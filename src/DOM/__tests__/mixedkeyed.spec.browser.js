@@ -79,7 +79,11 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
         render(template([spanTagWithKeyAndText('d', 'b'), spanTagWithText('c'), spanTagWithKeyAndText('e', 'a'), spanTagWithKeyAndText('f', 'c')]), container);
         expect(container.textContent).to.equal('bcac');
         expect(container.firstChild.childNodes.length).to.equal(4);
-        render(template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b')]), container);
+		render(template([spanTagWithKeyAndText('a', 1), spanTagWithKeyAndText('b', 'b')]), container);
+		expect(container.textContent).to.equal('1b');
+		render(template([spanTagWithKeyAndText('a', 1), spanTagWithKeyAndText('b', '')]), container);
+		expect(container.textContent).to.equal('1');
+		render(template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b')]), container);
         expect(container.textContent).to.equal('ab');
         expect(container.firstChild.childNodes.length).to.equal(2);
     });
@@ -116,6 +120,113 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
         expect(container.textContent).to.equal('ab');
     });
 
+it('should push a child node forward', () => {
+	render(template([spanTagWithText(1), spanTagWithText(2), spanTagWithText(3), spanTagWithText(4)]), container);
+expect(container.firstChild.childNodes.length).to.equal(4);
+render(template([spanTagWithText(2), spanTagWithText(3), spanTagWithText(1), spanTagWithText(4)]), container);
+expect(container.textContent).to.equal('2314');
+expect(container.firstChild.childNodes.length).to.equal(4);
+render(template([spanTagWithText(1), spanTagWithText(2), spanTagWithText(3), spanTagWithText(4)]), container);
+expect(container.firstChild.childNodes.length).to.equal(4);
+render(template([spanTagWithText(2), spanTagWithText(3), spanTagWithText(1), spanTagWithText(4)]), container);
+expect(container.textContent).to.equal('2314');
+expect(container.firstChild.childNodes.length).to.equal(4);
+render(template([spanTagWithText(1), spanTagWithText(2), spanTagWithText(3), spanTagWithText(4)]), container);
+expect(container.firstChild.childNodes.length).to.equal(4);
+render(template([spanTagWithText(2), spanTagWithText(3), spanTagWithText(1), spanTagWithText(4)]), container);
+expect(container.textContent).to.equal('2314');
+expect(container.firstChild.childNodes.length).to.equal(4);
+render(template([spanTagWithText(1), spanTagWithText(2), spanTagWithText(3), spanTagWithText(4)]), container);
+expect(container.firstChild.childNodes.length).to.equal(4);
+render(template([spanTagWithText(2), spanTagWithText(3), spanTagWithText(1), spanTagWithText(4)]), container);
+expect(container.textContent).to.equal('2314');
+expect(container.firstChild.childNodes.length).to.equal(4);
+
+});
+
+it('should remove a non-keyed child', () => {
+	render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('c')]), container);
+expect(container.textContent).to.equal('c');
+expect(container.firstChild.childNodes.length).to.equal(1);
+render(template([spanTagWithText('c')]), container);
+expect(container.textContent).to.equal('c');
+expect(container.firstChild.childNodes.length).to.equal(1);
+render(template([spanTagWithText('c')]), container);
+expect(container.textContent).to.equal('c');
+expect(container.firstChild.childNodes.length).to.equal(1);
+render(template([spanTagWithText('c')]), container);
+expect(container.textContent).to.equal('c');
+expect(container.firstChild.childNodes.length).to.equal(1);
+render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+
+});
+
+it('should swap two non-keyed children', () => {
+	render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('b'), spanTagWithText('a')]), container);
+expect(container.textContent).to.equal('ba');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('b'), spanTagWithText('a')]), container);
+expect(container.textContent).to.equal('ba');
+expect(container.firstChild.childNodes.length).to.equal(2);
+});
+
+it('should append a non-keyed child', () => {
+	render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('c'), spanTagWithText('d'), spanTagWithText('e')]), container);
+expect(container.textContent).to.equal('cde');
+expect(container.firstChild.childNodes.length).to.equal(3);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('c'), spanTagWithText('d'), spanTagWithText('e')]), container);
+expect(container.textContent).to.equal('cde');
+render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+expect(container.firstChild.childNodes.length).to.equal(3);expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('c'), spanTagWithText('d'), spanTagWithText('e')]), container);
+expect(container.textContent).to.equal('cde');
+expect(container.firstChild.childNodes.length).to.equal(3);expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('c'), spanTagWithText('d'), spanTagWithText('e')]), container);
+expect(container.textContent).to.equal('cde');
+expect(container.firstChild.childNodes.length).to.equal(3);
+render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
+
+});
+
     it('should remove the first keyed node child, and add two non-key child nodes', () => {
         render(template([spanTagWithKeyAndText('d', 'b'), spanTagWithText('c1'), spanTagWithText('c2'), spanTagWithKeyAndText('f', 'c')]), container);
         expect(container.textContent).to.equal('bc1c2c');
@@ -135,6 +246,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 	    render(template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]), container);
 	    expect(container.textContent).to.equal('abc');
 	    expect(container.firstChild.childNodes.length).to.equal(3);
+render(template([spanTagWithText('a'), spanTagWithText('b')]), container);
+expect(container.textContent).to.equal('ab');
+expect(container.firstChild.childNodes.length).to.equal(2);
 	    render(template([spanTagWithKeyAndText('d', 'b'), spanTagWithText('c1'), spanTagWithText('c2'), spanTagWithKeyAndText('f', 'c')]), container);
 	    expect(container.textContent).to.equal('bc1c2c');
 	    expect(container.firstChild.childNodes.length).to.equal(4);
@@ -171,8 +285,8 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 	    render(template([spanTagWithKeyAndText('d', 'b'), spanTagWithText('c1'), spanTagWithText('c2'), spanTagWithKeyAndText('f', 'c')]), container);
 	    expect(container.textContent).to.equal('bc1c2c');
 	    expect(container.firstChild.childNodes.length).to.equal(4);
-	    render(template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]), container);
-	    expect(container.textContent).to.equal('abc');
+	    render(template([spanTagWithKeyAndText('a', '1'), spanTagWithKeyAndText('b', '2'), spanTagWithKeyAndText('e', 3)]), container);
+	    expect(container.textContent).to.equal('123');
 	    expect(container.firstChild.childNodes.length).to.equal(3);
 	    render(template([spanTagWithKeyAndText('d', 'b'), spanTagWithText('c1'), spanTagWithText('c2'), spanTagWithKeyAndText('f', 'c')]), container);
 	    expect(container.textContent).to.equal('bc1c2c');
@@ -208,4 +322,29 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 	    expect(container.textContent).to.equal('bc1c2c');
 	    expect(container.firstChild.childNodes.length).to.equal(4);
     });
+
+it('should update single array element with another single array element', () => {
+	render(template([spanTagWithText(1)]), container);
+expect(container.firstChild.childNodes.length).to.equal(1);
+expect(container.textContent).to.equal('1');
+render(template([spanTagWithText(2)]), container);
+expect(container.textContent).to.equal('2');
+expect(container.firstChild.childNodes.length).to.equal(1);
+render(template([spanTagWithText(1)]), container);
+expect(container.firstChild.childNodes.length).to.equal(1);
+expect(container.textContent).to.equal('1');
+render(template([spanTagWithText(2)]), container);
+expect(container.textContent).to.equal('2');
+expect(container.firstChild.childNodes.length).to.equal(1);
+render(template([spanTagWithText(1)]), container);
+expect(container.firstChild.childNodes.length).to.equal(1);
+expect(container.textContent).to.equal('1');
+render(template([spanTagWithText(3)]), container);
+expect(container.textContent).to.equal('3');
+expect(container.firstChild.childNodes.length).to.equal(1);
+render(template([spanTagWithText(1)]), container);
+expect(container.firstChild.childNodes.length).to.equal(1);
+
 });
+});
+

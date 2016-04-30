@@ -49,13 +49,20 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes(['#0', '#1', '#2', '#3'])), container);
         expect(container.textContent).to.equal('#0#1#2#3');
         expect(container.firstChild.childNodes.length).to.equal(4);
+		render(template(generateKeyNodes([])), container);
+		render(template(generateKeyNodes(['#0', '#1', '#2', '#4'])), container);
+		expect(container.textContent).to.equal('#0#1#2#4');
+		expect(container.firstChild.childNodes.length).to.equal(4);
+
     });
+
     it('should remove two keys at the beginning', () => {
         render(template(generateKeyNodes(['a', 'b', 'c'])), container);
         render(template(generateKeyNodes(['c'])), container);
         expect(container.textContent).to.equal('c');
         expect(container.firstChild.childNodes.length).to.equal(1);
     });
+
     it('should size up', () => {
         render(template(generateKeyNodes(['#0', '#1'])), container);
         render(template(generateKeyNodes(['#0', '#1', '#2', '#3'])), container);
@@ -93,7 +100,13 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes(['#0', '#1', '#2', 'a'])), container);
         expect(container.textContent).to.equal('#0#1#2a');
         expect(container.firstChild.childNodes.length).to.equal(4);
+render(template(generateKeyNodes(['#0', 'a', '#2', '#3'])), container);
+render(template(generateKeyNodes(['a', '#0', '#1', '#2'])), container);
+render(template(generateKeyNodes(['#0', '#1', '#2', 'a'])), container);
+expect(container.textContent).to.equal('#0#1#2a');
+expect(container.firstChild.childNodes.length).to.equal(4);
     });
+
     it('should move a key', () => {
         render(template(generateKeyNodes(['#0', 'a', '#2', '#3'])), container);
         render(template(generateKeyNodes(['#0', '#1', 'a', '#3'])), container);
@@ -138,8 +151,13 @@ describe('keyed-nodes', () => {
         expect(container.textContent).to.equal('74326abcdef1');
         expect(container.firstChild.childNodes.length).to.equal(8);
     });
+
     it('should remove one key at the start', () => {
         render(template(generateKeyNodes(['a', 'b', 'c'])), container);
+render(template(generateKeyNodes(['a', 'b', 'c', 'd'])), container);
+render(template(generateKeyNodes(['d', 'c', 'b', 'a'])), container);
+expect(container.textContent).to.equal('dcba');
+expect(container.firstChild.childNodes.length).to.equal(4);
         render(template(generateKeyNodes(['b', 'c'])), container);
         expect(container.textContent).to.equal('bc');
         expect(container.firstChild.childNodes.length).to.equal(2);
@@ -149,6 +167,8 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes(['d', 'c', 'b', 'a'])), container);
         expect(container.textContent).to.equal('dcba');
         expect(container.firstChild.childNodes.length).to.equal(4);
+render(template(generateKeyNodes(['a', 'b', 'c', 'd'])), container);
+
     });
     it('should remove two keys at the start', () => {
         render(template(generateKeyNodes(['a', 'b', 'c'])), container);
@@ -171,7 +191,11 @@ describe('keyed-nodes', () => {
 	    expect(container.textContent).to.equal('abc');
 	    expect(container.firstChild.childNodes.length).to.equal(3);
         render(template(generateKeyNodes(['c'])), container);
-        render(template(generateKeyNodes(['a', 'b', 'c'])), container);
+render(template(generateKeyNodes(['a', 'b', 1])), container);
+expect(container.textContent).to.equal('ab1');
+expect(container.firstChild.childNodes.length).to.equal(3);
+render(template(generateKeyNodes(['c'])), container);
+render(template(generateKeyNodes(['a', 'b', 'c'])), container);
         expect(container.textContent).to.equal('abc');
         expect(container.firstChild.childNodes.length).to.equal(3);
     });
@@ -335,9 +359,9 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes([3, 4, 1, 2])), container);
         expect(container.firstChild.childNodes.length).to.equal(4);
         expect(container.textContent).to.equal('3412');
-        render(template(generateKeyNodes([2, 3, 4, 1])), container);
-        expect(container.firstChild.childNodes.length).to.equal(4);
-        expect(container.textContent).to.equal('2341');
+        render(template(generateKeyNodes([2])), container);
+        expect(container.firstChild.childNodes.length).to.equal(1);
+        expect(container.textContent).to.equal('2');
         render(template(generateKeyNodes([1, 2, 3, 4])), container);
         expect(container.firstChild.childNodes.length).to.equal(4);
         expect(container.textContent).to.equal('1234');
