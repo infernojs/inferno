@@ -83,6 +83,8 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
 
+		render(template(), container);
+
 		render(template(BasicComponent1, undefined), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -105,11 +107,15 @@ describe('Components (non-JSX)', () => {
 
 		render(template(BasicComponent1, '1234'), container);
 
+		render(template(), container);
+
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is 1234');
+
+		render(template(null), container);
 
 		// remove the component
 		render(template(null, '1234'), container);
@@ -249,6 +255,8 @@ describe('Components (non-JSX)', () => {
 		).to.equal(
 			true
 		);
+
+		render(template(false), container);
 
 		render(template(BasicComponent1d, '123', false), container);
 		expect(
