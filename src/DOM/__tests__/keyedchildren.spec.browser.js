@@ -67,13 +67,21 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes(['#0', '#1'])), container);
         expect(container.textContent).to.equal('#0#1');
         expect(container.firstChild.childNodes.length).to.equal(2);
+	    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'])), container);
+	    render(template(generateKeyNodes(['#0', '#1'])), container);
+	    expect(container.textContent).to.equal('#0#1');
+	    expect(container.firstChild.childNodes.length).to.equal(2);
     });
+
     it('should clear all nodes', () => {
         render(template(generateKeyNodes(['#0', '#1', '#2', '#3'])), container);
         render(template(generateKeyNodes([])), container);
         expect(container.textContent).to.equal('');
         expect(container.firstChild.childNodes.length).to.equal(0);
+	    render(template(generateKeyNodes(['#0', '#1', '#2', '#3'])), container);
+	    render(template(generateKeyNodes([])), container);
     });
+
     it('should work with mixed nodes', () => {
         render(template(generateKeyNodes(['1', '#0', '#1', '#2'])), container);
         render(template(generateKeyNodes(['#0', '#1', '#2', '#3'])), container);
@@ -115,7 +123,15 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes([1, 2, 3, 4, 0])), container);
         expect(container.textContent).to.equal('12340');
         expect(container.firstChild.childNodes.length).to.equal(5);
+	    render(template(generateKeyNodes([0, 1, 2, 3, 4])), container);
+	    render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
+	    expect(container.textContent).to.equal('74326abcdef1');
+	    expect(container.firstChild.childNodes.length).to.equal(8);
+	    render(template(generateKeyNodes(['#0', 'a', '#2'])), container);
+	    expect(container.textContent).to.equal('#0a#2');
+	    expect(container.firstChild.childNodes.length).to.equal(3);
     });
+
     it('should reorder keys', () => {
         render(template(generateKeyNodes(['1', '2', '3', '4', 'abc', '6', 'def', '7'])), container);
         render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
@@ -141,12 +157,19 @@ describe('keyed-nodes', () => {
         expect(container.firstChild.childNodes.length).to.equal(1);
     });
     it('should add one key to start', () => {
+	    render(template(generateKeyNodes(['a', 'b', 'c'])), container);
+	    expect(container.textContent).to.equal('abc');
+	    expect(container.firstChild.childNodes.length).to.equal(3);
         render(template(generateKeyNodes(['a', 'b'])), container);
         render(template(generateKeyNodes(['a', 'b', 'c'])), container);
         expect(container.textContent).to.equal('abc');
         expect(container.firstChild.childNodes.length).to.equal(3);
     });
+
     it('should add two key to start', () => {
+	    render(template(generateKeyNodes(['a', 'b', 'c'])), container);
+	    expect(container.textContent).to.equal('abc');
+	    expect(container.firstChild.childNodes.length).to.equal(3);
         render(template(generateKeyNodes(['c'])), container);
         render(template(generateKeyNodes(['a', 'b', 'c'])), container);
         expect(container.textContent).to.equal('abc');
@@ -199,7 +222,13 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes(['a', 'b', 'e'])), container);
         expect(container.textContent).to.equal('abe');
         expect(container.firstChild.childNodes.length).to.equal(3);
+	    render(template(generateKeyNodes(['c', 'd', 'e'])), container);
+	    render(template(generateKeyNodes(['c', 'd', 'e'])), container);
+	    render(template(generateKeyNodes(['a', 'p', 'e'])), container);
+	    expect(container.textContent).to.equal('ape');
+	    expect(container.firstChild.childNodes.length).to.equal(3);
     });
+
     it('should shuffle, insert and remove', () => {
         render(template(generateKeyNodes(['a', 'b', 'c', 'd', 'e', 'f', 'g'])), container);
         render(template(generateKeyNodes(['b', 'c', 'a'])), container);
@@ -219,7 +248,14 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes([2, 3, 1, 4])), container);
         expect(container.textContent).to.equal('2314');
         expect(container.firstChild.childNodes.length).to.equal(4);
+	    render(template(generateKeyNodes([3, 2, 1, 4])), container);
+	    expect(container.textContent).to.equal('3214');
+	    expect(container.firstChild.childNodes.length).to.equal(4);
+	    render(template(generateKeyNodes([3, 2, 4, 1])), container);
+	    expect(container.textContent).to.equal('3241');
+	    expect(container.firstChild.childNodes.length).to.equal(4);
     });
+
     it('should move a element to the end', () => {
         render(template(generateKeyNodes([1, 2, 3])), container);
         expect(container.firstChild.childNodes.length).to.equal(3);
@@ -240,14 +276,22 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes([4, 2, 3, 1])), container);
         expect(container.textContent).to.equal('4231');
         expect(container.firstChild.childNodes.length).to.equal(4);
+	    render(template(generateKeyNodes([1, 2, 3, 4])), container);
+	    expect(container.firstChild.childNodes.length).to.equal(4);
     });
+
     it('should move to left and replace', () => {
         render(template(generateKeyNodes([1, 2, 3, 4, 5])), container);
         expect(container.firstChild.childNodes.length).to.equal(5);
         render(template(generateKeyNodes([4, 1, 2, 3, 6])), container);
         expect(container.textContent).to.equal('41236');
         expect(container.firstChild.childNodes.length).to.equal(5);
+	    render(template(generateKeyNodes([4, 5, 2, 3, 0])), container);
+	    expect(container.textContent).to.equal('45230');
+	    render(template(generateKeyNodes([1, 2, 3, 4, 5])), container);
+	    expect(container.firstChild.childNodes.length).to.equal(5);
     });
+
     it('should move to left and leave a hole', () => {
         render(template(generateKeyNodes([1, 4, 5])), container);
         expect(container.firstChild.childNodes.length).to.equal(3);
@@ -307,10 +351,16 @@ describe('keyed-nodes', () => {
     });
 
     it('should reorder nodes', () => {
+	    render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
+	    expect(container.textContent).to.equal('74326abcdef1');
+	    expect(container.firstChild.childNodes.length).to.equal(8);
         render(template(generateKeyNodes(['1', '2', '3', '4', 'abc', '6', 'def', '7'])), container);
         render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
         expect(container.textContent).to.equal('74326abcdef1');
         expect(container.firstChild.childNodes.length).to.equal(8);
+	    render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
+	    expect(container.textContent).to.equal('74326abcdef1');
+	    expect(container.firstChild.childNodes.length).to.equal(8);
     });
 
     it('should do a advanced shuffle - numbers and letters', () => {
@@ -320,6 +370,19 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes([1, 'e', 2, 'b', 'f', 'g', 'c', 'a', 3])), container);
         expect(container.textContent).to.equal('1e2bfgca3');
         expect(container.firstChild.childNodes.length).to.equal(9);
+	    render(template(generateKeyNodes(['a', 'b', 'c', 'd', 1, 2, 3])), container);
+	    expect(container.textContent).to.equal('abcd123');
+	    expect(container.firstChild.childNodes.length).to.equal(7);
+	    render(template(generateKeyNodes([0, 'e', 2, 'b', 'f', 'g', 'c', 'a', 4])), container);
+	    expect(container.textContent).to.equal('0e2bfgca4');
+	    expect(container.firstChild.childNodes.length).to.equal(9);
+	    render(template(generateKeyNodes(['a', 'b', 'c', 'd', 1, 2, 3])), container);
+	    expect(container.textContent).to.equal('abcd123');
+	    expect(container.firstChild.childNodes.length).to.equal(7);
+	    render(template(generateKeyNodes([1, 'e', 2, 'b', 'f', 'g', 'c', 'a', 3])), container);
+	    expect(container.textContent).to.equal('1e2bfgca3');
+	    expect(container.firstChild.childNodes.length).to.equal(9);
+
     });
 
     it('should do a complex removal at the beginning', () => {
@@ -329,5 +392,11 @@ describe('keyed-nodes', () => {
         render(template(generateKeyNodes(['c', 'd'])), container);
         expect(container.textContent).to.equal('cd');
         expect(container.firstChild.childNodes.length).to.equal(2);
+	    render(template(generateKeyNodes(['a', 'b', 'c', 'd'])), container);
+	    expect(container.textContent).to.equal('abcd');
+	    expect(container.firstChild.childNodes.length).to.equal(4);
+	    render(template(generateKeyNodes(['a', 'b', 'c', 'd'])), container);
+	    expect(container.textContent).to.equal('abcd');
+	    expect(container.firstChild.childNodes.length).to.equal(4);
     });
 });
