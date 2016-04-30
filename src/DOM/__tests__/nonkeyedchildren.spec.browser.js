@@ -320,10 +320,8 @@ describe('Non Keyed nodes', () => {
         it('should swap two non-keyed children', () => {
             render(template([spanTagWithText('a'), [], spanTagWithText('b')]), container);
             expect(container.textContent).to.equal('ab');
-            expect(container.firstChild.childNodes.length).to.equal(2);
             render(template([spanTagWithText('b'), null, spanTagWithText('a')]), container);
             expect(container.textContent).to.equal('ba');
-            expect(container.firstChild.childNodes.length).to.equal(2);
         });
 
         it('should do a complex move of non-keyed to the beginning', () => {

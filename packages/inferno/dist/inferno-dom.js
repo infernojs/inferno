@@ -1366,7 +1366,7 @@
 		if (sameLength === false) {
 			if (lastChildrenLength > nextChildrenLength) {
 				while (lastChildrenLength !== nextChildrenLength) {
-					var lastChild = lastChildren[lastChildrenLength - 1];
+					var lastChild = lastChildren.pop();
 
 					if (!isInvalidNode(lastChild)) {
 						dom.removeChild(domChildren[lastChildrenLength - 1 + domChildrenIndex]);
@@ -1375,7 +1375,6 @@
 						}
 						detachNode(lastChild);
 						lastChildrenLength--;
-						lastChildren.pop();
 					}
 				}
 			} else {
@@ -1444,7 +1443,7 @@
 								insertOrAppendNonKeyed(dom, textNode, domChild);
 								isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 							}
-						} else if (sameLength === true) {
+						} else {
 							var _domNode = mount(_nextChild, null, lifecycle, context, instance, isSVG);
 							var _domChild = domChildren[index];
 

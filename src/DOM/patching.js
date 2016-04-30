@@ -204,7 +204,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 	if (sameLength === false) {
 		if (lastChildrenLength > nextChildrenLength) {
 			while (lastChildrenLength !== nextChildrenLength) {
-				const lastChild = lastChildren[lastChildrenLength - 1];
+				const lastChild = lastChildren.pop();
 
 				if (!isInvalidNode(lastChild)) {
 					dom.removeChild(domChildren[lastChildrenLength - 1 + domChildrenIndex]);
@@ -213,8 +213,8 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					}
 					detachNode(lastChild);
 					lastChildrenLength--;
-					lastChildren.pop();
 				}
+
 			}
 		} else {
 			while (lastChildrenLength !== nextChildrenLength) {
@@ -282,7 +282,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							insertOrAppendNonKeyed(dom, textNode, domChild);
 							isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 						}
-					} else if (sameLength === true) {
+					} else {
 						const domNode = mount(nextChild, null, lifecycle, context, instance, isSVG);
 						const domChild = domChildren[index];
 
