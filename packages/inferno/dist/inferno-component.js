@@ -142,6 +142,12 @@
 		if (!component._pendingSetState) {
 			component._pendingSetState = true;
 			applyState(component, false, callback);
+		} else {
+			var pendingState = component._pendingState;
+			var oldState = component.state;
+
+			component.state = babelHelpers.extends({}, oldState, pendingState);
+			component._pendingState = {};
 		}
 	}
 

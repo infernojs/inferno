@@ -323,27 +323,27 @@ describe('Components (JSX)', () => {
 		);
 	});
 
-    /* no more templates
-	it('should throw error when a component is included as a child without a template', () => {
+	/* no more templates
+	 it('should throw error when a component is included as a child without a template', () => {
 
-		expect(() => render((
-			<div>
-				<BasicComponent2 title="abc" name="basic-render">
-					<span>A child</span>
-					<BasicComponent1c/>
-				</BasicComponent2>
-			</div>
-		), container)).to.throw('Inferno Error: Children must be provided as templates.');
+	 expect(() => render((
+	 <div>
+	 <BasicComponent2 title="abc" name="basic-render">
+	 <span>A child</span>
+	 <BasicComponent1c/>
+	 </BasicComponent2>
+	 </div>
+	 ), container)).to.throw('Inferno Error: Children must be provided as templates.');
 
-		expect(() => render((
-			<div>
-				<BasicComponent2 title="abc" name="basic-render">
-					<span>A child</span>
-					<BasicComponent1c/>
-				</BasicComponent2>
-			</div>
-		), container)).to.throw('Inferno Error: Children must be provided as templates.');
-	}); */
+	 expect(() => render((
+	 <div>
+	 <BasicComponent2 title="abc" name="basic-render">
+	 <span>A child</span>
+	 <BasicComponent1c/>
+	 </BasicComponent2>
+	 </div>
+	 ), container)).to.throw('Inferno Error: Children must be provided as templates.');
+	 }); */
 
 	it('should render multiple components', () => {
 
@@ -358,7 +358,7 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is component 1</span></div>'
-			+ '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>')
+				+ '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>')
 		);
 
 		render((
@@ -534,12 +534,12 @@ describe('Components (JSX)', () => {
 	function test(element, expectedTag, expectedClassName, callback) {
 
 		render(element, container);
-        requestAnimationFrame(() => {
-            expect(container.firstChild).not.to.equal(null);
-            expect(container.firstChild.tagName).to.equal(expectedTag);
-            expect(container.firstChild.className).to.equal(expectedClassName);
-            callback();
-        });
+		requestAnimationFrame(() => {
+			expect(container.firstChild).not.to.equal(null);
+			expect(container.firstChild.tagName).to.equal(expectedTag);
+			expect(container.firstChild.className).to.equal(expectedClassName);
+			callback();
+		});
 	}
 
 	it('should preserve the name of the class for use in error messages', function () {
@@ -563,11 +563,11 @@ describe('Components (JSX)', () => {
 			}
 		}
 		test(<Foo initialValue={ null } />, 'SPAN', 'bar', () => {
-            test(<Foo initialValue="foo" />, 'SPAN', 'bar', () => {
-                expect(renderCount).to.equal(2);
-                done();
-            })
-        });
+			test(<Foo initialValue="foo" />, 'SPAN', 'bar', () => {
+				expect(renderCount).to.equal(2);
+				done();
+			})
+		});
 		// setState causes a render, so we should expect 2
 	});
 
@@ -603,11 +603,11 @@ describe('Components (JSX)', () => {
 			}
 		}
 		test(<Foo initialValue="foo" />, 'DIV', 'foo', function() {
-            expect(renderedName).to.equal('foo');
-            attachedListener();
-            expect(renderedName).to.equal('bar');
-            done();
-        });
+			expect(renderedName).to.equal('foo');
+			attachedListener();
+			expect(renderedName).to.equal('bar');
+			done();
+		});
 	});
 
 	it('should render using forceUpdate even when there is no state', function (done) {
@@ -630,10 +630,10 @@ describe('Components (JSX)', () => {
 			}
 		}
 		test(<Foo initialValue="foo" />, 'DIV', 'foo', function() {
-            attachedListener();
-            expect(renderedName).to.equal('bar');
-            done();
-        });
+			attachedListener();
+			expect(renderedName).to.equal('bar');
+			done();
+		});
 
 	});
 

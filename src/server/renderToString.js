@@ -14,13 +14,6 @@ function renderComponent(Component, props, children, context) {
 		// Block setting state - we should render only once, using latest state
 		instance._pendingSetState = true;
 		instance.componentWillMount();
-		const shouldUpdate = instance.shouldComponentUpdate();
-		if (shouldUpdate) {
-			instance.componentWillUpdate();
-			const pendingState = instance._pendingState;
-			const oldState = instance.state;
-			instance.state = { ...oldState, ...pendingState };
-		}
 		const node = instance.render();
 		instance._pendingSetState = false;
 		return renderNode(node, context);
