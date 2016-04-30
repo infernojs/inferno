@@ -262,4 +262,72 @@ describe('keyed-nodes', () => {
         expect(container.textContent).to.equal('432150');
         expect(container.firstChild.childNodes.length).to.equal(6);
     });
+
+    it('should cycle order correctly', () => {
+        render(template(generateKeyNodes([1, 2, 3, 4])), container);
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        expect(container.textContent).to.equal('1234');
+        render(template(generateKeyNodes([2, 3, 4, 1])), container);
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        expect(container.textContent).to.equal('2341');
+        render(template(generateKeyNodes([3, 4, 1, 2])), container);
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        expect(container.textContent).to.equal('3412');
+        render(template(generateKeyNodes([4, 1, 2, 3])), container);
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        expect(container.textContent).to.equal('4123');
+        render(template(generateKeyNodes([1, 2, 3, 4])), container);
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        expect(container.textContent).to.equal('1234');
+    });
+
+    it('should cycle order correctly in the other direction', () => {
+        render(template(generateKeyNodes([1, 2, 3, 4])), container);
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        expect(container.textContent).to.equal('1234');
+        render(template(generateKeyNodes([4, 1, 2, 3])), container);
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        expect(container.textContent).to.equal('4123');
+        render(template(generateKeyNodes([3, 4, 1, 2])), container);
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        expect(container.textContent).to.equal('3412');
+        render(template(generateKeyNodes([2, 3, 4, 1])), container);
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        expect(container.textContent).to.equal('2341');
+        render(template(generateKeyNodes([1, 2, 3, 4])), container);
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        expect(container.textContent).to.equal('1234');
+    });
+
+    it('should allow any character as a key', () => {
+        render(template(generateKeyNodes(['<WEIRD/&\\key>'])), container);
+        render(template(generateKeyNodes(['INSANE/(/&\\key', '<CRAZY/&\\key>', '<WEIRD/&\\key>'])), container);
+        expect(container.textContent).to.equal('INSANE/(/&\\key<CRAZY/&\\key><WEIRD/&\\key>');
+        expect(container.firstChild.childNodes.length).to.equal(3);
+    });
+
+    it('should reorder nodes', () => {
+        render(template(generateKeyNodes(['1', '2', '3', '4', 'abc', '6', 'def', '7'])), container);
+        render(template(generateKeyNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
+        expect(container.textContent).to.equal('74326abcdef1');
+        expect(container.firstChild.childNodes.length).to.equal(8);
+    });
+
+    it('should do a advanced shuffle - numbers and letters', () => {
+        render(template(generateKeyNodes(['a', 'b', 'c', 'd', 1, 2, 3])), container);
+        expect(container.textContent).to.equal('abcd123');
+        expect(container.firstChild.childNodes.length).to.equal(7);
+        render(template(generateKeyNodes([1, 'e', 2, 'b', 'f', 'g', 'c', 'a', 3])), container);
+        expect(container.textContent).to.equal('1e2bfgca3');
+        expect(container.firstChild.childNodes.length).to.equal(9);
+    });
+
+    it('should do a complex removal at the beginning', () => {
+        render(template(generateKeyNodes(['a', 'b', 'c', 'd'])), container);
+        expect(container.textContent).to.equal('abcd');
+        expect(container.firstChild.childNodes.length).to.equal(4);
+        render(template(generateKeyNodes(['c', 'd'])), container);
+        expect(container.textContent).to.equal('cd');
+        expect(container.firstChild.childNodes.length).to.equal(2);
+    });
 });

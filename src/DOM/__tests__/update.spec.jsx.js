@@ -6,9 +6,17 @@ const Inferno = {
     createBlueprint
 };
 
+
 describe('Stateful Component updates', () => {
 
     let container;
+
+    let template = function(child) {
+        return {
+            tag: 'div',
+            children: child
+        };
+    };
 
     beforeEach(() => {
         container = document.createElement('div');

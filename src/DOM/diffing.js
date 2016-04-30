@@ -1,5 +1,5 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
-import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode } from './utils';
+import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode, replaceNode } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents } from './patching';
 import { mountArrayChildren, mount, mountEvents, mountComponent } from './mounting';
 import { setClipNode } from './lifecycle';
@@ -190,10 +190,10 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 				const instance = lastNode.instance;
 
 				if (!isNullOrUndefined(instance) && instance._unmounted) {
+					const newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
 					if (parentDom !== null) {
-						remove(lastNode, parentDom);
+						replaceNode(parentDom, newDom, lastNode.dom);
 					}
-					mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
 				} else {
 					nextNode.instance = instance;
 					nextNode.dom = lastNode.dom;
@@ -334,10 +334,10 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 					const instance = lastNode._instance;
 
 					if (!isNullOrUndefined(instance) && instance._unmounted) {
+						const newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
 						if (parentDom !== null) {
-							remove(lastNode, parentDom);
+							replaceNode(parentDom, newDom, lastNode.dom);
 						}
-						mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
 					} else {
 						nextNode.instance = lastNode.instance;
 						nextNode.dom = lastNode.dom;
