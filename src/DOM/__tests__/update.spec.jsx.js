@@ -61,7 +61,7 @@ describe('Stateful Component updates', () => {
         render(<B />, container);
         expect(container.innerHTML).to.equal('<div>B Component B</div>');
         sinon.assert.calledOnce(spy); // componentUnMount should have been called
-	    spy.restore();
+        spy.restore();
 
         // delayed update triggers for A
         expect(() => updatesAfromOutside()).to.throw();
@@ -85,9 +85,9 @@ describe('Stateful Component updates', () => {
                 this.domagic = this.domagic.bind(this);
 
                 // Call setState
-	            expect(() => this.setState({
-		            show: true
-	            })).to.throw;
+                expect(() => this.setState({
+                    show: true
+                })).to.throw;
             }
 
             domagic() {
@@ -99,8 +99,8 @@ describe('Stateful Component updates', () => {
             render() {
                 return (
                     <div>
-                        <button onclick={this.domagic} />
-                        <Child show={this.state.show} />
+                        <button onclick={this.domagic}/>
+                        <Child show={this.state.show}/>
                     </div>
                 );
             }
@@ -145,22 +145,22 @@ describe('Stateful Component updates', () => {
             }
 
             updateCaller() {
-               this.setState({
-                   values: [
-                       {checked: false},
-                       {checked: false}
-                   ]
-               });
+                this.setState({
+                    values: [
+                        {checked: false},
+                        {checked: false}
+                    ]
+                });
             }
 
             render() {
-               return (
-                   <div>
-                       {this.state.values.map(function(value) {
-                           return <input type="checkbox" checked={value.checked} />
-                       })}
-                   </div>
-               )
+                return (
+                    <div>
+                        {this.state.values.map(function (value) {
+                            return <input type="checkbox" checked={value.checked}/>
+                        })}
+                    </div>
+                )
             }
         }
 
@@ -190,6 +190,7 @@ describe('Stateful Component updates', () => {
             constructor(props) {
                 super(props);
             }
+
             render() {
                 return (
                     <div>
@@ -235,6 +236,7 @@ describe('Stateful Component updates', () => {
             constructor(props) {
                 super(props);
             }
+
             render() {
                 return (
                     <C data={this.props.data}></C>
@@ -267,8 +269,8 @@ describe('Stateful Component updates', () => {
             render() {
                 return (
                     <div>
-                        {this.props.data.test+''}
-                        {this.state.b +''}
+                        {this.props.data.test + ''}
+                        {this.state.b + ''}
                     </div>
                 )
             }
@@ -281,7 +283,7 @@ describe('Stateful Component updates', () => {
         updateCaller();
         expect(container.innerHTML).to.equal('<div><div><div>falsefalse</div></div></div>');
         updateCaller();
-	    expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
+        expect(container.innerHTML).to.equal('<div><div><div>truefalse</div></div></div>');
         updateCaller();
         expect(container.innerHTML).to.equal('<div><div><div>falsefalse</div></div></div>');
         StuckChild();
@@ -300,6 +302,7 @@ describe('Stateful Component updates', () => {
             constructor(props) {
                 super(props);
             }
+
             render() {
                 return (
                     <div>
@@ -345,6 +348,7 @@ describe('Stateful Component updates', () => {
             constructor(props) {
                 super(props);
             }
+
             render() {
                 return (
                     <C data={this.props.data}></C>
@@ -377,8 +381,8 @@ describe('Stateful Component updates', () => {
             render() {
                 return (
                     <div>
-                        {this.props.data.test+''}
-                        {this.state.b +''}
+                        {this.props.data.test + ''}
+                        {this.state.b + ''}
                     </div>
                 )
             }
@@ -404,5 +408,101 @@ describe('Stateful Component updates', () => {
 
         StuckChild();
         expect(container.innerHTML).to.equal('<div><div><div>falsefalse</div></div></div>');
+    });
+
+    it('Should keep order of nodes', () => {
+        let setItems = null;
+
+        class InnerComponentToGetUnmounted extends Component {
+            constructor(props) {
+                super(props);
+            }
+
+
+            render() {
+                return (
+                    <div class="common-root">
+                        {(() => {
+                            if (this.props.i % 2 === 0) {
+                                return (
+                                    <div>DIV{this.props.value}</div>
+                                );
+                            } else {
+                                return (
+                                    <span>SPAN{this.props.value}</span>
+                                );
+                            }
+                        })()}
+                    </div>
+                );
+            }
+        }
+
+        const DropdownItem = ({children}) => (
+            <li>{children}</li>
+        );
+
+        class Looper extends Component {
+            constructor(props) {
+                super(props);
+
+                this.state = {
+                    items: [
+                    ]
+                };
+
+                this.setItems = this.setItems.bind(this);
+
+                setItems = this.setItems;
+            }
+
+            setItems(collection) {
+                this.setState({
+                    items: collection
+                });
+            }
+
+            render() {
+                return (
+                    <div>
+                        <ul>
+                            {this.state.items.map(function (item, i) {
+                                return (
+                                    <DropdownItem key={item.value}>
+                                        <InnerComponentToGetUnmounted key={0} i={i} value={item.value}></InnerComponentToGetUnmounted>
+                                        <span key={1}>{item.text}</span>
+                                    </DropdownItem>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                );
+            }
+        }
+
+        render(<Looper />, container);
+        expect(container.innerHTML).to.equal('<div><ul></ul></div>');
+        setItems([
+            {value: 'val1', text: 'key1'},
+            {value: 'val2', text: 'key2'},
+            {value: 'val3', text: 'key3'},
+            {value: 'val4', text: 'key4'}
+        ]);
+
+        expect(container.innerHTML).to.equal('<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>');
+
+        setItems([
+            {value: 'val2', text: 'key2'},
+            {value: 'val3', text: 'key3'}
+        ]);
+        expect(container.innerHTML).to.equal('<div><ul><li><div class="common-root"><div>DIVval2</div></div><span>key2</span></li><li><div class="common-root"><span>SPANval3</span></div><span>key3</span></li></ul></div>');
+
+        setItems([
+            {value: 'val1', text: 'key1'},
+            {value: 'val2', text: 'key2'},
+            {value: 'val3', text: 'key3'},
+            {value: 'val4', text: 'key4'}
+        ]);
+        expect(container.innerHTML).to.equal('<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>');
     });
 });
