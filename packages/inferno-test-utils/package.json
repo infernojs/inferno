@@ -23,6 +23,5 @@
     "inferno": "^0.6.5"
   },
   "main": "inferno-test-utils.js",
-  "jsnext:main": "dist/inferno-test-utils.es2015.js",
   "repository": "https://github.com/trueadm/inferno"
 }

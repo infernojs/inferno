@@ -611,8 +611,8 @@ describe('Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
 		expect(container.firstChild.getAttribute('type')).to.equal('file');
-		expect(container.firstChild.getAttribute('multiple')).to.equal('multiple');
-		expect(container.firstChild.getAttribute('capture')).to.equal('capture');
+		expect(container.firstChild.getAttribute('multiple')).to.equal('');
+		expect(container.firstChild.capture).to.equal(true);
 		expect(container.firstChild.getAttribute('accept')).to.equal('image/*');
 
 		render(<input type="file" multiple="multiple" capture="capture" accept="image/*"></input>, container);
@@ -620,8 +620,8 @@ describe('Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
 		expect(container.firstChild.getAttribute('type')).to.equal('file');
-		expect(container.firstChild.getAttribute('multiple')).to.equal('multiple');
-		expect(container.firstChild.getAttribute('capture')).to.equal('capture');
+		expect(container.firstChild.getAttribute('multiple')).to.equal('');
+		expect(container.firstChild.capture).to.equal(true);
 		expect(container.firstChild.getAttribute('accept')).to.equal('image/*');
 	});
 
@@ -670,6 +670,24 @@ describe('Elements - SVG (JSX)', () => {
 		render(<div />, container);
 		render(<div dir="ltr" />, container);
 		render(<div dir={ [] } />, container);
+	});
 
+	it('should render an iframe', () => {
+		document.body.appendChild(container);
+		render(<iframe src="http://infernojs.org"></iframe>, container);
+		expect(container.firstChild.contentWindow).to.not.equal(undefined);
+		document.body.removeChild(container);
+	});
+
+	it('should render a HTML5 video', () => {
+		document.body.appendChild(container);
+		render((
+			<video width="400" controls volume={ 0 }>
+				<source src="http://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+			</video>
+		), container);
+		expect(container.firstChild.volume).to.not.equal(undefined);
+		expect(container.firstChild.volume).to.be.equal(0);
+		document.body.removeChild(container);
 	});
 });

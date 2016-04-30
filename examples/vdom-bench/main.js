@@ -6,17 +6,58 @@
 	var NAME = 'inferno';
 	var VERSION = '0.7';
 
-	var t1 = Inferno.createBlueprint({
+	var bp1 = {
+		dom: null,
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'div',
-		key: { arg: 0 },
-		children: { arg: 1 }
-	}, 4);
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasClassName: false,
+		hasStyle: false,
+		isSVG: false,
+		lazy: false,
+		eventKeys: null,
+		attrKeys: null,
+		style: null,
+		className: null,
+		childrenType: 4 // multiple children keyed
+	};
 
-	var t2 = Inferno.createBlueprint({
+	var bp2 = {
+		lazy: false,
+		dom: null,
+		pools: {
+			keyed: {},
+			nonKeyed: []
+		},
 		tag: 'span',
-		key: { arg: 0 },
-		children: { arg: 1 }
-	}, 1);
+		className: null,
+		style: null,
+		isComponent: false,
+		hasAttrs: false,
+		hasHooks: false,
+		hasEvents: false,
+		hasStyle: false,
+		hasClassName: false,
+		isSVG: false,
+		eventKeys: null,
+		attrKeys: null,
+		childrenType: 1 // text child
+	};
+
+	function createNode(tpl, key, children) {
+		return {
+			dom: null,
+			bp: tpl,
+			key: key,
+			children: children
+		};
+	}
 
 	function renderTree(nodes) {
 		var children = new Array(nodes.length);
@@ -26,9 +67,9 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = t1(n.key, renderTree(n.children));
+				children[i] = createNode(bp1, n.key, renderTree(n.children));
 			} else {
-				children[i] = t2(n.key, n.key);
+				children[i] = createNode(bp2, n.key, n.key);
 			}
 		}
 		return children;
@@ -48,11 +89,11 @@
 	};
 
 	BenchmarkImpl.prototype.render = function() {
-		InfernoDOM.render(t1(null, renderTree(this.a)), this.container);
+		InfernoDOM.render(createNode(bp1, null, renderTree(this.a)), this.container);
 	};
 
 	BenchmarkImpl.prototype.update = function() {
-		InfernoDOM.render(t1(null, renderTree(this.b)), this.container);
+		InfernoDOM.render(createNode(bp1, null, renderTree(this.b)), this.container);
 	};
 
 	document.addEventListener('DOMContentLoaded', function() {

@@ -58,7 +58,7 @@ export function createBlueprint(shape, childrenType) {
 	const tag = shape.tag || null;
 	const tagIsDynamic = tag && tag.arg !== undefined ? true : false;
 
-	const children = !isNullOrUndefined(shape.children) ? shape.children : null;
+	const children = isNullOrUndefined(shape.children) ? null : shape.children;
 	const childrenIsDynamic = children && children.arg !== undefined ? true : false;
 
 	const attrs = shape.attrs || null;
@@ -70,13 +70,13 @@ export function createBlueprint(shape, childrenType) {
 	const events = shape.events || null;
 	const eventsIsDynamic = events && events.arg !== undefined ? true : false;
 
-	const key = shape.key !== undefined ? shape.key : null;
+	const key = shape.key === undefined ? null : shape.key;
 	const keyIsDynamic = !isNullOrUndefined(key) && !isNullOrUndefined(key.arg);
 
 	const style = shape.style || null;
 	const styleIsDynamic = style && style.arg !== undefined ? true : false;
 
-	const className = shape.className !== undefined ? shape.className : null;
+	const className = shape.className === undefined ? null : shape.className;
 	const classNameIsDynamic = className && className.arg !== undefined ? true : false;
 
 	const blueprint = {
@@ -86,7 +86,7 @@ export function createBlueprint(shape, childrenType) {
 			keyed: {},
 			nonKeyed: []
 		},
-		tag: !tagIsDynamic ? tag : null,
+		tag: tagIsDynamic ? null : tag,
 		className: className !== '' && className ? className : null,
 		style: style !== '' && style ? style : null,
 		isComponent: tagIsDynamic,

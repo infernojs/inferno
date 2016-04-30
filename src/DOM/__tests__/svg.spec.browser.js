@@ -42,6 +42,7 @@ describe('SVG (non-jsx)', () => {
 				height: val1
 			}, null);
 
+		render(template(null), container);
 		render(template(200), container);
 		expect(container.firstChild.tagName.toLowerCase()).to.eql('svg');
 		expect(container.firstChild.namespaceURI).to.eql('http://www.w3.org/2000/svg');
@@ -75,6 +76,7 @@ describe('SVG (non-jsx)', () => {
 			tag: 'svg'
 		});
 
+	    render(template(null), container);
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		render(template(null), container);
@@ -159,7 +161,7 @@ describe('SVG (non-jsx)', () => {
 				tag: 'circle'
 			}
 		});
-
+		
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');

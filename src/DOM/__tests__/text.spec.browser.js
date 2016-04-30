@@ -142,11 +142,17 @@ describe('Text', () => {
 
 			it(test.description, () => {
 
+				render(test.template(null), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
-
+				render(test.template(null), container);
+				render(test.template(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
+				render(test.template(), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
@@ -188,7 +194,7 @@ describe('Text', () => {
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.firstChild.textContent).to.equal(arg.expected);
-
+				render(test.template(undefined), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
@@ -210,12 +216,13 @@ describe('Text', () => {
 
 			it(test.description, () => {
 
+				render(test.template(undefined), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(1);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
-
+				render(test.template(undefined), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
@@ -426,18 +433,24 @@ describe('Text', () => {
 
 			it(test.description, () => {
 
+				render(test.template(null), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(arg.children);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
-
+				render(test.template(null), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.childNodes.length).to.equal(1);
 				expect(container.firstChild.childNodes.length).to.equal(arg.children);
 				expect(container.firstChild.textContent).to.equal(arg.expected);
-
+				render(test.template(undefined), container);
+				render(test.template(arg.value), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.childNodes.length).to.equal(1);
+				expect(container.firstChild.childNodes.length).to.equal(arg.children);
+				expect(container.firstChild.textContent).to.equal(arg.expected);
 			});
 		});
 	});

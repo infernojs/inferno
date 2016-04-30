@@ -1,7 +1,7 @@
-import Lifecycle from './../core/lifecycle';
+import Lifecycle from './../DOM/lifecycle';
 import { isNullOrUndefined } from './../core/utils';
 
-const noOp = 'Inferno Warning: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 
 // Copy of the util from dom/util, otherwise it makes massive bundles
 function getActiveNode() {
@@ -20,14 +20,20 @@ function queueStateChanges(component, newState, callback) {
 	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
-	if (component._pendingSetState === false) {
+	if (!component._pendingSetState) {
 		component._pendingSetState = true;
 		applyState(component, false, callback);
+	} else {
+		const pendingState = component._pendingState;
+		const oldState = component.state;
+
+		component.state = { ...oldState, ...pendingState };
+		component._pendingState = {};
 	}
 }
 
 function applyState(component, force, callback) {
-	if (component._deferSetState === false || force) {
+	if (!component._deferSetState || force) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
 		const oldState = component.state;
@@ -65,19 +71,19 @@ export default class Component {
 		this._pendingSetState = false;
 		this._pendingState = {};
 		this._lastNode = null;
-		this._unmounted = false;
+		this._unmounted = true;
 		this.context = {};
 		this._patch = null;
 	}
 	render() {}
 	forceUpdate(callback) {
-		if (this._unmounted === true) {
+		if (this._unmounted) {
 			throw Error(noOp);
 		}
 		applyState(this, true, callback);
 	}
 	setState(newState, callback) {
-		if (this._unmounted === true) {
+		if (this._unmounted) {
 			throw Error(noOp);
 		}
 		if (this._blockSetState === false) {
@@ -122,5 +128,6 @@ export default class Component {
 				return node;
 			}
 		}
+		return false;
 	}
 }

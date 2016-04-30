@@ -44,10 +44,13 @@ export function documentCreateElement(tag, isSVG) {
 }
 
 export function appendText(text, parentDom, singleChild) {
-	if (parentDom !== null) {
+	if (parentDom === null) {
+		return document.createTextNode(text);
+	} else {
 		if (singleChild) {
 			if (text !== '') {
 				parentDom.textContent = text;
+				return parentDom.firstChild;
 			} else {
 				const textNode = document.createTextNode('');
 
@@ -60,12 +63,10 @@ export function appendText(text, parentDom, singleChild) {
 			parentDom.appendChild(textNode);
 			return textNode;
 		}
-	} else {
-		return document.createTextNode(text);
 	}
 }
 
-export function replaceWithNewNode(lastNode, nextNode, parentDom, namespace, lifecycle, context, instance, isSVG) {
+export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
 	let lastInstance = null;
 	const instanceLastNode = lastNode._lastNode;
 
@@ -73,7 +74,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, namespace, lif
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	const dom = mount(nextNode, null, namespace, lifecycle, context, instance, isSVG);
+	const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
 	replaceNode(parentDom, dom, lastNode.dom);
@@ -265,9 +266,8 @@ export function createVirtualFragment() {
 	return fragment;
 }
 
-export function isKeyed(lastChildren, nextChildren) {
-	return (nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) &&
-		!isNullOrUndefined(nextChildren[1]) && !isNullOrUndefined(nextChildren[1].key));
+export function isKeyed(nextChildren) {
+	return (nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key));
 }
 
 function selectOptionValueIfNeeded(vdom, values) {
@@ -330,21 +330,4 @@ export function handleAttachedHooks(hooks, lifecycle, dom) {
 			hooks.attached(dom);
 		});
 	}
-}
-
-export function handleLazyAttached(node, lifecycle, dom) {
-	lifecycle.addListener(() => {
-		const rect = dom.getBoundingClientRect();
-
-		if (lifecycle.scrollY === null) {
-			lifecycle.refresh();
-		}
-		node.clipData = {
-			top: rect.top + lifecycle.scrollY,
-			left: rect.left + lifecycle.scrollX,
-			bottom: rect.bottom + lifecycle.scrollY,
-			right: rect.right + lifecycle.scrollX,
-			pending: false
-		};
-	});
 }

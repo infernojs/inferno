@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "license": "MPL-2.0",
   "description": "An extremely fast, isomorphic JavaScript library for building modern user interfaces",
   "author": {
@@ -26,6 +26,5 @@
     "rollup"
   ],
   "main": "inferno.js",
-  "jsnext:main": "dist/inferno.es2015.js",
   "repository": "https://github.com/trueadm/inferno"
 }

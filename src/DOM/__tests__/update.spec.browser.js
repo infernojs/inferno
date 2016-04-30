@@ -26,6 +26,7 @@ describe('Update (non-jsx)', () => {
 			children: [ 'hello', ' to' ]
 		});
 
+		render(template(null), container);
 		render(template(span()), container);
 
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -1290,6 +1291,7 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>bar</td></tr></table></div></div>');
 				render(C(), container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text1</td></tr></table></div></div>');
+
 			});
 
 			it('variation -2', () => {
@@ -1385,6 +1387,13 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text</td></tr></table></div></div>');
 				render(C, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text</td></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
+
 			});
 
 			it('variation 3', () => {
@@ -1488,6 +1497,14 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>');
 				render(C, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>');
+				//repeat
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>');
+
 			});
 
 			it('variation 4', () => {
@@ -1588,6 +1605,7 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
 				render(C, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+
 			});
 
 			it('variation 5', () => {
@@ -1682,6 +1700,15 @@ describe('Update (non-jsx)', () => {
 					]
 				};
 
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1text a<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+				// repeat
 				render(A[0], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
 				render(A[1], container);
@@ -1891,6 +1918,24 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
 				render(A[3], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+				// reverse
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1<br></td></tr></table>');
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				// repeat
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
 			});
 		});
 
@@ -2084,6 +2129,20 @@ describe('Update (non-jsx)', () => {
 					"dom": null
 				};
 
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text</td></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
+				// reverse
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>value<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text</td></tr></table></div></div>');
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
+				// back again
 				render(A, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
 				render(B, container);
@@ -2417,6 +2476,24 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
 				render(A[3], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+				// reverse
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1text a<br></td></tr></table>');
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				// back again
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1text a<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
 			});
 
 			it('variation 6', () => {
@@ -2523,7 +2600,16 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
 				render(C, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+				// repeat
+				render(A, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
+				render(B, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td><br></td></tr></table></div></div>');
+				render(C, container);
+				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 2<br></td></tr></table></div></div>');
+
 			});
+
 
 			it('variation 7', () => {
 				const A = [];
@@ -2632,6 +2718,16 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
 				render(A[3], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+				// reverse
+				render(A[0], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
+				render(A[1], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 1<br></td></tr></table>');
+				render(A[2], container);
+				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
+				render(A[3], container);
+				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
+
 			});
 		});
 	});
@@ -2668,6 +2764,9 @@ describe('Update (non-jsx)', () => {
 			expect(container.innerHTML).to.equal('<div>text 2<br>text 3</div>');
 			render(A[2], container);
 			expect(container.innerHTML).to.equal('<div>text 4</div>');
+			render(A[0], container);
+			expect(container.innerHTML).to.equal('<div>text 1</div>');
+
 		});
 	});
 
@@ -2705,6 +2804,13 @@ describe('Update (non-jsx)', () => {
 			expect(container.innerHTML).to.equal('<div>text 2</div>');
 			render(A[2], container);
 			expect(container.innerHTML).to.equal('<div><br>text 4</div>');
+			// reverse
+			render(A[2], container);
+			expect(container.innerHTML).to.equal('<div><br>text 4</div>');
+			render(A[1], container);
+			expect(container.innerHTML).to.equal('<div>text 2</div>');
+			render(A[0], container);
+			expect(container.innerHTML).to.equal('<div>text 1<br></div>');
 		});
 	});
 });

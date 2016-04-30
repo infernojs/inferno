@@ -1,5 +1,5 @@
 /*!
- * inferno-create-element v0.7.3
+ * inferno-create-element v0.7.4
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -65,7 +65,7 @@
 	}
 
 	function isInvalidNode(obj) {
-		return obj === void 0 || obj === null || obj === false;
+		return obj === null || obj === false || obj === void 0;
 	}
 
 	function isFunction(obj) {
@@ -218,10 +218,10 @@
 		vNode.attrs = attrsAndEvents.attrs || null;
 		vNode.events = attrsAndEvents.events || null;
 		vNode.hooks = attrsAndEvents.hooks || null;
-		vNode.children = children !== void 0 ? children : null;
-		vNode.key = key !== void 0 ? key : null;
-		vNode.className = className !== void 0 ? className : null;
-		vNode.style = style !== void 0 ? style : null;
+		vNode.children = children === void 0 ? null : children;
+		vNode.key = key === void 0 ? null : key;
+		vNode.className = className === void 0 ? null : className;
+		vNode.style = style === void 0 ? null : style;
 
 		return vNode;
 	}

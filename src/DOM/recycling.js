@@ -10,7 +10,7 @@ export function recycle(node, bp, lifecycle, context, instance) {
 		if (!isNullOrUndefined(pool)) {
 			const recycledNode = pool.pop();
 			if (!isNullOrUndefined(recycledNode)) {
-				patch(recycledNode, node, null, null, lifecycle, context, instance, true);
+				patch(recycledNode, node, null, lifecycle, context, instance, true, bp.isSVG);
 				return node.dom;
 			}
 		}

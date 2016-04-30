@@ -1,8 +1,29 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
-import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode } from './utils';
-import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents, patchNode } from './patching';
-import { mountArrayChildren, mount, mountEvents } from './mounting';
+import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode, replaceNode } from './utils';
+import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents } from './patching';
+import { mountArrayChildren, mount, mountEvents, mountComponent } from './mounting';
+import { setClipNode } from './lifecycle';
 
+function setValueProperty(nextNode) {
+	const value = nextNode.attrs.value;
+	if (!isNullOrUndefined(value)) {
+		nextNode.dom.value = value;
+	}
+}
+
+function setFormElementProperties(nextTag, nextNode) {
+	if (nextTag === 'input') {
+		const inputType = nextNode.attrs.type;
+		if (inputType === 'text') {
+			setValueProperty(nextNode);
+		} else if (inputType === 'checkbox' || inputType === 'radio') {
+			const checked = nextNode.attrs.checked;
+			nextNode.dom.checked = !!checked;
+		}
+	} else if (nextTag === 'textarea') {
+		setValueProperty(nextNode);
+	}
+}
 
 function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
 	const nextChildren = nextNode.children;
@@ -36,7 +57,7 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isS
 					if (domChildren === null && lastChildren.length > 1) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 					} else {
-						if (isKeyed(lastChildren, nextChildren)) {
+						if (isKeyed(nextChildren)) {
 							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 						} else {
 							patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), lifecycle, context, instance, 0, isSVG);
@@ -134,43 +155,6 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 	}
 }
 
-const lazyNodeMap = new Map();
-let lazyCheckRunning = false;
-
-function patchLazyNode(value) {
-	patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
-	value.clipData.pending = false;
-}
-
-function runPatchLazyNodes() {
-	lazyCheckRunning = true;
-	if (typeof requestIdleCallback !== 'undefined') {
-		requestIdleCallback(patchLazyNodes);
-	} else {
-		setTimeout(patchLazyNodes, 100);
-	}
-}
-
-function patchLazyNodes() {
-	lazyNodeMap.forEach(patchLazyNode);
-	lazyNodeMap.clear();
-	lazyCheckRunning = false;
-}
-
-function setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle) {
-	const lazyNodeEntry = lazyNodeMap.get(dom);
-
-	if (lazyNodeEntry === undefined) {
-		lazyNodeMap.set(dom, { lastNode, nextNode, parentDom, clipData, lifecycle });
-	} else {
-		lazyNodeEntry.nextNode = nextNode;
-	}
-	clipData.pending = true;
-	if (lazyCheckRunning === false) {
-		runPatchLazyNodes();
-	}
-}
-
 export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
 	let nextHooks;
 
@@ -184,28 +168,37 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 	const lastTag = lastNode.tag || lastBp.tag;
 
 	if (lastTag !== nextTag) {
-		if (lastNode.bp.isComponent === true) {
+		if (lastBp.isComponent === true) {
 			const lastNodeInstance = lastNode.instance;
 
 			if (nextBp.isComponent === true) {
 				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 				detachNode(lastNode);
 			} else if (isStatefulComponent(lastTag)) {
-				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
+				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			} else {
-				diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true);
+				diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			}
 		} else {
-			replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, false);
+			replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 		}
 	} else if (isNullOrUndefined(lastTag)) {
 		nextNode.dom = lastNode.dom;
 	} else {
 		if (lastBp.isComponent === true) {
 			if (nextBp.isComponent === true) {
-				nextNode.instance = lastNode.instance;
-				nextNode.dom = lastNode.dom;
-				patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				const instance = lastNode.instance;
+
+				if (!isNullOrUndefined(instance) && instance._unmounted) {
+					const newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
+					if (parentDom !== null) {
+						replaceNode(parentDom, newDom, lastNode.dom);
+					}
+				} else {
+					nextNode.instance = instance;
+					nextNode.dom = lastNode.dom;
+					patchComponent(true, nextNode, nextNode.tag, lastBp, nextBp, instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				}
 			}
 		} else {
 			const dom = lastNode.dom;
@@ -222,12 +215,14 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 
 				nextNode.clipData = clipData;
 				if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
-					setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle);
-					return;
+					if (setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle)) {
+						return;
+					}
 				}
 				if (clipData.bottom < lifecycle.scrollY) {
-					setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle);
-					return;
+					if (setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle)) {
+						return;
+					}
 				}
 			}
 
@@ -292,6 +287,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			if (nextNode.hasHooks === true && !isNullOrUndefined(nextHooks.didUpdate)) {
 				nextHooks.didUpdate(dom);
 			}
+			setFormElementProperties(nextTag, nextNode);
 		}
 	}
 }
@@ -309,8 +305,8 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 		if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
 			nextHooks.willUpdate(lastNode.dom);
 		}
-		const nextTag = nextNode.tag || ((!isNullOrUndefined(nextNode.bp)) ? nextNode.bp.tag : null);
-		const lastTag = lastNode.tag || ((!isNullOrUndefined(lastNode.bp)) ? lastNode.bp.tag : null);
+		const nextTag = nextNode.tag || ((isNullOrUndefined(nextNode.bp)) ? null : nextNode.bp.tag);
+		const lastTag = lastNode.tag || ((isNullOrUndefined(lastNode.bp)) ? null : lastNode.bp.tag);
 
 		if (nextTag === 'svg') {
 			isSVG = true;
@@ -323,9 +319,9 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 				if (isFunction(nextTag)) {
 					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				} else if (isStatefulComponent(lastTag)) {
-					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				} else {
-					diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+					diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				}
 			} else {
 				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
@@ -335,9 +331,18 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 		} else {
 			if (isFunction(lastTag)) {
 				if (isFunction(nextTag)) {
-					nextNode.instance = lastNode.instance;
-					nextNode.dom = lastNode.dom;
-					patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					const instance = lastNode._instance;
+
+					if (!isNullOrUndefined(instance) && instance._unmounted) {
+						const newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
+						if (parentDom !== null) {
+							replaceNode(parentDom, newDom, lastNode.dom);
+						}
+					} else {
+						nextNode.instance = lastNode.instance;
+						nextNode.dom = lastNode.dom;
+						patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					}
 				}
 			} else {
 				const dom = lastNode.dom;
@@ -363,6 +368,7 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.didUpdate)) {
 					nextHooks.didUpdate(dom);
 				}
+				setFormElementProperties(nextTag, nextNode);
 			}
 		}
 	}

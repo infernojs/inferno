@@ -1,5 +1,5 @@
 /*!
- * inferno-component v0.7.3
+ * inferno-component v0.7.4
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -56,14 +56,38 @@
 
 	babelHelpers;
 
+	function isNullOrUndefined(obj) {
+		return obj === void 0 || obj === null;
+	}
+
+	function constructDefaults(string, object, value) {
+		/* eslint no-return-assign: 0 */
+		string.split(',').forEach(function (i) {
+			return object[i] = value;
+		});
+	}
+
+	var xlinkNS = 'http://www.w3.org/1999/xlink';
+	var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+	var strictProps = {};
+	var booleanProps = {};
+	var namespaces = {};
+
+	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+	constructDefaults('volume,value', strictProps, true);
+	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+
 	var screenWidth = window.screen.width;
 	var screenHeight = window.screen.height;
 	var scrollX = 0;
 	var scrollY = 0;
+	var lastScrollTime = 0;
 
 	window.onscroll = function (e) {
 		scrollX = window.scrollX;
 		scrollY = window.scrollY;
+		lastScrollTime = performance.now();
 	};
 
 	window.resize = function (e) {
@@ -71,6 +95,7 @@
 		scrollY = window.scrollY;
 		screenWidth = window.screen.width;
 		screenHeight = window.screen.height;
+		lastScrollTime = performance.now();
 	};
 
 	function Lifecycle() {
@@ -96,11 +121,7 @@
 		}
 	};
 
-	function isNullOrUndefined(obj) {
-		return obj === void 0 || obj === null;
-	}
-
-	var noOp = 'Inferno Warning: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+	var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 
 	// Copy of the util from dom/util, otherwise it makes massive bundles
 	function getActiveNode() {
@@ -118,14 +139,20 @@
 		for (var stateKey in newState) {
 			component._pendingState[stateKey] = newState[stateKey];
 		}
-		if (component._pendingSetState === false) {
+		if (!component._pendingSetState) {
 			component._pendingSetState = true;
 			applyState(component, false, callback);
+		} else {
+			var pendingState = component._pendingState;
+			var oldState = component.state;
+
+			component.state = babelHelpers.extends({}, oldState, pendingState);
+			component._pendingState = {};
 		}
 	}
 
 	function applyState(component, force, callback) {
-		if (component._deferSetState === false || force) {
+		if (!component._deferSetState || force) {
 			(function () {
 				component._pendingSetState = false;
 				var pendingState = component._pendingState;
@@ -167,7 +194,7 @@
 			this._pendingSetState = false;
 			this._pendingState = {};
 			this._lastNode = null;
-			this._unmounted = false;
+			this._unmounted = true;
 			this.context = {};
 			this._patch = null;
 		}
@@ -178,7 +205,7 @@
 		}, {
 			key: 'forceUpdate',
 			value: function forceUpdate(callback) {
-				if (this._unmounted === true) {
+				if (this._unmounted) {
 					throw Error(noOp);
 				}
 				applyState(this, true, callback);
@@ -186,7 +213,7 @@
 		}, {
 			key: 'setState',
 			value: function setState(newState, callback) {
-				if (this._unmounted === true) {
+				if (this._unmounted) {
 					throw Error(noOp);
 				}
 				if (this._blockSetState === false) {
@@ -251,6 +278,7 @@
 						return node;
 					}
 				}
+				return false;
 			}
 		}]);
 		return Component;

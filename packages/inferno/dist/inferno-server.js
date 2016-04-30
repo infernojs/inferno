@@ -1,5 +1,5 @@
 /*!
- * inferno-server v0.7.3
+ * inferno-server v0.7.4
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -65,7 +65,7 @@
 	}
 
 	function isInvalidNode(obj) {
-		return obj === void 0 || obj === null || obj === false;
+		return obj === null || obj === false || obj === void 0;
 	}
 
 	function isFunction(obj) {
@@ -86,13 +86,6 @@
 			// Block setting state - we should render only once, using latest state
 			instance._pendingSetState = true;
 			instance.componentWillMount();
-			var shouldUpdate = instance.shouldComponentUpdate();
-			if (shouldUpdate) {
-				instance.componentWillUpdate();
-				var pendingState = instance._pendingState;
-				var oldState = instance.state;
-				instance.state = babelHelpers.extends({}, oldState, pendingState);
-			}
 			var node = instance.render();
 			instance._pendingSetState = false;
 			return renderNode(node, context);

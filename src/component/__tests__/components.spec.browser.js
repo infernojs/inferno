@@ -22,8 +22,8 @@ describe('Components (non-JSX)', () => {
 		render() {
 			const template = (name, title) =>
 				createElement('div', {
-					className: 'basic'
-				},
+						className: 'basic'
+					},
 					createElement('span', {
 						className: name
 					}, 'The title is ', title)
@@ -83,6 +83,8 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
 
+		render(template(), container);
+
 		render(template(BasicComponent1, undefined), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -105,11 +107,15 @@ describe('Components (non-JSX)', () => {
 
 		render(template(BasicComponent1, '1234'), container);
 
+		render(template(), container);
+
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('basic-render');
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is 1234');
+
+		render(template(null), container);
 
 		// remove the component
 		render(template(null, '1234'), container);
@@ -123,8 +129,8 @@ describe('Components (non-JSX)', () => {
 		render() {
 			const template = (isChecked, title) =>
 				createElement('div', {
-					className: 'basic'
-				},
+						className: 'basic'
+					},
 					createElement('label', {},
 						createElement('input', {
 							type: 'checkbox',
@@ -173,8 +179,8 @@ describe('Components (non-JSX)', () => {
 		render() {
 			const template = (isEnabled, title, type) =>
 				createElement('div', {
-					className: 'basic'
-				},
+						className: 'basic'
+					},
 					createElement('label', {},
 						createElement('input', {
 							type,
@@ -249,6 +255,8 @@ describe('Components (non-JSX)', () => {
 		).to.equal(
 			true
 		);
+
+		render(template(false), container);
 
 		render(template(BasicComponent1d, '123', false), container);
 		expect(
@@ -362,15 +370,15 @@ describe('Components (non-JSX)', () => {
 	class BasicComponent2 extends Component {
 		render() {
 			const template = (name, title, children) =>
-				createElement('div', {
-					className: 'basic'
-				},
-					createElement('span', {
-						className: name
-					}, 'The title is ', title),
-					children
-				)
-			;
+					createElement('div', {
+							className: 'basic'
+						},
+						createElement('span', {
+							className: name
+						}, 'The title is ', title),
+						children
+					)
+				;
 			return template(this.props.name, this.props.title, this.props.children);
 		}
 	}
@@ -379,13 +387,13 @@ describe('Components (non-JSX)', () => {
 		let template = (Component, title, name) =>
 			createElement('div', null,
 				createElement(Component, {
-					title,
-					name
-				},
+						title,
+						name
+					},
 					createElement('span', null, 'I\'m a child')
 				)
 
-		);
+			);
 
 		render(template(BasicComponent2, 'abc', 'basic-render'), container);
 
@@ -422,18 +430,18 @@ describe('Components (non-JSX)', () => {
 		);
 
 
-			render(template(), container);
+		render(template(), container);
 
 	});
 
 	class BasicComponent2b extends Component {
 		render() {
 			const template = (children) =>
-				createElement('div', null,
-					createElement('span', null, 'component!'),
-					createElement('div', null, children)
-				)
-			;
+					createElement('div', null,
+						createElement('span', null, 'component!'),
+						createElement('div', null, children)
+					)
+				;
 			return template(this.props.children);
 		}
 	}
@@ -441,11 +449,11 @@ describe('Components (non-JSX)', () => {
 	class BasicComponent2c extends Component {
 		render() {
 			const template = (children) =>
-				createElement('div', null,
-					createElement('span', null, 'other component!'),
-					createElement('div', null, children)
-				)
-			;
+					createElement('div', null,
+						createElement('span', null, 'other component!'),
+						createElement('div', null, children)
+					)
+				;
 			return template(this.props.children);
 		}
 	}
@@ -453,14 +461,14 @@ describe('Components (non-JSX)', () => {
 	class BasicComponent3 extends Component {
 		render() {
 			const template = (styles, title) =>
-				createElement('div', {
-					style: styles
-				},
-					createElement('span', {
-						style: styles
-					}, 'The title is ', title)
-				)
-			;
+					createElement('div', {
+							style: styles
+						},
+						createElement('span', {
+							style: styles
+						}, 'The title is ', title)
+					)
+				;
 
 			return template(this.props.styles, this.props.title);
 		}
@@ -523,7 +531,7 @@ describe('Components (non-JSX)', () => {
 				createElement(Component2, null,
 					createElement(Component3, null)
 				)
-		);
+			);
 		render(template(BasicComponent2b, BasicComponent2b, BasicComponent2b), container);
 
 		expect(
@@ -642,7 +650,7 @@ describe('Components (non-JSX)', () => {
 					title: title2,
 					name: name2
 				})
-		);
+			);
 
 		render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
 
@@ -779,10 +787,10 @@ describe('Components (non-JSX)', () => {
 			}
 			render() {
 				const template = (counter) =>
-					createElement('div', null,
-						createElement('span', {}, counter)
-					)
-				;
+						createElement('div', null,
+							createElement('span', {}, counter)
+						)
+					;
 				return template(this.state.counter);
 			}
 			componentWillMount() {
@@ -790,6 +798,57 @@ describe('Components (non-JSX)', () => {
 				this.setState({
 					counter: this.state.counter + 1
 				});
+			}
+		}
+
+		beforeEach((done) => {
+			componentWillMountCount = 0;
+			template = (Component) =>
+				createElement(Component)
+			;
+			render(template(ComponentLifecycleCheck), container);
+			waits(30, done);
+		});
+
+		it('componentWillMountCount to have fired once', () => {
+			expect(componentWillMountCount).to.equal(1);
+		});
+		it('the element in the component should show the new state', () => {
+			expect(container.innerHTML).to.equal(
+				'<div><span>1</span></div>'
+			);
+		});
+	});
+
+	describe('state changes should trigger all lifecycle events for an update #2', () => {
+		let componentWillMountCount;
+		let shouldComponentUpdateCount;
+		let componentDidUpdateCount;
+		let componentWillUpdateCount;
+		let template;
+
+		class ComponentLifecycleCheck extends Component {
+			constructor() {
+				super(null);
+				this.state = {
+					counter: 0
+				};
+			}
+			render() {
+				const template = (counter) =>
+						createElement('div', null,
+							createElement('span', {}, counter)
+						)
+					;
+				return template(this.state.counter);
+			}
+			componentWillMount() {
+				componentWillMountCount++;
+				setTimeout(() => {
+					this.setState({
+						counter: this.state.counter + 1
+					});
+				}, 20)
 			}
 			shouldComponentUpdate() {
 				shouldComponentUpdateCount++;
@@ -801,9 +860,6 @@ describe('Components (non-JSX)', () => {
 			componentWillUpdate() {
 				componentWillUpdateCount++;
 			}
-			componentWillReceiveProps() {
-				componentWillReceivePropsCount++;
-			}
 		}
 
 		beforeEach((done) => {
@@ -811,7 +867,6 @@ describe('Components (non-JSX)', () => {
 			shouldComponentUpdateCount = 0;
 			componentDidUpdateCount = 0;
 			componentWillUpdateCount = 0;
-			componentWillReceivePropsCount = 0;
 			template = (Component) =>
 				createElement(Component)
 			;
@@ -830,9 +885,6 @@ describe('Components (non-JSX)', () => {
 		});
 		it('componentDidUpdateCount to have fired once', () => {
 			expect(componentDidUpdateCount).to.equal(1);
-		});
-		it('componentWillReceivePropsCount not to have fired', () => {
-			expect(componentWillReceivePropsCount).to.equal(0);
 		});
 		it('the element in the component should show the new state', () => {
 			expect(container.innerHTML).to.equal(
@@ -941,29 +993,29 @@ describe('Components (non-JSX)', () => {
 	function BasicStatelessComponent1({
 		name,
 		title
-		}) {
+	}) {
 
 		const template = (name, title) =>
-			createElement('div', {
-				className: 'basic'
-			},
-				createElement('span', {
-					className: name
-				}, 'The title is ', title)
-			)
-		;
+				createElement('div', {
+						className: 'basic'
+					},
+					createElement('span', {
+						className: name
+					}, 'The title is ', title)
+				)
+			;
 		return template(name, title);
 	}
 
 	it('should render a stateless component', () => {
 		let template = (Component, title) =>
-			createElement('div', null,
-				createElement(Component, {
-					title: title,
-					name: 'Hello, World!'
-				})
-			)
-		;
+				createElement('div', null,
+					createElement(Component, {
+						title: title,
+						name: 'Hello, World!'
+					})
+				)
+			;
 
 		render(template(), container);
 		render(template(BasicStatelessComponent1, 'abc'), container);
