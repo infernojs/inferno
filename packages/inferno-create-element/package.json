@@ -21,6 +21,6 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.7.3"
+    "inferno": "^0.7.4"
   }
 }
