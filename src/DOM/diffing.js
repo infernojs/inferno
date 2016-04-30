@@ -175,12 +175,12 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 				detachNode(lastNode);
 			} else if (isStatefulComponent(lastTag)) {
-				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
+				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			} else {
-				diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true);
+				diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			}
 		} else {
-			replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, false);
+			replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 		}
 	} else if (isNullOrUndefined(lastTag)) {
 		nextNode.dom = lastNode.dom;
@@ -319,9 +319,9 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 				if (isFunction(nextTag)) {
 					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				} else if (isStatefulComponent(lastTag)) {
-					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				} else {
-					diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+					diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				}
 			} else {
 				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);

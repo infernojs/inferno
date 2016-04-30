@@ -117,7 +117,7 @@
 			if (!isNullOrUndefined(_pool)) {
 				var recycledNode = _pool.pop();
 				if (!isNullOrUndefined(recycledNode)) {
-					patch(recycledNode, node, null, null, lifecycle, context, instance, true);
+					patch(recycledNode, node, null, lifecycle, context, instance, true, bp.isSVG);
 					return node.dom;
 				}
 			}
@@ -425,7 +425,7 @@
 			instance._pendingSetState = false;
 
 			if (!isNullOrUndefined(node)) {
-				dom = mount(node, null, lifecycle, context, instance);
+				dom = mount(node, null, lifecycle, context, instance, false);
 				instance._lastNode = node;
 				if (parentDom !== null && !isInvalidNode(dom)) {
 					parentDom.appendChild(dom);
@@ -974,12 +974,12 @@
 					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 					detachNode(lastNode);
 				} else if (isStatefulComponent(lastTag)) {
-					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true);
+					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 				} else {
-					diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true);
+					diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 				}
 			} else {
-				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, false);
+				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			}
 		} else if (isNullOrUndefined(lastTag)) {
 			nextNode.dom = lastNode.dom;
@@ -989,10 +989,10 @@
 					var _instance = lastNode.instance;
 
 					if (!isNullOrUndefined(_instance) && _instance._unmounted) {
+						var newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance, parentDom, lifecycle, context);
 						if (parentDom !== null) {
-							remove(lastNode, parentDom);
+							replaceNode(parentDom, newDom, lastNode.dom);
 						}
-						mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance, parentDom, lifecycle, context);
 					} else {
 						nextNode.instance = _instance;
 						nextNode.dom = lastNode.dom;
@@ -1117,9 +1117,9 @@
 					if (isFunction(nextTag)) {
 						replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 					} else if (isStatefulComponent(lastTag)) {
-						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 					} else {
-						diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, true, isSVG);
+						diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
 					}
 				} else {
 					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
@@ -1132,10 +1132,10 @@
 						var _instance2 = lastNode._instance;
 
 						if (!isNullOrUndefined(_instance2) && _instance2._unmounted) {
+							var newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance2, parentDom, lifecycle, context);
 							if (parentDom !== null) {
-								remove(lastNode, parentDom);
+								replaceNode(parentDom, newDom, lastNode.dom);
 							}
-							mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, _instance2, parentDom, lifecycle, context);
 						} else {
 							nextNode.instance = lastNode.instance;
 							nextNode.dom = lastNode.dom;
