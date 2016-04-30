@@ -1366,7 +1366,7 @@
 		if (sameLength === false) {
 			if (lastChildrenLength > nextChildrenLength) {
 				while (lastChildrenLength !== nextChildrenLength) {
-					var lastChild = lastChildren.pop();
+					var lastChild = lastChildren[lastChildrenLength - 1];
 
 					if (!isInvalidNode(lastChild)) {
 						dom.removeChild(domChildren[lastChildrenLength - 1 + domChildrenIndex]);
@@ -1375,6 +1375,7 @@
 						}
 						detachNode(lastChild);
 						lastChildrenLength--;
+						lastChildren.pop();
 					}
 				}
 			} else {

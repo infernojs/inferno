@@ -204,7 +204,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 	if (sameLength === false) {
 		if (lastChildrenLength > nextChildrenLength) {
 			while (lastChildrenLength !== nextChildrenLength) {
-				const lastChild = lastChildren.pop();
+				const lastChild = lastChildren[lastChildrenLength - 1];
 
 				if (!isInvalidNode(lastChild)) {
 					dom.removeChild(domChildren[lastChildrenLength - 1 + domChildrenIndex]);
@@ -213,8 +213,8 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					}
 					detachNode(lastChild);
 					lastChildrenLength--;
+					lastChildren.pop();
 				}
-
 			}
 		} else {
 			while (lastChildrenLength !== nextChildrenLength) {
