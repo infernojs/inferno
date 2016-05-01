@@ -35,7 +35,7 @@
     "eslint-plugin-babel": "^3.2.0",
     "glob": "^7.0.3",
     "isparta": "^4.0.0",
-    "jsdom": "^8.4.1",
+    "jsdom": "^8.5.0",
     "karma": "^0.13.22",
     "karma-babel-preprocessor": "^6.0.1",
     "karma-chai": "^0.1.0",
@@ -130,4 +130,4 @@
     "eslint:source",
     "test"
   ]
-}
+}undefined
