@@ -71,8 +71,8 @@ function createChild({ tag, attrs, children, className, style, events, hooks }) 
 
 	vNode.tag = tag || null;
 	vNode.attrs = attrsAndEvents.attrs || null;
-	vNode.events = attrsAndEvents.events || null;
-	vNode.hooks = attrsAndEvents.hooks || null;
+	vNode.events = attrsAndEvents.events || events;
+	vNode.hooks = attrsAndEvents.hooks || hooks;
 	vNode.children = children === undefined ? null : children;
 	vNode.key = key === undefined ? null : key;
 	vNode.className = className === undefined ? null : className;
