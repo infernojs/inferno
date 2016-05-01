@@ -332,7 +332,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						detachNode(lastChild);
 					}
 				} else if (isArray(nextChild)) {
-					if (isKeyed(nextChild)) {
+					if (isKeyed(lastChild, nextChild)) {
 						patchKeyedChildren(lastChild, nextChild, domChildren[index], lifecycle, context, instance, isSVG);
 					} else {
 						if (isArray(lastChild)) {

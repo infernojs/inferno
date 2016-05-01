@@ -730,8 +730,8 @@
 		return fragment;
 	}
 
-	function isKeyed(nextChildren) {
-		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key);
+	function isKeyed(lastChildren, nextChildren) {
+		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 	}
 
 	function selectOptionValueIfNeeded(vdom, values) {
@@ -849,7 +849,7 @@
 						if (domChildren === null && lastChildren.length > 1) {
 							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 						} else {
-							if (isKeyed(nextChildren)) {
+							if (isKeyed(lastChildren, nextChildren)) {
 								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 							} else {
 								patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), lifecycle, context, instance, 0, isSVG);
@@ -1495,7 +1495,7 @@
 							detachNode(_lastChild);
 						}
 					} else if (isArray(_nextChild)) {
-						if (isKeyed(_nextChild)) {
+						if (isKeyed(_lastChild, _nextChild)) {
 							patchKeyedChildren(_lastChild, _nextChild, domChildren[index], lifecycle, context, instance, isSVG);
 						} else {
 							if (isArray(_lastChild)) {
