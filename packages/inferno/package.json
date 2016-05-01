@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "license": "MPL-2.0",
   "description": "An extremely fast, isomorphic JavaScript library for building modern user interfaces",
   "author": {
