@@ -1754,4 +1754,47 @@ describe('Components (JSX)', () => {
 			expect(container.firstChild.innerHTML).to.equal('Hello world');
 		});
 	});
+
+	it('Should mount refs after patch', (done) => {
+		let updater;
+		let reference;
+		class Bar extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					bool: true
+				};
+
+				this.changeDOM = this.changeDOM.bind(this);
+				updater = this.changeDOM;
+				reference = this;
+			}
+
+			changeDOM() {
+				this.setState({
+					bool: !this.state.bool
+				});
+			}
+
+			render() {
+				debugger;
+				if (this.state.bool === true) {
+					return <div>Hello world</div>;
+				} else {
+					return <div ref="hello">Hello world2</div>;
+				}
+			}
+		}
+
+
+		render(<Bar />, container);
+		expect(container.innerHTML).to.equal('<div>Hello world</div>');
+		expect(reference.refs.hello).to.equal(undefined);
+
+		updater();
+		expect(container.innerHTML).to.equal('<div>Hello world2</div>');
+		expect(reference.refs.hello).to.equal(container.firstChild);
+		done();
+	});
 });
