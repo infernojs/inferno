@@ -272,6 +272,7 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		}
 		instance.context = context;
 		instance._unmounted = false;
+		instance._parentNode = parentNode;
 
 		instance._pendingSetState = true;
 		instance.componentWillMount();
@@ -281,10 +282,18 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		if (!isInvalidNode(node)) {
 			dom = mount(node, null, lifecycle, context, instance, false);
 			instance._lastNode = node;
-			if (parentDom !== null && !isInvalidNode(dom)) {
-				parentDom.appendChild(dom);
-			}
 			instance.componentDidMount();
+		} else {
+			// create placeholder
+			dom = document.createTextNode('');
+			// a clever trick to force the next node to replace this placeholder :)
+			instance._lastNode = {
+				tag: 'null',
+				dom: dom
+			};
+		}
+		if (parentDom !== null && !isInvalidNode(dom)) {
+			parentDom.appendChild(dom);
 		}
 		parentNode.dom = dom;
 		parentNode.instance = instance;

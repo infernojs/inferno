@@ -57,7 +57,7 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isS
 					if (domChildren === null && lastChildren.length > 1) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 					} else {
-						if (isKeyed(nextChildren)) {
+						if (isKeyed(lastChildren, nextChildren)) {
 							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 						} else {
 							patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), lifecycle, context, instance, 0, isSVG);

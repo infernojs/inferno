@@ -1,5 +1,5 @@
 /*!
- * inferno-component v0.7.6
+ * inferno-component v0.7.7
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -166,12 +166,13 @@
 
 				var activeNode = getActiveNode();
 				var subLifecycle = new Lifecycle();
-				component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, null, false);
+				component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, false);
 				component._lastNode = nextNode;
 				subLifecycle.addListener(function () {
 					subLifecycle.trigger();
 					callback && callback();
 				});
+				component._parentNode.dom = nextNode.dom;
 				resetActiveNode(activeNode);
 			})();
 		}

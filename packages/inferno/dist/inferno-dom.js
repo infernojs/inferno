@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.6
+ * inferno-dom v0.7.7
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -412,6 +412,7 @@
 			}
 			instance.context = context;
 			instance._unmounted = false;
+			instance._parentNode = parentNode;
 
 			instance._pendingSetState = true;
 			instance.componentWillMount();
@@ -421,10 +422,18 @@
 			if (!isInvalidNode(node)) {
 				dom = mount(node, null, lifecycle, context, instance, false);
 				instance._lastNode = node;
-				if (parentDom !== null && !isInvalidNode(dom)) {
-					parentDom.appendChild(dom);
-				}
 				instance.componentDidMount();
+			} else {
+				// create placeholder
+				dom = document.createTextNode('');
+				// a clever trick to force the next node to replace this placeholder :)
+				instance._lastNode = {
+					tag: 'null',
+					dom: dom
+				};
+			}
+			if (parentDom !== null && !isInvalidNode(dom)) {
+				parentDom.appendChild(dom);
 			}
 			parentNode.dom = dom;
 			parentNode.instance = instance;
@@ -730,8 +739,8 @@
 		return fragment;
 	}
 
-	function isKeyed(nextChildren) {
-		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key);
+	function isKeyed(lastChildren, nextChildren) {
+		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key) || lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 	}
 
 	function selectOptionValueIfNeeded(vdom, values) {
@@ -849,7 +858,7 @@
 						if (domChildren === null && lastChildren.length > 1) {
 							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 						} else {
-							if (isKeyed(nextChildren)) {
+							if (isKeyed(lastChildren, nextChildren)) {
 								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 							} else {
 								patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), lifecycle, context, instance, 0, isSVG);
@@ -1327,8 +1336,8 @@
 			if (!isInvalidNode(nextNode)) {
 				patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 				lastNode.dom = nextNode.dom;
-				instance._lastNode = nextNode;
 			}
+			instance._lastNode = nextNode;
 		} else {
 			var shouldUpdate = true;
 			var nextHooksDefined = hasTemplate && nextBp.hasHooks === true || !isNullOrUndefined(nextHooks);
@@ -1344,9 +1353,7 @@
 				var _nextNode = Component(nextProps);
 
 				if (!isInvalidNode(_nextNode)) {
-					var dom = lastNode.dom;
-
-					_nextNode.dom = dom;
+					_nextNode.dom = lastNode.dom;
 					patch(instance, _nextNode, parentDom, lifecycle, context, null, null, false);
 					lastNode.instance = _nextNode;
 					if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
@@ -1495,7 +1502,7 @@
 							detachNode(_lastChild);
 						}
 					} else if (isArray(_nextChild)) {
-						if (isKeyed(_nextChild)) {
+						if (isKeyed(_lastChild, _nextChild)) {
 							patchKeyedChildren(_lastChild, _nextChild, domChildren[index], lifecycle, context, instance, isSVG);
 						} else {
 							if (isArray(_lastChild)) {

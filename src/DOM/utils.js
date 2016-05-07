@@ -266,8 +266,9 @@ export function createVirtualFragment() {
 	return fragment;
 }
 
-export function isKeyed(nextChildren) {
-	return (nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key));
+export function isKeyed(lastChildren, nextChildren) {
+	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
+		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 }
 
 function selectOptionValueIfNeeded(vdom, values) {
