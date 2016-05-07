@@ -41,7 +41,7 @@
     "karma-chai": "^0.1.0",
     "karma-chai-as-promised": "^0.1.2",
     "karma-chrome-launcher": "^1.0.1",
-    "karma-cli": "^0.1.2",
+    "karma-cli": "^1.0.0",
     "karma-commonjs": "0.0.13",
     "karma-coverage": "douglasduteil/karma-coverage#next",
     "karma-coveralls": "^1.1.2",
