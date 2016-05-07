@@ -165,8 +165,8 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 		if (!isInvalidNode(nextNode)) {
 			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 			lastNode.dom = nextNode.dom;
-			instance._lastNode = nextNode;
 		}
+		instance._lastNode = nextNode;
 	} else {
 		let shouldUpdate = true;
 		const nextHooksDefined = (hasTemplate && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
@@ -182,9 +182,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 			const nextNode = Component(nextProps);
 
 			if (!isInvalidNode(nextNode)) {
-				const dom = lastNode.dom;
-
-				nextNode.dom = dom;
+				nextNode.dom = lastNode.dom;
 				patch(instance, nextNode, parentDom, lifecycle, context, null, null, false);
 				lastNode.instance = nextNode;
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
