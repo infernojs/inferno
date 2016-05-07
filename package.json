@@ -45,7 +45,7 @@
     "karma-commonjs": "0.0.13",
     "karma-coverage": "douglasduteil/karma-coverage#next",
     "karma-coveralls": "^1.1.2",
-    "karma-firefox-launcher": "^0.1.7",
+    "karma-firefox-launcher": "^1.0.0",
     "karma-ie-launcher": "^0.2.0",
     "karma-mocha": "^0.2.2",
     "karma-mocha-reporter": "^2.0.2",
