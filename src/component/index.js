@@ -52,6 +52,7 @@ function applyState(component, force, callback) {
 			subLifecycle.trigger();
 			callback && callback();
 		});
+		component._parentNode.dom = nextNode.dom;
 		resetActiveNode(activeNode);
 	}
 }
