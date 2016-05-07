@@ -1,5 +1,5 @@
 /*!
- * inferno v0.7.3
+ * inferno v0.7.7
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -154,6 +154,11 @@
 			className: className !== '' && className ? className : null,
 			style: style !== '' && style ? style : null,
 			isComponent: tagIsDynamic,
+			hasAttrs: attrsIsDynamic || (attrs ? true : false),
+			hasHooks: hooksIsDynamic,
+			hasEvents: eventsIsDynamic,
+			hasStyle: styleIsDynamic || (style !== '' && style ? true : false),
+			hasClassName: classNameIsDynamic || (className !== '' && className ? true : false),
 			childrenType: childrenType === void 0 ? children ? 5 : 0 : childrenType,
 			attrKeys: null,
 			eventKeys: null,

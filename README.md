@@ -1,5 +1,5 @@
-# Inferno
-
+<p align="center"><img src="http://infernojs.org/img/inferno.png" width="150px"></p>
+<p>&nbsp;</p>
 [![Build Status](https://img.shields.io/travis/trueadm/inferno/master.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
 [![Coverage Status](https://img.shields.io/coveralls/trueadm/inferno/master.svg?style=flat-square)](https://coveralls.io/github/trueadm/inferno?branch=master)
 [![Dependencies](https://img.shields.io/david/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno)
@@ -69,11 +69,11 @@ npm install --save inferno-server
 Pre-bundled files for browser consumption:
  
 ```
-http://infernojs.org/releases/0.7.3/inferno.min.js
-http://infernojs.org/releases/0.7.3/inferno-create-element.min.js
-http://infernojs.org/releases/0.7.3/inferno-component.min.js
-http://infernojs.org/releases/0.7.3/inferno-dom.min.js
-http://infernojs.org/releases/0.7.3/inferno-server.min.js
+http://infernojs.org/releases/0.7.6/inferno.min.js
+http://infernojs.org/releases/0.7.6/inferno-create-element.min.js
+http://infernojs.org/releases/0.7.6/inferno-component.min.js
+http://infernojs.org/releases/0.7.6/inferno-dom.min.js
+http://infernojs.org/releases/0.7.6/inferno-server.min.js
 ```
 
 ## Overview

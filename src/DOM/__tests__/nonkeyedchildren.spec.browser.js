@@ -1,4 +1,5 @@
 import { render } from './../rendering';
+import { createBlueprint } from './../../core/createBlueprint';
 
 function generateNodes(array) {
 
@@ -21,7 +22,17 @@ function generateNodes(array) {
     return children;
 }
 
-describe('keyed-nodes', () => {
+const spanNonKeyedBluePrint = createBlueprint({
+    tag: 'span',
+    className: 'TableCell',
+    children: {arg: 0}
+});
+
+function spanTagWithText(text) {
+    return spanNonKeyedBluePrint(text);
+}
+
+describe('Non Keyed nodes', () => {
     let container;
 
     let template = function(child) {
@@ -92,7 +103,28 @@ describe('keyed-nodes', () => {
         render(template(generateNodes(['#0', '#1', '#2', '#3', 'a', '#5'])), container);
         expect(container.textContent).to.equal('#0#1#2#3a#5');
         expect(container.firstChild.childNodes.length).to.equal(6);
+	    render(template(generateNodes(['a', '#1', '#2', '#3'])), container);
+	    render(template(generateNodes(['#0', '#1', '#2', '#3', 'a', '#5'])), container);
+	    expect(container.textContent).to.equal('#0#1#2#3a#5');
+	    expect(container.firstChild.childNodes.length).to.equal(6);
+	    render(template(generateNodes(['a', '#1', '#2', '#3'])), container);
+	    render(template(generateNodes(['#0', '#1', '#2', '#3', 'a', '#5'])), container);
+	    expect(container.textContent).to.equal('#0#1#2#3a#5');
+	    expect(container.firstChild.childNodes.length).to.equal(6);
+	    render(template(generateNodes(['a', '#1', '#2', '#3'])), container);
+	    render(template(generateNodes(['#0', '#1', '#2', '#3', 'a', '#5'])), container);
+	    expect(container.textContent).to.equal('#0#1#2#3a#5');
+	    expect(container.firstChild.childNodes.length).to.equal(6);
+	    render(template(generateNodes(['a', '#1', '#2', '#4'])), container);
+	    render(template(generateNodes(['#0', '#1', '#2', '#4', 'a', '#5'])), container);
+	    expect(container.textContent).to.equal('#0#1#2#4a#5');
+	    expect(container.firstChild.childNodes.length).to.equal(6);
+	    render(template(generateNodes(['a', '#1', '#2', '#3'])), container);
+	    render(template(generateNodes(['#0', '#1', '#2', '#3', 'a', '#5'])), container);
+	    expect(container.textContent).to.equal('#0#1#2#3a#5');
+	    expect(container.firstChild.childNodes.length).to.equal(6);
     });
+
     it('should move a key with a size down', () => {
         render(template(generateNodes(['a', '#1', '#2', '#3'])), container);
         render(template(generateNodes(['#0', 'a', '#2'])), container);
@@ -110,7 +142,14 @@ describe('keyed-nodes', () => {
         render(template(generateNodes([1, 2, 3, 4, 0])), container);
         expect(container.textContent).to.equal('12340');
         expect(container.firstChild.childNodes.length).to.equal(5);
+	    render(template(generateNodes([0, 1, 2, 3, 4])), container);
+	    render(template(generateNodes([1, 7, 3, 4, 4])), container);
+	    expect(container.textContent).to.equal('17344');
+	    expect(container.firstChild.childNodes.length).to.equal(5);
+	    render(template(generateNodes([1, 2, 3, 4, 0])), container);
+	    expect(container.textContent).to.equal('12340');
     });
+
     it('should reorder keys', () => {
         render(template(generateNodes(['1', '2', '3', '4', 'abc', '6', 'def', '7'])), container);
         render(template(generateNodes(['7', '4', '3', '2', '6', 'abc', 'def', '1'])), container);
@@ -122,13 +161,31 @@ describe('keyed-nodes', () => {
         render(template(generateNodes(['b', 'c'])), container);
         expect(container.textContent).to.equal('bc');
         expect(container.firstChild.childNodes.length).to.equal(2);
+	    render(template(generateNodes(['a', 'b', 'c'])), container);
+	    render(template(generateNodes(['b', 'c'])), container);
+	    expect(container.textContent).to.equal('bc');
+	    expect(container.firstChild.childNodes.length).to.equal(2);
+	    render(template(generateNodes(['a', 'b', 'c', 'd'])), container);
+	    render(template(generateNodes(['d', 'c', 'b', 'a'])), container);
+	    expect(container.textContent).to.equal('dcba');
+	    expect(container.firstChild.childNodes.length).to.equal(4);
     });
+
     it('should do a complex reverse', () => {
         render(template(generateNodes(['a', 'b', 'c', 'd'])), container);
         render(template(generateNodes(['d', 'c', 'b', 'a'])), container);
         expect(container.textContent).to.equal('dcba');
         expect(container.firstChild.childNodes.length).to.equal(4);
+	    render(template(generateNodes(['a', 'b', 'c'])), container);
+	    render(template(generateNodes([0])), container);
+	    expect(container.textContent).to.equal('0');
+	    expect(container.firstChild.childNodes.length).to.equal(1);
+	    render(template(generateNodes(['a', 'b', 'c', 'd'])), container);
+	    render(template(generateNodes(['d', 'c', 'b', 'a'])), container);
+	    expect(container.textContent).to.equal('dcba');
+	    expect(container.firstChild.childNodes.length).to.equal(4);
     });
+
     it('should remove two keys at the start', () => {
         render(template(generateNodes(['a', 'b', 'c'])), container);
         render(template(generateNodes(['c'])), container);
@@ -256,5 +313,98 @@ describe('keyed-nodes', () => {
         render(template(generateNodes([4, 3, 2, 1, 5, 0])), container);
         expect(container.textContent).to.equal('432150');
         expect(container.firstChild.childNodes.length).to.equal(6);
+    });
+
+
+    describe('With blueprints', () => {
+        it('should swap two non-keyed children', () => {
+            render(template([spanTagWithText('a'), [], spanTagWithText('b')]), container);
+            expect(container.textContent).to.equal('ab');
+            render(template([spanTagWithText('b'), null, spanTagWithText('a')]), container);
+            expect(container.textContent).to.equal('ba');
+        });
+
+        it('should do a complex move of non-keyed to the beginning', () => {
+            render(template([spanTagWithText('x'), spanTagWithText('y'), spanTagWithText('a'), spanTagWithText('b'), spanTagWithText('d'), spanTagWithText('c'), spanTagWithText('v'), spanTagWithText('w')]), container);
+            expect(container.textContent).to.equal('xyabdcvw');
+            expect(container.firstChild.childNodes.length).to.equal(8);
+            render(template([spanTagWithText('y'), spanTagWithText('x'), spanTagWithText('a'), spanTagWithText('d2'), spanTagWithText('f'), spanTagWithText('g'), spanTagWithText('w'), spanTagWithText('v')]), container);
+            expect(container.textContent).to.equal('yxad2fgwv');
+            expect(container.firstChild.childNodes.length).to.equal(8);
+            render(template([spanTagWithText('x'), spanTagWithText('y'), spanTagWithText('a'), spanTagWithText('b'), spanTagWithText('d'), spanTagWithText('c'), spanTagWithText('v'), spanTagWithText('w')]), container);
+            expect(container.textContent).to.equal('xyabdcvw');
+            expect(container.firstChild.childNodes.length).to.equal(8);
+            render(template([spanTagWithText('y'), spanTagWithText('x'), undefined, spanTagWithText('a'), spanTagWithText('d2'), spanTagWithText('f'), spanTagWithText('g'), spanTagWithText('w'), spanTagWithText('v')]), container);
+            expect(container.textContent).to.equal('yxad2fgwv');
+            expect(container.firstChild.childNodes.length).to.equal(8);
+        });
+
+        it('should do a advanced shuffle', () => {
+            render(template([spanTagWithText('a'), spanTagWithText('b'), spanTagWithText('c'), spanTagWithText('d')]), container);
+            expect(container.textContent).to.equal('abcd');
+            expect(container.firstChild.childNodes.length).to.equal(4);
+            render(template([spanTagWithText('e'), spanTagWithText('b'), spanTagWithText('f'), spanTagWithText('g'), spanTagWithText('c'), spanTagWithText('a')]), container);
+            expect(container.textContent).to.equal('ebfgca');
+            expect(container.firstChild.childNodes.length).to.equal(6);
+	        render(template([spanTagWithText('a'), spanTagWithText('6'), null, spanTagWithText('c'), spanTagWithText('d')]), container);
+	        expect(container.textContent).to.equal('a6cd');
+	        expect(container.firstChild.childNodes.length).to.equal(4);
+	        render(template([spanTagWithText('e'), spanTagWithText('b'), spanTagWithText('f'), spanTagWithText('g'), spanTagWithText('c'), spanTagWithText('a')]), container);
+	        expect(container.textContent).to.equal('ebfgca');
+	        expect(container.firstChild.childNodes.length).to.equal(6);
+	        render(template([spanTagWithText('a'), spanTagWithText('b'), undefined, spanTagWithText('c'), spanTagWithText('d')]), container);
+	        expect(container.textContent).to.equal('abcd');
+	        expect(container.firstChild.childNodes.length).to.equal(4);
+	        render(template([spanTagWithText('e'), spanTagWithText('b'), spanTagWithText('f'), spanTagWithText('g'), spanTagWithText('c'), spanTagWithText('a')]), container);
+	        expect(container.textContent).to.equal('ebfgca');
+	        expect(container.firstChild.childNodes.length).to.equal(6);
+        });
+
+        it('should do a complex reverse #2', () => {
+            render(template([spanTagWithText('#0'), spanTagWithText('#1'), spanTagWithText('#2')]), container);
+            render(template([spanTagWithText('#2'), spanTagWithText('#1'), spanTagWithText('#0')]), container);
+            expect(container.textContent).to.equal('#2#1#0');
+            expect(container.firstChild.childNodes.length).to.equal(3);
+	        render(template([spanTagWithText('#2'), spanTagWithText('#1'), spanTagWithText('#0')]), container);
+	        expect(container.textContent).to.equal('#2#1#0');
+	        expect(container.firstChild.childNodes.length).to.equal(3);
+	        render(template([spanTagWithText('#2'), spanTagWithText('#1'), null, null, null, spanTagWithText('#0')]), container);
+	        expect(container.textContent).to.equal('#2#1#0');
+	        expect(container.firstChild.childNodes.length).to.equal(3);
+	        // Ideally we need to fix
+
+	        // render(template([spanTagWithText('#2'), spanTagWithText('#1'), spanTagWithText('#4')]), container);
+	        // expect(container.textContent).to.equal('#2#1#4');
+	        // expect(container.firstChild.childNodes.length).to.equal(3);
+        });
+
+        it('should add to end, delete from center & reverse #2', () => {
+            render(template([spanTagWithText('a'), spanTagWithText('b'), spanTagWithText('c'), spanTagWithText('d')]), container);
+            render(template([spanTagWithText('e'), spanTagWithText('d'), spanTagWithText('c'), spanTagWithText('a')]), container);
+            expect(container.textContent).to.equal('edca');
+            expect(container.firstChild.childNodes.length).to.equal(4);
+	        render(template([spanTagWithText('#2'), spanTagWithText('#1'), spanTagWithText('#0')]), container);
+	        expect(container.textContent).to.equal('#2#1#0');
+	        expect(container.firstChild.childNodes.length).to.equal(3);
+	        render(template([spanTagWithText('#2'), spanTagWithText('#1'), spanTagWithText('#4')]), container);
+	        expect(container.textContent).to.equal('#2#1#4');
+	        expect(container.firstChild.childNodes.length).to.equal(3);
+	        render(template([spanTagWithText('a'), spanTagWithText('b'), spanTagWithText('c'), spanTagWithText('d')]), container);
+	        render(template([spanTagWithText('e'), spanTagWithText('d'), spanTagWithText('c'), spanTagWithText('a')]), container);
+	        expect(container.textContent).to.equal('edca');
+	        expect(container.firstChild.childNodes.length).to.equal(4);
+        });
+
+        it('should insert to the middle #2', () => {
+            render(template([spanTagWithText('c'), spanTagWithText('d'), spanTagWithText('e')]), container);
+            expect(container.textContent).to.equal('cde');
+            expect(container.firstChild.childNodes.length).to.equal(3);
+            render(template([spanTagWithText('a'), spanTagWithText('b'), spanTagWithText('e')]), container);
+            expect(container.textContent).to.equal('abe');
+            expect(container.firstChild.childNodes.length).to.equal(3);
+            render(template([spanTagWithText('c'), spanTagWithText('d'), null, null, null, spanTagWithText('e')]), container);
+            expect(container.textContent).to.equal('cde');
+            expect(container.firstChild.childNodes.length).to.equal(3);
+        });
     });
 });

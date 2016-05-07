@@ -1,5 +1,5 @@
 /*!
- * inferno-create-element v0.7.3
+ * inferno-create-element v0.7.7
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -216,8 +216,8 @@
 
 		vNode.tag = tag || null;
 		vNode.attrs = attrsAndEvents.attrs || null;
-		vNode.events = attrsAndEvents.events || null;
-		vNode.hooks = attrsAndEvents.hooks || null;
+		vNode.events = attrsAndEvents.events || events;
+		vNode.hooks = attrsAndEvents.hooks || hooks;
 		vNode.children = children === void 0 ? null : children;
 		vNode.key = key === void 0 ? null : key;
 		vNode.className = className === void 0 ? null : className;

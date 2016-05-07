@@ -1,8 +1,7 @@
-import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, isFunction, isPromise } from './../core/utils';
-import { diffChildren, diffAttributes, diffEvents } from './diffing';
-import { mount, mountComponent, mountArrayChildren } from './mounting';
-import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode, replaceWithNewNode, removeAllChildren } from './utils';
-import { setClipNode } from './lifecycle';
+import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from './../core/utils';
+import { diffNodes, diffNodesWithTemplate } from './diffing';
+import { mount } from './mounting';
+import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
@@ -29,166 +28,13 @@ export function updateTextNode(dom, lastChildren, nextChildren) {
 }
 
 export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, skipLazyCheck) {
-	if (isPromise(nextNode)) {
-		nextNode.then(node => {
-			patch(lastNode, node, parentDom, lifecycle, context, instance, null, false);
-		});
-		return;
-	}
 	const lastBp = lastNode.bp;
 	const nextBp = nextNode.bp;
-	const hasBlueprint = lastBp !== undefined && nextBp !== undefined;
-	const nextHooks = nextNode.hooks;
 
-	if (nextHooks && !isNullOrUndefined(nextHooks.willUpdate)) {
-		nextHooks.willUpdate(lastNode.dom);
-	}
-	let nextTag = nextNode.tag;
-	let lastTag = lastNode.tag;
-
-	if (hasBlueprint) {
-		if (isNullOrUndefined(lastTag)) {
-			lastTag = lastBp.tag;
-		}
-		if (isNullOrUndefined(nextTag)) {
-			nextTag = nextBp.tag;
-		}
-	} else if (nextTag === 'svg') {
-		isSVG = true;
-	}
-	if (lastTag !== nextTag) {
-		if ((hasBlueprint && lastBp.isComponent === true) || (!hasBlueprint && isFunction(lastTag))) {
-			const lastNodeInstance = lastNode.instance;
-
-			if ((hasBlueprint && nextBp.isComponent === true) || (!hasBlueprint && isFunction(lastTag))) {
-				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
-				detachNode(lastNode);
-			} else if (isStatefulComponent(lastTag)) {
-				patchNode(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG, true);
-			} else {
-				patchNode(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG, true);
-			}
-		} else {
-			replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
-		}
-	} else if (isNullOrUndefined(lastTag)) {
-		nextNode.dom = lastNode.dom;
+	if (lastBp === undefined || nextBp === undefined) {
+		diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 	} else {
-		if ((hasBlueprint && lastBp.isComponent === true) || (!hasBlueprint && isFunction(lastTag))) {
-			if ((hasBlueprint && nextBp.isComponent === true) || (!hasBlueprint && isFunction(nextTag))) {
-				const instance = lastNode.instance;
-
-				nextNode.instance = instance;
-				nextNode.dom = lastNode.dom;
-				patchComponent(hasBlueprint, nextNode, nextNode.tag, nextBp, instance, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
-			}
-		} else {
-			const dom = lastNode.dom;
-
-			nextNode.dom = dom;
-			if (hasBlueprint && nextBp.lazy === true && skipLazyCheck === false) {
-				const clipData = lastNode.clipData;
-
-				if (lifecycle.scrollY === null) {
-					lifecycle.refresh();
-				}
-
-				nextNode.clipData = clipData;
-				if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
-					if (setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle)) {
-						return;
-					}
-				}
-				if (clipData.bottom < lifecycle.scrollY) {
-					if (setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle)) {
-						return;
-					}
-				}
-			}
-			if (hasBlueprint) {
-				const lastChildrenType = lastBp.childrenType;
-				const nextChildrenType = nextBp.childrenType;
-
-				if (lastChildrenType > 0 || nextChildrenType > 0) {
-					if (nextChildrenType === 5 || lastChildrenType === 5) {
-						diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
-					} else {
-						const lastChildren = lastNode.children;
-						const nextChildren = nextNode.children;
-
-						if (lastChildrenType === 0 || isInvalidNode(lastChildren)) {
-							if (nextChildrenType > 2) {
-								mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance, isSVG);
-							} else {
-								mount(nextChildren, dom, lifecycle, context, instance, isSVG);
-							}
-						} else if (nextChildrenType === 0 || isInvalidNode(nextChildren)) {
-							if (lastChildrenType > 2) {
-								removeAllChildren(dom, lastChildren);
-							} else {
-								remove(lastChildren, dom);
-							}
-						} else {
-							if (lastChildren !== nextChildren) {
-								if (lastChildrenType === 4 && nextChildrenType === 4) {
-									patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
-								} else if (lastChildrenType === 2 && nextChildrenType === 2) {
-									patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, isSVG);
-								} else if (lastChildrenType === 1 && nextChildrenType === 1) {
-									updateTextNode(dom, lastChildren, nextChildren);
-								} else {
-									diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
-								}
-							}
-						}
-					}
-				}
-			} else {
-				diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
-			}
-			const nextClassName = nextNode.className;
-			const nextStyle = nextNode.style;
-
-			diffAttributes(lastNode, nextNode, hasBlueprint ? lastBp.attrKeys : null, hasBlueprint ? nextBp.attrKeys : null, dom, instance);
-			diffEvents(lastNode, nextNode, hasBlueprint ? lastBp.eventKeys : null, hasBlueprint ? nextBp.eventKeys : null, dom);
-
-			if (lastNode.className !== nextClassName) {
-				if (isNullOrUndefined(nextClassName)) {
-					dom.removeAttribute('class');
-				} else {
-					dom.className = nextClassName;
-				}
-			}
-			if (lastNode.style !== nextStyle) {
-				patchStyle(lastNode.style, nextStyle, dom);
-			}
-			if (nextHooks && !isNullOrUndefined(nextHooks.didUpdate)) {
-				nextHooks.didUpdate(dom);
-			}
-			setFormElementProperties(nextTag, nextNode);
-		}
-	}
-}
-
-function setValueProperty(nextNode) {
-	const value = nextNode.attrs.value;
-	if (!isNullOrUndefined(value)) {
-		nextNode.dom.value = value;
-	}
-}
-
-
-function setFormElementProperties(nextTag, nextNode) {
-	if (nextTag === 'input') {
-		const inputType = nextNode.attrs.type;
-		if (inputType === 'text') {
-			setValueProperty(nextNode);
-		} else if (inputType === 'checkbox' || inputType === 'radio') {
-			const checked = nextNode.attrs.checked;
-			nextNode.dom.checked = !!checked;
-		}
-	} else if (nextTag === 'textarea') {
-		setValueProperty(nextNode);
+		diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck);
 	}
 }
 
@@ -300,39 +146,27 @@ export function patchAttribute(attrName, nextAttrValue, dom) {
 	}
 }
 
-export function patchComponent(hasTemplate, lastNode, Component, nextBp, lastInstance, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+
+export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {
-		if (instance._unmounted) {
-			instance = new Component(nextProps);
+		const prevProps = instance.props;
+		const prevState = instance.state;
+		const nextState = instance.state;
 
-			instance._patch = patch;
-			instance._mount = mount;
-			const node = instance._init(lastInstance, nextProps, lifecycle, context);
-
-			if (!isNullOrUndefined(node)) {
-				patch(lastNode, node, null, lifecycle, context, instance, false, false);
-				instance._lastNode = node;
-			}
-		} else {
-			const prevProps = instance.props;
-			const prevState = instance.state;
-			const nextState = instance.state;
-
-			const childContext = instance.getChildContext();
-			if (!isNullOrUndefined(childContext)) {
-				context = {...context, ...childContext};
-			}
-			instance.context = context;
-			const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
-
-			if (!isInvalidNode(nextNode)) {
-				patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
-				lastNode.dom = nextNode.dom;
-				instance._lastNode = nextNode;
-			}
+		const childContext = instance.getChildContext();
+		if (!isNullOrUndefined(childContext)) {
+			context = { ...context, ...childContext };
 		}
+		instance.context = context;
+		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+
+		if (!isInvalidNode(nextNode)) {
+			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
+			lastNode.dom = nextNode.dom;
+		}
+		instance._lastNode = nextNode;
 	} else {
 		let shouldUpdate = true;
 		const nextHooksDefined = (hasTemplate && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
@@ -348,9 +182,7 @@ export function patchComponent(hasTemplate, lastNode, Component, nextBp, lastIns
 			const nextNode = Component(nextProps);
 
 			if (!isInvalidNode(nextNode)) {
-				const dom = lastNode.dom;
-
-				nextNode.dom = dom;
+				nextNode.dom = lastNode.dom;
 				patch(instance, nextNode, parentDom, lifecycle, context, null, null, false);
 				lastNode.instance = nextNode;
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
@@ -448,7 +280,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 							insertOrAppendNonKeyed(dom, textNode, domChild);
 							isNotVirtualFragment && domChildren.splice(index, 0, textNode);
 						}
-					} else if (sameLength === true) {
+					} else {
 						const domNode = mount(nextChild, null, lifecycle, context, instance, isSVG);
 						const domChild = domChildren[index];
 
@@ -498,7 +330,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						detachNode(lastChild);
 					}
 				} else if (isArray(nextChild)) {
-					if (isKeyed(nextChild)) {
+					if (isKeyed(lastChild, nextChild)) {
 						patchKeyedChildren(lastChild, nextChild, domChildren[index], lifecycle, context, instance, isSVG);
 					} else {
 						if (isArray(lastChild)) {

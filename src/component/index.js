@@ -1,5 +1,5 @@
 import Lifecycle from './../DOM/lifecycle';
-import { isNullOrUndefined, isInvalidNode, isString } from './../core/utils';
+import { isNullOrUndefined } from './../core/utils';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 
@@ -46,19 +46,14 @@ function applyState(component, force, callback) {
 
 		const activeNode = getActiveNode();
 		const subLifecycle = new Lifecycle();
-		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, null, false);
+		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, false);
 		component._lastNode = nextNode;
 		subLifecycle.addListener(() => {
 			subLifecycle.trigger();
 			callback && callback();
 		});
+		component._parentNode.dom = nextNode.dom;
 		resetActiveNode(activeNode);
-	}
-}
-
-function mountRef(instance, value, refValue) {
-	if (!isInvalidNode(instance) && isString(value)) {
-		instance.refs[value] = refValue;
 	}
 }
 
@@ -84,26 +79,18 @@ export default class Component {
 	render() {}
 	forceUpdate(callback) {
 		if (this._unmounted) {
-			if (process.env.NODE_ENV !== 'production') {
-				throw Error(noOp);
-			}
-			return;
+			throw Error(noOp);
 		}
 		applyState(this, true, callback);
 	}
 	setState(newState, callback) {
 		if (this._unmounted) {
-			if (process.env.NODE_ENV !== 'production') {
-				throw Error(noOp);
-			}
-			return;
+			throw Error(noOp);
 		}
 		if (this._blockSetState === false) {
 			queueStateChanges(this, newState, callback);
 		} else {
-			if (process.env.NODE_ENV !== 'production') {
-				throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
-			}
+			throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
 		}
 	}
 	componentDidMount() {}
@@ -114,27 +101,6 @@ export default class Component {
 	componentWillReceiveProps() {}
 	componentWillUpdate() {}
 	getChildContext() {}
-	_init(lastInstance, props, lifecycle, context) {
-		if (!isNullOrUndefined(lastInstance) && props.ref) {
-			mountRef(lastInstance, props.ref, this);
-		}
-		const childContext = this.getChildContext();
-
-		if (!isNullOrUndefined(childContext)) {
-			context = { ...context, ...childContext };
-		}
-		this.context = context;
-		this._unmounted = false;
-		this._pendingSetState = true;
-		this.componentWillMount();
-		const node = this.render();
-
-		this._pendingSetState = false;
-		lifecycle.addListener(() => {
-			this.componentDidMount();
-		});
-		return node;
-	}
 	_updateComponent(prevState, nextState, prevProps, nextProps, force) {
 		if (this._unmounted === true) {
 			this._unmounted = false;

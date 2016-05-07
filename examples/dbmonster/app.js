@@ -73,8 +73,7 @@
 
 	var dbTemplate1 = Inferno.createBlueprint({
 		tag: 'tr',
-		children: {arg: 0},
-		lazy: true
+		children: {arg: 0}
 	}, 4);
 
 	var dbTemplate2 = Inferno.createBlueprint({

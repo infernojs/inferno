@@ -6,9 +6,17 @@ const Inferno = {
     createBlueprint
 };
 
+
 describe('Stateful Component updates', () => {
 
     let container;
+
+    let template = function(child) {
+        return {
+            tag: 'div',
+            children: child
+        };
+    };
 
     beforeEach(() => {
         container = document.createElement('div');
@@ -466,14 +474,14 @@ describe('Stateful Component updates', () => {
                 return (
                     <div>
                         <ul>
-                        {this.state.items.map(function (item, i) {
-                            return (
-                                <DropdownItem key={item.value}>
-                                    <InnerComponentToGetUnmounted key={0} i={i} value={item.value}></InnerComponentToGetUnmounted>
-                                    <span key={1}>{item.text}</span>
-                                </DropdownItem>
-                            );
-                        })}
+                            {this.state.items.map(function (item, i) {
+                                return (
+                                    <DropdownItem key={item.value}>
+                                        <InnerComponentToGetUnmounted key={0} i={i} value={item.value}></InnerComponentToGetUnmounted>
+                                        <span key={1}>{item.text}</span>
+                                    </DropdownItem>
+                                );
+                            })}
                         </ul>
                     </div>
                 );

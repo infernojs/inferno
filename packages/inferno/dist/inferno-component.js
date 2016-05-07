@@ -1,5 +1,5 @@
 /*!
- * inferno-component v0.7.3
+ * inferno-component v0.7.7
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
@@ -58,14 +58,6 @@
 
 	function isNullOrUndefined(obj) {
 		return obj === void 0 || obj === null;
-	}
-
-	function isInvalidNode(obj) {
-		return obj === null || obj === false || obj === void 0;
-	}
-
-	function isString(obj) {
-		return typeof obj === 'string';
 	}
 
 	function constructDefaults(string, object, value) {
@@ -174,20 +166,15 @@
 
 				var activeNode = getActiveNode();
 				var subLifecycle = new Lifecycle();
-				component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, null, false);
+				component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, false);
 				component._lastNode = nextNode;
 				subLifecycle.addListener(function () {
 					subLifecycle.trigger();
 					callback && callback();
 				});
+				component._parentNode.dom = nextNode.dom;
 				resetActiveNode(activeNode);
 			})();
-		}
-	}
-
-	function mountRef(instance, value, refValue) {
-		if (!isInvalidNode(instance) && isString(value)) {
-			instance.refs[value] = refValue;
 		}
 	}
 
@@ -211,7 +198,6 @@
 			this._unmounted = true;
 			this.context = {};
 			this._patch = null;
-			this._mount = null;
 		}
 
 		babelHelpers.createClass(Component, [{
@@ -221,10 +207,7 @@
 			key: 'forceUpdate',
 			value: function forceUpdate(callback) {
 				if (this._unmounted) {
-					if ('development' !== 'production') {
-						throw Error(noOp);
-					}
-					return;
+					throw Error(noOp);
 				}
 				applyState(this, true, callback);
 			}
@@ -232,17 +215,12 @@
 			key: 'setState',
 			value: function setState(newState, callback) {
 				if (this._unmounted) {
-					if ('development' !== 'production') {
-						throw Error(noOp);
-					}
-					return;
+					throw Error(noOp);
 				}
 				if (this._blockSetState === false) {
 					queueStateChanges(this, newState, callback);
 				} else {
-					if ('development' !== 'production') {
-						throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
-					}
+					throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
 				}
 			}
 		}, {
@@ -271,36 +249,6 @@
 		}, {
 			key: 'getChildContext',
 			value: function getChildContext() {}
-		}, {
-			key: '_init',
-			value: function _init(lastInstance, props, parentDom, lifecycle, context) {
-				var dom = void 0;
-
-				if (!isNullOrUndefined(lastInstance) && props.ref) {
-					mountRef(lastInstance, props.ref, this);
-				}
-				var childContext = this.getChildContext();
-
-				if (!isNullOrUndefined(childContext)) {
-					context = babelHelpers.extends({}, context, childContext);
-				}
-				this.context = context;
-				this._unmounted = false;
-				this._pendingSetState = true;
-				this.componentWillMount();
-				var node = this.render();
-
-				this._pendingSetState = false;
-				if (!isNullOrUndefined(node)) {
-					dom = this._mount(node, null, lifecycle, context, this, false);
-					this._lastNode = node;
-					if (parentDom !== null && !isInvalidNode(dom)) {
-						parentDom.appendChild(dom);
-					}
-				}
-				this.componentDidMount();
-				return dom;
-			}
 		}, {
 			key: '_updateComponent',
 			value: function _updateComponent(prevState, nextState, prevProps, nextProps, force) {
