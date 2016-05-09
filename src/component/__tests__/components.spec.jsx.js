@@ -1834,6 +1834,18 @@ describe('Components (JSX)', () => {
 
 			updater();
 			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
+
+			updater();
+			expect(container.innerHTML).to.equal('');
+
+			updater();
+			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
+
+			updater();
+			expect(container.innerHTML).to.equal('');
+
+			updater();
+			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
 		});
 	});
 

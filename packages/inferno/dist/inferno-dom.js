@@ -412,7 +412,7 @@
 			}
 			instance.context = context;
 			instance._unmounted = false;
-			instance._parentNode = parentNode;
+			// instance._parentNode = parentNode; TODO: Never used property
 
 			instance._pendingSetState = true;
 			instance.componentWillMount();
