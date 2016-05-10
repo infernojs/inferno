@@ -50,7 +50,6 @@ describe('Components (JSX)', () => {
 	}
 
 	it('should render a basic component jsx', () => {
-
 		render((
 			<div><BasicComponent1 title="abc" name="basic-render" /></div>
 		), container);
@@ -71,8 +70,7 @@ describe('Components (JSX)', () => {
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>')
 		);
 
-		const other = { foo: 'bar' };
-		const attrs = { title: 'abc', name: 'basic-render2', ...other };
+		const attrs = { title: 'abc', name: 'basic-render2', foo: 'bar' };
 
 		// JSX Spread Attribute
 		render((
@@ -602,7 +600,7 @@ describe('Components (JSX)', () => {
 				);
 			}
 		}
-		test(<Foo initialValue="foo" />, 'DIV', 'foo', function() {
+		test(<Foo initialValue="foo" />, 'DIV', 'foo', function () {
 			expect(renderedName).to.equal('foo');
 			attachedListener();
 			expect(renderedName).to.equal('bar');
@@ -629,7 +627,7 @@ describe('Components (JSX)', () => {
 				);
 			}
 		}
-		test(<Foo initialValue="foo" />, 'DIV', 'foo', function() {
+		test(<Foo initialValue="foo" />, 'DIV', 'foo', function () {
 			attachedListener();
 			expect(renderedName).to.equal('bar');
 			done();
@@ -1797,54 +1795,56 @@ describe('Components (JSX)', () => {
 		done();
 	});
 
-	it('Should be able to swap between invalid node and valid node', () => {
-		let updater;
-		let reference;
-		class Bar extends Component {
-			constructor(props) {
-				super(props);
+	describe('Should be able to swap between invalid node and valid node', () => {
+		it('Should be able to swap between invalid node and valid node', () => {
+			let updater;
+			let reference;
+			class Bar extends Component {
+				constructor(props) {
+					super(props);
 
-				this.state = {
-					bool: true
-				};
+					this.state = {
+						bool: true
+					};
 
-				this.changeDOM = this.changeDOM.bind(this);
-				updater = this.changeDOM;
-				reference = this;
-			}
+					this.changeDOM = this.changeDOM.bind(this);
+					updater = this.changeDOM;
+					reference = this;
+				}
 
-			changeDOM() {
-				this.setState({
-					bool: !this.state.bool
-				});
-			}
+				changeDOM() {
+					this.setState({
+						bool: !this.state.bool
+					});
+				}
 
-			render() {
-				if (this.state.bool === true) {
-					return null;
-				} else {
-					return <div>Rendered!</div>;
+				render() {
+					if (this.state.bool === true) {
+						return null;
+					} else {
+						return <div>Rendered!</div>;
+					}
 				}
 			}
-		}
 
 
-		render(<Bar />, container);
-		expect(container.innerHTML).to.equal('');
+			render(<Bar />, container);
+			expect(container.innerHTML).to.equal('');
 
-		updater();
-		expect(container.innerHTML).to.equal('<div>Rendered!</div>');
+			updater();
+			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
 
-		updater();
-		expect(container.innerHTML).to.equal('');
+			updater();
+			expect(container.innerHTML).to.equal('');
 
-		updater();
-		expect(container.innerHTML).to.equal('<div>Rendered!</div>');
+			updater();
+			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
 
-		updater();
-		expect(container.innerHTML).to.equal('');
+			updater();
+			expect(container.innerHTML).to.equal('');
 
-		updater();
-		expect(container.innerHTML).to.equal('<div>Rendered!</div>');
+			updater();
+			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
+		});
 	});
 });
