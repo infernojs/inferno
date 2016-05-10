@@ -1796,57 +1796,55 @@ describe('Components (JSX)', () => {
 		expect(reference.refs.hello).to.equal(container.firstChild);
 		done();
 	});
-	describe('Should update after rendering invalidNode', () => {
-		it('Should update after rendering invalidNode', () => {
-			let updater;
-			let reference;
-			class Bar extends Component {
-				constructor(props) {
-					super(props);
 
-					this.state = {
-						bool: true
-					};
+	it('Should be able to swap between invalid node and valid node', () => {
+		let updater;
+		let reference;
+		class Bar extends Component {
+			constructor(props) {
+				super(props);
 
-					this.changeDOM = this.changeDOM.bind(this);
-					updater = this.changeDOM;
-					reference = this;
-				}
+				this.state = {
+					bool: true
+				};
 
-				changeDOM() {
-					this.setState({
-						bool: !this.state.bool
-					});
-				}
-
-				render() {
-					if (this.state.bool === true) {
-						return null;
-					} else {
-						return <div>Rendered!</div>;
-					}
-				}
+				this.changeDOM = this.changeDOM.bind(this);
+				updater = this.changeDOM;
+				reference = this;
 			}
 
+			changeDOM() {
+				this.setState({
+					bool: !this.state.bool
+				});
+			}
 
-			render(<Bar />, container);
-			expect(container.innerHTML).to.equal('');
+			render() {
+				if (this.state.bool === true) {
+					return null;
+				} else {
+					return <div>Rendered!</div>;
+				}
+			}
+		}
 
-			updater();
-			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
 
-			updater();
-			expect(container.innerHTML).to.equal('');
+		render(<Bar />, container);
+		expect(container.innerHTML).to.equal('');
 
-			updater();
-			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
+		updater();
+		expect(container.innerHTML).to.equal('<div>Rendered!</div>');
 
-			updater();
-			expect(container.innerHTML).to.equal('');
+		updater();
+		expect(container.innerHTML).to.equal('');
 
-			updater();
-			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
-		});
+		updater();
+		expect(container.innerHTML).to.equal('<div>Rendered!</div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div>Rendered!</div>');
 	});
-
 });
