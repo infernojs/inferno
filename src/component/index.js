@@ -1,5 +1,6 @@
 import Lifecycle from './../DOM/lifecycle';
-import { isNullOrUndefined } from './../core/utils';
+import { isNullOrUndefined, isInvalidNode } from './../core/utils';
+import { createNullNode } from './../DOM/utils';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 
@@ -27,7 +28,7 @@ function queueStateChanges(component, newState, callback) {
 		const pendingState = component._pendingState;
 		const oldState = component.state;
 
-		component.state = { ...oldState, ...pendingState };
+		component.state = Object.assign({}, oldState, pendingState);
 		component._pendingState = {};
 	}
 }
@@ -37,10 +38,14 @@ function applyState(component, force, callback) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
 		const oldState = component.state;
-		const nextState = { ...oldState, ...pendingState };
+		const nextState = Object.assign({}, oldState, pendingState);
 
 		component._pendingState = {};
-		const nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+		let nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+
+		if (isInvalidNode(nextNode)) {
+			nextNode = createNullNode();
+		}
 		const lastNode = component._lastNode;
 		const parentDom = lastNode.dom.parentNode;
 
@@ -52,7 +57,7 @@ function applyState(component, force, callback) {
 			subLifecycle.trigger();
 			callback && callback();
 		});
-		// component._parentNode.dom = nextNode.dom; TODO: Never used property
+		component._parentNode.dom = nextNode.dom;
 		resetActiveNode(activeNode);
 	}
 }
@@ -71,6 +76,7 @@ export default class Component {
 		this._deferSetState = false;
 		this._pendingSetState = false;
 		this._pendingState = {};
+		this._parentNode = null;
 		this._lastNode = null;
 		this._unmounted = true;
 		this.context = {};

@@ -56,6 +56,18 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 	} else if (isStringOrNumber(nextInput)) {
 		const textNode = document.createTextNode(nextInput);
 		replaceNode(parentDom, textNode, lastInput.dom);
+	} else if (!isNullOrUndefined(nextInput.null)) {
+		let dom;
+
+		if (lastInput.dom) {
+			detachNode(lastInput);
+			dom = lastInput.dom;
+		} else {
+			// TODO
+			debugger;
+		}
+		replaceNode(parentDom, nextInput.dom, dom);
+		return;
 	} else {
 		patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
 	}
@@ -157,7 +169,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 
 		const childContext = instance.getChildContext();
 		if (!isNullOrUndefined(childContext)) {
-			context = { ...context, ...childContext };
+			context = Object.assign({}, context, childContext);
 		}
 		instance.context = context;
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);

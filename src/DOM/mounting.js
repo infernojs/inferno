@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks } from './utils';
+import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks, createNullNode } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
 
@@ -268,11 +268,11 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndefined(childContext)) {
-			context = { ...context, ...childContext };
+			context = Object.assign({}, context, childContext);
 		}
 		instance.context = context;
 		instance._unmounted = false;
-		// instance._parentNode = parentNode; TODO: Never used property
+		instance._parentNode = parentNode;
 
 		instance._pendingSetState = true;
 		instance.componentWillMount();
@@ -284,13 +284,8 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 			instance._lastNode = node;
 			instance.componentDidMount();
 		} else {
-			// create placeholder
-			dom = document.createTextNode('');
-			// a clever trick to force the next node to replace this placeholder :)
-			instance._lastNode = {
-				tag: 'null',
-				dom: dom
-			};
+			instance._lastNode = createNullNode();
+			dom = instance._lastNode.dom;
 		}
 		if (parentDom !== null && !isInvalidNode(dom)) {
 			parentDom.appendChild(dom);

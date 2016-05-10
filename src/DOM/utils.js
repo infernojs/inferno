@@ -24,6 +24,13 @@ export function insertOrAppendNonKeyed(parentDom, newNode, nextNode) {
 	}
 }
 
+export function createNullNode() {
+	return {
+		null: true,
+		dom: document.createTextNode('')
+	};
+}
+
 export function insertOrAppendKeyed(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
 		parentDom.appendChild(newNode);
@@ -108,6 +115,7 @@ export function detachNode(node) {
 		if (instance.render !== undefined) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
+			detachNode(instance._lastNode);
 		}
 	}
 	const hooks = node.hooks || instanceHooks;
