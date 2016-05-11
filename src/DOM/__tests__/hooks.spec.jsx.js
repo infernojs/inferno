@@ -301,10 +301,22 @@ describe('Components (JSX)', () => {
 				render() {
 					return (
 						<div class="c">
-							<B1 />
-							<B2 />
+							<C1 />
+							<C2 />
 						</div>
 					);
+				}
+			}
+
+			class C1 extends Component {
+				render() {
+					return <p>C1</p>;
+				}
+			}
+
+			class C2 extends Component {
+				render() {
+					return <p>C2</p>;
 				}
 			}
 
@@ -329,7 +341,7 @@ describe('Components (JSX)', () => {
 			CSpy.reset();
 
 			render(<C />, container);
-			expect(container.innerHTML).to.equal('<div class="c"><p>B1</p><p>B2</p></div>');
+			expect(container.innerHTML).to.equal('<div class="c"><p>C1</p><p>C2</p></div>');
 			calledOnce(Bspy);
 			calledOnce(B1spy);
 			calledOnce(B2spy);

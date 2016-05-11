@@ -81,6 +81,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
+	detachNode(lastNode);
 	const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
@@ -88,8 +89,6 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 	if (lastInstance !== null) {
 		lastInstance._lastNode = nextNode;
 	}
-	detachNode(lastNode);
-
 }
 
 export function replaceNode(parentDom, nextDom, lastDom) {

@@ -172,8 +172,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			const lastNodeInstance = lastNode.instance;
 
 			if (nextBp.isComponent === true) {
-				detachNode(lastNode);
-				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, false);
+				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 			} else if (isStatefulComponent(lastTag)) {
 				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			} else {
@@ -317,7 +316,7 @@ export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, ins
 
 			if (isFunction(lastTag)) {
 				if (isFunction(nextTag)) {
-					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+					replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				} else if (isStatefulComponent(lastTag)) {
 					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				} else {

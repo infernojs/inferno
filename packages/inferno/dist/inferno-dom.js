@@ -549,6 +549,7 @@
 			lastInstance = lastNode;
 			lastNode = instanceLastNode;
 		}
+		detachNode(lastNode);
 		var dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 		nextNode.dom = dom;
@@ -556,7 +557,6 @@
 		if (lastInstance !== null) {
 			lastInstance._lastNode = nextNode;
 		}
-		detachNode(lastNode);
 	}
 
 	function replaceNode(parentDom, nextDom, lastDom) {
@@ -975,8 +975,7 @@
 				var lastNodeInstance = lastNode.instance;
 
 				if (nextBp.isComponent === true) {
-					detachNode(lastNode);
-					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, false);
+					replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 				} else if (isStatefulComponent(lastTag)) {
 					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 				} else {
@@ -1119,7 +1118,7 @@
 
 				if (isFunction(lastTag)) {
 					if (isFunction(nextTag)) {
-						replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+						replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 					} else if (isStatefulComponent(lastTag)) {
 						diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 					} else {
