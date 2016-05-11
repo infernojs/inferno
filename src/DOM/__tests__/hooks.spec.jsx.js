@@ -1,6 +1,5 @@
 import { render } from './../../DOM/rendering';
 import Component from './../../component/index';
-import innerHTML from './../../../tools/innerHTML';
 import { createBlueprint } from './../../core/createBlueprint';
 
 const Inferno = {
@@ -60,7 +59,7 @@ describe('Components (JSX)', () => {
 							})()}
 							<button onClick={this.updateme} >btn</button>
 						</div>
-					)
+					);
 				}
 			}
 
@@ -74,7 +73,7 @@ describe('Components (JSX)', () => {
 						<div>
 							<C />
 						</div>
-					)
+					);
 				}
 			}
 
@@ -87,7 +86,7 @@ describe('Components (JSX)', () => {
 						<div>
 							<D />
 						</div>
-					)
+					);
 				}
 			}
 
@@ -100,7 +99,7 @@ describe('Components (JSX)', () => {
 						<div>
 							Terve
 						</div>
-					)
+					);
 				}
 			}
 
@@ -231,7 +230,7 @@ describe('Components (JSX)', () => {
 			done();
 		});
 
-		it('Should trigger unMount for direct nested children', (done) => {
+		it('Should trigger unMount for direct nested children', () => {
 			let bCalled = false,
 				cCalled = false,
 				dCalled = false;
@@ -286,7 +285,7 @@ describe('Components (JSX)', () => {
 
 			cCalled = false;
 			render(<B />, container);
-			expect(container.innerHTML).to.equal('<div>D</div>');
+			expect(container.innerHTML).to.equal('<div>B</div>');
 			expect(bCalled).to.equal(false);
 			expect(cCalled).to.equal(false);
 			expect(dCalled).to.equal(true);

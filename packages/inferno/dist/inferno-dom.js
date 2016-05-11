@@ -408,11 +408,11 @@
 			var childContext = instance.getChildContext();
 
 			if (!isNullOrUndefined(childContext)) {
-				context = babelHelpers.extends({}, context, childContext);
+				context = Object.assign({}, context, childContext);
 			}
 			instance.context = context;
 			instance._unmounted = false;
-			// instance._parentNode = parentNode; TODO: Never used property
+			instance._parentNode = parentNode;
 
 			instance._pendingSetState = true;
 			instance.componentWillMount();
@@ -424,13 +424,8 @@
 				instance._lastNode = node;
 				instance.componentDidMount();
 			} else {
-				// create placeholder
-				dom = document.createTextNode('');
-				// a clever trick to force the next node to replace this placeholder :)
-				instance._lastNode = {
-					tag: 'null',
-					dom: dom
-				};
+				instance._lastNode = createNullNode();
+				dom = instance._lastNode.dom;
 			}
 			if (parentDom !== null && !isInvalidNode(dom)) {
 				parentDom.appendChild(dom);
@@ -495,6 +490,13 @@
 				parentDom.insertBefore(newNode, nextNode);
 			}
 		}
+	}
+
+	function createNullNode() {
+		return {
+			null: true,
+			dom: document.createTextNode('')
+		};
 	}
 
 	function insertOrAppendKeyed(parentDom, newNode, nextNode) {
@@ -580,6 +582,7 @@
 			if (instance.render !== void 0) {
 				instance.componentWillUnmount();
 				instance._unmounted = true;
+				detachNode(instance._lastNode);
 			}
 		}
 		var hooks = node.hooks || instanceHooks;
@@ -972,8 +975,8 @@
 				var lastNodeInstance = lastNode.instance;
 
 				if (nextBp.isComponent === true) {
-					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 					detachNode(lastNode);
+					replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 				} else if (isStatefulComponent(lastTag)) {
 					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 				} else {
@@ -1228,6 +1231,18 @@
 		} else if (isStringOrNumber(nextInput)) {
 			var textNode = document.createTextNode(nextInput);
 			replaceNode(parentDom, textNode, lastInput.dom);
+		} else if (!isNullOrUndefined(nextInput.null)) {
+			var _dom = void 0;
+
+			if (lastInput.dom) {
+				detachNode(lastInput);
+				_dom = lastInput.dom;
+			} else {
+				// TODO
+				debugger;
+			}
+			replaceNode(parentDom, nextInput.dom, _dom);
+			return;
 		} else {
 			patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
 		}
@@ -1328,7 +1343,7 @@
 
 			var childContext = instance.getChildContext();
 			if (!isNullOrUndefined(childContext)) {
-				context = babelHelpers.extends({}, context, childContext);
+				context = Object.assign({}, context, childContext);
 			}
 			instance.context = context;
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);

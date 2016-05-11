@@ -60,6 +60,17 @@
 		return obj === void 0 || obj === null;
 	}
 
+	function isInvalidNode(obj) {
+		return obj === null || obj === false || obj === void 0;
+	}
+
+	function createNullNode() {
+		return {
+			null: true,
+			dom: document.createTextNode('')
+		};
+	}
+
 	function constructDefaults(string, object, value) {
 		/* eslint no-return-assign: 0 */
 		string.split(',').forEach(function (i) {
@@ -146,7 +157,7 @@
 			var pendingState = component._pendingState;
 			var oldState = component.state;
 
-			component.state = babelHelpers.extends({}, oldState, pendingState);
+			component.state = Object.assign({}, oldState, pendingState);
 			component._pendingState = {};
 		}
 	}
@@ -157,10 +168,14 @@
 				component._pendingSetState = false;
 				var pendingState = component._pendingState;
 				var oldState = component.state;
-				var nextState = babelHelpers.extends({}, oldState, pendingState);
+				var nextState = Object.assign({}, oldState, pendingState);
 
 				component._pendingState = {};
 				var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+
+				if (isInvalidNode(nextNode)) {
+					nextNode = createNullNode();
+				}
 				var lastNode = component._lastNode;
 				var parentDom = lastNode.dom.parentNode;
 
@@ -172,7 +187,7 @@
 					subLifecycle.trigger();
 					callback && callback();
 				});
-				// component._parentNode.dom = nextNode.dom; TODO: Never used property
+				component._parentNode.dom = nextNode.dom;
 				resetActiveNode(activeNode);
 			})();
 		}
@@ -194,6 +209,7 @@
 			this._deferSetState = false;
 			this._pendingSetState = false;
 			this._pendingState = {};
+			this._parentNode = null;
 			this._lastNode = null;
 			this._unmounted = true;
 			this.context = {};
