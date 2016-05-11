@@ -20,12 +20,8 @@ describe('Components (JSX)', () => {
 
 	describe('componentWillUnmount', () => {
 
-		it('Should trigger UnMount for all children', (done) => {
-			let updater = null,
-				aCalled = false,
-				bCalled = false,
-				cCalled = false,
-				dCalled = false;
+		it('Should trigger UnMount for all children', () => {
+			let updater = null;
 
 			class A extends Component {
 				constructor(props) {
@@ -37,9 +33,6 @@ describe('Components (JSX)', () => {
 
 					this.updateme = this.updateme.bind(this);
 					updater = this.updateme;
-				}
-				componentWillUnmount() {
-					aCalled = true; // This should not be called
 				}
 
 				updateme() {
@@ -64,9 +57,6 @@ describe('Components (JSX)', () => {
 			}
 
 			class B extends Component {
-				componentWillUnmount() {
-					bCalled = true;
-				}
 
 				render() {
 					return (
@@ -78,9 +68,6 @@ describe('Components (JSX)', () => {
 			}
 
 			class C extends Component {
-				componentWillUnmount() {
-					cCalled = true;
-				}
 				render() {
 					return (
 						<div>
@@ -91,9 +78,6 @@ describe('Components (JSX)', () => {
 			}
 
 			class D extends Component {
-				componentWillUnmount() {
-					dCalled = true;
-				}
 				render() {
 					return (
 						<div>
@@ -103,38 +87,37 @@ describe('Components (JSX)', () => {
 				}
 			}
 
-
+			const Aspy = sinon.spy(A.prototype, 'componentWillUnmount');
+			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
+			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
+			const DSpy = sinon.spy(D.prototype, 'componentWillUnmount');
+			const notCalled = sinon.assert.notCalled;
 
 			render(<A />, container);
 			expect(container.innerHTML).to.equal('<div><button>btn</button></div>');
-			expect(aCalled).to.equal(false);
-			expect(bCalled).to.equal(false);
-			expect(cCalled).to.equal(false);
-			expect(dCalled).to.equal(false);
+			notCalled(Aspy);
+			notCalled(Bspy);
+			notCalled(CSpy);
+			notCalled(DSpy);
 
 			updater();
 			expect(container.innerHTML).to.equal('<div><div><div><div>Terve</div></div></div><button>btn</button></div>');
-			expect(aCalled).to.equal(false);
-			expect(bCalled).to.equal(false);
-			expect(cCalled).to.equal(false);
-			expect(dCalled).to.equal(false);
+			notCalled(Aspy);
+			notCalled(Bspy);
+			notCalled(CSpy);
+			notCalled(DSpy);
 
 			updater();
 			expect(container.innerHTML).to.equal('<div><button>btn</button></div>');
-			expect(aCalled).to.equal(false, 'componentWillUnmount triggered for A');
-			expect(bCalled).to.equal(true, 'componentWillUnmount not triggered for B');
-			expect(cCalled).to.equal(true, 'componentWillUnmount not triggered for C'); // It should have called componentWillUnmount
-			expect(dCalled).to.equal(true, 'componentWillUnmount not triggered for D');
-
-			done();
+			notCalled(Aspy);
+			const calledOnce = sinon.assert.calledOnce;
+			calledOnce(Bspy);
+			calledOnce(CSpy);
+			calledOnce(DSpy);
 		});
 
-		it('Should not trigger unmount for new node', (done) => {
-			let updater = null,
-				aCalled = false,
-				bCalled = false,
-				cCalled = false,
-				dCalled = false;
+		it('Should not trigger unmount for new node', () => {
+			let updater = null;
 
 			class A extends Component {
 				constructor(props) {
@@ -146,9 +129,6 @@ describe('Components (JSX)', () => {
 
 					this.updateme = this.updateme.bind(this);
 					updater = this.updateme;
-				}
-				componentWillUnmount() {
-					aCalled = true; // This should not be called
 				}
 
 				updateme() {
@@ -173,28 +153,18 @@ describe('Components (JSX)', () => {
 			}
 
 			class B extends Component {
-				componentWillUnmount() {
-					bCalled = true;
-				}
-
 				render() {
 					return (<C />)
 				}
 			}
 
 			class C extends Component {
-				componentWillUnmount() {
-					cCalled = true;
-				}
 				render() {
 					return (<D />)
 				}
 			}
 
 			class D extends Component {
-				componentWillUnmount() {
-					dCalled = true;
-				}
 				render() {
 					return (
 						<div>
@@ -204,91 +174,85 @@ describe('Components (JSX)', () => {
 				}
 			}
 
-
+			const Aspy = sinon.spy(A.prototype, 'componentWillUnmount');
+			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
+			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
+			const DSpy = sinon.spy(D.prototype, 'componentWillUnmount');
+			const notCalled = sinon.assert.notCalled;
 
 			render(<A />, container);
 			expect(container.innerHTML).to.equal('<div><button>btn</button></div>');
-			expect(aCalled).to.equal(false);
-			expect(bCalled).to.equal(false);
-			expect(cCalled).to.equal(false);
-			expect(dCalled).to.equal(false);
+			notCalled(Aspy);
+			notCalled(Bspy);
+			notCalled(CSpy);
+			notCalled(DSpy);
 
 			updater();
 			expect(container.innerHTML).to.equal('<div><div>Terve</div><button>btn</button></div>');
-			expect(aCalled).to.equal(false);
-			expect(bCalled).to.equal(false);
-			expect(cCalled).to.equal(false);
-			expect(dCalled).to.equal(false);
+			notCalled(Aspy);
+			notCalled(Bspy);
+			notCalled(CSpy);
+			notCalled(DSpy);
 
 			updater();
 			expect(container.innerHTML).to.equal('<div><button>btn</button></div>');
-			expect(aCalled).to.equal(false, 'componentWillUnmount triggered for A');
-			expect(bCalled).to.equal(true, 'componentWillUnmount not triggered for B');
-			expect(cCalled).to.equal(true, 'componentWillUnmount not triggered for C'); // It should have called componentWillUnmount
-			expect(dCalled).to.equal(true, 'componentWillUnmount not triggered for D');
-
-			done();
+			notCalled(Aspy);
+			const calledOnce = sinon.assert.calledOnce;
+			calledOnce(Bspy);
+			calledOnce(CSpy);
+			calledOnce(DSpy);
 		});
 
 		it('Should trigger unMount for direct nested children', () => {
-			let bCalled = false,
-				cCalled = false,
-				dCalled = false;
-
 			class B extends Component {
-				componentWillUnmount() {
-					bCalled = true;
-				}
-
 				render() {
 					return <div>B</div>;
 				}
 			}
 
 			class C extends Component {
-				componentWillUnmount() {
-					cCalled = true;
-				}
 				render() {
 					return <div>C</div>;
 				}
 			}
 
 			class D extends Component {
-				componentWillUnmount() {
-					dCalled = true;
-				}
 				render() {
 					return <div>D</div>;
 				}
 			}
 
+
+			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
+			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
+			const DSpy = sinon.spy(D.prototype, 'componentWillUnmount');
+			const notCalled = sinon.assert.notCalled;
+			const calledOnce = sinon.assert.calledOnce;
+
 			render(<B />, container);
 			expect(container.innerHTML).to.equal('<div>B</div>');
-			expect(bCalled).to.equal(false, 'initial render');
-			expect(cCalled).to.equal(false, 'initial render');
-			expect(dCalled).to.equal(false, 'initial render');
+			notCalled(Bspy);
+			notCalled(CSpy);
+			notCalled(DSpy);
 
 
 			render(<C />, container);
 			expect(container.innerHTML).to.equal('<div>C</div>');
-			expect(bCalled).to.equal(true, 'Should HAVE called this - B');
-			expect(cCalled).to.equal(false, 'Should not have called this - C');
-			expect(dCalled).to.equal(false, 'Should not have called this - D');
+			calledOnce(Bspy);
+			notCalled(CSpy);
+			notCalled(DSpy);
 
-			bCalled = false;
 			render(<D />, container);
 			expect(container.innerHTML).to.equal('<div>D</div>');
-			expect(bCalled).to.equal(false);
-			expect(cCalled).to.equal(true);
-			expect(dCalled).to.equal(false);
+			calledOnce(Bspy);
+			calledOnce(CSpy);
+			notCalled(DSpy);
 
-			cCalled = false;
 			render(<B />, container);
 			expect(container.innerHTML).to.equal('<div>B</div>');
-			expect(bCalled).to.equal(false);
-			expect(cCalled).to.equal(false);
-			expect(dCalled).to.equal(true);
+			calledOnce(Bspy);
+			calledOnce(CSpy);
+			calledOnce(DSpy);
 		});
 
 	});
