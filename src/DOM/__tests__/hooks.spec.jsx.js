@@ -130,7 +130,7 @@ describe('Components (JSX)', () => {
 			done();
 		});
 
-		it('Should trigger unMount for direct nested children', (done) => {
+		it('Should not trigger unmount for new node', (done) => {
 			let updater = null,
 				aCalled = false,
 				bCalled = false,
@@ -230,6 +230,68 @@ describe('Components (JSX)', () => {
 
 			done();
 		});
+
+		it('Should trigger unMount for direct nested children', (done) => {
+			let bCalled = false,
+				cCalled = false,
+				dCalled = false;
+
+			class B extends Component {
+				componentWillUnmount() {
+					bCalled = true;
+				}
+
+				render() {
+					return <div>B</div>;
+				}
+			}
+
+			class C extends Component {
+				componentWillUnmount() {
+					cCalled = true;
+				}
+				render() {
+					return <div>C</div>;
+				}
+			}
+
+			class D extends Component {
+				componentWillUnmount() {
+					dCalled = true;
+				}
+				render() {
+					return <div>D</div>;
+				}
+			}
+
+			render(<B />, container);
+			expect(container.innerHTML).to.equal('<div>B</div>');
+			expect(bCalled).to.equal(false, 'initial render');
+			expect(cCalled).to.equal(false, 'initial render');
+			expect(dCalled).to.equal(false, 'initial render');
+
+
+			render(<C />, container);
+			expect(container.innerHTML).to.equal('<div>C</div>');
+			expect(bCalled).to.equal(true, 'Should HAVE called this - B');
+			expect(cCalled).to.equal(false, 'Should not have called this - C');
+			expect(dCalled).to.equal(false, 'Should not have called this - D');
+
+			bCalled = false;
+			render(<D />, container);
+			expect(container.innerHTML).to.equal('<div>D</div>');
+			expect(bCalled).to.equal(false);
+			expect(cCalled).to.equal(true);
+			expect(dCalled).to.equal(false);
+
+			cCalled = false;
+			render(<B />, container);
+			expect(container.innerHTML).to.equal('<div>D</div>');
+			expect(bCalled).to.equal(false);
+			expect(cCalled).to.equal(false);
+			expect(dCalled).to.equal(true);
+		});
+
 	});
 
 });
