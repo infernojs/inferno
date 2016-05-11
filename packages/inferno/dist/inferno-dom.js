@@ -1238,10 +1238,9 @@
 				_dom = lastInput.dom;
 			} else {
 				// TODO
-				debugger;
+				// debugger;
 			}
 			replaceNode(parentDom, nextInput.dom, _dom);
-			return;
 		} else {
 			patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
 		}
@@ -1350,8 +1349,8 @@
 			if (!isInvalidNode(nextNode)) {
 				patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 				lastNode.dom = nextNode.dom;
+				instance._lastNode = nextNode;
 			}
-			instance._lastNode = nextNode;
 		} else {
 			var shouldUpdate = true;
 			var nextHooksDefined = hasTemplate && nextBp.hasHooks === true || !isNullOrUndefined(nextHooks);

@@ -64,10 +64,9 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 			dom = lastInput.dom;
 		} else {
 			// TODO
-			debugger;
+			// debugger;
 		}
 		replaceNode(parentDom, nextInput.dom, dom);
-		return;
 	} else {
 		patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
 	}
@@ -177,8 +176,8 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 		if (!isInvalidNode(nextNode)) {
 			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 			lastNode.dom = nextNode.dom;
+			instance._lastNode = nextNode;
 		}
-		instance._lastNode = nextNode;
 	} else {
 		let shouldUpdate = true;
 		const nextHooksDefined = (hasTemplate && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
