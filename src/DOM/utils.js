@@ -195,7 +195,7 @@ export function removeAllChildren(dom, children) {
 }
 
 export function resetActiveNode(activeNode) {
-	if (activeNode !== document.body && document.activeElement !== activeNode) {
+	if (activeNode !== null && activeNode !== document.body && document.activeElement !== activeNode) {
 		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
 	}
 }
