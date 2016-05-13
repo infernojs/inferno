@@ -961,9 +961,9 @@
 	function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
 		var nextHooks = void 0;
 
-		if (nextNode.hasHooks === true) {
-			/* eslint no-cond-assign:0 */
-			if (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate)) {
+		if (nextBp.hasHooks === true) {
+			nextHooks = nextNode.hooks;
+			if (nextHooks && !isNullOrUndefined(nextHooks.willUpdate)) {
 				nextHooks.willUpdate(lastNode.dom);
 			}
 		}
@@ -1086,7 +1086,7 @@
 						patchStyle(lastNode.style, nextStyle, dom);
 					}
 				}
-				if (nextNode.hasHooks === true && !isNullOrUndefined(nextHooks.didUpdate)) {
+				if (nextBp.hasHooks === true && !isNullOrUndefined(nextHooks.didUpdate)) {
 					nextHooks.didUpdate(dom);
 				}
 				setFormElementProperties(nextTag, nextNode);

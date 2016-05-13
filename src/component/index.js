@@ -53,11 +53,12 @@ function applyState(component, force, callback) {
 		const subLifecycle = new Lifecycle();
 		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
 		component._lastNode = nextNode;
-		subLifecycle.addListener(() => {
-			subLifecycle.trigger();
-			callback && callback();
-		});
 		component._parentNode.dom = nextNode.dom;
+
+		subLifecycle.trigger();
+		if (!isNullOrUndefined(callback)) {
+			callback();
+		}
 		resetActiveNode(activeNode);
 	}
 }

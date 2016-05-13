@@ -164,32 +164,31 @@
 
 	function applyState(component, force, callback) {
 		if (!component._deferSetState || force) {
-			(function () {
-				component._pendingSetState = false;
-				var pendingState = component._pendingState;
-				var oldState = component.state;
-				var nextState = Object.assign({}, oldState, pendingState);
+			component._pendingSetState = false;
+			var pendingState = component._pendingState;
+			var oldState = component.state;
+			var nextState = Object.assign({}, oldState, pendingState);
 
-				component._pendingState = {};
-				var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+			component._pendingState = {};
+			var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
 
-				if (isInvalidNode(nextNode)) {
-					nextNode = createNullNode();
-				}
-				var lastNode = component._lastNode;
-				var parentDom = lastNode.dom.parentNode;
+			if (isInvalidNode(nextNode)) {
+				nextNode = createNullNode();
+			}
+			var lastNode = component._lastNode;
+			var parentDom = lastNode.dom.parentNode;
 
-				var activeNode = getActiveNode();
-				var subLifecycle = new Lifecycle();
-				component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
-				component._lastNode = nextNode;
-				subLifecycle.addListener(function () {
-					subLifecycle.trigger();
-					callback && callback();
-				});
-				component._parentNode.dom = nextNode.dom;
-				resetActiveNode(activeNode);
-			})();
+			var activeNode = getActiveNode();
+			var subLifecycle = new Lifecycle();
+			component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
+			component._lastNode = nextNode;
+			component._parentNode.dom = nextNode.dom;
+
+			subLifecycle.trigger();
+			if (!isNullOrUndefined(callback)) {
+				callback();
+			}
+			resetActiveNode(activeNode);
 		}
 	}
 

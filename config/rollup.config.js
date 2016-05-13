@@ -26,7 +26,6 @@ const plugins = [
 		main: true
 	}),
 	stub(),
-	filesize(),
 	replace({
 		'process.env.NODE_ENV': JSON.stringify('production'),
 		VERSION: pack.version
@@ -50,6 +49,9 @@ if (process.env.NODE_ENV === 'production') {
 		})
 	);
 }
+
+// Filesize plugin needs to be last to report correct filesizes when minified
+plugins.push(filesize());
 
 const bundles = [
 	{

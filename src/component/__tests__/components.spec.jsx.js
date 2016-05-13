@@ -1795,6 +1795,57 @@ describe('Components (JSX)', () => {
 		done();
 	});
 
+	it('Should trigger lifecycle after patch', () => {
+		let updater;
+		let obj = {
+			fn: function() {}
+		};
+
+		const calledOnce = sinon.assert.calledOnce;
+		const notCalled = sinon.assert.notCalled;
+		const spy = sinon.spy(obj, 'fn');
+
+		class Bar extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					bool: true
+				};
+
+				this.changeDOM = this.changeDOM.bind(this);
+				updater = this.changeDOM;
+			}
+
+			changeDOM() {
+				this.setState({
+					bool: !this.state.bool
+				});
+			}
+
+			render() {
+				if (this.state.bool === true) {
+					return <div>Hello world</div>;
+				} else {
+					return (
+						<div>
+							<div onAttached={obj.fn}>Hello world2</div>
+						</div>
+					);
+				}
+			}
+		}
+
+
+		render(<Bar />, container);
+		expect(container.innerHTML).to.equal('<div>Hello world</div>');
+		notCalled(spy);
+		
+		updater();
+		expect(container.innerHTML).to.equal('<div><div>Hello world2</div></div>');
+		calledOnce(spy);
+	});
+
 	describe('Should be able to swap between invalid node and valid node', () => {
 		it('Should be able to swap between invalid node and valid node', () => {
 			let updater;

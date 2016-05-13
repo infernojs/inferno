@@ -158,9 +158,9 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
 	let nextHooks;
 
-	if (nextNode.hasHooks === true) {
-		/* eslint no-cond-assign:0 */
-		if (nextHooks = nextNode.hooks && !isNullOrUndefined(nextHooks.willUpdate)) {
+	if (nextBp.hasHooks === true) {
+		nextHooks = nextNode.hooks;
+		if (nextHooks && !isNullOrUndefined(nextHooks.willUpdate)) {
 			nextHooks.willUpdate(lastNode.dom);
 		}
 	}
@@ -283,7 +283,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 					patchStyle(lastNode.style, nextStyle, dom);
 				}
 			}
-			if (nextNode.hasHooks === true && !isNullOrUndefined(nextHooks.didUpdate)) {
+			if (nextBp.hasHooks === true && !isNullOrUndefined(nextHooks.didUpdate)) {
 				nextHooks.didUpdate(dom);
 			}
 			setFormElementProperties(nextTag, nextNode);
