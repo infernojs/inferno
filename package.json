@@ -30,7 +30,7 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
     "coveralls": "^2.11.9",
-    "cross-env": "1.0.7",
+    "cross-env": "1.0.8",
     "eslint": "^2.9.0",
     "eslint-plugin-babel": "^3.2.0",
     "glob": "^7.0.3",
