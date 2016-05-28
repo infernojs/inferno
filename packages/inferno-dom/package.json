@@ -1,6 +1,6 @@
 {
   "name": "inferno-dom",
-  "version": "0.7.7",
+  "version": "0.7.8",
   "license": "MPL-2.0",
   "description": "Provides methods to render DOM nodes from Inferno fragments",
   "author": {
@@ -21,7 +21,7 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.7.7"
+    "inferno": "^0.7.8"
   },
   "repository": "https://github.com/trueadm/inferno"
 }

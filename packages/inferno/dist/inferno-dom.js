@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.7
+ * inferno-dom v0.7.8
  * (c) 2016 Dominic Gannaway
  * Released under the MPL-2.0 License.
  */
