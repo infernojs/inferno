@@ -81,7 +81,7 @@ http://infernojs.org/releases/0.7.8/inferno-server.min.js
 Let's start with some code. As you can see, Inferno intentionally keeps the same, good, design ideas as React regarding components: one-way data flow and separation of concerns.
 In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a simple way to express Inferno virtual DOM.
 
-```jsx
+```javascript
 import Inferno from 'inferno';
 import InfernoDOM from 'inferno-dom';
 
@@ -94,7 +94,7 @@ InfernoDOM.render(
 ```
 Furthermore, Inferno also uses ES6 components like React:
 
-```jsx
+```javascript
 import Inferno from 'inferno';
 import { Component } from `inferno-component`;
 import InfernoDOM from 'inferno-dom';
@@ -127,7 +127,7 @@ This is essential for low-powered devices such as tablets and phones, where user
 
 Creates an Inferno VNode object that has chainable setting methods.
 
-```jsx
+```javascript
 import createVNode from `inferno`;
 
 InfernoDOM.render(createVNode().setTag('div').setClassName('foo').setAttrs({ id: 'test' }).setChildren('Hello world!'), document.body);
@@ -137,7 +137,7 @@ InfernoDOM.render(createVNode().setTag('div').setClassName('foo').setAttrs({ id:
 
 Creates an Inferno VNode using a predefined blueprint. Using the reference to the blueprint, it allows for faster optimisations with little overhead.
 
-```jsx
+```javascript
 import InfernoDOM from 'inferno-dom';
 
 const myBlueprint = Inferno.createBlueprint({
@@ -158,7 +158,7 @@ For example: if my object is `const blueprint = Inferno.createBlueprint({ tag: {
 
 Creates an Inferno VNode using a similar API to that found with React's `createElement`
 
-```jsx
+```javascript
 import InfernoDOM from 'inferno-dom';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
@@ -182,7 +182,7 @@ InfernoDOM.render(createElement(BasicComponent, { title: 'abc' }), document.body
 
 **Stateful component:**
 
-```jsx
+```javascript
 import Component from 'inferno-component';
 
 class MyComponent extends Component {
@@ -196,7 +196,7 @@ This is the base class for Inferno Components when they're defined using ES6 cla
 
 **Stateless component:**
 
-```jsx
+```javascript
 const MyComponent => ({ name, age }) => 
   <span>My name is: { name } and my age is: {age}</span>  
 );
@@ -206,7 +206,7 @@ Stateless components are first-class functions where their first argument is the
 
 ### InfernoDOM.render
 
-```jsx
+```javascript
 import InfernoDOM from 'inferno-dom';
 
 InfernoDOM.render(<div />, document.body);
@@ -251,7 +251,7 @@ common hooks directly onto components and DOM nodes. Below is the table of all p
 It's simple to implicitly assign hooks to both DOM nodes and stateless components.
 Please note: stateful components (ES2015 classes) from `inferno-component` **do not** support hooks.
 
-```jsx
+```javascript
 function createdCallback(domNode, props) {
     // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 	// [props] will only be passed for stateless components
