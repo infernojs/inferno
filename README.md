@@ -41,33 +41,33 @@ Core package:
 ```sh
 npm install --save inferno
 ```
-
+ 
  ES2015 stateful components (with lifecycle events) package:
-
+ 
 ```sh
-npm install --save inferno-component
+npm install --save inferno-component 
 ```
-
+ 
 Browser DOM rendering package:
 
 ```sh
-npm install --save inferno-dom
+npm install --save inferno-dom 
 ```
 
 Helper for creating Inferno VNodes (similar to `React.createElement`):
 
 ```sh
-npm install --save inferno-create-element
+npm install --save inferno-create-element 
 ```
 
 Server-side rendering package:
 
 ```sh
-npm install --save inferno-server
+npm install --save inferno-server 
 ```
 
 Pre-bundled files for browser consumption:
-
+ 
 ```
 http://infernojs.org/releases/0.7.8/inferno.min.js
 http://infernojs.org/releases/0.7.8/inferno-create-element.min.js
@@ -197,7 +197,7 @@ This is the base class for Inferno Components when they're defined using ES6 cla
 **Stateless component:**
 
 ```jsx
-const MyComponent = ({ name, age }) =>
+const MyComponent = ({ name, age }) => 
   <span>My name is: { name } and my age is: {age}</span>  
 );
 ```
@@ -279,7 +279,7 @@ Writing code should be fun. Browsers are getting more advanced and the technolog
 time a framework offered more fun without compromising performance.
 
 ## JSX
-
+ 
 Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
 
 ## Differences from React
@@ -292,16 +292,16 @@ Non-performant features have been removed or replaced where an alternative solut
 Inferno wants to always deliver great performance and in order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work; so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
 
 ### The stateful ES2015 Component is located in its own package
-
+ 
 React's ES2015 component is referenced as `React.Component`. To reduce the bloat on the core of `Inferno`, we've extracted the ES2015 component
 into its own package, specifically `inferno-component` rather than `Inferno.Component`. Many users are opting to use stateless components with
 Inferno's `hooks` to give similar functionality as that provided by ES2015 components.
 
 ### Automatic unit insertion on properties and properties
 
-Inferno makes no attempt to add the unit to numerical attributes or properties that React attempts to automatically add units to. For example:
-`<div style={ { left: 10 } }/>` will result in `px` being added automatically to the style property in React. To ensure Inferno is kept lean and fast, the
-code base does not contain these expensive checks and overheads have been removed. It's completely down to the user to specify the property.
+Inferno makes no attempt to add the unit to numerical attributes or properties that React attempts to automatically add units to. For example: 
+`<div style={ { left: 10 } }/>` will result in `px` being added automatically to the style property in React. To ensure Inferno is kept lean and fast, the 
+code base does not contain these expensive checks and overheads have been removed. It's completely down to the user to specify the property. 
 So with Inferno, you should use the following to achieve the same result `<div style={ { left: '10px' } } />`.
 
 ## Contributing
@@ -329,3 +329,4 @@ npm run lint:source // lint the source
 ### Inferno is supported by BrowserStack
 
 <img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
+
