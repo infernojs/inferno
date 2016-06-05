@@ -1,7 +1,7 @@
 {
   "name": "inferno-dom",
-  "version": "0.7.8",
-  "license": "MPL-2.0",
+  "version": "0.7.9",
+  "license": "MIT",
   "description": "Provides methods to render DOM nodes from Inferno fragments",
   "author": {
     "name": "Dominic Gannaway",
@@ -21,7 +21,7 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.7.8"
+    "inferno": "^0.7.9"
   },
   "repository": "https://github.com/trueadm/inferno"
 }

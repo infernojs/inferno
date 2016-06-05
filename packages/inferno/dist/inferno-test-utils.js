@@ -1,7 +1,7 @@
 /*!
- * inferno-test-utils v0.7.8
+ * inferno-test-utils v0.7.9
  * (c) 2016 Dominic Gannaway
- * Released under the MPL-2.0 License.
+ * Released under the MIT License.
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :

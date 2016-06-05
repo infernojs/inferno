@@ -1,7 +1,7 @@
 {
   "name": "inferno-create-element",
-  "version": "0.7.8",
-  "license": "MPL-2.0",
+  "version": "0.7.9",
+  "license": "MIT",
   "description": "Provides methods to create Inferno VNodes",
   "author": {
     "name": "Dominic Gannaway",
@@ -21,6 +21,6 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.7.8"
+    "inferno": "^0.7.9"
   }
 }
