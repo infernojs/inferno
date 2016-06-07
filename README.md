@@ -8,9 +8,9 @@
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 [![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg)](https://www.npmjs.org/package/inferno-dom)
 
-Inferno is an isomorphic library for building high-performance user interfaces, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno uses intelligent techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
+Inferno is an isomorphic library for building high-performance user interfaces, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno uses techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
 
-In addition to this, we've painstakingly optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently the fastest virtual DOM implementation out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
+In addition to this, we've carefully optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently one of the fastest virtual DOM implementation out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
 
 In principle, Inferno is compatible with the standard React API, allowing painless transition from React to Inferno. Furthermore, Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno virtual DOM.
 
@@ -197,7 +197,7 @@ This is the base class for Inferno Components when they're defined using ES6 cla
 **Stateless component:**
 
 ```javascript
-const MyComponent => ({ name, age }) => 
+const MyComponent = ({ name, age }) => 
   <span>My name is: { name } and my age is: {age}</span>  
 );
 ```
