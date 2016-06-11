@@ -96,7 +96,7 @@ Furthermore, Inferno also uses ES6 components like React:
 
 ```javascript
 import Inferno from 'inferno';
-import { Component } from `inferno-component`;
+import Component from 'inferno-component';
 import InfernoDOM from 'inferno-dom';
 
 class MyComponent extends Component {
