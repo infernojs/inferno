@@ -1,5 +1,3 @@
-
-
 (function() {
 	var t = InfernoCreateElement;
 
@@ -34,4 +32,3 @@
 	), document.getElementById('app'));
 
 })();
-

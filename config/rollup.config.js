@@ -25,7 +25,6 @@ const plugins = [
 		jsnext: true,
 		main: true
 	}),
-	stub(),
 	replace({
 		'process.env.NODE_ENV': JSON.stringify('production'),
 		VERSION: pack.version
@@ -83,6 +82,11 @@ const bundles = [
 		moduleGlobal: 'InfernoCreateElement',
 		moduleName: 'inferno-create-element',
 		moduleEntry: 'packages/inferno-create-element/src/index.js'
+	},
+	{
+		moduleGlobal: 'InfernoRouter',
+		moduleName: 'inferno-router',
+		moduleEntry: 'packages/inferno-router/src/index.js'
 	}
 ];
 

@@ -1,13 +1,17 @@
 /*!
- * inferno-component v0.7.9
+ * inferno-router v0.7.9
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.InfernoComponent = factory());
+  (global.InfernoRouter = factory());
 }(this, function () { 'use strict';
+
+  function isArray(obj) {
+  	return obj instanceof Array;
+  }
 
   function isNullOrUndefined(obj) {
   	return obj === void 0 || obj === null;
@@ -15,6 +19,68 @@
 
   function isInvalidNode(obj) {
   	return obj === null || obj === false || obj === void 0;
+  }
+
+  function VNode(blueprint) {
+  	this.bp = blueprint;
+  	this.dom = null;
+  	this.instance = null;
+  	this.tag = null;
+  	this.children = null;
+  	this.style = null;
+  	this.className = null;
+  	this.attrs = null;
+  	this.events = null;
+  	this.hooks = null;
+  	this.key = null;
+  	this.clipData = null;
+  }
+
+  VNode.prototype = {
+  	setAttrs: function setAttrs(attrs) {
+  		this.attrs = attrs;
+  		return this;
+  	},
+  	setTag: function setTag(tag) {
+  		this.tag = tag;
+  		return this;
+  	},
+  	setStyle: function setStyle(style) {
+  		this.style = style;
+  		return this;
+  	},
+  	setClassName: function setClassName(className) {
+  		this.className = className;
+  		return this;
+  	},
+  	setChildren: function setChildren(children) {
+  		this.children = children;
+  		return this;
+  	},
+  	setHooks: function setHooks(hooks) {
+  		this.hooks = hooks;
+  		return this;
+  	},
+  	setEvents: function setEvents(events) {
+  		this.events = events;
+  		return this;
+  	},
+  	setKey: function setKey(key) {
+  		this.key = key;
+  		return this;
+  	}
+  };
+
+  function createVNode(bp) {
+  	return new VNode(bp);
+  }
+
+  function Route(_ref) {
+      var path = _ref.path;
+      var component = _ref.component;
+
+      console.warn('Inferno Warning: An "inferno-router" Route has been directly rendered instead of passed to a Router component.');
+      return createVNode().tag(component);
   }
 
   function createNullNode() {
@@ -108,6 +174,30 @@
       return Constructor;
     };
   }();
+
+  var inherits = function (subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  };
+
+  var possibleConstructorReturn = function (self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && (typeof call === "object" || typeof call === "function") ? call : self;
+  };
 
   var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 
@@ -277,6 +367,203 @@
   	return Component;
   }();
 
-  return Component;
+  var EMPTY$1 = {};
+
+  function segmentize(url) {
+  	return strip(url).split('/');
+  }
+
+  function strip(url) {
+  	return url.replace(/(^\/+|\/+$)/g, '');
+  }
+
+  function convertToHashbang(url) {
+  	if (url.indexOf('#') === -1) {
+  		url = '/';
+  	} else {
+  		var splitHashUrl = url.split('#!');
+  		splitHashUrl.shift();
+  		url = splitHashUrl.join('');
+  	}
+  	return url;
+  }
+
+  // Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
+  function exec(url, route) {
+  	var opts = arguments.length <= 2 || arguments[2] === void 0 ? EMPTY$1 : arguments[2];
+
+  	var reg = /(?:\?([^#]*))?(#.*)?$/,
+  	    c = url.match(reg),
+  	    matches = {},
+  	    ret = void 0;
+  	if (c && c[1]) {
+  		var p = c[1].split('&');
+  		for (var i = 0; i < p.length; i++) {
+  			var r = p[i].split('=');
+  			matches[decodeURIComponent(r[0])] = decodeURIComponent(r.slice(1).join('='));
+  		}
+  	}
+  	url = segmentize(url.replace(reg, ''));
+  	route = segmentize(route || '');
+  	var max = Math.max(url.length, route.length);
+  	for (var _i = 0; _i < max; _i++) {
+  		if (route[_i] && route[_i].charAt(0) === ':') {
+  			var param = route[_i].replace(/(^\:|[+*?]+$)/g, ''),
+  			    flags = (route[_i].match(/[+*?]+$/) || EMPTY$1)[0] || '',
+  			    plus = ~flags.indexOf('+'),
+  			    star = ~flags.indexOf('*'),
+  			    val = url[_i] || '';
+  			if (!val && !star && (flags.indexOf('?') < 0 || plus)) {
+  				ret = false;
+  				break;
+  			}
+  			matches[param] = decodeURIComponent(val);
+  			if (plus || star) {
+  				matches[param] = url.slice(_i).map(decodeURIComponent).join('/');
+  				break;
+  			}
+  		} else if (route[_i] !== url[_i]) {
+  			ret = false;
+  			break;
+  		}
+  	}
+  	if (opts.default !== true && ret === false) return false;
+  	return matches;
+  }
+
+  function isValidPath(path, url, hashbang) {
+  	return !!exec(hashbang ? convertToHashbang(url) : url, path);
+  }
+
+  var Router = function (_Component) {
+  	inherits(Router, _Component);
+
+  	function Router(props) {
+  		classCallCheck(this, Router);
+
+  		var _this = possibleConstructorReturn(this, Object.getPrototypeOf(Router).call(this, props));
+
+  		if (!props.history) {
+  			throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
+  		}
+  		_this._didRoute = false;
+  		_this.state = {
+  			url: props.url || props.history.getCurrentUrl()
+  		};
+  		return _this;
+  	}
+
+  	createClass(Router, [{
+  		key: 'getChildContext',
+  		value: function getChildContext() {
+  			return {
+  				history: this.props.history,
+  				hashbang: this.props.hashbang
+  			};
+  		}
+  	}, {
+  		key: 'componentWillMount',
+  		value: function componentWillMount() {
+  			this.props.history.addRouter(this);
+  		}
+  	}, {
+  		key: 'componentWillUnmount',
+  		value: function componentWillUnmount() {
+  			this.props.history.removeRouter(this);
+  		}
+  	}, {
+  		key: 'routeTo',
+  		value: function routeTo(url) {
+  			this._didRoute = false;
+  			this.setState({ url: url });
+  			return this._didRoute;
+  		}
+  	}, {
+  		key: 'render',
+  		value: function render() {
+  			var children = isArray(this.props.children) ? this.props.children : [this.props.children];
+  			var url = this.state.url;
+  			var wrapperComponent = this.props.component;
+  			var hashbang = this.props.hashbang;
+
+  			for (var i = 0; i < children.length; i++) {
+  				var child = children[i];
+  				var _child$attrs = child.attrs;
+  				var component = _child$attrs.component;
+  				var path = _child$attrs.path;
+
+
+  				if (isValidPath(path, url, hashbang)) {
+  					if (wrapperComponent) {
+  						return createVNode().setTag(wrapperComponent).setChildren(component);
+  					}
+  					return createVNode().setTag(component);
+  				}
+  			}
+  			return wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
+  		}
+  	}]);
+  	return Router;
+  }(Component);
+
+  function Link(_ref, _ref2) {
+      var to = _ref.to;
+      var children = _ref.children;
+      var hashbang = _ref2.hashbang;
+      var history = _ref2.history;
+
+      return createVNode().setAttrs({
+          href: hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to
+      }).setTag('a').setChildren(children);
+  }
+
+  var routers = [];
+
+  function getCurrentUrl() {
+  	var url = typeof location !== 'undefined' ? location : EMPTY;
+
+  	return '' + (url.pathname || '') + (url.search || '') + (url.hash || '');
+  }
+
+  function getHashbangRoot() {
+  	var url = typeof location !== 'undefined' ? location : EMPTY;
+
+  	return '' + (url.protocol + '//' || '') + (url.pathname || '') + (url.search || '') + '#!';
+  }
+
+  function routeTo(url) {
+  	var didRoute = false;
+  	for (var i = 0; i < routers.length; i++) {
+  		if (routers[i].routeTo(url) === true) {
+  			didRoute = true;
+  		}
+  	}
+  	return didRoute;
+  }
+
+  window.addEventListener('popstate', function () {
+  	return routeTo(getCurrentUrl());
+  });
+
+  var browserHistory = {
+  	addRouter: function addRouter(router) {
+  		routers.push(router);
+  	},
+  	removeRouter: function removeRouter(router) {
+  		roouters.splice(routers.indexOf(router), 1);
+  	},
+
+  	getCurrentUrl: getCurrentUrl,
+  	getHashbangRoot: getHashbangRoot
+  };
+
+  var index = {
+      Route: Route,
+      Router: Router,
+      Link: Link,
+      browserHistory: browserHistory
+  };
+
+  return index;
 
 }));

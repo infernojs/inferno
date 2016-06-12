@@ -1,8 +1,8 @@
 {
-  "name": "inferno-server",
+  "name": "inferno-router",
   "version": "0.7.9",
   "license": "MIT",
-  "description": "Provides methods to render HTML strings from Inferno elements",
+  "description": "Provides routing functionality for Inferno",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -11,6 +11,7 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
+  "main": "inferno-router.js",
   "keywords": [
     "babel",
     "react",
@@ -18,17 +19,10 @@
     "framework",
     "interfaces",
     "user interfaces",
-    "html",
-    "renderToString",
-    "server",
-    "dom",
-    "browser",
-    "rollup"
+    "router"
   ],
   "dependencies": {
-    "inferno": "^0.7.9",
-    "inferno-component": "^0.7.9"
+    "inferno": "^0.7.9"
   },
-  "main": "inferno-server.js",
   "repository": "https://github.com/trueadm/inferno"
 }
