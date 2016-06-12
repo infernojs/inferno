@@ -66,14 +66,15 @@ Server-side rendering package:
 npm install --save inferno-server 
 ```
 
-Pre-bundled files for browser consumption:
+Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
  
 ```
-http://infernojs.org/releases/0.7.8/inferno.min.js
-http://infernojs.org/releases/0.7.8/inferno-create-element.min.js
-http://infernojs.org/releases/0.7.8/inferno-component.min.js
-http://infernojs.org/releases/0.7.8/inferno-dom.min.js
-http://infernojs.org/releases/0.7.8/inferno-server.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-component.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-create-element.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-dom.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-server.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-test-utils.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno.min.js
 ```
 
 ## Overview
