@@ -190,6 +190,7 @@
   		this._unmounted = true;
   		this.context = {};
   		this._patch = null;
+  		this._parentComponent = null;
   	}
 
   	createClass(Component, [{

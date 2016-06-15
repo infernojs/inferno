@@ -71,3 +71,37 @@ export function isPromise(obj) {
 export function replaceInArray(array, obj, newObj) {
 	array.splice(array.indexOf(obj), 1, newObj);
 }
+
+function deepScanChildrenForNode(children, node) {
+	if (children) {
+		if (isArray(children)) {
+			for (let i = 0; i < children.length; i++) {
+				const child = children[i];
+
+				if (child === node) {
+					return true;
+				} else if (child.children) {
+					if (deepScanChildrenForNode(child.children, node)) {
+						return true;
+					}
+				}
+			}
+		} else {
+			if (children === node) {
+				return true;
+			} else if (children.children) {
+				return deepScanChildrenForNode(children.children, node);
+			}
+		}	
+	}
+	return false;
+}
+
+export function getRefInstance(node, instance) {
+	const children = instance.props.children;
+
+	if (deepScanChildrenForNode(children, node)) {
+		return getRefInstance(node, instance._parentComponent);
+	}
+	return instance;
+}

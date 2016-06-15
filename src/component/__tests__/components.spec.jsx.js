@@ -1989,9 +1989,7 @@ describe('Components (JSX)', () => {
 	});
 
 	describe('Nested components', () => {
-
 		it('Should map ref to parent', () => {
-
 			let refs = null;
 
 			class A extends Component {
@@ -2024,7 +2022,6 @@ describe('Components (JSX)', () => {
 		});
 
 		it('Should map ref to parent#2', () => {
-
 			let refs = null;
 
 			class A extends Component {

@@ -61,6 +61,40 @@
 		array.splice(array.indexOf(obj), 1, newObj);
 	}
 
+	function deepScanChildrenForNode(children, node) {
+		if (children) {
+			if (isArray(children)) {
+				for (var i = 0; i < children.length; i++) {
+					var child = children[i];
+
+					if (child === node) {
+						return true;
+					} else if (child.children) {
+						if (deepScanChildrenForNode(child.children, node)) {
+							return true;
+						}
+					}
+				}
+			} else {
+				if (children === node) {
+					return true;
+				} else if (children.children) {
+					return deepScanChildrenForNode(children.children, node);
+				}
+			}
+		}
+		return false;
+	}
+
+	function getRefInstance(node, instance) {
+		var children = instance.props.children;
+
+		if (deepScanChildrenForNode(children, node)) {
+			return getRefInstance(node, instance._parentComponent);
+		}
+		return instance;
+	}
+
 	var recyclingEnabled = true;
 
 	function recycle(node, bp, lifecycle, context, instance) {
@@ -184,7 +218,7 @@
 			}
 			var attrKeys = bp.attrKeys;
 
-			mountAttributes(attrs, attrKeys, dom, instance);
+			mountAttributes(node, attrs, attrKeys, dom, instance);
 		}
 		if (bp.hasClassName === true) {
 			dom.className = node.className;
@@ -240,7 +274,7 @@
 		}
 		if (!isNullOrUndefined(attrs)) {
 			handleSelects(node);
-			mountAttributes(attrs, Object.keys(attrs), dom, instance);
+			mountAttributes(node, attrs, Object.keys(attrs), dom, instance);
 		}
 		if (!isNullOrUndefined(className)) {
 			dom.className = className;
@@ -366,7 +400,9 @@
 			instance.context = context;
 			instance._unmounted = false;
 			instance._parentNode = parentNode;
-
+			if (lastInstance) {
+				instance._parentComponent = lastInstance;
+			}
 			instance._pendingSetState = true;
 			instance.componentWillMount();
 			var node = instance.render();
@@ -411,12 +447,12 @@
 		return dom;
 	}
 
-	function mountAttributes(attrs, attrKeys, dom, instance) {
+	function mountAttributes(node, attrs, attrKeys, dom, instance) {
 		for (var i = 0; i < attrKeys.length; i++) {
 			var attr = attrKeys[i];
 
 			if (attr === 'ref') {
-				mountRef(instance, attrs[attr], dom);
+				mountRef(getRefInstance(node, instance), attrs[attr], dom);
 			} else {
 				patchAttribute(attr, attrs[attr], dom);
 			}

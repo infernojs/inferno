@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from './../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray, getRefInstance } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks, createNullNode } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
@@ -91,7 +91,7 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 		}
 		const attrKeys = bp.attrKeys;
 
-		mountAttributes(attrs, attrKeys, dom, instance);
+		mountAttributes(node, attrs, attrKeys, dom, instance);
 	}
 	if (bp.hasClassName === true) {
 		dom.className = node.className;
@@ -147,7 +147,7 @@ function appendNode(node, parentDom, lifecycle, context, instance, isSVG) {
 	}
 	if (!isNullOrUndefined(attrs)) {
 		handleSelects(node);
-		mountAttributes(attrs, Object.keys(attrs), dom, instance);
+		mountAttributes(node, attrs, Object.keys(attrs), dom, instance);
 	}
 	if (!isNullOrUndefined(className)) {
 		dom.className = className;
@@ -273,7 +273,9 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		instance.context = context;
 		instance._unmounted = false;
 		instance._parentNode = parentNode;
-
+		if (lastInstance) {
+			instance._parentComponent = lastInstance;
+		}
 		instance._pendingSetState = true;
 		instance.componentWillMount();
 		const node = instance.render();
@@ -318,12 +320,12 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 	return dom;
 }
 
-function mountAttributes(attrs, attrKeys, dom, instance) {
+function mountAttributes(node, attrs, attrKeys, dom, instance) {
 	for (let i = 0; i < attrKeys.length; i++) {
 		const attr = attrKeys[i];
 
 		if (attr === 'ref') {
-			mountRef(instance, attrs[attr], dom);
+			mountRef(getRefInstance(node, instance), attrs[attr], dom);
 		} else {
 			patchAttribute(attr, attrs[attr], dom);
 		}
