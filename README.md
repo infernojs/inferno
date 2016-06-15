@@ -3,12 +3,12 @@
 [![Build Status](https://img.shields.io/travis/trueadm/inferno/master.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
 [![Coverage Status](https://img.shields.io/coveralls/trueadm/inferno/master.svg?style=flat-square)](https://coveralls.io/github/trueadm/inferno?branch=master)
 [![Dependencies](https://img.shields.io/david/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno)
-[![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg)](https://david-dm.org/trueadm/inferno#info=devDependencies)
-[![MPL-2.0](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
+[![devDependency Status](https://david-dm.org/trueadm/inferno/dev-status.svg?style=flat-square)](https://david-dm.org/trueadm/inferno#info=devDependencies)
+[![MIT](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
-[![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg)](https://www.npmjs.org/package/inferno-dom)
+[![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg?style=flat-square)](https://www.npmjs.org/package/inferno-dom)
 
-Inferno is an isomorphic library for building high-performance user interfaces, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Cycle and Om, Inferno uses techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
+Inferno is an isomorphic library for building high-performance user interfaces, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Virtual-dom, Snabbdom and Om, Inferno uses techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
 
 In addition to this, we've carefully optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently one of the fastest virtual DOM implementation out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
 
@@ -66,14 +66,15 @@ Server-side rendering package:
 npm install --save inferno-server 
 ```
 
-Pre-bundled files for browser consumption:
+Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
  
 ```
-http://infernojs.org/releases/0.7.8/inferno.min.js
-http://infernojs.org/releases/0.7.8/inferno-create-element.min.js
-http://infernojs.org/releases/0.7.8/inferno-component.min.js
-http://infernojs.org/releases/0.7.8/inferno-dom.min.js
-http://infernojs.org/releases/0.7.8/inferno-server.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-create-element.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-component.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-dom.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-server.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-test-utils.min.js
 ```
 
 ## Overview
@@ -96,7 +97,7 @@ Furthermore, Inferno also uses ES6 components like React:
 
 ```javascript
 import Inferno from 'inferno';
-import { Component } from `inferno-component`;
+import Component from 'inferno-component';
 import InfernoDOM from 'inferno-dom';
 
 class MyComponent extends Component {
