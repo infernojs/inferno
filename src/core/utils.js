@@ -4,7 +4,7 @@ export function addChildrenToProps(children, props) {
 		const isChildrenArray = isArray(children);
 		if (isChildrenArray && children.length > 0 || !isChildrenArray) {
 			if (props) {
-				props.children = children;
+				props = Object.assign({}, props, { children });
 			} else {
 				props = {
 					children: children
