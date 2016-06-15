@@ -1505,6 +1505,7 @@
 							patchNonKeyedChildren(_lastChild, [_nextChild], domChildren, domChildren[index].childNodes, lifecycle, context, instance, 0, isSVG);
 						} else {
 							patch(_lastChild, _nextChild, dom, lifecycle, context, instance, null, isSVG);
+							domChildren[index] = _nextChild.dom;
 						}
 					}
 				}

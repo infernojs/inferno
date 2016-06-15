@@ -1987,4 +1987,132 @@ describe('Components (JSX)', () => {
 		updater();
 		expect(container.innerHTML).to.equal('<div><span>span</span><div>div</div></div>');
 	});
+
+	describe('Nested components', () => {
+
+		it('Should map ref to parent', () => {
+
+			let refs = null;
+
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					refs = this.refs; // for asserting
+				}
+				render() {
+					return (
+						<div ref="bar">
+							<B>
+								<span ref="foo">Ref</span>
+							</B>
+						</div>
+					);
+				}
+			}
+
+			class B extends Component {
+				render() {
+					return this.props.children
+				}
+			}
+
+			render(<A />, container);
+			expect(container.innerHTML).to.equal('<div><span>Ref</span></div>');
+			expect(refs.bar).to.equal(container.firstChild);
+			expect(refs.foo).to.equal(container.firstChild.firstChild);
+		});
+
+		it('Should map ref to parent#2', () => {
+
+			let refs = null;
+
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					refs = this.refs; // for asserting
+				}
+				render() {
+					return (
+						<div ref="top">
+							<B>
+								<div ref="mid">
+									<B>
+										<span ref="bottom">Ref</span>
+									</B>
+								</div>
+							</B>
+						</div>
+					);
+				}
+			}
+
+			class B extends Component {
+				render() {
+					return this.props.children
+				}
+			}
+
+			render(<A />, container);
+			expect(container.innerHTML).to.equal('<div><div><span>Ref</span></div></div>');
+			expect(refs.top).to.equal(container.firstChild);
+			expect(refs.mid).to.equal(container.firstChild.firstChild);
+			expect(refs.bottom).to.equal(container.firstChild.firstChild.firstChild);
+		});
+
+		it('Should have correct props / children (github#240)', () => {
+
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						data: [
+							{i: 'one'},
+							{i: 'two'},
+							{i: 'three'}
+						]
+					};
+
+				}
+
+				fn() {
+
+				}
+
+				render() {
+					return (
+						<div>
+							{this.state.data.map((obj) => {
+								return (
+									<B>
+										<div onClick={() => this.fn(obj)}>
+											{obj.i}
+										</div>
+									</B>
+								);
+							})}
+						</div>
+					);
+				}
+			}
+
+			class B extends Component {
+				render() {
+					return this.props.children
+				}
+			}
+
+			const spy = sinon.spy(A.prototype, 'fn');
+
+			render(<A />, container);
+			expect(container.innerHTML).to.equal('<div><div>one</div><div>two</div><div>three</div></div>');
+			var div2 = container.firstChild.childNodes[1];
+			expect(div2.innerHTML).to.equal('two');
+			div2.click();
+
+			expect(spy.getCall(0).args[0].i).to.equal('two');
+		});
+	})
 });
