@@ -938,7 +938,7 @@
 
 				if (nextAttrsIsUndef || isNullOrUndefined(nextAttrs[_attr])) {
 					if (_attr === 'ref') {
-						diffRef(instance, lastAttrs[_attr], null, dom);
+						diffRef(getRefInstance(node, instance), lastAttrs[_attr], null, dom);
 					} else {
 						dom.removeAttribute(_attr);
 					}
