@@ -2061,7 +2061,7 @@ describe('Components (JSX)', () => {
 			expect(refs.bottom).to.equal(container.firstChild.firstChild.firstChild);
 		});
 
-		it('Should have correct props / children (github#240)', () => {
+		it('Should have correct props when nested component updates (github#240)', () => {
 
 			class A extends Component {
 				constructor(props) {
@@ -2077,19 +2077,13 @@ describe('Components (JSX)', () => {
 
 				}
 
-				fn() {
-
-				}
-
 				render() {
 					return (
 						<div>
 							{this.state.data.map((obj) => {
 								return (
-									<B>
-										<div onClick={() => this.fn(obj)}>
-											{obj.i}
-										</div>
+									<B foo="bar">
+										{obj.i}
 									</B>
 								);
 							})}
@@ -2099,20 +2093,41 @@ describe('Components (JSX)', () => {
 			}
 
 			class B extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						foo: 'bar'
+					};
+
+					this.updateMe = this.updateMe.bind(this);
+				}
+
+				updateMe() {
+					// This will mess up
+					this.setState({
+						foo: 'buu'
+					});
+				}
+
 				render() {
-					return this.props.children
+					return (
+						<div>
+							<span>{this.state.foo}</span>
+							<a onClick={this.updateMe}>{this.props.children}</a>
+						</div>
+					);
 				}
 			}
 
-			const spy = sinon.spy(A.prototype, 'fn');
-
 			render(<A />, container);
-			expect(container.innerHTML).to.equal('<div><div>one</div><div>two</div><div>three</div></div>');
-			var div2 = container.firstChild.childNodes[1];
+			expect(container.innerHTML).to.equal('<div><div><span>bar</span><a>one</a></div><div><span>bar</span><a>two</a></div><div><span>bar</span><a>three</a></div></div>');
+			var div2 = container.firstChild.childNodes[1].querySelector('a');
 			expect(div2.innerHTML).to.equal('two');
 			div2.click();
 
-			expect(spy.getCall(0).args[0].i).to.equal('two');
+			// Note => there should be: Buu two, not: Buu Three, props are messed up when nested component updates
+			expect(container.innerHTML).to.equal('<div><div><span>bar</span><a>one</a></div><div><span>buu</span><a>two</a></div><div><span>bar</span><a>three</a></div></div>');
 		});
-	})
+	});
 });
