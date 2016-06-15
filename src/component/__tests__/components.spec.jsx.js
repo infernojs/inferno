@@ -1840,7 +1840,7 @@ describe('Components (JSX)', () => {
 		render(<Bar />, container);
 		expect(container.innerHTML).to.equal('<div>Hello world</div>');
 		notCalled(spy);
-		
+
 		updater();
 		expect(container.innerHTML).to.equal('<div><div>Hello world2</div></div>');
 		calledOnce(spy);
@@ -1849,7 +1849,7 @@ describe('Components (JSX)', () => {
 	describe('Should be able to swap between invalid node and valid node', () => {
 		it('Should be able to swap between invalid node and valid node', () => {
 			let updater;
-			let reference;
+
 			class Bar extends Component {
 				constructor(props) {
 					super(props);
@@ -1860,7 +1860,6 @@ describe('Components (JSX)', () => {
 
 					this.changeDOM = this.changeDOM.bind(this);
 					updater = this.changeDOM;
-					reference = this;
 				}
 
 				changeDOM() {
@@ -1897,5 +1896,95 @@ describe('Components (JSX)', () => {
 			updater();
 			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
 		});
+	});
+
+	it('Should be able to swap between text node and html node', () => {
+		let updater;
+
+		class Bar extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					bool: true
+				};
+
+				this.changeDOM = this.changeDOM.bind(this);
+				updater = this.changeDOM;
+			}
+
+			changeDOM() {
+				this.setState({
+					bool: !this.state.bool
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						{this.state.bool ? <span>span</span> : 'text'}
+						<div>div</div>
+					</div>
+				)
+			}
+		}
+
+
+		render(<Bar />, container);
+		expect(container.innerHTML).to.equal('<div><span>span</span><div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div>text<div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div><span>span</span><div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div>text<div>div</div></div>');
+	});
+
+	it('Should be able to swap between text node and html node #2', () => {
+		let updater;
+
+		class Bar extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					bool: false
+				};
+
+				this.changeDOM = this.changeDOM.bind(this);
+				updater = this.changeDOM;
+			}
+
+			changeDOM() {
+				this.setState({
+					bool: !this.state.bool
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						{this.state.bool ? <span>span</span> : ''}
+						<div>div</div>
+					</div>
+				)
+			}
+		}
+
+
+		render(<Bar />, container);
+		expect(container.innerHTML).to.equal('<div><div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div><span>span</span><div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div><div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div><span>span</span><div>div</div></div>');
 	});
 });

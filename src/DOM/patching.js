@@ -378,6 +378,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, lifecycle, context, instance, 0, isSVG);
 					} else {
 						patch(lastChild, nextChild, dom, lifecycle, context, instance, null, isSVG);
+						domChildren[index] = nextChild.dom;
 					}
 				}
 			}
