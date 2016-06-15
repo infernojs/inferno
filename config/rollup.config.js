@@ -7,7 +7,6 @@ import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
-import stub from 'rollup-plugin-stub';
 
 const plugins = [
 	babel({
@@ -25,7 +24,6 @@ const plugins = [
 		jsnext: true,
 		main: true
 	}),
-	stub(),
 	replace({
 		'process.env.NODE_ENV': JSON.stringify('production'),
 		VERSION: pack.version

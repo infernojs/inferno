@@ -4,173 +4,170 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.InfernoServer = factory());
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.InfernoServer = factory());
 }(this, function () { 'use strict';
 
-	var babelHelpers = {};
-	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-	  return typeof obj;
-	} : function (obj) {
-	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-	};
+  function addChildrenToProps(children, props) {
+  	if (!isNullOrUndefined(children)) {
+  		var isChildrenArray = isArray(children);
+  		if (isChildrenArray && children.length > 0 || !isChildrenArray) {
+  			if (props) {
+  				props.children = children;
+  			} else {
+  				props = {
+  					children: children
+  				};
+  			}
+  		}
+  	}
+  	return props;
+  }
 
-	babelHelpers.extends = Object.assign || function (target) {
-	  for (var i = 1; i < arguments.length; i++) {
-	    var source = arguments[i];
+  function isArray(obj) {
+  	return obj instanceof Array;
+  }
 
-	    for (var key in source) {
-	      if (Object.prototype.hasOwnProperty.call(source, key)) {
-	        target[key] = source[key];
-	      }
-	    }
-	  }
+  function isStatefulComponent(obj) {
+  	return obj.prototype.render !== void 0;
+  }
 
-	  return target;
-	};
+  function isStringOrNumber(obj) {
+  	return typeof obj === 'string' || typeof obj === 'number';
+  }
 
-	babelHelpers;
+  function isNullOrUndefined(obj) {
+  	return obj === void 0 || obj === null;
+  }
 
-	function addChildrenToProps(children, props) {
-		if (!isNullOrUndefined(children)) {
-			var isChildrenArray = isArray(children);
-			if (isChildrenArray && children.length > 0 || !isChildrenArray) {
-				if (props) {
-					props.children = children;
-				} else {
-					props = {
-						children: children
-					};
-				}
-			}
-		}
-		return props;
-	}
+  function isInvalidNode(obj) {
+  	return obj === null || obj === false || obj === void 0;
+  }
 
-	function isArray(obj) {
-		return obj instanceof Array;
-	}
+  function isFunction(obj) {
+  	return typeof obj === 'function';
+  }
 
-	function isStatefulComponent(obj) {
-		return obj.prototype.render !== void 0;
-	}
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  };
 
-	function isStringOrNumber(obj) {
-		return typeof obj === 'string' || typeof obj === 'number';
-	}
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
 
-	function isNullOrUndefined(obj) {
-		return obj === void 0 || obj === null;
-	}
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
 
-	function isInvalidNode(obj) {
-		return obj === null || obj === false || obj === void 0;
-	}
+    return target;
+  };
 
-	function isFunction(obj) {
-		return typeof obj === 'function';
-	}
+  function renderComponent(Component, props, children, context) {
+  	props = addChildrenToProps(children, props);
 
-	function renderComponent(Component, props, children, context) {
-		props = addChildrenToProps(children, props);
+  	if (isStatefulComponent(Component)) {
+  		var instance = new Component(props);
+  		var childContext = instance.getChildContext();
 
-		if (isStatefulComponent(Component)) {
-			var instance = new Component(props);
-			var childContext = instance.getChildContext();
+  		if (!isNullOrUndefined(childContext)) {
+  			context = _extends({}, context, childContext);
+  		}
+  		instance.context = context;
+  		// Block setting state - we should render only once, using latest state
+  		instance._pendingSetState = true;
+  		instance.componentWillMount();
+  		var node = instance.render();
+  		instance._pendingSetState = false;
+  		return renderNode(node, context);
+  	} else {
+  		var _node = Component(props);
+  		return renderNode(_node, context);
+  	}
+  }
 
-			if (!isNullOrUndefined(childContext)) {
-				context = babelHelpers.extends({}, context, childContext);
-			}
-			instance.context = context;
-			// Block setting state - we should render only once, using latest state
-			instance._pendingSetState = true;
-			instance.componentWillMount();
-			var node = instance.render();
-			instance._pendingSetState = false;
-			return renderNode(node, context);
-		} else {
-			var _node = Component(props);
-			return renderNode(_node, context);
-		}
-	}
+  function renderChildren(children, context) {
+  	if (children && isArray(children)) {
+  		var childrenResult = [];
+  		var insertComment = false;
 
-	function renderChildren(children, context) {
-		if (children && isArray(children)) {
-			var childrenResult = [];
-			var insertComment = false;
+  		for (var i = 0; i < children.length; i++) {
+  			var child = children[i];
 
-			for (var i = 0; i < children.length; i++) {
-				var child = children[i];
+  			if (isStringOrNumber(child)) {
+  				if (insertComment === true) {
+  					childrenResult.push('<!-- -->');
+  				}
+  				childrenResult.push(child);
+  				insertComment = true;
+  			} else {
+  				insertComment = false;
+  				childrenResult.push(renderNode(child, context));
+  			}
+  		}
+  		return childrenResult.join('');
+  	} else if (!isInvalidNode(children)) {
+  		if (isStringOrNumber(children)) {
+  			return children;
+  		} else {
+  			return renderNode(children, context) || '';
+  		}
+  	}
 
-				if (isStringOrNumber(child)) {
-					if (insertComment === true) {
-						childrenResult.push('<!-- -->');
-					}
-					childrenResult.push(child);
-					insertComment = true;
-				} else {
-					insertComment = false;
-					childrenResult.push(renderNode(child, context));
-				}
-			}
-			return childrenResult.join('');
-		} else if (!isInvalidNode(children)) {
-			if (isStringOrNumber(children)) {
-				return children;
-			} else {
-				return renderNode(children, context) || '';
-			}
-		}
+  	return '';
+  }
 
-		return '';
-	}
+  function renderNode(node, context) {
+  	if (!isInvalidNode(node)) {
+  		var _ret = function () {
+  			var tag = node.tag;
+  			var outputAttrs = [];
 
-	function renderNode(node, context) {
-		if (!isInvalidNode(node)) {
-			var _ret = function () {
-				var tag = node.tag;
-				var outputAttrs = [];
+  			if (isFunction(tag)) {
+  				return {
+  					v: renderComponent(tag, node.attrs, node.children, context)
+  				};
+  			}
+  			if (!isNullOrUndefined(node.className)) {
+  				outputAttrs.push('class="' + node.className + '"');
+  			}
+  			var attrs = node.attrs;
 
-				if (isFunction(tag)) {
-					return {
-						v: renderComponent(tag, node.attrs, node.children, context)
-					};
-				}
-				if (!isNullOrUndefined(node.className)) {
-					outputAttrs.push('class="' + node.className + '"');
-				}
-				var attrs = node.attrs;
+  			if (!isNullOrUndefined(attrs)) {
+  				(function () {
+  					var attrsKeys = Object.keys(attrs);
 
-				if (!isNullOrUndefined(attrs)) {
-					(function () {
-						var attrsKeys = Object.keys(attrs);
+  					attrsKeys.forEach(function (attrsKey, i) {
+  						var attr = attrsKeys[i];
 
-						attrsKeys.forEach(function (attrsKey, i) {
-							var attr = attrsKeys[i];
+  						outputAttrs.push(attr + '="' + attrs[attr] + '"');
+  					});
+  				})();
+  			}
 
-							outputAttrs.push(attr + '="' + attrs[attr] + '"');
-						});
-					})();
-				}
+  			return {
+  				v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + renderChildren(node.children, context) + '</' + tag + '>'
+  			};
+  		}();
 
-				return {
-					v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + renderChildren(node.children, context) + '</' + tag + '>'
-				};
-			}();
+  		if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+  	}
+  }
 
-			if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
-		}
-	}
+  function renderToString(node) {
+  	return renderNode(node, null);
+  }
 
-	function renderToString(node) {
-		return renderNode(node, null);
-	}
+  var index = {
+  	renderToString: renderToString
+  };
 
-	var index = {
-		renderToString: renderToString
-	};
-
-	return index;
+  return index;
 
 }));
