@@ -2047,7 +2047,7 @@ describe('Components (JSX)', () => {
 
 			class B extends Component {
 				render() {
-					return this.props.children
+					return this.props.children;
 				}
 			}
 
@@ -2057,6 +2057,48 @@ describe('Components (JSX)', () => {
 			expect(refs.mid).to.equal(container.firstChild.firstChild);
 			expect(refs.bottom).to.equal(container.firstChild.firstChild.firstChild);
 		});
+
+		it('Should map ref to parent#3', () => {
+			let refs = null;
+
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					refs = this.refs; // for asserting
+				}
+
+				render() {
+					return (
+						<div ref="top">
+							<B>
+								<div ref="mid">
+									<B>
+										<div>
+											{null}
+											<span ref="bottom">Ref</span>
+										</div>
+									</B>
+								</div>
+							</B>
+						</div>
+					);
+				}
+			}
+
+			class B extends Component {
+				render() {
+					return this.props.children;
+				}
+			}
+
+			render(<A />, container);
+			expect(container.innerHTML).to.equal('<div><div><div><span>Ref</span></div></div></div>');
+			expect(refs.top).to.equal(container.firstChild);
+			expect(refs.mid).to.equal(container.firstChild.firstChild);
+			expect(refs.bottom).to.equal(container.firstChild.firstChild.firstChild.firstChild);
+		});
+
 
 		it('Should have correct props when nested component updates (github#240)', () => {
 

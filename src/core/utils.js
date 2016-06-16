@@ -73,16 +73,16 @@ export function replaceInArray(array, obj, newObj) {
 }
 
 function deepScanChildrenForNode(children, node) {
-	if (children) {
+	if (!isInvalidNode(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
 				const child = children[i];
 
-				if (child === node) {
-					return true;
-				} else if (child.children) {
-					if (deepScanChildrenForNode(child.children, node)) {
+				if (!isInvalidNode(child)) {
+					if (child === node) {
 						return true;
+					} else if (child.children) {
+						return deepScanChildrenForNode(child.children, node);
 					}
 				}
 			}
@@ -92,7 +92,7 @@ function deepScanChildrenForNode(children, node) {
 			} else if (children.children) {
 				return deepScanChildrenForNode(children.children, node);
 			}
-		}	
+		}
 	}
 	return false;
 }
