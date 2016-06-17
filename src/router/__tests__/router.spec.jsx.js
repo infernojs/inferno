@@ -12,6 +12,10 @@ function TestComponent() {
 	return <div>Test!</div>;
 }
 
+function TestComponentParams({ params }) {
+	return <div>Test! { params.test }</div>;
+}
+
 function createRouterWithSingleRoute(url, path, component) {
 	return (
 		<Router url={ url } history={ browserHistory }>
@@ -57,7 +61,26 @@ describe('Router tests (jsx)', () => {
 					container
 				);
 				expect(container.innerHTML).to.equal('<div>Test!</div>');
-			});    
+			});
+			it('it should render the TestComponent with given paths (and params)', () => {
+				render(
+					createRouterWithSingleRoute('/foo', '/:test', TestComponentParams),
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Test! foo</div>');
+
+				render(
+					createRouterWithSingleRoute('/foo/bar', '/foo/:test', TestComponentParams),
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Test! bar</div>');
+
+				render(
+					createRouterWithSingleRoute('/foo/bar/yar', '/foo/bar/:test', TestComponentParams),
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Test! yar</div>');
+			});    			
 		});
     })
 });

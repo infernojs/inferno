@@ -37,19 +37,22 @@ export default class Router extends Component {
 	}
 	render() {
 		const children = isArray(this.props.children) ? this.props.children : [ this.props.children ];
-		const url = this.state.url;
+		const url = this.props.url || this.state.url;
 		const wrapperComponent = this.props.component;
 		const hashbang = this.props.hashbang;
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 			const { component, path } = child.attrs;
+			const params = exec(hashbang ? convertToHashbang(url) : url, path);
 
-			if (isValidPath(path, url, hashbang)) {
+			if (params) {
 				if (wrapperComponent) {
-					return createVNode().setTag(wrapperComponent).setChildren(component);
+					return createVNode().setTag(wrapperComponent).setChildren(component).setAttrs({
+						params
+					});
 				}
-				return createVNode().setTag(component);
+				return createVNode().setTag(component).setAttrs({ params });
 			}
 		}
 		return wrapperComponent ? createVNode().setTag(wrapperComponent) : null;

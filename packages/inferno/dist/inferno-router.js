@@ -431,10 +431,6 @@
   	return matches;
   }
 
-  function isValidPath(path, url, hashbang) {
-  	return !!exec(hashbang ? convertToHashbang(url) : url, path);
-  }
-
   var Router = function (_Component) {
   	inherits(Router, _Component);
 
@@ -482,7 +478,7 @@
   		key: 'render',
   		value: function render() {
   			var children = isArray(this.props.children) ? this.props.children : [this.props.children];
-  			var url = this.state.url;
+  			var url = this.props.url || this.state.url;
   			var wrapperComponent = this.props.component;
   			var hashbang = this.props.hashbang;
 
@@ -492,12 +488,15 @@
   				var component = _child$attrs.component;
   				var path = _child$attrs.path;
 
+  				var params = exec(hashbang ? convertToHashbang(url) : url, path);
 
-  				if (isValidPath(path, url, hashbang)) {
+  				if (params) {
   					if (wrapperComponent) {
-  						return createVNode().setTag(wrapperComponent).setChildren(component);
+  						return createVNode().setTag(wrapperComponent).setChildren(component).setAttrs({
+  							params: params
+  						});
   					}
-  					return createVNode().setTag(component);
+  					return createVNode().setTag(component).setAttrs({ params: params });
   				}
   			}
   			return wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
