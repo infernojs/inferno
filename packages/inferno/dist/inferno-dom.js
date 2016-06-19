@@ -62,16 +62,16 @@
 	}
 
 	function deepScanChildrenForNode(children, node) {
-		if (children) {
+		if (!isInvalidNode(children)) {
 			if (isArray(children)) {
 				for (var i = 0; i < children.length; i++) {
 					var child = children[i];
 
-					if (child === node) {
-						return true;
-					} else if (child.children) {
-						if (deepScanChildrenForNode(child.children, node)) {
+					if (!isInvalidNode(child)) {
+						if (child === node) {
 							return true;
+						} else if (child.children) {
+							return deepScanChildrenForNode(child.children, node);
 						}
 					}
 				}
@@ -434,7 +434,7 @@
 			}
 
 			/* eslint new-cap: 0 */
-			var _node = Component(props);
+			var _node = Component(props, context);
 			dom = mount(_node, null, lifecycle, context, null);
 
 			parentNode.instance = _node;
@@ -1351,8 +1351,7 @@
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 				}
-
-				var _nextNode = Component(nextProps);
+				var _nextNode = Component(nextProps, context);
 
 				if (!isInvalidNode(_nextNode)) {
 					_nextNode.dom = lastNode.dom;

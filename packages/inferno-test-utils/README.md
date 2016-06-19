@@ -17,11 +17,9 @@ npm install inferno inferno-test-utils
 
 ## Usage
 
-```
-const template = Inferno.createTemplate(() => ({
-	tag: 'div'
-}));
+```js
+import Inferno from 'inferno';
+import { shallowRender } from 'inferno-test-utils';
 
-const output = InfernoTestUtils.shallowRender(template());
+const output = shallowRender(<div>Hello world</div>);
 ```
-

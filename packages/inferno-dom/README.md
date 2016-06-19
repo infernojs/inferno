@@ -11,17 +11,15 @@ npm install inferno inferno-dom
 
 ## Contents
 
-* createRef
 * render
 
 ## Usage
 
-```
-const template = Inferno.createTemplate(() => ({
-	tag: 'div'
-}));
+```js
+import Inferno from 'inferno';
+import InfernoDOM from 'inferno-dom';
 
-InfernoDOM.render(template(), container);
+InfernoDOM.render(<div>Hello world</div>, container);
 ```
 
 

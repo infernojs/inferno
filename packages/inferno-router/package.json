@@ -1,8 +1,8 @@
 {
-  "name": "inferno-dom",
+  "name": "inferno-router",
   "version": "0.7.10",
   "license": "MIT",
-  "description": "Provides methods to render DOM nodes from Inferno elements",
+  "description": "Provides routing functionality for Inferno",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -11,14 +11,15 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-dom.js",
+  "main": "inferno-router.js",
   "keywords": [
     "babel",
     "react",
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces"
+    "user interfaces",
+    "router"
   ],
   "dependencies": {
     "inferno": "^0.7.9"

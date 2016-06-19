@@ -15,11 +15,10 @@ npm install inferno inferno-server
 
 ## Usage
 
-```
-const template = Inferno.createTemplate(() => ({
-	tag: 'div'
-}));
+```js
+import Inferno from 'inferno';
+import InfernoServer from 'inferno-server';
 
-InfernoServer.renderToString(template());
+InfernoServer.renderToString(<div>Hello world</div>, container);
 ```
 

@@ -81,6 +81,11 @@ const bundles = [
 		moduleGlobal: 'InfernoCreateElement',
 		moduleName: 'inferno-create-element',
 		moduleEntry: 'packages/inferno-create-element/src/index.js'
+	},
+	{
+		moduleGlobal: 'InfernoRouter',
+		moduleName: 'inferno-router',
+		moduleEntry: 'packages/inferno-router/src/index.js'
 	}
 ];
 

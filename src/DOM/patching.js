@@ -189,8 +189,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 				nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 			}
-
-			const nextNode = Component(nextProps);
+			const nextNode = Component(nextProps, context);
 
 			if (!isInvalidNode(nextNode)) {
 				nextNode.dom = lastNode.dom;
