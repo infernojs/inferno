@@ -254,7 +254,9 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 		const nextChild = nextChildren[i];
 		let index = i + domChildrenIndex;
 
-		if (lastChild !== nextChild) {
+		if (lastChild === nextChild && isInvalidNode(lastChild)) {
+			domChildrenIndex--;
+		} else {
 			if (isInvalidNode(nextChild)) {
 				if (!isInvalidNode(lastChild)) {
 					if (isArray(lastChild) && lastChild.length === 0) {
