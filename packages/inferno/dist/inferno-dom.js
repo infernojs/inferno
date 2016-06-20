@@ -1405,7 +1405,7 @@
 						if (lastChildrenLength === 1) {
 							domChildren.push(dom.firstChild);
 						}
-						isNotVirtualFragment && domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
+						domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
 					}
 					lastChildrenLength++;
 				}
