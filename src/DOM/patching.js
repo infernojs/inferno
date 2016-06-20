@@ -233,7 +233,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				if (isStringOrNumber(nextChild)) {
 					domNode = document.createTextNode(nextChild);
 				} else {
-					domNode = mount(nextChild, null, context, instance, isSVG);
+					domNode = mount(nextChild, null, lifecycle, context, instance, isSVG);
 				}
 
 				if (!isInvalidNode(domNode)) {

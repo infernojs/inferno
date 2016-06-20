@@ -308,7 +308,7 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 
 		/* eslint new-cap: 0 */
 		const node = Component(props, context);
-		dom = mount(node, null, lifecycle, context, null);
+		dom = mount(node, null, lifecycle, context, null, false);
 
 		parentNode.instance = node;
 

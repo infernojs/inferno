@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.9
+ * inferno-dom v0.7.10
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -435,7 +435,7 @@
 
 			/* eslint new-cap: 0 */
 			var _node = Component(props, context);
-			dom = mount(_node, null, lifecycle, context, null);
+			dom = mount(_node, null, lifecycle, context, null, false);
 
 			parentNode.instance = _node;
 
@@ -1395,7 +1395,7 @@
 					if (isStringOrNumber(nextChild)) {
 						domNode = document.createTextNode(nextChild);
 					} else {
-						domNode = mount(nextChild, null, context, instance, isSVG);
+						domNode = mount(nextChild, null, lifecycle, context, instance, isSVG);
 					}
 
 					if (!isInvalidNode(domNode)) {
