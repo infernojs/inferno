@@ -1416,7 +1416,9 @@
 			var _nextChild = nextChildren[i];
 			var index = i + domChildrenIndex;
 
-			if (_lastChild !== _nextChild) {
+			if (_lastChild === _nextChild && isInvalidNode(_lastChild)) {
+				domChildrenIndex--;
+			} else {
 				if (isInvalidNode(_nextChild)) {
 					if (!isInvalidNode(_lastChild)) {
 						if (isArray(_lastChild) && _lastChild.length === 0) {
