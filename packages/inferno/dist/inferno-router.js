@@ -499,6 +499,17 @@
   	return matches;
   }
 
+  function pathRankSort(a, b) {
+  	var aAttr = a.attrs || EMPTY$1,
+  	    bAttr = b.attrs || EMPTY$1;
+  	var diff = rank(aAttr.path) - rank(bAttr.path);
+  	return diff || aAttr.path.length - bAttr.path.length;
+  }
+
+  function rank(url) {
+  	return (strip(url).match(/\/+/g) || '').length;
+  }
+
   var Router = function (_Component) {
   	inherits(Router, _Component);
 
@@ -549,6 +560,8 @@
   			var url = this.props.url || this.state.url;
   			var wrapperComponent = this.props.component;
   			var hashbang = this.props.hashbang;
+
+  			children.sort(pathRankSort);
 
   			for (var i = 0; i < children.length; i++) {
   				var child = children[i];
@@ -623,10 +636,10 @@
   };
 
   var index = {
-      Route: Route,
-      Router: Router,
-      Link: Link,
-      browserHistory: browserHistory
+  	Route: Route,
+  	Router: Router,
+  	Link: Link,
+  	browserHistory: browserHistory
   };
 
   return index;

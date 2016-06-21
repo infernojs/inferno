@@ -7,6 +7,7 @@ import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
+import commonjs from 'rollup-plugin-commonjs';
 
 const plugins = [
 	babel({
@@ -20,6 +21,7 @@ const plugins = [
 			'transform-object-rest-spread'
 		]
 	}),
+	commonjs(),
 	nodeResolve({
 		jsnext: true,
 		main: true
@@ -86,6 +88,11 @@ const bundles = [
 		moduleGlobal: 'InfernoRouter',
 		moduleName: 'inferno-router',
 		moduleEntry: 'packages/inferno-router/src/index.js'
+	},
+	{
+		moduleGlobal: 'InfernoRedux',
+		moduleName: 'inferno-redux',
+		moduleEntry: 'packages/inferno-redux/src/index.js'
 	}
 ];
 

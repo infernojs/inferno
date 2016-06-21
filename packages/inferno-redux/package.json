@@ -1,8 +1,8 @@
 {
-  "name": "inferno-create-element",
+  "name": "inferno-redux",
   "version": "0.7.10",
   "license": "MIT",
-  "description": "Provides methods to create Inferno VNodes",
+  "description": "Official Inferno bindings for Redux",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -11,16 +11,19 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-create-element.js",
+  "main": "inferno-redux.js",
   "keywords": [
     "babel",
     "react",
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces"
+    "user interfaces",
+    "redux"
   ],
   "dependencies": {
+    "hoist-non-inferno-statics": "^1.0.0",
     "inferno": "^0.7.10"
-  }
+  },
+  "repository": "https://github.com/trueadm/inferno"
 }
