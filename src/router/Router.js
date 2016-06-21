@@ -1,6 +1,6 @@
 import Component from '../component';
 import { isArray } from '../core/utils';
-import { exec, convertToHashbang } from './utils';
+import { exec, convertToHashbang, pathRankSort } from './utils';
 import { createVNode } from '../core/createBlueprint';
 
 function isValidPath(path, url, hashbang) {
@@ -40,6 +40,8 @@ export default class Router extends Component {
 		const url = this.props.url || this.state.url;
 		const wrapperComponent = this.props.component;
 		const hashbang = this.props.hashbang;
+
+		children.sort(pathRankSort);
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];

@@ -60,3 +60,14 @@ export function exec(url, route, opts = EMPTY) {
 	if (opts.default!==true && ret===false) return false;
 	return matches;
 }
+
+export function pathRankSort(a, b) {
+	let aAttr = a.attrs || EMPTY,
+		bAttr = b.attrs || EMPTY;
+	let diff = rank(aAttr.path) - rank(bAttr.path);
+	return diff || (aAttr.path.length - bAttr.path.length);
+}
+
+function rank(url) {
+	return (strip(url).match(/\/+/g) || '').length;
+}

@@ -106,6 +106,17 @@ describe('Router tests (jsx)', () => {
 					done();
 				}, 11);
 			});
+			it('it should render the TestComponent with the highest ranked path', () => {
+				render(
+					<Router url={ '/foo/bar/yar' } history={ browserHistory }>
+						<Route path={ '*' } component={ () => <div>Bad Component</div> } />
+						<Route path={ '/foo/bar/*' } component={ () => <div>Bad Component</div> } />
+						<Route path={ '/foo/bar/yar' } component={ () => <div>Good Component</div> } />
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Good Component</div>');
+			});
 		});
     });
 });
