@@ -75,14 +75,6 @@
   	return new VNode(bp);
   }
 
-  function Route(_ref) {
-      var path = _ref.path;
-      var component = _ref.component;
-
-      console.warn('Inferno Warning: An "inferno-router" Route has been directly rendered instead of passed to a Router component.');
-      return createVNode().tag(component);
-  }
-
   function createNullNode() {
   	return {
   		null: true,
@@ -368,6 +360,81 @@
   	return Component;
   }();
 
+  var ASYNC_STATUS = {
+  	pending: 'pending',
+  	fulfilled: 'fulfilled',
+  	rejected: 'rejected'
+  };
+
+  var Route = function (_Component) {
+  	inherits(Route, _Component);
+
+  	function Route(props) {
+  		classCallCheck(this, Route);
+
+  		var _this = possibleConstructorReturn(this, Object.getPrototypeOf(Route).call(this, props));
+
+  		_this.state = {
+  			async: null
+  		};
+  		return _this;
+  	}
+
+  	createClass(Route, [{
+  		key: 'async',
+  		value: function async() {
+  			var _this2 = this;
+
+  			var async = this.props.async;
+
+  			if (async) {
+  				this.setState({
+  					async: { status: ASYNC_STATUS.pending }
+  				});
+  				async(this.props.params).then(function (value) {
+  					_this2.setState({
+  						async: {
+  							status: ASYNC_STATUS.fulfilled,
+  							value: value
+  						}
+  					});
+  				}, this.reject).catch(this.reject);
+  			}
+  		}
+  	}, {
+  		key: 'reject',
+  		value: function reject(value) {
+  			this.setState({
+  				async: {
+  					status: ASYNC_STATUS.rejected,
+  					value: value
+  				}
+  			});
+  		}
+  	}, {
+  		key: 'componentWillReceiveProps',
+  		value: function componentWillReceiveProps() {
+  			this.async();
+  		}
+  	}, {
+  		key: 'componentWillMount',
+  		value: function componentWillMount() {
+  			this.async();
+  		}
+  	}, {
+  		key: 'render',
+  		value: function render() {
+  			var _props = this.props;
+  			var component = _props.component;
+  			var params = _props.params;
+
+
+  			return createVNode().setTag(component).setAttrs({ params: params, async: this.state.async });
+  		}
+  	}]);
+  	return Route;
+  }(Component);
+
   var EMPTY$1 = {};
 
   function segmentize(url) {
@@ -485,19 +552,17 @@
 
   			for (var i = 0; i < children.length; i++) {
   				var child = children[i];
-  				var _child$attrs = child.attrs;
-  				var component = _child$attrs.component;
-  				var path = _child$attrs.path;
+  				var path = child.attrs.path;
 
   				var params = exec(hashbang ? convertToHashbang(url) : url, path);
 
   				if (params) {
   					if (wrapperComponent) {
-  						return createVNode().setTag(wrapperComponent).setChildren(component).setAttrs({
+  						return createVNode().setTag(wrapperComponent).setChildren(child).setAttrs({
   							params: params
   						});
   					}
-  					return createVNode().setTag(component).setAttrs({ params: params });
+  					return child.setAttrs(Object.assign({}, { params: params }, child.attrs));
   				}
   			}
   			return wrapperComponent ? createVNode().setTag(wrapperComponent) : null;

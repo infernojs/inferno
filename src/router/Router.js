@@ -43,16 +43,16 @@ export default class Router extends Component {
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
-			const { component, path } = child.attrs;
+			const { path } = child.attrs;
 			const params = exec(hashbang ? convertToHashbang(url) : url, path);
 
 			if (params) {
 				if (wrapperComponent) {
-					return createVNode().setTag(wrapperComponent).setChildren(component).setAttrs({
+					return createVNode().setTag(wrapperComponent).setChildren(child).setAttrs({
 						params
 					});
 				}
-				return createVNode().setTag(component).setAttrs({ params });
+				return child.setAttrs(Object.assign({}, { params }, child.attrs));
 			}
 		}
 		return wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
