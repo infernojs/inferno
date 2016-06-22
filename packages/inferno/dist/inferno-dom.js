@@ -454,7 +454,7 @@
 			if (attr === 'ref') {
 				mountRef(getRefInstance(node, instance), attrs[attr], dom);
 			} else {
-				patchAttribute(attr, attrs[attr], dom);
+				patchAttribute(attr, null, attrs[attr], dom);
 			}
 		}
 	}
@@ -924,7 +924,7 @@
 					if (attr === 'ref') {
 						diffRef(instance, lastAttrVal, nextAttrVal, dom);
 					} else {
-						patchAttribute(attr, nextAttrVal, dom);
+						patchAttribute(attr, lastAttrVal, nextAttrVal, dom);
 					}
 				}
 			}
@@ -1294,8 +1294,18 @@
 		}
 	}
 
-	function patchAttribute(attrName, nextAttrValue, dom) {
-		if (strictProps[attrName]) {
+	function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
+		if (attrName === 'dangerouslySetInnerHTML') {
+			var lastHtml = lastAttrValue && lastAttrValue.__html;
+			var nextHtml = nextAttrValue && nextAttrValue.__html;
+
+			if (isNullOrUndefined(nextHtml)) {
+				throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
+			}
+			if (lastHtml !== nextHtml) {
+				dom.innerHTML = nextHtml;
+			}
+		} else if (strictProps[attrName]) {
 			dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
 		} else {
 			if (booleanProps[attrName]) {

@@ -327,7 +327,7 @@ function mountAttributes(node, attrs, attrKeys, dom, instance) {
 		if (attr === 'ref') {
 			mountRef(getRefInstance(node, instance), attrs[attr], dom);
 		} else {
-			patchAttribute(attr, attrs[attr], dom);
+			patchAttribute(attr, null, attrs[attr], dom);
 		}
 	}
 }

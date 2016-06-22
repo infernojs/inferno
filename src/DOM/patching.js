@@ -131,8 +131,18 @@ export function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKe
 	}
 }
 
-export function patchAttribute(attrName, nextAttrValue, dom) {
-	if (strictProps[attrName]) {
+export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
+	if (attrName === 'dangerouslySetInnerHTML') {
+		const lastHtml = lastAttrValue && lastAttrValue.__html;
+		const nextHtml = nextAttrValue && nextAttrValue.__html;
+
+		if (isNullOrUndefined(nextHtml)) {
+			throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
+		}
+		if (lastHtml !== nextHtml) {
+			dom.innerHTML = nextHtml;
+		}
+	} else if (strictProps[attrName]) {
 		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
 	} else {
 		if (booleanProps[attrName]) {
