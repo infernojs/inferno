@@ -495,8 +495,21 @@
   			break;
   		}
   	}
-  	if (opts.default !== true && ret === false) return false;
+  	if (opts.default !== true && ret === false) {
+  		return false;
+  	}
   	return matches;
+  }
+
+  function pathRankSort(a, b) {
+  	var aAttr = a.attrs || EMPTY$1,
+  	    bAttr = b.attrs || EMPTY$1;
+  	var diff = rank(aAttr.path) - rank(bAttr.path);
+  	return diff || aAttr.path.length - bAttr.path.length;
+  }
+
+  function rank(url) {
+  	return (strip(url).match(/\/+/g) || '').length;
   }
 
   var Router = function (_Component) {
@@ -550,6 +563,8 @@
   			var wrapperComponent = this.props.component;
   			var hashbang = this.props.hashbang;
 
+  			children.sort(pathRankSort);
+
   			for (var i = 0; i < children.length; i++) {
   				var child = children[i];
   				var path = child.attrs.path;
@@ -572,14 +587,14 @@
   }(Component);
 
   function Link(_ref, _ref2) {
-      var to = _ref.to;
-      var children = _ref.children;
-      var hashbang = _ref2.hashbang;
-      var history = _ref2.history;
+  	var to = _ref.to;
+  	var children = _ref.children;
+  	var hashbang = _ref2.hashbang;
+  	var history = _ref2.history;
 
-      return createVNode().setAttrs({
-          href: hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to
-      }).setTag('a').setChildren(children);
+  	return createVNode().setAttrs({
+  		href: hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to
+  	}).setTag('a').setChildren(children);
   }
 
   var routers = [];

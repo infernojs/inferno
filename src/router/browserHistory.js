@@ -22,7 +22,7 @@ function routeTo(url) {
 	return didRoute;
 }
 
-window.addEventListener('popstate', () => routeTo(getCurrentUrl()));	
+window.addEventListener('popstate', () => routeTo(getCurrentUrl()));
 
 export default {
 	addRouter(router) {

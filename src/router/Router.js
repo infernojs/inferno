@@ -36,7 +36,7 @@ export default class Router extends Component {
 		return this._didRoute;
 	}
 	render() {
-		const children = isArray(this.props.children) ? this.props.children : [ this.props.children ];
+		const children = isArray(this.props.children) ? this.props.children : [this.props.children];
 		const url = this.props.url || this.state.url;
 		const wrapperComponent = this.props.component;
 		const hashbang = this.props.hashbang;
