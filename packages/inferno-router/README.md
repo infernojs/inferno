@@ -53,8 +53,35 @@ InfernoDOM.render((
 			<Route path="*" component={ NoMatch }/>
 		</Route>
 	</Router>
-), container)
+), container);
 ```
 
+## Async routing
 
+In some cases, you may need to asynchronously retrieve or validate some data, which the route is dependent on before the routing begins.
+You can easily do this by passing a `function` to the `Route` component via a prop, as shown below:
 
+```js
+import Inferno from 'inferno';
+import InfernoDOM from 'inferno-dom';
+import { Router, Route, Link, browserHistory } from 'inferno-router';
+
+function async(params) {
+	return new Promise(function (resolve, reject) {
+		// do something ajax like, we can use a setTimeout for this example
+		setTimeout(() => {
+			resolve('Some data');
+		}, 1000);
+	});
+}
+
+InfernoDOM.render((
+	<Router url={ url } history={ browserHistory }>
+		<Route path={ path } component={ component } async={ async } />
+	</Router>
+), container);
+```
+
+When the `Router` finds a route it wants to use, it will first the `Route`'s async function that was passed in as a prop. The function will
+have the paramater data passed as the only argument. It's expected that a `Promise` is returned from this function, where the route change
+happens upon the `Promise` becoming resolved, rejected or caught via an exception.
