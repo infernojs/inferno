@@ -9,7 +9,7 @@ function getCurrentUrl() {
 function getHashbangRoot() {
 	const url = typeof location !== 'undefined' ? location : EMPTY;
 
-	return `${url.protocol + '//' || ''}${url.pathname || ''}${url.search || ''}#!`;
+	return `${url.protocol + '//' || ''}${url.host || ''}${url.pathname || ''}${url.search || ''}#!`;
 }
 
 function routeTo(url) {
