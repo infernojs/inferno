@@ -36,7 +36,7 @@
 		"glob": "^7.0.5",
 		"isparta": "^4.0.0",
 		"jsdom": "^9.2.1",
-		"karma": "^0.13.22",
+		"karma": "^1.1.0",
 		"karma-babel-preprocessor": "^6.0.1",
 		"karma-chai": "^0.1.0",
 		"karma-chai-as-promised": "^0.1.2",
