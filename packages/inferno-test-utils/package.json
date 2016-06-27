@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "0.7.10",
+  "version": "0.7.11",
   "license": "MIT",
   "description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
   "author": {
@@ -20,7 +20,7 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.7.9"
+    "inferno": "^0.7.11"
   },
   "main": "inferno-test-utils.js",
   "repository": "https://github.com/trueadm/inferno"

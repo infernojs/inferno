@@ -15,7 +15,7 @@
                 t('li', null, t(Link, { to: '/foo' }, 'Route to foo')),
                 t('li', null, t(Link, { to: '/bar' }, 'Route to bar'))
             ),
-            t('div', null, children ? t(children) : null)
+            t('div', null, children ? children : null)
         );
     }
 
@@ -39,5 +39,4 @@
             t(Route, { path: '/bar', component: Bar })
         )
     ), document.getElementById('app'));
-
 })();

@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "0.7.10",
+  "version": "0.7.11",
   "license": "MIT",
   "description": "Provides ES2015 stateful components (with lifecycle events) to Inferno",
   "author": {

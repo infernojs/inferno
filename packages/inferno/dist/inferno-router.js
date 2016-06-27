@@ -1,5 +1,5 @@
 /*!
- * inferno-router v0.7.10
+ * inferno-router v0.7.11
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -608,7 +608,7 @@
   function getHashbangRoot() {
   	var url = typeof location !== 'undefined' ? location : EMPTY;
 
-  	return '' + (url.protocol + '//' || '') + (url.pathname || '') + (url.search || '') + '#!';
+  	return '' + (url.protocol + '//' || '') + (url.host || '') + (url.pathname || '') + (url.search || '') + '#!';
   }
 
   function routeTo(url) {
