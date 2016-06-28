@@ -1,6 +1,8 @@
 import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent } from './../core/utils';
+import { createNullNode } from './utils';
+import { mountRef } from './mounting';
 
-function hydrateChild(child, domNode, parentDom, lifecycle) {
+function hydrateChild(child, domNode, parentDom, lifecycle, context, instance) {
 	if (isStringOrNumber(child)) {
 		if (domNode.nodeType === 3) {
 			if (domNode.nodeValue !== child) {
@@ -11,7 +13,7 @@ function hydrateChild(child, domNode, parentDom, lifecycle) {
 			debugger
 		}
 	} else {
-		hydrateNode(child, domNode, parentDom, lifecycle);
+		hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
 	}
 }
 
@@ -35,38 +37,63 @@ function getChildNodesWithoutComments(domNode) {
 	return childNodes;
 }
 
-function hydrateComponent(node, Component, props, children, domNode, parentDom, lifecycle, context, isRoot) {
+function hydrateComponent(node, Component, props, hooks, children, domNode, parentDom, lifecycle, context, lastInstance, isRoot) {
 	props = addChildrenToProps(children, props);
 
 	if (isStatefulComponent(Component)) {
 		const instance = new Component(props);
+
+		instance._patch = patch;
+		if (!isNullOrUndefined(lastInstance) && props.ref) {
+			mountRef(lastInstance, props.ref, instance);
+		}
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndefined(childContext)) {
 			context = Object.assign({}, context, childContext);
 		}
 		instance.context = context;
-		// Block setting state - we should render only once, using latest state
+		instance._unmounted = false;
+		instance._parentNode = parentNode;
+		if (lastInstance) {
+			instance._parentComponent = lastInstance;
+		}
 		instance._pendingSetState = true;
 		instance.componentWillMount();
-		const node = instance.render();
+		const nextNode = instance.render();
 
 		instance._pendingSetState = false;
-		return hydrateNode(node, domNode, parentDom, lifecycle, context, isRoot);
+		if (!isInvalidNode(nextNode)) {
+			hydrateNode(nextNode, domNode, parentDom, lifecycle, context, instance, isRoot);
+			instance._lastNode = nextNode;
+			instance.componentDidMount();
+		} else {
+			instance._lastNode = createNullNode();
+		}
 	} else {
+		if (!isNullOrUndefined(hooks)) {
+			if (!isNullOrUndefined(hooks.componentWillMount)) {
+				hooks.componentWillMount(null, props);
+			}
+			if (!isNullOrUndefined(hooks.componentDidMount)) {
+				lifecycle.addListener(() => {
+					hooks.componentDidMount(domNode, props);
+				});
+			}
+		}
 		const instance = node.instance = Component(props);
 
-		return hydrateNode(instance, domNode, parentDom, lifecycle, context, isRoot);
+		return hydrateNode(instance, domNode, parentDom, lifecycle, context, instance, isRoot);
 	}
 }
 
-function hydrateNode(node, domNode, parentDom, lifecycle, context, isRoot) {
+function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isRoot) {
 	const bp = node.bp;
 	const tag = node.tag || bp.tag;
 
 	if (isFunction(tag)) {
 		node.dom = domNode;
-		hydrateComponent(node, tag, node.attrs || {}, node.children, domNode, parentDom, lifecycle, context, isRoot);
+		hydrateComponent(node, tag, node.attrs || {}, node.hooks, node.children, domNode, parentDom, lifecycle, context, instance, isRoot);
 	} else {
 		if (
 			domNode.nodeType !== 1 ||
@@ -90,7 +117,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, isRoot) {
 						node.domChildren = childNodes;
 						if (childNodes.length === children.length) {
 							for (let i = 0; i < children.length; i++) {
-								hydrateChild(children[i], childNodes[i], domNode, lifecycle);
+								hydrateChild(children[i], childNodes[i], domNode, lifecycle, context, instance);
 							}
 						} else {
 							// recreate children?
@@ -98,7 +125,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, isRoot) {
 						}
 					} else {
 						if (childNodes.length === 1) {
-							hydrateChild(children, childNodes[0], domNode, lifecycle);
+							hydrateChild(children, childNodes[0], domNode, lifecycle, context, instance);
 						} else {
 							// recreate child
 							debugger;

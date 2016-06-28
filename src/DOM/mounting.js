@@ -240,7 +240,7 @@ function mountChildren(node, children, parentDom, lifecycle, context, instance, 
 	}
 }
 
-function mountRef(instance, value, refValue) {
+export function mountRef(instance, value, refValue) {
 	if (!isInvalidNode(instance) && isString(value)) {
 		instance.refs[value] = refValue;
 	}
@@ -279,8 +279,8 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		instance._pendingSetState = true;
 		instance.componentWillMount();
 		const node = instance.render();
-		instance._pendingSetState = false;
 
+		instance._pendingSetState = false;
 		if (!isInvalidNode(node)) {
 			dom = mount(node, null, lifecycle, context, instance, false);
 			instance._lastNode = node;
