@@ -1,6 +1,7 @@
 import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent } from './../core/utils';
 import { createNullNode } from './utils';
 import { mountRef } from './mounting';
+import { patch } from './patching';
 
 function hydrateChild(child, domNode, parentDom, lifecycle, context, instance) {
 	if (isStringOrNumber(child)) {
