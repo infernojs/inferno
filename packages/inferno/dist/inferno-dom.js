@@ -1899,15 +1899,17 @@
 		return false;
 	}
 
-	function hydrateChild(child, domNode, parentDom, lifecycle, context, instance) {
+	function hydrateChild(child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
 		if (isStringOrNumber(child)) {
-			if (domNode.nodeType === 3) {
+			if (domNode.nodeType === 3 && child !== '') {
 				if (domNode.nodeValue !== child) {
 					domNode.nodeValue = child;
 				}
 			} else {
-				// remake node?
-				debugger;
+				var textNode = document.createTextNode(child);
+
+				replaceNode(parentDom, textNode, domNode);
+				parentChildNodes.splice(parentChildNodes.indexOf(domNode), 1, textNode);
 			}
 		} else {
 			hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
@@ -1938,7 +1940,7 @@
 		props = addChildrenToProps(children, props);
 
 		if (isStatefulComponent(Component)) {
-			var instance = new Component(props);
+			var instance = node.instance = new Component(props);
 
 			instance._patch = patch;
 			if (!isNullOrUndefined(lastInstance) && props.ref) {
@@ -1968,6 +1970,8 @@
 				instance._lastNode = createNullNode();
 			}
 		} else {
+			var _instance = node.instance = Component(props);
+
 			if (!isNullOrUndefined(hooks)) {
 				if (!isNullOrUndefined(hooks.componentWillMount)) {
 					hooks.componentWillMount(null, props);
@@ -1978,8 +1982,6 @@
 					});
 				}
 			}
-			var _instance = node.instance = Component(props);
-
 			return hydrateNode(_instance, domNode, parentDom, lifecycle, context, _instance, isRoot);
 		}
 	}
@@ -2011,7 +2013,7 @@
 							node.domChildren = childNodes;
 							if (childNodes.length === children.length) {
 								for (var i = 0; i < children.length; i++) {
-									hydrateChild(children[i], childNodes[i], domNode, lifecycle, context, instance);
+									hydrateChild(children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
 								}
 							} else {
 								// recreate children?
@@ -2019,7 +2021,7 @@
 							}
 						} else {
 							if (childNodes.length === 1) {
-								hydrateChild(children, childNodes[0], domNode, lifecycle, context, instance);
+								hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
 							} else {
 								// recreate child
 								debugger;

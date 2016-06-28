@@ -1,17 +1,19 @@
 import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent } from './../core/utils';
-import { createNullNode } from './utils';
+import { createNullNode, replaceNode } from './utils';
 import { mountRef } from './mounting';
 import { patch } from './patching';
 
-function hydrateChild(child, domNode, parentDom, lifecycle, context, instance) {
+function hydrateChild(child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
 	if (isStringOrNumber(child)) {
-		if (domNode.nodeType === 3) {
+		if (domNode.nodeType === 3 && child !== '') {
 			if (domNode.nodeValue !== child) {
 				domNode.nodeValue = child;
 			}
 		} else {
-			// remake node?
-			debugger
+			const textNode = document.createTextNode(child);
+
+			replaceNode(parentDom, textNode, domNode);
+			parentChildNodes.splice(parentChildNodes.indexOf(domNode), 1, textNode);
 		}
 	} else {
 		hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
@@ -42,7 +44,7 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 	props = addChildrenToProps(children, props);
 
 	if (isStatefulComponent(Component)) {
-		const instance = new Component(props);
+		const instance = node.instance = new Component(props);
 
 		instance._patch = patch;
 		if (!isNullOrUndefined(lastInstance) && props.ref) {
@@ -72,6 +74,8 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 			instance._lastNode = createNullNode();
 		}
 	} else {
+		const instance = node.instance = Component(props);
+
 		if (!isNullOrUndefined(hooks)) {
 			if (!isNullOrUndefined(hooks.componentWillMount)) {
 				hooks.componentWillMount(null, props);
@@ -82,8 +86,6 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 				});
 			}
 		}
-		const instance = node.instance = Component(props);
-
 		return hydrateNode(instance, domNode, parentDom, lifecycle, context, instance, isRoot);
 	}
 }
@@ -118,7 +120,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 						node.domChildren = childNodes;
 						if (childNodes.length === children.length) {
 							for (let i = 0; i < children.length; i++) {
-								hydrateChild(children[i], childNodes[i], domNode, lifecycle, context, instance);
+								hydrateChild(children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
 							}
 						} else {
 							// recreate children?
@@ -126,7 +128,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 						}
 					} else {
 						if (childNodes.length === 1) {
-							hydrateChild(children, childNodes[0], domNode, lifecycle, context, instance);
+							hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
 						} else {
 							// recreate child
 							debugger;

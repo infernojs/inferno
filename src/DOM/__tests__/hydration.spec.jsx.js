@@ -166,6 +166,13 @@ describe('SSR Hydration - (JSX)', () => {
 			node2: <div><Comp2 /><Comp2 /><Comp2 /></div>,
 			expect2: '<div data-infernoroot=""><em>Worked 2!</em><em>Worked 2!</em><em>Worked 2!</em></div>',
 			node3: <div><Comp1 /><Comp1 /><Comp1 /></div>
+		},
+		{
+			node: <div><Comp3 /></div>,
+			expect1: '<div data-infernoroot=""><em>Works <span>again</span>!</em></div>',
+			node2: <div><Comp1 /><Comp3 /></div>,
+			expect2: '<div data-infernoroot=""><span>Worked!</span><em>Works <span>again</span>!</em></div>',
+			node3: <div><Comp3 /></div>
 		}
 	].forEach(({ node, expect1, node2, node3, expect2 }, i) => {
 		it(`Update various structures #${ (i + 1) }`, () => {
