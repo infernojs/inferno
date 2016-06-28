@@ -38,15 +38,19 @@
   }
 
   function isNullOrUndefined(obj) {
-  	return obj === void 0 || obj === null;
+  	return obj === void 0 || isNull(obj);
   }
 
   function isInvalidNode(obj) {
-  	return obj === null || obj === false || obj === void 0;
+  	return isNull(obj) || obj === false || obj === void 0;
   }
 
   function isFunction(obj) {
   	return typeof obj === 'function';
+  }
+
+  function isNull(obj) {
+  	return obj === null;
   }
 
   var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -55,21 +59,7 @@
     return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
-  var _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  function renderComponent(Component, props, children, context) {
+  function renderComponent(Component, props, children, context, isRoot) {
   	props = addChildrenToProps(children, props);
 
   	if (isStatefulComponent(Component)) {
@@ -77,18 +67,18 @@
   		var childContext = instance.getChildContext();
 
   		if (!isNullOrUndefined(childContext)) {
-  			context = _extends({}, context, childContext);
+  			context = Object.assign({}, context, childContext);
   		}
   		instance.context = context;
   		// Block setting state - we should render only once, using latest state
   		instance._pendingSetState = true;
   		instance.componentWillMount();
   		var node = instance.render();
+
   		instance._pendingSetState = false;
-  		return renderNode(node, context);
+  		return renderNode(node, context, isRoot);
   	} else {
-  		var _node = Component(props);
-  		return renderNode(_node, context);
+  		return renderNode(Component(props), context, isRoot);
   	}
   }
 
@@ -108,7 +98,7 @@
   				insertComment = true;
   			} else {
   				insertComment = false;
-  				childrenResult.push(renderNode(child, context));
+  				childrenResult.push(renderNode(child, context, false));
   			}
   		}
   		return childrenResult.join('');
@@ -116,26 +106,28 @@
   		if (isStringOrNumber(children)) {
   			return children;
   		} else {
-  			return renderNode(children, context) || '';
+  			return renderNode(children, context, false) || '';
   		}
   	}
 
   	return '';
   }
 
-  function renderNode(node, context) {
+  function renderNode(node, context, isRoot) {
   	if (!isInvalidNode(node)) {
   		var _ret = function () {
-  			var tag = node.tag;
+  			var bp = node.bp;
+  			var tag = node.tag || bp && bp.tag;
   			var outputAttrs = [];
+  			var className = node.className || bp && bp.className;
 
   			if (isFunction(tag)) {
   				return {
-  					v: renderComponent(tag, node.attrs, node.children, context)
+  					v: renderComponent(tag, node.attrs, node.children, context, isRoot)
   				};
   			}
-  			if (!isNullOrUndefined(node.className)) {
-  				outputAttrs.push('class="' + node.className + '"');
+  			if (!isNullOrUndefined(className)) {
+  				outputAttrs.push('class="' + className + '"');
   			}
   			var attrs = node.attrs;
 
@@ -150,7 +142,9 @@
   					});
   				})();
   			}
-
+  			if (isRoot) {
+  				outputAttrs.push('data-infernoroot');
+  			}
   			return {
   				v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + renderChildren(node.children, context) + '</' + tag + '>'
   			};
@@ -160,8 +154,8 @@
   	}
   }
 
-  function renderToString(node) {
-  	return renderNode(node, null);
+  function renderToString(node, noMetadata) {
+  	return renderNode(node, null, !noMetadata);
   }
 
   var index = {

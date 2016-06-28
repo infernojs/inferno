@@ -10,11 +10,15 @@
 }(this, function () { 'use strict';
 
 	function isNullOrUndefined(obj) {
-		return obj === void 0 || obj === null;
+		return obj === void 0 || isNull(obj);
 	}
 
 	function isAttrAnEvent(attr) {
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+	}
+
+	function isNull(obj) {
+		return obj === null;
 	}
 
 	function VNode(blueprint) {

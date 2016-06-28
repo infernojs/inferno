@@ -14,11 +14,11 @@
   }
 
   function isNullOrUndefined(obj) {
-  	return obj === void 0 || obj === null;
+  	return obj === void 0 || isNull(obj);
   }
 
   function isInvalidNode(obj) {
-  	return obj === null || obj === false || obj === void 0;
+  	return isNull(obj) || obj === false || obj === void 0;
   }
 
   function isFunction(obj) {
@@ -27,6 +27,10 @@
 
   function isAttrAnEvent(attr) {
   	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+  }
+
+  function isNull(obj) {
+  	return obj === null;
   }
 
   function isAttrAHook(hook) {

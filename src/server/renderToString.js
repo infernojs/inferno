@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent } from './../core/utils';
 
-function renderComponent(Component, props, children, context) {
+function renderComponent(Component, props, children, context, isRoot) {
 	props = addChildrenToProps(children, props);
 
 	if (isStatefulComponent(Component)) {
@@ -8,18 +8,18 @@ function renderComponent(Component, props, children, context) {
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndefined(childContext)) {
-			context = { ...context, ...childContext };
+			context = Object.assign({}, context, childContext);
 		}
 		instance.context = context;
 		// Block setting state - we should render only once, using latest state
 		instance._pendingSetState = true;
 		instance.componentWillMount();
 		const node = instance.render();
+
 		instance._pendingSetState = false;
-		return renderNode(node, context);
+		return renderNode(node, context, isRoot);
 	} else {
-		const node = Component(props);
-		return renderNode(node, context);
+		return renderNode(Component(props), context, isRoot);
 	}
 }
 
@@ -39,7 +39,7 @@ function renderChildren(children, context) {
 				insertComment = true;
 			} else {
 				insertComment = false;
-				childrenResult.push(renderNode(child, context));
+				childrenResult.push(renderNode(child, context, false));
 			}
 		}
 		return childrenResult.join('');
@@ -47,23 +47,25 @@ function renderChildren(children, context) {
 		if (isStringOrNumber(children)) {
 			return children;
 		} else {
-			return renderNode(children, context) || '';
+			return renderNode(children, context, false) || '';
 		}
 	}
 
 	return '';
 }
 
-function renderNode(node, context) {
+function renderNode(node, context, isRoot) {
 	if (!isInvalidNode(node)) {
-		const tag = node.tag;
+		const bp = node.bp;
+		const tag = node.tag || (bp && bp.tag);
 		const outputAttrs = [];
+		const className = node.className || (bp && bp.className);
 
 		if (isFunction(tag)) {
-			return renderComponent(tag, node.attrs, node.children, context);
+			return renderComponent(tag, node.attrs, node.children, context, isRoot);
 		}
-		if (!isNullOrUndefined(node.className)) {
-			outputAttrs.push('class="' + node.className + '"');
+		if (!isNullOrUndefined(className)) {
+			outputAttrs.push('class="' + className + '"');
 		}
 		const attrs = node.attrs;
 
@@ -76,11 +78,13 @@ function renderNode(node, context) {
 				outputAttrs.push(attr + '="' + attrs[attr] + '"');
 			});
 		}
-
+		if (isRoot) {
+			outputAttrs.push('data-infernoroot');
+		}
 		return `<${ tag }${ outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '' }>${ renderChildren(node.children, context) }</${ tag }>`;
 	}
 }
 
-export default function renderToString(node) {
-	return renderNode(node, null);
+export default function renderToString(node, noMetadata) {
+	return renderNode(node, null, !noMetadata);
 }

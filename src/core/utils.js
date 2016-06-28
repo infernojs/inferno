@@ -28,11 +28,11 @@ export function isStringOrNumber(obj) {
 }
 
 export function isNullOrUndefined(obj) {
-	return obj === undefined || obj === null;
+	return obj === undefined || isNull(obj);
 }
 
 export function isInvalidNode(obj) {
-	return obj === null || obj === false || obj === undefined;
+	return isNull(obj) || obj === false || obj === undefined;
 }
 
 export function isFunction(obj) {
@@ -45,6 +45,10 @@ export function isAttrAnEvent(attr) {
 
 export function isString(obj) {
 	return typeof obj === 'string';
+}
+
+export function isNull(obj) {
+	return obj === null;
 }
 
 export function isAttrAHook(hook) {

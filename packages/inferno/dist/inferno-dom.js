@@ -38,11 +38,11 @@
 	}
 
 	function isNullOrUndefined(obj) {
-		return obj === void 0 || obj === null;
+		return obj === void 0 || isNull(obj);
 	}
 
 	function isInvalidNode(obj) {
-		return obj === null || obj === false || obj === void 0;
+		return isNull(obj) || obj === false || obj === void 0;
 	}
 
 	function isFunction(obj) {
@@ -51,6 +51,10 @@
 
 	function isString(obj) {
 		return typeof obj === 'string';
+	}
+
+	function isNull(obj) {
+		return obj === null;
 	}
 
 	function isPromise(obj) {
@@ -1895,6 +1899,133 @@
 		return false;
 	}
 
+	function hydrateChild(child, domNode, parentDom, lifecycle) {
+		if (isStringOrNumber(child)) {
+			if (domNode.nodeType === 3) {
+				if (domNode.nodeValue !== child) {
+					domNode.nodeValue = child;
+				}
+			} else {
+				// remake node?
+				debugger;
+			}
+		} else {
+			hydrateNode(child, domNode, parentDom, lifecycle);
+		}
+	}
+
+	function getChildNodesWithoutComments(domNode) {
+		var childNodes = [];
+		var rawChildNodes = domNode.childNodes;
+		var length = rawChildNodes.length;
+		var i = 0;
+
+		while (i < length) {
+			var rawChild = rawChildNodes[i];
+
+			if (rawChild.nodeType === 8) {
+				domNode.removeChild(rawChild);
+				length--;
+			} else {
+				childNodes.push(rawChild);
+				i++;
+			}
+		}
+		return childNodes;
+	}
+
+	function hydrateComponent(node, Component, props, children, domNode, parentDom, lifecycle, context, isRoot) {
+		props = addChildrenToProps(children, props);
+
+		if (isStatefulComponent(Component)) {
+			var instance = new Component(props);
+			var childContext = instance.getChildContext();
+
+			if (!isNullOrUndefined(childContext)) {
+				context = Object.assign({}, context, childContext);
+			}
+			instance.context = context;
+			// Block setting state - we should render only once, using latest state
+			instance._pendingSetState = true;
+			instance.componentWillMount();
+			var _node = instance.render();
+
+			instance._pendingSetState = false;
+			return hydrateNode(_node, domNode, parentDom, lifecycle, context, isRoot);
+		} else {
+			var _instance = node.instance = Component(props);
+
+			return hydrateNode(_instance, domNode, parentDom, lifecycle, context, isRoot);
+		}
+	}
+
+	function hydrateNode(node, domNode, parentDom, lifecycle, context, isRoot) {
+		var bp = node.bp;
+		var tag = node.tag || bp.tag;
+
+		if (isFunction(tag)) {
+			node.dom = domNode;
+			hydrateComponent(node, tag, node.attrs || {}, node.children, domNode, parentDom, lifecycle, context, isRoot);
+		} else {
+			if (domNode.nodeType !== 1 || tag !== domNode.tagName.toLowerCase()) {
+				// remake node
+				debugger;
+			} else {
+				node.dom = domNode;
+				var children = node.children;
+
+				if (!isNullOrUndefined(children)) {
+					if (isStringOrNumber(children)) {
+						if (domNode.textContent !== children) {
+							domNode.textContent = children;
+						}
+					} else {
+						var childNodes = getChildNodesWithoutComments(domNode);
+
+						if (isArray(children)) {
+							node.domChildren = childNodes;
+							if (childNodes.length === children.length) {
+								for (var i = 0; i < children.length; i++) {
+									hydrateChild(children[i], childNodes[i], domNode, lifecycle);
+								}
+							} else {
+								// recreate children?
+								debugger;
+							}
+						} else {
+							if (childNodes.length === 1) {
+								hydrateChild(children, childNodes[0], domNode, lifecycle);
+							} else {
+								// recreate child
+								debugger;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	var documetBody = document.body;
+
+	function hydrate(node, parentDom, lifecycle) {
+		if (parentDom && parentDom.nodeType === 1) {
+			var rootNode = parentDom.querySelector('[data-infernoroot]');
+
+			if (rootNode && rootNode.parentNode === parentDom) {
+				hydrateNode(node, rootNode, parentDom, lifecycle, {}, true);
+				return true;
+			}
+		}
+		// clear parentDom, unless it's document.body
+		if (parentDom !== documetBody) {
+			parentDom.textContent = '';
+		} else {
+			console.warn('Inferno Warning: rendering to the "document.body" is dangerous! Use a dedicated container element instead.');
+		}
+		return false;
+	}
+
 	var roots = [];
 
 	function getRoot(parentDom) {
@@ -1923,8 +2054,12 @@
 		var root = getRoot(parentDom);
 		var lifecycle = new Lifecycle();
 
-		if (root === null) {
-			mount(node, parentDom, lifecycle, {}, null, false);
+		if (isNull(root)) {
+			var skipMount = true;
+
+			if (!hydrate(node, parentDom, lifecycle)) {
+				mount(node, parentDom, lifecycle, {}, null, false);
+			}
 			lifecycle.trigger();
 			roots.push({ node: node, dom: parentDom });
 		} else {

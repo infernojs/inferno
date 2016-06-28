@@ -2,6 +2,8 @@ import Lifecycle from './lifecycle';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { getActiveNode, resetActiveNode } from './utils';
+import { isNull } from '../core/utils';
+import hydrate from './hydration';
 
 const roots = [];
 
@@ -31,8 +33,12 @@ export function render(node, parentDom) {
 	const root = getRoot(parentDom);
 	const lifecycle = new Lifecycle();
 
-	if (root === null) {
-		mount(node, parentDom, lifecycle, {}, null, false);
+	if (isNull(root)) {
+		let skipMount = true;
+
+		if (!hydrate(node, parentDom, lifecycle)) {
+			mount(node, parentDom, lifecycle, {}, null, false);
+		}
 		lifecycle.trigger();
 		roots.push({ node: node, dom: parentDom });
 	} else {

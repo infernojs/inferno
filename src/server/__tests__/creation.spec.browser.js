@@ -139,7 +139,7 @@ describe('SSR Creation - (non-JSX)', () => {
 		}
 	].forEach(test => {
 		it(test.description, () => {
-			const output = renderToString(test.template('foo'));
+			const output = renderToString(test.template('foo'), true);
 			expect(output).to.equal(test.result);
 		});
 	});
