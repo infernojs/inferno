@@ -55,7 +55,7 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 		}
 		instance.context = context;
 		instance._unmounted = false;
-		instance._parentNode = parentNode;
+		instance._parentNode = node;
 		if (lastInstance) {
 			instance._parentComponent = lastInstance;
 		}

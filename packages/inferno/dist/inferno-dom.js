@@ -1951,7 +1951,7 @@
 			}
 			instance.context = context;
 			instance._unmounted = false;
-			instance._parentNode = parentNode;
+			instance._parentNode = node;
 			if (lastInstance) {
 				instance._parentComponent = lastInstance;
 			}

@@ -56,6 +56,12 @@ function Comp2() {
 	return <em>Worked 2!</em>;
 }
 
+class Comp3 extends Component {
+	render() {
+		return <em>Works{ ' ' }<span>again</span>!</em>;
+	}
+}
+
 describe('SSR Hydration - (JSX)', () => {
 	[
 		{
@@ -92,6 +98,11 @@ describe('SSR Hydration - (JSX)', () => {
 			node: <div><Comp1 /><Comp1 /><Comp1 /></div>,
 			expect1: '<div data-infernoroot=""><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>',
 			expect2: '<div data-infernoroot=""><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>'
+		},
+		{
+			node: <div><Comp3 /></div>,
+			expect1: '<div data-infernoroot=""><em>Works<!-- --> <span>again</span>!</em></div>',
+			expect2: '<div data-infernoroot=""><em>Works <span>again</span>!</em></div>'
 		}
 	].forEach(({ node, expect1, expect2 }, i) => {
 		it(`Validate various structures #${ (i + 1) }`, () => {
