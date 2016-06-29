@@ -1,5 +1,5 @@
 import renderToString from './../renderToString';
-import Component from './../../component';
+import Component from './../../component/es2015';
 
 class StatefulComponent extends Component {
 	render() {

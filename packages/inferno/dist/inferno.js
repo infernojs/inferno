@@ -9,6 +9,9 @@
 	(global.Inferno = factory());
 }(this, function () { 'use strict';
 
+	// Runs only once in applications lifetime
+	var isBrowser = typeof window !== 'undefined' && window.document;
+
 	function isNullOrUndefined(obj) {
 		return obj === void 0 || isNull(obj);
 	}
@@ -159,9 +162,6 @@
 			return vNode;
 		};
 	}
-
-	// Runs only once in applications lifetime
-	var isBrowser = typeof window !== 'undefined' && window.document;
 
 	// Copy of the util from dom/util, otherwise it makes massive bundles
 	function documentCreateElement(tag, isSVG) {

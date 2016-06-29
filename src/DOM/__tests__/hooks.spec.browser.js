@@ -1,5 +1,5 @@
 import { render } from './../../DOM/rendering';
-import createElement from './../../createElement';
+import createElement from './../../core/createElement';
 
 describe('lifecycle hooks', () => {
 	let container;

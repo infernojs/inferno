@@ -43,7 +43,9 @@ function applyState(component, force, callback) {
 		component._pendingState = {};
 		let nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
 
-		if (isInvalidNode(nextNode)) {
+		if (nextNode === false) {
+			nextNode = component._lastNode;
+		} else if (isNullOrUndefined(nextNode)) {
 			nextNode = createNullNode();
 		}
 		const lastNode = component._lastNode;

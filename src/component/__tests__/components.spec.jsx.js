@@ -1,5 +1,5 @@
 import { render } from './../../DOM/rendering';
-import Component from './../../component/index';
+import Component from './../../component/es2015';
 import innerHTML from './../../../tools/innerHTML';
 import { createBlueprint } from './../../core/createBlueprint';
 

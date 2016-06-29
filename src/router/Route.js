@@ -1,5 +1,5 @@
 import { createVNode } from '../core/createBlueprint';
-import Component from '../component';
+import Component from '../component/es2015';
 
 const ASYNC_STATUS = {
 	pending: 'pending',

@@ -9,12 +9,11 @@
   (global.InfernoComponent = factory());
 }(this, function () { 'use strict';
 
+  // Runs only once in applications lifetime
+  var isBrowser = typeof window !== 'undefined' && window.document;
+
   function isNullOrUndefined(obj) {
   	return obj === void 0 || isNull(obj);
-  }
-
-  function isInvalidNode(obj) {
-  	return isNull(obj) || obj === false || obj === void 0;
   }
 
   function isNull(obj) {
@@ -46,25 +45,27 @@
   constructDefaults('volume,value', strictProps, true);
   constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 
-  var screenWidth = window.screen.width;
-  var screenHeight = window.screen.height;
+  var screenWidth = isBrowser && window.screen.width;
+  var screenHeight = isBrowser && window.screen.height;
   var scrollX = 0;
   var scrollY = 0;
   var lastScrollTime = 0;
 
-  window.onscroll = function (e) {
-  	scrollX = window.scrollX;
-  	scrollY = window.scrollY;
-  	lastScrollTime = performance.now();
-  };
+  if (isBrowser) {
+  	window.onscroll = function (e) {
+  		scrollX = window.scrollX;
+  		scrollY = window.scrollY;
+  		lastScrollTime = performance.now();
+  	};
 
-  window.resize = function (e) {
-  	scrollX = window.scrollX;
-  	scrollY = window.scrollY;
-  	screenWidth = window.screen.width;
-  	screenHeight = window.screen.height;
-  	lastScrollTime = performance.now();
-  };
+  	window.resize = function (e) {
+  		scrollX = window.scrollX;
+  		scrollY = window.scrollY;
+  		screenWidth = window.screen.width;
+  		screenHeight = window.screen.height;
+  		lastScrollTime = performance.now();
+  	};
+  }
 
   function Lifecycle() {
   	this._listeners = [];
@@ -76,8 +77,8 @@
 
   Lifecycle.prototype = {
   	refresh: function refresh() {
-  		this.scrollX = window.scrollX;
-  		this.scrollY = window.scrollY;
+  		this.scrollX = isBrowser && window.scrollX;
+  		this.scrollY = isBrowser && window.scrollY;
   	},
   	addListener: function addListener(callback) {
   		this._listeners.push(callback);
@@ -153,7 +154,9 @@
   		component._pendingState = {};
   		var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
 
-  		if (isInvalidNode(nextNode)) {
+  		if (nextNode === false) {
+  			nextNode = component._lastNode;
+  		} else if (isNullOrUndefined(nextNode)) {
   			nextNode = createNullNode();
   		}
   		var lastNode = component._lastNode;
