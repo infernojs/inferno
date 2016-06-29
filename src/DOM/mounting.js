@@ -32,10 +32,34 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	}
 }
 
-function handleSelects(node) {
+export function handleSelects(node) {
 	if (node.tag === 'select') {
 		selectValue(node);
 	}
+}
+
+export function mountBlueprintAttrs(node, bp, dom, instance) {
+	handleSelects(node);
+	const attrs = node.attrs;
+
+	if (bp.attrKeys === null) {
+		const newKeys = Object.keys(attrs);
+		bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
+	}
+	const attrKeys = bp.attrKeys;
+
+	mountAttributes(node, attrs, attrKeys, dom, instance);
+}
+
+export function mountBlueprintEvents(node, bp, dom) {
+	const events = node.events;
+
+	if (bp.eventKeys === null) {
+		bp.eventKeys = Object.keys(events);
+	}
+	const eventKeys = bp.eventKeys;
+
+	mountEvents(events, eventKeys, dom);
 }
 
 function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance) {
@@ -82,16 +106,7 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 	}
 
 	if (bp.hasAttrs === true) {
-		handleSelects(node);
-		const attrs = node.attrs;
-
-		if (bp.attrKeys === null) {
-			const newKeys = Object.keys(attrs);
-			bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
-		}
-		const attrKeys = bp.attrKeys;
-
-		mountAttributes(node, attrs, attrKeys, dom, instance);
+		mountBlueprintAttrs(node, bp, dom, instance);
 	}
 	if (bp.hasClassName === true) {
 		dom.className = node.className;
@@ -100,14 +115,7 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 		patchStyle(null, node.style, dom);
 	}
 	if (bp.hasEvents === true) {
-		const events = node.events;
-
-		if (bp.eventKeys === null) {
-			bp.eventKeys = Object.keys(events);
-		}
-		const eventKeys = bp.eventKeys;
-
-		mountEvents(events, eventKeys, dom);
+		mountBlueprintEvents(node, bp, dom);
 	}
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);
@@ -320,7 +328,7 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 	return dom;
 }
 
-function mountAttributes(node, attrs, attrKeys, dom, instance) {
+export function mountAttributes(node, attrs, attrKeys, dom, instance) {
 	for (let i = 0; i < attrKeys.length; i++) {
 		const attr = attrKeys[i];
 

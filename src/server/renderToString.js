@@ -1,4 +1,5 @@
-import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent } from './../core/utils';
+import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent, isNumber } from './../core/utils';
+import { isUnitlessNumber } from '../DOM/utils';
 
 function renderComponent(Component, props, children, context, isRoot) {
 	props = addChildrenToProps(children, props);
@@ -50,8 +51,31 @@ function renderChildren(children, context) {
 			return renderNode(children, context, false) || '';
 		}
 	}
-
 	return '';
+}
+
+function toHyphenCase(str) {
+	return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+}
+
+function renderStyleToString(style) {
+	if (isStringOrNumber(style)) {
+		return style;
+	} else {
+		const styles = [];
+		const keys = Object.keys(style);
+
+		for (let i = 0; i < keys.length; i++) {
+			const styleName = keys[i];
+			const value = style[styleName];
+			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+
+			if (!isNullOrUndefined(value)) {
+				styles.push(`${ toHyphenCase(styleName) }:${ value }${ px };`);
+			}
+		}
+		return styles.join();
+	}
 }
 
 function renderNode(node, context, isRoot) {
@@ -59,7 +83,8 @@ function renderNode(node, context, isRoot) {
 		const bp = node.bp;
 		const tag = node.tag || (bp && bp.tag);
 		const outputAttrs = [];
-		const className = node.className || (bp && bp.className);
+		const className = node.className;
+		const style = node.style;
 
 		if (isFunction(tag)) {
 			return renderComponent(tag, node.attrs, node.children, context, isRoot);
@@ -67,17 +92,21 @@ function renderNode(node, context, isRoot) {
 		if (!isNullOrUndefined(className)) {
 			outputAttrs.push('class="' + className + '"');
 		}
-		const attrs = node.attrs;
-
-		if (!isNullOrUndefined(attrs)) {
-			const attrsKeys = Object.keys(attrs);
-
-			attrsKeys.forEach((attrsKey, i) => {
-				const attr = attrsKeys[i];
-
-				outputAttrs.push(attr + '="' + attrs[attr] + '"');
-			});
+		if (!isNullOrUndefined(style)) {
+			outputAttrs.push('style="' + renderStyleToString(style) + '"');
 		}
+		const attrs = node.attrs;
+		let attrKeys = Object.keys(attrs);
+
+		if (bp.hasAttrs === true) {
+			attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
+		}
+		attrsKeys.forEach((attrsKey, i) => {
+			const attr = attrsKeys[i];
+
+			outputAttrs.push(attr + '="' + attrs[attr] + '"');
+		});
+
 		if (isRoot) {
 			outputAttrs.push('data-infernoroot');
 		}

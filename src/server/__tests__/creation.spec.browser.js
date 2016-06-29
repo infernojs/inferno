@@ -25,6 +25,45 @@ describe('SSR Creation - (non-JSX)', () => {
 			},
 			result: '<div><span></span></div>'
 		}, {
+			description: 'should render div with span child and styling',
+			template: () => {
+				return {
+					tag: 'div',
+					children: {
+						dom: null,
+						tag: 'span',
+						style: 'border-left: 10px;'
+					}
+				};
+			},
+			result: '<div><span style="border-left: 10px;"></span></div>'
+		}, {
+			description: 'should render div with span child and styling #2',
+			template: () => {
+				return {
+					tag: 'div',
+					children: {
+						dom: null,
+						tag: 'span',
+						style: { borderLeft: 10 }
+					}
+				};
+			},
+			result: '<div><span style="border-left:10px;"></span></div>'
+		}, {
+			description: 'should render div with span child and styling #3',
+			template: () => {
+				return {
+					tag: 'div',
+					children: {
+						dom: null,
+						tag: 'span',
+						style: { fontFamily: 'Arial' }
+					}
+				};
+			},
+			result: '<div><span style="font-family:Arial;"></span></div>'
+		}, {
 			description: 'should render div with span child (with className)',
 			template: () => {
 				return {

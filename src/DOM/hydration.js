@@ -1,14 +1,12 @@
 import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent } from './../core/utils';
-import { createNullNode, replaceNode } from './utils';
-import { mountRef } from './mounting';
-import { patch } from './patching';
+import { createNullNode, replaceNode, handleAttachedHooks } from './utils';
+import { mountRef, handleSelects, mountAttributes, mountBlueprintAttrs, mountBlueprintEvents, mountEvents } from './mounting';
+import { patch, patchStyle } from './patching';
 
 function hydrateChild(child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
 	if (isStringOrNumber(child)) {
 		if (domNode.nodeType === 3 && child !== '') {
-			if (domNode.nodeValue !== child) {
-				domNode.nodeValue = child;
-			}
+			domNode.nodeValue = child;
 		} else {
 			const textNode = document.createTextNode(child);
 
@@ -106,6 +104,11 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 			debugger;
 		} else {
 			node.dom = domNode;
+			const hooks = node.hooks;
+
+			if (bp.hasHooks === true || !isNullOrUndefined(hooks)) {
+				handleAttachedHooks(hooks, lifecycle, domNode);
+			}
 			const children = node.children;
 
 			if (!isNullOrUndefined(children)) {
@@ -134,6 +137,34 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 							debugger;
 						}
 					}
+				}
+			}
+			const className = node.className;
+			const style = node.style;
+
+			if (!isNullOrUndefined(className)) {
+				domNode.className = className;
+			}
+			if (!isNullOrUndefined(style)) {
+				patchStyle(null, style, domNode);
+			}
+			if (bp.hasAttrs === true) {
+				mountBlueprintAttrs(node, bp, domNode, instance);
+			} else {
+				const attrs = node.attrs;
+
+				if (!isNullOrUndefined(attrs)) {
+					handleSelects(node);
+					mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
+				}
+			}
+			if (bp.hasEvents === true) {
+				mountBlueprintEvents(node, bp, domNode);
+			} else {
+				const events = node.events;
+
+				if (!isNullOrUndefined(events)) {
+					mountEvents(events, Object.keys(events), domNode);
 				}
 			}
 		}

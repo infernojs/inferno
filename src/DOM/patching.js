@@ -1,23 +1,7 @@
-import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from './../core/utils';
+import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, NO_RENDER, isNumber } from './../core/utils';
 import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mount } from './mounting';
-import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
-
-function constructDefaults(string, object, value) {
-	/* eslint no-return-assign: 0 */
-	string.split(',').forEach(i => object[i] = value);
-}
-
-const xlinkNS = 'http://www.w3.org/1999/xlink';
-const xmlNS = 'http://www.w3.org/XML/1998/namespace';
-const strictProps = {};
-const booleanProps = {};
-const namespaces = {};
-
-constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,value', strictProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode, isUnitlessNumber, booleanProps, strictProps, namespaces } from './utils';
 
 export function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
@@ -81,8 +65,13 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 
 			for (let i = 0; i < styleKeys.length; i++) {
 				const style = styleKeys[i];
+				const value = nextAttrValue[style];
 
-				dom.style[style] = nextAttrValue[style];
+				if (isNumber(value) && !isUnitlessNumber[style]) {
+					dom.style[style] = value + 'px';
+				} else {
+					dom.style[style] = value;
+				}
 			}
 		}
 	} else if (isNullOrUndefined(nextAttrValue)) {
@@ -92,11 +81,14 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 
 		for (let i = 0; i < styleKeys.length; i++) {
 			const style = styleKeys[i];
+			const value = nextAttrValue[style];
 
-			dom.style[style] = nextAttrValue[style];
+			if (isNumber(value) && !isUnitlessNumber[style]) {
+				dom.style[style] = value + 'px';
+			} else {
+				dom.style[style] = value;
+			}
 		}
-		// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
-		// TODO: needs performance benchmark
 		const lastStyleKeys = Object.keys(lastAttrValue);
 
 		for (let i = 0; i < lastStyleKeys.length; i++) {
@@ -183,7 +175,9 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 		instance.context = context;
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
-		if (!isInvalidNode(nextNode)) {
+		if (nextNode === NO_RENDER) {
+			instance._lastNode = lastNode;
+		} else if (!isInvalidNode(nextNode)) {
 			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;

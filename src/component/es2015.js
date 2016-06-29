@@ -1,5 +1,5 @@
 import Lifecycle from './../DOM/lifecycle';
-import { isNullOrUndefined, isInvalidNode } from './../core/utils';
+import { isNullOrUndefined, isInvalidNode, NO_RENDER } from './../core/utils';
 import { createNullNode } from './../DOM/utils';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
@@ -43,7 +43,7 @@ function applyState(component, force, callback) {
 		component._pendingState = {};
 		let nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
 
-		if (nextNode === false) {
+		if (nextNode === NO_RENDER) {
 			nextNode = component._lastNode;
 		} else if (isNullOrUndefined(nextNode)) {
 			nextNode = createNullNode();
@@ -139,6 +139,6 @@ export default class Component {
 				return node;
 			}
 		}
-		return false;
+		return NO_RENDER;
 	}
 }

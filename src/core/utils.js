@@ -15,6 +15,8 @@ export function addChildrenToProps(children, props) {
 	return props;
 }
 
+const NO_RENDER = 'NO_RENDER';
+
 // Runs only once in applications lifetime
 export const isBrowser = typeof window !== 'undefined' && window.document;
 
@@ -27,7 +29,7 @@ export function isStatefulComponent(obj) {
 }
 
 export function isStringOrNumber(obj) {
-	return typeof obj === 'string' || typeof obj === 'number';
+	return isString(obj) || isNumber(obj);
 }
 
 export function isNullOrUndefined(obj) {
@@ -48,6 +50,10 @@ export function isAttrAnEvent(attr) {
 
 export function isString(obj) {
 	return typeof obj === 'string';
+}
+
+export function isNumber(obj) {
+	return typeof obj === 'number';
 }
 
 export function isNull(obj) {
