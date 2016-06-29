@@ -15,7 +15,7 @@ export function addChildrenToProps(children, props) {
 	return props;
 }
 
-const NO_RENDER = 'NO_RENDER';
+export const NO_RENDER = 'NO_RENDER';
 
 // Runs only once in applications lifetime
 export const isBrowser = typeof window !== 'undefined' && window.document;

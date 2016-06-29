@@ -9,6 +9,63 @@
 	(global.InfernoDOM = factory());
 }(this, function () { 'use strict';
 
+	var babelHelpers = {};
+	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	  return typeof obj;
+	} : function (obj) {
+	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+	};
+
+	babelHelpers.classCallCheck = function (instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	};
+
+	babelHelpers.createClass = function () {
+	  function defineProperties(target, props) {
+	    for (var i = 0; i < props.length; i++) {
+	      var descriptor = props[i];
+	      descriptor.enumerable = descriptor.enumerable || false;
+	      descriptor.configurable = true;
+	      if ("value" in descriptor) descriptor.writable = true;
+	      Object.defineProperty(target, descriptor.key, descriptor);
+	    }
+	  }
+
+	  return function (Constructor, protoProps, staticProps) {
+	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	    if (staticProps) defineProperties(Constructor, staticProps);
+	    return Constructor;
+	  };
+	}();
+
+	babelHelpers.inherits = function (subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	  }
+
+	  subClass.prototype = Object.create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      enumerable: false,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+	  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	};
+
+	babelHelpers.possibleConstructorReturn = function (self, call) {
+	  if (!self) {
+	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	  }
+
+	  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+	};
+
+	babelHelpers;
+
 	function addChildrenToProps(children, props) {
 		if (!isNullOrUndefined(children)) {
 			var isChildrenArray = isArray(children);
@@ -25,6 +82,8 @@
 		return props;
 	}
 
+	var NO_RENDER = 'NO_RENDER';
+
 	// Runs only once in applications lifetime
 	var isBrowser = typeof window !== 'undefined' && window.document;
 
@@ -37,7 +96,7 @@
 	}
 
 	function isStringOrNumber(obj) {
-		return typeof obj === 'string' || typeof obj === 'number';
+		return isString(obj) || isNumber(obj);
 	}
 
 	function isNullOrUndefined(obj) {
@@ -54,6 +113,10 @@
 
 	function isString(obj) {
 		return typeof obj === 'string';
+	}
+
+	function isNumber(obj) {
+		return typeof obj === 'number';
 	}
 
 	function isNull(obj) {
@@ -172,6 +235,30 @@
 		}
 	}
 
+	function mountBlueprintAttrs(node, bp, dom, instance) {
+		handleSelects(node);
+		var attrs = node.attrs;
+
+		if (bp.attrKeys === null) {
+			var newKeys = Object.keys(attrs);
+			bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
+		}
+		var attrKeys = bp.attrKeys;
+
+		mountAttributes(node, attrs, attrKeys, dom, instance);
+	}
+
+	function mountBlueprintEvents(node, bp, dom) {
+		var events = node.events;
+
+		if (bp.eventKeys === null) {
+			bp.eventKeys = Object.keys(events);
+		}
+		var eventKeys = bp.eventKeys;
+
+		mountEvents(events, eventKeys, dom);
+	}
+
 	function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance) {
 		var tag = node.tag;
 
@@ -216,16 +303,7 @@
 		}
 
 		if (bp.hasAttrs === true) {
-			handleSelects(node);
-			var attrs = node.attrs;
-
-			if (bp.attrKeys === null) {
-				var newKeys = Object.keys(attrs);
-				bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
-			}
-			var attrKeys = bp.attrKeys;
-
-			mountAttributes(node, attrs, attrKeys, dom, instance);
+			mountBlueprintAttrs(node, bp, dom, instance);
 		}
 		if (bp.hasClassName === true) {
 			dom.className = node.className;
@@ -234,14 +312,7 @@
 			patchStyle(null, node.style, dom);
 		}
 		if (bp.hasEvents === true) {
-			var events = node.events;
-
-			if (bp.eventKeys === null) {
-				bp.eventKeys = Object.keys(events);
-			}
-			var eventKeys = bp.eventKeys;
-
-			mountEvents(events, eventKeys, dom);
+			mountBlueprintEvents(node, bp, dom);
 		}
 		if (parentDom !== null) {
 			parentDom.appendChild(dom);
@@ -465,6 +536,26 @@
 			}
 		}
 	}
+
+	function constructDefaults(string, object, value) {
+		/* eslint no-return-assign: 0 */
+		string.split(',').forEach(function (i) {
+			return object[i] = value;
+		});
+	}
+
+	var xlinkNS = 'http://www.w3.org/1999/xlink';
+	var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+	var strictProps = {};
+	var booleanProps = {};
+	var namespaces = {};
+	var isUnitlessNumber = {};
+
+	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+	constructDefaults('volume,value', strictProps, true);
+	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+	constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
 	function isVirtualFragment(obj) {
 		return !isNullOrUndefined(obj.append);
@@ -1171,24 +1262,6 @@
 		}
 	}
 
-	function constructDefaults(string, object, value) {
-		/* eslint no-return-assign: 0 */
-		string.split(',').forEach(function (i) {
-			return object[i] = value;
-		});
-	}
-
-	var xlinkNS = 'http://www.w3.org/1999/xlink';
-	var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-	var strictProps = {};
-	var booleanProps = {};
-	var namespaces = {};
-
-	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-	constructDefaults('volume,value', strictProps, true);
-	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-
 	function updateTextNode(dom, lastChildren, nextChildren) {
 		if (isStringOrNumber(lastChildren)) {
 			dom.firstChild.nodeValue = nextChildren;
@@ -1251,8 +1324,13 @@
 
 				for (var i = 0; i < styleKeys.length; i++) {
 					var style = styleKeys[i];
+					var value = nextAttrValue[style];
 
-					dom.style[style] = nextAttrValue[style];
+					if (isNumber(value) && !isUnitlessNumber[style]) {
+						dom.style[style] = value + 'px';
+					} else {
+						dom.style[style] = value;
+					}
 				}
 			}
 		} else if (isNullOrUndefined(nextAttrValue)) {
@@ -1262,11 +1340,14 @@
 
 			for (var _i = 0; _i < _styleKeys.length; _i++) {
 				var _style = _styleKeys[_i];
+				var _value = nextAttrValue[_style];
 
-				dom.style[_style] = nextAttrValue[_style];
+				if (isNumber(_value) && !isUnitlessNumber[_style]) {
+					dom.style[_style] = _value + 'px';
+				} else {
+					dom.style[_style] = _value;
+				}
 			}
-			// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
-			// TODO: needs performance benchmark
 			var lastStyleKeys = Object.keys(lastAttrValue);
 
 			for (var _i2 = 0; _i2 < lastStyleKeys.length; _i2++) {
@@ -1352,7 +1433,9 @@
 			instance.context = context;
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
-			if (!isInvalidNode(nextNode)) {
+			if (nextNode === NO_RENDER) {
+				instance._lastNode = lastNode;
+			} else if (!isInvalidNode(nextNode)) {
 				patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
@@ -1907,9 +1990,7 @@
 	function hydrateChild(child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
 		if (isStringOrNumber(child)) {
 			if (domNode.nodeType === 3 && child !== '') {
-				if (domNode.nodeValue !== child) {
-					domNode.nodeValue = child;
-				}
+				domNode.nodeValue = child;
 			} else {
 				var textNode = document.createTextNode(child);
 
@@ -2004,6 +2085,11 @@
 				debugger;
 			} else {
 				node.dom = domNode;
+				var hooks = node.hooks;
+
+				if (bp.hasHooks === true || !isNullOrUndefined(hooks)) {
+					handleAttachedHooks(hooks, lifecycle, domNode);
+				}
 				var children = node.children;
 
 				if (!isNullOrUndefined(children)) {
@@ -2032,6 +2118,34 @@
 								debugger;
 							}
 						}
+					}
+				}
+				var className = node.className;
+				var style = node.style;
+
+				if (!isNullOrUndefined(className)) {
+					domNode.className = className;
+				}
+				if (!isNullOrUndefined(style)) {
+					patchStyle(null, style, domNode);
+				}
+				if (bp && bp.hasAttrs === true) {
+					mountBlueprintAttrs(node, bp, domNode, instance);
+				} else {
+					var attrs = node.attrs;
+
+					if (!isNullOrUndefined(attrs)) {
+						handleSelects(node);
+						mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
+					}
+				}
+				if (bp && bp.hasEvents === true) {
+					mountBlueprintEvents(node, bp, domNode);
+				} else {
+					var events = node.events;
+
+					if (!isNullOrUndefined(events)) {
+						mountEvents(events, Object.keys(events), domNode);
 					}
 				}
 			}
