@@ -60,6 +60,12 @@ Helper for creating Inferno VNodes (similar to `React.createElement`):
 npm install --save inferno-create-element 
 ```
 
+Helper for creating Inferno Components via ES5 (similar to `React.createClass`):
+
+```sh
+npm install --save inferno-create-class
+```
+
 Server-side rendering package:
 
 ```sh
@@ -77,6 +83,7 @@ Pre-bundled files for browser consumption can be found on [our cdnjs](https://cd
 ```
 https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno.min.js
 https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-create-element.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-create-class.min.js
 https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-component.min.js
 https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-dom.min.js
 https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-server.min.js
