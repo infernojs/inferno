@@ -96,13 +96,13 @@ function renderNode(node, context, isRoot) {
 			outputAttrs.push('style="' + renderStyleToString(style) + '"');
 		}
 		const attrs = node.attrs;
-		let attrKeys = Object.keys(attrs);
+		let attrKeys = (attrs && Object.keys(attrs)) || [];
 
-		if (bp.hasAttrs === true) {
+		if (bp && bp.hasAttrs === true) {
 			attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
 		}
-		attrsKeys.forEach((attrsKey, i) => {
-			const attr = attrsKeys[i];
+		attrKeys.forEach((attrsKey, i) => {
+			const attr = attrKeys[i];
 
 			outputAttrs.push(attr + '="' + attrs[attr] + '"');
 		});

@@ -148,7 +148,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 			if (!isNullOrUndefined(style)) {
 				patchStyle(null, style, domNode);
 			}
-			if (bp.hasAttrs === true) {
+			if (bp && bp.hasAttrs === true) {
 				mountBlueprintAttrs(node, bp, domNode, instance);
 			} else {
 				const attrs = node.attrs;
@@ -158,7 +158,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 					mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
 				}
 			}
-			if (bp.hasEvents === true) {
+			if (bp && bp.hasEvents === true) {
 				mountBlueprintEvents(node, bp, domNode);
 			} else {
 				const events = node.events;
