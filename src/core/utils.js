@@ -15,6 +15,9 @@ export function addChildrenToProps(children, props) {
 	return props;
 }
 
+// Runs only once in applications lifetime
+export const isBrowser = typeof window !== 'undefined' && window.document;
+
 export function isArray(obj) {
 	return obj instanceof Array;
 }
