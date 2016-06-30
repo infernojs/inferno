@@ -2080,73 +2080,73 @@
 		} else {
 			if (domNode.nodeType !== 1 || tag !== domNode.tagName.toLowerCase()) {
 				// remake node
-				debugger;
+				// debugger;
 			} else {
-				node.dom = domNode;
-				var hooks = node.hooks;
+					node.dom = domNode;
+					var hooks = node.hooks;
 
-				if (bp.hasHooks === true || !isNullOrUndefined(hooks)) {
-					handleAttachedHooks(hooks, lifecycle, domNode);
-				}
-				var children = node.children;
+					if (bp.hasHooks === true || !isNullOrUndefined(hooks)) {
+						handleAttachedHooks(hooks, lifecycle, domNode);
+					}
+					var children = node.children;
 
-				if (!isNullOrUndefined(children)) {
-					if (isStringOrNumber(children)) {
-						if (domNode.textContent !== children) {
-							domNode.textContent = children;
-						}
-					} else {
-						var childNodes = getChildNodesWithoutComments(domNode);
-
-						if (isArray(children)) {
-							node.domChildren = childNodes;
-							if (childNodes.length === children.length) {
-								for (var i = 0; i < children.length; i++) {
-									hydrateChild(children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
-								}
-							} else {
-								// recreate children?
-								debugger;
+					if (!isNullOrUndefined(children)) {
+						if (isStringOrNumber(children)) {
+							if (domNode.textContent !== children) {
+								domNode.textContent = children;
 							}
 						} else {
-							if (childNodes.length === 1) {
-								hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
+							var childNodes = getChildNodesWithoutComments(domNode);
+
+							if (isArray(children)) {
+								node.domChildren = childNodes;
+								if (childNodes.length === children.length) {
+									for (var i = 0; i < children.length; i++) {
+										hydrateChild(children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
+									}
+								} else {
+									// recreate children?
+									// debugger;
+								}
 							} else {
-								// recreate child
-								debugger;
-							}
+									if (childNodes.length === 1) {
+										hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
+									} else {
+										// recreate child
+										// debugger;
+									}
+								}
+						}
+					}
+					var className = node.className;
+					var style = node.style;
+
+					if (!isNullOrUndefined(className)) {
+						domNode.className = className;
+					}
+					if (!isNullOrUndefined(style)) {
+						patchStyle(null, style, domNode);
+					}
+					if (bp && bp.hasAttrs === true) {
+						mountBlueprintAttrs(node, bp, domNode, instance);
+					} else {
+						var attrs = node.attrs;
+
+						if (!isNullOrUndefined(attrs)) {
+							handleSelects(node);
+							mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
+						}
+					}
+					if (bp && bp.hasEvents === true) {
+						mountBlueprintEvents(node, bp, domNode);
+					} else {
+						var events = node.events;
+
+						if (!isNullOrUndefined(events)) {
+							mountEvents(events, Object.keys(events), domNode);
 						}
 					}
 				}
-				var className = node.className;
-				var style = node.style;
-
-				if (!isNullOrUndefined(className)) {
-					domNode.className = className;
-				}
-				if (!isNullOrUndefined(style)) {
-					patchStyle(null, style, domNode);
-				}
-				if (bp && bp.hasAttrs === true) {
-					mountBlueprintAttrs(node, bp, domNode, instance);
-				} else {
-					var attrs = node.attrs;
-
-					if (!isNullOrUndefined(attrs)) {
-						handleSelects(node);
-						mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
-					}
-				}
-				if (bp && bp.hasEvents === true) {
-					mountBlueprintEvents(node, bp, domNode);
-				} else {
-					var events = node.events;
-
-					if (!isNullOrUndefined(events)) {
-						mountEvents(events, Object.keys(events), domNode);
-					}
-				}
-			}
 		}
 	}
 

@@ -101,7 +101,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 			tag !== domNode.tagName.toLowerCase()
 		) {
 			// remake node
-			debugger;
+			// debugger;
 		} else {
 			node.dom = domNode;
 			const hooks = node.hooks;
@@ -127,14 +127,14 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 							}
 						} else {
 							// recreate children?
-							debugger;
+							// debugger;
 						}
 					} else {
 						if (childNodes.length === 1) {
 							hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
 						} else {
 							// recreate child
-							debugger;
+							// debugger;
 						}
 					}
 				}

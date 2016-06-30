@@ -340,7 +340,7 @@
 
 	function extend(base, props, all) {
 		for (var key in props) {
-			if (all === true || props[key] != null) {
+			if (all === true || !isNullOrUndefined(props[key])) {
 				base[key] = props[key];
 			}
 		}
@@ -357,7 +357,7 @@
 	}
 
 	function createClass(obj) {
-		function cl(props) {
+		function Cl(props) {
 			extend(this, obj);
 			Component.call(this, props);
 			bindAll(this);
@@ -367,10 +367,10 @@
 		}
 
 		F.prototype = Component.prototype;
-		cl.prototype = new F();
-		cl.prototype.constructor = cl;
-		cl.displayName = obj.displayName || 'Component';
-		return cl;
+		Cl.prototype = new F();
+		Cl.prototype.constructor = Cl;
+		Cl.displayName = obj.displayName || 'Component';
+		return Cl;
 	}
 
 	return createClass;

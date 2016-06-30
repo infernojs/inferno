@@ -1,4 +1,5 @@
 import Component from './es2015';
+import { isNullOrUndefined } from '../core/utils';
 
 // don't autobind these methods since they already have guaranteed context.
 const AUTOBIND_BLACKLIST = {
@@ -18,7 +19,7 @@ function F() {}
 
 function extend(base, props, all) {
 	for (let key in props) {
-		if (all === true || props[key] != null) {
+		if (all === true || !isNullOrUndefined(props[key])) {
 			base[key] = props[key];
 		}
 	}
@@ -35,7 +36,7 @@ function bindAll(ctx) {
 }
 
 export default function createClass(obj) {
-	function cl(props) {
+	function Cl(props) {
 		extend(this, obj);
 		Component.call(this, props);
 		bindAll(this);
@@ -45,8 +46,8 @@ export default function createClass(obj) {
 	}
 
 	F.prototype = Component.prototype;
-	cl.prototype = new F();
-	cl.prototype.constructor = cl;
-	cl.displayName = obj.displayName || 'Component';
-	return cl;
+	Cl.prototype = new F();
+	Cl.prototype.constructor = Cl;
+	Cl.displayName = obj.displayName || 'Component';
+	return Cl;
 }
