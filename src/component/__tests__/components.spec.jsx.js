@@ -2101,7 +2101,6 @@ describe('Components (JSX)', () => {
 
 
 		it('Should have correct props when nested component updates (github#240)', () => {
-
 			class A extends Component {
 				constructor(props) {
 					super(props);
@@ -2167,6 +2166,18 @@ describe('Components (JSX)', () => {
 
 			// Note => there should be: Buu two, not: Buu Three, props are messed up when nested component updates
 			expect(container.innerHTML).to.equal('<div><div><span>bar</span><a>one</a></div><div><span>buu</span><a>two</a></div><div><span>bar</span><a>three</a></div></div>');
+		});
+	});
+	describe('Handling of different primatives', () => {
+		it('Should correctly handle boolean values (github#255)', () => {
+			const Todo = ({ todo }) => (
+				<tr> <td>{todo.id}</td> <td>{todo.desc}</td> <td>{todo.done}</td> </tr>
+			);
+
+			render(<Todo todo={ { done: false } } />, container);
+			expect(container.innerHTML).to.equal('<tr> <td></td> <td></td> <td></td> </tr>');
+			render(<Todo todo={ { done: true } } />, container);
+			expect(container.innerHTML).to.equal('<tr> <td></td> <td></td> <td></td> </tr>');
 		});
 	});
 });
