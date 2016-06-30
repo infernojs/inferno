@@ -2168,7 +2168,30 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div><div><span>bar</span><a>one</a></div><div><span>buu</span><a>two</a></div><div><span>bar</span><a>three</a></div></div>');
 		});
 	});
-	describe('Handling of different primatives', () => {
+	describe('handling of sCU', () => {
+		let instance;
+		class Test extends Component {
+			shouldComponentUpdate() {
+				return false;
+			}
+			render() {
+				instance = this;
+				return <div>{ this.props.foo }</div>;
+			}
+		}
+
+		it('should correctly render once but never again', () => {
+			render(<Test foo="bar" />, container);
+			expect(container.innerHTML).to.equal('<div>bar</div>');
+			render(<Test foo="yar" />, container);
+			expect(container.innerHTML).to.equal('<div>bar</div>');
+			instance.setState({ foo: 'woo' });
+			expect(container.innerHTML).to.equal('<div>bar</div>');
+			render(null, container);
+			expect(container.innerHTML).to.equal('');
+		});
+	});
+	describe('handling of different primatives', () => {
 		it('Should correctly handle boolean values (github#255)', () => {
 			const Todo = ({ todo }) => (
 				<tr> <td>{todo.id}</td> <td>{todo.desc}</td> <td>{todo.done}</td> </tr>

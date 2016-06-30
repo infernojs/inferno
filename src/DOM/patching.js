@@ -175,9 +175,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 		instance.context = context;
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
-		if (nextNode === NO_RENDER) {
-			instance._lastNode = lastNode;
-		} else if (!isInvalidNode(nextNode)) {
+		if (!isInvalidNode(nextNode) && nextNode !== NO_RENDER) {
 			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
