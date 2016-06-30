@@ -1,5 +1,5 @@
 /*!
- * inferno-create-element v0.7.12
+ * inferno-create-element v0.7.13
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -75,7 +75,7 @@
 	}
 
 	function isInvalidNode(obj) {
-		return isNull(obj) || obj === false || obj === void 0;
+		return isNull(obj) || obj === false || obj === true || obj === void 0;
 	}
 
 	function isFunction(obj) {

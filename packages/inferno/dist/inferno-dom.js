@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.12
+ * inferno-dom v0.7.13
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -104,7 +104,7 @@
 	}
 
 	function isInvalidNode(obj) {
-		return isNull(obj) || obj === false || obj === void 0;
+		return isNull(obj) || obj === false || obj === true || obj === void 0;
 	}
 
 	function isFunction(obj) {
@@ -1433,9 +1433,7 @@
 			instance.context = context;
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
-			if (nextNode === NO_RENDER) {
-				instance._lastNode = lastNode;
-			} else if (!isInvalidNode(nextNode)) {
+			if (!isInvalidNode(nextNode) && nextNode !== NO_RENDER) {
 				patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
