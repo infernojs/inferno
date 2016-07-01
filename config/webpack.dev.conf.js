@@ -19,12 +19,6 @@ module.exports = {
 	},
 	module: {
 		loaders: [
-			// Use imports loader to hack webpacking sinon.
-			// https://github.com/webpack/webpack/issues/177
-			{
-				test: /sinon\.js/,
-				loader: 'imports?define=>false,require=>false'
-			},
 			// Perform babel transpiling on all non-source, test files.
 			{
 				test: /\.js$/,

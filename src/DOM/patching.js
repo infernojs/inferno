@@ -48,7 +48,6 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 			dom = lastInput.dom;
 		} else {
 			// TODO
-			// debugger;
 		}
 		replaceNode(parentDom, nextInput.dom, dom);
 	} else {

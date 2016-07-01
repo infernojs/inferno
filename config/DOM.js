@@ -1,6 +1,4 @@
 /* eslint-disable */
-
-var sinonChai = require('sinon-chai');
 var jsdom = require('jsdom');
 
 // Setup the jsdom environment
@@ -13,8 +11,6 @@ global.usingJSDOM = true;
 global.chai = require('chai');
 global.expect = global.chai.expect;
 global.sinon = require('sinon');
-
-chai.use(sinonChai);
 
 //JSDOM doesn't support localStrage by default, so lets just fake it..
 if (!global.window.localStorage) {

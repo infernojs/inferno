@@ -100,7 +100,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 			domNode.nodeType !== 1 ||
 			tag !== domNode.tagName.toLowerCase()
 		) {
-			// remake node
+			// TODO: remake node
 			// debugger;
 		} else {
 			node.dom = domNode;
@@ -126,14 +126,14 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 								hydrateChild(children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
 							}
 						} else {
-							// recreate children?
+							// TODO: recreate children?
 							// debugger;
 						}
 					} else {
 						if (childNodes.length === 1) {
 							hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
 						} else {
-							// recreate child
+							// TODO: recreate child
 							// debugger;
 						}
 					}

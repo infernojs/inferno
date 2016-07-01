@@ -1,6 +1,7 @@
 import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
 import { createBlueprint } from './../../core/createBlueprint';
+const sinon = require('sinon/pkg/sinon');
 
 const Inferno = {
 	createBlueprint

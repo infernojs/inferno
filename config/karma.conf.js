@@ -2,21 +2,17 @@
 module.exports = function (config) {
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: '../',
+		basePath: '',
 		// frameworks to use
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
 		frameworks: [
-			'commonjs',
-			'sinon-chai',
-			'sinon',
-			'chai-as-promised',
 			'chai',
 			'mocha'
 		],
 		files: [
-            'node_modules/babel-polyfill/dist/polyfill.js',
-            './src/**',
-			'./tools/**'
+            './../node_modules/babel-polyfill/dist/polyfill.js',
+			'./../node_modules/sinon/pkg/sinon.js',
+            './../src/**/__tests__/**'
 		],
 		// Start these browsers, currently available:
 		// - Chrome
@@ -36,18 +32,58 @@ module.exports = function (config) {
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
-			'./src/**': ['babel', 'commonjs'],
-			'./tools/**': ['babel', 'commonjs']
+			'./../src/**/__tests__/**': ['webpack'],
 		},
-		babelPreprocessor: {
-			options: {
-				presets: ['es2015'],
-				plugins: [
-					'transform-object-rest-spread',
-					'babel-plugin-syntax-jsx',
-					'babel-plugin-inferno'
-				]
-				//	sourceMap: 'inline'
+		webpack: {
+			module: {
+				loaders: [
+					{
+						test: /\.js/,
+						loader: 'babel-loader',
+						exclude: /node_modules/,
+						query: {
+							presets: ['es2015'],
+							plugins: [
+								'transform-object-rest-spread',
+								'babel-plugin-syntax-jsx',
+								'babel-plugin-inferno'
+							]
+						},
+					},
+				],
+			}
+		},
+		webpackMiddleware: {
+			noInfo: false,
+			stats: {
+				// With console colors
+				colors: true,
+				// Add the hash of the compilation
+				hash: false,
+				// Add webpack version information
+				version: false,
+				// Add timing information
+				timings: true,
+				// Add assets information
+				assets: false,
+				// Add chunk information
+				chunks: false,
+				// Add built modules information to chunk information
+				chunkModules: false,
+				// Add built modules information
+				modules: false,
+				// Add also information about cached (not built) modules
+				cached: false,
+				// Add information about the reasons why modules are included
+				reasons: false,
+				// Add the source code of modules
+				source: false,
+				// Add details to errors (like resolving log)
+				errorDetails: true,
+				// Add the origins of chunks and chunk merging info
+				chunkOrigins: false,
+				// Add messages from child loaders
+				children: false
 			}
 		},
 		// test results reporter to use
