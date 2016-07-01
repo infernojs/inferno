@@ -33,11 +33,11 @@ export function isStringOrNumber(obj) {
 }
 
 export function isNullOrUndefined(obj) {
-	return obj === undefined || isNull(obj);
+	return isUndefined(obj) || isNull(obj);
 }
 
 export function isInvalidNode(obj) {
-	return isNull(obj) || obj === false || obj === true || obj === undefined;
+	return isNull(obj) || obj === false || obj === true || isUndefined(obj);
 }
 
 export function isFunction(obj) {
@@ -58,6 +58,10 @@ export function isNumber(obj) {
 
 export function isNull(obj) {
 	return obj === null;
+}
+
+export function isUndefined(obj) {
+	return obj === undefined;
 }
 
 export function isAttrAHook(hook) {

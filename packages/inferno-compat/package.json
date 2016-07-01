@@ -1,8 +1,8 @@
 {
-  "name": "inferno-dom",
-  "version": "0.7.13",
+  "name": "inferno-compat",
+  "version": "0.7.9",
   "license": "MIT",
-  "description": "Provides methods to render DOM nodes from Inferno elements",
+  "description": "Provides a compatibility with React codebases",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -11,7 +11,7 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-dom.js",
+  "main": "inferno-compat.js",
   "keywords": [
     "babel",
     "react",
@@ -21,7 +21,7 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.7.13"
-  },
-  "repository": "https://github.com/trueadm/inferno"
+    "inferno": "^0.7.9",
+    "proptypes": "^0.14.3"
+  }
 }

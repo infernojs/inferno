@@ -7,6 +7,10 @@ import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
+import commonjs from 'rollup-plugin-commonjs';
+
+const pkg = JSON.parse(fs.readFileSync('./package.json'));
+const external = Object.keys(pkg.peerDependencies || {}).concat(Object.keys(pkg.dependencies || {}));
 
 const plugins = [
 	babel({
@@ -22,7 +26,12 @@ const plugins = [
 	}),
 	nodeResolve({
 		jsnext: true,
-		main: true
+		main: true,
+		skip: external
+	}),
+	commonjs({
+		include: 'node_modules/**',
+		exclude: '**/*.css'
 	}),
 	replace({
 		'process.env.NODE_ENV': JSON.stringify('production'),
@@ -82,6 +91,11 @@ const bundles = [
 		moduleName: 'inferno-create-element',
 		moduleEntry: 'packages/inferno-create-element/src/index.js'
 	},
+	{
+		moduleGlobal: 'InfernoCompat',
+		moduleName: 'inferno-compat',
+		moduleEntry: 'packages/inferno-compat/src/index.js'
+	}, 
 	{
 		moduleGlobal: 'InfernoRouter',
 		moduleName: 'inferno-router',
