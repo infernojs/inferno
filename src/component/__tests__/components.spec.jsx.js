@@ -2168,6 +2168,80 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div><div><span>bar</span><a>one</a></div><div><span>buu</span><a>two</a></div><div><span>bar</span><a>three</a></div></div>');
 		});
 	});
+
+	it('Should handle nested component without errors', () => {
+		let toggleParent = null;
+		let toggleChild = null;
+
+		class Parent extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					active: true
+				};
+
+				this.toggle = this.toggle.bind(this);
+				toggleParent = this.toggle; // For the sake of test
+			}
+
+			toggle() {
+				this.setState({
+					active: !this.state.active
+				});
+			}
+
+			render() {
+				let content = null;
+				if (this.state.active) {
+					content = this.props.children;
+				}
+
+				return (
+					<div>
+						<span>A</span>
+						{content}
+					</div>
+				)
+			}
+		}
+
+		class Child extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					active: true
+				};
+
+				this.toggle = this.toggle.bind(this);
+				toggleChild = this.toggle; // For the sake of test
+			}
+
+			toggle() {
+				this.setState({
+					active: !this.state.active
+				});
+			}
+
+			render() {
+				if (this.state.active) {
+					return <span>2</span>;
+				}
+
+				return <div>1</div>;
+			}
+		}
+
+		render(<Parent><Child /></Parent>, container);
+		expect(container.innerHTML).to.equal('<div><span>A</span><span>2</span></div>');
+		toggleChild();
+		expect(container.innerHTML).to.equal('<div><span>A</span><div>1</div></div>');
+		toggleParent();
+		expect(container.innerHTML).to.equal('<div>A</div>');
+
+	});
+
 	describe('handling of sCU', () => {
 		let instance;
 		class Test extends Component {
