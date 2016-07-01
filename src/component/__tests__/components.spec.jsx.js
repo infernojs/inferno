@@ -2167,79 +2167,105 @@ describe('Components (JSX)', () => {
 			// Note => there should be: Buu two, not: Buu Three, props are messed up when nested component updates
 			expect(container.innerHTML).to.equal('<div><div><span>bar</span><a>one</a></div><div><span>buu</span><a>two</a></div><div><span>bar</span><a>three</a></div></div>');
 		});
-	});
 
-	it('Should handle nested component without errors', () => {
-		let toggleParent = null;
-		let toggleChild = null;
+		it('Should update without errors', () => {
+			let toggleParent = null;
+			let toggleChild = null;
 
-		class Parent extends Component {
-			constructor(props) {
-				super(props);
+			class Parent extends Component {
+				constructor(props) {
+					super(props);
 
-				this.state = {
-					active: true
-				};
+					this.state = {
+						active: true
+					};
 
-				this.toggle = this.toggle.bind(this);
-				toggleParent = this.toggle; // For the sake of test
-			}
-
-			toggle() {
-				this.setState({
-					active: !this.state.active
-				});
-			}
-
-			render() {
-				let content = null;
-				if (this.state.active) {
-					content = this.props.children;
+					this.toggle = this.toggle.bind(this);
+					toggleParent = this.toggle; // For the sake of test
 				}
 
-				return (
-					<div>
-						<span>A</span>
-						{content}
-					</div>
-				)
-			}
-		}
-
-		class Child extends Component {
-			constructor(props) {
-				super(props);
-
-				this.state = {
-					active: true
-				};
-
-				this.toggle = this.toggle.bind(this);
-				toggleChild = this.toggle; // For the sake of test
-			}
-
-			toggle() {
-				this.setState({
-					active: !this.state.active
-				});
-			}
-
-			render() {
-				if (this.state.active) {
-					return <span>2</span>;
+				toggle() {
+					this.setState({
+						active: !this.state.active
+					});
 				}
 
-				return <div>1</div>;
+				render() {
+					let content = null;
+					if (this.state.active) {
+						content = this.props.children;
+					}
+
+					return (
+						<div>
+							<span>A</span>
+							{content}
+						</div>
+					)
+				}
 			}
-		}
 
-		render(<Parent><Child /></Parent>, container);
-		expect(container.innerHTML).to.equal('<div><span>A</span><span>2</span></div>');
-		toggleChild();
-		expect(container.innerHTML).to.equal('<div><span>A</span><div>1</div></div>');
-		toggleParent();
-		expect(container.innerHTML).to.equal('<div>A</div>');
+			class Child extends Component {
+				constructor(props) {
+					super(props);
 
+					this.state = {
+						active: true
+					};
+
+					this.toggle = this.toggle.bind(this);
+					toggleChild = this.toggle; // For the sake of test
+				}
+
+				toggle() {
+					this.setState({
+						active: !this.state.active
+					});
+				}
+
+				render() {
+					if (this.state.active) {
+						return <span>2</span>;
+					}
+
+					return <div>1</div>;
+				}
+			}
+
+			render(<Parent><Child /></Parent>, container);
+			expect(container.innerHTML).to.equal('<div><span>A</span><span>2</span></div>');
+			toggleChild();
+			expect(container.innerHTML).to.equal('<div><span>A</span><div>1</div></div>');
+			toggleParent();
+			expect(container.innerHTML).to.equal('<div>A</div>');
+		});
+
+		it('Should trigger componentWillUnmount once for child', () => {
+			class Parent extends Component {
+				render() {
+					return (
+						<div>
+							<span>A</span>
+							{this.props.children}
+						</div>
+					)
+				}
+			}
+
+			class Child extends Component {
+				render() {
+					return <div>1</div>;
+				}
+			}
+
+			render(<Parent><Child /></Parent>, container);
+			expect(container.innerHTML).to.equal('<div><span>A</span><div>1</div></div>');
+
+			const calledOnce = sinon.assert.calledOnce;
+			const spy = sinon.spy(Child.prototype, 'componentWillUnmount');
+			render(null, container);
+			calledOnce(spy); // Should be called once not twice
+		});
 	});
 
 	describe('handling of sCU', () => {
