@@ -4,243 +4,298 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.InfernoServer = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.InfernoServer = factory());
 }(this, function () { 'use strict';
 
-  function addChildrenToProps(children, props) {
-  	if (!isNullOrUndefined(children)) {
-  		var isChildrenArray = isArray(children);
-  		if (isChildrenArray && children.length > 0 || !isChildrenArray) {
-  			if (props) {
-  				props = Object.assign({}, props, { children: children });
-  			} else {
-  				props = {
-  					children: children
-  				};
-  			}
-  		}
-  	}
-  	return props;
-  }
+	var babelHelpers = {};
+	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	  return typeof obj;
+	} : function (obj) {
+	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+	};
 
-  // Runs only once in applications lifetime
-  var isBrowser = typeof window !== 'undefined' && window.document;
+	babelHelpers.classCallCheck = function (instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	};
 
-  function isArray(obj) {
-  	return obj instanceof Array;
-  }
+	babelHelpers.createClass = function () {
+	  function defineProperties(target, props) {
+	    for (var i = 0; i < props.length; i++) {
+	      var descriptor = props[i];
+	      descriptor.enumerable = descriptor.enumerable || false;
+	      descriptor.configurable = true;
+	      if ("value" in descriptor) descriptor.writable = true;
+	      Object.defineProperty(target, descriptor.key, descriptor);
+	    }
+	  }
 
-  function isStatefulComponent(obj) {
-  	return obj.prototype.render !== void 0;
-  }
+	  return function (Constructor, protoProps, staticProps) {
+	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	    if (staticProps) defineProperties(Constructor, staticProps);
+	    return Constructor;
+	  };
+	}();
 
-  function isStringOrNumber(obj) {
-  	return isString(obj) || isNumber(obj);
-  }
+	babelHelpers.inherits = function (subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	  }
 
-  function isNullOrUndefined(obj) {
-  	return obj === void 0 || isNull(obj);
-  }
+	  subClass.prototype = Object.create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      enumerable: false,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+	  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	};
 
-  function isInvalidNode(obj) {
-  	return isNull(obj) || obj === false || obj === true || obj === void 0;
-  }
+	babelHelpers.possibleConstructorReturn = function (self, call) {
+	  if (!self) {
+	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	  }
 
-  function isFunction(obj) {
-  	return typeof obj === 'function';
-  }
+	  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+	};
 
-  function isString(obj) {
-  	return typeof obj === 'string';
-  }
+	babelHelpers;
 
-  function isNumber(obj) {
-  	return typeof obj === 'number';
-  }
+	function addChildrenToProps(children, props) {
+		if (!isNullOrUndefined(children)) {
+			var isChildrenArray = isArray(children);
+			if (isChildrenArray && children.length > 0 || !isChildrenArray) {
+				if (props) {
+					props = Object.assign({}, props, { children: children });
+				} else {
+					props = {
+						children: children
+					};
+				}
+			}
+		}
+		return props;
+	}
 
-  function isNull(obj) {
-  	return obj === null;
-  }
+	// Runs only once in applications lifetime
+	var isBrowser = typeof window !== 'undefined' && window.document;
 
-  var screenWidth = isBrowser && window.screen.width;
-  var screenHeight = isBrowser && window.screen.height;
-  var scrollX = 0;
-  var scrollY = 0;
-  var lastScrollTime = 0;
+	function isArray(obj) {
+		return obj instanceof Array;
+	}
 
-  if (isBrowser) {
-  	window.onscroll = function (e) {
-  		scrollX = window.scrollX;
-  		scrollY = window.scrollY;
-  		lastScrollTime = performance.now();
-  	};
+	function isStatefulComponent(obj) {
+		return obj.prototype.render !== void 0;
+	}
 
-  	window.resize = function (e) {
-  		scrollX = window.scrollX;
-  		scrollY = window.scrollY;
-  		screenWidth = window.screen.width;
-  		screenHeight = window.screen.height;
-  		lastScrollTime = performance.now();
-  	};
-  }
+	function isStringOrNumber(obj) {
+		return isString(obj) || isNumber(obj);
+	}
 
-  function constructDefaults(string, object, value) {
-  	/* eslint no-return-assign: 0 */
-  	string.split(',').forEach(function (i) {
-  		return object[i] = value;
-  	});
-  }
+	function isNullOrUndefined(obj) {
+		return isUndefined(obj) || isNull(obj);
+	}
 
-  var xlinkNS = 'http://www.w3.org/1999/xlink';
-  var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-  var strictProps = {};
-  var booleanProps = {};
-  var namespaces = {};
-  var isUnitlessNumber = {};
+	function isInvalidNode(obj) {
+		return isNull(obj) || obj === false || obj === true || isUndefined(obj);
+	}
 
-  constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-  constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-  constructDefaults('volume,value', strictProps, true);
-  constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-  constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+	function isFunction(obj) {
+		return typeof obj === 'function';
+	}
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-  };
+	function isString(obj) {
+		return typeof obj === 'string';
+	}
 
-  function renderComponent(Component, props, children, context, isRoot) {
-  	props = addChildrenToProps(children, props);
+	function isNumber(obj) {
+		return typeof obj === 'number';
+	}
 
-  	if (isStatefulComponent(Component)) {
-  		var instance = new Component(props);
-  		var childContext = instance.getChildContext();
+	function isNull(obj) {
+		return obj === null;
+	}
 
-  		if (!isNullOrUndefined(childContext)) {
-  			context = Object.assign({}, context, childContext);
-  		}
-  		instance.context = context;
-  		// Block setting state - we should render only once, using latest state
-  		instance._pendingSetState = true;
-  		instance.componentWillMount();
-  		var node = instance.render();
+	function isUndefined(obj) {
+		return obj === void 0;
+	}
 
-  		instance._pendingSetState = false;
-  		return renderNode(node, context, isRoot);
-  	} else {
-  		return renderNode(Component(props), context, isRoot);
-  	}
-  }
+	var screenWidth = isBrowser && window.screen.width;
+	var screenHeight = isBrowser && window.screen.height;
+	var scrollX = 0;
+	var scrollY = 0;
+	var lastScrollTime = 0;
 
-  function renderChildren(children, context) {
-  	if (children && isArray(children)) {
-  		var childrenResult = [];
-  		var insertComment = false;
+	if (isBrowser) {
+		window.onscroll = function (e) {
+			scrollX = window.scrollX;
+			scrollY = window.scrollY;
+			lastScrollTime = performance.now();
+		};
 
-  		for (var i = 0; i < children.length; i++) {
-  			var child = children[i];
+		window.resize = function (e) {
+			scrollX = window.scrollX;
+			scrollY = window.scrollY;
+			screenWidth = window.screen.width;
+			screenHeight = window.screen.height;
+			lastScrollTime = performance.now();
+		};
+	}
 
-  			if (isStringOrNumber(child)) {
-  				if (insertComment === true) {
-  					childrenResult.push('<!-- -->');
-  				}
-  				childrenResult.push(child);
-  				insertComment = true;
-  			} else {
-  				insertComment = false;
-  				childrenResult.push(renderNode(child, context, false));
-  			}
-  		}
-  		return childrenResult.join('');
-  	} else if (!isInvalidNode(children)) {
-  		if (isStringOrNumber(children)) {
-  			return children;
-  		} else {
-  			return renderNode(children, context, false) || '';
-  		}
-  	}
-  	return '';
-  }
+	function constructDefaults(string, object, value) {
+		/* eslint no-return-assign: 0 */
+		string.split(',').forEach(function (i) {
+			return object[i] = value;
+		});
+	}
 
-  function toHyphenCase(str) {
-  	return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
-  }
+	var xlinkNS = 'http://www.w3.org/1999/xlink';
+	var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+	var strictProps = {};
+	var booleanProps = {};
+	var namespaces = {};
+	var isUnitlessNumber = {};
 
-  function renderStyleToString(style) {
-  	if (isStringOrNumber(style)) {
-  		return style;
-  	} else {
-  		var styles = [];
-  		var keys = Object.keys(style);
+	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+	constructDefaults('volume,value', strictProps, true);
+	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+	constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-  		for (var i = 0; i < keys.length; i++) {
-  			var styleName = keys[i];
-  			var value = style[styleName];
-  			var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+	function renderComponent(Component, props, children, context, isRoot) {
+		props = addChildrenToProps(children, props);
 
-  			if (!isNullOrUndefined(value)) {
-  				styles.push(toHyphenCase(styleName) + ':' + value + px + ';');
-  			}
-  		}
-  		return styles.join();
-  	}
-  }
+		if (isStatefulComponent(Component)) {
+			var instance = new Component(props);
+			var childContext = instance.getChildContext();
 
-  function renderNode(node, context, isRoot) {
-  	if (!isInvalidNode(node)) {
-  		var _ret = function () {
-  			var bp = node.bp;
-  			var tag = node.tag || bp && bp.tag;
-  			var outputAttrs = [];
-  			var className = node.className;
-  			var style = node.style;
+			if (!isNullOrUndefined(childContext)) {
+				context = Object.assign({}, context, childContext);
+			}
+			instance.context = context;
+			// Block setting state - we should render only once, using latest state
+			instance._pendingSetState = true;
+			instance.componentWillMount();
+			var node = instance.render();
 
-  			if (isFunction(tag)) {
-  				return {
-  					v: renderComponent(tag, node.attrs, node.children, context, isRoot)
-  				};
-  			}
-  			if (!isNullOrUndefined(className)) {
-  				outputAttrs.push('class="' + className + '"');
-  			}
-  			if (!isNullOrUndefined(style)) {
-  				outputAttrs.push('style="' + renderStyleToString(style) + '"');
-  			}
-  			var attrs = node.attrs;
-  			var attrKeys = attrs && Object.keys(attrs) || [];
+			instance._pendingSetState = false;
+			return renderNode(node, context, isRoot);
+		} else {
+			return renderNode(Component(props), context, isRoot);
+		}
+	}
 
-  			if (bp && bp.hasAttrs === true) {
-  				attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
-  			}
-  			attrKeys.forEach(function (attrsKey, i) {
-  				var attr = attrKeys[i];
+	function renderChildren(children, context) {
+		if (children && isArray(children)) {
+			var childrenResult = [];
+			var insertComment = false;
 
-  				outputAttrs.push(attr + '="' + attrs[attr] + '"');
-  			});
+			for (var i = 0; i < children.length; i++) {
+				var child = children[i];
 
-  			if (isRoot) {
-  				outputAttrs.push('data-infernoroot');
-  			}
-  			return {
-  				v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + renderChildren(node.children, context) + '</' + tag + '>'
-  			};
-  		}();
+				if (isStringOrNumber(child)) {
+					if (insertComment === true) {
+						childrenResult.push('<!-- -->');
+					}
+					childrenResult.push(child);
+					insertComment = true;
+				} else {
+					insertComment = false;
+					childrenResult.push(renderNode(child, context, false));
+				}
+			}
+			return childrenResult.join('');
+		} else if (!isInvalidNode(children)) {
+			if (isStringOrNumber(children)) {
+				return children;
+			} else {
+				return renderNode(children, context, false) || '';
+			}
+		}
+		return '';
+	}
 
-  		if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
-  	}
-  }
+	function toHyphenCase(str) {
+		return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+	}
 
-  function renderToString(node, noMetadata) {
-  	return renderNode(node, null, !noMetadata);
-  }
+	function renderStyleToString(style) {
+		if (isStringOrNumber(style)) {
+			return style;
+		} else {
+			var styles = [];
+			var keys = Object.keys(style);
 
-  var index = {
-  	renderToString: renderToString
-  };
+			for (var i = 0; i < keys.length; i++) {
+				var styleName = keys[i];
+				var value = style[styleName];
+				var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
-  return index;
+				if (!isNullOrUndefined(value)) {
+					styles.push(toHyphenCase(styleName) + ':' + value + px + ';');
+				}
+			}
+			return styles.join();
+		}
+	}
+
+	function renderNode(node, context, isRoot) {
+		if (!isInvalidNode(node)) {
+			var _ret = function () {
+				var bp = node.bp;
+				var tag = node.tag || bp && bp.tag;
+				var outputAttrs = [];
+				var className = node.className;
+				var style = node.style;
+
+				if (isFunction(tag)) {
+					return {
+						v: renderComponent(tag, node.attrs, node.children, context, isRoot)
+					};
+				}
+				if (!isNullOrUndefined(className)) {
+					outputAttrs.push('class="' + className + '"');
+				}
+				if (!isNullOrUndefined(style)) {
+					outputAttrs.push('style="' + renderStyleToString(style) + '"');
+				}
+				var attrs = node.attrs;
+				var attrKeys = attrs && Object.keys(attrs) || [];
+
+				if (bp && bp.hasAttrs === true) {
+					attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
+				}
+				attrKeys.forEach(function (attrsKey, i) {
+					var attr = attrKeys[i];
+
+					outputAttrs.push(attr + '="' + attrs[attr] + '"');
+				});
+
+				if (isRoot) {
+					outputAttrs.push('data-infernoroot');
+				}
+				return {
+					v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + renderChildren(node.children, context) + '</' + tag + '>'
+				};
+			}();
+
+			if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
+		}
+	}
+
+	function renderToString(node, noMetadata) {
+		return renderNode(node, null, !noMetadata);
+	}
+
+	var index = {
+		renderToString: renderToString
+	};
+
+	return index;
 
 }));

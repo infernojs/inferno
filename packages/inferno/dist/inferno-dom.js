@@ -9,6 +9,63 @@
 	(global.InfernoDOM = factory());
 }(this, function () { 'use strict';
 
+	var babelHelpers = {};
+	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	  return typeof obj;
+	} : function (obj) {
+	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+	};
+
+	babelHelpers.classCallCheck = function (instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	};
+
+	babelHelpers.createClass = function () {
+	  function defineProperties(target, props) {
+	    for (var i = 0; i < props.length; i++) {
+	      var descriptor = props[i];
+	      descriptor.enumerable = descriptor.enumerable || false;
+	      descriptor.configurable = true;
+	      if ("value" in descriptor) descriptor.writable = true;
+	      Object.defineProperty(target, descriptor.key, descriptor);
+	    }
+	  }
+
+	  return function (Constructor, protoProps, staticProps) {
+	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	    if (staticProps) defineProperties(Constructor, staticProps);
+	    return Constructor;
+	  };
+	}();
+
+	babelHelpers.inherits = function (subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	  }
+
+	  subClass.prototype = Object.create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      enumerable: false,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+	  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	};
+
+	babelHelpers.possibleConstructorReturn = function (self, call) {
+	  if (!self) {
+	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	  }
+
+	  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+	};
+
+	babelHelpers;
+
 	function addChildrenToProps(children, props) {
 		if (!isNullOrUndefined(children)) {
 			var isChildrenArray = isArray(children);
@@ -43,11 +100,11 @@
 	}
 
 	function isNullOrUndefined(obj) {
-		return obj === void 0 || isNull(obj);
+		return isUndefined(obj) || isNull(obj);
 	}
 
 	function isInvalidNode(obj) {
-		return isNull(obj) || obj === false || obj === true || obj === void 0;
+		return isNull(obj) || obj === false || obj === true || isUndefined(obj);
 	}
 
 	function isFunction(obj) {
@@ -64,6 +121,10 @@
 
 	function isNull(obj) {
 		return obj === null;
+	}
+
+	function isUndefined(obj) {
+		return obj === void 0;
 	}
 
 	function isPromise(obj) {
@@ -2024,71 +2085,71 @@
 				// TODO: remake node
 				// debugger;
 			} else {
-				node.dom = domNode;
-				var hooks = node.hooks;
+					node.dom = domNode;
+					var hooks = node.hooks;
 
-				if (bp.hasHooks === true || !isNullOrUndefined(hooks)) {
-					handleAttachedHooks(hooks, lifecycle, domNode);
-				}
-				var children = node.children;
+					if (bp.hasHooks === true || !isNullOrUndefined(hooks)) {
+						handleAttachedHooks(hooks, lifecycle, domNode);
+					}
+					var children = node.children;
 
-				if (!isNullOrUndefined(children)) {
-					if (isStringOrNumber(children)) {
-						if (domNode.textContent !== children) {
-							domNode.textContent = children;
-						}
-					} else {
-						var childNodes = getChildNodesWithoutComments(domNode);
-
-						if (isArray(children)) {
-							node.domChildren = childNodes;
-							if (childNodes.length === children.length) {
-								for (var i = 0; i < children.length; i++) {
-									hydrateChild(children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
-								}
-							} else {
-								// TODO: recreate children?
-								// debugger;
+					if (!isNullOrUndefined(children)) {
+						if (isStringOrNumber(children)) {
+							if (domNode.textContent !== children) {
+								domNode.textContent = children;
 							}
 						} else {
-							if (childNodes.length === 1) {
-								hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
+							var childNodes = getChildNodesWithoutComments(domNode);
+
+							if (isArray(children)) {
+								node.domChildren = childNodes;
+								if (childNodes.length === children.length) {
+									for (var i = 0; i < children.length; i++) {
+										hydrateChild(children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
+									}
+								} else {
+									// TODO: recreate children?
+									// debugger;
+								}
 							} else {
-								// TODO: recreate child
-								// debugger;
-							}
+									if (childNodes.length === 1) {
+										hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
+									} else {
+										// TODO: recreate child
+										// debugger;
+									}
+								}
+						}
+					}
+					var className = node.className;
+					var style = node.style;
+
+					if (!isNullOrUndefined(className)) {
+						domNode.className = className;
+					}
+					if (!isNullOrUndefined(style)) {
+						patchStyle(null, style, domNode);
+					}
+					if (bp && bp.hasAttrs === true) {
+						mountBlueprintAttrs(node, bp, domNode, instance);
+					} else {
+						var attrs = node.attrs;
+
+						if (!isNullOrUndefined(attrs)) {
+							handleSelects(node);
+							mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
+						}
+					}
+					if (bp && bp.hasEvents === true) {
+						mountBlueprintEvents(node, bp, domNode);
+					} else {
+						var events = node.events;
+
+						if (!isNullOrUndefined(events)) {
+							mountEvents(events, Object.keys(events), domNode);
 						}
 					}
 				}
-				var className = node.className;
-				var style = node.style;
-
-				if (!isNullOrUndefined(className)) {
-					domNode.className = className;
-				}
-				if (!isNullOrUndefined(style)) {
-					patchStyle(null, style, domNode);
-				}
-				if (bp && bp.hasAttrs === true) {
-					mountBlueprintAttrs(node, bp, domNode, instance);
-				} else {
-					var attrs = node.attrs;
-
-					if (!isNullOrUndefined(attrs)) {
-						handleSelects(node);
-						mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
-					}
-				}
-				if (bp && bp.hasEvents === true) {
-					mountBlueprintEvents(node, bp, domNode);
-				} else {
-					var events = node.events;
-
-					if (!isNullOrUndefined(events)) {
-						mountEvents(events, Object.keys(events), domNode);
-					}
-				}
-			}
 		}
 	}
 
@@ -2112,49 +2173,32 @@
 		return false;
 	}
 
-	var roots = [];
-
-	function getRoot(parentDom) {
-		for (var i = 0; i < roots.length; i++) {
-			var root = roots[i];
-
-			if (root.dom === parentDom) {
-				return root;
-			}
-		}
-		return null;
+	try {
+		var foo = new Map();
+	} catch (e) {
+		throw new Error('Inferno Error: Inferno requires ES2015 Map objects. Please add a Map polyfill for environments with no support. \nhttps://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map');
 	}
 
-	function removeRoot(rootNode) {
-		for (var i = 0; i < roots.length; i++) {
-			var root = roots[i];
-
-			if (root === rootNode) {
-				roots.splice(i, 1);
-				return;
-			}
-		}
-	}
-
+	var roots = new Map();
 	function render(node, parentDom) {
-		var root = getRoot(parentDom);
+		var root = roots.get(parentDom);
 		var lifecycle = new Lifecycle();
 
-		if (isNull(root)) {
+		if (isUndefined(root)) {
 			var skipMount = true;
 
 			if (!hydrate(node, parentDom, lifecycle)) {
 				mount(node, parentDom, lifecycle, {}, null, false);
 			}
 			lifecycle.trigger();
-			roots.push({ node: node, dom: parentDom });
+			roots.set(parentDom, { node: node });
 		} else {
 			var activeNode = getActiveNode();
 
 			patch(root.node, node, parentDom, lifecycle, {}, null, null, false);
 			lifecycle.trigger();
 			if (node === null) {
-				removeRoot(root);
+				roots.delete(parentDom);
 			}
 			root.node = node;
 			resetActiveNode(activeNode);

@@ -100,11 +100,11 @@
   }
 
   function isNullOrUndefined(obj) {
-  	return obj === void 0 || isNull(obj);
+  	return isUndefined(obj) || isNull(obj);
   }
 
   function isInvalidNode(obj) {
-  	return isNull(obj) || obj === false || obj === true || obj === void 0;
+  	return isNull(obj) || obj === false || obj === true || isUndefined(obj);
   }
 
   function isFunction(obj) {
@@ -125,6 +125,10 @@
 
   function isNull(obj) {
   	return obj === null;
+  }
+
+  function isUndefined(obj) {
+  	return obj === void 0;
   }
 
   function isAttrAHook(hook) {
@@ -1319,7 +1323,6 @@
   			_dom = lastInput.dom;
   		} else {
   			// TODO
-  			// debugger;
   		}
   		replaceNode(parentDom, nextInput.dom, _dom);
   	} else {
@@ -2091,7 +2094,7 @@
   		hydrateComponent(node, tag, node.attrs || {}, node.hooks, node.children, domNode, parentDom, lifecycle, context, instance, isRoot);
   	} else {
   		if (domNode.nodeType !== 1 || tag !== domNode.tagName.toLowerCase()) {
-  			// remake node
+  			// TODO: remake node
   			// debugger;
   		} else {
   				node.dom = domNode;
@@ -2117,14 +2120,14 @@
   									hydrateChild(children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
   								}
   							} else {
-  								// recreate children?
+  								// TODO: recreate children?
   								// debugger;
   							}
   						} else {
   								if (childNodes.length === 1) {
   									hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
   								} else {
-  									// recreate child
+  									// TODO: recreate child
   									// debugger;
   								}
   							}
@@ -2182,49 +2185,32 @@
   	return false;
   }
 
-  var roots = [];
-
-  function getRoot(parentDom) {
-  	for (var i = 0; i < roots.length; i++) {
-  		var root = roots[i];
-
-  		if (root.dom === parentDom) {
-  			return root;
-  		}
-  	}
-  	return null;
+  try {
+  	var foo = new Map();
+  } catch (e) {
+  	throw new Error('Inferno Error: Inferno requires ES2015 Map objects. Please add a Map polyfill for environments with no support. \nhttps://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map');
   }
 
-  function removeRoot(rootNode) {
-  	for (var i = 0; i < roots.length; i++) {
-  		var root = roots[i];
-
-  		if (root === rootNode) {
-  			roots.splice(i, 1);
-  			return;
-  		}
-  	}
-  }
-
+  var roots = new Map();
   function render(node, parentDom) {
-  	var root = getRoot(parentDom);
+  	var root = roots.get(parentDom);
   	var lifecycle = new Lifecycle();
 
-  	if (isNull(root)) {
+  	if (isUndefined(root)) {
   		var skipMount = true;
 
   		if (!hydrate(node, parentDom, lifecycle)) {
   			mount(node, parentDom, lifecycle, {}, null, false);
   		}
   		lifecycle.trigger();
-  		roots.push({ node: node, dom: parentDom });
+  		roots.set(parentDom, { node: node });
   	} else {
   		var activeNode = getActiveNode();
 
   		patch(root.node, node, parentDom, lifecycle, {}, null, null, false);
   		lifecycle.trigger();
   		if (node === null) {
-  			removeRoot(root);
+  			roots.delete(parentDom);
   		}
   		root.node = node;
   		resetActiveNode(activeNode);
