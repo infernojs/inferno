@@ -1,6 +1,7 @@
 import { render } from '../../../src/DOM/rendering';
-import createElement from '../../../src/createElement';
-import Component from '../../../src/component';
+import createElement from '../../../src/core/createElement';
+import Component from '../../../src/component/es2015';
+import createClass from '../../../src/component/createClass';
 import PropTypes from 'proptypes';
 
 function unmountComponentAtNode(container) {
@@ -22,10 +23,6 @@ function cloneElement(element, props, ...children) {
 		),
 		...children
 	);
-}
-
-function createClass() {
-	throw new Error('Inferno Error: "inferno-compat" does not currently have support for createClass');
 }
 
 Component.prototype.isReactComponent = {};

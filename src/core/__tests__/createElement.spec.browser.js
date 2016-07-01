@@ -1,5 +1,5 @@
 import { render } from './../../DOM/rendering';
-import createElement from './../index';
+import createElement from './../createElement';
 
 describe('CreateElement should handle events', () => {
 	let container;

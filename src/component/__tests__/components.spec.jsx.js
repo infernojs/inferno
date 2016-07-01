@@ -1,5 +1,5 @@
 import { render } from './../../DOM/rendering';
-import Component from './../../component/index';
+import Component from './../../component/es2015';
 import innerHTML from './../../../tools/innerHTML';
 import { createBlueprint } from './../../core/createBlueprint';
 
@@ -1840,7 +1840,7 @@ describe('Components (JSX)', () => {
 		render(<Bar />, container);
 		expect(container.innerHTML).to.equal('<div>Hello world</div>');
 		notCalled(spy);
-		
+
 		updater();
 		expect(container.innerHTML).to.equal('<div><div>Hello world2</div></div>');
 		calledOnce(spy);
@@ -1849,7 +1849,7 @@ describe('Components (JSX)', () => {
 	describe('Should be able to swap between invalid node and valid node', () => {
 		it('Should be able to swap between invalid node and valid node', () => {
 			let updater;
-			let reference;
+
 			class Bar extends Component {
 				constructor(props) {
 					super(props);
@@ -1860,7 +1860,6 @@ describe('Components (JSX)', () => {
 
 					this.changeDOM = this.changeDOM.bind(this);
 					updater = this.changeDOM;
-					reference = this;
 				}
 
 				changeDOM() {
@@ -1896,6 +1895,312 @@ describe('Components (JSX)', () => {
 
 			updater();
 			expect(container.innerHTML).to.equal('<div>Rendered!</div>');
+		});
+	});
+
+	it('Should be able to swap between text node and html node', () => {
+		let updater;
+
+		class Bar extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					bool: true
+				};
+
+				this.changeDOM = this.changeDOM.bind(this);
+				updater = this.changeDOM;
+			}
+
+			changeDOM() {
+				this.setState({
+					bool: !this.state.bool
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						{this.state.bool ? <span>span</span> : 'text'}
+						<div>div</div>
+					</div>
+				)
+			}
+		}
+
+
+		render(<Bar />, container);
+		expect(container.innerHTML).to.equal('<div><span>span</span><div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div>text<div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div><span>span</span><div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div>text<div>div</div></div>');
+	});
+
+	it('Should be able to swap between text node and html node #2', () => {
+		let updater;
+
+		class Bar extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					bool: false
+				};
+
+				this.changeDOM = this.changeDOM.bind(this);
+				updater = this.changeDOM;
+			}
+
+			changeDOM() {
+				this.setState({
+					bool: !this.state.bool
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						{this.state.bool ? <span>span</span> : ''}
+						<div>div</div>
+					</div>
+				)
+			}
+		}
+
+
+		render(<Bar />, container);
+		expect(container.innerHTML).to.equal('<div><div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div><span>span</span><div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div><div>div</div></div>');
+
+		updater();
+		expect(container.innerHTML).to.equal('<div><span>span</span><div>div</div></div>');
+	});
+
+	describe('Nested components', () => {
+		it('Should map ref to parent', () => {
+			let refs = null;
+
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					refs = this.refs; // for asserting
+				}
+				render() {
+					return (
+						<div ref="bar">
+							<B>
+								<span ref="foo">Ref</span>
+							</B>
+						</div>
+					);
+				}
+			}
+
+			class B extends Component {
+				render() {
+					return this.props.children
+				}
+			}
+
+			render(<A />, container);
+			expect(container.innerHTML).to.equal('<div><span>Ref</span></div>');
+			expect(refs.bar).to.equal(container.firstChild);
+			expect(refs.foo).to.equal(container.firstChild.firstChild);
+		});
+
+		it('Should map ref to parent#2', () => {
+			let refs = null;
+
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					refs = this.refs; // for asserting
+				}
+				render() {
+					return (
+						<div ref="top">
+							<B>
+								<div ref="mid">
+									<B>
+										<span ref="bottom">Ref</span>
+									</B>
+								</div>
+							</B>
+						</div>
+					);
+				}
+			}
+
+			class B extends Component {
+				render() {
+					return this.props.children;
+				}
+			}
+
+			render(<A />, container);
+			expect(container.innerHTML).to.equal('<div><div><span>Ref</span></div></div>');
+			expect(refs.top).to.equal(container.firstChild);
+			expect(refs.mid).to.equal(container.firstChild.firstChild);
+			expect(refs.bottom).to.equal(container.firstChild.firstChild.firstChild);
+		});
+
+		it('Should map ref to parent#3', () => {
+			let refs = null;
+
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					refs = this.refs; // for asserting
+				}
+
+				render() {
+					return (
+						<div ref="top">
+							<B>
+								<div ref="mid">
+									<B>
+										<div>
+											{null}
+											<span ref="bottom">Ref</span>
+										</div>
+									</B>
+								</div>
+							</B>
+						</div>
+					);
+				}
+			}
+
+			class B extends Component {
+				render() {
+					return this.props.children;
+				}
+			}
+
+			render(<A />, container);
+			expect(container.innerHTML).to.equal('<div><div><div><span>Ref</span></div></div></div>');
+			expect(refs.top).to.equal(container.firstChild);
+			expect(refs.mid).to.equal(container.firstChild.firstChild);
+			expect(refs.bottom).to.equal(container.firstChild.firstChild.firstChild.firstChild);
+		});
+
+
+		it('Should have correct props when nested component updates (github#240)', () => {
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						data: [
+							{i: 'one'},
+							{i: 'two'},
+							{i: 'three'}
+						]
+					};
+
+				}
+
+				render() {
+					return (
+						<div>
+							{this.state.data.map((obj) => {
+								return (
+									<B foo="bar">
+										{obj.i}
+									</B>
+								);
+							})}
+						</div>
+					);
+				}
+			}
+
+			class B extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						foo: 'bar'
+					};
+
+					this.updateMe = this.updateMe.bind(this);
+				}
+
+				updateMe() {
+					// This will mess up
+					this.setState({
+						foo: 'buu'
+					});
+				}
+
+				render() {
+					return (
+						<div>
+							<span>{this.state.foo}</span>
+							<a onClick={this.updateMe}>{this.props.children}</a>
+						</div>
+					);
+				}
+			}
+
+			render(<A />, container);
+			expect(container.innerHTML).to.equal('<div><div><span>bar</span><a>one</a></div><div><span>bar</span><a>two</a></div><div><span>bar</span><a>three</a></div></div>');
+			var div2 = container.firstChild.childNodes[1].querySelector('a');
+			expect(div2.innerHTML).to.equal('two');
+			div2.click();
+
+			// Note => there should be: Buu two, not: Buu Three, props are messed up when nested component updates
+			expect(container.innerHTML).to.equal('<div><div><span>bar</span><a>one</a></div><div><span>buu</span><a>two</a></div><div><span>bar</span><a>three</a></div></div>');
+		});
+	});
+	describe('handling of sCU', () => {
+		let instance;
+		class Test extends Component {
+			shouldComponentUpdate() {
+				return false;
+			}
+			render() {
+				instance = this;
+				return <div>{ this.props.foo }</div>;
+			}
+		}
+
+		it('should correctly render once but never again', () => {
+			render(<Test foo="bar" />, container);
+			expect(container.innerHTML).to.equal('<div>bar</div>');
+			render(<Test foo="yar" />, container);
+			expect(container.innerHTML).to.equal('<div>bar</div>');
+			instance.setState({ foo: 'woo' });
+			expect(container.innerHTML).to.equal('<div>bar</div>');
+			render(null, container);
+			expect(container.innerHTML).to.equal('');
+		});
+	});
+	describe('handling of different primatives', () => {
+		it('Should correctly handle boolean values (github#255)', () => {
+			const Todo = ({ todo }) => (
+				<tr> <td>{todo.id}</td> <td>{todo.desc}</td> <td>{todo.done}</td> </tr>
+			);
+
+			render(<Todo todo={ { done: false } } />, container);
+			expect(container.innerHTML).to.equal('<tr> <td></td> <td></td> <td></td> </tr>');
+			render(<Todo todo={ { done: true } } />, container);
+			expect(container.innerHTML).to.equal('<tr> <td></td> <td></td> <td></td> </tr>');
 		});
 	});
 });

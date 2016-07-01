@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray } from './../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray, getRefInstance } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks, createNullNode } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
@@ -32,10 +32,34 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	}
 }
 
-function handleSelects(node) {
+export function handleSelects(node) {
 	if (node.tag === 'select') {
 		selectValue(node);
 	}
+}
+
+export function mountBlueprintAttrs(node, bp, dom, instance) {
+	handleSelects(node);
+	const attrs = node.attrs;
+
+	if (bp.attrKeys === null) {
+		const newKeys = Object.keys(attrs);
+		bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
+	}
+	const attrKeys = bp.attrKeys;
+
+	mountAttributes(node, attrs, attrKeys, dom, instance);
+}
+
+export function mountBlueprintEvents(node, bp, dom) {
+	const events = node.events;
+
+	if (bp.eventKeys === null) {
+		bp.eventKeys = Object.keys(events);
+	}
+	const eventKeys = bp.eventKeys;
+
+	mountEvents(events, eventKeys, dom);
 }
 
 function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance) {
@@ -82,16 +106,7 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 	}
 
 	if (bp.hasAttrs === true) {
-		handleSelects(node);
-		const attrs = node.attrs;
-
-		if (bp.attrKeys === null) {
-			const newKeys = Object.keys(attrs);
-			bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
-		}
-		const attrKeys = bp.attrKeys;
-
-		mountAttributes(attrs, attrKeys, dom, instance);
+		mountBlueprintAttrs(node, bp, dom, instance);
 	}
 	if (bp.hasClassName === true) {
 		dom.className = node.className;
@@ -100,14 +115,7 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 		patchStyle(null, node.style, dom);
 	}
 	if (bp.hasEvents === true) {
-		const events = node.events;
-
-		if (bp.eventKeys === null) {
-			bp.eventKeys = Object.keys(events);
-		}
-		const eventKeys = bp.eventKeys;
-
-		mountEvents(events, eventKeys, dom);
+		mountBlueprintEvents(node, bp, dom);
 	}
 	if (parentDom !== null) {
 		parentDom.appendChild(dom);
@@ -147,7 +155,7 @@ function appendNode(node, parentDom, lifecycle, context, instance, isSVG) {
 	}
 	if (!isNullOrUndefined(attrs)) {
 		handleSelects(node);
-		mountAttributes(attrs, Object.keys(attrs), dom, instance);
+		mountAttributes(node, attrs, Object.keys(attrs), dom, instance);
 	}
 	if (!isNullOrUndefined(className)) {
 		dom.className = className;
@@ -240,7 +248,7 @@ function mountChildren(node, children, parentDom, lifecycle, context, instance, 
 	}
 }
 
-function mountRef(instance, value, refValue) {
+export function mountRef(instance, value, refValue) {
 	if (!isInvalidNode(instance) && isString(value)) {
 		instance.refs[value] = refValue;
 	}
@@ -273,12 +281,14 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		instance.context = context;
 		instance._unmounted = false;
 		instance._parentNode = parentNode;
-
+		if (lastInstance) {
+			instance._parentComponent = lastInstance;
+		}
 		instance._pendingSetState = true;
 		instance.componentWillMount();
 		const node = instance.render();
-		instance._pendingSetState = false;
 
+		instance._pendingSetState = false;
 		if (!isInvalidNode(node)) {
 			dom = mount(node, null, lifecycle, context, instance, false);
 			instance._lastNode = node;
@@ -305,8 +315,8 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		}
 
 		/* eslint new-cap: 0 */
-		const node = Component(props);
-		dom = mount(node, null, lifecycle, context, null);
+		const node = Component(props, context);
+		dom = mount(node, null, lifecycle, context, null, false);
 
 		parentNode.instance = node;
 
@@ -318,14 +328,14 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 	return dom;
 }
 
-function mountAttributes(attrs, attrKeys, dom, instance) {
+export function mountAttributes(node, attrs, attrKeys, dom, instance) {
 	for (let i = 0; i < attrKeys.length; i++) {
 		const attr = attrKeys[i];
 
 		if (attr === 'ref') {
-			mountRef(instance, attrs[attr], dom);
+			mountRef(getRefInstance(node, instance), attrs[attr], dom);
 		} else {
-			patchAttribute(attr, attrs[attr], dom);
+			patchAttribute(attr, null, attrs[attr], dom);
 		}
 	}
 }

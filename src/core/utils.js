@@ -4,7 +4,7 @@ export function addChildrenToProps(children, props) {
 		const isChildrenArray = isArray(children);
 		if (isChildrenArray && children.length > 0 || !isChildrenArray) {
 			if (props) {
-				props.children = children;
+				props = Object.assign({}, props, { children });
 			} else {
 				props = {
 					children: children
@@ -15,6 +15,11 @@ export function addChildrenToProps(children, props) {
 	return props;
 }
 
+export const NO_RENDER = 'NO_RENDER';
+
+// Runs only once in applications lifetime
+export const isBrowser = typeof window !== 'undefined' && window.document;
+
 export function isArray(obj) {
 	return obj instanceof Array;
 }
@@ -24,15 +29,15 @@ export function isStatefulComponent(obj) {
 }
 
 export function isStringOrNumber(obj) {
-	return typeof obj === 'string' || typeof obj === 'number';
+	return isString(obj) || isNumber(obj);
 }
 
 export function isNullOrUndefined(obj) {
-	return obj === undefined || obj === null;
+	return isUndefined(obj) || isNull(obj);
 }
 
 export function isInvalidNode(obj) {
-	return obj === null || obj === false || obj === undefined;
+	return isNull(obj) || obj === false || obj === true || isUndefined(obj);
 }
 
 export function isFunction(obj) {
@@ -45,6 +50,18 @@ export function isAttrAnEvent(attr) {
 
 export function isString(obj) {
 	return typeof obj === 'string';
+}
+
+export function isNumber(obj) {
+	return typeof obj === 'number';
+}
+
+export function isNull(obj) {
+	return obj === null;
+}
+
+export function isUndefined(obj) {
+	return obj === undefined;
 }
 
 export function isAttrAHook(hook) {
@@ -70,4 +87,38 @@ export function isPromise(obj) {
 
 export function replaceInArray(array, obj, newObj) {
 	array.splice(array.indexOf(obj), 1, newObj);
+}
+
+function deepScanChildrenForNode(children, node) {
+	if (!isInvalidNode(children)) {
+		if (isArray(children)) {
+			for (let i = 0; i < children.length; i++) {
+				const child = children[i];
+
+				if (!isInvalidNode(child)) {
+					if (child === node) {
+						return true;
+					} else if (child.children) {
+						return deepScanChildrenForNode(child.children, node);
+					}
+				}
+			}
+		} else {
+			if (children === node) {
+				return true;
+			} else if (children.children) {
+				return deepScanChildrenForNode(children.children, node);
+			}
+		}
+	}
+	return false;
+}
+
+export function getRefInstance(node, instance) {
+	const children = instance.props.children;
+
+	if (deepScanChildrenForNode(children, node)) {
+		return getRefInstance(node, instance._parentComponent);
+	}
+	return instance;
 }

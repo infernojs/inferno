@@ -1,23 +1,7 @@
-import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode } from './../core/utils';
+import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, NO_RENDER, isNumber } from './../core/utils';
 import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mount } from './mounting';
-import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode } from './utils';
-
-function constructDefaults(string, object, value) {
-	/* eslint no-return-assign: 0 */
-	string.split(',').forEach(i => object[i] = value);
-}
-
-const xlinkNS = 'http://www.w3.org/1999/xlink';
-const xmlNS = 'http://www.w3.org/XML/1998/namespace';
-const strictProps = {};
-const booleanProps = {};
-const namespaces = {};
-
-constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,value', strictProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+import { insertOrAppendKeyed, insertOrAppendNonKeyed, remove, detachNode, createVirtualFragment, isKeyed, replaceNode, isUnitlessNumber, booleanProps, strictProps, namespaces } from './utils';
 
 export function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
@@ -81,8 +65,13 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 
 			for (let i = 0; i < styleKeys.length; i++) {
 				const style = styleKeys[i];
+				const value = nextAttrValue[style];
 
-				dom.style[style] = nextAttrValue[style];
+				if (isNumber(value) && !isUnitlessNumber[style]) {
+					dom.style[style] = value + 'px';
+				} else {
+					dom.style[style] = value;
+				}
 			}
 		}
 	} else if (isNullOrUndefined(nextAttrValue)) {
@@ -92,11 +81,14 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 
 		for (let i = 0; i < styleKeys.length; i++) {
 			const style = styleKeys[i];
+			const value = nextAttrValue[style];
 
-			dom.style[style] = nextAttrValue[style];
+			if (isNumber(value) && !isUnitlessNumber[style]) {
+				dom.style[style] = value + 'px';
+			} else {
+				dom.style[style] = value;
+			}
 		}
-		// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
-		// TODO: needs performance benchmark
 		const lastStyleKeys = Object.keys(lastAttrValue);
 
 		for (let i = 0; i < lastStyleKeys.length; i++) {
@@ -131,8 +123,18 @@ export function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKe
 	}
 }
 
-export function patchAttribute(attrName, nextAttrValue, dom) {
-	if (strictProps[attrName]) {
+export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
+	if (attrName === 'dangerouslySetInnerHTML') {
+		const lastHtml = lastAttrValue && lastAttrValue.__html;
+		const nextHtml = nextAttrValue && nextAttrValue.__html;
+
+		if (isNullOrUndefined(nextHtml)) {
+			throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
+		}
+		if (lastHtml !== nextHtml) {
+			dom.innerHTML = nextHtml;
+		}
+	} else if (strictProps[attrName]) {
 		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
 	} else {
 		if (booleanProps[attrName]) {
@@ -173,7 +175,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 		instance.context = context;
 		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
-		if (!isInvalidNode(nextNode)) {
+		if (!isInvalidNode(nextNode) && nextNode !== NO_RENDER) {
 			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
@@ -189,8 +191,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 				nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 			}
-
-			const nextNode = Component(nextProps);
+			const nextNode = Component(nextProps, context);
 
 			if (!isInvalidNode(nextNode)) {
 				nextNode.dom = lastNode.dom;
@@ -234,7 +235,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 				if (isStringOrNumber(nextChild)) {
 					domNode = document.createTextNode(nextChild);
 				} else {
-					domNode = mount(nextChild, null, context, instance, isSVG);
+					domNode = mount(nextChild, null, lifecycle, context, instance, isSVG);
 				}
 
 				if (!isInvalidNode(domNode)) {
@@ -244,7 +245,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 					if (lastChildrenLength === 1) {
 						domChildren.push(dom.firstChild);
 					}
-					isNotVirtualFragment && domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
+					domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
 				}
 				lastChildrenLength++;
 			}
@@ -255,7 +256,9 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 		const nextChild = nextChildren[i];
 		let index = i + domChildrenIndex;
 
-		if (lastChild !== nextChild) {
+		if (lastChild === nextChild && isInvalidNode(lastChild)) {
+			domChildrenIndex--;
+		} else {
 			if (isInvalidNode(nextChild)) {
 				if (!isInvalidNode(lastChild)) {
 					if (isArray(lastChild) && lastChild.length === 0) {
@@ -378,6 +381,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildr
 						patchNonKeyedChildren(lastChild, [nextChild], domChildren, domChildren[index].childNodes, lifecycle, context, instance, 0, isSVG);
 					} else {
 						patch(lastChild, nextChild, dom, lifecycle, context, instance, null, isSVG);
+						domChildren[index] = nextChild.dom;
 					}
 				}
 			}

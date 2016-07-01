@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.9
+ * inferno-dom v0.7.13
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -9,12 +9,69 @@
 	(global.InfernoDOM = factory());
 }(this, function () { 'use strict';
 
+	var babelHelpers = {};
+	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	  return typeof obj;
+	} : function (obj) {
+	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+	};
+
+	babelHelpers.classCallCheck = function (instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	};
+
+	babelHelpers.createClass = function () {
+	  function defineProperties(target, props) {
+	    for (var i = 0; i < props.length; i++) {
+	      var descriptor = props[i];
+	      descriptor.enumerable = descriptor.enumerable || false;
+	      descriptor.configurable = true;
+	      if ("value" in descriptor) descriptor.writable = true;
+	      Object.defineProperty(target, descriptor.key, descriptor);
+	    }
+	  }
+
+	  return function (Constructor, protoProps, staticProps) {
+	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	    if (staticProps) defineProperties(Constructor, staticProps);
+	    return Constructor;
+	  };
+	}();
+
+	babelHelpers.inherits = function (subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	  }
+
+	  subClass.prototype = Object.create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      enumerable: false,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+	  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	};
+
+	babelHelpers.possibleConstructorReturn = function (self, call) {
+	  if (!self) {
+	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	  }
+
+	  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+	};
+
+	babelHelpers;
+
 	function addChildrenToProps(children, props) {
 		if (!isNullOrUndefined(children)) {
 			var isChildrenArray = isArray(children);
 			if (isChildrenArray && children.length > 0 || !isChildrenArray) {
 				if (props) {
-					props.children = children;
+					props = Object.assign({}, props, { children: children });
 				} else {
 					props = {
 						children: children
@@ -25,6 +82,11 @@
 		return props;
 	}
 
+	var NO_RENDER = 'NO_RENDER';
+
+	// Runs only once in applications lifetime
+	var isBrowser = typeof window !== 'undefined' && window.document;
+
 	function isArray(obj) {
 		return obj instanceof Array;
 	}
@@ -34,15 +96,15 @@
 	}
 
 	function isStringOrNumber(obj) {
-		return typeof obj === 'string' || typeof obj === 'number';
+		return isString(obj) || isNumber(obj);
 	}
 
 	function isNullOrUndefined(obj) {
-		return obj === void 0 || obj === null;
+		return obj === void 0 || isNull(obj);
 	}
 
 	function isInvalidNode(obj) {
-		return obj === null || obj === false || obj === void 0;
+		return isNull(obj) || obj === false || obj === true || obj === void 0;
 	}
 
 	function isFunction(obj) {
@@ -53,12 +115,54 @@
 		return typeof obj === 'string';
 	}
 
+	function isNumber(obj) {
+		return typeof obj === 'number';
+	}
+
+	function isNull(obj) {
+		return obj === null;
+	}
+
 	function isPromise(obj) {
 		return obj instanceof Promise;
 	}
 
 	function replaceInArray(array, obj, newObj) {
 		array.splice(array.indexOf(obj), 1, newObj);
+	}
+
+	function deepScanChildrenForNode(children, node) {
+		if (!isInvalidNode(children)) {
+			if (isArray(children)) {
+				for (var i = 0; i < children.length; i++) {
+					var child = children[i];
+
+					if (!isInvalidNode(child)) {
+						if (child === node) {
+							return true;
+						} else if (child.children) {
+							return deepScanChildrenForNode(child.children, node);
+						}
+					}
+				}
+			} else {
+				if (children === node) {
+					return true;
+				} else if (children.children) {
+					return deepScanChildrenForNode(children.children, node);
+				}
+			}
+		}
+		return false;
+	}
+
+	function getRefInstance(node, instance) {
+		var children = instance.props.children;
+
+		if (deepScanChildrenForNode(children, node)) {
+			return getRefInstance(node, instance._parentComponent);
+		}
+		return instance;
 	}
 
 	var recyclingEnabled = true;
@@ -131,6 +235,30 @@
 		}
 	}
 
+	function mountBlueprintAttrs(node, bp, dom, instance) {
+		handleSelects(node);
+		var attrs = node.attrs;
+
+		if (bp.attrKeys === null) {
+			var newKeys = Object.keys(attrs);
+			bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
+		}
+		var attrKeys = bp.attrKeys;
+
+		mountAttributes(node, attrs, attrKeys, dom, instance);
+	}
+
+	function mountBlueprintEvents(node, bp, dom) {
+		var events = node.events;
+
+		if (bp.eventKeys === null) {
+			bp.eventKeys = Object.keys(events);
+		}
+		var eventKeys = bp.eventKeys;
+
+		mountEvents(events, eventKeys, dom);
+	}
+
 	function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance) {
 		var tag = node.tag;
 
@@ -175,16 +303,7 @@
 		}
 
 		if (bp.hasAttrs === true) {
-			handleSelects(node);
-			var attrs = node.attrs;
-
-			if (bp.attrKeys === null) {
-				var newKeys = Object.keys(attrs);
-				bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
-			}
-			var attrKeys = bp.attrKeys;
-
-			mountAttributes(attrs, attrKeys, dom, instance);
+			mountBlueprintAttrs(node, bp, dom, instance);
 		}
 		if (bp.hasClassName === true) {
 			dom.className = node.className;
@@ -193,14 +312,7 @@
 			patchStyle(null, node.style, dom);
 		}
 		if (bp.hasEvents === true) {
-			var events = node.events;
-
-			if (bp.eventKeys === null) {
-				bp.eventKeys = Object.keys(events);
-			}
-			var eventKeys = bp.eventKeys;
-
-			mountEvents(events, eventKeys, dom);
+			mountBlueprintEvents(node, bp, dom);
 		}
 		if (parentDom !== null) {
 			parentDom.appendChild(dom);
@@ -240,7 +352,7 @@
 		}
 		if (!isNullOrUndefined(attrs)) {
 			handleSelects(node);
-			mountAttributes(attrs, Object.keys(attrs), dom, instance);
+			mountAttributes(node, attrs, Object.keys(attrs), dom, instance);
 		}
 		if (!isNullOrUndefined(className)) {
 			dom.className = className;
@@ -366,12 +478,14 @@
 			instance.context = context;
 			instance._unmounted = false;
 			instance._parentNode = parentNode;
-
+			if (lastInstance) {
+				instance._parentComponent = lastInstance;
+			}
 			instance._pendingSetState = true;
 			instance.componentWillMount();
 			var node = instance.render();
-			instance._pendingSetState = false;
 
+			instance._pendingSetState = false;
 			if (!isInvalidNode(node)) {
 				dom = mount(node, null, lifecycle, context, instance, false);
 				instance._lastNode = node;
@@ -398,8 +512,8 @@
 			}
 
 			/* eslint new-cap: 0 */
-			var _node = Component(props);
-			dom = mount(_node, null, lifecycle, context, null);
+			var _node = Component(props, context);
+			dom = mount(_node, null, lifecycle, context, null, false);
 
 			parentNode.instance = _node;
 
@@ -411,17 +525,37 @@
 		return dom;
 	}
 
-	function mountAttributes(attrs, attrKeys, dom, instance) {
+	function mountAttributes(node, attrs, attrKeys, dom, instance) {
 		for (var i = 0; i < attrKeys.length; i++) {
 			var attr = attrKeys[i];
 
 			if (attr === 'ref') {
-				mountRef(instance, attrs[attr], dom);
+				mountRef(getRefInstance(node, instance), attrs[attr], dom);
 			} else {
-				patchAttribute(attr, attrs[attr], dom);
+				patchAttribute(attr, null, attrs[attr], dom);
 			}
 		}
 	}
+
+	function constructDefaults(string, object, value) {
+		/* eslint no-return-assign: 0 */
+		string.split(',').forEach(function (i) {
+			return object[i] = value;
+		});
+	}
+
+	var xlinkNS = 'http://www.w3.org/1999/xlink';
+	var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+	var strictProps = {};
+	var booleanProps = {};
+	var namespaces = {};
+	var isUnitlessNumber = {};
+
+	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+	constructDefaults('volume,value', strictProps, true);
+	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+	constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
 	function isVirtualFragment(obj) {
 		return !isNullOrUndefined(obj.append);
@@ -888,7 +1022,7 @@
 					if (attr === 'ref') {
 						diffRef(instance, lastAttrVal, nextAttrVal, dom);
 					} else {
-						patchAttribute(attr, nextAttrVal, dom);
+						patchAttribute(attr, lastAttrVal, nextAttrVal, dom);
 					}
 				}
 			}
@@ -902,7 +1036,7 @@
 
 				if (nextAttrsIsUndef || isNullOrUndefined(nextAttrs[_attr])) {
 					if (_attr === 'ref') {
-						diffRef(instance, lastAttrs[_attr], null, dom);
+						diffRef(getRefInstance(node, instance), lastAttrs[_attr], null, dom);
 					} else {
 						dom.removeAttribute(_attr);
 					}
@@ -1128,24 +1262,6 @@
 		}
 	}
 
-	function constructDefaults(string, object, value) {
-		/* eslint no-return-assign: 0 */
-		string.split(',').forEach(function (i) {
-			return object[i] = value;
-		});
-	}
-
-	var xlinkNS = 'http://www.w3.org/1999/xlink';
-	var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-	var strictProps = {};
-	var booleanProps = {};
-	var namespaces = {};
-
-	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-	constructDefaults('volume,value', strictProps, true);
-	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-
 	function updateTextNode(dom, lastChildren, nextChildren) {
 		if (isStringOrNumber(lastChildren)) {
 			dom.firstChild.nodeValue = nextChildren;
@@ -1208,8 +1324,13 @@
 
 				for (var i = 0; i < styleKeys.length; i++) {
 					var style = styleKeys[i];
+					var value = nextAttrValue[style];
 
-					dom.style[style] = nextAttrValue[style];
+					if (isNumber(value) && !isUnitlessNumber[style]) {
+						dom.style[style] = value + 'px';
+					} else {
+						dom.style[style] = value;
+					}
 				}
 			}
 		} else if (isNullOrUndefined(nextAttrValue)) {
@@ -1219,11 +1340,14 @@
 
 			for (var _i = 0; _i < _styleKeys.length; _i++) {
 				var _style = _styleKeys[_i];
+				var _value = nextAttrValue[_style];
 
-				dom.style[_style] = nextAttrValue[_style];
+				if (isNumber(_value) && !isUnitlessNumber[_style]) {
+					dom.style[_style] = _value + 'px';
+				} else {
+					dom.style[_style] = _value;
+				}
 			}
-			// TODO: possible optimization could be we remove all and add all from nextKeys then we can skip this obj loop
-			// TODO: needs performance benchmark
 			var lastStyleKeys = Object.keys(lastAttrValue);
 
 			for (var _i2 = 0; _i2 < lastStyleKeys.length; _i2++) {
@@ -1258,8 +1382,18 @@
 		}
 	}
 
-	function patchAttribute(attrName, nextAttrValue, dom) {
-		if (strictProps[attrName]) {
+	function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
+		if (attrName === 'dangerouslySetInnerHTML') {
+			var lastHtml = lastAttrValue && lastAttrValue.__html;
+			var nextHtml = nextAttrValue && nextAttrValue.__html;
+
+			if (isNullOrUndefined(nextHtml)) {
+				throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
+			}
+			if (lastHtml !== nextHtml) {
+				dom.innerHTML = nextHtml;
+			}
+		} else if (strictProps[attrName]) {
 			dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
 		} else {
 			if (booleanProps[attrName]) {
@@ -1299,7 +1433,7 @@
 			instance.context = context;
 			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
-			if (!isInvalidNode(nextNode)) {
+			if (!isInvalidNode(nextNode) && nextNode !== NO_RENDER) {
 				patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 				lastNode.dom = nextNode.dom;
 				instance._lastNode = nextNode;
@@ -1315,8 +1449,7 @@
 				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
 					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 				}
-
-				var _nextNode = Component(nextProps);
+				var _nextNode = Component(nextProps, context);
 
 				if (!isInvalidNode(_nextNode)) {
 					_nextNode.dom = lastNode.dom;
@@ -1360,7 +1493,7 @@
 					if (isStringOrNumber(nextChild)) {
 						domNode = document.createTextNode(nextChild);
 					} else {
-						domNode = mount(nextChild, null, context, instance, isSVG);
+						domNode = mount(nextChild, null, lifecycle, context, instance, isSVG);
 					}
 
 					if (!isInvalidNode(domNode)) {
@@ -1370,7 +1503,7 @@
 						if (lastChildrenLength === 1) {
 							domChildren.push(dom.firstChild);
 						}
-						isNotVirtualFragment && domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
+						domChildren.splice(lastChildrenLength + domChildrenIndex, 0, domNode);
 					}
 					lastChildrenLength++;
 				}
@@ -1381,7 +1514,9 @@
 			var _nextChild = nextChildren[i];
 			var index = i + domChildrenIndex;
 
-			if (_lastChild !== _nextChild) {
+			if (_lastChild === _nextChild && isInvalidNode(_lastChild)) {
+				domChildrenIndex--;
+			} else {
 				if (isInvalidNode(_nextChild)) {
 					if (!isInvalidNode(_lastChild)) {
 						if (isArray(_lastChild) && _lastChild.length === 0) {
@@ -1505,6 +1640,7 @@
 							patchNonKeyedChildren(_lastChild, [_nextChild], domChildren, domChildren[index].childNodes, lifecycle, context, instance, 0, isSVG);
 						} else {
 							patch(_lastChild, _nextChild, dom, lifecycle, context, instance, null, isSVG);
+							domChildren[index] = _nextChild.dom;
 						}
 					}
 				}
@@ -1748,25 +1884,27 @@
 		return result;
 	}
 
-	var screenWidth = window.screen.width;
-	var screenHeight = window.screen.height;
+	var screenWidth = isBrowser && window.screen.width;
+	var screenHeight = isBrowser && window.screen.height;
 	var scrollX = 0;
 	var scrollY = 0;
 	var lastScrollTime = 0;
 
-	window.onscroll = function (e) {
-		scrollX = window.scrollX;
-		scrollY = window.scrollY;
-		lastScrollTime = performance.now();
-	};
+	if (isBrowser) {
+		window.onscroll = function (e) {
+			scrollX = window.scrollX;
+			scrollY = window.scrollY;
+			lastScrollTime = performance.now();
+		};
 
-	window.resize = function (e) {
-		scrollX = window.scrollX;
-		scrollY = window.scrollY;
-		screenWidth = window.screen.width;
-		screenHeight = window.screen.height;
-		lastScrollTime = performance.now();
-	};
+		window.resize = function (e) {
+			scrollX = window.scrollX;
+			scrollY = window.scrollY;
+			screenWidth = window.screen.width;
+			screenHeight = window.screen.height;
+			lastScrollTime = performance.now();
+		};
+	}
 
 	function Lifecycle() {
 		this._listeners = [];
@@ -1778,8 +1916,8 @@
 
 	Lifecycle.prototype = {
 		refresh: function refresh() {
-			this.scrollX = window.scrollX;
-			this.scrollY = window.scrollY;
+			this.scrollX = isBrowser && window.scrollX;
+			this.scrollY = isBrowser && window.scrollY;
 		},
 		addListener: function addListener(callback) {
 			this._listeners.push(callback);
@@ -1847,6 +1985,191 @@
 		return false;
 	}
 
+	function hydrateChild(child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
+		if (isStringOrNumber(child)) {
+			if (domNode.nodeType === 3 && child !== '') {
+				domNode.nodeValue = child;
+			} else {
+				var textNode = document.createTextNode(child);
+
+				replaceNode(parentDom, textNode, domNode);
+				parentChildNodes.splice(parentChildNodes.indexOf(domNode), 1, textNode);
+			}
+		} else {
+			hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
+		}
+	}
+
+	function getChildNodesWithoutComments(domNode) {
+		var childNodes = [];
+		var rawChildNodes = domNode.childNodes;
+		var length = rawChildNodes.length;
+		var i = 0;
+
+		while (i < length) {
+			var rawChild = rawChildNodes[i];
+
+			if (rawChild.nodeType === 8) {
+				domNode.removeChild(rawChild);
+				length--;
+			} else {
+				childNodes.push(rawChild);
+				i++;
+			}
+		}
+		return childNodes;
+	}
+
+	function hydrateComponent(node, Component, props, hooks, children, domNode, parentDom, lifecycle, context, lastInstance, isRoot) {
+		props = addChildrenToProps(children, props);
+
+		if (isStatefulComponent(Component)) {
+			var instance = node.instance = new Component(props);
+
+			instance._patch = patch;
+			if (!isNullOrUndefined(lastInstance) && props.ref) {
+				mountRef(lastInstance, props.ref, instance);
+			}
+			var childContext = instance.getChildContext();
+
+			if (!isNullOrUndefined(childContext)) {
+				context = Object.assign({}, context, childContext);
+			}
+			instance.context = context;
+			instance._unmounted = false;
+			instance._parentNode = node;
+			if (lastInstance) {
+				instance._parentComponent = lastInstance;
+			}
+			instance._pendingSetState = true;
+			instance.componentWillMount();
+			var nextNode = instance.render();
+
+			instance._pendingSetState = false;
+			if (!isInvalidNode(nextNode)) {
+				hydrateNode(nextNode, domNode, parentDom, lifecycle, context, instance, isRoot);
+				instance._lastNode = nextNode;
+				instance.componentDidMount();
+			} else {
+				instance._lastNode = createNullNode();
+			}
+		} else {
+			var _instance = node.instance = Component(props);
+
+			if (!isNullOrUndefined(hooks)) {
+				if (!isNullOrUndefined(hooks.componentWillMount)) {
+					hooks.componentWillMount(null, props);
+				}
+				if (!isNullOrUndefined(hooks.componentDidMount)) {
+					lifecycle.addListener(function () {
+						hooks.componentDidMount(domNode, props);
+					});
+				}
+			}
+			return hydrateNode(_instance, domNode, parentDom, lifecycle, context, _instance, isRoot);
+		}
+	}
+
+	function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isRoot) {
+		var bp = node.bp;
+		var tag = node.tag || bp.tag;
+
+		if (isFunction(tag)) {
+			node.dom = domNode;
+			hydrateComponent(node, tag, node.attrs || {}, node.hooks, node.children, domNode, parentDom, lifecycle, context, instance, isRoot);
+		} else {
+			if (domNode.nodeType !== 1 || tag !== domNode.tagName.toLowerCase()) {
+				// remake node
+				// debugger;
+			} else {
+					node.dom = domNode;
+					var hooks = node.hooks;
+
+					if (bp.hasHooks === true || !isNullOrUndefined(hooks)) {
+						handleAttachedHooks(hooks, lifecycle, domNode);
+					}
+					var children = node.children;
+
+					if (!isNullOrUndefined(children)) {
+						if (isStringOrNumber(children)) {
+							if (domNode.textContent !== children) {
+								domNode.textContent = children;
+							}
+						} else {
+							var childNodes = getChildNodesWithoutComments(domNode);
+
+							if (isArray(children)) {
+								node.domChildren = childNodes;
+								if (childNodes.length === children.length) {
+									for (var i = 0; i < children.length; i++) {
+										hydrateChild(children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
+									}
+								} else {
+									// recreate children?
+									// debugger;
+								}
+							} else {
+									if (childNodes.length === 1) {
+										hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
+									} else {
+										// recreate child
+										// debugger;
+									}
+								}
+						}
+					}
+					var className = node.className;
+					var style = node.style;
+
+					if (!isNullOrUndefined(className)) {
+						domNode.className = className;
+					}
+					if (!isNullOrUndefined(style)) {
+						patchStyle(null, style, domNode);
+					}
+					if (bp && bp.hasAttrs === true) {
+						mountBlueprintAttrs(node, bp, domNode, instance);
+					} else {
+						var attrs = node.attrs;
+
+						if (!isNullOrUndefined(attrs)) {
+							handleSelects(node);
+							mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
+						}
+					}
+					if (bp && bp.hasEvents === true) {
+						mountBlueprintEvents(node, bp, domNode);
+					} else {
+						var events = node.events;
+
+						if (!isNullOrUndefined(events)) {
+							mountEvents(events, Object.keys(events), domNode);
+						}
+					}
+				}
+		}
+	}
+
+	var documetBody = document.body;
+
+	function hydrate(node, parentDom, lifecycle) {
+		if (parentDom && parentDom.nodeType === 1) {
+			var rootNode = parentDom.querySelector('[data-infernoroot]');
+
+			if (rootNode && rootNode.parentNode === parentDom) {
+				hydrateNode(node, rootNode, parentDom, lifecycle, {}, true);
+				return true;
+			}
+		}
+		// clear parentDom, unless it's document.body
+		if (parentDom !== documetBody) {
+			parentDom.textContent = '';
+		} else {
+			console.warn('Inferno Warning: rendering to the "document.body" is dangerous! Use a dedicated container element instead.');
+		}
+		return false;
+	}
+
 	var roots = [];
 
 	function getRoot(parentDom) {
@@ -1875,8 +2198,12 @@
 		var root = getRoot(parentDom);
 		var lifecycle = new Lifecycle();
 
-		if (root === null) {
-			mount(node, parentDom, lifecycle, {}, null, false);
+		if (isNull(root)) {
+			var skipMount = true;
+
+			if (!hydrate(node, parentDom, lifecycle)) {
+				mount(node, parentDom, lifecycle, {}, null, false);
+			}
 			lifecycle.trigger();
 			roots.push({ node: node, dom: parentDom });
 		} else {

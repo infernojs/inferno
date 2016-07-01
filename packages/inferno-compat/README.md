@@ -8,11 +8,13 @@ It provides the same exports as `react` and `react-dom`, meaning you can use you
 
 ### `react`
 
+- `React.createClass`
 - `React.createElement`
 - `React.cloneElement`
 - `React.Component`
 - `React.PropTypes`
 - `React.Component`
+- `React.Children`
 
 Note: Inferno will not currently validate `PropTypes`
 
@@ -20,6 +22,7 @@ Note: Inferno will not currently validate `PropTypes`
 
 - `ReactDOM.render`
 - `ReactDOM.unmountComponentAtNode`
+- `ReactDOM.findDOMNode`
 
 ## What is missing?
 
@@ -27,15 +30,9 @@ These features will hopefully be added in future versions
 
 ### `react`
 
-- `React.createClass`
 - `React.DOM`
 - `React.createFactory`
-- `React.Children`
 - `React.isValidElement`
-
-### `react-dom`
-
-- `ReactDOM.findDOMNode`
 
 ## Usage with Webpack
 

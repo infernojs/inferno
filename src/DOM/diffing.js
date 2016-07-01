@@ -1,4 +1,4 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise } from './../core/utils';
+import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise, getRefInstance } from './../core/utils';
 import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode, replaceNode } from './utils';
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents } from './patching';
 import { mountArrayChildren, mount, mountEvents, mountComponent } from './mounting';
@@ -132,7 +132,7 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 				if (attr === 'ref') {
 					diffRef(instance, lastAttrVal, nextAttrVal, dom);
 				} else {
-					patchAttribute(attr, nextAttrVal, dom);
+					patchAttribute(attr, lastAttrVal, nextAttrVal, dom);
 				}
 			}
 		}
@@ -146,7 +146,7 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 
 			if (nextAttrsIsUndef || isNullOrUndefined(nextAttrs[attr])) {
 				if (attr === 'ref') {
-					diffRef(instance, lastAttrs[attr], null, dom);
+					diffRef(getRefInstance(node, instance), lastAttrs[attr], null, dom);
 				} else {
 					dom.removeAttribute(attr);
 				}

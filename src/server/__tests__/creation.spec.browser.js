@@ -1,5 +1,5 @@
 import renderToString from './../renderToString';
-import Component from './../../component';
+import Component from './../../component/es2015';
 
 class StatefulComponent extends Component {
 	render() {
@@ -24,6 +24,45 @@ describe('SSR Creation - (non-JSX)', () => {
 				};
 			},
 			result: '<div><span></span></div>'
+		}, {
+			description: 'should render div with span child and styling',
+			template: () => {
+				return {
+					tag: 'div',
+					children: {
+						dom: null,
+						tag: 'span',
+						style: 'border-left: 10px;'
+					}
+				};
+			},
+			result: '<div><span style="border-left: 10px;"></span></div>'
+		}, {
+			description: 'should render div with span child and styling #2',
+			template: () => {
+				return {
+					tag: 'div',
+					children: {
+						dom: null,
+						tag: 'span',
+						style: { borderLeft: 10 }
+					}
+				};
+			},
+			result: '<div><span style="border-left:10px;"></span></div>'
+		}, {
+			description: 'should render div with span child and styling #3',
+			template: () => {
+				return {
+					tag: 'div',
+					children: {
+						dom: null,
+						tag: 'span',
+						style: { fontFamily: 'Arial' }
+					}
+				};
+			},
+			result: '<div><span style="font-family:Arial;"></span></div>'
 		}, {
 			description: 'should render div with span child (with className)',
 			template: () => {
@@ -139,7 +178,7 @@ describe('SSR Creation - (non-JSX)', () => {
 		}
 	].forEach(test => {
 		it(test.description, () => {
-			const output = renderToString(test.template('foo'));
+			const output = renderToString(test.template('foo'), true);
 			expect(output).to.equal(test.result);
 		});
 	});

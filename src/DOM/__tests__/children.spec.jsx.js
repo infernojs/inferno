@@ -1,4 +1,5 @@
 import { render } from './../rendering';
+import Component from './../../component/es2015';
 import { createBlueprint } from './../../core/createBlueprint';
 
 const Inferno = {
@@ -911,4 +912,60 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div class="c"><p>static</p></div>');
 		});
 	});
+
+	describe('Functions non keyed', () => {
+		it('Should render correctly functions and nodes mixed', () => {
+			// references for the sake of test case
+			let updaterFirst = null;
+			let updaterSecond = null;
+
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						first: true,
+						second: true
+					};
+
+					updaterFirst = () => this.setState({first: !this.state.first});
+					updaterSecond = () => this.setState({second: !this.state.second});
+				}
+
+				render() {
+					return (
+						<div>
+							<p>1</p>
+							{function() {
+								if (this.state.first) {
+									return <span>abc</span>;
+								}
+								return null;
+							}.call(this)}
+							<p>2</p>
+							{function() {
+								if (this.state.second) {
+									return <span>def</span>;
+								}
+								return null;
+							}.call(this)}
+							<p>3</p>
+						</div>
+					)
+				}
+			}
+
+
+			render(<A />, container);
+			expect(container.innerHTML).to.equal('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>');
+			updaterFirst();
+			expect(container.innerHTML).to.equal('<div><p>1</p><p>2</p><span>def</span><p>3</p></div>');
+			updaterSecond();
+			expect(container.innerHTML).to.equal('<div><p>1</p><p>2</p><p>3</p></div>');
+			updaterSecond();
+			expect(container.innerHTML).to.equal('<div><p>1</p><p>2</p><span>def</span><p>3</p></div>');
+			updaterFirst();
+			expect(container.innerHTML).to.equal('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>');
+		});
+	})
 });

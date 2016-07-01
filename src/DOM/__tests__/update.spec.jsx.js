@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import { createBlueprint } from './../../core/createBlueprint';
-import Component from './../../component/index';
+import Component from './../../component/es2015';
 
 const Inferno = {
     createBlueprint

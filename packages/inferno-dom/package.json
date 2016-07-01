@@ -1,8 +1,8 @@
 {
   "name": "inferno-dom",
-  "version": "0.7.9",
+  "version": "0.7.13",
   "license": "MIT",
-  "description": "Provides methods to render DOM nodes from Inferno fragments",
+  "description": "Provides methods to render DOM nodes from Inferno elements",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -21,7 +21,7 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.7.9"
+    "inferno": "^0.7.13"
   },
   "repository": "https://github.com/trueadm/inferno"
 }

@@ -95,6 +95,16 @@ const bundles = [
 		moduleGlobal: 'InfernoCompat',
 		moduleName: 'inferno-compat',
 		moduleEntry: 'packages/inferno-compat/src/index.js'
+	}, 
+	{
+		moduleGlobal: 'InfernoRouter',
+		moduleName: 'inferno-router',
+		moduleEntry: 'packages/inferno-router/src/index.js'
+	},
+	{
+		moduleGlobal: 'InfernoCreateClass',
+		moduleName: 'inferno-create-class',
+		moduleEntry: 'packages/inferno-create-class/src/index.js'
 	}
 ];
 

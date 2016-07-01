@@ -1,0 +1,26 @@
+{
+  "name": "inferno-create-class",
+  "version": "0.7.13",
+  "license": "MIT",
+  "description": "Provides a helper to create Inferno Components without needing ES2015",
+  "author": {
+    "name": "Dominic Gannaway",
+    "email": "dg@domgan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/trueadm/inferno/issues"
+  },
+  "homepage": "https://github.com/trueadm/inferno#readme",
+  "main": "inferno-create-class.js",
+  "keywords": [
+    "babel",
+    "react",
+    "inferno",
+    "framework",
+    "interfaces",
+    "user interfaces"
+  ],
+  "dependencies": {
+    "inferno": "^0.7.13"
+  }
+}

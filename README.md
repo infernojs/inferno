@@ -60,21 +60,34 @@ Helper for creating Inferno VNodes (similar to `React.createElement`):
 npm install --save inferno-create-element 
 ```
 
+Helper for creating Inferno Components via ES5 (similar to `React.createClass`):
+
+```sh
+npm install --save inferno-create-class
+```
+
 Server-side rendering package:
 
 ```sh
 npm install --save inferno-server 
 ```
 
+Basic routing functionality:
+
+```sh
+npm install --save inferno-router 
+```
+
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
  
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-create-element.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-component.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-dom.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-server.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.9/inferno-test-utils.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-create-element.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-create-class.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-component.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-dom.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-server.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-router.min.js
 ```
 
 ## Overview
@@ -198,6 +211,8 @@ This is the base class for Inferno Components when they're defined using ES6 cla
 **Stateless component:**
 
 ```javascript
+import Inferno from 'inferno';
+
 const MyComponent = ({ name, age }) => 
   <span>My name is: { name } and my age is: {age}</span>  
 );
@@ -208,17 +223,21 @@ Stateless components are first-class functions where their first argument is the
 ### InfernoDOM.render
 
 ```javascript
+import Inferno from 'inferno';
 import InfernoDOM from 'inferno-dom';
 
 InfernoDOM.render(<div />, document.body);
 ```
 
-Render a virtual node into the DOM in the supplied container given the supplied virtual DOM. If the virtual node was previously rendered into the container, this will
-perform an update on it and only mutate the DOM as necessary, to reflect the latest Inferno virtual node.
+Render a virtual node into the DOM in the supplied container given the supplied virtual DOM. If the virtual node was previously rendered
+into the container, this will perform an update on it and only mutate the DOM as necessary, to reflect the latest Inferno virtual node.
 
-### InfernoServer.renderToString
+Warning: If the container element is not empty before rendering, the content of the container will be overwriten on the initial render.
+
+### renderToString
 
 ```javascript
+import Inferno from 'inferno';
 import InfernoServer from 'inferno-server';
 
 InfernoServer.renderToString(<div />, document.body);
@@ -297,13 +316,6 @@ Inferno wants to always deliver great performance and in order to do so, it has 
 React's ES2015 component is referenced as `React.Component`. To reduce the bloat on the core of `Inferno`, we've extracted the ES2015 component
 into its own package, specifically `inferno-component` rather than `Inferno.Component`. Many users are opting to use stateless components with
 Inferno's `hooks` to give similar functionality as that provided by ES2015 components.
-
-### Automatic unit insertion on properties and properties
-
-Inferno makes no attempt to add the unit to numerical attributes or properties that React attempts to automatically add units to. For example: 
-`<div style={ { left: 10 } }/>` will result in `px` being added automatically to the style property in React. To ensure Inferno is kept lean and fast, the 
-code base does not contain these expensive checks and overheads have been removed. It's completely down to the user to specify the property. 
-So with Inferno, you should use the following to achieve the same result `<div style={ { left: '10px' } } />`.
 
 ## Contributing
 

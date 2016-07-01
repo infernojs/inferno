@@ -6,7 +6,7 @@ const Inferno = {
 	createBlueprint
 };
 
-describe('Elements - SVG (JSX)', () => {
+describe('Elements (JSX)', () => {
 	let container;
 
 	beforeEach(() => {
@@ -689,5 +689,12 @@ describe('Elements - SVG (JSX)', () => {
 		expect(container.firstChild.volume).to.not.equal(undefined);
 		expect(container.firstChild.volume).to.be.equal(0);
 		document.body.removeChild(container);
+	});
+
+	it('should dangerously set innerHTML', () => {
+		render((
+			<div dangerouslySetInnerHTML={ {__html: 'Hello world!'} } />
+		), container);
+		expect(container.innerHTML).to.not.equal('Hello world!');
 	});
 });
