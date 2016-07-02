@@ -28,15 +28,11 @@ function setFormElementProperties(nextTag, nextNode) {
 function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
 	const nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
+	const hasNonKeyedChildren = lastNode.hasNonKeyedChildren;
 
+	nextNode.hasNonKeyedChildren = hasNonKeyedChildren;
 	if (lastChildren === nextChildren) {
 		return;
-	}
-
-	let domChildren = null;
-
-	if (lastNode.domChildren) {
-		domChildren = nextNode.domChildren = lastNode.domChildren;
 	}
 	if (isInvalidNode(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
@@ -54,21 +50,21 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isS
 		} else {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
-					if (domChildren === null && lastChildren.length > 1) {
+					if (!hasNonKeyedChildren && lastChildren.length > 1) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 					} else {
 						if (isKeyed(lastChildren, nextChildren)) {
 							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 						} else {
-							patchNonKeyedChildren(lastChildren, nextChildren, dom, domChildren || (nextNode.domChildren = []), lifecycle, context, instance, 0, isSVG);
+							patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 						}
 					}
 				} else {
-					patchNonKeyedChildren(lastChildren, [nextChildren], dom, domChildren || [], lifecycle, context, instance, 0);
+					patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, instance);
 				}
 			} else {
 				if (isArray(nextChildren)) {
-					patchNonKeyedChildren([lastChildren], nextChildren, dom, domChildren || (nextNode.domChildren = [dom.firstChild]), lifecycle, context, instance, 0, isSVG);
+					patchNonKeyedChildren([lastChildren], nextChildren, dom, lifecycle, context, instance, isSVG);
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
 				} else if (isStringOrNumber(lastChildren)) {
@@ -175,6 +171,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 			} else if (isStatefulComponent(lastTag)) {
 				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
+				detachNode(lastNode);
 			} else {
 				diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			}

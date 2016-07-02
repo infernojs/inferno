@@ -13,6 +13,7 @@ function VNode(blueprint) {
 	this.hooks = null;
 	this.key = null;
 	this.clipData = null;
+	this.hasNonKeyedChildren = false;
 }
 
 VNode.prototype = {
@@ -123,6 +124,8 @@ export function createBlueprint(shape, childrenType) {
 		}
 		if (keyIsDynamic === true) {
 			vNode.key = arguments[key.arg];
+		} else {
+			vNode.key = key;
 		}
 		if (styleIsDynamic === true) {
 			vNode.style = arguments[style.arg];
@@ -134,7 +137,6 @@ export function createBlueprint(shape, childrenType) {
 		} else {
 			vNode.className = blueprint.className;
 		}
-
 
 		return vNode;
 	};

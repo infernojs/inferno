@@ -1,6 +1,6 @@
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, isPromise, replaceInArray, getRefInstance } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, documentCreateElement, createVirtualFragment, insertOrAppendNonKeyed, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks, createNullNode } from './utils';
+import { appendText, documentCreateElement, createVirtualFragment, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks, createNullNode } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
 
@@ -11,7 +11,6 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	if (isInvalidNode(input)) {
 		return null;
 	}
-
 	const bp = input.bp;
 
 	if (recyclingEnabled) {
@@ -172,9 +171,8 @@ function appendNode(node, parentDom, lifecycle, context, instance, isSVG) {
 	return dom;
 }
 
-function appendPromise(child, parentDom, domChildren, lifecycle, context, instance, isSVG) {
+function appendPromise(child, parentDom, lifecycle, context, instance, isSVG) {
 	const placeholder = createEmptyTextNode();
-	domChildren && domChildren.push(placeholder);
 
 	child.then(node => {
 		// TODO check for text nodes and arrays
@@ -182,7 +180,6 @@ function appendPromise(child, parentDom, domChildren, lifecycle, context, instan
 		if (parentDom !== null && !isInvalidNode(dom)) {
 			parentDom.replaceChild(dom, placeholder);
 		}
-		domChildren && replaceInArray(domChildren, placeholder, dom);
 	});
 	parentDom.appendChild(placeholder);
 }
@@ -194,46 +191,33 @@ export function mountArrayChildrenWithKeys(children, parentDom, lifecycle, conte
 }
 
 export function mountArrayChildren(node, children, parentDom, lifecycle, context, instance, isSVG) {
-	let domChildren = null;
-	let isNonKeyed = false;
-	let hasKeyedAssumption = false;
+	let hasNonKeyedChildren = false;
 
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
 		if (isStringOrNumber(child)) {
-			isNonKeyed = true;
-			domChildren = domChildren || [];
-			domChildren.push(appendText(child, parentDom, false));
+			hasNonKeyedChildren = true;
+			appendText(child, parentDom, false);
 		} else if (!isNullOrUndefined(child) && isArray(child)) {
-			const virtualFragment = createVirtualFragment();
-
-			isNonKeyed = true;
-			mountArrayChildren(node, child, virtualFragment, lifecycle, context, instance, isSVG);
-			insertOrAppendNonKeyed(parentDom, virtualFragment);
-			domChildren = domChildren || [];
-			domChildren.push(virtualFragment);
+			// we do this because we don't flatten keyed lists
+			hasNonKeyedChildren = true;
+			mountArrayChildren(node, child, parentDom, lifecycle, context, instance, isSVG);
 		} else if (isPromise(child)) {
-			appendPromise(child, parentDom, domChildren, lifecycle, context, instance, isSVG);
+			appendPromise(child, parentDom, lifecycle, context, instance, isSVG);
 		} else {
 			const domNode = mount(child, parentDom, lifecycle, context, instance, isSVG);
 
-			if (isNonKeyed || (!hasKeyedAssumption && !isNullOrUndefined(child) && isNullOrUndefined(child.key))) {
-				isNonKeyed = true;
-				domChildren = domChildren || [];
-				domChildren.push(domNode);
-			} else if (isInvalidNode(child)) {
-				isNonKeyed = true;
-				domChildren = domChildren || [];
-				domChildren.push(domNode);
-			} else if (hasKeyedAssumption === false) {
-				hasKeyedAssumption = true;
+			if (!hasNonKeyedChildren) {
+				if (!isNullOrUndefined(child) && isNullOrUndefined(child.key)) {
+					hasNonKeyedChildren = true;
+				} else if (isInvalidNode(child)) {
+					hasNonKeyedChildren = true;
+				}
 			}
 		}
 	}
-	if (domChildren !== null && domChildren.length > 1 && isNonKeyed === true) {
-		node.domChildren = domChildren;
-	}
+	node.hasNonKeyedChildren = hasNonKeyedChildren;
 }
 
 function mountChildren(node, children, parentDom, lifecycle, context, instance, isSVG) {

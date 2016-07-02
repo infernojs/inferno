@@ -3,8 +3,9 @@ import { createNullNode, replaceNode, handleAttachedHooks } from './utils';
 import { mountRef, handleSelects, mountAttributes, mountBlueprintAttrs, mountBlueprintEvents, mountEvents } from './mounting';
 import { patch, patchStyle } from './patching';
 
-function hydrateChild(child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
+function hydrateChild(parent, child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
 	if (isStringOrNumber(child)) {
+		parent.hasNonKeyedChildren = true;
 		if (domNode.nodeType === 3 && child !== '') {
 			domNode.nodeValue = child;
 		} else {
@@ -120,10 +121,9 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 					const childNodes = getChildNodesWithoutComments(domNode);
 
 					if (isArray(children)) {
-						node.domChildren = childNodes;
 						if (childNodes.length === children.length) {
 							for (let i = 0; i < children.length; i++) {
-								hydrateChild(children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
+								hydrateChild(node, children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
 							}
 						} else {
 							// TODO: recreate children?
@@ -131,7 +131,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 						}
 					} else {
 						if (childNodes.length === 1) {
-							hydrateChild(children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
+							hydrateChild(node, children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
 						} else {
 							// TODO: recreate child
 							// debugger;

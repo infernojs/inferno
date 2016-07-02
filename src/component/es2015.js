@@ -50,7 +50,6 @@ function applyState(component, force, callback) {
 		}
 		const lastNode = component._lastNode;
 		const parentDom = lastNode.dom.parentNode;
-
 		const activeNode = getActiveNode();
 		const subLifecycle = new Lifecycle();
 		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);

@@ -2237,7 +2237,7 @@ describe('Components (JSX)', () => {
 			toggleChild();
 			expect(container.innerHTML).to.equal('<div><span>A</span><div>1</div></div>');
 			toggleParent();
-			expect(container.innerHTML).to.equal('<div>A</div>');
+			expect(container.innerHTML).to.equal('<div><span>A</span></div>');
 		});
 
 		it('Should trigger componentWillUnmount once for child', () => {

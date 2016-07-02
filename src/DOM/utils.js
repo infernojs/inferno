@@ -20,28 +20,6 @@ constructDefaults('volume,value', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-function isVirtualFragment(obj) {
-	return !isNullOrUndefined(obj.append);
-}
-
-export function insertOrAppendNonKeyed(parentDom, newNode, nextNode) {
-	if (isNullOrUndefined(nextNode)) {
-		if (isVirtualFragment(newNode)) {
-			newNode.append(parentDom);
-		} else {
-			parentDom.appendChild(newNode);
-		}
-	} else {
-		if (isVirtualFragment(newNode)) {
-			newNode.insert(parentDom, nextNode);
-		} else if (isVirtualFragment(nextNode)) {
-			parentDom.insertBefore(newNode, nextNode.childNodes[0] || nextNode.dom);
-		} else {
-			parentDom.insertBefore(newNode, nextNode);
-		}
-	}
-}
-
 export function createNullNode() {
 	return {
 		null: true,
@@ -49,7 +27,7 @@ export function createNullNode() {
 	};
 }
 
-export function insertOrAppendKeyed(parentDom, newNode, nextNode) {
+export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
 		parentDom.appendChild(newNode);
 	} else {
@@ -110,11 +88,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 }
 
 export function replaceNode(parentDom, nextDom, lastDom) {
-	if (isVirtualFragment(lastDom)) {
-		lastDom.replaceWith(nextDom);
-	} else {
-		parentDom.replaceChild(nextDom, lastDom);
-	}
+	parentDom.replaceChild(nextDom, lastDom);
 }
 
 export function detachNode(node) {
@@ -130,9 +104,11 @@ export function detachNode(node) {
 		instanceChildren = instance.children;
 
 		if (instance.render !== undefined) {
-			instance.componentWillUnmount();
-			instance._unmounted = true;
-			detachNode(instance._lastNode);
+			if (!instance._unmounted) {
+				instance.componentWillUnmount();
+				instance._unmounted = true;
+				detachNode(instance._lastNode);
+			}
 		}
 	}
 	const hooks = node.hooks || instanceHooks;
@@ -216,79 +192,6 @@ export function resetActiveNode(activeNode) {
 	if (activeNode !== null && activeNode !== document.body && document.activeElement !== activeNode) {
 		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
 	}
-}
-
-export function createVirtualFragment() {
-	const childNodes = [];
-	const dom = document.createTextNode('');
-	let parentNode = null;
-
-	const fragment = {
-		dom,
-		childNodes,
-		appendChild(domNode) {
-			// TODO we need to check if the domNode already has a parentNode of VirtualFragment so we can remove it
-			childNodes.push(domNode);
-			if (parentNode) {
-				parentNode.insertBefore(domNode, dom);
-			}
-		},
-		removeChild(domNode) {
-			if (parentNode) {
-				parentNode.removeChild(domNode);
-			}
-			childNodes.splice(childNodes.indexOf(domNode), 1);
-		},
-		insertBefore(domNode, refNode) {
-			if (parentNode) {
-				parentNode.insertBefore(domNode, refNode);
-			}
-			childNodes.splice(childNodes.indexOf(refNode), 0, domNode);
-		},
-		replaceChild(domNode, refNode) {
-			parentNode.replaceChild(domNode, refNode);
-			replaceInArray(childNodes, refNode, domNode);
-		},
-		append(parentDom) {
-			parentDom.appendChild(dom);
-			parentNode = parentDom;
-			insertChildren(parentNode, childNodes, dom);
-		},
-		insert(parentDom, refNode) {
-			parentDom.insertBefore(dom, refNode);
-			parentNode = parentDom;
-			insertChildren(parentNode, childNodes, dom);
-		},
-		remove() {
-			parentNode.removeChild(dom);
-			for (let i = 0; i < childNodes.length; i++) {
-				parentNode.removeChild(childNodes[i]);
-			}
-			parentNode = null;
-		},
-		replaceWith(newNode) {
-			parentNode.replaceChild(newNode, dom);
-			for (let i = 0; i < childNodes.length; i++) {
-				parentNode.removeChild(childNodes[i]);
-			}
-			parentNode = null;
-		},
-		// here to emulate not being a TextNode
-		getElementsByTagName: null
-	};
-
-	Object.defineProperty(fragment, 'parentNode', {
-		get() {
-			return parentNode;
-		}
-	});
-	Object.defineProperty(fragment, 'firstChild', {
-		get() {
-			return childNodes[0];
-		}
-	});
-
-	return fragment;
 }
 
 export function isKeyed(lastChildren, nextChildren) {
