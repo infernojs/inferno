@@ -14,7 +14,7 @@
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.0",
     "babel-loader": "^6.2.4",
-    "babel-plugin-inferno": "^0.7.2",
+    "babel-plugin-inferno": "^0.7.3",
     "babel-plugin-syntax-jsx": "^6.8.0",
     "babel-plugin-syntax-object-rest-spread": "^6.8.0",
     "babel-plugin-transform-es2015-modules-umd": "^6.8.0",

@@ -254,6 +254,7 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		const instance = new Component(props);
 
 		instance._patch = patch;
+		instance._componentToDOMNodeMap = componentToDOMNodeMap;
 		if (!isNullOrUndefined(lastInstance) && props.ref) {
 			mountRef(lastInstance, props.ref, instance);
 		}

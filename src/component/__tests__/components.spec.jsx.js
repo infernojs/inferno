@@ -2303,4 +2303,34 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<tr> <td></td> <td></td> <td></td> </tr>');
 		});
 	});
+
+	describe('handling JSX spread attributes', () => {
+		it('should properly handle multiple attributes using spread', () => {
+			class Input extends Component {
+				constructor() {
+					super();
+					this.handleBlur = this.handleBlur.bind(this);
+				}
+
+				handleBlur(event) {
+					console.log(event, "blur");
+				}
+
+				render() {
+					const props = {
+						onBlur : this.handleBlur,
+						className: 'foo',
+						id: 'test'
+					};
+
+					return (<input { ...props } ></input>);
+				}
+			}
+
+			render(
+				<Input />, container
+			);
+			expect(container.innerHTML).to.equal('<input id="test" class="foo">');
+		});
+	});
 });
