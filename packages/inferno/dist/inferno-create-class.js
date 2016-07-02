@@ -9,63 +9,6 @@
 	(global.InfernoCreateClass = factory());
 }(this, function () { 'use strict';
 
-	var babelHelpers = {};
-	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-	  return typeof obj;
-	} : function (obj) {
-	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-	};
-
-	babelHelpers.classCallCheck = function (instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	};
-
-	babelHelpers.createClass = function () {
-	  function defineProperties(target, props) {
-	    for (var i = 0; i < props.length; i++) {
-	      var descriptor = props[i];
-	      descriptor.enumerable = descriptor.enumerable || false;
-	      descriptor.configurable = true;
-	      if ("value" in descriptor) descriptor.writable = true;
-	      Object.defineProperty(target, descriptor.key, descriptor);
-	    }
-	  }
-
-	  return function (Constructor, protoProps, staticProps) {
-	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-	    if (staticProps) defineProperties(Constructor, staticProps);
-	    return Constructor;
-	  };
-	}();
-
-	babelHelpers.inherits = function (subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      enumerable: false,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-	};
-
-	babelHelpers.possibleConstructorReturn = function (self, call) {
-	  if (!self) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-	};
-
-	babelHelpers;
-
 	var NO_RENDER = 'NO_RENDER';
 
 	// Runs only once in applications lifetime
@@ -80,14 +23,12 @@
 	}
 
 	function isUndefined(obj) {
-		return obj === void 0;
+		return obj === undefined;
 	}
 
 	function constructDefaults(string, object, value) {
 		/* eslint no-return-assign: 0 */
-		string.split(',').forEach(function (i) {
-			return object[i] = value;
-		});
+		string.split(',').forEach(function (i) { return object[i] = value; });
 	}
 
 	var xlinkNS = 'http://www.w3.org/1999/xlink';
@@ -149,8 +90,10 @@
 			this._listeners.push(callback);
 		},
 		trigger: function trigger() {
+			var this$1 = this;
+
 			for (var i = 0; i < this._listeners.length; i++) {
-				this._listeners[i]();
+				this$1._listeners[i]();
 			}
 		}
 	};
@@ -168,6 +111,7 @@
 			activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
 		}
 	}
+
 
 	function queueStateChanges(component, newState, callback) {
 		for (var stateKey in newState) {
@@ -202,7 +146,6 @@
 			}
 			var lastNode = component._lastNode;
 			var parentDom = lastNode.dom.parentNode;
-
 			var activeNode = getActiveNode();
 			var subLifecycle = new Lifecycle();
 			component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
@@ -217,114 +160,81 @@
 		}
 	}
 
-	var Component = function () {
-		function Component(props) {
-			babelHelpers.classCallCheck(this, Component);
+	var Component = function Component(props) {
+		/** @type {object} */
+		this.props = props || {};
 
-			/** @type {object} */
-			this.props = props || {};
+		/** @type {object} */
+		this.state = {};
 
-			/** @type {object} */
-			this.state = {};
-
-			/** @type {object} */
-			this.refs = {};
-			this._blockSetState = false;
-			this._deferSetState = false;
-			this._pendingSetState = false;
-			this._pendingState = {};
-			this._parentNode = null;
-			this._lastNode = null;
-			this._unmounted = true;
-			this.context = {};
-			this._patch = null;
-			this._parentComponent = null;
+		/** @type {object} */
+		this.refs = {};
+		this._blockSetState = false;
+		this._deferSetState = false;
+		this._pendingSetState = false;
+		this._pendingState = {};
+		this._parentNode = null;
+		this._lastNode = null;
+		this._unmounted = true;
+		this.context = {};
+		this._patch = null;
+		this._parentComponent = null;
+	};
+	Component.prototype.render = function render () {};
+	Component.prototype.forceUpdate = function forceUpdate (callback) {
+		if (this._unmounted) {
+			throw Error(noOp);
 		}
+		applyState(this, true, callback);
+	};
+	Component.prototype.setState = function setState (newState, callback) {
+		if (this._unmounted) {
+			throw Error(noOp);
+		}
+		if (this._blockSetState === false) {
+			queueStateChanges(this, newState, callback);
+		} else {
+			throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
+		}
+	};
+	Component.prototype.componentDidMount = function componentDidMount () {};
+	Component.prototype.componentWillMount = function componentWillMount () {};
+	Component.prototype.componentWillUnmount = function componentWillUnmount () {};
+	Component.prototype.componentDidUpdate = function componentDidUpdate () {};
+	Component.prototype.shouldComponentUpdate = function shouldComponentUpdate () { return true; };
+	Component.prototype.componentWillReceiveProps = function componentWillReceiveProps () {};
+	Component.prototype.componentWillUpdate = function componentWillUpdate () {};
+	Component.prototype.getChildContext = function getChildContext () {};
+	Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, force) {
+		if (this._unmounted === true) {
+			this._unmounted = false;
+			return false;
+		}
+		if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
+			nextProps.children = prevProps.children;
+		}
+		if (prevProps !== nextProps || prevState !== nextState || force) {
+			if (prevProps !== nextProps) {
+				this._blockSetState = true;
+				this.componentWillReceiveProps(nextProps);
+				this._blockSetState = false;
+			}
+			var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
-		babelHelpers.createClass(Component, [{
-			key: 'render',
-			value: function render() {}
-		}, {
-			key: 'forceUpdate',
-			value: function forceUpdate(callback) {
-				if (this._unmounted) {
-					throw Error(noOp);
-				}
-				applyState(this, true, callback);
-			}
-		}, {
-			key: 'setState',
-			value: function setState(newState, callback) {
-				if (this._unmounted) {
-					throw Error(noOp);
-				}
-				if (this._blockSetState === false) {
-					queueStateChanges(this, newState, callback);
-				} else {
-					throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
-				}
-			}
-		}, {
-			key: 'componentDidMount',
-			value: function componentDidMount() {}
-		}, {
-			key: 'componentWillMount',
-			value: function componentWillMount() {}
-		}, {
-			key: 'componentWillUnmount',
-			value: function componentWillUnmount() {}
-		}, {
-			key: 'componentDidUpdate',
-			value: function componentDidUpdate() {}
-		}, {
-			key: 'shouldComponentUpdate',
-			value: function shouldComponentUpdate() {
-				return true;
-			}
-		}, {
-			key: 'componentWillReceiveProps',
-			value: function componentWillReceiveProps() {}
-		}, {
-			key: 'componentWillUpdate',
-			value: function componentWillUpdate() {}
-		}, {
-			key: 'getChildContext',
-			value: function getChildContext() {}
-		}, {
-			key: '_updateComponent',
-			value: function _updateComponent(prevState, nextState, prevProps, nextProps, force) {
-				if (this._unmounted === true) {
-					this._unmounted = false;
-					return false;
-				}
-				if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
-					nextProps.children = prevProps.children;
-				}
-				if (prevProps !== nextProps || prevState !== nextState || force) {
-					if (prevProps !== nextProps) {
-						this._blockSetState = true;
-						this.componentWillReceiveProps(nextProps);
-						this._blockSetState = false;
-					}
-					var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
+			if (shouldUpdate !== false) {
+				this._blockSetState = true;
+				this.componentWillUpdate(nextProps, nextState);
+				this._blockSetState = false;
+				this.props = nextProps;
+				this.state = nextState;
+				var node = this.render();
 
-					if (shouldUpdate !== false) {
-						this._blockSetState = true;
-						this.componentWillUpdate(nextProps, nextState);
-						this._blockSetState = false;
-						this.props = nextProps;
-						this.state = nextState;
-						var node = this.render();
-
-						this.componentDidUpdate(prevProps, prevState);
-						return node;
-					}
-				}
-				return NO_RENDER;
+				this.componentDidUpdate(prevProps, prevState);
+				return node;
 			}
-		}]);
-		return Component;
-	}();
+		}
+		return NO_RENDER;
+	};
 
 	// don't autobind these methods since they already have guaranteed context.
 	var AUTOBIND_BLACKLIST = {

@@ -1,7 +1,7 @@
 import * as p from 'path';
 import * as fs from 'fs';
 import { rollup } from 'rollup';
-import babel from 'rollup-plugin-babel';
+import buble from 'rollup-plugin-buble';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
@@ -13,17 +13,7 @@ const pkg = JSON.parse(fs.readFileSync('./package.json'));
 const external = Object.keys(pkg.peerDependencies || {}).concat(Object.keys(pkg.dependencies || {}));
 
 const plugins = [
-	babel({
-		babelrc: false,
-		presets: 'es2015-rollup',
-		plugins: [
-			'transform-inline-environment-variables',
-			'transform-undefined-to-void',
-			'babel-plugin-syntax-jsx',
-			'babel-plugin-inferno',
-			'transform-object-rest-spread'
-		]
-	}),
+	buble(),
 	nodeResolve({
 		jsnext: true,
 		main: true,

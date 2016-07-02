@@ -9,63 +9,6 @@
 	(global.InfernoServer = factory());
 }(this, function () { 'use strict';
 
-	var babelHelpers = {};
-	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-	  return typeof obj;
-	} : function (obj) {
-	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-	};
-
-	babelHelpers.classCallCheck = function (instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	};
-
-	babelHelpers.createClass = function () {
-	  function defineProperties(target, props) {
-	    for (var i = 0; i < props.length; i++) {
-	      var descriptor = props[i];
-	      descriptor.enumerable = descriptor.enumerable || false;
-	      descriptor.configurable = true;
-	      if ("value" in descriptor) descriptor.writable = true;
-	      Object.defineProperty(target, descriptor.key, descriptor);
-	    }
-	  }
-
-	  return function (Constructor, protoProps, staticProps) {
-	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-	    if (staticProps) defineProperties(Constructor, staticProps);
-	    return Constructor;
-	  };
-	}();
-
-	babelHelpers.inherits = function (subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      enumerable: false,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-	};
-
-	babelHelpers.possibleConstructorReturn = function (self, call) {
-	  if (!self) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-	};
-
-	babelHelpers;
-
 	function addChildrenToProps(children, props) {
 		if (!isNullOrUndefined(children)) {
 			var isChildrenArray = isArray(children);
@@ -90,7 +33,7 @@
 	}
 
 	function isStatefulComponent(obj) {
-		return obj.prototype.render !== void 0;
+		return obj.prototype.render !== undefined;
 	}
 
 	function isStringOrNumber(obj) {
@@ -122,7 +65,7 @@
 	}
 
 	function isUndefined(obj) {
-		return obj === void 0;
+		return obj === undefined;
 	}
 
 	var screenWidth = isBrowser && window.screen.width;
@@ -149,9 +92,7 @@
 
 	function constructDefaults(string, object, value) {
 		/* eslint no-return-assign: 0 */
-		string.split(',').forEach(function (i) {
-			return object[i] = value;
-		});
+		string.split(',').forEach(function (i) { return object[i] = value; });
 	}
 
 	var xlinkNS = 'http://www.w3.org/1999/xlink';
@@ -237,7 +178,7 @@
 				var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
 				if (!isNullOrUndefined(value)) {
-					styles.push(toHyphenCase(styleName) + ':' + value + px + ';');
+					styles.push(((toHyphenCase(styleName)) + ":" + value + px + ";"));
 				}
 			}
 			return styles.join();
@@ -246,45 +187,37 @@
 
 	function renderNode(node, context, isRoot) {
 		if (!isInvalidNode(node)) {
-			var _ret = function () {
-				var bp = node.bp;
-				var tag = node.tag || bp && bp.tag;
-				var outputAttrs = [];
-				var className = node.className;
-				var style = node.style;
+			var bp = node.bp;
+			var tag = node.tag || (bp && bp.tag);
+			var outputAttrs = [];
+			var className = node.className;
+			var style = node.style;
 
-				if (isFunction(tag)) {
-					return {
-						v: renderComponent(tag, node.attrs, node.children, context, isRoot)
-					};
-				}
-				if (!isNullOrUndefined(className)) {
-					outputAttrs.push('class="' + className + '"');
-				}
-				if (!isNullOrUndefined(style)) {
-					outputAttrs.push('style="' + renderStyleToString(style) + '"');
-				}
-				var attrs = node.attrs;
-				var attrKeys = attrs && Object.keys(attrs) || [];
+			if (isFunction(tag)) {
+				return renderComponent(tag, node.attrs, node.children, context, isRoot);
+			}
+			if (!isNullOrUndefined(className)) {
+				outputAttrs.push('class="' + className + '"');
+			}
+			if (!isNullOrUndefined(style)) {
+				outputAttrs.push('style="' + renderStyleToString(style) + '"');
+			}
+			var attrs = node.attrs;
+			var attrKeys = (attrs && Object.keys(attrs)) || [];
 
-				if (bp && bp.hasAttrs === true) {
-					attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
-				}
-				attrKeys.forEach(function (attrsKey, i) {
-					var attr = attrKeys[i];
+			if (bp && bp.hasAttrs === true) {
+				attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
+			}
+			attrKeys.forEach(function (attrsKey, i) {
+				var attr = attrKeys[i];
 
-					outputAttrs.push(attr + '="' + attrs[attr] + '"');
-				});
+				outputAttrs.push(attr + '="' + attrs[attr] + '"');
+			});
 
-				if (isRoot) {
-					outputAttrs.push('data-infernoroot');
-				}
-				return {
-					v: '<' + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + '>' + renderChildren(node.children, context) + '</' + tag + '>'
-				};
-			}();
-
-			if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
+			if (isRoot) {
+				outputAttrs.push('data-infernoroot');
+			}
+			return ("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">" + (renderChildren(node.children, context)) + "</" + tag + ">");
 		}
 	}
 

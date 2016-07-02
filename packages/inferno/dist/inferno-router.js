@@ -9,63 +9,6 @@
     (global.InfernoRouter = factory());
 }(this, function () { 'use strict';
 
-    var babelHelpers = {};
-    babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-      return typeof obj;
-    } : function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-    };
-
-    babelHelpers.classCallCheck = function (instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-      }
-    };
-
-    babelHelpers.createClass = function () {
-      function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-          var descriptor = props[i];
-          descriptor.enumerable = descriptor.enumerable || false;
-          descriptor.configurable = true;
-          if ("value" in descriptor) descriptor.writable = true;
-          Object.defineProperty(target, descriptor.key, descriptor);
-        }
-      }
-
-      return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-      };
-    }();
-
-    babelHelpers.inherits = function (subClass, superClass) {
-      if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-      }
-
-      subClass.prototype = Object.create(superClass && superClass.prototype, {
-        constructor: {
-          value: subClass,
-          enumerable: false,
-          writable: true,
-          configurable: true
-        }
-      });
-      if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-    };
-
-    babelHelpers.possibleConstructorReturn = function (self, call) {
-      if (!self) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-      }
-
-      return call && (typeof call === "object" || typeof call === "function") ? call : self;
-    };
-
-    babelHelpers;
-
     var NO_RENDER = 'NO_RENDER';
 
     // Runs only once in applications lifetime
@@ -84,7 +27,7 @@
     }
 
     function isUndefined(obj) {
-    	return obj === void 0;
+    	return obj === undefined;
     }
 
     function VNode(blueprint) {
@@ -100,6 +43,7 @@
     	this.hooks = null;
     	this.key = null;
     	this.clipData = null;
+    	this.hasNonKeyedChildren = false;
     }
 
     VNode.prototype = {
@@ -143,9 +87,7 @@
 
     function constructDefaults(string, object, value) {
     	/* eslint no-return-assign: 0 */
-    	string.split(',').forEach(function (i) {
-    		return object[i] = value;
-    	});
+    	string.split(',').forEach(function (i) { return object[i] = value; });
     }
 
     var xlinkNS = 'http://www.w3.org/1999/xlink';
@@ -207,8 +149,10 @@
     		this._listeners.push(callback);
     	},
     	trigger: function trigger() {
+    		var this$1 = this;
+
     		for (var i = 0; i < this._listeners.length; i++) {
-    			this._listeners[i]();
+    			this$1._listeners[i]();
     		}
     	}
     };
@@ -226,6 +170,7 @@
     		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
     	}
     }
+
 
     function queueStateChanges(component, newState, callback) {
     	for (var stateKey in newState) {
@@ -260,7 +205,6 @@
     		}
     		var lastNode = component._lastNode;
     		var parentDom = lastNode.dom.parentNode;
-
     		var activeNode = getActiveNode();
     		var subLifecycle = new Lifecycle();
     		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
@@ -275,114 +219,81 @@
     	}
     }
 
-    var Component = function () {
-    	function Component(props) {
-    		babelHelpers.classCallCheck(this, Component);
+    var Component = function Component(props) {
+    	/** @type {object} */
+    	this.props = props || {};
 
-    		/** @type {object} */
-    		this.props = props || {};
+    	/** @type {object} */
+    	this.state = {};
 
-    		/** @type {object} */
-    		this.state = {};
-
-    		/** @type {object} */
-    		this.refs = {};
-    		this._blockSetState = false;
-    		this._deferSetState = false;
-    		this._pendingSetState = false;
-    		this._pendingState = {};
-    		this._parentNode = null;
-    		this._lastNode = null;
-    		this._unmounted = true;
-    		this.context = {};
-    		this._patch = null;
-    		this._parentComponent = null;
+    	/** @type {object} */
+    	this.refs = {};
+    	this._blockSetState = false;
+    	this._deferSetState = false;
+    	this._pendingSetState = false;
+    	this._pendingState = {};
+    	this._parentNode = null;
+    	this._lastNode = null;
+    	this._unmounted = true;
+    	this.context = {};
+    	this._patch = null;
+    	this._parentComponent = null;
+    };
+    Component.prototype.render = function render () {};
+    Component.prototype.forceUpdate = function forceUpdate (callback) {
+    	if (this._unmounted) {
+    		throw Error(noOp);
     	}
+    	applyState(this, true, callback);
+    };
+    Component.prototype.setState = function setState (newState, callback) {
+    	if (this._unmounted) {
+    		throw Error(noOp);
+    	}
+    	if (this._blockSetState === false) {
+    		queueStateChanges(this, newState, callback);
+    	} else {
+    		throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
+    	}
+    };
+    Component.prototype.componentDidMount = function componentDidMount () {};
+    Component.prototype.componentWillMount = function componentWillMount () {};
+    Component.prototype.componentWillUnmount = function componentWillUnmount () {};
+    Component.prototype.componentDidUpdate = function componentDidUpdate () {};
+    Component.prototype.shouldComponentUpdate = function shouldComponentUpdate () { return true; };
+    Component.prototype.componentWillReceiveProps = function componentWillReceiveProps () {};
+    Component.prototype.componentWillUpdate = function componentWillUpdate () {};
+    Component.prototype.getChildContext = function getChildContext () {};
+    Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, force) {
+    	if (this._unmounted === true) {
+    		this._unmounted = false;
+    		return false;
+    	}
+    	if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
+    		nextProps.children = prevProps.children;
+    	}
+    	if (prevProps !== nextProps || prevState !== nextState || force) {
+    		if (prevProps !== nextProps) {
+    			this._blockSetState = true;
+    			this.componentWillReceiveProps(nextProps);
+    			this._blockSetState = false;
+    		}
+    		var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
-    	babelHelpers.createClass(Component, [{
-    		key: 'render',
-    		value: function render() {}
-    	}, {
-    		key: 'forceUpdate',
-    		value: function forceUpdate(callback) {
-    			if (this._unmounted) {
-    				throw Error(noOp);
-    			}
-    			applyState(this, true, callback);
-    		}
-    	}, {
-    		key: 'setState',
-    		value: function setState(newState, callback) {
-    			if (this._unmounted) {
-    				throw Error(noOp);
-    			}
-    			if (this._blockSetState === false) {
-    				queueStateChanges(this, newState, callback);
-    			} else {
-    				throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
-    			}
-    		}
-    	}, {
-    		key: 'componentDidMount',
-    		value: function componentDidMount() {}
-    	}, {
-    		key: 'componentWillMount',
-    		value: function componentWillMount() {}
-    	}, {
-    		key: 'componentWillUnmount',
-    		value: function componentWillUnmount() {}
-    	}, {
-    		key: 'componentDidUpdate',
-    		value: function componentDidUpdate() {}
-    	}, {
-    		key: 'shouldComponentUpdate',
-    		value: function shouldComponentUpdate() {
-    			return true;
-    		}
-    	}, {
-    		key: 'componentWillReceiveProps',
-    		value: function componentWillReceiveProps() {}
-    	}, {
-    		key: 'componentWillUpdate',
-    		value: function componentWillUpdate() {}
-    	}, {
-    		key: 'getChildContext',
-    		value: function getChildContext() {}
-    	}, {
-    		key: '_updateComponent',
-    		value: function _updateComponent(prevState, nextState, prevProps, nextProps, force) {
-    			if (this._unmounted === true) {
-    				this._unmounted = false;
-    				return false;
-    			}
-    			if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
-    				nextProps.children = prevProps.children;
-    			}
-    			if (prevProps !== nextProps || prevState !== nextState || force) {
-    				if (prevProps !== nextProps) {
-    					this._blockSetState = true;
-    					this.componentWillReceiveProps(nextProps);
-    					this._blockSetState = false;
-    				}
-    				var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
+    		if (shouldUpdate !== false) {
+    			this._blockSetState = true;
+    			this.componentWillUpdate(nextProps, nextState);
+    			this._blockSetState = false;
+    			this.props = nextProps;
+    			this.state = nextState;
+    			var node = this.render();
 
-    				if (shouldUpdate !== false) {
-    					this._blockSetState = true;
-    					this.componentWillUpdate(nextProps, nextState);
-    					this._blockSetState = false;
-    					this.props = nextProps;
-    					this.state = nextState;
-    					var node = this.render();
-
-    					this.componentDidUpdate(prevProps, prevState);
-    					return node;
-    				}
-    			}
-    			return NO_RENDER;
+    			this.componentDidUpdate(prevProps, prevState);
+    			return node;
     		}
-    	}]);
-    	return Component;
-    }();
+    	}
+    	return NO_RENDER;
+    };
 
     var ASYNC_STATUS = {
     	pending: 'pending',
@@ -390,74 +301,60 @@
     	rejected: 'rejected'
     };
 
-    var Route = function (_Component) {
-    	babelHelpers.inherits(Route, _Component);
-
+    var Route = (function (Component) {
     	function Route(props) {
-    		babelHelpers.classCallCheck(this, Route);
-
-    		var _this = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Route).call(this, props));
-
-    		_this.state = {
+    		Component.call(this, props);
+    		this.state = {
     			async: null
     		};
-    		return _this;
     	}
 
-    	babelHelpers.createClass(Route, [{
-    		key: 'async',
-    		value: function async() {
-    			var _this2 = this;
+    	if ( Component ) Route.__proto__ = Component;
+    	Route.prototype = Object.create( Component && Component.prototype );
+    	Route.prototype.constructor = Route;
+    	Route.prototype.async = function async () {
+    		var this$1 = this;
 
-    			var async = this.props.async;
+    		var async = this.props.async;
 
-    			if (async) {
-    				this.setState({
-    					async: { status: ASYNC_STATUS.pending }
-    				});
-    				async(this.props.params).then(function (value) {
-    					_this2.setState({
-    						async: {
-    							status: ASYNC_STATUS.fulfilled,
-    							value: value
-    						}
-    					});
-    				}, this.reject).catch(this.reject);
-    			}
-    		}
-    	}, {
-    		key: 'reject',
-    		value: function reject(value) {
+    		if (async) {
     			this.setState({
-    				async: {
-    					status: ASYNC_STATUS.rejected,
-    					value: value
-    				}
+    				async: { status: ASYNC_STATUS.pending }
     			});
+    			async(this.props.params).then(function (value) {
+    				this$1.setState({
+    					async: {
+    						status: ASYNC_STATUS.fulfilled,
+    						value: value
+    					}
+    				});
+    			}, this.reject).catch(this.reject);
     		}
-    	}, {
-    		key: 'componentWillReceiveProps',
-    		value: function componentWillReceiveProps() {
-    			this.async();
-    		}
-    	}, {
-    		key: 'componentWillMount',
-    		value: function componentWillMount() {
-    			this.async();
-    		}
-    	}, {
-    		key: 'render',
-    		value: function render() {
-    			var _props = this.props;
-    			var component = _props.component;
-    			var params = _props.params;
+    	};
+    	Route.prototype.reject = function reject (value) {
+    		this.setState({
+    			async: {
+    				status: ASYNC_STATUS.rejected,
+    				value: value
+    			}
+    		});
+    	};
+    	Route.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
+    		this.async();
+    	};
+    	Route.prototype.componentWillMount = function componentWillMount () {
+    		this.async();
+    	};
+    	Route.prototype.render = function render () {
+    		var ref = this.props;
+    		var component = ref.component;
+    		var params = ref.params;
 
+    		return createVNode().setTag(component).setAttrs({ params: params, async: this.state.async });
+    	};
 
-    			return createVNode().setTag(component).setAttrs({ params: params, async: this.state.async });
-    		}
-    	}]);
     	return Route;
-    }(Component);
+    }(Component));
 
     var EMPTY$1 = {};
 
@@ -481,13 +378,13 @@
     }
 
     // Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
-    function exec(url, route) {
-    	var opts = arguments.length <= 2 || arguments[2] === void 0 ? EMPTY$1 : arguments[2];
+    function exec(url, route, opts) {
+    	if ( opts === void 0 ) opts = EMPTY$1;
 
     	var reg = /(?:\?([^#]*))?(#.*)?$/,
-    	    c = url.match(reg),
-    	    matches = {},
-    	    ret = void 0;
+    		c = url.match(reg),
+    		matches = {},
+    		ret;
     	if (c && c[1]) {
     		var p = c[1].split('&');
     		for (var i = 0; i < p.length; i++) {
@@ -498,23 +395,24 @@
     	url = segmentize(url.replace(reg, ''));
     	route = segmentize(route || '');
     	var max = Math.max(url.length, route.length);
-    	for (var _i = 0; _i < max; _i++) {
-    		if (route[_i] && route[_i].charAt(0) === ':') {
-    			var param = route[_i].replace(/(^\:|[+*?]+$)/g, ''),
-    			    flags = (route[_i].match(/[+*?]+$/) || EMPTY$1)[0] || '',
-    			    plus = ~flags.indexOf('+'),
-    			    star = ~flags.indexOf('*'),
-    			    val = url[_i] || '';
+    	for (var i$1 = 0; i$1 < max; i$1++) {
+    		if (route[i$1] && route[i$1].charAt(0) === ':') {
+    			var param = route[i$1].replace(/(^\:|[+*?]+$)/g, ''),
+    				flags = (route[i$1].match(/[+*?]+$/) || EMPTY$1)[0] || '',
+    				plus = ~flags.indexOf('+'),
+    				star = ~flags.indexOf('*'),
+    				val = url[i$1] || '';
     			if (!val && !star && (flags.indexOf('?') < 0 || plus)) {
     				ret = false;
     				break;
     			}
     			matches[param] = decodeURIComponent(val);
     			if (plus || star) {
-    				matches[param] = url.slice(_i).map(decodeURIComponent).join('/');
+    				matches[param] = url.slice(i$1).map(decodeURIComponent).join('/');
     				break;
     			}
-    		} else if (route[_i] !== url[_i]) {
+    		}
+    		else if (route[i$1] !== url[i$1]) {
     			ret = false;
     			break;
     		}
@@ -527,98 +425,85 @@
 
     function pathRankSort(a, b) {
     	var aAttr = a.attrs || EMPTY$1,
-    	    bAttr = b.attrs || EMPTY$1;
+    		bAttr = b.attrs || EMPTY$1;
     	var diff = rank(aAttr.path) - rank(bAttr.path);
-    	return diff || aAttr.path.length - bAttr.path.length;
+    	return diff || (aAttr.path.length - bAttr.path.length);
     }
 
     function rank(url) {
     	return (strip(url).match(/\/+/g) || '').length;
     }
 
-    var Router = function (_Component) {
-    	babelHelpers.inherits(Router, _Component);
-
+    var Router = (function (Component) {
     	function Router(props) {
-    		babelHelpers.classCallCheck(this, Router);
-
-    		var _this = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Router).call(this, props));
-
+    		Component.call(this, props);
     		if (!props.history) {
     			throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
     		}
-    		_this._didRoute = false;
-    		_this.state = {
+    		this._didRoute = false;
+    		this.state = {
     			url: props.url || props.history.getCurrentUrl()
     		};
-    		return _this;
     	}
 
-    	babelHelpers.createClass(Router, [{
-    		key: 'getChildContext',
-    		value: function getChildContext() {
-    			return {
-    				history: this.props.history,
-    				hashbang: this.props.hashbang
-    			};
-    		}
-    	}, {
-    		key: 'componentWillMount',
-    		value: function componentWillMount() {
-    			this.props.history.addRouter(this);
-    		}
-    	}, {
-    		key: 'componentWillUnmount',
-    		value: function componentWillUnmount() {
-    			this.props.history.removeRouter(this);
-    		}
-    	}, {
-    		key: 'routeTo',
-    		value: function routeTo(url) {
-    			this._didRoute = false;
-    			this.setState({ url: url });
-    			return this._didRoute;
-    		}
-    	}, {
-    		key: 'render',
-    		value: function render() {
-    			var children = isArray(this.props.children) ? this.props.children : [this.props.children];
-    			var url = this.props.url || this.state.url;
-    			var wrapperComponent = this.props.component;
-    			var hashbang = this.props.hashbang;
+    	if ( Component ) Router.__proto__ = Component;
+    	Router.prototype = Object.create( Component && Component.prototype );
+    	Router.prototype.constructor = Router;
+    	Router.prototype.getChildContext = function getChildContext () {
+    		return {
+    			history: this.props.history,
+    			hashbang: this.props.hashbang
+    		};
+    	};
+    	Router.prototype.componentWillMount = function componentWillMount () {
+    		this.props.history.addRouter(this);
+    	};
+    	Router.prototype.componentWillUnmount = function componentWillUnmount () {
+    		this.props.history.removeRouter(this);
+    	};
+    	Router.prototype.routeTo = function routeTo (url) {
+    		this._didRoute = false;
+    		this.setState({ url: url });
+    		return this._didRoute;
+    	};
+    	Router.prototype.render = function render () {
+    		var children = isArray(this.props.children) ? this.props.children : [this.props.children];
+    		var url = this.props.url || this.state.url;
+    		var wrapperComponent = this.props.component;
+    		var hashbang = this.props.hashbang;
 
-    			children.sort(pathRankSort);
+    		children.sort(pathRankSort);
 
-    			for (var i = 0; i < children.length; i++) {
-    				var child = children[i];
-    				var path = child.attrs.path;
+    		for (var i = 0; i < children.length; i++) {
+    			var child = children[i];
+    			var ref = child.attrs;
+    			var path = ref.path;
+    			var params = exec(hashbang ? convertToHashbang(url) : url, path);
 
-    				var params = exec(hashbang ? convertToHashbang(url) : url, path);
-
-    				if (params) {
-    					if (wrapperComponent) {
-    						return createVNode().setTag(wrapperComponent).setChildren(child).setAttrs({
-    							params: params
-    						});
-    					}
-    					return child.setAttrs(Object.assign({}, { params: params }, child.attrs));
+    			if (params) {
+    				if (wrapperComponent) {
+    					return createVNode().setTag(wrapperComponent).setChildren(child).setAttrs({
+    						params: params
+    					});
     				}
+    				return child.setAttrs(Object.assign({}, { params: params }, child.attrs));
     			}
-    			return wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
     		}
-    	}]);
+    		return wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
+    	};
+
     	return Router;
-    }(Component);
+    }(Component));
 
-    function Link(_ref, _ref2) {
-    	var to = _ref.to;
-    	var children = _ref.children;
-    	var hashbang = _ref2.hashbang;
-    	var history = _ref2.history;
+    function Link(ref, ref$1) {
+    	var to = ref.to;
+    	var children = ref.children;
+    	var hashbang = ref$1.hashbang;
+    	var history = ref$1.history;
 
-    	return createVNode().setAttrs({
+    	return (createVNode().setAttrs({
     		href: hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to
-    	}).setTag('a').setChildren(children);
+    	}).setTag('a').setChildren(children));
     }
 
     var routers = [];
@@ -626,13 +511,13 @@
     function getCurrentUrl() {
     	var url = typeof location !== 'undefined' ? location : EMPTY;
 
-    	return '' + (url.pathname || '') + (url.search || '') + (url.hash || '');
+    	return ("" + (url.pathname || '') + (url.search || '') + (url.hash || ''));
     }
 
     function getHashbangRoot() {
     	var url = typeof location !== 'undefined' ? location : EMPTY;
 
-    	return '' + (url.protocol + '//' || '') + (url.host || '') + (url.pathname || '') + (url.search || '') + '#!';
+    	return ("" + (url.protocol + '//' || '') + (url.host || '') + (url.pathname || '') + (url.search || '') + "#!");
     }
 
     function routeTo(url) {
@@ -645,9 +530,7 @@
     	return didRoute;
     }
 
-    window.addEventListener('popstate', function () {
-    	return routeTo(getCurrentUrl());
-    });
+    window.addEventListener('popstate', function () { return routeTo(getCurrentUrl()); });
 
     var browserHistory = {
     	addRouter: function addRouter(router) {
@@ -656,7 +539,6 @@
     	removeRouter: function removeRouter(router) {
     		roouters.splice(routers.indexOf(router), 1);
     	},
-
     	getCurrentUrl: getCurrentUrl,
     	getHashbangRoot: getHashbangRoot
     };

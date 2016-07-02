@@ -9,63 +9,6 @@
 	(global.InfernoCreateElement = factory());
 }(this, function () { 'use strict';
 
-	var babelHelpers = {};
-	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-	  return typeof obj;
-	} : function (obj) {
-	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-	};
-
-	babelHelpers.classCallCheck = function (instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	};
-
-	babelHelpers.createClass = function () {
-	  function defineProperties(target, props) {
-	    for (var i = 0; i < props.length; i++) {
-	      var descriptor = props[i];
-	      descriptor.enumerable = descriptor.enumerable || false;
-	      descriptor.configurable = true;
-	      if ("value" in descriptor) descriptor.writable = true;
-	      Object.defineProperty(target, descriptor.key, descriptor);
-	    }
-	  }
-
-	  return function (Constructor, protoProps, staticProps) {
-	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-	    if (staticProps) defineProperties(Constructor, staticProps);
-	    return Constructor;
-	  };
-	}();
-
-	babelHelpers.inherits = function (subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      enumerable: false,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-	};
-
-	babelHelpers.possibleConstructorReturn = function (self, call) {
-	  if (!self) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-	};
-
-	babelHelpers;
-
 	function isArray(obj) {
 		return obj instanceof Array;
 	}
@@ -91,15 +34,24 @@
 	}
 
 	function isUndefined(obj) {
-		return obj === void 0;
+		return obj === undefined;
 	}
 
 	function isAttrAHook(hook) {
-		return hook === 'onCreated' || hook === 'onAttached' || hook === 'onWillDetach' || hook === 'onWillUpdate' || hook === 'onDidUpdate';
+		return hook === 'onCreated'
+			|| hook === 'onAttached'
+			|| hook === 'onWillDetach'
+			|| hook === 'onWillUpdate'
+			|| hook === 'onDidUpdate';
 	}
 
 	function isAttrAComponentHook(hook) {
-		return hook === 'onComponentWillMount' || hook === 'onComponentDidMount' || hook === 'onComponentWillUnmount' || hook === 'onComponentShouldUpdate' || hook === 'onComponentWillUpdate' || hook === 'onComponentDidUpdate';
+		return hook === 'onComponentWillMount'
+			|| hook === 'onComponentDidMount'
+			|| hook === 'onComponentWillUnmount'
+			|| hook === 'onComponentShouldUpdate'
+			|| hook === 'onComponentWillUpdate'
+			|| hook === 'onComponentDidUpdate';
 	}
 
 	function VNode(blueprint) {
@@ -115,6 +67,7 @@
 		this.hooks = null;
 		this.key = null;
 		this.clipData = null;
+		this.hasNonKeyedChildren = false;
 	}
 
 	VNode.prototype = {
@@ -203,19 +156,19 @@
 		return { attrs: attrs, events: events, className: className, style: style, hooks: hooks };
 	}
 
-	function createChild(_ref) {
-		var tag = _ref.tag;
-		var attrs = _ref.attrs;
-		var children = _ref.children;
-		var className = _ref.className;
-		var style = _ref.style;
-		var events = _ref.events;
-		var hooks = _ref.hooks;
+	function createChild(ref) {
+		var tag = ref.tag;
+		var attrs = ref.attrs;
+		var children = ref.children;
+		var className = ref.className;
+		var style = ref.style;
+		var events = ref.events;
+		var hooks = ref.hooks;
 
-		if (tag === void 0 && !isNullOrUndefined(attrs) && !attrs.tpl && !isNullOrUndefined(children) && children.length === 0) {
+		if (tag === undefined && !isNullOrUndefined(attrs) && !attrs.tpl && !isNullOrUndefined(children) && children.length === 0) {
 			return null;
 		}
-		var key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : void 0;
+		var key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : undefined;
 
 		if (!isNullOrUndefined(children) && children.length === 0) {
 			children = null;
@@ -223,7 +176,7 @@
 			children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 		}
 
-		if (key !== void 0) {
+		if (key !== undefined) {
 			delete attrs.key;
 		}
 		var attrsAndEvents = createAttrsAndEvents(attrs, tag);
@@ -236,10 +189,10 @@
 		vNode.attrs = attrsAndEvents.attrs || null;
 		vNode.events = attrsAndEvents.events || events;
 		vNode.hooks = attrsAndEvents.hooks || hooks;
-		vNode.children = children === void 0 ? null : children;
-		vNode.key = key === void 0 ? null : key;
-		vNode.className = className === void 0 ? null : className;
-		vNode.style = style === void 0 ? null : style;
+		vNode.children = children === undefined ? null : children;
+		vNode.key = key === undefined ? null : key;
+		vNode.className = className === undefined ? null : className;
+		vNode.style = style === undefined ? null : style;
 
 		return vNode;
 	}
@@ -251,7 +204,7 @@
 
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
-				if (!isNullOrUndefined(child) && (typeof child === 'undefined' ? 'undefined' : babelHelpers.typeof(child)) === 'object') {
+				if (!isNullOrUndefined(child) && typeof child === 'object') {
 					if (isArray(child)) {
 						if (child.length > 0) {
 							newChildren.push(createChildren(child));
@@ -266,16 +219,15 @@
 				}
 			}
 			return newChildren;
-		} else if (childrenDefined && (typeof children === 'undefined' ? 'undefined' : babelHelpers.typeof(children)) === 'object') {
-			return children.dom === void 0 ? createChild(children) : children;
+		} else if (childrenDefined && typeof children === 'object') {
+			return children.dom === undefined ? createChild(children) : children;
 		}
 		return children;
 	}
 
 	function createElement(tag, props) {
-		for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-			children[_key - 2] = arguments[_key];
-		}
+		var children = [], len = arguments.length - 2;
+		while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
 
 		return createChild({ tag: tag, attrs: props, children: children });
 	}

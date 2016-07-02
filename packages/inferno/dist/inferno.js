@@ -9,63 +9,6 @@
 	(global.Inferno = factory());
 }(this, function () { 'use strict';
 
-	var babelHelpers = {};
-	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-	  return typeof obj;
-	} : function (obj) {
-	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-	};
-
-	babelHelpers.classCallCheck = function (instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	};
-
-	babelHelpers.createClass = function () {
-	  function defineProperties(target, props) {
-	    for (var i = 0; i < props.length; i++) {
-	      var descriptor = props[i];
-	      descriptor.enumerable = descriptor.enumerable || false;
-	      descriptor.configurable = true;
-	      if ("value" in descriptor) descriptor.writable = true;
-	      Object.defineProperty(target, descriptor.key, descriptor);
-	    }
-	  }
-
-	  return function (Constructor, protoProps, staticProps) {
-	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-	    if (staticProps) defineProperties(Constructor, staticProps);
-	    return Constructor;
-	  };
-	}();
-
-	babelHelpers.inherits = function (subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	  }
-
-	  subClass.prototype = Object.create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      enumerable: false,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-	};
-
-	babelHelpers.possibleConstructorReturn = function (self, call) {
-	  if (!self) {
-	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	  }
-
-	  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-	};
-
-	babelHelpers;
-
 	// Runs only once in applications lifetime
 	var isBrowser = typeof window !== 'undefined' && window.document;
 
@@ -82,7 +25,7 @@
 	}
 
 	function isUndefined(obj) {
-		return obj === void 0;
+		return obj === undefined;
 	}
 
 	function VNode(blueprint) {
@@ -98,6 +41,7 @@
 		this.hooks = null;
 		this.key = null;
 		this.clipData = null;
+		this.hasNonKeyedChildren = false;
 	}
 
 	VNode.prototype = {
@@ -141,28 +85,28 @@
 
 	function createBlueprint(shape, childrenType) {
 		var tag = shape.tag || null;
-		var tagIsDynamic = tag && tag.arg !== void 0 ? true : false;
+		var tagIsDynamic = tag && tag.arg !== undefined ? true : false;
 
 		var children = isNullOrUndefined(shape.children) ? null : shape.children;
-		var childrenIsDynamic = children && children.arg !== void 0 ? true : false;
+		var childrenIsDynamic = children && children.arg !== undefined ? true : false;
 
 		var attrs = shape.attrs || null;
-		var attrsIsDynamic = attrs && attrs.arg !== void 0 ? true : false;
+		var attrsIsDynamic = attrs && attrs.arg !== undefined ? true : false;
 
 		var hooks = shape.hooks || null;
-		var hooksIsDynamic = hooks && hooks.arg !== void 0 ? true : false;
+		var hooksIsDynamic = hooks && hooks.arg !== undefined ? true : false;
 
 		var events = shape.events || null;
-		var eventsIsDynamic = events && events.arg !== void 0 ? true : false;
+		var eventsIsDynamic = events && events.arg !== undefined ? true : false;
 
-		var key = shape.key === void 0 ? null : shape.key;
+		var key = shape.key === undefined ? null : shape.key;
 		var keyIsDynamic = !isNullOrUndefined(key) && !isNullOrUndefined(key.arg);
 
 		var style = shape.style || null;
-		var styleIsDynamic = style && style.arg !== void 0 ? true : false;
+		var styleIsDynamic = style && style.arg !== undefined ? true : false;
 
-		var className = shape.className === void 0 ? null : shape.className;
-		var classNameIsDynamic = className && className.arg !== void 0 ? true : false;
+		var className = shape.className === undefined ? null : shape.className;
+		var classNameIsDynamic = className && className.arg !== undefined ? true : false;
 
 		var blueprint = {
 			lazy: shape.lazy || false,
@@ -180,7 +124,7 @@
 			hasEvents: eventsIsDynamic,
 			hasStyle: styleIsDynamic || (style !== '' && style ? true : false),
 			hasClassName: classNameIsDynamic || (className !== '' && className ? true : false),
-			childrenType: childrenType === void 0 ? children ? 5 : 0 : childrenType,
+			childrenType: childrenType === undefined ? (children ? 5 : 0) : childrenType,
 			attrKeys: null,
 			eventKeys: null,
 			isSVG: shape.isSVG || false
@@ -208,6 +152,8 @@
 			}
 			if (keyIsDynamic === true) {
 				vNode.key = arguments[key.arg];
+			} else {
+				vNode.key = key;
 			}
 			if (styleIsDynamic === true) {
 				vNode.style = arguments[style.arg];
@@ -226,7 +172,7 @@
 
 	// Copy of the util from dom/util, otherwise it makes massive bundles
 	function documentCreateElement(tag, isSVG) {
-		var dom = void 0;
+		var dom;
 
 		if (isSVG === true) {
 			dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
