@@ -6,7 +6,7 @@ import { isUndefined } from '../core/utils';
 import hydrate from './hydration';
 
 try {
-	var foo = new Map();
+	new Map();
 } catch (e) {
 	throw new Error('Inferno Error: Inferno requires ES2015 Map objects. Please add a Map polyfill for environments with no support. \nhttps://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map');
 }
