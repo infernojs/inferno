@@ -1,6 +1,7 @@
 import { mount } from './mounting';
 import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from './../core/utils';
 import { recyclingEnabled, pool } from './recycling';
+import { componentToDOMNodeMap } from './rendering';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
@@ -107,6 +108,7 @@ export function detachNode(node) {
 			if (!instance._unmounted) {
 				instance.componentWillUnmount();
 				instance._unmounted = true;
+				componentToDOMNodeMap.delete(instance);
 				detachNode(instance._lastNode);
 			}
 		}

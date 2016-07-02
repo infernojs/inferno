@@ -1,5 +1,6 @@
-import { render } from '../../../src/DOM/rendering';
+import { render, findDOMNode } from '../../../src/DOM/rendering';
 
 export default {
-	render
+	render,
+	findDOMNode
 };

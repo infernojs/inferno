@@ -15,25 +15,25 @@ describe('Select / select multiple', () => {
 
 	it('should render "select" boolean on select options with numbers', () => {
 		const template = (val) => ({
-            tag: 'select',
-            attrs: {
-                multiple: true,
-                value: val
-            },
-            children: [{
-                tag: 'option',
-                attrs: {
-                    value: 1
-                },
-                children: 1
-            }, {
-                tag: 'option',
-                attrs: {
-                    value: 2
-                },
-                children: 2
-            }]
-        });
+			tag: 'select',
+			attrs: {
+				multiple: true,
+				value: val
+			},
+			children: [{
+				tag: 'option',
+				attrs: {
+					value: 1
+				},
+				children: 1
+			}, {
+				tag: 'option',
+				attrs: {
+					value: 2
+				},
+				children: 2
+			}]
+		});
 
 		render(template(null), container);
 		render(template(), container);
@@ -71,24 +71,24 @@ describe('Select / select multiple', () => {
 	it('should render "select" boolean on select options', () => {
 
 		const template = (val) => ({
-            tag: 'select',
-            attrs: {
-                multiple: true,
-                value: val
-            },
-            children: [{
-                tag: 'option',
-                attrs: {
-                    value: 'foo'
-                },
-                children: 'foo'
-            }, {
-                tag: 'option',
-                attrs: {
-                    value: 'bar'
-                },
-                children: 'bar'
-            }]
+			tag: 'select',
+			attrs: {
+				multiple: true,
+				value: val
+			},
+			children: [{
+				tag: 'option',
+				attrs: {
+					value: 'foo'
+				},
+				children: 'foo'
+			}, {
+				tag: 'option',
+				attrs: {
+					value: 'bar'
+				},
+				children: 'bar'
+			}]
 		});
 
 		render(template({}), container);
@@ -124,24 +124,24 @@ describe('Select / select multiple', () => {
 
 	it('should render "select" boolean on select options', () => {
 		const template = (val) => ({
-            tag: 'select',
-            attrs: {
-                multiple: true,
-                value: val
-            },
-            children: [{
-                tag: 'option',
-                attrs: {
-                    value: 'foo'
-                },
-                children: 'foo'
-            }, {
-                tag: 'option',
-                attrs: {
-                    value: 'bar'
-                },
-                children: 'bar'
-            }]
+			tag: 'select',
+			attrs: {
+				multiple: true,
+				value: val
+			},
+			children: [{
+				tag: 'option',
+				attrs: {
+					value: 'foo'
+				},
+				children: 'foo'
+			}, {
+				tag: 'option',
+				attrs: {
+					value: 'bar'
+				},
+				children: 'bar'
+			}]
 		});
 
 		render(template('foo'), container);
@@ -154,39 +154,39 @@ describe('Select / select multiple', () => {
 		);
 	});
 
-    /*
-    TODO! Do we need to support this kind of shortcuts, shouldn't user mark options as selected or not like in vanilla JS
+	/*
+	TODO! Do we need to support this kind of shortcuts, shouldn't user mark options as selected or not like in vanilla JS
 
 	it('should populate the value attribute on select multiple using groups', () => {
 		const template = (val) => ({
-            tag: 'select',
-            attrs: {
-                multiple: true,
-                value: val
-            },
-            children: [{
-                tag: 'optGroup',
-                attrs: {
-                    label: 'foo-group'
-                },
-                children: {
-                    tag: 'option',
-                    attrs: {
-                        value: 'foo'
-                    }
-                }
-            }, {
-                tag: 'optGroup',
-                attrs: {
-                    label: 'bar-group'
-                },
-                children: {
-                    tag: 'option',
-                    attrs: {
-                        value: 'bar'
-                    }
-                }
-            }]
+			tag: 'select',
+			attrs: {
+				multiple: true,
+				value: val
+			},
+			children: [{
+				tag: 'optGroup',
+				attrs: {
+					label: 'foo-group'
+				},
+				children: {
+					tag: 'option',
+					attrs: {
+						value: 'foo'
+					}
+				}
+			}, {
+				tag: 'optGroup',
+				attrs: {
+					label: 'bar-group'
+				},
+				children: {
+					tag: 'option',
+					attrs: {
+						value: 'bar'
+					}
+				}
+			}]
 		});
 
 		//render(template(undefined), container);
@@ -234,24 +234,24 @@ describe('Select / select multiple', () => {
 	it('should render "select" boolean on select options', () => {
 
 		const template = (val) => ({
-            tag: 'select',
-            attrs: {
-                multiple: true,
-                value: val
-            },
-            children: [{
-                tag: 'option',
-                attrs: {
-                    value: 'foo'
-                },
-                children: 'foo'
-            }, {
-                tag: 'option',
-                attrs: {
-                    value: 'bar'
-                },
-                children: 'bar'
-            }]
+			tag: 'select',
+			attrs: {
+				multiple: true,
+				value: val
+			},
+			children: [{
+				tag: 'option',
+				attrs: {
+					value: 'foo'
+				},
+				children: 'foo'
+			}, {
+				tag: 'option',
+				attrs: {
+					value: 'bar'
+				},
+				children: 'bar'
+			}]
 		});
 
 		render(template('foo'), container);
@@ -279,10 +279,10 @@ describe('Select / select multiple', () => {
 	it('should assure the value attribute also set the value property for `textarea`', () => {
 
 		const template = (val) => ({
-            tag: 'textarea',
-            attrs: {
-                value: val
-            }
+			tag: 'textarea',
+			attrs: {
+				value: val
+			}
 		});
 
 		render(template('foo'), container);

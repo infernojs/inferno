@@ -7,7 +7,6 @@ const Inferno = {
 };
 
 describe('Children - (JSX)', () => {
-
 	let container;
 
 	beforeEach(function () {

@@ -3,6 +3,7 @@ import { recyclingEnabled, recycle } from './recycling';
 import { appendText, documentCreateElement, createVirtualFragment, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks, createNullNode } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
+import { componentToDOMNodeMap } from './rendering';
 
 export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	if (isArray(input)) {
@@ -23,7 +24,6 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 			return dom;
 		}
 	}
-
 	if (bp === undefined) {
 		return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
 	} else {
@@ -284,6 +284,7 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		if (parentDom !== null && !isInvalidNode(dom)) {
 			parentDom.appendChild(dom);
 		}
+		componentToDOMNodeMap.set(instance, dom);
 		parentNode.dom = dom;
 		parentNode.instance = instance;
 	} else {

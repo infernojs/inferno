@@ -2,6 +2,7 @@ import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, i
 import { diffNodes, diffNodesWithTemplate } from './diffing';
 import { mount } from './mounting';
 import { insertOrAppend, remove, detachNode, createVirtualFragment, isKeyed, replaceNode, isUnitlessNumber, booleanProps, strictProps, namespaces } from './utils';
+import { componentToDOMNodeMap } from './rendering';
 
 export function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
@@ -178,6 +179,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
+			componentToDOMNodeMap.set(instance, nextNode.dom);
 		}
 	} else {
 		let shouldUpdate = true;

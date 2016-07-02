@@ -5,14 +5,12 @@ import { getActiveNode, resetActiveNode } from './utils';
 import { isUndefined } from '../core/utils';
 import hydrate from './hydration';
 
-try {
-	new Map();
-} catch (e) {
-	throw new Error('Inferno Error: Inferno requires ES2015 Map objects. Please add a Map polyfill for environments with no support. \nhttps://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map');
-}
-
 const roots = new Map();
-export const componentDomNodes = new Map();
+export const componentToDOMNodeMap = new Map();
+
+export function findDOMNode(domNode) {
+	return componentToDOMNodeMap.get(domNode) || null;
+}
 
 export function render(node, parentDom) {
 	const root = roots.get(parentDom);
