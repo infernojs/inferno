@@ -25,7 +25,7 @@
 		return typeof obj === 'function';
 	}
 
-	function isAttrAnEvent(attr) {
+	function isAttrAnEvent$1(attr) {
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 	}
 
@@ -37,7 +37,7 @@
 		return obj === undefined;
 	}
 
-	function isAttrAHook(hook) {
+	function isAttrAHook$1(hook) {
 		return hook === 'onCreated'
 			|| hook === 'onAttached'
 			|| hook === 'onWillDetach'
@@ -45,7 +45,7 @@
 			|| hook === 'onDidUpdate';
 	}
 
-	function isAttrAComponentHook(hook) {
+	function isAttrAComponentHook$1(hook) {
 		return hook === 'onComponentWillMount'
 			|| hook === 'onComponentDidMount'
 			|| hook === 'onComponentWillUnmount'
@@ -125,19 +125,19 @@
 					className = props[prop];
 				} else if (prop === 'style') {
 					style = props[prop];
-				} else if (isAttrAHook(prop) && !isFunction(tag)) {
+				} else if (isAttrAHook$1(prop) && !isFunction(tag)) {
 					if (isNullOrUndefined(hooks)) {
 						hooks = {};
 					}
 					hooks[prop.substring(2).toLowerCase()] = props[prop];
 					delete props[prop];
-				} else if (isAttrAnEvent(prop) && !isFunction(tag)) {
+				} else if (isAttrAnEvent$1(prop) && !isFunction(tag)) {
 					if (isNullOrUndefined(events)) {
 						events = {};
 					}
 					events[prop.toLowerCase()] = props[prop];
 					delete props[prop];
-				} else if (isAttrAComponentHook(prop) && isFunction(tag)) {
+				} else if (isAttrAComponentHook$1(prop) && isFunction(tag)) {
 					if (isNullOrUndefined(hooks)) {
 						hooks = {};
 					}

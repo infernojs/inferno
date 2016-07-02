@@ -184,7 +184,6 @@
   			return dom;
   		}
   	}
-
   	if (bp === undefined) {
   		return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
   	} else {
@@ -415,6 +414,7 @@
   		var instance = new Component(props);
 
   		instance._patch = patch;
+  		instance._componentToDOMNodeMap = componentToDOMNodeMap;
   		if (!isNullOrUndefined(lastInstance) && props.ref) {
   			mountRef(lastInstance, props.ref, instance);
   		}
@@ -445,6 +445,7 @@
   		if (parentDom !== null && !isInvalidNode(dom)) {
   			parentDom.appendChild(dom);
   		}
+  		componentToDOMNodeMap.set(instance, dom);
   		parentNode.dom = dom;
   		parentNode.instance = instance;
   	} else {
@@ -590,6 +591,7 @@
   			if (!instance._unmounted) {
   				instance.componentWillUnmount();
   				instance._unmounted = true;
+  				componentToDOMNodeMap.delete(instance);
   				detachNode(instance._lastNode);
   			}
   		}
@@ -1278,6 +1280,7 @@
   			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
   			lastNode.dom = nextNode.dom;
   			instance._lastNode = nextNode;
+  			componentToDOMNodeMap.set(instance, nextNode.dom);
   		}
   	} else {
   		var shouldUpdate = true;
@@ -1905,13 +1908,9 @@
   	return false;
   }
 
-  try {
-  	new Map();
-  } catch (e) {
-  	throw new Error('Inferno Error: Inferno requires ES2015 Map objects. Please add a Map polyfill for environments with no support. \nhttps://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map');
-  }
-
   var roots = new Map();
+  var componentToDOMNodeMap = new Map();
+
   function render(node, parentDom) {
   	var root = roots.get(parentDom);
   	var lifecycle = new Lifecycle();
@@ -2165,8 +2164,10 @@
   		var parentDom = lastNode.dom.parentNode;
   		var activeNode = getActiveNode$1();
   		var subLifecycle = new Lifecycle();
+
   		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
   		component._lastNode = nextNode;
+  		component._componentToDOMNodeMap.set(component, nextNode.dom);
   		component._parentNode.dom = nextNode.dom;
 
   		subLifecycle.trigger();
@@ -2196,6 +2197,7 @@
   	this.context = {};
   	this._patch = null;
   	this._parentComponent = null;
+  	this._componentToDOMNodeMap = null;
   };
   Component.prototype.render = function render () {};
   Component.prototype.forceUpdate = function forceUpdate (callback) {

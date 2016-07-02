@@ -16,7 +16,7 @@
 		return isUndefined(obj) || isNull(obj);
 	}
 
-	function isAttrAnEvent(attr) {
+	function isAttrAnEvent$1(attr) {
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 	}
 
@@ -83,6 +83,28 @@
 		return new VNode(bp);
 	}
 
+	function isAttrAnEvent(attr) {
+		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+	}
+
+	function isAttrAHook(hook) {
+		return hook === 'onCreated'
+			|| hook === 'onAttached'
+			|| hook === 'onWillDetach'
+			|| hook === 'onWillUpdate'
+			|| hook === 'onDidUpdate';
+	}
+
+	function isAttrAComponentHook(hook) {
+		return hook === 'onComponentWillMount'
+			|| hook === 'onComponentDidMount'
+			|| hook === 'onComponentWillUnmount'
+			|| hook === 'onComponentShouldUpdate'
+			|| hook === 'onComponentWillUpdate'
+			|| hook === 'onComponentDidUpdate';
+	}
+
+
 	function createBlueprint(shape, childrenType) {
 		var tag = shape.tag || null;
 		var tagIsDynamic = tag && tag.arg !== undefined ? true : false;
@@ -107,6 +129,9 @@
 
 		var className = shape.className === undefined ? null : shape.className;
 		var classNameIsDynamic = className && className.arg !== undefined ? true : false;
+
+		var spread = shape.spread === undefined ? null : shape.spread;
+		var hasSpread = shape.spread !== undefined;
 
 		var blueprint = {
 			lazy: shape.lazy || false,
@@ -139,33 +164,80 @@
 			if (childrenIsDynamic === true) {
 				vNode.children = arguments[children.arg];
 			}
-			if (attrsIsDynamic === true) {
-				vNode.attrs = arguments[attrs.arg];
-			} else {
-				vNode.attrs = attrs;
-			}
-			if (hooksIsDynamic === true) {
-				vNode.hooks = arguments[hooks.arg];
-			}
-			if (eventsIsDynamic === true) {
-				vNode.events = arguments[events.arg];
-			}
-			if (keyIsDynamic === true) {
-				vNode.key = arguments[key.arg];
-			} else {
-				vNode.key = key;
-			}
-			if (styleIsDynamic === true) {
-				vNode.style = arguments[style.arg];
-			} else {
-				vNode.style = blueprint.style;
-			}
-			if (classNameIsDynamic === true) {
-				vNode.className = arguments[className.arg];
-			} else {
-				vNode.className = blueprint.className;
-			}
+			if (hasSpread) {
+				var _spread = arguments[spread.arg];
+				var attrs$1;
+				var events$1;
+				var hooks$1;
 
+				for (var key$1 in _spread) {
+					var value = _spread[key$1];
+
+					if (key$1 === 'className') {
+						vNode.className = value;
+						blueprint.hasClassName = true;
+					} else if (key$1 === 'style') {
+						vNode.style = value;
+						blueprint.hasStyle = true;
+					} else if (key$1 === 'key') {
+						vNode.key = value;
+					} else if (isAttrAHook(key$1) || isAttrAComponentHook(key$1)) {
+						if (!hooks$1) {
+							hooks$1 = {};
+						}
+						hooks$1[key$1] = value;
+					} else if (isAttrAnEvent(key$1)) {
+						if (!events$1) {
+							events$1 = {};
+						}
+						events$1[key$1] = value;
+					} else {
+						if (!attrs$1) {
+							attrs$1 = {};
+						}
+						attrs$1[key$1] = value;
+					}
+				}
+				if (attrs$1) {
+					vNode.attrs = attrs$1;
+					blueprint.hasAttrs = true;
+				}
+				if (events$1) {
+					vNode.events = events$1;
+					blueprint.hasEvents = true;
+				}
+				if (hooks$1) {
+					vNode.hooks = hooks$1;
+					blueprint.hasHooks = true;
+				}
+			} else {
+				if (attrsIsDynamic === true) {
+					vNode.attrs = arguments[attrs.arg];
+				} else {
+					vNode.attrs = attrs;
+				}
+				if (hooksIsDynamic === true) {
+					vNode.hooks = arguments[hooks.arg];
+				}
+				if (eventsIsDynamic === true) {
+					vNode.events = arguments[events.arg];
+				}
+				if (keyIsDynamic === true) {
+					vNode.key = arguments[key.arg];
+				} else {
+					vNode.key = key;
+				}
+				if (styleIsDynamic === true) {
+					vNode.style = arguments[style.arg];
+				} else {
+					vNode.style = blueprint.style;
+				}
+				if (classNameIsDynamic === true) {
+					vNode.className = arguments[className.arg];
+				} else {
+					vNode.className = blueprint.className;
+				}
+			}
 			return vNode;
 		};
 	}
@@ -205,7 +277,7 @@
 			} else {
 				if (value === true) {
 					dom.setAttribute(attr, attr);
-				} else if (!isNullOrUndefined(value) && value !== false && !isAttrAnEvent(attr)) {
+				} else if (!isNullOrUndefined(value) && value !== false && !isAttrAnEvent$1(attr)) {
 					dom.setAttribute(attr, value);
 				}
 			}

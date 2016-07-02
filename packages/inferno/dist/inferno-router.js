@@ -207,8 +207,10 @@
     		var parentDom = lastNode.dom.parentNode;
     		var activeNode = getActiveNode();
     		var subLifecycle = new Lifecycle();
+
     		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
     		component._lastNode = nextNode;
+    		component._componentToDOMNodeMap.set(component, nextNode.dom);
     		component._parentNode.dom = nextNode.dom;
 
     		subLifecycle.trigger();
@@ -238,6 +240,7 @@
     	this.context = {};
     	this._patch = null;
     	this._parentComponent = null;
+    	this._componentToDOMNodeMap = null;
     };
     Component.prototype.render = function render () {};
     Component.prototype.forceUpdate = function forceUpdate (callback) {
