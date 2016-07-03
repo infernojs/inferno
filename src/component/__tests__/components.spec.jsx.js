@@ -2266,6 +2266,57 @@ describe('Components (JSX)', () => {
 			render(null, container);
 			calledOnce(spy); // Should be called once not twice
 		});
+
+		it('Should not trigger componentWillUnmount when siblings change', () => {
+			let updateParent = null;
+			class Parent extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						toggle: false
+					};
+
+					updateParent = () => this.setState({toggle: !this.state.toggle});
+				}
+
+				render() {
+					let content = null;
+					if (this.state.toggle) {
+						content = <span>test</span>;
+					}
+
+					return (
+						<div>
+							<span>A</span>
+							{content}
+							<B />
+						</div>
+					)
+				}
+			}
+
+			class B extends Component {
+				constructor(props) {
+					super(props);
+				}
+
+				componentWillUnmount() {}
+
+				render() {
+					return <div>B</div>
+				}
+			}
+
+			const spy = sinon.spy(B.prototype, 'componentWillUnmount');
+			render(<Parent />, container);
+			updateParent();
+			updateParent();
+			updateParent();
+			updateParent();
+			updateParent();
+			expect(spy.called).to.equal(false);
+		})
 	});
 
 	describe('handling of sCU', () => {
