@@ -1,12 +1,14 @@
 import { render } from './../rendering';
 import Component from './../../component/es2015';
 import { createBlueprint } from './../../core/createBlueprint';
+import { isNullOrUndefined } from '../../core/utils';
+const sinon = require('sinon/pkg/sinon');
 
 const Inferno = {
 	createBlueprint
 };
 
-describe('Children - (JSX)', () => {
+describe('Columns like tests - (JSX)', () => {
 	let container;
 
 	beforeEach(function () {
@@ -18,26 +20,6 @@ describe('Children - (JSX)', () => {
 	});
 
 	describe('Column-like tests', () => {
-
-		// Item Keyed
-		function BuildItemKeyed(text, key) {
-			return {text: text, key: key}
-		}
-
-		// Row Keyed
-		function BuildRowKeyed(key, ...items) {
-			return {key: key, items: items}
-		}
-
-		function BuildItem(k, text) {
-			return {text: text}
-		}
-
-		function BuildRow(k,...items) {
-			return {items: items}
-		}
-
-
 		function buildTestCases(Row, Item, suffix) {
 			return [
 				{
@@ -87,7 +69,7 @@ describe('Children - (JSX)', () => {
 					]
 				},
 				{
-					name: 'remove first item -' + suffix, // TODO: Somehow verify willDetach / componentWillUnmount here
+					name: 'remove first item -' + suffix,
 					initial: [
 						Row(1, Item(1,1), Item(2,2)),
 						Row(2, Item(3,3), Item(4,4))
@@ -98,7 +80,7 @@ describe('Children - (JSX)', () => {
 					]
 				},
 				{
-					name: 'remove last item -' + suffix, // TODO: Somehow verify willDetach / componentWillUnmount here
+					name: 'remove last item -' + suffix,
 					initial: [
 						Row(1, Item(1,1), Item(2,2)),
 						Row(2, Item(3,3), Item(4,4))
@@ -109,7 +91,7 @@ describe('Children - (JSX)', () => {
 					]
 				},
 				{
-					name: 'remove all items-' + suffix, // TODO: Somehow verify willDetach / componentWillUnmount here
+					name: 'remove all items-' + suffix,
 					initial: [
 						Row(1, Item(1,1), Item(2,2)),
 						Row(2, Item(3,3), Item(4,4))
@@ -120,7 +102,7 @@ describe('Children - (JSX)', () => {
 					]
 				},
 				{
-					name: 'remove all columns-' + suffix, // TODO: Somehow verify willDetach / componentWillUnmount here
+					name: 'remove all columns-' + suffix,
 					initial: [
 						Row(1, Item(1,1), Item(2,2)),
 						Row(2, Item(3,3), Item(4,4))
@@ -151,61 +133,298 @@ describe('Children - (JSX)', () => {
 			}
 		}
 
-		const keyedTestCases = buildTestCases(BuildRowKeyed, BuildItemKeyed, 'KEYED');
+		function getDifferentObjects(arr1, arr2) {
+			return arr1.filter(function(obj) {
+				return !arr2.some(function(obj2) {
+					return obj._testKey === obj2._testKey
+				});
+			});
+		}
 
-		const ItemKeyed =({text}) => (
-			<span>{text}</span>
-		);
+		function getSameObjects(arr1, arr2) {
+			return arr1.filter(function(obj) {
+				return arr2.some(function(obj2) {
+					return obj._testKey === obj2._testKey
+				});
+			});
+		}
 
-		const ColumnKeyed = ({items}) => (
-			<div>
-				<span key="-1">column</span>
-				{items.map((item) => <ItemKeyed text={item.text} key={item.key} />)}
-			</div>
+		describe('columns KEYED', () => {
+			// Item Keyed
+			function BuildItemKeyed(key, text) {
+				return {_testKey: key, id: key, text: text}
+			}
 
-		);
+			// Row Keyed
+			function BuildRowKeyed(key, ...items) {
+				return {_testKey: key, id: key, items: items}
+			}
 
-		const ViewKeyed = ({columns}) => (
-			<div>
-				{columns.map((column) => <ColumnKeyed items={column.items} key={column.key} />)}
-			</div>
-		);
+			const keyedTests = buildTestCases(BuildRowKeyed, BuildItemKeyed, 'KEYED');
 
-		keyedTestCases.forEach((testCase) => {
-			it('Should ' + testCase.name, () => {
-				render(<ViewKeyed columns={testCase.initial} />, container);
-				verifyRenderResult(testCase.initial, container);
-				render(<ViewKeyed columns={testCase.update} />, container);
-				verifyRenderResult(testCase.update, container);
+			class ItemKeyed extends Component {
+				constructor(props) {
+					super(props);
+				}
+				render() {
+					return (
+						<div>
+							{this.props.text}
+						</div>
+					)
+				}
+			}
+
+			class ColumnKeyed extends Component {
+				constructor(props) {
+					super(props);
+				}
+				render() {
+					const items = this.props.items;
+
+					return (
+						<div>
+							<span key="-1">column</span>
+							{items.map((item) => <ItemKeyed key={item.id} text={item.text} />)}
+						</div>
+					)
+				}
+			}
+
+			const ViewKeyed = ({columns}) => (
+				<div>
+					{columns.map((column) => <ColumnKeyed key={column.id} items={column.items} />)}
+				</div>
+			);
+
+			let mountedColumnSpy = null;
+			let unmountColumnSpy = null;
+			let updateColumnSpy = null;
+			let mountedItemSpy = null;
+			let unmountItemSpy = null;
+			let updateItemSpy = null;
+
+			beforeEach(() => {
+				mountedColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillMount');
+				unmountColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillUnmount');
+				updateColumnSpy = sinon.spy(ColumnKeyed.prototype, 'componentWillUpdate');
+				mountedItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillMount');
+				unmountItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillUnmount');
+				updateItemSpy = sinon.spy(ItemKeyed.prototype, 'componentWillUpdate');
+			});
+
+			afterEach(() => {
+				mountedColumnSpy.restore();
+				unmountColumnSpy.restore();
+				updateColumnSpy.restore();
+				mountedItemSpy.restore();
+				unmountItemSpy.restore();
+				updateItemSpy.restore();
+			});
+
+			keyedTests.forEach((testCase) => {
+				it('Should ' + testCase.name, () => {
+					const columnsToBeAdded = getDifferentObjects(testCase.update, testCase.initial);
+					const columnsToUpdate = getSameObjects(testCase.update, testCase.initial);
+					const columnsToRemove = getDifferentObjects(testCase.initial, testCase.update);
+
+					let itemsToBeAdded = [];
+					let itemsToUpdate = [];
+					let itemsToRemove = [];
+					let initialItemsCount = 0;
+
+					for (let i = 0; i < testCase.update.length || i < testCase.initial.length; i++) {
+						const updateColumns = testCase.update[i];
+						const intialColumns = testCase.initial[i];
+
+						if (!isNullOrUndefined(updateColumns)) {
+							if (!isNullOrUndefined(intialColumns)) {
+								itemsToBeAdded = itemsToBeAdded.concat(getDifferentObjects(updateColumns.items, intialColumns.items));
+								itemsToRemove = itemsToRemove.concat(getDifferentObjects(intialColumns.items, updateColumns.items));
+								itemsToUpdate = itemsToUpdate.concat(getSameObjects(updateColumns.items, intialColumns.items));
+								initialItemsCount += intialColumns.items.length;
+							} else {
+								itemsToBeAdded = itemsToBeAdded.concat(updateColumns.items);
+							}
+						} else {
+							if (!isNullOrUndefined(intialColumns)) {
+								initialItemsCount += intialColumns.items.length;
+							} else {
+								// Do nothing
+							}
+						}
+					}
+
+					// Do initial render
+					render(<ViewKeyed columns={testCase.initial} />, container);
+					verifyRenderResult(testCase.initial, container);
+					expect(mountedColumnSpy.callCount).to.equal(testCase.initial.length, 'Column Initial MOUNT'); // Initial all mounted
+					expect(unmountColumnSpy.callCount).to.equal(0, 'Column Initial unMount'); // Initial render none unmounted
+					expect(updateColumnSpy.callCount).to.equal(0, 'Column Initial update'); // Initial render none to update
+
+					expect(mountedItemSpy.callCount).to.equal(initialItemsCount, 'Item Initial Mount'); // Initial render - mount all items once
+					expect(updateItemSpy.callCount).to.equal(0, 'Item initial update'); // Initial render none to update
+					expect(unmountItemSpy.callCount).to.equal(0, 'Item initial unmount'); // Initial render none unmounted
+
+					// reset call counts
+					mountedColumnSpy.reset();
+					unmountColumnSpy.reset();
+					updateColumnSpy.reset();
+					mountedItemSpy.reset();
+					updateItemSpy.reset();
+					unmountItemSpy.reset();
+
+					// Do update
+					render(<ViewKeyed columns={testCase.update} />, container);
+					verifyRenderResult(testCase.update, container);
+
+					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length); // mount count should equal to added count
+					expect(unmountColumnSpy.callCount).to.equal(columnsToRemove.length); // Initial render none unmounted
+					expect(updateColumnSpy.callCount).to.equal(columnsToUpdate.length); // Initial render none unmounted
+					expect(mountedItemSpy.callCount).to.equal(itemsToBeAdded.length, `itemsToBeAdded ${JSON.stringify(itemsToBeAdded)} componentWillMount called: ${mountedItemSpy.callCount} times.`); // Initial render - mount all items once
+					expect(updateItemSpy.callCount).to.equal(itemsToUpdate.length, 'item update callback count'); // Initial render none to update
+					expect(unmountItemSpy.callCount).to.equal(itemsToRemove.length, 'item unmount callback count'); // Initial render none unmounted
+				});
 			});
 		});
 
-		const nonKeyedTestCases = buildTestCases(BuildRow, BuildItem, 'NON-KEYED');
 
-		const Item =({text}) => (
-			<span>{text}</span>
-		);
+		describe('columns NON-KEYED', () => {
+			// Item Keyed
+			function BuildItem(key, text) {
+				return {_testKey: key, text: text}
+			}
 
-		const Column = ({items}) => (
-			<div>
-				<span>column</span>
-				{items.map((item) => <Item text={item.text} />)}
-			</div>
+			// Row Keyed
+			function BuildRow(key, ...items) {
+				return {_testKey: key, items: items}
+			}
 
-		);
+			const nonKeyedTestCases = buildTestCases(BuildRow, BuildItem, 'NON-KEYED');
 
-		const View = ({columns}) => (
-			<div>
-				{columns.map((column) => <ColumnKeyed items={column.items} />)}
-			</div>
-		);
+			class Item extends Component {
+				constructor(props) {
+					super(props);
+				}
+				render() {
+					return (
+						<div>
+							{this.props.text}
+						</div>
+					)
+				}
+			}
 
-		nonKeyedTestCases.forEach((testCase) => {
-			it('Should ' + testCase.name, () => {
-				render(<View columns={testCase.initial} />, container);
-				verifyRenderResult(testCase.initial, container);
-				render(<View columns={testCase.update} />, container);
-				verifyRenderResult(testCase.update, container);
+			class Column extends Component {
+				constructor(props) {
+					super(props);
+				}
+				render() {
+					const items = this.props.items;
+
+					return (
+						<div>
+							<span>column</span>
+							{items.map((item) => <Item text={item.text} />)}
+						</div>
+					)
+				}
+			}
+
+			const View = ({columns}) => (
+				<div>
+					{columns.map((column) => <Column items={column.items} />)}
+				</div>
+			);
+
+			let mountedColumnSpy = null;
+			let unmountColumnSpy = null;
+			let updateColumnSpy = null;
+			let mountedItemSpy = null;
+			let unmountItemSpy = null;
+			let updateItemSpy = null;
+
+			beforeEach(() => {
+				mountedColumnSpy = sinon.spy(Column.prototype, 'componentWillMount');
+				unmountColumnSpy = sinon.spy(Column.prototype, 'componentWillUnmount');
+				updateColumnSpy = sinon.spy(Column.prototype, 'componentWillUpdate');
+				mountedItemSpy = sinon.spy(Item.prototype, 'componentWillMount');
+				unmountItemSpy = sinon.spy(Item.prototype, 'componentWillUnmount');
+				updateItemSpy = sinon.spy(Item.prototype, 'componentWillUpdate');
+			});
+
+			afterEach(() => {
+				mountedColumnSpy.restore();
+				unmountColumnSpy.restore();
+				updateColumnSpy.restore();
+				mountedItemSpy.restore();
+				unmountItemSpy.restore();
+				updateItemSpy.restore();
+			});
+
+			nonKeyedTestCases.forEach((testCase) => {
+				it('Should ' + testCase.name, () => {
+					const columnsToBeAdded = getDifferentObjects(testCase.update, testCase.initial);
+					const columnsToUpdate = getSameObjects(testCase.update, testCase.initial);
+					const columnsToRemove = getDifferentObjects(testCase.initial, testCase.update);
+
+					let itemsToBeAdded = [];
+					let itemsToUpdate = [];
+					let itemsToRemove = [];
+					let initialItemsCount = 0;
+
+					for (let i = 0; i < testCase.update.length || i < testCase.initial.length; i++) {
+						const updateColumns = testCase.update[i];
+						const intialColumns = testCase.initial[i];
+
+						if (!isNullOrUndefined(updateColumns)) {
+							if (!isNullOrUndefined(intialColumns)) {
+								itemsToBeAdded = itemsToBeAdded.concat(getDifferentObjects(updateColumns.items, intialColumns.items));
+								itemsToRemove = itemsToRemove.concat(getDifferentObjects(intialColumns.items, updateColumns.items));
+								itemsToUpdate = itemsToUpdate.concat(getSameObjects(updateColumns.items, intialColumns.items));
+								initialItemsCount += intialColumns.items.length;
+							} else {
+								itemsToBeAdded = itemsToBeAdded.concat(updateColumns.items);
+							}
+						} else {
+							if (!isNullOrUndefined(intialColumns)) {
+								initialItemsCount += intialColumns.items.length;
+							} else {
+								// Do nothing
+							}
+						}
+					}
+
+					// Do initial render
+					render(<View columns={testCase.initial} />, container);
+					verifyRenderResult(testCase.initial, container);
+					expect(mountedColumnSpy.callCount).to.equal(testCase.initial.length, 'Column Initial MOUNT'); // Initial all mounted
+					expect(unmountColumnSpy.callCount).to.equal(0, 'Column Initial unMount'); // Initial render none unmounted
+					expect(updateColumnSpy.callCount).to.equal(0, 'Column Initial update'); // Initial render none to update
+
+					expect(mountedItemSpy.callCount).to.equal(initialItemsCount, 'Item Initial Mount'); // Initial render - mount all items once
+					expect(updateItemSpy.callCount).to.equal(0, 'Item initial update'); // Initial render none to update
+					expect(unmountItemSpy.callCount).to.equal(0, 'Item initial unmount'); // Initial render none unmounted
+
+					// reset call counts
+					mountedColumnSpy.reset();
+					unmountColumnSpy.reset();
+					updateColumnSpy.reset();
+					mountedItemSpy.reset();
+					updateItemSpy.reset();
+					unmountItemSpy.reset();
+
+					// Do update
+					render(<View columns={testCase.update} />, container);
+					verifyRenderResult(testCase.update, container);
+
+					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length); // mount count should equal to added count
+					expect(unmountColumnSpy.callCount).to.equal(columnsToRemove.length); // Initial render none unmounted
+					expect(updateColumnSpy.callCount).to.equal(columnsToUpdate.length); // Initial render none unmounted
+					expect(mountedItemSpy.callCount).to.equal(itemsToBeAdded.length, `itemsToBeAdded ${JSON.stringify(itemsToBeAdded)} componentWillMount called: ${mountedItemSpy.callCount} times.`); // Initial render - mount all items once
+					expect(updateItemSpy.callCount).to.equal(itemsToUpdate.length, 'item update callback count'); // Initial render none to update
+					expect(unmountItemSpy.callCount).to.equal(itemsToRemove.length, 'item unmount callback count'); // Initial render none unmounted
+				});
 			});
 		});
 	});
