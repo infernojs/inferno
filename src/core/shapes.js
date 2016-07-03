@@ -213,3 +213,13 @@ export function createBlueprint(shape, childrenType) {
 		return vNode;
 	};
 }
+
+function VText(text) {
+	this.text = text;
+	this.dom = null;
+	this.key = null;
+}
+
+export function createVText(text) {
+	return new VText(text);
+}

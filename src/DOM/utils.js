@@ -28,6 +28,10 @@ export function createNullNode() {
 	};
 }
 
+export function isVText(o) {
+	return o.text !== undefined;
+}
+
 export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
 		parentDom.appendChild(newNode);
@@ -78,7 +82,6 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	detachNode(lastNode);
 	const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
@@ -97,23 +100,22 @@ export function detachNode(node) {
 		return;
 	}
 	const instance = node.instance;
-
 	let instanceHooks = null;
 	let instanceChildren = null;
+
 	if (!isNullOrUndefined(instance)) {
 		instanceHooks = instance.hooks;
 		instanceChildren = instance.children;
 
 		if (instance.render !== undefined) {
-			if (!instance._unmounted) {
-				instance.componentWillUnmount();
-				instance._unmounted = true;
-				componentToDOMNodeMap.delete(instance);
-				detachNode(instance._lastNode);
-			}
+			instance.componentWillUnmount();
+			instance._unmounted = true;
+			componentToDOMNodeMap.delete(instance);
+			detachNode(instance._lastNode);
 		}
 	}
 	const hooks = node.hooks || instanceHooks;
+
 	if (!isNullOrUndefined(hooks)) {
 		if (!isNullOrUndefined(hooks.willDetach)) {
 			hooks.willDetach(node.dom);
@@ -123,6 +125,7 @@ export function detachNode(node) {
 		}
 	}
 	const children = node.children || instanceChildren;
+
 	if (!isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {

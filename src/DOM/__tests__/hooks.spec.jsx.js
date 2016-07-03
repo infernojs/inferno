@@ -1,6 +1,6 @@
 import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
 const sinon = require('sinon/pkg/sinon');
 
 const Inferno = {
@@ -57,7 +57,6 @@ describe('Components (JSX)', () => {
 			}
 
 			class B extends Component {
-
 				render() {
 					return (
 						<div>

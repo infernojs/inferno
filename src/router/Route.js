@@ -1,4 +1,4 @@
-import { createVNode } from '../core/createBlueprint';
+import { createVNode } from '../core/shapes';
 import Component from '../component/es2015';
 
 const ASYNC_STATUS = {

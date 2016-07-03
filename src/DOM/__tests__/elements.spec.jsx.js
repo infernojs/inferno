@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import innerHTML from './../../../tools/innerHTML';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
 
 const Inferno = {
 	createBlueprint

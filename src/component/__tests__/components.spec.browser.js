@@ -631,50 +631,53 @@ describe('Components (non-JSX)', () => {
 		);
 	});
 
-	it('should render multiple components', () => {
-		let template = (Component, title1, name1, Component2, title2, name2) =>
-			createElement('div', null,
-				createElement(Component, {
-					title: title1,
-					name: name1
-				}),
-				createElement(Component2, {
-					title: title2,
-					name: name2
-				})
+	describe('should render multiple components', () => {
+		it('should render multiple components', () => {
+			let template = (Component, title1, name1, Component2, title2, name2) =>
+				createElement('div', null,
+					createElement(Component, {
+						title: title1,
+						name: name1
+					}),
+					createElement(Component2, {
+						title: title2,
+						name: name2
+					})
+				);
+
+			render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
+			);
+			render('', container);
+
+			render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
+
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
 			);
 
-		render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
-
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
-		);
-		render('', container);
-
-		render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
-
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
-		);
-
-		render(template(BasicComponent1, null, 'basic-render'), container);
-		render(template(BasicComponent1, null, null), container);
-		render(template(null, null, null), container);
-		render(null, container);
-		render(template(BasicComponent1, 'component 1', 'basic-render'), container);
-		render(template(), container);
-		render(template(BasicComponent1, 'component 1', 'basic-render'), container);
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div><div class="basic"><span class="basic-render">The title is component 1</span></div></div>'
-		);
-		render(template(), container);
+			render(template(BasicComponent1, null, 'basic-render'), container);
+			render(template(BasicComponent1, null, null), container);
+			render(template(null, null, null), container);
+			render(null, container);
+			render(template(BasicComponent1, 'component 1', 'basic-render'), container);
+			render(template(), container);
+			render(template(BasicComponent1, 'component 1', 'basic-render'), container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				'<div><div class="basic"><span class="basic-render">The title is component 1</span></div></div>'
+			);
+			render(template(), container);
+		});
 	});
+	
 
 	it('should support a ref string reference in the component', () => {
 		let elementRef = null;

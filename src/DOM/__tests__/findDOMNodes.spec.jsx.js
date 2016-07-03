@@ -1,5 +1,5 @@
 import { render } from './../rendering';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
 import { findDOMNode } from '../rendering';
 import Component from './../../component/es2015';
 

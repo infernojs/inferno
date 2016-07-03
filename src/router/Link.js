@@ -1,4 +1,4 @@
-import { createVNode } from '../core/createBlueprint';
+import { createVNode } from '../core/shapes';
 import { convertToHashbang } from './utils';
 
 export default function Link({ to, children }, { hashbang, history }) {

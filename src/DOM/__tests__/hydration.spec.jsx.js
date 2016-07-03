@@ -1,7 +1,7 @@
 import renderToString from './../../server/renderToString';
 import domHydration from './../../DOM/hydration';
 import Component from './../../component/es2015';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
 import { render } from './../../DOM/rendering';
 import { isArray, isStringOrNumber, isFunction, isNullOrUndefined } from './../../core/utils';
 

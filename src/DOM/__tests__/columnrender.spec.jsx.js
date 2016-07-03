@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import Component from './../../component/es2015';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
 import { isNullOrUndefined } from '../../core/utils';
 const sinon = require('sinon/pkg/sinon');
 
@@ -184,8 +184,9 @@ describe('Columns like tests - (JSX)', () => {
 
 					return (
 						<div>
-							<span key="-1">column</span>
-							{items.map((item) => <ItemKeyed key={item.id} text={item.text} />)}
+							{[ <span key="-1">column</span> ].concat( 
+								items.map((item) => <ItemKeyed key={item.id} text={item.text} />)
+							)}
 						</div>
 					)
 				}

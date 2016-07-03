@@ -1,7 +1,7 @@
 import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
 import innerHTML from './../../../tools/innerHTML';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
 
 const Inferno = {
 	createBlueprint
@@ -2248,7 +2248,7 @@ describe('Components (JSX)', () => {
 							<span>A</span>
 							{this.props.children}
 						</div>
-					)
+					);
 				}
 			}
 

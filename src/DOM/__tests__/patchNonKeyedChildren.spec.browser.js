@@ -1,5 +1,5 @@
 import { render } from './../rendering';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
 
 function generateNodes(array) {
 	let i, id;

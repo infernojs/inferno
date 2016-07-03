@@ -2,7 +2,7 @@ import { render } from './../../DOM/rendering';
 import Router from '../Router';
 import Route from '../Route';
 import browserHistory from '../browserHistory';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
 
 const Inferno = {
 	createBlueprint

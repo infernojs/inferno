@@ -1,7 +1,7 @@
 import Component from '../component/es2015';
 import { isArray } from '../core/utils';
 import { exec, convertToHashbang, pathRankSort } from './utils';
-import { createVNode } from '../core/createBlueprint';
+import { createVNode } from '../core/shapes';
 
 function isValidPath(path, url, hashbang) {
 	return !!exec(hashbang ? convertToHashbang(url) : url, path);

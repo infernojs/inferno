@@ -1,8 +1,9 @@
 import { isNullOrUndefined, isString, addChildrenToProps, isStatefulComponent, isStringOrNumber, isArray, isInvalidNode, NO_RENDER, isNumber } from './../core/utils';
 import { diffNodes, diffNodesWithTemplate } from './diffing';
-import { mount } from './mounting';
-import { insertOrAppend, remove, detachNode, createVirtualFragment, isKeyed, replaceNode, isUnitlessNumber, booleanProps, strictProps, namespaces } from './utils';
+import { mount, mountVText } from './mounting';
+import { insertOrAppend, remove, detachNode, createVirtualFragment, isKeyed, replaceNode, isUnitlessNumber, booleanProps, strictProps, namespaces, isVText } from './utils';
 import { componentToDOMNodeMap } from './rendering';
+import { createVText } from '../core/shapes';
 
 export function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
@@ -173,14 +174,17 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 			context = Object.assign({}, context, childContext);
 		}
 		instance.context = context;
-		const nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
+		let nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
 
-		if (!isInvalidNode(nextNode) && nextNode !== NO_RENDER) {
-			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
-			lastNode.dom = nextNode.dom;
-			instance._lastNode = nextNode;
-			componentToDOMNodeMap.set(instance, nextNode.dom);
+		if (nextNode === NO_RENDER) {
+			nextNode = component._lastNode;
+		} else if (isNullOrUndefined(nextNode)) {
+			nextNode = createNullNode();
 		}
+		patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
+		lastNode.dom = nextNode.dom;
+		instance._lastNode = nextNode;
+		componentToDOMNodeMap.set(instance, nextNode.dom);
 	} else {
 		let shouldUpdate = true;
 		const nextHooksDefined = (hasTemplate && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
@@ -206,63 +210,51 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 	}
 }
 
-function flatten(newArray, oldArray) {
+function normalise(newArray, oldArray) {
 	for (let i = 0; i < oldArray.length; i++) {
 		const item = oldArray[i];
 
 		if (isArray(item)) {
-			flatten(newArray, item);
+			normalise(newArray, item);
+		} else if (isStringOrNumber(item)) {
+			newArray.push(createVText(item));
 		} else if (!isInvalidNode(item)) {
 			newArray.push(item);
 		}
 	}
 }
 
-function flattenChildren(oldArray) {
-	const newArray = [];
+function normaliseChildren(oldArray) {
+	const refArray = oldArray.slice();
 
-	flatten(newArray, oldArray);
-	return newArray;
+	oldArray.length = 0;
+	normalise(oldArray, refArray);
 }
 
-let hasWarned = false;
-
-export function patchNonKeyedChildren(_lastChildren, _nextChildren, dom, lifecycle, context, instance, isSVG) {
-	if (!hasWarned) {
-		console.warn('Inferno Warning: each child in an array should have a unique "key" prop.');
-		hasWarned = true;
-	}
-	const lastChildren = flattenChildren(_lastChildren);
-	const nextChildren = flattenChildren(_nextChildren);
+export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG) {
+	normaliseChildren(nextChildren);
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
 	let commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
-	let standardLength = lastChildrenLength > commonLength ? lastChildrenLength : commonLength;
 	let i = 0;
-	const childDomNodes = [];
-	let lastChildDomNode = dom.firstChild;
 
-	for (; i < standardLength; i++) {
-		childDomNodes.push(lastChildDomNode);
-		lastChildDomNode = lastChildDomNode.nextSibling;
-		if (i < commonLength) {
-			const lastChild = lastChildren[i];
-			const nextChild = nextChildren[i];
-			let domNode;
+	for (; i < commonLength; i++) {
+		const lastChild = lastChildren[i];
+		const nextChild = nextChildren[i];
+		let domNode;
 
-			if (lastChild !== nextChild) {
-				if (isStringOrNumber(nextChild)) {
-					if (isStringOrNumber(lastChild)) {
-						childDomNodes[i].nodeValue = nextChild;
-					} else {
-						replaceNode(dom, document.createTextNode(nextChild), childDomNodes[i]);
-						detachNode(lastChild);
-					}
-				} else if (isStringOrNumber(lastChild)) {
-					replaceNode(dom, mount(nextChild, null, lifecycle, context, instance, isSVG), childDomNodes[i]);
+		if (lastChild !== nextChild) {
+			if (isVText(nextChild)) {
+				if (isVText(lastChild)) {
+					patchVText(lastChild, nextChild);
 				} else {
-					patch(lastChild, nextChild, dom, lifecycle, context, instance, false, isSVG);
+					replaceNode(dom, mountVText(nextChild, null), lastChild.dom);
+					detachNode(lastChild);
 				}
+			} else if (isVText(lastChild)) {
+				replaceNode(dom, mount(nextChild, null, lifecycle, context, instance, isSVG), lastChild.dom);
+			} else {
+				patch(lastChild, nextChild, dom, lifecycle, context, instance, false, isSVG);
 			}
 		}
 	}
@@ -271,8 +263,8 @@ export function patchNonKeyedChildren(_lastChildren, _nextChildren, dom, lifecyc
 			const child = nextChildren[i];
 			let domNode;
 
-			if (isStringOrNumber(child)) {
-				domNode = document.createTextNode(child);
+			if (isVText(child)) {
+				domNode = mountVText(child, null);
 			} else {
 				domNode = mount(child, null, lifecycle, context, instance, isSVG);
 			}
@@ -284,9 +276,19 @@ export function patchNonKeyedChildren(_lastChildren, _nextChildren, dom, lifecyc
 		for (i = commonLength; i < lastChildrenLength; i++) {
 			const child = lastChildren[i];
 
-			dom.removeChild(childDomNodes[i]);
+			dom.removeChild(child.dom);
 			detachNode(child);
 		}
+	}
+}
+
+export function patchVText(lastVText, nextVText) {
+	const nextText = nextVText.text;
+	const dom = lastVText.dom;
+
+	nextVText.dom = dom;
+	if (lastVText.text !== nextText) {
+		dom.nodeValue = nextText;
 	}
 }
 
