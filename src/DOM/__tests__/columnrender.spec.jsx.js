@@ -122,13 +122,13 @@ describe('Columns like tests - (JSX)', () => {
 			for (let i = 0; i < root.childNodes.length; i++) {
 				const columnRoot = root.childNodes[i];
 				expect(columnRoot.childNodes.length).to.equal(columns[i].items.length + 1, `Column data: ${JSON.stringify(columns[i].items)} Rendered: ${columnRoot.innerHTML}`);
-				expect(columnRoot.firstChild.innerText).to.equal('column', 'Column first child check');
+				expect(columnRoot.firstChild.innerHTML).to.equal('column', 'Column first child check');
 
 				// Verify items
 				// Skip first - its hardcoded
 				for (let j = 1; j < columnRoot.childNodes.length; j++) {
 					let itemRoot = columnRoot.childNodes[j];
-					expect(itemRoot.innerText).to.equal(columns[i].items[j-1].text.toString(), 'item content check');
+					expect(itemRoot.innerHTML).to.equal(columns[i].items[j-1].text.toString(), 'item content check');
 				}
 			}
 		}
