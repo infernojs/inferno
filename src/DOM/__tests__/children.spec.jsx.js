@@ -975,5 +975,5 @@ describe('Children - (JSX)', () => {
 			updaterFirst();
 			expect(container.innerHTML).to.equal('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>');
 		});
-	})
+	});
 });
