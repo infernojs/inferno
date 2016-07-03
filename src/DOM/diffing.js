@@ -171,7 +171,6 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 			} else if (isStatefulComponent(lastTag)) {
 				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
-				detachNode(lastNode);
 			} else {
 				diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			}
