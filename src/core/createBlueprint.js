@@ -162,7 +162,7 @@ export function createBlueprint(shape, childrenType) {
 					if (!events) {
 						events = {};
 					}
-					events[key] = value;
+					events[key.toLowerCase()] = value;
 				} else {
 					if (!attrs) {
 						attrs = {};

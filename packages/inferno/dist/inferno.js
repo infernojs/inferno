@@ -190,7 +190,7 @@
 						if (!events$1) {
 							events$1 = {};
 						}
-						events$1[key$1] = value;
+						events$1[key$1.toLowerCase()] = value;
 					} else {
 						if (!attrs$1) {
 							attrs$1 = {};
