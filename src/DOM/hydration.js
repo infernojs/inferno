@@ -1,8 +1,8 @@
 import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent } from './../core/utils';
-import { createNullNode, replaceNode, handleAttachedHooks, normaliseChildren, isVText, normaliseChild } from './utils';
+import { replaceNode, handleAttachedHooks, normaliseChildren, isVText, normaliseChild } from './utils';
 import { mountRef, handleSelects, mountAttributes, mountBlueprintAttrs, mountBlueprintEvents, mountEvents, mountVText } from './mounting';
 import { patch, patchStyle } from './patching';
-import { createVText } from '../core/shapes';
+import { createVText, createVPlaceholder } from '../core/shapes';
 
 function hydrateChild(parent, child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
 	if (isVText(child)) {
@@ -66,16 +66,16 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 		}
 		instance._pendingSetState = true;
 		instance.componentWillMount();
-		const nextNode = instance.render();
+		let nextNode = instance.render();
 
 		instance._pendingSetState = false;
-		if (!isInvalidNode(nextNode)) {
-			hydrateNode(nextNode, domNode, parentDom, lifecycle, context, instance, isRoot);
-			instance._lastNode = nextNode;
-			instance.componentDidMount();
-		} else {
-			instance._lastNode = createNullNode();
+		if (isInvalidNode(nextNode)) {
+			nextNode = createVPlaceholder();
 		}
+		hydrateNode(nextNode, domNode, parentDom, lifecycle, context, instance, isRoot);
+		instance._lastNode = nextNode;
+		instance.componentDidMount();
+
 	} else {
 		const instance = node.instance = Component(props);
 

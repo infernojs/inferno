@@ -43,7 +43,6 @@
     	this.hooks = null;
     	this.key = null;
     	this.clipData = null;
-    	this.hasNonKeyedChildren = false;
     }
 
     VNode.prototype = {
@@ -85,6 +84,16 @@
     	return new VNode(bp);
     }
 
+    function VPlaceholder(text) {
+    	this.placeholder = true;
+    	this.dom = null;
+    	this.key = null;
+    }
+
+    function createVPlaceholder() {
+    	return new VPlaceholder();
+    }
+
     function constructDefaults(string, object, value) {
     	/* eslint no-return-assign: 0 */
     	string.split(',').forEach(function (i) { return object[i] = value; });
@@ -102,13 +111,6 @@
     constructDefaults('volume,value', strictProps, true);
     constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
     constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
-
-    function createNullNode() {
-    	return {
-    		null: true,
-    		dom: document.createTextNode('')
-    	};
-    }
 
     var screenWidth = isBrowser && window.screen.width;
     var screenHeight = isBrowser && window.screen.height;
@@ -201,7 +203,7 @@
     		if (nextNode === NO_RENDER) {
     			nextNode = component._lastNode;
     		} else if (isNullOrUndefined(nextNode)) {
-    			nextNode = createNullNode();
+    			nextNode = createVPlaceholder();
     		}
     		var lastNode = component._lastNode;
     		var parentDom = lastNode.dom.parentNode;
@@ -398,6 +400,7 @@
     	url = segmentize(url.replace(reg, ''));
     	route = segmentize(route || '');
     	var max = Math.max(url.length, route.length);
+
     	for (var i$1 = 0; i$1 < max; i$1++) {
     		if (route[i$1] && route[i$1].charAt(0) === ':') {
     			var param = route[i$1].replace(/(^\:|[+*?]+$)/g, ''),
@@ -415,7 +418,7 @@
     				break;
     			}
     		}
-    		else if (route[i$1] !== url[i$1]) {
+    		else if (route[i$1] !== url[i$1] && !route[i$1] === '*') {
     			ret = false;
     			break;
     		}
@@ -429,8 +432,8 @@
     function pathRankSort(a, b) {
     	var aAttr = a.attrs || EMPTY$1,
     		bAttr = b.attrs || EMPTY$1;
-    	var diff = rank(aAttr.path) - rank(bAttr.path);
-    	return diff || (aAttr.path.length - bAttr.path.length);
+    	var diff = rank(bAttr.path) - rank(aAttr.path);
+    	return diff || (bAttr.path.length - aAttr.path.length);
     }
 
     function rank(url) {

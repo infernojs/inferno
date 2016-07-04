@@ -67,7 +67,6 @@
 		this.hooks = null;
 		this.key = null;
 		this.clipData = null;
-		this.hasNonKeyedChildren = false;
 	}
 
 	VNode.prototype = {

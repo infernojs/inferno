@@ -26,6 +26,16 @@
 		return obj === undefined;
 	}
 
+	function VPlaceholder(text) {
+		this.placeholder = true;
+		this.dom = null;
+		this.key = null;
+	}
+
+	function createVPlaceholder() {
+		return new VPlaceholder();
+	}
+
 	function constructDefaults(string, object, value) {
 		/* eslint no-return-assign: 0 */
 		string.split(',').forEach(function (i) { return object[i] = value; });
@@ -43,13 +53,6 @@
 	constructDefaults('volume,value', strictProps, true);
 	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 	constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
-
-	function createNullNode() {
-		return {
-			null: true,
-			dom: document.createTextNode('')
-		};
-	}
 
 	var screenWidth = isBrowser && window.screen.width;
 	var screenHeight = isBrowser && window.screen.height;
@@ -142,7 +145,7 @@
 			if (nextNode === NO_RENDER) {
 				nextNode = component._lastNode;
 			} else if (isNullOrUndefined(nextNode)) {
-				nextNode = createNullNode();
+				nextNode = createVPlaceholder();
 			}
 			var lastNode = component._lastNode;
 			var parentDom = lastNode.dom.parentNode;

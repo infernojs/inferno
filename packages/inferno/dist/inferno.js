@@ -41,7 +41,6 @@
 		this.hooks = null;
 		this.key = null;
 		this.clipData = null;
-		this.hasNonKeyedChildren = false;
 	}
 
 	VNode.prototype = {
@@ -242,6 +241,16 @@
 		};
 	}
 
+	function VText(text) {
+		this.text = text;
+		this.dom = null;
+		this.key = null;
+	}
+
+	function createVText(text) {
+		return new VText(text);
+	}
+
 	// Copy of the util from dom/util, otherwise it makes massive bundles
 	function documentCreateElement(tag, isSVG) {
 		var dom;
@@ -287,6 +296,7 @@
 	var index = {
 		createBlueprint: createBlueprint,
 		createVNode: createVNode,
+		createVText: createVText,
 		universal: {
 			createElement: createUniversalElement
 		}
