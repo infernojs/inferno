@@ -115,7 +115,6 @@
 		}
 	}
 
-
 	function queueStateChanges(component, newState, callback) {
 		for (var stateKey in newState) {
 			component._pendingState[stateKey] = newState[stateKey];

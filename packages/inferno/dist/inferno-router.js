@@ -173,7 +173,6 @@
     	}
     }
 
-
     function queueStateChanges(component, newState, callback) {
     	for (var stateKey in newState) {
     		component._pendingState[stateKey] = newState[stateKey];
@@ -536,7 +535,9 @@
     	return didRoute;
     }
 
-    window.addEventListener('popstate', function () { return routeTo(getCurrentUrl()); });
+    if (isBrowser) {
+    	window.addEventListener('popstate', function () { return routeTo(getCurrentUrl()); });
+    }
 
     var browserHistory = {
     	addRouter: function addRouter(router) {
