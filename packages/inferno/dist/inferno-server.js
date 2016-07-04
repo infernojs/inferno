@@ -139,11 +139,20 @@
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
 
-				if (isStringOrNumber(child)) {
+				if (isStringOrNumber(child) || isInvalidNode(child)) {
 					if (insertComment === true) {
-						childrenResult.push('<!-- -->');
+						if (isInvalidNode(child)) {
+							childrenResult.push('<!--!-->');
+						} else {
+							childrenResult.push('<!---->');
+						}
 					}
 					childrenResult.push(child);
+					insertComment = true;
+				} else if (isArray(child)) {
+					childrenResult.push('<!---->');
+					childrenResult.push(renderChildren(child));
+					childrenResult.push('<!--!-->');
 					insertComment = true;
 				} else {
 					insertComment = false;

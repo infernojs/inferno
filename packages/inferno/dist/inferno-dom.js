@@ -1788,7 +1788,9 @@
 		return false;
 	}
 
-	function hydrateChild(parent, child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
+	function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context, instance) {
+		var domNode = childNodes[counter.i];
+
 		if (isVText(child)) {
 			var text = child.text;
 
@@ -1798,13 +1800,41 @@
 			} else {
 				var newDomNode = mountVText(text);
 
-				replaceNode(parentDom,newDomNodetextNode, domNode);
+				replaceNode(parentDom, newDomNodetextNode, domNode);
 				parentChildNodes.splice(parentChildNodes.indexOf(domNode), 1, newDomNode);
 				child.dom = newDomNode;
 			}
+		} else if (isVPlaceholder(child)) {
+			child.dom = domNode;
+		} else if (isVList(child)) {
+			var items = child.items;
+
+			// this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
+			child.dom = document.createDocumentFragment();
+			for (var i = 0; i < items.length; i++) {
+				var rebuild = hydrateChild(normaliseChild(items, i), childNodes, counter, parentDom, lifecycle, context, instance);
+
+				if (rebuild) {
+					return true;
+				}
+			}
+			// at the end of every VList, there should be a "pointer". It's an empty TextNode used for tracking the VList
+			var pointer = childNodes[counter.i++];
+
+			if (pointer && pointer.nodeType === 3) {
+				child.pointer = pointer;
+			} else {
+				// there is a problem, we need to rebuild this tree
+				return true;
+			}
 		} else {
-			hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
+			var rebuild$1 = hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
+
+			if (rebuild$1) {
+				return true;
+			}
 		}
+		counter.i++;
 	}
 
 	function getChildNodesWithoutComments(domNode) {
@@ -1817,8 +1847,16 @@
 			var rawChild = rawChildNodes[i];
 
 			if (rawChild.nodeType === 8) {
-				domNode.removeChild(rawChild);
-				length--;
+				if (rawChild.data === '!') {
+					var placeholder = document.createTextNode('');
+
+					domNode.replaceChild(placeholder, rawChild);
+					childNodes.push(placeholder);
+					i++;
+				} else {
+					domNode.removeChild(rawChild);
+					length--;
+				}
 			} else {
 				childNodes.push(rawChild);
 				i++;
@@ -1889,8 +1927,7 @@
 				domNode.nodeType !== 1 ||
 				tag !== domNode.tagName.toLowerCase()
 			) {
-				// TODO: remake node
-				// debugger;
+				// TODO remake node
 			} else {
 				node.dom = domNode;
 				var hooks = node.hooks;
@@ -1907,23 +1944,27 @@
 						}
 					} else {
 						var childNodes = getChildNodesWithoutComments(domNode);
+						var counter = { i: 0 };
+						var rebuild = false;
 
 						if (isArray(children)) {
-							if (childNodes.length === children.length) {
-								for (var i = 0; i < children.length; i++) {
-									hydrateChild(node, normaliseChild(children, i), childNodes[i], childNodes, domNode, lifecycle, context, instance);
+							for (var i = 0; i < children.length; i++) {
+								rebuild = hydrateChild(normaliseChild(children, i), childNodes, counter, domNode, lifecycle, context, instance);
+
+								if (rebuild) {
+									break;
 								}
-							} else {
-								// TODO: recreate children?
-								// debugger;
 							}
 						} else {
 							if (childNodes.length === 1) {
-								hydrateChild(node, children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
+								rebuild = hydrateChild(children, childNodes, counter, domNode, lifecycle, context, instance);
 							} else {
-								// TODO: recreate child
-								// debugger;
+								rebuild = true;
 							}
+						}
+
+						if (rebuild) {
+							// TODO scrap children and rebuild again
 						}
 					}
 				}
