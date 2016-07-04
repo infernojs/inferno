@@ -113,21 +113,41 @@ describe('Columns like tests - (JSX)', () => {
 			];
 		}
 
+		// inferno now keeps null, undefined etc in the DOM as placeholders, we need to filter these out
+		function filterPlaceholders(_nodes) {
+			const nodes = [].slice.apply(_nodes);
+			let len = nodes.length, i = 0;
+
+			while (i < len) {
+				const node = nodes[i];
+
+				if (node.nodeType === 3 && node.nodeValue === '') {
+					nodes.splice(i, 1);
+					len--;
+				}
+				i++;
+			}
+			return nodes;
+		}
+
 		function verifyRenderResult(columns, container) {
 			// Verify root
 			const root = container.firstChild;
-			expect(root.childNodes.length).to.equal(columns.length);
+			const rootChildNodes = filterPlaceholders(root.childNodes);
 
+			expect(rootChildNodes.length).to.equal(columns.length);
 			// Verify columns
-			for (let i = 0; i < root.childNodes.length; i++) {
-				const columnRoot = root.childNodes[i];
-				expect(columnRoot.childNodes.length).to.equal(columns[i].items.length + 1, `Column data: ${JSON.stringify(columns[i].items)} Rendered: ${columnRoot.innerHTML}`);
+			for (let i = 0; i < rootChildNodes.length; i++) {
+				const columnRoot = rootChildNodes[i];
+				const columnChildNodes = filterPlaceholders(columnRoot.childNodes);
+
+				expect(columnChildNodes.length).to.equal(columns[i].items.length + 1, `Column data: ${JSON.stringify(columns[i].items)} Rendered: ${columnRoot.innerHTML}`);
 				expect(columnRoot.firstChild.innerHTML).to.equal('column', 'Column first child check');
 
 				// Verify items
 				// Skip first - its hardcoded
-				for (let j = 1; j < columnRoot.childNodes.length; j++) {
-					let itemRoot = columnRoot.childNodes[j];
+				for (let j = 1; j < columnChildNodes.length; j++) {
+					let itemRoot = columnChildNodes[j];
 					expect(itemRoot.innerHTML).to.equal(columns[i].items[j-1].text.toString(), 'item content check');
 				}
 			}

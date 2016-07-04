@@ -578,9 +578,6 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('CUSTOM-ELEM');
 		expect(container.childNodes.length).to.equal(1);
 		expect(container.firstChild.getAttribute('class')).to.equal('Hello, world!');
-
-		render([], container);
-
 	});
 
 	it('should properly render "width" and "height" attributes', () => {
