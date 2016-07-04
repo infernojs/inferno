@@ -271,7 +271,7 @@
   	if (bp === undefined) {
   		return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
   	} else {
-  		return appendNodeWithTemplate(input, bp, parentDom, lifecycle, context, instance);
+  		return appendNodeWithBlueprint(input, bp, parentDom, lifecycle, context, instance);
   	}
   }
 
@@ -340,7 +340,7 @@
   	mountEvents(events, eventKeys, dom);
   }
 
-  function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance) {
+  function appendNodeWithBlueprint(node, bp, parentDom, lifecycle, context, instance) {
   	var tag = node.tag;
 
   	if (bp.isComponent === true) {
@@ -441,7 +441,7 @@
   	if (!isNullOrUndefined(events)) {
   		mountEvents(events, Object.keys(events), dom);
   	}
-  	if (parentDom !== null) {
+  	if (!isNull(parentDom)) {
   		parentDom.appendChild(dom);
   	}
   	return dom;
@@ -1014,7 +1014,7 @@
   	}
   }
 
-  function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
+  function diffNodesWithBlueprint(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
   	var nextHooks;
 
   	if (nextBp.hasHooks === true) {
@@ -1244,7 +1244,7 @@
   	if (lastBp === undefined || nextBp === undefined) {
   		diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
   	} else {
-  		diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck);
+  		diffNodesWithBlueprint(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck);
   	}
   }
 
@@ -1385,7 +1385,7 @@
   }
 
 
-  function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+  function patchComponent(hasBlueprint, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
   	nextProps = addChildrenToProps(nextChildren, nextProps);
 
   	if (isStatefulComponent(Component)) {
@@ -1411,7 +1411,7 @@
   		componentToDOMNodeMap.set(instance, nextNode.dom);
   	} else {
   		var shouldUpdate = true;
-  		var nextHooksDefined = (hasTemplate && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
+  		var nextHooksDefined = (hasBlueprint && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
 
   		if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
   			shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
