@@ -35,6 +35,7 @@ export function exec(url, route, opts = EMPTY) {
 	url = segmentize(url.replace(reg, ''));
 	route = segmentize(route || '');
 	let max = Math.max(url.length, route.length);
+
 	for (let i = 0; i < max; i++) {
 		if (route[i] && route[i].charAt(0) === ':') {
 			let param = route[i].replace(/(^\:|[+*?]+$)/g, ''),
@@ -52,7 +53,7 @@ export function exec(url, route, opts = EMPTY) {
 				break;
 			}
 		}
-		else if (route[i] !== url[i]) {
+		else if (route[i] !== url[i] && !route[i] === '*') {
 			ret = false;
 			break;
 		}
@@ -66,8 +67,8 @@ export function exec(url, route, opts = EMPTY) {
 export function pathRankSort(a, b) {
 	let aAttr = a.attrs || EMPTY,
 		bAttr = b.attrs || EMPTY;
-	let diff = rank(aAttr.path) - rank(bAttr.path);
-	return diff || (aAttr.path.length - bAttr.path.length);
+	let diff = rank(bAttr.path) - rank(aAttr.path);
+	return diff || (bAttr.path.length - aAttr.path.length);
 }
 
 function rank(url) {

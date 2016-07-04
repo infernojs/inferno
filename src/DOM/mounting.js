@@ -1,17 +1,42 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, addChildrenToProps, isStatefulComponent, isString, isInvalidNode, replaceInArray, getRefInstance } from './../core/utils';
+import {
+	isArray,
+	isStringOrNumber,
+	isFunction,
+	isNullOrUndefined,
+	addChildrenToProps,
+	isStatefulComponent,
+	isString,
+	isInvalidNode,
+	replaceInArray,
+	getRefInstance
+} from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
-import { appendText, documentCreateElement, createVirtualFragment, createEmptyTextNode, selectValue, placeholder, handleAttachedHooks, createNullNode, isVText } from './utils';
+import {
+	appendText,
+	documentCreateElement,
+	createVirtualFragment,
+	createEmptyTextNode,
+	selectValue,
+	handleAttachedHooks,
+	isVText,
+	isVPlaceholder,
+	isVList,
+	insertOrAppend
+} from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
-import { createVText } from '../core/shapes';
+import { createVText, createVPlaceholder, createVList } from '../core/shapes';
 
 export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
-	if (isArray(input)) {
-		return placeholder(input, parentDom);
+	if (isVPlaceholder(input)) {
+		return mountVPlaceholder(input, parentDom);
 	}
-	if (isInvalidNode(input)) {
-		return null;
+	if (isVText(input)) {
+		return mountVText(input, parentDom);
+	}
+	if (isVList(input)) {
+		return mountVList(input, parentDom, lifecycle, context, instance, isSVG);
 	}
 	const bp = input.bp;
 
@@ -32,12 +57,37 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	}
 }
 
+export function mountVList(vList, parentDom, lifecycle, context, instance, isSVG) {
+	const items = vList.items;
+	const pointer = document.createTextNode('');
+	const dom = document.createDocumentFragment();
+
+	mountArrayChildren(items, dom, lifecycle, context, instance, isSVG);
+	vList.pointer = pointer;
+	vList.dom = dom;
+	dom.appendChild(pointer);
+	if (parentDom) {
+		insertOrAppend(parentDom, dom);
+	}
+	return dom;
+}
+
 export function mountVText(vText, parentDom) {
 	const dom = document.createTextNode(vText.text);
 
 	vText.dom = dom;
 	if (parentDom) {
-		parentDom.appendChild(dom);
+		insertOrAppend(parentDom, dom);
+	}
+	return dom;
+ }
+
+ export function mountVPlaceholder(vPlaceholder, parentDom) {
+	const dom = document.createTextNode('');
+
+	vPlaceholder.dom = dom;
+	if (parentDom) {
+		insertOrAppend(parentDom, dom);
 	}
 	return dom;
  }
@@ -103,7 +153,7 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 			mount(node.children, dom, lifecycle, context, instance);
 			break;
 		case 3:
-			mountArrayChildren(node, node.children, dom, lifecycle, context, instance);
+			mountArrayChildren(node.children, dom, lifecycle, context, instance);
 			break;
 		case 4:
 			mountArrayChildrenWithKeys(node.children, dom, lifecycle, context, instance);
@@ -136,9 +186,6 @@ function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instanc
 function appendNode(node, parentDom, lifecycle, context, instance, isSVG) {
 	const tag = node.tag;
 
-	if (tag === null) {
-		return placeholder(node, parentDom);
-	}
 	if (isFunction(tag)) {
 		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
 	}
@@ -188,55 +235,43 @@ export function mountArrayChildrenWithKeys(children, parentDom, lifecycle, conte
 	}
 }
 
-export function mountArrayChildren(node, children, parentDom, lifecycle, context, instance, isSVG, prevNormalisedChildren) {
-	let hasNonKeyedChildren = false;
-	const normalisedChildren = prevNormalisedChildren || [];
-
+export function mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG) {
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
 		if (isStringOrNumber(child)) {
 			const vText = createVText(child);
 
+			children[i] = vText;
 			mountVText(vText, parentDom);
-			normalisedChildren.push(vText);
-			hasNonKeyedChildren = true;
 		} else if (isInvalidNode(child)) {
-			hasNonKeyedChildren = true;
+			const vPlaceholder = createVPlaceholder();
+
+			children[i] = vPlaceholder;
+			mountVPlaceholder(vPlaceholder, parentDom);
 		} else if (isArray(child)) {
-			hasNonKeyedChildren = true;
-			mountArrayChildren(node, child, parentDom, lifecycle, context, instance, isSVG, normalisedChildren);
+			const vList = createVList(child);
+
+			children[i] = vList;
+			mountVList(vList, parentDom, lifecycle, context, instance, isSVG);
 		} else if (isVText(child)) {
 			mountVText(child, parentDom);
-			normalisedChildren.push(child);
-			hasNonKeyedChildren = true;
+		} else if (isVPlaceholder(child)) {
+			mountVPlaceholder(child, parentDom);
+		} else if (isVList(child)) {
+			mountVList(child, parentDom, lifecycle, context, instance, isSVG);
 		} else {
-			const domNode = mount(child, parentDom, lifecycle, context, instance, isSVG);
-
-			normalisedChildren.push(child);
-			if (!hasNonKeyedChildren) {
-				if (!isNullOrUndefined(child) && isNullOrUndefined(child.key)) {
-					hasNonKeyedChildren = true;
-				} else if (isInvalidNode(child)) {
-					hasNonKeyedChildren = true;
-				}
-			}
+			mount(child, parentDom, lifecycle, context, instance, isSVG);
 		}
-	}
-	if (hasNonKeyedChildren) {
-		node.hasNonKeyedChildren = hasNonKeyedChildren;
-	}
-	if (!prevNormalisedChildren) {
-		node.children = normalisedChildren;
 	}
 }
 
 function mountChildren(node, children, parentDom, lifecycle, context, instance, isSVG) {
 	if (isArray(children)) {
-		mountArrayChildren(node, children, parentDom, lifecycle, context, instance, isSVG);
+		mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG);
 	} else if (isStringOrNumber(children)) {
 		appendText(children, parentDom, true);
-	} else {
+	} else if (!isInvalidNode(children)) {
 		mount(children, parentDom, lifecycle, context, instance, isSVG);
 	}
 }
@@ -280,17 +315,15 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		}
 		instance._pendingSetState = true;
 		instance.componentWillMount();
-		const node = instance.render();
+		let node = instance.render();
 
-		instance._pendingSetState = false;
-		if (!isInvalidNode(node)) {
-			dom = mount(node, null, lifecycle, context, instance, false);
-			instance._lastNode = node;
-			instance.componentDidMount();
-		} else {
-			instance._lastNode = createNullNode();
-			dom = instance._lastNode.dom;
+		if (isInvalidNode(node)) {
+			node = createVPlaceholder();
 		}
+		instance._pendingSetState = false;
+		dom = mount(node, null, lifecycle, context, instance, false);
+		instance._lastNode = node;
+		instance.componentDidMount();
 		if (parentDom !== null && !isInvalidNode(dom)) {
 			parentDom.appendChild(dom);
 		}

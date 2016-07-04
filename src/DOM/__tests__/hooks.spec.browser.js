@@ -237,7 +237,7 @@ describe('lifecycle hooks', () => {
 					didUpdate,
 					willDetach
 				},
-				text: 'Hello world!'
+				children: 'Hello world!'
 			});
 		});
 

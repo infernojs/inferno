@@ -1,18 +1,22 @@
 import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent } from './../core/utils';
-import { createNullNode, replaceNode, handleAttachedHooks } from './utils';
-import { mountRef, handleSelects, mountAttributes, mountBlueprintAttrs, mountBlueprintEvents, mountEvents } from './mounting';
+import { createNullNode, replaceNode, handleAttachedHooks, normaliseChildren, isVText, normaliseChild } from './utils';
+import { mountRef, handleSelects, mountAttributes, mountBlueprintAttrs, mountBlueprintEvents, mountEvents, mountVText } from './mounting';
 import { patch, patchStyle } from './patching';
+import { createVText } from '../core/shapes';
 
 function hydrateChild(parent, child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
-	if (isStringOrNumber(child)) {
-		parent.hasNonKeyedChildren = true;
-		if (domNode.nodeType === 3 && child !== '') {
-			domNode.nodeValue = child;
-		} else {
-			const textNode = document.createTextNode(child);
+	if (isVText(child)) {
+		const text = child.text;
 
-			replaceNode(parentDom, textNode, domNode);
-			parentChildNodes.splice(parentChildNodes.indexOf(domNode), 1, textNode);
+		child.dom = domNode;
+		if (domNode.nodeType === 3 && text !== '') {
+			domNode.nodeValue = text;
+		} else {
+			const newDomNode = mountVText(text);
+
+			replaceNode(parentDom,newDomNodetextNode, domNode);
+			parentChildNodes.splice(parentChildNodes.indexOf(domNode), 1, newDomNode);
+			child.dom = newDomNode;
 		}
 	} else {
 		hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
@@ -107,7 +111,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 			node.dom = domNode;
 			const hooks = node.hooks;
 
-			if (bp.hasHooks === true || !isNullOrUndefined(hooks)) {
+			if ((bp && bp.hasHooks === true) || !isNullOrUndefined(hooks)) {
 				handleAttachedHooks(hooks, lifecycle, domNode);
 			}
 			const children = node.children;
@@ -123,7 +127,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 					if (isArray(children)) {
 						if (childNodes.length === children.length) {
 							for (let i = 0; i < children.length; i++) {
-								hydrateChild(node, children[i], childNodes[i], childNodes, domNode, lifecycle, context, instance);
+								hydrateChild(node, normaliseChild(children, i), childNodes[i], childNodes, domNode, lifecycle, context, instance);
 							}
 						} else {
 							// TODO: recreate children?

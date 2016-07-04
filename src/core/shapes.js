@@ -13,7 +13,6 @@ function VNode(blueprint) {
 	this.hooks = null;
 	this.key = null;
 	this.clipData = null;
-	this.hasNonKeyedChildren = false;
 }
 
 VNode.prototype = {
@@ -220,6 +219,27 @@ function VText(text) {
 	this.key = null;
 }
 
+function VPlaceholder(text) {
+	this.placeholder = true;
+	this.dom = null;
+	this.key = null;
+}
+
+function VList(items) {
+	this.dom = null;
+	this.key = null;
+	this.pointer = null;
+	this.items = items;
+}
+
 export function createVText(text) {
 	return new VText(text);
+}
+
+export function createVPlaceholder() {
+	return new VPlaceholder();
+}
+
+export function createVList(items) {
+	return new VList(items);
 }

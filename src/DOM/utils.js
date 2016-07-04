@@ -2,6 +2,7 @@ import { mount } from './mounting';
 import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from './../core/utils';
 import { recyclingEnabled, pool } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
+import { createVText, createVPlaceholder, createVList } from '../core/shapes';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
@@ -21,15 +22,16 @@ constructDefaults('volume,value', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-export function createNullNode() {
-	return {
-		null: true,
-		dom: document.createTextNode('')
-	};
-}
-
 export function isVText(o) {
 	return o.text !== undefined;
+}
+
+export function isVPlaceholder(o) {
+	return o.placeholder === true;
+}
+
+export function isVList(o) {
+	return o.items !== undefined;
 }
 
 export function insertOrAppend(parentDom, newNode, nextNode) {
@@ -38,6 +40,25 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 	} else {
 		parentDom.insertBefore(newNode, nextNode);
 	}
+}
+
+export function replaceVListWithNode(parentDom, vList, dom) {
+	const items = vList.items;
+	const pointer = vList.pointer;
+	const itemsLength = items.length;
+
+	if (itemsLength > 0) {
+		for (let i = 0; i < itemsLength; i++) {
+			const item = items[i];
+
+			if (isVList(item)) {
+				debugger;
+			} else {
+				removeChild(parentDom, item.dom);
+			}
+		}
+	}
+	replaceNode(parentDom, dom, pointer);
 }
 
 export function documentCreateElement(tag, isSVG) {
@@ -82,6 +103,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
+	detachNode(lastNode);
 	const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
@@ -95,7 +117,7 @@ export function replaceNode(parentDom, nextDom, lastDom) {
 	parentDom.replaceChild(nextDom, lastDom);
 }
 
-export function detachNode(node) {
+export function detachNode(node, shallow) {
 	if (isInvalidNode(node) || isStringOrNumber(node)) {
 		return;
 	}
@@ -111,7 +133,7 @@ export function detachNode(node) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
 			componentToDOMNodeMap.delete(instance);
-			detachNode(instance._lastNode);
+			!shallow && detachNode(instance._lastNode);
 		}
 	}
 	const hooks = node.hooks || instanceHooks;
@@ -126,7 +148,7 @@ export function detachNode(node) {
 	}
 	const children = node.children || instanceChildren;
 
-	if (!isNullOrUndefined(children)) {
+	if (isNullOrUndefined(instance) && !isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
 				detachNode(children[i]);
@@ -137,8 +159,19 @@ export function detachNode(node) {
 	}
 }
 
-export function createEmptyTextNode() {
-	return document.createTextNode('');
+export function normaliseChild(children, i) {
+	let child = children[i];
+
+	if (isStringOrNumber(child)) {
+		child = children[i] = createVText(child);
+	}
+	if (isInvalidNode(child)) {
+		child = children[i] = createVPlaceholder();
+	}
+	if (isArray(child)) {
+		child = children[i] = createVList(child);
+	}
+	return child;
 }
 
 export function remove(node, parentDom) {
@@ -152,6 +185,10 @@ export function remove(node, parentDom) {
 		}
 	}
 	detachNode(node);
+}
+
+export function removeChild(parentDom, dom) {
+	parentDom.removeChild(dom);
 }
 
 export function removeEvents(events, lastEventKeys, dom) {
@@ -242,17 +279,6 @@ export function selectValue(vdom) {
 	if (vdom.attrs && vdom.attrs[value]) {
 		delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
 	}
-}
-export function placeholder(node, parentDom) {
-	const dom = createEmptyTextNode();
-
-	if (parentDom !== null) {
-		parentDom.appendChild(dom);
-	}
-	if (!isInvalidNode(node)) {
-		node.dom = dom;
-	}
-	return dom;
 }
 
 export function handleAttachedHooks(hooks, lifecycle, dom) {

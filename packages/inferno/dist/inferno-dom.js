@@ -231,7 +231,7 @@
 				mount(node.children, dom, lifecycle, context, instance);
 				break;
 			case 3:
-				mountArrayChildren(node, node.children, dom, lifecycle, context, instance);
+				mountArrayChildren(node.children, dom, lifecycle, context, instance);
 				break;
 			case 4:
 				mountArrayChildrenWithKeys(node.children, dom, lifecycle, context, instance);
@@ -329,7 +329,7 @@
 		}
 	}
 
-	function mountArrayChildren(node, children, parentDom, lifecycle, context, instance, isSVG) {
+	function mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG) {
 		var hasNonKeyedChildren = false;
 
 		for (var i = 0; i < children.length; i++) {
@@ -341,7 +341,7 @@
 			} else if (!isNullOrUndefined(child) && isArray(child)) {
 				// we do this because we don't flatten keyed lists
 				hasNonKeyedChildren = true;
-				mountArrayChildren(node, child, parentDom, lifecycle, context, instance, isSVG);
+				mountArrayChildren(child, parentDom, lifecycle, context, instance, isSVG);
 			} else if (isPromise(child)) {
 				appendPromise(child, parentDom, lifecycle, context, instance, isSVG);
 			} else {

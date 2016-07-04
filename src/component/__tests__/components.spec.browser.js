@@ -41,12 +41,13 @@ describe('Components (non-JSX)', () => {
 				})
 			);
 
-		render(template(null, 'abc'), container);
+		expect(() => {
+			render(template(null, 'abc'), container);
+		}).to.throw();
 
 		expect(() => {
 			render(template({}, 'abc'), container);
 		}).to.throw();
-
 
 		render(template(BasicComponent1, 'abc'), container);
 
@@ -59,7 +60,6 @@ describe('Components (non-JSX)', () => {
 		expect(() => {
 			render(template({}, 'abc'), container);
 		}).to.throw();
-
 
 		render(template(), container);
 
@@ -91,18 +91,6 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is ');
 
-		expect(() => {
-			render(template({}, {}), container);
-		}).to.throw();
-
-		expect(() => {
-			render(template([], []), container);
-		}).to.throw();
-
-		// remove the component
-		render(template(null, null), container);
-		expect(container.firstChild.tagName).to.equal('DIV');
-
 		render(template(BasicComponent1, '1234'), container);
 
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -110,13 +98,6 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is 1234');
-
-		// remove the component
-		render(template(null, '1234'), container);
-		expect(container.firstChild.tagName).to.equal('DIV');
-
-		render(template(null, null), container);
-		expect(container.firstChild.tagName).to.equal('DIV');
 	});
 
 	class BasicComponent1b extends Component {
@@ -147,7 +128,7 @@ describe('Components (non-JSX)', () => {
 				})
 			);
 
-		render(template(null, null, false), container);
+		render(null, container);
 
 		render(template(BasicComponent1b, 'abc', true), container);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -157,8 +138,8 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
 		expect(container.querySelector('input').checked).to.equal(true);
 
-		render(template(null, null, false), container);
-		render(template(null, null, false), container);
+		render(null, container);
+		render(null, container);
 
 		render(template(BasicComponent1b, 'abc', null), container);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -198,8 +179,6 @@ describe('Components (non-JSX)', () => {
 				})
 			);
 
-		render(template(null, 'abc', true), container);
-
 		render(template(BasicComponent1c, 'abc', true), container);
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -237,7 +216,6 @@ describe('Components (non-JSX)', () => {
 			createElement('div', null,
 				createElement(Component, { title, isDisabled })
 			);
-		render(template(null, null, false), container);
 		render(template(BasicComponent1d, 'abc', true), container);
 		expect(
 			container.innerHTML
@@ -269,7 +247,6 @@ describe('Components (non-JSX)', () => {
 				createElement(Component, { title, name })
 			);
 
-		render(template(null, 'abc', 'basic-render'), container);
 		render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
 		expect(
@@ -293,7 +270,6 @@ describe('Components (non-JSX)', () => {
 				createElement(Component, { title, name })
 			);
 
-		render(template(null, null, false), container);
 		render(template(BasicComponent1, 'abc', null), container);
 
 		expect(
@@ -302,7 +278,7 @@ describe('Components (non-JSX)', () => {
 			'<div><div class="basic"><span>The title is abc</span></div></div>'
 		);
 
-		render(template(null, null, false), container);
+		render(null, container);
 
 		render(template(BasicComponent1, '123', 'basic-update'), container);
 		expect(
@@ -310,14 +286,11 @@ describe('Components (non-JSX)', () => {
 		).to.equal(
 			'<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>'
 		);
-		render(template(null, null, false), container);
 	});
 
 	it('should render a basic root component', () => {
 		let template = (Component, title, name) =>
 			createElement(Component, { title, name });
-
-		render(template(null, null, false), container);
 
 		render(template(BasicComponent1, 'abc', 'basic-render'), container);
 
@@ -342,15 +315,7 @@ describe('Components (non-JSX)', () => {
 			'<div class="basic"><span class="[object Object]">The title is abc</span></div>'
 		);
 
-		render(template(null, 'abc', 'basic-render'), container);
-
-		expect(
-			container.innerHTML
-		).to.equal(
-			''
-		);
-
-		render(template(null, null, null), container);
+		render(null, container);
 
 		expect(
 			container.innerHTML
@@ -420,10 +385,6 @@ describe('Components (non-JSX)', () => {
 		).to.equal(
 			'<div><div class="basic"><span class="basic-update">The title is 1234</span><span>I\'m a child</span></div></div>'
 		);
-
-
-		render(template(), container);
-
 	});
 
 	class BasicComponent2b extends Component {
@@ -470,10 +431,7 @@ describe('Components (non-JSX)', () => {
 		it('should render a basic component with styling', () => {
 
 			let template = (Component, props) =>
-					createElement(Component, props)
-				;
-
-			render(template(null, null, false), container);
+					createElement(Component, props);
 
 			render(template(BasicComponent3, {
 				title: 'styled!',
@@ -602,7 +560,6 @@ describe('Components (non-JSX)', () => {
 				)
 			);
 
-		render(template(ComponentLifecycleCheck, null, ComponentLifecycleCheck), container);
 		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
 		expect(
 			componentWillMountCount
@@ -611,19 +568,6 @@ describe('Components (non-JSX)', () => {
 		);
 
 		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, ComponentLifecycleCheck), container);
-		expect(
-			componentWillMountCount
-		).to.equal(
-			3
-		);
-
-		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
-		expect(
-			componentWillMountCount
-		).to.equal(
-			3
-		);
-		render(template(ComponentLifecycleCheck, ComponentLifecycleCheck, null), container);
 		expect(
 			componentWillMountCount
 		).to.equal(
@@ -664,7 +608,6 @@ describe('Components (non-JSX)', () => {
 
 			render(template(BasicComponent1, null, 'basic-render'), container);
 			render(template(BasicComponent1, null, null), container);
-			render(template(null, null, null), container);
 			render(null, container);
 			render(template(BasicComponent1, 'component 1', 'basic-render'), container);
 			render(template(), container);
@@ -973,7 +916,6 @@ describe('Components (non-JSX)', () => {
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
 			);
-			render(tpl1546018623(null), container);
 			render(tpl1546018623(valueComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
@@ -1026,7 +968,6 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
-		render(template(null, null), container);
 
 		const text = () => {
 			return {
@@ -1057,14 +998,6 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
 
-		render(template(undefined), container);
-
-		expect(
-			container.innerHTML
-		).to.equal(
-			'<div></div>'
-		);
-
 		expect(
 			() => createTemplate(() => {
 				return {
@@ -1076,10 +1009,6 @@ describe('Components (non-JSX)', () => {
 			})
 		).to.throw;
 
-		render(template(null), container);
-
-		render(template(BasicStatelessComponent1), container);
-		render(template(null), container);
 		render(template(BasicStatelessComponent1), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
@@ -1157,9 +1086,7 @@ describe('Components (non-JSX)', () => {
 		});
 
 		it('Second render (update with state change)', (done) => {
-			render(tpl79713834(null), container); // null
 			render(tpl79713834(TEST), container);
-			render(tpl79713834(null), container); // null
 			render(tpl79713834(TEST), container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 
@@ -1232,8 +1159,6 @@ describe('Components (non-JSX)', () => {
 		}
 
 		it('Initial render (creation)', () => {
-			render(starter(null), container);
-
 			render(starter(SomeError), container);
 
 			expect(
@@ -1241,8 +1166,6 @@ describe('Components (non-JSX)', () => {
 			).to.equal(
 				innerHTML('<div class="login-view"><button>ADD</button><br><div><h1>SS</h1></div><div><h1>SS1</h1></div></div>')
 			);
-
-			render(starter(null), container);
 
 			render(starter(SomeError), container);
 

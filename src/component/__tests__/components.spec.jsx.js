@@ -2096,7 +2096,7 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div><div><div><span>Ref</span></div></div></div>');
 			expect(refs.top).to.equal(container.firstChild);
 			expect(refs.mid).to.equal(container.firstChild.firstChild);
-			expect(refs.bottom).to.equal(container.firstChild.firstChild.firstChild.firstChild);
+			expect(refs.bottom).to.equal(container.firstChild.firstChild.firstChild.lastChild);
 		});
 
 
@@ -2304,7 +2304,7 @@ describe('Components (JSX)', () => {
 				componentWillUnmount() {}
 
 				render() {
-					return <div>B</div>
+					return <div>B</div>;
 				}
 			}
 

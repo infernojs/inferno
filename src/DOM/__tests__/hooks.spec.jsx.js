@@ -46,9 +46,9 @@ describe('Components (JSX)', () => {
 						<div>
 							{(() => {
 								if (this.state.foo) {
-									return null
+									return null;
 								}
-								return <B />
+								return <B />;
 							})()}
 							<button onClick={this.updateme} >btn</button>
 						</div>
@@ -76,7 +76,7 @@ describe('Components (JSX)', () => {
 				}
 			}
 
-			class D extends Component {
+			class D extends Component {			
 				render() {
 					return (
 						<div>

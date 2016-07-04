@@ -3,6 +3,7 @@ import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildr
 import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents } from './patching';
 import { mountArrayChildren, mount, mountEvents, mountComponent } from './mounting';
 import { setClipNode } from './lifecycle';
+import { createVText } from '../core/shapes';
 
 function setValueProperty(nextNode) {
 	const value = nextNode.attrs.value;
@@ -26,20 +27,18 @@ function setFormElementProperties(nextTag, nextNode) {
 }
 
 function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
-	const nextChildren = nextNode.children;
+	let nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
-	const hasNonKeyedChildren = lastNode.hasNonKeyedChildren;
 
-	nextNode.hasNonKeyedChildren = hasNonKeyedChildren;
 	if (lastChildren === nextChildren) {
 		return;
 	}
 	if (isInvalidNode(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
 			updateTextNode(dom, lastChildren, nextChildren);
-		} else if (!isNullOrUndefined(nextChildren)) {
+		} else if (!isInvalidNode(nextChildren)) {
 			if (isArray(nextChildren)) {
-				mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance, isSVG);
+				mountArrayChildren(nextChildren, dom, lifecycle, context, instance, isSVG);
 			} else {
 				mount(nextChildren, dom, lifecycle, context, instance, isSVG);
 			}
@@ -50,21 +49,23 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isS
 		} else {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
-					if (!hasNonKeyedChildren && lastChildren.length > 1) {
+					if (isKeyed(lastChildren, nextChildren)) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 					} else {
-						if (isKeyed(lastChildren, nextChildren)) {
-							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
-						} else {
-							patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
-						}
+						patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, null);
 					}
 				} else {
-					patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, instance);
+					patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, instance, null);
 				}
 			} else {
 				if (isArray(nextChildren)) {
-					patchNonKeyedChildren([lastChildren], nextChildren, dom, lifecycle, context, instance, isSVG);
+					let lastChild = lastChildren;
+
+					if (isStringOrNumber(lastChildren)) {
+						lastChild = createVText(lastChild);
+						lastChild.dom = dom.firstChild;
+					}
+					patchNonKeyedChildren([lastChild], nextChildren, dom, lifecycle, context, instance, isSVG, null);
 				} else if (isStringOrNumber(nextChildren)) {
 					updateTextNode(dom, lastChildren, nextChildren);
 				} else if (isStringOrNumber(lastChildren)) {
@@ -170,8 +171,10 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 			if (nextBp.isComponent === true) {
 				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, false);
 			} else if (isStatefulComponent(lastTag)) {
+				detachNode(lastNode, true);
 				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			} else {
+				detachNode(lastNode, true);
 				diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			}
 		} else {
@@ -230,7 +233,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 
 					if (lastChildrenType === 0 || isInvalidNode(lastChildren)) {
 						if (nextChildrenType > 2) {
-							mountArrayChildren(nextNode, nextChildren, dom, lifecycle, context, instance);
+							mountArrayChildren(nextChildren, dom, lifecycle, context, instance);
 						} else {
 							mount(nextChildren, dom, lifecycle, context, instance);
 						}
@@ -243,7 +246,7 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 					} else {
 						if (lastChildren !== nextChildren) {
 							if (lastChildrenType === 4 && nextChildrenType === 4) {
-								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance);
+								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, null);
 							} else if (lastChildrenType === 2 && nextChildrenType === 2) {
 								patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, false);
 							} else if (lastChildrenType === 1 && nextChildrenType === 1) {
@@ -289,82 +292,77 @@ export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parent
 
 
 export function diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
-	if (isPromise(nextNode)) {
-		nextNode.then(node => {
-			patch(lastNode, node, parentDom, lifecycle, context, instance, null, false);
-		});
-	} else {
-		const nextHooks = nextNode.hooks;
-		const nextHooksDefined = !isNullOrUndefined(nextHooks);
+	const nextHooks = nextNode.hooks;
+	const nextHooksDefined = !isNullOrUndefined(nextHooks);
 
-		if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
-			nextHooks.willUpdate(lastNode.dom);
-		}
-		const nextTag = nextNode.tag || ((isNullOrUndefined(nextNode.bp)) ? null : nextNode.bp.tag);
-		const lastTag = lastNode.tag || ((isNullOrUndefined(lastNode.bp)) ? null : lastNode.bp.tag);
+	if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
+		nextHooks.willUpdate(lastNode.dom);
+	}
+	const nextTag = nextNode.tag || ((isNullOrUndefined(nextNode.bp)) ? null : nextNode.bp.tag);
+	const lastTag = lastNode.tag || ((isNullOrUndefined(lastNode.bp)) ? null : lastNode.bp.tag);
 
-		if (nextTag === 'svg') {
-			isSVG = true;
-		}
+	if (nextTag === 'svg') {
+		isSVG = true;
+	}
+	if (lastTag !== nextTag) {
+		const lastNodeInstance = lastNode.instance;
 
-		if (lastTag !== nextTag) {
-			const lastNodeInstance = lastNode.instance;
-
-			if (isFunction(lastTag)) {
-				if (isFunction(nextTag)) {
-					replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
-				} else if (isStatefulComponent(lastTag)) {
-					diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
-				} else {
-					diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
-				}
+		if (isFunction(lastTag)) {
+			if (isFunction(nextTag)) {
+				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+			} else if (isStatefulComponent(lastTag)) {
+				detachNode(lastNode, true);
+				diffNodes(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 			} else {
-				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+				detachNode(lastNode, true);
+				diffNodes(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
 			}
-		} else if (isNullOrUndefined(lastTag)) {
-			nextNode.dom = lastNode.dom;
 		} else {
-			if (isFunction(lastTag)) {
-				if (isFunction(nextTag)) {
-					const instance = lastNode._instance;
+			replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+		}
+	} else if (isNullOrUndefined(lastTag)) {
+		nextNode.dom = lastNode.dom;
+	} else {
+		if (isFunction(lastTag)) {
+			if (isFunction(nextTag)) {
+				const instance = lastNode._instance;
 
-					if (!isNullOrUndefined(instance) && instance._unmounted) {
-						const newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
-						if (parentDom !== null) {
-							replaceNode(parentDom, newDom, lastNode.dom);
-						}
-					} else {
-						nextNode.instance = lastNode.instance;
-						nextNode.dom = lastNode.dom;
-						patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+				if (!isNullOrUndefined(instance) && instance._unmounted) {
+					const newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance, parentDom, lifecycle, context);
+					if (parentDom !== null) {
+						replaceNode(parentDom, newDom, lastNode.dom);
 					}
+				} else {
+					nextNode.instance = lastNode.instance;
+					nextNode.dom = lastNode.dom;
+					patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 				}
-			} else {
-				const dom = lastNode.dom;
-				const nextClassName = nextNode.className;
-				const nextStyle = nextNode.style;
-
-				nextNode.dom = dom;
-
-				diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
-				diffAttributes(lastNode, nextNode, null, null, dom, instance);
-				diffEvents(lastNode, nextNode, null, null, dom);
-
-				if (lastNode.className !== nextClassName) {
-					if (isNullOrUndefined(nextClassName)) {
-						dom.removeAttribute('class');
-					} else {
-						dom.className = nextClassName;
-					}
-				}
-				if (lastNode.style !== nextStyle) {
-					patchStyle(lastNode.style, nextStyle, dom);
-				}
-				if (nextHooksDefined && !isNullOrUndefined(nextHooks.didUpdate)) {
-					nextHooks.didUpdate(dom);
-				}
-				setFormElementProperties(nextTag, nextNode);
 			}
+		} else {
+			const dom = lastNode.dom;
+			const nextClassName = nextNode.className;
+			const nextStyle = nextNode.style;
+
+			nextNode.dom = dom;
+
+			diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
+			diffAttributes(lastNode, nextNode, null, null, dom, instance);
+			diffEvents(lastNode, nextNode, null, null, dom);
+
+			if (lastNode.className !== nextClassName) {
+				if (isNullOrUndefined(nextClassName)) {
+					dom.removeAttribute('class');
+				} else {
+					dom.className = nextClassName;
+				}
+			}
+			if (lastNode.style !== nextStyle) {
+				patchStyle(lastNode.style, nextStyle, dom);
+			}
+			if (nextHooksDefined && !isNullOrUndefined(nextHooks.didUpdate)) {
+				nextHooks.didUpdate(dom);
+			}
+			setFormElementProperties(nextTag, nextNode);
 		}
 	}
 }
