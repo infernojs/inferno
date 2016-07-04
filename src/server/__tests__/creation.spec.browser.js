@@ -94,7 +94,7 @@ describe('SSR Creation - (non-JSX)', () => {
 					children: [ 'Hello', ' world' ]
 				};
 			},
-			result: '<div>Hello<!-- --> world</div>'
+			result: '<div>Hello<!----> world</div>'
 		}, {
 			description: 'should render div with node children',
 			template: () => {

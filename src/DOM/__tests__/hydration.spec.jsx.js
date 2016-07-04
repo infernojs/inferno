@@ -71,12 +71,22 @@ describe('SSR Hydration - (JSX)', () => {
 		},
 		{
 			node: <div>Hello world, { 'Foo!' }</div>,
-			expect1: '<div data-infernoroot="">Hello world, <!-- -->Foo!</div>',
+			expect1: '<div data-infernoroot="">Hello world, <!---->Foo!</div>',
 			expect2: '<div data-infernoroot="">Hello world, Foo!</div>'
 		},
 		{
+			node: <div>Hello world, { [ 'Foo!', 'Bar!' ] }</div>,
+			expect1: '<div data-infernoroot="">Hello world, <!---->Foo!<!---->Bar!<!--!--></div>',
+			expect2: '<div data-infernoroot="">Hello world, Foo!Bar!</div>'
+		},
+		{
+			node: <div>Hello world!{ null }</div>,
+			expect1: '<div data-infernoroot="">Hello world!<!--!--></div>',
+			expect2: '<div data-infernoroot="">Hello world!</div>'
+		},
+		{
 			node: <div>Hello world, { '1' }2{ '3' }</div>,
-			expect1: '<div data-infernoroot="">Hello world, <!-- -->1<!-- -->2<!-- -->3</div>',
+			expect1: '<div data-infernoroot="">Hello world, <!---->1<!---->2<!---->3</div>',
 			expect2: '<div data-infernoroot="">Hello world, 123</div>'
 		},
 		{
@@ -101,7 +111,7 @@ describe('SSR Hydration - (JSX)', () => {
 		},
 		{
 			node: <div><Comp3 /></div>,
-			expect1: '<div data-infernoroot=""><em>Works<!-- --> <span>again</span>!</em></div>',
+			expect1: '<div data-infernoroot=""><em>Works<!----> <span>again</span>!</em></div>',
 			expect2: '<div data-infernoroot=""><em>Works <span>again</span>!</em></div>'
 		}
 	].forEach(({ node, expect1, expect2 }, i) => {

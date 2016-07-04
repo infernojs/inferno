@@ -1,10 +1,12 @@
 import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent } from './../core/utils';
-import { replaceNode, handleAttachedHooks, normaliseChildren, isVText, normaliseChild } from './utils';
+import { replaceNode, handleAttachedHooks, normaliseChildren, isVText, normaliseChild, isVPlaceholder, isVList } from './utils';
 import { mountRef, handleSelects, mountAttributes, mountBlueprintAttrs, mountBlueprintEvents, mountEvents, mountVText } from './mounting';
 import { patch, patchStyle } from './patching';
 import { createVText, createVPlaceholder } from '../core/shapes';
 
-function hydrateChild(parent, child, domNode, parentChildNodes, parentDom, lifecycle, context, instance) {
+function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context, instance) {
+	const domNode = childNodes[counter.i];
+
 	if (isVText(child)) {
 		const text = child.text;
 
@@ -14,13 +16,41 @@ function hydrateChild(parent, child, domNode, parentChildNodes, parentDom, lifec
 		} else {
 			const newDomNode = mountVText(text);
 
-			replaceNode(parentDom,newDomNodetextNode, domNode);
+			replaceNode(parentDom, newDomNodetextNode, domNode);
 			parentChildNodes.splice(parentChildNodes.indexOf(domNode), 1, newDomNode);
 			child.dom = newDomNode;
 		}
+	} else if (isVPlaceholder(child)) {
+		child.dom = domNode;
+	} else if (isVList(child)) {
+		const items = child.items;
+
+		// this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
+		child.dom = document.createDocumentFragment();
+		for (let i = 0; i < items.length; i++) {
+			const rebuild = hydrateChild(normaliseChild(items, i), childNodes, counter, parentDom, lifecycle, context, instance);
+
+			if (rebuild) {
+				return true;
+			}
+		}
+		// at the end of every VList, there should be a "pointer". It's an empty TextNode used for tracking the VList
+		const pointer = childNodes[counter.i++];
+
+		if (pointer && pointer.nodeType === 3) {
+			child.pointer = pointer;
+		} else {
+			// there is a problem, we need to rebuild this tree
+			return true;
+		}
 	} else {
-		hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
+		const rebuild = hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
+
+		if (rebuild) {
+			return true;
+		}
 	}
+	counter.i++;
 }
 
 function getChildNodesWithoutComments(domNode) {
@@ -33,8 +63,16 @@ function getChildNodesWithoutComments(domNode) {
 		const rawChild = rawChildNodes[i];
 
 		if (rawChild.nodeType === 8) {
-			domNode.removeChild(rawChild);
-			length--;
+			if (rawChild.data === '!') {
+				const placeholder = document.createTextNode('');
+
+				domNode.replaceChild(placeholder, rawChild);
+				childNodes.push(placeholder);
+				i++;
+			} else {
+				domNode.removeChild(rawChild);
+				length--;
+			}
 		} else {
 			childNodes.push(rawChild);
 			i++;
@@ -105,8 +143,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 			domNode.nodeType !== 1 ||
 			tag !== domNode.tagName.toLowerCase()
 		) {
-			// TODO: remake node
-			// debugger;
+			// TODO remake node
 		} else {
 			node.dom = domNode;
 			const hooks = node.hooks;
@@ -123,23 +160,27 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 					}
 				} else {
 					const childNodes = getChildNodesWithoutComments(domNode);
+					const counter = { i: 0 };
+					let rebuild = false;
 
 					if (isArray(children)) {
-						if (childNodes.length === children.length) {
-							for (let i = 0; i < children.length; i++) {
-								hydrateChild(node, normaliseChild(children, i), childNodes[i], childNodes, domNode, lifecycle, context, instance);
+						for (let i = 0; i < children.length; i++) {
+							rebuild = hydrateChild(normaliseChild(children, i), childNodes, counter, domNode, lifecycle, context, instance);
+
+							if (rebuild) {
+								break;
 							}
-						} else {
-							// TODO: recreate children?
-							// debugger;
 						}
 					} else {
 						if (childNodes.length === 1) {
-							hydrateChild(node, children, childNodes[0], childNodes, domNode, lifecycle, context, instance);
+							rebuild = hydrateChild(children, childNodes, counter, domNode, lifecycle, context, instance);
 						} else {
-							// TODO: recreate child
-							// debugger;
+							rebuild = true;
 						}
+					}
+
+					if (rebuild) {
+						// TODO scrap children and rebuild again
 					}
 				}
 			}
