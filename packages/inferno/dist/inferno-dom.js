@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.13
+ * inferno-dom v0.7.14
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -183,7 +183,7 @@
 		}
 		var bp = input.bp;
 
-		if (recyclingEnabled) {
+		if (recyclingEnabled && bp) {
 			var dom = recycle(input, bp, lifecycle, context, instance);
 
 			if (dom !== null) {

@@ -1,6 +1,6 @@
 {
   "name": "inferno-dom",
-  "version": "0.7.13",
+  "version": "0.7.14",
   "license": "MIT",
   "description": "Provides methods to render DOM nodes from Inferno elements",
   "author": {
@@ -21,7 +21,7 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.7.13"
+    "inferno": "^0.7.14"
   },
   "repository": "https://github.com/trueadm/inferno"
 }

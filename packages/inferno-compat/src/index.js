@@ -1,4 +1,4 @@
-import { render } from '../../../src/DOM/rendering';
+import { render, findDOMNode } from '../../../src/DOM/rendering';
 import createElement from '../../../src/core/createElement';
 import Component from '../../../src/component/es2015';
 import createClass from '../../../src/component/createClass';
@@ -34,7 +34,8 @@ export {
 	unmountComponentAtNode,
 	cloneElement,
 	PropTypes,
-	createClass
+	createClass,
+	findDOMNode
 };
 
 export default {
@@ -44,5 +45,6 @@ export default {
 	unmountComponentAtNode,
 	cloneElement,
 	PropTypes,
-	createClass
+	createClass,
+	findDOMNode
 };

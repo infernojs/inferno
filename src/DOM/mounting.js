@@ -49,7 +49,7 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	}
 	const bp = input.bp;
 
-	if (recyclingEnabled) {
+	if (recyclingEnabled && bp) {
 		const dom = recycle(input, bp, lifecycle, context, instance);
 
 		if (dom !== null) {

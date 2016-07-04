@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v0.7.13
+ * inferno-compat v0.7.14
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -258,7 +258,7 @@
   	}
   	var bp = input.bp;
 
-  	if (recyclingEnabled) {
+  	if (recyclingEnabled && bp) {
   		var dom = recycle(input, bp, lifecycle, context, instance);
 
   		if (dom !== null) {
@@ -2098,6 +2098,10 @@
   var roots = new Map();
   var componentToDOMNodeMap = new Map();
 
+  function findDOMNode(domNode) {
+  	return componentToDOMNodeMap.get(domNode) || null;
+  }
+
   function render(input, parentDom) {
   	var root = roots.get(parentDom);
   	var lifecycle = new Lifecycle();
@@ -2811,7 +2815,8 @@
   	unmountComponentAtNode: unmountComponentAtNode,
   	cloneElement: cloneElement,
   	PropTypes: PropTypes,
-  	createClass: createClass
+  	createClass: createClass,
+  	findDOMNode: findDOMNode
   };
 
   exports.render = render;
@@ -2821,6 +2826,7 @@
   exports.cloneElement = cloneElement;
   exports.PropTypes = PropTypes;
   exports.createClass = createClass;
+  exports.findDOMNode = findDOMNode;
   exports['default'] = index;
 
   Object.defineProperty(exports, '__esModule', { value: true });
