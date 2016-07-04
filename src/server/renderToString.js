@@ -1,4 +1,13 @@
-import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent, isNumber } from './../core/utils';
+import {
+	isArray,
+	isStringOrNumber,
+	isNullOrUndefined,
+	isInvalidNode,
+	isFunction,
+	addChildrenToProps,
+	isStatefulComponent,
+	isNumber
+} from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
 
 function renderComponent(Component, props, children, context, isRoot) {

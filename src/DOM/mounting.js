@@ -8,7 +8,8 @@ import {
 	isString,
 	isInvalidNode,
 	replaceInArray,
-	getRefInstance
+	getRefInstance,
+	isNull
 } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import {
@@ -23,10 +24,18 @@ import {
 	isVList,
 	insertOrAppend
 } from './utils';
-import { patchAttribute, patchStyle, patch } from './patching';
+import {
+	patchAttribute,
+	patchStyle,
+	patch
+} from './patching';
 import { handleLazyAttached } from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
-import { createVText, createVPlaceholder, createVList } from '../core/shapes';
+import {
+	createVText,
+	createVPlaceholder,
+	createVList
+} from '../core/shapes';
 
 export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	if (isVPlaceholder(input)) {
@@ -53,7 +62,7 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	if (bp === undefined) {
 		return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
 	} else {
-		return appendNodeWithTemplate(input, bp, parentDom, lifecycle, context, instance);
+		return appendNodeWithBlueprint(input, bp, parentDom, lifecycle, context, instance);
 	}
 }
 
@@ -122,7 +131,7 @@ export function mountBlueprintEvents(node, bp, dom) {
 	mountEvents(events, eventKeys, dom);
 }
 
-function appendNodeWithTemplate(node, bp, parentDom, lifecycle, context, instance) {
+function appendNodeWithBlueprint(node, bp, parentDom, lifecycle, context, instance) {
 	const tag = node.tag;
 
 	if (bp.isComponent === true) {
@@ -223,7 +232,7 @@ function appendNode(node, parentDom, lifecycle, context, instance, isSVG) {
 	if (!isNullOrUndefined(events)) {
 		mountEvents(events, Object.keys(events), dom);
 	}
-	if (parentDom !== null) {
+	if (!isNull(parentDom)) {
 		parentDom.appendChild(dom);
 	}
 	return dom;

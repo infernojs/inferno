@@ -1,10 +1,16 @@
 import Lifecycle from './lifecycle';
 import { mount } from './mounting';
 import { patch } from './patching';
-import { getActiveNode, resetActiveNode, isVPlaceholder } from './utils';
-import { isUndefined, isInvalidNode, isNull } from '../core/utils';
+import {
+	getActiveNode,
+	resetActiveNode
+} from './utils';
+import {
+	isUndefined,
+	isInvalidNode,
+	isNull
+} from '../core/utils';
 import hydrate from './hydration';
-import { createVPlaceholder } from '../core/shapes';
 
 const roots = new Map();
 export const componentToDOMNodeMap = new Map();

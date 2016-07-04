@@ -1,4 +1,8 @@
-import { isAttrAnEvent, isNullOrUndefined, isBrowser } from './utils';
+import {
+	isAttrAnEvent,
+	isNullOrUndefined,
+	isBrowser
+} from './utils';
 
 // Copy of the util from dom/util, otherwise it makes massive bundles
 function documentCreateElement(tag, isSVG) {

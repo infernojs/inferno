@@ -9,8 +9,17 @@ import {
 	NO_RENDER,
 	isNumber
 } from './../core/utils';
-import { diffNodes, diffNodesWithTemplate } from './diffing';
-import { mount, mountVText, mountVPlaceholder, mountArrayChildren, mountVList } from './mounting';
+import {
+	diffNodes,
+	diffNodesWithBlueprint
+} from './diffing';
+import {
+	mount,
+	mountVText,
+	mountVPlaceholder,
+	mountArrayChildren,
+	mountVList
+} from './mounting';
 import {
 	insertOrAppend,
 	remove,
@@ -31,7 +40,11 @@ import {
 	normaliseChild
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
-import { createVText, createVPlaceholder, createVList } from '../core/shapes';
+import {
+	createVText,
+	createVPlaceholder,
+	createVList
+} from '../core/shapes';
 
 export function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
@@ -48,7 +61,7 @@ export function patchNode(lastNode, nextNode, parentDom, lifecycle, context, ins
 	if (lastBp === undefined || nextBp === undefined) {
 		diffNodes(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 	} else {
-		diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck);
+		diffNodesWithBlueprint(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck);
 	}
 }
 
@@ -189,7 +202,7 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 }
 
 
-export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+export function patchComponent(hasBlueprint, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {
@@ -215,7 +228,7 @@ export function patchComponent(hasTemplate, lastNode, Component, lastBp, nextBp,
 		componentToDOMNodeMap.set(instance, nextNode.dom);
 	} else {
 		let shouldUpdate = true;
-		const nextHooksDefined = (hasTemplate && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
+		const nextHooksDefined = (hasBlueprint && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
 
 		if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
 			shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);

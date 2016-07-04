@@ -1,8 +1,35 @@
-import { isArray, isStringOrNumber, isNullOrUndefined, isInvalidNode, isFunction, addChildrenToProps, isStatefulComponent } from './../core/utils';
-import { replaceNode, handleAttachedHooks, normaliseChildren, isVText, normaliseChild, isVPlaceholder, isVList } from './utils';
-import { mountRef, handleSelects, mountAttributes, mountBlueprintAttrs, mountBlueprintEvents, mountEvents, mountVText } from './mounting';
+import {
+	isArray,
+	isStringOrNumber,
+	isNullOrUndefined,
+	isInvalidNode,
+	isFunction,
+	addChildrenToProps,
+	isStatefulComponent
+} from './../core/utils';
+import {
+	replaceNode,
+	handleAttachedHooks,
+	normaliseChildren,
+	isVText,
+	normaliseChild,
+	isVPlaceholder,
+	isVList
+} from './utils';
+import {
+	mountRef,
+	handleSelects,
+	mountAttributes,
+	mountBlueprintAttrs,
+	mountBlueprintEvents,
+	mountEvents,
+	mountVText
+} from './mounting';
 import { patch, patchStyle } from './patching';
-import { createVText, createVPlaceholder } from '../core/shapes';
+import {
+	createVText,
+	createVPlaceholder
+} from '../core/shapes';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context, instance) {
 	const domNode = childNodes[counter.i];

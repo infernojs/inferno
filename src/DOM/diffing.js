@@ -1,7 +1,40 @@
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined, isStatefulComponent, isInvalidNode, isString, isPromise, getRefInstance } from './../core/utils';
-import { replaceWithNewNode, isKeyed, selectValue, removeEvents, removeAllChildren, remove, detachNode, replaceNode } from './utils';
-import { patchNonKeyedChildren, patchKeyedChildren, patchAttribute, patchComponent, patchStyle, updateTextNode, patch, patchEvents } from './patching';
-import { mountArrayChildren, mount, mountEvents, mountComponent } from './mounting';
+import {
+	isArray,
+	isStringOrNumber,
+	isFunction,
+	isNullOrUndefined,
+	isStatefulComponent,
+	isInvalidNode,
+	isString,
+	isPromise,
+	getRefInstance
+} from './../core/utils';
+import {
+	replaceWithNewNode,
+	isKeyed,
+	selectValue,
+	removeEvents,
+	removeAllChildren,
+	remove,
+	detachNode,
+	replaceNode
+} from './utils';
+import {
+	patchNonKeyedChildren,
+	patchKeyedChildren,
+	patchAttribute,
+	patchComponent,
+	patchStyle,
+	updateTextNode,
+	patch,
+	patchEvents
+} from './patching';
+import {
+	mountArrayChildren,
+	mount,
+	mountEvents,
+	mountComponent
+} from './mounting';
 import { setClipNode } from './lifecycle';
 import { createVText } from '../core/shapes';
 
@@ -152,7 +185,7 @@ function diffAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, ins
 	}
 }
 
-export function diffNodesWithTemplate(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
+export function diffNodesWithBlueprint(lastNode, nextNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
 	let nextHooks;
 
 	if (nextBp.hasHooks === true) {

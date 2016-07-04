@@ -1,8 +1,21 @@
 import { mount } from './mounting';
-import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from './../core/utils';
-import { recyclingEnabled, pool } from './recycling';
+import {
+	isArray,
+	isNullOrUndefined,
+	isInvalidNode,
+	isStringOrNumber,
+	replaceInArray
+} from './../core/utils';
+import {
+	recyclingEnabled,
+	pool
+} from './recycling';
 import { componentToDOMNodeMap } from './rendering';
-import { createVText, createVPlaceholder, createVList } from '../core/shapes';
+import {
+	createVText,
+	createVPlaceholder,
+	createVList
+} from '../core/shapes';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
