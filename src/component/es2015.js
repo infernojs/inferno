@@ -20,7 +20,6 @@ function resetActiveNode(activeNode) {
 	}
 }
 
-
 function queueStateChanges(component, newState, callback) {
 	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];

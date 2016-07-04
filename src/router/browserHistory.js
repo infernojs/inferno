@@ -1,3 +1,5 @@
+import { isBrowser } from '../core/utils';
+
 const routers = [];
 
 function getCurrentUrl() {
@@ -22,7 +24,9 @@ function routeTo(url) {
 	return didRoute;
 }
 
-window.addEventListener('popstate', () => routeTo(getCurrentUrl()));
+if (isBrowser) {
+	window.addEventListener('popstate', () => routeTo(getCurrentUrl()));
+}
 
 export default {
 	addRouter(router) {
