@@ -146,9 +146,9 @@ export function detachNode(node, shallow) {
 			hooks.componentWillUnmount(node.dom, hooks);
 		}
 	}
-	const children = node.children || instanceChildren;
+	const children = (isNullOrUndefined(instance) ? node.children : null) || instanceChildren;
 
-	if (isNullOrUndefined(instance) && !isNullOrUndefined(children)) {
+	if (!isNullOrUndefined(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
 				detachNode(children[i]);
