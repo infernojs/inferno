@@ -694,4 +694,29 @@ describe('Elements (JSX)', () => {
 		), container);
 		expect(container.innerHTML).to.not.equal('Hello world!');
 	});
+
+	it('Should be able to construct input with Hooks, Events, Attributes defined', () => {
+		function test() {}
+		const obj = {fn: function() {}, focus: function(){}};
+		const bool = false;
+		const newValue = 't';
+		const spread = {id: 'test'};
+		const spy = sinon.spy(obj, 'fn');
+		const spyFocus = sinon.spy(obj, 'focus');
+
+
+		// TODO: Fails to creation of node fix needed
+		render(<input type="text" onAttached={obj.fn} spellcheck="false"
+					  readOnly={bool ? 'readonly' : false} disabled={bool}
+					  ondragenter={test} ondragover={test} value={newValue} oninput={test}
+					  onfocus={obj.focus} class="edit-field" onkeydown={test} onkeyup={test}
+					  onblur={test} {...spread} />, container);
+
+
+		// TODO: Somehow verify hooks / events work. Not sure this is as expected
+		const input = container.querySelector('#test');
+		sinon.assert.calledOnce(spy, 'Hook should work'); // Verify hook works
+		input.focus();
+		sinon.assert.calledOnce(spyFocus, 'Event should work'); // Verify hook works
+	});
 });
