@@ -707,10 +707,10 @@ describe('Elements (JSX)', () => {
 
 		// TODO: Fails to creation of node fix needed
 		render(<input type="text" onAttached={obj.fn} spellcheck="false"
-					  readOnly={bool ? 'readonly' : false} disabled={bool}
-					  ondragenter={test} ondragover={test} value={newValue} oninput={test}
-					  onfocus={obj.focus} class="edit-field" onkeydown={test} onkeyup={test}
-					  onblur={test} {...spread} />, container);
+					readOnly={bool ? 'readonly' : false} disabled={bool}
+					ondragenter={test} ondragover={test} value={newValue} oninput={test}
+					onfocus={obj.focus} class="edit-field" onkeydown={test} onkeyup={test}
+					onblur={test} {...spread} />, container);
 
 
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected

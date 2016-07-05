@@ -140,6 +140,7 @@ export function createBlueprint(shape, childrenType) {
 			let attrs;
 			let events;
 			let hooks;
+			let children;
 
 			for (let key in _spread) {
 				const value = _spread[key];
@@ -162,6 +163,8 @@ export function createBlueprint(shape, childrenType) {
 						events = {};
 					}
 					events[key.toLowerCase()] = value;
+				} else if (key === 'children') {
+					children = value;
 				} else {
 					if (!attrs) {
 						attrs = {};
@@ -180,6 +183,9 @@ export function createBlueprint(shape, childrenType) {
 			if (hooks) {
 				vNode.hooks = hooks;
 				blueprint.hasHooks = true;
+			}
+			if (children) {
+				vNode.children = children;
 			}
 		} else {
 			if (attrsIsDynamic === true) {
