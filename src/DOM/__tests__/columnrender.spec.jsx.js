@@ -181,7 +181,7 @@ describe('Columns like tests - (JSX)', () => {
 
 			const keyedTests = buildTestCases(BuildRowKeyed, BuildItemKeyed, 'KEYED');
 
-			class ItemKeyed extends Component {	
+			class ItemKeyed extends Component {
 				constructor(props) {
 					super(props);
 				}
@@ -203,7 +203,7 @@ describe('Columns like tests - (JSX)', () => {
 
 					return (
 						<div>
-							{[ <span key="-1">column</span> ].concat( 
+							{[ <span key="-1">column</span> ].concat(
 								items.map((item) => <ItemKeyed key={item.id} text={item.text} />)
 							)}
 						</div>
@@ -269,6 +269,7 @@ describe('Columns like tests - (JSX)', () => {
 						} else {
 							if (!isNullOrUndefined(intialColumns)) {
 								initialItemsCount += intialColumns.items.length;
+								itemsToRemove = itemsToRemove.concat(intialColumns.items);
 							} else {
 								// Do nothing
 							}
@@ -303,8 +304,7 @@ describe('Columns like tests - (JSX)', () => {
 					expect(updateColumnSpy.callCount).to.equal(columnsToUpdate.length); // Initial render none unmounted
 					expect(mountedItemSpy.callCount).to.equal(itemsToBeAdded.length, `itemsToBeAdded ${JSON.stringify(itemsToBeAdded)} componentWillMount called: ${mountedItemSpy.callCount} times.`); // Initial render - mount all items once
 					expect(updateItemSpy.callCount).to.equal(itemsToUpdate.length, 'item update callback count'); // Initial render none to update
-					// TODO not sure this one works as expected? fails 4 should be 0 on last test case when all columns are removed
-					// expect(unmountItemSpy.callCount).to.equal(itemsToRemove.length, 'item unmount callback count'); // Initial render none unmounted
+					expect(unmountItemSpy.callCount).to.equal(itemsToRemove.length, 'item unmount callback count'); // Initial render none unmounted
 				});
 			});
 		});
