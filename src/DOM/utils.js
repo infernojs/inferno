@@ -250,6 +250,9 @@ export function resetActiveNode(activeNode) {
 }
 
 export function isKeyed(lastChildren, nextChildren) {
+	if (lastChildren.complex) {
+		return false;
+	}
 	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
 		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 }

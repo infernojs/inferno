@@ -216,18 +216,15 @@ export function createBlueprint(shape, childrenType) {
 function VText(text) {
 	this.text = text;
 	this.dom = null;
-	this.key = null;
 }
 
 function VPlaceholder(text) {
 	this.placeholder = true;
 	this.dom = null;
-	this.key = null;
 }
 
 function VList(items) {
 	this.dom = null;
-	this.key = null;
 	this.pointer = null;
 	this.items = items;
 }

@@ -82,6 +82,9 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isS
 		} else {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
+					const complex = lastChildren.complex;
+
+					nextChildren.complex = complex;
 					if (isKeyed(lastChildren, nextChildren)) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 					} else {

@@ -245,6 +245,7 @@ export function mountArrayChildrenWithKeys(children, parentDom, lifecycle, conte
 }
 
 export function mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG) {
+	children.complex = false;
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
@@ -253,22 +254,28 @@ export function mountArrayChildren(children, parentDom, lifecycle, context, inst
 
 			children[i] = vText;
 			mountVText(vText, parentDom);
+			children.complex = true;
 		} else if (isInvalidNode(child)) {
 			const vPlaceholder = createVPlaceholder();
 
 			children[i] = vPlaceholder;
 			mountVPlaceholder(vPlaceholder, parentDom);
+			children.complex = true;
 		} else if (isArray(child)) {
 			const vList = createVList(child);
 
 			children[i] = vList;
 			mountVList(vList, parentDom, lifecycle, context, instance, isSVG);
+			children.complex = true;
 		} else if (isVText(child)) {
 			mountVText(child, parentDom);
+			children.complex = true;
 		} else if (isVPlaceholder(child)) {
 			mountVPlaceholder(child, parentDom);
+			children.complex = true;
 		} else if (isVList(child)) {
 			mountVList(child, parentDom, lifecycle, context, instance, isSVG);
+			children.complex = true;
 		} else {
 			mount(child, parentDom, lifecycle, context, instance, isSVG);
 		}
