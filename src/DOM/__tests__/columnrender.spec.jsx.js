@@ -203,9 +203,8 @@ describe('Columns like tests - (JSX)', () => {
 
 					return (
 						<div>
-							{[ <span key="-1">column</span> ].concat(
-								items.map((item) => <ItemKeyed key={item.id} text={item.text} />)
-							)}
+							<span key="-1">column</span>
+							{items.map((item) => <ItemKeyed key={item.id} text={item.text}/>)}
 						</div>
 					)
 				}
