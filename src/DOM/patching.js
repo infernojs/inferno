@@ -69,16 +69,6 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 	} else if (isStringOrNumber(nextInput)) {
 		const textNode = document.createTextNode(nextInput);
 		replaceNode(parentDom, textNode, lastInput.dom);
-	} else if (!isNullOrUndefined(nextInput.null)) {
-		let dom;
-
-		if (lastInput.dom) {
-			detachNode(lastInput);
-			dom = lastInput.dom;
-		} else {
-			// TODO
-		}
-		replaceNode(parentDom, nextInput.dom, dom);
 	} else {
 		patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
 	}

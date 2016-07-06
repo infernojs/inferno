@@ -1296,16 +1296,6 @@
   	} else if (isStringOrNumber(nextInput)) {
   		var textNode = document.createTextNode(nextInput);
   		replaceNode(parentDom, textNode, lastInput.dom);
-  	} else if (!isNullOrUndefined(nextInput.null)) {
-  		var dom$1;
-
-  		if (lastInput.dom) {
-  			detachNode(lastInput);
-  			dom$1 = lastInput.dom;
-  		} else {
-  			// TODO
-  		}
-  		replaceNode(parentDom, nextInput.dom, dom$1);
   	} else {
   		patchNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
   	}
