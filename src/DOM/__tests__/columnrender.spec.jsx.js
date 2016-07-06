@@ -409,6 +409,7 @@ describe('Columns like tests - (JSX)', () => {
 						} else {
 							if (!isNullOrUndefined(intialColumns)) {
 								initialItemsCount += intialColumns.items.length;
+								itemsToRemove = itemsToRemove.concat(intialColumns.items);
 							} else {
 								// Do nothing
 							}

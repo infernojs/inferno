@@ -712,11 +712,12 @@ describe('Elements (JSX)', () => {
 					onfocus={obj.focus} class="edit-field" onkeydown={test} onkeyup={test}
 					onblur={test} {...spread} />, container);
 
-
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
+		document.body.appendChild(container);
 		const input = container.querySelector('#test');
 		sinon.assert.calledOnce(spy, 'Hook should work'); // Verify hook works
 		input.focus();
 		sinon.assert.calledOnce(spyFocus, 'Event should work'); // Verify hook works
+		document.body.removeChild(container);
 	});
 });

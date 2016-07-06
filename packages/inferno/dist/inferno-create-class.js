@@ -29,7 +29,6 @@
 	function VPlaceholder(text) {
 		this.placeholder = true;
 		this.dom = null;
-		this.key = null;
 	}
 
 	function createVPlaceholder() {

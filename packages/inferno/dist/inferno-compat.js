@@ -218,18 +218,15 @@
   function VText(text) {
   	this.text = text;
   	this.dom = null;
-  	this.key = null;
   }
 
   function VPlaceholder(text) {
   	this.placeholder = true;
   	this.dom = null;
-  	this.key = null;
   }
 
   function VList(items) {
   	this.dom = null;
-  	this.key = null;
   	this.pointer = null;
   	this.items = items;
   }
@@ -454,6 +451,7 @@
   }
 
   function mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG) {
+  	children.complex = false;
   	for (var i = 0; i < children.length; i++) {
   		var child = children[i];
 
@@ -462,22 +460,28 @@
 
   			children[i] = vText;
   			mountVText(vText, parentDom);
+  			children.complex = true;
   		} else if (isInvalidNode(child)) {
   			var vPlaceholder = createVPlaceholder();
 
   			children[i] = vPlaceholder;
   			mountVPlaceholder(vPlaceholder, parentDom);
+  			children.complex = true;
   		} else if (isArray(child)) {
   			var vList = createVList(child);
 
   			children[i] = vList;
   			mountVList(vList, parentDom, lifecycle, context, instance, isSVG);
+  			children.complex = true;
   		} else if (isVText(child)) {
   			mountVText(child, parentDom);
+  			children.complex = true;
   		} else if (isVPlaceholder(child)) {
   			mountVPlaceholder(child, parentDom);
+  			children.complex = true;
   		} else if (isVList(child)) {
   			mountVList(child, parentDom, lifecycle, context, instance, isSVG);
+  			children.complex = true;
   		} else {
   			mount(child, parentDom, lifecycle, context, instance, isSVG);
   		}
@@ -700,7 +704,15 @@
   }
 
   function detachNode(node, shallow) {
-  	if (isInvalidNode(node) || isStringOrNumber(node)) {
+  	if (isVList(node)) {
+  		var items = node.items;
+
+  		for (var i = 0; i < items.length; i++) {
+  			detachNode(items[i]);
+  		}
+  		return;
+  	}
+  	if (isVText(node) || isVPlaceholder(node) || isInvalidNode(node) || isStringOrNumber(node)) {
   		return;
   	}
   	var instance = node.instance;
@@ -732,8 +744,8 @@
 
   	if (!isNullOrUndefined(children)) {
   		if (isArray(children)) {
-  			for (var i = 0; i < children.length; i++) {
-  				detachNode(children[i]);
+  			for (var i$1 = 0; i$1 < children.length; i$1++) {
+  				detachNode(children[i$1]);
   			}
   		} else {
   			detachNode(children);
@@ -812,6 +824,9 @@
   }
 
   function isKeyed(lastChildren, nextChildren) {
+  	if (lastChildren.complex) {
+  		return false;
+  	}
   	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
   		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
   }
@@ -911,6 +926,9 @@
   		} else {
   			if (isArray(lastChildren)) {
   				if (isArray(nextChildren)) {
+  					var complex = lastChildren.complex;
+
+  					nextChildren.complex = complex;
   					if (isKeyed(lastChildren, nextChildren)) {
   						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
   					} else {

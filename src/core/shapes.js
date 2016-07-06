@@ -140,52 +140,56 @@ export function createBlueprint(shape, childrenType) {
 			let attrs;
 			let events;
 			let hooks;
-			let children;
+			let attrKeys = [];
+			let eventKeys = [];
 
-			for (let key in _spread) {
-				const value = _spread[key];
+			for (let prop in _spread) {
+				const value = _spread[prop];
 
-				if (key === 'className') {
+				if (prop === 'className') {
 					vNode.className = value;
 					blueprint.hasClassName = true;
-				} else if (key === 'style') {
+				} else if (prop === 'style') {
 					vNode.style = value;
 					blueprint.hasStyle = true;
-				} else if (key === 'key') {
+				} else if (prop === 'key') {
 					vNode.key = value;
-				} else if (isAttrAHook(key) || isAttrAComponentHook(key)) {
+				} else if (isAttrAHook(prop) || isAttrAComponentHook(prop)) {
 					if (!hooks) {
 						hooks = {};
 					}
-					hooks[key] = value;
-				} else if (isAttrAnEvent(key)) {
+					hooks[prop[2].toLowerCase() + prop.substring(3)] = value;
+				} else if (isAttrAnEvent(prop)) {
 					if (!events) {
 						events = {};
 					}
-					events[key.toLowerCase()] = value;
-				} else if (key === 'children') {
-					children = value;
+					eventKeys.push(prop);
+					events[prop.toLowerCase()] = value;
+				} else if (prop === 'children') {
+					vNode.children = children;
 				} else {
 					if (!attrs) {
 						attrs = {};
 					}
-					attrs[key] = value;
+					attrKeys.push(prop);
+					attrs[prop] = value;
 				}
 			}
+			// TODO note: class -> className logic has not been added
+			// we need to make sure we're not an SVG element like the JSX plugin does
 			if (attrs) {
 				vNode.attrs = attrs;
+				blueprint.attrKeys = attrKeys;
 				blueprint.hasAttrs = true;
 			}
 			if (events) {
 				vNode.events = events;
+				blueprint.eventKeys = eventKeys;
 				blueprint.hasEvents = true;
 			}
 			if (hooks) {
 				vNode.hooks = hooks;
 				blueprint.hasHooks = true;
-			}
-			if (children) {
-				vNode.children = children;
 			}
 		} else {
 			if (attrsIsDynamic === true) {

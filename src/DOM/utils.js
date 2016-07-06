@@ -131,7 +131,15 @@ export function replaceNode(parentDom, nextDom, lastDom) {
 }
 
 export function detachNode(node, shallow) {
-	if (isInvalidNode(node) || isStringOrNumber(node)) {
+	if (isVList(node)) {
+		const items = node.items;
+
+		for (let i = 0; i < items.length; i++) {
+			detachNode(items[i]);
+		}
+		return;
+	}
+	if (isVText(node) || isVPlaceholder(node) || isInvalidNode(node) || isStringOrNumber(node)) {
 		return;
 	}
 	const instance = node.instance;

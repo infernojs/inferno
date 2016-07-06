@@ -168,41 +168,51 @@
 				var attrs$1;
 				var events$1;
 				var hooks$1;
+				var attrKeys = [];
+				var eventKeys = [];
 
-				for (var key$1 in _spread) {
-					var value = _spread[key$1];
+				for (var prop in _spread) {
+					var value = _spread[prop];
 
-					if (key$1 === 'className') {
+					if (prop === 'className') {
 						vNode.className = value;
 						blueprint.hasClassName = true;
-					} else if (key$1 === 'style') {
+					} else if (prop === 'style') {
 						vNode.style = value;
 						blueprint.hasStyle = true;
-					} else if (key$1 === 'key') {
+					} else if (prop === 'key') {
 						vNode.key = value;
-					} else if (isAttrAHook(key$1) || isAttrAComponentHook(key$1)) {
+					} else if (isAttrAHook(prop) || isAttrAComponentHook(prop)) {
 						if (!hooks$1) {
 							hooks$1 = {};
 						}
-						hooks$1[key$1] = value;
-					} else if (isAttrAnEvent(key$1)) {
+						hooks$1[prop[2].toLowerCase() + prop.substring(3)] = value;
+					} else if (isAttrAnEvent(prop)) {
 						if (!events$1) {
 							events$1 = {};
 						}
-						events$1[key$1.toLowerCase()] = value;
+						eventKeys.push(prop);
+						events$1[prop.toLowerCase()] = value;
+					} else if (prop === 'children') {
+						vNode.children = children;
 					} else {
 						if (!attrs$1) {
 							attrs$1 = {};
 						}
-						attrs$1[key$1] = value;
+						attrKeys.push(prop);
+						attrs$1[prop] = value;
 					}
 				}
+				// TODO note: class -> className logic has not been added
+				// we need to make sure we're not an SVG element like the JSX plugin does
 				if (attrs$1) {
 					vNode.attrs = attrs$1;
+					blueprint.attrKeys = attrKeys;
 					blueprint.hasAttrs = true;
 				}
 				if (events$1) {
 					vNode.events = events$1;
+					blueprint.eventKeys = eventKeys;
 					blueprint.hasEvents = true;
 				}
 				if (hooks$1) {
@@ -244,7 +254,6 @@
 	function VText(text) {
 		this.text = text;
 		this.dom = null;
-		this.key = null;
 	}
 
 	function createVText(text) {
