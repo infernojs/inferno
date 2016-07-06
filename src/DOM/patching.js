@@ -289,7 +289,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 					detachNode(lastChild);
 				}
 			} else if (isVList(lastChild)) {
-				replaceVListWithNode(dom, lastChild, mount(nextChild));
+				replaceVListWithNode(dom, lastChild, mount(nextChild, null, lifecycle, context, instance, isSVG));
 			} else if (isVPlaceholder(nextChild)) {
 				if (isVPlaceholder(lastChild)) {
 					patchVFragment(lastChild, nextChild);
@@ -298,7 +298,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 					detachNode(lastChild);
 				}
 			} else if (isVPlaceholder(lastChild)) {
-				replaceNode(dom, mount(nextChild, null), lastChild.dom);
+				replaceNode(dom, mount(nextChild, null, lifecycle, context, instance, isSVG), lastChild.dom);
 			} else if (isVText(nextChild)) {
 				if (isVText(lastChild)) {
 					patchVText(lastChild, nextChild);
