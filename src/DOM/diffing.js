@@ -28,7 +28,12 @@ import {
 	patch,
 	patchEvents
 } from './patching';
-import { mountArrayChildren, mount, mountEvents, mountComponent } from './mounting';
+import {
+	mountArrayChildren,
+	mount,
+	mountEvents,
+	mountComponent
+} from './mounting';
 import { setClipNode } from './lifecycle';
 import { createVText } from '../core/shapes';
 

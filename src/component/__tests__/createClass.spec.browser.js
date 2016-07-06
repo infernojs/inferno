@@ -1,7 +1,6 @@
 import { render } from './../../DOM/rendering';
 import createClass from './../createClass';
 import createElement from './../../core/createElement';
-import innerHTML from './../../../tools/innerHTML';
 
 describe('Components createClass (non-JSX)', () => {
 	let container;

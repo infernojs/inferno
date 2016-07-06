@@ -10,7 +10,6 @@ import {
 import {
 	replaceNode,
 	handleAttachedHooks,
-	normaliseChildren,
 	isVText,
 	normaliseChild,
 	isVPlaceholder,

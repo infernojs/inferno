@@ -80,14 +80,6 @@ export function isAttrAComponentHook(hook) {
 		|| hook === 'onComponentDidUpdate';
 }
 
-export function isPromise(obj) {
-	return obj instanceof Promise;
-}
-
-export function replaceInArray(array, obj, newObj) {
-	array.splice(array.indexOf(obj), 1, newObj);
-}
-
 function deepScanChildrenForNode(children, node) {
 	if (!isInvalidNode(children)) {
 		if (isArray(children)) {

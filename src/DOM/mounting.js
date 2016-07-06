@@ -26,7 +26,11 @@ import {
 import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
-import { createVText, createVPlaceholder, createVList } from '../core/shapes';
+import {
+	createVText,
+	createVPlaceholder,
+	createVList
+} from '../core/shapes';
 
 export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	if (isVPlaceholder(input)) {

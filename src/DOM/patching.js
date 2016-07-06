@@ -9,12 +9,16 @@ import {
 	isNumber
 } from './../core/utils';
 import { diffNodes, diffNodesWithBlueprint } from './diffing';
-import { mount, mountVText, mountVPlaceholder, mountVList } from './mounting';
+import {
+	mount,
+	mountVText,
+	mountVPlaceholder,
+	mountVList
+} from './mounting';
 import {
 	insertOrAppend,
 	remove,
 	detachNode,
-	createVirtualFragment,
 	isKeyed,
 	replaceNode,
 	isUnitlessNumber,
@@ -22,7 +26,6 @@ import {
 	strictProps,
 	namespaces,
 	isVText,
-	normaliseChildren,
 	isVPlaceholder,
 	removeChild,
 	replaceVListWithNode,

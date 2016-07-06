@@ -1,9 +1,12 @@
 import renderToString from './../../server/renderToString';
-import domHydration from './../../DOM/hydration';
 import Component from './../../component/es2015';
 import { createBlueprint } from './../../core/shapes';
 import { render } from './../../DOM/rendering';
-import { isArray, isStringOrNumber, isFunction, isNullOrUndefined } from './../../core/utils';
+import {
+	isArray,
+	isStringOrNumber,
+	isNullOrUndefined
+} from './../../core/utils';
 
 const Inferno = {
 	createBlueprint
