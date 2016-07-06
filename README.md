@@ -296,7 +296,17 @@ Inferno tries to address two problems with creating UI components:
 - Writing intensive modern UIs that require many updates/animations falls apart and becomes overly complicated - it shouldn't be.
 
 Writing code should be fun. Browsers are getting more advanced and the technologies being supported are growing by the week. It's about
-time a framework offered more fun without compromising performance.
+time a library offered more fun without compromising performance.
+
+## Browser Support
+
+Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support IE8+, Inferno requires polyfills for the following JavaScript features:
+
+- [Map object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+- [Object.keys](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
+- [Object.assign](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
+
+Potential solutions including using the [es5-shim](https://github.com/es-shims/es5-shim) for ES5 features and [es6-shim](https://github.com/paulmillr/es6-shim) from ES2015 feautres.
 
 ## JSX
  
