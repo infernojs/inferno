@@ -86,12 +86,12 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isS
 
 					nextChildren.complex = complex;
 					if (isKeyed(lastChildren, nextChildren)) {
-						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
+						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, null);
 					} else {
 						patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, null);
 					}
 				} else {
-					patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, instance, null);
+					patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, instance, isSVG, null);
 				}
 			} else {
 				if (isArray(nextChildren)) {
