@@ -274,13 +274,13 @@ export function diffNodesWithBlueprint(lastNode, nextNode, lastBp, nextBp, paren
 					} else {
 						if (lastChildren !== nextChildren) {
 							if (lastChildrenType === 4 && nextChildrenType === 4) {
-								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, null);
+								patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, nextBp.isSVG, null);
 							} else if (lastChildrenType === 2 && nextChildrenType === 2) {
-								patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, false);
+								patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, nextBp.isSVG);
 							} else if (lastChildrenType === 1 && nextChildrenType === 1) {
 								updateTextNode(dom, lastChildren, nextChildren);
 							} else {
-								diffChildren(lastNode, nextNode, dom, lifecycle, context, instance);
+								diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, nextBp.isSVG);
 							}
 						}
 					}
