@@ -174,7 +174,7 @@
 				for (var prop in _spread) {
 					var value = _spread[prop];
 
-					if (prop === 'className') {
+					if (prop === 'className' || (prop === 'class' && !blueprint.isSVG)) {
 						vNode.className = value;
 						blueprint.hasClassName = true;
 					} else if (prop === 'style') {
@@ -195,6 +195,7 @@
 						events$1[prop.toLowerCase()] = value;
 					} else if (prop === 'children') {
 						vNode.children = children;
+						blueprint.childrenType = blueprint.childrenType || 5;
 					} else {
 						if (!attrs$1) {
 							attrs$1 = {};
@@ -203,8 +204,6 @@
 						attrs$1[prop] = value;
 					}
 				}
-				// TODO note: class -> className logic has not been added
-				// we need to make sure we're not an SVG element like the JSX plugin does
 				if (attrs$1) {
 					vNode.attrs = attrs$1;
 					blueprint.attrKeys = attrKeys;

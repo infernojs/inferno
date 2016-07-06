@@ -146,7 +146,7 @@ export function createBlueprint(shape, childrenType) {
 			for (let prop in _spread) {
 				const value = _spread[prop];
 
-				if (prop === 'className') {
+				if (prop === 'className' || (prop === 'class' && !blueprint.isSVG)) {
 					vNode.className = value;
 					blueprint.hasClassName = true;
 				} else if (prop === 'style') {
@@ -167,6 +167,7 @@ export function createBlueprint(shape, childrenType) {
 					events[prop.toLowerCase()] = value;
 				} else if (prop === 'children') {
 					vNode.children = children;
+					blueprint.childrenType = blueprint.childrenType || 5;
 				} else {
 					if (!attrs) {
 						attrs = {};
@@ -175,8 +176,6 @@ export function createBlueprint(shape, childrenType) {
 					attrs[prop] = value;
 				}
 			}
-			// TODO note: class -> className logic has not been added
-			// we need to make sure we're not an SVG element like the JSX plugin does
 			if (attrs) {
 				vNode.attrs = attrs;
 				blueprint.attrKeys = attrKeys;
