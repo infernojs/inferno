@@ -227,6 +227,14 @@ describe('createTree - SVG (JSX)', () => {
 		)).to.equal(false);
 	});
 
+	it('Should make SVG and children with spread attribute', () => {
+
+		const spread = {id:'test'};
+
+		render(<svg {...spread}><use xlink:href="#changed"></use></svg>, container);
+		expect(container.innerHTML).to.equal('<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#changed"></use></svg>');
+	});
+
 	if (typeof global !== 'undefined' && !global.usingJSDOM) {
 		it('should add / change / remove xlink:href attribute', () => {
 
