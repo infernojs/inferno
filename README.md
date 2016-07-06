@@ -81,13 +81,13 @@ npm install --save inferno-router
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
  
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-create-element.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-create-class.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-component.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-dom.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-server.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.12/inferno-router.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.14/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.14/inferno-create-element.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.14/inferno-create-class.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.14/inferno-component.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.14/inferno-dom.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.14/inferno-server.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.14/inferno-router.min.js
 ```
 
 ## Overview
