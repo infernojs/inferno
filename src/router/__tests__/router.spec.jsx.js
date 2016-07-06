@@ -45,6 +45,7 @@ describe('Router tests (jsx)', () => {
 	});
 
 	afterEach(() => {
+		render(null, container);
 		container.innerHTML = '';
 	});
 
@@ -112,6 +113,38 @@ describe('Router tests (jsx)', () => {
 						<Route path={ '*' } component={ () => <div>Bad Component</div> } />
 						<Route path={ '/foo/bar/*' } component={ () => <div>Bad Component</div> } />
 						<Route path={ '/foo/bar/yar' } component={ () => <div>Good Component</div> } />
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Good Component</div>');
+
+				render(
+					<Router url={ '/foo/bar/yar' } history={ browserHistory }>
+						<Route path={ '*' } component={ () => <div>Bad Component</div> } />
+						<Route path={ '/foo/bar/*' } component={ () => <div>Bad Component</div> } />
+						<Route path={ '/foo/bar/yar' } component={ () => <div>Good Component</div> } />
+						<Route path={ '/foo/bar/yar/zoo' } component={ () => <div>Bad Component</div> } />
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Good Component</div>');
+			});
+			it('it should render the correct nested route based on the path', () => {
+				render(
+					<Router url={ '/foo/bar' } history={ browserHistory }>
+						<Route path={ '/foo' } component={ () => <div>Bad Component</div> }>
+							<Route path={ '/bar' } component={ () => <div>Good Component</div> } />
+						</Route>
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Good Component</div>');
+
+				render(
+					<Router url={ '/foo' } history={ browserHistory }>
+						<Route path={ '/foo' } component={ () => <div>Good Component</div> }>
+							<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
+						</Route>
 					</Router>,
 					container
 				);

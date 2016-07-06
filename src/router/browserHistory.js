@@ -33,7 +33,7 @@ export default {
 		routers.push(router);
 	},
 	removeRouter(router) {
-		roouters.splice(routers.indexOf(router), 1);
+		routers.splice(routers.indexOf(router), 1);
 	},
 	getCurrentUrl,
 	getHashbangRoot

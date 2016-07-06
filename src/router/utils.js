@@ -35,6 +35,7 @@ export function exec(url, route, opts = EMPTY) {
 	url = segmentize(url.replace(reg, ''));
 	route = segmentize(route || '');
 	let max = Math.max(url.length, route.length);
+	let hasWildcard = false;
 
 	for (let i = 0; i < max; i++) {
 		if (route[i] && route[i].charAt(0) === ':') {
@@ -53,9 +54,13 @@ export function exec(url, route, opts = EMPTY) {
 				break;
 			}
 		}
-		else if (route[i] !== url[i] && !route[i] === '*') {
-			ret = false;
-			break;
+		else if (route[i] !== url[i] && !hasWildcard) {
+			if (route[i] === '*' && route.length === i + 1) {
+				hasWildcard = true;
+			} else {
+				ret = false;
+				break;
+			}
 		}
 	}
 	if (opts.default !== true && ret === false) {

@@ -566,6 +566,10 @@
 
   		/* eslint new-cap: 0 */
   		var node$1 = Component(props, context);
+
+  		if (isInvalidNode(node$1)) {
+  			node$1 = createVPlaceholder();
+  		}
   		dom = mount(node$1, null, lifecycle, context, null, false);
 
   		parentNode.instance = node$1;

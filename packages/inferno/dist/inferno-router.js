@@ -398,6 +398,7 @@
     	url = segmentize(url.replace(reg, ''));
     	route = segmentize(route || '');
     	var max = Math.max(url.length, route.length);
+    	var hasWildcard = false;
 
     	for (var i$1 = 0; i$1 < max; i$1++) {
     		if (route[i$1] && route[i$1].charAt(0) === ':') {
@@ -416,9 +417,13 @@
     				break;
     			}
     		}
-    		else if (route[i$1] !== url[i$1] && !route[i$1] === '*') {
-    			ret = false;
-    			break;
+    		else if (route[i$1] !== url[i$1] && !hasWildcard) {
+    			if (route[i$1] === '*' && route.length === i$1 + 1) {
+    				hasWildcard = true;
+    			} else {
+    				ret = false;
+    				break;
+    			}
     		}
     	}
     	if (opts.default !== true && ret === false) {
@@ -471,33 +476,50 @@
     		return this._didRoute;
     	};
     	Router.prototype.render = function render () {
-    		var children = isArray(this.props.children) ? this.props.children : [this.props.children];
+    		var children = toArray(this.props.children);
     		var url = this.props.url || this.state.url;
     		var wrapperComponent = this.props.component;
     		var hashbang = this.props.hashbang;
 
-    		children.sort(pathRankSort);
-
-    		for (var i = 0; i < children.length; i++) {
-    			var child = children[i];
-    			var ref = child.attrs;
-    			var path = ref.path;
-    			var params = exec(hashbang ? convertToHashbang(url) : url, path);
-
-    			if (params) {
-    				if (wrapperComponent) {
-    					return createVNode().setTag(wrapperComponent).setChildren(child).setAttrs({
-    						params: params
-    					});
-    				}
-    				return child.setAttrs(Object.assign({}, { params: params }, child.attrs));
-    			}
-    		}
-    		return wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
+    		return handleRoutes(children, url, hashbang, wrapperComponent, '');
     	};
 
     	return Router;
     }(Component));
+
+    function toArray(children) {
+    	return isArray(children) ? children : (children ? [children] : children);
+    }
+
+    function handleRoutes(routes, url, hashbang, wrapperComponent, lastPath) {
+    	routes.sort(pathRankSort);
+
+    	for (var i = 0; i < routes.length; i++) {
+    		var route = routes[i];
+    		var ref = route.attrs;
+    		var path = ref.path;
+    		var fullPath = lastPath + path;
+    		var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
+    		var children = toArray(route.children);
+
+    		if (children) {
+    			var subRoute = handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
+
+    			if (!isNull(subRoute)) {
+    				return subRoute;
+    			}
+    		}
+    		if (params) {
+    			if (wrapperComponent) {
+    				return createVNode().setTag(wrapperComponent).setChildren(route).setAttrs({
+    					params: params
+    				});
+    			}
+    			return route.setAttrs(Object.assign({}, { params: params }, route.attrs));
+    		}
+    	}
+    	return !lastPath && wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
+    }
 
     function Link(ref, ref$1) {
     	var to = ref.to;
@@ -543,7 +565,7 @@
     		routers.push(router);
     	},
     	removeRouter: function removeRouter(router) {
-    		roouters.splice(routers.indexOf(router), 1);
+    		routers.splice(routers.indexOf(router), 1);
     	},
     	getCurrentUrl: getCurrentUrl,
     	getHashbangRoot: getHashbangRoot

@@ -1,5 +1,5 @@
 import Component from '../component/es2015';
-import { isArray } from '../core/utils';
+import { isArray, isNull } from '../core/utils';
 import { exec, convertToHashbang, pathRankSort } from './utils';
 import { createVNode } from '../core/shapes';
 
@@ -36,27 +36,44 @@ export default class Router extends Component {
 		return this._didRoute;
 	}
 	render() {
-		const children = isArray(this.props.children) ? this.props.children : [this.props.children];
+		const children = toArray(this.props.children);
 		const url = this.props.url || this.state.url;
 		const wrapperComponent = this.props.component;
 		const hashbang = this.props.hashbang;
 
-		children.sort(pathRankSort);
+		return handleRoutes(children, url, hashbang, wrapperComponent, '');
+	}
+}
 
-		for (let i = 0; i < children.length; i++) {
-			const child = children[i];
-			const { path } = child.attrs;
-			const params = exec(hashbang ? convertToHashbang(url) : url, path);
+function toArray(children) {
+	return isArray(children) ? children : (children ? [children] : children);
+}
 
-			if (params) {
-				if (wrapperComponent) {
-					return createVNode().setTag(wrapperComponent).setChildren(child).setAttrs({
-						params
-					});
-				}
-				return child.setAttrs(Object.assign({}, { params }, child.attrs));
+function handleRoutes(routes, url, hashbang, wrapperComponent, lastPath) {
+	routes.sort(pathRankSort);
+
+	for (let i = 0; i < routes.length; i++) {
+		const route = routes[i];
+		const { path } = route.attrs;
+		const fullPath = lastPath + path;
+		const params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
+		const children = toArray(route.children);
+
+		if (children) {
+			const subRoute = handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
+
+			if (!isNull(subRoute)) {
+				return subRoute;
 			}
 		}
-		return wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
+		if (params) {
+			if (wrapperComponent) {
+				return createVNode().setTag(wrapperComponent).setChildren(route).setAttrs({
+					params
+				});
+			}
+			return route.setAttrs(Object.assign({}, { params }, route.attrs));
+		}
 	}
+	return !lastPath && wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
 }
