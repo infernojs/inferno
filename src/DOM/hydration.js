@@ -26,10 +26,7 @@ import {
 	mountVText
 } from './mounting';
 import { patch, patchStyle } from './patching';
-import {
-	createVText,
-	createVPlaceholder
-} from '../core/shapes';
+import { createVPlaceholder } from '../core/shapes';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context, instance) {
 	const domNode = childNodes[counter.i];

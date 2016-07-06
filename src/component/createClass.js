@@ -15,7 +15,8 @@ const AUTOBIND_BLACKLIST = {
 	componentDidUnmount: 1
 };
 
-function F() {}
+function F() {
+}
 
 function extend(base, props, all) {
 	for (let key in props) {

@@ -8,13 +8,13 @@ let scrollY = 0;
 let lastScrollTime = 0;
 
 if (isBrowser) {
-	window.onscroll = function (e) {
+	window.onscroll = function () {
 		scrollX = window.scrollX;
 		scrollY = window.scrollY;
 		lastScrollTime = performance.now();
 	};
 
-	window.resize = function (e) {
+	window.resize = function () {
 		scrollX = window.scrollX;
 		scrollY = window.scrollY;
 		screenWidth = window.screen.width;

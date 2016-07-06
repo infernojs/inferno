@@ -145,7 +145,7 @@
 		this.dom = null;
 	}
 
-	function VPlaceholder(text) {
+	function VPlaceholder() {
 		this.placeholder = true;
 		this.dom = null;
 	}
@@ -220,9 +220,9 @@
 			insertOrAppend(parentDom, dom);
 		}
 		return dom;
-	 }
+	}
 
-	 function mountVPlaceholder(vPlaceholder, parentDom) {
+	function mountVPlaceholder(vPlaceholder, parentDom) {
 		var dom = document.createTextNode('');
 
 		vPlaceholder.dom = dom;
@@ -230,7 +230,7 @@
 			insertOrAppend(parentDom, dom);
 		}
 		return dom;
-	 }
+	}
 
 	function handleSelects(node) {
 		if (node.tag === 'select') {
@@ -855,9 +855,7 @@
 			} else {
 				if (isArray(lastChildren)) {
 					if (isArray(nextChildren)) {
-						var complex = lastChildren.complex;
-
-						nextChildren.complex = complex;
+						nextChildren.complex = lastChildren.complex;
 						if (isKeyed(lastChildren, nextChildren)) {
 							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, null);
 						} else {
@@ -1386,9 +1384,8 @@
 		var lastItems = lastVList.items;
 		var nextItems = nextVList.items;
 		var pointer = lastVList.pointer;
-		var dom = lastVList.dom;
 
-		nextVList.dom = dom;
+		nextVList.dom = lastVList.dom;
 		nextVList.pointer = pointer;
 		if (!lastItems !== nextItems) {
 			if (isKeyed(lastItems, nextItems)) {
@@ -1408,7 +1405,6 @@
 		for (; i < commonLength; i++) {
 			var lastChild = lastChildren[i];
 			var nextChild = normaliseChild(nextChildren, i);
-			var domNode;
 
 			if (lastChild !== nextChild) {
 				if (isVList(nextChild)) {
@@ -1446,15 +1442,15 @@
 		if (lastChildrenLength < nextChildrenLength) {
 			for (i = commonLength; i < nextChildrenLength; i++) {
 				var child = normaliseChild(nextChildren, i);
-				var domNode$1;
+				var domNode;
 
 				if (isVText(child)) {
-					domNode$1 = mountVText(child, null);
+					domNode = mountVText(child, null);
 				} else {
-					domNode$1 = mount(child, null, lifecycle, context, instance, isSVG);
+					domNode = mount(child, null, lifecycle, context, instance, isSVG);
 				}
-				if (!isInvalidNode(domNode$1)) {
-					insertOrAppend(dom, domNode$1, parentVList && parentVList.pointer);
+				if (!isInvalidNode(domNode)) {
+					insertOrAppend(dom, domNode, parentVList && parentVList.pointer);
 				}
 			}
 		} else if (lastChildrenLength > nextChildrenLength) {
@@ -1714,13 +1710,13 @@
 	var lastScrollTime = 0;
 
 	if (isBrowser) {
-		window.onscroll = function (e) {
+		window.onscroll = function () {
 			scrollX = window.scrollX;
 			scrollY = window.scrollY;
 			lastScrollTime = performance.now();
 		};
 
-		window.resize = function (e) {
+		window.resize = function () {
 			scrollX = window.scrollX;
 			scrollY = window.scrollY;
 			screenWidth = window.screen.width;
@@ -2055,8 +2051,6 @@
 
 		if (isUndefined(root)) {
 			if (!isInvalidNode(input)) {
-				var skipMount = true;
-
 				if (!hydrate(input, parentDom, lifecycle)) {
 					mount(input, parentDom, lifecycle, {}, null, false);
 				}

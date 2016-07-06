@@ -4,22 +4,12 @@ import {
 	addChildrenToProps,
 	isStatefulComponent,
 	isStringOrNumber,
-	isArray,
 	isInvalidNode,
 	NO_RENDER,
 	isNumber
 } from './../core/utils';
-import {
-	diffNodes,
-	diffNodesWithBlueprint
-} from './diffing';
-import {
-	mount,
-	mountVText,
-	mountVPlaceholder,
-	mountArrayChildren,
-	mountVList
-} from './mounting';
+import { diffNodes, diffNodesWithBlueprint } from './diffing';
+import { mount, mountVText, mountVPlaceholder, mountVList } from './mounting';
 import {
 	insertOrAppend,
 	remove,
@@ -40,11 +30,7 @@ import {
 	normaliseChild
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
-import {
-	createVText,
-	createVPlaceholder,
-	createVList
-} from '../core/shapes';
+import { createVPlaceholder } from '../core/shapes';
 
 export function updateTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
@@ -256,9 +242,8 @@ function patchVList(lastVList, nextVList, parentDom, lifecycle, context, instanc
 	const lastItems = lastVList.items;
 	const nextItems = nextVList.items;
 	const pointer = lastVList.pointer;
-	const dom = lastVList.dom;
 
-	nextVList.dom = dom;
+	nextVList.dom = lastVList.dom;
 	nextVList.pointer = pointer;
 	if (!lastItems !== nextItems) {
 		if (isKeyed(lastItems, nextItems)) {
@@ -278,7 +263,6 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 	for (; i < commonLength; i++) {
 		const lastChild = lastChildren[i];
 		const nextChild = normaliseChild(nextChildren, i);
-		let domNode;
 
 		if (lastChild !== nextChild) {
 			if (isVList(nextChild)) {

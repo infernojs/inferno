@@ -1,22 +1,9 @@
 import { mount } from './mounting';
-import {
-	isArray,
-	isNullOrUndefined,
-	isInvalidNode,
-	isStringOrNumber,
-	replaceInArray
-} from './../core/utils';
-import {
-	recyclingEnabled,
-	pool
-} from './recycling';
+import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber } from './../core/utils';
+import { recyclingEnabled, pool } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
-import {
-	createVText,
-	createVPlaceholder,
-	createVList
-} from '../core/shapes';
 import { unmountVList } from './unmounting';
+import { createVText, createVPlaceholder, createVList } from '../core/shapes';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
@@ -208,13 +195,6 @@ export function removeEvents(events, lastEventKeys, dom) {
 		const event = eventKeys[i];
 
 		dom[event] = null;
-	}
-}
-
-function insertChildren(parentNode, childNodes, dom) {
-	// we need to append all childNodes now
-	for (let i = 0; i < childNodes.length; i++) {
-		parentNode.insertBefore(childNodes[i], dom);
 	}
 }
 

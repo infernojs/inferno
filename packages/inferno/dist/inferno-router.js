@@ -84,7 +84,7 @@
     	return new VNode(bp);
     }
 
-    function VPlaceholder(text) {
+    function VPlaceholder() {
     	this.placeholder = true;
     	this.dom = null;
     }
@@ -118,13 +118,13 @@
     var lastScrollTime = 0;
 
     if (isBrowser) {
-    	window.onscroll = function (e) {
+    	window.onscroll = function () {
     		scrollX = window.scrollX;
     		scrollY = window.scrollY;
     		lastScrollTime = performance.now();
     	};
 
-    	window.resize = function (e) {
+    	window.resize = function () {
     		scrollX = window.scrollX;
     		scrollY = window.scrollY;
     		screenWidth = window.screen.width;
@@ -242,13 +242,17 @@
     	this._parentComponent = null;
     	this._componentToDOMNodeMap = null;
     };
-    Component.prototype.render = function render () {};
+
+    Component.prototype.render = function render () {
+    };
+
     Component.prototype.forceUpdate = function forceUpdate (callback) {
     	if (this._unmounted) {
     		throw Error(noOp);
     	}
     	applyState(this, true, callback);
     };
+
     Component.prototype.setState = function setState (newState, callback) {
     	if (this._unmounted) {
     		throw Error(noOp);
@@ -259,14 +263,32 @@
     		throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
     	}
     };
-    Component.prototype.componentDidMount = function componentDidMount () {};
-    Component.prototype.componentWillMount = function componentWillMount () {};
-    Component.prototype.componentWillUnmount = function componentWillUnmount () {};
-    Component.prototype.componentDidUpdate = function componentDidUpdate () {};
-    Component.prototype.shouldComponentUpdate = function shouldComponentUpdate () { return true; };
-    Component.prototype.componentWillReceiveProps = function componentWillReceiveProps () {};
-    Component.prototype.componentWillUpdate = function componentWillUpdate () {};
-    Component.prototype.getChildContext = function getChildContext () {};
+
+    Component.prototype.componentDidMount = function componentDidMount () {
+    };
+
+    Component.prototype.componentWillMount = function componentWillMount () {
+    };
+
+    Component.prototype.componentWillUnmount = function componentWillUnmount () {
+    };
+
+    Component.prototype.componentDidUpdate = function componentDidUpdate () {
+    };
+
+    Component.prototype.shouldComponentUpdate = function shouldComponentUpdate () {
+    	return true;
+    };
+
+    Component.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
+    };
+
+    Component.prototype.componentWillUpdate = function componentWillUpdate () {
+    };
+
+    Component.prototype.getChildContext = function getChildContext () {
+    };
+
     Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, force) {
     	if (this._unmounted === true) {
     		this._unmounted = false;
@@ -315,6 +337,7 @@
     	if ( Component ) Route.__proto__ = Component;
     	Route.prototype = Object.create( Component && Component.prototype );
     	Route.prototype.constructor = Route;
+
     	Route.prototype.async = function async () {
     		var this$1 = this;
 
@@ -334,6 +357,7 @@
     			}, this.reject).catch(this.reject);
     		}
     	};
+
     	Route.prototype.reject = function reject (value) {
     		this.setState({
     			async: {
@@ -342,12 +366,15 @@
     			}
     		});
     	};
+
     	Route.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
     		this.async();
     	};
+
     	Route.prototype.componentWillMount = function componentWillMount () {
     		this.async();
     	};
+
     	Route.prototype.render = function render () {
     		var ref = this.props;
     		var component = ref.component;
@@ -458,23 +485,28 @@
     	if ( Component ) Router.__proto__ = Component;
     	Router.prototype = Object.create( Component && Component.prototype );
     	Router.prototype.constructor = Router;
+
     	Router.prototype.getChildContext = function getChildContext () {
     		return {
     			history: this.props.history,
     			hashbang: this.props.hashbang
     		};
     	};
+
     	Router.prototype.componentWillMount = function componentWillMount () {
     		this.props.history.addRouter(this);
     	};
+
     	Router.prototype.componentWillUnmount = function componentWillUnmount () {
     		this.props.history.removeRouter(this);
     	};
+
     	Router.prototype.routeTo = function routeTo (url) {
     		this._didRoute = false;
     		this.setState({ url: url });
     		return this._didRoute;
     	};
+
     	Router.prototype.render = function render () {
     		var children = toArray(this.props.children);
     		var url = this.props.url || this.state.url;

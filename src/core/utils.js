@@ -1,4 +1,3 @@
-
 export function addChildrenToProps(children, props) {
 	if (!isNullOrUndefined(children)) {
 		const isChildrenArray = isArray(children);
