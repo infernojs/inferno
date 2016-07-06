@@ -519,6 +519,28 @@
 		}
 	}
 
+	function unmountVList(vList, parentDom, removePointer) {
+		var items = vList.items;
+		var itemsLength = items.length;
+		var pointer = items.pointer;
+
+		if (itemsLength > 0) {
+			for (var i = 0; i < itemsLength; i++) {
+				var item = items[i];
+
+				if (isVList(item)) {
+					unmountVList(item, parentDom, true);
+				} else {
+					removeChild(parentDom, item.dom);
+					detachNode(item);
+				}
+			}
+		}
+		if (removePointer) {
+			removeChild(parentDom, pointer);
+		}
+	}
+
 	function constructDefaults(string, object, value) {
 		/* eslint no-return-assign: 0 */
 		string.split(',').forEach(function (i) { return object[i] = value; });
@@ -558,21 +580,9 @@
 	}
 
 	function replaceVListWithNode(parentDom, vList, dom) {
-		var items = vList.items;
 		var pointer = vList.pointer;
-		var itemsLength = items.length;
 
-		if (itemsLength > 0) {
-			for (var i = 0; i < itemsLength; i++) {
-				var item = items[i];
-
-				if (isVList(item)) {
-					debugger;
-				} else {
-					removeChild(parentDom, item.dom);
-				}
-			}
-		}
+		unmountVList(vList, parentDom, false);
 		replaceNode(parentDom, dom, pointer);
 	}
 
@@ -1818,8 +1828,8 @@
 			} else {
 				var newDomNode = mountVText(text);
 
-				replaceNode(parentDom, newDomNodetextNode, domNode);
-				parentChildNodes.splice(parentChildNodes.indexOf(domNode), 1, newDomNode);
+				replaceNode(parentDom, newDomNode, domNode);
+				childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
 				child.dom = newDomNode;
 			}
 		} else if (isVPlaceholder(child)) {
