@@ -6,7 +6,6 @@ import {
 	isStatefulComponent,
 	isInvalidNode,
 	isString,
-	isPromise,
 	getRefInstance
 } from './../core/utils';
 import {
@@ -29,12 +28,7 @@ import {
 	patch,
 	patchEvents
 } from './patching';
-import {
-	mountArrayChildren,
-	mount,
-	mountEvents,
-	mountComponent
-} from './mounting';
+import { mountArrayChildren, mount, mountEvents, mountComponent } from './mounting';
 import { setClipNode } from './lifecycle';
 import { createVText } from '../core/shapes';
 
@@ -82,9 +76,7 @@ function diffChildren(lastNode, nextNode, dom, lifecycle, context, instance, isS
 		} else {
 			if (isArray(lastChildren)) {
 				if (isArray(nextChildren)) {
-					const complex = lastChildren.complex;
-
-					nextChildren.complex = complex;
+					nextChildren.complex = lastChildren.complex;
 					if (isKeyed(lastChildren, nextChildren)) {
 						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, null);
 					} else {

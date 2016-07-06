@@ -26,7 +26,7 @@
 		return obj === undefined;
 	}
 
-	function VPlaceholder(text) {
+	function VPlaceholder() {
 		this.placeholder = true;
 		this.dom = null;
 	}
@@ -60,13 +60,13 @@
 	var lastScrollTime = 0;
 
 	if (isBrowser) {
-		window.onscroll = function (e) {
+		window.onscroll = function () {
 			scrollX = window.scrollX;
 			scrollY = window.scrollY;
 			lastScrollTime = performance.now();
 		};
 
-		window.resize = function (e) {
+		window.resize = function () {
 			scrollX = window.scrollX;
 			scrollY = window.scrollY;
 			screenWidth = window.screen.width;
@@ -184,13 +184,17 @@
 		this._parentComponent = null;
 		this._componentToDOMNodeMap = null;
 	};
-	Component.prototype.render = function render () {};
+
+	Component.prototype.render = function render () {
+	};
+
 	Component.prototype.forceUpdate = function forceUpdate (callback) {
 		if (this._unmounted) {
 			throw Error(noOp);
 		}
 		applyState(this, true, callback);
 	};
+
 	Component.prototype.setState = function setState (newState, callback) {
 		if (this._unmounted) {
 			throw Error(noOp);
@@ -201,14 +205,32 @@
 			throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
 		}
 	};
-	Component.prototype.componentDidMount = function componentDidMount () {};
-	Component.prototype.componentWillMount = function componentWillMount () {};
-	Component.prototype.componentWillUnmount = function componentWillUnmount () {};
-	Component.prototype.componentDidUpdate = function componentDidUpdate () {};
-	Component.prototype.shouldComponentUpdate = function shouldComponentUpdate () { return true; };
-	Component.prototype.componentWillReceiveProps = function componentWillReceiveProps () {};
-	Component.prototype.componentWillUpdate = function componentWillUpdate () {};
-	Component.prototype.getChildContext = function getChildContext () {};
+
+	Component.prototype.componentDidMount = function componentDidMount () {
+	};
+
+	Component.prototype.componentWillMount = function componentWillMount () {
+	};
+
+	Component.prototype.componentWillUnmount = function componentWillUnmount () {
+	};
+
+	Component.prototype.componentDidUpdate = function componentDidUpdate () {
+	};
+
+	Component.prototype.shouldComponentUpdate = function shouldComponentUpdate () {
+		return true;
+	};
+
+	Component.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
+	};
+
+	Component.prototype.componentWillUpdate = function componentWillUpdate () {
+	};
+
+	Component.prototype.getChildContext = function getChildContext () {
+	};
+
 	Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, force) {
 		if (this._unmounted === true) {
 			this._unmounted = false;

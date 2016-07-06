@@ -227,7 +227,7 @@ function VText(text) {
 	this.dom = null;
 }
 
-function VPlaceholder(text) {
+function VPlaceholder() {
 	this.placeholder = true;
 	this.dom = null;
 }

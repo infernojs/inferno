@@ -3,10 +3,6 @@ import { isArray, isNull } from '../core/utils';
 import { exec, convertToHashbang, pathRankSort } from './utils';
 import { createVNode } from '../core/shapes';
 
-function isValidPath(path, url, hashbang) {
-	return !!exec(hashbang ? convertToHashbang(url) : url, path);
-}
-
 export default class Router extends Component {
 	constructor(props) {
 		super(props);
@@ -18,23 +14,28 @@ export default class Router extends Component {
 			url: props.url || props.history.getCurrentUrl()
 		};
 	}
+
 	getChildContext() {
 		return {
 			history: this.props.history,
 			hashbang: this.props.hashbang
 		};
 	}
+
 	componentWillMount() {
 		this.props.history.addRouter(this);
 	}
+
 	componentWillUnmount() {
 		this.props.history.removeRouter(this);
 	}
+
 	routeTo(url) {
 		this._didRoute = false;
 		this.setState({ url });
 		return this._didRoute;
 	}
+
 	render() {
 		const children = toArray(this.props.children);
 		const url = this.props.url || this.state.url;

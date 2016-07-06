@@ -7,7 +7,6 @@ import {
 	isStatefulComponent,
 	isString,
 	isInvalidNode,
-	replaceInArray,
 	getRefInstance,
 	isNull
 } from './../core/utils';
@@ -24,18 +23,10 @@ import {
 	isVList,
 	insertOrAppend
 } from './utils';
-import {
-	patchAttribute,
-	patchStyle,
-	patch
-} from './patching';
+import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
-import {
-	createVText,
-	createVPlaceholder,
-	createVList
-} from '../core/shapes';
+import { createVText, createVPlaceholder, createVList } from '../core/shapes';
 
 export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	if (isVPlaceholder(input)) {
@@ -89,9 +80,9 @@ export function mountVText(vText, parentDom) {
 		insertOrAppend(parentDom, dom);
 	}
 	return dom;
- }
+}
 
- export function mountVPlaceholder(vPlaceholder, parentDom) {
+export function mountVPlaceholder(vPlaceholder, parentDom) {
 	const dom = document.createTextNode('');
 
 	vPlaceholder.dom = dom;
@@ -99,7 +90,7 @@ export function mountVText(vText, parentDom) {
 		insertOrAppend(parentDom, dom);
 	}
 	return dom;
- }
+}
 
 export function handleSelects(node) {
 	if (node.tag === 'select') {

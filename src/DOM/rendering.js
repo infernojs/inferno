@@ -1,15 +1,8 @@
 import Lifecycle from './lifecycle';
 import { mount } from './mounting';
 import { patch } from './patching';
-import {
-	getActiveNode,
-	resetActiveNode
-} from './utils';
-import {
-	isUndefined,
-	isInvalidNode,
-	isNull
-} from '../core/utils';
+import { getActiveNode, resetActiveNode } from './utils';
+import { isUndefined, isInvalidNode, isNull } from '../core/utils';
 import hydrate from './hydration';
 
 const roots = new Map();
@@ -25,8 +18,6 @@ export function render(input, parentDom) {
 
 	if (isUndefined(root)) {
 		if (!isInvalidNode(input)) {
-			let skipMount = true;
-
 			if (!hydrate(input, parentDom, lifecycle)) {
 				mount(input, parentDom, lifecycle, {}, null, false);
 			}

@@ -14,6 +14,7 @@ export default class Route extends Component {
 			async: null
 		};
 	}
+
 	async() {
 		const async = this.props.async;
 
@@ -31,6 +32,7 @@ export default class Route extends Component {
 			}, this.reject).catch(this.reject);
 		}
 	}
+
 	reject(value) {
 		this.setState({
 			async: {
@@ -39,12 +41,15 @@ export default class Route extends Component {
 			}
 		});
 	}
+
 	componentWillReceiveProps() {
 		this.async();
 	}
+
 	componentWillMount() {
 		this.async();
 	}
+
 	render() {
 		const { component, params } = this.props;
 
