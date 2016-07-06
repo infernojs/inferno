@@ -232,7 +232,7 @@ describe('createTree - SVG (JSX)', () => {
 		const spread = {id:'test'};
 
 		render(<svg {...spread}><use xlink:href="#changed"></use></svg>, container);
-		expect(container.innerHTML).to.equal('<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#changed"></use></svg>');
+		expect(container.innerHTML).to.equal('<svg id="test"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#changed"></use></svg>');
 	});
 
 	if (typeof global !== 'undefined' && !global.usingJSDOM) {

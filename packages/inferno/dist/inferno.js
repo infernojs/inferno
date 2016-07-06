@@ -194,7 +194,7 @@
 						eventKeys.push(prop);
 						events$1[prop.toLowerCase()] = value;
 					} else if (prop === 'children') {
-						vNode.children = children;
+						vNode.children = value;
 						blueprint.childrenType = blueprint.childrenType || 5;
 					} else {
 						if (!attrs$1) {

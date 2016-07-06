@@ -166,7 +166,7 @@ export function createBlueprint(shape, childrenType) {
 					eventKeys.push(prop);
 					events[prop.toLowerCase()] = value;
 				} else if (prop === 'children') {
-					vNode.children = children;
+					vNode.children = value;
 					blueprint.childrenType = blueprint.childrenType || 5;
 				} else {
 					if (!attrs) {
