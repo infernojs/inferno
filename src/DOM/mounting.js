@@ -359,7 +359,11 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		}
 
 		/* eslint new-cap: 0 */
-		const node = Component(props, context);
+		let node = Component(props, context);
+
+		if (isInvalidNode(node)) {
+			node = createVPlaceholder();
+		}
 		dom = mount(node, null, lifecycle, context, null, false);
 
 		parentNode.instance = node;
