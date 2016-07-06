@@ -43,8 +43,8 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context,
 		} else {
 			const newDomNode = mountVText(text);
 
-			replaceNode(parentDom, newDomNodetextNode, domNode);
-			parentChildNodes.splice(parentChildNodes.indexOf(domNode), 1, newDomNode);
+			replaceNode(parentDom, newDomNode, domNode);
+			childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
 			child.dom = newDomNode;
 		}
 	} else if (isVPlaceholder(child)) {

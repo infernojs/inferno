@@ -16,6 +16,7 @@ import {
 	createVPlaceholder,
 	createVList
 } from '../core/shapes';
+import { unmountVList } from './unmounting';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
@@ -56,21 +57,9 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 }
 
 export function replaceVListWithNode(parentDom, vList, dom) {
-	const items = vList.items;
 	const pointer = vList.pointer;
-	const itemsLength = items.length;
 
-	if (itemsLength > 0) {
-		for (let i = 0; i < itemsLength; i++) {
-			const item = items[i];
-
-			if (isVList(item)) {
-				debugger;
-			} else {
-				removeChild(parentDom, item.dom);
-			}
-		}
-	}
+	unmountVList(vList, parentDom, false);
 	replaceNode(parentDom, dom, pointer);
 }
 
