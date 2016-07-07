@@ -1,6 +1,6 @@
 {
   "name": "inferno-compat",
-  "version": "0.7.14",
+  "version": "0.7.15",
   "license": "MIT",
   "description": "Provides a compatibility with React codebases",
   "author": {
@@ -21,7 +21,7 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^0.7.14",
+    "inferno": "^0.7.15",
     "proptypes": "^0.14.3"
   }
 }

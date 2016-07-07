@@ -171,29 +171,28 @@
 	function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 		if (isVPlaceholder(input)) {
 			return mountVPlaceholder(input, parentDom);
-		}
-		if (isVText(input)) {
+		} else if (isVText(input)) {
 			return mountVText(input, parentDom);
-		}
-		if (isVList(input)) {
+		} else if (isVList(input)) {
 			return mountVList(input, parentDom, lifecycle, context, instance, isSVG);
-		}
-		var bp = input.bp;
+		} else if (isVNode(input)) {
+			var bp = input.bp;
 
-		if (recyclingEnabled && bp) {
-			var dom = recycle(input, bp, lifecycle, context, instance);
+			if (recyclingEnabled && bp) {
+				var dom = recycle(input, bp, lifecycle, context, instance);
 
-			if (dom !== null) {
-				if (parentDom !== null) {
-					parentDom.appendChild(dom);
+				if (dom !== null) {
+					if (parentDom !== null) {
+						parentDom.appendChild(dom);
+					}
+					return dom;
 				}
-				return dom;
 			}
-		}
-		if (bp === undefined) {
-			return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
-		} else {
-			return appendNodeWithBlueprint(input, bp, parentDom, lifecycle, context, instance);
+			if (bp === undefined) {
+				return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
+			} else {
+				return appendNodeWithBlueprint(input, bp, parentDom, lifecycle, context, instance);
+			}
 		}
 	}
 
@@ -569,6 +568,10 @@
 
 	function isVList(o) {
 		return o.items !== undefined;
+	}
+
+	function isVNode(o) {
+		return o.tag !== undefined || o.bp !== undefined;
 	}
 
 	function insertOrAppend(parentDom, newNode, nextNode) {
@@ -1442,22 +1445,12 @@
 		if (lastChildrenLength < nextChildrenLength) {
 			for (i = commonLength; i < nextChildrenLength; i++) {
 				var child = normaliseChild(nextChildren, i);
-				var domNode;
 
-				if (isVText(child)) {
-					domNode = mountVText(child, null);
-				} else {
-					domNode = mount(child, null, lifecycle, context, instance, isSVG);
-				}
-				if (!isInvalidNode(domNode)) {
-					insertOrAppend(dom, domNode, parentVList && parentVList.pointer);
-				}
+				insertOrAppend(dom, mount(child, null, lifecycle, context, instance, isSVG), parentVList && parentVList.pointer);
 			}
 		} else if (lastChildrenLength > nextChildrenLength) {
 			for (i = commonLength; i < lastChildrenLength; i++) {
-				var child$1 = lastChildren[i];
-
-				remove(child$1, dom);
+				remove(lastChildren[i], dom);
 			}
 		}
 	}

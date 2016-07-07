@@ -169,19 +169,21 @@ export function detachNode(node, shallow) {
 	}
 }
 
-export function normaliseChild(children, i) {
-	let child = children[i];
+export function normalise(object) {
+	if (isStringOrNumber(object)) {
+		return createVText(object);
+	} else if (isInvalidNode(object)) {
+		return createVPlaceholder();
+	} else if (isArray(object)) {
+		return createVList(object);
+	}
+	return object;
+}
 
-	if (isStringOrNumber(child)) {
-		child = children[i] = createVText(child);
-	}
-	if (isInvalidNode(child)) {
-		child = children[i] = createVPlaceholder();
-	}
-	if (isArray(child)) {
-		child = children[i] = createVList(child);
-	}
-	return child;
+export function normaliseChild(children, i) {
+	const child = children[i];
+
+	return children[i] = normalise(child);
 }
 
 export function remove(node, parentDom) {
@@ -295,5 +297,26 @@ export function handleAttachedHooks(hooks, lifecycle, dom) {
 		lifecycle.addListener(() => {
 			hooks.attached(dom);
 		});
+	}
+}
+
+export function setValueProperty(nextNode) {
+	const value = nextNode.attrs.value;
+	if (!isNullOrUndefined(value)) {
+		nextNode.dom.value = value;
+	}
+}
+
+export function setFormElementProperties(nextTag, nextNode) {
+	if (nextTag === 'input') {
+		const inputType = nextNode.attrs.type;
+		if (inputType === 'text') {
+			setValueProperty(nextNode);
+		} else if (inputType === 'checkbox' || inputType === 'radio') {
+			const checked = nextNode.attrs.checked;
+			nextNode.dom.checked = !!checked;
+		}
+	} else if (nextTag === 'textarea') {
+		setValueProperty(nextNode);
 	}
 }
