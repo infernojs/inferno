@@ -56,12 +56,12 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 				parentDom.firstChild.nodeValue = nextInput;
 			} else {
 				const dom = mount(nextInput, null, lifecycle, context, instance, isSVG);
+
 				nextInput.dom = dom;
 				replaceNode(parentDom, dom, parentDom.firstChild);
 			}
 		} else if (isStringOrNumber(nextInput)) {
-			const textNode = document.createTextNode(nextInput);
-			replaceNode(parentDom, textNode, lastInput.dom);
+			replaceNode(parentDom, document.createTextNode(nextInput), lastInput.dom);
 		} else {
 			if (isVList(nextInput)) {
 				if (isVList(lastInput)) {
@@ -94,8 +94,12 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 				if (isVNode(lastInput)) {
 					patchVNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
 				} else {
-					debugger;
+					replaceNode(parentDom, mountVNode(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
+					unmount(lastInput, null);
 				}
+			} else if (isVNode(lastInput)) {
+				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
+				unmount(lastInput, null);
 			} else {
 				return patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
 			}

@@ -66,6 +66,10 @@
 		return obj === null;
 	}
 
+	function isTrue(obj) {
+		return obj === true;
+	}
+
 	function isUndefined(obj) {
 		return obj === undefined;
 	}
@@ -504,28 +508,28 @@
 		} else if (isVList(input)) {
 			return mountVList(input, parentDom, lifecycle, context, instance, isSVG);
 		} else if (isVNode(input)) {
-			return mountVNode(input, parentDom, lifecycle, context, instance, isSVG);
+			return mountVNode$1(input, parentDom, lifecycle, context, instance, isSVG);
 		} else {
 			mount(normalise(input), parentDom, lifecycle, context, instance, isSVG);
 		}
 	}
 
-	function mountVNode(vNode, parentDom, lifecycle, context, instance, isSVG) {
+	function mountVNode$1(vNode, parentDom, lifecycle, context, instance, isSVG) {
 		var bp = vNode.bp;
 
-		if (recyclingEnabled && bp) {
-			var dom = recycle(vNode, bp, lifecycle, context, instance);
-
-			if (dom !== null) {
-				if (parentDom !== null) {
-					parentDom.appendChild(dom);
-				}
-				return dom;
-			}
-		}
-		if (bp === undefined) {
+		if (isUndefined(bp)) {
 			return mountVNodeWithoutBlueprint(vNode, parentDom, lifecycle, context, instance, isSVG);
 		} else {
+			if (recyclingEnabled) {
+				var dom = recycle(vNode, bp, lifecycle, context, instance);
+
+				if (!isNull(dom)) {
+					if (!isNull(parentDom)) {
+						parentDom.appendChild(dom);
+					}
+					return dom;
+				}
+			}
 			return mountVNodeWithBlueprint(vNode, bp, parentDom, lifecycle, context, instance);
 		}
 	}
@@ -575,7 +579,7 @@
 		handleSelects(node);
 		var attrs = node.attrs;
 
-		if (bp.attrKeys === null) {
+		if (isNull(bp.attrKeys)) {
 			var newKeys = Object.keys(attrs);
 			bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
 		}
@@ -587,7 +591,7 @@
 	function mountBlueprintEvents(node, bp, dom) {
 		var events = node.events;
 
-		if (bp.eventKeys === null) {
+		if (isNull(bp.eventKeys)) {
 			bp.eventKeys = Object.keys(events);
 		}
 		var eventKeys = bp.eventKeys;
@@ -598,16 +602,16 @@
 	function mountVNodeWithBlueprint(node, bp, parentDom, lifecycle, context, instance) {
 		var tag = node.tag;
 
-		if (bp.isComponent === true) {
+		if (isTrue(bp.isComponent)) {
 			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
 		}
 		var dom = documentCreateElement(bp.tag, bp.isSVG);
 
 		node.dom = dom;
-		if (bp.hasHooks === true) {
+		if (isTrue(bp.hasHooks)) {
 			handleAttachedHooks(node.hooks, lifecycle, dom);
 		}
-		if (bp.lazy === true) {
+		if (isTrue(bp.lazy)) {
 			handleLazyAttached(node, lifecycle, dom);
 		}
 		var children = node.children;
@@ -641,19 +645,19 @@
 				break;
 		}
 
-		if (bp.hasAttrs === true) {
+		if (isTrue(bp.hasAttrs)) {
 			mountBlueprintAttrs(node, bp, dom, instance);
 		}
-		if (bp.hasClassName === true) {
+		if (isTrue(bp.hasClassName)) {
 			dom.className = node.className;
 		}
-		if (bp.hasStyle === true) {
+		if (isTrue(bp.hasStyle)) {
 			patchStyle(null, node.style, dom);
 		}
-		if (bp.hasEvents === true) {
+		if (isTrue(bp.hasEvents)) {
 			mountBlueprintEvents(node, bp, dom);
 		}
-		if (parentDom !== null) {
+		if (!isNull(parentDom)) {
 			parentDom.appendChild(dom);
 		}
 		return dom;
@@ -842,12 +846,12 @@
 					parentDom.firstChild.nodeValue = nextInput;
 				} else {
 					var dom = mount(nextInput, null, lifecycle, context, instance, isSVG);
+
 					nextInput.dom = dom;
 					replaceNode(parentDom, dom, parentDom.firstChild);
 				}
 			} else if (isStringOrNumber(nextInput)) {
-				var textNode = document.createTextNode(nextInput);
-				replaceNode(parentDom, textNode, lastInput.dom);
+				replaceNode(parentDom, document.createTextNode(nextInput), lastInput.dom);
 			} else {
 				if (isVList(nextInput)) {
 					if (isVList(lastInput)) {
@@ -880,8 +884,12 @@
 					if (isVNode(lastInput)) {
 						patchVNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
 					} else {
-						debugger;
+						replaceNode(parentDom, mountVNode(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
+						unmount(lastInput, null);
 					}
+				} else if (isVNode(lastInput)) {
+					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
+					unmount(lastInput, null);
 				} else {
 					return patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
 				}
@@ -1996,13 +2004,13 @@
 			}
 		} else {
 			var activeNode = getActiveNode();
+			var nextInput = patch(root.input, input, parentDom, lifecycle, {}, null, false);
 
-			patch(root.input, input, parentDom, lifecycle, {}, null, null, false);
 			lifecycle.trigger();
 			if (isNull(input)) {
 				roots.delete(parentDom);
 			}
-			root.input = input;
+			root.input = nextInput;
 			resetActiveNode(activeNode);
 		}
 	}

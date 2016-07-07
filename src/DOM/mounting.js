@@ -8,7 +8,9 @@ import {
 	isString,
 	isInvalidNode,
 	getRefInstance,
-	isNull
+	isNull,
+	isUndefined,
+	isTrue
 } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import {
@@ -51,19 +53,19 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 export function mountVNode(vNode, parentDom, lifecycle, context, instance, isSVG) {
 	const bp = vNode.bp;
 
-	if (recyclingEnabled && bp) {
-		const dom = recycle(vNode, bp, lifecycle, context, instance);
-
-		if (dom !== null) {
-			if (parentDom !== null) {
-				parentDom.appendChild(dom);
-			}
-			return dom;
-		}
-	}
-	if (bp === undefined) {
+	if (isUndefined(bp)) {
 		return mountVNodeWithoutBlueprint(vNode, parentDom, lifecycle, context, instance, isSVG);
 	} else {
+		if (recyclingEnabled) {
+			const dom = recycle(vNode, bp, lifecycle, context, instance);
+
+			if (!isNull(dom)) {
+				if (!isNull(parentDom)) {
+					parentDom.appendChild(dom);
+				}
+				return dom;
+			}
+		}
 		return mountVNodeWithBlueprint(vNode, bp, parentDom, lifecycle, context, instance);
 	}
 }
@@ -113,7 +115,7 @@ export function mountBlueprintAttrs(node, bp, dom, instance) {
 	handleSelects(node);
 	const attrs = node.attrs;
 
-	if (bp.attrKeys === null) {
+	if (isNull(bp.attrKeys)) {
 		const newKeys = Object.keys(attrs);
 		bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
 	}
@@ -125,7 +127,7 @@ export function mountBlueprintAttrs(node, bp, dom, instance) {
 export function mountBlueprintEvents(node, bp, dom) {
 	const events = node.events;
 
-	if (bp.eventKeys === null) {
+	if (isNull(bp.eventKeys)) {
 		bp.eventKeys = Object.keys(events);
 	}
 	const eventKeys = bp.eventKeys;
@@ -136,16 +138,16 @@ export function mountBlueprintEvents(node, bp, dom) {
 function mountVNodeWithBlueprint(node, bp, parentDom, lifecycle, context, instance) {
 	const tag = node.tag;
 
-	if (bp.isComponent === true) {
+	if (isTrue(bp.isComponent)) {
 		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
 	}
 	const dom = documentCreateElement(bp.tag, bp.isSVG);
 
 	node.dom = dom;
-	if (bp.hasHooks === true) {
+	if (isTrue(bp.hasHooks)) {
 		handleAttachedHooks(node.hooks, lifecycle, dom);
 	}
-	if (bp.lazy === true) {
+	if (isTrue(bp.lazy)) {
 		handleLazyAttached(node, lifecycle, dom);
 	}
 	const children = node.children;
@@ -179,19 +181,19 @@ function mountVNodeWithBlueprint(node, bp, parentDom, lifecycle, context, instan
 			break;
 	}
 
-	if (bp.hasAttrs === true) {
+	if (isTrue(bp.hasAttrs)) {
 		mountBlueprintAttrs(node, bp, dom, instance);
 	}
-	if (bp.hasClassName === true) {
+	if (isTrue(bp.hasClassName)) {
 		dom.className = node.className;
 	}
-	if (bp.hasStyle === true) {
+	if (isTrue(bp.hasStyle)) {
 		patchStyle(null, node.style, dom);
 	}
-	if (bp.hasEvents === true) {
+	if (isTrue(bp.hasEvents)) {
 		mountBlueprintEvents(node, bp, dom);
 	}
-	if (parentDom !== null) {
+	if (!isNull(parentDom)) {
 		parentDom.appendChild(dom);
 	}
 	return dom;
