@@ -787,7 +787,7 @@
   	if (dom === parentDom) {
   		dom.innerHTML = '';
   	} else {
-  		parentDom.removeChild(dom);
+  		removeChild(parentDom, dom);
   		if (recyclingEnabled) {
   			pool(node);
   		}
@@ -1532,8 +1532,7 @@
   		for (i = commonLength; i < lastChildrenLength; i++) {
   			var child$1 = lastChildren[i];
 
-  			removeChild(dom, child$1.dom);
-  			detachNode(child$1);
+  			remove(child$1, dom);
   		}
   	}
   }

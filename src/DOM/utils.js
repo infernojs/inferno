@@ -44,6 +44,10 @@ export function isVList(o) {
 	return o.items !== undefined;
 }
 
+export function isVNode(o) {
+	return o.tag !== undefined || o.bp !== undefined;
+}
+
 export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
 		parentDom.appendChild(newNode);
@@ -185,7 +189,7 @@ export function remove(node, parentDom) {
 	if (dom === parentDom) {
 		dom.innerHTML = '';
 	} else {
-		parentDom.removeChild(dom);
+		removeChild(parentDom, dom);
 		if (recyclingEnabled) {
 			pool(node);
 		}

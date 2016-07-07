@@ -293,23 +293,12 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 	if (lastChildrenLength < nextChildrenLength) {
 		for (i = commonLength; i < nextChildrenLength; i++) {
 			const child = normaliseChild(nextChildren, i);
-			let domNode;
 
-			if (isVText(child)) {
-				domNode = mountVText(child, null);
-			} else {
-				domNode = mount(child, null, lifecycle, context, instance, isSVG);
-			}
-			if (!isInvalidNode(domNode)) {
-				insertOrAppend(dom, domNode, parentVList && parentVList.pointer);
-			}
+			insertOrAppend(dom, mount(child, null, lifecycle, context, instance, isSVG), parentVList && parentVList.pointer);
 		}
 	} else if (lastChildrenLength > nextChildrenLength) {
 		for (i = commonLength; i < lastChildrenLength; i++) {
-			const child = lastChildren[i];
-
-			removeChild(dom, child.dom);
-			detachNode(child);
+			remove(lastChildren[i], dom);
 		}
 	}
 }

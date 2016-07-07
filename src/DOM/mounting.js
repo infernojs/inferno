@@ -21,6 +21,7 @@ import {
 	isVText,
 	isVPlaceholder,
 	isVList,
+	isVNode,
 	insertOrAppend
 } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
@@ -35,29 +36,28 @@ import {
 export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	if (isVPlaceholder(input)) {
 		return mountVPlaceholder(input, parentDom);
-	}
-	if (isVText(input)) {
+	} else if (isVText(input)) {
 		return mountVText(input, parentDom);
-	}
-	if (isVList(input)) {
+	} else if (isVList(input)) {
 		return mountVList(input, parentDom, lifecycle, context, instance, isSVG);
-	}
-	const bp = input.bp;
+	} else if (isVNode(input)) {
+		const bp = input.bp;
 
-	if (recyclingEnabled && bp) {
-		const dom = recycle(input, bp, lifecycle, context, instance);
+		if (recyclingEnabled && bp) {
+			const dom = recycle(input, bp, lifecycle, context, instance);
 
-		if (dom !== null) {
-			if (parentDom !== null) {
-				parentDom.appendChild(dom);
+			if (dom !== null) {
+				if (parentDom !== null) {
+					parentDom.appendChild(dom);
+				}
+				return dom;
 			}
-			return dom;
 		}
-	}
-	if (bp === undefined) {
-		return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
-	} else {
-		return appendNodeWithBlueprint(input, bp, parentDom, lifecycle, context, instance);
+		if (bp === undefined) {
+			return appendNode(input, parentDom, lifecycle, context, instance, isSVG);
+		} else {
+			return appendNodeWithBlueprint(input, bp, parentDom, lifecycle, context, instance);
+		}
 	}
 }
 

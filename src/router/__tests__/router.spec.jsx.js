@@ -49,7 +49,7 @@ describe('Router tests (jsx)', () => {
 		container.innerHTML = '';
 	});
 
-    describe('with browser history', () => {
+	describe('with browser history', () => {
 		describe('and with no wrapper component', () => {
 			it('it should render the TestComponent with given paths', () => {
 				render(
@@ -149,7 +149,17 @@ describe('Router tests (jsx)', () => {
 					container
 				);
 				expect(container.innerHTML).to.equal('<div>Good Component</div>');
+
+				render(
+					<Router url={ '/foo' } history={ browserHistory } component={ ({ children }) => <div>{ children }</div> }>
+						<Route path={ '/foo' } component={ () => <div>Good Component</div> }>
+							<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
+						</Route>
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div><div>Good Component</div></div>');
 			});
 		});
-    });
+	});
 });
