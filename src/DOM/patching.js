@@ -21,7 +21,6 @@ import {
 import {
 	insertOrAppend,
 	remove,
-	detachNode,
 	isKeyed,
 	replaceNode,
 	isUnitlessNumber,
@@ -44,6 +43,7 @@ import {
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import { createVPlaceholder, createVText } from '../core/shapes';
+import { unmount, unmountVNode } from './unmounting';
 
 export function patch(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG) {
 	if (lastInput !== nextInput) {
@@ -68,7 +68,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 					patchVList(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG);
 				} else {
 					replaceNode(parentDom, mountVList(nextInput, null), lastInput.dom);
-					detachNode(lastInput);
+					unmount(lastInput, null);
 				}
 			} else if (isVList(lastInput)) {
 				replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, instance, isSVG));
@@ -77,7 +77,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 					patchVFragment(lastInput, nextInput);
 				} else {
 					replaceNode(parentDom, mountVPlaceholder(nextInput, null), lastInput.dom);
-					detachNode(lastInput);
+					unmount(lastInput, null);
 				}
 			} else if (isVPlaceholder(lastInput)) {
 				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
@@ -86,7 +86,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 					patchVText(lastInput, nextInput);
 				} else {
 					replaceNode(parentDom, mountVText(nextInput, null), lastInput.dom);
-					detachNode(lastInput);
+					unmount(lastInput, null);
 				}
 			} else if (isVText(lastInput)) {
 				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
@@ -97,10 +97,11 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 					debugger;
 				}
 			} else {
-				patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
+				return patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
 			}
 		}
 	}
+	return nextInput;
 }
 
 export function updateTextNode(dom, lastChildren, nextChildren) {
@@ -205,10 +206,10 @@ export function patchVNodeWithBlueprint(lastVNode, nextVNode, lastBp, nextBp, pa
 			if (nextBp.isComponent === true) {
 				replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, instance, false);
 			} else if (isStatefulComponent(lastTag)) {
-				detachNode(lastVNode, true);
+				unmountVNode(lastVNode, null, true);
 				patchVNodeWithBlueprint(lastNodeInstance._lastNode, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			} else {
-				detachNode(lastVNode, true);
+				unmountVNode(lastVNode, null, true);
 				patchVNodeWithBlueprint(lastNodeInstance, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			}
 		} else {
@@ -345,10 +346,10 @@ export function patchVNodeWithoutBlueprint(lastNode, nextNode, parentDom, lifecy
 			if (isFunction(nextTag)) {
 				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 			} else if (isStatefulComponent(lastTag)) {
-				detachNode(lastNode, true);
+				unmountVNode(lastNode, null, true);
 				patchVNodeWithBlueprint(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 			} else {
-				detachNode(lastNode, true);
+				unmountVNode(lastNode, null, true);
 				patchVNodeWithBlueprint(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
 			}
 		} else {

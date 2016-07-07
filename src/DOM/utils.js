@@ -6,13 +6,13 @@ import {
 	isStringOrNumber
 } from './../core/utils';
 import { recyclingEnabled, pool } from './recycling';
-import { componentToDOMNodeMap } from './rendering';
 import { unmountVList } from './unmounting';
 import {
 	createVText,
 	createVPlaceholder,
 	createVList
 } from '../core/shapes';
+import { unmount } from './unmounting';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
@@ -105,7 +105,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	detachNode(lastNode);
+	unmount(lastNode, false);
 	const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
@@ -117,56 +117,6 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 
 export function replaceNode(parentDom, nextDom, lastDom) {
 	parentDom.replaceChild(nextDom, lastDom);
-}
-
-export function detachNode(node, shallow) {
-	if (isVList(node)) {
-		const items = node.items;
-
-		for (let i = 0; i < items.length; i++) {
-			detachNode(items[i]);
-		}
-		return;
-	}
-	if (isVText(node) || isVPlaceholder(node) || isInvalidNode(node) || isStringOrNumber(node)) {
-		return;
-	}
-	const instance = node.instance;
-	let instanceHooks = null;
-	let instanceChildren = null;
-
-	if (!isNullOrUndefined(instance)) {
-		instanceHooks = instance.hooks;
-		instanceChildren = instance.children;
-
-		if (instance.render !== undefined) {
-			instance.componentWillUnmount();
-			instance._unmounted = true;
-			componentToDOMNodeMap.delete(instance);
-			!shallow && detachNode(instance._lastNode);
-		}
-	}
-	const hooks = node.hooks || instanceHooks;
-
-	if (!isNullOrUndefined(hooks)) {
-		if (!isNullOrUndefined(hooks.willDetach)) {
-			hooks.willDetach(node.dom);
-		}
-		if (!isNullOrUndefined(hooks.componentWillUnmount)) {
-			hooks.componentWillUnmount(node.dom, hooks);
-		}
-	}
-	const children = (isNullOrUndefined(instance) ? node.children : null) || instanceChildren;
-
-	if (!isNullOrUndefined(children)) {
-		if (isArray(children)) {
-			for (let i = 0; i < children.length; i++) {
-				detachNode(children[i]);
-			}
-		} else {
-			detachNode(children);
-		}
-	}
 }
 
 export function normalise(object) {
@@ -196,7 +146,7 @@ export function remove(node, parentDom) {
 			pool(node);
 		}
 	}
-	detachNode(node);
+	unmount(node, false);
 }
 
 export function removeChild(parentDom, dom) {

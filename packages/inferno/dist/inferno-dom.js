@@ -140,6 +140,14 @@
 		return false;
 	}
 
+	function unmount(input, parentDom) {
+		if (isVList(input)) {
+			unmountVList(input, parentDom, true);
+		} else if (isVNode(input)) {
+			unmountVNode(input, parentDom, false);
+		}
+	}
+
 	function unmountVList(vList, parentDom, removePointer) {
 		var items = vList.items;
 		var itemsLength = items.length;
@@ -152,13 +160,54 @@
 				if (isVList(item)) {
 					unmountVList(item, parentDom, true);
 				} else {
-					removeChild(parentDom, item.dom);
-					detachNode(item);
+					if (parentDom) {
+						removeChild(parentDom, item.dom);
+					}
+					unmount(item, null);
 				}
 			}
 		}
-		if (removePointer) {
+		if (parentDom && removePointer) {
 			removeChild(parentDom, pointer);
+		}
+	}
+
+	function unmountVNode(node, parentDom, shallow) {
+		var instance = node.instance;
+		var instanceHooks = null;
+		var instanceChildren = null;
+
+		if (!isNullOrUndefined(instance)) {
+			instanceHooks = instance.hooks;
+			instanceChildren = instance.children;
+
+			if (instance.render !== undefined) {
+				instance.componentWillUnmount();
+				instance._unmounted = true;
+				componentToDOMNodeMap.delete(instance);
+				!shallow && unmount(instance._lastNode, null);
+			}
+		}
+		var hooks = node.hooks || instanceHooks;
+
+		if (!isNullOrUndefined(hooks)) {
+			if (!isNullOrUndefined(hooks.willDetach)) {
+				hooks.willDetach(node.dom);
+			}
+			if (!isNullOrUndefined(hooks.componentWillUnmount)) {
+				hooks.componentWillUnmount(node.dom, hooks);
+			}
+		}
+		var children = (isNullOrUndefined(instance) ? node.children : null) || instanceChildren;
+
+		if (!isNullOrUndefined(children)) {
+			if (isArray(children)) {
+				for (var i = 0; i < children.length; i++) {
+					unmount(children[i], null);
+				}
+			} else {
+				unmount(children, null);
+			}
 		}
 	}
 
@@ -281,7 +330,7 @@
 			lastInstance = lastNode;
 			lastNode = instanceLastNode;
 		}
-		detachNode(lastNode);
+		unmount(lastNode, false);
 		var dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 		nextNode.dom = dom;
@@ -293,56 +342,6 @@
 
 	function replaceNode(parentDom, nextDom, lastDom) {
 		parentDom.replaceChild(nextDom, lastDom);
-	}
-
-	function detachNode(node, shallow) {
-		if (isVList(node)) {
-			var items = node.items;
-
-			for (var i = 0; i < items.length; i++) {
-				detachNode(items[i]);
-			}
-			return;
-		}
-		if (isVText(node) || isVPlaceholder(node) || isInvalidNode(node) || isStringOrNumber(node)) {
-			return;
-		}
-		var instance = node.instance;
-		var instanceHooks = null;
-		var instanceChildren = null;
-
-		if (!isNullOrUndefined(instance)) {
-			instanceHooks = instance.hooks;
-			instanceChildren = instance.children;
-
-			if (instance.render !== undefined) {
-				instance.componentWillUnmount();
-				instance._unmounted = true;
-				componentToDOMNodeMap.delete(instance);
-				!shallow && detachNode(instance._lastNode);
-			}
-		}
-		var hooks = node.hooks || instanceHooks;
-
-		if (!isNullOrUndefined(hooks)) {
-			if (!isNullOrUndefined(hooks.willDetach)) {
-				hooks.willDetach(node.dom);
-			}
-			if (!isNullOrUndefined(hooks.componentWillUnmount)) {
-				hooks.componentWillUnmount(node.dom, hooks);
-			}
-		}
-		var children = (isNullOrUndefined(instance) ? node.children : null) || instanceChildren;
-
-		if (!isNullOrUndefined(children)) {
-			if (isArray(children)) {
-				for (var i$1 = 0; i$1 < children.length; i$1++) {
-					detachNode(children[i$1]);
-				}
-			} else {
-				detachNode(children);
-			}
-		}
 	}
 
 	function normalise$1(object) {
@@ -372,7 +371,7 @@
 				pool(node);
 			}
 		}
-		detachNode(node);
+		unmount(node, false);
 	}
 
 	function removeChild(parentDom, dom) {
@@ -855,7 +854,7 @@
 						patchVList(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG);
 					} else {
 						replaceNode(parentDom, mountVList(nextInput, null), lastInput.dom);
-						detachNode(lastInput);
+						unmount(lastInput, null);
 					}
 				} else if (isVList(lastInput)) {
 					replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, instance, isSVG));
@@ -864,7 +863,7 @@
 						patchVFragment(lastInput, nextInput);
 					} else {
 						replaceNode(parentDom, mountVPlaceholder(nextInput, null), lastInput.dom);
-						detachNode(lastInput);
+						unmount(lastInput, null);
 					}
 				} else if (isVPlaceholder(lastInput)) {
 					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
@@ -873,7 +872,7 @@
 						patchVText(lastInput, nextInput);
 					} else {
 						replaceNode(parentDom, mountVText(nextInput, null), lastInput.dom);
-						detachNode(lastInput);
+						unmount(lastInput, null);
 					}
 				} else if (isVText(lastInput)) {
 					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
@@ -884,10 +883,11 @@
 						debugger;
 					}
 				} else {
-					patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
+					return patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
 				}
 			}
 		}
+		return nextInput;
 	}
 
 	function updateTextNode(dom, lastChildren, nextChildren) {
@@ -992,10 +992,10 @@
 				if (nextBp.isComponent === true) {
 					replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, instance, false);
 				} else if (isStatefulComponent(lastTag)) {
-					detachNode(lastVNode, true);
+					unmountVNode(lastVNode, null, true);
 					patchVNodeWithBlueprint(lastNodeInstance._lastNode, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 				} else {
-					detachNode(lastVNode, true);
+					unmountVNode(lastVNode, null, true);
 					patchVNodeWithBlueprint(lastNodeInstance, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 				}
 			} else {
@@ -1132,10 +1132,10 @@
 				if (isFunction(nextTag)) {
 					replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				} else if (isStatefulComponent(lastTag)) {
-					detachNode(lastNode, true);
+					unmountVNode(lastNode, null, true);
 					patchVNodeWithBlueprint(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				} else {
-					detachNode(lastNode, true);
+					unmountVNode(lastNode, null, true);
 					patchVNodeWithBlueprint(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
 				}
 			} else {
@@ -2011,7 +2011,8 @@
 		render: render,
 		findDOMNode: findDOMNode,
 		mount: mount,
-		patch: patch
+		patch: patch,
+		unmount: unmount
 	};
 
 	return index;
