@@ -1,5 +1,5 @@
 /*!
- * inferno-server v0.7.14
+ * inferno-server v0.7.15
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */

@@ -247,12 +247,12 @@ export function patchVNodeWithBlueprint(lastVNode, nextVNode, lastBp, nextBp, pa
 
 				nextVNode.clipData = clipData;
 				if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
-					if (setClipNode(clipData, dom, lastVNode, nextVNode, parentDom, lifecycle)) {
+					if (setClipNode(clipData, dom, lastVNode, nextVNode, parentDom, lifecycle, context, instance, lastBp.isSVG)) {
 						return;
 					}
 				}
 				if (clipData.bottom < lifecycle.scrollY) {
-					if (setClipNode(clipData, dom, lastVNode, nextVNode, parentDom, lifecycle)) {
+					if (setClipNode(clipData, dom, lastVNode, nextVNode, parentDom, lifecycle, context, instance, lastBp.isSVG)) {
 						return;
 					}
 				}
