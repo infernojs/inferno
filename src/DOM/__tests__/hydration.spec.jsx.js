@@ -1,4 +1,4 @@
-import renderToString from './../../server/renderToString';
+import { renderToStaticMarkup } from './../../server/renderToString';
 import Component from './../../component/es2015';
 import { createBlueprint } from './../../core/shapes';
 import { render } from './../../DOM/rendering';
@@ -119,7 +119,7 @@ describe('SSR Hydration - (JSX)', () => {
 		}
 	].forEach(({ node, expect1, expect2 }, i) => {
 		it(`Validate various structures #${ (i + 1) }`, () => {
-			const html = renderToString(node);
+			const html = renderToStaticMarkup(node);
 			const container = createContainerWithHTML(html);
 
 			expect(container.innerHTML).to.equal(expect1);
@@ -189,7 +189,7 @@ describe('SSR Hydration - (JSX)', () => {
 		}
 	].forEach(({ node, expect1, node2, node3, expect2 }, i) => {
 		it(`Update various structures #${ (i + 1) }`, () => {
-			const html = renderToString(node);
+			const html = renderToStaticMarkup(node);
 			const container = createContainerWithHTML(html);
 
 			render(node, container);

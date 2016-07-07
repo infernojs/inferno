@@ -6,9 +6,11 @@ import {
 	isFunction,
 	addChildrenToProps,
 	isStatefulComponent,
-	isNumber
+	isNumber,
+	isTrue
 } from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
+import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
 
 function renderComponent(Component, props, children, context, isRoot) {
 	props = addChildrenToProps(children, props);
@@ -40,8 +42,10 @@ function renderChildren(children, context) {
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
+			const isText = isStringOrNumber(child);
+			const isInvalid = isInvalidNode(child);
 
-			if (isStringOrNumber(child) || isInvalidNode(child)) {
+			if (isText || isInvalid) {
 				if (insertComment === true) {
 					if (isInvalidNode(child)) {
 						childrenResult.push('<!--!-->');
@@ -49,7 +53,9 @@ function renderChildren(children, context) {
 						childrenResult.push('<!---->');
 					}
 				}
-				childrenResult.push(child);
+				if (isText) {
+					childrenResult.push(escapeText(child));
+				}
 				insertComment = true;
 			} else if (isArray(child)) {
 				childrenResult.push('<!---->');
@@ -64,16 +70,12 @@ function renderChildren(children, context) {
 		return childrenResult.join('');
 	} else if (!isInvalidNode(children)) {
 		if (isStringOrNumber(children)) {
-			return children;
+			return escapeText(children);
 		} else {
 			return renderNode(children, context, false) || '';
 		}
 	}
 	return '';
-}
-
-function toHyphenCase(str) {
-	return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
 }
 
 function renderStyleToString(style) {
@@ -89,7 +91,7 @@ function renderStyleToString(style) {
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
 			if (!isNullOrUndefined(value)) {
-				styles.push(`${ toHyphenCase(styleName) }:${ value }${ px };`);
+				styles.push(`${ toHyphenCase(styleName) }:${ escapeAttr(value) }${ px };`);
 			}
 		}
 		return styles.join();
@@ -108,30 +110,48 @@ function renderNode(node, context, isRoot) {
 			return renderComponent(tag, node.attrs, node.children, context, isRoot);
 		}
 		if (!isNullOrUndefined(className)) {
-			outputAttrs.push('class="' + className + '"');
+			outputAttrs.push('class="' + escapeAttr(className) + '"');
 		}
 		if (!isNullOrUndefined(style)) {
 			outputAttrs.push('style="' + renderStyleToString(style) + '"');
 		}
 		const attrs = node.attrs;
 		let attrKeys = (attrs && Object.keys(attrs)) || [];
+		let html = '';
 
 		if (bp && bp.hasAttrs === true) {
 			attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
 		}
 		attrKeys.forEach((attrsKey, i) => {
 			const attr = attrKeys[i];
+			const value = attrs[attr];
 
-			outputAttrs.push(attr + '="' + attrs[attr] + '"');
+			if (attr === 'dangerouslySetInnerHTML') {
+				html = value.__html;
+			} else {
+				if (isStringOrNumber(value)) {
+					outputAttrs.push(escapeAttr(attr) + '="' + escapeAttr(value) + '"');
+				} else if (isTrue(value)) {
+					outputAttrs.push(escapeAttr(attr));
+				}
+			}
 		});
 
 		if (isRoot) {
 			outputAttrs.push('data-infernoroot');
 		}
-		return `<${ tag }${ outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '' }>${ renderChildren(node.children, context) }</${ tag }>`;
+		if (isVoidElement(tag)) {
+			return `<${ tag }${ outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '' }>`;
+		} else {
+			return `<${ tag }${ outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '' }>${ html || renderChildren(node.children, context) }</${ tag }>`;
+		}
 	}
 }
 
-export default function renderToString(node, noMetadata) {
-	return renderNode(node, null, !noMetadata);
+export default function renderToString(node) {
+	return renderNode(node, null, false);
+}
+
+export function renderToStaticMarkup(node) {
+	return renderNode(node, null, true);
 }
