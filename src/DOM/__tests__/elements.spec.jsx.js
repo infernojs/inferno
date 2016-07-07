@@ -710,7 +710,7 @@ describe('Elements (JSX)', () => {
 					readOnly={bool ? 'readonly' : false} disabled={bool}
 					ondragenter={test} ondragover={test} value={newValue} oninput={test}
 					onfocus={obj.focus} class="edit-field" onkeydown={test} onkeyup={test}
-					onblur={test} {...spread} />, container);
+					onBlur={test} {...spread} />, container);
 
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		document.body.appendChild(container);

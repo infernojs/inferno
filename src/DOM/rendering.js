@@ -26,13 +26,13 @@ export function render(input, parentDom) {
 		}
 	} else {
 		const activeNode = getActiveNode();
+		const nextInput = patch(root.input, input, parentDom, lifecycle, {}, null, false);
 
-		patch(root.input, input, parentDom, lifecycle, {}, null, null, false);
 		lifecycle.trigger();
 		if (isNull(input)) {
 			roots.delete(parentDom);
 		}
-		root.input = input;
+		root.input = nextInput;
 		resetActiveNode(activeNode);
 	}
 }

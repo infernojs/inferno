@@ -6,13 +6,13 @@ import {
 	isStringOrNumber
 } from './../core/utils';
 import { recyclingEnabled, pool } from './recycling';
-import { componentToDOMNodeMap } from './rendering';
 import { unmountVList } from './unmounting';
 import {
 	createVText,
 	createVPlaceholder,
 	createVList
 } from '../core/shapes';
+import { unmount } from './unmounting';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
@@ -42,6 +42,10 @@ export function isVPlaceholder(o) {
 
 export function isVList(o) {
 	return o.items !== undefined;
+}
+
+export function isVNode(o) {
+	return o.tag !== undefined || o.bp !== undefined;
 }
 
 export function insertOrAppend(parentDom, newNode, nextNode) {
@@ -101,7 +105,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	detachNode(lastNode);
+	unmount(lastNode, false);
 	const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
@@ -115,69 +119,21 @@ export function replaceNode(parentDom, nextDom, lastDom) {
 	parentDom.replaceChild(nextDom, lastDom);
 }
 
-export function detachNode(node, shallow) {
-	if (isVList(node)) {
-		const items = node.items;
-
-		for (let i = 0; i < items.length; i++) {
-			detachNode(items[i]);
-		}
-		return;
+export function normalise(object) {
+	if (isStringOrNumber(object)) {
+		return createVText(object);
+	} else if (isInvalidNode(object)) {
+		return createVPlaceholder();
+	} else if (isArray(object)) {
+		return createVList(object);
 	}
-	if (isVText(node) || isVPlaceholder(node) || isInvalidNode(node) || isStringOrNumber(node)) {
-		return;
-	}
-	const instance = node.instance;
-	let instanceHooks = null;
-	let instanceChildren = null;
-
-	if (!isNullOrUndefined(instance)) {
-		instanceHooks = instance.hooks;
-		instanceChildren = instance.children;
-
-		if (instance.render !== undefined) {
-			instance.componentWillUnmount();
-			instance._unmounted = true;
-			componentToDOMNodeMap.delete(instance);
-			!shallow && detachNode(instance._lastNode);
-		}
-	}
-	const hooks = node.hooks || instanceHooks;
-
-	if (!isNullOrUndefined(hooks)) {
-		if (!isNullOrUndefined(hooks.willDetach)) {
-			hooks.willDetach(node.dom);
-		}
-		if (!isNullOrUndefined(hooks.componentWillUnmount)) {
-			hooks.componentWillUnmount(node.dom, hooks);
-		}
-	}
-	const children = (isNullOrUndefined(instance) ? node.children : null) || instanceChildren;
-
-	if (!isNullOrUndefined(children)) {
-		if (isArray(children)) {
-			for (let i = 0; i < children.length; i++) {
-				detachNode(children[i]);
-			}
-		} else {
-			detachNode(children);
-		}
-	}
+	return object;
 }
 
 export function normaliseChild(children, i) {
-	let child = children[i];
+	const child = children[i];
 
-	if (isStringOrNumber(child)) {
-		child = children[i] = createVText(child);
-	}
-	if (isInvalidNode(child)) {
-		child = children[i] = createVPlaceholder();
-	}
-	if (isArray(child)) {
-		child = children[i] = createVList(child);
-	}
-	return child;
+	return children[i] = normalise(child);
 }
 
 export function remove(node, parentDom) {
@@ -185,12 +141,12 @@ export function remove(node, parentDom) {
 	if (dom === parentDom) {
 		dom.innerHTML = '';
 	} else {
-		parentDom.removeChild(dom);
+		removeChild(parentDom, dom);
 		if (recyclingEnabled) {
 			pool(node);
 		}
 	}
-	detachNode(node);
+	unmount(node, false);
 }
 
 export function removeChild(parentDom, dom) {
@@ -291,5 +247,26 @@ export function handleAttachedHooks(hooks, lifecycle, dom) {
 		lifecycle.addListener(() => {
 			hooks.attached(dom);
 		});
+	}
+}
+
+export function setValueProperty(nextNode) {
+	const value = nextNode.attrs.value;
+	if (!isNullOrUndefined(value)) {
+		nextNode.dom.value = value;
+	}
+}
+
+export function setFormElementProperties(nextTag, nextNode) {
+	if (nextTag === 'input') {
+		const inputType = nextNode.attrs.type;
+		if (inputType === 'text') {
+			setValueProperty(nextNode);
+		} else if (inputType === 'checkbox' || inputType === 'radio') {
+			const checked = nextNode.attrs.checked;
+			nextNode.dom.checked = !!checked;
+		}
+	} else if (nextTag === 'textarea') {
+		setValueProperty(nextNode);
 	}
 }

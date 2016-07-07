@@ -12,6 +12,10 @@ npm install inferno inferno-dom
 ## Contents
 
 * render
+* findDOMNode
+* mount
+* patch
+* unmount
 
 ## Usage
 

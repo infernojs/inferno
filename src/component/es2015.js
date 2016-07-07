@@ -150,7 +150,7 @@ export default class Component {
 			}
 			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
-			if (shouldUpdate !== false) {
+			if (shouldUpdate !== false || force) {
 				this._blockSetState = true;
 				this.componentWillUpdate(nextProps, nextState);
 				this._blockSetState = false;

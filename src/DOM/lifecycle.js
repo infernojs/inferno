@@ -1,4 +1,4 @@
-import { patchNode } from './patching';
+import { patchVNode } from './patching';
 import { isBrowser } from '../core/utils';
 
 let screenWidth = isBrowser && window.screen.width;
@@ -67,7 +67,7 @@ export function handleLazyAttached(node, lifecycle, dom) {
 }
 
 function patchLazyNode(value) {
-	patchNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, null, null, false, true);
+	patchVNode(value.lastNode, value.nextNode, value.parentDom, value.lifecycle, value.context, value.instance, isSVG, true);
 	value.clipData.pending = false;
 }
 
@@ -82,12 +82,12 @@ function patchLazyNodes() {
 	lazyCheckRunning = false;
 }
 
-export function setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle) {
+export function setClipNode(clipData, dom, lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
 	if (performance.now() > lastScrollTime + 2000) {
 		const lazyNodeEntry = lazyNodeMap.get(dom);
 
 		if (lazyNodeEntry === undefined) {
-			lazyNodeMap.set(dom, { lastNode, nextNode, parentDom, clipData, lifecycle });
+			lazyNodeMap.set(dom, { lastNode, nextNode, parentDom, clipData, lifecycle, context, instance, isSVG });
 		} else {
 			lazyNodeEntry.nextNode = nextNode;
 		}

@@ -59,6 +59,10 @@ export function isNull(obj) {
 	return obj === null;
 }
 
+export function isTrue(obj) {
+	return obj === true;
+}
+
 export function isUndefined(obj) {
 	return obj === undefined;
 }

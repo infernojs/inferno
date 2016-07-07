@@ -2,6 +2,8 @@ import { render, findDOMNode } from '../../../src/DOM/rendering';
 import createElement from '../../../src/core/createElement';
 import Component from '../../../src/component/es2015';
 import createClass from '../../../src/component/createClass';
+import renderToString from '../../../src/server/renderToString';
+import { renderToStaticMarkup } from '../../../src/server/renderToString';
 import PropTypes from 'proptypes';
 
 function unmountComponentAtNode(container) {
@@ -35,7 +37,9 @@ export {
 	cloneElement,
 	PropTypes,
 	createClass,
-	findDOMNode
+	findDOMNode,
+	renderToString,
+	renderToStaticMarkup
 };
 
 export default {
@@ -46,5 +50,7 @@ export default {
 	cloneElement,
 	PropTypes,
 	createClass,
-	findDOMNode
+	findDOMNode,
+	renderToString,
+	renderToStaticMarkup
 };

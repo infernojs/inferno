@@ -1,5 +1,5 @@
 /*!
- * inferno-server v0.7.14
+ * inferno-server v0.7.15
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -64,6 +64,10 @@
 		return obj === null;
 	}
 
+	function isTrue(obj) {
+		return obj === true;
+	}
+
 	function isUndefined(obj) {
 		return obj === undefined;
 	}
@@ -108,6 +112,49 @@
 	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 	constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
+	function escapeText(str) {
+		return (str + '')
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#039;')
+			.replace(/\//g, '&#x2F;');
+	}
+
+	function escapeAttr(str) {
+		return (str + '')
+			.replace(/&/g, '&amp;')
+	        .replace(/"/g, '&quot;');
+	}
+
+	function toHyphenCase(str) {
+		return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+	}
+
+	var voidElements = {
+		area: true,
+		base: true,
+		br: true,
+		col: true,
+		command: true,
+		embed: true,
+		hr: true,
+		img: true,
+		input: true,
+		keygen: true,
+		link: true,
+		meta: true,
+		param: true,
+		source: true,
+		track: true,
+		wbr: true
+	};
+
+	function isVoidElement(str) {
+		return !!voidElements[str];
+	}
+
 	function renderComponent(Component, props, children, context, isRoot) {
 		props = addChildrenToProps(children, props);
 
@@ -138,8 +185,10 @@
 
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
+				var isText = isStringOrNumber(child);
+				var isInvalid = isInvalidNode(child);
 
-				if (isStringOrNumber(child) || isInvalidNode(child)) {
+				if (isText || isInvalid) {
 					if (insertComment === true) {
 						if (isInvalidNode(child)) {
 							childrenResult.push('<!--!-->');
@@ -147,7 +196,9 @@
 							childrenResult.push('<!---->');
 						}
 					}
-					childrenResult.push(child);
+					if (isText) {
+						childrenResult.push(escapeText(child));
+					}
 					insertComment = true;
 				} else if (isArray(child)) {
 					childrenResult.push('<!---->');
@@ -162,16 +213,12 @@
 			return childrenResult.join('');
 		} else if (!isInvalidNode(children)) {
 			if (isStringOrNumber(children)) {
-				return children;
+				return escapeText(children);
 			} else {
 				return renderNode(children, context, false) || '';
 			}
 		}
 		return '';
-	}
-
-	function toHyphenCase(str) {
-		return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
 	}
 
 	function renderStyleToString(style) {
@@ -187,7 +234,7 @@
 				var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
 				if (!isNullOrUndefined(value)) {
-					styles.push(((toHyphenCase(styleName)) + ":" + value + px + ";"));
+					styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
 				}
 			}
 			return styles.join();
@@ -206,36 +253,55 @@
 				return renderComponent(tag, node.attrs, node.children, context, isRoot);
 			}
 			if (!isNullOrUndefined(className)) {
-				outputAttrs.push('class="' + className + '"');
+				outputAttrs.push('class="' + escapeAttr(className) + '"');
 			}
 			if (!isNullOrUndefined(style)) {
 				outputAttrs.push('style="' + renderStyleToString(style) + '"');
 			}
 			var attrs = node.attrs;
 			var attrKeys = (attrs && Object.keys(attrs)) || [];
+			var html = '';
 
 			if (bp && bp.hasAttrs === true) {
 				attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
 			}
 			attrKeys.forEach(function (attrsKey, i) {
 				var attr = attrKeys[i];
+				var value = attrs[attr];
 
-				outputAttrs.push(attr + '="' + attrs[attr] + '"');
+				if (attr === 'dangerouslySetInnerHTML') {
+					html = value.__html;
+				} else {
+					if (isStringOrNumber(value)) {
+						outputAttrs.push(escapeAttr(attr) + '="' + escapeAttr(value) + '"');
+					} else if (isTrue(value)) {
+						outputAttrs.push(escapeAttr(attr));
+					}
+				}
 			});
 
 			if (isRoot) {
 				outputAttrs.push('data-infernoroot');
 			}
-			return ("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">" + (renderChildren(node.children, context)) + "</" + tag + ">");
+			if (isVoidElement(tag)) {
+				return ("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">");
+			} else {
+				return ("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">" + (html || renderChildren(node.children, context)) + "</" + tag + ">");
+			}
 		}
 	}
 
-	function renderToString(node, noMetadata) {
-		return renderNode(node, null, !noMetadata);
+	function renderToString(node) {
+		return renderNode(node, null, false);
+	}
+
+	function renderToStaticMarkup(node) {
+		return renderNode(node, null, true);
 	}
 
 	var index = {
-		renderToString: renderToString
+		renderToString: renderToString,
+		renderToStaticMarkup: renderToStaticMarkup
 	};
 
 	return index;

@@ -1,5 +1,5 @@
 /*!
- * inferno v0.7.14
+ * inferno v0.7.15
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -191,7 +191,7 @@
 						if (!events$1) {
 							events$1 = {};
 						}
-						eventKeys.push(prop);
+						eventKeys.push(prop.toLowerCase());
 						events$1[prop.toLowerCase()] = value;
 					} else if (prop === 'children') {
 						vNode.children = value;

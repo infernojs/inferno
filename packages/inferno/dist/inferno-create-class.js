@@ -1,5 +1,5 @@
 /*!
- * inferno-create-class v0.7.14
+ * inferno-create-class v0.7.15
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -247,7 +247,7 @@
 			}
 			var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
-			if (shouldUpdate !== false) {
+			if (shouldUpdate !== false || force) {
 				this._blockSetState = true;
 				this.componentWillUpdate(nextProps, nextState);
 				this._blockSetState = false;

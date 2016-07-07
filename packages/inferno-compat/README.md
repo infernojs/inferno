@@ -24,6 +24,11 @@ Note: Inferno will not currently validate `PropTypes`
 - `ReactDOM.unmountComponentAtNode`
 - `ReactDOM.findDOMNode`
 
+### `react-dom/server`
+
+- `ReactServer.renderToString`
+- `ReactServer.renderToStaticMarkup`
+
 ## What is missing?
 
 These features will hopefully be added in future versions
@@ -45,7 +50,8 @@ All you have to do is add an alias for `react` and `react-dom`:
 	resolve: {
 		alias: {
 			'react': 'inferno-compat',
-			'react-dom': 'inferno-compat'
+			'react-dom': 'inferno-compat',
+            'react-dom/server': 'inferno-compat'
 		}
 	}
 }
@@ -65,7 +71,8 @@ First, install it: `npm install --save-dev aliasify`
     "aliasify": {
         "aliases": {
             "react": "inferno-compat",
-            "react-dom": "inferno-compat"
+            "react-dom": "inferno-compat",
+            "react-dom/server": "inferno-compat"
         }
     }
     // ...
