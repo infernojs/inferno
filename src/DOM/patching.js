@@ -212,10 +212,10 @@ export function patchVNodeWithBlueprint(lastVNode, nextVNode, lastBp, nextBp, pa
 			} else if (isStatefulComponent(lastTag)) {
 				unmountVNode(lastVNode, null, true);
 				const lastNode = lastNodeInstance._lastNode;
-				patchVNodeWithBlueprint(lastNode, nextVNode, lastNode.bp, nextVNode.bp, parentDom, lifecycle, context, instance, nextBp.isSVG);
+				patchVNodeWithBlueprint(lastNode, nextVNode, lastNode.bp, nextBp, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			} else {
 				unmountVNode(lastVNode, null, true);
-				patchVNodeWithBlueprint(lastNodeInstance, nextVNode, lastNodeInstance.bp, nextVNode.bp, parentDom, lifecycle, context, instance, nextBp.isSVG);
+				patchVNodeWithBlueprint(lastNodeInstance, nextVNode, lastNodeInstance.bp, nextBp, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			}
 		} else {
 			replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
