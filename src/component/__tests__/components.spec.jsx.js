@@ -2384,4 +2384,60 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<input id="test" class="foo">');
 		});
 	});
+
+	describe('Swapping Component to DOM node', () => {
+		it('Should be able to swap component to DOM list when doing setState', () => {
+			let change1 = null;
+
+			const FooBar = () => (
+				<div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div>
+			);
+
+			class Tester extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						toggle1: false,
+						toggle2: false
+					};
+
+					change1 = this.toggle1.bind(this);
+				}
+
+				toggle1() {
+					this.setState({
+						toggle1: !this.state.toggle1
+					});
+				}
+
+				renderContent() {
+					if (this.state.toggle1) {
+						return <FooBar />;
+					} else {
+						return (
+							<div class="login-container">
+								<h1>foo</h1>
+							</div>
+						);
+					}
+				}
+
+				render() {
+					 return (
+						 <div>
+							 {this.renderContent()}
+						 </div>
+					 )
+				}
+			}
+
+			render(<Tester />, container);
+			expect(container.innerHTML).to.equal('<div><div class="login-container"><h1>foo</h1></div></div>');
+			change1();
+			expect(container.innerHTML).to.equal('<div><div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div></div>');
+			change1();
+			expect(container.innerHTML).to.equal('<div><div class="login-container"><h1>foo</h1></div></div>');
+		})
+	})
 });
