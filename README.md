@@ -213,7 +213,7 @@ This is the base class for Inferno Components when they're defined using ES6 cla
 ```javascript
 import Inferno from 'inferno';
 
-const MyComponent = ({ name, age }) => 
+const MyComponent = ({ name, age }) => (
   <span>My name is: { name } and my age is: {age}</span>  
 );
 ```
