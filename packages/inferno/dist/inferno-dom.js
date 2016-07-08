@@ -1004,7 +1004,7 @@
 					patchVNodeWithBlueprint(lastNodeInstance._lastNode, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 				} else {
 					unmountVNode(lastVNode, null, true);
-					patchVNodeWithBlueprint(lastNodeInstance, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
+					patchVNodeWithBlueprint(lastNodeInstance, nextVNode, lastNodeInstance.bp, nextVNode.bp, parentDom, lifecycle, context, instance, nextBp.isSVG);
 				}
 			} else {
 				replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
