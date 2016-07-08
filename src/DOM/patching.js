@@ -29,11 +29,9 @@ import {
 	namespaces,
 	isVText,
 	isVPlaceholder,
-	removeChild,
 	replaceVListWithNode,
 	isVList,
 	normaliseChild,
-	setValueProperty,
 	setFormElementProperties,
 	removeAllChildren,
 	replaceWithNewNode,
@@ -352,10 +350,10 @@ export function patchVNodeWithoutBlueprint(lastNode, nextNode, parentDom, lifecy
 				replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 			} else if (isStatefulComponent(lastTag)) {
 				unmountVNode(lastNode, null, true);
-				patchVNodeWithBlueprint(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
+				patchVNodeWithoutBlueprint(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 			} else {
 				unmountVNode(lastNode, null, true);
-				patchVNodeWithBlueprint(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
+				patchVNodeWithoutBlueprint(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
 			}
 		} else {
 			replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
