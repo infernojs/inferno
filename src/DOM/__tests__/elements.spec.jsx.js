@@ -1,6 +1,8 @@
 import { render } from './../rendering';
 import innerHTML from './../../../tools/innerHTML';
 import { createBlueprint } from './../../core/shapes';
+import createElement from './../../core/createElement';
+
 
 const Inferno = {
 	createBlueprint
@@ -690,17 +692,26 @@ describe('Elements (JSX)', () => {
 
 	it('should dangerously set innerHTML', () => {
 		render((
-			<div dangerouslySetInnerHTML={ {__html: 'Hello world!'} } />
+			<div dangerouslySetInnerHTML={ { __html: 'Hello world!' } } />
 		), container);
 		expect(container.innerHTML).to.not.equal('Hello world!');
 	});
 
+	it('mixing JSX with non-JSX', () => {
+		render(<div>{ createElement('div') }</div>, container);
+		expect(container.innerHTML).to.equal('<div><div></div></div>');
+		render(<div>{ createElement('span') }</div>, container);
+		expect(container.innerHTML).to.equal('<div><span></span></div>');
+		render(<span>{ createElement('div') }</span>, container);
+		expect(container.innerHTML).to.equal('<span><div></div></span>');
+	});
+
 	it('Should be able to construct input with Hooks, Events, Attributes defined', () => {
 		function test() {}
-		const obj = {fn: function() {}, focus: function(){}};
+		const obj = { fn: function () {}, focus: function () {} };
 		const bool = false;
 		const newValue = 't';
-		const spread = {id: 'test'};
+		const spread = { id: 'test' };
 		const spy = sinon.spy(obj, 'fn');
 		const spyFocus = sinon.spy(obj, 'focus');
 

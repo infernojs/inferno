@@ -2,6 +2,7 @@ import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
 import innerHTML from './../../../tools/innerHTML';
 import { createBlueprint } from './../../core/shapes';
+import createElement from './../../core/createElement';
 
 const Inferno = {
 	createBlueprint
@@ -2526,5 +2527,25 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div>1</div>');
 			expect(renderCount).to.equal(2);
 		});
+	});
+
+	it('mixing JSX components with non-JSX components', () => {
+		function Comp() {
+			return createElement('div');
+		}
+		function Comp2() {
+			return createElement('span');
+		}
+		function Comp3() {
+			return <div></div>;
+		}
+		render(<div><Comp /></div>, container);
+		expect(container.innerHTML).to.equal('<div><div></div></div>');
+		render(<div><Comp2 /></div>, container);
+		expect(container.innerHTML).to.equal('<div><span></span></div>');
+		render(<span><Comp /></span>, container);
+		expect(container.innerHTML).to.equal('<span><div></div></span>');
+		render(createElement('span', null, <Comp3 />), container);
+		expect(container.innerHTML).to.equal('<span><div></div></span>');
 	});
 });

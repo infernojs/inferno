@@ -147,6 +147,8 @@ export default class Component {
 				this._blockRender = false;
 				if (this._pendingSetState) {
 					nextState = Object.assign({}, nextState, this._pendingState);
+					this._pendingSetState = false;
+					this._pendingState = {};
 				}
 			}
 			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
