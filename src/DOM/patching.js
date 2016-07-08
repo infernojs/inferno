@@ -211,7 +211,8 @@ export function patchVNodeWithBlueprint(lastVNode, nextVNode, lastBp, nextBp, pa
 				replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, instance, false);
 			} else if (isStatefulComponent(lastTag)) {
 				unmountVNode(lastVNode, null, true);
-				patchVNodeWithBlueprint(lastNodeInstance._lastNode, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
+				const lastNode = lastNodeInstance._lastNode;
+				patchVNodeWithBlueprint(lastNode, nextVNode, lastNode.bp, nextVNode.bp, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			} else {
 				unmountVNode(lastVNode, null, true);
 				patchVNodeWithBlueprint(lastNodeInstance, nextVNode, lastNodeInstance.bp, nextVNode.bp, parentDom, lifecycle, context, instance, nextBp.isSVG);
