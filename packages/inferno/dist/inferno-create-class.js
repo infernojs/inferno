@@ -122,16 +122,13 @@
 			component._pendingSetState = true;
 			applyState(component, false, callback);
 		} else {
-			var pendingState = component._pendingState;
-			var oldState = component.state;
-
-			component.state = Object.assign({}, oldState, pendingState);
+			component.state = Object.assign({}, component.state, component._pendingState);
 			component._pendingState = {};
 		}
 	}
 
 	function applyState(component, force, callback) {
-		if (!component._deferSetState || force) {
+		if ((!component._deferSetState || force) && !component._blockRender) {
 			component._pendingSetState = false;
 			var pendingState = component._pendingState;
 			var oldState = component.state;
@@ -172,6 +169,7 @@
 
 		/** @type {object} */
 		this.refs = {};
+		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;
 		this._pendingSetState = false;
@@ -241,9 +239,12 @@
 		}
 		if (prevProps !== nextProps || prevState !== nextState || force) {
 			if (prevProps !== nextProps) {
-				this._blockSetState = true;
+				this._blockRender = true;
 				this.componentWillReceiveProps(nextProps);
-				this._blockSetState = false;
+				this._blockRender = false;
+				if (this._pendingSetState) {
+					nextState = Object.assign({}, nextState, this._pendingState);
+				}
 			}
 			var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 

@@ -2500,4 +2500,31 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div><div class="login-container"><h1>foo</h1></div></div>');
 		});
 	});
+
+	describe('handling componentWillReceiveProps lifecycle event', () => {
+		it('should correctly handle setState within the lifecycle funciton', () => {
+			let renderCount = 0;
+			class Comp1 extends Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						foo: 0
+					};
+				}
+				componentWillReceiveProps() {
+					this.setState({ foo: 1 });
+				}
+				render() {
+					renderCount++;
+					return <div>{ this.state.foo }</div>;
+				}
+			}
+
+			render(<Comp1 />, container);
+			expect(container.innerHTML).to.equal('<div>0</div>');
+			render(<Comp1 />, container);
+			expect(container.innerHTML).to.equal('<div>1</div>');
+			expect(renderCount).to.equal(2);
+		});
+	});
 });

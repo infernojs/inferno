@@ -290,6 +290,174 @@
   	return new VNode(bp);
   }
 
+  function isAttrAnEvent$1(attr) {
+  	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+  }
+
+  function isAttrAHook$1(hook) {
+  	return hook === 'onCreated'
+  		|| hook === 'onAttached'
+  		|| hook === 'onWillDetach'
+  		|| hook === 'onWillUpdate'
+  		|| hook === 'onDidUpdate';
+  }
+
+  function isAttrAComponentHook$1(hook) {
+  	return hook === 'onComponentWillMount'
+  		|| hook === 'onComponentDidMount'
+  		|| hook === 'onComponentWillUnmount'
+  		|| hook === 'onComponentShouldUpdate'
+  		|| hook === 'onComponentWillUpdate'
+  		|| hook === 'onComponentDidUpdate';
+  }
+
+
+  function createBlueprint(shape, childrenType) {
+  	var tag = shape.tag || null;
+  	var tagIsDynamic = tag && tag.arg !== undefined ? true : false;
+
+  	var children = isNullOrUndefined(shape.children) ? null : shape.children;
+  	var childrenIsDynamic = children && children.arg !== undefined ? true : false;
+
+  	var attrs = shape.attrs || null;
+  	var attrsIsDynamic = attrs && attrs.arg !== undefined ? true : false;
+
+  	var hooks = shape.hooks || null;
+  	var hooksIsDynamic = hooks && hooks.arg !== undefined ? true : false;
+
+  	var events = shape.events || null;
+  	var eventsIsDynamic = events && events.arg !== undefined ? true : false;
+
+  	var key = shape.key === undefined ? null : shape.key;
+  	var keyIsDynamic = !isNullOrUndefined(key) && !isNullOrUndefined(key.arg);
+
+  	var style = shape.style || null;
+  	var styleIsDynamic = style && style.arg !== undefined ? true : false;
+
+  	var className = shape.className === undefined ? null : shape.className;
+  	var classNameIsDynamic = className && className.arg !== undefined ? true : false;
+
+  	var spread = shape.spread === undefined ? null : shape.spread;
+  	var hasSpread = shape.spread !== undefined;
+
+  	var blueprint = {
+  		lazy: shape.lazy || false,
+  		dom: null,
+  		pools: {
+  			keyed: {},
+  			nonKeyed: []
+  		},
+  		tag: tagIsDynamic ? null : tag,
+  		className: className !== '' && className ? className : null,
+  		style: style !== '' && style ? style : null,
+  		isComponent: tagIsDynamic,
+  		hasAttrs: attrsIsDynamic || (attrs ? true : false),
+  		hasHooks: hooksIsDynamic,
+  		hasEvents: eventsIsDynamic,
+  		hasStyle: styleIsDynamic || (style !== '' && style ? true : false),
+  		hasClassName: classNameIsDynamic || (className !== '' && className ? true : false),
+  		childrenType: childrenType === undefined ? (children ? 5 : 0) : childrenType,
+  		attrKeys: null,
+  		eventKeys: null,
+  		isSVG: shape.isSVG || false
+  	};
+
+  	return function () {
+  		var vNode = new VNode(blueprint);
+
+  		if (tagIsDynamic === true) {
+  			vNode.tag = arguments[tag.arg];
+  		}
+  		if (childrenIsDynamic === true) {
+  			vNode.children = arguments[children.arg];
+  		}
+  		if (hasSpread) {
+  			var _spread = arguments[spread.arg];
+  			var attrs$1;
+  			var events$1;
+  			var hooks$1;
+  			var attrKeys = [];
+  			var eventKeys = [];
+
+  			for (var prop in _spread) {
+  				var value = _spread[prop];
+
+  				if (prop === 'className' || (prop === 'class' && !blueprint.isSVG)) {
+  					vNode.className = value;
+  					blueprint.hasClassName = true;
+  				} else if (prop === 'style') {
+  					vNode.style = value;
+  					blueprint.hasStyle = true;
+  				} else if (prop === 'key') {
+  					vNode.key = value;
+  				} else if (isAttrAHook$1(prop) || isAttrAComponentHook$1(prop)) {
+  					if (!hooks$1) {
+  						hooks$1 = {};
+  					}
+  					hooks$1[prop[2].toLowerCase() + prop.substring(3)] = value;
+  				} else if (isAttrAnEvent$1(prop)) {
+  					if (!events$1) {
+  						events$1 = {};
+  					}
+  					eventKeys.push(prop.toLowerCase());
+  					events$1[prop.toLowerCase()] = value;
+  				} else if (prop === 'children') {
+  					vNode.children = value;
+  					blueprint.childrenType = blueprint.childrenType || 5;
+  				} else {
+  					if (!attrs$1) {
+  						attrs$1 = {};
+  					}
+  					attrKeys.push(prop);
+  					attrs$1[prop] = value;
+  				}
+  			}
+  			if (attrs$1) {
+  				vNode.attrs = attrs$1;
+  				blueprint.attrKeys = attrKeys;
+  				blueprint.hasAttrs = true;
+  			}
+  			if (events$1) {
+  				vNode.events = events$1;
+  				blueprint.eventKeys = eventKeys;
+  				blueprint.hasEvents = true;
+  			}
+  			if (hooks$1) {
+  				vNode.hooks = hooks$1;
+  				blueprint.hasHooks = true;
+  			}
+  		} else {
+  			if (attrsIsDynamic === true) {
+  				vNode.attrs = arguments[attrs.arg];
+  			} else {
+  				vNode.attrs = attrs;
+  			}
+  			if (hooksIsDynamic === true) {
+  				vNode.hooks = arguments[hooks.arg];
+  			}
+  			if (eventsIsDynamic === true) {
+  				vNode.events = arguments[events.arg];
+  			}
+  			if (keyIsDynamic === true) {
+  				vNode.key = arguments[key.arg];
+  			} else {
+  				vNode.key = key;
+  			}
+  			if (styleIsDynamic === true) {
+  				vNode.style = arguments[style.arg];
+  			} else {
+  				vNode.style = blueprint.style;
+  			}
+  			if (classNameIsDynamic === true) {
+  				vNode.className = arguments[className.arg];
+  			} else {
+  				vNode.className = blueprint.className;
+  			}
+  		}
+  		return vNode;
+  	};
+  }
+
   function VText(text) {
   	this.text = text;
   	this.dom = null;
@@ -973,7 +1141,7 @@
   	return nextInput;
   }
 
-  function updateTextNode(dom, lastChildren, nextChildren) {
+  function patchTextNode(dom, lastChildren, nextChildren) {
   	if (isStringOrNumber(lastChildren)) {
   		dom.firstChild.nodeValue = nextChildren;
   	} else {
@@ -1001,7 +1169,7 @@
   	}
   	if (isInvalidNode(lastChildren)) {
   		if (isStringOrNumber(nextChildren)) {
-  			updateTextNode(dom, lastChildren, nextChildren);
+  			patchTextNode(dom, lastChildren, nextChildren);
   		} else if (!isInvalidNode(nextChildren)) {
   			if (isArray(nextChildren)) {
   				mountArrayChildren(nextChildren, dom, lifecycle, context, instance, isSVG);
@@ -1034,7 +1202,7 @@
   					}
   					patchNonKeyedChildren([lastChild], nextChildren, dom, lifecycle, context, instance, isSVG, null);
   				} else if (isStringOrNumber(nextChildren)) {
-  					updateTextNode(dom, lastChildren, nextChildren);
+  					patchTextNode(dom, lastChildren, nextChildren);
   				} else if (isStringOrNumber(lastChildren)) {
   					patch(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
   				} else {
@@ -1155,7 +1323,7 @@
   							} else if (lastChildrenType === 2 && nextChildrenType === 2) {
   								patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, nextBp.isSVG);
   							} else if (lastChildrenType === 1 && nextChildrenType === 1) {
-  								updateTextNode(dom, lastChildren, nextChildren);
+  								patchTextNode(dom, lastChildren, nextChildren);
   							} else {
   								patchChildren(lastVNode, nextVNode, dom, lifecycle, context, instance, nextBp.isSVG);
   							}
@@ -2236,16 +2404,13 @@
   		component._pendingSetState = true;
   		applyState(component, false, callback);
   	} else {
-  		var pendingState = component._pendingState;
-  		var oldState = component.state;
-
-  		component.state = Object.assign({}, oldState, pendingState);
+  		component.state = Object.assign({}, component.state, component._pendingState);
   		component._pendingState = {};
   	}
   }
 
   function applyState(component, force, callback) {
-  	if (!component._deferSetState || force) {
+  	if ((!component._deferSetState || force) && !component._blockRender) {
   		component._pendingSetState = false;
   		var pendingState = component._pendingState;
   		var oldState = component.state;
@@ -2286,6 +2451,7 @@
 
   	/** @type {object} */
   	this.refs = {};
+  	this._blockRender = false;
   	this._blockSetState = false;
   	this._deferSetState = false;
   	this._pendingSetState = false;
@@ -2355,9 +2521,12 @@
   	}
   	if (prevProps !== nextProps || prevState !== nextState || force) {
   		if (prevProps !== nextProps) {
-  			this._blockSetState = true;
+  			this._blockRender = true;
   			this.componentWillReceiveProps(nextProps);
-  			this._blockSetState = false;
+  			this._blockRender = false;
+  			if (this._pendingSetState) {
+  				nextState = Object.assign({}, nextState, this._pendingState);
+  			}
   		}
   		var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
@@ -2990,7 +3159,9 @@
   	createClass: createClass,
   	findDOMNode: findDOMNode,
   	renderToString: renderToString,
-  	renderToStaticMarkup: renderToStaticMarkup
+  	renderToStaticMarkup: renderToStaticMarkup,
+  	createBlueprint: createBlueprint,
+  	createVNode: createVNode
   };
 
   exports.render = render;
@@ -3003,6 +3174,8 @@
   exports.findDOMNode = findDOMNode;
   exports.renderToString = renderToString;
   exports.renderToStaticMarkup = renderToStaticMarkup;
+  exports.createBlueprint = createBlueprint;
+  exports.createVNode = createVNode;
   exports['default'] = index;
 
   Object.defineProperty(exports, '__esModule', { value: true });

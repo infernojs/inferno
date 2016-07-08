@@ -51,7 +51,8 @@ All you have to do is add an alias for `react` and `react-dom`:
 		alias: {
 			'react': 'inferno-compat',
 			'react-dom': 'inferno-compat',
-            'react-dom/server': 'inferno-compat'
+            'react-dom/server': 'inferno-compat',
+            'inferno': 'inferno-compat' // for usage of babel-plugin-inferno
 		}
 	}
 }
@@ -72,7 +73,8 @@ First, install it: `npm install --save-dev aliasify`
         "aliases": {
             "react": "inferno-compat",
             "react-dom": "inferno-compat",
-            "react-dom/server": "inferno-compat"
+            "react-dom/server": "inferno-compat",
+            'inferno': 'inferno-compat' // for usage of babel-plugin-inferno
         }
     }
     // ...

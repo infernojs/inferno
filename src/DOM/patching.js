@@ -106,7 +106,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 	return nextInput;
 }
 
-export function updateTextNode(dom, lastChildren, nextChildren) {
+export function patchTextNode(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
 		dom.firstChild.nodeValue = nextChildren;
 	} else {
@@ -126,7 +126,7 @@ function patchRef(instance, lastValue, nextValue, dom) {
 }
 
 function patchChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
-	let nextChildren = nextNode.children;
+	const nextChildren = nextNode.children;
 	const lastChildren = lastNode.children;
 
 	if (lastChildren === nextChildren) {
@@ -134,7 +134,7 @@ function patchChildren(lastNode, nextNode, dom, lifecycle, context, instance, is
 	}
 	if (isInvalidNode(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
-			updateTextNode(dom, lastChildren, nextChildren);
+			patchTextNode(dom, lastChildren, nextChildren);
 		} else if (!isInvalidNode(nextChildren)) {
 			if (isArray(nextChildren)) {
 				mountArrayChildren(nextChildren, dom, lifecycle, context, instance, isSVG);
@@ -167,7 +167,7 @@ function patchChildren(lastNode, nextNode, dom, lifecycle, context, instance, is
 					}
 					patchNonKeyedChildren([lastChild], nextChildren, dom, lifecycle, context, instance, isSVG, null);
 				} else if (isStringOrNumber(nextChildren)) {
-					updateTextNode(dom, lastChildren, nextChildren);
+					patchTextNode(dom, lastChildren, nextChildren);
 				} else if (isStringOrNumber(lastChildren)) {
 					patch(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 				} else {
@@ -288,7 +288,7 @@ export function patchVNodeWithBlueprint(lastVNode, nextVNode, lastBp, nextBp, pa
 							} else if (lastChildrenType === 2 && nextChildrenType === 2) {
 								patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, nextBp.isSVG);
 							} else if (lastChildrenType === 1 && nextChildrenType === 1) {
-								updateTextNode(dom, lastChildren, nextChildren);
+								patchTextNode(dom, lastChildren, nextChildren);
 							} else {
 								patchChildren(lastVNode, nextVNode, dom, lifecycle, context, instance, nextBp.isSVG);
 							}

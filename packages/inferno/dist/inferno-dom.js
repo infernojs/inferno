@@ -898,7 +898,7 @@
 		return nextInput;
 	}
 
-	function updateTextNode(dom, lastChildren, nextChildren) {
+	function patchTextNode(dom, lastChildren, nextChildren) {
 		if (isStringOrNumber(lastChildren)) {
 			dom.firstChild.nodeValue = nextChildren;
 		} else {
@@ -926,7 +926,7 @@
 		}
 		if (isInvalidNode(lastChildren)) {
 			if (isStringOrNumber(nextChildren)) {
-				updateTextNode(dom, lastChildren, nextChildren);
+				patchTextNode(dom, lastChildren, nextChildren);
 			} else if (!isInvalidNode(nextChildren)) {
 				if (isArray(nextChildren)) {
 					mountArrayChildren(nextChildren, dom, lifecycle, context, instance, isSVG);
@@ -959,7 +959,7 @@
 						}
 						patchNonKeyedChildren([lastChild], nextChildren, dom, lifecycle, context, instance, isSVG, null);
 					} else if (isStringOrNumber(nextChildren)) {
-						updateTextNode(dom, lastChildren, nextChildren);
+						patchTextNode(dom, lastChildren, nextChildren);
 					} else if (isStringOrNumber(lastChildren)) {
 						patch(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
 					} else {
@@ -1080,7 +1080,7 @@
 								} else if (lastChildrenType === 2 && nextChildrenType === 2) {
 									patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, nextBp.isSVG);
 								} else if (lastChildrenType === 1 && nextChildrenType === 1) {
-									updateTextNode(dom, lastChildren, nextChildren);
+									patchTextNode(dom, lastChildren, nextChildren);
 								} else {
 									patchChildren(lastVNode, nextVNode, dom, lifecycle, context, instance, nextBp.isSVG);
 								}
