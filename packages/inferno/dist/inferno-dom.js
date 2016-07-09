@@ -1380,6 +1380,7 @@
 			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
 			lastNode.dom = nextNode.dom;
 			instance._lastNode = nextNode;
+			instance.componentDidUpdate(prevProps, prevState);
 			componentToDOMNodeMap.set(instance, nextNode.dom);
 		} else {
 			var shouldUpdate = true;

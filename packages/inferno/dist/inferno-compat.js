@@ -1623,6 +1623,7 @@
   		patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
   		lastNode.dom = nextNode.dom;
   		instance._lastNode = nextNode;
+  		instance.componentDidUpdate(prevProps, prevState);
   		componentToDOMNodeMap.set(instance, nextNode.dom);
   	} else {
   		var shouldUpdate = true;
@@ -2413,11 +2414,12 @@
   	if ((!component._deferSetState || force) && !component._blockRender) {
   		component._pendingSetState = false;
   		var pendingState = component._pendingState;
-  		var oldState = component.state;
-  		var nextState = Object.assign({}, oldState, pendingState);
+  		var prevState = component.state;
+  		var nextState = Object.assign({}, prevState, pendingState);
+  		var props = component.props;
 
   		component._pendingState = {};
-  		var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+  		var nextNode = component._updateComponent(prevState, nextState, props, props, force);
 
   		if (nextNode === NO_RENDER) {
   			nextNode = component._lastNode;
@@ -2433,7 +2435,7 @@
   		component._lastNode = nextNode;
   		component._componentToDOMNodeMap.set(component, nextNode.dom);
   		component._parentNode.dom = nextNode.dom;
-
+  		component.componentDidUpdate(props, prevState);
   		subLifecycle.trigger();
   		if (!isNullOrUndefined(callback)) {
   			callback();
@@ -2538,10 +2540,7 @@
   			this._blockSetState = false;
   			this.props = nextProps;
   			this.state = nextState;
-  			var node = this.render();
-
-  			this.componentDidUpdate(prevProps, prevState);
-  			return node;
+  			return this.render();
   		}
   	}
   	return NO_RENDER;
