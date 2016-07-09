@@ -21,15 +21,19 @@
 
     function Foo() {
         return (
-            t('h2', null, 'I am Foo'),
-            t('p', null, 'I should only appear when you visit #!/foo')
+            t('div', null,
+                t('h2', null, 'I am Foo'),
+                t('p', null, 'I should only appear when you visit #!/foo')
+            )
         );
     }
 
     function Bar() {
         return (
-            t('h2', null, 'I am Bar'),
-            t('p', null, 'I should only appear when you visit #!/bar')
+            t('div', null,
+                t('h2', null, 'I am Bar'),
+                t('p', null, 'I should only appear when you visit #!/bar')
+            )
         );
     }
 
