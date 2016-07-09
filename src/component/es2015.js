@@ -33,11 +33,12 @@ function applyState(component, force, callback) {
 	if ((!component._deferSetState || force) && !component._blockRender) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
-		const oldState = component.state;
-		const nextState = Object.assign({}, oldState, pendingState);
+		const prevState = component.state;
+		const nextState = Object.assign({}, prevState, pendingState);
+		const props = component.props;
 
 		component._pendingState = {};
-		let nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+		let nextNode = component._updateComponent(prevState, nextState, props, props, force);
 
 		if (nextNode === NO_RENDER) {
 			nextNode = component._lastNode;
@@ -53,7 +54,7 @@ function applyState(component, force, callback) {
 		component._lastNode = nextNode;
 		component._componentToDOMNodeMap.set(component, nextNode.dom);
 		component._parentNode.dom = nextNode.dom;
-
+		component.componentDidUpdate(props, prevState);
 		subLifecycle.trigger();
 		if (!isNullOrUndefined(callback)) {
 			callback();
@@ -159,10 +160,7 @@ export default class Component {
 				this._blockSetState = false;
 				this.props = nextProps;
 				this.state = nextState;
-				const node = this.render();
-
-				this.componentDidUpdate(prevProps, prevState);
-				return node;
+				return this.render();
 			}
 		}
 		return NO_RENDER;
