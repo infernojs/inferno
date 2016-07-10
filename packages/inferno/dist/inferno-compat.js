@@ -1709,7 +1709,6 @@
   function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, parentVList) {
   	var lastChildrenLength = lastChildren.length;
   	var nextChildrenLength = nextChildren.length;
-  	var i;
   	var lastEndIndex = lastChildrenLength - 1;
   	var nextEndIndex = nextChildrenLength - 1;
   	var lastStartIndex = 0;
@@ -1718,11 +1717,7 @@
   	var nextStartNode = null;
   	var nextEndNode = null;
   	var lastEndNode = null;
-  	var index;
   	var nextNode;
-  	var lastTarget = 0;
-  	var pos;
-  	var prevItem;
 
   	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
   		nextStartNode = nextChildren[nextStartIndex];
@@ -1790,11 +1785,14 @@
   		var sources = new Array(bLength);
 
   		// Mark all nodes as inserted.
+  		var i;
   		for (i = 0; i < bLength; i++) {
   			sources[i] = -1;
   		}
   		var moved = false;
   		var removeOffset = 0;
+  		var lastTarget = 0;
+  		var index;
 
   		if (aLength * bLength <= 16) {
   			for (i = lastStartIndex; i <= lastEndIndex; i++) {
@@ -1824,8 +1822,7 @@
   			var prevItemsMap = new Map();
 
   			for (i = nextStartIndex; i <= nextEndIndex; i++) {
-  				prevItem = nextChildren[i];
-  				prevItemsMap.set(prevItem.key, i);
+  				prevItemsMap.set(nextChildren[i].key, i);
   			}
   			for (i = lastEndIndex; i >= lastStartIndex; i--) {
   				lastEndNode = lastChildren[i];
@@ -1835,6 +1832,7 @@
   					remove(lastEndNode, dom);
   					removeOffset++;
   				} else {
+
   					nextEndNode = nextChildren[index];
 
   					sources[index - nextStartIndex] = i;
@@ -1848,6 +1846,7 @@
   			}
   		}
 
+  		var pos;
   		if (moved) {
   			var seq = lis_algorithm(sources);
   			index = seq.length - 1;

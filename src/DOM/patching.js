@@ -674,7 +674,6 @@ export function patchVText(lastVText, nextVText) {
 export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, parentVList) {
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
-	let i;
 	let lastEndIndex = lastChildrenLength - 1;
 	let nextEndIndex = nextChildrenLength - 1;
 	let lastStartIndex = 0;
@@ -683,11 +682,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 	let nextStartNode = null;
 	let nextEndNode = null;
 	let lastEndNode = null;
-	let index;
 	let nextNode;
-	let lastTarget = 0;
-	let pos;
-	let prevItem;
 
 	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
 		nextStartNode = nextChildren[nextStartIndex];
@@ -755,11 +750,14 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 		const sources = new Array(bLength);
 
 		// Mark all nodes as inserted.
+		let i;
 		for (i = 0; i < bLength; i++) {
 			sources[i] = -1;
 		}
 		let moved = false;
 		let removeOffset = 0;
+		let lastTarget = 0;
+		let index;
 
 		if (aLength * bLength <= 16) {
 			for (i = lastStartIndex; i <= lastEndIndex; i++) {
@@ -789,8 +787,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 			const prevItemsMap = new Map();
 
 			for (i = nextStartIndex; i <= nextEndIndex; i++) {
-				prevItem = nextChildren[i];
-				prevItemsMap.set(prevItem.key, i);
+				prevItemsMap.set(nextChildren[i].key, i);
 			}
 			for (i = lastEndIndex; i >= lastStartIndex; i--) {
 				lastEndNode = lastChildren[i];
@@ -800,6 +797,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 					remove(lastEndNode, dom);
 					removeOffset++;
 				} else {
+
 					nextEndNode = nextChildren[index];
 
 					sources[index - nextStartIndex] = i;
@@ -813,6 +811,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 			}
 		}
 
+		let pos;
 		if (moved) {
 			let seq = lis_algorithm(sources);
 			index = seq.length - 1;
