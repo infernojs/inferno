@@ -620,7 +620,7 @@ describe('Components (non-JSX)', () => {
 			render(template(), container);
 		});
 	});
-	
+
 
 	it('should support a ref string reference in the component', () => {
 		let elementRef = null;

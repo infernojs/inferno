@@ -1137,6 +1137,7 @@ describe('Update (non-jsx)', () => {
 		);
 	});
 
+	// TODO: There seems to be bug in JSDOM because styles dont get removed by assigning null or empty to dom.style[something]
 	if (typeof global !== 'undefined' && !global.usingJSDOM) {
 		describe('should render styling on root node, and set and remove styling on multiple children', () => {
 			let template;

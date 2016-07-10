@@ -1,5 +1,6 @@
 import { render } from './../rendering';
 import { createBlueprint } from './../../core/shapes';
+import compareInnerHTML from './../../../tools/innerHTML';
 
 const Inferno = {
 	createBlueprint
@@ -232,30 +233,28 @@ describe('createTree - SVG (JSX)', () => {
 		const spread = {id:'test'};
 
 		render(<svg {...spread}><use xlink:href="#changed"></use></svg>, container);
-		expect(container.innerHTML).to.equal('<svg id="test"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#changed"></use></svg>');
+		expect(container.innerHTML).to.equal(compareInnerHTML('<svg id="test"><use xlink:href="#changed"></use></svg>'));
 	});
 
-	if (typeof global !== 'undefined' && !global.usingJSDOM) {
-		it('should add / change / remove xlink:href attribute', () => {
+	it('should add / change / remove xlink:href attribute', () => {
 
-			render(<svg>
-				<use xlink:href="#test"></use>
-			</svg>, container);
+		render(<svg>
+			<use xlink:href="#test"></use>
+		</svg>, container);
 
-			expect(container.innerHTML).to.equal('<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#test"></use></svg>'); // Add
+		expect(container.innerHTML).to.equal(compareInnerHTML('<svg><use xlink:href="#test"></use></svg>')); // Add
 
-			render(<svg>
-				<use xlink:href="#changed"></use>
-			</svg>, container);
+		render(<svg>
+			<use xlink:href="#changed"></use>
+		</svg>, container);
 
-			expect(container.innerHTML).to.equal('<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#changed"></use></svg>'); // Change
+		expect(container.innerHTML).to.equal(compareInnerHTML('<svg><use xlink:href="#changed"></use></svg>')); // Change
 
-			render(<svg>
-				<use></use>
-			</svg>, container);
+		render(<svg>
+			<use></use>
+		</svg>, container);
 
-			expect(container.innerHTML).to.equal('<svg><use></use></svg>'); // Remove
+		expect(container.innerHTML).to.equal(compareInnerHTML('<svg><use></use></svg>')); // Remove
 
-		});
-	}
+	});
 });
