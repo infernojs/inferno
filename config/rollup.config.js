@@ -54,32 +54,38 @@ const bundles = [
 	{
 		moduleGlobal: 'Inferno',
 		moduleName: 'inferno',
-		moduleEntry: 'packages/inferno/src/index.js'
+		moduleEntry: 'packages/inferno/src/index.js',
+		path: 'packages/inferno/'
 	},
 	{
 		moduleGlobal: 'InfernoDOM',
 		moduleName: 'inferno-dom',
-		moduleEntry: 'packages/inferno-dom/src/index.js'
+		moduleEntry: 'packages/inferno-dom/src/index.js',
+		path: 'packages/inferno-dom/'
 	},
 	{
 		moduleGlobal: 'InfernoServer',
 		moduleName: 'inferno-server',
-		moduleEntry: 'packages/inferno-server/src/index.js'
+		moduleEntry: 'packages/inferno-server/src/index.js',
+		path: 'packages/inferno-server/'
 	},
 	{
 		moduleGlobal: 'InfernoComponent',
 		moduleName: 'inferno-component',
-		moduleEntry: 'packages/inferno-component/src/index.js'
+		moduleEntry: 'packages/inferno-component/src/index.js',
+		path: 'packages/inferno-component/'
 	},
 	{
 		moduleGlobal: 'InfernoTestUtils',
 		moduleName: 'inferno-test-utils',
-		moduleEntry: 'packages/inferno-test-utils/src/index.js'
+		moduleEntry: 'packages/inferno-test-utils/src/index.js',
+		path: 'packages/inferno-test-utils/'
 	},
 	{
 		moduleGlobal: 'InfernoCreateElement',
 		moduleName: 'inferno-create-element',
-		moduleEntry: 'packages/inferno-create-element/src/index.js'
+		moduleEntry: 'packages/inferno-create-element/src/index.js',
+		path: 'packages/inferno-create-element/'
 	},
 	{
 		moduleGlobal: 'InfernoCompat',
@@ -90,16 +96,18 @@ const bundles = [
 	{
 		moduleGlobal: 'InfernoRouter',
 		moduleName: 'inferno-router',
-		moduleEntry: 'packages/inferno-router/src/index.js'
+		moduleEntry: 'packages/inferno-router/src/index.js',
+		path: 'packages/inferno-router/'
 	},
 	{
 		moduleGlobal: 'InfernoCreateClass',
 		moduleName: 'inferno-create-class',
-		moduleEntry: 'packages/inferno-create-class/src/index.js'
+		moduleEntry: 'packages/inferno-create-class/src/index.js',
+		path: 'packages/inferno-create-class/'
 	}
 ];
 
-function createBundle({moduleGlobal, moduleName, moduleEntry, path = 'packages/inferno/dist/'}) {
+function createBundle({moduleGlobal, moduleName, moduleEntry }, path) {
 	const copyright =
 		'/*!\n' +
 		' * ' + moduleName + ' v' + pack.version + '\n' +
@@ -125,4 +133,4 @@ function createBundle({moduleGlobal, moduleName, moduleEntry, path = 'packages/i
 	});
 }
 
-Promise.all(bundles.map(bundle => createBundle(bundle))).then(_ => console.log('Bundles created!'));
+Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));

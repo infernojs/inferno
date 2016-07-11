@@ -1,5 +1,5 @@
 /*!
- * inferno-router v0.7.17
+ * inferno-router v0.7.18
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -92,6 +92,8 @@
     function createVPlaceholder() {
     	return new VPlaceholder();
     }
+
+    var documetBody = isBrowser ? document.body : null;
 
     function constructDefaults(string, object, value) {
     	/* eslint no-return-assign: 0 */

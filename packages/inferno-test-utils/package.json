@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "0.7.17",
+  "version": "0.7.18",
   "license": "MIT",
   "description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
   "author": {
