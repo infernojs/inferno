@@ -1,6 +1,6 @@
 {
   "name": "inferno-create-class",
-  "version": "0.7.19",
+  "version": "0.7.20",
   "license": "MIT",
   "description": "Provides a helper to create Inferno Components without needing ES2015",
   "author": {
@@ -19,5 +19,8 @@
     "framework",
     "interfaces",
     "user interfaces"
-  ]
+  ],
+  "dependencies": {
+    "inferno": "^0.7.20"
+  }
 }

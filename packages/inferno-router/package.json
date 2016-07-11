@@ -1,6 +1,6 @@
 {
   "name": "inferno-router",
-  "version": "0.7.19",
+  "version": "0.7.20",
   "license": "MIT",
   "description": "Provides routing functionality for Inferno",
   "author": {
@@ -21,5 +21,8 @@
     "user interfaces",
     "router"
   ],
-  "repository": "https://github.com/trueadm/inferno"
+  "repository": "https://github.com/trueadm/inferno",
+  "dependencies": {
+    "inferno": "^0.7.20"
+  }
 }

@@ -3146,6 +3146,33 @@
   	);
   }
 
+  var ARR = [];
+
+  var Children = {
+  	map: function map(children, fn, ctx) {
+  		children = Children.toArray(children);
+  		if (ctx && ctx!==children) fn = fn.bind(ctx);
+  		return children.map(fn);
+  	},
+  	forEach: function forEach(children, fn, ctx) {
+  		children = Children.toArray(children);
+  		if (ctx && ctx!==children) fn = fn.bind(ctx);
+  		children.forEach(fn);
+  	},
+  	count: function count(children) {
+  		children = Children.toArray(children);
+  		return children.length;
+  	},
+  	only: function only(children) {
+  		children = Children.toArray(children);
+  		if (children.length!==1) throw new Error('Children.only() expects only one child.');
+  		return children[0];
+  	},
+  	toArray: function toArray(children) {
+  		return Array.isArray && Array.isArray(children) ? children : ARR.concat(children);
+  	}
+  };
+
   Component.prototype.isReactComponent = {};
 
   var index = {
@@ -3160,7 +3187,8 @@
   	renderToString: renderToString,
   	renderToStaticMarkup: renderToStaticMarkup,
   	createBlueprint: createBlueprint,
-  	createVNode: createVNode
+  	createVNode: createVNode,
+  	Children: Children
   };
 
   exports.render = render;
@@ -3175,6 +3203,7 @@
   exports.renderToStaticMarkup = renderToStaticMarkup;
   exports.createBlueprint = createBlueprint;
   exports.createVNode = createVNode;
+  exports.Children = Children;
   exports['default'] = index;
 
   Object.defineProperty(exports, '__esModule', { value: true });
