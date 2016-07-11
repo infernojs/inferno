@@ -84,7 +84,8 @@ const bundles = [
 	{
 		moduleGlobal: 'InfernoCompat',
 		moduleName: 'inferno-compat',
-		moduleEntry: 'packages/inferno-compat/src/index.js'
+		moduleEntry: 'packages/inferno-compat/src/index.js',
+		path: 'packages/inferno-compat/'
 	}, 
 	{
 		moduleGlobal: 'InfernoRouter',
@@ -98,7 +99,7 @@ const bundles = [
 	}
 ];
 
-function createBundle({moduleGlobal, moduleName, moduleEntry}) {
+function createBundle({moduleGlobal, moduleName, moduleEntry, path = 'packages/inferno/dist/'}) {
 	const copyright =
 		'/*!\n' +
 		' * ' + moduleName + ' v' + pack.version + '\n' +
@@ -106,7 +107,7 @@ function createBundle({moduleGlobal, moduleName, moduleEntry}) {
 		' * Released under the ' + pack.license + ' License.\n' +
 		' */';
 	const entry = p.resolve(moduleEntry);
-	const dest  = p.resolve(`packages/inferno/dist/${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
+	const dest  = p.resolve(`${ path }${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
 
 	const bundleConfig = {
 		dest,

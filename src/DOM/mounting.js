@@ -51,23 +51,43 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 }
 
 export function mountVNode(vNode, parentDom, lifecycle, context, instance, isSVG) {
-	const bp = vNode.bp;
+	const tag = node.tag;
 
-	if (isUndefined(bp)) {
-		return mountVNodeWithoutBlueprint(vNode, parentDom, lifecycle, context, instance, isSVG);
-	} else {
-		if (recyclingEnabled) {
-			const dom = recycle(vNode, bp, lifecycle, context, instance);
-
-			if (!isNull(dom)) {
-				if (!isNull(parentDom)) {
-					parentDom.appendChild(dom);
-				}
-				return dom;
-			}
-		}
-		return mountVNodeWithBlueprint(vNode, bp, parentDom, lifecycle, context, instance);
+	if (isFunction(tag)) {
+		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
 	}
+	if (!isString(tag) || tag === '') {
+		throw Error('Inferno Error: Expected function or string for element tag type');
+	}
+	if (tag === 'svg') {
+		isSVG = true;
+	}
+	const dom = documentCreateElement(tag, isSVG);
+	const children = node.children;
+	const attrs = node.attrs;
+	const events = node.events;
+	const hooks = node.hooks;
+	const className = node.className;
+	const style = node.style;
+
+	node.dom = dom;
+	if (!isNullOrUndefined(hooks)) {
+		handleAttachedHooks(hooks, lifecycle, dom);
+	}
+	if (!isInvalidNode(children)) {
+		mountChildren(node, children, dom, lifecycle, context, instance, isSVG);
+	}
+	if (!isNullOrUndefined(attrs)) {
+		handleSelects(node);
+		mountAttributes(node, attrs, Object.keys(attrs), dom, instance);
+	}
+	if (!isNullOrUndefined(events)) {
+		mountEvents(events, Object.keys(events), dom);
+	}
+	if (!isNull(parentDom)) {
+		parentDom.appendChild(dom);
+	}
+	return dom;
 }
 
 export function mountVList(vList, parentDom, lifecycle, context, instance, isSVG) {
@@ -109,140 +129,6 @@ export function handleSelects(node) {
 	if (node.tag === 'select') {
 		selectValue(node);
 	}
-}
-
-export function mountBlueprintAttrs(node, bp, dom, instance) {
-	handleSelects(node);
-	const attrs = node.attrs;
-
-	if (isNull(bp.attrKeys)) {
-		const newKeys = Object.keys(attrs);
-		bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
-	}
-	const attrKeys = bp.attrKeys;
-
-	mountAttributes(node, attrs, attrKeys, dom, instance);
-}
-
-export function mountBlueprintEvents(node, bp, dom) {
-	const events = node.events;
-
-	if (isNull(bp.eventKeys)) {
-		bp.eventKeys = Object.keys(events);
-	}
-	const eventKeys = bp.eventKeys;
-
-	mountEvents(events, eventKeys, dom);
-}
-
-function mountVNodeWithBlueprint(node, bp, parentDom, lifecycle, context, instance) {
-	const tag = node.tag;
-
-	if (isTrue(bp.isComponent)) {
-		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
-	}
-	const dom = documentCreateElement(bp.tag, bp.isSVG);
-
-	node.dom = dom;
-	if (isTrue(bp.hasHooks)) {
-		handleAttachedHooks(node.hooks, lifecycle, dom);
-	}
-	if (isTrue(bp.lazy)) {
-		handleLazyAttached(node, lifecycle, dom);
-	}
-	const children = node.children;
-	// bp.childrenType:
-	// 0: no children
-	// 1: text node
-	// 2: single child
-	// 3: multiple children
-	// 4: multiple children (keyed)
-	// 5: variable children (defaults to no optimisation)
-
-	switch (bp.childrenType) {
-		case 1:
-			appendText(children, dom, true);
-			break;
-		case 2:
-			mount(node.children, dom, lifecycle, context, instance, bp.isSVG);
-			break;
-		case 3:
-			mountArrayChildren(children, dom, lifecycle, context, instance, bp.isSVG);
-			break;
-		case 4:
-			for (let i = 0; i < children.length; i++) {
-				mount(children[i], dom, lifecycle, context, instance, bp.isSVG);
-			}
-			break;
-		case 5:
-			mountChildren(node, children, dom, lifecycle, context, instance, bp.isSVG);
-			break;
-		default:
-			break;
-	}
-
-	if (isTrue(bp.hasAttrs)) {
-		mountBlueprintAttrs(node, bp, dom, instance);
-	}
-	if (isTrue(bp.hasClassName)) {
-		dom.className = node.className;
-	}
-	if (isTrue(bp.hasStyle)) {
-		patchStyle(null, node.style, dom);
-	}
-	if (isTrue(bp.hasEvents)) {
-		mountBlueprintEvents(node, bp, dom);
-	}
-	if (!isNull(parentDom)) {
-		parentDom.appendChild(dom);
-	}
-	return dom;
-}
-
-function mountVNodeWithoutBlueprint(node, parentDom, lifecycle, context, instance, isSVG) {
-	const tag = node.tag;
-
-	if (isFunction(tag)) {
-		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
-	}
-	if (!isString(tag) || tag === '') {
-		throw Error('Inferno Error: Expected function or string for element tag type');
-	}
-	if (tag === 'svg') {
-		isSVG = true;
-	}
-	const dom = documentCreateElement(tag, isSVG);
-	const children = node.children;
-	const attrs = node.attrs;
-	const events = node.events;
-	const hooks = node.hooks;
-	const className = node.className;
-	const style = node.style;
-
-	node.dom = dom;
-	if (!isNullOrUndefined(hooks)) {
-		handleAttachedHooks(hooks, lifecycle, dom);
-	}
-	if (!isInvalidNode(children)) {
-		mountChildren(node, children, dom, lifecycle, context, instance, isSVG);
-	}
-	if (!isNullOrUndefined(attrs)) {
-		handleSelects(node);
-		mountAttributes(node, attrs, Object.keys(attrs), dom, instance);
-	}
-	if (!isNullOrUndefined(className)) {
-		dom.className = className;
-	}
-	if (!isNullOrUndefined(style)) {
-		patchStyle(null, style, dom);
-	}
-	if (!isNullOrUndefined(events)) {
-		mountEvents(events, Object.keys(events), dom);
-	}
-	if (!isNull(parentDom)) {
-		parentDom.appendChild(dom);
-	}
-	return dom;
 }
 
 export function mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG) {

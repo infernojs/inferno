@@ -32,22 +32,6 @@ constructDefaults('volume,value', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-export function isVText(o) {
-	return o.text !== undefined;
-}
-
-export function isVPlaceholder(o) {
-	return o.placeholder === true;
-}
-
-export function isVList(o) {
-	return o.items !== undefined;
-}
-
-export function isVNode(o) {
-	return o.tag !== undefined || o.bp !== undefined;
-}
-
 export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
 		parentDom.appendChild(newNode);

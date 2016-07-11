@@ -14,17 +14,41 @@ export function addChildrenToProps(children, props) {
 	return props;
 }
 
-export const NO_RENDER = 'NO_RENDER';
+export const NO_OP = 'NO_OP';
 
 // Runs only once in applications lifetime
 export const isBrowser = typeof window !== 'undefined' && window.document;
+
+export function isVText(o) {
+	return o.text !== undefined;
+}
+
+export function isVPlaceholder(o) {
+	return o.placeholder === true;
+}
+
+export function isVList(o) {
+	return o.items !== undefined;
+}
+
+export function isVElement(o) {
+	return o.tag !== undefined;
+}
+
+export function isVTemplate(o) {
+	return o.bp !== undefined;
+}
+
+export function isVComponent(o) {
+	return o.component !== undefined;
+}
 
 export function isArray(obj) {
 	return obj instanceof Array;
 }
 
-export function isStatefulComponent(obj) {
-	return obj.prototype.render !== undefined;
+export function isStatefulComponent(o) {
+	return isTrue(obj._isStateful);
 }
 
 export function isStringOrNumber(obj) {
@@ -36,7 +60,7 @@ export function isNullOrUndefined(obj) {
 }
 
 export function isInvalidNode(obj) {
-	return isNull(obj) || obj === false || obj === true || isUndefined(obj);
+	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
 
 export function isFunction(obj) {
