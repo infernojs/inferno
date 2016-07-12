@@ -16,8 +16,6 @@ import { recyclingEnabled, recycle } from './recycling';
 import {
 	appendText,
 	documentCreateElement,
-	createVirtualFragment,
-	createEmptyTextNode,
 	selectValue,
 	handleAttachedHooks,
 	isVText,
@@ -31,10 +29,9 @@ import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	createVText,
-	createVPlaceholder,
-	createVList
+	createVPlaceholder
 } from '../core/shapes';
+import {normalise} from './utils';
 
 export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	if (isVPlaceholder(input)) {
