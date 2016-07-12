@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.17
+ * inferno-dom v0.7.18
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -1963,8 +1963,7 @@
 			}
 		}
 	}
-
-	var documetBody = document.body;
+	var documetBody = isBrowser ? document.body : null;
 
 	function hydrate(node, parentDom, lifecycle) {
 		if (parentDom && parentDom.nodeType === 1) {

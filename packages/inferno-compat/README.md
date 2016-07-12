@@ -52,9 +52,20 @@ All you have to do is add an alias for `react` and `react-dom`:
 			'react': 'inferno-compat',
 			'react-dom': 'inferno-compat',
             'react-dom/server': 'inferno-compat',
-            'inferno': 'inferno-compat' // for usage of babel-plugin-inferno
 		}
 	}
+}
+```
+
+If you plan on using the Inferno JSX module `babel-plugin-inferno`, you must also apply the following:
+
+```js
+{
+    plugins: [
+        new webpack.ProvidePlugin({
+            'Inferno': 'react'
+        })
+    ]
 }
 ```
 
