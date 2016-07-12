@@ -753,7 +753,7 @@
   	} else if (isVNode(input)) {
   		return mountVNode$1(input, parentDom, lifecycle, context, instance, isSVG);
   	} else {
-  		mount(normalise(input), parentDom, lifecycle, context, instance, isSVG);
+  		mount(normalise$1(input), parentDom, lifecycle, context, instance, isSVG);
   	}
   }
 
