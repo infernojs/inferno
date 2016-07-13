@@ -61,8 +61,6 @@ describe('Components (non-JSX)', () => {
 			render(template({}, 'abc'), container);
 		}).to.throw();
 
-		render(template(), container);
-
 		expect(() => render(template(BasicComponent1, {}), container)).to.throw;
 
 		render(template(BasicComponent1, []), container);

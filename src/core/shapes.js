@@ -1,13 +1,22 @@
 import { isUndefined } from './utils';
 
+export const NodeTypes = {
+	ELEMENT: 0,
+	COMPONENT: 1,
+	TEMPLATE: 2,
+	TEXT: 3,
+	PLACEHOLDER: 4,
+	FRAGMENT: 5
+};
+
 function VElement(tag) {
+	this._type = NodeTypes.ELEMENT;
 	this._dom = null;
 	this._tag = tag;
 	this._children = null;
 	this._key = null;
-	this._attrs = null;
+	this._props = null;
 	this._hooks = null;
-	this._events = null;
 }
 
 VElement.prototype = {
@@ -29,13 +38,13 @@ VElement.prototype = {
 };
 
 function VComponent(component) {
+	this._type = NodeTypes.COMPONENT;
 	this._dom = null;
-	this._ref = null;
 	this._component = component;
 	this._props = null;
 	this._hooks = null;
 	this._key = null;
-	this._isStateful = !isUndefined(component.prototype.render);
+	this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
 }
 
 VComponent.prototype = {
@@ -51,6 +60,7 @@ VComponent.prototype = {
 };
 
 function VTemplate(bp, v0, v1, v2) {
+	this._type = NodeTypes.TEMPLATE;
 	this._dom = null;
 	this._bp = bp;
 	this._key = null;
@@ -60,16 +70,18 @@ function VTemplate(bp, v0, v1, v2) {
 }
 
 function VText(text) {
+	this._type = NodeTypes.TEXT;
 	this._text = text;
 	this._dom = null;
 }
 
 function VPlaceholder() {
-	this._placeholder = true;
+	this._type = NodeTypes.PLACEHOLDER;
 	this._dom = null;
 }
 
-function VList(items) {
+function VFragment(items) {
+	this._type = NodeTypes.FRAGMENT;
 	this._dom = null;
 	this._pointer = null;
 	this._items = items;
@@ -79,7 +91,7 @@ export function createVTemplate(bp, v0, v1, v2) {
 	return new VTemplate(bp, v0, v1, v2);
 }
 
-export function createVComponent(tag) {
+export function createVComponent(component) {
 	return new VComponent(component);
 }
 
@@ -95,6 +107,30 @@ export function createVPlaceholder() {
 	return new VPlaceholder();
 }
 
-export function createVList(items) {
-	return new VList(items);
+export function createVFragment(items) {
+	return new VFragment(items);
+}
+
+export function isVText(o) {
+	return o._type === NodeTypes.TEXT;
+}
+
+export function isVPlaceholder(o) {
+	return o._type === NodeTypes.PLACEHOLDER;
+}
+
+export function isVFragment(o) {
+	return o._type === NodeTypes.FRAGMENT;
+}
+
+export function isVElement(o) {
+	return o._type === NodeTypes.ELEMENT;
+}
+
+export function isVTemplate(o) {
+	return o._type === NodeTypes.TEMPLATE;
+}
+
+export function isVComponent(o) {
+	return o._type === NodeTypes.COMPONENT;
 }

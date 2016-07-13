@@ -10,7 +10,7 @@
 }(this, function () { 'use strict';
 
 	function addChildrenToProps(children, props) {
-		if (!isNullOrUndefined(children)) {
+		if (!isNullOrUndef(children)) {
 			var isChildrenArray = isArray(children);
 			if (isChildrenArray && children.length > 0 || !isChildrenArray) {
 				if (props) {
@@ -42,11 +42,11 @@
 		return isString(obj) || isNumber(obj);
 	}
 
-	function isNullOrUndefined(obj) {
+	function isNullOrUndef(obj) {
 		return isUndefined(obj) || isNull(obj);
 	}
 
-	function isInvalidNode(obj) {
+	function isInvalid(obj) {
 		return isNull(obj) || obj === false || obj === true || isUndefined(obj);
 	}
 
@@ -75,12 +75,12 @@
 	}
 
 	function deepScanChildrenForNode(children, node) {
-		if (!isInvalidNode(children)) {
+		if (!isInvalid(children)) {
 			if (isArray(children)) {
 				for (var i = 0; i < children.length; i++) {
 					var child = children[i];
 
-					if (!isInvalidNode(child)) {
+					if (!isInvalid(child)) {
 						if (child === node) {
 							return true;
 						} else if (child.children) {
@@ -114,9 +114,9 @@
 		if (bp !== undefined) {
 			var key = node.key;
 			var pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed[key];
-			if (!isNullOrUndefined(pool)) {
+			if (!isNullOrUndef(pool)) {
 				var recycledNode = pool.pop();
-				if (!isNullOrUndefined(recycledNode)) {
+				if (!isNullOrUndef(recycledNode)) {
 					patch(recycledNode, node, null, lifecycle, context, instance, true, bp.isSVG);
 					return node.dom;
 				}
@@ -128,7 +128,7 @@
 	function pool(node) {
 		var bp = node.bp;
 
-		if (!isNullOrUndefined(bp)) {
+		if (!isNullOrUndef(bp)) {
 			var key = node.key;
 			var pools = bp.pools;
 
@@ -146,13 +146,13 @@
 
 	function unmount(input, parentDom) {
 		if (isVList(input)) {
-			unmountVList(input, parentDom, true);
+			unmountVFragment(input, parentDom, true);
 		} else if (isVNode(input)) {
 			unmountVNode(input, parentDom, false);
 		}
 	}
 
-	function unmountVList(vList, parentDom, removePointer) {
+	function unmountVFragment(vList, parentDom, removePointer) {
 		var items = vList.items;
 		var itemsLength = items.length;
 		var pointer = items.pointer;
@@ -162,7 +162,7 @@
 				var item = items[i];
 
 				if (isVList(item)) {
-					unmountVList(item, parentDom, true);
+					unmountVFragment(item, parentDom, true);
 				} else {
 					if (parentDom) {
 						removeChild(parentDom, item.dom);
@@ -181,7 +181,7 @@
 		var instanceHooks = null;
 		var instanceChildren = null;
 
-		if (!isNullOrUndefined(instance)) {
+		if (!isNullOrUndef(instance)) {
 			instanceHooks = instance.hooks;
 			instanceChildren = instance.children;
 
@@ -194,17 +194,17 @@
 		}
 		var hooks = node.hooks || instanceHooks;
 
-		if (!isNullOrUndefined(hooks)) {
-			if (!isNullOrUndefined(hooks.willDetach)) {
+		if (!isNullOrUndef(hooks)) {
+			if (!isNullOrUndef(hooks.willDetach)) {
 				hooks.willDetach(node.dom);
 			}
-			if (!isNullOrUndefined(hooks.componentWillUnmount)) {
+			if (!isNullOrUndef(hooks.componentWillUnmount)) {
 				hooks.componentWillUnmount(node.dom, hooks);
 			}
 		}
-		var children = (isNullOrUndefined(instance) ? node.children : null) || instanceChildren;
+		var children = (isNullOrUndef(instance) ? node.children : null) || instanceChildren;
 
-		if (!isNullOrUndefined(children)) {
+		if (!isNullOrUndef(children)) {
 			if (isArray(children)) {
 				for (var i = 0; i < children.length; i++) {
 					unmount(children[i], null);
@@ -278,7 +278,7 @@
 	}
 
 	function insertOrAppend(parentDom, newNode, nextNode) {
-		if (isNullOrUndefined(nextNode)) {
+		if (isNullOrUndef(nextNode)) {
 			parentDom.appendChild(newNode);
 		} else {
 			parentDom.insertBefore(newNode, nextNode);
@@ -288,7 +288,7 @@
 	function replaceVListWithNode(parentDom, vList, dom) {
 		var pointer = vList.pointer;
 
-		unmountVList(vList, parentDom, false);
+		unmountVFragment(vList, parentDom, false);
 		replaceNode(parentDom, dom, pointer);
 	}
 
@@ -330,7 +330,7 @@
 		var lastInstance = null;
 		var instanceLastNode = lastNode._lastNode;
 
-		if (!isNullOrUndefined(instanceLastNode)) {
+		if (!isNullOrUndef(instanceLastNode)) {
 			lastInstance = lastNode;
 			lastNode = instanceLastNode;
 		}
@@ -351,7 +351,7 @@
 	function normalise$1(object) {
 		if (isStringOrNumber(object)) {
 			return createVText(object);
-		} else if (isInvalidNode(object)) {
+		} else if (isInvalid(object)) {
 			return createVPlaceholder();
 		} else if (isArray(object)) {
 			return createVList(object);
@@ -405,7 +405,7 @@
 				for (var i = 0; i < childrenLength; i++) {
 					var child = children[i];
 
-					if (!isInvalidNode(child)) {
+					if (!isInvalid(child)) {
 						pool(child);
 					}
 				}
@@ -424,8 +424,8 @@
 		if (lastChildren.complex) {
 			return false;
 		}
-		return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
-			&& lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+		return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
+			&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 	}
 
 	function selectOptionValueIfNeeded(vdom, values) {
@@ -469,10 +469,10 @@
 	}
 
 	function handleAttachedHooks(hooks, lifecycle, dom) {
-		if (!isNullOrUndefined(hooks.created)) {
+		if (!isNullOrUndef(hooks.created)) {
 			hooks.created(dom);
 		}
-		if (!isNullOrUndefined(hooks.attached)) {
+		if (!isNullOrUndef(hooks.attached)) {
 			lifecycle.addListener(function () {
 				hooks.attached(dom);
 			});
@@ -481,7 +481,7 @@
 
 	function setValueProperty(nextNode) {
 		var value = nextNode.attrs.value;
-		if (!isNullOrUndefined(value)) {
+		if (!isNullOrUndef(value)) {
 			nextNode.dom.value = value;
 		}
 	}
@@ -506,7 +506,7 @@
 		} else if (isVText(input)) {
 			return mountVText(input, parentDom);
 		} else if (isVList(input)) {
-			return mountVList(input, parentDom, lifecycle, context, instance, isSVG);
+			return mountVFragment(input, parentDom, lifecycle, context, instance, isSVG);
 		} else if (isVNode(input)) {
 			return mountVNode$1(input, parentDom, lifecycle, context, instance, isSVG);
 		} else {
@@ -534,7 +534,7 @@
 		}
 	}
 
-	function mountVList(vList, parentDom, lifecycle, context, instance, isSVG) {
+	function mountVFragment(vList, parentDom, lifecycle, context, instance, isSVG) {
 		var items = vList.items;
 		var pointer = document.createTextNode('');
 		var dom = document.createDocumentFragment();
@@ -684,23 +684,23 @@
 		var style = node.style;
 
 		node.dom = dom;
-		if (!isNullOrUndefined(hooks)) {
+		if (!isNullOrUndef(hooks)) {
 			handleAttachedHooks(hooks, lifecycle, dom);
 		}
-		if (!isInvalidNode(children)) {
+		if (!isInvalid(children)) {
 			mountChildren(node, children, dom, lifecycle, context, instance, isSVG);
 		}
-		if (!isNullOrUndefined(attrs)) {
+		if (!isNullOrUndef(attrs)) {
 			handleSelects(node);
 			mountAttributes(node, attrs, Object.keys(attrs), dom, instance);
 		}
-		if (!isNullOrUndefined(className)) {
+		if (!isNullOrUndef(className)) {
 			dom.className = className;
 		}
-		if (!isNullOrUndefined(style)) {
+		if (!isNullOrUndef(style)) {
 			patchStyle(null, style, dom);
 		}
-		if (!isNullOrUndefined(events)) {
+		if (!isNullOrUndef(events)) {
 			mountEvents$1(events, Object.keys(events), dom);
 		}
 		if (!isNull(parentDom)) {
@@ -721,7 +721,7 @@
 				mountVPlaceholder(child, parentDom);
 				children.complex = true;
 			} else if (isVList(child)) {
-				mountVList(child, parentDom, lifecycle, context, instance, isSVG);
+				mountVFragment(child, parentDom, lifecycle, context, instance, isSVG);
 				children.complex = true;
 			} else {
 				mount(child, parentDom, lifecycle, context, instance, isSVG);
@@ -734,13 +734,13 @@
 			mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG);
 		} else if (isStringOrNumber(children)) {
 			appendText(children, parentDom, true);
-		} else if (!isInvalidNode(children)) {
+		} else if (!isInvalid(children)) {
 			mount(children, parentDom, lifecycle, context, instance, isSVG);
 		}
 	}
 
 	function mountRef(instance, value, refValue) {
-		if (!isInvalidNode(instance) && isString(value)) {
+		if (!isInvalid(instance) && isString(value)) {
 			instance.refs[value] = refValue;
 		}
 	}
@@ -762,12 +762,12 @@
 
 			instance._patch = patch;
 			instance._componentToDOMNodeMap = componentToDOMNodeMap;
-			if (!isNullOrUndefined(lastInstance) && props.ref) {
+			if (!isNullOrUndef(lastInstance) && props.ref) {
 				mountRef(lastInstance, props.ref, instance);
 			}
 			var childContext = instance.getChildContext();
 
-			if (!isNullOrUndefined(childContext)) {
+			if (!isNullOrUndef(childContext)) {
 				context = Object.assign({}, context, childContext);
 			}
 			instance.context = context;
@@ -780,25 +780,25 @@
 			instance.componentWillMount();
 			var node = instance.render();
 
-			if (isInvalidNode(node)) {
+			if (isInvalid(node)) {
 				node = createVPlaceholder();
 			}
 			instance._pendingSetState = false;
 			dom = mount(node, null, lifecycle, context, instance, false);
 			instance._lastNode = node;
 			instance.componentDidMount();
-			if (parentDom !== null && !isInvalidNode(dom)) {
+			if (parentDom !== null && !isInvalid(dom)) {
 				parentDom.appendChild(dom);
 			}
 			componentToDOMNodeMap.set(instance, dom);
 			parentNode.dom = dom;
 			parentNode.instance = instance;
 		} else {
-			if (!isNullOrUndefined(hooks)) {
-				if (!isNullOrUndefined(hooks.componentWillMount)) {
+			if (!isNullOrUndef(hooks)) {
+				if (!isNullOrUndef(hooks.componentWillMount)) {
 					hooks.componentWillMount(null, props);
 				}
-				if (!isNullOrUndefined(hooks.componentDidMount)) {
+				if (!isNullOrUndef(hooks.componentDidMount)) {
 					lifecycle.addListener(function () {
 						hooks.componentDidMount(dom, props);
 					});
@@ -808,14 +808,14 @@
 			/* eslint new-cap: 0 */
 			var node$1 = Component(props, context);
 
-			if (isInvalidNode(node$1)) {
+			if (isInvalid(node$1)) {
 				node$1 = createVPlaceholder();
 			}
 			dom = mount(node$1, null, lifecycle, context, null, false);
 
 			parentNode.instance = node$1;
 
-			if (parentDom !== null && !isInvalidNode(dom)) {
+			if (parentDom !== null && !isInvalid(dom)) {
 				parentDom.appendChild(dom);
 			}
 			parentNode.dom = dom;
@@ -837,9 +837,9 @@
 
 	function patch(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG) {
 		if (lastInput !== nextInput) {
-			if (isInvalidNode(lastInput)) {
+			if (isInvalid(lastInput)) {
 				mount(nextInput, parentDom, lifecycle, context, instance, isSVG);
-			} else if (isInvalidNode(nextInput)) {
+			} else if (isInvalid(nextInput)) {
 				remove(lastInput, parentDom);
 			} else if (isStringOrNumber(lastInput)) {
 				if (isStringOrNumber(nextInput)) {
@@ -857,7 +857,7 @@
 					if (isVList(lastInput)) {
 						patchVList(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG);
 					} else {
-						replaceNode(parentDom, mountVList(nextInput, null), lastInput.dom);
+						replaceNode(parentDom, mountVFragment(nextInput, null), lastInput.dom);
 						unmount(lastInput, null);
 					}
 				} else if (isVList(lastInput)) {
@@ -924,10 +924,10 @@
 		if (lastChildren === nextChildren) {
 			return;
 		}
-		if (isInvalidNode(lastChildren)) {
+		if (isInvalid(lastChildren)) {
 			if (isStringOrNumber(nextChildren)) {
 				patchTextNode(dom, lastChildren, nextChildren);
-			} else if (!isInvalidNode(nextChildren)) {
+			} else if (!isInvalid(nextChildren)) {
 				if (isArray(nextChildren)) {
 					mountArrayChildren(nextChildren, dom, lifecycle, context, instance, isSVG);
 				} else {
@@ -935,7 +935,7 @@
 				}
 			}
 		} else {
-			if (isInvalidNode(nextChildren)) {
+			if (isInvalid(nextChildren)) {
 				removeAllChildren(dom, lastChildren);
 			} else {
 				if (isArray(lastChildren)) {
@@ -986,7 +986,7 @@
 
 		if (nextBp.hasHooks === true) {
 			nextHooks = nextVNode.hooks;
-			if (nextHooks && !isNullOrUndefined(nextHooks.willUpdate)) {
+			if (nextHooks && !isNullOrUndef(nextHooks.willUpdate)) {
 				nextHooks.willUpdate(lastVNode.dom);
 			}
 		}
@@ -1010,14 +1010,14 @@
 			} else {
 				replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
 			}
-		} else if (isNullOrUndefined(lastTag)) {
+		} else if (isNullOrUndef(lastTag)) {
 			nextVNode.dom = lastVNode.dom;
 		} else {
 			if (lastBp.isComponent === true) {
 				if (nextBp.isComponent === true) {
 					var instance$1 = lastVNode.instance;
 
-					if (!isNullOrUndefined(instance$1) && instance$1._unmounted) {
+					if (!isNullOrUndef(instance$1) && instance$1._unmounted) {
 						var newDom = mountComponent(nextVNode, lastTag, nextVNode.attrs || {}, nextVNode.hooks, nextVNode.children, instance$1, parentDom, lifecycle, context);
 						if (parentDom !== null) {
 							replaceNode(parentDom, newDom, lastVNode.dom);
@@ -1061,13 +1061,13 @@
 						var lastChildren = lastVNode.children;
 						var nextChildren = nextVNode.children;
 
-						if (lastChildrenType === 0 || isInvalidNode(lastChildren)) {
+						if (lastChildrenType === 0 || isInvalid(lastChildren)) {
 							if (nextChildrenType > 2) {
 								mountArrayChildren(nextChildren, dom, lifecycle, context, instance);
 							} else {
 								mount(nextChildren, dom, lifecycle, context, instance);
 							}
-						} else if (nextChildrenType === 0 || isInvalidNode(nextChildren)) {
+						} else if (nextChildrenType === 0 || isInvalid(nextChildren)) {
 							if (lastChildrenType > 2) {
 								removeAllChildren(dom, lastChildren);
 							} else {
@@ -1098,7 +1098,7 @@
 					var nextClassName = nextVNode.className;
 
 					if (lastVNode.className !== nextClassName) {
-						if (isNullOrUndefined(nextClassName)) {
+						if (isNullOrUndef(nextClassName)) {
 							dom.removeAttribute('class');
 						} else {
 							dom.className = nextClassName;
@@ -1113,7 +1113,7 @@
 						patchStyle(lastStyle, nextStyle, dom);
 					}
 				}
-				if (nextBp.hasHooks === true && !isNullOrUndefined(nextHooks.didUpdate)) {
+				if (nextBp.hasHooks === true && !isNullOrUndef(nextHooks.didUpdate)) {
 					nextHooks.didUpdate(dom);
 				}
 				setFormElementProperties(nextTag, nextVNode);
@@ -1123,13 +1123,13 @@
 
 	function patchVNodeWithoutBlueprint(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
 		var nextHooks = nextNode.hooks;
-		var nextHooksDefined = !isNullOrUndefined(nextHooks);
+		var nextHooksDefined = !isNullOrUndef(nextHooks);
 
-		if (nextHooksDefined && !isNullOrUndefined(nextHooks.willUpdate)) {
+		if (nextHooksDefined && !isNullOrUndef(nextHooks.willUpdate)) {
 			nextHooks.willUpdate(lastNode.dom);
 		}
-		var nextTag = nextNode.tag || ((isNullOrUndefined(nextNode.bp)) ? null : nextNode.bp.tag);
-		var lastTag = lastNode.tag || ((isNullOrUndefined(lastNode.bp)) ? null : lastNode.bp.tag);
+		var nextTag = nextNode.tag || ((isNullOrUndef(nextNode.bp)) ? null : nextNode.bp.tag);
+		var lastTag = lastNode.tag || ((isNullOrUndef(lastNode.bp)) ? null : lastNode.bp.tag);
 
 		if (nextTag === 'svg') {
 			isSVG = true;
@@ -1150,14 +1150,14 @@
 			} else {
 				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
 			}
-		} else if (isNullOrUndefined(lastTag)) {
+		} else if (isNullOrUndef(lastTag)) {
 			nextNode.dom = lastNode.dom;
 		} else {
 			if (isFunction(lastTag)) {
 				if (isFunction(nextTag)) {
 					var instance$1 = lastNode._instance;
 
-					if (!isNullOrUndefined(instance$1) && instance$1._unmounted) {
+					if (!isNullOrUndef(instance$1) && instance$1._unmounted) {
 						var newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance$1, parentDom, lifecycle, context);
 						if (parentDom !== null) {
 							replaceNode(parentDom, newDom, lastNode.dom);
@@ -1180,7 +1180,7 @@
 				patchEvents(lastNode.events, nextNode.events, null, null, dom);
 
 				if (lastNode.className !== nextClassName) {
-					if (isNullOrUndefined(nextClassName)) {
+					if (isNullOrUndef(nextClassName)) {
 						dom.removeAttribute('class');
 					} else {
 						dom.className = nextClassName;
@@ -1189,7 +1189,7 @@
 				if (lastNode.style !== nextStyle) {
 					patchStyle(lastNode.style, nextStyle, dom);
 				}
-				if (nextHooksDefined && !isNullOrUndefined(nextHooks.didUpdate)) {
+				if (nextHooksDefined && !isNullOrUndef(nextHooks.didUpdate)) {
 					nextHooks.didUpdate(dom);
 				}
 				setFormElementProperties(nextTag, nextNode);
@@ -1203,8 +1203,8 @@
 		}
 		var nextAttrs = nextNode.attrs;
 		var lastAttrs = lastNode.attrs;
-		var nextAttrsIsUndef = isNullOrUndefined(nextAttrs);
-		var lastAttrsIsNotUndef = !isNullOrUndefined(lastAttrs);
+		var nextAttrsIsUndef = isNullOrUndef(nextAttrs);
+		var lastAttrsIsNotUndef = !isNullOrUndef(lastAttrs);
 
 		if (!nextAttrsIsUndef) {
 			var nextAttrsKeys = nextAttrKeys || Object.keys(nextAttrs);
@@ -1231,7 +1231,7 @@
 			for (var i$1 = 0; i$1 < attrKeysLength$1; i$1++) {
 				var attr$1 = lastAttrsKeys[i$1];
 
-				if (nextAttrsIsUndef || isNullOrUndefined(nextAttrs[attr$1])) {
+				if (nextAttrsIsUndef || isNullOrUndef(nextAttrs[attr$1])) {
 					if (attr$1 === 'ref') {
 						patchRef(getRefInstance(node, instance), lastAttrs[attr$1], null, dom);
 					} else {
@@ -1246,8 +1246,8 @@
 	function patchStyle(lastAttrValue, nextAttrValue, dom) {
 		if (isString(nextAttrValue)) {
 			dom.style.cssText = nextAttrValue;
-		} else if (isNullOrUndefined(lastAttrValue)) {
-			if (!isNullOrUndefined(nextAttrValue)) {
+		} else if (isNullOrUndef(lastAttrValue)) {
+			if (!isNullOrUndef(nextAttrValue)) {
 				var styleKeys = Object.keys(nextAttrValue);
 
 				for (var i = 0; i < styleKeys.length; i++) {
@@ -1261,7 +1261,7 @@
 					}
 				}
 			}
-		} else if (isNullOrUndefined(nextAttrValue)) {
+		} else if (isNullOrUndef(nextAttrValue)) {
 			dom.removeAttribute('style');
 		} else {
 			var styleKeys$1 = Object.keys(nextAttrValue);
@@ -1280,7 +1280,7 @@
 
 			for (var i$2 = 0; i$2 < lastStyleKeys.length; i$2++) {
 				var style$2 = lastStyleKeys[i$2];
-				if (isNullOrUndefined(nextAttrValue[style$2])) {
+				if (isNullOrUndef(nextAttrValue[style$2])) {
 					dom.style[style$2] = '';
 				}
 			}
@@ -1288,8 +1288,8 @@
 	}
 
 	function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKeys, dom) {
-		var nextEventsDefined = !isNullOrUndefined(nextEvents);
-		var lastEventsDefined = !isNullOrUndefined(lastEvents);
+		var nextEventsDefined = !isNullOrUndef(nextEvents);
+		var lastEventsDefined = !isNullOrUndef(lastEvents);
 
 		if (nextEventsDefined) {
 			if (lastEventsDefined) {
@@ -1309,7 +1309,7 @@
 				for (var i$1 = 0; i$1 < lastEventKeys.length; i$1++) {
 					var event$1 = lastEventKeys[i$1];
 
-					if (isNullOrUndefined(nextEvents[event$1])) {
+					if (isNullOrUndef(nextEvents[event$1])) {
 						dom[event$1] = null;
 					}
 				}
@@ -1326,7 +1326,7 @@
 			var lastHtml = lastAttrValue && lastAttrValue.__html;
 			var nextHtml = nextAttrValue && nextAttrValue.__html;
 
-			if (isNullOrUndefined(nextHtml)) {
+			if (isNullOrUndef(nextHtml)) {
 				throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
 			}
 			if (lastHtml !== nextHtml) {
@@ -1340,7 +1340,7 @@
 			} else {
 				var ns = namespaces[attrName];
 
-				if (nextAttrValue === false || isNullOrUndefined(nextAttrValue)) {
+				if (nextAttrValue === false || isNullOrUndef(nextAttrValue)) {
 					if (ns !== undefined) {
 						dom.removeAttributeNS(ns, attrName);
 					} else {
@@ -1366,7 +1366,7 @@
 			var nextState = instance.state;
 
 			var childContext = instance.getChildContext();
-			if (!isNullOrUndefined(childContext)) {
+			if (!isNullOrUndef(childContext)) {
 				context = Object.assign({}, context, childContext);
 			}
 			instance.context = context;
@@ -1374,7 +1374,7 @@
 
 			if (nextNode === NO_RENDER) {
 				nextNode = instance._lastNode;
-			} else if (isNullOrUndefined(nextNode)) {
+			} else if (isNullOrUndef(nextNode)) {
 				nextNode = createVPlaceholder();
 			}
 			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
@@ -1384,24 +1384,24 @@
 			componentToDOMNodeMap.set(instance, nextNode.dom);
 		} else {
 			var shouldUpdate = true;
-			var nextHooksDefined = (hasBlueprint && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
+			var nextHooksDefined = (hasBlueprint && nextBp.hasHooks === true) || !isNullOrUndef(nextHooks);
 
-			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
+			if (nextHooksDefined && !isNullOrUndef(nextHooks.componentShouldUpdate)) {
 				shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
 			}
 			if (shouldUpdate !== false) {
-				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentWillUpdate)) {
+				if (nextHooksDefined && !isNullOrUndef(nextHooks.componentWillUpdate)) {
 					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
 				}
 				var nextNode$1 = Component(nextProps, context);
 
-				if (isInvalidNode(nextNode$1)) {
+				if (isInvalid(nextNode$1)) {
 					nextNode$1 = createVPlaceholder();
 				}
 				nextNode$1.dom = lastNode.dom;
 				patch(instance, nextNode$1, parentDom, lifecycle, context, null, null, false);
 				lastNode.instance = nextNode$1;
-				if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentDidUpdate)) {
+				if (nextHooksDefined && !isNullOrUndef(nextHooks.componentDidUpdate)) {
 					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
 				}
 			}
@@ -1836,12 +1836,12 @@
 			var instance = node.instance = new Component(props);
 
 			instance._patch = patch;
-			if (!isNullOrUndefined(lastInstance) && props.ref) {
+			if (!isNullOrUndef(lastInstance) && props.ref) {
 				mountRef(lastInstance, props.ref, instance);
 			}
 			var childContext = instance.getChildContext();
 
-			if (!isNullOrUndefined(childContext)) {
+			if (!isNullOrUndef(childContext)) {
 				context = Object.assign({}, context, childContext);
 			}
 			instance.context = context;
@@ -1855,7 +1855,7 @@
 			var nextNode = instance.render();
 
 			instance._pendingSetState = false;
-			if (isInvalidNode(nextNode)) {
+			if (isInvalid(nextNode)) {
 				nextNode = createVPlaceholder();
 			}
 			hydrateNode(nextNode, domNode, parentDom, lifecycle, context, instance, isRoot);
@@ -1865,11 +1865,11 @@
 		} else {
 			var instance$1 = node.instance = Component(props);
 
-			if (!isNullOrUndefined(hooks)) {
-				if (!isNullOrUndefined(hooks.componentWillMount)) {
+			if (!isNullOrUndef(hooks)) {
+				if (!isNullOrUndef(hooks.componentWillMount)) {
 					hooks.componentWillMount(null, props);
 				}
-				if (!isNullOrUndefined(hooks.componentDidMount)) {
+				if (!isNullOrUndef(hooks.componentDidMount)) {
 					lifecycle.addListener(function () {
 						hooks.componentDidMount(domNode, props);
 					});
@@ -1896,12 +1896,12 @@
 				node.dom = domNode;
 				var hooks = node.hooks;
 
-				if ((bp && bp.hasHooks === true) || !isNullOrUndefined(hooks)) {
+				if ((bp && bp.hasHooks === true) || !isNullOrUndef(hooks)) {
 					handleAttachedHooks(hooks, lifecycle, domNode);
 				}
 				var children = node.children;
 
-				if (!isNullOrUndefined(children)) {
+				if (!isNullOrUndef(children)) {
 					if (isStringOrNumber(children)) {
 						if (domNode.textContent !== children) {
 							domNode.textContent = children;
@@ -1935,10 +1935,10 @@
 				var className = node.className;
 				var style = node.style;
 
-				if (!isNullOrUndefined(className)) {
+				if (!isNullOrUndef(className)) {
 					domNode.className = className;
 				}
-				if (!isNullOrUndefined(style)) {
+				if (!isNullOrUndef(style)) {
 					patchStyle(null, style, domNode);
 				}
 				if (bp && bp.hasAttrs === true) {
@@ -1946,7 +1946,7 @@
 				} else {
 					var attrs = node.attrs;
 
-					if (!isNullOrUndefined(attrs)) {
+					if (!isNullOrUndef(attrs)) {
 						handleSelects(node);
 						mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
 					}
@@ -1956,7 +1956,7 @@
 				} else {
 					var events = node.events;
 
-					if (!isNullOrUndefined(events)) {
+					if (!isNullOrUndef(events)) {
 						mountEvents$1(events, Object.keys(events), domNode);
 					}
 				}
@@ -1995,7 +1995,7 @@
 		var lifecycle = new Lifecycle();
 
 		if (isUndefined(root)) {
-			if (!isInvalidNode(input)) {
+			if (!isInvalid(input)) {
 				if (!hydrate(input, parentDom, lifecycle)) {
 					mount(input, parentDom, lifecycle, {}, null, false);
 				}

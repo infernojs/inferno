@@ -2,7 +2,7 @@ import Lifecycle from './lifecycle';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { getActiveNode, resetActiveNode } from './utils';
-import { isUndefined, isInvalidNode, isNull } from '../core/utils';
+import { isUndefined, isInvalid, isNull } from '../core/utils';
 import hydrate from './hydration';
 
 const roots = new Map();
@@ -17,7 +17,7 @@ export function render(input, parentDom) {
 	const lifecycle = new Lifecycle();
 
 	if (isUndefined(root)) {
-		if (!isInvalidNode(input)) {
+		if (!isInvalid(input)) {
 			if (!hydrate(input, parentDom, lifecycle)) {
 				mount(input, parentDom, lifecycle, {}, null, false);
 			}
@@ -26,13 +26,13 @@ export function render(input, parentDom) {
 		}
 	} else {
 		const activeNode = getActiveNode();
-		const nextInput = patch(root.input, input, parentDom, lifecycle, {}, null, false);
+		patch(root.input, input, parentDom, lifecycle, {}, null, false);
 
 		lifecycle.trigger();
 		if (isNull(input)) {
 			roots.delete(parentDom);
 		}
-		root.input = nextInput;
+		root.input = input;
 		resetActiveNode(activeNode);
 	}
 }

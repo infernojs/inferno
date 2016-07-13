@@ -2,11 +2,11 @@ import {
 	isArray,
 	isStringOrNumber,
 	isFunction,
-	isNullOrUndefined,
+	isNullOrUndef,
 	addChildrenToProps,
 	isStatefulComponent,
 	isString,
-	isInvalidNode,
+	isInvalid,
 	getRefInstance,
 	isNull,
 	isUndefined,
@@ -18,18 +18,20 @@ import {
 	documentCreateElement,
 	selectValue,
 	handleAttachedHooks,
-	isVText,
-	isVPlaceholder,
-	isVList,
-	isVNode,
 	insertOrAppend,
-	normaliseChild
+	normaliseChild,
+	isPropertyOfElement
 } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	createVPlaceholder
+	createVPlaceholder,
+	isVText,
+	isVPlaceholder,
+	isVFragment,
+	isVElement,
+	isVComponent
 } from '../core/shapes';
 import { normalise } from './utils';
 
@@ -38,48 +40,41 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 		return mountVPlaceholder(input, parentDom);
 	} else if (isVText(input)) {
 		return mountVText(input, parentDom);
-	} else if (isVList(input)) {
-		return mountVList(input, parentDom, lifecycle, context, instance, isSVG);
-	} else if (isVNode(input)) {
-		return mountVNode(input, parentDom, lifecycle, context, instance, isSVG);
+	} else if (isVFragment(input)) {
+		return mountVFragment(input, parentDom, lifecycle, context, instance, isSVG);
+	} else if (isVElement(input)) {
+		return mountVElement(input, parentDom, lifecycle, context, instance, isSVG);
+	} else if (isVComponent(input)) {
+		return mountVComponent(input, parentDom, lifecycle, context, instance, isSVG);
 	} else {
-		mount(normalise(input), parentDom, lifecycle, context, instance, isSVG);
+		throw Error('Bad Input!');
 	}
 }
 
-export function mountVNode(vNode, parentDom, lifecycle, context, instance, isSVG) {
-	const tag = node.tag;
+export function mountVElement(vElement, parentDom, lifecycle, context, instance, isSVG) {
+	const tag = vElement._tag;
 
-	if (isFunction(tag)) {
-		return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
-	}
-	if (!isString(tag) || tag === '') {
-		throw Error('Inferno Error: Expected function or string for element tag type');
+	if (!isString(tag)) {
+		throw new Error('Inferno Error: expects VElement to have a string as the tag name');
 	}
 	if (tag === 'svg') {
 		isSVG = true;
 	}
 	const dom = documentCreateElement(tag, isSVG);
-	const children = node.children;
-	const attrs = node.attrs;
-	const events = node.events;
-	const hooks = node.hooks;
-	const className = node.className;
-	const style = node.style;
+	const children = vElement._children;
+	const props = vElement._props;
+	const hooks = vElement._hooks;
 
-	node.dom = dom;
-	if (!isNullOrUndefined(hooks)) {
+	vElement._dom = dom;
+	if (!isNullOrUndef(hooks)) {
 		handleAttachedHooks(hooks, lifecycle, dom);
 	}
-	if (!isInvalidNode(children)) {
-		mountChildren(node, children, dom, lifecycle, context, instance, isSVG);
+	if (!isNullOrUndef(children)) {
+		mountChildren(vElement, children, dom, lifecycle, context, instance, isSVG);
 	}
-	if (!isNullOrUndefined(attrs)) {
-		handleSelects(node);
-		mountAttributes(node, attrs, Object.keys(attrs), dom, instance);
-	}
-	if (!isNullOrUndefined(events)) {
-		mountEvents(events, Object.keys(events), dom);
+	if (!isNullOrUndef(props)) {
+		handleSelects(vElement);
+		mountProps(vElement, props, dom);
 	}
 	if (!isNull(parentDom)) {
 		parentDom.appendChild(dom);
@@ -87,7 +82,7 @@ export function mountVNode(vNode, parentDom, lifecycle, context, instance, isSVG
 	return dom;
 }
 
-export function mountVList(vList, parentDom, lifecycle, context, instance, isSVG) {
+export function mountVFragment(vList, parentDom, lifecycle, context, instance, isSVG) {
 	const items = vList.items;
 	const pointer = document.createTextNode('');
 	const dom = document.createDocumentFragment();
@@ -103,9 +98,9 @@ export function mountVList(vList, parentDom, lifecycle, context, instance, isSVG
 }
 
 export function mountVText(vText, parentDom) {
-	const dom = document.createTextNode(vText.text);
+	const dom = document.createTextNode(vText._text);
 
-	vText.dom = dom;
+	vText._dom = dom;
 	if (parentDom) {
 		insertOrAppend(parentDom, dom);
 	}
@@ -140,7 +135,7 @@ export function mountArrayChildren(children, parentDom, lifecycle, context, inst
 			mountVPlaceholder(child, parentDom);
 			children.complex = true;
 		} else if (isVList(child)) {
-			mountVList(child, parentDom, lifecycle, context, instance, isSVG);
+			mountVFragment(child, parentDom, lifecycle, context, instance, isSVG);
 			children.complex = true;
 		} else {
 			mount(child, parentDom, lifecycle, context, instance, isSVG);
@@ -153,13 +148,13 @@ function mountChildren(node, children, parentDom, lifecycle, context, instance, 
 		mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG);
 	} else if (isStringOrNumber(children)) {
 		appendText(children, parentDom, true);
-	} else if (!isInvalidNode(children)) {
+	} else if (!isInvalid(children)) {
 		mount(children, parentDom, lifecycle, context, instance, isSVG);
 	}
 }
 
 export function mountRef(instance, value, refValue) {
-	if (!isInvalidNode(instance) && isString(value)) {
+	if (!isInvalid(instance) && isString(value)) {
 		instance.refs[value] = refValue;
 	}
 }
@@ -172,26 +167,28 @@ export function mountEvents(events, eventKeys, dom) {
 	}
 }
 
-export function mountComponent(parentNode, Component, props, hooks, children, lastInstance, parentDom, lifecycle, context) {
-	props = addChildrenToProps(children, props);
-
+export function mountVComponent(vComponent, parentDom, lifecycle, context, lastInstance, isSVG) {
+	const Component = vComponent._component;
+	const props = vComponent._props;
+	const hooks = vComponent._hooks;
 	let dom;
-	if (isStatefulComponent(Component)) {
+
+	if (isStatefulComponent(vComponent)) {
 		const instance = new Component(props);
 
 		instance._patch = patch;
 		instance._componentToDOMNodeMap = componentToDOMNodeMap;
-		if (!isNullOrUndefined(lastInstance) && props.ref) {
+		if (!isNullOrUndef(lastInstance) && props.ref) {
 			mountRef(lastInstance, props.ref, instance);
 		}
 		const childContext = instance.getChildContext();
 
-		if (!isNullOrUndefined(childContext)) {
+		if (!isNullOrUndef(childContext)) {
 			context = Object.assign({}, context, childContext);
 		}
 		instance.context = context;
 		instance._unmounted = false;
-		instance._parentNode = parentNode;
+		instance._parentNode = vComponent;
 		if (lastInstance) {
 			instance._parentComponent = lastInstance;
 		}
@@ -199,25 +196,25 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		instance.componentWillMount();
 		let node = instance.render();
 
-		if (isInvalidNode(node)) {
+		if (isInvalid(node)) {
 			node = createVPlaceholder();
 		}
 		instance._pendingSetState = false;
 		dom = mount(node, null, lifecycle, context, instance, false);
 		instance._lastNode = node;
 		instance.componentDidMount();
-		if (parentDom !== null && !isInvalidNode(dom)) {
+		if (parentDom !== null && !isInvalid(dom)) {
 			parentDom.appendChild(dom);
 		}
 		componentToDOMNodeMap.set(instance, dom);
-		parentNode.dom = dom;
-		parentNode.instance = instance;
+		vComponent.dom = dom;
+		vComponent.instance = instance;
 	} else {
-		if (!isNullOrUndefined(hooks)) {
-			if (!isNullOrUndefined(hooks.componentWillMount)) {
+		if (!isNullOrUndef(hooks)) {
+			if (!isNullOrUndef(hooks.componentWillMount)) {
 				hooks.componentWillMount(null, props);
 			}
-			if (!isNullOrUndefined(hooks.componentDidMount)) {
+			if (!isNullOrUndef(hooks.componentDidMount)) {
 				lifecycle.addListener(() => {
 					hooks.componentDidMount(dom, props);
 				});
@@ -227,29 +224,31 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 		/* eslint new-cap: 0 */
 		let node = Component(props, context);
 
-		if (isInvalidNode(node)) {
+		if (isInvalid(node)) {
 			node = createVPlaceholder();
 		}
 		dom = mount(node, null, lifecycle, context, null, false);
-
-		parentNode.instance = node;
-
-		if (parentDom !== null && !isInvalidNode(dom)) {
+		vComponent.instance = node;
+		if (parentDom !== null && !isInvalid(dom)) {
 			parentDom.appendChild(dom);
 		}
-		parentNode.dom = dom;
+		vComponent.dom = dom;
 	}
 	return dom;
 }
 
-export function mountAttributes(node, attrs, attrKeys, dom, instance) {
-	for (let i = 0; i < attrKeys.length; i++) {
-		const attr = attrKeys[i];
+export function mountProps(vElement, props, dom, instance) {
+	for (let prop in props) {
+		const value = props[prop];
 
-		if (attr === 'ref') {
-			mountRef(getRefInstance(node, instance), attrs[attr], dom);
+		if (prop === 'ref') {
+			mountRef(getRefInstance(vElement, instance), value, dom);
 		} else {
-			patchAttribute(attr, null, attrs[attr], dom);
+			if (isPropertyOfElement(vElement._tag, prop)) {
+				dom[prop] = value;
+			} else {
+				dom.setAttribute(prop, value);
+			}
 		}
 	}
 }

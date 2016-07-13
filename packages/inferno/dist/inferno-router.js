@@ -18,7 +18,7 @@
     	return obj instanceof Array;
     }
 
-    function isNullOrUndefined(obj) {
+    function isNullOrUndef(obj) {
     	return isUndefined(obj) || isNull(obj);
     }
 
@@ -200,7 +200,7 @@
 
     		if (nextNode === NO_RENDER) {
     			nextNode = component._lastNode;
-    		} else if (isNullOrUndefined(nextNode)) {
+    		} else if (isNullOrUndef(nextNode)) {
     			nextNode = createVPlaceholder();
     		}
     		var lastNode = component._lastNode;
@@ -214,7 +214,7 @@
     		component._parentNode.dom = nextNode.dom;
     		component.componentDidUpdate(props, prevState);
     		subLifecycle.trigger();
-    		if (!isNullOrUndefined(callback)) {
+    		if (!isNullOrUndef(callback)) {
     			callback();
     		}
     		resetActiveNode(activeNode);
@@ -295,7 +295,7 @@
     		this._unmounted = false;
     		return false;
     	}
-    	if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
+    	if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
     		nextProps.children = prevProps.children;
     	}
     	if (prevProps !== nextProps || prevState !== nextState || force) {

@@ -1,12 +1,13 @@
 import { mount } from './mounting';
 import {
 	isArray,
-	isNullOrUndefined,
-	isInvalidNode,
-	isStringOrNumber
+	isNullOrUndef,
+	isInvalid,
+	isStringOrNumber,
+	isUndefined
 } from './../core/utils';
 import { recyclingEnabled, pool } from './recycling';
-import { unmountVList } from './unmounting';
+import { unmountVFragment } from './unmounting';
 import {
 	createVText,
 	createVPlaceholder,
@@ -32,8 +33,39 @@ constructDefaults('volume,value', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
+const elementsPropMap = new Map();
+
+// pre-populate with common tags
+getAllPropsForElement('div');
+getAllPropsForElement('span');
+getAllPropsForElement('table');
+getAllPropsForElement('tr');
+getAllPropsForElement('td');
+getAllPropsForElement('a');
+getAllPropsForElement('p');
+
+function getAllPropsForElement(tag) {
+	const elem = document.createElement(tag);
+	const props = {};
+
+	for (let prop in elem) {
+		props[prop] = true;
+	}
+	elementsPropMap.set(tag, props);
+	return props;
+}
+
+export function isPropertyOfElement(tag, prop) {
+	let propsForElement = elementsPropMap.get(tag);
+
+	if (isUndefined(propsForElement)) {
+		propsForElement = getAllPropsForElement(tag);
+	}
+	return propsForElement[prop];
+}
+
 export function insertOrAppend(parentDom, newNode, nextNode) {
-	if (isNullOrUndefined(nextNode)) {
+	if (isNullOrUndef(nextNode)) {
 		parentDom.appendChild(newNode);
 	} else {
 		parentDom.insertBefore(newNode, nextNode);
@@ -43,7 +75,7 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 export function replaceVListWithNode(parentDom, vList, dom) {
 	const pointer = vList.pointer;
 
-	unmountVList(vList, parentDom, false);
+	unmountVFragment(vList, parentDom, false);
 	replaceNode(parentDom, dom, pointer);
 }
 
@@ -85,7 +117,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 	let lastInstance = null;
 	const instanceLastNode = lastNode._lastNode;
 
-	if (!isNullOrUndefined(instanceLastNode)) {
+	if (!isNullOrUndef(instanceLastNode)) {
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
@@ -106,7 +138,7 @@ export function replaceNode(parentDom, nextDom, lastDom) {
 export function normalise(object) {
 	if (isStringOrNumber(object)) {
 		return createVText(object);
-	} else if (isInvalidNode(object)) {
+	} else if (isInvalid(object)) {
 		return createVPlaceholder();
 	} else if (isArray(object)) {
 		return createVList(object);
@@ -160,7 +192,7 @@ export function removeAllChildren(dom, children) {
 			for (let i = 0; i < childrenLength; i++) {
 				const child = children[i];
 
-				if (!isInvalidNode(child)) {
+				if (!isInvalid(child)) {
 					pool(child);
 				}
 			}
@@ -179,8 +211,8 @@ export function isKeyed(lastChildren, nextChildren) {
 	if (lastChildren.complex) {
 		return false;
 	}
-	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
-		&& lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
+		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
 
 function selectOptionValueIfNeeded(vdom, values) {
@@ -224,10 +256,10 @@ export function selectValue(vdom) {
 }
 
 export function handleAttachedHooks(hooks, lifecycle, dom) {
-	if (!isNullOrUndefined(hooks.created)) {
+	if (!isNullOrUndef(hooks.created)) {
 		hooks.created(dom);
 	}
-	if (!isNullOrUndefined(hooks.attached)) {
+	if (!isNullOrUndef(hooks.attached)) {
 		lifecycle.addListener(() => {
 			hooks.attached(dom);
 		});
@@ -236,7 +268,7 @@ export function handleAttachedHooks(hooks, lifecycle, dom) {
 
 export function setValueProperty(nextNode) {
 	const value = nextNode.attrs.value;
-	if (!isNullOrUndefined(value)) {
+	if (!isNullOrUndef(value)) {
 		nextNode.dom.value = value;
 	}
 }

@@ -1,7 +1,7 @@
 import { render } from './../rendering';
 import Component from './../../component/es2015';
 import { createBlueprint } from './../../core/shapes';
-import { isNullOrUndefined } from '../../core/utils';
+import { isNullOrUndef } from '../../core/utils';
 const sinon = require('sinon/pkg/sinon');
 
 const Inferno = {
@@ -256,8 +256,8 @@ describe('Columns like tests - (JSX)', () => {
 						const updateColumns = testCase.update[i];
 						const intialColumns = testCase.initial[i];
 
-						if (!isNullOrUndefined(updateColumns)) {
-							if (!isNullOrUndefined(intialColumns)) {
+						if (!isNullOrUndef(updateColumns)) {
+							if (!isNullOrUndef(intialColumns)) {
 								itemsToBeAdded = itemsToBeAdded.concat(getDifferentObjects(updateColumns.items, intialColumns.items));
 								itemsToRemove = itemsToRemove.concat(getDifferentObjects(intialColumns.items, updateColumns.items));
 								itemsToUpdate = itemsToUpdate.concat(getSameObjects(updateColumns.items, intialColumns.items));
@@ -266,7 +266,7 @@ describe('Columns like tests - (JSX)', () => {
 								itemsToBeAdded = itemsToBeAdded.concat(updateColumns.items);
 							}
 						} else {
-							if (!isNullOrUndefined(intialColumns)) {
+							if (!isNullOrUndef(intialColumns)) {
 								initialItemsCount += intialColumns.items.length;
 								itemsToRemove = itemsToRemove.concat(intialColumns.items);
 							} else {
@@ -397,8 +397,8 @@ describe('Columns like tests - (JSX)', () => {
 						const updateColumns = testCase.update[i];
 						const intialColumns = testCase.initial[i];
 
-						if (!isNullOrUndefined(updateColumns)) {
-							if (!isNullOrUndefined(intialColumns)) {
+						if (!isNullOrUndef(updateColumns)) {
+							if (!isNullOrUndef(intialColumns)) {
 								itemsToBeAdded = itemsToBeAdded.concat(getDifferentObjects(updateColumns.items, intialColumns.items));
 								itemsToRemove = itemsToRemove.concat(getDifferentObjects(intialColumns.items, updateColumns.items));
 								itemsToUpdate = itemsToUpdate.concat(getSameObjects(updateColumns.items, intialColumns.items));
@@ -407,7 +407,7 @@ describe('Columns like tests - (JSX)', () => {
 								itemsToBeAdded = itemsToBeAdded.concat(updateColumns.items);
 							}
 						} else {
-							if (!isNullOrUndefined(intialColumns)) {
+							if (!isNullOrUndef(intialColumns)) {
 								initialItemsCount += intialColumns.items.length;
 								itemsToRemove = itemsToRemove.concat(intialColumns.items);
 							} else {

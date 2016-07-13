@@ -12,7 +12,7 @@
 	// Runs only once in applications lifetime
 	var isBrowser = typeof window !== 'undefined' && window.document;
 
-	function isNullOrUndefined(obj) {
+	function isNullOrUndef(obj) {
 		return isUndefined(obj) || isNull(obj);
 	}
 
@@ -108,7 +108,7 @@
 		var tag = shape.tag || null;
 		var tagIsDynamic = tag && tag.arg !== undefined ? true : false;
 
-		var children = isNullOrUndefined(shape.children) ? null : shape.children;
+		var children = isNullOrUndef(shape.children) ? null : shape.children;
 		var childrenIsDynamic = children && children.arg !== undefined ? true : false;
 
 		var attrs = shape.attrs || null;
@@ -121,7 +121,7 @@
 		var eventsIsDynamic = events && events.arg !== undefined ? true : false;
 
 		var key = shape.key === undefined ? null : shape.key;
-		var keyIsDynamic = !isNullOrUndefined(key) && !isNullOrUndefined(key.arg);
+		var keyIsDynamic = !isNullOrUndef(key) && !isNullOrUndef(key.arg);
 
 		var style = shape.style || null;
 		var styleIsDynamic = style && style.arg !== undefined ? true : false;
@@ -294,7 +294,7 @@
 			} else {
 				if (value === true) {
 					dom.setAttribute(attr, attr);
-				} else if (!isNullOrUndefined(value) && value !== false && !isAttrAnEvent$1(attr)) {
+				} else if (!isNullOrUndef(value) && value !== false && !isAttrAnEvent$1(attr)) {
 					dom.setAttribute(attr, value);
 				}
 			}
