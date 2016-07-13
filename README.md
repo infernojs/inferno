@@ -144,7 +144,7 @@ This is essential for low-powered devices such as tablets and phones, where user
 Creates an Inferno VNode object that has chainable setting methods.
 
 ```javascript
-import createVNode from `inferno`;
+import createVNode from 'inferno';
 
 InfernoDOM.render(createVNode().setTag('div').setClassName('foo').setAttrs({ id: 'test' }).setChildren('Hello world!'), document.body);
 ```
