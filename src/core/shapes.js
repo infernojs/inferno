@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isUndefined } from './utils';
+import { isUndefined } from './utils';
 
 function VElement(tag) {
 	this._dom = null;

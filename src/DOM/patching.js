@@ -99,11 +99,10 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
 				unmount(lastInput, null);
 			} else {
-				return patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
+				throw Error('Bad Input!');
 			}
 		}
 	}
-	return nextInput;
 }
 
 export function patchTextNode(dom, lastChildren, nextChildren) {

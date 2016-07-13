@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.17
+ * inferno-dom v0.7.18
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -510,7 +510,7 @@
 		} else if (isVNode(input)) {
 			return mountVNode$1(input, parentDom, lifecycle, context, instance, isSVG);
 		} else {
-			mount(normalise(input), parentDom, lifecycle, context, instance, isSVG);
+			mount(normalise$1(input), parentDom, lifecycle, context, instance, isSVG);
 		}
 	}
 
@@ -1963,8 +1963,7 @@
 			}
 		}
 	}
-
-	var documetBody = document.body;
+	var documetBody = isBrowser ? document.body : null;
 
 	function hydrate(node, parentDom, lifecycle) {
 		if (parentDom && parentDom.nodeType === 1) {
