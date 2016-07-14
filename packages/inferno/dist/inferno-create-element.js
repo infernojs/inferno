@@ -13,11 +13,11 @@
 		return obj instanceof Array;
 	}
 
-	function isNullOrUndefined(obj) {
+	function isNullOrUndef(obj) {
 		return isUndefined(obj) || isNull(obj);
 	}
 
-	function isInvalidNode(obj) {
+	function isInvalid(obj) {
 		return isNull(obj) || obj === false || obj === true || isUndefined(obj);
 	}
 
@@ -115,7 +115,7 @@
 		var className = null;
 		var style = null;
 
-		if (!isNullOrUndefined(props)) {
+		if (!isNullOrUndef(props)) {
 			if (isArray(props)) {
 				return props;
 			}
@@ -125,25 +125,25 @@
 				} else if (prop === 'style') {
 					style = props[prop];
 				} else if (isAttrAHook$1(prop) && !isFunction(tag)) {
-					if (isNullOrUndefined(hooks)) {
+					if (isNullOrUndef(hooks)) {
 						hooks = {};
 					}
 					hooks[prop.substring(2).toLowerCase()] = props[prop];
 					delete props[prop];
 				} else if (isAttrAnEvent$1(prop) && !isFunction(tag)) {
-					if (isNullOrUndefined(events)) {
+					if (isNullOrUndef(events)) {
 						events = {};
 					}
 					events[prop.toLowerCase()] = props[prop];
 					delete props[prop];
 				} else if (isAttrAComponentHook$1(prop) && isFunction(tag)) {
-					if (isNullOrUndefined(hooks)) {
+					if (isNullOrUndef(hooks)) {
 						hooks = {};
 					}
 					hooks['c' + prop.substring(3)] = props[prop];
 					delete props[prop];
 				} else if (!isFunction(tag)) {
-					if (isNullOrUndefined(attrs)) {
+					if (isNullOrUndef(attrs)) {
 						attrs = {};
 					}
 					attrs[prop] = props[prop];
@@ -164,14 +164,14 @@
 		var events = ref.events;
 		var hooks = ref.hooks;
 
-		if (tag === undefined && !isNullOrUndefined(attrs) && !attrs.tpl && !isNullOrUndefined(children) && children.length === 0) {
+		if (tag === undefined && !isNullOrUndef(attrs) && !attrs.tpl && !isNullOrUndef(children) && children.length === 0) {
 			return null;
 		}
-		var key = !isNullOrUndefined(attrs) && !isNullOrUndefined(attrs.key) ? attrs.key : undefined;
+		var key = !isNullOrUndef(attrs) && !isNullOrUndef(attrs.key) ? attrs.key : undefined;
 
-		if (!isNullOrUndefined(children) && children.length === 0) {
+		if (!isNullOrUndef(children) && children.length === 0) {
 			children = null;
-		} else if (!isInvalidNode(children)) {
+		} else if (!isInvalid(children)) {
 			children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
 		}
 
@@ -197,13 +197,13 @@
 	}
 
 	function createChildren(children) {
-		var childrenDefined = !isNullOrUndefined(children);
+		var childrenDefined = !isNullOrUndef(children);
 		if (childrenDefined && isArray(children)) {
 			var newChildren = [];
 
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
-				if (!isNullOrUndefined(child) && typeof child === 'object') {
+				if (!isNullOrUndef(child) && typeof child === 'object') {
 					if (isArray(child)) {
 						if (child.length > 0) {
 							newChildren.push(createChildren(child));

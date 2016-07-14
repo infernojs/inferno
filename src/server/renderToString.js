@@ -1,8 +1,8 @@
 import {
 	isArray,
 	isStringOrNumber,
-	isNullOrUndefined,
-	isInvalidNode,
+	isNullOrUndef,
+	isInvalid,
 	isFunction,
 	addChildrenToProps,
 	isStatefulComponent,
@@ -19,7 +19,7 @@ function renderComponent(Component, props, children, context, isRoot) {
 		const instance = new Component(props);
 		const childContext = instance.getChildContext();
 
-		if (!isNullOrUndefined(childContext)) {
+		if (!isNullOrUndef(childContext)) {
 			context = Object.assign({}, context, childContext);
 		}
 		instance.context = context;
@@ -43,11 +43,11 @@ function renderChildren(children, context) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 			const isText = isStringOrNumber(child);
-			const isInvalid = isInvalidNode(child);
+			const isInvalid = isInvalid(child);
 
 			if (isText || isInvalid) {
 				if (insertComment === true) {
-					if (isInvalidNode(child)) {
+					if (isInvalid(child)) {
 						childrenResult.push('<!--!-->');
 					} else {
 						childrenResult.push('<!---->');
@@ -68,7 +68,7 @@ function renderChildren(children, context) {
 			}
 		}
 		return childrenResult.join('');
-	} else if (!isInvalidNode(children)) {
+	} else if (!isInvalid(children)) {
 		if (isStringOrNumber(children)) {
 			return escapeText(children);
 		} else {
@@ -90,7 +90,7 @@ function renderStyleToString(style) {
 			const value = style[styleName];
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
-			if (!isNullOrUndefined(value)) {
+			if (!isNullOrUndef(value)) {
 				styles.push(`${ toHyphenCase(styleName) }:${ escapeAttr(value) }${ px };`);
 			}
 		}
@@ -99,7 +99,7 @@ function renderStyleToString(style) {
 }
 
 function renderNode(node, context, isRoot) {
-	if (!isInvalidNode(node)) {
+	if (!isInvalid(node)) {
 		const bp = node.bp;
 		const tag = node.tag || (bp && bp.tag);
 		const outputAttrs = [];
@@ -109,10 +109,10 @@ function renderNode(node, context, isRoot) {
 		if (isFunction(tag)) {
 			return renderComponent(tag, node.attrs, node.children, context, isRoot);
 		}
-		if (!isNullOrUndefined(className)) {
+		if (!isNullOrUndef(className)) {
 			outputAttrs.push('class="' + escapeAttr(className) + '"');
 		}
-		if (!isNullOrUndefined(style)) {
+		if (!isNullOrUndef(style)) {
 			outputAttrs.push('style="' + renderStyleToString(style) + '"');
 		}
 		const attrs = node.attrs;

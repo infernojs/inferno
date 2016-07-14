@@ -1,8 +1,8 @@
 import {
 	isArray,
 	isStringOrNumber,
-	isNullOrUndefined,
-	isInvalidNode,
+	isNullOrUndef,
+	isInvalid,
 	isFunction,
 	addChildrenToProps,
 	isStatefulComponent,
@@ -14,7 +14,7 @@ import {
 	isVText,
 	normaliseChild,
 	isVPlaceholder,
-	isVList
+	isVFragment
 } from './utils';
 import {
 	mountRef,
@@ -46,7 +46,7 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context,
 		}
 	} else if (isVPlaceholder(child)) {
 		child.dom = domNode;
-	} else if (isVList(child)) {
+	} else if (isVFragment(child)) {
 		const items = child.items;
 
 		// this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
@@ -112,12 +112,12 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 		const instance = node.instance = new Component(props);
 
 		instance._patch = patch;
-		if (!isNullOrUndefined(lastInstance) && props.ref) {
+		if (!isNullOrUndef(lastInstance) && props.ref) {
 			mountRef(lastInstance, props.ref, instance);
 		}
 		const childContext = instance.getChildContext();
 
-		if (!isNullOrUndefined(childContext)) {
+		if (!isNullOrUndef(childContext)) {
 			context = Object.assign({}, context, childContext);
 		}
 		instance.context = context;
@@ -131,7 +131,7 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 		let nextNode = instance.render();
 
 		instance._pendingSetState = false;
-		if (isInvalidNode(nextNode)) {
+		if (isInvalid(nextNode)) {
 			nextNode = createVPlaceholder();
 		}
 		hydrateNode(nextNode, domNode, parentDom, lifecycle, context, instance, isRoot);
@@ -141,11 +141,11 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 	} else {
 		const instance = node.instance = Component(props);
 
-		if (!isNullOrUndefined(hooks)) {
-			if (!isNullOrUndefined(hooks.componentWillMount)) {
+		if (!isNullOrUndef(hooks)) {
+			if (!isNullOrUndef(hooks.componentWillMount)) {
 				hooks.componentWillMount(null, props);
 			}
-			if (!isNullOrUndefined(hooks.componentDidMount)) {
+			if (!isNullOrUndef(hooks.componentDidMount)) {
 				lifecycle.addListener(() => {
 					hooks.componentDidMount(domNode, props);
 				});
@@ -172,12 +172,12 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 			node.dom = domNode;
 			const hooks = node.hooks;
 
-			if ((bp && bp.hasHooks === true) || !isNullOrUndefined(hooks)) {
+			if ((bp && bp.hasHooks === true) || !isNullOrUndef(hooks)) {
 				handleAttachedHooks(hooks, lifecycle, domNode);
 			}
 			const children = node.children;
 
-			if (!isNullOrUndefined(children)) {
+			if (!isNullOrUndef(children)) {
 				if (isStringOrNumber(children)) {
 					if (domNode.textContent !== children) {
 						domNode.textContent = children;
@@ -211,10 +211,10 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 			const className = node.className;
 			const style = node.style;
 
-			if (!isNullOrUndefined(className)) {
+			if (!isNullOrUndef(className)) {
 				domNode.className = className;
 			}
-			if (!isNullOrUndefined(style)) {
+			if (!isNullOrUndef(style)) {
 				patchStyle(null, style, domNode);
 			}
 			if (bp && bp.hasAttrs === true) {
@@ -222,7 +222,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 			} else {
 				const attrs = node.attrs;
 
-				if (!isNullOrUndefined(attrs)) {
+				if (!isNullOrUndef(attrs)) {
 					handleSelects(node);
 					mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
 				}
@@ -232,7 +232,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 			} else {
 				const events = node.events;
 
-				if (!isNullOrUndefined(events)) {
+				if (!isNullOrUndef(events)) {
 					mountEvents(events, Object.keys(events), domNode);
 				}
 			}

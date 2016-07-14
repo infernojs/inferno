@@ -5,7 +5,7 @@ import { render } from './../../DOM/rendering';
 import {
 	isArray,
 	isStringOrNumber,
-	isNullOrUndefined
+	isNullOrUndef
 } from './../../core/utils';
 
 const Inferno = {
@@ -31,7 +31,7 @@ function validateNodeTree(node) {
 	}
 	const children = node.children;
 
-	if (!isNullOrUndefined(children)) {
+	if (!isNullOrUndef(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
 				const val = validateNodeTree(children[i]);

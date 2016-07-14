@@ -1,4 +1,4 @@
-import { isAttrAnEvent, isNullOrUndefined, isBrowser } from './utils';
+import { isAttrAnEvent, isNullOrUndef, isBrowser } from './utils';
 
 // Copy of the util from dom/util, otherwise it makes massive bundles
 function documentCreateElement(tag, isSVG) {
@@ -35,7 +35,7 @@ function createStaticAttributes(attrs, dom) {
 		} else {
 			if (value === true) {
 				dom.setAttribute(attr, attr);
-			} else if (!isNullOrUndefined(value) && value !== false && !isAttrAnEvent(attr)) {
+			} else if (!isNullOrUndef(value) && value !== false && !isAttrAnEvent(attr)) {
 				dom.setAttribute(attr, value);
 			}
 		}
