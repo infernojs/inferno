@@ -1,29 +1,36 @@
-import { isNullOrUndefined, isArray } from './../core/utils';
-import { removeChild, isVList, isVNode } from './utils';
+import { isNullOrUndef, isArray } from './../core/utils';
+import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
+import {
+	isVFragment,
+	isVElement,
+	isVComponent
+} from '../core/shapes';
 
 export function unmount(input, parentDom) {
-	if (isVList(input)) {
-		unmountVList(input, parentDom, true);
-	} else if (isVNode(input)) {
-		unmountVNode(input, parentDom, false);
+	if (isVFragment(input)) {
+		unmountVFragment(input, parentDom, true);
+	} else if (isVElement(input)) {
+		unmountVElement(input, parentDom);
+	} else if (isVComponent(input)) {
+		unmountVComponent(input, parentDom);
 	}
 }
 
-export function unmountVList(vList, parentDom, removePointer) {
-	const items = vList.items;
+export function unmountVFragment(vFragment, parentDom, removePointer) {
+	const items = vFragment._items;
 	const itemsLength = items.length;
-	const pointer = items.pointer;
+	const pointer = items._pointer;
 
 	if (itemsLength > 0) {
 		for (let i = 0; i < itemsLength; i++) {
 			const item = items[i];
 
-			if (isVList(item)) {
-				unmountVList(item, parentDom, true);
+			if (isVFragment(item)) {
+				unmountVFragment(item, parentDom, true);
 			} else {
 				if (parentDom) {
-					removeChild(parentDom, item.dom);
+					removeChild(parentDom, item._dom);
 				}
 				unmount(item, null);
 			}
@@ -34,35 +41,42 @@ export function unmountVList(vList, parentDom, removePointer) {
 	}
 }
 
-export function unmountVNode(node, parentDom, shallow) {
-	const instance = node.instance;
+export function unmountVComponent(vComponent, parentDom) {
+	const instance = vComponent._instance;
 	let instanceHooks = null;
 	let instanceChildren = null;
 
-	if (!isNullOrUndefined(instance)) {
-		instanceHooks = instance.hooks;
-		instanceChildren = instance.children;
+	if (!isNullOrUndef(instance)) {
+		instanceHooks = instance._hooks;
+		instanceChildren = instance._children;
 
 		if (instance.render !== undefined) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
 			componentToDOMNodeMap.delete(instance);
-			!shallow && unmount(instance._lastNode, null);
+			unmount(instance._lastInput, null);
 		}
 	}
-	const hooks = node.hooks || instanceHooks;
+	const hooks = vComponent._hooks || instanceHooks;
 
-	if (!isNullOrUndefined(hooks)) {
-		if (!isNullOrUndefined(hooks.willDetach)) {
-			hooks.willDetach(node.dom);
-		}
-		if (!isNullOrUndefined(hooks.componentWillUnmount)) {
-			hooks.componentWillUnmount(node.dom, hooks);
+	if (!isNullOrUndef(hooks)) {
+		if (!isNullOrUndef(hooks.componentWillUnmount)) {
+			hooks.componentWillUnmount(vComponent._dom, hooks);
 		}
 	}
-	const children = (isNullOrUndefined(instance) ? node.children : null) || instanceChildren;
+}
 
-	if (!isNullOrUndefined(children)) {
+export function unmountVElement(vElement, parentDom) {
+	const hooks = vElement._hooks;
+
+	if (!isNullOrUndef(hooks)) {
+		if (!isNullOrUndef(hooks.willDetach)) {
+			hooks.willDetach(vElement._dom);
+		}
+	}
+	const children = vElement._children;
+
+	if (!isNullOrUndef(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
 				unmount(children[i], null);

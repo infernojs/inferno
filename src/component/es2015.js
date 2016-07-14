@@ -1,5 +1,5 @@
 import Lifecycle from './../DOM/lifecycle';
-import { isNullOrUndefined, NO_RENDER } from './../core/utils';
+import { isNullOrUndef, NO_RENDER } from './../core/utils';
 import { createVPlaceholder } from './../core/shapes';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
@@ -38,25 +38,24 @@ function applyState(component, force, callback) {
 		const props = component.props;
 
 		component._pendingState = {};
-		let nextNode = component._updateComponent(prevState, nextState, props, props, force);
+		let nextInput = component._updateComponent(prevState, nextState, props, props, force);
 
-		if (nextNode === NO_RENDER) {
-			nextNode = component._lastNode;
-		} else if (isNullOrUndefined(nextNode)) {
-			nextNode = createVPlaceholder();
+		if (nextInput === NO_RENDER) {
+			nextInput = component._lastInput;
+		} else if (isNullOrUndef(nextInput)) {
+			nextInput = createVPlaceholder();
 		}
-		const lastNode = component._lastNode;
-		const parentDom = lastNode.dom.parentNode;
+		const lastInput = component._lastInput;
+		const parentDom = lastInput._dom.parentNode;
 		const activeNode = getActiveNode();
 		const subLifecycle = new Lifecycle();
 
-		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
-		component._lastNode = nextNode;
-		component._componentToDOMNodeMap.set(component, nextNode.dom);
-		component._parentNode.dom = nextNode.dom;
+		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
+		component._lastInput = nextInput;
+		component._componentToDOMNodeMap.set(component, nextInput.dom);
 		component.componentDidUpdate(props, prevState);
 		subLifecycle.trigger();
-		if (!isNullOrUndefined(callback)) {
+		if (!isNullOrUndef(callback)) {
 			callback();
 		}
 		resetActiveNode(activeNode);
@@ -64,7 +63,7 @@ function applyState(component, force, callback) {
 }
 
 export default class Component {
-	constructor(props) {
+	constructor(props, context) {
 		/** @type {object} */
 		this.props = props || {};
 
@@ -78,10 +77,9 @@ export default class Component {
 		this._deferSetState = false;
 		this._pendingSetState = false;
 		this._pendingState = {};
-		this._parentNode = null;
-		this._lastNode = null;
+		this._lastInput = null;
 		this._unmounted = true;
-		this.context = {};
+		this.context = context || {};
 		this._patch = null;
 		this._parentComponent = null;
 		this._componentToDOMNodeMap = null;
@@ -138,7 +136,7 @@ export default class Component {
 			this._unmounted = false;
 			return false;
 		}
-		if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
+		if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
 			nextProps.children = prevProps.children;
 		}
 		if (prevProps !== nextProps || prevState !== nextState || force) {

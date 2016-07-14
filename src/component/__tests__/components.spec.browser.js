@@ -157,7 +157,7 @@ describe('Components (non-JSX)', () => {
 					createElement('label', {},
 						createElement('input', {
 							type,
-							enabled: isEnabled
+							disabled: !isEnabled
 						}),
 						'The title is ',
 						title
@@ -183,7 +183,7 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
 		expect(container.firstChild.firstChild.firstChild.firstChild.tagName).to.equal('INPUT');
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('password');
-		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('enabled')).to.equal('enabled');
+		expect(container.firstChild.firstChild.firstChild.firstChild.disabled).to.equal(false);
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
 		render(template(BasicComponent1c, ['abc'], true), container);
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
@@ -191,7 +191,7 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
 		expect(container.firstChild.firstChild.firstChild.firstChild.tagName).to.equal('INPUT');
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('password');
-		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('enabled')).to.equal('enabled');
+		expect(container.firstChild.firstChild.firstChild.firstChild.disabled).to.equal(false);
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
 	});
 
@@ -603,44 +603,7 @@ describe('Components (non-JSX)', () => {
 			).to.equal(
 				'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
 			);
-
-			render(template(BasicComponent1, null, 'basic-render'), container);
-			render(template(BasicComponent1, null, null), container);
-			render(null, container);
-			render(template(BasicComponent1, 'component 1', 'basic-render'), container);
-			render(template(), container);
-			render(template(BasicComponent1, 'component 1', 'basic-render'), container);
-			expect(
-				container.innerHTML
-			).to.equal(
-				'<div><div class="basic"><span class="basic-render">The title is component 1</span></div></div>'
-			);
-			render(template(), container);
 		});
-	});
-
-
-	it('should support a ref string reference in the component', () => {
-		let elementRef = null;
-
-		class ComponentRefCheck extends Component {
-			constructor(props) {
-				super(props);
-				this.componentDidMount = this.componentDidMount.bind(this);
-			}
-			render() {
-				return createElement('div', null,
-					createElement('span', { ref: 'foo' })
-				);
-			}
-			componentDidMount() {
-				elementRef = this.refs.foo;
-			}
-		}
-		render(createElement(ComponentRefCheck), container);
-		const elementValidate = container.firstChild.firstChild;
-
-		expect(elementValidate).to.equal(elementRef);
 	});
 
 	it('should mount and unmount a basic component', () => {
@@ -831,40 +794,29 @@ describe('Components (non-JSX)', () => {
 
 	describe('should render a basic component with conditional fragment', () => {
 		const tpl3625453295 = function () {
-			return {
-				tag: 'h1',
-				children: 'BIG'
-			};
+			return createElement('h1', null, 'BIG');
 		};
 		const tpl4021787591 = function () {
-			return {
-				tag: 'h2',
-				children: 'small'
-			};
+			return createElement('h2', null, 'small');
 		};
 
 		class conditionalComponent extends Component {
 			render() {
-				return {
-					tag: 'div',
-					children: [ this.props.condition ? tpl3625453295() : tpl4021787591(), {
-						tag: 'p',
-						children: 'test'
-					}]
-				};
+				return createElement('div', null, [ this.props.condition ? tpl3625453295() : tpl4021787591(), 
+					createElement('p', null, 'test')
+				]);
 			}
 		}
 
 		it('Initial render (creation)', () => {
-			render(createElement(conditionalComponent, {condition: true}), container);
+			render(createElement(conditionalComponent, { condition: true }), container);
 			expect(container.innerHTML).to.equal(
 				'<div><h1>BIG</h1><p>test</p></div>'
 			);
-			render(createElement(conditionalComponent, {condition: false}), container);
+			render(createElement(conditionalComponent, { condition: false }), container);
 			expect(container.innerHTML).to.equal(
 				'<div><h2>small</h2><p>test</p></div>'
 			);
-
 		});
 	});
 
@@ -952,7 +904,6 @@ describe('Components (non-JSX)', () => {
 				)
 			;
 
-		render(template(), container);
 		render(template(BasicStatelessComponent1, 'abc'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');

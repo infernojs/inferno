@@ -26,8 +26,12 @@ export default function createElement(name, props, ..._children) {
 	let children = _children;
 	let vNode;
 
-	if (_children && _children.length === 1) {
-		children = _children[0];
+	if (_children) {
+		if (_children.length === 1) {
+			children = _children[0];
+		} else if (_children.length === 0) {
+			children = null;
+		}
 	}
 	if (isString(name)) {
 		let hooks;

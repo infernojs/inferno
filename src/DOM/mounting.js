@@ -10,7 +10,8 @@ import {
 	getRefInstance,
 	isNull,
 	isUndefined,
-	isTrue
+	isTrue,
+	isObject
 } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import {
@@ -83,13 +84,13 @@ export function mountVElement(vElement, parentDom, lifecycle, context, instance,
 }
 
 export function mountVFragment(vList, parentDom, lifecycle, context, instance, isSVG) {
-	const items = vList.items;
+	const items = vList._items;
 	const pointer = document.createTextNode('');
 	const dom = document.createDocumentFragment();
 
 	mountArrayChildren(items, dom, lifecycle, context, instance, isSVG);
-	vList.pointer = pointer;
-	vList.dom = dom;
+	vList._pointer = pointer;
+	vList._dom = dom;
 	dom.appendChild(pointer);
 	if (parentDom) {
 		insertOrAppend(parentDom, dom);
@@ -110,7 +111,7 @@ export function mountVText(vText, parentDom) {
 export function mountVPlaceholder(vPlaceholder, parentDom) {
 	const dom = document.createTextNode('');
 
-	vPlaceholder.dom = dom;
+	vPlaceholder._dom = dom;
 	if (parentDom) {
 		insertOrAppend(parentDom, dom);
 	}
@@ -134,7 +135,7 @@ export function mountArrayChildren(children, parentDom, lifecycle, context, inst
 		} else if (isVPlaceholder(child)) {
 			mountVPlaceholder(child, parentDom);
 			children.complex = true;
-		} else if (isVList(child)) {
+		} else if (isVFragment(child)) {
 			mountVFragment(child, parentDom, lifecycle, context, instance, isSVG);
 			children.complex = true;
 		} else {
@@ -153,12 +154,6 @@ function mountChildren(node, children, parentDom, lifecycle, context, instance, 
 	}
 }
 
-export function mountRef(instance, value, refValue) {
-	if (!isInvalid(instance) && isString(value)) {
-		instance.refs[value] = refValue;
-	}
-}
-
 export function mountEvents(events, eventKeys, dom) {
 	for (let i = 0; i < eventKeys.length; i++) {
 		const event = eventKeys[i];
@@ -174,7 +169,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, lastI
 	let dom;
 
 	if (isStatefulComponent(vComponent)) {
-		const instance = new Component(props);
+		const instance = new Component(props, context);
 
 		instance._patch = patch;
 		instance._componentToDOMNodeMap = componentToDOMNodeMap;
@@ -186,29 +181,27 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, lastI
 		if (!isNullOrUndef(childContext)) {
 			context = Object.assign({}, context, childContext);
 		}
-		instance.context = context;
 		instance._unmounted = false;
-		instance._parentNode = vComponent;
 		if (lastInstance) {
 			instance._parentComponent = lastInstance;
 		}
 		instance._pendingSetState = true;
 		instance.componentWillMount();
-		let node = instance.render();
+		let input = instance.render();
 
-		if (isInvalid(node)) {
-			node = createVPlaceholder();
+		if (isInvalid(input)) {
+			input = createVPlaceholder();
 		}
 		instance._pendingSetState = false;
-		dom = mount(node, null, lifecycle, context, instance, false);
-		instance._lastNode = node;
+		dom = mount(input, null, lifecycle, context, instance, false);
+		instance._lastInput = input;
 		instance.componentDidMount();
 		if (parentDom !== null && !isInvalid(dom)) {
 			parentDom.appendChild(dom);
 		}
 		componentToDOMNodeMap.set(instance, dom);
-		vComponent.dom = dom;
-		vComponent.instance = instance;
+		vComponent._dom = dom;
+		vComponent._instance = instance;
 	} else {
 		if (!isNullOrUndef(hooks)) {
 			if (!isNullOrUndef(hooks.componentWillMount)) {
@@ -222,17 +215,17 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, lastI
 		}
 
 		/* eslint new-cap: 0 */
-		let node = Component(props, context);
+		let input = Component(props, context);
 
-		if (isInvalid(node)) {
+		if (isInvalid(input)) {
 			node = createVPlaceholder();
 		}
-		dom = mount(node, null, lifecycle, context, null, false);
-		vComponent.instance = node;
+		dom = mount(input, null, lifecycle, context, null, false);
+		vComponent._instance = input;
 		if (parentDom !== null && !isInvalid(dom)) {
 			parentDom.appendChild(dom);
 		}
-		vComponent.dom = dom;
+		vComponent._dom = dom;
 	}
 	return dom;
 }
@@ -241,10 +234,10 @@ export function mountProps(vElement, props, dom, instance) {
 	for (let prop in props) {
 		const value = props[prop];
 
-		if (prop === 'ref') {
-			mountRef(getRefInstance(vElement, instance), value, dom);
-		} else {
-			if (isPropertyOfElement(vElement._tag, prop)) {
+		if (!isNullOrUndef(value)) {
+			if (prop === 'style') {
+				patchStyle(null, value, dom);
+			} else if (isPropertyOfElement(vElement._tag, prop)) {
 				dom[prop] = value;
 			} else {
 				dom.setAttribute(prop, value);

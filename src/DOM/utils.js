@@ -11,7 +11,7 @@ import { unmountVFragment } from './unmounting';
 import {
 	createVText,
 	createVPlaceholder,
-	createVList
+	createVFragment
 } from '../core/shapes';
 import { unmount } from './unmounting';
 
@@ -55,6 +55,14 @@ function getAllPropsForElement(tag) {
 	return props;
 }
 
+export function setTextContent(dom, lastChildren, nextChildren) {
+	if (isStringOrNumber(lastChildren)) {
+		dom.firstChild.nodeValue = nextChildren;
+	} else {
+		dom.textContent = nextChildren;
+	}
+}
+
 export function isPropertyOfElement(tag, prop) {
 	let propsForElement = elementsPropMap.get(tag);
 
@@ -73,7 +81,7 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 }
 
 export function replaceVListWithNode(parentDom, vList, dom) {
-	const pointer = vList.pointer;
+	const pointer = vList._pointer;
 
 	unmountVFragment(vList, parentDom, false);
 	replaceNode(parentDom, dom, pointer);
@@ -115,7 +123,7 @@ export function appendText(text, parentDom, singleChild) {
 
 export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
 	let lastInstance = null;
-	const instanceLastNode = lastNode._lastNode;
+	const instanceLastNode = lastNode._lastInput;
 
 	if (!isNullOrUndef(instanceLastNode)) {
 		lastInstance = lastNode;
@@ -124,10 +132,10 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 	unmount(lastNode, false);
 	const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
-	nextNode.dom = dom;
-	replaceNode(parentDom, dom, lastNode.dom);
+	nextNode._dom = dom;
+	replaceNode(parentDom, dom, lastNode._dom);
 	if (lastInstance !== null) {
-		lastInstance._lastNode = nextNode;
+		lastInstance._lasInput = nextNode;
 	}
 }
 
@@ -141,7 +149,7 @@ export function normalise(object) {
 	} else if (isInvalid(object)) {
 		return createVPlaceholder();
 	} else if (isArray(object)) {
-		return createVList(object);
+		return createVFragment(object);
 	}
 	return object;
 }
@@ -153,7 +161,7 @@ export function normaliseChild(children, i) {
 }
 
 export function remove(node, parentDom) {
-	const dom = node.dom;
+	const dom = node._dom;
 	if (dom === parentDom) {
 		dom.innerHTML = '';
 	} else {
@@ -229,9 +237,9 @@ function selectOptionValueIfNeeded(vdom, values) {
 	if (values[value]) {
 		vdom.attrs = vdom.attrs || {};
 		vdom.attrs.selected = 'selected';
-		vdom.dom.selected = true;
+		vdom._dom.selected = true;
 	} else {
-		vdom.dom.selected = false;
+		vdom._dom.selected = false;
 	}
 }
 
@@ -269,7 +277,7 @@ export function handleAttachedHooks(hooks, lifecycle, dom) {
 export function setValueProperty(nextNode) {
 	const value = nextNode.attrs.value;
 	if (!isNullOrUndef(value)) {
-		nextNode.dom.value = value;
+		nextNode._dom.value = value;
 	}
 }
 
@@ -280,7 +288,7 @@ export function setFormElementProperties(nextTag, nextNode) {
 			setValueProperty(nextNode);
 		} else if (inputType === 'checkbox' || inputType === 'radio') {
 			const checked = nextNode.attrs.checked;
-			nextNode.dom.checked = !!checked;
+			nextNode._dom.checked = !!checked;
 		}
 	} else if (nextTag === 'textarea') {
 		setValueProperty(nextNode);
