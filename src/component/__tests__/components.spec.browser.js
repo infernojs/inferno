@@ -822,13 +822,11 @@ describe('Components (non-JSX)', () => {
 
 	describe('should render a basic component with a list of values from state', () => {
 		const tpl2026545261 = function (v0) {
-			return {
-				tag: 'ul',
-				attrs: {
-					class: 'login-organizationlist'
-				},
-				children: [ '', v0, '' ]
-			};
+			return createElement('ul', { class: 'login-organizationlist' },
+				'',
+				v0,
+				''
+			);
 		};
 		const tpl3192647933 = function (v0) {
 			return {
