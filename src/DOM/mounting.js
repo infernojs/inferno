@@ -43,7 +43,13 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	} else if (isVNode(input)) {
 		return mountVNode(input, parentDom, lifecycle, context, instance, isSVG);
 	} else {
-		mount(normalise(input), parentDom, lifecycle, context, instance, isSVG);
+		const normalisedInput = normalise(input);
+
+		if (input !== normalisedInput) {
+			mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
+		} else {
+			throw new Error('Inferno Error: invalid object passed to mount()');
+		}
 	}
 }
 
