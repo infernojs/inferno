@@ -761,7 +761,7 @@
   		if (input !== normalisedInput) {
   			mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
   		} else {
-  			throw new Error('Inferno Error: invalid object passed to mount()');
+  			throw new Error(("Inferno Error: invalid object \"" + (typeof input) + "\"\" passed to mount()"));
   		}
   	}
   }
