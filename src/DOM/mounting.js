@@ -23,7 +23,8 @@ import {
 	isVList,
 	isVNode,
 	insertOrAppend,
-	normaliseChild
+	normaliseChild,
+	normalise
 } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
@@ -31,7 +32,6 @@ import { componentToDOMNodeMap } from './rendering';
 import {
 	createVPlaceholder
 } from '../core/shapes';
-import {normalise} from './utils';
 
 export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	if (isVPlaceholder(input)) {

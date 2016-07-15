@@ -27,6 +27,15 @@ describe('Elements (JSX)', () => {
 	});
 
 	it('should render a simple div with multiple children', () => {
+		const title = ['foo'];
+		const icon = undefined;
+		render((
+			<div className="table-cell-mid">
+				{ icon }
+				{ title }
+			</div>
+		), container);
+		expect(container.firstChild.nodeName).to.equal('DIV');
 		render(<div><span></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);

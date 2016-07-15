@@ -13,7 +13,7 @@ export function unmount(input, parentDom) {
 export function unmountVList(vList, parentDom, removePointer) {
 	const items = vList.items;
 	const itemsLength = items.length;
-	const pointer = items.pointer;
+	const pointer = vList.pointer;
 
 	if (itemsLength > 0) {
 		for (let i = 0; i < itemsLength; i++) {
