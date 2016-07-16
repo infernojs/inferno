@@ -1803,23 +1803,28 @@
   		var lastTarget = 0;
   		var index;
   		var removed = true;
+  		var k = 0;
 
-  		if (aLength * bLength <= 16) {
+  		if ((bLength <= 4) || (aLength * bLength <= 16)) {
   			for (i = lastStartIndex; i <= lastEndIndex; i++) {
+  				removed = true;
   				lastEndNode = lastChildren[i];
-  				for (index = nextStartIndex; index <= nextEndIndex; index++) {
-  					nextEndNode = nextChildren[index];
-  					if (lastEndNode.key === nextEndNode.key) {
-  						sources[index - nextStartIndex] = i;
+  				if (k < bLength) {
+  					for (index = nextStartIndex; index <= nextEndIndex; index++) {
+  						nextEndNode = nextChildren[index];
+  						if (lastEndNode.key === nextEndNode.key) {
+  							sources[index - nextStartIndex] = i;
 
-  						if (lastTarget > index) {
-  							moved = true;
-  						} else {
-  							lastTarget = index;
+  							if (lastTarget > index) {
+  								moved = true;
+  							} else {
+  								lastTarget = index;
+  							}
+  							patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
+  							k++;
+  							removed = false;
+  							break;
   						}
-  						patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
-  						removed = false;
-  						break;
   					}
   				}
   				if (removed) {
@@ -1829,7 +1834,6 @@
   			}
   		} else {
   			var prevItemsMap = new Map();
-  			var k = 0;
 
   			for (i = nextStartIndex; i <= nextEndIndex; i++) {
   				prevItemsMap.set(nextChildren[i].key, i);

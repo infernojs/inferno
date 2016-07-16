@@ -759,23 +759,28 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 		let lastTarget = 0;
 		let index;
 		let removed = true;
+		let k = 0;
 
-		if (aLength * bLength <= 16) {
+		if ((bLength <= 4) || (aLength * bLength <= 16)) {
 			for (i = lastStartIndex; i <= lastEndIndex; i++) {
+				removed = true;
 				lastEndNode = lastChildren[i];
-				for (index = nextStartIndex; index <= nextEndIndex; index++) {
-					nextEndNode = nextChildren[index];
-					if (lastEndNode.key === nextEndNode.key) {
-						sources[index - nextStartIndex] = i;
+				if (k < bLength) {
+					for (index = nextStartIndex; index <= nextEndIndex; index++) {
+						nextEndNode = nextChildren[index];
+						if (lastEndNode.key === nextEndNode.key) {
+							sources[index - nextStartIndex] = i;
 
-						if (lastTarget > index) {
-							moved = true;
-						} else {
-							lastTarget = index;
+							if (lastTarget > index) {
+								moved = true;
+							} else {
+								lastTarget = index;
+							}
+							patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
+							k++;
+							removed = false;
+							break;
 						}
-						patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
-						removed = false;
-						break;
 					}
 				}
 				if (removed) {
@@ -785,7 +790,6 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 			}
 		} else {
 			const prevItemsMap = new Map();
-			let k = 0;
 
 			for (i = nextStartIndex; i <= nextEndIndex; i++) {
 				prevItemsMap.set(nextChildren[i].key, i);
