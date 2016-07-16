@@ -758,10 +758,10 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 		let removeOffset = 0;
 		let lastTarget = 0;
 		let index;
+		let removed = true;
 
 		if (aLength * bLength <= 16) {
 			for (i = lastStartIndex; i <= lastEndIndex; i++) {
-				let removed = true;
 				lastEndNode = lastChildren[i];
 				for (index = nextStartIndex; index <= nextEndIndex; index++) {
 					nextEndNode = nextChildren[index];
@@ -785,28 +785,34 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 			}
 		} else {
 			const prevItemsMap = new Map();
+			let k = 0;
 
 			for (i = nextStartIndex; i <= nextEndIndex; i++) {
 				prevItemsMap.set(nextChildren[i].key, i);
 			}
-			for (i = lastEndIndex; i >= lastStartIndex; i--) {
+			for (i = lastStartIndex; i <= lastEndIndex; i++) {
+				removed = true;
 				lastEndNode = lastChildren[i];
-				index = prevItemsMap.get(lastEndNode.key);
 
-				if (index === undefined) {
+				if (k < nextChildrenLength) {
+					index = prevItemsMap.get(lastEndNode.key);
+
+					if (index !== undefined) {
+						nextEndNode = nextChildren[index];
+						sources[index - nextStartIndex] = i;
+						if (lastTarget > index) {
+							moved = true;
+						} else {
+							lastTarget = index;
+						}
+						patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
+						k++;
+						removed = false;
+					}
+				}
+				if (removed) {
 					remove(lastEndNode, dom);
 					removeOffset++;
-				} else {
-
-					nextEndNode = nextChildren[index];
-
-					sources[index - nextStartIndex] = i;
-					if (lastTarget > index) {
-						moved = true;
-					} else {
-						lastTarget = index;
-					}
-					patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
 				}
 			}
 		}

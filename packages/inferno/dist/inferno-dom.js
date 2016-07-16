@@ -1550,10 +1550,10 @@
 			var removeOffset = 0;
 			var lastTarget = 0;
 			var index;
+			var removed = true;
 
 			if (aLength * bLength <= 16) {
 				for (i = lastStartIndex; i <= lastEndIndex; i++) {
-					var removed = true;
 					lastEndNode = lastChildren[i];
 					for (index = nextStartIndex; index <= nextEndIndex; index++) {
 						nextEndNode = nextChildren[index];
@@ -1577,28 +1577,34 @@
 				}
 			} else {
 				var prevItemsMap = new Map();
+				var k = 0;
 
 				for (i = nextStartIndex; i <= nextEndIndex; i++) {
 					prevItemsMap.set(nextChildren[i].key, i);
 				}
-				for (i = lastEndIndex; i >= lastStartIndex; i--) {
+				for (i = lastStartIndex; i <= lastEndIndex; i++) {
+					removed = true;
 					lastEndNode = lastChildren[i];
-					index = prevItemsMap.get(lastEndNode.key);
 
-					if (index === undefined) {
+					if (k < nextChildrenLength) {
+						index = prevItemsMap.get(lastEndNode.key);
+
+						if (index !== undefined) {
+							nextEndNode = nextChildren[index];
+							sources[index - nextStartIndex] = i;
+							if (lastTarget > index) {
+								moved = true;
+							} else {
+								lastTarget = index;
+							}
+							patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
+							k++;
+							removed = false;
+						}
+					}
+					if (removed) {
 						remove(lastEndNode, dom);
 						removeOffset++;
-					} else {
-
-						nextEndNode = nextChildren[index];
-
-						sources[index - nextStartIndex] = i;
-						if (lastTarget > index) {
-							moved = true;
-						} else {
-							lastTarget = index;
-						}
-						patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
 					}
 				}
 			}
