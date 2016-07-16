@@ -37,7 +37,7 @@ export default function createElement(name, props, ..._children) {
 		if (_children.length === 1) {
 			children = _children[0];
 		} else if (_children.length === 0) {
-			children = null;
+			children = undefined;
 		}
 	}
 	if (isString(name)) {
@@ -64,7 +64,7 @@ export default function createElement(name, props, ..._children) {
 			}
 		}
 		vNode._props = props;
-		if (children) {
+		if (!isUndefined(children)) {
 			vNode._children = children;
 		}
 		if (hooks) {

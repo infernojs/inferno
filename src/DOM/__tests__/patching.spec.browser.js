@@ -1,4 +1,5 @@
 import { render } from './../rendering';
+import createElement from './../../core/createElement';
 
 describe('patching keyed lists (non-jsx)', () => {
 	function createDataModels() {
