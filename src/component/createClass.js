@@ -1,5 +1,5 @@
 import Component from './es2015';
-import { isNullOrUndefined } from '../core/utils';
+import { isNullOrUndef } from '../core/utils';
 
 // don't autobind these methods since they already have guaranteed context.
 const AUTOBIND_BLACKLIST = {
@@ -20,7 +20,7 @@ function F() {
 
 function extend(base, props, all) {
 	for (let key in props) {
-		if (all === true || !isNullOrUndefined(props[key])) {
+		if (all === true || !isNullOrUndef(props[key])) {
 			base[key] = props[key];
 		}
 	}

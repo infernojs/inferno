@@ -829,13 +829,10 @@ describe('Components (non-JSX)', () => {
 			);
 		};
 		const tpl3192647933 = function (v0) {
-			return {
-				tag: 'li',
-				children: v0
-			};
+			return createElement('li', null, v0);
 		};
 		const tpl1546018623 = function (v0) {
-			return { tag: v0 };
+			return createElement(v0);
 		};
 
 		class valueComponent extends Component {
@@ -916,45 +913,12 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
 
-		const text = () => {
-			return {
-				text: '123abc'
-			};
-		};
-
-		const text1 = () => {
-			return {
-				tag: 'span',
-				children: {
-					text: '123abc'
-				}
-			};
-		};
-
-		expect(
-			() => render(template(BasicStatelessComponent1, text), container)
-		).to.throw;
-		expect(
-			() => render(template(BasicStatelessComponent1, text1), container)
-		).to.throw;
-
 		render(template(BasicStatelessComponent1), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.getAttribute('class')).to.equal('basic');
 		expect(container.firstChild.firstChild.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('SPAN');
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is ');
-
-		expect(
-			() => createTemplate(() => {
-				return {
-					tag: 'span',
-					children: {
-						text: null
-					}
-				};
-			})
-		).to.throw;
 
 		render(template(BasicStatelessComponent1), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -966,30 +930,16 @@ describe('Components (non-JSX)', () => {
 
 	describe('should render a component with a conditional state item', () => {
 		const tpl3578458729 = function (v0) {
-			return {
-				tag: 'div',
-				className: 'login-view bg-visma',
-				children: v0
-			};
+			return createElement('div', { className: 'login-view bg-visma' }, v0);
 		};
 		const tpl188998005 = function () {
-			return {
-				tag: 'div',
-				children: 'VISIBLE'
-			};
+			return createElement('div', null, 'VISIBLE');
 		};
 
 		const tpl3754840163 = function (v0) {
-			return {
-				tag: 'div',
-				children: {
-					tag: 'button',
-					events: {
-						click: v0
-					},
-					children: 'Make visible'
-				}
-			};
+			return createElement('div', null,
+				createElement('button', { onclick: v0 }, 'Make visible') 
+			);
 		};
 
 		class TEST extends Component {
@@ -1018,9 +968,7 @@ describe('Components (non-JSX)', () => {
 		}
 
 		const tpl79713834 = function (v0) {
-			return {
-				tag: v0
-			};
+			return createElement(v0);
 		};
 
 		it('Initial render (creation)', () => {
@@ -1052,39 +1000,21 @@ describe('Components (non-JSX)', () => {
 
 	describe('should render a component with a list of divs', () => {
 		const BaseView = function (v0, v1) {
-			return {
-				tag: 'div',
-				attrs: {
-					class: 'login-view'
-				},
-				children: [{
-					tag: 'button',
-					events: {
-						click: v0
-					},
-					children: 'ADD'
-				}, {
-					tag: 'br'
-				}, v1 ]
-			};
+			return createElement('div', { class: 'login-view' },
+				createElement('button', { onclick: v0 }, 'ADD'),
+				createElement('br'),
+				v1
+			);
 		};
 
 		const Looper = function (v0) {
-			return {
-				tag: 'div',
-				children: [
-					{
-						tag: 'h1',
-						children: v0
-					}
-				]
-			};
+			return createElement('div', null,
+				createElement('h1', null, v0) 
+			);
 		};
 
 		const starter = function (v0) {
-			return {
-				tag: v0
-			};
+			return createElement(v0);
 		};
 
 		class SomeError extends Component {
@@ -1102,7 +1032,7 @@ describe('Components (non-JSX)', () => {
 						return Looper(result);
 					});
 				}).call(this));
-			};
+			}
 		}
 
 		it('Initial render (creation)', () => {
@@ -1126,17 +1056,11 @@ describe('Components (non-JSX)', () => {
 
 	describe('should render a component with a list of text nodes', () => {
 		const root = function (children) {
-			return {
-				tag: 'div',
-				children: children
-			};
+			return createElement('div', null, children);
 		};
 
 		const header = function (children) {
-			return {
-				tag: 'div',
-				children: children
-			};
+			return createElement('div', null, children);
 		};
 
 		const view = function (state) {

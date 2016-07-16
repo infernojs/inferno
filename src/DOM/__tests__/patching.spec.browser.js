@@ -1,5 +1,4 @@
 import { render } from './../rendering';
-import { createUniversalElement } from './../../core/universal';
 
 describe('patching keyed lists (non-jsx)', () => {
 	function createDataModels() {
@@ -80,38 +79,6 @@ describe('patching keyed lists (non-jsx)', () => {
 		dataModels = null;
 	});
 
-	const bp1 = {
-		dom: createUniversalElement('div'),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: 'div',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 4 // multiple children
-	};
-
-	const bp2 = {
-		dom: createUniversalElement('span'),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: 'span',
-		isComponent: false,
-		hasAttrs: false,
-		hasHooks: false,
-		hasEvents: false,
-		hasClassName: false,
-		hasStyle: false,
-		childrenType: 1 // text child
-	};
-
 	function renderTree(nodes) {
 		var children = new Array(nodes.length);
 		var i;
@@ -120,30 +87,16 @@ describe('patching keyed lists (non-jsx)', () => {
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = {
-					dom: null,
-					bp: bp1,
-					key: n.key,
-					children: renderTree(n.children)
-				};
+				children[i] = createElement('div', { key: n.key }, renderTree(n.children));
 			} else {
-				children[i] = {
-					dom: null,
-					bp: bp2,
-					key: n.key,
-					children: n.key
-				};
+				children[i] = createElement('span', { key: n.key }, n.key);
 			}
 		}
 		return children;
 	}
 
 	function renderModel(dataModel) {
-		render({
-			dom: null,
-			bp: bp1,
-			children: renderTree(dataModel)
-		}, container);
+		render(createElement('div', null, renderTree(dataModel)), container);
 	}
 
 	it('should render various combinations', () => {

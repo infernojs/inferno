@@ -204,12 +204,12 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, lastI
 		vComponent._instance = instance;
 	} else {
 		if (!isNullOrUndef(hooks)) {
-			if (!isNullOrUndef(hooks.componentWillMount)) {
-				hooks.componentWillMount(null, props);
+			if (!isNullOrUndef(hooks.onComponentWillMount)) {
+				hooks.onComponentWillMount(null, props);
 			}
-			if (!isNullOrUndef(hooks.componentDidMount)) {
+			if (!isNullOrUndef(hooks.onComponentDidMount)) {
 				lifecycle.addListener(() => {
-					hooks.componentDidMount(dom, props);
+					hooks.onComponentDidMount(dom, props);
 				});
 			}
 		}

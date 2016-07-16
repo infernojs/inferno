@@ -67,34 +67,17 @@ export function isUndefined(obj) {
 	return obj === undefined;
 }
 
-export function isAttrAHook(hook) {
-	return hook === 'onCreated'
-		|| hook === 'onAttached'
-		|| hook === 'onWillDetach'
-		|| hook === 'onWillUpdate'
-		|| hook === 'onDidUpdate';
-}
-
-export function isAttrAComponentHook(hook) {
-	return hook === 'onComponentWillMount'
-		|| hook === 'onComponentDidMount'
-		|| hook === 'onComponentWillUnmount'
-		|| hook === 'onComponentShouldUpdate'
-		|| hook === 'onComponentWillUpdate'
-		|| hook === 'onComponentDidUpdate';
-}
-
 export function isObject(o) {
 	return typeof o === 'object';
 }
 
 function deepScanChildrenForNode(children, node) {
-	if (!isInvalidNode(children)) {
+	if (!isInvalid(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
 				const child = children[i];
 
-				if (!isInvalidNode(child)) {
+				if (!isInvalid(child)) {
 					if (child === node) {
 						return true;
 					} else if (child.children) {

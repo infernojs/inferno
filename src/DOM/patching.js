@@ -18,7 +18,7 @@ import {
 	mountVPlaceholder,
 	mountVFragment,
 	mountArrayChildren,
-	mountComponent
+	mountVComponent
 } from './mounting';
 import {
 	insertOrAppend,
@@ -73,7 +73,8 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 				if (isVComponent(lastInput)) {
 					patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG);
 				} else {
-					debugger;
+					replaceNode(parentDom, mountVComponent(nextInput, null, lifecycle, context, instance, isSVG), lastInput._dom);
+					unmount(lastInput, null);
 				}
 			} else if (isVComponent(lastInput)) {
 				debugger;
@@ -157,8 +158,8 @@ export function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, 
 	const nextHooks = nextVElement._hooks;
 	const nextHooksDefined = !isNullOrUndef(nextHooks);
 
-	if (nextHooksDefined && !isNullOrUndef(nextHooks.willUpdate)) {
-		nextHooks.willUpdate(lastVElement._dom);
+	if (nextHooksDefined && !isNullOrUndef(nextHooks.onWillUpdate)) {
+		nextHooks.onWillUpdate(lastVElement._dom);
 	}
 	const nextTag = nextVElement._tag;
 	const lastTag = lastVElement._tag;
@@ -182,8 +183,8 @@ export function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, 
 		if (lastProps !== nextProps) {
 			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom, instance);
 		}
-		if (nextHooksDefined && !isNullOrUndef(nextHooks.didUpdate)) {
-			nextHooks.didUpdate(dom);
+		if (nextHooksDefined && !isNullOrUndef(nextHooks.onDidUpdate)) {
+			nextHooks.onDidUpdate(dom);
 		}
 		setFormElementProperties(nextTag, nextVElement);
 	}
@@ -351,12 +352,12 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 			const nextHooks = nextVComponent._hooks;
 			const nextHooksDefined = !isNullOrUndef(nextHooks);
 
-			if (nextHooksDefined && !isNullOrUndef(nextHooks.componentShouldUpdate)) {
-				shouldUpdate = nextHooks.componentShouldUpdate(lastVComponent._dom, lastProps, nextProps);
+			if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
+				shouldUpdate = nextHooks.onComponentShouldUpdate(lastVComponent._dom, lastProps, nextProps);
 			}
 			if (shouldUpdate !== false) {
-				if (nextHooksDefined && !isNullOrUndef(nextHooks.componentWillUpdate)) {
-					nextHooks.componentWillUpdate(lastVComponent._dom, lastProps, nextProps);
+				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
+					nextHooks.onComponentWillUpdate(lastVComponent._dom, lastProps, nextProps);
 				}
 				let nextInput = nextComponent(nextProps, context);
 				const lastInput = lastVComponent._instance;
@@ -367,8 +368,8 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				nextVComponent._dom = lastVComponent._dom;
 				patch(lastInput, nextInput, parentDom, lifecycle, context, null, null, false);
 				nextVComponent._instance = nextInput;
-				if (nextHooksDefined && !isNullOrUndef(nextHooks.componentDidUpdate)) {
-					nextHooks.componentDidUpdate(lastNode._dom, lastProps, nextProps);
+				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
+					nextHooks.onComponentDidUpdate(lastInput._dom, lastProps, nextProps);
 				}
 			}
 		}
@@ -376,8 +377,8 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 }
 
 function patchVList(lastVList, nextVList, parentDom, lifecycle, context, instance, isSVG) {
-	const lastItems = lastVList.items;
-	const nextItems = nextVList.items;
+	const lastItems = lastVList._items;
+	const nextItems = nextVList._items;
 	const pointer = lastVList._pointer;
 
 	nextVList._dom = lastVList._dom;

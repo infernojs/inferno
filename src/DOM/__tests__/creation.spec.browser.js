@@ -1,5 +1,4 @@
 import { render } from './../rendering';
-import { createUniversalElement } from './../../core/universal';
 
 describe('Creation - (non-JSX)', () => {
 	let container;
@@ -298,25 +297,5 @@ describe('Creation - (non-JSX)', () => {
 			expect(container.firstChild.tagName.toLowerCase()).to.equal(test.tagName);
 			expect(container.firstChild.childNodes.length).to.equal(test.children);
 		});
-	});
-});
-
-describe('universal creation', () => {
-	let container;
-
-	beforeEach(function () {
-		container = document.createElement('div');
-	});
-
-	afterEach(function () {
-		container.innerHTML = '';
-	});
-
-	it('Should create node with attrs', () => {
-		var node = createUniversalElement('div', {
-			'data-id': '3'
-		});
-		
-		expect(node.outerHTML).to.equal('<div data-id="3"></div>');
 	});
 });

@@ -5,8 +5,6 @@ import {
 	isString,
 	isFunction,
 	isInvalid,
-	isAttrAComponentHook,
-	isAttrAHook,
 	isUndefined,
 	isObject
 } from './../core/utils';
@@ -17,6 +15,15 @@ const elementHooks = {
 	onWillUpdate: true,
 	onDidUpdate: true,
 	onWillDetach: true
+};
+
+const componentHooks = {
+	onComponentWillMount: true,
+	onComponentDidMount: true,
+	onComponentWillUnmount: true,
+	onComponentShouldUpdate: true,
+	onComponentWillUpdate: true,
+	onComponentDidUpdate: true
 };
 
 export default function createElement(name, props, ..._children) {
@@ -47,6 +54,13 @@ export default function createElement(name, props, ..._children) {
 				}
 				hooks[prop] = props[prop];
 				delete props[prop];
+			} else if (isAttrAnEvent(prop)) {
+				const lowerCase = prop.toLowerCase();
+
+				if (lowerCase !== prop) {
+					props[prop.toLowerCase()] = props[prop];
+					delete props[prop];
+				}
 			}
 		}
 		vNode._props = props;
@@ -54,9 +68,10 @@ export default function createElement(name, props, ..._children) {
 			vNode._children = children;
 		}
 		if (hooks) {
-			vNode._props = props;
+			vNode._hooks = hooks;
 		}
 	} else {
+		let hooks;
 		vNode = createVComponent(name);
 
 		if (!isUndefined(children)) {
@@ -65,11 +80,21 @@ export default function createElement(name, props, ..._children) {
 			}
 			props.children = children;
 		}
-		if (props && props.key) {
-			vNode.key = props.key;
-			delete props.key;
+		for (let prop in props) {
+			if (componentHooks[prop]) {
+				if (!hooks) {
+					hooks = {};
+				}
+				hooks[prop] = props[prop];
+			} else if (prop === 'key') {
+				vNode.key = props.key;
+				delete props.key;
+			}
 		}
 		vNode._props = props;
+		if (hooks) {
+			vNode._hooks = hooks;
+		}
 	}
 	return vNode;
 }

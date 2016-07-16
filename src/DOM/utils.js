@@ -264,12 +264,12 @@ export function selectValue(vdom) {
 }
 
 export function handleAttachedHooks(hooks, lifecycle, dom) {
-	if (!isNullOrUndef(hooks.created)) {
-		hooks.created(dom);
+	if (!isNullOrUndef(hooks.onCreated)) {
+		hooks.onCreated(dom);
 	}
-	if (!isNullOrUndef(hooks.attached)) {
+	if (!isNullOrUndef(hooks.onAttached)) {
 		lifecycle.addListener(() => {
-			hooks.attached(dom);
+			hooks.onAttached(dom);
 		});
 	}
 }

@@ -60,8 +60,8 @@ export function unmountVComponent(vComponent, parentDom) {
 	const hooks = vComponent._hooks || instanceHooks;
 
 	if (!isNullOrUndef(hooks)) {
-		if (!isNullOrUndef(hooks.componentWillUnmount)) {
-			hooks.componentWillUnmount(vComponent._dom, hooks);
+		if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
+			hooks.onComponentWillUnmount(vComponent._dom, hooks);
 		}
 	}
 }
@@ -70,8 +70,8 @@ export function unmountVElement(vElement, parentDom) {
 	const hooks = vElement._hooks;
 
 	if (!isNullOrUndef(hooks)) {
-		if (!isNullOrUndef(hooks.willDetach)) {
-			hooks.willDetach(vElement._dom);
+		if (!isNullOrUndef(hooks.onWillDetach)) {
+			hooks.onWillDetach(vElement._dom);
 		}
 	}
 	const children = vElement._children;

@@ -1,11 +1,6 @@
-import { createBlueprint, createVNode, createVText }from '../../../src/core/shapes';
-import { createUniversalElement } from '../../../src/core/universal';
+import { createVElement, createVText } from '../../../src/core/shapes';
 
 export default {
-	createBlueprint,
-	createVNode,
-	createVText,
-	universal: {
-		createElement: createUniversalElement
-	}
+	createVElement,
+	createVText
 };

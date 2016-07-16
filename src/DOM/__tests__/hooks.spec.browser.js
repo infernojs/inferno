@@ -16,15 +16,12 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
-				tag: 'div',
-				hooks: {
-					created,
-					attached,
-					willUpdate,
-					didUpdate,
-					willDetach
-				}
+			template = (onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach) => createElement('div', {
+				onCreated,
+				onAttached,
+				onWillUpdate,
+				onDidUpdate,
+				onWillDetach
 			});
 		});
 
@@ -67,19 +64,15 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
-				tag: 'div',
-				children: {
-					tag: 'div',
-					hooks: {
-						created,
-						attached,
-						willUpdate,
-						didUpdate,
-						willDetach
-					}
-				}
-			});
+			template = (onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach) => createElement('div', null,
+				createElement('div', {
+					onCreated,
+					onAttached,
+					onWillUpdate,
+					onDidUpdate,
+					onWillDetach
+				})
+			);
 		});
 
 		it('"created" hook should fire', () => {
@@ -121,17 +114,13 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = (created, attached, willUpdate, didUpdate, willDetach, children) => ({
-				tag: 'div',
-				hooks: {
-					created,
-					attached,
-					willUpdate,
-					didUpdate,
-					willDetach
-				},
-				children
-			});
+			template = (onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, children) => createElement('div', {
+				onCreated,
+				onAttached,
+				onWillUpdate,
+				onDidUpdate,
+				onWillDetach
+			}, children);
 		});
 
 		it('"created" hook should fire', () => {
@@ -173,20 +162,15 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = (created, attached, willUpdate, didUpdate, willDetach, text) => ({
-				tag: 'div',
-				children: {
-					tag: 'div',
-					hooks: {
-						created,
-						attached,
-						willUpdate,
-						didUpdate,
-						willDetach
-					},
-					children: text
-				}
-			});
+			template = (onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, text) => createElement('div', null,
+				createElement('div', {
+					onCreated,
+					onAttached,
+					onWillUpdate,
+					onDidUpdate,
+					onWillDetach
+				}, text)
+			);
 		});
 
 		it('"created" hook should fire', () => {
@@ -228,17 +212,13 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
-				tag: 'div',
-				hooks: {
-					created,
-					attached,
-					willUpdate,
-					didUpdate,
-					willDetach
-				},
-				children: 'Hello world!'
-			});
+			template = (onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach) => createElement('div', {
+				onCreated,
+				onAttached,
+				onWillUpdate,
+				onDidUpdate,
+				onWillDetach
+			}, 'Hello world!');
 		});
 
 		it('"created" hook should fire', () => {
@@ -280,20 +260,15 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = (created, attached, willUpdate, didUpdate, willDetach) => ({
-				tag: 'div',
-				children: {
-					hooks: {
-						created,
-						attached,
-						willUpdate,
-						didUpdate,
-						willDetach
-					},
-					tag: 'div',
-					children: 'Hello world!'
-				}
-			});
+			template = (onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach) => createElement('div', null,
+				createElement('div', {
+					onCreated,
+					onAttached,
+					onWillUpdate,
+					onDidUpdate,
+					onWillDetach
+				}, createElement('div', null, 'Hello world!'))
+			);
 		});
 
 		it('"created" hook should fire', () => {
@@ -335,17 +310,13 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
-				tag: 'div',
-				hooks: {
-					created,
-					attached,
-					willUpdate,
-					didUpdate,
-					willDetach
-				},
-				children: child
-			});
+			template = (onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, child) => createElement('div', {
+				onCreated,
+				onAttached,
+				onWillUpdate,
+				onDidUpdate,
+				onWillDetach
+			}, child);
 		});
 
 		it('"created" hook should fire', () => {
@@ -387,20 +358,15 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
-				tag: 'div',
-				children: {
-					tag: 'div',
-					hooks: {
-						created,
-						attached,
-						willUpdate,
-						didUpdate,
-						willDetach
-					},
-					children: child
-				}
-			});
+			template = (onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, child) => createElement('div', null,
+				createElement('div', {
+					onCreated,
+					onAttached,
+					onWillUpdate,
+					onDidUpdate,
+					onWillDetach
+				}, child)
+			);
 		});
 
 		it('"created" hook should fire', () => {
@@ -442,25 +408,13 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
-				tag: 'div',
-				hooks: {
-					created,
-					attached,
-					willUpdate,
-					didUpdate,
-					willDetach
-				},
-				children: [
-					{
-						tag: 'div'
-					},
-					child,
-					{
-						tag: 'div'
-					}
-				]
-			});
+			template = (onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, child) => createElement('div', {
+				onCreated,
+				onAttached,
+				onWillUpdate,
+				onDidUpdate,
+				onWillDetach
+			}, createElement('div'), createElement('div'));
 		});
 
 		it('"created" hook should fire', () => {
@@ -502,28 +456,15 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		beforeEach(() => {
-			template = (created, attached, willUpdate, didUpdate, willDetach, child) => ({
-				tag: 'div',
-				children: {
-					tag: 'div',
-					hooks: {
-						created,
-						attached,
-						willUpdate,
-						didUpdate,
-						willDetach
-					},
-					children: [
-						{
-							tag: 'div'
-						},
-						child,
-						{
-							tag: 'div'
-						}
-					]
-				}
-			});
+			template = (onCreated, onAttached, onWillUpdate, onDidUpdate, onWillDetach, child) => createElement('div', null,
+				createElement('div', {
+					onCreated,
+					onAttached,
+					onWillUpdate,
+					onDidUpdate,
+					onWillDetach
+				}, createElement('div'), createElement('div')
+			));
 		});
 
 		it('"created" hook should fire', () => {
@@ -565,24 +506,18 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		function StatelessComponent() {
-			const template = () => ({
-				tag: 'div',
-				text: 'Hello world!'
-			});
-			return template();
+			return createElement('div', null, 'Hello world!');
 		}
 
 		beforeEach(() => {
-			template = (componentWillMount, componentDidMount, componentWillUnmount, componentWillUpdate, componentDidUpdate, componentShouldUpdate, StatelessComponent) => ({
-				tag: StatelessComponent,
-				hooks: {
-					componentWillMount,
-					componentDidMount,
-					componentWillUnmount,
-					componentWillUpdate,
-					componentDidUpdate,
-					componentShouldUpdate
-				}
+			template = (onComponentWillMount, onComponentDidMount, onComponentWillUnmount, onComponentWillUpdate, onComponentDidUpdate, onComponentShouldUpdate, StatelessComponent) =>
+			createElement(StatelessComponent, {
+				onComponentWillMount,
+				onComponentDidMount,
+				onComponentWillUnmount,
+				onComponentWillUpdate,
+				onComponentDidUpdate,
+				onComponentShouldUpdate
 			});
 		});
 
@@ -631,28 +566,21 @@ describe('lifecycle hooks', () => {
 		let template;
 
 		function StatelessComponent() {
-			const template = () => ({
-				tag: 'div',
-				text: 'Hello world!'
-			});
-			return template();
+			return createElement('div', null, 'Hello world!');
 		}
 
 		beforeEach(() => {
-			template = (componentWillMount, componentDidMount, componentWillUnmount, componentWillUpdate, componentDidUpdate, componentShouldUpdate, StatelessComponent) => ({
-				tag: 'div',
-				children: {
-					tag: StatelessComponent,
-					hooks: {
-						componentWillMount,
-						componentDidMount,
-						componentWillUnmount,
-						componentWillUpdate,
-						componentDidUpdate,
-						componentShouldUpdate
-					}
-				}
-			});
+			template = (onComponentWillMount, onComponentDidMount, onComponentWillUnmount, onComponentWillUpdate, onComponentDidUpdate, onComponentShouldUpdate, StatelessComponent) =>
+			createElement('div', null,
+				createElement(StatelessComponent, {
+					onComponentWillMount,
+					onComponentDidMount,
+					onComponentWillUnmount,
+					onComponentWillUpdate,
+					onComponentDidUpdate,
+					onComponentShouldUpdate
+				})
+			);
 		});
 
 		it('"onComponentWillMount" hook should fire', () => {
@@ -695,9 +623,8 @@ describe('lifecycle hooks', () => {
 			expect(onComponentShouldUpdateDomNode).to.equal(expectedDomNode);
 		});
 	});
-	
-	describe('github issue with willDetach', () => {
 
+	describe('github issue with willDetach', () => {
 		it('should raise willDetach', () => {
 
 			let didAttach = false,
@@ -705,69 +632,46 @@ describe('lifecycle hooks', () => {
 				didDetach = false;
 
 			function addElement() {
-				var el = createElement(function(v0, v1, v2) {
-					return {
-						tag: 'h1',
-						attrs: {
-							class: 'something'
-						},
-						hooks: {
-							attached: function() {
-								didAttach = true;
-							},
-							created: function() {
-								didCreate = true;
-							},
-							willDetach: function() {
-								didDetach = true;
-							}
-						},
-						children: 'Hi there!'
-					};
-				});
-
+				const el = createElement('h1', {
+					class: 'something',
+					onAttached: function () {
+						didAttach = true;
+					},
+					onCreated: function () {
+						didCreate = true;
+					},
+					onWillDetach: function () {
+						didDetach = true;
+					}
+				}, 'Hi there!');
 				render(
 					el,
 					container
 				);
 			}
-
 			function removeElement() {
 				render(
 					null,
 					container
 				);
 			}
-
 			addElement();
 			removeElement();
-
 			expect(didAttach).to.equal(true);
 			expect(didCreate).to.equal(true);
 			expect(didDetach).to.equal(true);
-
-
 		});
 
 		it('should raise willDetach', () => {
-
 			let didDetach = false;
 
 			function addElement() {
-				var el = createElement(function(v0, v1, v2) {
-					return {
-						tag: 'h1',
-						attrs: {
-							class: 'something'
-						},
-						hooks: {
-							willDetach: function() {
-								didDetach = true;
-							}
-						},
-						children: 'Hi there!'
-					};
-				});
+				const el = createElement('h1', {
+					class: 'something',
+					onWillDetach: function () {
+						didDetach = true;
+					}
+				}, 'Hi there!');
 
 				render(
 					el,
@@ -776,14 +680,10 @@ describe('lifecycle hooks', () => {
 			}
 
 			function addElementTwo() {
-				var el = createElement(function(v0, v1, v2) {
-					return {
-						tag: 'h2',
-						attrs: {
-							class: 'something'
-						},
-						children: 'Another!'
-					};
+				const el = createElement(function () {
+					return createElement('h2', {
+						class: 'something'
+					}, 'Another!');
 				});
 
 				render(
