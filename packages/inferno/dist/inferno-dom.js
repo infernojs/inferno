@@ -155,7 +155,7 @@
 	function unmountVList(vList, parentDom, removePointer) {
 		var items = vList.items;
 		var itemsLength = items.length;
-		var pointer = items.pointer;
+		var pointer = vList.pointer;
 
 		if (itemsLength > 0) {
 			for (var i = 0; i < itemsLength; i++) {
@@ -366,6 +366,9 @@
 	}
 
 	function remove(node, parentDom) {
+		if (isVList(node)) {
+			return unmount(node, parentDom);
+		}
 		var dom = node.dom;
 		if (dom === parentDom) {
 			dom.innerHTML = '';
@@ -510,7 +513,13 @@
 		} else if (isVNode(input)) {
 			return mountVNode$1(input, parentDom, lifecycle, context, instance, isSVG);
 		} else {
-			mount(normalise$1(input), parentDom, lifecycle, context, instance, isSVG);
+			var normalisedInput = normalise$1(input);
+
+			if (input !== normalisedInput) {
+				mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
+			} else {
+				throw new Error(("Inferno Error: invalid object \"" + (typeof input) + "\"\" passed to mount()"));
+			}
 		}
 	}
 

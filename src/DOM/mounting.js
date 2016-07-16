@@ -23,7 +23,8 @@ import {
 	isVList,
 	isVNode,
 	insertOrAppend,
-	normaliseChild
+	normaliseChild,
+	normalise
 } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
@@ -31,7 +32,6 @@ import { componentToDOMNodeMap } from './rendering';
 import {
 	createVPlaceholder
 } from '../core/shapes';
-import {normalise} from './utils';
 
 export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	if (isVPlaceholder(input)) {
@@ -43,7 +43,13 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 	} else if (isVNode(input)) {
 		return mountVNode(input, parentDom, lifecycle, context, instance, isSVG);
 	} else {
-		mount(normalise(input), parentDom, lifecycle, context, instance, isSVG);
+		const normalisedInput = normalise(input);
+
+		if (input !== normalisedInput) {
+			mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
+		} else {
+			throw new Error(`Inferno Error: invalid object "${ typeof input }"" passed to mount()`);
+		}
 	}
 }
 

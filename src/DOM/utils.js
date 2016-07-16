@@ -137,6 +137,9 @@ export function normaliseChild(children, i) {
 }
 
 export function remove(node, parentDom) {
+	if (isVList(node)) {
+		return unmount(node, parentDom);
+	}
 	const dom = node.dom;
 	if (dom === parentDom) {
 		dom.innerHTML = '';
