@@ -319,6 +319,8 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 Inferno strives to be compatible with much of React's basic API. However, in some places, alternative implementations have been used.
 Non-performant features have been removed or replaced where an alternative solution is easy to adopt without too many changes.
 
+Inferno doesn't have react's synthetic events, which means DOM elements have their events triggered in the same manner as you'd expect from the browser you're running.
+
 ### Custom namespaces
 
 Inferno wants to always deliver great performance and in order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work; so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
