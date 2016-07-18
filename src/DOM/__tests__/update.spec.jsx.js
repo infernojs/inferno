@@ -513,4 +513,36 @@ describe('Stateful Component updates', () => {
 		]);
 		expect(container.innerHTML).to.equal('<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>');
 	});
+
+	it('Should not crash when patching array to array with hooks', () => {
+		let updater = null;
+		const stuff = [<div >{['Test']}</div>, <span>1</span>];
+		const orig = [[<span onAttached={function(){}}>{'1'}</span>]];
+		class Stuff extends Component {
+			constructor(props) {
+				super(props);
+
+				this.state = {
+					stuff: stuff
+				};
+
+				updater = (stuff) => {this.setState({stuff: stuff})}
+			}
+
+			render() {
+				return (
+					<div>
+						<div>
+							{this.state.stuff}
+						</div>
+					</div>
+				)
+			}
+		}
+
+		render(<Stuff />, container);
+		updater(orig);
+		expect(container.innerHTML).to.equal('<div><div><span>1</span></div></div>');
+
+	})
 });

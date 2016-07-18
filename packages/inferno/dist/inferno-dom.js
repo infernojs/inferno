@@ -866,7 +866,7 @@
 					if (isVList(lastInput)) {
 						patchVList(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG);
 					} else {
-						replaceNode(parentDom, mountVList(nextInput, null), lastInput.dom);
+						replaceNode(parentDom, mountVList(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
 						unmount(lastInput, null);
 					}
 				} else if (isVList(lastInput)) {
