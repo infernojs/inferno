@@ -144,7 +144,7 @@ This is essential for low-powered devices such as tablets and phones, where user
 Creates an Inferno VNode object that has chainable setting methods.
 
 ```javascript
-import createVNode from `inferno`;
+import createVNode from 'inferno';
 
 InfernoDOM.render(createVNode().setTag('div').setClassName('foo').setAttrs({ id: 'test' }).setChildren('Hello world!'), document.body);
 ```
@@ -318,6 +318,8 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 Inferno strives to be compatible with much of React's basic API. However, in some places, alternative implementations have been used.
 Non-performant features have been removed or replaced where an alternative solution is easy to adopt without too many changes.
+
+Inferno doesn't have react's synthetic events, which means DOM elements have their events triggered in the same manner as you'd expect from the browser you're running.
 
 ### Custom namespaces
 
