@@ -1,4 +1,5 @@
 import { render } from './../rendering';
+import createElement from './../../core/createElement';
 
 describe('Children - (non-JSX)', () => {
 
@@ -183,10 +184,7 @@ describe('Children - (non-JSX)', () => {
 
 		[{
 			description: 'should set static children as ' + arg.name,
-			template: () => ({
-				tag: 'div',
-				children: arg.value
-			})
+			template: () => createElement('div', null, arg.value)
 		}].forEach((test) => {
 
 			it(test.description, () => {
@@ -205,13 +203,7 @@ describe('Children - (non-JSX)', () => {
 
 		[{
 			description: 'should set static deep children as ' + arg.name,
-			template: () => ({
-				tag: 'div',
-				children: {
-					tag: 'span',
-					children: arg.value
-				}
-			})
+			template: () => createElement('div', null, createElement('span', null, arg.value))
 		}].forEach((test) => {
 
 			it(test.description, () => {
@@ -235,19 +227,7 @@ describe('Children - (non-JSX)', () => {
 
 		[{
 			description: 'should set very deep static children as ' + arg.name,
-			template: () => ({
-				tag: 'div',
-				children: {
-					tag: 'span',
-					children: {
-						tag: 'b',
-						children: {
-							tag: 'b',
-							children: arg.value
-						}
-					}
-				}
-			})
+			template: () => createElement('div', null, createElement('span', null, createElement('b', null, createElement('b', null, arg.value))))
 		}].forEach((test) => {
 
 			it(test.description, () => {
@@ -272,10 +252,7 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set dynamic children as ' + arg.name,
 
-			template: (child) => ({
-				tag: 'div',
-				children: child
-			})
+			template: (child) => createElement('div', null, child)
 		}].forEach((test) => {
 
 			it(test.description, () => {
@@ -354,13 +331,7 @@ describe('Children - (non-JSX)', () => {
 
 		[{
 			description: 'should set deep dynamic children as ' + arg.name,
-			template: (child) => ({
-				tag: 'div',
-				children: {
-					tag: 'b',
-					children: child
-				}
-			})
+			template: (child) => createElement('div', null, createElement('b', null, child))
 		}].forEach((test) => {
 
 			it(test.description, () => {

@@ -1,36 +1,21 @@
 import { render } from './../rendering';
-import { createBlueprint } from './../../core/shapes';
-
-const Inferno = {
-	createBlueprint
-};
-
-const spanNonKeyedBluePrint = createBlueprint({
-	tag: 'span',
-	className: 'TableCell',
-	children: { arg: 0 }
-});
-
-const spanWithKeyBluePrint = createBlueprint({
-	tag: 'span',
-	className: 'TableCell',
-	key: { arg: 0 },
-	children: { arg: 1 }
-});
+import createElement from './../../core/createElement';
 
 function spanTagWithText(text) {
-	return spanNonKeyedBluePrint(text);
+	return createElement('span', {
+		className: 'TableCell'
+	}, text);
 }
 
 function spanTagWithKeyAndText(key, text) {
-	return spanWithKeyBluePrint(key, text);
+	return createElement('span', {
+		className: 'TableCell',
+		key
+	}, text);
 }
 
 let template = function (child) {
-	return {
-		tag: 'div',
-		children: child
-	};
+	return createElement('div', null, child);
 };
 
 describe('Mixed of Keyed/Non-Keyed nodes', () => {

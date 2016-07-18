@@ -89,7 +89,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 				if (isVElement(lastInput)) {
 					patchVElement(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG);
 				} else {
-					replaceNode(parentDom, mountVNode(nextInput, null, lifecycle, context, instance, isSVG), lastInput._dom);
+					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput._dom);
 					unmount(lastInput, null);
 				}
 			} else if (isVElement(lastInput)) {
@@ -316,7 +316,7 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, context, parentInstance, isSVG) {
 	const lastComponent = lastVComponent._component;
 	const nextComponent = nextVComponent._component;
-	const nextProps = nextVComponent._props;
+	const nextProps = nextVComponent._props || {};
 
 	if (lastComponent !== nextComponent) {
 		replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, parentInstance, isSVG);

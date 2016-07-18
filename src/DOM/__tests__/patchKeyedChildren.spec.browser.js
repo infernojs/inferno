@@ -1,4 +1,5 @@
 import { render } from './../rendering';
+import createElement from './../../core/createElement';
 
 function generateKeyNodes(array) {
 
@@ -12,16 +13,10 @@ function generateKeyNodes(array) {
 			newKey = key;
 		}
 
-		const template = function (k) {
-			return {
-				tag: 'div',
-				key: k,
-				attrs: {id: String(id)},
-				children: id
-			};
-		};
-
-		children.push(template(newKey));
+		children.push(createElement('div', {
+			key: newKey,
+			id: String(id)
+		}, id));
 	}
 	return children;
 }
@@ -29,11 +24,8 @@ function generateKeyNodes(array) {
 describe('keyed-nodes', () => {
 	let container;
 
-	let template = function(child) {
-		return {
-			tag: 'div',
-			children: child
-		};
+	let template = function (child) {
+		return createElement('div', null, child);
 	};
 
 	beforeEach(() => {

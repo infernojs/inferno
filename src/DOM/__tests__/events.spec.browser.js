@@ -1,4 +1,5 @@
 import { render } from './../rendering';
+import createElement from './../../core/createElement';
 
 describe('Basic event tests', () => {
 	let container;
@@ -14,14 +15,9 @@ describe('Basic event tests', () => {
 	});
 
 	it('should attach basic click events', (done) => {
-		const template = (val) => ({
-			tag: 'div',
-			attrs: {
-				id: 'test'
-			},
-			events: {
-				click: val
-			}
+		const template = (val) => createElement('div', {
+			id: 'test',
+			onclick: val
 		});
 
 		let calledFirstTest = false;
@@ -65,7 +61,7 @@ describe('Basic event tests', () => {
 	});
 
 	it('should update events', () => {
-		var data = {
+		let data = {
 			count: 0
 		};
 
@@ -77,14 +73,9 @@ describe('Basic event tests', () => {
 			};
 		}
 		function App(d) {
-			return {
-				tag: "button",
-				events: {
-					click: onClick(d)
-				},
-				children: ['Count ', d.count],
-				dom: null
-			};
+			return createElement('button', {
+				onclick: onClick(d)
+			}, 'Count ', d.count);
 		}
 
 		function renderIt() {
@@ -105,25 +96,16 @@ describe('Basic event tests', () => {
 	});
 
 	it('should not leak memory', () => {
-		const eventHandler = function(){};
+		const eventHandler = function (){};
 
 		function AppTwo() {
-			return {
-				tag: "button",
-				children: ['2'],
-				dom: null
-			};
+			return createElement('button', null, [2]);
 		}
 
 		function App() {
-			return {
-				tag: "button",
-				events: {
-					submit: eventHandler
-				},
-				children: ['1'],
-				dom: null
-			};
+			return createElement('button', {
+				onsubmit: eventHandler
+			}, ['1']);
 		}
 
 		render(App(), container);
@@ -138,38 +120,24 @@ describe('Basic event tests', () => {
 
 
 	it('should not leak memory when child changes', () => {
-		const eventHandler = function(){};
+		const eventHandler = function (){};
 
 		function smallComponent() {
-			return {
-				tag: "div",
-				events: {
-					keyup: eventHandler
-				},
-				children: '2',
-				dom: null
-			}
+			return createElement('div', {
+				onkeyup: eventHandler
+			}, '2');
 		}
 
-		const childrenArray = [smallComponent(), smallComponent(), smallComponent()];
+		const childrenArray = [ smallComponent(), smallComponent(), smallComponent() ];
 
 		function AppTwo() {
-			return {
-				tag: "p",
-				children: ['2'],
-				dom: null
-			};
+			return createElement('p', null, ['2']);
 		}
 
 		function App(children) {
-			return {
-				tag: "p",
-				events: {
-					keydown: eventHandler
-				},
-				children: children.slice(0), // use slice so we create a new object rather than use the same object or we get oldChildren === newChildren in the diff
-				dom: null
-			};
+			return createElement('p', {
+				onkeydown: eventHandler
+			}, children.slice(0));
 		}
 
 

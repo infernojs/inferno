@@ -219,8 +219,8 @@ export function isKeyed(lastChildren, nextChildren) {
 	if (lastChildren.complex) {
 		return false;
 	}
-	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
-		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
+	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0]._key)
+		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0]._key);
 }
 
 function selectOptionValueIfNeeded(vdom, values) {

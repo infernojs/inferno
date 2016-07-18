@@ -1,4 +1,5 @@
 import { render } from './../rendering';
+import createElement from './../../core/createElement';
 
 describe('Creation - (non-JSX)', () => {
 	let container;
@@ -14,271 +15,98 @@ describe('Creation - (non-JSX)', () => {
 	[{
 		description: 'should render div with span child',
 		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: {
-					dom: null,
-					tag: 'span'
-				}
-			};
+			return createElement('div', null, createElement('span'));
 		},
 		tagName: 'div',
 		children: 1,
 		textContent: ''
 	}, {
 		description: 'should render span with span child',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'span',
-				children: {
-					tag: 'span'
-				}
-			};
-		},
+		template: () => createElement('span', null, createElement('span')),
 		tagName: 'span',
 		children: 1,
 		textContent: ''
 	}, {
 		description: 'should render div with two span children',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: [{
-					tag: 'span'
-				}, {
-					tag: 'span'
-				}]
-			};
-		},
+		template: () => createElement('div', null, createElement('div'), createElement('div')),
 		tagName: 'div',
 		children: 2,
 		textContent: ''
 	}, {
 		description: 'should render div with three span children and unset middle child',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: [{
-					tag: 'span'
-				},
-					null, {
-						dom: null,
-						tag: 'span'
-					}
-				]
-			};
-		},
+		template: () => createElement('div', null, createElement('span'), null, createElement('span')),
 		tagName: 'div',
 		children: 3,
 		textContent: ''
 	}, {
 		description: 'should render div with three span children and unset first, and middle child',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: [
-					null,
-					null, {
-						dom: null,
-						tag: 'span'
-					}
-				]
-			};
-		},
+		template: () => createElement('div', null, null, null, createElement('span')),
 		tagName: 'div',
 		children: 3,
 		textContent: ''
 	}, {
 		description: 'should render div with three span children and unset first, and middle child',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: [
-					null,
-					null,
-					null
-				]
-			};
-		},
+		template: () => createElement('div', null, null, null, null),
 		tagName: 'div',
 		children: 3,
 		textContent: ''
 	}, {
 		description: 'should render div with two null children and one text node',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: [
-					null,
-					'Baboy',
-					null
-				]
-			};
-		},
+		template: () => createElement('div', null, null, 'Baboy', null),
 		tagName: 'div',
 		children: 3,
 		textContent: 'Baboy'
 	}, {
 		description: 'should render div with one textNode and a span children',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: [
-					'Hello!',
-					null, {
-						dom: null,
-						tag: 'span'
-					}
-				]
-			};
-		},
+		template: () => createElement('div', null, 'Hello!', null, createElement('span')),
 		tagName: 'div',
 		children: 3,
 		textContent: 'Hello!'
 	}, {
 		description: 'should render div with two textNodes and a span children',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: [
-					'Hello, ',
-					null,
-					'World!', {
-						dom: null,
-						tag: 'span'
-					}
-				]
-			};
-		},
+		template: () => createElement('div', null, 'Hello, ', null, 'World!', createElement('span')),
 		tagName: 'div',
 		children: 4,
 		textContent: 'Hello, World!'
 	}, {
 		description: 'should render div with two textNodes and a two span children',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: [
-					'Hello, ', {
-						dom: null,
-						tag: 'span'
-					},
-					'World!', {
-						dom: null,
-						tag: 'span'
-					}
-				]
-			};
-		},
+		template: () => createElement('div', null, 'Hello, ', createElement('span'), 'World!', createElement('span')),
 		tagName: 'div',
 		children: 4,
 		textContent: 'Hello, World!'
 	}, {
 		description: 'should render div with two textNodes and one span children, and span with textNode',
-		template: () => {
-			return {
-				tag: 'div',
-				children: [
-					'Hello', {
-						tag: 'span'
-					},
-					', ', {
-						tag: 'span',
-						children: 'World!'
-					}
-				]
-			};
-		},
+		template: () => createElement('div', null, 'Hello', createElement('span'), ', ', createElement('span', null, 'World!')),
 		tagName: 'div',
 		children: 4,
 		textContent: 'Hello, World!'
 	}, {
 		description: 'should render div with tree null values in an array for children',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: [
-					null,
-					null,
-					null
-				]
-			};
-		},
+		template: () => createElement('div', null, null, null, null),
 		tagName: 'div',
 		children: 3,
 		textContent: ''
 	}, {
 		description: 'should render div with b child, and tree null values in an array for children',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: {
-					dom: null,
-					tag: 'b',
-					children:
-					[
-						null,
-						null,
-						null
-					]
-				}
-			};
-		},
+		template: () => createElement('div', null, createElement('b', null, null, null, null)),
 		tagName: 'div',
 		children: 1,
 		textContent: ''
 	}, {
 		description: 'should render div with b child, and number and two null values in an array for children',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div',
-				children: {
-					dom: null,
-					tag: 'b',
-					children:
-					[
-						null,
-						123,
-						null
-					]
-				}
-			};
-		},
+		template: () => createElement('div', null, createElement('b', null, null, 123, null)),
 		tagName: 'div',
 		children: 1,
 		textContent: '123'
 	}, {
 		description: 'should render empty div',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'div'
-			};
-		},
+		template: () => createElement('div'),
 		tagName: 'div',
 		children: 0,
 		textContent: ''
 	}, {
 		description: 'should render empty span',
-		template: () => {
-			return {
-				dom: null,
-				tag: 'span'
-			};
-		},
+		template: () => createElement('span'),
 		tagName: 'span',
 		children: 0,
 		textContent: ''

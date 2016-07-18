@@ -1,5 +1,5 @@
 import { render } from './../rendering';
-import { createBlueprint } from './../../core/shapes';
+import createElement from './../../core/createElement';
 
 function generateNodes(array) {
 	let i, id;
@@ -8,33 +8,22 @@ function generateNodes(array) {
 	for (i = 0; i < array.length; i++) {
 		id = array[i];
 
-		children.push({
-			tag: 'div',
-			attrs: { id: String(id) },
-			children: id
-		});
+		children.push(createElement('div', { key: String(id) }, id));
 	}
 	return children;
 }
 
-const spanNonKeyedBluePrint = createBlueprint({
-	tag: 'span',
-	className: 'TableCell',
-	children: {arg: 0}
-});
-
 function spanTagWithText(text) {
-	return spanNonKeyedBluePrint(text);
+	return createElement('span', {
+		className: 'TableCell'
+	}, text);
 }
 
 describe('Non Keyed nodes', () => {
 	let container;
 
-	let template = function(child) {
-		return {
-			tag: 'div',
-			children: child
-		};
+	let template = function (child) {
+		return createElement('div', null, child);
 	};
 
 	beforeEach(() => {
@@ -311,7 +300,7 @@ describe('Non Keyed nodes', () => {
 	});
 
 
-	describe('With blueprints', () => {
+	describe('Without blueprints', () => {
 		it('should swap two non-keyed children', () => {
 			render(template([spanTagWithText('a'), [], spanTagWithText('b')]), container);
 			expect(container.textContent).to.equal('ab');

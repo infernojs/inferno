@@ -173,9 +173,6 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, lastI
 
 		instance._patch = patch;
 		instance._componentToDOMNodeMap = componentToDOMNodeMap;
-		if (!isNullOrUndef(lastInstance) && props.ref) {
-			mountRef(lastInstance, props.ref, instance);
-		}
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndef(childContext)) {
