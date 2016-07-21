@@ -224,19 +224,19 @@ export function isKeyed(lastChildren, nextChildren) {
 }
 
 function selectOptionValueIfNeeded(vdom, values) {
-	if (vdom.tag !== 'option') {
-		for (let i = 0, len = vdom.children.length; i < len; i++) {
-			selectOptionValueIfNeeded(vdom.children[i], values);
+	if (vdom._tag !== 'option') {
+		for (let i = 0, len = vdom._children.length; i < len; i++) {
+			selectOptionValueIfNeeded(vdom._children[i], values);
 		}
 		// NOTE! Has to be a return here to catch optGroup elements
 		return;
 	}
 
-	const value = vdom.attrs && vdom.attrs.value;
+	const value = vdom._props && vdom._props.value;
 
 	if (values[value]) {
-		vdom.attrs = vdom.attrs || {};
-		vdom.attrs.selected = 'selected';
+		vdom._props = vdom._props || {};
+		vdom._props.selected = true;
 		vdom._dom.selected = true;
 	} else {
 		vdom._dom.selected = false;
@@ -244,9 +244,9 @@ function selectOptionValueIfNeeded(vdom, values) {
 }
 
 export function selectValue(vdom) {
-	let value = vdom.attrs && vdom.attrs.value;
+	const value = vdom._props && vdom._props.value;
+	const values = {};
 
-	let values = {};
 	if (isArray(value)) {
 		for (let i = 0, len = value.length; i < len; i++) {
 			values[value[i]] = value[i];
@@ -254,12 +254,12 @@ export function selectValue(vdom) {
 	} else {
 		values[value] = value;
 	}
-	for (let i = 0, len = vdom.children.length; i < len; i++) {
-		selectOptionValueIfNeeded(vdom.children[i], values);
+	for (let i = 0, len = vdom._children.length; i < len; i++) {
+		selectOptionValueIfNeeded(vdom._children[i], values);
 	}
 
-	if (vdom.attrs && vdom.attrs[value]) {
-		delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+	if (vdom._props && vdom._props[value]) {
+		delete vdom._props.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
 	}
 }
 

@@ -1,8 +1,8 @@
 import { render } from './../rendering';
 import innerHTML from './../../../tools/innerHTML';
+import createElement from './../../core/createElement';
 
 describe('Select / select multiple', () => {
-
 	let container;
 
 	beforeEach(() => {
@@ -14,26 +14,14 @@ describe('Select / select multiple', () => {
 	});
 
 	it('should render "select" boolean on select options with numbers', () => {
-		const template = (val) => ({
-			tag: 'select',
-			attrs: {
-				multiple: true,
-				value: val
-			},
-			children: [{
-				tag: 'option',
-				attrs: {
-					value: 1
-				},
-				children: 1
-			}, {
-				tag: 'option',
-				attrs: {
-					value: 2
-				},
-				children: 2
-			}]
-		});
+		const template = (val) => createElement('select', {
+			multiple: true,
+			value: val
+		}, createElement('option', {
+			value: 1
+		}, 1), createElement('option', {
+			value: 2
+		}, 2));
 
 		render(template(null), container);
 		render(template(), container);
@@ -70,26 +58,14 @@ describe('Select / select multiple', () => {
 
 	it('should render "select" boolean on select options', () => {
 
-		const template = (val) => ({
-			tag: 'select',
-			attrs: {
-				multiple: true,
-				value: val
-			},
-			children: [{
-				tag: 'option',
-				attrs: {
-					value: 'foo'
-				},
-				children: 'foo'
-			}, {
-				tag: 'option',
-				attrs: {
-					value: 'bar'
-				},
-				children: 'bar'
-			}]
-		});
+		const template = (val) => createElement('select', {
+			multiple: true,
+			value: val
+		}, createElement('option', {
+			value: 'foo'
+		}, 'foo'), createElement('option', {
+			value: 'bar'
+		}, 'bar'));
 
 		render(template({}), container);
 		render(template(null), container);
@@ -123,26 +99,14 @@ describe('Select / select multiple', () => {
 	});
 
 	it('should render "select" boolean on select options', () => {
-		const template = (val) => ({
-			tag: 'select',
-			attrs: {
-				multiple: true,
-				value: val
-			},
-			children: [{
-				tag: 'option',
-				attrs: {
-					value: 'foo'
-				},
-				children: 'foo'
-			}, {
-				tag: 'option',
-				attrs: {
-					value: 'bar'
-				},
-				children: 'bar'
-			}]
-		});
+		const template = (val) => createElement('select', {
+			multiple: true,
+			value: val
+		}, createElement('option', {
+			value: 'foo'
+		}, 'foo'), createElement('option', {
+			value: 'bar'
+		}, 'bar'));
 
 		render(template('foo'), container);
 		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
@@ -233,26 +197,14 @@ describe('Select / select multiple', () => {
 */
 	it('should render "select" boolean on select options', () => {
 
-		const template = (val) => ({
-			tag: 'select',
-			attrs: {
-				multiple: true,
-				value: val
-			},
-			children: [{
-				tag: 'option',
-				attrs: {
-					value: 'foo'
-				},
-				children: 'foo'
-			}, {
-				tag: 'option',
-				attrs: {
-					value: 'bar'
-				},
-				children: 'bar'
-			}]
-		});
+		const template = (val) => createElement('select', {
+			multiple: true,
+			value: val
+		}, createElement('option', {
+			value: 'foo'
+		}, 'foo'), createElement('option', {
+			value: 'bar'
+		}, 'bar'));
 
 		render(template('foo'), container);
 
@@ -278,11 +230,8 @@ describe('Select / select multiple', () => {
 
 	it('should assure the value attribute also set the value property for `textarea`', () => {
 
-		const template = (val) => ({
-			tag: 'textarea',
-			attrs: {
-				value: val
-			}
+		const template = (val) => createElement('textarea', {
+			value: val
 		});
 
 		render(template('foo'), container);
@@ -305,9 +254,9 @@ describe('Select / select multiple', () => {
 
 		expect(container.firstChild.value).to.eql('');
 
-		render(template(undefined), container); // setting value to undefined sets it 'undefined' in JS
+		render(template(undefined), container);
 
-		expect(container.firstChild.value).to.eql('undefined');
+		expect(container.firstChild.value).to.eql('');
 
 		render(template('bar'), container);
 

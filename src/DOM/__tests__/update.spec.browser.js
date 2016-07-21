@@ -14,17 +14,10 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should insert an additionnal tag node', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: child
-		});
-
+		const template = (child) => createElement('div', null, child);
 		let span;
 
-		span = () => ({
-			tag: 'div',
-			children: [ 'hello', ' to' ]
-		});
+		span = () => createElement('div', null, 'hello ', 'to');
 
 		render(template(span()), container);
 
@@ -38,29 +31,18 @@ describe('Update (non-jsx)', () => {
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.textContent).to.equal('hello to');
 
-		span = () => ({
-			tag: 'div'
-		});
+		span = () => createElement('div');
 
 		render(template(span()), container);
 
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.textContent).to.equal('');
-
 	});
 
 	it('should insert an additional tag node', () => {
-
-		const template = (child) => ({
-			tag: 'div',
-
-			children: child
-		});
-
-		const span = () => ({
-			tag: 'div'
-		});
+		const template = (child) => createElement('div', null, child);
+		const span = () => createElement('div');
 
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('<div></div>');
@@ -68,35 +50,21 @@ describe('Update (non-jsx)', () => {
 		expect(container.firstChild.innerHTML).to.equal('');
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('<div></div>');
-
 	});
 
 	it('should insert an additional tag node', () => {
-		const template = (child) => ({
-			tag: 'div',
+		const template = (child) => createElement('div', null, child);
+		const div = () => createElement('div');
 
-			children: child
-		});
-
-		const span = () => ({
-			tag: 'div'
-		});
 		render(template(null), container);
 		expect(container.firstChild.innerHTML).to.equal('');
-		render(template(span()), container);
+		render(template(div()), container);
 		expect(container.firstChild.innerHTML).to.equal('<div></div>');
 	});
 
 	it('should insert an additional tag node', () => {
-		const template = (child) => ({
-			tag: 'div',
-
-			children: child
-		});
-
-		const span = () => ({
-			tag: 'div'
-		});
+		const template = (child) => createElement('div', null, child);
+		const span = () => createElement('div');
 
 		render(template(null), container);
 		expect(container.firstChild.innerHTML).to.equal('');
@@ -105,32 +73,15 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should insert multiple additional tag node', () => {
-		const template = (child) => ({
-			tag: 'div',
-
-			children: child
-		});
-		let span;
-
-		span = () => ({
-			tag: 'div'
-		});
+		const template = (child) => createElement('div', null, child);
+		const span = () => createElement('div');
 
 		render(template(span()), container);
-
 		expect(container.firstChild.innerHTML).to.equal('<div></div>');
 	});
 
 	it('should render a node with dynamic values', () => {
-		const template = (val1, val2) => ({
-			tag: 'div',
-			children: [
-				'Hello world - ',
-				val1,
-				' ',
-				val2
-			]
-		});
+		const template = (val1, val2) => createElement('div', null, 'Hello world - ', val1, ' ', val2);
 
 		render(template('Inferno', 'Owns'), container);
 		expect(
@@ -189,14 +140,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a wrapped text node', () => {
-		const template = (val1, val2) => ({
-			tag: 'div',
-			children: [
-				val1,
-				' foo',
-				val2
-			]
-		});
+		const template = (val1, val2) => createElement('div', null, val1, ' foo', val2);
 
 		render(template(null), container);
 		expect(
@@ -228,15 +172,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a wrapped text node', () => {
-
-		const template = (val1, val2) => ({
-			tag: 'div',
-			children: [
-				val1,
-				' foo',
-				val2
-			]
-		});
+		const template = (val1, val2) => createElement('div', null, val1, ' foo', val2);
 
 		render(template(null), container);
 		expect(

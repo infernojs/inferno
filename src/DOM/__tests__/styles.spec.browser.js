@@ -1,5 +1,6 @@
 import { render } from './../rendering';
 import style from './../../../tools/style';
+import createElement from './../../core/createElement';
 
 const isPhantomJS = window && window.navigator && /PhantomJS/.test(window.navigator.userAgent);
 
@@ -138,8 +139,7 @@ describe('CSS style properties', () => {
 	preDefined.forEach((arg) => {
 		[{
 			description: 'should ' + arg.name + ' on root node',
-			template: () => ({
-				tag: 'div',
+			template: () => createElement('div', {
 				style: arg.value
 			})
 		}].forEach((test) => {
@@ -158,13 +158,9 @@ describe('CSS style properties', () => {
 	preDefined.forEach((arg) => {
 		[{
 			description: 'should ' + arg.name + ' on first child node',
-			template: () => ({
-				tag: 'div',
-				children: {
-					tag: 'div',
-					style: arg.value
-				}
-			})
+			template: () => createElement('div', null, createElement('div', {
+				style: arg.value
+			}))
 		}].forEach((test) => {
 			it(test.description, () => {
 				render(test.template(), container);
@@ -188,8 +184,7 @@ describe('CSS style properties', () => {
 	preDefined.forEach((arg) => {
 		[{
 			description: 'should dynamically ' + arg.name + ' on root node',
-			template: (value) => ({
-				tag: 'div',
+			template: (value) => createElement('div', {
 				style: value
 			})
 		}].forEach((test) => {
@@ -244,13 +239,9 @@ describe('CSS style properties', () => {
 	preDefined.forEach((arg) => {
 		[{
 			description: 'should dynamically ' + arg.name + ' on first child node',
-			template: (value) => ({
-				tag: 'div',
-				children: {
-					tag: 'div',
-					style: value
-				}
-			})
+			template: (value) => createElement('div', null, createElement('div', {
+				style: value
+			}))
 		}].forEach((test) => {
 			it(test.description, () => {
 				render(test.template(arg.value), container);
@@ -298,14 +289,12 @@ describe('CSS style properties', () => {
 	preDefined.forEach((arg) => {
 		[{
 			description: 'should dynamically and statically ' + arg.name + ' on first child node',
-			template: (value) => ({
+			template: (value) => createElement('div', {
+				style: arg.value
+			}, createElement('div', {
 				tag: 'div',
-				style: arg.value,
-				children: {
-					tag: 'div',
-					style: value
-				}
-			})
+				style: value
+			}))
 		}].forEach((test) => {
 			it(test.description, () => {
 				render(test.template({}), container);
@@ -429,8 +418,7 @@ describe('CSS style properties', () => {
 
 
 	it('should support CSS background property', () => {
-		const template = () => ({
-			tag: 'div',
+		const template = () => createElement('div', {
 			style: {
 				width: '200px',
 				height: '200px',

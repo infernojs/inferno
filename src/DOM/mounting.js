@@ -21,7 +21,8 @@ import {
 	handleAttachedHooks,
 	insertOrAppend,
 	normaliseChild,
-	isPropertyOfElement
+	isPropertyOfElement,
+	namespaces
 } from './utils';
 import { patchAttribute, patchStyle, patch } from './patching';
 import { handleLazyAttached } from './lifecycle';
@@ -154,14 +155,6 @@ function mountChildren(node, children, parentDom, lifecycle, context, instance, 
 	}
 }
 
-export function mountEvents(events, eventKeys, dom) {
-	for (let i = 0; i < eventKeys.length; i++) {
-		const event = eventKeys[i];
-
-		dom[event] = events[event];
-	}
-}
-
 export function mountVComponent(vComponent, parentDom, lifecycle, context, lastInstance, isSVG) {
 	const Component = vComponent._component;
 	const props = vComponent._props;
@@ -237,7 +230,13 @@ export function mountProps(vElement, props, dom, instance) {
 			} else if (isPropertyOfElement(vElement._tag, prop)) {
 				dom[prop] = value;
 			} else {
-				dom.setAttribute(prop, value);
+				const namespace = namespaces[prop];
+
+				if (namespace) {
+					dom.setAttributeNS(namespace, prop, value);
+				} else {
+					dom.setAttribute(prop, value);
+				}
 			}
 		}
 	}

@@ -190,8 +190,10 @@ export function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, 
 	}
 }
 
-function patchProps(lastVElement, nextVElement, lastProps = {}, nextProps = {}, dom, instance) {
+function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom, instance) {
 	const tag = nextVElement._tag;
+	lastProps = lastProps || {};
+	nextProps = nextProps || {};
 
 	if (lastVElement._tag === 'select') {
 		selectValue(nextVElement);
@@ -209,13 +211,19 @@ function patchProps(lastVElement, nextVElement, lastProps = {}, nextProps = {}, 
 				} else if (isPropertyOfElement(tag, prop)) {
 					dom[prop] = nextValue;
 				} else {
-					dom.setAttribute(prop, nextValue);
+					const namespace = namespaces[prop];
+
+					if (namespace) {
+						dom.setAttributeNS(namespace, prop, nextValue);
+					} else {
+						dom.setAttribute(prop, nextValue);
+					}
 				}
 			}
 		}
 	}
 	for (let prop in lastProps) {
-		if (isUndefined(lastProps[prop])) {
+		if (isUndefined(nextProps[prop])) {
 			removeProp(tag, prop, dom);
 		}
 	}
