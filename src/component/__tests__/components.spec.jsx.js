@@ -1,7 +1,8 @@
 import { render } from './../../DOM/rendering';
-import Component from './../../component/index';
+import Component from './../../component/es2015';
 import innerHTML from './../../../tools/innerHTML';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
+import createElement from './../../core/createElement';
 
 const Inferno = {
 	createBlueprint
@@ -2096,12 +2097,11 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div><div><div><span>Ref</span></div></div></div>');
 			expect(refs.top).to.equal(container.firstChild);
 			expect(refs.mid).to.equal(container.firstChild.firstChild);
-			expect(refs.bottom).to.equal(container.firstChild.firstChild.firstChild.firstChild);
+			expect(refs.bottom).to.equal(container.firstChild.firstChild.firstChild.lastChild);
 		});
 
 
 		it('Should have correct props when nested component updates (github#240)', () => {
-
 			class A extends Component {
 				constructor(props) {
 					super(props);
@@ -2168,5 +2168,384 @@ describe('Components (JSX)', () => {
 			// Note => there should be: Buu two, not: Buu Three, props are messed up when nested component updates
 			expect(container.innerHTML).to.equal('<div><div><span>bar</span><a>one</a></div><div><span>buu</span><a>two</a></div><div><span>bar</span><a>three</a></div></div>');
 		});
+
+		it('Should update without errors', () => {
+			let toggleParent = null;
+			let toggleChild = null;
+
+			class Parent extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						active: true
+					};
+
+					this.toggle = this.toggle.bind(this);
+					toggleParent = this.toggle; // For the sake of test
+				}
+
+				toggle() {
+					this.setState({
+						active: !this.state.active
+					});
+				}
+
+				render() {
+					let content = null;
+					if (this.state.active) {
+						content = this.props.children;
+					}
+
+					return (
+						<div>
+							<span>A</span>
+							{content}
+						</div>
+					)
+				}
+			}
+
+			class Child extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						active: true
+					};
+
+					this.toggle = this.toggle.bind(this);
+					toggleChild = this.toggle; // For the sake of test
+				}
+
+				toggle() {
+					this.setState({
+						active: !this.state.active
+					});
+				}
+
+				render() {
+					if (this.state.active) {
+						return <span>2</span>;
+					}
+
+					return <div>1</div>;
+				}
+			}
+
+			render(<Parent><Child /></Parent>, container);
+			expect(container.innerHTML).to.equal('<div><span>A</span><span>2</span></div>');
+			toggleChild();
+			expect(container.innerHTML).to.equal('<div><span>A</span><div>1</div></div>');
+			toggleParent();
+			expect(container.innerHTML).to.equal('<div><span>A</span></div>');
+		});
+
+		it('Should trigger componentWillUnmount once for child', () => {
+			class Parent extends Component {
+				render() {
+					return (
+						<div>
+							<span>A</span>
+							{this.props.children}
+						</div>
+					);
+				}
+			}
+
+			class Child extends Component {
+				render() {
+					return <div>1</div>;
+				}
+			}
+
+			render(<Parent><Child /></Parent>, container);
+			expect(container.innerHTML).to.equal('<div><span>A</span><div>1</div></div>');
+
+			const calledOnce = sinon.assert.calledOnce;
+			const spy = sinon.spy(Child.prototype, 'componentWillUnmount');
+			render(null, container);
+			calledOnce(spy); // Should be called once not twice
+		});
+
+		it('Should not trigger componentWillUnmount when siblings change', () => {
+			let updateParent = null;
+			class Parent extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						toggle: false
+					};
+
+					updateParent = () => this.setState({toggle: !this.state.toggle});
+				}
+
+				render() {
+					let content = null;
+					if (this.state.toggle) {
+						content = <span>test</span>;
+					}
+
+					return (
+						<div>
+							<span>A</span>
+							{content}
+							<B />
+						</div>
+					)
+				}
+			}
+
+			class B extends Component {
+				constructor(props) {
+					super(props);
+				}
+
+				componentWillUnmount() {}
+
+				render() {
+					return <div>B</div>;
+				}
+			}
+
+			const spy = sinon.spy(B.prototype, 'componentWillUnmount');
+			render(<Parent />, container);
+			updateParent();
+			updateParent();
+			updateParent();
+			updateParent();
+			updateParent();
+			expect(spy.called).to.equal(false);
+		})
+	});
+
+	describe('handling of sCU', () => {
+		let instance;
+		class Test extends Component {
+			shouldComponentUpdate() {
+				return false;
+			}
+			render() {
+				instance = this;
+				return <div>{ this.props.foo }</div>;
+			}
+		}
+
+		it('should correctly render once but never again', () => {
+			render(<Test foo="bar" />, container);
+			expect(container.innerHTML).to.equal('<div>bar</div>');
+			render(<Test foo="yar" />, container);
+			expect(container.innerHTML).to.equal('<div>bar</div>');
+			instance.setState({ foo: 'woo' });
+			expect(container.innerHTML).to.equal('<div>bar</div>');
+			render(null, container);
+			expect(container.innerHTML).to.equal('');
+		});
+	});
+	describe('handling of different primatives', () => {
+		it('Should correctly handle boolean values (github#255)', () => {
+			const Todo = ({ todo }) => (
+				<tr> <td>{todo.id}</td> <td>{todo.desc}</td> <td>{todo.done}</td> </tr>
+			);
+
+			render(<Todo todo={ { done: false } } />, container);
+			expect(container.innerHTML).to.equal('<tr> <td></td> <td></td> <td></td> </tr>');
+			render(<Todo todo={ { done: true } } />, container);
+			expect(container.innerHTML).to.equal('<tr> <td></td> <td></td> <td></td> </tr>');
+		});
+	});
+
+	describe('handling JSX spread attributes', () => {
+		it('should properly handle multiple attributes using spread', () => {
+			class Input extends Component {
+				constructor() {
+					super();
+					this.handleBlur = this.handleBlur.bind(this);
+				}
+
+				handleBlur(event) {
+					console.log(event, "blur");
+				}
+
+				render() {
+					const props = {
+						onBlur : this.handleBlur,
+						className: 'foo',
+						id: 'test'
+					};
+
+					return (<input { ...props } ></input>);
+				}
+			}
+
+			render(
+				<Input />, container
+			);
+			expect(container.innerHTML).to.equal('<input id="test" class="foo">');
+		});
+	});
+
+	describe('Swapping Component to DOM node', () => {
+		it('Should be able to swap statefull component to DOM list when doing setState', () => {
+			let change1 = null;
+
+			class FooBar extends Component {
+				constructor(props) {
+					super(props)
+				};
+
+				render() {
+					return (
+						<div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div>
+					)
+				}
+			}
+
+			class Tester extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						toggle1: false
+					};
+
+					change1 = this.toggle1.bind(this);
+				}
+
+				toggle1() {
+					this.setState({
+						toggle1: !this.state.toggle1
+					});
+				}
+
+				renderContent() {
+					if (this.state.toggle1) {
+						return <FooBar />;
+					} else {
+						return (
+							<div class="login-container">
+								<h1>foo</h1>
+							</div>
+						);
+					}
+				}
+
+				render() {
+					 return (
+						 <div>
+							 {this.renderContent()}
+						 </div>
+					 )
+				}
+			}
+
+			render(<Tester />, container);
+			expect(container.innerHTML).to.equal('<div><div class="login-container"><h1>foo</h1></div></div>');
+			change1();
+			expect(container.innerHTML).to.equal('<div><div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div></div>');
+			change1();
+			expect(container.innerHTML).to.equal('<div><div class="login-container"><h1>foo</h1></div></div>');
+		});
+
+		it('Should be able to swap stateless component to DOM list when doing setState', () => {
+			let change1 = null;
+
+			const FooBar = () => (
+				<div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div>
+			);
+
+			class Tester extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						toggle1: false
+					};
+
+					change1 = this.toggle1.bind(this);
+				}
+
+				toggle1() {
+					this.setState({
+						toggle1: !this.state.toggle1
+					});
+				}
+
+				renderContent() {
+					if (this.state.toggle1) {
+						return <FooBar />;
+					} else {
+						return (
+							<div class="login-container">
+								<h1>foo</h1>
+							</div>
+						);
+					}
+				}
+
+				render() {
+					return (
+						<div>
+							{this.renderContent()}
+						</div>
+					)
+				}
+			}
+
+			render(<Tester />, container);
+			expect(container.innerHTML).to.equal('<div><div class="login-container"><h1>foo</h1></div></div>');
+			change1();
+			expect(container.innerHTML).to.equal('<div><div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div></div>');
+			change1();
+			expect(container.innerHTML).to.equal('<div><div class="login-container"><h1>foo</h1></div></div>');
+		});
+	});
+
+	describe('handling componentWillReceiveProps lifecycle event', () => {
+		it('should correctly handle setState within the lifecycle funciton', () => {
+			let renderCount = 0;
+			class Comp1 extends Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						foo: 0
+					};
+				}
+				componentWillReceiveProps() {
+					this.setState({ foo: 1 });
+				}
+				render() {
+					renderCount++;
+					return <div>{ this.state.foo }</div>;
+				}
+			}
+
+			render(<Comp1 />, container);
+			expect(container.innerHTML).to.equal('<div>0</div>');
+			render(<Comp1 />, container);
+			expect(container.innerHTML).to.equal('<div>1</div>');
+			expect(renderCount).to.equal(2);
+		});
+	});
+
+	it('mixing JSX components with non-JSX components', () => {
+		function Comp() {
+			return createElement('div');
+		}
+		function Comp2() {
+			return createElement('span');
+		}
+		function Comp3() {
+			return <div></div>;
+		}
+		render(<div><Comp /></div>, container);
+		expect(container.innerHTML).to.equal('<div><div></div></div>');
+		render(<div><Comp2 /></div>, container);
+		expect(container.innerHTML).to.equal('<div><span></span></div>');
+		render(<span><Comp /></span>, container);
+		expect(container.innerHTML).to.equal('<span><div></div></span>');
+		render(createElement('span', null, <Comp3 />), container);
+		expect(container.innerHTML).to.equal('<span><div></div></span>');
 	});
 });

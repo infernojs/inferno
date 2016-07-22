@@ -1,5 +1,5 @@
 /*!
- * inferno-test-utils v0.7.10
+ * inferno-test-utils v0.7.22
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -9,11 +9,17 @@
 	(global.InfernoTestUtils = factory());
 }(this, function () { 'use strict';
 
-	function shallowRender() {}
+	function shallowRender() {
 
-	function deepRender() {}
+	}
 
-	function renderIntoDocument() {}
+	function deepRender() {
+
+	}
+
+	function renderIntoDocument() {
+
+	}
 
 	var index = {
 		shallowRender: shallowRender,

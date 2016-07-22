@@ -18,13 +18,11 @@
 	<!-- Testing libraries -->
 	<script src='/node_modules/mocha/mocha.js'></script>
 	<script src='/node_modules/chai/chai.js'></script>
-	<script src='/node_modules/chai-as-promised/lib/chai-as-promised.js'></script>
 	<script src='/node_modules/sinon/pkg/sinon.js'></script>
-	<script src='/node_modules/sinon-chai/lib/sinon-chai.js'></script>
 	<script>
 		mocha.setup('bdd');
 		window.expect = window.chai.expect;
-		onload = function() {
+		window.onload = function() {
 			var runner = mocha.run();
 			runner.globals(['expect', 'mock', 'promise', 'sandbox', 'spy', 'stub', 'useFakeServer', 'useFakeTimers', 'useFakeXMLHttpRequest']);
 			runner.chai = chai;

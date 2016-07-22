@@ -1,7 +1,8 @@
+
 import * as p from 'path';
 import * as fs from 'fs';
 import { rollup } from 'rollup';
-import babel from 'rollup-plugin-babel';
+import buble from 'rollup-plugin-buble';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
@@ -9,22 +10,19 @@ import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
 import commonjs from 'rollup-plugin-commonjs';
 
+const pkg = JSON.parse(fs.readFileSync('./package.json'));
+const external = Object.keys(pkg.peerDependencies || {}).concat(Object.keys(pkg.dependencies || {}));
+
 const plugins = [
-	babel({
-		babelrc: false,
-		presets: 'es2015-rollup',
-		plugins: [
-			'transform-inline-environment-variables',
-			'transform-undefined-to-void',
-			'babel-plugin-syntax-jsx',
-			'babel-plugin-inferno',
-			'transform-object-rest-spread'
-		]
-	}),
-	commonjs(),
+	buble(),
 	nodeResolve({
 		jsnext: true,
-		main: true
+		main: true,
+		skip: external
+	}),
+	commonjs({
+		include: 'node_modules/**',
+		exclude: '**/*.css'
 	}),
 	replace({
 		'process.env.NODE_ENV': JSON.stringify('production'),
@@ -57,46 +55,66 @@ const bundles = [
 	{
 		moduleGlobal: 'Inferno',
 		moduleName: 'inferno',
-		moduleEntry: 'packages/inferno/src/index.js'
+		moduleEntry: 'packages/inferno/src/index.js',
+		path: 'packages/inferno/'
 	},
 	{
 		moduleGlobal: 'InfernoDOM',
 		moduleName: 'inferno-dom',
-		moduleEntry: 'packages/inferno-dom/src/index.js'
+		moduleEntry: 'packages/inferno-dom/src/index.js',
+		path: 'packages/inferno-dom/'
 	},
 	{
 		moduleGlobal: 'InfernoServer',
 		moduleName: 'inferno-server',
-		moduleEntry: 'packages/inferno-server/src/index.js'
+		moduleEntry: 'packages/inferno-server/src/index.js',
+		path: 'packages/inferno-server/'
 	},
 	{
 		moduleGlobal: 'InfernoComponent',
 		moduleName: 'inferno-component',
-		moduleEntry: 'packages/inferno-component/src/index.js'
+		moduleEntry: 'packages/inferno-component/src/index.js',
+		path: 'packages/inferno-component/'
 	},
 	{
 		moduleGlobal: 'InfernoTestUtils',
 		moduleName: 'inferno-test-utils',
-		moduleEntry: 'packages/inferno-test-utils/src/index.js'
+		moduleEntry: 'packages/inferno-test-utils/src/index.js',
+		path: 'packages/inferno-test-utils/'
 	},
 	{
 		moduleGlobal: 'InfernoCreateElement',
 		moduleName: 'inferno-create-element',
-		moduleEntry: 'packages/inferno-create-element/src/index.js'
+		moduleEntry: 'packages/inferno-create-element/src/index.js',
+		path: 'packages/inferno-create-element/'
+	},
+	{
+		moduleGlobal: 'InfernoCompat',
+		moduleName: 'inferno-compat',
+		moduleEntry: 'packages/inferno-compat/src/index.js',
+		path: 'packages/inferno-compat/'
 	},
 	{
 		moduleGlobal: 'InfernoRouter',
 		moduleName: 'inferno-router',
-		moduleEntry: 'packages/inferno-router/src/index.js'
+		moduleEntry: 'packages/inferno-router/src/index.js',
+		path: 'packages/inferno-router/'
+	},
+	{
+		moduleGlobal: 'InfernoCreateClass',
+		moduleName: 'inferno-create-class',
+		moduleEntry: 'packages/inferno-create-class/src/index.js',
+		path: 'packages/inferno-create-class/'
 	},
 	{
 		moduleGlobal: 'InfernoRedux',
 		moduleName: 'inferno-redux',
 		moduleEntry: 'packages/inferno-redux/src/index.js'
+		path: 'packages/inferno-redux/'
 	}
 ];
 
-function createBundle({moduleGlobal, moduleName, moduleEntry}) {
+function createBundle({moduleGlobal, moduleName, moduleEntry }, path) {
 	const copyright =
 		'/*!\n' +
 		' * ' + moduleName + ' v' + pack.version + '\n' +
@@ -104,7 +122,7 @@ function createBundle({moduleGlobal, moduleName, moduleEntry}) {
 		' * Released under the ' + pack.license + ' License.\n' +
 		' */';
 	const entry = p.resolve(moduleEntry);
-	const dest  = p.resolve(`packages/inferno/dist/${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
+	const dest  = p.resolve(`${ path }${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
 
 	const bundleConfig = {
 		dest,
@@ -122,4 +140,5 @@ function createBundle({moduleGlobal, moduleName, moduleEntry}) {
 	});
 }
 
-Promise.all(bundles.map(bundle => createBundle(bundle))).then(_ => console.log('Bundles created!'));
+Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));
+>>>>>>> master

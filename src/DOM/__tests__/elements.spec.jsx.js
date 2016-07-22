@@ -1,12 +1,14 @@
 import { render } from './../rendering';
 import innerHTML from './../../../tools/innerHTML';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
+import createElement from './../../core/createElement';
+
 
 const Inferno = {
 	createBlueprint
 };
 
-describe('Elements - SVG (JSX)', () => {
+describe('Elements (JSX)', () => {
 	let container;
 
 	beforeEach(() => {
@@ -25,6 +27,15 @@ describe('Elements - SVG (JSX)', () => {
 	});
 
 	it('should render a simple div with multiple children', () => {
+		const title = ['foo'];
+		const icon = undefined;
+		render((
+			<div className="table-cell-mid">
+				{ icon }
+				{ title }
+			</div>
+		), container);
+		expect(container.firstChild.nodeName).to.equal('DIV');
 		render(<div><span></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -578,9 +589,6 @@ describe('Elements - SVG (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('CUSTOM-ELEM');
 		expect(container.childNodes.length).to.equal(1);
 		expect(container.firstChild.getAttribute('class')).to.equal('Hello, world!');
-
-		render([], container);
-
 	});
 
 	it('should properly render "width" and "height" attributes', () => {
@@ -688,6 +696,48 @@ describe('Elements - SVG (JSX)', () => {
 		), container);
 		expect(container.firstChild.volume).to.not.equal(undefined);
 		expect(container.firstChild.volume).to.be.equal(0);
+		document.body.removeChild(container);
+	});
+
+	it('should dangerously set innerHTML', () => {
+		render((
+			<div dangerouslySetInnerHTML={ { __html: 'Hello world!' } } />
+		), container);
+		expect(container.innerHTML).to.not.equal('Hello world!');
+	});
+
+	it('mixing JSX with non-JSX', () => {
+		render(<div>{ createElement('div') }</div>, container);
+		expect(container.innerHTML).to.equal('<div><div></div></div>');
+		render(<div>{ createElement('span') }</div>, container);
+		expect(container.innerHTML).to.equal('<div><span></span></div>');
+		render(<span>{ createElement('div') }</span>, container);
+		expect(container.innerHTML).to.equal('<span><div></div></span>');
+	});
+
+	it('Should be able to construct input with Hooks, Events, Attributes defined', () => {
+		function test() {}
+		const obj = { fn: function () {}, focus: function () {} };
+		const bool = false;
+		const newValue = 't';
+		const spread = { id: 'test' };
+		const spy = sinon.spy(obj, 'fn');
+		const spyFocus = sinon.spy(obj, 'focus');
+
+
+		// TODO: Fails to creation of node fix needed
+		render(<input type="text" onAttached={obj.fn} spellcheck="false"
+					readOnly={bool ? 'readonly' : false} disabled={bool}
+					ondragenter={test} ondragover={test} value={newValue} oninput={test}
+					onfocus={obj.focus} class="edit-field" onkeydown={test} onkeyup={test}
+					onBlur={test} {...spread} />, container);
+
+		// TODO: Somehow verify hooks / events work. Not sure this is as expected
+		document.body.appendChild(container);
+		const input = container.querySelector('#test');
+		sinon.assert.calledOnce(spy, 'Hook should work'); // Verify hook works
+		input.focus();
+		sinon.assert.calledOnce(spyFocus, 'Event should work'); // Verify hook works
 		document.body.removeChild(container);
 	});
 });

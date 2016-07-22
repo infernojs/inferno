@@ -15,21 +15,25 @@
                 t('li', null, t(Link, { to: '/foo' }, 'Route to foo')),
                 t('li', null, t(Link, { to: '/bar' }, 'Route to bar'))
             ),
-            t('div', null, children ? t(children) : null)
+            t('div', null, children ? children : null)
         );
     }
 
     function Foo() {
         return (
-            t('h2', null, 'I am Foo'),
-            t('p', null, 'I should only appear when you visit #!/foo')
+            t('div', null,
+                t('h2', null, 'I am Foo'),
+                t('p', null, 'I should only appear when you visit #!/foo')
+            )
         );
     }
 
     function Bar() {
         return (
-            t('h2', null, 'I am Bar'),
-            t('p', null, 'I should only appear when you visit #!/bar')
+            t('div', null,
+                t('h2', null, 'I am Bar'),
+                t('p', null, 'I should only appear when you visit #!/bar')
+            )
         );
     }
 
@@ -39,5 +43,4 @@
             t(Route, { path: '/bar', component: Bar })
         )
     ), document.getElementById('app'));
-
 })();

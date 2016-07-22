@@ -1,3 +1,5 @@
+import { isBrowser } from '../core/utils';
+
 const routers = [];
 
 function getCurrentUrl() {
@@ -9,7 +11,7 @@ function getCurrentUrl() {
 function getHashbangRoot() {
 	const url = typeof location !== 'undefined' ? location : EMPTY;
 
-	return `${url.protocol + '//' || ''}${url.pathname || ''}${url.search || ''}#!`;
+	return `${url.protocol + '//' || ''}${url.host || ''}${url.pathname || ''}${url.search || ''}#!`;
 }
 
 function routeTo(url) {
@@ -22,14 +24,16 @@ function routeTo(url) {
 	return didRoute;
 }
 
-window.addEventListener('popstate', () => routeTo(getCurrentUrl()));	
+if (isBrowser) {
+	window.addEventListener('popstate', () => routeTo(getCurrentUrl()));
+}
 
 export default {
 	addRouter(router) {
 		routers.push(router);
 	},
 	removeRouter(router) {
-		roouters.splice(routers.indexOf(router), 1);
+		routers.splice(routers.indexOf(router), 1);
 	},
 	getCurrentUrl,
 	getHashbangRoot

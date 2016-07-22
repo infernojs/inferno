@@ -4,7 +4,6 @@ import style from './../../../tools/style';
 const isPhantomJS = window && window.navigator && /PhantomJS/.test(window.navigator.userAgent);
 
 describe('CSS style properties', () => {
-
 	let container;
 
 	beforeEach(() => {
@@ -35,7 +34,7 @@ describe('CSS style properties', () => {
 			backgroundColor: null,
 			display: 'null'
 		},
-		expected: [null, '', 'display: null;']
+		expected: [ null, '', 'display: null;' ]
 	}, {
 		name: 'ignore null styles',
 		value: {},
@@ -53,7 +52,7 @@ describe('CSS style properties', () => {
 			backgroundColor: undefined,
 			display: 'undefined'
 		},
-		expected: [null, '', 'display: undefined;']
+		expected: [ null, '', 'display: undefined;' ]
 	}, {
 		name: 'ignore undefined styles',
 		value: {
@@ -78,6 +77,12 @@ describe('CSS style properties', () => {
 		name: 'correctly set fontSize css property',
 		value: {
 			fontSize: '123px'
+		},
+		expected: ['font-size: 123px;']
+	}, {
+		name: 'correctly set fontSize css property #2',
+		value: {
+			fontSize: 123
 		},
 		expected: ['font-size: 123px;']
 	}, {
@@ -131,7 +136,6 @@ describe('CSS style properties', () => {
 	}
 
 	preDefined.forEach((arg) => {
-
 		[{
 			description: 'should ' + arg.name + ' on root node',
 			template: () => ({
@@ -139,7 +143,6 @@ describe('CSS style properties', () => {
 				style: arg.value
 			})
 		}].forEach((test) => {
-
 			it(test.description, () => {
 
 				render(test.template(), container);
@@ -148,13 +151,11 @@ describe('CSS style properties', () => {
 				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-
 			});
 		});
 	});
 
 	preDefined.forEach((arg) => {
-
 		[{
 			description: 'should ' + arg.name + ' on first child node',
 			template: () => ({
@@ -165,9 +166,7 @@ describe('CSS style properties', () => {
 				}
 			})
 		}].forEach((test) => {
-
 			it(test.description, () => {
-
 				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
@@ -175,9 +174,7 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 			});
-
 			it(test.description, () => {
-
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
@@ -189,7 +186,6 @@ describe('CSS style properties', () => {
 	});
 
 	preDefined.forEach((arg) => {
-
 		[{
 			description: 'should dynamically ' + arg.name + ' on root node',
 			template: (value) => ({
@@ -197,9 +193,7 @@ describe('CSS style properties', () => {
 				style: value
 			})
 		}].forEach((test) => {
-
 			it(test.description, () => {
-
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 
@@ -208,9 +202,7 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 			});
-
 			it(test.description, () => {
-
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.equal(null);
@@ -219,9 +211,7 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.equal(null);
 			});
-
 			it(test.description, () => {
-
 				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.equal(null);
@@ -230,9 +220,7 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.equal(null);
 			});
-
 			it(test.description, () => {
-
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.equal(null);
@@ -241,9 +229,7 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 			});
-
 			it(test.description, () => {
-
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
@@ -256,7 +242,6 @@ describe('CSS style properties', () => {
 	});
 
 	preDefined.forEach((arg) => {
-
 		[{
 			description: 'should dynamically ' + arg.name + ' on first child node',
 			template: (value) => ({
@@ -267,39 +252,22 @@ describe('CSS style properties', () => {
 				}
 			})
 		}].forEach((test) => {
-
 			it(test.description, () => {
-
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-
 			});
-
 			it(test.description, () => {
-
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-
 			});
-
-			it(test.description, () => {
-
-				render(test.template(null), container);
-				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
-				render(test.template(null), container);
-				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
-			});
-
 			it(test.description, () => {
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
@@ -307,9 +275,15 @@ describe('CSS style properties', () => {
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
-
 			});
-
+			it(test.description, () => {
+				render(test.template(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				render(test.template(null), container);
+				expect(container.firstChild.nodeType).to.equal(1);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+			});
 			it(test.description, () => {
 				render(test.template({}), container);
 				expect(container.firstChild.nodeType).to.equal(1);
@@ -317,7 +291,6 @@ describe('CSS style properties', () => {
 				render(test.template({}), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
-
 			});
 		});
 	});
@@ -334,9 +307,7 @@ describe('CSS style properties', () => {
 				}
 			})
 		}].forEach((test) => {
-
 			it(test.description, () => {
-
 				render(test.template({}), container);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
@@ -346,11 +317,9 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-
 			});
 
 			it(test.description, () => {
-
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
@@ -359,11 +328,8 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
-
 			});
-
 			it(test.description, () => {
-
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
@@ -372,11 +338,8 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-
 			});
-
 			it(test.description, () => {
-
 				render(test.template({}), container);
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
@@ -386,7 +349,6 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
-
 			});
 		});
 	});
@@ -467,8 +429,7 @@ describe('CSS style properties', () => {
 
 
 	it('should support CSS background property', () => {
-
-		let template = () => ({
+		const template = () => ({
 			tag: 'div',
 			style: {
 				width: '200px',
@@ -476,10 +437,8 @@ describe('CSS style properties', () => {
 				backgroundColor: 'red'
 			}
 		});
-
 		render(template(), container);
 		expect(container.innerHTML).to.equal('<div style="width: 200px; height: 200px; background-color: red;"></div>');
 	});
-
 });
 

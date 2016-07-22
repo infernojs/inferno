@@ -1,42 +1,66 @@
 import { mount } from './mounting';
-import { isArray, isNullOrUndefined, isInvalidNode, isStringOrNumber, replaceInArray } from './../core/utils';
+import {
+	isArray,
+	isNullOrUndefined,
+	isInvalidNode,
+	isStringOrNumber
+} from './../core/utils';
 import { recyclingEnabled, pool } from './recycling';
+import { unmountVList } from './unmounting';
+import {
+	createVText,
+	createVPlaceholder,
+	createVList
+} from '../core/shapes';
+import { unmount } from './unmounting';
 
-function isVirtualFragment(obj) {
-	return !isNullOrUndefined(obj.append);
+function constructDefaults(string, object, value) {
+	/* eslint no-return-assign: 0 */
+	string.split(',').forEach(i => object[i] = value);
 }
 
-export function insertOrAppendNonKeyed(parentDom, newNode, nextNode) {
-	if (isNullOrUndefined(nextNode)) {
-		if (isVirtualFragment(newNode)) {
-			newNode.append(parentDom);
-		} else {
-			parentDom.appendChild(newNode);
-		}
-	} else {
-		if (isVirtualFragment(newNode)) {
-			newNode.insert(parentDom, nextNode);
-		} else if (isVirtualFragment(nextNode)) {
-			parentDom.insertBefore(newNode, nextNode.childNodes[0] || nextNode.dom);
-		} else {
-			parentDom.insertBefore(newNode, nextNode);
-		}
-	}
+const xlinkNS = 'http://www.w3.org/1999/xlink';
+const xmlNS = 'http://www.w3.org/XML/1998/namespace';
+export const strictProps = {};
+export const booleanProps = {};
+export const namespaces = {};
+export const isUnitlessNumber = {};
+
+constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+constructDefaults('volume,value', strictProps, true);
+constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+
+export function isVText(o) {
+	return o.text !== undefined;
 }
 
-export function createNullNode() {
-	return {
-		null: true,
-		dom: document.createTextNode('')
-	};
+export function isVPlaceholder(o) {
+	return o.placeholder === true;
 }
 
-export function insertOrAppendKeyed(parentDom, newNode, nextNode) {
+export function isVList(o) {
+	return o.items !== undefined;
+}
+
+export function isVNode(o) {
+	return o.tag !== undefined || o.bp !== undefined;
+}
+
+export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (isNullOrUndefined(nextNode)) {
 		parentDom.appendChild(newNode);
 	} else {
 		parentDom.insertBefore(newNode, nextNode);
 	}
+}
+
+export function replaceVListWithNode(parentDom, vList, dom) {
+	const pointer = vList.pointer;
+
+	unmountVList(vList, parentDom, false);
+	replaceNode(parentDom, dom, pointer);
 }
 
 export function documentCreateElement(tag, isSVG) {
@@ -81,7 +105,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	detachNode(lastNode);
+	unmount(lastNode, false);
 	const dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
 
 	nextNode.dom = dom;
@@ -92,67 +116,44 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 }
 
 export function replaceNode(parentDom, nextDom, lastDom) {
-	if (isVirtualFragment(lastDom)) {
-		lastDom.replaceWith(nextDom);
-	} else {
-		parentDom.replaceChild(nextDom, lastDom);
-	}
+	parentDom.replaceChild(nextDom, lastDom);
 }
 
-export function detachNode(node) {
-	if (isInvalidNode(node) || isStringOrNumber(node)) {
-		return;
+export function normalise(object) {
+	if (isStringOrNumber(object)) {
+		return createVText(object);
+	} else if (isInvalidNode(object)) {
+		return createVPlaceholder();
+	} else if (isArray(object)) {
+		return createVList(object);
 	}
-	const instance = node.instance;
-
-	let instanceHooks = null;
-	let instanceChildren = null;
-	if (!isNullOrUndefined(instance)) {
-		instanceHooks = instance.hooks;
-		instanceChildren = instance.children;
-
-		if (instance.render !== undefined) {
-			instance.componentWillUnmount();
-			instance._unmounted = true;
-			detachNode(instance._lastNode);
-		}
-	}
-	const hooks = node.hooks || instanceHooks;
-	if (!isNullOrUndefined(hooks)) {
-		if (!isNullOrUndefined(hooks.willDetach)) {
-			hooks.willDetach(node.dom);
-		}
-		if (!isNullOrUndefined(hooks.componentWillUnmount)) {
-			hooks.componentWillUnmount(node.dom, hooks);
-		}
-	}
-	const children = node.children || instanceChildren;
-	if (!isNullOrUndefined(children)) {
-		if (isArray(children)) {
-			for (let i = 0; i < children.length; i++) {
-				detachNode(children[i]);
-			}
-		} else {
-			detachNode(children);
-		}
-	}
+	return object;
 }
 
-export function createEmptyTextNode() {
-	return document.createTextNode('');
+export function normaliseChild(children, i) {
+	const child = children[i];
+
+	return children[i] = normalise(child);
 }
 
 export function remove(node, parentDom) {
+	if (isVList(node)) {
+		return unmount(node, parentDom);
+	}
 	const dom = node.dom;
 	if (dom === parentDom) {
 		dom.innerHTML = '';
 	} else {
-		parentDom.removeChild(dom);
+		removeChild(parentDom, dom);
 		if (recyclingEnabled) {
 			pool(node);
 		}
 	}
-	detachNode(node);
+	unmount(node, false);
+}
+
+export function removeChild(parentDom, dom) {
+	parentDom.removeChild(dom);
 }
 
 export function removeEvents(events, lastEventKeys, dom) {
@@ -162,13 +163,6 @@ export function removeEvents(events, lastEventKeys, dom) {
 		const event = eventKeys[i];
 
 		dom[event] = null;
-	}
-}
-
-function insertChildren(parentNode, childNodes, dom) {
-	// we need to append all childNodes now
-	for (let i = 0; i < childNodes.length; i++) {
-		parentNode.insertBefore(childNodes[i], dom);
 	}
 }
 
@@ -200,82 +194,12 @@ export function resetActiveNode(activeNode) {
 	}
 }
 
-export function createVirtualFragment() {
-	const childNodes = [];
-	const dom = document.createTextNode('');
-	let parentNode = null;
-
-	const fragment = {
-		dom,
-		childNodes,
-		appendChild(domNode) {
-			// TODO we need to check if the domNode already has a parentNode of VirtualFragment so we can remove it
-			childNodes.push(domNode);
-			if (parentNode) {
-				parentNode.insertBefore(domNode, dom);
-			}
-		},
-		removeChild(domNode) {
-			if (parentNode) {
-				parentNode.removeChild(domNode);
-			}
-			childNodes.splice(childNodes.indexOf(domNode), 1);
-		},
-		insertBefore(domNode, refNode) {
-			if (parentNode) {
-				parentNode.insertBefore(domNode, refNode);
-			}
-			childNodes.splice(childNodes.indexOf(refNode), 0, domNode);
-		},
-		replaceChild(domNode, refNode) {
-			parentNode.replaceChild(domNode, refNode);
-			replaceInArray(childNodes, refNode, domNode);
-		},
-		append(parentDom) {
-			parentDom.appendChild(dom);
-			parentNode = parentDom;
-			insertChildren(parentNode, childNodes, dom);
-		},
-		insert(parentDom, refNode) {
-			parentDom.insertBefore(dom, refNode);
-			parentNode = parentDom;
-			insertChildren(parentNode, childNodes, dom);
-		},
-		remove() {
-			parentNode.removeChild(dom);
-			for (let i = 0; i < childNodes.length; i++) {
-				parentNode.removeChild(childNodes[i]);
-			}
-			parentNode = null;
-		},
-		replaceWith(newNode) {
-			parentNode.replaceChild(newNode, dom);
-			for (let i = 0; i < childNodes.length; i++) {
-				parentNode.removeChild(childNodes[i]);
-			}
-			parentNode = null;
-		},
-		// here to emulate not being a TextNode
-		getElementsByTagName: null
-	};
-
-	Object.defineProperty(fragment, 'parentNode', {
-		get() {
-			return parentNode;
-		}
-	});
-	Object.defineProperty(fragment, 'firstChild', {
-		get() {
-			return childNodes[0];
-		}
-	});
-
-	return fragment;
-}
-
 export function isKeyed(lastChildren, nextChildren) {
+	if (lastChildren.complex) {
+		return false;
+	}
 	return nextChildren.length && !isNullOrUndefined(nextChildren[0]) && !isNullOrUndefined(nextChildren[0].key)
-		|| lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
+		&& lastChildren.length && !isNullOrUndefined(lastChildren[0]) && !isNullOrUndefined(lastChildren[0].key);
 }
 
 function selectOptionValueIfNeeded(vdom, values) {
@@ -317,17 +241,6 @@ export function selectValue(vdom) {
 		delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
 	}
 }
-export function placeholder(node, parentDom) {
-	const dom = createEmptyTextNode();
-
-	if (parentDom !== null) {
-		parentDom.appendChild(dom);
-	}
-	if (!isInvalidNode(node)) {
-		node.dom = dom;
-	}
-	return dom;
-}
 
 export function handleAttachedHooks(hooks, lifecycle, dom) {
 	if (!isNullOrUndefined(hooks.created)) {
@@ -337,5 +250,26 @@ export function handleAttachedHooks(hooks, lifecycle, dom) {
 		lifecycle.addListener(() => {
 			hooks.attached(dom);
 		});
+	}
+}
+
+export function setValueProperty(nextNode) {
+	const value = nextNode.attrs.value;
+	if (!isNullOrUndefined(value)) {
+		nextNode.dom.value = value;
+	}
+}
+
+export function setFormElementProperties(nextTag, nextNode) {
+	if (nextTag === 'input') {
+		const inputType = nextNode.attrs.type;
+		if (inputType === 'text') {
+			setValueProperty(nextNode);
+		} else if (inputType === 'checkbox' || inputType === 'radio') {
+			const checked = nextNode.attrs.checked;
+			nextNode.dom.checked = !!checked;
+		}
+	} else if (nextTag === 'textarea') {
+		setValueProperty(nextNode);
 	}
 }

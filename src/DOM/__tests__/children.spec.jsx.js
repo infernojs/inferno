@@ -1,13 +1,12 @@
 import { render } from './../rendering';
-import Component from './../../component/index';
-import { createBlueprint } from './../../core/createBlueprint';
+import Component from './../../component/es2015';
+import { createBlueprint } from './../../core/shapes';
 
 const Inferno = {
 	createBlueprint
 };
 
 describe('Children - (JSX)', () => {
-
 	let container;
 
 	beforeEach(function () {
@@ -68,13 +67,16 @@ describe('Children - (JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>');
-			const addTab = container.querySelector('#add');
+			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div id="add">Add</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div id="add">Add</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div>New 5</div><div id="add">Add</div></div>');
 		});
@@ -115,9 +117,10 @@ describe('Children - (JSX)', () => {
 
 			renderIt();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
-			const addTab = container.querySelector('#add');
+			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div id="add">Add</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div></div>');
 		});
@@ -157,11 +160,11 @@ describe('Children - (JSX)', () => {
 			}
 
 			renderIt();
-
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
-			const addTab = container.querySelector('#add');
+			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div><div>New 0</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div><div>New 0</div><div>New 1</div></div>');
 		});
@@ -208,10 +211,10 @@ describe('Children - (JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
-			const addTab = container.querySelector('#add');
+			let addTab = container.querySelector('#add');
 			addTab.click();
-
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>');
 		});
@@ -425,13 +428,16 @@ describe('Children - (JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>');
-			const addTab = container.querySelector('#add');
+			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div id="add">Add</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div id="add">Add</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div>New 5</div><div id="add">Add</div></div>');
 		});
@@ -473,9 +479,10 @@ describe('Children - (JSX)', () => {
 
 			renderIt();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
-			const addTab = container.querySelector('#add');
+			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div id="add">Add</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div></div>');
 		});
@@ -565,9 +572,10 @@ describe('Children - (JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
-			const addTab = container.querySelector('#add');
+			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>');
+			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>');
 		});
@@ -967,5 +975,5 @@ describe('Children - (JSX)', () => {
 			updaterFirst();
 			expect(container.innerHTML).to.equal('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>');
 		});
-	})
+	});
 });

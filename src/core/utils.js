@@ -1,4 +1,3 @@
-
 export function addChildrenToProps(children, props) {
 	if (!isNullOrUndefined(children)) {
 		const isChildrenArray = isArray(children);
@@ -15,6 +14,11 @@ export function addChildrenToProps(children, props) {
 	return props;
 }
 
+export const NO_RENDER = 'NO_RENDER';
+
+// Runs only once in applications lifetime
+export const isBrowser = typeof window !== 'undefined' && window.document;
+
 export function isArray(obj) {
 	return obj instanceof Array;
 }
@@ -24,15 +28,15 @@ export function isStatefulComponent(obj) {
 }
 
 export function isStringOrNumber(obj) {
-	return typeof obj === 'string' || typeof obj === 'number';
+	return isString(obj) || isNumber(obj);
 }
 
 export function isNullOrUndefined(obj) {
-	return obj === undefined || obj === null;
+	return isUndefined(obj) || isNull(obj);
 }
 
 export function isInvalidNode(obj) {
-	return obj === null || obj === false || obj === undefined;
+	return isNull(obj) || obj === false || obj === true || isUndefined(obj);
 }
 
 export function isFunction(obj) {
@@ -45,6 +49,22 @@ export function isAttrAnEvent(attr) {
 
 export function isString(obj) {
 	return typeof obj === 'string';
+}
+
+export function isNumber(obj) {
+	return typeof obj === 'number';
+}
+
+export function isNull(obj) {
+	return obj === null;
+}
+
+export function isTrue(obj) {
+	return obj === true;
+}
+
+export function isUndefined(obj) {
+	return obj === undefined;
 }
 
 export function isAttrAHook(hook) {
@@ -62,14 +82,6 @@ export function isAttrAComponentHook(hook) {
 		|| hook === 'onComponentShouldUpdate'
 		|| hook === 'onComponentWillUpdate'
 		|| hook === 'onComponentDidUpdate';
-}
-
-export function isPromise(obj) {
-	return obj instanceof Promise;
-}
-
-export function replaceInArray(array, obj, newObj) {
-	array.splice(array.indexOf(obj), 1, newObj);
 }
 
 function deepScanChildrenForNode(children, node) {

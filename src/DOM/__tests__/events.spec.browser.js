@@ -1,71 +1,68 @@
 import { render } from './../rendering';
 
 describe('Basic event tests', () => {
+	let container;
 
-    let container;
+	beforeEach(() => {
+		container = document.createElement('div');
+		document.body.appendChild(container);
+	});
 
-    beforeEach(() => {
-        container = document.createElement('div');
-	    document.body.appendChild(container);
-    });
-
-    afterEach(() => {
+	afterEach(() => {
 		document.body.removeChild(container);
-        container.innerHTML = '';
-    });
+		container.innerHTML = '';
+	});
 
-    it('should attach basic click events', (done) => {
+	it('should attach basic click events', (done) => {
+		const template = (val) => ({
+			tag: 'div',
+			attrs: {
+				id: 'test'
+			},
+			events: {
+				click: val
+			}
+		});
 
-        const template = (val) => ({
-            tag: 'div',
-            attrs: {
-                id: 'test'
-            },
-            events: {
-                click: val
-            }
-        });
+		let calledFirstTest = false;
+		function test() {
+			calledFirstTest = true;
+		}
+		// different event
+		let calledSecondTest = false;
+		function test2() {
+			calledSecondTest = true;
+		}
 
+		render(template(test), container);
 
-        let calledFirstTest = false;
-        function test() {
-            calledFirstTest = true;
-        }
-        // different event
-        let calledSecondTest = false;
-        function test2() {
-            calledSecondTest = true;
-        }
+		let divs = Array.prototype.slice.call(container.querySelectorAll('div'));
+		divs.forEach(div => div.click());
+		expect(calledFirstTest).to.equal(true);
 
-        render(template(test), container);
+		// reset
+		calledFirstTest = false;
 
-        let divs = Array.prototype.slice.call(container.querySelectorAll('div'));
-        divs.forEach(div => div.click());
-        expect(calledFirstTest).to.equal(true);
+		render(template(test2), container);
+		divs = Array.prototype.slice.call(container.querySelectorAll('div'));
+		divs.forEach(div => div.click());
 
-        // reset
-        calledFirstTest = false;
+		expect(calledFirstTest).to.equal(false);
+		expect(calledSecondTest).to.equal(true);
 
-        render(template(test2), container);
-        divs = Array.prototype.slice.call(container.querySelectorAll('div'));
-        divs.forEach(div => div.click());
-
-        expect(calledFirstTest).to.equal(false);
-        expect(calledSecondTest).to.equal(true);
-
-        // reset
-        calledFirstTest = false;
-        calledSecondTest = false;
+		// reset
+		calledFirstTest = false;
+		calledSecondTest = false;
 
 
-        render(null, container);
-        divs = Array.prototype.slice.call(container.querySelectorAll('div'));
-        divs.forEach(div => div.click());
+		render(null, container);
+		divs = Array.prototype.slice.call(container.querySelectorAll('div'));
+		divs.forEach(div => div.click());
 
-        expect(calledFirstTest).to.equal(false);
-        expect(calledSecondTest).to.equal(false);
-        done();
-    });
+		expect(calledFirstTest).to.equal(false);
+		expect(calledSecondTest).to.equal(false);
+		done();
+	});
 
 	it('should update events', () => {
 		var data = {
@@ -107,85 +104,85 @@ describe('Basic event tests', () => {
 		expect(data.count).to.equal(2);
 	});
 
-    it('should not leak memory', () => {
-        const eventHandler = function(){};
+	it('should not leak memory', () => {
+		const eventHandler = function(){};
 
-        function AppTwo() {
-            return {
-                tag: "button",
-                children: ['2'],
-                dom: null
-            };
-        }
+		function AppTwo() {
+			return {
+				tag: "button",
+				children: ['2'],
+				dom: null
+			};
+		}
 
-        function App() {
-            return {
-                tag: "button",
-                events: {
-                    submit: eventHandler
-                },
-                children: ['1'],
-                dom: null
-            };
-        }
+		function App() {
+			return {
+				tag: "button",
+				events: {
+					submit: eventHandler
+				},
+				children: ['1'],
+				dom: null
+			};
+		}
 
-        render(App(), container);
-        expect(container.firstChild.innerHTML).to.equal('1');
+		render(App(), container);
+		expect(container.firstChild.innerHTML).to.equal('1');
 
-        render(App(), container);
-        expect(container.firstChild.innerHTML).to.equal('1');
+		render(App(), container);
+		expect(container.firstChild.innerHTML).to.equal('1');
 
-        render(AppTwo(), container);
-        expect(container.firstChild.innerHTML).to.equal('2');
-    });
-
-
-    it('should not leak memory when child changes', () => {
-        const eventHandler = function(){};
-
-        function smallComponent() {
-            return {
-                tag: "div",
-                events: {
-                    keyup: eventHandler
-                },
-                children: '2',
-                dom: null
-            }
-        }
-
-        const childrenArray = [smallComponent(), smallComponent(), smallComponent()];
-
-        function AppTwo() {
-            return {
-                tag: "p",
-                children: ['2'],
-                dom: null
-            };
-        }
-
-        function App(children) {
-            return {
-                tag: "p",
-                events: {
-                    keydown: eventHandler
-                },
-                children: children.slice(0), // use slice so we create a new object rather than use the same object or we get oldChildren === newChildren in the diff
-                dom: null
-            };
-        }
+		render(AppTwo(), container);
+		expect(container.firstChild.innerHTML).to.equal('2');
+	});
 
 
-        render(App(childrenArray), container);
-        expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div><div>2</div></p>');
+	it('should not leak memory when child changes', () => {
+		const eventHandler = function(){};
 
-        childrenArray.pop();
-        render(App(childrenArray), container);
-        expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div></p>');
+		function smallComponent() {
+			return {
+				tag: "div",
+				events: {
+					keyup: eventHandler
+				},
+				children: '2',
+				dom: null
+			}
+		}
 
-        render(AppTwo(), container);
-        expect(container.innerHTML).to.equal('<p>2</p>');
-    });
+		const childrenArray = [smallComponent(), smallComponent(), smallComponent()];
+
+		function AppTwo() {
+			return {
+				tag: "p",
+				children: ['2'],
+				dom: null
+			};
+		}
+
+		function App(children) {
+			return {
+				tag: "p",
+				events: {
+					keydown: eventHandler
+				},
+				children: children.slice(0), // use slice so we create a new object rather than use the same object or we get oldChildren === newChildren in the diff
+				dom: null
+			};
+		}
+
+
+		render(App(childrenArray), container);
+		expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div><div>2</div></p>');
+
+		childrenArray.pop();
+		render(App(childrenArray), container);
+		expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div></p>');
+
+		render(AppTwo(), container);
+		expect(container.innerHTML).to.equal('<p>2</p>');
+	});
 });
 
 

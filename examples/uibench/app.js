@@ -100,12 +100,12 @@
 		}
 		var cells = data.props;
 		var children = [
-			tableRow2(TableCell, { text: '#' + data.id }, defaultUpdateTableCell, -1)
+			tableRow2(TableCell, { text: '#' + data.id }, defaultUpdateTableCell, data.id)
 		];
 
 		for (var i = 0; i < cells.length; i++) {
 			children.push(
-				tableRow2(TableCell, { text: cells[i] }, defaultUpdateTableCell, i)
+				tableRow2(TableCell, { text: cells[i] }, defaultUpdateTableCell, data.id)
 			);
 		}
 

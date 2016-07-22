@@ -1,7 +1,4 @@
-import { isAttrAnEvent, isNullOrUndefined } from './utils';
-
-// Runs only once in applications lifetime
-const isBrowser = typeof window !== 'undefined' && window.document;
+import { isAttrAnEvent, isNullOrUndefined, isBrowser } from './utils';
 
 // Copy of the util from dom/util, otherwise it makes massive bundles
 function documentCreateElement(tag, isSVG) {

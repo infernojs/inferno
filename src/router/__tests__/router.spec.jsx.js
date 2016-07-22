@@ -2,7 +2,7 @@ import { render } from './../../DOM/rendering';
 import Router from '../Router';
 import Route from '../Route';
 import browserHistory from '../browserHistory';
-import { createBlueprint } from './../../core/createBlueprint';
+import { createBlueprint } from './../../core/shapes';
 
 const Inferno = {
 	createBlueprint
@@ -45,10 +45,11 @@ describe('Router tests (jsx)', () => {
 	});
 
 	afterEach(() => {
+		render(null, container);
 		container.innerHTML = '';
 	});
 
-    describe('with browser history', () => {
+	describe('with browser history', () => {
 		describe('and with no wrapper component', () => {
 			it('it should render the TestComponent with given paths', () => {
 				render(
@@ -116,7 +117,49 @@ describe('Router tests (jsx)', () => {
 					container
 				);
 				expect(container.innerHTML).to.equal('<div>Good Component</div>');
+
+				render(
+					<Router url={ '/foo/bar/yar' } history={ browserHistory }>
+						<Route path={ '*' } component={ () => <div>Bad Component</div> } />
+						<Route path={ '/foo/bar/*' } component={ () => <div>Bad Component</div> } />
+						<Route path={ '/foo/bar/yar' } component={ () => <div>Good Component</div> } />
+						<Route path={ '/foo/bar/yar/zoo' } component={ () => <div>Bad Component</div> } />
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Good Component</div>');
+			});
+			it('it should render the correct nested route based on the path', () => {
+				render(
+					<Router url={ '/foo/bar' } history={ browserHistory }>
+						<Route path={ '/foo' } component={ () => <div>Bad Component</div> }>
+							<Route path={ '/bar' } component={ () => <div>Good Component</div> } />
+						</Route>
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Good Component</div>');
+
+				render(
+					<Router url={ '/foo' } history={ browserHistory }>
+						<Route path={ '/foo' } component={ () => <div>Good Component</div> }>
+							<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
+						</Route>
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Good Component</div>');
+
+				render(
+					<Router url={ '/foo' } history={ browserHistory } component={ ({ children }) => <div>{ children }</div> }>
+						<Route path={ '/foo' } component={ () => <div>Good Component</div> }>
+							<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
+						</Route>
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div><div>Good Component</div></div>');
 			});
 		});
-    });
+	});
 });

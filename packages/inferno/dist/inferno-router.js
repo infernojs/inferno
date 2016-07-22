@@ -1,647 +1,618 @@
 /*!
- * inferno-router v0.7.10
+ * inferno-router v0.7.22
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.InfernoRouter = factory());
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.InfernoRouter = factory());
 }(this, function () { 'use strict';
 
-  function isArray(obj) {
-  	return obj instanceof Array;
-  }
+    var NO_RENDER = 'NO_RENDER';
 
-  function isNullOrUndefined(obj) {
-  	return obj === void 0 || obj === null;
-  }
+    // Runs only once in applications lifetime
+    var isBrowser = typeof window !== 'undefined' && window.document;
 
-  function isInvalidNode(obj) {
-  	return obj === null || obj === false || obj === void 0;
-  }
-
-  function VNode(blueprint) {
-  	this.bp = blueprint;
-  	this.dom = null;
-  	this.instance = null;
-  	this.tag = null;
-  	this.children = null;
-  	this.style = null;
-  	this.className = null;
-  	this.attrs = null;
-  	this.events = null;
-  	this.hooks = null;
-  	this.key = null;
-  	this.clipData = null;
-  }
-
-  VNode.prototype = {
-  	setAttrs: function setAttrs(attrs) {
-  		this.attrs = attrs;
-  		return this;
-  	},
-  	setTag: function setTag(tag) {
-  		this.tag = tag;
-  		return this;
-  	},
-  	setStyle: function setStyle(style) {
-  		this.style = style;
-  		return this;
-  	},
-  	setClassName: function setClassName(className) {
-  		this.className = className;
-  		return this;
-  	},
-  	setChildren: function setChildren(children) {
-  		this.children = children;
-  		return this;
-  	},
-  	setHooks: function setHooks(hooks) {
-  		this.hooks = hooks;
-  		return this;
-  	},
-  	setEvents: function setEvents(events) {
-  		this.events = events;
-  		return this;
-  	},
-  	setKey: function setKey(key) {
-  		this.key = key;
-  		return this;
-  	}
-  };
-
-  function createVNode(bp) {
-  	return new VNode(bp);
-  }
-
-  function createNullNode() {
-  	return {
-  		null: true,
-  		dom: document.createTextNode('')
-  	};
-  }
-
-  function constructDefaults(string, object, value) {
-  	/* eslint no-return-assign: 0 */
-  	string.split(',').forEach(function (i) {
-  		return object[i] = value;
-  	});
-  }
-
-  var xlinkNS = 'http://www.w3.org/1999/xlink';
-  var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-  var strictProps = {};
-  var booleanProps = {};
-  var namespaces = {};
-
-  constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-  constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-  constructDefaults('volume,value', strictProps, true);
-  constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-
-  var screenWidth = window.screen.width;
-  var screenHeight = window.screen.height;
-  var scrollX = 0;
-  var scrollY = 0;
-  var lastScrollTime = 0;
-
-  window.onscroll = function (e) {
-  	scrollX = window.scrollX;
-  	scrollY = window.scrollY;
-  	lastScrollTime = performance.now();
-  };
-
-  window.resize = function (e) {
-  	scrollX = window.scrollX;
-  	scrollY = window.scrollY;
-  	screenWidth = window.screen.width;
-  	screenHeight = window.screen.height;
-  	lastScrollTime = performance.now();
-  };
-
-  function Lifecycle() {
-  	this._listeners = [];
-  	this.scrollX = null;
-  	this.scrollY = null;
-  	this.screenHeight = screenHeight;
-  	this.screenWidth = screenWidth;
-  }
-
-  Lifecycle.prototype = {
-  	refresh: function refresh() {
-  		this.scrollX = window.scrollX;
-  		this.scrollY = window.scrollY;
-  	},
-  	addListener: function addListener(callback) {
-  		this._listeners.push(callback);
-  	},
-  	trigger: function trigger() {
-  		for (var i = 0; i < this._listeners.length; i++) {
-  			this._listeners[i]();
-  		}
-  	}
-  };
-
-  var classCallCheck = function (instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  };
-
-  var createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
+    function isArray(obj) {
+    	return obj instanceof Array;
     }
 
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
+    function isNullOrUndefined(obj) {
+    	return isUndefined(obj) || isNull(obj);
+    }
+
+    function isNull(obj) {
+    	return obj === null;
+    }
+
+    function isUndefined(obj) {
+    	return obj === undefined;
+    }
+
+    function VNode(blueprint) {
+    	this.bp = blueprint;
+    	this.dom = null;
+    	this.instance = null;
+    	this.tag = null;
+    	this.children = null;
+    	this.style = null;
+    	this.className = null;
+    	this.attrs = null;
+    	this.events = null;
+    	this.hooks = null;
+    	this.key = null;
+    	this.clipData = null;
+    }
+
+    VNode.prototype = {
+    	setAttrs: function setAttrs(attrs) {
+    		this.attrs = attrs;
+    		return this;
+    	},
+    	setTag: function setTag(tag) {
+    		this.tag = tag;
+    		return this;
+    	},
+    	setStyle: function setStyle(style) {
+    		this.style = style;
+    		return this;
+    	},
+    	setClassName: function setClassName(className) {
+    		this.className = className;
+    		return this;
+    	},
+    	setChildren: function setChildren(children) {
+    		this.children = children;
+    		return this;
+    	},
+    	setHooks: function setHooks(hooks) {
+    		this.hooks = hooks;
+    		return this;
+    	},
+    	setEvents: function setEvents(events) {
+    		this.events = events;
+    		return this;
+    	},
+    	setKey: function setKey(key) {
+    		this.key = key;
+    		return this;
+    	}
     };
-  }();
 
-  var inherits = function (subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+    function createVNode(bp) {
+    	return new VNode(bp);
     }
 
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  };
-
-  var possibleConstructorReturn = function (self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    function VPlaceholder() {
+    	this.placeholder = true;
+    	this.dom = null;
     }
 
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  };
+    function createVPlaceholder() {
+    	return new VPlaceholder();
+    }
 
-  var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+    var documetBody = isBrowser ? document.body : null;
 
-  // Copy of the util from dom/util, otherwise it makes massive bundles
-  function getActiveNode() {
-  	return document.activeElement;
-  }
+    function constructDefaults(string, object, value) {
+    	/* eslint no-return-assign: 0 */
+    	string.split(',').forEach(function (i) { return object[i] = value; });
+    }
 
-  // Copy of the util from dom/util, otherwise it makes massive bundles
-  function resetActiveNode(activeNode) {
-  	if (activeNode !== document.body && document.activeElement !== activeNode) {
-  		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
-  	}
-  }
+    var xlinkNS = 'http://www.w3.org/1999/xlink';
+    var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+    var strictProps = {};
+    var booleanProps = {};
+    var namespaces = {};
+    var isUnitlessNumber = {};
 
-  function queueStateChanges(component, newState, callback) {
-  	for (var stateKey in newState) {
-  		component._pendingState[stateKey] = newState[stateKey];
-  	}
-  	if (!component._pendingSetState) {
-  		component._pendingSetState = true;
-  		applyState(component, false, callback);
-  	} else {
-  		var pendingState = component._pendingState;
-  		var oldState = component.state;
+    constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+    constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+    constructDefaults('volume,value', strictProps, true);
+    constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+    constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-  		component.state = Object.assign({}, oldState, pendingState);
-  		component._pendingState = {};
-  	}
-  }
+    var screenWidth = isBrowser && window.screen.width;
+    var screenHeight = isBrowser && window.screen.height;
+    var scrollX = 0;
+    var scrollY = 0;
+    var lastScrollTime = 0;
 
-  function applyState(component, force, callback) {
-  	if (!component._deferSetState || force) {
-  		component._pendingSetState = false;
-  		var pendingState = component._pendingState;
-  		var oldState = component.state;
-  		var nextState = Object.assign({}, oldState, pendingState);
+    if (isBrowser) {
+    	window.onscroll = function () {
+    		scrollX = window.scrollX;
+    		scrollY = window.scrollY;
+    		lastScrollTime = performance.now();
+    	};
 
-  		component._pendingState = {};
-  		var nextNode = component._updateComponent(oldState, nextState, component.props, component.props, force);
+    	window.resize = function () {
+    		scrollX = window.scrollX;
+    		scrollY = window.scrollY;
+    		screenWidth = window.screen.width;
+    		screenHeight = window.screen.height;
+    		lastScrollTime = performance.now();
+    	};
+    }
 
-  		if (isInvalidNode(nextNode)) {
-  			nextNode = createNullNode();
-  		}
-  		var lastNode = component._lastNode;
-  		var parentDom = lastNode.dom.parentNode;
+    function Lifecycle() {
+    	this._listeners = [];
+    	this.scrollX = null;
+    	this.scrollY = null;
+    	this.screenHeight = screenHeight;
+    	this.screenWidth = screenWidth;
+    }
 
-  		var activeNode = getActiveNode();
-  		var subLifecycle = new Lifecycle();
-  		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
-  		component._lastNode = nextNode;
-  		component._parentNode.dom = nextNode.dom;
+    Lifecycle.prototype = {
+    	refresh: function refresh() {
+    		this.scrollX = isBrowser && window.scrollX;
+    		this.scrollY = isBrowser && window.scrollY;
+    	},
+    	addListener: function addListener(callback) {
+    		this._listeners.push(callback);
+    	},
+    	trigger: function trigger() {
+    		var this$1 = this;
 
-  		subLifecycle.trigger();
-  		if (!isNullOrUndefined(callback)) {
-  			callback();
-  		}
-  		resetActiveNode(activeNode);
-  	}
-  }
+    		for (var i = 0; i < this._listeners.length; i++) {
+    			this$1._listeners[i]();
+    		}
+    	}
+    };
 
-  var Component = function () {
-  	function Component(props) {
-  		classCallCheck(this, Component);
+    var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 
-  		/** @type {object} */
-  		this.props = props || {};
+    // Copy of the util from dom/util, otherwise it makes massive bundles
+    function getActiveNode() {
+    	return document.activeElement;
+    }
 
-  		/** @type {object} */
-  		this.state = {};
+    // Copy of the util from dom/util, otherwise it makes massive bundles
+    function resetActiveNode(activeNode) {
+    	if (activeNode !== document.body && document.activeElement !== activeNode) {
+    		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
+    	}
+    }
 
-  		/** @type {object} */
-  		this.refs = {};
-  		this._blockSetState = false;
-  		this._deferSetState = false;
-  		this._pendingSetState = false;
-  		this._pendingState = {};
-  		this._parentNode = null;
-  		this._lastNode = null;
-  		this._unmounted = true;
-  		this.context = {};
-  		this._patch = null;
-  		this._parentComponent = null;
-  	}
+    function queueStateChanges(component, newState, callback) {
+    	for (var stateKey in newState) {
+    		component._pendingState[stateKey] = newState[stateKey];
+    	}
+    	if (!component._pendingSetState) {
+    		component._pendingSetState = true;
+    		applyState(component, false, callback);
+    	} else {
+    		component.state = Object.assign({}, component.state, component._pendingState);
+    		component._pendingState = {};
+    	}
+    }
 
-  	createClass(Component, [{
-  		key: 'render',
-  		value: function render() {}
-  	}, {
-  		key: 'forceUpdate',
-  		value: function forceUpdate(callback) {
-  			if (this._unmounted) {
-  				throw Error(noOp);
-  			}
-  			applyState(this, true, callback);
-  		}
-  	}, {
-  		key: 'setState',
-  		value: function setState(newState, callback) {
-  			if (this._unmounted) {
-  				throw Error(noOp);
-  			}
-  			if (this._blockSetState === false) {
-  				queueStateChanges(this, newState, callback);
-  			} else {
-  				throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
-  			}
-  		}
-  	}, {
-  		key: 'componentDidMount',
-  		value: function componentDidMount() {}
-  	}, {
-  		key: 'componentWillMount',
-  		value: function componentWillMount() {}
-  	}, {
-  		key: 'componentWillUnmount',
-  		value: function componentWillUnmount() {}
-  	}, {
-  		key: 'componentDidUpdate',
-  		value: function componentDidUpdate() {}
-  	}, {
-  		key: 'shouldComponentUpdate',
-  		value: function shouldComponentUpdate() {
-  			return true;
-  		}
-  	}, {
-  		key: 'componentWillReceiveProps',
-  		value: function componentWillReceiveProps() {}
-  	}, {
-  		key: 'componentWillUpdate',
-  		value: function componentWillUpdate() {}
-  	}, {
-  		key: 'getChildContext',
-  		value: function getChildContext() {}
-  	}, {
-  		key: '_updateComponent',
-  		value: function _updateComponent(prevState, nextState, prevProps, nextProps, force) {
-  			if (this._unmounted === true) {
-  				this._unmounted = false;
-  				return false;
-  			}
-  			if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
-  				nextProps.children = prevProps.children;
-  			}
-  			if (prevProps !== nextProps || prevState !== nextState || force) {
-  				if (prevProps !== nextProps) {
-  					this._blockSetState = true;
-  					this.componentWillReceiveProps(nextProps);
-  					this._blockSetState = false;
-  				}
-  				var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
+    function applyState(component, force, callback) {
+    	if ((!component._deferSetState || force) && !component._blockRender) {
+    		component._pendingSetState = false;
+    		var pendingState = component._pendingState;
+    		var prevState = component.state;
+    		var nextState = Object.assign({}, prevState, pendingState);
+    		var props = component.props;
 
-  				if (shouldUpdate !== false) {
-  					this._blockSetState = true;
-  					this.componentWillUpdate(nextProps, nextState);
-  					this._blockSetState = false;
-  					this.props = nextProps;
-  					this.state = nextState;
-  					var node = this.render();
+    		component._pendingState = {};
+    		var nextNode = component._updateComponent(prevState, nextState, props, props, force);
 
-  					this.componentDidUpdate(prevProps, prevState);
-  					return node;
-  				}
-  			}
-  			return false;
-  		}
-  	}]);
-  	return Component;
-  }();
+    		if (nextNode === NO_RENDER) {
+    			nextNode = component._lastNode;
+    		} else if (isNullOrUndefined(nextNode)) {
+    			nextNode = createVPlaceholder();
+    		}
+    		var lastNode = component._lastNode;
+    		var parentDom = lastNode.dom.parentNode;
+    		var activeNode = getActiveNode();
+    		var subLifecycle = new Lifecycle();
 
-  var ASYNC_STATUS = {
-  	pending: 'pending',
-  	fulfilled: 'fulfilled',
-  	rejected: 'rejected'
-  };
+    		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
+    		component._lastNode = nextNode;
+    		component._componentToDOMNodeMap.set(component, nextNode.dom);
+    		component._parentNode.dom = nextNode.dom;
+    		component.componentDidUpdate(props, prevState);
+    		subLifecycle.trigger();
+    		if (!isNullOrUndefined(callback)) {
+    			callback();
+    		}
+    		resetActiveNode(activeNode);
+    	}
+    }
 
-  var Route = function (_Component) {
-  	inherits(Route, _Component);
+    var Component = function Component(props) {
+    	/** @type {object} */
+    	this.props = props || {};
 
-  	function Route(props) {
-  		classCallCheck(this, Route);
+    	/** @type {object} */
+    	this.state = {};
 
-  		var _this = possibleConstructorReturn(this, Object.getPrototypeOf(Route).call(this, props));
+    	/** @type {object} */
+    	this.refs = {};
+    	this._blockRender = false;
+    	this._blockSetState = false;
+    	this._deferSetState = false;
+    	this._pendingSetState = false;
+    	this._pendingState = {};
+    	this._parentNode = null;
+    	this._lastNode = null;
+    	this._unmounted = true;
+    	this.context = {};
+    	this._patch = null;
+    	this._parentComponent = null;
+    	this._componentToDOMNodeMap = null;
+    };
 
-  		_this.state = {
-  			async: null
-  		};
-  		return _this;
-  	}
+    Component.prototype.render = function render () {
+    };
 
-  	createClass(Route, [{
-  		key: 'async',
-  		value: function async() {
-  			var _this2 = this;
+    Component.prototype.forceUpdate = function forceUpdate (callback) {
+    	if (this._unmounted) {
+    		throw Error(noOp);
+    	}
+    	applyState(this, true, callback);
+    };
 
-  			var async = this.props.async;
+    Component.prototype.setState = function setState (newState, callback) {
+    	if (this._unmounted) {
+    		throw Error(noOp);
+    	}
+    	if (this._blockSetState === false) {
+    		queueStateChanges(this, newState, callback);
+    	} else {
+    		throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
+    	}
+    };
 
-  			if (async) {
-  				this.setState({
-  					async: { status: ASYNC_STATUS.pending }
-  				});
-  				async(this.props.params).then(function (value) {
-  					_this2.setState({
-  						async: {
-  							status: ASYNC_STATUS.fulfilled,
-  							value: value
-  						}
-  					});
-  				}, this.reject).catch(this.reject);
-  			}
-  		}
-  	}, {
-  		key: 'reject',
-  		value: function reject(value) {
-  			this.setState({
-  				async: {
-  					status: ASYNC_STATUS.rejected,
-  					value: value
-  				}
-  			});
-  		}
-  	}, {
-  		key: 'componentWillReceiveProps',
-  		value: function componentWillReceiveProps() {
-  			this.async();
-  		}
-  	}, {
-  		key: 'componentWillMount',
-  		value: function componentWillMount() {
-  			this.async();
-  		}
-  	}, {
-  		key: 'render',
-  		value: function render() {
-  			var _props = this.props;
-  			var component = _props.component;
-  			var params = _props.params;
+    Component.prototype.componentDidMount = function componentDidMount () {
+    };
 
+    Component.prototype.componentWillMount = function componentWillMount () {
+    };
 
-  			return createVNode().setTag(component).setAttrs({ params: params, async: this.state.async });
-  		}
-  	}]);
-  	return Route;
-  }(Component);
+    Component.prototype.componentWillUnmount = function componentWillUnmount () {
+    };
 
-  var EMPTY$1 = {};
+    Component.prototype.componentDidUpdate = function componentDidUpdate () {
+    };
 
-  function segmentize(url) {
-  	return strip(url).split('/');
-  }
+    Component.prototype.shouldComponentUpdate = function shouldComponentUpdate () {
+    	return true;
+    };
 
-  function strip(url) {
-  	return url.replace(/(^\/+|\/+$)/g, '');
-  }
+    Component.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
+    };
 
-  function convertToHashbang(url) {
-  	if (url.indexOf('#') === -1) {
-  		url = '/';
-  	} else {
-  		var splitHashUrl = url.split('#!');
-  		splitHashUrl.shift();
-  		url = splitHashUrl.join('');
-  	}
-  	return url;
-  }
+    Component.prototype.componentWillUpdate = function componentWillUpdate () {
+    };
 
-  // Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
-  function exec(url, route) {
-  	var opts = arguments.length <= 2 || arguments[2] === void 0 ? EMPTY$1 : arguments[2];
+    Component.prototype.getChildContext = function getChildContext () {
+    };
 
-  	var reg = /(?:\?([^#]*))?(#.*)?$/,
-  	    c = url.match(reg),
-  	    matches = {},
-  	    ret = void 0;
-  	if (c && c[1]) {
-  		var p = c[1].split('&');
-  		for (var i = 0; i < p.length; i++) {
-  			var r = p[i].split('=');
-  			matches[decodeURIComponent(r[0])] = decodeURIComponent(r.slice(1).join('='));
-  		}
-  	}
-  	url = segmentize(url.replace(reg, ''));
-  	route = segmentize(route || '');
-  	var max = Math.max(url.length, route.length);
-  	for (var _i = 0; _i < max; _i++) {
-  		if (route[_i] && route[_i].charAt(0) === ':') {
-  			var param = route[_i].replace(/(^\:|[+*?]+$)/g, ''),
-  			    flags = (route[_i].match(/[+*?]+$/) || EMPTY$1)[0] || '',
-  			    plus = ~flags.indexOf('+'),
-  			    star = ~flags.indexOf('*'),
-  			    val = url[_i] || '';
-  			if (!val && !star && (flags.indexOf('?') < 0 || plus)) {
-  				ret = false;
-  				break;
-  			}
-  			matches[param] = decodeURIComponent(val);
-  			if (plus || star) {
-  				matches[param] = url.slice(_i).map(decodeURIComponent).join('/');
-  				break;
-  			}
-  		} else if (route[_i] !== url[_i]) {
-  			ret = false;
-  			break;
-  		}
-  	}
-  	if (opts.default !== true && ret === false) return false;
-  	return matches;
-  }
+    Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, force) {
+    	if (this._unmounted === true) {
+    		this._unmounted = false;
+    		return false;
+    	}
+    	if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
+    		nextProps.children = prevProps.children;
+    	}
+    	if (prevProps !== nextProps || prevState !== nextState || force) {
+    		if (prevProps !== nextProps) {
+    			this._blockRender = true;
+    			this.componentWillReceiveProps(nextProps);
+    			this._blockRender = false;
+    			if (this._pendingSetState) {
+    				nextState = Object.assign({}, nextState, this._pendingState);
+    				this._pendingSetState = false;
+    				this._pendingState = {};
+    			}
+    		}
+    		var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
 
-  function pathRankSort(a, b) {
-  	var aAttr = a.attrs || EMPTY$1,
-  	    bAttr = b.attrs || EMPTY$1;
-  	var diff = rank(aAttr.path) - rank(bAttr.path);
-  	return diff || aAttr.path.length - bAttr.path.length;
-  }
+    		if (shouldUpdate !== false || force) {
+    			this._blockSetState = true;
+    			this.componentWillUpdate(nextProps, nextState);
+    			this._blockSetState = false;
+    			this.props = nextProps;
+    			this.state = nextState;
+    			return this.render();
+    		}
+    	}
+    	return NO_RENDER;
+    };
 
-  function rank(url) {
-  	return (strip(url).match(/\/+/g) || '').length;
-  }
+    var ASYNC_STATUS = {
+    	pending: 'pending',
+    	fulfilled: 'fulfilled',
+    	rejected: 'rejected'
+    };
 
-  var Router = function (_Component) {
-  	inherits(Router, _Component);
+    var Route = (function (Component) {
+    	function Route(props) {
+    		Component.call(this, props);
+    		this.state = {
+    			async: null
+    		};
+    	}
 
-  	function Router(props) {
-  		classCallCheck(this, Router);
+    	if ( Component ) Route.__proto__ = Component;
+    	Route.prototype = Object.create( Component && Component.prototype );
+    	Route.prototype.constructor = Route;
 
-  		var _this = possibleConstructorReturn(this, Object.getPrototypeOf(Router).call(this, props));
+    	Route.prototype.async = function async () {
+    		var this$1 = this;
 
-  		if (!props.history) {
-  			throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
-  		}
-  		_this._didRoute = false;
-  		_this.state = {
-  			url: props.url || props.history.getCurrentUrl()
-  		};
-  		return _this;
-  	}
+    		var async = this.props.async;
 
-  	createClass(Router, [{
-  		key: 'getChildContext',
-  		value: function getChildContext() {
-  			return {
-  				history: this.props.history,
-  				hashbang: this.props.hashbang
-  			};
-  		}
-  	}, {
-  		key: 'componentWillMount',
-  		value: function componentWillMount() {
-  			this.props.history.addRouter(this);
-  		}
-  	}, {
-  		key: 'componentWillUnmount',
-  		value: function componentWillUnmount() {
-  			this.props.history.removeRouter(this);
-  		}
-  	}, {
-  		key: 'routeTo',
-  		value: function routeTo(url) {
-  			this._didRoute = false;
-  			this.setState({ url: url });
-  			return this._didRoute;
-  		}
-  	}, {
-  		key: 'render',
-  		value: function render() {
-  			var children = isArray(this.props.children) ? this.props.children : [this.props.children];
-  			var url = this.props.url || this.state.url;
-  			var wrapperComponent = this.props.component;
-  			var hashbang = this.props.hashbang;
+    		if (async) {
+    			this.setState({
+    				async: { status: ASYNC_STATUS.pending }
+    			});
+    			async(this.props.params).then(function (value) {
+    				this$1.setState({
+    					async: {
+    						status: ASYNC_STATUS.fulfilled,
+    						value: value
+    					}
+    				});
+    			}, this.reject).catch(this.reject);
+    		}
+    	};
 
-  			children.sort(pathRankSort);
+    	Route.prototype.reject = function reject (value) {
+    		this.setState({
+    			async: {
+    				status: ASYNC_STATUS.rejected,
+    				value: value
+    			}
+    		});
+    	};
 
-  			for (var i = 0; i < children.length; i++) {
-  				var child = children[i];
-  				var path = child.attrs.path;
+    	Route.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
+    		this.async();
+    	};
 
-  				var params = exec(hashbang ? convertToHashbang(url) : url, path);
+    	Route.prototype.componentWillMount = function componentWillMount () {
+    		this.async();
+    	};
 
-  				if (params) {
-  					if (wrapperComponent) {
-  						return createVNode().setTag(wrapperComponent).setChildren(child).setAttrs({
-  							params: params
-  						});
-  					}
-  					return child.setAttrs(Object.assign({}, { params: params }, child.attrs));
-  				}
-  			}
-  			return wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
-  		}
-  	}]);
-  	return Router;
-  }(Component);
+    	Route.prototype.render = function render () {
+    		var ref = this.props;
+    		var component = ref.component;
+    		var params = ref.params;
 
-  function Link(_ref, _ref2) {
-      var to = _ref.to;
-      var children = _ref.children;
-      var hashbang = _ref2.hashbang;
-      var history = _ref2.history;
+    		return createVNode().setTag(component).setAttrs({ params: params, async: this.state.async });
+    	};
 
-      return createVNode().setAttrs({
-          href: hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to
-      }).setTag('a').setChildren(children);
-  }
+    	return Route;
+    }(Component));
 
-  var routers = [];
+    var EMPTY$1 = {};
 
-  function getCurrentUrl() {
-  	var url = typeof location !== 'undefined' ? location : EMPTY;
+    function segmentize(url) {
+    	return strip(url).split('/');
+    }
 
-  	return '' + (url.pathname || '') + (url.search || '') + (url.hash || '');
-  }
+    function strip(url) {
+    	return url.replace(/(^\/+|\/+$)/g, '');
+    }
 
-  function getHashbangRoot() {
-  	var url = typeof location !== 'undefined' ? location : EMPTY;
+    function convertToHashbang(url) {
+    	if (url.indexOf('#') === -1) {
+    		url = '/';
+    	} else {
+    		var splitHashUrl = url.split('#!');
+    		splitHashUrl.shift();
+    		url = splitHashUrl.join('');
+    	}
+    	return url;
+    }
 
-  	return '' + (url.protocol + '//' || '') + (url.pathname || '') + (url.search || '') + '#!';
-  }
+    // Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
+    function exec(url, route, opts) {
+    	if ( opts === void 0 ) opts = EMPTY$1;
 
-  function routeTo(url) {
-  	var didRoute = false;
-  	for (var i = 0; i < routers.length; i++) {
-  		if (routers[i].routeTo(url) === true) {
-  			didRoute = true;
-  		}
-  	}
-  	return didRoute;
-  }
+    	var reg = /(?:\?([^#]*))?(#.*)?$/,
+    		c = url.match(reg),
+    		matches = {},
+    		ret;
+    	if (c && c[1]) {
+    		var p = c[1].split('&');
+    		for (var i = 0; i < p.length; i++) {
+    			var r = p[i].split('=');
+    			matches[decodeURIComponent(r[0])] = decodeURIComponent(r.slice(1).join('='));
+    		}
+    	}
+    	url = segmentize(url.replace(reg, ''));
+    	route = segmentize(route || '');
+    	var max = Math.max(url.length, route.length);
+    	var hasWildcard = false;
 
-  window.addEventListener('popstate', function () {
-  	return routeTo(getCurrentUrl());
-  });
+    	for (var i$1 = 0; i$1 < max; i$1++) {
+    		if (route[i$1] && route[i$1].charAt(0) === ':') {
+    			var param = route[i$1].replace(/(^\:|[+*?]+$)/g, ''),
+    				flags = (route[i$1].match(/[+*?]+$/) || EMPTY$1)[0] || '',
+    				plus = ~flags.indexOf('+'),
+    				star = ~flags.indexOf('*'),
+    				val = url[i$1] || '';
+    			if (!val && !star && (flags.indexOf('?') < 0 || plus)) {
+    				ret = false;
+    				break;
+    			}
+    			matches[param] = decodeURIComponent(val);
+    			if (plus || star) {
+    				matches[param] = url.slice(i$1).map(decodeURIComponent).join('/');
+    				break;
+    			}
+    		}
+    		else if (route[i$1] !== url[i$1] && !hasWildcard) {
+    			if (route[i$1] === '*' && route.length === i$1 + 1) {
+    				hasWildcard = true;
+    			} else {
+    				ret = false;
+    				break;
+    			}
+    		}
+    	}
+    	if (opts.default !== true && ret === false) {
+    		return false;
+    	}
+    	return matches;
+    }
 
-  var browserHistory = {
-  	addRouter: function addRouter(router) {
-  		routers.push(router);
-  	},
-  	removeRouter: function removeRouter(router) {
-  		roouters.splice(routers.indexOf(router), 1);
-  	},
+    function pathRankSort(a, b) {
+    	var aAttr = a.attrs || EMPTY$1,
+    		bAttr = b.attrs || EMPTY$1;
+    	var diff = rank(bAttr.path) - rank(aAttr.path);
+    	return diff || (bAttr.path.length - aAttr.path.length);
+    }
 
-  	getCurrentUrl: getCurrentUrl,
-  	getHashbangRoot: getHashbangRoot
-  };
+    function rank(url) {
+    	return (strip(url).match(/\/+/g) || '').length;
+    }
 
-  var index = {
-  	Route: Route,
-  	Router: Router,
-  	Link: Link,
-  	browserHistory: browserHistory
-  };
+    var Router = (function (Component) {
+    	function Router(props) {
+    		Component.call(this, props);
+    		if (!props.history) {
+    			throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
+    		}
+    		this._didRoute = false;
+    		this.state = {
+    			url: props.url || props.history.getCurrentUrl()
+    		};
+    	}
 
-  return index;
+    	if ( Component ) Router.__proto__ = Component;
+    	Router.prototype = Object.create( Component && Component.prototype );
+    	Router.prototype.constructor = Router;
+
+    	Router.prototype.getChildContext = function getChildContext () {
+    		return {
+    			history: this.props.history,
+    			hashbang: this.props.hashbang
+    		};
+    	};
+
+    	Router.prototype.componentWillMount = function componentWillMount () {
+    		this.props.history.addRouter(this);
+    	};
+
+    	Router.prototype.componentWillUnmount = function componentWillUnmount () {
+    		this.props.history.removeRouter(this);
+    	};
+
+    	Router.prototype.routeTo = function routeTo (url) {
+    		this._didRoute = false;
+    		this.setState({ url: url });
+    		return this._didRoute;
+    	};
+
+    	Router.prototype.render = function render () {
+    		var children = toArray(this.props.children);
+    		var url = this.props.url || this.state.url;
+    		var wrapperComponent = this.props.component;
+    		var hashbang = this.props.hashbang;
+
+    		return handleRoutes(children, url, hashbang, wrapperComponent, '');
+    	};
+
+    	return Router;
+    }(Component));
+
+    function toArray(children) {
+    	return isArray(children) ? children : (children ? [children] : children);
+    }
+
+    function handleRoutes(routes, url, hashbang, wrapperComponent, lastPath) {
+    	routes.sort(pathRankSort);
+
+    	for (var i = 0; i < routes.length; i++) {
+    		var route = routes[i];
+    		var ref = route.attrs;
+    		var path = ref.path;
+    		var fullPath = lastPath + path;
+    		var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
+    		var children = toArray(route.children);
+
+    		if (children) {
+    			var subRoute = handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
+
+    			if (!isNull(subRoute)) {
+    				return subRoute;
+    			}
+    		}
+    		if (params) {
+    			if (wrapperComponent) {
+    				return createVNode().setTag(wrapperComponent).setChildren(route).setAttrs({
+    					params: params
+    				});
+    			}
+    			return route.setAttrs(Object.assign({}, { params: params }, route.attrs));
+    		}
+    	}
+    	return !lastPath && wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
+    }
+
+    function Link(ref, ref$1) {
+    	var to = ref.to;
+    	var children = ref.children;
+    	var hashbang = ref$1.hashbang;
+    	var history = ref$1.history;
+
+    	return (createVNode().setAttrs({
+    		href: hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to
+    	}).setTag('a').setChildren(children));
+    }
+
+    var routers = [];
+
+    function getCurrentUrl() {
+    	var url = typeof location !== 'undefined' ? location : EMPTY;
+
+    	return ("" + (url.pathname || '') + (url.search || '') + (url.hash || ''));
+    }
+
+    function getHashbangRoot() {
+    	var url = typeof location !== 'undefined' ? location : EMPTY;
+
+    	return ("" + (url.protocol + '//' || '') + (url.host || '') + (url.pathname || '') + (url.search || '') + "#!");
+    }
+
+    function routeTo(url) {
+    	var didRoute = false;
+    	for (var i = 0; i < routers.length; i++) {
+    		if (routers[i].routeTo(url) === true) {
+    			didRoute = true;
+    		}
+    	}
+    	return didRoute;
+    }
+
+    if (isBrowser) {
+    	window.addEventListener('popstate', function () { return routeTo(getCurrentUrl()); });
+    }
+
+    var browserHistory = {
+    	addRouter: function addRouter(router) {
+    		routers.push(router);
+    	},
+    	removeRouter: function removeRouter(router) {
+    		routers.splice(routers.indexOf(router), 1);
+    	},
+    	getCurrentUrl: getCurrentUrl,
+    	getHashbangRoot: getHashbangRoot
+    };
+
+    var index = {
+        Route: Route,
+        Router: Router,
+        Link: Link,
+        browserHistory: browserHistory
+    };
+
+    return index;
 
 }));

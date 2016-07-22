@@ -1,5 +1,5 @@
 import renderToString from './../renderToString';
-import Component from './../../component';
+import Component from './../../component/es2015';
 
 class StatefulComponent extends Component {
 	render() {
@@ -25,6 +25,45 @@ describe('SSR Creation - (non-JSX)', () => {
 			},
 			result: '<div><span></span></div>'
 		}, {
+			description: 'should render div with span child and styling',
+			template: () => {
+				return {
+					tag: 'div',
+					children: {
+						dom: null,
+						tag: 'span',
+						style: 'border-left: 10px;'
+					}
+				};
+			},
+			result: '<div><span style="border-left: 10px;"></span></div>'
+		}, {
+			description: 'should render div with span child and styling #2',
+			template: () => {
+				return {
+					tag: 'div',
+					children: {
+						dom: null,
+						tag: 'span',
+						style: { borderLeft: 10 }
+					}
+				};
+			},
+			result: '<div><span style="border-left:10px;"></span></div>'
+		}, {
+			description: 'should render div with span child and styling #3',
+			template: () => {
+				return {
+					tag: 'div',
+					children: {
+						dom: null,
+						tag: 'span',
+						style: { fontFamily: 'Arial' }
+					}
+				};
+			},
+			result: '<div><span style="font-family:Arial;"></span></div>'
+		}, {
 			description: 'should render div with span child (with className)',
 			template: () => {
 				return {
@@ -48,6 +87,15 @@ describe('SSR Creation - (non-JSX)', () => {
 			},
 			result: '<div>Hello world</div>'
 		}, {
+			description: 'should render div with text child (XSS script attack)',
+			template: () => {
+				return {
+					tag: 'div',
+					children: 'Hello world <img src="x" onerror="alert(\'XSS\')">'
+				};
+			},
+			result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>'
+		}, {
 			description: 'should render div with text children',
 			template: () => {
 				return {
@@ -55,7 +103,15 @@ describe('SSR Creation - (non-JSX)', () => {
 					children: [ 'Hello', ' world' ]
 				};
 			},
-			result: '<div>Hello<!-- --> world</div>'
+			result: '<div>Hello<!----> world</div>'
+		}, {
+			description: 'should render a void element correct',
+			template: () => {
+				return {
+					tag: 'input'
+				};
+			},
+			result: '<input>'
 		}, {
 			description: 'should render div with node children',
 			template: () => {
@@ -106,6 +162,17 @@ describe('SSR Creation - (non-JSX)', () => {
 			},
 			result: '<div>0</div>'
 		}, {
+			description: 'should render div with dangerouslySetInnerHTML',
+			template: () => {
+				return {
+					tag: 'div',
+					attrs: {
+						dangerouslySetInnerHTML: { __html: '<span>test</span>' }
+					}
+				};
+			},
+			result: '<div><span>test</span></div>'
+		}, {
 			description: 'should render a stateful component',
 			template: (value) => {
 				return {
@@ -139,8 +206,13 @@ describe('SSR Creation - (non-JSX)', () => {
 		}
 	].forEach(test => {
 		it(test.description, () => {
-			const output = renderToString(test.template('foo'));
+			const container = document.createElement('div');
+			const vDom = test.template('foo');
+			const output = renderToString(vDom, true);
+			document.body.appendChild(container);
+			container.innerHTML = output;
 			expect(output).to.equal(test.result);
+			document.body.removeChild(container);
 		});
 	});
 

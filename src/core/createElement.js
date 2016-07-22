@@ -1,5 +1,13 @@
-import { createVNode } from '../core/createBlueprint';
-import { isAttrAnEvent, isArray, isNullOrUndefined, isFunction, isInvalidNode, isAttrAComponentHook, isAttrAHook } from './../core/utils';
+import { createVNode } from '../core/shapes';
+import {
+	isAttrAnEvent,
+	isArray,
+	isNullOrUndefined,
+	isFunction,
+	isInvalidNode,
+	isAttrAComponentHook,
+	isAttrAHook
+} from './../core/utils';
 
 export function createAttrsAndEvents(props, tag) {
 	let events = null;

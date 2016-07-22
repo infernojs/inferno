@@ -2,48 +2,37 @@ import Lifecycle from './lifecycle';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { getActiveNode, resetActiveNode } from './utils';
+import { isUndefined, isInvalidNode, isNull } from '../core/utils';
+import hydrate from './hydration';
 
-const roots = [];
+const roots = new Map();
+export const componentToDOMNodeMap = new Map();
 
-function getRoot(parentDom) {
-	for (let i = 0; i < roots.length; i++) {
-		const root = roots[i];
-
-		if (root.dom === parentDom) {
-			return root;
-		}
-	}
-	return null;
+export function findDOMNode(domNode) {
+	return componentToDOMNodeMap.get(domNode) || null;
 }
 
-function removeRoot(rootNode) {
-	for (let i = 0; i < roots.length; i++) {
-		const root = roots[i];
-
-		if (root === rootNode) {
-			roots.splice(i, 1);
-			return;
-		}
-	}
-}
-
-export function render(node, parentDom) {
-	const root = getRoot(parentDom);
+export function render(input, parentDom) {
+	const root = roots.get(parentDom);
 	const lifecycle = new Lifecycle();
 
-	if (root === null) {
-		mount(node, parentDom, lifecycle, {}, null, false);
-		lifecycle.trigger();
-		roots.push({ node: node, dom: parentDom });
+	if (isUndefined(root)) {
+		if (!isInvalidNode(input)) {
+			if (!hydrate(input, parentDom, lifecycle)) {
+				mount(input, parentDom, lifecycle, {}, null, false);
+			}
+			lifecycle.trigger();
+			roots.set(parentDom, { input: input });
+		}
 	} else {
 		const activeNode = getActiveNode();
+		const nextInput = patch(root.input, input, parentDom, lifecycle, {}, null, false);
 
-		patch(root.node, node, parentDom, lifecycle, {}, null, null, false);
 		lifecycle.trigger();
-		if (node === null) {
-			removeRoot(root);
+		if (isNull(input)) {
+			roots.delete(parentDom);
 		}
-		root.node = node;
+		root.input = nextInput;
 		resetActiveNode(activeNode);
 	}
 }

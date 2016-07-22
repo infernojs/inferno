@@ -1,5 +1,5 @@
 import { render } from './../../DOM/rendering';
-import createElement from './../../createElement';
+import createElement from './../../core/createElement';
 
 describe('lifecycle hooks', () => {
 	let container;
@@ -237,7 +237,7 @@ describe('lifecycle hooks', () => {
 					didUpdate,
 					willDetach
 				},
-				text: 'Hello world!'
+				children: 'Hello world!'
 			});
 		});
 
