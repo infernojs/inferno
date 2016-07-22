@@ -16,7 +16,8 @@ import {
 	mountVPlaceholder,
 	mountVList,
 	mountArrayChildren,
-	mountComponent
+	mountComponent,
+	mountEvents
 } from './mounting';
 import {
 	insertOrAppend,
