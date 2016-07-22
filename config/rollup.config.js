@@ -141,4 +141,3 @@ function createBundle({moduleGlobal, moduleName, moduleEntry }, path) {
 }
 
 Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));
->>>>>>> master
