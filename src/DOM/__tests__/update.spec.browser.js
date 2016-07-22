@@ -225,15 +225,12 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a wrapped text node with 4 arguments', () => {
-		const template = (val1, val2, val3, val4) => ({
-			tag: 'div',
-			children: [
-				val1,
-				val2,
-				val3,
-				val4
-			]
-		});
+		const template = (val1, val2, val3, val4) => createElement('div', null,
+			val1,
+			val2,
+			val3,
+			val4
+		);
 
 		render(template('Hello', ' world!', ' and ', 'Bar'), container);
 		expect(
@@ -301,14 +298,9 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a node with static text', () => {
-
-		const template = (val) => ({
-			tag: 'div',
-			children: 'Hello, World',
-			attrs: {
-				id: val
-			}
-		});
+		const template = (val) => createElement('div', {
+			id: val
+		}, 'Hello, World');
 
 		render(template('Hello'), container);
 		expect(
@@ -361,14 +353,9 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a node with multiple children and static text', () => {
-
-		const template = (val1) => ({
-			tag: 'div',
-			attrs: {
-				id: val1
-			},
-			children: 'Hello, World'
-		});
+		const template = (val1) => createElement('div', {
+			id: val1
+		}, 'Hello, World');
 
 		render(template('Hello'), container);
 		expect(
@@ -399,14 +386,10 @@ describe('Update (non-jsx)', () => {
 		);
 	});
 
-	it('should update a node with multiple children and static text', () => {
-		const template = (val1) => ({
-			tag: 'div',
-			attrs: {
-				id: val1
-			},
-			children: 'Hello, World'
-		});
+	it('should update a node with multiple children and static text #2', () => {
+		const template = (val1) => createElement('div', {
+			id: val1
+		}, 'Hello, World');
 
 		render(template(null), container); // should unset
 		expect(
@@ -445,24 +428,13 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a div with class attribute, and dynamic children with static text', () => {
+		const template = (child) => createElement('div', {
+			class: 'hello, world'
+		}, child);
 
-		const template = (child) => ({
-			tag: 'div',
-			attrs: {
-				class: 'hello, world'
-			},
-			children: child
-		});
+		const b = () => createElement('span', null, '1', '2', '3');
 
-		const b = () => ({
-			tag: 'span',
-			children: [ '1', '2', '3' ]
-		});
-
-		const span = (b) => ({
-			tag: 'span',
-			children: b
-		});
+		const span = (b) => createElement('span', null, b);
 
 		render(template(null), container);
 
@@ -485,28 +457,15 @@ describe('Update (non-jsx)', () => {
 
 	it('should handle lots of dynamic variables', () => {
 		const template = function (val1, val2, val3, val4, val5, val6) {
-			return {
-				tag: 'div',
+			return createElement('div', {
 				className: val2,
-				attrs: {
-					id: val1
-				},
-				children: [{
-					tag: 'div',
-					attrs: {
-						id: val5
-					},
-					children: {
-						tag: 'span',
-						children: val6
-					}
-				}, {
-					tag: 'div',
-					className: val4,
-					children: val3
-				}]
-
-			};
+				id: val1
+			}, createElement('div', {
+				id: val5
+			}, createElement('span', null, val6)),
+			createElement('div', {
+				className: val4
+			}, val3));
 		};
 
 		render(template(), container);
@@ -609,12 +568,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should render a basic example #7', () => {
-
-		const div = (child) => ({
-			tag: 'div',
-			children: child
-		});
-
+		const div = (child) => createElement('div', null, child);
 		const span1 = () => 'Hello world!';
 
 		render(div(span1()), container);
@@ -623,50 +577,13 @@ describe('Update (non-jsx)', () => {
 		).to.equal(
 			innerHTML('<div>Hello world!</div>')
 		);
-
-		const span2 = (child) => ({
-			tag: 'span',
-			children: 'Im updated!'
-		});
+		const span2 = (child) => createElement('span', null, 'Im updated!');
 
 		render(div(span2()), container);
-
-		const b = (child) => ({
-			tag: 'b',
-			children: 'Im updated!'
-		});
-
-		/*
-		render(div(b()), container);
-
-		expect(
-			container.innerHTML
-		).to.equal(
-			innerHTML('<div><b>Im updated!</b></div>')
-		);
-
-		render(div(span2()), container);
-
-		expect(
-			container.innerHTML
-		).to.equal(
-			innerHTML('<div><span>Im updated!</span></div>')
-		);
-
-		render(div(), container);
-
-		expect(
-			container.innerHTML
-		).to.equal(
-			innerHTML('<div></div>')
-		);*/
 	});
 
 	it('should patch a wrapped text node with its container', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: child
-		});
+		const template = (child) => createElement('div', null, child);
 
 		render(template(null), container);
 		expect(
@@ -681,11 +598,8 @@ describe('Update (non-jsx)', () => {
 		).to.equal(
 			innerHTML('<div></div>')
 		);
+		const span = () => createElement('div', null, 'Hello');
 
-		const span = () => ({
-			tag: 'div',
-			children: 'Hello'
-		});
 		render(template(span()), container);
 		expect(
 			container.innerHTML
@@ -695,14 +609,11 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should patch a text node into a tag node', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: child
-		});
-
+		const template = (child) => createElement('div', null, child);
 		const span = function () {
 			return 'Hello';
 		};
+
 		render(template(span()), container);
 		expect(
 			container.innerHTML
@@ -711,16 +622,10 @@ describe('Update (non-jsx)', () => {
 		);
 	});
 
-	it('should patch a tag node into a text node', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: child
-		});
+	it('should patch a tag node into a text node #2', () => {
+		const template = (child) => createElement('div', null, child);
 
-		const span = () => ({
-			tag: 'span',
-			children: 'Good bye!'
-		});
+		const span = () => createElement('span', null, 'Good bye!');
 		render(template(span()), container);
 		expect(
 			container.innerHTML
@@ -737,14 +642,11 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should render text then update it', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: child
-		});
-
+		const template = (child) => createElement('div', null, child);
 		const span = function () {
 			return 'Hello';
 		};
+
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('Hello');
 		render(template(span()), container);
@@ -752,17 +654,11 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should render text then update to an array of text nodes', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: child
-		});
-
+		const template = (child) => createElement('div', null, child);
 		const span = function () {
-			return {
-				tag: 'span',
-				children: [ 'Hello ', 'World', '!' ]
-			};
+			return createElement('span', null, 'Hello ', 'World', '!');
 		};
+
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
 		render(template(span()), container);
@@ -771,49 +667,31 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should render an array of text nodes then update to a single text node', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: child
-		});
-
+		const template = (child) => createElement('div', null, child);
 		const span = function () {
-			return {
-				tag: 'span',
-				children: [ 'Hello ', 'World', '!' ]
-			};
+			return createElement('span', null, 'Hello ', 'World', '!');
 		};
+
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
 	});
 
 	it('should update and array of text nodes to another array of text nodes', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: child
-		});
-
+		const template = (child) => createElement('div', null, child);
 		const span = function () {
-			return {
-				tag: 'span',
-				children: [ 'Hello ', 'World' ]
-			};
+			return createElement('span', null, 'Hello ', 'World');
 		};
+
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('<span>Hello World</span>');
 	});
 
 	it('should update and array of text nodes to another array of text nodes #2', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: child
-		});
-
+		const template = (child) => createElement('div', null, child);
 		const span = function () {
-			return {
-				tag: 'span',
-				children: [ 'Hello ', 'World', '!' ]
-			};
+			return createElement('span', null, 'Hello ', 'World', '!');
 		};
+
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
 		render(template(span()), container);
@@ -821,18 +699,9 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update an node with static child', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: {
-				tag: 'div',
-				children: {
-					tag: 'span',
-					attrs: {
-						id: child
-					}
-				}
-			}
-		});
+		const template = (child) => createElement('div', null, createElement('div', null, createElement('span', {
+			id: child
+		})));
 
 		render(template('id#1'), container);
 		expect(container.firstChild.innerHTML).to.equal('<div><span id="id#1"></span></div>');
@@ -844,22 +713,13 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update an node with static child and dynamic custom attribute', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: {
-				tag: 'div',
-				children: child
-			}
-		});
-
+		const template = (child) => createElement('div', null, createElement('div', null, child));
 		const span = function (val) {
-			return {
-				tag: 'span',
-				attrs: {
-					custom_attr: val
-				}
-			};
+			return createElement('span', {
+				custom_attr: val
+			});
 		};
+
 		render(template(span('id#1')), container);
 		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1"></span></div>');
 		render(template(span('id#1')), container);
@@ -867,68 +727,38 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update an node with static child and dynamic custom attribute and static text', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: {
-				tag: 'div',
-				children: child
-			}
-		});
-
+		const template = (child) => createElement('div', null, createElement('div', null, child));
 		const span = function (val) {
-			return {
-				tag: 'span',
-				attrs: {
-					custom_attr: val
-				},
-				child: 'Hello!!'
-			};
+			return createElement('span', {
+				custom_attr: val
+			}, 'Hello!!');
 		};
+
 		render(template(span('id#1')), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1"></span></div>');
+		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1">Hello!!</span></div>');
 		render(template(span('id#2')), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#2"></span></div>');
+		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#2">Hello!!</span></div>');
 	});
 
-	it('should update an node with static child and dynamic custom attribute and static text', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: {
-				tag: 'div',
-				children: child
-			}
-		});
-
+	it('should update an node with static child and dynamic custom attribute and static text #2', () => {
+		const template = (child) => createElement('div', null, createElement('div', null, child));
 		const span = function (val) {
-			return {
-				tag: 'span',
-				attrs: {
-					custom_attr: val
-				},
-				child: 'Hello!!'
-			};
+			return createElement('span', {
+				custom_attr: val
+			}, 'Hello!!');
 		};
-
 		const span2 = function (val) {
-			return {
-				tag: 'span',
-				attrs: {
-					caught_fire: val
-				},
-				children: 'Hello, world'
-			};
+			return createElement('span', {
+				caught_fire: val
+			}, 'Hello, world');
 		};
 
 		render(template(span('id#1', span2('custom'))), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1"></span></div>'); // WILL NOT FAIL
-
+		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1">Hello!!</span></div>');
 	});
 
 	it('should not ignore a empty text node', () => {
-		const template = () => ({
-			tag: 'span',
-			children: ''
-		});
+		const template = () => createElement('span', null, '');
 
 		render(template(), container);
 		expect(container.childNodes.length).to.equal(1);
@@ -937,22 +767,16 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should remove a text node', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: child
-		});
+		const template = (child) => createElement('div', null, child);
 
 		render(template([ 'hello', 'world' ]), container);
 		expect(container.firstChild.childNodes.length).to.equal(2);
-
 	});
 
 	it('should update multiple changes', () => {
-		const template = (val1, val2) => ({
-			tag: 'div',
-			className: val1,
-			children: val2
-		});
+		const template = (val1, val2) => createElement('div', {
+			className: val1
+		}, val2);
 
 		render(template('hello', [ 'hello', 'world' ]), container);
 		expect(container.firstChild.childNodes.length).to.equal(2);
@@ -964,13 +788,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update an node with static child and text', () => {
-		const template = () => ({
-			tag: 'div',
-			children: {
-				tag: 'div',
-				children: 'Hello, World'
-			}
-		});
+		const template = () => createElement('div', null, createElement('div', null, 'Hello, World'));
 
 		render(template(), container);
 		expect(container.firstChild.innerHTML).to.equal('<div>Hello, World</div>');
@@ -982,32 +800,16 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update an node with dynamic child', () => {
-		const template = (child) => ({
-			tag: 'div',
-			children: {
-				tag: 'div',
-				children: child
-			}
-		});
-
+		const template = (child) => createElement('div', null, createElement('div', null, child));
 		const span = function () {
-			return {
-				tag: 'span',
-				children: [ 'Hello ', 'World' ]
-			};
+			return createElement('span', null, 'Hello ', 'World');
 		};
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('<div><span>Hello World</span></div>');
 	});
 
 	it('should inject dynamic text various places', () => {
-
-		const div = (text) => ({
-			tag: 'div',
-			children: [
-				'There is ', text, ' spoon!'
-			]
-		});
+		const div = (text) => createElement('div', null, 'There is ', text, ' spoon!');
 
 		render(div('no'), container);
 		expect(
@@ -1142,85 +944,20 @@ describe('Update (non-jsx)', () => {
 		describe('nonKeyed updates', () => {
 			it('variation-1', () => {
 				function A() {
-					return {
-						"tag": "div",
-						"children": {
-							"tag": "div",
-							"children": {
-								"tag": "table",
-								"children": [
-									{
-										"tag": "tr",
-										"children": [
-											{
-												"tag": "td",
-												"children": "Text"
-											}
-
-										],
-										"dom": null
-									}
-								]
-							}
-						},
-						"dom": null
-					}
+					return createElement('div', null, createElement('div', null, createElement('table', null,
+						createElement('tr', null, createElement('td', null, 'Text'))
+					)));
 				}
 
 				function B() {
-					return {
-						"tag": "div",
-						"children": {
-							"tag": "div",
-							"children": {
-								"tag": "table",
-								"children": [
-									{
-										"tag": "tr",
-										"children": [
-											{
-												"tag": "td",
-												"children": [
-													"bar"
-												]
-											}
-										],
-										"dom": null
-									}
-								]
-							}
-						},
-						"dom": null
-					}
+					return createElement('div', null, createElement('div', null, createElement('table', null,
+						createElement('tr', null, createElement('td', null, 'bar'))
+					)));
 				}
 
 				function C() {
-					return {
-						"tag": "div",
-						"children": {
-							"tag": "div",
-							"children": {
-								"tag": "table",
-								"children": [
-									{
-										"tag": "tr",
-										"children": [
-											{
-												"tag": "td",
-												"children": [
-													"text1"
-												]
-											}
-										],
-										"dom": null
-									}
-								]
-							}
-						},
-						"dom": null
-					}
+					return createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, 'text1')))));
 				}
-
 				render(A(), container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>Text</td></tr></table></div></div>');
 				render(B(), container);
@@ -1230,91 +967,11 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('variation -2', () => {
-				const A={
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"children": [
-										{
-											"tag": "td",
-											"children": [
-												"text",
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
-				const B = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"children": [
-										{
-											"tag": "td",
-											"children": [
-												[
-													"text"
-												]
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
-				const C={
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"children": [
-										{
-											"tag": "td",
-											"children": [
-												[
-													"value"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const A = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', null, createElement('td', null, 'text', createElement('br'))
+				))));
+				const B = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['text'])))));
+				const C = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['value'], createElement('br'))))));
 
 				render(A, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');

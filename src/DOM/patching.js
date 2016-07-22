@@ -232,6 +232,8 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom, insta
 function removeProp(tag, prop, dom) {
 	if (prop === 'className') {
 		dom.removeAttribute('class');
+	} else if (prop === 'id') {
+		dom.removeAttribute('id');
 	} else {
 		if (isPropertyOfElement(tag, prop)) {
 			dom[prop] = null;
@@ -285,41 +287,41 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	}
 }
 
-export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
-	if (attrName === 'dangerouslySetInnerHTML') {
-		const lastHtml = lastAttrValue && lastAttrValue.__html;
-		const nextHtml = nextAttrValue && nextAttrValue.__html;
+// export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
+// 	if (attrName === 'dangerouslySetInnerHTML') {
+// 		const lastHtml = lastAttrValue && lastAttrValue.__html;
+// 		const nextHtml = nextAttrValue && nextAttrValue.__html;
 
-		if (isNullOrUndef(nextHtml)) {
-			throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
-		}
-		if (lastHtml !== nextHtml) {
-			dom.innerHTML = nextHtml;
-		}
-	} else if (strictProps[attrName]) {
-		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
-	} else {
-		if (booleanProps[attrName]) {
-			dom[attrName] = nextAttrValue ? true : false;
-		} else {
-			const ns = namespaces[attrName];
+// 		if (isNullOrUndef(nextHtml)) {
+// 			throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
+// 		}
+// 		if (lastHtml !== nextHtml) {
+// 			dom.innerHTML = nextHtml;
+// 		}
+// 	} else if (strictProps[attrName]) {
+// 		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
+// 	} else {
+// 		if (booleanProps[attrName]) {
+// 			dom[attrName] = nextAttrValue ? true : false;
+// 		} else {
+// 			const ns = namespaces[attrName];
 
-			if (nextAttrValue === false || isNullOrUndef(nextAttrValue)) {
-				if (ns !== undefined) {
-					dom.removeAttributeNS(ns, attrName);
-				} else {
-					dom.removeAttribute(attrName);
-				}
-			} else {
-				if (ns !== undefined) {
-					dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
-				} else {
-					dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
-				}
-			}
-		}
-	}
-}
+// 			if (nextAttrValue === false || isNullOrUndef(nextAttrValue)) {
+// 				if (ns !== undefined) {
+// 					dom.removeAttributeNS(ns, attrName);
+// 				} else {
+// 					dom.removeAttribute(attrName);
+// 				}
+// 			} else {
+// 				if (ns !== undefined) {
+// 					dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
+// 				} else {
+// 					dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
 export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, context, parentInstance, isSVG) {
 	const lastComponent = lastVComponent._component;
