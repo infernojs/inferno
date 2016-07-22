@@ -605,7 +605,7 @@
 		}
 		var eventKeys = bp.eventKeys;
 
-		mountEvents$1(events, eventKeys, dom);
+		mountEvents(events, eventKeys, dom);
 	}
 
 	function mountVNodeWithBlueprint(node, bp, parentDom, lifecycle, context, instance) {
@@ -710,7 +710,7 @@
 			patchStyle(null, style, dom);
 		}
 		if (!isNullOrUndefined(events)) {
-			mountEvents$1(events, Object.keys(events), dom);
+			mountEvents(events, Object.keys(events), dom);
 		}
 		if (!isNull(parentDom)) {
 			parentDom.appendChild(dom);
@@ -754,7 +754,7 @@
 		}
 	}
 
-	function mountEvents$1(events, eventKeys, dom) {
+	function mountEvents(events, eventKeys, dom) {
 		for (var i = 0; i < eventKeys.length; i++) {
 			var event = eventKeys[i];
 
@@ -1976,7 +1976,7 @@
 					var events = node.events;
 
 					if (!isNullOrUndefined(events)) {
-						mountEvents$1(events, Object.keys(events), domNode);
+						mountEvents(events, Object.keys(events), domNode);
 					}
 				}
 			}
