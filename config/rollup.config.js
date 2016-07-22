@@ -109,7 +109,7 @@ const bundles = [
 	{
 		moduleGlobal: 'InfernoRedux',
 		moduleName: 'inferno-redux',
-		moduleEntry: 'packages/inferno-redux/src/index.js'
+		moduleEntry: 'packages/inferno-redux/src/index.js',
 		path: 'packages/inferno-redux/'
 	}
 ];
