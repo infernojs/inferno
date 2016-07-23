@@ -1,4 +1,7 @@
-import Provider from './components/Provider';
-import connect from './components/connect';
+import Provider from '../../../src/redux/Provider';
+import connect from '../../../src/redux/connect';
 
-export { Provider, connect };
+export default {
+	Provider,
+	connect,
+};

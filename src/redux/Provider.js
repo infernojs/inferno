@@ -1,5 +1,8 @@
-import Component from '../../../../src/component';
-import { warning } from '../utils';
+import Component from '../component/es2015';
+import { warning, shallowEqual } from './utils';
+import { isFunction } from '../core/utils';
+import { createBlueprint, createVNode } from '../core/shapes';
+import hoistStatics from 'hoist-non-inferno-statics';
 
 let didWarnAboutReceivingStore = false;
 function warnAboutReceivingStore() {
@@ -34,5 +37,5 @@ if (process.env.NODE_ENV !== 'production') {
 		if (store !== nextStore) {
 			warnAboutReceivingStore();
 		}
-	}
+	};
 }

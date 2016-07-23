@@ -1,7 +1,8 @@
-import { isFunction } from '../../../../src/core/utils';
-import { createVNode } from '../../../../src/core/createBlueprint';
+import Component from '../component/es2015';
+import { warning, shallowEqual } from './utils';
+import { isFunction } from '../core/utils';
+import { createBlueprint, createVNode } from '../core/shapes';
 import hoistStatics from 'hoist-non-inferno-statics';
-import { shallowEqual } from '../utils';
 
 const errorObject = { value: null };
 const defaultMapStateToProps = state => ({}); // eslint-disable-line no-unused-vars
@@ -30,7 +31,7 @@ let nextVersion = 0;
 export default function connect(mapStateToProps, mapDispatchToProps, mergeProps, options = {}) {
 	const shouldSubscribe = Boolean(mapStateToProps);
 	const mapState = mapStateToProps || defaultMapStateToProps;
-	let mapDispatch
+	let mapDispatch;
 
 	if (isFunction(mapDispatchToProps)) {
 		mapDispatch = mapDispatchToProps;
@@ -53,20 +54,20 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				warning(
 					`${methodName}() in ${connectDisplayName} must return a plain object. ` +
 					`Instead received ${props}.`
-		 		)
+				);
 			}
 		}
 		function computeMergedProps(stateProps, dispatchProps, parentProps) {
-			const mergedProps = finalMergeProps(stateProps, dispatchProps, parentProps)
+			const mergedProps = finalMergeProps(stateProps, dispatchProps, parentProps);
 			if (process.env.NODE_ENV !== 'production') {
-				checkStateShape(mergedProps, 'mergeProps')
+				checkStateShape(mergedProps, 'mergeProps');
 			}
-			return mergedProps
+			return mergedProps;
 		}
 
 		class Connect extends Component {
 			shouldComponentUpdate() {
-				return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged
+				return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged;
 			}
 			constructor(props, context) {
 				super(props, context);
@@ -74,9 +75,9 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				this.store = props.store || context.store;
 
 				invariant(this.store,
-					`Could not find "store" in either the context or ` +
+					'Could not find "store" in either the context or ' +
 					`props of "${connectDisplayName}". ` +
-					`Either wrap the root component in a <Provider>, ` +
+					'Either wrap the root component in a <Provider>, ' +
 					`or explicitly pass "store" as a prop to "${connectDisplayName}".`
 				);
 
@@ -93,7 +94,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 					this.finalMapStateToProps(state, props) :
 					this.finalMapStateToProps(state);
 
-				return stateProps
+				return stateProps;
 			}
 			configureFinalMapState(store, props) {
 				const mappedState = mapState(store.getState(), props);
@@ -128,7 +129,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 					return this.computeDispatchProps(store, props);
 				}
 				return mappedDispatch;
-			}			
+			}
 			updateStatePropsIfNeeded() {
 				const nextStateProps = this.computeStateProps(this.store, this.props);
 
@@ -145,7 +146,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 					return false;
 				}
 				this.dispatchProps = nextDispatchProps;
-				return true
+				return true;
 			}
 			updateMergedPropsIfNeeded() {
 				const nextMergedProps = computeMergedProps(this.stateProps, this.dispatchProps, this.props);
@@ -155,7 +156,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				}
 				this.mergedProps = nextMergedProps;
 				return true;
-			}		
+			}
 			isSubscribed() {
 				return isFunction(this.unsubscribe);
 			}
@@ -182,7 +183,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 			componentWillUnmount() {
 				this.tryUnsubscribe();
 				this.clearCache();
-			}				
+			}
 			clearCache() {
 				this.dispatchProps = null;
 				this.stateProps = null;
@@ -298,6 +299,6 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				this.clearCache();
 			};
 		}
-		return hoistStatics(Connect, WrappedComponent)	
-	}
+		return hoistStatics(Connect, WrappedComponent);
+	};
 }
