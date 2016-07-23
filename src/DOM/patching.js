@@ -38,7 +38,8 @@ import {
 	replaceWithNewNode,
 	removeEvents,
 	selectValue,
-	isVNode
+	isVNode,
+	normalise
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import { createVPlaceholder, createVText } from '../core/shapes';
