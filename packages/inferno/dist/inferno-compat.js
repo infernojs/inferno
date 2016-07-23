@@ -1277,7 +1277,7 @@
   				} else {
   					nextVNode.instance = instance$1;
   					nextVNode.dom = lastVNode.dom;
-  					patchComponent(true, nextVNode, nextVNode.tag, lastBp, nextBp, instance$1, lastVNode.attrs || {}, nextVNode.attrs || {}, nextVNode.hooks, nextVNode.children, parentDom, lifecycle, context);
+  					patchComponent(true, nextVNode, nextVNode.tag, lastBp, nextBp, instance$1, lastVNode.attrs || {}, nextVNode.attrs || {}, nextVNode.hooks, lastVNode.children, nextVNode.children, parentDom, lifecycle, context);
   				}
   			}
   		} else {
@@ -1417,7 +1417,7 @@
   				} else {
   					nextNode.instance = lastNode.instance;
   					nextNode.dom = lastNode.dom;
-  					patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+  					patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, lastNode.children, nextNode.children, parentDom, lifecycle, context);
   				}
   			}
   		} else {
@@ -1609,7 +1609,7 @@
   	}
   }
 
-  function patchComponent(hasBlueprint, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+  function patchComponent(hasBlueprint, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, lastChildren, nextChildren, parentDom, lifecycle, context) {
   	nextProps = addChildrenToProps(nextChildren, nextProps);
 
   	if (isStatefulComponent(Component)) {
@@ -1638,6 +1638,7 @@
   		var shouldUpdate = true;
   		var nextHooksDefined = (hasBlueprint && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
 
+  		lastProps = addChildrenToProps(lastChildren, lastProps);
   		if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
   			shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
   		}
@@ -2806,10 +2807,6 @@
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
 
-  function interopDefault(ex) {
-  	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
-  }
-
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
@@ -3146,7 +3143,7 @@
 
   });
 
-  var PropTypes = interopDefault(index$1);
+  var PropTypes = (index$1 && typeof index$1 === 'object' && 'default' in index$1 ? index$1['default'] : index$1);
 
   function unmountComponentAtNode(container) {
   	render(null, container);
