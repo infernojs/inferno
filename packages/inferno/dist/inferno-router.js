@@ -221,7 +221,9 @@
 		}
 	}
 
-	var Component = function Component(props) {
+	var Component = function Component(props, context) {
+		if ( context === void 0 ) context = {};
+
 		/** @type {object} */
 		this.props = props || {};
 
@@ -238,7 +240,7 @@
 		this._parentNode = null;
 		this._lastNode = null;
 		this._unmounted = true;
-		this.context = {};
+		this.context = context;
 		this._patch = null;
 		this._parentComponent = null;
 		this._componentToDOMNodeMap = null;
@@ -511,7 +513,7 @@
 		};
 
 		Router.prototype.render = function render () {
-			var children = toArray(this.props.children);
+			var children = toArray$1(this.props.children);
 			var url = this.props.url || this.state.url;
 			var wrapperComponent = this.props.component;
 			var hashbang = this.props.hashbang;
@@ -522,7 +524,7 @@
 		return Router;
 	}(Component));
 
-	function toArray(children) {
+	function toArray$1(children) {
 		return isArray(children) ? children : (children ? [children] : children);
 	}
 
@@ -535,7 +537,7 @@
 			var path = ref.path;
 			var fullPath = lastPath + path;
 			var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
-			var children = toArray(route.children);
+			var children = toArray$1(route.children);
 
 			if (children) {
 				var subRoute = handleRoutes(children, url, hashbang, wrapperComponent, fullPath);

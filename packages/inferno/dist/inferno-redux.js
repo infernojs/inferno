@@ -14,6 +14,14 @@
     // Runs only once in applications lifetime
     var isBrowser = typeof window !== 'undefined' && window.document;
 
+    function toArray(children) {
+    	return isArray(children) ? children : (children ? [children] : children);
+    }
+
+    function isArray(obj) {
+    	return obj instanceof Array;
+    }
+
     function isNullOrUndefined(obj) {
     	return isUndefined(obj) || isNull(obj);
     }
@@ -221,7 +229,9 @@
     	}
     }
 
-    var Component = function Component(props) {
+    var Component = function Component(props, context) {
+    	if ( context === void 0 ) context = {};
+
     	/** @type {object} */
     	this.props = props || {};
 
@@ -238,7 +248,7 @@
     	this._parentNode = null;
     	this._lastNode = null;
     	this._unmounted = true;
-    	this.context = {};
+    	this.context = context;
     	this._patch = null;
     	this._parentComponent = null;
     	this._componentToDOMNodeMap = null;
@@ -323,6 +333,108 @@
     	return NO_RENDER;
     };
 
+    /** Used to resolve the decompiled source of functions. */
+    var funcToString = Function.prototype.toString;
+
+    /** Used to infer the `Object` constructor. */
+    var objectCtorString = funcToString.call(Object);
+
+    var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
+
+    function interopDefault(ex) {
+    	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
+    }
+
+    function createCommonjsModule(fn, module) {
+    	return module = { exports: {} }, fn(module, module.exports), module.exports;
+    }
+
+    var ponyfill = createCommonjsModule(function (module) {
+    'use strict';
+
+    module.exports = function symbolObservablePonyfill(root) {
+    	var result;
+    	var Symbol = root.Symbol;
+
+    	if (typeof Symbol === 'function') {
+    		if (Symbol.observable) {
+    			result = Symbol.observable;
+    		} else {
+    			result = Symbol('observable');
+    			Symbol.observable = result;
+    		}
+    	} else {
+    		result = '@@observable';
+    	}
+
+    	return result;
+    };
+    });
+
+    var ponyfill$1 = interopDefault(ponyfill);
+
+
+    var require$$0 = Object.freeze({
+    	default: ponyfill$1
+    });
+
+    var index$1 = createCommonjsModule(function (module) {
+    /* global window */
+    'use strict';
+
+    module.exports = interopDefault(require$$0)(commonjsGlobal || window || commonjsGlobal);
+    });
+
+    interopDefault(index$1);
+
+    function bindActionCreator(actionCreator, dispatch) {
+      return function () {
+        return dispatch(actionCreator.apply(undefined, arguments));
+      };
+    }
+
+    /**
+     * Turns an object whose values are action creators, into an object with the
+     * same keys, but with every function wrapped into a `dispatch` call so they
+     * may be invoked directly. This is just a convenience method, as you can call
+     * `store.dispatch(MyActionCreators.doSomething())` yourself just fine.
+     *
+     * For convenience, you can also pass a single function as the first argument,
+     * and get a function in return.
+     *
+     * @param {Function|Object} actionCreators An object whose values are action
+     * creator functions. One handy way to obtain it is to use ES6 `import * as`
+     * syntax. You may also pass a single function.
+     *
+     * @param {Function} dispatch The `dispatch` function available on your Redux
+     * store.
+     *
+     * @returns {Function|Object} The object mimicking the original object, but with
+     * every action creator wrapped into the `dispatch` call. If you passed a
+     * function as `actionCreators`, the return value will also be a single
+     * function.
+     */
+    function bindActionCreators(actionCreators, dispatch) {
+      if (typeof actionCreators === 'function') {
+        return bindActionCreator(actionCreators, dispatch);
+      }
+
+      if (typeof actionCreators !== 'object' || actionCreators === null) {
+        throw new Error('bindActionCreators expected an object or a function, instead received ' + (actionCreators === null ? 'null' : typeof actionCreators) + '. ' + 'Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?');
+      }
+
+      var keys = Object.keys(actionCreators);
+      var boundActionCreators = {};
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        var actionCreator = actionCreators[key];
+        if (typeof actionCreator === 'function') {
+          boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
+        }
+      }
+      return boundActionCreators;
+    }
+
     /**
      * Prints a warning in the console if it exists.
      *
@@ -334,20 +446,23 @@
     	if (typeof console !== 'undefined' && typeof console.error === 'function') {
     		console.error(message);
     	}
+
     	/* eslint-enable no-console */
     	try {
     		// This error was thrown as a convenience so that if you enable
     		// "break on all exceptions" in your console,
     		// it would pause the execution at this line.
     		throw new Error(message);
+
     		/* eslint-disable no-empty */
     	} catch (e) {}
+
     	/* eslint-enable no-empty */
     }
 
     function shallowEqual(objA, objB) {
     	if (objA === objB) {
-    		return true
+    		return true;
     	}
     	var keysA = Object.keys(objA);
     	var keysB = Object.keys(objB);
@@ -366,15 +481,36 @@
     	return true;
     }
 
-    function interopDefault(ex) {
-    	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
+    function wrapActionCreators(actionCreators) {
+    	return function (dispatch) { return bindActionCreators(actionCreators, dispatch); };
     }
 
-    function createCommonjsModule(fn, module) {
-    	return module = { exports: {} }, fn(module, module.exports), module.exports;
-    }
+    var Provider = (function (Component) {
+    	function Provider(props, context) {
+    		Component.call(this, props, context);
+    		this.store = props.store;
+    	}
 
-    var index$1 = createCommonjsModule(function (module) {
+    	if ( Component ) Provider.__proto__ = Component;
+    	Provider.prototype = Object.create( Component && Component.prototype );
+    	Provider.prototype.constructor = Provider;
+
+    	Provider.prototype.getChildContext = function getChildContext () {
+    		return { store: this.store };
+    	};
+
+    	Provider.prototype.render = function render () {
+    		if (isNullOrUndefined(this.props.children) || toArray(this.props.children).length !== 1) {
+    			throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
+    		}
+
+    		return this.props.children;
+    	};
+
+    	return Provider;
+    }(Component));
+
+    var index$2 = createCommonjsModule(function (module) {
     'use strict';
 
     var INFERNO_STATICS = {
@@ -424,36 +560,72 @@
     module.exports = hoistNonReactStatics;
     });
 
-    var hoistStatics = interopDefault(index$1);
+    var hoistStatics = interopDefault(index$2);
 
-    var Provider = (function (Component) {
-    	function Provider(props, context) {
-    		Component.call(this, props, context);
-    		this.store = props.store;
-    	}
+    var invariant = createCommonjsModule(function (module) {
+    /**
+     * Copyright 2013-2015, Facebook, Inc.
+     * All rights reserved.
+     *
+     * This source code is licensed under the BSD-style license found in the
+     * LICENSE file in the root directory of this source tree. An additional grant
+     * of patent rights can be found in the PATENTS file in the same directory.
+     */
 
-    	if ( Component ) Provider.__proto__ = Component;
-    	Provider.prototype = Object.create( Component && Component.prototype );
-    	Provider.prototype.constructor = Provider;
-    	Provider.prototype.getChildContext = function getChildContext () {
-    		return { store: this.store };
-    	};
+    'use strict';
 
-    	Provider.prototype.render = function render () {
-    		return this.props.children;
-    	};
+    /**
+     * Use invariant() to assert state which your program assumes to be true.
+     *
+     * Provide sprintf-style format (only %s is supported) and arguments
+     * to provide information about what broke and what you were
+     * expecting.
+     *
+     * The invariant message will be stripped in production, but the invariant
+     * will remain to ensure logic does not differ in production.
+     */
 
-    	return Provider;
-    }(Component));
+    var NODE_ENV = "production";
+
+    var invariant = function(condition, format, a, b, c, d, e, f) {
+      if (NODE_ENV !== 'production') {
+        if (format === undefined) {
+          throw new Error('invariant requires an error message argument');
+        }
+      }
+
+      if (!condition) {
+        var error;
+        if (format === undefined) {
+          error = new Error(
+            'Minified exception occurred; use the non-minified dev environment ' +
+            'for the full error message and additional helpful warnings.'
+          );
+        } else {
+          var args = [a, b, c, d, e, f];
+          var argIndex = 0;
+          error = new Error(
+            format.replace(/%s/g, function() { return args[argIndex++]; })
+          );
+          error.name = 'Invariant Violation';
+        }
+
+        error.framesToPop = 1; // we don't care about invariant's own frame
+        throw error;
+      }
+    };
+
+    module.exports = invariant;
+    });
+
+    var invariant$1 = interopDefault(invariant);
 
     var errorObject = { value: null };
     var defaultMapStateToProps = function (state) { return ({}); }; // eslint-disable-line no-unused-vars
     var defaultMapDispatchToProps = function (dispatch) { return ({ dispatch: dispatch }); };
-    var defaultMergeProps = function (stateProps, dispatchProps, parentProps) { return Object.assign({},
-    	parentProps,
+    var defaultMergeProps = function (stateProps, dispatchProps, parentProps) { return (Object.assign({}, parentProps,
     	stateProps,
-    	dispatchProps
-    ); };
+    	dispatchProps)); };
 
     function tryCatch(fn, ctx) {
     	try {
@@ -467,6 +639,7 @@
     function getDisplayName(WrappedComponent) {
     	return WrappedComponent.displayName || WrappedComponent.name || 'Component';
     }
+
     // Helps track hot reloading.
     var nextVersion = 0;
 
@@ -475,7 +648,7 @@
 
     	var shouldSubscribe = Boolean(mapStateToProps);
     	var mapState = mapStateToProps || defaultMapStateToProps;
-    	var mapDispatch
+    	var mapDispatch;
 
     	if (isFunction(mapDispatchToProps)) {
     		mapDispatch = mapDispatchToProps;
@@ -499,25 +672,26 @@
     				warning(
     					methodName + "() in " + connectDisplayName + " must return a plain object. " +
     					"Instead received " + props + "."
-    		 		)
+    				);
     			}
     		}
     		function computeMergedProps(stateProps, dispatchProps, parentProps) {
-    			var mergedProps = finalMergeProps(stateProps, dispatchProps, parentProps)
+    			var mergedProps = finalMergeProps(stateProps, dispatchProps, parentProps);
     			if ("production" !== 'production') {}
-    			return mergedProps
+    			return mergedProps;
     		}
 
     		var Connect = (function (Component) {
     			function Connect(props, context) {
     				Component.call(this, props, context);
+
     				this.version = version;
     				this.store = props.store || context.store;
 
-    				invariant(this.store,
-    					"Could not find \"store\" in either the context or " +
+    				invariant$1(this.store,
+    					'Could not find "store" in either the context or ' +
     					"props of \"" + connectDisplayName + "\". " +
-    					"Either wrap the root component in a <Provider>, " +
+    					'Either wrap the root component in a <Provider>, ' +
     					"or explicitly pass \"store\" as a prop to \"" + connectDisplayName + "\"."
     				);
 
@@ -530,7 +704,7 @@
     			Connect.prototype = Object.create( Component && Component.prototype );
     			Connect.prototype.constructor = Connect;
     			Connect.prototype.shouldComponentUpdate = function shouldComponentUpdate () {
-    				return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged
+    				return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged;
     			};
 
     			Connect.prototype.computeStateProps = function computeStateProps (store, props) {
@@ -542,7 +716,7 @@
     					this.finalMapStateToProps(state, props) :
     					this.finalMapStateToProps(state);
 
-    				return stateProps
+    				return stateProps;
     			};
     			Connect.prototype.configureFinalMapState = function configureFinalMapState (store, props) {
     				var mappedState = mapState(store.getState(), props);
@@ -594,7 +768,7 @@
     					return false;
     				}
     				this.dispatchProps = nextDispatchProps;
-    				return true
+    				return true;
     			};
     			Connect.prototype.updateMergedPropsIfNeeded = function updateMergedPropsIfNeeded () {
     				var nextMergedProps = computeMergedProps(this.stateProps, this.dispatchProps, this.props);
@@ -738,8 +912,8 @@
     		Connect.WrappedComponent = WrappedComponent;
 
     		if ("production" !== 'production') {}
-    		return hoistStatics(Connect, WrappedComponent)
-    	}
+    		return hoistStatics(Connect, WrappedComponent);
+    	};
     }
 
     var index = {

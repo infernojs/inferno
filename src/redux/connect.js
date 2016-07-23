@@ -1,17 +1,18 @@
 import Component from '../component/es2015';
-import { warning, shallowEqual } from './utils';
+import { warning, shallowEqual, wrapActionCreators } from './utils';
 import { isFunction } from '../core/utils';
 import { createBlueprint, createVNode } from '../core/shapes';
 import hoistStatics from 'hoist-non-inferno-statics';
+import invariant from 'invariant';
 
 const errorObject = { value: null };
 const defaultMapStateToProps = state => ({}); // eslint-disable-line no-unused-vars
 const defaultMapDispatchToProps = dispatch => ({ dispatch });
-const defaultMergeProps = (stateProps, dispatchProps, parentProps) => Object.assign({},
-	parentProps,
-	stateProps,
-	dispatchProps
-);
+const defaultMergeProps = (stateProps, dispatchProps, parentProps) => ({
+	...parentProps,
+	...stateProps,
+	...dispatchProps
+});
 
 function tryCatch(fn, ctx) {
 	try {
@@ -25,6 +26,7 @@ function tryCatch(fn, ctx) {
 function getDisplayName(WrappedComponent) {
 	return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
+
 // Helps track hot reloading.
 let nextVersion = 0;
 
@@ -71,6 +73,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 			}
 			constructor(props, context) {
 				super(props, context);
+
 				this.version = version;
 				this.store = props.store || context.store;
 

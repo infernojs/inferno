@@ -1,3 +1,6 @@
+
+import { bindActionCreators } from 'redux';
+
 /**
  * Prints a warning in the console if it exists.
  *
@@ -42,4 +45,8 @@ export function shallowEqual(objA, objB) {
 		}
 	}
 	return true;
+}
+
+export function wrapActionCreators(actionCreators) {
+	return dispatch => bindActionCreators(actionCreators, dispatch);
 }

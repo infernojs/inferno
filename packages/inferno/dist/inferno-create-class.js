@@ -163,7 +163,9 @@
 		}
 	}
 
-	var Component = function Component(props) {
+	var Component = function Component(props, context) {
+		if ( context === void 0 ) context = {};
+
 		/** @type {object} */
 		this.props = props || {};
 
@@ -180,7 +182,7 @@
 		this._parentNode = null;
 		this._lastNode = null;
 		this._unmounted = true;
-		this.context = {};
+		this.context = context;
 		this._patch = null;
 		this._parentComponent = null;
 		this._componentToDOMNodeMap = null;

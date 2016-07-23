@@ -1,8 +1,7 @@
 import Component from '../component/es2015';
 import { warning, shallowEqual } from './utils';
-import { isFunction } from '../core/utils';
+import { isFunction, isArray, isNullOrUndefined, toArray } from '../core/utils';
 import { createBlueprint, createVNode } from '../core/shapes';
-import hoistStatics from 'hoist-non-inferno-statics';
 
 let didWarnAboutReceivingStore = false;
 function warnAboutReceivingStore() {
@@ -20,11 +19,17 @@ export default class Provider extends Component {
 	getChildContext() {
 		return { store: this.store };
 	}
+
 	constructor(props, context) {
 		super(props, context);
 		this.store = props.store;
 	}
+
 	render() {
+		if (isNullOrUndefined(this.props.children) || toArray(this.props.children).length !== 1) {
+			throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
+		}
+
 		return this.props.children;
 	}
 }
