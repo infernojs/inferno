@@ -4,8 +4,8 @@ import Link from '../../../src/router/Link';
 import browserHistory from '../../../src/router/browserHistory';
 
 export default {
-    Route,
-    Router,
-    Link,
-    browserHistory
+	Route,
+	Router,
+	Link,
+	browserHistory
 };
