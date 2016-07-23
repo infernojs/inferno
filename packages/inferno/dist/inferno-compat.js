@@ -591,7 +591,7 @@
   	parentDom.replaceChild(nextDom, lastDom);
   }
 
-  function normalise$1(object) {
+  function normalise(object) {
   	if (isStringOrNumber(object)) {
   		return createVText(object);
   	} else if (isInvalidNode(object)) {
@@ -605,7 +605,7 @@
   function normaliseChild(children, i) {
   	var child = children[i];
 
-  	return children[i] = normalise$1(child);
+  	return children[i] = normalise(child);
   }
 
   function remove(node, parentDom) {
@@ -756,7 +756,7 @@
   	} else if (isVNode(input)) {
   		return mountVNode$1(input, parentDom, lifecycle, context, instance, isSVG);
   	} else {
-  		var normalisedInput = normalise$1(input);
+  		var normalisedInput = normalise(input);
 
   		if (input !== normalisedInput) {
   			mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
@@ -1143,7 +1143,7 @@
   				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
   				unmount(lastInput, null);
   			} else {
-  				return patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
+  				return patch(lastInput, normalise(nextInput), parentDom, lifecycle, context, instance, isSVG);
   			}
   		}
   	}
