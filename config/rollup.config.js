@@ -1,3 +1,4 @@
+
 import * as p from 'path';
 import * as fs from 'fs';
 import { rollup } from 'rollup';
@@ -92,7 +93,7 @@ const bundles = [
 		moduleName: 'inferno-compat',
 		moduleEntry: 'packages/inferno-compat/src/index.js',
 		path: 'packages/inferno-compat/'
-	}, 
+	},
 	{
 		moduleGlobal: 'InfernoRouter',
 		moduleName: 'inferno-router',
@@ -104,6 +105,12 @@ const bundles = [
 		moduleName: 'inferno-create-class',
 		moduleEntry: 'packages/inferno-create-class/src/index.js',
 		path: 'packages/inferno-create-class/'
+	},
+	{
+		moduleGlobal: 'InfernoRedux',
+		moduleName: 'inferno-redux',
+		moduleEntry: 'packages/inferno-redux/src/index.js',
+		path: 'packages/inferno-redux/'
 	}
 ];
 
@@ -117,6 +124,7 @@ function createBundle({moduleGlobal, moduleName, moduleEntry }, path) {
 	const entry = p.resolve(moduleEntry);
 	const dest  = p.resolve(`${ path }${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
 
+	console.log(dest)
 	const bundleConfig = {
 		dest,
 		format: 'umd',

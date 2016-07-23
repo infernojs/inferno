@@ -64,7 +64,7 @@ function applyState(component, force, callback) {
 }
 
 export default class Component {
-	constructor(props) {
+	constructor(props, context = {}) {
 		/** @type {object} */
 		this.props = props || {};
 
@@ -81,7 +81,7 @@ export default class Component {
 		this._parentNode = null;
 		this._lastNode = null;
 		this._unmounted = true;
-		this.context = {};
+		this.context = context;
 		this._patch = null;
 		this._parentComponent = null;
 		this._componentToDOMNodeMap = null;
