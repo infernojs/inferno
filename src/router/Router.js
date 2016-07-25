@@ -4,8 +4,8 @@ import { exec, convertToHashbang, pathRankSort } from './utils';
 import { createVNode } from '../core/shapes';
 
 export default class Router extends Component {
-	constructor(props) {
-		super(props);
+	constructor(props, context) {
+		super(props, context);
 		if (!props.history) {
 			throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
 		}
