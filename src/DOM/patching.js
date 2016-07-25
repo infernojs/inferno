@@ -38,7 +38,8 @@ import {
 	replaceWithNewNode,
 	removeEvents,
 	selectValue,
-	isVNode
+	isVNode,
+	normalise
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import { createVPlaceholder, createVText } from '../core/shapes';
@@ -100,7 +101,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
 				unmount(lastInput, null);
 			} else {
-				return patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
+				return patch(lastInput, normalise(nextInput), parentDom, lifecycle, context, instance, isSVG);
 			}
 		}
 	}
@@ -234,7 +235,7 @@ export function patchVNodeWithBlueprint(lastVNode, nextVNode, lastBp, nextBp, pa
 				} else {
 					nextVNode.instance = instance;
 					nextVNode.dom = lastVNode.dom;
-					patchComponent(true, nextVNode, nextVNode.tag, lastBp, nextBp, instance, lastVNode.attrs || {}, nextVNode.attrs || {}, nextVNode.hooks, nextVNode.children, parentDom, lifecycle, context);
+					patchComponent(true, nextVNode, nextVNode.tag, lastBp, nextBp, instance, lastVNode.attrs || {}, nextVNode.attrs || {}, nextVNode.hooks, lastVNode.children, nextVNode.children, parentDom, lifecycle, context);
 				}
 			}
 		} else {
@@ -374,7 +375,7 @@ export function patchVNodeWithoutBlueprint(lastNode, nextNode, parentDom, lifecy
 				} else {
 					nextNode.instance = lastNode.instance;
 					nextNode.dom = lastNode.dom;
-					patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+					patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, lastNode.children, nextNode.children, parentDom, lifecycle, context);
 				}
 			}
 		} else {
@@ -566,7 +567,7 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 	}
 }
 
-export function patchComponent(hasBlueprint, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+export function patchComponent(hasBlueprint, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, lastChildren, nextChildren, parentDom, lifecycle, context) {
 	nextProps = addChildrenToProps(nextChildren, nextProps);
 
 	if (isStatefulComponent(Component)) {
@@ -595,6 +596,7 @@ export function patchComponent(hasBlueprint, lastNode, Component, lastBp, nextBp
 		let shouldUpdate = true;
 		const nextHooksDefined = (hasBlueprint && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
 
+		lastProps = addChildrenToProps(lastChildren, lastProps);
 		if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
 			shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
 		}

@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.22
+ * inferno-dom v0.7.23
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -348,7 +348,7 @@
 		parentDom.replaceChild(nextDom, lastDom);
 	}
 
-	function normalise$1(object) {
+	function normalise(object) {
 		if (isStringOrNumber(object)) {
 			return createVText(object);
 		} else if (isInvalidNode(object)) {
@@ -362,7 +362,7 @@
 	function normaliseChild(children, i) {
 		var child = children[i];
 
-		return children[i] = normalise$1(child);
+		return children[i] = normalise(child);
 	}
 
 	function remove(node, parentDom) {
@@ -513,7 +513,7 @@
 		} else if (isVNode(input)) {
 			return mountVNode$1(input, parentDom, lifecycle, context, instance, isSVG);
 		} else {
-			var normalisedInput = normalise$1(input);
+			var normalisedInput = normalise(input);
 
 			if (input !== normalisedInput) {
 				mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
@@ -900,7 +900,7 @@
 					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
 					unmount(lastInput, null);
 				} else {
-					return patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
+					return patch(lastInput, normalise(nextInput), parentDom, lifecycle, context, instance, isSVG);
 				}
 			}
 		}
@@ -1034,7 +1034,7 @@
 					} else {
 						nextVNode.instance = instance$1;
 						nextVNode.dom = lastVNode.dom;
-						patchComponent(true, nextVNode, nextVNode.tag, lastBp, nextBp, instance$1, lastVNode.attrs || {}, nextVNode.attrs || {}, nextVNode.hooks, nextVNode.children, parentDom, lifecycle, context);
+						patchComponent(true, nextVNode, nextVNode.tag, lastBp, nextBp, instance$1, lastVNode.attrs || {}, nextVNode.attrs || {}, nextVNode.hooks, lastVNode.children, nextVNode.children, parentDom, lifecycle, context);
 					}
 				}
 			} else {
@@ -1174,7 +1174,7 @@
 					} else {
 						nextNode.instance = lastNode.instance;
 						nextNode.dom = lastNode.dom;
-						patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
+						patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, lastNode.children, nextNode.children, parentDom, lifecycle, context);
 					}
 				}
 			} else {
@@ -1366,7 +1366,7 @@
 		}
 	}
 
-	function patchComponent(hasBlueprint, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
+	function patchComponent(hasBlueprint, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, lastChildren, nextChildren, parentDom, lifecycle, context) {
 		nextProps = addChildrenToProps(nextChildren, nextProps);
 
 		if (isStatefulComponent(Component)) {
@@ -1395,6 +1395,7 @@
 			var shouldUpdate = true;
 			var nextHooksDefined = (hasBlueprint && nextBp.hasHooks === true) || !isNullOrUndefined(nextHooks);
 
+			lastProps = addChildrenToProps(lastChildren, lastProps);
 			if (nextHooksDefined && !isNullOrUndefined(nextHooks.componentShouldUpdate)) {
 				shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
 			}
