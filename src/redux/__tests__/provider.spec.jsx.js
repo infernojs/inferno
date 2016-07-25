@@ -6,6 +6,10 @@ import { findDOMNode, render } from './../../DOM/rendering';
 import { createBlueprint } from './../../core/shapes';
 import Component from './../../component/es2015';
 
+import Route from '../../router/Route';
+import Router from '../../router/Router';
+import browserHistory from '../../router/browserHistory';
+
 import { createStore } from 'redux';
 const sinon = require('sinon/pkg/sinon');
 
@@ -135,5 +139,45 @@ describe('Provider (JSX)', () => {
 		link.click();
 
 		expect(container.innerHTML).to.equal('<div><div class="basic"><a id="dispatch"><span>Hello Jerry</span></a></div><div class="basic2">You\'re a mouse!</div></div>');
+	});
+
+	it('should work with routing', () => {
+		const store = createStore((state = {
+			name: 'Tom'
+		}, action) => {
+			switch (action.type) {
+				case 'CHANGE_NAME':
+					return {
+						...state,
+						name: action.name
+					};
+				default:
+					return state;
+			}
+		});
+
+		const _render = (url = '/') => {
+			render(
+				<Provider store={store}>
+					<Router url={ url } history={ browserHistory } component={ BasicRouter }>
+						<Route path='/next' component={ BasicComponent2 } />
+						<Route path='/' component={ BasicComponent1 } />
+					</Router>
+				</Provider>
+			, container);
+		};
+
+		_render();
+		store.subscribe(() => {
+			const state = store.getState();
+			_render(state.name === 'Tom' ? '/' : '/next');
+		});
+
+		expect(container.innerHTML).to.equal('<div><div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div></div>');
+
+		const link = container.querySelector('#dispatch');
+		link.click();
+
+		expect(container.innerHTML).to.equal('<div><div class="basic2">You\'re a mouse!</div></div>');
 	});
 });

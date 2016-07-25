@@ -8,8 +8,8 @@ const ASYNC_STATUS = {
 };
 
 export default class Route extends Component {
-	constructor(props) {
-		super(props);
+	constructor(props, context) {
+		super(props, context);
 		this.state = {
 			async: null
 		};
