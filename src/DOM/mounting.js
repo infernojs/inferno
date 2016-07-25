@@ -37,23 +37,23 @@ import {
 } from '../core/shapes';
 import { normalise } from './utils';
 
-export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
+export function mount(input, parentDom, lifecycle, context, isSVG) {
 	if (isVPlaceholder(input)) {
 		return mountVPlaceholder(input, parentDom);
 	} else if (isVText(input)) {
 		return mountVText(input, parentDom);
 	} else if (isVFragment(input)) {
-		return mountVFragment(input, parentDom, lifecycle, context, instance, isSVG);
+		return mountVFragment(input, parentDom, lifecycle, context, isSVG);
 	} else if (isVElement(input)) {
-		return mountVElement(input, parentDom, lifecycle, context, instance, isSVG);
+		return mountVElement(input, parentDom, lifecycle, context, isSVG);
 	} else if (isVComponent(input)) {
-		return mountVComponent(input, parentDom, lifecycle, context, instance, isSVG);
+		return mountVComponent(input, parentDom, lifecycle, context, isSVG);
 	} else {
 		throw Error('Bad Input!');
 	}
 }
 
-export function mountVElement(vElement, parentDom, lifecycle, context, instance, isSVG) {
+export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	const tag = vElement._tag;
 
 	if (!isString(tag)) {
@@ -72,7 +72,7 @@ export function mountVElement(vElement, parentDom, lifecycle, context, instance,
 		handleAttachedHooks(hooks, lifecycle, dom);
 	}
 	if (!isNullOrUndef(children)) {
-		mountChildren(vElement, children, dom, lifecycle, context, instance, isSVG);
+		mountChildren(vElement, children, dom, lifecycle, context, isSVG);
 	}
 	if (!isNullOrUndef(props)) {
 		handleSelects(vElement);
@@ -84,12 +84,12 @@ export function mountVElement(vElement, parentDom, lifecycle, context, instance,
 	return dom;
 }
 
-export function mountVFragment(vList, parentDom, lifecycle, context, instance, isSVG) {
+export function mountVFragment(vList, parentDom, lifecycle, context, isSVG) {
 	const items = vList._items;
 	const pointer = document.createTextNode('');
 	const dom = document.createDocumentFragment();
 
-	mountArrayChildren(items, dom, lifecycle, context, instance, isSVG);
+	mountArrayChildren(items, dom, lifecycle, context, isSVG);
 	vList._pointer = pointer;
 	vList._dom = dom;
 	dom.appendChild(pointer);
@@ -125,7 +125,7 @@ export function handleSelects(node) {
 	}
 }
 
-export function mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG) {
+export function mountArrayChildren(children, parentDom, lifecycle, context, isSVG) {
 	children.complex = false;
 	for (let i = 0; i < children.length; i++) {
 		const child = normaliseChild(children, i);
@@ -137,25 +137,25 @@ export function mountArrayChildren(children, parentDom, lifecycle, context, inst
 			mountVPlaceholder(child, parentDom);
 			children.complex = true;
 		} else if (isVFragment(child)) {
-			mountVFragment(child, parentDom, lifecycle, context, instance, isSVG);
+			mountVFragment(child, parentDom, lifecycle, context, isSVG);
 			children.complex = true;
 		} else {
-			mount(child, parentDom, lifecycle, context, instance, isSVG);
+			mount(child, parentDom, lifecycle, context, isSVG);
 		}
 	}
 }
 
-function mountChildren(node, children, parentDom, lifecycle, context, instance, isSVG) {
+function mountChildren(node, children, parentDom, lifecycle, context, isSVG) {
 	if (isArray(children)) {
-		mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG);
+		mountArrayChildren(children, parentDom, lifecycle, context, isSVG);
 	} else if (isStringOrNumber(children)) {
 		appendText(children, parentDom, true);
 	} else if (!isInvalid(children)) {
-		mount(children, parentDom, lifecycle, context, instance, isSVG);
+		mount(children, parentDom, lifecycle, context, isSVG);
 	}
 }
 
-export function mountVComponent(vComponent, parentDom, lifecycle, context, lastInstance, isSVG) {
+export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 	const Component = vComponent._component;
 	const props = vComponent._props;
 	const hooks = vComponent._hooks;
@@ -172,9 +172,6 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, lastI
 			context = Object.assign({}, context, childContext);
 		}
 		instance._unmounted = false;
-		if (lastInstance) {
-			instance._parentComponent = lastInstance;
-		}
 		instance._pendingSetState = true;
 		instance.componentWillMount();
 		let input = instance.render();
@@ -183,7 +180,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, lastI
 			input = createVPlaceholder();
 		}
 		instance._pendingSetState = false;
-		dom = mount(input, null, lifecycle, context, instance, false);
+		dom = mount(input, null, lifecycle, context, false);
 		instance._lastInput = input;
 		instance.componentDidMount();
 		if (parentDom !== null && !isInvalid(dom)) {
@@ -220,7 +217,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, lastI
 	return dom;
 }
 
-export function mountProps(vElement, props, dom, instance) {
+export function mountProps(vElement, props, dom) {
 	for (let prop in props) {
 		const value = props[prop];
 

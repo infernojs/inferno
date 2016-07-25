@@ -9,226 +9,200 @@
 	(global.InfernoCreateElement = factory());
 }(this, function () { 'use strict';
 
-	function isArray(obj) {
-		return obj instanceof Array;
-	}
-
-	function isNullOrUndef(obj) {
-		return isUndefined(obj) || isNull(obj);
-	}
-
 	function isInvalid(obj) {
-		return isNull(obj) || obj === false || obj === true || isUndefined(obj);
+		return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 	}
 
-	function isFunction(obj) {
-		return typeof obj === 'function';
-	}
-
-	function isAttrAnEvent$1(attr) {
+	function isAttrAnEvent(attr) {
 		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+	}
+
+	function isString(obj) {
+		return typeof obj === 'string';
 	}
 
 	function isNull(obj) {
 		return obj === null;
 	}
 
+	function isTrue(obj) {
+		return obj === true;
+	}
+
 	function isUndefined(obj) {
 		return obj === undefined;
 	}
 
-	function isAttrAHook$1(hook) {
-		return hook === 'onCreated'
-			|| hook === 'onAttached'
-			|| hook === 'onWillDetach'
-			|| hook === 'onWillUpdate'
-			|| hook === 'onDidUpdate';
+	function isObject(o) {
+		return typeof o === 'object';
 	}
 
-	function isAttrAComponentHook$1(hook) {
-		return hook === 'onComponentWillMount'
-			|| hook === 'onComponentDidMount'
-			|| hook === 'onComponentWillUnmount'
-			|| hook === 'onComponentShouldUpdate'
-			|| hook === 'onComponentWillUpdate'
-			|| hook === 'onComponentDidUpdate';
+	var NodeTypes = {
+		ELEMENT: 0,
+		COMPONENT: 1,
+		TEMPLATE: 2,
+		TEXT: 3,
+		PLACEHOLDER: 4,
+		FRAGMENT: 5
+	};
+
+	function VElement(tag) {
+		this._type = NodeTypes.ELEMENT;
+		this._dom = null;
+		this._tag = tag;
+		this._children = null;
+		this._key = null;
+		this._props = null;
+		this._hooks = null;
 	}
 
-	function VNode(blueprint) {
-		this.bp = blueprint;
-		this.dom = null;
-		this.instance = null;
-		this.tag = null;
-		this.children = null;
-		this.style = null;
-		this.className = null;
-		this.attrs = null;
-		this.events = null;
-		this.hooks = null;
-		this.key = null;
-		this.clipData = null;
-	}
-
-	VNode.prototype = {
-		setAttrs: function setAttrs(attrs) {
-			this.attrs = attrs;
+	VElement.prototype = {
+		children: function children(children) {
+			this._children = children;
 			return this;
 		},
-		setTag: function setTag(tag) {
-			this.tag = tag;
+		key: function key(key) {
+			this._key = key;
 			return this;
 		},
-		setStyle: function setStyle(style) {
-			this.style = style;
+		props: function props(props) {
+			this._props = props;
 			return this;
 		},
-		setClassName: function setClassName(className) {
-			this.className = className;
+		hooks: function hooks(hooks) {
+			this._hooks = hooks;
 			return this;
 		},
-		setChildren: function setChildren(children) {
-			this.children = children;
-			return this;
-		},
-		setHooks: function setHooks(hooks) {
-			this.hooks = hooks;
-			return this;
-		},
-		setEvents: function setEvents(events) {
-			this.events = events;
-			return this;
-		},
-		setKey: function setKey(key) {
-			this.key = key;
+		events: function events(events) {
+			this._events = events;
 			return this;
 		}
 	};
 
-	function createVNode(bp) {
-		return new VNode(bp);
+	function VComponent(component) {
+		this._type = NodeTypes.COMPONENT;
+		this._dom = null;
+		this._component = component;
+		this._props = null;
+		this._hooks = null;
+		this._key = null;
+		this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
 	}
 
-	function createAttrsAndEvents(props, tag) {
-		var events = null;
-		var hooks = null;
-		var attrs = null;
-		var className = null;
-		var style = null;
+	VComponent.prototype = {
+		key: function key$1(key) {
+			this._key = key;
+			return this;
+		},
+		props: function props$1(props) {
+			this._props = props;
+			return this;
+		},
+		hooks: function hooks$1(hooks) {
+			this._hooks = hooks;
+			return this;
+		}
+	};
 
-		if (!isNullOrUndef(props)) {
-			if (isArray(props)) {
-				return props;
+	function createVComponent(component) {
+		return new VComponent(component);
+	}
+
+	function createVElement(tag) {
+		return new VElement(tag);
+	}
+
+	var elementHooks = {
+		onCreated: true,
+		onAttached: true,
+		onWillUpdate: true,
+		onDidUpdate: true,
+		onWillDetach: true
+	};
+
+	var componentHooks = {
+		onComponentWillMount: true,
+		onComponentDidMount: true,
+		onComponentWillUnmount: true,
+		onComponentShouldUpdate: true,
+		onComponentWillUpdate: true,
+		onComponentDidUpdate: true
+	};
+
+	function createElement(name, props) {
+		var _children = [], len = arguments.length - 2;
+		while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
+
+		if (isInvalid(name) || isObject(name)) {
+			throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
+		}
+		var children = _children;
+		var vNode;
+
+		if (_children) {
+			if (_children.length === 1) {
+				children = _children[0];
+			} else if (_children.length === 0) {
+				children = undefined;
 			}
+		}
+		if (isString(name)) {
+			var hooks;
+			vNode = createVElement(name);
+
 			for (var prop in props) {
-				if (prop === 'className') {
-					className = props[prop];
-				} else if (prop === 'style') {
-					style = props[prop];
-				} else if (isAttrAHook$1(prop) && !isFunction(tag)) {
-					if (isNullOrUndef(hooks)) {
+				if (prop === 'key') {
+					vNode.key = props.key;
+					delete props.key;
+				} else if (elementHooks[prop]) {
+					if (!hooks) {
 						hooks = {};
 					}
-					hooks[prop.substring(2).toLowerCase()] = props[prop];
+					hooks[prop] = props[prop];
 					delete props[prop];
-				} else if (isAttrAnEvent$1(prop) && !isFunction(tag)) {
-					if (isNullOrUndef(events)) {
-						events = {};
+				} else if (isAttrAnEvent(prop)) {
+					var lowerCase = prop.toLowerCase();
+
+					if (lowerCase !== prop) {
+						props[prop.toLowerCase()] = props[prop];
+						delete props[prop];
 					}
-					events[prop.toLowerCase()] = props[prop];
-					delete props[prop];
-				} else if (isAttrAComponentHook$1(prop) && isFunction(tag)) {
-					if (isNullOrUndef(hooks)) {
-						hooks = {};
-					}
-					hooks['c' + prop.substring(3)] = props[prop];
-					delete props[prop];
-				} else if (!isFunction(tag)) {
-					if (isNullOrUndef(attrs)) {
-						attrs = {};
-					}
-					attrs[prop] = props[prop];
-				} else {
-					attrs = props;
 				}
 			}
+			vNode._props = props;
+			if (!isUndefined(children)) {
+				vNode._children = children;
+			}
+			if (hooks) {
+				vNode._hooks = hooks;
+			}
+		} else {
+			var hooks$1;
+			vNode = createVComponent(name);
+
+			if (!isUndefined(children)) {
+				if (!props) {
+					props = {};
+				}
+				props.children = children;
+			}
+			for (var prop$1 in props) {
+				if (componentHooks[prop$1]) {
+					if (!hooks$1) {
+						hooks$1 = {};
+					}
+					hooks$1[prop$1] = props[prop$1];
+				} else if (prop$1 === 'key') {
+					vNode.key = props.key;
+					delete props.key;
+				}
+			}
+			vNode._props = props;
+			if (hooks$1) {
+				vNode._hooks = hooks$1;
+			}
 		}
-		return { attrs: attrs, events: events, className: className, style: style, hooks: hooks };
-	}
-
-	function createChild(ref) {
-		var tag = ref.tag;
-		var attrs = ref.attrs;
-		var children = ref.children;
-		var className = ref.className;
-		var style = ref.style;
-		var events = ref.events;
-		var hooks = ref.hooks;
-
-		if (tag === undefined && !isNullOrUndef(attrs) && !attrs.tpl && !isNullOrUndef(children) && children.length === 0) {
-			return null;
-		}
-		var key = !isNullOrUndef(attrs) && !isNullOrUndef(attrs.key) ? attrs.key : undefined;
-
-		if (!isNullOrUndef(children) && children.length === 0) {
-			children = null;
-		} else if (!isInvalid(children)) {
-			children = isArray(children) && children.length === 1 ? createChildren(children[0]) : createChildren(children);
-		}
-
-		if (key !== undefined) {
-			delete attrs.key;
-		}
-		var attrsAndEvents = createAttrsAndEvents(attrs, tag);
-		var vNode = createVNode();
-
-		className = className || attrsAndEvents.className;
-		style = style || attrsAndEvents.style;
-
-		vNode.tag = tag || null;
-		vNode.attrs = attrsAndEvents.attrs || null;
-		vNode.events = attrsAndEvents.events || events;
-		vNode.hooks = attrsAndEvents.hooks || hooks;
-		vNode.children = children === undefined ? null : children;
-		vNode.key = key === undefined ? null : key;
-		vNode.className = className === undefined ? null : className;
-		vNode.style = style === undefined ? null : style;
-
 		return vNode;
-	}
-
-	function createChildren(children) {
-		var childrenDefined = !isNullOrUndef(children);
-		if (childrenDefined && isArray(children)) {
-			var newChildren = [];
-
-			for (var i = 0; i < children.length; i++) {
-				var child = children[i];
-				if (!isNullOrUndef(child) && typeof child === 'object') {
-					if (isArray(child)) {
-						if (child.length > 0) {
-							newChildren.push(createChildren(child));
-						} else {
-							newChildren.push(null);
-						}
-					} else {
-						newChildren.push(createChild(child));
-					}
-				} else {
-					newChildren.push(child);
-				}
-			}
-			return newChildren;
-		} else if (childrenDefined && typeof children === 'object') {
-			return children.dom === undefined ? createChild(children) : children;
-		}
-		return children;
-	}
-
-	function createElement(tag, props) {
-		var children = [], len = arguments.length - 2;
-		while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
-
-		return createChild({ tag: tag, attrs: props, children: children });
 	}
 
 	return createElement;

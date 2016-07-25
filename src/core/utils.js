@@ -95,12 +95,3 @@ function deepScanChildrenForNode(children, node) {
 	}
 	return false;
 }
-
-export function getRefInstance(node, instance) {
-	const children = instance.props.children;
-
-	if (deepScanChildrenForNode(children, node)) {
-		return getRefInstance(node, instance._parentComponent);
-	}
-	return instance;
-}

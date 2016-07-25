@@ -1,6 +1,6 @@
 import { render, findDOMNode } from '../../../src/DOM/rendering';
 import createElement from '../../../src/core/createElement';
-import { createBlueprint, createVNode } from '../../../src/core/shapes';
+import { createVElement } from '../../../src/core/shapes';
 import Component from '../../../src/component/es2015';
 import createClass from '../../../src/component/createClass';
 import renderToString from '../../../src/server/renderToString';
@@ -68,8 +68,7 @@ export {
 	findDOMNode,
 	renderToString,
 	renderToStaticMarkup,
-	createBlueprint,
-	createVNode,
+	createVElement,
 	Children
 };
 
@@ -84,7 +83,6 @@ export default {
 	findDOMNode,
 	renderToString,
 	renderToStaticMarkup,
-	createBlueprint,
-	createVNode,
+	createVElement,
 	Children
 };

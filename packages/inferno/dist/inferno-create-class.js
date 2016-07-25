@@ -9,12 +9,12 @@
 	(global.InfernoCreateClass = factory());
 }(this, function () { 'use strict';
 
-	var NO_RENDER = 'NO_RENDER';
+	var NO_OP = 'NO_OP';
 
 	// Runs only once in applications lifetime
 	var isBrowser = typeof window !== 'undefined' && window.document;
 
-	function isNullOrUndefined(obj) {
+	function isNullOrUndef(obj) {
 		return isUndefined(obj) || isNull(obj);
 	}
 
@@ -26,9 +26,18 @@
 		return obj === undefined;
 	}
 
+	var NodeTypes = {
+		ELEMENT: 0,
+		COMPONENT: 1,
+		TEMPLATE: 2,
+		TEXT: 3,
+		PLACEHOLDER: 4,
+		FRAGMENT: 5
+	};
+
 	function VPlaceholder() {
-		this.placeholder = true;
-		this.dom = null;
+		this._type = NodeTypes.PLACEHOLDER;
+		this._dom = null;
 	}
 
 	function createVPlaceholder() {
@@ -54,6 +63,28 @@
 	constructDefaults('volume,value', strictProps, true);
 	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 	constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+
+	var elementsPropMap = new Map();
+
+	// pre-populate with common tags
+	getAllPropsForElement('div');
+	getAllPropsForElement('span');
+	getAllPropsForElement('table');
+	getAllPropsForElement('tr');
+	getAllPropsForElement('td');
+	getAllPropsForElement('a');
+	getAllPropsForElement('p');
+
+	function getAllPropsForElement(tag) {
+		var elem = document.createElement(tag);
+		var props = {};
+
+		for (var prop in elem) {
+			props[prop] = true;
+		}
+		elementsPropMap.set(tag, props);
+		return props;
+	}
 
 	var screenWidth = isBrowser && window.screen.width;
 	var screenHeight = isBrowser && window.screen.height;
@@ -138,32 +169,31 @@
 			var props = component.props;
 
 			component._pendingState = {};
-			var nextNode = component._updateComponent(prevState, nextState, props, props, force);
+			var nextInput = component._updateComponent(prevState, nextState, props, props, force);
 
-			if (nextNode === NO_RENDER) {
-				nextNode = component._lastNode;
-			} else if (isNullOrUndefined(nextNode)) {
-				nextNode = createVPlaceholder();
+			if (nextInput === NO_RENDER) {
+				nextInput = component._lastInput;
+			} else if (isNullOrUndef(nextInput)) {
+				nextInput = createVPlaceholder();
 			}
-			var lastNode = component._lastNode;
-			var parentDom = lastNode.dom.parentNode;
+			var lastInput = component._lastInput;
+			var parentDom = lastInput._dom.parentNode;
 			var activeNode = getActiveNode();
 			var subLifecycle = new Lifecycle();
 
-			component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
-			component._lastNode = nextNode;
-			component._componentToDOMNodeMap.set(component, nextNode.dom);
-			component._parentNode.dom = nextNode.dom;
+			component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
+			component._lastInput = nextInput;
+			component._componentToDOMNodeMap.set(component, nextInput.dom);
 			component.componentDidUpdate(props, prevState);
 			subLifecycle.trigger();
-			if (!isNullOrUndefined(callback)) {
+			if (!isNullOrUndef(callback)) {
 				callback();
 			}
 			resetActiveNode(activeNode);
 		}
 	}
 
-	var Component = function Component(props) {
+	var Component = function Component(props, context) {
 		/** @type {object} */
 		this.props = props || {};
 
@@ -177,10 +207,9 @@
 		this._deferSetState = false;
 		this._pendingSetState = false;
 		this._pendingState = {};
-		this._parentNode = null;
-		this._lastNode = null;
+		this._lastInput = null;
 		this._unmounted = true;
-		this.context = {};
+		this.context = context || {};
 		this._patch = null;
 		this._parentComponent = null;
 		this._componentToDOMNodeMap = null;
@@ -237,7 +266,7 @@
 			this._unmounted = false;
 			return false;
 		}
-		if (!isNullOrUndefined(nextProps) && isNullOrUndefined(nextProps.children)) {
+		if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
 			nextProps.children = prevProps.children;
 		}
 		if (prevProps !== nextProps || prevState !== nextState || force) {
@@ -262,7 +291,7 @@
 				return this.render();
 			}
 		}
-		return NO_RENDER;
+		return NO_OP;
 	};
 
 	// don't autobind these methods since they already have guaranteed context.
@@ -284,7 +313,7 @@
 
 	function extend(base, props, all) {
 		for (var key in props) {
-			if (all === true || !isNullOrUndefined(props[key])) {
+			if (all === true || !isNullOrUndef(props[key])) {
 				base[key] = props[key];
 			}
 		}

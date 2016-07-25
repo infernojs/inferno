@@ -1,7 +1,7 @@
 import Component from '../component/es2015';
 import { isArray, isNull } from '../core/utils';
 import { exec, convertToHashbang, pathRankSort } from './utils';
-import { createVNode } from '../core/shapes';
+import { createVComponent } from '../core/shapes';
 
 export default class Router extends Component {
 	constructor(props) {
@@ -55,7 +55,7 @@ function handleRoutes(routes, url, hashbang, wrapperComponent, lastPath) {
 
 	for (let i = 0; i < routes.length; i++) {
 		const route = routes[i];
-		const { path } = route.attrs;
+		const { path } = route.props;
 		const fullPath = lastPath + path;
 		const params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
 		const children = toArray(route.children);
@@ -69,12 +69,13 @@ function handleRoutes(routes, url, hashbang, wrapperComponent, lastPath) {
 		}
 		if (params) {
 			if (wrapperComponent) {
-				return createVNode().setTag(wrapperComponent).setChildren(route).setAttrs({
-					params
+				return createVComponent(wrapperComponent).setProps({
+					params,
+					children: route
 				});
 			}
-			return route.setAttrs(Object.assign({}, { params }, route.attrs));
+			return route.setProps(Object.assign({}, { params }, route.props));
 		}
 	}
-	return !lastPath && wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
+	return !lastPath && wrapperComponent ? createVComponent(wrapperComponent) : null;
 }

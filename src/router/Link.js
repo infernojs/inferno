@@ -1,8 +1,8 @@
-import { createVNode } from '../core/shapes';
+import { createVElement } from '../core/shapes';
 import { convertToHashbang } from './utils';
 
 export default function Link({ to, children }, { hashbang, history }) {
-	return (createVNode().setAttrs({
+	return (createVElement('a').setProps({
 		href: hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to
-	}).setTag('a').setChildren(children));
+	}).setChildren(children));
 }

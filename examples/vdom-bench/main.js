@@ -2,52 +2,10 @@
 	'use strict';
 
 	var benchmark = require('vdom-benchmark-base');
+	var e = Inferno.createVElement;
 
 	var NAME = 'inferno';
-	var VERSION = '0.7';
-
-	var bp1 = {
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: 'div',
-		isComponent: false,
-		isSVG: false,
-		lazy: false,
-		eventKeys: null,
-		attrKeys: null,
-		style: null,
-		className: null,
-		childrenType: 4 // multiple children keyed
-	};
-
-	var bp2 = {
-		lazy: false,
-		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
-		tag: 'span',
-		className: null,
-		style: null,
-		isComponent: false,
-		isSVG: false,
-		eventKeys: null,
-		attrKeys: null,
-		childrenType: 1 // text child
-	};
-
-	function createNode(tpl, key, children) {
-		return {
-			dom: null,
-			bp: tpl,
-			key: key,
-			children: children
-		};
-	}
+	var VERSION = '0.8';
 
 	function renderTree(nodes) {
 		var children = new Array(nodes.length);
@@ -57,9 +15,9 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = createNode(bp1, n.key, renderTree(n.children));
+				children[i] = e('div').key(n.key).children(renderTree(n.children));
 			} else {
-				children[i] = createNode(bp2, n.key, n.key);
+				children[i] = e('span').key(n.key).children(n.key);
 			}
 		}
 		return children;
@@ -79,11 +37,17 @@
 	};
 
 	BenchmarkImpl.prototype.render = function() {
-		InfernoDOM.render(createNode(bp1, null, renderTree(this.a)), this.container);
+		InfernoDOM.render(
+			e('div').children(renderTree(this.a)),
+			this.container
+		);
 	};
 
 	BenchmarkImpl.prototype.update = function() {
-		InfernoDOM.render(createNode(bp1, null, renderTree(this.b)), this.container);
+		InfernoDOM.render(
+			e('div').children(renderTree(this.b)),
+			this.container
+		);
 	};
 
 	document.addEventListener('DOMContentLoaded', function() {

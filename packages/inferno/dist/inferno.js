@@ -9,305 +9,99 @@
 	(global.Inferno = factory());
 }(this, function () { 'use strict';
 
-	// Runs only once in applications lifetime
-	var isBrowser = typeof window !== 'undefined' && window.document;
-
-	function isNullOrUndef(obj) {
-		return isUndefined(obj) || isNull(obj);
-	}
-
-	function isAttrAnEvent$1(attr) {
-		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
-	}
-
-	function isNull(obj) {
-		return obj === null;
-	}
-
 	function isUndefined(obj) {
 		return obj === undefined;
 	}
 
-	function VNode(blueprint) {
-		this.bp = blueprint;
-		this.dom = null;
-		this.instance = null;
-		this.tag = null;
-		this.children = null;
-		this.style = null;
-		this.className = null;
-		this.attrs = null;
-		this.events = null;
-		this.hooks = null;
-		this.key = null;
-		this.clipData = null;
+	var NodeTypes = {
+		ELEMENT: 0,
+		COMPONENT: 1,
+		TEMPLATE: 2,
+		TEXT: 3,
+		PLACEHOLDER: 4,
+		FRAGMENT: 5
+	};
+
+	function VElement(tag) {
+		this._type = NodeTypes.ELEMENT;
+		this._dom = null;
+		this._tag = tag;
+		this._children = null;
+		this._key = null;
+		this._props = null;
+		this._hooks = null;
 	}
 
-	VNode.prototype = {
-		setAttrs: function setAttrs(attrs) {
-			this.attrs = attrs;
+	VElement.prototype = {
+		children: function children(children) {
+			this._children = children;
 			return this;
 		},
-		setTag: function setTag(tag) {
-			this.tag = tag;
+		key: function key(key) {
+			this._key = key;
 			return this;
 		},
-		setStyle: function setStyle(style) {
-			this.style = style;
+		props: function props(props) {
+			this._props = props;
 			return this;
 		},
-		setClassName: function setClassName(className) {
-			this.className = className;
+		hooks: function hooks(hooks) {
+			this._hooks = hooks;
 			return this;
 		},
-		setChildren: function setChildren(children) {
-			this.children = children;
-			return this;
-		},
-		setHooks: function setHooks(hooks) {
-			this.hooks = hooks;
-			return this;
-		},
-		setEvents: function setEvents(events) {
-			this.events = events;
-			return this;
-		},
-		setKey: function setKey(key) {
-			this.key = key;
+		events: function events(events) {
+			this._events = events;
 			return this;
 		}
 	};
 
-	function createVNode(bp) {
-		return new VNode(bp);
+	function VComponent(component) {
+		this._type = NodeTypes.COMPONENT;
+		this._dom = null;
+		this._component = component;
+		this._props = null;
+		this._hooks = null;
+		this._key = null;
+		this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
 	}
 
-	function isAttrAnEvent(attr) {
-		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
-	}
-
-	function isAttrAHook(hook) {
-		return hook === 'onCreated'
-			|| hook === 'onAttached'
-			|| hook === 'onWillDetach'
-			|| hook === 'onWillUpdate'
-			|| hook === 'onDidUpdate';
-	}
-
-	function isAttrAComponentHook(hook) {
-		return hook === 'onComponentWillMount'
-			|| hook === 'onComponentDidMount'
-			|| hook === 'onComponentWillUnmount'
-			|| hook === 'onComponentShouldUpdate'
-			|| hook === 'onComponentWillUpdate'
-			|| hook === 'onComponentDidUpdate';
-	}
-
-
-	function createBlueprint(shape, childrenType) {
-		var tag = shape.tag || null;
-		var tagIsDynamic = tag && tag.arg !== undefined ? true : false;
-
-		var children = isNullOrUndef(shape.children) ? null : shape.children;
-		var childrenIsDynamic = children && children.arg !== undefined ? true : false;
-
-		var attrs = shape.attrs || null;
-		var attrsIsDynamic = attrs && attrs.arg !== undefined ? true : false;
-
-		var hooks = shape.hooks || null;
-		var hooksIsDynamic = hooks && hooks.arg !== undefined ? true : false;
-
-		var events = shape.events || null;
-		var eventsIsDynamic = events && events.arg !== undefined ? true : false;
-
-		var key = shape.key === undefined ? null : shape.key;
-		var keyIsDynamic = !isNullOrUndef(key) && !isNullOrUndef(key.arg);
-
-		var style = shape.style || null;
-		var styleIsDynamic = style && style.arg !== undefined ? true : false;
-
-		var className = shape.className === undefined ? null : shape.className;
-		var classNameIsDynamic = className && className.arg !== undefined ? true : false;
-
-		var spread = shape.spread === undefined ? null : shape.spread;
-		var hasSpread = shape.spread !== undefined;
-
-		var blueprint = {
-			lazy: shape.lazy || false,
-			dom: null,
-			pools: {
-				keyed: {},
-				nonKeyed: []
-			},
-			tag: tagIsDynamic ? null : tag,
-			className: className !== '' && className ? className : null,
-			style: style !== '' && style ? style : null,
-			isComponent: tagIsDynamic,
-			hasAttrs: attrsIsDynamic || (attrs ? true : false),
-			hasHooks: hooksIsDynamic,
-			hasEvents: eventsIsDynamic,
-			hasStyle: styleIsDynamic || (style !== '' && style ? true : false),
-			hasClassName: classNameIsDynamic || (className !== '' && className ? true : false),
-			childrenType: childrenType === undefined ? (children ? 5 : 0) : childrenType,
-			attrKeys: null,
-			eventKeys: null,
-			isSVG: shape.isSVG || false
-		};
-
-		return function () {
-			var vNode = new VNode(blueprint);
-
-			if (tagIsDynamic === true) {
-				vNode.tag = arguments[tag.arg];
-			}
-			if (childrenIsDynamic === true) {
-				vNode.children = arguments[children.arg];
-			}
-			if (hasSpread) {
-				var _spread = arguments[spread.arg];
-				var attrs$1;
-				var events$1;
-				var hooks$1;
-				var attrKeys = [];
-				var eventKeys = [];
-
-				for (var prop in _spread) {
-					var value = _spread[prop];
-
-					if (prop === 'className' || (prop === 'class' && !blueprint.isSVG)) {
-						vNode.className = value;
-						blueprint.hasClassName = true;
-					} else if (prop === 'style') {
-						vNode.style = value;
-						blueprint.hasStyle = true;
-					} else if (prop === 'key') {
-						vNode.key = value;
-					} else if (isAttrAHook(prop) || isAttrAComponentHook(prop)) {
-						if (!hooks$1) {
-							hooks$1 = {};
-						}
-						hooks$1[prop[2].toLowerCase() + prop.substring(3)] = value;
-					} else if (isAttrAnEvent(prop)) {
-						if (!events$1) {
-							events$1 = {};
-						}
-						eventKeys.push(prop.toLowerCase());
-						events$1[prop.toLowerCase()] = value;
-					} else if (prop === 'children') {
-						vNode.children = value;
-						blueprint.childrenType = blueprint.childrenType || 5;
-					} else {
-						if (!attrs$1) {
-							attrs$1 = {};
-						}
-						attrKeys.push(prop);
-						attrs$1[prop] = value;
-					}
-				}
-				if (attrs$1) {
-					vNode.attrs = attrs$1;
-					blueprint.attrKeys = attrKeys;
-					blueprint.hasAttrs = true;
-				}
-				if (events$1) {
-					vNode.events = events$1;
-					blueprint.eventKeys = eventKeys;
-					blueprint.hasEvents = true;
-				}
-				if (hooks$1) {
-					vNode.hooks = hooks$1;
-					blueprint.hasHooks = true;
-				}
-			} else {
-				if (attrsIsDynamic === true) {
-					vNode.attrs = arguments[attrs.arg];
-				} else {
-					vNode.attrs = attrs;
-				}
-				if (hooksIsDynamic === true) {
-					vNode.hooks = arguments[hooks.arg];
-				}
-				if (eventsIsDynamic === true) {
-					vNode.events = arguments[events.arg];
-				}
-				if (keyIsDynamic === true) {
-					vNode.key = arguments[key.arg];
-				} else {
-					vNode.key = key;
-				}
-				if (styleIsDynamic === true) {
-					vNode.style = arguments[style.arg];
-				} else {
-					vNode.style = blueprint.style;
-				}
-				if (classNameIsDynamic === true) {
-					vNode.className = arguments[className.arg];
-				} else {
-					vNode.className = blueprint.className;
-				}
-			}
-			return vNode;
-		};
-	}
+	VComponent.prototype = {
+		key: function key$1(key) {
+			this._key = key;
+			return this;
+		},
+		props: function props$1(props) {
+			this._props = props;
+			return this;
+		},
+		hooks: function hooks$1(hooks) {
+			this._hooks = hooks;
+			return this;
+		}
+	};
 
 	function VText(text) {
-		this.text = text;
-		this.dom = null;
+		this._type = NodeTypes.TEXT;
+		this._text = text;
+		this._dom = null;
+	}
+
+	function createVComponent(component) {
+		return new VComponent(component);
+	}
+
+	function createVElement(tag) {
+		return new VElement(tag);
 	}
 
 	function createVText(text) {
 		return new VText(text);
 	}
 
-	// Copy of the util from dom/util, otherwise it makes massive bundles
-	function documentCreateElement(tag, isSVG) {
-		var dom;
-
-		if (isSVG === true) {
-			dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
-		} else {
-			dom = document.createElement(tag);
-		}
-		return dom;
-	}
-
-	function createUniversalElement(tag, attrs, isSVG) {
-		if (isBrowser) {
-			var dom = documentCreateElement(tag, isSVG);
-			if (attrs) {
-				createStaticAttributes(attrs, dom);
-			}
-			return dom;
-		}
-		return null;
-	}
-
-	function createStaticAttributes(attrs, dom) {
-		var attrKeys = Object.keys(attrs);
-
-		for (var i = 0; i < attrKeys.length; i++) {
-			var attr = attrKeys[i];
-			var value = attrs[attr];
-
-			if (attr === 'className') {
-				dom.className = value;
-			} else {
-				if (value === true) {
-					dom.setAttribute(attr, attr);
-				} else if (!isNullOrUndef(value) && value !== false && !isAttrAnEvent$1(attr)) {
-					dom.setAttribute(attr, value);
-				}
-			}
-		}
-	}
-
 	var index = {
-		createBlueprint: createBlueprint,
-		createVNode: createVNode,
-		createVText: createVText,
-		universal: {
-			createElement: createUniversalElement
-		}
+		createVComponent: createVComponent,
+		createVElement: createVElement,
+		createVText: createVText
 	};
 
 	return index;

@@ -982,99 +982,13 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('variation 3', () => {
-				const A = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table"
-						}
-					},
-					"dom": null
-				};
-				const B = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"dom": null
-								},
-								{
-									"tag": "tr",
-									"children": [
-
-										{
-											"tag": "td",
-											"children": [
-												[
-													"A"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"children": [
-												[
-													"B"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								},
-								{
-									"tag": "tr",
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
-				const C = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"dom": null
-								},
-								{
-									"tag": "tr",
-									"children": [
-										{
-											"tag": "td",
-											"children": [
-												"",
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const A = createElement('div', null, createElement('div', null, createElement('table')));
+				const B = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr'),
+					createElement('tr', null, createElement('td', null, 'A', createElement('br')), createElement('td', null, 'B', createElement('br'))),
+					createElement('tr')
+				)));
+				const C = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr'), createElement('tr', null, createElement('td', null, createElement('br'))))));
 
 				render(A, container);
 				expect(container.innerHTML).to.equal('<div><div><table></table></div></div>');

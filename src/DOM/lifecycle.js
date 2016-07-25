@@ -1,4 +1,4 @@
-import { patchVNode } from './patching';
+import { patch } from './patching';
 import { isBrowser } from '../core/utils';
 
 let screenWidth = isBrowser && window.screen.width;

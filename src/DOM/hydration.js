@@ -11,24 +11,21 @@ import {
 import {
 	replaceNode,
 	handleAttachedHooks,
-	isVText,
-	normaliseChild,
-	isVPlaceholder,
-	isVFragment
+	normaliseChild
 } from './utils';
 import {
-	mountRef,
 	handleSelects,
-	mountAttributes,
-	mountBlueprintAttrs,
-	mountBlueprintEvents,
-	mountEvents,
 	mountVText
 } from './mounting';
 import { patch, patchStyle } from './patching';
-import { createVPlaceholder } from '../core/shapes';
+import {
+	createVPlaceholder,
+	isVPlaceholder,
+	isVFragment,
+	isVText
+} from '../core/shapes';
 
-function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context, instance) {
+function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];
 
 	if (isVText(child)) {
@@ -52,7 +49,7 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context,
 		// this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
 		child.dom = document.createDocumentFragment();
 		for (let i = 0; i < items.length; i++) {
-			const rebuild = hydrateChild(normaliseChild(items, i), childNodes, counter, parentDom, lifecycle, context, instance);
+			const rebuild = hydrateChild(normaliseChild(items, i), childNodes, counter, parentDom, lifecycle, context);
 
 			if (rebuild) {
 				return true;
@@ -68,7 +65,7 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context,
 			return true;
 		}
 	} else {
-		const rebuild = hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
+		const rebuild = hydrateNode(child, domNode, parentDom, lifecycle, context, false);
 
 		if (rebuild) {
 			return true;
@@ -105,16 +102,13 @@ function getChildNodesWithoutComments(domNode) {
 	return childNodes;
 }
 
-function hydrateComponent(node, Component, props, hooks, children, domNode, parentDom, lifecycle, context, lastInstance, isRoot) {
+function hydrateComponent(node, Component, props, hooks, children, domNode, parentDom, lifecycle, context, isRoot) {
 	props = addChildrenToProps(children, props);
 
 	if (isStatefulComponent(Component)) {
 		const instance = node.instance = new Component(props);
 
 		instance._patch = patch;
-		if (!isNullOrUndef(lastInstance) && props.ref) {
-			mountRef(lastInstance, props.ref, instance);
-		}
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndef(childContext)) {
@@ -123,9 +117,6 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 		instance.context = context;
 		instance._unmounted = false;
 		instance._parentNode = node;
-		if (lastInstance) {
-			instance._parentComponent = lastInstance;
-		}
 		instance._pendingSetState = true;
 		instance.componentWillMount();
 		let nextNode = instance.render();
@@ -134,7 +125,7 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 		if (isInvalid(nextNode)) {
 			nextNode = createVPlaceholder();
 		}
-		hydrateNode(nextNode, domNode, parentDom, lifecycle, context, instance, isRoot);
+		hydrateNode(nextNode, domNode, parentDom, lifecycle, context, isRoot);
 		instance._lastNode = nextNode;
 		instance.componentDidMount();
 
@@ -151,17 +142,17 @@ function hydrateComponent(node, Component, props, hooks, children, domNode, pare
 				});
 			}
 		}
-		return hydrateNode(instance, domNode, parentDom, lifecycle, context, instance, isRoot);
+		return hydrateNode(instance, domNode, parentDom, lifecycle, context, isRoot);
 	}
 }
 
-function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isRoot) {
+function hydrateNode(node, domNode, parentDom, lifecycle, context, isRoot) {
 	const bp = node.bp;
 	const tag = node.tag || bp.tag;
 
 	if (isFunction(tag)) {
 		node.dom = domNode;
-		hydrateComponent(node, tag, node.attrs || {}, node.hooks, node.children, domNode, parentDom, lifecycle, context, instance, isRoot);
+		hydrateComponent(node, tag, node.attrs || {}, node.hooks, node.children, domNode, parentDom, lifecycle, context, isRoot);
 	} else {
 		if (
 			domNode.nodeType !== 1 ||
@@ -189,7 +180,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 
 					if (isArray(children)) {
 						for (let i = 0; i < children.length; i++) {
-							rebuild = hydrateChild(normaliseChild(children, i), childNodes, counter, domNode, lifecycle, context, instance);
+							rebuild = hydrateChild(normaliseChild(children, i), childNodes, counter, domNode, lifecycle, context);
 
 							if (rebuild) {
 								break;
@@ -197,7 +188,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 						}
 					} else {
 						if (childNodes.length === 1) {
-							rebuild = hydrateChild(children, childNodes, counter, domNode, lifecycle, context, instance);
+							rebuild = hydrateChild(children, childNodes, counter, domNode, lifecycle, context);
 						} else {
 							rebuild = true;
 						}
@@ -218,13 +209,13 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 				patchStyle(null, style, domNode);
 			}
 			if (bp && bp.hasAttrs === true) {
-				mountBlueprintAttrs(node, bp, domNode, instance);
+				mountBlueprintAttrs(node, bp, domNode);
 			} else {
 				const attrs = node.attrs;
 
 				if (!isNullOrUndef(attrs)) {
 					handleSelects(node);
-					mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
+					mountAttributes(node, attrs, Object.keys(attrs), domNode);
 				}
 			}
 			if (bp && bp.hasEvents === true) {
@@ -233,7 +224,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 				const events = node.events;
 
 				if (!isNullOrUndef(events)) {
-					mountEvents(events, Object.keys(events), domNode);
+					// mountEvents(events, Object.keys(events), domNode);
 				}
 			}
 		}
@@ -242,19 +233,19 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isR
 const documetBody = isBrowser ? document.body : null;
 
 export default function hydrate(node, parentDom, lifecycle) {
-	if (parentDom && parentDom.nodeType === 1) {
-		const rootNode = parentDom.querySelector('[data-infernoroot]');
+	// if (parentDom && parentDom.nodeType === 1) {
+	// 	const rootNode = parentDom.querySelector('[data-infernoroot]');
 
-		if (rootNode && rootNode.parentNode === parentDom) {
-			hydrateNode(node, rootNode, parentDom, lifecycle, {}, true);
-			return true;
-		}
-	}
-	// clear parentDom, unless it's document.body
-	if (parentDom !== documetBody) {
-		parentDom.textContent = '';
-	} else {
-		console.warn('Inferno Warning: rendering to the "document.body" is dangerous! Use a dedicated container element instead.');
-	}
-	return false;
+	// 	if (rootNode && rootNode.parentNode === parentDom) {
+	// 		hydrateNode(node, rootNode, parentDom, lifecycle, {}, true);
+	// 		return true;
+	// 	}
+	// }
+	// // clear parentDom, unless it's document.body
+	// if (parentDom !== documetBody) {
+	// 	parentDom.textContent = '';
+	// } else {
+	// 	console.warn('Inferno Warning: rendering to the "document.body" is dangerous! Use a dedicated container element instead.');
+	// }
+	// return false;
 }

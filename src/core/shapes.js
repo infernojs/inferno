@@ -22,18 +22,23 @@ function VElement(tag) {
 VElement.prototype = {
 	children(children) {
 		this._children = children;
+		return this;
 	},
 	key(key) {
 		this._key = key;
+		return this;
 	},
-	attrs(attrs) {
-		this._attrs = attrs;
+	props(props) {
+		this._props = props;
+		return this;
 	},
 	hooks(hooks) {
 		this._hooks = hooks;
+		return this;
 	},
 	events(events) {
 		this._events = events;
+		return this;
 	}
 };
 
@@ -50,12 +55,15 @@ function VComponent(component) {
 VComponent.prototype = {
 	key(key) {
 		this._key = key;
+		return this;
 	},
 	props(props) {
 		this._props = props;
+		return this;
 	},
 	hooks(hooks) {
 		this._hooks = hooks;
+		return this;
 	}
 };
 

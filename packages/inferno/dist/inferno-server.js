@@ -10,7 +10,7 @@
 }(this, function () { 'use strict';
 
 	function addChildrenToProps(children, props) {
-		if (!isNullOrUndefined(children)) {
+		if (!isNullOrUndef(children)) {
 			var isChildrenArray = isArray(children);
 			if (isChildrenArray && children.length > 0 || !isChildrenArray) {
 				if (props) {
@@ -32,20 +32,20 @@
 		return obj instanceof Array;
 	}
 
-	function isStatefulComponent(obj) {
-		return obj.prototype.render !== undefined;
+	function isStatefulComponent(o) {
+		return isTrue(o._isStateful);
 	}
 
 	function isStringOrNumber(obj) {
 		return isString(obj) || isNumber(obj);
 	}
 
-	function isNullOrUndefined(obj) {
+	function isNullOrUndef(obj) {
 		return isUndefined(obj) || isNull(obj);
 	}
 
-	function isInvalidNode(obj) {
-		return isNull(obj) || obj === false || obj === true || isUndefined(obj);
+	function isInvalid(obj) {
+		return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 	}
 
 	function isFunction(obj) {
@@ -114,6 +114,28 @@
 	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 	constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
+	var elementsPropMap = new Map();
+
+	// pre-populate with common tags
+	getAllPropsForElement('div');
+	getAllPropsForElement('span');
+	getAllPropsForElement('table');
+	getAllPropsForElement('tr');
+	getAllPropsForElement('td');
+	getAllPropsForElement('a');
+	getAllPropsForElement('p');
+
+	function getAllPropsForElement(tag) {
+		var elem = document.createElement(tag);
+		var props = {};
+
+		for (var prop in elem) {
+			props[prop] = true;
+		}
+		elementsPropMap.set(tag, props);
+		return props;
+	}
+
 	function escapeText(str) {
 		return (str + '')
 			.replace(/&/g, '&amp;')
@@ -164,7 +186,7 @@
 			var instance = new Component(props);
 			var childContext = instance.getChildContext();
 
-			if (!isNullOrUndefined(childContext)) {
+			if (!isNullOrUndef(childContext)) {
 				context = Object.assign({}, context, childContext);
 			}
 			instance.context = context;
@@ -188,11 +210,11 @@
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
 				var isText = isStringOrNumber(child);
-				var isInvalid = isInvalidNode(child);
+				var isInvalid$1 = isInvalid$1(child);
 
-				if (isText || isInvalid) {
+				if (isText || isInvalid$1) {
 					if (insertComment === true) {
-						if (isInvalidNode(child)) {
+						if (isInvalid$1(child)) {
 							childrenResult.push('<!--!-->');
 						} else {
 							childrenResult.push('<!---->');
@@ -213,7 +235,7 @@
 				}
 			}
 			return childrenResult.join('');
-		} else if (!isInvalidNode(children)) {
+		} else if (!isInvalid(children)) {
 			if (isStringOrNumber(children)) {
 				return escapeText(children);
 			} else {
@@ -235,7 +257,7 @@
 				var value = style[styleName];
 				var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
-				if (!isNullOrUndefined(value)) {
+				if (!isNullOrUndef(value)) {
 					styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
 				}
 			}
@@ -244,7 +266,7 @@
 	}
 
 	function renderNode(node, context, isRoot) {
-		if (!isInvalidNode(node)) {
+		if (!isInvalid(node)) {
 			var bp = node.bp;
 			var tag = node.tag || (bp && bp.tag);
 			var outputAttrs = [];
@@ -254,10 +276,10 @@
 			if (isFunction(tag)) {
 				return renderComponent(tag, node.attrs, node.children, context, isRoot);
 			}
-			if (!isNullOrUndefined(className)) {
+			if (!isNullOrUndef(className)) {
 				outputAttrs.push('class="' + escapeAttr(className) + '"');
 			}
-			if (!isNullOrUndefined(style)) {
+			if (!isNullOrUndef(style)) {
 				outputAttrs.push('style="' + renderStyleToString(style) + '"');
 			}
 			var attrs = node.attrs;

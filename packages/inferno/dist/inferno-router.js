@@ -9,7 +9,7 @@
     (global.InfernoRouter = factory());
 }(this, function () { 'use strict';
 
-    var NO_RENDER = 'NO_RENDER';
+    var NO_OP = 'NO_OP';
 
     // Runs only once in applications lifetime
     var isBrowser = typeof window !== 'undefined' && window.document;
@@ -30,63 +30,84 @@
     	return obj === undefined;
     }
 
-    function VNode(blueprint) {
-    	this.bp = blueprint;
-    	this.dom = null;
-    	this.instance = null;
-    	this.tag = null;
-    	this.children = null;
-    	this.style = null;
-    	this.className = null;
-    	this.attrs = null;
-    	this.events = null;
-    	this.hooks = null;
-    	this.key = null;
-    	this.clipData = null;
+    var NodeTypes = {
+    	ELEMENT: 0,
+    	COMPONENT: 1,
+    	TEMPLATE: 2,
+    	TEXT: 3,
+    	PLACEHOLDER: 4,
+    	FRAGMENT: 5
+    };
+
+    function VElement(tag) {
+    	this._type = NodeTypes.ELEMENT;
+    	this._dom = null;
+    	this._tag = tag;
+    	this._children = null;
+    	this._key = null;
+    	this._props = null;
+    	this._hooks = null;
     }
 
-    VNode.prototype = {
-    	setAttrs: function setAttrs(attrs) {
-    		this.attrs = attrs;
+    VElement.prototype = {
+    	children: function children(children) {
+    		this._children = children;
     		return this;
     	},
-    	setTag: function setTag(tag) {
-    		this.tag = tag;
+    	key: function key(key) {
+    		this._key = key;
     		return this;
     	},
-    	setStyle: function setStyle(style) {
-    		this.style = style;
+    	props: function props(props) {
+    		this._props = props;
     		return this;
     	},
-    	setClassName: function setClassName(className) {
-    		this.className = className;
+    	hooks: function hooks(hooks) {
+    		this._hooks = hooks;
     		return this;
     	},
-    	setChildren: function setChildren(children) {
-    		this.children = children;
-    		return this;
-    	},
-    	setHooks: function setHooks(hooks) {
-    		this.hooks = hooks;
-    		return this;
-    	},
-    	setEvents: function setEvents(events) {
-    		this.events = events;
-    		return this;
-    	},
-    	setKey: function setKey(key) {
-    		this.key = key;
+    	events: function events(events) {
+    		this._events = events;
     		return this;
     	}
     };
 
-    function createVNode(bp) {
-    	return new VNode(bp);
+    function VComponent(component) {
+    	this._type = NodeTypes.COMPONENT;
+    	this._dom = null;
+    	this._component = component;
+    	this._props = null;
+    	this._hooks = null;
+    	this._key = null;
+    	this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
     }
 
+    VComponent.prototype = {
+    	key: function key$1(key) {
+    		this._key = key;
+    		return this;
+    	},
+    	props: function props$1(props) {
+    		this._props = props;
+    		return this;
+    	},
+    	hooks: function hooks$1(hooks) {
+    		this._hooks = hooks;
+    		return this;
+    	}
+    };
+
     function VPlaceholder() {
-    	this.placeholder = true;
-    	this.dom = null;
+    	this._type = NodeTypes.PLACEHOLDER;
+    	this._dom = null;
+    }
+
+    function createVComponent(component) {
+    	return new VComponent(component);
+    }
+
+    function createVElement(tag) {
+    	return new VElement(tag);
     }
 
     function createVPlaceholder() {
@@ -112,6 +133,28 @@
     constructDefaults('volume,value', strictProps, true);
     constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
     constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+
+    var elementsPropMap = new Map();
+
+    // pre-populate with common tags
+    getAllPropsForElement('div');
+    getAllPropsForElement('span');
+    getAllPropsForElement('table');
+    getAllPropsForElement('tr');
+    getAllPropsForElement('td');
+    getAllPropsForElement('a');
+    getAllPropsForElement('p');
+
+    function getAllPropsForElement(tag) {
+    	var elem = document.createElement(tag);
+    	var props = {};
+
+    	for (var prop in elem) {
+    		props[prop] = true;
+    	}
+    	elementsPropMap.set(tag, props);
+    	return props;
+    }
 
     var screenWidth = isBrowser && window.screen.width;
     var screenHeight = isBrowser && window.screen.height;
@@ -196,22 +239,21 @@
     		var props = component.props;
 
     		component._pendingState = {};
-    		var nextNode = component._updateComponent(prevState, nextState, props, props, force);
+    		var nextInput = component._updateComponent(prevState, nextState, props, props, force);
 
-    		if (nextNode === NO_RENDER) {
-    			nextNode = component._lastNode;
-    		} else if (isNullOrUndef(nextNode)) {
-    			nextNode = createVPlaceholder();
+    		if (nextInput === NO_RENDER) {
+    			nextInput = component._lastInput;
+    		} else if (isNullOrUndef(nextInput)) {
+    			nextInput = createVPlaceholder();
     		}
-    		var lastNode = component._lastNode;
-    		var parentDom = lastNode.dom.parentNode;
+    		var lastInput = component._lastInput;
+    		var parentDom = lastInput._dom.parentNode;
     		var activeNode = getActiveNode();
     		var subLifecycle = new Lifecycle();
 
-    		component._patch(lastNode, nextNode, parentDom, subLifecycle, component.context, component, null);
-    		component._lastNode = nextNode;
-    		component._componentToDOMNodeMap.set(component, nextNode.dom);
-    		component._parentNode.dom = nextNode.dom;
+    		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
+    		component._lastInput = nextInput;
+    		component._componentToDOMNodeMap.set(component, nextInput.dom);
     		component.componentDidUpdate(props, prevState);
     		subLifecycle.trigger();
     		if (!isNullOrUndef(callback)) {
@@ -221,7 +263,7 @@
     	}
     }
 
-    var Component = function Component(props) {
+    var Component = function Component(props, context) {
     	/** @type {object} */
     	this.props = props || {};
 
@@ -235,10 +277,9 @@
     	this._deferSetState = false;
     	this._pendingSetState = false;
     	this._pendingState = {};
-    	this._parentNode = null;
-    	this._lastNode = null;
+    	this._lastInput = null;
     	this._unmounted = true;
-    	this.context = {};
+    	this.context = context || {};
     	this._patch = null;
     	this._parentComponent = null;
     	this._componentToDOMNodeMap = null;
@@ -320,7 +361,7 @@
     			return this.render();
     		}
     	}
-    	return NO_RENDER;
+    	return NO_OP;
     };
 
     var ASYNC_STATUS = {
@@ -383,7 +424,7 @@
     		var component = ref.component;
     		var params = ref.params;
 
-    		return createVNode().setTag(component).setAttrs({ params: params, async: this.state.async });
+    		return createVComponent(component).setProps({ params: params, async: this.state.async });
     	};
 
     	return Route;
@@ -531,7 +572,7 @@
 
     	for (var i = 0; i < routes.length; i++) {
     		var route = routes[i];
-    		var ref = route.attrs;
+    		var ref = route.props;
     		var path = ref.path;
     		var fullPath = lastPath + path;
     		var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
@@ -546,14 +587,15 @@
     		}
     		if (params) {
     			if (wrapperComponent) {
-    				return createVNode().setTag(wrapperComponent).setChildren(route).setAttrs({
-    					params: params
+    				return createVComponent(wrapperComponent).setProps({
+    					params: params,
+    					children: route
     				});
     			}
-    			return route.setAttrs(Object.assign({}, { params: params }, route.attrs));
+    			return route.setProps(Object.assign({}, { params: params }, route.props));
     		}
     	}
-    	return !lastPath && wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
+    	return !lastPath && wrapperComponent ? createVComponent(wrapperComponent) : null;
     }
 
     function Link(ref, ref$1) {
@@ -562,9 +604,9 @@
     	var hashbang = ref$1.hashbang;
     	var history = ref$1.history;
 
-    	return (createVNode().setAttrs({
+    	return (createVElement('a').setProps({
     		href: hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to
-    	}).setTag('a').setChildren(children));
+    	}).setChildren(children));
     }
 
     var routers = [];

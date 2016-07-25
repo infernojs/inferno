@@ -9,23 +9,7 @@
 	(global.InfernoDOM = factory());
 }(this, function () { 'use strict';
 
-	function addChildrenToProps(children, props) {
-		if (!isNullOrUndef(children)) {
-			var isChildrenArray = isArray(children);
-			if (isChildrenArray && children.length > 0 || !isChildrenArray) {
-				if (props) {
-					props = Object.assign({}, props, { children: children });
-				} else {
-					props = {
-						children: children
-					};
-				}
-			}
-		}
-		return props;
-	}
-
-	var NO_RENDER = 'NO_RENDER';
+	var NO_OP = 'NO_OP';
 
 	// Runs only once in applications lifetime
 	var isBrowser = typeof window !== 'undefined' && window.document;
@@ -34,8 +18,8 @@
 		return obj instanceof Array;
 	}
 
-	function isStatefulComponent(obj) {
-		return obj.prototype.render !== undefined;
+	function isStatefulComponent(o) {
+		return isTrue(o._isStateful);
 	}
 
 	function isStringOrNumber(obj) {
@@ -47,11 +31,7 @@
 	}
 
 	function isInvalid(obj) {
-		return isNull(obj) || obj === false || obj === true || isUndefined(obj);
-	}
-
-	function isFunction(obj) {
-		return typeof obj === 'function';
+		return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 	}
 
 	function isString(obj) {
@@ -74,161 +54,52 @@
 		return obj === undefined;
 	}
 
-	function deepScanChildrenForNode(children, node) {
-		if (!isInvalid(children)) {
-			if (isArray(children)) {
-				for (var i = 0; i < children.length; i++) {
-					var child = children[i];
-
-					if (!isInvalid(child)) {
-						if (child === node) {
-							return true;
-						} else if (child.children) {
-							return deepScanChildrenForNode(child.children, node);
-						}
-					}
-				}
-			} else {
-				if (children === node) {
-					return true;
-				} else if (children.children) {
-					return deepScanChildrenForNode(children.children, node);
-				}
-			}
-		}
-		return false;
-	}
-
-	function getRefInstance$1(node, instance) {
-		var children = instance.props.children;
-
-		if (deepScanChildrenForNode(children, node)) {
-			return getRefInstance$1(node, instance._parentComponent);
-		}
-		return instance;
-	}
-
 	var recyclingEnabled = true;
 
-	function recycle(node, bp, lifecycle, context, instance) {
-		if (bp !== undefined) {
-			var key = node.key;
-			var pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed[key];
-			if (!isNullOrUndef(pool)) {
-				var recycledNode = pool.pop();
-				if (!isNullOrUndef(recycledNode)) {
-					patch(recycledNode, node, null, lifecycle, context, instance, true, bp.isSVG);
-					return node.dom;
-				}
-			}
-		}
-		return null;
-	}
-
 	function pool(node) {
-		var bp = node.bp;
+		// const bp = node.bp;
 
-		if (!isNullOrUndef(bp)) {
-			var key = node.key;
-			var pools = bp.pools;
+		// if (!isNullOrUndef(bp)) {
+		// 	const key = node._key;
+		// 	const pools = bp.pools;
 
-			if (key === null) {
-				var pool = pools.nonKeyed;
-				pool && pool.push(node);
-			} else {
-				var pool$1 = pools.keyed;
-				(pool$1[key] || (pool$1[key] = [])).push(node);
-			}
-			return true;
-		}
+		// 	if (key === null) {
+		// 		const pool = pools.nonKeyed;
+		// 		pool && pool.push(node);
+		// 	} else {
+		// 		const pool = pools._keyed;
+		// 		(pool[key] || (pool[key] = [])).push(node);
+		// 	}
+		// 	return true;
+		// }
 		return false;
 	}
 
-	function unmount(input, parentDom) {
-		if (isVList(input)) {
-			unmountVFragment(input, parentDom, true);
-		} else if (isVNode(input)) {
-			unmountVNode(input, parentDom, false);
-		}
-	}
-
-	function unmountVFragment(vList, parentDom, removePointer) {
-		var items = vList.items;
-		var itemsLength = items.length;
-		var pointer = items.pointer;
-
-		if (itemsLength > 0) {
-			for (var i = 0; i < itemsLength; i++) {
-				var item = items[i];
-
-				if (isVList(item)) {
-					unmountVFragment(item, parentDom, true);
-				} else {
-					if (parentDom) {
-						removeChild(parentDom, item.dom);
-					}
-					unmount(item, null);
-				}
-			}
-		}
-		if (parentDom && removePointer) {
-			removeChild(parentDom, pointer);
-		}
-	}
-
-	function unmountVNode(node, parentDom, shallow) {
-		var instance = node.instance;
-		var instanceHooks = null;
-		var instanceChildren = null;
-
-		if (!isNullOrUndef(instance)) {
-			instanceHooks = instance.hooks;
-			instanceChildren = instance.children;
-
-			if (instance.render !== undefined) {
-				instance.componentWillUnmount();
-				instance._unmounted = true;
-				componentToDOMNodeMap.delete(instance);
-				!shallow && unmount(instance._lastNode, null);
-			}
-		}
-		var hooks = node.hooks || instanceHooks;
-
-		if (!isNullOrUndef(hooks)) {
-			if (!isNullOrUndef(hooks.willDetach)) {
-				hooks.willDetach(node.dom);
-			}
-			if (!isNullOrUndef(hooks.componentWillUnmount)) {
-				hooks.componentWillUnmount(node.dom, hooks);
-			}
-		}
-		var children = (isNullOrUndef(instance) ? node.children : null) || instanceChildren;
-
-		if (!isNullOrUndef(children)) {
-			if (isArray(children)) {
-				for (var i = 0; i < children.length; i++) {
-					unmount(children[i], null);
-				}
-			} else {
-				unmount(children, null);
-			}
-		}
-	}
+	var NodeTypes = {
+		ELEMENT: 0,
+		COMPONENT: 1,
+		TEMPLATE: 2,
+		TEXT: 3,
+		PLACEHOLDER: 4,
+		FRAGMENT: 5
+	};
 
 	function VText(text) {
-		this.text = text;
-		this.dom = null;
+		this._type = NodeTypes.TEXT;
+		this._text = text;
+		this._dom = null;
 	}
 
 	function VPlaceholder() {
-		this.placeholder = true;
-		this.dom = null;
+		this._type = NodeTypes.PLACEHOLDER;
+		this._dom = null;
 	}
 
-	function VList(items) {
-		this.dom = null;
-		this.pointer = null;
-		this.items = items;
+	function VFragment(items) {
+		this._type = NodeTypes.FRAGMENT;
+		this._dom = null;
+		this._pointer = null;
+		this._items = items;
 	}
 
 	function createVText(text) {
@@ -239,8 +110,108 @@
 		return new VPlaceholder();
 	}
 
-	function createVList(items) {
-		return new VList(items);
+	function createVFragment(items) {
+		return new VFragment(items);
+	}
+
+	function isVText(o) {
+		return o._type === NodeTypes.TEXT;
+	}
+
+	function isVPlaceholder(o) {
+		return o._type === NodeTypes.PLACEHOLDER;
+	}
+
+	function isVFragment(o) {
+		return o._type === NodeTypes.FRAGMENT;
+	}
+
+	function isVElement(o) {
+		return o._type === NodeTypes.ELEMENT;
+	}
+
+	function isVComponent(o) {
+		return o._type === NodeTypes.COMPONENT;
+	}
+
+	function unmount(input, parentDom) {
+		if (isVFragment(input)) {
+			unmountVFragment(input, parentDom, true);
+		} else if (isVElement(input)) {
+			unmountVElement(input, parentDom);
+		} else if (isVComponent(input)) {
+			unmountVComponent(input, parentDom);
+		}
+	}
+
+	function unmountVFragment(vFragment, parentDom, removePointer) {
+		var items = vFragment._items;
+		var itemsLength = items.length;
+		var pointer = items._pointer;
+
+		if (itemsLength > 0) {
+			for (var i = 0; i < itemsLength; i++) {
+				var item = items[i];
+
+				if (isVFragment(item)) {
+					unmountVFragment(item, parentDom, true);
+				} else {
+					if (parentDom) {
+						removeChild(parentDom, item._dom);
+					}
+					unmount(item, null);
+				}
+			}
+		}
+		if (parentDom && removePointer) {
+			removeChild(parentDom, pointer);
+		}
+	}
+
+	function unmountVComponent(vComponent, parentDom) {
+		var instance = vComponent._instance;
+		var instanceHooks = null;
+		var instanceChildren = null;
+
+		if (!isNullOrUndef(instance)) {
+			instanceHooks = instance._hooks;
+			instanceChildren = instance._children;
+
+			if (instance.render !== undefined) {
+				instance.componentWillUnmount();
+				instance._unmounted = true;
+				componentToDOMNodeMap.delete(instance);
+				unmount(instance._lastInput, null);
+			}
+		}
+		var hooks = vComponent._hooks || instanceHooks;
+
+		if (!isNullOrUndef(hooks)) {
+			if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
+				hooks.onComponentWillUnmount(vComponent._dom, hooks);
+			}
+		}
+	}
+
+	function unmountVElement(vElement, parentDom) {
+		var hooks = vElement._hooks;
+
+		if (!isNullOrUndef(hooks)) {
+			if (!isNullOrUndef(hooks.onWillDetach)) {
+				hooks.onWillDetach(vElement._dom);
+			}
+		}
+		var children = vElement._children;
+
+		if (!isNullOrUndef(children)) {
+			if (isArray(children)) {
+				for (var i = 0; i < children.length; i++) {
+					unmount(children[i], null);
+				}
+			} else {
+				unmount(children, null);
+			}
+		}
 	}
 
 	function constructDefaults(string, object, value) {
@@ -261,20 +232,43 @@
 	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 	constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-	function isVText(o) {
-		return o.text !== undefined;
+	var elementsPropMap = new Map();
+
+	// pre-populate with common tags
+	getAllPropsForElement('div');
+	getAllPropsForElement('span');
+	getAllPropsForElement('table');
+	getAllPropsForElement('tr');
+	getAllPropsForElement('td');
+	getAllPropsForElement('a');
+	getAllPropsForElement('p');
+
+	function getAllPropsForElement(tag) {
+		var elem = document.createElement(tag);
+		var props = {};
+
+		for (var prop in elem) {
+			props[prop] = true;
+		}
+		elementsPropMap.set(tag, props);
+		return props;
 	}
 
-	function isVPlaceholder(o) {
-		return o.placeholder === true;
+	function setTextContent(dom, lastChildren, nextChildren) {
+		if (isStringOrNumber(lastChildren)) {
+			dom.firstChild.nodeValue = nextChildren;
+		} else {
+			dom.textContent = nextChildren;
+		}
 	}
 
-	function isVList(o) {
-		return o.items !== undefined;
-	}
+	function isPropertyOfElement(tag, prop) {
+		var propsForElement = elementsPropMap.get(tag);
 
-	function isVNode(o) {
-		return o.tag !== undefined || o.bp !== undefined;
+		if (isUndefined(propsForElement)) {
+			propsForElement = getAllPropsForElement(tag);
+		}
+		return propsForElement[prop];
 	}
 
 	function insertOrAppend(parentDom, newNode, nextNode) {
@@ -286,7 +280,7 @@
 	}
 
 	function replaceVListWithNode(parentDom, vList, dom) {
-		var pointer = vList.pointer;
+		var pointer = vList._pointer;
 
 		unmountVFragment(vList, parentDom, false);
 		replaceNode(parentDom, dom, pointer);
@@ -326,21 +320,21 @@
 		}
 	}
 
-	function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
+	function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG) {
 		var lastInstance = null;
-		var instanceLastNode = lastNode._lastNode;
+		var instanceLastNode = lastNode._lastInput;
 
 		if (!isNullOrUndef(instanceLastNode)) {
 			lastInstance = lastNode;
 			lastNode = instanceLastNode;
 		}
 		unmount(lastNode, false);
-		var dom = mount(nextNode, null, lifecycle, context, instance, isSVG);
+		var dom = mount(nextNode, null, lifecycle, context, isSVG);
 
-		nextNode.dom = dom;
-		replaceNode(parentDom, dom, lastNode.dom);
+		nextNode._dom = dom;
+		replaceNode(parentDom, dom, lastNode._dom);
 		if (lastInstance !== null) {
-			lastInstance._lastNode = nextNode;
+			lastInstance._lasInput = nextNode;
 		}
 	}
 
@@ -348,13 +342,13 @@
 		parentDom.replaceChild(nextDom, lastDom);
 	}
 
-	function normalise$1(object) {
+	function normalise(object) {
 		if (isStringOrNumber(object)) {
 			return createVText(object);
 		} else if (isInvalid(object)) {
 			return createVPlaceholder();
 		} else if (isArray(object)) {
-			return createVList(object);
+			return createVFragment(object);
 		}
 		return object;
 	}
@@ -362,11 +356,11 @@
 	function normaliseChild(children, i) {
 		var child = children[i];
 
-		return children[i] = normalise$1(child);
+		return children[i] = normalise(child);
 	}
 
 	function remove(node, parentDom) {
-		var dom = node.dom;
+		var dom = node._dom;
 		if (dom === parentDom) {
 			dom.innerHTML = '';
 		} else {
@@ -380,16 +374,6 @@
 
 	function removeChild(parentDom, dom) {
 		parentDom.removeChild(dom);
-	}
-
-	function removeEvents(events, lastEventKeys, dom) {
-		var eventKeys = lastEventKeys || Object.keys(events);
-
-		for (var i = 0; i < eventKeys.length; i++) {
-			var event = eventKeys[i];
-
-			dom[event] = null;
-		}
 	}
 
 	// TODO: for node we need to check if document is valid
@@ -424,34 +408,34 @@
 		if (lastChildren.complex) {
 			return false;
 		}
-		return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
-			&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
+		return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0]._key)
+			&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0]._key);
 	}
 
 	function selectOptionValueIfNeeded(vdom, values) {
-		if (vdom.tag !== 'option') {
-			for (var i = 0, len = vdom.children.length; i < len; i++) {
-				selectOptionValueIfNeeded(vdom.children[i], values);
+		if (vdom._tag !== 'option') {
+			for (var i = 0, len = vdom._children.length; i < len; i++) {
+				selectOptionValueIfNeeded(vdom._children[i], values);
 			}
 			// NOTE! Has to be a return here to catch optGroup elements
 			return;
 		}
 
-		var value = vdom.attrs && vdom.attrs.value;
+		var value = vdom._props && vdom._props.value;
 
 		if (values[value]) {
-			vdom.attrs = vdom.attrs || {};
-			vdom.attrs.selected = 'selected';
-			vdom.dom.selected = true;
+			vdom._props = vdom._props || {};
+			vdom._props.selected = true;
+			vdom._dom.selected = true;
 		} else {
-			vdom.dom.selected = false;
+			vdom._dom.selected = false;
 		}
 	}
 
 	function selectValue(vdom) {
-		var value = vdom.attrs && vdom.attrs.value;
-
+		var value = vdom._props && vdom._props.value;
 		var values = {};
+
 		if (isArray(value)) {
 			for (var i = 0, len = value.length; i < len; i++) {
 				values[value[i]] = value[i];
@@ -459,22 +443,22 @@
 		} else {
 			values[value] = value;
 		}
-		for (var i$1 = 0, len$1 = vdom.children.length; i$1 < len$1; i$1++) {
-			selectOptionValueIfNeeded(vdom.children[i$1], values);
+		for (var i$1 = 0, len$1 = vdom._children.length; i$1 < len$1; i$1++) {
+			selectOptionValueIfNeeded(vdom._children[i$1], values);
 		}
 
-		if (vdom.attrs && vdom.attrs[value]) {
-			delete vdom.attrs.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+		if (vdom._props && vdom._props[value]) {
+			delete vdom._props.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
 		}
 	}
 
 	function handleAttachedHooks(hooks, lifecycle, dom) {
-		if (!isNullOrUndef(hooks.created)) {
-			hooks.created(dom);
+		if (!isNullOrUndef(hooks.onCreated)) {
+			hooks.onCreated(dom);
 		}
-		if (!isNullOrUndef(hooks.attached)) {
+		if (!isNullOrUndef(hooks.onAttached)) {
 			lifecycle.addListener(function () {
-				hooks.attached(dom);
+				hooks.onAttached(dom);
 			});
 		}
 	}
@@ -482,7 +466,7 @@
 	function setValueProperty(nextNode) {
 		var value = nextNode.attrs.value;
 		if (!isNullOrUndef(value)) {
-			nextNode.dom.value = value;
+			nextNode._dom.value = value;
 		}
 	}
 
@@ -493,55 +477,68 @@
 				setValueProperty(nextNode);
 			} else if (inputType === 'checkbox' || inputType === 'radio') {
 				var checked = nextNode.attrs.checked;
-				nextNode.dom.checked = !!checked;
+				nextNode._dom.checked = !!checked;
 			}
 		} else if (nextTag === 'textarea') {
 			setValueProperty(nextNode);
 		}
 	}
 
-	function mount(input, parentDom, lifecycle, context, instance, isSVG) {
+	function mount(input, parentDom, lifecycle, context, isSVG) {
 		if (isVPlaceholder(input)) {
 			return mountVPlaceholder(input, parentDom);
 		} else if (isVText(input)) {
 			return mountVText(input, parentDom);
-		} else if (isVList(input)) {
-			return mountVFragment(input, parentDom, lifecycle, context, instance, isSVG);
-		} else if (isVNode(input)) {
-			return mountVNode$1(input, parentDom, lifecycle, context, instance, isSVG);
+		} else if (isVFragment(input)) {
+			return mountVFragment(input, parentDom, lifecycle, context, isSVG);
+		} else if (isVElement(input)) {
+			return mountVElement(input, parentDom, lifecycle, context, isSVG);
+		} else if (isVComponent(input)) {
+			return mountVComponent(input, parentDom, lifecycle, context, isSVG);
 		} else {
-			mount(normalise$1(input), parentDom, lifecycle, context, instance, isSVG);
+			throw Error('Bad Input!');
 		}
 	}
 
-	function mountVNode$1(vNode, parentDom, lifecycle, context, instance, isSVG) {
-		var bp = vNode.bp;
+	function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
+		var tag = vElement._tag;
 
-		if (isUndefined(bp)) {
-			return mountVNodeWithoutBlueprint(vNode, parentDom, lifecycle, context, instance, isSVG);
-		} else {
-			if (recyclingEnabled) {
-				var dom = recycle(vNode, bp, lifecycle, context, instance);
-
-				if (!isNull(dom)) {
-					if (!isNull(parentDom)) {
-						parentDom.appendChild(dom);
-					}
-					return dom;
-				}
-			}
-			return mountVNodeWithBlueprint(vNode, bp, parentDom, lifecycle, context, instance);
+		if (!isString(tag)) {
+			throw new Error('Inferno Error: expects VElement to have a string as the tag name');
 		}
+		if (tag === 'svg') {
+			isSVG = true;
+		}
+		var dom = documentCreateElement(tag, isSVG);
+		var children = vElement._children;
+		var props = vElement._props;
+		var hooks = vElement._hooks;
+
+		vElement._dom = dom;
+		if (!isNullOrUndef(hooks)) {
+			handleAttachedHooks(hooks, lifecycle, dom);
+		}
+		if (!isNullOrUndef(children)) {
+			mountChildren(vElement, children, dom, lifecycle, context, isSVG);
+		}
+		if (!isNullOrUndef(props)) {
+			handleSelects(vElement);
+			mountProps(vElement, props, dom);
+		}
+		if (!isNull(parentDom)) {
+			parentDom.appendChild(dom);
+		}
+		return dom;
 	}
 
-	function mountVFragment(vList, parentDom, lifecycle, context, instance, isSVG) {
-		var items = vList.items;
+	function mountVFragment(vList, parentDom, lifecycle, context, isSVG) {
+		var items = vList._items;
 		var pointer = document.createTextNode('');
 		var dom = document.createDocumentFragment();
 
-		mountArrayChildren(items, dom, lifecycle, context, instance, isSVG);
-		vList.pointer = pointer;
-		vList.dom = dom;
+		mountArrayChildren(items, dom, lifecycle, context, isSVG);
+		vList._pointer = pointer;
+		vList._dom = dom;
 		dom.appendChild(pointer);
 		if (parentDom) {
 			insertOrAppend(parentDom, dom);
@@ -550,9 +547,9 @@
 	}
 
 	function mountVText(vText, parentDom) {
-		var dom = document.createTextNode(vText.text);
+		var dom = document.createTextNode(vText._text);
 
-		vText.dom = dom;
+		vText._dom = dom;
 		if (parentDom) {
 			insertOrAppend(parentDom, dom);
 		}
@@ -562,7 +559,7 @@
 	function mountVPlaceholder(vPlaceholder, parentDom) {
 		var dom = document.createTextNode('');
 
-		vPlaceholder.dom = dom;
+		vPlaceholder._dom = dom;
 		if (parentDom) {
 			insertOrAppend(parentDom, dom);
 		}
@@ -575,141 +572,7 @@
 		}
 	}
 
-	function mountBlueprintAttrs(node, bp, dom, instance) {
-		handleSelects(node);
-		var attrs = node.attrs;
-
-		if (isNull(bp.attrKeys)) {
-			var newKeys = Object.keys(attrs);
-			bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(newKeys) : newKeys;
-		}
-		var attrKeys = bp.attrKeys;
-
-		mountAttributes(node, attrs, attrKeys, dom, instance);
-	}
-
-	function mountBlueprintEvents(node, bp, dom) {
-		var events = node.events;
-
-		if (isNull(bp.eventKeys)) {
-			bp.eventKeys = Object.keys(events);
-		}
-		var eventKeys = bp.eventKeys;
-
-		mountEvents$1(events, eventKeys, dom);
-	}
-
-	function mountVNodeWithBlueprint(node, bp, parentDom, lifecycle, context, instance) {
-		var tag = node.tag;
-
-		if (isTrue(bp.isComponent)) {
-			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
-		}
-		var dom = documentCreateElement(bp.tag, bp.isSVG);
-
-		node.dom = dom;
-		if (isTrue(bp.hasHooks)) {
-			handleAttachedHooks(node.hooks, lifecycle, dom);
-		}
-		if (isTrue(bp.lazy)) {
-			handleLazyAttached(node, lifecycle, dom);
-		}
-		var children = node.children;
-		// bp.childrenType:
-		// 0: no children
-		// 1: text node
-		// 2: single child
-		// 3: multiple children
-		// 4: multiple children (keyed)
-		// 5: variable children (defaults to no optimisation)
-
-		switch (bp.childrenType) {
-			case 1:
-				appendText(children, dom, true);
-				break;
-			case 2:
-				mount(node.children, dom, lifecycle, context, instance, bp.isSVG);
-				break;
-			case 3:
-				mountArrayChildren(children, dom, lifecycle, context, instance, bp.isSVG);
-				break;
-			case 4:
-				for (var i = 0; i < children.length; i++) {
-					mount(children[i], dom, lifecycle, context, instance, bp.isSVG);
-				}
-				break;
-			case 5:
-				mountChildren(node, children, dom, lifecycle, context, instance, bp.isSVG);
-				break;
-			default:
-				break;
-		}
-
-		if (isTrue(bp.hasAttrs)) {
-			mountBlueprintAttrs(node, bp, dom, instance);
-		}
-		if (isTrue(bp.hasClassName)) {
-			dom.className = node.className;
-		}
-		if (isTrue(bp.hasStyle)) {
-			patchStyle(null, node.style, dom);
-		}
-		if (isTrue(bp.hasEvents)) {
-			mountBlueprintEvents(node, bp, dom);
-		}
-		if (!isNull(parentDom)) {
-			parentDom.appendChild(dom);
-		}
-		return dom;
-	}
-
-	function mountVNodeWithoutBlueprint(node, parentDom, lifecycle, context, instance, isSVG) {
-		var tag = node.tag;
-
-		if (isFunction(tag)) {
-			return mountComponent(node, tag, node.attrs || {}, node.hooks, node.children, instance, parentDom, lifecycle, context);
-		}
-		if (!isString(tag) || tag === '') {
-			throw Error('Inferno Error: Expected function or string for element tag type');
-		}
-		if (tag === 'svg') {
-			isSVG = true;
-		}
-		var dom = documentCreateElement(tag, isSVG);
-		var children = node.children;
-		var attrs = node.attrs;
-		var events = node.events;
-		var hooks = node.hooks;
-		var className = node.className;
-		var style = node.style;
-
-		node.dom = dom;
-		if (!isNullOrUndef(hooks)) {
-			handleAttachedHooks(hooks, lifecycle, dom);
-		}
-		if (!isInvalid(children)) {
-			mountChildren(node, children, dom, lifecycle, context, instance, isSVG);
-		}
-		if (!isNullOrUndef(attrs)) {
-			handleSelects(node);
-			mountAttributes(node, attrs, Object.keys(attrs), dom, instance);
-		}
-		if (!isNullOrUndef(className)) {
-			dom.className = className;
-		}
-		if (!isNullOrUndef(style)) {
-			patchStyle(null, style, dom);
-		}
-		if (!isNullOrUndef(events)) {
-			mountEvents$1(events, Object.keys(events), dom);
-		}
-		if (!isNull(parentDom)) {
-			parentDom.appendChild(dom);
-		}
-		return dom;
-	}
-
-	function mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG) {
+	function mountArrayChildren(children, parentDom, lifecycle, context, isSVG) {
 		children.complex = false;
 		for (var i = 0; i < children.length; i++) {
 			var child = normaliseChild(children, i);
@@ -720,528 +583,300 @@
 			} else if (isVPlaceholder(child)) {
 				mountVPlaceholder(child, parentDom);
 				children.complex = true;
-			} else if (isVList(child)) {
-				mountVFragment(child, parentDom, lifecycle, context, instance, isSVG);
+			} else if (isVFragment(child)) {
+				mountVFragment(child, parentDom, lifecycle, context, isSVG);
 				children.complex = true;
 			} else {
-				mount(child, parentDom, lifecycle, context, instance, isSVG);
+				mount(child, parentDom, lifecycle, context, isSVG);
 			}
 		}
 	}
 
-	function mountChildren(node, children, parentDom, lifecycle, context, instance, isSVG) {
+	function mountChildren(node, children, parentDom, lifecycle, context, isSVG) {
 		if (isArray(children)) {
-			mountArrayChildren(children, parentDom, lifecycle, context, instance, isSVG);
+			mountArrayChildren(children, parentDom, lifecycle, context, isSVG);
 		} else if (isStringOrNumber(children)) {
 			appendText(children, parentDom, true);
 		} else if (!isInvalid(children)) {
-			mount(children, parentDom, lifecycle, context, instance, isSVG);
+			mount(children, parentDom, lifecycle, context, isSVG);
 		}
 	}
 
-	function mountRef(instance, value, refValue) {
-		if (!isInvalid(instance) && isString(value)) {
-			instance.refs[value] = refValue;
-		}
-	}
-
-	function mountEvents$1(events, eventKeys, dom) {
-		for (var i = 0; i < eventKeys.length; i++) {
-			var event = eventKeys[i];
-
-			dom[event] = events[event];
-		}
-	}
-
-	function mountComponent(parentNode, Component, props, hooks, children, lastInstance, parentDom, lifecycle, context) {
-		props = addChildrenToProps(children, props);
-
+	function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
+		var Component = vComponent._component;
+		var props = vComponent._props;
+		var hooks = vComponent._hooks;
 		var dom;
-		if (isStatefulComponent(Component)) {
-			var instance = new Component(props);
+
+		if (isStatefulComponent(vComponent)) {
+			var instance = new Component(props, context);
 
 			instance._patch = patch;
 			instance._componentToDOMNodeMap = componentToDOMNodeMap;
-			if (!isNullOrUndef(lastInstance) && props.ref) {
-				mountRef(lastInstance, props.ref, instance);
-			}
 			var childContext = instance.getChildContext();
 
 			if (!isNullOrUndef(childContext)) {
 				context = Object.assign({}, context, childContext);
 			}
-			instance.context = context;
 			instance._unmounted = false;
-			instance._parentNode = parentNode;
-			if (lastInstance) {
-				instance._parentComponent = lastInstance;
-			}
 			instance._pendingSetState = true;
 			instance.componentWillMount();
-			var node = instance.render();
+			var input = instance.render();
 
-			if (isInvalid(node)) {
-				node = createVPlaceholder();
+			if (isInvalid(input)) {
+				input = createVPlaceholder();
 			}
 			instance._pendingSetState = false;
-			dom = mount(node, null, lifecycle, context, instance, false);
-			instance._lastNode = node;
+			dom = mount(input, null, lifecycle, context, false);
+			instance._lastInput = input;
 			instance.componentDidMount();
 			if (parentDom !== null && !isInvalid(dom)) {
 				parentDom.appendChild(dom);
 			}
 			componentToDOMNodeMap.set(instance, dom);
-			parentNode.dom = dom;
-			parentNode.instance = instance;
+			vComponent._dom = dom;
+			vComponent._instance = instance;
 		} else {
 			if (!isNullOrUndef(hooks)) {
-				if (!isNullOrUndef(hooks.componentWillMount)) {
-					hooks.componentWillMount(null, props);
+				if (!isNullOrUndef(hooks.onComponentWillMount)) {
+					hooks.onComponentWillMount(null, props);
 				}
-				if (!isNullOrUndef(hooks.componentDidMount)) {
+				if (!isNullOrUndef(hooks.onComponentDidMount)) {
 					lifecycle.addListener(function () {
-						hooks.componentDidMount(dom, props);
+						hooks.onComponentDidMount(dom, props);
 					});
 				}
 			}
 
 			/* eslint new-cap: 0 */
-			var node$1 = Component(props, context);
+			var input$1 = Component(props, context);
 
-			if (isInvalid(node$1)) {
-				node$1 = createVPlaceholder();
+			if (isInvalid(input$1)) {
+				node = createVPlaceholder();
 			}
-			dom = mount(node$1, null, lifecycle, context, null, false);
-
-			parentNode.instance = node$1;
-
+			dom = mount(input$1, null, lifecycle, context, null, false);
+			vComponent._instance = input$1;
 			if (parentDom !== null && !isInvalid(dom)) {
 				parentDom.appendChild(dom);
 			}
-			parentNode.dom = dom;
+			vComponent._dom = dom;
 		}
 		return dom;
 	}
 
-	function mountAttributes(node, attrs, attrKeys, dom, instance) {
-		for (var i = 0; i < attrKeys.length; i++) {
-			var attr = attrKeys[i];
+	function mountProps(vElement, props, dom) {
+		for (var prop in props) {
+			var value = props[prop];
 
-			if (attr === 'ref') {
-				mountRef(getRefInstance$1(node, instance), attrs[attr], dom);
-			} else {
-				patchAttribute(attr, null, attrs[attr], dom);
+			if (!isNullOrUndef(value)) {
+				if (prop === 'style') {
+					patchStyle(null, value, dom);
+				} else if (isPropertyOfElement(vElement._tag, prop)) {
+					dom[prop] = value;
+				} else {
+					var namespace = namespaces[prop];
+
+					if (namespace) {
+						dom.setAttributeNS(namespace, prop, value);
+					} else {
+						dom.setAttribute(prop, value);
+					}
+				}
 			}
 		}
 	}
 
-	function patch(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG) {
+	function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 		if (lastInput !== nextInput) {
 			if (isInvalid(lastInput)) {
-				mount(nextInput, parentDom, lifecycle, context, instance, isSVG);
+				mount(nextInput, parentDom, lifecycle, context, isSVG);
 			} else if (isInvalid(nextInput)) {
 				remove(lastInput, parentDom);
 			} else if (isStringOrNumber(lastInput)) {
 				if (isStringOrNumber(nextInput)) {
 					parentDom.firstChild.nodeValue = nextInput;
 				} else {
-					var dom = mount(nextInput, null, lifecycle, context, instance, isSVG);
+					var dom = mount(nextInput, null, lifecycle, context, isSVG);
 
-					nextInput.dom = dom;
+					nextInput._dom = dom;
 					replaceNode(parentDom, dom, parentDom.firstChild);
 				}
 			} else if (isStringOrNumber(nextInput)) {
-				replaceNode(parentDom, document.createTextNode(nextInput), lastInput.dom);
+				replaceNode(parentDom, document.createTextNode(nextInput), lastInput._dom);
 			} else {
-				if (isVList(nextInput)) {
-					if (isVList(lastInput)) {
-						patchVList(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG);
+				if (isVComponent(nextInput)) {
+					if (isVComponent(lastInput)) {
+						patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 					} else {
-						replaceNode(parentDom, mountVFragment(nextInput, null), lastInput.dom);
+						replaceNode(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
 						unmount(lastInput, null);
 					}
-				} else if (isVList(lastInput)) {
-					replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, instance, isSVG));
+				} else if (isVComponent(lastInput)) {
+					// debugger;
+				} else if (isVFragment(nextInput)) {
+					if (isVFragment(lastInput)) {
+						patchVList(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+					} else {
+						replaceNode(parentDom, mountVFragment(nextInput, null), lastInput._dom);
+						unmount(lastInput, null);
+					}
+				} else if (isVElement(nextInput)) {
+					if (isVElement(lastInput)) {
+						patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+					} else {
+						replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+						unmount(lastInput, null);
+					}
+				} else if (isVElement(lastInput)) {
+					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+					unmount(lastInput, null);
+				} else if (isVFragment(lastInput)) {
+					replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG));
 				} else if (isVPlaceholder(nextInput)) {
 					if (isVPlaceholder(lastInput)) {
 						patchVFragment(lastInput, nextInput);
 					} else {
-						replaceNode(parentDom, mountVPlaceholder(nextInput, null), lastInput.dom);
+						replaceNode(parentDom, mountVPlaceholder(nextInput, null), lastInput._dom);
 						unmount(lastInput, null);
 					}
 				} else if (isVPlaceholder(lastInput)) {
-					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
+					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
 				} else if (isVText(nextInput)) {
 					if (isVText(lastInput)) {
 						patchVText(lastInput, nextInput);
 					} else {
-						replaceNode(parentDom, mountVText(nextInput, null), lastInput.dom);
+						replaceNode(parentDom, mountVText(nextInput, null), lastInput._dom);
 						unmount(lastInput, null);
 					}
 				} else if (isVText(lastInput)) {
-					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
-				} else if (isVNode(nextInput)) {
-					if (isVNode(lastInput)) {
-						patchVNode(lastInput, nextInput, parentDom, lifecycle, context, instance, isSVG, false);
-					} else {
-						replaceNode(parentDom, mountVNode(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
-						unmount(lastInput, null);
-					}
-				} else if (isVNode(lastInput)) {
-					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, instance, isSVG), lastInput.dom);
-					unmount(lastInput, null);
+					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
 				} else {
-					return patch(lastInput, normalise(nextInput),parentDomdom, lifecycle, context, instance, isSVG);
+					throw Error('Bad Input!');
 				}
 			}
 		}
-		return nextInput;
 	}
 
-	function patchTextNode(dom, lastChildren, nextChildren) {
-		if (isStringOrNumber(lastChildren)) {
-			dom.firstChild.nodeValue = nextChildren;
-		} else {
-			dom.textContent = nextChildren;
-		}
-	}
-
-	function patchRef(instance, lastValue, nextValue, dom) {
-		if (instance) {
-			if (isString(lastValue)) {
-				delete instance.refs[lastValue];
-			}
-			if (isString(nextValue)) {
-				instance.refs[nextValue] = dom;
-			}
-		}
-	}
-
-	function patchChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG) {
-		var nextChildren = nextNode.children;
-		var lastChildren = lastNode.children;
-
-		if (lastChildren === nextChildren) {
-			return;
-		}
-		if (isInvalid(lastChildren)) {
+	function patchChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+		if (isInvalid(nextChildren)) {
+			removeAllChildren(dom, lastChildren);
+		} else if (isInvalid(lastChildren)) {
 			if (isStringOrNumber(nextChildren)) {
-				patchTextNode(dom, lastChildren, nextChildren);
+				setTextContent(dom, lastChildren, nextChildren);
 			} else if (!isInvalid(nextChildren)) {
 				if (isArray(nextChildren)) {
-					mountArrayChildren(nextChildren, dom, lifecycle, context, instance, isSVG);
+					mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
 				} else {
-					mount(nextChildren, dom, lifecycle, context, instance, isSVG);
+					mount(nextChildren, dom, lifecycle, context, isSVG);
 				}
 			}
-		} else {
-			if (isInvalid(nextChildren)) {
-				removeAllChildren(dom, lastChildren);
-			} else {
-				if (isArray(lastChildren)) {
-					if (isArray(nextChildren)) {
-						nextChildren.complex = lastChildren.complex;
-						if (isKeyed(lastChildren, nextChildren)) {
-							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, null);
-						} else {
-							patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, null);
-						}
-					} else {
-						patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, instance, isSVG, null);
-					}
-				} else {
-					if (isArray(nextChildren)) {
-						var lastChild = lastChildren;
+		} else if (isArray(nextChildren)) {
+			if (isArray(lastChildren)) {
+				nextChildren.complex = lastChildren.complex;
 
-						if (isStringOrNumber(lastChildren)) {
-							lastChild = createVText(lastChild);
-							lastChild.dom = dom.firstChild;
-						}
-						patchNonKeyedChildren([lastChild], nextChildren, dom, lifecycle, context, instance, isSVG, null);
-					} else if (isStringOrNumber(nextChildren)) {
-						patchTextNode(dom, lastChildren, nextChildren);
-					} else if (isStringOrNumber(lastChildren)) {
-						patch(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG);
-					} else {
-						patchVNode(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, false);
-					}
+				if (isKeyed(lastChildren, nextChildren)) {
+					patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
+				} else {
+					patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
 				}
+			} else {
+				patchNonKeyedChildren([lastChildren], nextChildren, dom, lifecycle, context, isSVG, null);
 			}
+		} else if (isArray(lastChildren)) {
+			patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, isSVG, null);
+		} else {
+			patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
 		}
 	}
 
-	function patchVNode(lastVNode, nextVNode, parentDom, lifecycle, context, instance, isSVG, skipLazyCheck) {
-		var lastBp = lastVNode.bp;
-		var nextBp = nextVNode.bp;
-
-		if (lastBp === undefined || nextBp === undefined) {
-			patchVNodeWithoutBlueprint(lastVNode, nextVNode, parentDom, lifecycle, context, instance, isSVG);
-		} else {
-			patchVNodeWithBlueprint(lastVNode, nextVNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck);
-		}
-	}
-
-	function patchVNodeWithBlueprint(lastVNode, nextVNode, lastBp, nextBp, parentDom, lifecycle, context, instance, skipLazyCheck) {
-		var nextHooks;
-
-		if (nextBp.hasHooks === true) {
-			nextHooks = nextVNode.hooks;
-			if (nextHooks && !isNullOrUndef(nextHooks.willUpdate)) {
-				nextHooks.willUpdate(lastVNode.dom);
-			}
-		}
-		var nextTag = nextVNode.tag || nextBp.tag;
-		var lastTag = lastVNode.tag || lastBp.tag;
-
-		if (lastTag !== nextTag) {
-			if (lastBp.isComponent === true) {
-				var lastNodeInstance = lastVNode.instance;
-
-				if (nextBp.isComponent === true) {
-					replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, instance, false);
-				} else if (isStatefulComponent(lastTag)) {
-					unmountVNode(lastVNode, null, true);
-					var lastNode = lastNodeInstance._lastNode;
-					patchVNodeWithBlueprint(lastNode, nextVNode, lastNode.bp, nextBp, parentDom, lifecycle, context, instance, nextBp.isSVG);
-				} else {
-					unmountVNode(lastVNode, null, true);
-					patchVNodeWithBlueprint(lastNodeInstance, nextVNode, lastNodeInstance.bp, nextBp, parentDom, lifecycle, context, instance, nextBp.isSVG);
-				}
-			} else {
-				replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, instance, nextBp.isSVG);
-			}
-		} else if (isNullOrUndef(lastTag)) {
-			nextVNode.dom = lastVNode.dom;
-		} else {
-			if (lastBp.isComponent === true) {
-				if (nextBp.isComponent === true) {
-					var instance$1 = lastVNode.instance;
-
-					if (!isNullOrUndef(instance$1) && instance$1._unmounted) {
-						var newDom = mountComponent(nextVNode, lastTag, nextVNode.attrs || {}, nextVNode.hooks, nextVNode.children, instance$1, parentDom, lifecycle, context);
-						if (parentDom !== null) {
-							replaceNode(parentDom, newDom, lastVNode.dom);
-						}
-					} else {
-						nextVNode.instance = instance$1;
-						nextVNode.dom = lastVNode.dom;
-						patchComponent(true, nextVNode, nextVNode.tag, lastBp, nextBp, instance$1, lastVNode.attrs || {}, nextVNode.attrs || {}, nextVNode.hooks, nextVNode.children, parentDom, lifecycle, context);
-					}
-				}
-			} else {
-				var dom = lastVNode.dom;
-				var lastChildrenType = lastBp.childrenType;
-				var nextChildrenType = nextBp.childrenType;
-				nextVNode.dom = dom;
-
-				if (nextBp.lazy === true && skipLazyCheck === false) {
-					var clipData = lastVNode.clipData;
-
-					if (lifecycle.scrollY === null) {
-						lifecycle.refresh();
-					}
-
-					nextVNode.clipData = clipData;
-					if (clipData.pending === true || clipData.top - lifecycle.scrollY > lifecycle.screenHeight) {
-						if (setClipNode(clipData, dom, lastVNode, nextVNode, parentDom, lifecycle, context, instance, lastBp.isSVG)) {
-							return;
-						}
-					}
-					if (clipData.bottom < lifecycle.scrollY) {
-						if (setClipNode(clipData, dom, lastVNode, nextVNode, parentDom, lifecycle, context, instance, lastBp.isSVG)) {
-							return;
-						}
-					}
-				}
-
-				if (lastChildrenType > 0 || nextChildrenType > 0) {
-					if (nextChildrenType === 5 || lastChildrenType === 5) {
-						patchChildren(lastVNode, nextVNode, dom, lifecycle, context, instance);
-					} else {
-						var lastChildren = lastVNode.children;
-						var nextChildren = nextVNode.children;
-
-						if (lastChildrenType === 0 || isInvalid(lastChildren)) {
-							if (nextChildrenType > 2) {
-								mountArrayChildren(nextChildren, dom, lifecycle, context, instance);
-							} else {
-								mount(nextChildren, dom, lifecycle, context, instance);
-							}
-						} else if (nextChildrenType === 0 || isInvalid(nextChildren)) {
-							if (lastChildrenType > 2) {
-								removeAllChildren(dom, lastChildren);
-							} else {
-								remove(lastChildren, dom);
-							}
-						} else {
-							if (lastChildren !== nextChildren) {
-								if (lastChildrenType === 4 && nextChildrenType === 4) {
-									patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, nextBp.isSVG, null);
-								} else if (lastChildrenType === 2 && nextChildrenType === 2) {
-									patch(lastChildren, nextChildren, dom, lifecycle, context, instance, true, nextBp.isSVG);
-								} else if (lastChildrenType === 1 && nextChildrenType === 1) {
-									patchTextNode(dom, lastChildren, nextChildren);
-								} else {
-									patchChildren(lastVNode, nextVNode, dom, lifecycle, context, instance, nextBp.isSVG);
-								}
-							}
-						}
-					}
-				}
-				if (lastBp.hasAttrs === true || nextBp.hasAttrs === true) {
-					patchAttributes(lastVNode, nextVNode, lastBp.attrKeys, nextBp.attrKeys, dom, instance);
-				}
-				if (lastBp.hasEvents === true || nextBp.hasEvents === true) {
-					patchEvents(lastVNode.events, nextVNode.events, lastBp.eventKeys, nextBp.eventKeys, dom);
-				}
-				if (lastBp.hasClassName === true || nextBp.hasClassName === true) {
-					var nextClassName = nextVNode.className;
-
-					if (lastVNode.className !== nextClassName) {
-						if (isNullOrUndef(nextClassName)) {
-							dom.removeAttribute('class');
-						} else {
-							dom.className = nextClassName;
-						}
-					}
-				}
-				if (lastBp.hasStyle === true || nextBp.hasStyle === true) {
-					var nextStyle = nextVNode.style;
-					var lastStyle = lastVNode.style;
-
-					if (lastStyle !== nextStyle) {
-						patchStyle(lastStyle, nextStyle, dom);
-					}
-				}
-				if (nextBp.hasHooks === true && !isNullOrUndef(nextHooks.didUpdate)) {
-					nextHooks.didUpdate(dom);
-				}
-				setFormElementProperties(nextTag, nextVNode);
-			}
-		}
-	}
-
-	function patchVNodeWithoutBlueprint(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG) {
-		var nextHooks = nextNode.hooks;
+	function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context, isSVG) {
+		var nextHooks = nextVElement._hooks;
 		var nextHooksDefined = !isNullOrUndef(nextHooks);
 
-		if (nextHooksDefined && !isNullOrUndef(nextHooks.willUpdate)) {
-			nextHooks.willUpdate(lastNode.dom);
+		if (nextHooksDefined && !isNullOrUndef(nextHooks.onWillUpdate)) {
+			nextHooks.onWillUpdate(lastVElement._dom);
 		}
-		var nextTag = nextNode.tag || ((isNullOrUndef(nextNode.bp)) ? null : nextNode.bp.tag);
-		var lastTag = lastNode.tag || ((isNullOrUndef(lastNode.bp)) ? null : lastNode.bp.tag);
+		var nextTag = nextVElement._tag;
+		var lastTag = lastVElement._tag;
 
 		if (nextTag === 'svg') {
 			isSVG = true;
 		}
 		if (lastTag !== nextTag) {
-			var lastNodeInstance = lastNode.instance;
-
-			if (isFunction(lastTag)) {
-				if (isFunction(nextTag)) {
-					replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
-				} else if (isStatefulComponent(lastTag)) {
-					unmountVNode(lastNode, null, true);
-					patchVNodeWithoutBlueprint(lastNodeInstance._lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
-				} else {
-					unmountVNode(lastNode, null, true);
-					patchVNodeWithoutBlueprint(lastNodeInstance, nextNode, parentDom, lifecycle, context, instance, isSVG);
-				}
-			} else {
-				replaceWithNewNode(lastNodeInstance || lastNode, nextNode, parentDom, lifecycle, context, instance, isSVG);
-			}
-		} else if (isNullOrUndef(lastTag)) {
-			nextNode.dom = lastNode.dom;
+			replaceWithNewNode(lastVElement, nextVElement, parentDom, lifecycle, context, isSVG);
 		} else {
-			if (isFunction(lastTag)) {
-				if (isFunction(nextTag)) {
-					var instance$1 = lastNode._instance;
+			var dom = lastVElement._dom;
+			var lastProps = lastVElement._props;
+			var nextProps = nextVElement._props;
+			var lastChildren = lastVElement._children;
+			var nextChildren = nextVElement._children;
 
-					if (!isNullOrUndef(instance$1) && instance$1._unmounted) {
-						var newDom = mountComponent(nextNode, lastTag, nextNode.attrs || {}, nextNode.hooks, nextNode.children, instance$1, parentDom, lifecycle, context);
-						if (parentDom !== null) {
-							replaceNode(parentDom, newDom, lastNode.dom);
+			nextVElement._dom = dom;
+			if (lastChildren !== nextChildren) {
+				patchChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			}
+			if (lastProps !== nextProps) {
+				patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
+			}
+			if (nextHooksDefined && !isNullOrUndef(nextHooks.onDidUpdate)) {
+				nextHooks.onDidUpdate(dom);
+			}
+			setFormElementProperties(nextTag, nextVElement);
+		}
+	}
+
+	function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
+		var tag = nextVElement._tag;
+		lastProps = lastProps || {};
+		nextProps = nextProps || {};
+
+		if (lastVElement._tag === 'select') {
+			selectValue(nextVElement);
+		}
+		for (var prop in nextProps) {
+			var nextValue = nextProps[prop];
+			var lastValue = lastProps[prop];
+
+			if (lastValue !== nextValue) {
+				if (isNullOrUndef(nextValue)) {
+					removeProp(tag, prop, dom);
+				} else {
+					if (prop === 'style') {
+						patchStyle(lastValue, nextValue, dom);
+					} else if (isPropertyOfElement(tag, prop)) {
+						dom[prop] = nextValue;
+					} else {
+						var namespace = namespaces[prop];
+
+						if (namespace) {
+							dom.setAttributeNS(namespace, prop, nextValue);
+						} else {
+							dom.setAttribute(prop, nextValue);
 						}
-					} else {
-						nextNode.instance = lastNode.instance;
-						nextNode.dom = lastNode.dom;
-						patchComponent(false, nextNode, nextNode.tag, null, null, nextNode.instance, lastNode.attrs || {}, nextNode.attrs || {}, nextNode.hooks, nextNode.children, parentDom, lifecycle, context);
 					}
 				}
+			}
+		}
+		for (var prop$1 in lastProps) {
+			if (isUndefined(nextProps[prop$1])) {
+				removeProp(tag, prop$1, dom);
+			}
+		}
+	}
+
+	function removeProp(tag, prop, dom) {
+		if (prop === 'className') {
+			dom.removeAttribute('class');
+		} else if (prop === 'id') {
+			dom.removeAttribute('id');
+		} else {
+			if (isPropertyOfElement(tag, prop)) {
+				dom[prop] = null;
 			} else {
-				var dom = lastNode.dom;
-				var nextClassName = nextNode.className;
-				var nextStyle = nextNode.style;
-
-				nextNode.dom = dom;
-
-				patchChildren(lastNode, nextNode, dom, lifecycle, context, instance, isSVG);
-				patchAttributes(lastNode, nextNode, null, null, dom, instance);
-				patchEvents(lastNode.events, nextNode.events, null, null, dom);
-
-				if (lastNode.className !== nextClassName) {
-					if (isNullOrUndef(nextClassName)) {
-						dom.removeAttribute('class');
-					} else {
-						dom.className = nextClassName;
-					}
-				}
-				if (lastNode.style !== nextStyle) {
-					patchStyle(lastNode.style, nextStyle, dom);
-				}
-				if (nextHooksDefined && !isNullOrUndef(nextHooks.didUpdate)) {
-					nextHooks.didUpdate(dom);
-				}
-				setFormElementProperties(nextTag, nextNode);
+				dom.removeAttribute(prop);
 			}
 		}
 	}
-
-	function patchAttributes(lastNode, nextNode, lastAttrKeys, nextAttrKeys, dom, instance) {
-		if (lastNode.tag === 'select') {
-			selectValue(nextNode);
-		}
-		var nextAttrs = nextNode.attrs;
-		var lastAttrs = lastNode.attrs;
-		var nextAttrsIsUndef = isNullOrUndef(nextAttrs);
-		var lastAttrsIsNotUndef = !isNullOrUndef(lastAttrs);
-
-		if (!nextAttrsIsUndef) {
-			var nextAttrsKeys = nextAttrKeys || Object.keys(nextAttrs);
-			var attrKeysLength = nextAttrsKeys.length;
-
-			for (var i = 0; i < attrKeysLength; i++) {
-				var attr = nextAttrsKeys[i];
-				var lastAttrVal = lastAttrsIsNotUndef && lastAttrs[attr];
-				var nextAttrVal = nextAttrs[attr];
-
-				if (lastAttrVal !== nextAttrVal) {
-					if (attr === 'ref') {
-						patchRef(instance, lastAttrVal, nextAttrVal, dom);
-					} else {
-						patchAttribute(attr, lastAttrVal, nextAttrVal, dom);
-					}
-				}
-			}
-		}
-		if (lastAttrsIsNotUndef) {
-			var lastAttrsKeys = lastAttrKeys || Object.keys(lastAttrs);
-			var attrKeysLength$1 = lastAttrsKeys.length;
-
-			for (var i$1 = 0; i$1 < attrKeysLength$1; i$1++) {
-				var attr$1 = lastAttrsKeys[i$1];
-
-				if (nextAttrsIsUndef || isNullOrUndef(nextAttrs[attr$1])) {
-					if (attr$1 === 'ref') {
-						patchRef(getRefInstance(node, instance), lastAttrs[attr$1], null, dom);
-					} else {
-						dom.removeAttribute(attr$1);
-					}
-				}
-			}
-		}
-	}
-
 
 	function patchStyle(lastAttrValue, nextAttrValue, dom) {
 		if (isString(nextAttrValue)) {
@@ -1287,144 +922,122 @@
 		}
 	}
 
-	function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKeys, dom) {
-		var nextEventsDefined = !isNullOrUndef(nextEvents);
-		var lastEventsDefined = !isNullOrUndef(lastEvents);
+	// export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
+	// 	if (attrName === 'dangerouslySetInnerHTML') {
+	// 		const lastHtml = lastAttrValue && lastAttrValue.__html;
+	// 		const nextHtml = nextAttrValue && nextAttrValue.__html;
 
-		if (nextEventsDefined) {
-			if (lastEventsDefined) {
-				var nextEventKeys = _nextEventKeys || Object.keys(nextEvents);
+	// 		if (isNullOrUndef(nextHtml)) {
+	// 			throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
+	// 		}
+	// 		if (lastHtml !== nextHtml) {
+	// 			dom.innerHTML = nextHtml;
+	// 		}
+	// 	} else if (strictProps[attrName]) {
+	// 		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
+	// 	} else {
+	// 		if (booleanProps[attrName]) {
+	// 			dom[attrName] = nextAttrValue ? true : false;
+	// 		} else {
+	// 			const ns = namespaces[attrName];
 
-				for (var i = 0; i < nextEventKeys.length; i++) {
-					var event = nextEventKeys[i];
-					var lastEvent = lastEvents[event];
-					var nextEvent = nextEvents[event];
+	// 			if (nextAttrValue === false || isNullOrUndef(nextAttrValue)) {
+	// 				if (ns !== undefined) {
+	// 					dom.removeAttributeNS(ns, attrName);
+	// 				} else {
+	// 					dom.removeAttribute(attrName);
+	// 				}
+	// 			} else {
+	// 				if (ns !== undefined) {
+	// 					dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
+	// 				} else {
+	// 					dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-					if (lastEvent !== nextEvent) {
-						dom[event] = nextEvent;
-					}
-				}
-				var lastEventKeys = _lastEventKeys || Object.keys(lastEvents);
+	function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG) {
+		var lastComponent = lastVComponent._component;
+		var nextComponent = nextVComponent._component;
+		var nextProps = nextVComponent._props || {};
 
-				for (var i$1 = 0; i$1 < lastEventKeys.length; i$1++) {
-					var event$1 = lastEventKeys[i$1];
-
-					if (isNullOrUndef(nextEvents[event$1])) {
-						dom[event$1] = null;
-					}
-				}
-			} else {
-				mountEvents(nextEvents, _nextEventKeys, dom);
-			}
-		} else if (lastEventsDefined) {
-			removeEvents(lastEvents, _nextEventKeys, dom);
-		}
-	}
-
-	function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
-		if (attrName === 'dangerouslySetInnerHTML') {
-			var lastHtml = lastAttrValue && lastAttrValue.__html;
-			var nextHtml = nextAttrValue && nextAttrValue.__html;
-
-			if (isNullOrUndef(nextHtml)) {
-				throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
-			}
-			if (lastHtml !== nextHtml) {
-				dom.innerHTML = nextHtml;
-			}
-		} else if (strictProps[attrName]) {
-			dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
+		if (lastComponent !== nextComponent) {
+			replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG);
 		} else {
-			if (booleanProps[attrName]) {
-				dom[attrName] = nextAttrValue ? true : false;
+			if (isStatefulComponent(nextVComponent)) {
+				var dom = lastVComponent._dom;
+				var instance = lastVComponent._instance;
+				var lastProps = instance.props;
+				var lastState = instance.state;
+				var nextState = instance.state;
+				var childContext = instance.getChildContext();
+
+				nextVComponent._instance = instance;
+				instance.context = context;
+				if (!isNullOrUndef(childContext)) {
+					context = Object.assign({}, context, childContext);
+				}
+				var nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps);
+
+				if (nextInput === NO_OP) {
+					nextInput = instance._lastInput;
+				} else if (isNullOrUndef(nextInput)) {
+					nextInput = createVPlaceholder();
+				}
+				patch(instance._lastInput, nextInput, parentDom, lifecycle, context, null, false);
+				instance._lastInput = nextInput;
+				instance.componentDidUpdate(lastProps, lastState);
+				nextVComponent._dom = nextInput._dom;
+				componentToDOMNodeMap.set(instance, nextInput._dom);
 			} else {
-				var ns = namespaces[attrName];
+				var shouldUpdate = true;
+				var lastProps$1 = lastVComponent._props;
+				var nextHooks = nextVComponent._hooks;
+				var nextHooksDefined = !isNullOrUndef(nextHooks);
 
-				if (nextAttrValue === false || isNullOrUndef(nextAttrValue)) {
-					if (ns !== undefined) {
-						dom.removeAttributeNS(ns, attrName);
-					} else {
-						dom.removeAttribute(attrName);
+				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
+					shouldUpdate = nextHooks.onComponentShouldUpdate(lastVComponent._dom, lastProps$1, nextProps);
+				}
+				if (shouldUpdate !== false) {
+					if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
+						nextHooks.onComponentWillUpdate(lastVComponent._dom, lastProps$1, nextProps);
 					}
-				} else {
-					if (ns !== undefined) {
-						dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
-					} else {
-						dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
+					var nextInput$1 = nextComponent(nextProps, context);
+					var lastInput = lastVComponent._instance;
+
+					if (isInvalid(nextInput$1)) {
+						nextInput$1 = createVPlaceholder();
+					}
+					nextVComponent._dom = lastVComponent._dom;
+					patch(lastInput, nextInput$1, parentDom, lifecycle, context, null, null, false);
+					nextVComponent._instance = nextInput$1;
+					if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
+						nextHooks.onComponentDidUpdate(lastInput._dom, lastProps$1, nextProps);
 					}
 				}
 			}
 		}
 	}
 
-	function patchComponent(hasBlueprint, lastNode, Component, lastBp, nextBp, instance, lastProps, nextProps, nextHooks, nextChildren, parentDom, lifecycle, context) {
-		nextProps = addChildrenToProps(nextChildren, nextProps);
+	function patchVList(lastVList, nextVList, parentDom, lifecycle, context, isSVG) {
+		var lastItems = lastVList._items;
+		var nextItems = nextVList._items;
+		var pointer = lastVList._pointer;
 
-		if (isStatefulComponent(Component)) {
-			var prevProps = instance.props;
-			var prevState = instance.state;
-			var nextState = instance.state;
-
-			var childContext = instance.getChildContext();
-			if (!isNullOrUndef(childContext)) {
-				context = Object.assign({}, context, childContext);
-			}
-			instance.context = context;
-			var nextNode = instance._updateComponent(prevState, nextState, prevProps, nextProps);
-
-			if (nextNode === NO_RENDER) {
-				nextNode = instance._lastNode;
-			} else if (isNullOrUndef(nextNode)) {
-				nextNode = createVPlaceholder();
-			}
-			patch(instance._lastNode, nextNode, parentDom, lifecycle, context, instance, null, false);
-			lastNode.dom = nextNode.dom;
-			instance._lastNode = nextNode;
-			instance.componentDidUpdate(prevProps, prevState);
-			componentToDOMNodeMap.set(instance, nextNode.dom);
-		} else {
-			var shouldUpdate = true;
-			var nextHooksDefined = (hasBlueprint && nextBp.hasHooks === true) || !isNullOrUndef(nextHooks);
-
-			if (nextHooksDefined && !isNullOrUndef(nextHooks.componentShouldUpdate)) {
-				shouldUpdate = nextHooks.componentShouldUpdate(lastNode.dom, lastProps, nextProps);
-			}
-			if (shouldUpdate !== false) {
-				if (nextHooksDefined && !isNullOrUndef(nextHooks.componentWillUpdate)) {
-					nextHooks.componentWillUpdate(lastNode.dom, lastProps, nextProps);
-				}
-				var nextNode$1 = Component(nextProps, context);
-
-				if (isInvalid(nextNode$1)) {
-					nextNode$1 = createVPlaceholder();
-				}
-				nextNode$1.dom = lastNode.dom;
-				patch(instance, nextNode$1, parentDom, lifecycle, context, null, null, false);
-				lastNode.instance = nextNode$1;
-				if (nextHooksDefined && !isNullOrUndef(nextHooks.componentDidUpdate)) {
-					nextHooks.componentDidUpdate(lastNode.dom, lastProps, nextProps);
-				}
-			}
-		}
-	}
-
-	function patchVList(lastVList, nextVList, parentDom, lifecycle, context, instance, isSVG) {
-		var lastItems = lastVList.items;
-		var nextItems = nextVList.items;
-		var pointer = lastVList.pointer;
-
-		nextVList.dom = lastVList.dom;
-		nextVList.pointer = pointer;
+		nextVList._dom = lastVList._dom;
+		nextVList._pointer = pointer;
 		if (!lastItems !== nextItems) {
 			if (isKeyed(lastItems, nextItems)) {
-				patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, instance, isSVG, nextVList);
+				patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVList);
 			} else {
-				patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, instance, isSVG, nextVList);
+				patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVList);
 			}
 		}
 	}
 
-	function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, parentVList) {
+	function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, parentVList) {
 		var lastChildrenLength = lastChildren.length;
 		var nextChildrenLength = nextChildren.length;
 		var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
@@ -1434,13 +1047,13 @@
 			var lastChild = lastChildren[i];
 			var nextChild = normaliseChild(nextChildren, i);
 
-			patch(lastChild, nextChild, dom, lifecycle, context, instance, isSVG);
+			patch(lastChild, nextChild, dom, lifecycle, context, isSVG);
 		}
 		if (lastChildrenLength < nextChildrenLength) {
 			for (i = commonLength; i < nextChildrenLength; i++) {
 				var child = normaliseChild(nextChildren, i);
 
-				insertOrAppend(dom, mount(child, null, lifecycle, context, instance, isSVG), parentVList && parentVList.pointer);
+				insertOrAppend(dom, mount(child, null, lifecycle, context, isSVG), parentVList && parentVList.pointer);
 			}
 		} else if (lastChildrenLength > nextChildrenLength) {
 			for (i = commonLength; i < lastChildrenLength; i++) {
@@ -1450,20 +1063,20 @@
 	}
 
 	function patchVFragment(lastVFragment, nextVFragment) {
-		nextVFragment.dom = lastVFragment.dom;
+		nextVFragment._dom = lastVFragment._dom;
 	}
 
 	function patchVText(lastVText, nextVText) {
-		var nextText = nextVText.text;
-		var dom = lastVText.dom;
+		var nextText = nextVText._text;
+		var dom = lastVText._dom;
 
-		nextVText.dom = dom;
+		nextVText._dom = dom;
 		if (lastVText.text !== nextText) {
 			dom.nodeValue = nextText;
 		}
 	}
 
-	function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, instance, isSVG, parentVList) {
+	function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, parentVList) {
 		var lastChildrenLength = lastChildren.length;
 		var nextChildrenLength = nextChildren.length;
 		var lastEndIndex = lastChildrenLength - 1;
@@ -1480,10 +1093,10 @@
 			nextStartNode = nextChildren[nextStartIndex];
 			lastStartNode = lastChildren[lastStartIndex];
 
-			if (nextStartNode.key !== lastStartNode.key) {
+			if (nextStartNode._key !== lastStartNode._key) {
 				break;
 			}
-			patchVNode(lastStartNode, nextStartNode, dom, lifecycle, context, instance, isSVG, false);
+			patch(lastStartNode, nextStartNode, dom, lifecycle, context, isSVG, false);
 			nextStartIndex++;
 			lastStartIndex++;
 		}
@@ -1491,10 +1104,10 @@
 			nextEndNode = nextChildren[nextEndIndex];
 			lastEndNode = lastChildren[lastEndIndex];
 
-			if (nextEndNode.key !== lastEndNode.key) {
+			if (nextEndNode._key !== lastEndNode._key) {
 				break;
 			}
-			patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
+			patch(lastEndNode, nextEndNode, dom, lifecycle, context, isSVG, false);
 			nextEndIndex--;
 			lastEndIndex--;
 		}
@@ -1502,12 +1115,12 @@
 			nextEndNode = nextChildren[nextEndIndex];
 			lastStartNode = lastChildren[lastStartIndex];
 
-			if (nextEndNode.key !== lastStartNode.key) {
+			if (nextEndNode._key !== lastStartNode._key) {
 				break;
 			}
-			nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1].dom : null;
-			patchVNode(lastStartNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
-			insertOrAppend(dom, nextEndNode.dom, nextNode);
+			nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1]._dom : null;
+			patch(lastStartNode, nextEndNode, dom, lifecycle, context, isSVG, false);
+			insertOrAppend(dom, nextEndNode._dom, nextNode);
 			nextEndIndex--;
 			lastStartIndex++;
 		}
@@ -1515,21 +1128,21 @@
 			nextStartNode = nextChildren[nextStartIndex];
 			lastEndNode = lastChildren[lastEndIndex];
 
-			if (nextStartNode.key !== lastEndNode.key) {
+			if (nextStartNode._key !== lastEndNode._key) {
 				break;
 			}
-			nextNode = lastChildren[lastStartIndex].dom;
-			patchVNode(lastEndNode, nextStartNode, dom, lifecycle, context, instance, isSVG, false);
-			insertOrAppend(dom, nextStartNode.dom, nextNode);
+			nextNode = lastChildren[lastStartIndex]._dom;
+			patch(lastEndNode, nextStartNode, dom, lifecycle, context, isSVG, false);
+			insertOrAppend(dom, nextStartNode._dom, nextNode);
 			nextStartIndex++;
 			lastEndIndex--;
 		}
 
 		if (lastStartIndex > lastEndIndex) {
 			if (nextStartIndex <= nextEndIndex) {
-				nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1].dom : parentVList && parentVList.pointer;
+				nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1]._dom : parentVList && parentVList.pointer;
 				for (; nextStartIndex <= nextEndIndex; nextStartIndex++) {
-					insertOrAppend(dom, mount(nextChildren[nextStartIndex], null, lifecycle, context, instance, isSVG), nextNode);
+					insertOrAppend(dom, mount(nextChildren[nextStartIndex], null, lifecycle, context, isSVG), nextNode);
 				}
 			}
 		} else if (nextStartIndex > nextEndIndex) {
@@ -1557,7 +1170,7 @@
 					lastEndNode = lastChildren[i];
 					for (index = nextStartIndex; index <= nextEndIndex; index++) {
 						nextEndNode = nextChildren[index];
-						if (lastEndNode.key === nextEndNode.key) {
+						if (lastEndNode._key === nextEndNode._key) {
 							sources[index - nextStartIndex] = i;
 
 							if (lastTarget > index) {
@@ -1565,7 +1178,7 @@
 							} else {
 								lastTarget = index;
 							}
-							patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
+							patch(lastEndNode, nextEndNode, dom, lifecycle, context, isSVG, false);
 							removed = false;
 							break;
 						}
@@ -1579,11 +1192,11 @@
 				var prevItemsMap = new Map();
 
 				for (i = nextStartIndex; i <= nextEndIndex; i++) {
-					prevItemsMap.set(nextChildren[i].key, i);
+					prevItemsMap.set(nextChildren[i]._key, i);
 				}
 				for (i = lastEndIndex; i >= lastStartIndex; i--) {
 					lastEndNode = lastChildren[i];
-					index = prevItemsMap.get(lastEndNode.key);
+					index = prevItemsMap.get(lastEndNode._key);
 
 					if (index === undefined) {
 						remove(lastEndNode, dom);
@@ -1598,7 +1211,7 @@
 						} else {
 							lastTarget = index;
 						}
-						patchVNode(lastEndNode, nextEndNode, dom, lifecycle, context, instance, isSVG, false);
+						patch(lastEndNode, nextEndNode, dom, lifecycle, context, isSVG, false);
 					}
 				}
 			}
@@ -1610,13 +1223,13 @@
 				for (i = bLength - 1; i >= 0; i--) {
 					if (sources[i] === -1) {
 						pos = i + nextStartIndex;
-						nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1].dom : parentVList && parentVList.pointer;
-						insertOrAppend(dom, mount(nextChildren[pos], null, lifecycle, context, instance, isSVG), nextNode);
+						nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList.pointer;
+						insertOrAppend(dom, mount(nextChildren[pos], null, lifecycle, context, isSVG), nextNode);
 					} else {
 						if (index < 0 || i !== seq[index]) {
 							pos = i + nextStartIndex;
-							nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1].dom : parentVList && parentVList.pointer;
-							insertOrAppend(dom, nextChildren[pos].dom, nextNode);
+							nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList.pointer;
+							insertOrAppend(dom, nextChildren[pos]._dom, nextNode);
 						} else {
 							index--;
 						}
@@ -1626,8 +1239,8 @@
 				for (i = bLength - 1; i >= 0; i--) {
 					if (sources[i] === -1) {
 						pos = i + nextStartIndex;
-						nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1].dom : parentVList && parentVList.pointer;
-						insertOrAppend(dom, mount(nextChildren[pos], null, lifecycle, context, instance, isSVG), nextNode);
+						nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList.pointer;
+						insertOrAppend(dom, mount(nextChildren[pos], null, lifecycle, context, isSVG), nextNode);
 					}
 				}
 			}
@@ -1735,252 +1348,24 @@
 		}
 	};
 
-	function handleLazyAttached(node, lifecycle, dom) {
-		lifecycle.addListener(function () {
-			var rect = dom.getBoundingClientRect();
-
-			if (lifecycle.scrollY === null) {
-				lifecycle.refresh();
-			}
-			node.clipData = {
-				top: rect.top + lifecycle.scrollY,
-				left: rect.left + lifecycle.scrollX,
-				bottom: rect.bottom + lifecycle.scrollY,
-				right: rect.right + lifecycle.scrollX,
-				pending: false
-			};
-		});
-	}
-
-	function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context, instance) {
-		var domNode = childNodes[counter.i];
-
-		if (isVText(child)) {
-			var text = child.text;
-
-			child.dom = domNode;
-			if (domNode.nodeType === 3 && text !== '') {
-				domNode.nodeValue = text;
-			} else {
-				var newDomNode = mountVText(text);
-
-				replaceNode(parentDom, newDomNode, domNode);
-				childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
-				child.dom = newDomNode;
-			}
-		} else if (isVPlaceholder(child)) {
-			child.dom = domNode;
-		} else if (isVList(child)) {
-			var items = child.items;
-
-			// this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
-			child.dom = document.createDocumentFragment();
-			for (var i = 0; i < items.length; i++) {
-				var rebuild = hydrateChild(normaliseChild(items, i), childNodes, counter, parentDom, lifecycle, context, instance);
-
-				if (rebuild) {
-					return true;
-				}
-			}
-			// at the end of every VList, there should be a "pointer". It's an empty TextNode used for tracking the VList
-			var pointer = childNodes[counter.i++];
-
-			if (pointer && pointer.nodeType === 3) {
-				child.pointer = pointer;
-			} else {
-				// there is a problem, we need to rebuild this tree
-				return true;
-			}
-		} else {
-			var rebuild$1 = hydrateNode(child, domNode, parentDom, lifecycle, context, instance, false);
-
-			if (rebuild$1) {
-				return true;
-			}
-		}
-		counter.i++;
-	}
-
-	function getChildNodesWithoutComments(domNode) {
-		var childNodes = [];
-		var rawChildNodes = domNode.childNodes;
-		var length = rawChildNodes.length;
-		var i = 0;
-
-		while (i < length) {
-			var rawChild = rawChildNodes[i];
-
-			if (rawChild.nodeType === 8) {
-				if (rawChild.data === '!') {
-					var placeholder = document.createTextNode('');
-
-					domNode.replaceChild(placeholder, rawChild);
-					childNodes.push(placeholder);
-					i++;
-				} else {
-					domNode.removeChild(rawChild);
-					length--;
-				}
-			} else {
-				childNodes.push(rawChild);
-				i++;
-			}
-		}
-		return childNodes;
-	}
-
-	function hydrateComponent(node, Component, props, hooks, children, domNode, parentDom, lifecycle, context, lastInstance, isRoot) {
-		props = addChildrenToProps(children, props);
-
-		if (isStatefulComponent(Component)) {
-			var instance = node.instance = new Component(props);
-
-			instance._patch = patch;
-			if (!isNullOrUndef(lastInstance) && props.ref) {
-				mountRef(lastInstance, props.ref, instance);
-			}
-			var childContext = instance.getChildContext();
-
-			if (!isNullOrUndef(childContext)) {
-				context = Object.assign({}, context, childContext);
-			}
-			instance.context = context;
-			instance._unmounted = false;
-			instance._parentNode = node;
-			if (lastInstance) {
-				instance._parentComponent = lastInstance;
-			}
-			instance._pendingSetState = true;
-			instance.componentWillMount();
-			var nextNode = instance.render();
-
-			instance._pendingSetState = false;
-			if (isInvalid(nextNode)) {
-				nextNode = createVPlaceholder();
-			}
-			hydrateNode(nextNode, domNode, parentDom, lifecycle, context, instance, isRoot);
-			instance._lastNode = nextNode;
-			instance.componentDidMount();
-
-		} else {
-			var instance$1 = node.instance = Component(props);
-
-			if (!isNullOrUndef(hooks)) {
-				if (!isNullOrUndef(hooks.componentWillMount)) {
-					hooks.componentWillMount(null, props);
-				}
-				if (!isNullOrUndef(hooks.componentDidMount)) {
-					lifecycle.addListener(function () {
-						hooks.componentDidMount(domNode, props);
-					});
-				}
-			}
-			return hydrateNode(instance$1, domNode, parentDom, lifecycle, context, instance$1, isRoot);
-		}
-	}
-
-	function hydrateNode(node, domNode, parentDom, lifecycle, context, instance, isRoot) {
-		var bp = node.bp;
-		var tag = node.tag || bp.tag;
-
-		if (isFunction(tag)) {
-			node.dom = domNode;
-			hydrateComponent(node, tag, node.attrs || {}, node.hooks, node.children, domNode, parentDom, lifecycle, context, instance, isRoot);
-		} else {
-			if (
-				domNode.nodeType !== 1 ||
-				tag !== domNode.tagName.toLowerCase()
-			) {
-				// TODO remake node
-			} else {
-				node.dom = domNode;
-				var hooks = node.hooks;
-
-				if ((bp && bp.hasHooks === true) || !isNullOrUndef(hooks)) {
-					handleAttachedHooks(hooks, lifecycle, domNode);
-				}
-				var children = node.children;
-
-				if (!isNullOrUndef(children)) {
-					if (isStringOrNumber(children)) {
-						if (domNode.textContent !== children) {
-							domNode.textContent = children;
-						}
-					} else {
-						var childNodes = getChildNodesWithoutComments(domNode);
-						var counter = { i: 0 };
-						var rebuild = false;
-
-						if (isArray(children)) {
-							for (var i = 0; i < children.length; i++) {
-								rebuild = hydrateChild(normaliseChild(children, i), childNodes, counter, domNode, lifecycle, context, instance);
-
-								if (rebuild) {
-									break;
-								}
-							}
-						} else {
-							if (childNodes.length === 1) {
-								rebuild = hydrateChild(children, childNodes, counter, domNode, lifecycle, context, instance);
-							} else {
-								rebuild = true;
-							}
-						}
-
-						if (rebuild) {
-							// TODO scrap children and rebuild again
-						}
-					}
-				}
-				var className = node.className;
-				var style = node.style;
-
-				if (!isNullOrUndef(className)) {
-					domNode.className = className;
-				}
-				if (!isNullOrUndef(style)) {
-					patchStyle(null, style, domNode);
-				}
-				if (bp && bp.hasAttrs === true) {
-					mountBlueprintAttrs(node, bp, domNode, instance);
-				} else {
-					var attrs = node.attrs;
-
-					if (!isNullOrUndef(attrs)) {
-						handleSelects(node);
-						mountAttributes(node, attrs, Object.keys(attrs), domNode, instance);
-					}
-				}
-				if (bp && bp.hasEvents === true) {
-					mountBlueprintEvents(node, bp, domNode);
-				} else {
-					var events = node.events;
-
-					if (!isNullOrUndef(events)) {
-						mountEvents$1(events, Object.keys(events), domNode);
-					}
-				}
-			}
-		}
-	}
 	var documetBody = isBrowser ? document.body : null;
 
 	function hydrate(node, parentDom, lifecycle) {
-		if (parentDom && parentDom.nodeType === 1) {
-			var rootNode = parentDom.querySelector('[data-infernoroot]');
+		// if (parentDom && parentDom.nodeType === 1) {
+		// 	const rootNode = parentDom.querySelector('[data-infernoroot]');
 
-			if (rootNode && rootNode.parentNode === parentDom) {
-				hydrateNode(node, rootNode, parentDom, lifecycle, {}, true);
-				return true;
-			}
-		}
-		// clear parentDom, unless it's document.body
-		if (parentDom !== documetBody) {
-			parentDom.textContent = '';
-		} else {
-			console.warn('Inferno Warning: rendering to the "document.body" is dangerous! Use a dedicated container element instead.');
-		}
-		return false;
+		// 	if (rootNode && rootNode.parentNode === parentDom) {
+		// 		hydrateNode(node, rootNode, parentDom, lifecycle, {}, true);
+		// 		return true;
+		// 	}
+		// }
+		// // clear parentDom, unless it's document.body
+		// if (parentDom !== documetBody) {
+		// 	parentDom.textContent = '';
+		// } else {
+		// 	console.warn('Inferno Warning: rendering to the "document.body" is dangerous! Use a dedicated container element instead.');
+		// }
+		// return false;
 	}
 
 	var roots = new Map();
@@ -2004,13 +1389,13 @@
 			}
 		} else {
 			var activeNode = getActiveNode();
-			var nextInput = patch(root.input, input, parentDom, lifecycle, {}, null, false);
+			patch(root.input, input, parentDom, lifecycle, {}, null, false);
 
 			lifecycle.trigger();
 			if (isNull(input)) {
 				roots.delete(parentDom);
 			}
-			root.input = nextInput;
+			root.input = input;
 			resetActiveNode(activeNode);
 		}
 	}
