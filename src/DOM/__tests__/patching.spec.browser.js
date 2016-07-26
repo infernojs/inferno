@@ -82,10 +82,7 @@ describe('patching keyed lists (non-jsx)', () => {
 
 	const bp1 = {
 		dom: createUniversalElement('div'),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+		pool: [],
 		tag: 'div',
 		isComponent: false,
 		hasAttrs: false,
@@ -98,10 +95,7 @@ describe('patching keyed lists (non-jsx)', () => {
 
 	const bp2 = {
 		dom: createUniversalElement('span'),
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+		pool: [],
 		tag: 'span',
 		isComponent: false,
 		hasAttrs: false,

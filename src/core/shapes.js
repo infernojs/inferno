@@ -107,10 +107,7 @@ export function createBlueprint(shape, childrenType) {
 	const blueprint = {
 		lazy: shape.lazy || false,
 		dom: null,
-		pools: {
-			keyed: {},
-			nonKeyed: []
-		},
+		pool: [],
 		tag: tagIsDynamic ? null : tag,
 		className: className !== '' && className ? className : null,
 		style: style !== '' && style ? style : null,

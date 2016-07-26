@@ -542,6 +542,8 @@ export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
 		if (lastHtml !== nextHtml) {
 			dom.innerHTML = nextHtml;
 		}
+	} else if (attrName === 'eventData') {
+		dom.eventData = nextAttrValue;
 	} else if (strictProps[attrName]) {
 		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
 	} else {
