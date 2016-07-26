@@ -1,5 +1,5 @@
 /*!
- * inferno-router v0.7.23
+ * inferno-router v0.7.24
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -332,8 +332,8 @@
 	};
 
 	var Route = (function (Component) {
-		function Route(props) {
-			Component.call(this, props);
+		function Route(props, context) {
+			Component.call(this, props, context);
 			this.state = {
 				async: null
 			};
@@ -476,8 +476,8 @@
 	}
 
 	var Router = (function (Component) {
-		function Router(props) {
-			Component.call(this, props);
+		function Router(props, context) {
+			Component.call(this, props, context);
 			if (!props.history) {
 				throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
 			}

@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.23
+ * inferno-dom v0.7.24
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -112,14 +112,12 @@
 
 	function recycle(node, bp, lifecycle, context, instance) {
 		if (bp !== undefined) {
-			var key = node.key;
-			var pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed[key];
-			if (!isNullOrUndefined(pool)) {
-				var recycledNode = pool.pop();
-				if (!isNullOrUndefined(recycledNode)) {
-					patch(recycledNode, node, null, lifecycle, context, instance, true, bp.isSVG);
-					return node.dom;
-				}
+			var pool = bp.pool;
+			var recycledNode = pool.pop();
+
+			if (!isNullOrUndefined(recycledNode)) {
+				patch(recycledNode, node, null, lifecycle, context, instance, bp.isSVG);
+				return node.dom;
 			}
 		}
 		return null;
@@ -129,16 +127,7 @@
 		var bp = node.bp;
 
 		if (!isNullOrUndefined(bp)) {
-			var key = node.key;
-			var pools = bp.pools;
-
-			if (key === null) {
-				var pool = pools.nonKeyed;
-				pool && pool.push(node);
-			} else {
-				var pool$1 = pools.keyed;
-				(pool$1[key] || (pool$1[key] = [])).push(node);
-			}
+			bp.pool.push(node);
 			return true;
 		}
 		return false;
@@ -1341,6 +1330,8 @@
 			if (lastHtml !== nextHtml) {
 				dom.innerHTML = nextHtml;
 			}
+		} else if (attrName === 'eventData') {
+			dom.eventData = nextAttrValue;
 		} else if (strictProps[attrName]) {
 			dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
 		} else {

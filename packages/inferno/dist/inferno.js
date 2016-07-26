@@ -1,5 +1,5 @@
 /*!
- * inferno v0.7.23
+ * inferno v0.7.24
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -135,10 +135,7 @@
 		var blueprint = {
 			lazy: shape.lazy || false,
 			dom: null,
-			pools: {
-				keyed: {},
-				nonKeyed: []
-			},
+			pool: [],
 			tag: tagIsDynamic ? null : tag,
 			className: className !== '' && className ? className : null,
 			style: style !== '' && style ? style : null,
