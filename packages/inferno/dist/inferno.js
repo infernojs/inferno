@@ -13,13 +13,17 @@
 		return obj === undefined;
 	}
 
+	var NULL_INDEX = -1;
+	var ROOT_INDEX = -2;
+
 	var NodeTypes = {
 		ELEMENT: 0,
 		COMPONENT: 1,
 		TEMPLATE: 2,
 		TEXT: 3,
 		PLACEHOLDER: 4,
-		FRAGMENT: 5
+		FRAGMENT: 5,
+		VARIABLE: 6
 	};
 
 	function VElement(tag) {
@@ -80,10 +84,100 @@
 		}
 	};
 
+	function VTemplate(templateReducers, key, v0, v1, v2) {
+		this._type = NodeTypes.TEMPLATE;
+		this._dom = null;
+		this._tr = templateReducers;
+		this._key = key;
+		this._v0 = v0;
+		this._v1 = v1;
+		this._v2 = v2;
+	}
+
+	VTemplate.prototype = {
+		read: function read(index) {
+			var value;
+			if (index === ROOT_INDEX) {
+				value = this._dom;
+			} else if (index === 0) {
+				value = this._v0;
+			} else {
+				value = this._v1[index - 1];
+			}
+			return value;
+		},
+		write: function write(index, value) {
+			if (index === ROOT_INDEX) {
+				this._dom = value;
+			} else if (index === 0) {
+				this._v0 = value;
+			} else {
+				var array = this._v1;
+				if (!array) {
+					this._v1 = [value];
+				} else {
+					array[index - 1] = value;
+				}
+			}
+		}
+	};
+
 	function VText(text) {
 		this._type = NodeTypes.TEXT;
 		this._text = text;
 		this._dom = null;
+	}
+
+	function Variable(arg) {
+		this._type = NodeTypes.VARIABLE;
+		this._arg = arg;
+	}
+
+	function createVTemplate(schema, renderer) {
+		var argCount = schema.length;
+		var parameters = [];
+
+		for (var i = 0; i < argCount; i++) {
+			parameters.push(new Variable(i));
+		}
+		var vNode = schema.apply(void 0, parameters);
+		var templateReducers = renderer.createTemplateReducers(vNode, true, { length: argCount }, null, false);
+		var keyIndex = templateReducers._keyIndex;
+
+		templateReducers._schema = schema;
+		switch (argCount) {
+			case 0:
+				return function () { return new VTemplate(templateReducers, null, null, null); };
+			case 1:
+				if (keyIndex === 0) {
+					return function (v0) { return new VTemplate(templateReducers, v0, v0, null); };
+				} else {
+					return function (v0) { return new VTemplate(templateReducers, null, v0, null); };
+				}
+			default:
+				if (keyIndex === NULL_INDEX) {
+					return function (v0) {
+						var v1 = [], len = arguments.length - 1;
+						while ( len-- > 0 ) v1[ len ] = arguments[ len + 1 ];
+
+						return new VTemplate(templateReducers, null, v0, v1);
+					};
+				} else if (keyIndex === 0) {
+					return function (v0) {
+						var v1 = [], len = arguments.length - 1;
+						while ( len-- > 0 ) v1[ len ] = arguments[ len + 1 ];
+
+						return new VTemplate(templateReducers, v0, v0, v1);
+					};
+				} else {
+					return function (v0) {
+						var v1 = [], len = arguments.length - 1;
+						while ( len-- > 0 ) v1[ len ] = arguments[ len + 1 ];
+
+						return new VTemplate(templateReducers, v1[keyIndex - 1], v0, v1);
+					};
+				}
+		}
 	}
 
 	function createVComponent(component) {
@@ -99,6 +193,7 @@
 	}
 
 	var index = {
+		createVTemplate: createVTemplate,
 		createVComponent: createVComponent,
 		createVElement: createVElement,
 		createVText: createVText

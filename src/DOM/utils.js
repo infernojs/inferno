@@ -160,19 +160,6 @@ export function normaliseChild(children, i) {
 	return children[i] = normalise(child);
 }
 
-export function remove(node, parentDom) {
-	const dom = node._dom;
-	if (dom === parentDom) {
-		dom.innerHTML = '';
-	} else {
-		removeChild(parentDom, dom);
-		if (recyclingEnabled) {
-			pool(node);
-		}
-	}
-	unmount(node, false);
-}
-
 export function removeChild(parentDom, dom) {
 	parentDom.removeChild(dom);
 }

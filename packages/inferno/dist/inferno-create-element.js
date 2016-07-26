@@ -43,7 +43,8 @@
 		TEMPLATE: 2,
 		TEXT: 3,
 		PLACEHOLDER: 4,
-		FRAGMENT: 5
+		FRAGMENT: 5,
+		VARIABLE: 6
 	};
 
 	function VElement(tag) {

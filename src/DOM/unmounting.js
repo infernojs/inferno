@@ -68,6 +68,7 @@ export function unmountVComponent(vComponent, parentDom) {
 
 export function unmountVElement(vElement, parentDom) {
 	const hooks = vElement._hooks;
+	const dom = vElement._dom;
 
 	if (!isNullOrUndef(hooks)) {
 		if (!isNullOrUndef(hooks.onWillDetach)) {
@@ -85,4 +86,13 @@ export function unmountVElement(vElement, parentDom) {
 			unmount(children, null);
 		}
 	}
+	if (parentDom) {
+		removeChild(parentDom, dom);
+	}
+}
+
+export function unmountVariable(variable) {
+	return function unmountVariable() {
+		debugger;
+	};
 }

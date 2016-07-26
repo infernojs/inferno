@@ -22,7 +22,6 @@ import {
 } from './mounting';
 import {
 	insertOrAppend,
-	remove,
 	isKeyed,
 	replaceNode,
 	isUnitlessNumber,
@@ -56,7 +55,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 		if (isInvalid(lastInput)) {
 			mount(nextInput, parentDom, lifecycle, context, isSVG);
 		} else if (isInvalid(nextInput)) {
-			remove(lastInput, parentDom);
+			unmount(lastInput, parentDom);
 		} else if (isStringOrNumber(lastInput)) {
 			if (isStringOrNumber(nextInput)) {
 				parentDom.firstChild.nodeValue = nextInput;
@@ -422,7 +421,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 		}
 	} else if (lastChildrenLength > nextChildrenLength) {
 		for (i = commonLength; i < lastChildrenLength; i++) {
-			remove(lastChildren[i], dom);
+			unmount(lastChildren[i], dom);
 		}
 	}
 }
@@ -512,7 +511,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 		}
 	} else if (nextStartIndex > nextEndIndex) {
 		while (lastStartIndex <= lastEndIndex) {
-			remove(lastChildren[lastStartIndex++], dom);
+			unmount(lastChildren[lastStartIndex++], dom);
 		}
 	} else {
 		let aLength = lastEndIndex - lastStartIndex + 1;
@@ -549,7 +548,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 					}
 				}
 				if (removed) {
-					remove(lastEndNode, dom);
+					unmount(lastEndNode, dom);
 					removeOffset++;
 				}
 			}
@@ -564,7 +563,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 				index = prevItemsMap.get(lastEndNode._key);
 
 				if (index === undefined) {
-					remove(lastEndNode, dom);
+					unmount(lastEndNode, dom);
 					removeOffset++;
 				} else {
 
@@ -664,4 +663,10 @@ function lis_algorithm(a) {
 	}
 
 	return result;
+}
+
+export function patchVariable(variable, isSVG) {
+	return function patchVariable() {
+		debugger;
+	};
 }

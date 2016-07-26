@@ -109,7 +109,8 @@
   	TEMPLATE: 2,
   	TEXT: 3,
   	PLACEHOLDER: 4,
-  	FRAGMENT: 5
+  	FRAGMENT: 5,
+  	VARIABLE: 6
   };
 
   function VElement(tag) {
@@ -224,6 +225,10 @@
   	return o._type === NodeTypes.ELEMENT;
   }
 
+  function isVTemplate(o) {
+  	return o._type === NodeTypes.TEMPLATE;
+  }
+
   function isVComponent(o) {
   	return o._type === NodeTypes.COMPONENT;
   }
@@ -289,6 +294,7 @@
 
   function unmountVElement(vElement, parentDom) {
   	var hooks = vElement._hooks;
+  	var dom = vElement._dom;
 
   	if (!isNullOrUndef(hooks)) {
   		if (!isNullOrUndef(hooks.onWillDetach)) {
@@ -305,6 +311,9 @@
   		} else {
   			unmount(children, null);
   		}
+  	}
+  	if (parentDom) {
+  		removeChild(parentDom, dom);
   	}
   }
 
@@ -453,19 +462,6 @@
   	return children[i] = normalise(child);
   }
 
-  function remove(node, parentDom) {
-  	var dom = node._dom;
-  	if (dom === parentDom) {
-  		dom.innerHTML = '';
-  	} else {
-  		removeChild(parentDom, dom);
-  		if (recyclingEnabled) {
-  			pool(node);
-  		}
-  	}
-  	unmount(node, false);
-  }
-
   function removeChild(parentDom, dom) {
   	parentDom.removeChild(dom);
   }
@@ -579,7 +575,9 @@
   }
 
   function mount(input, parentDom, lifecycle, context, isSVG) {
-  	if (isVPlaceholder(input)) {
+  	if (isVTemplate(input)) {
+  		return mountVTemplate(input, parentDom, lifecycle, context);
+  	} else if (isVPlaceholder(input)) {
   		return mountVPlaceholder(input, parentDom);
   	} else if (isVText(input)) {
   		return mountVText(input, parentDom);
@@ -592,6 +590,12 @@
   	} else {
   		throw Error('Bad Input!');
   	}
+  }
+
+  function mountVTemplate(vTemplate, parentDom, lifecycle, context) {
+  	var templateReducers = vTemplate._tr;
+  	var domNode = templateReducers.mount(vTemplate, parentDom, lifecycle, context);
+  	debugger;
   }
 
   function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
@@ -785,7 +789,7 @@
   		if (isInvalid(lastInput)) {
   			mount(nextInput, parentDom, lifecycle, context, isSVG);
   		} else if (isInvalid(nextInput)) {
-  			remove(lastInput, parentDom);
+  			unmount(lastInput, parentDom);
   		} else if (isStringOrNumber(lastInput)) {
   			if (isStringOrNumber(nextInput)) {
   				parentDom.firstChild.nodeValue = nextInput;
@@ -1151,7 +1155,7 @@
   		}
   	} else if (lastChildrenLength > nextChildrenLength) {
   		for (i = commonLength; i < lastChildrenLength; i++) {
-  			remove(lastChildren[i], dom);
+  			unmount(lastChildren[i], dom);
   		}
   	}
   }
@@ -1241,7 +1245,7 @@
   		}
   	} else if (nextStartIndex > nextEndIndex) {
   		while (lastStartIndex <= lastEndIndex) {
-  			remove(lastChildren[lastStartIndex++], dom);
+  			unmount(lastChildren[lastStartIndex++], dom);
   		}
   	} else {
   		var aLength = lastEndIndex - lastStartIndex + 1;
@@ -1278,7 +1282,7 @@
   					}
   				}
   				if (removed) {
-  					remove(lastEndNode, dom);
+  					unmount(lastEndNode, dom);
   					removeOffset++;
   				}
   			}
@@ -1293,7 +1297,7 @@
   				index = prevItemsMap.get(lastEndNode._key);
 
   				if (index === undefined) {
-  					remove(lastEndNode, dom);
+  					unmount(lastEndNode, dom);
   					removeOffset++;
   				} else {
 

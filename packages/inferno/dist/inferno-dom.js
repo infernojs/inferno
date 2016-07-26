@@ -75,13 +75,17 @@
 		return false;
 	}
 
+	var NULL_INDEX = -1;
+	var ROOT_INDEX = -2;
+
 	var NodeTypes = {
 		ELEMENT: 0,
 		COMPONENT: 1,
 		TEMPLATE: 2,
 		TEXT: 3,
 		PLACEHOLDER: 4,
-		FRAGMENT: 5
+		FRAGMENT: 5,
+		VARIABLE: 6
 	};
 
 	function VText(text) {
@@ -102,6 +106,18 @@
 		this._items = items;
 	}
 
+	function TemplaceReducers(keyIndex, mount, patch, unmount) {
+		this._keyIndex = keyIndex;
+		this._schema = null;
+		this.mount = mount;
+		this.patch = patch;
+		this.unmount = unmount;
+	}
+
+	function createTemplaceReducers(keyIndex, mount, patch, unmount) {
+		return new TemplaceReducers(keyIndex, mount, unmount);
+	}
+
 	function createVText(text) {
 		return new VText(text);
 	}
@@ -118,6 +134,10 @@
 		return o._type === NodeTypes.TEXT;
 	}
 
+	function isVariable(o) {
+		return o._type === NodeTypes.VARIABLE;
+	}
+
 	function isVPlaceholder(o) {
 		return o._type === NodeTypes.PLACEHOLDER;
 	}
@@ -128,6 +148,10 @@
 
 	function isVElement(o) {
 		return o._type === NodeTypes.ELEMENT;
+	}
+
+	function isVTemplate(o) {
+		return o._type === NodeTypes.TEMPLATE;
 	}
 
 	function isVComponent(o) {
@@ -195,6 +219,7 @@
 
 	function unmountVElement(vElement, parentDom) {
 		var hooks = vElement._hooks;
+		var dom = vElement._dom;
 
 		if (!isNullOrUndef(hooks)) {
 			if (!isNullOrUndef(hooks.onWillDetach)) {
@@ -212,6 +237,15 @@
 				unmount(children, null);
 			}
 		}
+		if (parentDom) {
+			removeChild(parentDom, dom);
+		}
+	}
+
+	function unmountVariable(variable) {
+		return function unmountVariable() {
+			debugger;
+		};
 	}
 
 	function constructDefaults(string, object, value) {
@@ -359,19 +393,6 @@
 		return children[i] = normalise(child);
 	}
 
-	function remove(node, parentDom) {
-		var dom = node._dom;
-		if (dom === parentDom) {
-			dom.innerHTML = '';
-		} else {
-			removeChild(parentDom, dom);
-			if (recyclingEnabled) {
-				pool(node);
-			}
-		}
-		unmount(node, false);
-	}
-
 	function removeChild(parentDom, dom) {
 		parentDom.removeChild(dom);
 	}
@@ -485,7 +506,9 @@
 	}
 
 	function mount(input, parentDom, lifecycle, context, isSVG) {
-		if (isVPlaceholder(input)) {
+		if (isVTemplate(input)) {
+			return mountVTemplate(input, parentDom, lifecycle, context);
+		} else if (isVPlaceholder(input)) {
 			return mountVPlaceholder(input, parentDom);
 		} else if (isVText(input)) {
 			return mountVText(input, parentDom);
@@ -498,6 +521,12 @@
 		} else {
 			throw Error('Bad Input!');
 		}
+	}
+
+	function mountVTemplate(vTemplate, parentDom, lifecycle, context) {
+		var templateReducers = vTemplate._tr;
+		var domNode = templateReducers.mount(vTemplate, parentDom, lifecycle, context);
+		debugger;
 	}
 
 	function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
@@ -686,12 +715,32 @@
 		}
 	}
 
+	function mountVariable(variable, isSVG) {
+		return function mountVariable(vTemplate, parentDom, lifecycle, context) {
+			var arg = variable._arg;
+			var input = vTemplate.read(arg);
+
+			debugger;
+		};
+	}
+
+	function mountDOMNodeFromTemplate(templateDomNode, isRoot, shouldClone) {
+		return function mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context) {
+			var domNode = templateDomNode.cloneNode(shouldClone);
+
+			if (!isRoot && !isNull(parentDom)) {
+				appendChild(parentDom, domNode);
+			}
+			return domNode;
+		};
+	}
+
 	function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 		if (lastInput !== nextInput) {
 			if (isInvalid(lastInput)) {
 				mount(nextInput, parentDom, lifecycle, context, isSVG);
 			} else if (isInvalid(nextInput)) {
-				remove(lastInput, parentDom);
+				unmount(lastInput, parentDom);
 			} else if (isStringOrNumber(lastInput)) {
 				if (isStringOrNumber(nextInput)) {
 					parentDom.firstChild.nodeValue = nextInput;
@@ -1057,7 +1106,7 @@
 			}
 		} else if (lastChildrenLength > nextChildrenLength) {
 			for (i = commonLength; i < lastChildrenLength; i++) {
-				remove(lastChildren[i], dom);
+				unmount(lastChildren[i], dom);
 			}
 		}
 	}
@@ -1147,7 +1196,7 @@
 			}
 		} else if (nextStartIndex > nextEndIndex) {
 			while (lastStartIndex <= lastEndIndex) {
-				remove(lastChildren[lastStartIndex++], dom);
+				unmount(lastChildren[lastStartIndex++], dom);
 			}
 		} else {
 			var aLength = lastEndIndex - lastStartIndex + 1;
@@ -1184,7 +1233,7 @@
 						}
 					}
 					if (removed) {
-						remove(lastEndNode, dom);
+						unmount(lastEndNode, dom);
 						removeOffset++;
 					}
 				}
@@ -1199,7 +1248,7 @@
 					index = prevItemsMap.get(lastEndNode._key);
 
 					if (index === undefined) {
-						remove(lastEndNode, dom);
+						unmount(lastEndNode, dom);
 						removeOffset++;
 					} else {
 
@@ -1301,6 +1350,12 @@
 		return result;
 	}
 
+	function patchVariable(variable, isSVG) {
+		return function patchVariable() {
+			debugger;
+		};
+	}
+
 	var screenWidth = isBrowser && window.screen.width;
 	var screenHeight = isBrowser && window.screen.height;
 	var scrollX = 0;
@@ -1400,12 +1455,222 @@
 		}
 	}
 
+	function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG) {
+		if (!isInvalid(vNode)) {
+			var keyIndex = NULL_INDEX;
+			var nodeIndex = isRoot ? ROOT_INDEX : NULL_INDEX;
+			var mount;
+			var patch;
+			var unmount;
+			var shouldClone = false;
+
+			if (isVariable(vNode)) {
+				mount = mountVariable(vNode, isSVG);
+				patch = patchVariable(vNode, isSVG);
+				unmount = unmountVariable(vNode);
+			} else if (isVElement(vNode)) {
+				var mounters = [];
+				var patchers = [];
+				var unmounters = [];
+				var tag = vNode._tag;
+
+				if (tag === 'svg') {
+					isSVG = true;
+				}
+				var domNode = documentCreateElement(tag, isSVG);
+				var key = vNode._key;
+
+				if (!isNull(key) && isVariable(key)) {
+					keyIndex = key._arg;
+				}
+				var props = vNode._props;
+				var hooks = vNode._hooks;
+
+				if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
+					nodeIndex = offset.length++;
+				}
+				var children = vNode._children;
+
+				if (!isInvalid(children)) {
+					if (isStringOrNumber(children)) {
+						debugger;
+					} else if (isArray(children)) {
+						debugger;
+					} else {
+						var templateReducers = createTemplateReducers(children, false, offset, domNode, isSVG);
+
+						if (!isInvalid(templateReducers)) {
+							mounters.push(templateReducers.mount);
+							var patch$1 = templateReducers.patch;
+							var unmount$1 = templateReducers.unmount;
+
+							if (!isNull(patch$1)) {
+								patchers.push(patch$1);
+							}
+							if (!isNull(unmount$1)) {
+								unmounters.push(unmount$1);
+							}
+						}
+					}
+				}
+				mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(domNode, isRoot, shouldClone), mounters);
+				patch = combinePatch(nodeIndex, patchers);
+				unmount = combineUnmount(nodeIndex, unmounters);
+			} else if (isVComponent(vNode)) {
+				throw new Error('Inferno Error: templates cannot contain VComponent nodes. Pass a VComponent node into a template as a variable instead.');
+			}
+			return createTemplaceReducers(keyIndex, mount, patch, unmount);
+		}
+	}
+
+	function combineMount(nodeIndex, mountDOMNodeFromTemplate, mounters) {
+		if (nodeIndex === NULL_INDEX && mounters.length === 0) {
+			return mountDOMNodeFromTemplate;
+		} else if (mounters.length <= 5) {
+			return combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounters[0], mounters[1], mounters[2], mounters[3]);
+		} else {
+			return combineMountToX(nodeIndex, mountDOMNodeFromTemplate, mounters);
+		}
+	}
+
+	function combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounter1, mounter2, mounter3, mounter4) {
+		var write = (nodeIndex !== NULL_INDEX);
+
+		return function combineMountTo5(vTemplate, parentDom, lifecycle, context) {
+			var domNode = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context);
+
+			if (write) {
+				vTemplate.write(nodeIndex, domNode);
+			}
+			if (mounter1) {
+				mounter1(vTemplate, domNode, lifecycle, context);
+				if (mounter2) {
+					mounter2(vTemplate, domNode, lifecycle, context);
+					if (mounter3) {
+						mounter3(vTemplate, domNode, lifecycle, context);
+						if (mounter4) {
+							mounter4(vTemplate, domNode, lifecycle, context);
+						}
+					}
+				}
+			}
+			return domNode;
+		};
+	}
+
+	function combineMountToX(nodeIndex, mountDOMNodeFromTemplate, mounters) {
+		var write = (nodeIndex !== NULL_INDEX);
+
+		return function combineMountToX(vTemplate, parentDom, lifecycle, instance) {
+			var domNode = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context);
+
+			if (write) {
+				vTemplate.write(nodeIndex, domNode);
+			}
+			for (var i = 0; i < mounters.length; i++) {
+				mounters[i](vTemplate, domNode, lifecycle, context);
+			}
+			return domNode;
+		};
+	}
+
+	function combinePatch(nodeIndex, patchers) {
+		if (patchers.length === 0) {
+			if (nodeIndex !== NULL_INDEX) {
+				return copyTemplate(nodeIndex);
+			} else {
+				return null;
+			}
+		} else if (patchers.length <= 5) {
+			return combinePatchTo5(nodeIndex, patchers[0], patchers[1], patchers[2], patchers[3], patchers[4]);
+		} else {
+			return combinePatchX(nodeIndex, patchers);
+		}
+	}
+
+	function combinePatchTo5(nodeIndex, patch1, patch2, patch3, patch4, patch5) {
+		var copy = (nodeIndex !== NULL_INDEX);
+
+		return function combinePatchTo5(lastVTemplate, nextVTemplate, lifecycle, context) {
+			var domNode;
+
+			if (copy) {
+				domNode = copyValue(lastVTemplate, nextVTemplate, nodeIndex);
+			}
+			if (patch1) {
+				patch1(lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+				if (patch2) {
+					patch2(lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+					if (patch3) {
+						patch3(lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+						if (patch4) {
+							patch4(lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+							if (patch5) {
+								patch5(lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+							}
+						}
+					}
+				}
+			}
+		};
+	}
+
+	function combinePatchX(nodeIndex, patchers) {
+		var copy = (nodeIndex !== NULL_INDEX);
+
+		return function combinePatchX(lastVTemplate, nextVTemplate, lifecycle, context) {
+			var domNode;
+
+			if (copy) {
+				domNode = copyValue(lastVTemplate, nextVTemplate, nodeIndex);
+			}
+			for (var i = 0; i < patchers.length; i++) {
+				patchers[i](lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+			}
+		};
+	}
+
+	function combineUnmount(nodeIndex, unmounters) {
+		if (unmounters.length > 0) {
+			if (unmounters.length <= 5) {
+				return combineUnmountTo5(nodeIndex, unmounters[0], unmounters[1], unmounters[2], unmounters[3], unmounters[4]);
+			}
+		}
+		return null;
+	}
+
+	function combineUnmountTo5(nodeIndex, unomunt1, unomunt2, unomunt3, unomunt4, unomunt5) {
+		var copy = (nodeIndex !== NULL_INDEX);
+
+		return function combineUnmountTo5(vTemplate, domNode, lifecycle, isRoot, isReplace) {
+			if (copy) {
+				domNode = vTemplate.read(nodeIndex);
+			}
+			if (unomunt1) {
+				unomunt1(vTemplate, domNode, lifecycle, isRoot, isReplace);
+				if (unomunt2) {
+					unomunt2(vTemplate, domNode, lifecycle, isRoot, isReplace);
+					if (unomunt3) {
+						unomunt3(vTemplate, domNode, lifecycle, isRoot, isReplace);
+						if (unomunt4) {
+							unomunt4(vTemplate, domNode, lifecycle, isRoot, isReplace);
+							if (unomunt5) {
+								unomunt5(vTemplate, domNode, lifecycle, isRoot, isReplace);
+							}
+						}
+					}
+				}
+			}
+		};
+	}
+
 	var index = {
 		render: render,
 		findDOMNode: findDOMNode,
 		mount: mount,
 		patch: patch,
-		unmount: unmount
+		unmount: unmount,
+		createTemplateReducers: createTemplateReducers
 	};
 
 	return index;

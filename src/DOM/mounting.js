@@ -33,12 +33,15 @@ import {
 	isVPlaceholder,
 	isVFragment,
 	isVElement,
-	isVComponent
+	isVComponent,
+	isVTemplate
 } from '../core/shapes';
 import { normalise } from './utils';
 
 export function mount(input, parentDom, lifecycle, context, isSVG) {
-	if (isVPlaceholder(input)) {
+	if (isVTemplate(input)) {
+		return mountVTemplate(input, parentDom, lifecycle, context);
+	} else if (isVPlaceholder(input)) {
 		return mountVPlaceholder(input, parentDom);
 	} else if (isVText(input)) {
 		return mountVText(input, parentDom);
@@ -53,7 +56,13 @@ export function mount(input, parentDom, lifecycle, context, isSVG) {
 	}
 }
 
-export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
+function mountVTemplate(vTemplate, parentDom, lifecycle, context) {
+	const templateReducers = vTemplate._tr;
+	const domNode = templateReducers.mount(vTemplate, parentDom, lifecycle, context);
+	debugger;
+}
+
+function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	const tag = vElement._tag;
 
 	if (!isString(tag)) {
@@ -237,4 +246,24 @@ export function mountProps(vElement, props, dom) {
 			}
 		}
 	}
+}
+
+export function mountVariable(variable, isSVG) {
+	return function mountVariable(vTemplate, parentDom, lifecycle, context) {
+		const arg = variable._arg;
+		let input = vTemplate.read(arg);
+
+		debugger;
+	};
+}
+
+export function mountDOMNodeFromTemplate(templateDomNode, isRoot, shouldClone) {
+	return function mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context) {
+		const domNode = templateDomNode.cloneNode(shouldClone);
+
+		if (!isRoot && !isNull(parentDom)) {
+			appendChild(parentDom, domNode);
+		}
+		return domNode;
+	};
 }

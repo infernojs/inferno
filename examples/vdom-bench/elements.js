@@ -3,22 +3,9 @@
 
 	var benchmark = require('vdom-benchmark-base');
 	var e = Inferno.createVElement;
-	var t = Inferno.createVTemplate;
 
 	var NAME = 'inferno';
 	var VERSION = '0.8';
-
-	var tpl1 = t(children =>
-		e('div').children(children)
-	, InfernoDOM);
-
-	var tpl2 = t((children, key) =>
-		e('div').key(key).children(children)
-	, InfernoDOM);
-
-	var tpl3 = t((children, key) =>
-		e('span').key(key).children(children)
-	, InfernoDOM);
 
 	function renderTree(nodes) {
 		var children = new Array(nodes.length);
@@ -28,9 +15,9 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = tpl2(renderTree(n.children), n.key);
+				children[i] = e('div').key(n.key).children(renderTree(n.children));
 			} else {
-				children[i] = tpl3(n.key, n.key); 
+				children[i] = e('span').key(n.key).children(n.key);
 			}
 		}
 		return children;
@@ -51,14 +38,14 @@
 
 	BenchmarkImpl.prototype.render = function() {
 		InfernoDOM.render(
-			tpl1(renderTree(this.a)),
+			e('div').children(renderTree(this.a)),
 			this.container
 		);
 	};
 
 	BenchmarkImpl.prototype.update = function() {
 		InfernoDOM.render(
-			tpl1(renderTree(this.b)),
+			e('div').children(renderTree(this.b)),
 			this.container
 		);
 	};
