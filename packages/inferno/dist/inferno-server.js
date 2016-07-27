@@ -25,9 +25,6 @@
 		return props;
 	}
 
-	// Runs only once in applications lifetime
-	var isBrowser = typeof window !== 'undefined' && window.document;
-
 	function isArray(obj) {
 		return obj instanceof Array;
 	}
@@ -72,30 +69,6 @@
 		return obj === undefined;
 	}
 
-	var screenWidth = isBrowser && window.screen.width;
-	var screenHeight = isBrowser && window.screen.height;
-	var scrollX = 0;
-	var scrollY = 0;
-	var lastScrollTime = 0;
-
-	if (isBrowser) {
-		window.onscroll = function () {
-			scrollX = window.scrollX;
-			scrollY = window.scrollY;
-			lastScrollTime = performance.now();
-		};
-
-		window.resize = function () {
-			scrollX = window.scrollX;
-			scrollY = window.scrollY;
-			screenWidth = window.screen.width;
-			screenHeight = window.screen.height;
-			lastScrollTime = performance.now();
-		};
-	}
-
-	var documetBody = isBrowser ? document.body : null;
-
 	function constructDefaults(string, object, value) {
 		/* eslint no-return-assign: 0 */
 		string.split(',').forEach(function (i) { return object[i] = value; });
@@ -113,28 +86,6 @@
 	constructDefaults('volume,value', strictProps, true);
 	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 	constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
-
-	var elementsPropMap = new Map();
-
-	// pre-populate with common tags
-	getAllPropsForElement('div');
-	getAllPropsForElement('span');
-	getAllPropsForElement('table');
-	getAllPropsForElement('tr');
-	getAllPropsForElement('td');
-	getAllPropsForElement('a');
-	getAllPropsForElement('p');
-
-	function getAllPropsForElement(tag) {
-		var elem = document.createElement(tag);
-		var props = {};
-
-		for (var prop in elem) {
-			props[prop] = true;
-		}
-		elementsPropMap.set(tag, props);
-		return props;
-	}
 
 	function escapeText(str) {
 		return (str + '')

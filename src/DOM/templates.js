@@ -36,11 +36,14 @@ import {
 	mountDOMNodeFromTemplate
 } from './mounting';
 import {
-	patchVariable
+	patchVariable,
+	patchVTemplate
 } from './patching';
 import {
 	unmountVariable
 } from './unmounting';
+
+export const recyclingEnabled = true;
 
 function copyValue(oldItem, item, index) {
 	const value = oldItem.read(index);
@@ -62,7 +65,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 		let mount;
 		let patch;
 		let unmount;
-		let shouldClone = false;
+		let deepClone = false;
 
 		if (isVariable(vNode)) {
 			mount = mountVariable(vNode, isSVG, isChildren, childrenType);
@@ -113,7 +116,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					}
 				}
 			}
-			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(domNode, isRoot, shouldClone), mounters);
+			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(domNode, isRoot, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);
 			unmount = combineUnmount(nodeIndex, unmounters);
 		} else if (isVComponent(vNode)) {
@@ -263,4 +266,41 @@ function combineUnmountTo5(nodeIndex, unomunt1, unomunt2, unomunt3, unomunt4, un
 
 function combineUnmountX() {
 
+}
+
+export function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
+	const templateReducers = vTemplate._tr;
+	const key = vTemplate._key;
+	const pool = key === null ? templateReducers._pools.nonKeyed : templateReducers._pools.keyed.get(key);
+
+	if (!isUndefined(pool)) {
+		const recycledVTemplate = pool.pop();
+
+		if (!isNullOrUndef(recycledVTemplate)) {
+			patchVTemplate(recycledVTemplate, vTemplate, null, lifecycle, context, isSVG);
+			return vTemplate._dom;
+		}
+	}
+	return null;
+}
+
+export function poolVTemplate(vTemplate) {
+	const templateReducers = vTemplate._tr;
+	const key = vTemplate._key;
+	const pools = templateReducers._pools;
+
+	if (key === null) {
+		const pool = pools.nonKeyed;
+
+		pool && pool.push(vTemplate);
+	} else {
+		let pool = pools.keyed.get(key);
+
+		if (isUndefined(pool)) {
+			pool = [];
+			pools.keyed.set(key, pool);
+		}
+		pool.push(vTemplate);
+	}
+	return true;
 }

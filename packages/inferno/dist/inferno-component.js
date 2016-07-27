@@ -9,10 +9,21 @@
 	(global.InfernoComponent = factory());
 }(this, function () { 'use strict';
 
-	var NO_OP = 'NO_OP';
+	var Lifecycle = function Lifecycle() {
+		this._listeners = [];
+	};
+	Lifecycle.prototype.addListener = function addListener (callback) {
+		this._listeners.push(callback);
+	};
+	Lifecycle.prototype.trigger = function trigger () {
+			var this$1 = this;
 
-	// Runs only once in applications lifetime
-	var isBrowser = typeof window !== 'undefined' && window.document;
+		for (var i = 0; i < this._listeners.length; i++) {
+			this$1._listeners[i]();
+		}
+	};
+
+	var NO_OP = 'NO_OP';
 
 	function isNullOrUndef(obj) {
 		return isUndefined(obj) || isNull(obj);
@@ -36,103 +47,14 @@
 		VARIABLE: 6
 	};
 
-	function VPlaceholder() {
+	var VPlaceholder = function VPlaceholder() {
 		this._type = NodeTypes.PLACEHOLDER;
 		this._dom = null;
-	}
+	};
 
 	function createVPlaceholder() {
 		return new VPlaceholder();
 	}
-
-	var documetBody = isBrowser ? document.body : null;
-
-	function constructDefaults(string, object, value) {
-		/* eslint no-return-assign: 0 */
-		string.split(',').forEach(function (i) { return object[i] = value; });
-	}
-
-	var xlinkNS = 'http://www.w3.org/1999/xlink';
-	var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-	var strictProps = {};
-	var booleanProps = {};
-	var namespaces = {};
-	var isUnitlessNumber = {};
-
-	constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-	constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-	constructDefaults('volume,value', strictProps, true);
-	constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-	constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
-
-	var elementsPropMap = new Map();
-
-	// pre-populate with common tags
-	getAllPropsForElement('div');
-	getAllPropsForElement('span');
-	getAllPropsForElement('table');
-	getAllPropsForElement('tr');
-	getAllPropsForElement('td');
-	getAllPropsForElement('a');
-	getAllPropsForElement('p');
-
-	function getAllPropsForElement(tag) {
-		var elem = document.createElement(tag);
-		var props = {};
-
-		for (var prop in elem) {
-			props[prop] = true;
-		}
-		elementsPropMap.set(tag, props);
-		return props;
-	}
-
-	var screenWidth = isBrowser && window.screen.width;
-	var screenHeight = isBrowser && window.screen.height;
-	var scrollX = 0;
-	var scrollY = 0;
-	var lastScrollTime = 0;
-
-	if (isBrowser) {
-		window.onscroll = function () {
-			scrollX = window.scrollX;
-			scrollY = window.scrollY;
-			lastScrollTime = performance.now();
-		};
-
-		window.resize = function () {
-			scrollX = window.scrollX;
-			scrollY = window.scrollY;
-			screenWidth = window.screen.width;
-			screenHeight = window.screen.height;
-			lastScrollTime = performance.now();
-		};
-	}
-
-	function Lifecycle() {
-		this._listeners = [];
-		this.scrollX = null;
-		this.scrollY = null;
-		this.screenHeight = screenHeight;
-		this.screenWidth = screenWidth;
-	}
-
-	Lifecycle.prototype = {
-		refresh: function refresh() {
-			this.scrollX = isBrowser && window.scrollX;
-			this.scrollY = isBrowser && window.scrollY;
-		},
-		addListener: function addListener(callback) {
-			this._listeners.push(callback);
-		},
-		trigger: function trigger() {
-			var this$1 = this;
-
-			for (var i = 0; i < this._listeners.length; i++) {
-				this$1._listeners[i]();
-			}
-		}
-	};
 
 	var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 

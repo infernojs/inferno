@@ -7,6 +7,7 @@ import {
 	isVComponent,
 	isVTemplate
 } from '../core/shapes';
+import { poolVTemplate, recyclingEnabled } from './templates';
 
 export function unmount(input, parentDom, lifecycle) {
 	if (isVTemplate(input)) {
@@ -23,10 +24,12 @@ export function unmount(input, parentDom, lifecycle) {
 function unmountVTemplate(vTemplate, parentDom) {
 	const dom = vTemplate._dom;
 	const templateReducers = vTemplate._tr;
-	// pool for recycling?
 	templateReducers.unmount(vTemplate);
 	if (!isNull(parentDom)) {
 		removeChild(parentDom, dom);
+	}
+	if (recyclingEnabled) {
+		poolVTemplate(vTemplate);
 	}
 }
 

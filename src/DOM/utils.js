@@ -6,7 +6,6 @@ import {
 	isStringOrNumber,
 	isUndefined
 } from './../core/utils';
-import { recyclingEnabled, pool } from './recycling';
 import { unmountVFragment } from './unmounting';
 import {
 	createVText,
@@ -36,13 +35,13 @@ constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,bo
 const elementsPropMap = new Map();
 
 // pre-populate with common tags
-getAllPropsForElement('div');
-getAllPropsForElement('span');
-getAllPropsForElement('table');
-getAllPropsForElement('tr');
-getAllPropsForElement('td');
-getAllPropsForElement('a');
-getAllPropsForElement('p');
+// getAllPropsForElement('div');
+// getAllPropsForElement('span');
+// getAllPropsForElement('table');
+// getAllPropsForElement('tr');
+// getAllPropsForElement('td');
+// getAllPropsForElement('a');
+// getAllPropsForElement('p');
 
 function getAllPropsForElement(tag) {
 	const elem = document.createElement(tag);
@@ -80,9 +79,13 @@ export function isPropertyOfElement(tag, prop) {
 	return propsForElement[prop];
 }
 
+export function appendChild(parentDom, dom) {
+	parentDom.appendChild(dom);
+}
+
 export function insertOrAppend(parentDom, newNode, nextNode) {
 	if (isNullOrUndef(nextNode)) {
-		parentDom.appendChild(newNode);
+		appendChild(parentDom, newNode);
 	} else {
 		parentDom.insertBefore(newNode, nextNode);
 	}
@@ -92,7 +95,7 @@ export function replaceVListWithNode(parentDom, vList, dom) {
 	const pointer = vList._pointer;
 
 	unmountVFragment(vList, parentDom, false);
-	replaceNode(parentDom, dom, pointer);
+	replaceChild(parentDom, dom, pointer);
 }
 
 export function documentCreateElement(tag, isSVG) {
@@ -118,13 +121,13 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode._dom = dom;
-	replaceNode(parentDom, dom, lastNode._dom);
+	replaceChild(parentDom, dom, lastNode._dom);
 	if (lastInstance !== null) {
 		lastInstance._lasInput = nextNode;
 	}
 }
 
-export function replaceNode(parentDom, nextDom, lastDom) {
+export function replaceChild(parentDom, nextDom, lastDom) {
 	parentDom.replaceChild(nextDom, lastDom);
 }
 

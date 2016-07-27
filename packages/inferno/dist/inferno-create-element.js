@@ -55,7 +55,7 @@
 		VARIABLE: 6
 	};
 
-	function VElement(tag) {
+	var VElement = function VElement(tag) {
 		this._type = NodeTypes.ELEMENT;
 		this._dom = null;
 		this._tag = tag;
@@ -64,36 +64,33 @@
 		this._props = null;
 		this._hooks = null;
 		this._childrenType = ChildrenTypes.UKNOWN;
-	}
-
-	VElement.prototype = {
-		children: function children(children) {
-			this._children = children;
-			return this;
-		},
-		key: function key(key) {
-			this._key = key;
-			return this;
-		},
-		props: function props(props) {
-			this._props = props;
-			return this;
-		},
-		hooks: function hooks(hooks) {
-			this._hooks = hooks;
-			return this;
-		},
-		events: function events(events) {
-			this._events = events;
-			return this;
-		},
-		childrenType: function childrenType(childrenType) {
-			this._childrenType = childrenType;
-			return this;
-		}
+	};
+	VElement.prototype.children = function children (children) {
+		this._children = children;
+		return this;
+	};
+	VElement.prototype.key = function key (key) {
+		this._key = key;
+		return this;
+	};
+	VElement.prototype.props = function props (props) {
+		this._props = props;
+		return this;
+	};
+	VElement.prototype.hooks = function hooks (hooks) {
+		this._hooks = hooks;
+		return this;
+	};
+	VElement.prototype.events = function events (events) {
+		this._events = events;
+		return this;
+	};
+	VElement.prototype.childrenType = function childrenType (childrenType) {
+		this._childrenType = childrenType;
+		return this;
 	};
 
-	function VComponent(component) {
+	var VComponent = function VComponent(component) {
 		this._type = NodeTypes.COMPONENT;
 		this._dom = null;
 		this._component = component;
@@ -101,21 +98,18 @@
 		this._hooks = null;
 		this._key = null;
 		this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
-	}
-
-	VComponent.prototype = {
-		key: function key$1(key) {
-			this._key = key;
-			return this;
-		},
-		props: function props$1(props) {
-			this._props = props;
-			return this;
-		},
-		hooks: function hooks$1(hooks) {
-			this._hooks = hooks;
-			return this;
-		}
+	};
+	VComponent.prototype.key = function key (key) {
+		this._key = key;
+		return this;
+	};
+	VComponent.prototype.props = function props (props) {
+		this._props = props;
+		return this;
+	};
+	VComponent.prototype.hooks = function hooks (hooks) {
+		this._hooks = hooks;
+		return this;
 	};
 
 	function createVComponent(component) {

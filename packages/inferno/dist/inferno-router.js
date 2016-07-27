@@ -48,7 +48,7 @@
     	VARIABLE: 6
     };
 
-    function VElement(tag) {
+    var VElement = function VElement(tag) {
     	this._type = NodeTypes.ELEMENT;
     	this._dom = null;
     	this._tag = tag;
@@ -57,36 +57,33 @@
     	this._props = null;
     	this._hooks = null;
     	this._childrenType = ChildrenTypes.UKNOWN;
-    }
-
-    VElement.prototype = {
-    	children: function children(children) {
-    		this._children = children;
-    		return this;
-    	},
-    	key: function key(key) {
-    		this._key = key;
-    		return this;
-    	},
-    	props: function props(props) {
-    		this._props = props;
-    		return this;
-    	},
-    	hooks: function hooks(hooks) {
-    		this._hooks = hooks;
-    		return this;
-    	},
-    	events: function events(events) {
-    		this._events = events;
-    		return this;
-    	},
-    	childrenType: function childrenType(childrenType) {
-    		this._childrenType = childrenType;
-    		return this;
-    	}
+    };
+    VElement.prototype.children = function children (children) {
+    	this._children = children;
+    	return this;
+    };
+    VElement.prototype.key = function key (key) {
+    	this._key = key;
+    	return this;
+    };
+    VElement.prototype.props = function props (props) {
+    	this._props = props;
+    	return this;
+    };
+    VElement.prototype.hooks = function hooks (hooks) {
+    	this._hooks = hooks;
+    	return this;
+    };
+    VElement.prototype.events = function events (events) {
+    	this._events = events;
+    	return this;
+    };
+    VElement.prototype.childrenType = function childrenType (childrenType) {
+    	this._childrenType = childrenType;
+    	return this;
     };
 
-    function VComponent(component) {
+    var VComponent = function VComponent(component) {
     	this._type = NodeTypes.COMPONENT;
     	this._dom = null;
     	this._component = component;
@@ -94,27 +91,24 @@
     	this._hooks = null;
     	this._key = null;
     	this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
-    }
-
-    VComponent.prototype = {
-    	key: function key$1(key) {
-    		this._key = key;
-    		return this;
-    	},
-    	props: function props$1(props) {
-    		this._props = props;
-    		return this;
-    	},
-    	hooks: function hooks$1(hooks) {
-    		this._hooks = hooks;
-    		return this;
-    	}
+    };
+    VComponent.prototype.key = function key (key) {
+    	this._key = key;
+    	return this;
+    };
+    VComponent.prototype.props = function props (props) {
+    	this._props = props;
+    	return this;
+    };
+    VComponent.prototype.hooks = function hooks (hooks) {
+    	this._hooks = hooks;
+    	return this;
     };
 
-    function VPlaceholder() {
+    var VPlaceholder = function VPlaceholder() {
     	this._type = NodeTypes.PLACEHOLDER;
     	this._dom = null;
-    }
+    };
 
     function createVComponent(component) {
     	return new VComponent(component);
@@ -128,92 +122,17 @@
     	return new VPlaceholder();
     }
 
-    var documetBody = isBrowser ? document.body : null;
-
-    function constructDefaults(string, object, value) {
-    	/* eslint no-return-assign: 0 */
-    	string.split(',').forEach(function (i) { return object[i] = value; });
-    }
-
-    var xlinkNS = 'http://www.w3.org/1999/xlink';
-    var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-    var strictProps = {};
-    var booleanProps = {};
-    var namespaces = {};
-    var isUnitlessNumber = {};
-
-    constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-    constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-    constructDefaults('volume,value', strictProps, true);
-    constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-    constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
-
-    var elementsPropMap = new Map();
-
-    // pre-populate with common tags
-    getAllPropsForElement('div');
-    getAllPropsForElement('span');
-    getAllPropsForElement('table');
-    getAllPropsForElement('tr');
-    getAllPropsForElement('td');
-    getAllPropsForElement('a');
-    getAllPropsForElement('p');
-
-    function getAllPropsForElement(tag) {
-    	var elem = document.createElement(tag);
-    	var props = {};
-
-    	for (var prop in elem) {
-    		props[prop] = true;
-    	}
-    	elementsPropMap.set(tag, props);
-    	return props;
-    }
-
-    var screenWidth = isBrowser && window.screen.width;
-    var screenHeight = isBrowser && window.screen.height;
-    var scrollX = 0;
-    var scrollY = 0;
-    var lastScrollTime = 0;
-
-    if (isBrowser) {
-    	window.onscroll = function () {
-    		scrollX = window.scrollX;
-    		scrollY = window.scrollY;
-    		lastScrollTime = performance.now();
-    	};
-
-    	window.resize = function () {
-    		scrollX = window.scrollX;
-    		scrollY = window.scrollY;
-    		screenWidth = window.screen.width;
-    		screenHeight = window.screen.height;
-    		lastScrollTime = performance.now();
-    	};
-    }
-
-    function Lifecycle() {
+    var Lifecycle = function Lifecycle() {
     	this._listeners = [];
-    	this.scrollX = null;
-    	this.scrollY = null;
-    	this.screenHeight = screenHeight;
-    	this.screenWidth = screenWidth;
-    }
-
-    Lifecycle.prototype = {
-    	refresh: function refresh() {
-    		this.scrollX = isBrowser && window.scrollX;
-    		this.scrollY = isBrowser && window.scrollY;
-    	},
-    	addListener: function addListener(callback) {
-    		this._listeners.push(callback);
-    	},
-    	trigger: function trigger() {
+    };
+    Lifecycle.prototype.addListener = function addListener (callback) {
+    	this._listeners.push(callback);
+    };
+    Lifecycle.prototype.trigger = function trigger () {
     		var this$1 = this;
 
-    		for (var i = 0; i < this._listeners.length; i++) {
-    			this$1._listeners[i]();
-    		}
+    	for (var i = 0; i < this._listeners.length; i++) {
+    		this$1._listeners[i]();
     	}
     };
 

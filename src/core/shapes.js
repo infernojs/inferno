@@ -14,79 +14,76 @@ export const NodeTypes = {
 	VARIABLE: 6
 };
 
-function VElement(tag) {
-	this._type = NodeTypes.ELEMENT;
-	this._dom = null;
-	this._tag = tag;
-	this._children = null;
-	this._key = null;
-	this._props = null;
-	this._hooks = null;
-	this._childrenType = ChildrenTypes.UKNOWN;
-}
-
-VElement.prototype = {
+class VElement {
+	constructor(tag) {
+		this._type = NodeTypes.ELEMENT;
+		this._dom = null;
+		this._tag = tag;
+		this._children = null;
+		this._key = null;
+		this._props = null;
+		this._hooks = null;
+		this._childrenType = ChildrenTypes.UKNOWN;
+	}
 	children(children) {
 		this._children = children;
 		return this;
-	},
+	}
 	key(key) {
 		this._key = key;
 		return this;
-	},
+	}
 	props(props) {
 		this._props = props;
 		return this;
-	},
+	}
 	hooks(hooks) {
 		this._hooks = hooks;
 		return this;
-	},
+	}
 	events(events) {
 		this._events = events;
 		return this;
-	},
+	}
 	childrenType(childrenType) {
 		this._childrenType = childrenType;
 		return this;
 	}
-};
-
-function VComponent(component) {
-	this._type = NodeTypes.COMPONENT;
-	this._dom = null;
-	this._component = component;
-	this._props = null;
-	this._hooks = null;
-	this._key = null;
-	this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
 }
 
-VComponent.prototype = {
+class VComponent {
+	constructor(component) {
+		this._type = NodeTypes.COMPONENT;
+		this._dom = null;
+		this._component = component;
+		this._props = null;
+		this._hooks = null;
+		this._key = null;
+		this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
+	}
 	key(key) {
 		this._key = key;
 		return this;
-	},
+	}
 	props(props) {
 		this._props = props;
 		return this;
-	},
+	}
 	hooks(hooks) {
 		this._hooks = hooks;
 		return this;
 	}
-};
-
-export function VTemplate(templateReducers, key, v0, v1) {
-	this._type = NodeTypes.TEMPLATE;
-	this._dom = null;
-	this._tr = templateReducers;
-	this._key = key;
-	this._v0 = v0;
-	this._v1 = v1;
 }
 
-VTemplate.prototype = {
+export class VTemplate {
+	constructor(templateReducers, key, v0, v1) {
+		this._type = NodeTypes.TEMPLATE;
+		this._dom = null;
+		this._tr = templateReducers;
+		this._key = key;
+		this._v0 = v0;
+		this._v1 = v1;
+	}
 	read(index) {
 		let value;
 		if (index === ROOT_INDEX) {
@@ -97,7 +94,7 @@ VTemplate.prototype = {
 			value = this._v1[index - 1];
 		}
 		return value;
-	},
+	}
 	write(index, value) {
 		if (index === ROOT_INDEX) {
 			this._dom = value;
@@ -112,37 +109,51 @@ VTemplate.prototype = {
 			}
 		}
 	}
-};
-
-function VText(text) {
-	this._type = NodeTypes.TEXT;
-	this._text = text;
-	this._dom = null;
 }
 
-function VPlaceholder() {
-	this._type = NodeTypes.PLACEHOLDER;
-	this._dom = null;
+class VText {
+	constructor(text) {
+		this._type = NodeTypes.TEXT;
+		this._text = text;
+		this._dom = null;
+	}
 }
 
-function VFragment(items) {
-	this._type = NodeTypes.FRAGMENT;
-	this._dom = null;
-	this._pointer = null;
-	this._items = items;
+class VPlaceholder {
+	constructor() {
+		this._type = NodeTypes.PLACEHOLDER;
+		this._dom = null;
+	}
 }
 
-function Variable(arg) {
-	this._type = NodeTypes.VARIABLE;
-	this._arg = arg;
+class VFragment {
+	constructor(items) {
+		this._type = NodeTypes.FRAGMENT;
+		this._dom = null;
+		this._pointer = null;
+		this._items = items;
+	}
 }
 
-function TemplaceReducers(keyIndex, mount, patch, unmount) {
-	this._keyIndex = keyIndex;
-	this._schema = null;
-	this.mount = mount;
-	this.patch = patch;
-	this.unmount = unmount;
+class Variable {
+	constructor(arg) {
+		this._type = NodeTypes.VARIABLE;
+		this._arg = arg;
+	}
+}
+
+class TemplaceReducers {
+	constructor(keyIndex, mount, patch, unmount) {
+		this._keyIndex = keyIndex;
+		this._schema = null;
+		this._pools = {
+			nonKeyed: [],
+			keyed: new Map()
+		};
+		this.mount = mount;
+		this.patch = patch;
+		this.unmount = unmount;
+	}
 }
 
 export function createVTemplate(schema, renderer) {

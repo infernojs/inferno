@@ -9,7 +9,7 @@ import {
 	isBrowser
 } from './../core/utils';
 import {
-	replaceNode,
+	replaceChild,
 	handleAttachedHooks,
 	normaliseChild
 } from './utils';
@@ -37,7 +37,7 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context)
 		} else {
 			const newDomNode = mountVText(text);
 
-			replaceNode(parentDom, newDomNode, domNode);
+			replaceChild(parentDom, newDomNode, domNode);
 			childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
 			child.dom = newDomNode;
 		}

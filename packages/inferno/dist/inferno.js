@@ -34,7 +34,7 @@
 		VARIABLE: 6
 	};
 
-	function VElement(tag) {
+	var VElement = function VElement(tag) {
 		this._type = NodeTypes.ELEMENT;
 		this._dom = null;
 		this._tag = tag;
@@ -43,36 +43,33 @@
 		this._props = null;
 		this._hooks = null;
 		this._childrenType = ChildrenTypes.UKNOWN;
-	}
-
-	VElement.prototype = {
-		children: function children(children) {
-			this._children = children;
-			return this;
-		},
-		key: function key(key) {
-			this._key = key;
-			return this;
-		},
-		props: function props(props) {
-			this._props = props;
-			return this;
-		},
-		hooks: function hooks(hooks) {
-			this._hooks = hooks;
-			return this;
-		},
-		events: function events(events) {
-			this._events = events;
-			return this;
-		},
-		childrenType: function childrenType(childrenType) {
-			this._childrenType = childrenType;
-			return this;
-		}
+	};
+	VElement.prototype.children = function children (children) {
+		this._children = children;
+		return this;
+	};
+	VElement.prototype.key = function key (key) {
+		this._key = key;
+		return this;
+	};
+	VElement.prototype.props = function props (props) {
+		this._props = props;
+		return this;
+	};
+	VElement.prototype.hooks = function hooks (hooks) {
+		this._hooks = hooks;
+		return this;
+	};
+	VElement.prototype.events = function events (events) {
+		this._events = events;
+		return this;
+	};
+	VElement.prototype.childrenType = function childrenType (childrenType) {
+		this._childrenType = childrenType;
+		return this;
 	};
 
-	function VComponent(component) {
+	var VComponent = function VComponent(component) {
 		this._type = NodeTypes.COMPONENT;
 		this._dom = null;
 		this._component = component;
@@ -80,70 +77,64 @@
 		this._hooks = null;
 		this._key = null;
 		this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
-	}
-
-	VComponent.prototype = {
-		key: function key$1(key) {
-			this._key = key;
-			return this;
-		},
-		props: function props$1(props) {
-			this._props = props;
-			return this;
-		},
-		hooks: function hooks$1(hooks) {
-			this._hooks = hooks;
-			return this;
-		}
+	};
+	VComponent.prototype.key = function key (key) {
+		this._key = key;
+		return this;
+	};
+	VComponent.prototype.props = function props (props) {
+		this._props = props;
+		return this;
+	};
+	VComponent.prototype.hooks = function hooks (hooks) {
+		this._hooks = hooks;
+		return this;
 	};
 
-	function VTemplate(templateReducers, key, v0, v1) {
+	var VTemplate = function VTemplate(templateReducers, key, v0, v1) {
 		this._type = NodeTypes.TEMPLATE;
 		this._dom = null;
 		this._tr = templateReducers;
 		this._key = key;
 		this._v0 = v0;
 		this._v1 = v1;
-	}
-
-	VTemplate.prototype = {
-		read: function read(index) {
-			var value;
-			if (index === ROOT_INDEX) {
-				value = this._dom;
-			} else if (index === 0) {
-				value = this._v0;
+	};
+	VTemplate.prototype.read = function read (index) {
+		var value;
+		if (index === ROOT_INDEX) {
+			value = this._dom;
+		} else if (index === 0) {
+			value = this._v0;
+		} else {
+			value = this._v1[index - 1];
+		}
+		return value;
+	};
+	VTemplate.prototype.write = function write (index, value) {
+		if (index === ROOT_INDEX) {
+			this._dom = value;
+		} else if (index === 0) {
+			this._v0 = value;
+		} else {
+			var array = this._v1;
+			if (!array) {
+				this._v1 = [value];
 			} else {
-				value = this._v1[index - 1];
-			}
-			return value;
-		},
-		write: function write(index, value) {
-			if (index === ROOT_INDEX) {
-				this._dom = value;
-			} else if (index === 0) {
-				this._v0 = value;
-			} else {
-				var array = this._v1;
-				if (!array) {
-					this._v1 = [value];
-				} else {
-					array[index - 1] = value;
-				}
+				array[index - 1] = value;
 			}
 		}
 	};
 
-	function VText(text) {
+	var VText = function VText(text) {
 		this._type = NodeTypes.TEXT;
 		this._text = text;
 		this._dom = null;
-	}
+	};
 
-	function Variable(arg) {
+	var Variable = function Variable(arg) {
 		this._type = NodeTypes.VARIABLE;
 		this._arg = arg;
-	}
+	};
 
 	function createVTemplate(schema, renderer) {
 		var argCount = schema.length;

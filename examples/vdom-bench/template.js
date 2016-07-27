@@ -7,7 +7,7 @@
 	var ChildrenTypes = Inferno.ChildrenTypes;
 
 	var NAME = 'inferno';
-	var VERSION = '0.8';
+	var VERSION = '0.8-templates';
 
 	var tpl1 = t(children =>
 		e('div').children(children).childrenType(ChildrenTypes.KEYED_LIST)

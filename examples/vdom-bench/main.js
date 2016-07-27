@@ -7,17 +7,17 @@
 	var ChildrenTypes = Inferno.ChildrenTypes;
 
 	var NAME = 'inferno';
-	var VERSION = '0.84';
+	var VERSION = '0.8-templates';
 
 	var tpl1 = t(children =>
 		e('div').children(children).childrenType(ChildrenTypes.KEYED_LIST)
 	, InfernoDOM);
 
-	var tpl2 = t((children, key) =>
+	var tpl2 = t((key, children) =>
 		e('div').key(key).children(children).childrenType(ChildrenTypes.KEYED_LIST)
 	, InfernoDOM);
 
-	var tpl3 = t((children, key) =>
+	var tpl3 = t((key, children) =>
 		e('span').key(key).childrenType(ChildrenTypes.TEXT).children(key)
 	, InfernoDOM);
 
@@ -29,7 +29,7 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = tpl2(renderTree(n.children), n.key);
+				children[i] = tpl2(n.key, renderTree(n.children));
 			} else {
 				children[i] = tpl3(n.key, n.key); 
 			}
