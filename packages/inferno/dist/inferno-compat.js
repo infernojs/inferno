@@ -103,6 +103,14 @@
   	return false;
   }
 
+  var ChildrenTypes = {
+  	KEYED_LIST: 0,
+  	NON_KEYED_LIST: 1,
+  	TEXT: 2,
+  	NODE: 3,
+  	UNKNOWN: 4
+  };
+
   var NodeTypes = {
   	ELEMENT: 0,
   	COMPONENT: 1,
@@ -121,6 +129,7 @@
   	this._key = null;
   	this._props = null;
   	this._hooks = null;
+  	this._childrenType = ChildrenTypes.UKNOWN;
   }
 
   VElement.prototype = {
@@ -142,6 +151,10 @@
   	},
   	events: function events(events) {
   		this._events = events;
+  		return this;
+  	},
+  	childrenType: function childrenType(childrenType) {
+  		this._childrenType = childrenType;
   		return this;
   	}
   };
@@ -233,13 +246,25 @@
   	return o._type === NodeTypes.COMPONENT;
   }
 
-  function unmount(input, parentDom) {
-  	if (isVFragment(input)) {
+  function unmount(input, parentDom, lifecycle) {
+  	if (isVTemplate(input)) {
+  		unmountVTemplate(input, parentDom);
+  	} else if (isVFragment(input)) {
   		unmountVFragment(input, parentDom, true);
   	} else if (isVElement(input)) {
   		unmountVElement(input, parentDom);
   	} else if (isVComponent(input)) {
   		unmountVComponent(input, parentDom);
+  	}
+  }
+
+  function unmountVTemplate(vTemplate, parentDom) {
+  	var dom = vTemplate._dom;
+  	var templateReducers = vTemplate._tr;
+  	// pool for recycling?
+  	templateReducers.unmount(vTemplate);
+  	if (!isNull(parentDom)) {
+  		removeChild(parentDom, dom);
   	}
   }
 
@@ -357,7 +382,15 @@
   	return props;
   }
 
-  function setTextContent(dom, lastChildren, nextChildren) {
+  function setTextContent(dom, text) {
+  	if (text !== '') {
+  		dom.textContent = text;
+  	} else {
+  		dom.appendChild(document.createTextNode(''));
+  	}
+  }
+
+  function updateTextContent(dom, lastChildren, nextChildren) {
   	if (isStringOrNumber(lastChildren)) {
   		dom.firstChild.nodeValue = nextChildren;
   	} else {
@@ -398,29 +431,6 @@
   		dom = document.createElement(tag);
   	}
   	return dom;
-  }
-
-  function appendText(text, parentDom, singleChild) {
-  	if (parentDom === null) {
-  		return document.createTextNode(text);
-  	} else {
-  		if (singleChild) {
-  			if (text !== '') {
-  				parentDom.textContent = text;
-  				return parentDom.firstChild;
-  			} else {
-  				var textNode = document.createTextNode('');
-
-  				parentDom.appendChild(textNode);
-  				return textNode;
-  			}
-  		} else {
-  			var textNode$1 = document.createTextNode(text);
-
-  			parentDom.appendChild(textNode$1);
-  			return textNode$1;
-  		}
-  	}
   }
 
   function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG) {
@@ -576,7 +586,7 @@
 
   function mount(input, parentDom, lifecycle, context, isSVG) {
   	if (isVTemplate(input)) {
-  		return mountVTemplate(input, parentDom, lifecycle, context);
+  		return mountVTemplate(input, parentDom, lifecycle, context, isSVG);
   	} else if (isVPlaceholder(input)) {
   		return mountVPlaceholder(input, parentDom);
   	} else if (isVText(input)) {
@@ -588,14 +598,20 @@
   	} else if (isVComponent(input)) {
   		return mountVComponent(input, parentDom, lifecycle, context, isSVG);
   	} else {
-  		throw Error('Bad Input!');
+  		throw Error('Inferno Error: Bad input argument called on mount(). Input argument may need normalising.');
   	}
   }
 
-  function mountVTemplate(vTemplate, parentDom, lifecycle, context) {
+  function mountVTemplate(vTemplate, parentDom, lifecycle, context, iSVG) {
   	var templateReducers = vTemplate._tr;
-  	var domNode = templateReducers.mount(vTemplate, parentDom, lifecycle, context);
-  	debugger;
+  	// we need to handle recycling in here too
+  	var dom = templateReducers.mount(vTemplate, null, lifecycle, context, iSVG);
+
+  	vTemplate._dom = dom;
+  	if (!isNull(parentDom)) {
+  		parentDom.appendChild(dom);
+  	}
+  	return dom;
   }
 
   function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
@@ -617,7 +633,7 @@
   		handleAttachedHooks(hooks, lifecycle, dom);
   	}
   	if (!isNullOrUndef(children)) {
-  		mountChildren(vElement, children, dom, lifecycle, context, isSVG);
+  		mountChildren$1(vElement._childrenType, children, dom, lifecycle, context, isSVG);
   	}
   	if (!isNullOrUndef(props)) {
   		handleSelects(vElement);
@@ -670,34 +686,30 @@
   	}
   }
 
-  function mountArrayChildren(children, parentDom, lifecycle, context, isSVG) {
-  	children.complex = false;
-  	for (var i = 0; i < children.length; i++) {
-  		var child = normaliseChild(children, i);
-
-  		if (isVText(child)) {
-  			mountVText(child, parentDom);
-  			children.complex = true;
-  		} else if (isVPlaceholder(child)) {
-  			mountVPlaceholder(child, parentDom);
-  			children.complex = true;
-  		} else if (isVFragment(child)) {
-  			mountVFragment(child, parentDom, lifecycle, context, isSVG);
-  			children.complex = true;
-  		} else {
-  			mount(child, parentDom, lifecycle, context, isSVG);
+  function mountChildren$1(childrenType, children, parentDom, lifecycle, context, isSVG) {
+  	if (childrenType === ChildrenTypes.KEYED_LIST) {
+  		for (var i = 0; i < children.length; i++) {
+  			mount(children[i], parentDom, lifecycle, context, isSVG);
   		}
+  	} else if (childrenType === ChildrenTypes.TEXT) {
+  		setTextContent(parentDom, children);
   	}
-  }
-
-  function mountChildren(node, children, parentDom, lifecycle, context, isSVG) {
-  	if (isArray(children)) {
-  		mountArrayChildren(children, parentDom, lifecycle, context, isSVG);
-  	} else if (isStringOrNumber(children)) {
-  		appendText(children, parentDom, true);
-  	} else if (!isInvalid(children)) {
-  		mount(children, parentDom, lifecycle, context, isSVG);
-  	}
+  	// switch (childrenType) {
+  	// 	case ChildrenTypes.NON_KEYED_LIST:
+  	// 	case ChildrenTypes.KEYED_LIST:
+  	// 		for (let i = 0; i < children.length; i++) {
+  	// 			mount(children[i], parentDom, lifecycle, context, isSVG);
+  	// 		}
+  	// 		break;
+  	// 	case ChildrenTypes.UNKNOWN:
+  	// 		mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG);
+  	// 		break;
+  	// 	case ChildrenTypes.TEXT:
+  	// 		setTextContent(parentDom, children);
+  	// 		break;
+  	// 	default:
+  	// 		throw new Error('Inferno Error: Bad childrenType value specified when attempting to mountChildren');
+  	// }
   }
 
   function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
@@ -786,84 +798,99 @@
 
   function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
   	if (lastInput !== nextInput) {
-  		if (isInvalid(lastInput)) {
-  			mount(nextInput, parentDom, lifecycle, context, isSVG);
-  		} else if (isInvalid(nextInput)) {
-  			unmount(lastInput, parentDom);
-  		} else if (isStringOrNumber(lastInput)) {
-  			if (isStringOrNumber(nextInput)) {
-  				parentDom.firstChild.nodeValue = nextInput;
+  		if (isVTemplate(nextInput)) {
+  			if (isVTemplate(lastInput)) {
+  				patchVTemplate(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
   			} else {
-  				var dom = mount(nextInput, null, lifecycle, context, isSVG);
-
-  				nextInput._dom = dom;
-  				replaceNode(parentDom, dom, parentDom.firstChild);
-  			}
-  		} else if (isStringOrNumber(nextInput)) {
-  			replaceNode(parentDom, document.createTextNode(nextInput), lastInput._dom);
-  		} else {
-  			if (isVComponent(nextInput)) {
-  				if (isVComponent(lastInput)) {
-  					patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
-  				} else {
-  					replaceNode(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-  					unmount(lastInput, null);
-  				}
-  			} else if (isVComponent(lastInput)) {
   				// debugger;
-  			} else if (isVFragment(nextInput)) {
-  				if (isVFragment(lastInput)) {
-  					patchVList(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
-  				} else {
-  					replaceNode(parentDom, mountVFragment(nextInput, null), lastInput._dom);
-  					unmount(lastInput, null);
-  				}
-  			} else if (isVElement(nextInput)) {
-  				if (isVElement(lastInput)) {
-  					patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
-  				} else {
-  					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-  					unmount(lastInput, null);
-  				}
-  			} else if (isVElement(lastInput)) {
+  			}
+  		} else if (isVTemplate(lastInput)) {
+  			// debugger;
+  		} else if (isVComponent(nextInput)) {
+  			if (isVComponent(lastInput)) {
+  				patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+  			} else {
+  				replaceNode(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+  				unmount(lastInput, null);
+  			}
+  		} else if (isVComponent(lastInput)) {
+  			// debugger;
+  		} else if (isVFragment(nextInput)) {
+  			if (isVFragment(lastInput)) {
+  				patchVList(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+  			} else {
+  				replaceNode(parentDom, mountVFragment(nextInput, null), lastInput._dom);
+  				unmount(lastInput, null);
+  			}
+  		} else if (isVElement(nextInput)) {
+  			if (isVElement(lastInput)) {
+  				patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+  			} else {
   				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
   				unmount(lastInput, null);
-  			} else if (isVFragment(lastInput)) {
-  				replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG));
-  			} else if (isVPlaceholder(nextInput)) {
-  				if (isVPlaceholder(lastInput)) {
-  					patchVFragment(lastInput, nextInput);
-  				} else {
-  					replaceNode(parentDom, mountVPlaceholder(nextInput, null), lastInput._dom);
-  					unmount(lastInput, null);
-  				}
-  			} else if (isVPlaceholder(lastInput)) {
-  				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-  			} else if (isVText(nextInput)) {
-  				if (isVText(lastInput)) {
-  					patchVText(lastInput, nextInput);
-  				} else {
-  					replaceNode(parentDom, mountVText(nextInput, null), lastInput._dom);
-  					unmount(lastInput, null);
-  				}
-  			} else if (isVText(lastInput)) {
-  				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-  			} else {
-  				throw Error('Bad Input!');
   			}
+  		} else if (isVElement(lastInput)) {
+  			replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+  			unmount(lastInput, null);
+  		} else if (isVFragment(lastInput)) {
+  			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG));
+  		} else if (isVPlaceholder(nextInput)) {
+  			if (isVPlaceholder(lastInput)) {
+  				patchVFragment(lastInput, nextInput);
+  			} else {
+  				replaceNode(parentDom, mountVPlaceholder(nextInput, null), lastInput._dom);
+  				unmount(lastInput, null);
+  			}
+  		} else if (isVPlaceholder(lastInput)) {
+  			replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+  		} else if (isVText(nextInput)) {
+  			if (isVText(lastInput)) {
+  				patchVText(lastInput, nextInput);
+  			} else {
+  				replaceNode(parentDom, mountVText(nextInput, null), lastInput._dom);
+  				unmount(lastInput, null);
+  			}
+  		} else if (isVText(lastInput)) {
+  			replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+  		} else {
+  			throw Error('Inferno Error: Bad input argument called on patch(). Input argument may need normalising.');
   		}
   	}
   }
 
-  function patchChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+  function patchChildren(childrenType, lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+  	if (childrenType === ChildrenTypes.KEYED_LIST) {
+  		patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
+  	} else if (childrenType === ChildrenTypes.TEXT) {
+  		updateTextContent(dom, lastChildren, nextChildren);
+  	}
+  	// switch (childrenType) {
+  	// 	case ChildrenTypes.NON_KEYED_LIST:
+  	// 		patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
+  	// 		break;
+  	// 	case ChildrenTypes.KEYED_LIST:
+  	// 		patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
+  	// 		break;
+  	// 	case ChildrenTypes.UNKNOWN:
+  	// 		patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
+  	// 		break;
+  	// 	case ChildrenTypes.TEXT:
+  	// 		updateTextContent(dom, lastChildren, nextChildren);
+  	// 		break;
+  	// 	default:
+  	// 		throw new Error('Inferno Error: Bad childrenType value specified when attempting to patchChildren');
+  	// }
+  }
+
+  function patchChildrenWithUnknownType(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
   	if (isInvalid(nextChildren)) {
   		removeAllChildren(dom, lastChildren);
   	} else if (isInvalid(lastChildren)) {
   		if (isStringOrNumber(nextChildren)) {
-  			setTextContent(dom, lastChildren, nextChildren);
+  			updateTextContent(dom, lastChildren, nextChildren);
   		} else if (!isInvalid(nextChildren)) {
   			if (isArray(nextChildren)) {
-  				mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
+  				mountChildren(nextChildren, dom, lifecycle, context, isSVG);
   			} else {
   				mount(nextChildren, dom, lifecycle, context, isSVG);
   			}
@@ -884,6 +911,19 @@
   		patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, isSVG, null);
   	} else {
   		patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+  	}
+  }
+
+  function patchVTemplate(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
+  	var dom = lastVTemplate._dom;
+  	var lastTemplateReducers = lastVTemplate._tr;
+  	var nextTemplateReducers = nextVTemplate._tr;
+
+  	if (lastTemplateReducers !== nextTemplateReducers) {
+  		// debugger;
+  	} else {
+  		nextVTemplate._dom = dom;
+  		nextTemplateReducers.patch(lastVTemplate, nextVTemplate, lifecycle, context, isSVG);
   	}
   }
 
@@ -911,7 +951,14 @@
 
   		nextVElement._dom = dom;
   		if (lastChildren !== nextChildren) {
-  			patchChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+  			var lastChildrenType = lastVElement._childrenType;
+  			var nextChildrenType = nextVElement._childrenType;
+
+  			if (lastChildrenType === nextChildrenType) {
+  				patchChildren(lastChildrenType, lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+  			} else {
+  				patchChildrenWithUnknownType(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+  			}
   		}
   		if (lastProps !== nextProps) {
   			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
@@ -1019,42 +1066,6 @@
   		}
   	}
   }
-
-  // export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
-  // 	if (attrName === 'dangerouslySetInnerHTML') {
-  // 		const lastHtml = lastAttrValue && lastAttrValue.__html;
-  // 		const nextHtml = nextAttrValue && nextAttrValue.__html;
-
-  // 		if (isNullOrUndef(nextHtml)) {
-  // 			throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
-  // 		}
-  // 		if (lastHtml !== nextHtml) {
-  // 			dom.innerHTML = nextHtml;
-  // 		}
-  // 	} else if (strictProps[attrName]) {
-  // 		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
-  // 	} else {
-  // 		if (booleanProps[attrName]) {
-  // 			dom[attrName] = nextAttrValue ? true : false;
-  // 		} else {
-  // 			const ns = namespaces[attrName];
-
-  // 			if (nextAttrValue === false || isNullOrUndef(nextAttrValue)) {
-  // 				if (ns !== undefined) {
-  // 					dom.removeAttributeNS(ns, attrName);
-  // 				} else {
-  // 					dom.removeAttribute(attrName);
-  // 				}
-  // 			} else {
-  // 				if (ns !== undefined) {
-  // 					dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
-  // 				} else {
-  // 					dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
-  // 				}
-  // 			}
-  // 		}
-  // 	}
-  // }
 
   function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG) {
   	var lastComponent = lastVComponent._component;
@@ -1480,19 +1491,21 @@
   	if (isUndefined(root)) {
   		if (!isInvalid(input)) {
   			if (!hydrate(input, parentDom, lifecycle)) {
-  				mount(input, parentDom, lifecycle, {}, null, false);
+  				mount(input, parentDom, lifecycle, {}, false);
   			}
   			lifecycle.trigger();
   			roots.set(parentDom, { input: input });
   		}
   	} else {
   		var activeNode = getActiveNode();
-  		patch(root.input, input, parentDom, lifecycle, {}, null, false);
 
-  		lifecycle.trigger();
   		if (isNull(input)) {
+  			unmount(root.input, parentDom);
   			roots.delete(parentDom);
+  		} else {
+  			patch(root.input, input, parentDom, lifecycle, {}, false);
   		}
+  		lifecycle.trigger();
   		root.input = input;
   		resetActiveNode(activeNode);
   	}

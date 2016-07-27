@@ -37,6 +37,14 @@
 		return typeof o === 'object';
 	}
 
+	var ChildrenTypes = {
+		KEYED_LIST: 0,
+		NON_KEYED_LIST: 1,
+		TEXT: 2,
+		NODE: 3,
+		UNKNOWN: 4
+	};
+
 	var NodeTypes = {
 		ELEMENT: 0,
 		COMPONENT: 1,
@@ -55,6 +63,7 @@
 		this._key = null;
 		this._props = null;
 		this._hooks = null;
+		this._childrenType = ChildrenTypes.UKNOWN;
 	}
 
 	VElement.prototype = {
@@ -76,6 +85,10 @@
 		},
 		events: function events(events) {
 			this._events = events;
+			return this;
+		},
+		childrenType: function childrenType(childrenType) {
+			this._childrenType = childrenType;
 			return this;
 		}
 	};

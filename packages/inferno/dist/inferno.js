@@ -13,6 +13,14 @@
 		return obj === undefined;
 	}
 
+	var ChildrenTypes = {
+		KEYED_LIST: 0,
+		NON_KEYED_LIST: 1,
+		TEXT: 2,
+		NODE: 3,
+		UNKNOWN: 4
+	};
+
 	var NULL_INDEX = -1;
 	var ROOT_INDEX = -2;
 
@@ -34,6 +42,7 @@
 		this._key = null;
 		this._props = null;
 		this._hooks = null;
+		this._childrenType = ChildrenTypes.UKNOWN;
 	}
 
 	VElement.prototype = {
@@ -55,6 +64,10 @@
 		},
 		events: function events(events) {
 			this._events = events;
+			return this;
+		},
+		childrenType: function childrenType(childrenType) {
+			this._childrenType = childrenType;
 			return this;
 		}
 	};
@@ -84,14 +97,13 @@
 		}
 	};
 
-	function VTemplate(templateReducers, key, v0, v1, v2) {
+	function VTemplate(templateReducers, key, v0, v1) {
 		this._type = NodeTypes.TEMPLATE;
 		this._dom = null;
 		this._tr = templateReducers;
 		this._key = key;
 		this._v0 = v0;
 		this._v1 = v1;
-		this._v2 = v2;
 	}
 
 	VTemplate.prototype = {
@@ -141,7 +153,7 @@
 			parameters.push(new Variable(i));
 		}
 		var vNode = schema.apply(void 0, parameters);
-		var templateReducers = renderer.createTemplateReducers(vNode, true, { length: argCount }, null, false);
+		var templateReducers = renderer.createTemplateReducers(vNode, true, { length: argCount }, null, false, false);
 		var keyIndex = templateReducers._keyIndex;
 
 		templateReducers._schema = schema;
@@ -196,7 +208,8 @@
 		createVTemplate: createVTemplate,
 		createVComponent: createVComponent,
 		createVElement: createVElement,
-		createVText: createVText
+		createVText: createVText,
+		ChildrenTypes: ChildrenTypes
 	};
 
 	return index;

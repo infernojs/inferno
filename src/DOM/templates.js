@@ -42,7 +42,20 @@ import {
 	unmountVariable
 } from './unmounting';
 
-export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG) {
+function copyValue(oldItem, item, index) {
+	const value = oldItem.read(index);
+
+	item.write(index, value);
+	return value;
+}
+
+function copyTemplate(nodeIndex) {
+	return function copyTemplate(oldItem, item) {
+		return copyValue(oldItem, item, nodeIndex);
+	};
+}
+
+export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChildren, childrenType) {
 	if (!isInvalid(vNode)) {
 		let keyIndex = NULL_INDEX;
 		let nodeIndex = isRoot ? ROOT_INDEX : NULL_INDEX;
@@ -52,9 +65,9 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG) 
 		let shouldClone = false;
 
 		if (isVariable(vNode)) {
-			mount = mountVariable(vNode, isSVG);
-			patch = patchVariable(vNode, isSVG);
-			unmount = unmountVariable(vNode);
+			mount = mountVariable(vNode, isSVG, isChildren, childrenType);
+			patch = patchVariable(vNode, isSVG, isChildren, childrenType);
+			unmount = unmountVariable(vNode, isChildren, childrenType);
 		} else if (isVElement(vNode)) {
 			const mounters = [];
 			const patchers = [];
@@ -80,11 +93,11 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG) 
 
 			if (!isInvalid(children)) {
 				if (isStringOrNumber(children)) {
-					debugger;
+					// debugger;
 				} else if (isArray(children)) {
-					debugger;
+					// debugger;
 				} else {
-					const templateReducers = createTemplateReducers(children, false, offset, domNode, isSVG);
+					const templateReducers = createTemplateReducers(children, false, offset, domNode, isSVG, true, vNode._childrenType);
 
 					if (!isInvalid(templateReducers)) {
 						mounters.push(templateReducers.mount);
@@ -123,20 +136,20 @@ function combineMount(nodeIndex, mountDOMNodeFromTemplate, mounters) {
 function combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounter1, mounter2, mounter3, mounter4) {
 	const write = (nodeIndex !== NULL_INDEX);
 
-	return function combineMountTo5(vTemplate, parentDom, lifecycle, context) {
-		const domNode = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context);
+	return function combineMountTo5(vTemplate, parentDom, lifecycle, context, isSVG) {
+		const domNode = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context, isSVG);
 
 		if (write) {
 			vTemplate.write(nodeIndex, domNode);
 		}
 		if (mounter1) {
-			mounter1(vTemplate, domNode, lifecycle, context);
+			mounter1(vTemplate, domNode, lifecycle, context, isSVG);
 			if (mounter2) {
-				mounter2(vTemplate, domNode, lifecycle, context);
+				mounter2(vTemplate, domNode, lifecycle, context, isSVG);
 				if (mounter3) {
-					mounter3(vTemplate, domNode, lifecycle, context);
+					mounter3(vTemplate, domNode, lifecycle, context, isSVG);
 					if (mounter4) {
-						mounter4(vTemplate, domNode, lifecycle, context);
+						mounter4(vTemplate, domNode, lifecycle, context, isSVG);
 					}
 				}
 			}
@@ -148,14 +161,14 @@ function combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounter1, mounter2
 function combineMountToX(nodeIndex, mountDOMNodeFromTemplate, mounters) {
 	const write = (nodeIndex !== NULL_INDEX);
 
-	return function combineMountToX(vTemplate, parentDom, lifecycle, instance) {
+	return function combineMountToX(vTemplate, parentDom, lifecycle, instance, isSVG) {
 		const domNode = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context);
 
 		if (write) {
 			vTemplate.write(nodeIndex, domNode);
 		}
 		for (let i = 0; i < mounters.length; i++) {
-			mounters[i](vTemplate, domNode, lifecycle, context);
+			mounters[i](vTemplate, domNode, lifecycle, context, isSVG);
 		}
 		return domNode;
 	};
@@ -178,22 +191,22 @@ function combinePatch(nodeIndex, patchers) {
 function combinePatchTo5(nodeIndex, patch1, patch2, patch3, patch4, patch5) {
 	const copy = (nodeIndex !== NULL_INDEX);
 
-	return function combinePatchTo5(lastVTemplate, nextVTemplate, lifecycle, context) {
+	return function combinePatchTo5(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
 		let domNode;
 
 		if (copy) {
 			domNode = copyValue(lastVTemplate, nextVTemplate, nodeIndex);
 		}
 		if (patch1) {
-			patch1(lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+			patch1(lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
 			if (patch2) {
-				patch2(lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+				patch2(lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
 				if (patch3) {
-					patch3(lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+					patch3(lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
 					if (patch4) {
-						patch4(lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+						patch4(lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
 						if (patch5) {
-							patch5(lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+							patch5(lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
 						}
 					}
 				}
@@ -205,14 +218,14 @@ function combinePatchTo5(nodeIndex, patch1, patch2, patch3, patch4, patch5) {
 function combinePatchX(nodeIndex, patchers) {
 	const copy = (nodeIndex !== NULL_INDEX);
 
-	return function combinePatchX(lastVTemplate, nextVTemplate, lifecycle, context) {
+	return function combinePatchX(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
 		let domNode;
 
 		if (copy) {
 			domNode = copyValue(lastVTemplate, nextVTemplate, nodeIndex);
 		}
 		for (let i = 0; i < patchers.length; i++) {
-			patchers[i](lastVTemplate, nextVTemplate, domNode, lifecycle, context);
+			patchers[i](lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
 		}
 	};
 }
@@ -229,20 +242,17 @@ function combineUnmount(nodeIndex, unmounters) {
 function combineUnmountTo5(nodeIndex, unomunt1, unomunt2, unomunt3, unomunt4, unomunt5) {
 	const copy = (nodeIndex !== NULL_INDEX);
 
-	return function combineUnmountTo5(vTemplate, domNode, lifecycle, isRoot, isReplace) {
-		if (copy) {
-			domNode = vTemplate.read(nodeIndex);
-		}
+	return function combineUnmountTo5(vTemplate) {
 		if (unomunt1) {
-			unomunt1(vTemplate, domNode, lifecycle, isRoot, isReplace);
+			unomunt1(vTemplate);
 			if (unomunt2) {
-				unomunt2(vTemplate, domNode, lifecycle, isRoot, isReplace);
+				unomunt2(vTemplate);
 				if (unomunt3) {
-					unomunt3(vTemplate, domNode, lifecycle, isRoot, isReplace);
+					unomunt3(vTemplate);
 					if (unomunt4) {
-						unomunt4(vTemplate, domNode, lifecycle, isRoot, isReplace);
+						unomunt4(vTemplate);
 						if (unomunt5) {
-							unomunt5(vTemplate, domNode, lifecycle, isRoot, isReplace);
+							unomunt5(vTemplate);
 						}
 					}
 				}

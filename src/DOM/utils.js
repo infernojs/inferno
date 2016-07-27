@@ -55,7 +55,15 @@ function getAllPropsForElement(tag) {
 	return props;
 }
 
-export function setTextContent(dom, lastChildren, nextChildren) {
+export function setTextContent(dom, text) {
+	if (text !== '') {
+		dom.textContent = text;
+	} else {
+		dom.appendChild(document.createTextNode(''));
+	}
+}
+
+export function updateTextContent(dom, lastChildren, nextChildren) {
 	if (isStringOrNumber(lastChildren)) {
 		dom.firstChild.nodeValue = nextChildren;
 	} else {
@@ -96,29 +104,6 @@ export function documentCreateElement(tag, isSVG) {
 		dom = document.createElement(tag);
 	}
 	return dom;
-}
-
-export function appendText(text, parentDom, singleChild) {
-	if (parentDom === null) {
-		return document.createTextNode(text);
-	} else {
-		if (singleChild) {
-			if (text !== '') {
-				parentDom.textContent = text;
-				return parentDom.firstChild;
-			} else {
-				const textNode = document.createTextNode('');
-
-				parentDom.appendChild(textNode);
-				return textNode;
-			}
-		} else {
-			const textNode = document.createTextNode(text);
-
-			parentDom.appendChild(textNode);
-			return textNode;
-		}
-	}
 }
 
 export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG) {

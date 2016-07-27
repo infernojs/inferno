@@ -3,6 +3,7 @@
 
 	var benchmark = require('vdom-benchmark-base');
 	var e = Inferno.createVElement;
+	var ChildrenTypes = Inferno.ChildrenTypes;
 
 	var NAME = 'inferno';
 	var VERSION = '0.8';
@@ -15,9 +16,9 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = e('div').key(n.key).children(renderTree(n.children));
+				children[i] = e('div').key(n.key).children(renderTree(n.children)).childrenType(ChildrenTypes.KEYED_LIST);
 			} else {
-				children[i] = e('span').key(n.key).children(n.key);
+				children[i] = e('span').key(n.key).children(n.key).childrenType(ChildrenTypes.TEXT);
 			}
 		}
 		return children;
@@ -38,14 +39,14 @@
 
 	BenchmarkImpl.prototype.render = function() {
 		InfernoDOM.render(
-			e('div').children(renderTree(this.a)),
+			e('div').children(renderTree(this.a)).childrenType(ChildrenTypes.KEYED_LIST),
 			this.container
 		);
 	};
 
 	BenchmarkImpl.prototype.update = function() {
 		InfernoDOM.render(
-			e('div').children(renderTree(this.b)),
+			e('div').children(renderTree(this.b)).childrenType(ChildrenTypes.KEYED_LIST),
 			this.container
 		);
 	};

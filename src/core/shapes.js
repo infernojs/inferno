@@ -1,4 +1,5 @@
 import { isUndefined } from './utils';
+import ChildrenTypes from './ChildrenTypes';
 
 export const NULL_INDEX = -1;
 export const ROOT_INDEX = -2;
@@ -21,6 +22,7 @@ function VElement(tag) {
 	this._key = null;
 	this._props = null;
 	this._hooks = null;
+	this._childrenType = ChildrenTypes.UKNOWN;
 }
 
 VElement.prototype = {
@@ -42,6 +44,10 @@ VElement.prototype = {
 	},
 	events(events) {
 		this._events = events;
+		return this;
+	},
+	childrenType(childrenType) {
+		this._childrenType = childrenType;
 		return this;
 	}
 };
@@ -71,14 +77,13 @@ VComponent.prototype = {
 	}
 };
 
-export function VTemplate(templateReducers, key, v0, v1, v2) {
+export function VTemplate(templateReducers, key, v0, v1) {
 	this._type = NodeTypes.TEMPLATE;
 	this._dom = null;
 	this._tr = templateReducers;
 	this._key = key;
 	this._v0 = v0;
 	this._v1 = v1;
-	this._v2 = v2;
 }
 
 VTemplate.prototype = {
@@ -148,7 +153,7 @@ export function createVTemplate(schema, renderer) {
 		parameters.push(new Variable(i));
 	}
 	const vNode = schema(...parameters);
-	const templateReducers = renderer.createTemplateReducers(vNode, true, { length: argCount }, null, false);
+	const templateReducers = renderer.createTemplateReducers(vNode, true, { length: argCount }, null, false, false);
 	const keyIndex = templateReducers._keyIndex;
 
 	templateReducers._schema = schema;
@@ -175,7 +180,7 @@ export function createVTemplate(schema, renderer) {
 }
 
 export function createTemplaceReducers(keyIndex, mount, patch, unmount) {
-	return new TemplaceReducers(keyIndex, mount, unmount);
+	return new TemplaceReducers(keyIndex, mount, patch, unmount);
 }
 
 export function createVComponent(component) {

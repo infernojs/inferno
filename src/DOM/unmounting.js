@@ -1,19 +1,32 @@
-import { isNullOrUndef, isArray } from './../core/utils';
+import { isNullOrUndef, isArray, isNull } from './../core/utils';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
 	isVFragment,
 	isVElement,
-	isVComponent
+	isVComponent,
+	isVTemplate
 } from '../core/shapes';
 
-export function unmount(input, parentDom) {
-	if (isVFragment(input)) {
+export function unmount(input, parentDom, lifecycle) {
+	if (isVTemplate(input)) {
+		unmountVTemplate(input, parentDom);
+	} else if (isVFragment(input)) {
 		unmountVFragment(input, parentDom, true);
 	} else if (isVElement(input)) {
 		unmountVElement(input, parentDom);
 	} else if (isVComponent(input)) {
 		unmountVComponent(input, parentDom);
+	}
+}
+
+function unmountVTemplate(vTemplate, parentDom) {
+	const dom = vTemplate._dom;
+	const templateReducers = vTemplate._tr;
+	// pool for recycling?
+	templateReducers.unmount(vTemplate);
+	if (!isNull(parentDom)) {
+		removeChild(parentDom, dom);
 	}
 }
 
@@ -91,8 +104,8 @@ export function unmountVElement(vElement, parentDom) {
 	}
 }
 
-export function unmountVariable(variable) {
-	return function unmountVariable() {
-		debugger;
+export function unmountVariable(variable, isChildren) {
+	return function unmountVariable(vTemplate) {
+		// TODO
 	};
 }

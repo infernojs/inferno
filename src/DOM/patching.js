@@ -35,7 +35,7 @@ import {
 	replaceWithNewNode,
 	removeEvents,
 	selectValue,
-	setTextContent,
+	updateTextContent,
 	isPropertyOfElement
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
@@ -46,90 +46,107 @@ import {
 	isVFragment,
 	isVText,
 	isVPlaceholder,
-	isVComponent
+	isVComponent,
+	isVTemplate
 } from '../core/shapes';
 import { unmount, unmountVNode } from './unmounting';
+import ChildrenTypes from '../core/ChildrenTypes';
 
 export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 	if (lastInput !== nextInput) {
-		if (isInvalid(lastInput)) {
-			mount(nextInput, parentDom, lifecycle, context, isSVG);
-		} else if (isInvalid(nextInput)) {
-			unmount(lastInput, parentDom);
-		} else if (isStringOrNumber(lastInput)) {
-			if (isStringOrNumber(nextInput)) {
-				parentDom.firstChild.nodeValue = nextInput;
+		if (isVTemplate(nextInput)) {
+			if (isVTemplate(lastInput)) {
+				patchVTemplate(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 			} else {
-				const dom = mount(nextInput, null, lifecycle, context, isSVG);
-
-				nextInput._dom = dom;
-				replaceNode(parentDom, dom, parentDom.firstChild);
-			}
-		} else if (isStringOrNumber(nextInput)) {
-			replaceNode(parentDom, document.createTextNode(nextInput), lastInput._dom);
-		} else {
-			if (isVComponent(nextInput)) {
-				if (isVComponent(lastInput)) {
-					patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
-				} else {
-					replaceNode(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-					unmount(lastInput, null);
-				}
-			} else if (isVComponent(lastInput)) {
 				// debugger;
-			} else if (isVFragment(nextInput)) {
-				if (isVFragment(lastInput)) {
-					patchVList(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
-				} else {
-					replaceNode(parentDom, mountVFragment(nextInput, null), lastInput._dom);
-					unmount(lastInput, null);
-				}
-			} else if (isVElement(nextInput)) {
-				if (isVElement(lastInput)) {
-					patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
-				} else {
-					replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-					unmount(lastInput, null);
-				}
-			} else if (isVElement(lastInput)) {
+			}
+		} else if (isVTemplate(lastInput)) {
+			// debugger;
+		} else if (isVComponent(nextInput)) {
+			if (isVComponent(lastInput)) {
+				patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+			} else {
+				replaceNode(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+				unmount(lastInput, null);
+			}
+		} else if (isVComponent(lastInput)) {
+			// debugger;
+		} else if (isVFragment(nextInput)) {
+			if (isVFragment(lastInput)) {
+				patchVList(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+			} else {
+				replaceNode(parentDom, mountVFragment(nextInput, null), lastInput._dom);
+				unmount(lastInput, null);
+			}
+		} else if (isVElement(nextInput)) {
+			if (isVElement(lastInput)) {
+				patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+			} else {
 				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
 				unmount(lastInput, null);
-			} else if (isVFragment(lastInput)) {
-				replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG));
-			} else if (isVPlaceholder(nextInput)) {
-				if (isVPlaceholder(lastInput)) {
-					patchVFragment(lastInput, nextInput);
-				} else {
-					replaceNode(parentDom, mountVPlaceholder(nextInput, null), lastInput._dom);
-					unmount(lastInput, null);
-				}
-			} else if (isVPlaceholder(lastInput)) {
-				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-			} else if (isVText(nextInput)) {
-				if (isVText(lastInput)) {
-					patchVText(lastInput, nextInput);
-				} else {
-					replaceNode(parentDom, mountVText(nextInput, null), lastInput._dom);
-					unmount(lastInput, null);
-				}
-			} else if (isVText(lastInput)) {
-				replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-			} else {
-				throw Error('Bad Input!');
 			}
+		} else if (isVElement(lastInput)) {
+			replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+			unmount(lastInput, null);
+		} else if (isVFragment(lastInput)) {
+			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG));
+		} else if (isVPlaceholder(nextInput)) {
+			if (isVPlaceholder(lastInput)) {
+				patchVFragment(lastInput, nextInput);
+			} else {
+				replaceNode(parentDom, mountVPlaceholder(nextInput, null), lastInput._dom);
+				unmount(lastInput, null);
+			}
+		} else if (isVPlaceholder(lastInput)) {
+			replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+		} else if (isVText(nextInput)) {
+			if (isVText(lastInput)) {
+				patchVText(lastInput, nextInput);
+			} else {
+				replaceNode(parentDom, mountVText(nextInput, null), lastInput._dom);
+				unmount(lastInput, null);
+			}
+		} else if (isVText(lastInput)) {
+			replaceNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+		} else {
+			throw Error('Inferno Error: Bad input argument called on patch(). Input argument may need normalising.');
 		}
 	}
 }
 
-function patchChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+function patchChildren(childrenType, lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+	if (childrenType === ChildrenTypes.KEYED_LIST) {
+		patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
+	} else if (childrenType === ChildrenTypes.TEXT) {
+		updateTextContent(dom, lastChildren, nextChildren);
+	}
+	// switch (childrenType) {
+	// 	case ChildrenTypes.NON_KEYED_LIST:
+	// 		patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
+	// 		break;
+	// 	case ChildrenTypes.KEYED_LIST:
+	// 		patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
+	// 		break;
+	// 	case ChildrenTypes.UNKNOWN:
+	// 		patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
+	// 		break;
+	// 	case ChildrenTypes.TEXT:
+	// 		updateTextContent(dom, lastChildren, nextChildren);
+	// 		break;
+	// 	default:
+	// 		throw new Error('Inferno Error: Bad childrenType value specified when attempting to patchChildren');
+	// }
+}
+
+function patchChildrenWithUnknownType(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
 	if (isInvalid(nextChildren)) {
 		removeAllChildren(dom, lastChildren);
 	} else if (isInvalid(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
-			setTextContent(dom, lastChildren, nextChildren);
+			updateTextContent(dom, lastChildren, nextChildren);
 		} else if (!isInvalid(nextChildren)) {
 			if (isArray(nextChildren)) {
-				mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
+				mountChildren(nextChildren, dom, lifecycle, context, isSVG);
 			} else {
 				mount(nextChildren, dom, lifecycle, context, isSVG);
 			}
@@ -153,7 +170,20 @@ function patchChildren(lastChildren, nextChildren, dom, lifecycle, context, isSV
 	}
 }
 
-export function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context, isSVG) {
+function patchVTemplate(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
+	const dom = lastVTemplate._dom;
+	const lastTemplateReducers = lastVTemplate._tr;
+	const nextTemplateReducers = nextVTemplate._tr;
+
+	if (lastTemplateReducers !== nextTemplateReducers) {
+		// debugger;
+	} else {
+		nextVTemplate._dom = dom;
+		nextTemplateReducers.patch(lastVTemplate, nextVTemplate, lifecycle, context, isSVG);
+	}
+}
+
+function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context, isSVG) {
 	const nextHooks = nextVElement._hooks;
 	const nextHooksDefined = !isNullOrUndef(nextHooks);
 
@@ -177,7 +207,14 @@ export function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, 
 
 		nextVElement._dom = dom;
 		if (lastChildren !== nextChildren) {
-			patchChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			const lastChildrenType = lastVElement._childrenType;
+			const nextChildrenType = nextVElement._childrenType;
+
+			if (lastChildrenType === nextChildrenType) {
+				patchChildren(lastChildrenType, lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			} else {
+				patchChildrenWithUnknownType(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			}
 		}
 		if (lastProps !== nextProps) {
 			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
@@ -285,42 +322,6 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 		}
 	}
 }
-
-// export function patchAttribute(attrName, lastAttrValue, nextAttrValue, dom) {
-// 	if (attrName === 'dangerouslySetInnerHTML') {
-// 		const lastHtml = lastAttrValue && lastAttrValue.__html;
-// 		const nextHtml = nextAttrValue && nextAttrValue.__html;
-
-// 		if (isNullOrUndef(nextHtml)) {
-// 			throw new Error('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content');
-// 		}
-// 		if (lastHtml !== nextHtml) {
-// 			dom.innerHTML = nextHtml;
-// 		}
-// 	} else if (strictProps[attrName]) {
-// 		dom[attrName] = nextAttrValue === null ? '' : nextAttrValue;
-// 	} else {
-// 		if (booleanProps[attrName]) {
-// 			dom[attrName] = nextAttrValue ? true : false;
-// 		} else {
-// 			const ns = namespaces[attrName];
-
-// 			if (nextAttrValue === false || isNullOrUndef(nextAttrValue)) {
-// 				if (ns !== undefined) {
-// 					dom.removeAttributeNS(ns, attrName);
-// 				} else {
-// 					dom.removeAttribute(attrName);
-// 				}
-// 			} else {
-// 				if (ns !== undefined) {
-// 					dom.setAttributeNS(ns, attrName, nextAttrValue === true ? attrName : nextAttrValue);
-// 				} else {
-// 					dom.setAttribute(attrName, nextAttrValue === true ? attrName : nextAttrValue);
-// 				}
-// 			}
-// 		}
-// 	}
-// }
 
 export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG) {
 	const lastComponent = lastVComponent._component;
@@ -665,8 +666,18 @@ function lis_algorithm(a) {
 	return result;
 }
 
-export function patchVariable(variable, isSVG) {
-	return function patchVariable() {
-		debugger;
+export function patchVariable(variable, templateIsSVG, isChildren, childrenType) {
+	const arg = variable._arg;
+
+	return function patchVariable(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
+		const lastInput = lastVTemplate.read(arg);
+		const nextInput = nextVTemplate.read(arg);
+
+		if (isChildren) {
+			patchChildren(childrenType, lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
+		} else {
+			// handle normalising?
+			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
+		}
 	};
 }

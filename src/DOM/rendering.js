@@ -4,6 +4,7 @@ import { patch } from './patching';
 import { getActiveNode, resetActiveNode } from './utils';
 import { isUndefined, isInvalid, isNull } from '../core/utils';
 import hydrate from './hydration';
+import { unmount } from './unmounting';
 
 const roots = new Map();
 export const componentToDOMNodeMap = new Map();
@@ -19,19 +20,21 @@ export function render(input, parentDom) {
 	if (isUndefined(root)) {
 		if (!isInvalid(input)) {
 			if (!hydrate(input, parentDom, lifecycle)) {
-				mount(input, parentDom, lifecycle, {}, null, false);
+				mount(input, parentDom, lifecycle, {}, false);
 			}
 			lifecycle.trigger();
 			roots.set(parentDom, { input: input });
 		}
 	} else {
 		const activeNode = getActiveNode();
-		patch(root.input, input, parentDom, lifecycle, {}, null, false);
 
-		lifecycle.trigger();
 		if (isNull(input)) {
+			unmount(root.input, parentDom);
 			roots.delete(parentDom);
+		} else {
+			patch(root.input, input, parentDom, lifecycle, {}, false);
 		}
+		lifecycle.trigger();
 		root.input = input;
 		resetActiveNode(activeNode);
 	}

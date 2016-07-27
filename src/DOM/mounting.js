@@ -15,7 +15,7 @@ import {
 } from './../core/utils';
 import { recyclingEnabled, recycle } from './recycling';
 import {
-	appendText,
+	setTextContent,
 	documentCreateElement,
 	selectValue,
 	handleAttachedHooks,
@@ -34,13 +34,15 @@ import {
 	isVFragment,
 	isVElement,
 	isVComponent,
-	isVTemplate
+	isVTemplate,
+	NodeTypes
 } from '../core/shapes';
+import ChildrenTypes from '../core/ChildrenTypes';
 import { normalise } from './utils';
 
 export function mount(input, parentDom, lifecycle, context, isSVG) {
 	if (isVTemplate(input)) {
-		return mountVTemplate(input, parentDom, lifecycle, context);
+		return mountVTemplate(input, parentDom, lifecycle, context, isSVG);
 	} else if (isVPlaceholder(input)) {
 		return mountVPlaceholder(input, parentDom);
 	} else if (isVText(input)) {
@@ -52,14 +54,20 @@ export function mount(input, parentDom, lifecycle, context, isSVG) {
 	} else if (isVComponent(input)) {
 		return mountVComponent(input, parentDom, lifecycle, context, isSVG);
 	} else {
-		throw Error('Bad Input!');
+		throw Error('Inferno Error: Bad input argument called on mount(). Input argument may need normalising.');
 	}
 }
 
-function mountVTemplate(vTemplate, parentDom, lifecycle, context) {
+function mountVTemplate(vTemplate, parentDom, lifecycle, context, iSVG) {
 	const templateReducers = vTemplate._tr;
-	const domNode = templateReducers.mount(vTemplate, parentDom, lifecycle, context);
-	debugger;
+	// we need to handle recycling in here too
+	const dom = templateReducers.mount(vTemplate, null, lifecycle, context, iSVG);
+
+	vTemplate._dom = dom;
+	if (!isNull(parentDom)) {
+		parentDom.appendChild(dom);
+	}
+	return dom;
 }
 
 function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
@@ -81,7 +89,7 @@ function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 		handleAttachedHooks(hooks, lifecycle, dom);
 	}
 	if (!isNullOrUndef(children)) {
-		mountChildren(vElement, children, dom, lifecycle, context, isSVG);
+		mountChildren(vElement._childrenType, children, dom, lifecycle, context, isSVG);
 	}
 	if (!isNullOrUndef(props)) {
 		handleSelects(vElement);
@@ -134,7 +142,7 @@ export function handleSelects(node) {
 	}
 }
 
-export function mountArrayChildren(children, parentDom, lifecycle, context, isSVG) {
+export function mountArrayChildrenWithoutType(children, parentDom, lifecycle, context, isSVG) {
 	children.complex = false;
 	for (let i = 0; i < children.length; i++) {
 		const child = normaliseChild(children, i);
@@ -154,14 +162,40 @@ export function mountArrayChildren(children, parentDom, lifecycle, context, isSV
 	}
 }
 
-function mountChildren(node, children, parentDom, lifecycle, context, isSVG) {
+function mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG) {
 	if (isArray(children)) {
-		mountArrayChildren(children, parentDom, lifecycle, context, isSVG);
+		mountArrayChildrenWithoutType(children, parentDom, lifecycle, context, isSVG);
 	} else if (isStringOrNumber(children)) {
-		appendText(children, parentDom, true);
+		setTextContent(parentDom, children);
 	} else if (!isInvalid(children)) {
 		mount(children, parentDom, lifecycle, context, isSVG);
 	}
+}
+
+function mountChildren(childrenType, children, parentDom, lifecycle, context, isSVG) {
+	if (childrenType === ChildrenTypes.KEYED_LIST) {
+		for (let i = 0; i < children.length; i++) {
+			mount(children[i], parentDom, lifecycle, context, isSVG);
+		}
+	} else if (childrenType === ChildrenTypes.TEXT) {
+		setTextContent(parentDom, children);
+	}
+	// switch (childrenType) {
+	// 	case ChildrenTypes.NON_KEYED_LIST:
+	// 	case ChildrenTypes.KEYED_LIST:
+	// 		for (let i = 0; i < children.length; i++) {
+	// 			mount(children[i], parentDom, lifecycle, context, isSVG);
+	// 		}
+	// 		break;
+	// 	case ChildrenTypes.UNKNOWN:
+	// 		mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG);
+	// 		break;
+	// 	case ChildrenTypes.TEXT:
+	// 		setTextContent(parentDom, children);
+	// 		break;
+	// 	default:
+	// 		throw new Error('Inferno Error: Bad childrenType value specified when attempting to mountChildren');
+	// }
 }
 
 export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
@@ -248,12 +282,18 @@ export function mountProps(vElement, props, dom) {
 	}
 }
 
-export function mountVariable(variable, isSVG) {
-	return function mountVariable(vTemplate, parentDom, lifecycle, context) {
-		const arg = variable._arg;
-		let input = vTemplate.read(arg);
+export function mountVariable(variable, templateIsSVG, isChildren, childrenType) {
+	const arg = variable._arg;
 
-		debugger;
+	return function mountVariable(vTemplate, parentDom, lifecycle, context, isSVG) {
+		const input = vTemplate.read(arg);
+
+		if (isChildren) {
+			return mountChildren(childrenType, input, parentDom, lifecycle, context, isSVG || templateIsSVG);
+		} else {
+			// we may need to normalise here
+			return mount(input, parentDom, lifecycle, context, isSVG || templateIsSVG);
+		}
 	};
 }
 
@@ -261,7 +301,7 @@ export function mountDOMNodeFromTemplate(templateDomNode, isRoot, shouldClone) {
 	return function mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context) {
 		const domNode = templateDomNode.cloneNode(shouldClone);
 
-		if (!isRoot && !isNull(parentDom)) {
+		if (!isNull(parentDom)) {
 			appendChild(parentDom, domNode);
 		}
 		return domNode;
