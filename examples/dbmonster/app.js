@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 	var elem = document.getElementById('app');
-	var e = Inferno.createVElement;
+	var t = Inferno.createVTemplate;
 	var c = Inferno.createVComponent;
 
 	perfMonitor.startFPSMonitor();

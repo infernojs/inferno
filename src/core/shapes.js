@@ -1,5 +1,5 @@
 import { isUndefined } from './utils';
-import ChildrenTypes from './ChildrenTypes';
+import { ChildrenTypes } from './ChildrenTypes';
 
 export const NULL_INDEX = -1;
 export const ROOT_INDEX = -2;

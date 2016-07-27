@@ -51,7 +51,13 @@ import {
 	isVTemplate
 } from '../core/shapes';
 import { unmount, unmountVNode } from './unmounting';
-import ChildrenTypes from '../core/ChildrenTypes';
+import {
+	isKeyedListChildrenType,
+	isTextChildrenType,
+	isNodeChildrenType,
+	isNonKeyedListChildrenType,
+	isUnknownChildrenType
+} from '../core/ChildrenTypes';
 
 export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 	if (lastInput !== nextInput) {
@@ -115,36 +121,33 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 	}
 }
 
-function patchChildren(childrenType, lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
-	switch (childrenType) {
-		case ChildrenTypes.NON_KEYED_LIST:
-			patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
-			break;
-		case ChildrenTypes.KEYED_LIST:
-			patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
-			break;
-		case ChildrenTypes.UNKNOWN:
-			patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
-			break;
-		case ChildrenTypes.TEXT:
-			updateTextContent(dom, lastChildren, nextChildren);
-			break;
-		default:
-			throw new Error('Inferno Error: Bad childrenType value specified when attempting to patchChildren');
+function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
+	if (isTextChildrenType(childrenType)) {
+		updateTextContent(parentDom, lastChildren, nextChildren);
+	} else if (isNodeChildrenType(childrenType)) {
+		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
+	} else if (isKeyedListChildrenType(childrenType)) {
+		patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null);
+	} else if (isNonKeyedListChildrenType(childrenType)) {
+		patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null);
+	} else if (isUnknownChildrenType(childrenType)) {
+		patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
+	} else {
+		throw new Error('Inferno Error: Bad childrenType value specified when attempting to patchChildren');
 	}
 }
 
-function patchChildrenWithUnknownType(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
 	if (isInvalid(nextChildren)) {
-		removeAllChildren(dom, lastChildren);
+		removeAllChildren(parentDom, lastChildren);
 	} else if (isInvalid(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
-			updateTextContent(dom, lastChildren, nextChildren);
+			updateTextContent(parentDom, lastChildren, nextChildren);
 		} else if (!isInvalid(nextChildren)) {
 			if (isArray(nextChildren)) {
-				mountChildren(nextChildren, dom, lifecycle, context, isSVG);
+				mountChildren(nextChildren, parentDom, lifecycle, context, isSVG);
 			} else {
-				mount(nextChildren, dom, lifecycle, context, isSVG);
+				mount(nextChildren, parentDom, lifecycle, context, isSVG);
 			}
 		}
 	} else if (isArray(nextChildren)) {
@@ -152,17 +155,17 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, dom, lifecycle
 			nextChildren.complex = lastChildren.complex;
 
 			if (isKeyed(lastChildren, nextChildren)) {
-				patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
+				patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null);
 			} else {
-				patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, null);
+				patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null);
 			}
 		} else {
-			patchNonKeyedChildren([lastChildren], nextChildren, dom, lifecycle, context, isSVG, null);
+			patchNonKeyedChildren([lastChildren], nextChildren, parentDom, lifecycle, context, isSVG, null);
 		}
 	} else if (isArray(lastChildren)) {
-		patchNonKeyedChildren(lastChildren, [nextChildren], dom, lifecycle, context, isSVG, null);
+		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null);
 	} else {
-		patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
 	}
 }
 

@@ -37,26 +37,31 @@ import {
 	isVTemplate,
 	NodeTypes
 } from '../core/shapes';
-import ChildrenTypes from '../core/ChildrenTypes';
+import {
+	isKeyedListChildrenType,
+	isTextChildrenType,
+	isNodeChildrenType,
+	isNonKeyedListChildrenType,
+	isUnknownChildrenType
+} from '../core/ChildrenTypes';
 import { normalise } from './utils';
 import { recycleVTemplate, recyclingEnabled } from './templates';
 
 export function mount(input, parentDom, lifecycle, context, isSVG) {
-	switch (input._type) {
-		case NodeTypes.TEMPLATE:
-			return mountVTemplate(input, parentDom, lifecycle, context, isSVG);
-		case NodeTypes.PLACEHOLDER:
-			return mountVPlaceholder(input, parentDom);
-		case NodeTypes.TEXT:
-			return mountVText(input, parentDom);
-		case NodeTypes.FRAGMENT:
-			return mountVFragment(input, parentDom, lifecycle, context, isSVG);
-		case NodeTypes.ELEMENT:
-			return mountVElement(input, parentDom, lifecycle, context, isSVG);
-		case NodeTypes.COMPONENT:
-			return mountVComponent(input, parentDom, lifecycle, context, isSVG);
-		default:
-			throw Error('Inferno Error: Bad input argument called on mount(). Input argument may need normalising.');
+	if (isVTemplate(input)) {
+		return mountVTemplate(input, parentDom, lifecycle, context, isSVG);
+	} else if (isVPlaceholder(input)) {
+		return mountVPlaceholder(input, parentDom);
+	} else if (isVText(input)) {
+		return mountVText(input, parentDom);
+	} else if (isVFragment(input)) {
+		return mountVFragment(input, parentDom, lifecycle, context, isSVG);
+	} else if (isVElement(input)) {
+		return mountVElement(input, parentDom, lifecycle, context, isSVG);
+	} else if (isVComponent(input)) {
+		return mountVComponent(input, parentDom, lifecycle, context, isSVG);
+	} else {
+		throw Error('Inferno Error: Bad input argument called on mount(). Input argument may need normalising.');
 	}
 }
 
@@ -181,21 +186,18 @@ function mountChildrenWithUnknownType(children, parentDom, lifecycle, context, i
 }
 
 function mountChildren(childrenType, children, parentDom, lifecycle, context, isSVG) {
-	switch (childrenType) {
-		case ChildrenTypes.NON_KEYED_LIST:
-		case ChildrenTypes.KEYED_LIST:
-			for (let i = 0; i < children.length; i++) {
-				mount(children[i], parentDom, lifecycle, context, isSVG);
-			}
-			break;
-		case ChildrenTypes.UNKNOWN:
-			mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG);
-			break;
-		case ChildrenTypes.TEXT:
-			setTextContent(parentDom, children);
-			break;
-		default:
-			throw new Error('Inferno Error: Bad childrenType value specified when attempting to mountChildren');
+	if (isTextChildrenType(childrenType)) {
+		setTextContent(parentDom, children);
+	} else if (isNodeChildrenType(childrenType)) {
+		mount(children, parentDom, lifecycle, context, isSVG);
+	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
+		for (let i = 0; i < children.length; i++) {
+			mount(children[i], parentDom, lifecycle, context, isSVG);
+		}
+	} else if (isUnknownChildrenType(childrenType)) {
+		mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG);
+	} else {
+		throw new Error('Inferno Error: Bad childrenType value specified when attempting to mountChildren');
 	}
 }
 

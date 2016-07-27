@@ -7,19 +7,19 @@
 	var ChildrenTypes = Inferno.ChildrenTypes;
 
 	var NAME = 'inferno';
-	var VERSION = '0.8-templates';
+	var VERSION = '0.8-templates2';
 
-	var tpl1 = t(children =>
-		e('div').children(children).childrenType(ChildrenTypes.KEYED_LIST)
-	, InfernoDOM);
+	var tpl1 = t(function (children) {
+		return e('div').children(children).childrenType(ChildrenTypes.KEYED_LIST)
+	}, InfernoDOM);
 
-	var tpl2 = t((key, children) =>
-		e('div').key(key).children(children).childrenType(ChildrenTypes.KEYED_LIST)
-	, InfernoDOM);
+	var tpl2 = t(function (key, children) {
+		return e('div').key(key).children(children).childrenType(ChildrenTypes.KEYED_LIST)
+	}, InfernoDOM);
 
-	var tpl3 = t((key, children) =>
-		e('span').key(key).childrenType(ChildrenTypes.TEXT).children(key)
-	, InfernoDOM);
+	var tpl3 = t(function (key, children) {
+		return e('span').key(key).childrenType(ChildrenTypes.TEXT).children(key)
+	}, InfernoDOM);
 
 	function renderTree(nodes) {
 		var children = new Array(nodes.length);
