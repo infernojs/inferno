@@ -31,7 +31,7 @@ function renderComponent(Component, props, children, context, isRoot) {
 		instance._pendingSetState = false;
 		return renderNode(node, context, isRoot);
 	} else {
-		return renderNode(Component(props), context, isRoot);
+		return renderNode(Component(props, context), context, isRoot);
 	}
 }
 
