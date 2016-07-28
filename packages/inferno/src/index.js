@@ -1,4 +1,4 @@
-import { createVTemplate, createVComponent, createVElement, createVText } from '../../../src/core/shapes';
+import { createVTemplate, createVComponent, createVFragment, createVElement, createVText } from '../../../src/core/shapes';
 import { ChildrenTypes } from '../../../src/core/ChildrenTypes';
 
 export default {
@@ -6,5 +6,6 @@ export default {
 	createVComponent,
 	createVElement,
 	createVText,
+	createVFragment,
 	ChildrenTypes
 };

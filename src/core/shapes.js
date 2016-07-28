@@ -132,13 +132,18 @@ class VFragment {
 		this._dom = null;
 		this._pointer = null;
 		this._items = items;
+		this._childrenType = ChildrenTypes.UNKNOWN;
+	}
+	childrenType(childrenType) {
+		this._childrenType = childrenType;
+		return this;
 	}
 }
 
 class Variable {
-	constructor(arg) {
+	constructor(pointer) {
 		this._type = NodeTypes.VARIABLE;
-		this._arg = arg;
+		this._pointer = pointer;
 	}
 }
 
@@ -240,4 +245,8 @@ export function isVTemplate(o) {
 
 export function isVComponent(o) {
 	return o._type === NodeTypes.COMPONENT;
+}
+
+export function isVNode(o) {
+	return o._type !== undefined;
 }

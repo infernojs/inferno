@@ -4,11 +4,12 @@
 	var t = Inferno.createVTemplate;
 	var e = Inferno.createVElement;
 	var c = Inferno.createVComponent;
+	var f = Inferno.createVFragment;
 	var ChildrenTypes = Inferno.ChildrenTypes;
 
-	perfMonitor.startFPSMonitor();
-	perfMonitor.startMemMonitor();
-	perfMonitor.initProfiler('view update');
+	// perfMonitor.startFPSMonitor();
+	// perfMonitor.startMemMonitor();
+	// perfMonitor.initProfiler('view update');
 
 	//allows support in < IE9
 	function map(func, array) {
@@ -19,92 +20,39 @@
 		return newArray;
 	}
 
-	// var queryTemplate1 = Inferno.createBlueprint({
-	// 	tag: 'td',
-	// 	className: {arg: 0},
-	// 	children: {arg: 1}
-	// }, 4);
-
-	// var queryTemplate2 = Inferno.createBlueprint({
-	// 	tag: 'span',
-	// 	className: 'foo',
-	// 	children: {arg: 0}
-	// }, 1);
-
-	// var queryTemplate3 = Inferno.createBlueprint({
-	// 	tag: 'div',
-	// 	className: 'popover left',
-	// 	children: {arg: 0}
-	// }, 4);
-
-	// var queryTemplate4 = Inferno.createBlueprint({
-	// 	tag: 'div',
-	// 	className: 'popover-content',
-	// 	children: {arg: 0}
-	// }, 1);
-
-	// var queryTemplate5 = Inferno.createBlueprint({
-	// 	tag: 'div',
-	// 	className: 'arrow'
-	// }, 0);
-
-	// var queryTemplate6 = Inferno.createBlueprint({
-	// 	tag: { arg: 0 },
-	// 	attrs: { arg: 1 },
-	// 	hooks: { arg: 2 }
-	// }, 0);
-
-	function Query(props) {
-		var query = props.query;
-		return e('td').props({ className: query.elapsedClassName }).children([
-			e('span').children(query.formatElapsed),
+	var queryTemplate = t(function (elapsedClassName, formatElapsed, query) {
+		return e('td').props({ className: elapsedClassName }).children([
+			e('span').children(formatElapsed).childrenType(ChildrenTypes.TEXT),
 			e('div').props({ className: 'popover left' }).children(
-				e('div').props({ className: 'popover-content' }).children(query.query),
+				e('div').props({ className: 'popover-content' }).children(query).childrenType(ChildrenTypes.TEXT),
 				e('div').props({ className: 'arrow' })
 			)
 		]);
-	}
+	}, InfernoDOM);
 
-	var queryHooks = {
-		componentShouldUpdate: function(domNode, lastProps, nextProps) {
-			return lastProps.query !== nextProps.query || lastProps.elapsed !== nextProps.elapsed;
-		}
-	};
-
-	function renderQuery(query) {
-		return c(Query).props({ query: query, elapsed: query.elapsed }).hooks(queryHooks);
+	function query(query) {
+		return queryTemplate(query.elapsedClassName, query.formatElapsed, query.query);
 	}
 
 	var databaseTpl = t(function (dbName, countClassName, nbQueries, queries) {
 		return e('tr')
 			.children([
-				e('td').props({ className: 'dbname' }).children(dbName),
+				e('td').props({ className: 'dbname' }).children(dbName).childrenType(ChildrenTypes.TEXT),
 				e('td').props({ className: 'query-count' }).children(
 					e('span').props({ className: countClassName }).children(nbQueries).childrenType(ChildrenTypes.TEXT)
 				),
-				// queries
+				f(queries).childrenType(ChildrenTypes.NON_KEYED_LIST)
 			]).childrenType(ChildrenTypes.NON_KEYED_LIST);
 	}, InfernoDOM);
 
-	function Database(props) {
-		var db = props.db;
+	function database(db) {
 		var lastSample = db.lastSample;
-		const queries = [];
+		var queries = [];
 
 		for (var i = 0; i < 5; i++) {
-			queries.push(renderQuery(lastSample.topFiveQueries[i]))
+			queries.push(query(lastSample.topFiveQueries[i]))
 		}
 		return databaseTpl(db.dbname, lastSample.countClassName, lastSample.nbQueries, queries);
-	}
-
-	var databaseHooks = {
-		componentShouldUpdate: function(domNode, lastProps, nextProps) {
-			return lastProps.lastMutationId !== nextProps.lastMutationId;
-		}
-	};
-
-	function createDatabase(db) {
-		return c(Database).props({ db: db, lastMutationId: db.lastMutationId }).hooks(databaseHooks);
 	}
 
 	var tableTpl = t(function (children) {
@@ -116,13 +64,13 @@
 	}, InfernoDOM);
 
 	function render() {
-		var dbs = ENV.generateData(true).toArray();
-		perfMonitor.startProfile('view update');
+		var dbs = ENV.generateData(false).toArray();
+		//perfMonitor.startProfile('view update');
 		InfernoDOM.render(
-			tableTpl((map(createDatabase, dbs))),
+			tableTpl((map(database, dbs))),
 			elem
 		);
-		perfMonitor.endProfile('view update');
+		//perfMonitor.endProfile('view update');
 		setTimeout(render, ENV.timeout);
 	}
 	render();

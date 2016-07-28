@@ -131,9 +131,21 @@
 		this._dom = null;
 	};
 
-	var Variable = function Variable(arg) {
+	var VFragment = function VFragment(items) {
+		this._type = NodeTypes.FRAGMENT;
+		this._dom = null;
+		this._pointer = null;
+		this._items = items;
+		this._childrenType = ChildrenTypes.UNKNOWN;
+	};
+	VFragment.prototype.childrenType = function childrenType (childrenType) {
+		this._childrenType = childrenType;
+		return this;
+	};
+
+	var Variable = function Variable(pointer) {
 		this._type = NodeTypes.VARIABLE;
-		this._arg = arg;
+		this._pointer = pointer;
 	};
 
 	function createVTemplate(schema, renderer) {
@@ -195,11 +207,16 @@
 		return new VText(text);
 	}
 
+	function createVFragment(items) {
+		return new VFragment(items);
+	}
+
 	var index = {
 		createVTemplate: createVTemplate,
 		createVComponent: createVComponent,
 		createVElement: createVElement,
 		createVText: createVText,
+		createVFragment: createVFragment,
 		ChildrenTypes: ChildrenTypes
 	};
 

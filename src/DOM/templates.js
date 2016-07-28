@@ -27,13 +27,15 @@ import {
 	isVElement,
 	isVComponent,
 	isVariable,
+	isVFragment,
 	createTemplaceReducers,
 	NULL_INDEX,
 	ROOT_INDEX
 } from './../core/shapes';
 import {
 	mountVariable,
-	mountDOMNodeFromTemplate
+	mountDOMNodeFromTemplate,
+	mountTemplateClassName
 } from './mounting';
 import {
 	patchVariable,
@@ -70,9 +72,11 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 		let deepClone = false;
 
 		if (isVariable(vNode)) {
-			mount = mountVariable(vNode, isSVG, isChildren, childrenType);
-			patch = patchVariable(vNode, isSVG, isChildren, childrenType);
-			unmount = unmountVariable(vNode, isChildren, childrenType);
+			mount = mountVariable(vNode._pointer, isSVG, isChildren, childrenType);
+			patch = patchVariable(vNode._pointer, isSVG, isChildren, childrenType);
+			unmount = unmountVariable(vNode._pointer, isChildren, childrenType);
+		} else if (isVFragment(vNode)) {
+			debugger;
 		} else if (isVElement(vNode)) {
 			const mounters = [];
 			const patchers = [];
@@ -96,7 +100,8 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 
 					if (isVariable(value)) {
 						if (prop === 'className') {
-							patchers.push(patchTemplateClassName(value));
+							mounters.push(mountTemplateClassName(value._pointer));
+							patchers.push(patchTemplateClassName(value._pointer));
 						}
 					} else {
 						const shouldMountProp = patchProp(prop, null, value, dom);

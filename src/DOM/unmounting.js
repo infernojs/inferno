@@ -107,7 +107,7 @@ export function unmountVElement(vElement, parentDom) {
 	}
 }
 
-export function unmountVariable(variable, isChildren) {
+export function unmountVariable(pointer, isChildren) {
 	return function unmountVariable(vTemplate) {
 		// TODO
 	};

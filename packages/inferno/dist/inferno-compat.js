@@ -204,6 +204,11 @@
   	this._dom = null;
   	this._pointer = null;
   	this._items = items;
+  	this._childrenType = ChildrenTypes.UNKNOWN;
+  };
+  VFragment.prototype.childrenType = function childrenType (childrenType) {
+  	this._childrenType = childrenType;
+  	return this;
   };
 
   function createVComponent(component) {
@@ -271,7 +276,7 @@
   			// debugger;
   		} else if (isVFragment(nextInput)) {
   			if (isVFragment(lastInput)) {
-  				patchVList(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+  				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
   			} else {
   				replaceChild(parentDom, mountVFragment(nextInput, null), lastInput._dom);
   				unmount(lastInput, null);
@@ -290,7 +295,7 @@
   			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG));
   		} else if (isVPlaceholder(nextInput)) {
   			if (isVPlaceholder(lastInput)) {
-  				patchVFragment(lastInput, nextInput);
+  				patchVPlaceholder(lastInput, nextInput);
   			} else {
   				replaceChild(parentDom, mountVPlaceholder(nextInput, null), lastInput._dom);
   				unmount(lastInput, null);
@@ -599,18 +604,28 @@
   	}
   }
 
-  function patchVList(lastVList, nextVList, parentDom, lifecycle, context, isSVG) {
-  	var lastItems = lastVList._items;
-  	var nextItems = nextVList._items;
-  	var pointer = lastVList._pointer;
+  function patchVFragment(lastVFragment, nextVFragment, parentDom, lifecycle, context, isSVG) {
+  	var lastItems = lastVFragment._items;
+  	var nextItems = nextVFragment._items;
+  	var pointer = lastVFragment._pointer;
 
-  	nextVList._dom = lastVList._dom;
-  	nextVList._pointer = pointer;
+  	nextVFragment._dom = lastVFragment._dom;
+  	nextVFragment._pointer = pointer;
   	if (!lastItems !== nextItems) {
+  		var lastChildrenType = lastVFragment._childrenType;
+  		var nextChildrenType = nextVFragment._childrenType;
+
+  		if (lastChildrenType === nextChildrenType) {
+  			if (isKeyedListChildrenType(nextChildrenType)) {
+  				return patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+  			} else if (isKeyedListChildrenType(nextChildrenType)) {
+  				return patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+  			}
+  		}
   		if (isKeyed(lastItems, nextItems)) {
-  			patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVList);
+  			patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
   		} else {
-  			patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVList);
+  			patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
   		}
   	}
   }
@@ -640,8 +655,8 @@
   	}
   }
 
-  function patchVFragment(lastVFragment, nextVFragment) {
-  	nextVFragment._dom = lastVFragment._dom;
+  function patchVPlaceholder(lastVPlacholder, nextVPlacholder) {
+  	nextVPlacholder._dom = lastVPlacholder._dom;
   }
 
   function patchVText(lastVText, nextVText) {
@@ -1303,14 +1318,19 @@
   	return dom;
   }
 
-  function mountVFragment(vList, parentDom, lifecycle, context, isSVG) {
-  	var items = vList._items;
+  function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) {
+  	var items = vFragment._items;
   	var pointer = document.createTextNode('');
   	var dom = document.createDocumentFragment();
+  	var childrenType = vFragment._childrenType;
 
-  	mountArrayChildren(items, dom, lifecycle, context, isSVG);
-  	vList._pointer = pointer;
-  	vList._dom = dom;
+  	if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
+  		mountArrayChildrenWithType(items, dom, lifecycle, context, isSVG);
+  	} else if (isUnknownChildrenType(childrenType)) {
+  		mountArrayChildrenWithoutType(items, dom, lifecycle, context, isSVG);
+  	}
+  	vFragment._pointer = pointer;
+  	vFragment._dom = dom;
   	appendChild(dom, pointer);
   	if (parentDom) {
   		appendChild(parentDom, dom);
@@ -1374,15 +1394,19 @@
   	}
   }
 
+  function mountArrayChildrenWithType(children, parentDom, lifecycle, context, isSVG) {
+  	for (var i = 0; i < children.length; i++) {
+  		mount(children[i], parentDom, lifecycle, context, isSVG);
+  	}
+  }
+
   function mountChildren$1(childrenType, children, parentDom, lifecycle, context, isSVG) {
   	if (isTextChildrenType(childrenType)) {
   		setTextContent(parentDom, children);
   	} else if (isNodeChildrenType(childrenType)) {
   		mount(children, parentDom, lifecycle, context, isSVG);
   	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
-  		for (var i = 0; i < children.length; i++) {
-  			mount(children[i], parentDom, lifecycle, context, isSVG);
-  		}
+  		mountArrayChildrenWithType(children, parentDom, lifecycle, context, isSVG);
   	} else if (isUnknownChildrenType(childrenType)) {
   		mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG);
   	} else {

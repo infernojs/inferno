@@ -35,7 +35,8 @@ import {
 	isVElement,
 	isVComponent,
 	isVTemplate,
-	NodeTypes
+	NodeTypes,
+	isVNode
 } from '../core/shapes';
 import {
 	isKeyedListChildrenType,
@@ -114,14 +115,19 @@ function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	return dom;
 }
 
-export function mountVFragment(vList, parentDom, lifecycle, context, isSVG) {
-	const items = vList._items;
+export function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) {
+	const items = vFragment._items;
 	const pointer = document.createTextNode('');
 	const dom = document.createDocumentFragment();
+	const childrenType = vFragment._childrenType;
 
-	mountArrayChildren(items, dom, lifecycle, context, isSVG);
-	vList._pointer = pointer;
-	vList._dom = dom;
+	if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
+		mountArrayChildrenWithType(items, dom, lifecycle, context, isSVG);
+	} else if (isUnknownChildrenType(childrenType)) {
+		mountArrayChildrenWithoutType(items, dom, lifecycle, context, isSVG);
+	}
+	vFragment._pointer = pointer;
+	vFragment._dom = dom;
 	appendChild(dom, pointer);
 	if (parentDom) {
 		appendChild(parentDom, dom);
@@ -185,15 +191,19 @@ function mountChildrenWithUnknownType(children, parentDom, lifecycle, context, i
 	}
 }
 
+function mountArrayChildrenWithType(children, parentDom, lifecycle, context, isSVG) {
+	for (let i = 0; i < children.length; i++) {
+		mount(children[i], parentDom, lifecycle, context, isSVG);
+	}
+}
+
 function mountChildren(childrenType, children, parentDom, lifecycle, context, isSVG) {
 	if (isTextChildrenType(childrenType)) {
 		setTextContent(parentDom, children);
 	} else if (isNodeChildrenType(childrenType)) {
 		mount(children, parentDom, lifecycle, context, isSVG);
 	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
-		for (let i = 0; i < children.length; i++) {
-			mount(children[i], parentDom, lifecycle, context, isSVG);
-		}
+		mountArrayChildrenWithType(children, parentDom, lifecycle, context, isSVG);
 	} else if (isUnknownChildrenType(childrenType)) {
 		mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG);
 	} else {
@@ -271,16 +281,17 @@ function mountProps(vElement, props, dom) {
 	}
 }
 
-export function mountVariable(variable, templateIsSVG, isChildren, childrenType) {
-	const arg = variable._arg;
-
+export function mountVariable(pointer, templateIsSVG, isChildren, childrenType) {
 	return function mountVariable(vTemplate, parentDom, lifecycle, context, isSVG) {
-		const input = vTemplate.read(arg);
+		let input = vTemplate.read(pointer);
 
 		if (isChildren) {
 			return mountChildren(childrenType, input, parentDom, lifecycle, context, isSVG || templateIsSVG);
 		} else {
-			// we may need to normalise here
+			if (!isVNode(input)) {
+				input = normalise(input);
+				vTemplate.write(pointer, input);
+			}
 			return mount(input, parentDom, lifecycle, context, isSVG || templateIsSVG);
 		}
 	};
@@ -294,5 +305,15 @@ export function mountDOMNodeFromTemplate(templateDomNode, isRoot, deepClone) {
 			appendChild(parentDom, domNode);
 		}
 		return domNode;
+	};
+}
+
+export function mountTemplateClassName(pointer) {
+	return function mountTemplateClassName(vTemplate, parentDom) {
+		const className = vTemplate.read(pointer);
+
+		if (!isNullOrUndef(className)) {
+			parentDom.className = className;
+		}
 	};
 }
