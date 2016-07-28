@@ -341,6 +341,10 @@
 
     var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
 
+    function interopDefault(ex) {
+    	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
+    }
+
     function createCommonjsModule(fn, module) {
     	return module = { exports: {} }, fn(module, module.exports), module.exports;
     }
@@ -367,14 +371,21 @@
     };
     });
 
-    var require$$0 = (ponyfill && typeof ponyfill === 'object' && 'default' in ponyfill ? ponyfill['default'] : ponyfill);
+    var ponyfill$1 = interopDefault(ponyfill);
+
+
+    var require$$0 = Object.freeze({
+    	default: ponyfill$1
+    });
 
     var index$1 = createCommonjsModule(function (module) {
     /* global window */
     'use strict';
 
-    module.exports = require$$0(commonjsGlobal || window || commonjsGlobal);
+    module.exports = interopDefault(require$$0)(commonjsGlobal || window || commonjsGlobal);
     });
+
+    interopDefault(index$1);
 
     function bindActionCreator(actionCreator, dispatch) {
       return function () {
@@ -549,7 +560,7 @@
     module.exports = hoistNonReactStatics;
     });
 
-    var hoistStatics = (index$2 && typeof index$2 === 'object' && 'default' in index$2 ? index$2['default'] : index$2);
+    var hoistStatics = interopDefault(index$2);
 
     var invariant = createCommonjsModule(function (module) {
     /**
@@ -607,7 +618,7 @@
     module.exports = invariant;
     });
 
-    var invariant$1 = (invariant && typeof invariant === 'object' && 'default' in invariant ? invariant['default'] : invariant);
+    var invariant$1 = interopDefault(invariant);
 
     var errorObject = { value: null };
     var defaultMapStateToProps = function (state) { return ({}); }; // eslint-disable-line no-unused-vars

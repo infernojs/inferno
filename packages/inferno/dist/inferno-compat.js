@@ -2795,6 +2795,10 @@
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
 
+  function interopDefault(ex) {
+  	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
+  }
+
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
@@ -3131,7 +3135,7 @@
 
   });
 
-  var PropTypes = (index$1 && typeof index$1 === 'object' && 'default' in index$1 ? index$1['default'] : index$1);
+  var PropTypes = interopDefault(index$1);
 
   function unmountComponentAtNode(container) {
   	render(null, container);
