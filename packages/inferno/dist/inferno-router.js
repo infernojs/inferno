@@ -56,7 +56,7 @@
     	this._key = null;
     	this._props = null;
     	this._hooks = null;
-    	this._childrenType = ChildrenTypes.UKNOWN;
+    	this._childrenType = ChildrenTypes.UNKNOWN;
     };
     VElement.prototype.children = function children (children) {
     	this._children = children;

@@ -36,6 +36,7 @@ import {
 	removeEvents,
 	selectValue,
 	updateTextContent,
+	setTextContent,
 	isPropertyOfElement,
 	replaceChild
 } from './utils';
@@ -123,7 +124,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 
 function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
 	if (isTextChildrenType(childrenType)) {
-		updateTextContent(parentDom, lastChildren, nextChildren);
+		updateTextContent(parentDom, nextChildren);
 	} else if (isNodeChildrenType(childrenType)) {
 		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
 	} else if (isKeyedListChildrenType(childrenType)) {
@@ -142,7 +143,7 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
 		removeAllChildren(parentDom, lastChildren);
 	} else if (isInvalid(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
-			updateTextContent(parentDom, lastChildren, nextChildren);
+			setTextContent(parentDom, nextChildren);
 		} else if (!isInvalid(nextChildren)) {
 			if (isArray(nextChildren)) {
 				mountChildren(nextChildren, parentDom, lifecycle, context, isSVG);
@@ -150,6 +151,14 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
 				mount(nextChildren, parentDom, lifecycle, context, isSVG);
 			}
 		}
+	} else if (isStringOrNumber(nextChildren)) {
+		if (isStringOrNumber(lastChildren)) {
+			updateTextContent(parentDom, nextChildren);
+		} else {
+			setTextContent(parentDom, nextChildren);
+		}
+	} else if (isStringOrNumber(lastChildren)) {
+		// debugger;
 	} else if (isArray(nextChildren)) {
 		if (isArray(lastChildren)) {
 			nextChildren.complex = lastChildren.complex;
@@ -230,9 +239,9 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 
 function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 	const tag = nextVElement._tag;
+
 	lastProps = lastProps || {};
 	nextProps = nextProps || {};
-
 	if (lastVElement._tag === 'select') {
 		selectValue(nextVElement);
 	}
@@ -244,19 +253,7 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 			if (isNullOrUndef(nextValue)) {
 				removeProp(tag, prop, dom);
 			} else {
-				if (prop === 'style') {
-					patchStyle(lastValue, nextValue, dom);
-				} else if (isPropertyOfElement(tag, prop)) {
-					dom[prop] = nextValue;
-				} else {
-					const namespace = namespaces[prop];
-
-					if (namespace) {
-						dom.setAttributeNS(namespace, prop, nextValue);
-					} else {
-						dom.setAttribute(prop, nextValue);
-					}
-				}
+				patchProp(prop, lastValue, nextValue, dom);
 			}
 		}
 	}
@@ -265,6 +262,30 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 			removeProp(tag, prop, dom);
 		}
 	}
+}
+
+// returns true if a property of the element has been mutated, otherwise false for an attribute
+export function patchProp(prop, lastValue, nextValue, dom) {
+	if (prop === 'className') {
+		dom.className = nextValue;
+		return false;
+	} else if (prop === 'style') {
+		patchStyle(lastValue, nextValue, dom);
+	} else if (strictProps[prop]) {
+		dom[prop] = nextValue === null ? '' : nextValue;
+	} else if (booleanProps[prop]) {
+		dom[prop] = nextValue ? true : false;
+	} else {
+		const ns = namespaces[prop];
+
+		if (ns) {
+			dom.setAttributeNS(ns, prop, nextValue);
+		} else {
+			dom.setAttribute(prop, nextValue);
+		}
+		return false;
+	}
+	return true;
 }
 
 function removeProp(tag, prop, dom) {
@@ -682,6 +703,19 @@ export function patchVariable(variable, templateIsSVG, isChildren, childrenType)
 				// handle normalising?
 				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
 			}
+		}
+	};
+}
+
+export function patchTemplateClassName(variable) {
+	const arg = variable._arg;
+
+	return function patchTemplateClassName(lastVTemplate, nextVTemplate, parentDom) {
+		const lastClassName = lastVTemplate.read(arg);
+		const nextClassName = nextVTemplate.read(arg);
+
+		if (lastClassName !== nextClassName) {
+			parentDom.className = nextClassName;
 		}
 	};
 }

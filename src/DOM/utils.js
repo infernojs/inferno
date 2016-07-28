@@ -32,28 +32,6 @@ constructDefaults('volume,value', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-const elementsPropMap = new Map();
-
-// pre-populate with common tags
-// getAllPropsForElement('div');
-// getAllPropsForElement('span');
-// getAllPropsForElement('table');
-// getAllPropsForElement('tr');
-// getAllPropsForElement('td');
-// getAllPropsForElement('a');
-// getAllPropsForElement('p');
-
-function getAllPropsForElement(tag) {
-	const elem = document.createElement(tag);
-	const props = {};
-
-	for (let prop in elem) {
-		props[prop] = true;
-	}
-	elementsPropMap.set(tag, props);
-	return props;
-}
-
 export function setTextContent(dom, text) {
 	if (text !== '') {
 		dom.textContent = text;
@@ -62,12 +40,8 @@ export function setTextContent(dom, text) {
 	}
 }
 
-export function updateTextContent(dom, lastChildren, nextChildren) {
-	if (isStringOrNumber(lastChildren)) {
-		dom.firstChild.nodeValue = nextChildren;
-	} else {
-		dom.textContent = nextChildren;
-	}
+export function updateTextContent(dom, text) {
+	dom.firstChild.nodeValue = text;
 }
 
 export function isPropertyOfElement(tag, prop) {

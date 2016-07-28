@@ -2,7 +2,9 @@
 	"use strict";
 	var elem = document.getElementById('app');
 	var t = Inferno.createVTemplate;
+	var e = Inferno.createVElement;
 	var c = Inferno.createVComponent;
+	var ChildrenTypes = Inferno.ChildrenTypes;
 
 	perfMonitor.startFPSMonitor();
 	perfMonitor.startMemMonitor();
@@ -73,20 +75,26 @@
 		return c(Query).props({ query: query, elapsed: query.elapsed }).hooks(queryHooks);
 	}
 
+	var databaseTpl = t(function (dbName, countClassName, nbQueries, queries) {
+		return e('tr')
+			.children([
+				e('td').props({ className: 'dbname' }).children(dbName),
+				e('td').props({ className: 'query-count' }).children(
+					e('span').props({ className: countClassName }).children(nbQueries).childrenType(ChildrenTypes.TEXT)
+				),
+				// queries
+			]).childrenType(ChildrenTypes.NON_KEYED_LIST);
+	}, InfernoDOM);
+
 	function Database(props) {
 		var db = props.db;
 		var lastSample = db.lastSample;
-		var children = [
-			e('td').props({ className: 'dbname' }).children(db.dbname),
-			e('td').props({ className: 'query-count' }).children(
-				e('span').props({ className: lastSample.countClassName }).children(lastSample.nbQueries)
-			)
-		];
+		const queries = [];
 
 		for (var i = 0; i < 5; i++) {
-			children.push(renderQuery(lastSample.topFiveQueries[i]))
+			queries.push(renderQuery(lastSample.topFiveQueries[i]))
 		}
-		return e('tr').children(children)
+		return databaseTpl(db.dbname, lastSample.countClassName, lastSample.nbQueries, queries);
 	}
 
 	var databaseHooks = {
@@ -99,15 +107,19 @@
 		return c(Database).props({ db: db, lastMutationId: db.lastMutationId }).hooks(databaseHooks);
 	}
 
+	var tableTpl = t(function (children) {
+		return e('table')
+			.props({ className: 'table table-striped latest-data' })
+			.children(
+				e('tbody').children(children).childrenType(ChildrenTypes.NON_KEYED_LIST)
+			);
+	}, InfernoDOM);
+
 	function render() {
 		var dbs = ENV.generateData(true).toArray();
 		perfMonitor.startProfile('view update');
 		InfernoDOM.render(
-			e('table')
-				.props({ className: 'table table-striped latest-data' })
-				.children(
-					e('tbody').children((map(createDatabase, dbs)))
-				),
+			tableTpl((map(createDatabase, dbs))),
 			elem
 		);
 		perfMonitor.endProfile('view update');

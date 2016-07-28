@@ -139,7 +139,7 @@
   	this._key = null;
   	this._props = null;
   	this._hooks = null;
-  	this._childrenType = ChildrenTypes.UKNOWN;
+  	this._childrenType = ChildrenTypes.UNKNOWN;
   };
   VElement.prototype.children = function children (children) {
   	this._children = children;
@@ -314,7 +314,7 @@
 
   function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
   	if (isTextChildrenType(childrenType)) {
-  		updateTextContent(parentDom, lastChildren, nextChildren);
+  		updateTextContent(parentDom, nextChildren);
   	} else if (isNodeChildrenType(childrenType)) {
   		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
   	} else if (isKeyedListChildrenType(childrenType)) {
@@ -333,7 +333,7 @@
   		removeAllChildren(parentDom, lastChildren);
   	} else if (isInvalid(lastChildren)) {
   		if (isStringOrNumber(nextChildren)) {
-  			updateTextContent(parentDom, lastChildren, nextChildren);
+  			setTextContent(parentDom, nextChildren);
   		} else if (!isInvalid(nextChildren)) {
   			if (isArray(nextChildren)) {
   				mountChildren(nextChildren, parentDom, lifecycle, context, isSVG);
@@ -341,6 +341,14 @@
   				mount(nextChildren, parentDom, lifecycle, context, isSVG);
   			}
   		}
+  	} else if (isStringOrNumber(nextChildren)) {
+  		if (isStringOrNumber(lastChildren)) {
+  			updateTextContent(parentDom, nextChildren);
+  		} else {
+  			setTextContent(parentDom, nextChildren);
+  		}
+  	} else if (isStringOrNumber(lastChildren)) {
+  		// debugger;
   	} else if (isArray(nextChildren)) {
   		if (isArray(lastChildren)) {
   			nextChildren.complex = lastChildren.complex;
@@ -421,9 +429,9 @@
 
   function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
   	var tag = nextVElement._tag;
+
   	lastProps = lastProps || {};
   	nextProps = nextProps || {};
-
   	if (lastVElement._tag === 'select') {
   		selectValue(nextVElement);
   	}
@@ -435,19 +443,7 @@
   			if (isNullOrUndef(nextValue)) {
   				removeProp(tag, prop, dom);
   			} else {
-  				if (prop === 'style') {
-  					patchStyle(lastValue, nextValue, dom);
-  				} else if (isPropertyOfElement(tag, prop)) {
-  					dom[prop] = nextValue;
-  				} else {
-  					var namespace = namespaces[prop];
-
-  					if (namespace) {
-  						dom.setAttributeNS(namespace, prop, nextValue);
-  					} else {
-  						dom.setAttribute(prop, nextValue);
-  					}
-  				}
+  				patchProp(prop, lastValue, nextValue, dom);
   			}
   		}
   	}
@@ -456,6 +452,30 @@
   			removeProp(tag, prop$1, dom);
   		}
   	}
+  }
+
+  // returns true if a property of the element has been mutated, otherwise false for an attribute
+  function patchProp(prop, lastValue, nextValue, dom) {
+  	if (prop === 'className') {
+  		dom.className = nextValue;
+  		return false;
+  	} else if (prop === 'style') {
+  		patchStyle(lastValue, nextValue, dom);
+  	} else if (strictProps[prop]) {
+  		dom[prop] = nextValue === null ? '' : nextValue;
+  	} else if (booleanProps[prop]) {
+  		dom[prop] = nextValue ? true : false;
+  	} else {
+  		var ns = namespaces[prop];
+
+  		if (ns) {
+  			dom.setAttributeNS(ns, prop, nextValue);
+  		} else {
+  			dom.setAttribute(prop, nextValue);
+  		}
+  		return false;
+  	}
+  	return true;
   }
 
   function removeProp(tag, prop, dom) {
@@ -1014,28 +1034,6 @@
   constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
   constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-  var elementsPropMap = new Map();
-
-  // pre-populate with common tags
-  // getAllPropsForElement('div');
-  // getAllPropsForElement('span');
-  // getAllPropsForElement('table');
-  // getAllPropsForElement('tr');
-  // getAllPropsForElement('td');
-  // getAllPropsForElement('a');
-  // getAllPropsForElement('p');
-
-  function getAllPropsForElement(tag) {
-  	var elem = document.createElement(tag);
-  	var props = {};
-
-  	for (var prop in elem) {
-  		props[prop] = true;
-  	}
-  	elementsPropMap.set(tag, props);
-  	return props;
-  }
-
   function setTextContent(dom, text) {
   	if (text !== '') {
   		dom.textContent = text;
@@ -1044,12 +1042,8 @@
   	}
   }
 
-  function updateTextContent(dom, lastChildren, nextChildren) {
-  	if (isStringOrNumber(lastChildren)) {
-  		dom.firstChild.nodeValue = nextChildren;
-  	} else {
-  		dom.textContent = nextChildren;
-  	}
+  function updateTextContent(dom, text) {
+  	dom.firstChild.nodeValue = text;
   }
 
   function isPropertyOfElement(tag, prop) {
@@ -1462,21 +1456,7 @@
   	for (var prop in props) {
   		var value = props[prop];
 
-  		if (!isNullOrUndef(value)) {
-  			if (prop === 'style') {
-  				patchStyle(null, value, dom);
-  			} else if (isPropertyOfElement(vElement._tag, prop)) {
-  				dom[prop] = value;
-  			} else {
-  				var namespace = namespaces[prop];
-
-  				if (namespace) {
-  					dom.setAttributeNS(namespace, prop, value);
-  				} else {
-  					dom.setAttribute(prop, value);
-  				}
-  			}
-  		}
+  		patchProp(prop, null, value, dom);
   	}
   }
 

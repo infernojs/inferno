@@ -37,7 +37,9 @@ import {
 } from './mounting';
 import {
 	patchVariable,
-	patchVTemplate
+	patchVTemplate,
+	patchProp,
+	patchTemplateClassName
 } from './patching';
 import {
 	unmountVariable
@@ -80,13 +82,29 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 			if (tag === 'svg') {
 				isSVG = true;
 			}
-			const domNode = documentCreateElement(tag, isSVG);
+			const dom = documentCreateElement(tag, isSVG);
 			const key = vNode._key;
 
 			if (!isNull(key) && isVariable(key)) {
 				keyIndex = key._arg;
 			}
 			const props = vNode._props;
+
+			if (!isNull(props)) {
+				for (let prop in props) {
+					const value = props[prop];
+
+					if (isVariable(value)) {
+						if (prop === 'className') {
+							patchers.push(patchTemplateClassName(value));
+						}
+					} else {
+						const shouldMountProp = patchProp(prop, null, value, dom);
+						// debugger;
+						// todo
+					}
+				}
+			}
 			const hooks = vNode._hooks;
 
 			if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
@@ -98,9 +116,27 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 				if (isStringOrNumber(children)) {
 					// debugger;
 				} else if (isArray(children)) {
-					// debugger;
+					for (let i = 0; i < children.length; i++) {
+						const templateReducers = createTemplateReducers(children[i], false, offset, dom, isSVG, false, vNode._childrenType);
+
+						if (!isInvalid(templateReducers)) {
+							mounters.push(templateReducers.mount);
+							const patch = templateReducers.patch;
+							const unmount = templateReducers.unmount;
+
+							if (!isNull(patch)) {
+								patchers.push(patch);
+							}
+							if (!isNull(unmount)) {
+								unmounters.push(unmount);
+							}
+						}
+					}
 				} else {
-					const templateReducers = createTemplateReducers(children, false, offset, domNode, isSVG, true, vNode._childrenType);
+					if (nodeIndex === NULL_INDEX && isVariable(children)) {
+						nodeIndex = offset.length++;
+					}
+					const templateReducers = createTemplateReducers(children, false, offset, dom, isSVG, true, vNode._childrenType);
 
 					if (!isInvalid(templateReducers)) {
 						mounters.push(templateReducers.mount);
@@ -116,7 +152,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					}
 				}
 			}
-			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(domNode, isRoot, deepClone), mounters);
+			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, isRoot, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);
 			unmount = combineUnmount(nodeIndex, unmounters);
 		} else if (isVComponent(vNode)) {
@@ -140,24 +176,24 @@ function combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounter1, mounter2
 	const write = (nodeIndex !== NULL_INDEX);
 
 	return function combineMountTo5(vTemplate, parentDom, lifecycle, context, isSVG) {
-		const domNode = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context, isSVG);
+		const dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context, isSVG);
 
 		if (write) {
-			vTemplate.write(nodeIndex, domNode);
+			vTemplate.write(nodeIndex, dom);
 		}
 		if (mounter1) {
-			mounter1(vTemplate, domNode, lifecycle, context, isSVG);
+			mounter1(vTemplate, dom, lifecycle, context, isSVG);
 			if (mounter2) {
-				mounter2(vTemplate, domNode, lifecycle, context, isSVG);
+				mounter2(vTemplate, dom, lifecycle, context, isSVG);
 				if (mounter3) {
-					mounter3(vTemplate, domNode, lifecycle, context, isSVG);
+					mounter3(vTemplate, dom, lifecycle, context, isSVG);
 					if (mounter4) {
-						mounter4(vTemplate, domNode, lifecycle, context, isSVG);
+						mounter4(vTemplate, dom, lifecycle, context, isSVG);
 					}
 				}
 			}
 		}
-		return domNode;
+		return dom;
 	};
 }
 
@@ -165,15 +201,15 @@ function combineMountToX(nodeIndex, mountDOMNodeFromTemplate, mounters) {
 	const write = (nodeIndex !== NULL_INDEX);
 
 	return function combineMountToX(vTemplate, parentDom, lifecycle, instance, isSVG) {
-		const domNode = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context);
+		const dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context);
 
 		if (write) {
-			vTemplate.write(nodeIndex, domNode);
+			vTemplate.write(nodeIndex, dom);
 		}
 		for (let i = 0; i < mounters.length; i++) {
-			mounters[i](vTemplate, domNode, lifecycle, context, isSVG);
+			mounters[i](vTemplate, dom, lifecycle, context, isSVG);
 		}
-		return domNode;
+		return dom;
 	};
 }
 
@@ -195,21 +231,21 @@ function combinePatchTo5(nodeIndex, patch1, patch2, patch3, patch4, patch5) {
 	const copy = (nodeIndex !== NULL_INDEX);
 
 	return function combinePatchTo5(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
-		let domNode;
+		let dom;
 
 		if (copy) {
-			domNode = copyValue(lastVTemplate, nextVTemplate, nodeIndex);
+			dom = copyValue(lastVTemplate, nextVTemplate, nodeIndex);
 		}
 		if (patch1) {
-			patch1(lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
+			patch1(lastVTemplate, nextVTemplate, dom, lifecycle, context, isSVG);
 			if (patch2) {
-				patch2(lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
+				patch2(lastVTemplate, nextVTemplate, dom, lifecycle, context, isSVG);
 				if (patch3) {
-					patch3(lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
+					patch3(lastVTemplate, nextVTemplate, dom, lifecycle, context, isSVG);
 					if (patch4) {
-						patch4(lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
+						patch4(lastVTemplate, nextVTemplate, dom, lifecycle, context, isSVG);
 						if (patch5) {
-							patch5(lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
+							patch5(lastVTemplate, nextVTemplate, dom, lifecycle, context, isSVG);
 						}
 					}
 				}
@@ -222,13 +258,13 @@ function combinePatchX(nodeIndex, patchers) {
 	const copy = (nodeIndex !== NULL_INDEX);
 
 	return function combinePatchX(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
-		let domNode;
+		let dom;
 
 		if (copy) {
-			domNode = copyValue(lastVTemplate, nextVTemplate, nodeIndex);
+			dom = copyValue(lastVTemplate, nextVTemplate, nodeIndex);
 		}
 		for (let i = 0; i < patchers.length; i++) {
-			patchers[i](lastVTemplate, nextVTemplate, domNode, lifecycle, context, isSVG);
+			patchers[i](lastVTemplate, nextVTemplate, dom, lifecycle, context, isSVG);
 		}
 	};
 }

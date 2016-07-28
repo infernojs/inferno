@@ -24,7 +24,7 @@ import {
 	namespaces,
 	appendChild
 } from './utils';
-import { patchAttribute, patchStyle, patch } from './patching';
+import { patchAttribute, patchStyle, patch, patchProp } from './patching';
 import { handleLazyAttached } from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
 import {
@@ -263,25 +263,11 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 	return dom;
 }
 
-export function mountProps(vElement, props, dom) {
+function mountProps(vElement, props, dom) {
 	for (let prop in props) {
 		const value = props[prop];
 
-		if (!isNullOrUndef(value)) {
-			if (prop === 'style') {
-				patchStyle(null, value, dom);
-			} else if (isPropertyOfElement(vElement._tag, prop)) {
-				dom[prop] = value;
-			} else {
-				const namespace = namespaces[prop];
-
-				if (namespace) {
-					dom.setAttributeNS(namespace, prop, value);
-				} else {
-					dom.setAttribute(prop, value);
-				}
-			}
-		}
+		patchProp(prop, null, value, dom);
 	}
 }
 
