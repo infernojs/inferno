@@ -16,7 +16,7 @@ function renderComponent(Component, props, children, context, isRoot) {
 	props = addChildrenToProps(children, props);
 
 	if (isStatefulComponent(Component)) {
-		const instance = new Component(props);
+		const instance = new Component(props, context);
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndefined(childContext)) {
