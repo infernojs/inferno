@@ -297,7 +297,7 @@ export function mountComponent(parentNode, Component, props, hooks, children, la
 
 	let dom;
 	if (isStatefulComponent(Component)) {
-		const instance = new Component(props);
+		const instance = new Component(props, context);
 
 		instance._patch = patch;
 		instance._componentToDOMNodeMap = componentToDOMNodeMap;
