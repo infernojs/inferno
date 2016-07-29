@@ -16,7 +16,7 @@ function renderComponent(Component, props, children, context, isRoot) {
 	props = addChildrenToProps(children, props);
 
 	if (isStatefulComponent(Component)) {
-		const instance = new Component(props);
+		const instance = new Component(props, context);
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndefined(childContext)) {
@@ -31,7 +31,7 @@ function renderComponent(Component, props, children, context, isRoot) {
 		instance._pendingSetState = false;
 		return renderNode(node, context, isRoot);
 	} else {
-		return renderNode(Component(props), context, isRoot);
+		return renderNode(Component(props, context), context, isRoot);
 	}
 }
 
