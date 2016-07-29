@@ -75,7 +75,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				super(props, context);
 
 				this.version = version;
-				this.store = props.store || context.store;
+				this.store = (props && props.store) || (context && context.store);
 
 				invariant(this.store,
 					'Could not find "store" in either the context or ' +
