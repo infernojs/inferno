@@ -10,7 +10,8 @@ import {
 	isFunction,
 	isArray,
 	isUndefined,
-	isObject
+	isObject,
+	isAttrAnEvent
 } from './../core/utils';
 import {
 	mount,
@@ -277,6 +278,8 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 		dom[prop] = nextValue === null ? '' : nextValue;
 	} else if (booleanProps[prop]) {
 		dom[prop] = nextValue ? true : false;
+	} else if (isAttrAnEvent(prop)) {
+		dom[prop] = nextValue;
 	} else {
 		const ns = namespaces[prop];
 
@@ -738,14 +741,40 @@ export function patchVariableAsText(pointer) {
 }
 
 export function patchTemplateClassName(pointer) {
-	return function patchTemplateClassName(lastVTemplate, nextVTemplate, parentDom) {
+	return function patchTemplateClassName(lastVTemplate, nextVTemplate, dom) {
 		const nextClassName = nextVTemplate.read(pointer);
 
 		if (lastVTemplate.read(pointer) !== nextClassName) {
 			if (isNullOrUndef(nextClassName)) {
-				parentDom.removeAttribute('class');
+				dom.removeAttribute('class');
 			} else {
-				parentDom.className = nextClassName;
+				dom.className = nextClassName;
+			}
+		}
+	};
+}
+
+export function patchTemplateStyle(pointer) {
+	return function patchTemplateClassName(lastVTemplate, nextVTemplate, dom) {
+		const lastStyle = lastVTemplate.read(pointer);
+		const nextStyle = nextVTemplate.read(pointer);
+
+		if (lastStyle !== nextStyle) {
+			patchStyle(lastStyle, nextStyle, dom);
+		}
+	};
+}
+
+export function patchTemplateProps(propsToPatch) {
+	return function patchTemplateProps(lastVTemplate, nextVTemplate, dom) {
+		for (let i = 0; i < propsToPatch.length; i += 2) {
+			const prop = propsToPatch[i];
+			const pointer = propsToPatch[i + 1];
+			const lastValue = lastVTemplate.read(pointer);
+			const nextValue = nextVTemplate.read(pointer);
+
+			if (lastValue !== nextValue) {
+				patchProp(prop, lastValue, nextValue, dom);
 			}
 		}
 	};

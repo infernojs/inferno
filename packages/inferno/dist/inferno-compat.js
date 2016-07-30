@@ -473,6 +473,8 @@
   		dom[prop] = nextValue === null ? '' : nextValue;
   	} else if (booleanProps[prop]) {
   		dom[prop] = nextValue ? true : false;
+  	} else if (isAttrAnEvent(prop)) {
+  		dom[prop] = nextValue;
   	} else {
   		var ns = namespaces[prop];
 
@@ -951,7 +953,11 @@
   function unmountVTemplate(vTemplate, parentDom) {
   	var dom = vTemplate._dom;
   	var templateReducers = vTemplate._tr;
-  	templateReducers.unmount(vTemplate);
+  	var unmount = templateReducers.unmount;
+
+  	if (!isNull(unmount)) {
+  		templateReducers.unmount(vTemplate);
+  	}
   	if (!isNull(parentDom)) {
   		removeChild(parentDom, dom);
   	}

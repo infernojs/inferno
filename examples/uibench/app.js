@@ -1,301 +1,154 @@
 (function() {
 	"use strict";
 
-	uibench.init('Inferno', '0.7');
+	var t = Inferno.createVTemplate;
+	var e = Inferno.createVElement;
+	var ChildrenTypes = Inferno.ChildrenTypes;
 
-	var defaultAppUpdateCheck = {
-		componentShouldUpdate: appUpdateCheck
-	};
+	uibench.init('Inferno', '0.8-alpha');
 
-	var defaultUpdateTableCell = {
-		componentShouldUpdate: updateTableCell
-	};
+	var treeLeafTpl = t(function (id) {
+		return e('li').key(id).props({ className: 'TreeLeaf' }).key(id).children(id).childrenType(ChildrenTypes.TEXT);
+	}, InfernoDOM);
 
-	var animBox1 = Inferno.createBlueprint({
-		tag: 'div',
-		className: 'AnimBox',
-		attrs: { arg: 0 },
-		style: { arg: 1 }
-	});
+	var treeNodeTpl = t(function (children, key) {
+		return e('ul').props({ className: 'TreeNode' }).key(key).children(children).childrenType(ChildrenTypes.KEYED_LIST);
+	}, InfernoDOM);
 
-	var AnimBox = function (props) {
-		var data = props.data;
-		var time = data.time;
-		var style =
-			'border-radius:' + (time % 10).toString() + 'px;' +
-			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)).toString() + ')';
+	function treeNode(data) {
+		var length = data.children.length;
+		var children = new Array(length);
 
-		return animBox1({ 'data-id': data.id }, style)
-	};
+		for (var i = 0; i < length; i++) {
+			var n = data.children[i];
 
-	var anim1 = Inferno.createBlueprint({
-		tag: 'div',
-		className: 'Anim',
-		children: { arg: 0 }
-	}, 4);
-
-	var anim2 = Inferno.createBlueprint({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 },
-		key: { arg: 3 }
-	});
-
-	var Anim = function (props) {
-		var data = props.data;
-		var items = data.items;
-
-		var children = [];
-		for (var i = 0; i < items.length; i++) {
-			var item = items[i];
-			children.push(anim2(AnimBox, { data: item }, defaultAppUpdateCheck, item.id));
+			if (n.container) {
+				children[i] = treeNode(n);
+			} else {
+				children[i] = treeLeafTpl(n.id);
+			}
 		}
-		return anim1(children);
-	};
-
-	var tableCell1 = Inferno.createBlueprint({
-		tag: 'td',
-		className: 'TableCell',
-		children: { arg: 0 },
-		events: { arg: 1 },
-		attrs: { arg: 2 }
-	}, 1);
-
-	function updateTableCell(domNode, lastProps, nextProps) {
-		return lastProps.text !== nextProps.text;
+		return treeNodeTpl(children, data.id);
 	}
 
-	function onClick(e) {
-		console.log('Clicked' + e.xtag);
-		e.stopPropagation();
+	var treeTpl = t(function (root) {
+		return e('div').props({ className: 'Tree' }).children(root).childrenType(ChildrenTypes.NODE);
+	}, InfernoDOM);
+
+	function tree(data) {
+		return treeTpl(treeNode(data.root));
 	}
 
-	var TableCell = function (props) {
-		return tableCell1(props.text, {
-			onclick: onClick
-		}, {
-			xtag: props.text
-		});
-	};
+	var animBoxTpl = t(function (id, style) {
+		return e('div').props({ className: 'AnimBox', style: style, 'data-id': id }).key(id);
+	}, InfernoDOM);
 
-	var tableRow1 = Inferno.createBlueprint({
-		tag: 'tr',
-		children: { arg: 0 },
-		className: { arg: 1 },
-		attrs: { arg: 2 }
-	}, 4);
+	function animBox(data) {
+		var time = data.time;
+		var style = 'border-radius: ' + (time % 10) + 'px;' +
+			'background: rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')';
+		return animBoxTpl(data.id, style);
+	}
 
-	var tableRow2 = Inferno.createBlueprint({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 },
-		key: { arg: 3 }
-	});
+	var animTpl = t(function (children) {
+		return e('div').props({ className: 'Anim' }).children(children).childrenType(ChildrenTypes.KEYED_LIST);
+	}, InfernoDOM);
 
-	var TableRow = function (props) {
-		var data = props.data;
+	function anim(data) {
+		var items = data.items;
+		var length = items.length;
+		var children = new Array(length);
+
+		for (var i = 0; i < length; i++) {
+			var item = items[i];
+
+			children[i] = animBox(item);
+		}
+		return animTpl(children);
+	}
+
+	var tableCellTpl = t(function (text, key) {
+		return e('td').props({ 
+			className: 'TableCell', 
+			xtag: text, 
+			onclick: function(e) {
+				console.log('Click' + e.target.xtag);
+				e.stopPropagation();
+			}
+		}).key(key).children(text).childrenType(ChildrenTypes.TEXT);
+	}, InfernoDOM);
+
+	var tableRowTpl = t(function (classes, id, children) {
+		return e('tr').props({ className: classes, 'data-id': id }).key(id).children(children).childrenType(ChildrenTypes.KEYED_LIST);
+	}, InfernoDOM);
+
+	function tableRow(data) {
 		var classes = 'TableRow';
+
 		if (data.active) {
 			classes = 'TableRow active';
 		}
 		var cells = data.props;
-		var children = [
-			tableRow2(TableCell, { text: '#' + data.id }, defaultUpdateTableCell, data.id)
-		];
+		var length = cells.length + 1;
+		var children = new Array(length);
 
-		for (var i = 0; i < cells.length; i++) {
-			children.push(
-				tableRow2(TableCell, { text: cells[i] }, defaultUpdateTableCell, data.id)
-			);
+		children[0] = tableCellTpl('#' + data.id, -1);
+
+		for (var i = 1; i < length; i++) {
+			children[i] = tableCellTpl(cells[i - 1], i);
 		}
-
-		return tableRow1(children, classes, { 'data-id': data.id });
-	};
-
-	var table1 = Inferno.createBlueprint({
-		tag: 'table',
-		className: 'Table',
-		children: { arg: 0 }
-	}, 2);
-
-	var table2 = Inferno.createBlueprint({
-		tag: 'tbody',
-		children: { arg: 0 }
-	}, 4);
-
-	var table3 = Inferno.createBlueprint({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 },
-		key: { arg: 3 }
-	});
-
-	var Table = function (props) {
-		var items = props.data.items;
-
-		var children = [];
-		for (var i = 0; i < items.length; i++) {
-			var item = items[i];
-			children.push(
-				table3(TableRow, { data: item }, defaultAppUpdateCheck, item.id)
-			);
-		}
-
-		return table1(table2(children));
-	};
-
-	var treeLeaf1 = Inferno.createBlueprint({
-		tag: 'li',
-		className: 'TreeLeaf',
-		children: { arg: 0 }
-	}, 1);
-
-	var TreeLeaf = function (props) {
-		return treeLeaf1(props.data.id);
-	};
-
-	var treeNode1 = Inferno.createBlueprint({
-		tag: 'ul',
-		className: 'TreeNode',
-		children: { arg: 0 }
-	}, 4);
-
-	var treeNode2 = Inferno.createBlueprint({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 },
-		key: { arg: 3 }
-	});
-
-	var treeNode3 = Inferno.createBlueprint({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 },
-		key: { arg: 3 }
-	});
-
-	var TreeNode = function (props) {
-		var data = props.data;
-		var children = [];
-
-		for (var i = 0; i < data.children.length; i++) {
-			var n = data.children[i];
-			if (n.container) {
-				children.push(
-					treeNode2(TreeNode, {
-						data: n
-					}, defaultAppUpdateCheck, n.id)
-				);
-			} else {
-				children.push(
-					treeNode3(TreeLeaf, {
-						data: n
-					}, defaultAppUpdateCheck, n.id)
-				);
-			}
-		}
-
-		return treeNode1(children);
-	};
-
-	var tree1 = Inferno.createBlueprint({
-		tag: 'div',
-		className: 'Tree',
-		children: { arg: 0 }
-	}, 2);
-
-	var tree2 = Inferno.createBlueprint({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 }
-	});
-
-	var Tree = function (props) {
-		return tree1(
-			tree2(TreeNode, {
-				data: props.data.root
-			}, defaultAppUpdateCheck)
-		);
-	};
-
-	var main1 = Inferno.createBlueprint({
-		tag: 'div',
-		className: 'Main',
-		children: { arg: 0 }
-	}, 2);
-
-	var main2 = Inferno.createBlueprint({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 }
-	});
-
-	var main3 = Inferno.createBlueprint({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 }
-	});
-
-	var main4 = Inferno.createBlueprint({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 }
-	});
-
-	var Main = function (props) {
-		var data = props.data;
-		var location = data.location;
-
-		var section;
-		if (location === 'table') {
-			section = main2(Table, {
-				data: data.table
-			}, defaultAppUpdateCheck);
-		} else if (location === 'anim') {
-			section = main3(Anim, {
-				data: data.anim
-			}, defaultAppUpdateCheck);
-		} else if (location === 'tree') {
-			section = main4(Tree, {
-				data: data.tree
-			}, defaultAppUpdateCheck);
-		}
-
-		return new main1(section);
-	};
-
-	var app1 = Inferno.createBlueprint({
-		tag: { arg: 0 },
-		attrs: { arg: 1 },
-		hooks: { arg: 2 }
-	});
-
-	var app2 = Inferno.createBlueprint({
-		tag: 'pre',
-		children: { arg: 0 }
-	}, 5);
-
-	function appUpdateCheck(domNode, lastProps, nextProps) {
-		return lastProps.data !== nextProps.data;
+		return tableRowTpl(classes, data.id, children);
 	}
+
+	var tableTpl = t(function (children) {
+		return e('table').props({ className: 'Table' }).children(children).childrenType(ChildrenTypes.KEYED_LIST);
+	}, InfernoDOM);
+
+	function table(data) {
+		var items = data.items;
+		var length = items.length;
+		var children = new Array(length);
+
+		for (var i = 0; i < length; i++) {
+			var item = items[i];
+
+			children[i] = tableRow(item);
+		}
+		return tableTpl(children);
+	}
+
+	var mainTpl = t(function (section) {
+		return e('div').props({ className: 'Main' }).children(section).childrenType(ChildrenTypes.NODE);
+	}, InfernoDOM);
+
+	function main(data) {
+		var location = data.location;
+		var section;
+
+		if (location === 'table') {
+			section = table(data.table);
+		} else if (location === 'anim') {
+			section = anim(data.anim);
+		} else if (location === 'tree') {
+			section = tree(data.tree);
+		}
+		return mainTpl(section);
+	}
+
+	var preTpl = t(function (text) {
+		return e('pre').children(text).childrenType(ChildrenTypes.TEXT);
+	}, InfernoDOM);
 
 	document.addEventListener('DOMContentLoaded', function(e) {
 		var container = document.querySelector('#App');
 
 		uibench.run(
 			function(state) {
-				InfernoDOM.render(
-					app1(Main, {
-						data: state
-					}, defaultAppUpdateCheck)
-					, container);
+				InfernoDOM.render(main(state), container);
 			},
 			function(samples) {
-				InfernoDOM.render(
-					app2(JSON.stringify(samples, null, ' '))
-					, container);
+				InfernoDOM.render(preTpl(JSON.stringify(samples, null, ' ')), container);
 			}
 		);
 	});
-
 })();

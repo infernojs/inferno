@@ -45,6 +45,10 @@
 		return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 	}
 
+	function isAttrAnEvent(attr) {
+		return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+	}
+
 	function isString(obj) {
 		return typeof obj === 'string';
 	}
@@ -405,6 +409,8 @@
 			dom[prop] = nextValue === null ? '' : nextValue;
 		} else if (booleanProps[prop]) {
 			dom[prop] = nextValue ? true : false;
+		} else if (isAttrAnEvent(prop)) {
+			dom[prop] = nextValue;
 		} else {
 			var ns = namespaces[prop];
 
@@ -866,14 +872,40 @@
 	}
 
 	function patchTemplateClassName(pointer) {
-		return function patchTemplateClassName(lastVTemplate, nextVTemplate, parentDom) {
+		return function patchTemplateClassName(lastVTemplate, nextVTemplate, dom) {
 			var nextClassName = nextVTemplate.read(pointer);
 
 			if (lastVTemplate.read(pointer) !== nextClassName) {
 				if (isNullOrUndef(nextClassName)) {
-					parentDom.removeAttribute('class');
+					dom.removeAttribute('class');
 				} else {
-					parentDom.className = nextClassName;
+					dom.className = nextClassName;
+				}
+			}
+		};
+	}
+
+	function patchTemplateStyle(pointer) {
+		return function patchTemplateClassName(lastVTemplate, nextVTemplate, dom) {
+			var lastStyle = lastVTemplate.read(pointer);
+			var nextStyle = nextVTemplate.read(pointer);
+
+			if (lastStyle !== nextStyle) {
+				patchStyle(lastStyle, nextStyle, dom);
+			}
+		};
+	}
+
+	function patchTemplateProps(propsToPatch) {
+		return function patchTemplateProps(lastVTemplate, nextVTemplate, dom) {
+			for (var i = 0; i < propsToPatch.length; i += 2) {
+				var prop = propsToPatch[i];
+				var pointer = propsToPatch[i + 1];
+				var lastValue = lastVTemplate.read(pointer);
+				var nextValue = nextVTemplate.read(pointer);
+
+				if (lastValue !== nextValue) {
+					patchProp(prop, lastValue, nextValue, dom);
 				}
 			}
 		};
@@ -956,6 +988,9 @@
 				var props = vNode._props;
 
 				if (!isNull(props)) {
+					var propsToMount = [];
+					var propsToPatch = [];
+
 					for (var prop in props) {
 						var value = props[prop];
 
@@ -963,12 +998,26 @@
 							if (prop === 'className') {
 								mounters.push(mountTemplateClassName(value._pointer));
 								patchers.push(patchTemplateClassName(value._pointer));
+							} else if (prop === 'style') {
+								mounters.push(mountTemplateStyle(value._pointer));
+								patchers.push(patchTemplateStyle(value._pointer));
+							} else {
+								propsToMount.push(prop, value);
+								propsToPatch.push(prop, value._pointer);
 							}
 						} else {
 							var shouldMountProp = patchProp(prop, null, value, dom);
-							// debugger;
-							// todo
+
+							if (shouldMountProp) {
+								propsToMount.push(prop, value);
+							}
 						}
+					}
+					if (propsToMount.length > 0) {
+						mounters.push(mountTemplateProps(propsToMount));
+					}
+					if (propsToPatch.length > 0) {
+						patchers.push(patchTemplateProps(propsToPatch));
 					}
 				}
 				var hooks = vNode._hooks;
@@ -1253,7 +1302,11 @@
 	function unmountVTemplate(vTemplate, parentDom) {
 		var dom = vTemplate._dom;
 		var templateReducers = vTemplate._tr;
-		templateReducers.unmount(vTemplate);
+		var unmount = templateReducers.unmount;
+
+		if (!isNull(unmount)) {
+			templateReducers.unmount(vTemplate);
+		}
 		if (!isNull(parentDom)) {
 			removeChild(parentDom, dom);
 		}
@@ -1853,11 +1906,31 @@
 	}
 
 	function mountTemplateClassName(pointer) {
-		return function mountTemplateClassName(vTemplate, parentDom) {
+		return function mountTemplateClassName(vTemplate, dom) {
 			var className = vTemplate.read(pointer);
 
 			if (!isNullOrUndef(className)) {
-				parentDom.className = className;
+				dom.className = className;
+			}
+		};
+	}
+
+	function mountTemplateStyle(pointer) {
+		return function mountTemplateStyle(vTemplate, dom) {
+			patchStyle(null, vTemplate.read(pointer), dom);
+		};
+	}
+
+	function mountTemplateProps(propsToMount) {
+		return function mountTemplateProps(vTemplate, dom) {
+			for (var i = 0; i < propsToMount.length; i += 2) {
+				var prop = propsToMount[i];
+				var value = propsToMount[i + 1];
+
+				if (isVariable(value)) {
+					value = vTemplate.read(value._pointer);
+				}
+				patchProp(prop, null, value, dom);
 			}
 		};
 	}

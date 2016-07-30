@@ -24,7 +24,11 @@ export function unmount(input, parentDom, lifecycle) {
 function unmountVTemplate(vTemplate, parentDom) {
 	const dom = vTemplate._dom;
 	const templateReducers = vTemplate._tr;
-	templateReducers.unmount(vTemplate);
+	const unmount = templateReducers.unmount;
+
+	if (!isNull(unmount)) {
+		templateReducers.unmount(vTemplate);
+	}
 	if (!isNull(parentDom)) {
 		removeChild(parentDom, dom);
 	}

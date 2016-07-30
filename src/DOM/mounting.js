@@ -36,6 +36,7 @@ import {
 	isVComponent,
 	isVTemplate,
 	NodeTypes,
+	isVariable,
 	isVNode
 } from '../core/shapes';
 import {
@@ -327,11 +328,31 @@ export function mountEmptyTextNode(vTemplate, parentDom) {
 }
 
 export function mountTemplateClassName(pointer) {
-	return function mountTemplateClassName(vTemplate, parentDom) {
+	return function mountTemplateClassName(vTemplate, dom) {
 		const className = vTemplate.read(pointer);
 
 		if (!isNullOrUndef(className)) {
-			parentDom.className = className;
+			dom.className = className;
+		}
+	};
+}
+
+export function mountTemplateStyle(pointer) {
+	return function mountTemplateStyle(vTemplate, dom) {
+		patchStyle(null, vTemplate.read(pointer), dom);
+	};
+}
+
+export function mountTemplateProps(propsToMount) {
+	return function mountTemplateProps(vTemplate, dom) {
+		for (let i = 0; i < propsToMount.length; i += 2) {
+			const prop = propsToMount[i];
+			let value = propsToMount[i + 1];
+
+			if (isVariable(value)) {
+				value = vTemplate.read(value._pointer);
+			}
+			patchProp(prop, null, value, dom);
 		}
 	};
 }

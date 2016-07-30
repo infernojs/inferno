@@ -39,7 +39,9 @@ import {
 	mountVariableAsText,
 	mountDOMNodeFromTemplate,
 	mountEmptyTextNode,
-	mountTemplateClassName
+	mountTemplateClassName,
+	mountTemplateStyle,
+	mountTemplateProps
 } from './mounting';
 import {
 	patchVariableAsExpression,
@@ -47,7 +49,9 @@ import {
 	patchVariableAsText,
 	patchVTemplate,
 	patchProp,
-	patchTemplateClassName
+	patchTemplateClassName,
+	patchTemplateStyle,
+	patchTemplateProps
 } from './patching';
 import {
 	unmountVariableAsExpression,
@@ -135,6 +139,9 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 			const props = vNode._props;
 
 			if (!isNull(props)) {
+				const propsToMount = [];
+				const propsToPatch = [];
+
 				for (let prop in props) {
 					const value = props[prop];
 
@@ -142,12 +149,26 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 						if (prop === 'className') {
 							mounters.push(mountTemplateClassName(value._pointer));
 							patchers.push(patchTemplateClassName(value._pointer));
+						} else if (prop === 'style') {
+							mounters.push(mountTemplateStyle(value._pointer));
+							patchers.push(patchTemplateStyle(value._pointer));
+						} else {
+							propsToMount.push(prop, value);
+							propsToPatch.push(prop, value._pointer);
 						}
 					} else {
 						const shouldMountProp = patchProp(prop, null, value, dom);
-						// debugger;
-						// todo
+
+						if (shouldMountProp) {
+							propsToMount.push(prop, value);
+						}
 					}
+				}
+				if (propsToMount.length > 0) {
+					mounters.push(mountTemplateProps(propsToMount));
+				}
+				if (propsToPatch.length > 0) {
+					patchers.push(patchTemplateProps(propsToPatch));
 				}
 			}
 			const hooks = vNode._hooks;
