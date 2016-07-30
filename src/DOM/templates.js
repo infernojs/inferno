@@ -28,24 +28,35 @@ import {
 	isVComponent,
 	isVariable,
 	isVFragment,
+	isVText,
 	createTemplaceReducers,
 	NULL_INDEX,
 	ROOT_INDEX
 } from './../core/shapes';
 import {
-	mountVariable,
+	mountVariableAsExpression,
+	mountVariableAsChildren,
+	mountVariableAsText,
 	mountDOMNodeFromTemplate,
+	mountEmptyTextNode,
 	mountTemplateClassName
 } from './mounting';
 import {
-	patchVariable,
+	patchVariableAsExpression,
+	patchVariableAsChildren,
+	patchVariableAsText,
 	patchVTemplate,
 	patchProp,
 	patchTemplateClassName
 } from './patching';
 import {
-	unmountVariable
+	unmountVariableAsExpression,
+	unmountVariableAsChildren,
+	unmountVariableAsText
 } from './unmounting';
+import {
+	ChildrenTypes
+} from '../core/ChildrenTypes';
 
 export const recyclingEnabled = true;
 
@@ -72,11 +83,40 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 		let deepClone = false;
 
 		if (isVariable(vNode)) {
-			mount = mountVariable(vNode._pointer, isSVG, isChildren, childrenType);
-			patch = patchVariable(vNode._pointer, isSVG, isChildren, childrenType);
-			unmount = unmountVariable(vNode._pointer, isChildren, childrenType);
+			if (isChildren) {
+				mount = mountVariableAsChildren(vNode._pointer, isSVG, childrenType);
+				if (childrenType === ChildrenTypes.STATIC_TEXT) {
+					patch = null;
+				} else {
+					patch = patchVariableAsChildren(vNode._pointer, isSVG, childrenType);
+				}
+				unmount = unmountVariableAsChildren(vNode._pointer, childrenType);
+			} else {
+				mount = mountVariableAsExpression(vNode._pointer, isSVG);
+				patch = patchVariableAsExpression(vNode._pointer, isSVG);
+				unmount = unmountVariableAsExpression(vNode._pointer);
+			}
 		} else if (isVFragment(vNode)) {
-			debugger;
+			const children = vNode._children;
+
+			if (isVariable(children)) {
+				mount = mountVariableAsChildren(children._pointer, isSVG, childrenType);
+				patch = patchVariableAsChildren(children._pointer, isSVG, childrenType);
+				unmount = unmountVariableAsChildren(children._pointer, childrenType);
+			} else {
+				// TODO
+			}
+		} else if (isVText(vNode)) {
+			const text = vNode._text;
+			nodeIndex = offset.length++;
+
+			if (isVariable(text)) {
+				mount = combineMountTo2(nodeIndex, mountEmptyTextNode, mountVariableAsText(text._pointer));
+				patch = combinePatchTo2(nodeIndex, patchVariableAsText(text._pointer));
+				unmount = unmountVariableAsText(text._pointer);
+			} else {
+				// TODO
+			}
 		} else if (isVElement(vNode)) {
 			const mounters = [];
 			const patchers = [];
@@ -170,11 +210,29 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 function combineMount(nodeIndex, mountDOMNodeFromTemplate, mounters) {
 	if (nodeIndex === NULL_INDEX && mounters.length === 0) {
 		return mountDOMNodeFromTemplate;
+	} else if (mounters.length <= 1) {
+		return combineMountTo2(nodeIndex, mountDOMNodeFromTemplate, mounters[0]);
 	} else if (mounters.length <= 5) {
 		return combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounters[0], mounters[1], mounters[2], mounters[3]);
 	} else {
 		return combineMountToX(nodeIndex, mountDOMNodeFromTemplate, mounters);
 	}
+}
+
+function combineMountTo2(nodeIndex, mountDOMNodeFromTemplate, mounter1) {
+	const write = (nodeIndex !== NULL_INDEX);
+
+	return function combineMountTo2(vTemplate, parentDom, lifecycle, context, isSVG) {
+		const dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context, isSVG);
+
+		if (write) {
+			vTemplate.write(nodeIndex, dom);
+		}
+		if (mounter1) {
+			mounter1(vTemplate, dom, lifecycle, context, isSVG);
+		}
+		return dom;
+	};
 }
 
 function combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounter1, mounter2, mounter3, mounter4) {
@@ -225,11 +283,28 @@ function combinePatch(nodeIndex, patchers) {
 		} else {
 			return null;
 		}
+	} else if (patchers.length <= 1) {
+		return combinePatchTo2(nodeIndex, patchers[0]);
 	} else if (patchers.length <= 5) {
 		return combinePatchTo5(nodeIndex, patchers[0], patchers[1], patchers[2], patchers[3], patchers[4]);
 	} else {
 		return combinePatchX(nodeIndex, patchers);
 	}
+}
+
+function combinePatchTo2(nodeIndex, patch1) {
+	const copy = (nodeIndex !== NULL_INDEX);
+
+	return function combinePatchTo2(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
+		let dom;
+
+		if (copy) {
+			dom = copyValue(lastVTemplate, nextVTemplate, nodeIndex);
+		}
+		if (patch1) {
+			patch1(lastVTemplate, nextVTemplate, dom, lifecycle, context, isSVG);
+		}
+	};
 }
 
 function combinePatchTo5(nodeIndex, patch1, patch2, patch3, patch4, patch5) {

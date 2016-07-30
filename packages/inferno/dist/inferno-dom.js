@@ -70,7 +70,8 @@
 		NON_KEYED_LIST: 1,
 		TEXT: 2,
 		NODE: 3,
-		UNKNOWN: 4
+		UNKNOWN: 4,
+		STATIC_TEXT: 5
 	};
 
 	function isKeyedListChildrenType(o) {
@@ -82,7 +83,7 @@
 	}
 
 	function isTextChildrenType(o) {
-		return o === ChildrenTypes.TEXT;
+		return o === ChildrenTypes.TEXT || o === ChildrenTypes.STATIC_TEXT;
 	}
 
 	function isNodeChildrenType(o) {
@@ -106,9 +107,9 @@
 		VARIABLE: 6
 	};
 
-	var VText = function VText(text) {
+	var VText = function VText($text) {
 		this._type = NodeTypes.TEXT;
-		this._text = text;
+		this._text = $text;
 		this._dom = null;
 	};
 
@@ -117,28 +118,28 @@
 		this._dom = null;
 	};
 
-	var VFragment = function VFragment(items) {
+	var VFragment = function VFragment($children) {
 		this._type = NodeTypes.FRAGMENT;
 		this._dom = null;
 		this._pointer = null;
-		this._items = items;
+		this._children = $children;
 		this._childrenType = ChildrenTypes.UNKNOWN;
 	};
-	VFragment.prototype.childrenType = function childrenType (childrenType) {
-		this._childrenType = childrenType;
+	VFragment.prototype.childrenType = function childrenType ($childrenType) {
+		this._childrenType = $childrenType;
 		return this;
 	};
 
-	var TemplaceReducers = function TemplaceReducers(keyIndex, mount, patch, unmount) {
-		this._keyIndex = keyIndex;
+	var TemplaceReducers = function TemplaceReducers($keyIndex, $mount, $patch, $unmount) {
+		this._keyIndex = $keyIndex;
 		this._schema = null;
 		this._pools = {
 			nonKeyed: [],
 			keyed: new Map()
 		};
-		this.mount = mount;
-		this.patch = patch;
-		this.unmount = unmount;
+		this.mount = $mount;
+		this.patch = $patch;
+		this.unmount = $unmount;
 	};
 
 	function createTemplaceReducers(keyIndex, mount, patch, unmount) {
@@ -539,27 +540,27 @@
 	}
 
 	function patchVFragment(lastVFragment, nextVFragment, parentDom, lifecycle, context, isSVG) {
-		var lastItems = lastVFragment._items;
-		var nextItems = nextVFragment._items;
+		var lastChildren = lastVFragment._children;
+		var nextChildren = nextVFragment._children;
 		var pointer = lastVFragment._pointer;
 
 		nextVFragment._dom = lastVFragment._dom;
 		nextVFragment._pointer = pointer;
-		if (!lastItems !== nextItems) {
+		if (!lastChildren !== nextChildren) {
 			var lastChildrenType = lastVFragment._childrenType;
 			var nextChildrenType = nextVFragment._childrenType;
 
 			if (lastChildrenType === nextChildrenType) {
 				if (isKeyedListChildrenType(nextChildrenType)) {
-					return patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+					return patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
 				} else if (isKeyedListChildrenType(nextChildrenType)) {
-					return patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+					return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
 				}
 			}
-			if (isKeyed(lastItems, nextItems)) {
-				patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+			if (isKeyed(lastChildren, nextChildren)) {
+				patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
 			} else {
-				patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+				patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
 			}
 		}
 	}
@@ -828,31 +829,47 @@
 		return result;
 	}
 
-	function patchVariable(pointer, templateIsSVG, isChildren, childrenType) {
-		return function patchVariable(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
+	function patchVariableAsExpression(pointer, templateIsSVG) {
+		return function patchVariableAsExpression(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
 			var lastInput = lastVTemplate.read(pointer);
 			var nextInput = nextVTemplate.read(pointer);
 
 			if (lastInput !== nextInput) {
-				if (isChildren) {
-					patchChildren(childrenType, lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
-				} else {
-					if (!isVNode(nextInput)) {
-						nextInput = normalise(nextInput);
-						nextVTemplate.write(pointer, nextInput);
-					}
-					patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
+				if (!isVNode(nextInput)) {
+					nextInput = normalise(nextInput);
+					nextVTemplate.write(pointer, nextInput);
 				}
+				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
+			}
+		};
+	}
+
+	function patchVariableAsChildren(pointer, templateIsSVG, childrenType) {
+		return function patchVariableAsChildren(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
+			var lastInput = lastVTemplate.read(pointer);
+			var nextInput = nextVTemplate.read(pointer);
+
+			if (lastInput !== nextInput) {
+				patchChildren(childrenType, lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
+			}
+		};
+	}
+
+	function patchVariableAsText(pointer) {
+		return function patchVariableAsText(lastVTemplate, nextVTemplate, textNode) {
+			var nextInput = nextVTemplate.read(pointer);
+
+			if (lastVTemplate.read(pointer) !== nextInput) {
+				textNode.nodeValue = nextInput;
 			}
 		};
 	}
 
 	function patchTemplateClassName(pointer) {
 		return function patchTemplateClassName(lastVTemplate, nextVTemplate, parentDom) {
-			var lastClassName = lastVTemplate.read(pointer);
 			var nextClassName = nextVTemplate.read(pointer);
 
-			if (lastClassName !== nextClassName) {
+			if (lastVTemplate.read(pointer) !== nextClassName) {
 				if (isNullOrUndef(nextClassName)) {
 					parentDom.removeAttribute('class');
 				} else {
@@ -887,11 +904,40 @@
 			var deepClone = false;
 
 			if (isVariable(vNode)) {
-				mount = mountVariable(vNode._pointer, isSVG, isChildren, childrenType);
-				patch = patchVariable(vNode._pointer, isSVG, isChildren, childrenType);
-				unmount = unmountVariable(vNode._pointer, isChildren, childrenType);
+				if (isChildren) {
+					mount = mountVariableAsChildren(vNode._pointer, isSVG, childrenType);
+					if (childrenType === ChildrenTypes.STATIC_TEXT) {
+						patch = null;
+					} else {
+						patch = patchVariableAsChildren(vNode._pointer, isSVG, childrenType);
+					}
+					unmount = unmountVariableAsChildren(vNode._pointer, childrenType);
+				} else {
+					mount = mountVariableAsExpression(vNode._pointer, isSVG);
+					patch = patchVariableAsExpression(vNode._pointer, isSVG);
+					unmount = unmountVariableAsExpression(vNode._pointer);
+				}
 			} else if (isVFragment(vNode)) {
-				debugger;
+				var children = vNode._children;
+
+				if (isVariable(children)) {
+					mount = mountVariableAsChildren(children._pointer, isSVG, childrenType);
+					patch = patchVariableAsChildren(children._pointer, isSVG, childrenType);
+					unmount = unmountVariableAsChildren(children._pointer, childrenType);
+				} else {
+					// TODO
+				}
+			} else if (isVText(vNode)) {
+				var text = vNode._text;
+				nodeIndex = offset.length++;
+
+				if (isVariable(text)) {
+					mount = combineMountTo2(nodeIndex, mountEmptyTextNode, mountVariableAsText(text._pointer));
+					patch = combinePatchTo2(nodeIndex, patchVariableAsText(text._pointer));
+					unmount = unmountVariableAsText(text._pointer);
+				} else {
+					// TODO
+				}
 			} else if (isVElement(vNode)) {
 				var mounters = [];
 				var patchers = [];
@@ -930,14 +976,14 @@
 				if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
 					nodeIndex = offset.length++;
 				}
-				var children = vNode._children;
+				var children$1 = vNode._children;
 
-				if (!isInvalid(children)) {
-					if (isStringOrNumber(children)) {
+				if (!isInvalid(children$1)) {
+					if (isStringOrNumber(children$1)) {
 						// debugger;
-					} else if (isArray(children)) {
-						for (var i = 0; i < children.length; i++) {
-							var templateReducers = createTemplateReducers(children[i], false, offset, dom, isSVG, false, vNode._childrenType);
+					} else if (isArray(children$1)) {
+						for (var i = 0; i < children$1.length; i++) {
+							var templateReducers = createTemplateReducers(children$1[i], false, offset, dom, isSVG, false, vNode._childrenType);
 
 							if (!isInvalid(templateReducers)) {
 								mounters.push(templateReducers.mount);
@@ -953,10 +999,10 @@
 							}
 						}
 					} else {
-						if (nodeIndex === NULL_INDEX && isVariable(children)) {
+						if (nodeIndex === NULL_INDEX && isVariable(children$1)) {
 							nodeIndex = offset.length++;
 						}
-						var templateReducers$1 = createTemplateReducers(children, false, offset, dom, isSVG, true, vNode._childrenType);
+						var templateReducers$1 = createTemplateReducers(children$1, false, offset, dom, isSVG, true, vNode._childrenType);
 
 						if (!isInvalid(templateReducers$1)) {
 							mounters.push(templateReducers$1.mount);
@@ -985,11 +1031,29 @@
 	function combineMount(nodeIndex, mountDOMNodeFromTemplate, mounters) {
 		if (nodeIndex === NULL_INDEX && mounters.length === 0) {
 			return mountDOMNodeFromTemplate;
+		} else if (mounters.length <= 1) {
+			return combineMountTo2(nodeIndex, mountDOMNodeFromTemplate, mounters[0]);
 		} else if (mounters.length <= 5) {
 			return combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounters[0], mounters[1], mounters[2], mounters[3]);
 		} else {
 			return combineMountToX(nodeIndex, mountDOMNodeFromTemplate, mounters);
 		}
+	}
+
+	function combineMountTo2(nodeIndex, mountDOMNodeFromTemplate, mounter1) {
+		var write = (nodeIndex !== NULL_INDEX);
+
+		return function combineMountTo2(vTemplate, parentDom, lifecycle, context, isSVG) {
+			var dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context, isSVG);
+
+			if (write) {
+				vTemplate.write(nodeIndex, dom);
+			}
+			if (mounter1) {
+				mounter1(vTemplate, dom, lifecycle, context, isSVG);
+			}
+			return dom;
+		};
 	}
 
 	function combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounter1, mounter2, mounter3, mounter4) {
@@ -1040,11 +1104,28 @@
 			} else {
 				return null;
 			}
+		} else if (patchers.length <= 1) {
+			return combinePatchTo2(nodeIndex, patchers[0]);
 		} else if (patchers.length <= 5) {
 			return combinePatchTo5(nodeIndex, patchers[0], patchers[1], patchers[2], patchers[3], patchers[4]);
 		} else {
 			return combinePatchX(nodeIndex, patchers);
 		}
+	}
+
+	function combinePatchTo2(nodeIndex, patch1) {
+		var copy = (nodeIndex !== NULL_INDEX);
+
+		return function combinePatchTo2(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
+			var dom;
+
+			if (copy) {
+				dom = copyValue(lastVTemplate, nextVTemplate, nodeIndex);
+			}
+			if (patch1) {
+				patch1(lastVTemplate, nextVTemplate, dom, lifecycle, context, isSVG);
+			}
+		};
 	}
 
 	function combinePatchTo5(nodeIndex, patch1, patch2, patch3, patch4, patch5) {
@@ -1255,9 +1336,21 @@
 		}
 	}
 
-	function unmountVariable(pointer, isChildren) {
-		return function unmountVariable(vTemplate) {
+	function unmountVariableAsExpression(pointer) {
+		return function unmountVariableAsExpression(vTemplate) {
 			// TODO
+		};
+	}
+
+	function unmountVariableAsChildren(pointer, childrenType) {
+		return function unmountVariableAsChildren(vTemplate) {
+			// TODO
+		};
+	}
+
+	function unmountVariableAsText(pointer) {
+		return function unmountVariableAsText(vTemplate, parentDom) {
+			debugger;
 		};
 	}
 
@@ -1549,15 +1642,15 @@
 	}
 
 	function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) {
-		var items = vFragment._items;
+		var children = vFragment._children;
 		var pointer = document.createTextNode('');
 		var dom = document.createDocumentFragment();
 		var childrenType = vFragment._childrenType;
 
 		if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
-			mountArrayChildrenWithType(items, dom, lifecycle, context, isSVG);
+			mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG);
 		} else if (isUnknownChildrenType(childrenType)) {
-			mountArrayChildrenWithoutType(items, dom, lifecycle, context, isSVG);
+			mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
 		}
 		vFragment._pointer = pointer;
 		vFragment._dom = dom;
@@ -1714,19 +1807,28 @@
 		}
 	}
 
-	function mountVariable(pointer, templateIsSVG, isChildren, childrenType) {
-		return function mountVariable(vTemplate, parentDom, lifecycle, context, isSVG) {
+	function mountVariableAsExpression(pointer, templateIsSVG) {
+		return function mountVariableAsExpression(vTemplate, parentDom, lifecycle, context, isSVG) {
 			var input = vTemplate.read(pointer);
 
-			if (isChildren) {
-				return mountChildren$1(childrenType, input, parentDom, lifecycle, context, isSVG || templateIsSVG);
-			} else {
-				if (!isVNode(input)) {
-					input = normalise(input);
-					vTemplate.write(pointer, input);
-				}
-				return mount(input, parentDom, lifecycle, context, isSVG || templateIsSVG);
+			if (!isVNode(input)) {
+				input = normalise(input);
+				vTemplate.write(pointer, input);
 			}
+			return mount(input, parentDom, lifecycle, context, isSVG || templateIsSVG);
+		};
+	}
+
+	function mountVariableAsChildren(pointer, templateIsSVG, childrenType) {
+		return function mountVariableAsChildren(vTemplate, parentDom, lifecycle, context, isSVG) {
+			return mountChildren$1(childrenType, vTemplate.read(pointer), parentDom, lifecycle, context, isSVG || templateIsSVG);
+		};
+	}
+
+
+	function mountVariableAsText(pointer) {
+		return function mountVariableAsText(vTemplate, textNode) {
+			textNode.nodeValue = vTemplate.read(pointer);
 		};
 	}
 
@@ -1739,6 +1841,15 @@
 			}
 			return domNode;
 		};
+	}
+
+	function mountEmptyTextNode(vTemplate, parentDom) {
+		var textNode = document.createTextNode('');
+
+		if (!isNull(parentDom)) {
+			appendChild(parentDom, textNode);
+		}
+		return textNode;
 	}
 
 	function mountTemplateClassName(pointer) {

@@ -7,7 +7,7 @@
 	var ChildrenTypes = Inferno.ChildrenTypes;
 
 	var NAME = 'inferno';
-	var VERSION = '0.8-templates2';
+	var VERSION = '0.8-alpha';
 
 	var tpl1 = t(function (children) {
 		return e('div').children(children).childrenType(ChildrenTypes.KEYED_LIST)

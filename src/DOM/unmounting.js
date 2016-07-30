@@ -107,8 +107,20 @@ export function unmountVElement(vElement, parentDom) {
 	}
 }
 
-export function unmountVariable(pointer, isChildren) {
-	return function unmountVariable(vTemplate) {
+export function unmountVariableAsExpression(pointer) {
+	return function unmountVariableAsExpression(vTemplate) {
 		// TODO
+	};
+}
+
+export function unmountVariableAsChildren(pointer, childrenType) {
+	return function unmountVariableAsChildren(vTemplate) {
+		// TODO
+	};
+}
+
+export function unmountVariableAsText(pointer) {
+	return function unmountVariableAsText(vTemplate, parentDom) {
+		debugger;
 	};
 }

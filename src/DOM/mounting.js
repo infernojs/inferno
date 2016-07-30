@@ -116,15 +116,15 @@ function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 }
 
 export function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) {
-	const items = vFragment._items;
+	const children = vFragment._children;
 	const pointer = document.createTextNode('');
 	const dom = document.createDocumentFragment();
 	const childrenType = vFragment._childrenType;
 
 	if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
-		mountArrayChildrenWithType(items, dom, lifecycle, context, isSVG);
+		mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG);
 	} else if (isUnknownChildrenType(childrenType)) {
-		mountArrayChildrenWithoutType(items, dom, lifecycle, context, isSVG);
+		mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
 	}
 	vFragment._pointer = pointer;
 	vFragment._dom = dom;
@@ -281,19 +281,28 @@ function mountProps(vElement, props, dom) {
 	}
 }
 
-export function mountVariable(pointer, templateIsSVG, isChildren, childrenType) {
-	return function mountVariable(vTemplate, parentDom, lifecycle, context, isSVG) {
+export function mountVariableAsExpression(pointer, templateIsSVG) {
+	return function mountVariableAsExpression(vTemplate, parentDom, lifecycle, context, isSVG) {
 		let input = vTemplate.read(pointer);
 
-		if (isChildren) {
-			return mountChildren(childrenType, input, parentDom, lifecycle, context, isSVG || templateIsSVG);
-		} else {
-			if (!isVNode(input)) {
-				input = normalise(input);
-				vTemplate.write(pointer, input);
-			}
-			return mount(input, parentDom, lifecycle, context, isSVG || templateIsSVG);
+		if (!isVNode(input)) {
+			input = normalise(input);
+			vTemplate.write(pointer, input);
 		}
+		return mount(input, parentDom, lifecycle, context, isSVG || templateIsSVG);
+	};
+}
+
+export function mountVariableAsChildren(pointer, templateIsSVG, childrenType) {
+	return function mountVariableAsChildren(vTemplate, parentDom, lifecycle, context, isSVG) {
+		return mountChildren(childrenType, vTemplate.read(pointer), parentDom, lifecycle, context, isSVG || templateIsSVG);
+	};
+}
+
+
+export function mountVariableAsText(pointer) {
+	return function mountVariableAsText(vTemplate, textNode) {
+		textNode.nodeValue = vTemplate.read(pointer);
 	};
 }
 
@@ -306,6 +315,15 @@ export function mountDOMNodeFromTemplate(templateDomNode, isRoot, deepClone) {
 		}
 		return domNode;
 	};
+}
+
+export function mountEmptyTextNode(vTemplate, parentDom) {
+	const textNode = document.createTextNode('');
+
+	if (!isNull(parentDom)) {
+		appendChild(parentDom, textNode);
+	}
+	return textNode;
 }
 
 export function mountTemplateClassName(pointer) {

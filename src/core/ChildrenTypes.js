@@ -3,7 +3,8 @@ export const ChildrenTypes = {
 	NON_KEYED_LIST: 1,
 	TEXT: 2,
 	NODE: 3,
-	UNKNOWN: 4
+	UNKNOWN: 4,
+	STATIC_TEXT: 5
 };
 
 export function isKeyedListChildrenType(o) {
@@ -15,7 +16,7 @@ export function isNonKeyedListChildrenType(o) {
 }
 
 export function isTextChildrenType(o) {
-	return o === ChildrenTypes.TEXT;
+	return o === ChildrenTypes.TEXT || o === ChildrenTypes.STATIC_TEXT;
 }
 
 export function isNodeChildrenType(o) {

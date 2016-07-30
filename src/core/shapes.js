@@ -14,75 +14,77 @@ export const NodeTypes = {
 	VARIABLE: 6
 };
 
+// added $ before all argument names to stop a silly Safari bug
+
 class VElement {
-	constructor(tag) {
+	constructor($tag) {
 		this._type = NodeTypes.ELEMENT;
 		this._dom = null;
-		this._tag = tag;
+		this._tag = $tag;
 		this._children = null;
 		this._key = null;
 		this._props = null;
 		this._hooks = null;
 		this._childrenType = ChildrenTypes.UNKNOWN;
 	}
-	children(children) {
-		this._children = children;
+	children($children) {
+		this._children = $children;
 		return this;
 	}
-	key(key) {
-		this._key = key;
+	key($key) {
+		this._key = $key;
 		return this;
 	}
-	props(props) {
-		this._props = props;
+	props($props) {
+		this._props = $props;
 		return this;
 	}
-	hooks(hooks) {
-		this._hooks = hooks;
+	hooks($hooks) {
+		this._hooks = $hooks;
 		return this;
 	}
-	events(events) {
-		this._events = events;
+	events($events) {
+		this._events = $events;
 		return this;
 	}
-	childrenType(childrenType) {
-		this._childrenType = childrenType;
+	childrenType($childrenType) {
+		this._childrenType = $childrenType;
 		return this;
 	}
 }
 
 class VComponent {
-	constructor(component) {
+	constructor($component) {
 		this._type = NodeTypes.COMPONENT;
 		this._dom = null;
-		this._component = component;
+		this._component = $component;
 		this._props = null;
 		this._hooks = null;
 		this._key = null;
-		this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
+		this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
 	}
-	key(key) {
-		this._key = key;
+	key($key) {
+		this._key = $key;
 		return this;
 	}
-	props(props) {
-		this._props = props;
+	props($props) {
+		this._props = $props;
 		return this;
 	}
-	hooks(hooks) {
-		this._hooks = hooks;
+	hooks($hooks) {
+		this._hooks = $hooks;
 		return this;
 	}
 }
 
 export class VTemplate {
-	constructor(templateReducers, key, v0, v1) {
+	constructor($templateReducers, $key, $v0, $v1) {
 		this._type = NodeTypes.TEMPLATE;
 		this._dom = null;
-		this._tr = templateReducers;
-		this._key = key;
-		this._v0 = v0;
-		this._v1 = v1;
+		this._tr = $templateReducers;
+		this._key = $key;
+		this._v0 = $v0;
+		this._v1 = $v1;
 	}
 	read(index) {
 		let value;
@@ -112,9 +114,9 @@ export class VTemplate {
 }
 
 class VText {
-	constructor(text) {
+	constructor($text) {
 		this._type = NodeTypes.TEXT;
-		this._text = text;
+		this._text = $text;
 		this._dom = null;
 	}
 }
@@ -127,37 +129,37 @@ class VPlaceholder {
 }
 
 class VFragment {
-	constructor(items) {
+	constructor($children) {
 		this._type = NodeTypes.FRAGMENT;
 		this._dom = null;
 		this._pointer = null;
-		this._items = items;
+		this._children = $children;
 		this._childrenType = ChildrenTypes.UNKNOWN;
 	}
-	childrenType(childrenType) {
-		this._childrenType = childrenType;
+	childrenType($childrenType) {
+		this._childrenType = $childrenType;
 		return this;
 	}
 }
 
 class Variable {
-	constructor(pointer) {
+	constructor($pointer) {
 		this._type = NodeTypes.VARIABLE;
-		this._pointer = pointer;
+		this._pointer = $pointer;
 	}
 }
 
 class TemplaceReducers {
-	constructor(keyIndex, mount, patch, unmount) {
-		this._keyIndex = keyIndex;
+	constructor($keyIndex, $mount, $patch, $unmount) {
+		this._keyIndex = $keyIndex;
 		this._schema = null;
 		this._pools = {
 			nonKeyed: [],
 			keyed: new Map()
 		};
-		this.mount = mount;
-		this.patch = patch;
-		this.unmount = unmount;
+		this.mount = $mount;
+		this.patch = $patch;
+		this.unmount = $unmount;
 	}
 }
 

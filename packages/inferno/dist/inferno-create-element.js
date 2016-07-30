@@ -42,7 +42,8 @@
 		NON_KEYED_LIST: 1,
 		TEXT: 2,
 		NODE: 3,
-		UNKNOWN: 4
+		UNKNOWN: 4,
+		STATIC_TEXT: 5
 	};
 
 	var NodeTypes = {
@@ -55,60 +56,62 @@
 		VARIABLE: 6
 	};
 
-	var VElement = function VElement(tag) {
+	// added $ before all argument names to stop a silly Safari bug
+
+	var VElement = function VElement($tag) {
 		this._type = NodeTypes.ELEMENT;
 		this._dom = null;
-		this._tag = tag;
+		this._tag = $tag;
 		this._children = null;
 		this._key = null;
 		this._props = null;
 		this._hooks = null;
 		this._childrenType = ChildrenTypes.UNKNOWN;
 	};
-	VElement.prototype.children = function children (children) {
-		this._children = children;
+	VElement.prototype.children = function children ($children) {
+		this._children = $children;
 		return this;
 	};
-	VElement.prototype.key = function key (key) {
-		this._key = key;
+	VElement.prototype.key = function key ($key) {
+		this._key = $key;
 		return this;
 	};
-	VElement.prototype.props = function props (props) {
-		this._props = props;
+	VElement.prototype.props = function props ($props) {
+		this._props = $props;
 		return this;
 	};
-	VElement.prototype.hooks = function hooks (hooks) {
-		this._hooks = hooks;
+	VElement.prototype.hooks = function hooks ($hooks) {
+		this._hooks = $hooks;
 		return this;
 	};
-	VElement.prototype.events = function events (events) {
-		this._events = events;
+	VElement.prototype.events = function events ($events) {
+		this._events = $events;
 		return this;
 	};
-	VElement.prototype.childrenType = function childrenType (childrenType) {
-		this._childrenType = childrenType;
+	VElement.prototype.childrenType = function childrenType ($childrenType) {
+		this._childrenType = $childrenType;
 		return this;
 	};
 
-	var VComponent = function VComponent(component) {
+	var VComponent = function VComponent($component) {
 		this._type = NodeTypes.COMPONENT;
 		this._dom = null;
-		this._component = component;
+		this._component = $component;
 		this._props = null;
 		this._hooks = null;
 		this._key = null;
-		this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
+		this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
 	};
-	VComponent.prototype.key = function key (key) {
-		this._key = key;
+	VComponent.prototype.key = function key ($key) {
+		this._key = $key;
 		return this;
 	};
-	VComponent.prototype.props = function props (props) {
-		this._props = props;
+	VComponent.prototype.props = function props ($props) {
+		this._props = $props;
 		return this;
 	};
-	VComponent.prototype.hooks = function hooks (hooks) {
-		this._hooks = hooks;
+	VComponent.prototype.hooks = function hooks ($hooks) {
+		this._hooks = $hooks;
 		return this;
 	};
 

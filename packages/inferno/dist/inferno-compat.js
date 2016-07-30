@@ -98,7 +98,8 @@
   	NON_KEYED_LIST: 1,
   	TEXT: 2,
   	NODE: 3,
-  	UNKNOWN: 4
+  	UNKNOWN: 4,
+  	STATIC_TEXT: 5
   };
 
   function isKeyedListChildrenType(o) {
@@ -110,7 +111,7 @@
   }
 
   function isTextChildrenType(o) {
-  	return o === ChildrenTypes.TEXT;
+  	return o === ChildrenTypes.TEXT || o === ChildrenTypes.STATIC_TEXT;
   }
 
   function isNodeChildrenType(o) {
@@ -131,66 +132,68 @@
   	VARIABLE: 6
   };
 
-  var VElement = function VElement(tag) {
+  // added $ before all argument names to stop a silly Safari bug
+
+  var VElement = function VElement($tag) {
   	this._type = NodeTypes.ELEMENT;
   	this._dom = null;
-  	this._tag = tag;
+  	this._tag = $tag;
   	this._children = null;
   	this._key = null;
   	this._props = null;
   	this._hooks = null;
   	this._childrenType = ChildrenTypes.UNKNOWN;
   };
-  VElement.prototype.children = function children (children) {
-  	this._children = children;
+  VElement.prototype.children = function children ($children) {
+  	this._children = $children;
   	return this;
   };
-  VElement.prototype.key = function key (key) {
-  	this._key = key;
+  VElement.prototype.key = function key ($key) {
+  	this._key = $key;
   	return this;
   };
-  VElement.prototype.props = function props (props) {
-  	this._props = props;
+  VElement.prototype.props = function props ($props) {
+  	this._props = $props;
   	return this;
   };
-  VElement.prototype.hooks = function hooks (hooks) {
-  	this._hooks = hooks;
+  VElement.prototype.hooks = function hooks ($hooks) {
+  	this._hooks = $hooks;
   	return this;
   };
-  VElement.prototype.events = function events (events) {
-  	this._events = events;
+  VElement.prototype.events = function events ($events) {
+  	this._events = $events;
   	return this;
   };
-  VElement.prototype.childrenType = function childrenType (childrenType) {
-  	this._childrenType = childrenType;
+  VElement.prototype.childrenType = function childrenType ($childrenType) {
+  	this._childrenType = $childrenType;
   	return this;
   };
 
-  var VComponent = function VComponent(component) {
+  var VComponent = function VComponent($component) {
   	this._type = NodeTypes.COMPONENT;
   	this._dom = null;
-  	this._component = component;
+  	this._component = $component;
   	this._props = null;
   	this._hooks = null;
   	this._key = null;
-  	this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
+  	this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
   };
-  VComponent.prototype.key = function key (key) {
-  	this._key = key;
+  VComponent.prototype.key = function key ($key) {
+  	this._key = $key;
   	return this;
   };
-  VComponent.prototype.props = function props (props) {
-  	this._props = props;
+  VComponent.prototype.props = function props ($props) {
+  	this._props = $props;
   	return this;
   };
-  VComponent.prototype.hooks = function hooks (hooks) {
-  	this._hooks = hooks;
+  VComponent.prototype.hooks = function hooks ($hooks) {
+  	this._hooks = $hooks;
   	return this;
   };
 
-  var VText = function VText(text) {
+  var VText = function VText($text) {
   	this._type = NodeTypes.TEXT;
-  	this._text = text;
+  	this._text = $text;
   	this._dom = null;
   };
 
@@ -199,15 +202,15 @@
   	this._dom = null;
   };
 
-  var VFragment = function VFragment(items) {
+  var VFragment = function VFragment($children) {
   	this._type = NodeTypes.FRAGMENT;
   	this._dom = null;
   	this._pointer = null;
-  	this._items = items;
+  	this._children = $children;
   	this._childrenType = ChildrenTypes.UNKNOWN;
   };
-  VFragment.prototype.childrenType = function childrenType (childrenType) {
-  	this._childrenType = childrenType;
+  VFragment.prototype.childrenType = function childrenType ($childrenType) {
+  	this._childrenType = $childrenType;
   	return this;
   };
 
@@ -605,27 +608,27 @@
   }
 
   function patchVFragment(lastVFragment, nextVFragment, parentDom, lifecycle, context, isSVG) {
-  	var lastItems = lastVFragment._items;
-  	var nextItems = nextVFragment._items;
+  	var lastChildren = lastVFragment._children;
+  	var nextChildren = nextVFragment._children;
   	var pointer = lastVFragment._pointer;
 
   	nextVFragment._dom = lastVFragment._dom;
   	nextVFragment._pointer = pointer;
-  	if (!lastItems !== nextItems) {
+  	if (!lastChildren !== nextChildren) {
   		var lastChildrenType = lastVFragment._childrenType;
   		var nextChildrenType = nextVFragment._childrenType;
 
   		if (lastChildrenType === nextChildrenType) {
   			if (isKeyedListChildrenType(nextChildrenType)) {
-  				return patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+  				return patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
   			} else if (isKeyedListChildrenType(nextChildrenType)) {
-  				return patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+  				return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
   			}
   		}
-  		if (isKeyed(lastItems, nextItems)) {
-  			patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+  		if (isKeyed(lastChildren, nextChildren)) {
+  			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
   		} else {
-  			patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+  			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
   		}
   	}
   }
@@ -1319,15 +1322,15 @@
   }
 
   function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) {
-  	var items = vFragment._items;
+  	var children = vFragment._children;
   	var pointer = document.createTextNode('');
   	var dom = document.createDocumentFragment();
   	var childrenType = vFragment._childrenType;
 
   	if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
-  		mountArrayChildrenWithType(items, dom, lifecycle, context, isSVG);
+  		mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG);
   	} else if (isUnknownChildrenType(childrenType)) {
-  		mountArrayChildrenWithoutType(items, dom, lifecycle, context, isSVG);
+  		mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
   	}
   	vFragment._pointer = pointer;
   	vFragment._dom = dom;

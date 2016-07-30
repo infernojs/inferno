@@ -18,7 +18,8 @@
 		NON_KEYED_LIST: 1,
 		TEXT: 2,
 		NODE: 3,
-		UNKNOWN: 4
+		UNKNOWN: 4,
+		STATIC_TEXT: 5
 	};
 
 	var NULL_INDEX = -1;
@@ -34,70 +35,72 @@
 		VARIABLE: 6
 	};
 
-	var VElement = function VElement(tag) {
+	// added $ before all argument names to stop a silly Safari bug
+
+	var VElement = function VElement($tag) {
 		this._type = NodeTypes.ELEMENT;
 		this._dom = null;
-		this._tag = tag;
+		this._tag = $tag;
 		this._children = null;
 		this._key = null;
 		this._props = null;
 		this._hooks = null;
 		this._childrenType = ChildrenTypes.UNKNOWN;
 	};
-	VElement.prototype.children = function children (children) {
-		this._children = children;
+	VElement.prototype.children = function children ($children) {
+		this._children = $children;
 		return this;
 	};
-	VElement.prototype.key = function key (key) {
-		this._key = key;
+	VElement.prototype.key = function key ($key) {
+		this._key = $key;
 		return this;
 	};
-	VElement.prototype.props = function props (props) {
-		this._props = props;
+	VElement.prototype.props = function props ($props) {
+		this._props = $props;
 		return this;
 	};
-	VElement.prototype.hooks = function hooks (hooks) {
-		this._hooks = hooks;
+	VElement.prototype.hooks = function hooks ($hooks) {
+		this._hooks = $hooks;
 		return this;
 	};
-	VElement.prototype.events = function events (events) {
-		this._events = events;
+	VElement.prototype.events = function events ($events) {
+		this._events = $events;
 		return this;
 	};
-	VElement.prototype.childrenType = function childrenType (childrenType) {
-		this._childrenType = childrenType;
+	VElement.prototype.childrenType = function childrenType ($childrenType) {
+		this._childrenType = $childrenType;
 		return this;
 	};
 
-	var VComponent = function VComponent(component) {
+	var VComponent = function VComponent($component) {
 		this._type = NodeTypes.COMPONENT;
 		this._dom = null;
-		this._component = component;
+		this._component = $component;
 		this._props = null;
 		this._hooks = null;
 		this._key = null;
-		this._isStateful = !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
+		this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
 	};
-	VComponent.prototype.key = function key (key) {
-		this._key = key;
+	VComponent.prototype.key = function key ($key) {
+		this._key = $key;
 		return this;
 	};
-	VComponent.prototype.props = function props (props) {
-		this._props = props;
+	VComponent.prototype.props = function props ($props) {
+		this._props = $props;
 		return this;
 	};
-	VComponent.prototype.hooks = function hooks (hooks) {
-		this._hooks = hooks;
+	VComponent.prototype.hooks = function hooks ($hooks) {
+		this._hooks = $hooks;
 		return this;
 	};
 
-	var VTemplate = function VTemplate(templateReducers, key, v0, v1) {
+	var VTemplate = function VTemplate($templateReducers, $key, $v0, $v1) {
 		this._type = NodeTypes.TEMPLATE;
 		this._dom = null;
-		this._tr = templateReducers;
-		this._key = key;
-		this._v0 = v0;
-		this._v1 = v1;
+		this._tr = $templateReducers;
+		this._key = $key;
+		this._v0 = $v0;
+		this._v1 = $v1;
 	};
 	VTemplate.prototype.read = function read (index) {
 		var value;
@@ -125,27 +128,27 @@
 		}
 	};
 
-	var VText = function VText(text) {
+	var VText = function VText($text) {
 		this._type = NodeTypes.TEXT;
-		this._text = text;
+		this._text = $text;
 		this._dom = null;
 	};
 
-	var VFragment = function VFragment(items) {
+	var VFragment = function VFragment($children) {
 		this._type = NodeTypes.FRAGMENT;
 		this._dom = null;
 		this._pointer = null;
-		this._items = items;
+		this._children = $children;
 		this._childrenType = ChildrenTypes.UNKNOWN;
 	};
-	VFragment.prototype.childrenType = function childrenType (childrenType) {
-		this._childrenType = childrenType;
+	VFragment.prototype.childrenType = function childrenType ($childrenType) {
+		this._childrenType = $childrenType;
 		return this;
 	};
 
-	var Variable = function Variable(pointer) {
+	var Variable = function Variable($pointer) {
 		this._type = NodeTypes.VARIABLE;
-		this._pointer = pointer;
+		this._pointer = $pointer;
 	};
 
 	function createVTemplate(schema, renderer) {

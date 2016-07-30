@@ -412,27 +412,27 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 }
 
 function patchVFragment(lastVFragment, nextVFragment, parentDom, lifecycle, context, isSVG) {
-	const lastItems = lastVFragment._items;
-	const nextItems = nextVFragment._items;
+	const lastChildren = lastVFragment._children;
+	const nextChildren = nextVFragment._children;
 	const pointer = lastVFragment._pointer;
 
 	nextVFragment._dom = lastVFragment._dom;
 	nextVFragment._pointer = pointer;
-	if (!lastItems !== nextItems) {
+	if (!lastChildren !== nextChildren) {
 		const lastChildrenType = lastVFragment._childrenType;
 		const nextChildrenType = nextVFragment._childrenType;
 
 		if (lastChildrenType === nextChildrenType) {
 			if (isKeyedListChildrenType(nextChildrenType)) {
-				return patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+				return patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
 			} else if (isKeyedListChildrenType(nextChildrenType)) {
-				return patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+				return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
 			}
 		}
-		if (isKeyed(lastItems, nextItems)) {
-			patchKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+		if (isKeyed(lastChildren, nextChildren)) {
+			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
 		} else {
-			patchNonKeyedChildren(lastItems, nextItems, parentDom, lifecycle, context, isSVG, nextVFragment);
+			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
 		}
 	}
 }
@@ -701,31 +701,47 @@ function lis_algorithm(a) {
 	return result;
 }
 
-export function patchVariable(pointer, templateIsSVG, isChildren, childrenType) {
-	return function patchVariable(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
+export function patchVariableAsExpression(pointer, templateIsSVG) {
+	return function patchVariableAsExpression(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
 		const lastInput = lastVTemplate.read(pointer);
 		let nextInput = nextVTemplate.read(pointer);
 
 		if (lastInput !== nextInput) {
-			if (isChildren) {
-				patchChildren(childrenType, lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
-			} else {
-				if (!isVNode(nextInput)) {
-					nextInput = normalise(nextInput);
-					nextVTemplate.write(pointer, nextInput);
-				}
-				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
+			if (!isVNode(nextInput)) {
+				nextInput = normalise(nextInput);
+				nextVTemplate.write(pointer, nextInput);
 			}
+			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
+		}
+	};
+}
+
+export function patchVariableAsChildren(pointer, templateIsSVG, childrenType) {
+	return function patchVariableAsChildren(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
+		const lastInput = lastVTemplate.read(pointer);
+		const nextInput = nextVTemplate.read(pointer);
+
+		if (lastInput !== nextInput) {
+			patchChildren(childrenType, lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
+		}
+	};
+}
+
+export function patchVariableAsText(pointer) {
+	return function patchVariableAsText(lastVTemplate, nextVTemplate, textNode) {
+		const nextInput = nextVTemplate.read(pointer);
+
+		if (lastVTemplate.read(pointer) !== nextInput) {
+			textNode.nodeValue = nextInput;
 		}
 	};
 }
 
 export function patchTemplateClassName(pointer) {
 	return function patchTemplateClassName(lastVTemplate, nextVTemplate, parentDom) {
-		const lastClassName = lastVTemplate.read(pointer);
 		const nextClassName = nextVTemplate.read(pointer);
 
-		if (lastClassName !== nextClassName) {
+		if (lastVTemplate.read(pointer) !== nextClassName) {
 			if (isNullOrUndef(nextClassName)) {
 				parentDom.removeAttribute('class');
 			} else {
