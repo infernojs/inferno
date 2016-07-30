@@ -951,7 +951,7 @@
 				var key = vNode._key;
 
 				if (!isNull(key) && isVariable(key)) {
-					keyIndex = key._arg;
+					keyIndex = key._pointer;
 				}
 				var props = vNode._props;
 

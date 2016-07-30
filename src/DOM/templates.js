@@ -130,7 +130,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 			const key = vNode._key;
 
 			if (!isNull(key) && isVariable(key)) {
-				keyIndex = key._arg;
+				keyIndex = key._pointer;
 			}
 			const props = vNode._props;
 
