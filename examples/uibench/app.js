@@ -79,7 +79,7 @@
 	}, InfernoDOM);
 
 	var tableRowTpl = t(function (classes, id, children) {
-		return e('tr').props({ className: classes, 'data-id': id }).children(children).childrenType(ChildrenTypes.KEYED_LIST);
+		return e('tr').props({ className: classes, 'data-id': id }).key(id).children(children).childrenType(ChildrenTypes.KEYED_LIST);
 	}, InfernoDOM);
 
 	function tableRow(data) {
