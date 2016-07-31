@@ -10,7 +10,7 @@ module.exports = function (config) {
 			'mocha'
 		],
 		files: [
-            './../node_modules/babel-polyfill/dist/polyfill.js',
+			'./../node_modules/babel-polyfill/dist/polyfill.js',
 			'./../node_modules/sinon/pkg/sinon.js',
             './../src/**/__tests__/**'
 		],
@@ -42,6 +42,7 @@ module.exports = function (config) {
 						loader: 'babel-loader',
 						exclude: /node_modules/,
 						query: {
+							compact: false,
 							presets: ['es2015'],
 							plugins: [
 								'transform-object-rest-spread',
