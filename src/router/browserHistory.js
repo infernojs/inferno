@@ -14,6 +14,16 @@ function getHashbangRoot() {
 	return `${url.protocol + '//' || ''}${url.host || ''}${url.pathname || ''}${url.search || ''}#!`;
 }
 
+function isActive(path, hashbang) {
+	if (hashbang) {
+		var currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
+		var matchURL = currentURL.match(/#!(.*)/);
+		var matchHash = matchURL && typeof matchURL[1] !== 'undefined' && (matchURL[1] || '/');
+		return matchHash === path;
+	}
+	return location.pathname === path;
+}
+
 function routeTo(url) {
 	let didRoute = false;
 	for (let i = 0; i < routers.length; i++) {
@@ -36,5 +46,6 @@ export default {
 		routers.splice(routers.indexOf(router), 1);
 	},
 	getCurrentUrl,
-	getHashbangRoot
+	getHashbangRoot,
+	isActive
 };

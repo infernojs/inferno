@@ -28,7 +28,7 @@ export function isArray(obj) {
 }
 
 export function isStatefulComponent(obj) {
-	return obj.prototype.render !== undefined;
+	return obj.prototype && obj.prototype.render !== undefined;
 }
 
 export function isStringOrNumber(obj) {
