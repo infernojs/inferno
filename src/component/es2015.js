@@ -40,7 +40,7 @@ function applyState(component, force, callback) {
 		component._pendingState = {};
 		let nextInput = component._updateComponent(prevState, nextState, props, props, force);
 
-		if (nextInput === NO_RENDER) {
+		if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 		} else if (isNullOrUndef(nextInput)) {
 			nextInput = createVPlaceholder();

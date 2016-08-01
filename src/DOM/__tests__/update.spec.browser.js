@@ -999,96 +999,17 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('variation 4', () => {
-				const A = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"children": [
-										{
-											"tag": "td",
-											"children": [
-												[
-													"text 1"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const A = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', null, createElement('td', null, 'text 1', createElement('br')))
+				)));
 
-				const B = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"children": [
-										{
-											"tag": "td",
-											"children": [
-												"",
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const B = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', null, createElement('td', null, createElement('br')))
+				)));
 
-				const C = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"children": [
-										{
-											"tag": "td",
-											"children": [
-												[
-													"text 2"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const C = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', null, createElement('td', null, 'text 2', createElement('br')))
+				)));
 
 				render(A, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');

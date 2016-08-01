@@ -18,7 +18,7 @@ import {
 	mountVText,
 	mountVPlaceholder,
 	mountVFragment,
-	mountArrayChildren,
+	mountArrayChildrenWithoutType,
 	mountVComponent,
 	mountVTemplate
 } from './mounting';
@@ -78,7 +78,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 				patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 			} else {
 				replaceChild(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-				unmount(lastInput, null);
+				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVComponent(lastInput)) {
 			// debugger;
@@ -87,26 +87,26 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 			} else {
 				replaceChild(parentDom, mountVFragment(nextInput, null), lastInput._dom);
-				unmount(lastInput, null);
+				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVElement(nextInput)) {
 			if (isVElement(lastInput)) {
 				patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 			} else {
 				replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-				unmount(lastInput, null);
+				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVElement(lastInput)) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-			unmount(lastInput, null);
+			unmount(lastInput, null, lifecycle);
 		} else if (isVFragment(lastInput)) {
-			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG));
+			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG), lifecycle);
 		} else if (isVPlaceholder(nextInput)) {
 			if (isVPlaceholder(lastInput)) {
 				patchVPlaceholder(lastInput, nextInput);
 			} else {
 				replaceChild(parentDom, mountVPlaceholder(nextInput, null), lastInput._dom);
-				unmount(lastInput, null);
+				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVPlaceholder(lastInput)) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
@@ -115,7 +115,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 				patchVText(lastInput, nextInput);
 			} else {
 				replaceChild(parentDom, mountVText(nextInput, null), lastInput._dom);
-				unmount(lastInput, null);
+				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVText(lastInput)) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
@@ -143,13 +143,13 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
 
 function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
 	if (isInvalid(nextChildren)) {
-		removeAllChildren(parentDom, lastChildren);
+		removeAllChildren(parentDom, lastChildren, lifecycle);
 	} else if (isInvalid(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
 			setTextContent(parentDom, nextChildren);
 		} else if (!isInvalid(nextChildren)) {
 			if (isArray(nextChildren)) {
-				mountChildren(nextChildren, parentDom, lifecycle, context, isSVG);
+				mountArrayChildrenWithoutType(nextChildren, parentDom, lifecycle, context, isSVG);
 			} else {
 				mount(nextChildren, parentDom, lifecycle, context, isSVG);
 			}
@@ -269,6 +269,10 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 
 // returns true if a property of the element has been mutated, otherwise false for an attribute
 export function patchProp(prop, lastValue, nextValue, dom) {
+	if (isNullOrUndef(nextValue)) {
+		dom.removeAttribute(prop);
+		return false;
+	}
 	if (prop === 'className') {
 		dom.className = nextValue;
 		return false;
@@ -296,14 +300,8 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 function removeProp(tag, prop, dom) {
 	if (prop === 'className') {
 		dom.removeAttribute('class');
-	} else if (prop === 'id') {
-		dom.removeAttribute('id');
 	} else {
-		if (isPropertyOfElement(tag, prop)) {
-			dom[prop] = null;
-		} else {
-			dom.removeAttribute(prop);
-		}
+		dom.removeAttribute(prop);
 	}
 }
 
@@ -460,7 +458,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 		}
 	} else if (lastChildrenLength > nextChildrenLength) {
 		for (i = commonLength; i < lastChildrenLength; i++) {
-			unmount(lastChildren[i], dom);
+			unmount(lastChildren[i], dom, lifecycle);
 		}
 	}
 }
@@ -550,7 +548,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 		}
 	} else if (nextStartIndex > nextEndIndex) {
 		while (lastStartIndex <= lastEndIndex) {
-			unmount(lastChildren[lastStartIndex++], dom);
+			unmount(lastChildren[lastStartIndex++], dom, lifecycle);
 		}
 	} else {
 		let aLength = lastEndIndex - lastStartIndex + 1;
@@ -602,7 +600,7 @@ export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, c
 				index = prevItemsMap.get(lastEndNode._key);
 
 				if (index === undefined) {
-					unmount(lastEndNode, dom);
+					unmount(lastEndNode, dom, lifecycle);
 					removeOffset++;
 				} else {
 

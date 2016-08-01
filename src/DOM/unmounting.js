@@ -5,29 +5,38 @@ import {
 	isVFragment,
 	isVElement,
 	isVComponent,
-	isVTemplate
+	isVTemplate,
+	isVText
 } from '../core/shapes';
 import { poolVTemplate, recyclingEnabled } from './templates';
 
 export function unmount(input, parentDom, lifecycle) {
 	if (isVTemplate(input)) {
-		unmountVTemplate(input, parentDom);
+		unmountVTemplate(input, parentDom, lifecycle);
 	} else if (isVFragment(input)) {
-		unmountVFragment(input, parentDom, true);
+		unmountVFragment(input, parentDom, true, lifecycle);
 	} else if (isVElement(input)) {
-		unmountVElement(input, parentDom);
+		unmountVElement(input, parentDom, lifecycle);
 	} else if (isVComponent(input)) {
-		unmountVComponent(input, parentDom);
+		unmountVComponent(input, parentDom, lifecycle);
+	} else if (isVText(input)) {
+		unmountVText(input, parentDom);
 	}
 }
 
-function unmountVTemplate(vTemplate, parentDom) {
+function unmountVText(vText, parentDom) {
+	if (parentDom) {
+		removeChild(parentDom, vText._dom);
+	}
+}
+
+function unmountVTemplate(vTemplate, parentDom, lifecycle) {
 	const dom = vTemplate._dom;
 	const templateReducers = vTemplate._tr;
 	const unmount = templateReducers.unmount;
 
 	if (!isNull(unmount)) {
-		templateReducers.unmount(vTemplate);
+		templateReducers.unmount(vTemplate, lifecycle);
 	}
 	if (!isNull(parentDom)) {
 		removeChild(parentDom, dom);
@@ -37,22 +46,19 @@ function unmountVTemplate(vTemplate, parentDom) {
 	}
 }
 
-export function unmountVFragment(vFragment, parentDom, removePointer) {
-	const items = vFragment._items;
-	const itemsLength = items.length;
-	const pointer = items._pointer;
+export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle) {
+	const children = vFragment._children;
+	const childrenLength = children.length;
+	const pointer = vFragment._pointer;
 
-	if (itemsLength > 0) {
-		for (let i = 0; i < itemsLength; i++) {
-			const item = items[i];
+	if (childrenLength > 0) {
+		for (let i = 0; i < childrenLength; i++) {
+			const child = children[i];
 
-			if (isVFragment(item)) {
-				unmountVFragment(item, parentDom, true);
+			if (isVFragment(child)) {
+				unmountVFragment(child, parentDom, true, lifecycle);
 			} else {
-				if (parentDom) {
-					removeChild(parentDom, item._dom);
-				}
-				unmount(item, null);
+				unmount(child, parentDom, lifecycle);
 			}
 		}
 	}
@@ -61,7 +67,7 @@ export function unmountVFragment(vFragment, parentDom, removePointer) {
 	}
 }
 
-export function unmountVComponent(vComponent, parentDom) {
+export function unmountVComponent(vComponent, parentDom, lifecycle) {
 	const instance = vComponent._instance;
 	let instanceHooks = null;
 	let instanceChildren = null;
@@ -74,7 +80,7 @@ export function unmountVComponent(vComponent, parentDom) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
 			componentToDOMNodeMap.delete(instance);
-			unmount(instance._lastInput, null);
+			unmount(instance._lastInput, null, lifecycle);
 		}
 	}
 	const hooks = vComponent._hooks || instanceHooks;
@@ -84,9 +90,12 @@ export function unmountVComponent(vComponent, parentDom) {
 			hooks.onComponentWillUnmount(vComponent._dom, hooks);
 		}
 	}
+	if (parentDom) {
+		removeChild(parentDom, vComponent._dom);
+	}
 }
 
-export function unmountVElement(vElement, parentDom) {
+export function unmountVElement(vElement, parentDom, lifecycle) {
 	const hooks = vElement._hooks;
 	const dom = vElement._dom;
 
@@ -100,10 +109,10 @@ export function unmountVElement(vElement, parentDom) {
 	if (!isNullOrUndef(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
-				unmount(children[i], null);
+				unmount(children[i], null, lifecycle);
 			}
 		} else {
-			unmount(children, null);
+			unmount(children, null, lifecycle);
 		}
 	}
 	if (parentDom) {

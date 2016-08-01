@@ -594,7 +594,6 @@ describe('Components (non-JSX)', () => {
 			).to.equal(
 				'<div><div class="basic"><span class="basic-render">The title is component 1</span></div>' + '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>'
 			);
-			render('', container);
 
 			render(template(BasicComponent1, 'component 1', 'basic-render', BasicComponent1, 'component 2', 'basic-render'), container);
 

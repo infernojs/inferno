@@ -65,10 +65,10 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 	}
 }
 
-export function replaceVListWithNode(parentDom, vList, dom) {
+export function replaceVListWithNode(parentDom, vList, dom, lifecycle) {
 	const pointer = vList._pointer;
 
-	unmountVFragment(vList, parentDom, false);
+	unmountVFragment(vList, parentDom, false, lifecycle);
 	replaceChild(parentDom, dom, pointer);
 }
 
@@ -91,7 +91,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	unmount(lastNode, false);
+	unmount(lastNode, false, lifecycle);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode._dom = dom;
@@ -141,18 +141,12 @@ export function getActiveNode() {
 	return document.activeElement;
 }
 
-export function removeAllChildren(dom, children) {
-	if (recyclingEnabled) {
-		const childrenLength = children.length;
+export function removeAllChildren(dom, children, lifecycle) {
+	for (let i = 0; i < children.length; i++) {
+		const child = children[i];
 
-		if (childrenLength > 5) {
-			for (let i = 0; i < childrenLength; i++) {
-				const child = children[i];
-
-				if (!isInvalid(child)) {
-					pool(child);
-				}
-			}
+		if (!isInvalid(child)) {
+			unmount(child, null, lifecycle);
 		}
 	}
 	dom.textContent = '';
@@ -232,11 +226,11 @@ export function setValueProperty(nextNode) {
 
 export function setFormElementProperties(nextTag, nextNode) {
 	if (nextTag === 'input') {
-		const inputType = nextNode.attrs.type;
+		const inputType = nextNode._props.type;
 		if (inputType === 'text') {
 			setValueProperty(nextNode);
 		} else if (inputType === 'checkbox' || inputType === 'radio') {
-			const checked = nextNode.attrs.checked;
+			const checked = nextNode._props.checked;
 			nextNode._dom.checked = !!checked;
 		}
 	} else if (nextTag === 'textarea') {

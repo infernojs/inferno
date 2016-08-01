@@ -382,17 +382,17 @@ function combineUnmount(nodeIndex, unmounters) {
 function combineUnmountTo5(nodeIndex, unomunt1, unomunt2, unomunt3, unomunt4, unomunt5) {
 	const copy = (nodeIndex !== NULL_INDEX);
 
-	return function combineUnmountTo5(vTemplate) {
+	return function combineUnmountTo5(vTemplate, lifecycle) {
 		if (unomunt1) {
-			unomunt1(vTemplate);
+			unomunt1(vTemplate, lifecycle);
 			if (unomunt2) {
-				unomunt2(vTemplate);
+				unomunt2(vTemplate, lifecycle);
 				if (unomunt3) {
-					unomunt3(vTemplate);
+					unomunt3(vTemplate, lifecycle);
 					if (unomunt4) {
-						unomunt4(vTemplate);
+						unomunt4(vTemplate, lifecycle);
 						if (unomunt5) {
-							unomunt5(vTemplate);
+							unomunt5(vTemplate, lifecycle);
 						}
 					}
 				}
