@@ -47,7 +47,7 @@
     "karma-phantomjs-launcher": "^1.0.1",
     "karma-webpack": "^1.7.0",
     "mkdirp": "^0.5.1",
-    "mocha": "^2.5.3",
+    "mocha": "^3.0.0",
     "mocha-lcov-reporter": "^1.2.0",
     "phantomjs-prebuilt": "^2.1.7",
     "pre-commit": "^1.1.3",
