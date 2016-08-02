@@ -290,6 +290,14 @@ InfernoDOM.render(<StatelessComponent onComponentWillMount={ createdCallback } /
 
 Hooks provide powerful lifecycle events to stateless components, allowing you to build components without being forced to use ES2015 classes.
 
+## Third-party state libraries
+
+Inferno now has bindings available for some of the major state management libraries out there:
+
+- [Redux](https://github.com/trueadm/inferno/tree/master/packages/inferno-redux) via `inferno-redux`
+- [MobX](https://github.com/nightwolfz/mobx-inferno) via `mobx-inferno`
+- [Cerebral](https://github.com/cerebral/cerebral-view-inferno) via `cerebral-view-inferno`
+
 ## Performance
 
 Inferno tries to address two problems with creating UI components:
