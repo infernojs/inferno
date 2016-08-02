@@ -413,6 +413,7 @@
 	}
 
 	// Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
+	// Wildcard support is added on top of that.
 	function exec(url, route, opts) {
 		if ( opts === void 0 ) opts = EMPTY;
 
@@ -506,6 +507,42 @@
 			this.props.history.removeRouter(this);
 		};
 
+		Router.prototype.handleRoutes = function handleRoutes (routes, url, hashbang, wrapperComponent, lastPath) {
+			var this$1 = this;
+
+			routes.sort(pathRankSort);
+
+			for (var i = 0; i < routes.length; i++) {
+				var route = routes[i];
+				var ref = route.attrs;
+				var path = ref.path;
+				var fullPath = lastPath + path;
+				var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
+				var children = toArray$1(route.children);
+
+				if (children) {
+					var subRoute = this$1.handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
+
+					if (!isNull(subRoute)) {
+						return subRoute;
+					}
+				}
+				if (params) {
+					if (wrapperComponent) {
+						return createVNode().setTag(wrapperComponent).setChildren(route).setAttrs({
+							params: params
+						});
+					}
+					return route.setAttrs(Object.assign({}, { params: params }, route.attrs));
+				}
+			}
+			if (!lastPath && wrapperComponent) {
+				this._didRoute = true;
+				return createVNode().setTag(wrapperComponent);
+			}
+			return null;
+		};
+
 		Router.prototype.routeTo = function routeTo (url) {
 			this._didRoute = false;
 			this.setState({ url: url });
@@ -518,7 +555,7 @@
 			var wrapperComponent = this.props.component;
 			var hashbang = this.props.hashbang;
 
-			return handleRoutes(children, url, hashbang, wrapperComponent, '');
+			return this.handleRoutes(children, url, hashbang, wrapperComponent, '');
 		};
 
 		return Router;
@@ -526,36 +563,6 @@
 
 	function toArray$1(children) {
 		return isArray(children) ? children : (children ? [children] : children);
-	}
-
-	function handleRoutes(routes, url, hashbang, wrapperComponent, lastPath) {
-		routes.sort(pathRankSort);
-
-		for (var i = 0; i < routes.length; i++) {
-			var route = routes[i];
-			var ref = route.attrs;
-			var path = ref.path;
-			var fullPath = lastPath + path;
-			var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
-			var children = toArray$1(route.children);
-
-			if (children) {
-				var subRoute = handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
-
-				if (!isNull(subRoute)) {
-					return subRoute;
-				}
-			}
-			if (params) {
-				if (wrapperComponent) {
-					return createVNode().setTag(wrapperComponent).setChildren(route).setAttrs({
-						params: params
-					});
-				}
-				return route.setAttrs(Object.assign({}, { params: params }, route.attrs));
-			}
-		}
-		return !lastPath && wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
 	}
 
 	function Link(props, ref) {
@@ -567,7 +574,7 @@
 		var className = props.className;
 		var to = props.to;
 		var element = createVNode();
-		var href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : history.getCurrentUrl() + to;
+		var href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to;
 
 		if (className) {
 			element.setClassName(className);
@@ -587,8 +594,8 @@
 				onclick: function navigate(e) {
 					e.preventDefault();
 					var target = e.target;
-					window.history.pushState(null, target.textContent, target.href);
-					history.routeTo(target.href)
+					window.history.pushState(null, target.textContent, to);
+					history.routeTo(to);
 				}
 			});
 		}

@@ -30,6 +30,39 @@ export default class Router extends Component {
 		this.props.history.removeRouter(this);
 	}
 
+	handleRoutes(routes, url, hashbang, wrapperComponent, lastPath) {
+		routes.sort(pathRankSort);
+
+		for (let i = 0; i < routes.length; i++) {
+			const route = routes[i];
+			const { path } = route.attrs;
+			const fullPath = lastPath + path;
+			const params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
+			const children = toArray(route.children);
+
+			if (children) {
+				const subRoute = this.handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
+
+				if (!isNull(subRoute)) {
+					return subRoute;
+				}
+			}
+			if (params) {
+				if (wrapperComponent) {
+					return createVNode().setTag(wrapperComponent).setChildren(route).setAttrs({
+						params
+					});
+				}
+				return route.setAttrs(Object.assign({}, { params }, route.attrs));
+			}
+		}
+		if (!lastPath && wrapperComponent) {
+			this._didRoute = true;
+			return createVNode().setTag(wrapperComponent);
+		}
+		return null;
+	}
+
 	routeTo(url) {
 		this._didRoute = false;
 		this.setState({ url });
@@ -42,39 +75,10 @@ export default class Router extends Component {
 		const wrapperComponent = this.props.component;
 		const hashbang = this.props.hashbang;
 
-		return handleRoutes(children, url, hashbang, wrapperComponent, '');
+		return this.handleRoutes(children, url, hashbang, wrapperComponent, '');
 	}
 }
 
 function toArray(children) {
 	return isArray(children) ? children : (children ? [children] : children);
-}
-
-function handleRoutes(routes, url, hashbang, wrapperComponent, lastPath) {
-	routes.sort(pathRankSort);
-
-	for (let i = 0; i < routes.length; i++) {
-		const route = routes[i];
-		const { path } = route.attrs;
-		const fullPath = lastPath + path;
-		const params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
-		const children = toArray(route.children);
-
-		if (children) {
-			const subRoute = handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
-
-			if (!isNull(subRoute)) {
-				return subRoute;
-			}
-		}
-		if (params) {
-			if (wrapperComponent) {
-				return createVNode().setTag(wrapperComponent).setChildren(route).setAttrs({
-					params
-				});
-			}
-			return route.setAttrs(Object.assign({}, { params }, route.attrs));
-		}
-	}
-	return !lastPath && wrapperComponent ? createVNode().setTag(wrapperComponent) : null;
 }

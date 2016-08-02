@@ -9,7 +9,7 @@
         return t('div', null,
             t('h1', null, 'Routing Example - HTML5 history API'),
             t('p', null, `Below are the sub-children components for this "app", 
-                they will show and hide depending on the route. This example uses hashbangs only.`),
+                they will show and hide depending on the route. Note that you need rewrite rule for your webserver to be able to change URL directly without refresh. back / forward and links should work out of box.`),
             t('p', null, 'Some links:'),
             t('ul', null,
                 t('li', null, t(Link, { to: '/foo' }, 'Route to foo')),
@@ -23,7 +23,7 @@
         return (
             t('div', null,
                 t('h2', null, 'I am Foo'),
-                t('p', null, 'I should only appear when you visit #!/foo')
+                t('p', null, 'I should only appear when you visit /foo')
             )
         );
     }
@@ -32,7 +32,7 @@
         return (
             t('div', null,
                 t('h2', null, 'I am Bar'),
-                t('p', null, 'I should only appear when you visit #!/bar')
+                t('p', null, 'I should only appear when you visit /bar')
             )
         );
     }

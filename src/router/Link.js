@@ -4,7 +4,7 @@ import { convertToHashbang } from './utils';
 export default function Link(props, { hashbang, history }) {
 	const { activeClassName, activeStyle, className, to } = props;
 	const element = createVNode();
-	const href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : history.getCurrentUrl() + to;
+	const href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to;
 
 	if (className) {
 		element.setClassName(className);
@@ -24,8 +24,8 @@ export default function Link(props, { hashbang, history }) {
 			onclick: function navigate(e) {
 				e.preventDefault();
 				const target = e.target;
-				window.history.pushState(null, target.textContent, target.href);
-				history.routeTo(target.href);
+				window.history.pushState(null, target.textContent, to);
+				history.routeTo(to);
 			}
 		});
 	}
