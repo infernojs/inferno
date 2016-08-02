@@ -43,9 +43,9 @@ function renderChildren(children, context) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 			const isText = isStringOrNumber(child);
-			const isInvalid = isInvalid(child);
+			const invalid = isInvalid(child);
 
-			if (isText || isInvalid) {
+			if (isText || invalid) {
 				if (insertComment === true) {
 					if (isInvalid(child)) {
 						childrenResult.push('<!--!-->');

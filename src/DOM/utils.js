@@ -218,7 +218,8 @@ export function handleAttachedHooks(hooks, lifecycle, dom) {
 }
 
 export function setValueProperty(nextNode) {
-	const value = nextNode.attrs.value;
+	const value = nextNode._props.value;
+	
 	if (!isNullOrUndef(value)) {
 		nextNode._dom.value = value;
 	}

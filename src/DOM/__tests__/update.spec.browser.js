@@ -1021,25 +1021,8 @@ describe('Update (non-jsx)', () => {
 
 			it('variation 5', () => {
 				const A = [];
-				A[0] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										"",
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
+
+				A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br'))));
 
 				A[1] =  {
 					"tag": "table",
