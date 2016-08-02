@@ -25,13 +25,12 @@ function isActive(path, hashbang) {
 }
 
 function routeTo(url) {
-	let didRoute = false;
 	for (let i = 0; i < routers.length; i++) {
 		if (routers[i].routeTo(url) === true) {
-			didRoute = true;
+			return true;
 		}
 	}
-	return didRoute;
+	return false;
 }
 
 if (isBrowser) {

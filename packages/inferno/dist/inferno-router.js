@@ -610,13 +610,12 @@
 	}
 
 	function routeTo(url) {
-		var didRoute = false;
 		for (var i = 0; i < routers.length; i++) {
 			if (routers[i].routeTo(url) === true) {
-				didRoute = true;
+				return true;
 			}
 		}
-		return didRoute;
+		return false;
 	}
 
 	if (isBrowser) {
