@@ -35,7 +35,7 @@
   }
 
   function isStatefulComponent(obj) {
-  	return obj.prototype.render !== undefined;
+  	return obj.prototype && obj.prototype.render !== undefined;
   }
 
   function isStringOrNumber(obj) {
@@ -996,7 +996,7 @@
 
   	var dom;
   	if (isStatefulComponent(Component)) {
-  		var instance = new Component(props);
+  		var instance = new Component(props, context);
 
   		instance._patch = patch;
   		instance._componentToDOMNodeMap = componentToDOMNodeMap;
@@ -2653,7 +2653,7 @@
   	props = addChildrenToProps(children, props);
 
   	if (isStatefulComponent(Component)) {
-  		var instance = new Component(props);
+  		var instance = new Component(props, context);
   		var childContext = instance.getChildContext();
 
   		if (!isNullOrUndefined(childContext)) {
@@ -2668,7 +2668,7 @@
   		instance._pendingSetState = false;
   		return renderNode(node, context, isRoot);
   	} else {
-  		return renderNode(Component(props), context, isRoot);
+  		return renderNode(Component(props, context), context, isRoot);
   	}
   }
 

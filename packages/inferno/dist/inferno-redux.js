@@ -686,7 +686,7 @@
     				Component.call(this, props, context);
 
     				this.version = version;
-    				this.store = props.store || context.store;
+    				this.store = (props && props.store) || (context && context.store);
 
     				invariant$1(this.store,
     					'Could not find "store" in either the context or ' +

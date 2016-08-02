@@ -35,7 +35,7 @@
 	}
 
 	function isStatefulComponent(obj) {
-		return obj.prototype.render !== undefined;
+		return obj.prototype && obj.prototype.render !== undefined;
 	}
 
 	function isStringOrNumber(obj) {
@@ -756,7 +756,7 @@
 
 		var dom;
 		if (isStatefulComponent(Component)) {
-			var instance = new Component(props);
+			var instance = new Component(props, context);
 
 			instance._patch = patch;
 			instance._componentToDOMNodeMap = componentToDOMNodeMap;
