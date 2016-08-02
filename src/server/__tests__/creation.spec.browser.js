@@ -1,12 +1,10 @@
 import renderToString from './../renderToString';
 import Component from './../../component/es2015';
+import createElement from './../../core/createElement';
 
 class StatefulComponent extends Component {
 	render() {
-		return {
-			tag: 'span',
-			children: `stateless ${ this.props.value }!`
-		};
+		return createElement('span', null, `stateless ${ this.props.value }!`);
 	}
 }
 
@@ -14,194 +12,63 @@ describe('SSR Creation - (non-JSX)', () => {
 	[
 		{
 			description: 'should render div with span child',
-			template: () => {
-				return {
-					tag: 'div',
-					children: {
-						dom: null,
-						tag: 'span'
-					}
-				};
-			},
+			template: () => createElement('div', null, createElement('span')),
 			result: '<div><span></span></div>'
 		}, {
 			description: 'should render div with span child and styling',
-			template: () => {
-				return {
-					tag: 'div',
-					children: {
-						dom: null,
-						tag: 'span',
-						style: 'border-left: 10px;'
-					}
-				};
-			},
+			template: () => createElement('div', null, createElement('span', { style: 'border-left: 10px;' })),
 			result: '<div><span style="border-left: 10px;"></span></div>'
 		}, {
 			description: 'should render div with span child and styling #2',
-			template: () => {
-				return {
-					tag: 'div',
-					children: {
-						dom: null,
-						tag: 'span',
-						style: { borderLeft: 10 }
-					}
-				};
-			},
+			template: () => createElement('div', null, createElement('span', { style: { borderLeft: 10 } })),
 			result: '<div><span style="border-left:10px;"></span></div>'
 		}, {
 			description: 'should render div with span child and styling #3',
-			template: () => {
-				return {
-					tag: 'div',
-					children: {
-						dom: null,
-						tag: 'span',
-						style: { fontFamily: 'Arial' }
-					}
-				};
-			},
+			template: () => createElement('div', null, createElement('span', { style: { fontFamily: 'Arial' } })),
 			result: '<div><span style="font-family:Arial;"></span></div>'
 		}, {
 			description: 'should render div with span child (with className)',
-			template: () => {
-				return {
-					tag: 'div',
-					className: 'foo',
-					children: {
-						dom: null,
-						className: 'bar',
-						tag: 'span'
-					}
-				};
-			},
+			template: () => createElement('div', { className: 'foo' }, createElement('span', { className: 'bar' })),
 			result: '<div class="foo"><span class="bar"></span></div>'
 		}, {
 			description: 'should render div with text child',
-			template: () => {
-				return {
-					tag: 'div',
-					children: 'Hello world'
-				};
-			},
+			template: () => createElement('div', null, 'Hello world'),
 			result: '<div>Hello world</div>'
 		}, {
 			description: 'should render div with text child (XSS script attack)',
-			template: () => {
-				return {
-					tag: 'div',
-					children: 'Hello world <img src="x" onerror="alert(\'XSS\')">'
-				};
-			},
+			template: () => createElement('div', null, 'Hello world <img src="x" onerror="alert(\'XSS\')">'),
 			result: '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;XSS&#039;)&quot;&gt;</div>'
 		}, {
 			description: 'should render div with text children',
-			template: () => {
-				return {
-					tag: 'div',
-					children: [ 'Hello', ' world' ]
-				};
-			},
+			template: () => createElement('div', null, 'Hello', ' world'),
 			result: '<div>Hello<!----> world</div>'
 		}, {
 			description: 'should render a void element correct',
-			template: () => {
-				return {
-					tag: 'input'
-				};
-			},
+			template: () => createElement('input'),
 			result: '<input>'
 		}, {
 			description: 'should render div with node children',
-			template: () => {
-				return {
-					tag: 'div',
-					children: [
-						{
-							tag: 'span',
-							children: 'Hello'
-						},
-						{
-							tag: 'span',
-							children: ' world!'
-						}
-					]
-				};
-			},
+			template: () => createElement('div', null, createElement('span', null, 'Hello'), createElement('span', null, ' world!')),
 			result: '<div><span>Hello</span><span> world!</span></div>'
 		}, {
 			description: 'should render div with node children #2',
-			template: () => {
-				return {
-					tag: 'div',
-					children: [
-						{
-							tag: 'span',
-							children: 'Hello',
-							attrs: {
-								id: '123'
-							}
-						},
-						{
-							tag: 'span',
-							children: ' world!',
-							className: 'foo'
-						}
-					]
-				};
-			},
+			template: () => createElement('div', null, createElement('span', { id: '123' }, 'Hello'), createElement('span', { className: 'foo' }, ' world!')),
 			result: '<div><span id="123">Hello</span><span class="foo"> world!</span></div>'
 		}, {
 			description: 'should render div with falsy children',
-			template: () => {
-				return {
-					tag: 'div',
-					children: 0
-				};
-			},
+			template: () => createElement('div', null, 0),
 			result: '<div>0</div>'
 		}, {
 			description: 'should render div with dangerouslySetInnerHTML',
-			template: () => {
-				return {
-					tag: 'div',
-					attrs: {
-						dangerouslySetInnerHTML: { __html: '<span>test</span>' }
-					}
-				};
-			},
+			template: () => createElement('div', { dangerouslySetInnerHTML: { __html: '<span>test</span>' } }),
 			result: '<div><span>test</span></div>'
 		}, {
 			description: 'should render a stateful component',
-			template: (value) => {
-				return {
-					tag: 'div',
-					children: {
-						tag: StatefulComponent,
-						attrs: {
-							value
-						}
-					}
-				};
-			},
+			template: (value) => createElement('div', null, createElement(StatefulComponent, { value })),
 			result: '<div><span>stateless foo!</span></div>'
 		}, {
 			description: 'should render a stateless component',
-			template: (value) => {
-				return {
-					tag: 'div',
-					children: {
-						tag: ({ value }) => ({
-							tag: 'span',
-							children: `stateless ${ value }!`
-						}),
-						attrs: {
-							value
-						}
-					}
-				};
-			},
+			template: (value) => createElement('div', null, createElement(({ value }) => createElement('span', null, `stateless ${ value }!`))),
 			result: '<div><span>stateless foo!</span></div>'
 		}
 	].forEach(test => {
@@ -209,6 +76,7 @@ describe('SSR Creation - (non-JSX)', () => {
 			const container = document.createElement('div');
 			const vDom = test.template('foo');
 			const output = renderToString(vDom, true);
+
 			document.body.appendChild(container);
 			container.innerHTML = output;
 			expect(output).to.equal(test.result);

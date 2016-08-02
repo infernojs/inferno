@@ -11,11 +11,15 @@ import {
 } from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
 import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
+import {
+	isVElement,
+	isVComponent
+} from './../core/shapes';
 
-function renderComponent(Component, props, children, context, isRoot) {
-	props = addChildrenToProps(children, props);
+function renderComponent(vComponent, isRoot, context) {
+	const Component = vComponent._component;
 
-	if (isStatefulComponent(Component)) {
+	if (isStatefulComponent(vComponent)) {
 		const instance = new Component(props);
 		const childContext = instance.getChildContext();
 
@@ -98,52 +102,47 @@ function renderStyleToString(style) {
 	}
 }
 
+function renderVElement(vElement, isRoot, context) {
+	const tag = vElement._tag;
+	const outputProps = [];
+	const props = vElement._props;
+	let propsKeys = (props && Object.keys(props)) || [];
+	let html = '';
+
+	for (let i = 0; i < propsKeys.length; i++) {
+		const prop = propsKeys[i];
+		const value = props[prop];
+
+		if (prop === 'dangerouslySetInnerHTML') {
+			html = value.__html;
+		} else if (prop === 'style') {
+			outputProps.push('style="' + renderStyleToString(props.style) + '"');
+		} else if (prop === 'className') {
+			outputProps.push('class="' + value + '"');
+		} else {
+			if (isStringOrNumber(value)) {
+				outputProps.push(escapeAttr(prop) + '="' + escapeAttr(value) + '"');
+			} else if (isTrue(value)) {
+				outputProps.push(escapeAttr(prop));
+			}
+		}
+	}
+	if (isRoot) {
+		outputProps.push('data-infernoroot');
+	}
+	if (isVoidElement(tag)) {
+		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps.join(' ') : '' }>`;
+	} else {
+		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps.join(' ') : '' }>${ html || renderChildren(vElement._children, context) }</${ tag }>`;
+	}
+}
+
 function renderNode(node, context, isRoot) {
 	if (!isInvalid(node)) {
-		const bp = node.bp;
-		const tag = node.tag || (bp && bp.tag);
-		const outputAttrs = [];
-		const className = node.className;
-		const style = node.style;
-
-		if (isFunction(tag)) {
-			return renderComponent(tag, node.attrs, node.children, context, isRoot);
-		}
-		if (!isNullOrUndef(className)) {
-			outputAttrs.push('class="' + escapeAttr(className) + '"');
-		}
-		if (!isNullOrUndef(style)) {
-			outputAttrs.push('style="' + renderStyleToString(style) + '"');
-		}
-		const attrs = node.attrs;
-		let attrKeys = (attrs && Object.keys(attrs)) || [];
-		let html = '';
-
-		if (bp && bp.hasAttrs === true) {
-			attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
-		}
-		attrKeys.forEach((attrsKey, i) => {
-			const attr = attrKeys[i];
-			const value = attrs[attr];
-
-			if (attr === 'dangerouslySetInnerHTML') {
-				html = value.__html;
-			} else {
-				if (isStringOrNumber(value)) {
-					outputAttrs.push(escapeAttr(attr) + '="' + escapeAttr(value) + '"');
-				} else if (isTrue(value)) {
-					outputAttrs.push(escapeAttr(attr));
-				}
-			}
-		});
-
-		if (isRoot) {
-			outputAttrs.push('data-infernoroot');
-		}
-		if (isVoidElement(tag)) {
-			return `<${ tag }${ outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '' }>`;
-		} else {
-			return `<${ tag }${ outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '' }>${ html || renderChildren(node.children, context) }</${ tag }>`;
+		if (isVElement(node)) {
+			return renderVElement(node, isRoot, context);
+		} else if (isVComponent(node)) {
+			return renderComponent(node, isRoot, context);
 		}
 	}
 }

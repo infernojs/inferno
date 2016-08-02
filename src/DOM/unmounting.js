@@ -6,7 +6,8 @@ import {
 	isVElement,
 	isVComponent,
 	isVTemplate,
-	isVText
+	isVText,
+	isVPlaceholder
 } from '../core/shapes';
 import { poolVTemplate, recyclingEnabled } from './templates';
 
@@ -21,6 +22,14 @@ export function unmount(input, parentDom, lifecycle) {
 		unmountVComponent(input, parentDom, lifecycle);
 	} else if (isVText(input)) {
 		unmountVText(input, parentDom);
+	} else if (isVPlaceholder(input)) {
+		unmountVPlaceholder(input, parentDom);
+	}
+}
+
+function unmountVPlaceholder(vPlaceholder, parentDom) {
+	if (parentDom) {
+		removeChild(parentDom, vPlaceholder._dom);
 	}
 }
 

@@ -1023,77 +1023,9 @@ describe('Update (non-jsx)', () => {
 				const A = [];
 
 				A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br'))));
-
-				A[1] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										[
-											"text 1",
-											"text a"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
-
-				A[2] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										[
-											"text 2"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
-
-				A[3] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										[
-											{
-												"tag": "br"
-											},
-											"text 3"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
-
+				A[1] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', 'text a', createElement('br'))));
+				A[2] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br'))));
+				A[3] = createElement('table', null, createElement('tr', null, createElement('td', null, [ createElement('br'), 'text 3' ], createElement('br'))));
 				render(A[0], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
 				render(A[1], container);
