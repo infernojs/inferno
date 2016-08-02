@@ -1,4 +1,4 @@
-const EMPTY = {};
+export const EMPTY = {};
 
 function segmentize(url) {
 	return strip(url).split('/');

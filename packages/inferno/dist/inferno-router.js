@@ -391,7 +391,7 @@
 		return Route;
 	}(Component));
 
-	var EMPTY$1 = {};
+	var EMPTY = {};
 
 	function segmentize(url) {
 		return strip(url).split('/');
@@ -414,7 +414,7 @@
 
 	// Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
 	function exec(url, route, opts) {
-		if ( opts === void 0 ) opts = EMPTY$1;
+		if ( opts === void 0 ) opts = EMPTY;
 
 		var reg = /(?:\?([^#]*))?(#.*)?$/,
 			c = url.match(reg),
@@ -435,7 +435,7 @@
 		for (var i$1 = 0; i$1 < max; i$1++) {
 			if (route[i$1] && route[i$1].charAt(0) === ':') {
 				var param = route[i$1].replace(/(^\:|[+*?]+$)/g, ''),
-					flags = (route[i$1].match(/[+*?]+$/) || EMPTY$1)[0] || '',
+					flags = (route[i$1].match(/[+*?]+$/) || EMPTY)[0] || '',
 					plus = ~flags.indexOf('+'),
 					star = ~flags.indexOf('*'),
 					val = url[i$1] || '';
@@ -465,8 +465,8 @@
 	}
 
 	function pathRankSort(a, b) {
-		var aAttr = a.attrs || EMPTY$1,
-			bAttr = b.attrs || EMPTY$1;
+		var aAttr = a.attrs || EMPTY,
+			bAttr = b.attrs || EMPTY;
 		var diff = rank(bAttr.path) - rank(aAttr.path);
 		return diff || (bAttr.path.length - aAttr.path.length);
 	}
@@ -567,7 +567,7 @@
 		var className = props.className;
 		var to = props.to;
 		var element = createVNode();
-		var href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to;
+		var href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : history.getCurrentUrl() + to;
 
 		if (className) {
 			element.setClassName(className);
@@ -580,6 +580,17 @@
 			if (activeStyle) {
 				element.setStyle(Object.assign({}, props.style, activeStyle));
 			}
+		}
+
+		if (!hashbang) {
+			element.setEvents({
+				onclick: function navigate(e) {
+					e.preventDefault();
+					var target = e.target;
+					window.history.pushState(null, target.textContent, target.href);
+					history.routeTo(target.href)
+				}
+			});
 		}
 
 		return element.setTag('a').setAttrs({ href: href }).setChildren(props.children);
@@ -631,7 +642,8 @@
 		},
 		getCurrentUrl: getCurrentUrl,
 		getHashbangRoot: getHashbangRoot,
-		isActive: isActive
+		isActive: isActive,
+		routeTo: routeTo
 	};
 
 	var index = {

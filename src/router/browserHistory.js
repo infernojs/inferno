@@ -1,4 +1,5 @@
 import { isBrowser } from '../core/utils';
+import { EMPTY } from './utils';
 
 const routers = [];
 
@@ -46,5 +47,6 @@ export default {
 	},
 	getCurrentUrl,
 	getHashbangRoot,
-	isActive
+	isActive,
+	routeTo
 };

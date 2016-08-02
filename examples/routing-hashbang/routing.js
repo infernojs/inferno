@@ -7,7 +7,7 @@
 
     function App({ children }) {
         return t('div', null,
-            t('h1', null, 'Routing Example'),
+            t('h1', null, 'Routing Example - Hashbang'),
             t('p', null, `Below are the sub-children components for this "app", 
                 they will show and hide depending on the route. This example uses hashbangs only.`),
             t('p', null, 'Some links:'),
