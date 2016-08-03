@@ -46,7 +46,7 @@ export function mount(input, parentDom, lifecycle, context, instance, isSVG) {
 		const normalisedInput = normalise(input);
 
 		if (input !== normalisedInput) {
-			mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
+			return mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
 		} else {
 			throw new Error(`Inferno Error: invalid object "${ typeof input }" passed to mount()`);
 		}
