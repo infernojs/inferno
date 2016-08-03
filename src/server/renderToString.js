@@ -18,6 +18,7 @@ import {
 
 function renderComponent(vComponent, isRoot, context) {
 	const Component = vComponent._component;
+	const props = vComponent._props;
 
 	if (isStatefulComponent(vComponent)) {
 		const instance = new Component(props);

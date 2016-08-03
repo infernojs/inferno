@@ -8,6 +8,8 @@ class StatefulComponent extends Component {
 	}
 }
 
+const FunctionalComponent = ({ value }) => createElement('span', null, `stateless ${ value }!`);
+
 describe('SSR Creation - (non-JSX)', () => {
 	[
 		{
@@ -68,7 +70,7 @@ describe('SSR Creation - (non-JSX)', () => {
 			result: '<div><span>stateless foo!</span></div>'
 		}, {
 			description: 'should render a stateless component',
-			template: (value) => createElement('div', null, createElement(({ value }) => createElement('span', null, `stateless ${ value }!`))),
+			template: (value) => createElement('div', null, createElement(FunctionalComponent, { value })),
 			result: '<div><span>stateless foo!</span></div>'
 		}
 	].forEach(test => {
