@@ -261,7 +261,7 @@ export function setValueProperty(nextNode) {
 }
 
 export function setFormElementProperties(nextTag, nextNode) {
-	if (nextTag === 'input') {
+	if (nextTag === 'input' && nextNode.attrs) {
 		const inputType = nextNode.attrs.type;
 		if (inputType === 'text') {
 			setValueProperty(nextNode);
