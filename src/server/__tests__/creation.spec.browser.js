@@ -1,5 +1,6 @@
 import renderToString from './../renderToString';
 import Component from './../../component/es2015';
+import { createBlueprint } from './../../core/shapes';
 
 class StatefulComponent extends Component {
 	render() {
@@ -215,5 +216,15 @@ describe('SSR Creation - (non-JSX)', () => {
 			document.body.removeChild(container);
 		});
 	});
+	it('should not duplicate attrs', () => {
+		const tpl = createBlueprint({
+			tag: 'div',
+			attrs: { id: 'test' }
+		});
+		const output1 = renderToString(tpl());
+		const output2 = renderToString(tpl());
+		const output3 = renderToString(tpl());
 
+		expect(output1 === output2 && output1 === output3).to.equal(true);
+	});
 });

@@ -120,7 +120,7 @@ function renderNode(node, context, isRoot) {
 		let html = '';
 
 		if (bp && bp.hasAttrs === true) {
-			attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
+			attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
 		}
 		attrKeys.forEach((attrsKey, i) => {
 			const attr = attrKeys[i];
