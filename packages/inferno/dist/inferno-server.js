@@ -1,5 +1,5 @@
 /*!
- * inferno-server v0.7.24
+ * inferno-server v0.7.25
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -265,7 +265,7 @@
 			var html = '';
 
 			if (bp && bp.hasAttrs === true) {
-				attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
+				attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
 			}
 			attrKeys.forEach(function (attrsKey, i) {
 				var attr = attrKeys[i];

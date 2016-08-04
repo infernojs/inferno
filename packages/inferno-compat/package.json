@@ -1,27 +1,27 @@
 {
-  "name": "inferno-compat",
-  "version": "0.7.24",
-  "license": "MIT",
-  "description": "Provides a compatibility with React codebases",
-  "author": {
-    "name": "Dominic Gannaway",
-    "email": "dg@domgan.com"
-  },
-  "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
-  },
-  "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-compat.js",
-  "keywords": [
-    "babel",
-    "react",
-    "inferno",
-    "framework",
-    "interfaces",
-    "user interfaces"
-  ],
-  "dependencies": {
-    "inferno": "^0.7.24",
-    "proptypes": "^0.14.3"
-  }
+	"name": "inferno-compat",
+	"version": "0.7.25",
+	"license": "MIT",
+	"description": "Provides a compatibility with React codebases",
+	"author": {
+		"name": "Dominic Gannaway",
+		"email": "dg@domgan.com"
+	},
+	"bugs": {
+		"url": "https://github.com/trueadm/inferno/issues"
+	},
+	"homepage": "https://github.com/trueadm/inferno#readme",
+	"main": "inferno-compat.js",
+	"keywords": [
+		"babel",
+		"react",
+		"inferno",
+		"framework",
+		"interfaces",
+		"user interfaces"
+	],
+	"dependencies": {
+		"inferno": "^0.7.25",
+		"proptypes": "^0.14.3"
+	}
 }

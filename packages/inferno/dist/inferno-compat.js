@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v0.7.24
+ * inferno-compat v0.7.25
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -719,7 +719,7 @@
   }
 
   function setFormElementProperties(nextTag, nextNode) {
-  	if (nextTag === 'input') {
+  	if (nextTag === 'input' && nextNode.attrs) {
   		var inputType = nextNode.attrs.type;
   		if (inputType === 'text') {
   			setValueProperty(nextNode);
@@ -745,9 +745,9 @@
   		var normalisedInput = normalise(input);
 
   		if (input !== normalisedInput) {
-  			mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
+  			return mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
   		} else {
-  			throw new Error(("Inferno Error: invalid object \"" + (typeof input) + "\"\" passed to mount()"));
+  			throw new Error(("Inferno Error: invalid object \"" + (typeof input) + "\" passed to mount()"));
   		}
   	}
   }
@@ -2757,7 +2757,7 @@
   		var html = '';
 
   		if (bp && bp.hasAttrs === true) {
-  			attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
+  			attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
   		}
   		attrKeys.forEach(function (attrsKey, i) {
   			var attr = attrKeys[i];
@@ -2794,10 +2794,6 @@
   }
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
-
-  function interopDefault(ex) {
-  	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
-  }
 
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -3135,7 +3131,7 @@
 
   });
 
-  var PropTypes = interopDefault(index$1);
+  var PropTypes = (index$1 && typeof index$1 === 'object' && 'default' in index$1 ? index$1['default'] : index$1);
 
   function unmountComponentAtNode(container) {
   	render(null, container);

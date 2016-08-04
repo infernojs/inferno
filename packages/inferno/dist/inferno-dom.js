@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v0.7.24
+ * inferno-dom v0.7.25
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -479,7 +479,7 @@
 	}
 
 	function setFormElementProperties(nextTag, nextNode) {
-		if (nextTag === 'input') {
+		if (nextTag === 'input' && nextNode.attrs) {
 			var inputType = nextNode.attrs.type;
 			if (inputType === 'text') {
 				setValueProperty(nextNode);
@@ -505,9 +505,9 @@
 			var normalisedInput = normalise(input);
 
 			if (input !== normalisedInput) {
-				mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
+				return mount(normalisedInput, parentDom, lifecycle, context, instance, isSVG);
 			} else {
-				throw new Error(("Inferno Error: invalid object \"" + (typeof input) + "\"\" passed to mount()"));
+				throw new Error(("Inferno Error: invalid object \"" + (typeof input) + "\" passed to mount()"));
 			}
 		}
 	}

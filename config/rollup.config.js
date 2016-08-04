@@ -124,7 +124,6 @@ function createBundle({moduleGlobal, moduleName, moduleEntry }, path) {
 	const entry = p.resolve(moduleEntry);
 	const dest  = p.resolve(`${ path }${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
 
-	console.log(dest)
 	const bundleConfig = {
 		dest,
 		format: 'umd',

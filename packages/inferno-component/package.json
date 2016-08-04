@@ -1,32 +1,32 @@
 {
-  "name": "inferno-component",
-  "version": "0.7.24",
-  "license": "MIT",
-  "description": "Provides ES2015 stateful components (with lifecycle events) to Inferno",
-  "author": {
-    "name": "Dominic Gannaway",
-    "email": "dg@domgan.com"
-  },
-  "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
-  },
-  "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-component.js",
-  "keywords": [
-    "babel",
-    "react",
-    "inferno",
-    "framework",
-    "interfaces",
-    "user interfaces",
-    "html",
-    "renderToString",
-    "server",
-    "dom",
-    "browser",
-    "rollup"
-  ],
-  "dependencies": {
-    "inferno": "^0.7.24"
-  }
+	"name": "inferno-component",
+	"version": "0.7.25",
+	"license": "MIT",
+	"description": "Provides ES2015 stateful components (with lifecycle events) to Inferno",
+	"author": {
+		"name": "Dominic Gannaway",
+		"email": "dg@domgan.com"
+	},
+	"bugs": {
+		"url": "https://github.com/trueadm/inferno/issues"
+	},
+	"homepage": "https://github.com/trueadm/inferno#readme",
+	"main": "inferno-component.js",
+	"keywords": [
+		"babel",
+		"react",
+		"inferno",
+		"framework",
+		"interfaces",
+		"user interfaces",
+		"html",
+		"renderToString",
+		"server",
+		"dom",
+		"browser",
+		"rollup"
+	],
+	"dependencies": {
+		"inferno": "^0.7.25"
+	}
 }

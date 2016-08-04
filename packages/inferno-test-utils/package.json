@@ -1,27 +1,27 @@
 {
-  "name": "inferno-test-utils",
-  "version": "0.7.24",
-  "license": "MIT",
-  "description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
-  "author": {
-    "name": "Dominic Gannaway",
-    "email": "dg@domgan.com"
-  },
-  "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
-  },
-  "homepage": "https://github.com/trueadm/inferno#readme",
-  "keywords": [
-    "babel",
-    "react",
-    "inferno",
-    "framework",
-    "interfaces",
-    "user interfaces"
-  ],
-  "dependencies": {
-    "inferno": "^0.7.24"
-  },
-  "main": "inferno-test-utils.js",
-  "repository": "https://github.com/trueadm/inferno"
+	"name": "inferno-test-utils",
+	"version": "0.7.25",
+	"license": "MIT",
+	"description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
+	"author": {
+		"name": "Dominic Gannaway",
+		"email": "dg@domgan.com"
+	},
+	"bugs": {
+		"url": "https://github.com/trueadm/inferno/issues"
+	},
+	"homepage": "https://github.com/trueadm/inferno#readme",
+	"keywords": [
+		"babel",
+		"react",
+		"inferno",
+		"framework",
+		"interfaces",
+		"user interfaces"
+	],
+	"dependencies": {
+		"inferno": "^0.7.25"
+	},
+	"main": "inferno-test-utils.js",
+	"repository": "https://github.com/trueadm/inferno"
 }
