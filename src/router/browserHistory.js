@@ -16,13 +16,16 @@ function getHashbangRoot() {
 }
 
 function isActive(path, hashbang) {
-	if (hashbang) {
-		const currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
-		const matchURL = currentURL.match(/#!(.*)/);
-		const matchHash = matchURL && typeof matchURL[1] !== 'undefined' && (matchURL[1] || '/');
-		return matchHash === path;
+	if (isBrowser) {
+		if (hashbang) {
+			const currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
+			const matchURL = currentURL.match(/#!(.*)/);
+			const matchHash = matchURL && typeof matchURL[1] !== 'undefined' && (matchURL[1] || '/');
+			return matchHash === path;
+		}
+		return location.pathname === path;
 	}
-	return location.pathname === path;
+	return false;
 }
 
 function routeTo(url) {
