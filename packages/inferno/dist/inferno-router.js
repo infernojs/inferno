@@ -618,13 +618,16 @@
 	}
 
 	function isActive(path, hashbang) {
-		if (hashbang) {
-			var currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
-			var matchURL = currentURL.match(/#!(.*)/);
-			var matchHash = matchURL && typeof matchURL[1] !== 'undefined' && (matchURL[1] || '/');
-			return matchHash === path;
+		if (isBrowser) {
+			if (hashbang) {
+				var currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
+				var matchURL = currentURL.match(/#!(.*)/);
+				var matchHash = matchURL && typeof matchURL[1] !== 'undefined' && (matchURL[1] || '/');
+				return matchHash === path;
+			}
+			return location.pathname === path;
 		}
-		return location.pathname === path;
+		return false;
 	}
 
 	function routeTo(url) {
