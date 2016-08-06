@@ -3,7 +3,7 @@ const glob = require('glob');
 const path = require('path');
 
 const testFiles = glob.sync('./src/**/*__tests__*/**/*spec.browser.js')
-	// .concat(glob.sync('./src/**/*__tests__*/**/*spec.jsx.js'))
+	.concat(glob.sync('./src/**/*__tests__*/**/*spec.jsx.js'))
 	.concat(glob.sync('./src/**/*__tests__*/**/*spec.ssr.js'));
 
 module.exports = {

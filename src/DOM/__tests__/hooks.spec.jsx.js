@@ -1,10 +1,17 @@
 import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
-import { createBlueprint } from './../../core/shapes';
+import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
+import { createTemplateReducers } from './../../DOM/templates';
+
 const sinon = require('sinon/pkg/sinon');
 
 const Inferno = {
-	createBlueprint
+	createVTemplate,
+	createVElement,
+	createVComponent
+};
+const InfernoDOM = {
+	createTemplateReducers
 };
 
 describe('Components (JSX)', () => {

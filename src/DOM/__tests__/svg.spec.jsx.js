@@ -1,9 +1,15 @@
 import { render } from './../rendering';
-import { createBlueprint } from './../../core/shapes';
 import compareInnerHTML from './../../../tools/innerHTML';
+import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
+import { createTemplateReducers } from './../../DOM/templates';
 
 const Inferno = {
-	createBlueprint
+	createVTemplate,
+	createVElement,
+	createVComponent
+};
+const InfernoDOM = {
+	createTemplateReducers
 };
 
 describe('createTree - SVG (JSX)', () => {

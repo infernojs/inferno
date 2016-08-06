@@ -1,11 +1,16 @@
 import { render } from './../rendering';
 import innerHTML from './../../../tools/innerHTML';
-import { createBlueprint } from './../../core/shapes';
 import createElement from './../../core/createElement';
-
+import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
+import { createTemplateReducers } from './../../DOM/templates';
 
 const Inferno = {
-	createBlueprint
+	createVTemplate,
+	createVElement,
+	createVComponent
+};
+const InfernoDOM = {
+	createTemplateReducers
 };
 
 describe('Elements (JSX)', () => {

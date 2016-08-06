@@ -19,9 +19,10 @@ import {
 	selectValue,
 	handleAttachedHooks,
 	insertOrAppend,
-	normaliseChild,
+	normalise,
 	isPropertyOfElement,
-	namespaces
+	namespaces,
+	setTextContent
 } from './utils';
 import {
 	isVElement,
@@ -108,7 +109,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 				patch = patchVariableAsChildren(children._pointer, isSVG, childrenType);
 				unmount = unmountVariableAsChildren(children._pointer, childrenType);
 			} else {
-				// TODO
+				debugger;
 			}
 		} else if (isVText(vNode)) {
 			const text = vNode._text;
@@ -119,7 +120,9 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 				patch = combinePatchTo2(nodeIndex, patchVariableAsText(text._pointer));
 				unmount = unmountVariableAsText(text._pointer);
 			} else {
-				// TODO
+				mount = mountDOMNodeFromTemplate(document.createTextNode(text), isRoot, true);
+				patch = null;
+				unmount = null;
 			}
 		} else if (isVElement(vNode)) {
 			const mounters = [];
@@ -180,10 +183,11 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 
 			if (!isInvalid(children)) {
 				if (isStringOrNumber(children)) {
-					// debugger;
+					setTextContent(dom, children);
+					deepClone = true;
 				} else if (isArray(children)) {
 					for (let i = 0; i < children.length; i++) {
-						const templateReducers = createTemplateReducers(children[i], false, offset, dom, isSVG, false, vNode._childrenType);
+						const templateReducers = createTemplateReducers(normalise(children[i]), false, offset, dom, isSVG, false, vNode._childrenType);
 
 						if (!isInvalid(templateReducers)) {
 							mounters.push(templateReducers.mount);
@@ -202,7 +206,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					if (nodeIndex === NULL_INDEX && isVariable(children)) {
 						nodeIndex = offset.length++;
 					}
-					const templateReducers = createTemplateReducers(children, false, offset, dom, isSVG, true, vNode._childrenType);
+					const templateReducers = createTemplateReducers(normalise(children), false, offset, dom, isSVG, true, vNode._childrenType);
 
 					if (!isInvalid(templateReducers)) {
 						mounters.push(templateReducers.mount);

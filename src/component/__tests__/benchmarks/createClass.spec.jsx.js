@@ -1,9 +1,15 @@
 import { render } from './../../../DOM/rendering';
 import createClass from './../../../component/createClass';
-import { createBlueprint } from './../../../core/shapes';
+import { createVTemplate, createVElement, createVComponent } from './../../../core/shapes';
+import { createTemplateReducers } from './../../../DOM/templates';
 
 const Inferno = {
-	createBlueprint
+	createVTemplate,
+	createVElement,
+	createVComponent
+};
+const InfernoDOM = {
+	createTemplateReducers
 };
 
 function runBenchmark(container) {

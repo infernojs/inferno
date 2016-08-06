@@ -1059,94 +1059,10 @@ describe('Update (non-jsx)', () => {
 
 			it('variation 7', () => {
 				const A = [];
-				A[0] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										"",
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
-
-				A[1] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										[
-											"text 1"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
-
-				A[2] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										[
-											"text 2"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
-
-				A[3] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"children": [
-								{
-									"tag": "td",
-									"children": [
-										[
-											{
-												"tag": "br"
-											},
-											"text 3"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
+				A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br'))));
+				A[1] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', createElement('br'))));
+				A[2] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br'))));
+				A[3] = createElement('table', null, createElement('tr', null, createElement('td', null, [createElement('br')], 'text 3', createElement('br'))));
 
 				render(A[0], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
@@ -1163,89 +1079,21 @@ describe('Update (non-jsx)', () => {
 		describe('KEYED updates', () => {
 			it('variation-1', () => {
 				function A() {
-					return {
-						"tag": "div",
-						"children": {
-							"tag": "div",
-							"children": {
-								"tag": "table",
-								"children": [
-									{
-										"tag": "tr",
-										"key": "row1",
-										"children": [
-											{
-												"tag": "td",
-												"key": "td1",
-												"children": "Text"
-											}
-
-										],
-										"dom": null
-									}
-								]
-							}
-						},
-						"dom": null
-					}
+					return createElement('div', null, createElement('div', null, createElement('table', null,
+						createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, 'Text'))
+					)));
 				}
 
 				function B() {
-					return {
-						"tag": "div",
-						"children": {
-							"tag": "div",
-							"children": {
-								"tag": "table",
-								"children": [
-									{
-										"tag": "tr",
-										"key": "row1",
-										"children": [
-											{
-												"tag": "td",
-												"key": "td1",
-												"children": [
-													"bar"
-												]
-											}
-										],
-										"dom": null
-									}
-								]
-							}
-						},
-						"dom": null
-					}
+					return createElement('div', null, createElement('div', null, createElement('table', null,
+						createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, 'bar'))
+					)));
 				}
 
 				function C() {
-					return {
-						"tag": "div",
-						"children": {
-							"tag": "div",
-							"children": {
-								"tag": "table",
-								"children": [
-									{
-										"tag": "tr",
-										"key": "row1",
-										"children": [
-											{
-												"tag": "td",
-												"key": "td1",
-												"children": [
-													"text1"
-												]
-											}
-										],
-										"dom": null
-									}
-								]
-							}
-						},
-						"dom": null
-					}
+					return createElement('div', null, createElement('div', null, createElement('table', null,
+						createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, 'text1'))
+					)));
 				}
 
 				render(A(), container);
@@ -1257,97 +1105,17 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('variation -2', () => {
-				const A={
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"children": [
-										{
-											"tag": "td",
-											"key": "td1",
-											"children": [
-												"text",
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
-				const B = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"children": [
-										{
-											"tag": "td",
-											"key": "td1",
-											"children": [
-												[
-													"text"
-												]
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
-				const C={
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"children": [
-										{
-											"tag": "td",
-											"key": "td1",
-											"children": [
-												[
-													"value"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const A = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, [ 'text', createElement('br') ]))
+				)));
+
+				const B = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, ['text']))
+				)));
+
+				const C = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, [ 'value', createElement('br') ]))
+				)));
 
 				render(A, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
@@ -1358,107 +1126,27 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('variation 3', () => {
-				const A = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table"
-						}
-					},
-					"dom": null
-				};
-				const B = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"dom": null
-								},
-								{
-									"tag": "tr",
-									"key": "row2",
-									"children": [
-
-										{
-											"tag": "td",
-											"key": "td2-1",
-											"children": [
-												[
-													"A"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										},
-										{
-											"tag": "td",
-											"key": "td2-2",
-											"children": [
-												[
-													"B"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								},
-								{
-									"tag": "tr",
-									"key": "row3",
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
-				const C = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"dom": null
-								},
-								{
-									"tag": "tr",
-									"key": "row2",
-									"children": [
-										{
-											"tag": "td",
-											"key": "td2-2",
-											"children": [
-												"",
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const A = createElement('div', null, createElement('div', null, createElement('table')));
+				const B = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }),
+					createElement('tr', { key: 'row2' },
+						createElement('td', { key: 'td2-1' },
+							'A', createElement('br')
+						),
+						createElement('td', { key: 'td2-2' },
+							'B', createElement('br')
+						)
+					),
+					createElement('tr', { key: 'row3' })
+				)));
+				const C = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }),
+					createElement('tr', { key: 'row2' },
+						createElement('td', { key: 'td2-2' },
+							'', createElement('br')
+						)
+					)
+				)));
 
 				render(A, container);
 				expect(container.innerHTML).to.equal('<div><div><table></table></div></div>');
@@ -1469,102 +1157,26 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('variation 4', () => {
-				const A = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"children": [
-										{
-											"tag": "td",
-											"key": "td1-1",
-											"children": [
-												[
-													"text 1"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const A = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' },
+						'text 1',
+						createElement('br')
+					))
+				)));
 
-				const B = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"children": [
-										{
-											"tag": "td",
-											"key": "td1-1",
-											"children": [
-												"",
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const B = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' },
+						'',
+						createElement('br')
+					))
+				)));
 
-				const C = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"children": [
-										{
-											"tag": "td",
-											"key": "td1-1",
-											"children": [
-												[
-													"text 2"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const C = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' },
+						'text 2',
+						createElement('br')
+					))
+				)));
 
 				render(A, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
@@ -1576,103 +1188,34 @@ describe('Update (non-jsx)', () => {
 
 			it('variation 5', () => {
 				const A = [];
-				A[0] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"key": "row1",
-							"children": [
-								{
-									"tag": "td",
-									"key": "td1-1",
-									"children": [
-										"",
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
 
-				A[1] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"key": "row1",
-							"children": [
-								{
-									"tag": "td",
-									"key": "td1-1",
-									"children": [
-										[
-											"text 1",
-											"text a"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
+				A[0] = createElement('table', null, createElement('tr', { key: 'row1' },
+					createElement('td', { key: 'td1-1' },
+						'',
+						createElement('br')
+					)
+				));
 
-				A[2] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"key": "row1",
-							"children": [
-								{
-									"tag": "td",
-									"key": "td1-1",
-									"children": [
-										[
-											"text 2"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
+				A[1] = createElement('table', null, createElement('tr', { key: 'row1' },
+					createElement('td', { key: 'td1-1' },
+						[ 'text 1', 'text a' ],
+						createElement('br')
+					)
+				));
 
-				A[3] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"key": "row1",
-							"children": [
-								{
-									"tag": "td",
-									"key": "td1-1",
-									"children": [
-										[
-											{
-												"tag": "br"
-											},
-											"text 3"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
+				A[2] = createElement('table', null, createElement('tr', { key: 'row1' },
+					createElement('td', { key: 'td1-1' },
+						['text 2'],
+						createElement('br')
+					)
+				));
+
+				A[3] = createElement('table', null, createElement('tr', { key: 'row1' },
+					createElement('td', { key: 'td1-1' },
+						[ createElement('br'), 'text 3' ],
+						createElement('br')
+					)
+				));
 
 				render(A[0], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
@@ -1685,102 +1228,26 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('variation 6', () => {
-				const A = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"children": [
-										{
-											"tag": "td",
-											"key": "td1-1",
-											"children": [
-												[
-													"text 1"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const A = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, [ 
+						'text 1',
+						createElement('br')
+					]))
+				)));
 
-				const B = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"children": [
-										{
-											"tag": "td",
-											"key": "td1-1",
-											"children": [
-												"",
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const B = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, [
+						'',
+						createElement('br')
+					]))
+				)));
 
-				const C = {
-					"tag": "div",
-					"children": {
-						"tag": "div",
-						"children": {
-							"tag": "table",
-							"children": [
-								{
-									"tag": "tr",
-									"key": "row1",
-									"children": [
-										{
-											"tag": "td",
-											"key": "td1-1",
-											"children": [
-												[
-													"text 2"
-												],
-												{
-													"tag": "br"
-												}
-											],
-											"dom": null
-										}
-									],
-									"dom": null
-								}
-							]
-						}
-					},
-					"dom": null
-				};
+				const C = createElement('div', null, createElement('div', null, createElement('table', null,
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, [
+						'text 2',
+						createElement('br')
+					]))
+				)));
 
 				render(A, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text 1<br></td></tr></table></div></div>');
@@ -1792,102 +1259,37 @@ describe('Update (non-jsx)', () => {
 
 			it('variation 7', () => {
 				const A = [];
-				A[0] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"key": "row1",
-							"children": [
-								{
-									"tag": "td",
-									"key": "td1-1",
-									"children": [
-										"",
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
 
-				A[1] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"key": "row1",
-							"children": [
-								{
-									"tag": "td",
-									"key": "td1-1",
-									"children": [
-										[
-											"text 1"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
+				A[0] = createElement('table', null, createElement('tr', { key: 'row1' },
+					createElement('td', { key: 'td1-1' },
+						'',
+						createElement('br')
+					)
+				));
 
-				A[2] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"key": "row1",
-							"children": [
-								{
-									"tag": "td",
-									"key": "td1-1",
-									"children": [
-										[
-											"text 2"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
+				A[1] = createElement('table', null, createElement('tr', { key: 'row1' },
+					createElement('td', { key: 'td1-1' },
+						'text 1',
+						createElement('br')
+					)
+				));
 
-				A[3] =  {
-					"tag": "table",
-					"children": [
-						{
-							"tag": "tr",
-							"key": "row1",
-							"children": [
-								{
-									"tag": "td",
-									"key": "td1-1",
-									"children": [
-										[
-											{
-												"tag": "br"
-											},
-											"text 3"
-										],
-										{
-											"tag": "br"
-										}
-									]
-								}
-							]
-						}
-					]
-				};
+				A[2] = createElement('table', null, createElement('tr', { key: 'row1' },
+					createElement('td', { key: 'td1-1' },
+						'text 2',
+						createElement('br')
+					)
+				));
+
+				A[3] = createElement('table', null, createElement('tr', { key: 'row1' },
+					createElement('td', { key: 'td1-1' },
+						[
+							createElement('br'),
+							'text 3'
+						],
+						createElement('br')
+					)
+				));
 
 				render(A[0], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
@@ -1902,31 +1304,17 @@ describe('Update (non-jsx)', () => {
 	});
 
 	describe('Github #162', () => {
-		it("works", function() {
+		it('works', () => {
 			const A = [];
 
-			A[0] =  {
-				"tag": "div",
-				"children": [
-					"text 1"
-				]
-			};
-			A[1] =  {
-				"tag": "div",
-				"children": [
-					"text 2",
-					{
-						"tag": "br"
-					},
-					"text 3"
-				]
-			};
-			A[2] =  {
-				"tag": "div",
-				"children": [
-					"text 4"
-				]
-			};
+			A[0] = createElement('div', null, 'text 1');
+			A[1] = createElement('div', null,
+				'text 2',
+				createElement('br'),
+				'text 3'
+			);
+			A[2] = createElement('div', null, 'text 4');
+
 			render(A[0], container);
 			expect(container.innerHTML).to.equal('<div>text 1</div>');
 			render(A[1], container);
@@ -1937,32 +1325,22 @@ describe('Update (non-jsx)', () => {
 	});
 
 	describe('Github #162', () => {
-		it("works", function() {
+		it("works", () => {
 			const A = [];
-			A[0] =  {
-				"tag": "div",
-				"children": [
-					"text 1",
-					{
-						"tag": "br"
-					}
-				]
-			};
 
-			A[1] =  {
-				"tag": "div",
-				"children": "text 2"
-			};
+			A[0] = createElement('div', null,
+				'text 1',
+				createElement('br')
+			);
 
-			A[2] =  {
-				"tag": "div",
-				"children": [
-					{
-						"tag": "br"
-					},
-					"text 4"
-				]
-			};
+			A[1] = createElement('div', null,
+				'text 2'
+			);
+
+			A[2] = createElement('div', null,
+				createElement('br'),
+				'text 4'
+			);
 
 			render(A[0], container);
 			expect(container.innerHTML).to.equal('<div>text 1<br></div>');

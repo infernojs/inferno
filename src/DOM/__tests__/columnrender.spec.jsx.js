@@ -1,12 +1,19 @@
 import { render } from './../rendering';
 import Component from './../../component/es2015';
-import { createBlueprint } from './../../core/shapes';
 import { isNullOrUndef } from '../../core/utils';
-const sinon = require('sinon/pkg/sinon');
+import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
+import { createTemplateReducers } from './../../DOM/templates';
 
 const Inferno = {
-	createBlueprint
+	createVTemplate,
+	createVElement,
+	createVComponent
 };
+const InfernoDOM = {
+	createTemplateReducers
+};
+
+const sinon = require('sinon/pkg/sinon');
 
 describe('Columns like tests - (JSX)', () => {
 	let container;

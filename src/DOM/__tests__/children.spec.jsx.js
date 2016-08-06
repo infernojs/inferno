@@ -1,11 +1,16 @@
 import { render } from './../rendering';
 import Component from './../../component/es2015';
-import { createBlueprint } from './../../core/shapes';
+import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
+import { createTemplateReducers } from './../../DOM/templates';
 
 const Inferno = {
-	createBlueprint
+	createVTemplate,
+	createVElement,
+	createVComponent
 };
-
+const InfernoDOM = {
+	createTemplateReducers
+};
 describe('Children - (JSX)', () => {
 	let container;
 

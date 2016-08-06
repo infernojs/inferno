@@ -262,7 +262,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		let input = Component(props, context);
 
 		if (isInvalid(input)) {
-			node = createVPlaceholder();
+			input = createVPlaceholder();
 		}
 		dom = mount(input, null, lifecycle, context, null, false);
 		vComponent._instance = input;
@@ -286,7 +286,7 @@ export function mountVariableAsExpression(pointer, templateIsSVG) {
 	return function mountVariableAsExpression(vTemplate, parentDom, lifecycle, context, isSVG) {
 		let input = vTemplate.read(pointer);
 
-		if (!isVNode(input)) {
+		if (isNullOrUndef(input) || !isVNode(input)) {
 			input = normalise(input);
 			vTemplate.write(pointer, input);
 		}

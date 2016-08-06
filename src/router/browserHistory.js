@@ -1,4 +1,5 @@
 import { isBrowser } from '../core/utils';
+import { EMPTY } from './utils';
 
 const routers = [];
 
@@ -14,14 +15,26 @@ function getHashbangRoot() {
 	return `${url.protocol + '//' || ''}${url.host || ''}${url.pathname || ''}${url.search || ''}#!`;
 }
 
+function isActive(path, hashbang) {
+	if (isBrowser) {
+		if (hashbang) {
+			const currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
+			const matchURL = currentURL.match(/#!(.*)/);
+			const matchHash = matchURL && typeof matchURL[1] !== 'undefined' && (matchURL[1] || '/');
+			return matchHash === path;
+		}
+		return location.pathname === path;
+	}
+	return false;
+}
+
 function routeTo(url) {
-	let didRoute = false;
 	for (let i = 0; i < routers.length; i++) {
 		if (routers[i].routeTo(url) === true) {
-			didRoute = true;
+			return true;
 		}
 	}
-	return didRoute;
+	return false;
 }
 
 if (isBrowser) {
@@ -36,5 +49,7 @@ export default {
 		routers.splice(routers.indexOf(router), 1);
 	},
 	getCurrentUrl,
-	getHashbangRoot
+	getHashbangRoot,
+	isActive,
+	routeTo
 };
