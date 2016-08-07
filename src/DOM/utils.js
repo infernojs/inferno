@@ -206,17 +206,6 @@ export function selectValue(vdom) {
 	}
 }
 
-export function handleAttachedHooks(hooks, lifecycle, dom) {
-	if (!isNullOrUndef(hooks.onCreated)) {
-		hooks.onCreated(dom);
-	}
-	if (!isNullOrUndef(hooks.onAttached)) {
-		lifecycle.addListener(() => {
-			hooks.onAttached(dom);
-		});
-	}
-}
-
 export function setValueProperty(nextNode) {
 	const value = nextNode._props.value;
 

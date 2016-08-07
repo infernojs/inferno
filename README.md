@@ -254,19 +254,15 @@ Please note: hooks are provided by `inferno-dom`;
 Inferno supports many of the basic events on DOM nodes, such as `onClick`, `onMouseOver` and `onTouchStart`. Furthermore, Inferno allows you to attach
 common hooks directly onto components and DOM nodes. Below is the table of all possible hooks available in `inferno-dom`.
 
-| Name                      | Triggered when                                                 | Arguments to callback           |
-| -----------               | --------------                                                 | -----------------------         |
-| `onCreated`               | a DOM node has just been created                               | `domNode`                       |
-| `onAttached`              | a DOM node being attached to the document                      | `domNode`                       |
-| `onWillDetach`            | a DOM node is about to be removed from the document            | `domNode`                       |
-| `onWillUpdate`            | a DOM node is about to perform any potential updates           | `domNode`                       |
-| `onDidUpdate`             | a DOM node has performed any potential updates                 | `domNode`                       |
-| `onComponentWillMount`    | a stateless component is about to mount                        | `domNode, props`                |
-| `onComponentDidMount`     | a stateless component has mounted successfully                 | `domNode, props`                |
-| `onComponentWillUnmount`  | a stateless component is about to be unmounted                 | `domNode, props`                |
-| `onComponentShouldUpdate` | a stateless component has been triggered to updated            | `domNode, lastProps, nextProps` |
-| `onComponentWillUpdate`   | a stateless component is about to perform an update            | `domNode, lastProps, nextProps` |
-| `onComponentDidUpdate`    | a stateless component has performed an updated                 | `domNode, props`                |
+| Name                      | Triggered when                                                 | Arguments to callback              |
+| -----------               | --------------                                                 | -----------------------            |
+| `ref`                     | a DOM node has just been mounted / unmounted                   | `domNode` if mounted `null` if not |
+| `onComponentWillMount`    | a stateless component is about to mount                        | `domNode, props`                   |
+| `onComponentDidMount`     | a stateless component has mounted successfully                 | `domNode, props`                   |
+| `onComponentWillUnmount`  | a stateless component is about to be unmounted                 | `domNode, props`                   |
+| `onComponentShouldUpdate` | a stateless component has been triggered to updated            | `domNode, lastProps, nextProps`    |
+| `onComponentWillUpdate`   | a stateless component is about to perform an update            | `domNode, lastProps, nextProps`    |
+| `onComponentDidUpdate`    | a stateless component has performed an updated                 | `domNode, props`                   |
 
 ### Using hooks
 

@@ -42,7 +42,8 @@ import {
 	mountEmptyTextNode,
 	mountTemplateClassName,
 	mountTemplateStyle,
-	mountTemplateProps
+	mountTemplateProps,
+	mountRefFromTemplate
 } from './mounting';
 import {
 	patchVariableAsExpression,
@@ -174,8 +175,11 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					patchers.push(patchTemplateProps(propsToPatch));
 				}
 			}
-			const hooks = vNode._hooks;
+			const ref = vNode._ref;
 
+			if (!isNullOrUndef(ref)) {
+				mounters.push(mountRefFromTemplate(ref));
+			}
 			if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
 				nodeIndex = offset.length++;
 			}

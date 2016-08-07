@@ -63,16 +63,22 @@ import {
 	isUnknownChildrenType
 } from '../core/ChildrenTypes';
 
+function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
+	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+	unmount(lastInput, null, lifecycle);
+}
+
 export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 	if (lastInput !== nextInput) {
 		if (isVTemplate(nextInput)) {
 			if (isVTemplate(lastInput)) {
 				patchVTemplate(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 			} else {
-				debugger;
+				replaceChild(parentDom, mountVTemplate(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVTemplate(lastInput)) {
-			debugger;
+			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 		} else if (isVComponent(nextInput)) {
 			if (isVComponent(lastInput)) {
 				patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
@@ -81,7 +87,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVComponent(lastInput)) {
-			debugger;
+			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 		} else if (isVFragment(nextInput)) {
 			if (isVFragment(lastInput)) {
 				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
@@ -93,12 +99,11 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			if (isVElement(lastInput)) {
 				patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 			} else {
-				replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+				replaceChild(parentDom, mountVElement(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
 				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVElement(lastInput)) {
-			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-			unmount(lastInput, null, lifecycle);
+			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 		} else if (isVFragment(lastInput)) {
 			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG), lifecycle);
 		} else if (isVPlaceholder(nextInput)) {
@@ -201,12 +206,6 @@ export function patchVTemplate(lastVTemplate, nextVTemplate, parentDom, lifecycl
 }
 
 function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context, isSVG) {
-	const nextHooks = nextVElement._hooks;
-	const nextHooksDefined = !isNullOrUndef(nextHooks);
-
-	if (nextHooksDefined && !isNullOrUndef(nextHooks.onWillUpdate)) {
-		nextHooks.onWillUpdate(lastVElement._dom);
-	}
 	const nextTag = nextVElement._tag;
 	const lastTag = lastVElement._tag;
 
@@ -286,7 +285,7 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 	} else if (booleanProps[prop]) {
 		dom[prop] = nextValue ? true : false;
 	} else if (isAttrAnEvent(prop)) {
-		dom[prop] = nextValue;
+		dom[prop.toLowerCase()] = nextValue;
 	} else {
 		const ns = namespaces[prop];
 
@@ -383,6 +382,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				nextInput = createVPlaceholder();
 			}
 			patch(instance._lastInput, nextInput, parentDom, lifecycle, context, null, false);
+			instance._vComponent = nextVComponent;
 			instance._lastInput = nextInput;
 			instance.componentDidUpdate(lastProps, lastState);
 			nextVComponent._dom = nextInput._dom;
@@ -713,7 +713,7 @@ export function patchVariableAsExpression(pointer, templateIsSVG) {
 		let nextInput = nextVTemplate.read(pointer);
 
 		if (lastInput !== nextInput) {
-			if (!isVNode(nextInput)) {
+			if (isNullOrUndef(nextInput) || !isVNode(nextInput)) {
 				nextInput = normalise(nextInput);
 				nextVTemplate.write(pointer, nextInput);
 			}

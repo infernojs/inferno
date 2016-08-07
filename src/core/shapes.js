@@ -24,7 +24,7 @@ class VElement {
 		this._children = null;
 		this._key = null;
 		this._props = null;
-		this._hooks = null;
+		this._ref = null;
 		this._childrenType = ChildrenTypes.UNKNOWN;
 	}
 	children($children) {
@@ -39,8 +39,8 @@ class VElement {
 		this._props = $props;
 		return this;
 	}
-	hooks($hooks) {
-		this._hooks = $hooks;
+	ref($ref) {
+		this._ref = $ref;
 		return this;
 	}
 	events($events) {

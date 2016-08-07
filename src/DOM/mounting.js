@@ -17,7 +17,6 @@ import {
 	setTextContent,
 	documentCreateElement,
 	selectValue,
-	handleAttachedHooks,
 	insertOrAppend,
 	normaliseChild,
 	isPropertyOfElement,
@@ -97,11 +96,13 @@ function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	const dom = documentCreateElement(tag, isSVG);
 	const children = vElement._children;
 	const props = vElement._props;
-	const hooks = vElement._hooks;
+	const ref = vElement._ref;
 
 	vElement._dom = dom;
-	if (!isNullOrUndef(hooks)) {
-		handleAttachedHooks(hooks, lifecycle, dom);
+	if (!isNullOrUndef(ref)) {
+		lifecycle.addListener(() => {
+			ref(dom);
+		});
 	}
 	if (!isNullOrUndef(children)) {
 		mountChildren(vElement._childrenType, children, dom, lifecycle, context, isSVG);
@@ -230,6 +231,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		}
 		instance._unmounted = false;
 		instance._pendingSetState = true;
+		instance._vComponent = vComponent;
 		instance.componentWillMount();
 		let input = instance.render();
 
@@ -315,6 +317,19 @@ export function mountDOMNodeFromTemplate(templateDomNode, isRoot, deepClone) {
 			appendChild(parentDom, domNode);
 		}
 		return domNode;
+	};
+}
+
+export function mountRefFromTemplate(ref) {
+	return function mountRefFromTemplate(vTemplate, dom) {
+		let value = ref;
+
+		if (isVariable(ref)) {
+			value = vTemplate.read(ref._pointer);
+		}
+		if (isFunction(value)) {
+			value(dom);
+		}
 	};
 }
 

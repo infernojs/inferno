@@ -52,6 +52,7 @@ function applyState(component, force, callback) {
 
 		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
 		component._lastInput = nextInput;
+		component._vComponent._dom = nextInput._dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
 		component.componentDidUpdate(props, prevState);
 		subLifecycle.trigger();
@@ -78,6 +79,7 @@ export default class Component {
 		this._pendingSetState = false;
 		this._pendingState = {};
 		this._lastInput = null;
+		this._vComponent = null;
 		this._unmounted = true;
 		this.context = context || {};
 		this._patch = null;
