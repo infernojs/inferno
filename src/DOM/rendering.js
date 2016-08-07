@@ -2,7 +2,7 @@ import Lifecycle from './lifecycle';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { getActiveNode, resetActiveNode } from './utils';
-import { isUndefined, isInvalid, isNull } from '../core/utils';
+import { isUndefined, isInvalid } from '../core/utils';
 import hydrate from './hydration';
 import { unmount } from './unmounting';
 
@@ -28,7 +28,7 @@ export function render(input, parentDom) {
 	} else {
 		const activeNode = getActiveNode();
 
-		if (isNull(input)) {
+		if (isInvalid(input)) {
 			unmount(root.input, parentDom);
 			roots.delete(parentDom);
 		} else {

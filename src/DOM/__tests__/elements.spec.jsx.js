@@ -650,9 +650,6 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.hasAttribute('height')).to.equal(false);
 		render(<img height={ null } />, container);
 		expect(container.firstChild.hasAttribute('height')).to.equal(false);
-		render(<img height={ false } />, container);
-		expect(container.firstChild.hasAttribute('height')).to.equal(false);
-
 	});
 
 	it('should remove properties #2', () => {
@@ -722,7 +719,7 @@ describe('Elements (JSX)', () => {
 
 
 		// TODO: Fails to creation of node fix needed
-		render(<input type="text" onAttached={obj.fn} spellcheck="false"
+		render(<input type="text" ref={obj.fn} spellcheck="false"
 					readOnly={bool ? 'readonly' : false} disabled={bool}
 					ondragenter={test} ondragover={test} value={newValue} oninput={test}
 					onfocus={obj.focus} class="edit-field" onkeydown={test} onkeyup={test}

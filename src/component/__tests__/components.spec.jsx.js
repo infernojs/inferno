@@ -2014,7 +2014,7 @@ describe('Components (JSX)', () => {
 			render(
 				<Input />, container
 			);
-			expect(container.innerHTML).to.equal('<input id="test" class="foo">');
+			expect(container.innerHTML).to.equal('<input class="foo" id="test">');
 		});
 	});
 

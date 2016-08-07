@@ -20,7 +20,8 @@ import {
 	mountVFragment,
 	mountArrayChildrenWithoutType,
 	mountVComponent,
-	mountVTemplate
+	mountVTemplate,
+	mountVElement
 } from './mounting';
 import {
 	insertOrAppend,
@@ -235,9 +236,6 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 		if (lastProps !== nextProps) {
 			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
 		}
-		if (nextHooksDefined && !isNullOrUndef(nextHooks.onDidUpdate)) {
-			nextHooks.onDidUpdate(dom);
-		}
 		setFormElementProperties(nextTag, nextVElement);
 	}
 }
@@ -263,7 +261,7 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 		}
 	}
 	for (let prop in lastProps) {
-		if (isUndefined(nextProps[prop])) {
+		if (isNullOrUndef(nextProps[prop])) {
 			removeProp(tag, prop, dom);
 		}
 	}
@@ -286,7 +284,7 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 		dom[prop] = nextValue ? true : false;
 	} else if (isAttrAnEvent(prop)) {
 		dom[prop.toLowerCase()] = nextValue;
-	} else {
+	} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
 		const ns = namespaces[prop];
 
 		if (ns) {

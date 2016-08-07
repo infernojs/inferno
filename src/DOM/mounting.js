@@ -84,7 +84,7 @@ export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) 
 	return dom;
 }
 
-function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
+export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	const tag = vElement._tag;
 
 	if (!isString(tag)) {
@@ -333,13 +333,31 @@ export function mountRefFromTemplate(ref) {
 	};
 }
 
+export function mountSpreadPropsFromTemplate(pointer) {
+	return function mountSpreadPropsFromTemplate(vTemplate, dom) {
+		const props = vTemplate.read(pointer);
+
+		for (let prop in props) {
+			const value = props[prop];
+
+			if (prop === 'key') {
+				debugger;
+			} else if (prop === 'ref') {
+				debugger;
+			} else {
+				patchProp(prop, null, value, dom);
+			}
+		}
+	};
+}
+
 export function mountEmptyTextNode(vTemplate, parentDom) {
-	const textNode = document.createTextNode('');
+	const dom = document.createTextNode('');
 
 	if (!isNull(parentDom)) {
-		appendChild(parentDom, textNode);
+		appendChild(parentDom, dom);
 	}
-	return textNode;
+	return dom;
 }
 
 export function mountTemplateClassName(pointer) {

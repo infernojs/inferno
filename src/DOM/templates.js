@@ -43,7 +43,8 @@ import {
 	mountTemplateClassName,
 	mountTemplateStyle,
 	mountTemplateProps,
-	mountRefFromTemplate
+	mountRefFromTemplate,
+	mountSpreadPropsFromTemplate
 } from './mounting';
 import {
 	patchVariableAsExpression,
@@ -143,36 +144,40 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 			const props = vNode._props;
 
 			if (!isNull(props)) {
-				const propsToMount = [];
-				const propsToPatch = [];
+				if (isVariable(props)) {
+					mounters.push(mountSpreadPropsFromTemplate(props._pointer));
+				} else {
+					const propsToMount = [];
+					const propsToPatch = [];
 
-				for (let prop in props) {
-					const value = props[prop];
+					for (let prop in props) {
+						const value = props[prop];
 
-					if (isVariable(value)) {
-						if (prop === 'className') {
-							mounters.push(mountTemplateClassName(value._pointer));
-							patchers.push(patchTemplateClassName(value._pointer));
-						} else if (prop === 'style') {
-							mounters.push(mountTemplateStyle(value._pointer));
-							patchers.push(patchTemplateStyle(value._pointer));
+						if (isVariable(value)) {
+							if (prop === 'className') {
+								mounters.push(mountTemplateClassName(value._pointer));
+								patchers.push(patchTemplateClassName(value._pointer));
+							} else if (prop === 'style') {
+								mounters.push(mountTemplateStyle(value._pointer));
+								patchers.push(patchTemplateStyle(value._pointer));
+							} else {
+								propsToMount.push(prop, value);
+								propsToPatch.push(prop, value._pointer);
+							}
 						} else {
-							propsToMount.push(prop, value);
-							propsToPatch.push(prop, value._pointer);
-						}
-					} else {
-						const shouldMountProp = patchProp(prop, null, value, dom);
+							const shouldMountProp = patchProp(prop, null, value, dom);
 
-						if (shouldMountProp) {
-							propsToMount.push(prop, value);
+							if (shouldMountProp) {
+								propsToMount.push(prop, value);
+							}
 						}
 					}
-				}
-				if (propsToMount.length > 0) {
-					mounters.push(mountTemplateProps(propsToMount));
-				}
-				if (propsToPatch.length > 0) {
-					patchers.push(patchTemplateProps(propsToPatch));
+					if (propsToMount.length > 0) {
+						mounters.push(mountTemplateProps(propsToMount));
+					}
+					if (propsToPatch.length > 0) {
+						patchers.push(patchTemplateProps(propsToPatch));
+					}
 				}
 			}
 			const ref = vNode._ref;
@@ -241,7 +246,7 @@ function combineMount(nodeIndex, mountDOMNodeFromTemplate, mounters) {
 		return mountDOMNodeFromTemplate;
 	} else if (mounters.length <= 1) {
 		return combineMountTo2(nodeIndex, mountDOMNodeFromTemplate, mounters[0]);
-	} else if (mounters.length <= 5) {
+	} else if (mounters.length <= 4) {
 		return combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounters[0], mounters[1], mounters[2], mounters[3]);
 	} else {
 		return combineMountToX(nodeIndex, mountDOMNodeFromTemplate, mounters);
@@ -314,7 +319,7 @@ function combinePatch(nodeIndex, patchers) {
 		}
 	} else if (patchers.length <= 1) {
 		return combinePatchTo2(nodeIndex, patchers[0]);
-	} else if (patchers.length <= 5) {
+	} else if (patchers.length <= 4) {
 		return combinePatchTo5(nodeIndex, patchers[0], patchers[1], patchers[2], patchers[3], patchers[4]);
 	} else {
 		return combinePatchX(nodeIndex, patchers);
@@ -380,7 +385,7 @@ function combinePatchX(nodeIndex, patchers) {
 
 function combineUnmount(nodeIndex, unmounters) {
 	if (unmounters.length > 0) {
-		if (unmounters.length <= 5) {
+		if (unmounters.length <= 4) {
 			return combineUnmountTo5(nodeIndex, unmounters[0], unmounters[1], unmounters[2], unmounters[3], unmounters[4]);
 		}
 	}

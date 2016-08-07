@@ -91,7 +91,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	unmount(lastNode, false, lifecycle);
+	unmount(lastNode, null, lifecycle);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode._dom = dom;

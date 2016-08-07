@@ -1,4 +1,4 @@
-import { isNullOrUndef, isArray, isNull } from './../core/utils';
+import { isNullOrUndef, isArray, isNull, isInvalid } from './../core/utils';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
@@ -12,18 +12,20 @@ import {
 import { poolVTemplate, recyclingEnabled } from './templates';
 
 export function unmount(input, parentDom, lifecycle) {
-	if (isVTemplate(input)) {
-		unmountVTemplate(input, parentDom, lifecycle);
-	} else if (isVFragment(input)) {
-		unmountVFragment(input, parentDom, true, lifecycle);
-	} else if (isVElement(input)) {
-		unmountVElement(input, parentDom, lifecycle);
-	} else if (isVComponent(input)) {
-		unmountVComponent(input, parentDom, lifecycle);
-	} else if (isVText(input)) {
-		unmountVText(input, parentDom);
-	} else if (isVPlaceholder(input)) {
-		unmountVPlaceholder(input, parentDom);
+	if (!isInvalid(input)) {
+		if (isVTemplate(input)) {
+			unmountVTemplate(input, parentDom, lifecycle);
+		} else if (isVFragment(input)) {
+			unmountVFragment(input, parentDom, true, lifecycle);
+		} else if (isVElement(input)) {
+			unmountVElement(input, parentDom, lifecycle);
+		} else if (isVComponent(input)) {
+			unmountVComponent(input, parentDom, lifecycle);
+		} else if (isVText(input)) {
+			unmountVText(input, parentDom);
+		} else if (isVPlaceholder(input)) {
+			unmountVPlaceholder(input, parentDom);
+		}
 	}
 }
 
@@ -50,7 +52,7 @@ function unmountVTemplate(vTemplate, parentDom, lifecycle) {
 	if (!isNull(parentDom)) {
 		removeChild(parentDom, dom);
 	}
-	if (recyclingEnabled) {
+	if (recyclingEnabled && parentDom) {
 		poolVTemplate(vTemplate);
 	}
 }
@@ -129,15 +131,26 @@ export function unmountVElement(vElement, parentDom, lifecycle) {
 	}
 }
 
+function unmountTemplateValue(value, lifecycle) {
+	if (isArray(value)) {
+		for (let i = 0; i < value.length; i++) {
+			unmount(value[i], null, lifecycle);
+		}
+	} else {
+		unmount(value, null, lifecycle);
+	}
+}
+
+// TODO we can probably combine the below two functions, depends on if we can optimise with childrenType?
 export function unmountVariableAsExpression(pointer) {
-	return function unmountVariableAsExpression(vTemplate) {
-		// TODO
+	return function unmountVariableAsExpression(vTemplate, lifecycle) {
+		unmountTemplateValue(vTemplate.read(pointer), lifecycle);
 	};
 }
 
 export function unmountVariableAsChildren(pointer, childrenType) {
-	return function unmountVariableAsChildren(vTemplate) {
-		// TODO
+	return function unmountVariableAsChildren(vTemplate, lifecycle) {
+		unmountTemplateValue(vTemplate.read(pointer), lifecycle);
 	};
 }
 
