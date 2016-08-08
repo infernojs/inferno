@@ -225,6 +225,6 @@ export function setFormElementProperties(nextTag, node, dom) {
 			node.checked = !!checked;
 		}
 	} else if (nextTag === 'textarea') {
-		setValueProperty(nextNode, dom);
+		setValueProperty(node, dom);
 	}
 }
