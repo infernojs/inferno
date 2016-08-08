@@ -206,24 +206,25 @@ export function selectValue(vdom) {
 	}
 }
 
-export function setValueProperty(nextNode) {
-	const value = nextNode._props.value;
+export function setValueProperty(node, dom) {
+	const value = node.value;
 
 	if (!isNullOrUndef(value)) {
-		nextNode._dom.value = value;
+		dom.value = value;
 	}
 }
 
-export function setFormElementProperties(nextTag, nextNode) {
+export function setFormElementProperties(nextTag, node, dom) {
 	if (nextTag === 'input') {
-		const inputType = nextNode._props.type;
+		const inputType = node.type;
 		if (inputType === 'text') {
-			setValueProperty(nextNode);
+			setValueProperty(node, dom);
 		} else if (inputType === 'checkbox' || inputType === 'radio') {
-			const checked = nextNode._props.checked;
-			nextNode._dom.checked = !!checked;
+			const checked = node.checked;
+
+			node.checked = !!checked;
 		}
 	} else if (nextTag === 'textarea') {
-		setValueProperty(nextNode);
+		setValueProperty(nextNode, dom);
 	}
 }

@@ -236,7 +236,7 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 		if (lastProps !== nextProps) {
 			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
 		}
-		setFormElementProperties(nextTag, nextVElement);
+		setFormElementProperties(nextTag, nextVElement._props, dom);
 	}
 }
 
@@ -778,5 +778,6 @@ export function patchTemplateProps(propsToPatch) {
 				patchProp(prop, lastValue, nextValue, dom);
 			}
 		}
+		setFormElementProperties(dom.tagName.toLowerCase(), dom, dom);
 	};
 }

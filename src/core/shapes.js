@@ -15,6 +15,11 @@ export const NodeTypes = {
 };
 
 // added $ before all argument names to stop a silly Safari bug
+function initProps(o) {
+	if (!o._props) {
+		o._props = {};
+	}
+}
 
 class VElement {
 	constructor($tag) {
@@ -51,14 +56,20 @@ class VElement {
 		this._childrenType = $childrenType;
 		return this;
 	}
-	className() {
-
+	className($className) {
+		initProps(this);
+		this._props.className = $className;
+		return this;
 	}
-	style() {
-
+	style($style) {
+		initProps(this);
+		this._props.style = $style;
+		return this;
 	}
 	events() {
-		
+		initProps(this);
+		debugger;
+		return this;
 	}
 }
 

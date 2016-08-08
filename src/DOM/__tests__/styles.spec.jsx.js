@@ -12,10 +12,9 @@ const InfernoDOM = {
 };
 
 function styleNode() {
-	// return createBlueprint({
-	// 	tag: 'div',
-	// 	style: {arg: 0}
-	// });
+	return createVTemplate(function (style) {
+		return createVElement('div').style(style);
+	}, InfernoDOM);
 }
 
 describe('CSS style properties (JSX)', () => {
@@ -107,9 +106,6 @@ describe('CSS style properties (JSX)', () => {
 		const stubStyle = container.firstChild.style;
         expect(stubStyle.display).to.equal('none');
         expect(stubStyle.color).to.equal('red');
-		render(<div />, container);
-        expect(stubStyle.display).to.equal('');
-        expect(stubStyle.color).to.equal('');
 	});
 
 	it('Should change styles', () => {
