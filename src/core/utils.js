@@ -19,6 +19,10 @@ export const NO_OP = 'NO_OP';
 // Runs only once in applications lifetime
 export const isBrowser = typeof window !== 'undefined' && window.document;
 
+export function toArray(children) {
+	return isArray(children) ? children : (children ? [children] : children);
+}
+
 export function isArray(obj) {
 	return obj instanceof Array;
 }

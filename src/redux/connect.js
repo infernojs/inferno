@@ -1,7 +1,7 @@
 import Component from '../component/es2015';
 import { warning, shallowEqual, wrapActionCreators } from './utils';
 import { isFunction } from '../core/utils';
-import { createBlueprint, createVNode } from '../core/shapes';
+import { createBlueprint, createVComponent } from '../core/shapes';
 import hoistStatics from 'hoist-non-inferno-statics';
 import invariant from 'invariant';
 
@@ -279,11 +279,11 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 					return renderedElement;
 				}
 				if (withRef) {
-					this.renderedElement = createVNode().setTag(WrappedComponent)
-						.setAttrs(Object.assign({}, this.mergedProps, { ref: 'wrappedInstance' }));
+					this.renderedElement = createVComponent(WrappedComponent)
+						.props(Object.assign({}, this.mergedProps, { ref: 'wrappedInstance' }));
 				} else {
-					this.renderedElement = createVNode().setTag(WrappedComponent)
-						.setAttrs(this.mergedProps);
+					this.renderedElement = createVComponent(WrappedComponent)
+						.props(this.mergedProps);
 				}
 				return this.renderedElement;
 			}

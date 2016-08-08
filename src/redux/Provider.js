@@ -1,7 +1,6 @@
 import Component from '../component/es2015';
 import { warning, shallowEqual } from './utils';
-import { isFunction, isArray, isNullOrUndefined, toArray } from '../core/utils';
-import { createBlueprint, createVNode } from '../core/shapes';
+import { isFunction, isArray, isNullOrUndef, toArray } from '../core/utils';
 
 let didWarnAboutReceivingStore = false;
 function warnAboutReceivingStore() {
@@ -26,7 +25,7 @@ export default class Provider extends Component {
 	}
 
 	render() {
-		if (isNullOrUndefined(this.props.children) || toArray(this.props.children).length !== 1) {
+		if (isNullOrUndef(this.props.children) || toArray(this.props.children).length !== 1) {
 			throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
 		}
 
