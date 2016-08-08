@@ -147,7 +147,7 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
 	}
 }
 
-function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
+export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
 	if (isInvalid(nextChildren)) {
 		removeAllChildren(parentDom, lastChildren, lifecycle);
 	} else if (isInvalid(lastChildren)) {

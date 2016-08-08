@@ -51,6 +51,15 @@ class VElement {
 		this._childrenType = $childrenType;
 		return this;
 	}
+	className() {
+
+	}
+	style() {
+
+	}
+	events() {
+		
+	}
 }
 
 class VComponent {

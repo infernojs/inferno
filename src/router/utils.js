@@ -71,8 +71,8 @@ export function exec(url, route, opts = EMPTY) {
 }
 
 export function pathRankSort(a, b) {
-	let aAttr = a.attrs || EMPTY,
-		bAttr = b.attrs || EMPTY;
+	let aAttr = a._props || EMPTY,
+		bAttr = b._props || EMPTY;
 	let diff = rank(bAttr.path) - rank(aAttr.path);
 	return diff || (bAttr.path.length - aAttr.path.length);
 }

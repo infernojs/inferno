@@ -1,4 +1,4 @@
-import { createVNode } from '../core/shapes';
+import { createVComponent } from '../core/shapes';
 import Component from '../component/es2015';
 
 const ASYNC_STATUS = {
@@ -53,6 +53,6 @@ export default class Route extends Component {
 	render() {
 		const { component, params } = this.props;
 
-		return createVNode().setTag(component).setAttrs({ params, async: this.state.async });
+		return createVComponent(component).props({ params, async: this.state.async });
 	}
 }

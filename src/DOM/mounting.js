@@ -36,6 +36,7 @@ import {
 	isVTemplate,
 	NodeTypes,
 	isVariable,
+	isVRoot,
 	isVNode
 } from '../core/shapes';
 import {
@@ -61,9 +62,15 @@ export function mount(input, parentDom, lifecycle, context, isSVG) {
 		return mountVElement(input, parentDom, lifecycle, context, isSVG);
 	} else if (isVComponent(input)) {
 		return mountVComponent(input, parentDom, lifecycle, context, isSVG);
+	} else if (isVRoot(input)) {
+		return mountVRoot(input, parentDom, lifecycle, context, isSVG);
 	} else {
 		throw Error('Inferno Error: Bad input argument called on mount(). Input argument may need normalising.');
 	}
+}
+
+function mountVRoot(vRoot, parentDom, lifecycle, context, isSVG) {
+	debugger;
 }
 
 export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) {
@@ -183,7 +190,7 @@ export function mountArrayChildrenWithoutType(children, parentDom, lifecycle, co
 	}
 }
 
-function mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG) {
+export function mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG) {
 	if (isArray(children)) {
 		mountArrayChildrenWithoutType(children, parentDom, lifecycle, context, isSVG);
 	} else if (isStringOrNumber(children)) {

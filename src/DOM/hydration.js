@@ -5,8 +5,7 @@ import {
 	isInvalid,
 	isFunction,
 	addChildrenToProps,
-	isStatefulComponent,
-	isBrowser
+	isStatefulComponent
 } from './../core/utils';
 import {
 	replaceChild,
@@ -230,7 +229,6 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, isRoot) {
 		}
 	}
 }
-const documetBody = isBrowser ? document.body : null;
 
 export default function hydrate(node, parentDom, lifecycle) {
 	// if (parentDom && parentDom.nodeType === 1) {
