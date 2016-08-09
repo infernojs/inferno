@@ -1288,11 +1288,15 @@
 	function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKeys, dom) {
 		var nextEventsDefined = !isNullOrUndefined(nextEvents);
 		var lastEventsDefined = !isNullOrUndefined(lastEvents);
+		var lastEventKeys;
 
+		if (lastEventsDefined) {
+			lastEventKeys = _lastEventKeys || Object.keys(lastEvents);
+		}
 		if (nextEventsDefined) {
-			if (lastEventsDefined) {
-				var nextEventKeys = _nextEventKeys || Object.keys(nextEvents);
+			var nextEventKeys = _nextEventKeys || Object.keys(nextEvents);
 
+			if (lastEventsDefined) {
 				for (var i = 0; i < nextEventKeys.length; i++) {
 					var event = nextEventKeys[i];
 					var lastEvent = lastEvents[event];
@@ -1302,8 +1306,6 @@
 						dom[event] = nextEvent;
 					}
 				}
-				var lastEventKeys = _lastEventKeys || Object.keys(lastEvents);
-
 				for (var i$1 = 0; i$1 < lastEventKeys.length; i$1++) {
 					var event$1 = lastEventKeys[i$1];
 
@@ -1312,10 +1314,10 @@
 					}
 				}
 			} else {
-				mountEvents(nextEvents, _nextEventKeys, dom);
+				mountEvents(nextEvents, nextEventKeys, dom);
 			}
 		} else if (lastEventsDefined) {
-			removeEvents(lastEvents, _nextEventKeys, dom);
+			removeEvents(lastEvents, lastEventKeys, dom);
 		}
 	}
 

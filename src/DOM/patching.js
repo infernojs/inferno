@@ -500,11 +500,15 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 export function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKeys, dom) {
 	const nextEventsDefined = !isNullOrUndefined(nextEvents);
 	const lastEventsDefined = !isNullOrUndefined(lastEvents);
+	let lastEventKeys;
 
+	if (lastEventsDefined) {
+		lastEventKeys = _lastEventKeys || Object.keys(lastEvents);
+	}
 	if (nextEventsDefined) {
-		if (lastEventsDefined) {
-			const nextEventKeys = _nextEventKeys || Object.keys(nextEvents);
+		const nextEventKeys = _nextEventKeys || Object.keys(nextEvents);
 
+		if (lastEventsDefined) {
 			for (let i = 0; i < nextEventKeys.length; i++) {
 				const event = nextEventKeys[i];
 				const lastEvent = lastEvents[event];
@@ -514,8 +518,6 @@ export function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKe
 					dom[event] = nextEvent;
 				}
 			}
-			const lastEventKeys = _lastEventKeys || Object.keys(lastEvents);
-
 			for (let i = 0; i < lastEventKeys.length; i++) {
 				const event = lastEventKeys[i];
 
@@ -524,10 +526,10 @@ export function patchEvents(lastEvents, nextEvents, _lastEventKeys, _nextEventKe
 				}
 			}
 		} else {
-			mountEvents(nextEvents, _nextEventKeys, dom);
+			mountEvents(nextEvents, nextEventKeys, dom);
 		}
 	} else if (lastEventsDefined) {
-		removeEvents(lastEvents, _nextEventKeys, dom);
+		removeEvents(lastEvents, lastEventKeys, dom);
 	}
 }
 

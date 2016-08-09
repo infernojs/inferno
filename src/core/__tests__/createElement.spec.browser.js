@@ -60,4 +60,17 @@ describe('CreateElement should handle events', () => {
 
 		expect(triggered).to.equal(true);
 	});
+
+	it('Should handle events correctly when patching', () => {
+		let triggered = false;
+
+		render(createElement('button', {}, 'Click Me'), container);
+		render(createElement('button', { onclick: () => (triggered = true) }, 'Click Me'), container);
+		expect(triggered).to.equal(false);
+
+		const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+		buttons.forEach(button => button.click());
+
+		expect(triggered).to.equal(true);
+	});
 });
