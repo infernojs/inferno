@@ -23,23 +23,10 @@
   	}
   };
 
-  function addChildrenToProps(children, props) {
-  	if (!isNullOrUndef(children)) {
-  		var isChildrenArray = isArray(children);
-  		if (isChildrenArray && children.length > 0 || !isChildrenArray) {
-  			if (props) {
-  				props = Object.assign({}, props, { children: children });
-  			} else {
-  				props = {
-  					children: children
-  				};
-  			}
-  		}
-  	}
-  	return props;
-  }
-
   var NO_OP = 'NO_OP';
+
+  // Runs only once in applications lifetime
+  var isBrowser = typeof window !== 'undefined' && window.document;
 
   function isArray(obj) {
   	return obj instanceof Array;
@@ -59,10 +46,6 @@
 
   function isInvalid(obj) {
   	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
-  }
-
-  function isFunction(obj) {
-  	return typeof obj === 'function';
   }
 
   function isAttrAnEvent(attr) {
@@ -133,6 +116,11 @@
   };
 
   // added $ before all argument names to stop a silly Safari bug
+  function initProps(o) {
+  	if (!o._props) {
+  		o._props = {};
+  	}
+  }
 
   var VElement = function VElement($tag) {
   	this._type = NodeTypes.ELEMENT;
@@ -141,7 +129,7 @@
   	this._children = null;
   	this._key = null;
   	this._props = null;
-  	this._hooks = null;
+  	this._ref = null;
   	this._childrenType = ChildrenTypes.UNKNOWN;
   };
   VElement.prototype.children = function children ($children) {
@@ -156,8 +144,8 @@
   	this._props = $props;
   	return this;
   };
-  VElement.prototype.hooks = function hooks ($hooks) {
-  	this._hooks = $hooks;
+  VElement.prototype.ref = function ref ($ref) {
+  	this._ref = $ref;
   	return this;
   };
   VElement.prototype.events = function events ($events) {
@@ -168,12 +156,27 @@
   	this._childrenType = $childrenType;
   	return this;
   };
+  VElement.prototype.className = function className ($className) {
+  	initProps(this);
+  	this._props.className = $className;
+  	return this;
+  };
+  VElement.prototype.style = function style ($style) {
+  	initProps(this);
+  	this._props.style = $style;
+  	return this;
+  };
+  VElement.prototype.events = function events () {
+  	initProps(this);
+  	debugger;
+  	return this;
+  };
 
   var VComponent = function VComponent($component) {
   	this._type = NodeTypes.COMPONENT;
   	this._dom = null;
   	this._component = $component;
-  	this._props = null;
+  	this._props = {};
   	this._hooks = null;
   	this._key = null;
   	this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
@@ -258,50 +261,55 @@
   	return o._type === NodeTypes.COMPONENT;
   }
 
+  function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
+  	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+  	unmount(lastInput, null, lifecycle);
+  }
+
   function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
   	if (lastInput !== nextInput) {
   		if (isVTemplate(nextInput)) {
   			if (isVTemplate(lastInput)) {
   				patchVTemplate(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
   			} else {
-  				// debugger;
+  				replaceChild(parentDom, mountVTemplate(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+  				unmount(lastInput, null, lifecycle);
   			}
   		} else if (isVTemplate(lastInput)) {
-  			// debugger;
+  			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
   		} else if (isVComponent(nextInput)) {
   			if (isVComponent(lastInput)) {
   				patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
   			} else {
   				replaceChild(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-  				unmount(lastInput, null);
+  				unmount(lastInput, null, lifecycle);
   			}
   		} else if (isVComponent(lastInput)) {
-  			// debugger;
+  			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
   		} else if (isVFragment(nextInput)) {
   			if (isVFragment(lastInput)) {
   				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
   			} else {
   				replaceChild(parentDom, mountVFragment(nextInput, null), lastInput._dom);
-  				unmount(lastInput, null);
+  				unmount(lastInput, null, lifecycle);
   			}
   		} else if (isVElement(nextInput)) {
   			if (isVElement(lastInput)) {
   				patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
   			} else {
-  				replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-  				unmount(lastInput, null);
+  				replaceChild(parentDom, mountVElement(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
+  				unmount(lastInput, null, lifecycle);
   			}
   		} else if (isVElement(lastInput)) {
-  			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
-  			unmount(lastInput, null);
+  			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
   		} else if (isVFragment(lastInput)) {
-  			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG));
+  			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG), lifecycle);
   		} else if (isVPlaceholder(nextInput)) {
   			if (isVPlaceholder(lastInput)) {
   				patchVPlaceholder(lastInput, nextInput);
   			} else {
   				replaceChild(parentDom, mountVPlaceholder(nextInput, null), lastInput._dom);
-  				unmount(lastInput, null);
+  				unmount(lastInput, null, lifecycle);
   			}
   		} else if (isVPlaceholder(lastInput)) {
   			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
@@ -310,7 +318,7 @@
   				patchVText(lastInput, nextInput);
   			} else {
   				replaceChild(parentDom, mountVText(nextInput, null), lastInput._dom);
-  				unmount(lastInput, null);
+  				unmount(lastInput, null, lifecycle);
   			}
   		} else if (isVText(lastInput)) {
   			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
@@ -338,13 +346,13 @@
 
   function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
   	if (isInvalid(nextChildren)) {
-  		removeAllChildren(parentDom, lastChildren);
+  		removeAllChildren(parentDom, lastChildren, lifecycle);
   	} else if (isInvalid(lastChildren)) {
   		if (isStringOrNumber(nextChildren)) {
   			setTextContent(parentDom, nextChildren);
   		} else if (!isInvalid(nextChildren)) {
   			if (isArray(nextChildren)) {
-  				mountChildren(nextChildren, parentDom, lifecycle, context, isSVG);
+  				mountArrayChildrenWithoutType(nextChildren, parentDom, lifecycle, context, isSVG);
   			} else {
   				mount(nextChildren, parentDom, lifecycle, context, isSVG);
   			}
@@ -356,7 +364,10 @@
   			setTextContent(parentDom, nextChildren);
   		}
   	} else if (isStringOrNumber(lastChildren)) {
-  		// debugger;
+  		var child = normalise(lastChildren);
+
+  		child._dom = parentDom.firstChild;
+  		patchChildrenWithUnknownType(child, nextChildren, parentDom, lifecycle, context, isSVG);
   	} else if (isArray(nextChildren)) {
   		if (isArray(lastChildren)) {
   			nextChildren.complex = lastChildren.complex;
@@ -393,12 +404,6 @@
   }
 
   function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context, isSVG) {
-  	var nextHooks = nextVElement._hooks;
-  	var nextHooksDefined = !isNullOrUndef(nextHooks);
-
-  	if (nextHooksDefined && !isNullOrUndef(nextHooks.onWillUpdate)) {
-  		nextHooks.onWillUpdate(lastVElement._dom);
-  	}
   	var nextTag = nextVElement._tag;
   	var lastTag = lastVElement._tag;
 
@@ -428,18 +433,14 @@
   		if (lastProps !== nextProps) {
   			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
   		}
-  		if (nextHooksDefined && !isNullOrUndef(nextHooks.onDidUpdate)) {
-  			nextHooks.onDidUpdate(dom);
-  		}
-  		setFormElementProperties(nextTag, nextVElement);
+  		setFormElementProperties(nextTag, nextVElement._props, dom);
   	}
   }
 
   function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
-  	var tag = nextVElement._tag;
-
   	lastProps = lastProps || {};
   	nextProps = nextProps || {};
+
   	if (lastVElement._tag === 'select') {
   		selectValue(nextVElement);
   	}
@@ -449,21 +450,25 @@
 
   		if (lastValue !== nextValue) {
   			if (isNullOrUndef(nextValue)) {
-  				removeProp(tag, prop, dom);
+  				removeProp(prop, dom);
   			} else {
   				patchProp(prop, lastValue, nextValue, dom);
   			}
   		}
   	}
   	for (var prop$1 in lastProps) {
-  		if (isUndefined(nextProps[prop$1])) {
-  			removeProp(tag, prop$1, dom);
+  		if (isNullOrUndef(nextProps[prop$1])) {
+  			removeProp(prop$1, dom);
   		}
   	}
   }
 
   // returns true if a property of the element has been mutated, otherwise false for an attribute
   function patchProp(prop, lastValue, nextValue, dom) {
+  	if (isNullOrUndef(nextValue)) {
+  		dom.removeAttribute(prop);
+  		return false;
+  	}
   	if (prop === 'className') {
   		dom.className = nextValue;
   		return false;
@@ -474,8 +479,8 @@
   	} else if (booleanProps[prop]) {
   		dom[prop] = nextValue ? true : false;
   	} else if (isAttrAnEvent(prop)) {
-  		dom[prop] = nextValue;
-  	} else {
+  		dom[prop.toLowerCase()] = nextValue;
+  	} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
   		var ns = namespaces[prop];
 
   		if (ns) {
@@ -488,17 +493,13 @@
   	return true;
   }
 
-  function removeProp(tag, prop, dom) {
+  function removeProp(prop, dom) {
   	if (prop === 'className') {
   		dom.removeAttribute('class');
-  	} else if (prop === 'id') {
-  		dom.removeAttribute('id');
+  	} else if (prop === 'value') {
+  		dom.value = '';
   	} else {
-  		if (isPropertyOfElement(tag, prop)) {
-  			dom[prop] = null;
-  		} else {
-  			dom.removeAttribute(prop);
-  		}
+  		dom.removeAttribute(prop);
   	}
   }
 
@@ -555,7 +556,6 @@
   		replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG);
   	} else {
   		if (isStatefulComponent(nextVComponent)) {
-  			var dom = lastVComponent._dom;
   			var instance = lastVComponent._instance;
   			var lastProps = instance.props;
   			var lastState = instance.state;
@@ -575,6 +575,7 @@
   				nextInput = createVPlaceholder();
   			}
   			patch(instance._lastInput, nextInput, parentDom, lifecycle, context, null, false);
+  			instance._vComponent = nextVComponent;
   			instance._lastInput = nextInput;
   			instance.componentDidUpdate(lastProps, lastState);
   			nextVComponent._dom = nextInput._dom;
@@ -651,11 +652,11 @@
   		for (i = commonLength; i < nextChildrenLength; i++) {
   			var child = normaliseChild(nextChildren, i);
 
-  			insertOrAppend(dom, mount(child, null, lifecycle, context, isSVG), parentVList && parentVList.pointer);
+  			insertOrAppend(dom, mount(child, null, lifecycle, context, isSVG), parentVList && parentVList._pointer);
   		}
   	} else if (lastChildrenLength > nextChildrenLength) {
   		for (i = commonLength; i < lastChildrenLength; i++) {
-  			unmount(lastChildren[i], dom);
+  			unmount(lastChildren[i], dom, lifecycle);
   		}
   	}
   }
@@ -738,14 +739,14 @@
 
   	if (lastStartIndex > lastEndIndex) {
   		if (nextStartIndex <= nextEndIndex) {
-  			nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1]._dom : parentVList && parentVList.pointer;
+  			nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1]._dom : parentVList && parentVList._pointer;
   			for (; nextStartIndex <= nextEndIndex; nextStartIndex++) {
   				insertOrAppend(dom, mount(nextChildren[nextStartIndex], null, lifecycle, context, isSVG), nextNode);
   			}
   		}
   	} else if (nextStartIndex > nextEndIndex) {
   		while (lastStartIndex <= lastEndIndex) {
-  			unmount(lastChildren[lastStartIndex++], dom);
+  			unmount(lastChildren[lastStartIndex++], dom, lifecycle);
   		}
   	} else {
   		var aLength = lastEndIndex - lastStartIndex + 1;
@@ -797,7 +798,7 @@
   				index = prevItemsMap.get(lastEndNode._key);
 
   				if (index === undefined) {
-  					unmount(lastEndNode, dom);
+  					unmount(lastEndNode, dom, lifecycle);
   					removeOffset++;
   				} else {
 
@@ -821,12 +822,12 @@
   			for (i = bLength - 1; i >= 0; i--) {
   				if (sources[i] === -1) {
   					pos = i + nextStartIndex;
-  					nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList.pointer;
+  					nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList._pointer;
   					insertOrAppend(dom, mount(nextChildren[pos], null, lifecycle, context, isSVG), nextNode);
   				} else {
   					if (index < 0 || i !== seq[index]) {
   						pos = i + nextStartIndex;
-  						nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList.pointer;
+  						nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList._pointer;
   						insertOrAppend(dom, nextChildren[pos]._dom, nextNode);
   					} else {
   						index--;
@@ -837,7 +838,7 @@
   			for (i = bLength - 1; i >= 0; i--) {
   				if (sources[i] === -1) {
   					pos = i + nextStartIndex;
-  					nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList.pointer;
+  					nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList._pointer;
   					insertOrAppend(dom, mount(nextChildren[pos], null, lifecycle, context, isSVG), nextNode);
   				}
   			}
@@ -899,7 +900,7 @@
   	return result;
   }
 
-  var recyclingEnabled$1 = true;
+  var recyclingEnabled = true;
 
   function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
   	var templateReducers = vTemplate._tr;
@@ -939,49 +940,64 @@
   }
 
   function unmount(input, parentDom, lifecycle) {
-  	if (isVTemplate(input)) {
-  		unmountVTemplate(input, parentDom);
-  	} else if (isVFragment(input)) {
-  		unmountVFragment(input, parentDom, true);
-  	} else if (isVElement(input)) {
-  		unmountVElement(input, parentDom);
-  	} else if (isVComponent(input)) {
-  		unmountVComponent(input, parentDom);
+  	if (!isInvalid(input)) {
+  		if (isVTemplate(input)) {
+  			unmountVTemplate(input, parentDom, lifecycle);
+  		} else if (isVFragment(input)) {
+  			unmountVFragment(input, parentDom, true, lifecycle);
+  		} else if (isVElement(input)) {
+  			unmountVElement(input, parentDom, lifecycle);
+  		} else if (isVComponent(input)) {
+  			unmountVComponent(input, parentDom, lifecycle);
+  		} else if (isVText(input)) {
+  			unmountVText(input, parentDom);
+  		} else if (isVPlaceholder(input)) {
+  			unmountVPlaceholder(input, parentDom);
+  		}
   	}
   }
 
-  function unmountVTemplate(vTemplate, parentDom) {
+  function unmountVPlaceholder(vPlaceholder, parentDom) {
+  	if (parentDom) {
+  		removeChild(parentDom, vPlaceholder._dom);
+  	}
+  }
+
+  function unmountVText(vText, parentDom) {
+  	if (parentDom) {
+  		removeChild(parentDom, vText._dom);
+  	}
+  }
+
+  function unmountVTemplate(vTemplate, parentDom, lifecycle) {
   	var dom = vTemplate._dom;
   	var templateReducers = vTemplate._tr;
   	var unmount = templateReducers.unmount;
 
   	if (!isNull(unmount)) {
-  		templateReducers.unmount(vTemplate);
+  		templateReducers.unmount(vTemplate, lifecycle);
   	}
   	if (!isNull(parentDom)) {
   		removeChild(parentDom, dom);
   	}
-  	if (recyclingEnabled$1) {
+  	if (recyclingEnabled && parentDom) {
   		poolVTemplate(vTemplate);
   	}
   }
 
-  function unmountVFragment(vFragment, parentDom, removePointer) {
-  	var items = vFragment._items;
-  	var itemsLength = items.length;
-  	var pointer = items._pointer;
+  function unmountVFragment(vFragment, parentDom, removePointer, lifecycle) {
+  	var children = vFragment._children;
+  	var childrenLength = children.length;
+  	var pointer = vFragment._pointer;
 
-  	if (itemsLength > 0) {
-  		for (var i = 0; i < itemsLength; i++) {
-  			var item = items[i];
+  	if (childrenLength > 0) {
+  		for (var i = 0; i < childrenLength; i++) {
+  			var child = children[i];
 
-  			if (isVFragment(item)) {
-  				unmountVFragment(item, parentDom, true);
+  			if (isVFragment(child)) {
+  				unmountVFragment(child, parentDom, true, lifecycle);
   			} else {
-  				if (parentDom) {
-  					removeChild(parentDom, item._dom);
-  				}
-  				unmount(item, null);
+  				unmount(child, parentDom, lifecycle);
   			}
   		}
   	}
@@ -990,7 +1006,7 @@
   	}
   }
 
-  function unmountVComponent(vComponent, parentDom) {
+  function unmountVComponent(vComponent, parentDom, lifecycle) {
   	var instance = vComponent._instance;
   	var instanceHooks = null;
   	var instanceChildren = null;
@@ -1003,7 +1019,7 @@
   			instance.componentWillUnmount();
   			instance._unmounted = true;
   			componentToDOMNodeMap.delete(instance);
-  			unmount(instance._lastInput, null);
+  			unmount(instance._lastInput, null, lifecycle);
   		}
   	}
   	var hooks = vComponent._hooks || instanceHooks;
@@ -1013,9 +1029,12 @@
   			hooks.onComponentWillUnmount(vComponent._dom, hooks);
   		}
   	}
+  	if (parentDom) {
+  		removeChild(parentDom, vComponent._dom);
+  	}
   }
 
-  function unmountVElement(vElement, parentDom) {
+  function unmountVElement(vElement, parentDom, lifecycle) {
   	var hooks = vElement._hooks;
   	var dom = vElement._dom;
 
@@ -1029,10 +1048,10 @@
   	if (!isNullOrUndef(children)) {
   		if (isArray(children)) {
   			for (var i = 0; i < children.length; i++) {
-  				unmount(children[i], null);
+  				unmount(children[i], null, lifecycle);
   			}
   		} else {
-  			unmount(children, null);
+  			unmount(children, null, lifecycle);
   		}
   	}
   	if (parentDom) {
@@ -1070,15 +1089,6 @@
   	dom.firstChild.nodeValue = text;
   }
 
-  function isPropertyOfElement(tag, prop) {
-  	var propsForElement = elementsPropMap.get(tag);
-
-  	if (isUndefined(propsForElement)) {
-  		propsForElement = getAllPropsForElement(tag);
-  	}
-  	return propsForElement[prop];
-  }
-
   function appendChild(parentDom, dom) {
   	parentDom.appendChild(dom);
   }
@@ -1091,10 +1101,10 @@
   	}
   }
 
-  function replaceVListWithNode(parentDom, vList, dom) {
+  function replaceVListWithNode(parentDom, vList, dom, lifecycle) {
   	var pointer = vList._pointer;
 
-  	unmountVFragment(vList, parentDom, false);
+  	unmountVFragment(vList, parentDom, false, lifecycle);
   	replaceChild(parentDom, dom, pointer);
   }
 
@@ -1117,7 +1127,7 @@
   		lastInstance = lastNode;
   		lastNode = instanceLastNode;
   	}
-  	unmount(lastNode, false);
+  	unmount(lastNode, null, lifecycle);
   	var dom = mount(nextNode, null, lifecycle, context, isSVG);
 
   	nextNode._dom = dom;
@@ -1157,18 +1167,12 @@
   	return document.activeElement;
   }
 
-  function removeAllChildren(dom, children) {
-  	if (recyclingEnabled) {
-  		var childrenLength = children.length;
+  function removeAllChildren(dom, children, lifecycle) {
+  	for (var i = 0; i < children.length; i++) {
+  		var child = children[i];
 
-  		if (childrenLength > 5) {
-  			for (var i = 0; i < childrenLength; i++) {
-  				var child = children[i];
-
-  				if (!isInvalid(child)) {
-  					pool(child);
-  				}
-  			}
+  		if (!isInvalid(child)) {
+  			unmount(child, null, lifecycle);
   		}
   	}
   	dom.textContent = '';
@@ -1228,35 +1232,26 @@
   	}
   }
 
-  function handleAttachedHooks(hooks, lifecycle, dom) {
-  	if (!isNullOrUndef(hooks.onCreated)) {
-  		hooks.onCreated(dom);
-  	}
-  	if (!isNullOrUndef(hooks.onAttached)) {
-  		lifecycle.addListener(function () {
-  			hooks.onAttached(dom);
-  		});
-  	}
-  }
+  function setValueProperty(node, dom) {
+  	var value = node.value;
 
-  function setValueProperty(nextNode) {
-  	var value = nextNode.attrs.value;
   	if (!isNullOrUndef(value)) {
-  		nextNode._dom.value = value;
+  		dom.value = value;
   	}
   }
 
-  function setFormElementProperties(nextTag, nextNode) {
+  function setFormElementProperties(nextTag, node, dom) {
   	if (nextTag === 'input') {
-  		var inputType = nextNode.attrs.type;
+  		var inputType = node.type;
   		if (inputType === 'text') {
-  			setValueProperty(nextNode);
+  			setValueProperty(node, dom);
   		} else if (inputType === 'checkbox' || inputType === 'radio') {
-  			var checked = nextNode.attrs.checked;
-  			nextNode._dom.checked = !!checked;
+  			var checked = node.checked;
+
+  			node.checked = !!checked;
   		}
   	} else if (nextTag === 'textarea') {
-  		setValueProperty(nextNode);
+  		setValueProperty(node, dom);
   	}
   }
 
@@ -1282,7 +1277,7 @@
   	var templateReducers = vTemplate._tr;
   	var dom = null;
 
-  	if (recyclingEnabled$1) {
+  	if (recyclingEnabled) {
   		dom = recycleVTemplate(vTemplate, lifecycle, context, isSVG);
   	}
   	if (isNull(dom)) {
@@ -1308,14 +1303,16 @@
   	var dom = documentCreateElement(tag, isSVG);
   	var children = vElement._children;
   	var props = vElement._props;
-  	var hooks = vElement._hooks;
+  	var ref = vElement._ref;
 
   	vElement._dom = dom;
-  	if (!isNullOrUndef(hooks)) {
-  		handleAttachedHooks(hooks, lifecycle, dom);
+  	if (!isNullOrUndef(ref)) {
+  		lifecycle.addListener(function () {
+  			ref(dom);
+  		});
   	}
   	if (!isNullOrUndef(children)) {
-  		mountChildren$1(vElement._childrenType, children, dom, lifecycle, context, isSVG);
+  		mountChildren(vElement._childrenType, children, dom, lifecycle, context, isSVG);
   	}
   	if (!isNullOrUndef(props)) {
   		handleSelects(vElement);
@@ -1409,7 +1406,7 @@
   	}
   }
 
-  function mountChildren$1(childrenType, children, parentDom, lifecycle, context, isSVG) {
+  function mountChildren(childrenType, children, parentDom, lifecycle, context, isSVG) {
   	if (isTextChildrenType(childrenType)) {
   		setTextContent(parentDom, children);
   	} else if (isNodeChildrenType(childrenType)) {
@@ -1441,6 +1438,7 @@
   		}
   		instance._unmounted = false;
   		instance._pendingSetState = true;
+  		instance._vComponent = vComponent;
   		instance.componentWillMount();
   		var input = instance.render();
 
@@ -1473,7 +1471,7 @@
   		var input$1 = Component(props, context);
 
   		if (isInvalid(input$1)) {
-  			node = createVPlaceholder();
+  			input$1 = createVPlaceholder();
   		}
   		dom = mount(input$1, null, lifecycle, context, null, false);
   		vComponent._instance = input$1;
@@ -1518,14 +1516,20 @@
   	return componentToDOMNodeMap.get(domNode) || null;
   }
 
+  var documetBody = isBrowser ? document.body : null;
+
   function render(input, parentDom) {
   	var root = roots.get(parentDom);
   	var lifecycle = new Lifecycle();
 
+  	if (documetBody === parentDom) {
+  		throw Error('Inferno Error: you cannot render() to the "document.body". Use an empty element as a container instead.');
+  	}
+
   	if (isUndefined(root)) {
   		if (!isInvalid(input)) {
   			if (!hydrate(input, parentDom, lifecycle)) {
-  				mount(input, parentDom, lifecycle, {}, false);
+  				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false);
   			}
   			lifecycle.trigger();
   			roots.set(parentDom, { input: input });
@@ -1537,7 +1541,7 @@
   			unmount(root.input, parentDom);
   			roots.delete(parentDom);
   		} else {
-  			patch(root.input, input, parentDom, lifecycle, {}, false);
+  			patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false);
   		}
   		lifecycle.trigger();
   		root.input = input;
@@ -1676,7 +1680,7 @@
   		component._pendingState = {};
   		var nextInput = component._updateComponent(prevState, nextState, props, props, force);
 
-  		if (nextInput === NO_RENDER) {
+  		if (nextInput === NO_OP) {
   			nextInput = component._lastInput;
   		} else if (isNullOrUndef(nextInput)) {
   			nextInput = createVPlaceholder();
@@ -1688,6 +1692,7 @@
 
   		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
   		component._lastInput = nextInput;
+  		component._vComponent._dom = nextInput._dom;
   		component._componentToDOMNodeMap.set(component, nextInput.dom);
   		component.componentDidUpdate(props, prevState);
   		subLifecycle.trigger();
@@ -1713,6 +1718,7 @@
   	this._pendingSetState = false;
   	this._pendingState = {};
   	this._lastInput = null;
+  	this._vComponent = null;
   	this._unmounted = true;
   	this.context = context || {};
   	this._patch = null;
@@ -1894,10 +1900,11 @@
   	return !!voidElements[str];
   }
 
-  function renderComponent(Component, props, children, context, isRoot) {
-  	props = addChildrenToProps(children, props);
+  function renderComponent(vComponent, isRoot, context) {
+  	var Component = vComponent._component;
+  	var props = vComponent._props;
 
-  	if (isStatefulComponent(Component)) {
+  	if (isStatefulComponent(vComponent)) {
   		var instance = new Component(props);
   		var childContext = instance.getChildContext();
 
@@ -1925,11 +1932,11 @@
   		for (var i = 0; i < children.length; i++) {
   			var child = children[i];
   			var isText = isStringOrNumber(child);
-  			var isInvalid$1 = isInvalid$1(child);
+  			var invalid = isInvalid(child);
 
-  			if (isText || isInvalid$1) {
+  			if (isText || invalid) {
   				if (insertComment === true) {
-  					if (isInvalid$1(child)) {
+  					if (isInvalid(child)) {
   						childrenResult.push('<!--!-->');
   					} else {
   						childrenResult.push('<!---->');
@@ -1980,52 +1987,47 @@
   	}
   }
 
+  function renderVElement(vElement, isRoot, context) {
+  	var tag = vElement._tag;
+  	var outputProps = [];
+  	var props = vElement._props;
+  	var propsKeys = (props && Object.keys(props)) || [];
+  	var html = '';
+
+  	for (var i = 0; i < propsKeys.length; i++) {
+  		var prop = propsKeys[i];
+  		var value = props[prop];
+
+  		if (prop === 'dangerouslySetInnerHTML') {
+  			html = value.__html;
+  		} else if (prop === 'style') {
+  			outputProps.push('style="' + renderStyleToString(props.style) + '"');
+  		} else if (prop === 'className') {
+  			outputProps.push('class="' + value + '"');
+  		} else {
+  			if (isStringOrNumber(value)) {
+  				outputProps.push(escapeAttr(prop) + '="' + escapeAttr(value) + '"');
+  			} else if (isTrue(value)) {
+  				outputProps.push(escapeAttr(prop));
+  			}
+  		}
+  	}
+  	if (isRoot) {
+  		outputProps.push('data-infernoroot');
+  	}
+  	if (isVoidElement(tag)) {
+  		return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">");
+  	} else {
+  		return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren(vElement._children, context)) + "</" + tag + ">");
+  	}
+  }
+
   function renderNode(node, context, isRoot) {
   	if (!isInvalid(node)) {
-  		var bp = node.bp;
-  		var tag = node.tag || (bp && bp.tag);
-  		var outputAttrs = [];
-  		var className = node.className;
-  		var style = node.style;
-
-  		if (isFunction(tag)) {
-  			return renderComponent(tag, node.attrs, node.children, context, isRoot);
-  		}
-  		if (!isNullOrUndef(className)) {
-  			outputAttrs.push('class="' + escapeAttr(className) + '"');
-  		}
-  		if (!isNullOrUndef(style)) {
-  			outputAttrs.push('style="' + renderStyleToString(style) + '"');
-  		}
-  		var attrs = node.attrs;
-  		var attrKeys = (attrs && Object.keys(attrs)) || [];
-  		var html = '';
-
-  		if (bp && bp.hasAttrs === true) {
-  			attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
-  		}
-  		attrKeys.forEach(function (attrsKey, i) {
-  			var attr = attrKeys[i];
-  			var value = attrs[attr];
-
-  			if (attr === 'dangerouslySetInnerHTML') {
-  				html = value.__html;
-  			} else {
-  				if (isStringOrNumber(value)) {
-  					outputAttrs.push(escapeAttr(attr) + '="' + escapeAttr(value) + '"');
-  				} else if (isTrue(value)) {
-  					outputAttrs.push(escapeAttr(attr));
-  				}
-  			}
-  		});
-
-  		if (isRoot) {
-  			outputAttrs.push('data-infernoroot');
-  		}
-  		if (isVoidElement(tag)) {
-  			return ("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">");
-  		} else {
-  			return ("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">" + (html || renderChildren(node.children, context)) + "</" + tag + ">");
+  		if (isVElement(node)) {
+  			return renderVElement(node, isRoot, context);
+  		} else if (isVComponent(node)) {
+  			return renderComponent(node, isRoot, context);
   		}
   	}
   }
@@ -2039,6 +2041,10 @@
   }
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
+
+  function interopDefault(ex) {
+  	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
+  }
 
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -2376,7 +2382,7 @@
 
   });
 
-  var PropTypes = (index$1 && typeof index$1 === 'object' && 'default' in index$1 ? index$1['default'] : index$1);
+  var PropTypes = interopDefault(index$1);
 
   function unmountComponentAtNode(container) {
   	render(null, container);
@@ -2389,9 +2395,9 @@
 
   	return createElement.apply(
   		void 0, [ element.tag,
-  		Object.assign({}, 
-  			element.attrs || {}, 
-  			props || {}, 
+  		Object.assign({},
+  			element.attrs || {},
+  			props || {},
   			element.className ? { className: element.className } : {},
   			element.style ? { style: element.style } : {},
   			element.key ? { key: element.key } : {},

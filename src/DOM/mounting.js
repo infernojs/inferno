@@ -3,28 +3,13 @@ import {
 	isStringOrNumber,
 	isFunction,
 	isNullOrUndef,
-	addChildrenToProps,
 	isStatefulComponent,
 	isString,
 	isInvalid,
-	getRefInstance,
-	isNull,
-	isUndefined,
-	isTrue,
-	isObject
+	isNull
 } from './../core/utils';
-import {
-	setTextContent,
-	documentCreateElement,
-	selectValue,
-	insertOrAppend,
-	normaliseChild,
-	isPropertyOfElement,
-	namespaces,
-	appendChild
-} from './utils';
-import { patchAttribute, patchStyle, patch, patchProp } from './patching';
-import { handleLazyAttached } from './lifecycle';
+import { setTextContent, documentCreateElement, selectValue, normaliseChild, appendChild, normalise } from './utils';
+import { patchStyle, patch, patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import {
 	createVPlaceholder,
@@ -34,9 +19,7 @@ import {
 	isVElement,
 	isVComponent,
 	isVTemplate,
-	NodeTypes,
 	isVariable,
-	isVRoot,
 	isVNode
 } from '../core/shapes';
 import {
@@ -46,7 +29,6 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/ChildrenTypes';
-import { normalise } from './utils';
 import { recycleVTemplate, recyclingEnabled } from './templates';
 
 export function mount(input, parentDom, lifecycle, context, isSVG) {
@@ -62,15 +44,9 @@ export function mount(input, parentDom, lifecycle, context, isSVG) {
 		return mountVElement(input, parentDom, lifecycle, context, isSVG);
 	} else if (isVComponent(input)) {
 		return mountVComponent(input, parentDom, lifecycle, context, isSVG);
-	} else if (isVRoot(input)) {
-		return mountVRoot(input, parentDom, lifecycle, context, isSVG);
 	} else {
 		throw Error('Inferno Error: Bad input argument called on mount(). Input argument may need normalising.');
 	}
-}
-
-function mountVRoot(vRoot, parentDom, lifecycle, context, isSVG) {
-	debugger;
 }
 
 export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) {
@@ -316,8 +292,8 @@ export function mountVariableAsText(pointer) {
 	};
 }
 
-export function mountDOMNodeFromTemplate(templateDomNode, isRoot, deepClone) {
-	return function mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context) {
+export function mountDOMNodeFromTemplate(templateDomNode, deepClone) {
+	return function mountDOMNodeFromTemplate(vTemplate, parentDom) {
 		const domNode = templateDomNode.cloneNode(deepClone);
 
 		if (!isNull(parentDom)) {

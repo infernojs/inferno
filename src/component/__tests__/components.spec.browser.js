@@ -801,7 +801,7 @@ describe('Components (non-JSX)', () => {
 
 		class conditionalComponent extends Component {
 			render() {
-				return createElement('div', null, [ this.props.condition ? tpl3625453295() : tpl4021787591(), 
+				return createElement('div', null, [ this.props.condition ? tpl3625453295() : tpl4021787591(),
 					createElement('p', null, 'test')
 				]);
 			}
@@ -937,7 +937,7 @@ describe('Components (non-JSX)', () => {
 
 		const tpl3754840163 = function (v0) {
 			return createElement('div', null,
-				createElement('button', { onclick: v0 }, 'Make visible') 
+				createElement('button', { onclick: v0 }, 'Make visible')
 			);
 		};
 
@@ -1008,7 +1008,7 @@ describe('Components (non-JSX)', () => {
 
 		const Looper = function (v0) {
 			return createElement('div', null,
-				createElement('h1', null, v0) 
+				createElement('h1', null, v0)
 			);
 		};
 

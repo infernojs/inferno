@@ -152,7 +152,7 @@ describe('HTML Form Elements', () => {
 					<input type="radio" name="gender" checked value="female"/> Female
 					<input type="radio" name="gender" value="other"/> Other
 				</div>, container);
-			
+
 			expect(container.firstChild.firstChild.value).to.equal("male");
 			expect(container.firstChild.firstChild.checked).to.equal(false);
 			expect(container.firstChild.children[1].value).to.equal("female");

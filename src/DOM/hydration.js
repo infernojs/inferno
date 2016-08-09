@@ -7,22 +7,10 @@ import {
 	addChildrenToProps,
 	isStatefulComponent
 } from './../core/utils';
-import {
-	replaceChild,
-	handleAttachedHooks,
-	normaliseChild
-} from './utils';
-import {
-	handleSelects,
-	mountVText
-} from './mounting';
+import { replaceChild, normaliseChild } from './utils';
+import { handleSelects, mountVText } from './mounting';
 import { patch, patchStyle } from './patching';
-import {
-	createVPlaceholder,
-	isVPlaceholder,
-	isVFragment,
-	isVText
-} from '../core/shapes';
+import { createVPlaceholder, isVPlaceholder, isVFragment, isVText } from '../core/shapes';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];
@@ -163,7 +151,7 @@ function hydrateNode(node, domNode, parentDom, lifecycle, context, isRoot) {
 			const hooks = node.hooks;
 
 			if ((bp && bp.hasHooks === true) || !isNullOrUndef(hooks)) {
-				handleAttachedHooks(hooks, lifecycle, domNode);
+				// handleAttachedHooks(hooks, lifecycle, domNode); TODO
 			}
 			const children = node.children;
 

@@ -5372,7 +5372,7 @@ describe('Benchmark - functionalComponent (JSX)', () => {
 		container = document.createElement('div');
 		document.body.appendChild(container)
 	});
-		
+
 	afterEach(function () {
 		document.body.removeChild(container);
 		render(null, container);

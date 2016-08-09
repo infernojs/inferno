@@ -6698,12 +6698,12 @@ describe('Benchmark - createClass (JSX)', () => {
 	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
-	});	
+	});
 
 	afterEach(function () {
 		document.body.removeChild(container);
 		render(null, container);
-	});		
+	});
 
 	it('Run the benchmark once', () => {
 		runBenchmark(container);

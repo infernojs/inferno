@@ -1,29 +1,13 @@
 import {
 	isArray,
 	isStringOrNumber,
-	isFunction,
 	isNullOrUndef,
-	addChildrenToProps,
-	isStatefulComponent,
-	isString,
 	isInvalid,
 	getRefInstance,
 	isNull,
-	isUndefined,
-	isTrue,
-	isObject
+	isUndefined
 } from './../core/utils';
-import {
-	appendText,
-	documentCreateElement,
-	selectValue,
-	handleAttachedHooks,
-	insertOrAppend,
-	normalise,
-	isPropertyOfElement,
-	namespaces,
-	setTextContent
-} from './utils';
+import { appendText, documentCreateElement, handleAttachedHooks, normalise, setTextContent } from './utils';
 import {
 	isVElement,
 	isVComponent,
@@ -56,14 +40,8 @@ import {
 	patchTemplateStyle,
 	patchTemplateProps
 } from './patching';
-import {
-	unmountVariableAsExpression,
-	unmountVariableAsChildren,
-	unmountVariableAsText
-} from './unmounting';
-import {
-	ChildrenTypes
-} from '../core/ChildrenTypes';
+import { unmountVariableAsExpression, unmountVariableAsChildren, unmountVariableAsText } from './unmounting';
+import { ChildrenTypes } from '../core/ChildrenTypes';
 
 export const recyclingEnabled = true;
 
@@ -122,7 +100,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 				patch = combinePatchTo2(nodeIndex, patchVariableAsText(text._pointer));
 				unmount = unmountVariableAsText(text._pointer);
 			} else {
-				mount = mountDOMNodeFromTemplate(document.createTextNode(text), isRoot, true);
+				mount = mountDOMNodeFromTemplate(document.createTextNode(text), true);
 				patch = null;
 				unmount = null;
 			}
@@ -231,7 +209,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					}
 				}
 			}
-			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, isRoot, deepClone), mounters);
+			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);
 			unmount = combineUnmount(nodeIndex, unmounters);
 		} else if (isVComponent(vNode)) {

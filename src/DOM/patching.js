@@ -1,16 +1,12 @@
 import {
 	isNullOrUndef,
 	isString,
-	addChildrenToProps,
 	isStatefulComponent,
 	isStringOrNumber,
 	isInvalid,
 	NO_OP,
 	isNumber,
-	isFunction,
 	isArray,
-	isUndefined,
-	isObject,
 	isAttrAnEvent
 } from './../core/utils';
 import {
@@ -35,18 +31,15 @@ import {
 	setFormElementProperties,
 	removeAllChildren,
 	replaceWithNewNode,
-	removeEvents,
 	selectValue,
 	updateTextContent,
 	setTextContent,
-	isPropertyOfElement,
 	replaceChild,
 	normalise
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
 	createVPlaceholder,
-	createVText,
 	isVElement,
 	isVFragment,
 	isVText,
@@ -55,7 +48,7 @@ import {
 	isVTemplate,
 	isVNode
 } from '../core/shapes';
-import { unmount, unmountVNode } from './unmounting';
+import { unmount } from './unmounting';
 import {
 	isKeyedListChildrenType,
 	isTextChildrenType,
@@ -241,10 +234,9 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 }
 
 function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
-	const tag = nextVElement._tag;
-
 	lastProps = lastProps || {};
 	nextProps = nextProps || {};
+
 	if (lastVElement._tag === 'select') {
 		selectValue(nextVElement);
 	}
@@ -254,7 +246,7 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 
 		if (lastValue !== nextValue) {
 			if (isNullOrUndef(nextValue)) {
-				removeProp(tag, prop, dom);
+				removeProp(prop, dom);
 			} else {
 				patchProp(prop, lastValue, nextValue, dom);
 			}
@@ -262,7 +254,7 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 	}
 	for (let prop in lastProps) {
 		if (isNullOrUndef(nextProps[prop])) {
-			removeProp(tag, prop, dom);
+			removeProp(prop, dom);
 		}
 	}
 }
@@ -297,7 +289,7 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 	return true;
 }
 
-function removeProp(tag, prop, dom) {
+function removeProp(prop, dom) {
 	if (prop === 'className') {
 		dom.removeAttribute('class');
 	} else if (prop === 'value') {
@@ -360,7 +352,6 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 		replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG);
 	} else {
 		if (isStatefulComponent(nextVComponent)) {
-			const dom = lastVComponent._dom;
 			const instance = lastVComponent._instance;
 			const lastProps = instance.props;
 			const lastState = instance.state;

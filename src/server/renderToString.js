@@ -1,20 +1,15 @@
 import {
-	isArray,
-	isStringOrNumber,
-	isNullOrUndef,
-	isInvalid,
-	isFunction,
-	addChildrenToProps,
-	isStatefulComponent,
-	isNumber,
-	isTrue
+    isArray,
+    isStringOrNumber,
+    isNullOrUndef,
+    isInvalid,
+    isStatefulComponent,
+    isNumber,
+    isTrue
 } from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
 import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
-import {
-	isVElement,
-	isVComponent
-} from './../core/shapes';
+import { isVElement, isVComponent } from './../core/shapes';
 
 function renderComponent(vComponent, isRoot, context) {
 	const Component = vComponent._component;

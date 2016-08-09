@@ -1,6 +1,6 @@
 import Component from '../component/es2015';
-import { warning, shallowEqual } from './utils';
-import { isFunction, isArray, isNullOrUndef, toArray } from '../core/utils';
+import { warning } from './utils';
+import { isNullOrUndef, toArray } from '../core/utils';
 
 let didWarnAboutReceivingStore = false;
 function warnAboutReceivingStore() {

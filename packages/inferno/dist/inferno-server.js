@@ -9,22 +9,6 @@
 	(global.InfernoServer = factory());
 }(this, function () { 'use strict';
 
-	function addChildrenToProps(children, props) {
-		if (!isNullOrUndef(children)) {
-			var isChildrenArray = isArray(children);
-			if (isChildrenArray && children.length > 0 || !isChildrenArray) {
-				if (props) {
-					props = Object.assign({}, props, { children: children });
-				} else {
-					props = {
-						children: children
-					};
-				}
-			}
-		}
-		return props;
-	}
-
 	function isArray(obj) {
 		return obj instanceof Array;
 	}
@@ -45,10 +29,6 @@
 		return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 	}
 
-	function isFunction(obj) {
-		return typeof obj === 'function';
-	}
-
 	function isString(obj) {
 		return typeof obj === 'string';
 	}
@@ -67,6 +47,24 @@
 
 	function isUndefined(obj) {
 		return obj === undefined;
+	}
+
+	var NodeTypes = {
+		ELEMENT: 0,
+		COMPONENT: 1,
+		TEMPLATE: 2,
+		TEXT: 3,
+		PLACEHOLDER: 4,
+		FRAGMENT: 5,
+		VARIABLE: 6
+	};
+
+	function isVElement(o) {
+		return o._type === NodeTypes.ELEMENT;
+	}
+
+	function isVComponent(o) {
+		return o._type === NodeTypes.COMPONENT;
 	}
 
 	function constructDefaults(string, object, value) {
@@ -130,10 +128,11 @@
 		return !!voidElements[str];
 	}
 
-	function renderComponent(Component, props, children, context, isRoot) {
-		props = addChildrenToProps(children, props);
+	function renderComponent(vComponent, isRoot, context) {
+		var Component = vComponent._component;
+		var props = vComponent._props;
 
-		if (isStatefulComponent(Component)) {
+		if (isStatefulComponent(vComponent)) {
 			var instance = new Component(props);
 			var childContext = instance.getChildContext();
 
@@ -161,11 +160,11 @@
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
 				var isText = isStringOrNumber(child);
-				var isInvalid$1 = isInvalid$1(child);
+				var invalid = isInvalid(child);
 
-				if (isText || isInvalid$1) {
+				if (isText || invalid) {
 					if (insertComment === true) {
-						if (isInvalid$1(child)) {
+						if (isInvalid(child)) {
 							childrenResult.push('<!--!-->');
 						} else {
 							childrenResult.push('<!---->');
@@ -216,52 +215,47 @@
 		}
 	}
 
+	function renderVElement(vElement, isRoot, context) {
+		var tag = vElement._tag;
+		var outputProps = [];
+		var props = vElement._props;
+		var propsKeys = (props && Object.keys(props)) || [];
+		var html = '';
+
+		for (var i = 0; i < propsKeys.length; i++) {
+			var prop = propsKeys[i];
+			var value = props[prop];
+
+			if (prop === 'dangerouslySetInnerHTML') {
+				html = value.__html;
+			} else if (prop === 'style') {
+				outputProps.push('style="' + renderStyleToString(props.style) + '"');
+			} else if (prop === 'className') {
+				outputProps.push('class="' + value + '"');
+			} else {
+				if (isStringOrNumber(value)) {
+					outputProps.push(escapeAttr(prop) + '="' + escapeAttr(value) + '"');
+				} else if (isTrue(value)) {
+					outputProps.push(escapeAttr(prop));
+				}
+			}
+		}
+		if (isRoot) {
+			outputProps.push('data-infernoroot');
+		}
+		if (isVoidElement(tag)) {
+			return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">");
+		} else {
+			return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren(vElement._children, context)) + "</" + tag + ">");
+		}
+	}
+
 	function renderNode(node, context, isRoot) {
 		if (!isInvalid(node)) {
-			var bp = node.bp;
-			var tag = node.tag || (bp && bp.tag);
-			var outputAttrs = [];
-			var className = node.className;
-			var style = node.style;
-
-			if (isFunction(tag)) {
-				return renderComponent(tag, node.attrs, node.children, context, isRoot);
-			}
-			if (!isNullOrUndef(className)) {
-				outputAttrs.push('class="' + escapeAttr(className) + '"');
-			}
-			if (!isNullOrUndef(style)) {
-				outputAttrs.push('style="' + renderStyleToString(style) + '"');
-			}
-			var attrs = node.attrs;
-			var attrKeys = (attrs && Object.keys(attrs)) || [];
-			var html = '';
-
-			if (bp && bp.hasAttrs === true) {
-				attrKeys = bp.attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
-			}
-			attrKeys.forEach(function (attrsKey, i) {
-				var attr = attrKeys[i];
-				var value = attrs[attr];
-
-				if (attr === 'dangerouslySetInnerHTML') {
-					html = value.__html;
-				} else {
-					if (isStringOrNumber(value)) {
-						outputAttrs.push(escapeAttr(attr) + '="' + escapeAttr(value) + '"');
-					} else if (isTrue(value)) {
-						outputAttrs.push(escapeAttr(attr));
-					}
-				}
-			});
-
-			if (isRoot) {
-				outputAttrs.push('data-infernoroot');
-			}
-			if (isVoidElement(tag)) {
-				return ("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">");
-			} else {
-				return ("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">" + (html || renderChildren(node.children, context)) + "</" + tag + ">");
+			if (isVElement(node)) {
+				return renderVElement(node, isRoot, context);
+			} else if (isVComponent(node)) {
+				return renderComponent(node, isRoot, context);
 			}
 		}
 	}

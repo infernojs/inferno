@@ -83,7 +83,7 @@ describe('Components (JSX)', () => {
 				}
 			}
 
-			class D extends Component {			
+			class D extends Component {
 				render() {
 					return (
 						<div>

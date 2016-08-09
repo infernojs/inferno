@@ -1229,7 +1229,7 @@ describe('Update (non-jsx)', () => {
 
 			it('variation 6', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null,
-					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, [ 
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, [
 						'text 1',
 						createElement('br')
 					]))

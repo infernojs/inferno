@@ -1,6 +1,5 @@
 import Provider from '../Provider';
-import connect from '../connect';
-import { findDOMNode, render } from './../../DOM/rendering';
+import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
 import Route from '../../router/Route';
 import Router from '../../router/Router';
