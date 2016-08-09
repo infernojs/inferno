@@ -28,6 +28,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.9.0",
     "chai": "^3.5.0",
+    "concat-stream": "^1.5.1",
     "coveralls": "^2.11.9",
     "cross-env": "^1.0.8",
     "eslint": "^3.0.1",

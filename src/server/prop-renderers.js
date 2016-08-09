@@ -1,6 +1,6 @@
 import {
 	isStringOrNumber,
-	isNullOrUndefined,
+	isNullOrUndef,
 	isNumber
 } from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
@@ -18,7 +18,7 @@ export function renderStyleToString(style) {
 			const value = style[styleName];
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
-			if (!isNullOrUndefined(value)) {
+			if (!isNullOrUndef(value)) {
 				styles.push(`${ toHyphenCase(styleName) }:${ escapeAttr(value) }${ px };`);
 			}
 		}
@@ -26,26 +26,23 @@ export function renderStyleToString(style) {
 	}
 }
 
-export function renderAttributes(bp, attrs){
+export function renderAttributes(props){
 	const outputAttrs = [];
-	let attrKeys = (attrs && Object.keys(attrs)) || [];
-	let html = '';
+	const propsKeys = (props && Object.keys(props)) || [];
 
-	if (bp && bp.hasAttrs === true) {
-		attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
-	}
-	attrKeys.forEach((attrsKey, i) => {
-		const attr = attrKeys[i];
-		const value = attrs[attr];
-
-		if (attr === 'dangerouslySetInnerHTML') {
-			return;
-		} else {
-			if (isStringOrNumber(value)) {
-				outputAttrs.push(escapeAttr(attr) + '="' + escapeAttr(value) + '"');
-			} else if (isTrue(value)) {
-				outputAttrs.push(escapeAttr(attr));
-			}
+	propsKeys.forEach((propKey, i) => {
+		const value = props[propKey];
+		switch (propKey) {
+			case 'dangerouslySetInnerHTML' :
+			case 'className' :
+			case 'style' :
+				return;
+			default :
+				if (isStringOrNumber(value)) {
+					outputAttrs.push(escapeAttr(propKey) + '="' + escapeAttr(value) + '"');
+				} else if (isTrue(value)) {
+					outputAttrs.push(escapeAttr(propKey));
+				}
 		}
 	});
 

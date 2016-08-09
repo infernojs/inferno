@@ -1,8 +1,8 @@
 import {
 	isArray,
 	isStringOrNumber,
-	isNullOrUndefined,
-	isInvalidNode,
+	isNullOrUndef,
+	isInvalid,
 	isFunction,
 	addChildrenToProps,
 	isStatefulComponent,
@@ -12,6 +12,10 @@ import {
 import { isUnitlessNumber } from '../DOM/utils';
 import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
 import { Readable } from 'stream';
+import {
+	isVElement,
+	isVComponent
+} from './../core/shapes';
 import { renderStyleToString, renderAttributes } from './prop-renderers';
 
 export class RenderStream extends Readable {
@@ -38,30 +42,26 @@ export class RenderStream extends Readable {
 	}
 
 	renderNode(node, context, isRoot){
-		if (isInvalidNode(node)) {
+		if (isInvalid(node)) {
 			return;
-		}
-
-		const bp = node.bp;
-		const tag = node.tag || (bp && bp.tag);
-
-		if (isFunction(tag)) {
-			return this.renderComponent(tag, node.attrs, node.children, context, isRoot);
-		} else {
-			return this.renderNative(tag, node, context, isRoot);
+		} else if (isVComponent(node)) {
+			return this.renderComponent(node, isRoot, context);
+		} else if (isVElement(node)) {
+			return this.renderNative(node, isRoot, context);
 		}
 	}
-	renderComponent(Component, props, children, context, isRoot) {
-		props = addChildrenToProps(children, props);
+	renderComponent(vComponent, isRoot, context) {
+		const Component = vComponent._component;
+		const props = vComponent._props;
 
-		if (!isStatefulComponent(Component)) {
-			return this.renderNode(Component(props, context), context, isRoot);
+		if (!isStatefulComponent(vComponent)) {
+			return this.renderNode(Component(props), context, isRoot);
 		}
 
-		const instance = new Component(props, context);
+		const instance = new Component(props);
 		const childContext = instance.getChildContext();
 
-		if (!isNullOrUndefined(childContext)) {
+		if (!isNullOrUndef(childContext)) {
 			context = Object.assign({}, context, childContext);
 		}
 		instance.context = context;
@@ -84,7 +84,7 @@ export class RenderStream extends Readable {
 		}
 
 		const childrenIsArray = isArray(children);
-		if (!childrenIsArray && !isInvalidNode(children)) {
+		if (!childrenIsArray && !isInvalid(children)) {
 			return this.renderNode(children, context, false);
 		}
 		if (!childrenIsArray) {
@@ -93,11 +93,11 @@ export class RenderStream extends Readable {
 		return children.reduce((p, child)=> {
 			return p.then((insertComment)=>{
 				const isText = isStringOrNumber(child);
-				const isInvalid = isInvalidNode(child);
+				const childIsInvalid = isInvalid(child);
 
-				if (isText || isInvalid) {
+				if (isText || childIsInvalid) {
 					if (insertComment === true) {
-						if (isInvalid) {
+						if (childIsInvalid) {
 							this.push('<!--!-->');
 						} else {
 							this.push('<!---->');
@@ -123,24 +123,28 @@ export class RenderStream extends Readable {
 		}, Promise.resolve(false));
 	}
 
-	renderNative(tag, node, context, isRoot) {
-		const bp = node.bp;
-		const attrs = node.attrs;
-		const className = node.className;
-		const style = node.style;
+	renderNative(vElement, isRoot, context) {
+		const tag = vElement._tag;
+		const outputProps = [];
+		const props = vElement._props;
 
-		const outputAttrs = renderAttributes(bp, attrs);
-		if (!isNullOrUndefined(className)) {
-			outputAttrs.push('class="' + escapeAttr(className) + '"');
-		}
-		if (!isNullOrUndefined(style)) {
-			outputAttrs.push('style="' + renderStyleToString(style) + '"');
-		}
+		const outputAttrs = renderAttributes(props);
 
 		let html = '';
+		if (props) {
+			const className = props.className;
+			if (className) {
+				outputAttrs.push('class="' + escapeAttr(className) + '"');
+			}
 
-		if (attrs && 'dangerouslySetInnerHTML' in attrs) {
-			html = attrs[ 'dangerouslySetInnerHTML' ].__html;
+			const style = props.style;
+			if (style) {
+				outputAttrs.push('style="' + renderStyleToString(style) + '"');
+			}
+
+			if (props.dangerouslySetInnerHTML) {
+				html = props.dangerouslySetInnerHTML.__html;
+			}
 		}
 
 
@@ -156,7 +160,7 @@ export class RenderStream extends Readable {
 			this.push(`</${tag}>`);
 			return;
 		}
-		return Promise.resolve(this.renderChildren(node.children, context)).then(()=>{
+		return Promise.resolve(this.renderChildren(vElement._children, context)).then(()=>{
 			this.push(`</${tag}>`);
 		});
 	}
