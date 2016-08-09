@@ -36,6 +36,11 @@
 	};
 
 	// added $ before all argument names to stop a silly Safari bug
+	function initProps(o) {
+		if (!o._props) {
+			o._props = {};
+		}
+	}
 
 	var VElement = function VElement($tag) {
 		this._type = NodeTypes.ELEMENT;
@@ -44,7 +49,7 @@
 		this._children = null;
 		this._key = null;
 		this._props = null;
-		this._hooks = null;
+		this._ref = null;
 		this._childrenType = ChildrenTypes.UNKNOWN;
 	};
 	VElement.prototype.children = function children ($children) {
@@ -59,8 +64,8 @@
 		this._props = $props;
 		return this;
 	};
-	VElement.prototype.hooks = function hooks ($hooks) {
-		this._hooks = $hooks;
+	VElement.prototype.ref = function ref ($ref) {
+		this._ref = $ref;
 		return this;
 	};
 	VElement.prototype.events = function events ($events) {
@@ -71,12 +76,27 @@
 		this._childrenType = $childrenType;
 		return this;
 	};
+	VElement.prototype.className = function className ($className) {
+		initProps(this);
+		this._props.className = $className;
+		return this;
+	};
+	VElement.prototype.style = function style ($style) {
+		initProps(this);
+		this._props.style = $style;
+		return this;
+	};
+	VElement.prototype.events = function events () {
+		initProps(this);
+		debugger;
+		return this;
+	};
 
 	var VComponent = function VComponent($component) {
 		this._type = NodeTypes.COMPONENT;
 		this._dom = null;
 		this._component = $component;
-		this._props = null;
+		this._props = {};
 		this._hooks = null;
 		this._key = null;
 		this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);

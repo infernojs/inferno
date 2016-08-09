@@ -50,6 +50,11 @@
     };
 
     // added $ before all argument names to stop a silly Safari bug
+    function initProps(o) {
+    	if (!o._props) {
+    		o._props = {};
+    	}
+    }
 
     var VElement = function VElement($tag) {
     	this._type = NodeTypes.ELEMENT;
@@ -58,7 +63,7 @@
     	this._children = null;
     	this._key = null;
     	this._props = null;
-    	this._hooks = null;
+    	this._ref = null;
     	this._childrenType = ChildrenTypes.UNKNOWN;
     };
     VElement.prototype.children = function children ($children) {
@@ -73,8 +78,8 @@
     	this._props = $props;
     	return this;
     };
-    VElement.prototype.hooks = function hooks ($hooks) {
-    	this._hooks = $hooks;
+    VElement.prototype.ref = function ref ($ref) {
+    	this._ref = $ref;
     	return this;
     };
     VElement.prototype.events = function events ($events) {
@@ -85,12 +90,27 @@
     	this._childrenType = $childrenType;
     	return this;
     };
+    VElement.prototype.className = function className ($className) {
+    	initProps(this);
+    	this._props.className = $className;
+    	return this;
+    };
+    VElement.prototype.style = function style ($style) {
+    	initProps(this);
+    	this._props.style = $style;
+    	return this;
+    };
+    VElement.prototype.events = function events () {
+    	initProps(this);
+    	debugger;
+    	return this;
+    };
 
     var VComponent = function VComponent($component) {
     	this._type = NodeTypes.COMPONENT;
     	this._dom = null;
     	this._component = $component;
-    	this._props = null;
+    	this._props = {};
     	this._hooks = null;
     	this._key = null;
     	this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
@@ -177,7 +197,7 @@
     		component._pendingState = {};
     		var nextInput = component._updateComponent(prevState, nextState, props, props, force);
 
-    		if (nextInput === NO_RENDER) {
+    		if (nextInput === NO_OP) {
     			nextInput = component._lastInput;
     		} else if (isNullOrUndef(nextInput)) {
     			nextInput = createVPlaceholder();
@@ -189,6 +209,7 @@
 
     		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
     		component._lastInput = nextInput;
+    		component._vComponent._dom = nextInput._dom;
     		component._componentToDOMNodeMap.set(component, nextInput.dom);
     		component.componentDidUpdate(props, prevState);
     		subLifecycle.trigger();
@@ -214,6 +235,7 @@
     	this._pendingSetState = false;
     	this._pendingState = {};
     	this._lastInput = null;
+    	this._vComponent = null;
     	this._unmounted = true;
     	this.context = context || {};
     	this._patch = null;
@@ -307,8 +329,8 @@
     };
 
     var Route = (function (Component) {
-    	function Route(props) {
-    		Component.call(this, props);
+    	function Route(props, context) {
+    		Component.call(this, props, context);
     		this.state = {
     			async: null
     		};
@@ -360,13 +382,13 @@
     		var component = ref.component;
     		var params = ref.params;
 
-    		return createVComponent(component).setProps({ params: params, async: this.state.async });
+    		return createVComponent(component).props({ params: params, async: this.state.async });
     	};
 
     	return Route;
     }(Component));
 
-    var EMPTY$1 = {};
+    var EMPTY = {};
 
     function segmentize(url) {
     	return strip(url).split('/');
@@ -388,8 +410,9 @@
     }
 
     // Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
+    // Wildcard support is added on top of that.
     function exec(url, route, opts) {
-    	if ( opts === void 0 ) opts = EMPTY$1;
+    	if ( opts === void 0 ) opts = EMPTY;
 
     	var reg = /(?:\?([^#]*))?(#.*)?$/,
     		c = url.match(reg),
@@ -410,7 +433,7 @@
     	for (var i$1 = 0; i$1 < max; i$1++) {
     		if (route[i$1] && route[i$1].charAt(0) === ':') {
     			var param = route[i$1].replace(/(^\:|[+*?]+$)/g, ''),
-    				flags = (route[i$1].match(/[+*?]+$/) || EMPTY$1)[0] || '',
+    				flags = (route[i$1].match(/[+*?]+$/) || EMPTY)[0] || '',
     				plus = ~flags.indexOf('+'),
     				star = ~flags.indexOf('*'),
     				val = url[i$1] || '';
@@ -440,8 +463,8 @@
     }
 
     function pathRankSort(a, b) {
-    	var aAttr = a.attrs || EMPTY$1,
-    		bAttr = b.attrs || EMPTY$1;
+    	var aAttr = a._props || EMPTY,
+    		bAttr = b._props || EMPTY;
     	var diff = rank(bAttr.path) - rank(aAttr.path);
     	return diff || (bAttr.path.length - aAttr.path.length);
     }
@@ -451,8 +474,8 @@
     }
 
     var Router = (function (Component) {
-    	function Router(props) {
-    		Component.call(this, props);
+    	function Router(props, context) {
+    		Component.call(this, props, context);
     		if (!props.history) {
     			throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
     		}
@@ -481,6 +504,43 @@
     		this.props.history.removeRouter(this);
     	};
 
+    	Router.prototype.handleRoutes = function handleRoutes (routes, url, hashbang, wrapperComponent, lastPath) {
+    		var this$1 = this;
+
+    		routes.sort(pathRankSort);
+
+    		for (var i = 0; i < routes.length; i++) {
+    			var route = routes[i];
+    			var ref = route._props;
+    			var path = ref.path;
+    			var fullPath = lastPath + path;
+    			var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
+    			var children = toArray$1(route._props.children);
+
+    			if (children) {
+    				var subRoute = this$1.handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
+
+    				if (!isNull(subRoute)) {
+    					return subRoute;
+    				}
+    			}
+    			if (params) {
+    				if (wrapperComponent) {
+    					return createVComponent(wrapperComponent).props({
+    						params: params,
+    						children: route
+    					});
+    				}
+    				return route.props(Object.assign({}, { params: params }, route._props));
+    			}
+    		}
+    		if (!lastPath && wrapperComponent) {
+    			this._didRoute = true;
+    			return createVComponent(wrapperComponent);
+    		}
+    		return null;
+    	};
+
     	Router.prototype.routeTo = function routeTo (url) {
     		this._didRoute = false;
     		this.setState({ url: url });
@@ -488,61 +548,57 @@
     	};
 
     	Router.prototype.render = function render () {
-    		var children = toArray(this.props.children);
+    		var children = toArray$1(this.props.children);
     		var url = this.props.url || this.state.url;
     		var wrapperComponent = this.props.component;
     		var hashbang = this.props.hashbang;
 
-    		return handleRoutes(children, url, hashbang, wrapperComponent, '');
+    		return this.handleRoutes(children, url, hashbang, wrapperComponent, '');
     	};
 
     	return Router;
     }(Component));
 
-    function toArray(children) {
+    function toArray$1(children) {
     	return isArray(children) ? children : (children ? [children] : children);
     }
 
-    function handleRoutes(routes, url, hashbang, wrapperComponent, lastPath) {
-    	routes.sort(pathRankSort);
+    function Link(props, ref) {
+    	var hashbang = ref.hashbang;
+    	var history = ref.history;
 
-    	for (var i = 0; i < routes.length; i++) {
-    		var route = routes[i];
-    		var ref = route.props;
-    		var path = ref.path;
-    		var fullPath = lastPath + path;
-    		var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
-    		var children = toArray(route.children);
+    	var activeClassName = props.activeClassName;
+    	var activeStyle = props.activeStyle;
+    	var className = props.className;
+    	var to = props.to;
+    	var element = createVElement('a');
+    	var href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to;
 
-    		if (children) {
-    			var subRoute = handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
+    	if (className) {
+    		element.className(className);
+    	}
 
-    			if (!isNull(subRoute)) {
-    				return subRoute;
-    			}
+    	if (history.isActive(to, hashbang)) {
+    		if (activeClassName) {
+    			element.className((className ? className + ' ' : '') + activeClassName);
     		}
-    		if (params) {
-    			if (wrapperComponent) {
-    				return createVComponent(wrapperComponent).setProps({
-    					params: params,
-    					children: route
-    				});
-    			}
-    			return route.setProps(Object.assign({}, { params: params }, route.props));
+    		if (activeStyle) {
+    			element.style(Object.assign({}, props.style, activeStyle));
     		}
     	}
-    	return !lastPath && wrapperComponent ? createVComponent(wrapperComponent) : null;
-    }
 
-    function Link(ref, ref$1) {
-    	var to = ref.to;
-    	var children = ref.children;
-    	var hashbang = ref$1.hashbang;
-    	var history = ref$1.history;
+    	if (!hashbang) {
+    		element.events({
+    			onclick: function navigate(e) {
+    				e.preventDefault();
+    				var target = e.target;
+    				window.history.pushState(null, target.textContent, to);
+    				history.routeTo(to);
+    			}
+    		});
+    	}
 
-    	return (createVElement('a').setProps({
-    		href: hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to
-    	}).setChildren(children));
+    	return element.props({ href: href }).children(props.children);
     }
 
     var routers = [];
@@ -559,14 +615,26 @@
     	return ("" + (url.protocol + '//' || '') + (url.host || '') + (url.pathname || '') + (url.search || '') + "#!");
     }
 
+    function isActive(path, hashbang) {
+    	if (isBrowser) {
+    		if (hashbang) {
+    			var currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
+    			var matchURL = currentURL.match(/#!(.*)/);
+    			var matchHash = matchURL && typeof matchURL[1] !== 'undefined' && (matchURL[1] || '/');
+    			return matchHash === path;
+    		}
+    		return location.pathname === path;
+    	}
+    	return false;
+    }
+
     function routeTo(url) {
-    	var didRoute = false;
     	for (var i = 0; i < routers.length; i++) {
     		if (routers[i].routeTo(url) === true) {
-    			didRoute = true;
+    			return true;
     		}
     	}
-    	return didRoute;
+    	return false;
     }
 
     if (isBrowser) {
@@ -581,7 +649,9 @@
     		routers.splice(routers.indexOf(router), 1);
     	},
     	getCurrentUrl: getCurrentUrl,
-    	getHashbangRoot: getHashbangRoot
+    	getHashbangRoot: getHashbangRoot,
+    	isActive: isActive,
+    	routeTo: routeTo
     };
 
     var index = {

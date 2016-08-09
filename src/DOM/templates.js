@@ -297,7 +297,7 @@ function combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounter1, mounter2
 function combineMountToX(nodeIndex, mountDOMNodeFromTemplate, mounters) {
 	const write = (nodeIndex !== NULL_INDEX);
 
-	return function combineMountToX(vTemplate, parentDom, lifecycle, instance, isSVG) {
+	return function combineMountToX(vTemplate, parentDom, lifecycle, context, isSVG) {
 		const dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context);
 
 		if (write) {

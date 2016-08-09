@@ -94,7 +94,7 @@
 			component._pendingState = {};
 			var nextInput = component._updateComponent(prevState, nextState, props, props, force);
 
-			if (nextInput === NO_RENDER) {
+			if (nextInput === NO_OP) {
 				nextInput = component._lastInput;
 			} else if (isNullOrUndef(nextInput)) {
 				nextInput = createVPlaceholder();
@@ -106,6 +106,7 @@
 
 			component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
 			component._lastInput = nextInput;
+			component._vComponent._dom = nextInput._dom;
 			component._componentToDOMNodeMap.set(component, nextInput.dom);
 			component.componentDidUpdate(props, prevState);
 			subLifecycle.trigger();
@@ -131,6 +132,7 @@
 		this._pendingSetState = false;
 		this._pendingState = {};
 		this._lastInput = null;
+		this._vComponent = null;
 		this._unmounted = true;
 		this.context = context || {};
 		this._patch = null;

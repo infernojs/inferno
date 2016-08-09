@@ -78,7 +78,7 @@ class VComponent {
 		this._type = NodeTypes.COMPONENT;
 		this._dom = null;
 		this._component = $component;
-		this._props = null;
+		this._props = {};
 		this._hooks = null;
 		this._key = null;
 		this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
