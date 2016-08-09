@@ -4,10 +4,10 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.InfernoServer = factory());
-}(this, function () { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('stream')) :
+	typeof define === 'function' && define.amd ? define(['stream'], factory) :
+	(global.InfernoServer = factory(global.stream));
+}(this, function (stream) { 'use strict';
 
 	function addChildrenToProps(children, props) {
 		if (!isNullOrUndefined(children)) {
@@ -64,7 +64,7 @@
 		return obj === null;
 	}
 
-	function isTrue(obj) {
+	function isTrue$1(obj) {
 		return obj === true;
 	}
 
@@ -276,7 +276,7 @@
 				} else {
 					if (isStringOrNumber(value)) {
 						outputAttrs.push(escapeAttr(attr) + '="' + escapeAttr(value) + '"');
-					} else if (isTrue(value)) {
+					} else if (isTrue$1(value)) {
 						outputAttrs.push(escapeAttr(attr));
 					}
 				}
@@ -301,9 +301,228 @@
 		return renderNode(node, null, true);
 	}
 
+	function renderStyleToString$1(style) {
+		if (isStringOrNumber(style)) {
+			return style;
+		} else {
+			var styles = [];
+			var keys = Object.keys(style);
+
+			for (var i = 0; i < keys.length; i++) {
+				var styleName = keys[i];
+				var value = style[styleName];
+				var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+
+				if (!isNullOrUndefined(value)) {
+					styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
+				}
+			}
+			return styles.join();
+		}
+	}
+
+	function renderAttributes(bp, attrs){
+		var outputAttrs = [];
+		var attrKeys = (attrs && Object.keys(attrs)) || [];
+		var html = '';
+
+		if (bp && bp.hasAttrs === true) {
+			attrKeys = bp.attrKeys ? bp.attrKeys.concat(attrKeys) : attrKeys;
+		}
+		attrKeys.forEach(function (attrsKey, i) {
+			var attr = attrKeys[i];
+			var value = attrs[attr];
+
+			if (attr === 'dangerouslySetInnerHTML') {
+				return;
+			} else {
+				if (isStringOrNumber(value)) {
+					outputAttrs.push(escapeAttr(attr) + '="' + escapeAttr(value) + '"');
+				} else if (isTrue(value)) {
+					outputAttrs.push(escapeAttr(attr));
+				}
+			}
+		});
+
+		return outputAttrs;
+	}
+
+	var RenderStream = (function (Readable) {
+		function RenderStream(initNode, staticMarkup) {
+			Readable.call(this);
+			this.initNode = initNode;
+			this.staticMarkup = staticMarkup;
+			this.started = false;
+		}
+
+		if ( Readable ) RenderStream.__proto__ = Readable;
+		RenderStream.prototype = Object.create( Readable && Readable.prototype );
+		RenderStream.prototype.constructor = RenderStream;
+
+		RenderStream.prototype._read = function _read (){
+			var this$1 = this;
+
+			if (this.started) {
+				return;
+			}
+			this.started = true;
+
+			Promise.resolve().then(function () {
+				return this$1.renderNode(this$1.initNode, null, this$1.staticMarkup);
+			}).then(function (){
+				this$1.push(null);
+			}).catch(function (err) {
+				this$1.emit('error', err);
+			});
+		};
+
+		RenderStream.prototype.renderNode = function renderNode (node, context, isRoot){
+			if (isInvalidNode(node)) {
+				return;
+			}
+
+			var bp = node.bp;
+			var tag = node.tag || (bp && bp.tag);
+
+			if (isFunction(tag)) {
+				return this.renderComponent(tag, node.attrs, node.children, context, isRoot);
+			} else {
+				return this.renderNative(tag, node, context, isRoot);
+			}
+		};
+		RenderStream.prototype.renderComponent = function renderComponent (Component, props, children, context, isRoot) {
+			var this$1 = this;
+
+			props = addChildrenToProps(children, props);
+
+			if (!isStatefulComponent(Component)) {
+				return this.renderNode(Component(props, context), context, isRoot);
+			}
+
+			var instance = new Component(props, context);
+			var childContext = instance.getChildContext();
+
+			if (!isNullOrUndefined(childContext)) {
+				context = Object.assign({}, context, childContext);
+			}
+			instance.context = context;
+
+			// Block setting state - we should render only once, using latest state
+			instance._pendingSetState = true;
+			return Promise.resolve(instance.componentWillMount()).then(function () {
+				var node = instance.render();
+				instance._pendingSetState = false;
+				return this$1.renderNode(node, context, isRoot);
+			});
+		};
+
+		RenderStream.prototype.renderChildren = function renderChildren (children, context){
+			var this$1 = this;
+
+			if (isStringOrNumber(children)) {
+				return this.push(escapeText(children));
+			}
+			if (!children) {
+				return;
+			}
+
+			var childrenIsArray = isArray(children);
+			if (!childrenIsArray && !isInvalidNode(children)) {
+				return this.renderNode(children, context, false);
+			}
+			if (!childrenIsArray) {
+				throw new Error('invalid component');
+			}
+			return children.reduce(function (p, child){
+				return p.then(function (insertComment){
+					var isText = isStringOrNumber(child);
+					var isInvalid = isInvalidNode(child);
+
+					if (isText || isInvalid) {
+						if (insertComment === true) {
+							if (isInvalid) {
+								this$1.push('<!--!-->');
+							} else {
+								this$1.push('<!---->');
+							}
+						}
+						if (isText) {
+							this$1.push(escapeText(child));
+						}
+						return true;
+					} else if (isArray(child)) {
+						this$1.push('<!---->');
+						return Promise.resolve(this$1.renderChildren(child)).then(function (){
+							this$1.push('<!--!-->');
+							return true;
+						});
+					} else {
+						return this$1.renderNode(child, context, false)
+						.then(function () {
+							return false;
+						});
+					}
+				});
+			}, Promise.resolve(false));
+		};
+
+		RenderStream.prototype.renderNative = function renderNative (tag, node, context, isRoot) {
+			var this$1 = this;
+
+			var bp = node.bp;
+			var attrs = node.attrs;
+			var className = node.className;
+			var style = node.style;
+
+			var outputAttrs = renderAttributes(bp, attrs);
+			if (!isNullOrUndefined(className)) {
+				outputAttrs.push('class="' + escapeAttr(className) + '"');
+			}
+			if (!isNullOrUndefined(style)) {
+				outputAttrs.push('style="' + renderStyleToString$1(style) + '"');
+			}
+
+			var html = '';
+
+			if (attrs && 'dangerouslySetInnerHTML' in attrs) {
+				html = attrs[ 'dangerouslySetInnerHTML' ].__html;
+			}
+
+
+			if (isRoot) {
+				outputAttrs.push('data-infernoroot');
+			}
+			this.push(("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">"));
+			if (isVoidElement(tag)) {
+				return;
+			}
+			if (html) {
+				this.push(html);
+				this.push(("</" + tag + ">"));
+				return;
+			}
+			return Promise.resolve(this.renderChildren(node.children, context)).then(function (){
+				this$1.push(("</" + tag + ">"));
+			});
+		};
+
+		return RenderStream;
+	}(stream.Readable));
+
+	function streamAsString(node) {
+		return new RenderStream(node, false);
+	}
+
+	function streamAsStaticMarkup(node) {
+		return new RenderStream(node, true);
+	}
+
 	var index = {
 		renderToString: renderToString,
-		renderToStaticMarkup: renderToStaticMarkup
+		renderToStaticMarkup: renderToStaticMarkup,
+		streamAsString: streamAsString,
+		streamAsStaticMarkup: streamAsStaticMarkup,
+		RenderStream: RenderStream
 	};
 
 	return index;
