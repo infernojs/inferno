@@ -28,6 +28,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.11.6",
     "chai": "^3.5.0",
+    "concat-stream": "^1.5.1",
     "coveralls": "^2.11.12",
     "cross-env": "^2.0.0",
     "eslint": "^3.2.2",
@@ -112,5 +113,6 @@
   "pre-commit": [
     "eslint:source",
     "test"
-  ]
+  ],
+  "dependencies": {}
 }
