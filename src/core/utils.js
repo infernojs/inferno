@@ -1,18 +1,3 @@
-export function addChildrenToProps(children, props) {
-	if (!isNullOrUndef(children)) {
-		const isChildrenArray = isArray(children);
-		if (isChildrenArray && children.length > 0 || !isChildrenArray) {
-			if (props) {
-				props = Object.assign({}, props, { children });
-			} else {
-				props = {
-					children: children
-				};
-			}
-		}
-	}
-	return props;
-}
 
 export const NO_OP = 'NO_OP';
 

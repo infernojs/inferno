@@ -9,9 +9,9 @@ import {
 } from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
 import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
-import { isVElement, isVComponent } from './../core/shapes';
+import { isVElement, isVComponent, isVTemplate } from './../core/shapes';
 
-function renderComponent(vComponent, isRoot, context) {
+function renderComponentToString(vComponent, isRoot, context) {
 	const Component = vComponent._component;
 	const props = vComponent._props;
 
@@ -29,9 +29,9 @@ function renderComponent(vComponent, isRoot, context) {
 		const node = instance.render();
 
 		instance._pendingSetState = false;
-		return renderNode(node, context, isRoot);
+		return renderInputToString(node, context, isRoot);
 	} else {
-		return renderNode(Component(props), context, isRoot);
+		return renderInputToString(Component(props), context, isRoot);
 	}
 }
 
@@ -64,7 +64,7 @@ function renderChildren(children, context) {
 				insertComment = true;
 			} else {
 				insertComment = false;
-				childrenResult.push(renderNode(child, context, false));
+				childrenResult.push(renderInputToString(child, context, false));
 			}
 		}
 		return childrenResult.join('');
@@ -72,7 +72,7 @@ function renderChildren(children, context) {
 		if (isStringOrNumber(children)) {
 			return escapeText(children);
 		} else {
-			return renderNode(children, context, false) || '';
+			return renderInputToString(children, context, false) || '';
 		}
 	}
 	return '';
@@ -98,7 +98,7 @@ function renderStyleToString(style) {
 	}
 }
 
-function renderVElement(vElement, isRoot, context) {
+function renderVElementToString(vElement, isRoot, context) {
 	const tag = vElement._tag;
 	const outputProps = [];
 	const props = vElement._props;
@@ -133,20 +133,41 @@ function renderVElement(vElement, isRoot, context) {
 	}
 }
 
-function renderNode(node, context, isRoot) {
-	if (!isInvalid(node)) {
-		if (isVElement(node)) {
-			return renderVElement(node, isRoot, context);
-		} else if (isVComponent(node)) {
-			return renderComponent(node, isRoot, context);
+function getTemplateValues(vTemplate) {
+	const values = [];
+	const v0 = vTemplate._v0;
+	const v1 = vTemplate._v1;
+
+	if (v0) {
+		values.push(v0);
+	}
+	if (v1) {
+		values.push(...v1);
+	}
+	return values;
+}
+
+function renderVTemplateToString(vTemplate, isRoot, context) {
+	return renderInputToString(vTemplate._tr._schema.apply(null, getTemplateValues(vTemplate)), context, isRoot);
+}
+
+function renderInputToString(input, context, isRoot) {
+	if (!isInvalid(input)) {
+		if (isVTemplate(input)) {
+			return renderVTemplateToString(input, isRoot, context);
+		} else if (isVElement(input)) {
+			return renderVElementToString(input, isRoot, context);
+		} else if (isVComponent(input)) {
+			return renderComponentToString(input, isRoot, context);
 		}
 	}
+	throw Error('Inferno Error: Bad input argument called on renderInputToString(). Input argument may need normalising.');
 }
 
-export default function renderToString(node) {
-	return renderNode(node, null, false);
+export default function renderToString(input) {
+	return renderInputToString(input, null, false);
 }
 
-export function renderToStaticMarkup(node) {
-	return renderNode(node, null, true);
+export function renderToStaticMarkup(input) {
+	return renderInputToString(input, null, true);
 }

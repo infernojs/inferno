@@ -1990,22 +1990,24 @@
 		};
 	}
 
-	function hydrate(node, parentDom, lifecycle) {
-		// if (parentDom && parentDom.nodeType === 1) {
-		// 	const rootNode = parentDom.querySelector('[data-infernoroot]');
+	function hydrate(input, dom, parentDom, lifecycle, context) {
+		if (isVElement(input)) {
 
-		// 	if (rootNode && rootNode.parentNode === parentDom) {
-		// 		hydrateNode(node, rootNode, parentDom, lifecycle, {}, true);
-		// 		return true;
-		// 	}
-		// }
-		// // clear parentDom, unless it's document.body
-		// if (parentDom !== documetBody) {
-		// 	parentDom.textContent = '';
-		// } else {
-		// 	console.warn('Inferno Warning: rendering to the "document.body" is dangerous! Use a dedicated container element instead.');
-		// }
-		// return false;
+		} else {
+			throw Error('Inferno Error: Bad input argument called on hydrate(). Input argument may need normalising.');
+		}
+	}
+
+	function hydrateRoot(input, parentDom, lifecycle) {
+		if (parentDom && parentDom.nodeType === 1) {
+			var rootNode = parentDom.querySelector('[data-infernoroot]');
+
+			if (rootNode && rootNode.parentNode === parentDom) {
+				hydrate(input, rootNode, parentDom, lifecycle, {});
+				return true;
+			}
+		}
+		return false;
 	}
 
 	var roots = new Map();
@@ -2027,7 +2029,7 @@
 
 		if (isUndefined(root)) {
 			if (!isInvalid(input)) {
-				if (!hydrate(input, parentDom, lifecycle)) {
+				if (!hydrateRoot(input, parentDom, lifecycle)) {
 					mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false);
 				}
 				lifecycle.trigger();

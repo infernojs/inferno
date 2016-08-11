@@ -1491,22 +1491,24 @@
   	}
   }
 
-  function hydrate(node, parentDom, lifecycle) {
-  	// if (parentDom && parentDom.nodeType === 1) {
-  	// 	const rootNode = parentDom.querySelector('[data-infernoroot]');
+  function hydrate(input, dom, parentDom, lifecycle, context) {
+  	if (isVElement(input)) {
 
-  	// 	if (rootNode && rootNode.parentNode === parentDom) {
-  	// 		hydrateNode(node, rootNode, parentDom, lifecycle, {}, true);
-  	// 		return true;
-  	// 	}
-  	// }
-  	// // clear parentDom, unless it's document.body
-  	// if (parentDom !== documetBody) {
-  	// 	parentDom.textContent = '';
-  	// } else {
-  	// 	console.warn('Inferno Warning: rendering to the "document.body" is dangerous! Use a dedicated container element instead.');
-  	// }
-  	// return false;
+  	} else {
+  		throw Error('Inferno Error: Bad input argument called on hydrate(). Input argument may need normalising.');
+  	}
+  }
+
+  function hydrateRoot(input, parentDom, lifecycle) {
+  	if (parentDom && parentDom.nodeType === 1) {
+  		var rootNode = parentDom.querySelector('[data-infernoroot]');
+
+  		if (rootNode && rootNode.parentNode === parentDom) {
+  			hydrate(input, rootNode, parentDom, lifecycle, {});
+  			return true;
+  		}
+  	}
+  	return false;
   }
 
   var roots = new Map();
@@ -1528,7 +1530,7 @@
 
   	if (isUndefined(root)) {
   		if (!isInvalid(input)) {
-  			if (!hydrate(input, parentDom, lifecycle)) {
+  			if (!hydrateRoot(input, parentDom, lifecycle)) {
   				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false);
   			}
   			lifecycle.trigger();
@@ -1900,7 +1902,7 @@
   	return !!voidElements[str];
   }
 
-  function renderComponent(vComponent, isRoot, context) {
+  function renderComponentToString(vComponent, isRoot, context) {
   	var Component = vComponent._component;
   	var props = vComponent._props;
 
@@ -1918,9 +1920,9 @@
   		var node = instance.render();
 
   		instance._pendingSetState = false;
-  		return renderNode(node, context, isRoot);
+  		return renderInputToString(node, context, isRoot);
   	} else {
-  		return renderNode(Component(props), context, isRoot);
+  		return renderInputToString(Component(props), context, isRoot);
   	}
   }
 
@@ -1953,7 +1955,7 @@
   				insertComment = true;
   			} else {
   				insertComment = false;
-  				childrenResult.push(renderNode(child, context, false));
+  				childrenResult.push(renderInputToString(child, context, false));
   			}
   		}
   		return childrenResult.join('');
@@ -1961,7 +1963,7 @@
   		if (isStringOrNumber(children)) {
   			return escapeText(children);
   		} else {
-  			return renderNode(children, context, false) || '';
+  			return renderInputToString(children, context, false) || '';
   		}
   	}
   	return '';
@@ -1987,7 +1989,7 @@
   	}
   }
 
-  function renderVElement(vElement, isRoot, context) {
+  function renderVElementToString(vElement, isRoot, context) {
   	var tag = vElement._tag;
   	var outputProps = [];
   	var props = vElement._props;
@@ -2022,22 +2024,43 @@
   	}
   }
 
-  function renderNode(node, context, isRoot) {
-  	if (!isInvalid(node)) {
-  		if (isVElement(node)) {
-  			return renderVElement(node, isRoot, context);
-  		} else if (isVComponent(node)) {
-  			return renderComponent(node, isRoot, context);
+  function getTemplateValues(vTemplate) {
+  	var values = [];
+  	var v0 = vTemplate._v0;
+  	var v1 = vTemplate._v1;
+
+  	if (v0) {
+  		values.push(v0);
+  	}
+  	if (v1) {
+  		values.push.apply(values, v1);
+  	}
+  	return values;
+  }
+
+  function renderVTemplateToString(vTemplate, isRoot, context) {
+  	return renderInputToString(vTemplate._tr._schema.apply(null, getTemplateValues(vTemplate)), context, isRoot);
+  }
+
+  function renderInputToString(input, context, isRoot) {
+  	if (!isInvalid(input)) {
+  		if (isVTemplate(input)) {
+  			return renderVTemplateToString(input, isRoot, context);
+  		} else if (isVElement(input)) {
+  			return renderVElementToString(input, isRoot, context);
+  		} else if (isVComponent(input)) {
+  			return renderComponentToString(input, isRoot, context);
   		}
   	}
+  	throw Error('Inferno Error: Bad input argument called on renderInputToString(). Input argument may need normalising.');
   }
 
-  function renderToString(node) {
-  	return renderNode(node, null, false);
+  function renderToString(input) {
+  	return renderInputToString(input, null, false);
   }
 
-  function renderToStaticMarkup(node) {
-  	return renderNode(node, null, true);
+  function renderToStaticMarkup(input) {
+  	return renderInputToString(input, null, true);
   }
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}

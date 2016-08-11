@@ -1,0 +1,28 @@
+{
+	"name": "inferno-redux",
+	"version": "0.8",
+	"license": "MIT",
+	"description": "Official Inferno bindings for Redux",
+	"author": {
+		"name": "Dominic Gannaway",
+		"email": "dg@domgan.com"
+	},
+	"bugs": {
+		"url": "https://github.com/trueadm/inferno/issues"
+	},
+	"homepage": "https://github.com/trueadm/inferno#readme",
+	"main": "inferno-redux.js",
+	"keywords": [
+		"babel",
+		"react",
+		"inferno",
+		"framework",
+		"interfaces",
+		"user interfaces",
+		"redux"
+	],
+	"repository": "https://github.com/trueadm/inferno",
+	"dependencies": {
+		"inferno": "^0.7.26"
+	}
+}

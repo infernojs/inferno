@@ -40,6 +40,10 @@ import {
 	patchTemplateStyle,
 	patchTemplateProps
 } from './patching';
+import {
+	hydrateVariableAsChildren,
+	hydrateVariableAsExpression
+} from './hydration';
 import { unmountVariableAsExpression, unmountVariableAsChildren, unmountVariableAsText } from './unmounting';
 import { ChildrenTypes } from '../core/ChildrenTypes';
 
@@ -65,6 +69,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 		let mount;
 		let patch;
 		let unmount;
+		let hydrate;
 		let deepClone = false;
 
 		if (isVariable(vNode)) {
@@ -76,10 +81,12 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					patch = patchVariableAsChildren(vNode._pointer, isSVG, childrenType);
 				}
 				unmount = unmountVariableAsChildren(vNode._pointer, childrenType);
+				hydrate = hydrateVariableAsChildren(vNode._pointer, childrenType);
 			} else {
 				mount = mountVariableAsExpression(vNode._pointer, isSVG);
 				patch = patchVariableAsExpression(vNode._pointer, isSVG);
 				unmount = unmountVariableAsExpression(vNode._pointer);
+				hydrate = hydrateVariableAsExpression(vNode._pointer);
 			}
 		} else if (isVFragment(vNode)) {
 			const children = vNode._children;
@@ -108,6 +115,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 			const mounters = [];
 			const patchers = [];
 			const unmounters = [];
+			const hydraters = [];
 			const tag = vNode._tag;
 
 			if (tag === 'svg') {
@@ -180,12 +188,16 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 							mounters.push(templateReducers.mount);
 							const patch = templateReducers.patch;
 							const unmount = templateReducers.unmount;
+							const hydrate = templateReducers.hydrate;
 
 							if (!isNull(patch)) {
 								patchers.push(patch);
 							}
 							if (!isNull(unmount)) {
 								unmounters.push(unmount);
+							}
+							if (!isNull(hydrate)) {
+								hydraters.push(hydrate);
 							}
 						}
 					}
@@ -199,6 +211,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 						mounters.push(templateReducers.mount);
 						const patch = templateReducers.patch;
 						const unmount = templateReducers.unmount;
+						const hydrate = templateReducers.hydrate;
 
 						if (!isNull(patch)) {
 							patchers.push(patch);
@@ -206,16 +219,20 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 						if (!isNull(unmount)) {
 							unmounters.push(unmount);
 						}
+						if (!isNull(hydrate)) {
+							hydraters.push(hydrate);
+						}
 					}
 				}
 			}
 			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);
 			unmount = combineUnmount(nodeIndex, unmounters);
+			hydrate = combineHydrate(nodeIndex, hydraters);
 		} else if (isVComponent(vNode)) {
 			throw new Error('Inferno Error: templates cannot contain VComponent nodes. Pass a VComponent node into a template as a variable instead.');
 		}
-		return createTemplaceReducers(keyIndex, mount, patch, unmount);
+		return createTemplaceReducers(keyIndex, mount, patch, unmount, hydrate);
 	}
 }
 
@@ -371,8 +388,6 @@ function combineUnmount(nodeIndex, unmounters) {
 }
 
 function combineUnmountTo5(nodeIndex, unomunt1, unomunt2, unomunt3, unomunt4, unomunt5) {
-	const copy = (nodeIndex !== NULL_INDEX);
-
 	return function combineUnmountTo5(vTemplate, lifecycle) {
 		if (unomunt1) {
 			unomunt1(vTemplate, lifecycle);
@@ -394,6 +409,45 @@ function combineUnmountTo5(nodeIndex, unomunt1, unomunt2, unomunt3, unomunt4, un
 
 function combineUnmountX() {
 
+}
+
+function combineHydrate(nodeIndex, hydraters) {
+	if (hydraters.length <= 4) {
+		return combineHydrateTo5(nodeIndex, hydraters[0], hydraters[1], hydraters[2], hydraters[3], hydraters[4]);
+	} else {
+		return combineHydrateX(nodeIndex, hydraters);
+	}
+}
+
+function combineHydrateTo5(nodeIndex, hydrate1, hydrate2, hydrate3, hydrate4, hydrate5) {
+	const write = (nodeIndex !== NULL_INDEX);
+
+	return function combineHydrateTo5(vTemplate, dom, lifecycle, context) {
+		if (write) {
+			vTemplate.write(nodeIndex, dom);
+		}
+		if (hydrate1) {
+			hydrate1(vTemplate, dom, lifecycle, context);
+			if (hydrate2) {
+				hydrate2(vTemplate, dom, lifecycle, context);
+				if (hydrate3) {
+					hydrate3(vTemplate, dom, lifecycle, context);
+					if (hydrate4) {
+						hydrate4(vTemplate, dom, lifecycle, context);
+						if (hydrate5) {
+							hydrate5(vTemplate, dom, lifecycle, context);
+						}
+					}
+				}
+			}
+		}
+	};
+}
+
+function combineHydrateX() {
+	return function combineHydrateX() {
+		debugger;
+	};
 }
 
 export function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {

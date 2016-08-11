@@ -104,7 +104,13 @@ const bundles = [
 		moduleName: 'inferno-create-class',
 		moduleEntry: 'packages/inferno-create-class/src/index.js',
 		path: 'packages/inferno-create-class/'
-	}
+	},
+	{
+		moduleGlobal: 'InfernoRedux',
+		moduleName: 'inferno-redux',
+		moduleEntry: 'packages/inferno-redux/src/index.js',
+		path: 'packages/inferno-redux/'
+	}	
 ];
 
 function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {

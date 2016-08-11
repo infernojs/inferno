@@ -3,7 +3,7 @@ import { mountChildrenWithUnknownType } from './mounting';
 import { patchChildrenWithUnknownType } from './patching';
 import { getActiveNode, resetActiveNode } from './utils';
 import { isUndefined, isInvalid, isNull, isBrowser } from '../core/utils';
-import hydrate from './hydration';
+import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
 
 const roots = new Map();
@@ -25,7 +25,7 @@ export function render(input, parentDom) {
 
 	if (isUndefined(root)) {
 		if (!isInvalid(input)) {
-			if (!hydrate(input, parentDom, lifecycle)) {
+			if (!hydrateRoot(input, parentDom, lifecycle)) {
 				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false);
 			}
 			lifecycle.trigger();

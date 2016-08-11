@@ -170,7 +170,7 @@ class Variable {
 }
 
 class TemplaceReducers {
-	constructor($keyIndex, $mount, $patch, $unmount) {
+	constructor($keyIndex, $mount, $patch, $unmount, $hydrate) {
 		this._keyIndex = $keyIndex;
 		this._schema = null;
 		this._pools = {
@@ -180,6 +180,7 @@ class TemplaceReducers {
 		this.mount = $mount;
 		this.patch = $patch;
 		this.unmount = $unmount;
+		this.hydrate = $hydrate;
 	}
 }
 
@@ -217,8 +218,8 @@ export function createVTemplate(schema, renderer) {
 	}
 }
 
-export function createTemplaceReducers(keyIndex, mount, patch, unmount) {
-	return new TemplaceReducers(keyIndex, mount, patch, unmount);
+export function createTemplaceReducers(keyIndex, mount, patch, unmount, hydrate) {
+	return new TemplaceReducers(keyIndex, mount, patch, unmount, hydrate);
 }
 
 export function createVComponent(component) {
