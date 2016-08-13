@@ -1,5 +1,5 @@
 /*!
- * inferno-redux v0.7.18
+ * inferno-redux v0.8.0-alpha1
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -257,8 +257,9 @@
     	return NO_OP;
     };
 
+    var funcProto = Function.prototype;
     /** Used to resolve the decompiled source of functions. */
-    var funcToString = Function.prototype.toString;
+    var funcToString = funcProto.toString;
 
     /** Used to infer the `Object` constructor. */
     var objectCtorString = funcToString.call(Object);
