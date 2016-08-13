@@ -5,7 +5,7 @@
 	var e = Inferno.createVElement;
 	var ChildrenTypes = Inferno.ChildrenTypes;
 
-	uibench.init('Inferno', '0.8-alpha');
+	uibench.init('Inferno', '0.8.0-alpha');
 
 	var treeLeafTpl = t(function (id) {
 		return e('li').key(id).props({ className: 'TreeLeaf' }).key(id).children(id).childrenType(ChildrenTypes.TEXT);
