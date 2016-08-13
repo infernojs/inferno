@@ -141,7 +141,7 @@
 		return this;
 	};
 
-	var TemplaceReducers = function TemplaceReducers($keyIndex, $mount, $patch, $unmount) {
+	var TemplaceReducers = function TemplaceReducers($keyIndex, $mount, $patch, $unmount, $hydrate) {
 		this._keyIndex = $keyIndex;
 		this._schema = null;
 		this._pools = {
@@ -151,10 +151,11 @@
 		this.mount = $mount;
 		this.patch = $patch;
 		this.unmount = $unmount;
+		this.hydrate = $hydrate;
 	};
 
-	function createTemplaceReducers(keyIndex, mount, patch, unmount) {
-		return new TemplaceReducers(keyIndex, mount, patch, unmount);
+	function createTemplaceReducers(keyIndex, mount, patch, unmount, hydrate) {
+		return new TemplaceReducers(keyIndex, mount, patch, unmount, hydrate);
 	}
 
 	function createVText(text) {
@@ -304,7 +305,7 @@
 				setTextContent(parentDom, nextChildren);
 			}
 		} else if (isStringOrNumber(lastChildren)) {
-			var child = normalise(lastChildren);
+			var child = normalise$1(lastChildren);
 
 			child._dom = parentDom.firstChild;
 			patchChildrenWithUnknownType(child, nextChildren, parentDom, lifecycle, context, isSVG);
@@ -373,7 +374,6 @@
 			if (lastProps !== nextProps) {
 				patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
 			}
-			setFormElementProperties(nextTag, nextVElement._props, dom);
 		}
 	}
 
@@ -847,7 +847,7 @@
 
 			if (lastInput !== nextInput) {
 				if (isNullOrUndef(nextInput) || !isVNode(nextInput)) {
-					nextInput = normalise(nextInput);
+					nextInput = normalise$1(nextInput);
 					nextVTemplate.write(pointer, nextInput);
 				}
 				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
@@ -903,6 +903,8 @@
 
 	function patchTemplateProps(propsToPatch) {
 		return function patchTemplateProps(lastVTemplate, nextVTemplate, dom) {
+			resetStatefulDomProperties(dom);
+
 			for (var i = 0; i < propsToPatch.length; i += 2) {
 				var prop = propsToPatch[i];
 				var pointer = propsToPatch[i + 1];
@@ -913,7 +915,257 @@
 					patchProp(prop, lastValue, nextValue, dom);
 				}
 			}
-			setFormElementProperties(dom.tagName.toLowerCase(), dom, dom);
+		};
+	}
+
+	function normaliseChildNodes(dom) {
+		var childNodes = [];
+		var rawChildNodes = dom.childNodes;
+		var length = rawChildNodes.length;
+		var i = 0;
+
+		while (i < length) {
+			var rawChild = rawChildNodes[i];
+
+			if (rawChild.nodeType === 8) {
+				if (rawChild.data === '!') {
+					var placeholder = document.createTextNode('');
+
+					dom.replaceChild(placeholder, rawChild);
+					childNodes.push(placeholder);
+					i++;
+				} else {
+					dom.removeChild(rawChild);
+					length--;
+				}
+			} else {
+				childNodes.push(rawChild);
+				i++;
+			}
+		}
+		return childNodes;
+	}
+
+	function hydrateVComponent(vComponent, dom, lifecycle, context) {
+		var Component = vComponent._component;
+		var props = vComponent._props;
+		var hooks = vComponent._hooks;
+
+		vComponent._dom = dom;
+		if (isStatefulComponent(vComponent)) {
+			var instance = new Component(props, context);
+
+			instance._patch = patch;
+			instance._componentToDOMNodeMap = componentToDOMNodeMap;
+			var childContext = instance.getChildContext();
+
+			if (!isNullOrUndef(childContext)) {
+				context = Object.assign({}, context, childContext);
+			}
+			instance._unmounted = false;
+			instance._pendingSetState = true;
+			instance._vComponent = vComponent;
+			instance.componentWillMount();
+			var input = instance.render();
+
+			if (isInvalid(input)) {
+				input = createVPlaceholder();
+			}
+			instance._pendingSetState = false;
+			hydrate(input, dom, lifecycle, context);
+			instance._lastInput = input;
+			instance.componentDidMount();
+			componentToDOMNodeMap.set(instance, dom);
+			vComponent._instance = instance;
+		} else {
+			if (!isNullOrUndef(hooks)) {
+				if (!isNullOrUndef(hooks.onComponentWillMount)) {
+					hooks.onComponentWillMount(null, props);
+				}
+				if (!isNullOrUndef(hooks.onComponentDidMount)) {
+					lifecycle.addListener(function () {
+						hooks.onComponentDidMount(dom, props);
+					});
+				}
+			}
+
+			/* eslint new-cap: 0 */
+			var input$1 = Component(props, context);
+
+			if (isInvalid(input$1)) {
+				input$1 = createVPlaceholder();
+			}
+			hydrate(input$1, dom, lifecycle, context);
+		}
+	}
+
+	function hydrateVElement(vElement, dom, lifecycle, context) {
+		var tag = node._tag;
+
+		debugger;
+
+		// if (isFunction(tag)) {
+		// 	node.dom = domNode;
+		// 	hydrateComponent(node, tag, node._props || {}, domNode, parentDom, lifecycle, context);
+		// } else {
+		// 	if (
+		// 		domNode.nodeType !== 1 ||
+		// 		tag !== domNode.tagName.toLowerCase()
+		// 	) {
+		// 		// TODO remake node
+		// 	} else {
+		// 		node.dom = domNode;
+		// 		const hooks = node.hooks;
+
+		// 		const children = node.children;
+
+		// 		if (!isNullOrUndef(children)) {
+		// 			if (isStringOrNumber(children)) {
+		// 				if (domNode.textContent !== children) {
+		// 					domNode.textContent = children;
+		// 				}
+		// 			} else {
+		// 				const childNodes = getChildNodesWithoutComments(domNode);
+		// 				const counter = { i: 0 };
+		// 				let rebuild = false;
+
+		// 				if (isArray(children)) {
+		// 					for (let i = 0; i < children.length; i++) {
+		// 						rebuild = hydrateChild(normaliseChild(children, i), childNodes, counter, domNode, lifecycle, context);
+
+		// 						if (rebuild) {
+		// 							break;
+		// 						}
+		// 					}
+		// 				} else {
+		// 					if (childNodes.length === 1) {
+		// 						rebuild = hydrateChild(children, childNodes, counter, domNode, lifecycle, context);
+		// 					} else {
+		// 						rebuild = true;
+		// 					}
+		// 				}
+
+		// 				if (rebuild) {
+		// 					// TODO scrap children and rebuild again
+		// 				}
+		// 			}
+		// 		}
+		// 		const className = node.className;
+		// 		const style = node.style;
+
+		// 		if (!isNullOrUndef(className)) {
+		// 			domNode.className = className;
+		// 		}
+		// 		if (!isNullOrUndef(style)) {
+		// 			patchStyle(null, style, domNode);
+		// 		}
+		// 		if (bp && bp.hasAttrs === true) {
+		// 			mountBlueprintAttrs(node, bp, domNode);
+		// 		} else {
+		// 			const attrs = node.attrs;
+
+		// 			if (!isNullOrUndef(attrs)) {
+		// 				handleSelects(node);
+		// 				mountAttributes(node, attrs, Object.keys(attrs), domNode);
+		// 			}
+		// 		}
+		// 		if (bp && bp.hasEvents === true) {
+		// 			mountBlueprintEvents(node, bp, domNode);
+		// 		} else {
+		// 			const events = node.events;
+
+		// 			if (!isNullOrUndef(events)) {
+		// 				// mountEvents(events, Object.keys(events), domNode);
+		// 			}
+		// 		}
+		// 	}
+		// }
+	}
+
+	// const childNodes = normaliseChildNodes(dom);
+
+	function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
+		for (var i = 0; i < children.length; i++) {
+			debugger;
+		}
+	}
+
+	function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
+		if (isArray(children)) {
+			debugger;
+		} else if (isStringOrNumber(children)) {
+			debugger;
+		} else if (!isInvalid(children)) {
+			hydrate(children, dom.firstChild, lifecycle, context);
+		}
+	}
+
+	function hydrateChildren(childrenType, children, dom, lifecycle, context) {
+		if (isTextChildrenType(childrenType)) {
+			debugger;
+		} else if (isNodeChildrenType(childrenType)) {
+			debugger;
+		} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
+			hydrateArrayChildrenWithType(childrem, dom, lifecycle, context);
+		} else if (isUnknownChildrenType(childrenType)) {
+			hydrateChildrenWithUnknownType(children, dom);
+		} else {
+			throw new Error('Inferno Error: Bad childrenType value specified when attempting to hydrateChildren');
+		}
+	}
+
+	function hydrateVTemplate(vTemplate, dom, lifecycle, context) {
+		var templateReducers = vTemplate._tr;
+
+		templateReducers.hydrate(vTemplate, dom, lifecycle, context);
+	}
+
+	function hydrate(input, dom, lifecycle, context) {
+		if (isVTemplate(input)) {
+			hydrateVTemplate(input, dom, lifecycle, context);
+		} else if (isVElement(input)) {
+			hydrateVElement(input, dom, lifecycle, context);
+		} else if (isVComponent(input)) {
+			hydrateVComponent(input, dom, lifecycle, context);
+		} else {
+			throw Error('Inferno Error: Bad input argument called on hydrate(). Input argument may need normalising.');
+		}
+	}
+
+	function hydrateRoot(input, parentDom, lifecycle) {
+		if (parentDom && parentDom.nodeType === 1) {
+			var rootNode = parentDom.querySelector('[data-infernoroot]');
+
+			if (rootNode && rootNode.parentNode === parentDom) {
+				rootNode.removeAttribute('data-infernoroot');
+				hydrate(input, rootNode, lifecycle, {});
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function hydrateVariableAsChildren(pointer, childrenType) {
+		return function hydrateVariableAsChildren(vTemplate, dom, lifecycle, context) {
+			hydrateChildren(childrenType, vTemplate.read(pointer), dom, lifecycle, context);
+		};
+	}
+
+	function hydrateVariableAsExpression(pointer) {
+		return function hydrateVariableAsExpression(vTemplate, dom, lifecycle, context) {
+			var input = vTemplate.read(pointer);
+
+			if (isNullOrUndef(input) || !isVNode(input)) {
+				input = normalise(input);
+				vTemplate.write(pointer, input);
+			}
+			return hydrate(input, dom, lifecycle, context);
+		};
+	}
+
+	function hydrateVariableAsText() {
+		return function hydrateVariableAsText() {
+			debugger;
 		};
 	}
 
@@ -932,13 +1184,14 @@
 		};
 	}
 
-	function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChildren, childrenType) {
+	function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChildren, childrenType, path) {
 		if (!isInvalid(vNode)) {
 			var keyIndex = NULL_INDEX;
 			var nodeIndex = isRoot ? ROOT_INDEX : NULL_INDEX;
 			var mount;
 			var patch;
 			var unmount;
+			var hydrate;
 			var deepClone = false;
 
 			if (isVariable(vNode)) {
@@ -950,10 +1203,12 @@
 						patch = patchVariableAsChildren(vNode._pointer, isSVG, childrenType);
 					}
 					unmount = unmountVariableAsChildren(vNode._pointer, childrenType);
+					hydrate = hydrateVariableAsChildren(vNode._pointer, childrenType);
 				} else {
 					mount = mountVariableAsExpression(vNode._pointer, isSVG);
 					patch = patchVariableAsExpression(vNode._pointer, isSVG);
 					unmount = unmountVariableAsExpression(vNode._pointer);
+					hydrate = hydrateVariableAsExpression(vNode._pointer);
 				}
 			} else if (isVFragment(vNode)) {
 				var children = vNode._children;
@@ -973,6 +1228,7 @@
 					mount = combineMountTo2(nodeIndex, mountEmptyTextNode, mountVariableAsText(text._pointer));
 					patch = combinePatchTo2(nodeIndex, patchVariableAsText(text._pointer));
 					unmount = unmountVariableAsText(text._pointer);
+					hydrate = hydrateVariableAsText(text._pointer);
 				} else {
 					mount = mountDOMNodeFromTemplate(document.createTextNode(text), true);
 					patch = null;
@@ -982,6 +1238,7 @@
 				var mounters = [];
 				var patchers = [];
 				var unmounters = [];
+				var hydraters = [];
 				var tag = vNode._tag;
 
 				if (tag === 'svg') {
@@ -1048,12 +1305,13 @@
 						deepClone = true;
 					} else if (isArray(children$1)) {
 						for (var i = 0; i < children$1.length; i++) {
-							var templateReducers = createTemplateReducers(normalise(children$1[i]), false, offset, dom, isSVG, false, vNode._childrenType);
+							var templateReducers = createTemplateReducers(normalise$1(children$1[i]), false, offset, dom, isSVG, false, vNode._childrenType, path + ',' + i);
 
 							if (!isInvalid(templateReducers)) {
 								mounters.push(templateReducers.mount);
 								var patch$1 = templateReducers.patch;
 								var unmount$1 = templateReducers.unmount;
+								var hydrate$1 = templateReducers.hydrate;
 
 								if (!isNull(patch$1)) {
 									patchers.push(patch$1);
@@ -1061,18 +1319,22 @@
 								if (!isNull(unmount$1)) {
 									unmounters.push(unmount$1);
 								}
+								if (!isNull(hydrate$1)) {
+									hydraters.push(hydrate$1);
+								}
 							}
 						}
 					} else {
 						if (nodeIndex === NULL_INDEX && isVariable(children$1)) {
 							nodeIndex = offset.length++;
 						}
-						var templateReducers$1 = createTemplateReducers(normalise(children$1), false, offset, dom, isSVG, true, vNode._childrenType);
+						var templateReducers$1 = createTemplateReducers(normalise$1(children$1), false, offset, dom, isSVG, true, vNode._childrenType, path + ',0');
 
 						if (!isInvalid(templateReducers$1)) {
 							mounters.push(templateReducers$1.mount);
 							var patch$2 = templateReducers$1.patch;
 							var unmount$2 = templateReducers$1.unmount;
+							var hydrate$2 = templateReducers$1.hydrate;
 
 							if (!isNull(patch$2)) {
 								patchers.push(patch$2);
@@ -1080,16 +1342,20 @@
 							if (!isNull(unmount$2)) {
 								unmounters.push(unmount$2);
 							}
+							if (!isNull(hydrate$2)) {
+								hydraters.push(hydrate$2);
+							}
 						}
 					}
 				}
 				mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, deepClone), mounters);
 				patch = combinePatch(nodeIndex, patchers);
 				unmount = combineUnmount(nodeIndex, unmounters);
+				hydrate = combineHydrate(nodeIndex, path, hydraters);
 			} else if (isVComponent(vNode)) {
 				throw new Error('Inferno Error: templates cannot contain VComponent nodes. Pass a VComponent node into a template as a variable instead.');
 			}
-			return createTemplaceReducers(keyIndex, mount, patch, unmount);
+			return createTemplaceReducers(keyIndex, mount, patch, unmount, hydrate);
 		}
 	}
 
@@ -1245,8 +1511,6 @@
 	}
 
 	function combineUnmountTo5(nodeIndex, unomunt1, unomunt2, unomunt3, unomunt4, unomunt5) {
-		var copy = (nodeIndex !== NULL_INDEX);
-
 		return function combineUnmountTo5(vTemplate, lifecycle) {
 			if (unomunt1) {
 				unomunt1(vTemplate, lifecycle);
@@ -1263,6 +1527,51 @@
 					}
 				}
 			}
+		};
+	}
+
+	function combineHydrate(nodeIndex, path, hydraters) {
+		if (hydraters.length <= 4) {
+			return combineHydrateTo5(nodeIndex, path, hydraters[0], hydraters[1], hydraters[2], hydraters[3], hydraters[4]);
+		} else {
+			return combineHydrateX(nodeIndex, path, hydraters);
+		}
+	}
+
+	function combineHydrateTo5(nodeIndex, path, hydrate1, hydrate2, hydrate3, hydrate4, hydrate5) {
+		var write = (nodeIndex !== NULL_INDEX);
+
+		return function combineHydrateTo5(vTemplate, rootDom, lifecycle, context) {
+			var dom;
+
+			if (write) {
+				dom = getDomFromTemplatePath(rootDom, path);
+				vTemplate.write(nodeIndex, dom);
+			}
+			if (hydrate1) {
+				if (!dom) {
+					dom = getDomFromTemplatePath(rootDom, path);
+				}
+				hydrate1(vTemplate, dom, lifecycle, context);
+				if (hydrate2) {
+					hydrate2(vTemplate, dom, lifecycle, context);
+					if (hydrate3) {
+						hydrate3(vTemplate, dom, lifecycle, context);
+						if (hydrate4) {
+							hydrate4(vTemplate, dom, lifecycle, context);
+							if (hydrate5) {
+								hydrate5(vTemplate, dom, lifecycle, context);
+							}
+						}
+					}
+				}
+			}
+		};
+	}
+
+	function combineHydrateX() {
+		return function combineHydrateX() {
+			debugger;
 		};
 	}
 
@@ -1301,6 +1610,27 @@
 			pool$1.push(vTemplate);
 		}
 		return true;
+	}
+
+	function getDomFromTemplatePath(rootDom, path) {
+		if (path === '') {
+			normaliseChildNodes(rootDom);
+			return rootDom;
+		} else {
+			var routes = path.split(',');
+			var dom = rootDom;
+
+			for (var i = 0; i < routes.length; i++) {
+				var route = routes[i];
+
+				if (route !== '') {
+					var childNodes = normaliseChildNodes(dom);
+
+					dom = childNodes[route];
+				}
+			}
+			return dom;
+		}
 	}
 
 	function unmount(input, parentDom, lifecycle) {
@@ -1534,7 +1864,7 @@
 		parentDom.replaceChild(nextDom, lastDom);
 	}
 
-	function normalise(object) {
+	function normalise$1(object) {
 		if (isStringOrNumber(object)) {
 			return createVText(object);
 		} else if (isInvalid(object)) {
@@ -1548,7 +1878,7 @@
 	function normaliseChild(children, i) {
 		var child = children[i];
 
-		return children[i] = normalise(child);
+		return children[i] = normalise$1(child);
 	}
 
 	function removeChild(parentDom, dom) {
@@ -1625,26 +1955,13 @@
 		}
 	}
 
-	function setValueProperty(node, dom) {
-		var value = node.value;
+	function resetStatefulDomProperties(dom) {
+		var tagName = dom.tagName;
 
-		if (!isNullOrUndef(value)) {
-			dom.value = value;
-		}
-	}
-
-	function setFormElementProperties(nextTag, node, dom) {
-		if (nextTag === 'input') {
-			var inputType = node.type;
-			if (inputType === 'text') {
-				setValueProperty(node, dom);
-			} else if (inputType === 'checkbox' || inputType === 'radio') {
-				var checked = node.checked;
-
-				node.checked = !!checked;
+		if (tagName === 'INPUT') {
+			if (dom.checked) {
+				dom.checked = false;
 			}
-		} else if (nextTag === 'textarea') {
-			setValueProperty(node, dom);
 		}
 	}
 
@@ -1763,51 +2080,51 @@
 		}
 	}
 
-	function mountArrayChildrenWithoutType(children, parentDom, lifecycle, context, isSVG) {
+	function mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG) {
 		children.complex = false;
 		for (var i = 0; i < children.length; i++) {
 			var child = normaliseChild(children, i);
 
 			if (isVText(child)) {
-				mountVText(child, parentDom);
+				mountVText(child, dom);
 				children.complex = true;
 			} else if (isVPlaceholder(child)) {
-				mountVPlaceholder(child, parentDom);
+				mountVPlaceholder(child, dom);
 				children.complex = true;
 			} else if (isVFragment(child)) {
-				mountVFragment(child, parentDom, lifecycle, context, isSVG);
+				mountVFragment(child, dom, lifecycle, context, isSVG);
 				children.complex = true;
 			} else {
-				mount(child, parentDom, lifecycle, context, isSVG);
+				mount(child, dom, lifecycle, context, isSVG);
 			}
 		}
 	}
 
-	function mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG) {
+	function mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG) {
 		if (isArray(children)) {
-			mountArrayChildrenWithoutType(children, parentDom, lifecycle, context, isSVG);
+			mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
 		} else if (isStringOrNumber(children)) {
-			setTextContent(parentDom, children);
+			setTextContent(dom, children);
 		} else if (!isInvalid(children)) {
-			mount(children, parentDom, lifecycle, context, isSVG);
+			mount(children, dom, lifecycle, context, isSVG);
 		}
 	}
 
-	function mountArrayChildrenWithType(children, parentDom, lifecycle, context, isSVG) {
+	function mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
 		for (var i = 0; i < children.length; i++) {
-			mount(children[i], parentDom, lifecycle, context, isSVG);
+			mount(children[i], dom, lifecycle, context, isSVG);
 		}
 	}
 
-	function mountChildren(childrenType, children, parentDom, lifecycle, context, isSVG) {
+	function mountChildren(childrenType, children, dom, lifecycle, context, isSVG) {
 		if (isTextChildrenType(childrenType)) {
-			setTextContent(parentDom, children);
+			setTextContent(dom, children);
 		} else if (isNodeChildrenType(childrenType)) {
-			mount(children, parentDom, lifecycle, context, isSVG);
+			mount(children, dom, lifecycle, context, isSVG);
 		} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
-			mountArrayChildrenWithType(children, parentDom, lifecycle, context, isSVG);
+			mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG);
 		} else if (isUnknownChildrenType(childrenType)) {
-			mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG);
+			mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG);
 		} else {
 			throw new Error('Inferno Error: Bad childrenType value specified when attempting to mountChildren');
 		}
@@ -1885,20 +2202,20 @@
 	}
 
 	function mountVariableAsExpression(pointer, templateIsSVG) {
-		return function mountVariableAsExpression(vTemplate, parentDom, lifecycle, context, isSVG) {
+		return function mountVariableAsExpression(vTemplate, dom, lifecycle, context, isSVG) {
 			var input = vTemplate.read(pointer);
 
 			if (isNullOrUndef(input) || !isVNode(input)) {
-				input = normalise(input);
+				input = normalise$1(input);
 				vTemplate.write(pointer, input);
 			}
-			return mount(input, parentDom, lifecycle, context, isSVG || templateIsSVG);
+			return mount(input, dom, lifecycle, context, isSVG || templateIsSVG);
 		};
 	}
 
 	function mountVariableAsChildren(pointer, templateIsSVG, childrenType) {
-		return function mountVariableAsChildren(vTemplate, parentDom, lifecycle, context, isSVG) {
-			return mountChildren(childrenType, vTemplate.read(pointer), parentDom, lifecycle, context, isSVG || templateIsSVG);
+		return function mountVariableAsChildren(vTemplate, dom, lifecycle, context, isSVG) {
+			return mountChildren(childrenType, vTemplate.read(pointer), dom, lifecycle, context, isSVG || templateIsSVG);
 		};
 	}
 
@@ -1910,11 +2227,11 @@
 	}
 
 	function mountDOMNodeFromTemplate(templateDomNode, deepClone) {
-		return function mountDOMNodeFromTemplate(vTemplate, parentDom) {
+		return function mountDOMNodeFromTemplate(vTemplate, dom) {
 			var domNode = templateDomNode.cloneNode(deepClone);
 
-			if (!isNull(parentDom)) {
-				appendChild(parentDom, domNode);
+			if (!isNull(dom)) {
+				appendChild(dom, domNode);
 			}
 			return domNode;
 		};
@@ -1988,26 +2305,6 @@
 				patchProp(prop, null, value, dom);
 			}
 		};
-	}
-
-	function hydrate(input, dom, parentDom, lifecycle, context) {
-		if (isVElement(input)) {
-
-		} else {
-			throw Error('Inferno Error: Bad input argument called on hydrate(). Input argument may need normalising.');
-		}
-	}
-
-	function hydrateRoot(input, parentDom, lifecycle) {
-		if (parentDom && parentDom.nodeType === 1) {
-			var rootNode = parentDom.querySelector('[data-infernoroot]');
-
-			if (rootNode && rootNode.parentNode === parentDom) {
-				hydrate(input, rootNode, parentDom, lifecycle, {});
-				return true;
-			}
-		}
-		return false;
 	}
 
 	var roots = new Map();

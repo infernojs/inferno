@@ -364,7 +364,7 @@
   			setTextContent(parentDom, nextChildren);
   		}
   	} else if (isStringOrNumber(lastChildren)) {
-  		var child = normalise(lastChildren);
+  		var child = normalise$1(lastChildren);
 
   		child._dom = parentDom.firstChild;
   		patchChildrenWithUnknownType(child, nextChildren, parentDom, lifecycle, context, isSVG);
@@ -433,7 +433,6 @@
   		if (lastProps !== nextProps) {
   			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
   		}
-  		setFormElementProperties(nextTag, nextVElement._props, dom);
   	}
   }
 
@@ -900,6 +899,173 @@
   	return result;
   }
 
+  function hydrateVComponent(vComponent, dom, lifecycle, context) {
+  	var Component = vComponent._component;
+  	var props = vComponent._props;
+  	var hooks = vComponent._hooks;
+
+  	vComponent._dom = dom;
+  	if (isStatefulComponent(vComponent)) {
+  		var instance = new Component(props, context);
+
+  		instance._patch = patch;
+  		instance._componentToDOMNodeMap = componentToDOMNodeMap;
+  		var childContext = instance.getChildContext();
+
+  		if (!isNullOrUndef(childContext)) {
+  			context = Object.assign({}, context, childContext);
+  		}
+  		instance._unmounted = false;
+  		instance._pendingSetState = true;
+  		instance._vComponent = vComponent;
+  		instance.componentWillMount();
+  		var input = instance.render();
+
+  		if (isInvalid(input)) {
+  			input = createVPlaceholder();
+  		}
+  		instance._pendingSetState = false;
+  		hydrate(input, dom, lifecycle, context);
+  		instance._lastInput = input;
+  		instance.componentDidMount();
+  		componentToDOMNodeMap.set(instance, dom);
+  		vComponent._instance = instance;
+  	} else {
+  		if (!isNullOrUndef(hooks)) {
+  			if (!isNullOrUndef(hooks.onComponentWillMount)) {
+  				hooks.onComponentWillMount(null, props);
+  			}
+  			if (!isNullOrUndef(hooks.onComponentDidMount)) {
+  				lifecycle.addListener(function () {
+  					hooks.onComponentDidMount(dom, props);
+  				});
+  			}
+  		}
+
+  		/* eslint new-cap: 0 */
+  		var input$1 = Component(props, context);
+
+  		if (isInvalid(input$1)) {
+  			input$1 = createVPlaceholder();
+  		}
+  		hydrate(input$1, dom, lifecycle, context);
+  	}
+  }
+
+  function hydrateVElement(vElement, dom, lifecycle, context) {
+  	var tag = node._tag;
+
+  	debugger;
+
+  	// if (isFunction(tag)) {
+  	// 	node.dom = domNode;
+  	// 	hydrateComponent(node, tag, node._props || {}, domNode, parentDom, lifecycle, context);
+  	// } else {
+  	// 	if (
+  	// 		domNode.nodeType !== 1 ||
+  	// 		tag !== domNode.tagName.toLowerCase()
+  	// 	) {
+  	// 		// TODO remake node
+  	// 	} else {
+  	// 		node.dom = domNode;
+  	// 		const hooks = node.hooks;
+
+  	// 		const children = node.children;
+
+  	// 		if (!isNullOrUndef(children)) {
+  	// 			if (isStringOrNumber(children)) {
+  	// 				if (domNode.textContent !== children) {
+  	// 					domNode.textContent = children;
+  	// 				}
+  	// 			} else {
+  	// 				const childNodes = getChildNodesWithoutComments(domNode);
+  	// 				const counter = { i: 0 };
+  	// 				let rebuild = false;
+
+  	// 				if (isArray(children)) {
+  	// 					for (let i = 0; i < children.length; i++) {
+  	// 						rebuild = hydrateChild(normaliseChild(children, i), childNodes, counter, domNode, lifecycle, context);
+
+  	// 						if (rebuild) {
+  	// 							break;
+  	// 						}
+  	// 					}
+  	// 				} else {
+  	// 					if (childNodes.length === 1) {
+  	// 						rebuild = hydrateChild(children, childNodes, counter, domNode, lifecycle, context);
+  	// 					} else {
+  	// 						rebuild = true;
+  	// 					}
+  	// 				}
+
+  	// 				if (rebuild) {
+  	// 					// TODO scrap children and rebuild again
+  	// 				}
+  	// 			}
+  	// 		}
+  	// 		const className = node.className;
+  	// 		const style = node.style;
+
+  	// 		if (!isNullOrUndef(className)) {
+  	// 			domNode.className = className;
+  	// 		}
+  	// 		if (!isNullOrUndef(style)) {
+  	// 			patchStyle(null, style, domNode);
+  	// 		}
+  	// 		if (bp && bp.hasAttrs === true) {
+  	// 			mountBlueprintAttrs(node, bp, domNode);
+  	// 		} else {
+  	// 			const attrs = node.attrs;
+
+  	// 			if (!isNullOrUndef(attrs)) {
+  	// 				handleSelects(node);
+  	// 				mountAttributes(node, attrs, Object.keys(attrs), domNode);
+  	// 			}
+  	// 		}
+  	// 		if (bp && bp.hasEvents === true) {
+  	// 			mountBlueprintEvents(node, bp, domNode);
+  	// 		} else {
+  	// 			const events = node.events;
+
+  	// 			if (!isNullOrUndef(events)) {
+  	// 				// mountEvents(events, Object.keys(events), domNode);
+  	// 			}
+  	// 		}
+  	// 	}
+  	// }
+  }
+
+  function hydrateVTemplate(vTemplate, dom, lifecycle, context) {
+  	var templateReducers = vTemplate._tr;
+
+  	templateReducers.hydrate(vTemplate, dom, lifecycle, context);
+  }
+
+  function hydrate(input, dom, lifecycle, context) {
+  	if (isVTemplate(input)) {
+  		hydrateVTemplate(input, dom, lifecycle, context);
+  	} else if (isVElement(input)) {
+  		hydrateVElement(input, dom, lifecycle, context);
+  	} else if (isVComponent(input)) {
+  		hydrateVComponent(input, dom, lifecycle, context);
+  	} else {
+  		throw Error('Inferno Error: Bad input argument called on hydrate(). Input argument may need normalising.');
+  	}
+  }
+
+  function hydrateRoot(input, parentDom, lifecycle) {
+  	if (parentDom && parentDom.nodeType === 1) {
+  		var rootNode = parentDom.querySelector('[data-infernoroot]');
+
+  		if (rootNode && rootNode.parentNode === parentDom) {
+  			rootNode.removeAttribute('data-infernoroot');
+  			hydrate(input, rootNode, lifecycle, {});
+  			return true;
+  		}
+  	}
+  	return false;
+  }
+
   var recyclingEnabled = true;
 
   function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
@@ -1141,7 +1307,7 @@
   	parentDom.replaceChild(nextDom, lastDom);
   }
 
-  function normalise(object) {
+  function normalise$1(object) {
   	if (isStringOrNumber(object)) {
   		return createVText(object);
   	} else if (isInvalid(object)) {
@@ -1155,7 +1321,7 @@
   function normaliseChild(children, i) {
   	var child = children[i];
 
-  	return children[i] = normalise(child);
+  	return children[i] = normalise$1(child);
   }
 
   function removeChild(parentDom, dom) {
@@ -1229,29 +1395,6 @@
 
   	if (vdom._props && vdom._props[value]) {
   		delete vdom._props.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
-  	}
-  }
-
-  function setValueProperty(node, dom) {
-  	var value = node.value;
-
-  	if (!isNullOrUndef(value)) {
-  		dom.value = value;
-  	}
-  }
-
-  function setFormElementProperties(nextTag, node, dom) {
-  	if (nextTag === 'input') {
-  		var inputType = node.type;
-  		if (inputType === 'text') {
-  			setValueProperty(node, dom);
-  		} else if (inputType === 'checkbox' || inputType === 'radio') {
-  			var checked = node.checked;
-
-  			node.checked = !!checked;
-  		}
-  	} else if (nextTag === 'textarea') {
-  		setValueProperty(node, dom);
   	}
   }
 
@@ -1370,51 +1513,51 @@
   	}
   }
 
-  function mountArrayChildrenWithoutType(children, parentDom, lifecycle, context, isSVG) {
+  function mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG) {
   	children.complex = false;
   	for (var i = 0; i < children.length; i++) {
   		var child = normaliseChild(children, i);
 
   		if (isVText(child)) {
-  			mountVText(child, parentDom);
+  			mountVText(child, dom);
   			children.complex = true;
   		} else if (isVPlaceholder(child)) {
-  			mountVPlaceholder(child, parentDom);
+  			mountVPlaceholder(child, dom);
   			children.complex = true;
   		} else if (isVFragment(child)) {
-  			mountVFragment(child, parentDom, lifecycle, context, isSVG);
+  			mountVFragment(child, dom, lifecycle, context, isSVG);
   			children.complex = true;
   		} else {
-  			mount(child, parentDom, lifecycle, context, isSVG);
+  			mount(child, dom, lifecycle, context, isSVG);
   		}
   	}
   }
 
-  function mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG) {
+  function mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG) {
   	if (isArray(children)) {
-  		mountArrayChildrenWithoutType(children, parentDom, lifecycle, context, isSVG);
+  		mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
   	} else if (isStringOrNumber(children)) {
-  		setTextContent(parentDom, children);
+  		setTextContent(dom, children);
   	} else if (!isInvalid(children)) {
-  		mount(children, parentDom, lifecycle, context, isSVG);
+  		mount(children, dom, lifecycle, context, isSVG);
   	}
   }
 
-  function mountArrayChildrenWithType(children, parentDom, lifecycle, context, isSVG) {
+  function mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
   	for (var i = 0; i < children.length; i++) {
-  		mount(children[i], parentDom, lifecycle, context, isSVG);
+  		mount(children[i], dom, lifecycle, context, isSVG);
   	}
   }
 
-  function mountChildren(childrenType, children, parentDom, lifecycle, context, isSVG) {
+  function mountChildren(childrenType, children, dom, lifecycle, context, isSVG) {
   	if (isTextChildrenType(childrenType)) {
-  		setTextContent(parentDom, children);
+  		setTextContent(dom, children);
   	} else if (isNodeChildrenType(childrenType)) {
-  		mount(children, parentDom, lifecycle, context, isSVG);
+  		mount(children, dom, lifecycle, context, isSVG);
   	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
-  		mountArrayChildrenWithType(children, parentDom, lifecycle, context, isSVG);
+  		mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG);
   	} else if (isUnknownChildrenType(childrenType)) {
-  		mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG);
+  		mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG);
   	} else {
   		throw new Error('Inferno Error: Bad childrenType value specified when attempting to mountChildren');
   	}
@@ -1489,26 +1632,6 @@
 
   		patchProp(prop, null, value, dom);
   	}
-  }
-
-  function hydrate(input, dom, parentDom, lifecycle, context) {
-  	if (isVElement(input)) {
-
-  	} else {
-  		throw Error('Inferno Error: Bad input argument called on hydrate(). Input argument may need normalising.');
-  	}
-  }
-
-  function hydrateRoot(input, parentDom, lifecycle) {
-  	if (parentDom && parentDom.nodeType === 1) {
-  		var rootNode = parentDom.querySelector('[data-infernoroot]');
-
-  		if (rootNode && rootNode.parentNode === parentDom) {
-  			hydrate(input, rootNode, parentDom, lifecycle, {});
-  			return true;
-  		}
-  	}
-  	return false;
   }
 
   var roots = new Map();

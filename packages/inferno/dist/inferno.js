@@ -179,7 +179,7 @@
 			parameters.push(new Variable(i));
 		}
 		var vNode = schema.apply(void 0, parameters);
-		var templateReducers = renderer.createTemplateReducers(vNode, true, { length: argCount }, null, false, false);
+		var templateReducers = renderer.createTemplateReducers(vNode, true, { length: argCount }, null, false, false, 0, '');
 		var keyIndex = templateReducers._keyIndex;
 
 		templateReducers._schema = schema;

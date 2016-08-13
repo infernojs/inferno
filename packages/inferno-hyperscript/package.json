@@ -1,25 +1,17 @@
 {
-	"name": "inferno-redux",
+	"name": "inferno-hyperscript",
 	"version": "0.8-alpha",
 	"license": "MIT",
-	"description": "Official Inferno bindings for Redux",
-	"author": {
-		"name": "Dominic Gannaway",
-		"email": "dg@domgan.com"
-	},
+	"description": "Bridging hyperscript to InfernoJS",
+	"author": "Terin Stock <terinjokes@gmail.com> (https://terinstock.com/)",
 	"bugs": {
 		"url": "https://github.com/trueadm/inferno/issues"
 	},
 	"homepage": "https://github.com/trueadm/inferno#readme",
-	"main": "inferno-redux.js",
+	"main": "inferno-hyperscript.js",
 	"keywords": [
-		"babel",
-		"react",
 		"inferno",
-		"framework",
-		"interfaces",
-		"user interfaces",
-		"redux"
+		"hyperscript"
 	],
 	"repository": "https://github.com/trueadm/inferno",
 	"dependencies": {
