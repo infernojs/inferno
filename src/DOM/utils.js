@@ -203,17 +203,12 @@ export function setValueProperty(node, dom) {
 	}
 }
 
-export function setFormElementProperties(nextTag, node, dom) {
-	if (nextTag === 'input') {
-		const inputType = node.type;
-		if (inputType === 'text') {
-			setValueProperty(node, dom);
-		} else if (inputType === 'checkbox' || inputType === 'radio') {
-			const checked = node.checked;
+export function resetStatefulDomProperties(dom) {
+	const tagName = dom.tagName;
 
-			node.checked = !!checked;
+	if (tagName === 'INPUT') {
+		if (dom.checked) {
+			dom.checked = false;
 		}
-	} else if (nextTag === 'textarea') {
-		setValueProperty(node, dom);
 	}
 }

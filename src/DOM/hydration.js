@@ -16,8 +16,17 @@ import {
 	isVText,
 	isVElement,
 	isVComponent,
-	isVTemplate
+	isVTemplate,
+	isVNode
 } from '../core/shapes';
+import { componentToDOMNodeMap } from './rendering';
+import {
+	isKeyedListChildrenType,
+	isTextChildrenType,
+	isNodeChildrenType,
+	isNonKeyedListChildrenType,
+	isUnknownChildrenType
+} from '../core/ChildrenTypes';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];
@@ -68,7 +77,7 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context)
 	counter.i++;
 }
 
-function normaliseHydration(dom) {
+export function normaliseChildNodes(dom) {
 	const childNodes = [];
 	const rawChildNodes = dom.childNodes;
 	let length = rawChildNodes.length;
@@ -97,51 +106,62 @@ function normaliseHydration(dom) {
 }
 
 function hydrateVComponent(vComponent, dom, lifecycle, context) {
-	// props = addChildrenToProps(children, props);
+	const Component = vComponent._component;
+	const props = vComponent._props;
+	const hooks = vComponent._hooks;
 
-	// if (isStatefulComponent(Component)) {
-	// 	const instance = node.instance = new Component(props);
+	vComponent._dom = dom;
+	if (isStatefulComponent(vComponent)) {
+		const instance = new Component(props, context);
 
-	// 	instance._patch = patch;
-	// 	const childContext = instance.getChildContext();
+		instance._patch = patch;
+		instance._componentToDOMNodeMap = componentToDOMNodeMap;
+		const childContext = instance.getChildContext();
 
-	// 	if (!isNullOrUndef(childContext)) {
-	// 		context = Object.assign({}, context, childContext);
-	// 	}
-	// 	instance.context = context;
-	// 	instance._unmounted = false;
-	// 	instance._parentNode = node;
-	// 	instance._pendingSetState = true;
-	// 	instance.componentWillMount();
-	// 	let nextNode = instance.render();
+		if (!isNullOrUndef(childContext)) {
+			context = Object.assign({}, context, childContext);
+		}
+		instance._unmounted = false;
+		instance._pendingSetState = true;
+		instance._vComponent = vComponent;
+		instance.componentWillMount();
+		let input = instance.render();
 
-	// 	instance._pendingSetState = false;
-	// 	if (isInvalid(nextNode)) {
-	// 		nextNode = createVPlaceholder();
-	// 	}
-	// 	hydrateNode(nextNode, domNode, lifecycle, context);
-	// 	instance._lastNode = nextNode;
-	// 	instance.componentDidMount();
+		if (isInvalid(input)) {
+			input = createVPlaceholder();
+		}
+		instance._pendingSetState = false;
+		hydrate(input, dom, lifecycle, context);
+		instance._lastInput = input;
+		instance.componentDidMount();
+		componentToDOMNodeMap.set(instance, dom);
+		vComponent._instance = instance;
+	} else {
+		if (!isNullOrUndef(hooks)) {
+			if (!isNullOrUndef(hooks.onComponentWillMount)) {
+				hooks.onComponentWillMount(null, props);
+			}
+			if (!isNullOrUndef(hooks.onComponentDidMount)) {
+				lifecycle.addListener(() => {
+					hooks.onComponentDidMount(dom, props);
+				});
+			}
+		}
 
-	// } else {
-	// 	const instance = node.instance = Component(props);
+		/* eslint new-cap: 0 */
+		let input = Component(props, context);
 
-	// 	if (!isNullOrUndef(hooks)) {
-	// 		if (!isNullOrUndef(hooks.componentWillMount)) {
-	// 			hooks.componentWillMount(null, props);
-	// 		}
-	// 		if (!isNullOrUndef(hooks.componentDidMount)) {
-	// 			lifecycle.addListener(() => {
-	// 				hooks.componentDidMount(domNode, props);
-	// 			});
-	// 		}
-	// 	}
-	// 	return hydrateNode(instance, domNode, lifecycle, context);
-	// }
+		if (isInvalid(input)) {
+			input = createVPlaceholder();
+		}
+		hydrate(input, dom, lifecycle, context);
+	}
 }
 
 function hydrateVElement(vElement, dom, lifecycle, context) {
 	const tag = node._tag;
+
+	debugger;
 
 	// if (isFunction(tag)) {
 	// 	node.dom = domNode;
@@ -221,6 +241,38 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
 	// }
 }
 
+// const childNodes = normaliseChildNodes(dom);
+
+function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
+	for (let i = 0; i < children.length; i++) {
+		debugger;
+	}
+}
+
+function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
+	if (isArray(children)) {
+		debugger;
+	} else if (isStringOrNumber(children)) {
+		debugger;
+	} else if (!isInvalid(children)) {
+		hydrate(children, dom.firstChild, lifecycle, context);
+	}
+}
+
+function hydrateChildren(childrenType, children, dom, lifecycle, context) {
+	if (isTextChildrenType(childrenType)) {
+		debugger;
+	} else if (isNodeChildrenType(childrenType)) {
+		debugger;
+	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
+		hydrateArrayChildrenWithType(childrem, dom, lifecycle, context);
+	} else if (isUnknownChildrenType(childrenType)) {
+		hydrateChildrenWithUnknownType(children, dom);
+	} else {
+		throw new Error('Inferno Error: Bad childrenType value specified when attempting to hydrateChildren');
+	}
+}
+
 function hydrateVTemplate(vTemplate, dom, lifecycle, context) {
 	const templateReducers = vTemplate._tr;
 
@@ -244,6 +296,7 @@ export default function hydrateRoot(input, parentDom, lifecycle) {
 		const rootNode = parentDom.querySelector('[data-infernoroot]');
 
 		if (rootNode && rootNode.parentNode === parentDom) {
+			rootNode.removeAttribute('data-infernoroot');
 			hydrate(input, rootNode, lifecycle, {});
 			return true;
 		}
@@ -252,13 +305,25 @@ export default function hydrateRoot(input, parentDom, lifecycle) {
 }
 
 export function hydrateVariableAsChildren(pointer, childrenType) {
-	return function hydrateVariableAsChildren() {
-		debugger;
+	return function hydrateVariableAsChildren(vTemplate, dom, lifecycle, context) {
+		hydrateChildren(childrenType, vTemplate.read(pointer), dom, lifecycle, context);
 	};
 }
 
-export function hydrateVariableAsExpression() {
-	return function hydrateVariableAsExpression() {
+export function hydrateVariableAsExpression(pointer) {
+	return function hydrateVariableAsExpression(vTemplate, dom, lifecycle, context) {
+		let input = vTemplate.read(pointer);
+
+		if (isNullOrUndef(input) || !isVNode(input)) {
+			input = normalise(input);
+			vTemplate.write(pointer, input);
+		}
+		return hydrate(input, dom, lifecycle, context);
+	};
+}
+
+export function hydrateVariableAsText() {
+	return function hydrateVariableAsText() {
 		debugger;
 	};
 }

@@ -28,7 +28,7 @@ import {
 	namespaces,
 	replaceVListWithNode,
 	normaliseChild,
-	setFormElementProperties,
+	resetStatefulDomProperties,
 	removeAllChildren,
 	replaceWithNewNode,
 	selectValue,
@@ -229,7 +229,6 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 		if (lastProps !== nextProps) {
 			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
 		}
-		setFormElementProperties(nextTag, nextVElement._props, dom);
 	}
 }
 
@@ -759,6 +758,8 @@ export function patchTemplateStyle(pointer) {
 
 export function patchTemplateProps(propsToPatch) {
 	return function patchTemplateProps(lastVTemplate, nextVTemplate, dom) {
+		resetStatefulDomProperties(dom);
+
 		for (let i = 0; i < propsToPatch.length; i += 2) {
 			const prop = propsToPatch[i];
 			const pointer = propsToPatch[i + 1];
@@ -769,6 +770,5 @@ export function patchTemplateProps(propsToPatch) {
 				patchProp(prop, lastValue, nextValue, dom);
 			}
 		}
-		setFormElementProperties(dom.tagName.toLowerCase(), dom, dom);
 	};
 }

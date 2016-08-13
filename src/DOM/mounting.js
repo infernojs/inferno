@@ -146,51 +146,51 @@ export function handleSelects(node) {
 	}
 }
 
-export function mountArrayChildrenWithoutType(children, parentDom, lifecycle, context, isSVG) {
+export function mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG) {
 	children.complex = false;
 	for (let i = 0; i < children.length; i++) {
 		const child = normaliseChild(children, i);
 
 		if (isVText(child)) {
-			mountVText(child, parentDom);
+			mountVText(child, dom);
 			children.complex = true;
 		} else if (isVPlaceholder(child)) {
-			mountVPlaceholder(child, parentDom);
+			mountVPlaceholder(child, dom);
 			children.complex = true;
 		} else if (isVFragment(child)) {
-			mountVFragment(child, parentDom, lifecycle, context, isSVG);
+			mountVFragment(child, dom, lifecycle, context, isSVG);
 			children.complex = true;
 		} else {
-			mount(child, parentDom, lifecycle, context, isSVG);
+			mount(child, dom, lifecycle, context, isSVG);
 		}
 	}
 }
 
-export function mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG) {
+export function mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG) {
 	if (isArray(children)) {
-		mountArrayChildrenWithoutType(children, parentDom, lifecycle, context, isSVG);
+		mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
 	} else if (isStringOrNumber(children)) {
-		setTextContent(parentDom, children);
+		setTextContent(dom, children);
 	} else if (!isInvalid(children)) {
-		mount(children, parentDom, lifecycle, context, isSVG);
+		mount(children, dom, lifecycle, context, isSVG);
 	}
 }
 
-function mountArrayChildrenWithType(children, parentDom, lifecycle, context, isSVG) {
+function mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
 	for (let i = 0; i < children.length; i++) {
-		mount(children[i], parentDom, lifecycle, context, isSVG);
+		mount(children[i], dom, lifecycle, context, isSVG);
 	}
 }
 
-function mountChildren(childrenType, children, parentDom, lifecycle, context, isSVG) {
+function mountChildren(childrenType, children, dom, lifecycle, context, isSVG) {
 	if (isTextChildrenType(childrenType)) {
-		setTextContent(parentDom, children);
+		setTextContent(dom, children);
 	} else if (isNodeChildrenType(childrenType)) {
-		mount(children, parentDom, lifecycle, context, isSVG);
+		mount(children, dom, lifecycle, context, isSVG);
 	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
-		mountArrayChildrenWithType(children, parentDom, lifecycle, context, isSVG);
+		mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG);
 	} else if (isUnknownChildrenType(childrenType)) {
-		mountChildrenWithUnknownType(children, parentDom, lifecycle, context, isSVG);
+		mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG);
 	} else {
 		throw new Error('Inferno Error: Bad childrenType value specified when attempting to mountChildren');
 	}
@@ -268,20 +268,20 @@ function mountProps(vElement, props, dom) {
 }
 
 export function mountVariableAsExpression(pointer, templateIsSVG) {
-	return function mountVariableAsExpression(vTemplate, parentDom, lifecycle, context, isSVG) {
+	return function mountVariableAsExpression(vTemplate, dom, lifecycle, context, isSVG) {
 		let input = vTemplate.read(pointer);
 
 		if (isNullOrUndef(input) || !isVNode(input)) {
 			input = normalise(input);
 			vTemplate.write(pointer, input);
 		}
-		return mount(input, parentDom, lifecycle, context, isSVG || templateIsSVG);
+		return mount(input, dom, lifecycle, context, isSVG || templateIsSVG);
 	};
 }
 
 export function mountVariableAsChildren(pointer, templateIsSVG, childrenType) {
-	return function mountVariableAsChildren(vTemplate, parentDom, lifecycle, context, isSVG) {
-		return mountChildren(childrenType, vTemplate.read(pointer), parentDom, lifecycle, context, isSVG || templateIsSVG);
+	return function mountVariableAsChildren(vTemplate, dom, lifecycle, context, isSVG) {
+		return mountChildren(childrenType, vTemplate.read(pointer), dom, lifecycle, context, isSVG || templateIsSVG);
 	};
 }
 
@@ -293,11 +293,11 @@ export function mountVariableAsText(pointer) {
 }
 
 export function mountDOMNodeFromTemplate(templateDomNode, deepClone) {
-	return function mountDOMNodeFromTemplate(vTemplate, parentDom) {
+	return function mountDOMNodeFromTemplate(vTemplate, dom) {
 		const domNode = templateDomNode.cloneNode(deepClone);
 
-		if (!isNull(parentDom)) {
-			appendChild(parentDom, domNode);
+		if (!isNull(dom)) {
+			appendChild(dom, domNode);
 		}
 		return domNode;
 	};

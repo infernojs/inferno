@@ -192,7 +192,7 @@ export function createVTemplate(schema, renderer) {
 		parameters.push(new Variable(i));
 	}
 	const vNode = schema(...parameters);
-	const templateReducers = renderer.createTemplateReducers(vNode, true, { length: argCount }, null, false, false);
+	const templateReducers = renderer.createTemplateReducers(vNode, true, { length: argCount }, null, false, false, 0, '');
 	const keyIndex = templateReducers._keyIndex;
 
 	templateReducers._schema = schema;

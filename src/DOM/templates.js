@@ -42,7 +42,9 @@ import {
 } from './patching';
 import {
 	hydrateVariableAsChildren,
-	hydrateVariableAsExpression
+	hydrateVariableAsExpression,
+	hydrateVariableAsText,
+	normaliseChildNodes
 } from './hydration';
 import { unmountVariableAsExpression, unmountVariableAsChildren, unmountVariableAsText } from './unmounting';
 import { ChildrenTypes } from '../core/ChildrenTypes';
@@ -62,7 +64,7 @@ function copyTemplate(nodeIndex) {
 	};
 }
 
-export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChildren, childrenType) {
+export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChildren, childrenType, path) {
 	if (!isInvalid(vNode)) {
 		let keyIndex = NULL_INDEX;
 		let nodeIndex = isRoot ? ROOT_INDEX : NULL_INDEX;
@@ -106,6 +108,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 				mount = combineMountTo2(nodeIndex, mountEmptyTextNode, mountVariableAsText(text._pointer));
 				patch = combinePatchTo2(nodeIndex, patchVariableAsText(text._pointer));
 				unmount = unmountVariableAsText(text._pointer);
+				hydrate = hydrateVariableAsText(text._pointer);
 			} else {
 				mount = mountDOMNodeFromTemplate(document.createTextNode(text), true);
 				patch = null;
@@ -182,7 +185,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					deepClone = true;
 				} else if (isArray(children)) {
 					for (let i = 0; i < children.length; i++) {
-						const templateReducers = createTemplateReducers(normalise(children[i]), false, offset, dom, isSVG, false, vNode._childrenType);
+						const templateReducers = createTemplateReducers(normalise(children[i]), false, offset, dom, isSVG, false, vNode._childrenType, path + ',' + i);
 
 						if (!isInvalid(templateReducers)) {
 							mounters.push(templateReducers.mount);
@@ -205,7 +208,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					if (nodeIndex === NULL_INDEX && isVariable(children)) {
 						nodeIndex = offset.length++;
 					}
-					const templateReducers = createTemplateReducers(normalise(children), false, offset, dom, isSVG, true, vNode._childrenType);
+					const templateReducers = createTemplateReducers(normalise(children), false, offset, dom, isSVG, true, vNode._childrenType, path + ',0');
 
 					if (!isInvalid(templateReducers)) {
 						mounters.push(templateReducers.mount);
@@ -228,7 +231,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);
 			unmount = combineUnmount(nodeIndex, unmounters);
-			hydrate = combineHydrate(nodeIndex, hydraters);
+			hydrate = combineHydrate(nodeIndex, path, hydraters);
 		} else if (isVComponent(vNode)) {
 			throw new Error('Inferno Error: templates cannot contain VComponent nodes. Pass a VComponent node into a template as a variable instead.');
 		}
@@ -411,22 +414,28 @@ function combineUnmountX() {
 
 }
 
-function combineHydrate(nodeIndex, hydraters) {
+function combineHydrate(nodeIndex, path, hydraters) {
 	if (hydraters.length <= 4) {
-		return combineHydrateTo5(nodeIndex, hydraters[0], hydraters[1], hydraters[2], hydraters[3], hydraters[4]);
+		return combineHydrateTo5(nodeIndex, path, hydraters[0], hydraters[1], hydraters[2], hydraters[3], hydraters[4]);
 	} else {
-		return combineHydrateX(nodeIndex, hydraters);
+		return combineHydrateX(nodeIndex, path, hydraters);
 	}
 }
 
-function combineHydrateTo5(nodeIndex, hydrate1, hydrate2, hydrate3, hydrate4, hydrate5) {
+function combineHydrateTo5(nodeIndex, path, hydrate1, hydrate2, hydrate3, hydrate4, hydrate5) {
 	const write = (nodeIndex !== NULL_INDEX);
 
-	return function combineHydrateTo5(vTemplate, dom, lifecycle, context) {
+	return function combineHydrateTo5(vTemplate, rootDom, lifecycle, context) {
+		let dom;
+
 		if (write) {
+			dom = getDomFromTemplatePath(rootDom, path);
 			vTemplate.write(nodeIndex, dom);
 		}
 		if (hydrate1) {
+			if (!dom) {
+				dom = getDomFromTemplatePath(rootDom, path);
+			}
 			hydrate1(vTemplate, dom, lifecycle, context);
 			if (hydrate2) {
 				hydrate2(vTemplate, dom, lifecycle, context);
@@ -485,4 +494,25 @@ export function poolVTemplate(vTemplate) {
 		pool.push(vTemplate);
 	}
 	return true;
+}
+
+function getDomFromTemplatePath(rootDom, path) {
+	if (path === '') {
+		normaliseChildNodes(rootDom);
+		return rootDom;
+	} else {
+		const routes = path.split(',');
+		let dom = rootDom;
+
+		for (let i = 0; i < routes.length; i++) {
+			const route = routes[i];
+
+			if (route !== '') {
+				const childNodes = normaliseChildNodes(dom);
+
+				dom = childNodes[route];
+			}
+		}
+		return dom;
+	}
 }
