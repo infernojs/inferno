@@ -242,7 +242,7 @@ Warning: If the container element is not empty before rendering, the content of 
 import Inferno from 'inferno';
 import InfernoServer from 'inferno-server';
 
-InfernoServer.renderToString(<div />, document.body);
+InfernoServer.renderToString(<div />);
 ```
 
 Render a virtual node into an HTML string, given the supplied virtual DOM.
