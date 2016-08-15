@@ -526,6 +526,7 @@
 				var nextHooks = nextVComponent._hooks;
 				var nextHooksDefined = !isNullOrUndef(nextHooks);
 
+				nextVComponent._dom = lastVComponent._dom;
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
 					shouldUpdate = nextHooks.onComponentShouldUpdate(lastVComponent._dom, lastProps$1, nextProps);
 				}
@@ -536,10 +537,11 @@
 					var nextInput$1 = nextComponent(nextProps, context);
 					var lastInput = lastVComponent._instance;
 
-					if (isInvalid(nextInput$1)) {
+					if (nextInput$1 === NO_OP) {
+						return;
+					} else if (isInvalid(nextInput$1)) {
 						nextInput$1 = createVPlaceholder();
 					}
-					nextVComponent._dom = lastVComponent._dom;
 					patch(lastInput, nextInput$1, parentDom, lifecycle, context, null, null, false);
 					nextVComponent._instance = nextInput$1;
 					if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
