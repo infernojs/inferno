@@ -547,6 +547,8 @@
 					if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
 						nextHooks.onComponentDidUpdate(lastInput._dom, lastProps$1, nextProps);
 					}
+				} else {
+					nextVComponent._instance = lastVComponent._instance;
 				}
 			}
 		}
