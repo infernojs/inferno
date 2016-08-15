@@ -227,7 +227,7 @@
     Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, force) {
     	if (this._unmounted === true) {
     		this._unmounted = false;
-    		return false;
+    		return NO_OP;
     	}
     	if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
     		nextProps.children = prevProps.children;

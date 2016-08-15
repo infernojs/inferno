@@ -35,7 +35,7 @@ export function render(input, parentDom) {
 		const activeNode = getActiveNode();
 
 		if (isNull(input)) {
-			unmount(root.input, parentDom);
+			unmount(root.input, parentDom, lifecycle, true);
 			roots.delete(parentDom);
 		} else {
 			patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false);

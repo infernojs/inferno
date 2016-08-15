@@ -119,7 +119,7 @@ describe('Templates', () => {
 					// Do something with node and setState
 					this.setState({
 						text: 'animate'
-					})
+					});
 				}
 
 				render() {
@@ -138,7 +138,7 @@ describe('Templates', () => {
 			render(<A />, container);
 
 			render(<A open={true}/>, container);
-			expect(container.innerHTML).to.equal(innerHTML(<div>animate</div>));
+			expect(container.innerHTML).to.equal(innerHTML('<div>animate</div>'));
 		})
 	})
 });

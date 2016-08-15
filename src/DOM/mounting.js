@@ -304,14 +304,14 @@ export function mountDOMNodeFromTemplate(templateDomNode, deepClone) {
 }
 
 export function mountRefFromTemplate(ref) {
-	return function mountRefFromTemplate(vTemplate, dom) {
+	return function mountRefFromTemplate(vTemplate, dom, lifecycle) {
 		let value = ref;
 
 		if (isVariable(ref)) {
 			value = vTemplate.read(ref._pointer);
 		}
 		if (isFunction(value)) {
-			value(dom);
+			lifecycle.addListener(() => value(dom));
 		}
 	};
 }

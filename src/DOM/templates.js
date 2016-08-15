@@ -185,7 +185,12 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					deepClone = true;
 				} else if (isArray(children)) {
 					for (let i = 0; i < children.length; i++) {
-						const templateReducers = createTemplateReducers(normalise(children[i]), false, offset, dom, isSVG, false, vNode._childrenType, path + ',' + i);
+						const child = children[i];
+
+						if (nodeIndex === NULL_INDEX && isVariable(child)) {
+							nodeIndex = offset.length++;
+						}
+						const templateReducers = createTemplateReducers(normalise(child), false, offset, dom, isSVG, false, vNode._childrenType, path + ',' + i);
 
 						if (!isInvalid(templateReducers)) {
 							mounters.push(templateReducers.mount);
@@ -327,7 +332,7 @@ function combinePatch(nodeIndex, patchers) {
 function combinePatchTo2(nodeIndex, patch1) {
 	const copy = (nodeIndex !== NULL_INDEX);
 
-	return function combinePatchTo2(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
+	return function combinePatchTo2(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
 		let dom;
 
 		if (copy) {
@@ -342,7 +347,7 @@ function combinePatchTo2(nodeIndex, patch1) {
 function combinePatchTo5(nodeIndex, patch1, patch2, patch3, patch4, patch5) {
 	const copy = (nodeIndex !== NULL_INDEX);
 
-	return function combinePatchTo5(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
+	return function combinePatchTo5(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
 		let dom;
 
 		if (copy) {
@@ -369,7 +374,7 @@ function combinePatchTo5(nodeIndex, patch1, patch2, patch3, patch4, patch5) {
 function combinePatchX(nodeIndex, patchers) {
 	const copy = (nodeIndex !== NULL_INDEX);
 
-	return function combinePatchX(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
+	return function combinePatchX(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
 		let dom;
 
 		if (copy) {

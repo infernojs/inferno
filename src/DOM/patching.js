@@ -195,7 +195,7 @@ export function patchVTemplate(lastVTemplate, nextVTemplate, parentDom, lifecycl
 		unmount(lastVTemplate, null, lifecycle);
 	} else {
 		nextVTemplate._dom = dom;
-		nextTemplateReducers.patch(lastVTemplate, nextVTemplate, lifecycle, context, isSVG);
+		nextTemplateReducers.patch(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG);
 	}
 }
 
@@ -366,7 +366,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 
 			if (nextInput === NO_OP) {
 				nextInput = instance._lastInput;
-			} else if (isNullOrUndef(nextInput)) {
+			} else if (isInvalid(nextInput)) {
 				nextInput = createVPlaceholder();
 			}
 			patch(instance._lastInput, nextInput, parentDom, lifecycle, context, null, false);

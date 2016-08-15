@@ -399,7 +399,7 @@
   		unmount(lastVTemplate, null, lifecycle);
   	} else {
   		nextVTemplate._dom = dom;
-  		nextTemplateReducers.patch(lastVTemplate, nextVTemplate, lifecycle, context, isSVG);
+  		nextTemplateReducers.patch(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG);
   	}
   }
 
@@ -570,7 +570,7 @@
 
   			if (nextInput === NO_OP) {
   				nextInput = instance._lastInput;
-  			} else if (isNullOrUndef(nextInput)) {
+  			} else if (isInvalid(nextInput)) {
   				nextInput = createVPlaceholder();
   			}
   			patch(instance._lastInput, nextInput, parentDom, lifecycle, context, null, false);
@@ -1107,10 +1107,10 @@
   	return true;
   }
 
-  function unmount(input, parentDom, lifecycle) {
+  function unmount(input, parentDom, lifecycle, canRecycle) {
   	if (!isInvalid(input)) {
   		if (isVTemplate(input)) {
-  			unmountVTemplate(input, parentDom, lifecycle);
+  			unmountVTemplate(input, parentDom, lifecycle, canRecycle);
   		} else if (isVFragment(input)) {
   			unmountVFragment(input, parentDom, true, lifecycle);
   		} else if (isVElement(input)) {
@@ -1137,7 +1137,7 @@
   	}
   }
 
-  function unmountVTemplate(vTemplate, parentDom, lifecycle) {
+  function unmountVTemplate(vTemplate, parentDom, lifecycle, canRecycle) {
   	var dom = vTemplate._dom;
   	var templateReducers = vTemplate._tr;
   	var unmount = templateReducers.unmount;
@@ -1148,7 +1148,7 @@
   	if (!isNull(parentDom)) {
   		removeChild(parentDom, dom);
   	}
-  	if (recyclingEnabled && parentDom) {
+  	if (recyclingEnabled && (parentDom || canRecycle)) {
   		poolVTemplate(vTemplate);
   	}
   }
@@ -1165,7 +1165,7 @@
   			if (isVFragment(child)) {
   				unmountVFragment(child, parentDom, true, lifecycle);
   			} else {
-  				unmount(child, parentDom, lifecycle);
+  				unmount(child, parentDom, lifecycle, false);
   			}
   		}
   	}
@@ -1187,7 +1187,7 @@
   			instance.componentWillUnmount();
   			instance._unmounted = true;
   			componentToDOMNodeMap.delete(instance);
-  			unmount(instance._lastInput, null, lifecycle);
+  			unmount(instance._lastInput, null, lifecycle, parentDom);
   		}
   	}
   	var hooks = vComponent._hooks || instanceHooks;
@@ -1216,10 +1216,10 @@
   	if (!isNullOrUndef(children)) {
   		if (isArray(children)) {
   			for (var i = 0; i < children.length; i++) {
-  				unmount(children[i], null, lifecycle);
+  				unmount(children[i], null, lifecycle, false);
   			}
   		} else {
-  			unmount(children, null, lifecycle);
+  			unmount(children, null, lifecycle, false);
   		}
   	}
   	if (parentDom) {
@@ -1295,7 +1295,7 @@
   		lastInstance = lastNode;
   		lastNode = instanceLastNode;
   	}
-  	unmount(lastNode, null, lifecycle);
+  	unmount(lastNode, null, lifecycle, true);
   	var dom = mount(nextNode, null, lifecycle, context, isSVG);
 
   	nextNode._dom = dom;
@@ -1340,7 +1340,7 @@
   		var child = children[i];
 
   		if (!isInvalid(child)) {
-  			unmount(child, null, lifecycle);
+  			unmount(child, null, lifecycle, true);
   		}
   	}
   	dom.textContent = '';
@@ -1665,7 +1665,7 @@
   		var activeNode = getActiveNode();
 
   		if (isNull(input)) {
-  			unmount(root.input, parentDom);
+  			unmount(root.input, parentDom, lifecycle, true);
   			roots.delete(parentDom);
   		} else {
   			patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false);
@@ -1902,7 +1902,7 @@
   Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, force) {
   	if (this._unmounted === true) {
   		this._unmounted = false;
-  		return false;
+  		return NO_OP;
   	}
   	if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
   		nextProps.children = prevProps.children;

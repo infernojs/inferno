@@ -340,7 +340,7 @@
 			unmount(lastVTemplate, null, lifecycle);
 		} else {
 			nextVTemplate._dom = dom;
-			nextTemplateReducers.patch(lastVTemplate, nextVTemplate, lifecycle, context, isSVG);
+			nextTemplateReducers.patch(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG);
 		}
 	}
 
@@ -511,7 +511,7 @@
 
 				if (nextInput === NO_OP) {
 					nextInput = instance._lastInput;
-				} else if (isNullOrUndef(nextInput)) {
+				} else if (isInvalid(nextInput)) {
 					nextInput = createVPlaceholder();
 				}
 				patch(instance._lastInput, nextInput, parentDom, lifecycle, context, null, false);
@@ -1307,7 +1307,12 @@
 						deepClone = true;
 					} else if (isArray(children$1)) {
 						for (var i = 0; i < children$1.length; i++) {
-							var templateReducers = createTemplateReducers(normalise$1(children$1[i]), false, offset, dom, isSVG, false, vNode._childrenType, path + ',' + i);
+							var child = children$1[i];
+
+							if (nodeIndex === NULL_INDEX && isVariable(child)) {
+								nodeIndex = offset.length++;
+							}
+							var templateReducers = createTemplateReducers(normalise$1(child), false, offset, dom, isSVG, false, vNode._childrenType, path + ',' + i);
 
 							if (!isInvalid(templateReducers)) {
 								mounters.push(templateReducers.mount);
@@ -1449,7 +1454,7 @@
 	function combinePatchTo2(nodeIndex, patch1) {
 		var copy = (nodeIndex !== NULL_INDEX);
 
-		return function combinePatchTo2(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
+		return function combinePatchTo2(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
 			var dom;
 
 			if (copy) {
@@ -1464,7 +1469,7 @@
 	function combinePatchTo5(nodeIndex, patch1, patch2, patch3, patch4, patch5) {
 		var copy = (nodeIndex !== NULL_INDEX);
 
-		return function combinePatchTo5(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
+		return function combinePatchTo5(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
 			var dom;
 
 			if (copy) {
@@ -1491,7 +1496,7 @@
 	function combinePatchX(nodeIndex, patchers) {
 		var copy = (nodeIndex !== NULL_INDEX);
 
-		return function combinePatchX(lastVTemplate, nextVTemplate, lifecycle, context, isSVG) {
+		return function combinePatchX(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
 			var dom;
 
 			if (copy) {
@@ -1635,10 +1640,10 @@
 		}
 	}
 
-	function unmount(input, parentDom, lifecycle) {
+	function unmount(input, parentDom, lifecycle, canRecycle) {
 		if (!isInvalid(input)) {
 			if (isVTemplate(input)) {
-				unmountVTemplate(input, parentDom, lifecycle);
+				unmountVTemplate(input, parentDom, lifecycle, canRecycle);
 			} else if (isVFragment(input)) {
 				unmountVFragment(input, parentDom, true, lifecycle);
 			} else if (isVElement(input)) {
@@ -1665,7 +1670,7 @@
 		}
 	}
 
-	function unmountVTemplate(vTemplate, parentDom, lifecycle) {
+	function unmountVTemplate(vTemplate, parentDom, lifecycle, canRecycle) {
 		var dom = vTemplate._dom;
 		var templateReducers = vTemplate._tr;
 		var unmount = templateReducers.unmount;
@@ -1676,7 +1681,7 @@
 		if (!isNull(parentDom)) {
 			removeChild(parentDom, dom);
 		}
-		if (recyclingEnabled && parentDom) {
+		if (recyclingEnabled && (parentDom || canRecycle)) {
 			poolVTemplate(vTemplate);
 		}
 	}
@@ -1693,7 +1698,7 @@
 				if (isVFragment(child)) {
 					unmountVFragment(child, parentDom, true, lifecycle);
 				} else {
-					unmount(child, parentDom, lifecycle);
+					unmount(child, parentDom, lifecycle, false);
 				}
 			}
 		}
@@ -1715,7 +1720,7 @@
 				instance.componentWillUnmount();
 				instance._unmounted = true;
 				componentToDOMNodeMap.delete(instance);
-				unmount(instance._lastInput, null, lifecycle);
+				unmount(instance._lastInput, null, lifecycle, parentDom);
 			}
 		}
 		var hooks = vComponent._hooks || instanceHooks;
@@ -1744,10 +1749,10 @@
 		if (!isNullOrUndef(children)) {
 			if (isArray(children)) {
 				for (var i = 0; i < children.length; i++) {
-					unmount(children[i], null, lifecycle);
+					unmount(children[i], null, lifecycle, false);
 				}
 			} else {
-				unmount(children, null, lifecycle);
+				unmount(children, null, lifecycle, false);
 			}
 		}
 		if (parentDom) {
@@ -1758,10 +1763,10 @@
 	function unmountTemplateValue(value, lifecycle) {
 		if (isArray(value)) {
 			for (var i = 0; i < value.length; i++) {
-				unmount(value[i], null, lifecycle);
+				unmount(value[i], null, lifecycle, false);
 			}
 		} else {
-			unmount(value, null, lifecycle);
+			unmount(value, null, lifecycle, false);
 		}
 	}
 
@@ -1852,7 +1857,7 @@
 			lastInstance = lastNode;
 			lastNode = instanceLastNode;
 		}
-		unmount(lastNode, null, lifecycle);
+		unmount(lastNode, null, lifecycle, true);
 		var dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 		nextNode._dom = dom;
@@ -1897,7 +1902,7 @@
 			var child = children[i];
 
 			if (!isInvalid(child)) {
-				unmount(child, null, lifecycle);
+				unmount(child, null, lifecycle, true);
 			}
 		}
 		dom.textContent = '';
@@ -2240,14 +2245,14 @@
 	}
 
 	function mountRefFromTemplate(ref) {
-		return function mountRefFromTemplate(vTemplate, dom) {
+		return function mountRefFromTemplate(vTemplate, dom, lifecycle) {
 			var value = ref;
 
 			if (isVariable(ref)) {
 				value = vTemplate.read(ref._pointer);
 			}
 			if (isFunction(value)) {
-				value(dom);
+				lifecycle.addListener(function () { return value(dom); });
 			}
 		};
 	}
@@ -2338,7 +2343,7 @@
 			var activeNode = getActiveNode();
 
 			if (isNull(input)) {
-				unmount(root.input, parentDom);
+				unmount(root.input, parentDom, lifecycle, true);
 				roots.delete(parentDom);
 			} else {
 				patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false);
