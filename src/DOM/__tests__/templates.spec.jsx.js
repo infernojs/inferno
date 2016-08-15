@@ -101,4 +101,44 @@ describe('Templates', () => {
 			});
 		});
 	});
+
+	describe('Infinite loop issue', () => {
+		it('Should not get stuck when doing setState from ref callback', () => {
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						text: 'foo'
+					};
+
+					this.onWilAttach = this.onWilAttach.bind(this);
+				}
+
+				onWilAttach(node) {
+					// Do something with node and setState
+					this.setState({
+						text: 'animate'
+					})
+				}
+
+				render() {
+					if (!this.props.open) {
+						return null;
+					}
+
+					return (
+						<div ref={this.onWilAttach}>
+							{this.state.text}
+						</div>
+					)
+				}
+			}
+
+			render(<A />, container);
+
+			render(<A open={true}/>, container);
+			expect(container.innerHTML).to.equal(innerHTML(<div>animate</div>));
+		})
+	})
 });
