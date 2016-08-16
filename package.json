@@ -57,7 +57,7 @@
     "rimraf": "^2.5.4",
     "rollup": "^0.34.3",
     "rollup-plugin-babel": "^2.6.1",
-    "rollup-plugin-buble": "^0.12.1",
+    "rollup-plugin-buble": "^0.13.0",
     "rollup-plugin-commonjs": "^3.3.1",
     "rollup-plugin-filesize": "^0.4.4",
     "rollup-plugin-node-resolve": "^2.0.0",
