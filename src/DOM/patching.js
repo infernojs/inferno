@@ -505,7 +505,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 		return;
 	}
 	// Step 1
-	outer: while (true) {
+	outer: do {
 		// Sync nodes with the same key at the beginning.
 		while (aStartNode._key === bStartNode._key) {
 			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG);
@@ -539,13 +539,13 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 			aStart++;
 			bEnd--;
 			if (aStart > aEnd || bStart > bEnd) {
-				break;
+				break outer;
 			}
 			aStartNode = a[aStart];
 			bEndNode = b[bEnd];
 			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
 			// immediately jump to the start of this prefix/suffix algo.
-			continue;
+			continue outer;
 		}
 
 		// Move and sync nodes from right to left.
@@ -555,14 +555,13 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 			aEnd--;
 			bStart++;
 			if (aStart > aEnd || bStart > bEnd) {
-				break;
+				break outer;
 			}
 			aEndNode = a[aEnd];
 			bStartNode = b[bStart];
-			continue;
+			continue outer;
 		}
-		break;
-	}
+	} while (false);
 
 	if (aStart > aEnd) {
 		if (bStart <= bEnd) {
