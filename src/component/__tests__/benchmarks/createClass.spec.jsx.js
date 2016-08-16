@@ -66,7 +66,7 @@ function runBenchmark(container) {
 
 	var AdsPEAccountSelector7 = createClass({
 		render: function () {
-			return <ReactXUIPopoverButton6 ref={"button"} />;
+			return <ReactXUIPopoverButton6 />;
 		},
 	});
 
@@ -190,7 +190,7 @@ function runBenchmark(container) {
 
 	var ReactPopoverMenu22 = createClass({
 		render: function () {
-			return <InlineBlock21 ref={"root"} />;
+			return <InlineBlock21 />;
 		},
 	});
 
@@ -215,15 +215,15 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<div className={"_5ljl"} id={"ads_pe_top_nav"}>
-					<div ref={"logo"} className={"_5ljm"}>
+					<div className={"_5ljm"}>
 						<Link0 />
 						<div className={"_5rne"}>
 							<span className={"_5ljs"} data-testid={"PETopNavLogoText"}>{"Power Editor"}</span>
 						</div>
 						<span className={"_5ljt _5lju"}>{"Dick Madanson"}</span>
 					</div>
-					<div ref={"leftButtonGroup"} className={"_5ljy"}>
-						<div ref={"accountDropdown"} className={"_5ljz _5mun"}>
+					<div className={"_5ljy"}>
+						<div className={"_5ljz _5mun"}>
 							<AdsPEAccountSelectorContainer8 />
 							<div className={"_5lj- _5lju"}>{"Account 10149999073643408"}</div>
 						</div>
@@ -244,7 +244,7 @@ function runBenchmark(container) {
 							</div>
 						</div>
 					</div>
-					<div ref={"rightButtonGroup"} className={"_5lk3"}>
+					<div className={"_5lk3"}>
 						<XUIButtonGroup23 />
 					</div>
 					<AdsPEResetDialog24 />
@@ -263,7 +263,7 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<li selected={true} focused={false} tabIndex={null} hideFocusRing={true} onClick={function () { } } onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } } className={"_5vwz _5vwy _45hc _1hqh"} wrapper={function () { } } shouldWrapTab={true} mockSpacebarClick={true} role={"presentation"}>
-					<a ref={"tab"} ajaxify={undefined} href={"#"} role={"tab"} rel={undefined} target={undefined} tabIndex={0} className={""} aria-selected={true} onKeyDown={function () { } }>
+					<a ajaxify={undefined} href={"#"} role={"tab"} rel={undefined} target={undefined} tabIndex={0} className={""} aria-selected={true} onKeyDown={function () { } }>
 						<div className={"_4jq5"}>{"Manage Ads"}</div>
 						<span className={"_13xf"}></span>
 					</a>
@@ -294,7 +294,7 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function () { } } onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } } className={"_5vwz _45hc"} wrapper={function () { } } shouldWrapTab={true} mockSpacebarClick={true} role={"presentation"}>
-					<a ref={"tab"} ajaxify={undefined} href={"#"} role={"tab"} rel={undefined} target={undefined} tabIndex={-1} className={""} aria-selected={false} onKeyDown={function () { } }>
+					<a aria-selected={false} onKeyDown={function () { } }>
 						<div className={"_4jq5"}>{"Audiences"}</div>
 						<span className={"_13xf"}></span>
 					</a>
@@ -325,7 +325,7 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function () { } } onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } } className={"_5vwz _45hc"} wrapper={function () { } } shouldWrapTab={true} mockSpacebarClick={true} role={"presentation"}>
-					<a ref={"tab"} ajaxify={undefined} href={"#"} role={"tab"} rel={undefined} target={undefined} tabIndex={-1} className={""} aria-selected={false} onKeyDown={function () { } }>
+					<a aria-selected={false} onKeyDown={function () { } }>
 						<div className={"_4jq5"}>{"Image Library"}</div>
 						<span className={"_13xf"}></span>
 					</a>
@@ -356,7 +356,7 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function () { } } onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } } className={"_5vwz _45hc"} wrapper={function () { } } shouldWrapTab={true} mockSpacebarClick={true} role={"presentation"}>
-					<a ref={"tab"} ajaxify={undefined} href={"#"} role={"tab"} rel={undefined} target={undefined} tabIndex={-1} className={""} aria-selected={false} onKeyDown={function () { } }>
+					<a aria-selected={false} onKeyDown={function () { } }>
 						<div className={"_4jq5"}>
 							{"Reporting"}
 							{null}
@@ -390,7 +390,7 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function () { } } onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } } className={"_5vwz _45hc"} wrapper={function () { } } shouldWrapTab={true} mockSpacebarClick={true} role={"presentation"}>
-					<a ref={"tab"} ajaxify={undefined} href={"#"} role={"tab"} rel={undefined} target={undefined} tabIndex={-1} className={""} aria-selected={false} onKeyDown={function () { } }>
+					<a aria-selected={false} onKeyDown={function () { } }>
 						<div className={"_4jq5"}>{"Page Posts"}</div>
 						<span className={"_13xf"}></span>
 					</a>
@@ -420,7 +420,7 @@ function runBenchmark(container) {
 	var TabBarItem47 = createClass({
 		render: function () {
 			return (
-				<a ref={"tab"} menuClassName={undefined} selected={false} focused={false} hideFocusRing={true} onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } } label={"Tools"} tabComponent={function () { } } shouldWrapTab={false} className={"_45hd _45hc _p _45hc"} tabIndex={-1} mockSpacebarClick={false} wrapper={function () { } } href={"#"} role={"tab"} aria-selected={false}>
+				<a aria-selected={false}>
 					<span className={"_1b0"}>
 						{"Tools"}
 						<span className={"accessible_elem"}>{"additional tabs menu"}</span>
@@ -442,7 +442,7 @@ function runBenchmark(container) {
 
 	var ReactPopoverMenu49 = createClass({
 		render: function () {
-			return <InlineBlock48 ref={"root"} />;
+			return <InlineBlock48 />;
 		},
 	});
 
@@ -465,7 +465,7 @@ function runBenchmark(container) {
 					<TabBarItemWrapper38 key={"IMAGES"} />
 					<TabBarItemWrapper42 key={"REPORTING"} />
 					<TabBarItemWrapper46 key={"PAGES"} />
-					<TabBarDropdownItem50 key={"_dropdown"} ref={"more"} />
+					<TabBarDropdownItem50 key={"_dropdown"} />
 				</ul>
 			);
 		},
@@ -473,7 +473,7 @@ function runBenchmark(container) {
 
 	var XUIPageNavigationGroup52 = createClass({
 		render: function () {
-			return <TabBar51 ref={"bar"} />;
+			return <TabBar51 />;
 		},
 	});
 
@@ -482,7 +482,7 @@ function runBenchmark(container) {
 			return (
 				<div className={"_5vx7 clearfix"}>
 					<div key={"left"} className={"_ohe lfloat"}>
-						<XUIPageNavigationGroup52 key={"0"} ref={"left"} />
+						<XUIPageNavigationGroup52 key={"0"} />
 					</div>
 					{null}
 				</div>
@@ -598,7 +598,7 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<span transitionEnterTimeout={500} transitionLeaveTimeout={500} transitionName={{}} transitionAppear={false} transitionEnter={true} transitionLeave={true} childFactory={function () { } } component={"span"}>
-					<ReactCSSTransitionGroupChild65 key={".0"} ref={".0"} />
+					<ReactCSSTransitionGroupChild65 key={".0"} />
 				</span>
 			);
 		},
@@ -732,8 +732,8 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<span className={"_5b-l  _5bbe"}>
-					<ReactXUIPopoverButton76 ref={"searchButton"} />
-					<ReactXUIPopoverButton83 ref={"filterButton"} />
+					<ReactXUIPopoverButton76 />
+					<ReactXUIPopoverButton83 />
 				</span>
 			);
 		},
@@ -784,7 +784,7 @@ function runBenchmark(container) {
 	var AdsPopoverLink91 = createClass({
 		render: function () {
 			return (
-				<span ref={"tipIcon"} onMouseEnter={function () { } } onMouseLeave={function () { } }>
+				<span onMouseEnter={function () { } } onMouseLeave={function () { } }>
 					<span className={"_3o_j"}></span>
 					<ReactImage90 />
 				</span>
@@ -837,7 +837,7 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<div className={"_3yz1 _3yz2 _3dad"}>
-					<div ref={"filterToken"} className={"_3yz4"} aria-hidden={false}>
+					<div aria-hidden={false}>
 						<div onClick={function () { } } className={"_3yz5"}>
 							<ReactImage85 />
 							<div className={"_3yz7"}>{"Ads:"}</div>
@@ -845,7 +845,7 @@ function runBenchmark(container) {
 						</div>
 						<XUICloseButton88 />
 					</div>
-					<BUIFilterTokenInput95 ref={"filterTokenInput"} />
+					<BUIFilterTokenInput95 />
 				</div>
 			);
 		},
@@ -902,7 +902,7 @@ function runBenchmark(container) {
 
 	var AdsPEAmbientNUXMegaphone102 = createClass({
 		render: function () {
-			return <span ref={"mainChild"}></span>;
+			return <span ></span>;
 		},
 	});
 
@@ -1012,7 +1012,7 @@ function runBenchmark(container) {
 			return (
 				<div className={"_3c5o _3c5p _6a _6b"} defaultValue={"LIFETIME"} size={"large"} onChange={function () { } } disabled={false} alignv={"middle"} fullWidth={false}>
 					<input type={"hidden"} autoComplete={"off"} name={undefined} value={"LIFETIME"}></input>
-					<XUISingleSelectorButton116 ref={"button"} />
+					<XUISingleSelectorButton116 />
 				</div>
 			);
 		},
@@ -1144,7 +1144,7 @@ function runBenchmark(container) {
 
 	var ReactPopoverMenu132 = createClass({
 		render: function () {
-			return <InlineBlock131 ref={"root"} />;
+			return <InlineBlock131 />;
 		},
 	});
 
@@ -1327,7 +1327,7 @@ function runBenchmark(container) {
 
 	var ReactPopoverMenu154 = createClass({
 		render: function () {
-			return <InlineBlock153 ref={"root"} />;
+			return <InlineBlock153 />;
 		},
 	});
 
@@ -1416,7 +1416,7 @@ function runBenchmark(container) {
 				<div className={"_5n7z _51xa"}>
 					<XUIButton149 key={"saveAudience"} />
 					<AdsPEExportImportMenuContainer159 />
-					<XUIButton162 key={"createReport"} ref={"ads_create_report_button"} />
+					<XUIButton162 key={"createReport"} />
 					<XUIButton164 key={"variations"} />
 				</div>
 			);
@@ -4568,7 +4568,7 @@ function runBenchmark(container) {
 	var AdsPopoverLink440 = createClass({
 		render: function () {
 			return (
-				<span ref={"tipIcon"} onMouseEnter={function () { } } onMouseLeave={function () { } }>
+				<span onMouseEnter={function () { } } onMouseLeave={function () { } }>
 					<span className={"_3o_j"}></span>
 					<ReactImage439 />
 				</span>
@@ -4717,7 +4717,7 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<div onFocus={function () { } } onBlur={function () { } } onKeyDown={function () { } } onMouseDown={function () { } } onWheel={function () { } } className={"_1t0r _1t0t _4jdr _1t0u"} style={{ "width": 1083, "zIndex": 99 }} tabIndex={0}>
-					<div ref={"face"} className={"_1t0w _1t0y _1t0_"} style={{ "width": 407.918085106383, "transform": "translate3d(4px,0px,0)", "backfaceVisibility": "hidden" }}></div>
+					<div style={{ "width": 407.918085106383, "transform": "translate3d(4px,0px,0)", "backfaceVisibility": "hidden" }}></div>
 				</div>
 			);
 		},
@@ -4774,7 +4774,7 @@ function runBenchmark(container) {
 	var AdsDataTableKeyboardSupportDecorator456 = createClass({
 		render: function () {
 			return (
-				<div ref={"tableContainer"} className={"_5d6f"} tabIndex={"0"} onKeyDown={function () { } }>
+				<div onKeyDown={function () { } }>
 					<AdsSelectableFixedDataTable455 />
 				</div>
 			);
@@ -4785,7 +4785,7 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<div onCopy={function () { } }>
-					<AdsDataTableKeyboardSupportDecorator456 ref={"decoratedTable"} />
+					<AdsDataTableKeyboardSupportDecorator456 />
 				</div>
 			);
 		},
@@ -4809,7 +4809,7 @@ function runBenchmark(container) {
 				<div onResize={function () { } } className={"_4u-c"}>
 					<AdsPEDataTableContainer458 />
 					<div key={"sensor"} className={"_4u-f"}>
-						<iframe ref={"sensorNode"} aria-hidden={"true"} className={"_4u-g"} tabIndex={"-1"}></iframe>
+						<iframe tabIndex={"-1"}></iframe>
 					</div>
 				</div>
 			);
@@ -5042,10 +5042,10 @@ function runBenchmark(container) {
 						<div className={"_2vla _1h1g"}>
 							<div>
 								{null}
-								<textarea ref={"input"} id={undefined} disabled={undefined} onKeyDown={function () { } } onFocus={function () { } } onBlur={function () { } } onChange={function () { } } dir={"auto"} maxLength={null} className={"_2vli _2vlj _1h26 _1h27"} value={"Test Ad"}></textarea>
+								<textarea value={"Test Ad"}></textarea>
 								{null}
 							</div>
-							<div ref={"shadowText"} aria-hidden={"true"} className={"_2vlk"}></div>
+							<div className={"_2vlk"}></div>
 						</div>
 					</div>
 					{null}
@@ -5068,14 +5068,14 @@ function runBenchmark(container) {
 
 	var AdsAutoNamingTemplateDialog489 = createClass({
 		render: function () {
-			return <Link488 ref={"link"} />;
+			return <Link488 />;
 		},
 	});
 
 	var AdsPEAmbientNUXMegaphone490 = createClass({
 		render: function () {
 			return (
-				<span ref={"mainChild"}>
+				<span >
 					<AdsAutoNamingTemplateDialog489 />
 				</span>
 			);
@@ -5131,7 +5131,7 @@ function runBenchmark(container) {
 						<div>
 							<AdsLabeledField485 />
 							<span className={"_5irl"}>
-								<AdsTextInput487 key={"nameEditor98010048849345"} ref={"nameTextInput"} />
+								<AdsTextInput487 key={"nameEditor98010048849345"} />
 								<AdsPEAmbientNUXMegaphone490 />
 							</span>
 						</div>
@@ -5470,7 +5470,7 @@ function runBenchmark(container) {
 						<div className={"hidden_elem"}>
 							<XUINotice531 />
 						</div>
-						<div ref={"pageletContainer"} className={""}></div>
+						<div className={""}></div>
 					</div>
 				</div>
 			);
@@ -5503,7 +5503,7 @@ function runBenchmark(container) {
 		render: function () {
 			return (
 				<div>
-					<AdsPEPreviewPillList528 ref={"pillList"} />
+					<AdsPEPreviewPillList528 />
 					{undefined}
 					<AdsCardSection534 />
 				</div>
@@ -5564,7 +5564,7 @@ function runBenchmark(container) {
 			return (
 				<div>
 					{null}
-					<div ref={"sticky"}>
+					<div >
 						<AdsPEAdgroupPreviewSectionContainer542 />
 					</div>
 				</div>
@@ -5735,7 +5735,7 @@ function runBenchmark(container) {
 	var AdsPopoverLink563 = createClass({
 		render: function () {
 			return (
-				<span ref={"tipIcon"} onMouseEnter={function () { } } onMouseLeave={function () { } }>
+				<span onMouseEnter={function () { } } onMouseLeave={function () { } }>
 					<span className={"_3o_j"}></span>
 					<ReactImage562 />
 				</span>
@@ -5775,10 +5775,10 @@ function runBenchmark(container) {
 						<div className={"_2vla _1h1g"}>
 							<div>
 								{null}
-								<textarea ref={"input"} id={undefined} disabled={undefined} onKeyDown={function () { } } onFocus={function () { } } onBlur={function () { } } onChange={function () { } } dir={"auto"} maxLength={null} className={"_2vli _2vlj _1h26 _1h27"} value={"http://www.example.com/"}></textarea>
+								<textarea value={"http://www.example.com/"}></textarea>
 								{null}
 							</div>
-							<div ref={"shadowText"} aria-hidden={"true"} className={"_2vlk"}></div>
+							<div className={"_2vlk"}></div>
 						</div>
 					</div>
 					{null}
@@ -5814,7 +5814,7 @@ function runBenchmark(container) {
 	var AdsPopoverLink571 = createClass({
 		render: function () {
 			return (
-				<span ref={"tipIcon"} onMouseEnter={function () { } } onMouseLeave={function () { } }>
+				<span onMouseEnter={function () { } } onMouseLeave={function () { } }>
 					<span className={"_3o_j"}></span>
 					<ReactImage570 />
 				</span>
@@ -5854,10 +5854,10 @@ function runBenchmark(container) {
 						<div className={"_2vla _1h1g"}>
 							<div>
 								{null}
-								<textarea ref={"input"} id={undefined} disabled={undefined} onKeyDown={function () { } } onFocus={function () { } } onBlur={function () { } } onChange={function () { } } dir={"auto"} maxLength={null} className={"_2vli _2vlj _1h26 _1h27"} value={"Example"}></textarea>
+								<textarea value={"Example"}></textarea>
 								{null}
 							</div>
-							<div ref={"shadowText"} aria-hidden={"true"} className={"_2vlk"}></div>
+							<div className={"_2vlk"}></div>
 						</div>
 					</div>
 					{null}
@@ -5910,10 +5910,10 @@ function runBenchmark(container) {
 						<div className={"_2vla _1h1g"}>
 							<div>
 								{null}
-								<textarea ref={"input"} id={undefined} disabled={undefined} onKeyDown={function () { } } onFocus={function () { } } onBlur={function () { } } onChange={function () { } } dir={"auto"} maxLength={null} className={"_2vli _2vlj _1h26 _1h27"} value={"It's an example."}></textarea>
+								<textarea value={"It's an example."}></textarea>
 								{null}
 							</div>
-							<div ref={"shadowText"} aria-hidden={"true"} className={"_2vlk"}></div>
+							<div className={"_2vlk"}></div>
 						</div>
 					</div>
 					{null}
@@ -6236,7 +6236,7 @@ function runBenchmark(container) {
 	var AdsPopoverLink614 = createClass({
 		render: function () {
 			return (
-				<span ref={"tipIcon"} onMouseEnter={function () { } } onMouseLeave={function () { } }>
+				<span onMouseEnter={function () { } } onMouseLeave={function () { } }>
 					<span className={"_3o_j"}></span>
 					<ReactImage613 />
 				</span>
