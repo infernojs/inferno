@@ -48,6 +48,10 @@
   	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
   }
 
+  function isFunction(obj) {
+  	return typeof obj === 'function';
+  }
+
   function isAttrAnEvent(attr) {
   	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
   }
@@ -179,6 +183,7 @@
   	this._props = {};
   	this._hooks = null;
   	this._key = null;
+  	this._ref = null;
   	this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
   };
   VComponent.prototype.key = function key ($key) {
@@ -191,6 +196,10 @@
   };
   VComponent.prototype.hooks = function hooks ($hooks) {
   	this._hooks = $hooks;
+  	return this;
+  };
+  VComponent.prototype.ref = function ref ($ref) {
+  	this._ref = $ref;
   	return this;
   };
 
@@ -706,7 +715,7 @@
   		return;
   	}
   	// Step 1
-  	outer: do {
+  	outer: while (true) {
   		// Sync nodes with the same key at the beginning.
   		while (aStartNode._key === bStartNode._key) {
   			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG);
@@ -740,13 +749,13 @@
   			aStart++;
   			bEnd--;
   			if (aStart > aEnd || bStart > bEnd) {
-  				break outer;
+  				break;
   			}
   			aStartNode = a[aStart];
   			bEndNode = b[bEnd];
   			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
   			// immediately jump to the start of this prefix/suffix algo.
-  			continue outer;
+  			continue;
   		}
 
   		// Move and sync nodes from right to left.
@@ -756,13 +765,14 @@
   			aEnd--;
   			bStart++;
   			if (aStart > aEnd || bStart > bEnd) {
-  				break outer;
+  				break;
   			}
   			aEndNode = a[aEnd];
   			bStartNode = b[bStart];
-  			continue outer;
+  			continue;
   		}
-  	} while (false);
+  		break;
+  	}
 
   	if (aStart > aEnd) {
   		if (bStart <= bEnd) {
@@ -1440,6 +1450,8 @@
   	}
   }
 
+  var refsError = 'Inferno Error: string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.';
+
   function mount(input, parentDom, lifecycle, context, isSVG) {
   	if (isVTemplate(input)) {
   		return mountVTemplate(input, parentDom, lifecycle, context, isSVG);
@@ -1608,9 +1620,13 @@
   	var Component = vComponent._component;
   	var props = vComponent._props;
   	var hooks = vComponent._hooks;
+  	var ref = vComponent._ref;
   	var dom;
 
   	if (isStatefulComponent(vComponent)) {
+  		if (hooks) {
+  			throw new Error('Inferno Error: "hooks" are not supported on stateful components.');
+  		}
   		var instance = new Component(props, context);
 
   		instance._patch = patch;
@@ -1639,7 +1655,17 @@
   		componentToDOMNodeMap.set(instance, dom);
   		vComponent._dom = dom;
   		vComponent._instance = instance;
+  		if (ref) {
+  			if (isFunction(ref)) {
+  				ref(instance);
+  			} else {
+  				throw new Error(refsError);
+  			}
+  		}
   	} else {
+  		if (ref) {
+  			throw new Error('Inferno Error: "refs" are not supported on stateless components.');
+  		}
   		if (!isNullOrUndef(hooks)) {
   			if (!isNullOrUndef(hooks.onComponentWillMount)) {
   				hooks.onComponentWillMount(null, props);

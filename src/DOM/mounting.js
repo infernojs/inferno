@@ -31,6 +31,8 @@ import {
 } from '../core/ChildrenTypes';
 import { recycleVTemplate, recyclingEnabled } from './templates';
 
+const refsError = 'Inferno Error: string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.';
+
 export function mount(input, parentDom, lifecycle, context, isSVG) {
 	if (isVTemplate(input)) {
 		return mountVTemplate(input, parentDom, lifecycle, context, isSVG);
@@ -199,9 +201,13 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 	const Component = vComponent._component;
 	const props = vComponent._props;
 	const hooks = vComponent._hooks;
+	const ref = vComponent._ref;
 	let dom;
 
 	if (isStatefulComponent(vComponent)) {
+		if (hooks) {
+			throw new Error('Inferno Error: "hooks" are not supported on stateful components.');
+		}
 		const instance = new Component(props, context);
 
 		instance._patch = patch;
@@ -230,15 +236,23 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		componentToDOMNodeMap.set(instance, dom);
 		vComponent._dom = dom;
 		vComponent._instance = instance;
+		if (ref) {
+			if (isFunction(ref)) {
+				lifecycle.addListener(() => ref(instance));
+			} else {
+				throw new Error(refsError);
+			}
+		}
 	} else {
+		if (ref) {
+			throw new Error('Inferno Error: "refs" are not supported on stateless components.');
+		}
 		if (!isNullOrUndef(hooks)) {
 			if (!isNullOrUndef(hooks.onComponentWillMount)) {
 				hooks.onComponentWillMount(null, props);
 			}
 			if (!isNullOrUndef(hooks.onComponentDidMount)) {
-				lifecycle.addListener(() => {
-					hooks.onComponentDidMount(dom, props);
-				});
+				lifecycle.addListener(() => hooks.onComponentDidMount(dom, props));
 			}
 		}
 
@@ -311,6 +325,8 @@ export function mountRefFromTemplate(ref) {
 		}
 		if (isFunction(value)) {
 			lifecycle.addListener(() => value(dom));
+		} else {
+			throw new Error(refsError);
 		}
 	};
 }

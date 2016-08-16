@@ -81,6 +81,7 @@ class VComponent {
 		this._props = {};
 		this._hooks = null;
 		this._key = null;
+		this._ref = null;
 		this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
 	}
 	key($key) {
@@ -93,6 +94,10 @@ class VComponent {
 	}
 	hooks($hooks) {
 		this._hooks = $hooks;
+		return this;
+	}
+	ref($ref) {
+		this._ref = $ref;
 		return this;
 	}
 }

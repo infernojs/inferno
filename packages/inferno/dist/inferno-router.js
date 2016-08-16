@@ -113,6 +113,7 @@
     	this._props = {};
     	this._hooks = null;
     	this._key = null;
+    	this._ref = null;
     	this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
     };
     VComponent.prototype.key = function key ($key) {
@@ -125,6 +126,10 @@
     };
     VComponent.prototype.hooks = function hooks ($hooks) {
     	this._hooks = $hooks;
+    	return this;
+    };
+    VComponent.prototype.ref = function ref ($ref) {
+    	this._ref = $ref;
     	return this;
     };
 
