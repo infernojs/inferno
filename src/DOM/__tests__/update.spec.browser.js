@@ -42,14 +42,14 @@ describe('Update (non-jsx)', () => {
 
 	it('should insert an additional tag node', () => {
 		const template = (child) => createElement('div', null, child);
-		const span = () => createElement('div');
+		const span = () => createElement('span');
 
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<div></div>');
+		expect(container.firstChild.innerHTML).to.equal('<span></span>');
 		render(template(null), container);
 		expect(container.firstChild.innerHTML).to.equal('');
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<div></div>');
+		expect(container.firstChild.innerHTML).to.equal('<span></span>');
 	});
 
 	it('should insert an additional tag node', () => {

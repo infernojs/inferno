@@ -346,7 +346,7 @@
 
   function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
   	if (isInvalid(nextChildren)) {
-  		removeAllChildren(parentDom, lastChildren, lifecycle, isKeyed(lastChildren, nextChildren));
+  		removeAllChildren(parentDom, lastChildren, lifecycle);
   	} else if (isInvalid(lastChildren)) {
   		if (isStringOrNumber(nextChildren)) {
   			setTextContent(parentDom, nextChildren);
@@ -701,7 +701,7 @@
   		return;
   	} else if (bLength === 0) {
   		if (aLength !== 0) {
-  			removeAllChildren(dom, a, lifecycle, true);
+  			removeAllChildren(dom, a, lifecycle);
   		}
   		return;
   	}
@@ -840,7 +840,7 @@
   			}
   		}
   		if (aLength === a.length && patched === 0) {
-  			removeAllChildren(dom, a, lifecycle, true);
+  			removeAllChildren(dom, a, lifecycle);
   			while (bStart < bLength) {
   				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), null);
   			}
@@ -1375,15 +1375,13 @@
   	return document.activeElement;
   }
 
-  function removeAllChildren(dom, children, lifecycle, isKeyed) {
-  	if (isKeyed) {
-  		dom.textContent = '';
-  	}
+  function removeAllChildren(dom, children, lifecycle) {
+  	dom.textContent = '';
   	for (var i = 0; i < children.length; i++) {
   		var child = children[i];
 
   		if (!isInvalid(child)) {
-  			unmount(child, isKeyed ? null : dom, lifecycle, true);
+  			unmount(child, null, lifecycle, true);
   		}
   	}
   }

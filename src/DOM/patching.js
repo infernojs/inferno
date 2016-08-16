@@ -145,7 +145,7 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
 
 export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
 	if (isInvalid(nextChildren)) {
-		removeAllChildren(parentDom, lastChildren, lifecycle, isKeyed(lastChildren, nextChildren));
+		removeAllChildren(parentDom, lastChildren, lifecycle);
 	} else if (isInvalid(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
 			setTextContent(parentDom, nextChildren);
@@ -500,7 +500,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 		return;
 	} else if (bLength === 0) {
 		if (aLength !== 0) {
-			removeAllChildren(dom, a, lifecycle, true);
+			removeAllChildren(dom, a, lifecycle);
 		}
 		return;
 	}
@@ -639,7 +639,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 			}
 		}
 		if (aLength === a.length && patched === 0) {
-			removeAllChildren(dom, a, lifecycle, true);
+			removeAllChildren(dom, a, lifecycle);
 			while (bStart < bLength) {
 				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), null);
 			}

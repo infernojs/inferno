@@ -130,15 +130,13 @@ export function getActiveNode() {
 	return document.activeElement;
 }
 
-export function removeAllChildren(dom, children, lifecycle, isKeyed) {
-	if (isKeyed) {
-		dom.textContent = '';
-	}
+export function removeAllChildren(dom, children, lifecycle) {
+	dom.textContent = '';
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
 		if (!isInvalid(child)) {
-			unmount(child, isKeyed ? null : dom, lifecycle, true);
+			unmount(child, null, lifecycle, true);
 		}
 	}
 }
