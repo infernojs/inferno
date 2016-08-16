@@ -383,8 +383,10 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 			const lastProps = lastVComponent._props;
 			const nextHooks = nextVComponent._hooks;
 			const nextHooksDefined = !isNullOrUndef(nextHooks);
+			const lastInput = lastVComponent._instance;
 
 			nextVComponent._dom = lastVComponent._dom;
+			nextVComponent._instance = lastInput;
 			if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
 				shouldUpdate = nextHooks.onComponentShouldUpdate(lastVComponent._dom, lastProps, nextProps);
 			}
@@ -393,7 +395,6 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 					nextHooks.onComponentWillUpdate(lastVComponent._dom, lastProps, nextProps);
 				}
 				let nextInput = nextComponent(nextProps, context);
-				const lastInput = lastVComponent._instance;
 
 				if (nextInput === NO_OP) {
 					return;

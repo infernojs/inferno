@@ -525,8 +525,10 @@
 				var lastProps$1 = lastVComponent._props;
 				var nextHooks = nextVComponent._hooks;
 				var nextHooksDefined = !isNullOrUndef(nextHooks);
+				var lastInput = lastVComponent._instance;
 
 				nextVComponent._dom = lastVComponent._dom;
+				nextVComponent._instance = lastInput;
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
 					shouldUpdate = nextHooks.onComponentShouldUpdate(lastVComponent._dom, lastProps$1, nextProps);
 				}
@@ -535,7 +537,6 @@
 						nextHooks.onComponentWillUpdate(lastVComponent._dom, lastProps$1, nextProps);
 					}
 					var nextInput$1 = nextComponent(nextProps, context);
-					var lastInput = lastVComponent._instance;
 
 					if (nextInput$1 === NO_OP) {
 						return;
