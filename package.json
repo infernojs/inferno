@@ -1,7 +1,7 @@
 {
   "name": "inferno-src",
   "license": "MIT",
-  "version": "0.8.0-alpha1",
+  "version": "0.8.0-alpha2",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -14,7 +14,7 @@
     "babel-core": "^6.13.2",
     "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.4",
-    "babel-plugin-inferno": "^0.8.0-alpha1",
+    "babel-plugin-inferno": "^0.8.0-alpha2",
     "babel-plugin-syntax-jsx": "^6.13.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-es2015-modules-umd": "^6.12.0",
