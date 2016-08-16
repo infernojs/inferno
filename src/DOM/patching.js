@@ -482,6 +482,8 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 	let bEnd = bLength - 1;
 	let aStart = 0;
 	let bStart = 0;
+	let i;
+	let j;
 	let aStartNode = a[aStart];
 	let bStartNode = b[bStart];
 	let aEndNode = a[aEnd];
@@ -564,7 +566,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 	if (aStart > aEnd) {
 		if (bStart <= bEnd) {
 			nextPos = bEnd + 1;
-			nextNode = (nextPos < bLength) ? b[nextPos]._dom : parentVList && parentVList._pointer;
+			nextNode = (nextPos < b.length) ? b[nextPos]._dom : parentVList && parentVList._pointer;
 			while (bStart <= bEnd) {
 				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), nextNode);
 			}
@@ -578,8 +580,6 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 		bLength = bEnd - bStart + 1;
 		const aNullable = a;
 		const sources = new Array(bLength);
-		let i;
-		let j;
 
 		// Mark all nodes as inserted.
 		for (i = 0; i < bLength; i++) {
@@ -595,7 +595,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 				if (patched < bLength) {
 					for (j = bStart; j <= bEnd; j++) {
 						bNode = b[j];
-						if (aEndNode._key === bEndNode._key) {
+						if (aNode._key === bNode._key) {
 							sources[j - bStart] = i;
 
 							if (pos > j) {

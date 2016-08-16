@@ -683,6 +683,8 @@
   	var bEnd = bLength - 1;
   	var aStart = 0;
   	var bStart = 0;
+  	var i;
+  	var j;
   	var aStartNode = a[aStart];
   	var bStartNode = b[bStart];
   	var aEndNode = a[aEnd];
@@ -765,7 +767,7 @@
   	if (aStart > aEnd) {
   		if (bStart <= bEnd) {
   			nextPos = bEnd + 1;
-  			nextNode = (nextPos < bLength) ? b[nextPos]._dom : parentVList && parentVList._pointer;
+  			nextNode = (nextPos < b.length) ? b[nextPos]._dom : parentVList && parentVList._pointer;
   			while (bStart <= bEnd) {
   				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), nextNode);
   			}
@@ -779,8 +781,6 @@
   		bLength = bEnd - bStart + 1;
   		var aNullable = a;
   		var sources = new Array(bLength);
-  		var i;
-  		var j;
 
   		// Mark all nodes as inserted.
   		for (i = 0; i < bLength; i++) {
@@ -796,7 +796,7 @@
   				if (patched < bLength) {
   					for (j = bStart; j <= bEnd; j++) {
   						bNode = b[j];
-  						if (aEndNode._key === bEndNode._key) {
+  						if (aNode._key === bNode._key) {
   							sources[j - bStart] = i;
 
   							if (pos > j) {
