@@ -2220,7 +2220,7 @@
 			vComponent._instance = instance;
 			if (ref) {
 				if (isFunction(ref)) {
-					ref(instance);
+					lifecycle.addListener(function () { return ref(instance); });
 				} else {
 					throw new Error(refsError);
 				}
@@ -2234,9 +2234,7 @@
 					hooks.onComponentWillMount(null, props);
 				}
 				if (!isNullOrUndef(hooks.onComponentDidMount)) {
-					lifecycle.addListener(function () {
-						hooks.onComponentDidMount(dom, props);
-					});
+					lifecycle.addListener(function () { return hooks.onComponentDidMount(dom, props); });
 				}
 			}
 
