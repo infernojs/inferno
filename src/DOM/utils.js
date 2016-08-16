@@ -131,6 +131,7 @@ export function getActiveNode() {
 }
 
 export function removeAllChildren(dom, children, lifecycle) {
+	dom.textContent = '';
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
@@ -138,7 +139,6 @@ export function removeAllChildren(dom, children, lifecycle) {
 			unmount(child, null, lifecycle, true);
 		}
 	}
-	dom.textContent = '';
 }
 
 export function resetActiveNode(activeNode) {

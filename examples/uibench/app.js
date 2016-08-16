@@ -67,19 +67,21 @@
 		return animTpl(children);
 	}
 
-	addEventListener('click', function (e) {
-		console.log('Click');
+	function onClick(e) {
+		console.log('Clicked' + e.target.xtag);
 		e.stopPropagation();
-	});
+	}
 
 	var tableCellTpl = t(function (text, key) {
 		return e('td').props({ 
-			className: 'TableCell'
+			className: 'TableCell',
+			'xtag': text,
+			onclick: onClick
 		}).key(key).children(text).childrenType(ChildrenTypes.TEXT);
 	}, InfernoDOM);
 
 	var tableRowTpl = t(function (classes, id, children) {
-		return e('tr').props({ className: classes, 'data-id': id }).children(children).childrenType(ChildrenTypes.KEYED_LIST);
+		return e('tr').props({ className: classes, 'data-id': id }).key(id).children(children).childrenType(ChildrenTypes.KEYED_LIST);
 	}, InfernoDOM);
 
 	function tableRow(data) {
@@ -101,7 +103,7 @@
 	}
 
 	var tableTpl = t(function (children) {
-		return e('table').props({ className: 'Table' }).children(children).childrenType(ChildrenTypes.NON_KEYED_LIST);
+		return e('table').props({ className: 'Table' }).children(children).childrenType(ChildrenTypes.KEYED_LIST);
 	}, InfernoDOM);
 
 	function table(data) {

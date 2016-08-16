@@ -59,7 +59,6 @@ export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) 
 	if (isNull(dom)) {
 		dom = templateReducers.mount(vTemplate, null, lifecycle, context, isSVG);
 	}
-
 	vTemplate._dom = dom;
 	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);

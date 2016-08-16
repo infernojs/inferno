@@ -1,5 +1,7 @@
 import {
 	isNullOrUndef,
+	isUndefined,
+	isNull,
 	isString,
 	isStatefulComponent,
 	isStringOrNumber,
@@ -472,171 +474,191 @@ export function patchVText(lastVText, nextVText) {
 	}
 }
 
-export function patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, parentVList) {
-	let lastChildrenLength = lastChildren.length;
-	let nextChildrenLength = nextChildren.length;
-	let lastEndIndex = lastChildrenLength - 1;
-	let nextEndIndex = nextChildrenLength - 1;
-	let lastStartIndex = 0;
-	let nextStartIndex = 0;
-	let lastStartNode = null;
-	let nextStartNode = null;
-	let nextEndNode = null;
-	let lastEndNode = null;
+export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
+	let aLength = a.length;
+	let bLength = b.length;
+	let aEnd = aLength - 1;
+	let bEnd = bLength - 1;
+	let aStart = 0;
+	let bStart = 0;
+	let aStartNode = null;
+	let bStartNode = null;
+	let aEndNode = null;
+	let bEndNode = null;
+	let aNode = null;
+	let bNode = null;
 	let nextNode;
+	let nextPos;
 
-	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
-		nextStartNode = nextChildren[nextStartIndex];
-		lastStartNode = lastChildren[lastStartIndex];
+	while (aStart <= aEnd && bStart <= bEnd) {
+		bStartNode = b[bStart];
+		aStartNode = a[aStart];
 
-		if (nextStartNode._key !== lastStartNode._key) {
+		if (bStartNode._key !== aStartNode._key) {
 			break;
 		}
-		patch(lastStartNode, nextStartNode, dom, lifecycle, context, isSVG, false);
-		nextStartIndex++;
-		lastStartIndex++;
+		patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG, false);
+		bStart++;
+		aStart++;
 	}
-	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
-		nextEndNode = nextChildren[nextEndIndex];
-		lastEndNode = lastChildren[lastEndIndex];
+	while (aStart <= aEnd && bStart <= bEnd) {
+		bEndNode = b[bEnd];
+		aEndNode = a[aEnd];
 
-		if (nextEndNode._key !== lastEndNode._key) {
+		if (bEndNode._key !== aEndNode._key) {
 			break;
 		}
-		patch(lastEndNode, nextEndNode, dom, lifecycle, context, isSVG, false);
-		nextEndIndex--;
-		lastEndIndex--;
+		patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG, false);
+		bEnd--;
+		aEnd--;
 	}
-	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
-		nextEndNode = nextChildren[nextEndIndex];
-		lastStartNode = lastChildren[lastStartIndex];
+	while (aStart <= aEnd && bStart <= bEnd) {
+		bEndNode = b[bEnd];
+		aStartNode = a[aStart];
 
-		if (nextEndNode._key !== lastStartNode._key) {
+		if (bEndNode._key !== aStartNode._key) {
 			break;
 		}
-		nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1]._dom : null;
-		patch(lastStartNode, nextEndNode, dom, lifecycle, context, isSVG, false);
-		insertOrAppend(dom, nextEndNode._dom, nextNode);
-		nextEndIndex--;
-		lastStartIndex++;
+		nextPos = bEnd + 1;
+		nextNode = (nextPos < bLength) ? b[nextPos]._dom : null;
+		patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG, false);
+		insertOrAppend(dom, bEndNode._dom, nextNode);
+		bEnd--;
+		aStart++;
 	}
-	while (lastStartIndex <= lastEndIndex && nextStartIndex <= nextEndIndex) {
-		nextStartNode = nextChildren[nextStartIndex];
-		lastEndNode = lastChildren[lastEndIndex];
+	while (aStart <= aEnd && bStart <= bEnd) {
+		bStartNode = b[bStart];
+		aEndNode = a[aEnd];
 
-		if (nextStartNode._key !== lastEndNode._key) {
+		if (bStartNode._key !== aEndNode._key) {
 			break;
 		}
-		nextNode = lastChildren[lastStartIndex]._dom;
-		patch(lastEndNode, nextStartNode, dom, lifecycle, context, isSVG, false);
-		insertOrAppend(dom, nextStartNode._dom, nextNode);
-		nextStartIndex++;
-		lastEndIndex--;
+		nextNode = a[aStart]._dom;
+		patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG, false);
+		insertOrAppend(dom, bStartNode._dom, nextNode);
+		bStart++;
+		aEnd--;
 	}
 
-	if (lastStartIndex > lastEndIndex) {
-		if (nextStartIndex <= nextEndIndex) {
-			nextNode = (nextEndIndex + 1 < nextChildrenLength) ? nextChildren[nextEndIndex + 1]._dom : parentVList && parentVList._pointer;
-			for (; nextStartIndex <= nextEndIndex; nextStartIndex++) {
-				insertOrAppend(dom, mount(nextChildren[nextStartIndex], null, lifecycle, context, isSVG), nextNode);
+	if (aStart > aEnd) {
+		if (bStart <= bEnd) {
+			nextPos = bEnd + 1;
+			nextNode = (nextPos < bLength) ? b[nextPos]._dom : parentVList && parentVList._pointer;
+			while (bStart <= bEnd) {
+				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), nextNode);
 			}
 		}
-	} else if (nextStartIndex > nextEndIndex) {
-		while (lastStartIndex <= lastEndIndex) {
-			unmount(lastChildren[lastStartIndex++], dom, lifecycle);
+	} else if (bStart > bEnd) {
+		while (aStart <= aEnd) {
+			unmount(a[aStart++], dom, lifecycle, true);
 		}
 	} else {
-		let aLength = lastEndIndex - lastStartIndex + 1;
-		let bLength = nextEndIndex - nextStartIndex + 1;
+		aLength = aEnd - aStart + 1;
+		bLength = bEnd - bStart + 1;
+		const aNullable = a;
 		const sources = new Array(bLength);
+		let i;
+		let j;
 
 		// Mark all nodes as inserted.
-		let i;
 		for (i = 0; i < bLength; i++) {
 			sources[i] = -1;
 		}
 		let moved = false;
-		let removeOffset = 0;
-		let lastTarget = 0;
-		let index;
+		let pos = 0;
+		let patched = 0;
 
-		if (aLength * bLength <= 16) {
-			for (i = lastStartIndex; i <= lastEndIndex; i++) {
-				let removed = true;
-				lastEndNode = lastChildren[i];
-				for (index = nextStartIndex; index <= nextEndIndex; index++) {
-					nextEndNode = nextChildren[index];
-					if (lastEndNode._key === nextEndNode._key) {
-						sources[index - nextStartIndex] = i;
+		if ((bLength <= 4) || (aLength * bLength <= 16)) {
+			for (i = aStart; i <= aEnd; i++) {
+				aNode = a[i];
+				if (patched < bLength) {
+					for (j = bStart; j <= bEnd; j++) {
+						bNode = b[j];
+						if (aEndNode._key === bEndNode._key) {
+							sources[j - bStart] = i;
 
-						if (lastTarget > index) {
-							moved = true;
-						} else {
-							lastTarget = index;
+							if (pos > j) {
+								moved = true;
+							} else {
+								pos = j;
+							}
+							patch(aNode, bNode, dom, lifecycle, context, isSVG, false);
+							patched++;
+							aNullable[i] = null;
+							break;
 						}
-						patch(lastEndNode, nextEndNode, dom, lifecycle, context, isSVG, false);
-						removed = false;
-						break;
 					}
-				}
-				if (removed) {
-					unmount(lastEndNode, dom);
-					removeOffset++;
 				}
 			}
 		} else {
-			const prevItemsMap = new Map();
+			const keyIndex = new Map();
 
-			for (i = nextStartIndex; i <= nextEndIndex; i++) {
-				prevItemsMap.set(nextChildren[i]._key, i);
+			for (i = bStart; i <= bEnd; i++) {
+				keyIndex.set(b[i]._key, i);
 			}
-			for (i = lastEndIndex; i >= lastStartIndex; i--) {
-				lastEndNode = lastChildren[i];
-				index = prevItemsMap.get(lastEndNode._key);
+			for (i = aStart; i <= aEnd; i++) {
+				aNode = a[i];
 
-				if (index === undefined) {
-					unmount(lastEndNode, dom, lifecycle);
-					removeOffset++;
-				} else {
+				if (patched < bLength) {
+					j = keyIndex.get(aNode._key);
 
-					nextEndNode = nextChildren[index];
-
-					sources[index - nextStartIndex] = i;
-					if (lastTarget > index) {
-						moved = true;
-					} else {
-						lastTarget = index;
+					if (!isUndefined(j)) {
+						bNode = b[j];
+						sources[j - bStart] = i;
+						if (pos > j) {
+							moved = true;
+						} else {
+							pos = j;
+						}
+						patch(aNode, bNode, dom, lifecycle, context, isSVG, false);
+						patched++;
+						aNullable[i] = null;
 					}
-					patch(lastEndNode, nextEndNode, dom, lifecycle, context, isSVG, false);
 				}
 			}
 		}
-
-		let pos;
-		if (moved) {
-			let seq = lis_algorithm(sources);
-			index = seq.length - 1;
-			for (i = bLength - 1; i >= 0; i--) {
-				if (sources[i] === -1) {
-					pos = i + nextStartIndex;
-					nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList._pointer;
-					insertOrAppend(dom, mount(nextChildren[pos], null, lifecycle, context, isSVG), nextNode);
-				} else {
-					if (index < 0 || i !== seq[index]) {
-						pos = i + nextStartIndex;
-						nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList._pointer;
-						insertOrAppend(dom, nextChildren[pos]._dom, nextNode);
-					} else {
-						index--;
-					}
+		if (aLength === a.length && patched === 0) {
+			removeAllChildren(dom, a, lifecycle);
+			while (bStart < bLength) {
+				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), null);
+			}
+		} else {
+			i = aLength - patched;
+			while (i > 0) {
+				aNode = aNullable[aStart++];
+				if (!isNull(aNode)) {
+					unmount(aNode, dom, lifecycle, true);
+					i--;
 				}
 			}
-		} else if (aLength - removeOffset !== bLength) {
-			for (i = bLength - 1; i >= 0; i--) {
-				if (sources[i] === -1) {
-					pos = i + nextStartIndex;
-					nextNode = (pos + 1 < nextChildrenLength) ? nextChildren[pos + 1]._dom : parentVList && parentVList._pointer;
-					insertOrAppend(dom, mount(nextChildren[pos], null, lifecycle, context, isSVG), nextNode);
+			if (moved) {
+				let seq = lis_algorithm(sources);
+				j = seq.length - 1;
+				for (i = bLength - 1; i >= 0; i--) {
+					if (sources[i] === -1) {
+						pos = i + bStart;
+						nextPos = pos + 1;
+						nextNode = (nextPos < bLength) ? b[nextPos]._dom : parentVList && parentVList._pointer;
+						insertOrAppend(dom, mount(b[pos], null, lifecycle, context, isSVG), nextNode);
+					} else {
+						if (j < 0 || i !== seq[j]) {
+							pos = i + bStart;
+							nextPos = pos + 1;
+							nextNode = (nextPos < bLength) ? b[nextPos]._dom : parentVList && parentVList._pointer;
+							insertOrAppend(dom, mount(b[pos], null, lifecycle, context, isSVG), nextNode);
+						} else {
+							j--;
+						}
+					}
+				}
+			} else if (patched !== bLength) {
+				for (i = bLength - 1; i >= 0; i--) {
+					if (sources[i] === -1) {
+						pos = i + bStart;
+						nextPos = pos + 1;
+						nextNode = (nextPos < bLength) ? b[nextPos]._dom : parentVList && parentVList._pointer;
+						insertOrAppend(dom, mount(b[pos], null, lifecycle, context, isSVG), nextNode);
+					}
 				}
 			}
 		}
