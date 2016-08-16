@@ -287,7 +287,7 @@
 
 	function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
 		if (isInvalid(nextChildren)) {
-			removeAllChildren(parentDom, lastChildren, lifecycle);
+			removeAllChildren(parentDom, lastChildren, lifecycle, isKeyed(lastChildren, nextChildren));
 		} else if (isInvalid(lastChildren)) {
 			if (isStringOrNumber(nextChildren)) {
 				setTextContent(parentDom, nextChildren);
@@ -624,64 +624,84 @@
 		var bEnd = bLength - 1;
 		var aStart = 0;
 		var bStart = 0;
-		var aStartNode = null;
-		var bStartNode = null;
-		var aEndNode = null;
-		var bEndNode = null;
+		var aStartNode = a[aStart];
+		var bStartNode = b[bStart];
+		var aEndNode = a[aEnd];
+		var bEndNode = b[bEnd];
 		var aNode = null;
 		var bNode = null;
 		var nextNode;
 		var nextPos;
 
-		while (aStart <= aEnd && bStart <= bEnd) {
-			bStartNode = b[bStart];
-			aStartNode = a[aStart];
-
-			if (bStartNode._key !== aStartNode._key) {
-				break;
+		if (aLength === 0) {
+			if (bLength !== 0) {
+				mountArrayChildrenWithType(b, dom, lifecycle, context, isSVG);
 			}
-			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG, false);
-			bStart++;
-			aStart++;
-		}
-		while (aStart <= aEnd && bStart <= bEnd) {
-			bEndNode = b[bEnd];
-			aEndNode = a[aEnd];
-
-			if (bEndNode._key !== aEndNode._key) {
-				break;
+			return;
+		} else if (bLength === 0) {
+			if (aLength !== 0) {
+				removeAllChildren(dom, a, lifecycle, true);
 			}
-			patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG, false);
-			bEnd--;
-			aEnd--;
+			return;
 		}
-		while (aStart <= aEnd && bStart <= bEnd) {
-			bEndNode = b[bEnd];
-			aStartNode = a[aStart];
-
-			if (bEndNode._key !== aStartNode._key) {
-				break;
+		// Step 1
+		outer: do {
+			// Sync nodes with the same key at the beginning.
+			while (aStartNode._key === bStartNode._key) {
+				patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG);
+				aStart++;
+				bStart++;
+				if (aStart > aEnd || bStart > bEnd) {
+					break outer;
+				}
+				aStartNode = a[aStart];
+				bStartNode = b[bStart];
 			}
-			nextPos = bEnd + 1;
-			nextNode = (nextPos < bLength) ? b[nextPos]._dom : null;
-			patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG, false);
-			insertOrAppend(dom, bEndNode._dom, nextNode);
-			bEnd--;
-			aStart++;
-		}
-		while (aStart <= aEnd && bStart <= bEnd) {
-			bStartNode = b[bStart];
-			aEndNode = a[aEnd];
 
-			if (bStartNode._key !== aEndNode._key) {
-				break;
+			// Sync nodes with the same key at the end.
+			while (aEndNode._key === bEndNode._key) {
+				patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG);
+				aEnd--;
+				bEnd--;
+				if (aStart > aEnd || bStart > bEnd) {
+					break outer;
+				}
+				aEndNode = a[aEnd];
+				bEndNode = b[bEnd];
 			}
-			nextNode = a[aStart]._dom;
-			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG, false);
-			insertOrAppend(dom, bStartNode._dom, nextNode);
-			bStart++;
-			aEnd--;
-		}
+
+			// Move and sync nodes from left to right.
+			if (aStartNode._key === bEndNode._key) {
+				patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG);
+				nextPos = bEnd + 1;
+				nextNode = nextPos < b.length ? b[nextPos]._dom : parentVList && parentVList._pointer;
+				insertOrAppend(dom, bEndNode._dom, nextNode);
+				aStart++;
+				bEnd--;
+				if (aStart > aEnd || bStart > bEnd) {
+					break outer;
+				}
+				aStartNode = a[aStart];
+				bEndNode = b[bEnd];
+				// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
+				// immediately jump to the start of this prefix/suffix algo.
+				continue outer;
+			}
+
+			// Move and sync nodes from right to left.
+			if (aEndNode._key === bStartNode._key) {
+				patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
+				insertOrAppend(dom, bStartNode._dom, aStartNode._dom);
+				aEnd--;
+				bStart++;
+				if (aStart > aEnd || bStart > bEnd) {
+					break outer;
+				}
+				aEndNode = a[aEnd];
+				bStartNode = b[bStart];
+				continue outer;
+			}
+		} while (false);
 
 		if (aStart > aEnd) {
 			if (bStart <= bEnd) {
@@ -761,7 +781,7 @@
 				}
 			}
 			if (aLength === a.length && patched === 0) {
-				removeAllChildren(dom, a, lifecycle);
+				removeAllChildren(dom, a, lifecycle, true);
 				while (bStart < bLength) {
 					insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), null);
 				}
@@ -1917,13 +1937,15 @@
 		return document.activeElement;
 	}
 
-	function removeAllChildren(dom, children, lifecycle) {
-		dom.textContent = '';
+	function removeAllChildren(dom, children, lifecycle, isKeyed) {
+		if (isKeyed) {
+			dom.textContent = '';
+		}
 		for (var i = 0; i < children.length; i++) {
 			var child = children[i];
 
 			if (!isInvalid(child)) {
-				unmount(child, null, lifecycle, true);
+				unmount(child, isKeyed ? null : dom, lifecycle, true);
 			}
 		}
 	}

@@ -175,7 +175,7 @@ export function mountChildrenWithUnknownType(children, dom, lifecycle, context, 
 	}
 }
 
-function mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
+export function mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
 	for (let i = 0; i < children.length; i++) {
 		mount(children[i], dom, lifecycle, context, isSVG);
 	}
