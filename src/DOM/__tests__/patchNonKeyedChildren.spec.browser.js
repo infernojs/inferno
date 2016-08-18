@@ -127,8 +127,8 @@ describe('Non Keyed nodes', () => {
 		expect(container.textContent).to.equal('12340');
 		expect(container.firstChild.childNodes.length).to.equal(5);
 		render(template(generateNodes([0, 1, 2, 3, 4])), container);
-		render(template(generateNodes([1, 7, 3, 4, 4])), container);
-		expect(container.textContent).to.equal('17344');
+		render(template(generateNodes([1, 7, 3, 4, 5])), container); // this originally had duplicate keys!
+		expect(container.textContent).to.equal('17345');
 		expect(container.firstChild.childNodes.length).to.equal(5);
 		render(template(generateNodes([1, 2, 3, 4, 0])), container);
 		expect(container.textContent).to.equal('12340');

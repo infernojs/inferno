@@ -47,7 +47,7 @@ function isObject(o) {
 }
 
 function warning(condition, message) {
-	if (condition) {
+	if (!condition) {
 		console.error(message);
 	}
 }
@@ -203,7 +203,7 @@ function createElement(name, props) {
 
 		for (var prop in props) {
 			if (prop === 'key') {
-				vNode.key = props.key;
+				vNode._key = props.key;
 				delete props.key;
 			} else if (elementHooks[prop]) {
 				if (!hooks) {

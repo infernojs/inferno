@@ -95,7 +95,7 @@ function throwError(message) {
 }
 
 function warning(condition, message) {
-	if (condition) {
+	if (!condition) {
 		console.error(message);
 	}
 }
@@ -663,6 +663,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 	var bNode = null;
 	var nextNode;
 	var nextPos;
+	var node;
 
 	if (aLength === 0) {
 		if (bLength !== 0) {
@@ -738,7 +739,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 	if (aStart > aEnd) {
 		if (bStart <= bEnd) {
 			nextPos = bEnd + 1;
-			nextNode = (nextPos < b.length) ? b[nextPos]._dom : parentVList && parentVList._pointer;
+			nextNode = nextPos < b.length ? b[nextPos]._dom : parentVList && parentVList._pointer;
 			while (bStart <= bEnd) {
 				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), nextNode);
 			}
@@ -787,7 +788,8 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 			var keyIndex = new Map();
 
 			for (i = bStart; i <= bEnd; i++) {
-				keyIndex.set(b[i]._key, i);
+				node = b[i];
+				keyIndex.set(node._key, i);
 			}
 			for (i = aStart; i <= aEnd; i++) {
 				aNode = a[i];
@@ -830,15 +832,17 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 				for (i = bLength - 1; i >= 0; i--) {
 					if (sources[i] === -1) {
 						pos = i + bStart;
+						node = b[pos];
 						nextPos = pos + 1;
-						nextNode = (nextPos < bLength) ? b[nextPos]._dom : parentVList && parentVList._pointer;
-						insertOrAppend(dom, mount(b[pos], null, lifecycle, context, isSVG), nextNode);
+						nextNode = nextPos < b.length ? b[nextPos]._dom : parentVList && parentVList._pointer;
+						insertOrAppend(dom, mount(node, dom, lifecycle, context, isSVG), nextNode);
 					} else {
 						if (j < 0 || i !== seq[j]) {
 							pos = i + bStart;
+							node = b[pos];
 							nextPos = pos + 1;
-							nextNode = (nextPos < bLength) ? b[nextPos]._dom : parentVList && parentVList._pointer;
-							insertOrAppend(dom, mount(b[pos], null, lifecycle, context, isSVG), nextNode);
+							nextNode = nextPos < b.length ? b[nextPos]._dom : parentVList && parentVList._pointer;
+							insertOrAppend(dom, node._dom, nextNode);
 						} else {
 							j--;
 						}
@@ -848,9 +852,10 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 				for (i = bLength - 1; i >= 0; i--) {
 					if (sources[i] === -1) {
 						pos = i + bStart;
+						node = b[pos];
 						nextPos = pos + 1;
-						nextNode = (nextPos < bLength) ? b[nextPos]._dom : parentVList && parentVList._pointer;
-						insertOrAppend(dom, mount(b[pos], null, lifecycle, context, isSVG), nextNode);
+						nextNode = nextPos < b.length ? b[nextPos]._dom : parentVList && parentVList._pointer;
+						insertOrAppend(dom, mount(node, null, lifecycle, context, isSVG), nextNode);
 					}
 				}
 			}

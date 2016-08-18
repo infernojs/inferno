@@ -104,7 +104,7 @@ export function throwError(message) {
 }
 
 function warning(condition, message) {
-	if (condition) {
+	if (!condition) {
 		console.error(message);
 	}
 }

@@ -23,7 +23,7 @@ function isUndefined(obj) {
 }
 
 function warning(condition, message) {
-	if (condition) {
+	if (!condition) {
 		console.error(message);
 	}
 }
