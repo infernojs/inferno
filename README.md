@@ -83,13 +83,13 @@ npm install --save inferno-router
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
  
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.24/inferno.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.24/inferno-create-element.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.24/inferno-create-class.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.24/inferno-component.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.24/inferno-dom.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.24/inferno-server.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.24/inferno-router.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.26/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.26/inferno-create-element.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.26/inferno-create-class.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.26/inferno-component.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.26/inferno-dom.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.26/inferno-server.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.26/inferno-router.min.js
 ```
 
 ## Overview
@@ -242,7 +242,7 @@ Warning: If the container element is not empty before rendering, the content of 
 import Inferno from 'inferno';
 import InfernoServer from 'inferno-server';
 
-InfernoServer.renderToString(<div />, document.body);
+InfernoServer.renderToString(<div />);
 ```
 
 Render a virtual node into an HTML string, given the supplied virtual DOM.
