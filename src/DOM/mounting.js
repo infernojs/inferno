@@ -229,13 +229,6 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		instance._pendingSetState = false;
 		dom = mount(input, null, lifecycle, context, false);
 		instance._lastInput = input;
-		instance.componentDidMount();
-		if (parentDom !== null && !isInvalid(dom)) {
-			appendChild(parentDom, dom);
-		}
-		componentToDOMNodeMap.set(instance, dom);
-		vComponent._dom = dom;
-		vComponent._instance = instance;
 		if (ref) {
 			if (isFunction(ref)) {
 				lifecycle.addListener(() => ref(instance));
@@ -243,6 +236,13 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 				throw new Error(refsError);
 			}
 		}
+		if (parentDom !== null && !isInvalid(dom)) {
+			appendChild(parentDom, dom);
+		}
+		instance.componentDidMount();
+		componentToDOMNodeMap.set(instance, dom);
+		vComponent._dom = dom;
+		vComponent._instance = instance;
 	} else {
 		if (ref) {
 			throw new Error('Inferno Error: "refs" are not supported on stateless components.');

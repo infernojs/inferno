@@ -13,7 +13,9 @@ const pkg = JSON.parse(fs.readFileSync('./package.json'));
 const external = Object.keys(pkg.peerDependencies || {}).concat(Object.keys(pkg.dependencies || {}));
 
 const plugins = [
-	buble(),
+	buble({
+		objectAssign: 'Object.assign'
+	}),
 	nodeResolve({
 		jsnext: true,
 		main: true,
@@ -110,7 +112,7 @@ const bundles = [
 		moduleName: 'inferno-redux',
 		moduleEntry: 'packages/inferno-redux/src/index.js',
 		path: 'packages/inferno-redux/'
-	}	
+	}
 ];
 
 function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
