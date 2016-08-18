@@ -534,7 +534,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 		// Move and sync nodes from right to left.
 		if (aEndNode._key === bStartNode._key) {
 			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
-			insertOrAppend(dom, bStartNode._dom, bStartNode._dom);
+			insertOrAppend(dom, bStartNode._dom, aStartNode._dom);
 			aEnd--;
 			bStart++;
 			if (aStart > aEnd || bStart > bEnd) {

@@ -221,6 +221,13 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		instance._pendingSetState = true;
 		instance._vComponent = vComponent;
 		instance.componentWillMount();
+		if (ref) {
+			if (isFunction(ref)) {
+				ref(instance);
+			} else {
+				throw new Error(refsError);
+			}
+		}
 		let input = instance.render();
 
 		if (isInvalid(input)) {
@@ -229,13 +236,6 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		instance._pendingSetState = false;
 		dom = mount(input, null, lifecycle, context, false);
 		instance._lastInput = input;
-		if (ref) {
-			if (isFunction(ref)) {
-				lifecycle.addListener(() => ref(instance));
-			} else {
-				throw new Error(refsError);
-			}
-		}
 		if (parentDom !== null && !isInvalid(dom)) {
 			appendChild(parentDom, dom);
 		}
