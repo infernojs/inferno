@@ -38,7 +38,7 @@ export default function createElement(name, props, ..._children) {
 
 		for (let prop in props) {
 			if (prop === 'key') {
-				vNode.key = props.key;
+				vNode._key = props.key;
 				delete props.key;
 			} else if (elementHooks[prop]) {
 				if (!hooks) {

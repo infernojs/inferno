@@ -391,4 +391,52 @@ describe('keyed-nodes', () => {
 		expect(container.textContent).to.equal('abcd');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 	});
+
+	describe('Calendar like layout', () => {
+		function o(text) {
+			return createElement('span', {
+				key: 'o' + text
+			}, ',o' + text);
+		}
+
+		function d(text) {
+			return createElement('span', {
+				key: 'd' + text
+			}, ',d' + text);
+		}
+
+		function wk(text) {
+			return createElement('span', {
+				key: 'wk' + text
+			}, ',wk' + text);
+		}
+
+		it('Should do complex suffle without duplications', () => {
+			const layout1 = [
+				wk(31), d(1), d(2), d(3), d(4), d(5), d(6), d(7),
+				wk(32), d(8), d(9), d(10), d(11), d(12), d(13), d(14),
+				wk(33), d(15), d(16), d(17), d(18), d(19), d(20), d(21),
+				wk(34), d(22), d(23), d(24), d(25), d(26), d(27), d(28),
+				wk(35), d(29), d(30), d(31), o(1), o(2), o(3), o(4),
+				wk(36), o(5), o(6), o(7), o(8), o(9), o(10), o(11),
+			];
+			render(template(layout1), container);
+
+			expect(container.textContent).to.equal(',wk31,d1,d2,d3,d4,d5,d6,d7,wk32,d8,d9,d10,d11,d12,d13,d14,wk33,d15,d16,d17,d18,d19,d20,d21,wk34,d22,d23,d24,d25,d26,d27,d28,wk35,d29,d30,d31,o1,o2,o3,o4,wk36,o5,o6,o7,o8,o9,o10,o11');
+
+			const layout2 = [
+				wk(35), o(29), o(30), o(31), d(1), d(2), d(3), d(4),
+				wk(36), d(5), d(6), d(7), d(8), d(9), d(10), d(11),
+				wk(37), d(12), d(13), d(14), d(15), d(16), d(17), d(18),
+				wk(38), d(19), d(20), d(21), d(22), d(23), d(24), d(25),
+				wk(39), d(26), d(27), d(28), d(29), d(30), o(1), o(2),
+				wk(40), o(3), o(4), o(5), o(6), o(7), o(8), o(9),
+			];
+			render(template(layout2), container);
+
+			expect(container.textContent).to.equal(',wk35,o29,o30,o31,d1,d2,d3,d4,wk36,d5,d6,d7,d8,d9,d10,d11,wk37,d12,d13,d14,d15,d16,d17,d18,wk38,d19,d20,d21,d22,d23,d24,d25,wk39,d26,d27,d28,d29,d30,o1,o2,wk40,o3,o4,o5,o6,o7,o8,o9');
+		});
+	});
+
+
 });
