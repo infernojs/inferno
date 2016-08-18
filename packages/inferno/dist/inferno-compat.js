@@ -299,7 +299,7 @@ function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 			if (isVFragment(lastInput)) {
 				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 			} else {
-				replaceChild(parentDom, mountVFragment(nextInput, null), lastInput._dom);
+				replaceChild(parentDom, mountVFragment(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
 				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVElement(nextInput)) {
