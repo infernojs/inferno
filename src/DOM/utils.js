@@ -1,5 +1,11 @@
 import { mount } from './mounting';
-import { isArray, isNullOrUndef, isInvalid, isStringOrNumber, isUndefined } from './../core/utils';
+import {
+	isArray,
+	isNullOrUndef,
+	isInvalid,
+	isStringOrNumber,
+	isUndefined
+} from './../core/utils';
 import { unmountVFragment, unmount } from './unmounting';
 import { createVText, createVPlaceholder, createVFragment } from '../core/shapes';
 

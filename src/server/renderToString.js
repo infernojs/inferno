@@ -1,11 +1,11 @@
 import {
-    isArray,
-    isStringOrNumber,
-    isNullOrUndef,
-    isInvalid,
-    isStatefulComponent,
-    isNumber,
-    isTrue
+	isArray,
+	isStringOrNumber,
+	isNullOrUndef,
+	isInvalid,
+	isStatefulComponent,
+	isNumber,
+	isTrue
 } from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
 import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';

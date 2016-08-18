@@ -2,7 +2,12 @@ import { renderToStaticMarkup } from './../../server/renderToString';
 import Component from './../../component/es2015';
 import { render } from './../../DOM/rendering';
 import { isArray, isStringOrNumber, isNullOrUndef } from './../../core/utils';
-import { createVTemplate, createVElement, createVComponent, isVNode } from './../../core/shapes';
+import {
+	createVTemplate,
+	createVElement,
+	createVComponent,
+	isVNode
+} from './../../core/shapes';
 import { createTemplateReducers } from './../../DOM/templates';
 
 const Inferno = {

@@ -9,8 +9,8 @@ import {
 	throwError
 } from './../core/utils';
 import { replaceChild, normaliseChild } from './utils';
-import { handleSelects, mountVText } from './mounting';
-import { patch, patchStyle } from './patching';
+import { mountVText } from './mounting';
+import { patch } from './patching';
 import {
 	createVPlaceholder,
 	isVPlaceholder,

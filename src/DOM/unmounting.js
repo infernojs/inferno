@@ -1,7 +1,14 @@
 import { isNullOrUndef, isArray, isNull, isInvalid } from './../core/utils';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
-import { isVFragment, isVElement, isVComponent, isVTemplate, isVText, isVPlaceholder } from '../core/shapes';
+import {
+	isVFragment,
+	isVElement,
+	isVComponent,
+	isVTemplate,
+	isVText,
+	isVPlaceholder
+} from '../core/shapes';
 import { poolVTemplate, recyclingEnabled } from './templates';
 
 export function unmount(input, parentDom, lifecycle) {

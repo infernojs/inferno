@@ -3,19 +3,12 @@ import {
 	isStringOrNumber,
 	isNullOrUndef,
 	isInvalid,
-	isFunction,
 	addChildrenToProps,
-	isStatefulComponent,
-	isNumber,
-	isTrue
+	isStatefulComponent
 } from './../core/utils';
-import { isUnitlessNumber } from '../DOM/utils';
-import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
+import { escapeText, escapeAttr, isVoidElement } from './utils';
 import { Readable } from 'stream';
-import {
-	isVElement,
-	isVComponent
-} from './../core/shapes';
+import { isVElement, isVComponent } from './../core/shapes';
 import { renderStyleToString, renderAttributes } from './prop-renderers';
 
 export class RenderStream extends Readable {

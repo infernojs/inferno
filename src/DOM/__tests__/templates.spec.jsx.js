@@ -2,7 +2,7 @@ import { render } from './../rendering';
 import Component from './../../component/es2015';
 import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
 import { createTemplateReducers } from './../../DOM/templates';
-import innerHTML from "../../../tools/innerHTML";
+import innerHTML from '../../../tools/innerHTML';
 
 const Inferno = {
 	createVTemplate,

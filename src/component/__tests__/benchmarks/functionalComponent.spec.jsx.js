@@ -1,5 +1,9 @@
 import { render } from './../../../DOM/rendering';
-import { createVTemplate, createVElement, createVComponent } from './../../../core/shapes';
+import {
+	createVTemplate,
+	createVElement,
+	createVComponent
+} from './../../../core/shapes';
 import { createTemplateReducers } from './../../../DOM/templates';
 
 const Inferno = {

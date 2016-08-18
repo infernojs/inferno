@@ -1,5 +1,11 @@
 import { createVNode, createVElement, createVComponent } from '../core/shapes';
-import { isAttrAnEvent, isString, isInvalid, isUndefined, isObject } from './../core/utils';
+import {
+	isAttrAnEvent,
+	isString,
+	isInvalid,
+	isUndefined,
+	isObject
+} from './../core/utils';
 
 const elementHooks = {
 	onCreated: true,

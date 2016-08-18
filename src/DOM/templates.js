@@ -8,7 +8,13 @@ import {
 	isUndefined,
 	throwError
 } from './../core/utils';
-import { appendText, documentCreateElement, handleAttachedHooks, normalise, setTextContent } from './utils';
+import {
+	appendText,
+	documentCreateElement,
+	handleAttachedHooks,
+	normalise,
+	setTextContent
+} from './utils';
 import {
 	isVElement,
 	isVComponent,
@@ -47,7 +53,11 @@ import {
 	hydrateVariableAsText,
 	normaliseChildNodes
 } from './hydration';
-import { unmountVariableAsExpression, unmountVariableAsChildren, unmountVariableAsText } from './unmounting';
+import {
+	unmountVariableAsExpression,
+	unmountVariableAsChildren,
+	unmountVariableAsText
+} from './unmounting';
 import { ChildrenTypes } from '../core/ChildrenTypes';
 
 export const recyclingEnabled = true;

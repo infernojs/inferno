@@ -1,8 +1,4 @@
-import {
-	isStringOrNumber,
-	isNullOrUndef,
-	isNumber
-} from './../core/utils';
+import { isStringOrNumber, isNullOrUndef, isNumber } from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
 import { toHyphenCase, escapeAttr } from './utils';
 
