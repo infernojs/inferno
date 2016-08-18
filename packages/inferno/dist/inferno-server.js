@@ -23,7 +23,7 @@ function isArray(obj) {
 }
 
 function isStatefulComponent(o) {
-	return isTrue$1(o._isStateful);
+	return isTrue(o._isStateful);
 }
 
 function isStringOrNumber(obj) {
@@ -35,7 +35,7 @@ function isNullOrUndef(obj) {
 }
 
 function isInvalid(obj) {
-	return isNull(obj) || obj === false || isTrue$1(obj) || isUndefined(obj);
+	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
 
 function isString(obj) {
@@ -50,7 +50,7 @@ function isNull(obj) {
 	return obj === null;
 }
 
-function isTrue$1(obj) {
+function isTrue(obj) {
 	return obj === true;
 }
 
@@ -254,7 +254,7 @@ function renderVElementToString(vElement, isRoot, context) {
 		} else {
 			if (isStringOrNumber(value)) {
 				outputProps.push(escapeAttr(prop) + '="' + escapeAttr(value) + '"');
-			} else if (isTrue$1(value)) {
+			} else if (isTrue(value)) {
 				outputProps.push(escapeAttr(prop));
 			}
 		}

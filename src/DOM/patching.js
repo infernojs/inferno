@@ -516,6 +516,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 		return;
 	}
 	// Step 1
+	/* eslint no-constant-condition: 0 */
 	outer: while (true) {
 		// Sync nodes with the same key at the beginning.
 		while (aStartNode._key === bStartNode._key) {

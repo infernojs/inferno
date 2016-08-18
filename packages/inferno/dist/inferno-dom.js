@@ -331,7 +331,7 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
 			setTextContent(parentDom, nextChildren);
 		}
 	} else if (isStringOrNumber(lastChildren)) {
-		var child = normalise$1(lastChildren);
+		var child = normalise(lastChildren);
 
 		child._dom = parentDom.firstChild;
 		patchChildrenWithUnknownType(child, nextChildren, parentDom, lifecycle, context, isSVG);
@@ -924,7 +924,7 @@ function patchVariableAsExpression(pointer, templateIsSVG) {
 
 		if (lastInput !== nextInput) {
 			if (isNullOrUndef(nextInput) || !isVNode(nextInput)) {
-				nextInput = normalise$1(nextInput);
+				nextInput = normalise(nextInput);
 				nextVTemplate.write(pointer, nextInput);
 			}
 			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
@@ -1400,7 +1400,7 @@ function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChild
 						if (nodeIndex === NULL_INDEX && isVariable(child)) {
 							nodeIndex = offset.length++;
 						}
-						var templateReducers = createTemplateReducers(normalise$1(child), false, offset, dom, isSVG, false, vNode._childrenType, path + ',' + i);
+						var templateReducers = createTemplateReducers(normalise(child), false, offset, dom, isSVG, false, vNode._childrenType, path + ',' + i);
 
 						if (!isInvalid(templateReducers)) {
 							mounters.push(templateReducers.mount);
@@ -1423,7 +1423,7 @@ function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChild
 					if (nodeIndex === NULL_INDEX && isVariable(children$1)) {
 						nodeIndex = offset.length++;
 					}
-					var templateReducers$1 = createTemplateReducers(normalise$1(children$1), false, offset, dom, isSVG, true, vNode._childrenType, path + ',0');
+					var templateReducers$1 = createTemplateReducers(normalise(children$1), false, offset, dom, isSVG, true, vNode._childrenType, path + ',0');
 
 					if (!isInvalid(templateReducers$1)) {
 						mounters.push(templateReducers$1.mount);
@@ -1962,7 +1962,7 @@ function replaceChild(parentDom, nextDom, lastDom) {
 	parentDom.replaceChild(nextDom, lastDom);
 }
 
-function normalise$1(object) {
+function normalise(object) {
 	if (isStringOrNumber(object)) {
 		return createVText(object);
 	} else if (isInvalid(object)) {
@@ -1976,7 +1976,7 @@ function normalise$1(object) {
 function normaliseChild(children, i) {
 	var child = children[i];
 
-	return children[i] = normalise$1(child);
+	return children[i] = normalise(child);
 }
 
 function removeChild(parentDom, dom) {
@@ -2174,7 +2174,7 @@ function mountVPlaceholder(vPlaceholder, parentDom) {
 }
 
 function handleSelects(node) {
-	if (node.tag === 'select') {
+	if (node._tag === 'select') {
 		selectValue(node);
 	}
 }
@@ -2325,7 +2325,7 @@ function mountVariableAsExpression(pointer, templateIsSVG) {
 		var input = vTemplate.read(pointer);
 
 		if (isNullOrUndef(input) || !isVNode(input)) {
-			input = normalise$1(input);
+			input = normalise(input);
 			vTemplate.write(pointer, input);
 		}
 		return mount(input, dom, lifecycle, context, isSVG || templateIsSVG);
