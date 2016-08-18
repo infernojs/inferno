@@ -8,7 +8,7 @@ import {
 	isStatefulComponent,
 	throwError
 } from './../core/utils';
-import { replaceChild, normaliseChild } from './utils';
+import { replaceChild, normaliseChild, normalise } from './utils';
 import { mountVText } from './mounting';
 import { patch } from './patching';
 import {
@@ -29,7 +29,6 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/ChildrenTypes';
-import { normalise } from './utils';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];
