@@ -29,6 +29,7 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/ChildrenTypes';
+import { normalise } from './utils';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];

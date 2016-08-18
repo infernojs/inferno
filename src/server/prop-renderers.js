@@ -1,6 +1,7 @@
 import { isStringOrNumber, isNullOrUndef, isNumber } from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
 import { toHyphenCase, escapeAttr } from './utils';
+import { isTrue } from '../core/utils';
 
 export function renderStyleToString(style) {
 	if (isStringOrNumber(style)) {

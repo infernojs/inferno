@@ -3,8 +3,7 @@ import {
 	isArray,
 	isNullOrUndef,
 	isInvalid,
-	isStringOrNumber,
-	isUndefined
+	isStringOrNumber
 } from './../core/utils';
 import { unmountVFragment, unmount } from './unmounting';
 import { createVText, createVPlaceholder, createVFragment } from '../core/shapes';
@@ -37,15 +36,6 @@ export function setTextContent(dom, text) {
 
 export function updateTextContent(dom, text) {
 	dom.firstChild.nodeValue = text;
-}
-
-export function isPropertyOfElement(tag, prop) {
-	let propsForElement = elementsPropMap.get(tag);
-
-	if (isUndefined(propsForElement)) {
-		propsForElement = getAllPropsForElement(tag);
-	}
-	return propsForElement[prop];
 }
 
 export function appendChild(parentDom, dom) {
@@ -121,16 +111,6 @@ export function removeChild(parentDom, dom) {
 	parentDom.removeChild(dom);
 }
 
-export function removeEvents(events, lastEventKeys, dom) {
-	const eventKeys = lastEventKeys || Object.keys(events);
-
-	for (let i = 0; i < eventKeys.length; i++) {
-		const event = eventKeys[i];
-
-		dom[event] = null;
-	}
-}
-
 // TODO: for node we need to check if document is valid
 export function getActiveNode() {
 	return document.activeElement;
@@ -198,14 +178,6 @@ export function selectValue(vdom) {
 
 	if (vdom._props && vdom._props[value]) {
 		delete vdom._props.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
-	}
-}
-
-export function setValueProperty(node, dom) {
-	const value = node.value;
-
-	if (!isNullOrUndef(value)) {
-		dom.value = value;
 	}
 }
 
