@@ -1,5 +1,5 @@
 import Lifecycle from './../DOM/lifecycle';
-import { isNullOrUndef, NO_OP } from './../core/utils';
+import { isNullOrUndef, NO_OP, throwError } from './../core/utils';
 import { createVPlaceholder } from './../core/shapes';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
@@ -85,6 +85,9 @@ export default class Component {
 		this._patch = null;
 		this._parentComponent = null;
 		this._componentToDOMNodeMap = null;
+		if (!this.componentDidMount) {
+			this.componentDidMount = null;
+		}
 	}
 
 	render() {
@@ -96,7 +99,6 @@ export default class Component {
 		}
 		applyState(this, true, callback);
 	}
-
 	setState(newState, callback) {
 		if (this._unmounted) {
 			throw Error(noOp);
@@ -104,11 +106,11 @@ export default class Component {
 		if (this._blockSetState === false) {
 			queueStateChanges(this, newState, callback);
 		} else {
-			throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('cannot update state via setState() in componentWillUpdate().');
+			}
+			throwError();
 		}
-	}
-
-	componentDidMount() {
 	}
 
 	componentWillMount() {

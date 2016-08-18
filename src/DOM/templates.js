@@ -5,7 +5,8 @@ import {
 	isInvalid,
 	getRefInstance,
 	isNull,
-	isUndefined
+	isUndefined,
+	throwError
 } from './../core/utils';
 import { appendText, documentCreateElement, handleAttachedHooks, normalise, setTextContent } from './utils';
 import {
@@ -98,7 +99,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 				patch = patchVariableAsChildren(children._pointer, isSVG, childrenType);
 				unmount = unmountVariableAsChildren(children._pointer, childrenType);
 			} else {
-				debugger;
+				// debugger;
 			}
 		} else if (isVText(vNode)) {
 			const text = vNode._text;
@@ -169,6 +170,11 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					}
 				}
 			}
+			const ref = vNode._ref;
+
+			if (!isNullOrUndef(ref)) {
+				mounters.push(mountRefFromTemplate(ref));
+			}
 			if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
 				nodeIndex = offset.length++;
 			}
@@ -228,17 +234,15 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					}
 				}
 			}
-			const ref = vNode._ref;
-
-			if (!isNullOrUndef(ref)) {
-				mounters.push(mountRefFromTemplate(ref));
-			}
 			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);
 			unmount = combineUnmount(nodeIndex, unmounters);
 			hydrate = combineHydrate(nodeIndex, path, hydraters);
 		} else if (isVComponent(vNode)) {
-			throw new Error('Inferno Error: templates cannot contain VComponent nodes. Pass a VComponent node into a template as a variable instead.');
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('templates cannot contain VComponent nodes. Pass a VComponent node into a template as a variable instead.');
+			}
+			throwError();
 		}
 		return createTemplaceReducers(keyIndex, mount, patch, unmount, hydrate);
 	}

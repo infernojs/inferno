@@ -2,7 +2,7 @@ import Lifecycle from './lifecycle';
 import { mountChildrenWithUnknownType } from './mounting';
 import { patchChildrenWithUnknownType } from './patching';
 import { getActiveNode, resetActiveNode } from './utils';
-import { isUndefined, isInvalid, isNull, isBrowser } from '../core/utils';
+import { isUndefined, isInvalid, isNull, isBrowser, throwError } from '../core/utils';
 import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
 
@@ -20,7 +20,10 @@ export function render(input, parentDom) {
 	const lifecycle = new Lifecycle();
 
 	if (documetBody === parentDom) {
-		throw Error('Inferno Error: you cannot render() to the "document.body". Use an empty element as a container instead.');
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
+		}
+		throwError();
 	}
 
 	if (isUndefined(root)) {

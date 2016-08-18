@@ -1,10 +1,12 @@
 import {
 	isArray,
+	isNull,
 	isStringOrNumber,
 	isNullOrUndef,
 	isInvalid,
 	isFunction,
-	isStatefulComponent
+	isStatefulComponent,
+	throwError
 } from './../core/utils';
 import { replaceChild, normaliseChild } from './utils';
 import { handleSelects, mountVText } from './mounting';
@@ -109,6 +111,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 	const Component = vComponent._component;
 	const props = vComponent._props;
 	const hooks = vComponent._hooks;
+	const ref = vComponent._ref;
 
 	vComponent._dom = dom;
 	if (isStatefulComponent(vComponent)) {
@@ -133,7 +136,19 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 		instance._pendingSetState = false;
 		hydrate(input, dom, lifecycle, context);
 		instance._lastInput = input;
-		instance.componentDidMount();
+		if (ref) {
+			if (isFunction(ref)) {
+				lifecycle.addListener(() => ref(instance));
+			} else {
+				if (process.env.NODE_ENV !== 'production') {
+					throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+				}
+				throwError();
+			}
+		}
+		if (!isNull(instance.componentDidMount)) {
+			lifecycle.addListener(() => instance.componentDidMount());
+		}
 		componentToDOMNodeMap.set(instance, dom);
 		vComponent._instance = instance;
 	} else {
@@ -245,15 +260,15 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
 
 function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
 	for (let i = 0; i < children.length; i++) {
-		debugger;
+		// debugger;
 	}
 }
 
 function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
 	if (isArray(children)) {
-		debugger;
+		// debugger;
 	} else if (isStringOrNumber(children)) {
-		debugger;
+		// debugger;
 	} else if (!isInvalid(children)) {
 		hydrate(children, dom.firstChild, lifecycle, context);
 	}
@@ -261,15 +276,18 @@ function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
 
 function hydrateChildren(childrenType, children, dom, lifecycle, context) {
 	if (isTextChildrenType(childrenType)) {
-		debugger;
+		// debugger;
 	} else if (isNodeChildrenType(childrenType)) {
-		debugger;
+		// debugger;
 	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
 		hydrateArrayChildrenWithType(childrem, dom, lifecycle, context);
 	} else if (isUnknownChildrenType(childrenType)) {
 		hydrateChildrenWithUnknownType(children, dom);
 	} else {
-		throw new Error('Inferno Error: Bad childrenType value specified when attempting to hydrateChildren');
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('Bad childrenType value specified when attempting to hydrateChildren.');
+		}
+		throwError();
 	}
 }
 
@@ -287,7 +305,10 @@ function hydrate(input, dom, lifecycle, context) {
 	} else if (isVComponent(input)) {
 		hydrateVComponent(input, dom, lifecycle, context);
 	} else {
-		throw Error('Inferno Error: Bad input argument called on hydrate(). Input argument may need normalising.');
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('bad input argument called on hydrate(). Input argument may need normalising.');
+		}
+		throwError();
 	}
 }
 
@@ -324,6 +345,6 @@ export function hydrateVariableAsExpression(pointer) {
 
 export function hydrateVariableAsText() {
 	return function hydrateVariableAsText() {
-		debugger;
+		// debugger;
 	};
 }

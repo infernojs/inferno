@@ -9,7 +9,8 @@ import {
 	NO_OP,
 	isNumber,
 	isArray,
-	isAttrAnEvent
+	isAttrAnEvent,
+	throwError
 } from './../core/utils';
 import {
 	mount,
@@ -122,7 +123,10 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 		} else if (isVText(lastInput)) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput._dom);
 		} else {
-			throw Error('Inferno Error: Bad input argument called on patch(). Input argument may need normalising.');
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('bad input argument called on patch(). Input argument may need normalising.');
+			}
+			throwError();
 		}
 	}
 }
@@ -139,7 +143,10 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
 	} else if (isUnknownChildrenType(childrenType)) {
 		patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
 	} else {
-		throw new Error('Inferno Error: Bad childrenType value specified when attempting to patchChildren');
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('bad childrenType value specified when attempting to patchChildren.');
+		}
+		throwError();
 	}
 }
 

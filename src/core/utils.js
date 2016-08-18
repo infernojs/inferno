@@ -1,5 +1,16 @@
 
+const testFunc = function testFn() {};
+warning(
+	(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
+	'It looks like you\'re using a minified copy of the development build ' +
+	'of Inferno. When deploying Inferno apps to production, make sure to use ' +
+	'the production build which skips development warnings and is faster. ' +
+	'See http://infernojs.org for more details.'
+);
+
 export const NO_OP = 'NO_OP';
+
+const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 // Runs only once in applications lifetime
 export const isBrowser = typeof window !== 'undefined' && window.document;
@@ -83,4 +94,17 @@ function deepScanChildrenForNode(children, node) {
 		}
 	}
 	return false;
+}
+
+export function throwError(message) {
+	if (!message) {
+		message = ERROR_MSG;
+	}
+	throw new Error(`Inferno Error: ${ message }`);
+}
+
+function warning(condition, message) {
+	if (condition) {
+		console.error(message);
+	}
 }

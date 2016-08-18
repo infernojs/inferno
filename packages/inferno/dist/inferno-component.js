@@ -23,7 +23,18 @@ Lifecycle.prototype.trigger = function trigger () {
 	}
 };
 
+var testFunc = function testFn() {};
+warning(
+	(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
+	'It looks like you\'re using a minified copy of the development build ' +
+	'of Inferno. When deploying Inferno apps to production, make sure to use ' +
+	'the production build which skips development warnings and is faster. ' +
+	'See http://infernojs.org for more details.'
+);
+
 var NO_OP = 'NO_OP';
+
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 function isNullOrUndef(obj) {
 	return isUndefined(obj) || isNull(obj);
@@ -35,6 +46,19 @@ function isNull(obj) {
 
 function isUndefined(obj) {
 	return obj === undefined;
+}
+
+function throwError(message) {
+	if (!message) {
+		message = ERROR_MSG;
+	}
+	throw new Error(("Inferno Error: " + message));
+}
+
+function warning(condition, message) {
+	if (condition) {
+		console.error(message);
+	}
 }
 
 var NodeTypes = {
@@ -138,6 +162,9 @@ var Component = function Component(props, context) {
 	this._patch = null;
 	this._parentComponent = null;
 	this._componentToDOMNodeMap = null;
+	if (!this.componentDidMount) {
+		this.componentDidMount = null;
+	}
 };
 
 Component.prototype.render = function render () {
@@ -149,7 +176,6 @@ Component.prototype.forceUpdate = function forceUpdate (callback) {
 	}
 	applyState(this, true, callback);
 };
-
 Component.prototype.setState = function setState (newState, callback) {
 	if (this._unmounted) {
 		throw Error(noOp);
@@ -157,11 +183,9 @@ Component.prototype.setState = function setState (newState, callback) {
 	if (this._blockSetState === false) {
 		queueStateChanges(this, newState, callback);
 	} else {
-		throw Error('Inferno Warning: Cannot update state via setState() in componentWillUpdate()');
+		if ("production" !== 'production') {}
+		throwError();
 	}
-};
-
-Component.prototype.componentDidMount = function componentDidMount () {
 };
 
 Component.prototype.componentWillMount = function componentWillMount () {

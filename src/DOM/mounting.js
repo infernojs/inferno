@@ -6,9 +6,17 @@ import {
 	isStatefulComponent,
 	isString,
 	isInvalid,
-	isNull
+	isNull,
+	throwError
 } from './../core/utils';
-import { setTextContent, documentCreateElement, selectValue, normaliseChild, appendChild, normalise } from './utils';
+import {
+	setTextContent,
+	documentCreateElement,
+	selectValue,
+	normaliseChild,
+	appendChild,
+	normalise
+} from './utils';
 import { patchStyle, patch, patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import {
@@ -31,8 +39,6 @@ import {
 } from '../core/ChildrenTypes';
 import { recycleVTemplate, recyclingEnabled } from './templates';
 
-const refsError = 'Inferno Error: string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.';
-
 export function mount(input, parentDom, lifecycle, context, isSVG) {
 	if (isVTemplate(input)) {
 		return mountVTemplate(input, parentDom, lifecycle, context, isSVG);
@@ -47,7 +53,10 @@ export function mount(input, parentDom, lifecycle, context, isSVG) {
 	} else if (isVComponent(input)) {
 		return mountVComponent(input, parentDom, lifecycle, context, isSVG);
 	} else {
-		throw Error('Inferno Error: Bad input argument called on mount(). Input argument may need normalising.');
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('bad input argument called on mount(). Input argument may need normalising.');
+		}
+		throwError();
 	}
 }
 
@@ -72,7 +81,10 @@ export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	const tag = vElement._tag;
 
 	if (!isString(tag)) {
-		throw new Error('Inferno Error: expects VElement to have a string as the tag name');
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('expects VElement to have a string as the tag name');
+		}
+		throwError();
 	}
 	if (tag === 'svg') {
 		isSVG = true;
@@ -193,7 +205,10 @@ function mountChildren(childrenType, children, dom, lifecycle, context, isSVG) {
 	} else if (isUnknownChildrenType(childrenType)) {
 		mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG);
 	} else {
-		throw new Error('Inferno Error: Bad childrenType value specified when attempting to mountChildren');
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('bad childrenType value specified when attempting to mountChildren.');
+		}
+		throwError();
 	}
 }
 
@@ -206,7 +221,10 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 
 	if (isStatefulComponent(vComponent)) {
 		if (hooks) {
-			throw new Error('Inferno Error: "hooks" are not supported on stateful components.');
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('"hooks" are not supported on stateful components.');
+			}
+			throwError();
 		}
 		const instance = new Component(props, context);
 
@@ -221,13 +239,6 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		instance._pendingSetState = true;
 		instance._vComponent = vComponent;
 		instance.componentWillMount();
-		if (ref) {
-			if (isFunction(ref)) {
-				ref(instance);
-			} else {
-				throw new Error(refsError);
-			}
-		}
 		let input = instance.render();
 
 		if (isInvalid(input)) {
@@ -239,13 +250,30 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		if (parentDom !== null && !isInvalid(dom)) {
 			appendChild(parentDom, dom);
 		}
-		instance.componentDidMount();
+		if (ref) {
+			if (isFunction(ref)) {
+				lifecycle.addListener(() => ref(instance));
+			} else {
+				if (process.env.NODE_ENV !== 'production') {
+					throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+				}
+				throwError();
+			}
+		}
+		if (!isNull(instance.componentDidMount)) {
+			lifecycle.addListener(() => {
+				instance.componentDidMount();
+			});
+		}
 		componentToDOMNodeMap.set(instance, dom);
 		vComponent._dom = dom;
 		vComponent._instance = instance;
 	} else {
 		if (ref) {
-			throw new Error('Inferno Error: "refs" are not supported on stateless components.');
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('"refs" are not supported on stateless components.');
+			}
+			throwError();
 		}
 		if (!isNullOrUndef(hooks)) {
 			if (!isNullOrUndef(hooks.onComponentWillMount)) {
@@ -324,9 +352,12 @@ export function mountRefFromTemplate(ref) {
 			value = vTemplate.read(ref._pointer);
 		}
 		if (isFunction(value)) {
-			value(dom);
+			lifecycle.addListener(() => value(dom));
 		} else {
-			throw new Error(refsError);
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+			}
+			throwError();
 		}
 	};
 }
@@ -339,9 +370,9 @@ export function mountSpreadPropsFromTemplate(pointer) {
 			const value = props[prop];
 
 			if (prop === 'key') {
-				debugger;
+				// debugger;
 			} else if (prop === 'ref') {
-				debugger;
+				// debugger;
 			} else {
 				patchProp(prop, null, value, dom);
 			}

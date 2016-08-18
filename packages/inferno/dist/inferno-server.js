@@ -9,6 +9,15 @@
 	(global.InfernoServer = factory(global.stream));
 }(this, (function (stream) { 'use strict';
 
+var testFunc = function testFn() {};
+warning(
+	(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
+	'It looks like you\'re using a minified copy of the development build ' +
+	'of Inferno. When deploying Inferno apps to production, make sure to use ' +
+	'the production build which skips development warnings and is faster. ' +
+	'See http://infernojs.org for more details.'
+);
+
 function isArray(obj) {
 	return obj instanceof Array;
 }
@@ -47,6 +56,12 @@ function isTrue$1(obj) {
 
 function isUndefined(obj) {
 	return obj === undefined;
+}
+
+function warning(condition, message) {
+	if (condition) {
+		console.error(message);
+	}
 }
 
 var NodeTypes = {
