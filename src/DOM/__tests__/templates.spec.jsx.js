@@ -152,8 +152,8 @@ describe('Templates', () => {
 				}
 
 				componentDidMount() {
-					expect(this._first).to.be.an('object');
-					expect(this._second).to.be.an('object');
+					expect(this._first).to.not.equal(null);
+					expect(this._second).to.not.equal(null);
 				}
 
 				render() {

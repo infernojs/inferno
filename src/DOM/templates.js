@@ -169,11 +169,6 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					}
 				}
 			}
-			const ref = vNode._ref;
-
-			if (!isNullOrUndef(ref)) {
-				mounters.push(mountRefFromTemplate(ref));
-			}
 			if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
 				nodeIndex = offset.length++;
 			}
@@ -232,6 +227,11 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 						}
 					}
 				}
+			}
+			const ref = vNode._ref;
+
+			if (!isNullOrUndef(ref)) {
+				mounters.push(mountRefFromTemplate(ref));
 			}
 			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);

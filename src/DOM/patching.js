@@ -365,14 +365,16 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 			if (!isNullOrUndef(childContext)) {
 				context = Object.assign({}, context, childContext);
 			}
+			const lastInput = instance._lastInput;
 			let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps);
 
 			if (nextInput === NO_OP) {
-				nextInput = instance._lastInput;
+				nextInput = lastInput;
 			} else if (isInvalid(nextInput)) {
 				nextInput = createVPlaceholder();
 			}
-			patch(instance._lastInput, nextInput, parentDom, lifecycle, context, null, false);
+			instance._lastInput = nextInput;
+			patch(lastInput, nextInput, parentDom, lifecycle, context, null, false);
 			instance._vComponent = nextVComponent;
 			instance._lastInput = nextInput;
 			instance.componentDidUpdate(lastProps, lastState);

@@ -324,7 +324,7 @@ export function mountRefFromTemplate(ref) {
 			value = vTemplate.read(ref._pointer);
 		}
 		if (isFunction(value)) {
-			lifecycle.addListener(() => value(dom));
+			value(dom);
 		} else {
 			throw new Error(refsError);
 		}

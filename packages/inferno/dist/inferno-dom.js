@@ -507,14 +507,16 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
 			if (!isNullOrUndef(childContext)) {
 				context = Object.assign({}, context, childContext);
 			}
+			var lastInput = instance._lastInput;
 			var nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps);
 
 			if (nextInput === NO_OP) {
-				nextInput = instance._lastInput;
+				nextInput = lastInput;
 			} else if (isInvalid(nextInput)) {
 				nextInput = createVPlaceholder();
 			}
-			patch(instance._lastInput, nextInput, parentDom, lifecycle, context, null, false);
+			instance._lastInput = nextInput;
+			patch(lastInput, nextInput, parentDom, lifecycle, context, null, false);
 			instance._vComponent = nextVComponent;
 			instance._lastInput = nextInput;
 			instance.componentDidUpdate(lastProps, lastState);
@@ -525,10 +527,10 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
 			var lastProps$1 = lastVComponent._props;
 			var nextHooks = nextVComponent._hooks;
 			var nextHooksDefined = !isNullOrUndef(nextHooks);
-			var lastInput = lastVComponent._instance;
+			var lastInput$1 = lastVComponent._instance;
 
 			nextVComponent._dom = lastVComponent._dom;
-			nextVComponent._instance = lastInput;
+			nextVComponent._instance = lastInput$1;
 			if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
 				shouldUpdate = nextHooks.onComponentShouldUpdate(lastVComponent._dom, lastProps$1, nextProps);
 			}
@@ -543,10 +545,10 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
 				} else if (isInvalid(nextInput$1)) {
 					nextInput$1 = createVPlaceholder();
 				}
-				patch(lastInput, nextInput$1, parentDom, lifecycle, context, null, null, false);
+				patch(lastInput$1, nextInput$1, parentDom, lifecycle, context, null, null, false);
 				nextVComponent._instance = nextInput$1;
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
-					nextHooks.onComponentDidUpdate(lastInput._dom, lastProps$1, nextProps);
+					nextHooks.onComponentDidUpdate(lastInput$1._dom, lastProps$1, nextProps);
 				}
 			}
 		}
@@ -676,7 +678,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 		// Move and sync nodes from right to left.
 		if (aEndNode._key === bStartNode._key) {
 			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
-			insertOrAppend(dom, bStartNode._dom, bStartNode._dom);
+			insertOrAppend(dom, bStartNode._dom, aStartNode._dom);
 			aEnd--;
 			bStart++;
 			if (aStart > aEnd || bStart > bEnd) {
@@ -1333,11 +1335,6 @@ function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChild
 					}
 				}
 			}
-			var ref = vNode._ref;
-
-			if (!isNullOrUndef(ref)) {
-				mounters.push(mountRefFromTemplate(ref));
-			}
 			if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
 				nodeIndex = offset.length++;
 			}
@@ -1396,6 +1393,11 @@ function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChild
 						}
 					}
 				}
+			}
+			var ref = vNode._ref;
+
+			if (!isNullOrUndef(ref)) {
+				mounters.push(mountRefFromTemplate(ref));
 			}
 			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);
@@ -2206,6 +2208,13 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		instance._pendingSetState = true;
 		instance._vComponent = vComponent;
 		instance.componentWillMount();
+		if (ref) {
+			if (isFunction(ref)) {
+				ref(instance);
+			} else {
+				throw new Error(refsError);
+			}
+		}
 		var input = instance.render();
 
 		if (isInvalid(input)) {
@@ -2214,13 +2223,6 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		instance._pendingSetState = false;
 		dom = mount(input, null, lifecycle, context, false);
 		instance._lastInput = input;
-		if (ref) {
-			if (isFunction(ref)) {
-				lifecycle.addListener(function () { return ref(instance); });
-			} else {
-				throw new Error(refsError);
-			}
-		}
 		if (parentDom !== null && !isInvalid(dom)) {
 			appendChild(parentDom, dom);
 		}
@@ -2309,7 +2311,7 @@ function mountRefFromTemplate(ref) {
 			value = vTemplate.read(ref._pointer);
 		}
 		if (isFunction(value)) {
-			lifecycle.addListener(function () { return value(dom); });
+			value(dom);
 		} else {
 			throw new Error(refsError);
 		}
