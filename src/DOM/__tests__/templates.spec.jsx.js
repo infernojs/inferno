@@ -139,6 +139,34 @@ describe('Templates', () => {
 
 			render(<A open={true}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div>animate</div>'));
-		})
-	})
+		});
+	});
+
+	describe('Refs inside components', () => {
+		it('Should have refs defined when componentDidMount is called', () => {
+			class Com extends Component {
+				constructor(props) {
+					super(props);
+					this._first = null;
+					this._second = null;
+				}
+
+				componentDidMount() {
+					expect(this._first).to.be.an('object');
+					expect(this._second).to.be.an('object');
+				}
+
+				render() {
+					return (
+						<div ref={(node) => this._first = node}>
+							<span>1</span>
+							<span ref={(node) => this._second = node}>2</span>
+						</div>
+					)
+				}
+			}
+
+			render(<Com />, container);
+		});
+	});
 });
