@@ -154,7 +154,7 @@ export function mountVPlaceholder(vPlaceholder, parentDom) {
 }
 
 export function handleSelects(node) {
-	if (node.tag === 'select') {
+	if (node._tag === 'select') {
 		selectValue(node);
 	}
 }
