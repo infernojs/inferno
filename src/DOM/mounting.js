@@ -12,7 +12,7 @@ import {
 import {
 	setTextContent,
 	documentCreateElement,
-	selectValue,
+	selectVElementValue,
 	normaliseChild,
 	appendChild,
 	normalise
@@ -104,7 +104,7 @@ export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 		mountChildren(vElement._childrenType, children, dom, lifecycle, context, isSVG);
 	}
 	if (!isNullOrUndef(props)) {
-		handleSelects(vElement);
+		handlevElementSelects(vElement);
 		mountProps(vElement, props, dom);
 	}
 	if (!isNull(parentDom)) {
@@ -153,9 +153,9 @@ export function mountVPlaceholder(vPlaceholder, parentDom) {
 	return dom;
 }
 
-export function handleSelects(node) {
-	if (node._tag === 'select') {
-		selectValue(node);
+export function handlevElementSelects(vElement) {
+	if (vElement._tag === 'select') {
+		selectVElementValue(vElement);
 	}
 }
 

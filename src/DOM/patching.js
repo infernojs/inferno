@@ -35,7 +35,7 @@ import {
 	resetStatefulDomProperties,
 	removeAllChildren,
 	replaceWithNewNode,
-	selectValue,
+	selectVElementValue,
 	updateTextContent,
 	setTextContent,
 	replaceChild,
@@ -247,7 +247,7 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 	nextProps = nextProps || {};
 
 	if (lastVElement._tag === 'select') {
-		selectValue(nextVElement);
+		selectVElementValue(nextVElement);
 	}
 	for (let prop in nextProps) {
 		const nextValue = nextProps[prop];

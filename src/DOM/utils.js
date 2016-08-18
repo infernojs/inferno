@@ -136,28 +136,28 @@ export function isKeyed(lastChildren, nextChildren) {
 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0]._key);
 }
 
-function selectOptionValueIfNeeded(vdom, values) {
-	if (vdom._tag !== 'option') {
-		for (let i = 0, len = vdom._children.length; i < len; i++) {
-			selectOptionValueIfNeeded(vdom._children[i], values);
+function selectvElementOptionValueIfNeeded(vElement, values) {
+	if (vElement._tag !== 'option') {
+		for (let i = 0, len = vElement._children.length; i < len; i++) {
+			selectvElementOptionValueIfNeeded(vElement._children[i], values);
 		}
 		// NOTE! Has to be a return here to catch optGroup elements
 		return;
 	}
 
-	const value = vdom._props && vdom._props.value;
+	const value = vElement._props && vElement._props.value;
 
 	if (values[value]) {
-		vdom._props = vdom._props || {};
-		vdom._props.selected = true;
-		vdom._dom.selected = true;
+		vElement._props = vElement._props || {};
+		vElement._props.selected = true;
+		vElement._dom.selected = true;
 	} else {
-		vdom._dom.selected = false;
+		vElement._dom.selected = false;
 	}
 }
 
-export function selectValue(vdom) {
-	const value = vdom._props && vdom._props.value;
+export function selectVElementValue(vElement) {
+	const value = vElement._props && vElement._props.value;
 	const values = {};
 
 	if (isArray(value)) {
@@ -167,12 +167,12 @@ export function selectValue(vdom) {
 	} else {
 		values[value] = value;
 	}
-	for (let i = 0, len = vdom._children.length; i < len; i++) {
-		selectOptionValueIfNeeded(vdom._children[i], values);
+	for (let i = 0, len = vElement._children.length; i < len; i++) {
+		selectvElementOptionValueIfNeeded(vElement._children[i], values);
 	}
 
-	if (vdom._props && vdom._props[value]) {
-		delete vdom._props.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+	if (vElement._props && vElement._props[value]) {
+		delete vElement._props.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
 	}
 }
 

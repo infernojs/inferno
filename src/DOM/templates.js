@@ -141,53 +141,6 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 			if (!isNull(key) && isVariable(key)) {
 				keyIndex = key._pointer;
 			}
-			const props = vNode._props;
-
-			if (!isNull(props)) {
-				if (isVariable(props)) {
-					mounters.push(mountSpreadPropsFromTemplate(props._pointer));
-				} else {
-					const propsToMount = [];
-					const propsToPatch = [];
-
-					for (let prop in props) {
-						const value = props[prop];
-
-						if (isVariable(value)) {
-							if (prop === 'className') {
-								mounters.push(mountTemplateClassName(value._pointer));
-								patchers.push(patchTemplateClassName(value._pointer));
-							} else if (prop === 'style') {
-								mounters.push(mountTemplateStyle(value._pointer));
-								patchers.push(patchTemplateStyle(value._pointer));
-							} else {
-								propsToMount.push(prop, value);
-								propsToPatch.push(prop, value._pointer);
-							}
-						} else {
-							const shouldMountProp = patchProp(prop, null, value, dom);
-
-							if (shouldMountProp) {
-								propsToMount.push(prop, value);
-							}
-						}
-					}
-					if (propsToMount.length > 0) {
-						mounters.push(mountTemplateProps(propsToMount));
-					}
-					if (propsToPatch.length > 0) {
-						patchers.push(patchTemplateProps(propsToPatch));
-					}
-				}
-			}
-			const ref = vNode._ref;
-
-			if (!isNullOrUndef(ref)) {
-				mounters.push(mountRefFromTemplate(ref));
-			}
-			if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
-				nodeIndex = offset.length++;
-			}
 			const children = vNode._children;
 
 			if (!isInvalid(children)) {
@@ -243,6 +196,53 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 						}
 					}
 				}
+			}
+			const props = vNode._props;
+
+			if (!isNull(props)) {
+				if (isVariable(props)) {
+					mounters.push(mountSpreadPropsFromTemplate(props._pointer));
+				} else {
+					const propsToMount = [];
+					const propsToPatch = [];
+
+					for (let prop in props) {
+						const value = props[prop];
+
+						if (isVariable(value)) {
+							if (prop === 'className') {
+								mounters.push(mountTemplateClassName(value._pointer));
+								patchers.push(patchTemplateClassName(value._pointer));
+							} else if (prop === 'style') {
+								mounters.push(mountTemplateStyle(value._pointer));
+								patchers.push(patchTemplateStyle(value._pointer));
+							} else {
+								propsToMount.push(prop, value);
+								propsToPatch.push(prop, value._pointer);
+							}
+						} else {
+							const shouldMountProp = patchProp(prop, null, value, dom);
+
+							if (shouldMountProp) {
+								propsToMount.push(prop, value);
+							}
+						}
+					}
+					if (propsToMount.length > 0) {
+						mounters.push(mountTemplateProps(propsToMount));
+					}
+					if (propsToPatch.length > 0) {
+						patchers.push(patchTemplateProps(propsToPatch));
+					}
+				}
+			}
+			const ref = vNode._ref;
+
+			if (!isNullOrUndef(ref)) {
+				mounters.push(mountRefFromTemplate(ref));
+			}
+			if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
+				nodeIndex = offset.length++;
 			}
 			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);
