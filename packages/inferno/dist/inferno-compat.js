@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v0.8.0-alpha3
+ * inferno-compat v0.8.0-alpha4
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -716,7 +716,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 		return;
 	}
 	// Step 1
-	outer: do {
+	outer: while (true) {
 		// Sync nodes with the same key at the beginning.
 		while (aStartNode._key === bStartNode._key) {
 			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG);
@@ -741,6 +741,22 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 			bEndNode = b[bEnd];
 		}
 
+		// Move and sync nodes from right to left.
+		if (aEndNode._key === bStartNode._key) {
+			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
+			insertOrAppend(dom, bStartNode._dom, bStartNode._dom);
+			aEnd--;
+			bStart++;
+			if (aStart > aEnd || bStart > bEnd) {
+				break;
+			}
+			aEndNode = a[aEnd];
+			bStartNode = b[bStart];
+			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
+			// immediately jump to the start of this prefix/suffix algo.
+			continue;
+		}
+
 		// Move and sync nodes from left to right.
 		if (aStartNode._key === bEndNode._key) {
 			patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG);
@@ -750,29 +766,14 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 			aStart++;
 			bEnd--;
 			if (aStart > aEnd || bStart > bEnd) {
-				break outer;
+				break;
 			}
 			aStartNode = a[aStart];
 			bEndNode = b[bEnd];
-			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
-			// immediately jump to the start of this prefix/suffix algo.
-			continue outer;
+			continue;
 		}
-
-		// Move and sync nodes from right to left.
-		if (aEndNode._key === bStartNode._key) {
-			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
-			insertOrAppend(dom, bStartNode._dom, aStartNode._dom);
-			aEnd--;
-			bStart++;
-			if (aStart > aEnd || bStart > bEnd) {
-				break outer;
-			}
-			aEndNode = a[aEnd];
-			bStartNode = b[bStart];
-			continue outer;
-		}
-	} while (false);
+		break;
+	}
 
 	if (aStart > aEnd) {
 		if (bStart <= bEnd) {
@@ -784,7 +785,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 		}
 	} else if (bStart > bEnd) {
 		while (aStart <= aEnd) {
-			unmount(a[aStart++], dom, lifecycle, true);
+			unmount(a[aStart++], dom, lifecycle);
 		}
 	} else {
 		aLength = aEnd - aStart + 1;
@@ -859,7 +860,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 			while (i > 0) {
 				aNode = aNullable[aStart++];
 				if (!isNull(aNode)) {
-					unmount(aNode, dom, lifecycle, true);
+					unmount(aNode, dom, lifecycle);
 					i--;
 				}
 			}
@@ -1157,10 +1158,10 @@ function poolVTemplate(vTemplate) {
 	return true;
 }
 
-function unmount(input, parentDom, lifecycle, canRecycle) {
+function unmount(input, parentDom, lifecycle) {
 	if (!isInvalid(input)) {
 		if (isVTemplate(input)) {
-			unmountVTemplate(input, parentDom, lifecycle, canRecycle);
+			unmountVTemplate(input, parentDom, lifecycle);
 		} else if (isVFragment(input)) {
 			unmountVFragment(input, parentDom, true, lifecycle);
 		} else if (isVElement(input)) {
@@ -1187,7 +1188,7 @@ function unmountVText(vText, parentDom) {
 	}
 }
 
-function unmountVTemplate(vTemplate, parentDom, lifecycle, canRecycle) {
+function unmountVTemplate(vTemplate, parentDom, lifecycle) {
 	var dom = vTemplate._dom;
 	var templateReducers = vTemplate._tr;
 	var unmount = templateReducers.unmount;
@@ -1198,7 +1199,7 @@ function unmountVTemplate(vTemplate, parentDom, lifecycle, canRecycle) {
 	if (!isNull(parentDom)) {
 		removeChild(parentDom, dom);
 	}
-	if (recyclingEnabled && (parentDom || canRecycle)) {
+	if (recyclingEnabled && parentDom) {
 		poolVTemplate(vTemplate);
 	}
 }
@@ -1215,7 +1216,7 @@ function unmountVFragment(vFragment, parentDom, removePointer, lifecycle) {
 			if (isVFragment(child)) {
 				unmountVFragment(child, parentDom, true, lifecycle);
 			} else {
-				unmount(child, parentDom, lifecycle, false);
+				unmount(child, parentDom, lifecycle);
 			}
 		}
 	}
@@ -1237,7 +1238,9 @@ function unmountVComponent(vComponent, parentDom, lifecycle) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
 			componentToDOMNodeMap.delete(instance);
-			unmount(instance._lastInput, null, lifecycle, parentDom);
+			unmount(instance._lastInput, null, lifecycle);
+		} else {
+			unmount(instance, null, lifecycle);
 		}
 	}
 	var hooks = vComponent._hooks || instanceHooks;
@@ -1266,10 +1269,10 @@ function unmountVElement(vElement, parentDom, lifecycle) {
 	if (!isNullOrUndef(children)) {
 		if (isArray(children)) {
 			for (var i = 0; i < children.length; i++) {
-				unmount(children[i], null, lifecycle, false);
+				unmount(children[i], null, lifecycle);
 			}
 		} else {
-			unmount(children, null, lifecycle, false);
+			unmount(children, null, lifecycle);
 		}
 	}
 	if (parentDom) {
@@ -1345,7 +1348,7 @@ function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, i
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	unmount(lastNode, null, lifecycle, true);
+	unmount(lastNode, null, lifecycle);
 	var dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode._dom = dom;
@@ -1391,7 +1394,7 @@ function removeAllChildren(dom, children, lifecycle) {
 		var child = children[i];
 
 		if (!isInvalid(child)) {
-			unmount(child, null, lifecycle, true);
+			unmount(child, null, lifecycle);
 		}
 	}
 }

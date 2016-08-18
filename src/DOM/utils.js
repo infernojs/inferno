@@ -80,7 +80,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	unmount(lastNode, null, lifecycle, true);
+	unmount(lastNode, null, lifecycle);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode._dom = dom;
@@ -136,7 +136,7 @@ export function removeAllChildren(dom, children, lifecycle) {
 		const child = children[i];
 
 		if (!isInvalid(child)) {
-			unmount(child, null, lifecycle, true);
+			unmount(child, null, lifecycle);
 		}
 	}
 }

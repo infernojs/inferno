@@ -506,7 +506,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 		return;
 	}
 	// Step 1
-	outer: do {
+	outer: while (true) {
 		// Sync nodes with the same key at the beginning.
 		while (aStartNode._key === bStartNode._key) {
 			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG);
@@ -531,6 +531,22 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 			bEndNode = b[bEnd];
 		}
 
+		// Move and sync nodes from right to left.
+		if (aEndNode._key === bStartNode._key) {
+			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
+			insertOrAppend(dom, bStartNode._dom, bStartNode._dom);
+			aEnd--;
+			bStart++;
+			if (aStart > aEnd || bStart > bEnd) {
+				break;
+			}
+			aEndNode = a[aEnd];
+			bStartNode = b[bStart];
+			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
+			// immediately jump to the start of this prefix/suffix algo.
+			continue;
+		}
+
 		// Move and sync nodes from left to right.
 		if (aStartNode._key === bEndNode._key) {
 			patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG);
@@ -540,29 +556,14 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 			aStart++;
 			bEnd--;
 			if (aStart > aEnd || bStart > bEnd) {
-				break outer;
+				break;
 			}
 			aStartNode = a[aStart];
 			bEndNode = b[bEnd];
-			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
-			// immediately jump to the start of this prefix/suffix algo.
-			continue outer;
+			continue;
 		}
-
-		// Move and sync nodes from right to left.
-		if (aEndNode._key === bStartNode._key) {
-			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
-			insertOrAppend(dom, bStartNode._dom, aStartNode._dom);
-			aEnd--;
-			bStart++;
-			if (aStart > aEnd || bStart > bEnd) {
-				break outer;
-			}
-			aEndNode = a[aEnd];
-			bStartNode = b[bStart];
-			continue outer;
-		}
-	} while (false);
+		break;
+	}
 
 	if (aStart > aEnd) {
 		if (bStart <= bEnd) {
@@ -574,7 +575,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 		}
 	} else if (bStart > bEnd) {
 		while (aStart <= aEnd) {
-			unmount(a[aStart++], dom, lifecycle, true);
+			unmount(a[aStart++], dom, lifecycle);
 		}
 	} else {
 		aLength = aEnd - aStart + 1;
@@ -649,7 +650,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 			while (i > 0) {
 				aNode = aNullable[aStart++];
 				if (!isNull(aNode)) {
-					unmount(aNode, dom, lifecycle, true);
+					unmount(aNode, dom, lifecycle);
 					i--;
 				}
 			}
