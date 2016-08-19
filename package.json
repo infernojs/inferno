@@ -39,7 +39,7 @@
     "jsdom": "^9.4.2",
     "karma": "^1.2.0",
     "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^1.0.1",
+    "karma-chrome-launcher": "^2.0.0",
     "karma-firefox-launcher": "^1.0.0",
     "karma-ie-launcher": "^1.0.0",
     "karma-mocha": "^1.1.1",

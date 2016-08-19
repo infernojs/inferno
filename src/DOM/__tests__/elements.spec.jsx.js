@@ -708,7 +708,7 @@ describe('Elements (JSX)', () => {
 		expect(container.innerHTML).to.equal('<span><div></div></span>');
 	});
 
-	it('Should be able to construct input with Hooks, Events, Attributes defined', () => {
+	it('Should be able to construct input with Hooks, Events, Attributes defined', (done) => {
 		function test() {}
 		const obj = { fn: function () {}, focus: function () {} };
 		const bool = false;
@@ -730,7 +730,10 @@ describe('Elements (JSX)', () => {
 		const input = container.querySelector('#test');
 		sinon.assert.calledOnce(spy, 'Hook should work'); // Verify hook works
 		input.focus();
-		sinon.assert.calledOnce(spyFocus, 'Event should work'); // Verify hook works
-		document.body.removeChild(container);
+		requestAnimationFrame(() => {
+			sinon.assert.calledOnce(spyFocus, 'Event should work'); // Verify hook works
+			document.body.removeChild(container);
+			done();
+		});
 	});
 });
