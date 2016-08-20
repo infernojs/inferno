@@ -98,7 +98,7 @@ describe('FormElements', () => {
 			let input = container.querySelector('input');
 			expect(input.checked).to.equal(false);
 			input.checked = false; // Simulate user clicking checkbox twice
-			render(<CheckBox value={true} />, container);
+			render(<CheckBox checked={true} />, container);
 			input = container.querySelector('input');
 			expect(input.checked).to.equal(true);
 		});
@@ -109,7 +109,7 @@ describe('FormElements', () => {
 			expect(input.checked).to.equal(false);
 			input.checked = true; // Simulate user clicking checkbox
 			expect(input.checked).to.equal(true);
-			render(<CheckBox value={false} />, container);
+			render(<CheckBox checked={false} />, container);
 			input = container.querySelector('input');
 			expect(input.checked).to.equal(false);
 		});
@@ -120,7 +120,7 @@ describe('FormElements', () => {
 			expect(input.checked).to.equal(true);
 			input.checked = false; // Simulate user clicking checkbox
 			expect(input.checked).to.equal(false);
-			render(<CheckBox value={true} />, container);
+			render(<CheckBox checked={true} />, container);
 			input = container.querySelector('input');
 			expect(input.checked).to.equal(true);
 		});

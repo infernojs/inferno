@@ -32,10 +32,10 @@ import {
 	namespaces,
 	replaceVListWithNode,
 	normaliseChild,
-	resetStatefulDomProperties,
+	resetFormInputProperties,
 	removeAllChildren,
 	replaceWithNewNode,
-	selectVElementValue,
+	formSelectValue,
 	updateTextContent,
 	setTextContent,
 	replaceChild,
@@ -245,20 +245,19 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 	lastProps = lastProps || {};
 	nextProps = nextProps || {};
+	let formValue;
 
-	if (lastVElement._tag === 'select') {
-		selectVElementValue(nextVElement);
-	}
 	for (let prop in nextProps) {
 		const nextValue = nextProps[prop];
 		const lastValue = lastProps[prop];
 
-		if (lastValue !== nextValue) {
-			if (isNullOrUndef(nextValue)) {
-				removeProp(prop, dom);
-			} else {
-				patchProp(prop, lastValue, nextValue, dom);
-			}
+		if (prop === 'value') {
+			formValue = nextValue;
+		}
+		if (isNullOrUndef(nextValue)) {
+			removeProp(prop, dom);
+		} else {
+			patchProp(prop, lastValue, nextValue, dom);
 		}
 	}
 	for (let prop in lastProps) {
@@ -266,44 +265,51 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 			removeProp(prop, dom);
 		}
 	}
+	if (nextVElement._tag === 'select') {
+		formSelectValue(dom, formValue);
+	}
 }
 
-// returns true if a property of the element has been mutated, otherwise false for an attribute
+// returns true if a property has been applied that can't be cloned via elem.cloneNode()
 export function patchProp(prop, lastValue, nextValue, dom) {
-	if (isNullOrUndef(nextValue)) {
-		dom.removeAttribute(prop);
-		return false;
-	}
-	if (prop === 'className') {
-		dom.className = nextValue;
-		return false;
-	} else if (prop === 'style') {
-		patchStyle(lastValue, nextValue, dom);
-	} else if (prop === 'defaultChecked') {
-		if (isNull(lastValue)) {
-			dom.addAttribute('checked');
-		}
-		return false;
-	} else if (prop === 'defaultValue') {
-		if (isNull(lastValue)) {
-			dom.setAttribute('value', nextValue);
-		}
-		return false;
-	} else if (strictProps[prop]) {
-		dom[prop] = nextValue === null ? '' : nextValue;
+	if (strictProps[prop]) {
+		dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
 	} else if (booleanProps[prop]) {
 		dom[prop] = nextValue ? true : false;
-	} else if (isAttrAnEvent(prop)) {
-		dom[prop.toLowerCase()] = nextValue;
-	} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
-		const ns = namespaces[prop];
+	} else {
+		if (lastValue !== nextValue) {
+			if (isNullOrUndef(nextValue)) {
+				dom.removeAttribute(prop);
+				return false;
+			}
+			if (prop === 'className') {
+				dom.className = nextValue;
+				return false;
+			} else if (prop === 'style') {
+				patchStyle(lastValue, nextValue, dom);
+			} else if (prop === 'defaultChecked') {
+				if (isNull(lastValue)) {
+					dom.addAttribute('checked');
+				}
+				return false;
+			} else if (prop === 'defaultValue') {
+				if (isNull(lastValue)) {
+					dom.setAttribute('value', nextValue);
+				}
+				return false;
+			} else if (isAttrAnEvent(prop)) {
+				dom[prop.toLowerCase()] = nextValue;
+			} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
+				const ns = namespaces[prop];
 
-		if (ns) {
-			dom.setAttributeNS(ns, prop, nextValue);
-		} else {
-			dom.setAttribute(prop, nextValue);
+				if (ns) {
+					dom.setAttributeNS(ns, prop, nextValue);
+				} else {
+					dom.setAttribute(prop, nextValue);
+				}
+				return false;
+			}
 		}
-		return false;
 	}
 	return true;
 }
@@ -828,19 +834,27 @@ export function patchTemplateStyle(pointer) {
 	};
 }
 
-export function patchTemplateProps(propsToPatch) {
+export function patchTemplateProps(propsToPatch, tag) {
 	return function patchTemplateProps(lastVTemplate, nextVTemplate, dom) {
-		resetStatefulDomProperties(dom);
+		// used for form values only
+		let formValue;
 
+		if (tag === 'input') {
+			resetFormInputProperties(dom);
+		}
 		for (let i = 0; i < propsToPatch.length; i += 2) {
 			const prop = propsToPatch[i];
 			const pointer = propsToPatch[i + 1];
 			const lastValue = lastVTemplate.read(pointer);
 			const nextValue = nextVTemplate.read(pointer);
 
-			if (lastValue !== nextValue) {
-				patchProp(prop, lastValue, nextValue, dom);
+			if (prop === 'value') {
+				formValue = lastValue;
 			}
+			patchProp(prop, lastValue, nextValue, dom);
+		}
+		if (tag === 'select') {
+			formSelectValue(dom, formValue);
 		}
 	};
 }

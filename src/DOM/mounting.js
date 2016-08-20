@@ -7,15 +7,16 @@ import {
 	isString,
 	isInvalid,
 	isNull,
+	isTrue,
 	throwError
 } from './../core/utils';
 import {
 	setTextContent,
 	documentCreateElement,
-	selectVElementValue,
 	normaliseChild,
 	appendChild,
-	normalise
+	normalise,
+	formSelectValue
 } from './utils';
 import { patchStyle, patch, patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
@@ -93,6 +94,7 @@ export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	const children = vElement._children;
 	const props = vElement._props;
 	const ref = vElement._ref;
+	const hasProps = !isNullOrUndef(props);
 
 	vElement._dom = dom;
 	if (!isNullOrUndef(ref)) {
@@ -100,11 +102,13 @@ export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 			ref(dom);
 		});
 	}
+	if (tag === 'select' && hasProps && isTrue(props.multiple)) {
+		patchProp('multiple', null, true, dom);
+	}
 	if (!isNullOrUndef(children)) {
 		mountChildren(vElement._childrenType, children, dom, lifecycle, context, isSVG);
 	}
-	if (!isNullOrUndef(props)) {
-		handlevElementSelects(vElement);
+	if (hasProps) {
 		mountProps(vElement, props, dom);
 	}
 	if (!isNull(parentDom)) {
@@ -151,12 +155,6 @@ export function mountVPlaceholder(vPlaceholder, parentDom) {
 		appendChild(parentDom, dom);
 	}
 	return dom;
-}
-
-export function handlevElementSelects(vElement) {
-	if (vElement._tag === 'select') {
-		selectVElementValue(vElement);
-	}
 }
 
 export function mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG) {
@@ -301,10 +299,18 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 }
 
 function mountProps(vElement, props, dom) {
+	let formValue;
+
 	for (let prop in props) {
 		const value = props[prop];
 
+		if (prop === 'value') {
+			formValue = value;
+		}
 		patchProp(prop, null, value, dom);
+	}
+	if (vElement._tag === 'select') {
+		formSelectValue(vElement._dom, formValue);
 	}
 }
 
@@ -405,8 +411,11 @@ export function mountTemplateStyle(pointer) {
 	};
 }
 
-export function mountTemplateProps(propsToMount) {
+export function mountTemplateProps(propsToMount, tag) {
 	return function mountTemplateProps(vTemplate, dom) {
+		// used for form values only
+		let formValue;
+
 		for (let i = 0; i < propsToMount.length; i += 2) {
 			const prop = propsToMount[i];
 			let value = propsToMount[i + 1];
@@ -414,7 +423,13 @@ export function mountTemplateProps(propsToMount) {
 			if (isVariable(value)) {
 				value = vTemplate.read(value._pointer);
 			}
+			if (prop === 'value') {
+				formValue = value;
+			}
 			patchProp(prop, null, value, dom);
+		}
+		if (tag === 'select') {
+			formSelectValue(dom, formValue);
 		}
 	};
 }

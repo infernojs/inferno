@@ -90,16 +90,7 @@ describe('Select / select multiple (JSX)', () => {
 	});
 
 	it('should render "select" boolean on select options', () => {
-		const template = (val) => createElement('select', {
-			multiple: true,
-			value: val
-		}, createElement('option', {
-			value: 'foo'
-		}, 'foo'), createElement('option', {
-			value: 'bar'
-		}, 'bar'));
-
-		render(template('foo'), container);
+		render(<select multiple={ true } value={ 'foo' }><option value='foo'>foo</option><option value='bar'>bar</option></select>, container);
 		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
 		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
@@ -188,16 +179,7 @@ describe('Select / select multiple (JSX)', () => {
 */
 	it('should render "select" boolean on select options', () => {
 
-		const template = (val) => createElement('select', {
-			multiple: true,
-			value: val
-		}, createElement('option', {
-			value: 'foo'
-		}, 'foo'), createElement('option', {
-			value: 'bar'
-		}, 'bar'));
-
-		render(template('foo'), container);
+		render(<select multiple={ true } value={ 'foo' }><option value='foo'>foo</option><option value='bar'>bar</option></select>, container);
 
 		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
 		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
@@ -207,7 +189,7 @@ describe('Select / select multiple (JSX)', () => {
 			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
 		);
 
-		render(template(), container);
+		render(<select multiple={ true } value={ undefined }><option value='foo'>foo</option><option value='bar'>bar</option></select>, container);
 
 		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
 		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
@@ -220,45 +202,72 @@ describe('Select / select multiple (JSX)', () => {
 	});
 
 	it('should assure the value attribute also set the value property for `textarea`', () => {
-
-		const template = (val) => createElement('textarea', {
-			value: val
-		});
-
-		render(template('foo'), container);
-
+		render(<textarea value={ 'foo' } />, container);
 		expect(container.firstChild.value).to.eql('foo');
-
-		render(template('bar'), container);
-
+		render(<textarea value={ 'bar' } />, container);
 		expect(container.firstChild.value).to.eql('bar');
-
-		render(template('bar'), container);
-
+		render(<textarea value={ 'bar' } />, container);
 		expect(container.firstChild.value).to.eql('bar');
-
-		render(template('foo'), container);
-
+		render(<textarea value={ 'foo' } />, container);
 		expect(container.firstChild.value).to.eql('foo');
-
-		render(template(null), container);
-
+		render(<textarea value={ null } />, container);
 		expect(container.firstChild.value).to.eql('');
-
-		render(template(undefined), container);
-
+		render(<textarea value={ undefined } />, container);
 		expect(container.firstChild.value).to.eql('');
-
-		render(template('bar'), container);
-
+		render(<textarea value={ 'bar' } />, container);
 		expect(container.firstChild.value).to.eql('bar');
-
-		render(template([]), container);
-
+		render(<textarea value={ [] } />, container);
 		expect(container.firstChild.value).to.eql('');
-
-		render(template({}), container);
-
+		render(<textarea value={ {} } />, container);
 		expect(container.firstChild.value).to.eql('[object Object]');
 	});
+
+	it('should handle when multiple values passed in as an array', () => {
+		render(<select multiple={ true } value={ [ 'a', 'b', 'c' ] }>
+			<option value={ 'a' }>a</option>
+			<option value={ 'b' }>b</option>
+			<option value={ 'c' }>c</option>
+			<option value={ 'd' }>d</option>
+		</select>, container);
+
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 2 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
+		);
+	});
+
+	// it('should handle when multiple options with selected set', () => {
+
+	// 	const template = () => createElement('select', {
+	// 		multiple: true
+	// 	}, createElement('option', {
+	// 		value: 'a',
+	// 		selected: true
+	// 	}, 'a'), createElement('option', {
+	// 		value: 'b',
+	// 		selected: true
+	// 	}, 'b'), createElement('option', {
+	// 		value: 'c',
+	// 		selected: true
+	// 	}, 'c'), createElement('option', {
+	// 		value: 'd'
+	// 	}, 'd'));
+
+	// 	render(template(), container);
+
+	// 	expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+	// 	expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+	// 	expect(container.firstChild.children[ 2 ].selected).to.eql(true);
+	// 	expect(container.firstChild.children[ 3 ].selected).to.eql(false);
+	// 	expect(
+	// 		container.innerHTML
+	// 	).to.equal(
+	// 		innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
+	// 	);
+	// });
 });

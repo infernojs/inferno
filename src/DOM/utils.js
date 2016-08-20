@@ -136,52 +136,38 @@ export function isKeyed(lastChildren, nextChildren) {
 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0]._key);
 }
 
-function selectvElementOptionValueIfNeeded(vElement, values) {
-	if (vElement._tag !== 'option') {
-		for (let i = 0, len = vElement._children.length; i < len; i++) {
-			selectvElementOptionValueIfNeeded(vElement._children[i], values);
+function formSelectValueFindOptions(dom, value, isMap) {
+	let child = dom.firstChild;
+
+	while (child) {
+		const tagName = child.tagName;
+
+		if (tagName === 'OPTION') {
+			if ((!isMap && child.value === value) || (isMap && value.get(child.value))) {
+				child.selected = true;
+			}
+		} else if (tagName === 'OPTGROUP') {
+			formSelectValueFindOptions(child, value, isMap);
 		}
-		// NOTE! Has to be a return here to catch optGroup elements
-		return;
-	}
-
-	const value = vElement._props && vElement._props.value;
-
-	if (values[value]) {
-		vElement._props = vElement._props || {};
-		vElement._props.selected = true;
-		vElement._dom.selected = true;
-	} else {
-		vElement._dom.selected = false;
+		child = child.nextSibling;
 	}
 }
 
-export function selectVElementValue(vElement) {
-	const value = vElement._props && vElement._props.value;
-	const values = {};
+export function formSelectValue(dom, value) {
+	let isMap = false;
 
-	if (isArray(value)) {
-		for (let i = 0, len = value.length; i < len; i++) {
-			values[value[i]] = value[i];
+	if (!isNullOrUndef(value)) {
+		if (isArray(value)) {
+			// Map vs Object v using reduce here for perf?
+			value = value.reduce((o, v) => o.set(v, true), new Map());
+			isMap = true;
 		}
-	} else {
-		values[value] = value;
-	}
-	for (let i = 0, len = vElement._children.length; i < len; i++) {
-		selectvElementOptionValueIfNeeded(vElement._children[i], values);
-	}
-
-	if (vElement._props && vElement._props[value]) {
-		delete vElement._props.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+		formSelectValueFindOptions(dom, value, isMap);
 	}
 }
 
-export function resetStatefulDomProperties(dom) {
-	const tagName = dom.tagName;
-
-	if (tagName === 'INPUT') {
-		if (dom.checked) {
-			dom.checked = false;
-		}
+export function resetFormInputProperties(dom) {
+	if (dom.checked) {
+		dom.checked = false;
 	}
 }

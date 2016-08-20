@@ -229,10 +229,10 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 						}
 					}
 					if (propsToMount.length > 0) {
-						mounters.push(mountTemplateProps(propsToMount));
+						mounters.push(mountTemplateProps(propsToMount, tag));
 					}
 					if (propsToPatch.length > 0) {
-						patchers.push(patchTemplateProps(propsToPatch));
+						patchers.push(patchTemplateProps(propsToPatch, tag));
 					}
 				}
 			}

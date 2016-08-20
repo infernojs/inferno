@@ -191,6 +191,10 @@ var Variable = function Variable($pointer) {
 	this._pointer = $pointer;
 };
 
+function cloneVNode(vNodeToClone) {
+
+}
+
 function createVTemplate(schema, renderer) {
 	var argCount = schema.length;
 	var parameters = [];
@@ -260,7 +264,8 @@ var index = {
 	createVElement: createVElement,
 	createVText: createVText,
 	createVFragment: createVFragment,
-	ChildrenTypes: ChildrenTypes
+	ChildrenTypes: ChildrenTypes,
+	cloneVNode: cloneVNode
 };
 
 return index;

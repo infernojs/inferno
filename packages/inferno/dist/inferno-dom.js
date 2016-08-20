@@ -406,20 +406,19 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 	lastProps = lastProps || {};
 	nextProps = nextProps || {};
+	var formValue;
 
-	if (lastVElement._tag === 'select') {
-		selectValue(nextVElement);
-	}
 	for (var prop in nextProps) {
 		var nextValue = nextProps[prop];
 		var lastValue = lastProps[prop];
 
-		if (lastValue !== nextValue) {
-			if (isNullOrUndef(nextValue)) {
-				removeProp(prop, dom);
-			} else {
-				patchProp(prop, lastValue, nextValue, dom);
-			}
+		if (prop === 'value') {
+			formValue = nextValue;
+		}
+		if (isNullOrUndef(nextValue)) {
+			removeProp(prop, dom);
+		} else {
+			patchProp(prop, lastValue, nextValue, dom);
 		}
 	}
 	for (var prop$1 in lastProps) {
@@ -427,34 +426,51 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 			removeProp(prop$1, dom);
 		}
 	}
+	if (nextVElement._tag === 'select') {
+		formSelectValue(dom, formValue);
+	}
 }
 
-// returns true if a property of the element has been mutated, otherwise false for an attribute
+// returns true if a property has been applied that can't be cloned via elem.cloneNode()
 function patchProp(prop, lastValue, nextValue, dom) {
-	if (isNullOrUndef(nextValue)) {
-		dom.removeAttribute(prop);
-		return false;
-	}
-	if (prop === 'className') {
-		dom.className = nextValue;
-		return false;
-	} else if (prop === 'style') {
-		patchStyle(lastValue, nextValue, dom);
-	} else if (strictProps[prop]) {
-		dom[prop] = nextValue === null ? '' : nextValue;
+	if (strictProps[prop]) {
+		dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
 	} else if (booleanProps[prop]) {
 		dom[prop] = nextValue ? true : false;
-	} else if (isAttrAnEvent(prop)) {
-		dom[prop.toLowerCase()] = nextValue;
-	} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
-		var ns = namespaces[prop];
+	} else {
+		if (lastValue !== nextValue) {
+			if (isNullOrUndef(nextValue)) {
+				dom.removeAttribute(prop);
+				return false;
+			}
+			if (prop === 'className') {
+				dom.className = nextValue;
+				return false;
+			} else if (prop === 'style') {
+				patchStyle(lastValue, nextValue, dom);
+			} else if (prop === 'defaultChecked') {
+				if (isNull(lastValue)) {
+					dom.addAttribute('checked');
+				}
+				return false;
+			} else if (prop === 'defaultValue') {
+				if (isNull(lastValue)) {
+					dom.setAttribute('value', nextValue);
+				}
+				return false;
+			} else if (isAttrAnEvent(prop)) {
+				dom[prop.toLowerCase()] = nextValue;
+			} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
+				var ns = namespaces[prop];
 
-		if (ns) {
-			dom.setAttributeNS(ns, prop, nextValue);
-		} else {
-			dom.setAttribute(prop, nextValue);
+				if (ns) {
+					dom.setAttributeNS(ns, prop, nextValue);
+				} else {
+					dom.setAttribute(prop, nextValue);
+				}
+				return false;
+			}
 		}
-		return false;
 	}
 	return true;
 }
@@ -979,19 +995,27 @@ function patchTemplateStyle(pointer) {
 	};
 }
 
-function patchTemplateProps(propsToPatch) {
+function patchTemplateProps(propsToPatch, tag) {
 	return function patchTemplateProps(lastVTemplate, nextVTemplate, dom) {
-		resetStatefulDomProperties(dom);
+		// used for form values only
+		var formValue;
 
+		if (tag === 'input') {
+			resetFormInputProperties(dom);
+		}
 		for (var i = 0; i < propsToPatch.length; i += 2) {
 			var prop = propsToPatch[i];
 			var pointer = propsToPatch[i + 1];
 			var lastValue = lastVTemplate.read(pointer);
 			var nextValue = nextVTemplate.read(pointer);
 
-			if (lastValue !== nextValue) {
-				patchProp(prop, lastValue, nextValue, dom);
+			if (prop === 'value') {
+				formValue = lastValue;
 			}
+			patchProp(prop, lastValue, nextValue, dom);
+		}
+		if (tag === 'select') {
+			formSelectValue(dom, formValue);
 		}
 	};
 }
@@ -1341,53 +1365,6 @@ function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChild
 			if (!isNull(key) && isVariable(key)) {
 				keyIndex = key._pointer;
 			}
-			var props = vNode._props;
-
-			if (!isNull(props)) {
-				if (isVariable(props)) {
-					mounters.push(mountSpreadPropsFromTemplate(props._pointer));
-				} else {
-					var propsToMount = [];
-					var propsToPatch = [];
-
-					for (var prop in props) {
-						var value = props[prop];
-
-						if (isVariable(value)) {
-							if (prop === 'className') {
-								mounters.push(mountTemplateClassName(value._pointer));
-								patchers.push(patchTemplateClassName(value._pointer));
-							} else if (prop === 'style') {
-								mounters.push(mountTemplateStyle(value._pointer));
-								patchers.push(patchTemplateStyle(value._pointer));
-							} else {
-								propsToMount.push(prop, value);
-								propsToPatch.push(prop, value._pointer);
-							}
-						} else {
-							var shouldMountProp = patchProp(prop, null, value, dom);
-
-							if (shouldMountProp) {
-								propsToMount.push(prop, value);
-							}
-						}
-					}
-					if (propsToMount.length > 0) {
-						mounters.push(mountTemplateProps(propsToMount));
-					}
-					if (propsToPatch.length > 0) {
-						patchers.push(patchTemplateProps(propsToPatch));
-					}
-				}
-			}
-			var ref = vNode._ref;
-
-			if (!isNullOrUndef(ref)) {
-				mounters.push(mountRefFromTemplate(ref));
-			}
-			if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
-				nodeIndex = offset.length++;
-			}
 			var children$1 = vNode._children;
 
 			if (!isInvalid(children$1)) {
@@ -1443,6 +1420,53 @@ function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChild
 						}
 					}
 				}
+			}
+			var props = vNode._props;
+
+			if (!isNull(props)) {
+				if (isVariable(props)) {
+					mounters.push(mountSpreadPropsFromTemplate(props._pointer));
+				} else {
+					var propsToMount = [];
+					var propsToPatch = [];
+
+					for (var prop in props) {
+						var value = props[prop];
+
+						if (isVariable(value)) {
+							if (prop === 'className') {
+								mounters.push(mountTemplateClassName(value._pointer));
+								patchers.push(patchTemplateClassName(value._pointer));
+							} else if (prop === 'style') {
+								mounters.push(mountTemplateStyle(value._pointer));
+								patchers.push(patchTemplateStyle(value._pointer));
+							} else {
+								propsToMount.push(prop, value);
+								propsToPatch.push(prop, value._pointer);
+							}
+						} else {
+							var shouldMountProp = patchProp(prop, null, value, dom);
+
+							if (shouldMountProp) {
+								propsToMount.push(prop, value);
+							}
+						}
+					}
+					if (propsToMount.length > 0) {
+						mounters.push(mountTemplateProps(propsToMount, tag));
+					}
+					if (propsToPatch.length > 0) {
+						patchers.push(patchTemplateProps(propsToPatch, tag));
+					}
+				}
+			}
+			var ref = vNode._ref;
+
+			if (!isNullOrUndef(ref)) {
+				mounters.push(mountRefFromTemplate(ref));
+			}
+			if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
+				nodeIndex = offset.length++;
 			}
 			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);
@@ -2014,53 +2038,39 @@ function isKeyed(lastChildren, nextChildren) {
 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0]._key);
 }
 
-function selectOptionValueIfNeeded(vdom, values) {
-	if (vdom._tag !== 'option') {
-		for (var i = 0, len = vdom._children.length; i < len; i++) {
-			selectOptionValueIfNeeded(vdom._children[i], values);
+function formSelectValueFindOptions(dom, value, isMap) {
+	var child = dom.firstChild;
+
+	while (child) {
+		var tagName = child.tagName;
+
+		if (tagName === 'OPTION') {
+			if ((!isMap && child.value === value) || (isMap && value.get(child.value))) {
+				child.selected = true;
+			}
+		} else if (tagName === 'OPTGROUP') {
+			formSelectValueFindOptions(child, value, isMap);
 		}
-		// NOTE! Has to be a return here to catch optGroup elements
-		return;
-	}
-
-	var value = vdom._props && vdom._props.value;
-
-	if (values[value]) {
-		vdom._props = vdom._props || {};
-		vdom._props.selected = true;
-		vdom._dom.selected = true;
-	} else {
-		vdom._dom.selected = false;
+		child = child.nextSibling;
 	}
 }
 
-function selectValue(vdom) {
-	var value = vdom._props && vdom._props.value;
-	var values = {};
+function formSelectValue(dom, value) {
+	var isMap = false;
 
-	if (isArray(value)) {
-		for (var i = 0, len = value.length; i < len; i++) {
-			values[value[i]] = value[i];
+	if (!isNullOrUndef(value)) {
+		if (isArray(value)) {
+			// Map vs Object v using reduce here for perf?
+			value = value.reduce(function (o, v) { return o.set(v, true); }, new Map());
+			isMap = true;
 		}
-	} else {
-		values[value] = value;
-	}
-	for (var i$1 = 0, len$1 = vdom._children.length; i$1 < len$1; i$1++) {
-		selectOptionValueIfNeeded(vdom._children[i$1], values);
-	}
-
-	if (vdom._props && vdom._props[value]) {
-		delete vdom._props.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+		formSelectValueFindOptions(dom, value, isMap);
 	}
 }
 
-function resetStatefulDomProperties(dom) {
-	var tagName = dom.tagName;
-
-	if (tagName === 'INPUT') {
-		if (dom.checked) {
-			dom.checked = false;
-		}
+function resetFormInputProperties(dom) {
+	if (dom.checked) {
+		dom.checked = false;
 	}
 }
 
@@ -2114,6 +2124,7 @@ function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	var children = vElement._children;
 	var props = vElement._props;
 	var ref = vElement._ref;
+	var hasProps = !isNullOrUndef(props);
 
 	vElement._dom = dom;
 	if (!isNullOrUndef(ref)) {
@@ -2121,11 +2132,13 @@ function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 			ref(dom);
 		});
 	}
+	if (tag === 'select' && hasProps && isTrue(props.multiple)) {
+		patchProp('multiple', null, true, dom);
+	}
 	if (!isNullOrUndef(children)) {
 		mountChildren(vElement._childrenType, children, dom, lifecycle, context, isSVG);
 	}
-	if (!isNullOrUndef(props)) {
-		handleSelects(vElement);
+	if (hasProps) {
 		mountProps(vElement, props, dom);
 	}
 	if (!isNull(parentDom)) {
@@ -2172,12 +2185,6 @@ function mountVPlaceholder(vPlaceholder, parentDom) {
 		appendChild(parentDom, dom);
 	}
 	return dom;
-}
-
-function handleSelects(node) {
-	if (node._tag === 'select') {
-		selectValue(node);
-	}
 }
 
 function mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG) {
@@ -2314,10 +2321,18 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 }
 
 function mountProps(vElement, props, dom) {
+	var formValue;
+
 	for (var prop in props) {
 		var value = props[prop];
 
+		if (prop === 'value') {
+			formValue = value;
+		}
 		patchProp(prop, null, value, dom);
+	}
+	if (vElement._tag === 'select') {
+		formSelectValue(vElement._dom, formValue);
 	}
 }
 
@@ -2416,8 +2431,11 @@ function mountTemplateStyle(pointer) {
 	};
 }
 
-function mountTemplateProps(propsToMount) {
+function mountTemplateProps(propsToMount, tag) {
 	return function mountTemplateProps(vTemplate, dom) {
+		// used for form values only
+		var formValue;
+
 		for (var i = 0; i < propsToMount.length; i += 2) {
 			var prop = propsToMount[i];
 			var value = propsToMount[i + 1];
@@ -2425,7 +2443,13 @@ function mountTemplateProps(propsToMount) {
 			if (isVariable(value)) {
 				value = vTemplate.read(value._pointer);
 			}
+			if (prop === 'value') {
+				formValue = value;
+			}
 			patchProp(prop, null, value, dom);
+		}
+		if (tag === 'select') {
+			formSelectValue(dom, formValue);
 		}
 	};
 }

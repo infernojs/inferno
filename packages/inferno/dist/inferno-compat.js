@@ -474,20 +474,19 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 	lastProps = lastProps || {};
 	nextProps = nextProps || {};
+	var formValue;
 
-	if (lastVElement._tag === 'select') {
-		selectValue(nextVElement);
-	}
 	for (var prop in nextProps) {
 		var nextValue = nextProps[prop];
 		var lastValue = lastProps[prop];
 
-		if (lastValue !== nextValue) {
-			if (isNullOrUndef(nextValue)) {
-				removeProp(prop, dom);
-			} else {
-				patchProp(prop, lastValue, nextValue, dom);
-			}
+		if (prop === 'value') {
+			formValue = nextValue;
+		}
+		if (isNullOrUndef(nextValue)) {
+			removeProp(prop, dom);
+		} else {
+			patchProp(prop, lastValue, nextValue, dom);
 		}
 	}
 	for (var prop$1 in lastProps) {
@@ -495,34 +494,51 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 			removeProp(prop$1, dom);
 		}
 	}
+	if (nextVElement._tag === 'select') {
+		formSelectValue(dom, formValue);
+	}
 }
 
-// returns true if a property of the element has been mutated, otherwise false for an attribute
+// returns true if a property has been applied that can't be cloned via elem.cloneNode()
 function patchProp(prop, lastValue, nextValue, dom) {
-	if (isNullOrUndef(nextValue)) {
-		dom.removeAttribute(prop);
-		return false;
-	}
-	if (prop === 'className') {
-		dom.className = nextValue;
-		return false;
-	} else if (prop === 'style') {
-		patchStyle(lastValue, nextValue, dom);
-	} else if (strictProps[prop]) {
-		dom[prop] = nextValue === null ? '' : nextValue;
+	if (strictProps[prop]) {
+		dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
 	} else if (booleanProps[prop]) {
 		dom[prop] = nextValue ? true : false;
-	} else if (isAttrAnEvent(prop)) {
-		dom[prop.toLowerCase()] = nextValue;
-	} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
-		var ns = namespaces[prop];
+	} else {
+		if (lastValue !== nextValue) {
+			if (isNullOrUndef(nextValue)) {
+				dom.removeAttribute(prop);
+				return false;
+			}
+			if (prop === 'className') {
+				dom.className = nextValue;
+				return false;
+			} else if (prop === 'style') {
+				patchStyle(lastValue, nextValue, dom);
+			} else if (prop === 'defaultChecked') {
+				if (isNull(lastValue)) {
+					dom.addAttribute('checked');
+				}
+				return false;
+			} else if (prop === 'defaultValue') {
+				if (isNull(lastValue)) {
+					dom.setAttribute('value', nextValue);
+				}
+				return false;
+			} else if (isAttrAnEvent(prop)) {
+				dom[prop.toLowerCase()] = nextValue;
+			} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
+				var ns = namespaces[prop];
 
-		if (ns) {
-			dom.setAttributeNS(ns, prop, nextValue);
-		} else {
-			dom.setAttribute(prop, nextValue);
+				if (ns) {
+					dom.setAttributeNS(ns, prop, nextValue);
+				} else {
+					dom.setAttribute(prop, nextValue);
+				}
+				return false;
+			}
 		}
-		return false;
 	}
 	return true;
 }
@@ -1459,43 +1475,33 @@ function isKeyed(lastChildren, nextChildren) {
 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0]._key);
 }
 
-function selectOptionValueIfNeeded(vdom, values) {
-	if (vdom._tag !== 'option') {
-		for (var i = 0, len = vdom._children.length; i < len; i++) {
-			selectOptionValueIfNeeded(vdom._children[i], values);
+function formSelectValueFindOptions(dom, value, isMap) {
+	var child = dom.firstChild;
+
+	while (child) {
+		var tagName = child.tagName;
+
+		if (tagName === 'OPTION') {
+			if ((!isMap && child.value === value) || (isMap && value.get(child.value))) {
+				child.selected = true;
+			}
+		} else if (tagName === 'OPTGROUP') {
+			formSelectValueFindOptions(child, value, isMap);
 		}
-		// NOTE! Has to be a return here to catch optGroup elements
-		return;
-	}
-
-	var value = vdom._props && vdom._props.value;
-
-	if (values[value]) {
-		vdom._props = vdom._props || {};
-		vdom._props.selected = true;
-		vdom._dom.selected = true;
-	} else {
-		vdom._dom.selected = false;
+		child = child.nextSibling;
 	}
 }
 
-function selectValue(vdom) {
-	var value = vdom._props && vdom._props.value;
-	var values = {};
+function formSelectValue(dom, value) {
+	var isMap = false;
 
-	if (isArray(value)) {
-		for (var i = 0, len = value.length; i < len; i++) {
-			values[value[i]] = value[i];
+	if (!isNullOrUndef(value)) {
+		if (isArray(value)) {
+			// Map vs Object v using reduce here for perf?
+			value = value.reduce(function (o, v) { return o.set(v, true); }, new Map());
+			isMap = true;
 		}
-	} else {
-		values[value] = value;
-	}
-	for (var i$1 = 0, len$1 = vdom._children.length; i$1 < len$1; i$1++) {
-		selectOptionValueIfNeeded(vdom._children[i$1], values);
-	}
-
-	if (vdom._props && vdom._props[value]) {
-		delete vdom._props.value; // TODO! Avoid deletion here. Set to null or undef. Not sure what you want to usev
+		formSelectValueFindOptions(dom, value, isMap);
 	}
 }
 
@@ -1549,6 +1555,7 @@ function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	var children = vElement._children;
 	var props = vElement._props;
 	var ref = vElement._ref;
+	var hasProps = !isNullOrUndef(props);
 
 	vElement._dom = dom;
 	if (!isNullOrUndef(ref)) {
@@ -1556,11 +1563,13 @@ function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 			ref(dom);
 		});
 	}
+	if (tag === 'select' && hasProps && isTrue(props.multiple)) {
+		patchProp('multiple', null, true, dom);
+	}
 	if (!isNullOrUndef(children)) {
 		mountChildren(vElement._childrenType, children, dom, lifecycle, context, isSVG);
 	}
-	if (!isNullOrUndef(props)) {
-		handleSelects(vElement);
+	if (hasProps) {
 		mountProps(vElement, props, dom);
 	}
 	if (!isNull(parentDom)) {
@@ -1607,12 +1616,6 @@ function mountVPlaceholder(vPlaceholder, parentDom) {
 		appendChild(parentDom, dom);
 	}
 	return dom;
-}
-
-function handleSelects(node) {
-	if (node._tag === 'select') {
-		selectValue(node);
-	}
 }
 
 function mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG) {
@@ -1749,10 +1752,18 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 }
 
 function mountProps(vElement, props, dom) {
+	var formValue;
+
 	for (var prop in props) {
 		var value = props[prop];
 
+		if (prop === 'value') {
+			formValue = value;
+		}
 		patchProp(prop, null, value, dom);
+	}
+	if (vElement._tag === 'select') {
+		formSelectValue(vElement._dom, formValue);
 	}
 }
 

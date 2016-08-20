@@ -255,7 +255,6 @@ describe('Select / select multiple (non-JSX)', () => {
 	});
 
 	it('should handle when multiple values passed in as an array', () => {
-
 		const template = (val) => createElement('select', {
 			multiple: true,
 			value: val
@@ -268,8 +267,7 @@ describe('Select / select multiple (non-JSX)', () => {
 		}, 'c'), createElement('option', {
 			value: 'd'
 		}, 'd'));
-
-		render(template(['a', 'b', 'c']), container);
+		render(template([ 'a', 'b', 'c' ]), container);
 
 		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
 		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
@@ -283,7 +281,6 @@ describe('Select / select multiple (non-JSX)', () => {
 	});
 
 	it('should handle when multiple options with selected set', () => {
-
 		const template = () => createElement('select', {
 			multiple: true
 		}, createElement('option', {
@@ -298,7 +295,6 @@ describe('Select / select multiple (non-JSX)', () => {
 		}, 'c'), createElement('option', {
 			value: 'd'
 		}, 'd'));
-
 		render(template(), container);
 
 		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
