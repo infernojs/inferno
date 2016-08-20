@@ -1,7 +1,7 @@
 import { render } from './../rendering';
-import innerHTML from './../../../tools/innerHTML';
 import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
 import { createTemplateReducers } from './../../DOM/templates';
+import { innerHTML } from '../../tools/utils';
 
 const Inferno = {
 	createVTemplate,
@@ -241,33 +241,37 @@ describe('Select / select multiple (JSX)', () => {
 		);
 	});
 
-	// it('should handle when multiple options with selected set', () => {
+	it('should handle when multiple options with selected set', () => {
+		const template = () => createElement('select', {
+			multiple: true
+		}, createElement('option', {
+			value: 'a',
+			selected: true
+		}, 'a'), createElement('option', {
+			value: 'b',
+			selected: true
+		}, 'b'), createElement('option', {
+			value: 'c',
+			selected: true
+		}, 'c'), createElement('option', {
+			value: 'd'
+		}, 'd'));
 
-	// 	const template = () => createElement('select', {
-	// 		multiple: true
-	// 	}, createElement('option', {
-	// 		value: 'a',
-	// 		selected: true
-	// 	}, 'a'), createElement('option', {
-	// 		value: 'b',
-	// 		selected: true
-	// 	}, 'b'), createElement('option', {
-	// 		value: 'c',
-	// 		selected: true
-	// 	}, 'c'), createElement('option', {
-	// 		value: 'd'
-	// 	}, 'd'));
+		render(<select multiple={ true }>
+			<option value='a' selected={ true }>a</option>
+			<option value='b' selected={ true }>b</option>
+			<option value='c' selected={ true }>c</option>
+			<option value='d'>d</option>
+		</select>, container);
 
-	// 	render(template(), container);
-
-	// 	expect(container.firstChild.children[ 0 ].selected).to.eql(true);
-	// 	expect(container.firstChild.children[ 1 ].selected).to.eql(true);
-	// 	expect(container.firstChild.children[ 2 ].selected).to.eql(true);
-	// 	expect(container.firstChild.children[ 3 ].selected).to.eql(false);
-	// 	expect(
-	// 		container.innerHTML
-	// 	).to.equal(
-	// 		innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
-	// 	);
-	// });
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 2 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
+		);
+	});
 });

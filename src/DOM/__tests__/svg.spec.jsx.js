@@ -1,5 +1,5 @@
 import { render } from './../rendering';
-import compareInnerHTML from './../../../tools/innerHTML';
+import { innerHTML } from '../../tools/utils';
 import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
 import { createTemplateReducers } from './../../DOM/templates';
 
@@ -239,7 +239,7 @@ describe('createTree - SVG (JSX)', () => {
 		const spread = {id:'test'};
 
 		render(<svg {...spread}><use xlink:href="#changed"></use></svg>, container);
-		expect(container.innerHTML).to.equal(compareInnerHTML('<svg id="test"><use xlink:href="#changed"></use></svg>'));
+		expect(container.innerHTML).to.equal(innerHTML('<svg id="test"><use xlink:href="#changed"></use></svg>'));
 	});
 
 	it('should add / change / remove xlink:href attribute', () => {
@@ -248,19 +248,19 @@ describe('createTree - SVG (JSX)', () => {
 			<use xlink:href="#test"></use>
 		</svg>, container);
 
-		expect(container.innerHTML).to.equal(compareInnerHTML('<svg><use xlink:href="#test"></use></svg>')); // Add
+		expect(container.innerHTML).to.equal(innerHTML('<svg><use xlink:href="#test"></use></svg>')); // Add
 
 		render(<svg>
 			<use xlink:href="#changed"></use>
 		</svg>, container);
 
-		expect(container.innerHTML).to.equal(compareInnerHTML('<svg><use xlink:href="#changed"></use></svg>')); // Change
+		expect(container.innerHTML).to.equal(innerHTML('<svg><use xlink:href="#changed"></use></svg>')); // Change
 
 		render(<svg>
 			<use></use>
 		</svg>, container);
 
-		expect(container.innerHTML).to.equal(compareInnerHTML('<svg><use></use></svg>')); // Remove
+		expect(container.innerHTML).to.equal(innerHTML('<svg><use></use></svg>')); // Remove
 
 	});
 });

@@ -1,13 +1,14 @@
 import { renderToStaticMarkup } from './../../server/renderToString';
 import Component from './../../component/es2015';
 import { render } from './../../DOM/rendering';
-import { isArray, isStringOrNumber, isNullOrUndef } from './../../core/utils';
+import { isArray, isStringOrNumber, isNullOrUndef } from '../../core/utils';
+import { createContainerWithHTML, validateNodeTree } from '../../tools/utils';
 import {
 	createVTemplate,
 	createVElement,
 	createVComponent,
 	isVNode
-} from './../../core/shapes';
+} from '../../core/shapes';
 import { createTemplateReducers } from './../../DOM/templates';
 
 const Inferno = {
@@ -18,57 +19,6 @@ const Inferno = {
 const InfernoDOM = {
 	createTemplateReducers
 };
-
-function createContainerWithHTML(html) {
-	const container = document.createElement('div');
-
-	container.innerHTML = html;
-	return container;
-}
-
-function validateNodeTree(node) {
-	if (!node) {
-		return true;
-	}
-	if (isStringOrNumber(node)) {
-		return true;
-	}
-	if (!node._dom) {
-		return false;
-	}
-	const children = node._children;
-
-	if (!isNullOrUndef(children)) {
-		if (isArray(children)) {
-			for (let i = 0; i < children.length; i++) {
-				const val = validateNodeTree(children[i]);
-
-				if (!val) {
-					return false;
-				}
-			}
-		} else {
-			const val = validateNodeTree(children);
-
-			if (!val) {
-				return false;
-			}
-		}
-	}
-	const v0 = node._v0;
-
-	if (!isNullOrUndef(v0)) {
-		if (isVNode(v0)) {
-			return validateNodeTree(v0);
-		}
-	}
-	const v1 = node._v1;
-
-	if (!isNullOrUndef(v1)) {
-		debugger;
-	}
-	return true;
-}
 
 function Comp1() {
 	return <span>Worked!</span>;

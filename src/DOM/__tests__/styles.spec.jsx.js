@@ -104,8 +104,8 @@ describe('CSS style properties (JSX)', () => {
 		render(<div style={ styles } />, container);
 
 		const stubStyle = container.firstChild.style;
-        expect(stubStyle.display).to.equal('none');
-        expect(stubStyle.color).to.equal('red');
+		expect(stubStyle.display).to.equal('none');
+		expect(stubStyle.color).to.equal('red');
 	});
 
 	it('Should change styles', () => {

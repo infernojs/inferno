@@ -1,6 +1,6 @@
 import { render } from './../rendering';
-import innerHTML from './../../../tools/innerHTML';
 import createElement from './../../core/createElement';
+import { innerHTML } from '../../tools/utils';
 
 describe('Select / select multiple (non-JSX)', () => {
 	let container;

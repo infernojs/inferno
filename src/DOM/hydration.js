@@ -174,7 +174,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 }
 
 function hydrateVElement(vElement, dom, lifecycle, context) {
-	const tag = node._tag;
+	const tag = vElement._tag;
 
 	debugger;
 
