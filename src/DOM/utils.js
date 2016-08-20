@@ -145,6 +145,8 @@ function formSelectValueFindOptions(dom, value, isMap) {
 		if (tagName === 'OPTION') {
 			if ((!isMap && child.value === value) || (isMap && value.get(child.value))) {
 				child.selected = true;
+			} else {
+				child.selected = false;
 			}
 		} else if (tagName === 'OPTGROUP') {
 			formSelectValueFindOptions(child, value, isMap);
@@ -161,6 +163,9 @@ export function formSelectValue(dom, value) {
 			// Map vs Object v using reduce here for perf?
 			value = value.reduce((o, v) => o.set(v, true), new Map());
 			isMap = true;
+		} else {
+			// convert to string
+			value = value + '';
 		}
 		formSelectValueFindOptions(dom, value, isMap);
 	}

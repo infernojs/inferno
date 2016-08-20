@@ -849,7 +849,7 @@ export function patchTemplateProps(propsToPatch, tag) {
 			const nextValue = nextVTemplate.read(pointer);
 
 			if (prop === 'value') {
-				formValue = lastValue;
+				formValue = nextValue;
 			}
 			patchProp(prop, lastValue, nextValue, dom);
 		}
