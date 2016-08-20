@@ -18,7 +18,7 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 
 - One of the fastest front-end frameworks for rendering UI in the DOM
 - Components have a similar API to React ES2015 components with `inferno-component`
-- Stateless components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
+- Stateless functional components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
 - Isomorphic/universal for easy server-side rendering with `inferno-server`
 
 ## Benchmarks
@@ -210,7 +210,7 @@ class MyComponent extends Component {
 
 This is the base class for Inferno Components when they're defined using ES6 classes.
 
-**Stateless component:**
+**Stateless functional component:**
 
 ```javascript
 import Inferno from 'inferno';
@@ -254,37 +254,37 @@ Please note: hooks are provided by `inferno-dom`;
 Inferno supports many of the basic events on DOM nodes, such as `onClick`, `onMouseOver` and `onTouchStart`. Furthermore, Inferno allows you to attach
 common hooks directly onto components and DOM nodes. Below is the table of all possible hooks available in `inferno-dom`.
 
-| Name                      | Triggered when                                                 | Arguments to callback              |
-| -----------               | --------------                                                 | -----------------------            |
-| `ref`                     | a DOM node has just been mounted / unmounted                   | `domNode` if mounted `null` if not |
-| `onComponentWillMount`    | a stateless component is about to mount                        | `domNode, props`                   |
-| `onComponentDidMount`     | a stateless component has mounted successfully                 | `domNode, props`                   |
-| `onComponentWillUnmount`  | a stateless component is about to be unmounted                 | `domNode, props`                   |
-| `onComponentShouldUpdate` | a stateless component has been triggered to updated            | `domNode, lastProps, nextProps`    |
-| `onComponentWillUpdate`   | a stateless component is about to perform an update            | `domNode, lastProps, nextProps`    |
-| `onComponentDidUpdate`    | a stateless component has performed an updated                 | `domNode, props`                   |
+| Name                      | Triggered when                                                          | Arguments to callback              |
+| -----------               | --------------                                                          | -----------------------            |
+| `ref`                     | a DOM node has just been mounted / unmounted                            | `domNode` if mounted `null` if not |
+| `onComponentWillMount`    | a stateless function component is about to mount                        | `domNode, props`                   |
+| `onComponentDidMount`     | a stateless function component has mounted successfully                 | `domNode, props`                   |
+| `onComponentWillUnmount`  | a stateless function component is about to be unmounted                 | `domNode, props`                   |
+| `onComponentShouldUpdate` | a stateless function component has been triggered to updated            | `domNode, lastProps, nextProps`    |
+| `onComponentWillUpdate`   | a stateless function component is about to perform an update            | `domNode, lastProps, nextProps`    |
+| `onComponentDidUpdate`    | a stateless function component has performed an updated                 | `domNode, props`                   |
 
 ### Using hooks
 
-It's simple to implicitly assign hooks to both DOM nodes and stateless components.
+It's simple to implicitly assign hooks to both DOM nodes and stateless functional components.
 Please note: stateful components (ES2015 classes) from `inferno-component` **do not** support hooks.
 
 ```javascript
 function createdCallback(domNode, props) {
-    // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
-	// [props] will only be passed for stateless components
+  // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
+	// [props] will only be passed for stateless functional components
 }
 
 InfernoDOM.render(<div onCreated={ createdCallback } />, document.body);
 
-function StatelessComponent({ props }) {
+function StatelessFunctionalComponent({ props }) {
 	return <div>Hello world</div>;
 }
 
-InfernoDOM.render(<StatelessComponent onComponentWillMount={ createdCallback } />, document.body);
+InfernoDOM.render(<StatelessFunctionalComponent onComponentWillMount={ createdCallback } />, document.body);
 ```
 
-Hooks provide powerful lifecycle events to stateless components, allowing you to build components without being forced to use ES2015 classes.
+Hooks provide powerful lifecycle events to stateless functional components, allowing you to build components without being forced to use ES2015 classes.
 
 ## Performance
 
@@ -322,7 +322,7 @@ Inferno wants to always deliver great performance and in order to do so, it has 
 ### The stateful ES2015 Component is located in its own package
  
 React's ES2015 component is referenced as `React.Component`. To reduce the bloat on the core of `Inferno`, we've extracted the ES2015 component
-into its own package, specifically `inferno-component` rather than `Inferno.Component`. Many users are opting to use stateless components with
+into its own package, specifically `inferno-component` rather than `Inferno.Component`. Many users are opting to use stateless functional components with
 Inferno's `hooks` to give similar functionality as that provided by ES2015 components.
 
 ## Contributing
