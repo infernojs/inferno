@@ -279,6 +279,16 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 		return false;
 	} else if (prop === 'style') {
 		patchStyle(lastValue, nextValue, dom);
+	} else if (prop === 'defaultChecked') {
+		if (isNull(lastValue)) {
+			dom.addAttribute('checked');
+		}
+		return false;
+	} else if (prop === 'defaultValue') {
+		if (isNull(lastValue)) {
+			dom.setAttribute('value', nextValue);
+		}
+		return false;
 	} else if (strictProps[prop]) {
 		dom[prop] = nextValue === null ? '' : nextValue;
 	} else if (booleanProps[prop]) {
