@@ -3,7 +3,8 @@ import {
 	createVComponent,
 	createVFragment,
 	createVElement,
-	createVText
+	createVText,
+	cloneVNode
 } from '../../../src/core/shapes';
 import { ChildrenTypes } from '../../../src/core/ChildrenTypes';
 
@@ -13,5 +14,6 @@ export default {
 	createVElement,
 	createVText,
 	createVFragment,
-	ChildrenTypes
+	ChildrenTypes,
+	cloneVNode
 };

@@ -189,6 +189,10 @@ class TemplaceReducers {
 	}
 }
 
+export function cloneVNode(vNodeToClone) {
+
+}
+
 export function createVTemplate(schema, renderer) {
 	const argCount = schema.length;
 	const parameters = [];

@@ -235,39 +235,22 @@ describe('Select / select multiple (non-JSX)', () => {
 		});
 
 		render(template('foo'), container);
-
 		expect(container.firstChild.value).to.eql('foo');
-
 		render(template('bar'), container);
-
 		expect(container.firstChild.value).to.eql('bar');
-
 		render(template('bar'), container);
-
 		expect(container.firstChild.value).to.eql('bar');
-
 		render(template('foo'), container);
-
 		expect(container.firstChild.value).to.eql('foo');
-
 		render(template(null), container);
-
 		expect(container.firstChild.value).to.eql('');
-
 		render(template(undefined), container);
-
 		expect(container.firstChild.value).to.eql('');
-
 		render(template('bar'), container);
-
 		expect(container.firstChild.value).to.eql('bar');
-
 		render(template([]), container);
-
 		expect(container.firstChild.value).to.eql('');
-
 		render(template({}), container);
-
 		expect(container.firstChild.value).to.eql('[object Object]');
 	});
 
@@ -289,13 +272,9 @@ describe('Select / select multiple (non-JSX)', () => {
 		render(template(['a', 'b', 'c']), container);
 
 		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
-		
 		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
-
 		expect(container.firstChild.children[ 2 ].selected).to.eql(true);
-		
 		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
-		
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -323,13 +302,9 @@ describe('Select / select multiple (non-JSX)', () => {
 		render(template(), container);
 
 		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
-		
 		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
-
 		expect(container.firstChild.children[ 2 ].selected).to.eql(true);
-		
 		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
-		
 		expect(
 			container.innerHTML
 		).to.equal(
