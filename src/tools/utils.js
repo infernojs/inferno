@@ -1,4 +1,4 @@
-import { isStringOrNumber, isNullOrUndef } from '../core/utils';
+import { isStringOrNumber, isNullOrUndef, isArray } from '../core/utils';
 import { isVNode } from '../core/shapes';
 
 const comparer = document.createElement('div');

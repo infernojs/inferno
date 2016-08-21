@@ -2,6 +2,7 @@ import {
 	isArray,
 	isNull,
 	isStringOrNumber,
+	isString,
 	isNullOrUndef,
 	isInvalid,
 	isFunction,
@@ -176,114 +177,44 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 function hydrateVElement(vElement, dom, lifecycle, context) {
 	const tag = vElement._tag;
 
-	debugger;
+	if (!isString(tag)) {
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('expects VElement to have a string as the tag name');
+		}
+		throwError();
+	}
+	const children = vElement._children;
+	const props = vElement._props;
+	const ref = vElement._ref;
 
-	// if (isFunction(tag)) {
-	// 	node.dom = domNode;
-	// 	hydrateComponent(node, tag, node._props || {}, domNode, parentDom, lifecycle, context);
-	// } else {
-	// 	if (
-	// 		domNode.nodeType !== 1 ||
-	// 		tag !== domNode.tagName.toLowerCase()
-	// 	) {
-	// 		// TODO remake node
-	// 	} else {
-	// 		node.dom = domNode;
-	// 		const hooks = node.hooks;
-
-	// 		const children = node.children;
-
-	// 		if (!isNullOrUndef(children)) {
-	// 			if (isStringOrNumber(children)) {
-	// 				if (domNode.textContent !== children) {
-	// 					domNode.textContent = children;
-	// 				}
-	// 			} else {
-	// 				const childNodes = getChildNodesWithoutComments(domNode);
-	// 				const counter = { i: 0 };
-	// 				let rebuild = false;
-
-	// 				if (isArray(children)) {
-	// 					for (let i = 0; i < children.length; i++) {
-	// 						rebuild = hydrateChild(normaliseChild(children, i), childNodes, counter, domNode, lifecycle, context);
-
-	// 						if (rebuild) {
-	// 							break;
-	// 						}
-	// 					}
-	// 				} else {
-	// 					if (childNodes.length === 1) {
-	// 						rebuild = hydrateChild(children, childNodes, counter, domNode, lifecycle, context);
-	// 					} else {
-	// 						rebuild = true;
-	// 					}
-	// 				}
-
-	// 				if (rebuild) {
-	// 					// TODO scrap children and rebuild again
-	// 				}
-	// 			}
-	// 		}
-	// 		const className = node.className;
-	// 		const style = node.style;
-
-	// 		if (!isNullOrUndef(className)) {
-	// 			domNode.className = className;
-	// 		}
-	// 		if (!isNullOrUndef(style)) {
-	// 			patchStyle(null, style, domNode);
-	// 		}
-	// 		if (bp && bp.hasAttrs === true) {
-	// 			mountBlueprintAttrs(node, bp, domNode);
-	// 		} else {
-	// 			const attrs = node.attrs;
-
-	// 			if (!isNullOrUndef(attrs)) {
-	// 				handleSelects(node);
-	// 				mountAttributes(node, attrs, Object.keys(attrs), domNode);
-	// 			}
-	// 		}
-	// 		if (bp && bp.hasEvents === true) {
-	// 			mountBlueprintEvents(node, bp, domNode);
-	// 		} else {
-	// 			const events = node.events;
-
-	// 			if (!isNullOrUndef(events)) {
-	// 				// mountEvents(events, Object.keys(events), domNode);
-	// 			}
-	// 		}
-	// 	}
-	// }
+	vElement._dom = dom;
+	if (children) {
+		hydrateChildren(vElement._childrenType, children, dom, lifecycle, context);
+	}
 }
-
-// const childNodes = normaliseChildNodes(dom);
 
 function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
 	for (let i = 0; i < children.length; i++) {
-		// debugger;
+		debugger;
 	}
 }
 
 function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
 	if (isArray(children)) {
-		// debugger;
-	} else if (isStringOrNumber(children)) {
-		// debugger;
-	} else if (!isInvalid(children)) {
+		debugger;
+	} else if (!isInvalid(children) && !isStringOrNumber(children)) {
 		hydrate(children, dom.firstChild, lifecycle, context);
 	}
 }
 
 function hydrateChildren(childrenType, children, dom, lifecycle, context) {
-	if (isTextChildrenType(childrenType)) {
-		// debugger;
-	} else if (isNodeChildrenType(childrenType)) {
-		// debugger;
+	if (isNodeChildrenType(childrenType)) {
+		hydrate(children, dom, lifecycle, context);
 	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
 		hydrateArrayChildrenWithType(childrem, dom, lifecycle, context);
 	} else if (isUnknownChildrenType(childrenType)) {
 		hydrateChildrenWithUnknownType(children, dom);
-	} else {
+	} else if (!isTextChildrenType(childrenType)) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('Bad childrenType value specified when attempting to hydrateChildren.');
 		}
@@ -345,6 +276,6 @@ export function hydrateVariableAsExpression(pointer) {
 
 export function hydrateVariableAsText() {
 	return function hydrateVariableAsText() {
-		// debugger;
+		debugger;
 	};
 }
