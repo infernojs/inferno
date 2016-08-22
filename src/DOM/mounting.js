@@ -368,17 +368,26 @@ export function mountRefFromTemplate(ref) {
 	};
 }
 
-export function mountSpreadPropsFromTemplate(pointer) {
-	return function mountSpreadPropsFromTemplate(vTemplate, dom) {
+export function mountSpreadPropsFromTemplate(pointer, templateIsSVG) {
+	return function mountSpreadPropsFromTemplate(vTemplate, dom, lifecycle, context, isSVG) {
 		const props = vTemplate.read(pointer);
 
 		for (let prop in props) {
 			const value = props[prop];
 
 			if (prop === 'key') {
-				// debugger;
+				vTemplate._key = value;
 			} else if (prop === 'ref') {
-				// debugger;
+				if (isFunction(value)) {
+					lifecycle.addListener(() => value(dom));
+				} else {
+					if (process.env.NODE_ENV !== 'production') {
+						throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+					}
+					throwError();
+				}
+			} else if (prop === 'children') {
+				mountChildrenWithUnknownType(value, dom, lifecycle, context, isSVG || templateIsSVG);
 			} else {
 				patchProp(prop, null, value, dom);
 			}

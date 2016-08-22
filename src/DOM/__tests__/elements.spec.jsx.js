@@ -696,7 +696,22 @@ describe('Elements (JSX)', () => {
 		render((
 			<div dangerouslySetInnerHTML={ { __html: 'Hello world!' } } />
 		), container);
-		expect(container.innerHTML).to.not.equal('Hello world!');
+		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
+	});
+
+	it('handles JSX spread props (including children)', () => {
+		const foo = {
+			children: 'Hello world!',
+			className: 'lol'
+		};
+		const bar = {
+			id: 'test'
+		};
+
+		render((
+			<div { ...foo } { ...bar } />
+		), container);
+		expect(container.innerHTML).to.equal('<div class="lol" id="test">Hello world!</div>');
 	});
 
 	it('mixing JSX with non-JSX', () => {

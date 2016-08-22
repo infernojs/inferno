@@ -42,6 +42,10 @@ class VElement {
 	}
 	props($props) {
 		this._props = $props;
+		if (!isUndefined($props.children)) {
+			delete $props.children;
+			this._children = $props.children;
+		}
 		return this;
 	}
 	ref($ref) {
@@ -68,7 +72,6 @@ class VElement {
 	}
 	events() {
 		initProps(this);
-		debugger;
 		return this;
 	}
 }

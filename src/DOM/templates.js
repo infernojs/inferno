@@ -201,7 +201,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 
 			if (!isNull(props)) {
 				if (isVariable(props)) {
-					mounters.push(mountSpreadPropsFromTemplate(props._pointer));
+					mounters.push(mountSpreadPropsFromTemplate(props._pointer, isSVG));
 				} else {
 					const propsToMount = [];
 					const propsToPatch = [];
@@ -429,8 +429,12 @@ function combineUnmountTo5(nodeIndex, unomunt1, unomunt2, unomunt3, unomunt4, un
 	};
 }
 
-function combineUnmountX() {
-
+function combineUnmountX(nodeIndex, unmounters) {
+	return function combineUnmountX(vTemplate, lifecycle) {
+		for (let i = 0; i < unmounters.length; i++) {
+			unmounters[i](vTemplate, lifecycle);
+		}
+	};
 }
 
 function combineHydrate(nodeIndex, path, hydraters) {
