@@ -170,6 +170,10 @@ VElement.prototype.key = function key ($key) {
 };
 VElement.prototype.props = function props ($props) {
 	this._props = $props;
+	if (!isUndefined($props.children)) {
+		delete $props.children;
+		this._children = $props.children;
+	}
 	return this;
 };
 VElement.prototype.ref = function ref ($ref) {
@@ -196,7 +200,6 @@ VElement.prototype.style = function style ($style) {
 };
 VElement.prototype.events = function events () {
 	initProps(this);
-	debugger;
 	return this;
 };
 
@@ -528,6 +531,17 @@ function patchProp(prop, lastValue, nextValue, dom) {
 				return false;
 			} else if (isAttrAnEvent(prop)) {
 				dom[prop.toLowerCase()] = nextValue;
+			} else if (prop === 'dangerouslySetInnerHTML') {
+				var lastHtml = lastValue && lastValue.__html;
+				var nextHtml = nextValue && nextValue.__html;
+
+				if (isNullOrUndef(nextHtml)) {
+					if ("production" !== 'production') {}
+					throwError();
+				}
+				if (lastHtml !== nextHtml) {
+					dom.innerHTML = nextHtml;
+				}
 			} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
 				var ns = namespaces[prop];
 

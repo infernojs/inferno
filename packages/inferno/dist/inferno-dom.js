@@ -460,6 +460,17 @@ function patchProp(prop, lastValue, nextValue, dom) {
 				return false;
 			} else if (isAttrAnEvent(prop)) {
 				dom[prop.toLowerCase()] = nextValue;
+			} else if (prop === 'dangerouslySetInnerHTML') {
+				var lastHtml = lastValue && lastValue.__html;
+				var nextHtml = nextValue && nextValue.__html;
+
+				if (isNullOrUndef(nextHtml)) {
+					if ("production" !== 'production') {}
+					throwError();
+				}
+				if (lastHtml !== nextHtml) {
+					dom.innerHTML = nextHtml;
+				}
 			} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
 				var ns = namespaces[prop];
 
@@ -1353,7 +1364,7 @@ function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChild
 
 			if (!isNull(props)) {
 				if (isVariable(props)) {
-					mounters.push(mountSpreadPropsFromTemplate(props._pointer));
+					mounters.push(mountSpreadPropsFromTemplate(props._pointer, isSVG));
 				} else {
 					var propsToMount = [];
 					var propsToPatch = [];
@@ -1598,9 +1609,6 @@ function combineHydrateTo5(nodeIndex, path, hydrate1, hydrate2, hydrate3, hydrat
 			vTemplate.write(nodeIndex, dom);
 		}
 		if (hydrate1) {
-			if (!dom) {
-				dom = getDomFromTemplatePath(rootDom, path);
-			}
 			hydrate1(vTemplate, dom, lifecycle, context);
 			if (hydrate2) {
 				hydrate2(vTemplate, dom, lifecycle, context);
@@ -1618,9 +1626,21 @@ function combineHydrateTo5(nodeIndex, path, hydrate1, hydrate2, hydrate3, hydrat
 	};
 }
 
-function combineHydrateX() {
+function combineHydrateX(nodeIndex, unmounters) {
 	return function combineHydrateX() {
-		debugger;
+		var write = (nodeIndex !== NULL_INDEX);
+
+		return function combineHydrateX(vTemplate, rootDom, lifecycle, context) {
+			var dom;
+
+			if (write) {
+				dom = getDomFromTemplatePath(rootDom, path);
+				vTemplate.write(nodeIndex, dom);
+			}
+			for (var i = 0; i < unmounters.length; i++) {
+				unmounters[i](vTemplate, dom, lifecycle, context);
+			}
+		};
 	};
 }
 
@@ -2321,21 +2341,30 @@ function mountRefFromTemplate(ref) {
 	};
 }
 
-function mountSpreadPropsFromTemplate(pointer) {
-	return function mountSpreadPropsFromTemplate(vTemplate, dom) {
+function mountSpreadPropsFromTemplate(pointer, templateIsSVG) {
+	return function mountSpreadPropsFromTemplate(vTemplate, dom, lifecycle, context, isSVG) {
 		var props = vTemplate.read(pointer);
 
-		for (var prop in props) {
+		var loop = function ( prop ) {
 			var value = props[prop];
 
 			if (prop === 'key') {
-				// debugger;
+				vTemplate._key = value;
 			} else if (prop === 'ref') {
-				// debugger;
+				if (isFunction(value)) {
+					lifecycle.addListener(function () { return value(dom); });
+				} else {
+					if ("production" !== 'production') {}
+					throwError();
+				}
+			} else if (prop === 'children') {
+				mountChildrenWithUnknownType(value, dom, lifecycle, context, isSVG || templateIsSVG);
 			} else {
 				patchProp(prop, null, value, dom);
 			}
-		}
+		};
+
+		for (var prop in props) loop( prop );
 	};
 }
 

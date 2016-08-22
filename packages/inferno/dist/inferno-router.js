@@ -100,6 +100,10 @@ VElement.prototype.key = function key ($key) {
 };
 VElement.prototype.props = function props ($props) {
 	this._props = $props;
+	if (!isUndefined($props.children)) {
+		delete $props.children;
+		this._children = $props.children;
+	}
 	return this;
 };
 VElement.prototype.ref = function ref ($ref) {
@@ -126,7 +130,6 @@ VElement.prototype.style = function style ($style) {
 };
 VElement.prototype.events = function events () {
 	initProps(this);
-	debugger;
 	return this;
 };
 

@@ -456,9 +456,6 @@ function combineHydrateTo5(nodeIndex, path, hydrate1, hydrate2, hydrate3, hydrat
 			vTemplate.write(nodeIndex, dom);
 		}
 		if (hydrate1) {
-			if (!dom) {
-				dom = getDomFromTemplatePath(rootDom, path);
-			}
 			hydrate1(vTemplate, dom, lifecycle, context);
 			if (hydrate2) {
 				hydrate2(vTemplate, dom, lifecycle, context);
@@ -476,9 +473,21 @@ function combineHydrateTo5(nodeIndex, path, hydrate1, hydrate2, hydrate3, hydrat
 	};
 }
 
-function combineHydrateX() {
+function combineHydrateX(nodeIndex, unmounters) {
 	return function combineHydrateX() {
-		debugger;
+		const write = (nodeIndex !== NULL_INDEX);
+
+		return function combineHydrateX(vTemplate, rootDom, lifecycle, context) {
+			let dom;
+
+			if (write) {
+				dom = getDomFromTemplatePath(rootDom, path);
+				vTemplate.write(nodeIndex, dom);
+			}
+			for (let i = 0; i < unmounters.length; i++) {
+				unmounters[i](vTemplate, dom, lifecycle, context);
+			}
+		};
 	};
 }
 
