@@ -64,7 +64,7 @@
     "rollup-plugin-uglify": "^1.0.1",
     "sinon": "2.0.0-pre",
     "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-server": "^1.15.0"
   },
   "files": [
     "src"

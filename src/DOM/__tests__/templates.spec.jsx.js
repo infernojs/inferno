@@ -169,4 +169,38 @@ describe('Templates', () => {
 			render(<Com />, container);
 		});
 	});
+
+	describe('Spread operator and templates', () => {
+		it('Should be able to update property', () => {
+			class A extends Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						value: null
+					}
+				}
+
+				isDisabled() {
+					return this.props.disabled;
+				}
+
+				render() {
+					return (
+						<div>
+							<input disabled={this.isDisabled()} value={this.state.value} {...this.props.args} />
+						</div>
+					)
+				}
+			}
+
+			render(<A disabled={true} />, container);
+			let input = container.querySelector('input');
+			expect(input.disabled).to.equal(true);
+
+			render(<A disabled={false} />, container);
+			input = container.querySelector('input');
+			expect(input.disabled).to.equal(false);
+		});
+	});
 });
