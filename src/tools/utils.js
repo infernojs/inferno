@@ -38,10 +38,10 @@ export function validateNodeTree(node) {
 	if (isStringOrNumber(node)) {
 		return true;
 	}
-	if (!node._dom) {
+	if (!node.dom) {
 		return false;
 	}
-	const children = node._children;
+	const children = node.children;
 
 	if (!isNullOrUndef(children)) {
 		if (isArray(children)) {

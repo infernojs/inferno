@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import Component from './../../component/es2015';
-import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
+import { createVTemplateFactory as createVTemplate, createVElement, createVComponent } from './../../core/shapes';
 import { createTemplateReducers } from './../../DOM/templates';
 
 const Inferno = {

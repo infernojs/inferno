@@ -23,7 +23,7 @@ function isArray(obj) {
 }
 
 function isStatefulComponent(o) {
-	return isTrue(o._isStateful);
+	return isTrue(o.isStateful);
 }
 
 function isStringOrNumber(obj) {
@@ -148,8 +148,8 @@ function isVoidElement(str) {
 }
 
 function renderComponentToString(vComponent, isRoot, context) {
-	var Component = vComponent._component;
-	var props = vComponent._props;
+	var Component = vComponent.component;
+	var props = vComponent.props;
 
 	if (isStatefulComponent(vComponent)) {
 		var instance = new Component(props);
@@ -235,9 +235,9 @@ function renderStyleToString(style) {
 }
 
 function renderVElementToString(vElement, isRoot, context) {
-	var tag = vElement._tag;
+	var tag = vElement.tag;
 	var outputProps = [];
-	var props = vElement._props;
+	var props = vElement.props;
 	var propsKeys = (props && Object.keys(props)) || [];
 	var html = '';
 
@@ -265,7 +265,7 @@ function renderVElementToString(vElement, isRoot, context) {
 	if (isVoidElement(tag)) {
 		return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">");
 	} else {
-		return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren(vElement._children, context)) + "</" + tag + ">");
+		return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren(vElement.children, context)) + "</" + tag + ">");
 	}
 }
 
@@ -284,7 +284,7 @@ function getTemplateValues(vTemplate) {
 }
 
 function renderVTemplateToString(vTemplate, isRoot, context) {
-	return renderInputToString(vTemplate._tr._schema.apply(null, getTemplateValues(vTemplate)), context, isRoot);
+	return renderInputToString(vTemplate.tr._schema.apply(null, getTemplateValues(vTemplate)), context, isRoot);
 }
 
 function renderInputToString(input, context, isRoot) {
@@ -392,8 +392,8 @@ var RenderStream = (function (Readable) {
 	RenderStream.prototype.renderComponent = function renderComponent (vComponent, isRoot, context) {
 		var this$1 = this;
 
-		var Component = vComponent._component;
-		var props = vComponent._props;
+		var Component = vComponent.component;
+		var props = vComponent.props;
 
 		if (!isStatefulComponent(vComponent)) {
 			return this.renderNode(Component(props), context, isRoot);
@@ -469,9 +469,9 @@ var RenderStream = (function (Readable) {
 	RenderStream.prototype.renderNative = function renderNative (vElement, isRoot, context) {
 		var this$1 = this;
 
-		var tag = vElement._tag;
+		var tag = vElement.tag;
 		var outputProps = [];
-		var props = vElement._props;
+		var props = vElement.props;
 
 		var outputAttrs = renderAttributes(props);
 
@@ -505,7 +505,7 @@ var RenderStream = (function (Readable) {
 			this.push(("</" + tag + ">"));
 			return;
 		}
-		return Promise.resolve(this.renderChildren(vElement._children, context)).then(function (){
+		return Promise.resolve(this.renderChildren(vElement.children, context)).then(function (){
 			this$1.push(("</" + tag + ">"));
 		});
 	};

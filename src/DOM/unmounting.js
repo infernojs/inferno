@@ -9,7 +9,11 @@ import {
 	isVText,
 	isVPlaceholder
 } from '../core/shapes';
-import { poolVTemplate, recyclingEnabled } from './templates';
+import {
+	poolVTemplate,
+	recyclingEnabled,
+	readFromVTemplate
+} from './templates';
 
 export function unmount(input, parentDom, lifecycle) {
 	if (!isInvalid(input)) {
@@ -31,19 +35,19 @@ export function unmount(input, parentDom, lifecycle) {
 
 function unmountVPlaceholder(vPlaceholder, parentDom) {
 	if (parentDom) {
-		removeChild(parentDom, vPlaceholder._dom);
+		removeChild(parentDom, vPlaceholder.dom);
 	}
 }
 
 function unmountVText(vText, parentDom) {
 	if (parentDom) {
-		removeChild(parentDom, vText._dom);
+		removeChild(parentDom, vText.dom);
 	}
 }
 
 function unmountVTemplate(vTemplate, parentDom, lifecycle) {
-	const dom = vTemplate._dom;
-	const templateReducers = vTemplate._tr;
+	const dom = vTemplate.dom;
+	const templateReducers = vTemplate.tr;
 	const unmount = templateReducers.unmount;
 
 	if (!isNull(unmount)) {
@@ -58,9 +62,9 @@ function unmountVTemplate(vTemplate, parentDom, lifecycle) {
 }
 
 export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle) {
-	const children = vFragment._children;
+	const children = vFragment.children;
 	const childrenLength = children.length;
-	const pointer = vFragment._pointer;
+	const pointer = vFragment.pointer;
 
 	if (childrenLength > 0) {
 		for (let i = 0; i < childrenLength; i++) {
@@ -79,13 +83,13 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle)
 }
 
 export function unmountVComponent(vComponent, parentDom, lifecycle) {
-	const instance = vComponent._instance;
+	const instance = vComponent.instance;
 	let instanceHooks = null;
 	let instanceChildren = null;
 
 	if (!isNullOrUndef(instance)) {
-		instanceHooks = instance._hooks;
-		instanceChildren = instance._children;
+		instanceHooks = instance.hooks;
+		instanceChildren = instance.children;
 
 		if (instance.render !== undefined) {
 			instance.componentWillUnmount();
@@ -96,28 +100,28 @@ export function unmountVComponent(vComponent, parentDom, lifecycle) {
 			unmount(instance, null, lifecycle);
 		}
 	}
-	const hooks = vComponent._hooks || instanceHooks;
+	const hooks = vComponent.hooks || instanceHooks;
 
 	if (!isNullOrUndef(hooks)) {
 		if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-			hooks.onComponentWillUnmount(vComponent._dom, hooks);
+			hooks.onComponentWillUnmount(vComponent.dom, hooks);
 		}
 	}
 	if (parentDom) {
-		removeChild(parentDom, vComponent._dom);
+		removeChild(parentDom, vComponent.dom);
 	}
 }
 
 export function unmountVElement(vElement, parentDom, lifecycle) {
-	const hooks = vElement._hooks;
-	const dom = vElement._dom;
+	const hooks = vElement.hooks;
+	const dom = vElement.dom;
 
 	if (!isNullOrUndef(hooks)) {
 		if (!isNullOrUndef(hooks.onWillDetach)) {
-			hooks.onWillDetach(vElement._dom);
+			hooks.onWillDetach(vElement.dom);
 		}
 	}
-	const children = vElement._children;
+	const children = vElement.children;
 
 	if (!isNullOrUndef(children)) {
 		if (isArray(children)) {
@@ -146,13 +150,13 @@ function unmountTemplateValue(value, lifecycle) {
 // TODO we can probably combine the below two functions, depends on if we can optimise with childrenType?
 export function unmountVariableAsExpression(pointer) {
 	return function unmountVariableAsExpression(vTemplate, lifecycle) {
-		unmountTemplateValue(vTemplate.read(pointer), lifecycle);
+		unmountTemplateValue(readFromVTemplate(vTemplate, pointer), lifecycle);
 	};
 }
 
 export function unmountVariableAsChildren(pointer, childrenType) {
 	return function unmountVariableAsChildren(vTemplate, lifecycle) {
-		unmountTemplateValue(vTemplate.read(pointer), lifecycle);
+		unmountTemplateValue(readFromVTemplate(vTemplate, pointer), lifecycle);
 	};
 }
 

@@ -46,13 +46,13 @@ function applyState(component, force, callback) {
 			nextInput = createVPlaceholder();
 		}
 		const lastInput = component._lastInput;
-		const parentDom = lastInput._dom.parentNode;
+		const parentDom = lastInput.dom.parentNode;
 		const activeNode = getActiveNode();
 		const subLifecycle = new Lifecycle();
 
 		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
 		component._lastInput = nextInput;
-		component._vComponent._dom = nextInput._dom;
+		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
 		component.componentDidUpdate(props, prevState);
 		subLifecycle.trigger();

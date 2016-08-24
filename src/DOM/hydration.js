@@ -30,6 +30,7 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/ChildrenTypes';
+import { readFromVTemplate } from './templates';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];
@@ -109,12 +110,12 @@ export function normaliseChildNodes(dom) {
 }
 
 function hydrateVComponent(vComponent, dom, lifecycle, context) {
-	const Component = vComponent._component;
-	const props = vComponent._props;
-	const hooks = vComponent._hooks;
-	const ref = vComponent._ref;
+	const Component = vComponent.component;
+	const props = vComponent.props;
+	const hooks = vComponent.hooks;
+	const ref = vComponent.ref;
 
-	vComponent._dom = dom;
+	vComponent.dom = dom;
 	if (isStatefulComponent(vComponent)) {
 		const instance = new Component(props, context);
 
@@ -151,7 +152,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 			lifecycle.addListener(() => instance.componentDidMount());
 		}
 		componentToDOMNodeMap.set(instance, dom);
-		vComponent._instance = instance;
+		vComponent.instance = instance;
 	} else {
 		if (!isNullOrUndef(hooks)) {
 			if (!isNullOrUndef(hooks.onComponentWillMount)) {
@@ -175,7 +176,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 }
 
 function hydrateVElement(vElement, dom, lifecycle, context) {
-	const tag = vElement._tag;
+	const tag = vElement.tag;
 
 	if (!isString(tag)) {
 		if (process.env.NODE_ENV !== 'production') {
@@ -183,13 +184,13 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
 		}
 		throwError();
 	}
-	const children = vElement._children;
-	const props = vElement._props;
-	const ref = vElement._ref;
+	const children = vElement.children;
+	const props = vElement.props;
+	const ref = vElement.ref;
 
-	vElement._dom = dom;
+	vElement.dom = dom;
 	if (children) {
-		hydrateChildren(vElement._childrenType, children, dom, lifecycle, context);
+		hydrateChildren(vElement.childrenType, children, dom, lifecycle, context);
 	}
 }
 
@@ -223,7 +224,7 @@ function hydrateChildren(childrenType, children, dom, lifecycle, context) {
 }
 
 function hydrateVTemplate(vTemplate, dom, lifecycle, context) {
-	const templateReducers = vTemplate._tr;
+	const templateReducers = vTemplate.tr;
 
 	templateReducers.hydrate(vTemplate, dom, lifecycle, context);
 }
@@ -258,13 +259,13 @@ export default function hydrateRoot(input, parentDom, lifecycle) {
 
 export function hydrateVariableAsChildren(pointer, childrenType) {
 	return function hydrateVariableAsChildren(vTemplate, dom, lifecycle, context) {
-		hydrateChildren(childrenType, vTemplate.read(pointer), dom, lifecycle, context);
+		hydrateChildren(childrenType, readFromVTemplate(vTemplate, pointer), dom, lifecycle, context);
 	};
 }
 
 export function hydrateVariableAsExpression(pointer) {
 	return function hydrateVariableAsExpression(vTemplate, dom, lifecycle, context) {
-		let input = vTemplate.read(pointer);
+		let input = readFromVTemplate(vTemplate, pointer);
 
 		if (isNullOrUndef(input) || !isVNode(input)) {
 			input = normalise(input);

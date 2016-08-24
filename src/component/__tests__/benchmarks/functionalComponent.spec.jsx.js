@@ -1,6 +1,6 @@
 import { render } from './../../../DOM/rendering';
 import {
-	createVTemplate,
+	createVTemplateFactory as createVTemplate,
 	createVElement,
 	createVComponent
 } from './../../../core/shapes';

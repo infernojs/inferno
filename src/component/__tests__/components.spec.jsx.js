@@ -1,7 +1,7 @@
 import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
 import createElement from './../../core/createElement';
-import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
+import { createVTemplateFactory as createVTemplate, createVElement, createVComponent } from './../../core/shapes';
 import { createTemplateReducers } from './../../DOM/templates';
 import { innerHTML } from '../../tools/utils';
 

@@ -85,34 +85,34 @@ var NodeTypes = {
 
 var VComponent = function VComponent($component) {
 	this._type = NodeTypes.COMPONENT;
-	this._dom = null;
+	this.dom = null;
 	this._component = $component;
-	this._props = {};
-	this._hooks = null;
-	this._key = null;
-	this._ref = null;
-	this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
+	this.props = {};
+	this.hooks = null;
+	this.key = null;
+	this.ref = null;
+	this.isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
 };
 VComponent.prototype.key = function key ($key) {
-	this._key = $key;
+	this.key = $key;
 	return this;
 };
 VComponent.prototype.props = function props ($props) {
-	this._props = $props;
+	this.props = $props;
 	return this;
 };
 VComponent.prototype.hooks = function hooks ($hooks) {
-	this._hooks = $hooks;
+	this.hooks = $hooks;
 	return this;
 };
 VComponent.prototype.ref = function ref ($ref) {
-	this._ref = $ref;
+	this.ref = $ref;
 	return this;
 };
 
 var VPlaceholder = function VPlaceholder() {
 	this._type = NodeTypes.PLACEHOLDER;
-	this._dom = null;
+	this.dom = null;
 };
 
 function createVComponent(component) {
@@ -167,13 +167,13 @@ function applyState(component, force, callback) {
 			nextInput = createVPlaceholder();
 		}
 		var lastInput = component._lastInput;
-		var parentDom = lastInput._dom.parentNode;
+		var parentDom = lastInput.dom.parentNode;
 		var activeNode = getActiveNode();
 		var subLifecycle = new Lifecycle();
 
 		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
 		component._lastInput = nextInput;
-		component._vComponent._dom = nextInput._dom;
+		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
 		component.componentDidUpdate(props, prevState);
 		subLifecycle.trigger();

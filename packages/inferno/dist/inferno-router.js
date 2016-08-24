@@ -75,39 +75,39 @@ var NodeTypes = {
 
 // added $ before all argument names to stop a silly Safari bug
 function initProps(o) {
-	if (!o._props) {
-		o._props = {};
+	if (!o.props) {
+		o.props = {};
 	}
 }
 
 var VElement = function VElement($tag) {
 	this._type = NodeTypes.ELEMENT;
-	this._dom = null;
-	this._tag = $tag;
-	this._children = null;
-	this._key = null;
-	this._props = null;
-	this._ref = null;
-	this._childrenType = ChildrenTypes.UNKNOWN;
+	this.dom = null;
+	this.tag = $tag;
+	this.children = null;
+	this.key = null;
+	this.props = null;
+	this.ref = null;
+	this.childrenType = ChildrenTypes.UNKNOWN;
 };
 VElement.prototype.children = function children ($children) {
-	this._children = $children;
+	this.children = $children;
 	return this;
 };
 VElement.prototype.key = function key ($key) {
-	this._key = $key;
+	this.key = $key;
 	return this;
 };
 VElement.prototype.props = function props ($props) {
-	this._props = $props;
+	this.props = $props;
 	if (!isUndefined($props.children)) {
 		delete $props.children;
-		this._children = $props.children;
+		this.children = $props.children;
 	}
 	return this;
 };
 VElement.prototype.ref = function ref ($ref) {
-	this._ref = $ref;
+	this.ref = $ref;
 	return this;
 };
 VElement.prototype.events = function events ($events) {
@@ -115,17 +115,17 @@ VElement.prototype.events = function events ($events) {
 	return this;
 };
 VElement.prototype.childrenType = function childrenType ($childrenType) {
-	this._childrenType = $childrenType;
+	this.childrenType = $childrenType;
 	return this;
 };
 VElement.prototype.className = function className ($className) {
 	initProps(this);
-	this._props.className = $className;
+	this.props.className = $className;
 	return this;
 };
 VElement.prototype.style = function style ($style) {
 	initProps(this);
-	this._props.style = $style;
+	this.props.style = $style;
 	return this;
 };
 VElement.prototype.events = function events () {
@@ -135,34 +135,34 @@ VElement.prototype.events = function events () {
 
 var VComponent = function VComponent($component) {
 	this._type = NodeTypes.COMPONENT;
-	this._dom = null;
+	this.dom = null;
 	this._component = $component;
-	this._props = {};
-	this._hooks = null;
-	this._key = null;
-	this._ref = null;
-	this._isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
+	this.props = {};
+	this.hooks = null;
+	this.key = null;
+	this.ref = null;
+	this.isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
 };
 VComponent.prototype.key = function key ($key) {
-	this._key = $key;
+	this.key = $key;
 	return this;
 };
 VComponent.prototype.props = function props ($props) {
-	this._props = $props;
+	this.props = $props;
 	return this;
 };
 VComponent.prototype.hooks = function hooks ($hooks) {
-	this._hooks = $hooks;
+	this.hooks = $hooks;
 	return this;
 };
 VComponent.prototype.ref = function ref ($ref) {
-	this._ref = $ref;
+	this.ref = $ref;
 	return this;
 };
 
 var VPlaceholder = function VPlaceholder() {
 	this._type = NodeTypes.PLACEHOLDER;
-	this._dom = null;
+	this.dom = null;
 };
 
 function createVComponent(component) {
@@ -235,13 +235,13 @@ function applyState(component, force, callback) {
 			nextInput = createVPlaceholder();
 		}
 		var lastInput = component._lastInput;
-		var parentDom = lastInput._dom.parentNode;
+		var parentDom = lastInput.dom.parentNode;
 		var activeNode = getActiveNode();
 		var subLifecycle = new Lifecycle();
 
 		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
 		component._lastInput = nextInput;
-		component._vComponent._dom = nextInput._dom;
+		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
 		component.componentDidUpdate(props, prevState);
 		subLifecycle.trigger();
@@ -495,8 +495,8 @@ function exec(url, route, opts) {
 }
 
 function pathRankSort(a, b) {
-	var aAttr = a._props || EMPTY,
-		bAttr = b._props || EMPTY;
+	var aAttr = a.props || EMPTY,
+		bAttr = b.props || EMPTY;
 	var diff = rank(bAttr.path) - rank(aAttr.path);
 	return diff || (bAttr.path.length - aAttr.path.length);
 }
@@ -543,11 +543,11 @@ var Router = (function (Component) {
 
 		for (var i = 0; i < routes.length; i++) {
 			var route = routes[i];
-			var ref = route._props;
+			var ref = route.props;
 			var path = ref.path;
 			var fullPath = lastPath + path;
 			var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
-			var children = toArray$1(route._props.children);
+			var children = toArray$1(route.props.children);
 
 			if (children) {
 				var subRoute = this$1.handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
@@ -563,7 +563,7 @@ var Router = (function (Component) {
 						children: route
 					});
 				}
-				return route.props(Object.assign({}, { params: params }, route._props));
+				return route.props(Object.assign({}, { params: params }, route.props));
 			}
 		}
 		if (!lastPath && wrapperComponent) {

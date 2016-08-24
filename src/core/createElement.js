@@ -44,7 +44,7 @@ export default function createElement(name, props, ..._children) {
 
 		for (let prop in props) {
 			if (prop === 'key') {
-				vNode._key = props.key;
+				vNode.key = props.key;
 				delete props.key;
 			} else if (elementHooks[prop]) {
 				if (!hooks) {
@@ -61,12 +61,12 @@ export default function createElement(name, props, ..._children) {
 				}
 			}
 		}
-		vNode._props = props;
+		vNode.props = props;
 		if (!isUndefined(children)) {
-			vNode._children = children;
+			vNode.children = children;
 		}
 		if (hooks) {
-			vNode._hooks = hooks;
+			vNode.hooks = hooks;
 		}
 	} else {
 		let hooks;
@@ -89,9 +89,9 @@ export default function createElement(name, props, ..._children) {
 				delete props.key;
 			}
 		}
-		vNode._props = props;
+		vNode.props = props;
 		if (hooks) {
-			vNode._hooks = hooks;
+			vNode.hooks = hooks;
 		}
 	}
 	return vNode;

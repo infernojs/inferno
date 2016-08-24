@@ -24,7 +24,7 @@ export function isArray(obj) {
 }
 
 export function isStatefulComponent(o) {
-	return isTrue(o._isStateful);
+	return isTrue(o.isStateful);
 }
 
 export function isStringOrNumber(obj) {

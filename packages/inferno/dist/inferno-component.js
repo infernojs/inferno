@@ -73,7 +73,7 @@ var NodeTypes = {
 
 var VPlaceholder = function VPlaceholder() {
 	this._type = NodeTypes.PLACEHOLDER;
-	this._dom = null;
+	this.dom = null;
 };
 
 function createVPlaceholder() {
@@ -124,13 +124,13 @@ function applyState(component, force, callback) {
 			nextInput = createVPlaceholder();
 		}
 		var lastInput = component._lastInput;
-		var parentDom = lastInput._dom.parentNode;
+		var parentDom = lastInput.dom.parentNode;
 		var activeNode = getActiveNode();
 		var subLifecycle = new Lifecycle();
 
 		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
 		component._lastInput = nextInput;
-		component._vComponent._dom = nextInput._dom;
+		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
 		component.componentDidUpdate(props, prevState);
 		subLifecycle.trigger();

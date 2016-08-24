@@ -63,9 +63,9 @@ import { ChildrenTypes } from '../core/ChildrenTypes';
 export const recyclingEnabled = true;
 
 function copyValue(oldItem, item, index) {
-	const value = oldItem.read(index);
+	const value = readFromVTemplate(oldItem, index);
 
-	item.write(index, value);
+	writeToVTemplate(item, index, value);
 	return value;
 }
 
@@ -73,6 +73,33 @@ function copyTemplate(nodeIndex) {
 	return function copyTemplate(oldItem, item) {
 		return copyValue(oldItem, item, nodeIndex);
 	};
+}
+
+export function readFromVTemplate(vTemplate, index) {
+	let value;
+	if (index === ROOT_INDEX) {
+		value = vTemplate.dom;
+	} else if (index === 0) {
+		value = vTemplate.v0;
+	} else {
+		value = vTemplate.v1[index - 1];
+	}
+	return value;
+}
+
+export function writeToVTemplate(vTemplate, index, value) {
+	if (index === ROOT_INDEX) {
+		vTemplate.dom = value;
+	} else if (index === 0) {
+		vTemplate.v0 = value;
+	} else {
+		const array = vTemplate.v1;
+		if (!array) {
+			vTemplate.v1 = [value];
+		} else {
+			array[index - 1] = value;
+		}
+	}
 }
 
 export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChildren, childrenType, path) {
@@ -87,39 +114,39 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 
 		if (isVariable(vNode)) {
 			if (isChildren) {
-				mount = mountVariableAsChildren(vNode._pointer, isSVG, childrenType);
+				mount = mountVariableAsChildren(vNode.pointer, isSVG, childrenType);
 				if (childrenType === ChildrenTypes.STATIC_TEXT) {
 					patch = null;
 				} else {
-					patch = patchVariableAsChildren(vNode._pointer, isSVG, childrenType);
+					patch = patchVariableAsChildren(vNode.pointer, isSVG, childrenType);
 				}
-				unmount = unmountVariableAsChildren(vNode._pointer, childrenType);
-				hydrate = hydrateVariableAsChildren(vNode._pointer, childrenType);
+				unmount = unmountVariableAsChildren(vNode.pointer, childrenType);
+				hydrate = hydrateVariableAsChildren(vNode.pointer, childrenType);
 			} else {
-				mount = mountVariableAsExpression(vNode._pointer, isSVG);
-				patch = patchVariableAsExpression(vNode._pointer, isSVG);
-				unmount = unmountVariableAsExpression(vNode._pointer);
-				hydrate = hydrateVariableAsExpression(vNode._pointer);
+				mount = mountVariableAsExpression(vNode.pointer, isSVG);
+				patch = patchVariableAsExpression(vNode.pointer, isSVG);
+				unmount = unmountVariableAsExpression(vNode.pointer);
+				hydrate = hydrateVariableAsExpression(vNode.pointer);
 			}
 		} else if (isVFragment(vNode)) {
-			const children = vNode._children;
+			const children = vNode.children;
 
 			if (isVariable(children)) {
-				mount = mountVariableAsChildren(children._pointer, isSVG, childrenType);
-				patch = patchVariableAsChildren(children._pointer, isSVG, childrenType);
-				unmount = unmountVariableAsChildren(children._pointer, childrenType);
+				mount = mountVariableAsChildren(children.pointer, isSVG, childrenType);
+				patch = patchVariableAsChildren(children.pointer, isSVG, childrenType);
+				unmount = unmountVariableAsChildren(children.pointer, childrenType);
 			} else {
 				// debugger;
 			}
 		} else if (isVText(vNode)) {
-			const text = vNode._text;
+			const text = vNode.text;
 			nodeIndex = offset.length++;
 
 			if (isVariable(text)) {
-				mount = combineMountTo2(nodeIndex, mountEmptyTextNode, mountVariableAsText(text._pointer));
-				patch = combinePatchTo2(nodeIndex, patchVariableAsText(text._pointer));
-				unmount = unmountVariableAsText(text._pointer);
-				hydrate = hydrateVariableAsText(text._pointer);
+				mount = combineMountTo2(nodeIndex, mountEmptyTextNode, mountVariableAsText(text.pointer));
+				patch = combinePatchTo2(nodeIndex, patchVariableAsText(text.pointer));
+				unmount = unmountVariableAsText(text.pointer);
+				hydrate = hydrateVariableAsText(text.pointer);
 			} else {
 				mount = mountDOMNodeFromTemplate(document.createTextNode(text), true);
 				patch = null;
@@ -130,18 +157,18 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 			const patchers = [];
 			const unmounters = [];
 			const hydraters = [];
-			const tag = vNode._tag;
+			const tag = vNode.tag;
 
 			if (tag === 'svg') {
 				isSVG = true;
 			}
 			const dom = documentCreateElement(tag, isSVG);
-			const key = vNode._key;
+			const key = vNode.key;
 
 			if (!isNull(key) && isVariable(key)) {
-				keyIndex = key._pointer;
+				keyIndex = key.pointer;
 			}
-			const children = vNode._children;
+			const children = vNode.children;
 
 			if (!isInvalid(children)) {
 				if (isStringOrNumber(children)) {
@@ -154,7 +181,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 						if (nodeIndex === NULL_INDEX && isVariable(child)) {
 							nodeIndex = offset.length++;
 						}
-						const templateReducers = createTemplateReducers(normalise(child), false, offset, dom, isSVG, false, vNode._childrenType, path + ',' + i);
+						const templateReducers = createTemplateReducers(normalise(child), false, offset, dom, isSVG, false, vNode.childrenType, path + ',' + i);
 
 						if (!isInvalid(templateReducers)) {
 							mounters.push(templateReducers.mount);
@@ -177,7 +204,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					if (nodeIndex === NULL_INDEX && isVariable(children)) {
 						nodeIndex = offset.length++;
 					}
-					const templateReducers = createTemplateReducers(normalise(children), false, offset, dom, isSVG, true, vNode._childrenType, path + ',0');
+					const templateReducers = createTemplateReducers(normalise(children), false, offset, dom, isSVG, true, vNode.childrenType, path + ',0');
 
 					if (!isInvalid(templateReducers)) {
 						mounters.push(templateReducers.mount);
@@ -197,11 +224,11 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					}
 				}
 			}
-			const props = vNode._props;
+			const props = vNode.props;
 
 			if (!isNull(props)) {
 				if (isVariable(props)) {
-					mounters.push(mountSpreadPropsFromTemplate(props._pointer, isSVG));
+					mounters.push(mountSpreadPropsFromTemplate(props.pointer, isSVG));
 				} else {
 					const propsToMount = [];
 					const propsToPatch = [];
@@ -211,14 +238,14 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 
 						if (isVariable(value)) {
 							if (prop === 'className') {
-								mounters.push(mountTemplateClassName(value._pointer));
-								patchers.push(patchTemplateClassName(value._pointer));
+								mounters.push(mountTemplateClassName(value.pointer));
+								patchers.push(patchTemplateClassName(value.pointer));
 							} else if (prop === 'style') {
-								mounters.push(mountTemplateStyle(value._pointer));
-								patchers.push(patchTemplateStyle(value._pointer));
+								mounters.push(mountTemplateStyle(value.pointer));
+								patchers.push(patchTemplateStyle(value.pointer));
 							} else {
 								propsToMount.push(prop, value);
-								propsToPatch.push(prop, value._pointer);
+								propsToPatch.push(prop, value.pointer);
 							}
 						} else {
 							const shouldMountProp = patchProp(prop, null, value, dom);
@@ -236,7 +263,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 					}
 				}
 			}
-			const ref = vNode._ref;
+			const ref = vNode.ref;
 
 			if (!isNullOrUndef(ref)) {
 				mounters.push(mountRefFromTemplate(ref));
@@ -277,7 +304,7 @@ function combineMountTo2(nodeIndex, mountDOMNodeFromTemplate, mounter1) {
 		const dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context, isSVG);
 
 		if (write) {
-			vTemplate.write(nodeIndex, dom);
+			writeToVTemplate(vTemplate, nodeIndex, dom);
 		}
 		if (mounter1) {
 			mounter1(vTemplate, dom, lifecycle, context, isSVG);
@@ -293,7 +320,7 @@ function combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounter1, mounter2
 		const dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context, isSVG);
 
 		if (write) {
-			vTemplate.write(nodeIndex, dom);
+			writeToVTemplate(vTemplate, nodeIndex, dom);
 		}
 		if (mounter1) {
 			mounter1(vTemplate, dom, lifecycle, context, isSVG);
@@ -318,7 +345,7 @@ function combineMountToX(nodeIndex, mountDOMNodeFromTemplate, mounters) {
 		const dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context);
 
 		if (write) {
-			vTemplate.write(nodeIndex, dom);
+			writeToVTemplate(vTemplate, nodeIndex, dom);
 		}
 		for (let i = 0; i < mounters.length; i++) {
 			mounters[i](vTemplate, dom, lifecycle, context, isSVG);
@@ -453,7 +480,7 @@ function combineHydrateTo5(nodeIndex, path, hydrate1, hydrate2, hydrate3, hydrat
 
 		if (write) {
 			dom = getDomFromTemplatePath(rootDom, path);
-			vTemplate.write(nodeIndex, dom);
+			writeToVTemplate(vTemplate, nodeIndex, dom);
 		}
 		if (hydrate1) {
 			hydrate1(vTemplate, dom, lifecycle, context);
@@ -482,7 +509,7 @@ function combineHydrateX(nodeIndex, unmounters) {
 
 			if (write) {
 				dom = getDomFromTemplatePath(rootDom, path);
-				vTemplate.write(nodeIndex, dom);
+				writeToVTemplate(vTemplate, nodeIndex, dom);
 			}
 			for (let i = 0; i < unmounters.length; i++) {
 				unmounters[i](vTemplate, dom, lifecycle, context);
@@ -492,8 +519,8 @@ function combineHydrateX(nodeIndex, unmounters) {
 }
 
 export function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
-	const templateReducers = vTemplate._tr;
-	const key = vTemplate._key;
+	const templateReducers = vTemplate.tr;
+	const key = vTemplate.key;
 	const pool = key === null ? templateReducers._pools.nonKeyed : templateReducers._pools.keyed.get(key);
 
 	if (!isUndefined(pool)) {
@@ -501,15 +528,15 @@ export function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
 
 		if (!isNullOrUndef(recycledVTemplate)) {
 			patchVTemplate(recycledVTemplate, vTemplate, null, lifecycle, context, isSVG);
-			return vTemplate._dom;
+			return vTemplate.dom;
 		}
 	}
 	return null;
 }
 
 export function poolVTemplate(vTemplate) {
-	const templateReducers = vTemplate._tr;
-	const key = vTemplate._key;
+	const templateReducers = vTemplate.tr;
+	const key = vTemplate.key;
 	const pools = templateReducers._pools;
 
 	if (key === null) {

@@ -44,8 +44,8 @@ export class RenderStream extends Readable {
 		}
 	}
 	renderComponent(vComponent, isRoot, context) {
-		const Component = vComponent._component;
-		const props = vComponent._props;
+		const Component = vComponent.component;
+		const props = vComponent.props;
 
 		if (!isStatefulComponent(vComponent)) {
 			return this.renderNode(Component(props), context, isRoot);
@@ -117,9 +117,9 @@ export class RenderStream extends Readable {
 	}
 
 	renderNative(vElement, isRoot, context) {
-		const tag = vElement._tag;
+		const tag = vElement.tag;
 		const outputProps = [];
-		const props = vElement._props;
+		const props = vElement.props;
 
 		const outputAttrs = renderAttributes(props);
 
@@ -153,7 +153,7 @@ export class RenderStream extends Readable {
 			this.push(`</${tag}>`);
 			return;
 		}
-		return Promise.resolve(this.renderChildren(vElement._children, context)).then(()=>{
+		return Promise.resolve(this.renderChildren(vElement.children, context)).then(()=>{
 			this.push(`</${tag}>`);
 		});
 	}

@@ -5,7 +5,7 @@ import Route from '../../router/Route';
 import Router from '../../router/Router';
 import browserHistory from '../../router/browserHistory';
 import { createStore } from 'redux';
-import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
+import { createVTemplateFactory as createVTemplate, createVElement, createVComponent } from './../../core/shapes';
 import { createTemplateReducers } from './../../DOM/templates';
 
 const Inferno = {

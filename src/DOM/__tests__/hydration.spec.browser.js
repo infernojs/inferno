@@ -5,7 +5,7 @@ import { isArray, isStringOrNumber, isNullOrUndef } from './../../core/utils';
 import { createContainerWithHTML, validateNodeTree } from '../../tools/utils';
 import createElement from './../../core/createElement';
 import {
-	createVTemplate,
+	createVTemplateFactory as createVTemplate,
 	createVElement,
 	createVComponent,
 	isVNode

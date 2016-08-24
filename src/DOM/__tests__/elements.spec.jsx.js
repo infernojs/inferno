@@ -1,7 +1,7 @@
 import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
 import createElement from './../../core/createElement';
-import { createVTemplate, createVElement, createVComponent } from './../../core/shapes';
+import { createVTemplateFactory as createVTemplate, createVElement, createVComponent } from './../../core/shapes';
 import { createTemplateReducers } from './../../DOM/templates';
 
 const Inferno = {

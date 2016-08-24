@@ -1,5 +1,5 @@
 import {
-	createVTemplate,
+	createVTemplateFactory as createVTemplate,
 	createVComponent,
 	createVFragment,
 	createVElement,

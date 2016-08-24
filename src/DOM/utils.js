@@ -46,7 +46,7 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 }
 
 export function replaceVListWithNode(parentDom, vList, dom, lifecycle) {
-	const pointer = vList._pointer;
+	const pointer = vList.pointer;
 
 	unmountVFragment(vList, parentDom, false, lifecycle);
 	replaceChild(parentDom, dom, pointer);
@@ -74,8 +74,8 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 	unmount(lastNode, null, lifecycle);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
-	nextNode._dom = dom;
-	replaceChild(parentDom, dom, lastNode._dom);
+	nextNode.dom = dom;
+	replaceChild(parentDom, dom, lastNode.dom);
 	if (lastInstance !== null) {
 		lastInstance._lasInput = nextNode;
 	}
@@ -132,8 +132,8 @@ export function isKeyed(lastChildren, nextChildren) {
 	if (lastChildren.complex) {
 		return false;
 	}
-	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0]._key)
-		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0]._key);
+	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
+		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
 
 function formSelectValueFindOptions(dom, value, isMap) {

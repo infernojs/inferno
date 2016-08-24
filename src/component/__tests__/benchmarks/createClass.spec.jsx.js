@@ -1,7 +1,7 @@
 import { render } from './../../../DOM/rendering';
 import createClass from './../../../component/createClass';
 import {
-	createVTemplate,
+	createVTemplateFactory as createVTemplate,
 	createVElement,
 	createVComponent
 } from './../../../core/shapes';

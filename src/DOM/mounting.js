@@ -38,7 +38,12 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/ChildrenTypes';
-import { recycleVTemplate, recyclingEnabled } from './templates';
+import {
+	recycleVTemplate,
+	recyclingEnabled,
+	readFromVTemplate,
+	writeToVTemplate
+} from './templates';
 
 export function mount(input, parentDom, lifecycle, context, isSVG) {
 	if (isVTemplate(input)) {
@@ -62,7 +67,7 @@ export function mount(input, parentDom, lifecycle, context, isSVG) {
 }
 
 export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) {
-	const templateReducers = vTemplate._tr;
+	const templateReducers = vTemplate.tr;
 	let dom = null;
 
 	if (recyclingEnabled) {
@@ -71,7 +76,7 @@ export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) 
 	if (isNull(dom)) {
 		dom = templateReducers.mount(vTemplate, null, lifecycle, context, isSVG);
 	}
-	vTemplate._dom = dom;
+	vTemplate.dom = dom;
 	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
 	}
@@ -79,7 +84,7 @@ export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) 
 }
 
 export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
-	const tag = vElement._tag;
+	const tag = vElement.tag;
 
 	if (!isString(tag)) {
 		if (process.env.NODE_ENV !== 'production') {
@@ -91,12 +96,12 @@ export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 		isSVG = true;
 	}
 	const dom = documentCreateElement(tag, isSVG);
-	const children = vElement._children;
-	const props = vElement._props;
-	const ref = vElement._ref;
+	const children = vElement.children;
+	const props = vElement.props;
+	const ref = vElement.ref;
 	const hasProps = !isNullOrUndef(props);
 
-	vElement._dom = dom;
+	vElement.dom = dom;
 	if (!isNullOrUndef(ref)) {
 		lifecycle.addListener(() => {
 			ref(dom);
@@ -106,7 +111,7 @@ export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 		patchProp('multiple', null, true, dom);
 	}
 	if (!isNullOrUndef(children)) {
-		mountChildren(vElement._childrenType, children, dom, lifecycle, context, isSVG);
+		mountChildren(vElement.childrenType, children, dom, lifecycle, context, isSVG);
 	}
 	if (hasProps) {
 		mountProps(vElement, props, dom);
@@ -118,18 +123,18 @@ export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 }
 
 export function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) {
-	const children = vFragment._children;
+	const children = vFragment.children;
 	const pointer = document.createTextNode('');
 	const dom = document.createDocumentFragment();
-	const childrenType = vFragment._childrenType;
+	const childrenType = vFragment.childrenType;
 
 	if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
 		mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG);
 	} else if (isUnknownChildrenType(childrenType)) {
 		mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
 	}
-	vFragment._pointer = pointer;
-	vFragment._dom = dom;
+	vFragment.pointer = pointer;
+	vFragment.dom = dom;
 	appendChild(dom, pointer);
 	if (parentDom) {
 		appendChild(parentDom, dom);
@@ -138,9 +143,9 @@ export function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) 
 }
 
 export function mountVText(vText, parentDom) {
-	const dom = document.createTextNode(vText._text);
+	const dom = document.createTextNode(vText.text);
 
-	vText._dom = dom;
+	vText.dom = dom;
 	if (parentDom) {
 		appendChild(parentDom, dom);
 	}
@@ -150,7 +155,7 @@ export function mountVText(vText, parentDom) {
 export function mountVPlaceholder(vPlaceholder, parentDom) {
 	const dom = document.createTextNode('');
 
-	vPlaceholder._dom = dom;
+	vPlaceholder.dom = dom;
 	if (parentDom) {
 		appendChild(parentDom, dom);
 	}
@@ -211,10 +216,10 @@ function mountChildren(childrenType, children, dom, lifecycle, context, isSVG) {
 }
 
 export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
-	const Component = vComponent._component;
-	const props = vComponent._props;
-	const hooks = vComponent._hooks;
-	const ref = vComponent._ref;
+	const Component = vComponent.component;
+	const props = vComponent.props;
+	const hooks = vComponent.hooks;
+	const ref = vComponent.ref;
 	let dom;
 
 	if (isStatefulComponent(vComponent)) {
@@ -264,8 +269,8 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 			});
 		}
 		componentToDOMNodeMap.set(instance, dom);
-		vComponent._dom = dom;
-		vComponent._instance = instance;
+		vComponent.dom = dom;
+		vComponent.instance = instance;
 	} else {
 		if (ref) {
 			if (process.env.NODE_ENV !== 'production') {
@@ -289,11 +294,11 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 			input = createVPlaceholder();
 		}
 		dom = mount(input, null, lifecycle, context, null, false);
-		vComponent._instance = input;
+		vComponent.instance = input;
 		if (parentDom !== null && !isInvalid(dom)) {
 			appendChild(parentDom, dom);
 		}
-		vComponent._dom = dom;
+		vComponent.dom = dom;
 	}
 	return dom;
 }
@@ -309,18 +314,18 @@ function mountProps(vElement, props, dom) {
 		}
 		patchProp(prop, null, value, dom);
 	}
-	if (vElement._tag === 'select') {
-		formSelectValue(vElement._dom, formValue);
+	if (vElement.tag === 'select') {
+		formSelectValue(vElement.dom, formValue);
 	}
 }
 
 export function mountVariableAsExpression(pointer, templateIsSVG) {
 	return function mountVariableAsExpression(vTemplate, dom, lifecycle, context, isSVG) {
-		let input = vTemplate.read(pointer);
+		let input = readFromVTemplate(vTemplate, pointer);
 
 		if (isNullOrUndef(input) || !isVNode(input)) {
 			input = normalise(input);
-			vTemplate.write(pointer, input);
+			readFromVTemplate(vTemplate, pointer, input);
 		}
 		return mount(input, dom, lifecycle, context, isSVG || templateIsSVG);
 	};
@@ -328,14 +333,20 @@ export function mountVariableAsExpression(pointer, templateIsSVG) {
 
 export function mountVariableAsChildren(pointer, templateIsSVG, childrenType) {
 	return function mountVariableAsChildren(vTemplate, dom, lifecycle, context, isSVG) {
-		return mountChildren(childrenType, vTemplate.read(pointer), dom, lifecycle, context, isSVG || templateIsSVG);
+		return mountChildren(
+			childrenType,
+			readFromVTemplate(vTemplate, pointer),
+			dom,
+			lifecycle,
+			context,
+			isSVG || templateIsSVG);
 	};
 }
 
 
 export function mountVariableAsText(pointer) {
 	return function mountVariableAsText(vTemplate, textNode) {
-		textNode.nodeValue = vTemplate.read(pointer);
+		textNode.nodeValue = readFromVTemplate(vTemplate, pointer);
 	};
 }
 
@@ -355,7 +366,7 @@ export function mountRefFromTemplate(ref) {
 		let value = ref;
 
 		if (isVariable(ref)) {
-			value = vTemplate.read(ref._pointer);
+			value = readFromVTemplate(vTemplate, ref.pointer);
 		}
 		if (isFunction(value)) {
 			lifecycle.addListener(() => value(dom));
@@ -370,13 +381,13 @@ export function mountRefFromTemplate(ref) {
 
 export function mountSpreadPropsFromTemplate(pointer, templateIsSVG) {
 	return function mountSpreadPropsFromTemplate(vTemplate, dom, lifecycle, context, isSVG) {
-		const props = vTemplate.read(pointer);
+		const props = readFromVTemplate(vTemplate, pointer);
 
 		for (let prop in props) {
 			const value = props[prop];
 
 			if (prop === 'key') {
-				vTemplate._key = value;
+				vTemplate.key = value;
 			} else if (prop === 'ref') {
 				if (isFunction(value)) {
 					lifecycle.addListener(() => value(dom));
@@ -406,7 +417,7 @@ export function mountEmptyTextNode(vTemplate, parentDom) {
 
 export function mountTemplateClassName(pointer) {
 	return function mountTemplateClassName(vTemplate, dom) {
-		const className = vTemplate.read(pointer);
+		const className = readFromVTemplate(vTemplate, pointer);
 
 		if (!isNullOrUndef(className)) {
 			dom.className = className;
@@ -416,7 +427,7 @@ export function mountTemplateClassName(pointer) {
 
 export function mountTemplateStyle(pointer) {
 	return function mountTemplateStyle(vTemplate, dom) {
-		patchStyle(null, vTemplate.read(pointer), dom);
+		patchStyle(null, readFromVTemplate(vTemplate, pointer), dom);
 	};
 }
 
@@ -430,7 +441,7 @@ export function mountTemplateProps(propsToMount, tag) {
 			let value = propsToMount[i + 1];
 
 			if (isVariable(value)) {
-				value = vTemplate.read(value._pointer);
+				value = readFromVTemplate(vTemplate, value.pointer);
 			}
 			if (prop === 'value') {
 				formValue = value;

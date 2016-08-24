@@ -35,10 +35,10 @@ export default class Router extends Component {
 
 		for (let i = 0; i < routes.length; i++) {
 			const route = routes[i];
-			const { path } = route._props;
+			const { path } = route.props;
 			const fullPath = lastPath + path;
 			const params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
-			const children = toArray(route._props.children);
+			const children = toArray(route.props.children);
 
 			if (children) {
 				const subRoute = this.handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
@@ -54,7 +54,7 @@ export default class Router extends Component {
 						children: route
 					});
 				}
-				return route.props(Object.assign({}, { params }, route._props));
+				return route.props(Object.assign({}, { params }, route.props));
 			}
 		}
 		if (!lastPath && wrapperComponent) {

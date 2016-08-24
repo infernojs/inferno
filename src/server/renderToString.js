@@ -12,8 +12,8 @@ import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
 import { isVElement, isVComponent, isVTemplate } from './../core/shapes';
 
 function renderComponentToString(vComponent, isRoot, context) {
-	const Component = vComponent._component;
-	const props = vComponent._props;
+	const Component = vComponent.component;
+	const props = vComponent.props;
 
 	if (isStatefulComponent(vComponent)) {
 		const instance = new Component(props);
@@ -99,9 +99,9 @@ function renderStyleToString(style) {
 }
 
 function renderVElementToString(vElement, isRoot, context) {
-	const tag = vElement._tag;
+	const tag = vElement.tag;
 	const outputProps = [];
-	const props = vElement._props;
+	const props = vElement.props;
 	let propsKeys = (props && Object.keys(props)) || [];
 	let html = '';
 
@@ -129,7 +129,7 @@ function renderVElementToString(vElement, isRoot, context) {
 	if (isVoidElement(tag)) {
 		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps.join(' ') : '' }>`;
 	} else {
-		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps.join(' ') : '' }>${ html || renderChildren(vElement._children, context) }</${ tag }>`;
+		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps.join(' ') : '' }>${ html || renderChildren(vElement.children, context) }</${ tag }>`;
 	}
 }
 
@@ -148,7 +148,7 @@ function getTemplateValues(vTemplate) {
 }
 
 function renderVTemplateToString(vTemplate, isRoot, context) {
-	return renderInputToString(vTemplate._tr._schema.apply(null, getTemplateValues(vTemplate)), context, isRoot);
+	return renderInputToString(vTemplate.tr._schema.apply(null, getTemplateValues(vTemplate)), context, isRoot);
 }
 
 function renderInputToString(input, context, isRoot) {
