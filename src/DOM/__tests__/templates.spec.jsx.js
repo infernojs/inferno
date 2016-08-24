@@ -175,20 +175,12 @@ describe('Templates', () => {
 			class A extends Component {
 				constructor(props) {
 					super(props);
-
-					this.state = {
-						value: null
-					}
-				}
-
-				isDisabled() {
-					return this.props.disabled;
 				}
 
 				render() {
 					return (
 						<div>
-							<input disabled={this.isDisabled()} value={this.state.value} {...this.props.args} />
+							<input disabled={this.props.disabled} {...this.props.args} />
 						</div>
 					)
 				}
