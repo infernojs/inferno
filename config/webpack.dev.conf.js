@@ -25,7 +25,8 @@ module.exports = {
 				exclude: [
 					path.resolve('node_modules/')
 				],
-				loader: 'babel-loader'
+				loader: 'babel-loader',
+				cacheDirectory: true
 			}
 		]
 	},
@@ -34,14 +35,8 @@ module.exports = {
 		port: 8080,
 		noInfo: false,
 		hot: true,
-		inline: true,
-		proxy: {
-			'/': {
-				bypass: function(req, res, proxyOptions) {
-					return '/config/index.html';
-				}
-			}
-		}
+		inline: true
+	
 	},
 	resolve: {
 		extensions: ['', '.js']

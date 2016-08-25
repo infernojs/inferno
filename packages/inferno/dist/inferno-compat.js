@@ -1161,7 +1161,7 @@ var recyclingEnabled = true;
 function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
 	var templateReducers = vTemplate.tr;
 	var key = vTemplate.key;
-	var pool = key === null ? templateReducers._pools.nonKeyed : templateReducers._pools.keyed.get(key);
+	var pool = key === null ? templateReducers.pools.nonKeyed : templateReducers.pools.keyed.get(key);
 
 	if (!isUndefined(pool)) {
 		var recycledVTemplate = pool.pop();
@@ -1177,7 +1177,7 @@ function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
 function poolVTemplate(vTemplate) {
 	var templateReducers = vTemplate.tr;
 	var key = vTemplate.key;
-	var pools = templateReducers._pools;
+	var pools = templateReducers.pools;
 
 	if (key === null) {
 		var pool = pools.nonKeyed;

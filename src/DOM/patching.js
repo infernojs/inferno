@@ -392,31 +392,36 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 	} else {
 		if (isStatefulComponent(nextVComponent)) {
 			const instance = lastVComponent.instance;
-			const lastProps = instance.props;
-			const lastState = instance.state;
-			const nextState = instance.state;
-			const childContext = instance.getChildContext();
 
-			nextVComponent.instance = instance;
-			instance.context = context;
-			if (!isNullOrUndef(childContext)) {
-				context = Object.assign({}, context, childContext);
-			}
-			const lastInput = instance._lastInput;
-			let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps);
+			if (instance._unmounted) {
+				replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG), lastVComponent.dom);
+			} else {
+				const lastProps = instance.props;
+				const lastState = instance.state;
+				const nextState = instance.state;
+				const childContext = instance.getChildContext();
 
-			if (nextInput === NO_OP) {
-				nextInput = lastInput;
-			} else if (isInvalid(nextInput)) {
-				nextInput = createVPlaceholder();
+				nextVComponent.instance = instance;
+				instance.context = context;
+				if (!isNullOrUndef(childContext)) {
+					context = Object.assign({}, context, childContext);
+				}
+				const lastInput = instance._lastInput;
+				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps);
+
+				if (nextInput === NO_OP) {
+					nextInput = lastInput;
+				} else if (isInvalid(nextInput)) {
+					nextInput = createVPlaceholder();
+				}
+				instance._lastInput = nextInput;
+				patch(lastInput, nextInput, parentDom, lifecycle, context, null, false);
+				instance._vComponent = nextVComponent;
+				instance._lastInput = nextInput;
+				instance.componentDidUpdate(lastProps, lastState);
+				nextVComponent.dom = nextInput.dom;
+				componentToDOMNodeMap.set(instance, nextInput.dom);
 			}
-			instance._lastInput = nextInput;
-			patch(lastInput, nextInput, parentDom, lifecycle, context, null, false);
-			instance._vComponent = nextVComponent;
-			instance._lastInput = nextInput;
-			instance.componentDidUpdate(lastProps, lastState);
-			nextVComponent.dom = nextInput.dom;
-			componentToDOMNodeMap.set(instance, nextInput.dom);
 		} else {
 			let shouldUpdate = true;
 			const lastProps = lastVComponent.props;

@@ -521,7 +521,7 @@ function combineHydrateX(nodeIndex, unmounters) {
 export function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
 	const templateReducers = vTemplate.tr;
 	const key = vTemplate.key;
-	const pool = key === null ? templateReducers._pools.nonKeyed : templateReducers._pools.keyed.get(key);
+	const pool = key === null ? templateReducers.pools.nonKeyed : templateReducers.pools.keyed.get(key);
 
 	if (!isUndefined(pool)) {
 		const recycledVTemplate = pool.pop();
@@ -537,7 +537,7 @@ export function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
 export function poolVTemplate(vTemplate) {
 	const templateReducers = vTemplate.tr;
 	const key = vTemplate.key;
-	const pools = templateReducers._pools;
+	const pools = templateReducers.pools;
 
 	if (key === null) {
 		const pool = pools.nonKeyed;

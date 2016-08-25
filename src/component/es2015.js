@@ -137,8 +137,7 @@ export default class Component {
 
 	_updateComponent(prevState, nextState, prevProps, nextProps, force) {
 		if (this._unmounted === true) {
-			this._unmounted = false;
-			return NO_OP;
+			throw new Error('You can\'t update an unmounted component!');
 		}
 		if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
 			nextProps.children = prevProps.children;

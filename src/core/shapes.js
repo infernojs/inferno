@@ -102,7 +102,7 @@ export function createTemplaceReducers(
 
 export function createVComponent(
 	component,
-	props = {},
+	props = null,
 	key = null,
 	hooks = null,
 	ref = null
@@ -125,7 +125,7 @@ export function createVElement(
 	children = null,
 	key = null,
 	ref = null,
-	childrenType = ChildrenTypes.UNKNOWN
+	childrenType = null
 ) {
 	return {
 		type: NodeTypes.ELEMENT,
@@ -135,7 +135,7 @@ export function createVElement(
 		key,
 		props,
 		ref,
-		childrenType
+		childrenType: childrenType || ChildrenTypes.UNKNOWN
 	};
 }
 

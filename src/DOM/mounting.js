@@ -325,7 +325,7 @@ export function mountVariableAsExpression(pointer, templateIsSVG) {
 
 		if (isNullOrUndef(input) || !isVNode(input)) {
 			input = normalise(input);
-			readFromVTemplate(vTemplate, pointer, input);
+			writeToVTemplate(vTemplate, pointer, input);
 		}
 		return mount(input, dom, lifecycle, context, isSVG || templateIsSVG);
 	};

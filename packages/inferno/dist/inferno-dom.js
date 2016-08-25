@@ -168,7 +168,7 @@ VFragment.prototype.childrenType = function childrenType ($childrenType) {
 var TemplaceReducers = function TemplaceReducers($keyIndex, $mount, $patch, $unmount, $hydrate) {
 	this.keyIndex = $keyIndex;
 	this._schema = null;
-	this._pools = {
+	this.pools = {
 		nonKeyed: [],
 		keyed: new Map()
 	};
@@ -1647,7 +1647,7 @@ function combineHydrateX(nodeIndex, unmounters) {
 function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
 	var templateReducers = vTemplate.tr;
 	var key = vTemplate.key;
-	var pool = key === null ? templateReducers._pools.nonKeyed : templateReducers._pools.keyed.get(key);
+	var pool = key === null ? templateReducers.pools.nonKeyed : templateReducers.pools.keyed.get(key);
 
 	if (!isUndefined(pool)) {
 		var recycledVTemplate = pool.pop();
@@ -1663,7 +1663,7 @@ function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
 function poolVTemplate(vTemplate) {
 	var templateReducers = vTemplate.tr;
 	var key = vTemplate.key;
-	var pools = templateReducers._pools;
+	var pools = templateReducers.pools;
 
 	if (key === null) {
 		var pool = pools.nonKeyed;
