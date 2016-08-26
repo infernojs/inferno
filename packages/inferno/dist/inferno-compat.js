@@ -742,7 +742,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 	}
 	// Step 1
 	/* eslint no-constant-condition: 0 */
-	outer: while (true) {
+	outer: do {
 		// Sync nodes with the same key at the beginning.
 		while (aStartNode.key === bStartNode.key) {
 			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG);
@@ -767,22 +767,6 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 			bEndNode = b[bEnd];
 		}
 
-		// Move and sync nodes from right to left.
-		if (aEndNode.key === bStartNode.key) {
-			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
-			insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
-			aEnd--;
-			bStart++;
-			if (aStart > aEnd || bStart > bEnd) {
-				break;
-			}
-			aEndNode = a[aEnd];
-			bStartNode = b[bStart];
-			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
-			// immediately jump to the start of this prefix/suffix algo.
-			continue;
-		}
-
 		// Move and sync nodes from left to right.
 		if (aStartNode.key === bEndNode.key) {
 			patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG);
@@ -792,14 +776,29 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 			aStart++;
 			bEnd--;
 			if (aStart > aEnd || bStart > bEnd) {
-				break;
+				break outer;
 			}
 			aStartNode = a[aStart];
 			bEndNode = b[bEnd];
-			continue;
+			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
+			// immediately jump to the start of this prefix/suffix algo.
+			continue outer;
 		}
-		break;
-	}
+
+		// Move and sync nodes from right to left.
+		if (aEndNode.key === bStartNode.key) {
+			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
+			insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
+			aEnd--;
+			bStart++;
+			if (aStart > aEnd || bStart > bEnd) {
+				break outer;
+			}
+			aEndNode = a[aEnd];
+			bStartNode = b[bStart];
+			continue outer;
+		}
+	} while (false);
 
 	if (aStart > aEnd) {
 		if (bStart <= bEnd) {
@@ -1169,10 +1168,10 @@ function poolVTemplate(vTemplate) {
 	return true;
 }
 
-function unmount(input, parentDom, lifecycle) {
+function unmount(input, parentDom, lifecycle, canRecycle) {
 	if (!isInvalid(input)) {
 		if (isVTemplate(input)) {
-			unmountVTemplate(input, parentDom, lifecycle);
+			unmountVTemplate(input, parentDom, lifecycle, canRecycle);
 		} else if (isVFragment(input)) {
 			unmountVFragment(input, parentDom, true, lifecycle);
 		} else if (isVElement(input)) {
@@ -1199,7 +1198,7 @@ function unmountVText(vText, parentDom) {
 	}
 }
 
-function unmountVTemplate(vTemplate, parentDom, lifecycle) {
+function unmountVTemplate(vTemplate, parentDom, lifecycle, canRecycle) {
 	var dom = vTemplate.dom;
 	var templateReducers = vTemplate.tr;
 	var unmount = templateReducers.unmount;
@@ -1210,7 +1209,7 @@ function unmountVTemplate(vTemplate, parentDom, lifecycle) {
 	if (!isNull(parentDom)) {
 		removeChild(parentDom, dom);
 	}
-	if (recyclingEnabled && parentDom) {
+	if (recyclingEnabled && (parentDom || canRecycle)) {
 		poolVTemplate(vTemplate);
 	}
 }
@@ -1225,9 +1224,9 @@ function unmountVFragment(vFragment, parentDom, removePointer, lifecycle) {
 			var child = children[i];
 
 			if (isVFragment(child)) {
-				unmountVFragment(child, parentDom, true, lifecycle);
+				unmountVFragment(child, parentDom, true, lifecycle, false);
 			} else {
-				unmount(child, parentDom, lifecycle);
+				unmount(child, parentDom, lifecycle, false);
 			}
 		}
 	}
@@ -1253,9 +1252,9 @@ function unmountVComponent(vComponent, parentDom, lifecycle) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
 			componentToDOMNodeMap.delete(instance);
-			unmount(instance._lastInput, null, lifecycle);
+			unmount(instance._lastInput, null, lifecycle, false);
 		} else {
-			unmount(instance, null, lifecycle);
+			unmount(instance, null, lifecycle, false);
 		}
 	}
 	var hooks = vComponent.hooks || instanceHooks;
@@ -1283,10 +1282,10 @@ function unmountVElement(vElement, parentDom, lifecycle) {
 	if (!isNullOrUndef(children)) {
 		if (isArray$1(children)) {
 			for (var i = 0; i < children.length; i++) {
-				unmount(children[i], null, lifecycle);
+				unmount(children[i], null, lifecycle, false);
 			}
 		} else {
-			unmount(children, null, lifecycle);
+			unmount(children, null, lifecycle, false);
 		}
 	}
 	if (parentDom) {
@@ -1362,7 +1361,7 @@ function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, i
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	unmount(lastNode, null, lifecycle);
+	unmount(lastNode, null, lifecycle, true);
 	var dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode.dom = dom;
@@ -1408,7 +1407,7 @@ function removeAllChildren(dom, children, lifecycle) {
 		var child = children[i];
 
 		if (!isInvalid(child)) {
-			unmount(child, null, lifecycle);
+			unmount(child, null, lifecycle, true);
 		}
 	}
 }

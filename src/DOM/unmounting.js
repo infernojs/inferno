@@ -15,10 +15,10 @@ import {
 	readFromVTemplate
 } from './templates';
 
-export function unmount(input, parentDom, lifecycle) {
+export function unmount(input, parentDom, lifecycle, canRecycle) {
 	if (!isInvalid(input)) {
 		if (isVTemplate(input)) {
-			unmountVTemplate(input, parentDom, lifecycle);
+			unmountVTemplate(input, parentDom, lifecycle, canRecycle);
 		} else if (isVFragment(input)) {
 			unmountVFragment(input, parentDom, true, lifecycle);
 		} else if (isVElement(input)) {
@@ -45,7 +45,7 @@ function unmountVText(vText, parentDom) {
 	}
 }
 
-function unmountVTemplate(vTemplate, parentDom, lifecycle) {
+function unmountVTemplate(vTemplate, parentDom, lifecycle, canRecycle) {
 	const dom = vTemplate.dom;
 	const templateReducers = vTemplate.tr;
 	const unmount = templateReducers.unmount;
@@ -56,7 +56,7 @@ function unmountVTemplate(vTemplate, parentDom, lifecycle) {
 	if (!isNull(parentDom)) {
 		removeChild(parentDom, dom);
 	}
-	if (recyclingEnabled && parentDom) {
+	if (recyclingEnabled && (parentDom || canRecycle)) {
 		poolVTemplate(vTemplate);
 	}
 }
@@ -71,9 +71,9 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle)
 			const child = children[i];
 
 			if (isVFragment(child)) {
-				unmountVFragment(child, parentDom, true, lifecycle);
+				unmountVFragment(child, parentDom, true, lifecycle, false);
 			} else {
-				unmount(child, parentDom, lifecycle);
+				unmount(child, parentDom, lifecycle, false);
 			}
 		}
 	}
@@ -99,9 +99,9 @@ export function unmountVComponent(vComponent, parentDom, lifecycle) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
 			componentToDOMNodeMap.delete(instance);
-			unmount(instance._lastInput, null, lifecycle);
+			unmount(instance._lastInput, null, lifecycle, false);
 		} else {
-			unmount(instance, null, lifecycle);
+			unmount(instance, null, lifecycle, false);
 		}
 	}
 	const hooks = vComponent.hooks || instanceHooks;
@@ -129,10 +129,10 @@ export function unmountVElement(vElement, parentDom, lifecycle) {
 	if (!isNullOrUndef(children)) {
 		if (isArray(children)) {
 			for (let i = 0; i < children.length; i++) {
-				unmount(children[i], null, lifecycle);
+				unmount(children[i], null, lifecycle, false);
 			}
 		} else {
-			unmount(children, null, lifecycle);
+			unmount(children, null, lifecycle, false);
 		}
 	}
 	if (parentDom) {
@@ -143,10 +143,10 @@ export function unmountVElement(vElement, parentDom, lifecycle) {
 function unmountTemplateValue(value, lifecycle) {
 	if (isArray(value)) {
 		for (let i = 0; i < value.length; i++) {
-			unmount(value[i], null, lifecycle);
+			unmount(value[i], null, lifecycle, false);
 		}
 	} else {
-		unmount(value, null, lifecycle);
+		unmount(value, null, lifecycle, false);
 	}
 }
 
