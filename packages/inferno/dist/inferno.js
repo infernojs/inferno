@@ -38,8 +38,6 @@ var ChildrenTypes = {
 };
 
 var NULL_INDEX = -1;
-var ROOT_INDEX = -2;
-
 var NodeTypes = {
 	ELEMENT: 0,
 	COMPONENT: 1,
@@ -50,174 +48,39 @@ var NodeTypes = {
 	VARIABLE: 6
 };
 
-// added $ before all argument names to stop a silly Safari bug
-function initProps(o) {
-	if (!o.props) {
-		o.props = {};
-	}
-}
-
-var VElement = function VElement($tag) {
-	this._type = NodeTypes.ELEMENT;
-	this.dom = null;
-	this.tag = $tag;
-	this.children = null;
-	this.key = null;
-	this.props = null;
-	this.ref = null;
-	this.childrenType = ChildrenTypes.UNKNOWN;
-};
-VElement.prototype.children = function children ($children) {
-	this.children = $children;
-	return this;
-};
-VElement.prototype.key = function key ($key) {
-	this.key = $key;
-	return this;
-};
-VElement.prototype.props = function props ($props) {
-	this.props = $props;
-	if (!isUndefined($props.children)) {
-		delete $props.children;
-		this.children = $props.children;
-	}
-	return this;
-};
-VElement.prototype.ref = function ref ($ref) {
-	this.ref = $ref;
-	return this;
-};
-VElement.prototype.events = function events ($events) {
-	this._events = $events;
-	return this;
-};
-VElement.prototype.childrenType = function childrenType ($childrenType) {
-	this.childrenType = $childrenType;
-	return this;
-};
-VElement.prototype.className = function className ($className) {
-	initProps(this);
-	this.props.className = $className;
-	return this;
-};
-VElement.prototype.style = function style ($style) {
-	initProps(this);
-	this.props.style = $style;
-	return this;
-};
-VElement.prototype.events = function events () {
-	initProps(this);
-	return this;
-};
-
-var VComponent = function VComponent($component) {
-	this._type = NodeTypes.COMPONENT;
-	this.dom = null;
-	this._component = $component;
-	this.props = {};
-	this.hooks = null;
-	this.key = null;
-	this.ref = null;
-	this.isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
-};
-VComponent.prototype.key = function key ($key) {
-	this.key = $key;
-	return this;
-};
-VComponent.prototype.props = function props ($props) {
-	this.props = $props;
-	return this;
-};
-VComponent.prototype.hooks = function hooks ($hooks) {
-	this.hooks = $hooks;
-	return this;
-};
-VComponent.prototype.ref = function ref ($ref) {
-	this.ref = $ref;
-	return this;
-};
-
-var VTemplate = function VTemplate($templateReducers, $key, $v0, $v1) {
-	this._type = NodeTypes.TEMPLATE;
-	this.dom = null;
-	this.tr = $templateReducers;
-	this.key = $key;
-	this._v0 = $v0;
-	this._v1 = $v1;
-};
-VTemplate.prototype.read = function read (index) {
-	var value;
-	if (index === ROOT_INDEX) {
-		value = this.dom;
-	} else if (index === 0) {
-		value = this._v0;
-	} else {
-		value = this._v1[index - 1];
-	}
-	return value;
-};
-VTemplate.prototype.write = function write (index, value) {
-	if (index === ROOT_INDEX) {
-		this.dom = value;
-	} else if (index === 0) {
-		this._v0 = value;
-	} else {
-		var array = this._v1;
-		if (!array) {
-			this._v1 = [value];
-		} else {
-			array[index - 1] = value;
-		}
-	}
-};
-
-var VText = function VText($text) {
-	this._type = NodeTypes.TEXT;
-	this.text = $text;
-	this.dom = null;
-};
-
-var VFragment = function VFragment($children) {
-	this._type = NodeTypes.FRAGMENT;
-	this.dom = null;
-	this.pointer = null;
-	this.children = $children;
-	this.childrenType = ChildrenTypes.UNKNOWN;
-};
-VFragment.prototype.childrenType = function childrenType ($childrenType) {
-	this.childrenType = $childrenType;
-	return this;
-};
-
-var Variable = function Variable($pointer) {
-	this._type = NodeTypes.VARIABLE;
-	this.pointer = $pointer;
-};
-
 function cloneVNode(vNodeToClone) {
-
+	// TODO
 }
 
-function createVTemplate(schema, renderer) {
+function createVTemplateFactory(schema, renderer) {
 	var argCount = schema.length;
 	var parameters = [];
 
 	for (var i = 0; i < argCount; i++) {
-		parameters.push(new Variable(i));
+		parameters.push(createVariable(i));
 	}
 	var vNode = schema.apply(void 0, parameters);
-	var templateReducers = renderer.createTemplateReducers(vNode, true, { length: argCount }, null, false, false, 0, '');
+	var templateReducers = renderer.createTemplateReducers(
+		vNode,
+		true,
+		{ length: argCount },
+		null,
+		false,
+		false,
+		0,
+		''
+	);
 	var keyIndex = templateReducers.keyIndex;
 
 	templateReducers._schema = schema;
 	switch (argCount) {
 		case 0:
-			return function () { return new VTemplate(templateReducers, null, null, null); };
+			return function () { return creaetVTemplate(templateReducers, null, null, null); };
 		case 1:
 			if (keyIndex === 0) {
-				return function (v0) { return new VTemplate(templateReducers, v0, v0, null); };
+				return function (v0) { return creaetVTemplate(templateReducers, v0, v0, null); };
 			} else {
-				return function (v0) { return new VTemplate(templateReducers, null, v0, null); };
+				return function (v0) { return creaetVTemplate(templateReducers, null, v0, null); };
 			}
 		default:
 			if (keyIndex === NULL_INDEX) {
@@ -225,44 +88,119 @@ function createVTemplate(schema, renderer) {
 					var v1 = [], len = arguments.length - 1;
 					while ( len-- > 0 ) v1[ len ] = arguments[ len + 1 ];
 
-					return new VTemplate(templateReducers, null, v0, v1);
+					return creaetVTemplate(templateReducers, null, v0, v1);
 				};
 			} else if (keyIndex === 0) {
 				return function (v0) {
 					var v1 = [], len = arguments.length - 1;
 					while ( len-- > 0 ) v1[ len ] = arguments[ len + 1 ];
 
-					return new VTemplate(templateReducers, v0, v0, v1);
+					return creaetVTemplate(templateReducers, v0, v0, v1);
 				};
 			} else {
 				return function (v0) {
 					var v1 = [], len = arguments.length - 1;
 					while ( len-- > 0 ) v1[ len ] = arguments[ len + 1 ];
 
-					return new VTemplate(templateReducers, v1[keyIndex - 1], v0, v1);
+					return creaetVTemplate(templateReducers, v1[keyIndex - 1], v0, v1);
 				};
 			}
 	}
 }
 
-function createVComponent(component) {
-	return new VComponent(component);
+function creaetVTemplate(tr, key, v0, v1) {
+	return {
+		type: NodeTypes.TEMPLATE,
+		dom: null,
+		tr: tr,
+		key: key,
+		v0: v0,
+		v1: v1
+	};
 }
 
-function createVElement(tag) {
-	return new VElement(tag);
+function createVariable(pointer) {
+	return {
+		type: NodeTypes.VARIABLE,
+		pointer: pointer
+	};
+}
+
+function createVComponent(
+	component,
+	props,
+	key,
+	hooks,
+	ref
+) {
+	if ( props === void 0 ) props = null;
+	if ( key === void 0 ) key = null;
+	if ( hooks === void 0 ) hooks = null;
+	if ( ref === void 0 ) ref = null;
+
+	return {
+		type: NodeTypes.COMPONENT,
+		dom: null,
+		component: component,
+		props: props,
+		hooks: hooks,
+		key: key,
+		ref: ref,
+		isStateful: !isUndefined(component.prototype) && !isUndefined(component.prototype.render)
+	};
+}
+
+function createVElement(
+	tag,
+	props,
+	children,
+	key,
+	ref,
+	childrenType
+) {
+	if ( props === void 0 ) props = null;
+	if ( children === void 0 ) children = null;
+	if ( key === void 0 ) key = null;
+	if ( ref === void 0 ) ref = null;
+	if ( childrenType === void 0 ) childrenType = null;
+
+	return {
+		type: NodeTypes.ELEMENT,
+		dom: null,
+		tag: tag,
+		children: children,
+		key: key,
+		props: props,
+		ref: ref,
+		childrenType: childrenType || ChildrenTypes.UNKNOWN
+	};
 }
 
 function createVText(text) {
-	return new VText(text);
+	return {
+		type: NodeTypes.TEXT,
+		text: text,
+		dom: null
+	};
 }
 
-function createVFragment(items) {
-	return new VFragment(items);
+function createVFragment(
+	children,
+	childrenType
+) {
+	if ( childrenType === void 0 ) childrenType = ChildrenTypes.UNKNOWN;
+
+	return {
+		type: NodeTypes.FRAGMENT,
+		dom: null,
+		pointer: null,
+		children: children,
+		childrenType: childrenType
+	};
 }
 
 var index = {
-	createVTemplate: createVTemplate,
+	createVTemplate: createVTemplateFactory,
 	createVComponent: createVComponent,
 	createVElement: createVElement,
 	createVText: createVText,

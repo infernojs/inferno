@@ -75,15 +75,15 @@ var NodeTypes = {
 };
 
 function isVElement(o) {
-	return o._type === NodeTypes.ELEMENT;
+	return o.type === NodeTypes.ELEMENT;
 }
 
 function isVTemplate(o) {
-	return o._type === NodeTypes.TEMPLATE;
+	return o.type === NodeTypes.TEMPLATE;
 }
 
 function isVComponent(o) {
-	return o._type === NodeTypes.COMPONENT;
+	return o.type === NodeTypes.COMPONENT;
 }
 
 function constructDefaults(string, object, value) {

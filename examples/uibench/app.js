@@ -8,11 +8,11 @@
 	uibench.init('Inferno', '0.8.0-alpha4');
 
 	var treeLeafTpl = t(function (id) {
-		return e('li').key(id).props({ className: 'TreeLeaf' }).key(id).children(id).childrenType(ChildrenTypes.TEXT);
+		return e('li', { className: 'TreeLeaf' }, id, id, ChildrenTypes.TEXT);
 	}, InfernoDOM);
 
 	var treeNodeTpl = t(function (children, key) {
-		return e('ul').props({ className: 'TreeNode' }).key(key).children(children).childrenType(ChildrenTypes.KEYED_LIST);
+		return e('ul', { className: 'TreeNode' }, children, key, null, ChildrenTypes.KEYED_LIST);
 	}, InfernoDOM);
 
 	function treeNode(data) {
@@ -32,7 +32,7 @@
 	}
 
 	var treeTpl = t(function (root) {
-		return e('div').props({ className: 'Tree' }).children(root).childrenType(ChildrenTypes.NODE);
+		return e('div', { className: 'Tree' }, root, null, null, ChildrenTypes.NODE);
 	}, InfernoDOM);
 
 	function tree(data) {
@@ -40,7 +40,7 @@
 	}
 
 	var animBoxTpl = t(function (id, style) {
-		return e('div').props({ className: 'AnimBox', style: style, 'data-id': id }).key(id);
+		return e('div', { className: 'AnimBox', style: style, 'data-id': id }, null, id, null, null);
 	}, InfernoDOM);
 
 	function animBox(data) {
@@ -51,7 +51,7 @@
 	}
 
 	var animTpl = t(function (children) {
-		return e('div').props({ className: 'Anim' }).children(children).childrenType(ChildrenTypes.KEYED_LIST);
+		return e('div', { className: 'Anim' }, children, null, null, ChildrenTypes.KEYED_LIST);
 	}, InfernoDOM);
 
 	function anim(data) {
@@ -73,15 +73,15 @@
 	}
 
 	var tableCellTpl = t(function (text, key) {
-		return e('td').props({ 
+		return e('td', { 
 			className: 'TableCell',
 			'xtag': text,
 			onclick: onClick
-		}).key(key).children(text).childrenType(ChildrenTypes.TEXT);
+		}, text, key, null, ChildrenTypes.TEXT);
 	}, InfernoDOM);
 
 	var tableRowTpl = t(function (classes, id, children) {
-		return e('tr').props({ className: classes, 'data-id': id }).key(id).children(children).childrenType(ChildrenTypes.KEYED_LIST);
+		return e('tr', { className: classes, 'data-id': id }, children, id, null, ChildrenTypes.KEYED_LIST);
 	}, InfernoDOM);
 
 	function tableRow(data) {
@@ -103,7 +103,7 @@
 	}
 
 	var tableTpl = t(function (children) {
-		return e('table').props({ className: 'Table' }).children(children).childrenType(ChildrenTypes.KEYED_LIST);
+		return e('table', { className: 'Table' }, children, null, null, ChildrenTypes.KEYED_LIST);
 	}, InfernoDOM);
 
 	function table(data) {

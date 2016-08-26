@@ -71,99 +71,54 @@ var NodeTypes = {
 	VARIABLE: 6
 };
 
-// added $ before all argument names to stop a silly Safari bug
-function initProps(o) {
-	if (!o.props) {
-		o.props = {};
-	}
+function createVComponent(
+	component,
+	props,
+	key,
+	hooks,
+	ref
+) {
+	if ( props === void 0 ) props = null;
+	if ( key === void 0 ) key = null;
+	if ( hooks === void 0 ) hooks = null;
+	if ( ref === void 0 ) ref = null;
+
+	return {
+		type: NodeTypes.COMPONENT,
+		dom: null,
+		component: component,
+		props: props,
+		hooks: hooks,
+		key: key,
+		ref: ref,
+		isStateful: !isUndefined(component.prototype) && !isUndefined(component.prototype.render)
+	};
 }
 
-var VElement = function VElement($tag) {
-	this._type = NodeTypes.ELEMENT;
-	this.dom = null;
-	this.tag = $tag;
-	this.children = null;
-	this.key = null;
-	this.props = null;
-	this.ref = null;
-	this.childrenType = ChildrenTypes.UNKNOWN;
-};
-VElement.prototype.children = function children ($children) {
-	this.children = $children;
-	return this;
-};
-VElement.prototype.key = function key ($key) {
-	this.key = $key;
-	return this;
-};
-VElement.prototype.props = function props ($props) {
-	this.props = $props;
-	if (!isUndefined($props.children)) {
-		delete $props.children;
-		this.children = $props.children;
-	}
-	return this;
-};
-VElement.prototype.ref = function ref ($ref) {
-	this.ref = $ref;
-	return this;
-};
-VElement.prototype.events = function events ($events) {
-	this._events = $events;
-	return this;
-};
-VElement.prototype.childrenType = function childrenType ($childrenType) {
-	this.childrenType = $childrenType;
-	return this;
-};
-VElement.prototype.className = function className ($className) {
-	initProps(this);
-	this.props.className = $className;
-	return this;
-};
-VElement.prototype.style = function style ($style) {
-	initProps(this);
-	this.props.style = $style;
-	return this;
-};
-VElement.prototype.events = function events () {
-	initProps(this);
-	return this;
-};
+function createVElement(
+	tag,
+	props,
+	children,
+	key,
+	ref,
+	childrenType
+) {
+	if ( props === void 0 ) props = null;
+	if ( children === void 0 ) children = null;
+	if ( key === void 0 ) key = null;
+	if ( ref === void 0 ) ref = null;
+	if ( childrenType === void 0 ) childrenType = null;
 
-var VComponent = function VComponent($component) {
-	this._type = NodeTypes.COMPONENT;
-	this.dom = null;
-	this._component = $component;
-	this.props = {};
-	this.hooks = null;
-	this.key = null;
-	this.ref = null;
-	this.isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
-};
-VComponent.prototype.key = function key ($key) {
-	this.key = $key;
-	return this;
-};
-VComponent.prototype.props = function props ($props) {
-	this.props = $props;
-	return this;
-};
-VComponent.prototype.hooks = function hooks ($hooks) {
-	this.hooks = $hooks;
-	return this;
-};
-VComponent.prototype.ref = function ref ($ref) {
-	this.ref = $ref;
-	return this;
-};
-
-function createVComponent(component) {
-	return new VComponent(component);
-}
-
-function createVElement(tag) {
-	return new VElement(tag);
+	return {
+		type: NodeTypes.ELEMENT,
+		dom: null,
+		tag: tag,
+		children: children,
+		key: key,
+		props: props,
+		ref: ref,
+		childrenType: childrenType || ChildrenTypes.UNKNOWN
+	};
 }
 
 var elementHooks = {

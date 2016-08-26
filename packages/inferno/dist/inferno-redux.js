@@ -83,44 +83,35 @@ var NodeTypes = {
 	VARIABLE: 6
 };
 
-var VComponent = function VComponent($component) {
-	this._type = NodeTypes.COMPONENT;
-	this.dom = null;
-	this._component = $component;
-	this.props = {};
-	this.hooks = null;
-	this.key = null;
-	this.ref = null;
-	this.isStateful = !isUndefined($component.prototype) && !isUndefined($component.prototype.render);
-};
-VComponent.prototype.key = function key ($key) {
-	this.key = $key;
-	return this;
-};
-VComponent.prototype.props = function props ($props) {
-	this.props = $props;
-	return this;
-};
-VComponent.prototype.hooks = function hooks ($hooks) {
-	this.hooks = $hooks;
-	return this;
-};
-VComponent.prototype.ref = function ref ($ref) {
-	this.ref = $ref;
-	return this;
-};
+function createVComponent(
+	component,
+	props,
+	key,
+	hooks,
+	ref
+) {
+	if ( props === void 0 ) props = null;
+	if ( key === void 0 ) key = null;
+	if ( hooks === void 0 ) hooks = null;
+	if ( ref === void 0 ) ref = null;
 
-var VPlaceholder = function VPlaceholder() {
-	this._type = NodeTypes.PLACEHOLDER;
-	this.dom = null;
-};
-
-function createVComponent(component) {
-	return new VComponent(component);
+	return {
+		type: NodeTypes.COMPONENT,
+		dom: null,
+		component: component,
+		props: props,
+		hooks: hooks,
+		key: key,
+		ref: ref,
+		isStateful: !isUndefined(component.prototype) && !isUndefined(component.prototype.render)
+	};
 }
 
 function createVPlaceholder() {
-	return new VPlaceholder();
+	return {
+		type: NodeTypes.PLACEHOLDER,
+		dom: null
+	};
 }
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
@@ -255,8 +246,7 @@ Component.prototype.getChildContext = function getChildContext () {
 
 Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, force) {
 	if (this._unmounted === true) {
-		this._unmounted = false;
-		return NO_OP;
+		throw new Error('You can\'t update an unmounted component!');
 	}
 	if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
 		nextProps.children = prevProps.children;

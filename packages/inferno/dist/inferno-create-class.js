@@ -71,13 +71,11 @@ var NodeTypes = {
 	VARIABLE: 6
 };
 
-var VPlaceholder = function VPlaceholder() {
-	this._type = NodeTypes.PLACEHOLDER;
-	this.dom = null;
-};
-
 function createVPlaceholder() {
-	return new VPlaceholder();
+	return {
+		type: NodeTypes.PLACEHOLDER,
+		dom: null
+	};
 }
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
@@ -212,8 +210,7 @@ Component.prototype.getChildContext = function getChildContext () {
 
 Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, force) {
 	if (this._unmounted === true) {
-		this._unmounted = false;
-		return NO_OP;
+		throw new Error('You can\'t update an unmounted component!');
 	}
 	if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
 		nextProps.children = prevProps.children;

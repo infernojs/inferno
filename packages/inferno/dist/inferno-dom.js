@@ -142,88 +142,87 @@ var NodeTypes = {
 	VARIABLE: 6
 };
 
-var VText = function VText($text) {
-	this._type = NodeTypes.TEXT;
-	this.text = $text;
-	this.dom = null;
-};
-
-var VPlaceholder = function VPlaceholder() {
-	this._type = NodeTypes.PLACEHOLDER;
-	this.dom = null;
-};
-
-var VFragment = function VFragment($children) {
-	this._type = NodeTypes.FRAGMENT;
-	this.dom = null;
-	this.pointer = null;
-	this.children = $children;
-	this.childrenType = ChildrenTypes.UNKNOWN;
-};
-VFragment.prototype.childrenType = function childrenType ($childrenType) {
-	this.childrenType = $childrenType;
-	return this;
-};
-
-var TemplaceReducers = function TemplaceReducers($keyIndex, $mount, $patch, $unmount, $hydrate) {
-	this.keyIndex = $keyIndex;
-	this._schema = null;
-	this.pools = {
-		nonKeyed: [],
-		keyed: new Map()
+function createTemplaceReducers(
+	keyIndex,
+	mount,
+	patch,
+	unmount,
+	hydrate
+) {
+	return {
+		keyIndex: keyIndex,
+		schema: null,
+		pools: {
+			nonKeyed: [],
+			keyed: new Map()
+		},
+		mount: mount,
+		patch: patch,
+		unmount: unmount,
+		hydrate: hydrate
 	};
-	this.mount = $mount;
-	this.patch = $patch;
-	this.unmount = $unmount;
-	this.hydrate = $hydrate;
-};
-
-function createTemplaceReducers(keyIndex, mount, patch, unmount, hydrate) {
-	return new TemplaceReducers(keyIndex, mount, patch, unmount, hydrate);
 }
 
 function createVText(text) {
-	return new VText(text);
+	return {
+		type: NodeTypes.TEXT,
+		text: text,
+		dom: null
+	};
 }
 
 function createVPlaceholder() {
-	return new VPlaceholder();
+	return {
+		type: NodeTypes.PLACEHOLDER,
+		dom: null
+	};
 }
 
-function createVFragment(items) {
-	return new VFragment(items);
+function createVFragment(
+	children,
+	childrenType
+) {
+	if ( childrenType === void 0 ) childrenType = ChildrenTypes.UNKNOWN;
+
+	return {
+		type: NodeTypes.FRAGMENT,
+		dom: null,
+		pointer: null,
+		children: children,
+		childrenType: childrenType
+	};
 }
 
 function isVText(o) {
-	return o._type === NodeTypes.TEXT;
+	return o.type === NodeTypes.TEXT;
 }
 
 function isVariable(o) {
-	return o._type === NodeTypes.VARIABLE;
+	return o.type === NodeTypes.VARIABLE;
 }
 
 function isVPlaceholder(o) {
-	return o._type === NodeTypes.PLACEHOLDER;
+	return o.type === NodeTypes.PLACEHOLDER;
 }
 
 function isVFragment(o) {
-	return o._type === NodeTypes.FRAGMENT;
+	return o.type === NodeTypes.FRAGMENT;
 }
 
 function isVElement(o) {
-	return o._type === NodeTypes.ELEMENT;
+	return o.type === NodeTypes.ELEMENT;
 }
 
 function isVTemplate(o) {
-	return o._type === NodeTypes.TEMPLATE;
+	return o.type === NodeTypes.TEMPLATE;
 }
 
 function isVComponent(o) {
-	return o._type === NodeTypes.COMPONENT;
+	return o.type === NodeTypes.COMPONENT;
 }
 
 function isVNode(o) {
-	return o._type !== undefined;
+	return o.type !== undefined;
 }
 
 function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
@@ -550,31 +549,36 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
 	} else {
 		if (isStatefulComponent(nextVComponent)) {
 			var instance = lastVComponent.instance;
-			var lastProps = instance.props;
-			var lastState = instance.state;
-			var nextState = instance.state;
-			var childContext = instance.getChildContext();
 
-			nextVComponent.instance = instance;
-			instance.context = context;
-			if (!isNullOrUndef(childContext)) {
-				context = Object.assign({}, context, childContext);
-			}
-			var lastInput = instance._lastInput;
-			var nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps);
+			if (instance._unmounted) {
+				replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG), lastVComponent.dom);
+			} else {
+				var lastProps = instance.props;
+				var lastState = instance.state;
+				var nextState = instance.state;
+				var childContext = instance.getChildContext();
 
-			if (nextInput === NO_OP) {
-				nextInput = lastInput;
-			} else if (isInvalid(nextInput)) {
-				nextInput = createVPlaceholder();
+				nextVComponent.instance = instance;
+				instance.context = context;
+				if (!isNullOrUndef(childContext)) {
+					context = Object.assign({}, context, childContext);
+				}
+				var lastInput = instance._lastInput;
+				var nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps);
+
+				if (nextInput === NO_OP) {
+					nextInput = lastInput;
+				} else if (isInvalid(nextInput)) {
+					nextInput = createVPlaceholder();
+				}
+				instance._lastInput = nextInput;
+				patch(lastInput, nextInput, parentDom, lifecycle, context, null, false);
+				instance._vComponent = nextVComponent;
+				instance._lastInput = nextInput;
+				instance.componentDidUpdate(lastProps, lastState);
+				nextVComponent.dom = nextInput.dom;
+				componentToDOMNodeMap.set(instance, nextInput.dom);
 			}
-			instance._lastInput = nextInput;
-			patch(lastInput, nextInput, parentDom, lifecycle, context, null, false);
-			instance._vComponent = nextVComponent;
-			instance._lastInput = nextInput;
-			instance.componentDidUpdate(lastProps, lastState);
-			nextVComponent.dom = nextInput.dom;
-			componentToDOMNodeMap.set(instance, nextInput.dom);
 		} else {
 			var shouldUpdate = true;
 			var lastProps$1 = lastVComponent.props;
@@ -947,13 +951,13 @@ function lis_algorithm(a) {
 
 function patchVariableAsExpression(pointer, templateIsSVG) {
 	return function patchVariableAsExpression(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
-		var lastInput = lastVTemplate.read(pointer);
-		var nextInput = nextVTemplate.read(pointer);
+		var lastInput = readFromVTemplate(lastVTemplate, pointer);
+		var nextInput = readFromVTemplate(nextVTemplate, pointer);
 
 		if (lastInput !== nextInput) {
 			if (isNullOrUndef(nextInput) || !isVNode(nextInput)) {
 				nextInput = normalise(nextInput);
-				nextVTemplate.write(pointer, nextInput);
+				writeToVTemplate(nextVTemplate, pointer, nextInput);
 			}
 			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
 		}
@@ -962,8 +966,8 @@ function patchVariableAsExpression(pointer, templateIsSVG) {
 
 function patchVariableAsChildren(pointer, templateIsSVG, childrenType) {
 	return function patchVariableAsChildren(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
-		var lastInput = lastVTemplate.read(pointer);
-		var nextInput = nextVTemplate.read(pointer);
+		var lastInput = readFromVTemplate(lastVTemplate, pointer);
+		var nextInput = readFromVTemplate(nextVTemplate, pointer);
 
 		if (lastInput !== nextInput) {
 			patchChildren(childrenType, lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
@@ -973,9 +977,9 @@ function patchVariableAsChildren(pointer, templateIsSVG, childrenType) {
 
 function patchVariableAsText(pointer) {
 	return function patchVariableAsText(lastVTemplate, nextVTemplate, textNode) {
-		var nextInput = nextVTemplate.read(pointer);
+		var nextInput = readFromVTemplate(nextVTemplate, pointer);
 
-		if (lastVTemplate.read(pointer) !== nextInput) {
+		if (readFromVTemplate(lastVTemplate, pointer) !== nextInput) {
 			textNode.nodeValue = nextInput;
 		}
 	};
@@ -983,9 +987,9 @@ function patchVariableAsText(pointer) {
 
 function patchTemplateClassName(pointer) {
 	return function patchTemplateClassName(lastVTemplate, nextVTemplate, dom) {
-		var nextClassName = nextVTemplate.read(pointer);
+		var nextClassName = readFromVTemplate(nextVTemplate, pointer);
 
-		if (lastVTemplate.read(pointer) !== nextClassName) {
+		if (readFromVTemplate(lastVTemplate, pointer) !== nextClassName) {
 			if (isNullOrUndef(nextClassName)) {
 				dom.removeAttribute('class');
 			} else {
@@ -997,8 +1001,8 @@ function patchTemplateClassName(pointer) {
 
 function patchTemplateStyle(pointer) {
 	return function patchTemplateClassName(lastVTemplate, nextVTemplate, dom) {
-		var lastStyle = lastVTemplate.read(pointer);
-		var nextStyle = nextVTemplate.read(pointer);
+		var lastStyle = readFromVTemplate(lastVTemplate, pointer);
+		var nextStyle = readFromVTemplate(nextVTemplate, pointer);
 
 		if (lastStyle !== nextStyle) {
 			patchStyle(lastStyle, nextStyle, dom);
@@ -1017,8 +1021,8 @@ function patchTemplateProps(propsToPatch, tag) {
 		for (var i = 0; i < propsToPatch.length; i += 2) {
 			var prop = propsToPatch[i];
 			var pointer = propsToPatch[i + 1];
-			var lastValue = lastVTemplate.read(pointer);
-			var nextValue = nextVTemplate.read(pointer);
+			var lastValue = readFromVTemplate(lastVTemplate, pointer);
+			var nextValue = readFromVTemplate(nextVTemplate, pointer);
 
 			if (prop === 'value') {
 				formValue = nextValue;
@@ -1201,13 +1205,13 @@ function hydrateRoot(input, parentDom, lifecycle) {
 
 function hydrateVariableAsChildren(pointer, childrenType) {
 	return function hydrateVariableAsChildren(vTemplate, dom, lifecycle, context) {
-		hydrateChildren(childrenType, vTemplate.read(pointer), dom, lifecycle, context);
+		hydrateChildren(childrenType, readFromVTemplate(vTemplate, pointer), dom, lifecycle, context);
 	};
 }
 
 function hydrateVariableAsExpression(pointer) {
 	return function hydrateVariableAsExpression(vTemplate, dom, lifecycle, context) {
-		var input = vTemplate.read(pointer);
+		var input = readFromVTemplate(vTemplate, pointer);
 
 		if (isNullOrUndef(input) || !isVNode(input)) {
 			input = normalise(input);
@@ -1226,9 +1230,9 @@ function hydrateVariableAsText() {
 var recyclingEnabled = true;
 
 function copyValue(oldItem, item, index) {
-	var value = oldItem.read(index);
+	var value = readFromVTemplate(oldItem, index);
 
-	item.write(index, value);
+	writeToVTemplate(item, index, value);
 	return value;
 }
 
@@ -1236,6 +1240,33 @@ function copyTemplate(nodeIndex) {
 	return function copyTemplate(oldItem, item) {
 		return copyValue(oldItem, item, nodeIndex);
 	};
+}
+
+function readFromVTemplate(vTemplate, index) {
+	var value;
+	if (index === ROOT_INDEX) {
+		value = vTemplate.dom;
+	} else if (index === 0) {
+		value = vTemplate.v0;
+	} else {
+		value = vTemplate.v1[index - 1];
+	}
+	return value;
+}
+
+function writeToVTemplate(vTemplate, index, value) {
+	if (index === ROOT_INDEX) {
+		vTemplate.dom = value;
+	} else if (index === 0) {
+		vTemplate.v0 = value;
+	} else {
+		var array = vTemplate.v1;
+		if (!array) {
+			vTemplate.v1 = [value];
+		} else {
+			array[index - 1] = value;
+		}
+	}
 }
 
 function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChildren, childrenType, path) {
@@ -1438,7 +1469,7 @@ function combineMountTo2(nodeIndex, mountDOMNodeFromTemplate, mounter1) {
 		var dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context, isSVG);
 
 		if (write) {
-			vTemplate.write(nodeIndex, dom);
+			writeToVTemplate(vTemplate, nodeIndex, dom);
 		}
 		if (mounter1) {
 			mounter1(vTemplate, dom, lifecycle, context, isSVG);
@@ -1454,7 +1485,7 @@ function combineMountTo5(nodeIndex, mountDOMNodeFromTemplate, mounter1, mounter2
 		var dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context, isSVG);
 
 		if (write) {
-			vTemplate.write(nodeIndex, dom);
+			writeToVTemplate(vTemplate, nodeIndex, dom);
 		}
 		if (mounter1) {
 			mounter1(vTemplate, dom, lifecycle, context, isSVG);
@@ -1479,7 +1510,7 @@ function combineMountToX(nodeIndex, mountDOMNodeFromTemplate, mounters) {
 		var dom = mountDOMNodeFromTemplate(vTemplate, parentDom, lifecycle, context);
 
 		if (write) {
-			vTemplate.write(nodeIndex, dom);
+			writeToVTemplate(vTemplate, nodeIndex, dom);
 		}
 		for (var i = 0; i < mounters.length; i++) {
 			mounters[i](vTemplate, dom, lifecycle, context, isSVG);
@@ -1606,7 +1637,7 @@ function combineHydrateTo5(nodeIndex, path, hydrate1, hydrate2, hydrate3, hydrat
 
 		if (write) {
 			dom = getDomFromTemplatePath(rootDom, path);
-			vTemplate.write(nodeIndex, dom);
+			writeToVTemplate(vTemplate, nodeIndex, dom);
 		}
 		if (hydrate1) {
 			hydrate1(vTemplate, dom, lifecycle, context);
@@ -1635,7 +1666,7 @@ function combineHydrateX(nodeIndex, unmounters) {
 
 			if (write) {
 				dom = getDomFromTemplatePath(rootDom, path);
-				vTemplate.write(nodeIndex, dom);
+				writeToVTemplate(vTemplate, nodeIndex, dom);
 			}
 			for (var i = 0; i < unmounters.length; i++) {
 				unmounters[i](vTemplate, dom, lifecycle, context);
@@ -1837,13 +1868,13 @@ function unmountTemplateValue(value, lifecycle) {
 // TODO we can probably combine the below two functions, depends on if we can optimise with childrenType?
 function unmountVariableAsExpression(pointer) {
 	return function unmountVariableAsExpression(vTemplate, lifecycle) {
-		unmountTemplateValue(vTemplate.read(pointer), lifecycle);
+		unmountTemplateValue(readFromVTemplate(vTemplate, pointer), lifecycle);
 	};
 }
 
 function unmountVariableAsChildren(pointer, childrenType) {
 	return function unmountVariableAsChildren(vTemplate, lifecycle) {
-		unmountTemplateValue(vTemplate.read(pointer), lifecycle);
+		unmountTemplateValue(readFromVTemplate(vTemplate, pointer), lifecycle);
 	};
 }
 
@@ -2291,11 +2322,11 @@ function mountProps(vElement, props, dom) {
 
 function mountVariableAsExpression(pointer, templateIsSVG) {
 	return function mountVariableAsExpression(vTemplate, dom, lifecycle, context, isSVG) {
-		var input = vTemplate.read(pointer);
+		var input = readFromVTemplate(vTemplate, pointer);
 
 		if (isNullOrUndef(input) || !isVNode(input)) {
 			input = normalise(input);
-			vTemplate.write(pointer, input);
+			writeToVTemplate(vTemplate, pointer, input);
 		}
 		return mount(input, dom, lifecycle, context, isSVG || templateIsSVG);
 	};
@@ -2303,14 +2334,20 @@ function mountVariableAsExpression(pointer, templateIsSVG) {
 
 function mountVariableAsChildren(pointer, templateIsSVG, childrenType) {
 	return function mountVariableAsChildren(vTemplate, dom, lifecycle, context, isSVG) {
-		return mountChildren(childrenType, vTemplate.read(pointer), dom, lifecycle, context, isSVG || templateIsSVG);
+		return mountChildren(
+			childrenType,
+			readFromVTemplate(vTemplate, pointer),
+			dom,
+			lifecycle,
+			context,
+			isSVG || templateIsSVG);
 	};
 }
 
 
 function mountVariableAsText(pointer) {
 	return function mountVariableAsText(vTemplate, textNode) {
-		textNode.nodeValue = vTemplate.read(pointer);
+		textNode.nodeValue = readFromVTemplate(vTemplate, pointer);
 	};
 }
 
@@ -2330,7 +2367,7 @@ function mountRefFromTemplate(ref) {
 		var value = ref;
 
 		if (isVariable(ref)) {
-			value = vTemplate.read(ref.pointer);
+			value = readFromVTemplate(vTemplate, ref.pointer);
 		}
 		if (isFunction(value)) {
 			lifecycle.addListener(function () { return value(dom); });
@@ -2343,7 +2380,7 @@ function mountRefFromTemplate(ref) {
 
 function mountSpreadPropsFromTemplate(pointer, templateIsSVG) {
 	return function mountSpreadPropsFromTemplate(vTemplate, dom, lifecycle, context, isSVG) {
-		var props = vTemplate.read(pointer);
+		var props = readFromVTemplate(vTemplate, pointer);
 
 		var loop = function ( prop ) {
 			var value = props[prop];
@@ -2379,7 +2416,7 @@ function mountEmptyTextNode(vTemplate, parentDom) {
 
 function mountTemplateClassName(pointer) {
 	return function mountTemplateClassName(vTemplate, dom) {
-		var className = vTemplate.read(pointer);
+		var className = readFromVTemplate(vTemplate, pointer);
 
 		if (!isNullOrUndef(className)) {
 			dom.className = className;
@@ -2389,7 +2426,7 @@ function mountTemplateClassName(pointer) {
 
 function mountTemplateStyle(pointer) {
 	return function mountTemplateStyle(vTemplate, dom) {
-		patchStyle(null, vTemplate.read(pointer), dom);
+		patchStyle(null, readFromVTemplate(vTemplate, pointer), dom);
 	};
 }
 
@@ -2403,7 +2440,7 @@ function mountTemplateProps(propsToMount, tag) {
 			var value = propsToMount[i + 1];
 
 			if (isVariable(value)) {
-				value = vTemplate.read(value.pointer);
+				value = readFromVTemplate(vTemplate, value.pointer);
 			}
 			if (prop === 'value') {
 				formValue = value;
