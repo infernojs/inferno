@@ -152,7 +152,7 @@ export function createTemplaceReducers(
 		schema: null,
 		pools: {
 			nonKeyed: [],
-			keyed: {}
+			keyed: new Map()
 		},
 		mount,
 		patch,

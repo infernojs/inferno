@@ -263,8 +263,9 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 	return NO_OP;
 };
 
+var funcProto = Function.prototype;
 /** Used to resolve the decompiled source of functions. */
-var funcToString = Function.prototype.toString;
+var funcToString = funcProto.toString;
 
 /** Used to infer the `Object` constructor. */
 var objectCtorString = funcToString.call(Object);

@@ -139,7 +139,7 @@ function createTemplaceReducers(
 		schema: null,
 		pools: {
 			nonKeyed: [],
-			keyed: {}
+			keyed: new Map()
 		},
 		mount: mount,
 		patch: patch,
