@@ -280,7 +280,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		}
 		if (!isNullOrUndef(hooks)) {
 			if (!isNullOrUndef(hooks.onComponentWillMount)) {
-				hooks.onComponentWillMount(null, props);
+				hooks.onComponentWillMount(props);
 			}
 			if (!isNullOrUndef(hooks.onComponentDidMount)) {
 				lifecycle.addListener(() => hooks.onComponentDidMount(dom, props));

@@ -24,7 +24,7 @@ export function unmount(input, parentDom, lifecycle, canRecycle) {
 		} else if (isVElement(input)) {
 			unmountVElement(input, parentDom, lifecycle);
 		} else if (isVComponent(input)) {
-			unmountVComponent(input, parentDom, lifecycle);
+			unmountVComponent(input, parentDom, lifecycle, canRecycle);
 		} else if (isVText(input)) {
 			unmountVText(input, parentDom);
 		} else if (isVPlaceholder(input)) {
@@ -82,7 +82,7 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle)
 	}
 }
 
-export function unmountVComponent(vComponent, parentDom, lifecycle) {
+export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle) {
 	const instance = vComponent.instance;
 	let instanceHooks = null;
 	let instanceChildren = null;
@@ -99,16 +99,16 @@ export function unmountVComponent(vComponent, parentDom, lifecycle) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
 			componentToDOMNodeMap.delete(instance);
-			unmount(instance._lastInput, null, lifecycle, false);
+			unmount(instance._lastInput, null, lifecycle, canRecycle);
 		} else {
-			unmount(instance, null, lifecycle, false);
+			unmount(instance, null, lifecycle, canRecycle);
 		}
 	}
 	const hooks = vComponent.hooks || instanceHooks;
 
 	if (!isNullOrUndef(hooks)) {
 		if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-			hooks.onComponentWillUnmount(vComponent.dom, hooks);
+			hooks.onComponentWillUnmount(hooks);
 		}
 	}
 	if (parentDom) {

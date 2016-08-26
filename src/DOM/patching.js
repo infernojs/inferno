@@ -435,11 +435,11 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 			nextVComponent.dom = lastVComponent.dom;
 			nextVComponent.instance = lastInput;
 			if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
-				shouldUpdate = nextHooks.onComponentShouldUpdate(lastVComponent.dom, lastProps, nextProps);
+				shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps, nextProps);
 			}
 			if (shouldUpdate !== false) {
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
-					nextHooks.onComponentWillUpdate(lastVComponent.dom, lastProps, nextProps);
+					nextHooks.onComponentWillUpdate(lastProps, nextProps);
 				}
 				let nextInput = nextComponent(nextProps, context);
 
@@ -451,7 +451,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				patch(lastInput, nextInput, parentDom, lifecycle, context, null, null, false);
 				nextVComponent.instance = nextInput;
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
-					nextHooks.onComponentDidUpdate(lastInput.dom, lastProps, nextProps);
+					nextHooks.onComponentDidUpdate(lastProps, nextProps);
 				}
 			}
 		}

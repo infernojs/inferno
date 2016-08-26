@@ -622,11 +622,11 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
 			nextVComponent.dom = lastVComponent.dom;
 			nextVComponent.instance = lastInput$1;
 			if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
-				shouldUpdate = nextHooks.onComponentShouldUpdate(lastVComponent.dom, lastProps$1, nextProps);
+				shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps$1, nextProps);
 			}
 			if (shouldUpdate !== false) {
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
-					nextHooks.onComponentWillUpdate(lastVComponent.dom, lastProps$1, nextProps);
+					nextHooks.onComponentWillUpdate(lastProps$1, nextProps);
 				}
 				var nextInput$1 = nextComponent(nextProps, context);
 
@@ -638,7 +638,7 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
 				patch(lastInput$1, nextInput$1, parentDom, lifecycle, context, null, null, false);
 				nextVComponent.instance = nextInput$1;
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
-					nextHooks.onComponentDidUpdate(lastInput$1.dom, lastProps$1, nextProps);
+					nextHooks.onComponentDidUpdate(lastProps$1, nextProps);
 				}
 			}
 		}
@@ -742,7 +742,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 	}
 	// Step 1
 	/* eslint no-constant-condition: 0 */
-	outer: do {
+	outer: while (true) {
 		// Sync nodes with the same key at the beginning.
 		while (aStartNode.key === bStartNode.key) {
 			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG);
@@ -767,6 +767,22 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 			bEndNode = b[bEnd];
 		}
 
+		// Move and sync nodes from right to left.
+		if (aEndNode.key === bStartNode.key) {
+			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
+			insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
+			aEnd--;
+			bStart++;
+			if (aStart > aEnd || bStart > bEnd) {
+				break;
+			}
+			aEndNode = a[aEnd];
+			bStartNode = b[bStart];
+			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
+			// immediately jump to the start of this prefix/suffix algo.
+			continue;
+		}
+
 		// Move and sync nodes from left to right.
 		if (aStartNode.key === bEndNode.key) {
 			patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG);
@@ -776,29 +792,14 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList) {
 			aStart++;
 			bEnd--;
 			if (aStart > aEnd || bStart > bEnd) {
-				break outer;
+				break;
 			}
 			aStartNode = a[aStart];
 			bEndNode = b[bEnd];
-			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
-			// immediately jump to the start of this prefix/suffix algo.
-			continue outer;
+			continue;
 		}
-
-		// Move and sync nodes from right to left.
-		if (aEndNode.key === bStartNode.key) {
-			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
-			insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
-			aEnd--;
-			bStart++;
-			if (aStart > aEnd || bStart > bEnd) {
-				break outer;
-			}
-			aEndNode = a[aEnd];
-			bStartNode = b[bStart];
-			continue outer;
-		}
-	} while (false);
+		break;
+	}
 
 	if (aStart > aEnd) {
 		if (bStart <= bEnd) {
@@ -1177,7 +1178,7 @@ function unmount(input, parentDom, lifecycle, canRecycle) {
 		} else if (isVElement(input)) {
 			unmountVElement(input, parentDom, lifecycle);
 		} else if (isVComponent(input)) {
-			unmountVComponent(input, parentDom, lifecycle);
+			unmountVComponent(input, parentDom, lifecycle, canRecycle);
 		} else if (isVText(input)) {
 			unmountVText(input, parentDom);
 		} else if (isVPlaceholder(input)) {
@@ -1235,7 +1236,7 @@ function unmountVFragment(vFragment, parentDom, removePointer, lifecycle) {
 	}
 }
 
-function unmountVComponent(vComponent, parentDom, lifecycle) {
+function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle) {
 	var instance = vComponent.instance;
 	var instanceHooks = null;
 	var instanceChildren = null;
@@ -1252,16 +1253,16 @@ function unmountVComponent(vComponent, parentDom, lifecycle) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
 			componentToDOMNodeMap.delete(instance);
-			unmount(instance._lastInput, null, lifecycle, false);
+			unmount(instance._lastInput, null, lifecycle, canRecycle);
 		} else {
-			unmount(instance, null, lifecycle, false);
+			unmount(instance, null, lifecycle, canRecycle);
 		}
 	}
 	var hooks = vComponent.hooks || instanceHooks;
 
 	if (!isNullOrUndef(hooks)) {
 		if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-			hooks.onComponentWillUnmount(vComponent.dom, hooks);
+			hooks.onComponentWillUnmount(hooks);
 		}
 	}
 	if (parentDom) {
@@ -1696,7 +1697,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		}
 		if (!isNullOrUndef(hooks)) {
 			if (!isNullOrUndef(hooks.onComponentWillMount)) {
-				hooks.onComponentWillMount(null, props);
+				hooks.onComponentWillMount(props);
 			}
 			if (!isNullOrUndef(hooks.onComponentDidMount)) {
 				lifecycle.addListener(function () { return hooks.onComponentDidMount(dom, props); });

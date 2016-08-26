@@ -2,6 +2,7 @@
 	"use strict";
 
 	var t = Inferno.createVTemplate;
+	var c = Inferno.createVComponent;
 	var e = Inferno.createVElement;
 	var ChildrenTypes = Inferno.ChildrenTypes;
 
@@ -68,15 +69,16 @@
 	}
 
 	function onClick(e) {
-		console.log('Clicked' + e.target.xtag);
+		console.log('Clicked ' + e.target.value);
 		e.stopPropagation();
 	}
+
+	document.addEventListener('click', onClick);
 
 	var tableCellTpl = t(function (text, key) {
 		return e('td', { 
 			className: 'TableCell',
-			'xtag': text,
-			onclick: onClick
+			value: text
 		}, text, key, null, ChildrenTypes.TEXT);
 	}, InfernoDOM);
 
@@ -84,7 +86,8 @@
 		return e('tr', { className: classes, 'data-id': id }, children, id, null, ChildrenTypes.KEYED_LIST);
 	}, InfernoDOM);
 
-	function tableRow(data) {
+	function TableRow(props) {
+		var data = props.data
 		var classes = 'TableRow';
 
 		if (data.active) {
@@ -114,7 +117,7 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = tableRow(item);
+			children[i] = c(TableRow, { data: item }, null, shouldDataUpdate, null);
 		}
 		return tableTpl(children);
 	}
@@ -123,7 +126,8 @@
 		return e('div', { className: 'Main' }, section, null, null, ChildrenTypes.NODE);
 	}, InfernoDOM);
 
-	function main(data) {
+	function Main(props) {
+		var data = props.data;
 		var location = data.location;
 		var section;
 
@@ -141,12 +145,18 @@
 		return e('pre', null, text, null, null, ChildrenTypes.TEXT);
 	}, InfernoDOM);
 
+	const shouldDataUpdate = {
+		onComponentShouldUpdate: function(lastProps, nextProps) {
+			return lastProps.data !== nextProps.data;
+		}
+	};
+
 	document.addEventListener('DOMContentLoaded', function(e) {
 		var container = document.querySelector('#App');
 
 		uibench.run(
 			function(state) {
-				InfernoDOM.render(main(state), container);
+				InfernoDOM.render(c(Main, { data: state }, null, shouldDataUpdate, null), container);
 			},
 			function(samples) {
 				InfernoDOM.render(preTpl(JSON.stringify(samples, null, ' ')), container);

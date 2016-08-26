@@ -257,12 +257,12 @@ common hooks directly onto components and DOM nodes. Below is the table of all p
 | Name                      | Triggered when                                                          | Arguments to callback              |
 | -----------               | --------------                                                          | -----------------------            |
 | `ref`                     | a DOM node has just been mounted / unmounted                            | `domNode` if mounted `null` if not |
-| `onComponentWillMount`    | a stateless function component is about to mount                        | `domNode, props`                   |
+| `onComponentWillMount`    | a stateless function component is about to mount                        | `props`                            |
 | `onComponentDidMount`     | a stateless function component has mounted successfully                 | `domNode, props`                   |
-| `onComponentWillUnmount`  | a stateless function component is about to be unmounted                 | `domNode, props`                   |
-| `onComponentShouldUpdate` | a stateless function component has been triggered to updated            | `domNode, lastProps, nextProps`    |
-| `onComponentWillUpdate`   | a stateless function component is about to perform an update            | `domNode, lastProps, nextProps`    |
-| `onComponentDidUpdate`    | a stateless function component has performed an updated                 | `domNode, props`                   |
+| `onComponentWillUnmount`  | a stateless function component is about to be unmounted                 | `props`                            |
+| `onComponentShouldUpdate` | a stateless function component has been triggered to updated            | `lastProps, nextProps`             |
+| `onComponentWillUpdate`   | a stateless function component is about to perform an update            | `lastProps, nextProps`             |
+| `onComponentDidUpdate`    | a stateless function component has performed an updated                 | `props`                            |
 
 ### Using hooks
 
