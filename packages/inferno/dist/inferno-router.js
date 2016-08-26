@@ -9,15 +9,6 @@
     (global.InfernoRouter = factory());
 }(this, (function () { 'use strict';
 
-var testFunc = function testFn() {};
-warning(
-	(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
-	'It looks like you\'re using a minified copy of the development build ' +
-	'of Inferno. When deploying Inferno apps to production, make sure to use ' +
-	'the production build which skips development warnings and is faster. ' +
-	'See http://infernojs.org for more details.'
-);
-
 var NO_OP = 'NO_OP';
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
@@ -46,12 +37,6 @@ function throwError(message) {
 		message = ERROR_MSG;
 	}
 	throw new Error(("Inferno Error: " + message));
-}
-
-function warning(condition, message) {
-	if (!condition) {
-		console.error(message);
-	}
 }
 
 var ChildrenTypes = {
@@ -327,7 +312,9 @@ Component.prototype.setState = function setState (newState, callback) {
 	if (this._blockSetState === false) {
 		queueStateChanges(this, newState, callback);
 	} else {
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			throwError('cannot update state via setState() in componentWillUpdate().');
+		}
 		throwError();
 	}
 };

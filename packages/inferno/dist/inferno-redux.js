@@ -23,15 +23,6 @@ Lifecycle.prototype.trigger = function trigger () {
 	}
 };
 
-var testFunc = function testFn() {};
-warning(
-	(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
-	'It looks like you\'re using a minified copy of the development build ' +
-	'of Inferno. When deploying Inferno apps to production, make sure to use ' +
-	'the production build which skips development warnings and is faster. ' +
-	'See http://infernojs.org for more details.'
-);
-
 var NO_OP = 'NO_OP';
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
@@ -65,12 +56,6 @@ function throwError(message) {
 		message = ERROR_MSG;
 	}
 	throw new Error(("Inferno Error: " + message));
-}
-
-function warning(condition, message) {
-	if (!condition) {
-		console.error(message);
-	}
 }
 
 var NodeTypes = {
@@ -217,7 +202,9 @@ Component.prototype.setState = function setState (newState, callback) {
 	if (this._blockSetState === false) {
 		queueStateChanges(this, newState, callback);
 	} else {
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			throwError('cannot update state via setState() in componentWillUpdate().');
+		}
 		throwError();
 	}
 };
@@ -330,6 +317,28 @@ module.exports = interopDefault(require$$0)(commonjsGlobal || window || commonjs
 
 interopDefault(index$1);
 
+/**
+ * Prints a warning in the console if it exists.
+ *
+ * @param {String} message The warning message.
+ * @returns {void}
+ */
+function warning$2(message) {
+  /* eslint-disable no-console */
+  if (typeof console !== 'undefined' && typeof console.error === 'function') {
+    console.error(message);
+  }
+  /* eslint-enable no-console */
+  try {
+    // This error was thrown as a convenience so that if you enable
+    // "break on all exceptions" in your console,
+    // it would pause the execution at this line.
+    throw new Error(message);
+    /* eslint-disable no-empty */
+  } catch (e) {}
+  /* eslint-enable no-empty */
+}
+
 function bindActionCreator(actionCreator, dispatch) {
   return function () {
     return dispatch(actionCreator.apply(undefined, arguments));
@@ -376,6 +385,16 @@ function bindActionCreators(actionCreators, dispatch) {
     }
   }
   return boundActionCreators;
+}
+
+/*
+* This is a dummy function to check if the function name has been altered by minification.
+* If the function has been minified and NODE_ENV !== 'production', warn the user.
+*/
+function isCrushed() {}
+
+if ("development" !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+  warning$2('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
 }
 
 /**
@@ -428,6 +447,18 @@ function wrapActionCreators(actionCreators) {
 	return function (dispatch) { return bindActionCreators(actionCreators, dispatch); };
 }
 
+var didWarnAboutReceivingStore = false;
+function warnAboutReceivingStore() {
+	if (didWarnAboutReceivingStore) {
+		return;
+	}
+	didWarnAboutReceivingStore = true;
+
+	warning$1(
+		'<Provider> does not support changing `store` on the fly.'
+	);
+}
+
 var Provider = (function (Component) {
 	function Provider(props, context) {
 		Component.call(this, props, context);
@@ -452,6 +483,18 @@ var Provider = (function (Component) {
 
 	return Provider;
 }(Component));
+
+if ("development" !== 'production') {
+	Provider.prototype.componentWillReceiveProps = function (nextProps) {
+		var ref = this;
+		var store = ref.store;
+		var nextStore = nextProps.store;
+
+		if (store !== nextStore) {
+			warnAboutReceivingStore();
+		}
+	};
+}
 
 var index$2 = createCommonjsModule(function (module) {
 'use strict';
@@ -528,7 +571,7 @@ var invariant = createCommonjsModule(function (module) {
  * will remain to ensure logic does not differ in production.
  */
 
-var NODE_ENV = "production";
+var NODE_ENV = "development";
 
 var invariant = function(condition, format, a, b, c, d, e, f) {
   if (NODE_ENV !== 'production') {
@@ -620,7 +663,9 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 		}
 		function computeMergedProps(stateProps, dispatchProps, parentProps) {
 			var mergedProps = finalMergeProps(stateProps, dispatchProps, parentProps);
-			if ("production" !== 'production') {}
+			if ("development" !== 'production') {
+				checkStateShape(mergedProps, 'mergeProps');
+			}
 			return mergedProps;
 		}
 
@@ -856,7 +901,17 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 		Connect.displayName = connectDisplayName;
 		Connect.WrappedComponent = WrappedComponent;
 
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			Connect.prototype.componentWillUpdate = function componentWillUpdate() {
+				if (this.version === version) {
+					return;
+				}
+				// We are hot reloading!
+				this.version = version;
+				this.trySubscribe();
+				this.clearCache();
+			};
+		}
 		return hoistStatics(Connect, WrappedComponent);
 	};
 }

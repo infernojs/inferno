@@ -9,15 +9,6 @@
 	(global.InfernoCreateElement = factory());
 }(this, (function () { 'use strict';
 
-var testFunc = function testFn() {};
-warning(
-	(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
-	'It looks like you\'re using a minified copy of the development build ' +
-	'of Inferno. When deploying Inferno apps to production, make sure to use ' +
-	'the production build which skips development warnings and is faster. ' +
-	'See http://infernojs.org for more details.'
-);
-
 function isInvalid(obj) {
 	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
@@ -44,12 +35,6 @@ function isUndefined(obj) {
 
 function isObject(o) {
 	return typeof o === 'object';
-}
-
-function warning(condition, message) {
-	if (!condition) {
-		console.error(message);
-	}
 }
 
 var ChildrenTypes = {

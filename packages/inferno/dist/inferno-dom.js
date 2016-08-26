@@ -23,15 +23,6 @@ Lifecycle.prototype.trigger = function trigger () {
 	}
 };
 
-var testFunc = function testFn() {};
-warning(
-	(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
-	'It looks like you\'re using a minified copy of the development build ' +
-	'of Inferno. When deploying Inferno apps to production, make sure to use ' +
-	'the production build which skips development warnings and is faster. ' +
-	'See http://infernojs.org for more details.'
-);
-
 var NO_OP = 'NO_OP';
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
@@ -92,12 +83,6 @@ function throwError(message) {
 		message = ERROR_MSG;
 	}
 	throw new Error(("Inferno Error: " + message));
-}
-
-function warning(condition, message) {
-	if (!condition) {
-		console.error(message);
-	}
 }
 
 var ChildrenTypes = {
@@ -287,7 +272,9 @@ function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 		} else if (isVText(lastInput)) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
 		} else {
-			if ("production" !== 'production') {}
+			if ("development" !== 'production') {
+				throwError('bad input argument called on patch(). Input argument may need normalising.');
+			}
 			throwError();
 		}
 	}
@@ -305,7 +292,9 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
 	} else if (isUnknownChildrenType(childrenType)) {
 		patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
 	} else {
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			throwError('bad childrenType value specified when attempting to patchChildren.');
+		}
 		throwError();
 	}
 }
@@ -466,7 +455,9 @@ function patchProp(prop, lastValue, nextValue, dom) {
 				var nextHtml = nextValue && nextValue.__html;
 
 				if (isNullOrUndef(nextHtml)) {
-					if ("production" !== 'production') {}
+					if ("development" !== 'production') {
+						throwError('dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
+					}
 					throwError();
 				}
 				if (lastHtml !== nextHtml) {
@@ -1141,7 +1132,9 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 			if (isFunction(ref)) {
 				lifecycle.addListener(function () { return ref(instance); });
 			} else {
-				if ("production" !== 'production') {}
+				if ("development" !== 'production') {
+					throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+				}
 				throwError();
 			}
 		}
@@ -1176,7 +1169,9 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
 	var tag = vElement.tag;
 
 	if (!isString(tag)) {
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			throwError('expects VElement to have a string as the tag name');
+		}
 		throwError();
 	}
 	var children = vElement.children;
@@ -1211,7 +1206,9 @@ function hydrateChildren(childrenType, children, dom, lifecycle, context) {
 	} else if (isUnknownChildrenType(childrenType)) {
 		hydrateChildrenWithUnknownType(children, dom);
 	} else if (!isTextChildrenType(childrenType)) {
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			throwError('Bad childrenType value specified when attempting to hydrateChildren.');
+		}
 		throwError();
 	}
 }
@@ -1230,7 +1227,9 @@ function hydrate(input, dom, lifecycle, context) {
 	} else if (isVComponent(input)) {
 		hydrateVComponent(input, dom, lifecycle, context);
 	} else {
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			throwError('bad input argument called on hydrate(). Input argument may need normalising.');
+		}
 		throwError();
 	}
 }
@@ -1498,7 +1497,9 @@ function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChild
 			unmount = combineUnmount(nodeIndex, unmounters);
 			hydrate = combineHydrate(nodeIndex, path, hydraters);
 		} else if (isVComponent(vNode)) {
-			if ("production" !== 'production') {}
+			if ("development" !== 'production') {
+				throwError('templates cannot contain VComponent nodes. Pass a VComponent node into a template as a variable instead.');
+			}
 			throwError();
 		}
 		return createTemplaceReducers(keyIndex, mount, patch, unmount, hydrate);
@@ -2133,7 +2134,9 @@ function mount(input, parentDom, lifecycle, context, isSVG) {
 	} else if (isVComponent(input)) {
 		return mountVComponent(input, parentDom, lifecycle, context, isSVG);
 	} else {
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			throwError('bad input argument called on mount(). Input argument may need normalising.');
+		}
 		throwError();
 	}
 }
@@ -2159,7 +2162,9 @@ function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	var tag = vElement.tag;
 
 	if (!isString(tag)) {
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			throwError('expects VElement to have a string as the tag name');
+		}
 		throwError();
 	}
 	if (tag === 'svg') {
@@ -2278,7 +2283,9 @@ function mountChildren(childrenType, children, dom, lifecycle, context, isSVG) {
 	} else if (isUnknownChildrenType(childrenType)) {
 		mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG);
 	} else {
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			throwError('bad childrenType value specified when attempting to mountChildren.');
+		}
 		throwError();
 	}
 }
@@ -2292,7 +2299,9 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 
 	if (isStatefulComponent(vComponent)) {
 		if (hooks) {
-			if ("production" !== 'production') {}
+			if ("development" !== 'production') {
+				throwError('"hooks" are not supported on stateful components.');
+			}
 			throwError();
 		}
 		var instance = new Component(props, context);
@@ -2323,7 +2332,9 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 			if (isFunction(ref)) {
 				lifecycle.addListener(function () { return ref(instance); });
 			} else {
-				if ("production" !== 'production') {}
+				if ("development" !== 'production') {
+					throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+				}
 				throwError();
 			}
 		}
@@ -2337,7 +2348,9 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		vComponent.instance = instance;
 	} else {
 		if (ref) {
-			if ("production" !== 'production') {}
+			if ("development" !== 'production') {
+				throwError('"refs" are not supported on stateless components.');
+			}
 			throwError();
 		}
 		if (!isNullOrUndef(hooks)) {
@@ -2433,7 +2446,9 @@ function mountRefFromTemplate(ref) {
 		if (isFunction(value)) {
 			lifecycle.addListener(function () { return value(dom); });
 		} else {
-			if ("production" !== 'production') {}
+			if ("development" !== 'production') {
+				throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+			}
 			throwError();
 		}
 	};
@@ -2452,7 +2467,9 @@ function mountSpreadPropsFromTemplate(pointer, templateIsSVG) {
 				if (isFunction(value)) {
 					lifecycle.addListener(function () { return value(dom); });
 				} else {
-					if ("production" !== 'production') {}
+					if ("development" !== 'production') {
+						throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+					}
 					throwError();
 				}
 			} else if (prop === 'children') {
@@ -2528,7 +2545,9 @@ function render(input, parentDom) {
 	var lifecycle = new Lifecycle();
 
 	if (documetBody === parentDom) {
-		if ("production" !== 'production') {}
+		if ("development" !== 'production') {
+			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
+		}
 		throwError();
 	}
 

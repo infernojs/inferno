@@ -9,15 +9,6 @@
 	(global.Inferno = factory());
 }(this, (function () { 'use strict';
 
-var testFunc = function testFn() {};
-warning(
-	(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
-	'It looks like you\'re using a minified copy of the development build ' +
-	'of Inferno. When deploying Inferno apps to production, make sure to use ' +
-	'the production build which skips development warnings and is faster. ' +
-	'See http://infernojs.org for more details.'
-);
-
 function isUndefined(obj) {
 	return obj === undefined;
 }
@@ -275,6 +266,17 @@ function isVComponent(o) {
 	return o.type === NodeTypes.COMPONENT;
 }
 
+if ("development" !== 'production') {
+	var testFunc = function testFn() {};
+	warning(
+		(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
+		'It looks like you\'re using a minified copy of the development build ' +
+		'of Inferno. When deploying Inferno apps to production, make sure to use ' +
+		'the production build which skips development warnings and is faster. ' +
+		'See http://infernojs.org for more details.'
+	);
+}
+
 var index = {
 	createVTemplate: createVTemplateFactory,
 	createVComponent: createVComponent,
@@ -282,7 +284,8 @@ var index = {
 	createVText: createVText,
 	createVFragment: createVFragment,
 	ChildrenTypes: ChildrenTypes,
-	cloneVNode: cloneVNode
+	cloneVNode: cloneVNode,
+	convertVTemplate: convertVTemplate
 };
 
 return index;

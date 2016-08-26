@@ -8,7 +8,7 @@
 	uibench.init('Inferno', '0.8.0-alpha4');
 
 	var treeLeafTpl = t(function (id) {
-		return e('li', { className: 'TreeLeaf' }, id, id, ChildrenTypes.TEXT);
+		return e('li', { className: 'TreeLeaf' }, id, id, null, ChildrenTypes.TEXT);
 	}, InfernoDOM);
 
 	var treeNodeTpl = t(function (children, key) {
@@ -120,7 +120,7 @@
 	}
 
 	var mainTpl = t(function (section) {
-		return e('div').props({ className: 'Main' }).children(section).childrenType(ChildrenTypes.NODE);
+		return e('div', { className: 'Main' }, section, null, null, ChildrenTypes.NODE);
 	}, InfernoDOM);
 
 	function main(data) {
@@ -138,7 +138,7 @@
 	}
 
 	var preTpl = t(function (text) {
-		return e('pre').children(text).childrenType(ChildrenTypes.TEXT);
+		return e('pre', null, text, null, null, ChildrenTypes.TEXT);
 	}, InfernoDOM);
 
 	document.addEventListener('DOMContentLoaded', function(e) {

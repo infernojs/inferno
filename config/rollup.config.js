@@ -24,10 +24,6 @@ const plugins = [
 	commonjs({
 		include: 'node_modules/**',
 		exclude: '**/*.css'
-	}),
-	replace({
-		'process.env.NODE_ENV': JSON.stringify('production'),
-		VERSION: pack.version
 	})
 ];
 
@@ -47,6 +43,19 @@ if (process.env.NODE_ENV === 'production') {
 			}
 		})
 	);
+	plugins.push(
+		replace({
+			VERSION: pack.version,
+			'process.env.NODE_ENV': JSON.stringify('production')
+		})
+	)
+} else {
+	plugins.push(
+		replace({
+			VERSION: pack.version,
+			'process.env.NODE_ENV': JSON.stringify('development')
+		})
+	)
 }
 
 // Filesize plugin needs to be last to report correct filesizes when minified
