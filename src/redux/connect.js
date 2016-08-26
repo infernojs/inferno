@@ -279,11 +279,13 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 					return renderedElement;
 				}
 				if (withRef) {
-					this.renderedElement = createVComponent(WrappedComponent)
-						.props(Object.assign({}, this.mergedProps, { ref: 'wrappedInstance' }));
+					this.renderedElement = createVComponent(WrappedComponent,
+						Object.assign({}, this.mergedProps, { ref: 'wrappedInstance' })
+					);
 				} else {
-					this.renderedElement = createVComponent(WrappedComponent)
-						.props(this.mergedProps);
+					this.renderedElement = createVComponent(WrappedComponent,
+						this.mergedProps
+					);
 				}
 				return this.renderedElement;
 			}

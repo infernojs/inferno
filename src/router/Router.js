@@ -1,7 +1,7 @@
 import Component from '../component/es2015';
 import { isArray, isNull } from '../core/utils';
 import { exec, convertToHashbang, pathRankSort } from './utils';
-import { createVComponent } from '../core/shapes';
+import { createVComponent, cloneVNode } from '../core/shapes';
 
 export default class Router extends Component {
 	constructor(props, context) {
@@ -49,12 +49,14 @@ export default class Router extends Component {
 			}
 			if (params) {
 				if (wrapperComponent) {
-					return createVComponent(wrapperComponent).props({
+					return createVComponent(wrapperComponent, {
 						params,
 						children: route
 					});
 				}
-				return route.props(Object.assign({}, { params }, route.props));
+				return cloneVNode(route, {
+					params
+				});
 			}
 		}
 		if (!lastPath && wrapperComponent) {

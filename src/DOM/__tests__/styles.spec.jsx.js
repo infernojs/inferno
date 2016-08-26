@@ -13,7 +13,7 @@ const InfernoDOM = {
 
 function styleNode() {
 	return createVTemplate(function (style) {
-		return createVElement('div').style(style);
+		return createVElement('div', { style });
 	}, InfernoDOM);
 }
 

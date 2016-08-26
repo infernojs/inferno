@@ -9,7 +9,7 @@ import {
 } from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
 import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
-import { isVElement, isVComponent, isVTemplate } from './../core/shapes';
+import { isVElement, isVComponent, isVTemplate, convertVTemplate } from './../core/shapes';
 
 function renderComponentToString(vComponent, isRoot, context) {
 	const Component = vComponent.component;
@@ -133,22 +133,8 @@ function renderVElementToString(vElement, isRoot, context) {
 	}
 }
 
-function getTemplateValues(vTemplate) {
-	const values = [];
-	const v0 = vTemplate._v0;
-	const v1 = vTemplate._v1;
-
-	if (v0) {
-		values.push(v0);
-	}
-	if (v1) {
-		values.push(...v1);
-	}
-	return values;
-}
-
 function renderVTemplateToString(vTemplate, isRoot, context) {
-	return renderInputToString(vTemplate.tr._schema.apply(null, getTemplateValues(vTemplate)), context, isRoot);
+	return renderInputToString(convertVTemplate(vTemplate), context, isRoot);
 }
 
 function renderInputToString(input, context, isRoot) {

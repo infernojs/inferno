@@ -14,8 +14,69 @@ export const NodeTypes = {
 	VARIABLE: 6
 };
 
-export function cloneVNode(vNodeToClone) {
-	// TODO
+export function cloneVNode(vNodeToClone, props, ...children) {
+	if (!props) {
+		props = {};
+	}
+	if (children.length > 0) {
+		if (children.length === 1) {
+			children = children[0];
+		}
+		if (!props.children) {
+			props.children = children;
+		} else {
+			if (isArray(children)) {
+				if (isArray(props.children)) {
+					props.children = props.children.concat(children);
+				} else {
+					props.children = [props.children].concat(children);
+				}
+			} else {
+				if (isArray(props.children)) {
+					props.children.push(children);
+				} else {
+					props.children = [props.children];
+					props.children.push(children);
+				}
+			}
+		}
+	}
+	if (isVComponent(vNodeToClone)) {
+		return createVComponent(vNodeToClone.component,
+			Object.assign({}, vNodeToClone.props, props),
+			vNodeToClone.key,
+			vNodeToClone.hooks,
+			vNodeToClone.ref
+		);
+	} else if (isVElement(vNodeToClone)) {
+		return createVElement(vNodeToClone.tag,
+			Object.assign({}, vNodeToClone.props, props),
+			props.children || children || vNodeToClone.children,
+			vNodeToClone.key,
+			vNodeToClone.ref,
+			ChildrenTypes.UNKNOWN
+		);
+	} else if (isVTemplate(vNodeToClone)) {
+		return cloneVNode(convertVTemplate(vNodeToClone, props, children));
+	}
+}
+
+function getTemplateValues(vTemplate) {
+	const values = [];
+	const v0 = vTemplate.v0;
+	const v1 = vTemplate.v1;
+
+	if (v0) {
+		values.push(v0);
+	}
+	if (v1) {
+		values.push(...v1);
+	}
+	return values;
+}
+
+export function convertVTemplate(vTemplate) {
+	return vTemplate.tr.schema.apply(null, getTemplateValues(vTemplate));
 }
 
 export function createVTemplateFactory(schema, renderer) {
@@ -38,7 +99,7 @@ export function createVTemplateFactory(schema, renderer) {
 	);
 	const keyIndex = templateReducers.keyIndex;
 
-	templateReducers._schema = schema;
+	templateReducers.schema = schema;
 	switch (argCount) {
 		case 0:
 			return () => creaetVTemplate(templateReducers, null, null, null);

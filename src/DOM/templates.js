@@ -140,8 +140,10 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 			}
 		} else if (isVText(vNode)) {
 			const text = vNode.text;
-			nodeIndex = offset.length++;
 
+			if (nodeIndex !== NULL_INDEX) {
+				nodeIndex = offset.length++;
+			}
 			if (isVariable(text)) {
 				mount = combineMountTo2(nodeIndex, mountEmptyTextNode, mountVariableAsText(text.pointer));
 				patch = combinePatchTo2(nodeIndex, patchVariableAsText(text.pointer));
@@ -225,6 +227,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 				}
 			}
 			const props = vNode.props;
+			let staticPropCount = 0;
 
 			if (!isNull(props)) {
 				if (isVariable(props)) {
@@ -245,13 +248,15 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 								patchers.push(patchTemplateStyle(value.pointer));
 							} else {
 								propsToMount.push(prop, value);
-								propsToPatch.push(prop, value.pointer);
+								propsToPatch.push(prop, value);
 							}
 						} else {
 							const shouldMountProp = patchProp(prop, null, value, dom);
 
 							if (shouldMountProp) {
 								propsToMount.push(prop, value);
+								propsToPatch.push(prop, value);
+								staticPropCount++;
 							}
 						}
 					}
@@ -269,7 +274,11 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 				mounters.push(mountRefFromTemplate(ref));
 			}
 			if (patchers.length > 0 && nodeIndex === NULL_INDEX) {
-				nodeIndex = offset.length++;
+				if (staticPropCount === patchers.length) {
+					nodeIndex = offset.length + 1;
+				} else {
+					nodeIndex = offset.length++;
+				}
 			}
 			mount = combineMount(nodeIndex, mountDOMNodeFromTemplate(dom, deepClone), mounters);
 			patch = combinePatch(nodeIndex, patchers);

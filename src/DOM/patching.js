@@ -50,7 +50,8 @@ import {
 	isVPlaceholder,
 	isVComponent,
 	isVTemplate,
-	isVNode
+	isVNode,
+	isVariable
 } from '../core/shapes';
 import { unmount } from './unmounting';
 import {
@@ -153,7 +154,9 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
 
 export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
 	if (isInvalid(nextChildren)) {
-		removeAllChildren(parentDom, lastChildren, lifecycle);
+		if (!isInvalid(lastChildren)) {
+			removeAllChildren(parentDom, lastChildren, lifecycle);
+		}
 	} else if (isInvalid(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
 			setTextContent(parentDom, nextChildren);
@@ -863,10 +866,14 @@ export function patchTemplateProps(propsToPatch, tag) {
 		}
 		for (let i = 0; i < propsToPatch.length; i += 2) {
 			const prop = propsToPatch[i];
-			const pointer = propsToPatch[i + 1];
-			const lastValue = readFromVTemplate(lastVTemplate, pointer);
-			const nextValue = readFromVTemplate(nextVTemplate, pointer);
+			const value = propsToPatch[i + 1];
+			let lastValue = value;
+			let nextValue = value;
 
+			if (isVariable(value)) {
+				lastValue = readFromVTemplate(lastVTemplate, value.pointer);
+				nextValue = readFromVTemplate(nextVTemplate, value.pointer);
+			}
 			if (prop === 'value') {
 				formValue = nextValue;
 			}

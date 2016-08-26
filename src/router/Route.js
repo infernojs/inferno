@@ -53,6 +53,6 @@ export default class Route extends Component {
 	render() {
 		const { component, params } = this.props;
 
-		return createVComponent(component).props({ params, async: this.state.async });
+		return createVComponent(component, { params, async: this.state.async });
 	}
 }
