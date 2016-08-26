@@ -175,4 +175,7 @@ export function resetFormInputProperties(dom) {
 	if (dom.checked) {
 		dom.checked = false;
 	}
+	if (dom.disabled) {
+		dom.disabled = false;
+	}
 }

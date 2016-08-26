@@ -39,7 +39,7 @@ var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment
 // Runs only once in applications lifetime
 var isBrowser = typeof window !== 'undefined' && window.document;
 
-function isArray(obj) {
+function isArray$1(obj) {
 	return obj instanceof Array;
 }
 
@@ -142,6 +142,24 @@ var NodeTypes = {
 	FRAGMENT: 5,
 	VARIABLE: 6
 };
+
+function getTemplateValues(vTemplate) {
+	var values = [];
+	var v0 = vTemplate.v0;
+	var v1 = vTemplate.v1;
+
+	if (v0) {
+		values.push(v0);
+	}
+	if (v1) {
+		values.push.apply(values, v1);
+	}
+	return values;
+}
+
+function convertVTemplate(vTemplate) {
+	return vTemplate.tr.schema.apply(null, getTemplateValues(vTemplate));
+}
 
 function createVComponent(
 	component,
@@ -334,12 +352,14 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
 
 function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG) {
 	if (isInvalid(nextChildren)) {
-		removeAllChildren(parentDom, lastChildren, lifecycle);
+		if (!isInvalid(lastChildren)) {
+			removeAllChildren(parentDom, lastChildren, lifecycle);
+		}
 	} else if (isInvalid(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
 			setTextContent(parentDom, nextChildren);
 		} else if (!isInvalid(nextChildren)) {
-			if (isArray(nextChildren)) {
+			if (isArray$1(nextChildren)) {
 				mountArrayChildrenWithoutType(nextChildren, parentDom, lifecycle, context, isSVG);
 			} else {
 				mount(nextChildren, parentDom, lifecycle, context, isSVG);
@@ -356,8 +376,8 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
 
 		child.dom = parentDom.firstChild;
 		patchChildrenWithUnknownType(child, nextChildren, parentDom, lifecycle, context, isSVG);
-	} else if (isArray(nextChildren)) {
-		if (isArray(lastChildren)) {
+	} else if (isArray$1(nextChildren)) {
+		if (isArray$1(lastChildren)) {
 			nextChildren.complex = lastChildren.complex;
 
 			if (isKeyed(lastChildren, nextChildren)) {
@@ -368,7 +388,7 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
 		} else {
 			patchNonKeyedChildren([lastChildren], nextChildren, parentDom, lifecycle, context, isSVG, null);
 		}
-	} else if (isArray(lastChildren)) {
+	} else if (isArray$1(lastChildren)) {
 		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null);
 	} else {
 		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
@@ -1059,7 +1079,7 @@ function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) 
 }
 
 function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
-	if (isArray(children)) {
+	if (isArray$1(children)) {
 		debugger;
 	} else if (!isInvalid(children) && !isStringOrNumber(children)) {
 		hydrate(children, dom.firstChild, lifecycle, context);
@@ -1223,9 +1243,13 @@ function unmountVComponent(vComponent, parentDom, lifecycle) {
 	var instanceChildren = null;
 
 	if (!isNullOrUndef(instance)) {
+		var ref = vComponent.ref;
+
+		if (ref) {
+			ref(null);
+		}
 		instanceHooks = instance.hooks;
 		instanceChildren = instance.children;
-
 		if (instance.render !== undefined) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
@@ -1250,16 +1274,15 @@ function unmountVComponent(vComponent, parentDom, lifecycle) {
 function unmountVElement(vElement, parentDom, lifecycle) {
 	var hooks = vElement.hooks;
 	var dom = vElement.dom;
+	var ref = vElement.ref;
 
-	if (!isNullOrUndef(hooks)) {
-		if (!isNullOrUndef(hooks.onWillDetach)) {
-			hooks.onWillDetach(vElement.dom);
-		}
+	if (ref) {
+		ref(null);
 	}
 	var children = vElement.children;
 
 	if (!isNullOrUndef(children)) {
-		if (isArray(children)) {
+		if (isArray$1(children)) {
 			for (var i = 0; i < children.length; i++) {
 				unmount(children[i], null, lifecycle);
 			}
@@ -1359,7 +1382,7 @@ function normalise(object) {
 		return createVText(object);
 	} else if (isInvalid(object)) {
 		return createVPlaceholder();
-	} else if (isArray(object)) {
+	} else if (isArray$1(object)) {
 		return createVFragment(object);
 	}
 	return object;
@@ -1428,7 +1451,7 @@ function formSelectValue(dom, value) {
 	var isMap = false;
 
 	if (!isNullOrUndef(value)) {
-		if (isArray(value)) {
+		if (isArray$1(value)) {
 			// Map vs Object v using reduce here for perf?
 			value = value.reduce(function (o, v) { return o.set(v, true); }, new Map());
 			isMap = true;
@@ -1574,7 +1597,7 @@ function mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG)
 }
 
 function mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG) {
-	if (isArray(children)) {
+	if (isArray$1(children)) {
 		mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
 	} else if (isStringOrNumber(children)) {
 		setTextContent(dom, children);
@@ -2118,7 +2141,7 @@ function renderComponentToString(vComponent, isRoot, context) {
 }
 
 function renderChildren(children, context) {
-	if (children && isArray(children)) {
+	if (children && isArray$1(children)) {
 		var childrenResult = [];
 		var insertComment = false;
 
@@ -2139,7 +2162,7 @@ function renderChildren(children, context) {
 					childrenResult.push(escapeText(child));
 				}
 				insertComment = true;
-			} else if (isArray(child)) {
+			} else if (isArray$1(child)) {
 				childrenResult.push('<!---->');
 				childrenResult.push(renderChildren(child));
 				childrenResult.push('<!--!-->');
@@ -2215,22 +2238,8 @@ function renderVElementToString(vElement, isRoot, context) {
 	}
 }
 
-function getTemplateValues(vTemplate) {
-	var values = [];
-	var v0 = vTemplate._v0;
-	var v1 = vTemplate._v1;
-
-	if (v0) {
-		values.push(v0);
-	}
-	if (v1) {
-		values.push.apply(values, v1);
-	}
-	return values;
-}
-
 function renderVTemplateToString(vTemplate, isRoot, context) {
-	return renderInputToString(vTemplate.tr._schema.apply(null, getTemplateValues(vTemplate)), context, isRoot);
+	return renderInputToString(convertVTemplate(vTemplate), context, isRoot);
 }
 
 function renderInputToString(input, context, isRoot) {

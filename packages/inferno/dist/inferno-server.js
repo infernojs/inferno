@@ -18,7 +18,7 @@ warning(
 	'See http://infernojs.org for more details.'
 );
 
-function isArray(obj) {
+function isArray$1(obj) {
 	return obj instanceof Array;
 }
 
@@ -73,6 +73,24 @@ var NodeTypes = {
 	FRAGMENT: 5,
 	VARIABLE: 6
 };
+
+function getTemplateValues(vTemplate) {
+	var values = [];
+	var v0 = vTemplate.v0;
+	var v1 = vTemplate.v1;
+
+	if (v0) {
+		values.push(v0);
+	}
+	if (v1) {
+		values.push.apply(values, v1);
+	}
+	return values;
+}
+
+function convertVTemplate(vTemplate) {
+	return vTemplate.tr.schema.apply(null, getTemplateValues(vTemplate));
+}
 
 function isVElement(o) {
 	return o.type === NodeTypes.ELEMENT;
@@ -172,7 +190,7 @@ function renderComponentToString(vComponent, isRoot, context) {
 }
 
 function renderChildren(children, context) {
-	if (children && isArray(children)) {
+	if (children && isArray$1(children)) {
 		var childrenResult = [];
 		var insertComment = false;
 
@@ -193,7 +211,7 @@ function renderChildren(children, context) {
 					childrenResult.push(escapeText(child));
 				}
 				insertComment = true;
-			} else if (isArray(child)) {
+			} else if (isArray$1(child)) {
 				childrenResult.push('<!---->');
 				childrenResult.push(renderChildren(child));
 				childrenResult.push('<!--!-->');
@@ -269,22 +287,8 @@ function renderVElementToString(vElement, isRoot, context) {
 	}
 }
 
-function getTemplateValues(vTemplate) {
-	var values = [];
-	var v0 = vTemplate._v0;
-	var v1 = vTemplate._v1;
-
-	if (v0) {
-		values.push(v0);
-	}
-	if (v1) {
-		values.push.apply(values, v1);
-	}
-	return values;
-}
-
 function renderVTemplateToString(vTemplate, isRoot, context) {
-	return renderInputToString(vTemplate.tr._schema.apply(null, getTemplateValues(vTemplate)), context, isRoot);
+	return renderInputToString(convertVTemplate(vTemplate), context, isRoot);
 }
 
 function renderInputToString(input, context, isRoot) {
@@ -426,7 +430,7 @@ var RenderStream = (function (Readable) {
 			return;
 		}
 
-		var childrenIsArray = isArray(children);
+		var childrenIsArray = isArray$1(children);
 		if (!childrenIsArray && !isInvalid(children)) {
 			return this.renderNode(children, context, false);
 		}
@@ -450,7 +454,7 @@ var RenderStream = (function (Readable) {
 						this$1.push(escapeText(child));
 					}
 					return true;
-				} else if (isArray(child)) {
+				} else if (isArray$1(child)) {
 					this$1.push('<!---->');
 					return Promise.resolve(this$1.renderChildren(child)).then(function (){
 						this$1.push('<!--!-->');

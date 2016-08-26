@@ -884,3 +884,42 @@ export function patchTemplateProps(propsToPatch, tag) {
 		}
 	};
 }
+
+export function patchSpreadPropsFromTemplate(pointer, templateIsSVG, tag) {
+	return function patchSpreadPropsFromTemplate(lastVTemplate, nextVTemplate, dom, lifecycle, context, isSVG) {
+		const lastProps = readFromVTemplate(lastVTemplate, pointer) || {};
+		const nextProps = readFromVTemplate(nextVTemplate, pointer) || {};
+		// used for form values only
+		let formValue;
+
+		for (let prop in nextProps) {
+			const lastValue = nextProps[prop];
+			const nextValue = nextProps[prop];
+
+			if (prop === 'key') {
+				nextVTemplate.key = nextValue;
+			} else if (prop === 'children') {
+				if (lastValue !== nextValue) {
+					patchChildrenWithUnknownType(lastValue, nextValue, dom, lifecycle, context, isSVG || templateIsSVG);
+				}
+			} else {
+				if (isNullOrUndef(nextValue)) {
+					removeProp(prop, dom);
+				} else {
+					patchProp(prop, lastValue, nextValue, dom);
+				}
+			}
+			if (prop === 'value') {
+				formValue = nextValue;
+			}
+		}
+		for (let prop in lastProps) {
+			if (isNullOrUndef(nextProps[prop])) {
+				removeProp(prop, dom);
+			}
+		}
+		if (tag === 'select') {
+			formSelectValue(dom, formValue);
+		}
+	};
+}

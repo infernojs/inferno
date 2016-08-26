@@ -45,7 +45,8 @@ import {
 	patchProp,
 	patchTemplateClassName,
 	patchTemplateStyle,
-	patchTemplateProps
+	patchTemplateProps,
+	patchSpreadPropsFromTemplate
 } from './patching';
 import {
 	hydrateVariableAsChildren,
@@ -232,6 +233,7 @@ export function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, 
 			if (!isNull(props)) {
 				if (isVariable(props)) {
 					mounters.push(mountSpreadPropsFromTemplate(props.pointer, isSVG));
+					patchers.push(patchSpreadPropsFromTemplate(props.pointer, isSVG));
 				} else {
 					const propsToMount = [];
 					const propsToPatch = [];

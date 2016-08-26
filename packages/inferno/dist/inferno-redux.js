@@ -37,10 +37,10 @@ var NO_OP = 'NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 function toArray(children) {
-	return isArray(children) ? children : (children ? [children] : children);
+	return isArray$1(children) ? children : (children ? [children] : children);
 }
 
-function isArray(obj) {
+function isArray$1(obj) {
 	return obj instanceof Array;
 }
 
@@ -276,9 +276,8 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 	return NO_OP;
 };
 
-var funcProto = Function.prototype;
 /** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
+var funcToString = Function.prototype.toString;
 
 /** Used to infer the `Object` constructor. */
 var objectCtorString = funcToString.call(Object);
@@ -841,11 +840,13 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 					return renderedElement;
 				}
 				if (withRef) {
-					this.renderedElement = createVComponent(WrappedComponent)
-						.props(Object.assign({}, this.mergedProps, { ref: 'wrappedInstance' }));
+					this.renderedElement = createVComponent(WrappedComponent,
+						Object.assign({}, this.mergedProps, { ref: 'wrappedInstance' })
+					);
 				} else {
-					this.renderedElement = createVComponent(WrappedComponent)
-						.props(this.mergedProps);
+					this.renderedElement = createVComponent(WrappedComponent,
+						this.mergedProps
+					);
 				}
 				return this.renderedElement;
 			};

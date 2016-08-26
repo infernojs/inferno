@@ -88,9 +88,13 @@ export function unmountVComponent(vComponent, parentDom, lifecycle) {
 	let instanceChildren = null;
 
 	if (!isNullOrUndef(instance)) {
+		const ref = vComponent.ref;
+
+		if (ref) {
+			ref(null);
+		}
 		instanceHooks = instance.hooks;
 		instanceChildren = instance.children;
-
 		if (instance.render !== undefined) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
@@ -115,11 +119,10 @@ export function unmountVComponent(vComponent, parentDom, lifecycle) {
 export function unmountVElement(vElement, parentDom, lifecycle) {
 	const hooks = vElement.hooks;
 	const dom = vElement.dom;
+	const ref = vElement.ref;
 
-	if (!isNullOrUndef(hooks)) {
-		if (!isNullOrUndef(hooks.onWillDetach)) {
-			hooks.onWillDetach(vElement.dom);
-		}
+	if (ref) {
+		ref(null);
 	}
 	const children = vElement.children;
 

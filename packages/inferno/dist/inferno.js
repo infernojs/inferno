@@ -48,8 +48,72 @@ var NodeTypes = {
 	VARIABLE: 6
 };
 
-function cloneVNode(vNodeToClone) {
-	// TODO
+function cloneVNode(vNodeToClone, props) {
+	var children = [], len = arguments.length - 2;
+	while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
+
+	if (!props) {
+		props = {};
+	}
+	if (children.length > 0) {
+		if (children.length === 1) {
+			children = children[0];
+		}
+		if (!props.children) {
+			props.children = children;
+		} else {
+			if (isArray(children)) {
+				if (isArray(props.children)) {
+					props.children = props.children.concat(children);
+				} else {
+					props.children = [props.children].concat(children);
+				}
+			} else {
+				if (isArray(props.children)) {
+					props.children.push(children);
+				} else {
+					props.children = [props.children];
+					props.children.push(children);
+				}
+			}
+		}
+	}
+	if (isVComponent(vNodeToClone)) {
+		return createVComponent(vNodeToClone.component,
+			Object.assign({}, vNodeToClone.props, props),
+			vNodeToClone.key,
+			vNodeToClone.hooks,
+			vNodeToClone.ref
+		);
+	} else if (isVElement(vNodeToClone)) {
+		return createVElement(vNodeToClone.tag,
+			Object.assign({}, vNodeToClone.props, props),
+			props.children || children || vNodeToClone.children,
+			vNodeToClone.key,
+			vNodeToClone.ref,
+			ChildrenTypes.UNKNOWN
+		);
+	} else if (isVTemplate(vNodeToClone)) {
+		return cloneVNode(convertVTemplate(vNodeToClone, props, children));
+	}
+}
+
+function getTemplateValues(vTemplate) {
+	var values = [];
+	var v0 = vTemplate.v0;
+	var v1 = vTemplate.v1;
+
+	if (v0) {
+		values.push(v0);
+	}
+	if (v1) {
+		values.push.apply(values, v1);
+	}
+	return values;
+}
+
+function convertVTemplate(vTemplate) {
+	return vTemplate.tr.schema.apply(null, getTemplateValues(vTemplate));
 }
 
 function createVTemplateFactory(schema, renderer) {
@@ -72,7 +136,7 @@ function createVTemplateFactory(schema, renderer) {
 	);
 	var keyIndex = templateReducers.keyIndex;
 
-	templateReducers._schema = schema;
+	templateReducers.schema = schema;
 	switch (argCount) {
 		case 0:
 			return function () { return creaetVTemplate(templateReducers, null, null, null); };
@@ -197,6 +261,18 @@ function createVFragment(
 		children: children,
 		childrenType: childrenType
 	};
+}
+
+function isVElement(o) {
+	return o.type === NodeTypes.ELEMENT;
+}
+
+function isVTemplate(o) {
+	return o.type === NodeTypes.TEMPLATE;
+}
+
+function isVComponent(o) {
+	return o.type === NodeTypes.COMPONENT;
 }
 
 var index = {

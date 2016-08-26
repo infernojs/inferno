@@ -25,7 +25,7 @@ var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment
 // Runs only once in applications lifetime
 var isBrowser = typeof window !== 'undefined' && window.document;
 
-function isArray(obj) {
+function isArray$1(obj) {
 	return obj instanceof Array;
 }
 
@@ -72,6 +72,74 @@ var NodeTypes = {
 	FRAGMENT: 5,
 	VARIABLE: 6
 };
+
+function cloneVNode(vNodeToClone, props) {
+	var children = [], len = arguments.length - 2;
+	while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
+
+	if (!props) {
+		props = {};
+	}
+	if (children.length > 0) {
+		if (children.length === 1) {
+			children = children[0];
+		}
+		if (!props.children) {
+			props.children = children;
+		} else {
+			if (isArray(children)) {
+				if (isArray(props.children)) {
+					props.children = props.children.concat(children);
+				} else {
+					props.children = [props.children].concat(children);
+				}
+			} else {
+				if (isArray(props.children)) {
+					props.children.push(children);
+				} else {
+					props.children = [props.children];
+					props.children.push(children);
+				}
+			}
+		}
+	}
+	if (isVComponent(vNodeToClone)) {
+		return createVComponent(vNodeToClone.component,
+			Object.assign({}, vNodeToClone.props, props),
+			vNodeToClone.key,
+			vNodeToClone.hooks,
+			vNodeToClone.ref
+		);
+	} else if (isVElement(vNodeToClone)) {
+		return createVElement(vNodeToClone.tag,
+			Object.assign({}, vNodeToClone.props, props),
+			props.children || children || vNodeToClone.children,
+			vNodeToClone.key,
+			vNodeToClone.ref,
+			ChildrenTypes.UNKNOWN
+		);
+	} else if (isVTemplate(vNodeToClone)) {
+		return cloneVNode(convertVTemplate(vNodeToClone, props, children));
+	}
+}
+
+function getTemplateValues(vTemplate) {
+	var values = [];
+	var v0 = vTemplate.v0;
+	var v1 = vTemplate.v1;
+
+	if (v0) {
+		values.push(v0);
+	}
+	if (v1) {
+		values.push.apply(values, v1);
+	}
+	return values;
+}
+
+function convertVTemplate(vTemplate) {
+	return vTemplate.tr.schema.apply(null, getTemplateValues(vTemplate));
+}
 
 function createVComponent(
 	component,
@@ -128,6 +196,18 @@ function createVPlaceholder() {
 		type: NodeTypes.PLACEHOLDER,
 		dom: null
 	};
+}
+
+function isVElement(o) {
+	return o.type === NodeTypes.ELEMENT;
+}
+
+function isVTemplate(o) {
+	return o.type === NodeTypes.TEMPLATE;
+}
+
+function isVComponent(o) {
+	return o.type === NodeTypes.COMPONENT;
 }
 
 var Lifecycle = function Lifecycle() {
@@ -366,7 +446,7 @@ var Route = (function (Component) {
 		var component = ref.component;
 		var params = ref.params;
 
-		return createVComponent(component).props({ params: params, async: this.state.async });
+		return createVComponent(component, { params: params, async: this.state.async });
 	};
 
 	return Route;
@@ -510,12 +590,14 @@ var Router = (function (Component) {
 			}
 			if (params) {
 				if (wrapperComponent) {
-					return createVComponent(wrapperComponent).props({
+					return createVComponent(wrapperComponent, {
 						params: params,
 						children: route
 					});
 				}
-				return route.props(Object.assign({}, { params: params }, route.props));
+				return cloneVNode(route, {
+					params: params
+				});
 			}
 		}
 		if (!lastPath && wrapperComponent) {
@@ -544,7 +626,7 @@ var Router = (function (Component) {
 }(Component));
 
 function toArray$1(children) {
-	return isArray(children) ? children : (children ? [children] : children);
+	return isArray$1(children) ? children : (children ? [children] : children);
 }
 
 function Link(props, ref) {
