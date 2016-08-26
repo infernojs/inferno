@@ -86,12 +86,12 @@ function throwError(message) {
 }
 
 var ChildrenTypes = {
-	KEYED_LIST: 0,
-	NON_KEYED_LIST: 1,
-	TEXT: 2,
-	NODE: 3,
-	UNKNOWN: 4,
-	STATIC_TEXT: 5
+	KEYED_LIST: 1,
+	NON_KEYED_LIST: 2,
+	TEXT: 3,
+	NODE: 4,
+	UNKNOWN: 5,
+	STATIC_TEXT: 6
 };
 
 function isKeyedListChildrenType(o) {
@@ -139,7 +139,7 @@ function createTemplaceReducers(
 		schema: null,
 		pools: {
 			nonKeyed: [],
-			keyed: new Map()
+			keyed: {}
 		},
 		mount: mount,
 		patch: patch,
