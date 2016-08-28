@@ -981,4 +981,40 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>');
 		});
 	});
+
+	describe('JSX plugin', () => {
+		it('Should not have undefined properties', () => {
+			class A extends Component {
+				constructor(props) {
+					super(props);
+				}
+
+				render() {
+					return (
+						<div>
+							{this.props.children}
+						</div>
+					)
+				}
+			}
+
+			class B extends Component {
+				constructor(props) {
+					super(props);
+				}
+
+				callback() {}
+
+				render() {
+					return (
+						<A>
+							<div onclick={this.callback}>B</div>
+						</A>
+					)
+				}
+			}
+
+			render(<B />, container);
+		});
+	});
 });
