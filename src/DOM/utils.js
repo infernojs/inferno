@@ -87,11 +87,11 @@ export function replaceChild(parentDom, nextDom, lastDom) {
 
 export function normalise(object) {
 	if (isStringOrNumber(object)) {
-		return createVText(object);
+		// return createVText(object);
 	} else if (isInvalid(object)) {
-		return createVPlaceholder();
+		// return createVPlaceholder();
 	} else if (isArray(object)) {
-		return createVFragment(object);
+		// return createVFragment(object);
 	}
 	return object;
 }

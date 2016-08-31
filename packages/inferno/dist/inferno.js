@@ -9,220 +9,33 @@
 	(global.Inferno = factory());
 }(this, (function () { 'use strict';
 
-var NO_OP = '$NO_OP';
-
 function warning(condition, message) {
 	if (!condition) {
 		console.error(message);
 	}
 }
 
-var ChildrenTypes = {
-	KEYED_LIST: 1,
-	NON_KEYED_LIST: 2,
-	TEXT: 3,
-	NODE: 4,
-	UNKNOWN: 5,
-	STATIC_TEXT: 6
-};
-
 var NodeTypes = {
-	ELEMENT: 0,
-	COMPONENT: 1,
-	TEMPLATE: 2,
-	TEXT: 3,
-	PLACEHOLDER: 4,
-	FRAGMENT: 5,
-	VARIABLE: 6
+	TEMPLATE: 0
 };
 
-function cloneVNode(vNodeToClone, props) {
-	var children = [], len = arguments.length - 2;
-	while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
-
-	if (!props) {
-		props = {};
-	}
-	if (children.length > 0) {
-		if (children.length === 1) {
-			children = children[0];
-		}
-		if (!props.children) {
-			props.children = children;
-		} else {
-			if (isArray(children)) {
-				if (isArray(props.children)) {
-					props.children = props.children.concat(children);
-				} else {
-					props.children = [props.children].concat(children);
-				}
-			} else {
-				if (isArray(props.children)) {
-					props.children.push(children);
-				} else {
-					props.children = [props.children];
-					props.children.push(children);
-				}
-			}
-		}
-	}
-	if (isVComponent(vNodeToClone)) {
-		return createVComponent(vNodeToClone.component,
-			Object.assign({}, vNodeToClone.props, props),
-			vNodeToClone.key,
-			vNodeToClone.hooks,
-			vNodeToClone.ref
-		);
-	} else if (isVElement(vNodeToClone)) {
-		return createVElement(vNodeToClone.tag,
-			Object.assign({}, vNodeToClone.props, props),
-			props.children || children || vNodeToClone.children,
-			vNodeToClone.key,
-			vNodeToClone.ref,
-			ChildrenTypes.UNKNOWN
-		);
-	} else if (isVTemplate(vNodeToClone)) {
-		return cloneVNode(convertVTemplate(vNodeToClone, props, children));
-	}
-}
-
-function getTemplateValues(vTemplate) {
-	var values = [];
-	var v0 = vTemplate.v0;
-	var v1 = vTemplate.v1;
-
-	if (v0) {
-		values.push(v0);
-	}
-	if (v1) {
-		values.push.apply(values, v1);
-	}
-	return values;
-}
-
-function convertVTemplate(vTemplate) {
-	return vTemplate.tr.schema.apply(null, getTemplateValues(vTemplate));
-}
-
-function createVTemplateReducers(schema, renderer) {
-	var argCount = schema.length;
-	var parameters = [];
-
-	for (var i = 0; i < argCount; i++) {
-		parameters.push(createVariable(i));
-	}
-	var vNode = schema.apply(void 0, parameters);
-	var templateReducers = renderer.createTemplateReducers(
-		vNode,
-		true,
-		{ length: argCount },
-		null,
-		false,
-		false,
-		0,
-		''
-	);
-	templateReducers.schema = schema;
-	return templateReducers;
-}
-
-function createVTemplate(tr, key, v0, v1) {
+function createVTemplate(bp, key, v0, v1, v2, v3) {
 	return {
 		type: NodeTypes.TEMPLATE,
+		bp: bp,
 		dom: null,
-		tr: tr,
 		key: key,
 		v0: v0,
-		v1: v1
+		v1: v1,
+		v2: v2,
+		v3: v3
 	};
 }
 
-function createVariable(pointer) {
-	return {
-		type: NodeTypes.VARIABLE,
-		pointer: pointer
-	};
-}
-
-function createVComponent(
-	component,
-	props,
-	key,
-	hooks,
-	ref,
-	isStateful
-) {
-	return {
-		type: NodeTypes.COMPONENT,
-		dom: null,
-		component: component,
-		props: props,
-		hooks: hooks,
-		key: key,
-		ref: ref
-	};
-}
-
-function createVElement(
-	tag,
-	props,
-	children,
-	key,
-	ref,
-	childrenType
-) {
-	if ( props === void 0 ) props = null;
-	if ( children === void 0 ) children = null;
-	if ( key === void 0 ) key = null;
-	if ( ref === void 0 ) ref = null;
-	if ( childrenType === void 0 ) childrenType = null;
-
-	return {
-		type: NodeTypes.ELEMENT,
-		dom: null,
-		tag: tag,
-		children: children,
-		key: key,
-		props: props,
-		ref: ref,
-		childrenType: childrenType || ChildrenTypes.UNKNOWN
-	};
-}
-
-function createVText(text) {
-	return {
-		type: NodeTypes.TEXT,
-		text: text,
-		dom: null
-	};
-}
-
-function createVFragment(
-	children,
-	childrenType
-) {
-	if ( childrenType === void 0 ) childrenType = ChildrenTypes.UNKNOWN;
-
-	return {
-		type: NodeTypes.FRAGMENT,
-		dom: null,
-		pointer: null,
-		children: children,
-		childrenType: childrenType
-	};
-}
-
-function isVElement(o) {
-	return o.type === NodeTypes.ELEMENT;
-}
-
-function isVTemplate(o) {
-	return o.type === NodeTypes.TEMPLATE;
-}
-
-function isVComponent(o) {
-	return o.type === NodeTypes.COMPONENT;
-}
+var TemplateValueTypes = {
+	CHILDREN_KEYED: 1,
+	CHILDREN_TEXT: 2
+};
 
 if ("development" !== 'production') {
 	var testFunc = function testFn() {};
@@ -237,15 +50,7 @@ if ("development" !== 'production') {
 
 var index = {
 	createVTemplate: createVTemplate,
-	createVComponent: createVComponent,
-	createVElement: createVElement,
-	createVText: createVText,
-	createVFragment: createVFragment,
-	ChildrenTypes: ChildrenTypes,
-	cloneVNode: cloneVNode,
-	convertVTemplate: convertVTemplate,
-	createVTemplateReducers: createVTemplateReducers,
-	NO_OP: NO_OP
+	TemplateValueTypes: TemplateValueTypes
 };
 
 return index;

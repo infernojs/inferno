@@ -1,15 +1,8 @@
 import {
-	createVTemplate,
-	createVComponent,
-	createVFragment,
-	createVElement,
-	createVText,
-	cloneVNode,
-	convertVTemplate,
-	createVTemplateReducers
+	createVTemplate
 } from '../../../src/core/shapes';
 import { warning, NO_OP } from '../../../src/core/utils';
-import { ChildrenTypes } from '../../../src/core/ChildrenTypes';
+import TemplateValueTypes from '../../../src/core/TemplateValueTypes';
 
 if (process.env.NODE_ENV !== 'production') {
 	const testFunc = function testFn() {};
@@ -24,13 +17,5 @@ if (process.env.NODE_ENV !== 'production') {
 
 export default {
 	createVTemplate,
-	createVComponent,
-	createVElement,
-	createVText,
-	createVFragment,
-	ChildrenTypes,
-	cloneVNode,
-	convertVTemplate,
-	createVTemplateReducers,
-	NO_OP
+	TemplateValueTypes
 };

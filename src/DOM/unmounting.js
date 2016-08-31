@@ -2,19 +2,13 @@ import { isNullOrUndef, isArray, isNull, isInvalid } from './../core/utils';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	isVFragment,
-	isVElement,
-	isVComponent,
-	isVTemplate,
-	isVText,
-	isVPlaceholder
+	isVTemplate
 } from '../core/shapes';
 import {
 	readFromVTemplate
 } from './templates';
 import {
 	poolVTemplate,
-	poolVComponent,
 	recyclingEnabled
 } from './recycling';
 
@@ -22,16 +16,6 @@ export function unmount(input, parentDom, lifecycle, canRecycle) {
 	if (!isInvalid(input)) {
 		if (isVTemplate(input)) {
 			unmountVTemplate(input, parentDom, lifecycle, canRecycle);
-		} else if (isVFragment(input)) {
-			unmountVFragment(input, parentDom, true, lifecycle);
-		} else if (isVElement(input)) {
-			unmountVElement(input, parentDom, lifecycle);
-		} else if (isVComponent(input)) {
-			unmountVComponent(input, parentDom, lifecycle, canRecycle);
-		} else if (isVText(input)) {
-			unmountVText(input, parentDom);
-		} else if (isVPlaceholder(input)) {
-			unmountVPlaceholder(input, parentDom);
 		}
 	}
 }
@@ -49,15 +33,8 @@ function unmountVText(vText, parentDom) {
 }
 
 function unmountVTemplate(vTemplate, parentDom, lifecycle, canRecycle) {
-	const dom = vTemplate.dom;
-	const templateReducers = vTemplate.tr;
-	const unmount = templateReducers.unmount;
-
-	if (!isNull(unmount)) {
-		templateReducers.unmount(vTemplate, lifecycle);
-	}
 	if (!isNull(parentDom)) {
-		removeChild(parentDom, dom);
+		parentDom.removeChild(vTemplate.dom);
 	}
 	if (recyclingEnabled && (parentDom || canRecycle)) {
 		poolVTemplate(vTemplate);
@@ -157,20 +134,20 @@ function unmountTemplateValue(value, lifecycle) {
 }
 
 // TODO we can probably combine the below two functions, depends on if we can optimise with childrenType?
-export function unmountVariableAsExpression(pointer) {
-	return function unmountVariableAsExpression(vTemplate, lifecycle) {
-		unmountTemplateValue(readFromVTemplate(vTemplate, pointer), lifecycle);
-	};
-}
+// export function unmountVariableAsExpression(pointer) {
+// 	return function unmountVariableAsExpression(vTemplate, lifecycle) {
+// 		unmountTemplateValue(readFromVTemplate(vTemplate, pointer), lifecycle);
+// 	};
+// }
 
-export function unmountVariableAsChildren(pointer, childrenType) {
-	return function unmountVariableAsChildren(vTemplate, lifecycle) {
-		unmountTemplateValue(readFromVTemplate(vTemplate, pointer), lifecycle);
-	};
-}
+// export function unmountVariableAsChildren(pointer, childrenType) {
+// 	return function unmountVariableAsChildren(vTemplate, lifecycle) {
+// 		unmountTemplateValue(readFromVTemplate(vTemplate, pointer), lifecycle);
+// 	};
+// }
 
-export function unmountVariableAsText(pointer) {
-	return function unmountVariableAsText(vTemplate, parentDom) {
-		debugger;
-	};
-}
+// export function unmountVariableAsText(pointer) {
+// 	return function unmountVariableAsText(vTemplate, parentDom) {
+// 		debugger;
+// 	};
+// }
