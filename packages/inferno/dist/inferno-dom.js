@@ -1351,15 +1351,16 @@ function createTemplateReducers(vNode, isRoot, offset, parentDom, isSVG, isChild
 		} else if (isVText(vNode)) {
 			var text = vNode.text;
 
-			if (nodeIndex !== NULL_INDEX) {
-				nodeIndex = offset.length++;
-			}
 			if (isVariable(text)) {
+				nodeIndex = offset.length++;
 				mount = combineMountTo2(nodeIndex, mountEmptyTextNode, mountVariableAsText(text.pointer));
 				patch = combinePatchTo2(nodeIndex, patchVariableAsText(text.pointer));
 				unmount = unmountVariableAsText(text.pointer);
 				hydrate = hydrateVariableAsText(text.pointer);
 			} else {
+				if (nodeIndex !== NULL_INDEX) {
+					nodeIndex = offset.length++;
+				}
 				mount = mountDOMNodeFromTemplate(document.createTextNode(text), true);
 				patch = null;
 				unmount = null;

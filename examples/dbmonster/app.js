@@ -1,6 +1,7 @@
 (function() {
 	"use strict";
 	var elem = document.getElementById('app');
+	var createVTemplateReducers = Inferno.createVTemplateReducers;
 	var t = Inferno.createVTemplate;
 	var e = Inferno.createVElement;
 	var c = Inferno.createVComponent;
@@ -21,29 +22,28 @@
 		return newArray;
 	}
 
-	var queryTemplate = t(function (elapsedClassName, formatElapsed, query) {
-		return e('td').props({ className: elapsedClassName }).children([
-			e('span').children(text(formatElapsed)),
-			e('div').props({ className: 'popover left' }).children(
-				e('div').props({ className: 'popover-content' }).children(text(query)),
-				e('div').props({ className: 'arrow' })
-			)
-		]);
+	var queryTemplate = createVTemplateReducers(function (elapsedClassName, formatElapsed, query) {
+		return e('td', { className: elapsedClassName }, [
+			e('span', null, text(formatElapsed), null, null, null),
+			e('div', { className: 'popover left' }, [
+				e('div', { className: 'popover-content' }, text(query), null, null, null),
+				e('div', { className: 'arrow' }, null, null, null, null)
+			], null, null, null)
+		], null, null, null);
 	}, InfernoDOM);
 
 	function query(query) {
-		return queryTemplate(query.elapsedClassName, query.formatElapsed, query.query);
+		return t(queryTemplate, null, query.elapsedClassName, [query.formatElapsed, query.query]);
 	}
 
-	var databaseTpl = t(function (dbName, countClassName, nbQueries, queries) {
-		return e('tr')
-			.children([
-				e('td').props({ className: 'dbname' }).children(dbName).childrenType(ChildrenTypes.STATIC_TEXT),
-				e('td').props({ className: 'query-count' }).children(
-					e('span').props({ className: countClassName }).children(text(nbQueries))
-				),
-				f(queries).childrenType(ChildrenTypes.NON_KEYED_LIST)
-			]).childrenType(ChildrenTypes.NON_KEYED_LIST);
+	var databaseTpl = createVTemplateReducers(function (dbName, countClassName, nbQueries, queries) {
+		return e('tr', null, [
+			e('td', { className: 'dbname' }, dbName, null, null, ChildrenTypes.STATIC_TEXT),
+			e('td', { className: 'query-count' },
+				e('span', { className: countClassName }, text(nbQueries), null, null, ChildrenTypes.NODE), null, null, null
+			),
+			f(queries, ChildrenTypes.NON_KEYED_LIST)
+		], null, null, ChildrenTypes.NON_KEYED_LIST);
 	}, InfernoDOM);
 
 	function database(db) {
@@ -51,24 +51,22 @@
 		var queries = [];
 
 		for (var i = 0; i < 5; i++) {
-			queries.push(query(lastSample.topFiveQueries[i]))
+			queries.push(query(lastSample.topFiveQueries[i]));
 		}
-		return databaseTpl(db.dbname, lastSample.countClassName, lastSample.nbQueries, queries);
+		return t(databaseTpl, null, db.dbname, [lastSample.countClassName, lastSample.nbQueries, queries]);
 	}
 
-	var tableTpl = t(function (children) {
-		return e('table')
-			.props({ className: 'table table-striped latest-data' })
-			.children(
-				e('tbody').children(children).childrenType(ChildrenTypes.NON_KEYED_LIST)
-			);
+	var tableTpl = createVTemplateReducers(function (children) {
+		return e('table', { className: 'table table-striped latest-data' },
+			e('tbody', null, children, null, null, ChildrenTypes.NON_KEYED_LIST), null, null, null
+		);
 	}, InfernoDOM);
 
 	function render() {
 		var dbs = ENV.generateData(false).toArray();
 		perfMonitor.startProfile('view update');
 		InfernoDOM.render(
-			tableTpl((map(database, dbs))),
+			t(tableTpl, null, map(database, dbs), null),
 			elem
 		);
 		perfMonitor.endProfile('view update');
