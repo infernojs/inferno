@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v0.8.0-alpha4
+ * inferno-compat v0.8.0-alpha5
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -1178,7 +1178,7 @@ function unmount(input, parentDom, lifecycle, canRecycle) {
 		} else if (isVElement(input)) {
 			unmountVElement(input, parentDom, lifecycle);
 		} else if (isVComponent(input)) {
-			unmountVComponent(input, parentDom, lifecycle, canRecycle);
+			unmountVComponent(input, parentDom, lifecycle);
 		} else if (isVText(input)) {
 			unmountVText(input, parentDom);
 		} else if (isVPlaceholder(input)) {
@@ -1236,7 +1236,7 @@ function unmountVFragment(vFragment, parentDom, removePointer, lifecycle) {
 	}
 }
 
-function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle) {
+function unmountVComponent(vComponent, parentDom, lifecycle) {
 	var instance = vComponent.instance;
 	var instanceHooks = null;
 	var instanceChildren = null;
@@ -1253,9 +1253,9 @@ function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle) {
 			instance.componentWillUnmount();
 			instance._unmounted = true;
 			componentToDOMNodeMap.delete(instance);
-			unmount(instance._lastInput, null, lifecycle, canRecycle);
+			unmount(instance._lastInput, null, lifecycle, false);
 		} else {
-			unmount(instance, null, lifecycle, canRecycle);
+			unmount(instance, null, lifecycle, false);
 		}
 	}
 	var hooks = vComponent.hooks || instanceHooks;
