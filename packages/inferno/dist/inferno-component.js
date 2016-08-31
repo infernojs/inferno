@@ -53,8 +53,7 @@ var NodeTypes = {
 	TEXT: 3,
 	PLACEHOLDER: 4,
 	FRAGMENT: 5,
-	VARIABLE: 6,
-	PURE_VALUE : 7
+	VARIABLE: 6
 };
 
 function createVPlaceholder() {

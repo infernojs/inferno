@@ -11,10 +11,6 @@
 
 var NO_OP = '$NO_OP';
 
-function isUndefined(obj) {
-	return obj === undefined;
-}
-
 function warning(condition, message) {
 	if (!condition) {
 		console.error(message);
@@ -37,8 +33,7 @@ var NodeTypes = {
 	TEXT: 3,
 	PLACEHOLDER: 4,
 	FRAGMENT: 5,
-	VARIABLE: 6,
-	PURE_VALUE : 7
+	VARIABLE: 6
 };
 
 function cloneVNode(vNodeToClone, props) {
@@ -154,7 +149,8 @@ function createVComponent(
 	props,
 	key,
 	hooks,
-	ref
+	ref,
+	isStateful
 ) {
 	return {
 		type: NodeTypes.COMPONENT,
@@ -163,8 +159,7 @@ function createVComponent(
 		props: props,
 		hooks: hooks,
 		key: key,
-		ref: ref,
-		isStateful: !isUndefined(component.prototype) && !isUndefined(component.prototype.render)
+		ref: ref
 	};
 }
 

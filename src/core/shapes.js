@@ -1,4 +1,4 @@
-import { isUndefined } from './utils';
+import { isUndefined, isNull } from './utils';
 import { ChildrenTypes } from './ChildrenTypes';
 
 export const NULL_INDEX = -1;
@@ -11,8 +11,7 @@ export const NodeTypes = {
 	TEXT: 3,
 	PLACEHOLDER: 4,
 	FRAGMENT: 5,
-	VARIABLE: 6,
-	PURE_VALUE : 7
+	VARIABLE: 6
 };
 
 export function cloneVNode(vNodeToClone, props, ...children) {
@@ -147,7 +146,8 @@ export function createVComponent(
 	props,
 	key,
 	hooks,
-	ref
+	ref,
+	isStateful
 ) {
 	return {
 		type: NodeTypes.COMPONENT,
@@ -156,8 +156,7 @@ export function createVComponent(
 		props,
 		hooks,
 		key,
-		ref,
-		isStateful: !isUndefined(component.prototype) && !isUndefined(component.prototype.render)
+		ref
 	};
 }
 

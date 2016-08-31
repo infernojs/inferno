@@ -35,7 +35,7 @@ function isArray$1(obj) {
 }
 
 function isStatefulComponent(o) {
-	return isTrue(o.isStateful);
+	return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
 
 function isStringOrNumber(obj) {
@@ -124,8 +124,7 @@ var NodeTypes = {
 	TEXT: 3,
 	PLACEHOLDER: 4,
 	FRAGMENT: 5,
-	VARIABLE: 6,
-	PURE_VALUE : 7
+	VARIABLE: 6
 };
 
 function createTemplaceReducers(
