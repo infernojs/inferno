@@ -1,5 +1,5 @@
 /*!
- * inferno-test-utils v0.7.25
+ * inferno-test-utils v0.7.26
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -7,27 +7,27 @@
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
 	(global.InfernoTestUtils = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
-	function shallowRender() {
+function shallowRender() {
 
-	}
+}
 
-	function deepRender() {
+function deepRender() {
 
-	}
+}
 
-	function renderIntoDocument() {
+function renderIntoDocument() {
 
-	}
+}
 
-	var index = {
-		shallowRender: shallowRender,
-		deepRender: deepRender,
-		renderIntoDocument: renderIntoDocument
-		// Simulate
-	};
+var index = {
+	shallowRender: shallowRender,
+	deepRender: deepRender,
+	renderIntoDocument: renderIntoDocument
+	// Simulate
+};
 
-	return index;
+return index;
 
-}));
+})));

@@ -109,7 +109,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 }
 
 export function patchTextNode(dom, lastChildren, nextChildren) {
-	if (isStringOrNumber(lastChildren)) {
+	if (isStringOrNumber(lastChildren) && lastChildren !== '') {
 		dom.firstChild.nodeValue = nextChildren;
 	} else {
 		dom.textContent = nextChildren;

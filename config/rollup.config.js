@@ -14,7 +14,9 @@ const pkg = JSON.parse(fs.readFileSync('./package.json'));
 const external = Object.keys(pkg.peerDependencies || {}).concat(Object.keys(pkg.dependencies || {}));
 
 const plugins = [
-	buble(),
+	buble({
+		objectAssign: 'Object.assign'
+	}),
 	nodeResolve({
 		jsnext: true,
 		main: true,
