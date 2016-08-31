@@ -23,7 +23,7 @@ Lifecycle.prototype.trigger = function trigger () {
 	}
 };
 
-var NO_OP = 'NO_OP';
+var NO_OP = '$NO_OP';
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
@@ -125,7 +125,8 @@ var NodeTypes = {
 	TEXT: 3,
 	PLACEHOLDER: 4,
 	FRAGMENT: 5,
-	VARIABLE: 6
+	VARIABLE: 6,
+	PURE_VALUE : 7
 };
 
 function getTemplateValues(vTemplate) {
@@ -153,11 +154,6 @@ function createVComponent(
 	hooks,
 	ref
 ) {
-	if ( props === void 0 ) props = null;
-	if ( key === void 0 ) key = null;
-	if ( hooks === void 0 ) hooks = null;
-	if ( ref === void 0 ) ref = null;
-
 	return {
 		type: NodeTypes.COMPONENT,
 		dom: null,
@@ -1132,6 +1128,8 @@ function hydrateRoot(input, parentDom, lifecycle) {
 
 var recyclingEnabled = true;
 
+var vComponentPools = new Map();
+
 function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
 	var templateReducers = vTemplate.tr;
 	var key = vTemplate.key;
@@ -1140,7 +1138,7 @@ function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
 	if (!isUndefined(pool)) {
 		var recycledVTemplate = pool.pop();
 
-		if (!isNullOrUndef(recycledVTemplate)) {
+		if (!isUndefined(recycledVTemplate)) {
 			patchVTemplate(recycledVTemplate, vTemplate, null, lifecycle, context, isSVG);
 			return vTemplate.dom;
 		}
@@ -1153,20 +1151,62 @@ function poolVTemplate(vTemplate) {
 	var key = vTemplate.key;
 	var pools = templateReducers.pools;
 
-	if (key === null) {
-		var pool = pools.nonKeyed;
-
-		pool && pool.push(vTemplate);
+	if (isNull(key)) {
+		pools.nonKeyed.push(vTemplate);
 	} else {
-		var pool$1 = pools.keyed.get(key);
+		var pool = pools.keyed.get(key);
 
-		if (isUndefined(pool$1)) {
-			pool$1 = [];
-			pools.keyed.set(key, pool$1);
+		if (isUndefined(pool)) {
+			pool = [];
+			pools.keyed.set(key, pool);
 		}
-		pool$1.push(vTemplate);
+		pool.push(vTemplate);
 	}
-	return true;
+}
+
+function recycleVComponent(vComponent, lifecycle, context, isSVG) {
+	var component = vComponent.component;
+	var key = vComponent.key;
+	var pools = vComponentPools.get(component);
+
+	if (!isUndefined(pools)) {
+		var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
+
+		if (!isUndefined(pool)) {
+			var recycledVComponent = pool.pop();
+
+			if (!isUndefined(recycledVComponent)) {
+				patchVComponent(recycledVComponent, vComponent, null, lifecycle, context, isSVG);
+				return vComponent.dom;
+			}
+		}
+	}
+	return null;
+}
+
+function poolVComponent(vComponent) {
+	var component = vComponent.component;
+	var key = vComponent.key;
+	var pools = vComponentPools.get(component);
+
+	if (isUndefined(pools)) {
+		pools = {
+			nonKeyed: [],
+			keyed: new Map()
+		};
+		vComponentPools.set(component, pools);
+	}
+	if (isNull(key)) {
+		pools.nonKeyed.push(vComponent);
+	} else {
+		var pool = pools.keyed.get(key);
+
+		if (isUndefined(pool)) {
+			pool = [];
+			pools.keyed.set(key, pool);
+		}
+		pool.push(vComponent);
+	}
 }
 
 function unmount(input, parentDom, lifecycle, canRecycle) {
@@ -1178,7 +1218,7 @@ function unmount(input, parentDom, lifecycle, canRecycle) {
 		} else if (isVElement(input)) {
 			unmountVElement(input, parentDom, lifecycle);
 		} else if (isVComponent(input)) {
-			unmountVComponent(input, parentDom, lifecycle);
+			unmountVComponent(input, parentDom, lifecycle, canRecycle);
 		} else if (isVText(input)) {
 			unmountVText(input, parentDom);
 		} else if (isVPlaceholder(input)) {
@@ -1236,7 +1276,7 @@ function unmountVFragment(vFragment, parentDom, removePointer, lifecycle) {
 	}
 }
 
-function unmountVComponent(vComponent, parentDom, lifecycle) {
+function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle) {
 	var instance = vComponent.instance;
 	var instanceHooks = null;
 	var instanceChildren = null;
@@ -1267,6 +1307,9 @@ function unmountVComponent(vComponent, parentDom, lifecycle) {
 	}
 	if (parentDom) {
 		removeChild(parentDom, vComponent.dom);
+	}
+	if (recyclingEnabled && (parentDom || canRecycle)) {
+		poolVComponent(vComponent);
 	}
 }
 
@@ -1633,6 +1676,16 @@ function mountChildren(childrenType, children, dom, lifecycle, context, isSVG) {
 }
 
 function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
+	if (recyclingEnabled) {
+		var dom$1 = recycleVComponent(vComponent, lifecycle, context, isSVG);
+
+		if (!isNull(dom$1)) {
+			if (!isNull(parentDom)) {
+				appendChild(parentDom, dom$1);
+			}
+			return dom$1;
+		}
+	}
 	var Component = vComponent.component;
 	var props = vComponent.props;
 	var hooks = vComponent.hooks;
@@ -1667,7 +1720,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		instance._pendingSetState = false;
 		dom = mount(input, null, lifecycle, context, false);
 		instance._lastInput = input;
-		if (parentDom !== null && !isInvalid(dom)) {
+		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}
 		if (ref) {
@@ -1712,7 +1765,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		}
 		dom = mount(input$1, null, lifecycle, context, null, false);
 		vComponent.instance = input$1;
-		if (parentDom !== null && !isInvalid(dom)) {
+		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}
 		vComponent.dom = dom;
@@ -1755,7 +1808,9 @@ function render(input, parentDom) {
 		}
 		throwError();
 	}
-
+	if (input === NO_OP) {
+		return;
+	}
 	if (isUndefined(root)) {
 		if (!isInvalid(input)) {
 			if (!hydrateRoot(input, parentDom, lifecycle)) {

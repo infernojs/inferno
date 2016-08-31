@@ -39,11 +39,14 @@ import {
 	isUnknownChildrenType
 } from '../core/ChildrenTypes';
 import {
-	recycleVTemplate,
-	recyclingEnabled,
 	readFromVTemplate,
 	writeToVTemplate
 } from './templates';
+import {
+	recycleVTemplate,
+	recycleVComponent,
+	recyclingEnabled
+} from './recycling';
 
 export function mount(input, parentDom, lifecycle, context, isSVG) {
 	if (isVTemplate(input)) {
@@ -216,6 +219,16 @@ function mountChildren(childrenType, children, dom, lifecycle, context, isSVG) {
 }
 
 export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
+	if (recyclingEnabled) {
+		const dom = recycleVComponent(vComponent, lifecycle, context, isSVG);
+
+		if (!isNull(dom)) {
+			if (!isNull(parentDom)) {
+				appendChild(parentDom, dom);
+			}
+			return dom;
+		}
+	}
 	const Component = vComponent.component;
 	const props = vComponent.props;
 	const hooks = vComponent.hooks;
@@ -250,7 +263,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		instance._pendingSetState = false;
 		dom = mount(input, null, lifecycle, context, false);
 		instance._lastInput = input;
-		if (parentDom !== null && !isInvalid(dom)) {
+		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}
 		if (ref) {
@@ -295,7 +308,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		}
 		dom = mount(input, null, lifecycle, context, null, false);
 		vComponent.instance = input;
-		if (parentDom !== null && !isInvalid(dom)) {
+		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}
 		vComponent.dom = dom;

@@ -23,7 +23,7 @@ Lifecycle.prototype.trigger = function trigger () {
 	}
 };
 
-var NO_OP = 'NO_OP';
+var NO_OP = '$NO_OP';
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
@@ -53,7 +53,8 @@ var NodeTypes = {
 	TEXT: 3,
 	PLACEHOLDER: 4,
 	FRAGMENT: 5,
-	VARIABLE: 6
+	VARIABLE: 6,
+	PURE_VALUE : 7
 };
 
 function createVPlaceholder() {

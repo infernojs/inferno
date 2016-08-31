@@ -1,4 +1,4 @@
-export const NO_OP = 'NO_OP';
+export const NO_OP = '$NO_OP';
 
 const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 

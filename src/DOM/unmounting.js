@@ -10,10 +10,13 @@ import {
 	isVPlaceholder
 } from '../core/shapes';
 import {
-	poolVTemplate,
-	recyclingEnabled,
 	readFromVTemplate
 } from './templates';
+import {
+	poolVTemplate,
+	poolVComponent,
+	recyclingEnabled
+} from './recycling';
 
 export function unmount(input, parentDom, lifecycle, canRecycle) {
 	if (!isInvalid(input)) {
@@ -24,7 +27,7 @@ export function unmount(input, parentDom, lifecycle, canRecycle) {
 		} else if (isVElement(input)) {
 			unmountVElement(input, parentDom, lifecycle);
 		} else if (isVComponent(input)) {
-			unmountVComponent(input, parentDom, lifecycle);
+			unmountVComponent(input, parentDom, lifecycle, canRecycle);
 		} else if (isVText(input)) {
 			unmountVText(input, parentDom);
 		} else if (isVPlaceholder(input)) {
@@ -82,7 +85,7 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle)
 	}
 }
 
-export function unmountVComponent(vComponent, parentDom, lifecycle) {
+export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle) {
 	const instance = vComponent.instance;
 	let instanceHooks = null;
 	let instanceChildren = null;
@@ -113,6 +116,9 @@ export function unmountVComponent(vComponent, parentDom, lifecycle) {
 	}
 	if (parentDom) {
 		removeChild(parentDom, vComponent.dom);
+	}
+	if (recyclingEnabled && (parentDom || canRecycle)) {
+		poolVComponent(vComponent);
 	}
 }
 

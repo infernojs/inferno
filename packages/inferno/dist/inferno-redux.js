@@ -23,7 +23,7 @@ Lifecycle.prototype.trigger = function trigger () {
 	}
 };
 
-var NO_OP = 'NO_OP';
+var NO_OP = '$NO_OP';
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
@@ -65,7 +65,8 @@ var NodeTypes = {
 	TEXT: 3,
 	PLACEHOLDER: 4,
 	FRAGMENT: 5,
-	VARIABLE: 6
+	VARIABLE: 6,
+	PURE_VALUE : 7
 };
 
 function createVComponent(
@@ -75,11 +76,6 @@ function createVComponent(
 	hooks,
 	ref
 ) {
-	if ( props === void 0 ) props = null;
-	if ( key === void 0 ) key = null;
-	if ( hooks === void 0 ) hooks = null;
-	if ( ref === void 0 ) ref = null;
-
 	return {
 		type: NodeTypes.COMPONENT,
 		dom: null,

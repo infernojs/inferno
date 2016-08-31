@@ -41,7 +41,6 @@ import {
 	patchVariableAsExpression,
 	patchVariableAsChildren,
 	patchVariableAsText,
-	patchVTemplate,
 	patchProp,
 	patchTemplateClassName,
 	patchTemplateStyle,
@@ -60,8 +59,6 @@ import {
 	unmountVariableAsText
 } from './unmounting';
 import { ChildrenTypes } from '../core/ChildrenTypes';
-
-export const recyclingEnabled = true;
 
 function copyValue(oldItem, item, index) {
 	const value = readFromVTemplate(oldItem, index);
@@ -527,43 +524,6 @@ function combineHydrateX(nodeIndex, unmounters) {
 			}
 		};
 	};
-}
-
-export function recycleVTemplate(vTemplate, lifecycle, context, isSVG) {
-	const templateReducers = vTemplate.tr;
-	const key = vTemplate.key;
-	const pool = key === null ? templateReducers.pools.nonKeyed : templateReducers.pools.keyed.get(key);
-
-	if (!isUndefined(pool)) {
-		const recycledVTemplate = pool.pop();
-
-		if (!isNullOrUndef(recycledVTemplate)) {
-			patchVTemplate(recycledVTemplate, vTemplate, null, lifecycle, context, isSVG);
-			return vTemplate.dom;
-		}
-	}
-	return null;
-}
-
-export function poolVTemplate(vTemplate) {
-	const templateReducers = vTemplate.tr;
-	const key = vTemplate.key;
-	const pools = templateReducers.pools;
-
-	if (key === null) {
-		const pool = pools.nonKeyed;
-
-		pool && pool.push(vTemplate);
-	} else {
-		let pool = pools.keyed.get(key);
-
-		if (isUndefined(pool)) {
-			pool = [];
-			pools.keyed.set(key, pool);
-		}
-		pool.push(vTemplate);
-	}
-	return true;
 }
 
 function getDomFromTemplatePath(rootDom, path) {

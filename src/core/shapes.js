@@ -11,7 +11,8 @@ export const NodeTypes = {
 	TEXT: 3,
 	PLACEHOLDER: 4,
 	FRAGMENT: 5,
-	VARIABLE: 6
+	VARIABLE: 6,
+	PURE_VALUE : 7
 };
 
 export function cloneVNode(vNodeToClone, props, ...children) {
@@ -136,16 +137,17 @@ export function createTemplaceReducers(
 		mount,
 		patch,
 		unmount,
-		hydrate
+		hydrate,
+		shouldUpdate: null
 	};
 }
 
 export function createVComponent(
 	component,
-	props = null,
-	key = null,
-	hooks = null,
-	ref = null
+	props,
+	key,
+	hooks,
+	ref
 ) {
 	return {
 		type: NodeTypes.COMPONENT,

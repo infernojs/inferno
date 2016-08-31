@@ -8,7 +8,7 @@ import {
 	convertVTemplate,
 	createVTemplateReducers
 } from '../../../src/core/shapes';
-import { warning } from '../../../src/core/utils';
+import { warning, NO_OP } from '../../../src/core/utils';
 import { ChildrenTypes } from '../../../src/core/ChildrenTypes';
 
 if (process.env.NODE_ENV !== 'production') {
@@ -31,5 +31,6 @@ export default {
 	ChildrenTypes,
 	cloneVNode,
 	convertVTemplate,
-	createVTemplateReducers
+	createVTemplateReducers,
+	NO_OP
 };
