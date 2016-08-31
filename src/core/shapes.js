@@ -79,7 +79,7 @@ export function convertVTemplate(vTemplate) {
 	return vTemplate.tr.schema.apply(null, getTemplateValues(vTemplate));
 }
 
-export function createVTemplateFactory(schema, renderer) {
+export function createVTemplateReducers(schema, renderer) {
 	const argCount = schema.length;
 	const parameters = [];
 
@@ -97,32 +97,11 @@ export function createVTemplateFactory(schema, renderer) {
 		0,
 		''
 	);
-	const keyIndex = templateReducers.keyIndex;
-
 	templateReducers.schema = schema;
-	switch (argCount) {
-		case 0:
-			return () => creaetVTemplate(templateReducers, null, null, null);
-		case 1:
-			if (keyIndex === 0) {
-				return v0 => creaetVTemplate(templateReducers, v0, v0, null);
-			} else {
-				return v0 => creaetVTemplate(templateReducers, null, v0, null);
-			}
-		default:
-			if (keyIndex === NULL_INDEX) {
-				return (v0, ...v1) => creaetVTemplate(templateReducers, null, v0, v1);
-			} else if (keyIndex === 0) {
-				return (v0, ...v1) => creaetVTemplate(templateReducers, v0, v0, v1);
-			} else {
-				return (v0, ...v1) => {
-					return creaetVTemplate(templateReducers, v1[keyIndex - 1], v0, v1);
-				};
-			}
-	}
+	return templateReducers;
 }
 
-function creaetVTemplate(tr, key, v0, v1) {
+export function createVTemplate(tr, key, v0, v1) {
 	return {
 		type: NodeTypes.TEMPLATE,
 		dom: null,

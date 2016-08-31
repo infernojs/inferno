@@ -1,5 +1,5 @@
 /*!
- * inferno v0.8.0-alpha5
+ * inferno v0.8.0-alpha6
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -28,7 +28,6 @@ var ChildrenTypes = {
 	STATIC_TEXT: 6
 };
 
-var NULL_INDEX = -1;
 var NodeTypes = {
 	ELEMENT: 0,
 	COMPONENT: 1,
@@ -107,7 +106,7 @@ function convertVTemplate(vTemplate) {
 	return vTemplate.tr.schema.apply(null, getTemplateValues(vTemplate));
 }
 
-function createVTemplateFactory(schema, renderer) {
+function createVTemplateReducers(schema, renderer) {
 	var argCount = schema.length;
 	var parameters = [];
 
@@ -125,45 +124,11 @@ function createVTemplateFactory(schema, renderer) {
 		0,
 		''
 	);
-	var keyIndex = templateReducers.keyIndex;
-
 	templateReducers.schema = schema;
-	switch (argCount) {
-		case 0:
-			return function () { return creaetVTemplate(templateReducers, null, null, null); };
-		case 1:
-			if (keyIndex === 0) {
-				return function (v0) { return creaetVTemplate(templateReducers, v0, v0, null); };
-			} else {
-				return function (v0) { return creaetVTemplate(templateReducers, null, v0, null); };
-			}
-		default:
-			if (keyIndex === NULL_INDEX) {
-				return function (v0) {
-					var v1 = [], len = arguments.length - 1;
-					while ( len-- > 0 ) v1[ len ] = arguments[ len + 1 ];
-
-					return creaetVTemplate(templateReducers, null, v0, v1);
-				};
-			} else if (keyIndex === 0) {
-				return function (v0) {
-					var v1 = [], len = arguments.length - 1;
-					while ( len-- > 0 ) v1[ len ] = arguments[ len + 1 ];
-
-					return creaetVTemplate(templateReducers, v0, v0, v1);
-				};
-			} else {
-				return function (v0) {
-					var v1 = [], len = arguments.length - 1;
-					while ( len-- > 0 ) v1[ len ] = arguments[ len + 1 ];
-
-					return creaetVTemplate(templateReducers, v1[keyIndex - 1], v0, v1);
-				};
-			}
-	}
+	return templateReducers;
 }
 
-function creaetVTemplate(tr, key, v0, v1) {
+function createVTemplate(tr, key, v0, v1) {
 	return {
 		type: NodeTypes.TEMPLATE,
 		dom: null,
@@ -278,14 +243,15 @@ if ("development" !== 'production') {
 }
 
 var index = {
-	createVTemplate: createVTemplateFactory,
+	createVTemplate: createVTemplate,
 	createVComponent: createVComponent,
 	createVElement: createVElement,
 	createVText: createVText,
 	createVFragment: createVFragment,
 	ChildrenTypes: ChildrenTypes,
 	cloneVNode: cloneVNode,
-	convertVTemplate: convertVTemplate
+	convertVTemplate: convertVTemplate,
+	createVTemplateReducers: createVTemplateReducers
 };
 
 return index;

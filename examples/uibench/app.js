@@ -6,7 +6,7 @@
 	var e = Inferno.createVElement;
 	var ChildrenTypes = Inferno.ChildrenTypes;
 
-	uibench.init('Inferno', '0.8.0-alpha4');
+	uibench.init('Inferno', '0.8.0-alpha6');
 
 	var treeLeafTpl = t(function (id) {
 		return e('li', { className: 'TreeLeaf' }, id, id, null, ChildrenTypes.TEXT);

@@ -1,11 +1,12 @@
 import {
-	createVTemplateFactory as createVTemplate,
+	createVTemplate,
 	createVComponent,
 	createVFragment,
 	createVElement,
 	createVText,
 	cloneVNode,
-	convertVTemplate
+	convertVTemplate,
+	createVTemplateReducers
 } from '../../../src/core/shapes';
 import { warning } from '../../../src/core/utils';
 import { ChildrenTypes } from '../../../src/core/ChildrenTypes';
@@ -29,5 +30,6 @@ export default {
 	createVFragment,
 	ChildrenTypes,
 	cloneVNode,
-	convertVTemplate
+	convertVTemplate,
+	createVTemplateReducers
 };

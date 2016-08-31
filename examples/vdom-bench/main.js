@@ -4,21 +4,22 @@
 	var benchmark = require('vdom-benchmark-base');
 	var e = Inferno.createVElement;
 	var t = Inferno.createVTemplate;
+	var createVTemplateReducers = Inferno.createVTemplateReducers;
 	var ChildrenTypes = Inferno.ChildrenTypes;
 
 	var NAME = 'inferno';
-	var VERSION = '0.8.0-alpha4';
+	var VERSION = '0.8.0-alpha6';
 
-	var tpl1 = t(function (children) {
-		return e('div').children(children).childrenType(ChildrenTypes.KEYED_LIST)
+	var tr1 = createVTemplateReducers(function (children) {
+		return e('div', null, children, null, null, ChildrenTypes.KEYED_LIST)
 	}, InfernoDOM);
 
-	var tpl2 = t(function (key, children) {
-		return e('div').key(key).children(children).childrenType(ChildrenTypes.KEYED_LIST)
+	var tr2 = createVTemplateReducers(function (key, children) {
+		return e('div', null, children, key, null, ChildrenTypes.KEYED_LIST)
 	}, InfernoDOM);
 
-	var tpl3 = t(function (key, children) {
-		return e('span').key(key).childrenType(ChildrenTypes.TEXT).children(key)
+	var tr3 = createVTemplateReducers(function (key, children) {
+		return e('span', null, key, key, null, ChildrenTypes.TEXT)
 	}, InfernoDOM);
 
 	function renderTree(nodes) {
@@ -29,9 +30,9 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = tpl2(n.key, renderTree(n.children));
+				children[i] = t(tr2, n.key, null, [renderTree(n.children)]);
 			} else {
-				children[i] = tpl3(n.key, n.key); 
+				children[i] = t(tr3, n.key, n.key, null); 
 			}
 		}
 		return children;
@@ -52,14 +53,14 @@
 
 	BenchmarkImpl.prototype.render = function() {
 		InfernoDOM.render(
-			tpl1(renderTree(this.a)),
+			t(tr1, null, renderTree(this.a), null),
 			this.container
 		);
 	};
 
 	BenchmarkImpl.prototype.update = function() {
 		InfernoDOM.render(
-			tpl1(renderTree(this.b)),
+			t(tr1, null, renderTree(this.b), null),
 			this.container
 		);
 	};
