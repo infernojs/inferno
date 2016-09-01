@@ -16,15 +16,16 @@ function warning(condition, message) {
 }
 
 var NodeTypes = {
-	TEMPLATE: 0
+	TEMPLATE: 1,
+	TEXT: 2
 };
 
 function createVTemplate(bp, key, v0, v1, v2, v3) {
 	return {
-		type: NodeTypes.TEMPLATE,
 		bp: bp,
 		dom: null,
 		key: key,
+		type: NodeTypes.TEMPLATE,
 		v0: v0,
 		v1: v1,
 		v2: v2,
@@ -32,9 +33,20 @@ function createVTemplate(bp, key, v0, v1, v2, v3) {
 	};
 }
 
+function createVText(text) {
+	return {
+		dom: null,
+		text: text,
+		type: NodeTypes.TEXT
+	};
+}
+
 var TemplateValueTypes = {
 	CHILDREN_KEYED: 1,
-	CHILDREN_TEXT: 2
+	CHILDREN_NON_KEYED: 2,
+	CHILDREN_TEXT: 3,
+	CHILDREN_NODE: 4,
+	PROPS_CLASS_NAME: 5
 };
 
 if ("development" !== 'production') {
@@ -50,6 +62,7 @@ if ("development" !== 'production') {
 
 var index = {
 	createVTemplate: createVTemplate,
+	createVText: createVText,
 	TemplateValueTypes: TemplateValueTypes
 };
 

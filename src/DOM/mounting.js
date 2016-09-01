@@ -22,7 +22,8 @@ import {
 import { patchStyle, patch, patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	isVTemplate
+	isVTemplate,
+	isVText
 } from '../core/shapes';
 import TemplateValueTypes from '../core/TemplateValueTypes';
 import {
@@ -33,7 +34,32 @@ import {
 export function mount(input, parentDom, lifecycle, context, isSVG) {
 	if (isVTemplate(input)) {
 		return mountVTemplate(input, parentDom, lifecycle, context, isSVG);
+	} else if (isVText(input)) {
+		return mountVText(input, parentDom);
 	}
+}
+
+function createStaticClone(bp, isSVG) {
+	const stat = bp.static;
+	const tag = stat.tag;
+	const dom = document.createElement(tag);
+	const props = stat.props;
+
+	for (let prop in props) {
+		patchProp(prop, null, props[prop], dom);
+	}
+	bp.clone = dom;
+	return dom.cloneNode(true);
+}
+
+export function mountVText(vText, parentDom) {
+	const dom = document.createTextNode(vText.text);
+
+	vText.dom = dom;
+	if (!isNull(parentDom)) {
+		appendChild(parentDom, dom);
+	}
+	return dom;
 }
 
 export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) {
@@ -44,7 +70,7 @@ export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) 
 		dom = recycleVTemplate(vTemplate, lifecycle, context, isSVG);
 	}
 	if (isNull(dom)) {
-		dom = document.createElement(bp.tag);
+		dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticClone(bp, isSVG);
 		const v0 = vTemplate.v0;
 		const v1 = vTemplate.v1;
 		const v2 = vTemplate.v2;
@@ -53,6 +79,9 @@ export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) 
 		vTemplate.dom = dom;
 		if (!isUndefined(v0)) {
 			mountTemplateValue(bp.v0, v0, dom, lifecycle, context, isSVG);
+			if (!isUndefined(v1)) {
+				mountTemplateValue(bp.v1, v1, dom, lifecycle, context, isSVG);
+			}
 		}
 	}
 	if (!isNull(parentDom)) {
@@ -64,10 +93,19 @@ export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) 
 function mountTemplateValue(templateValueType, value, dom, lifecycle, context, isSVG) {
 	switch (templateValueType) {
 		case TemplateValueTypes.CHILDREN_KEYED:
+		case TemplateValueTypes.CHILDREN_NON_KEYED:
 			mountArrayChildrenWithType(value, dom, lifecycle, context, isSVG);
 			break;
 		case TemplateValueTypes.CHILDREN_TEXT:
 			setTextContent(dom, value);
+			break;
+		case TemplateValueTypes.CHILDREN_NODE:
+			mount(value, dom, lifecycle, context, isSVG);
+			break;
+		case TemplateValueTypes.PROPS_CLASS_NAME:
+			if (!isNullOrUndef(value)) {
+				dom.className = value;
+			}
 			break;
 	}
 }

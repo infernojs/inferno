@@ -1,5 +1,6 @@
 import {
-	createVTemplate
+	createVTemplate,
+	createVText
 } from '../../../src/core/shapes';
 import { warning, NO_OP } from '../../../src/core/utils';
 import TemplateValueTypes from '../../../src/core/TemplateValueTypes';
@@ -17,5 +18,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 export default {
 	createVTemplate,
+	createVText,
 	TemplateValueTypes
 };

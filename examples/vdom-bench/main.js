@@ -5,10 +5,13 @@
 	var t = Inferno.createVTemplate;
 
 	var NAME = 'inferno';
-	var VERSION = '0.8.0-alpha6';
+	var VERSION = '1.0.0-alpha1';
 
 	var bp1 = {
-		tag: 'div',
+		static: {
+			tag: 'div'
+		},
+		clone: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -17,7 +20,10 @@
 	};
 
 	var bp2 = {
-		tag: 'span',
+		static: {
+			tag: 'span'
+		},
+		clone: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()

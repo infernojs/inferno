@@ -37,7 +37,8 @@ import {
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	isVTemplate
+	isVTemplate,
+	isVText
 } from '../core/shapes';
 import { unmount } from './unmounting';
 import TemplateValueTypes from '../core/TemplateValueTypes';
@@ -55,6 +56,10 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			} else {
 				// replaceChild(parentDom, mountVTemplate(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
 				// unmount(lastInput, null, lifecycle);
+			}
+		} else if (isVText(nextInput)) {
+			if (isVText(lastInput)) {
+				patchVText(lastInput, nextInput);
 			}
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
@@ -129,6 +134,16 @@ export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentD
 	}
 }
 
+export function patchVText(lastVText, nextVText) {
+	const nextText = nextVText.text;
+	const dom = lastVText.dom;
+
+	nextVText.dom = dom;
+	if (lastVText.text !== nextText) {
+		dom.nodeValue = nextText;
+	}
+}
+
 export function patchVTemplate(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
 	const dom = lastVTemplate.dom;
 	const lastBp = lastVTemplate.bp;
@@ -152,6 +167,13 @@ export function patchVTemplate(lastVTemplate, nextVTemplate, parentDom, lifecycl
 			if (lastV0 !== nextV0) {
 				patchTemplateValue(nextBp.v0, lastV0, nextV0, dom, lifecycle, context, isSVG);
 			}
+			if (!isUndefined(nextV1)) {
+				const lastV1 = lastVTemplate.v1;
+
+				if (lastV1 !== nextV1) {
+					patchTemplateValue(nextBp.v1, lastV1, nextV1, dom, lifecycle, context, isSVG);
+				}
+			}
 		}
 	}
 }
@@ -161,9 +183,47 @@ function patchTemplateValue(templateValueType, lastValue, nextValue, dom, lifecy
 		case TemplateValueTypes.CHILDREN_KEYED:
 			patchKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null);
 			break;
+		case TemplateValueTypes.CHILDREN_NON_KEYED:
+			patchNonKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null);
+			break;
 		case TemplateValueTypes.CHILDREN_TEXT:
 			updateTextContent(dom, nextValue);
 			break;
+		case TemplateValueTypes.CHILDREN_NODE:
+			patch(lastValue, nextValue, dom, lifecycle, context, isSVG);
+			break;
+		case TemplateValueTypes.PROPS_CLASS_NAME:
+			if (isNullOrUndef(nextValue)) {
+				dom.removeAttribute('class');
+			} else {
+				dom.className = nextValue;
+			}
+			break;
+	}
+}
+
+export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, parentVList) {
+	let lastChildrenLength = lastChildren.length;
+	let nextChildrenLength = nextChildren.length;
+	let commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
+	let i = 0;
+
+	for (; i < commonLength; i++) {
+		const lastChild = lastChildren[i];
+		const nextChild = normaliseChild(nextChildren, i);
+
+		patch(lastChild, nextChild, dom, lifecycle, context, isSVG);
+	}
+	if (lastChildrenLength < nextChildrenLength) {
+		for (i = commonLength; i < nextChildrenLength; i++) {
+			const child = normaliseChild(nextChildren, i);
+
+			insertOrAppend(dom, mount(child, null, lifecycle, context, isSVG), parentVList && parentVList.pointer);
+		}
+	} else if (lastChildrenLength > nextChildrenLength) {
+		for (i = commonLength; i < lastChildrenLength; i++) {
+			unmount(lastChildren[i], dom, lifecycle);
+		}
 	}
 }
 
@@ -527,6 +587,63 @@ export function patchTemplateProps(propsToPatch, tag) {
 			formSelectValue(dom, formValue);
 		}
 	};
+}
+
+// returns true if a property has been applied that can't be cloned via elem.cloneNode()
+export function patchProp(prop, lastValue, nextValue, dom) {
+	if (strictProps[prop]) {
+		dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
+	} else if (booleanProps[prop]) {
+		dom[prop] = nextValue ? true : false;
+	} else {
+		if (lastValue !== nextValue) {
+			if (isNullOrUndef(nextValue)) {
+				dom.removeAttribute(prop);
+				return false;
+			}
+			if (prop === 'className') {
+				dom.className = nextValue;
+				return false;
+			} else if (prop === 'style') {
+				patchStyle(lastValue, nextValue, dom);
+			} else if (prop === 'defaultChecked') {
+				if (isNull(lastValue)) {
+					dom.addAttribute('checked');
+				}
+				return false;
+			} else if (prop === 'defaultValue') {
+				if (isNull(lastValue)) {
+					dom.setAttribute('value', nextValue);
+				}
+				return false;
+			} else if (isAttrAnEvent(prop)) {
+				dom[prop.toLowerCase()] = nextValue;
+			} else if (prop === 'dangerouslySetInnerHTML') {
+				const lastHtml = lastValue && lastValue.__html;
+				const nextHtml = nextValue && nextValue.__html;
+
+				if (isNullOrUndef(nextHtml)) {
+					if (process.env.NODE_ENV !== 'production') {
+						throwError('dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
+					}
+					throwError();
+				}
+				if (lastHtml !== nextHtml) {
+					dom.innerHTML = nextHtml;
+				}
+			} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
+				const ns = namespaces[prop];
+
+				if (ns) {
+					dom.setAttributeNS(ns, prop, nextValue);
+				} else {
+					dom.setAttribute(prop, nextValue);
+				}
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 export function patchSpreadPropsFromTemplate(pointer, templateIsSVG, tag) {
