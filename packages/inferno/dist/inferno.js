@@ -16,12 +16,14 @@ function warning(condition, message) {
 }
 
 var NodeTypes = {
-	TEMPLATE: 1,
-	TEXT: 2,
-	FRAGMENT: 3
+	ELEMENT: 1,
+	OPT_ELEMENT: 2,
+	TEXT: 3,
+	FRAGMENT: 4,
+	OPT_BLUEPRINT: 5
 };
 
-var TemplateValueTypes = {
+var ValueTypes = {
 	CHILDREN_KEYED: 1,
 	CHILDREN_NON_KEYED: 2,
 	CHILDREN_TEXT: 3,
@@ -37,16 +39,18 @@ var ChildrenTypes = {
 	UNKNOWN: 5
 };
 
-function createVTemplate(bp, key, v0, v1, v2, v3) {
+function createOptBlueprint(staticVElement, v0, v1, v2) {
 	return {
-		bp: bp,
-		dom: null,
-		key: key,
-		type: NodeTypes.TEMPLATE,
+		clone: null,
+		pools: {
+			nonKeyed: [],
+			keyed: new Map()
+		},
+		staticVElement: staticVElement,
+		type: NodeTypes.OPT_BLUEPRINT,
 		v0: v0,
 		v1: v1,
-		v2: v2,
-		v3: v3
+		v2: v2
 	};
 }
 
@@ -58,13 +62,35 @@ function createVText(text) {
 	};
 }
 
+function createVElement(tag, props, children, key, ref, childrenType) {
+	return {
+		children: children,
+		childrenType: childrenType || ChildrenTypes.UNKNOWN,
+		dom: null,
+		key: key || null,
+		props: props,
+		ref: ref || null,
+		tag: tag,
+		type: NodeTypes.ELEMENT
+	};
+}
+
+function createStaticVElement(tag, props, children) {
+	return {
+		children: children,
+		props: props,
+		tag: tag,
+		type: NodeTypes.ELEMENT
+	};
+}
+
 function createVFragment(children, childrenType) {
 	return {
-		type: NodeTypes.FRAGMENT,
+		children: children,
+		childrenType: childrenType || ChildrenTypes.UNKNOWN,
 		dom: null,
 		pointer: null,
-		children: children,
-		childrenType: childrenType || ChildrenTypes.UNKNOWN
+		type: NodeTypes.FRAGMENT
 	};
 }
 
@@ -80,10 +106,12 @@ if ("development" !== 'production') {
 }
 
 var index = {
-	createVTemplate: createVTemplate,
+	createOptBlueprint: createOptBlueprint,
+	createVElement: createVElement,
+	createStaticVElement: createStaticVElement,
 	createVFragment: createVFragment,
 	createVText: createVText,
-	TemplateValueTypes: TemplateValueTypes,
+	ValueTypes: ValueTypes,
 	ChildrenTypes: ChildrenTypes,
 	NodeTypes: NodeTypes
 };

@@ -4,12 +4,14 @@ export const NULL_INDEX = -1;
 export const ROOT_INDEX = -2;
 
 export const NodeTypes = {
-	TEMPLATE: 1,
-	TEXT: 2,
-	FRAGMENT: 3
+	ELEMENT: 1,
+	OPT_ELEMENT: 2,
+	TEXT: 3,
+	FRAGMENT: 4,
+	OPT_BLUEPRINT: 5
 };
 
-export const TemplateValueTypes = {
+export const ValueTypes = {
 	CHILDREN_KEYED: 1,
 	CHILDREN_NON_KEYED: 2,
 	CHILDREN_TEXT: 3,
@@ -25,16 +27,18 @@ export const ChildrenTypes = {
 	UNKNOWN: 5
 };
 
-export function createVTemplate(bp, key, v0, v1, v2, v3) {
+export function createOptBlueprint(staticVElement, v0, v1, v2) {
 	return {
-		bp,
-		dom: null,
-		key,
-		type: NodeTypes.TEMPLATE,
+		clone: null,
+		pools: {
+			nonKeyed: [],
+			keyed: new Map()
+		},
+		staticVElement,
+		type: NodeTypes.OPT_BLUEPRINT,
 		v0,
 		v1,
-		v2,
-		v3
+		v2
 	};
 }
 
@@ -46,18 +50,44 @@ export function createVText(text) {
 	};
 }
 
-export function createVFragment(children, childrenType) {
+export function createVElement(tag, props, children, key, ref, childrenType) {
 	return {
-		type: NodeTypes.FRAGMENT,
-		dom: null,
-		pointer: null,
 		children,
-		childrenType: childrenType || ChildrenTypes.UNKNOWN
+		childrenType: childrenType || ChildrenTypes.UNKNOWN,
+		dom: null,
+		key: key || null,
+		props,
+		ref: ref || null,
+		tag,
+		type: NodeTypes.ELEMENT
 	};
 }
 
-export function isVTemplate(o) {
-	return o.type === NodeTypes.TEMPLATE;
+export function createStaticVElement(tag, props, children) {
+	return {
+		children,
+		props,
+		tag,
+		type: NodeTypes.ELEMENT
+	};
+}
+
+export function createVFragment(children, childrenType) {
+	return {
+		children,
+		childrenType: childrenType || ChildrenTypes.UNKNOWN,
+		dom: null,
+		pointer: null,
+		type: NodeTypes.FRAGMENT
+	};
+}
+
+export function isVElement(o) {
+	return o.type === NodeTypes.ELEMENT;
+}
+
+export function isOptVElement(o) {
+	return o.type === NodeTypes.OPT_ELEMENT;
 }
 
 export function isVText(o) {
@@ -66,6 +96,10 @@ export function isVText(o) {
 
 export function isVFragment(o) {
 	return o.type === NodeTypes.FRAGMENT;
+}
+
+export function isVNode(o) {
+	return !isUndefined(o.type);
 }
 
 export function isUnknownChildrenType(o) {

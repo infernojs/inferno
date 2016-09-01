@@ -14,7 +14,7 @@ import {
 } from './../core/utils';
 import {
 	mount,
-	mountVTemplate,
+	mountOptVElement,
 	mountArrayChildrenWithType
 } from './mounting';
 import {
@@ -37,10 +37,11 @@ import {
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	isVTemplate,
+	isVNode,
+	isOptVElement,
 	isVFragment,
 	isVText,
-	TemplateValueTypes,
+	ValueTypes,
 	isKeyedListChildrenType,
 	isNonKeyedListChildrenType,
 	isNodeChildrenType,
@@ -56,14 +57,14 @@ function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, 
 
 export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 	if (lastInput !== nextInput) {
-		if (isVTemplate(nextInput)) {
-			if (isVTemplate(lastInput)) {
-				patchVTemplate(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+		if (isOptVElement(nextInput)) {
+			if (isOptVElement(lastInput)) {
+				patchOptVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 			} else {
-				replaceChild(parentDom, mountVTemplate(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
+				replaceChild(parentDom, mountOptVElement(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
 				unmount(lastInput, null, lifecycle);
 			}
-		} else if (isVTemplate(lastInput)) {
+		} else if (isOptVElement(lastInput)) {
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 		} else if (isVText(nextInput)) {
 			if (isVText(lastInput)) {
@@ -119,6 +120,8 @@ export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentD
 				mount(nextChildren, parentDom, lifecycle, context, isSVG);
 			}
 		}
+	} else if (isVNode(nextChildren)) {
+		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
 	} else if (isStringOrNumber(nextChildren)) {
 		if (isStringOrNumber(lastChildren)) {
 			updateTextContent(parentDom, nextChildren);
@@ -145,7 +148,7 @@ export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentD
 	} else if (isArray(lastChildren)) {
 		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null, true);
 	} else {
-		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
+		// TODO normalise?
 	}
 }
 
@@ -159,55 +162,55 @@ export function patchVText(lastVText, nextVText) {
 	}
 }
 
-export function patchVTemplate(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
-	const dom = lastVTemplate.dom;
-	const lastBp = lastVTemplate.bp;
-	const nextBp = nextVTemplate.bp;
+export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle, context, isSVG) {
+	const dom = lastOptVElement.dom;
+	const lastBp = lastOptVElement.bp;
+	const nextBp = nextOptVElement.bp;
 
-	nextVTemplate.dom = dom;
+	nextOptVElement.dom = dom;
 	if (lastBp !== nextBp) {
-		const newDom = mountVTemplate(nextVTemplate, null, lifecycle, context, isSVG);
+		const newDom = mountVTemplate(nextOptVElement, null, lifecycle, context, isSVG);
 
 		replaceChild(parentDom, newDom, dom);
-		unmount(lastVTemplate, null, lifecycle, true);
+		unmount(lastOptVElement, null, lifecycle, true);
 	} else {
 		const bp0 = nextBp.v0;
 
 		if (!isNull(bp0)) {
-			const lastV0 = lastVTemplate.v0;
-			const nextV0 = nextVTemplate.v0;
+			const lastV0 = lastOptVElement.v0;
+			const nextV0 = nextOptVElement.v0;
 			const bp1 = nextBp.v1;
 
 			if (lastV0 !== nextV0) {
-				patchTemplateValue(bp0, lastV0, nextV0, dom, lifecycle, context, isSVG);
+				patchOptVElementValue(bp0, lastV0, nextV0, dom, lifecycle, context, isSVG);
 			}
 			if (!isNull(bp1)) {
-				const lastV1 = lastVTemplate.v1;
-				const nextV1 = nextVTemplate.v1;
+				const lastV1 = lastOptVElement.v1;
+				const nextV1 = nextOptVElement.v1;
 
 				if (lastV1 !== nextV1) {
-					patchTemplateValue(bp1, lastV1, nextV1, dom, lifecycle, context, isSVG);
+					patchOptVElementValue(bp1, lastV1, nextV1, dom, lifecycle, context, isSVG);
 				}
 			}
 		}
 	}
 }
 
-function patchTemplateValue(templateValueType, lastValue, nextValue, dom, lifecycle, context, isSVG) {
-	switch (templateValueType) {
-		case TemplateValueTypes.CHILDREN_KEYED:
+function patchOptVElementValue(valueType, lastValue, nextValue, dom, lifecycle, context, isSVG) {
+	switch (valueType) {
+		case ValueTypes.CHILDREN_KEYED:
 			patchKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null);
 			break;
-		case TemplateValueTypes.CHILDREN_NON_KEYED:
+		case ValueTypes.CHILDREN_NON_KEYED:
 			patchNonKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null, false);
 			break;
-		case TemplateValueTypes.CHILDREN_TEXT:
+		case ValueTypes.CHILDREN_TEXT:
 			updateTextContent(dom, nextValue);
 			break;
-		case TemplateValueTypes.CHILDREN_NODE:
+		case ValueTypes.CHILDREN_NODE:
 			patch(lastValue, nextValue, dom, lifecycle, context, isSVG);
 			break;
-		case TemplateValueTypes.PROPS_CLASS_NAME:
+		case ValueTypes.PROPS_CLASS_NAME:
 			if (isNullOrUndef(nextValue)) {
 				dom.removeAttribute('class');
 			} else {
@@ -540,96 +543,6 @@ function lis_algorithm(a) {
 	return result;
 }
 
-export function patchVariableAsExpression(pointer, templateIsSVG) {
-	return function patchVariableAsExpression(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
-		const lastInput = readFromVTemplate(lastVTemplate, pointer);
-		let nextInput = readFromVTemplate(nextVTemplate, pointer);
-
-		if (lastInput !== nextInput) {
-			if (isNullOrUndef(nextInput) || !isVNode(nextInput)) {
-				nextInput = normalise(nextInput);
-				writeToVTemplate(nextVTemplate, pointer, nextInput);
-			}
-			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
-		}
-	};
-}
-
-export function patchVariableAsChildren(pointer, templateIsSVG, childrenType) {
-	return function patchVariableAsChildren(lastVTemplate, nextVTemplate, parentDom, lifecycle, context, isSVG) {
-		const lastInput = readFromVTemplate(lastVTemplate, pointer);
-		const nextInput = readFromVTemplate(nextVTemplate, pointer);
-
-		if (lastInput !== nextInput) {
-			patchChildren(childrenType, lastInput, nextInput, parentDom, lifecycle, context, isSVG || templateIsSVG);
-		}
-	};
-}
-
-export function patchVariableAsText(pointer) {
-	return function patchVariableAsText(lastVTemplate, nextVTemplate, textNode) {
-		const nextInput = readFromVTemplate(nextVTemplate, pointer);
-
-		if (readFromVTemplate(lastVTemplate, pointer) !== nextInput) {
-			textNode.nodeValue = nextInput;
-		}
-	};
-}
-
-export function patchTemplateClassName(pointer) {
-	return function patchTemplateClassName(lastVTemplate, nextVTemplate, dom) {
-		const nextClassName = readFromVTemplate(nextVTemplate, pointer);
-
-		if (readFromVTemplate(lastVTemplate, pointer) !== nextClassName) {
-			if (isNullOrUndef(nextClassName)) {
-				dom.removeAttribute('class');
-			} else {
-				dom.className = nextClassName;
-			}
-		}
-	};
-}
-
-export function patchTemplateStyle(pointer) {
-	return function patchTemplateClassName(lastVTemplate, nextVTemplate, dom) {
-		const lastStyle = readFromVTemplate(lastVTemplate, pointer);
-		const nextStyle = readFromVTemplate(nextVTemplate, pointer);
-
-		if (lastStyle !== nextStyle) {
-			patchStyle(lastStyle, nextStyle, dom);
-		}
-	};
-}
-
-export function patchTemplateProps(propsToPatch, tag) {
-	return function patchTemplateProps(lastVTemplate, nextVTemplate, dom) {
-		// used for form values only
-		let formValue;
-
-		if (tag === 'input') {
-			resetFormInputProperties(dom);
-		}
-		for (let i = 0; i < propsToPatch.length; i += 2) {
-			const prop = propsToPatch[i];
-			const value = propsToPatch[i + 1];
-			let lastValue = value;
-			let nextValue = value;
-
-			if (isVariable(value)) {
-				lastValue = readFromVTemplate(lastVTemplate, value.pointer);
-				nextValue = readFromVTemplate(nextVTemplate, value.pointer);
-			}
-			if (prop === 'value') {
-				formValue = nextValue;
-			}
-			patchProp(prop, lastValue, nextValue, dom);
-		}
-		if (tag === 'select') {
-			formSelectValue(dom, formValue);
-		}
-	};
-}
-
 // returns true if a property has been applied that can't be cloned via elem.cloneNode()
 export function patchProp(prop, lastValue, nextValue, dom) {
 	if (strictProps[prop]) {
@@ -685,43 +598,4 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 		}
 	}
 	return true;
-}
-
-export function patchSpreadPropsFromTemplate(pointer, templateIsSVG, tag) {
-	return function patchSpreadPropsFromTemplate(lastVTemplate, nextVTemplate, dom, lifecycle, context, isSVG) {
-		const lastProps = readFromVTemplate(lastVTemplate, pointer) || {};
-		const nextProps = readFromVTemplate(nextVTemplate, pointer) || {};
-		// used for form values only
-		let formValue;
-
-		for (let prop in nextProps) {
-			const lastValue = nextProps[prop];
-			const nextValue = nextProps[prop];
-
-			if (prop === 'key') {
-				nextVTemplate.key = nextValue;
-			} else if (prop === 'children') {
-				if (lastValue !== nextValue) {
-					patchChildrenWithUnknownType(lastValue, nextValue, dom, lifecycle, context, isSVG || templateIsSVG);
-				}
-			} else {
-				if (isNullOrUndef(nextValue)) {
-					removeProp(prop, dom);
-				} else {
-					patchProp(prop, lastValue, nextValue, dom);
-				}
-			}
-			if (prop === 'value') {
-				formValue = nextValue;
-			}
-		}
-		for (let prop in lastProps) {
-			if (isNullOrUndef(nextProps[prop])) {
-				removeProp(prop, dom);
-			}
-		}
-		if (tag === 'select') {
-			formSelectValue(dom, formValue);
-		}
-	};
 }

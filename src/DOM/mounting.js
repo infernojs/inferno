@@ -22,22 +22,23 @@ import {
 import { patchStyle, patch, patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	isVTemplate,
+	isVElement,
+	isOptVElement,
 	isVText,
 	isVFragment,
-	TemplateValueTypes,
+	ValueTypes,
 	isKeyedListChildrenType,
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/shapes';
 import {
-	recycleVTemplate,
+	recycleOptVElement,
 	recyclingEnabled
 } from './recycling';
 
 export function mount(input, parentDom, lifecycle, context, isSVG) {
-	if (isVTemplate(input)) {
-		return mountVTemplate(input, parentDom, lifecycle, context, isSVG);
+	if (isOptVElement(input)) {
+		return mountOptVElement(input, parentDom, lifecycle, context, isSVG);
 	} else if (isVText(input)) {
 		return mountVText(input, parentDom);
 	} else if (isVFragment(input)) {
@@ -70,8 +71,8 @@ export function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) 
 	return dom;
 }
 
-function createStaticClone(bp, isSVG) {
-	const stat = bp.static;
+function createStaticVElementClone(bp, isSVG) {
+	const stat = bp.staticVElement;
 	const tag = stat.tag;
 	const dom = document.createElement(tag);
 	const props = stat.props;
@@ -93,24 +94,24 @@ export function mountVText(vText, parentDom) {
 	return dom;
 }
 
-export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) {
-	const bp = vTemplate.bp;
+export function mountOptVElement(optVElement, parentDom, lifecycle, context, isSVG) {
+	const bp = optVElement.bp;
 	let dom = null;
 
 	if (recyclingEnabled) {
-		dom = recycleVTemplate(vTemplate, lifecycle, context, isSVG);
+		dom = recycleOptVElement(optVElement, lifecycle, context, isSVG);
 	}
 	if (isNull(dom)) {
-		dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticClone(bp, isSVG);
-		vTemplate.dom = dom;
+		dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
+		optVElement.dom = dom;
 		const bp0 = bp.v0;
 
 		if (!isNull(bp0)) {
-			mountTemplateValue(bp0, vTemplate.v0, dom, lifecycle, context, isSVG);
+			mountOptVElementValue(bp0, optVElement.v0, dom, lifecycle, context, isSVG);
 			const bp1 = bp.v1;
 
 			if (!isNull(bp1)) {
-				mountTemplateValue(bp1, vTemplate.v1, dom, lifecycle, context, isSVG);
+				mountOptVElementValue(bp1, optVElement.v1, dom, lifecycle, context, isSVG);
 			}
 		}
 	}
@@ -120,19 +121,19 @@ export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) 
 	return dom;
 }
 
-function mountTemplateValue(templateValueType, value, dom, lifecycle, context, isSVG) {
-	switch (templateValueType) {
-		case TemplateValueTypes.CHILDREN_KEYED:
-		case TemplateValueTypes.CHILDREN_NON_KEYED:
+function mountOptVElementValue(valueType, value, dom, lifecycle, context, isSVG) {
+	switch (valueType) {
+		case ValueTypes.CHILDREN_KEYED:
+		case ValueTypes.CHILDREN_NON_KEYED:
 			mountArrayChildrenWithType(value, dom, lifecycle, context, isSVG);
 			break;
-		case TemplateValueTypes.CHILDREN_TEXT:
+		case ValueTypes.CHILDREN_TEXT:
 			setTextContent(dom, value);
 			break;
-		case TemplateValueTypes.CHILDREN_NODE:
+		case ValueTypes.CHILDREN_NODE:
 			mount(value, dom, lifecycle, context, isSVG);
 			break;
-		case TemplateValueTypes.PROPS_CLASS_NAME:
+		case ValueTypes.PROPS_CLASS_NAME:
 			if (!isNullOrUndef(value)) {
 				dom.className = value;
 			}

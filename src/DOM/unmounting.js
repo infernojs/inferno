@@ -2,20 +2,17 @@ import { isNullOrUndef, isArray, isNull, isInvalid } from './../core/utils';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	isVTemplate
+	isOptVElement
 } from '../core/shapes';
 import {
-	readFromVTemplate
-} from './templates';
-import {
-	poolVTemplate,
+	poolOptVElement,
 	recyclingEnabled
 } from './recycling';
 
 export function unmount(input, parentDom, lifecycle, canRecycle) {
 	if (!isInvalid(input)) {
-		if (isVTemplate(input)) {
-			unmountVTemplate(input, parentDom, lifecycle, canRecycle);
+		if (isOptVElement(input)) {
+			unmountOptVElement(input, parentDom, lifecycle, canRecycle);
 		}
 	}
 }
@@ -32,12 +29,12 @@ function unmountVText(vText, parentDom) {
 	}
 }
 
-function unmountVTemplate(vTemplate, parentDom, lifecycle, canRecycle) {
+function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle) {
 	if (!isNull(parentDom)) {
-		parentDom.removeChild(vTemplate.dom);
+		parentDom.removeChild(optVElement.dom);
 	}
 	if (recyclingEnabled && (parentDom || canRecycle)) {
-		poolVTemplate(vTemplate);
+		poolOptVElement(optVElement);
 	}
 }
 

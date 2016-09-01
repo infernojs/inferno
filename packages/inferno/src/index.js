@@ -1,8 +1,10 @@
 import {
-	createVTemplate,
+	createOptBlueprint,
+	createVElement,
+	createStaticVElement,
 	createVFragment,
 	createVText,
-	TemplateValueTypes,
+	ValueTypes,
 	ChildrenTypes,
 	NodeTypes
 } from '../../../src/core/shapes';
@@ -20,10 +22,12 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default {
-	createVTemplate,
+	createOptBlueprint,
+	createVElement,
+	createStaticVElement,
 	createVFragment,
 	createVText,
-	TemplateValueTypes,
+	ValueTypes,
 	ChildrenTypes,
 	NodeTypes
 };

@@ -1,12 +1,11 @@
 (function() {
 	"use strict";
 	var elem = document.getElementById('app');
-	var createVTemplateReducers = Inferno.createVTemplateReducers;
-	var t = Inferno.createVTemplate;
-	var e = Inferno.createVElement;
+	var e = Inferno.createStaticVElement;
 	var f = Inferno.createVFragment;
+	var bp = Inferno.createOptBlueprint;
 	var text = Inferno.createVText;
-	var TemplateValueTypes = Inferno.TemplateValueTypes;
+	var ValueTypes = Inferno.ValueTypes;
 	var ChildrenTypes = Inferno.ChildrenTypes;
 	var NodeTypes = Inferno.NodeTypes;
 
@@ -23,84 +22,16 @@
 		return newArray;
 	}
 
-	var bp1 = {
-		static: {
-			tag: 'td'
-		},
-		clone: null,
-		v0: TemplateValueTypes.PROPS_CLASS_NAME,
-		v1: TemplateValueTypes.CHILDREN_NON_KEYED,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};
-
-	var bp2 = {
-		static: {
-			tag: 'span'
-		},
-		clone: null,
-		v0: TemplateValueTypes.CHILDREN_NODE,
-		v1: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};
-
-	var bp3 = {
-		static: {
-			tag: 'div',
-			props: {
-				className: 'popover left'
-			}
-		},
-		clone: null,
-		v0: TemplateValueTypes.CHILDREN_NON_KEYED,
-		v1: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};
-
-	var bp4 = {
-		static: {
-			tag: 'div',
-			props: {
-				className: 'popover-content'
-			}
-		},
-		clone: null,
-		v0: TemplateValueTypes.CHILDREN_NODE,
-		v1: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};
-
-	var bp5 = {
-		static: {
-			tag: 'div',
-			props: {
-				className: 'arrow'
-			}
-		},
-		clone: null,
-		v0: null,
-		v1: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};	
+	var bp1 = bp(e('td'), ValueTypes.PROPS_CLASS_NAME, ValueTypes.CHILDREN_NON_KEYED, null);
+	var bp2 = bp(e('span'), ValueTypes.CHILDREN_NODE, null, null);
+	var bp3 = bp(e('div', { className: 'popover left' }), ValueTypes.CHILDREN_NON_KEYED, null, null);
+	var bp4 = bp(e('div', { className: 'popover-content' }), ValueTypes.CHILDREN_NODE, null, null);
+	var bp5 = bp(e('div', { className: 'arrow' }), null, null, null);
 
 	var staticNode = {
 		bp: bp5,
 		dom: null,
-		type: NodeTypes.TEMPLATE,
+		type: NodeTypes.OPT_ELEMENT,
 		v0: null,
 		v1: null
 	};
@@ -109,13 +40,13 @@
 		return {
 			bp: bp1,
 			dom: null,
-			type: NodeTypes.TEMPLATE,
+			type: NodeTypes.OPT_ELEMENT,
 			v0: query.elapsedClassName,
 			v1: [
 				{
 					bp: bp2,
 					dom: null,
-					type: NodeTypes.TEMPLATE,
+					type: NodeTypes.OPT_ELEMENT,
 					v0: {
 						dom: null,
 						type: NodeTypes.TEXT,
@@ -126,12 +57,12 @@
 				{
 					bp: bp3,
 					dom: null,
-					type: NodeTypes.TEMPLATE,
+					type: NodeTypes.OPT_ELEMENT,
 					v0: [
 						{
 							bp: bp4,
 							dom: null,
-							type: NodeTypes.TEMPLATE,
+							type: NodeTypes.OPT_ELEMENT,
 							v0: {
 								dom: null,
 								type: NodeTypes.TEXT,
@@ -147,63 +78,10 @@
 		};
 	}
 
-	var bp6 = {
-		static: {
-			tag: 'tr',
-		},
-		clone: null,
-		v0: TemplateValueTypes.CHILDREN_NON_KEYED,
-		v1: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};
-
-	var bp7 = {
-		static: {
-			tag: 'td',
-			props: {
-				className: 'dbname'
-			}
-		},
-		clone: null,
-		v0: TemplateValueTypes.CHILDREN_TEXT,
-		v1: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};
-
-	var bp8 = {
-		static: {
-			tag: 'td',
-			props: {
-				className: 'query-count'
-			}
-		},
-		clone: null,
-		v0: TemplateValueTypes.CHILDREN_NODE,
-		v1: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};
-
-	var bp9 = {
-		static: {
-			tag: 'span'
-		},
-		clone: null,
-		v0: TemplateValueTypes.PROPS_CLASS_NAME,
-		v1: TemplateValueTypes.CHILDREN_NODE,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};
+	var bp6 = bp(e('tr'), ValueTypes.CHILDREN_NON_KEYED, null, null);
+	var bp7 = bp(e('td', { className: 'dbname' }), ValueTypes.CHILDREN_TEXT, null, null);
+	var bp8 = bp(e('td', { className: 'query-count' }), ValueTypes.CHILDREN_NODE, null, null);
+	var bp9 = bp(e('span'), ValueTypes.PROPS_CLASS_NAME, ValueTypes.CHILDREN_NODE, null);
 
 	function database(db) {
 		var lastSample = db.lastSample;
@@ -215,23 +93,23 @@
 		return {
 			bp: bp6,
 			dom: null,
-			type: NodeTypes.TEMPLATE,
+			type: NodeTypes.OPT_ELEMENT,
 			v0: [
 				{
 					bp: bp7,
 					dom: null,
-					type: NodeTypes.TEMPLATE,
+					type: NodeTypes.OPT_ELEMENT,
 					v0: db.dbname,
 					v1: null
 				},
 				{
 					bp: bp8,
 					dom: null,
-					type: NodeTypes.TEMPLATE,
+					type: NodeTypes.OPT_ELEMENT,
 					v0: {
 						bp: bp9,
 						dom: null,
-						type: NodeTypes.TEMPLATE,
+						type: NodeTypes.OPT_ELEMENT,
 						v0: lastSample.countClassName,
 						v1: {
 							dom: null,
@@ -253,34 +131,8 @@
 		};
 	}
 
-	var bp10 = {
-		static: {
-			tag: 'table',
-			props: {
-				className: 'table table-striped latest-data'
-			}
-		},
-		clone: null,
-		v0: TemplateValueTypes.CHILDREN_NODE,
-		v1: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};	
-
-	var bp11 = {
-		static: {
-			tag: 'tbody'
-		},
-		clone: null,
-		v0: TemplateValueTypes.CHILDREN_NON_KEYED,
-		v1: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		}
-	};
+	var bp10 = bp(e('table', { className: 'table table-striped latest-data' }), ValueTypes.CHILDREN_NODE, null, null);
+	var bp11 = bp(e('tbody'), ValueTypes.CHILDREN_NON_KEYED, null, null);
 
 	function render() {
 		var dbs = ENV.generateData(false).toArray();
@@ -289,11 +141,11 @@
 			{
 				bp: bp10,
 				dom: null,
-				type: NodeTypes.TEMPLATE,
+				type: NodeTypes.OPT_ELEMENT,
 				v0: {
 					bp: bp11,
 					dom: null,
-					type: NodeTypes.TEMPLATE,
+					type: NodeTypes.OPT_ELEMENT,
 					v0: map(database, dbs),
 					v1: null
 				},
