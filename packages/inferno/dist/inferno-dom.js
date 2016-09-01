@@ -742,13 +742,13 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
 			if (isKeyed(lastChildren, nextChildren)) {
 				patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null);
 			} else {
-				patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null);
+				patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, true);
 			}
 		} else {
-			patchNonKeyedChildren([lastChildren], nextChildren, parentDom, lifecycle, context, isSVG, null);
+			patchNonKeyedChildren([lastChildren], nextChildren, parentDom, lifecycle, context, isSVG, null, true);
 		}
 	} else if (isArray(lastChildren)) {
-		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null);
+		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null, true);
 	} else {
 		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
 	}
@@ -802,7 +802,7 @@ function patchTemplateValue(templateValueType, lastValue, nextValue, dom, lifecy
 			patchKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null);
 			break;
 		case TemplateValueTypes.CHILDREN_NON_KEYED:
-			patchNonKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null);
+			patchNonKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null, false);
 			break;
 		case TemplateValueTypes.CHILDREN_TEXT:
 			updateTextContent(dom, nextValue);
@@ -834,19 +834,19 @@ function patchVFragment(lastVFragment, nextVFragment, parentDom, lifecycle, cont
 		if (lastChildrenType === nextChildrenType) {
 			if (isKeyedListChildrenType(nextChildrenType)) {
 				return patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
-			} else if (isKeyedListChildrenType(nextChildrenType)) {
-				return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
+			} else if (isNonKeyedListChildrenType(nextChildrenType)) {
+				return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, false);
 			}
 		}
 		if (isKeyed(lastChildren, nextChildren)) {
 			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
 		} else {
-			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
+			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, true);
 		}
 	}
 }
 
-function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, parentVList) {
+function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, parentVList, shouldNormalise) {
 	var lastChildrenLength = lastChildren.length;
 	var nextChildrenLength = nextChildren.length;
 	var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
@@ -854,7 +854,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
 
 	for (; i < commonLength; i++) {
 		var lastChild = lastChildren[i];
-		var nextChild = normaliseChild(nextChildren, i);
+		var nextChild = shouldNormalise ? normaliseChild(nextChildren, i) : nextChildren[i];
 
 		patch(lastChild, nextChild, dom, lifecycle, context, isSVG);
 	}
@@ -1491,7 +1491,6 @@ function mountTemplateValue(templateValueType, value, dom, lifecycle, context, i
 			mount(value, dom, lifecycle, context, isSVG);
 			break;
 		case TemplateValueTypes.PROPS_CLASS_NAME:
-			debugger;
 			if (!isNullOrUndef(value)) {
 				dom.className = value;
 			}

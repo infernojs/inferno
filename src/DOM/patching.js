@@ -93,7 +93,7 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
 	} else if (isKeyedListChildrenType(childrenType)) {
 		patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null);
 	} else if (isNonKeyedListChildrenType(childrenType)) {
-		patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null);
+		patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false);
 	} else if (isUnknownChildrenType(childrenType)) {
 		patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
 	} else {
@@ -137,13 +137,13 @@ export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentD
 			if (isKeyed(lastChildren, nextChildren)) {
 				patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null);
 			} else {
-				patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null);
+				patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, true);
 			}
 		} else {
-			patchNonKeyedChildren([lastChildren], nextChildren, parentDom, lifecycle, context, isSVG, null);
+			patchNonKeyedChildren([lastChildren], nextChildren, parentDom, lifecycle, context, isSVG, null, true);
 		}
 	} else if (isArray(lastChildren)) {
-		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null);
+		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null, true);
 	} else {
 		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
 	}
@@ -197,7 +197,7 @@ function patchTemplateValue(templateValueType, lastValue, nextValue, dom, lifecy
 			patchKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null);
 			break;
 		case TemplateValueTypes.CHILDREN_NON_KEYED:
-			patchNonKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null);
+			patchNonKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null, false);
 			break;
 		case TemplateValueTypes.CHILDREN_TEXT:
 			updateTextContent(dom, nextValue);
@@ -229,19 +229,19 @@ function patchVFragment(lastVFragment, nextVFragment, parentDom, lifecycle, cont
 		if (lastChildrenType === nextChildrenType) {
 			if (isKeyedListChildrenType(nextChildrenType)) {
 				return patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
-			} else if (isKeyedListChildrenType(nextChildrenType)) {
-				return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
+			} else if (isNonKeyedListChildrenType(nextChildrenType)) {
+				return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, false);
 			}
 		}
 		if (isKeyed(lastChildren, nextChildren)) {
 			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
 		} else {
-			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
+			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, true);
 		}
 	}
 }
 
-export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, parentVList) {
+export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, parentVList, shouldNormalise) {
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
 	let commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
@@ -249,7 +249,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 
 	for (; i < commonLength; i++) {
 		const lastChild = lastChildren[i];
-		const nextChild = normaliseChild(nextChildren, i);
+		const nextChild = shouldNormalise ? normaliseChild(nextChildren, i) : nextChildren[i];
 
 		patch(lastChild, nextChild, dom, lifecycle, context, isSVG);
 	}

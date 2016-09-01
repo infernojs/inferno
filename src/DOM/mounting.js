@@ -133,7 +133,6 @@ function mountTemplateValue(templateValueType, value, dom, lifecycle, context, i
 			mount(value, dom, lifecycle, context, isSVG);
 			break;
 		case TemplateValueTypes.PROPS_CLASS_NAME:
-			debugger;
 			if (!isNullOrUndef(value)) {
 				dom.className = value;
 			}
