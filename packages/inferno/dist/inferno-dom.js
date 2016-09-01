@@ -79,7 +79,24 @@ function throwError(message) {
 
 var NodeTypes = {
 	TEMPLATE: 1,
-	TEXT: 2
+	TEXT: 2,
+	FRAGMENT: 3
+};
+
+var TemplateValueTypes = {
+	CHILDREN_KEYED: 1,
+	CHILDREN_NON_KEYED: 2,
+	CHILDREN_TEXT: 3,
+	CHILDREN_NODE: 4,
+	PROPS_CLASS_NAME: 5
+};
+
+var ChildrenTypes = {
+	NON_KEYED: 1,
+	KEYED: 2,
+	NODE: 3,
+	TEXT: 4,
+	UNKNOWN: 5
 };
 
 function isVTemplate(o) {
@@ -88,6 +105,22 @@ function isVTemplate(o) {
 
 function isVText(o) {
 	return o.type === NodeTypes.TEXT;
+}
+
+function isVFragment$1(o) {
+	return o.type === NodeTypes.FRAGMENT;
+}
+
+function isUnknownChildrenType(o) {
+	return o === ChildrenTypes.UNKNOWN;
+}
+
+function isKeyedListChildrenType(o) {
+	return o === ChildrenTypes.KEYED;
+}
+
+function isNonKeyedListChildrenType(o) {
+	return o === ChildrenTypes.NON_KEYED;
 }
 
 // import {
@@ -640,13 +673,10 @@ function isVText(o) {
 // 	}
 // }
 
-var TemplateValueTypes = {
-	CHILDREN_KEYED: 1,
-	CHILDREN_NON_KEYED: 2,
-	CHILDREN_TEXT: 3,
-	CHILDREN_NODE: 4,
-	PROPS_CLASS_NAME: 5
-};
+function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
+	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
+	unmount(lastInput, null, lifecycle);
+}
 
 function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 	if (lastInput !== nextInput) {
@@ -654,12 +684,21 @@ function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 			if (isVTemplate(lastInput)) {
 				patchVTemplate(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 			} else {
-				// replaceChild(parentDom, mountVTemplate(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
-				// unmount(lastInput, null, lifecycle);
+				replaceChild(parentDom, mountVTemplate(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
+				unmount(lastInput, null, lifecycle);
 			}
+		} else if (isVTemplate(lastInput)) {
+			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 		} else if (isVText(nextInput)) {
 			if (isVText(lastInput)) {
 				patchVText(lastInput, nextInput);
+			}
+		} else if (isVFragment$1(nextInput)) {
+			if (isVFragment$1(lastInput)) {
+				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+			} else {
+				replaceChild(parentDom, mountVFragment(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
+				unmount(lastInput, null, lifecycle);
 			}
 		} else {
 			if ("development" !== 'production') {
@@ -738,12 +777,10 @@ function patchVTemplate(lastVTemplate, nextVTemplate, parentDom, lifecycle, cont
 		unmount(lastVTemplate, null, lifecycle, true);
 	} else {
 		var nextV0 = nextVTemplate.v0;
-		var nextV1 = nextVTemplate.v1;
-		var nextV2 = nextVTemplate.v2;
-		var nextV3 = nextVTemplate.v3;
 
 		if (!isUndefined(nextV0)) {
 			var lastV0 = lastVTemplate.v0;
+			var nextV1 = nextVTemplate.v1;
 
 			if (lastV0 !== nextV0) {
 				patchTemplateValue(nextBp.v0, lastV0, nextV0, dom, lifecycle, context, isSVG);
@@ -780,6 +817,32 @@ function patchTemplateValue(templateValueType, lastValue, nextValue, dom, lifecy
 				dom.className = nextValue;
 			}
 			break;
+	}
+}
+
+function patchVFragment(lastVFragment, nextVFragment, parentDom, lifecycle, context, isSVG) {
+	var lastChildren = lastVFragment.children;
+	var nextChildren = nextVFragment.children;
+	var pointer = lastVFragment.pointer;
+
+	nextVFragment.dom = lastVFragment.dom;
+	nextVFragment.pointer = pointer;
+	if (!lastChildren !== nextChildren) {
+		var lastChildrenType = lastVFragment.childrenType;
+		var nextChildrenType = nextVFragment.childrenType;
+
+		if (lastChildrenType === nextChildrenType) {
+			if (isKeyedListChildrenType(nextChildrenType)) {
+				return patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
+			} else if (isKeyedListChildrenType(nextChildrenType)) {
+				return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
+			}
+		}
+		if (isKeyed(lastChildren, nextChildren)) {
+			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
+		} else {
+			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment);
+		}
 	}
 }
 
@@ -1335,7 +1398,34 @@ function mount(input, parentDom, lifecycle, context, isSVG) {
 		return mountVTemplate(input, parentDom, lifecycle, context, isSVG);
 	} else if (isVText(input)) {
 		return mountVText(input, parentDom);
+	} else if (isVFragment$1(input)) {
+		return mountVFragment$1(input, parentDom, lifecycle, context, isSVG);
+	} else {
+		if ("development" !== 'production') {
+			throwError('bad input argument called on mount(). Input argument may need normalising.');
+		}
+		throwError();
 	}
+}
+
+function mountVFragment$1(vFragment, parentDom, lifecycle, context, isSVG) {
+	var children = vFragment.children;
+	var pointer = document.createTextNode('');
+	var dom = document.createDocumentFragment();
+	var childrenType = vFragment.childrenType;
+
+	if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
+		mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG);
+	} else if (isUnknownChildrenType(childrenType)) {
+		mountArrayChildrenWithoutType$1(children, dom, lifecycle, context, isSVG);
+	}
+	vFragment.pointer = pointer;
+	vFragment.dom = dom;
+	appendChild(dom, pointer);
+	if (parentDom) {
+		appendChild(parentDom, dom);
+	}
+	return dom;
 }
 
 function createStaticClone(bp, isSVG) {
@@ -1371,13 +1461,12 @@ function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) {
 	if (isNull(dom)) {
 		dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticClone(bp, isSVG);
 		var v0 = vTemplate.v0;
-		var v1 = vTemplate.v1;
-		var v2 = vTemplate.v2;
-		var v3 = vTemplate.v3;
 
 		vTemplate.dom = dom;
 		if (!isUndefined(v0)) {
 			mountTemplateValue(bp.v0, v0, dom, lifecycle, context, isSVG);
+			var v1 = vTemplate.v1;
+
 			if (!isUndefined(v1)) {
 				mountTemplateValue(bp.v1, v1, dom, lifecycle, context, isSVG);
 			}
@@ -1402,6 +1491,7 @@ function mountTemplateValue(templateValueType, value, dom, lifecycle, context, i
 			mount(value, dom, lifecycle, context, isSVG);
 			break;
 		case TemplateValueTypes.PROPS_CLASS_NAME:
+			debugger;
 			if (!isNullOrUndef(value)) {
 				dom.className = value;
 			}
@@ -1422,6 +1512,26 @@ function mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG) 
 		setTextContent(dom, children);
 	} else if (!isInvalid(children)) {
 		mount(children, dom, lifecycle, context, isSVG);
+	}
+}
+
+function mountArrayChildrenWithoutType$1(children, dom, lifecycle, context, isSVG) {
+	children.complex = false;
+	for (var i = 0; i < children.length; i++) {
+		var child = normaliseChild(children, i);
+
+		if (isVText(child)) {
+			mountVText(child, dom);
+			children.complex = true;
+		} else if (isVPlaceholder(child)) {
+			mountVPlaceholder(child, dom);
+			children.complex = true;
+		} else if (isVFragment$1(child)) {
+			mountVFragment$1(child, dom, lifecycle, context, isSVG);
+			children.complex = true;
+		} else {
+			mount(child, dom, lifecycle, context, isSVG);
+		}
 	}
 }
 

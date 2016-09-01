@@ -17,7 +17,24 @@ function warning(condition, message) {
 
 var NodeTypes = {
 	TEMPLATE: 1,
-	TEXT: 2
+	TEXT: 2,
+	FRAGMENT: 3
+};
+
+var TemplateValueTypes = {
+	CHILDREN_KEYED: 1,
+	CHILDREN_NON_KEYED: 2,
+	CHILDREN_TEXT: 3,
+	CHILDREN_NODE: 4,
+	PROPS_CLASS_NAME: 5
+};
+
+var ChildrenTypes = {
+	NON_KEYED: 1,
+	KEYED: 2,
+	NODE: 3,
+	TEXT: 4,
+	UNKNOWN: 5
 };
 
 function createVTemplate(bp, key, v0, v1, v2, v3) {
@@ -41,13 +58,15 @@ function createVText(text) {
 	};
 }
 
-var TemplateValueTypes = {
-	CHILDREN_KEYED: 1,
-	CHILDREN_NON_KEYED: 2,
-	CHILDREN_TEXT: 3,
-	CHILDREN_NODE: 4,
-	PROPS_CLASS_NAME: 5
-};
+function createVFragment(children, childrenType) {
+	return {
+		type: NodeTypes.FRAGMENT,
+		dom: null,
+		pointer: null,
+		children: children,
+		childrenType: childrenType || ChildrenTypes.UNKNOWN
+	};
+}
 
 if ("development" !== 'production') {
 	var testFunc = function testFn() {};
@@ -62,8 +81,10 @@ if ("development" !== 'production') {
 
 var index = {
 	createVTemplate: createVTemplate,
+	createVFragment: createVFragment,
 	createVText: createVText,
-	TemplateValueTypes: TemplateValueTypes
+	TemplateValueTypes: TemplateValueTypes,
+	ChildrenTypes: ChildrenTypes
 };
 
 return index;

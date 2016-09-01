@@ -7,6 +7,7 @@
 	var f = Inferno.createVFragment;
 	var text = Inferno.createVText;
 	var TemplateValueTypes = Inferno.TemplateValueTypes;
+	var ChildrenTypes = Inferno.ChildrenTypes;
 
 	perfMonitor.startFPSMonitor();
 	perfMonitor.startMemMonitor();
@@ -26,7 +27,7 @@
 			tag: 'td'
 		},
 		clone: null,
-		v0: TemplateValueTypes.PROP_CLASS_NAME,
+		v0: TemplateValueTypes.PROPS_CLASS_NAME,
 		v1: TemplateValueTypes.CHILDREN_NON_KEYED,
 		pools: {
 			nonKeyed: [],
@@ -54,7 +55,11 @@
 			}
 		},
 		clone: null,
-		v0: TemplateValueTypes.CHILDREN_NON_KEYED
+		v0: TemplateValueTypes.CHILDREN_NON_KEYED,
+		pools: {
+			nonKeyed: [],
+			keyed: new Map()
+		}
 	};
 
 	var bp4 = {
@@ -89,13 +94,13 @@
 	var staticNode = t(bp5, null);
 
 	function query(query) {
-		return t(bp1, null, query.elapsedClassName,
+		return t(bp1, null, query.elapsedClassName, [
 			t(bp2, null, text(query.formatElapsed)),
-			t(bp3, null,
+			t(bp3, null, [
 				t(bp4, null, text(query.query)),
 				staticNode
-			)
-		);
+			])
+		]);
 	}
 
 	var bp6 = {
@@ -152,17 +157,6 @@
 			keyed: new Map()
 		}
 	};
-	
-
-	// var databaseTpl = createVTemplateReducers(function (dbName, countClassName, nbQueries, queries) {
-	// 	return e('tr', null, [
-	// 		e('td', { className: 'dbname' }, dbName, null, null, ChildrenTypes.STATIC_TEXT),
-	// 		e('td', { className: 'query-count' },
-	// 			e('span', { className: countClassName }, text(nbQueries), null, null, ChildrenTypes.NODE), null, null, null
-	// 		),
-	// 		f(queries, ChildrenTypes.NON_KEYED_LIST)
-	// 	], null, null, ChildrenTypes.NON_KEYED_LIST);
-	// }, InfernoDOM);
 
 	function database(db) {
 		var lastSample = db.lastSample;
@@ -171,12 +165,12 @@
 		for (var i = 0; i < 5; i++) {
 			queries.push(query(lastSample.topFiveQueries[i]));
 		}
-		//return t(bp6, null, db.dbname, [lastSample.countClassName, lastSample.nbQueries, queries]);
 		return t(bp6, null, [
 			t(bp7, null, db.dbname),
 			t(bp8, null,
 				t(bp9, null, lastSample.countClassName, text(db.nbQueries))
-			)
+			),
+			f(queries, ChildrenTypes.NON_KEYED)
 		]);
 	}
 
