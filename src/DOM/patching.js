@@ -169,7 +169,7 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 
 	nextOptVElement.dom = dom;
 	if (lastBp !== nextBp) {
-		const newDom = mountVTemplate(nextOptVElement, null, lifecycle, context, isSVG);
+		const newDom = mountOptVElement(nextOptVElement, null, lifecycle, context, isSVG);
 
 		replaceChild(parentDom, newDom, dom);
 		unmount(lastOptVElement, null, lifecycle, true);

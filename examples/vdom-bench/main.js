@@ -2,34 +2,16 @@
 	'use strict';
 
 	var benchmark = require('vdom-benchmark-base');
-	var t = Inferno.createVTemplate;
+	var ValueTypes = Inferno.ValueTypes;
+	var bp = Inferno.createOptBlueprint;
+	var e = Inferno.createStaticVElement;
+	var NodeTypes = Inferno.NodeTypes;
 
 	var NAME = 'inferno';
 	var VERSION = '1.0.0-alpha1';
 
-	var bp1 = {
-		static: {
-			tag: 'div'
-		},
-		clone: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		},
-		v0: Inferno.TemplateValueTypes.CHILDREN_KEYED
-	};
-
-	var bp2 = {
-		static: {
-			tag: 'span'
-		},
-		clone: null,
-		pools: {
-			nonKeyed: [],
-			keyed: new Map()
-		},
-		v0: Inferno.TemplateValueTypes.CHILDREN_TEXT
-	};
+	var bp1 = bp(e('div'), ValueTypes.CHILDREN_KEYED, null, null)
+	var bp2 = bp(e('span'), ValueTypes.CHILDREN_TEXT, null, null)
 
 	function renderTree(nodes) {
 		var children = new Array(nodes.length);
@@ -39,9 +21,21 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = t(bp1, n.key, renderTree(n.children));
+				children[i] = {
+					bp: bp1,
+					dom: null,
+					key: n.key,
+					type: NodeTypes.OPT_ELEMENT,
+					v0: renderTree(n.children)
+				};
 			} else {
-				children[i] = t(bp2, n.key, n.key); 
+				children[i] = {
+					bp: bp2,
+					dom: null,
+					key: n.key,
+					type: NodeTypes.OPT_ELEMENT,
+					v0: n.key
+				}; 
 			}
 		}
 		return children;
@@ -62,14 +56,26 @@
 
 	BenchmarkImpl.prototype.render = function() {
 		InfernoDOM.render(
-			t(bp1, null, renderTree(this.a)),
+			{
+				bp: bp1,
+				dom: null,
+				key: null,
+				type: NodeTypes.OPT_ELEMENT,
+				v0: renderTree(this.a)
+			},
 			this.container
 		);
 	};
 
 	BenchmarkImpl.prototype.update = function() {
 		InfernoDOM.render(
-			t(bp1, null, renderTree(this.b)),
+			{
+				bp: bp1,
+				dom: null,
+				key: null,
+				type: NodeTypes.OPT_ELEMENT,
+				v0: renderTree(this.b)
+			},
 			this.container
 		);
 	};

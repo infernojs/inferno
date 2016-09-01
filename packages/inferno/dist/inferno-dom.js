@@ -229,7 +229,7 @@ function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle
 
 	nextOptVElement.dom = dom;
 	if (lastBp !== nextBp) {
-		var newDom = mountVTemplate(nextOptVElement, null, lifecycle, context, isSVG);
+		var newDom = mountOptVElement(nextOptVElement, null, lifecycle, context, isSVG);
 
 		replaceChild(parentDom, newDom, dom);
 		unmount(lastOptVElement, null, lifecycle, true);
