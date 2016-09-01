@@ -171,20 +171,22 @@ export function patchVTemplate(lastVTemplate, nextVTemplate, parentDom, lifecycl
 		replaceChild(parentDom, newDom, dom);
 		unmount(lastVTemplate, null, lifecycle, true);
 	} else {
-		const nextV0 = nextVTemplate.v0;
+		const bp0 = nextBp.v0;
 
-		if (!isUndefined(nextV0)) {
+		if (!isNull(bp0)) {
 			const lastV0 = lastVTemplate.v0;
-			const nextV1 = nextVTemplate.v1;
+			const nextV0 = nextVTemplate.v0;
+			const bp1 = nextBp.v1;
 
 			if (lastV0 !== nextV0) {
-				patchTemplateValue(nextBp.v0, lastV0, nextV0, dom, lifecycle, context, isSVG);
+				patchTemplateValue(bp0, lastV0, nextV0, dom, lifecycle, context, isSVG);
 			}
-			if (!isUndefined(nextV1)) {
+			if (!isNull(bp1)) {
 				const lastV1 = lastVTemplate.v1;
+				const nextV1 = nextVTemplate.v1;
 
 				if (lastV1 !== nextV1) {
-					patchTemplateValue(nextBp.v1, lastV1, nextV1, dom, lifecycle, context, isSVG);
+					patchTemplateValue(bp1, lastV1, nextV1, dom, lifecycle, context, isSVG);
 				}
 			}
 		}

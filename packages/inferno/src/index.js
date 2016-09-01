@@ -3,7 +3,8 @@ import {
 	createVFragment,
 	createVText,
 	TemplateValueTypes,
-	ChildrenTypes
+	ChildrenTypes,
+	NodeTypes
 } from '../../../src/core/shapes';
 import { warning, NO_OP } from '../../../src/core/utils';
 
@@ -23,5 +24,6 @@ export default {
 	createVFragment,
 	createVText,
 	TemplateValueTypes,
-	ChildrenTypes
+	ChildrenTypes,
+	NodeTypes
 };

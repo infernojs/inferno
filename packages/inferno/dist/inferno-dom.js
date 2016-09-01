@@ -776,20 +776,22 @@ function patchVTemplate(lastVTemplate, nextVTemplate, parentDom, lifecycle, cont
 		replaceChild(parentDom, newDom, dom);
 		unmount(lastVTemplate, null, lifecycle, true);
 	} else {
-		var nextV0 = nextVTemplate.v0;
+		var bp0 = nextBp.v0;
 
-		if (!isUndefined(nextV0)) {
+		if (!isNull(bp0)) {
 			var lastV0 = lastVTemplate.v0;
-			var nextV1 = nextVTemplate.v1;
+			var nextV0 = nextVTemplate.v0;
+			var bp1 = nextBp.v1;
 
 			if (lastV0 !== nextV0) {
-				patchTemplateValue(nextBp.v0, lastV0, nextV0, dom, lifecycle, context, isSVG);
+				patchTemplateValue(bp0, lastV0, nextV0, dom, lifecycle, context, isSVG);
 			}
-			if (!isUndefined(nextV1)) {
+			if (!isNull(bp1)) {
 				var lastV1 = lastVTemplate.v1;
+				var nextV1 = nextVTemplate.v1;
 
 				if (lastV1 !== nextV1) {
-					patchTemplateValue(nextBp.v1, lastV1, nextV1, dom, lifecycle, context, isSVG);
+					patchTemplateValue(bp1, lastV1, nextV1, dom, lifecycle, context, isSVG);
 				}
 			}
 		}
@@ -1460,15 +1462,15 @@ function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) {
 	}
 	if (isNull(dom)) {
 		dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticClone(bp, isSVG);
-		var v0 = vTemplate.v0;
-
 		vTemplate.dom = dom;
-		if (!isUndefined(v0)) {
-			mountTemplateValue(bp.v0, v0, dom, lifecycle, context, isSVG);
-			var v1 = vTemplate.v1;
+		var bp0 = bp.v0;
 
-			if (!isUndefined(v1)) {
-				mountTemplateValue(bp.v1, v1, dom, lifecycle, context, isSVG);
+		if (!isNull(bp0)) {
+			mountTemplateValue(bp0, vTemplate.v0, dom, lifecycle, context, isSVG);
+			var bp1 = bp.v1;
+
+			if (!isNull(bp1)) {
+				mountTemplateValue(bp1, vTemplate.v1, dom, lifecycle, context, isSVG);
 			}
 		}
 	}

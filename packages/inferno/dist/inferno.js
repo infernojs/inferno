@@ -84,7 +84,8 @@ var index = {
 	createVFragment: createVFragment,
 	createVText: createVText,
 	TemplateValueTypes: TemplateValueTypes,
-	ChildrenTypes: ChildrenTypes
+	ChildrenTypes: ChildrenTypes,
+	NodeTypes: NodeTypes
 };
 
 return index;

@@ -8,6 +8,7 @@
 	var text = Inferno.createVText;
 	var TemplateValueTypes = Inferno.TemplateValueTypes;
 	var ChildrenTypes = Inferno.ChildrenTypes;
+	var NodeTypes = Inferno.NodeTypes;
 
 	perfMonitor.startFPSMonitor();
 	perfMonitor.startMemMonitor();
@@ -41,6 +42,7 @@
 		},
 		clone: null,
 		v0: TemplateValueTypes.CHILDREN_NODE,
+		v1: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -56,6 +58,7 @@
 		},
 		clone: null,
 		v0: TemplateValueTypes.CHILDREN_NON_KEYED,
+		v1: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -71,6 +74,7 @@
 		},
 		clone: null,
 		v0: TemplateValueTypes.CHILDREN_NODE,
+		v1: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -85,22 +89,62 @@
 			}
 		},
 		clone: null,
+		v0: null,
+		v1: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
 		}
 	};	
 
-	var staticNode = t(bp5, null);
+	var staticNode = {
+		bp: bp5,
+		dom: null,
+		type: NodeTypes.TEMPLATE,
+		v0: null,
+		v1: null
+	};
 
 	function query(query) {
-		return t(bp1, null, query.elapsedClassName, [
-			t(bp2, null, text(query.formatElapsed)),
-			t(bp3, null, [
-				t(bp4, null, text(query.query)),
-				staticNode
-			])
-		]);
+		return {
+			bp: bp1,
+			dom: null,
+			type: NodeTypes.TEMPLATE,
+			v0: query.elapsedClassName,
+			v1: [
+				{
+					bp: bp2,
+					dom: null,
+					type: NodeTypes.TEMPLATE,
+					v0: {
+						dom: null,
+						type: NodeTypes.TEXT,
+						text: query.formatElapsed
+					},
+					v1: null
+				},
+				{
+					bp: bp3,
+					dom: null,
+					type: NodeTypes.TEMPLATE,
+					v0: [
+						{
+							bp: bp4,
+							dom: null,
+							type: NodeTypes.TEMPLATE,
+							v0: {
+								dom: null,
+								type: NodeTypes.TEXT,
+								text: query.query
+							},
+							v1: null
+						},
+						staticNode
+					],
+					v1: null
+				}
+			]
+		};
 	}
 
 	var bp6 = {
@@ -109,6 +153,7 @@
 		},
 		clone: null,
 		v0: TemplateValueTypes.CHILDREN_NON_KEYED,
+		v1: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -124,6 +169,7 @@
 		},
 		clone: null,
 		v0: TemplateValueTypes.CHILDREN_TEXT,
+		v1: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -139,6 +185,7 @@
 		},
 		clone: null,
 		v0: TemplateValueTypes.CHILDREN_NODE,
+		v1: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -165,13 +212,45 @@
 		for (var i = 0; i < 5; i++) {
 			queries.push(query(lastSample.topFiveQueries[i]));
 		}
-		return t(bp6, null, [
-			t(bp7, null, db.dbname),
-			t(bp8, null,
-				t(bp9, null, lastSample.countClassName, text(db.nbQueries))
-			),
-			f(queries, ChildrenTypes.NON_KEYED)
-		]);
+		return {
+			bp: bp6,
+			dom: null,
+			type: NodeTypes.TEMPLATE,
+			v0: [
+				{
+					bp: bp7,
+					dom: null,
+					type: NodeTypes.TEMPLATE,
+					v0: db.dbname,
+					v1: null
+				},
+				{
+					bp: bp8,
+					dom: null,
+					type: NodeTypes.TEMPLATE,
+					v0: {
+						bp: bp9,
+						dom: null,
+						type: NodeTypes.TEMPLATE,
+						v0: lastSample.countClassName,
+						v1: {
+							dom: null,
+							type: NodeTypes.TEXT,
+							text: db.nbQueries
+						}
+					},
+					v1: null
+				},
+				{
+					dom: null,
+					type: NodeTypes.FRAGMENT,
+					children: queries,
+					childrenType: ChildrenTypes.NON_KEYED,
+					pointer: null
+				}
+			],
+			v1: null
+		};
 	}
 
 	var bp10 = {
@@ -183,6 +262,7 @@
 		},
 		clone: null,
 		v0: TemplateValueTypes.CHILDREN_NODE,
+		v1: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -195,6 +275,7 @@
 		},
 		clone: null,
 		v0: TemplateValueTypes.CHILDREN_NON_KEYED,
+		v1: null,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -205,7 +286,19 @@
 		var dbs = ENV.generateData(false).toArray();
 		perfMonitor.startProfile('view update');
 		InfernoDOM.render(
-			t(bp10, null, t(bp11, null, map(database, dbs))),
+			{
+				bp: bp10,
+				dom: null,
+				type: NodeTypes.TEMPLATE,
+				v0: {
+					bp: bp11,
+					dom: null,
+					type: NodeTypes.TEMPLATE,
+					v0: map(database, dbs),
+					v1: null
+				},
+				v1: null
+			},
 			elem
 		);
 		perfMonitor.endProfile('view update');

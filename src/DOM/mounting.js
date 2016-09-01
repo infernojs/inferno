@@ -102,15 +102,15 @@ export function mountVTemplate(vTemplate, parentDom, lifecycle, context, isSVG) 
 	}
 	if (isNull(dom)) {
 		dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticClone(bp, isSVG);
-		const v0 = vTemplate.v0;
-
 		vTemplate.dom = dom;
-		if (!isUndefined(v0)) {
-			mountTemplateValue(bp.v0, v0, dom, lifecycle, context, isSVG);
-			const v1 = vTemplate.v1;
+		const bp0 = bp.v0;
 
-			if (!isUndefined(v1)) {
-				mountTemplateValue(bp.v1, v1, dom, lifecycle, context, isSVG);
+		if (!isNull(bp0)) {
+			mountTemplateValue(bp0, vTemplate.v0, dom, lifecycle, context, isSVG);
+			const bp1 = bp.v1;
+
+			if (!isNull(bp1)) {
+				mountTemplateValue(bp1, vTemplate.v1, dom, lifecycle, context, isSVG);
 			}
 		}
 	}
