@@ -1,7 +1,16 @@
 import { mount } from './mounting';
-import { isArray, isNullOrUndef, isInvalid, isStringOrNumber } from './../core/utils';
+import {
+	isArray,
+	isNullOrUndef,
+	isInvalid,
+	isStringOrNumber
+} from './../core/utils';
 import { unmountVFragment, unmount } from './unmounting';
-import { createVText, createVPlaceholder, createVFragment } from '../core/shapes';
+import {
+	createVText,
+	createVPlaceholder,
+	createVFragment
+} from '../core/shapes';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
@@ -87,11 +96,11 @@ export function replaceChild(parentDom, nextDom, lastDom) {
 
 export function normalise(object) {
 	if (isStringOrNumber(object)) {
-		// return createVText(object);
+		return createVText(object);
 	} else if (isInvalid(object)) {
-		// return createVPlaceholder();
+		return createVPlaceholder();
 	} else if (isArray(object)) {
-		// return createVFragment(object);
+		return createVFragment(object);
 	}
 	return object;
 }

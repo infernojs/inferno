@@ -97,6 +97,13 @@ export function createVFragment(children, childrenType) {
 	};
 }
 
+export function createVPlaceholder() {
+	return {
+		dom: null,
+		type: NodeTypes.PLACEHOLDER
+	};
+}
+
 export function isVElement(o) {
 	return o.type === NodeTypes.ELEMENT;
 }

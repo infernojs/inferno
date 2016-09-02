@@ -3,6 +3,7 @@
 
 	var benchmark = require('vdom-benchmark-base');
 	var ValueTypes = Inferno.ValueTypes;
+	var ChildrenTypes = Inferno.ChildrenTypes;
 	var bp = Inferno.createOptBlueprint;
 	var e = Inferno.createStaticVElement;
 	var NodeTypes = Inferno.NodeTypes;
@@ -10,8 +11,8 @@
 	var NAME = 'inferno';
 	var VERSION = '1.0.0-alpha1';
 
-	var bp1 = bp(e('div'), ValueTypes.CHILDREN_KEYED, null, null)
-	var bp2 = bp(e('span'), ValueTypes.CHILDREN_TEXT, null, null)
+	var bp1 = bp(e('div'), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null);
+	var bp2 = bp(e('span'), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null);
 
 	function renderTree(nodes) {
 		var children = new Array(nodes.length);

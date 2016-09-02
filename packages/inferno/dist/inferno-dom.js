@@ -109,7 +109,32 @@ var ChildrenTypes = {
 	UNKNOWN: 5
 };
 
-function isVElement(o) {
+function createVText(text) {
+	return {
+		dom: null,
+		text: text,
+		type: NodeTypes.TEXT
+	};
+}
+
+function createVFragment(children, childrenType) {
+	return {
+		children: children,
+		childrenType: childrenType || ChildrenTypes.UNKNOWN,
+		dom: null,
+		pointer: null,
+		type: NodeTypes.FRAGMENT
+	};
+}
+
+function createVPlaceholder$1() {
+	return {
+		dom: null,
+		type: NodeTypes.PLACEHOLDER
+	};
+}
+
+function isVElement$1(o) {
 	return o.type === NodeTypes.ELEMENT;
 }
 
@@ -129,7 +154,7 @@ function isVFragment(o) {
 	return o.type === NodeTypes.FRAGMENT;
 }
 
-function isVPlaceholder(o) {
+function isVPlaceholder$1(o) {
 	return o.type === NodeTypes.FRAGMENT;
 }
 
@@ -180,10 +205,26 @@ function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 				replaceChild(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
 				unmount(lastInput, null, lifecycle);
 			}
+		} else if (isVComponent(lastInput)) {
+			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+		} else if (isVElement(nextInput)) {
+			if (isVElement(lastInput)) {
+				patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+			} else {
+				replaceChild(parentDom, mountVElement(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
+				unmount(lastInput, null, lifecycle);
+			}
+		} else if (isVElement(lastInput)) {
+			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 		} else if (isVText(nextInput)) {
 			if (isVText(lastInput)) {
 				patchVText(lastInput, nextInput);
+			} else {
+				replaceChild(parentDom, mountVText(nextInput, null), lastInput.dom);
+				unmount(lastInput, null, lifecycle);
 			}
+		} else if (isVText(lastInput)) {
+			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
 		} else if (isVFragment(nextInput)) {
 			if (isVFragment(lastInput)) {
 				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
@@ -191,11 +232,55 @@ function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 				replaceChild(parentDom, mountVFragment(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
 				unmount(lastInput, null, lifecycle);
 			}
+		} else if (isVPlaceholder(nextInput)) {
+			if (isVPlaceholder(lastInput)) {
+				patchVPlaceholder(lastInput, nextInput);
+			} else {
+				replaceChild(parentDom, mountVPlaceholder(nextInput, null), lastInput.dom);
+				unmount(lastInput, null, lifecycle);
+			}
+		} else if (isVPlaceholder(lastInput)) {
+			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
+		} else if (isVFragment(lastInput)) {
+			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG), lifecycle);
 		} else {
 			if ("development" !== 'production') {
 				throwError('bad input argument called on patch(). Input argument may need normalising.');
 			}
 			throwError();
+		}
+	}
+}
+
+function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context, isSVG) {
+	var nextTag = nextVElement.tag;
+	var lastTag = lastVElement.tag;
+
+	if (nextTag === 'svg') {
+		isSVG = true;
+	}
+	if (lastTag !== nextTag) {
+		replaceWithNewNode(lastVElement, nextVElement, parentDom, lifecycle, context, isSVG);
+	} else {
+		var dom = lastVElement.dom;
+		var lastProps = lastVElement.props;
+		var nextProps = nextVElement.props;
+		var lastChildren = lastVElement.children;
+		var nextChildren = nextVElement.children;
+
+		nextVElement.dom = dom;
+		if (lastChildren !== nextChildren) {
+			var lastChildrenType = lastVElement.childrenType;
+			var nextChildrenType = nextVElement.childrenType;
+
+			if (lastChildrenType === nextChildrenType) {
+				patchChildren(lastChildrenType, lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			} else {
+				patchChildrenWithUnknownType(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			}
+		}
+		if (lastProps !== nextProps) {
+			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
 		}
 	}
 }
@@ -323,7 +408,10 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
 	} else if (isArray(lastChildren)) {
 		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null, true);
 	} else {
-		// TODO normalise?
+		if ("development" !== 'production') {
+			throwError('bad input argument called on patchChildrenWithUnknownType(). Input argument may need normalising.');
+		}
+		throwError();
 	}
 }
 
@@ -408,6 +496,10 @@ function patchVText(lastVText, nextVText) {
 	if (lastVText.text !== nextText) {
 		dom.nodeValue = nextText;
 	}
+}
+
+function patchVPlaceholder(lastVPlacholder, nextVPlacholder) {
+	nextVPlacholder.dom = lastVPlacholder.dom;
 }
 
 function patchVFragment(lastVFragment, nextVFragment, parentDom, lifecycle, context, isSVG) {
@@ -790,6 +882,34 @@ function patchProp(prop, lastValue, nextValue, dom) {
 	return true;
 }
 
+function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
+	lastProps = lastProps || {};
+	nextProps = nextProps || {};
+	var formValue;
+
+	for (var prop in nextProps) {
+		var nextValue = nextProps[prop];
+		var lastValue = lastProps[prop];
+
+		if (prop === 'value') {
+			formValue = nextValue;
+		}
+		if (isNullOrUndef(nextValue)) {
+			removeProp(prop, dom);
+		} else {
+			patchProp(prop, lastValue, nextValue, dom);
+		}
+	}
+	for (var prop$1 in lastProps) {
+		if (isNullOrUndef(nextProps[prop$1])) {
+			removeProp(prop$1, dom);
+		}
+	}
+	if (nextVElement.tag === 'select') {
+		formSelectValue(dom, formValue);
+	}
+}
+
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
@@ -831,6 +951,16 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
 				dom.style[style$2] = '';
 			}
 		}
+	}
+}
+
+function removeProp(prop, dom) {
+	if (prop === 'className') {
+		dom.removeAttribute('class');
+	} else if (prop === 'value') {
+		dom.value = '';
+	} else {
+		dom.removeAttribute(prop);
 	}
 }
 
@@ -923,13 +1053,13 @@ function unmount(input, parentDom, lifecycle, canRecycle) {
 			unmountOptVElement(input, parentDom, lifecycle, canRecycle);
 		} else if (isVComponent(input)) {
 			unmountVComponent(input, parentDom, lifecycle, canRecycle);
-		} else if (isVElement(input)) {
+		} else if (isVElement$1(input)) {
 			unmountVElement(input, parentDom, lifecycle);
 		} else if (isVFragment(input)) {
 			unmountVFragment(input, parentDom, true, lifecycle);
 		} else if (isVText(input)) {
 			unmountVText(input, parentDom);
-		} else if (isVPlaceholder(input)) {
+		} else if (isVPlaceholder$1(input)) {
 			unmountVPlaceholder(input, parentDom);
 		}
 	}
@@ -1080,6 +1210,13 @@ function insertOrAppend(parentDom, newNode, nextNode) {
 	}
 }
 
+function replaceVListWithNode(parentDom, vList, dom, lifecycle) {
+	var pointer = vList.pointer;
+
+	unmountVFragment(vList, parentDom, false, lifecycle);
+	replaceChild(parentDom, dom, pointer);
+}
+
 function documentCreateElement(tag, isSVG) {
 	var dom;
 
@@ -1115,11 +1252,11 @@ function replaceChild(parentDom, nextDom, lastDom) {
 
 function normalise(object) {
 	if (isStringOrNumber(object)) {
-		// return createVText(object);
+		return createVText(object);
 	} else if (isInvalid(object)) {
-		// return createVPlaceholder();
+		return createVPlaceholder$1();
 	} else if (isArray(object)) {
-		// return createVFragment(object);
+		return createVFragment(object);
 	}
 	return object;
 }
@@ -1164,18 +1301,53 @@ function isKeyed(lastChildren, nextChildren) {
 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
 
+function formSelectValueFindOptions(dom, value, isMap) {
+	var child = dom.firstChild;
+
+	while (child) {
+		var tagName = child.tagName;
+
+		if (tagName === 'OPTION') {
+			if ((!isMap && child.value === value) || (isMap && value.get(child.value))) {
+				child.selected = true;
+			} else {
+				child.selected = false;
+			}
+		} else if (tagName === 'OPTGROUP') {
+			formSelectValueFindOptions(child, value, isMap);
+		}
+		child = child.nextSibling;
+	}
+}
+
+function formSelectValue(dom, value) {
+	var isMap = false;
+
+	if (!isNullOrUndef(value)) {
+		if (isArray(value)) {
+			// Map vs Object v using reduce here for perf?
+			value = value.reduce(function (o, v) { return o.set(v, true); }, new Map());
+			isMap = true;
+		} else {
+			// convert to string
+			value = value + '';
+		}
+		formSelectValueFindOptions(dom, value, isMap);
+	}
+}
+
 function mount(input, parentDom, lifecycle, context, isSVG) {
 	if (isOptVElement(input)) {
 		return mountOptVElement(input, parentDom, lifecycle, context, isSVG);
 	} else if (isVComponent(input)) {
 		return mountVComponent(input, parentDom, lifecycle, context, isSVG);
-	} else if (isVElement(input)) {
+	} else if (isVElement$1(input)) {
 		return mountVElement(input, parentDom, lifecycle, context, isSVG);
 	} else if (isVText(input)) {
 		return mountVText(input, parentDom);
 	} else if (isVFragment(input)) {
 		return mountVFragment$1(input, parentDom, lifecycle, context, isSVG);
-	} else if (isVPlaceholder(input)) {
+	} else if (isVPlaceholder$1(input)) {
 		return mountVPlaceholder(input, parentDom);
 	} else {
 		if ("development" !== 'production') {
@@ -1369,7 +1541,7 @@ function mountArrayChildrenWithoutType$1(children, dom, lifecycle, context, isSV
 		if (isVText(child)) {
 			mountVText(child, dom);
 			children.complex = true;
-		} else if (isVPlaceholder(child)) {
+		} else if (isVPlaceholder$1(child)) {
 			mountVPlaceholder(child, dom);
 			children.complex = true;
 		} else if (isVFragment(child)) {
