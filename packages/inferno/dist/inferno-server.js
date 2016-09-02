@@ -14,7 +14,9 @@ function isArray$1(obj) {
 }
 
 function isStatefulComponent(o) {
-	return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
+	var component = o.component;
+
+	return !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
 }
 
 function isStringOrNumber(obj) {
@@ -50,42 +52,24 @@ function isUndefined(obj) {
 }
 
 var NodeTypes = {
-	ELEMENT: 0,
-	COMPONENT: 1,
-	TEMPLATE: 2,
+	ELEMENT: 1,
+	OPT_ELEMENT: 2,
 	TEXT: 3,
-	PLACEHOLDER: 4,
-	FRAGMENT: 5,
-	VARIABLE: 6
+	FRAGMENT: 4,
+	OPT_BLUEPRINT: 5,
+	COMPONENT: 6,
+	PLACEHOLDER: 7
 };
-
-function getTemplateValues(vTemplate) {
-	var values = [];
-	var v0 = vTemplate.v0;
-	var v1 = vTemplate.v1;
-
-	if (v0) {
-		values.push(v0);
-	}
-	if (v1) {
-		values.push.apply(values, v1);
-	}
-	return values;
-}
-
-function convertVTemplate(vTemplate) {
-	return vTemplate.tr.schema.apply(null, getTemplateValues(vTemplate));
-}
 
 function isVElement(o) {
 	return o.type === NodeTypes.ELEMENT;
 }
 
-function isVTemplate(o) {
-	return o.type === NodeTypes.TEMPLATE;
+function isOptVElement(o) {
+	return o.type === NodeTypes.OPT_ELEMENT;
 }
 
-function isVComponent(o) {
+function isVComponent$1(o) {
 	return o.type === NodeTypes.COMPONENT;
 }
 
@@ -272,17 +256,17 @@ function renderVElementToString(vElement, isRoot, context) {
 	}
 }
 
-function renderVTemplateToString(vTemplate, isRoot, context) {
-	return renderInputToString(convertVTemplate(vTemplate), context, isRoot);
+function renderOptVElementToString(optVElement, isRoot, context) {
+	debugger;
 }
 
 function renderInputToString(input, context, isRoot) {
 	if (!isInvalid(input)) {
-		if (isVTemplate(input)) {
-			return renderVTemplateToString(input, isRoot, context);
+		if (isOptVElement(input)) {
+			return renderOptVElementToString(input, isRoot, context);
 		} else if (isVElement(input)) {
 			return renderVElementToString(input, isRoot, context);
-		} else if (isVComponent(input)) {
+		} else if (isVComponent$1(input)) {
 			return renderComponentToString(input, isRoot, context);
 		}
 	}
@@ -372,7 +356,7 @@ var RenderStream = (function (Readable) {
 	RenderStream.prototype.renderNode = function renderNode (node, context, isRoot){
 		if (isInvalid(node)) {
 			return;
-		} else if (isVComponent(node)) {
+		} else if (isVComponent$1(node)) {
 			return this.renderComponent(node, isRoot, context);
 		} else if (isVElement(node)) {
 			return this.renderNative(node, isRoot, context);

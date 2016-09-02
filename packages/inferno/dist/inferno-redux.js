@@ -59,38 +59,31 @@ function throwError(message) {
 }
 
 var NodeTypes = {
-	ELEMENT: 0,
-	COMPONENT: 1,
-	TEMPLATE: 2,
+	ELEMENT: 1,
+	OPT_ELEMENT: 2,
 	TEXT: 3,
-	PLACEHOLDER: 4,
-	FRAGMENT: 5,
-	VARIABLE: 6
+	FRAGMENT: 4,
+	OPT_BLUEPRINT: 5,
+	COMPONENT: 6,
+	PLACEHOLDER: 7
 };
 
-function createVComponent(
-	component,
-	props,
-	key,
-	hooks,
-	ref,
-	isStateful
-) {
+function createVComponent(component, props, key, hooks, ref) {
 	return {
-		type: NodeTypes.COMPONENT,
-		dom: null,
 		component: component,
-		props: props,
-		hooks: hooks,
+		dom: null,
+		hooks: hooks || null,
 		key: key,
-		ref: ref
+		props: props,
+		ref: ref || null,
+		type: NodeTypes.COMPONENT
 	};
 }
 
 function createVPlaceholder() {
 	return {
-		type: NodeTypes.PLACEHOLDER,
-		dom: null
+		dom: null,
+		type: NodeTypes.PLACEHOLDER
 	};
 }
 

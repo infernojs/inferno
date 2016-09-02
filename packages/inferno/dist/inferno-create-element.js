@@ -37,67 +37,46 @@ function isObject(o) {
 	return typeof o === 'object';
 }
 
-var ChildrenTypes = {
-	KEYED_LIST: 1,
-	NON_KEYED_LIST: 2,
-	TEXT: 3,
-	NODE: 4,
-	UNKNOWN: 5,
-	STATIC_TEXT: 6
-};
-
 var NodeTypes = {
-	ELEMENT: 0,
-	COMPONENT: 1,
-	TEMPLATE: 2,
+	ELEMENT: 1,
+	OPT_ELEMENT: 2,
 	TEXT: 3,
-	PLACEHOLDER: 4,
-	FRAGMENT: 5,
-	VARIABLE: 6
+	FRAGMENT: 4,
+	OPT_BLUEPRINT: 5,
+	COMPONENT: 6,
+	PLACEHOLDER: 7
 };
 
-function createVComponent(
-	component,
-	props,
-	key,
-	hooks,
-	ref,
-	isStateful
-) {
+var ChildrenTypes = {
+	NON_KEYED: 1,
+	KEYED: 2,
+	NODE: 3,
+	TEXT: 4,
+	UNKNOWN: 5
+};
+
+function createVComponent(component, props, key, hooks, ref) {
 	return {
-		type: NodeTypes.COMPONENT,
-		dom: null,
 		component: component,
-		props: props,
-		hooks: hooks,
+		dom: null,
+		hooks: hooks || null,
 		key: key,
-		ref: ref
+		props: props,
+		ref: ref || null,
+		type: NodeTypes.COMPONENT
 	};
 }
 
-function createVElement(
-	tag,
-	props,
-	children,
-	key,
-	ref,
-	childrenType
-) {
-	if ( props === void 0 ) props = null;
-	if ( children === void 0 ) children = null;
-	if ( key === void 0 ) key = null;
-	if ( ref === void 0 ) ref = null;
-	if ( childrenType === void 0 ) childrenType = null;
-
+function createVElement(tag, props, children, key, ref, childrenType) {
 	return {
-		type: NodeTypes.ELEMENT,
-		dom: null,
-		tag: tag,
 		children: children,
+		childrenType: childrenType || ChildrenTypes.UNKNOWN,
+		dom: null,
 		key: key,
 		props: props,
-		ref: ref,
-		childrenType: childrenType || ChildrenTypes.UNKNOWN
+		ref: ref || null,
+		tag: tag,
+		type: NodeTypes.ELEMENT
 	};
 }
 

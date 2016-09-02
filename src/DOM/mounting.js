@@ -355,3 +355,19 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 	}
 	return dom;
 }
+
+function mountProps(vElement, props, dom) {
+	let formValue;
+
+	for (let prop in props) {
+		const value = props[prop];
+
+		if (prop === 'value') {
+			formValue = value;
+		}
+		patchProp(prop, null, value, dom);
+	}
+	if (vElement.tag === 'select') {
+		formSelectValue(vElement.dom, formValue);
+	}
+}

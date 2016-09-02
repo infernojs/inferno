@@ -8,8 +8,18 @@ import {
 	isTrue
 } from './../core/utils';
 import { isUnitlessNumber } from '../DOM/utils';
-import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
-import { isVElement, isVComponent, isVTemplate, convertVTemplate } from './../core/shapes';
+import {
+	toHyphenCase,
+	escapeText,
+	escapeAttr,
+	isVoidElement
+} from './utils';
+import {
+	isVElement,
+	isVComponent,
+	isOptVElement,
+	convertVTemplate
+} from './../core/shapes';
 
 function renderComponentToString(vComponent, isRoot, context) {
 	const Component = vComponent.component;
@@ -133,14 +143,14 @@ function renderVElementToString(vElement, isRoot, context) {
 	}
 }
 
-function renderVTemplateToString(vTemplate, isRoot, context) {
-	return renderInputToString(convertVTemplate(vTemplate), context, isRoot);
+function renderOptVElementToString(optVElement, isRoot, context) {
+	debugger;
 }
 
 function renderInputToString(input, context, isRoot) {
 	if (!isInvalid(input)) {
-		if (isVTemplate(input)) {
-			return renderVTemplateToString(input, isRoot, context);
+		if (isOptVElement(input)) {
+			return renderOptVElementToString(input, isRoot, context);
 		} else if (isVElement(input)) {
 			return renderVElementToString(input, isRoot, context);
 		} else if (isVComponent(input)) {

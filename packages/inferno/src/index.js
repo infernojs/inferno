@@ -5,6 +5,7 @@ import {
 	createVFragment,
 	createVComponent,
 	createVText,
+	cloneVNode,
 	ValueTypes,
 	ChildrenTypes,
 	NodeTypes
@@ -29,6 +30,7 @@ export default {
 	createVFragment,
 	createVComponent,
 	createVText,
+	cloneVNode,
 	ValueTypes,
 	ChildrenTypes,
 	NodeTypes,

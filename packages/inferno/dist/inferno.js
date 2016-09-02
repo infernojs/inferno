@@ -22,7 +22,9 @@ var NodeTypes = {
 	OPT_ELEMENT: 2,
 	TEXT: 3,
 	FRAGMENT: 4,
-	OPT_BLUEPRINT: 5
+	OPT_BLUEPRINT: 5,
+	COMPONENT: 6,
+	PLACEHOLDER: 7
 };
 
 var ValueTypes = {
@@ -40,6 +42,56 @@ var ChildrenTypes = {
 	TEXT: 4,
 	UNKNOWN: 5
 };
+
+function cloneVNode(vNodeToClone, props) {
+	var children = [], len = arguments.length - 2;
+	while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
+
+	if (!props) {
+		props = {};
+	}
+	if (children.length > 0) {
+		if (children.length === 1) {
+			children = children[0];
+		}
+		if (!props.children) {
+			props.children = children;
+		} else {
+			if (isArray(children)) {
+				if (isArray(props.children)) {
+					props.children = props.children.concat(children);
+				} else {
+					props.children = [props.children].concat(children);
+				}
+			} else {
+				if (isArray(props.children)) {
+					props.children.push(children);
+				} else {
+					props.children = [props.children];
+					props.children.push(children);
+				}
+			}
+		}
+	}
+	if (isVComponent(vNodeToClone)) {
+		return createVComponent(vNodeToClone.component,
+			Object.assign({}, vNodeToClone.props, props),
+			vNodeToClone.key,
+			vNodeToClone.hooks,
+			vNodeToClone.ref
+		);
+	} else if (isVElement(vNodeToClone)) {
+		return createVElement(vNodeToClone.tag,
+			Object.assign({}, vNodeToClone.props, props),
+			props.children || children || vNodeToClone.children,
+			vNodeToClone.key,
+			vNodeToClone.ref,
+			ChildrenTypes.UNKNOWN
+		);
+	} else if (isOptVElement(vNodeToClone)) {
+		debugger;
+	}
+}
 
 function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2) {
 	return {
@@ -111,6 +163,18 @@ function createVFragment(children, childrenType) {
 	};
 }
 
+function isVElement(o) {
+	return o.type === NodeTypes.ELEMENT;
+}
+
+function isOptVElement(o) {
+	return o.type === NodeTypes.OPT_ELEMENT;
+}
+
+function isVComponent(o) {
+	return o.type === NodeTypes.COMPONENT;
+}
+
 if ("development" !== 'production') {
 	var testFunc = function testFn() {};
 	warning(
@@ -129,6 +193,7 @@ var index = {
 	createVFragment: createVFragment,
 	createVComponent: createVComponent,
 	createVText: createVText,
+	cloneVNode: cloneVNode,
 	ValueTypes: ValueTypes,
 	ChildrenTypes: ChildrenTypes,
 	NodeTypes: NodeTypes,

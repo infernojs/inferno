@@ -8,7 +8,9 @@ export const NodeTypes = {
 	OPT_ELEMENT: 2,
 	TEXT: 3,
 	FRAGMENT: 4,
-	OPT_BLUEPRINT: 5
+	OPT_BLUEPRINT: 5,
+	COMPONENT: 6,
+	PLACEHOLDER: 7
 };
 
 export const ValueTypes = {
@@ -26,6 +28,53 @@ export const ChildrenTypes = {
 	TEXT: 4,
 	UNKNOWN: 5
 };
+
+export function cloneVNode(vNodeToClone, props, ...children) {
+	if (!props) {
+		props = {};
+	}
+	if (children.length > 0) {
+		if (children.length === 1) {
+			children = children[0];
+		}
+		if (!props.children) {
+			props.children = children;
+		} else {
+			if (isArray(children)) {
+				if (isArray(props.children)) {
+					props.children = props.children.concat(children);
+				} else {
+					props.children = [props.children].concat(children);
+				}
+			} else {
+				if (isArray(props.children)) {
+					props.children.push(children);
+				} else {
+					props.children = [props.children];
+					props.children.push(children);
+				}
+			}
+		}
+	}
+	if (isVComponent(vNodeToClone)) {
+		return createVComponent(vNodeToClone.component,
+			Object.assign({}, vNodeToClone.props, props),
+			vNodeToClone.key,
+			vNodeToClone.hooks,
+			vNodeToClone.ref
+		);
+	} else if (isVElement(vNodeToClone)) {
+		return createVElement(vNodeToClone.tag,
+			Object.assign({}, vNodeToClone.props, props),
+			props.children || children || vNodeToClone.children,
+			vNodeToClone.key,
+			vNodeToClone.ref,
+			ChildrenTypes.UNKNOWN
+		);
+	} else if (isOptVElement(vNodeToClone)) {
+		debugger;
+	}
+}
 
 export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2) {
 	return {
@@ -125,7 +174,7 @@ export function isVFragment(o) {
 }
 
 export function isVPlaceholder(o) {
-	return o.type === NodeTypes.FRAGMENT;
+	return o.type === NodeTypes.PLACEHOLDER;
 }
 
 export function isVNode(o) {

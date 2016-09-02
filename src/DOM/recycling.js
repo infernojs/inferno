@@ -57,8 +57,11 @@ export function recycleVComponent(vComponent, lifecycle, context, isSVG) {
 			const recycledVComponent = pool.pop();
 
 			if (!isUndefined(recycledVComponent)) {
-				patchVComponent(recycledVComponent, vComponent, null, lifecycle, context, isSVG);
-				return vComponent.dom;
+				const failed = patchVComponent(recycledVComponent, vComponent, null, lifecycle, context, isSVG);
+
+				if (!failed) {
+					return vComponent.dom;
+				}
 			}
 		}
 	}

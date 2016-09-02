@@ -14,7 +14,9 @@ export function isArray(obj) {
 }
 
 export function isStatefulComponent(o) {
-	return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
+	const component = o.component;
+
+	return !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
 }
 
 export function isStringOrNumber(obj) {

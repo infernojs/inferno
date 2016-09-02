@@ -16,10 +16,12 @@ import {
 	mount,
 	mountVElement,
 	mountVText,
+	mountVFragment,
 	mountVComponent,
 	mountOptVElement,
 	mountVPlaceholder,
-	mountArrayChildrenWithType
+	mountArrayChildrenWithType,
+	mountArrayChildrenWithoutType
 } from './mounting';
 import {
 	insertOrAppend,
@@ -42,9 +44,11 @@ import {
 import { componentToDOMNodeMap } from './rendering';
 import {
 	isVNode,
+	isVElement,
 	isOptVElement,
 	isVFragment,
 	isVComponent,
+	isVPlaceholder,
 	isVText,
 	ValueTypes,
 	isKeyedListChildrenType,
@@ -87,6 +91,15 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 				replaceChild(parentDom, mountVElement(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
 				unmount(lastInput, null, lifecycle);
 			}
+		} else if (isVFragment(nextInput)) {
+			if (isVFragment(lastInput)) {
+				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+			} else {
+				replaceChild(parentDom, mountVFragment(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
+				unmount(lastInput, null, lifecycle);
+			}
+		} else if (isVFragment(lastInput)) {
+			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG), lifecycle);			
 		} else if (isVElement(lastInput)) {
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 		} else if (isVText(nextInput)) {
@@ -98,13 +111,6 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			}
 		} else if (isVText(lastInput)) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
-		} else if (isVFragment(nextInput)) {
-			if (isVFragment(lastInput)) {
-				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
-			} else {
-				replaceChild(parentDom, mountVFragment(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
-				unmount(lastInput, null, lifecycle);
-			}
 		} else if (isVPlaceholder(nextInput)) {
 			if (isVPlaceholder(lastInput)) {
 				patchVPlaceholder(lastInput, nextInput);
@@ -114,8 +120,6 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			}
 		} else if (isVPlaceholder(lastInput)) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
-		} else if (isVFragment(lastInput)) {
-			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG), lifecycle);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError('bad input argument called on patch(). Input argument may need normalising.');
@@ -253,7 +257,7 @@ export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentD
 				mount(nextChildren, parentDom, lifecycle, context, isSVG);
 			}
 		}
-	} else if (isVNode(nextChildren)) {
+	} else if (isVNode(lastChildren) && isVNode(nextChildren)) {
 		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
 	} else if (isStringOrNumber(nextChildren)) {
 		if (isStringOrNumber(lastChildren)) {
@@ -294,12 +298,18 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 	const nextProps = nextVComponent.props || {};
 
 	if (lastComponent !== nextComponent) {
+		if (isNull(parentDom)) {
+			return true;
+		}
 		replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG);
 	} else {
 		if (isStatefulComponent(nextVComponent)) {
 			const instance = lastVComponent.instance;
 
 			if (instance._unmounted) {
+				if (isNull(parentDom)) {
+					return true;
+				}
 				replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG), lastVComponent.dom);
 			} else {
 				const lastProps = instance.props;
@@ -347,7 +357,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				let nextInput = nextComponent(nextProps, context);
 
 				if (nextInput === NO_OP) {
-					return;
+					return false;
 				} else if (isInvalid(nextInput)) {
 					nextInput = createVPlaceholder();
 				}
@@ -359,6 +369,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 			}
 		}
 	}
+	return false;
 }
 
 export function patchVText(lastVText, nextVText) {

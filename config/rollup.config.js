@@ -74,54 +74,54 @@ const bundles = [
 		moduleEntry: 'packages/inferno-dom/src/index.js',
 		path: 'packages/inferno-dom/'
 	},
-	// {
-	// 	moduleGlobal: 'InfernoServer',
-	// 	moduleName: 'inferno-server',
-	// 	moduleEntry: 'packages/inferno-server/src/index.js',
-	// 	path: 'packages/inferno-server/'
-	// },
-	// {
-	// 	moduleGlobal: 'InfernoComponent',
-	// 	moduleName: 'inferno-component',
-	// 	moduleEntry: 'packages/inferno-component/src/index.js',
-	// 	path: 'packages/inferno-component/'
-	// },
-	// {
-	// 	moduleGlobal: 'InfernoTestUtils',
-	// 	moduleName: 'inferno-test-utils',
-	// 	moduleEntry: 'packages/inferno-test-utils/src/index.js',
-	// 	path: 'packages/inferno-test-utils/'
-	// },
-	// {
-	// 	moduleGlobal: 'InfernoCreateElement',
-	// 	moduleName: 'inferno-create-element',
-	// 	moduleEntry: 'packages/inferno-create-element/src/index.js',
-	// 	path: 'packages/inferno-create-element/'
-	// },
-	// {
-	// 	moduleGlobal: 'InfernoCompat',
-	// 	moduleName: 'inferno-compat',
-	// 	moduleEntry: 'packages/inferno-compat/src/index.js',
-	// 	path: 'packages/inferno-compat/'
-	// },
-	// {
-	// 	moduleGlobal: 'InfernoRouter',
-	// 	moduleName: 'inferno-router',
-	// 	moduleEntry: 'packages/inferno-router/src/index.js',
-	// 	path: 'packages/inferno-router/'
-	// },
-	// {
-	// 	moduleGlobal: 'InfernoCreateClass',
-	// 	moduleName: 'inferno-create-class',
-	// 	moduleEntry: 'packages/inferno-create-class/src/index.js',
-	// 	path: 'packages/inferno-create-class/'
-	// },
-	// {
-	// 	moduleGlobal: 'InfernoRedux',
-	// 	moduleName: 'inferno-redux',
-	// 	moduleEntry: 'packages/inferno-redux/src/index.js',
-	// 	path: 'packages/inferno-redux/'
-	// }
+	{
+		moduleGlobal: 'InfernoServer',
+		moduleName: 'inferno-server',
+		moduleEntry: 'packages/inferno-server/src/index.js',
+		path: 'packages/inferno-server/'
+	},
+	{
+		moduleGlobal: 'InfernoComponent',
+		moduleName: 'inferno-component',
+		moduleEntry: 'packages/inferno-component/src/index.js',
+		path: 'packages/inferno-component/'
+	},
+	{
+		moduleGlobal: 'InfernoTestUtils',
+		moduleName: 'inferno-test-utils',
+		moduleEntry: 'packages/inferno-test-utils/src/index.js',
+		path: 'packages/inferno-test-utils/'
+	},
+	{
+		moduleGlobal: 'InfernoCreateElement',
+		moduleName: 'inferno-create-element',
+		moduleEntry: 'packages/inferno-create-element/src/index.js',
+		path: 'packages/inferno-create-element/'
+	},
+	{
+		moduleGlobal: 'InfernoCompat',
+		moduleName: 'inferno-compat',
+		moduleEntry: 'packages/inferno-compat/src/index.js',
+		path: 'packages/inferno-compat/'
+	},
+	{
+		moduleGlobal: 'InfernoRouter',
+		moduleName: 'inferno-router',
+		moduleEntry: 'packages/inferno-router/src/index.js',
+		path: 'packages/inferno-router/'
+	},
+	{
+		moduleGlobal: 'InfernoCreateClass',
+		moduleName: 'inferno-create-class',
+		moduleEntry: 'packages/inferno-create-class/src/index.js',
+		path: 'packages/inferno-create-class/'
+	},
+	{
+		moduleGlobal: 'InfernoRedux',
+		moduleName: 'inferno-redux',
+		moduleEntry: 'packages/inferno-redux/src/index.js',
+		path: 'packages/inferno-redux/'
+	}
 ];
 
 function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
