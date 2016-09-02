@@ -22,11 +22,11 @@
 		return newArray;
 	}
 
-	var bp1 = bp(e('td'), ValueTypes.PROPS_CLASS_NAME, ValueTypes.CHILDREN_NON_KEYED, null);
-	var bp2 = bp(e('span'), ValueTypes.CHILDREN_NODE, null, null);
-	var bp3 = bp(e('div', { className: 'popover left' }), ValueTypes.CHILDREN_NON_KEYED, null, null);
-	var bp4 = bp(e('div', { className: 'popover-content' }), ValueTypes.CHILDREN_NODE, null, null);
-	var bp5 = bp(e('div', { className: 'arrow' }), null, null, null);
+	var bp1 = bp(e('td'), ValueTypes.PROP_CLASS_NAME, null, ValueTypes.CHILDREN, ChildrenTypes.NON_KEYED, null, null);
+	var bp2 = bp(e('span'), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null);
+	var bp3 = bp(e('div', { className: 'popover left' }), ValueTypes.CHILDREN, ChildrenTypes.NON_KEYED, null, null, null, null);
+	var bp4 = bp(e('div', { className: 'popover-content' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null);
+	var bp5 = bp(e('div', { className: 'arrow' }), null, null, null, null, null);
 
 	var staticNode = {
 		bp: bp5,
@@ -78,10 +78,10 @@
 		};
 	}
 
-	var bp6 = bp(e('tr'), ValueTypes.CHILDREN_NON_KEYED, null, null);
-	var bp7 = bp(e('td', { className: 'dbname' }), ValueTypes.CHILDREN_TEXT, null, null);
-	var bp8 = bp(e('td', { className: 'query-count' }), ValueTypes.CHILDREN_NODE, null, null);
-	var bp9 = bp(e('span'), ValueTypes.PROPS_CLASS_NAME, ValueTypes.CHILDREN_NODE, null);
+	var bp6 = bp(e('tr'), ValueTypes.CHILDREN, ChildrenTypes.NON_KEYED, null, null, null, null);
+	var bp7 = bp(e('td', { className: 'dbname' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null);
+	var bp8 = bp(e('td', { className: 'query-count' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null);
+	var bp9 = bp(e('span'), ValueTypes.PROP_CLASS_NAME, null, ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null);
 
 	function database(db) {
 		var lastSample = db.lastSample;
@@ -131,8 +131,8 @@
 		};
 	}
 
-	var bp10 = bp(e('table', { className: 'table table-striped latest-data' }), ValueTypes.CHILDREN_NODE, null, null);
-	var bp11 = bp(e('tbody'), ValueTypes.CHILDREN_NON_KEYED, null, null);
+	var bp10 = bp(e('table', { className: 'table table-striped latest-data' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null);
+	var bp11 = bp(e('tbody'), ValueTypes.CHILDREN, ChildrenTypes.NON_KEYED, null, null, null, null);
 
 	function render() {
 		var dbs = ENV.generateData(false).toArray();

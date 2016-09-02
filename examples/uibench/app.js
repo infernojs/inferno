@@ -1,24 +1,27 @@
 (function() {
 	"use strict";
 
-	var t = Inferno.createVTemplate;
-	var createVTemplateReducers = Inferno.createVTemplateReducers;
-	var c = Inferno.createVComponent;
-	var e = Inferno.createVElement;
+	var bp = Inferno.createOptBlueprint;
+	var e = Inferno.createStaticVElement;
 	var ChildrenTypes = Inferno.ChildrenTypes;
+	var ValueTypes = Inferno.ValueTypes;
+	var NodeTypes = Inferno.NodeTypes;
 
-	uibench.init('Inferno', '0.8.0-alpha6');
+	uibench.init('Inferno', '1.0.0-alpha1');
 
-	var treeLeafTpl = createVTemplateReducers(function (id) {
-		return e('li', { className: 'TreeLeaf' }, id, null, null, ChildrenTypes.TEXT);
-	}, InfernoDOM);
-
-	var treeNodeTpl = createVTemplateReducers(function (children) {
-		return e('ul', { className: 'TreeNode' }, children, null, null, ChildrenTypes.KEYED_LIST);
-	}, InfernoDOM);
+	var treeLeafBp = bp(e('li', { className: 'TreeLeaf' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null);
+	var treeNodeBp = bp(e('ul', { className: 'TreeNode' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null);
 
 	function TreeLeaf(id) {
-		return t(treeLeafTpl, null, id, null);
+		return {
+			bp: treeLeafBp,
+			dom: null,
+			key: null,
+			type: NodeTypes.OPT_ELEMENT,
+			v0: id,
+			v1: null,
+			v2: null
+		};
 	}
 
 	function TreeNode(data) {
@@ -29,18 +32,39 @@
 			var n = data.children[i];
 
 			if (n.container) {
-				children[i] = c(TreeNode, n, n.id, shouldDataUpdate, null);
+				children[i] = {
+					component: TreeNode,
+					dom: null,
+					hooks: shouldDataUpdate,
+					key: n.id,
+					props: n,
+					ref: null,
+					type: NodeTypes.COMPONENT
+				};
 			} else {
-				children[i] = c(TreeLeaf, n.id, n.id, shouldDataUpdate, null);
+				children[i] = {
+					component: TreeLeaf,
+					dom: null,
+					hooks: shouldDataUpdate,
+					key: n.id,
+					props: n.id,
+					ref: null,
+					type: NodeTypes.COMPONENT
+				};
 			}
 		}
-		return t(treeNodeTpl, null, children, null);
+		return {
+			bp: treeNodeBp,
+			dom: null,
+			key: null,
+			type: NodeTypes.OPT_ELEMENT,
+			v0: children,
+			v1: null,
+			v2: null
+		};
 	}
 
-	var treeTpl = createVTemplateReducers(function (root) {
-		return e('div', { className: 'Tree' }, root, null, null, ChildrenTypes.NODE);
-	}, InfernoDOM);
-
+	var treeBp = bp(e('div', { className: 'Tree' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null);
 	var lastTreeData;
 
 	function tree(data) {
@@ -48,24 +72,44 @@
 			return Inferno.NO_OP;
 		}
 		lastTreeData = data;
-		return t(treeTpl, null, c(TreeNode, data.root, null, shouldDataUpdate, null), null);
+		return {
+			bp: treeBp,
+			dom: null,
+			key: null,
+			type: NodeTypes.OPT_ELEMENT,
+			v0: {
+				component: TreeNode,
+				dom: null,
+				hooks: shouldDataUpdate,
+				key: null,
+				props: data.root,
+				ref: null,
+				type: NodeTypes.COMPONENT
+			},
+			v1: null,
+			v2: null
+		};			
 	}
 
-	var animBoxTpl = createVTemplateReducers(function (id, style) {
-		return e('div', { className: 'AnimBox', style: style, 'data-id': id }, null, null, null, null);
-	}, InfernoDOM);
+	var animBoxBp = bp(e('div', { className: 'AnimBox' }), ValueTypes.PROP_STYLE, null, ValueTypes.PROP_DATA, 'id', null, null);
 
 	function AnimBox(data) {
 		var time = data.time;
-		var style = 'border-radius: ' + (time % 10) + 'px;' +
-			'background: rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')';
-		return t(animBoxTpl, null, data.id, [style]);
+		var style = 'border-radius:' + (time % 10) + 'px;' +
+			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')';
+
+		return {
+			bp: animBoxBp,
+			dom: null,
+			key: null,
+			type: NodeTypes.OPT_ELEMENT,
+			v0: style,
+			v1: data.id,
+			v2: null
+		};		
 	}
 
-	var animTpl = createVTemplateReducers(function (children) {
-		return e('div', { className: 'Anim' }, children, null, null, ChildrenTypes.KEYED_LIST);
-	}, InfernoDOM);
-
+	var animBp = bp(e('div', { className: 'Anim' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null);
 	var lastAnimData;
 
 	function anim(data) {
@@ -80,9 +124,25 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = c(AnimBox, item, item.id, shouldDataUpdate, null);
+			children[i] = {
+				component: AnimBox,
+				dom: null,
+				hooks: shouldDataUpdate,
+				key: item.id,
+				props: item,
+				ref: null,
+				type: NodeTypes.COMPONENT
+			};
 		}
-		return t(animTpl, null, children, null);
+		return {
+			bp: animBp,
+			dom: null,
+			key: null,
+			type: NodeTypes.OPT_ELEMENT,
+			v0: children,
+			v1: null,
+			v2: null
+		};
 	}
 
 	function onClick(e) {
@@ -92,19 +152,19 @@
 
 	document.addEventListener('click', onClick);
 
-	var tableCellTpl = createVTemplateReducers(function (text) {
-		return e('td', { 
-			className: 'TableCell',
-			value: text
-		}, text, null, null, ChildrenTypes.TEXT);
-	}, InfernoDOM);
-
-	var tableRowTpl = createVTemplateReducers(function (classes, id, children) {
-		return e('tr', { className: classes, 'data-id': id }, children, null, null, ChildrenTypes.KEYED_LIST);
-	}, InfernoDOM);
+	var tableCellBp = bp(e('td', { className: 'TableCell' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null);
+	var tableRowBp = bp(e('tr'), ValueTypes.PROP_CLASS_NAME, null, ValueTypes.PROP_DATA, 'id', ValueTypes.CHILDREN, ChildrenTypes.KEYED);
 
 	function TableCell(text) {
-		return t(tableCellTpl, null, text, null);
+		return {
+			bp: tableCellBp,
+			dom: null,
+			key: null,
+			type: NodeTypes.OPT_ELEMENT,
+			v0: text,
+			v1: null,
+			v2: null
+		};
 	}
 
 	function TableRow(data) {
@@ -117,18 +177,39 @@
 		var length = cells.length + 1;
 		var children = new Array(length);
 
-		children[0] = c(TableCell, '#' + data.id, -1, shouldDataUpdate, null);
+		children[0] = {
+			component: TableCell,
+			dom: null,
+			hooks: shouldDataUpdate,
+			key: -1,
+			props: '#' + data.id,
+			ref: null,
+			type: NodeTypes.COMPONENT
+		};
 
 		for (var i = 1; i < length; i++) {
-			children[i] = c(TableCell, cells[i - 1], i, shouldDataUpdate, null);
+			children[i] = {
+				component: TableCell,
+				dom: null,
+				hooks: shouldDataUpdate,
+				key: i,
+				props: cells[i - 1],
+				ref: null,
+				type: NodeTypes.COMPONENT
+			};
 		}
-		return t(tableRowTpl, null, classes, [data.id, children]);
+		return {
+			bp: tableRowBp,
+			dom: null,
+			key: null,
+			type: NodeTypes.OPT_ELEMENT,
+			v0: classes,
+			v1: data.id,
+			v2: children
+		};
 	}
 
-	var tableTpl = createVTemplateReducers(function (children) {
-		return e('table', { className: 'Table' }, children, null, null, ChildrenTypes.KEYED_LIST);
-	}, InfernoDOM);
-
+	var tableBp = bp(e('table', { className: 'Table' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null);
 	var lastTableData;
 
 	function table(data) {
@@ -143,15 +224,28 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = c(TableRow, item, item.id, shouldDataUpdate, null);
+			children[i] = {
+				component: TableRow,
+				dom: null,
+				hooks: shouldDataUpdate,
+				key: item.id,
+				props: item,
+				ref: null,
+				type: NodeTypes.COMPONENT
+			};
 		}
-		return t(tableTpl, null, children, null);
+		return {
+			bp: tableBp,
+			dom: null,
+			key: null,
+			type: NodeTypes.OPT_ELEMENT,
+			v0: children,
+			v1: null,
+			v2: null
+		};
 	}
 
-	var mainTpl = createVTemplateReducers(function (section) {
-		return e('div', { className: 'Main' }, section, null, null, ChildrenTypes.NODE);
-	}, InfernoDOM);
-
+	var mainBp = bp(e('div', { className: 'Main' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null);
 	var lastMainData;
 
 	function main(data) {
@@ -169,12 +263,18 @@
 		} else if (location === 'tree') {
 			section = tree(data.tree);
 		}
-		return t(mainTpl, null, section, null);
+		return {
+			bp: mainBp,
+			dom: null,
+			key: null,
+			type: NodeTypes.OPT_ELEMENT,
+			v0: section,
+			v1: null,
+			v2: null
+		};
 	}
 
-	var preTpl = createVTemplateReducers(function (text) {
-		return e('pre', null, text, null, null, ChildrenTypes.TEXT);
-	}, InfernoDOM);
+	var preBp = bp(e('pre'), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null);
 
 	var shouldDataUpdate = {
 		onComponentShouldUpdate: function(lastProps, nextProps) {
@@ -190,7 +290,15 @@
 				InfernoDOM.render(main(state), container);
 			},
 			function(samples) {
-				InfernoDOM.render(t(preTpl, null, JSON.stringify(samples, null, ' '), null), container);
+				InfernoDOM.render({
+					bp: preBp,
+					dom: null,
+					key: null,
+					type: NodeTypes.OPT_ELEMENT,
+					v0: JSON.stringify(samples, null, ' '),
+					v1: null,
+					v2: null
+				}, container);
 			}
 		);
 	});

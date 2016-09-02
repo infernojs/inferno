@@ -3,7 +3,8 @@ import {
 	isNull
 } from './../core/utils';
 import {
-	patchOptVElement
+	patchOptVElement,
+	patchVComponent
 } from './patching';
 
 export const recyclingEnabled = true;

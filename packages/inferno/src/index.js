@@ -3,6 +3,7 @@ import {
 	createVElement,
 	createStaticVElement,
 	createVFragment,
+	createVComponent,
 	createVText,
 	ValueTypes,
 	ChildrenTypes,
@@ -26,8 +27,10 @@ export default {
 	createVElement,
 	createStaticVElement,
 	createVFragment,
+	createVComponent,
 	createVText,
 	ValueTypes,
 	ChildrenTypes,
-	NodeTypes
+	NodeTypes,
+	NO_OP
 };

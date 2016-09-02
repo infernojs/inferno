@@ -12,11 +12,11 @@ export const NodeTypes = {
 };
 
 export const ValueTypes = {
-	CHILDREN_KEYED: 1,
-	CHILDREN_NON_KEYED: 2,
-	CHILDREN_TEXT: 3,
-	CHILDREN_NODE: 4,
-	PROPS_CLASS_NAME: 5
+	CHILDREN: 1,
+	PROP_CLASS_NAME: 2,
+	PROP_STYLE: 3,
+	PROP_DATA: 4,
+	PROP: 5
 };
 
 export const ChildrenTypes = {
@@ -27,9 +27,12 @@ export const ChildrenTypes = {
 	UNKNOWN: 5
 };
 
-export function createOptBlueprint(staticVElement, v0, v1, v2) {
+export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2) {
 	return {
 		clone: null,
+		d0,
+		d1,
+		d2,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -39,6 +42,18 @@ export function createOptBlueprint(staticVElement, v0, v1, v2) {
 		v0,
 		v1,
 		v2
+	};
+}
+
+export function createVComponent(component, props, key, hooks, ref) {
+	return {
+		component,
+		dom: null,
+		hooks: hooks || null,
+		key,
+		props,
+		ref: ref || null,
+		type: NodeTypes.COMPONENT
 	};
 }
 
@@ -55,7 +70,7 @@ export function createVElement(tag, props, children, key, ref, childrenType) {
 		children,
 		childrenType: childrenType || ChildrenTypes.UNKNOWN,
 		dom: null,
-		key: key || null,
+		key,
 		props,
 		ref: ref || null,
 		tag,
@@ -90,11 +105,19 @@ export function isOptVElement(o) {
 	return o.type === NodeTypes.OPT_ELEMENT;
 }
 
+export function isVComponent(o) {
+	return o.type === NodeTypes.COMPONENT;
+}
+
 export function isVText(o) {
 	return o.type === NodeTypes.TEXT;
 }
 
 export function isVFragment(o) {
+	return o.type === NodeTypes.FRAGMENT;
+}
+
+export function isVPlaceholder(o) {
 	return o.type === NodeTypes.FRAGMENT;
 }
 

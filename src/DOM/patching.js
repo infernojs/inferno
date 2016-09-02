@@ -14,6 +14,7 @@ import {
 } from './../core/utils';
 import {
 	mount,
+	mountVComponent,
 	mountOptVElement,
 	mountArrayChildrenWithType
 } from './mounting';
@@ -40,6 +41,7 @@ import {
 	isVNode,
 	isOptVElement,
 	isVFragment,
+	isVComponent,
 	isVText,
 	ValueTypes,
 	isKeyedListChildrenType,
@@ -66,6 +68,13 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			}
 		} else if (isOptVElement(lastInput)) {
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+		} else if (isVComponent(nextInput)) {
+			if (isVComponent(lastInput)) {
+				patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+			} else {
+				replaceChild(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
+				unmount(lastInput, null, lifecycle);
+			}
 		} else if (isVText(nextInput)) {
 			if (isVText(lastInput)) {
 				patchVText(lastInput, nextInput);
@@ -83,6 +92,67 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			}
 			throwError();
 		}
+	}
+}
+
+export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle, context, isSVG) {
+	const dom = lastOptVElement.dom;
+	const lastBp = lastOptVElement.bp;
+	const nextBp = nextOptVElement.bp;
+
+	nextOptVElement.dom = dom;
+	if (lastBp !== nextBp) {
+		const newDom = mountOptVElement(nextOptVElement, null, lifecycle, context, isSVG);
+
+		replaceChild(parentDom, newDom, dom);
+		unmount(lastOptVElement, null, lifecycle, true);
+	} else {
+		const bp0 = nextBp.v0;
+
+		if (!isNull(bp0)) {
+			const lastV0 = lastOptVElement.v0;
+			const nextV0 = nextOptVElement.v0;
+			const bp1 = nextBp.v1;
+
+			if (lastV0 !== nextV0) {
+				patchOptVElementValue(bp0, lastV0, nextV0, nextBp.d0, dom, lifecycle, context, isSVG);
+			}
+			if (!isNull(bp1)) {
+				const lastV1 = lastOptVElement.v1;
+				const nextV1 = nextOptVElement.v1;
+				const bp2 = nextBp.v2;
+
+				if (lastV1 !== nextV1) {
+					patchOptVElementValue(bp1, lastV1, nextV1, nextBp.d1, dom, lifecycle, context, isSVG);
+				}
+				if (!isNull(bp2)) {
+					const lastV2 = lastOptVElement.v2;
+					const nextV2 = nextOptVElement.v2;
+
+					if (lastV2 !== nextV2) {
+						patchOptVElementValue(bp2, lastV2, nextV2, nextBp.d2, dom, lifecycle, context, isSVG);
+					}
+				}
+			}
+		}
+	}
+}
+
+function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom, lifecycle, context, isSVG) {
+	switch (valueType) {
+		case ValueTypes.CHILDREN:
+			patchChildren(descriptor, lastValue, nextValue, dom, lifecycle, context, isSVG);
+			break;
+		case ValueTypes.PROP_CLASS_NAME:
+			if (isNullOrUndef(nextValue)) {
+				dom.removeAttribute('class');
+			} else {
+				dom.className = nextValue;
+			}
+			break;
+		case ValueTypes.PROP_STYLE:
+			patchStyle(lastValue, nextValue, dom);
+			break;
 	}
 }
 
@@ -152,6 +222,79 @@ export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentD
 	}
 }
 
+export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG) {
+	const lastComponent = lastVComponent.component;
+	const nextComponent = nextVComponent.component;
+	const nextProps = nextVComponent.props || {};
+
+	if (lastComponent !== nextComponent) {
+		replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG);
+	} else {
+		if (isStatefulComponent(nextVComponent)) {
+			const instance = lastVComponent.instance;
+
+			if (instance._unmounted) {
+				replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG), lastVComponent.dom);
+			} else {
+				const lastProps = instance.props;
+				const lastState = instance.state;
+				const nextState = instance.state;
+				const childContext = instance.getChildContext();
+
+				nextVComponent.instance = instance;
+				instance.context = context;
+				if (!isNullOrUndef(childContext)) {
+					context = Object.assign({}, context, childContext);
+				}
+				const lastInput = instance._lastInput;
+				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps);
+
+				if (nextInput === NO_OP) {
+					nextInput = lastInput;
+				} else if (isInvalid(nextInput)) {
+					nextInput = createVPlaceholder();
+				}
+				instance._lastInput = nextInput;
+				patch(lastInput, nextInput, parentDom, lifecycle, context, null, false);
+				instance._vComponent = nextVComponent;
+				instance._lastInput = nextInput;
+				instance.componentDidUpdate(lastProps, lastState);
+				nextVComponent.dom = nextInput.dom;
+				componentToDOMNodeMap.set(instance, nextInput.dom);
+			}
+		} else {
+			let shouldUpdate = true;
+			const lastProps = lastVComponent.props;
+			const nextHooks = nextVComponent.hooks;
+			const nextHooksDefined = !isNullOrUndef(nextHooks);
+			const lastInput = lastVComponent.instance;
+
+			nextVComponent.dom = lastVComponent.dom;
+			nextVComponent.instance = lastInput;
+			if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
+				shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps, nextProps);
+			}
+			if (shouldUpdate !== false) {
+				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
+					nextHooks.onComponentWillUpdate(lastProps, nextProps);
+				}
+				let nextInput = nextComponent(nextProps, context);
+
+				if (nextInput === NO_OP) {
+					return;
+				} else if (isInvalid(nextInput)) {
+					nextInput = createVPlaceholder();
+				}
+				patch(lastInput, nextInput, parentDom, lifecycle, context, null, null, false);
+				nextVComponent.instance = nextInput;
+				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
+					nextHooks.onComponentDidUpdate(lastProps, nextProps);
+				}
+			}
+		}
+	}
+}
+
 export function patchVText(lastVText, nextVText) {
 	const nextText = nextVText.text;
 	const dom = lastVText.dom;
@@ -159,64 +302,6 @@ export function patchVText(lastVText, nextVText) {
 	nextVText.dom = dom;
 	if (lastVText.text !== nextText) {
 		dom.nodeValue = nextText;
-	}
-}
-
-export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle, context, isSVG) {
-	const dom = lastOptVElement.dom;
-	const lastBp = lastOptVElement.bp;
-	const nextBp = nextOptVElement.bp;
-
-	nextOptVElement.dom = dom;
-	if (lastBp !== nextBp) {
-		const newDom = mountOptVElement(nextOptVElement, null, lifecycle, context, isSVG);
-
-		replaceChild(parentDom, newDom, dom);
-		unmount(lastOptVElement, null, lifecycle, true);
-	} else {
-		const bp0 = nextBp.v0;
-
-		if (!isNull(bp0)) {
-			const lastV0 = lastOptVElement.v0;
-			const nextV0 = nextOptVElement.v0;
-			const bp1 = nextBp.v1;
-
-			if (lastV0 !== nextV0) {
-				patchOptVElementValue(bp0, lastV0, nextV0, dom, lifecycle, context, isSVG);
-			}
-			if (!isNull(bp1)) {
-				const lastV1 = lastOptVElement.v1;
-				const nextV1 = nextOptVElement.v1;
-
-				if (lastV1 !== nextV1) {
-					patchOptVElementValue(bp1, lastV1, nextV1, dom, lifecycle, context, isSVG);
-				}
-			}
-		}
-	}
-}
-
-function patchOptVElementValue(valueType, lastValue, nextValue, dom, lifecycle, context, isSVG) {
-	switch (valueType) {
-		case ValueTypes.CHILDREN_KEYED:
-			patchKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null);
-			break;
-		case ValueTypes.CHILDREN_NON_KEYED:
-			patchNonKeyedChildren(lastValue, nextValue, dom, lifecycle, context, isSVG, null, false);
-			break;
-		case ValueTypes.CHILDREN_TEXT:
-			updateTextContent(dom, nextValue);
-			break;
-		case ValueTypes.CHILDREN_NODE:
-			patch(lastValue, nextValue, dom, lifecycle, context, isSVG);
-			break;
-		case ValueTypes.PROPS_CLASS_NAME:
-			if (isNullOrUndef(nextValue)) {
-				dom.removeAttribute('class');
-			} else {
-				dom.className = nextValue;
-			}
-			break;
 	}
 }
 
@@ -598,4 +683,48 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 		}
 	}
 	return true;
+}
+
+export function patchStyle(lastAttrValue, nextAttrValue, dom) {
+	if (isString(nextAttrValue)) {
+		dom.style.cssText = nextAttrValue;
+	} else if (isNullOrUndef(lastAttrValue)) {
+		if (!isNullOrUndef(nextAttrValue)) {
+			const styleKeys = Object.keys(nextAttrValue);
+
+			for (let i = 0; i < styleKeys.length; i++) {
+				const style = styleKeys[i];
+				const value = nextAttrValue[style];
+
+				if (isNumber(value) && !isUnitlessNumber[style]) {
+					dom.style[style] = value + 'px';
+				} else {
+					dom.style[style] = value;
+				}
+			}
+		}
+	} else if (isNullOrUndef(nextAttrValue)) {
+		dom.removeAttribute('style');
+	} else {
+		const styleKeys = Object.keys(nextAttrValue);
+
+		for (let i = 0; i < styleKeys.length; i++) {
+			const style = styleKeys[i];
+			const value = nextAttrValue[style];
+
+			if (isNumber(value) && !isUnitlessNumber[style]) {
+				dom.style[style] = value + 'px';
+			} else {
+				dom.style[style] = value;
+			}
+		}
+		const lastStyleKeys = Object.keys(lastAttrValue);
+
+		for (let i = 0; i < lastStyleKeys.length; i++) {
+			const style = lastStyleKeys[i];
+			if (isNullOrUndef(nextAttrValue[style])) {
+				dom.style[style] = '';
+			}
+		}
+	}
 }

@@ -26,29 +26,89 @@ import {
 	isOptVElement,
 	isVText,
 	isVFragment,
+	isVComponent,
+	isVPlaceholder,
 	ValueTypes,
+	isTextChildrenType,
+	isNodeChildrenType,
 	isKeyedListChildrenType,
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/shapes';
 import {
 	recycleOptVElement,
-	recyclingEnabled
+	recyclingEnabled,
+	recycleVComponent
 } from './recycling';
 
 export function mount(input, parentDom, lifecycle, context, isSVG) {
 	if (isOptVElement(input)) {
 		return mountOptVElement(input, parentDom, lifecycle, context, isSVG);
+	} else if (isVComponent(input)) {
+		return mountVComponent(input, parentDom, lifecycle, context, isSVG);
+	} else if (isVElement(input)) {
+		return mountVElement(input, parentDom, lifecycle, context, isSVG);
 	} else if (isVText(input)) {
 		return mountVText(input, parentDom);
 	} else if (isVFragment(input)) {
 		return mountVFragment(input, parentDom, lifecycle, context, isSVG);
+	} else if (isVPlaceholder(input)) {
+		return mountVPlaceholder(input, parentDom);
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('bad input argument called on mount(). Input argument may need normalising.');
 		}
 		throwError();
 	}
+}
+
+export function mountVPlaceholder(vPlaceholder, parentDom) {
+	const dom = document.createTextNode('');
+
+	vPlaceholder.dom = dom;
+	if (parentDom) {
+		appendChild(parentDom, dom);
+	}
+	return dom;
+}
+
+export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
+	const tag = vElement.tag;
+
+	if (!isString(tag)) {
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('expects VElement to have a string as the tag name');
+		}
+		throwError();
+	}
+	if (tag === 'svg') {
+		isSVG = true;
+	}
+	const dom = documentCreateElement(tag, isSVG);
+	const children = vElement.children;
+	const props = vElement.props;
+	const ref = vElement.ref;
+	const hasProps = !isNullOrUndef(props);
+
+	vElement.dom = dom;
+	if (!isNullOrUndef(ref)) {
+		lifecycle.addListener(() => {
+			ref(dom);
+		});
+	}
+	if (tag === 'select' && hasProps && isTrue(props.multiple)) {
+		patchProp('multiple', null, true, dom);
+	}
+	if (!isNullOrUndef(children)) {
+		mountChildren(vElement.childrenType, children, dom, lifecycle, context, isSVG);
+	}
+	if (hasProps) {
+		mountProps(vElement, props, dom);
+	}
+	if (!isNull(parentDom)) {
+		appendChild(parentDom, dom);
+	}
+	return dom;
 }
 
 export function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) {
@@ -107,11 +167,16 @@ export function mountOptVElement(optVElement, parentDom, lifecycle, context, isS
 		const bp0 = bp.v0;
 
 		if (!isNull(bp0)) {
-			mountOptVElementValue(bp0, optVElement.v0, dom, lifecycle, context, isSVG);
+			mountOptVElementValue(bp0, optVElement.v0, bp.d0, dom, lifecycle, context, isSVG);
 			const bp1 = bp.v1;
 
 			if (!isNull(bp1)) {
-				mountOptVElementValue(bp1, optVElement.v1, dom, lifecycle, context, isSVG);
+				mountOptVElementValue(bp1, optVElement.v1, bp.d1, dom, lifecycle, context, isSVG);
+				const bp2 = bp.v2;
+
+				if (!isNull(bp2)) {
+					mountOptVElementValue(bp2, optVElement.v2, bp.d2, dom, lifecycle, context, isSVG);
+				}
 			}
 		}
 	}
@@ -121,23 +186,39 @@ export function mountOptVElement(optVElement, parentDom, lifecycle, context, isS
 	return dom;
 }
 
-function mountOptVElementValue(valueType, value, dom, lifecycle, context, isSVG) {
+function mountOptVElementValue(valueType, value, descriptor, dom, lifecycle, context, isSVG) {
 	switch (valueType) {
-		case ValueTypes.CHILDREN_KEYED:
-		case ValueTypes.CHILDREN_NON_KEYED:
-			mountArrayChildrenWithType(value, dom, lifecycle, context, isSVG);
+		case ValueTypes.CHILDREN:
+			mountChildren(descriptor, value, dom, lifecycle, context, isSVG);
 			break;
-		case ValueTypes.CHILDREN_TEXT:
-			setTextContent(dom, value);
-			break;
-		case ValueTypes.CHILDREN_NODE:
-			mount(value, dom, lifecycle, context, isSVG);
-			break;
-		case ValueTypes.PROPS_CLASS_NAME:
+		case ValueTypes.PROP_CLASS_NAME:
 			if (!isNullOrUndef(value)) {
 				dom.className = value;
 			}
 			break;
+		case ValueTypes.PROP_DATA:
+			dom.dataset[descriptor] = value;
+			break;
+		case ValueTypes.PROP_STYLE:
+			patchStyle(null, value, dom);
+			break;
+	}
+}
+
+function mountChildren(childrenType, children, dom, lifecycle, context, isSVG) {
+	if (isTextChildrenType(childrenType)) {
+		setTextContent(dom, children);
+	} else if (isNodeChildrenType(childrenType)) {
+		mount(children, dom, lifecycle, context, isSVG);
+	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
+		mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG);
+	} else if (isUnknownChildrenType(childrenType)) {
+		mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG);
+	} else {
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('bad childrenType value specified when attempting to mountChildren.');
+		}
+		throwError();
 	}
 }
 
@@ -149,7 +230,7 @@ export function mountArrayChildrenWithType(children, dom, lifecycle, context, is
 
 export function mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG) {
 	if (isArray(children)) {
-		// mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
+		mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
 	} else if (isStringOrNumber(children)) {
 		setTextContent(dom, children);
 	} else if (!isInvalid(children)) {
@@ -175,4 +256,102 @@ export function mountArrayChildrenWithoutType(children, dom, lifecycle, context,
 			mount(child, dom, lifecycle, context, isSVG);
 		}
 	}
+}
+
+export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
+	if (recyclingEnabled) {
+		const dom = recycleVComponent(vComponent, lifecycle, context, isSVG);
+
+		if (!isNull(dom)) {
+			if (!isNull(parentDom)) {
+				appendChild(parentDom, dom);
+			}
+			return dom;
+		}
+	}
+	const Component = vComponent.component;
+	const props = vComponent.props;
+	const hooks = vComponent.hooks;
+	const ref = vComponent.ref;
+	let dom;
+
+	if (isStatefulComponent(vComponent)) {
+		if (hooks) {
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('"hooks" are not supported on stateful components.');
+			}
+			throwError();
+		}
+		const instance = new Component(props, context);
+
+		instance._patch = patch;
+		instance._componentToDOMNodeMap = componentToDOMNodeMap;
+		const childContext = instance.getChildContext();
+
+		if (!isNullOrUndef(childContext)) {
+			context = Object.assign({}, context, childContext);
+		}
+		instance._unmounted = false;
+		instance._pendingSetState = true;
+		instance._vComponent = vComponent;
+		instance.componentWillMount();
+		let input = instance.render();
+
+		if (isInvalid(input)) {
+			input = createVPlaceholder();
+		}
+		instance._pendingSetState = false;
+		dom = mount(input, null, lifecycle, context, false);
+		instance._lastInput = input;
+		if (!isNull(parentDom)) {
+			appendChild(parentDom, dom);
+		}
+		if (ref) {
+			if (isFunction(ref)) {
+				lifecycle.addListener(() => ref(instance));
+			} else {
+				if (process.env.NODE_ENV !== 'production') {
+					throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+				}
+				throwError();
+			}
+		}
+		if (!isNull(instance.componentDidMount)) {
+			lifecycle.addListener(() => {
+				instance.componentDidMount();
+			});
+		}
+		componentToDOMNodeMap.set(instance, dom);
+		vComponent.dom = dom;
+		vComponent.instance = instance;
+	} else {
+		if (ref) {
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('"refs" are not supported on stateless components.');
+			}
+			throwError();
+		}
+		if (!isNullOrUndef(hooks)) {
+			if (!isNullOrUndef(hooks.onComponentWillMount)) {
+				hooks.onComponentWillMount(props);
+			}
+			if (!isNullOrUndef(hooks.onComponentDidMount)) {
+				lifecycle.addListener(() => hooks.onComponentDidMount(dom, props));
+			}
+		}
+
+		/* eslint new-cap: 0 */
+		let input = Component(props, context);
+
+		if (isInvalid(input)) {
+			input = createVPlaceholder();
+		}
+		dom = mount(input, null, lifecycle, context, null, false);
+		vComponent.instance = input;
+		if (!isNull(parentDom)) {
+			appendChild(parentDom, dom);
+		}
+		vComponent.dom = dom;
+	}
+	return dom;
 }

@@ -2,10 +2,16 @@ import { isNullOrUndef, isArray, isNull, isInvalid } from './../core/utils';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	isOptVElement
+	isOptVElement,
+	isVComponent,
+	isVElement,
+	isVText,
+	isVPlaceholder,
+	isVFragment
 } from '../core/shapes';
 import {
 	poolOptVElement,
+	poolVComponent,
 	recyclingEnabled
 } from './recycling';
 
@@ -13,6 +19,16 @@ export function unmount(input, parentDom, lifecycle, canRecycle) {
 	if (!isInvalid(input)) {
 		if (isOptVElement(input)) {
 			unmountOptVElement(input, parentDom, lifecycle, canRecycle);
+		} else if (isVComponent(input)) {
+			unmountVComponent(input, parentDom, lifecycle, canRecycle);
+		} else if (isVElement(input)) {
+			unmountVElement(input, parentDom, lifecycle);
+		} else if (isVFragment(input)) {
+			unmountVFragment(input, parentDom, true, lifecycle);
+		} else if (isVText(input)) {
+			unmountVText(input, parentDom);
+		} else if (isVPlaceholder(input)) {
+			unmountVPlaceholder(input, parentDom);
 		}
 	}
 }
