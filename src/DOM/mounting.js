@@ -22,6 +22,7 @@ import {
 import { patchStyle, patch, patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import {
+	createVPlaceholder,
 	isVElement,
 	isOptVElement,
 	isVText,

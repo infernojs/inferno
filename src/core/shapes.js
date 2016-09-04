@@ -18,7 +18,8 @@ export const ValueTypes = {
 	PROP_CLASS_NAME: 2,
 	PROP_STYLE: 3,
 	PROP_DATA: 4,
-	PROP: 5
+	PROP_REF: 5,
+	PROP: 6
 };
 
 export const ChildrenTypes = {

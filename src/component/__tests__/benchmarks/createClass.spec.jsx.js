@@ -1,19 +1,14 @@
 import { render } from './../../../DOM/rendering';
 import createClass from './../../../component/createClass';
-import {
-	createVTemplateFactory as createVTemplate,
-	createVElement,
-	createVComponent
-} from './../../../core/shapes';
-import { createTemplateReducers } from './../../../DOM/templates';
+import { createStaticVElement, createOptBlueprint, createVComponent, ChildrenTypes, ValueTypes, NodeTypes } from './../../../core/shapes';
 
 const Inferno = {
-	createVTemplate,
-	createVElement,
-	createVComponent
-};
-const InfernoDOM = {
-	createTemplateReducers
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	ChildrenTypes,
+	ValueTypes,
+	NodeTypes
 };
 
 function runBenchmark(container) {
