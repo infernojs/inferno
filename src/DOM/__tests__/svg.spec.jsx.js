@@ -1,15 +1,14 @@
 import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
-import { createVTemplateFactory as createVTemplate, createVElement, createVComponent } from './../../core/shapes';
-import { createTemplateReducers } from './../../DOM/templates';
+import { createStaticVElement, createOptBlueprint, createVComponent, createVElement, ChildrenTypes, ValueTypes, NodeTypes } from './../../core/shapes';
 
 const Inferno = {
-	createVTemplate,
-	createVElement,
-	createVComponent
-};
-const InfernoDOM = {
-	createTemplateReducers
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	ChildrenTypes,
+	ValueTypes,
+	NodeTypes
 };
 
 describe('createTree - SVG (JSX)', () => {

@@ -3,21 +3,15 @@ import Component from './../../component/es2015';
 import { render } from './../../DOM/rendering';
 import { isArray, isStringOrNumber, isNullOrUndef } from '../../core/utils';
 import { createContainerWithHTML, validateNodeTree } from '../../tools/utils';
-import {
-	createVTemplateFactory as createVTemplate,
-	createVElement,
-	createVComponent,
-	isVNode
-} from '../../core/shapes';
-import { createTemplateReducers } from './../../DOM/templates';
+import { createStaticVElement, createOptBlueprint, createVComponent, createVElement, ChildrenTypes, ValueTypes, NodeTypes, isVNode } from './../../core/shapes';
 
 const Inferno = {
-	createVTemplate,
-	createVElement,
-	createVComponent
-};
-const InfernoDOM = {
-	createTemplateReducers
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	ChildrenTypes,
+	ValueTypes,
+	NodeTypes
 };
 
 function Comp1() {

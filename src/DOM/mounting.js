@@ -93,9 +93,7 @@ export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 
 	vElement.dom = dom;
 	if (!isNullOrUndef(ref)) {
-		lifecycle.addListener(() => {
-			ref(dom);
-		});
+		mountRef(dom, ref, lifecycle);
 	}
 	if (tag === 'select' && hasProps && isTrue(props.multiple)) {
 		patchProp('multiple', null, true, dom);
@@ -104,7 +102,11 @@ export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 		mountChildren(vElement.childrenType, children, dom, lifecycle, context, isSVG);
 	}
 	if (hasProps) {
-		mountProps(vElement, props, dom);
+		const formValue = mountProps(vElement, props, dom, lifecycle);
+
+		if (tag === 'select') {
+			formSelectValue(dom, formValue);
+		}
 	}
 	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
@@ -136,10 +138,17 @@ function createStaticVElementClone(bp, isSVG) {
 	const stat = bp.staticVElement;
 	const tag = stat.tag;
 	const dom = document.createElement(tag);
+	const children = stat.children;
+
+	if (!isNull(children)) {
+		mountChildrenWithUnknownType(children, dom, null, null, isSVG);
+	}
 	const props = stat.props;
 
-	for (let prop in props) {
-		patchProp(prop, null, props[prop], dom);
+	if (!isNull(props)) {
+		for (let prop in props) {
+			patchProp(prop, null, props[prop], dom);
+		}
 	}
 	bp.clone = dom;
 	return dom.cloneNode(true);
@@ -168,15 +177,15 @@ export function mountOptVElement(optVElement, parentDom, lifecycle, context, isS
 		const bp0 = bp.v0;
 
 		if (!isNull(bp0)) {
-			mountOptVElementValue(bp0, optVElement.v0, bp.d0, dom, lifecycle, context, isSVG);
+			mountOptVElementValue(optVElement, bp0, optVElement.v0, bp.d0, dom, lifecycle, context, isSVG);
 			const bp1 = bp.v1;
 
 			if (!isNull(bp1)) {
-				mountOptVElementValue(bp1, optVElement.v1, bp.d1, dom, lifecycle, context, isSVG);
+				mountOptVElementValue(optVElement, bp1, optVElement.v1, bp.d1, dom, lifecycle, context, isSVG);
 				const bp2 = bp.v2;
 
 				if (!isNull(bp2)) {
-					mountOptVElementValue(bp2, optVElement.v2, bp.d2, dom, lifecycle, context, isSVG);
+					mountOptVElementValue(optVElement, bp2, optVElement.v2, bp.d2, dom, lifecycle, context, isSVG);
 				}
 			}
 		}
@@ -187,7 +196,7 @@ export function mountOptVElement(optVElement, parentDom, lifecycle, context, isS
 	return dom;
 }
 
-function mountOptVElementValue(valueType, value, descriptor, dom, lifecycle, context, isSVG) {
+function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, lifecycle, context, isSVG) {
 	switch (valueType) {
 		case ValueTypes.CHILDREN:
 			mountChildren(descriptor, value, dom, lifecycle, context, isSVG);
@@ -202,6 +211,15 @@ function mountOptVElementValue(valueType, value, descriptor, dom, lifecycle, con
 			break;
 		case ValueTypes.PROP_STYLE:
 			patchStyle(null, value, dom);
+			break;
+		case ValueTypes.PROP:
+			patchProp(descriptor, null, value, dom);
+			break;
+		case ValueTypes.PROP_REF:
+			mountRef(dom, value, lifecycle);
+			break;
+		case ValueTypes.PROP_SPREAD:
+			mountProps(optVElement, value, dom, lifecycle);
 			break;
 	}
 }
@@ -357,7 +375,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 	return dom;
 }
 
-function mountProps(vElement, props, dom) {
+function mountProps(vNode, props, dom, lifecycle) {
 	let formValue;
 
 	for (let prop in props) {
@@ -366,9 +384,24 @@ function mountProps(vElement, props, dom) {
 		if (prop === 'value') {
 			formValue = value;
 		}
-		patchProp(prop, null, value, dom);
+		if (prop === 'key') {
+			vNode.key= value;
+		} else if (prop === 'key') {
+			mountRef(dom, value, lifecycle);
+		} else {
+			patchProp(prop, null, value, dom);
+		}
 	}
-	if (vElement.tag === 'select') {
-		formSelectValue(vElement.dom, formValue);
+	return formValue;
+}
+
+function mountRef(dom, value, lifecycle) {
+	if (isFunction(value)) {
+		lifecycle.addListener(() => value(dom));
+	} else {
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+		}
+		throwError();
 	}
 }

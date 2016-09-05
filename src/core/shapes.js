@@ -19,7 +19,8 @@ export const ValueTypes = {
 	PROP_STYLE: 3,
 	PROP_DATA: 4,
 	PROP_REF: 5,
-	PROP: 6
+	PROP_SPREAD: 6,
+	PROP: 7
 };
 
 export const ChildrenTypes = {

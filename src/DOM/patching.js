@@ -220,6 +220,9 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 		case ValueTypes.PROP_STYLE:
 			patchStyle(lastValue, nextValue, dom);
 			break;
+		case ValueTypes.PROP:
+			patchProp(descriptor, lastValue, nextValue, dom);
+			break;
 	}
 }
 
