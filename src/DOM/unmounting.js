@@ -1,4 +1,11 @@
-import { isNullOrUndef, isArray, isNull, isInvalid } from './../core/utils';
+import {
+	isNullOrUndef,
+	isArray,
+	isNull,
+	isInvalid,
+	isFunction,
+	throwError
+} from './../core/utils';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
@@ -7,7 +14,8 @@ import {
 	isVElement,
 	isVText,
 	isVPlaceholder,
-	isVFragment
+	isVFragment,
+	ValueTypes
 } from '../core/shapes';
 import {
 	poolOptVElement,
@@ -46,11 +54,42 @@ function unmountVText(vText, parentDom) {
 }
 
 function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle) {
+	const bp = optVElement.bp;
+	const bp0 = bp.v0;
+	const dom = bp.dom;
+
+	if (!isNull(bp0)) {
+		unmountOptVElementValue(optVElement, bp0, optVElement.v0, dom, lifecycle);
+		const bp1 = bp.v1;
+
+		if (!isNull(bp1)) {
+			unmountOptVElementValue(optVElement, bp1, optVElement.v1, dom, lifecycle);
+			const bp2 = bp.v2;
+
+			if (!isNull(bp2)) {
+				unmountOptVElementValue(optVElement, bp2, optVElement.v2, dom, lifecycle);
+			}
+		}
+	}
 	if (!isNull(parentDom)) {
 		parentDom.removeChild(optVElement.dom);
 	}
 	if (recyclingEnabled && (parentDom || canRecycle)) {
 		poolOptVElement(optVElement);
+	}
+}
+
+function unmountOptVElementValue(optVElement, valueType, value, dom, lifecycle) {
+	switch (valueType) {
+		case ValueTypes.CHILDREN:
+			unmountChildren(value, dom, lifecycle);
+			break;
+		case ValueTypes.PROP_REF:
+			unmountRef(value);
+			break;
+		case ValueTypes.PROP_SPREAD:
+			unmountProps(value, dom, lifecycle);
+			break;
 	}
 }
 
@@ -118,49 +157,45 @@ export function unmountVElement(vElement, parentDom, lifecycle) {
 	const ref = vElement.ref;
 
 	if (ref) {
-		ref(null);
+		unmountRef(ref);
 	}
 	const children = vElement.children;
 
 	if (!isNullOrUndef(children)) {
-		if (isArray(children)) {
-			for (let i = 0; i < children.length; i++) {
-				unmount(children[i], null, lifecycle, false);
-			}
-		} else {
-			unmount(children, null, lifecycle, false);
-		}
+		unmountChildren(children, lifecycle);
 	}
 	if (parentDom) {
 		removeChild(parentDom, dom);
 	}
 }
 
-function unmountTemplateValue(value, lifecycle) {
-	if (isArray(value)) {
-		for (let i = 0; i < value.length; i++) {
-			unmount(value[i], null, lifecycle, false);
+function unmountChildren(children, lifecycle) {
+	if (isArray(children)) {
+		for (let i = 0; i < children.length; i++) {
+			unmount(children[i], null, lifecycle, false);
 		}
 	} else {
-		unmount(value, null, lifecycle, false);
+		unmount(children, null, lifecycle, false);
 	}
 }
 
-// TODO we can probably combine the below two functions, depends on if we can optimise with childrenType?
-// export function unmountVariableAsExpression(pointer) {
-// 	return function unmountVariableAsExpression(vTemplate, lifecycle) {
-// 		unmountTemplateValue(readFromVTemplate(vTemplate, pointer), lifecycle);
-// 	};
-// }
+function unmountRef(ref) {
+	if (isFunction(ref)) {
+		ref(null);
+	} else {
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+		}
+		throwError();
+	}
+}
 
-// export function unmountVariableAsChildren(pointer, childrenType) {
-// 	return function unmountVariableAsChildren(vTemplate, lifecycle) {
-// 		unmountTemplateValue(readFromVTemplate(vTemplate, pointer), lifecycle);
-// 	};
-// }
+function unmountProps(props, dom, lifecycle) {
+	for (let prop in props) {
+		const value = props[prop];
 
-// export function unmountVariableAsText(pointer) {
-// 	return function unmountVariableAsText(vTemplate, parentDom) {
-// 		debugger;
-// 	};
-// }
+		if (prop === 'ref') {
+			unmountRef(value);
+		}
+	}
+}

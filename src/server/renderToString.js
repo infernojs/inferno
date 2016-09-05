@@ -144,7 +144,7 @@ function renderVElementToString(vElement, isRoot, context) {
 }
 
 function renderOptVElementToString(optVElement, isRoot, context) {
-	debugger;
+	// debugger;
 }
 
 function renderInputToString(input, context, isRoot) {

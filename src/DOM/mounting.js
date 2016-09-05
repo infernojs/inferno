@@ -385,8 +385,8 @@ function mountProps(vNode, props, dom, lifecycle) {
 			formValue = value;
 		}
 		if (prop === 'key') {
-			vNode.key= value;
-		} else if (prop === 'key') {
+			vNode.key = value;
+		} else if (prop === 'ref') {
 			mountRef(dom, value, lifecycle);
 		} else {
 			patchProp(prop, null, value, dom);
