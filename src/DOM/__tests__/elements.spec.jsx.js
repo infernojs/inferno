@@ -142,7 +142,7 @@ describe('Elements (JSX)', () => {
 
 		let attrs;
 
-		attrs = 'id#1';
+		attrs = 'id#1';;
 
 		render(<div><div id={ attrs }></div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -738,7 +738,6 @@ describe('Elements (JSX)', () => {
 					ondragenter={test} ondragover={test} value={newValue} oninput={test}
 					onfocus={obj.focus} class="edit-field" onkeydown={test} onkeyup={test}
 					onBlur={test} {...spread} />, container);
-
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		document.body.appendChild(container);
 		const input = container.querySelector('#test');

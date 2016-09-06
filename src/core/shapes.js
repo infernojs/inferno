@@ -20,7 +20,8 @@ export const ValueTypes = {
 	PROP_DATA: 4,
 	PROP_REF: 5,
 	PROP_SPREAD: 6,
-	PROP: 7
+	PROP_VALUE: 7,
+	PROP: 8
 };
 
 export const ChildrenTypes = {
@@ -78,12 +79,13 @@ export function cloneVNode(vNodeToClone, props, ...children) {
 	}
 }
 
-export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2) {
+export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {
 	return {
 		clone: null,
 		d0,
 		d1,
 		d2,
+		d3,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -92,7 +94,8 @@ export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2) {
 		type: NodeTypes.OPT_BLUEPRINT,
 		v0,
 		v1,
-		v2
+		v2,
+		v3
 	};
 }
 

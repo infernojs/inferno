@@ -3,7 +3,8 @@ import {
 	isArray,
 	isNullOrUndef,
 	isInvalid,
-	isStringOrNumber
+	isStringOrNumber,
+	isNull
 } from './../core/utils';
 import { unmountVFragment, unmount } from './unmounting';
 import {
@@ -59,6 +60,27 @@ export function replaceVListWithNode(parentDom, vList, dom, lifecycle) {
 
 	unmountVFragment(vList, parentDom, false, lifecycle);
 	replaceChild(parentDom, dom, pointer);
+}
+
+export function getPropFromOptElement(optVElement, valueType) {
+	const bp = optVElement.bp;
+
+	// TODO check "prop" and "spread"
+	if (!isNull(bp.v0)) {
+		if (bp.v0 === valueType) {
+			return optVElement.v0;
+		}
+		if (!isNull(bp.v1)) {
+			if (bp.v1 === valueType) {
+				return optVElement.v1;
+			}
+			if (!isNull(bp.v2)) {
+				if (bp.v2 === valueType) {
+					return optVElement.v2;
+				}
+			}
+		}
+	}
 }
 
 export function documentCreateElement(tag, isSVG) {

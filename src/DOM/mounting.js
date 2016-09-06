@@ -17,7 +17,8 @@ import {
 	normaliseChild,
 	appendChild,
 	normalise,
-	formSelectValue
+	formSelectValue,
+	getPropFromOptElement
 } from './utils';
 import { patchStyle, patch, patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
@@ -90,23 +91,20 @@ export function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	const props = vElement.props;
 	const ref = vElement.ref;
 	const hasProps = !isNullOrUndef(props);
+	let formValue;
 
 	vElement.dom = dom;
 	if (!isNullOrUndef(ref)) {
 		mountRef(dom, ref, lifecycle);
 	}
-	if (tag === 'select' && hasProps && isTrue(props.multiple)) {
-		patchProp('multiple', null, true, dom);
+	if (hasProps) {
+		formValue = mountProps(vElement, props, dom, lifecycle, context, isSVG, false);
 	}
 	if (!isNullOrUndef(children)) {
 		mountChildren(vElement.childrenType, children, dom, lifecycle, context, isSVG);
 	}
-	if (hasProps) {
-		const formValue = mountProps(vElement, props, dom, lifecycle);
-
-		if (tag === 'select') {
-			formSelectValue(dom, formValue);
-		}
+	if (tag === 'select' && formValue) {
+		formSelectValue(dom, formValue);
 	}
 	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
@@ -137,7 +135,7 @@ export function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) 
 function createStaticVElementClone(bp, isSVG) {
 	const stat = bp.staticVElement;
 	const tag = stat.tag;
-	const dom = document.createElement(tag);
+	const dom = documentCreateElement(tag, isSVG);
 	const children = stat.children;
 
 	if (!isNull(children)) {
@@ -171,7 +169,12 @@ export function mountOptVElement(optVElement, parentDom, lifecycle, context, isS
 	if (recyclingEnabled) {
 		dom = recycleOptVElement(optVElement, lifecycle, context, isSVG);
 	}
+	const tag = bp.staticVElement.tag;
+
 	if (isNull(dom)) {
+		if (isSVG || tag === 'svg') {
+			isSVG = true;
+		}
 		dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
 		optVElement.dom = dom;
 		const bp0 = bp.v0;
@@ -186,8 +189,22 @@ export function mountOptVElement(optVElement, parentDom, lifecycle, context, isS
 
 				if (!isNull(bp2)) {
 					mountOptVElementValue(optVElement, bp2, optVElement.v2, bp.d2, dom, lifecycle, context, isSVG);
+					const bp3 = bp.v3;
+
+					if (!isNull(bp3)) {
+						const v3 = optVElement.v3;
+						const d3 = bp.d3;
+						const bp3 = bp.v3;
+
+						for (let i = 0; i < bp3.length; i++) {
+							mountOptVElementValue(optVElement, bp3[i], v3[i], d3[i], dom, lifecycle, context, isSVG);
+						}
+					}
 				}
 			}
+		}
+		if (tag === 'select') {
+			formSelectValue(dom, getPropFromOptElement(optVElement, ValueTypes.PROP_VALUE));
 		}
 	}
 	if (!isNull(parentDom)) {
@@ -212,6 +229,9 @@ function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, l
 		case ValueTypes.PROP_STYLE:
 			patchStyle(null, value, dom);
 			break;
+		case ValueTypes.PROP_VALUE:
+			dom.value = isNullOrUndef(value) ? '' : value;
+			break;
 		case ValueTypes.PROP:
 			patchProp(descriptor, null, value, dom);
 			break;
@@ -219,7 +239,7 @@ function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, l
 			mountRef(dom, value, lifecycle);
 			break;
 		case ValueTypes.PROP_SPREAD:
-			mountProps(optVElement, value, dom, lifecycle);
+			mountProps(optVElement, value, dom, lifecycle, context, isSVG, true);
 			break;
 	}
 }
@@ -375,7 +395,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 	return dom;
 }
 
-function mountProps(vNode, props, dom, lifecycle) {
+function mountProps(vNode, props, dom, lifecycle, context, isSVG, isSpread) {
 	let formValue;
 
 	for (let prop in props) {
@@ -388,6 +408,12 @@ function mountProps(vNode, props, dom, lifecycle) {
 			vNode.key = value;
 		} else if (prop === 'ref') {
 			mountRef(dom, value, lifecycle);
+		} else if (prop === 'children') {
+			if (isSpread) {
+				mountChildrenWithUnknownType(value, dom, lifecycle, context, isSVG);
+			} else if (isVElement(vNode)) {
+				vNode.children = value;
+			}
 		} else {
 			patchProp(prop, null, value, dom);
 		}

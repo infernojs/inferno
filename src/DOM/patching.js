@@ -39,7 +39,8 @@ import {
 	updateTextContent,
 	setTextContent,
 	replaceChild,
-	normalise
+	normalise,
+	getPropFromOptElement
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
@@ -157,7 +158,11 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 			}
 		}
 		if (lastProps !== nextProps) {
-			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
+			const formValue = patchProps(lastProps, nextProps, dom);
+
+			if (nextTag === 'select') {
+				formSelectValue(dom, formValue);
+			}
 		}
 	}
 }
@@ -175,13 +180,27 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 		unmount(lastOptVElement, null, lifecycle, true);
 	} else {
 		const bp0 = nextBp.v0;
+		const tag = nextBp.staticVElement.tag;
+		let ignoreDiff = false;
 
+		if (tag === 'input') {
+			// input elements are problematic due to the large amount of internal state that hold
+			// so instead of making lots of assumptions, we instead reset common values and re-apply
+			// the the patching each time
+			resetFormInputProperties(dom);
+			ignoreDiff = true;
+		} else if (tag === 'select') {
+		} else if (tag === 'textarea') {
+			// textarea elements are like input elements, except they have sligthly less internal state to
+			// worry about
+			ignoreDiff = true;
+		}
 		if (!isNull(bp0)) {
 			const lastV0 = lastOptVElement.v0;
 			const nextV0 = nextOptVElement.v0;
 			const bp1 = nextBp.v1;
 
-			if (lastV0 !== nextV0) {
+			if (lastV0 !== nextV0 || ignoreDiff) {
 				patchOptVElementValue(bp0, lastV0, nextV0, nextBp.d0, dom, lifecycle, context, isSVG);
 			}
 			if (!isNull(bp1)) {
@@ -189,18 +208,36 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 				const nextV1 = nextOptVElement.v1;
 				const bp2 = nextBp.v2;
 
-				if (lastV1 !== nextV1) {
+				if (lastV1 !== nextV1 || ignoreDiff) {
 					patchOptVElementValue(bp1, lastV1, nextV1, nextBp.d1, dom, lifecycle, context, isSVG);
 				}
 				if (!isNull(bp2)) {
 					const lastV2 = lastOptVElement.v2;
 					const nextV2 = nextOptVElement.v2;
+					const bp3 = nextBp.v3;
 
-					if (lastV2 !== nextV2) {
+					if (lastV2 !== nextV2 || ignoreDiff) {
 						patchOptVElementValue(bp2, lastV2, nextV2, nextBp.d2, dom, lifecycle, context, isSVG);
+					}
+					if (!isNull(bp3)) {
+						const d3 = nextBp.d3;
+						const lastV3s = lastOptVElement.v3;
+						const nextV3s = nextOptVElement.v3;
+
+						for (let i = 0; i < lastV3s.length; i++) {
+							const lastV3 = lastV3s[i];
+							const nextV3 = nextV3s[i];
+
+							if (lastV2 !== nextV2 || ignoreDiff) {
+								patchOptVElementValue(bp3[i], lastV3, nextV3, d3[i], dom, lifecycle, context, isSVG);
+							}
+						}
 					}
 				}
 			}
+		}
+		if (tag === 'select') {
+			formSelectValue(dom, getPropFromOptElement(nextOptVElement, ValueTypes.PROP_VALUE));
 		}
 	}
 }
@@ -220,8 +257,14 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 		case ValueTypes.PROP_STYLE:
 			patchStyle(lastValue, nextValue, dom);
 			break;
+		case ValueTypes.PROP_VALUE:
+			dom.value = isNullOrUndef(nextValue) ? '' : nextValue;
+			break;
 		case ValueTypes.PROP:
 			patchProp(descriptor, lastValue, nextValue, dom);
+			break;
+		case ValueTypes.SPREAD:
+			patchProps(lastValue, nextValue, dom);
 			break;
 	}
 }
@@ -769,7 +812,7 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 	return true;
 }
 
-function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
+function patchProps(lastProps, nextProps, dom) {
 	lastProps = lastProps || {};
 	nextProps = nextProps || {};
 	let formValue;
@@ -792,9 +835,7 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 			removeProp(prop, dom);
 		}
 	}
-	if (nextVElement.tag === 'select') {
-		formSelectValue(dom, formValue);
-	}
+	return formValue;
 }
 
 export function patchStyle(lastAttrValue, nextAttrValue, dom) {

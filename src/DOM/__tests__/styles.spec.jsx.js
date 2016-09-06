@@ -10,10 +10,8 @@ const Inferno = {
 	NodeTypes
 };
 
-function styleNode() {
-	return createVTemplate(function (style) {
-		return createVElement('div', { style });
-	}, InfernoDOM);
+function styleNode(style) {
+	return <div style={ style }></div>;
 }
 
 describe('CSS style properties (JSX)', () => {
@@ -109,19 +107,19 @@ describe('CSS style properties (JSX)', () => {
 
 	it('Should change styles', () => {
 		const stylesOne = { color: 'red' };
-		render(styleNode()(stylesOne), container);
+		render(styleNode(stylesOne), container);
 		expect(container.firstChild.style.color).to.equal('red');
 
 		const styles = { color: 'blue' };
-		render(styleNode()(styles), container);
+		render(styleNode(styles), container);
 		expect(container.firstChild.style.color).to.equal('blue');
 
 		const stylesTwo = { color: 'orange' };
-		render(styleNode()(stylesTwo), container);
+		render(styleNode(stylesTwo), container);
 		expect(container.firstChild.style.color).to.equal('orange');
 
 		const stylesThree = { color: 'orange' };
-		render(styleNode()(stylesThree), container);
+		render(styleNode(stylesThree), container);
 		expect(container.firstChild.style.color).to.equal('orange');
 	});
 });
