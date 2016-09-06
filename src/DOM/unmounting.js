@@ -4,7 +4,8 @@ import {
 	isNull,
 	isInvalid,
 	isFunction,
-	throwError
+	throwError,
+	isObject
 } from './../core/utils';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
@@ -55,15 +56,15 @@ function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle) {
 	const dom = bp.dom;
 
 	if (!isNull(bp0)) {
-		unmountOptVElementValue(optVElement, bp0, optVElement.v0, dom, lifecycle);
+		unmountOptVElementValue(optVElement, bp0, optVElement.v0, lifecycle);
 		const bp1 = bp.v1;
 
 		if (!isNull(bp1)) {
-			unmountOptVElementValue(optVElement, bp1, optVElement.v1, dom, lifecycle);
+			unmountOptVElementValue(optVElement, bp1, optVElement.v1, lifecycle);
 			const bp2 = bp.v2;
 
 			if (!isNull(bp2)) {
-				unmountOptVElementValue(optVElement, bp2, optVElement.v2, dom, lifecycle);
+				unmountOptVElementValue(optVElement, bp2, optVElement.v2, lifecycle);
 			}
 		}
 	}
@@ -75,16 +76,16 @@ function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle) {
 	}
 }
 
-function unmountOptVElementValue(optVElement, valueType, value, dom, lifecycle) {
+function unmountOptVElementValue(optVElement, valueType, value, lifecycle) {
 	switch (valueType) {
 		case ValueTypes.CHILDREN:
-			unmountChildren(value, dom, lifecycle);
+			unmountChildren(value, lifecycle);
 			break;
 		case ValueTypes.PROP_REF:
 			unmountRef(value);
 			break;
 		case ValueTypes.PROP_SPREAD:
-			unmountProps(value, dom, lifecycle);
+			unmountProps(value, lifecycle);
 			break;
 	}
 }
@@ -168,9 +169,13 @@ export function unmountVElement(vElement, parentDom, lifecycle) {
 function unmountChildren(children, lifecycle) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
-			unmount(children[i], null, lifecycle, false);
+			const child = children[i];
+
+			if (isObject(child)) {
+				unmount(child, null, lifecycle, false);
+			}
 		}
-	} else {
+	} else if (isObject(children)) {
 		unmount(children, null, lifecycle, false);
 	}
 }
@@ -186,7 +191,7 @@ function unmountRef(ref) {
 	}
 }
 
-function unmountProps(props, dom, lifecycle) {
+function unmountProps(props, lifecycle) {
 	for (let prop in props) {
 		const value = props[prop];
 
