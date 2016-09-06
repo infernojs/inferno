@@ -15,6 +15,10 @@ function isArray(obj) {
 	return obj instanceof Array;
 }
 
+function isNull(obj) {
+	return obj === null;
+}
+
 function warning(condition, message) {
 	if (!condition) {
 		console.error(message);
@@ -50,6 +54,103 @@ var ChildrenTypes = {
 	UNKNOWN: 5
 };
 
+function convertVOptElementToVElement(optVElement) {
+	var bp = optVElement.bp;
+	var staticElement = bp.staticVElement;
+	var vElement = createVElement(staticElement.tag, null, null, optVElement.key, null, null);
+	var bp0 = bp.v0;
+	var staticChildren = staticElement.children;
+	var staticProps = staticElement.props;
+
+	if (!isNull(staticChildren)) {
+		vElement.children = staticChildren;
+	}
+	if (!isNull(staticProps)) {
+		vElement.props = staticProps;
+	}
+	if (!isNull(bp0)) {
+		attachOptVElementValue(vElement, optVElement, bp0, optVElement.v0, bp.d0);
+		var bp1 = bp.v1;
+
+		if (!isNull(bp1)) {
+			attachOptVElementValue(vElement, optVElement, bp1, optVElement.v1, bp.d1);
+			var bp2 = bp.v2;
+
+			if (!isNull(bp2)) {
+				attachOptVElementValue(vElement, optVElement, bp2, optVElement.v2, bp.d2);
+				var bp3 = bp.v3;
+
+				if (!isNull(bp3)) {
+					var v3 = optVElement.v3;
+					var d3 = bp.d3;
+					var bp3$1 = bp.v3;
+
+					for (var i = 0; i < bp3$1.length; i++) {
+						attachOptVElementValue(vElement, optVElement, bp3$1[i], v3[i], d3[i]);
+					}
+				}
+			}
+		}
+	}
+	return vElement;
+}
+
+function attachOptVElementValue(vElement, vOptElement, valueType, value, descriptor) {
+	switch (valueType) {
+		case ValueTypes.CHILDREN:
+			vElement.childrenType = descriptor;
+			if (!vElement.children) {
+				vElement.children = value;
+			} else {
+				debugger;
+			}
+			break;
+		case ValueTypes.PROP_CLASS_NAME:
+			if (!vElement.props) {
+				vElement.props = { className: value };
+			} else {
+				debugger;
+			}
+			break;
+		case ValueTypes.PROP_DATA:
+			if (!vElement.props) {
+				vElement.props = {};
+			}
+			vElement.props['data-' + descriptor] = value;
+			break;
+		case ValueTypes.PROP_STYLE:
+			if (!vElement.props) {
+				vElement.props = { style: value };
+			} else {
+				debugger;
+			}
+			break;
+		case ValueTypes.PROP_VALUE:
+			if (!vElement.props) {
+				vElement.props = { value: value };
+			} else {
+				debugger;
+			}
+			break;
+		case ValueTypes.PROP:
+			if (!vElement.props) {
+				vElement.props = {};
+			}
+			vElement.props[descriptor] = value;
+			break;
+		case ValueTypes.PROP_REF:
+			vElement.ref = value;
+			break;
+		case ValueTypes.PROP_SPREAD:
+			if (!vElement.props) {
+				vElement.props = value;
+			} else {
+				debugger;
+			}
+			break;
+	}
+}
+
 function cloneVNode(vNodeToClone, props) {
 	var children = [], len = arguments.length - 2;
 	while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
@@ -79,24 +180,28 @@ function cloneVNode(vNodeToClone, props) {
 				}
 			}
 		}
+	} else {
+		children = null;
 	}
 	if (isVComponent(vNodeToClone)) {
 		return createVComponent(vNodeToClone.component,
-			Object.assign({}, vNodeToClone.props, props || {}),
+			Object.assign({}, vNodeToClone.props, props),
 			vNodeToClone.key,
 			vNodeToClone.hooks,
 			vNodeToClone.ref
 		);
 	} else if (isVElement(vNodeToClone)) {
 		return createVElement(vNodeToClone.tag,
-			Object.assign({}, vNodeToClone.props, props || {}),
+			Object.assign({}, vNodeToClone.props, props),
 			props.children || children || vNodeToClone.children,
 			vNodeToClone.key,
 			vNodeToClone.ref,
 			ChildrenTypes.UNKNOWN
 		);
 	} else if (isOptVElement(vNodeToClone)) {
-		debugger;
+		return cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
+	} else if (isArray(vNodeToClone)) {
+		return vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
 	}
 }
 

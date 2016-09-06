@@ -60,6 +60,7 @@ import {
 	clonePropsChildren
 } from '../core/shapes';
 import { unmount } from './unmounting';
+import { createVPlaceholder } from '../core/shapes';
 
 function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput.dom);
@@ -101,7 +102,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVFragment(lastInput)) {
-			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG), lifecycle);			
+			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG), lifecycle);
 		} else if (isVElement(lastInput)) {
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 		} else if (isVText(nextInput)) {
