@@ -175,7 +175,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
 	switch (valueType) {
 		case ValueTypes.CHILDREN:
 			vElement.childrenType = descriptor;
-			if (!vElement.children) {
+			if (isNullOrUndef(vElement.children)) {
 				vElement.children = value;
 			} else {
 				debugger;
@@ -238,7 +238,7 @@ function cloneVNode(vNodeToClone, props) {
 		if (children.length === 1) {
 			children = children[0];
 		}
-		if (!props.children) {
+		if (isUndefined(props.children)) {
 			props.children = children;
 		} else {
 			if (isArray(children)) {
@@ -259,25 +259,29 @@ function cloneVNode(vNodeToClone, props) {
 	} else {
 		children = null;
 	}
-	if (isVComponent$1(vNodeToClone)) {
-		return createVComponent(vNodeToClone.component,
-			Object.assign({}, vNodeToClone.props, props),
-			vNodeToClone.key,
-			vNodeToClone.hooks,
-			vNodeToClone.ref
-		);
-	} else if (isVElement(vNodeToClone)) {
-		return createVElement(vNodeToClone.tag,
-			Object.assign({}, vNodeToClone.props, props),
-			props.children || children || vNodeToClone.children,
-			vNodeToClone.key,
-			vNodeToClone.ref,
-			ChildrenTypes.UNKNOWN
-		);
-	} else if (isOptVElement(vNodeToClone)) {
-		return cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
-	} else if (isArray(vNodeToClone)) {
+	if (isArray(vNodeToClone)) {
 		return vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
+	} else if (isNull(props) && isNull(children)) {
+		return Object.assign({}, vNodeToClone);
+	} else {
+		if (isVComponent$1(vNodeToClone)) {
+			return createVComponent(vNodeToClone.component,
+				Object.assign({}, vNodeToClone.props, props),
+				vNodeToClone.key,
+				vNodeToClone.hooks,
+				vNodeToClone.ref
+			);
+		} else if (isVElement(vNodeToClone)) {
+			return createVElement(vNodeToClone.tag,
+				Object.assign({}, vNodeToClone.props, props),
+				props.children || children || vNodeToClone.children,
+				vNodeToClone.key,
+				vNodeToClone.ref,
+				ChildrenTypes.UNKNOWN
+			);
+		} else if (isOptVElement(vNodeToClone)) {
+			return cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
+		}
 	}
 }
 

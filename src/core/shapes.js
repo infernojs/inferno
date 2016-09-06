@@ -1,4 +1,4 @@
-import { isUndefined, isArray, isNull } from './utils';
+import { isUndefined, isArray, isNull, isNullOrUndef } from './utils';
 
 export const NodeTypes = {
 	ELEMENT: 1,
@@ -82,7 +82,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
 	switch (valueType) {
 		case ValueTypes.CHILDREN:
 			vElement.childrenType = descriptor;
-			if (isUndefined(vElement.children)) {
+			if (isNullOrUndef(vElement.children)) {
 				vElement.children = value;
 			} else {
 				debugger;
@@ -142,7 +142,7 @@ export function cloneVNode(vNodeToClone, props, ...children) {
 		if (children.length === 1) {
 			children = children[0];
 		}
-		if (!props.children) {
+		if (isUndefined(props.children)) {
 			props.children = children;
 		} else {
 			if (isArray(children)) {
@@ -163,26 +163,43 @@ export function cloneVNode(vNodeToClone, props, ...children) {
 	} else {
 		children = null;
 	}
-	if (isVComponent(vNodeToClone)) {
-		return createVComponent(vNodeToClone.component,
-			Object.assign({}, vNodeToClone.props, props),
-			vNodeToClone.key,
-			vNodeToClone.hooks,
-			vNodeToClone.ref
-		);
-	} else if (isVElement(vNodeToClone)) {
-		return createVElement(vNodeToClone.tag,
-			Object.assign({}, vNodeToClone.props, props),
-			props.children || children || vNodeToClone.children,
-			vNodeToClone.key,
-			vNodeToClone.ref,
-			ChildrenTypes.UNKNOWN
-		);
-	} else if (isOptVElement(vNodeToClone)) {
-		return cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
-	} else if (isArray(vNodeToClone)) {
+	if (isArray(vNodeToClone)) {
 		return vNodeToClone.map(vNode => cloneVNode(vNode));
+	} else if (isNull(props) && isNull(children)) {
+		return Object.assign({}, vNodeToClone);
+	} else {
+		if (isVComponent(vNodeToClone)) {
+			return createVComponent(vNodeToClone.component,
+				Object.assign({}, vNodeToClone.props, props),
+				vNodeToClone.key,
+				vNodeToClone.hooks,
+				vNodeToClone.ref
+			);
+		} else if (isVElement(vNodeToClone)) {
+			return createVElement(vNodeToClone.tag,
+				Object.assign({}, vNodeToClone.props, props),
+				props.children || children || vNodeToClone.children,
+				vNodeToClone.key,
+				vNodeToClone.ref,
+				ChildrenTypes.UNKNOWN
+			);
+		} else if (isOptVElement(vNodeToClone)) {
+			return cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
+		}
 	}
+}
+
+export function createOptVElement(bp, key, v0, v1, v2, v3) {
+	return {
+		bp,
+		dom: null,
+		key,
+		type: NodeTypes.OPT_ELEMENT,
+		v0,
+		v1,
+		v2,
+		v3
+	};
 }
 
 export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {

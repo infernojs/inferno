@@ -1,4 +1,5 @@
 import {
+	createOptVElement,
 	createOptBlueprint,
 	createVElement,
 	createStaticVElement,
@@ -8,7 +9,7 @@ import {
 	cloneVNode,
 	ValueTypes,
 	ChildrenTypes,
-	NodeTypes
+	NodeTypes,
 } from '../../../src/core/shapes';
 import { warning, NO_OP } from '../../../src/core/utils';
 
@@ -24,6 +25,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default {
+	createOptVElement,
 	createOptBlueprint,
 	createVElement,
 	createStaticVElement,
