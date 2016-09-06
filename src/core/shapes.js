@@ -82,7 +82,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
 	switch (valueType) {
 		case ValueTypes.CHILDREN:
 			vElement.childrenType = descriptor;
-			if (!vElement.children) {
+			if (isUndefined(vElement.children)) {
 				vElement.children = value;
 			} else {
 				debugger;
