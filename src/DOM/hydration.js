@@ -7,7 +7,8 @@ import {
 	isInvalid,
 	isFunction,
 	isStatefulComponent,
-	throwError
+	throwError,
+	isObject
 } from './../core/utils';
 import { replaceChild, normaliseChild } from './utils';
 import { mountVText } from './mounting';
@@ -18,12 +19,14 @@ import {
 	isVFragment,
 	isVText,
 	isVElement,
+	isVComponent,
 	isOptVElement,
 	isKeyedListChildrenType,
 	isTextChildrenType,
 	isNodeChildrenType,
 	isNonKeyedListChildrenType,
-	isUnknownChildrenType
+	isUnknownChildrenType,
+	ValueTypes
 } from '../core/shapes';
 import { componentToDOMNodeMap } from './rendering';
 
@@ -78,7 +81,6 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context)
 }
 
 export function normaliseChildNodes(dom) {
-	const childNodes = [];
 	const rawChildNodes = dom.childNodes;
 	let length = rawChildNodes.length;
 	let i = 0;
@@ -91,18 +93,15 @@ export function normaliseChildNodes(dom) {
 				const placeholder = document.createTextNode('');
 
 				dom.replaceChild(placeholder, rawChild);
-				childNodes.push(placeholder);
 				i++;
 			} else {
 				dom.removeChild(rawChild);
 				length--;
 			}
 		} else {
-			childNodes.push(rawChild);
 			i++;
 		}
 	}
-	return childNodes;
 }
 
 function hydrateVComponent(vComponent, dom, lifecycle, context) {
@@ -198,8 +197,14 @@ function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) 
 
 function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
 	if (isArray(children)) {
-		debugger;
-	} else if (!isInvalid(children) && !isStringOrNumber(children)) {
+		for (let i = 0; i < children.length; i++) {
+			const child = normaliseChild(children, i);
+
+			if (isObject(child)) {
+				hydrate(child, dom, lifecycle, context);
+			}
+		}
+	} else if (isObject(children)) {
 		hydrate(children, dom.firstChild, lifecycle, context);
 	}
 }
@@ -220,16 +225,79 @@ function hydrateChildren(childrenType, children, dom, lifecycle, context) {
 }
 
 function hydrateOptVElement(optVElement, dom, lifecycle, context) {
-	debugger;
+	const bp = optVElement.bp;
+	const bp0 = bp.v0;
+
+	optVElement.dom = dom;
+	if (!isNull(bp0)) {
+		hydrateOptVElementValue(optVElement, bp0, optVElement.v0, bp.d0, dom, context);
+		const bp1 = bp.v1;
+
+		if (!isNull(bp1)) {
+			hydrateOptVElementValue(optVElement, bp1, optVElement.v1, bp.d1, dom, context);
+			const bp2 = bp.v2;
+
+			if (!isNull(bp2)) {
+				hydrateOptVElementValue(optVElement, bp2, optVElement.v2, bp.d2, dom, context);
+				const bp3 = bp.v3;
+
+				if (!isNull(bp3)) {
+					const v3 = optVElement.v3;
+					const d3 = bp.d3;
+					const bp3 = bp.v3;
+
+					for (let i = 0; i < bp3.length; i++) {
+						hydrateOptVElementValue(optVElement, bp3[i], v3[i], d3[i], dom, context);
+					}
+				}
+			}
+		}
+	}
+}
+
+function hydrateVText(vText, dom) {
+	vText.dom = dom;
+}
+
+function hydrateVFragment(vFragment, dom) {
+	const children = vFragment.children;
+	const childNodes = dom.childNodes;
+
+	for (let i = 0; i < childNodes.length; i++) {
+		const child = childNodes[i];
+
+		debugger;
+		// if (child.nodeValue === children[0]) {
+		// 	debugger;
+		// }
+	}
+}
+
+function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom, lifecycle, context) {
+	switch (valueType) {
+		case ValueTypes.CHILDREN:
+			hydrateChildren(descriptor, value, dom, lifecycle, context);
+			break;
+		case ValueTypes.PROP_SPREAD:
+			debugger;
+			break;
+	}
 }
 
 function hydrate(input, dom, lifecycle, context) {
+	normaliseChildNodes(dom);
 	if (isOptVElement(input)) {
 		hydrateOptVElement(input, dom, lifecycle, context);
-	} else if (isVElement(input)) {
-		hydrateVElement(input, dom, lifecycle, context);
 	} else if (isVComponent(input)) {
 		hydrateVComponent(input, dom, lifecycle, context);
+	} else if (isVElement(input)) {
+		hydrateVElement(input, dom, lifecycle, context);
+	} else if (isVFragment(input)) {
+		hydrateVFragment(input, dom);
+	} else if (isVText(input)) {
+		hydrateVText(input, dom);
+	} else if (isVPlaceholder(input)) {
+		debugger;			
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('bad input argument called on hydrate(). Input argument may need normalising.');

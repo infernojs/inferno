@@ -37,7 +37,7 @@ export function clonePropsChildren(props) {
 	}
 }
 
-function convertVOptElementToVElement(optVElement) {
+export function convertVOptElementToVElement(optVElement) {
 	const bp = optVElement.bp;
 	const staticElement = bp.staticVElement;
 	const vElement = createVElement(staticElement.tag, null, null, optVElement.key, null, null);

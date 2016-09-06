@@ -13,7 +13,7 @@ import {
 	isVElement,
 	isVComponent,
 	isOptVElement,
-	convertVTemplate
+	convertVOptElementToVElement
 } from './../core/shapes';
 
 function renderComponentToString(vComponent, isRoot, context) {
@@ -139,7 +139,7 @@ function renderVElementToString(vElement, isRoot, context) {
 }
 
 function renderOptVElementToString(optVElement, isRoot, context) {
-	// debugger;
+	return renderInputToString(convertVOptElementToVElement(optVElement), context, isRoot);
 }
 
 function renderInputToString(input, context, isRoot) {
