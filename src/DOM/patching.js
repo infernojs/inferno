@@ -56,7 +56,8 @@ import {
 	isNonKeyedListChildrenType,
 	isNodeChildrenType,
 	isTextChildrenType,
-	isUnknownChildrenType
+	isUnknownChildrenType,
+	clonePropsChildren
 } from '../core/shapes';
 import { unmount } from './unmounting';
 
@@ -343,6 +344,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 	const nextComponent = nextVComponent.component;
 	const nextProps = nextVComponent.props || {};
 
+	clonePropsChildren(nextProps);
 	if (lastComponent !== nextComponent) {
 		if (isNull(parentDom)) {
 			return true;

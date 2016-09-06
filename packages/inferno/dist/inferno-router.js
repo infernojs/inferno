@@ -89,14 +89,14 @@ function cloneVNode(vNodeToClone, props) {
 	}
 	if (isVComponent(vNodeToClone)) {
 		return createVComponent(vNodeToClone.component,
-			Object.assign({}, vNodeToClone.props, props),
+			Object.assign({}, vNodeToClone.props, props || {}),
 			vNodeToClone.key,
 			vNodeToClone.hooks,
 			vNodeToClone.ref
 		);
 	} else if (isVElement(vNodeToClone)) {
 		return createVElement(vNodeToClone.tag,
-			Object.assign({}, vNodeToClone.props, props),
+			Object.assign({}, vNodeToClone.props, props || {}),
 			props.children || children || vNodeToClone.children,
 			vNodeToClone.key,
 			vNodeToClone.ref,

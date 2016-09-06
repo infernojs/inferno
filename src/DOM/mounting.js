@@ -33,7 +33,8 @@ import {
 	isNodeChildrenType,
 	isKeyedListChildrenType,
 	isNonKeyedListChildrenType,
-	isUnknownChildrenType
+	isUnknownChildrenType,
+	clonePropsChildren
 } from '../core/shapes';
 import { recycleOptVElement, recyclingEnabled, recycleVComponent } from './recycling';
 
@@ -308,6 +309,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 	const ref = vComponent.ref;
 	let dom;
 
+	clonePropsChildren(props);
 	if (isStatefulComponent(vComponent)) {
 		if (hooks) {
 			if (process.env.NODE_ENV !== 'production') {

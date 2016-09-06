@@ -122,11 +122,94 @@ var ChildrenTypes = {
 	UNKNOWN: 5
 };
 
+function clonePropsChildren(props) {
+	var children = props.children;
+
+	if (!isUndefined(children)) {
+		props.children = cloneVNode(children);
+	}
+}
+
+function cloneVNode(vNodeToClone, props) {
+	var children = [], len = arguments.length - 2;
+	while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
+
+	if (!props) {
+		props = {};
+	}
+	if (children.length > 0) {
+		if (children.length === 1) {
+			children = children[0];
+		}
+		if (!props.children) {
+			props.children = children;
+		} else {
+			if (isArray(children)) {
+				if (isArray(props.children)) {
+					props.children = props.children.concat(children);
+				} else {
+					props.children = [props.children].concat(children);
+				}
+			} else {
+				if (isArray(props.children)) {
+					props.children.push(children);
+				} else {
+					props.children = [props.children];
+					props.children.push(children);
+				}
+			}
+		}
+	}
+	if (isVComponent$1(vNodeToClone)) {
+		return createVComponent(vNodeToClone.component,
+			Object.assign({}, vNodeToClone.props, props || {}),
+			vNodeToClone.key,
+			vNodeToClone.hooks,
+			vNodeToClone.ref
+		);
+	} else if (isVElement(vNodeToClone)) {
+		return createVElement(vNodeToClone.tag,
+			Object.assign({}, vNodeToClone.props, props || {}),
+			props.children || children || vNodeToClone.children,
+			vNodeToClone.key,
+			vNodeToClone.ref,
+			ChildrenTypes.UNKNOWN
+		);
+	} else if (isOptVElement(vNodeToClone)) {
+		debugger;
+	}
+}
+
+function createVComponent(component, props, key, hooks, ref) {
+	return {
+		component: component,
+		dom: null,
+		hooks: hooks || null,
+		key: key,
+		props: props,
+		ref: ref || null,
+		type: NodeTypes.COMPONENT
+	};
+}
+
 function createVText(text) {
 	return {
 		dom: null,
 		text: text,
 		type: NodeTypes.TEXT
+	};
+}
+
+function createVElement(tag, props, children, key, ref, childrenType) {
+	return {
+		children: children,
+		childrenType: childrenType || ChildrenTypes.UNKNOWN,
+		dom: null,
+		key: key,
+		props: props,
+		ref: ref || null,
+		tag: tag,
+		type: NodeTypes.ELEMENT
 	};
 }
 
@@ -478,6 +561,7 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
 	var nextComponent = nextVComponent.component;
 	var nextProps = nextVComponent.props || {};
 
+	clonePropsChildren(nextProps);
 	if (lastComponent !== nextComponent) {
 		if (isNull(parentDom)) {
 			return true;
@@ -1763,6 +1847,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 	var ref = vComponent.ref;
 	var dom;
 
+	clonePropsChildren(props);
 	if (isStatefulComponent(vComponent)) {
 		if (hooks) {
 			if ("development" !== 'production') {

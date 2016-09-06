@@ -63,31 +63,6 @@ export function isObject(o) {
 	return typeof o === 'object';
 }
 
-function deepScanChildrenForNode(children, node) {
-	if (!isInvalid(children)) {
-		if (isArray(children)) {
-			for (let i = 0; i < children.length; i++) {
-				const child = children[i];
-
-				if (!isInvalid(child)) {
-					if (child === node) {
-						return true;
-					} else if (child.children) {
-						return deepScanChildrenForNode(child.children, node);
-					}
-				}
-			}
-		} else {
-			if (children === node) {
-				return true;
-			} else if (children.children) {
-				return deepScanChildrenForNode(children.children, node);
-			}
-		}
-	}
-	return false;
-}
-
 export function throwError(message) {
 	if (!message) {
 		message = ERROR_MSG;
