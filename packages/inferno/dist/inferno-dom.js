@@ -136,7 +136,7 @@ function createVFragment(children, childrenType) {
 	};
 }
 
-function createVPlaceholder$1() {
+function createVPlaceholder() {
 	return {
 		dom: null,
 		type: NodeTypes.PLACEHOLDER
@@ -231,7 +231,7 @@ function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 				unmount(lastInput, null, lifecycle);
 			}
 		} else if (isVFragment(lastInput)) {
-			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG), lifecycle);			
+			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG), lifecycle);
 		} else if (isVElement(lastInput)) {
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 		} else if (isVText(nextInput)) {
@@ -1393,7 +1393,7 @@ function normalise(object) {
 	if (isStringOrNumber(object)) {
 		return createVText(object);
 	} else if (isInvalid(object)) {
-		return createVPlaceholder$1();
+		return createVPlaceholder();
 	} else if (isArray(object)) {
 		return createVFragment(object);
 	}
@@ -1778,7 +1778,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		var input = instance.render();
 
 		if (isInvalid(input)) {
-			input = createVPlaceholder$1();
+			input = createVPlaceholder();
 		}
 		instance._pendingSetState = false;
 		dom = mount(input, null, lifecycle, context, false);
@@ -1824,7 +1824,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		var input$1 = Component(props, context);
 
 		if (isInvalid(input$1)) {
-			input$1 = createVPlaceholder$1();
+			input$1 = createVPlaceholder();
 		}
 		dom = mount(input$1, null, lifecycle, context, null, false);
 		vComponent.instance = input$1;
@@ -1897,7 +1897,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 		var input = instance.render();
 
 		if (isInvalid(input)) {
-			input = createVPlaceholder$1();
+			input = createVPlaceholder();
 		}
 		instance._pendingSetState = false;
 		hydrate(input, dom, lifecycle, context);
@@ -1933,7 +1933,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 		var input$1 = Component(props, context);
 
 		if (isInvalid(input$1)) {
-			input$1 = createVPlaceholder$1();
+			input$1 = createVPlaceholder();
 		}
 		hydrate(input$1, dom, lifecycle, context);
 	}
