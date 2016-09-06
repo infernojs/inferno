@@ -100,3 +100,5 @@ export function warning(condition, message) {
 		console.error(message);
 	}
 }
+
+export const EMPTY_OBJ = {};

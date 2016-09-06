@@ -1,15 +1,7 @@
 import { renderToStaticMarkup } from './../../server/renderToString';
-import Component from './../../component/es2015';
 import { render } from './../../DOM/rendering';
-import { isArray, isStringOrNumber, isNullOrUndef } from './../../core/utils';
 import { createContainerWithHTML, validateNodeTree } from '../../tools/utils';
 import createElement from './../../core/createElement';
-import {
-	createVTemplateFactory as createVTemplate,
-	createVElement,
-	createVComponent,
-	isVNode
-} from './../../core/shapes';
 
 describe('SSR Hydration - (non-JSX)', () => {
 	[

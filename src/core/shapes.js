@@ -1,7 +1,4 @@
-import { isUndefined, isNull } from './utils';
-
-export const NULL_INDEX = -1;
-export const ROOT_INDEX = -2;
+import { isUndefined, isArray } from './utils';
 
 export const NodeTypes = {
 	ELEMENT: 1,

@@ -2,7 +2,14 @@ import Lifecycle from './lifecycle';
 import { mountChildrenWithUnknownType } from './mounting';
 import { patchChildrenWithUnknownType } from './patching';
 import { getActiveNode, resetActiveNode } from './utils';
-import { isUndefined, isInvalid, isNull, isBrowser, throwError, NO_OP } from '../core/utils';
+import {
+	isUndefined,
+	isInvalid,
+	isNull,
+	isBrowser,
+	throwError,
+	NO_OP
+} from '../core/utils';
 import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
 

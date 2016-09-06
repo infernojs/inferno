@@ -9,7 +9,7 @@ import {
 	isStatefulComponent,
 	throwError
 } from './../core/utils';
-import { replaceChild, normaliseChild, normalise } from './utils';
+import { replaceChild, normaliseChild } from './utils';
 import { mountVText } from './mounting';
 import { patch } from './patching';
 import {
@@ -19,8 +19,6 @@ import {
 	isVText,
 	isVElement,
 	isOptVElement,
-	isVTemplate,
-	isVNode,
 	isKeyedListChildrenType,
 	isTextChildrenType,
 	isNodeChildrenType,
@@ -69,6 +67,7 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context)
 			return true;
 		}
 	} else {
+		// TODO: Import missing
 		const rebuild = hydrateNode(child, domNode, parentDom, lifecycle, context, false);
 
 		if (rebuild) {

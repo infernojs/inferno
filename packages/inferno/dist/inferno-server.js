@@ -9,7 +9,7 @@
 	(global.InfernoServer = factory(global.stream));
 }(this, (function (stream) { 'use strict';
 
-function isArray$1(obj) {
+function isArray(obj) {
 	return obj instanceof Array;
 }
 
@@ -159,7 +159,7 @@ function renderComponentToString(vComponent, isRoot, context) {
 }
 
 function renderChildren(children, context) {
-	if (children && isArray$1(children)) {
+	if (children && isArray(children)) {
 		var childrenResult = [];
 		var insertComment = false;
 
@@ -180,7 +180,7 @@ function renderChildren(children, context) {
 					childrenResult.push(escapeText(child));
 				}
 				insertComment = true;
-			} else if (isArray$1(child)) {
+			} else if (isArray(child)) {
 				childrenResult.push('<!---->');
 				childrenResult.push(renderChildren(child));
 				childrenResult.push('<!--!-->');
@@ -257,7 +257,7 @@ function renderVElementToString(vElement, isRoot, context) {
 }
 
 function renderOptVElementToString(optVElement, isRoot, context) {
-	debugger;
+	// debugger;
 }
 
 function renderInputToString(input, context, isRoot) {
@@ -399,7 +399,7 @@ var RenderStream = (function (Readable) {
 			return;
 		}
 
-		var childrenIsArray = isArray$1(children);
+		var childrenIsArray = isArray(children);
 		if (!childrenIsArray && !isInvalid(children)) {
 			return this.renderNode(children, context, false);
 		}
@@ -423,7 +423,7 @@ var RenderStream = (function (Readable) {
 						this$1.push(escapeText(child));
 					}
 					return true;
-				} else if (isArray$1(child)) {
+				} else if (isArray(child)) {
 					this$1.push('<!---->');
 					return Promise.resolve(this$1.renderChildren(child)).then(function (){
 						this$1.push('<!--!-->');

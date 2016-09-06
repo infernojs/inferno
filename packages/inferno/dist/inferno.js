@@ -11,6 +11,10 @@
 
 var NO_OP = '$NO_OP';
 
+function isArray(obj) {
+	return obj instanceof Array;
+}
+
 function warning(condition, message) {
 	if (!condition) {
 		console.error(message);
@@ -32,7 +36,10 @@ var ValueTypes = {
 	PROP_CLASS_NAME: 2,
 	PROP_STYLE: 3,
 	PROP_DATA: 4,
-	PROP: 5
+	PROP_REF: 5,
+	PROP_SPREAD: 6,
+	PROP_VALUE: 7,
+	PROP: 8
 };
 
 var ChildrenTypes = {
@@ -93,12 +100,13 @@ function cloneVNode(vNodeToClone, props) {
 	}
 }
 
-function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2) {
+function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {
 	return {
 		clone: null,
 		d0: d0,
 		d1: d1,
 		d2: d2,
+		d3: d3,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map()
@@ -107,7 +115,8 @@ function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2) {
 		type: NodeTypes.OPT_BLUEPRINT,
 		v0: v0,
 		v1: v1,
-		v2: v2
+		v2: v2,
+		v3: v3
 	};
 }
 

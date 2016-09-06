@@ -7,11 +7,7 @@ import {
 	isNull
 } from './../core/utils';
 import { unmountVFragment, unmount } from './unmounting';
-import {
-	createVText,
-	createVPlaceholder,
-	createVFragment
-} from '../core/shapes';
+import { createVText, createVPlaceholder, createVFragment } from '../core/shapes';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */

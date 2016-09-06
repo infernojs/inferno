@@ -30,7 +30,7 @@ var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment
 // Runs only once in applications lifetime
 var isBrowser = typeof window !== 'undefined' && window.document;
 
-function isArray$1(obj) {
+function isArray(obj) {
 	return obj instanceof Array;
 }
 
@@ -91,6 +91,8 @@ function throwError(message) {
 	throw new Error(("Inferno Error: " + message));
 }
 
+var EMPTY_OBJ = {};
+
 var NodeTypes = {
 	ELEMENT: 1,
 	OPT_ELEMENT: 2,
@@ -106,7 +108,10 @@ var ValueTypes = {
 	PROP_CLASS_NAME: 2,
 	PROP_STYLE: 3,
 	PROP_DATA: 4,
-	PROP: 5
+	PROP_REF: 5,
+	PROP_SPREAD: 6,
+	PROP_VALUE: 7,
+	PROP: 8
 };
 
 var ChildrenTypes = {
@@ -313,7 +318,11 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 			}
 		}
 		if (lastProps !== nextProps) {
-			patchProps(lastVElement, nextVElement, lastProps, nextProps, dom);
+			var formValue = patchProps(lastProps, nextProps, dom);
+
+			if (nextTag === 'select') {
+				formSelectValue(dom, formValue);
+			}
 		}
 	}
 }
@@ -331,13 +340,27 @@ function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle
 		unmount(lastOptVElement, null, lifecycle, true);
 	} else {
 		var bp0 = nextBp.v0;
+		var tag = nextBp.staticVElement.tag;
+		var ignoreDiff = false;
 
+		if (tag === 'input') {
+			// input elements are problematic due to the large amount of internal state that hold
+			// so instead of making lots of assumptions, we instead reset common values and re-apply
+			// the the patching each time
+			resetFormInputProperties(dom);
+			ignoreDiff = true;
+		} else if (tag === 'select') {
+		} else if (tag === 'textarea') {
+			// textarea elements are like input elements, except they have sligthly less internal state to
+			// worry about
+			ignoreDiff = true;
+		}
 		if (!isNull(bp0)) {
 			var lastV0 = lastOptVElement.v0;
 			var nextV0 = nextOptVElement.v0;
 			var bp1 = nextBp.v1;
 
-			if (lastV0 !== nextV0) {
+			if (lastV0 !== nextV0 || ignoreDiff) {
 				patchOptVElementValue(bp0, lastV0, nextV0, nextBp.d0, dom, lifecycle, context, isSVG);
 			}
 			if (!isNull(bp1)) {
@@ -345,18 +368,36 @@ function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle
 				var nextV1 = nextOptVElement.v1;
 				var bp2 = nextBp.v2;
 
-				if (lastV1 !== nextV1) {
+				if (lastV1 !== nextV1 || ignoreDiff) {
 					patchOptVElementValue(bp1, lastV1, nextV1, nextBp.d1, dom, lifecycle, context, isSVG);
 				}
 				if (!isNull(bp2)) {
 					var lastV2 = lastOptVElement.v2;
 					var nextV2 = nextOptVElement.v2;
+					var bp3 = nextBp.v3;
 
-					if (lastV2 !== nextV2) {
+					if (lastV2 !== nextV2 || ignoreDiff) {
 						patchOptVElementValue(bp2, lastV2, nextV2, nextBp.d2, dom, lifecycle, context, isSVG);
+					}
+					if (!isNull(bp3)) {
+						var d3 = nextBp.d3;
+						var lastV3s = lastOptVElement.v3;
+						var nextV3s = nextOptVElement.v3;
+
+						for (var i = 0; i < lastV3s.length; i++) {
+							var lastV3 = lastV3s[i];
+							var nextV3 = nextV3s[i];
+
+							if (lastV2 !== nextV2 || ignoreDiff) {
+								patchOptVElementValue(bp3[i], lastV3, nextV3, d3[i], dom, lifecycle, context, isSVG);
+							}
+						}
 					}
 				}
 			}
+		}
+		if (tag === 'select') {
+			formSelectValue(dom, getPropFromOptElement(nextOptVElement, ValueTypes.PROP_VALUE));
 		}
 	}
 }
@@ -375,6 +416,15 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 			break;
 		case ValueTypes.PROP_STYLE:
 			patchStyle(lastValue, nextValue, dom);
+			break;
+		case ValueTypes.PROP_VALUE:
+			dom.value = isNullOrUndef(nextValue) ? '' : nextValue;
+			break;
+		case ValueTypes.PROP:
+			patchProp(descriptor, lastValue, nextValue, dom);
+			break;
+		case ValueTypes.SPREAD:
+			patchProps(lastValue, nextValue, dom);
 			break;
 	}
 }
@@ -407,7 +457,7 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
 		if (isStringOrNumber(nextChildren)) {
 			setTextContent(parentDom, nextChildren);
 		} else if (!isInvalid(nextChildren)) {
-			if (isArray$1(nextChildren)) {
+			if (isArray(nextChildren)) {
 				mountArrayChildrenWithoutType(nextChildren, parentDom, lifecycle, context, isSVG);
 			} else {
 				mount(nextChildren, parentDom, lifecycle, context, isSVG);
@@ -426,8 +476,8 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
 
 		child.dom = parentDom.firstChild;
 		patchChildrenWithUnknownType(child, nextChildren, parentDom, lifecycle, context, isSVG);
-	} else if (isArray$1(nextChildren)) {
-		if (isArray$1(lastChildren)) {
+	} else if (isArray(nextChildren)) {
+		if (isArray(lastChildren)) {
 			nextChildren.complex = lastChildren.complex;
 
 			if (isKeyed(lastChildren, nextChildren)) {
@@ -438,7 +488,7 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
 		} else {
 			patchNonKeyedChildren([lastChildren], nextChildren, parentDom, lifecycle, context, isSVG, null, true);
 		}
-	} else if (isArray$1(lastChildren)) {
+	} else if (isArray(lastChildren)) {
 		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null, true);
 	} else {
 		if ("development" !== 'production') {
@@ -922,7 +972,7 @@ function patchProp(prop, lastValue, nextValue, dom) {
 	return true;
 }
 
-function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
+function patchProps(lastProps, nextProps, dom) {
 	lastProps = lastProps || {};
 	nextProps = nextProps || {};
 	var formValue;
@@ -945,9 +995,7 @@ function patchProps(lastVElement, nextVElement, lastProps, nextProps, dom) {
 			removeProp(prop$1, dom);
 		}
 	}
-	if (nextVElement.tag === 'select') {
-		formSelectValue(dom, formValue);
-	}
+	return formValue;
 }
 
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
@@ -1121,11 +1169,42 @@ function unmountVText(vText, parentDom) {
 }
 
 function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle) {
+	var bp = optVElement.bp;
+	var bp0 = bp.v0;
+	var dom = bp.dom;
+
+	if (!isNull(bp0)) {
+		unmountOptVElementValue(optVElement, bp0, optVElement.v0, dom, lifecycle);
+		var bp1 = bp.v1;
+
+		if (!isNull(bp1)) {
+			unmountOptVElementValue(optVElement, bp1, optVElement.v1, dom, lifecycle);
+			var bp2 = bp.v2;
+
+			if (!isNull(bp2)) {
+				unmountOptVElementValue(optVElement, bp2, optVElement.v2, dom, lifecycle);
+			}
+		}
+	}
 	if (!isNull(parentDom)) {
 		parentDom.removeChild(optVElement.dom);
 	}
 	if (recyclingEnabled && (parentDom || canRecycle)) {
 		poolOptVElement(optVElement);
+	}
+}
+
+function unmountOptVElementValue(optVElement, valueType, value, dom, lifecycle) {
+	switch (valueType) {
+		case ValueTypes.CHILDREN:
+			unmountChildren(value, dom, lifecycle);
+			break;
+		case ValueTypes.PROP_REF:
+			unmountRef(value);
+			break;
+		case ValueTypes.PROP_SPREAD:
+			unmountProps(value, dom, lifecycle);
+			break;
 	}
 }
 
@@ -1193,21 +1272,46 @@ function unmountVElement(vElement, parentDom, lifecycle) {
 	var ref = vElement.ref;
 
 	if (ref) {
-		ref(null);
+		unmountRef(ref);
 	}
 	var children = vElement.children;
 
 	if (!isNullOrUndef(children)) {
-		if (isArray$1(children)) {
-			for (var i = 0; i < children.length; i++) {
-				unmount(children[i], null, lifecycle, false);
-			}
-		} else {
-			unmount(children, null, lifecycle, false);
-		}
+		unmountChildren(children, lifecycle);
 	}
 	if (parentDom) {
 		removeChild(parentDom, dom);
+	}
+}
+
+function unmountChildren(children, lifecycle) {
+	if (isArray(children)) {
+		for (var i = 0; i < children.length; i++) {
+			unmount(children[i], null, lifecycle, false);
+		}
+	} else {
+		unmount(children, null, lifecycle, false);
+	}
+}
+
+function unmountRef(ref) {
+	if (isFunction(ref)) {
+		ref(null);
+	} else {
+		if ("development" !== 'production') {
+			throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+		}
+		throwError();
+	}
+}
+
+function unmountProps(props, dom, lifecycle) {
+	for (var prop in props) {
+		var value = props[prop];
+
+		if (prop === 'ref') {
+			unmountRef(value);
+		}
 	}
 }
 
@@ -1260,6 +1364,27 @@ function replaceVListWithNode(parentDom, vList, dom, lifecycle) {
 	replaceChild(parentDom, dom, pointer);
 }
 
+function getPropFromOptElement(optVElement, valueType) {
+	var bp = optVElement.bp;
+
+	// TODO check "prop" and "spread"
+	if (!isNull(bp.v0)) {
+		if (bp.v0 === valueType) {
+			return optVElement.v0;
+		}
+		if (!isNull(bp.v1)) {
+			if (bp.v1 === valueType) {
+				return optVElement.v1;
+			}
+			if (!isNull(bp.v2)) {
+				if (bp.v2 === valueType) {
+					return optVElement.v2;
+				}
+			}
+		}
+	}
+}
+
 function documentCreateElement(tag, isSVG) {
 	var dom;
 
@@ -1298,7 +1423,7 @@ function normalise(object) {
 		return createVText(object);
 	} else if (isInvalid(object)) {
 		return createVPlaceholder$1();
-	} else if (isArray$1(object)) {
+	} else if (isArray(object)) {
 		return createVFragment(object);
 	}
 	return object;
@@ -1367,7 +1492,7 @@ function formSelectValue(dom, value) {
 	var isMap = false;
 
 	if (!isNullOrUndef(value)) {
-		if (isArray$1(value)) {
+		if (isArray(value)) {
 			// Map vs Object v using reduce here for perf?
 			value = value.reduce(function (o, v) { return o.set(v, true); }, new Map());
 			isMap = true;
@@ -1376,6 +1501,15 @@ function formSelectValue(dom, value) {
 			value = value + '';
 		}
 		formSelectValueFindOptions(dom, value, isMap);
+	}
+}
+
+function resetFormInputProperties(dom) {
+	if (dom.checked) {
+		dom.checked = false;
+	}
+	if (dom.disabled) {
+		dom.disabled = false;
 	}
 }
 
@@ -1427,21 +1561,20 @@ function mountVElement(vElement, parentDom, lifecycle, context, isSVG) {
 	var props = vElement.props;
 	var ref = vElement.ref;
 	var hasProps = !isNullOrUndef(props);
+	var formValue;
 
 	vElement.dom = dom;
 	if (!isNullOrUndef(ref)) {
-		lifecycle.addListener(function () {
-			ref(dom);
-		});
+		mountRef(dom, ref, lifecycle);
 	}
-	if (tag === 'select' && hasProps && isTrue(props.multiple)) {
-		patchProp('multiple', null, true, dom);
+	if (hasProps) {
+		formValue = mountProps(vElement, props, dom, lifecycle, context, isSVG, false);
 	}
 	if (!isNullOrUndef(children)) {
 		mountChildren(vElement.childrenType, children, dom, lifecycle, context, isSVG);
 	}
-	if (hasProps) {
-		mountProps(vElement, props, dom);
+	if (tag === 'select' && formValue) {
+		formSelectValue(dom, formValue);
 	}
 	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
@@ -1472,11 +1605,18 @@ function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG) {
 function createStaticVElementClone(bp, isSVG) {
 	var stat = bp.staticVElement;
 	var tag = stat.tag;
-	var dom = document.createElement(tag);
+	var dom = documentCreateElement(tag, isSVG);
+	var children = stat.children;
+
+	if (!isNull(children)) {
+		mountChildrenWithUnknownType(children, dom, null, null, isSVG);
+	}
 	var props = stat.props;
 
-	for (var prop in props) {
-		patchProp(prop, null, props[prop], dom);
+	if (!isNull(props)) {
+		for (var prop in props) {
+			patchProp(prop, null, props[prop], dom);
+		}
 	}
 	bp.clone = dom;
 	return dom.cloneNode(true);
@@ -1499,23 +1639,42 @@ function mountOptVElement(optVElement, parentDom, lifecycle, context, isSVG) {
 	if (recyclingEnabled) {
 		dom = recycleOptVElement(optVElement, lifecycle, context, isSVG);
 	}
+	var tag = bp.staticVElement.tag;
+
 	if (isNull(dom)) {
+		if (isSVG || tag === 'svg') {
+			isSVG = true;
+		}
 		dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
 		optVElement.dom = dom;
 		var bp0 = bp.v0;
 
 		if (!isNull(bp0)) {
-			mountOptVElementValue(bp0, optVElement.v0, bp.d0, dom, lifecycle, context, isSVG);
+			mountOptVElementValue(optVElement, bp0, optVElement.v0, bp.d0, dom, lifecycle, context, isSVG);
 			var bp1 = bp.v1;
 
 			if (!isNull(bp1)) {
-				mountOptVElementValue(bp1, optVElement.v1, bp.d1, dom, lifecycle, context, isSVG);
+				mountOptVElementValue(optVElement, bp1, optVElement.v1, bp.d1, dom, lifecycle, context, isSVG);
 				var bp2 = bp.v2;
 
 				if (!isNull(bp2)) {
-					mountOptVElementValue(bp2, optVElement.v2, bp.d2, dom, lifecycle, context, isSVG);
+					mountOptVElementValue(optVElement, bp2, optVElement.v2, bp.d2, dom, lifecycle, context, isSVG);
+					var bp3 = bp.v3;
+
+					if (!isNull(bp3)) {
+						var v3 = optVElement.v3;
+						var d3 = bp.d3;
+						var bp3$1 = bp.v3;
+
+						for (var i = 0; i < bp3$1.length; i++) {
+							mountOptVElementValue(optVElement, bp3$1[i], v3[i], d3[i], dom, lifecycle, context, isSVG);
+						}
+					}
 				}
 			}
+		}
+		if (tag === 'select') {
+			formSelectValue(dom, getPropFromOptElement(optVElement, ValueTypes.PROP_VALUE));
 		}
 	}
 	if (!isNull(parentDom)) {
@@ -1524,7 +1683,7 @@ function mountOptVElement(optVElement, parentDom, lifecycle, context, isSVG) {
 	return dom;
 }
 
-function mountOptVElementValue(valueType, value, descriptor, dom, lifecycle, context, isSVG) {
+function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, lifecycle, context, isSVG) {
 	switch (valueType) {
 		case ValueTypes.CHILDREN:
 			mountChildren(descriptor, value, dom, lifecycle, context, isSVG);
@@ -1539,6 +1698,18 @@ function mountOptVElementValue(valueType, value, descriptor, dom, lifecycle, con
 			break;
 		case ValueTypes.PROP_STYLE:
 			patchStyle(null, value, dom);
+			break;
+		case ValueTypes.PROP_VALUE:
+			dom.value = isNullOrUndef(value) ? '' : value;
+			break;
+		case ValueTypes.PROP:
+			patchProp(descriptor, null, value, dom);
+			break;
+		case ValueTypes.PROP_REF:
+			mountRef(dom, value, lifecycle);
+			break;
+		case ValueTypes.PROP_SPREAD:
+			mountProps(optVElement, value, dom, lifecycle, context, isSVG, true);
 			break;
 	}
 }
@@ -1567,7 +1738,7 @@ function mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
 }
 
 function mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG) {
-	if (isArray$1(children)) {
+	if (isArray(children)) {
 		mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG);
 	} else if (isStringOrNumber(children)) {
 		setTextContent(dom, children);
@@ -1608,7 +1779,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		}
 	}
 	var Component = vComponent.component;
-	var props = vComponent.props;
+	var props = vComponent.props || EMPTY_OBJ;
 	var hooks = vComponent.hooks;
 	var ref = vComponent.ref;
 	var dom;
@@ -1636,7 +1807,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		var input = instance.render();
 
 		if (isInvalid(input)) {
-			input = createVPlaceholder();
+			input = createVPlaceholder$1();
 		}
 		instance._pendingSetState = false;
 		dom = mount(input, null, lifecycle, context, false);
@@ -1682,7 +1853,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 		var input$1 = Component(props, context);
 
 		if (isInvalid(input$1)) {
-			input$1 = createVPlaceholder();
+			input$1 = createVPlaceholder$1();
 		}
 		dom = mount(input$1, null, lifecycle, context, null, false);
 		vComponent.instance = input$1;
@@ -1694,7 +1865,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG) {
 	return dom;
 }
 
-function mountProps(vElement, props, dom) {
+function mountProps(vNode, props, dom, lifecycle, context, isSVG, isSpread) {
 	var formValue;
 
 	for (var prop in props) {
@@ -1703,10 +1874,31 @@ function mountProps(vElement, props, dom) {
 		if (prop === 'value') {
 			formValue = value;
 		}
-		patchProp(prop, null, value, dom);
+		if (prop === 'key') {
+			vNode.key = value;
+		} else if (prop === 'ref') {
+			mountRef(dom, value, lifecycle);
+		} else if (prop === 'children') {
+			if (isSpread) {
+				mountChildrenWithUnknownType(value, dom, lifecycle, context, isSVG);
+			} else if (isVElement(vNode)) {
+				vNode.children = value;
+			}
+		} else {
+			patchProp(prop, null, value, dom);
+		}
 	}
-	if (vElement.tag === 'select') {
-		formSelectValue(vElement.dom, formValue);
+	return formValue;
+}
+
+function mountRef(dom, value, lifecycle) {
+	if (isFunction(value)) {
+		lifecycle.addListener(function () { return value(dom); });
+	} else {
+		if ("development" !== 'production') {
+			throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+		}
+		throwError();
 	}
 }
 
@@ -1802,7 +1994,7 @@ function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) 
 }
 
 function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
-	if (isArray$1(children)) {
+	if (isArray(children)) {
 		debugger;
 	} else if (!isInvalid(children) && !isStringOrNumber(children)) {
 		hydrate(children, dom.firstChild, lifecycle, context);
@@ -2042,7 +2234,7 @@ function applyState(component, force, callback) {
 		var activeNode = getActiveNode$1();
 		var subLifecycle = new Lifecycle();
 
-		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
+		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, null);
 		component._lastInput = nextInput;
 		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
@@ -2074,7 +2266,6 @@ var Component = function Component(props, context) {
 	this._unmounted = true;
 	this.context = context || {};
 	this._patch = null;
-	this._parentComponent = null;
 	this._componentToDOMNodeMap = null;
 	if (!this.componentDidMount) {
 		this.componentDidMount = null;
@@ -2278,7 +2469,7 @@ function renderComponentToString(vComponent, isRoot, context) {
 }
 
 function renderChildren(children, context) {
-	if (children && isArray$1(children)) {
+	if (children && isArray(children)) {
 		var childrenResult = [];
 		var insertComment = false;
 
@@ -2299,7 +2490,7 @@ function renderChildren(children, context) {
 					childrenResult.push(escapeText(child));
 				}
 				insertComment = true;
-			} else if (isArray$1(child)) {
+			} else if (isArray(child)) {
 				childrenResult.push('<!---->');
 				childrenResult.push(renderChildren(child));
 				childrenResult.push('<!--!-->');
@@ -2376,7 +2567,7 @@ function renderVElementToString(vElement, isRoot, context) {
 }
 
 function renderOptVElementToString(optVElement, isRoot, context) {
-	debugger;
+	// debugger;
 }
 
 function renderInputToString(input, context, isRoot) {
@@ -2400,11 +2591,7 @@ function renderToStaticMarkup(input) {
 	return renderInputToString(input, null, true);
 }
 
-var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
-
-function interopDefault(ex) {
-	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
-}
+var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -2742,8 +2929,6 @@ var index$1 = createCommonjsModule(function (module, exports) {
 
 });
 
-var PropTypes = interopDefault(index$1);
-
 function unmountComponentAtNode(container) {
 	render(null, container);
 	return true;
@@ -2802,7 +2987,7 @@ var index = {
 	Component: Component,
 	unmountComponentAtNode: unmountComponentAtNode,
 	cloneElement: cloneElement,
-	PropTypes: PropTypes,
+	PropTypes: index$1,
 	createClass: createClass,
 	findDOMNode: findDOMNode,
 	renderToString: renderToString,
@@ -2816,7 +3001,7 @@ exports.createElement = createElement;
 exports.Component = Component;
 exports.unmountComponentAtNode = unmountComponentAtNode;
 exports.cloneElement = cloneElement;
-exports.PropTypes = PropTypes;
+exports.PropTypes = index$1;
 exports.createClass = createClass;
 exports.findDOMNode = findDOMNode;
 exports.renderToString = renderToString;

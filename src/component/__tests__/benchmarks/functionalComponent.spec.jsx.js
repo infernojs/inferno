@@ -1,5 +1,12 @@
 import { render } from './../../../DOM/rendering';
-import { createStaticVElement, createOptBlueprint, createVComponent, ChildrenTypes, ValueTypes, NodeTypes } from './../../../core/shapes';
+import {
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	ChildrenTypes,
+	ValueTypes,
+	NodeTypes
+} from './../../../core/shapes';
 
 const Inferno = {
 	createStaticVElement,

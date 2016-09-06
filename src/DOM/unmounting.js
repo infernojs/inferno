@@ -17,11 +17,7 @@ import {
 	isVFragment,
 	ValueTypes
 } from '../core/shapes';
-import {
-	poolOptVElement,
-	poolVComponent,
-	recyclingEnabled
-} from './recycling';
+import { poolOptVElement, poolVComponent, recyclingEnabled } from './recycling';
 
 export function unmount(input, parentDom, lifecycle, canRecycle) {
 	if (!isInvalid(input)) {

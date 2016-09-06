@@ -1,7 +1,14 @@
 import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
 import createElement from './../../core/createElement';
-import { createStaticVElement, createOptBlueprint, createVComponent, createVElement, ChildrenTypes, ValueTypes, NodeTypes } from './../../core/shapes';
+import {
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	ChildrenTypes,
+	ValueTypes,
+	NodeTypes
+} from './../../core/shapes';
 
 const Inferno = {
 	createStaticVElement,

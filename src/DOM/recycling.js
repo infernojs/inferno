@@ -1,11 +1,5 @@
-import {
-	isUndefined,
-	isNull
-} from './../core/utils';
-import {
-	patchOptVElement,
-	patchVComponent
-} from './patching';
+import { isUndefined, isNull } from './../core/utils';
+import { patchOptVElement, patchVComponent } from './patching';
 
 export const recyclingEnabled = true;
 

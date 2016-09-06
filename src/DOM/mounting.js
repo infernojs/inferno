@@ -1,6 +1,5 @@
 import {
 	isArray,
-	isUndefined,
 	isStringOrNumber,
 	isFunction,
 	isNullOrUndef,
@@ -8,15 +7,14 @@ import {
 	isString,
 	isInvalid,
 	isNull,
-	isTrue,
-	throwError
+	throwError,
+	EMPTY_OBJ
 } from './../core/utils';
 import {
 	setTextContent,
 	documentCreateElement,
 	normaliseChild,
 	appendChild,
-	normalise,
 	formSelectValue,
 	getPropFromOptElement
 } from './utils';
@@ -37,11 +35,7 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/shapes';
-import {
-	recycleOptVElement,
-	recyclingEnabled,
-	recycleVComponent
-} from './recycling';
+import { recycleOptVElement, recyclingEnabled, recycleVComponent } from './recycling';
 
 export function mount(input, parentDom, lifecycle, context, isSVG) {
 	if (isOptVElement(input)) {
@@ -309,7 +303,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		}
 	}
 	const Component = vComponent.component;
-	const props = vComponent.props;
+	const props = vComponent.props || EMPTY_OBJ;
 	const hooks = vComponent.hooks;
 	const ref = vComponent.ref;
 	let dom;

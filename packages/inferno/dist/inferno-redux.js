@@ -28,10 +28,10 @@ var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 function toArray(children) {
-	return isArray$1(children) ? children : (children ? [children] : children);
+	return isArray(children) ? children : (children ? [children] : children);
 }
 
-function isArray$1(obj) {
+function isArray(obj) {
 	return obj instanceof Array;
 }
 
@@ -135,7 +135,7 @@ function applyState(component, force, callback) {
 		var activeNode = getActiveNode();
 		var subLifecycle = new Lifecycle();
 
-		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
+		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, null);
 		component._lastInput = nextInput;
 		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
@@ -167,7 +167,6 @@ var Component = function Component(props, context) {
 	this._unmounted = true;
 	this.context = context || {};
 	this._patch = null;
-	this._parentComponent = null;
 	this._componentToDOMNodeMap = null;
 	if (!this.componentDidMount) {
 		this.componentDidMount = null;
@@ -258,20 +257,7 @@ var funcToString = funcProto.toString;
 /** Used to infer the `Object` constructor. */
 var objectCtorString = funcToString.call(Object);
 
-var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
-
-function interopDefault(ex) {
-	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
-}
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var ponyfill = createCommonjsModule(function (module) {
-'use strict';
-
-module.exports = function symbolObservablePonyfill(root) {
+function symbolObservablePonyfill(root) {
 	var result;
 	var Symbol = root.Symbol;
 
@@ -288,23 +274,16 @@ module.exports = function symbolObservablePonyfill(root) {
 
 	return result;
 };
-});
 
-var ponyfill$1 = interopDefault(ponyfill);
-
-
-var require$$0 = Object.freeze({
-	default: ponyfill$1
-});
-
-var index$1 = createCommonjsModule(function (module) {
 /* global window */
-'use strict';
+var root = undefined;
+if (typeof global !== 'undefined') {
+	root = global;
+} else if (typeof window !== 'undefined') {
+	root = window;
+}
 
-module.exports = interopDefault(require$$0)(commonjsGlobal || window || commonjsGlobal);
-});
-
-interopDefault(index$1);
+var result = symbolObservablePonyfill(root);
 
 /**
  * Prints a warning in the console if it exists.
@@ -485,7 +464,11 @@ if ("development" !== 'production') {
 	};
 }
 
-var index$2 = createCommonjsModule(function (module) {
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var index$1 = createCommonjsModule(function (module) {
 'use strict';
 
 var INFERNO_STATICS = {
@@ -534,8 +517,6 @@ function hoistNonReactStatics(targetComponent, sourceComponent, customStatics) {
 
 module.exports = hoistNonReactStatics;
 });
-
-var hoistStatics = interopDefault(index$2);
 
 var invariant = createCommonjsModule(function (module) {
 /**
@@ -592,8 +573,6 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 
 module.exports = invariant;
 });
-
-var invariant$1 = interopDefault(invariant);
 
 var errorObject = { value: null };
 var defaultMapStateToProps = function (state) { return ({}); }; // eslint-disable-line no-unused-vars
@@ -665,7 +644,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 				this.version = version;
 				this.store = (props && props.store) || (context && context.store);
 
-				invariant$1(this.store,
+				invariant(this.store,
 					'Could not find "store" in either the context or ' +
 					"props of \"" + connectDisplayName + "\". " +
 					'Either wrap the root component in a <Provider>, ' +
@@ -901,7 +880,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 				this.clearCache();
 			};
 		}
-		return hoistStatics(Connect, WrappedComponent);
+		return index$1(Connect, WrappedComponent);
 	};
 }
 

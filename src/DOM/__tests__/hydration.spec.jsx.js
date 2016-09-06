@@ -1,9 +1,15 @@
 import { renderToStaticMarkup } from './../../server/renderToString';
 import Component from './../../component/es2015';
 import { render } from './../../DOM/rendering';
-import { isArray, isStringOrNumber, isNullOrUndef } from '../../core/utils';
 import { createContainerWithHTML, validateNodeTree } from '../../tools/utils';
-import { createStaticVElement, createOptBlueprint, createVComponent, createVElement, ChildrenTypes, ValueTypes, NodeTypes, isVNode } from './../../core/shapes';
+import {
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	ChildrenTypes,
+	ValueTypes,
+	NodeTypes
+} from './../../core/shapes';
 
 const Inferno = {
 	createStaticVElement,

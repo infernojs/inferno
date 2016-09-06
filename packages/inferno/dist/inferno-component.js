@@ -111,7 +111,7 @@ function applyState(component, force, callback) {
 		var activeNode = getActiveNode();
 		var subLifecycle = new Lifecycle();
 
-		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
+		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, null);
 		component._lastInput = nextInput;
 		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
@@ -143,7 +143,6 @@ var Component = function Component(props, context) {
 	this._unmounted = true;
 	this.context = context || {};
 	this._patch = null;
-	this._parentComponent = null;
 	this._componentToDOMNodeMap = null;
 	if (!this.componentDidMount) {
 		this.componentDidMount = null;

@@ -5,7 +5,14 @@ import Route from '../../router/Route';
 import Router from '../../router/Router';
 import browserHistory from '../../router/browserHistory';
 import { createStore } from 'redux';
-import { createStaticVElement, createOptBlueprint, createVComponent, createVElement, ChildrenTypes, ValueTypes, NodeTypes } from './../../core/shapes';
+import {
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	ChildrenTypes,
+	ValueTypes,
+	NodeTypes
+} from './../../core/shapes';
 
 const Inferno = {
 	createStaticVElement,

@@ -2,7 +2,14 @@ import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
 import createElement from './../../core/createElement';
 import { innerHTML } from '../../tools/utils';
-import { createStaticVElement, createOptBlueprint, createVComponent, createVElement, ChildrenTypes, ValueTypes, NodeTypes } from './../../core/shapes';
+import {
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	ChildrenTypes,
+	ValueTypes,
+	NodeTypes
+} from './../../core/shapes';
 
 const Inferno = {
 	createStaticVElement,
@@ -29,9 +36,6 @@ describe('Components (JSX)', () => {
 		document.body.appendChild(container);
 
 		Inner = class extends Component {
-			getName() {
-				return this.props.name;
-			}
 			render() {
 				attachedListener = this.props.onClick;
 				renderedName = this.props.name;

@@ -1,4 +1,4 @@
-import { createVNode, createVElement, createVComponent } from '../core/shapes';
+import { createVElement, createVComponent } from '../core/shapes';
 import {
 	isAttrAnEvent,
 	isString,

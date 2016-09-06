@@ -16,7 +16,7 @@ var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment
 // Runs only once in applications lifetime
 var isBrowser = typeof window !== 'undefined' && window.document;
 
-function isArray$1(obj) {
+function isArray(obj) {
 	return obj instanceof Array;
 }
 
@@ -213,7 +213,7 @@ function applyState(component, force, callback) {
 		var activeNode = getActiveNode();
 		var subLifecycle = new Lifecycle();
 
-		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component, null);
+		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, null);
 		component._lastInput = nextInput;
 		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
@@ -245,7 +245,6 @@ var Component = function Component(props, context) {
 	this._unmounted = true;
 	this.context = context || {};
 	this._patch = null;
-	this._parentComponent = null;
 	this._componentToDOMNodeMap = null;
 	if (!this.componentDidMount) {
 		this.componentDidMount = null;
@@ -569,7 +568,7 @@ var Router = (function (Component) {
 }(Component));
 
 function toArray$1(children) {
-	return isArray$1(children) ? children : (children ? [children] : children);
+	return isArray(children) ? children : (children ? [children] : children);
 }
 
 function Link(props, ref) {

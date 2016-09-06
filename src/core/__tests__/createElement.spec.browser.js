@@ -15,7 +15,7 @@ describe('CreateElement should handle events', () => {
 	it('Should handle events correctly when having multiple children', () => {
 		let triggered = false;
 
-		const App = props => {
+		const App = () => {
 			return createElement('div', null,
 				createElement('div', { className: 'title' }, 'Example'),
 				createElement('button', {
@@ -40,7 +40,7 @@ describe('CreateElement should handle events', () => {
 	it('Should handle events correctly when having single child', () => {
 		let triggered = false;
 
-		const App = props => {
+		const App = () => {
 			return createElement('div', null,
 				createElement('button', {
 					type: 'button',
