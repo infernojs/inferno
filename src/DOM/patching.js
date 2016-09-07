@@ -72,6 +72,9 @@ function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, 
 }
 
 export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
+	if (lastInput.dom === parentDom) {
+		debugger;
+	}
 	if (lastInput !== nextInput) {
 		if (isOptVElement(nextInput)) {
 			if (isOptVElement(lastInput)) {

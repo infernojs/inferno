@@ -227,11 +227,11 @@ export function createVComponent(component, props, key, hooks, ref) {
 		component,
 		dom: null,
 		hooks: hooks || null,
+		instance: null,
 		key,
 		props,
 		ref: ref || null,
-		type: NodeTypes.COMPONENT,
-		unmounted: false
+		type: NodeTypes.COMPONENT
 	};
 }
 

@@ -18,6 +18,7 @@ function constructDefaults(string, object, value) {
 
 const xlinkNS = 'http://www.w3.org/1999/xlink';
 const xmlNS = 'http://www.w3.org/XML/1998/namespace';
+export const svgNS = 'http://www.w3.org/2000/svg';
 export const strictProps = {};
 export const booleanProps = {};
 export const namespaces = {};
@@ -120,7 +121,7 @@ export function documentCreateElement(tag, isSVG) {
 	let dom;
 
 	if (isSVG === true) {
-		dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
+		dom = document.createElementNS(svgNS, tag);
 	} else {
 		dom = document.createElement(tag);
 	}

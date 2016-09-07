@@ -10,8 +10,18 @@ import {
 	throwError,
 	isObject
 } from './../core/utils';
-import { replaceChild, normaliseChild } from './utils';
-import { mountVText } from './mounting';
+import {
+	replaceChild,
+	normaliseChild,
+	createStatelessComponentInput,
+	createStatefulComponentInstance,
+	svgNS
+} from './utils';
+import {
+	mountVText,
+	mountStatelessComponentCallbacks,
+	mountStatefulComponentCallbacks
+} from './mounting';
 import { patch } from './patching';
 import {
 	createVPlaceholder,
@@ -105,68 +115,29 @@ export function normaliseChildNodes(dom) {
 }
 
 function hydrateVComponent(vComponent, dom, lifecycle, context) {
-	const Component = vComponent.component;
+	const component = vComponent.component;
 	const props = vComponent.props;
 	const hooks = vComponent.hooks;
 	const ref = vComponent.ref;
 
 	vComponent.dom = dom;
 	if (isStatefulComponent(vComponent)) {
-		const instance = new Component(props, context);
+		const isSVG = dom.namespaceURI === svgNS;
+		const instance = createStatefulComponentInstance(component, props, context, isSVG);
+		const input = instance._lastInput;
 
-		instance._patch = patch;
-		instance._componentToDOMNodeMap = componentToDOMNodeMap;
-		const childContext = instance.getChildContext();
-
-		if (!isNullOrUndef(childContext)) {
-			context = Object.assign({}, context, childContext);
-		}
-		instance._unmounted = false;
-		instance._pendingSetState = true;
 		instance._vComponent = vComponent;
-		instance.componentWillMount();
-		let input = instance.render();
-
-		if (isInvalid(input)) {
-			input = createVPlaceholder();
-		}
-		instance._pendingSetState = false;
 		hydrate(input, dom, lifecycle, context);
-		instance._lastInput = input;
-		if (ref) {
-			if (isFunction(ref)) {
-				lifecycle.addListener(() => ref(instance));
-			} else {
-				if (process.env.NODE_ENV !== 'production') {
-					throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
-				}
-				throwError();
-			}
-		}
-		if (!isNull(instance.componentDidMount)) {
-			lifecycle.addListener(() => instance.componentDidMount());
-		}
+		mountStatefulComponentCallbacks(ref, instance, lifecycle);
 		componentToDOMNodeMap.set(instance, dom);
 		vComponent.instance = instance;
 	} else {
-		if (!isNullOrUndef(hooks)) {
-			if (!isNullOrUndef(hooks.onComponentWillMount)) {
-				hooks.onComponentWillMount(null, props);
-			}
-			if (!isNullOrUndef(hooks.onComponentDidMount)) {
-				lifecycle.addListener(() => {
-					hooks.onComponentDidMount(dom, props);
-				});
-			}
-		}
+		const input = createStatelessComponentInput(component, props, context);
 
-		/* eslint new-cap: 0 */
-		let input = Component(props, context);
-
-		if (isInvalid(input)) {
-			input = createVPlaceholder();
-		}
 		hydrate(input, dom, lifecycle, context);
+		vComponent.instance = input;
+		vComponent.dom = input.dom;
+		mountStatelessComponentCallbacks(hooks, dom, lifecycle);
 	}
 }
 
@@ -196,12 +167,14 @@ function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) 
 }
 
 function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
+	const domNodes = Array.prototype.slice.call(dom.childNodes);
+
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = normaliseChild(children, i);
 
 			if (isObject(child)) {
-				hydrate(child, dom, lifecycle, context);
+				hydrate(child, domNodes[i], lifecycle, context);
 			}
 		}
 	} else if (isObject(children)) {
@@ -259,18 +232,21 @@ function hydrateVText(vText, dom) {
 	vText.dom = dom;
 }
 
-function hydrateVFragment(vFragment, dom) {
+function hydrateVFragment(vFragment, currentDom, lifecycle, context) {
 	const children = vFragment.children;
-	const childNodes = dom.childNodes;
+	const parentDom = currentDom.parentNode;
+	const pointer = vFragment.pointer = document.createTextNode('');
 
-	for (let i = 0; i < childNodes.length; i++) {
-		const child = childNodes[i];
+	for (let i = 0; i < children.length; i++) {
+		const child = normaliseChild(children, i);
+		const childDom = currentDom;
 
-		debugger;
-		// if (child.nodeValue === children[0]) {
-		// 	debugger;
-		// }
+		if (isObject(child)) {
+			hydrate(child, childDom, lifecycle, context);
+		}
+		currentDom = currentDom.nextSibling;
 	}
+	parentDom.insertBefore(pointer, currentDom);
 }
 
 function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom, lifecycle, context) {
@@ -293,7 +269,7 @@ function hydrate(input, dom, lifecycle, context) {
 	} else if (isVElement(input)) {
 		hydrateVElement(input, dom, lifecycle, context);
 	} else if (isVFragment(input)) {
-		hydrateVFragment(input, dom);
+		hydrateVFragment(input, dom, lifecycle, context);
 	} else if (isVText(input)) {
 		hydrateVText(input, dom);
 	} else if (isVPlaceholder(input)) {
