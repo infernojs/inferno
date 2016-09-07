@@ -60,11 +60,11 @@ function createVComponent(component, props, key, hooks, ref) {
 		component: component,
 		dom: null,
 		hooks: hooks || null,
+		instance: null,
 		key: key,
 		props: props,
 		ref: ref || null,
-		type: NodeTypes.COMPONENT,
-		unmounted: false
+		type: NodeTypes.COMPONENT
 	};
 }
 

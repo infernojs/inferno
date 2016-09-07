@@ -475,6 +475,9 @@ function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, 
 }
 
 function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
+	if (lastInput.dom === parentDom) {
+		debugger;
+	}
 	if (lastInput !== nextInput) {
 		if (isOptVElement(nextInput)) {
 			if (isOptVElement(lastInput)) {
@@ -1330,6 +1333,7 @@ function constructDefaults(string, object, value) {
 
 var xlinkNS = 'http://www.w3.org/1999/xlink';
 var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+var svgNS = 'http://www.w3.org/2000/svg';
 var strictProps = {};
 var booleanProps = {};
 var namespaces = {};
@@ -1432,7 +1436,7 @@ function documentCreateElement(tag, isSVG) {
 	var dom;
 
 	if (isSVG === true) {
-		dom = document.createElementNS('http://www.w3.org/2000/svg', tag);
+		dom = document.createElementNS(svgNS, tag);
 	} else {
 		dom = document.createElement(tag);
 	}
@@ -1956,68 +1960,29 @@ function normaliseChildNodes(dom) {
 }
 
 function hydrateVComponent(vComponent, dom, lifecycle, context) {
-	var Component = vComponent.component;
+	var component = vComponent.component;
 	var props = vComponent.props;
 	var hooks = vComponent.hooks;
 	var ref = vComponent.ref;
 
 	vComponent.dom = dom;
 	if (isStatefulComponent(vComponent)) {
-		var instance = new Component(props, context);
+		var isSVG = dom.namespaceURI === svgNS;
+		var instance = createStatefulComponentInstance(component, props, context, isSVG);
+		var input = instance._lastInput;
 
-		instance._patch = patch;
-		instance._componentToDOMNodeMap = componentToDOMNodeMap;
-		var childContext = instance.getChildContext();
-
-		if (!isNullOrUndef(childContext)) {
-			context = Object.assign({}, context, childContext);
-		}
-		instance._unmounted = false;
-		instance._pendingSetState = true;
 		instance._vComponent = vComponent;
-		instance.componentWillMount();
-		var input = instance.render();
-
-		if (isInvalid(input)) {
-			input = createVPlaceholder();
-		}
-		instance._pendingSetState = false;
 		hydrate(input, dom, lifecycle, context);
-		instance._lastInput = input;
-		if (ref) {
-			if (isFunction(ref)) {
-				lifecycle.addListener(function () { return ref(instance); });
-			} else {
-				if ("development" !== 'production') {
-					throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
-				}
-				throwError();
-			}
-		}
-		if (!isNull(instance.componentDidMount)) {
-			lifecycle.addListener(function () { return instance.componentDidMount(); });
-		}
+		mountStatefulComponentCallbacks(ref, instance, lifecycle);
 		componentToDOMNodeMap.set(instance, dom);
 		vComponent.instance = instance;
 	} else {
-		if (!isNullOrUndef(hooks)) {
-			if (!isNullOrUndef(hooks.onComponentWillMount)) {
-				hooks.onComponentWillMount(null, props);
-			}
-			if (!isNullOrUndef(hooks.onComponentDidMount)) {
-				lifecycle.addListener(function () {
-					hooks.onComponentDidMount(dom, props);
-				});
-			}
-		}
+		var input$1 = createStatelessComponentInput(component, props, context);
 
-		/* eslint new-cap: 0 */
-		var input$1 = Component(props, context);
-
-		if (isInvalid(input$1)) {
-			input$1 = createVPlaceholder();
-		}
 		hydrate(input$1, dom, lifecycle, context);
+		vComponent.instance = input$1;
+		vComponent.dom = input$1.dom;
+		mountStatelessComponentCallbacks(hooks, dom, lifecycle);
 	}
 }
 
@@ -2047,12 +2012,14 @@ function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) 
 }
 
 function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
+	var domNodes = Array.prototype.slice.call(dom.childNodes);
+
 	if (isArray(children)) {
 		for (var i = 0; i < children.length; i++) {
 			var child = normaliseChild(children, i);
 
 			if (isObject(child)) {
-				hydrate(child, dom, lifecycle, context);
+				hydrate(child, domNodes[i], lifecycle, context);
 			}
 		}
 	} else if (isObject(children)) {
@@ -2110,18 +2077,21 @@ function hydrateVText(vText, dom) {
 	vText.dom = dom;
 }
 
-function hydrateVFragment(vFragment, dom) {
+function hydrateVFragment(vFragment, currentDom, lifecycle, context) {
 	var children = vFragment.children;
-	var childNodes = dom.childNodes;
+	var parentDom = currentDom.parentNode;
+	var pointer = vFragment.pointer = document.createTextNode('');
 
-	for (var i = 0; i < childNodes.length; i++) {
-		var child = childNodes[i];
+	for (var i = 0; i < children.length; i++) {
+		var child = normaliseChild(children, i);
+		var childDom = currentDom;
 
-		debugger;
-		// if (child.nodeValue === children[0]) {
-		// 	debugger;
-		// }
+		if (isObject(child)) {
+			hydrate(child, childDom, lifecycle, context);
+		}
+		currentDom = currentDom.nextSibling;
 	}
+	parentDom.insertBefore(pointer, currentDom);
 }
 
 function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom, lifecycle, context) {
@@ -2144,7 +2114,7 @@ function hydrate(input, dom, lifecycle, context) {
 	} else if (isVElement(input)) {
 		hydrateVElement(input, dom, lifecycle, context);
 	} else if (isVFragment(input)) {
-		hydrateVFragment(input, dom);
+		hydrateVFragment(input, dom, lifecycle, context);
 	} else if (isVText(input)) {
 		hydrateVText(input, dom);
 	} else if (isVPlaceholder(input)) {
