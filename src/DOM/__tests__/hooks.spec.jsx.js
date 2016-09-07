@@ -20,7 +20,7 @@ const Inferno = {
 	NodeTypes
 };
 
-describe('Components (JSX)', () => {
+describe('Component lifecycle (JSX)', () => {
 	let container;
 
 	beforeEach(function () {
@@ -308,7 +308,7 @@ describe('Components (JSX)', () => {
 				updateMe() {
 					this.setState({
 						text: 'C1'
-					})
+					});
 				}
 
 				render() {

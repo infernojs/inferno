@@ -1,4 +1,5 @@
 import { mount } from './mounting';
+import { patch } from './patching';
 import {
 	isArray,
 	isNullOrUndef,
@@ -8,6 +9,7 @@ import {
 } from './../core/utils';
 import { unmountVFragment, unmount } from './unmounting';
 import { createVText, createVPlaceholder, createVFragment } from '../core/shapes';
+import { componentToDOMNodeMap } from './rendering';
 
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
@@ -26,6 +28,41 @@ constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,value', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+
+export function createStatefulComponentInstance(Component, props, context, isSVG) {
+	const instance = new Component(props, context);
+
+	instance._patch = patch;
+	instance._componentToDOMNodeMap = componentToDOMNodeMap;
+	const childContext = instance.getChildContext();
+
+	if (!isNullOrUndef(childContext)) {
+		instance._childContext = Object.assign({}, context, childContext);
+	} else {
+		instance._childContext = context;
+	}
+	instance._unmounted = false;
+	instance._pendingSetState = true;
+	instance._isSVG = isSVG;
+	instance.componentWillMount();
+	let input = instance.render();
+
+	if (isInvalid(input)) {
+		input = createVPlaceholder();
+	}
+	instance._pendingSetState = false;
+	instance._lastInput = input;
+	return instance;
+}
+
+export function createStatelessComponentInput(component, props, context) {
+	let input = component(props, context);
+
+	if (isInvalid(input)) {
+		input = createVPlaceholder();
+	}
+	return input;
+}
 
 export function setTextContent(dom, text) {
 	if (text !== '') {
@@ -51,10 +88,10 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 	}
 }
 
-export function replaceVListWithNode(parentDom, vList, dom, lifecycle) {
+export function replaceVListWithNode(parentDom, vList, dom, lifecycle, shallowUnmount) {
 	const pointer = vList.pointer;
 
-	unmountVFragment(vList, parentDom, false, lifecycle);
+	unmountVFragment(vList, parentDom, false, lifecycle, shallowUnmount);
 	replaceChild(parentDom, dom, pointer);
 }
 
@@ -90,7 +127,7 @@ export function documentCreateElement(tag, isSVG) {
 	return dom;
 }
 
-export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG) {
+export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	let lastInstance = null;
 	const instanceLastNode = lastNode._lastInput;
 
@@ -98,8 +135,8 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	unmount(lastNode, null, lifecycle, true);
-	const dom = mount(nextNode, null, lifecycle, context, isSVG);
+	unmount(lastNode, null, lifecycle, true, shallowUnmount);
+	const dom = mount(nextNode, null, lifecycle, context, isSVG, shallowUnmount);
 
 	nextNode.dom = dom;
 	replaceChild(parentDom, dom, lastNode.dom);
@@ -138,13 +175,13 @@ export function getActiveNode() {
 	return document.activeElement;
 }
 
-export function removeAllChildren(dom, children, lifecycle) {
+export function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
 	dom.textContent = '';
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
 		if (!isInvalid(child)) {
-			unmount(child, null, lifecycle, true);
+			unmount(child, null, lifecycle, true, shallowUnmount);
 		}
 	}
 }

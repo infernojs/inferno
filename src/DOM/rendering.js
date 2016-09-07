@@ -38,7 +38,7 @@ export function render(input, parentDom) {
 	if (isUndefined(root)) {
 		if (!isInvalid(input)) {
 			if (!hydrateRoot(input, parentDom, lifecycle)) {
-				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false);
+				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false, false);
 			}
 			lifecycle.trigger();
 			roots.set(parentDom, { input: input });
@@ -50,7 +50,7 @@ export function render(input, parentDom) {
 			unmount(root.input, parentDom, lifecycle, true);
 			roots.delete(parentDom);
 		} else {
-			patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false);
+			patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false, false);
 		}
 		lifecycle.trigger();
 		root.input = input;

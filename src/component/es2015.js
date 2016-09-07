@@ -50,7 +50,7 @@ function applyState(component, force, callback) {
 		const activeNode = getActiveNode();
 		const subLifecycle = new Lifecycle();
 
-		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, null);
+		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component._isSVG, false);
 		component._lastInput = nextInput;
 		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
@@ -82,7 +82,9 @@ export default class Component {
 		this._vComponent = null;
 		this._unmounted = true;
 		this.context = context || {};
+		this._childContext = null;
 		this._patch = null;
+		this._isSVG = false;
 		this._componentToDOMNodeMap = null;
 		if (!this.componentDidMount) {
 			this.componentDidMount = null;

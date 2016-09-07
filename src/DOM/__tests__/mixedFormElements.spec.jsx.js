@@ -163,8 +163,6 @@ describe('HTML Form Elements', () => {
 			expect(container.firstChild.firstChild.checked).to.equal(false);
 			expect(container.firstChild.children[1].value).to.equal("female");
 			expect(container.firstChild.children[1].checked).to.equal(true);
-
 		});
-
 	});
 });

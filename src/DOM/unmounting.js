@@ -20,16 +20,16 @@ import {
 } from '../core/shapes';
 import { poolOptVElement, poolVComponent, recyclingEnabled } from './recycling';
 
-export function unmount(input, parentDom, lifecycle, canRecycle) {
+export function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	if (!isInvalid(input)) {
 		if (isOptVElement(input)) {
-			unmountOptVElement(input, parentDom, lifecycle, canRecycle);
+			unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
 		} else if (isVComponent(input)) {
-			unmountVComponent(input, parentDom, lifecycle, canRecycle);
+			unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
 		} else if (isVElement(input)) {
-			unmountVElement(input, parentDom, lifecycle);
+			unmountVElement(input, parentDom, lifecycle, shallowUnmount);
 		} else if (isVFragment(input)) {
-			unmountVFragment(input, parentDom, true, lifecycle);
+			unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
 		} else if (isVText(input)) {
 			unmountVText(input, parentDom);
 		} else if (isVPlaceholder(input)) {
@@ -50,21 +50,23 @@ function unmountVText(vText, parentDom) {
 	}
 }
 
-function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle) {
+function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	const bp = optVElement.bp;
 	const bp0 = bp.v0;
 	const dom = bp.dom;
 
-	if (!isNull(bp0)) {
-		unmountOptVElementValue(optVElement, bp0, optVElement.v0, lifecycle);
-		const bp1 = bp.v1;
+	if (!shallowUnmount) {
+		if (!isNull(bp0)) {
+			unmountOptVElementValue(optVElement, bp0, optVElement.v0, lifecycle);
+			const bp1 = bp.v1;
 
-		if (!isNull(bp1)) {
-			unmountOptVElementValue(optVElement, bp1, optVElement.v1, lifecycle);
-			const bp2 = bp.v2;
+			if (!isNull(bp1)) {
+				unmountOptVElementValue(optVElement, bp1, optVElement.v1, lifecycle);
+				const bp2 = bp.v2;
 
-			if (!isNull(bp2)) {
-				unmountOptVElementValue(optVElement, bp2, optVElement.v2, lifecycle);
+				if (!isNull(bp2)) {
+					unmountOptVElementValue(optVElement, bp2, optVElement.v2, lifecycle);
+				}
 			}
 		}
 	}
@@ -90,12 +92,12 @@ function unmountOptVElementValue(optVElement, valueType, value, lifecycle) {
 	}
 }
 
-export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle) {
+export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle, shallowUnmount) {
 	const children = vFragment.children;
 	const childrenLength = children.length;
 	const pointer = vFragment.pointer;
 
-	if (childrenLength > 0) {
+	if (!shallowUnmount && childrenLength > 0) {
 		for (let i = 0; i < childrenLength; i++) {
 			const child = children[i];
 
@@ -111,33 +113,36 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle)
 	}
 }
 
-export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle) {
-	const instance = vComponent.instance;
-	let instanceHooks = null;
-	let instanceChildren = null;
+export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, shallowUnmount) {
+	if (!shallowUnmount) {
+		const instance = vComponent.instance;
+		let instanceHooks = null;
+		let instanceChildren = null;
 
-	if (!isNullOrUndef(instance)) {
-		const ref = vComponent.ref;
+		vComponent.unmounted = true;
+		if (!isNullOrUndef(instance)) {
+			const ref = vComponent.ref;
 
-		if (ref) {
-			ref(null);
+			if (ref) {
+				ref(null);
+			}
+			instanceHooks = instance.hooks;
+			instanceChildren = instance.children;
+			if (instance.render !== undefined) {
+				instance.componentWillUnmount();
+				instance._unmounted = true;
+				componentToDOMNodeMap.delete(instance);
+				unmount(instance._lastInput, null, lifecycle, false);
+			} else {
+				unmount(instance, null, lifecycle, false);
+			}
 		}
-		instanceHooks = instance.hooks;
-		instanceChildren = instance.children;
-		if (instance.render !== undefined) {
-			instance.componentWillUnmount();
-			instance._unmounted = true;
-			componentToDOMNodeMap.delete(instance);
-			unmount(instance._lastInput, null, lifecycle, false);
-		} else {
-			unmount(instance, null, lifecycle, false);
-		}
-	}
-	const hooks = vComponent.hooks || instanceHooks;
+		const hooks = vComponent.hooks || instanceHooks;
 
-	if (!isNullOrUndef(hooks)) {
-		if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-			hooks.onComponentWillUnmount(hooks);
+		if (!isNullOrUndef(hooks)) {
+			if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
+				hooks.onComponentWillUnmount(hooks);
+			}
 		}
 	}
 	if (parentDom) {
@@ -148,18 +153,20 @@ export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle) 
 	}
 }
 
-export function unmountVElement(vElement, parentDom, lifecycle) {
+export function unmountVElement(vElement, parentDom, lifecycle, shallowUnmount) {
 	const hooks = vElement.hooks;
 	const dom = vElement.dom;
 	const ref = vElement.ref;
 
-	if (ref) {
-		unmountRef(ref);
-	}
-	const children = vElement.children;
+	if (!shallowUnmount) {
+		if (ref) {
+			unmountRef(ref);
+		}
+		const children = vElement.children;
 
-	if (!isNullOrUndef(children)) {
-		unmountChildren(children, lifecycle);
+		if (!isNullOrUndef(children)) {
+			unmountChildren(children, lifecycle);
+		}
 	}
 	if (parentDom) {
 		removeChild(parentDom, dom);

@@ -230,7 +230,8 @@ export function createVComponent(component, props, key, hooks, ref) {
 		key,
 		props,
 		ref: ref || null,
-		type: NodeTypes.COMPONENT
+		type: NodeTypes.COMPONENT,
+		unmounted: false
 	};
 }
 
