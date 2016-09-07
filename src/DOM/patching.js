@@ -349,7 +349,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 	const nextComponent = nextVComponent.component;
 	const nextProps = nextVComponent.props || {};
 
-	clonePropsChildren(nextProps);
+	// clonePropsChildren(nextProps);
 	if (lastComponent !== nextComponent) {
 		if (isStatefulComponent(nextVComponent)) {
 			const lastInstance = lastVComponent.instance;

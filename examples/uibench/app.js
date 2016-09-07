@@ -9,8 +9,8 @@
 
 	uibench.init('Inferno', '1.0.0-alpha1');
 
-	var treeLeafBp = bp(e('li', { className: 'TreeLeaf' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null);
-	var treeNodeBp = bp(e('ul', { className: 'TreeNode' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null);
+	var treeLeafBp = bp(e('li', { className: 'TreeLeaf' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
+	var treeNodeBp = bp(e('ul', { className: 'TreeNode' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
 
 	function TreeLeaf(id) {
 		return {
@@ -64,7 +64,7 @@
 		};
 	}
 
-	var treeBp = bp(e('div', { className: 'Tree' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null);
+	var treeBp = bp(e('div', { className: 'Tree' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null, null, null);
 	var lastTreeData;
 
 	function tree(data) {
@@ -91,7 +91,7 @@
 		};			
 	}
 
-	var animBoxBp = bp(e('div', { className: 'AnimBox' }), ValueTypes.PROP_STYLE, null, ValueTypes.PROP_DATA, 'id', null, null);
+	var animBoxBp = bp(e('div', { className: 'AnimBox' }), ValueTypes.PROP_STYLE, null, ValueTypes.PROP_DATA, 'id', null, null, null, null);
 
 	function AnimBox(data) {
 		var time = data.time;
@@ -109,7 +109,7 @@
 		};		
 	}
 
-	var animBp = bp(e('div', { className: 'Anim' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null);
+	var animBp = bp(e('div', { className: 'Anim' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
 	var lastAnimData;
 
 	function anim(data) {
@@ -152,8 +152,8 @@
 
 	document.addEventListener('click', onClick);
 
-	var tableCellBp = bp(e('td', { className: 'TableCell' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null);
-	var tableRowBp = bp(e('tr'), ValueTypes.PROP_CLASS_NAME, null, ValueTypes.PROP_DATA, 'id', ValueTypes.CHILDREN, ChildrenTypes.KEYED);
+	var tableCellBp = bp(e('td', { className: 'TableCell' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
+	var tableRowBp = bp(e('tr'), ValueTypes.PROP_CLASS_NAME, null, ValueTypes.PROP_DATA, 'id', ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null);
 
 	function TableCell(text) {
 		return {
@@ -209,7 +209,7 @@
 		};
 	}
 
-	var tableBp = bp(e('table', { className: 'Table' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null);
+	var tableBp = bp(e('table', { className: 'Table' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
 	var lastTableData;
 
 	function table(data) {
@@ -245,7 +245,7 @@
 		};
 	}
 
-	var mainBp = bp(e('div', { className: 'Main' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null);
+	var mainBp = bp(e('div', { className: 'Main' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null, null, null);
 	var lastMainData;
 
 	function main(data) {
@@ -274,7 +274,7 @@
 		};
 	}
 
-	var preBp = bp(e('pre'), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null);
+	var preBp = bp(e('pre'), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
 
 	var shouldDataUpdate = {
 		onComponentShouldUpdate: function(lastProps, nextProps) {
