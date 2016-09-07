@@ -63,7 +63,8 @@ function createVComponent(component, props, key, hooks, ref) {
 		key: key,
 		props: props,
 		ref: ref || null,
-		type: NodeTypes.COMPONENT
+		type: NodeTypes.COMPONENT,
+		unmounted: false
 	};
 }
 

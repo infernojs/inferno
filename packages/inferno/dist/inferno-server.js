@@ -61,6 +61,135 @@ var NodeTypes = {
 	PLACEHOLDER: 7
 };
 
+var ValueTypes = {
+	CHILDREN: 1,
+	PROP_CLASS_NAME: 2,
+	PROP_STYLE: 3,
+	PROP_DATA: 4,
+	PROP_REF: 5,
+	PROP_SPREAD: 6,
+	PROP_VALUE: 7,
+	PROP: 8
+};
+
+var ChildrenTypes = {
+	NON_KEYED: 1,
+	KEYED: 2,
+	NODE: 3,
+	TEXT: 4,
+	UNKNOWN: 5
+};
+
+function convertVOptElementToVElement(optVElement) {
+	var bp = optVElement.bp;
+	var staticElement = bp.staticVElement;
+	var vElement = createVElement(staticElement.tag, null, null, optVElement.key, null, null);
+	var bp0 = bp.v0;
+	var staticChildren = staticElement.children;
+	var staticProps = staticElement.props;
+
+	if (!isNull(staticChildren)) {
+		vElement.children = staticChildren;
+	}
+	if (!isNull(staticProps)) {
+		vElement.props = staticProps;
+	}
+	if (!isNull(bp0)) {
+		attachOptVElementValue(vElement, optVElement, bp0, optVElement.v0, bp.d0);
+		var bp1 = bp.v1;
+
+		if (!isNull(bp1)) {
+			attachOptVElementValue(vElement, optVElement, bp1, optVElement.v1, bp.d1);
+			var bp2 = bp.v2;
+
+			if (!isNull(bp2)) {
+				attachOptVElementValue(vElement, optVElement, bp2, optVElement.v2, bp.d2);
+				var bp3 = bp.v3;
+
+				if (!isNull(bp3)) {
+					var v3 = optVElement.v3;
+					var d3 = bp.d3;
+					var bp3$1 = bp.v3;
+
+					for (var i = 0; i < bp3$1.length; i++) {
+						attachOptVElementValue(vElement, optVElement, bp3$1[i], v3[i], d3[i]);
+					}
+				}
+			}
+		}
+	}
+	return vElement;
+}
+
+function attachOptVElementValue(vElement, vOptElement, valueType, value, descriptor) {
+	switch (valueType) {
+		case ValueTypes.CHILDREN:
+			vElement.childrenType = descriptor;
+			if (isNullOrUndef(vElement.children)) {
+				vElement.children = value;
+			} else {
+				debugger;
+			}
+			break;
+		case ValueTypes.PROP_CLASS_NAME:
+			if (!vElement.props) {
+				vElement.props = { className: value };
+			} else {
+				debugger;
+			}
+			break;
+		case ValueTypes.PROP_DATA:
+			if (!vElement.props) {
+				vElement.props = {};
+			}
+			vElement.props['data-' + descriptor] = value;
+			break;
+		case ValueTypes.PROP_STYLE:
+			if (!vElement.props) {
+				vElement.props = { style: value };
+			} else {
+				debugger;
+			}
+			break;
+		case ValueTypes.PROP_VALUE:
+			if (!vElement.props) {
+				vElement.props = { value: value };
+			} else {
+				debugger;
+			}
+			break;
+		case ValueTypes.PROP:
+			if (!vElement.props) {
+				vElement.props = {};
+			}
+			vElement.props[descriptor] = value;
+			break;
+		case ValueTypes.PROP_REF:
+			vElement.ref = value;
+			break;
+		case ValueTypes.PROP_SPREAD:
+			if (!vElement.props) {
+				vElement.props = value;
+			} else {
+				debugger;
+			}
+			break;
+	}
+}
+
+function createVElement(tag, props, children, key, ref, childrenType) {
+	return {
+		children: children,
+		childrenType: childrenType || ChildrenTypes.UNKNOWN,
+		dom: null,
+		key: key,
+		props: props,
+		ref: ref || null,
+		tag: tag,
+		type: NodeTypes.ELEMENT
+	};
+}
+
 function isVElement(o) {
 	return o.type === NodeTypes.ELEMENT;
 }
@@ -69,7 +198,7 @@ function isOptVElement(o) {
 	return o.type === NodeTypes.OPT_ELEMENT;
 }
 
-function isVComponent$1(o) {
+function isVComponent(o) {
 	return o.type === NodeTypes.COMPONENT;
 }
 
@@ -257,7 +386,7 @@ function renderVElementToString(vElement, isRoot, context) {
 }
 
 function renderOptVElementToString(optVElement, isRoot, context) {
-	// debugger;
+	return renderInputToString(convertVOptElementToVElement(optVElement), context, isRoot);
 }
 
 function renderInputToString(input, context, isRoot) {
@@ -266,7 +395,7 @@ function renderInputToString(input, context, isRoot) {
 			return renderOptVElementToString(input, isRoot, context);
 		} else if (isVElement(input)) {
 			return renderVElementToString(input, isRoot, context);
-		} else if (isVComponent$1(input)) {
+		} else if (isVComponent(input)) {
 			return renderComponentToString(input, isRoot, context);
 		}
 	}
@@ -356,7 +485,7 @@ var RenderStream = (function (Readable) {
 	RenderStream.prototype.renderNode = function renderNode (node, context, isRoot){
 		if (isInvalid(node)) {
 			return;
-		} else if (isVComponent$1(node)) {
+		} else if (isVComponent(node)) {
 			return this.renderComponent(node, isRoot, context);
 		} else if (isVElement(node)) {
 			return this.renderNative(node, isRoot, context);
