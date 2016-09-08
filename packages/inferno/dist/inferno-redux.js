@@ -1,5 +1,5 @@
 /*!
- * inferno-redux v0.7.26
+ * inferno-redux v0.7.27
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -340,20 +340,7 @@ var funcToString = funcProto.toString;
 /** Used to infer the `Object` constructor. */
 var objectCtorString = funcToString.call(Object);
 
-var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
-
-function interopDefault(ex) {
-	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
-}
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var ponyfill = createCommonjsModule(function (module) {
-'use strict';
-
-module.exports = function symbolObservablePonyfill(root) {
+function symbolObservablePonyfill(root) {
 	var result;
 	var Symbol = root.Symbol;
 
@@ -370,23 +357,16 @@ module.exports = function symbolObservablePonyfill(root) {
 
 	return result;
 };
-});
 
-var ponyfill$1 = interopDefault(ponyfill);
-
-
-var require$$0 = Object.freeze({
-	default: ponyfill$1
-});
-
-var index$1 = createCommonjsModule(function (module) {
 /* global window */
-'use strict';
+var root = undefined;
+if (typeof global !== 'undefined') {
+	root = global;
+} else if (typeof window !== 'undefined') {
+	root = window;
+}
 
-module.exports = interopDefault(require$$0)(commonjsGlobal || window || commonjsGlobal);
-});
-
-interopDefault(index$1);
+var result = symbolObservablePonyfill(root);
 
 function bindActionCreator(actionCreator, dispatch) {
   return function () {
@@ -511,7 +491,15 @@ var Provider = (function (Component) {
 	return Provider;
 }(Component));
 
-var index$2 = createCommonjsModule(function (module) {
+function interopDefault(ex) {
+	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
+}
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var index$1 = createCommonjsModule(function (module) {
 'use strict';
 
 var INFERNO_STATICS = {
@@ -561,7 +549,7 @@ function hoistNonReactStatics(targetComponent, sourceComponent, customStatics) {
 module.exports = hoistNonReactStatics;
 });
 
-var hoistStatics = interopDefault(index$2);
+var hoistStatics = interopDefault(index$1);
 
 var invariant = createCommonjsModule(function (module) {
 /**

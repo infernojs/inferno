@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v0.7.26
+ * inferno-compat v0.7.27
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */

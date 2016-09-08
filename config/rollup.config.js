@@ -24,7 +24,7 @@ const plugins = [
 	}),
 	commonjs({
 		include: 'node_modules/**',
-		exclude: '**/*.css'
+		exclude: ['node_modules/symbol-observable/**', '**/*.css']
 	}),
 	replace({
 		'process.env.NODE_ENV': JSON.stringify('production'),
