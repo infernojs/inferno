@@ -109,7 +109,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, insta
 }
 
 export function patchTextNode(dom, lastChildren, nextChildren) {
-	if (isStringOrNumber(lastChildren)) {
+	if (isStringOrNumber(lastChildren) && lastChildren !== '') {
 		dom.firstChild.nodeValue = nextChildren;
 	} else {
 		dom.textContent = nextChildren;
@@ -204,7 +204,7 @@ export function patchVNodeWithBlueprint(lastVNode, nextVNode, lastBp, nextBp, pa
 	const lastTag = lastVNode.tag || lastBp.tag;
 
 	if (lastTag !== nextTag) {
-		if (lastBp.isComponent === true) {
+		if (lastBp && lastBp.isComponent === true) {
 			const lastNodeInstance = lastVNode.instance;
 
 			if (nextBp.isComponent === true) {
@@ -223,7 +223,7 @@ export function patchVNodeWithBlueprint(lastVNode, nextVNode, lastBp, nextBp, pa
 	} else if (isNullOrUndefined(lastTag)) {
 		nextVNode.dom = lastVNode.dom;
 	} else {
-		if (lastBp.isComponent === true) {
+		if (lastBp && lastBp.isComponent === true) {
 			if (nextBp.isComponent === true) {
 				const instance = lastVNode.instance;
 

@@ -14,7 +14,9 @@ const pkg = JSON.parse(fs.readFileSync('./package.json'));
 const external = Object.keys(pkg.peerDependencies || {}).concat(Object.keys(pkg.dependencies || {}));
 
 const plugins = [
-	buble(),
+	buble({
+		objectAssign: 'Object.assign'
+	}),
 	nodeResolve({
 		jsnext: true,
 		main: true,
@@ -22,7 +24,7 @@ const plugins = [
 	}),
 	commonjs({
 		include: 'node_modules/**',
-		exclude: '**/*.css'
+		exclude: ['node_modules/symbol-observable/**', '**/*.css']
 	}),
 	replace({
 		'process.env.NODE_ENV': JSON.stringify('production'),
