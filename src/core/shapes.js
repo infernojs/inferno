@@ -168,7 +168,6 @@ export function cloneVNode(vNodeToClone, props, ...children) {
 	if (isArray(vNodeToClone)) {
 		newVNode = vNodeToClone.map(vNode => cloneVNode(vNode));
 	} else if (isNullOrUndef(props) && isNullOrUndef(children)) {
-		debugger;
 		newVNode = Object.assign({}, vNodeToClone);
 	} else {
 		if (isVComponent(vNodeToClone)) {

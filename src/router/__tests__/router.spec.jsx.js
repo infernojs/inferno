@@ -172,6 +172,15 @@ describe('Router tests (jsx)', () => {
 				);
 				expect(container.innerHTML).to.equal('<div><div>Good Component</div></div>');
 			});
+			it('it should render the both components and both components should get the params prop passed down', () => {
+				render(
+					<Router url={ '/foo/bar' } history={ browserHistory } component={ ({ children }) => <div>{ children }</div> }>
+						<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> } />
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div><div>Param is bar</div></div>');
+			});
 		});
 	});
 });

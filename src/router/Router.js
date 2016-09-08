@@ -51,7 +51,9 @@ export default class Router extends Component {
 				if (wrapperComponent) {
 					return createVComponent(wrapperComponent, {
 						params,
-						children: route
+						children: cloneVNode(route, {
+							params
+						})
 					});
 				}
 				return cloneVNode(route, {
