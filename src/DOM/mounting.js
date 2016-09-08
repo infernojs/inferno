@@ -279,8 +279,13 @@ function mountChildren(node, children, parentDom, lifecycle, context, instance, 
 }
 
 export function mountRef(instance, value, refValue) {
-	if (!isInvalidNode(instance) && isString(value)) {
-		instance.refs[value] = refValue;
+	if (!isInvalidNode(instance)) { 
+		if (isString(value)) {
+			instance.refs[value] = refValue;
+		}
+		if (isFunction(value)) {
+			value(refValue);
+		}
 	}
 }
 
