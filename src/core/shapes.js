@@ -135,10 +135,10 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
 }
 
 export function cloneVNode(vNodeToClone, props, ...children) {
-	if (!props) {
-		props = {};
-	}
-	if (children.length > 0) {
+	if (children.length > 0 && !isNull(children[0])) {
+		if (!props) {
+			props = {};
+		}
 		if (children.length === 1) {
 			children = children[0];
 		}
@@ -163,30 +163,35 @@ export function cloneVNode(vNodeToClone, props, ...children) {
 	} else {
 		children = null;
 	}
+	let newVNode;
+
 	if (isArray(vNodeToClone)) {
-		return vNodeToClone.map(vNode => cloneVNode(vNode));
-	} else if (isNull(props) && isNull(children)) {
-		return Object.assign({}, vNodeToClone);
+		newVNode = vNodeToClone.map(vNode => cloneVNode(vNode));
+	} else if (isNullOrUndef(props) && isNullOrUndef(children)) {
+		debugger;
+		newVNode = Object.assign({}, vNodeToClone);
 	} else {
 		if (isVComponent(vNodeToClone)) {
-			return createVComponent(vNodeToClone.component,
+			newVNode = createVComponent(vNodeToClone.component,
 				Object.assign({}, vNodeToClone.props, props),
 				vNodeToClone.key,
 				vNodeToClone.hooks,
 				vNodeToClone.ref
 			);
 		} else if (isVElement(vNodeToClone)) {
-			return createVElement(vNodeToClone.tag,
+			newVNode = createVElement(vNodeToClone.tag,
 				Object.assign({}, vNodeToClone.props, props),
-				props.children || children || vNodeToClone.children,
+				(props && props.children) || children || vNodeToClone.children,
 				vNodeToClone.key,
 				vNodeToClone.ref,
 				ChildrenTypes.UNKNOWN
 			);
 		} else if (isOptVElement(vNodeToClone)) {
-			return cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
+			newVNode = cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
 		}
 	}
+	newVNode.dom = null;
+	return newVNode;
 }
 
 export function createOptVElement(bp, key, v0, v1, v2, v3) {

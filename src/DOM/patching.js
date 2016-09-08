@@ -72,9 +72,6 @@ function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, 
 }
 
 export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-	if (lastInput.dom === parentDom) {
-		debugger;
-	}
 	if (lastInput !== nextInput) {
 		if (isOptVElement(nextInput)) {
 			if (isOptVElement(lastInput)) {
@@ -352,7 +349,6 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 	const nextComponent = nextVComponent.component;
 	const nextProps = nextVComponent.props || {};
 
-	// clonePropsChildren(nextProps);
 	if (lastComponent !== nextComponent) {
 		if (isStatefulComponent(nextVComponent)) {
 			const lastInstance = lastVComponent.instance;

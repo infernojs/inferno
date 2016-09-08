@@ -5,13 +5,14 @@ import { getActiveNode, resetActiveNode } from './utils';
 import {
 	isUndefined,
 	isInvalid,
-	isNull,
+	isNullOrUndef,
 	isBrowser,
 	throwError,
 	NO_OP
 } from '../core/utils';
 import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
+import { cloneVNode } from '../core/shapes';
 
 const roots = new Map();
 export const componentToDOMNodeMap = new Map();
@@ -37,6 +38,9 @@ export function render(input, parentDom) {
 	}
 	if (isUndefined(root)) {
 		if (!isInvalid(input)) {
+			if (input.dom) {
+				input = cloneVNode(input);
+			}
 			if (!hydrateRoot(input, parentDom, lifecycle)) {
 				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false, false);
 			}
@@ -46,10 +50,13 @@ export function render(input, parentDom) {
 	} else {
 		const activeNode = getActiveNode();
 
-		if (isNull(input)) {
+		if (isNullOrUndef(input)) {
 			unmount(root.input, parentDom, lifecycle, true);
 			roots.delete(parentDom);
 		} else {
+			if (input.dom) {
+				input = cloneVNode(input);
+			}
 			patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false, false);
 		}
 		lifecycle.trigger();

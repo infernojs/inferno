@@ -729,7 +729,7 @@ describe('Elements (JSX)', () => {
 		expect(container.innerHTML).to.equal('<span><div></div></span>');
 	});
 
-	it('Should be able to construct input with Hooks, Events, Attributes defined', (done) => {
+	it('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
 		function test() {}
 		const obj = { fn: function () {}, focus: function () {} };
 		const bool = false;
@@ -754,6 +754,40 @@ describe('Elements (JSX)', () => {
 			sinon.assert.calledOnce(spyFocus, 'Event should work'); // Verify hook works
 			document.body.removeChild(container);
 			done();
+		});
+	});
+
+	describe('should correctly handle VNodes as quasi-immutable objects, like ReactElement does', () => {
+		const a = <div>Hello world</div>;
+		const b = <span>This works!</span>;
+		const C = ({ children }) => <div>{ children }{ children }{ children }</div>;
+
+		it('basic example ', () => {
+			render(a, container);
+			expect(container.innerHTML).to.equal('<div>Hello world</div>');
+			render(b, container);
+			expect(container.innerHTML).to.equal('<span>This works!</span>');
+		});
+
+		it('basic example #2 ', () => {
+			render([ a, a, a ], container);
+			expect(container.innerHTML).to.equal('<div>Hello world</div><div>Hello world</div><div>Hello world</div>');
+			render(b, container);
+			expect(container.innerHTML).to.equal('<span>This works!</span>');
+		});
+
+		it('basic nested example ', () => {
+			render(<div>{ a }{ b }</div>, container);
+			expect(container.innerHTML).to.equal('<div><div>Hello world</div><span>This works!</span></div>');
+			render(<div>{ b }{ a }</div>, container);
+			expect(container.innerHTML).to.equal('<div><span>This works!</span><div>Hello world</div></div>');
+		});
+
+		it('basic nested component example ', () => {
+			render(<C>{ a }</C>, container);
+			expect(container.innerHTML).to.equal('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>');
+			render(<C>{ b }{ a }</C>, container);
+			expect(container.innerHTML).to.equal('<div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div></div>');
 		});
 	});
 });

@@ -273,7 +273,7 @@ function hydrate(input, dom, lifecycle, context) {
 	} else if (isVText(input)) {
 		hydrateVText(input, dom);
 	} else if (isVPlaceholder(input)) {
-		debugger;			
+		debugger;
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('bad input argument called on hydrate(). Input argument may need normalising.');

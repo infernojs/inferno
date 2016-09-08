@@ -8,7 +8,13 @@ import {
 	isNull
 } from './../core/utils';
 import { unmountVFragment, unmount } from './unmounting';
-import { createVText, createVPlaceholder, createVFragment } from '../core/shapes';
+import {
+	createVText,
+	createVPlaceholder,
+	createVFragment,
+	isVNode,
+	cloneVNode
+} from '../core/shapes';
 import { componentToDOMNodeMap } from './rendering';
 
 function constructDefaults(string, object, value) {
@@ -157,6 +163,8 @@ export function normalise(object) {
 		return createVPlaceholder();
 	} else if (isArray(object)) {
 		return createVFragment(object);
+	} else if (isVNode(object) && object.dom) {
+		return cloneVNode(object);
 	}
 	return object;
 }

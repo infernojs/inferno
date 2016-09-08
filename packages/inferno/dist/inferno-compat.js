@@ -219,6 +219,68 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
 	}
 }
 
+function cloneVNode(vNodeToClone, props) {
+	var children = [], len = arguments.length - 2;
+	while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
+
+	if (children.length > 0 && !isNull(children[0])) {
+		if (!props) {
+			props = {};
+		}
+		if (children.length === 1) {
+			children = children[0];
+		}
+		if (isUndefined(props.children)) {
+			props.children = children;
+		} else {
+			if (isArray(children)) {
+				if (isArray(props.children)) {
+					props.children = props.children.concat(children);
+				} else {
+					props.children = [props.children].concat(children);
+				}
+			} else {
+				if (isArray(props.children)) {
+					props.children.push(children);
+				} else {
+					props.children = [props.children];
+					props.children.push(children);
+				}
+			}
+		}
+	} else {
+		children = null;
+	}
+	var newVNode;
+
+	if (isArray(vNodeToClone)) {
+		newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
+	} else if (isNullOrUndef(props) && isNullOrUndef(children)) {
+		newVNode = Object.assign({}, vNodeToClone);
+	} else {
+		if (isVComponent(vNodeToClone)) {
+			newVNode = createVComponent(vNodeToClone.component,
+				Object.assign({}, vNodeToClone.props, props),
+				vNodeToClone.key,
+				vNodeToClone.hooks,
+				vNodeToClone.ref
+			);
+		} else if (isVElement(vNodeToClone)) {
+			newVNode = createVElement(vNodeToClone.tag,
+				Object.assign({}, vNodeToClone.props, props),
+				(props && props.children) || children || vNodeToClone.children,
+				vNodeToClone.key,
+				vNodeToClone.ref,
+				ChildrenTypes.UNKNOWN
+			);
+		} else if (isOptVElement(vNodeToClone)) {
+			newVNode = cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
+		}
+	}
+	newVNode.dom = null;
+	return newVNode;
+}
+
 function createVComponent(component, props, key, hooks, ref) {
 	return {
 		component: component,
@@ -598,9 +660,6 @@ function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, 
 }
 
 function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-	if (lastInput.dom === parentDom) {
-		debugger;
-	}
 	if (lastInput !== nextInput) {
 		if (isOptVElement(nextInput)) {
 			if (isOptVElement(lastInput)) {
@@ -878,7 +937,6 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
 	var nextComponent = nextVComponent.component;
 	var nextProps = nextVComponent.props || {};
 
-	// clonePropsChildren(nextProps);
 	if (lastComponent !== nextComponent) {
 		if (isStatefulComponent(nextVComponent)) {
 			var lastInstance = lastVComponent.instance;
@@ -1595,6 +1653,8 @@ function normalise(object) {
 		return createVPlaceholder();
 	} else if (isArray(object)) {
 		return createVFragment(object);
+	} else if (isVNode(object) && object.dom) {
+		return cloneVNode(object);
 	}
 	return object;
 }
@@ -1954,7 +2014,6 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
 	var ref = vComponent.ref;
 	var dom;
 
-	// clonePropsChildren(props);
 	if (isStatefulComponent(vComponent)) {
 		if (hooks) {
 			if ("development" !== 'production') {
@@ -2241,7 +2300,7 @@ function hydrate(input, dom, lifecycle, context) {
 	} else if (isVText(input)) {
 		hydrateVText(input, dom);
 	} else if (isVPlaceholder(input)) {
-		debugger;			
+		debugger;
 	} else {
 		if ("development" !== 'production') {
 			throwError('bad input argument called on hydrate(). Input argument may need normalising.');
@@ -2287,6 +2346,9 @@ function render(input, parentDom) {
 	}
 	if (isUndefined(root)) {
 		if (!isInvalid(input)) {
+			if (input.dom) {
+				input = cloneVNode(input);
+			}
 			if (!hydrateRoot(input, parentDom, lifecycle)) {
 				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false, false);
 			}
@@ -2296,10 +2358,13 @@ function render(input, parentDom) {
 	} else {
 		var activeNode = getActiveNode();
 
-		if (isNull(input)) {
+		if (isNullOrUndef(input)) {
 			unmount(root.input, parentDom, lifecycle, true);
 			roots.delete(parentDom);
 		} else {
+			if (input.dom) {
+				input = cloneVNode(input);
+			}
 			patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false, false);
 		}
 		lifecycle.trigger();
