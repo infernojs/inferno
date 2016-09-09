@@ -822,7 +822,7 @@ function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle
 							var lastV3 = lastV3s[i];
 							var nextV3 = nextV3s[i];
 
-							if (lastV2 !== nextV2 || ignoreDiff) {
+							if (lastV3 !== nextV3 || ignoreDiff) {
 								patchOptVElementValue(bp3[i], lastV3, nextV3, d3[i], dom, lifecycle, context, isSVG, shallowUnmount);
 							}
 						}
@@ -847,6 +847,9 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 			} else {
 				dom.className = nextValue;
 			}
+			break;
+		case ValueTypes.PROP_DATA:
+			dom.dataset[descriptor] = value;
 			break;
 		case ValueTypes.PROP_STYLE:
 			patchStyle(lastValue, nextValue, dom);
