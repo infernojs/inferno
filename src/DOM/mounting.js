@@ -282,6 +282,9 @@ export function mountRef(instance, value, refValue) {
 	if (!isInvalidNode(instance) && isString(value)) {
 		instance.refs[value] = refValue;
 	}
+	else if (isFunction(value)) {
+		value(refValue);
+	}
 }
 
 export function mountEvents(events, eventKeys, dom) {

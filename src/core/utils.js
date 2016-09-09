@@ -114,10 +114,12 @@ function deepScanChildrenForNode(children, node) {
 }
 
 export function getRefInstance(node, instance) {
-	const children = instance.props.children;
+	if (instance) {
+		const children = instance.props.children;
 
-	if (deepScanChildrenForNode(children, node)) {
-		return getRefInstance(node, instance._parentComponent);
+		if (deepScanChildrenForNode(children, node)) {
+			return getRefInstance(node, instance._parentComponent);
+		}
 	}
 	return instance;
 }
