@@ -1,6 +1,6 @@
 import { render, findDOMNode } from '../../../src/DOM/rendering';
 import createElement from '../../../src/core/createElement';
-import { createVElement } from '../../../src/core/shapes';
+import { createVElement, createStaticVElement, createOptBlueprint, createVComponent, ValueTypes, ChildrenTypes, NodeTypes } from '../../../src/core/shapes';
 import Component from '../../../src/component/es2015';
 import createClass from '../../../src/component/createClass';
 import renderToString, { renderToStaticMarkup } from '../../../src/server/renderToString';
@@ -68,6 +68,12 @@ export {
 	renderToString,
 	renderToStaticMarkup,
 	createVElement,
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	ValueTypes,
+	ChildrenTypes,
+	NodeTypes,
 	Children
 };
 
@@ -83,5 +89,11 @@ export default {
 	renderToString,
 	renderToStaticMarkup,
 	createVElement,
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	ValueTypes,
+	ChildrenTypes,
+	NodeTypes,
 	Children
 };

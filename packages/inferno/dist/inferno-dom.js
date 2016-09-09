@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v1.0.0-alpha2
+ * inferno-dom v1.0.0-alpha3
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -855,7 +855,7 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 			}
 			break;
 		case ValueTypes.PROP_DATA:
-			dom.dataset[descriptor] = value;
+			dom.dataset[descriptor] = nextValue;
 			break;
 		case ValueTypes.PROP_STYLE:
 			patchStyle(lastValue, nextValue, dom);

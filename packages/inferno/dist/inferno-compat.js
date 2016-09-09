@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-alpha2
+ * inferno-compat v1.0.0-alpha3
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -281,6 +281,26 @@ function cloneVNode(vNodeToClone, props) {
 	return newVNode;
 }
 
+function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {
+	return {
+		clone: null,
+		d0: d0,
+		d1: d1,
+		d2: d2,
+		d3: d3,
+		pools: {
+			nonKeyed: [],
+			keyed: new Map()
+		},
+		staticVElement: staticVElement,
+		type: NodeTypes.OPT_BLUEPRINT,
+		v0: v0,
+		v1: v1,
+		v2: v2,
+		v3: v3
+	};
+}
+
 function createVComponent(component, props, key, hooks, ref) {
 	return {
 		component: component,
@@ -310,6 +330,15 @@ function createVElement(tag, props, children, key, ref, childrenType) {
 		key: key,
 		props: props,
 		ref: ref || null,
+		tag: tag,
+		type: NodeTypes.ELEMENT
+	};
+}
+
+function createStaticVElement(tag, props, children) {
+	return {
+		children: children,
+		props: props,
 		tag: tag,
 		type: NodeTypes.ELEMENT
 	};
@@ -855,7 +884,7 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 			}
 			break;
 		case ValueTypes.PROP_DATA:
-			dom.dataset[descriptor] = value;
+			dom.dataset[descriptor] = nextValue;
 			break;
 		case ValueTypes.PROP_STYLE:
 			patchStyle(lastValue, nextValue, dom);
@@ -3288,6 +3317,12 @@ var index = {
 	renderToString: renderToString,
 	renderToStaticMarkup: renderToStaticMarkup,
 	createVElement: createVElement,
+	createStaticVElement: createStaticVElement,
+	createOptBlueprint: createOptBlueprint,
+	createVComponent: createVComponent,
+	ValueTypes: ValueTypes,
+	ChildrenTypes: ChildrenTypes,
+	NodeTypes: NodeTypes,
 	Children: Children
 };
 
@@ -3302,6 +3337,12 @@ exports.findDOMNode = findDOMNode;
 exports.renderToString = renderToString;
 exports.renderToStaticMarkup = renderToStaticMarkup;
 exports.createVElement = createVElement;
+exports.createStaticVElement = createStaticVElement;
+exports.createOptBlueprint = createOptBlueprint;
+exports.createVComponent = createVComponent;
+exports.ValueTypes = ValueTypes;
+exports.ChildrenTypes = ChildrenTypes;
+exports.NodeTypes = NodeTypes;
 exports.Children = Children;
 exports['default'] = index;
 

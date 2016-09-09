@@ -267,7 +267,7 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 			}
 			break;
 		case ValueTypes.PROP_DATA:
-			dom.dataset[descriptor] = value;
+			dom.dataset[descriptor] = nextValue;
 			break;
 		case ValueTypes.PROP_STYLE:
 			patchStyle(lastValue, nextValue, dom);

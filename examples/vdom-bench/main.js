@@ -9,7 +9,7 @@
 	var NodeTypes = Inferno.NodeTypes;
 
 	var NAME = 'inferno';
-	var VERSION = '1.0.0-alpha2';
+	var VERSION = '1.0.0-alpha3';
 
 	var bp1 = bp(e('div'), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
 	var bp2 = bp(e('span'), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);

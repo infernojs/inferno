@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-alpha2
+ * inferno v1.0.0-alpha3
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -307,6 +307,13 @@ function createVFragment(children, childrenType) {
 	};
 }
 
+function createVPlaceholder() {
+	return {
+		dom: null,
+		type: NodeTypes.PLACEHOLDER
+	};
+}
+
 function isVElement(o) {
 	return o.type === NodeTypes.ELEMENT;
 }
@@ -336,6 +343,7 @@ var index = {
 	createVElement: createVElement,
 	createStaticVElement: createStaticVElement,
 	createVFragment: createVFragment,
+	createVPlaceholder: createVPlaceholder,
 	createVComponent: createVComponent,
 	createVText: createVText,
 	cloneVNode: cloneVNode,
