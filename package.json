@@ -106,7 +106,7 @@
     "karma:chrome": "./node_modules/.bin/karma start config/karma.conf.js --browsers=Chrome",
     "karma:ie": "./node_modules/.bin/karma start config/karma.conf.js --browsers=IE",
     "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
-    "packages:purge": "rm -rf node_modules",
+    "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js"
   },
