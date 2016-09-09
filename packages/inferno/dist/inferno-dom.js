@@ -777,7 +777,9 @@ function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle
 		var tag = nextBp.staticVElement.tag;
 		var ignoreDiff = false;
 
-		if (tag === 'input') {
+		if (tag === 'svg') {
+			isSVG = true;
+		} else if (tag === 'input') {
 			// input elements are problematic due to the large amount of internal state that hold
 			// so instead of making lots of assumptions, we instead reset common values and re-apply
 			// the the patching each time
@@ -845,7 +847,11 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 			if (isNullOrUndef(nextValue)) {
 				dom.removeAttribute('class');
 			} else {
-				dom.className = nextValue;
+				if (isSVG) {
+					dom.setAttribute('class', nextValue);
+				} else {
+					dom.className = nextValue;
+				}
 			}
 			break;
 		case ValueTypes.PROP_DATA:
@@ -1923,7 +1929,11 @@ function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, l
 			break;
 		case ValueTypes.PROP_CLASS_NAME:
 			if (!isNullOrUndef(value)) {
-				dom.className = value;
+				if (isSVG) {
+					dom.setAttribute('class', value);
+				} else {
+					dom.className = value;
+				}
 			}
 			break;
 		case ValueTypes.PROP_DATA:

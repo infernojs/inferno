@@ -189,7 +189,9 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 		const tag = nextBp.staticVElement.tag;
 		let ignoreDiff = false;
 
-		if (tag === 'input') {
+		if (tag === 'svg') {
+			isSVG = true;
+		} else if (tag === 'input') {
 			// input elements are problematic due to the large amount of internal state that hold
 			// so instead of making lots of assumptions, we instead reset common values and re-apply
 			// the the patching each time
@@ -258,7 +260,7 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 				dom.removeAttribute('class');
 			} else {
 				if (isSVG) {
-					dom.setAttribute('class', value);
+					dom.setAttribute('class', nextValue);
 				} else {
 					dom.className = nextValue;
 				}
