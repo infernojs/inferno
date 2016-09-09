@@ -657,7 +657,9 @@ var Router = (function (Component) {
 				if (wrapperComponent) {
 					return createVComponent(wrapperComponent, {
 						params: params,
-						children: route
+						children: cloneVNode(route, {
+							params: params
+						})
 					});
 				}
 				return cloneVNode(route, {
