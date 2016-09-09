@@ -257,7 +257,11 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 			if (isNullOrUndef(nextValue)) {
 				dom.removeAttribute('class');
 			} else {
-				dom.className = nextValue;
+				if (isSVG) {
+					dom.setAttribute('class', value);
+				} else {
+					dom.className = nextValue;
+				}
 			}
 			break;
 		case ValueTypes.PROP_DATA:

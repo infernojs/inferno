@@ -21,7 +21,7 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "1.0.0-alpha2",
+    "inferno": "^1.0.0-alpha2",
     "proptypes": "^0.14.3"
   }
 }

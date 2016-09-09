@@ -217,7 +217,11 @@ function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, l
 			break;
 		case ValueTypes.PROP_CLASS_NAME:
 			if (!isNullOrUndef(value)) {
-				dom.className = value;
+				if (isSVG) {
+					dom.setAttribute('class', value);
+				} else {
+					dom.className = value;
+				}
 			}
 			break;
 		case ValueTypes.PROP_DATA:
