@@ -129,22 +129,45 @@ export function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG, 
 	return dom;
 }
 
-function createStaticVElementClone(bp, isSVG) {
-	const stat = bp.staticVElement;
-	const tag = stat.tag;
+function mountStaticChildren(children, dom, isSVG) {
+	if (isArray(children)) {
+		for (let i = 0; i < children.length; i++) {
+			const child = children[i];
+
+			mountStaticChildren(child, dom, isSVG);
+		}
+	} else if (isStringOrNumber(children)) {
+		dom.appendChild(document.createTextNode(children));
+	} else if (!isInvalid(children)) {
+		mountStaticNode(children, dom, isSVG);
+	}
+}
+
+function mountStaticNode(node, parentDom, isSVG) {
+	const tag = node.tag;
 	const dom = documentCreateElement(tag, isSVG);
-	const children = stat.children;
+	const children = node.children;
 
 	if (!isNull(children)) {
-		mountChildrenWithUnknownType(children, dom, null, null, isSVG, false);
+		mountStaticChildren(children, dom, isSVG);
 	}
-	const props = stat.props;
+	const props = node.props;
 
 	if (!isNull(props)) {
 		for (let prop in props) {
 			patchProp(prop, null, props[prop], dom);
 		}
 	}
+	if (parentDom) {
+		parentDom.appendChild(dom);
+	}
+	return dom;
+}
+
+function createStaticVElementClone(bp, isSVG) {
+	const staticNode = bp.staticVElement;
+	const dom = mountStaticNode(staticNode, null, isSVG);
+
 	bp.clone = dom;
 	return dom.cloneNode(true);
 }

@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v1.0.0-alpha3
+ * inferno-dom v1.0.0-alpha4
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -1841,22 +1841,45 @@ function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG, shallow
 	return dom;
 }
 
-function createStaticVElementClone(bp, isSVG) {
-	var stat = bp.staticVElement;
-	var tag = stat.tag;
+function mountStaticChildren(children, dom, isSVG) {
+	if (isArray(children)) {
+		for (var i = 0; i < children.length; i++) {
+			var child = children[i];
+
+			mountStaticChildren(child, dom, isSVG);
+		}
+	} else if (isStringOrNumber(children)) {
+		dom.appendChild(document.createTextNode(children));
+	} else if (!isInvalid(children)) {
+		mountStaticNode(children, dom, isSVG);
+	}
+}
+
+function mountStaticNode(node, parentDom, isSVG) {
+	var tag = node.tag;
 	var dom = documentCreateElement(tag, isSVG);
-	var children = stat.children;
+	var children = node.children;
 
 	if (!isNull(children)) {
-		mountChildrenWithUnknownType(children, dom, null, null, isSVG, false);
+		mountStaticChildren(children, dom, isSVG);
 	}
-	var props = stat.props;
+	var props = node.props;
 
 	if (!isNull(props)) {
 		for (var prop in props) {
 			patchProp(prop, null, props[prop], dom);
 		}
 	}
+	if (parentDom) {
+		parentDom.appendChild(dom);
+	}
+	return dom;
+}
+
+function createStaticVElementClone(bp, isSVG) {
+	var staticNode = bp.staticVElement;
+	var dom = mountStaticNode(staticNode, null, isSVG);
+
 	bp.clone = dom;
 	return dom.cloneNode(true);
 }
@@ -2201,8 +2224,10 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
 }
 
 function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
+	var domNodes = Array.prototype.slice.call(dom.childNodes);
+
 	for (var i = 0; i < children.length; i++) {
-		debugger;
+		hydrate(children[i], domNodes[i], lifecycle, context);
 	}
 }
 
@@ -2224,9 +2249,9 @@ function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
 
 function hydrateChildren(childrenType, children, dom, lifecycle, context) {
 	if (isNodeChildrenType(childrenType)) {
-		hydrate(children, dom, lifecycle, context);
+		hydrate(children, dom.firstChild, lifecycle, context);
 	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
-		hydrateArrayChildrenWithType(childrem, dom, lifecycle, context);
+		hydrateArrayChildrenWithType(children, dom, lifecycle, context);
 	} else if (isUnknownChildrenType(childrenType)) {
 		hydrateChildrenWithUnknownType(children, dom);
 	} else if (!isTextChildrenType(childrenType)) {
@@ -2237,10 +2262,37 @@ function hydrateChildren(childrenType, children, dom, lifecycle, context) {
 	}
 }
 
+function hydrateStaticVElement(node, dom) {
+	var children = node.children;
+
+	if (!isNull(children)) {
+		if (!isStringOrNumber(children) && !isInvalid(children)) {
+			var childNode = dom.firstChild;
+
+			if (isArray(children)) {
+				for (var i = 0; i < children.length; i++) {
+					var child = children[i];
+
+					if (!isStringOrNumber(child) && !isInvalid(child)) {
+						normaliseChildNodes(childNode);
+						hydrateStaticVElement(child, normaliseChildNodes(childNode));
+					}
+					childNode = childNode.nextSibling;
+				}
+			} else {
+				normaliseChildNodes(childNode);
+				hydrateStaticVElement(children, childNode);
+			}
+		}
+	}
+}
+
 function hydrateOptVElement(optVElement, dom, lifecycle, context) {
 	var bp = optVElement.bp;
 	var bp0 = bp.v0;
+	var staticVElement = bp.staticVElement;
 
+	hydrateStaticVElement(staticVElement, dom);
 	optVElement.dom = dom;
 	if (!isNull(bp0)) {
 		hydrateOptVElementValue(optVElement, bp0, optVElement.v0, bp.d0, dom, context);

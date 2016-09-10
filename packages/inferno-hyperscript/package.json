@@ -1,6 +1,6 @@
 {
 	"name": "inferno-hyperscript",
-	"version": "1.0.0-alpha3",
+	"version": "1.0.0-alpha4",
 	"license": "MIT",
 	"description": "Bridging hyperscript to InfernoJS",
 	"author": "Terin Stock <terinjokes@gmail.com> (https://terinstock.com/)",
@@ -15,6 +15,6 @@
 	],
 	"repository": "https://github.com/trueadm/inferno",
 	"dependencies": {
-		"inferno": "1.0.0-alpha3"
+		"inferno": "1.0.0-alpha4"
 	}
 }

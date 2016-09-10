@@ -161,8 +161,10 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
 }
 
 function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
+	const domNodes = Array.prototype.slice.call(dom.childNodes);
+
 	for (let i = 0; i < children.length; i++) {
-		debugger;
+		hydrate(children[i], domNodes[i], lifecycle, context);
 	}
 }
 
@@ -184,9 +186,9 @@ function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
 
 function hydrateChildren(childrenType, children, dom, lifecycle, context) {
 	if (isNodeChildrenType(childrenType)) {
-		hydrate(children, dom, lifecycle, context);
+		hydrate(children, dom.firstChild, lifecycle, context);
 	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
-		hydrateArrayChildrenWithType(childrem, dom, lifecycle, context);
+		hydrateArrayChildrenWithType(children, dom, lifecycle, context);
 	} else if (isUnknownChildrenType(childrenType)) {
 		hydrateChildrenWithUnknownType(children, dom);
 	} else if (!isTextChildrenType(childrenType)) {
@@ -197,10 +199,37 @@ function hydrateChildren(childrenType, children, dom, lifecycle, context) {
 	}
 }
 
+function hydrateStaticVElement(node, dom) {
+	const children = node.children;
+
+	if (!isNull(children)) {
+		if (!isStringOrNumber(children) && !isInvalid(children)) {
+			let childNode = dom.firstChild;
+
+			if (isArray(children)) {
+				for (let i = 0; i < children.length; i++) {
+					const child = children[i];
+
+					if (!isStringOrNumber(child) && !isInvalid(child)) {
+						normaliseChildNodes(childNode);
+						hydrateStaticVElement(child, normaliseChildNodes(childNode));
+					}
+					childNode = childNode.nextSibling;
+				}
+			} else {
+				normaliseChildNodes(childNode);
+				hydrateStaticVElement(children, childNode);
+			}
+		}
+	}
+}
+
 function hydrateOptVElement(optVElement, dom, lifecycle, context) {
 	const bp = optVElement.bp;
 	const bp0 = bp.v0;
+	const staticVElement = bp.staticVElement;
 
+	hydrateStaticVElement(staticVElement, dom);
 	optVElement.dom = dom;
 	if (!isNull(bp0)) {
 		hydrateOptVElementValue(optVElement, bp0, optVElement.v0, bp.d0, dom, context);

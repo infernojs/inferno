@@ -1,5 +1,5 @@
 /*!
- * inferno-router v1.0.0-alpha3
+ * inferno-router v1.0.0-alpha4
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -723,6 +723,10 @@ function Link(props, ref) {
 	if (!hashbang) {
 		element.events({
 			onclick: function navigate(e) {
+				if (e.button !== 1) {
+					return;
+				}
+				
 				e.preventDefault();
 				var target = e.target;
 				window.history.pushState(null, target.textContent, to);

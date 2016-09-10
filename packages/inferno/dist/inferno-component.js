@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-alpha3
+ * inferno-component v1.0.0-alpha4
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
