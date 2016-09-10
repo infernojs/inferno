@@ -11,26 +11,249 @@
 
 var NO_OP = '$NO_OP';
 
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+// Runs only once in applications lifetime
+var isBrowser = typeof window !== 'undefined' && window.document;
+
 function isArray(obj) {
 	return obj instanceof Array;
+}
+
+function isStringOrNumber(obj) {
+	return isString(obj) || isNumber(obj);
 }
 
 function isNullOrUndef(obj) {
 	return isUndefined(obj) || isNull(obj);
 }
 
+function isInvalid(obj) {
+	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
+}
+
+function isAttrAnEvent(attr) {
+	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+}
+
+function isString(obj) {
+	return typeof obj === 'string';
+}
+
+function isNumber(obj) {
+	return typeof obj === 'number';
+}
+
 function isNull(obj) {
 	return obj === null;
+}
+
+function isTrue(obj) {
+	return obj === true;
 }
 
 function isUndefined(obj) {
 	return obj === undefined;
 }
 
+function throwError(message) {
+	if (!message) {
+		message = ERROR_MSG;
+	}
+	throw new Error(("Inferno Error: " + message));
+}
+
 function warning(condition, message) {
 	if (!condition) {
 		console.error(message);
 	}
+}
+
+var documetBody = isBrowser ? document.body : null;
+
+// returns true if a property has been applied that can't be cloned via elem.cloneNode()
+function patchProp(prop, lastValue, nextValue, dom) {
+	if (strictProps[prop]) {
+		dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
+	} else if (booleanProps[prop]) {
+		dom[prop] = nextValue ? true : false;
+	} else {
+		if (lastValue !== nextValue) {
+			if (isNullOrUndef(nextValue)) {
+				dom.removeAttribute(prop);
+				return false;
+			}
+			if (prop === 'className') {
+				dom.className = nextValue;
+				return false;
+			} else if (prop === 'style') {
+				patchStyle(lastValue, nextValue, dom);
+			} else if (prop === 'defaultChecked') {
+				if (isNull(lastValue)) {
+					dom.addAttribute('checked');
+				}
+				return false;
+			} else if (prop === 'defaultValue') {
+				if (isNull(lastValue)) {
+					dom.setAttribute('value', nextValue);
+				}
+				return false;
+			} else if (isAttrAnEvent(prop)) {
+				dom[prop.toLowerCase()] = nextValue;
+			} else if (prop === 'dangerouslySetInnerHTML') {
+				var lastHtml = lastValue && lastValue.__html;
+				var nextHtml = nextValue && nextValue.__html;
+
+				if (isNullOrUndef(nextHtml)) {
+					if ("development" !== 'production') {
+						throwError('dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
+					}
+					throwError();
+				}
+				if (lastHtml !== nextHtml) {
+					dom.innerHTML = nextHtml;
+				}
+			} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
+				var ns = namespaces[prop];
+
+				if (ns) {
+					dom.setAttributeNS(ns, prop, nextValue);
+				} else {
+					dom.setAttribute(prop, nextValue);
+				}
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+function patchStyle(lastAttrValue, nextAttrValue, dom) {
+	if (isString(nextAttrValue)) {
+		dom.style.cssText = nextAttrValue;
+	} else if (isNullOrUndef(lastAttrValue)) {
+		if (!isNullOrUndef(nextAttrValue)) {
+			var styleKeys = Object.keys(nextAttrValue);
+
+			for (var i = 0; i < styleKeys.length; i++) {
+				var style = styleKeys[i];
+				var value = nextAttrValue[style];
+
+				if (isNumber(value) && !isUnitlessNumber[style]) {
+					dom.style[style] = value + 'px';
+				} else {
+					dom.style[style] = value;
+				}
+			}
+		}
+	} else if (isNullOrUndef(nextAttrValue)) {
+		dom.removeAttribute('style');
+	} else {
+		var styleKeys$1 = Object.keys(nextAttrValue);
+
+		for (var i$1 = 0; i$1 < styleKeys$1.length; i$1++) {
+			var style$1 = styleKeys$1[i$1];
+			var value$1 = nextAttrValue[style$1];
+
+			if (isNumber(value$1) && !isUnitlessNumber[style$1]) {
+				dom.style[style$1] = value$1 + 'px';
+			} else {
+				dom.style[style$1] = value$1;
+			}
+		}
+		var lastStyleKeys = Object.keys(lastAttrValue);
+
+		for (var i$2 = 0; i$2 < lastStyleKeys.length; i$2++) {
+			var style$2 = lastStyleKeys[i$2];
+			if (isNullOrUndef(nextAttrValue[style$2])) {
+				dom.style[style$2] = '';
+			}
+		}
+	}
+}
+
+function constructDefaults(string, object, value) {
+	/* eslint no-return-assign: 0 */
+	string.split(',').forEach(function (i) { return object[i] = value; });
+}
+
+var xlinkNS = 'http://www.w3.org/1999/xlink';
+var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+var svgNS = 'http://www.w3.org/2000/svg';
+var strictProps = {};
+var booleanProps = {};
+var namespaces = {};
+var isUnitlessNumber = {};
+
+constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+constructDefaults('volume,value', strictProps, true);
+constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+
+function documentCreateElement(tag, isSVG) {
+	var dom;
+
+	if (isSVG === true) {
+		dom = document.createElementNS(svgNS, tag);
+	} else {
+		dom = document.createElement(tag);
+	}
+	return dom;
+}
+
+function mountStaticChildren(children, dom, isSVG) {
+	if (isArray(children)) {
+		for (var i = 0; i < children.length; i++) {
+			var child = children[i];
+
+			mountStaticChildren(child, dom, isSVG);
+		}
+	} else if (isStringOrNumber(children)) {
+		dom.appendChild(document.createTextNode(children));
+	} else if (!isInvalid(children)) {
+		mountStaticNode(children, dom, isSVG);
+	}
+}
+
+function mountStaticNode(node, parentDom, isSVG) {
+	var tag = node.tag;
+
+	if (tag === 'svg') {
+		isSVG = true;
+	}
+	var dom = documentCreateElement(tag, isSVG);
+	var children = node.children;
+
+	if (!isNull(children)) {
+		mountStaticChildren(children, dom, isSVG);
+	}
+	var props = node.props;
+
+	if (!isNull(props)) {
+		for (var prop in props) {
+			patchProp(prop, null, props[prop], dom);
+		}
+	}
+	if (parentDom) {
+		parentDom.appendChild(dom);
+	}
+	return dom;
+}
+
+function createStaticVElementClone(bp, isSVG) {
+	if (!isBrowser) {
+		return null;
+	}
+	var staticNode = bp.staticVElement;
+	var dom = mountStaticNode(staticNode, null, isSVG);
+
+	if (isSVG) {
+		bp.svgClone = dom;
+	} else {
+		bp.clone = dom;
+	}
+	return dom.cloneNode(true);
 }
 
 var NodeTypes = {
@@ -235,8 +458,9 @@ function createOptVElement(bp, key, v0, v1, v2, v3) {
 }
 
 function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {
-	return {
+	var bp = {
 		clone: null,
+		svgClone: null,
 		d0: d0,
 		d1: d1,
 		d2: d2,
@@ -252,6 +476,8 @@ function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {
 		v2: v2,
 		v3: v3
 	};
+	createStaticVElementClone(bp, false);
+	return bp;
 }
 
 function createVComponent(component, props, key, hooks, ref) {

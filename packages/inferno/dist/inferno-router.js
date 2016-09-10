@@ -39,6 +39,40 @@ function throwError(message) {
 	throw new Error(("Inferno Error: " + message));
 }
 
+var Lifecycle = function Lifecycle() {
+	this._listeners = [];
+};
+Lifecycle.prototype.addListener = function addListener (callback) {
+	this._listeners.push(callback);
+};
+Lifecycle.prototype.trigger = function trigger () {
+		var this$1 = this;
+
+	for (var i = 0; i < this._listeners.length; i++) {
+		this$1._listeners[i]();
+	}
+};
+
+var documetBody = isBrowser ? document.body : null;
+
+function constructDefaults(string, object, value) {
+	/* eslint no-return-assign: 0 */
+	string.split(',').forEach(function (i) { return object[i] = value; });
+}
+
+var xlinkNS = 'http://www.w3.org/1999/xlink';
+var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+var strictProps = {};
+var booleanProps = {};
+var namespaces = {};
+var isUnitlessNumber = {};
+
+constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+constructDefaults('volume,value', strictProps, true);
+constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+
 var NodeTypes = {
 	ELEMENT: 1,
 	OPT_ELEMENT: 2,
@@ -272,29 +306,15 @@ function isVComponent(o) {
 	return o.type === NodeTypes.COMPONENT;
 }
 
-var Lifecycle = function Lifecycle() {
-	this._listeners = [];
-};
-Lifecycle.prototype.addListener = function addListener (callback) {
-	this._listeners.push(callback);
-};
-Lifecycle.prototype.trigger = function trigger () {
-		var this$1 = this;
-
-	for (var i = 0; i < this._listeners.length; i++) {
-		this$1._listeners[i]();
-	}
-};
-
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 
 // Copy of the util from dom/util, otherwise it makes massive bundles
-function getActiveNode() {
+function getActiveNode$1() {
 	return document.activeElement;
 }
 
 // Copy of the util from dom/util, otherwise it makes massive bundles
-function resetActiveNode(activeNode) {
+function resetActiveNode$1(activeNode) {
 	if (activeNode !== document.body && document.activeElement !== activeNode) {
 		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
 	}
@@ -331,7 +351,7 @@ function applyState(component, force, callback) {
 		}
 		var lastInput = component._lastInput;
 		var parentDom = lastInput.dom.parentNode;
-		var activeNode = getActiveNode();
+		var activeNode = getActiveNode$1();
 		var subLifecycle = new Lifecycle();
 
 		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component._isSVG, false);
@@ -343,7 +363,7 @@ function applyState(component, force, callback) {
 		if (!isNullOrUndef(callback)) {
 			callback();
 		}
-		resetActiveNode(activeNode);
+		resetActiveNode$1(activeNode);
 	}
 }
 

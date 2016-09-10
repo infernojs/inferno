@@ -93,6 +93,60 @@ function throwError(message) {
 
 var EMPTY_OBJ = {};
 
+function mountStaticChildren(children, dom, isSVG) {
+	if (isArray(children)) {
+		for (var i = 0; i < children.length; i++) {
+			var child = children[i];
+
+			mountStaticChildren(child, dom, isSVG);
+		}
+	} else if (isStringOrNumber(children)) {
+		dom.appendChild(document.createTextNode(children));
+	} else if (!isInvalid(children)) {
+		mountStaticNode(children, dom, isSVG);
+	}
+}
+
+function mountStaticNode(node, parentDom, isSVG) {
+	var tag = node.tag;
+
+	if (tag === 'svg') {
+		isSVG = true;
+	}
+	var dom = documentCreateElement(tag, isSVG);
+	var children = node.children;
+
+	if (!isNull(children)) {
+		mountStaticChildren(children, dom, isSVG);
+	}
+	var props = node.props;
+
+	if (!isNull(props)) {
+		for (var prop in props) {
+			patchProp(prop, null, props[prop], dom);
+		}
+	}
+	if (parentDom) {
+		parentDom.appendChild(dom);
+	}
+	return dom;
+}
+
+function createStaticVElementClone(bp, isSVG) {
+	if (!isBrowser) {
+		return null;
+	}
+	var staticNode = bp.staticVElement;
+	var dom = mountStaticNode(staticNode, null, isSVG);
+
+	if (isSVG) {
+		bp.svgClone = dom;
+	} else {
+		bp.clone = dom;
+	}
+	return dom.cloneNode(true);
+}
+
 var NodeTypes = {
 	ELEMENT: 1,
 	OPT_ELEMENT: 2,
@@ -282,8 +336,9 @@ function cloneVNode(vNodeToClone, props) {
 }
 
 function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {
-	return {
+	var bp = {
 		clone: null,
+		svgClone: null,
 		d0: d0,
 		d1: d1,
 		d2: d2,
@@ -299,6 +354,8 @@ function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {
 		v2: v2,
 		v3: v3
 	};
+	createStaticVElementClone(bp, false);
+	return bp;
 }
 
 function createVComponent(component, props, key, hooks, ref) {
@@ -1870,53 +1927,6 @@ function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG, shallow
 	return dom;
 }
 
-function mountStaticChildren(children, dom, isSVG) {
-	if (isArray(children)) {
-		for (var i = 0; i < children.length; i++) {
-			var child = children[i];
-
-			mountStaticChildren(child, dom, isSVG);
-		}
-	} else if (isStringOrNumber(children)) {
-		dom.appendChild(document.createTextNode(children));
-	} else if (!isInvalid(children)) {
-		mountStaticNode(children, dom, isSVG);
-	}
-}
-
-function mountStaticNode(node, parentDom, isSVG) {
-	var tag = node.tag;
-
-	if (tag === 'svg') {
-		isSVG = true;
-	}
-	var dom = documentCreateElement(tag, isSVG);
-	var children = node.children;
-
-	if (!isNull(children)) {
-		mountStaticChildren(children, dom, isSVG);
-	}
-	var props = node.props;
-
-	if (!isNull(props)) {
-		for (var prop in props) {
-			patchProp(prop, null, props[prop], dom);
-		}
-	}
-	if (parentDom) {
-		parentDom.appendChild(dom);
-	}
-	return dom;
-}
-
-function createStaticVElementClone(bp, isSVG) {
-	var staticNode = bp.staticVElement;
-	var dom = mountStaticNode(staticNode, null, isSVG);
-
-	bp.clone = dom;
-	return dom.cloneNode(true);
-}
-
 function mountVText(vText, parentDom) {
 	var dom = document.createTextNode(vText.text);
 
@@ -1939,8 +1949,10 @@ function mountOptVElement(optVElement, parentDom, lifecycle, context, isSVG, sha
 	if (isNull(dom)) {
 		if (isSVG || tag === 'svg') {
 			isSVG = true;
+			dom = (bp.svgClone && bp.svgClone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
+		} else {
+			dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
 		}
-		dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
 		optVElement.dom = dom;
 		var bp0 = bp.v0;
 
