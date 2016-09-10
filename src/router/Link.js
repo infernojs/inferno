@@ -22,6 +22,10 @@ export default function Link(props, { hashbang, history }) {
 	if (!hashbang) {
 		element.events({
 			onclick: function navigate(e) {
+				if (e.button !== 1) {
+					return;
+				}
+				
 				e.preventDefault();
 				const target = e.target;
 				window.history.pushState(null, target.textContent, to);
