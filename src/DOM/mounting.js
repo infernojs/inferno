@@ -9,16 +9,16 @@ import {
 	isNull,
 	throwError,
 	EMPTY_OBJ
-} from './../core/utils';
+} from '../core/utils';
 import {
 	setTextContent,
-	documentCreateElement,
 	normaliseChild,
 	appendChild,
 	formSelectValue,
 	getPropFromOptElement,
 	createStatefulComponentInstance,
-	createStatelessComponentInput
+	createStatelessComponentInput,
+	documentCreateElement
 } from './utils';
 import { patchStyle, patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
@@ -39,6 +39,7 @@ import {
 	clonePropsChildren
 } from '../core/shapes';
 import { recycleOptVElement, recyclingEnabled, recycleVComponent } from './recycling';
+import createStaticVElementClone from '../core/createStaticVElementClone';
 
 export function mount(input, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	if (isOptVElement(input)) {
@@ -129,53 +130,6 @@ export function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG, 
 	return dom;
 }
 
-function mountStaticChildren(children, dom, isSVG) {
-	if (isArray(children)) {
-		for (let i = 0; i < children.length; i++) {
-			const child = children[i];
-
-			mountStaticChildren(child, dom, isSVG);
-		}
-	} else if (isStringOrNumber(children)) {
-		dom.appendChild(document.createTextNode(children));
-	} else if (!isInvalid(children)) {
-		mountStaticNode(children, dom, isSVG);
-	}
-}
-
-function mountStaticNode(node, parentDom, isSVG) {
-	const tag = node.tag;
-
-	if (tag === 'svg') {
-		isSVG = true;
-	}
-	const dom = documentCreateElement(tag, isSVG);
-	const children = node.children;
-
-	if (!isNull(children)) {
-		mountStaticChildren(children, dom, isSVG);
-	}
-	const props = node.props;
-
-	if (!isNull(props)) {
-		for (let prop in props) {
-			patchProp(prop, null, props[prop], dom);
-		}
-	}
-	if (parentDom) {
-		parentDom.appendChild(dom);
-	}
-	return dom;
-}
-
-function createStaticVElementClone(bp, isSVG) {
-	const staticNode = bp.staticVElement;
-	const dom = mountStaticNode(staticNode, null, isSVG);
-
-	bp.clone = dom;
-	return dom.cloneNode(true);
-}
-
 export function mountVText(vText, parentDom) {
 	const dom = document.createTextNode(vText.text);
 
@@ -198,8 +152,10 @@ export function mountOptVElement(optVElement, parentDom, lifecycle, context, isS
 	if (isNull(dom)) {
 		if (isSVG || tag === 'svg') {
 			isSVG = true;
+			dom = (bp.svgClone && bp.svgClone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
+		} else {
+			dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
 		}
-		dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
 		optVElement.dom = dom;
 		const bp0 = bp.v0;
 

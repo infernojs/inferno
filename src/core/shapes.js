@@ -1,4 +1,5 @@
 import { isUndefined, isArray, isNull, isNullOrUndef } from './utils';
+import createStaticVElementClone from './createStaticVElementClone';
 
 export const NodeTypes = {
 	ELEMENT: 1,
@@ -207,8 +208,9 @@ export function createOptVElement(bp, key, v0, v1, v2, v3) {
 }
 
 export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {
-	return {
+	const bp = {
 		clone: null,
+		svgClone: null,
 		d0,
 		d1,
 		d2,
@@ -224,6 +226,8 @@ export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d
 		v2,
 		v3
 	};
+	createStaticVElementClone(bp, false);
+	return bp;
 }
 
 export function createVComponent(component, props, key, hooks, ref) {

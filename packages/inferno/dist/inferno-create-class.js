@@ -1,5 +1,5 @@
 /*!
- * inferno-create-class v1.0.0-alpha5
+ * inferno-create-class v1.0.0-alpha6
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
