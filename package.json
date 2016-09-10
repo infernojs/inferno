@@ -55,7 +55,7 @@
     "proptypes": "^0.14.3",
     "redux": "^3.5.2",
     "rimraf": "^2.5.4",
-    "rollup": "^0.34.11",
+    "rollup": "^0.35.0",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-buble": "^0.13.0",
     "rollup-plugin-commonjs": "^4.0.1",
