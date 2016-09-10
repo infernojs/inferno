@@ -145,6 +145,10 @@ function mountStaticChildren(children, dom, isSVG) {
 
 function mountStaticNode(node, parentDom, isSVG) {
 	const tag = node.tag;
+
+	if (tag === 'svg') {
+		isSVG = true;
+	}
 	const dom = documentCreateElement(tag, isSVG);
 	const children = node.children;
 

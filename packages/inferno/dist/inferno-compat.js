@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-alpha4
+ * inferno-compat v1.0.0-alpha5
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -1886,6 +1886,10 @@ function mountStaticChildren(children, dom, isSVG) {
 
 function mountStaticNode(node, parentDom, isSVG) {
 	var tag = node.tag;
+
+	if (tag === 'svg') {
+		isSVG = true;
+	}
 	var dom = documentCreateElement(tag, isSVG);
 	var children = node.children;
 
