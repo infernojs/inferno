@@ -1,7 +1,7 @@
 import { isUndefined, isArray, isNull, isNullOrUndef } from './utils';
 import createStaticVElementClone from './createStaticVElementClone';
 
-export const enum NodeTypes {
+export enum NodeTypes {
 	ELEMENT = 1,
 	OPT_ELEMENT = 2,
 	TEXT = 3,
@@ -11,7 +11,7 @@ export const enum NodeTypes {
 	PLACEHOLDER = 7
 };
 
-export const enum ValueTypes {
+export enum ValueTypes {
 	CHILDREN,
 	PROP_CLASS_NAME,
 	PROP_STYLE,
@@ -22,7 +22,7 @@ export const enum ValueTypes {
 	PROP
 };
 
-export const enum ChildrenTypes {
+export enum ChildrenTypes {
 	NON_KEYED,
 	KEYED,
 	NODE,
