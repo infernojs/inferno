@@ -1,10 +1,15 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "lib": ["es6", "dom"],
-    "noUnusedLocals": true,
-    "strictNullChecks": true,
-    "removeComments": false,
-    "moduleResolution": "node"
-  }
+	"compilerOptions": {
+		"target": "es6",
+		"module": "commonjs",
+		"lib": [
+			"es6",
+			"dom"
+		],
+		"jsx": "preserve",
+		"noUnusedLocals": true,
+		"strictNullChecks": true,
+		"removeComments": false,
+		"moduleResolution": "node"
+	}
 }

@@ -25,7 +25,7 @@ module.exports = {
 				exclude: [
 					path.resolve('node_modules/')
 				],
-				loader: 'babel-loader!ts-loader',
+				loaders: ['babel-loader', 'ts-loader'],
 				cacheDirectory: true
 			}
 		]
@@ -39,7 +39,7 @@ module.exports = {
 	
 	},
 	resolve: {
-		extensions: ['', '.js']
+		extensions: ['', '.js', '.ts']
 	},
 	plugins: [
 		// By default, webpack does `n=>n` compilation with entry files. This concatenates
