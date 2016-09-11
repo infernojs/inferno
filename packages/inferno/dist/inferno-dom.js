@@ -2451,12 +2451,21 @@ function render(input, parentDom) {
 	}
 }
 
+function createRenderer() {
+	var parentDom;
+
+	return function renderer(lastInput, nextInput) {
+		if (!parentDom) {
+			parentDom = lastInput;
+		}
+		render(nextInput, parentDom);
+	};
+}
+
 var index = {
 	render: render,
 	findDOMNode: findDOMNode,
-	mount: mount,
-	patch: patch,
-	unmount: unmount
+	createRenderer: createRenderer
 };
 
 return index;
