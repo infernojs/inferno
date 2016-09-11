@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-alpha7
+ * inferno v1.0.0-alpha8
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */

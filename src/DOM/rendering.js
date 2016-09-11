@@ -64,3 +64,14 @@ export function render(input, parentDom) {
 		resetActiveNode(activeNode);
 	}
 }
+
+export function createRenderer() {
+	let parentDom;
+
+	return function renderer(lastInput, nextInput) {
+		if (!parentDom) {
+			parentDom = lastInput;
+		}
+		render(nextInput, parentDom);
+	};
+}

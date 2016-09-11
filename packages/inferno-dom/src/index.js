@@ -1,12 +1,7 @@
-import { render, findDOMNode } from '../../../src/DOM/rendering';
-import { mount } from '../../../src/DOM/mounting';
-import { patch } from '../../../src/DOM/patching';
-import { unmount } from '../../../src/DOM/unmounting';
+import { render, findDOMNode, createRenderer } from '../../../src/DOM/rendering';
 
 export default {
 	render,
 	findDOMNode,
-	mount,
-	patch,
-	unmount
+	createRenderer
 };
