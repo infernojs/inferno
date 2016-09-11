@@ -33,31 +33,29 @@ function throwError(message) {
 }
 
 var Lifecycle = function Lifecycle() {
-	this._listeners = [];
+    this._listeners = [];
 };
 Lifecycle.prototype.addListener = function addListener (callback) {
-	this._listeners.push(callback);
+    this._listeners.push(callback);
 };
 Lifecycle.prototype.trigger = function trigger () {
-		var this$1 = this;
+        var this$1 = this;
 
-	for (var i = 0; i < this._listeners.length; i++) {
-		this$1._listeners[i]();
-	}
+    for (var i = 0; i < this._listeners.length; i++) {
+        this$1._listeners[i]();
+    }
 };
 
 function constructDefaults(string, object, value) {
-	/* eslint no-return-assign: 0 */
-	string.split(',').forEach(function (i) { return object[i] = value; });
+    /* eslint no-return-assign: 0 */
+    string.split(',').forEach(function (i) { return object[i] = value; });
 }
-
 var xlinkNS = 'http://www.w3.org/1999/xlink';
 var xmlNS = 'http://www.w3.org/XML/1998/namespace';
 var strictProps = {};
 var booleanProps = {};
 var namespaces = {};
 var isUnitlessNumber = {};
-
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,value', strictProps, true);
@@ -97,6 +95,7 @@ var ChildrenTypes;
     ChildrenTypes[ChildrenTypes["TEXT"] = 3] = "TEXT";
     ChildrenTypes[ChildrenTypes["UNKNOWN"] = 4] = "UNKNOWN";
 })(ChildrenTypes || (ChildrenTypes = {}));
+;
 ;
 ;
 function convertVOptElementToVElement(optVElement) {
@@ -733,7 +732,6 @@ function Link(props, ref) {
 				if (e.button !== 1) {
 					return;
 				}
-				
 				e.preventDefault();
 				var target = e.target;
 				window.history.pushState(null, target.textContent, to);

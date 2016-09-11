@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.Inferno = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.Inferno = factory());
 }(this, (function () { 'use strict';
 
 var NO_OP = '$NO_OP';
@@ -56,10 +56,9 @@ function warning(condition, message) {
 }
 
 function constructDefaults(string, object, value) {
-	/* eslint no-return-assign: 0 */
-	string.split(',').forEach(function (i) { return object[i] = value; });
+    /* eslint no-return-assign: 0 */
+    string.split(',').forEach(function (i) { return object[i] = value; });
 }
-
 var xlinkNS = 'http://www.w3.org/1999/xlink';
 var xmlNS = 'http://www.w3.org/XML/1998/namespace';
 var svgNS = 'http://www.w3.org/2000/svg';
@@ -67,7 +66,6 @@ var strictProps = {};
 var booleanProps = {};
 var namespaces = {};
 var isUnitlessNumber = {};
-
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,value', strictProps, true);
@@ -189,57 +187,53 @@ function documentCreateElement(tag, isSVG) {
 }
 
 function mountStaticChildren(children, dom, isSVG) {
-	if (isArray(children)) {
-		for (var i = 0; i < children.length; i++) {
-			var child = children[i];
-
-			mountStaticChildren(child, dom, isSVG);
-		}
-	} else if (isStringOrNumber(children)) {
-		dom.appendChild(document.createTextNode(children));
-	} else if (!isInvalid(children)) {
-		mountStaticNode(children, dom, isSVG);
-	}
+    if (isArray(children)) {
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            mountStaticChildren(child, dom, isSVG);
+        }
+    }
+    else if (isStringOrNumber(children)) {
+        dom.appendChild(document.createTextNode(children));
+    }
+    else if (!isInvalid(children)) {
+        mountStaticNode(children, dom, isSVG);
+    }
 }
-
 function mountStaticNode(node, parentDom, isSVG) {
-	var tag = node.tag;
-
-	if (tag === 'svg') {
-		isSVG = true;
-	}
-	var dom = documentCreateElement(tag, isSVG);
-	var children = node.children;
-
-	if (!isNull(children)) {
-		mountStaticChildren(children, dom, isSVG);
-	}
-	var props = node.props;
-
-	if (!isNull(props)) {
-		for (var prop in props) {
-			patchProp(prop, null, props[prop], dom);
-		}
-	}
-	if (parentDom) {
-		parentDom.appendChild(dom);
-	}
-	return dom;
+    var tag = node.tag;
+    if (tag === 'svg') {
+        isSVG = true;
+    }
+    var dom = documentCreateElement(tag, isSVG);
+    var children = node.children;
+    if (!isNull(children)) {
+        mountStaticChildren(children, dom, isSVG);
+    }
+    var props = node.props;
+    if (!isNull(props)) {
+        for (var prop in props) {
+            patchProp(prop, null, props[prop], dom);
+        }
+    }
+    if (parentDom) {
+        parentDom.appendChild(dom);
+    }
+    return dom;
 }
-
 function createStaticVElementClone(bp, isSVG) {
-	if (!isBrowser) {
-		return null;
-	}
-	var staticNode = bp.staticVElement;
-	var dom = mountStaticNode(staticNode, null, isSVG);
-
-	if (isSVG) {
-		bp.svgClone = dom;
-	} else {
-		bp.clone = dom;
-	}
-	return dom.cloneNode(true);
+    if (!isBrowser) {
+        return null;
+    }
+    var staticNode = bp.staticVElement;
+    var dom = mountStaticNode(staticNode, null, isSVG);
+    if (isSVG) {
+        bp.svgClone = dom;
+    }
+    else {
+        bp.clone = dom;
+    }
+    return dom.cloneNode(true);
 }
 
 var NodeTypes;
@@ -273,6 +267,7 @@ var ChildrenTypes;
     ChildrenTypes[ChildrenTypes["TEXT"] = 3] = "TEXT";
     ChildrenTypes[ChildrenTypes["UNKNOWN"] = 4] = "UNKNOWN";
 })(ChildrenTypes || (ChildrenTypes = {}));
+;
 ;
 ;
 function convertVOptElementToVElement(optVElement) {

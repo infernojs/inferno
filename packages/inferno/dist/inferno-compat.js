@@ -10,17 +10,17 @@
 }(this, (function (exports) { 'use strict';
 
 var Lifecycle = function Lifecycle() {
-	this._listeners = [];
+    this._listeners = [];
 };
 Lifecycle.prototype.addListener = function addListener (callback) {
-	this._listeners.push(callback);
+    this._listeners.push(callback);
 };
 Lifecycle.prototype.trigger = function trigger () {
-		var this$1 = this;
+        var this$1 = this;
 
-	for (var i = 0; i < this._listeners.length; i++) {
-		this$1._listeners[i]();
-	}
+    for (var i = 0; i < this._listeners.length; i++) {
+        this$1._listeners[i]();
+    }
 };
 
 var NO_OP = '$NO_OP';
@@ -76,57 +76,53 @@ function throwError(message) {
 var EMPTY_OBJ = {};
 
 function mountStaticChildren(children, dom, isSVG) {
-	if (isArray(children)) {
-		for (var i = 0; i < children.length; i++) {
-			var child = children[i];
-
-			mountStaticChildren(child, dom, isSVG);
-		}
-	} else if (isStringOrNumber(children)) {
-		dom.appendChild(document.createTextNode(children));
-	} else if (!isInvalid(children)) {
-		mountStaticNode(children, dom, isSVG);
-	}
+    if (isArray(children)) {
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            mountStaticChildren(child, dom, isSVG);
+        }
+    }
+    else if (isStringOrNumber(children)) {
+        dom.appendChild(document.createTextNode(children));
+    }
+    else if (!isInvalid(children)) {
+        mountStaticNode(children, dom, isSVG);
+    }
 }
-
 function mountStaticNode(node, parentDom, isSVG) {
-	var tag = node.tag;
-
-	if (tag === 'svg') {
-		isSVG = true;
-	}
-	var dom = documentCreateElement(tag, isSVG);
-	var children = node.children;
-
-	if (!isNull(children)) {
-		mountStaticChildren(children, dom, isSVG);
-	}
-	var props = node.props;
-
-	if (!isNull(props)) {
-		for (var prop in props) {
-			patchProp(prop, null, props[prop], dom);
-		}
-	}
-	if (parentDom) {
-		parentDom.appendChild(dom);
-	}
-	return dom;
+    var tag = node.tag;
+    if (tag === 'svg') {
+        isSVG = true;
+    }
+    var dom = documentCreateElement(tag, isSVG);
+    var children = node.children;
+    if (!isNull(children)) {
+        mountStaticChildren(children, dom, isSVG);
+    }
+    var props = node.props;
+    if (!isNull(props)) {
+        for (var prop in props) {
+            patchProp(prop, null, props[prop], dom);
+        }
+    }
+    if (parentDom) {
+        parentDom.appendChild(dom);
+    }
+    return dom;
 }
-
 function createStaticVElementClone(bp, isSVG) {
-	if (!isBrowser) {
-		return null;
-	}
-	var staticNode = bp.staticVElement;
-	var dom = mountStaticNode(staticNode, null, isSVG);
-
-	if (isSVG) {
-		bp.svgClone = dom;
-	} else {
-		bp.clone = dom;
-	}
-	return dom.cloneNode(true);
+    if (!isBrowser) {
+        return null;
+    }
+    var staticNode = bp.staticVElement;
+    var dom = mountStaticNode(staticNode, null, isSVG);
+    if (isSVG) {
+        bp.svgClone = dom;
+    }
+    else {
+        bp.clone = dom;
+    }
+    return dom.cloneNode(true);
 }
 
 (function (NodeTypes) {
@@ -157,6 +153,7 @@ function createStaticVElementClone(bp, isSVG) {
     ChildrenTypes[ChildrenTypes["TEXT"] = 3] = "TEXT";
     ChildrenTypes[ChildrenTypes["UNKNOWN"] = 4] = "UNKNOWN";
 })(exports.ChildrenTypes || (exports.ChildrenTypes = {}));
+;
 ;
 ;
 function convertVOptElementToVElement(optVElement) {
@@ -427,89 +424,77 @@ function isNodeChildrenType(o) {
 }
 
 var recyclingEnabled = true;
-
 var vComponentPools = new Map();
-
+;
 function recycleOptVElement(optVElement, lifecycle, context, isSVG, shallowUnmount) {
-	var bp = optVElement.bp;
-	var key = optVElement.key;
-	var pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed.get(key);
-
-	if (!isUndefined(pool)) {
-		var recycledOptVElement = pool.pop();
-
-		if (!isUndefined(recycledOptVElement)) {
-			patchOptVElement(recycledOptVElement, optVElement, null, lifecycle, context, isSVG, shallowUnmount);
-			return optVElement.dom;
-		}
-	}
-	return null;
+    var bp = optVElement.bp;
+    var key = optVElement.key;
+    var pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed.get(key);
+    if (!isUndefined(pool)) {
+        var recycledOptVElement = pool.pop();
+        if (!isUndefined(recycledOptVElement)) {
+            patchOptVElement(recycledOptVElement, optVElement, null, lifecycle, context, isSVG, shallowUnmount);
+            return optVElement.dom;
+        }
+    }
+    return null;
 }
-
 function poolOptVElement(optVElement) {
-	var bp = optVElement.bp;
-	var key = optVElement.key;
-	var pools = bp.pools;
-
-	if (isNull(key)) {
-		pools.nonKeyed.push(optVElement);
-	} else {
-		var pool = pools.keyed.get(key);
-
-		if (isUndefined(pool)) {
-			pool = [];
-			pools.keyed.set(key, pool);
-		}
-		pool.push(optVElement);
-	}
+    var bp = optVElement.bp;
+    var key = optVElement.key;
+    var pools = bp.pools;
+    if (isNull(key)) {
+        pools.nonKeyed.push(optVElement);
+    }
+    else {
+        var pool = pools.keyed.get(key);
+        if (isUndefined(pool)) {
+            pool = [];
+            pools.keyed.set(key, pool);
+        }
+        pool.push(optVElement);
+    }
 }
-
 function recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount) {
-	var component = vComponent.component;
-	var key = vComponent.key;
-	var pools = vComponentPools.get(component);
-
-	if (!isUndefined(pools)) {
-		var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
-
-		if (!isUndefined(pool)) {
-			var recycledVComponent = pool.pop();
-
-			if (!isUndefined(recycledVComponent)) {
-				var failed = patchVComponent(recycledVComponent, vComponent, null, lifecycle, context, isSVG, shallowUnmount);
-
-				if (!failed) {
-					return vComponent.dom;
-				}
-			}
-		}
-	}
-	return null;
+    var component = vComponent.component;
+    var key = vComponent.key;
+    var pools = vComponentPools.get(component);
+    if (!isUndefined(pools)) {
+        var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
+        if (!isUndefined(pool)) {
+            var recycledVComponent = pool.pop();
+            if (!isUndefined(recycledVComponent)) {
+                var failed = patchVComponent(recycledVComponent, vComponent, null, lifecycle, context, isSVG, shallowUnmount);
+                if (!failed) {
+                    return vComponent.dom;
+                }
+            }
+        }
+    }
+    return null;
 }
-
 function poolVComponent(vComponent) {
-	var component = vComponent.component;
-	var key = vComponent.key;
-	var pools = vComponentPools.get(component);
-
-	if (isUndefined(pools)) {
-		pools = {
-			nonKeyed: [],
-			keyed: new Map()
-		};
-		vComponentPools.set(component, pools);
-	}
-	if (isNull(key)) {
-		pools.nonKeyed.push(vComponent);
-	} else {
-		var pool = pools.keyed.get(key);
-
-		if (isUndefined(pool)) {
-			pool = [];
-			pools.keyed.set(key, pool);
-		}
-		pool.push(vComponent);
-	}
+    var component = vComponent.component;
+    var key = vComponent.key;
+    var pools = vComponentPools.get(component);
+    if (isUndefined(pools)) {
+        pools = {
+            nonKeyed: [],
+            keyed: new Map()
+        };
+        vComponentPools.set(component, pools);
+    }
+    if (isNull(key)) {
+        pools.nonKeyed.push(vComponent);
+    }
+    else {
+        var pool = pools.keyed.get(key);
+        if (isUndefined(pool)) {
+            pool = [];
+            pools.keyed.set(key, pool);
+        }
+        pool.push(vComponent);
+    }
 }
 
 function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
@@ -701,10 +686,9 @@ function unmountProps(props, lifecycle) {
 }
 
 function constructDefaults(string, object, value) {
-	/* eslint no-return-assign: 0 */
-	string.split(',').forEach(function (i) { return object[i] = value; });
+    /* eslint no-return-assign: 0 */
+    string.split(',').forEach(function (i) { return object[i] = value; });
 }
-
 var xlinkNS = 'http://www.w3.org/1999/xlink';
 var xmlNS = 'http://www.w3.org/XML/1998/namespace';
 var svgNS = 'http://www.w3.org/2000/svg';
@@ -712,7 +696,6 @@ var strictProps = {};
 var booleanProps = {};
 var namespaces = {};
 var isUnitlessNumber = {};
-
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,value', strictProps, true);
@@ -2395,53 +2378,50 @@ function hydrateRoot(input, parentDom, lifecycle) {
 
 var roots = new Map();
 var componentToDOMNodeMap = new Map();
-
 function findDOMNode(domNode) {
-	return componentToDOMNodeMap.get(domNode) || null;
+    return componentToDOMNodeMap.get(domNode) || null;
 }
-
 var documetBody = isBrowser ? document.body : null;
-
 function render(input, parentDom) {
-	var root = roots.get(parentDom);
-	var lifecycle = new Lifecycle();
-
-	if (documetBody === parentDom) {
-		if ("development" !== 'production') {
-			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
-		}
-		throwError();
-	}
-	if (input === NO_OP) {
-		return;
-	}
-	if (isUndefined(root)) {
-		if (!isInvalid(input)) {
-			if (input.dom) {
-				input = cloneVNode(input);
-			}
-			if (!hydrateRoot(input, parentDom, lifecycle)) {
-				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false, false);
-			}
-			lifecycle.trigger();
-			roots.set(parentDom, { input: input });
-		}
-	} else {
-		var activeNode = getActiveNode();
-
-		if (isNullOrUndef(input)) {
-			unmount(root.input, parentDom, lifecycle, true);
-			roots.delete(parentDom);
-		} else {
-			if (input.dom) {
-				input = cloneVNode(input);
-			}
-			patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false, false);
-		}
-		lifecycle.trigger();
-		root.input = input;
-		resetActiveNode(activeNode);
-	}
+    var root = roots.get(parentDom);
+    var lifecycle = new Lifecycle();
+    if (documetBody === parentDom) {
+        if ("development" !== 'production') {
+            throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
+        }
+        throwError();
+    }
+    if (input === NO_OP) {
+        return;
+    }
+    if (isUndefined(root)) {
+        if (!isInvalid(input)) {
+            if (input.dom) {
+                input = cloneVNode(input);
+            }
+            if (!hydrateRoot(input, parentDom, lifecycle)) {
+                mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false, false);
+            }
+            lifecycle.trigger();
+            roots.set(parentDom, { input: input });
+        }
+    }
+    else {
+        var activeNode = getActiveNode();
+        if (isNullOrUndef(input)) {
+            unmount(root.input, parentDom, lifecycle, false, false);
+            roots.delete(parentDom);
+        }
+        else {
+            if (input.dom) {
+                input = cloneVNode(input);
+            }
+            patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false, false);
+        }
+        lifecycle.trigger();
+        root.input = input;
+        resetActiveNode(activeNode);
+    }
 }
 
 var elementHooks = {

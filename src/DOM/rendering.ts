@@ -14,7 +14,7 @@ import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
 import { cloneVNode } from '../core/shapes';
 
-const roots = new Map();
+const roots = new Map<Node | SVGAElement, { input: any }>();
 export const componentToDOMNodeMap = new Map();
 
 export function findDOMNode(domNode) {
@@ -23,7 +23,7 @@ export function findDOMNode(domNode) {
 
 const documetBody = isBrowser ? document.body : null;
 
-export function render(input, parentDom) {
+export function render(input: any, parentDom: Node | SVGAElement) {
 	const root = roots.get(parentDom);
 	const lifecycle = new Lifecycle();
 
