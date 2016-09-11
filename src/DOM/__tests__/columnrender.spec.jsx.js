@@ -8,7 +8,7 @@ import {
 	ChildrenTypes,
 	ValueTypes,
 	NodeTypes
-} from './../../core/shapes';
+} from './../../core/shapes.ts';
 
 const Inferno = {
 	createStaticVElement,

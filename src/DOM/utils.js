@@ -14,7 +14,7 @@ import {
 	createVFragment,
 	isVNode,
 	cloneVNode
-} from '../core/shapes';
+} from '../core/shapes.ts';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
 

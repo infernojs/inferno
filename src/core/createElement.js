@@ -1,4 +1,4 @@
-import { createVElement, createVComponent } from '../core/shapes';
+import { createVElement, createVComponent } from '../core/shapes.ts';
 import {
 	isAttrAnEvent,
 	isString,

@@ -1,5 +1,5 @@
 import { isStringOrNumber, isNullOrUndef, isArray } from '../core/utils';
-import { isVNode } from '../core/shapes';
+import { isVNode } from '../core/shapes.ts';
 
 const comparer = document.createElement('div');
 

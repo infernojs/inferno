@@ -38,6 +38,11 @@ module.exports = function (config) {
 			module: {
 				loaders: [
 					{
+						test: /\.ts/,
+						loaders: ['babel-loader', 'ts-loader'],
+						exclude: /node_modules/
+					},
+										{
 						test: /\.js/,
 						loader: 'babel-loader',
 						exclude: /node_modules/,
@@ -49,7 +54,7 @@ module.exports = function (config) {
 								'babel-plugin-inferno'
 							]
 						},
-					},
+					}
 				],
 			}
 		},

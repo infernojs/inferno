@@ -1,4 +1,4 @@
-import { createVElement } from '../core/shapes';
+import { createVElement } from '../core/shapes.ts';
 import { convertToHashbang } from './utils';
 
 export default function Link(props, { hashbang, history }) {

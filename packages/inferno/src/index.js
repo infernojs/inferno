@@ -11,7 +11,7 @@ import {
 	ValueTypes,
 	ChildrenTypes,
 	NodeTypes,
-} from '../../../src/core/shapes';
+} from '../../../src/core/shapes.ts';
 import { warning, NO_OP } from '../../../src/core/utils';
 
 if (process.env.NODE_ENV !== 'production') {

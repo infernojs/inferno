@@ -8,7 +8,7 @@ import {
 } from './../core/utils';
 import { escapeText, escapeAttr, isVoidElement } from './utils';
 import { Readable } from 'stream';
-import { isVElement, isVComponent } from './../core/shapes';
+import { isVElement, isVComponent } from './../core/shapes.ts';
 import { renderStyleToString, renderAttributes } from './prop-renderers';
 
 export class RenderStream extends Readable {
