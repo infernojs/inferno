@@ -1,4 +1,4 @@
-import { createVElement, createVComponent } from '../core/shapes.ts';
+import { createVElement, createVComponent } from './shapes';
 import {
 	isAttrAnEvent,
 	isString,
@@ -24,23 +24,23 @@ const componentHooks = {
 	onComponentDidUpdate: true
 };
 
-export default function createElement(name, props, ..._children) {
+export default function createElement(name: string | Function, props: any, ..._children) {
 	if (isInvalid(name) || isObject(name)) {
 		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
-	let children = _children;
+	let children: any = _children;
 	let vNode;
 
 	if (_children) {
 		if (_children.length === 1) {
 			children = _children[0];
 		} else if (_children.length === 0) {
-			children = undefined;
+			children = null;
 		}
 	}
 	if (isString(name)) {
 		let hooks;
-		vNode = createVElement(name);
+		vNode = createVElement(name, null, null, null, null, null);
 
 		for (let prop in props) {
 			if (prop === 'key') {
@@ -70,7 +70,7 @@ export default function createElement(name, props, ..._children) {
 		}
 	} else {
 		let hooks;
-		vNode = createVComponent(name);
+		vNode = createVComponent(name, null, null, null, null);
 
 		if (!isUndefined(children)) {
 			if (!props) {

@@ -10,45 +10,35 @@
 }(this, (function (stream) { 'use strict';
 
 function isArray(obj) {
-	return obj instanceof Array;
+    return obj instanceof Array;
 }
-
 function isStatefulComponent(o) {
-	var component = o.component;
-
-	return !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
+    var component = o.component;
+    return !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
 }
-
 function isStringOrNumber(obj) {
-	return isString(obj) || isNumber(obj);
+    return isString(obj) || isNumber(obj);
 }
-
 function isNullOrUndef(obj) {
-	return isUndefined(obj) || isNull(obj);
+    return isUndefined(obj) || isNull(obj);
 }
-
 function isInvalid(obj) {
-	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
+    return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
-
 function isString(obj) {
-	return typeof obj === 'string';
+    return typeof obj === 'string';
 }
-
 function isNumber(obj) {
-	return typeof obj === 'number';
+    return typeof obj === 'number';
 }
-
 function isNull(obj) {
-	return obj === null;
+    return obj === null;
 }
-
 function isTrue(obj) {
-	return obj === true;
+    return obj === true;
 }
-
 function isUndefined(obj) {
-	return obj === undefined;
+    return obj === undefined;
 }
 
 function constructDefaults(string, object, value) {
@@ -114,13 +104,13 @@ function isVoidElement(str) {
 
 var NodeTypes;
 (function (NodeTypes) {
-    NodeTypes[NodeTypes["ELEMENT"] = 0] = "ELEMENT";
-    NodeTypes[NodeTypes["OPT_ELEMENT"] = 1] = "OPT_ELEMENT";
-    NodeTypes[NodeTypes["TEXT"] = 2] = "TEXT";
-    NodeTypes[NodeTypes["FRAGMENT"] = 3] = "FRAGMENT";
-    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 4] = "OPT_BLUEPRINT";
-    NodeTypes[NodeTypes["COMPONENT"] = 5] = "COMPONENT";
-    NodeTypes[NodeTypes["PLACEHOLDER"] = 6] = "PLACEHOLDER";
+    NodeTypes[NodeTypes["ELEMENT"] = 1] = "ELEMENT";
+    NodeTypes[NodeTypes["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
+    NodeTypes[NodeTypes["TEXT"] = 3] = "TEXT";
+    NodeTypes[NodeTypes["FRAGMENT"] = 4] = "FRAGMENT";
+    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
+    NodeTypes[NodeTypes["COMPONENT"] = 6] = "COMPONENT";
+    NodeTypes[NodeTypes["PLACEHOLDER"] = 7] = "PLACEHOLDER";
 })(NodeTypes || (NodeTypes = {}));
 ;
 var ValueTypes;
@@ -143,6 +133,7 @@ var ChildrenTypes;
     ChildrenTypes[ChildrenTypes["TEXT"] = 3] = "TEXT";
     ChildrenTypes[ChildrenTypes["UNKNOWN"] = 4] = "UNKNOWN";
 })(ChildrenTypes || (ChildrenTypes = {}));
+;
 ;
 function convertVOptElementToVElement(optVElement) {
     var bp = optVElement.bp;

@@ -12,7 +12,7 @@ import {
 } from '../core/utils';
 import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
-import { cloneVNode } from '../core/shapes.ts';
+import { cloneVNode } from '../core/shapes';
 
 const roots = new Map();
 export const componentToDOMNodeMap = new Map();
@@ -51,7 +51,7 @@ export function render(input, parentDom) {
 		const activeNode = getActiveNode();
 
 		if (isNullOrUndef(input)) {
-			unmount(root.input, parentDom, lifecycle, true);
+			unmount(root.input, parentDom, lifecycle, false, false);
 			roots.delete(parentDom);
 		} else {
 			if (input.dom) {

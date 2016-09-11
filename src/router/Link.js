@@ -1,4 +1,4 @@
-import { createVElement } from '../core/shapes.ts';
+import { createVElement } from '../core/shapes';
 import { convertToHashbang } from './utils';
 
 export default function Link(props, { hashbang, history }) {
@@ -25,7 +25,6 @@ export default function Link(props, { hashbang, history }) {
 				if (e.button !== 1) {
 					return;
 				}
-				
 				e.preventDefault();
 				const target = e.target;
 				window.history.pushState(null, target.textContent, to);

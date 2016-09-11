@@ -1,5 +1,4 @@
 export const NO_OP = '$NO_OP';
-
 const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 // Runs only once in applications lifetime
@@ -63,14 +62,14 @@ export function isObject(o) {
 	return typeof o === 'object';
 }
 
-export function throwError(message) {
+export function throwError(message?: string) {
 	if (!message) {
 		message = ERROR_MSG;
 	}
 	throw new Error(`Inferno Error: ${ message }`);
 }
 
-export function warning(condition, message) {
+export function warning(condition, message: string) {
 	if (!condition) {
 		console.error(message);
 	}

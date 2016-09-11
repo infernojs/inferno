@@ -10,63 +10,49 @@
 }(this, (function () { 'use strict';
 
 var NO_OP = '$NO_OP';
-
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
 // Runs only once in applications lifetime
 var isBrowser = typeof window !== 'undefined' && window.document;
-
 function isArray(obj) {
-	return obj instanceof Array;
+    return obj instanceof Array;
 }
-
 function isStringOrNumber(obj) {
-	return isString(obj) || isNumber(obj);
+    return isString(obj) || isNumber(obj);
 }
-
 function isNullOrUndef(obj) {
-	return isUndefined(obj) || isNull(obj);
+    return isUndefined(obj) || isNull(obj);
 }
-
 function isInvalid(obj) {
-	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
+    return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
-
 function isAttrAnEvent(attr) {
-	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+    return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 }
-
 function isString(obj) {
-	return typeof obj === 'string';
+    return typeof obj === 'string';
 }
-
 function isNumber(obj) {
-	return typeof obj === 'number';
+    return typeof obj === 'number';
 }
-
 function isNull(obj) {
-	return obj === null;
+    return obj === null;
 }
-
 function isTrue(obj) {
-	return obj === true;
+    return obj === true;
 }
-
 function isUndefined(obj) {
-	return obj === undefined;
+    return obj === undefined;
 }
-
 function throwError(message) {
-	if (!message) {
-		message = ERROR_MSG;
-	}
-	throw new Error(("Inferno Error: " + message));
+    if (!message) {
+        message = ERROR_MSG;
+    }
+    throw new Error(("Inferno Error: " + message));
 }
-
 function warning(condition, message) {
-	if (!condition) {
-		console.error(message);
-	}
+    if (!condition) {
+        console.error(message);
+    }
 }
 
 function constructDefaults(string, object, value) {
@@ -258,13 +244,13 @@ function createStaticVElementClone(bp, isSVG) {
 
 var NodeTypes;
 (function (NodeTypes) {
-    NodeTypes[NodeTypes["ELEMENT"] = 0] = "ELEMENT";
-    NodeTypes[NodeTypes["OPT_ELEMENT"] = 1] = "OPT_ELEMENT";
-    NodeTypes[NodeTypes["TEXT"] = 2] = "TEXT";
-    NodeTypes[NodeTypes["FRAGMENT"] = 3] = "FRAGMENT";
-    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 4] = "OPT_BLUEPRINT";
-    NodeTypes[NodeTypes["COMPONENT"] = 5] = "COMPONENT";
-    NodeTypes[NodeTypes["PLACEHOLDER"] = 6] = "PLACEHOLDER";
+    NodeTypes[NodeTypes["ELEMENT"] = 1] = "ELEMENT";
+    NodeTypes[NodeTypes["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
+    NodeTypes[NodeTypes["TEXT"] = 3] = "TEXT";
+    NodeTypes[NodeTypes["FRAGMENT"] = 4] = "FRAGMENT";
+    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
+    NodeTypes[NodeTypes["COMPONENT"] = 6] = "COMPONENT";
+    NodeTypes[NodeTypes["PLACEHOLDER"] = 7] = "PLACEHOLDER";
 })(NodeTypes || (NodeTypes = {}));
 ;
 var ValueTypes;
@@ -287,6 +273,7 @@ var ChildrenTypes;
     ChildrenTypes[ChildrenTypes["TEXT"] = 3] = "TEXT";
     ChildrenTypes[ChildrenTypes["UNKNOWN"] = 4] = "UNKNOWN";
 })(ChildrenTypes || (ChildrenTypes = {}));
+;
 ;
 function convertVOptElementToVElement(optVElement) {
     var bp = optVElement.bp;
@@ -384,15 +371,16 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
     }
 }
 function cloneVNode(vNodeToClone, props) {
-    var children = [], len = arguments.length - 2;
-    while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
+    var _children = [], len = arguments.length - 2;
+    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
 
-    if (children.length > 0 && !isNull(children[0])) {
+    var children = _children;
+    if (_children.length > 0 && !isNull(_children[0])) {
         if (!props) {
             props = {};
         }
-        if (children.length === 1) {
-            children = children[0];
+        if (_children.length === 1) {
+            children = _children[0];
         }
         if (isUndefined(props.children)) {
             props.children = children;
@@ -523,7 +511,7 @@ function createVFragment(children, childrenType) {
         type: NodeTypes.FRAGMENT
     };
 }
-function createVPlaceholder() {
+function createVPlaceholder$1() {
     return {
         dom: null,
         type: NodeTypes.PLACEHOLDER
@@ -556,7 +544,7 @@ var index = {
 	createVElement: createVElement,
 	createStaticVElement: createStaticVElement,
 	createVFragment: createVFragment,
-	createVPlaceholder: createVPlaceholder,
+	createVPlaceholder: createVPlaceholder$1,
 	createVComponent: createVComponent,
 	createVText: createVText,
 	cloneVNode: cloneVNode,

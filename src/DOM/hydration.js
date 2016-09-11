@@ -36,7 +36,7 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType,
 	ValueTypes
-} from '../core/shapes.ts';
+} from '../core/shapes';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
 

@@ -7,7 +7,7 @@ import {
 	ChildrenTypes,
 	ValueTypes,
 	NodeTypes
-} from './../../core/shapes.ts';
+} from './../../core/shapes';
 
 const sinon = require('sinon/pkg/sinon');
 

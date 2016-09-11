@@ -1,4 +1,6 @@
 export default class Lifecycle {
+	private _listeners: Array<Function>;
+	
 	constructor() {
 		this._listeners = [];
 	}

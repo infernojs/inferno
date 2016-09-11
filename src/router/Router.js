@@ -1,7 +1,7 @@
 import Component from '../component/es2015';
 import { isArray, isNull } from '../core/utils';
 import { exec, convertToHashbang, pathRankSort } from './utils';
-import { createVComponent, cloneVNode } from '../core/shapes.ts';
+import { createVComponent, cloneVNode } from '../core/shapes';
 
 export default class Router extends Component {
 	constructor(props, context) {

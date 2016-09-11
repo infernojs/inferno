@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-    typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (factory((global.InfernoCompat = global.InfernoCompat || {})));
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (factory((global.InfernoCompat = global.InfernoCompat || {})));
 }(this, (function (exports) { 'use strict';
 
 var Lifecycle = function Lifecycle() {
@@ -24,73 +24,55 @@ Lifecycle.prototype.trigger = function trigger () {
 };
 
 var NO_OP = '$NO_OP';
-
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
 // Runs only once in applications lifetime
 var isBrowser = typeof window !== 'undefined' && window.document;
-
 function isArray(obj) {
-	return obj instanceof Array;
+    return obj instanceof Array;
 }
-
 function isStatefulComponent(o) {
-	var component = o.component;
-
-	return !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
+    var component = o.component;
+    return !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
 }
-
 function isStringOrNumber(obj) {
-	return isString(obj) || isNumber(obj);
+    return isString(obj) || isNumber(obj);
 }
-
 function isNullOrUndef(obj) {
-	return isUndefined(obj) || isNull(obj);
+    return isUndefined(obj) || isNull(obj);
 }
-
 function isInvalid(obj) {
-	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
+    return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
-
 function isFunction(obj) {
-	return typeof obj === 'function';
+    return typeof obj === 'function';
 }
-
 function isAttrAnEvent(attr) {
-	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+    return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 }
-
 function isString(obj) {
-	return typeof obj === 'string';
+    return typeof obj === 'string';
 }
-
 function isNumber(obj) {
-	return typeof obj === 'number';
+    return typeof obj === 'number';
 }
-
 function isNull(obj) {
-	return obj === null;
+    return obj === null;
 }
-
 function isTrue(obj) {
-	return obj === true;
+    return obj === true;
 }
-
 function isUndefined(obj) {
-	return obj === undefined;
+    return obj === undefined;
 }
-
 function isObject(o) {
-	return typeof o === 'object';
+    return typeof o === 'object';
 }
-
 function throwError(message) {
-	if (!message) {
-		message = ERROR_MSG;
-	}
-	throw new Error(("Inferno Error: " + message));
+    if (!message) {
+        message = ERROR_MSG;
+    }
+    throw new Error(("Inferno Error: " + message));
 }
-
 var EMPTY_OBJ = {};
 
 function mountStaticChildren(children, dom, isSVG) {
@@ -148,13 +130,13 @@ function createStaticVElementClone(bp, isSVG) {
 }
 
 (function (NodeTypes) {
-    NodeTypes[NodeTypes["ELEMENT"] = 0] = "ELEMENT";
-    NodeTypes[NodeTypes["OPT_ELEMENT"] = 1] = "OPT_ELEMENT";
-    NodeTypes[NodeTypes["TEXT"] = 2] = "TEXT";
-    NodeTypes[NodeTypes["FRAGMENT"] = 3] = "FRAGMENT";
-    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 4] = "OPT_BLUEPRINT";
-    NodeTypes[NodeTypes["COMPONENT"] = 5] = "COMPONENT";
-    NodeTypes[NodeTypes["PLACEHOLDER"] = 6] = "PLACEHOLDER";
+    NodeTypes[NodeTypes["ELEMENT"] = 1] = "ELEMENT";
+    NodeTypes[NodeTypes["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
+    NodeTypes[NodeTypes["TEXT"] = 3] = "TEXT";
+    NodeTypes[NodeTypes["FRAGMENT"] = 4] = "FRAGMENT";
+    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
+    NodeTypes[NodeTypes["COMPONENT"] = 6] = "COMPONENT";
+    NodeTypes[NodeTypes["PLACEHOLDER"] = 7] = "PLACEHOLDER";
 })(exports.NodeTypes || (exports.NodeTypes = {}));
 ;
 (function (ValueTypes) {
@@ -175,6 +157,7 @@ function createStaticVElementClone(bp, isSVG) {
     ChildrenTypes[ChildrenTypes["TEXT"] = 3] = "TEXT";
     ChildrenTypes[ChildrenTypes["UNKNOWN"] = 4] = "UNKNOWN";
 })(exports.ChildrenTypes || (exports.ChildrenTypes = {}));
+;
 ;
 function convertVOptElementToVElement(optVElement) {
     var bp = optVElement.bp;
@@ -272,15 +255,16 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
     }
 }
 function cloneVNode(vNodeToClone, props) {
-    var children = [], len = arguments.length - 2;
-    while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
+    var _children = [], len = arguments.length - 2;
+    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
 
-    if (children.length > 0 && !isNull(children[0])) {
+    var children = _children;
+    if (_children.length > 0 && !isNull(_children[0])) {
         if (!props) {
             props = {};
         }
-        if (children.length === 1) {
-            children = children[0];
+        if (_children.length === 1) {
+            children = _children[0];
         }
         if (isUndefined(props.children)) {
             props.children = children;
@@ -399,7 +383,7 @@ function createVFragment(children, childrenType) {
         type: exports.NodeTypes.FRAGMENT
     };
 }
-function createVPlaceholder() {
+function createVPlaceholder$1() {
     return {
         dom: null,
         type: exports.NodeTypes.PLACEHOLDER
@@ -1616,7 +1600,7 @@ function createStatefulComponentInstance(Component, props, context, isSVG) {
 	var input = instance.render();
 
 	if (isInvalid(input)) {
-		input = createVPlaceholder();
+		input = createVPlaceholder$1();
 	}
 	instance._pendingSetState = false;
 	instance._lastInput = input;
@@ -1627,7 +1611,7 @@ function createStatelessComponentInput(component, props, context) {
 	var input = component(props, context);
 
 	if (isInvalid(input)) {
-		input = createVPlaceholder();
+		input = createVPlaceholder$1();
 	}
 	return input;
 }
@@ -1721,7 +1705,7 @@ function normalise(object) {
 	if (isStringOrNumber(object)) {
 		return createVText(object);
 	} else if (isInvalid(object)) {
-		return createVPlaceholder();
+		return createVPlaceholder$1();
 	} else if (isArray(object)) {
 		return createVFragment(object);
 	} else if (isVNode(object) && object.dom) {
@@ -2461,96 +2445,95 @@ function render(input, parentDom) {
 }
 
 var elementHooks = {
-	onCreated: true,
-	onAttached: true,
-	onWillUpdate: true,
-	onDidUpdate: true,
-	onWillDetach: true
+    onCreated: true,
+    onAttached: true,
+    onWillUpdate: true,
+    onDidUpdate: true,
+    onWillDetach: true
 };
-
 var componentHooks = {
-	onComponentWillMount: true,
-	onComponentDidMount: true,
-	onComponentWillUnmount: true,
-	onComponentShouldUpdate: true,
-	onComponentWillUpdate: true,
-	onComponentDidUpdate: true
+    onComponentWillMount: true,
+    onComponentDidMount: true,
+    onComponentWillUnmount: true,
+    onComponentShouldUpdate: true,
+    onComponentWillUpdate: true,
+    onComponentDidUpdate: true
 };
-
 function createElement(name, props) {
-	var _children = [], len = arguments.length - 2;
-	while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
+    var _children = [], len = arguments.length - 2;
+    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
 
-	if (isInvalid(name) || isObject(name)) {
-		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
-	}
-	var children = _children;
-	var vNode;
-
-	if (_children) {
-		if (_children.length === 1) {
-			children = _children[0];
-		} else if (_children.length === 0) {
-			children = undefined;
-		}
-	}
-	if (isString(name)) {
-		var hooks;
-		vNode = createVElement(name);
-
-		for (var prop in props) {
-			if (prop === 'key') {
-				vNode.key = props.key;
-				delete props.key;
-			} else if (elementHooks[prop]) {
-				if (!hooks) {
-					hooks = {};
-				}
-				hooks[prop] = props[prop];
-				delete props[prop];
-			} else if (isAttrAnEvent(prop)) {
-				var lowerCase = prop.toLowerCase();
-
-				if (lowerCase !== prop) {
-					props[prop.toLowerCase()] = props[prop];
-					delete props[prop];
-				}
-			}
-		}
-		vNode.props = props;
-		if (!isUndefined(children)) {
-			vNode.children = children;
-		}
-		if (hooks) {
-			vNode.hooks = hooks;
-		}
-	} else {
-		var hooks$1;
-		vNode = createVComponent(name);
-
-		if (!isUndefined(children)) {
-			if (!props) {
-				props = {};
-			}
-			props.children = children;
-		}
-		for (var prop$1 in props) {
-			if (componentHooks[prop$1]) {
-				if (!hooks$1) {
-					hooks$1 = {};
-				}
-				hooks$1[prop$1] = props[prop$1];
-			} else if (prop$1 === 'key') {
-				vNode.key = props.key;
-				delete props.key;
-			}
-		}
-		vNode.props = props;
-		if (hooks$1) {
-			vNode.hooks = hooks$1;
-		}
-	}
-	return vNode;
+    if (isInvalid(name) || isObject(name)) {
+        throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
+    }
+    var children = _children;
+    var vNode;
+    if (_children) {
+        if (_children.length === 1) {
+            children = _children[0];
+        }
+        else if (_children.length === 0) {
+            children = null;
+        }
+    }
+    if (isString(name)) {
+        var hooks;
+        vNode = createVElement(name, null, null, null, null, null);
+        for (var prop in props) {
+            if (prop === 'key') {
+                vNode.key = props.key;
+                delete props.key;
+            }
+            else if (elementHooks[prop]) {
+                if (!hooks) {
+                    hooks = {};
+                }
+                hooks[prop] = props[prop];
+                delete props[prop];
+            }
+            else if (isAttrAnEvent(prop)) {
+                var lowerCase = prop.toLowerCase();
+                if (lowerCase !== prop) {
+                    props[prop.toLowerCase()] = props[prop];
+                    delete props[prop];
+                }
+            }
+        }
+        vNode.props = props;
+        if (!isUndefined(children)) {
+            vNode.children = children;
+        }
+        if (hooks) {
+            vNode.hooks = hooks;
+        }
+    }
+    else {
+        var hooks$1;
+        vNode = createVComponent(name, null, null, null, null);
+        if (!isUndefined(children)) {
+            if (!props) {
+                props = {};
+            }
+            props.children = children;
+        }
+        for (var prop$1 in props) {
+            if (componentHooks[prop$1]) {
+                if (!hooks$1) {
+                    hooks$1 = {};
+                }
+                hooks$1[prop$1] = props[prop$1];
+            }
+            else if (prop$1 === 'key') {
+                vNode.key = props.key;
+                delete props.key;
+            }
+        }
+        vNode.props = props;
+        if (hooks$1) {
+            vNode.hooks = hooks$1;
+        }
+    }
+    return vNode;
 }
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
@@ -2594,7 +2577,7 @@ function applyState(component, force, callback) {
 		if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 		} else if (isNullOrUndef(nextInput)) {
-			nextInput = createVPlaceholder();
+			nextInput = createVPlaceholder$1();
 		}
 		var lastInput = component._lastInput;
 		var parentDom = lastInput.dom.parentNode;

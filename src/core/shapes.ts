@@ -1,14 +1,14 @@
-import { isUndefined, isArray, isNull, isNullOrUndef } from './utils.js';
-import createStaticVElementClone from './createStaticVElementClone.js';
+import { isUndefined, isArray, isNull, isNullOrUndef } from './utils';
+import createStaticVElementClone from './createStaticVElementClone';
 
 export enum NodeTypes {
-	ELEMENT,
-	OPT_ELEMENT,
-	TEXT,
-	FRAGMENT,
-	OPT_BLUEPRINT,
-	COMPONENT,
-	PLACEHOLDER
+	ELEMENT = 1,
+	OPT_ELEMENT = 2,
+	TEXT = 3,
+	FRAGMENT = 4,
+	OPT_BLUEPRINT = 5,
+	COMPONENT = 6,
+	PLACEHOLDER = 7
 };
 
 export enum ValueTypes {
@@ -30,7 +30,7 @@ export enum ChildrenTypes {
 	UNKNOWN
 };
 
-interface OptBlueprint {
+export interface OptBlueprint {
 	clone: null | Node;
 	svgClone: null | SVGAElement;
 	d0: any;
@@ -49,16 +49,38 @@ interface OptBlueprint {
 	v3: Array<any>;
 }
 
-interface OptVElement {
+export interface OptVElement {
 	bp: OptBlueprint;
 	dom: null | Node | SVGAElement;
 	key: string | number | null;
-	type: NodeTypes;
+	type: NodeTypes.OPT_ELEMENT;
 	v0: any;
 	v1: any;
 	v2: any;
 	v3: Array<any>;
 }
+
+export interface VComponent {
+	component: Function | null;
+	dom: null | Node | SVGAElement;
+	hooks: any;
+	instance: null | Object;
+	key: null | string | number;
+	props: any;
+	ref: Function | null;
+	type: NodeTypes.COMPONENT
+};
+
+export interface VElement {
+	children: string | null | number | Array<any>;
+	childrenType: ChildrenTypes;
+	dom: null | Node | SVGAElement;
+	key: null | string | number;
+	props: any;
+	ref: Function | null;
+	tag: string;
+	type: NodeTypes.ELEMENT;
+};
 
 export function clonePropsChildren(props: any) {
 	const children = props.children;
@@ -262,7 +284,7 @@ export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d
 	return bp;
 }
 
-export function createVComponent(component, props, key, hooks, ref) {
+export function createVComponent(component, props, key, hooks, ref): VComponent {
 	return {
 		component,
 		dom: null,
@@ -283,7 +305,7 @@ export function createVText(text) {
 	};
 }
 
-export function createVElement(tag, props, children, key, ref, childrenType) {
+export function createVElement(tag, props, children, key, ref, childrenType): VElement {
 	return {
 		children,
 		childrenType: childrenType || ChildrenTypes.UNKNOWN,

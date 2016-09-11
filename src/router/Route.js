@@ -1,4 +1,4 @@
-import { createVComponent } from '../core/shapes.ts';
+import { createVComponent } from '../core/shapes';
 import Component from '../component/es2015';
 
 const ASYNC_STATUS = {

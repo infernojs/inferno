@@ -24,38 +24,30 @@ Lifecycle.prototype.trigger = function trigger () {
 };
 
 var NO_OP = '$NO_OP';
-
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
 function toArray(children) {
-	return isArray(children) ? children : (children ? [children] : children);
+    return isArray(children) ? children : (children ? [children] : children);
 }
-
 function isArray(obj) {
-	return obj instanceof Array;
+    return obj instanceof Array;
 }
-
 function isNullOrUndef(obj) {
-	return isUndefined(obj) || isNull(obj);
+    return isUndefined(obj) || isNull(obj);
 }
-
 function isFunction(obj) {
-	return typeof obj === 'function';
+    return typeof obj === 'function';
 }
-
 function isNull(obj) {
-	return obj === null;
+    return obj === null;
 }
-
 function isUndefined(obj) {
-	return obj === undefined;
+    return obj === undefined;
 }
-
 function throwError(message) {
-	if (!message) {
-		message = ERROR_MSG;
-	}
-	throw new Error(("Inferno Error: " + message));
+    if (!message) {
+        message = ERROR_MSG;
+    }
+    throw new Error(("Inferno Error: " + message));
 }
 
 function constructDefaults(string, object, value) {
@@ -78,13 +70,13 @@ constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,bo
 
 var NodeTypes;
 (function (NodeTypes) {
-    NodeTypes[NodeTypes["ELEMENT"] = 0] = "ELEMENT";
-    NodeTypes[NodeTypes["OPT_ELEMENT"] = 1] = "OPT_ELEMENT";
-    NodeTypes[NodeTypes["TEXT"] = 2] = "TEXT";
-    NodeTypes[NodeTypes["FRAGMENT"] = 3] = "FRAGMENT";
-    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 4] = "OPT_BLUEPRINT";
-    NodeTypes[NodeTypes["COMPONENT"] = 5] = "COMPONENT";
-    NodeTypes[NodeTypes["PLACEHOLDER"] = 6] = "PLACEHOLDER";
+    NodeTypes[NodeTypes["ELEMENT"] = 1] = "ELEMENT";
+    NodeTypes[NodeTypes["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
+    NodeTypes[NodeTypes["TEXT"] = 3] = "TEXT";
+    NodeTypes[NodeTypes["FRAGMENT"] = 4] = "FRAGMENT";
+    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
+    NodeTypes[NodeTypes["COMPONENT"] = 6] = "COMPONENT";
+    NodeTypes[NodeTypes["PLACEHOLDER"] = 7] = "PLACEHOLDER";
 })(NodeTypes || (NodeTypes = {}));
 ;
 function createVComponent(component, props, key, hooks, ref) {
@@ -99,7 +91,7 @@ function createVComponent(component, props, key, hooks, ref) {
         type: NodeTypes.COMPONENT
     };
 }
-function createVPlaceholder() {
+function createVPlaceholder$1() {
     return {
         dom: null,
         type: NodeTypes.PLACEHOLDER
@@ -147,7 +139,7 @@ function applyState(component, force, callback) {
 		if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 		} else if (isNullOrUndef(nextInput)) {
-			nextInput = createVPlaceholder();
+			nextInput = createVPlaceholder$1();
 		}
 		var lastInput = component._lastInput;
 		var parentDom = lastInput.dom.parentNode;

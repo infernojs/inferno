@@ -1,7 +1,7 @@
 import Component from '../component/es2015';
 import { warning, shallowEqual, wrapActionCreators } from './utils';
 import { isFunction } from '../core/utils';
-import { createBlueprint, createVComponent } from '../core/shapes.ts';
+import { createBlueprint, createVComponent } from '../core/shapes';
 import hoistStatics from 'hoist-non-inferno-statics';
 import invariant from 'invariant';
 

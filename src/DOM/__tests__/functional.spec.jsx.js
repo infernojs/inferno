@@ -7,7 +7,7 @@ import {
 	ChildrenTypes,
 	ValueTypes,
 	NodeTypes
-} from './../../core/shapes.ts';
+} from './../../core/shapes';
 import {
   // observe,
   fromEvent,

@@ -14,7 +14,7 @@ import {
 	isVComponent,
 	isOptVElement,
 	convertVOptElementToVElement
-} from './../core/shapes.ts';
+} from './../core/shapes';
 
 function renderComponentToString(vComponent, isRoot, context) {
 	const Component = vComponent.component;

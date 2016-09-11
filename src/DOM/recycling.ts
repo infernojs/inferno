@@ -1,9 +1,14 @@
 import { isUndefined, isNull } from './../core/utils';
 import { patchOptVElement, patchVComponent } from './patching';
+import { VComponent } from '../core/shapes';
 
 export const recyclingEnabled = true;
+const vComponentPools = new Map<Function | null, Pools>();
 
-const vComponentPools = new Map();
+interface Pools {
+	nonKeyed: Array<VComponent>,
+	keyed: Map<string | number, Array<VComponent>>
+};
 
 export function recycleOptVElement(optVElement, lifecycle, context, isSVG, shallowUnmount) {
 	const bp = optVElement.bp;
@@ -39,10 +44,10 @@ export function poolOptVElement(optVElement) {
 	}
 }
 
-export function recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount) {
+export function recycleVComponent(vComponent: VComponent, lifecycle, context, isSVG, shallowUnmount) {
 	const component = vComponent.component;
 	const key = vComponent.key;
-	let pools = vComponentPools.get(component);
+	let pools: Pools = vComponentPools.get(component);
 
 	if (!isUndefined(pools)) {
 		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
@@ -65,12 +70,12 @@ export function recycleVComponent(vComponent, lifecycle, context, isSVG, shallow
 export function poolVComponent(vComponent) {
 	const component = vComponent.component;
 	const key = vComponent.key;
-	let pools = vComponentPools.get(component);
+	let pools: Pools = vComponentPools.get(component);
 
 	if (isUndefined(pools)) {
 		pools = {
 			nonKeyed: [],
-			keyed: new Map()
+			keyed: new Map<string | number, Array<VComponent>>()
 		};
 		vComponentPools.set(component, pools);
 	}

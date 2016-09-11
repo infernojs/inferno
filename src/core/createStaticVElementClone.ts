@@ -1,8 +1,9 @@
 import { isBrowser, isNull, isArray, isStringOrNumber, isInvalid } from './utils';
 import { documentCreateElement } from '../DOM/utils';
 import { patchProp } from '../DOM/patching';
+import { OptBlueprint } from './shapes';
 
-function mountStaticChildren(children, dom, isSVG) {
+function mountStaticChildren(children, dom: Node | SVGAElement, isSVG: boolean) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
@@ -16,7 +17,7 @@ function mountStaticChildren(children, dom, isSVG) {
 	}
 }
 
-function mountStaticNode(node, parentDom, isSVG) {
+function mountStaticNode(node, parentDom: Node | SVGAElement | null, isSVG: boolean) {
 	const tag = node.tag;
 
 	if (tag === 'svg') {
@@ -41,7 +42,7 @@ function mountStaticNode(node, parentDom, isSVG) {
 	return dom;
 }
 
-export default function createStaticVElementClone(bp, isSVG) {
+export default function createStaticVElementClone(bp: OptBlueprint, isSVG: boolean) {
 	if (!isBrowser) {
 		return null;
 	}

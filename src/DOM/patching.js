@@ -58,7 +58,7 @@ import {
 	isTextChildrenType,
 	isUnknownChildrenType,
 	clonePropsChildren
-} from '../core/shapes.ts';
+} from '../core/shapes';
 import { unmount } from './unmounting';
 import {
 	isUnitlessNumber,

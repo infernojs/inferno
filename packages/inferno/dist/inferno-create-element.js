@@ -4,37 +4,31 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.InfernoCreateElement = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.InfernoCreateElement = factory());
 }(this, (function () { 'use strict';
 
 function isInvalid(obj) {
-	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
+    return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
-
 function isAttrAnEvent(attr) {
-	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+    return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 }
-
 function isString(obj) {
-	return typeof obj === 'string';
+    return typeof obj === 'string';
 }
-
 function isNull(obj) {
-	return obj === null;
+    return obj === null;
 }
-
 function isTrue(obj) {
-	return obj === true;
+    return obj === true;
 }
-
 function isUndefined(obj) {
-	return obj === undefined;
+    return obj === undefined;
 }
-
 function isObject(o) {
-	return typeof o === 'object';
+    return typeof o === 'object';
 }
 
 function constructDefaults(string, object, value) {
@@ -57,13 +51,13 @@ constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,bo
 
 var NodeTypes;
 (function (NodeTypes) {
-    NodeTypes[NodeTypes["ELEMENT"] = 0] = "ELEMENT";
-    NodeTypes[NodeTypes["OPT_ELEMENT"] = 1] = "OPT_ELEMENT";
-    NodeTypes[NodeTypes["TEXT"] = 2] = "TEXT";
-    NodeTypes[NodeTypes["FRAGMENT"] = 3] = "FRAGMENT";
-    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 4] = "OPT_BLUEPRINT";
-    NodeTypes[NodeTypes["COMPONENT"] = 5] = "COMPONENT";
-    NodeTypes[NodeTypes["PLACEHOLDER"] = 6] = "PLACEHOLDER";
+    NodeTypes[NodeTypes["ELEMENT"] = 1] = "ELEMENT";
+    NodeTypes[NodeTypes["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
+    NodeTypes[NodeTypes["TEXT"] = 3] = "TEXT";
+    NodeTypes[NodeTypes["FRAGMENT"] = 4] = "FRAGMENT";
+    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
+    NodeTypes[NodeTypes["COMPONENT"] = 6] = "COMPONENT";
+    NodeTypes[NodeTypes["PLACEHOLDER"] = 7] = "PLACEHOLDER";
 })(NodeTypes || (NodeTypes = {}));
 ;
 var ChildrenTypes;
@@ -74,6 +68,7 @@ var ChildrenTypes;
     ChildrenTypes[ChildrenTypes["TEXT"] = 3] = "TEXT";
     ChildrenTypes[ChildrenTypes["UNKNOWN"] = 4] = "UNKNOWN";
 })(ChildrenTypes || (ChildrenTypes = {}));
+;
 ;
 function createVComponent(component, props, key, hooks, ref) {
     return {
@@ -101,96 +96,95 @@ function createVElement(tag, props, children, key, ref, childrenType) {
 }
 
 var elementHooks = {
-	onCreated: true,
-	onAttached: true,
-	onWillUpdate: true,
-	onDidUpdate: true,
-	onWillDetach: true
+    onCreated: true,
+    onAttached: true,
+    onWillUpdate: true,
+    onDidUpdate: true,
+    onWillDetach: true
 };
-
 var componentHooks = {
-	onComponentWillMount: true,
-	onComponentDidMount: true,
-	onComponentWillUnmount: true,
-	onComponentShouldUpdate: true,
-	onComponentWillUpdate: true,
-	onComponentDidUpdate: true
+    onComponentWillMount: true,
+    onComponentDidMount: true,
+    onComponentWillUnmount: true,
+    onComponentShouldUpdate: true,
+    onComponentWillUpdate: true,
+    onComponentDidUpdate: true
 };
-
 function createElement(name, props) {
-	var _children = [], len = arguments.length - 2;
-	while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
+    var _children = [], len = arguments.length - 2;
+    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
 
-	if (isInvalid(name) || isObject(name)) {
-		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
-	}
-	var children = _children;
-	var vNode;
-
-	if (_children) {
-		if (_children.length === 1) {
-			children = _children[0];
-		} else if (_children.length === 0) {
-			children = undefined;
-		}
-	}
-	if (isString(name)) {
-		var hooks;
-		vNode = createVElement(name);
-
-		for (var prop in props) {
-			if (prop === 'key') {
-				vNode.key = props.key;
-				delete props.key;
-			} else if (elementHooks[prop]) {
-				if (!hooks) {
-					hooks = {};
-				}
-				hooks[prop] = props[prop];
-				delete props[prop];
-			} else if (isAttrAnEvent(prop)) {
-				var lowerCase = prop.toLowerCase();
-
-				if (lowerCase !== prop) {
-					props[prop.toLowerCase()] = props[prop];
-					delete props[prop];
-				}
-			}
-		}
-		vNode.props = props;
-		if (!isUndefined(children)) {
-			vNode.children = children;
-		}
-		if (hooks) {
-			vNode.hooks = hooks;
-		}
-	} else {
-		var hooks$1;
-		vNode = createVComponent(name);
-
-		if (!isUndefined(children)) {
-			if (!props) {
-				props = {};
-			}
-			props.children = children;
-		}
-		for (var prop$1 in props) {
-			if (componentHooks[prop$1]) {
-				if (!hooks$1) {
-					hooks$1 = {};
-				}
-				hooks$1[prop$1] = props[prop$1];
-			} else if (prop$1 === 'key') {
-				vNode.key = props.key;
-				delete props.key;
-			}
-		}
-		vNode.props = props;
-		if (hooks$1) {
-			vNode.hooks = hooks$1;
-		}
-	}
-	return vNode;
+    if (isInvalid(name) || isObject(name)) {
+        throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
+    }
+    var children = _children;
+    var vNode;
+    if (_children) {
+        if (_children.length === 1) {
+            children = _children[0];
+        }
+        else if (_children.length === 0) {
+            children = null;
+        }
+    }
+    if (isString(name)) {
+        var hooks;
+        vNode = createVElement(name, null, null, null, null, null);
+        for (var prop in props) {
+            if (prop === 'key') {
+                vNode.key = props.key;
+                delete props.key;
+            }
+            else if (elementHooks[prop]) {
+                if (!hooks) {
+                    hooks = {};
+                }
+                hooks[prop] = props[prop];
+                delete props[prop];
+            }
+            else if (isAttrAnEvent(prop)) {
+                var lowerCase = prop.toLowerCase();
+                if (lowerCase !== prop) {
+                    props[prop.toLowerCase()] = props[prop];
+                    delete props[prop];
+                }
+            }
+        }
+        vNode.props = props;
+        if (!isUndefined(children)) {
+            vNode.children = children;
+        }
+        if (hooks) {
+            vNode.hooks = hooks;
+        }
+    }
+    else {
+        var hooks$1;
+        vNode = createVComponent(name, null, null, null, null);
+        if (!isUndefined(children)) {
+            if (!props) {
+                props = {};
+            }
+            props.children = children;
+        }
+        for (var prop$1 in props) {
+            if (componentHooks[prop$1]) {
+                if (!hooks$1) {
+                    hooks$1 = {};
+                }
+                hooks$1[prop$1] = props[prop$1];
+            }
+            else if (prop$1 === 'key') {
+                vNode.key = props.key;
+                delete props.key;
+            }
+        }
+        vNode.props = props;
+        if (hooks$1) {
+            vNode.hooks = hooks$1;
+        }
+    }
+    return vNode;
 }
 
 return createElement;
