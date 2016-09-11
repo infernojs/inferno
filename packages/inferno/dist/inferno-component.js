@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.InfernoComponent = factory());
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.InfernoComponent = factory());
 }(this, (function () { 'use strict';
 
 var Lifecycle = function Lifecycle() {
@@ -64,21 +64,22 @@ constructDefaults('volume,value', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-var NodeTypes = {
-	ELEMENT: 1,
-	OPT_ELEMENT: 2,
-	TEXT: 3,
-	FRAGMENT: 4,
-	OPT_BLUEPRINT: 5,
-	COMPONENT: 6,
-	PLACEHOLDER: 7
-};
-
+var NodeTypes;
+(function (NodeTypes) {
+    NodeTypes[NodeTypes["ELEMENT"] = 0] = "ELEMENT";
+    NodeTypes[NodeTypes["OPT_ELEMENT"] = 1] = "OPT_ELEMENT";
+    NodeTypes[NodeTypes["TEXT"] = 2] = "TEXT";
+    NodeTypes[NodeTypes["FRAGMENT"] = 3] = "FRAGMENT";
+    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 4] = "OPT_BLUEPRINT";
+    NodeTypes[NodeTypes["COMPONENT"] = 5] = "COMPONENT";
+    NodeTypes[NodeTypes["PLACEHOLDER"] = 6] = "PLACEHOLDER";
+})(NodeTypes || (NodeTypes = {}));
+;
 function createVPlaceholder() {
-	return {
-		dom: null,
-		type: NodeTypes.PLACEHOLDER
-	};
+    return {
+        dom: null,
+        type: NodeTypes.PLACEHOLDER
+    };
 }
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';

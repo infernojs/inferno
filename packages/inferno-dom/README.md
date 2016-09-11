@@ -13,17 +13,22 @@ npm install inferno inferno-dom
 
 * render
 * findDOMNode
-* mount
-* patch
-* unmount
+* createRenderer
 
 ## Usage
 
 ```js
 import Inferno from 'inferno';
 import InfernoDOM from 'inferno-dom';
+import { from } from 'most';
 
+// render
 InfernoDOM.render(<div>Hello world</div>, container);
+
+// createRenderer
+const vNodes$ = from([<div />, <div />]);
+
+scan(renderer, container, vNodes$);
 ```
 
 

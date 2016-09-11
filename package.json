@@ -10,6 +10,7 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "devDependencies": {
+    "@types/core-js": "^0.9.32",
     "babel-cli": "^6.14.0",
     "babel-core": "^6.14.0",
     "babel-eslint": "^6.1.2",
@@ -64,8 +65,11 @@
     "rollup-plugin-filesize": "^0.5.5",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-typescript": "^0.8.1",
     "rollup-plugin-uglify": "^1.0.1",
     "sinon": "2.0.0-pre",
+    "ts-loader": "^0.8.2",
+    "typescript": "^2.0.2",
     "union-type": "^0.3.2",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.1"

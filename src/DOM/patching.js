@@ -28,10 +28,6 @@ import {
 import {
 	insertOrAppend,
 	isKeyed,
-	isUnitlessNumber,
-	booleanProps,
-	strictProps,
-	namespaces,
 	replaceVListWithNode,
 	normaliseChild,
 	resetFormInputProperties,
@@ -65,6 +61,12 @@ import {
 } from '../core/shapes';
 import { unmount } from './unmounting';
 import { createVPlaceholder } from '../core/shapes';
+import {
+	isUnitlessNumber,
+	booleanProps,
+	strictProps,
+	namespaces
+} from './constants';
 
 function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);

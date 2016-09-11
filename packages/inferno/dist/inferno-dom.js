@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.InfernoDOM = factory());
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.InfernoDOM = factory());
 }(this, (function () { 'use strict';
 
 var Lifecycle = function Lifecycle() {
@@ -147,291 +147,272 @@ function createStaticVElementClone(bp, isSVG) {
 	return dom.cloneNode(true);
 }
 
-var NodeTypes = {
-	ELEMENT: 1,
-	OPT_ELEMENT: 2,
-	TEXT: 3,
-	FRAGMENT: 4,
-	OPT_BLUEPRINT: 5,
-	COMPONENT: 6,
-	PLACEHOLDER: 7
-};
-
-var ValueTypes = {
-	CHILDREN: 1,
-	PROP_CLASS_NAME: 2,
-	PROP_STYLE: 3,
-	PROP_DATA: 4,
-	PROP_REF: 5,
-	PROP_SPREAD: 6,
-	PROP_VALUE: 7,
-	PROP: 8
-};
-
-var ChildrenTypes = {
-	NON_KEYED: 1,
-	KEYED: 2,
-	NODE: 3,
-	TEXT: 4,
-	UNKNOWN: 5
-};
-
+var NodeTypes;
+(function (NodeTypes) {
+    NodeTypes[NodeTypes["ELEMENT"] = 0] = "ELEMENT";
+    NodeTypes[NodeTypes["OPT_ELEMENT"] = 1] = "OPT_ELEMENT";
+    NodeTypes[NodeTypes["TEXT"] = 2] = "TEXT";
+    NodeTypes[NodeTypes["FRAGMENT"] = 3] = "FRAGMENT";
+    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 4] = "OPT_BLUEPRINT";
+    NodeTypes[NodeTypes["COMPONENT"] = 5] = "COMPONENT";
+    NodeTypes[NodeTypes["PLACEHOLDER"] = 6] = "PLACEHOLDER";
+})(NodeTypes || (NodeTypes = {}));
+;
+var ValueTypes;
+(function (ValueTypes) {
+    ValueTypes[ValueTypes["CHILDREN"] = 0] = "CHILDREN";
+    ValueTypes[ValueTypes["PROP_CLASS_NAME"] = 1] = "PROP_CLASS_NAME";
+    ValueTypes[ValueTypes["PROP_STYLE"] = 2] = "PROP_STYLE";
+    ValueTypes[ValueTypes["PROP_DATA"] = 3] = "PROP_DATA";
+    ValueTypes[ValueTypes["PROP_REF"] = 4] = "PROP_REF";
+    ValueTypes[ValueTypes["PROP_SPREAD"] = 5] = "PROP_SPREAD";
+    ValueTypes[ValueTypes["PROP_VALUE"] = 6] = "PROP_VALUE";
+    ValueTypes[ValueTypes["PROP"] = 7] = "PROP";
+})(ValueTypes || (ValueTypes = {}));
+;
+var ChildrenTypes;
+(function (ChildrenTypes) {
+    ChildrenTypes[ChildrenTypes["NON_KEYED"] = 0] = "NON_KEYED";
+    ChildrenTypes[ChildrenTypes["KEYED"] = 1] = "KEYED";
+    ChildrenTypes[ChildrenTypes["NODE"] = 2] = "NODE";
+    ChildrenTypes[ChildrenTypes["TEXT"] = 3] = "TEXT";
+    ChildrenTypes[ChildrenTypes["UNKNOWN"] = 4] = "UNKNOWN";
+})(ChildrenTypes || (ChildrenTypes = {}));
+;
 function convertVOptElementToVElement(optVElement) {
-	var bp = optVElement.bp;
-	var staticElement = bp.staticVElement;
-	var vElement = createVElement(staticElement.tag, null, null, optVElement.key, null, null);
-	var bp0 = bp.v0;
-	var staticChildren = staticElement.children;
-	var staticProps = staticElement.props;
-
-	if (!isNull(staticChildren)) {
-		vElement.children = staticChildren;
-	}
-	if (!isNull(staticProps)) {
-		vElement.props = staticProps;
-	}
-	if (!isNull(bp0)) {
-		attachOptVElementValue(vElement, optVElement, bp0, optVElement.v0, bp.d0);
-		var bp1 = bp.v1;
-
-		if (!isNull(bp1)) {
-			attachOptVElementValue(vElement, optVElement, bp1, optVElement.v1, bp.d1);
-			var bp2 = bp.v2;
-
-			if (!isNull(bp2)) {
-				attachOptVElementValue(vElement, optVElement, bp2, optVElement.v2, bp.d2);
-				var bp3 = bp.v3;
-
-				if (!isNull(bp3)) {
-					var v3 = optVElement.v3;
-					var d3 = bp.d3;
-					var bp3$1 = bp.v3;
-
-					for (var i = 0; i < bp3$1.length; i++) {
-						attachOptVElementValue(vElement, optVElement, bp3$1[i], v3[i], d3[i]);
-					}
-				}
-			}
-		}
-	}
-	return vElement;
+    var bp = optVElement.bp;
+    var staticElement = bp.staticVElement;
+    var vElement = createVElement(staticElement.tag, null, null, optVElement.key, null, null);
+    var bp0 = bp.v0;
+    var staticChildren = staticElement.children;
+    var staticProps = staticElement.props;
+    if (!isNull(staticChildren)) {
+        vElement.children = staticChildren;
+    }
+    if (!isNull(staticProps)) {
+        vElement.props = staticProps;
+    }
+    if (!isNull(bp0)) {
+        attachOptVElementValue(vElement, optVElement, bp0, optVElement.v0, bp.d0);
+        var bp1 = bp.v1;
+        if (!isNull(bp1)) {
+            attachOptVElementValue(vElement, optVElement, bp1, optVElement.v1, bp.d1);
+            var bp2 = bp.v2;
+            if (!isNull(bp2)) {
+                attachOptVElementValue(vElement, optVElement, bp2, optVElement.v2, bp.d2);
+                var bp3 = bp.v3;
+                if (!isNull(bp3)) {
+                    var v3 = optVElement.v3;
+                    var d3 = bp.d3;
+                    var bp3$1 = bp.v3;
+                    for (var i = 0; i < bp3$1.length; i++) {
+                        attachOptVElementValue(vElement, optVElement, bp3$1[i], v3[i], d3[i]);
+                    }
+                }
+            }
+        }
+    }
+    return vElement;
 }
-
 function attachOptVElementValue(vElement, vOptElement, valueType, value, descriptor) {
-	switch (valueType) {
-		case ValueTypes.CHILDREN:
-			vElement.childrenType = descriptor;
-			if (isNullOrUndef(vElement.children)) {
-				vElement.children = value;
-			} else {
-				debugger;
-			}
-			break;
-		case ValueTypes.PROP_CLASS_NAME:
-			if (!vElement.props) {
-				vElement.props = { className: value };
-			} else {
-				debugger;
-			}
-			break;
-		case ValueTypes.PROP_DATA:
-			if (!vElement.props) {
-				vElement.props = {};
-			}
-			vElement.props['data-' + descriptor] = value;
-			break;
-		case ValueTypes.PROP_STYLE:
-			if (!vElement.props) {
-				vElement.props = { style: value };
-			} else {
-				debugger;
-			}
-			break;
-		case ValueTypes.PROP_VALUE:
-			if (!vElement.props) {
-				vElement.props = { value: value };
-			} else {
-				debugger;
-			}
-			break;
-		case ValueTypes.PROP:
-			if (!vElement.props) {
-				vElement.props = {};
-			}
-			vElement.props[descriptor] = value;
-			break;
-		case ValueTypes.PROP_REF:
-			vElement.ref = value;
-			break;
-		case ValueTypes.PROP_SPREAD:
-			if (!vElement.props) {
-				vElement.props = value;
-			} else {
-				debugger;
-			}
-			break;
-	}
+    switch (valueType) {
+        case ValueTypes.CHILDREN:
+            vElement.childrenType = descriptor;
+            if (isNullOrUndef(vElement.children)) {
+                vElement.children = value;
+            }
+            else {
+                debugger;
+            }
+            break;
+        case ValueTypes.PROP_CLASS_NAME:
+            if (!vElement.props) {
+                vElement.props = { className: value };
+            }
+            else {
+                debugger;
+            }
+            break;
+        case ValueTypes.PROP_DATA:
+            if (!vElement.props) {
+                vElement.props = {};
+            }
+            vElement.props['data-' + descriptor] = value;
+            break;
+        case ValueTypes.PROP_STYLE:
+            if (!vElement.props) {
+                vElement.props = { style: value };
+            }
+            else {
+                debugger;
+            }
+            break;
+        case ValueTypes.PROP_VALUE:
+            if (!vElement.props) {
+                vElement.props = { value: value };
+            }
+            else {
+                debugger;
+            }
+            break;
+        case ValueTypes.PROP:
+            if (!vElement.props) {
+                vElement.props = {};
+            }
+            vElement.props[descriptor] = value;
+            break;
+        case ValueTypes.PROP_REF:
+            vElement.ref = value;
+            break;
+        case ValueTypes.PROP_SPREAD:
+            if (!vElement.props) {
+                vElement.props = value;
+            }
+            else {
+                debugger;
+            }
+            break;
+    }
 }
-
 function cloneVNode(vNodeToClone, props) {
-	var children = [], len = arguments.length - 2;
-	while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
+    var children = [], len = arguments.length - 2;
+    while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
 
-	if (children.length > 0 && !isNull(children[0])) {
-		if (!props) {
-			props = {};
-		}
-		if (children.length === 1) {
-			children = children[0];
-		}
-		if (isUndefined(props.children)) {
-			props.children = children;
-		} else {
-			if (isArray(children)) {
-				if (isArray(props.children)) {
-					props.children = props.children.concat(children);
-				} else {
-					props.children = [props.children].concat(children);
-				}
-			} else {
-				if (isArray(props.children)) {
-					props.children.push(children);
-				} else {
-					props.children = [props.children];
-					props.children.push(children);
-				}
-			}
-		}
-	} else {
-		children = null;
-	}
-	var newVNode;
-
-	if (isArray(vNodeToClone)) {
-		newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
-	} else if (isNullOrUndef(props) && isNullOrUndef(children)) {
-		newVNode = Object.assign({}, vNodeToClone);
-	} else {
-		if (isVComponent(vNodeToClone)) {
-			newVNode = createVComponent(vNodeToClone.component,
-				Object.assign({}, vNodeToClone.props, props),
-				vNodeToClone.key,
-				vNodeToClone.hooks,
-				vNodeToClone.ref
-			);
-		} else if (isVElement(vNodeToClone)) {
-			newVNode = createVElement(vNodeToClone.tag,
-				Object.assign({}, vNodeToClone.props, props),
-				(props && props.children) || children || vNodeToClone.children,
-				vNodeToClone.key,
-				vNodeToClone.ref,
-				ChildrenTypes.UNKNOWN
-			);
-		} else if (isOptVElement(vNodeToClone)) {
-			newVNode = cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
-		}
-	}
-	newVNode.dom = null;
-	return newVNode;
+    if (children.length > 0 && !isNull(children[0])) {
+        if (!props) {
+            props = {};
+        }
+        if (children.length === 1) {
+            children = children[0];
+        }
+        if (isUndefined(props.children)) {
+            props.children = children;
+        }
+        else {
+            if (isArray(children)) {
+                if (isArray(props.children)) {
+                    props.children = props.children.concat(children);
+                }
+                else {
+                    props.children = [props.children].concat(children);
+                }
+            }
+            else {
+                if (isArray(props.children)) {
+                    props.children.push(children);
+                }
+                else {
+                    props.children = [props.children];
+                    props.children.push(children);
+                }
+            }
+        }
+    }
+    else {
+        children = null;
+    }
+    var newVNode;
+    if (isArray(vNodeToClone)) {
+        newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
+    }
+    else if (isNullOrUndef(props) && isNullOrUndef(children)) {
+        newVNode = Object.assign({}, vNodeToClone);
+    }
+    else {
+        if (isVComponent(vNodeToClone)) {
+            newVNode = createVComponent(vNodeToClone.component, Object.assign({}, vNodeToClone.props, props), vNodeToClone.key, vNodeToClone.hooks, vNodeToClone.ref);
+        }
+        else if (isVElement(vNodeToClone)) {
+            newVNode = createVElement(vNodeToClone.tag, Object.assign({}, vNodeToClone.props, props), (props && props.children) || children || vNodeToClone.children, vNodeToClone.key, vNodeToClone.ref, ChildrenTypes.UNKNOWN);
+        }
+        else if (isOptVElement(vNodeToClone)) {
+            newVNode = cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
+        }
+    }
+    newVNode.dom = null;
+    return newVNode;
 }
-
 function createVComponent(component, props, key, hooks, ref) {
-	return {
-		component: component,
-		dom: null,
-		hooks: hooks || null,
-		instance: null,
-		key: key,
-		props: props,
-		ref: ref || null,
-		type: NodeTypes.COMPONENT
-	};
+    return {
+        component: component,
+        dom: null,
+        hooks: hooks || null,
+        instance: null,
+        key: key,
+        props: props,
+        ref: ref || null,
+        type: NodeTypes.COMPONENT
+    };
 }
-
 function createVText(text) {
-	return {
-		dom: null,
-		text: text,
-		type: NodeTypes.TEXT
-	};
+    return {
+        dom: null,
+        text: text,
+        type: NodeTypes.TEXT
+    };
 }
-
 function createVElement(tag, props, children, key, ref, childrenType) {
-	return {
-		children: children,
-		childrenType: childrenType || ChildrenTypes.UNKNOWN,
-		dom: null,
-		key: key,
-		props: props,
-		ref: ref || null,
-		tag: tag,
-		type: NodeTypes.ELEMENT
-	};
+    return {
+        children: children,
+        childrenType: childrenType || ChildrenTypes.UNKNOWN,
+        dom: null,
+        key: key,
+        props: props,
+        ref: ref || null,
+        tag: tag,
+        type: NodeTypes.ELEMENT
+    };
 }
-
 function createVFragment(children, childrenType) {
-	return {
-		children: children,
-		childrenType: childrenType || ChildrenTypes.UNKNOWN,
-		dom: null,
-		pointer: null,
-		type: NodeTypes.FRAGMENT
-	};
+    return {
+        children: children,
+        childrenType: childrenType || ChildrenTypes.UNKNOWN,
+        dom: null,
+        pointer: null,
+        type: NodeTypes.FRAGMENT
+    };
 }
-
 function createVPlaceholder() {
-	return {
-		dom: null,
-		type: NodeTypes.PLACEHOLDER
-	};
+    return {
+        dom: null,
+        type: NodeTypes.PLACEHOLDER
+    };
 }
-
 function isVElement(o) {
-	return o.type === NodeTypes.ELEMENT;
+    return o.type === NodeTypes.ELEMENT;
 }
-
 function isOptVElement(o) {
-	return o.type === NodeTypes.OPT_ELEMENT;
+    return o.type === NodeTypes.OPT_ELEMENT;
 }
-
 function isVComponent(o) {
-	return o.type === NodeTypes.COMPONENT;
+    return o.type === NodeTypes.COMPONENT;
 }
-
 function isVText(o) {
-	return o.type === NodeTypes.TEXT;
+    return o.type === NodeTypes.TEXT;
 }
-
 function isVFragment(o) {
-	return o.type === NodeTypes.FRAGMENT;
+    return o.type === NodeTypes.FRAGMENT;
 }
-
 function isVPlaceholder(o) {
-	return o.type === NodeTypes.PLACEHOLDER;
+    return o.type === NodeTypes.PLACEHOLDER;
 }
-
 function isVNode(o) {
-	return !isUndefined(o.type);
+    return !isUndefined(o.type);
 }
-
 function isUnknownChildrenType(o) {
-	return o === ChildrenTypes.UNKNOWN;
+    return o === ChildrenTypes.UNKNOWN;
 }
-
 function isKeyedListChildrenType(o) {
-	return o === ChildrenTypes.KEYED;
+    return o === ChildrenTypes.KEYED;
 }
-
 function isNonKeyedListChildrenType(o) {
-	return o === ChildrenTypes.NON_KEYED;
+    return o === ChildrenTypes.NON_KEYED;
 }
-
 function isTextChildrenType(o) {
-	return o === ChildrenTypes.TEXT;
+    return o === ChildrenTypes.TEXT;
 }
-
 function isNodeChildrenType(o) {
-	return o === ChildrenTypes.NODE;
+    return o === ChildrenTypes.NODE;
 }
 
 var recyclingEnabled = true;
@@ -707,6 +688,25 @@ function unmountProps(props, lifecycle) {
 		}
 	}
 }
+
+function constructDefaults(string, object, value) {
+	/* eslint no-return-assign: 0 */
+	string.split(',').forEach(function (i) { return object[i] = value; });
+}
+
+var xlinkNS = 'http://www.w3.org/1999/xlink';
+var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+var svgNS = 'http://www.w3.org/2000/svg';
+var strictProps = {};
+var booleanProps = {};
+var namespaces = {};
+var isUnitlessNumber = {};
+
+constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+constructDefaults('volume,value', strictProps, true);
+constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
 function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
@@ -1570,25 +1570,6 @@ function removeProp(prop, dom) {
 	}
 }
 
-function constructDefaults(string, object, value) {
-	/* eslint no-return-assign: 0 */
-	string.split(',').forEach(function (i) { return object[i] = value; });
-}
-
-var xlinkNS = 'http://www.w3.org/1999/xlink';
-var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-var svgNS = 'http://www.w3.org/2000/svg';
-var strictProps = {};
-var booleanProps = {};
-var namespaces = {};
-var isUnitlessNumber = {};
-
-constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,value', strictProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
-
 function createStatefulComponentInstance(Component, props, context, isSVG) {
 	var instance = new Component(props, context);
 
@@ -1725,7 +1706,8 @@ function normalise(object) {
 function normaliseChild(children, i) {
 	var child = children[i];
 
-	return children[i] = normalise(child);
+	children[i] = normalise(child);
+	return children[i];
 }
 
 function removeChild(parentDom, dom) {

@@ -7,7 +7,7 @@ import {
 	isNumber,
 	isTrue
 } from './../core/utils';
-import { isUnitlessNumber } from '../DOM/utils';
+import { isUnitlessNumber } from '../DOM/constants';
 import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
 import {
 	isVElement,

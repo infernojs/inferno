@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.InfernoCreateElement = factory());
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.InfernoCreateElement = factory());
 }(this, (function () { 'use strict';
 
 function isInvalid(obj) {
@@ -55,48 +55,49 @@ constructDefaults('volume,value', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-var NodeTypes = {
-	ELEMENT: 1,
-	OPT_ELEMENT: 2,
-	TEXT: 3,
-	FRAGMENT: 4,
-	OPT_BLUEPRINT: 5,
-	COMPONENT: 6,
-	PLACEHOLDER: 7
-};
-
-var ChildrenTypes = {
-	NON_KEYED: 1,
-	KEYED: 2,
-	NODE: 3,
-	TEXT: 4,
-	UNKNOWN: 5
-};
-
+var NodeTypes;
+(function (NodeTypes) {
+    NodeTypes[NodeTypes["ELEMENT"] = 0] = "ELEMENT";
+    NodeTypes[NodeTypes["OPT_ELEMENT"] = 1] = "OPT_ELEMENT";
+    NodeTypes[NodeTypes["TEXT"] = 2] = "TEXT";
+    NodeTypes[NodeTypes["FRAGMENT"] = 3] = "FRAGMENT";
+    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 4] = "OPT_BLUEPRINT";
+    NodeTypes[NodeTypes["COMPONENT"] = 5] = "COMPONENT";
+    NodeTypes[NodeTypes["PLACEHOLDER"] = 6] = "PLACEHOLDER";
+})(NodeTypes || (NodeTypes = {}));
+;
+var ChildrenTypes;
+(function (ChildrenTypes) {
+    ChildrenTypes[ChildrenTypes["NON_KEYED"] = 0] = "NON_KEYED";
+    ChildrenTypes[ChildrenTypes["KEYED"] = 1] = "KEYED";
+    ChildrenTypes[ChildrenTypes["NODE"] = 2] = "NODE";
+    ChildrenTypes[ChildrenTypes["TEXT"] = 3] = "TEXT";
+    ChildrenTypes[ChildrenTypes["UNKNOWN"] = 4] = "UNKNOWN";
+})(ChildrenTypes || (ChildrenTypes = {}));
+;
 function createVComponent(component, props, key, hooks, ref) {
-	return {
-		component: component,
-		dom: null,
-		hooks: hooks || null,
-		instance: null,
-		key: key,
-		props: props,
-		ref: ref || null,
-		type: NodeTypes.COMPONENT
-	};
+    return {
+        component: component,
+        dom: null,
+        hooks: hooks || null,
+        instance: null,
+        key: key,
+        props: props,
+        ref: ref || null,
+        type: NodeTypes.COMPONENT
+    };
 }
-
 function createVElement(tag, props, children, key, ref, childrenType) {
-	return {
-		children: children,
-		childrenType: childrenType || ChildrenTypes.UNKNOWN,
-		dom: null,
-		key: key,
-		props: props,
-		ref: ref || null,
-		tag: tag,
-		type: NodeTypes.ELEMENT
-	};
+    return {
+        children: children,
+        childrenType: childrenType || ChildrenTypes.UNKNOWN,
+        dom: null,
+        key: key,
+        props: props,
+        ref: ref || null,
+        tag: tag,
+        type: NodeTypes.ELEMENT
+    };
 }
 
 var elementHooks = {

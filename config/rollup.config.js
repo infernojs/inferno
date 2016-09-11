@@ -8,11 +8,15 @@ import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
 import commonjs from 'rollup-plugin-commonjs';
+import typescript from 'rollup-plugin-typescript';
 
 const pkg = JSON.parse(fs.readFileSync('./package.json'));
 const external = Object.keys(pkg.peerDependencies || {}).concat(Object.keys(pkg.dependencies || {}));
 
 const plugins = [
+	typescript({
+		typescript: require('typescript')
+	}),
 	buble({
 		objectAssign: 'Object.assign'
 	}),

@@ -139,9 +139,12 @@ This is essential for low-powered devices such as tablets and phones, where user
 
 ## Inferno Top-Level API
 
-### Inferno.createVNode
+### Inferno.createVELement
 
-Creates an Inferno VNode object that has chainable setting methods.
+Creates an Inferno VElement object. VElement's represent DOM nodes directly. As such there shape and factory method is:
+
+```javascript
+```
 
 ```javascript
 import createVNode from `inferno`;

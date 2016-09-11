@@ -14,8 +14,7 @@ import {
 	replaceChild,
 	normaliseChild,
 	createStatelessComponentInput,
-	createStatefulComponentInstance,
-	svgNS
+	createStatefulComponentInstance
 } from './utils';
 import {
 	mountVText,
@@ -39,6 +38,7 @@ import {
 	ValueTypes
 } from '../core/shapes';
 import { componentToDOMNodeMap } from './rendering';
+import { svgNS } from './constants';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];

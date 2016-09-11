@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["es6", "dom"],
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "removeComments": false,
+    "moduleResolution": "node"
+  }
+}

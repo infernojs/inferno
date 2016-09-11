@@ -1,36 +1,66 @@
 import { isUndefined, isArray, isNull, isNullOrUndef } from './utils';
 import createStaticVElementClone from './createStaticVElementClone';
 
-export const NodeTypes = {
-	ELEMENT: 1,
-	OPT_ELEMENT: 2,
-	TEXT: 3,
-	FRAGMENT: 4,
-	OPT_BLUEPRINT: 5,
-	COMPONENT: 6,
-	PLACEHOLDER: 7
+export enum NodeTypes {
+	ELEMENT,
+	OPT_ELEMENT,
+	TEXT,
+	FRAGMENT,
+	OPT_BLUEPRINT,
+	COMPONENT,
+	PLACEHOLDER
 };
 
-export const ValueTypes = {
-	CHILDREN: 1,
-	PROP_CLASS_NAME: 2,
-	PROP_STYLE: 3,
-	PROP_DATA: 4,
-	PROP_REF: 5,
-	PROP_SPREAD: 6,
-	PROP_VALUE: 7,
-	PROP: 8
+export enum ValueTypes {
+	CHILDREN,
+	PROP_CLASS_NAME,
+	PROP_STYLE,
+	PROP_DATA,
+	PROP_REF,
+	PROP_SPREAD,
+	PROP_VALUE,
+	PROP
 };
 
-export const ChildrenTypes = {
-	NON_KEYED: 1,
-	KEYED: 2,
-	NODE: 3,
-	TEXT: 4,
-	UNKNOWN: 5
+export enum ChildrenTypes {
+	NON_KEYED,
+	KEYED,
+	NODE,
+	TEXT,
+	UNKNOWN
 };
 
-export function clonePropsChildren(props) {
+interface OptBlueprint {
+	clone: null | Node;
+	svgClone: null | SVGAElement;
+	d0: any;
+	d1: any;
+	d2: any;
+	d3: Array<any>;
+	pools: {
+		nonKeyed: Array<OptBlueprint>;
+		keyed: Map<OptBlueprint>;
+	};
+	staticVElement;
+	type: NodeTypes.OPT_BLUEPRINT;
+	v0: any;
+	v1: any;
+	v2: any;
+	v3: Array<any>;
+}
+
+interface OptVElement {
+	bp: OptBlueprint;
+	dom: null | Node | SVGAElement;
+	key: string | number | null;
+	type: NodeTypes;
+	v0: any;
+	v1: any;
+	v2: any;
+	v3: Array<any>;
+}
+
+export function clonePropsChildren(props: any) {
 	const children = props.children;
 
 	if (!isUndefined(children)) {
@@ -38,7 +68,7 @@ export function clonePropsChildren(props) {
 	}
 }
 
-export function convertVOptElementToVElement(optVElement) {
+export function convertVOptElementToVElement(optVElement: OptVElement) {
 	const bp = optVElement.bp;
 	const staticElement = bp.staticVElement;
 	const vElement = createVElement(staticElement.tag, null, null, optVElement.key, null, null);
@@ -135,7 +165,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
 	}
 }
 
-export function cloneVNode(vNodeToClone, props, ...children) {
+export function cloneVNode(vNodeToClone, props?, ...children) {
 	if (children.length > 0 && !isNull(children[0])) {
 		if (!props) {
 			props = {};
@@ -194,7 +224,7 @@ export function cloneVNode(vNodeToClone, props, ...children) {
 	return newVNode;
 }
 
-export function createOptVElement(bp, key, v0, v1, v2, v3) {
+export function createOptVElement(bp, key, v0, v1, v2, v3): OptVElement {
 	return {
 		bp,
 		dom: null,
@@ -207,8 +237,8 @@ export function createOptVElement(bp, key, v0, v1, v2, v3) {
 	};
 }
 
-export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {
-	const bp = {
+export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3): OptBlueprint {
+	const bp: OptBlueprint = {
 		clone: null,
 		svgClone: null,
 		d0,

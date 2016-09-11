@@ -28,5 +28,8 @@
   ],
   "dependencies": {
     "inferno": "1.0.0-alpha8"
+  },
+  "devDependencies": {
+    "typescript": "^2.0.2"
   }
 }
