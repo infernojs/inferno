@@ -1,6 +1,6 @@
 import Lifecycle from './../DOM/lifecycle';
 import { isNullOrUndef, NO_OP, throwError } from './../core/utils';
-import { createVPlaceholder } from './../core/shapes';
+import { createVPlaceholder } from './../core/shapes.ts';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 

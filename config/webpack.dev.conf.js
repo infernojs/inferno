@@ -21,11 +21,18 @@ module.exports = {
 		loaders: [
 			// Perform babel transpiling on all non-source, test files.
 			{
-				test: /\.[jt]s$/,
+				test: /\.ts$/,
 				exclude: [
 					path.resolve('node_modules/')
 				],
-				loaders: ['babel-loader', 'ts-loader'],
+				loaders: ['babel-loader', 'ts-loader']
+			},
+			{
+				test: /\.js$/,
+				exclude: [
+					path.resolve('node_modules/')
+				],
+				loader: 'babel-loader',
 				cacheDirectory: true
 			}
 		]

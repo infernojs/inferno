@@ -1,5 +1,5 @@
-import { isUndefined, isArray, isNull, isNullOrUndef } from './utils';
-import createStaticVElementClone from './createStaticVElementClone';
+import { isUndefined, isArray, isNull, isNullOrUndef } from './utils.js';
+import createStaticVElementClone from './createStaticVElementClone.js';
 
 export enum NodeTypes {
 	ELEMENT,
@@ -39,7 +39,7 @@ interface OptBlueprint {
 	d3: Array<any>;
 	pools: {
 		nonKeyed: Array<OptBlueprint>;
-		keyed: Map<OptBlueprint>;
+		keyed: Map<string | number, OptVElement>;
 	};
 	staticVElement;
 	type: NodeTypes.OPT_BLUEPRINT;
@@ -165,13 +165,15 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
 	}
 }
 
-export function cloneVNode(vNodeToClone, props?, ...children) {
-	if (children.length > 0 && !isNull(children[0])) {
+export function cloneVNode(vNodeToClone, props?, ..._children) {
+	let children: any = _children;
+
+	if (_children.length > 0 && !isNull(_children[0])) {
 		if (!props) {
 			props = {};
 		}
-		if (children.length === 1) {
-			children = children[0];
+		if (_children.length === 1) {
+			children = _children[0];
 		}
 		if (isUndefined(props.children)) {
 			props.children = children;
@@ -247,7 +249,7 @@ export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d
 		d3,
 		pools: {
 			nonKeyed: [],
-			keyed: new Map()
+			keyed: new Map<string | number, OptVElement>()
 		},
 		staticVElement,
 		type: NodeTypes.OPT_BLUEPRINT,

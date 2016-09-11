@@ -17,7 +17,7 @@ import {
 	isVPlaceholder,
 	isVFragment,
 	ValueTypes
-} from '../core/shapes';
+} from '../core/shapes.ts';
 import { poolOptVElement, poolVComponent, recyclingEnabled } from './recycling';
 
 export function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {

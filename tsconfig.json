@@ -1,7 +1,10 @@
 {
 	"compilerOptions": {
 		"target": "es6",
-		"module": "commonjs",
+		"module": "es2015",
+		"allowJs": true,
+    "allowSyntheticDefaultImports": true,
+		"sourceMap": true,
 		"lib": [
 			"es6",
 			"dom"
@@ -9,7 +12,6 @@
 		"jsx": "preserve",
 		"noUnusedLocals": true,
 		"strictNullChecks": true,
-		"removeComments": false,
-		"moduleResolution": "node"
+		"removeComments": false
 	}
 }

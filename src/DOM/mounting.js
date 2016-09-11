@@ -37,7 +37,7 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType,
 	clonePropsChildren
-} from '../core/shapes';
+} from '../core/shapes.ts';
 import { recycleOptVElement, recyclingEnabled, recycleVComponent } from './recycling';
 import createStaticVElementClone from '../core/createStaticVElementClone';
 

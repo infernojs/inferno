@@ -12,7 +12,7 @@ import {
 } from '../core/utils';
 import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
-import { cloneVNode } from '../core/shapes';
+import { cloneVNode } from '../core/shapes.ts';
 
 const roots = new Map();
 export const componentToDOMNodeMap = new Map();
