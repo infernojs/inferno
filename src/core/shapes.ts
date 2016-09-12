@@ -1,5 +1,5 @@
 import { isUndefined } from '../shared';
-import { NodeTypes, ChildrenTypes, NodeTypesEnum, ChildrenTypesEnum } from './constants';
+import { NodeTypes, ChildrenTypes } from './constants';
 
 export interface OptBlueprint {
 	clone: null | Node;
@@ -13,7 +13,7 @@ export interface OptBlueprint {
 		keyed: Map<string | number, OptVElement>;
 	};
 	staticVElement;
-	type: NodeTypesEnum.OPT_BLUEPRINT;
+	type: number;
 	v0: any;
 	v1: any;
 	v2: any;
@@ -24,7 +24,7 @@ export interface OptVElement {
 	bp: OptBlueprint;
 	dom: null | Node | SVGAElement;
 	key: string | number | null;
-	type: NodeTypesEnum.OPT_ELEMENT;
+	type: number;
 	v0: any;
 	v1: any;
 	v2: any;
@@ -39,18 +39,18 @@ export interface VComponent {
 	key: null | string | number;
 	props: any;
 	ref: Function | null;
-	type: NodeTypesEnum.COMPONENT
+	type: number
 };
 
 export interface VElement {
 	children: string | null | number | Array<any>;
-	childrenType: ChildrenTypesEnum;
+	childrenType: number;
 	dom: null | Node | SVGAElement;
 	key: null | string | number;
 	props: any;
 	ref: Function | null;
 	tag: string;
-	type: NodeTypesEnum.ELEMENT;
+	type: number
 };
 
 export function createOptVElement(bp, key, v0, v1, v2, v3): OptVElement {
@@ -58,7 +58,7 @@ export function createOptVElement(bp, key, v0, v1, v2, v3): OptVElement {
 		bp,
 		dom: null,
 		key,
-		type: NodeTypesEnum.OPT_ELEMENT,
+		type: NodeTypes.OPT_ELEMENT,
 		v0,
 		v1,
 		v2,
@@ -79,7 +79,7 @@ export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d
 			keyed: new Map<string | number, OptVElement>()
 		},
 		staticVElement,
-		type: NodeTypesEnum.OPT_BLUEPRINT,
+		type: NodeTypes.OPT_BLUEPRINT,
 		v0,
 		v1,
 		v2,
@@ -100,7 +100,7 @@ export function createVComponent(component, props, key, hooks, ref): VComponent 
 		key,
 		props,
 		ref: ref || null,
-		type: NodeTypesEnum.COMPONENT
+		type: NodeTypes.COMPONENT
 	};
 }
 
@@ -121,7 +121,7 @@ export function createVElement(tag, props, children, key, ref, childrenType): VE
 		props,
 		ref: ref || null,
 		tag,
-		type: NodeTypesEnum.ELEMENT
+		type: NodeTypes.ELEMENT
 	};
 }
 

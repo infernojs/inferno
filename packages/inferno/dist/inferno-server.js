@@ -100,17 +100,6 @@ function isVoidElement(str) {
 	return !!voidElements[str];
 }
 
-var NodeTypesEnum;
-(function (NodeTypesEnum) {
-    NodeTypesEnum[NodeTypesEnum["ELEMENT"] = 1] = "ELEMENT";
-    NodeTypesEnum[NodeTypesEnum["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
-    NodeTypesEnum[NodeTypesEnum["TEXT"] = 3] = "TEXT";
-    NodeTypesEnum[NodeTypesEnum["FRAGMENT"] = 4] = "FRAGMENT";
-    NodeTypesEnum[NodeTypesEnum["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
-    NodeTypesEnum[NodeTypesEnum["COMPONENT"] = 6] = "COMPONENT";
-    NodeTypesEnum[NodeTypesEnum["PLACEHOLDER"] = 7] = "PLACEHOLDER";
-})(NodeTypesEnum || (NodeTypesEnum = {}));
-;
 var ValueTypes = {
     CHILDREN: 1,
     PROP_CLASS_NAME: 2,
@@ -147,7 +136,7 @@ function createVElement(tag, props, children, key, ref, childrenType) {
         props: props,
         ref: ref || null,
         tag: tag,
-        type: NodeTypesEnum.ELEMENT
+        type: NodeTypes.ELEMENT
     };
 }
 function isVElement(o) {

@@ -75,17 +75,6 @@ function throwError(message) {
 }
 var EMPTY_OBJ = {};
 
-var NodeTypesEnum;
-(function (NodeTypesEnum) {
-    NodeTypesEnum[NodeTypesEnum["ELEMENT"] = 1] = "ELEMENT";
-    NodeTypesEnum[NodeTypesEnum["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
-    NodeTypesEnum[NodeTypesEnum["TEXT"] = 3] = "TEXT";
-    NodeTypesEnum[NodeTypesEnum["FRAGMENT"] = 4] = "FRAGMENT";
-    NodeTypesEnum[NodeTypesEnum["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
-    NodeTypesEnum[NodeTypesEnum["COMPONENT"] = 6] = "COMPONENT";
-    NodeTypesEnum[NodeTypesEnum["PLACEHOLDER"] = 7] = "PLACEHOLDER";
-})(NodeTypesEnum || (NodeTypesEnum = {}));
-;
 var ValueTypes = {
     CHILDREN: 1,
     PROP_CLASS_NAME: 2,
@@ -141,7 +130,7 @@ function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3, rend
             keyed: new Map()
         },
         staticVElement: staticVElement,
-        type: NodeTypesEnum.OPT_BLUEPRINT,
+        type: NodeTypes.OPT_BLUEPRINT,
         v0: v0,
         v1: v1,
         v2: v2,
@@ -161,7 +150,7 @@ function createVComponent(component, props, key, hooks, ref) {
         key: key,
         props: props,
         ref: ref || null,
-        type: NodeTypesEnum.COMPONENT
+        type: NodeTypes.COMPONENT
     };
 }
 function createVText$1(text) {
@@ -180,7 +169,7 @@ function createVElement(tag, props, children, key, ref, childrenType) {
         props: props,
         ref: ref || null,
         tag: tag,
-        type: NodeTypesEnum.ELEMENT
+        type: NodeTypes.ELEMENT
     };
 }
 function createStaticVElement(tag, props, children) {
