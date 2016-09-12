@@ -4,11 +4,13 @@ import { isNullOrUndef } from '../../core/utils';
 import {
 	createStaticVElement,
 	createOptBlueprint,
-	createVComponent,
+	createVComponent
+} from './../../core/shapes';
+import {
 	ChildrenTypes,
 	ValueTypes,
 	NodeTypes
-} from './../../core/shapes';
+} from './../../core/constants';
 
 const Inferno = {
 	createStaticVElement,
