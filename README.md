@@ -261,11 +261,11 @@ common hooks directly onto components and DOM nodes. Below is the table of all p
 | -----------               | --------------                                                          | -----------------------            |
 | `ref`                     | a DOM node has just been mounted / unmounted                            | `domNode` if mounted `null` if not |
 | `onComponentWillMount`    | a stateless function component is about to mount                        | `props`                            |
-| `onComponentDidMount`     | a stateless function component has mounted successfully                 | `domNode, props`                   |
-| `onComponentWillUnmount`  | a stateless function component is about to be unmounted                 | `props`                            |
+| `onComponentDidMount`     | a stateless function component has mounted successfully                 | `domNode`                          |
+| `onComponentWillUnmount`  | a stateless function component is about to be unmounted                 |                                    |
 | `onComponentShouldUpdate` | a stateless function component has been triggered to updated            | `lastProps, nextProps`             |
 | `onComponentWillUpdate`   | a stateless function component is about to perform an update            | `lastProps, nextProps`             |
-| `onComponentDidUpdate`    | a stateless function component has performed an updated                 | `props`                            |
+| `onComponentDidUpdate`    | a stateless function component has performed an updated                 |                                    |
 
 ### Using hooks
 

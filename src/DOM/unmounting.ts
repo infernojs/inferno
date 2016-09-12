@@ -6,7 +6,7 @@ import {
 	isFunction,
 	throwError,
 	isObject
-} from './../core/utils';
+} from '../shared';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
@@ -15,9 +15,9 @@ import {
 	isVElement,
 	isVText,
 	isVPlaceholder,
-	isVFragment,
-	ValueTypes
+	isVFragment
 } from '../core/shapes';
+import { ValueTypes } from '../core/constants';
 import { poolOptVElement, poolVComponent, recyclingEnabled } from './recycling';
 
 export function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
@@ -53,19 +53,18 @@ function unmountVText(vText, parentDom) {
 function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	const bp = optVElement.bp;
 	const bp0 = bp.v0;
-	const dom = bp.dom;
 
 	if (!shallowUnmount) {
 		if (!isNull(bp0)) {
-			unmountOptVElementValue(optVElement, bp0, optVElement.v0, lifecycle);
+			unmountOptVElementValue(optVElement, bp0, optVElement.v0, lifecycle, shallowUnmount);
 			const bp1 = bp.v1;
 
 			if (!isNull(bp1)) {
-				unmountOptVElementValue(optVElement, bp1, optVElement.v1, lifecycle);
+				unmountOptVElementValue(optVElement, bp1, optVElement.v1, lifecycle, shallowUnmount);
 				const bp2 = bp.v2;
 
 				if (!isNull(bp2)) {
-					unmountOptVElementValue(optVElement, bp2, optVElement.v2, lifecycle);
+					unmountOptVElementValue(optVElement, bp2, optVElement.v2, lifecycle, shallowUnmount);
 				}
 			}
 		}
@@ -78,10 +77,10 @@ function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle, shall
 	}
 }
 
-function unmountOptVElementValue(optVElement, valueType, value, lifecycle) {
+function unmountOptVElementValue(optVElement, valueType, value, lifecycle, shallowUnmount) {
 	switch (valueType) {
 		case ValueTypes.CHILDREN:
-			unmountChildren(value, lifecycle);
+			unmountChildren(value, lifecycle, shallowUnmount);
 			break;
 		case ValueTypes.PROP_REF:
 			unmountRef(value);
@@ -104,7 +103,7 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle,
 			if (isVFragment(child)) {
 				unmountVFragment(child, parentDom, true, lifecycle, false);
 			} else {
-				unmount(child, parentDom, lifecycle, false);
+				unmount(child, parentDom, lifecycle, false, shallowUnmount);
 			}
 		}
 	}
@@ -132,9 +131,9 @@ export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, 
 				instance.componentWillUnmount();
 				instance._unmounted = true;
 				componentToDOMNodeMap.delete(instance);
-				unmount(instance._lastInput, null, lifecycle, false);
+				unmount(instance._lastInput, null, lifecycle, false, shallowUnmount);
 			} else {
-				unmount(instance, null, lifecycle, false);
+				unmount(instance, null, lifecycle, false, shallowUnmount);
 			}
 		}
 		const hooks = vComponent.hooks || instanceHooks;
@@ -154,7 +153,6 @@ export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, 
 }
 
 export function unmountVElement(vElement, parentDom, lifecycle, shallowUnmount) {
-	const hooks = vElement.hooks;
 	const dom = vElement.dom;
 	const ref = vElement.ref;
 
@@ -165,7 +163,7 @@ export function unmountVElement(vElement, parentDom, lifecycle, shallowUnmount) 
 		const children = vElement.children;
 
 		if (!isNullOrUndef(children)) {
-			unmountChildren(children, lifecycle);
+			unmountChildren(children, lifecycle, shallowUnmount);
 		}
 	}
 	if (parentDom) {
@@ -173,17 +171,17 @@ export function unmountVElement(vElement, parentDom, lifecycle, shallowUnmount) 
 	}
 }
 
-function unmountChildren(children, lifecycle) {
+function unmountChildren(children, lifecycle, shallowUnmount) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 
 			if (isObject(child)) {
-				unmount(child, null, lifecycle, false);
+				unmount(child, null, lifecycle, false, shallowUnmount);
 			}
 		}
 	} else if (isObject(children)) {
-		unmount(children, null, lifecycle, false);
+		unmount(children, null, lifecycle, false, shallowUnmount);
 	}
 }
 

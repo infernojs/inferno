@@ -1,10 +1,16 @@
 import { render, findDOMNode } from '../../../src/DOM/rendering';
-import createElement from '../../../src/core/createElement';
-import { createVElement, createStaticVElement, createOptBlueprint, createVComponent, ValueTypes, ChildrenTypes, NodeTypes } from '../../../src/core/shapes';
+import createElement from '../../../src/factories/createElement';
+import { createVElement, createStaticVElement, createOptBlueprint, createVComponent } from '../../../src/core/shapes';
 import Component from '../../../src/component/es2015';
 import createClass from '../../../src/component/createClass';
 import renderToString, { renderToStaticMarkup } from '../../../src/server/renderToString';
 import PropTypes from 'proptypes';
+import cloneVNode from '../../../src/factories/cloneVNode';
+import {
+	ValueTypes,
+	ChildrenTypes,
+	NodeTypes
+} from '../../../src/core/constants';
 
 function unmountComponentAtNode(container) {
 	render(null, container);
@@ -74,7 +80,13 @@ export {
 	ValueTypes,
 	ChildrenTypes,
 	NodeTypes,
-	Children
+	Children,
+	createOptVElement,
+	createVFragment,
+	createVPlaceholder,
+	createVText,
+	cloneVNode,
+	NO_OP
 };
 
 export default {
@@ -95,5 +107,11 @@ export default {
 	ValueTypes,
 	ChildrenTypes,
 	NodeTypes,
-	Children
+	Children,
+	createOptVElement,
+	createVFragment,
+	createVPlaceholder,
+	createVText,
+	cloneVNode,
+	NO_OP
 };

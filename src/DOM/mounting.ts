@@ -9,7 +9,7 @@ import {
 	isNull,
 	throwError,
 	EMPTY_OBJ
-} from '../core/utils';
+} from '../shared';
 import {
 	setTextContent,
 	normaliseChild,
@@ -23,23 +23,23 @@ import {
 import { patchStyle, patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	createVPlaceholder,
 	isVElement,
 	isOptVElement,
 	isVText,
 	isVFragment,
 	isVComponent,
-	isVPlaceholder,
+	isVPlaceholder
+} from '../core/shapes';
+import { 
 	ValueTypes,
 	isTextChildrenType,
 	isNodeChildrenType,
 	isKeyedListChildrenType,
 	isNonKeyedListChildrenType,
-	isUnknownChildrenType,
-	clonePropsChildren
-} from '../core/shapes';
+	isUnknownChildrenType
+} from '../core/constants';
 import { recycleOptVElement, recyclingEnabled, recycleVComponent } from './recycling';
-import createStaticVElementClone from '../core/createStaticVElementClone';
+import createStaticVElementClone from '../factories/createStaticVElementClone';
 
 export function mount(input, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	if (isOptVElement(input)) {
@@ -325,7 +325,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		}
 		const input = createStatelessComponentInput(component, props, context);
 
-		vComponent.dom = dom = mount(input, null, lifecycle, context, null, false, shallowUnmount);
+		vComponent.dom = dom = mount(input, null, lifecycle, context, isSVG, shallowUnmount);
 		vComponent.instance = input;
 		mountStatelessComponentCallbacks(hooks, dom, lifecycle);
 		if (!isNull(parentDom)) {
@@ -356,10 +356,10 @@ export function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
 export function mountStatelessComponentCallbacks(hooks, dom, lifecycle) {
 	if (!isNullOrUndef(hooks)) {
 		if (!isNullOrUndef(hooks.onComponentWillMount)) {
-			hooks.onComponentWillMount(props);
+			hooks.onComponentWillMount();
 		}
 		if (!isNullOrUndef(hooks.onComponentDidMount)) {
-			lifecycle.addListener(() => hooks.onComponentDidMount(dom, props));
+			lifecycle.addListener(() => hooks.onComponentDidMount(dom));
 		}
 	}
 }

@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('stream')) :
-    typeof define === 'function' && define.amd ? define(['stream'], factory) :
-    (global.InfernoServer = factory(global.stream));
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('stream')) :
+	typeof define === 'function' && define.amd ? define(['stream'], factory) :
+	(global.InfernoServer = factory(global.stream));
 }(this, (function (stream) { 'use strict';
 
 function isArray(obj) {
@@ -100,40 +100,55 @@ function isVoidElement(str) {
 	return !!voidElements[str];
 }
 
-var NodeTypes;
-(function (NodeTypes) {
-    NodeTypes[NodeTypes["ELEMENT"] = 1] = "ELEMENT";
-    NodeTypes[NodeTypes["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
-    NodeTypes[NodeTypes["TEXT"] = 3] = "TEXT";
-    NodeTypes[NodeTypes["FRAGMENT"] = 4] = "FRAGMENT";
-    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
-    NodeTypes[NodeTypes["COMPONENT"] = 6] = "COMPONENT";
-    NodeTypes[NodeTypes["PLACEHOLDER"] = 7] = "PLACEHOLDER";
-})(NodeTypes || (NodeTypes = {}));
-;
-var ValueTypes;
-(function (ValueTypes) {
-    ValueTypes[ValueTypes["CHILDREN"] = 0] = "CHILDREN";
-    ValueTypes[ValueTypes["PROP_CLASS_NAME"] = 1] = "PROP_CLASS_NAME";
-    ValueTypes[ValueTypes["PROP_STYLE"] = 2] = "PROP_STYLE";
-    ValueTypes[ValueTypes["PROP_DATA"] = 3] = "PROP_DATA";
-    ValueTypes[ValueTypes["PROP_REF"] = 4] = "PROP_REF";
-    ValueTypes[ValueTypes["PROP_SPREAD"] = 5] = "PROP_SPREAD";
-    ValueTypes[ValueTypes["PROP_VALUE"] = 6] = "PROP_VALUE";
-    ValueTypes[ValueTypes["PROP"] = 7] = "PROP";
-})(ValueTypes || (ValueTypes = {}));
-;
-var ChildrenTypes;
-(function (ChildrenTypes) {
-    ChildrenTypes[ChildrenTypes["NON_KEYED"] = 0] = "NON_KEYED";
-    ChildrenTypes[ChildrenTypes["KEYED"] = 1] = "KEYED";
-    ChildrenTypes[ChildrenTypes["NODE"] = 2] = "NODE";
-    ChildrenTypes[ChildrenTypes["TEXT"] = 3] = "TEXT";
-    ChildrenTypes[ChildrenTypes["UNKNOWN"] = 4] = "UNKNOWN";
-})(ChildrenTypes || (ChildrenTypes = {}));
-;
-;
-;
+var ValueTypes = {
+    CHILDREN: 1,
+    PROP_CLASS_NAME: 2,
+    PROP_STYLE: 3,
+    PROP_DATA: 4,
+    PROP_REF: 5,
+    PROP_SPREAD: 6,
+    PROP_VALUE: 7,
+    PROP: 8
+};
+var ChildrenTypes = {
+    NON_KEYED: 1,
+    KEYED: 2,
+    NODE: 3,
+    TEXT: 4,
+    UNKNOWN: 5
+};
+var NodeTypes = {
+    ELEMENT: 1,
+    OPT_ELEMENT: 2,
+    TEXT: 3,
+    FRAGMENT: 4,
+    OPT_BLUEPRINT: 5,
+    COMPONENT: 6,
+    PLACEHOLDER: 7
+};
+
+function createVElement(tag, props, children, key, ref, childrenType) {
+    return {
+        children: children,
+        childrenType: childrenType || ChildrenTypes.UNKNOWN,
+        dom: null,
+        key: key,
+        props: props,
+        ref: ref || null,
+        tag: tag,
+        type: NodeTypes.ELEMENT
+    };
+}
+function isVElement(o) {
+    return o.type === NodeTypes.ELEMENT;
+}
+function isOptVElement(o) {
+    return o.type === NodeTypes.OPT_ELEMENT;
+}
+function isVComponent(o) {
+    return o.type === NodeTypes.COMPONENT;
+}
+
 function convertVOptElementToVElement(optVElement) {
     var bp = optVElement.bp;
     var staticElement = bp.staticVElement;
@@ -229,173 +244,150 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
             break;
     }
 }
-function createVElement(tag, props, children, key, ref, childrenType) {
-    return {
-        children: children,
-        childrenType: childrenType || ChildrenTypes.UNKNOWN,
-        dom: null,
-        key: key,
-        props: props,
-        ref: ref || null,
-        tag: tag,
-        type: NodeTypes.ELEMENT
-    };
-}
-function isVElement(o) {
-    return o.type === NodeTypes.ELEMENT;
-}
-function isOptVElement(o) {
-    return o.type === NodeTypes.OPT_ELEMENT;
-}
-function isVComponent(o) {
-    return o.type === NodeTypes.COMPONENT;
-}
 
 function renderComponentToString(vComponent, isRoot, context) {
-	var Component = vComponent.component;
-	var props = vComponent.props;
-
-	if (isStatefulComponent(vComponent)) {
-		var instance = new Component(props);
-		var childContext = instance.getChildContext();
-
-		if (!isNullOrUndef(childContext)) {
-			context = Object.assign({}, context, childContext);
-		}
-		instance.context = context;
-		// Block setting state - we should render only once, using latest state
-		instance._pendingSetState = true;
-		instance.componentWillMount();
-		var node = instance.render();
-
-		instance._pendingSetState = false;
-		return renderInputToString(node, context, isRoot);
-	} else {
-		return renderInputToString(Component(props), context, isRoot);
-	}
+    var Component = vComponent.component;
+    var props = vComponent.props;
+    if (isStatefulComponent(vComponent)) {
+        var instance = new Component(props);
+        var childContext = instance.getChildContext();
+        if (!isNullOrUndef(childContext)) {
+            context = Object.assign({}, context, childContext);
+        }
+        instance.context = context;
+        // Block setting state - we should render only once, using latest state
+        instance._pendingSetState = true;
+        instance.componentWillMount();
+        var node = instance.render();
+        instance._pendingSetState = false;
+        return renderInputToString(node, context, isRoot);
+    }
+    else {
+        return renderInputToString(Component(props), context, isRoot);
+    }
 }
-
 function renderChildren(children, context) {
-	if (children && isArray(children)) {
-		var childrenResult = [];
-		var insertComment = false;
-
-		for (var i = 0; i < children.length; i++) {
-			var child = children[i];
-			var isText = isStringOrNumber(child);
-			var invalid = isInvalid(child);
-
-			if (isText || invalid) {
-				if (insertComment === true) {
-					if (isInvalid(child)) {
-						childrenResult.push('<!--!-->');
-					} else {
-						childrenResult.push('<!---->');
-					}
-				}
-				if (isText) {
-					childrenResult.push(escapeText(child));
-				}
-				insertComment = true;
-			} else if (isArray(child)) {
-				childrenResult.push('<!---->');
-				childrenResult.push(renderChildren(child));
-				childrenResult.push('<!--!-->');
-				insertComment = true;
-			} else {
-				insertComment = false;
-				childrenResult.push(renderInputToString(child, context, false));
-			}
-		}
-		return childrenResult.join('');
-	} else if (!isInvalid(children)) {
-		if (isStringOrNumber(children)) {
-			return escapeText(children);
-		} else {
-			return renderInputToString(children, context, false) || '';
-		}
-	}
-	return '';
+    if (children && isArray(children)) {
+        var childrenResult = [];
+        var insertComment = false;
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            var isText = isStringOrNumber(child);
+            var invalid = isInvalid(child);
+            if (isText || invalid) {
+                if (insertComment === true) {
+                    if (isInvalid(child)) {
+                        childrenResult.push('<!--!-->');
+                    }
+                    else {
+                        childrenResult.push('<!---->');
+                    }
+                }
+                if (isText) {
+                    childrenResult.push(escapeText(child));
+                }
+                insertComment = true;
+            }
+            else if (isArray(child)) {
+                childrenResult.push('<!---->');
+                childrenResult.push(renderChildren(child, context));
+                childrenResult.push('<!--!-->');
+                insertComment = true;
+            }
+            else {
+                insertComment = false;
+                childrenResult.push(renderInputToString(child, context, false));
+            }
+        }
+        return childrenResult.join('');
+    }
+    else if (!isInvalid(children)) {
+        if (isStringOrNumber(children)) {
+            return escapeText(children);
+        }
+        else {
+            return renderInputToString(children, context, false) || '';
+        }
+    }
+    return '';
 }
-
 function renderStyleToString(style) {
-	if (isStringOrNumber(style)) {
-		return style;
-	} else {
-		var styles = [];
-		var keys = Object.keys(style);
-
-		for (var i = 0; i < keys.length; i++) {
-			var styleName = keys[i];
-			var value = style[styleName];
-			var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
-
-			if (!isNullOrUndef(value)) {
-				styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
-			}
-		}
-		return styles.join();
-	}
+    if (isStringOrNumber(style)) {
+        return style;
+    }
+    else {
+        var styles = [];
+        var keys = Object.keys(style);
+        for (var i = 0; i < keys.length; i++) {
+            var styleName = keys[i];
+            var value = style[styleName];
+            var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+            if (!isNullOrUndef(value)) {
+                styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
+            }
+        }
+        return styles.join();
+    }
 }
-
 function renderVElementToString(vElement, isRoot, context) {
-	var tag = vElement.tag;
-	var outputProps = [];
-	var props = vElement.props;
-	var propsKeys = (props && Object.keys(props)) || [];
-	var html = '';
-
-	for (var i = 0; i < propsKeys.length; i++) {
-		var prop = propsKeys[i];
-		var value = props[prop];
-
-		if (prop === 'dangerouslySetInnerHTML') {
-			html = value.__html;
-		} else if (prop === 'style') {
-			outputProps.push('style="' + renderStyleToString(props.style) + '"');
-		} else if (prop === 'className') {
-			outputProps.push('class="' + value + '"');
-		} else {
-			if (isStringOrNumber(value)) {
-				outputProps.push(escapeAttr(prop) + '="' + escapeAttr(value) + '"');
-			} else if (isTrue(value)) {
-				outputProps.push(escapeAttr(prop));
-			}
-		}
-	}
-	if (isRoot) {
-		outputProps.push('data-infernoroot');
-	}
-	if (isVoidElement(tag)) {
-		return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">");
-	} else {
-		return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren(vElement.children, context)) + "</" + tag + ">");
-	}
+    var tag = vElement.tag;
+    var outputProps = [];
+    var props = vElement.props;
+    var propsKeys = (props && Object.keys(props)) || [];
+    var html = '';
+    for (var i = 0; i < propsKeys.length; i++) {
+        var prop = propsKeys[i];
+        var value = props[prop];
+        if (prop === 'dangerouslySetInnerHTML') {
+            html = value.__html;
+        }
+        else if (prop === 'style') {
+            outputProps.push('style="' + renderStyleToString(props.style) + '"');
+        }
+        else if (prop === 'className') {
+            outputProps.push('class="' + value + '"');
+        }
+        else {
+            if (isStringOrNumber(value)) {
+                outputProps.push(escapeAttr(prop) + '="' + escapeAttr(value) + '"');
+            }
+            else if (isTrue(value)) {
+                outputProps.push(escapeAttr(prop));
+            }
+        }
+    }
+    if (isRoot) {
+        outputProps.push('data-infernoroot');
+    }
+    if (isVoidElement(tag)) {
+        return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">");
+    }
+    else {
+        return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren(vElement.children, context)) + "</" + tag + ">");
+    }
 }
-
 function renderOptVElementToString(optVElement, isRoot, context) {
-	return renderInputToString(convertVOptElementToVElement(optVElement), context, isRoot);
+    return renderInputToString(convertVOptElementToVElement(optVElement), context, isRoot);
 }
-
 function renderInputToString(input, context, isRoot) {
-	if (!isInvalid(input)) {
-		if (isOptVElement(input)) {
-			return renderOptVElementToString(input, isRoot, context);
-		} else if (isVElement(input)) {
-			return renderVElementToString(input, isRoot, context);
-		} else if (isVComponent(input)) {
-			return renderComponentToString(input, isRoot, context);
-		}
-	}
-	throw Error('Inferno Error: Bad input argument called on renderInputToString(). Input argument may need normalising.');
+    if (!isInvalid(input)) {
+        if (isOptVElement(input)) {
+            return renderOptVElementToString(input, isRoot, context);
+        }
+        else if (isVElement(input)) {
+            return renderVElementToString(input, isRoot, context);
+        }
+        else if (isVComponent(input)) {
+            return renderComponentToString(input, isRoot, context);
+        }
+    }
+    throw Error('Inferno Error: Bad input argument called on renderInputToString(). Input argument may need normalising.');
 }
-
 function renderToString(input) {
-	return renderInputToString(input, null, false);
+    return renderInputToString(input, null, false);
 }
-
 function renderToStaticMarkup(input) {
-	return renderInputToString(input, null, true);
+    return renderInputToString(input, null, true);
 }
 
 function renderStyleToString$1(style) {

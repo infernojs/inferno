@@ -1,7 +1,7 @@
-import { isBrowser, isNull, isArray, isStringOrNumber, isInvalid } from './utils';
+import { isBrowser, isNull, isArray, isStringOrNumber, isInvalid } from '../shared';
 import { documentCreateElement } from '../DOM/utils';
 import { patchProp } from '../DOM/patching';
-import { OptBlueprint } from './shapes';
+import { OptBlueprint } from '../core/shapes';
 
 function mountStaticChildren(children, dom: Node | SVGAElement, isSVG: boolean) {
 	if (isArray(children)) {

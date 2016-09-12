@@ -1,4 +1,4 @@
-import { isStringOrNumber, isNullOrUndef, isNumber, isTrue } from './../core/utils';
+import { isStringOrNumber, isNullOrUndef, isNumber, isTrue } from './../shared';
 import { isUnitlessNumber } from '../DOM/constants';
 import { toHyphenCase, escapeAttr } from './utils';
 

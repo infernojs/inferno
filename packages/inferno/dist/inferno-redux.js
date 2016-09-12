@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.InfernoRedux = factory());
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.InfernoRedux = factory());
 }(this, (function () { 'use strict';
 
 var Lifecycle = function Lifecycle() {
@@ -25,17 +25,8 @@ Lifecycle.prototype.trigger = function trigger () {
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-function toArray(children) {
-    return isArray(children) ? children : (children ? [children] : children);
-}
-function isArray(obj) {
-    return obj instanceof Array;
-}
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
-}
-function isFunction(obj) {
-    return typeof obj === 'function';
 }
 function isNull(obj) {
     return obj === null;
@@ -50,33 +41,35 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
-function constructDefaults(string, object, value) {
-    /* eslint no-return-assign: 0 */
-    string.split(',').forEach(function (i) { return object[i] = value; });
+function toArray$1(children) {
+    return isArray$1(children) ? children : (children ? [children] : children);
 }
-var xlinkNS = 'http://www.w3.org/1999/xlink';
-var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-var strictProps = {};
-var booleanProps = {};
-var namespaces = {};
-var isUnitlessNumber = {};
-constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,value', strictProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+function isArray$1(obj) {
+    return obj instanceof Array;
+}
+function isNullOrUndef$1(obj) {
+    return isUndefined$1(obj) || isNull$1(obj);
+}
+function isFunction$1(obj) {
+    return typeof obj === 'function';
+}
+function isNull$1(obj) {
+    return obj === null;
+}
+function isUndefined$1(obj) {
+    return obj === undefined;
+}
 
-var NodeTypes;
-(function (NodeTypes) {
-    NodeTypes[NodeTypes["ELEMENT"] = 1] = "ELEMENT";
-    NodeTypes[NodeTypes["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
-    NodeTypes[NodeTypes["TEXT"] = 3] = "TEXT";
-    NodeTypes[NodeTypes["FRAGMENT"] = 4] = "FRAGMENT";
-    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
-    NodeTypes[NodeTypes["COMPONENT"] = 6] = "COMPONENT";
-    NodeTypes[NodeTypes["PLACEHOLDER"] = 7] = "PLACEHOLDER";
-})(NodeTypes || (NodeTypes = {}));
-;
+var NodeTypes = {
+    ELEMENT: 1,
+    OPT_ELEMENT: 2,
+    TEXT: 3,
+    FRAGMENT: 4,
+    OPT_BLUEPRINT: 5,
+    COMPONENT: 6,
+    PLACEHOLDER: 7
+};
+
 function createVComponent(component, props, key, hooks, ref) {
     return {
         component: component,
@@ -89,7 +82,7 @@ function createVComponent(component, props, key, hooks, ref) {
         type: NodeTypes.COMPONENT
     };
 }
-function createVPlaceholder$1() {
+function createVPlaceholder() {
     return {
         dom: null,
         type: NodeTypes.PLACEHOLDER
@@ -137,7 +130,7 @@ function applyState(component, force, callback) {
 		if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 		} else if (isNullOrUndef(nextInput)) {
-			nextInput = createVPlaceholder$1();
+			nextInput = createVPlaceholder();
 		}
 		var lastInput = component._lastInput;
 		var parentDom = lastInput.dom.parentNode;
@@ -302,7 +295,7 @@ var result = symbolObservablePonyfill(root);
  * @param {String} message The warning message.
  * @returns {void}
  */
-function warning$2(message) {
+function warning$3(message) {
   /* eslint-disable no-console */
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
     console.error(message);
@@ -373,7 +366,7 @@ function bindActionCreators(actionCreators, dispatch) {
 function isCrushed() {}
 
 if ("development" !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-  warning$2('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+  warning$3('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
 }
 
 /**
@@ -382,7 +375,7 @@ if ("development" !== 'production' && typeof isCrushed.name === 'string' && isCr
  * @param {String} message The warning message.
  * @returns {void}
  */
-function warning$1(message) {
+function warning$2(message) {
 	/* eslint-disable no-console */
 	if (typeof console !== 'undefined' && typeof console.error === 'function') {
 		console.error(message);
@@ -433,7 +426,7 @@ function warnAboutReceivingStore() {
 	}
 	didWarnAboutReceivingStore = true;
 
-	warning$1(
+	warning$2(
 		'<Provider> does not support changing `store` on the fly.'
 	);
 }
@@ -453,7 +446,7 @@ var Provider = (function (Component) {
 	};
 
 	Provider.prototype.render = function render () {
-		if (isNullOrUndef(this.props.children) || toArray(this.props.children).length !== 1) {
+		if (isNullOrUndef$1(this.props.children) || toArray$1(this.props.children).length !== 1) {
 			throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
 		}
 
@@ -588,9 +581,11 @@ module.exports = invariant;
 var errorObject = { value: null };
 var defaultMapStateToProps = function (state) { return ({}); }; // eslint-disable-line no-unused-vars
 var defaultMapDispatchToProps = function (dispatch) { return ({ dispatch: dispatch }); };
-var defaultMergeProps = function (stateProps, dispatchProps, parentProps) { return (Object.assign({}, parentProps,
+var defaultMergeProps = function (stateProps, dispatchProps, parentProps) { return Object.assign({},
+	parentProps,
 	stateProps,
-	dispatchProps)); };
+	dispatchProps
+); };
 
 function tryCatch(fn, ctx) {
 	try {
@@ -615,7 +610,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 	var mapState = mapStateToProps || defaultMapStateToProps;
 	var mapDispatch;
 
-	if (isFunction(mapDispatchToProps)) {
+	if (isFunction$1(mapDispatchToProps)) {
 		mapDispatch = mapDispatchToProps;
 	} else if (!mapDispatchToProps) {
 		mapDispatch = defaultMapDispatchToProps;
@@ -634,7 +629,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 
 		function checkStateShape(props, methodName) {
 			if (!isPlainObject(props)) {
-				warning$1(
+				warning$2(
 					methodName + "() in " + connectDisplayName + " must return a plain object. " +
 					"Instead received " + props + "."
 				);
@@ -687,7 +682,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 			};
 			Connect.prototype.configureFinalMapState = function configureFinalMapState (store, props) {
 				var mappedState = mapState(store.getState(), props);
-				var isFactory = isFunction(mappedState);
+				var isFactory = isFunction$1(mappedState);
 
 				this.finalMapStateToProps = isFactory ? mappedState : mapState;
 				this.doStatePropsDependOnOwnProps = this.finalMapStateToProps.length !== 1;
@@ -709,7 +704,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 			};
 			Connect.prototype.configureFinalMapDispatch = function configureFinalMapDispatch (store, props) {
 				var mappedDispatch = mapDispatch(store.dispatch, props);
-				var isFactory = isFunction(mappedDispatch);
+				var isFactory = isFunction$1(mappedDispatch);
 
 				this.finalMapDispatchToProps = isFactory ? mappedDispatch : mapDispatch;
 				this.doDispatchPropsDependOnOwnProps = this.finalMapDispatchToProps.length !== 1;
@@ -747,7 +742,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 				return true;
 			};
 			Connect.prototype.isSubscribed = function isSubscribed () {
-				return isFunction(this.unsubscribe);
+				return isFunction$1(this.unsubscribe);
 			};
 			Connect.prototype.trySubscribe = function trySubscribe () {
 				if (shouldSubscribe && !this.unsubscribe) {

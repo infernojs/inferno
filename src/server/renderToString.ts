@@ -6,15 +6,15 @@ import {
 	isStatefulComponent,
 	isNumber,
 	isTrue
-} from './../core/utils';
+} from './../shared';
 import { isUnitlessNumber } from '../DOM/constants';
 import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
 import {
 	isVElement,
 	isVComponent,
-	isOptVElement,
-	convertVOptElementToVElement
+	isOptVElement
 } from './../core/shapes';
+import { convertVOptElementToVElement } from '../factories/cloneVNode';
 
 function renderComponentToString(vComponent, isRoot, context) {
 	const Component = vComponent.component;
@@ -40,9 +40,9 @@ function renderComponentToString(vComponent, isRoot, context) {
 	}
 }
 
-function renderChildren(children, context) {
+function renderChildren(children, context): string {
 	if (children && isArray(children)) {
-		const childrenResult = [];
+		const childrenResult: Array<string> = [];
 		let insertComment = false;
 
 		for (let i = 0; i < children.length; i++) {
@@ -64,7 +64,7 @@ function renderChildren(children, context) {
 				insertComment = true;
 			} else if (isArray(child)) {
 				childrenResult.push('<!---->');
-				childrenResult.push(renderChildren(child));
+				childrenResult.push(renderChildren(child, context));
 				childrenResult.push('<!--!-->');
 				insertComment = true;
 			} else {
@@ -87,7 +87,7 @@ function renderStyleToString(style) {
 	if (isStringOrNumber(style)) {
 		return style;
 	} else {
-		const styles = [];
+		const styles: Array<string> = [];
 		const keys = Object.keys(style);
 
 		for (let i = 0; i < keys.length; i++) {
@@ -105,7 +105,7 @@ function renderStyleToString(style) {
 
 function renderVElementToString(vElement, isRoot, context) {
 	const tag = vElement.tag;
-	const outputProps = [];
+	const outputProps: Array<string> = [];
 	const props = vElement.props;
 	let propsKeys = (props && Object.keys(props)) || [];
 	let html = '';

@@ -6,15 +6,15 @@ import {
 	isInvalid,
 	isStringOrNumber,
 	isNull
-} from './../core/utils';
+} from './../shared';
 import { unmountVFragment, unmount } from './unmounting';
 import {
 	createVText,
 	createVPlaceholder,
 	createVFragment,
-	isVNode,
-	cloneVNode
+	isVNode
 } from '../core/shapes';
+import cloneVNode from '../factories/cloneVNode';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
 
@@ -117,7 +117,7 @@ export function documentCreateElement(tag, isSVG) {
 }
 
 export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-	let lastInstance = null;
+	let lastInstance: any = null;
 	const instanceLastNode = lastNode._lastInput;
 
 	if (!isNullOrUndef(instanceLastNode)) {
@@ -144,7 +144,7 @@ export function normalise(object) {
 	} else if (isInvalid(object)) {
 		return createVPlaceholder();
 	} else if (isArray(object)) {
-		return createVFragment(object);
+		return createVFragment(object, null);
 	} else if (isVNode(object) && object.dom) {
 		return cloneVNode(object);
 	}

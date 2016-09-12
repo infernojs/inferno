@@ -3,13 +3,11 @@ import {
 	isNull,
 	isStringOrNumber,
 	isString,
-	isNullOrUndef,
 	isInvalid,
-	isFunction,
 	isStatefulComponent,
 	throwError,
 	isObject
-} from './../core/utils';
+} from '../shared';
 import {
 	replaceChild,
 	normaliseChild,
@@ -21,22 +19,22 @@ import {
 	mountStatelessComponentCallbacks,
 	mountStatefulComponentCallbacks
 } from './mounting';
-import { patch } from './patching';
 import {
-	createVPlaceholder,
 	isVPlaceholder,
 	isVFragment,
 	isVText,
 	isVElement,
 	isVComponent,
-	isOptVElement,
+	isOptVElement
+} from '../core/shapes';
+import { 
+	ValueTypes,
 	isKeyedListChildrenType,
 	isTextChildrenType,
 	isNodeChildrenType,
 	isNonKeyedListChildrenType,
-	isUnknownChildrenType,
-	ValueTypes
-} from '../core/shapes';
+	isUnknownChildrenType
+} from '../core/constants';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
 
@@ -50,7 +48,7 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context)
 		if (domNode.nodeType === 3 && text !== '') {
 			domNode.nodeValue = text;
 		} else {
-			const newDomNode = mountVText(text);
+			const newDomNode = mountVText(text, null);
 
 			replaceChild(parentDom, newDomNode, domNode);
 			childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
@@ -80,8 +78,7 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context)
 			return true;
 		}
 	} else {
-		// TODO: Import missing
-		const rebuild = hydrateNode(child, domNode, parentDom, lifecycle, context, false);
+		const rebuild = hydrate(child, domNode, lifecycle, context);
 
 		if (rebuild) {
 			return true;
@@ -151,8 +148,6 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
 		throwError();
 	}
 	const children = vElement.children;
-	const props = vElement.props;
-	const ref = vElement.ref;
 
 	vElement.dom = dom;
 	if (children) {
@@ -160,7 +155,7 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
 	}
 }
 
-function hydrateArrayChildrenWithType(children, dom, lifecycle, context, isSVG) {
+function hydrateArrayChildrenWithType(children, dom, lifecycle, context) {
 	const domNodes = Array.prototype.slice.call(dom.childNodes);
 
 	for (let i = 0; i < children.length; i++) {
@@ -190,7 +185,7 @@ function hydrateChildren(childrenType, children, dom, lifecycle, context) {
 	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
 		hydrateArrayChildrenWithType(children, dom, lifecycle, context);
 	} else if (isUnknownChildrenType(childrenType)) {
-		hydrateChildrenWithUnknownType(children, dom);
+		hydrateChildrenWithUnknownType(children, dom, lifecycle, context);
 	} else if (!isTextChildrenType(childrenType)) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('Bad childrenType value specified when attempting to hydrateChildren.');
@@ -232,15 +227,15 @@ function hydrateOptVElement(optVElement, dom, lifecycle, context) {
 	hydrateStaticVElement(staticVElement, dom);
 	optVElement.dom = dom;
 	if (!isNull(bp0)) {
-		hydrateOptVElementValue(optVElement, bp0, optVElement.v0, bp.d0, dom, context);
+		hydrateOptVElementValue(optVElement, bp0, optVElement.v0, bp.d0, dom, lifecycle, context);
 		const bp1 = bp.v1;
 
 		if (!isNull(bp1)) {
-			hydrateOptVElementValue(optVElement, bp1, optVElement.v1, bp.d1, dom, context);
+			hydrateOptVElementValue(optVElement, bp1, optVElement.v1, bp.d1, dom, lifecycle, context);
 			const bp2 = bp.v2;
 
 			if (!isNull(bp2)) {
-				hydrateOptVElementValue(optVElement, bp2, optVElement.v2, bp.d2, dom, context);
+				hydrateOptVElementValue(optVElement, bp2, optVElement.v2, bp.d2, dom, lifecycle, context);
 				const bp3 = bp.v3;
 
 				if (!isNull(bp3)) {
@@ -249,7 +244,7 @@ function hydrateOptVElement(optVElement, dom, lifecycle, context) {
 					const bp3 = bp.v3;
 
 					for (let i = 0; i < bp3.length; i++) {
-						hydrateOptVElementValue(optVElement, bp3[i], v3[i], d3[i], dom, context);
+						hydrateOptVElementValue(optVElement, bp3[i], v3[i], d3[i], dom, lifecycle, context);
 					}
 				}
 			}

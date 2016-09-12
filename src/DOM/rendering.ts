@@ -9,10 +9,10 @@ import {
 	isBrowser,
 	throwError,
 	NO_OP
-} from '../core/utils';
+} from '../shared';
 import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
-import { cloneVNode } from '../core/shapes';
+import cloneVNode from '../factories/cloneVNode';
 
 const roots = new Map<Node | SVGAElement, { input: any }>();
 export const componentToDOMNodeMap = new Map();

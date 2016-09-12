@@ -5,7 +5,7 @@ import {
 	isInvalid,
 	addChildrenToProps,
 	isStatefulComponent
-} from './../core/utils';
+} from './../shared';
 import { escapeText, escapeAttr, isVoidElement } from './utils';
 import { Readable } from 'stream';
 import { isVElement, isVComponent } from './../core/shapes';

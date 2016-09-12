@@ -1,18 +1,18 @@
 import Component from '../component/es2015';
 import { warning, shallowEqual, wrapActionCreators } from './utils';
-import { isFunction } from '../core/utils';
-import { createBlueprint, createVComponent } from '../core/shapes';
+import { isFunction } from '../shared';
+import { createVComponent } from '../core/shapes';
 import hoistStatics from 'hoist-non-inferno-statics';
 import invariant from 'invariant';
 
 const errorObject = { value: null };
 const defaultMapStateToProps = state => ({}); // eslint-disable-line no-unused-vars
 const defaultMapDispatchToProps = dispatch => ({ dispatch });
-const defaultMergeProps = (stateProps, dispatchProps, parentProps) => ({
-	...parentProps,
-	...stateProps,
-	...dispatchProps
-});
+const defaultMergeProps = (stateProps, dispatchProps, parentProps) => Object.assign({},
+	parentProps,
+	stateProps,
+	dispatchProps
+);
 
 function tryCatch(fn, ctx) {
 	try {

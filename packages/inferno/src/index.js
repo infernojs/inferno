@@ -6,13 +6,15 @@ import {
 	createVFragment,
 	createVComponent,
 	createVPlaceholder,
-	createVText,
-	cloneVNode,
+	createVText
+} from '../../../src/core/shapes';
+import {
 	ValueTypes,
 	ChildrenTypes,
-	NodeTypes,
-} from '../../../src/core/shapes';
-import { warning, NO_OP } from '../../../src/core/utils';
+	NodeTypes
+} from '../../../src/core/constants';
+import cloneVNode from '../../../src/factories/cloneVNode';
+import { warning, NO_OP } from '../../../src/shared';
 
 if (process.env.NODE_ENV !== 'production') {
 	const testFunc = function testFn() {};

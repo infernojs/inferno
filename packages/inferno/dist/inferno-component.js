@@ -41,34 +41,17 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
-function constructDefaults(string, object, value) {
-    /* eslint no-return-assign: 0 */
-    string.split(',').forEach(function (i) { return object[i] = value; });
-}
-var xlinkNS = 'http://www.w3.org/1999/xlink';
-var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-var strictProps = {};
-var booleanProps = {};
-var namespaces = {};
-var isUnitlessNumber = {};
-constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,value', strictProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+var NodeTypes = {
+    ELEMENT: 1,
+    OPT_ELEMENT: 2,
+    TEXT: 3,
+    FRAGMENT: 4,
+    OPT_BLUEPRINT: 5,
+    COMPONENT: 6,
+    PLACEHOLDER: 7
+};
 
-var NodeTypes;
-(function (NodeTypes) {
-    NodeTypes[NodeTypes["ELEMENT"] = 1] = "ELEMENT";
-    NodeTypes[NodeTypes["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
-    NodeTypes[NodeTypes["TEXT"] = 3] = "TEXT";
-    NodeTypes[NodeTypes["FRAGMENT"] = 4] = "FRAGMENT";
-    NodeTypes[NodeTypes["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
-    NodeTypes[NodeTypes["COMPONENT"] = 6] = "COMPONENT";
-    NodeTypes[NodeTypes["PLACEHOLDER"] = 7] = "PLACEHOLDER";
-})(NodeTypes || (NodeTypes = {}));
-;
-function createVPlaceholder$1() {
+function createVPlaceholder() {
     return {
         dom: null,
         type: NodeTypes.PLACEHOLDER
@@ -116,7 +99,7 @@ function applyState(component, force, callback) {
 		if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 		} else if (isNullOrUndef(nextInput)) {
-			nextInput = createVPlaceholder$1();
+			nextInput = createVPlaceholder();
 		}
 		var lastInput = component._lastInput;
 		var parentDom = lastInput.dom.parentNode;

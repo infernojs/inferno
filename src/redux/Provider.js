@@ -1,6 +1,6 @@
 import Component from '../component/es2015';
 import { warning } from './utils';
-import { isNullOrUndef, toArray } from '../core/utils';
+import { isNullOrUndef, toArray } from '../shared';
 
 let didWarnAboutReceivingStore = false;
 function warnAboutReceivingStore() {

@@ -1,11 +1,11 @@
-import { createVElement, createVComponent } from './shapes';
+import { createVElement, createVComponent } from '../core/shapes';
 import {
 	isAttrAnEvent,
 	isString,
 	isInvalid,
 	isUndefined,
 	isObject
-} from './../core/utils';
+} from './../shared';
 
 const elementHooks = {
 	onCreated: true,

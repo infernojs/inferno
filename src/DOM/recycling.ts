@@ -1,4 +1,4 @@
-import { isUndefined, isNull } from './../core/utils';
+import { isUndefined, isNull } from './../shared';
 import { patchOptVElement, patchVComponent } from './patching';
 import { VComponent } from '../core/shapes';
 

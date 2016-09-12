@@ -11,7 +11,7 @@ import {
 	isArray,
 	isAttrAnEvent,
 	throwError
-} from './../core/utils';
+} from './../shared';
 import {
 	mount,
 	mountVElement,
@@ -51,14 +51,19 @@ import {
 	isVComponent,
 	isVPlaceholder,
 	isVText,
+	createVPlaceholder,
+	VComponent,
+	OptVElement,
+	VElement
+} from '../core/shapes';
+import { 
 	ValueTypes,
 	isKeyedListChildrenType,
 	isNonKeyedListChildrenType,
 	isNodeChildrenType,
 	isTextChildrenType,
-	isUnknownChildrenType,
-	clonePropsChildren
-} from '../core/shapes';
+	isUnknownChildrenType
+} from '../core/constants';
 import { unmount } from './unmounting';
 import {
 	isUnitlessNumber,
@@ -112,7 +117,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 		} else if (isVText(nextInput)) {
 			if (isVText(lastInput)) {
-				patchVText(lastInput, nextInput, false, shallowUnmount);
+				patchVText(lastInput, nextInput);
 			} else {
 				replaceChild(parentDom, mountVText(nextInput, null), lastInput.dom);
 				unmount(lastInput, null, lifecycle, false, shallowUnmount);
@@ -279,7 +284,7 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 		case ValueTypes.PROP:
 			patchProp(descriptor, lastValue, nextValue, dom);
 			break;
-		case ValueTypes.SPREAD:
+		case ValueTypes.PROP_SPREAD:
 			patchProps(lastValue, nextValue, dom, shallowUnmount);
 			break;
 	}
@@ -520,7 +525,16 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 	}
 }
 
-export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList, shallowUnmount) {
+export function patchKeyedChildren(
+	a: Array<VComponent | OptVElement | VElement>,
+	b: Array<VComponent | OptVElement | VElement>,
+	dom,
+	lifecycle,
+	context,
+	isSVG,
+	parentVList,
+	shallowUnmount
+) {
 	let aLength = a.length;
 	let bLength = b.length;
 	let aEnd = aLength - 1;
@@ -533,8 +547,8 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 	let bStartNode = b[bStart];
 	let aEndNode = a[aEnd];
 	let bEndNode = b[bEnd];
-	let aNode = null;
-	let bNode = null;
+	let aNode;
+	let bNode;
 	let nextNode;
 	let nextPos;
 	let node;
@@ -626,7 +640,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 	} else {
 		aLength = aEnd - aStart + 1;
 		bLength = bEnd - bStart + 1;
-		const aNullable = a;
+		const aNullable: Array<VComponent | OptVElement | VElement | null> = a;
 		const sources = new Array(bLength);
 
 		// Mark all nodes as inserted.
@@ -688,7 +702,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 			}
 		}
 		if (aLength === a.length && patched === 0) {
-			removeAllChildren(dom, a, lifecycle);
+			removeAllChildren(dom, a, lifecycle, shallowUnmount);
 			while (bStart < bLength) {
 				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG, shallowUnmount), null);
 			}
@@ -741,7 +755,7 @@ export function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentV
 // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 function lis_algorithm(a) {
 	let p = a.slice(0);
-	let result = [];
+	let result: Array<any> = [];
 	result.push(0);
 	let i;
 	let j;

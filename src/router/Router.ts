@@ -1,9 +1,12 @@
 import Component from '../component/es2015';
-import { isArray, isNull } from '../core/utils';
+import { isArray, isNull } from '../shared';
 import { exec, convertToHashbang, pathRankSort } from './utils';
-import { createVComponent, cloneVNode } from '../core/shapes';
+import { createVComponent } from '../core/shapes';
+import cloneVNode from '../factories/cloneVNode';
 
 export default class Router extends Component {
+	_didRoute: boolean;
+
 	constructor(props, context) {
 		super(props, context);
 		if (!props.history) {
@@ -54,7 +57,7 @@ export default class Router extends Component {
 						children: cloneVNode(route, {
 							params
 						})
-					});
+					}, null, null, null);
 				}
 				return cloneVNode(route, {
 					params
@@ -63,14 +66,14 @@ export default class Router extends Component {
 		}
 		if (!lastPath && wrapperComponent) {
 			this._didRoute = true;
-			return createVComponent(wrapperComponent);
+			return createVComponent(wrapperComponent, null, null, null, null);
 		}
 		return null;
 	}
 
 	routeTo(url) {
 		this._didRoute = false;
-		this.setState({ url });
+		this.setState({ url }, null);
 		return this._didRoute;
 	}
 
