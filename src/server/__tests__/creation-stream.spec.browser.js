@@ -1,7 +1,7 @@
 import streamAsString from './../renderToString.stream';
 import concatStream from 'concat-stream';
 import Component from './../../component/es2015';
-import createElement from './../../core/createElement';
+import createElement from './../../factories/createElement';
 
 class StatefulComponent extends Component {
 	render() {

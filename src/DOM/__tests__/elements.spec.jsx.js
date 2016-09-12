@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
-import createElement from './../../core/createElement';
+import createElement from './../../factories/createElement';
 import {
 	createStaticVElement,
 	createOptBlueprint,

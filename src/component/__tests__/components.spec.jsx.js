@@ -1,6 +1,6 @@
 import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
-import createElement from './../../core/createElement';
+import createElement from './../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
 import {
 	createStaticVElement,

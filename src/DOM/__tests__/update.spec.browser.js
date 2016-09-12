@@ -1,5 +1,5 @@
 import { render } from './../rendering';
-import createElement from './../../core/createElement';
+import createElement from './../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
 
 describe('Update (non-jsx)', () => {

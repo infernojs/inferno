@@ -1,5 +1,5 @@
 import { render } from './../rendering';
-import createElement from './../../core/createElement';
+import createElement from './../../factories/createElement';
 
 function generateNodes(array) {
 	let i, id;
