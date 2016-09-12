@@ -242,7 +242,7 @@ describe('createTree - SVG (JSX)', () => {
 
 	it('Should make SVG and children with spread attribute', () => {
 
-		const spread = {id:'test'};
+		const spread = { id: 'test' };
 
 		render(<svg {...spread}><use xlink:href="#changed"></use></svg>, container);
 		expect(container.innerHTML).to.equal(innerHTML('<svg id="test"><use xlink:href="#changed"></use></svg>'));
