@@ -60,6 +60,17 @@ function isUndefined$1(obj) {
     return obj === undefined;
 }
 
+var NodeTypesEnum;
+(function (NodeTypesEnum) {
+    NodeTypesEnum[NodeTypesEnum["ELEMENT"] = 1] = "ELEMENT";
+    NodeTypesEnum[NodeTypesEnum["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
+    NodeTypesEnum[NodeTypesEnum["TEXT"] = 3] = "TEXT";
+    NodeTypesEnum[NodeTypesEnum["FRAGMENT"] = 4] = "FRAGMENT";
+    NodeTypesEnum[NodeTypesEnum["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
+    NodeTypesEnum[NodeTypesEnum["COMPONENT"] = 6] = "COMPONENT";
+    NodeTypesEnum[NodeTypesEnum["PLACEHOLDER"] = 7] = "PLACEHOLDER";
+})(NodeTypesEnum || (NodeTypesEnum = {}));
+;
 var NodeTypes = {
     ELEMENT: 1,
     OPT_ELEMENT: 2,
@@ -79,7 +90,7 @@ function createVComponent(component, props, key, hooks, ref) {
         key: key,
         props: props,
         ref: ref || null,
-        type: NodeTypes.COMPONENT
+        type: NodeTypesEnum.COMPONENT
     };
 }
 function createVPlaceholder() {

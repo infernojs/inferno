@@ -31,21 +31,23 @@ function isObject(o) {
     return typeof o === 'object';
 }
 
+var NodeTypesEnum;
+(function (NodeTypesEnum) {
+    NodeTypesEnum[NodeTypesEnum["ELEMENT"] = 1] = "ELEMENT";
+    NodeTypesEnum[NodeTypesEnum["OPT_ELEMENT"] = 2] = "OPT_ELEMENT";
+    NodeTypesEnum[NodeTypesEnum["TEXT"] = 3] = "TEXT";
+    NodeTypesEnum[NodeTypesEnum["FRAGMENT"] = 4] = "FRAGMENT";
+    NodeTypesEnum[NodeTypesEnum["OPT_BLUEPRINT"] = 5] = "OPT_BLUEPRINT";
+    NodeTypesEnum[NodeTypesEnum["COMPONENT"] = 6] = "COMPONENT";
+    NodeTypesEnum[NodeTypesEnum["PLACEHOLDER"] = 7] = "PLACEHOLDER";
+})(NodeTypesEnum || (NodeTypesEnum = {}));
+;
 var ChildrenTypes = {
     NON_KEYED: 1,
     KEYED: 2,
     NODE: 3,
     TEXT: 4,
     UNKNOWN: 5
-};
-var NodeTypes = {
-    ELEMENT: 1,
-    OPT_ELEMENT: 2,
-    TEXT: 3,
-    FRAGMENT: 4,
-    OPT_BLUEPRINT: 5,
-    COMPONENT: 6,
-    PLACEHOLDER: 7
 };
 
 function createVComponent(component, props, key, hooks, ref) {
@@ -57,7 +59,7 @@ function createVComponent(component, props, key, hooks, ref) {
         key: key,
         props: props,
         ref: ref || null,
-        type: NodeTypes.COMPONENT
+        type: NodeTypesEnum.COMPONENT
     };
 }
 function createVElement(tag, props, children, key, ref, childrenType) {
@@ -69,7 +71,7 @@ function createVElement(tag, props, children, key, ref, childrenType) {
         props: props,
         ref: ref || null,
         tag: tag,
-        type: NodeTypes.ELEMENT
+        type: NodeTypesEnum.ELEMENT
     };
 }
 
