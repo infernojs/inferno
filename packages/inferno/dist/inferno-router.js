@@ -9,15 +9,26 @@
 	(global.InfernoRouter = factory());
 }(this, (function () { 'use strict';
 
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
 function isArray(obj) {
     return obj instanceof Array;
 }
+
+
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
+
+
+
+
+
 function isNull(obj) {
     return obj === null;
 }
+
 function isUndefined(obj) {
     return obj === undefined;
 }
@@ -61,6 +72,7 @@ function createVComponent(component, props, key, hooks, ref) {
         type: NodeTypes.COMPONENT
     };
 }
+
 function createVElement(tag, props, children, key, ref, childrenType) {
     return {
         children: children,
@@ -73,6 +85,8 @@ function createVElement(tag, props, children, key, ref, childrenType) {
         type: NodeTypes.ELEMENT
     };
 }
+
+
 function createVPlaceholder() {
     return {
         dom: null,
@@ -105,17 +119,27 @@ Lifecycle.prototype.trigger = function trigger () {
 
 var NO_OP$1 = '$NO_OP';
 var ERROR_MSG$1 = 'a runtime error occured! Use Inferno in development environment to find the error.';
-// Runs only once in applications lifetime
 var isBrowser$1 = typeof window !== 'undefined' && window.document;
+
+
+
+
 function isNullOrUndef$1(obj) {
     return isUndefined$1(obj) || isNull$1(obj);
 }
+
+
+
+
+
 function isNull$1(obj) {
     return obj === null;
 }
+
 function isUndefined$1(obj) {
     return obj === undefined;
 }
+
 function throwError$1(message) {
     if (!message) {
         message = ERROR_MSG$1;
@@ -227,7 +251,7 @@ Component.prototype.setState = function setState (newState, callback) {
 	if (this._blockSetState === false) {
 		queueStateChanges(this, newState, callback);
 	} else {
-		if ("development" !== 'production') {
+		{
 			throwError$1('cannot update state via setState() in componentWillUpdate().');
 		}
 		throwError$1();
@@ -294,16 +318,16 @@ var ASYNC_STATUS = {
 	rejected: 'rejected'
 };
 
-var Route = (function (Component) {
+var Route = (function (Component$$1) {
 	function Route(props, context) {
-		Component.call(this, props, context);
+		Component$$1.call(this, props, context);
 		this.state = {
 			async: null
 		};
 	}
 
-	if ( Component ) Route.__proto__ = Component;
-	Route.prototype = Object.create( Component && Component.prototype );
+	if ( Component$$1 ) Route.__proto__ = Component$$1;
+	Route.prototype = Object.create( Component$$1 && Component$$1.prototype );
 	Route.prototype.constructor = Route;
 
 	Route.prototype.async = function async () {
@@ -594,9 +618,9 @@ function cloneVNode(vNodeToClone, props) {
     return newVNode;
 }
 
-var Router = (function (Component) {
+var Router = (function (Component$$1) {
     function Router(props, context) {
-        Component.call(this, props, context);
+        Component$$1.call(this, props, context);
         if (!props.history) {
             throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
         }
@@ -606,8 +630,8 @@ var Router = (function (Component) {
         };
     }
 
-    if ( Component ) Router.__proto__ = Component;
-    Router.prototype = Object.create( Component && Component.prototype );
+    if ( Component$$1 ) Router.__proto__ = Component$$1;
+    Router.prototype = Object.create( Component$$1 && Component$$1.prototype );
     Router.prototype.constructor = Router;
     Router.prototype.getChildContext = function getChildContext () {
         return {
@@ -704,7 +728,7 @@ function Link(props, ref) {
 	if (!hashbang) {
 		element.events({
 			onclick: function navigate(e) {
-				if (e.button !== 1) {
+				if (e.button !== 0 || e.ctrlKey || e.altKey) {
 					return;
 				}
 				e.preventDefault();
@@ -745,7 +769,7 @@ function isActive(path, hashbang) {
 	return false;
 }
 
-function routeTo(url) {
+function routeTo$1(url) {
 	for (var i = 0; i < routers.length; i++) {
 		if (routers[i].routeTo(url) === true) {
 			return true;
@@ -755,7 +779,7 @@ function routeTo(url) {
 }
 
 if (isBrowser$1) {
-	window.addEventListener('popstate', function () { return routeTo(getCurrentUrl()); });
+	window.addEventListener('popstate', function () { return routeTo$1(getCurrentUrl()); });
 }
 
 var browserHistory = {
@@ -768,7 +792,7 @@ var browserHistory = {
 	getCurrentUrl: getCurrentUrl,
 	getHashbangRoot: getHashbangRoot,
 	isActive: isActive,
-	routeTo: routeTo
+	routeTo: routeTo$1
 };
 
 var index = {

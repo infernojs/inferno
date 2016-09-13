@@ -25,8 +25,8 @@ Lifecycle.prototype.trigger = function trigger () {
 
 var NO_OP$1 = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-// Runs only once in applications lifetime
 var isBrowser = typeof window !== 'undefined' && window.document;
+
 function isArray(obj) {
     return obj instanceof Array;
 }
@@ -73,6 +73,7 @@ function throwError(message) {
     }
     throw new Error(("Inferno Error: " + message));
 }
+
 var EMPTY_OBJ = {};
 
 var ValueTypes = {
@@ -219,7 +220,6 @@ function isVNode(o) {
 
 var recyclingEnabled = true;
 var vComponentPools = new Map();
-;
 function recycleOptVElement(optVElement, lifecycle, context, isSVG, shallowUnmount) {
     var bp = optVElement.bp;
     var key = optVElement.key;
@@ -449,7 +449,10 @@ function unmountRef(ref) {
         ref(null);
     }
     else {
-        if ("development" !== 'production') {
+        if (isInvalid(ref)) {
+            return;
+        }
+        {
             throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
         }
         throwError();
@@ -560,7 +563,7 @@ function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shall
             replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
         }
         else {
-            if ("development" !== 'production') {
+            {
                 throwError('bad input argument called on patch(). Input argument may need normalising.');
             }
             throwError();
@@ -725,7 +728,7 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
         patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
     }
     else {
-        if ("development" !== 'production') {
+        {
             throwError('bad childrenType value specified when attempting to patchChildren.');
         }
         throwError();
@@ -784,7 +787,7 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
         patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null, true, shallowUnmount);
     }
     else {
-        if ("development" !== 'production') {
+        {
             throwError('bad input argument called on patchChildrenWithUnknownType(). Input argument may need normalising.');
         }
         throwError();
@@ -1247,7 +1250,7 @@ function patchProp(prop, lastValue, nextValue, dom) {
                 var lastHtml = lastValue && lastValue.__html;
                 var nextHtml = nextValue && nextValue.__html;
                 if (isNullOrUndef(nextHtml)) {
-                    if ("development" !== 'production') {
+                    {
                         throwError('dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
                     }
                     throwError();
@@ -1661,12 +1664,7 @@ function formSelectValueFindOptions(dom, value, isMap) {
     while (child) {
         var tagName = child.tagName;
         if (tagName === 'OPTION') {
-            if ((!isMap && child.value === value) || (isMap && value.get(child.value))) {
-                child.selected = true;
-            }
-            else {
-                child.selected = false;
-            }
+            child.selected = !!((!isMap && child.value === value) || (isMap && value.get(child.value)));
         }
         else if (tagName === 'OPTGROUP') {
             formSelectValueFindOptions(child, value, isMap);
@@ -1768,7 +1766,7 @@ function mount(input, parentDom, lifecycle, context, isSVG, shallowUnmount) {
         return mountVPlaceholder(input, parentDom);
     }
     else {
-        if ("development" !== 'production') {
+        {
             throwError('bad input argument called on mount(). Input argument may need normalising.');
         }
         throwError();
@@ -1785,7 +1783,7 @@ function mountVPlaceholder(vPlaceholder, parentDom) {
 function mountVElement(vElement, parentDom, lifecycle, context, isSVG, shallowUnmount) {
     var tag = vElement.tag;
     if (!isString(tag)) {
-        if ("development" !== 'production') {
+        {
             throwError('expects VElement to have a string as the tag name');
         }
         throwError();
@@ -1939,7 +1937,7 @@ function mountChildren(childrenType, children, dom, lifecycle, context, isSVG, s
         mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG, shallowUnmount);
     }
     else {
-        if ("development" !== 'production') {
+        {
             throwError('bad childrenType value specified when attempting to mountChildren.');
         }
         throwError();
@@ -1999,7 +1997,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
     var dom;
     if (isStatefulComponent(vComponent)) {
         if (hooks) {
-            if ("development" !== 'production') {
+            {
                 throwError('"hooks" are not supported on stateful components.');
             }
             throwError();
@@ -2017,7 +2015,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
     }
     else {
         if (ref) {
-            if ("development" !== 'production') {
+            {
                 throwError('"refs" are not supported on stateless components.');
             }
             throwError();
@@ -2038,7 +2036,7 @@ function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
             lifecycle.addListener(function () { return ref(instance); });
         }
         else {
-            if ("development" !== 'production') {
+            {
                 throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
             }
             throwError();
@@ -2092,7 +2090,10 @@ function mountRef(dom, value, lifecycle) {
         lifecycle.addListener(function () { return value(dom); });
     }
     else {
-        if ("development" !== 'production') {
+        if (isInvalid(value)) {
+            return;
+        }
+        {
             throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
         }
         throwError();
@@ -2148,7 +2149,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 function hydrateVElement(vElement, dom, lifecycle, context) {
     var tag = vElement.tag;
     if (!isString(tag)) {
-        if ("development" !== 'production') {
+        {
             throwError('expects VElement to have a string as the tag name');
         }
         throwError();
@@ -2190,7 +2191,7 @@ function hydrateChildren(childrenType, children, dom, lifecycle, context) {
         hydrateChildrenWithUnknownType(children, dom, lifecycle, context);
     }
     else if (!isTextChildrenType(childrenType)) {
-        if ("development" !== 'production') {
+        {
             throwError('Bad childrenType value specified when attempting to hydrateChildren.');
         }
         throwError();
@@ -2293,7 +2294,7 @@ function hydrate(input, dom, lifecycle, context) {
         debugger;
     }
     else {
-        if ("development" !== 'production') {
+        {
             throwError('bad input argument called on hydrate(). Input argument may need normalising.');
         }
         throwError();
@@ -2317,11 +2318,11 @@ function findDOMNode(domNode) {
     return componentToDOMNodeMap.get(domNode) || null;
 }
 var documetBody = isBrowser ? document.body : null;
-function render(input, parentDom) {
+function render$1(input, parentDom) {
     var root = roots.get(parentDom);
     var lifecycle = new Lifecycle();
     if (documetBody === parentDom) {
-        if ("development" !== 'production') {
+        {
             throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
         }
         throwError();
@@ -2453,15 +2454,27 @@ function createElement(name, props) {
 
 var NO_OP$2 = '$NO_OP';
 var ERROR_MSG$1 = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
+
+
+
 function isNullOrUndef$1(obj) {
     return isUndefined$1(obj) || isNull$1(obj);
 }
+
+
+
+
+
 function isNull$1(obj) {
     return obj === null;
 }
+
 function isUndefined$1(obj) {
     return obj === undefined;
 }
+
 function throwError$1(message) {
     if (!message) {
         message = ERROR_MSG$1;
@@ -2573,7 +2586,7 @@ Component.prototype.setState = function setState (newState, callback) {
 	if (this._blockSetState === false) {
 		queueStateChanges(this, newState, callback);
 	} else {
-		if ("development" !== 'production') {
+		{
 			throwError$1('cannot update state via setState() in componentWillUpdate().');
 		}
 		throwError$1();
@@ -2875,6 +2888,8 @@ function renderToStaticMarkup(input) {
 }
 
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -3213,7 +3228,7 @@ var index$1 = createCommonjsModule(function (module, exports) {
 });
 
 function unmountComponentAtNode(container) {
-	render(null, container);
+	render$1(null, container);
 	return true;
 }
 
@@ -3265,7 +3280,7 @@ var Children = {
 Component.prototype.isReactComponent = {};
 
 var index = {
-	render: render,
+	render: render$1,
 	createElement: createElement,
 	Component: Component,
 	unmountComponentAtNode: unmountComponentAtNode,
@@ -3291,7 +3306,7 @@ var index = {
 	NO_OP: NO_OP
 };
 
-exports.render = render;
+exports.render = render$1;
 exports.createElement = createElement;
 exports.Component = Component;
 exports.unmountComponentAtNode = unmountComponentAtNode;

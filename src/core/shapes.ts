@@ -40,7 +40,7 @@ export interface VComponent {
 	props: any;
 	ref: Function | null;
 	type: number
-};
+}
 
 export interface VElement {
 	children: string | null | number | Array<any>;
@@ -51,7 +51,7 @@ export interface VElement {
 	ref: Function | null;
 	tag: string;
 	type: number
-};
+}
 
 export function createOptVElement(bp, key, v0, v1, v2, v3): OptVElement {
 	return {

@@ -1,7 +1,6 @@
 export const NO_OP = '$NO_OP';
 const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
-// Runs only once in applications lifetime
 export const isBrowser = typeof window !== 'undefined' && window.document;
 
 export function toArray(children) {
@@ -74,5 +73,3 @@ export function warning(condition, message: string) {
 		console.error(message);
 	}
 }
-
-export const EMPTY_OBJ = {};

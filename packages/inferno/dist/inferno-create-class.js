@@ -25,21 +25,35 @@ Lifecycle.prototype.trigger = function trigger () {
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
+
+
+
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
+
+
+
+
+
 function isNull(obj) {
     return obj === null;
 }
+
 function isUndefined(obj) {
     return obj === undefined;
 }
+
 function throwError(message) {
     if (!message) {
         message = ERROR_MSG;
     }
     throw new Error(("Inferno Error: " + message));
 }
+
+var ERROR_MSG$1 = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 var NodeTypes = {
     ELEMENT: 1,
@@ -162,7 +176,7 @@ Component.prototype.setState = function setState (newState, callback) {
 	if (this._blockSetState === false) {
 		queueStateChanges(this, newState, callback);
 	} else {
-		if ("development" !== 'production') {
+		{
 			throwError('cannot update state via setState() in componentWillUpdate().');
 		}
 		throwError();
@@ -258,7 +272,7 @@ function bindAll(ctx) {
 	}
 }
 
-function createClass(obj) {
+function createClass$1(obj) {
 	function Cl(props) {
 		extend(this, obj);
 		Component.call(this, props);
@@ -275,6 +289,6 @@ function createClass(obj) {
 	return Cl;
 }
 
-return createClass;
+return createClass$1;
 
 })));

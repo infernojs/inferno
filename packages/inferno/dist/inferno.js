@@ -10,18 +10,31 @@
 }(this, (function () { 'use strict';
 
 var NO_OP = '$NO_OP';
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
 function isArray(obj) {
     return obj instanceof Array;
 }
+
+
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
+
+
+
+
+
 function isNull(obj) {
     return obj === null;
 }
+
 function isUndefined(obj) {
     return obj === undefined;
 }
+
+
 function warning(condition, message) {
     if (!condition) {
         console.error(message);
@@ -310,7 +323,7 @@ function cloneVNode(vNodeToClone, props) {
     return newVNode;
 }
 
-if ("development" !== 'production') {
+{
 	var testFunc = function testFn() {};
 	warning(
 		(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,

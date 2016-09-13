@@ -199,11 +199,7 @@ function formSelectValueFindOptions(dom, value, isMap) {
 		const tagName = child.tagName;
 
 		if (tagName === 'OPTION') {
-			if ((!isMap && child.value === value) || (isMap && value.get(child.value))) {
-				child.selected = true;
-			} else {
-				child.selected = false;
-			}
+			child.selected = !!((!isMap && child.value === value) || (isMap && value.get(child.value)));
 		} else if (tagName === 'OPTGROUP') {
 			formSelectValueFindOptions(child, value, isMap);
 		}

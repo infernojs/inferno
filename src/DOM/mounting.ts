@@ -30,7 +30,7 @@ import {
 	isVComponent,
 	isVPlaceholder
 } from '../core/shapes';
-import { 
+import {
 	ValueTypes,
 	isTextChildrenType,
 	isNodeChildrenType,
@@ -394,6 +394,9 @@ function mountRef(dom, value, lifecycle) {
 	if (isFunction(value)) {
 		lifecycle.addListener(() => value(dom));
 	} else {
+		if(isInvalid(value)) {
+			return;
+		}
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
 		}

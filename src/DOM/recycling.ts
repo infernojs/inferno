@@ -8,7 +8,7 @@ const vComponentPools = new Map<Function | null, Pools>();
 interface Pools {
 	nonKeyed: Array<VComponent>,
 	keyed: Map<string | number, Array<VComponent>>
-};
+}
 
 export function recycleOptVElement(optVElement, lifecycle, context, isSVG, shallowUnmount) {
 	const bp = optVElement.bp;
