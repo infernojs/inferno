@@ -28,7 +28,7 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 - [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
 - [dbmonster (lazy optimisation)](http://infernojs.org/benchmarks/dbmonster-lazy/)
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
-- [JS Web Frameworks Benchmark - Round 3](http://www.stefankrause.net/js-frameworks-benchmark2/webdriver-java/table.html)
+- [JS Web Frameworks Benchmark - Round 4](http://stefankrause.net/js-frameworks-benchmark4/webdriver-ts/table.html)
 
 ## Install
 
