@@ -22,7 +22,7 @@ export default function Link(props, { hashbang, history }) {
 	if (!hashbang) {
 		element.events({
 			onclick: function navigate(e) {
-				if (e.button !== 1) {
+				if (e.button !== 0 || e.ctrlKey || e.altKey) {
 					return;
 				}
 				e.preventDefault();
