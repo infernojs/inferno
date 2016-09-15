@@ -139,7 +139,7 @@ This is essential for low-powered devices such as tablets and phones, where user
 
 ## Inferno Top-Level API
 
-### Inferno.createVELement
+### Inferno.createVElement
 
 Creates an Inferno VElement object. VElement's represent DOM nodes directly. As such there shape and factory method is:
 
