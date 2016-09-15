@@ -1026,4 +1026,43 @@ describe('Children - (JSX)', () => {
 			render(<B />, container);
 		});
 	});
+
+	describe('Rendering null on child node', () => {
+		it('Should trigger unmount', () => {
+			class A extends Component {
+				constructor(props) {
+					super(props);
+				}
+
+				render() {
+					return (
+						<div>
+							{this.props.test}
+						</div>
+					)
+				}
+			}
+
+			class B extends Component {
+				constructor(props) {
+					super(props);
+				}
+
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<p>B</p>
+					)
+				}
+			}
+
+			const unmountSpy = sinon.spy(B.prototype, 'componentWillUnmount');
+			render(<A test={<B />} />, container);
+			expect(container.innerHTML).to.equal('<div><p>B</p></div>');
+			render(<A test={null} />, container);
+			expect(container.innerHTML).to.equal('<div></div>');
+			expect(unmountSpy.callCount).to.equal(1);
+		});
+	});
 });
