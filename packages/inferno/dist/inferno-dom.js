@@ -706,7 +706,12 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
 function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
     if (isInvalid(nextChildren)) {
         if (!isInvalid(lastChildren)) {
-            removeAllChildren(parentDom, lastChildren, lifecycle, shallowUnmount);
+            if (isVNode(lastChildren)) {
+                unmount(lastChildren, parentDom, lifecycle, true, shallowUnmount);
+            }
+            else {
+                removeAllChildren(parentDom, lastChildren, lifecycle, shallowUnmount);
+            }
         }
     }
     else if (isInvalid(lastChildren)) {

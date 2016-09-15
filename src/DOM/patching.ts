@@ -56,7 +56,7 @@ import {
 	OptVElement,
 	VElement
 } from '../core/shapes';
-import { 
+import {
 	ValueTypes,
 	isKeyedListChildrenType,
 	isNonKeyedListChildrenType,
@@ -312,7 +312,11 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
 export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	if (isInvalid(nextChildren)) {
 		if (!isInvalid(lastChildren)) {
-			removeAllChildren(parentDom, lastChildren, lifecycle, shallowUnmount);
+			if (isVNode(lastChildren)) {
+				unmount(lastChildren, parentDom, lifecycle, true, shallowUnmount);
+			} else { // If lastChildren ain't VNode we assume its array
+				removeAllChildren(parentDom, lastChildren, lifecycle, shallowUnmount);
+			}
 		}
 	} else if (isInvalid(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
