@@ -2823,7 +2823,7 @@ function renderStyleToString(style) {
                 styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
             }
         }
-        return styles.join();
+        return styles.join('');
     }
 }
 function renderVElementToString(vElement, isRoot, context) {
