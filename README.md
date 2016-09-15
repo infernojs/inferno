@@ -347,7 +347,7 @@ npm run build
 ### Linting
 
 ```sh
-npm run lint:source // lint the source
+npm run eslint:source // lint the source
 ```
 
 ### Inferno is supported by BrowserStack
