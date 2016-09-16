@@ -1222,6 +1222,69 @@ describe('Components (JSX)', () => {
 		});
 	});
 
+	describe('should render a stateless component with context', () => {
+		const StatelessComponent = ({ value }, { fortyTwo }) => (
+			<p>{value}-{fortyTwo || 'ERROR'}</p>
+		);
+
+		class First extends Component {
+			constructor(props, context) {
+				super(props, context);
+
+				this.state = {
+					counter: 0
+				};
+
+				this._onClick = this._onClick.bind(this);
+			}
+
+			_onClick() {
+				this.setState({
+					counter: 1
+				});
+			}
+
+		  getChildContext() {
+		    return {
+		      fortyTwo: 42
+		    };
+		  }
+
+			render() {
+				return (
+					<div>
+						<button onClick={this._onClick}>Increase! {this.state.counter}</button>
+						<StatelessComponent value={this.state.counter}/>
+					</div>
+				);
+			}
+		}
+
+		it('should correctly render', () => {
+			render(<First />, container);
+			expect(
+				container.innerHTML
+			).to.equal(
+				innerHTML('<div><button>Increase! 0</button><p>0-42</p></div>')
+			);
+		});
+
+		it('should handle update upon click', (done) => {
+			render(<First />, container);
+			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
+
+			buttons.forEach(button => button.click());
+			requestAnimationFrame(() => {
+				expect(
+					container.innerHTML
+				).to.equal(
+					innerHTML('<div><button>Increase! 1</button><p>1-42</p></div>')
+				);
+				done();
+			});
+		});
+	});
+
 	describe('should render a conditional stateless component', () => {
 		const StatelessComponent = ({ value }) => (
 			<p>{value}</p>
