@@ -9,24 +9,15 @@
     (global.InfernoCreateElement = factory());
 }(this, (function () { 'use strict';
 
-var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-
-
-
-
-
 function isInvalid(obj) {
     return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
-
 function isAttrAnEvent(attr) {
     return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
 }
 function isString(obj) {
     return typeof obj === 'string';
 }
-
 function isNull(obj) {
     return obj === null;
 }
@@ -69,7 +60,6 @@ function createVComponent(component, props, key, hooks, ref) {
         type: NodeTypes.COMPONENT
     };
 }
-
 function createVElement(tag, props, children, key, ref, childrenType) {
     return {
         children: children,
@@ -98,7 +88,7 @@ var componentHooks = {
     onComponentWillUpdate: true,
     onComponentDidUpdate: true
 };
-function createElement$1(name, props) {
+function createElement(name, props) {
     var _children = [], len = arguments.length - 2;
     while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
 
@@ -175,6 +165,6 @@ function createElement$1(name, props) {
     return vNode;
 }
 
-return createElement$1;
+return createElement;
 
 })));

@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import Component from './../../component/es2015';
-import { isNullOrUndef } from '../../core/utils';
+import { isNullOrUndef } from '../../shared';
 import {
 	createStaticVElement,
 	createOptBlueprint,

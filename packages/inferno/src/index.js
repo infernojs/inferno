@@ -28,17 +28,26 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default {
+	// JSX optimisations
 	createOptVElement,
 	createOptBlueprint,
-	createVElement,
 	createStaticVElement,
+
+	// core shapes
+	createVElement,
 	createVFragment,
 	createVPlaceholder,
 	createVComponent,
 	createVText,
-	cloneVNode,
+
+	// cloning
+	cloneVNode,	
+
+	// enums
 	ValueTypes,
 	ChildrenTypes,
 	NodeTypes,
+
+	// TODO do we still need this? can we remove?
 	NO_OP
 };

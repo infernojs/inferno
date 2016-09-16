@@ -25,60 +25,29 @@ Lifecycle.prototype.trigger = function trigger () {
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-
-
-
-
+function toArray(children) {
+    return isArray(children) ? children : (children ? [children] : children);
+}
+function isArray(obj) {
+    return obj instanceof Array;
+}
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
-
-
-
-
-
+function isFunction(obj) {
+    return typeof obj === 'function';
+}
 function isNull(obj) {
     return obj === null;
 }
-
 function isUndefined(obj) {
     return obj === undefined;
 }
-
 function throwError(message) {
     if (!message) {
         message = ERROR_MSG;
     }
     throw new Error(("Inferno Error: " + message));
-}
-
-var ERROR_MSG$1 = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-function toArray$1(children) {
-    return isArray$1(children) ? children : (children ? [children] : children);
-}
-function isArray$1(obj) {
-    return obj instanceof Array;
-}
-
-
-function isNullOrUndef$1(obj) {
-    return isUndefined$1(obj) || isNull$1(obj);
-}
-
-function isFunction$1(obj) {
-    return typeof obj === 'function';
-}
-
-
-
-function isNull$1(obj) {
-    return obj === null;
-}
-
-function isUndefined$1(obj) {
-    return obj === undefined;
 }
 
 var NodeTypes = {
@@ -103,10 +72,6 @@ function createVComponent(component, props, key, hooks, ref) {
         type: NodeTypes.COMPONENT
     };
 }
-
-
-
-
 function createVPlaceholder() {
     return {
         dom: null,
@@ -221,7 +186,7 @@ Component.prototype.setState = function setState (newState, callback) {
 	if (this._blockSetState === false) {
 		queueStateChanges(this, newState, callback);
 	} else {
-		{
+		if ("development" !== 'production') {
 			throwError('cannot update state via setState() in componentWillUpdate().');
 		}
 		throwError();
@@ -282,134 +247,12 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 	return NO_OP;
 };
 
-/**
- * Creates a unary function that invokes `func` with its argument transformed.
- *
- * @private
- * @param {Function} func The function to wrap.
- * @param {Function} transform The argument transform.
- * @returns {Function} Returns the new function.
- */
-function overArg(func, transform) {
-  return function(arg) {
-    return func(transform(arg));
-  };
-}
-
-/** Built-in value references. */
-var getPrototype = overArg(Object.getPrototypeOf, Object);
-
-/**
- * Checks if `value` is a host object in IE < 9.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
- */
-function isHostObject(value) {
-  // Many host objects are `Object` objects that can coerce to strings
-  // despite having improperly defined `toString` methods.
-  var result = false;
-  if (value != null && typeof value.toString != 'function') {
-    try {
-      result = !!(value + '');
-    } catch (e) {}
-  }
-  return result;
-}
-
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
-
-/** `Object#toString` result references. */
-var objectTag = '[object Object]';
-
-/** Used for built-in method references. */
 var funcProto = Function.prototype;
-var objectProto = Object.prototype;
-
 /** Used to resolve the decompiled source of functions. */
 var funcToString = funcProto.toString;
 
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
 /** Used to infer the `Object` constructor. */
 var objectCtorString = funcToString.call(Object);
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objectToString = objectProto.toString;
-
-/**
- * Checks if `value` is a plain object, that is, an object created by the
- * `Object` constructor or one with a `[[Prototype]]` of `null`.
- *
- * @static
- * @memberOf _
- * @since 0.8.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- * }
- *
- * _.isPlainObject(new Foo);
- * // => false
- *
- * _.isPlainObject([1, 2, 3]);
- * // => false
- *
- * _.isPlainObject({ 'x': 0, 'y': 0 });
- * // => true
- *
- * _.isPlainObject(Object.create(null));
- * // => true
- */
-function isPlainObject$1(value) {
-  if (!isObjectLike(value) ||
-      objectToString.call(value) != objectTag || isHostObject(value)) {
-    return false;
-  }
-  var proto = getPrototype(value);
-  if (proto === null) {
-    return true;
-  }
-  var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
-  return (typeof Ctor == 'function' &&
-    Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString);
-}
 
 function symbolObservablePonyfill(root) {
 	var result;
@@ -427,7 +270,7 @@ function symbolObservablePonyfill(root) {
 	}
 
 	return result;
-}
+};
 
 /* global window */
 var root = undefined;
@@ -440,22 +283,12 @@ if (typeof global !== 'undefined') {
 var result = symbolObservablePonyfill(root);
 
 /**
- * These are private action types reserved by Redux.
- * For any unknown actions, you must return the current state.
- * If the current state is undefined, you must return the initial state.
- * Do not reference these action types directly in your code.
- */
-var ActionTypes = {
-  INIT: '@@redux/INIT'
-};
-
-/**
  * Prints a warning in the console if it exists.
  *
  * @param {String} message The warning message.
  * @returns {void}
  */
-function warning$3(message) {
+function warning$2(message) {
   /* eslint-disable no-console */
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
     console.error(message);
@@ -469,47 +302,6 @@ function warning$3(message) {
     /* eslint-disable no-empty */
   } catch (e) {}
   /* eslint-enable no-empty */
-}
-
-function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
-  var reducerKeys = Object.keys(reducers);
-  var argumentName = action && action.type === ActionTypes.INIT ? 'preloadedState argument passed to createStore' : 'previous state received by the reducer';
-
-  if (reducerKeys.length === 0) {
-    return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
-  }
-
-  if (!isPlainObject$1(inputState)) {
-    return 'The ' + argumentName + ' has unexpected type of "' + {}.toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + ('keys: "' + reducerKeys.join('", "') + '"');
-  }
-
-  var unexpectedKeys = Object.keys(inputState).filter(function (key) {
-    return !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key];
-  });
-
-  unexpectedKeys.forEach(function (key) {
-    unexpectedKeyCache[key] = true;
-  });
-
-  if (unexpectedKeys.length > 0) {
-    return 'Unexpected ' + (unexpectedKeys.length > 1 ? 'keys' : 'key') + ' ' + ('"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + '. ') + 'Expected to find one of the known reducer keys instead: ' + ('"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.');
-  }
-}
-
-function assertReducerSanity(reducers) {
-  Object.keys(reducers).forEach(function (key) {
-    var reducer = reducers[key];
-    var initialState = reducer(undefined, { type: ActionTypes.INIT });
-
-    if (typeof initialState === 'undefined') {
-      throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined.');
-    }
-
-    var type = '@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.');
-    if (typeof reducer(undefined, { type: type }) === 'undefined') {
-      throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined.');
-    }
-  });
 }
 
 function bindActionCreator(actionCreator, dispatch) {
@@ -560,43 +352,6 @@ function bindActionCreators(actionCreators, dispatch) {
   return boundActionCreators;
 }
 
-/**
- * Composes single-argument functions from right to left. The rightmost
- * function can take multiple arguments as it provides the signature for
- * the resulting composite function.
- *
- * @param {...Function} funcs The functions to compose.
- * @returns {Function} A function obtained by composing the argument functions
- * from right to left. For example, compose(f, g, h) is identical to doing
- * (...args) => f(g(h(...args))).
- */
-
-function compose() {
-  var arguments$1 = arguments;
-
-  for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
-    funcs[_key] = arguments$1[_key];
-  }
-
-  if (funcs.length === 0) {
-    return function (arg) {
-      return arg;
-    };
-  }
-
-  if (funcs.length === 1) {
-    return funcs[0];
-  }
-
-  var last = funcs[funcs.length - 1];
-  var rest = funcs.slice(0, -1);
-  return function () {
-    return rest.reduceRight(function (composed, f) {
-      return f(composed);
-    }, last.apply(undefined, arguments));
-  };
-}
-
 /*
 * This is a dummy function to check if the function name has been altered by minification.
 * If the function has been minified and NODE_ENV !== 'production', warn the user.
@@ -604,7 +359,7 @@ function compose() {
 function isCrushed() {}
 
 if ("development" !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-  warning$3('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+  warning$2('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
 }
 
 /**
@@ -613,7 +368,7 @@ if ("development" !== 'production' && typeof isCrushed.name === 'string' && isCr
  * @param {String} message The warning message.
  * @returns {void}
  */
-function warning$2(message) {
+function warning$1(message) {
 	/* eslint-disable no-console */
 	if (typeof console !== 'undefined' && typeof console.error === 'function') {
 		console.error(message);
@@ -664,19 +419,19 @@ function warnAboutReceivingStore() {
 	}
 	didWarnAboutReceivingStore = true;
 
-	warning$2(
+	warning$1(
 		'<Provider> does not support changing `store` on the fly.'
 	);
 }
 
-var Provider = (function (Component$$1) {
+var Provider = (function (Component) {
 	function Provider(props, context) {
-		Component$$1.call(this, props, context);
+		Component.call(this, props, context);
 		this.store = props.store;
 	}
 
-	if ( Component$$1 ) Provider.__proto__ = Component$$1;
-	Provider.prototype = Object.create( Component$$1 && Component$$1.prototype );
+	if ( Component ) Provider.__proto__ = Component;
+	Provider.prototype = Object.create( Component && Component.prototype );
 	Provider.prototype.constructor = Provider;
 
 	Provider.prototype.getChildContext = function getChildContext () {
@@ -684,7 +439,7 @@ var Provider = (function (Component$$1) {
 	};
 
 	Provider.prototype.render = function render () {
-		if (isNullOrUndef$1(this.props.children) || toArray$1(this.props.children).length !== 1) {
+		if (isNullOrUndef(this.props.children) || toArray(this.props.children).length !== 1) {
 			throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
 		}
 
@@ -694,7 +449,7 @@ var Provider = (function (Component$$1) {
 	return Provider;
 }(Component));
 
-{
+if ("development" !== 'production') {
 	Provider.prototype.componentWillReceiveProps = function (nextProps) {
 		var ref = this;
 		var store = ref.store;
@@ -755,7 +510,7 @@ function hoistNonReactStatics(targetComponent, sourceComponent, customStatics) {
     }
 
     return targetComponent;
-}
+};
 
 module.exports = hoistNonReactStatics;
 });
@@ -848,7 +603,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 	var mapState = mapStateToProps || defaultMapStateToProps;
 	var mapDispatch;
 
-	if (isFunction$1(mapDispatchToProps)) {
+	if (isFunction(mapDispatchToProps)) {
 		mapDispatch = mapDispatchToProps;
 	} else if (!mapDispatchToProps) {
 		mapDispatch = defaultMapDispatchToProps;
@@ -867,7 +622,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 
 		function checkStateShape(props, methodName) {
 			if (!isPlainObject(props)) {
-				warning$2(
+				warning$1(
 					methodName + "() in " + connectDisplayName + " must return a plain object. " +
 					"Instead received " + props + "."
 				);
@@ -875,15 +630,15 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 		}
 		function computeMergedProps(stateProps, dispatchProps, parentProps) {
 			var mergedProps = finalMergeProps(stateProps, dispatchProps, parentProps);
-			{
+			if ("development" !== 'production') {
 				checkStateShape(mergedProps, 'mergeProps');
 			}
 			return mergedProps;
 		}
 
-		var Connect = (function (Component$$1) {
+		var Connect = (function (Component) {
 			function Connect(props, context) {
-				Component$$1.call(this, props, context);
+				Component.call(this, props, context);
 
 				this.version = version;
 				this.store = (props && props.store) || (context && context.store);
@@ -900,8 +655,8 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 				this.clearCache();
 			}
 
-			if ( Component$$1 ) Connect.__proto__ = Component$$1;
-			Connect.prototype = Object.create( Component$$1 && Component$$1.prototype );
+			if ( Component ) Connect.__proto__ = Component;
+			Connect.prototype = Object.create( Component && Component.prototype );
 			Connect.prototype.constructor = Connect;
 			Connect.prototype.shouldComponentUpdate = function shouldComponentUpdate () {
 				return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged;
@@ -920,7 +675,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 			};
 			Connect.prototype.configureFinalMapState = function configureFinalMapState (store, props) {
 				var mappedState = mapState(store.getState(), props);
-				var isFactory = isFunction$1(mappedState);
+				var isFactory = isFunction(mappedState);
 
 				this.finalMapStateToProps = isFactory ? mappedState : mapState;
 				this.doStatePropsDependOnOwnProps = this.finalMapStateToProps.length !== 1;
@@ -942,7 +697,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 			};
 			Connect.prototype.configureFinalMapDispatch = function configureFinalMapDispatch (store, props) {
 				var mappedDispatch = mapDispatch(store.dispatch, props);
-				var isFactory = isFunction$1(mappedDispatch);
+				var isFactory = isFunction(mappedDispatch);
 
 				this.finalMapDispatchToProps = isFactory ? mappedDispatch : mapDispatch;
 				this.doDispatchPropsDependOnOwnProps = this.finalMapDispatchToProps.length !== 1;
@@ -980,7 +735,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 				return true;
 			};
 			Connect.prototype.isSubscribed = function isSubscribed () {
-				return isFunction$1(this.unsubscribe);
+				return isFunction(this.unsubscribe);
 			};
 			Connect.prototype.trySubscribe = function trySubscribe () {
 				if (shouldSubscribe && !this.unsubscribe) {
@@ -1113,7 +868,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 		Connect.displayName = connectDisplayName;
 		Connect.WrappedComponent = WrappedComponent;
 
-		{
+		if ("development" !== 'production') {
 			Connect.prototype.componentWillUpdate = function componentWillUpdate() {
 				if (this.version === version) {
 					return;

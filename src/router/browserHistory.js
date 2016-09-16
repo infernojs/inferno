@@ -1,4 +1,4 @@
-import { isBrowser } from '../core/utils';
+import { isBrowser } from '../shared';
 import { EMPTY } from './utils';
 
 const routers = [];

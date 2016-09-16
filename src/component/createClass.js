@@ -1,5 +1,5 @@
 import Component from './es2015';
-import { isNullOrUndef } from '../core/utils';
+import { isNullOrUndef } from '../shared';
 
 // don't autobind these methods since they already have guaranteed context.
 const AUTOBIND_BLACKLIST = {

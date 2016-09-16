@@ -9,28 +9,26 @@
 	(global.InfernoRouter = factory());
 }(this, (function () { 'use strict';
 
+var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-
+var isBrowser = typeof window !== 'undefined' && window.document;
 function isArray(obj) {
     return obj instanceof Array;
 }
-
-
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
-
-
-
-
-
 function isNull(obj) {
     return obj === null;
 }
-
 function isUndefined(obj) {
     return obj === undefined;
+}
+function throwError(message) {
+    if (!message) {
+        message = ERROR_MSG;
+    }
+    throw new Error(("Inferno Error: " + message));
 }
 
 var ValueTypes = {
@@ -72,7 +70,6 @@ function createVComponent(component, props, key, hooks, ref) {
         type: NodeTypes.COMPONENT
     };
 }
-
 function createVElement(tag, props, children, key, ref, childrenType) {
     return {
         children: children,
@@ -85,8 +82,6 @@ function createVElement(tag, props, children, key, ref, childrenType) {
         type: NodeTypes.ELEMENT
     };
 }
-
-
 function createVPlaceholder() {
     return {
         dom: null,
@@ -116,36 +111,6 @@ Lifecycle.prototype.trigger = function trigger () {
         this$1._listeners[i]();
     }
 };
-
-var NO_OP$1 = '$NO_OP';
-var ERROR_MSG$1 = 'a runtime error occured! Use Inferno in development environment to find the error.';
-var isBrowser$1 = typeof window !== 'undefined' && window.document;
-
-
-
-
-function isNullOrUndef$1(obj) {
-    return isUndefined$1(obj) || isNull$1(obj);
-}
-
-
-
-
-
-function isNull$1(obj) {
-    return obj === null;
-}
-
-function isUndefined$1(obj) {
-    return obj === undefined;
-}
-
-function throwError$1(message) {
-    if (!message) {
-        message = ERROR_MSG$1;
-    }
-    throw new Error(("Inferno Error: " + message));
-}
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 
@@ -185,9 +150,9 @@ function applyState(component, force, callback) {
 		component._pendingState = {};
 		var nextInput = component._updateComponent(prevState, nextState, props, props, force);
 
-		if (nextInput === NO_OP$1) {
+		if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
-		} else if (isNullOrUndef$1(nextInput)) {
+		} else if (isNullOrUndef(nextInput)) {
 			nextInput = createVPlaceholder();
 		}
 		var lastInput = component._lastInput;
@@ -204,7 +169,7 @@ function applyState(component, force, callback) {
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
 		component.componentDidUpdate(props, prevState);
 		subLifecycle.trigger();
-		if (!isNullOrUndef$1(callback)) {
+		if (!isNullOrUndef(callback)) {
 			callback();
 		}
 		resetActiveNode(activeNode);
@@ -254,10 +219,10 @@ Component.prototype.setState = function setState (newState, callback) {
 	if (this._blockSetState === false) {
 		queueStateChanges(this, newState, callback);
 	} else {
-		{
-			throwError$1('cannot update state via setState() in componentWillUpdate().');
+		if ("development" !== 'production') {
+			throwError('cannot update state via setState() in componentWillUpdate().');
 		}
-		throwError$1();
+		throwError();
 	}
 };
 
@@ -287,7 +252,7 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 	if (this._unmounted === true) {
 		throw new Error('You can\'t update an unmounted component!');
 	}
-	if (!isNullOrUndef$1(nextProps) && isNullOrUndef$1(nextProps.children)) {
+	if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
 		nextProps.children = prevProps.children;
 	}
 	if (prevProps !== nextProps || prevState !== nextState || force) {
@@ -312,7 +277,7 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 			return this.render();
 		}
 	}
-	return NO_OP$1;
+	return NO_OP;
 };
 
 var ASYNC_STATUS = {
@@ -321,16 +286,16 @@ var ASYNC_STATUS = {
 	rejected: 'rejected'
 };
 
-var Route = (function (Component$$1) {
+var Route = (function (Component) {
 	function Route(props, context) {
-		Component$$1.call(this, props, context);
+		Component.call(this, props, context);
 		this.state = {
 			async: null
 		};
 	}
 
-	if ( Component$$1 ) Route.__proto__ = Component$$1;
-	Route.prototype = Object.create( Component$$1 && Component$$1.prototype );
+	if ( Component ) Route.__proto__ = Component;
+	Route.prototype = Object.create( Component && Component.prototype );
 	Route.prototype.constructor = Route;
 
 	Route.prototype.async = function async () {
@@ -621,9 +586,9 @@ function cloneVNode(vNodeToClone, props) {
     return newVNode;
 }
 
-var Router = (function (Component$$1) {
+var Router = (function (Component) {
     function Router(props, context) {
-        Component$$1.call(this, props, context);
+        Component.call(this, props, context);
         if (!props.history) {
             throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
         }
@@ -633,8 +598,8 @@ var Router = (function (Component$$1) {
         };
     }
 
-    if ( Component$$1 ) Router.__proto__ = Component$$1;
-    Router.prototype = Object.create( Component$$1 && Component$$1.prototype );
+    if ( Component ) Router.__proto__ = Component;
+    Router.prototype = Object.create( Component && Component.prototype );
     Router.prototype.constructor = Router;
     Router.prototype.getChildContext = function getChildContext () {
         return {
@@ -658,7 +623,7 @@ var Router = (function (Component$$1) {
             var path = ref.path;
             var fullPath = lastPath + path;
             var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
-            var children = toArray$2(route.props.children);
+            var children = toArray$1(route.props.children);
             if (children) {
                 var subRoute = this$1.handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
                 if (!isNull(subRoute)) {
@@ -691,7 +656,7 @@ var Router = (function (Component$$1) {
         return this._didRoute;
     };
     Router.prototype.render = function render () {
-        var children = toArray$2(this.props.children);
+        var children = toArray$1(this.props.children);
         var url = this.props.url || this.state.url;
         var wrapperComponent = this.props.component;
         var hashbang = this.props.hashbang;
@@ -700,7 +665,7 @@ var Router = (function (Component$$1) {
 
     return Router;
 }(Component));
-function toArray$2(children) {
+function toArray$1(children) {
     return isArray(children) ? children : (children ? [children] : children);
 }
 
@@ -760,7 +725,7 @@ function getHashbangRoot() {
 }
 
 function isActive(path, hashbang) {
-	if (isBrowser$1) {
+	if (isBrowser) {
 		if (hashbang) {
 			var currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
 			var matchURL = currentURL.match(/#!(.*)/);
@@ -772,7 +737,7 @@ function isActive(path, hashbang) {
 	return false;
 }
 
-function routeTo$1(url) {
+function routeTo(url) {
 	for (var i = 0; i < routers.length; i++) {
 		if (routers[i].routeTo(url) === true) {
 			return true;
@@ -781,8 +746,8 @@ function routeTo$1(url) {
 	return false;
 }
 
-if (isBrowser$1) {
-	window.addEventListener('popstate', function () { return routeTo$1(getCurrentUrl()); });
+if (isBrowser) {
+	window.addEventListener('popstate', function () { return routeTo(getCurrentUrl()); });
 }
 
 var browserHistory = {
@@ -795,7 +760,7 @@ var browserHistory = {
 	getCurrentUrl: getCurrentUrl,
 	getHashbangRoot: getHashbangRoot,
 	isActive: isActive,
-	routeTo: routeTo$1
+	routeTo: routeTo
 };
 
 var index = {
