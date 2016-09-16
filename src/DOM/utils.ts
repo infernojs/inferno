@@ -5,7 +5,8 @@ import {
 	isNullOrUndef,
 	isInvalid,
 	isStringOrNumber,
-	isNull
+	isNull,
+	isUndefined
 } from './../shared';
 import { unmountVFragment, unmount } from './unmounting';
 import {
@@ -17,6 +18,14 @@ import {
 import cloneVNode from '../factories/cloneVNode';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
+
+export function copyPropsTo(copyFrom, copyTo) {
+	for (let prop in copyFrom) {
+		if (isUndefined(copyTo[prop])) {
+			copyTo[prop] = copyFrom[prop];
+		}
+	}
+}
 
 export function createStatefulComponentInstance(Component, props, context, isSVG) {
 	const instance = new Component(props, context);

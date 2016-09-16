@@ -2305,4 +2305,51 @@ describe('Components (JSX)', () => {
 		render(createElement('span', null, <Comp3 />), container);
 		expect(container.innerHTML).to.equal('<span><div></div></span>');
 	});
+
+	describe('components should be able to use defaultProps', () => {
+
+		class Comp1 extends Component {
+			constructor(props) {
+				super(props);
+			}
+			render() {
+				return <div className={ this.props.a } id={ this.props.b }>Hello { this.props.c }!</div>;
+			}
+		}
+		Comp1.defaultProps = {
+			a: 'A',
+			b: 'B'
+		};
+
+		class Comp2 extends Component {
+			constructor(props) {
+				super(props);
+			}
+			render() {
+				return <div className={ this.props.a } id={ this.props.b }>Hello { this.props.c }!</div>;
+			}
+		}
+		Comp2.defaultProps = {
+			a: 'aye',
+			b: 'bee'
+		};
+
+		it('should mount component with defaultProps', () => {
+			render(<Comp1 c='C' />, container);
+			expect(container.innerHTML).to.equal('<div class="A" id="B">Hello C!</div>');
+		});
+
+		it('should patch component with defaultProps', () => {
+			render(<Comp1 c='C' />, container);
+			render(<Comp1 c='C2' />, container);
+			expect(container.innerHTML).to.equal('<div class="A" id="B">Hello C2!</div>');
+		});
+		it('should patch component with defaultProps #2', () => {
+			render(<Comp1 c='C' />, container);
+			render(<Comp2 c='C1' />, container);
+			expect(container.innerHTML).to.equal('<div class="aye" id="bee">Hello C1!</div>');
+			render(<Comp1 c='C2' />, container);
+			expect(container.innerHTML).to.equal('<div class="A" id="B">Hello C2!</div>');
+		});		
+	});
 });

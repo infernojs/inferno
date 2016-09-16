@@ -9,9 +9,6 @@
 	(global.InfernoServer = factory(global.stream));
 }(this, (function (stream) { 'use strict';
 
-var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-
 function isArray(obj) {
     return obj instanceof Array;
 }
@@ -28,8 +25,6 @@ function isNullOrUndef(obj) {
 function isInvalid(obj) {
     return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
-
-
 function isString(obj) {
     return typeof obj === 'string';
 }
@@ -52,7 +47,6 @@ function constructDefaults(string, object, value) {
 }
 var xlinkNS = 'http://www.w3.org/1999/xlink';
 var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-
 var strictProps = {};
 var booleanProps = {};
 var namespaces = {};
@@ -129,19 +123,6 @@ var NodeTypes = {
     PLACEHOLDER: 7
 };
 
-function createVComponent(component, props, key, hooks, ref) {
-    return {
-        component: component,
-        dom: null,
-        hooks: hooks || null,
-        instance: null,
-        key: key,
-        props: props,
-        ref: ref || null,
-        type: NodeTypes.COMPONENT
-    };
-}
-
 function createVElement(tag, props, children, key, ref, childrenType) {
     return {
         children: children,
@@ -154,9 +135,6 @@ function createVElement(tag, props, children, key, ref, childrenType) {
         type: NodeTypes.ELEMENT
     };
 }
-
-
-
 function isVElement(o) {
     return o.type === NodeTypes.ELEMENT;
 }
@@ -284,7 +262,7 @@ function renderComponentToString(vComponent, isRoot, context) {
         return renderInputToString(Component(props), context, isRoot);
     }
 }
-function renderChildren$1(children, context) {
+function renderChildren(children, context) {
     if (children && isArray(children)) {
         var childrenResult = [];
         var insertComment = false;
@@ -308,7 +286,7 @@ function renderChildren$1(children, context) {
             }
             else if (isArray(child)) {
                 childrenResult.push('<!---->');
-                childrenResult.push(renderChildren$1(child, context));
+                childrenResult.push(renderChildren(child, context));
                 childrenResult.push('<!--!-->');
                 insertComment = true;
             }
@@ -381,7 +359,7 @@ function renderVElementToString(vElement, isRoot, context) {
         return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">");
     }
     else {
-        return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren$1(vElement.children, context)) + "</" + tag + ">");
+        return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren(vElement.children, context)) + "</" + tag + ">");
     }
 }
 function renderOptVElementToString(optVElement, isRoot, context) {
@@ -451,16 +429,16 @@ function renderAttributes(props){
 	return outputAttrs;
 }
 
-var RenderStream = (function (Readable$$1) {
+var RenderStream = (function (Readable) {
 	function RenderStream(initNode, staticMarkup) {
-		Readable$$1.call(this);
+		Readable.call(this);
 		this.initNode = initNode;
 		this.staticMarkup = staticMarkup;
 		this.started = false;
 	}
 
-	if ( Readable$$1 ) RenderStream.__proto__ = Readable$$1;
-	RenderStream.prototype = Object.create( Readable$$1 && Readable$$1.prototype );
+	if ( Readable ) RenderStream.__proto__ = Readable;
+	RenderStream.prototype = Object.create( Readable && Readable.prototype );
 	RenderStream.prototype.constructor = RenderStream;
 
 	RenderStream.prototype._read = function _read (){

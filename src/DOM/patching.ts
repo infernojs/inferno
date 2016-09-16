@@ -40,7 +40,8 @@ import {
 	normalise,
 	getPropFromOptElement,
 	createStatefulComponentInstance,
-	createStatelessComponentInput
+	createStatelessComponentInput,
+	copyPropsTo
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
@@ -370,6 +371,11 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 
 	if (lastComponent !== nextComponent) {
 		if (isStatefulComponent(nextVComponent)) {
+			const defaultProps = nextComponent.defaultProps;
+
+			if (!isUndefined(defaultProps)) {
+				nextVComponent.props = copyPropsTo(defaultProps, nextProps);
+			}
 			const lastInstance = lastVComponent.instance;
 			const nextInstance = createStatefulComponentInstance(nextComponent, nextProps, context, isSVG);
 			// we use || lastInstance because stateless components store their lastInstance
@@ -404,6 +410,11 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				}
 				replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG, shallowUnmount), lastVComponent.dom);
 			} else {
+				const defaultProps = nextComponent.defaultProps;
+
+				if (!isUndefined(defaultProps)) {
+					nextVComponent.props = copyPropsTo(defaultProps, nextProps);
+				}
 				const lastProps = instance.props;
 				const lastState = instance.state;
 				const nextState = instance.state;

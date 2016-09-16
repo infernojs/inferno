@@ -160,7 +160,7 @@ function applyState(component, force, callback) {
 		var activeNode = getActiveNode();
 		var subLifecycle = new Lifecycle();
 		var childContext = component.getChildContext();
-		if (!isNullOrUndef$1(childContext)) {
+		if (!isNullOrUndef(childContext)) {
 			component.context = Object.assign({}, context, childContext);
 		}
 		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component._isSVG, false);

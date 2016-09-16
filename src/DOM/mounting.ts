@@ -8,6 +8,7 @@ import {
 	isInvalid,
 	isNull,
 	throwError,
+	isUndefined,
 	EMPTY_OBJ
 } from '../shared';
 import {
@@ -18,7 +19,8 @@ import {
 	getPropFromOptElement,
 	createStatefulComponentInstance,
 	createStatelessComponentInput,
-	documentCreateElement
+	documentCreateElement,
+	copyPropsTo
 } from './utils';
 import { patchStyle, patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
@@ -299,6 +301,11 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 	let dom;
 
 	if (isStatefulComponent(vComponent)) {
+		const defaultProps = component.defaultProps;
+
+		if (!isUndefined(defaultProps)) {
+			vComponent.props = copyPropsTo(defaultProps, props);
+		}
 		if (hooks) {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError('"hooks" are not supported on stateful components.');

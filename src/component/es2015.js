@@ -76,7 +76,6 @@ export default class Component {
 
 		/** @type {object} */
 		this.refs = {};
-		this.defaultProps = {};
 		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;

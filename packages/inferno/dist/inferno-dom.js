@@ -770,6 +770,10 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
     var nextProps = nextVComponent.props || {};
     if (lastComponent !== nextComponent) {
         if (isStatefulComponent(nextVComponent)) {
+            var defaultProps = nextComponent.defaultProps;
+            if (!isUndefined(defaultProps)) {
+                nextVComponent.props = copyPropsTo(defaultProps, nextProps);
+            }
             var lastInstance = lastVComponent.instance;
             var nextInstance = createStatefulComponentInstance(nextComponent, nextProps, context, isSVG);
             // we use || lastInstance because stateless components store their lastInstance
@@ -803,6 +807,10 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG, shallowUnmount), lastVComponent.dom);
             }
             else {
+                var defaultProps$1 = nextComponent.defaultProps;
+                if (!isUndefined(defaultProps$1)) {
+                    nextVComponent.props = copyPropsTo(defaultProps$1, nextProps);
+                }
                 var lastProps = instance.props;
                 var lastState = instance.state;
                 var nextState = instance.state;
@@ -1478,6 +1486,13 @@ function cloneVNode(vNodeToClone, props) {
     return newVNode;
 }
 
+function copyPropsTo(copyFrom, copyTo) {
+    for (var prop in copyFrom) {
+        if (isUndefined(copyTo[prop])) {
+            copyTo[prop] = copyFrom[prop];
+        }
+    }
+}
 function createStatefulComponentInstance(Component, props, context, isSVG) {
     var instance = new Component(props, context);
     instance._patch = patch;
@@ -1967,6 +1982,10 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
     var ref = vComponent.ref;
     var dom;
     if (isStatefulComponent(vComponent)) {
+        var defaultProps = component.defaultProps;
+        if (!isUndefined(defaultProps)) {
+            vComponent.props = copyPropsTo(defaultProps, props);
+        }
         if (hooks) {
             if ("development" !== 'production') {
                 throwError('"hooks" are not supported on stateful components.');
