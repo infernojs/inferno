@@ -304,7 +304,8 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 		const defaultProps = component.defaultProps;
 
 		if (!isUndefined(defaultProps)) {
-			vComponent.props = copyPropsTo(defaultProps, props);
+			copyPropsTo(defaultProps, props);
+			vComponent.props = props;
 		}
 		if (hooks) {
 			if (process.env.NODE_ENV !== 'production') {

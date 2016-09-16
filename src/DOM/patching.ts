@@ -411,23 +411,29 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG, shallowUnmount), lastVComponent.dom);
 			} else {
 				const defaultProps = nextComponent.defaultProps;
+				const lastProps = instance.props;
 
 				if (!isUndefined(defaultProps)) {
-					nextVComponent.props = copyPropsTo(defaultProps, nextProps);
+					copyPropsTo(lastProps, nextProps);
+					nextVComponent.props = nextProps;
 				}
-				const lastProps = instance.props;
 				const lastState = instance.state;
 				const nextState = instance.state;
-				const childContext = instance.getChildContext();
+				let childContext = instance.getChildContext();
 
 				nextVComponent.instance = instance;
-				instance.context = context;
+				instance._isSVG = isSVG;
 				if (!isNullOrUndef(childContext)) {
-					context = Object.assign({}, context, childContext);
+					childContext = Object.assign({}, context, childContext);
+				} else {
+					childContext = context;
 				}
+				instance.props = nextProps;
 				const lastInput = instance._lastInput;
-				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps);
+				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
 
+				instance._childContext = childContext;
+				instance.context = context;
 				if (nextInput === NO_OP) {
 					nextInput = lastInput;
 				} else if (isInvalid(nextInput)) {
@@ -436,7 +442,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				instance._lastInput = nextInput;
 				instance._vComponent = nextVComponent;
 				instance._lastInput = nextInput;
-				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
+				patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
 				instance.componentDidUpdate(lastProps, lastState);
 				nextVComponent.dom = nextInput.dom;
 				componentToDOMNodeMap.set(instance, nextInput.dom);

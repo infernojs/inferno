@@ -30,6 +30,7 @@ export function copyPropsTo(copyFrom, copyTo) {
 export function createStatefulComponentInstance(Component, props, context, isSVG) {
 	const instance = new Component(props, context);
 
+	instance.context = context;
 	instance._patch = patch;
 	instance._componentToDOMNodeMap = componentToDOMNodeMap;
 	const childContext = instance.getChildContext();
@@ -42,6 +43,7 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	instance._unmounted = false;
 	instance._pendingSetState = true;
 	instance._isSVG = isSVG;
+	instance._context = context;
 	instance.componentWillMount();
 	let input = instance.render();
 

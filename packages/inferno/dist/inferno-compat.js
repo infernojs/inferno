@@ -23,7 +23,7 @@ Lifecycle.prototype.trigger = function trigger () {
     }
 };
 
-var NO_OP$1 = '$NO_OP';
+var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 var isBrowser = typeof window !== 'undefined' && window.document;
 function isArray(obj) {
@@ -116,6 +116,18 @@ function isNodeChildrenType(o) {
     return o === ChildrenTypes.NODE;
 }
 
+function createOptVElement(bp, key, v0, v1, v2, v3) {
+    return {
+        bp: bp,
+        dom: null,
+        key: key,
+        type: NodeTypes.OPT_ELEMENT,
+        v0: v0,
+        v1: v1,
+        v2: v2,
+        v3: v3
+    };
+}
 function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3, renderer) {
     var bp = {
         clone: null,
@@ -152,7 +164,7 @@ function createVComponent(component, props, key, hooks, ref) {
         type: NodeTypes.COMPONENT
     };
 }
-function createVText$1(text) {
+function createVText(text) {
     return {
         dom: null,
         text: text,
@@ -179,7 +191,7 @@ function createStaticVElement(tag, props, children) {
         type: NodeTypes.ELEMENT
     };
 }
-function createVFragment$1(children, childrenType) {
+function createVFragment(children, childrenType) {
     return {
         children: children,
         childrenType: childrenType || ChildrenTypes.UNKNOWN,
@@ -188,7 +200,7 @@ function createVFragment$1(children, childrenType) {
         type: NodeTypes.FRAGMENT
     };
 }
-function createVPlaceholder$1() {
+function createVPlaceholder() {
     return {
         dom: null,
         type: NodeTypes.PLACEHOLDER
@@ -840,30 +852,37 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
             }
             else {
                 var defaultProps$1 = nextComponent.defaultProps;
-                if (!isUndefined(defaultProps$1)) {
-                    nextVComponent.props = copyPropsTo(defaultProps$1, nextProps);
-                }
                 var lastProps = instance.props;
+                if (!isUndefined(defaultProps$1)) {
+                    copyPropsTo(lastProps, nextProps);
+                    nextVComponent.props = nextProps;
+                }
                 var lastState = instance.state;
                 var nextState = instance.state;
                 var childContext = instance.getChildContext();
                 nextVComponent.instance = instance;
-                instance.context = context;
+                instance._isSVG = isSVG;
                 if (!isNullOrUndef(childContext)) {
-                    context = Object.assign({}, context, childContext);
+                    childContext = Object.assign({}, context, childContext);
                 }
+                else {
+                    childContext = context;
+                }
+                instance.props = nextProps;
                 var lastInput$2 = instance._lastInput;
-                var nextInput$2 = instance._updateComponent(lastState, nextState, lastProps, nextProps);
-                if (nextInput$2 === NO_OP$1) {
+                var nextInput$2 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
+                instance._childContext = childContext;
+                instance.context = context;
+                if (nextInput$2 === NO_OP) {
                     nextInput$2 = lastInput$2;
                 }
                 else if (isInvalid(nextInput$2)) {
-                    nextInput$2 = createVPlaceholder$1();
+                    nextInput$2 = createVPlaceholder();
                 }
                 instance._lastInput = nextInput$2;
                 instance._vComponent = nextVComponent;
                 instance._lastInput = nextInput$2;
-                patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG, shallowUnmount);
+                patch(lastInput$2, nextInput$2, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
                 instance.componentDidUpdate(lastProps, lastState);
                 nextVComponent.dom = nextInput$2.dom;
                 componentToDOMNodeMap.set(instance, nextInput$2.dom);
@@ -885,11 +904,11 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                     nextHooks.onComponentWillUpdate(lastProps$1, nextProps);
                 }
                 var nextInput$3 = nextComponent(nextProps, context);
-                if (nextInput$3 === NO_OP$1) {
+                if (nextInput$3 === NO_OP) {
                     return false;
                 }
                 else if (isInvalid(nextInput$3)) {
-                    nextInput$3 = createVPlaceholder$1();
+                    nextInput$3 = createVPlaceholder();
                 }
                 patch(lastInput$3, nextInput$3, parentDom, lifecycle, context, isSVG, shallowUnmount);
                 nextVComponent.instance = nextInput$3;
@@ -1527,6 +1546,7 @@ function copyPropsTo(copyFrom, copyTo) {
 }
 function createStatefulComponentInstance(Component, props, context, isSVG) {
     var instance = new Component(props, context);
+    instance.context = context;
     instance._patch = patch;
     instance._componentToDOMNodeMap = componentToDOMNodeMap;
     var childContext = instance.getChildContext();
@@ -1539,10 +1559,11 @@ function createStatefulComponentInstance(Component, props, context, isSVG) {
     instance._unmounted = false;
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
+    instance._context = context;
     instance.componentWillMount();
     var input = instance.render();
     if (isInvalid(input)) {
-        input = createVPlaceholder$1();
+        input = createVPlaceholder();
     }
     instance._pendingSetState = false;
     instance._lastInput = input;
@@ -1551,7 +1572,7 @@ function createStatefulComponentInstance(Component, props, context, isSVG) {
 function createStatelessComponentInput(component, props, context) {
     var input = component(props, context);
     if (isInvalid(input)) {
-        input = createVPlaceholder$1();
+        input = createVPlaceholder();
     }
     return input;
 }
@@ -1631,13 +1652,13 @@ function replaceChild(parentDom, nextDom, lastDom) {
 }
 function normalise(object) {
     if (isStringOrNumber(object)) {
-        return createVText$1(object);
+        return createVText(object);
     }
     else if (isInvalid(object)) {
-        return createVPlaceholder$1();
+        return createVPlaceholder();
     }
     else if (isArray(object)) {
-        return createVFragment$1(object, null);
+        return createVFragment(object, null);
     }
     else if (isVNode(object) && object.dom) {
         return cloneVNode(object);
@@ -2016,7 +2037,8 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
     if (isStatefulComponent(vComponent)) {
         var defaultProps = component.defaultProps;
         if (!isUndefined(defaultProps)) {
-            vComponent.props = copyPropsTo(defaultProps, props);
+            copyPropsTo(defaultProps, props);
+            vComponent.props = props;
         }
         if (hooks) {
             if ("development" !== 'production') {
@@ -2349,7 +2371,7 @@ function render(input, parentDom) {
         }
         throwError();
     }
-    if (input === NO_OP$1) {
+    if (input === NO_OP) {
         return;
     }
     if (isUndefined(root)) {
@@ -2508,25 +2530,29 @@ function applyState(component, force, callback) {
 		var prevState = component.state;
 		var nextState = Object.assign({}, prevState, pendingState);
 		var props = component.props;
+		var context = component.context;
 
 		component._pendingState = {};
-		var nextInput = component._updateComponent(prevState, nextState, props, props, force);
+		var nextInput = component._updateComponent(prevState, nextState, props, props, context, force);
 
-		if (nextInput === NO_OP$1) {
+		if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 		} else if (isNullOrUndef(nextInput)) {
-			nextInput = createVPlaceholder$1();
+			nextInput = createVPlaceholder();
 		}
 		var lastInput = component._lastInput;
 		var parentDom = lastInput.dom.parentNode;
 		var activeNode = getActiveNode$1();
 		var subLifecycle = new Lifecycle();
 		var childContext = component.getChildContext();
+
 		if (!isNullOrUndef(childContext)) {
-			component.context = Object.assign({}, context, childContext);
+			childContext = Object.assign({}, context, component._childContext, childContext);
+		} else {
+			childContext = Object.assign({}, context, component._childContext);
 		}
-		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component._isSVG, false);
 		component._lastInput = nextInput;
+		component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
 		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
 		component.componentDidUpdate(props, prevState);
@@ -2610,7 +2636,7 @@ Component.prototype.componentWillUpdate = function componentWillUpdate () {
 Component.prototype.getChildContext = function getChildContext () {
 };
 
-Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, force) {
+Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, context, force) {
 	if (this._unmounted === true) {
 		throw new Error('You can\'t update an unmounted component!');
 	}
@@ -2620,7 +2646,7 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 	if (prevProps !== nextProps || prevState !== nextState || force) {
 		if (prevProps !== nextProps) {
 			this._blockRender = true;
-			this.componentWillReceiveProps(nextProps);
+			this.componentWillReceiveProps(nextProps, context);
 			this._blockRender = false;
 			if (this._pendingSetState) {
 				nextState = Object.assign({}, nextState, this._pendingState);
@@ -2628,18 +2654,18 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 				this._pendingState = {};
 			}
 		}
-		var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
+		var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState, context);
 
 		if (shouldUpdate !== false || force) {
 			this._blockSetState = true;
-			this.componentWillUpdate(nextProps, nextState);
+			this.componentWillUpdate(nextProps, nextState, context);
 			this._blockSetState = false;
 			this.props = nextProps;
 			this.state = nextState;
 			return this.render();
 		}
 	}
-	return NO_OP$1;
+	return NO_OP;
 };
 
 // don't autobind these methods since they already have guaranteed context.

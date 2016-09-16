@@ -36,9 +36,10 @@ function applyState(component, force, callback) {
 		const prevState = component.state;
 		const nextState = Object.assign({}, prevState, pendingState);
 		const props = component.props;
+		const context = component.context;
 
 		component._pendingState = {};
-		let nextInput = component._updateComponent(prevState, nextState, props, props, force);
+		let nextInput = component._updateComponent(prevState, nextState, props, props, context, force);
 
 		if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
@@ -49,12 +50,15 @@ function applyState(component, force, callback) {
 		const parentDom = lastInput.dom.parentNode;
 		const activeNode = getActiveNode();
 		const subLifecycle = new Lifecycle();
-		const childContext = component.getChildContext();
+		let childContext = component.getChildContext();
+
 		if (!isNullOrUndef(childContext)) {
-			component.context = Object.assign({}, context, childContext);
+			childContext = Object.assign({}, context, component._childContext, childContext);
+		} else {
+			childContext = Object.assign({}, context, component._childContext);
 		}
-		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component._isSVG, false);
 		component._lastInput = nextInput;
+		component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
 		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
 		component.componentDidUpdate(props, prevState);
@@ -139,7 +143,7 @@ export default class Component {
 	getChildContext() {
 	}
 
-	_updateComponent(prevState, nextState, prevProps, nextProps, force) {
+	_updateComponent(prevState, nextState, prevProps, nextProps, context, force) {
 		if (this._unmounted === true) {
 			throw new Error('You can\'t update an unmounted component!');
 		}
@@ -149,7 +153,7 @@ export default class Component {
 		if (prevProps !== nextProps || prevState !== nextState || force) {
 			if (prevProps !== nextProps) {
 				this._blockRender = true;
-				this.componentWillReceiveProps(nextProps);
+				this.componentWillReceiveProps(nextProps, context);
 				this._blockRender = false;
 				if (this._pendingSetState) {
 					nextState = Object.assign({}, nextState, this._pendingState);
@@ -157,11 +161,11 @@ export default class Component {
 					this._pendingState = {};
 				}
 			}
-			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState);
+			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState, context);
 
 			if (shouldUpdate !== false || force) {
 				this._blockSetState = true;
-				this.componentWillUpdate(nextProps, nextState);
+				this.componentWillUpdate(nextProps, nextState, context);
 				this._blockSetState = false;
 				this.props = nextProps;
 				this.state = nextState;

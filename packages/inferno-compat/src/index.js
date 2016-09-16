@@ -1,6 +1,16 @@
 import { render, findDOMNode } from '../../../src/DOM/rendering';
+import { NO_OP } from '../../../src/shared';
 import createElement from '../../../src/factories/createElement';
-import { createVElement, createStaticVElement, createOptBlueprint, createVComponent } from '../../../src/core/shapes';
+import { 
+	createVElement,
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	createOptVElement,
+	createVFragment,
+	createVPlaceholder,
+	createVText
+} from '../../../src/core/shapes';
 import Component from '../../../src/component/es2015';
 import createClass from '../../../src/component/createClass';
 import renderToString, { renderToStaticMarkup } from '../../../src/server/renderToString';

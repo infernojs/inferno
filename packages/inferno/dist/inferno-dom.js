@@ -808,20 +808,27 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
             }
             else {
                 var defaultProps$1 = nextComponent.defaultProps;
-                if (!isUndefined(defaultProps$1)) {
-                    nextVComponent.props = copyPropsTo(defaultProps$1, nextProps);
-                }
                 var lastProps = instance.props;
+                if (!isUndefined(defaultProps$1)) {
+                    copyPropsTo(lastProps, nextProps);
+                    nextVComponent.props = nextProps;
+                }
                 var lastState = instance.state;
                 var nextState = instance.state;
                 var childContext = instance.getChildContext();
                 nextVComponent.instance = instance;
-                instance.context = context;
+                instance._isSVG = isSVG;
                 if (!isNullOrUndef(childContext)) {
-                    context = Object.assign({}, context, childContext);
+                    childContext = Object.assign({}, context, childContext);
                 }
+                else {
+                    childContext = context;
+                }
+                instance.props = nextProps;
                 var lastInput$2 = instance._lastInput;
-                var nextInput$2 = instance._updateComponent(lastState, nextState, lastProps, nextProps);
+                var nextInput$2 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
+                instance._childContext = childContext;
+                instance.context = context;
                 if (nextInput$2 === NO_OP) {
                     nextInput$2 = lastInput$2;
                 }
@@ -831,7 +838,7 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 instance._lastInput = nextInput$2;
                 instance._vComponent = nextVComponent;
                 instance._lastInput = nextInput$2;
-                patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG, shallowUnmount);
+                patch(lastInput$2, nextInput$2, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
                 instance.componentDidUpdate(lastProps, lastState);
                 nextVComponent.dom = nextInput$2.dom;
                 componentToDOMNodeMap.set(instance, nextInput$2.dom);
@@ -1495,6 +1502,7 @@ function copyPropsTo(copyFrom, copyTo) {
 }
 function createStatefulComponentInstance(Component, props, context, isSVG) {
     var instance = new Component(props, context);
+    instance.context = context;
     instance._patch = patch;
     instance._componentToDOMNodeMap = componentToDOMNodeMap;
     var childContext = instance.getChildContext();
@@ -1507,6 +1515,7 @@ function createStatefulComponentInstance(Component, props, context, isSVG) {
     instance._unmounted = false;
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
+    instance._context = context;
     instance.componentWillMount();
     var input = instance.render();
     if (isInvalid(input)) {
@@ -1984,7 +1993,8 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
     if (isStatefulComponent(vComponent)) {
         var defaultProps = component.defaultProps;
         if (!isUndefined(defaultProps)) {
-            vComponent.props = copyPropsTo(defaultProps, props);
+            copyPropsTo(defaultProps, props);
+            vComponent.props = props;
         }
         if (hooks) {
             if ("development" !== 'production') {
