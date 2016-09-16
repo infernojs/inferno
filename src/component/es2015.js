@@ -49,7 +49,10 @@ function applyState(component, force, callback) {
 		const parentDom = lastInput.dom.parentNode;
 		const activeNode = getActiveNode();
 		const subLifecycle = new Lifecycle();
-
+		const childContext = component.getChildContext();
+		if (!isNullOrUndef(childContext)) {
+			component.context = Object.assign({}, context, childContext);
+		}
 		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component._isSVG, false);
 		component._lastInput = nextInput;
 		component._vComponent.dom = nextInput.dom;

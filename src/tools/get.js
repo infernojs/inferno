@@ -1,8 +1,10 @@
+import { isNullOrUndef } from './../core/utils';
+
 let rreturn = /\r/g,
 	each = (collection, cb) => {
-		var arr = collection || [],
-			index = -1,
-			length = arr.length;
+		const arr = collection || [];
+		const length = arr.length;
+		let index = -1;
 
 		while (++index < length) {
 			cb(arr[index], index, arr);
@@ -10,28 +12,27 @@ let rreturn = /\r/g,
 		return arr;
 	};
 
-export default function(node) {
-	var type = node.getAttribute('type') == null ? node.nodeName.toLowerCase() : node.getAttribute('type');
+export default function (node) {
+	const type = isNullOrUndef(node.getAttribute('type')) ? node.nodeName.toLowerCase() : node.getAttribute('type');
 	if (arguments.length === 1) {
-		if ( type === 'checkbox' || type === 'radio' ) {
+		if (type === 'checkbox' || type === 'radio') {
 			if (!node.checked) {
 				return false;
 			}
 
-			var val = node.getAttribute( 'value' );
-			return val == null ? true : val;
-		} else if ( type === 'select' ) {
+			const val = node.getAttribute('value');
+			return isNullOrUndef(val) ? true : val;
+		} else if (type === 'select') {
 			if (node.multiple) {
-				var result = [];
+				const result = [];
 
 				each(node.options, option => {
 					// Don't return options that are disabled or in a disabled optgroup
-					if ( option.selected &&
+					if (option.selected &&
 						option.getAttribute('disabled') === null &&
 						(!option.parentNode.disabled || option.parentNode.nodeName !== 'OPTGROUP')) {
-						result.push( option.value || option.text );
+						result.push(option.value || option.text);
 					}
-
 				});
 
 				return result;
@@ -40,10 +41,10 @@ export default function(node) {
 		}
 	}
 
-	var ret = node.value;
+	const ret = node.value;
 	return typeof ret === 'string' ?
 		// Handle most common string cases
-		ret.replace( rreturn, '' ) :
+		ret.replace(rreturn, '') :
 		// Handle cases where value is null/undef or number
-		ret == null ? '' : ret;
+		isNullOrUndef(ret) ? '' : ret;
 }

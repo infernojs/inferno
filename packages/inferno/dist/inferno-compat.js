@@ -2534,7 +2534,10 @@ function applyState(component, force, callback) {
 		var parentDom = lastInput.dom.parentNode;
 		var activeNode = getActiveNode$1();
 		var subLifecycle = new Lifecycle();
-
+		var childContext = component.getChildContext();
+		if (!isNullOrUndef$1(childContext)) {
+			component.context = Object.assign({}, context, childContext);
+		}
 		component._patch(lastInput, nextInput, parentDom, subLifecycle, component.context, component._isSVG, false);
 		component._lastInput = nextInput;
 		component._vComponent.dom = nextInput.dom;
@@ -2705,46 +2708,42 @@ function createClass(obj) {
 }
 
 function escapeText(str) {
-	return (str + '')
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&#039;')
-		.replace(/\//g, '&#x2F;');
+    return (str + '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+        .replace(/\//g, '&#x2F;');
 }
-
 function escapeAttr(str) {
-	return (str + '')
-		.replace(/&/g, '&amp;')
+    return (str + '')
+        .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;');
 }
-
 function toHyphenCase(str) {
-	return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+    return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
 }
-
 var voidElements = {
-	area: true,
-	base: true,
-	br: true,
-	col: true,
-	command: true,
-	embed: true,
-	hr: true,
-	img: true,
-	input: true,
-	keygen: true,
-	link: true,
-	meta: true,
-	param: true,
-	source: true,
-	track: true,
-	wbr: true
+    area: true,
+    base: true,
+    br: true,
+    col: true,
+    command: true,
+    embed: true,
+    hr: true,
+    img: true,
+    input: true,
+    keygen: true,
+    link: true,
+    meta: true,
+    param: true,
+    source: true,
+    track: true,
+    wbr: true
 };
-
 function isVoidElement(str) {
-	return !!voidElements[str];
+    return !!voidElements[str];
 }
 
 function renderComponentToString(vComponent, isRoot, context) {

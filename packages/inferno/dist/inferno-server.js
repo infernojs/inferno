@@ -9,6 +9,9 @@
 	(global.InfernoServer = factory(global.stream));
 }(this, (function (stream) { 'use strict';
 
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
 function isArray(obj) {
     return obj instanceof Array;
 }
@@ -25,6 +28,8 @@ function isNullOrUndef(obj) {
 function isInvalid(obj) {
     return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
+
+
 function isString(obj) {
     return typeof obj === 'string';
 }
@@ -47,6 +52,7 @@ function constructDefaults(string, object, value) {
 }
 var xlinkNS = 'http://www.w3.org/1999/xlink';
 var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+
 var strictProps = {};
 var booleanProps = {};
 var namespaces = {};
@@ -58,46 +64,42 @@ constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selec
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
 function escapeText(str) {
-	return (str + '')
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&#039;')
-		.replace(/\//g, '&#x2F;');
+    return (str + '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+        .replace(/\//g, '&#x2F;');
 }
-
 function escapeAttr(str) {
-	return (str + '')
-		.replace(/&/g, '&amp;')
+    return (str + '')
+        .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;');
 }
-
 function toHyphenCase(str) {
-	return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+    return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
 }
-
 var voidElements = {
-	area: true,
-	base: true,
-	br: true,
-	col: true,
-	command: true,
-	embed: true,
-	hr: true,
-	img: true,
-	input: true,
-	keygen: true,
-	link: true,
-	meta: true,
-	param: true,
-	source: true,
-	track: true,
-	wbr: true
+    area: true,
+    base: true,
+    br: true,
+    col: true,
+    command: true,
+    embed: true,
+    hr: true,
+    img: true,
+    input: true,
+    keygen: true,
+    link: true,
+    meta: true,
+    param: true,
+    source: true,
+    track: true,
+    wbr: true
 };
-
 function isVoidElement(str) {
-	return !!voidElements[str];
+    return !!voidElements[str];
 }
 
 var ValueTypes = {
@@ -127,6 +129,19 @@ var NodeTypes = {
     PLACEHOLDER: 7
 };
 
+function createVComponent(component, props, key, hooks, ref) {
+    return {
+        component: component,
+        dom: null,
+        hooks: hooks || null,
+        instance: null,
+        key: key,
+        props: props,
+        ref: ref || null,
+        type: NodeTypes.COMPONENT
+    };
+}
+
 function createVElement(tag, props, children, key, ref, childrenType) {
     return {
         children: children,
@@ -139,6 +154,9 @@ function createVElement(tag, props, children, key, ref, childrenType) {
         type: NodeTypes.ELEMENT
     };
 }
+
+
+
 function isVElement(o) {
     return o.type === NodeTypes.ELEMENT;
 }
@@ -266,7 +284,7 @@ function renderComponentToString(vComponent, isRoot, context) {
         return renderInputToString(Component(props), context, isRoot);
     }
 }
-function renderChildren(children, context) {
+function renderChildren$1(children, context) {
     if (children && isArray(children)) {
         var childrenResult = [];
         var insertComment = false;
@@ -290,7 +308,7 @@ function renderChildren(children, context) {
             }
             else if (isArray(child)) {
                 childrenResult.push('<!---->');
-                childrenResult.push(renderChildren(child, context));
+                childrenResult.push(renderChildren$1(child, context));
                 childrenResult.push('<!--!-->');
                 insertComment = true;
             }
@@ -326,7 +344,7 @@ function renderStyleToString(style) {
                 styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
             }
         }
-        return styles.join();
+        return styles.join('');
     }
 }
 function renderVElementToString(vElement, isRoot, context) {
@@ -363,7 +381,7 @@ function renderVElementToString(vElement, isRoot, context) {
         return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">");
     }
     else {
-        return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren(vElement.children, context)) + "</" + tag + ">");
+        return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren$1(vElement.children, context)) + "</" + tag + ">");
     }
 }
 function renderOptVElementToString(optVElement, isRoot, context) {
@@ -433,16 +451,16 @@ function renderAttributes(props){
 	return outputAttrs;
 }
 
-var RenderStream = (function (Readable) {
+var RenderStream = (function (Readable$$1) {
 	function RenderStream(initNode, staticMarkup) {
-		Readable.call(this);
+		Readable$$1.call(this);
 		this.initNode = initNode;
 		this.staticMarkup = staticMarkup;
 		this.started = false;
 	}
 
-	if ( Readable ) RenderStream.__proto__ = Readable;
-	RenderStream.prototype = Object.create( Readable && Readable.prototype );
+	if ( Readable$$1 ) RenderStream.__proto__ = Readable$$1;
+	RenderStream.prototype = Object.create( Readable$$1 && Readable$$1.prototype );
 	RenderStream.prototype.constructor = RenderStream;
 
 	RenderStream.prototype._read = function _read (){

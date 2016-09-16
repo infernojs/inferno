@@ -733,27 +733,27 @@ describe('Elements (JSX)', () => {
 
 	it('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
 		function test() {}
-		const obj = { fn: function () {}, focus: function () {} };
+		const obj = { fn: function () {}, click: function () {} };
 		const bool = false;
 		const newValue = 't';
 		const spread = { id: 'test' };
 		const spy = sinon.spy(obj, 'fn');
-		const spyFocus = sinon.spy(obj, 'focus');
+		const spyClick = sinon.spy(obj, 'click');
 
 
 		// TODO: Fails to creation of node fix needed
 		render(<input type="text" ref={obj.fn} spellcheck="false"
 					readOnly={bool ? 'readonly' : false} disabled={bool}
 					ondragenter={test} ondragover={test} value={newValue} oninput={test}
-					onfocus={obj.focus} class="edit-field" onkeydown={test} onkeyup={test}
+					onclick={obj.click} class="edit-field" onkeydown={test} onkeyup={test}
 					onBlur={test} {...spread} />, container);
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		document.body.appendChild(container);
 		const input = container.querySelector('#test');
 		sinon.assert.calledOnce(spy, 'Hook should work'); // Verify hook works
-		input.focus();
+		input.click(); // Focus fails with async tests - changed to tests
 		requestAnimationFrame(() => {
-			sinon.assert.calledOnce(spyFocus, 'Event should work'); // Verify hook works
+			sinon.assert.calledOnce(spyClick, 'Event should work'); // Verify hook works
 			document.body.removeChild(container);
 			done();
 		});

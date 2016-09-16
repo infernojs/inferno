@@ -3,7 +3,6 @@ import {
 	isStringOrNumber,
 	isNullOrUndef,
 	isInvalid,
-	addChildrenToProps,
 	isStatefulComponent
 } from './../shared';
 import { escapeText, escapeAttr, isVoidElement } from './utils';
