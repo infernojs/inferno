@@ -20,6 +20,8 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 - Components have a similar API to React ES2015 components with `inferno-component`
 - Stateless functional components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
 - Isomorphic/universal for easy server-side rendering with `inferno-server`
+- can be swapped in for react utilising `inferno-compat`
+- small payload-comes in around 8kb gzipped
 
 ## Benchmarks
 
