@@ -27,22 +27,6 @@ function unmountComponentAtNode(container) {
 	return true;
 }
 
-function cloneElement(element, props, ...children) {
-	return createElement(
-		element.tag,
-		Object.assign({},
-			element.attrs || {},
-			props || {},
-			element.className ? { className: element.className } : {},
-			element.style ? { style: element.style } : {},
-			element.key ? { key: element.key } : {},
-			element.hooks || {},
-			element.events || {}
-		),
-		...children
-	);
-}
-
 const ARR = [];
 
 const Children = {
@@ -72,6 +56,9 @@ const Children = {
 
 Component.prototype.isReactComponent = {};
 
+const cloneElement = cloneVNode;
+const version = '15.3.1';
+
 export {
 	render,
 	createElement,
@@ -96,7 +83,8 @@ export {
 	createVPlaceholder,
 	createVText,
 	cloneVNode,
-	NO_OP
+	NO_OP,
+	version
 };
 
 export default {
@@ -123,5 +111,6 @@ export default {
 	createVPlaceholder,
 	createVText,
 	cloneVNode,
-	NO_OP
+	NO_OP,
+	version
 };

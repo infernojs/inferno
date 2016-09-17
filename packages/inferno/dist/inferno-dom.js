@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v1.0.0-alpha10
+ * inferno-dom v1.0.0-alpha11
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -26,6 +26,7 @@ Lifecycle.prototype.trigger = function trigger () {
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 var isBrowser = typeof window !== 'undefined' && window.document;
+
 function isArray(obj) {
     return obj instanceof Array;
 }
@@ -72,6 +73,7 @@ function throwError(message) {
     }
     throw new Error(("Inferno Error: " + message));
 }
+
 var EMPTY_OBJ = {};
 
 var ValueTypes = {
@@ -147,6 +149,7 @@ function createVElement(tag, props, children, key, ref, childrenType) {
         type: NodeTypes.ELEMENT
     };
 }
+
 function createVFragment(children, childrenType) {
     return {
         children: children,
@@ -418,7 +421,7 @@ function unmountRef(ref) {
         if (isInvalid(ref)) {
             return;
         }
-        if ("development" !== 'production') {
+        {
             throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
         }
         throwError();
@@ -446,7 +449,7 @@ var namespaces = {};
 var isUnitlessNumber = {};
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,value', strictProps, true);
+constructDefaults('volume,value,defaultValue,defaultChecked', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
@@ -529,7 +532,7 @@ function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shall
             replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
         }
         else {
-            if ("development" !== 'production') {
+            {
                 throwError('bad input argument called on patch(). Input argument may need normalising.');
             }
             throwError();
@@ -694,7 +697,7 @@ function patchChildren(childrenType, lastChildren, nextChildren, parentDom, life
         patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
     }
     else {
-        if ("development" !== 'production') {
+        {
             throwError('bad childrenType value specified when attempting to patchChildren.');
         }
         throwError();
@@ -758,7 +761,7 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
         patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null, true, shallowUnmount);
     }
     else {
-        if ("development" !== 'production') {
+        {
             throwError('bad input argument called on patchChildrenWithUnknownType(). Input argument may need normalising.');
         }
         throwError();
@@ -1215,18 +1218,6 @@ function patchProp(prop, lastValue, nextValue, dom) {
             else if (prop === 'style') {
                 patchStyle(lastValue, nextValue, dom);
             }
-            else if (prop === 'defaultChecked') {
-                if (isNull(lastValue)) {
-                    dom.addAttribute('checked');
-                }
-                return false;
-            }
-            else if (prop === 'defaultValue') {
-                if (isNull(lastValue)) {
-                    dom.setAttribute('value', nextValue);
-                }
-                return false;
-            }
             else if (isAttrAnEvent(prop)) {
                 dom[prop.toLowerCase()] = nextValue;
             }
@@ -1234,7 +1225,7 @@ function patchProp(prop, lastValue, nextValue, dom) {
                 var lastHtml = lastValue && lastValue.__html;
                 var nextHtml = nextValue && nextValue.__html;
                 if (isNullOrUndef(nextHtml)) {
-                    if ("development" !== 'production') {
+                    {
                         throwError('dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
                     }
                     throwError();
@@ -1758,7 +1749,7 @@ function mount(input, parentDom, lifecycle, context, isSVG, shallowUnmount) {
         return mountVPlaceholder(input, parentDom);
     }
     else {
-        if ("development" !== 'production') {
+        {
             throwError('bad input argument called on mount(). Input argument may need normalising.');
         }
         throwError();
@@ -1775,7 +1766,7 @@ function mountVPlaceholder(vPlaceholder, parentDom) {
 function mountVElement(vElement, parentDom, lifecycle, context, isSVG, shallowUnmount) {
     var tag = vElement.tag;
     if (!isString(tag)) {
-        if ("development" !== 'production') {
+        {
             throwError('expects VElement to have a string as the tag name');
         }
         throwError();
@@ -1929,7 +1920,7 @@ function mountChildren(childrenType, children, dom, lifecycle, context, isSVG, s
         mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG, shallowUnmount);
     }
     else {
-        if ("development" !== 'production') {
+        {
             throwError('bad childrenType value specified when attempting to mountChildren.');
         }
         throwError();
@@ -1994,7 +1985,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
             vComponent.props = props;
         }
         if (hooks) {
-            if ("development" !== 'production') {
+            {
                 throwError('"hooks" are not supported on stateful components.');
             }
             throwError();
@@ -2012,7 +2003,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
     }
     else {
         if (ref) {
-            if ("development" !== 'production') {
+            {
                 throwError('"refs" are not supported on stateless components.');
             }
             throwError();
@@ -2033,7 +2024,7 @@ function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
             lifecycle.addListener(function () { return ref(instance); });
         }
         else {
-            if ("development" !== 'production') {
+            {
                 throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
             }
             throwError();
@@ -2090,7 +2081,7 @@ function mountRef(dom, value, lifecycle) {
         if (isInvalid(value)) {
             return;
         }
-        if ("development" !== 'production') {
+        {
             throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
         }
         throwError();
@@ -2146,7 +2137,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 function hydrateVElement(vElement, dom, lifecycle, context) {
     var tag = vElement.tag;
     if (!isString(tag)) {
-        if ("development" !== 'production') {
+        {
             throwError('expects VElement to have a string as the tag name');
         }
         throwError();
@@ -2188,7 +2179,7 @@ function hydrateChildren(childrenType, children, dom, lifecycle, context) {
         hydrateChildrenWithUnknownType(children, dom, lifecycle, context);
     }
     else if (!isTextChildrenType(childrenType)) {
-        if ("development" !== 'production') {
+        {
             throwError('Bad childrenType value specified when attempting to hydrateChildren.');
         }
         throwError();
@@ -2291,7 +2282,7 @@ function hydrate(input, dom, lifecycle, context) {
         debugger;
     }
     else {
-        if ("development" !== 'production') {
+        {
             throwError('bad input argument called on hydrate(). Input argument may need normalising.');
         }
         throwError();
@@ -2319,7 +2310,7 @@ function render(input, parentDom) {
     var root = roots.get(parentDom);
     var lifecycle = new Lifecycle();
     if (documetBody === parentDom) {
-        if ("development" !== 'production') {
+        {
             throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
         }
         throwError();
@@ -2369,7 +2360,8 @@ function createRenderer() {
 var index = {
 	render: render,
 	findDOMNode: findDOMNode,
-	createRenderer: createRenderer
+	createRenderer: createRenderer,
+	createStaticVElementClone: createStaticVElementClone
 };
 
 return index;

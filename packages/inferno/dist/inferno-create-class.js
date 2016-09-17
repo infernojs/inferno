@@ -1,5 +1,5 @@
 /*!
- * inferno-create-class v1.0.0-alpha10
+ * inferno-create-class v1.0.0-alpha11
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -25,15 +25,27 @@ Lifecycle.prototype.trigger = function trigger () {
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
+
+
+
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
+
+
+
+
+
 function isNull(obj) {
     return obj === null;
 }
+
 function isUndefined(obj) {
     return obj === undefined;
 }
+
 function throwError(message) {
     if (!message) {
         message = ERROR_MSG;
@@ -200,7 +212,7 @@ Component.prototype.setState = function setState (newState, callback) {
 	if (this._blockSetState === false) {
 		queueStateChanges(this, newState, callback);
 	} else {
-		if ("development" !== 'production') {
+		{
 			throwError('cannot update state via setState() in componentWillUpdate().');
 		}
 		throwError();
@@ -297,7 +309,7 @@ function bindAll(ctx) {
 	}
 }
 
-function createClass(obj) {
+function createClass$1(obj) {
 	function Cl(props) {
 		extend(this, obj);
 		Component.call(this, props);
@@ -314,6 +326,6 @@ function createClass(obj) {
 	return Cl;
 }
 
-return createClass;
+return createClass$1;
 
 })));

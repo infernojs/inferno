@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-alpha10
+ * inferno-component v1.0.0-alpha11
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -25,15 +25,27 @@ Lifecycle.prototype.trigger = function trigger () {
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
+
+
+
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
+
+
+
+
+
 function isNull(obj) {
     return obj === null;
 }
+
 function isUndefined(obj) {
     return obj === undefined;
 }
+
 function throwError(message) {
     if (!message) {
         message = ERROR_MSG;
@@ -156,7 +168,7 @@ function applyState(component, force, callback) {
 	}
 }
 
-var Component = function Component(props, context) {
+var Component$1 = function Component$1(props, context) {
 	/** @type {object} */
 	this.props = props || {};
 
@@ -184,52 +196,52 @@ var Component = function Component(props, context) {
 	}
 };
 
-Component.prototype.render = function render () {
+Component$1.prototype.render = function render () {
 };
 
-Component.prototype.forceUpdate = function forceUpdate (callback) {
+Component$1.prototype.forceUpdate = function forceUpdate (callback) {
 	if (this._unmounted) {
 		throw Error(noOp);
 	}
 	applyState(this, true, callback);
 };
-Component.prototype.setState = function setState (newState, callback) {
+Component$1.prototype.setState = function setState (newState, callback) {
 	if (this._unmounted) {
 		throw Error(noOp);
 	}
 	if (this._blockSetState === false) {
 		queueStateChanges(this, newState, callback);
 	} else {
-		if ("development" !== 'production') {
+		{
 			throwError('cannot update state via setState() in componentWillUpdate().');
 		}
 		throwError();
 	}
 };
 
-Component.prototype.componentWillMount = function componentWillMount () {
+Component$1.prototype.componentWillMount = function componentWillMount () {
 };
 
-Component.prototype.componentWillUnmount = function componentWillUnmount () {
+Component$1.prototype.componentWillUnmount = function componentWillUnmount () {
 };
 
-Component.prototype.componentDidUpdate = function componentDidUpdate () {
+Component$1.prototype.componentDidUpdate = function componentDidUpdate () {
 };
 
-Component.prototype.shouldComponentUpdate = function shouldComponentUpdate () {
+Component$1.prototype.shouldComponentUpdate = function shouldComponentUpdate () {
 	return true;
 };
 
-Component.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
+Component$1.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
 };
 
-Component.prototype.componentWillUpdate = function componentWillUpdate () {
+Component$1.prototype.componentWillUpdate = function componentWillUpdate () {
 };
 
-Component.prototype.getChildContext = function getChildContext () {
+Component$1.prototype.getChildContext = function getChildContext () {
 };
 
-Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, context, force) {
+Component$1.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, context, force) {
 	if (this._unmounted === true) {
 		throw new Error('You can\'t update an unmounted component!');
 	}
@@ -262,6 +274,6 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 	return NO_OP;
 };
 
-return Component;
+return Component$1;
 
 })));

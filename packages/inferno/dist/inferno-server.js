@@ -1,5 +1,5 @@
 /*!
- * inferno-server v1.0.0-alpha10
+ * inferno-server v1.0.0-alpha11
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -8,6 +8,9 @@
 	typeof define === 'function' && define.amd ? define(['stream'], factory) :
 	(global.InfernoServer = factory(global.stream));
 }(this, (function (stream) { 'use strict';
+
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
 
 function isArray(obj) {
     return obj instanceof Array;
@@ -25,6 +28,8 @@ function isNullOrUndef(obj) {
 function isInvalid(obj) {
     return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
+
+
 function isString(obj) {
     return typeof obj === 'string';
 }
@@ -47,13 +52,14 @@ function constructDefaults(string, object, value) {
 }
 var xlinkNS = 'http://www.w3.org/1999/xlink';
 var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+
 var strictProps = {};
 var booleanProps = {};
 var namespaces = {};
 var isUnitlessNumber = {};
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,value', strictProps, true);
+constructDefaults('volume,value,defaultValue,defaultChecked', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
@@ -123,6 +129,19 @@ var NodeTypes = {
     PLACEHOLDER: 7
 };
 
+function createVComponent(component, props, key, hooks, ref) {
+    return {
+        component: component,
+        dom: null,
+        hooks: hooks || null,
+        instance: null,
+        key: key,
+        props: props,
+        ref: ref || null,
+        type: NodeTypes.COMPONENT
+    };
+}
+
 function createVElement(tag, props, children, key, ref, childrenType) {
     return {
         children: children,
@@ -135,6 +154,9 @@ function createVElement(tag, props, children, key, ref, childrenType) {
         type: NodeTypes.ELEMENT
     };
 }
+
+
+
 function isVElement(o) {
     return o.type === NodeTypes.ELEMENT;
 }
@@ -262,7 +284,7 @@ function renderComponentToString(vComponent, isRoot, context) {
         return renderInputToString(Component(props), context, isRoot);
     }
 }
-function renderChildren(children, context) {
+function renderChildren$1(children, context) {
     if (children && isArray(children)) {
         var childrenResult = [];
         var insertComment = false;
@@ -286,7 +308,7 @@ function renderChildren(children, context) {
             }
             else if (isArray(child)) {
                 childrenResult.push('<!---->');
-                childrenResult.push(renderChildren(child, context));
+                childrenResult.push(renderChildren$1(child, context));
                 childrenResult.push('<!--!-->');
                 insertComment = true;
             }
@@ -359,7 +381,7 @@ function renderVElementToString(vElement, isRoot, context) {
         return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">");
     }
     else {
-        return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren(vElement.children, context)) + "</" + tag + ">");
+        return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + (html || renderChildren$1(vElement.children, context)) + "</" + tag + ">");
     }
 }
 function renderOptVElementToString(optVElement, isRoot, context) {
@@ -429,16 +451,16 @@ function renderAttributes(props){
 	return outputAttrs;
 }
 
-var RenderStream = (function (Readable) {
+var RenderStream = (function (Readable$$1) {
 	function RenderStream(initNode, staticMarkup) {
-		Readable.call(this);
+		Readable$$1.call(this);
 		this.initNode = initNode;
 		this.staticMarkup = staticMarkup;
 		this.started = false;
 	}
 
-	if ( Readable ) RenderStream.__proto__ = Readable;
-	RenderStream.prototype = Object.create( Readable && Readable.prototype );
+	if ( Readable$$1 ) RenderStream.__proto__ = Readable$$1;
+	RenderStream.prototype = Object.create( Readable$$1 && Readable$$1.prototype );
 	RenderStream.prototype.constructor = RenderStream;
 
 	RenderStream.prototype._read = function _read (){
