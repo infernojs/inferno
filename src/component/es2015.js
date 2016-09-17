@@ -201,7 +201,7 @@ export default class Component {
 				this.props = nextProps;
 				this.state = nextState;
 				this.context = context;
-				return this.render();
+				return this.render(nextProps, context);
 			}
 		}
 		return NO_OP;
