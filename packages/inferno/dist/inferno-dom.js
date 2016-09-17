@@ -824,11 +824,9 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 else {
                     childContext = context;
                 }
-                instance.props = nextProps;
                 var lastInput$2 = instance._lastInput;
                 var nextInput$2 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
                 instance._childContext = childContext;
-                instance.context = context;
                 if (nextInput$2 === NO_OP) {
                     nextInput$2 = lastInput$2;
                 }
@@ -1515,7 +1513,6 @@ function createStatefulComponentInstance(Component, props, context, isSVG) {
     instance._unmounted = false;
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
-    instance._context = context;
     instance.componentWillMount();
     var input = instance.render();
     if (isInvalid(input)) {

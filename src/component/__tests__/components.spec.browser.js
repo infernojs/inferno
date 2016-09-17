@@ -745,7 +745,7 @@ describe('Components (non-JSX)', () => {
 					this.setState({
 						counter: this.state.counter + 1
 					});
-				}, 20)
+				}, 1)
 			}
 			shouldComponentUpdate() {
 				shouldComponentUpdateCount++;

@@ -43,7 +43,6 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	instance._unmounted = false;
 	instance._pendingSetState = true;
 	instance._isSVG = isSVG;
-	instance._context = context;
 	instance.componentWillMount();
 	let input = instance.render();
 

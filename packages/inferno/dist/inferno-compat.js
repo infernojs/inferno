@@ -868,11 +868,9 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 else {
                     childContext = context;
                 }
-                instance.props = nextProps;
                 var lastInput$2 = instance._lastInput;
                 var nextInput$2 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
                 instance._childContext = childContext;
-                instance.context = context;
                 if (nextInput$2 === NO_OP) {
                     nextInput$2 = lastInput$2;
                 }
@@ -1559,7 +1557,6 @@ function createStatefulComponentInstance(Component, props, context, isSVG) {
     instance._unmounted = false;
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
-    instance._context = context;
     instance.componentWillMount();
     var input = instance.render();
     if (isInvalid(input)) {
@@ -2497,6 +2494,30 @@ function createElement(name, props) {
 }
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+var componentCallbackQueue = new Map();
+
+function addToQueue(component, force, callback) {
+	var queue = componentCallbackQueue.get(component);
+
+	if (!queue) {
+		queue = [];
+		componentCallbackQueue.set(component, queue);
+		requestAnimationFrame(function () {
+			applyState(component, force, function () {
+				for (var i = 0; i < queue.length; i++) {
+					queue[i]();
+				}
+			});
+			componentCallbackQueue.delete(component);
+			component._processingSetState = false;
+		});
+	}
+	if (callback) {
+		queue.push(
+			callback
+		);
+	}
+}
 
 // Copy of the util from dom/util, otherwise it makes massive bundles
 function getActiveNode$1() {
@@ -2516,7 +2537,13 @@ function queueStateChanges(component, newState, callback) {
 	}
 	if (!component._pendingSetState) {
 		component._pendingSetState = true;
-		applyState(component, false, callback);
+		if (component._processingSetState || callback) {
+			addToQueue(component, false, callback);
+		} else {
+			component._processingSetState = true;
+			applyState(component, false, callback);
+			component._processingSetState = false;
+		}
 	} else {
 		component.state = Object.assign({}, component.state, component._pendingState);
 		component._pendingState = {};
@@ -2573,6 +2600,7 @@ var Component = function Component(props, context) {
 
 	/** @type {object} */
 	this.refs = {};
+	this._processingSetState = false;
 	this._blockRender = false;
 	this._blockSetState = false;
 	this._deferSetState = false;
@@ -2662,6 +2690,7 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 			this._blockSetState = false;
 			this.props = nextProps;
 			this.state = nextState;
+			this.context = context;
 			return this.render();
 		}
 	}

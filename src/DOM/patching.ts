@@ -428,12 +428,10 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				} else {
 					childContext = context;
 				}
-				instance.props = nextProps;
 				const lastInput = instance._lastInput;
 				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
 
 				instance._childContext = childContext;
-				instance.context = context;
 				if (nextInput === NO_OP) {
 					nextInput = lastInput;
 				} else if (isInvalid(nextInput)) {

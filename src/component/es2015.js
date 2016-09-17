@@ -3,6 +3,30 @@ import { isNullOrUndef, NO_OP, throwError } from '../shared';
 import { createVPlaceholder } from './../core/shapes';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+const componentCallbackQueue = new Map();
+
+function addToQueue(component, force, callback) {
+	let queue = componentCallbackQueue.get(component);
+
+	if (!queue) {
+		queue = [];
+		componentCallbackQueue.set(component, queue);
+		requestAnimationFrame(() => {
+			applyState(component, force, () => {
+				for (let i = 0; i < queue.length; i++) {
+					queue[i]();
+				}
+			});
+			componentCallbackQueue.delete(component);
+			component._processingSetState = false;
+		});
+	}
+	if (callback) {
+		queue.push(
+			callback
+		);
+	}
+}
 
 // Copy of the util from dom/util, otherwise it makes massive bundles
 function getActiveNode() {
@@ -22,7 +46,13 @@ function queueStateChanges(component, newState, callback) {
 	}
 	if (!component._pendingSetState) {
 		component._pendingSetState = true;
-		applyState(component, false, callback);
+		if (component._processingSetState || callback) {
+			addToQueue(component, false, callback);
+		} else {
+			component._processingSetState = true;
+			applyState(component, false, callback);
+			component._processingSetState = false;
+		}
 	} else {
 		component.state = Object.assign({}, component.state, component._pendingState);
 		component._pendingState = {};
@@ -80,6 +110,7 @@ export default class Component {
 
 		/** @type {object} */
 		this.refs = {};
+		this._processingSetState = false;
 		this._blockRender = false;
 		this._blockSetState = false;
 		this._deferSetState = false;
@@ -169,6 +200,7 @@ export default class Component {
 				this._blockSetState = false;
 				this.props = nextProps;
 				this.state = nextState;
+				this.context = context;
 				return this.render();
 			}
 		}

@@ -537,12 +537,12 @@ describe('Components (JSX)', () => {
 	function test(element, expectedTag, expectedClassName, callback) {
 
 		render(element, container);
-		requestAnimationFrame(() => {
+		setTimeout(() => {
 			expect(container.firstChild).not.to.equal(null);
 			expect(container.firstChild.tagName).to.equal(expectedTag);
 			expect(container.firstChild.className).to.equal(expectedClassName);
 			callback();
-		});
+		}, 30);
 	}
 
 	it('should preserve the name of the class for use in error messages', function () {
@@ -595,11 +595,11 @@ describe('Components (JSX)', () => {
 		class Foo extends Component {
 			constructor(props) {
 				super(props);
-				this.state = {bar: props.initialValue};
+				this.state = { bar: props.initialValue };
 			}
 
 			handleClick() {
-				this.setState({bar: 'bar'});
+				this.setState({ bar: 'bar' });
 			}
 
 			render() {
