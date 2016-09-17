@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v1.0.0-alpha11
+ * inferno-dom v1.0.0-alpha12
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -189,6 +189,10 @@ function isVNode(o) {
 
 var recyclingEnabled = true;
 var vComponentPools = new Map();
+function disableRecycling() {
+    recyclingEnabled = false;
+    vComponentPools.clear();
+}
 function recycleOptVElement(optVElement, lifecycle, context, isSVG, shallowUnmount) {
     var bp = optVElement.bp;
     var key = optVElement.key;
@@ -596,8 +600,6 @@ function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle
             // the the patching each time
             resetFormInputProperties(dom);
             ignoreDiff = true;
-        }
-        else if (tag === 'select') {
         }
         else if (tag === 'textarea') {
             // textarea elements are like input elements, except they have sligthly less internal state to
@@ -2361,7 +2363,8 @@ var index = {
 	render: render,
 	findDOMNode: findDOMNode,
 	createRenderer: createRenderer,
-	createStaticVElementClone: createStaticVElementClone
+	createStaticVElementClone: createStaticVElementClone,
+	disableRecycling: disableRecycling
 };
 
 return index;

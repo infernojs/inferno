@@ -125,7 +125,13 @@ const bundles = [
 		moduleName: 'inferno-redux',
 		moduleEntry: 'packages/inferno-redux/src/index.js',
 		path: 'packages/inferno-redux/'
-	}
+	},
+	{
+		moduleGlobal: 'InfernoHyperscript',
+		moduleName: 'inferno-hyperscript',
+		moduleEntry: 'packages/inferno-hyperscript/src/index.js',
+		path: 'packages/inferno-hyperscript/'
+	}	
 ];
 
 function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {

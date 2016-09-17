@@ -204,7 +204,6 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 			// the the patching each time
 			resetFormInputProperties(dom);
 			ignoreDiff = true;
-		} else if (tag === 'select') {
 		} else if (tag === 'textarea') {
 			// textarea elements are like input elements, except they have sligthly less internal state to
 			// worry about

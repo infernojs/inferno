@@ -1,5 +1,5 @@
 /*!
- * inferno-create-element v1.0.0-alpha11
+ * inferno-create-element v1.0.0-alpha12
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */

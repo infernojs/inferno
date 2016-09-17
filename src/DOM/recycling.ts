@@ -2,12 +2,17 @@ import { isUndefined, isNull } from './../shared';
 import { patchOptVElement, patchVComponent } from './patching';
 import { VComponent } from '../core/shapes';
 
-export const recyclingEnabled = true;
-const vComponentPools = new Map<Function | null, Pools>();
+export let recyclingEnabled = true;
+let vComponentPools = new Map<Function | null, Pools>();
 
 interface Pools {
 	nonKeyed: Array<VComponent>,
 	keyed: Map<string | number, Array<VComponent>>
+}
+
+export function disableRecycling() {
+	recyclingEnabled = false;
+	vComponentPools.clear();
 }
 
 export function recycleOptVElement(optVElement, lifecycle, context, isSVG, shallowUnmount) {
