@@ -8,7 +8,8 @@ import { createStore } from 'redux';
 import {
 	createStaticVElement,
 	createOptBlueprint,
-	createVComponent
+	createVComponent,
+	createOptVElement
 } from './../../core/shapes';
 import {
 	ChildrenTypes,
@@ -17,6 +18,7 @@ import {
 } from './../../core/constants';
 
 const Inferno = {
+	createOptVElement,
 	createStaticVElement,
 	createOptBlueprint,
 	createVComponent,

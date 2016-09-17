@@ -3,7 +3,8 @@ import Component from './../../component/es2015';
 import {
 	createStaticVElement,
 	createOptBlueprint,
-	createVComponent
+	createVComponent,
+	createOptVElement
 } from './../../core/shapes';
 import {
 	ChildrenTypes,
@@ -14,6 +15,7 @@ import {
 const sinon = require('sinon/pkg/sinon');
 
 const Inferno = {
+	createOptVElement,
 	createStaticVElement,
 	createOptBlueprint,
 	createVComponent,
