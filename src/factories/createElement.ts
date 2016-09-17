@@ -64,6 +64,7 @@ export default function createElement(name: string | Function, props: any, ..._c
 		vNode.props = props;
 		if (!isUndefined(children)) {
 			vNode.children = children;
+			props.children = children;
 		}
 		if (hooks) {
 			vNode.hooks = hooks;
