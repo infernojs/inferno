@@ -123,6 +123,9 @@ function createElement$1(name, props) {
                 vNode.key = props.key;
                 delete props.key;
             }
+            else if (prop === 'children') {
+                vNode.children = children;
+            }
             else if (elementHooks[prop]) {
                 if (!hooks) {
                     hooks = {};

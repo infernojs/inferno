@@ -290,7 +290,7 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 			this.props = nextProps;
 			this.state = nextState;
 			this.context = context;
-			return this.render();
+			return this.render(nextProps, context);
 		}
 	}
 	return NO_OP;
@@ -720,13 +720,6 @@ var Provider = (function (Component$$1) {
 	};
 }
 
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var index$1 = createCommonjsModule(function (module) {
-'use strict';
-
 var INFERNO_STATICS = {
     childContextTypes: true,
     contextTypes: true,
@@ -771,10 +764,8 @@ function hoistNonReactStatics(targetComponent, sourceComponent, customStatics) {
     return targetComponent;
 }
 
-module.exports = hoistNonReactStatics;
-});
+var index$1 = hoistNonReactStatics;
 
-var invariant = createCommonjsModule(function (module) {
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -783,8 +774,6 @@ var invariant = createCommonjsModule(function (module) {
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-
-'use strict';
 
 /**
  * Use invariant() to assert state which your program assumes to be true.
@@ -827,8 +816,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
   }
 };
 
-module.exports = invariant;
-});
+var invariant_1 = invariant;
 
 var errorObject = { value: null };
 var defaultMapStateToProps = function (state) { return ({}); }; // eslint-disable-line no-unused-vars
@@ -902,7 +890,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 				this.version = version;
 				this.store = (props && props.store) || (context && context.store);
 
-				invariant(this.store,
+				invariant_1(this.store,
 					'Could not find "store" in either the context or ' +
 					"props of \"" + connectDisplayName + "\". " +
 					'Either wrap the root component in a <Provider>, ' +

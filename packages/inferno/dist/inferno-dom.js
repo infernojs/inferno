@@ -1507,7 +1507,7 @@ function createStatefulComponentInstance(Component, props, context, isSVG) {
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
     instance.componentWillMount();
-    var input = instance.render();
+    var input = instance.render(props, context);
     if (isInvalid(input)) {
         input = createVPlaceholder();
     }

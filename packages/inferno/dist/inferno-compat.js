@@ -1547,7 +1547,7 @@ function createStatefulComponentInstance(Component, props, context, isSVG) {
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
     instance.componentWillMount();
-    var input = instance.render();
+    var input = instance.render(props, context);
     if (isInvalid(input)) {
         input = createVPlaceholder();
     }
@@ -2430,6 +2430,9 @@ function createElement(name, props) {
                 vNode.key = props.key;
                 delete props.key;
             }
+            else if (prop === 'children') {
+                vNode.children = children;
+            }
             else if (elementHooks[prop]) {
                 if (!hooks) {
                     hooks = {};
@@ -2680,7 +2683,7 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 			this.props = nextProps;
 			this.state = nextState;
 			this.context = context;
-			return this.render();
+			return this.render(nextProps, context);
 		}
 	}
 	return NO_OP;
@@ -2923,6 +2926,8 @@ function renderToStaticMarkup(input) {
 }
 
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+
 
 
 
@@ -3272,12 +3277,12 @@ var ARR = [];
 var Children = {
 	map: function map(children, fn, ctx) {
 		children = Children.toArray(children);
-		if (ctx && ctx!==children) fn = fn.bind(ctx);
+		if (ctx && ctx!==children) { fn = fn.bind(ctx); }
 		return children.map(fn);
 	},
 	forEach: function forEach(children, fn, ctx) {
 		children = Children.toArray(children);
-		if (ctx && ctx!==children) fn = fn.bind(ctx);
+		if (ctx && ctx!==children) { fn = fn.bind(ctx); }
 		children.forEach(fn);
 	},
 	count: function count(children) {
@@ -3286,7 +3291,7 @@ var Children = {
 	},
 	only: function only(children) {
 		children = Children.toArray(children);
-		if (children.length!==1) throw new Error('Children.only() expects only one child.');
+		if (children.length!==1) { throw new Error('Children.only() expects only one child.'); }
 		return children[0];
 	},
 	toArray: function toArray(children) {

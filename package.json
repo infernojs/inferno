@@ -59,10 +59,10 @@
     "proptypes": "^0.14.3",
     "redux": "^3.6.0",
     "rimraf": "^2.5.4",
-    "rollup": "^0.35.11",
+    "rollup": "^0.35.12",
     "rollup-plugin-babel": "^2.6.1",
-    "rollup-plugin-buble": "^0.13.0",
-    "rollup-plugin-commonjs": "^4.1.0",
+    "rollup-plugin-buble": "^0.14.0",
+    "rollup-plugin-commonjs": "^5.0.3",
     "rollup-plugin-filesize": "^0.5.5",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
@@ -73,7 +73,7 @@
     "typescript": "^2.0.2",
     "union-type": "^0.3.2",
     "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.15.2"
+    "webpack-dev-server": "^1.16.1"
   },
   "files": [
     "src"

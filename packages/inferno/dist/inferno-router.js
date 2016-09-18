@@ -323,7 +323,7 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
 			this.props = nextProps;
 			this.state = nextState;
 			this.context = context;
-			return this.render();
+			return this.render(nextProps, context);
 		}
 	}
 	return NO_OP;
