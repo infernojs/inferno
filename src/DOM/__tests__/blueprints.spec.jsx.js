@@ -33,13 +33,13 @@ describe('Blueprints', () => {
 	describe('Should have parentDOM defined #1', () => {
 		class A extends Component {
 			render() {
-				return <div>A</div>
+				return <div>A</div>;
 			}
 		}
 
 		class B extends Component {
 			render() {
-				return <span>B</span>
+				return <span>B</span>;
 			}
 		}
 

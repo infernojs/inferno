@@ -1,4 +1,5 @@
 --compilers js:babel-core/register
+--compilers ts:ts-node/register
 --require babel-core/register ./config/DOM.js
 --reporter spec
 --ui bdd
@@ -6,5 +7,5 @@
 --timeout 15000
 --bail
 
-./src/**/*__tests__*/**/*spec.jsx.js
-./src/**/*__tests__*/**/*spec.browser.js
+src/**/*__tests__*/**/*spec.jsx.js
+src/**/*__tests__*/**/*spec.browser.js
