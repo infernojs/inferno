@@ -260,6 +260,8 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 debugger;
             }
             break;
+        default:
+            throw new Error('Unknown ValueType: ' + valueType);
     }
 }
 
@@ -402,10 +404,10 @@ function renderInputToString(input, context, isRoot) {
     throw Error('Inferno Error: Bad input argument called on renderInputToString(). Input argument may need normalising.');
 }
 function renderToString(input) {
-    return renderInputToString(input, null, false);
+    return renderInputToString(input, null, true);
 }
 function renderToStaticMarkup(input) {
-    return renderInputToString(input, null, true);
+    return renderInputToString(input, null, false);
 }
 
 function renderStyleToString$1(style) {

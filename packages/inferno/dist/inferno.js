@@ -261,6 +261,8 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 debugger;
             }
             break;
+        default:
+            throw new Error('Unknown ValueType: ' + valueType);
     }
 }
 function cloneVNode(vNodeToClone, props) {

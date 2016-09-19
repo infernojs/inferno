@@ -370,6 +370,7 @@ function unmountOptVElementValue(optVElement, valueType, value, lifecycle, shall
         case ValueTypes.PROP_SPREAD:
             unmountProps(value, lifecycle);
             break;
+        default:
     }
 }
 function unmountVFragment(vFragment, parentDom, removePointer, lifecycle, shallowUnmount) {
@@ -473,6 +474,9 @@ function unmountRef(ref) {
 }
 function unmountProps(props, lifecycle) {
     for (var prop in props) {
+        if (!props.hasOwnProperty(prop)) {
+            continue;
+        }
         var value = props[prop];
         if (prop === 'ref') {
             unmountRef(value);
@@ -720,6 +724,7 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
         case ValueTypes.PROP_SPREAD:
             patchProps(lastValue, nextValue, dom, shallowUnmount);
             break;
+        default:
     }
 }
 function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
@@ -1295,6 +1300,9 @@ function patchProps(lastProps, nextProps, dom, shallowUnmount) {
     nextProps = nextProps || {};
     var formValue;
     for (var prop in nextProps) {
+        if (!nextProps.hasOwnProperty(prop)) {
+            continue;
+        }
         var nextValue = nextProps[prop];
         var lastValue = lastProps[prop];
         if (prop === 'value') {
@@ -1462,6 +1470,8 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 debugger;
             }
             break;
+        default:
+            throw new Error('Unknown ValueType: ' + valueType);
     }
 }
 function cloneVNode(vNodeToClone, props) {
@@ -1748,6 +1758,9 @@ function mountStaticNode(node, parentDom, isSVG) {
     var props = node.props;
     if (!isNull(props)) {
         for (var prop in props) {
+            if (!props.hasOwnProperty(prop)) {
+                continue;
+            }
             patchProp(prop, null, props[prop], dom);
         }
     }
@@ -1946,6 +1959,7 @@ function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, l
         case ValueTypes.PROP_SPREAD:
             mountProps(optVElement, value, dom, lifecycle, context, isSVG, true, shallowUnmount);
             break;
+        default:
     }
 }
 function mountChildren(childrenType, children, dom, lifecycle, context, isSVG, shallowUnmount) {
@@ -2091,6 +2105,9 @@ function mountStatelessComponentCallbacks(hooks, dom, lifecycle) {
 function mountProps(vNode, props, dom, lifecycle, context, isSVG, isSpread, shallowUnmount) {
     var formValue;
     for (var prop in props) {
+        if (!props.hasOwnProperty(prop)) {
+            continue;
+        }
         var value = props[prop];
         if (prop === 'value') {
             formValue = value;
@@ -2130,6 +2147,52 @@ function mountRef(dom, value, lifecycle) {
     }
 }
 
+function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
+    var domNode = childNodes[counter.i];
+    if (isVText(child)) {
+        var text = child.text;
+        child.dom = domNode;
+        if (domNode.nodeType === 3 && text !== '') {
+            domNode.nodeValue = text;
+        }
+        else {
+            var newDomNode = mountVText(text, null);
+            replaceChild(parentDom, newDomNode, domNode);
+            childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
+            child.dom = newDomNode;
+        }
+    }
+    else if (isVPlaceholder(child)) {
+        child.dom = domNode;
+    }
+    else if (isVFragment(child)) {
+        var items = child.items;
+        // this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
+        child.dom = document.createDocumentFragment();
+        for (var i = 0; i < items.length; i++) {
+            var rebuild = hydrateChild(normaliseChild(items, i), childNodes, counter, parentDom, lifecycle, context);
+            if (rebuild) {
+                return true;
+            }
+        }
+        // at the end of every VList, there should be a "pointer". It's an empty TextNode used for tracking the VList
+        var pointer = childNodes[counter.i++];
+        if (pointer && pointer.nodeType === 3) {
+            child.pointer = pointer;
+        }
+        else {
+            // there is a problem, we need to rebuild this tree
+            return true;
+        }
+    }
+    else {
+        var rebuild$1 = hydrate(child, domNode, lifecycle, context);
+        if (rebuild$1) {
+            return true;
+        }
+    }
+    counter.i++;
+}
 function normaliseChildNodes(dom) {
     var rawChildNodes = dom.childNodes;
     var length = rawChildNodes.length;
@@ -2301,6 +2364,7 @@ function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom,
         case ValueTypes.PROP_SPREAD:
             debugger;
             break;
+        default:
     }
 }
 function hydrate(input, dom, lifecycle, context) {
@@ -2524,6 +2588,9 @@ function resetActiveNode$1(activeNode) {
 }
 
 function queueStateChanges(component, newState, callback) {
+	if (isFunction(newState)) {
+		newState = newState();
+	}
 	for (var stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
@@ -2919,10 +2986,10 @@ function renderInputToString(input, context, isRoot) {
     throw Error('Inferno Error: Bad input argument called on renderInputToString(). Input argument may need normalising.');
 }
 function renderToString(input) {
-    return renderInputToString(input, null, false);
+    return renderInputToString(input, null, true);
 }
 function renderToStaticMarkup(input) {
-    return renderInputToString(input, null, true);
+    return renderInputToString(input, null, false);
 }
 
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
