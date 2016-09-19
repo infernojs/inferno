@@ -156,9 +156,9 @@ function renderInputToString(input, context, isRoot) {
 }
 
 export default function renderToString(input) {
-	return renderInputToString(input, null, false);
+	return renderInputToString(input, null, true);
 }
 
 export function renderToStaticMarkup(input) {
-	return renderInputToString(input, null, true);
+	return renderInputToString(input, null, false);
 }

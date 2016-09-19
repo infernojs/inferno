@@ -1,4 +1,4 @@
-import renderToString from './../renderToString';
+import {renderToStaticMarkup} from './../renderToString';
 import Component from './../../component/es2015';
 import createElement from './../../factories/createElement';
 
@@ -81,7 +81,7 @@ describe('SSR Creation - (non-JSX)', () => {
 		it(test.description, () => {
 			const container = document.createElement('div');
 			const vDom = test.template('foo');
-			const output = renderToString(vDom, true);
+			const output = renderToStaticMarkup(vDom, true);
 
 			document.body.appendChild(container);
 			container.innerHTML = output;
