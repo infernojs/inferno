@@ -71,6 +71,7 @@
     "sinon": "2.0.0-pre",
     "ts-loader": "^0.8.2",
     "ts-node": "^1.3.0",
+    "tslint": "^3.15.1",
     "typescript": "^2.0.2",
     "union-type": "^0.3.2",
     "webpack": "^1.13.2",
@@ -112,6 +113,7 @@
     "server:cov:publish": "npm run server:cov && coveralls < coverage/lcov.info && rimraf coverage",
     "eslint:source": "eslint ./src/**/*.js",
     "eslint:test": "eslint ./src/**/__tests__/*.js",
+    "lint:source": "tslint 'src/**/*.ts'",
     "karma:firefox": "karma start config/karma.conf.js --browsers=Firefox",
     "karma:chrome": "karma start config/karma.conf.js --browsers=Chrome",
     "karma:ie": "karma start config/karma.conf.js --browsers=IE",
@@ -122,6 +124,7 @@
   },
   "pre-commit": [
     "eslint:source",
+    "lint:source",
     "test"
   ],
   "dependencies": {}
