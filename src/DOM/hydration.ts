@@ -27,7 +27,7 @@ import {
 	isVComponent,
 	isOptVElement
 } from '../core/shapes';
-import { 
+import {
 	ValueTypes,
 	isKeyedListChildrenType,
 	isTextChildrenType,
@@ -280,7 +280,9 @@ function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom,
 			break;
 		case ValueTypes.PROP_SPREAD:
 			debugger;
-			break;
+      break;
+    default:
+      // TODO
 	}
 }
 

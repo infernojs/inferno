@@ -45,7 +45,7 @@ export function render(input: any, parentDom: Node | SVGAElement) {
 				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false, false);
 			}
 			lifecycle.trigger();
-			roots.set(parentDom, { input: input });
+			roots.set(parentDom, { input });
 		}
 	} else {
 		const activeNode = getActiveNode();

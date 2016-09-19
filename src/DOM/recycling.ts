@@ -6,8 +6,8 @@ export let recyclingEnabled = true;
 let vComponentPools = new Map<Function | null, Pools>();
 
 interface Pools {
-	nonKeyed: Array<VComponent>,
-	keyed: Map<string | number, Array<VComponent>>
+  nonKeyed: Array<VComponent>;
+  keyed: Map<string | number, Array<VComponent>>;
 }
 
 export function disableRecycling() {

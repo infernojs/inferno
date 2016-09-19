@@ -39,7 +39,7 @@ export interface VComponent {
 	key: null | string | number;
 	props: any;
 	ref: Function | null;
-	type: number
+  type: number;
 }
 
 export interface VElement {
@@ -50,7 +50,7 @@ export interface VElement {
 	props: any;
 	ref: Function | null;
 	tag: string;
-	type: number
+  type: number;
 }
 
 export function createOptVElement(bp, key, v0, v1, v2, v3): OptVElement {

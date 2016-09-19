@@ -85,7 +85,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
 			break;
 		case ValueTypes.PROP_VALUE:
 			if (!vElement.props) {
-				vElement.props = { value: value };
+				vElement.props = { value };
 			} else {
 				debugger;
 			}
@@ -105,7 +105,9 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
 			} else {
 				debugger;
 			}
-			break;
+      break;
+    default:
+      throw new Error('Unknown ValueType: ' + valueType);
 	}
 }
 
