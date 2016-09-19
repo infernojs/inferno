@@ -22,7 +22,9 @@ function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
 
-
+function isFunction(obj) {
+    return typeof obj === 'function';
+}
 
 
 
@@ -164,6 +166,9 @@ function resetActiveNode(activeNode) {
 }
 
 function queueStateChanges(component, newState, callback) {
+	if (isFunction(newState)) {
+		newState = newState();
+	}
 	for (var stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
@@ -573,6 +578,8 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 debugger;
             }
             break;
+        default:
+            throw new Error('Unknown ValueType: ' + valueType);
     }
 }
 function cloneVNode(vNodeToClone, props) {

@@ -2371,13 +2371,15 @@ describe('Components (JSX)', () => {
 				}));
 			}
 			render() {
-				return <div className={this.props.a} id={this.props.b}>Hello {this.props.c}!</div>;
+				return <div>{ this.state.foo }</div>;
 			}
 		}
 
 		it('the state should update properly', () => {
 			render(<Comp1 />, container);
-			debugger;
+			expect(container.innerHTML).to.equal('<div>yar</div>');
+			reference();
+			expect(container.innerHTML).to.equal('<div>bar</div>');
 		});
 	});
 });

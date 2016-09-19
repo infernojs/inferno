@@ -1,0 +1,11 @@
+# top-most EditorConfig file
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+# Tab indentation
+[*.{js,ts,json}]
+indent_style = tab
+indent_size = 2

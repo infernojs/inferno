@@ -34,7 +34,9 @@ function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
 
-
+function isFunction(obj) {
+    return typeof obj === 'function';
+}
 
 
 
@@ -109,6 +111,9 @@ function resetActiveNode(activeNode) {
 }
 
 function queueStateChanges(component, newState, callback) {
+	if (isFunction(newState)) {
+		newState = newState();
+	}
 	for (var stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
