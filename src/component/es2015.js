@@ -1,5 +1,5 @@
 import Lifecycle from './../DOM/lifecycle';
-import { isNullOrUndef, NO_OP, throwError } from '../shared';
+import { isNullOrUndef, NO_OP, throwError, isFunction } from '../shared';
 import { createVPlaceholder } from './../core/shapes';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
@@ -41,6 +41,9 @@ function resetActiveNode(activeNode) {
 }
 
 function queueStateChanges(component, newState, callback) {
+	if (isFunction(newState)) {
+		newState = newState();
+	}
 	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
