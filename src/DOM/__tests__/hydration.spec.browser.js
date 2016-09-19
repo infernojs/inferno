@@ -1,4 +1,4 @@
-import { renderToStaticMarkup } from './../../server/renderToString';
+import renderToString from './../../server/renderToString';
 import { render } from './../../DOM/rendering';
 import { createContainerWithHTML, validateNodeTree } from '../../tools/utils';
 import createElement from './../../factories/createElement';
@@ -72,7 +72,7 @@ describe('SSR Hydration - (non-JSX)', () => {
 		// }
 	].forEach(({ node, expect1, expect2 }, i) => {
 		it(`Validate various structures #${ (i + 1) }`, () => {
-			const html = renderToStaticMarkup(node);
+			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
 			expect(container.innerHTML).to.equal(expect1);
