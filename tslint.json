@@ -1,0 +1,28 @@
+{
+  "extends": "tslint:latest",
+  "rules": {
+    "quotemark": [
+      "single"
+    ],
+    "indent": [
+      "tabs"
+    ],
+    "trailing-comma": false,
+    "ordered-imports": false,
+    "variable-name": [
+      false
+    ],
+    "object-literal-sort-keys": false,
+    "no-debugger": false,
+    "interface-name": [
+      false
+    ],
+    "max-line-length": [false],
+    "only-arrow-functions": false,
+    "member-access": [
+      false
+    ],
+    "one-variable-per-declaration": false,
+    "no-bitwise": false
+  }
+}
