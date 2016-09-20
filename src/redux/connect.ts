@@ -4,6 +4,7 @@ import { isFunction } from '../shared';
 import { createVComponent } from '../core/shapes';
 import hoistStatics from 'hoist-non-inferno-statics';
 import invariant from 'invariant';
+import isPlainObject from 'lodash/isPlainObject';
 
 const errorObject = { value: null };
 const defaultMapStateToProps = state => ({}); // eslint-disable-line no-unused-vars
