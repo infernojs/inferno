@@ -18,7 +18,7 @@ const AUTOBIND_BLACKLIST = {
 function F() {
 }
 
-function extend(base, props, all) {
+function extend(base, props, all?) {
 	for (let key in props) {
 		if (all === true || !isNullOrUndef(props[key])) {
 			base[key] = props[key];
@@ -49,6 +49,6 @@ export default function createClass(obj) {
 	F.prototype = Component.prototype;
 	Cl.prototype = new F();
 	Cl.prototype.constructor = Cl;
-	Cl.displayName = obj.displayName || 'Component';
+	(Cl as any).displayName = obj.displayName || 'Component';
 	return Cl;
 }
