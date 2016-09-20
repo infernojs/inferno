@@ -13,6 +13,8 @@ import {
 	createVText,
 	createVPlaceholder,
 	createVFragment,
+	isVFragment,
+	isVComponent,
 	isVNode
 } from '../core/shapes';
 import cloneVNode from '../factories/cloneVNode';
@@ -46,7 +48,9 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	instance.componentWillMount();
 	let input = instance.render(props, context);
 
-	if (isInvalid(input)) {
+	if (isArray(input)) {
+		input = createVFragment(input, null);
+	} else if (isInvalid(input)) {
 		input = createVPlaceholder();
 	}
 	instance._pendingSetState = false;
@@ -54,10 +58,26 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	return instance;
 }
 
+export function replaceVNode(parentDom, dom, vNode, shallowUnmount, lifecycle) {
+	if (isVComponent(vNode)) {
+		// if we are accessing a stateful or stateless component, we want to access their last rendered input
+		// accessing their DOM node is not useful to us here
+		vNode = vNode.instance._lastInput || vNode.instance;
+	}
+	if (isVFragment(vNode)) {
+		replaceVFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
+	} else {
+		replaceChild(parentDom, dom, vNode.dom);
+		unmount(vNode, null, lifecycle, false, shallowUnmount);
+	}
+}
+
 export function createStatelessComponentInput(component, props, context) {
 	let input = component(props, context);
 
-	if (isInvalid(input)) {
+	if (isArray(input)) {
+		input = createVFragment(input, null);
+	} else if (isInvalid(input)) {
 		input = createVPlaceholder();
 	}
 	return input;
@@ -87,10 +107,10 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 	}
 }
 
-export function replaceVListWithNode(parentDom, vList, dom, lifecycle, shallowUnmount) {
-	const pointer = vList.pointer;
+export function replaceVFragmentWithNode(parentDom, vFragment, dom, lifecycle, shallowUnmount) {
+	const pointer = vFragment.pointer;
 
-	unmountVFragment(vList, parentDom, false, lifecycle, shallowUnmount);
+	unmountVFragment(vFragment, parentDom, false, lifecycle, shallowUnmount);
 	replaceChild(parentDom, dom, pointer);
 }
 

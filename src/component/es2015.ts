@@ -1,6 +1,6 @@
 import Lifecycle from './../DOM/lifecycle';
-import { isNullOrUndef, NO_OP, throwError, isFunction } from '../shared';
-import { createVPlaceholder } from './../core/shapes';
+import { isNullOrUndef, NO_OP, throwError, isFunction, isArray } from '../shared';
+import { createVPlaceholder, createVFragment } from './../core/shapes';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 const componentCallbackQueue = new Map();
@@ -65,6 +65,8 @@ function applyState(component, force, callback) {
 
 		if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
+		} else if (isArray(nextInput)) {
+			nextInput = createVFragment(nextInput, null);
 		} else if (isNullOrUndef(nextInput)) {
 			nextInput = createVPlaceholder();
 		}

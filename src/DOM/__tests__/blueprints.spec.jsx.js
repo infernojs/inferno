@@ -23,7 +23,7 @@ const Inferno = {
 	NodeTypes
 };
 
-describe('Blueprints', () => {
+describe('Blueprints (JSX)', () => {
 	let container;
 
 	beforeEach(() => {

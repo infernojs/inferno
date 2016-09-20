@@ -28,7 +28,7 @@ import {
 import {
 	insertOrAppend,
 	isKeyed,
-	replaceVListWithNode,
+	replaceVFragmentWithNode,
 	normaliseChild,
 	resetFormInputProperties,
 	removeAllChildren,
@@ -41,7 +41,8 @@ import {
 	getPropFromOptElement,
 	createStatefulComponentInstance,
 	createStatelessComponentInput,
-	copyPropsTo
+	copyPropsTo,
+	replaceVNode
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
@@ -53,6 +54,7 @@ import {
 	isVPlaceholder,
 	isVText,
 	createVPlaceholder,
+	createVFragment,
 	VComponent,
 	OptVElement,
 	VElement
@@ -84,8 +86,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			if (isOptVElement(lastInput)) {
 				patchOptVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 			} else {
-				replaceChild(parentDom, mountOptVElement(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
-				unmount(lastInput, null, lifecycle, false, shallowUnmount);
+				replaceVNode(parentDom, mountOptVElement(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
 			}
 		} else if (isOptVElement(lastInput)) {
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
@@ -93,8 +94,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			if (isVComponent(lastInput)) {
 				patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 			} else {
-				replaceChild(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
-				unmount(lastInput, null, lifecycle, false, shallowUnmount);
+				replaceVNode(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
 			}
 		} else if (isVComponent(lastInput)) {
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
@@ -102,26 +102,23 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			if (isVElement(lastInput)) {
 				patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 			} else {
-				replaceChild(parentDom, mountVElement(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
-				unmount(lastInput, null, lifecycle, false, shallowUnmount);
+				replaceVNode(parentDom, mountVElement(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
 			}
 		} else if (isVFragment(nextInput)) {
 			if (isVFragment(lastInput)) {
 				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 			} else {
-				replaceChild(parentDom, mountVFragment(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
-				unmount(lastInput, null, lifecycle, false, shallowUnmount);
+				replaceVNode(parentDom, mountVFragment(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
 			}
 		} else if (isVFragment(lastInput)) {
-			replaceVListWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lifecycle, shallowUnmount);
+			replaceVFragmentWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lifecycle, shallowUnmount);
 		} else if (isVElement(lastInput)) {
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 		} else if (isVText(nextInput)) {
 			if (isVText(lastInput)) {
 				patchVText(lastInput, nextInput);
 			} else {
-				replaceChild(parentDom, mountVText(nextInput, null), lastInput.dom);
-				unmount(lastInput, null, lifecycle, false, shallowUnmount);
+				replaceVNode(parentDom, mountVText(nextInput, null), lastInput, shallowUnmount, lifecycle);
 			}
 		} else if (isVText(lastInput)) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
@@ -129,8 +126,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 			if (isVPlaceholder(lastInput)) {
 				patchVPlaceholder(lastInput, nextInput);
 			} else {
-				replaceChild(parentDom, mountVPlaceholder(nextInput, null), lastInput.dom);
-				unmount(lastInput, null, lifecycle, false, shallowUnmount);
+				replaceVNode(parentDom, mountVPlaceholder(nextInput, null), lastInput, shallowUnmount, lifecycle);
 			}
 		} else if (isVPlaceholder(lastInput)) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
@@ -435,6 +431,8 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				instance._childContext = childContext;
 				if (nextInput === NO_OP) {
 					nextInput = lastInput;
+				} else if (isArray(nextInput)) {
+					nextInput = createVFragment(nextInput, null);
 				} else if (isInvalid(nextInput)) {
 					nextInput = createVPlaceholder();
 				}
@@ -466,6 +464,8 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 
 				if (nextInput === NO_OP) {
 					return false;
+				} else if (isArray(nextInput)) {
+					nextInput = createVFragment(nextInput, null);
 				} else if (isInvalid(nextInput)) {
 					nextInput = createVPlaceholder();
 				}
