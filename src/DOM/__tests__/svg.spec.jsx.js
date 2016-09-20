@@ -245,32 +245,38 @@ describe('createTree - SVG (JSX)', () => {
 	});
 
 	it('Should make SVG and children with spread attribute', () => {
-
 		const spread = { id: 'test' };
 
-		render(<svg {...spread}><use xlink:href="#changed"></use></svg>, container);
-		expect(container.innerHTML).to.equal(innerHTML('<svg id="test"><use xlink:href="#changed"></use></svg>'));
+		render(<svg {...spread}></svg>, container);
+		expect(container.innerHTML).to.equal(innerHTML('<svg id="test"></svg>'));
 	});
 
 	it('should add / change / remove xlink:href attribute', () => {
-
 		render(<svg>
 			<use xlink:href="#test"></use>
 		</svg>, container);
 
-		expect(container.innerHTML).to.equal(innerHTML('<svg><use xlink:href="#test"></use></svg>')); // Add
+		expect(container.firstChild.firstChild.getAttributeNS(
+			'http://www.w3.org/1999/xlink',
+			'href'
+		)).to.equal('#test');
 
 		render(<svg>
 			<use xlink:href="#changed"></use>
 		</svg>, container);
 
-		expect(container.innerHTML).to.equal(innerHTML('<svg><use xlink:href="#changed"></use></svg>')); // Change
+		expect(container.firstChild.firstChild.getAttributeNS(
+			'http://www.w3.org/1999/xlink',
+			'href'
+		)).to.equal('#changed');
 
 		render(<svg>
 			<use></use>
 		</svg>, container);
 
-		expect(container.innerHTML).to.equal(innerHTML('<svg><use></use></svg>')); // Remove
-
+		expect(container.firstChild.firstChild.hasAttributeNS(
+			'http://www.w3.org/1999/xlink',
+			'href'
+		)).to.equal(false);
 	});
 });

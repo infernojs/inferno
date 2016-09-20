@@ -11,11 +11,13 @@ import { isVElement, isVComponent } from './../core/shapes';
 import { renderStyleToString, renderAttributes } from './prop-renderers';
 
 export class RenderStream extends Readable {
+	initNode: any;
+	staticMarkup: any;
+	started: boolean = false;
 	constructor(initNode, staticMarkup) {
 		super();
 		this.initNode = initNode;
 		this.staticMarkup = staticMarkup;
-		this.started = false;
 	}
 
 	_read(){
@@ -67,7 +69,7 @@ export class RenderStream extends Readable {
 		});
 	}
 
-	renderChildren(children, context){
+	renderChildren(children: any, context?: any){
 		if (isStringOrNumber(children)) {
 			return this.push(escapeText(children));
 		}

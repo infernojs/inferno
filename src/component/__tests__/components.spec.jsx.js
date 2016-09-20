@@ -34,7 +34,7 @@ describe('Components (JSX)', () => {
 			render() {
 				attachedListener = this.props.onClick;
 				renderedName = this.props.name;
-				return <div className={this.props.name} />;
+				return <div className={this.props.name}/>;
 			}
 		};
 	});
@@ -56,26 +56,26 @@ describe('Components (JSX)', () => {
 
 	it('should render a basic component jsx', () => {
 		render((
-			<div><BasicComponent1 title="abc" name="basic-render" /></div>
+			<div><BasicComponent1 title="abc" name="basic-render"/></div>
 		), container);
 
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>')
-			);
+		);
 
 		render((
-			<div><BasicComponent1 title="abc" name="basic-render" /></div>
+			<div><BasicComponent1 title="abc" name="basic-render"/></div>
 		), container);
 
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>')
-			);
+		);
 
-		const attrs = { title: 'abc', name: 'basic-render2', foo: 'bar' };
+		const attrs = {title: 'abc', name: 'basic-render2', foo: 'bar'};
 
 		// JSX Spread Attribute
 		render((
@@ -86,7 +86,7 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render2">The title is abc</span></div></div>')
-			);
+		);
 	});
 
 	class BasicComponent1b extends Component {
@@ -94,7 +94,7 @@ describe('Components (JSX)', () => {
 			return (
 				<div className="basic">
 					<label>
-						<input checked={this.props.isChecked} />
+						<input checked={this.props.isChecked}/>
 						The title is {this.props.title}
 					</label>
 				</div>
@@ -111,7 +111,7 @@ describe('Components (JSX)', () => {
 	it('should render a basic component with inputs', () => {
 		render((
 			<div>
-				<BasicComponent1b title="abc" isChecked={true} />
+				<BasicComponent1b title="abc" isChecked={true}/>
 			</div>
 		), container);
 
@@ -119,32 +119,32 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><label><input>The title is abc</label></div></div>')
-			);
+		);
 		expect(
 			container.querySelector('input').checked
 		).to.equal(
 			true
-			);
+		);
 
 		render((
 			<div>
-				<BasicComponent1b title="123" isChecked={false} />
+				<BasicComponent1b title="123" isChecked={false}/>
 			</div>
 		), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><label><input>The title is 123</label></div></div>')
-			);
+		);
 		expect(
 			container.querySelector('input').checked
 		).to.equal(
 			false
-			);
+		);
 
 		render((
 			<div>
-				<BasicComponent1b title="123" isChecked={null} />
+				<BasicComponent1b title="123" isChecked={null}/>
 			</div>
 		), container);
 
@@ -154,23 +154,23 @@ describe('Components (JSX)', () => {
 
 		render((
 			<div>
-				<BasicComponent1b title="123" isChecked={true} />
+				<BasicComponent1b title="123" isChecked={true}/>
 			</div>
 		), container);
 		expect(
 			container.querySelector('input').checked
 		).to.equal(
 			true
-			);
+		);
 	});
 
 	it('should render a basic component and remove property if null', () => {
 
 		render((
-			<div>
-				<BasicComponent1 title="abc" name="basic-render" />
-			</div>
-		),
+				<div>
+					<BasicComponent1 title="abc" name="basic-render"/>
+				</div>
+			),
 			container
 		);
 
@@ -178,18 +178,18 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is abc</span></div></div>')
-			);
+		);
 
 		render((
-			<div></div>
-		),
+				<div></div>
+			),
 			container
 		);
 		render((
-			<div>
-				<BasicComponent1 title="Hello, World!" name="basic-render" />
-			</div>
-		),
+				<div>
+					<BasicComponent1 title="Hello, World!" name="basic-render"/>
+				</div>
+			),
 			container
 		);
 
@@ -197,36 +197,36 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is Hello, World!</span></div></div>')
-			);
+		);
 
 		render((
-			<div>
-				<BasicComponent1 title="123" name={null} />
-			</div>
-		),
+				<div>
+					<BasicComponent1 title="123" name={null}/>
+				</div>
+			),
 			container
 		);
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span>The title is 123</span></div></div>')
-			);
+		);
 		render((
-			<div>
-				<BasicComponent1 title={[]} name={null} />
-			</div>
-		),
+				<div>
+					<BasicComponent1 title={[]} name={null}/>
+				</div>
+			),
 			container
 		);
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span>The title is </span></div></div>')
-			);
+		);
 
 		render((
 			<div>
-				<BasicComponent1 title={null} name={null} />
+				<BasicComponent1 title={null} name={null}/>
 			</div>
 		), container);
 
@@ -234,11 +234,11 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span>The title is </span></div></div>')
-			);
+		);
 
 		render((
 			<div>
-				<BasicComponent1 title="abc" name={null} />
+				<BasicComponent1 title="abc" name={null}/>
 			</div>
 		), container);
 
@@ -246,42 +246,42 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span>The title is abc</span></div></div>')
-			);
+		);
 
 		render((
 			<div>
-				<BasicComponent1 title="123" name="basic-update" />
+				<BasicComponent1 title="123" name="basic-update"/>
 			</div>
 		), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-update">The title is 123</span></div></div>')
-			);
+		);
 	});
 
 	it('should render a basic root component', () => {
 
 		render((
-			<BasicComponent1 title="abc" name="basic-render" />
+			<BasicComponent1 title="abc" name="basic-render"/>
 		), container);
 
 		expect(container.firstChild.getAttribute('class')).to.equal('basic');
 
 		render((
-			<BasicComponent1 title="abc" name="basic-render" />
+			<BasicComponent1 title="abc" name="basic-render"/>
 		), container);
 
 		expect(container.firstChild.getAttribute('class')).to.equal('basic');
 
 		render((
-			<BasicComponent1 title="123" name="basic-update" />
+			<BasicComponent1 title="123" name="basic-update"/>
 		), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div class="basic"><span class="basic-update">The title is 123</span></div>')
-			);
+		);
 	});
 
 	class BasicComponent2 extends Component {
@@ -309,7 +309,7 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is abc</span><span>Im a child</span></div></div>')
-			);
+		);
 
 		render((
 			<div>
@@ -322,7 +322,7 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-update">The title is 123</span><span>Im a child</span></div></div>')
-			);
+		);
 	});
 
 	/* no more templates
@@ -351,8 +351,8 @@ describe('Components (JSX)', () => {
 
 		render((
 			<div>
-				<BasicComponent1 title="component 1" name="basic-render" />
-				<BasicComponent1 title="component 2" name="basic-render" />
+				<BasicComponent1 title="component 1" name="basic-render"/>
+				<BasicComponent1 title="component 2" name="basic-render"/>
 			</div>
 		), container);
 
@@ -361,18 +361,18 @@ describe('Components (JSX)', () => {
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is component 1</span></div>'
 				+ '<div class="basic"><span class="basic-render">The title is component 2</span></div></div>')
-			);
+		);
 
 		render((
 			<div>
-				<BasicComponent1 title="component 1" name="basic-render" />
+				<BasicComponent1 title="component 1" name="basic-render"/>
 			</div>
 		), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><div class="basic"><span class="basic-render">The title is component 1</span></div></div>')
-			);
+		);
 	});
 
 	class BasicComponent3 extends Component {
@@ -388,50 +388,50 @@ describe('Components (JSX)', () => {
 	it('should render a basic component with styling', () => {
 
 		render((
-			<BasicComponent3 title="styled!" styles={{ color: 'red', paddingLeft: '10px' }} />
+			<BasicComponent3 title="styled!" styles={{color: 'red', paddingLeft: '10px'}}/>
 		), container);
 
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div style="color: red; padding-left: 10px;"><span style="color: red; padding-left: 10px;">The title is styled!</span></div>')
-			);
+		);
 
 		render((
 			<BasicComponent3 />
 		), container);
 
 		render((
-			<BasicComponent3 title="styled (again)!" styles={{ color: 'blue', marginBottom: '20px' }} />
+			<BasicComponent3 title="styled (again)!" styles={{color: 'blue', marginBottom: '20px'}}/>
 		), container);
 
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div style="color: blue; margin-bottom: 20px;"><span style="color: blue; margin-bottom: 20px;">The title is styled (again)!</span></div>')
-			);
+		);
 	});
 
 	it('should render a basic component and remove styling', () => {
 
 		render((
-			<BasicComponent3 title="styled!" styles={{ color: 'red', paddingTop: '20px' }} />
+			<BasicComponent3 title="styled!" styles={{color: 'red', paddingTop: '20px'}}/>
 		), container);
 
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div style="color: red; padding-top: 20px;"><span style="color: red; padding-top: 20px;">The title is styled!</span></div>')
-			);
+		);
 
 		render((
-			<BasicComponent3 title="styles are removed!" styles={null} />
+			<BasicComponent3 title="styles are removed!" styles={null}/>
 		), container);
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div><span>The title is styles are removed!</span></div>')
-			);
+		);
 	});
 
 	it('should render a basic component with SVG', () => {
@@ -451,12 +451,10 @@ describe('Components (JSX)', () => {
 
 		render(<SvgComponent />, container);
 
-		expect(
-			container.innerHTML
-		).to.equal(
-			innerHTML('<svg class="alert-icon"><use xlink:href="#error"></use></svg>')
-			);
-
+		expect(container.firstChild.firstChild.hasAttributeNS(
+				'http://www.w3.org/1999/xlink',
+				'href'
+			)).to.equal(true);
 		// unset
 		render(null, container);
 
@@ -464,15 +462,14 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			''
-			);
+		);
 
 		render(<SvgComponent />, container);
 
-		expect(
-			container.innerHTML
-		).to.equal(
-			innerHTML('<svg class="alert-icon"><use xlink:href="#error"></use></svg>')
-		);
+		expect(container.firstChild.firstChild.hasAttributeNS(
+			'http://www.w3.org/1999/xlink',
+			'href'
+		)).to.equal(true);
 	});
 
 	class SuperComponent extends Component {
@@ -480,12 +477,12 @@ describe('Components (JSX)', () => {
 			super(props);
 			this.state = {
 				organizations: [
-					{ name: 'test1', key: '1' },
-					{ name: 'test2', key: '2' },
-					{ name: 'test3', key: '3' },
-					{ name: 'test4', key: '4' },
-					{ name: 'test5', key: '5' },
-					{ name: 'test6', key: '6' }
+					{name: 'test1', key: '1'},
+					{name: 'test2', key: '2'},
+					{name: 'test3', key: '3'},
+					{name: 'test4', key: '4'},
+					{name: 'test5', key: '5'},
+					{name: 'test6', key: '6'}
 				]
 			};
 		}
@@ -506,7 +503,7 @@ describe('Components (JSX)', () => {
 			container.innerHTML
 		).to.equal(
 			'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
-			);
+		);
 	});
 
 	it('should render a basic component with an element and components as children', () => {
@@ -525,7 +522,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div className="main">
 						<Navbar />
-						<div id="app" />
+						<div id="app"/>
 					</div>
 				);
 			}
@@ -557,20 +554,20 @@ describe('Components (JSX)', () => {
 		class Foo extends Component {
 			constructor(props) {
 				super(props);
-				this.state = { bar: props.initialValue };
+				this.state = {bar: props.initialValue};
 			}
 
 			componentWillMount() {
-				this.setState({ bar: 'bar' });
+				this.setState({bar: 'bar'});
 			}
 
 			render() {
 				renderCount++;
-				return <span className={this.state.bar} />;
+				return <span className={this.state.bar}/>;
 			}
 		}
-		test(<Foo initialValue={null} />, 'SPAN', 'bar', () => {
-			test(<Foo initialValue="foo" />, 'SPAN', 'bar', () => {
+		test(<Foo initialValue={null}/>, 'SPAN', 'bar', () => {
+			test(<Foo initialValue="foo"/>, 'SPAN', 'bar', () => {
 				expect(renderCount).to.equal(2);
 				done();
 			})
@@ -596,11 +593,11 @@ describe('Components (JSX)', () => {
 		class Foo extends Component {
 			constructor(props) {
 				super(props);
-				this.state = { bar: props.initialValue };
+				this.state = {bar: props.initialValue};
 			}
 
 			handleClick() {
-				this.setState({ bar: 'bar' });
+				this.setState({bar: 'bar'});
 			}
 
 			render() {
@@ -608,11 +605,11 @@ describe('Components (JSX)', () => {
 					<Inner
 						name={this.state.bar}
 						onClick={this.handleClick.bind(this)}
-						/>
+					/>
 				);
 			}
 		}
-		test(<Foo initialValue="foo" />, 'DIV', 'foo', function () {
+		test(<Foo initialValue="foo"/>, 'DIV', 'foo', function () {
 			expect(renderedName).to.equal('foo');
 			attachedListener();
 			expect(renderedName).to.equal('bar');
@@ -637,11 +634,11 @@ describe('Components (JSX)', () => {
 					<Inner
 						name={this.mutativeValue}
 						onClick={this.handleClick.bind(this)}
-						/>
+					/>
 				);
 			}
 		}
-		test(<Foo initialValue="foo" />, 'DIV', 'foo', function () {
+		test(<Foo initialValue="foo"/>, 'DIV', 'foo', function () {
 			attachedListener();
 			expect(renderedName).to.equal('bar');
 			done();
@@ -684,7 +681,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						{['Saab', 'Volvo', 'BMW'].map(function (c) {
-							return (<Counter car={c} />);
+							return (<Counter car={c}/>);
 						})}
 					</div>
 				);
@@ -698,7 +695,7 @@ describe('Components (JSX)', () => {
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><div class="my-component"><h1>Saab 0</h1><button type="button">Increment</button></div><div class="my-component"><h1>Volvo 0</h1><button type="button">Increment</button></div><div class="my-component"><h1>BMW 0</h1><button type="button">Increment</button></div></div>')
-				);
+			);
 		});
 
 		it('Second render (update)', (done) => {
@@ -713,7 +710,7 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div><div class="my-component"><h1>Saab 1</h1><button type="button">Increment</button></div><div class="my-component"><h1>Volvo 1</h1><button type="button">Increment</button></div><div class="my-component"><h1>BMW 1</h1><button type="button">Increment</button></div></div>')
-					);
+				);
 				done();
 			});
 		});
@@ -761,7 +758,7 @@ describe('Components (JSX)', () => {
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>Not so cool</h1></div>')
-				);
+			);
 		});
 
 		it('Second render (update with state change)', (done) => {
@@ -774,7 +771,7 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div class="login-view bg-visma"><button>TOGGLE</button><br><h1>This is cool!</h1></div>')
-					);
+				);
 				done();
 			});
 		});
@@ -807,7 +804,7 @@ describe('Components (JSX)', () => {
 						{function () {
 							if (this.state.show === true) {
 								return (
-									<StatelessComponent name={this.name} />
+									<StatelessComponent name={this.name}/>
 								);
 							} else {
 								return (
@@ -831,7 +828,7 @@ describe('Components (JSX)', () => {
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><h1>Hello guys</h1><button>toggle</button></div>')
-				);
+			);
 		});
 
 		it('Second render (update with state change)', (done) => {
@@ -844,7 +841,7 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div><p>Kalle</p><button>toggle</button></div>')
-					);
+				);
 				done();
 			});
 		});
@@ -869,7 +866,7 @@ describe('Components (JSX)', () => {
 				// this doesn't work - only the last value is updated
 				const children = [];
 				for (let i = 0; i < 3; i++) {
-					children.push(<Value key={i} value={this.props.value} />);
+					children.push(<Value key={i} value={this.props.value}/>);
 				}
 
 				return (<div>
@@ -888,28 +885,28 @@ describe('Components (JSX)', () => {
 		it('should correctly render as values increase', () => {
 			let value = 0;
 
-			render(<Repeater value={value} />, container);
+			render(<Repeater value={value}/>, container);
 			expect(
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><div>0</div><div>0</div><div>0</div></div>')
-				);
+			);
 
 			value++;
-			render(<Repeater value={value} />, container);
+			render(<Repeater value={value}/>, container);
 			expect(
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><div>1</div><div>1</div><div>1</div></div>')
-				);
+			);
 
 			value++;
-			render(<Repeater value={value} />, container);
+			render(<Repeater value={value}/>, container);
 			expect(
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><div>2</div><div>2</div><div>2</div></div>')
-				);
+			);
 		});
 	});
 
@@ -965,7 +962,7 @@ describe('Components (JSX)', () => {
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><div><div><h1>Okdokfwoe</h1><p>odkodwq</p></div></div></div>')
-				);
+			);
 		});
 	});
 
@@ -979,13 +976,13 @@ describe('Components (JSX)', () => {
 			}
 
 			componentDidMount() {
-				this.setState({ isok: true });
+				this.setState({isok: true});
 			}
 
 			render() {
 				return (
 					<MyComponent99
-						isok={this.state.isok} />
+						isok={this.state.isok}/>
 				);
 			}
 		}
@@ -1001,11 +998,11 @@ describe('Components (JSX)', () => {
 						isok={this.props.isok ? 'true' : 'false'}
 						<div>
 							{this.props.isok &&
-								['a', 'b'].map((x) => {
-									return (
-										<span>{x}</span>
-									);
-								})}
+							['a', 'b'].map((x) => {
+								return (
+									<span>{x}</span>
+								);
+							})}
 						</div>
 					</div>
 				);
@@ -1019,7 +1016,7 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div>isok=true<div><span>a</span><span>b</span></div></div>')
-					);
+				);
 				done();
 			});
 
@@ -1036,13 +1033,13 @@ describe('Components (JSX)', () => {
 			}
 
 			componentDidMount() {
-				this.setState({ isok: true });
+				this.setState({isok: true});
 			}
 
 			render() {
 				return (
 					<MyComponent99
-						isok={this.state.isok} />
+						isok={this.state.isok}/>
 				);
 			}
 		}
@@ -1082,7 +1079,7 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div><div><span>a</span></div></div>')
-					);
+				);
 				done();
 			});
 
@@ -1093,13 +1090,13 @@ describe('Components (JSX)', () => {
 
 	it('should render stateless component', () => {
 
-		render(<StatelessComponent name="A" />, container);
+		render(<StatelessComponent name="A"/>, container);
 		expect(container.textContent).to.equal('A');
 	});
 
 	it('should unmount stateless component', function () {
 
-		render(<StatelessComponent name="A" />, container);
+		render(<StatelessComponent name="A"/>, container);
 		expect(container.textContent).to.equal('A');
 
 		render(null, container);
@@ -1111,7 +1108,7 @@ describe('Components (JSX)', () => {
 			return <div>{test}</div>;
 		}
 
-		render(<Child test="test" />, container);
+		render(<Child test="test"/>, container);
 
 		expect(container.textContent).to.equal('test');
 	});
@@ -1160,7 +1157,7 @@ describe('Components (JSX)', () => {
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><button>Empty</button><ul><li>No cars!</li></ul></div>')
-				);
+			);
 		});
 
 		it('should handle update upon click', (done) => {
@@ -1173,7 +1170,7 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div><button>Empty</button><ul><li>BMW</li><li>Volvo</li><li>Saab</li></ul></div>')
-					);
+				);
 				done();
 			});
 		});
@@ -1216,7 +1213,7 @@ describe('Components (JSX)', () => {
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><button>1</button><div>0</div><div>1</div><div>2</div><div>3</div></div>')
-				);
+			);
 		});
 
 		it('should handle update upon click', (done) => {
@@ -1229,7 +1226,7 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div><button>1</button><div>0</div></div>')
-					);
+				);
 				done();
 			});
 		});
@@ -1267,7 +1264,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={this._onClick}>Increase! {this.state.counter}</button>
-						<StatelessComponent value={this.state.counter} />
+						<StatelessComponent value={this.state.counter}/>
 					</div>
 				);
 			}
@@ -1279,7 +1276,7 @@ describe('Components (JSX)', () => {
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><button>Increase! 0</button><p>0-42</p></div>')
-				);
+			);
 		});
 
 		it('should handle update upon click', (done) => {
@@ -1292,7 +1289,7 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div><button>Increase! 1</button><p>1-42</p></div>')
-					);
+				);
 				done();
 			});
 		});
@@ -1325,7 +1322,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={this._onClick}>Increase! {this.state.counter}</button>
-						{this.condition ? <StatelessComponent value={this.state.counter} /> : null}
+						{this.condition ? <StatelessComponent value={this.state.counter}/> : null}
 					</div>
 				);
 			}
@@ -1337,7 +1334,7 @@ describe('Components (JSX)', () => {
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><button>Increase! 0</button><p>0</p></div>')
-				);
+			);
 		});
 
 		it('should handle update upon click', (done) => {
@@ -1350,7 +1347,7 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div><button>Increase! 1</button><p>1</p></div>')
-					);
+				);
 				done();
 			});
 		});
@@ -1394,26 +1391,26 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={this._onClick}>{this.props.name} {this.state.counter}</button>
-						{this.condition ? <StatelessComponent value={this.state.counter} /> : null}
+						{this.condition ? <StatelessComponent value={this.state.counter}/> : null}
 					</div>
 				);
 			}
 		}
 
 		it('should correctly render', () => {
-			render(<First name="guy1" />, firstDiv);
-			render(<First name="guy2" />, secondDiv);
+			render(<First name="guy1"/>, firstDiv);
+			render(<First name="guy2"/>, secondDiv);
 
 			expect(
 				container.innerHTML
 			).to.equal(
 				innerHTML('<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>')
-				);
+			);
 		});
 
 		it('should handle update when changing first component', (done) => {
-			render(<First name="guy1" />, firstDiv);
-			render(<First name="guy2" />, secondDiv);
+			render(<First name="guy1"/>, firstDiv);
+			render(<First name="guy2"/>, secondDiv);
 
 			const buttons = Array.prototype.slice.call(firstDiv.querySelectorAll('button'));
 			buttons.forEach(button => button.click());
@@ -1423,14 +1420,14 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div><div><button>guy1 1</button><p>1</p></div></div><div><div><button>guy2 0</button><p>0</p></div></div>')
-					);
+				);
 				done();
 			});
 		});
 
 		it('should handle update when changing second component', (done) => {
-			render(<First name="guy1" />, firstDiv);
-			render(<First name="guy2" />, secondDiv);
+			render(<First name="guy1"/>, firstDiv);
+			render(<First name="guy2"/>, secondDiv);
 
 			const buttons = Array.prototype.slice.call(secondDiv.querySelectorAll('button'));
 			buttons.forEach(button => button.click());
@@ -1440,7 +1437,7 @@ describe('Components (JSX)', () => {
 					container.innerHTML
 				).to.equal(
 					innerHTML('<div><div><button>guy1 0</button><p>0</p></div></div><div><div><button>guy2 1</button><p>1</p></div></div>')
-					);
+				);
 				done();
 			});
 		});
@@ -1455,10 +1452,10 @@ describe('Components (JSX)', () => {
 			class Parent extends Component {
 				constructor(props) {
 					super(props);
-					this.state = { x: false };
+					this.state = {x: false};
 
 					updateParent = () => {
-						this.setState({ x: true });
+						this.setState({x: true});
 					};
 				}
 
@@ -1485,10 +1482,10 @@ describe('Components (JSX)', () => {
 			class ChildA extends Component {
 				constructor(props) {
 					super(props);
-					this.state = { z: false };
+					this.state = {z: false};
 
 					updateChild = () => {
-						this.setState({ z: true });
+						this.setState({z: true});
 					}
 				};
 
@@ -1526,99 +1523,99 @@ describe('Components (JSX)', () => {
 				render() {
 					const children = this.props.data.map((entity) => {
 						const {key, data, ...other} = entity;
-				const child = Array.isArray(data) ?
-					<List
-						data={data}
-						{...other}
-						/> :
-					<Text
-						data={data}
-						{...other}
-						/>;
-				return<li key={key }>{ child }</li >;
-		});
+						const child = Array.isArray(data) ?
+							<List
+								data={data}
+								{...other}
+							/> :
+							<Text
+								data={data}
+								{...other}
+							/>;
+						return <li key={key }>{ child }</li >;
+					});
 
-		return <ul>{children}</ul>;
-	}
+					return <ul>{children}</ul>;
 				}
-
-		class Text extends Component {
-			render() {
-				return <span>{this.props.data}</span>;
 			}
-		}
 
-				const data = [
-					// Data structure should provide stable keys.
-					{ key: '0', data: 'Foo' },
-					{
-			key: '1',
-			data: [
-				{ key: '1/1', data: 'a' },
-				{ key: '1/2', data: 'b' }
-			]
-					}
-	];
-
-	render(<List data={data} />, container);
-	expect(container.innerHTML).to.equal('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
-			});
-
-	it('Should be possible to pass props recursively AT BEGINNING (JSX plugin change required)', () => {
-
-		class List extends Component {
-			render() {
-				const children = this.props.data.map((entity) => {
-					const {key, data, ...other} = entity;
-			const child = Array.isArray(data) ?
-				<List
-					{...other}
-					data={data}
-					/> :
-				<Text
-					{...other}
-					data={data}
-					/>;
-			return<li key={key }>{ child }</li >;
-	});
-
-	return <ul>{children}</ul>;
-					}
+			class Text extends Component {
+				render() {
+					return <span>{this.props.data}</span>;
 				}
+			}
 
-	class Text extends Component {
-					render() {
-			return <span>{this.props.data}</span>;
-					}
-	}
+			const data = [
+				// Data structure should provide stable keys.
+				{key: '0', data: 'Foo'},
+				{
+					key: '1',
+					data: [
+						{key: '1/1', data: 'a'},
+						{key: '1/2', data: 'b'}
+					]
+				}
+			];
 
-	const data = [
-					// Data structure should provide stable keys.
-					{ key: '0', data: 'Foo' },
-					{
-			key: '1',
-			data: [
-				{ key: '1/1', data: 'a' },
-				{ key: '1/2', data: 'b' }
-			]
-					}
-	];
-
-	render(<List data={data} />, container);
-	expect(container.innerHTML).to.equal('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
-			});
+			render(<List data={data}/>, container);
+			expect(container.innerHTML).to.equal('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
 		});
+
+		it('Should be possible to pass props recursively AT BEGINNING (JSX plugin change required)', () => {
+
+			class List extends Component {
+				render() {
+					const children = this.props.data.map((entity) => {
+						const {key, data, ...other} = entity;
+						const child = Array.isArray(data) ?
+							<List
+								{...other}
+								data={data}
+							/> :
+							<Text
+								{...other}
+								data={data}
+							/>;
+						return <li key={key }>{ child }</li >;
+					});
+
+					return <ul>{children}</ul>;
+				}
+			}
+
+			class Text extends Component {
+				render() {
+					return <span>{this.props.data}</span>;
+				}
+			}
+
+			const data = [
+				// Data structure should provide stable keys.
+				{key: '0', data: 'Foo'},
+				{
+					key: '1',
+					data: [
+						{key: '1/1', data: 'a'},
+						{key: '1/2', data: 'b'}
+					]
+				}
+			];
+
+			render(<List data={data}/>, container);
+			expect(container.innerHTML).to.equal('<ul><li><span>Foo</span></li><li><ul><li><span>a</span></li><li><span>b</span></li></ul></li></ul>');
+		});
+	});
 
 	it('Should render (github #117)', (done) => {
 		class MakeX extends Component {
 			constructor(props) {
 				super(props);
-				this.state = { x: false };
+				this.state = {x: false};
 			};
 
 			componentWillMount() {
 				setTimeout(() => {
-					this.setState({ x: true });
+					this.setState({x: true});
 				}, 10);
 			};
 
@@ -1644,12 +1641,12 @@ describe('Components (JSX)', () => {
 		class MakeA extends Component {
 			constructor(props) {
 				super(props);
-				this.state = { z: false };
+				this.state = {z: false};
 			};
 
 			componentWillMount() {
 				setTimeout(() => {
-					expect(() => this.setState({ z: true })).to.throw();
+					expect(() => this.setState({z: true})).to.throw();
 				}, 20);
 			};
 
@@ -1681,7 +1678,7 @@ describe('Components (JSX)', () => {
 	it('Events should propagate between components (github #135)', (done) => {
 		class Label extends Component {
 			render() {
-				const style = { backgroundColor: 'red', padding: '0 20px', fontSize: '40px' };
+				const style = {backgroundColor: 'red', padding: '0 20px', fontSize: '40px'};
 				return <span style={style}>{this.props.text}</span>;
 			}
 		}
@@ -1696,7 +1693,7 @@ describe('Components (JSX)', () => {
 
 			render() {
 				const {text} = this.props;
-				return <button onClick={this.onClick}><Label text={text} /></button>;
+				return <button onClick={this.onClick}><Label text={text}/></button>;
 			}
 		}
 
@@ -1706,7 +1703,7 @@ describe('Components (JSX)', () => {
 			}
 
 			render() {
-				return <div onClick={this.onClick}><Button text="Click me" /></div>
+				return <div onClick={this.onClick}><Button text="Click me"/></div>
 			}
 		}
 
@@ -1726,7 +1723,7 @@ describe('Components (JSX)', () => {
 	it('Should be possible to stop propagation', (done) => {
 		class Label extends Component {
 			render() {
-				const style = { backgroundColor: 'red', padding: '0 20px', fontSize: '40px' };
+				const style = {backgroundColor: 'red', padding: '0 20px', fontSize: '40px'};
 				return <span style={style}>{this.props.text}</span>;
 			}
 		}
@@ -1742,7 +1739,7 @@ describe('Components (JSX)', () => {
 
 			render() {
 				const {text} = this.props;
-				return <button onClick={this.onClick}><Label text={text} /></button>;
+				return <button onClick={this.onClick}><Label text={text}/></button>;
 			}
 		}
 
@@ -1752,7 +1749,7 @@ describe('Components (JSX)', () => {
 			}
 
 			render() {
-				return <div onClick={this.onClick}><Button text="Click me" /></div>
+				return <div onClick={this.onClick}><Button text="Click me"/></div>
 			}
 		}
 
@@ -2056,11 +2053,11 @@ describe('Components (JSX)', () => {
 		}
 
 		it('should correctly render once but never again', () => {
-			render(<Test foo="bar" />, container);
+			render(<Test foo="bar"/>, container);
 			expect(container.innerHTML).to.equal('<div>bar</div>');
-			render(<Test foo="yar" />, container);
+			render(<Test foo="yar"/>, container);
 			expect(container.innerHTML).to.equal('<div>bar</div>');
-			instance.setState({ foo: 'woo' });
+			instance.setState({foo: 'woo'});
 			expect(container.innerHTML).to.equal('<div>bar</div>');
 			render(null, container);
 			expect(container.innerHTML).to.equal('');
@@ -2076,9 +2073,9 @@ describe('Components (JSX)', () => {
 				</tr>
 			);
 
-			render(<Todo todo={{ done: false }} />, container);
+			render(<Todo todo={{done: false}}/>, container);
 			expect(container.innerHTML).to.equal('<tr><td></td><td></td><td></td></tr>');
-			render(<Todo todo={{ done: true }} />, container);
+			render(<Todo todo={{done: true}}/>, container);
 			expect(container.innerHTML).to.equal('<tr><td></td><td></td><td></td></tr>');
 		});
 	});
@@ -2241,7 +2238,7 @@ describe('Components (JSX)', () => {
 				}
 
 				componentWillReceiveProps() {
-					this.setState({ foo: 1 });
+					this.setState({foo: 1});
 				}
 
 				render() {
@@ -2313,6 +2310,7 @@ describe('Components (JSX)', () => {
 			constructor(props) {
 				super(props);
 			}
+
 			render() {
 				return <div className={this.props.a} id={this.props.b}>Hello {this.props.c}!</div>;
 			}
@@ -2326,6 +2324,7 @@ describe('Components (JSX)', () => {
 			constructor(props) {
 				super(props);
 			}
+
 			render() {
 				return <div className={this.props.a} id={this.props.b}>Hello {this.props.c}!</div>;
 			}
@@ -2336,20 +2335,20 @@ describe('Components (JSX)', () => {
 		};
 
 		it('should mount component with defaultProps', () => {
-			render(<Comp1 c='C' />, container);
+			render(<Comp1 c='C'/>, container);
 			expect(container.innerHTML).to.equal('<div class="A" id="B">Hello C!</div>');
 		});
 
 		it('should patch component with defaultProps', () => {
-			render(<Comp1 c='C' />, container);
-			render(<Comp1 c='C2' />, container);
+			render(<Comp1 c='C'/>, container);
+			render(<Comp1 c='C2'/>, container);
 			expect(container.innerHTML).to.equal('<div class="A" id="B">Hello C2!</div>');
 		});
 		it('should patch component with defaultProps #2', () => {
-			render(<Comp1 c='C' />, container);
-			render(<Comp2 c='C1' />, container);
+			render(<Comp1 c='C'/>, container);
+			render(<Comp2 c='C1'/>, container);
 			expect(container.innerHTML).to.equal('<div class="aye" id="bee">Hello C1!</div>');
-			render(<Comp1 c='C2' />, container);
+			render(<Comp1 c='C2'/>, container);
 			expect(container.innerHTML).to.equal('<div class="A" id="B">Hello C2!</div>');
 		});
 	});
@@ -2365,11 +2364,13 @@ describe('Components (JSX)', () => {
 				};
 				reference = this.update.bind(this);
 			}
+
 			update() {
 				this.setState(() => ({
 					foo: 'bar'
 				}));
 			}
+
 			render() {
 				return <div>{ this.state.foo }</div>;
 			}
