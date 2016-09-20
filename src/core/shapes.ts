@@ -91,7 +91,7 @@ export function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d
 	return bp;
 }
 
-export function createVComponent(component, props, key, hooks, ref): VComponent {
+export function createVComponent(component, props, key?, hooks?, ref?): VComponent {
 	return {
 		component,
 		dom: null,

@@ -68,6 +68,24 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 		}
 
 		class Connect extends Component {
+			static displayName: any;
+			static WrappedComponent: any;
+			version: any;
+			store: any;
+			haveOwnPropsChanged: boolean;
+			hasStoreStateChanged: boolean;
+			finalMapStateToProps: any;
+			doStatePropsDependOnOwnProps: any;
+			finalMapDispatchToProps: any;
+			doDispatchPropsDependOnOwnProps: any;
+			stateProps: any;
+			dispatchProps: any;
+			mergedProps: any;
+			unsubscribe: any;
+			haveStatePropsBeenPrecalculated: boolean;
+			statePropsPrecalculationError: any;
+			renderedElement: any;
+
 			shouldComponentUpdate() {
 				return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged;
 			}

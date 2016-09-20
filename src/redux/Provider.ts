@@ -15,6 +15,7 @@ function warnAboutReceivingStore() {
 }
 
 export default class Provider extends Component {
+	store: any;
 	getChildContext() {
 		return { store: this.store };
 	}

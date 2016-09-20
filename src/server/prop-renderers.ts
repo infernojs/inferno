@@ -2,11 +2,11 @@ import { isStringOrNumber, isNullOrUndef, isNumber, isTrue } from './../shared';
 import { isUnitlessNumber } from '../DOM/constants';
 import { toHyphenCase, escapeAttr } from './utils';
 
-export function renderStyleToString(style) {
+export function renderStyleToString(style): string {
 	if (isStringOrNumber(style)) {
 		return style;
 	} else {
-		const styles = [];
+		const styles: string[] = [];
 		const keys = Object.keys(style);
 
 		for (let i = 0; i < keys.length; i++) {
@@ -22,8 +22,8 @@ export function renderStyleToString(style) {
 	}
 }
 
-export function renderAttributes(props){
-	const outputAttrs = [];
+export function renderAttributes(props): string[] {
+	const outputAttrs: string[] = [];
 	const propsKeys = (props && Object.keys(props)) || [];
 
 	propsKeys.forEach((propKey, i) => {

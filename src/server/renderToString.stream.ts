@@ -119,7 +119,6 @@ export class RenderStream extends Readable {
 
 	renderNative(vElement, isRoot, context) {
 		const tag = vElement.tag;
-		const outputProps = [];
 		const props = vElement.props;
 
 		const outputAttrs = renderAttributes(props);
