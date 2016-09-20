@@ -9,3 +9,5 @@ insert_final_newline = true
 [*.{js,ts,json}]
 indent_style = tab
 indent_size = 2
+
+quote_type = single
