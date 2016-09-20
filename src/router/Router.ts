@@ -1,6 +1,6 @@
-import Component from '../component/es2015.js';
+import Component from '../component/es2015';
 import { isArray, isNull } from '../shared';
-import { exec, convertToHashbang, pathRankSort } from './utils.js';
+import { exec, convertToHashbang, pathRankSort } from './utils';
 import { createVComponent } from '../core/shapes';
 import cloneVNode from '../factories/cloneVNode';
 
