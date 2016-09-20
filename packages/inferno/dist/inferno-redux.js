@@ -118,21 +118,9 @@ function addToQueue(component, force, callback) {
 	}
 }
 
-// Copy of the util from dom/util, otherwise it makes massive bundles
-function getActiveNode() {
-	return document.activeElement;
-}
-
-// Copy of the util from dom/util, otherwise it makes massive bundles
-function resetActiveNode(activeNode) {
-	if (activeNode !== document.body && document.activeElement !== activeNode) {
-		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
-	}
-}
-
 function queueStateChanges(component, newState, callback) {
 	if (isFunction(newState)) {
-		newState = newState();
+		newState = newState(component.state);
 	}
 	for (var stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
@@ -171,7 +159,6 @@ function applyState(component, force, callback) {
 		}
 		var lastInput = component._lastInput;
 		var parentDom = lastInput.dom.parentNode;
-		var activeNode = getActiveNode();
 		var subLifecycle = new Lifecycle();
 		var childContext = component.getChildContext();
 
@@ -189,7 +176,6 @@ function applyState(component, force, callback) {
 		if (!isNullOrUndef(callback)) {
 			callback();
 		}
-		resetActiveNode(activeNode);
 	}
 }
 
@@ -317,25 +303,6 @@ function overArg(func, transform) {
 var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 /**
- * Checks if `value` is a host object in IE < 9.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
- */
-function isHostObject(value) {
-  // Many host objects are `Object` objects that can coerce to strings
-  // despite having improperly defined `toString` methods.
-  var result = false;
-  if (value != null && typeof value.toString != 'function') {
-    try {
-      result = !!(value + '');
-    } catch (e) {}
-  }
-  return result;
-}
-
-/**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
  *
@@ -360,7 +327,7 @@ function isHostObject(value) {
  * // => false
  */
 function isObjectLike(value) {
-  return !!value && typeof value == 'object';
+  return value != null && typeof value == 'object';
 }
 
 /** `Object#toString` result references. */
@@ -415,8 +382,7 @@ var objectToString = objectProto.toString;
  * // => true
  */
 function isPlainObject$1(value) {
-  if (!isObjectLike(value) ||
-      objectToString.call(value) != objectTag || isHostObject(value)) {
+  if (!isObjectLike(value) || objectToString.call(value) != objectTag) {
     return false;
   }
   var proto = getPrototype(value);

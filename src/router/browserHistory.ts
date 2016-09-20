@@ -1,16 +1,16 @@
 import { isBrowser } from '../shared';
 import { EMPTY } from './utils';
 
-const routers = [];
+const routers: Array<any> = [];
 
 function getCurrentUrl() {
-	const url = typeof location !== 'undefined' ? location : EMPTY;
+	const url: any = typeof location !== 'undefined' ? location : EMPTY;
 
 	return `${url.pathname || ''}${url.search || ''}${url.hash || ''}`;
 }
 
 function getHashbangRoot() {
-	const url = typeof location !== 'undefined' ? location : EMPTY;
+	const url: any = typeof location !== 'undefined' ? location : EMPTY;
 
 	return `${url.protocol + '//' || ''}${url.host || ''}${url.pathname || ''}${url.search || ''}#!`;
 }

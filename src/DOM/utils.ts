@@ -172,11 +172,6 @@ export function removeChild(parentDom, dom) {
 	parentDom.removeChild(dom);
 }
 
-// TODO: for node we need to check if document is valid
-export function getActiveNode() {
-	return document.activeElement;
-}
-
 export function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
 	dom.textContent = '';
 	for (let i = 0; i < children.length; i++) {
@@ -185,12 +180,6 @@ export function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
 		if (!isInvalid(child)) {
 			unmount(child, null, lifecycle, true, shallowUnmount);
 		}
-	}
-}
-
-export function resetActiveNode(activeNode) {
-	if (activeNode !== null && activeNode !== document.body && document.activeElement !== activeNode) {
-		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
 	}
 }
 

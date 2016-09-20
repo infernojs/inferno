@@ -1669,10 +1669,6 @@ function normaliseChild(children, i) {
 function removeChild(parentDom, dom) {
     parentDom.removeChild(dom);
 }
-// TODO: for node we need to check if document is valid
-function getActiveNode() {
-    return document.activeElement;
-}
 function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
     dom.textContent = '';
     for (var i = 0; i < children.length; i++) {
@@ -1680,11 +1676,6 @@ function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
         if (!isInvalid(child)) {
             unmount(child, null, lifecycle, true, shallowUnmount);
         }
-    }
-}
-function resetActiveNode(activeNode) {
-    if (activeNode !== null && activeNode !== document.body && document.activeElement !== activeNode) {
-        activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
     }
 }
 function isKeyed(lastChildren, nextChildren) {
@@ -2437,7 +2428,6 @@ function render$1(input, parentDom) {
         }
     }
     else {
-        var activeNode = getActiveNode();
         if (isNullOrUndef(input)) {
             unmount(root.input, parentDom, lifecycle, false, false);
             roots.delete(parentDom);
@@ -2450,7 +2440,6 @@ function render$1(input, parentDom) {
         }
         lifecycle.trigger();
         root.input = input;
-        resetActiveNode(activeNode);
     }
 }
 
@@ -2575,21 +2564,9 @@ function addToQueue(component, force, callback) {
 	}
 }
 
-// Copy of the util from dom/util, otherwise it makes massive bundles
-function getActiveNode$1() {
-	return document.activeElement;
-}
-
-// Copy of the util from dom/util, otherwise it makes massive bundles
-function resetActiveNode$1(activeNode) {
-	if (activeNode !== document.body && document.activeElement !== activeNode) {
-		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
-	}
-}
-
 function queueStateChanges(component, newState, callback) {
 	if (isFunction(newState)) {
-		newState = newState();
+		newState = newState(component.state);
 	}
 	for (var stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
@@ -2628,7 +2605,6 @@ function applyState(component, force, callback) {
 		}
 		var lastInput = component._lastInput;
 		var parentDom = lastInput.dom.parentNode;
-		var activeNode = getActiveNode$1();
 		var subLifecycle = new Lifecycle();
 		var childContext = component.getChildContext();
 
@@ -2646,7 +2622,6 @@ function applyState(component, force, callback) {
 		if (!isNullOrUndef(callback)) {
 			callback();
 		}
-		resetActiveNode$1(activeNode);
 	}
 }
 

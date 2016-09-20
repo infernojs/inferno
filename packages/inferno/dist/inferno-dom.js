@@ -1629,10 +1629,6 @@ function normaliseChild(children, i) {
 function removeChild(parentDom, dom) {
     parentDom.removeChild(dom);
 }
-// TODO: for node we need to check if document is valid
-function getActiveNode() {
-    return document.activeElement;
-}
 function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
     dom.textContent = '';
     for (var i = 0; i < children.length; i++) {
@@ -1640,11 +1636,6 @@ function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
         if (!isInvalid(child)) {
             unmount(child, null, lifecycle, true, shallowUnmount);
         }
-    }
-}
-function resetActiveNode(activeNode) {
-    if (activeNode !== null && activeNode !== document.body && document.activeElement !== activeNode) {
-        activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
     }
 }
 function isKeyed(lastChildren, nextChildren) {
@@ -2397,7 +2388,6 @@ function render(input, parentDom) {
         }
     }
     else {
-        var activeNode = getActiveNode();
         if (isNullOrUndef(input)) {
             unmount(root.input, parentDom, lifecycle, false, false);
             roots.delete(parentDom);
@@ -2410,7 +2400,6 @@ function render(input, parentDom) {
         }
         lifecycle.trigger();
         root.input = input;
-        resetActiveNode(activeNode);
     }
 }
 function createRenderer() {

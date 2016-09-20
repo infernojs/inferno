@@ -153,21 +153,9 @@ function addToQueue(component, force, callback) {
 	}
 }
 
-// Copy of the util from dom/util, otherwise it makes massive bundles
-function getActiveNode() {
-	return document.activeElement;
-}
-
-// Copy of the util from dom/util, otherwise it makes massive bundles
-function resetActiveNode(activeNode) {
-	if (activeNode !== document.body && document.activeElement !== activeNode) {
-		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
-	}
-}
-
 function queueStateChanges(component, newState, callback) {
 	if (isFunction(newState)) {
-		newState = newState();
+		newState = newState(component.state);
 	}
 	for (var stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
@@ -206,7 +194,6 @@ function applyState(component, force, callback) {
 		}
 		var lastInput = component._lastInput;
 		var parentDom = lastInput.dom.parentNode;
-		var activeNode = getActiveNode();
 		var subLifecycle = new Lifecycle();
 		var childContext = component.getChildContext();
 
@@ -224,7 +211,6 @@ function applyState(component, force, callback) {
 		if (!isNullOrUndef(callback)) {
 			callback();
 		}
-		resetActiveNode(activeNode);
 	}
 }
 

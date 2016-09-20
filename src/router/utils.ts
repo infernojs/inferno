@@ -21,7 +21,7 @@ export function convertToHashbang(url) {
 
 // Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
 // Wildcard support is added on top of that.
-export function exec(url, route, opts = EMPTY) {
+export function exec(url, route, opts: any = EMPTY) {
 	let reg = /(?:\?([^#]*))?(#.*)?$/,
 		c = url.match(reg),
 		matches = {},

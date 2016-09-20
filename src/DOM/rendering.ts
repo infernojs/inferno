@@ -1,7 +1,6 @@
 import Lifecycle from './lifecycle';
 import { mountChildrenWithUnknownType } from './mounting';
 import { patchChildrenWithUnknownType } from './patching';
-import { getActiveNode, resetActiveNode } from './utils';
 import {
 	isUndefined,
 	isInvalid,
@@ -48,8 +47,6 @@ export function render(input: any, parentDom: Node | SVGAElement) {
 			roots.set(parentDom, { input });
 		}
 	} else {
-		const activeNode = getActiveNode();
-
 		if (isNullOrUndef(input)) {
 			unmount(root.input, parentDom, lifecycle, false, false);
 			roots.delete(parentDom);
@@ -61,7 +58,6 @@ export function render(input: any, parentDom: Node | SVGAElement) {
 		}
 		lifecycle.trigger();
 		root.input = input;
-		resetActiveNode(activeNode);
 	}
 }
 

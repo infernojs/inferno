@@ -6,7 +6,8 @@ const noOp = 'Inferno Error: Can only update a mounted or mounting component. Th
 const componentCallbackQueue = new Map();
 
 function addToQueue(component, force, callback) {
-	let queue = componentCallbackQueue.get(component);
+	// TODO this function needs to be revised and improved on
+	let queue: any = componentCallbackQueue.get(component);
 
 	if (!queue) {
 		queue = [];
@@ -25,18 +26,6 @@ function addToQueue(component, force, callback) {
 		queue.push(
 			callback
 		);
-	}
-}
-
-// Copy of the util from dom/util, otherwise it makes massive bundles
-function getActiveNode() {
-	return document.activeElement;
-}
-
-// Copy of the util from dom/util, otherwise it makes massive bundles
-function resetActiveNode(activeNode) {
-	if (activeNode !== document.body && document.activeElement !== activeNode) {
-		activeNode.focus(); // TODO: verify are we doing new focus event, if user has focus listener this might trigger it
 	}
 }
 
@@ -81,7 +70,6 @@ function applyState(component, force, callback) {
 		}
 		const lastInput = component._lastInput;
 		const parentDom = lastInput.dom.parentNode;
-		const activeNode = getActiveNode();
 		const subLifecycle = new Lifecycle();
 		let childContext = component.getChildContext();
 
@@ -99,40 +87,43 @@ function applyState(component, force, callback) {
 		if (!isNullOrUndef(callback)) {
 			callback();
 		}
-		resetActiveNode(activeNode);
 	}
 }
 
 export default class Component {
+	state: any = {};
+	refs: any = {};
+	props;
+	context;
+	componentDidMount;
+	_processingSetState = false;
+	_blockRender = false;
+	_blockSetState = false;
+	_deferSetState = false;
+	_pendingSetState = false;
+	_pendingState = {};
+	_lastInput = null;
+	_vComponent = null;
+	_unmounted = true;
+	
+	_childContext = null;
+	_patch = null;
+	_isSVG = false;
+	_componentToDOMNodeMap = null;
+
 	constructor(props, context) {
 		/** @type {object} */
 		this.props = props || {};
 
 		/** @type {object} */
-		this.state = {};
-
-		/** @type {object} */
-		this.refs = {};
-		this._processingSetState = false;
-		this._blockRender = false;
-		this._blockSetState = false;
-		this._deferSetState = false;
-		this._pendingSetState = false;
-		this._pendingState = {};
-		this._lastInput = null;
-		this._vComponent = null;
-		this._unmounted = true;
 		this.context = context || {};
-		this._childContext = null;
-		this._patch = null;
-		this._isSVG = false;
-		this._componentToDOMNodeMap = null;
+
 		if (!this.componentDidMount) {
 			this.componentDidMount = null;
 		}
 	}
 
-	render() {
+	render(nextProps?, nextContext?) {
 	}
 
 	forceUpdate(callback) {
@@ -141,7 +132,7 @@ export default class Component {
 		}
 		applyState(this, true, callback);
 	}
-	setState(newState, callback) {
+	setState(newState, callback?) {
 		if (this._unmounted) {
 			throw Error(noOp);
 		}
@@ -164,20 +155,20 @@ export default class Component {
 	componentDidUpdate() {
 	}
 
-	shouldComponentUpdate() {
+	shouldComponentUpdate(nextProps?, nextState?, context?) {
 		return true;
 	}
 
-	componentWillReceiveProps() {
+	componentWillReceiveProps(nextProps?, context?) {
 	}
 
-	componentWillUpdate() {
+	componentWillUpdate(nextProps?, nextState?, nextContext?) {
 	}
 
 	getChildContext() {
 	}
 
-	_updateComponent(prevState, nextState, prevProps, nextProps, context, force) {
+	_updateComponent(prevState, nextState, prevProps, nextProps, context, force): any {
 		if (this._unmounted === true) {
 			throw new Error('You can\'t update an unmounted component!');
 		}
