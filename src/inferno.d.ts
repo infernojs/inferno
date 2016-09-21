@@ -1,7 +1,9 @@
 declare module 'lodash/isPlainObject' {
-	export = function (value): boolean;
+	function isPlainObject(value: any): boolean;
+	export = isPlainObject;
 }
 
 declare module 'invariant' {
-	export = function(condition: any, message: string): void;
+	function invariant(condition: any, message: string): void;
+	export = invariant;
 }
