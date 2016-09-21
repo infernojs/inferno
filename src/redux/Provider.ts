@@ -14,10 +14,10 @@ function warnAboutReceivingStore() {
 	);
 }
 
-export default class Provider extends Component {
+export default class Provider extends Component<any, any> {
 	store: any;
 
-	constructor(props, context) {
+	constructor(props, context?: any) {
 		super(props, context);
 		this.store = props.store;
 	}

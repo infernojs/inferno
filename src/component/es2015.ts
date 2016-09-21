@@ -1,6 +1,7 @@
 import Lifecycle from './../DOM/lifecycle';
 import { isNullOrUndef, NO_OP, throwError, isFunction, isArray } from '../shared';
 import { createVPlaceholder, createVFragment } from './../core/shapes';
+import { ComponentLifecycle } from 'inferno-component';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 const componentCallbackQueue = new Map();
@@ -92,11 +93,11 @@ function applyState(component, force, callback) {
 	}
 }
 
-export default class Component {
+export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	state: any = {};
 	refs: any = {};
-	props;
-	context;
+	props: P & {children: any};
+	context: S;
 	componentDidMount;
 	_processingSetState = false;
 	_blockRender = false;
@@ -113,7 +114,7 @@ export default class Component {
 	_isSVG = false;
 	_componentToDOMNodeMap = null;
 
-	constructor(props, context) {
+	constructor(props?: any, context?: any) {
 		/** @type {object} */
 		this.props = props || {};
 

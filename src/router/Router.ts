@@ -3,11 +3,12 @@ import { isArray, isNull } from '../shared';
 import { exec, convertToHashbang, pathRankSort } from './utils';
 import { createVComponent } from '../core/shapes';
 import cloneVNode from '../factories/cloneVNode';
+import { IRouterProps } from 'inferno-router';
 
-export default class Router extends Component {
+export default class Router extends Component<IRouterProps, any> {
 	_didRoute: boolean;
 
-	constructor(props, context) {
+	constructor(props?: any, context?: any) {
 		super(props, context);
 		if (!props.history) {
 			throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
