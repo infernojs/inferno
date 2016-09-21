@@ -568,7 +568,7 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
             }
         }
         if (lastProps !== nextProps) {
-            var formValue = patchProps(lastProps, nextProps, dom, shallowUnmount);
+            var formValue = patchProps(lastProps, nextProps, dom, shallowUnmount, isSVG);
             if (nextTag === 'select') {
                 formSelectValue(dom, formValue);
             }
@@ -673,10 +673,10 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
             dom.value = isNullOrUndef(nextValue) ? '' : nextValue;
             break;
         case ValueTypes.PROP:
-            patchProp(descriptor, lastValue, nextValue, dom);
+            patchProp(descriptor, lastValue, nextValue, dom, isSVG);
             break;
         case ValueTypes.PROP_SPREAD:
-            patchProps(lastValue, nextValue, dom, shallowUnmount);
+            patchProps(lastValue, nextValue, dom, shallowUnmount, isSVG);
             break;
         default:
     }
@@ -1205,7 +1205,7 @@ function lis_algorithm(a) {
     return result;
 }
 // returns true if a property has been applied that can't be cloned via elem.cloneNode()
-function patchProp(prop, lastValue, nextValue, dom) {
+function patchProp(prop, lastValue, nextValue, dom, isSVG) {
     if (strictProps[prop]) {
         dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
     }
@@ -1219,7 +1219,12 @@ function patchProp(prop, lastValue, nextValue, dom) {
                 return false;
             }
             if (prop === 'className') {
-                dom.className = nextValue;
+                if (isSVG) {
+                    dom.setAttribute('class', nextValue);
+                }
+                else {
+                    dom.className = nextValue;
+                }
                 return false;
             }
             else if (prop === 'style') {
@@ -1255,7 +1260,7 @@ function patchProp(prop, lastValue, nextValue, dom) {
     }
     return true;
 }
-function patchProps(lastProps, nextProps, dom, shallowUnmount) {
+function patchProps(lastProps, nextProps, dom, shallowUnmount, isSVG) {
     lastProps = lastProps || {};
     nextProps = nextProps || {};
     var formValue;
@@ -1272,7 +1277,7 @@ function patchProps(lastProps, nextProps, dom, shallowUnmount) {
             removeProp(prop, dom);
         }
         else {
-            patchProp(prop, lastValue, nextValue, dom);
+            patchProp(prop, lastValue, nextValue, dom, isSVG);
         }
     }
     for (var prop$1 in lastProps) {
@@ -1922,7 +1927,7 @@ function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, l
             dom.value = isNullOrUndef(value) ? '' : value;
             break;
         case ValueTypes.PROP:
-            patchProp(descriptor, null, value, dom);
+            patchProp(descriptor, null, value, dom, isSVG);
             break;
         case ValueTypes.PROP_REF:
             mountRef(dom, value, lifecycle);
@@ -2098,7 +2103,7 @@ function mountProps(vNode, props, dom, lifecycle, context, isSVG, isSpread, shal
             }
         }
         else {
-            patchProp(prop, null, value, dom);
+            patchProp(prop, null, value, dom, isSVG);
         }
     }
     return formValue;
