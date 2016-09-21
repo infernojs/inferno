@@ -9,7 +9,7 @@ function parseTag(tag, props) {
 	if (!tag) {
 		return 'div';
 	}
-	const noId = isUndefined(props.id);
+	const noId = props && isUndefined(props.id);
 	const tagParts = tag.split(classIdSplit);
 	let tagName: null | string = null;
 

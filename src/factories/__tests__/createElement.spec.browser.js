@@ -1,7 +1,7 @@
 import { render } from './../../DOM/rendering';
 import createElement from './../createElement';
 
-describe('CreateElement should handle events', () => {
+describe('CreateElement (non-JSX)', () => {
 	let container;
 
 	beforeEach(() => {
