@@ -411,216 +411,198 @@ function renderToStaticMarkup(input) {
 }
 
 function renderStyleToString$1(style) {
-	if (isStringOrNumber(style)) {
-		return style;
-	} else {
-		var styles = [];
-		var keys = Object.keys(style);
-
-		for (var i = 0; i < keys.length; i++) {
-			var styleName = keys[i];
-			var value = style[styleName];
-			var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
-
-			if (!isNullOrUndef(value)) {
-				styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
-			}
-		}
-		return styles.join();
-	}
+    if (isStringOrNumber(style)) {
+        return style;
+    }
+    else {
+        var styles = [];
+        var keys = Object.keys(style);
+        for (var i = 0; i < keys.length; i++) {
+            var styleName = keys[i];
+            var value = style[styleName];
+            var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+            if (!isNullOrUndef(value)) {
+                styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
+            }
+        }
+        return styles.join();
+    }
 }
-
-function renderAttributes(props){
-	var outputAttrs = [];
-	var propsKeys = (props && Object.keys(props)) || [];
-
-	propsKeys.forEach(function (propKey, i) {
-		var value = props[propKey];
-		switch (propKey) {
-			case 'dangerouslySetInnerHTML' :
-			case 'className' :
-			case 'style' :
-				return;
-			default :
-				if (isStringOrNumber(value)) {
-					outputAttrs.push(escapeAttr(propKey) + '="' + escapeAttr(value) + '"');
-				} else if (isTrue(value)) {
-					outputAttrs.push(escapeAttr(propKey));
-				}
-		}
-	});
-
-	return outputAttrs;
+function renderAttributes(props) {
+    var outputAttrs = [];
+    var propsKeys = (props && Object.keys(props)) || [];
+    propsKeys.forEach(function (propKey, i) {
+        var value = props[propKey];
+        switch (propKey) {
+            case 'dangerouslySetInnerHTML':
+            case 'className':
+            case 'style':
+                return;
+            default:
+                if (isStringOrNumber(value)) {
+                    outputAttrs.push(escapeAttr(propKey) + '="' + escapeAttr(value) + '"');
+                }
+                else if (isTrue(value)) {
+                    outputAttrs.push(escapeAttr(propKey));
+                }
+        }
+    });
+    return outputAttrs;
 }
 
 var RenderStream = (function (Readable$$1) {
-	function RenderStream(initNode, staticMarkup) {
-		Readable$$1.call(this);
-		this.initNode = initNode;
-		this.staticMarkup = staticMarkup;
-		this.started = false;
-	}
+    function RenderStream(initNode, staticMarkup) {
+        Readable$$1.call(this);
+        this.started = false;
+        this.initNode = initNode;
+        this.staticMarkup = staticMarkup;
+    }
 
-	if ( Readable$$1 ) RenderStream.__proto__ = Readable$$1;
-	RenderStream.prototype = Object.create( Readable$$1 && Readable$$1.prototype );
-	RenderStream.prototype.constructor = RenderStream;
+    if ( Readable$$1 ) RenderStream.__proto__ = Readable$$1;
+    RenderStream.prototype = Object.create( Readable$$1 && Readable$$1.prototype );
+    RenderStream.prototype.constructor = RenderStream;
+    RenderStream.prototype._read = function _read () {
+        var this$1 = this;
 
-	RenderStream.prototype._read = function _read (){
-		var this$1 = this;
+        if (this.started) {
+            return;
+        }
+        this.started = true;
+        Promise.resolve().then(function () {
+            return this$1.renderNode(this$1.initNode, null, this$1.staticMarkup);
+        }).then(function () {
+            this$1.push(null);
+        }).catch(function (err) {
+            this$1.emit('error', err);
+        });
+    };
+    RenderStream.prototype.renderNode = function renderNode (node, context, isRoot) {
+        if (isInvalid(node)) {
+            return;
+        }
+        else if (isVComponent(node)) {
+            return this.renderComponent(node, isRoot, context);
+        }
+        else if (isVElement(node)) {
+            return this.renderNative(node, isRoot, context);
+        }
+    };
+    RenderStream.prototype.renderComponent = function renderComponent (vComponent, isRoot, context) {
+        var this$1 = this;
 
-		if (this.started) {
-			return;
-		}
-		this.started = true;
+        var Component = vComponent.component;
+        var props = vComponent.props;
+        if (!isStatefulComponent(vComponent)) {
+            return this.renderNode(Component(props), context, isRoot);
+        }
+        var instance = new Component(props);
+        var childContext = instance.getChildContext();
+        if (!isNullOrUndef(childContext)) {
+            context = Object.assign({}, context, childContext);
+        }
+        instance.context = context;
+        // Block setting state - we should render only once, using latest state
+        instance._pendingSetState = true;
+        return Promise.resolve(instance.componentWillMount()).then(function () {
+            var node = instance.render();
+            instance._pendingSetState = false;
+            return this$1.renderNode(node, context, isRoot);
+        });
+    };
+    RenderStream.prototype.renderChildren = function renderChildren (children, context) {
+        var this$1 = this;
 
-		Promise.resolve().then(function () {
-			return this$1.renderNode(this$1.initNode, null, this$1.staticMarkup);
-		}).then(function (){
-			this$1.push(null);
-		}).catch(function (err) {
-			this$1.emit('error', err);
-		});
-	};
+        if (isStringOrNumber(children)) {
+            return this.push(escapeText(children));
+        }
+        if (!children) {
+            return;
+        }
+        var childrenIsArray = isArray(children);
+        if (!childrenIsArray && !isInvalid(children)) {
+            return this.renderNode(children, context, false);
+        }
+        if (!childrenIsArray) {
+            throw new Error('invalid component');
+        }
+        return children.reduce(function (p, child) {
+            return p.then(function (insertComment) {
+                var isText = isStringOrNumber(child);
+                var childIsInvalid = isInvalid(child);
+                if (isText || childIsInvalid) {
+                    if (insertComment === true) {
+                        if (childIsInvalid) {
+                            this$1.push('<!--!-->');
+                        }
+                        else {
+                            this$1.push('<!---->');
+                        }
+                    }
+                    if (isText) {
+                        this$1.push(escapeText(child));
+                    }
+                    return true;
+                }
+                else if (isArray(child)) {
+                    this$1.push('<!---->');
+                    return Promise.resolve(this$1.renderChildren(child)).then(function () {
+                        this$1.push('<!--!-->');
+                        return true;
+                    });
+                }
+                else {
+                    return this$1.renderNode(child, context, false)
+                        .then(function () {
+                        return false;
+                    });
+                }
+            });
+        }, Promise.resolve(false));
+    };
+    RenderStream.prototype.renderNative = function renderNative (vElement, isRoot, context) {
+        var this$1 = this;
 
-	RenderStream.prototype.renderNode = function renderNode (node, context, isRoot){
-		if (isInvalid(node)) {
-			return;
-		} else if (isVComponent(node)) {
-			return this.renderComponent(node, isRoot, context);
-		} else if (isVElement(node)) {
-			return this.renderNative(node, isRoot, context);
-		}
-	};
-	RenderStream.prototype.renderComponent = function renderComponent (vComponent, isRoot, context) {
-		var this$1 = this;
+        var tag = vElement.tag;
+        var props = vElement.props;
+        var outputAttrs = renderAttributes(props);
+        var html = '';
+        if (props) {
+            var className = props.className;
+            if (className) {
+                outputAttrs.push('class="' + escapeAttr(className) + '"');
+            }
+            var style = props.style;
+            if (style) {
+                outputAttrs.push('style="' + renderStyleToString$1(style) + '"');
+            }
+            if (props.dangerouslySetInnerHTML) {
+                html = props.dangerouslySetInnerHTML.__html;
+            }
+        }
+        if (isRoot) {
+            outputAttrs.push('data-infernoroot');
+        }
+        this.push(("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">"));
+        if (isVoidElement(tag)) {
+            return;
+        }
+        if (html) {
+            this.push(html);
+            this.push(("</" + tag + ">"));
+            return;
+        }
+        return Promise.resolve(this.renderChildren(vElement.children, context)).then(function () {
+            this$1.push(("</" + tag + ">"));
+        });
+    };
 
-		var Component = vComponent.component;
-		var props = vComponent.props;
-
-		if (!isStatefulComponent(vComponent)) {
-			return this.renderNode(Component(props), context, isRoot);
-		}
-
-		var instance = new Component(props);
-		var childContext = instance.getChildContext();
-
-		if (!isNullOrUndef(childContext)) {
-			context = Object.assign({}, context, childContext);
-		}
-		instance.context = context;
-
-		// Block setting state - we should render only once, using latest state
-		instance._pendingSetState = true;
-		return Promise.resolve(instance.componentWillMount()).then(function () {
-			var node = instance.render();
-			instance._pendingSetState = false;
-			return this$1.renderNode(node, context, isRoot);
-		});
-	};
-
-	RenderStream.prototype.renderChildren = function renderChildren (children, context){
-		var this$1 = this;
-
-		if (isStringOrNumber(children)) {
-			return this.push(escapeText(children));
-		}
-		if (!children) {
-			return;
-		}
-
-		var childrenIsArray = isArray(children);
-		if (!childrenIsArray && !isInvalid(children)) {
-			return this.renderNode(children, context, false);
-		}
-		if (!childrenIsArray) {
-			throw new Error('invalid component');
-		}
-		return children.reduce(function (p, child){
-			return p.then(function (insertComment){
-				var isText = isStringOrNumber(child);
-				var childIsInvalid = isInvalid(child);
-
-				if (isText || childIsInvalid) {
-					if (insertComment === true) {
-						if (childIsInvalid) {
-							this$1.push('<!--!-->');
-						} else {
-							this$1.push('<!---->');
-						}
-					}
-					if (isText) {
-						this$1.push(escapeText(child));
-					}
-					return true;
-				} else if (isArray(child)) {
-					this$1.push('<!---->');
-					return Promise.resolve(this$1.renderChildren(child)).then(function (){
-						this$1.push('<!--!-->');
-						return true;
-					});
-				} else {
-					return this$1.renderNode(child, context, false)
-					.then(function () {
-						return false;
-					});
-				}
-			});
-		}, Promise.resolve(false));
-	};
-
-	RenderStream.prototype.renderNative = function renderNative (vElement, isRoot, context) {
-		var this$1 = this;
-
-		var tag = vElement.tag;
-		var outputProps = [];
-		var props = vElement.props;
-
-		var outputAttrs = renderAttributes(props);
-
-		var html = '';
-		if (props) {
-			var className = props.className;
-			if (className) {
-				outputAttrs.push('class="' + escapeAttr(className) + '"');
-			}
-
-			var style = props.style;
-			if (style) {
-				outputAttrs.push('style="' + renderStyleToString$1(style) + '"');
-			}
-
-			if (props.dangerouslySetInnerHTML) {
-				html = props.dangerouslySetInnerHTML.__html;
-			}
-		}
-
-
-		if (isRoot) {
-			outputAttrs.push('data-infernoroot');
-		}
-		this.push(("<" + tag + (outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : '') + ">"));
-		if (isVoidElement(tag)) {
-			return;
-		}
-		if (html) {
-			this.push(html);
-			this.push(("</" + tag + ">"));
-			return;
-		}
-		return Promise.resolve(this.renderChildren(vElement.children, context)).then(function (){
-			this$1.push(("</" + tag + ">"));
-		});
-	};
-
-	return RenderStream;
+    return RenderStream;
 }(stream.Readable));
-
 function streamAsString(node) {
-	return new RenderStream(node, false);
+    return new RenderStream(node, false);
 }
-
 function streamAsStaticMarkup(node) {
-	return new RenderStream(node, true);
+    return new RenderStream(node, true);
 }
 
 var index = {

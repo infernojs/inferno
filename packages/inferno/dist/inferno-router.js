@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.InfernoRouter = factory());
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.InfernoRouter = factory());
 }(this, (function () { 'use strict';
 
 var NO_OP = '$NO_OP';
@@ -96,7 +96,15 @@ function createVElement(tag, props, children, key, ref, childrenType) {
     };
 }
 
-
+function createVFragment(children, childrenType) {
+    return {
+        children: children,
+        childrenType: childrenType || ChildrenTypes.UNKNOWN,
+        dom: null,
+        pointer: null,
+        type: NodeTypes.FRAGMENT
+    };
+}
 function createVPlaceholder() {
     return {
         dom: null,
@@ -129,346 +137,310 @@ Lifecycle.prototype.trigger = function trigger () {
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 var componentCallbackQueue = new Map();
-
 function addToQueue(component, force, callback) {
-	var queue = componentCallbackQueue.get(component);
-
-	if (!queue) {
-		queue = [];
-		componentCallbackQueue.set(component, queue);
-		requestAnimationFrame(function () {
-			applyState(component, force, function () {
-				for (var i = 0; i < queue.length; i++) {
-					queue[i]();
-				}
-			});
-			componentCallbackQueue.delete(component);
-			component._processingSetState = false;
-		});
-	}
-	if (callback) {
-		queue.push(
-			callback
-		);
-	}
+    // TODO this function needs to be revised and improved on
+    var queue = componentCallbackQueue.get(component);
+    if (!queue) {
+        queue = [];
+        componentCallbackQueue.set(component, queue);
+        requestAnimationFrame(function () {
+            applyState(component, force, function () {
+                for (var i = 0; i < queue.length; i++) {
+                    queue[i]();
+                }
+            });
+            componentCallbackQueue.delete(component);
+            component._processingSetState = false;
+        });
+    }
+    if (callback) {
+        queue.push(callback);
+    }
 }
-
 function queueStateChanges(component, newState, callback) {
-	if (isFunction(newState)) {
-		newState = newState(component.state);
-	}
-	for (var stateKey in newState) {
-		component._pendingState[stateKey] = newState[stateKey];
-	}
-	if (!component._pendingSetState) {
-		component._pendingSetState = true;
-		if (component._processingSetState || callback) {
-			addToQueue(component, false, callback);
-		} else {
-			component._processingSetState = true;
-			applyState(component, false, callback);
-			component._processingSetState = false;
-		}
-	} else {
-		component.state = Object.assign({}, component.state, component._pendingState);
-		component._pendingState = {};
-	}
+    if (isFunction(newState)) {
+        newState = newState(component.state);
+    }
+    for (var stateKey in newState) {
+        component._pendingState[stateKey] = newState[stateKey];
+    }
+    if (!component._pendingSetState) {
+        component._pendingSetState = true;
+        if (component._processingSetState || callback) {
+            addToQueue(component, false, callback);
+        }
+        else {
+            component._processingSetState = true;
+            applyState(component, false, callback);
+            component._processingSetState = false;
+        }
+    }
+    else {
+        component.state = Object.assign({}, component.state, component._pendingState);
+        component._pendingState = {};
+    }
 }
-
 function applyState(component, force, callback) {
-	if ((!component._deferSetState || force) && !component._blockRender) {
-		component._pendingSetState = false;
-		var pendingState = component._pendingState;
-		var prevState = component.state;
-		var nextState = Object.assign({}, prevState, pendingState);
-		var props = component.props;
-		var context = component.context;
-
-		component._pendingState = {};
-		var nextInput = component._updateComponent(prevState, nextState, props, props, context, force);
-
-		if (nextInput === NO_OP) {
-			nextInput = component._lastInput;
-		} else if (isNullOrUndef(nextInput)) {
-			nextInput = createVPlaceholder();
-		}
-		var lastInput = component._lastInput;
-		var parentDom = lastInput.dom.parentNode;
-		var subLifecycle = new Lifecycle();
-		var childContext = component.getChildContext();
-
-		if (!isNullOrUndef(childContext)) {
-			childContext = Object.assign({}, context, component._childContext, childContext);
-		} else {
-			childContext = Object.assign({}, context, component._childContext);
-		}
-		component._lastInput = nextInput;
-		component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
-		component._vComponent.dom = nextInput.dom;
-		component._componentToDOMNodeMap.set(component, nextInput.dom);
-		component.componentDidUpdate(props, prevState);
-		subLifecycle.trigger();
-		if (!isNullOrUndef(callback)) {
-			callback();
-		}
-	}
+    if ((!component._deferSetState || force) && !component._blockRender) {
+        component._pendingSetState = false;
+        var pendingState = component._pendingState;
+        var prevState = component.state;
+        var nextState = Object.assign({}, prevState, pendingState);
+        var props = component.props;
+        var context = component.context;
+        component._pendingState = {};
+        var nextInput = component._updateComponent(prevState, nextState, props, props, context, force);
+        if (nextInput === NO_OP) {
+            nextInput = component._lastInput;
+        }
+        else if (isArray(nextInput)) {
+            nextInput = createVFragment(nextInput, null);
+        }
+        else if (isNullOrUndef(nextInput)) {
+            nextInput = createVPlaceholder();
+        }
+        var lastInput = component._lastInput;
+        var parentDom = lastInput.dom.parentNode;
+        var subLifecycle = new Lifecycle();
+        var childContext = component.getChildContext();
+        if (!isNullOrUndef(childContext)) {
+            childContext = Object.assign({}, context, component._childContext, childContext);
+        }
+        else {
+            childContext = Object.assign({}, context, component._childContext);
+        }
+        component._lastInput = nextInput;
+        component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
+        component._vComponent.dom = nextInput.dom;
+        component._componentToDOMNodeMap.set(component, nextInput.dom);
+        component.componentDidUpdate(props, prevState);
+        subLifecycle.trigger();
+        if (!isNullOrUndef(callback)) {
+            callback();
+        }
+    }
 }
-
 var Component = function Component(props, context) {
-	/** @type {object} */
-	this.props = props || {};
-
-	/** @type {object} */
-	this.state = {};
-
-	/** @type {object} */
-	this.refs = {};
-	this._processingSetState = false;
-	this._blockRender = false;
-	this._blockSetState = false;
-	this._deferSetState = false;
-	this._pendingSetState = false;
-	this._pendingState = {};
-	this._lastInput = null;
-	this._vComponent = null;
-	this._unmounted = true;
-	this.context = context || {};
-	this._childContext = null;
-	this._patch = null;
-	this._isSVG = false;
-	this._componentToDOMNodeMap = null;
-	if (!this.componentDidMount) {
-		this.componentDidMount = null;
-	}
+    this.state = {};
+    this.refs = {};
+    this._processingSetState = false;
+    this._blockRender = false;
+    this._blockSetState = false;
+    this._deferSetState = false;
+    this._pendingSetState = false;
+    this._pendingState = {};
+    this._lastInput = null;
+    this._vComponent = null;
+    this._unmounted = true;
+    this._childContext = null;
+    this._patch = null;
+    this._isSVG = false;
+    this._componentToDOMNodeMap = null;
+    /** @type {object} */
+    this.props = props || {};
+    /** @type {object} */
+    this.context = context || {};
+    if (!this.componentDidMount) {
+        this.componentDidMount = null;
+    }
 };
-
-Component.prototype.render = function render () {
+Component.prototype.render = function render (nextProps, nextContext) {
 };
-
 Component.prototype.forceUpdate = function forceUpdate (callback) {
-	if (this._unmounted) {
-		throw Error(noOp);
-	}
-	applyState(this, true, callback);
+    if (this._unmounted) {
+        throw Error(noOp);
+    }
+    applyState(this, true, callback);
 };
 Component.prototype.setState = function setState (newState, callback) {
-	if (this._unmounted) {
-		throw Error(noOp);
-	}
-	if (this._blockSetState === false) {
-		queueStateChanges(this, newState, callback);
-	} else {
-		{
-			throwError('cannot update state via setState() in componentWillUpdate().');
-		}
-		throwError();
-	}
+    if (this._unmounted) {
+        throw Error(noOp);
+    }
+    if (this._blockSetState === false) {
+        queueStateChanges(this, newState, callback);
+    }
+    else {
+        {
+            throwError('cannot update state via setState() in componentWillUpdate().');
+        }
+        throwError();
+    }
 };
-
 Component.prototype.componentWillMount = function componentWillMount () {
 };
-
 Component.prototype.componentWillUnmount = function componentWillUnmount () {
 };
-
 Component.prototype.componentDidUpdate = function componentDidUpdate () {
 };
-
-Component.prototype.shouldComponentUpdate = function shouldComponentUpdate () {
-	return true;
+Component.prototype.shouldComponentUpdate = function shouldComponentUpdate (nextProps, nextState, context) {
+    return true;
 };
-
-Component.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
+Component.prototype.componentWillReceiveProps = function componentWillReceiveProps (nextProps, context) {
 };
-
-Component.prototype.componentWillUpdate = function componentWillUpdate () {
+Component.prototype.componentWillUpdate = function componentWillUpdate (nextProps, nextState, nextContext) {
 };
-
 Component.prototype.getChildContext = function getChildContext () {
 };
-
 Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, context, force) {
-	if (this._unmounted === true) {
-		throw new Error('You can\'t update an unmounted component!');
-	}
-	if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
-		nextProps.children = prevProps.children;
-	}
-	if (prevProps !== nextProps || prevState !== nextState || force) {
-		if (prevProps !== nextProps) {
-			this._blockRender = true;
-			this.componentWillReceiveProps(nextProps, context);
-			this._blockRender = false;
-			if (this._pendingSetState) {
-				nextState = Object.assign({}, nextState, this._pendingState);
-				this._pendingSetState = false;
-				this._pendingState = {};
-			}
-		}
-		var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState, context);
-
-		if (shouldUpdate !== false || force) {
-			this._blockSetState = true;
-			this.componentWillUpdate(nextProps, nextState, context);
-			this._blockSetState = false;
-			this.props = nextProps;
-			this.state = nextState;
-			this.context = context;
-			return this.render(nextProps, context);
-		}
-	}
-	return NO_OP;
+    if (this._unmounted === true) {
+        throw new Error('You can\'t update an unmounted component!');
+    }
+    if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
+        nextProps.children = prevProps.children;
+    }
+    if (prevProps !== nextProps || prevState !== nextState || force) {
+        if (prevProps !== nextProps) {
+            this._blockRender = true;
+            this.componentWillReceiveProps(nextProps, context);
+            this._blockRender = false;
+            if (this._pendingSetState) {
+                nextState = Object.assign({}, nextState, this._pendingState);
+                this._pendingSetState = false;
+                this._pendingState = {};
+            }
+        }
+        var shouldUpdate = this.shouldComponentUpdate(nextProps, nextState, context);
+        if (shouldUpdate !== false || force) {
+            this._blockSetState = true;
+            this.componentWillUpdate(nextProps, nextState, context);
+            this._blockSetState = false;
+            this.props = nextProps;
+            this.state = nextState;
+            this.context = context;
+            return this.render(nextProps, context);
+        }
+    }
+    return NO_OP;
 };
 
 var ASYNC_STATUS = {
-	pending: 'pending',
-	fulfilled: 'fulfilled',
-	rejected: 'rejected'
+    pending: 'pending',
+    fulfilled: 'fulfilled',
+    rejected: 'rejected'
 };
-
 var Route = (function (Component$$1) {
-	function Route(props, context) {
-		Component$$1.call(this, props, context);
-		this.state = {
-			async: null
-		};
-	}
+    function Route(props, context) {
+        Component$$1.call(this, props, context);
+        this.state = {
+            async: null
+        };
+    }
 
-	if ( Component$$1 ) Route.__proto__ = Component$$1;
-	Route.prototype = Object.create( Component$$1 && Component$$1.prototype );
-	Route.prototype.constructor = Route;
+    if ( Component$$1 ) Route.__proto__ = Component$$1;
+    Route.prototype = Object.create( Component$$1 && Component$$1.prototype );
+    Route.prototype.constructor = Route;
+    Route.prototype.async = function async () {
+        var this$1 = this;
 
-	Route.prototype.async = function async () {
-		var this$1 = this;
+        var async = this.props.async;
+        if (async) {
+            this.setState({
+                async: { status: ASYNC_STATUS.pending }
+            });
+            async(this.props.params).then(function (value) {
+                this$1.setState({
+                    async: {
+                        status: ASYNC_STATUS.fulfilled,
+                        value: value
+                    }
+                });
+            }, this.reject).catch(this.reject);
+        }
+    };
+    Route.prototype.reject = function reject (value) {
+        this.setState({
+            async: {
+                status: ASYNC_STATUS.rejected,
+                value: value
+            }
+        });
+    };
+    Route.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
+        this.async();
+    };
+    Route.prototype.componentWillMount = function componentWillMount () {
+        this.async();
+    };
+    Route.prototype.render = function render () {
+        var ref = this.props;
+        var component = ref.component;
+        var params = ref.params;
+        return createVComponent(component, { params: params, async: this.state.async });
+    };
 
-		var async = this.props.async;
-
-		if (async) {
-			this.setState({
-				async: { status: ASYNC_STATUS.pending }
-			});
-			async(this.props.params).then(function (value) {
-				this$1.setState({
-					async: {
-						status: ASYNC_STATUS.fulfilled,
-						value: value
-					}
-				});
-			}, this.reject).catch(this.reject);
-		}
-	};
-
-	Route.prototype.reject = function reject (value) {
-		this.setState({
-			async: {
-				status: ASYNC_STATUS.rejected,
-				value: value
-			}
-		});
-	};
-
-	Route.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
-		this.async();
-	};
-
-	Route.prototype.componentWillMount = function componentWillMount () {
-		this.async();
-	};
-
-	Route.prototype.render = function render () {
-		var ref = this.props;
-		var component = ref.component;
-		var params = ref.params;
-
-		return createVComponent(component, { params: params, async: this.state.async });
-	};
-
-	return Route;
+    return Route;
 }(Component));
 
 var EMPTY = {};
-
 function segmentize(url) {
-	return strip(url).split('/');
+    return strip(url).split('/');
 }
-
 function strip(url) {
-	return url.replace(/(^\/+|\/+$)/g, '');
+    return url.replace(/(^\/+|\/+$)/g, '');
 }
-
 function convertToHashbang(url) {
-	if (url.indexOf('#') === -1) {
-		url = '/';
-	} else {
-		var splitHashUrl = url.split('#!');
-		splitHashUrl.shift();
-		url = splitHashUrl.join('');
-	}
-	return url;
+    if (url.indexOf('#') === -1) {
+        url = '/';
+    }
+    else {
+        var splitHashUrl = url.split('#!');
+        splitHashUrl.shift();
+        url = splitHashUrl.join('');
+    }
+    return url;
 }
-
 // Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
 // Wildcard support is added on top of that.
 function exec(url, route, opts) {
-	if ( opts === void 0 ) opts = EMPTY;
+    if ( opts === void 0 ) opts = EMPTY;
 
-	var reg = /(?:\?([^#]*))?(#.*)?$/,
-		c = url.match(reg),
-		matches = {},
-		ret;
-	if (c && c[1]) {
-		var p = c[1].split('&');
-		for (var i = 0; i < p.length; i++) {
-			var r = p[i].split('=');
-			matches[decodeURIComponent(r[0])] = decodeURIComponent(r.slice(1).join('='));
-		}
-	}
-	url = segmentize(url.replace(reg, ''));
-	route = segmentize(route || '');
-	var max = Math.max(url.length, route.length);
-	var hasWildcard = false;
-
-	for (var i$1 = 0; i$1 < max; i$1++) {
-		if (route[i$1] && route[i$1].charAt(0) === ':') {
-			var param = route[i$1].replace(/(^\:|[+*?]+$)/g, ''),
-				flags = (route[i$1].match(/[+*?]+$/) || EMPTY)[0] || '',
-				plus = ~flags.indexOf('+'),
-				star = ~flags.indexOf('*'),
-				val = url[i$1] || '';
-			if (!val && !star && (flags.indexOf('?') < 0 || plus)) {
-				ret = false;
-				break;
-			}
-			matches[param] = decodeURIComponent(val);
-			if (plus || star) {
-				matches[param] = url.slice(i$1).map(decodeURIComponent).join('/');
-				break;
-			}
-		}
-		else if (route[i$1] !== url[i$1] && !hasWildcard) {
-			if (route[i$1] === '*' && route.length === i$1 + 1) {
-				hasWildcard = true;
-			} else {
-				ret = false;
-				break;
-			}
-		}
-	}
-	if (opts.default !== true && ret === false) {
-		return false;
-	}
-	return matches;
+    var reg = /(?:\?([^#]*))?(#.*)?$/, c = url.match(reg), matches = {}, ret;
+    if (c && c[1]) {
+        var p = c[1].split('&');
+        for (var i = 0; i < p.length; i++) {
+            var r = p[i].split('=');
+            matches[decodeURIComponent(r[0])] = decodeURIComponent(r.slice(1).join('='));
+        }
+    }
+    url = segmentize(url.replace(reg, ''));
+    route = segmentize(route || '');
+    var max = Math.max(url.length, route.length);
+    var hasWildcard = false;
+    for (var i$1 = 0; i$1 < max; i$1++) {
+        if (route[i$1] && route[i$1].charAt(0) === ':') {
+            var param = route[i$1].replace(/(^\:|[+*?]+$)/g, ''), flags = (route[i$1].match(/[+*?]+$/) || EMPTY)[0] || '', plus = ~flags.indexOf('+'), star = ~flags.indexOf('*'), val = url[i$1] || '';
+            if (!val && !star && (flags.indexOf('?') < 0 || plus)) {
+                ret = false;
+                break;
+            }
+            matches[param] = decodeURIComponent(val);
+            if (plus || star) {
+                matches[param] = url.slice(i$1).map(decodeURIComponent).join('/');
+                break;
+            }
+        }
+        else if (route[i$1] !== url[i$1] && !hasWildcard) {
+            if (route[i$1] === '*' && route.length === i$1 + 1) {
+                hasWildcard = true;
+            }
+            else {
+                ret = false;
+                break;
+            }
+        }
+    }
+    if (opts.default !== true && ret === false) {
+        return false;
+    }
+    return matches;
 }
-
 function pathRankSort(a, b) {
-	var aAttr = a.props || EMPTY,
-		bAttr = b.props || EMPTY;
-	var diff = rank(bAttr.path) - rank(aAttr.path);
-	return diff || (bAttr.path.length - aAttr.path.length);
+    var aAttr = a.props || EMPTY, bAttr = b.props || EMPTY;
+    var diff = rank(bAttr.path) - rank(aAttr.path);
+    return diff || (bAttr.path.length - aAttr.path.length);
 }
-
 function rank(url) {
-	return (strip(url).match(/\/+/g) || '').length;
+    return (strip(url).match(/\/+/g) || '').length;
 }
 
 function convertVOptElementToVElement(optVElement) {
@@ -712,97 +684,84 @@ function toArray$1(children) {
 }
 
 function Link(props, ref) {
-	var hashbang = ref.hashbang;
-	var history = ref.history;
+    var hashbang = ref.hashbang;
+    var history = ref.history;
 
-	var activeClassName = props.activeClassName;
-	var activeStyle = props.activeStyle;
-	var className = props.className;
-	var to = props.to;
-	var element = createVElement('a');
-	var href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to;
-
-	if (className) {
-		element.className(className);
-	}
-
-	if (history.isActive(to, hashbang)) {
-		if (activeClassName) {
-			element.className((className ? className + ' ' : '') + activeClassName);
-		}
-		if (activeStyle) {
-			element.style(Object.assign({}, props.style, activeStyle));
-		}
-	}
-
-	if (!hashbang) {
-		element.events({
-			onclick: function navigate(e) {
-				if (e.button !== 0 || e.ctrlKey || e.altKey) {
-					return;
-				}
-				e.preventDefault();
-				var target = e.target;
-				window.history.pushState(null, target.textContent, to);
-				history.routeTo(to);
-			}
-		});
-	}
-
-	return element.props({ href: href }).children(props.children);
+    var activeClassName = props.activeClassName;
+    var activeStyle = props.activeStyle;
+    var className = props.className;
+    var to = props.to;
+    var href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to;
+    var elemProps = { href: href };
+    var element = createVElement('a', elemProps, props.children, null, null, null);
+    if (className) {
+        elemProps.className = className;
+    }
+    if (history.isActive(to, hashbang)) {
+        if (activeClassName) {
+            elemProps.className = (className ? className + ' ' : '') + activeClassName;
+        }
+        if (activeStyle) {
+            elemProps.style = Object.assign({}, props.style, activeStyle);
+        }
+    }
+    if (!hashbang) {
+        elemProps.onclick = function navigate(e) {
+            if (e.button !== 0 || e.ctrlKey || e.altKey) {
+                return;
+            }
+            e.preventDefault();
+            var target = e.target;
+            window.history.pushState(null, target.textContent, to);
+            history.routeTo(to);
+        };
+    }
+    return element;
 }
 
 var routers = [];
-
 function getCurrentUrl() {
-	var url = typeof location !== 'undefined' ? location : EMPTY;
-
-	return ("" + (url.pathname || '') + (url.search || '') + (url.hash || ''));
+    var url = typeof location !== 'undefined' ? location : EMPTY;
+    return ("" + (url.pathname || '') + (url.search || '') + (url.hash || ''));
 }
-
 function getHashbangRoot() {
-	var url = typeof location !== 'undefined' ? location : EMPTY;
-
-	return ("" + (url.protocol + '//' || '') + (url.host || '') + (url.pathname || '') + (url.search || '') + "#!");
+    var url = typeof location !== 'undefined' ? location : EMPTY;
+    return ("" + (url.protocol + '//' || '') + (url.host || '') + (url.pathname || '') + (url.search || '') + "#!");
 }
-
 function isActive(path, hashbang) {
-	if (isBrowser) {
-		if (hashbang) {
-			var currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
-			var matchURL = currentURL.match(/#!(.*)/);
-			var matchHash = matchURL && typeof matchURL[1] !== 'undefined' && (matchURL[1] || '/');
-			return matchHash === path;
-		}
-		return location.pathname === path;
-	}
-	return false;
+    if (isBrowser) {
+        if (hashbang) {
+            var currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
+            var matchURL = currentURL.match(/#!(.*)/);
+            var matchHash = matchURL && typeof matchURL[1] !== 'undefined' && (matchURL[1] || '/');
+            return matchHash === path;
+        }
+        return location.pathname === path;
+    }
+    return false;
 }
-
 function routeTo$1(url) {
-	for (var i = 0; i < routers.length; i++) {
-		if (routers[i].routeTo(url) === true) {
-			return true;
-		}
-	}
-	return false;
+    for (var i = 0; i < routers.length; i++) {
+        if (routers[i].routeTo(url) === true) {
+            return true;
+        }
+    }
+    return false;
 }
-
 if (isBrowser) {
-	window.addEventListener('popstate', function () { return routeTo$1(getCurrentUrl()); });
+    window.addEventListener('popstate', function () { return routeTo$1(getCurrentUrl()); });
 }
-
 var browserHistory = {
-	addRouter: function addRouter(router) {
-		routers.push(router);
-	},
-	removeRouter: function removeRouter(router) {
-		routers.splice(routers.indexOf(router), 1);
-	},
-	getCurrentUrl: getCurrentUrl,
-	getHashbangRoot: getHashbangRoot,
-	isActive: isActive,
-	routeTo: routeTo$1
+    addRouter: function addRouter(router) {
+        routers.push(router);
+    },
+    removeRouter: function removeRouter(router) {
+        routers.splice(routers.indexOf(router), 1);
+    },
+    getCurrentUrl: getCurrentUrl,
+    getHashbangRoot: getHashbangRoot,
+    isActive: isActive,
+    routeTo: routeTo$1
 };
 
 var index = {
