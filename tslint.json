@@ -4,6 +4,8 @@
     "quotemark": [
       "single"
     ],
+		"forin": false,
+		"no-empty": false,
     "indent": [
       "tabs"
     ],

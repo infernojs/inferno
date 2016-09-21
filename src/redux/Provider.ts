@@ -16,13 +16,14 @@ function warnAboutReceivingStore() {
 
 export default class Provider extends Component {
 	store: any;
-	getChildContext() {
-		return { store: this.store };
-	}
 
 	constructor(props, context) {
 		super(props, context);
 		this.store = props.store;
+	}
+
+	getChildContext() {
+		return { store: this.store };
 	}
 
 	render() {

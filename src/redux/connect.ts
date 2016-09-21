@@ -60,6 +60,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				);
 			}
 		}
+
 		function computeMergedProps(stateProps, dispatchProps, parentProps) {
 			const mergedProps = finalMergeProps(stateProps, dispatchProps, parentProps);
 			if (process.env.NODE_ENV !== 'production') {
@@ -87,9 +88,6 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 			statePropsPrecalculationError: any;
 			renderedElement: any;
 
-			shouldComponentUpdate() {
-				return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged;
-			}
 			constructor(props, context) {
 				super(props, context);
 
@@ -107,6 +105,11 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				this.state = { storeState };
 				this.clearCache();
 			}
+
+			shouldComponentUpdate() {
+				return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged;
+			}
+
 			computeStateProps(store, props) {
 				if (!this.finalMapStateToProps) {
 					return this.configureFinalMapState(store, props);
@@ -118,6 +121,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 
 				return stateProps;
 			}
+
 			configureFinalMapState(store, props) {
 				const mappedState = mapState(store.getState(), props);
 				const isFactory = isFunction(mappedState);
@@ -129,6 +133,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				}
 				return mappedState;
 			}
+
 			computeDispatchProps(store, props) {
 				if (!this.finalMapDispatchToProps) {
 					return this.configureFinalMapDispatch(store, props);
@@ -140,6 +145,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 
 				return dispatchProps;
 			}
+
 			configureFinalMapDispatch(store, props) {
 				const mappedDispatch = mapDispatch(store.dispatch, props);
 				const isFactory = isFunction(mappedDispatch);
@@ -152,6 +158,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				}
 				return mappedDispatch;
 			}
+
 			updateStatePropsIfNeeded() {
 				const nextStateProps = this.computeStateProps(this.store, this.props);
 
@@ -161,6 +168,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				this.stateProps = nextStateProps;
 				return true;
 			}
+
 			updateDispatchPropsIfNeeded() {
 				const nextDispatchProps = this.computeDispatchProps(this.store, this.props);
 
@@ -170,6 +178,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				this.dispatchProps = nextDispatchProps;
 				return true;
 			}
+
 			updateMergedPropsIfNeeded() {
 				const nextMergedProps = computeMergedProps(this.stateProps, this.dispatchProps, this.props);
 
@@ -179,33 +188,40 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				this.mergedProps = nextMergedProps;
 				return true;
 			}
+
 			isSubscribed() {
 				return isFunction(this.unsubscribe);
 			}
+
 			trySubscribe() {
 				if (shouldSubscribe && !this.unsubscribe) {
 					this.unsubscribe = this.store.subscribe(this.handleChange.bind(this));
 					this.handleChange();
 				}
 			}
+
 			tryUnsubscribe() {
 				if (this.unsubscribe) {
 					this.unsubscribe();
 					this.unsubscribe = null;
 				}
 			}
+
 			componentDidMount() {
 				this.trySubscribe();
 			}
+
 			componentWillReceiveProps(nextProps) {
 				if (!pure || !shallowEqual(nextProps, this.props)) {
 					this.haveOwnPropsChanged = true;
 				}
 			}
+
 			componentWillUnmount() {
 				this.tryUnsubscribe();
 				this.clearCache();
 			}
+
 			clearCache() {
 				this.dispatchProps = null;
 				this.stateProps = null;
@@ -218,6 +234,7 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				this.finalMapDispatchToProps = null;
 				this.finalMapStateToProps = null;
 			}
+
 			handleChange() {
 				if (!this.unsubscribe) {
 					return;
@@ -241,9 +258,11 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 				this.hasStoreStateChanged = true;
 				this.setState({ storeState });
 			}
+
 			getWrappedInstance() {
 				return this.refs.wrappedInstance;
 			}
+
 			render() {
 				const {
 					haveOwnPropsChanged,
@@ -266,8 +285,8 @@ export default function connect(mapStateToProps, mapDispatchToProps, mergeProps,
 
 				if (pure && renderedElement) {
 					shouldUpdateStateProps = hasStoreStateChanged || (
-						haveOwnPropsChanged && this.doStatePropsDependOnOwnProps
-					);
+							haveOwnPropsChanged && this.doStatePropsDependOnOwnProps
+						);
 					shouldUpdateDispatchProps =
 						haveOwnPropsChanged && this.doDispatchPropsDependOnOwnProps;
 				}

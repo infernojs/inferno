@@ -29,7 +29,7 @@ export default function Link(props, { hashbang, history }) {
 			const target = e.target;
 			window.history.pushState(null, target.textContent, to);
 			history.routeTo(to);
-		}
+		};
 	}
 
 	return element;

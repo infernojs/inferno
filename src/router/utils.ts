@@ -54,8 +54,7 @@ export function exec(url, route, opts: any = EMPTY) {
 				matches[param] = url.slice(i).map(decodeURIComponent).join('/');
 				break;
 			}
-		}
-		else if (route[i] !== url[i] && !hasWildcard) {
+		} else if (route[i] !== url[i] && !hasWildcard) {
 			if (route[i] === '*' && route.length === i + 1) {
 				hasWildcard = true;
 			} else {

@@ -14,28 +14,29 @@ export class RenderStream extends Readable {
 	initNode: any;
 	staticMarkup: any;
 	started: boolean = false;
+
 	constructor(initNode, staticMarkup) {
 		super();
 		this.initNode = initNode;
 		this.staticMarkup = staticMarkup;
 	}
 
-	_read(){
+	_read() {
 		if (this.started) {
 			return;
 		}
 		this.started = true;
 
-		Promise.resolve().then(() =>{
+		Promise.resolve().then(() => {
 			return this.renderNode(this.initNode, null, this.staticMarkup);
-		}).then(()=>{
+		}).then(() => {
 			this.push(null);
-		}).catch((err) =>{
+		}).catch((err) => {
 			this.emit('error', err);
 		});
 	}
 
-	renderNode(node, context, isRoot){
+	renderNode(node, context, isRoot) {
 		if (isInvalid(node)) {
 			return;
 		} else if (isVComponent(node)) {
@@ -44,6 +45,7 @@ export class RenderStream extends Readable {
 			return this.renderNative(node, isRoot, context);
 		}
 	}
+
 	renderComponent(vComponent, isRoot, context) {
 		const Component = vComponent.component;
 		const props = vComponent.props;
@@ -62,14 +64,14 @@ export class RenderStream extends Readable {
 
 		// Block setting state - we should render only once, using latest state
 		instance._pendingSetState = true;
-		return Promise.resolve(instance.componentWillMount()).then(() =>{
+		return Promise.resolve(instance.componentWillMount()).then(() => {
 			const node = instance.render();
 			instance._pendingSetState = false;
 			return this.renderNode(node, context, isRoot);
 		});
 	}
 
-	renderChildren(children: any, context?: any){
+	renderChildren(children: any, context?: any) {
 		if (isStringOrNumber(children)) {
 			return this.push(escapeText(children));
 		}
@@ -84,8 +86,8 @@ export class RenderStream extends Readable {
 		if (!childrenIsArray) {
 			throw new Error('invalid component');
 		}
-		return children.reduce((p, child)=> {
-			return p.then((insertComment)=>{
+		return children.reduce((p, child) => {
+			return p.then((insertComment) => {
 				const isText = isStringOrNumber(child);
 				const childIsInvalid = isInvalid(child);
 
@@ -103,15 +105,15 @@ export class RenderStream extends Readable {
 					return true;
 				} else if (isArray(child)) {
 					this.push('<!---->');
-					return Promise.resolve(this.renderChildren(child)).then(()=>{
+					return Promise.resolve(this.renderChildren(child)).then(() => {
 						this.push('<!--!-->');
 						return true;
 					});
 				} else {
 					return this.renderNode(child, context, false)
-					.then(function () {
-						return false;
-					});
+						.then(function () {
+							return false;
+						});
 				}
 			});
 		}, Promise.resolve(false));
@@ -140,7 +142,6 @@ export class RenderStream extends Readable {
 			}
 		}
 
-
 		if (isRoot) {
 			outputAttrs.push('data-infernoroot');
 		}
@@ -153,7 +154,7 @@ export class RenderStream extends Readable {
 			this.push(`</${tag}>`);
 			return;
 		}
-		return Promise.resolve(this.renderChildren(vElement.children, context)).then(()=>{
+		return Promise.resolve(this.renderChildren(vElement.children, context)).then(() => {
 			this.push(`</${tag}>`);
 		});
 	}

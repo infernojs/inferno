@@ -107,7 +107,7 @@ export default class Component {
 	_lastInput = null;
 	_vComponent = null;
 	_unmounted = true;
-	
+
 	_childContext = null;
 	_patch = null;
 	_isSVG = false;
@@ -134,6 +134,7 @@ export default class Component {
 		}
 		applyState(this, true, callback);
 	}
+
 	setState(newState, callback?) {
 		if (this._unmounted) {
 			throw Error(noOp);
