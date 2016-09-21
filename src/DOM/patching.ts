@@ -167,7 +167,7 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 			}
 		}
 		if (lastProps !== nextProps) {
-			const formValue = patchProps(lastProps, nextProps, dom, shallowUnmount);
+			const formValue = patchProps(lastProps, nextProps, dom, shallowUnmount, isSVG);
 
 			if (nextTag === 'select') {
 				formSelectValue(dom, formValue);
@@ -278,10 +278,10 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 			dom.value = isNullOrUndef(nextValue) ? '' : nextValue;
 			break;
 		case ValueTypes.PROP:
-			patchProp(descriptor, lastValue, nextValue, dom);
+			patchProp(descriptor, lastValue, nextValue, dom, isSVG);
 			break;
 		case ValueTypes.PROP_SPREAD:
-			patchProps(lastValue, nextValue, dom, shallowUnmount);
+			patchProps(lastValue, nextValue, dom, shallowUnmount, isSVG);
 			break;
 		default:
 			// TODO
@@ -827,7 +827,7 @@ function lis_algorithm(a) {
 }
 
 // returns true if a property has been applied that can't be cloned via elem.cloneNode()
-export function patchProp(prop, lastValue, nextValue, dom) {
+export function patchProp(prop, lastValue, nextValue, dom, isSVG) {
 	if (strictProps[prop]) {
 		dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
 	} else if (booleanProps[prop]) {
@@ -839,7 +839,12 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 				return false;
 			}
 			if (prop === 'className') {
-				dom.className = nextValue;
+				if (isSVG) {
+					dom.setAttribute('class', nextValue);
+				} else {
+					dom.className = nextValue;
+				}
+
 				return false;
 			} else if (prop === 'style') {
 				patchStyle(lastValue, nextValue, dom);
@@ -873,7 +878,7 @@ export function patchProp(prop, lastValue, nextValue, dom) {
 	return true;
 }
 
-function patchProps(lastProps, nextProps, dom, shallowUnmount) {
+function patchProps(lastProps, nextProps, dom, shallowUnmount, isSVG) {
 	lastProps = lastProps || {};
 	nextProps = nextProps || {};
 	let formValue;
@@ -892,7 +897,7 @@ function patchProps(lastProps, nextProps, dom, shallowUnmount) {
 		if (isNullOrUndef(nextValue)) {
 			removeProp(prop, dom);
 		} else {
-			patchProp(prop, lastValue, nextValue, dom);
+			patchProp(prop, lastValue, nextValue, dom, isSVG);
 		}
 	}
 	for (let prop in lastProps) {

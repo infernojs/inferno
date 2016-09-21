@@ -305,4 +305,52 @@ describe('SVG (non-jsx)', () => {
 		render(template(), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	});
+
+	it('should be possible to add className to SVG', () => {
+		const template = () => createElement('svg', {
+			xmlns: 'http://www.w3.org/2000/svg',
+			className: 'class1 class2'
+		});
+
+		render(template(), container);
+		expect(container.firstChild.getAttribute('class')).to.equal('class1 class2');
+	});
+
+
+	it('should be possible to remove className from SVG', () => {
+		const template = (val) => createElement('svg', {
+			xmlns: 'http://www.w3.org/2000/svg',
+			className: val
+		});
+
+		render(template('class1 class2'), container);
+		expect(container.firstChild.getAttribute('class')).to.equal('class1 class2');
+		render(template('class1'), container);
+		expect(container.firstChild.getAttribute('class')).to.equal('class1');
+		render(template(), container);
+		expect(container.firstChild.getAttribute('class')).to.equal(null);
+	});
+
+
+	it('should follow last wins when both class and className are defined', () => {
+		const template = () => createElement('svg', {
+			xmlns: 'http://www.w3.org/2000/svg',
+			'class': 'test',
+			className: 'class1 class2'
+		});
+
+		render(template(), container);
+		expect(container.firstChild.getAttribute('class')).to.equal('class1 class2');
+	});
+
+	it('should follow last wins when both class and className are defined #1', () => {
+		const template = () => createElement('svg', {
+			xmlns: 'http://www.w3.org/2000/svg',
+			className: 'class1 class2',
+			'class': 'test'
+		});
+
+		render(template(), container);
+		expect(container.firstChild.getAttribute('class')).to.equal('test');
+	});
 });

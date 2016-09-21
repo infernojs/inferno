@@ -219,7 +219,7 @@ function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, l
 			dom.value = isNullOrUndef(value) ? '' : value;
 			break;
 		case ValueTypes.PROP:
-			patchProp(descriptor, null, value, dom);
+			patchProp(descriptor, null, value, dom, isSVG);
 			break;
 		case ValueTypes.PROP_REF:
 			mountRef(dom, value, lifecycle);
@@ -398,7 +398,7 @@ function mountProps(vNode, props, dom, lifecycle, context, isSVG, isSpread, shal
 				vNode.children = value;
 			}
 		} else {
-			patchProp(prop, null, value, dom);
+			patchProp(prop, null, value, dom, isSVG);
 		}
 	}
 	return formValue;
