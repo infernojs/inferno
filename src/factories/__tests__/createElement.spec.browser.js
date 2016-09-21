@@ -40,7 +40,7 @@ describe('CreateElement should handle events', () => {
 	it('Should handle events correctly when having single child', () => {
 		let triggered = false;
 
-		const App = () => {
+		const app = () => {
 			return createElement('div', null,
 				createElement('button', {
 					type: 'button',
@@ -48,10 +48,10 @@ describe('CreateElement should handle events', () => {
 						triggered = !triggered;
 					}
 				}, 'Do a thing')
-			)
+			);
 		};
 
-		render(App(), container);
+		render(app(), container);
 		expect(container.innerHTML).to.equal('<div><button type="button">Do a thing</button></div>');
 		expect(triggered).to.equal(false);
 

@@ -139,9 +139,8 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 				}
 			}
 		}
-	} else {
-		children = null;
 	}
+	children = null;
 	let newVNode;
 
 	if (isArray(vNodeToClone)) {

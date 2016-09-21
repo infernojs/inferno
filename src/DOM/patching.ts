@@ -167,7 +167,7 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
 			}
 		}
 		if (lastProps !== nextProps) {
-			const formValue = patchProps(lastProps, nextProps, dom, shallowUnmount, isSVG);
+			const formValue = patchProps(nextVElement, lastProps, nextProps, dom, shallowUnmount, false, isSVG, lifecycle, context);
 
 			if (nextTag === 'select') {
 				formSelectValue(dom, formValue);
@@ -211,7 +211,7 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 			const bp1 = nextBp.v1;
 
 			if (lastV0 !== nextV0 || ignoreDiff) {
-				patchOptVElementValue(bp0, lastV0, nextV0, nextBp.d0, dom, lifecycle, context, isSVG, shallowUnmount);
+				patchOptVElementValue(nextOptVElement, bp0, lastV0, nextV0, nextBp.d0, dom, lifecycle, context, isSVG, shallowUnmount);
 			}
 			if (!isNull(bp1)) {
 				const lastV1 = lastOptVElement.v1;
@@ -219,7 +219,7 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 				const bp2 = nextBp.v2;
 
 				if (lastV1 !== nextV1 || ignoreDiff) {
-					patchOptVElementValue(bp1, lastV1, nextV1, nextBp.d1, dom, lifecycle, context, isSVG, shallowUnmount);
+					patchOptVElementValue(nextOptVElement, bp1, lastV1, nextV1, nextBp.d1, dom, lifecycle, context, isSVG, shallowUnmount);
 				}
 				if (!isNull(bp2)) {
 					const lastV2 = lastOptVElement.v2;
@@ -227,7 +227,7 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 					const bp3 = nextBp.v3;
 
 					if (lastV2 !== nextV2 || ignoreDiff) {
-						patchOptVElementValue(bp2, lastV2, nextV2, nextBp.d2, dom, lifecycle, context, isSVG, shallowUnmount);
+						patchOptVElementValue(nextOptVElement, bp2, lastV2, nextV2, nextBp.d2, dom, lifecycle, context, isSVG, shallowUnmount);
 					}
 					if (!isNull(bp3)) {
 						const d3 = nextBp.d3;
@@ -239,7 +239,7 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 							const nextV3 = nextV3s[i];
 
 							if (lastV3 !== nextV3 || ignoreDiff) {
-								patchOptVElementValue(bp3[i], lastV3, nextV3, d3[i], dom, lifecycle, context, isSVG, shallowUnmount);
+								patchOptVElementValue(nextOptVElement, bp3[i], lastV3, nextV3, d3[i], dom, lifecycle, context, isSVG, shallowUnmount);
 							}
 						}
 					}
@@ -252,7 +252,7 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 	}
 }
 
-function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom, lifecycle, context, isSVG, shallowUnmount) {
+function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, descriptor, dom, lifecycle, context, isSVG, shallowUnmount) {
 	switch (valueType) {
 		case ValueTypes.CHILDREN:
 			patchChildren(descriptor, lastValue, nextValue, dom, lifecycle, context, isSVG, shallowUnmount);
@@ -281,7 +281,7 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
 			patchProp(descriptor, lastValue, nextValue, dom, isSVG);
 			break;
 		case ValueTypes.PROP_SPREAD:
-			patchProps(lastValue, nextValue, dom, shallowUnmount, isSVG);
+			patchProps(optVElement, lastValue, nextValue, dom, shallowUnmount, true, isSVG, lifecycle, context);
 			break;
 		default:
 			// TODO
@@ -828,6 +828,9 @@ function lis_algorithm(a) {
 
 // returns true if a property has been applied that can't be cloned via elem.cloneNode()
 export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
+	if (prop === 'children') {
+		return;
+	}
 	if (strictProps[prop]) {
 		dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
 	} else if (booleanProps[prop]) {
@@ -878,7 +881,7 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 	return true;
 }
 
-function patchProps(lastProps, nextProps, dom, shallowUnmount, isSVG) {
+function patchProps(vNode, lastProps, nextProps, dom, shallowUnmount, isSpread, isSVG, lifecycle, context) {
 	lastProps = lastProps || {};
 	nextProps = nextProps || {};
 	let formValue;
@@ -896,6 +899,12 @@ function patchProps(lastProps, nextProps, dom, shallowUnmount, isSVG) {
 		}
 		if (isNullOrUndef(nextValue)) {
 			removeProp(prop, dom);
+		} else if (prop === 'children') {
+			if (isSpread) {
+				patchChildrenWithUnknownType(lastValue, nextValue, dom, lifecycle, context, isSVG, shallowUnmount);
+			} else if (isVElement(vNode)) {
+				vNode.children = nextValue;
+			}
 		} else {
 			patchProp(prop, lastValue, nextValue, dom, isSVG);
 		}
