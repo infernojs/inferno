@@ -36,7 +36,7 @@ function mountStaticNode(node, parentDom: Node | SVGAElement | null, isSVG: bool
 			if (!props.hasOwnProperty(prop)) {
 				continue;
 			}
-			patchProp(prop, null, props[prop], dom);
+			patchProp(prop, null, props[prop], dom, isSVG);
 		}
 	}
 	if (parentDom) {

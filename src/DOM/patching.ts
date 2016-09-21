@@ -827,7 +827,7 @@ function lis_algorithm(a) {
 }
 
 // returns true if a property has been applied that can't be cloned via elem.cloneNode()
-export function patchProp(prop, lastValue, nextValue, dom, isSVG) {
+export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 	if (strictProps[prop]) {
 		dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
 	} else if (booleanProps[prop]) {
