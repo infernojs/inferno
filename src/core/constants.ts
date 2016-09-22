@@ -28,22 +28,22 @@ export const NodeTypes = {
 	PLACEHOLDER: 7
 };
 
-export function isUnknownChildrenType(o) {
+export function isUnknownChildrenType(o: number): boolean {
 	return o === ChildrenTypes.UNKNOWN;
 }
 
-export function isKeyedListChildrenType(o) {
+export function isKeyedListChildrenType(o: number): boolean {
 	return o === ChildrenTypes.KEYED;
 }
 
-export function isNonKeyedListChildrenType(o) {
+export function isNonKeyedListChildrenType(o: number): boolean {
 	return o === ChildrenTypes.NON_KEYED;
 }
 
-export function isTextChildrenType(o) {
+export function isTextChildrenType(o: number): boolean {
 	return o === ChildrenTypes.TEXT;
 }
 
-export function isNodeChildrenType(o) {
+export function isNodeChildrenType(o: number): boolean {
 	return o === ChildrenTypes.NODE;
 }

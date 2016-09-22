@@ -3,7 +3,13 @@ import { isArray, isNull } from '../shared';
 import { exec, convertToHashbang, pathRankSort } from './utils';
 import { createVComponent } from '../core/shapes';
 import cloneVNode from '../factories/cloneVNode';
-import { IRouterProps } from 'inferno-router';
+
+export interface IRouterProps {
+	history?: any;
+	hashbang?: boolean;
+	url: string;
+	component?: Component<any, any>;
+}
 
 export default class Router extends Component<IRouterProps, any> {
 	_didRoute: boolean;
