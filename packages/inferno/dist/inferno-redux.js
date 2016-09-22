@@ -1,5 +1,5 @@
 /*!
- * inferno-redux v1.0.0-alpha12
+ * inferno-redux v1.0.0-beta1
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -242,7 +242,7 @@ Component.prototype.componentWillMount = function componentWillMount () {
 };
 Component.prototype.componentWillUnmount = function componentWillUnmount () {
 };
-Component.prototype.componentDidUpdate = function componentDidUpdate () {
+Component.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState, prevContext) {
 };
 Component.prototype.shouldComponentUpdate = function shouldComponentUpdate (nextProps, nextState, context) {
     return true;

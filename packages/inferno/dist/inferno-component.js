@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-alpha12
+ * inferno-component v1.0.0-beta1
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -225,7 +225,7 @@ Component$1.prototype.componentWillMount = function componentWillMount () {
 };
 Component$1.prototype.componentWillUnmount = function componentWillUnmount () {
 };
-Component$1.prototype.componentDidUpdate = function componentDidUpdate () {
+Component$1.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState, prevContext) {
 };
 Component$1.prototype.shouldComponentUpdate = function shouldComponentUpdate (nextProps, nextState, context) {
     return true;

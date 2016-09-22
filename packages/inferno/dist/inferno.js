@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-alpha12
+ * inferno v1.0.0-beta1
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -300,9 +300,7 @@ function cloneVNode(vNodeToClone, props) {
             }
         }
     }
-    else {
-        children = null;
-    }
+    children = null;
     var newVNode;
     if (isArray(vNodeToClone)) {
         newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
