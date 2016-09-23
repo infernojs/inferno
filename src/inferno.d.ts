@@ -32,10 +32,9 @@ declare module 'inferno-router' {
 		component?: Component<any, any>;
 	}
 	interface IRouteProps {
-		async?: (params?: any) => Promise;
+		async?: (params?: any) => Promise<any>;
 		params?: any;
 		component?: Component<any, any>;
 	}
-	export class Router extends Component<IRouterProps, any> {}
-	export class Router extends Component<IRouteProps, any> {}
+	export class Router extends Component<IRouterProps | IRouteProps, any> {}
 }
