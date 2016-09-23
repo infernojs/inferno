@@ -8,7 +8,9 @@ lib
 jsconfig.json
 coverage
 node_modules
+src/**/*.js
 .DS_Store
+*.map
 *.log
 *.swp
 *~
