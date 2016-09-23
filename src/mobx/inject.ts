@@ -9,70 +9,70 @@ interface IProps extends Object {
 /**
  * Store Injection
  */
-function createStoreInjector(grabStoresFn, component) {
-	const Injector: any = createClass({
+function createStoreInjector ( grabStoresFn, component ) {
+	const Injector: any = createClass( {
 		displayName: 'MobXStoreInjector',
 		render() {
 			let newProps = <IProps> {};
-			for (let key in this.props) {
-				if (this.props.hasOwnProperty(key)) {
-					newProps[key] = this.props[key];
+			for ( let key in this.props ) {
+				if ( this.props.hasOwnProperty( key ) ) {
+					newProps[ key ] = this.props[ key ];
 				}
 			}
-			let additionalProps = grabStoresFn(this.context.mobxStores || {}, newProps, this.context) || {};
-			for (let key in additionalProps) {
-				newProps[key] = additionalProps[key];
+			let additionalProps = grabStoresFn( this.context.mobxStores || {}, newProps, this.context ) || {};
+			for ( let key in additionalProps ) {
+				newProps[ key ] = additionalProps[ key ];
 			}
 			newProps.ref = instance => {
 				this.wrappedInstance = instance;
 			};
-			return createElement(component, newProps);
+			return createElement( component, newProps );
 		}
 		// TODO: should have shouldComponentUpdate?
-	});
+	} );
 	Injector.contextTypes = {
 		mobxStores: () => {
 		}
 	};
 	Injector.wrappedComponent = component;
-	injectStaticWarnings(Injector, component);
-	hoistStatics(Injector, component);
+	injectStaticWarnings( Injector, component );
+	hoistStatics( Injector, component );
 	return Injector;
 }
 
-function injectStaticWarnings(hoc, component) {
-	if (typeof process === 'undefined' || !process.env || process.env.NODE_ENV === 'production') {
+function injectStaticWarnings ( hoc, component ) {
+	if ( typeof process === 'undefined' || !process.env || process.env.NODE_ENV === 'production' ) {
 		return;
 	}
-	['propTypes', 'defaultProps', 'contextTypes'].forEach(function (prop) {
-		const propValue = hoc[prop];
-		Object.defineProperty(hoc, prop, {
-			set (_) {
+	[ 'propTypes', 'defaultProps', 'contextTypes' ].forEach( function ( prop ) {
+		const propValue = hoc[ prop ];
+		Object.defineProperty( hoc, prop, {
+			set ( _ ) {
 				// enable for testing:
 				let name = component.displayName || component.name;
-				console.warn('Mobx Injector: you are trying to attach ' + prop +
-					' to HOC instead of ' + name + '. Use `wrappedComponent` property.');
+				console.warn( 'Mobx Injector: you are trying to attach ' + prop +
+					' to HOC instead of ' + name + '. Use `wrappedComponent` property.' );
 			},
 			get () {
 				return propValue;
 			},
 			configurable: true
-		});
-	});
+		} );
+	} );
 }
 
-function grabStoresByName(storeNames) {
-	return function (baseStores, nextProps) {
-		storeNames.forEach(function (storeName) {
-			if (storeName in nextProps) {
+function grabStoresByName ( storeNames ) {
+	return function ( baseStores, nextProps ) {
+		storeNames.forEach( function ( storeName ) {
+			if ( storeName in nextProps ) {
 				// prefer props over stores
 				return;
 			}
-			if (!(storeName in baseStores)) {
-				throw new Error('MobX observer: Store "' + storeName + '" is not available! Make sure it is provided by some Provider');
+			if ( !(storeName in baseStores) ) {
+				throw new Error( 'MobX observer: Store "' + storeName + '" is not available! Make sure it is provided by some Provider' );
 			}
-			nextProps[storeName] = baseStores[storeName];
-		});
+			nextProps[ storeName ] = baseStores[ storeName ];
+		} );
 		return nextProps;
 	};
 }
@@ -87,18 +87,18 @@ function grabStoresByName(storeNames) {
  * or a function that manually maps the available stores from the context to props:
  * storesToProps(mobxStores, props, context) => newProps
  */
-export default function inject(): any /* fn(stores, nextProps) or ...storeNames */ {
+export default function inject (): any /* fn(stores, nextProps) or ...storeNames */ {
 	let grabStoresFn: any = void 0;
-	if (typeof arguments[0] === 'function') {
-		grabStoresFn = arguments[0];
+	if ( typeof arguments[ 0 ] === 'function' ) {
+		grabStoresFn = arguments[ 0 ];
 	} else {
 		let storesNames: any = [];
-		for (let i = 0; i < arguments.length; i++) {
-			storesNames[i] = arguments[i];
+		for ( let i = 0; i < arguments.length; i++ ) {
+			storesNames[ i ] = arguments[ i ];
 		}
-		grabStoresFn = grabStoresByName(storesNames);
+		grabStoresFn = grabStoresByName( storesNames );
 	}
-	return function (componentClass) {
-		return createStoreInjector(grabStoresFn, componentClass);
+	return function ( componentClass ) {
+		return createStoreInjector( grabStoresFn, componentClass );
 	};
 }
