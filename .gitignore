@@ -8,6 +8,7 @@ lib
 jsconfig.json
 coverage
 node_modules
+packages/inferno/dist
 src/**/*.js
 .DS_Store
 *.map
