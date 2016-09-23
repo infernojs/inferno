@@ -1,5 +1,5 @@
 /*!
- * inferno-hyperscript v1.0.0-alpha12
+ * inferno-hyperscript v1.0.0-beta1
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -84,7 +84,7 @@ function parseTag(tag, props) {
     if (!tag) {
         return 'div';
     }
-    var noId = isUndefined(props.id);
+    var noId = props && isUndefined(props.id);
     var tagParts = tag.split(classIdSplit);
     var tagName = null;
     if (notClassId.test(tagParts[1])) {

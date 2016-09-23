@@ -1,12 +1,17 @@
 import { createVComponent } from '../core/shapes';
 import Component from '../component/es2015';
-import { IRouteProps } from 'inferno-router';
 
 const ASYNC_STATUS = {
 	pending: 'pending',
 	fulfilled: 'fulfilled',
 	rejected: 'rejected'
 };
+
+export interface IRouteProps {
+	async?: (params?: any) => Promise<any>;
+	params?: any;
+	component?: Component<any, any>;
+}
 
 export default class Route extends Component<IRouteProps, any> {
 	constructor(props?: IRouteProps, context?: any) {

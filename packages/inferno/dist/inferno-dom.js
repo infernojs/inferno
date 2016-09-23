@@ -1,5 +1,5 @@
 /*!
- * inferno-dom v1.0.0-alpha12
+ * inferno-dom v1.0.0-beta1
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -568,7 +568,7 @@ function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context
             }
         }
         if (lastProps !== nextProps) {
-            var formValue = patchProps(lastProps, nextProps, dom, shallowUnmount, isSVG);
+            var formValue = patchProps(nextVElement, lastProps, nextProps, dom, shallowUnmount, false, isSVG, lifecycle, context);
             if (nextTag === 'select') {
                 formSelectValue(dom, formValue);
             }
@@ -609,21 +609,21 @@ function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle
             var nextV0 = nextOptVElement.v0;
             var bp1 = nextBp.v1;
             if (lastV0 !== nextV0 || ignoreDiff) {
-                patchOptVElementValue(bp0, lastV0, nextV0, nextBp.d0, dom, lifecycle, context, isSVG, shallowUnmount);
+                patchOptVElementValue(nextOptVElement, bp0, lastV0, nextV0, nextBp.d0, dom, lifecycle, context, isSVG, shallowUnmount);
             }
             if (!isNull(bp1)) {
                 var lastV1 = lastOptVElement.v1;
                 var nextV1 = nextOptVElement.v1;
                 var bp2 = nextBp.v2;
                 if (lastV1 !== nextV1 || ignoreDiff) {
-                    patchOptVElementValue(bp1, lastV1, nextV1, nextBp.d1, dom, lifecycle, context, isSVG, shallowUnmount);
+                    patchOptVElementValue(nextOptVElement, bp1, lastV1, nextV1, nextBp.d1, dom, lifecycle, context, isSVG, shallowUnmount);
                 }
                 if (!isNull(bp2)) {
                     var lastV2 = lastOptVElement.v2;
                     var nextV2 = nextOptVElement.v2;
                     var bp3 = nextBp.v3;
                     if (lastV2 !== nextV2 || ignoreDiff) {
-                        patchOptVElementValue(bp2, lastV2, nextV2, nextBp.d2, dom, lifecycle, context, isSVG, shallowUnmount);
+                        patchOptVElementValue(nextOptVElement, bp2, lastV2, nextV2, nextBp.d2, dom, lifecycle, context, isSVG, shallowUnmount);
                     }
                     if (!isNull(bp3)) {
                         var d3 = nextBp.d3;
@@ -633,7 +633,7 @@ function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle
                             var lastV3 = lastV3s[i];
                             var nextV3 = nextV3s[i];
                             if (lastV3 !== nextV3 || ignoreDiff) {
-                                patchOptVElementValue(bp3[i], lastV3, nextV3, d3[i], dom, lifecycle, context, isSVG, shallowUnmount);
+                                patchOptVElementValue(nextOptVElement, bp3[i], lastV3, nextV3, d3[i], dom, lifecycle, context, isSVG, shallowUnmount);
                             }
                         }
                     }
@@ -645,7 +645,7 @@ function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle
         }
     }
 }
-function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom, lifecycle, context, isSVG, shallowUnmount) {
+function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, descriptor, dom, lifecycle, context, isSVG, shallowUnmount) {
     switch (valueType) {
         case ValueTypes.CHILDREN:
             patchChildren(descriptor, lastValue, nextValue, dom, lifecycle, context, isSVG, shallowUnmount);
@@ -676,7 +676,7 @@ function patchOptVElementValue(valueType, lastValue, nextValue, descriptor, dom,
             patchProp(descriptor, lastValue, nextValue, dom, isSVG);
             break;
         case ValueTypes.PROP_SPREAD:
-            patchProps(lastValue, nextValue, dom, shallowUnmount, isSVG);
+            patchProps(optVElement, lastValue, nextValue, dom, shallowUnmount, true, isSVG, lifecycle, context);
             break;
         default:
     }
@@ -1206,6 +1206,9 @@ function lis_algorithm(a) {
 }
 // returns true if a property has been applied that can't be cloned via elem.cloneNode()
 function patchProp(prop, lastValue, nextValue, dom, isSVG) {
+    if (prop === 'children') {
+        return;
+    }
     if (strictProps[prop]) {
         dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
     }
@@ -1260,7 +1263,7 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
     }
     return true;
 }
-function patchProps(lastProps, nextProps, dom, shallowUnmount, isSVG) {
+function patchProps(vNode, lastProps, nextProps, dom, shallowUnmount, isSpread, isSVG, lifecycle, context) {
     lastProps = lastProps || {};
     nextProps = nextProps || {};
     var formValue;
@@ -1275,6 +1278,14 @@ function patchProps(lastProps, nextProps, dom, shallowUnmount, isSVG) {
         }
         if (isNullOrUndef(nextValue)) {
             removeProp(prop, dom);
+        }
+        else if (prop === 'children') {
+            if (isSpread) {
+                patchChildrenWithUnknownType(lastValue, nextValue, dom, lifecycle, context, isSVG, shallowUnmount);
+            }
+            else if (isVElement(vNode)) {
+                vNode.children = nextValue;
+            }
         }
         else {
             patchProp(prop, lastValue, nextValue, dom, isSVG);
@@ -1474,9 +1485,7 @@ function cloneVNode(vNodeToClone, props) {
             }
         }
     }
-    else {
-        children = null;
-    }
+    children = null;
     var newVNode;
     if (isArray(vNodeToClone)) {
         newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
@@ -1737,7 +1746,7 @@ function mountStaticNode(node, parentDom, isSVG) {
             if (!props.hasOwnProperty(prop)) {
                 continue;
             }
-            patchProp(prop, null, props[prop], dom);
+            patchProp(prop, null, props[prop], dom, isSVG);
         }
     }
     if (parentDom) {

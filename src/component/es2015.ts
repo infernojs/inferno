@@ -1,12 +1,21 @@
 import Lifecycle from './../DOM/lifecycle';
 import { isNullOrUndef, NO_OP, throwError, isFunction, isArray } from '../shared';
 import { createVPlaceholder, createVFragment } from './../core/shapes';
-import { ComponentLifecycle } from 'inferno-component';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 const componentCallbackQueue = new Map();
 
-function addToQueue(component, force, callback) {
+export interface ComponentLifecycle<P, S> {
+	componentWillMount?(): void;
+	componentDidMount?(): void;
+	componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+	shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
+	componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
+	componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
+	componentWillUnmount?(): void;
+}
+
+function addToQueue(component: Component<any, any>, force, callback): void {
 	// TODO this function needs to be revised and improved on
 	let queue: any = componentCallbackQueue.get(component);
 
@@ -30,7 +39,7 @@ function addToQueue(component, force, callback) {
 	}
 }
 
-function queueStateChanges(component, newState, callback) {
+function queueStateChanges(component: Component<any, any>, newState, callback): void {
 	if (isFunction(newState)) {
 		newState = newState(component.state);
 	}
@@ -52,7 +61,7 @@ function queueStateChanges(component, newState, callback) {
 	}
 }
 
-function applyState(component, force, callback) {
+function applyState(component: Component<any, any>, force, callback): void {
 	if ((!component._deferSetState || force) && !component._blockRender) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
@@ -156,23 +165,23 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	componentWillUnmount() {
 	}
 
-	componentDidUpdate() {
+	componentDidUpdate(prevProps: P, prevState: S, prevContext?: any) {
 	}
 
-	shouldComponentUpdate(nextProps?, nextState?, context?) {
+	shouldComponentUpdate(nextProps?: P, nextState?: S, context?: any) {
 		return true;
 	}
 
-	componentWillReceiveProps(nextProps?, context?) {
+	componentWillReceiveProps(nextProps?: P, context?: any) {
 	}
 
-	componentWillUpdate(nextProps?, nextState?, nextContext?) {
+	componentWillUpdate(nextProps?: P, nextState?: S, nextContext?: any) {
 	}
 
 	getChildContext() {
 	}
 
-	_updateComponent(prevState, nextState, prevProps, nextProps, context, force): any {
+	_updateComponent(prevState: S, nextState: S, prevProps: P, nextProps: P & {children: any}, context: any, force: boolean): any {
 		if (this._unmounted === true) {
 			throw new Error('You can\'t update an unmounted component!');
 		}
