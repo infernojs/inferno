@@ -36,7 +36,7 @@ function reportRendering(component) {
 }
 
 export function trackComponents() {
-	invariant(typeof WeakMap !== 'undefined', '[mobx-react] tracking components is not supported in this browser.');
+	invariant(typeof WeakMap !== 'undefined', '[inferno-mobx] tracking components is not supported in this browser.');
 
 	if (!isDevtoolsEnabled) {
 		isDevtoolsEnabled = true;
@@ -93,7 +93,7 @@ const reactiveMixin = {
 			reaction = new Reaction(`${initialName}#${rootNodeID}.render()`, () => {
 				if (!isRenderingPending) {
 					// N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
-					// This unidiomatic React usage but React will correctly warn about this so we continue as usual
+					// This unidiomatic Inferno usage but React will correctly warn about this so we continue as usual
 					// See #85 / Pull #44
 					isRenderingPending = true;
 					if (typeof this.componentWillReact === 'function') {
@@ -101,9 +101,9 @@ const reactiveMixin = {
 					}
 					if (this.__$mobxIsUnmounted !== true) {
 						// If we are unmounted at this point, componentWillReact() had a side effect causing the component to unmounted
-						// TODO: remove this check? Then react will properly warn about the fact that this should not happen? See #73
+						// TODO: remove this check? Then Inferno will properly warn about the fact that this should not happen? See #73
 						// However, people also claim this migth happen during unit tests..
-						// React.Component.prototype.forceUpdate.call(this)
+						// Inferno.Component.prototype.forceUpdate.call(this)
 						Component.prototype.forceUpdate.call(this);
 					}
 				}
@@ -168,8 +168,8 @@ const reactiveMixin = {
 			} else if (newValue && typeof newValue === 'object' && !isObservable(newValue)) {
 				/**
 				 * If the newValue is still the same object, but that object is not observable,
-				 * fallback to the default React behavior: update, because the object *might* have changed.
-				 * If you need the non default behavior, just use the React pure render mixin, as that one
+				 * fallback to the default Inferno behavior: update, because the object *might* have changed.
+				 * If you need the non default behavior, just use the Inferno pure render mixin, as that one
 				 * will work fine with mobx as well, instead of the default implementation of
 				 * observer.
 				 */
@@ -207,8 +207,8 @@ export default function connect(arg1, arg2 = null) {
 	console.info(componentClass.prototype);
 
 	// Stateless function component:
-	// If it is function but doesn't seem to be a react class constructor,
-	// wrap it to a react class automatically
+	// If it is function but doesn't seem to be a Inferno class constructor,
+	// wrap it to a Inferno class automatically
 	if (typeof componentClass === 'function'
 		&& (!componentClass.prototype || !componentClass.prototype.render)
 		&& !componentClass.isReactClass
@@ -236,6 +236,6 @@ export default function connect(arg1, arg2 = null) {
 	if (!target.shouldComponentUpdate) {
 		target.shouldComponentUpdate = reactiveMixin.shouldComponentUpdate;
 	}
-	componentClass.isMobXReactObserver = true;
+	componentClass.isMobXInfernoObserver = true;
 	return componentClass;
 }

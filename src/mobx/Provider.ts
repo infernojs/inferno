@@ -4,7 +4,7 @@ import {isNullOrUndef, toArray} from '../shared';
 
 const PropTypesAny = function () {
 };
-const specialReactKeys = {
+const specialKeys = {
 	children: true,
 	key: true,
 	ref: true
@@ -43,7 +43,7 @@ export default class Provider extends Component<any, any> {
 		}
 		// add own stores
 		for (let key in this.props) {
-			if (!specialReactKeys[key]) {
+			if (!specialKeys[key]) {
 				stores[key] = this.props[key];
 			}
 		}
@@ -60,7 +60,7 @@ if (process.env.NODE_ENV !== 'production') {
 			warning("MobX Provider: The set of provided stores has changed. Please avoid changing stores as the change might not propagate to all children");
 		}
 		for (let key in nextProps) {
-			if (!specialReactKeys[key] && this.props[key] !== nextProps[key]) {
+			if (!specialKeys[key] && this.props[key] !== nextProps[key]) {
 				warning("MobX Provider: Provided store '" + key + "' has changed. Please avoid replacing stores as the change might not propagate to all children");
 			}
 		}
