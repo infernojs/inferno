@@ -12,19 +12,17 @@
     "trailing-comma": false,
     "ordered-imports": false,
     "variable-name": [
-      false
+      "ban-keywords"
     ],
     "object-literal-sort-keys": false,
     "no-debugger": false,
-    "interface-name": [
-      false
-    ],
-    "max-line-length": [false],
+    "max-line-length": false,
     "only-arrow-functions": false,
     "member-access": [
-      false
+      "check-accessor"
     ],
     "one-variable-per-declaration": false,
+    "no-unused-expression": false,
     "no-bitwise": false
   }
 }
