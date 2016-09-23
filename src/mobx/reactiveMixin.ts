@@ -4,18 +4,17 @@ import EventEmitter from './utils/EventEmitter';
 import Component from '../component/es2015';
 import { findDOMNode } from "../DOM/rendering";
 
-/**
- * Dev tool support
- */
+// TODO: Check if DevTools actually work with Inferno
 let isDevtoolsEnabled = false;
 
-// WeakMap<Node, Object>;
+// The correct types should be WeakMap<Node, Object>;
 export const componentByNodeRegistery: WeakMap<Object, Object> = new WeakMap();
 export const renderReporter = new EventEmitter();
 
 function reportRendering (component) {
+	// TODO: Add return type to findDOMNode
 	const node = findDOMNode(component);
-	if (node && exports.componentByNodeRegistery) {
+	if (node && componentByNodeRegistery) {
 		componentByNodeRegistery.set(node, component);
 	}
 
@@ -45,7 +44,6 @@ export default {
 	componentWillMount() {
 		// Generate friendly name for debugging
 		const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || "<component>";
-		const rootNodeID = this._reactInternalInstance && this._reactInternalInstance._rootNodeID;
 		const baseRender = this.render.bind(this);
 		let reaction: Reaction;
 		let isRenderingPending = false;
@@ -66,20 +64,15 @@ export default {
 		};
 
 		const initialRender = () => {
-			reaction = new Reaction(`${initialName}#${rootNodeID}.render()`, () => {
+			reaction = new Reaction(`${initialName}.render()`, () => {
 				if (!isRenderingPending) {
-					// N.B. Getting here *before mounting* means that a component constructor has side effects (see the relevant test in misc.js)
-					// This unidiomatic Inferno usage but Inferno will correctly warn about this so we continue as usual
-					// See #85 / Pull #44
+					// N.B. Getting here *before mounting* means that a component constructor has side effects
 					isRenderingPending = true;
 					if (typeof this.componentWillReact === 'function') {
 						this.componentWillReact(); // TODO: wrap in action?
 					}
 					if (this.__$mobxIsUnmounted !== true) {
 						// If we are unmounted at this point, componentWillReact() had a side effect causing the component to unmounted
-						// TODO: remove this check? Then Inferno will properly warn about the fact that this should not happen? See #73
-						// However, people also claim this migth happen during unit tests..
-						// Inferno.Component.prototype.forceUpdate.call(this)
 						Component.prototype.forceUpdate.call(this);
 					}
 				}
@@ -122,17 +115,17 @@ export default {
 
 	shouldComponentUpdate(nextProps, nextState) {
 		// TODO: if context changed, return true.., see #18
-		// if props or state did change, but a render was scheduled already, no additional render needs to be scheduled
+		// If props or state did change, but a render was scheduled already, no additional render needs to be scheduled
 		if (this.render.$mobx && this.render.$mobx.isScheduled() === true) {
 			return false;
 		}
 
-		// update on any state changes (as is the default)
+		// Update on any state changes (as is the default)
 		if (this.state !== nextState) {
 			return true;
 		}
 
-		// update if props are shallowly not equal, inspired by PureRenderMixin
+		// Update if props are shallowly not equal, inspired by PureRenderMixin
 		const keys = Object.keys(this.props);
 		if (keys.length !== Object.keys(nextProps).length) {
 			return true;
@@ -144,13 +137,8 @@ export default {
 			if (newValue !== this.props[key]) {
 				return true;
 			} else if (newValue && typeof newValue === 'object' && !isObservable(newValue)) {
-				/**
-				 * If the newValue is still the same object, but that object is not observable,
-				 * fallback to the default Inferno behavior: update, because the object *might* have changed.
-				 * If you need the non default behavior, just use the Inferno pure render mixin, as that one
-				 * will work fine with mobx as well, instead of the default implementation of
-				 * observer.
-				 */
+				// If the newValue is still the same object, but that object is not observable,
+				// fallback to the default behavior: update, because the object *might* have changed.
 				return true;
 			}
 		}
