@@ -1,18 +1,16 @@
 import Component from '../component/es2015';
-import { warning } from './utils/warning';
-import { isNullOrUndef, toArray } from '../shared';
+import { isNullOrUndef, toArray, warning } from '../shared';
 
-const PropTypesAny = function () {
-};
+function PropTypesAny () {}
 const specialKeys = {
 	children: true,
 	key: true,
 	ref: true
 };
 
-function ChildrenOnly ( children ) {
-	if ( isNullOrUndef( children ) || toArray( children ).length !== 1 ) {
-		throw Error( 'Inferno Error: Only one child is allowed within the `Provider` component' );
+function ChildrenOnly (children) {
+	if (isNullOrUndef(children) || toArray(children).length !== 1) {
+		throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
 	}
 	return children;
 }
@@ -22,13 +20,13 @@ export default class Provider extends Component<any, any> {
 	contextTypes = { mobxStores: PropTypesAny };
 	childContextTypes = { mobxStores: PropTypesAny };
 
-	constructor ( props, context?: any ) {
-		super( props, context );
+	constructor (props?: any, context?: any) {
+		super(props, context);
 		this.store = props.store;
 	}
 
 	public render () {
-		return ChildrenOnly( this.props.children );
+		return ChildrenOnly(this.props.children);
 	}
 
 	getChildContext () {
@@ -36,15 +34,15 @@ export default class Provider extends Component<any, any> {
 		// inherit stores
 		let baseStores = this.context.mobxStores;
 
-		if ( baseStores ) {
-			for ( let key in baseStores ) {
-				stores[ key ] = baseStores[ key ];
+		if (baseStores) {
+			for (let key in baseStores) {
+				stores[key] = baseStores[key];
 			}
 		}
 		// add own stores
-		for ( let key in this.props ) {
-			if ( !specialKeys[ key ] ) {
-				stores[ key ] = this.props[ key ];
+		for (let key in this.props) {
+			if (!specialKeys[key]) {
+				stores[key] = this.props[key];
 			}
 		}
 		return {
@@ -53,16 +51,27 @@ export default class Provider extends Component<any, any> {
 	}
 }
 
-if ( process.env.NODE_ENV !== 'production' ) {
-	Provider.prototype.componentWillReceiveProps = function ( nextProps ) {
+if (process.env.NODE_ENV !== 'production') {
+	Provider.prototype.componentWillReceiveProps = function(nextProps) {
 		// Maybe this warning is to aggressive?
 		if ( Object.keys( nextProps ).length !== Object.keys( this.props ).length ) {
-			warning( "MobX Provider: The set of provided stores has changed. Please avoid changing stores as the change might not propagate to all children" );
+			warning(false, "MobX Provider: The set of provided stores has changed. Please avoid changing stores as the change might not propagate to all children" );
 		}
 		for ( let key in nextProps ) {
 			if ( !specialKeys[ key ] && this.props[ key ] !== nextProps[ key ] ) {
-				warning( "MobX Provider: Provided store '" + key + "' has changed. Please avoid replacing stores as the change might not propagate to all children" );
+				warning(false, "MobX Provider: Provided store '" + key + "' has changed. Please avoid replacing stores as the change might not propagate to all children" );
 			}
 		}
+
+		/*warning(Object.keys(nextProps).length === Object.keys(this.props).length,
+			'MobX Provider: The set of provided stores has changed. ' +
+			'Please avoid changing stores as the change might not propagate to all children'
+		);
+		for (let key in nextProps) {
+			warning(specialKeys[key] && this.props[key] === nextProps[key],
+				'MobX Provider: Provided store \'' + key + "' has changed. " +
+				'Please avoid replacing stores as the change might not propagate to all children'
+			);
+		}*/
 	};
 }
