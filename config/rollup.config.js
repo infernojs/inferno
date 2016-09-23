@@ -127,19 +127,26 @@ const bundles = [
 		path: 'packages/inferno-redux/'
 	},
 	{
+		moduleGlobal: 'InfernoMobx',
+		moduleName: 'inferno-mobx',
+		moduleEntry: 'packages/inferno-mobx/src/index.js',
+		path: 'packages/inferno-mobx/'
+	},
+	{
 		moduleGlobal: 'InfernoHyperscript',
 		moduleName: 'inferno-hyperscript',
 		moduleEntry: 'packages/inferno-hyperscript/src/index.js',
 		path: 'packages/inferno-hyperscript/'
-	}	
+	}
 ];
 
 function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
+	const pkg = getPackageJSON(moduleName);
 	const copyright =
 		'/*!\n' +
-		' * ' + moduleName + ' v' + pack.version + '\n' +
-		' * (c) ' + new Date().getFullYear() + ' ' + pack.author.name + '\n' +
-		' * Released under the ' + pack.license + ' License.\n' +
+		' * ' + moduleName + ' v' + pkg.version + '\n' +
+		' * (c) ' + new Date().getFullYear() + ' ' + pkg.author.name + '\n' +
+		' * Released under the ' + pkg.license + ' License.\n' +
 		' */';
 	const entry = p.resolve(moduleEntry);
 	const dest  = p.resolve(`${ path }${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
@@ -158,6 +165,14 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
 	return rollup({ entry, plugins }).then(({ write }) => write(bundleConfig)).catch(err => {
 		console.log(err);
 	});
+}
+
+function getPackageJSON(moduleName, defaultPackage) {
+	try {
+		return require('../packages/' + moduleName + '/package.json');
+	} catch(e) {
+		return defaultPackage
+	}
 }
 
 Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));
