@@ -131,10 +131,11 @@ const bundles = [
 		moduleName: 'inferno-hyperscript',
 		moduleEntry: 'packages/inferno-hyperscript/src/index.js',
 		path: 'packages/inferno-hyperscript/'
-	}	
+	}
 ];
 
 function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
+	const pack = getPackageJSON(moduleName, pkg);
 	const copyright =
 		'/*!\n' +
 		' * ' + moduleName + ' v' + pack.version + '\n' +
@@ -158,6 +159,14 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
 	return rollup({ entry, plugins }).then(({ write }) => write(bundleConfig)).catch(err => {
 		console.log(err);
 	});
+}
+
+function getPackageJSON(moduleName, defaultPackage) {
+	try {
+		return require('../packages/' + moduleName + '/package.json');
+	} catch(e) {
+		return defaultPackage
+	}
 }
 
 Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));
