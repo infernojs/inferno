@@ -1,31 +1,28 @@
 {
-	"extends": "tslint:latest",
-	"rules": {
-		"quotemark": [
-			"single"
-		],
+  "extends": "tslint:latest",
+  "rules": {
+    "quotemark": [
+      "single"
+    ],
 		"forin": false,
 		"no-empty": false,
-		"indent": [
-			"tabs"
-		],
-		"trailing-comma": false,
-		"ordered-imports": false,
-		"variable-name": [
-			false
-		],
-		"object-literal-sort-keys": false,
-		"no-debugger": false,
-		"interface-name": [
-			false
-		],
-		"max-line-length": false,
-		"only-arrow-functions": false,
-		"member-access": [
-			false
-		],
-		"one-variable-per-declaration": false,
-		"no-unused-expression": false,
-		"no-bitwise": false
-	}
+    "indent": [
+      "tabs"
+    ],
+    "trailing-comma": false,
+    "ordered-imports": false,
+    "variable-name": [
+      false
+    ],
+    "object-literal-sort-keys": false,
+    "no-debugger": false,
+    "max-line-length": false,
+    "only-arrow-functions": false,
+    "member-access": [
+      false
+    ],
+    "one-variable-per-declaration": false,
+    "no-unused-expression": false,
+    "no-bitwise": false
+  }
 }
