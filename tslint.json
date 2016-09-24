@@ -4,8 +4,8 @@
     "quotemark": [
       "single"
     ],
-		"forin": false,
-		"no-empty": false,
+    "forin": false,
+    "no-empty": false,
     "indent": [
       "tabs"
     ],
@@ -16,6 +16,9 @@
     ],
     "object-literal-sort-keys": false,
     "no-debugger": false,
+    "interface-name": [
+      false
+    ],
     "max-line-length": false,
     "only-arrow-functions": false,
     "member-access": [
