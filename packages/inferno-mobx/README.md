@@ -10,9 +10,6 @@
 
 This is a fork of [mobx-react](https://github.com/mobxjs/mobx-react) for [Inferno](https://github.com/trueadm/inferno)
 
-### Please wait a bit before installing this module...
-*The module is ONLY compatible with a PRE-release version of Inferno*
-
 <p>&nbsp;</p>
 <p align="center"><img src="http://infernojs.org/img/inferno.png" width="150px"></p>
 <p>&nbsp;</p>
