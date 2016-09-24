@@ -66,7 +66,7 @@ if (process.env.NODE_ENV === 'production') {
 plugins.push(filesize());
 
 const bundles = [
-	/*{
+	{
 		moduleGlobal: 'Inferno',
 		moduleName: 'inferno',
 		moduleEntry: 'packages/inferno/src/index.js',
@@ -125,19 +125,19 @@ const bundles = [
 		moduleName: 'inferno-redux',
 		moduleEntry: 'packages/inferno-redux/src/index.js',
 		path: 'packages/inferno-redux/'
-	},*/
+	},
 	{
 		moduleGlobal: 'InfernoMobx',
 		moduleName: 'inferno-mobx',
 		moduleEntry: 'packages/inferno-mobx/src/index.js',
 		path: 'packages/inferno-mobx/'
-	}/*,
+	},
 	{
 		moduleGlobal: 'InfernoHyperscript',
 		moduleName: 'inferno-hyperscript',
 		moduleEntry: 'packages/inferno-hyperscript/src/index.js',
 		path: 'packages/inferno-hyperscript/'
-	}*/
+	}
 ];
 
 function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
