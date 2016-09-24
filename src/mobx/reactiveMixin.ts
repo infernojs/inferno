@@ -119,18 +119,18 @@ export default {
 	},
 
 	shouldComponentUpdate(nextProps, nextState) {
-		// TODO: if context changed, return true.., see #18
-		// if props or state did change, but a render was scheduled already, no additional render needs to be scheduled
+		// TODO: if context changed, return true..
+		// If props or state did change, but a render was scheduled already, no additional render needs to be scheduled
 		if (this.render.$mobx && this.render.$mobx.isScheduled() === true) {
 			return false;
 		}
 
-		// update on any state changes (as is the default)
+		// Update on any state changes (as is the default)
 		if (this.state !== nextState) {
 			return true;
 		}
 
-		// update if props are shallowly not equal, inspired by PureRenderMixin
+		// Update if props are shallowly not equal, inspired by PureRenderMixin
 		const keys = Object.keys(this.props);
 		if (keys.length !== Object.keys(nextProps).length) {
 			return true;
