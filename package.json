@@ -30,7 +30,7 @@
     "chai": "^3.5.0",
     "concat-stream": "^1.5.1",
     "coveralls": "^2.11.12",
-    "cross-env": "^2.0.1",
+    "cross-env": "^3.0.0",
     "eslint": "^3.4.0",
     "eslint-plugin-babel": "^3.3.0",
     "glob": "^7.0.6",
