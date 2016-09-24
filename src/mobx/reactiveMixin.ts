@@ -4,10 +4,12 @@ import EventEmitter from './utils/EventEmitter';
 import Component from '../component/es2015';
 import { findDOMNode } from "../DOM/rendering";
 
-// TODO: Check if DevTools actually work with Inferno
+/**
+ * Dev tools support
+ */
 let isDevtoolsEnabled = false;
 
-// The correct types should be WeakMap<Node, Object>;
+// WeakMap<Node, Object>;
 export const componentByNodeRegistery: WeakMap<Object, Object> = new WeakMap();
 export const renderReporter = new EventEmitter();
 
@@ -44,6 +46,7 @@ export default {
 	componentWillMount() {
 		// Generate friendly name for debugging
 		const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || "<component>";
+		const rootNodeID = this._reactInternalInstance && this._reactInternalInstance._rootNodeID;
 		const baseRender = this.render.bind(this);
 		let reaction: Reaction;
 		let isRenderingPending = false;
@@ -64,7 +67,7 @@ export default {
 		};
 
 		const initialRender = () => {
-			reaction = new Reaction(`${initialName}.render()`, () => {
+			reaction = new Reaction(`${initialName}#${rootNodeID}.render()`, () => {
 				if (!isRenderingPending) {
 					// N.B. Getting here *before mounting* means that a component constructor has side effects
 					isRenderingPending = true;
@@ -73,6 +76,8 @@ export default {
 					}
 					if (this.__$mobxIsUnmounted !== true) {
 						// If we are unmounted at this point, componentWillReact() had a side effect causing the component to unmounted
+						// TODO: remove this check? Then Inferno will properly warn about the fact that this should not happen? See #73
+						// However, people also claim this migth happen during unit tests..
 						Component.prototype.forceUpdate.call(this);
 					}
 				}
@@ -115,17 +120,17 @@ export default {
 
 	shouldComponentUpdate(nextProps, nextState) {
 		// TODO: if context changed, return true.., see #18
-		// If props or state did change, but a render was scheduled already, no additional render needs to be scheduled
+		// if props or state did change, but a render was scheduled already, no additional render needs to be scheduled
 		if (this.render.$mobx && this.render.$mobx.isScheduled() === true) {
 			return false;
 		}
 
-		// Update on any state changes (as is the default)
+		// update on any state changes (as is the default)
 		if (this.state !== nextState) {
 			return true;
 		}
 
-		// Update if props are shallowly not equal, inspired by PureRenderMixin
+		// update if props are shallowly not equal, inspired by PureRenderMixin
 		const keys = Object.keys(this.props);
 		if (keys.length !== Object.keys(nextProps).length) {
 			return true;
