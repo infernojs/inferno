@@ -396,7 +396,6 @@ function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, shallow
     if (!shallowUnmount) {
         var instance = vComponent.instance;
         var instanceHooks = null;
-        var instanceChildren = null;
         vComponent.unmounted = true;
         if (!isNullOrUndef(instance)) {
             var ref = vComponent.ref;
@@ -404,7 +403,6 @@ function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, shallow
                 ref(null);
             }
             instanceHooks = instance.hooks;
-            instanceChildren = instance.children;
             if (instance.render !== undefined) {
                 instance.componentWillUnmount();
                 instance._unmounted = true;
