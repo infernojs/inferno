@@ -1,31 +1,18 @@
 {
-  "extends": "tslint:latest",
-  "rules": {
-    "quotemark": [
-      "single"
-    ],
-    "forin": false,
-    "no-empty": false,
-    "indent": [
-      "tabs"
-    ],
-    "trailing-comma": false,
-    "ordered-imports": false,
-    "variable-name": [
-      false
-    ],
-    "object-literal-sort-keys": false,
-    "no-debugger": false,
-    "interface-name": [
-      false
-    ],
-    "max-line-length": false,
-    "only-arrow-functions": false,
-    "member-access": [
-      false
-    ],
-    "one-variable-per-declaration": false,
-    "no-unused-expression": false,
-    "no-bitwise": false
-  }
+	"compilerOptions": {
+		"target": "es6",
+		"module": "es2015",
+		"allowJs": true,
+    "allowSyntheticDefaultImports": true,
+		"sourceMap": true,
+		"lib": [
+			"es6",
+			"es7",
+			"dom"
+		],
+		"jsx": "preserve",
+		"noUnusedLocals": true,
+		"strictNullChecks": false,
+		"removeComments": false
+	}
 }
