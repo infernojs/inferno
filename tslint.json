@@ -12,14 +12,17 @@
     "trailing-comma": false,
     "ordered-imports": false,
     "variable-name": [
-      "ban-keywords"
+			false
     ],
     "object-literal-sort-keys": false,
     "no-debugger": false,
+		"interface-name": [
+			false
+		],
     "max-line-length": false,
     "only-arrow-functions": false,
     "member-access": [
-      "check-accessor"
+      false
     ],
     "one-variable-per-declaration": false,
     "no-unused-expression": false,
