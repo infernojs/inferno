@@ -6,7 +6,7 @@ end_of_line = lf
 insert_final_newline = true
 
 # Tab indentation
-[*.{js,ts,json}]
+[*.{js,ts}]
 indent_style = tab
 indent_size = 2
 
