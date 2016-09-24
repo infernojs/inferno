@@ -1,10 +1,18 @@
 import Component from '../component/es2015';
 import { warning, shallowEqual, wrapActionCreators } from './utils';
 import { isFunction } from '../shared';
-import { createVComponent } from '../core/shapes';
+import { createVComponent, IProps } from '../core/shapes';
 import hoistStatics from 'hoist-non-inferno-statics';
 import invariant from 'invariant';
 import isPlainObject from 'lodash/isPlainObject';
+
+export interface WrapWithConnect {
+	(WrappedComponent: Component<any, any>): void;
+}
+
+export interface MapStateToProps {
+	(state: {[index: string]: any}, props: IProps): {[index: string]: any};
+}
 
 const errorObject = { value: null };
 const defaultMapStateToProps = state => ({}); // eslint-disable-line no-unused-vars
@@ -31,7 +39,9 @@ function getDisplayName(WrappedComponent) {
 // Helps track hot reloading.
 let nextVersion = 0;
 
-export default function connect(mapStateToProps, mapDispatchToProps, mergeProps, options = {}) {
+export default function connect(
+	mapStateToProps?: MapStateToProps, mapDispatchToProps?, mergeProps?, options = {}
+): WrapWithConnect {
 	const shouldSubscribe = Boolean(mapStateToProps);
 	const mapState = mapStateToProps || defaultMapStateToProps;
 	let mapDispatch;

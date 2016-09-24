@@ -1,6 +1,6 @@
 /*!
  * inferno-hyperscript v1.0.0-beta1
- * (c) 2016 Dominic Gannaway
+ * (c) 2016 undefined
  * Released under the MIT License.
  */
 (function (global, factory) {

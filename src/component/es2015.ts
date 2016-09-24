@@ -181,7 +181,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	getChildContext() {
 	}
 
-	_updateComponent(prevState: S, nextState: S, prevProps: P, nextProps: P & {children: any}, context: any, force: boolean): any {
+	_updateComponent(prevState: S, nextState: S, prevProps: P & {children: any}, nextProps: P & {children: any}, context: any, force: boolean): any {
 		if (this._unmounted === true) {
 			throw new Error('You can\'t update an unmounted component!');
 		}

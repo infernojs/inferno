@@ -2383,4 +2383,33 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div>bar</div>');
 		});
 	});
+
+	describe('Support Arrays from Components', () => {
+		class RetChildren extends Component {
+			render() {
+				return this.props.children;
+			}
+		}
+
+		class RetArray extends Component {
+			render() {
+				return [
+					this.props.foo
+				]
+			}
+		}
+
+		it('Should be able to mount with array', () => {
+			debugger;
+			render(<RetArray />, container);
+			expect(container.innerHTML).to.equal('');
+			render(null, container);
+		});
+
+		it('Should be able to mount with array', () => {
+			debugger;
+			render(<RetArray foo={<div></div>} />, container);
+			expect(container.innerHTML).to.equal('<div></div>');
+		});
+	});
 });
