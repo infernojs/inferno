@@ -1,5 +1,5 @@
-import { isStringOrNumber, isNullOrUndef, isArray } from '../shared';
 import { isVNode } from '../core/shapes';
+import { isStringOrNumber, isNullOrUndef, isArray } from '../shared';
 
 const comparer = document.createElement('div');
 
@@ -70,7 +70,7 @@ export function validateNodeTree(node) {
 	const v1 = node._v1;
 
 	if (!isNullOrUndef(v1)) {
-		debugger;
+		debugger; // eslint-disable-line no-debugger
 	}
 	return true;
 }
