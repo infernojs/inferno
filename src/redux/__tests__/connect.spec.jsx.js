@@ -51,6 +51,7 @@ describe('connect', () => {
 		handleClick() {
 			this.props.action();
 		}
+
 		render() {
 			return (
 				<a onClick={this.handleClick.bind(this)}>{this.props.test}</a>
@@ -77,23 +78,73 @@ describe('connect', () => {
 	});
 
 	it('should have correct mapDispatchToProps', () => {
-		const store = createStore((state = {test:1}, action) => {
+		const store = createStore((state = {test: 1}, action) => {
 			if (action && action.type === 'TEST_ACTION') {
 				return {test: 2};
 			}
 			return state;
 		});
 		const mapDispatchToProps = dispatch => {
-			return {action: () => {
-				dispatch({type: 'TEST_ACTION'});
-			}}
+			return {
+				action: () => {
+					dispatch({type: 'TEST_ACTION'});
+				}
+			}
 		};
 		const mapStateToProps = state => state;
 		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent1);
 		store.subscribe(() => {
 			render(<ConnectedComponent store={store}/>, container);
 		});
-		store.dispatch({type:''});
+		store.dispatch({type: ''});
+		expect(container.innerHTML).to.equal('<a>1</a>');
+		container.querySelector('a').click();
+		expect(container.innerHTML).to.equal('<a>2</a>');
+	});
+
+	it('should have correct mapDispatchToProps', () => {
+		const store = createStore((state = {test: 1}, action) => {
+			if (action && action.type === 'TEST_ACTION') {
+				return {test: 2};
+			}
+			return state;
+		});
+		const mapDispatchToProps = dispatch => {
+			return {
+				action: () => {
+					dispatch({type: 'TEST_ACTION'});
+				}
+			}
+		};
+		const mapStateToProps = state => state;
+		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent1);
+		store.subscribe(() => {
+			render(<ConnectedComponent store={store}/>, container);
+		});
+		store.dispatch({type: ''});
+		expect(container.innerHTML).to.equal('<a>1</a>');
+		container.querySelector('a').click();
+		expect(container.innerHTML).to.equal('<a>2</a>');
+	});
+
+	it('should have correct mapDispatchToProps using action creators map', () => {
+		const store = createStore((state = {test: 1}, action) => {
+			if (action && action.type === 'TEST_ACTION') {
+				return {test: 2};
+			}
+			return state;
+		});
+		const mapDispatchToProps = {
+			action: () => {
+				return {type: 'TEST_ACTION'};
+			}
+		};
+		const mapStateToProps = state => state;
+		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent1);
+		store.subscribe(() => {
+			render(<ConnectedComponent store={store}/>, container);
+		});
+		store.dispatch({type: ''});
 		expect(container.innerHTML).to.equal('<a>1</a>');
 		container.querySelector('a').click();
 		expect(container.innerHTML).to.equal('<a>2</a>');
