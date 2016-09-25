@@ -31,7 +31,7 @@ function renderComponentToString(vComponent, isRoot, context) {
 		// Block setting state - we should render only once, using latest state
 		instance._pendingSetState = true;
 		instance.componentWillMount();
-		const node = instance.render();
+		const node = instance.render(props, vComponent.context);
 
 		instance._pendingSetState = false;
 		return renderInputToString(node, context, isRoot);
