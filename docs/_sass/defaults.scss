@@ -1,0 +1,16 @@
+html {
+  font-family: 'Montserrat', -apple-system, sans-serif;
+  font-size: 16px;
+}
+
+body {
+  background-color: $c_default_white;
+  height: 100vh;
+  width: 100vw;
+}
+
+.container {
+  display: block;
+  width: 90%;
+  margin: 0 auto;
+}

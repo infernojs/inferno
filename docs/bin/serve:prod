@@ -1,3 +1,0 @@
-#!/bin/bash
-
-jekyll s -P 8080 -H localhost

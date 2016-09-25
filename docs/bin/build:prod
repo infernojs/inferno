@@ -1,3 +1,0 @@
-#!/bin/bash
-
-jekyll build -t -V -b http://www.infernojs.org
