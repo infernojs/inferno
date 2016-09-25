@@ -140,7 +140,7 @@
     "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
-    "prepublish": "npm run clean && npm run build:prod",
+    "prepublish": "npm run build",
     "browser": "webpack-dev-server --quiet --config config/webpack.dev.conf.js"
   },
   "pre-commit": [
