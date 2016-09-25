@@ -6,8 +6,8 @@ const noOp = 'Inferno Error: Can only update a mounted or mounting component. Th
 const componentCallbackQueue = new Map();
 
 export interface ComponentLifecycle<P, S> {
+	componentDidMount?: () => void;
 	componentWillMount?(): void;
-	componentDidMount?(): void;
 	componentWillReceiveProps?(nextProps: P, nextContext: any): void;
 	shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
 	componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
@@ -107,7 +107,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	refs: any = {};
 	props: P & {children: any};
 	context: S;
-	componentDidMount;
+	componentDidMount: any;
 	_processingSetState = false;
 	_blockRender = false;
 	_blockSetState = false;

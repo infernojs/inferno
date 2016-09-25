@@ -14,6 +14,16 @@ export interface MapStateToProps {
 	(state: {[index: string]: any}, props: IProps): {[index: string]: any};
 }
 
+export interface MapDispatchToPropsFunction {
+	(dispatch: (action: any) => void, props?: IProps) : {[index: string]: () => any};
+}
+
+export interface MapDispatchToPropsFactory {
+	(dispatch: (action: any) => void, props?: IProps) : MapDispatchToPropsFunction;
+}
+
+type MapDispatchToProps = MapDispatchToPropsFunction | {[index: string]: MapDispatchToPropsFunction} | MapDispatchToPropsFactory;
+
 const errorObject = { value: null };
 const defaultMapStateToProps = state => ({}); // eslint-disable-line no-unused-vars
 const defaultMapDispatchToProps = dispatch => ({ dispatch });
@@ -40,7 +50,7 @@ function getDisplayName(WrappedComponent) {
 let nextVersion = 0;
 
 export default function connect(
-	mapStateToProps?: MapStateToProps, mapDispatchToProps?, mergeProps?, options = {}
+	mapStateToProps?: MapStateToProps, mapDispatchToProps?: MapDispatchToProps, mergeProps?, options: any = {}
 ): WrapWithConnect {
 	const shouldSubscribe = Boolean(mapStateToProps);
 	const mapState = mapStateToProps || defaultMapStateToProps;
@@ -79,7 +89,7 @@ export default function connect(
 			return mergedProps;
 		}
 
-		class Connect extends Component {
+		class Connect extends Component<any, any> {
 			static displayName: any;
 			static WrappedComponent: any;
 			version: any;
@@ -103,6 +113,9 @@ export default function connect(
 
 				this.version = version;
 				this.store = (props && props.store) || (context && context.store);
+				this.componentDidMount = () => {
+					this.trySubscribe();
+				};
 
 				invariant(this.store,
 					'Could not find "store" in either the context or ' +
@@ -215,10 +228,6 @@ export default function connect(
 					this.unsubscribe();
 					this.unsubscribe = null;
 				}
-			}
-
-			componentDidMount() {
-				this.trySubscribe();
 			}
 
 			componentWillReceiveProps(nextProps) {
