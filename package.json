@@ -49,6 +49,7 @@
     "karma-webpack": "^1.8.0",
     "lodash": "^4.16.1",
     "mkdirp": "^0.5.1",
+    "mobx": "^2.5.1",
     "mocha": "^3.0.2",
     "mocha-lcov-reporter": "^1.2.0",
     "most": "^1.0.3",

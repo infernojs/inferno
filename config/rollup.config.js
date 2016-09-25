@@ -127,6 +127,12 @@ const bundles = [
 		path: 'packages/inferno-redux/'
 	},
 	{
+		moduleGlobal: 'InfernoMobx',
+		moduleName: 'inferno-mobx',
+		moduleEntry: 'packages/inferno-mobx/src/index.js',
+		path: 'packages/inferno-mobx/'
+	},
+	{
 		moduleGlobal: 'InfernoHyperscript',
 		moduleName: 'inferno-hyperscript',
 		moduleEntry: 'packages/inferno-hyperscript/src/index.js',
