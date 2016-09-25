@@ -37,7 +37,6 @@ function connect (arg1: string | any, arg2 = null): any {
 		&& !componentClass.isReactClass
 		&& !Component.isPrototypeOf(componentClass)
 	) {
-
 		const newClass = createClass({
 			displayName: componentClass.displayName || componentClass.name,
 			propTypes: componentClass.propTypes,

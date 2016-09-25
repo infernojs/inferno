@@ -98,25 +98,25 @@
     "browser",
     "rollup"
   ],
-	"nyc": {
-		"include": [
-			"src/*.ts",
-			"src/**/*.ts"
-		],
-		"exclude": [
-			"typings"
-		],
-		"extension": [
-			".ts"
-		],
-		"require": [
-			"ts-node/register"
-		],
-		"reporter": [
-			"json",
-			"html"
-		]
-	},
+  "nyc": {
+    "include": [
+      "src/*.ts",
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "typings"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "json",
+      "html"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/trueadm/inferno.git"
@@ -128,7 +128,7 @@
     "build:prod": "cross-env NODE_ENV=production babel-node --presets es2015 config/rollup.config.js",
     "test": "npm run test:browser",
     "test:browser": "karma start config/karma.conf.js",
-    "test:server": "cross-env TS_NODE_COMPILER_OPTIONS='{\"target\":\"es5\",\"module\":\"commonjs\"}' mocha --recursive --bail --opts config/mocha.opts",
+    "test:server": "mocha --recursive --bail --opts config/mocha.opts",
     "server:cov": "cross-env TS_NODE_COMPILER_OPTIONS='{\"target\":\"es5\",\"module\":\"commonjs\"}' nyc --reporter=lcov --reporter=text mocha --compilers ts:ts-node/register,js:babel-register --recursive src/**/__tests__/*  --opts config/mocha.opts",
     "server:cov:publish": "npm run server:cov && coveralls < coverage/lcov.info && rimraf coverage",
     "eslint:source": "eslint ./src/**/*.js",

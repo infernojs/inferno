@@ -9,8 +9,7 @@ import { findDOMNode } from "../DOM/rendering";
  */
 let isDevtoolsEnabled = false;
 
-// WeakMap<Node, Object>;
-export const componentByNodeRegistery: WeakMap<Object, Object> = new WeakMap();
+export const componentByNodeRegistery: WeakMap<Node, Object> = new WeakMap();
 export const renderReporter = new EventEmitter();
 
 function reportRendering (component) {
@@ -66,7 +65,7 @@ export default {
 			return rendering;
 		};
 
-		const initialRender = () => {
+		const initialRender = (nextProps, nextContext) => {
 			reaction = new Reaction(`${initialName}#${rootNodeID}.render()`, () => {
 				if (!isRenderingPending) {
 					// N.B. Getting here *before mounting* means that a component constructor has side effects
@@ -84,6 +83,10 @@ export default {
 			});
 			reactiveRender.$mobx = reaction;
 			this.render = reactiveRender;
+
+			// Inject props & state
+			// TODO: Check if this is the correct/fast way
+			baseRender.apply(baseRender, [nextProps, nextContext]);
 			return reactiveRender();
 		};
 
