@@ -3,12 +3,15 @@
 		"target": "es6",
 		"module": "es2015",
 		"allowJs": true,
-    "allowSyntheticDefaultImports": true,
+		"allowSyntheticDefaultImports": true,
 		"sourceMap": true,
 		"lib": [
 			"es6",
 			"es7",
 			"dom"
+		],
+		"types": [
+			"node"
 		],
 		"jsx": "preserve",
 		"noUnusedLocals": true,
