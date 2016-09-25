@@ -1,0 +1,36 @@
+.indexPage_landing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  color: $c_text_light;
+
+  .indexPageLanding_nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: stretch;
+    margin: 25px 0;
+
+    > li {
+      font-size: 18px;
+      list-style: none;
+      list-style-type: none;
+    }
+
+    > * {
+      margin: 0 10px;
+    }
+  }
+
+  .indexPageLanding_image {
+    height: 25%;
+    max-height: 150px;
+    margin: 50px 0;
+  }
+
+  .indexPageLanding_link {
+    font-size: 2em;
+  }
+}

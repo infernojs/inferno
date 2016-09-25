@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <!-- Set default page meta -->
+    {% if page.title %}
+      {% assign title = page.title %}
+    {% else %} 
+      {% assign title = site.name %}
+    {% endif %}
+    
+    <!-- Page Display Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>
+      {{ title }} | Inferno
+    </title>
+
+    <!-- Social Links -->
+    <meta name="viewport" content="width=device-width">
+    <meta property="og:title" content="{{ title }} | Inferno">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+    <meta property="og:image" content="{{ site.url }}/static/img/inferno.png">
+    <meta property="og:description" content="{{ site.description }}">
+
+    <link 
+      rel="alternate" 
+      type="application/rss+xml" 
+      title="{{ site.name }}" 
+      href="{{ site.url }}/feed.xml"
+    />
+    <link 
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link 
+      href="{{ site.url }}/css/inferno.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body>
+    {{ content }}
+  </body>
+</html>

@@ -1,0 +1,19 @@
+name: Inferno
+description: > # An extremely fast, React-like JavaScript library for building modern user interfaces
+url: http://www.infernojs.org
+
+# Defaults
+defaults:
+- scope:
+    path: ''
+    type: pages
+  values:
+    layout: page
+
+# Build settings
+markdown: kramdown 
+exclude:
+- Gemfile
+- Gemfile.lock
+- Rakefile
+- README.md

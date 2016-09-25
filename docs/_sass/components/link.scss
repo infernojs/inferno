@@ -1,0 +1,13 @@
+a {
+  color: $c_text_light;
+  text-decoration: none;
+  cursor: pointer;
+
+  * {
+    cursor: pointer;
+  }
+
+  &:hover {
+    color: $c_text_default;
+  }
+}
