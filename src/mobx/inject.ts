@@ -13,7 +13,7 @@ function createStoreInjector (grabStoresFn, component) {
 	const Injector: any = createClass({
 		displayName: 'MobXStoreInjector',
 		render() {
-			const newProps = <IProps>{};
+			const newProps = <IProps> {};
 			for (let key in this.props) {
 				if (this.props.hasOwnProperty(key)) {
 					newProps[key] = this.props[key];
@@ -31,7 +31,7 @@ function createStoreInjector (grabStoresFn, component) {
 		}
 	});
 
-	Injector.contextTypes = { mobxStores(){} };
+	Injector.contextTypes = { mobxStores() {} };
 	Injector.wrappedComponent = component;
 	hoistStatics(Injector, component);
 
@@ -56,7 +56,7 @@ const grabStoresByName = (storeNames) => (baseStores, nextProps) => {
 		nextProps[storeName] = baseStores[storeName];
 	});
 	return nextProps;
-}
+};
 
 /**
  * Higher order component that injects stores to a child.

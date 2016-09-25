@@ -15,7 +15,7 @@ const lifecycleMethods = [
  * Wraps a component and provides stores as props
  */
 function connect (arg1: string | any, arg2 = null): any {
-	invariant(typeof arg1 !== 'string', 'Store names should be provided as array')
+	invariant(typeof arg1 !== 'string', 'Store names should be provided as array');
 
 	if (Array.isArray(arg1)) {
 		// component needs stores
@@ -44,12 +44,12 @@ function connect (arg1: string | any, arg2 = null): any {
 			contextTypes: componentClass.contextTypes,
 			getDefaultProps: () => componentClass.defaultProps,
 			render: () => componentClass.call(this, this.props, this.context)
-		})
+		});
 
 		return connect(newClass);
 	}
 
-	invariant(componentClass, 'Please pass a valid component to "observer"')
+	invariant(componentClass, 'Please pass a valid component to "observer"');
 
 	const target = componentClass.prototype || componentClass;
 

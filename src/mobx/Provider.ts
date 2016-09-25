@@ -8,9 +8,9 @@ const specialKeys = {
 };
 
 export default class Provider extends Component<any, any> {
+	contextTypes: any = { mobxStores() {} };
+	childContextTypes: any = { mobxStores() {} };
 	private store: any;
-	contextTypes = { mobxStores(){} };
-	childContextTypes = { mobxStores(){} };
 
 	constructor (props?: any, context?: any) {
 		super(props, context);
