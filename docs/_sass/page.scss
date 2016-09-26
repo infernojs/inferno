@@ -1,0 +1,34 @@
+.page {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidenav {
+  width: 33%;
+}
+
+.topNav {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  margin: 25px 0;
+
+  > li {
+    font-size: 18px;
+    list-style: none;
+    list-style-type: none;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-left: 0;
+    }
+  }
+
+  > * {
+    margin: 0 10px;
+  }
+}

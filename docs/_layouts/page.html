@@ -1,6 +1,14 @@
 ---
 layout: default
 ---
-<div>
- {{ content }}
+
+<div class="page">
+  {% include sidenav.html %}
+  <section>
+    <header>
+      {% include topnav.html %}
+      <article>
+        {{ content }}
+      </article>
+  </section>
 </div>
