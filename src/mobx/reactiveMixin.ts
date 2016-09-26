@@ -52,7 +52,7 @@ export default {
 
 		const initialRender = (nextProps, nextContext) => {
 			// Inject props & state
-			const enhancedRender = baseRender.bind(this, nextProps, nextContext);
+			const enhancedRender = () => baseRender(nextProps, nextContext);
 			const reactiveRender: IReactiveRender = () => {
 				isRenderingPending = false;
 				let rendering = undefined;
