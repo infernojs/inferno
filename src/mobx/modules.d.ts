@@ -1,11 +1,13 @@
 declare module 'inferno-component' {
-	export default class Component<P, S> {
-		props?: P;
-		context?: S;
-		constructor (props?: P, context?: S);
-		componentWillReceiveProps?(nextProps: P, nextContext: S): void;
-		forceUpdate();
+	class Component<any, any> {
+		props?: any;
+		context?: any;
+		constructor (props?: any, context?: any);
+		componentWillReceiveProps? (nextProps: any, nextContext: any): void;
+		forceUpdate (): void;
+		isPrototypeOf (v: Object): boolean;
 	}
+	export default Component;
 }
 
 declare module 'inferno-dom' {
