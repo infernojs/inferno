@@ -1,4 +1,3 @@
-import invariant from 'invariant';
 import { isObservable, Reaction, extras } from 'mobx';
 import EventEmitter from './utils/EventEmitter';
 import Component from 'inferno-component';
@@ -26,14 +25,6 @@ function reportRendering (component) {
 		component,
 		node
 	});
-}
-
-export function trackComponents () {
-	invariant(typeof WeakMap !== 'undefined', '[inferno-mobx] tracking components is not supported in this browser.');
-
-	if (!isDevtoolsEnabled) {
-		isDevtoolsEnabled = true;
-	}
 }
 
 interface IReactiveRender {
