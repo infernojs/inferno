@@ -1,16 +1,34 @@
-html {
-  font-family: 'Montserrat', -apple-system, sans-serif;
-  font-size: 16px;
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: $text_size;
+  color: $text_color;
+  line-height: $line_height;
 }
 
-body {
-  background-color: $c_default_white;
-  height: 100vh;
-  width: 100vw;
+h1 {
+  font-size: $h1_size;
+  color: $h1_color;
+  line-height: $h1_line_height;
+  margin: 0;
+}
+
+h3 {
+  font-size: $h3_size;
+  color: $h3_color;
+  line-height: $h3_line_height;
+  margin: 0;
+}
+
+ul {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-  display: block;
-  width: 90%;
+  width: 1024px;
+  height: auto;
   margin: 0 auto;
+  padding: 0 50px;
 }

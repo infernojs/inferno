@@ -1,36 +1,56 @@
-.indexPage_landing {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
+.landing-banner {
+  display: block;
+  width: 100%;
+  height: 510px;
+  background-image: url('../static/img/banner_bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  margin-bottom: 50px;
+  overflow: hidden;
+}
+
+#logo {
+  width: 94px;
+  height: 96px;
+  background-image: url('../static/img/inferno.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 100px auto 30px;
+}
+
+.tagline {
+  width: 428px;
+  font-size: 22px;
   text-align: center;
-  color: $c_text_light;
+  line-height: 30px;
+  margin: 0 auto 25px;
+}
 
-  .indexPageLanding_nav {
-    display: flex;
-    flex-direction: row;
-    justify-content: stretch;
-    align-items: stretch;
-    margin: 25px 0;
+.button-enclose {
+  width: 148.09px;
+  margin: 0 auto;
+  overflow: hidden;
+}
 
-    > li {
-      font-size: 18px;
-      list-style: none;
-      list-style-type: none;
+.link-button {
+  float: left;
+}
+
+.key-features {
+  li {
+    float: left;
+    width: 25%;
+
+    .kf-icon {
+      float: left;
+      margin: 4px 10px 0 0;
     }
 
-    > * {
-      margin: 0 10px;
+    .kf-desc {
+      width: 190px;
+      margin: 12px 10px 10px 32px;
+      clear: both;
     }
-  }
-
-  .indexPageLanding_image {
-    height: 25%;
-    max-height: 150px;
-    margin: 50px 0;
-  }
-
-  .indexPageLanding_link {
-    font-size: 2em;
   }
 }

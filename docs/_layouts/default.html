@@ -3,10 +3,10 @@
     <!-- Set default page meta -->
     {% if page.title %}
       {% assign title = page.title %}
-    {% else %} 
+    {% else %}
       {% assign title = site.name %}
     {% endif %}
-    
+
     <!-- Page Display Meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -22,24 +22,37 @@
     <meta property="og:image" content="{{ site.url }}/static/img/inferno.png">
     <meta property="og:description" content="{{ site.description }}">
 
-    <link 
-      rel="alternate" 
-      type="application/rss+xml" 
-      title="{{ site.name }}" 
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="{{ site.name }}"
       href="{{ site.url }}/feed.xml"
     />
-    <link 
-      href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+    <link
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600"
       rel="stylesheet"
       type="text/css"
     />
-    <link 
-      href="{{ site.url }}/css/inferno.css"
+    <link
+      href="/css/inferno.css"
       rel="stylesheet"
       type="text/css"
     />
   </head>
   <body>
+    <div class="landing-banner">
+      <nav>
+        <a href="/get-started">Get Started</a>
+        <a href="/learning-resources">Learning Resources</a>
+        <a href="/benefits">Benefits</a>
+        <a href="/help">Help</a>
+      </nav>
+      <div id="logo"></div>
+      <div class="tagline">An extremely fast, React-like Javascript library for building modern user interfaces.</div>
+      <div class="button-enclose">
+        <a href="/get-started" class="link-button">Get Started</a>
+      </div>
+    </div>
     {{ content }}
   </body>
 </html>

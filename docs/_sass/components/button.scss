@@ -1,7 +1,9 @@
-button {
-  padding: 7px 10px;
-  border: 0;
-  background-color: $c_brand_green;
-  border-radius: $l_border_radius;
-  color: $c_text_lighter;
+.link-button {
+  background: $button_color;
+  font-size: $button_text_size;
+  color: $button_text_color;
+  line-height: $button_text_line_height;
+  text-decoration: none;
+  border-radius: $button_border_radius;
+  padding: $button_padding;
 }
