@@ -50,22 +50,24 @@ export default {
 		let reaction: Reaction;
 		let isRenderingPending = false;
 
-		const reactiveRender: IReactiveRender = () => {
-			isRenderingPending = false;
-			let rendering = undefined;
-			reaction.track(() => {
-				if (isDevtoolsEnabled) {
-					this.__$mobRenderStart = Date.now();
-				}
-				rendering = extras.allowStateChanges(false, baseRender);
-				if (isDevtoolsEnabled) {
-					this.__$mobRenderEnd = Date.now();
-				}
-			});
-			return rendering;
-		};
-
 		const initialRender = (nextProps, nextContext) => {
+			// Inject props & state
+			const enhancedRender = () => baseRender(nextProps, nextContext);
+			const reactiveRender: IReactiveRender = () => {
+				isRenderingPending = false;
+				let rendering = undefined;
+				reaction.track(() => {
+					if (isDevtoolsEnabled) {
+						this.__$mobRenderStart = Date.now();
+					}
+					rendering = extras.allowStateChanges(false, enhancedRender);
+					if (isDevtoolsEnabled) {
+						this.__$mobRenderEnd = Date.now();
+					}
+				});
+				return rendering;
+			};
+
 			reaction = new Reaction(`${initialName}#${rootNodeID}.render()`, () => {
 				if (!isRenderingPending) {
 					// N.B. Getting here *before mounting* means that a component constructor has side effects
@@ -83,10 +85,6 @@ export default {
 			});
 			reactiveRender.$mobx = reaction;
 			this.render = reactiveRender;
-
-			// Inject props & state
-			// TODO: Check if this is the correct/fast way
-			baseRender.apply(baseRender, [nextProps, nextContext]);
 			return reactiveRender();
 		};
 

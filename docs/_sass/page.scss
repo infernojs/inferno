@@ -1,0 +1,43 @@
+.page {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidenav {
+  flex-basis: 25%;
+  flex-grow: 0.25;
+  padding: 0 15px;
+  border-right: 2px solid rgba($c_brand_red, 0.45);
+  background-color: rgba(#FEF8EC, 0.75);
+}
+
+.mainContent {
+  flex-grow: 0.75;
+  flex-basis: 75%;
+}
+
+.topNav {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  margin: 25px 0;
+
+  > li {
+    font-size: 18px;
+    list-style: none;
+    list-style-type: none;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-left: 0;
+    }
+  }
+
+  > * {
+    margin: 0 10px;
+  }
+}
