@@ -1,9 +1,9 @@
 declare module 'inferno-component' {
-	export = class Component<any, any> {
+	export = class Component<props, context> {
 		public props;
 		public context;
-		constructor(props?, context?);
-		componentWillReceiveProps();
+		constructor(props?: any, context?: any);
+		componentWillReceiveProps(nextProps?: any);
 		forceUpdate();
 	};
 }

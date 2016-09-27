@@ -9,7 +9,7 @@ import InfernoDOM from 'inferno-dom';
  */
 let isDevtoolsEnabled = false;
 
-export const componentByNodeRegistery: WeakMap<Object, Object> = new WeakMap();
+export const componentByNodeRegistery: WeakMap<any, any> = new WeakMap();
 export const renderReporter = new EventEmitter();
 
 function reportRendering (component) {
