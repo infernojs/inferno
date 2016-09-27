@@ -1,11 +1,14 @@
+class Component<props, context> {
+	public props?: any;
+	public context?: any;
+	constructor(props?: any, context?: any)
+	componentWillReceiveProps(nextProps?: any)
+	forceUpdate()
+	isPrototypeOf(target: any): boolean
+}
+
 declare module 'inferno-component' {
-	export = class Component<props, context> {
-		public props;
-		public context;
-		constructor(props?: any, context?: any)
-		componentWillReceiveProps(nextProps?: any)
-		forceUpdate()
-	};
+	export = Component;
 }
 
 declare module 'inferno-dom' {
