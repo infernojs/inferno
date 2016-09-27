@@ -1,12 +1,11 @@
 declare module 'inferno-component' {
-	interface Component<P, S> {
-		props?: any;
-		context?: any;
-		new (props?: any, context?: any);
+	export default class Component<P, S> {
+		props?: P;
+		context?: S;
+		constructor (props?: P, context?: S);
 		componentWillReceiveProps?(nextProps: P, nextContext: S): void;
 		forceUpdate();
 	}
-	export = Component;
 }
 
 declare module 'inferno-dom' {
