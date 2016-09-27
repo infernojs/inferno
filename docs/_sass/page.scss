@@ -4,7 +4,16 @@
 }
 
 .sidenav {
-  width: 33%;
+  flex-basis: 25%;
+  flex-grow: 0.25;
+  padding: 0 15px;
+  border-right: 2px solid rgba($c_brand_red, 0.45);
+  background-color: rgba(#FEF8EC, 0.75);
+}
+
+.mainContent {
+  flex-grow: 0.75;
+  flex-basis: 75%;
 }
 
 .topNav {
