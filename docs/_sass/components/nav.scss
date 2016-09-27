@@ -1,0 +1,21 @@
+nav {
+  text-align: center;
+  margin-top: 20px;
+
+  a {
+    font-size: $nav_size;
+    color: $nav_color;
+    line-height: $nav_line_height;
+    text-decoration: none;
+    margin-right: 30px;
+    cursor: pointer;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:hover,&.active {
+      text-decoration: underline;
+    }
+  }
+}

@@ -1,60 +1,181 @@
 ---
-title: An extremely fast, React-like JavaScript library for building modern user interfaces  
+layout: default
+description: A description about my blog homepage
 ---
 
+<div class="landing-banner">
+  <nav>
+    <a href="/get-started">Get Started</a>
+    <a href="/learning-resources">Learning Resources</a>
+    <a href="/benefits">Benefits</a>
+    <a href="/help">Help</a>
+  </nav>
+  <div id="logo"></div>
+  <div class="tagline">An extremely fast, React-like Javascript library for building modern user interfaces.</div>
+  <div class="button-enclose">
+    <a href="/get-started" class="link-button">Get Started</a>
+  </div>
+  <div class="diagonal-shapes"></div>
+</div>
+
 <div class="container">
-  <header class="indexPage_landing">
-    {% include topnav.html %}
-    <summary>
-      <img
-        alt="Inferno Logo" 
-        class="indexPageLanding_image"
-        src="{{ site.url }}/static/img/inferno.png"
-      />
-      <div>
-        <h1>
-          An extremely fast, React-like JavaScript library for building modern user interfaces.
-        </h1>
-        <a class="indexPageLanding_link" href="{{ site.url }}/getting-started">
-          <button>
-            Get Started
-          </button>
-        </a>
-      </div>
-    </summary>
-    <section class="indexPageLanding_nav">
-        <article>
-          <h2>
-            Fastest
-          </h2>
-          <p>
-            One of the fastest front-end frameworks for rendering UI in the DOM.
-          </p>
-        </article>
-        <article>
-          <h2>
-            Standard
-          </h2>
-          <p>
-            Components have a similar API to React ES2015 components with inferno- component
-          </p>
-        </article>
-        <article>
-          <h2>
-            Stateless
-          </h2>
-          <p>
-            Stateless components are fully supported and have more usability thanks to inferno’s hooks system.
-          </p>
-        </article>
-        <article>
-          <h2>
-            Isomorphic
-          </h2>
-          <p>
-            Isomorphic/Universal for easy server-side rendering with inferno-server
-          </p>
-        </article>
-    </section>
-  </header>
+  <ul class="key-features">
+    <li>
+      <span class="kf-icon">
+        <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
+          <g fill="none" stroke="#494949" stroke-width="2" stroke-miterlimit="10">
+            <path data-cap="butt" data-color="color-2" d="M12.7 20c-.4 1.3-.7 2.6-.7 4m24 0c0-6.6-5.4-12-12-12-1.4 0-2.7.2-4 .7"/>
+            <path data-color="color-2" stroke-linecap="square" d="M21.2 21.2L14 14"/><circle data-color="color-2" stroke-linecap="square" cx="24" cy="24" r="4"/>
+            <circle stroke-linecap="square" cx="24" cy="24" r="22"/>
+          </g>
+        </svg>
+      </span>
+      <h3 class="kf-title">Fastest</h3>
+      <p class="kf-desc">One of the fastest front-end frameworks for rendering UI in the DOM.</p>
+    </li>
+    <li>
+      <span class="kf-icon">
+        <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
+          <g fill="none" stroke="#494949" stroke-width="2" stroke-miterlimit="10">
+            <path data-cap="butt" d="M42 19.4V34"/>
+            <path data-cap="butt" data-color="color-2" d="M12 23.6V36c0 3.3 5.4 6 12 6s12-2.7 12-6V23.6"/>
+            <path stroke-linecap="square" d="M24 32L4 18 24 6l20 12z"/>
+          </g>
+        </svg>
+      </span>
+      <h3 class="kf-title">Standard</h3>
+      <p class="kf-desc">Components have a similar API to React ES2015 components with inferno-component.</p>
+    </li>
+    <li>
+      <span class="kf-icon">
+        <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
+          <g fill="none" stroke="#494949" stroke-width="2" stroke-miterlimit="10">
+            <path data-cap="butt" d="M20.4 14.7l-8.9-8.8m-5.6 5.6l8.8 8.9m18.6 0l8.8-8.9m-5.6-5.6l-8.9 8.8m0 18.6l8.9 8.8m5.6-5.6l-8.8-8.9m-18.6 0l-8.8 8.9m5.6 5.6l8.9-8.8"/>
+            <circle data-color="color-2" stroke-linecap="square" cx="24" cy="24" r="22"/>
+            <circle data-color="color-2" stroke-linecap="square" cx="24" cy="24" r="10"/>
+          </g>
+        </svg>
+      </span>
+      <h3 class="kf-title">Stateless</h3>
+      <p class="kf-desc">Stateless components are fully supported and have more usability thanks to inferno’s hooks system.</p>
+    </li>
+    <li>
+      <span class="kf-icon">
+        <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
+          <g fill="none" stroke="#494949" stroke-width="2" stroke-miterlimit="10">
+            <path data-cap="butt" d="M24 4v40M4 24h40M6.7 14h34.6M6.7 34h34.6"/>
+            <circle stroke-linecap="square" cx="24" cy="24" r="20"/>
+            <ellipse stroke-linecap="square" cx="24" cy="24" rx="10" ry="20"/>
+          </g>
+        </svg>
+      </span>
+      <h3 class="kf-title">Isomorphic</h3>
+      <p class="kf-desc">Isomorphic/Universal for easy server-side rendering with inferno-server.</p>
+    </li>
+  </ul>
+  <div class="inferno-intro">
+    <h1>Introduction</h1>
+    <ul>
+      <li>
+        <h3>What is Inferno?</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Morbi efficitur lectus purus, vitae ultrices purus fringilla sit amet.
+          Nunc et nulla congue, ullamcorper neque vitae, luctus diam.
+          Phasellus ut lorem ut odio posuere tincidunt sed eu lacus.
+          In tristique libero ut auctor fermentum.
+        </p>
+      </li>
+      <li>
+        <h3>How do I use it?</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Morbi efficitur lectus purus, vitae ultrices purus fringilla sit amet.
+          Nunc et nulla congue, ullamcorper neque vitae, luctus diam.
+          Phasellus ut lorem ut odio posuere tincidunt sed eu lacus.
+          In tristique libero ut auctor fermentum.
+        </p>
+      </li>
+      <li>
+        <h3>How do I install it?</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Morbi efficitur lectus purus, vitae ultrices purus fringilla sit amet.
+          Nunc et nulla congue, ullamcorper neque vitae, luctus diam.
+          Phasellus ut lorem ut odio posuere tincidunt sed eu lacus.
+          In tristique libero ut auctor fermentum.
+        </p>
+      </li>
+      <li>
+        <h3>What features does it have?</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Morbi efficitur lectus purus, vitae ultrices purus fringilla sit amet.
+          Nunc et nulla congue, ullamcorper neque vitae, luctus diam.
+          Phasellus ut lorem ut odio posuere tincidunt sed eu lacus.
+          In tristique libero ut auctor fermentum.
+        </p>
+      </li>
+      <li>
+        <h3>How does it compare to React?</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Morbi efficitur lectus purus, vitae ultrices purus fringilla sit amet.
+          Nunc et nulla congue, ullamcorper neque vitae, luctus diam.
+          Phasellus ut lorem ut odio posuere tincidunt sed eu lacus.
+          In tristique libero ut auctor fermentum.
+        </p>
+      </li>
+      <li>
+        <h3>How fast is it?</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Morbi efficitur lectus purus, vitae ultrices purus fringilla sit amet.
+          Nunc et nulla congue, ullamcorper neque vitae, luctus diam.
+          Phasellus ut lorem ut odio posuere tincidunt sed eu lacus.
+          In tristique libero ut auctor fermentum.
+        </p>
+      </li>
+      <li>
+        <h3>Why is it so fast?</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Morbi efficitur lectus purus, vitae ultrices purus fringilla sit amet.
+          Nunc et nulla congue, ullamcorper neque vitae, luctus diam.
+          Phasellus ut lorem ut odio posuere tincidunt sed eu lacus.
+          In tristique libero ut auctor fermentum.
+        </p>
+      </li>
+      <li>
+        <h3>How do I migrate from React to Inferno?</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Morbi efficitur lectus purus, vitae ultrices purus fringilla sit amet.
+          Nunc et nulla congue, ullamcorper neque vitae, luctus diam.
+          Phasellus ut lorem ut odio posuere tincidunt sed eu lacus.
+          In tristique libero ut auctor fermentum.
+        </p>
+      </li>
+      <li>
+        <h3>What browser compatibility does Inferno have?</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Morbi efficitur lectus purus, vitae ultrices purus fringilla sit amet.
+          Nunc et nulla congue, ullamcorper neque vitae, luctus diam.
+          Phasellus ut lorem ut odio posuere tincidunt sed eu lacus.
+          In tristique libero ut auctor fermentum.
+        </p>
+      </li>
+      <li>
+        <h3>Why did you write in Typescript?</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Morbi efficitur lectus purus, vitae ultrices purus fringilla sit amet.
+          Nunc et nulla congue, ullamcorper neque vitae, luctus diam.
+          Phasellus ut lorem ut odio posuere tincidunt sed eu lacus.
+          In tristique libero ut auctor fermentum.
+        </p>
+      </li>
+    </ul>
+  </div>
 </div>

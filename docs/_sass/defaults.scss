@@ -1,16 +1,47 @@
-html {
-  font-family: 'Montserrat', -apple-system, sans-serif;
-  font-size: 16px;
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: $text_size;
+  color: $text_color;
+  line-height: $line_height;
 }
 
-body {
-  background-color: $c_default_white;
-  height: 100vh;
-  width: 100vw;
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: $h1_size;
+  color: $h1_color;
+  line-height: $h1_line_height;
+  margin: 0 0 26px 0;
+}
+
+h3 {
+  font-size: $h3_size;
+  color: $h3_color;
+  line-height: $h3_line_height;
+  margin: 0 0 12px 0;
+}
+
+ul {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-  display: block;
-  width: 90%;
+  width: 1024px;
+  height: auto;
   margin: 0 auto;
+  padding: 0 50px;
+}
+
+footer {
+  height: 90px;
+  background: $brand-secondary;
+  font-size: 14px;
+  color: #FFFFFF;
+  line-height: 18px;
+  padding: 20px 0;
 }

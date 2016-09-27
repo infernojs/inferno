@@ -11,9 +11,15 @@ defaults:
     layout: page
 
 # Build settings
-markdown: kramdown 
+markdown: kramdown
+
+# Sass settings
+sass:
+  sass_dir: _sass
+
 exclude:
 - Gemfile
 - Gemfile.lock
 - Rakefile
+- node_modules
 - README.md
