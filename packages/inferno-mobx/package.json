@@ -23,5 +23,12 @@
 		"mobx"
 	],
 	"repository": "https://github.com/trueadm/inferno",
-	"dependencies": {}
+	"dependencies": {
+		"inferno": "*",
+		"inferno-component": "*",
+		"inferno-create-class": "*",
+		"inferno-create-element": "*",
+		"inferno-dom": "*",
+		"hoist-non-inferno-statics": "*"
+	}
 }
