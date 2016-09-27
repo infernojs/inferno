@@ -1,11 +1,15 @@
 declare module 'inferno-component' {
-	export = class Component {
+	export = class Component<any, any> {
+		public props;
+		public context;
 		constructor(props?, context?);
+		componentWillReceiveProps();
+		forceUpdate();
 	};
 }
 
 declare module 'inferno-dom' {
-	export function findDOMNode(node: any): void;
+	export function findDOMNode(node: any): any;
 }
 
 declare module 'inferno-create-class' {

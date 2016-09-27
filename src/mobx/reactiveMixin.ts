@@ -38,7 +38,7 @@ export function trackComponents () {
 
 interface IReactiveRender {
 	$mobx?: Reaction;
-	(): void;
+	(param?: () => any): void;
 }
 
 export default {
