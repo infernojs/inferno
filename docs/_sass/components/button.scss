@@ -1,4 +1,5 @@
 .link-button {
+  display: block;
   background: $button_color;
   font-size: $button_text_size;
   color: $button_text_color;
@@ -6,4 +7,26 @@
   text-decoration: none;
   border-radius: $button_border_radius;
   padding: $button_padding;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.link-outline {
+  display: block;
+  background: $button_secondary_color;
+  font-size: $button_text_size;
+  color: $button_text_color;
+  line-height: $button_text_line_height;
+  text-decoration: none;
+  border: $button_secondary_border;
+  border-radius: $button_border_radius;
+  padding: $button_padding;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+  }
 }

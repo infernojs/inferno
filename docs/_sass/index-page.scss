@@ -9,17 +9,14 @@
   margin-bottom: 50px;
   overflow: hidden;
 
-  &:after {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+  .diagonal-shapes {
     width: 100%;
     height: 500px;
     background-image: url('../static/img/diagonal_shape.png');
     background-position: center bottom;
     background-size: cover;
     background-repeat: no-repeat;
-    content: "";
+    margin-top: -380px;
   }
 }
 
@@ -29,7 +26,7 @@
   background-image: url('../static/img/inferno.png');
   background-size: cover;
   background-repeat: no-repeat;
-  margin: 100px auto 30px;
+  margin: 60px auto 40px;
 }
 
 .tagline {
@@ -37,13 +34,14 @@
   font-size: 22px;
   text-align: center;
   line-height: 30px;
-  margin: 0 auto 25px;
+  margin: 0 auto 35px;
 }
 
 .button-enclose {
-  width: 148.09px;
+  width: 150px;
   margin: 0 auto;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .link-button {
@@ -51,6 +49,9 @@
 }
 
 .key-features {
+  margin-bottom: 100px;
+  overflow: hidden;
+
   li {
     float: left;
     width: 25%;
@@ -65,5 +66,58 @@
       margin: 12px 10px 10px 32px;
       clear: both;
     }
+  }
+}
+
+.inferno-intro {
+  width: 580px;
+  margin-bottom: 100px;
+
+  li {
+    margin-bottom: 40px;
+  }
+}
+
+.banner-bottom {
+  width: 100%;
+  height: 110px;
+  background: $brand-primary;
+  overflow: hidden;
+
+  .button-enclose {
+    margin: 31px auto;
+  }
+}
+
+.contributors {
+  float: left;
+  margin-top: 28px;
+  overflow: hidden;
+
+  .icon {
+    float: left;
+    margin-right: 10px;
+  }
+
+  .title {
+    float: left;
+    margin-top: 3px;
+    color: white;
+  }
+}
+
+.license {
+  float: right;
+  margin-top: 7px;
+  text-align: right;
+  overflow: hidden;
+
+  div:first-child {
+    margin-bottom: 10px;
+  }
+
+  a {
+    color: white;
+    text-decoration: underline;
   }
 }

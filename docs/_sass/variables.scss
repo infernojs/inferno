@@ -38,11 +38,17 @@ $nav_line_height: 20px;
 $link_color: #D51D1D;
 
 
-// Button
+// Button Primary
 
 $button_color: $brand_green;
 $button_border_radius: 40px;
 $button_text_size: 22px;
 $button_text_color: #FFFFFF;
 $button_text_line_height: 22px;
-$button_padding: 10px 22px 14px;
+$button_padding: 10px 21px 14px;
+
+
+// Button Secondary
+
+$button_secondary_color: transparent;
+$button_secondary_border: 1px solid #FFFFFF;

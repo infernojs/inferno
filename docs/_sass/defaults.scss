@@ -5,18 +5,22 @@ body {
   line-height: $line_height;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 h1 {
   font-size: $h1_size;
   color: $h1_color;
   line-height: $h1_line_height;
-  margin: 0;
+  margin: 0 0 26px 0;
 }
 
 h3 {
   font-size: $h3_size;
   color: $h3_color;
   line-height: $h3_line_height;
-  margin: 0;
+  margin: 0 0 12px 0;
 }
 
 ul {
@@ -31,4 +35,13 @@ ul {
   height: auto;
   margin: 0 auto;
   padding: 0 50px;
+}
+
+footer {
+  height: 90px;
+  background: $brand-secondary;
+  font-size: 14px;
+  color: #FFFFFF;
+  line-height: 18px;
+  padding: 20px 0;
 }
