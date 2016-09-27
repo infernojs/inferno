@@ -2,7 +2,7 @@ import invariant from 'invariant';
 import { isObservable, Reaction, extras } from 'mobx';
 import EventEmitter from './utils/EventEmitter';
 import Component from 'inferno-component';
-import InfernoDOM = require('inferno-dom');
+import InfernoDOM from 'inferno-dom';
 
 /**
  * Dev tools support
