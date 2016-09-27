@@ -10,9 +10,9 @@ module.exports = function (config) {
 			'mocha'
 		],
 		files: [
-            './../node_modules/babel-polyfill/dist/polyfill.js',
+			'./../node_modules/babel-polyfill/dist/polyfill.js',
 			'./../node_modules/sinon/pkg/sinon.js',
-            './../src/**/__tests__/**'
+			'./../src/**/__tests__/**'
 		],
 		// Start these browsers, currently available:
 		// - Chrome
