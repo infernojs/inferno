@@ -29,6 +29,7 @@
 		"inferno-create-class": "*",
 		"inferno-create-element": "*",
 		"inferno-dom": "*",
+		"invariant": "*",
 		"hoist-non-inferno-statics": "*"
 	}
 }

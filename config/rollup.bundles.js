@@ -1,5 +1,6 @@
 import { Bundles } from './rollup.helpers';
 
+// Methods available: add, skip, only
 const bundles = new Bundles();
 
 bundles.add({
