@@ -124,7 +124,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 		const input = instance._lastInput;
 
 		instance._vComponent = vComponent;
-		hydrate(input, dom, lifecycle, context);
+		hydrate(input, dom, lifecycle, instance._childContext);
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
 		componentToDOMNodeMap.set(instance, dom);
 		vComponent.instance = instance;
