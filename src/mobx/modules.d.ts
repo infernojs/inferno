@@ -1,5 +1,7 @@
 declare module 'inferno-component' {
 	class Component<P, C> {
+		props?: P;
+		context?: C;
 		constructor (props?: P, context?: C);
 		componentWillReceiveProps? (nextProps: P, nextContext: C): void;
 		forceUpdate (): void;
@@ -27,6 +29,6 @@ declare module 'mobx' {
 	export class Reaction {
 		constructor(name?: string, onInvalidate?: any)
 		track(param: any): void
-	};
+	}
 	export const extras: any;
 }
