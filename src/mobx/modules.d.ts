@@ -1,9 +1,7 @@
 declare module 'inferno-component' {
-	class Component<any, any> {
-		props?: any;
-		context?: any;
-		constructor (props?: any, context?: any);
-		componentWillReceiveProps? (nextProps: any, nextContext: any): void;
+	class Component<P, C> {
+		constructor (props?: P, context?: C);
+		componentWillReceiveProps? (nextProps: P, nextContext: C): void;
 		forceUpdate (): void;
 		isPrototypeOf (v: Object): boolean;
 	}
