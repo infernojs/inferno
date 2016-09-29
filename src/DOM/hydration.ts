@@ -6,7 +6,8 @@ import {
 	isInvalid,
 	isStatefulComponent,
 	throwError,
-	isObject
+	isObject,
+	isNullOrUndef
 } from '../shared';
 import {
 	replaceChild,
@@ -35,6 +36,10 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/constants';
+import {
+	patchProp,
+	patchStyle
+} from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
 
@@ -280,9 +285,21 @@ function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom,
 			break;
 		case ValueTypes.PROP_SPREAD:
 			debugger;
-      break;
-    default:
-      // TODO
+			break;
+		case ValueTypes.PROP_DATA:
+			dom.dataset[descriptor] = value;
+			break;
+		case ValueTypes.PROP_STYLE:
+			patchStyle(null, value, dom);
+			break;
+		case ValueTypes.PROP_VALUE:
+			dom.value = isNullOrUndef(value) ? '' : value;
+			break;
+		case ValueTypes.PROP:
+			patchProp(descriptor, null, value, dom, false);
+			break;
+		default:
+		// TODO
 	}
 }
 
