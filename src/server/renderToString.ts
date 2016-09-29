@@ -36,7 +36,7 @@ function renderComponentToString(vComponent, isRoot, context) {
 		instance._pendingSetState = false;
 		return renderInputToString(node, context, isRoot);
 	} else {
-		return renderInputToString(Component(props), context, isRoot);
+		return renderInputToString(Component(props, context), context, isRoot);
 	}
 }
 
