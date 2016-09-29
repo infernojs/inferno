@@ -1,20 +1,20 @@
 import invariant from 'invariant';
 import { isObservable, Reaction, extras } from 'mobx';
 import EventEmitter from './utils/EventEmitter';
-import Component from '../component/es2015';
-import { findDOMNode } from "../DOM/rendering";
+import Component from 'inferno-component';
+import InfernoDOM from 'inferno-dom';
 
 /**
  * Dev tools support
  */
 let isDevtoolsEnabled = false;
 
-export const componentByNodeRegistery: WeakMap<Node, Object> = new WeakMap();
+export const componentByNodeRegistery: WeakMap<any, any> = new WeakMap();
 export const renderReporter = new EventEmitter();
 
 function reportRendering (component) {
 	// TODO: Add return type to findDOMNode
-	const node = findDOMNode(component);
+	const node = InfernoDOM.findDOMNode(component);
 	if (node && componentByNodeRegistery) {
 		componentByNodeRegistery.set(node, component);
 	}
@@ -38,7 +38,7 @@ export function trackComponents () {
 
 interface IReactiveRender {
 	$mobx?: Reaction;
-	(): void;
+	(param?: () => any): void;
 }
 
 export default {
@@ -95,7 +95,7 @@ export default {
 		this.render.$mobx && this.render.$mobx.dispose();
 		this.__$mobxIsUnmounted = true;
 		if (isDevtoolsEnabled) {
-			const node = findDOMNode(this);
+			const node = InfernoDOM.findDOMNode(this);
 			if (node && componentByNodeRegistery) {
 				componentByNodeRegistery.delete(node);
 			}
