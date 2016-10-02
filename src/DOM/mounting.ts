@@ -232,7 +232,7 @@ function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, l
 	}
 }
 
-function mountChildren(childrenType, children, dom, lifecycle, context, isSVG, shallowUnmount) {
+export function mountChildren(childrenType, children, dom, lifecycle, context, isSVG, shallowUnmount) {
 	if (isTextChildrenType(childrenType)) {
 		setTextContent(dom, children);
 	} else if (isNodeChildrenType(childrenType)) {
