@@ -117,7 +117,7 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle,
 export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	const instance = vComponent.instance;
 
-	if (!shallowUnmount) {	
+	if (!shallowUnmount) {
 		let instanceHooks = null;
 
 		vComponent.unmounted = true;
