@@ -1,4 +1,4 @@
-import connect from '../connect';
+import connect from './../connect';
 import {createStore} from 'redux';
 import Component from './../../component/es2015';
 import {render} from './../../DOM/rendering';
