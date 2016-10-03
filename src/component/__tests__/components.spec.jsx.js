@@ -2395,19 +2395,17 @@ describe('Components (JSX)', () => {
 			render() {
 				return [
 					this.props.foo
-				]
+				];
 			}
 		}
 
 		it('Should be able to mount with array', () => {
-			debugger;
 			render(<RetArray />, container);
 			expect(container.innerHTML).to.equal('');
 			render(null, container);
 		});
 
 		it('Should be able to mount with array', () => {
-			debugger;
 			render(<RetArray foo={<div></div>} />, container);
 			expect(container.innerHTML).to.equal('<div></div>');
 		});

@@ -115,8 +115,9 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle,
 }
 
 export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, shallowUnmount) {
-	if (!shallowUnmount) {
-		const instance = vComponent.instance;
+	const instance = vComponent.instance;
+
+	if (!shallowUnmount) {	
 		let instanceHooks = null;
 
 		vComponent.unmounted = true;
@@ -145,7 +146,16 @@ export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, 
 		}
 	}
 	if (parentDom) {
-		removeChild(parentDom, vComponent.dom);
+		let lastInput = instance._lastInput;
+
+		if (isNullOrUndef(lastInput)) {
+			lastInput = instance;
+		}
+		if (isVFragment(lastInput)) {
+			unmountVFragment(lastInput, parentDom, true, lifecycle, shallowUnmount);
+		} else {
+			removeChild(parentDom, vComponent.dom);
+		}
 	}
 	if (recyclingEnabled && (parentDom || canRecycle)) {
 		poolVComponent(vComponent);
