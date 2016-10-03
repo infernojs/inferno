@@ -49,6 +49,9 @@ export default function createClass(obj) {
 	F.prototype = Component.prototype;
 	Cl.prototype = new F();
 	Cl.prototype.constructor = Cl;
+	if (obj.getDefaultProps) {
+		Cl.defaultProps = obj.getDefaultProps();
+	}	
 	(Cl as any).displayName = obj.displayName || 'Component';
 	return Cl;
 }
