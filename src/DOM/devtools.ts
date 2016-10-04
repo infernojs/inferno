@@ -21,8 +21,21 @@ export function initDevToolsHooks(global) {
 	global.__INFERNO_DEVTOOLS_GLOBAL_HOOK__ = true;
 
 	// we now need to wait for a message?
-	global.addEventListener('message', function (event) {
-		// the dev tools will need roots, it's the roots of the vdom tree
-		// roots
+	global.addEventListener('message', function(event) {
+		console.log(event)
+		// Only accept messages from the same frame
+		if (event.source !== window) {
+			return;
+		}
+
+		var message = event.data;
+
+		// Only accept messages that we know are ours
+		if (typeof message !== 'object' || message === null ||
+			message.source !== 'my-devtools-extension') {
+			return;
+		}
+
+		global.chrome.runtime.sendMessage('my-devtools-extension', message);
 	});
 }
