@@ -47,10 +47,10 @@ function queueStateChanges(component: Component<any, any>, newState, callback): 
 		component._pendingState[stateKey] = newState[stateKey];
 	}
 	if (!component._pendingSetState) {
-		component._pendingSetState = true;
 		if (component._processingSetState || callback) {
 			addToQueue(component, false, callback);
 		} else {
+			component._pendingSetState = true;			
 			component._processingSetState = true;
 			applyState(component, false, callback);
 			component._processingSetState = false;
@@ -72,9 +72,11 @@ function applyState(component: Component<any, any>, force, callback): void {
 
 		component._pendingState = {};
 		let nextInput = component._updateComponent(prevState, nextState, props, props, context, force);
+		let didUpdate = true;
 
 		if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
+			didUpdate = false;
 		} else if (isArray(nextInput)) {
 			nextInput = createVFragment(nextInput, null);
 		} else if (isNullOrUndef(nextInput)) {
@@ -82,20 +84,24 @@ function applyState(component: Component<any, any>, force, callback): void {
 		}
 		const lastInput = component._lastInput;
 		const parentDom = lastInput.dom.parentNode;
-		const subLifecycle = new Lifecycle();
-		let childContext = component.getChildContext();
-
-		if (!isNullOrUndef(childContext)) {
-			childContext = Object.assign({}, context, component._childContext, childContext);
-		} else {
-			childContext = Object.assign({}, context, component._childContext);
-		}
+		
 		component._lastInput = nextInput;
-		component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
+		if (didUpdate) {
+			const subLifecycle = new Lifecycle();
+			let childContext = component.getChildContext();
+
+			if (!isNullOrUndef(childContext)) {
+				childContext = Object.assign({}, context, component._childContext, childContext);
+			} else {
+				childContext = Object.assign({}, context, component._childContext);
+			}
+
+			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
+			subLifecycle.trigger();
+			component.componentDidUpdate(props, prevState);
+		}
 		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
-		component.componentDidUpdate(props, prevState);
-		subLifecycle.trigger();
 		if (!isNullOrUndef(callback)) {
 			callback();
 		}

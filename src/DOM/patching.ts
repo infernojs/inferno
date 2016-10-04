@@ -427,10 +427,12 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				}
 				const lastInput = instance._lastInput;
 				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
+				let didUpdate = true;
 
 				instance._childContext = childContext;
 				if (nextInput === NO_OP) {
 					nextInput = lastInput;
+					didUpdate = false;
 				} else if (isArray(nextInput)) {
 					nextInput = createVFragment(nextInput, null);
 				} else if (isInvalid(nextInput)) {
@@ -439,10 +441,12 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				instance._lastInput = nextInput;
 				instance._vComponent = nextVComponent;
 				instance._lastInput = nextInput;
-				patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
-				instance.componentDidUpdate(lastProps, lastState);
+				if (didUpdate) {
+					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
+					instance.componentDidUpdate(lastProps, lastState);
+					componentToDOMNodeMap.set(instance, nextInput.dom);
+				}
 				nextVComponent.dom = nextInput.dom;
-				componentToDOMNodeMap.set(instance, nextInput.dom);
 			}
 		} else {
 			let shouldUpdate = true;
