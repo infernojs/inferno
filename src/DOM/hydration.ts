@@ -203,7 +203,7 @@ function hydrateChildren(childrenType, children, dom, lifecycle, context, isSVG 
 function hydrateStaticVElement(node, dom) {
 	const children = node.children;
 
-	if (!isNull(children)) {
+	if (!isNull(children) && !isNullOrUndef(dom)) {
 		if (!isStringOrNumber(children) && !isInvalid(children)) {
 			let childNode = dom.firstChild;
 
