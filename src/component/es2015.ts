@@ -1,5 +1,5 @@
 import Lifecycle from './../DOM/lifecycle';
-import { isNullOrUndef, NO_OP, throwError, isFunction, isArray } from '../shared';
+import { isNullOrUndef, NO_OP, throwError, isFunction, isArray, isInvalid } from '../shared';
 import { createVPlaceholder, createVFragment } from './../core/shapes';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
@@ -50,7 +50,7 @@ function queueStateChanges(component: Component<any, any>, newState, callback): 
 		if (component._processingSetState || callback) {
 			addToQueue(component, false, callback);
 		} else {
-			component._pendingSetState = true;			
+			component._pendingSetState = true;
 			component._processingSetState = true;
 			applyState(component, false, callback);
 			component._processingSetState = false;
@@ -74,17 +74,18 @@ function applyState(component: Component<any, any>, force, callback): void {
 		let nextInput = component._updateComponent(prevState, nextState, props, props, context, force);
 		let didUpdate = true;
 
-		if (nextInput === NO_OP) {
-			nextInput = component._lastInput;
-			didUpdate = false;
+		if (isInvalid(nextInput)) {
+			nextInput = createVPlaceholder();
 		} else if (isArray(nextInput)) {
 			nextInput = createVFragment(nextInput, null);
-		} else if (isNullOrUndef(nextInput)) {
-			nextInput = createVPlaceholder();
+		} else if (nextInput === NO_OP) {
+			nextInput = component._lastInput;
+			didUpdate = false;
 		}
+
 		const lastInput = component._lastInput;
 		const parentDom = lastInput.dom.parentNode;
-		
+
 		component._lastInput = nextInput;
 		if (didUpdate) {
 			const subLifecycle = new Lifecycle();

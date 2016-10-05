@@ -430,14 +430,15 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				let didUpdate = true;
 
 				instance._childContext = childContext;
-				if (nextInput === NO_OP) {
-					nextInput = lastInput;
-					didUpdate = false;
+				if (isInvalid(nextInput)) {
+					nextInput = createVPlaceholder();
 				} else if (isArray(nextInput)) {
 					nextInput = createVFragment(nextInput, null);
-				} else if (isInvalid(nextInput)) {
-					nextInput = createVPlaceholder();
+				} else if (nextInput === NO_OP) {
+					nextInput = lastInput;
+					didUpdate = false;
 				}
+
 				instance._lastInput = nextInput;
 				instance._vComponent = nextVComponent;
 				instance._lastInput = nextInput;
@@ -466,13 +467,14 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				}
 				let nextInput = nextComponent(nextProps, context);
 
-				if (nextInput === NO_OP) {
-					return false;
+				if (isInvalid(nextInput)) {
+					nextInput = createVPlaceholder();
 				} else if (isArray(nextInput)) {
 					nextInput = createVFragment(nextInput, null);
-				} else if (isInvalid(nextInput)) {
-					nextInput = createVPlaceholder();
+				} else if (nextInput === NO_OP) {
+					return false;
 				}
+
 				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 				nextVComponent.instance = nextInput;
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
