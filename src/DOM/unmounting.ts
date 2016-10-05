@@ -156,7 +156,7 @@ export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, 
 			lastInput = instance;
 		}
 		if (isVFragment(lastInput)) {
-			unmountVFragment(lastInput, parentDom, true, lifecycle, shallowUnmount);
+			unmountVFragment(lastInput, parentDom, true, lifecycle, true);
 		} else {
 			removeChild(parentDom, vComponent.dom);
 		}

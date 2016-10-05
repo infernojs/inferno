@@ -46,7 +46,6 @@ describe('lifecycle hooks', () => {
 			const spyObj = {fn: () => {}};
 			const spy = sinon.spy(spyObj, 'fn');
 			const node = template(null, spyObj.fn, null, null, null, null, StatelessComponent);
-			// TODO: It looks like aggressive recycling is making this test case fail
 			render(node, container);
 
 			expect(spy.callCount).to.equal(1);
@@ -70,12 +69,12 @@ describe('lifecycle hooks', () => {
 			const spy = sinon.spy(spyObj, 'fn');
 			const node = template(null, null, null, spyObj.fn, null, null, StatelessComponent);
 			render(node, container);
-			expect(spy.callCount).to.equal(1);
+			expect(spy.callCount).to.equal(0);
 
-			console.log(spy.getCall(0).args);
+			// console.log(spy.getCall(0).args);
 			// TODO: How can we verify last props in unit test
 			// expect(spy.getCall(0).args[0]).to.equal(node.props, 'verify last props'); // last props
-			expect(spy.getCall(0).args[1]).to.equal(node.props, 'verify next props'); // next props
+			// expect(spy.getCall(0).args[1]).to.equal(node.props, 'verify next props'); // next props
 		});
 
 		it('"onComponentDidUpdate" hook should fire', () => {
@@ -83,39 +82,39 @@ describe('lifecycle hooks', () => {
 			const spy = sinon.spy(spyObj, 'fn');
 			const node = template(null, null, null, null, spyObj.fn, null, StatelessComponent);
 			render(node, container);
-			expect(spy.callCount).to.equal(1); // Update 1
+			expect(spy.callCount).to.equal(0); // Update 1
 			render(node, container);
-			expect(spy.callCount).to.equal(2); // Update 2
+			expect(spy.callCount).to.equal(1); // Update 2
 		});
 
 		it('"onComponentShouldUpdate" hook should fire, should call render when return true', () => {
-			const spyObj = {shouldUpdate: () => true};
-			const renderSpy = sinon.spy(StatelessComponent);
-			const spy = sinon.spy(spyObj, 'shouldUpdate');
-			const node = template(null, null, null, null, null, spyObj.shouldUpdate, StatelessComponent);
+			let onComponentShouldUpdateCount = 0;
+			let renderCount = 0;
+			const StatelessComponent = () => { renderCount++; return null; };
+			const node = template(null, null, null, null, null, () => { onComponentShouldUpdateCount++; return true; }, StatelessComponent);
 
 			render(node, container);
-			expect(spy.callCount).to.equal(1, 'should have called shouldUpdate once'); // Update 1
-			expect(renderSpy.callCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
+			expect(onComponentShouldUpdateCount).to.equal(0, 'should have called shouldUpdate none'); // Update 1
+			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
 
 			render(node, container);
-			expect(spy.callCount).to.equal(2, 'should have called shouldUpdate twice'); // Update 2
-			expect(renderSpy.callCount).to.equal(2, 'should have called "render" twice'); // Rendered 2 time
+			expect(onComponentShouldUpdateCount).to.equal(1, 'should have called shouldUpdate once'); // Update 2
+			expect(renderCount).to.equal(2, 'should have called "render" twice'); // Rendered 2 time
 		});
 
 		it('"onComponentShouldUpdate" hook should fire, should not call render when return false', () => {
-			const spyObj = {shouldUpdate: () => false};
-			const renderSpy = sinon.spy(StatelessComponent);
-			const spy = sinon.spy(spyObj, 'shouldUpdate');
-			const node = template(null, null, null, null, null, spyObj.shouldUpdate, StatelessComponent);
+			let onComponentShouldUpdateCount = 0;
+			let renderCount = 0;
+			const StatelessComponent = () => { renderCount++; return null; };
+			const node = template(null, null, null, null, null, () => { onComponentShouldUpdateCount++; return false; }, StatelessComponent);
 
 			render(node, container);
-			expect(spy.callCount).to.equal(1, 'should have called shouldUpdate once'); // Update 1
-			expect(renderSpy.callCount).to.equal(0, 'Should update false, dont render');
+			expect(onComponentShouldUpdateCount).to.equal(0, 'should have called shouldUpdate none'); // Update 1
+			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
 
 			render(node, container);
-			expect(spy.callCount).to.equal(2, 'should have called shouldUpdate twice'); // Update 2
-			expect(renderSpy.callCount).to.equal(0, 'Should update false, dont render');
+			expect(onComponentShouldUpdateCount).to.equal(1, 'should have called shouldUpdate once'); // Update 2
+			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
 		});
 	});
 });

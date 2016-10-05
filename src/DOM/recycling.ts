@@ -81,6 +81,17 @@ export function recycleVComponent(vComponent: VComponent, lifecycle, context, is
 export function poolVComponent(vComponent) {
 	const component = vComponent.component;
 	const key = vComponent.key;
+	const hooks = vComponent.hooks;
+	const nonRecycleHooks = hooks && (
+		hooks.onComponentWillMount ||
+		hooks.onComponentWillUnmount ||
+		hooks.onComponentDidMount ||
+		hooks.onComponentWillUpdate ||
+		hooks.onComponentDidUpdate
+	);
+	if (nonRecycleHooks) {
+		return;
+	}
 	let pools: Pools = vComponentPools.get(component);
 
 	if (isUndefined(pools)) {
