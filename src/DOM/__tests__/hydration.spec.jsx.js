@@ -1,7 +1,10 @@
 import renderToString from './../../server/renderToString';
 import Component from './../../component/es2015';
 import { render } from './../../DOM/rendering';
-import { createContainerWithHTML, validateNodeTree } from '../../tools/utils';
+import {
+	createContainerWithHTML,
+	validateNodeTree
+} from '../../tools/utils';
 import {
 	createStaticVElement,
 	createOptBlueprint,

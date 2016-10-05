@@ -1,7 +1,14 @@
 import Component from '../component/es2015';
-import { warning, shallowEqual, wrapActionCreators } from './utils';
+import {
+	warning,
+	shallowEqual,
+	wrapActionCreators
+} from './utils';
 import { isFunction } from '../shared';
-import { createVComponent, IProps } from '../core/shapes';
+import {
+	createVComponent,
+	IProps
+} from '../core/shapes';
 /* tslint:disable */
 // TODO: Change to imports and make sure server side / browser tests work
 const hoistStatics = require('hoist-non-inferno-statics');

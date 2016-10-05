@@ -22,7 +22,10 @@ import {
 	documentCreateElement,
 	copyPropsTo
 } from './utils';
-import { patchStyle, patchProp } from './patching';
+import {
+	patchStyle,
+	patchProp
+} from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import {
 	isVElement,
@@ -40,7 +43,11 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/constants';
-import { recycleOptVElement, recyclingEnabled, recycleVComponent } from './recycling';
+import {
+	recycleOptVElement,
+	recyclingEnabled,
+	recycleVComponent
+} from './recycling';
 import createStaticVElementClone from '../factories/createStaticVElementClone';
 
 export function mount(input, parentDom, lifecycle, context, isSVG, shallowUnmount) {

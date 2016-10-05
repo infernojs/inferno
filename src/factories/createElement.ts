@@ -1,4 +1,7 @@
-import { createVElement, createVComponent } from '../core/shapes';
+import {
+	createVElement,
+	createVComponent
+} from '../core/shapes';
 import {
 	isAttrAnEvent,
 	isString,
@@ -6,14 +9,6 @@ import {
 	isUndefined,
 	isObject
 } from './../shared';
-
-const elementHooks = {
-	onCreated: true,
-	onAttached: true,
-	onWillUpdate: true,
-	onDidUpdate: true,
-	onWillDetach: true
-};
 
 const componentHooks = {
 	onComponentWillMount: true,
@@ -48,12 +43,8 @@ export default function createElement(name: string | Function, props: any, ..._c
 				delete props.key;
 			} else if (prop === 'children') {
 				vNode.children = children;
-			} else if (elementHooks[prop]) {
-				if (!hooks) {
-					hooks = {};
-				}
-				hooks[prop] = props[prop];
-				delete props[prop];
+			} else if (prop === 'ref') {
+				vNode.ref = props.ref; // TODO: Verify it works - tests
 			} else if (isAttrAnEvent(prop)) {
 				const lowerCase = prop.toLowerCase();
 

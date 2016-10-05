@@ -2,8 +2,17 @@ import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
 import createElement from './../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
-import { createStaticVElement, createOptBlueprint, createVComponent, createOptVElement } from './../../core/shapes';
-import { ChildrenTypes, ValueTypes, NodeTypes } from './../../core/constants';
+import {
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	createOptVElement
+} from './../../core/shapes';
+import {
+	ChildrenTypes,
+	ValueTypes,
+	NodeTypes
+} from './../../core/constants';
 
 const Inferno = {
 	createOptVElement,

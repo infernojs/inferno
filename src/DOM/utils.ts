@@ -8,7 +8,10 @@ import {
 	isNull,
 	isUndefined
 } from './../shared';
-import { unmountVFragment, unmount } from './unmounting';
+import {
+	unmountVFragment,
+	unmount
+} from './unmounting';
 import {
 	createVText,
 	createVPlaceholder,

@@ -8,7 +8,12 @@ import {
 	isTrue
 } from './../shared';
 import { isUnitlessNumber } from '../DOM/constants';
-import { toHyphenCase, escapeText, escapeAttr, isVoidElement } from './utils';
+import {
+	toHyphenCase,
+	escapeText,
+	escapeAttr,
+	isVoidElement
+} from './utils';
 import {
 	isVElement,
 	isVComponent,

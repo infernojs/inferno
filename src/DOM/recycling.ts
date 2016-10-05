@@ -1,5 +1,11 @@
-import { isUndefined, isNull } from './../shared';
-import { patchOptVElement, patchVComponent } from './patching';
+import {
+	isUndefined,
+	isNull
+} from './../shared';
+import {
+	patchOptVElement,
+	patchVComponent
+} from './patching';
 import { VComponent } from '../core/shapes';
 
 export let recyclingEnabled = true;

@@ -1,7 +1,7 @@
 import { roots } from './rendering';
 
 function sendToDevTools(global, data) {
-	var event = new CustomEvent('inferno.client.message', {
+	let event = new CustomEvent('inferno.client.message', {
 		detail: JSON.stringify(data)
 	});
 	global.dispatchEvent(event);
@@ -17,6 +17,9 @@ export function initDevToolsHooks(global) {
 		switch (type) {
 			case 'init':
 				sendToDevTools(global, { type: 'roots', data: Array.from(roots.values()) });
+				break;
+			default:
+				// TODO:?
 				break;
 		}
 	});

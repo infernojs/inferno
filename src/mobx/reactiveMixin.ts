@@ -1,5 +1,9 @@
 import invariant from 'invariant';
-import { isObservable, Reaction, extras } from 'mobx';
+import {
+	isObservable,
+	Reaction,
+	extras
+} from 'mobx';
 import EventEmitter from './utils/EventEmitter';
 import Component from 'inferno-component';
 import InfernoDOM from 'inferno-dom';
