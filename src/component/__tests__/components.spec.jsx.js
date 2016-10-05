@@ -14,6 +14,7 @@ const Inferno = {
 	ValueTypes,
 	NodeTypes
 };
+const sinon = require('sinon/pkg/sinon');
 
 describe('Components (JSX)', () => {
 	let container;
@@ -2399,6 +2400,12 @@ describe('Components (JSX)', () => {
 			}
 		}
 
+		class A extends Component {
+			render() {
+				return <div></div>;
+			}
+		}
+
 		it('Should be able to mount with array', () => {
 			render(<RetArray />, container);
 			expect(container.innerHTML).to.equal('');
@@ -2409,5 +2416,18 @@ describe('Components (JSX)', () => {
 			render(<RetArray foo={<div></div>} />, container);
 			expect(container.innerHTML).to.equal('<div></div>');
 		});
+
+		it('Should be able to mount and unmount array', () => {
+			let mountedColumnSpy = sinon.spy(A.prototype, 'componentWillMount');
+			let unmountColumnSpy = sinon.spy(A.prototype, 'componentWillUnmount');
+			render(<RetArray foo={<A />} />, container);
+			expect(mountedColumnSpy.callCount).to.equal(1);
+			expect(unmountColumnSpy.callCount).to.equal(0);
+			expect(container.innerHTML).to.equal('<div></div>');
+			render(<RetArray foo={null} />, container);
+			expect(mountedColumnSpy.callCount).to.equal(1);
+			expect(unmountColumnSpy.callCount).to.equal(1);
+			expect(container.innerHTML).to.equal('');
+		})
 	});
 });

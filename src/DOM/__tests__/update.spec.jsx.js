@@ -559,5 +559,5 @@ describe('Stateful Component updates', () => {
 		updater(orig);
 		expect(container.innerHTML).to.equal('<div><div><span>1</span></div></div>');
 
-	})
+	});
 });
