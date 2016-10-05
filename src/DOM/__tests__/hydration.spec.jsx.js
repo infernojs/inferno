@@ -46,6 +46,11 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<div><span>Hello world</span></div>'
 		},
 		{
+			node: <div><p>Hello world<sup><a>Foo</a></sup></p></div>,
+			expect1: '<div data-infernoroot=""><p>Hello world<sup><a>Foo</a></sup></p></div>',
+			expect2: '<div><p>Hello world<sup><a>Foo</a></sup></p></div>'
+		},
+		{
 			node: <div>{ <span>Hello world</span> }</div>,
 			expect1: '<div data-infernoroot=""><span>Hello world</span></div>',
 			expect2: '<div><span>Hello world</span></div>'
