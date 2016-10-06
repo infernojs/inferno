@@ -1,0 +1,14 @@
+<div class="side-nav">
+  <div class="legend">
+    <a href="/" class="logo-small"></a>
+    <span class="docs-caption">docs</span>
+  </div>
+  {% for section in site.data.side_nav %}
+    <div class="sn-title">{{ section.title }}</div>
+    <div class="sn-list">
+      {% for item in section.items %}
+        <a href="/{{ item.id }}" {% if page.id == item.id %} class="active"{% endif %}>{{ item.title }}</a>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
