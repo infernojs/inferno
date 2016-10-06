@@ -9,12 +9,9 @@ import {
 	createVComponent,
 	IProps
 } from '../core/shapes';
-/* tslint:disable */
-// TODO: Change to imports and make sure server side / browser tests work
-const hoistStatics = require('hoist-non-inferno-statics');
-const invariant = require('invariant');
-const isPlainObject = require('lodash/isPlainObject');
-/* tslint:enable */
+import hoistStatics from 'hoist-non-inferno-statics';
+import invariant from 'invariant';
+import isPlainObject from 'lodash/isPlainObject';
 
 export interface WrapWithConnect {
 	(WrappedComponent: Component<any, any>): void;
