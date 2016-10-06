@@ -1,5 +1,9 @@
 import { roots } from './rendering';
 
+export const devToolsStatus = {
+	connected: false
+};
+
 function sendToDevTools(global, data) {
 	let event = new CustomEvent('inferno.client.message', {
 		detail: JSON.stringify(data)
@@ -15,12 +19,17 @@ export function initDevToolsHooks(global) {
 		const type = detail.type;
 
 		switch (type) {
-			case 'init':
-				sendToDevTools(global, { type: 'roots', data: Array.from(roots.values()) });
+			case 'get-roots':
+				devToolsStatus.connected = true;
+				sendRoots(global);
 				break;
 			default:
 				// TODO:?
 				break;
 		}
 	});
+}
+
+export function sendRoots(global) {
+	sendToDevTools(global, { type: 'roots', data: Array.from(roots.values()) });
 }

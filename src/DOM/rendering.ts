@@ -12,6 +12,7 @@ import {
 import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
 import cloneVNode from '../factories/cloneVNode';
+import { devToolsStatus, sendRoots } from './devtools';
 
 export const roots = new Map<Node | SVGAElement, { input: any }>();
 export const componentToDOMNodeMap = new Map();
@@ -58,6 +59,9 @@ export function render(input: any, parentDom: Node | SVGAElement) {
 		}
 		lifecycle.trigger();
 		root.input = input;
+	}
+	if (devToolsStatus.connected) {
+		sendRoots(window);
 	}
 }
 
