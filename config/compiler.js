@@ -33,7 +33,7 @@ require.extensions['.ts'] = function (m, filename) {
 			const tsMap = convert.fromMapFileSource(code);
 
 			// ES6 -> ES5 using buble
-			const bubleResult = buble.transform(code, options);
+			const bubleResult = buble.transform(code, Object.assign({source: filename}, options));
 
 			// merge TS and buble maps
 			const tsAndBubleMap = merge(tsMap.sourcemap, bubleResult.map);
@@ -51,6 +51,7 @@ require.extensions['.ts'] = function (m, filename) {
 			// join the final code with the final sourcemap
 			const codeWithoutMap = convert.removeMapFileComments(transpiledModules.code);
 			const sourceMapComment = convert.fromObject(finalMap).toComment();
+
 			compiled = codeWithoutMap + sourceMapComment;
 		} catch (err) {
 			if (err.snippet) {
