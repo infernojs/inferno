@@ -25,6 +25,22 @@ export interface ComponentLifecycle<P, S> {
 	componentWillUnmount?(): void;
 }
 
+export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
+        statics?: {
+            [key: string]: any;
+        };
+
+        displayName?: string;
+
+        getDefaultProps?(): P;
+		getInitialState?(): S;
+}
+
+export interface ComponentSpec<P, S> extends Mixin<P, S> {
+	render(): any;
+	[propertyName: string]: any;
+}
+
 function addToQueue(component: Component<any, any>, force, callback): void {
 	// TODO this function needs to be revised and improved on
 	let queue: any = componentCallbackQueue.get(component);
@@ -120,10 +136,10 @@ function applyState(component: Component<any, any>, force, callback): void {
 }
 
 export default class Component<P, S> implements ComponentLifecycle<P, S> {
-	state: any = {};
+	state: S = {} as S;
 	refs: any = {};
-	props: P & {children: any};
-	context: S;
+	props: P & {children?: any};
+	context: any;
 	componentDidMount: any;
 	_processingSetState = false;
 	_blockRender = false;
@@ -140,9 +156,9 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_isSVG = false;
 	_componentToDOMNodeMap = null;
 
-	constructor(props?: any, context?: any) {
+	constructor(props?: P, context?: any) {
 		/** @type {object} */
-		this.props = props || {};
+		this.props = props || ({} as P);
 
 		/** @type {object} */
 		this.context = context || {};
@@ -152,7 +168,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 	}
 
-	render(nextProps?, nextContext?) {
+	render(nextProps?: P, nextContext?) {
 	}
 
 	forceUpdate(callback) {
