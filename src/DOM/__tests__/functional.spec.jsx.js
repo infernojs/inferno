@@ -1,5 +1,4 @@
 import { createRenderer } from './../rendering';
-import Component from './../../component/es2015';
 import {
 	createStaticVElement,
 	createOptBlueprint,
@@ -12,15 +11,14 @@ import {
 	NodeTypes
 } from './../../core/constants';
 import {
-  // observe,
-  fromEvent,
-  map,
-  scan
+	fromEvent,
+	map,
+	scan
 } from 'most';
 import { holdSubject } from 'most-subject';
-// import { click } from '@most/dom-event'
 import fp from 'lodash/fp';
 import Type from 'union-type';
+// import { click } from '@most/dom-event'
 
 const Inferno = {
 	createOptVElement,

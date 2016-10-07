@@ -1,4 +1,9 @@
-import { isUndefined, isArray, isNull, isNullOrUndef } from '../shared';
+import {
+	isUndefined,
+	isArray,
+	isNull,
+	isNullOrUndef
+} from '../shared';
 import {
 	isVComponent,
 	isVElement,

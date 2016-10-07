@@ -262,7 +262,7 @@ common hooks directly onto components and DOM nodes. Below is the table of all p
 | Name                      | Triggered when                                                          | Arguments to callback              |
 | -----------               | --------------                                                          | -----------------------            |
 | `ref`                     | a DOM node has just been mounted / unmounted                            | `domNode` if mounted `null` if not |
-| `onComponentWillMount`    | a stateless function component is about to mount                        | `props`                            |
+| `onComponentWillMount`    | a stateless function component is about to mount                        |                                    |
 | `onComponentDidMount`     | a stateless function component has mounted successfully                 | `domNode`                          |
 | `onComponentWillUnmount`  | a stateless function component is about to be unmounted                 |                                    |
 | `onComponentShouldUpdate` | a stateless function component has been triggered to updated            | `lastProps, nextProps`             |

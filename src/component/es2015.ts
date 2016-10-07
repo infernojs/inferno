@@ -1,6 +1,16 @@
 import Lifecycle from './../DOM/lifecycle';
-import { isNullOrUndef, NO_OP, throwError, isFunction, isArray } from '../shared';
-import { createVPlaceholder, createVFragment } from './../core/shapes';
+import {
+	isNullOrUndef,
+	NO_OP,
+	throwError,
+	isFunction,
+	isArray,
+	isInvalid
+} from '../shared';
+import {
+	createVPlaceholder,
+	createVFragment
+} from './../core/shapes';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 const componentCallbackQueue = new Map();
@@ -47,10 +57,10 @@ function queueStateChanges(component: Component<any, any>, newState, callback): 
 		component._pendingState[stateKey] = newState[stateKey];
 	}
 	if (!component._pendingSetState) {
-		component._pendingSetState = true;
 		if (component._processingSetState || callback) {
 			addToQueue(component, false, callback);
 		} else {
+			component._pendingSetState = true;
 			component._processingSetState = true;
 			applyState(component, false, callback);
 			component._processingSetState = false;
@@ -72,30 +82,37 @@ function applyState(component: Component<any, any>, force, callback): void {
 
 		component._pendingState = {};
 		let nextInput = component._updateComponent(prevState, nextState, props, props, context, force);
+		let didUpdate = true;
 
-		if (nextInput === NO_OP) {
-			nextInput = component._lastInput;
+		if (isInvalid(nextInput)) {
+			nextInput = createVPlaceholder();
 		} else if (isArray(nextInput)) {
 			nextInput = createVFragment(nextInput, null);
-		} else if (isNullOrUndef(nextInput)) {
-			nextInput = createVPlaceholder();
+		} else if (nextInput === NO_OP) {
+			nextInput = component._lastInput;
+			didUpdate = false;
 		}
+
 		const lastInput = component._lastInput;
 		const parentDom = lastInput.dom.parentNode;
-		const subLifecycle = new Lifecycle();
-		let childContext = component.getChildContext();
 
-		if (!isNullOrUndef(childContext)) {
-			childContext = Object.assign({}, context, component._childContext, childContext);
-		} else {
-			childContext = Object.assign({}, context, component._childContext);
-		}
 		component._lastInput = nextInput;
-		component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
+		if (didUpdate) {
+			const subLifecycle = new Lifecycle();
+			let childContext = component.getChildContext();
+
+			if (!isNullOrUndef(childContext)) {
+				childContext = Object.assign({}, context, component._childContext, childContext);
+			} else {
+				childContext = Object.assign({}, context, component._childContext);
+			}
+
+			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
+			subLifecycle.trigger();
+			component.componentDidUpdate(props, prevState);
+		}
 		component._vComponent.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
-		component.componentDidUpdate(props, prevState);
-		subLifecycle.trigger();
 		if (!isNullOrUndef(callback)) {
 			callback();
 		}

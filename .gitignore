@@ -16,3 +16,4 @@ packages/inferno/dist
 *.log
 *.swp
 *~
+.nyc_output

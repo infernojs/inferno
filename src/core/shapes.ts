@@ -1,5 +1,8 @@
 import { isUndefined } from '../shared';
-import { NodeTypes, ChildrenTypes } from './constants';
+import {
+	NodeTypes,
+	ChildrenTypes
+} from './constants';
 
 export interface IProps {
 	[index: string]: any;

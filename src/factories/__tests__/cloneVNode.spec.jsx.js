@@ -1,7 +1,5 @@
 import { render } from '../../DOM/rendering';
 import cloneVNode from '../cloneVNode';
-import Component from '../../component/es2015';
-import { innerHTML } from '../../tools/utils';
 import {
 	createStaticVElement,
 	createOptBlueprint,

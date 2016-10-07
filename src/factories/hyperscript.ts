@@ -1,5 +1,15 @@
-import { isStringOrNumber, isArray, isString, isUndefined } from '../shared';
-import { createVElement, createVComponent, VComponent, VElement } from '../core/shapes';
+import {
+	isStringOrNumber,
+	isArray,
+	isString,
+	isUndefined
+} from '../shared';
+import {
+	createVElement,
+	createVComponent,
+	VComponent,
+	VElement
+} from '../core/shapes';
 import { ChildrenTypes } from '../core/constants';
 
 const classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;

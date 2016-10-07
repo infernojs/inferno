@@ -1,5 +1,9 @@
 import { isVNode } from '../core/shapes';
-import { isStringOrNumber, isNullOrUndef, isArray } from '../shared';
+import {
+	isStringOrNumber,
+	isNullOrUndef,
+	isArray
+} from '../shared';
 
 const comparer = document.createElement('div');
 

@@ -1,6 +1,14 @@
-import { isStringOrNumber, isNullOrUndef, isNumber, isTrue } from './../shared';
+import {
+	isStringOrNumber,
+	isNullOrUndef,
+	isNumber,
+	isTrue
+} from './../shared';
 import { isUnitlessNumber } from '../DOM/constants';
-import { toHyphenCase, escapeAttr } from './utils';
+import {
+	toHyphenCase,
+	escapeAttr
+} from './utils';
 
 export function renderStyleToString(style): string {
 	if (isStringOrNumber(style)) {

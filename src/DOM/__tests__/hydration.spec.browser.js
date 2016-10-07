@@ -1,6 +1,9 @@
 import renderToString from './../../server/renderToString';
 import { render } from './../../DOM/rendering';
-import { createContainerWithHTML, validateNodeTree } from '../../tools/utils';
+import {
+	createContainerWithHTML,
+	validateNodeTree
+} from '../../tools/utils';
 import createElement from './../../factories/createElement';
 
 describe('SSR Hydration - (non-JSX)', () => {

@@ -18,7 +18,11 @@ import {
 	isVFragment
 } from '../core/shapes';
 import { ValueTypes } from '../core/constants';
-import { poolOptVElement, poolVComponent, recyclingEnabled } from './recycling';
+import {
+	poolOptVElement,
+	poolVComponent,
+	recyclingEnabled
+} from './recycling';
 
 export function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	if (!isInvalid(input)) {
@@ -115,8 +119,9 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle,
 }
 
 export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, shallowUnmount) {
+	const instance = vComponent.instance;
+
 	if (!shallowUnmount) {
-		const instance = vComponent.instance;
 		let instanceHooks = null;
 
 		vComponent.unmounted = true;
@@ -140,12 +145,21 @@ export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, 
 
 		if (!isNullOrUndef(hooks)) {
 			if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-				hooks.onComponentWillUnmount(hooks);
+				hooks.onComponentWillUnmount();
 			}
 		}
 	}
 	if (parentDom) {
-		removeChild(parentDom, vComponent.dom);
+		let lastInput = instance._lastInput;
+
+		if (isNullOrUndef(lastInput)) {
+			lastInput = instance;
+		}
+		if (isVFragment(lastInput)) {
+			unmountVFragment(lastInput, parentDom, true, lifecycle, true);
+		} else {
+			removeChild(parentDom, vComponent.dom);
+		}
 	}
 	if (recyclingEnabled && (parentDom || canRecycle)) {
 		poolVComponent(vComponent);
