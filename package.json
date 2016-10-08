@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@types/core-js": "^0.9.34",
-    "@types/node": "^6.0.42",
+    "@types/node": "^6.0.45",
     "babel-cli": "^6.16.0",
     "babel-core": "^6.17.0",
     "babel-eslint": "^7.0.0",
@@ -48,7 +48,7 @@
     "karma-mocha-reporter": "^2.2.0",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-webpack": "^1.8.0",
-    "lodash": "^4.16.3",
+    "lodash": "^4.16.4",
     "merge-source-map": "^1.0.3",
     "mkdirp": "^0.5.1",
     "mobx": "^2.6.0",
@@ -78,7 +78,7 @@
     "typescript": "^2.0.3",
     "union-type": "^0.3.3",
     "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.16.1"
+    "webpack-dev-server": "^1.16.2"
   },
   "files": [
     "src"
