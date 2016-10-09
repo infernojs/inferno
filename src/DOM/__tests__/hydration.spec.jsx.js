@@ -1,7 +1,10 @@
 import renderToString from './../../server/renderToString';
 import Component from './../../component/es2015';
 import { render } from './../../DOM/rendering';
-import { createContainerWithHTML, validateNodeTree } from '../../tools/utils';
+import {
+	createContainerWithHTML,
+	validateNodeTree
+} from '../../tools/utils';
 import {
 	createStaticVElement,
 	createOptBlueprint,
@@ -44,6 +47,11 @@ describe('SSR Hydration - (JSX)', () => {
 			node: <div><span>Hello world</span></div>,
 			expect1: '<div data-infernoroot=""><span>Hello world</span></div>',
 			expect2: '<div><span>Hello world</span></div>'
+		},
+		{
+			node: <div><p>Hello world<sup><a>Foo</a></sup></p></div>,
+			expect1: '<div data-infernoroot=""><p>Hello world<sup><a>Foo</a></sup></p></div>',
+			expect2: '<div><p>Hello world<sup><a>Foo</a></sup></p></div>'
 		},
 		{
 			node: <div>{ <span>Hello world</span> }</div>,

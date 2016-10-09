@@ -7,7 +7,7 @@
 	var ValueTypes = Inferno.ValueTypes;
 	var NodeTypes = Inferno.NodeTypes;
 
-	uibench.init('Inferno', '1.0.0-beta1');
+	uibench.init('Inferno', '1.0.0-beta3');
 
 	var treeLeafBp = bp(e('li', { className: 'TreeLeaf' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
 	var treeNodeBp = bp(e('ul', { className: 'TreeNode' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);

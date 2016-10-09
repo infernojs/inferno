@@ -1,4 +1,10 @@
-import { isBrowser, isNull, isArray, isStringOrNumber, isInvalid } from '../shared';
+import {
+	isBrowser,
+	isNull,
+	isArray,
+	isStringOrNumber,
+	isInvalid
+} from '../shared';
 import { documentCreateElement } from '../DOM/utils';
 import { patchProp } from '../DOM/patching';
 import { OptBlueprint } from '../core/shapes';

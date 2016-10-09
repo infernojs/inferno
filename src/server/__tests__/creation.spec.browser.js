@@ -1,4 +1,4 @@
-import {renderToStaticMarkup} from './../renderToString';
+import { renderToStaticMarkup } from './../renderToString';
 import Component from './../../component/es2015';
 import createElement from './../../factories/createElement';
 

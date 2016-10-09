@@ -4,8 +4,9 @@
 		<title>inferno svg tiger</title>
 	</head>
 	<body>
+		<div id="app"></div>
 		<script src="../../packages/inferno/dist/inferno.min.js"></script>
-		<script src="../../packages/inferno/dist/inferno-dom.min.js"></script>
+		<script src="../../packages/inferno/dist/inferno-dom.js"></script>
 		<script src="../../packages/inferno/dist/inferno-create-element.min.js"></script>
 		<script>
 			var createElement = InfernoCreateElement;
@@ -251,9 +252,7 @@
 							createElement('path', {id:"path958",stroke:"#000000",d:"M265.752,848.265c0,0,3.531-11.477-7.946-3.53"}),
 							createElement('path', {id:"path962",stroke:"#000000",d:"M361.097,863.271c0,0,2.648-19.422-17.655,3.531"})
 						);
-
-				parentNode = document.getElementsByTagName('body')[0];
-			InfernoDOM.render(tiger, parentNode);
+			InfernoDOM.render(tiger, document.getElementById('app'));
 		</script>
 	</body>
 </html>

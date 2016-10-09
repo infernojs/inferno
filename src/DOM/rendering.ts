@@ -13,7 +13,7 @@ import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
 import cloneVNode from '../factories/cloneVNode';
 
-const roots = new Map<Node | SVGAElement, { input: any }>();
+export const roots = new Map<Node | SVGAElement, { input: any }>();
 export const componentToDOMNodeMap = new Map();
 
 export function findDOMNode(domNode) {

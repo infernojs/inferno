@@ -1,6 +1,4 @@
 import { render } from './../rendering';
-import Component from './../../component/es2015';
-import { innerHTML } from '../../tools/utils';
 import {
 	createStaticVElement,
 	createOptBlueprint,

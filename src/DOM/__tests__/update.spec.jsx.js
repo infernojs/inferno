@@ -22,6 +22,8 @@ const Inferno = {
 	NodeTypes
 };
 
+const sinon = require('sinon/pkg/sinon');
+
 describe('Stateful Component updates', () => {
 
 	let container;
@@ -532,7 +534,7 @@ describe('Stateful Component updates', () => {
 	it('Should not crash when patching array to array with hooks', () => {
 		let updater = null;
 		const stuff = [<div >{['Test']}</div>, <span>1</span>];
-		const orig = [[<span onAttached={function(){}}>{'1'}</span>]];
+		const orig = [[<span ref={function(){}}>{'1'}</span>]];
 		class Stuff extends Component {
 			constructor(props) {
 				super(props);
@@ -559,5 +561,5 @@ describe('Stateful Component updates', () => {
 		updater(orig);
 		expect(container.innerHTML).to.equal('<div><div><span>1</span></div></div>');
 
-	})
+	});
 });

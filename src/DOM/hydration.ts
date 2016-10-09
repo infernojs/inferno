@@ -6,7 +6,8 @@ import {
 	isInvalid,
 	isStatefulComponent,
 	throwError,
-	isObject
+	isObject,
+	isNullOrUndef
 } from '../shared';
 import {
 	replaceChild,
@@ -17,7 +18,8 @@ import {
 import {
 	mountVText,
 	mountStatelessComponentCallbacks,
-	mountStatefulComponentCallbacks
+	mountStatefulComponentCallbacks,
+	mountChildren
 } from './mounting';
 import {
 	isVPlaceholder,
@@ -35,6 +37,10 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/constants';
+import {
+	patchProp,
+	patchStyle
+} from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
 
@@ -124,7 +130,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 		const input = instance._lastInput;
 
 		instance._vComponent = vComponent;
-		hydrate(input, dom, lifecycle, context);
+		hydrate(input, dom, lifecycle, instance._childContext);
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
 		componentToDOMNodeMap.set(instance, dom);
 		vComponent.instance = instance;
@@ -179,7 +185,7 @@ function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
 	}
 }
 
-function hydrateChildren(childrenType, children, dom, lifecycle, context) {
+function hydrateChildren(childrenType, children, dom, lifecycle, context, isSVG = false) {
 	if (isNodeChildrenType(childrenType)) {
 		hydrate(children, dom.firstChild, lifecycle, context);
 	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
@@ -197,7 +203,7 @@ function hydrateChildren(childrenType, children, dom, lifecycle, context) {
 function hydrateStaticVElement(node, dom) {
 	const children = node.children;
 
-	if (!isNull(children)) {
+	if (!isNull(children) && !isNullOrUndef(dom)) {
 		if (!isStringOrNumber(children) && !isInvalid(children)) {
 			let childNode = dom.firstChild;
 
@@ -273,16 +279,32 @@ function hydrateVFragment(vFragment, currentDom, lifecycle, context) {
 	parentDom.insertBefore(pointer, currentDom);
 }
 
-function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom, lifecycle, context) {
+function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom, lifecycle, context, isSVG = false) {
 	switch (valueType) {
 		case ValueTypes.CHILDREN:
-			hydrateChildren(descriptor, value, dom, lifecycle, context);
+			if (value === null) {
+				mountChildren(descriptor, value, dom, lifecycle, context, isSVG, false);
+			} else {
+				hydrateChildren(descriptor, value, dom, lifecycle, context, isSVG);
+			}
 			break;
 		case ValueTypes.PROP_SPREAD:
 			debugger;
-      break;
-    default:
-      // TODO
+			break;
+		case ValueTypes.PROP_DATA:
+			dom.dataset[descriptor] = value;
+			break;
+		case ValueTypes.PROP_STYLE:
+			patchStyle(null, value, dom);
+			break;
+		case ValueTypes.PROP_VALUE:
+			dom.value = isNullOrUndef(value) ? '' : value;
+			break;
+		case ValueTypes.PROP:
+			patchProp(descriptor, null, value, dom, false);
+			break;
+		default:
+		// TODO
 	}
 }
 
@@ -294,10 +316,10 @@ function hydrate(input, dom, lifecycle, context) {
 		hydrateVComponent(input, dom, lifecycle, context);
 	} else if (isVElement(input)) {
 		hydrateVElement(input, dom, lifecycle, context);
-	} else if (isVFragment(input)) {
-		hydrateVFragment(input, dom, lifecycle, context);
 	} else if (isVText(input)) {
 		hydrateVText(input, dom);
+	} else if (isVFragment(input)) {
+		hydrateVFragment(input, dom, lifecycle, context);
 	} else if (isVPlaceholder(input)) {
 		debugger;
 	} else {

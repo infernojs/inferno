@@ -5,10 +5,20 @@ import {
 	isInvalid,
 	isStatefulComponent
 } from './../shared';
-import { escapeText, escapeAttr, isVoidElement } from './utils';
+import {
+	escapeText,
+	escapeAttr,
+	isVoidElement
+} from './utils';
 import { Readable } from 'stream';
-import { isVElement, isVComponent } from './../core/shapes';
-import { renderStyleToString, renderAttributes } from './prop-renderers';
+import {
+	isVElement,
+	isVComponent
+} from './../core/shapes';
+import {
+	renderStyleToString,
+	renderAttributes
+} from './prop-renderers';
 
 export class RenderStream extends Readable {
 	initNode: any;

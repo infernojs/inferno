@@ -1,7 +1,10 @@
 import { render } from './../../DOM/rendering';
 import Component from './../es2015';
 import createElement from './../../factories/createElement';
-import { innerHTML, waits } from '../../tools/utils';
+import {
+	innerHTML,
+	waits
+} from '../../tools/utils';
 
 describe('Components (non-JSX)', () => {
 	let container;

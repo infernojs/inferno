@@ -2,8 +2,17 @@ import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
 import createElement from './../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
-import { createStaticVElement, createOptBlueprint, createVComponent, createOptVElement } from './../../core/shapes';
-import { ChildrenTypes, ValueTypes, NodeTypes } from './../../core/constants';
+import {
+	createStaticVElement,
+	createOptBlueprint,
+	createVComponent,
+	createOptVElement
+} from './../../core/shapes';
+import {
+	ChildrenTypes,
+	ValueTypes,
+	NodeTypes
+} from './../../core/constants';
 
 const Inferno = {
 	createOptVElement,
@@ -14,6 +23,7 @@ const Inferno = {
 	ValueTypes,
 	NodeTypes
 };
+const sinon = require('sinon/pkg/sinon');
 
 describe('Components (JSX)', () => {
 	let container;
@@ -2395,21 +2405,38 @@ describe('Components (JSX)', () => {
 			render() {
 				return [
 					this.props.foo
-				]
+				];
+			}
+		}
+
+		class A extends Component {
+			render() {
+				return <div></div>;
 			}
 		}
 
 		it('Should be able to mount with array', () => {
-			debugger;
 			render(<RetArray />, container);
 			expect(container.innerHTML).to.equal('');
 			render(null, container);
 		});
 
 		it('Should be able to mount with array', () => {
-			debugger;
 			render(<RetArray foo={<div></div>} />, container);
 			expect(container.innerHTML).to.equal('<div></div>');
 		});
+
+		it('Should be able to mount and unmount array', () => {
+			let mountedColumnSpy = sinon.spy(A.prototype, 'componentWillMount');
+			let unmountColumnSpy = sinon.spy(A.prototype, 'componentWillUnmount');
+			render(<RetArray foo={<A />} />, container);
+			expect(mountedColumnSpy.callCount).to.equal(1);
+			expect(unmountColumnSpy.callCount).to.equal(0);
+			expect(container.innerHTML).to.equal('<div></div>');
+			render(<RetArray foo={null} />, container);
+			expect(mountedColumnSpy.callCount).to.equal(1);
+			expect(unmountColumnSpy.callCount).to.equal(1);
+			expect(container.innerHTML).to.equal('');
+		})
 	});
 });

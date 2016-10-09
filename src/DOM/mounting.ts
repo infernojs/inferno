@@ -22,7 +22,10 @@ import {
 	documentCreateElement,
 	copyPropsTo
 } from './utils';
-import { patchStyle, patchProp } from './patching';
+import {
+	patchStyle,
+	patchProp
+} from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import {
 	isVElement,
@@ -40,7 +43,11 @@ import {
 	isNonKeyedListChildrenType,
 	isUnknownChildrenType
 } from '../core/constants';
-import { recycleOptVElement, recyclingEnabled, recycleVComponent } from './recycling';
+import {
+	recycleOptVElement,
+	recyclingEnabled,
+	recycleVComponent
+} from './recycling';
 import createStaticVElementClone from '../factories/createStaticVElementClone';
 
 export function mount(input, parentDom, lifecycle, context, isSVG, shallowUnmount) {
@@ -232,7 +239,7 @@ function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, l
 	}
 }
 
-function mountChildren(childrenType, children, dom, lifecycle, context, isSVG, shallowUnmount) {
+export function mountChildren(childrenType, children, dom, lifecycle, context, isSVG, shallowUnmount) {
 	if (isTextChildrenType(childrenType)) {
 		setTextContent(dom, children);
 	} else if (isNodeChildrenType(childrenType)) {

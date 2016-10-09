@@ -39,7 +39,7 @@ function bindAll(ctx) {
 export default function createClass(obj) {
 	function Cl(props) {
 		extend(this, obj);
-		Component.call(this, props);
+		Component.call(this, props); // TODO: This will fail in pure ES6 environment
 		bindAll(this);
 		if (this.getInitialState) {
 			this.state = this.getInitialState();
@@ -49,6 +49,9 @@ export default function createClass(obj) {
 	F.prototype = Component.prototype;
 	Cl.prototype = new F();
 	Cl.prototype.constructor = Cl;
+	if (obj.getDefaultProps) {
+		(Cl as any).defaultProps = obj.getDefaultProps();
+	}
 	(Cl as any).displayName = obj.displayName || 'Component';
 	return Cl;
 }
