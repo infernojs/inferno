@@ -63,4 +63,26 @@ describe('Components createClass (non-JSX)', () => {
 			done();
 		}, 2);
 	});
+	it('should have propTypes on created class', () => {
+		const propTypes = {
+			value: 'not important'
+		};
+		const Component = createClass({
+			propTypes,
+			render() {
+				return createElement('div', null, 'Hello world!');
+			}
+		});
+
+		expect(Component.propTypes).to.equal(propTypes);
+	});
+	it('should not have propTypes on created class when not specified', () => {
+		const Component = createClass({
+			render() {
+				return createElement('div', null, 'Hello world!');
+			}
+		});
+
+		expect(Component.propTypes).to.be.undefined;
+	});
 });
