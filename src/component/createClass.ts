@@ -30,7 +30,7 @@ function extend(base, props, all?) {
 function bindAll(ctx) {
 	for (let i in ctx) {
 		const v = ctx[i];
-		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST.hasOwnProperty(i)) {
+		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST[i]) {
 			(ctx[i] = v.bind(ctx)).__bound = true;
 		}
 	}
