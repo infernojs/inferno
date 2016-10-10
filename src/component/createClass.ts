@@ -53,5 +53,6 @@ export default function createClass(obj) {
 		(Cl as any).defaultProps = obj.getDefaultProps();
 	}
 	(Cl as any).displayName = obj.displayName || 'Component';
+	(Cl as any).propTypes = obj.propTypes;
 	return Cl;
 }
