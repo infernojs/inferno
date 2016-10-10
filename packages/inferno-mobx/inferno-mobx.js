@@ -1,2 +1,6 @@
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-module.exports = require('inferno/dist/inferno-mobx');
+exports.default = require('inferno/dist/inferno-mobx');
+module.exports = exports['default'];
