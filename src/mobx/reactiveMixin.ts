@@ -1,10 +1,6 @@
-import invariant from 'invariant';
-import {
-	isObservable,
-	Reaction,
-	extras
-} from 'mobx';
-import EventEmitter from './utils/EventEmitter';
+import { isObservable, Reaction, extras } from 'mobx';
+import EventEmitter from './EventEmitter';
+import { throwError } from '../shared';
 import Component from 'inferno-component';
 import InfernoDOM from 'inferno-dom';
 
@@ -32,9 +28,10 @@ function reportRendering (component) {
 	});
 }
 
-export function trackComponents () {
-	invariant(typeof WeakMap !== 'undefined', '[inferno-mobx] tracking components is not supported in this browser.');
-
+export function trackComponents() {
+	if (typeof WeakMap === 'undefined') {
+		throwError('[inferno-mobx] tracking components is not supported in this browser.');
+	}
 	if (!isDevtoolsEnabled) {
 		isDevtoolsEnabled = true;
 	}

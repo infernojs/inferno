@@ -1,6 +1,6 @@
-import invariant from 'invariant';
 import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
+import { throwError } from '../shared';
 import reactiveMixin from './reactiveMixin';
 import inject from './inject';
 
@@ -15,7 +15,9 @@ const lifecycleMethods = [
  * Wraps a component and provides stores as props
  */
 function connect (arg1: string | any, arg2 = null): any {
-	invariant(typeof arg1 !== 'string', 'Store names should be provided as array');
+	if (typeof arg1 === 'string') {
+		throwError('Store names should be provided as array');
+	}
 
 	if (Array.isArray(arg1)) {
 		// component needs stores
@@ -50,7 +52,9 @@ function connect (arg1: string | any, arg2 = null): any {
 		return connect(newClass);
 	}
 
-	invariant(componentClass, 'Please pass a valid component to "observer"');
+	if (!componentClass) {
+		throwError('Please pass a valid component to "observer"');
+	}
 
 	const target = componentClass.prototype || componentClass;
 
