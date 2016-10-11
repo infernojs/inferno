@@ -1,6 +1,6 @@
 
 import { expect } from 'chai';
-import sinon from 'sinon';
+import * as sinon from 'sinon';
 
 import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
@@ -730,7 +730,7 @@ describe('Elements (JSX)', () => {
 		expect(container.innerHTML).to.equal('<span><div></div></span>');
 	});
 
-	it.skip('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
+	it('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
 		function test() { }
 		const obj = { fn () { }, click () { } };
 		const bool = false;
