@@ -1,3 +1,4 @@
+import { isObject, isFunction, isNull, isUndefined } from '../shared';
 import { roots } from './rendering';
 
 export const devToolsStatus = {
@@ -5,9 +6,25 @@ export const devToolsStatus = {
 };
 
 function sendToDevTools(global, data) {
-	let event = new CustomEvent('inferno.client.message', {
-		detail: JSON.stringify(data)
+	// const occurances = new Map();
+	const event = new CustomEvent('inferno.client.message', {
+		detail: JSON.stringify(data, (key, val) => {
+			if (!isNull(val)) {
+				if (key == '_vComponent' || !isUndefined(val.nodeType)) {
+					return;
+				} else if (isFunction(val)) {
+					return val.name;
+				} else if (isObject(val)) {
+					// if (occurances.has(val)) {
+					// 	return;
+					// }
+					// occurances.set(val, true);
+				}
+			}
+			return val;
+		})
 	});
+
 	global.dispatchEvent(event);
 }
 
