@@ -42,7 +42,7 @@ module.exports = function (config) {
 						loaders: ['babel-loader', 'ts-loader'],
 						exclude: /node_modules/
 					},
-										{
+					{
 						test: /\.js/,
 						loader: 'babel-loader',
 						exclude: /node_modules/,
@@ -58,7 +58,16 @@ module.exports = function (config) {
 				],
 			},
 			resolve: {
-				extensions: ['', '.js', '.ts']
+				extensions: ['', '.js', '.ts'],
+				alias: {
+					'inferno-dom': '../../packages/inferno-dom/src',
+					'inferno-component': '../../packages/inferno-component/src',
+					'inferno-create-class': '../../packages/inferno-create-class/src',
+					'inferno-create-element': '../../packages/inferno-create-element/src',
+					'inferno-hyperscript': '../../packages/inferno-hyperscript/src',
+					'inferno-router': '../../packages/inferno-router/src',
+					'inferno-server': '../../packages/inferno-server/src'
+				}
 			}
 		},
 		webpackMiddleware: {
