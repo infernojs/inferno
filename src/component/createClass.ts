@@ -36,6 +36,7 @@ function bindAll(ctx) {
 export default function createClass<P, S>(obj: ComponentSpec<P, S>) {
 	return class Cl extends Component<P, S> {
 		static displayName = obj.displayName || 'Component';
+		static propTypes = obj.propTypes;
 		static defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
 
 		constructor(props) {

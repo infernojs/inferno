@@ -1,5 +1,5 @@
---compilers ts:ts-node/register,js:babel-core/register,js:babel-core/register
---require ./config/compiler.js ./config/DOM.js
+--compilers ts:./config/compiler.js,js:babel-core/register,js:babel-core/register
+--require ./config/DOM.js
 --reporter spec
 --ui bdd
 --recursive

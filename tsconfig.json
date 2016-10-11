@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "es6",
 		"module": "es2015",
-		"allowJs": true,
+		"allowJs": false,
 		"allowSyntheticDefaultImports": true,
 		"sourceMap": true,
 		"lib": [
@@ -20,5 +20,8 @@
 		"noUnusedLocals": true,
 		"strictNullChecks": false,
 		"removeComments": false
-	}
+	},
+	"exclude": [
+		"node_modules"
+	]
 }

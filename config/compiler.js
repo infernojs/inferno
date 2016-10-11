@@ -1,3 +1,10 @@
+require('ts-node').register({
+	compilerOptions: {
+        jsx: 'preserve'
+    },
+	lazy: true
+});
+
 var fs = require('fs');
 var path = require('path');
 var buble = require('buble');

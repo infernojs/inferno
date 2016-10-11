@@ -31,6 +31,7 @@ export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
         };
 
         displayName?: string;
+        propTypes?: {[index: string]: Function};
 
         getDefaultProps?(): P;
 		getInitialState?(): S;
