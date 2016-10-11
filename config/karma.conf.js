@@ -1,5 +1,3 @@
-const path = require('path')
-
 /* global module */
 module.exports = function (config) {
 	config.set({
@@ -61,7 +59,7 @@ module.exports = function (config) {
 			},
 			resolve: {
 				extensions: ['', '.js', '.ts'],
-				fallback: path.resolve('./packages')
+				modulesDirectories: ['node_modules', 'packages']
 			}
 		},
 		webpackMiddleware: {
