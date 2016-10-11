@@ -58,16 +58,7 @@ module.exports = function (config) {
 				],
 			},
 			resolve: {
-				extensions: ['', '.js', '.ts'],
-				alias: {
-					'inferno-dom': '../../packages/inferno-dom/src',
-					'inferno-component': '../../packages/inferno-component/src',
-					'inferno-create-class': '../../packages/inferno-create-class/src',
-					'inferno-create-element': '../../packages/inferno-create-element/src',
-					'inferno-hyperscript': '../../packages/inferno-hyperscript/src',
-					'inferno-router': '../../packages/inferno-router/src',
-					'inferno-server': '../../packages/inferno-server/src'
-				}
+				extensions: ['', '.js', '.ts']
 			}
 		},
 		webpackMiddleware: {

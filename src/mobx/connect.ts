@@ -1,4 +1,4 @@
-import invariant from 'invariant';
+import invariant = require('invariant');
 import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
 import reactiveMixin from './reactiveMixin';

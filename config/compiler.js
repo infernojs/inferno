@@ -23,10 +23,10 @@ if (!old) {
 }
 
 require.extensions['.ts'] = function (m, filename) {
-	
+
 	if ( nodeModulesPattern.test( filename ) ) return old( m, filename );
 	var _compile = m._compile;
-	m._compile = function (code, fileName) { 
+	m._compile = function (code, fileName) {
 		var compiled;
 		try {
 			// extract map from ts-node (ES6) output
@@ -42,7 +42,17 @@ require.extensions['.ts'] = function (m, filename) {
 			const transpiledModules = babel.transform(bubleResult.code, {
 				sourceMaps: true,
 				presets: [],
-				plugins: ["transform-es2015-modules-commonjs"]
+				plugins: [
+					"transform-es2015-modules-commonjs",
+					["module-resolver", {
+						"alias": {
+							"inferno-component": "../../src/component/es2015",
+							"inferno-dom": "../../src/DOM/rendering",
+							"inferno-create-class": "../../src/component/createClass",
+							"inferno-create-element": "../../src/factories/createElement"
+						}
+					}]
+				]
 			});
 
 			// merge babel map with previous map

@@ -1,4 +1,4 @@
-import hoistStatics from 'hoist-non-inferno-statics';
+import hoistStatics = require('hoist-non-inferno-statics');
 import createElement from 'inferno-create-element';
 import createClass from 'inferno-create-class';
 

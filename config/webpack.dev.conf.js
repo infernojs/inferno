@@ -43,7 +43,6 @@ module.exports = {
 		noInfo: false,
 		hot: true,
 		inline: true
-	
 	},
 	resolve: {
 		extensions: ['', '.js', '.ts']

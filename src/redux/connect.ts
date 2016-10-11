@@ -9,9 +9,9 @@ import {
 	createVComponent,
 	IProps
 } from '../core/shapes';
-import hoistStatics from 'hoist-non-inferno-statics';
-import invariant from 'invariant';
-import isPlainObject from 'lodash/isPlainObject';
+import hoistStatics = require('hoist-non-inferno-statics');
+import invariant = require('invariant');
+import isPlainObject = require('lodash/isPlainObject');
 
 export interface WrapWithConnect {
 	(WrappedComponent: Component<any, any>): void;
