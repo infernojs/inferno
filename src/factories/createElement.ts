@@ -21,12 +21,14 @@ const componentHooks = {
 	onComponentDidUpdate: true
 };
 
-export default function createElement(name: string | Function, props: any, ..._children) {
+export type InfernoElement = VElement | VComponent;
+
+export default function createElement(name: string | Function, props?: any, ..._children) {
 	if (isInvalid(name) || isObject(name)) {
 		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
 	let children: any = _children;
-	let vNode: VElement | VComponent;
+	let vNode: InfernoElement;
 
 	if (_children) {
 		if (_children.length === 1) {
