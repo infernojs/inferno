@@ -1,4 +1,4 @@
-import Component from './es2015';
+import Component, {ComponentSpec} from './es2015';
 import { isNullOrUndef } from '../shared';
 
 // don't autobind these methods since they already have guaranteed context.
@@ -14,9 +14,6 @@ const AUTOBIND_BLACKLIST = {
 	componentWillUnmount: 1,
 	componentDidUnmount: 1
 };
-
-function F() {
-}
 
 function extend(base, props, all?) {
 	for (let key in props) {
@@ -36,23 +33,19 @@ function bindAll(ctx) {
 	}
 }
 
-export default function createClass(obj) {
-	function Cl(props) {
-		extend(this, obj);
-		Component.call(this, props); // TODO: This will fail in pure ES6 environment
-		bindAll(this);
-		if (this.getInitialState) {
-			this.state = this.getInitialState();
-		}
-	}
+export default function createClass<P, S>(obj: ComponentSpec<P, S>) {
+	return class Cl extends Component<P, S> {
+		static displayName = obj.displayName || 'Component';
+		static propTypes = obj.propTypes;
+		static defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
 
-	F.prototype = Component.prototype;
-	Cl.prototype = new F();
-	Cl.prototype.constructor = Cl;
-	if (obj.getDefaultProps) {
-		(Cl as any).defaultProps = obj.getDefaultProps();
-	}
-	(Cl as any).displayName = obj.displayName || 'Component';
-	(Cl as any).propTypes = obj.propTypes;
-	return Cl;
+		constructor(props) {
+			super(props);
+			extend(this, obj);
+			bindAll(this);
+			if (obj.getInitialState) {
+				this.state = obj.getInitialState.call(this);
+			}
+		}
+	};
 }

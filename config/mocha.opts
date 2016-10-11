@@ -1,10 +1,11 @@
---compilers ts:ts-node/register,js:babel-core/register,js:babel-core/register
---require ./config/compiler.js ./config/DOM.js
+--compilers ts:./config/compiler.js,js:babel-core/register,js:babel-core/register
+--require ./config/DOM.js
 --reporter spec
 --ui bdd
 --recursive
 --timeout 15000
 --bail
 
+src/**/*__tests__*/**/*spec.tsx
 src/**/*__tests__*/**/*spec.jsx.js
 src/**/*__tests__*/**/*spec.browser.js

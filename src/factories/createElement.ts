@@ -1,6 +1,8 @@
 import {
 	createVElement,
-	createVComponent
+	createVComponent,
+	VElement,
+	VComponent
 } from '../core/shapes';
 import {
 	isAttrAnEvent,
@@ -19,12 +21,14 @@ const componentHooks = {
 	onComponentDidUpdate: true
 };
 
-export default function createElement(name: string | Function, props: any, ..._children) {
+export type InfernoElement = VElement | VComponent;
+
+export default function createElement(name: string | Function, props?: any, ..._children) {
 	if (isInvalid(name) || isObject(name)) {
 		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
 	let children: any = _children;
-	let vNode;
+	let vNode: InfernoElement;
 
 	if (_children) {
 		if (_children.length === 1) {
@@ -34,7 +38,6 @@ export default function createElement(name: string | Function, props: any, ..._c
 		}
 	}
 	if (isString(name)) {
-		let hooks;
 		vNode = createVElement(name, null, null, null, null, null);
 
 		for (let prop in props) {
@@ -57,9 +60,6 @@ export default function createElement(name: string | Function, props: any, ..._c
 		vNode.props = props;
 		if (!isUndefined(children)) {
 			vNode.children = children;
-		}
-		if (hooks) {
-			vNode.hooks = hooks;
 		}
 	} else {
 		let hooks;

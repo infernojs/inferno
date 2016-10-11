@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "es6",
 		"module": "es2015",
-		"allowJs": true,
+		"allowJs": false,
 		"allowSyntheticDefaultImports": true,
 		"sourceMap": true,
 		"lib": [
@@ -11,11 +11,17 @@
 			"dom"
 		],
 		"types": [
-			"node"
+			"node",
+			"mocha",
+			"chai",
+			"sinon"
 		],
 		"jsx": "preserve",
 		"noUnusedLocals": true,
 		"strictNullChecks": false,
 		"removeComments": false
-	}
+	},
+	"exclude": [
+		"node_modules"
+	]
 }
