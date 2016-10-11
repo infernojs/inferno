@@ -11,7 +11,10 @@
 			"dom"
 		],
 		"types": [
-			"node"
+			"node",
+			"mocha",
+			"chai",
+			"sinon"
 		],
 		"jsx": "preserve",
 		"noUnusedLocals": true,
