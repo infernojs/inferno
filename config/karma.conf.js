@@ -1,3 +1,5 @@
+const path = require('path')
+
 /* global module */
 module.exports = function (config) {
 	config.set({
@@ -42,7 +44,7 @@ module.exports = function (config) {
 						loaders: ['babel-loader', 'ts-loader'],
 						exclude: /node_modules/
 					},
-										{
+					{
 						test: /\.js/,
 						loader: 'babel-loader',
 						exclude: /node_modules/,
@@ -58,7 +60,8 @@ module.exports = function (config) {
 				],
 			},
 			resolve: {
-				extensions: ['', '.js', '.ts']
+				extensions: ['', '.js', '.ts'],
+				fallback: path.resolve('./packages')
 			}
 		},
 		webpackMiddleware: {
