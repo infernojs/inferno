@@ -42,7 +42,9 @@ function connect (arg1: string | any, arg2 = null): any {
 			propTypes: componentClass.propTypes,
 			contextTypes: componentClass.contextTypes,
 			getDefaultProps: () => componentClass.defaultProps,
-			render: () => componentClass.call(this, this.props, this.context)
+			render() {
+				return componentClass.call(this, this.props, this.context);
+			}
 		});
 
 		return connect(newClass);
