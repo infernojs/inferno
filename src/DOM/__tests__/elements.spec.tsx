@@ -730,9 +730,9 @@ describe('Elements (JSX)', () => {
 		expect(container.innerHTML).to.equal('<span><div></div></span>');
 	});
 
-	it('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
+	it.skip('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
 		function test() { }
-		const obj = { fn: function () { }, click: function () { } };
+		const obj = { fn () { }, click () { } };
 		const bool = false;
 		const newValue = 't';
 		const spread = { id: 'test' };

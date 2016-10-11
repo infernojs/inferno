@@ -6,6 +6,15 @@
     "plugins": [
         "transform-object-rest-spread",
         "babel-plugin-syntax-jsx",
-        "babel-plugin-inferno"
+        "babel-plugin-inferno",
+        ["module-resolver", {
+          "extensions": [".js", ".jsx", ".ts", ".tsx"],
+          "alias": {
+            "inferno-component": "./src/component/es2015",
+            "inferno-dom": "./src/DOM/rendering",
+            "inferno-create-class": "./src/component/createClass",
+            "inferno-create-element": "./src/factories/createElement"
+          }
+        }]
     ]
 }

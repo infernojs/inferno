@@ -19,7 +19,7 @@ const Inferno = {
 };
 Inferno; // suppress ts 'never used' error
 
-describe.only('MobX Provider', () => {
+describe('MobX Provider', () => {
 	let container;
 	let stores = observable({
 		form: {
