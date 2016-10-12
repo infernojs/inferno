@@ -56,7 +56,11 @@ if (process.env.NODE_ENV === 'production') {
 	plugins.push(
 		replace({
 			VERSION: pack.version,
-			'process.env.NODE_ENV': JSON.stringify('development')
+			//
+			// Setting NODE_ENV: 'development' replaces production checks from bundle making
+			// it impossible for end user to build their own bundle without minified code
+			//
+			// 'process.env.NODE_ENV': JSON.stringify('development')
 		})
 	)
 }
