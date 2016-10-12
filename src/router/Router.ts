@@ -6,7 +6,8 @@ import {
 import {
 	exec,
 	convertToHashbang,
-	pathRankSort
+	pathRankSort,
+	flatten
 } from './utils';
 import { createVComponent } from '../core/shapes';
 import cloneVNode from '../factories/cloneVNode';
@@ -47,7 +48,8 @@ export default class Router extends Component<IRouterProps, any> {
 		this.props.history.removeRouter(this);
 	}
 
-	handleRoutes(routes, url, hashbang, wrapperComponent, lastPath) {
+	handleRoutes(_routes, url, hashbang, wrapperComponent, lastPath) {
+		const routes = flatten(_routes);
 		routes.sort(pathRankSort);
 
 		for (let i = 0; i < routes.length; i++) {

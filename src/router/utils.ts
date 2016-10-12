@@ -1,3 +1,5 @@
+import { isArray } from '../shared';
+
 export const EMPTY = {};
 
 function segmentize(url) {
@@ -6,6 +8,25 @@ function segmentize(url) {
 
 function strip(url) {
 	return url.replace(/(^\/+|\/+$)/g, '');
+}
+
+function flattenArray(oldArray, newArray) {
+	for (let i = 0; i < oldArray.length; i++) {
+		const item = oldArray[i];
+
+		if (isArray(item)) {
+			flattenArray(item, newArray);
+		} else {
+			newArray.push(item);
+		}
+	}
+}
+
+export function flatten(oldArray) {
+	const newArray = [];
+
+	flattenArray(oldArray, newArray);
+	return newArray;
 }
 
 export function convertToHashbang(url) {
