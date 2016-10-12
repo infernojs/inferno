@@ -486,11 +486,18 @@ babel-plugin-external-helpers@^6.4.0:
   dependencies:
     babel-runtime "^6.0.0"
 
-babel-plugin-inferno@^1.0.0-beta1:
-  version "1.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/babel-plugin-inferno/-/babel-plugin-inferno-1.0.0-beta2.tgz#6a2b1a37b6f1c85acfa24bf153248b171c1138cf"
+babel-plugin-inferno@^1.0.0-beta3:
+  version "1.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/babel-plugin-inferno/-/babel-plugin-inferno-1.0.0-beta3.tgz#69aa24860e5249e268d67805c7ab8eece7613512"
   dependencies:
     babel-plugin-syntax-jsx "^6.13.0"
+
+babel-plugin-module-resolver@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-module-resolver/-/babel-plugin-module-resolver-2.2.0.tgz#344d7bc06c7a530a3c9a15cb517cdb38e3bf152a"
+  dependencies:
+    glob "^7.0.6"
+    resolve "^1.1.7"
 
 babel-plugin-syntax-async-functions@^6.8.0:
   version "6.13.0"
@@ -3428,10 +3435,6 @@ oauth-sign@~0.8.1:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
 
-object-assign@^2.0.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-2.1.1.tgz#43c36e5d569ff8e4816c4efa8be02d26967c18aa"
-
 object-assign@^4.0.1, object-assign@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.0.tgz#7a3b3d0e98063d43f4c03f2e8ae6cd51a86883a0"
@@ -4596,15 +4599,15 @@ tryit@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.2.tgz#c196b0073e6b1c595d93c9c830855b7acc32a453"
 
-ts-loader@^0.8.2:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-0.8.2.tgz#7331296d13d5b3105cd905cebca39143eed2b255"
+ts-loader@^0.9.0:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-0.9.1.tgz#ff560bf73fba7beada492996eae6cf17287130b6"
   dependencies:
     arrify "^1.0.0"
     colors "^1.0.3"
     enhanced-resolve "^0.9.0"
     loader-utils "^0.2.6"
-    object-assign "^2.0.0"
+    object-assign "^4.1.0"
     semver "^5.0.1"
 
 ts-node@^1.4.2:
