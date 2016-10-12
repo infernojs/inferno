@@ -10,8 +10,8 @@ import {
 	IProps
 } from '../core/shapes';
 import hoistStatics from 'hoist-non-inferno-statics';
-import invariant from 'invariant';
-import isPlainObject from 'lodash/isPlainObject';
+import { throwError } from '../shared';
+import { isPlainObject } from './helpers';
 
 export interface WrapWithConnect {
 	(WrappedComponent: Component<any, any>): void;
@@ -124,12 +124,12 @@ export default function connect(
 					this.trySubscribe();
 				};
 
-				invariant(this.store,
-					'Could not find "store" in either the context or ' +
-					`props of "${connectDisplayName}". ` +
-					'Either wrap the root component in a <Provider>, ' +
-					`or explicitly pass "store" as a prop to "${connectDisplayName}".`
-				);
+				if (!this.store) {
+					throwError('Could not find "store" in either the context or ' +
+						`props of "${connectDisplayName}". ` +
+						'Either wrap the root component in a <Provider>, ' +
+						`or explicitly pass "store" as a prop to "${connectDisplayName}".`);
+				}
 
 				const storeState = this.store.getState();
 				this.state = { storeState };

@@ -1,6 +1,6 @@
 
 import { expect } from 'chai';
-import sinon from 'sinon';
+import * as sinon from 'sinon';
 
 import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
@@ -732,7 +732,7 @@ describe('Elements (JSX)', () => {
 
 	it('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
 		function test() { }
-		const obj = { fn: function () { }, click: function () { } };
+		const obj = { fn () { }, click () { } };
 		const bool = false;
 		const newValue = 't';
 		const spread = { id: 'test' };

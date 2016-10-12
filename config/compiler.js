@@ -1,7 +1,7 @@
 require('ts-node').register({
 	compilerOptions: {
-        jsx: 'preserve'
-    },
+		jsx: 'preserve'
+	},
 	lazy: true
 });
 
@@ -30,7 +30,18 @@ var babelOptions = {
 	babelrc: false,
 	sourceMaps: true,
 	presets: [],
-	plugins: ["transform-es2015-modules-commonjs", "babel-plugin-inferno"]
+	plugins: [
+		"transform-es2015-modules-commonjs",
+		"babel-plugin-inferno",
+		["module-resolver", {
+			"alias": {
+				"inferno-component": "../../src/component/es2015",
+				"inferno-dom": "../../src/DOM/rendering",
+				"inferno-create-class": "../../src/component/createClass",
+				"inferno-create-element": "../../src/factories/createElement"
+			}
+		}]
+	]
 };
 
 registerExtension('.ts');

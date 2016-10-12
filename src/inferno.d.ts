@@ -17,8 +17,11 @@ declare module 'redux' {
 	export function bindActionCreators(actionCreation: any, dispatch: (action: any) => any): any;
 }
 
-/// <reference path="../node_modules/@types/sinon/index.d.ts" />
-
 declare module 'sinon' {
-	export default Sinon;
+	export function spy(obj: any, event: string): any;
+	export const assert;
+}
+
+declare module 'sinon.assert' {
+	export function calledOnce(obj: any): any;
 }

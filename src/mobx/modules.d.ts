@@ -25,6 +25,7 @@ declare module 'inferno-create-element' {
 }
 
 declare module 'mobx' {
+	export function observable(value: any): any;
 	export function isObservable(value: any, property?: string): boolean;
 	export class Reaction {
 		constructor(name?: string, onInvalidate?: any)
