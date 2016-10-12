@@ -6,6 +6,8 @@ lib
 .idea
 .vscode
 jsconfig.json
+Gemfile
+Gemfile.lock
 coverage
 node_modules
 packages/inferno/dist

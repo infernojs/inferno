@@ -1,4 +1,0 @@
----
----
-
-Getting Started

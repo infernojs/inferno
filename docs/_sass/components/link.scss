@@ -1,13 +1,8 @@
 a {
-  color: $c_text_light;
+  color: $link_color;
   text-decoration: none;
-  cursor: pointer;
 
-  * {
-    cursor: pointer;
-  }
-
-  &:hover {
-    color: $c_text_default;
+  &:hover,&.active {
+    text-decoration: underline;
   }
 }

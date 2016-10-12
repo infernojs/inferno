@@ -1,36 +1,114 @@
-.indexPage_landing {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
+.landing-banner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 500px;
+  background-image: url('../static/img/stripe.png');
+  background-position: left top;
+  background-repeat: repeat;
+  margin-bottom: 50px;
+  overflow: hidden;
+
+  .diagonal-shapes {
+    width: 100%;
+    height: 500px;
+    background-image: url('../static/img/diagonal_shape.png');
+    background-position: center bottom;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-top: -380px;
+  }
+}
+
+.tagline {
+  width: 428px;
+  font-size: 22px;
   text-align: center;
-  color: $c_text_light;
+  line-height: 30px;
+  margin: 0 auto 35px;
+}
 
-  .indexPageLanding_nav {
-    display: flex;
-    flex-direction: row;
-    justify-content: stretch;
-    align-items: stretch;
-    margin: 25px 0;
+.button-enclose {
+  width: 150px;
+  margin: 0 auto;
+  overflow: hidden;
+  cursor: pointer;
+}
 
-    > li {
-      font-size: 18px;
-      list-style: none;
-      list-style-type: none;
+.link-button {
+  float: left;
+}
+
+.key-features {
+  margin-bottom: 100px;
+  overflow: hidden;
+
+  li {
+    float: left;
+    width: 25%;
+
+    .kf-icon {
+      float: left;
+      margin: 4px 10px 0 0;
     }
 
-    > * {
-      margin: 0 10px;
+    .kf-desc {
+      width: 190px;
+      margin: 12px 10px 10px 32px;
+      clear: both;
     }
   }
+}
 
-  .indexPageLanding_image {
-    height: 25%;
-    max-height: 150px;
-    margin: 50px 0;
+.inferno-intro {
+  width: 580px;
+  margin-bottom: 100px;
+
+  li {
+    margin-bottom: 40px;
+  }
+}
+
+.banner-bottom {
+  width: 100%;
+  height: 110px;
+  background: $brand-primary;
+  overflow: hidden;
+
+  .button-enclose {
+    margin: 31px auto;
+  }
+}
+
+.contributors {
+  float: left;
+  margin-top: 28px;
+  overflow: hidden;
+
+  .icon {
+    float: left;
+    margin-right: 10px;
   }
 
-  .indexPageLanding_link {
-    font-size: 2em;
+  .title {
+    float: left;
+    margin-top: 3px;
+    color: white;
+  }
+}
+
+.license {
+  float: right;
+  margin-top: 7px;
+  text-align: right;
+  overflow: hidden;
+
+  div:first-child {
+    margin-bottom: 10px;
+  }
+
+  a {
+    color: white;
+    text-decoration: underline;
   }
 }

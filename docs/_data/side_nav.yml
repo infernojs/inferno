@@ -1,0 +1,13 @@
+- title: Get Started
+  items:
+  - id: get-started
+    title: Installation
+  - id: get-started/overview
+    title: Overview
+- title: Benefits
+  items:
+  - id: benefits
+    title: Why Inferno?
+  - id: benefits/list-rendering
+    title: List Rendering
+- title: Learning Resources
