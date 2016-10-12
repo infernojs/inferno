@@ -39,7 +39,6 @@ There isn't (yet) a formal style guide for Inferno, so please take care to adher
 * Tabs, not spaces!
 * Semi-colons
 * Single-quotes for strings
-```
 
 Above all, code should be clean and readable, and commented where necessary. If you add a new feature, make sure you add a test to go along with it!
 
