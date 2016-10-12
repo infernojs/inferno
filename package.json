@@ -19,7 +19,7 @@
     "babel-core": "^6.17.0",
     "babel-eslint": "^7.0.0",
     "babel-loader": "^6.2.5",
-    "babel-plugin-inferno": "^1.0.0-beta1",
+    "babel-plugin-inferno": "^1.0.0-beta3",
     "babel-plugin-module-resolver": "^2.2.0",
     "babel-plugin-syntax-jsx": "^6.13.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
