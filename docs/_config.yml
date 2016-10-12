@@ -9,11 +9,32 @@ defaults:
     type: pages
   values:
     layout: page
+- scope:
+    path: get-started
+    type: pages
+  values:
+    layout: get-started
+- scope:
+    path: benefits
+    type: pages
+  values:
+    layout: benefits
+- scope:
+    path: learning-resources
+    type: pages
+  values:
+    layout: learning-resources
 
 # Build settings
-markdown: kramdown 
+markdown: kramdown
+
+# Sass settings
+sass:
+  sass_dir: _sass
+
 exclude:
 - Gemfile
 - Gemfile.lock
 - Rakefile
+- node_modules
 - README.md

@@ -1,16 +1,128 @@
-html {
-  font-family: 'Montserrat', -apple-system, sans-serif;
-  font-size: 16px;
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: $text_size;
+  color: $text_color;
+  line-height: $line_height;
 }
 
-body {
-  background-color: $c_default_white;
-  height: 100vh;
-  width: 100vw;
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: $h1_size;
+  color: $h1_color;
+  line-height: $h1_line_height;
+  margin: 0 0 26px 0;
+}
+
+h3 {
+  font-size: $h3_size;
+  color: $h3_color;
+  line-height: $h3_line_height;
+  margin: 0 0 12px 0;
+}
+
+ul {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  width: 580px;
+}
+
+.logo {
+  position: relative;
+  display: block;
+  width: 94px;
+  height: 96px;
+  background-image: url('../static/img/inferno.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 60px auto 40px;
+  cursor: pointer;
+}
+
+.logo-small {
+  display: block;
+  width: 73px;
+  height: 75px;
+  background-image: url('../static/img/inferno.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .container {
-  display: block;
-  width: 90%;
+  width: 1024px;
+  height: auto;
   margin: 0 auto;
+  padding: 0 50px;
+}
+
+.side-nav {
+
+  .legend {
+    margin-bottom: 50px;
+    overflow: hidden;
+  }
+
+  .logo-small {
+    float: left;
+  }
+
+  .docs-caption {
+    float: left;
+    font-size: 19px;
+    color: #D51D1D;
+    font-weight: 600;
+    margin: 54px 0 0 6px;
+  }
+
+  .sn-title {
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 24px;
+    margin-bottom: 10px;
+  }
+
+  .sn-list {
+    margin-bottom: 30px;
+
+    a {
+      display: block;
+      color: $text_color;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &.active {
+        color: $link_color;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.dc-right {
+  width: 640px;
+  margin-left: 300px;
+  padding: 20px 50px;
+
+  .docs-detail {
+    margin-top: 90px;
+  }
+}
+
+footer {
+  height: 90px;
+  background: $brand-secondary;
+  font-size: 14px;
+  color: #FFFFFF;
+  line-height: 18px;
+  padding: 20px 0;
 }
