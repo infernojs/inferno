@@ -60,4 +60,33 @@ describe('CreateElement (non-JSX)', () => {
 
 		expect(triggered).to.equal(true);
 	});
+
+	it('Should allow passing childs through "children" property (native component)', () => {
+		const app = () => {
+			return createElement('div', null,
+				createElement('button', {
+					type: 'button',
+					children: ['Do a thing']
+				})
+			);
+		};
+
+		render(app(), container);
+		expect(container.innerHTML).to.equal('<div><button type="button">Do a thing</button></div>');
+	});
+
+	it('Should allow passing childs through "children" property (custom component)', () => {
+		const Button = props => createElement('button', props);
+		const app = () => {
+			return createElement('div', null,
+				createElement(Button, {
+					type: 'button',
+					children: ['Do a thing']
+				})
+			);
+		};
+
+		render(app(), container);
+		expect(container.innerHTML).to.equal('<div><button type="button">Do a thing</button></div>');
+	});
 });
