@@ -151,6 +151,8 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_lastInput = null;
 	_vComponent = null;
 	_unmounted = true;
+	_devToolsStatus = null;
+	_devToolsId = null;
 
 	_childContext = null;
 	_patch = null;

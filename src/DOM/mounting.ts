@@ -49,6 +49,7 @@ import {
 	recycleVComponent
 } from './recycling';
 import createStaticVElementClone from '../factories/createStaticVElementClone';
+import { devToolsStatus } from './devtools';
 
 export function mount(input, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	if (isOptVElement(input)) {
@@ -322,7 +323,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 			}
 			throwError();
 		}
-		const instance = createStatefulComponentInstance(component, props, context, isSVG);
+		const instance = createStatefulComponentInstance(component, props, context, isSVG, devToolsStatus);
 		const input = instance._lastInput;
 
 		instance._vComponent = vComponent;

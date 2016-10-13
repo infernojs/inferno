@@ -32,11 +32,12 @@ export function copyPropsTo(copyFrom, copyTo) {
 	}
 }
 
-export function createStatefulComponentInstance(Component, props, context, isSVG) {
+export function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
 	const instance = new Component(props, context);
 
 	instance.context = context;
 	instance._patch = patch;
+	instance._devToolsStatus = devToolsStatus;
 	instance._componentToDOMNodeMap = componentToDOMNodeMap;
 	const childContext = instance.getChildContext();
 

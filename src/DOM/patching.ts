@@ -74,6 +74,7 @@ import {
 	strictProps,
 	namespaces
 } from './constants';
+import { getIncrementalId, componentIdMap, devToolsStatus } from './devtools';
 
 function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
@@ -374,7 +375,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				nextVComponent.props = copyPropsTo(defaultProps, nextProps);
 			}
 			const lastInstance = lastVComponent.instance;
-			const nextInstance = createStatefulComponentInstance(nextComponent, nextProps, context, isSVG);
+			const nextInstance = createStatefulComponentInstance(nextComponent, nextProps, context, isSVG, devToolsStatus);
 			// we use || lastInstance because stateless components store their lastInstance
 			const lastInput = lastInstance._lastInput || lastInstance;
 			const nextInput = nextInstance._lastInput;
@@ -410,6 +411,9 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				const defaultProps = nextComponent.defaultProps;
 				const lastProps = instance.props;
 
+				if (instance._devToolsStatus.connected && !instance._devToolsId) {
+					componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
+				}
 				if (!isUndefined(defaultProps)) {
 					copyPropsTo(lastProps, nextProps);
 					nextVComponent.props = nextProps;
