@@ -34,7 +34,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 		if (_children.length === 1) {
 			children = _children[0];
 		} else if (_children.length === 0) {
-			children = null;
+			children = undefined;
 		}
 	}
 	if (isString(name)) {
@@ -44,8 +44,8 @@ export default function createElement(name: string | Function, props?: any, ..._
 			if (prop === 'key') {
 				vNode.key = props.key;
 				delete props.key;
-			} else if (prop === 'children') {
-				vNode.children = children;
+			} else if (prop === 'children' && isUndefined(children)) {
+				vNode.children = props.children; // always favour children args, default to props
 			} else if (prop === 'ref') {
 				vNode.ref = props.ref; // TODO: Verify it works - tests
 			} else if (isAttrAnEvent(prop)) {
