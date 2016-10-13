@@ -16,6 +16,14 @@ import {
 import cloneVNode from '../../../src/factories/cloneVNode';
 import { warning, NO_OP } from '../../../src/shared';
 
+if (typeof window !== 'undefined' && window.document) {
+	window.process = {
+		env: {
+			NODE_ENV: 'development'
+		}
+	};
+}
+
 if (process.env.NODE_ENV !== 'production') {
 	const testFunc = function testFn() {};
 	warning(

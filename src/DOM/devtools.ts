@@ -8,7 +8,7 @@ export const devToolsStatus = {
 function sendToDevTools(global, data) {
 	const event = new CustomEvent('inferno.client.message', {
 		detail: JSON.stringify(data, (key, val) => {
-			if (!isNull(val)) {
+			if (!isNull(val) && !isUndefined(val)) {
 				if (key === '_vComponent' || !isUndefined(val.nodeType)) {
 					return;
 				} else if (isFunction(val)) {
