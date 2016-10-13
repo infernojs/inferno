@@ -1,6 +1,6 @@
 {
 	"name": "inferno-mobx",
-	"version": "1.0.0-beta2",
+	"version": "1.0.0-beta3",
 	"license": "MIT",
 	"description": "Official Inferno bindings for Mobx",
 	"author": {
