@@ -43,6 +43,7 @@ import {
 } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
+import createStaticVElementClone from '../factories/createStaticVElementClone';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];
@@ -126,7 +127,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 	vComponent.dom = dom;
 	if (isStatefulComponent(vComponent)) {
 		const isSVG = dom.namespaceURI === svgNS;
-		const instance = createStatefulComponentInstance(component, props, context, isSVG);
+		const instance = createStatefulComponentInstance(component, props, context, isSVG, createStaticVElementClone);
 		const input = instance._lastInput;
 
 		instance._vComponent = vComponent;
