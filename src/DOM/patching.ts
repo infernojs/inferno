@@ -932,10 +932,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 		dom.style.cssText = nextAttrValue;
 	} else if (isNullOrUndef(lastAttrValue)) {
 		if (!isNullOrUndef(nextAttrValue)) {
-			const styleKeys = Object.keys(nextAttrValue);
-
-			for (let i = 0; i < styleKeys.length; i++) {
-				const style = styleKeys[i];
+			for (let style in nextAttrValue) {
 				const value = nextAttrValue[style];
 
 				if (isNumber(value) && !isUnitlessNumber[style]) {
@@ -948,10 +945,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	} else if (isNullOrUndef(nextAttrValue)) {
 		dom.removeAttribute('style');
 	} else {
-		const styleKeys = Object.keys(nextAttrValue);
-
-		for (let i = 0; i < styleKeys.length; i++) {
-			const style = styleKeys[i];
+		for (let style in nextAttrValue) {
 			const value = nextAttrValue[style];
 
 			if (isNumber(value) && !isUnitlessNumber[style]) {
@@ -960,10 +954,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 				dom.style[style] = value;
 			}
 		}
-		const lastStyleKeys = Object.keys(lastAttrValue);
-
-		for (let i = 0; i < lastStyleKeys.length; i++) {
-			const style = lastStyleKeys[i];
+		for (let style in lastAttrValue) {
 			if (isNullOrUndef(nextAttrValue[style])) {
 				dom.style[style] = '';
 			}
