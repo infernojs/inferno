@@ -30,6 +30,10 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 - [JS Web Frameworks Benchmark - Round 4](http://stefankrause.net/js-frameworks-benchmark4/webdriver-ts/table.html)
 
+## Live Demos/Examples
+
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/avsmtvpf/)
+
 ## Install
 
 Very much like React, Inferno requires the `inferno` and the `inferno-dom` packages for consumption in the browser's DOM. Inferno also has the `inferno-server` package for
