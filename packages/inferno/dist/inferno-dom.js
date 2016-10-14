@@ -1382,9 +1382,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
     }
     else if (isNullOrUndef(lastAttrValue)) {
         if (!isNullOrUndef(nextAttrValue)) {
-            var styleKeys = Object.keys(nextAttrValue);
-            for (var i = 0; i < styleKeys.length; i++) {
-                var style = styleKeys[i];
+            for (var style in nextAttrValue) {
                 var value = nextAttrValue[style];
                 if (isNumber(value) && !isUnitlessNumber[style]) {
                     dom.style[style] = value + 'px';
@@ -1399,9 +1397,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
         dom.removeAttribute('style');
     }
     else {
-        var styleKeys$1 = Object.keys(nextAttrValue);
-        for (var i$1 = 0; i$1 < styleKeys$1.length; i$1++) {
-            var style$1 = styleKeys$1[i$1];
+        for (var style$1 in nextAttrValue) {
             var value$1 = nextAttrValue[style$1];
             if (isNumber(value$1) && !isUnitlessNumber[style$1]) {
                 dom.style[style$1] = value$1 + 'px';
@@ -1410,9 +1406,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
                 dom.style[style$1] = value$1;
             }
         }
-        var lastStyleKeys = Object.keys(lastAttrValue);
-        for (var i$2 = 0; i$2 < lastStyleKeys.length; i$2++) {
-            var style$2 = lastStyleKeys[i$2];
+        for (var style$2 in lastAttrValue) {
             if (isNullOrUndef(nextAttrValue[style$2])) {
                 dom.style[style$2] = '';
             }

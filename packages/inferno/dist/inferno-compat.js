@@ -1408,9 +1408,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
     }
     else if (isNullOrUndef(lastAttrValue)) {
         if (!isNullOrUndef(nextAttrValue)) {
-            var styleKeys = Object.keys(nextAttrValue);
-            for (var i = 0; i < styleKeys.length; i++) {
-                var style = styleKeys[i];
+            for (var style in nextAttrValue) {
                 var value = nextAttrValue[style];
                 if (isNumber(value) && !isUnitlessNumber[style]) {
                     dom.style[style] = value + 'px';
@@ -1425,9 +1423,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
         dom.removeAttribute('style');
     }
     else {
-        var styleKeys$1 = Object.keys(nextAttrValue);
-        for (var i$1 = 0; i$1 < styleKeys$1.length; i$1++) {
-            var style$1 = styleKeys$1[i$1];
+        for (var style$1 in nextAttrValue) {
             var value$1 = nextAttrValue[style$1];
             if (isNumber(value$1) && !isUnitlessNumber[style$1]) {
                 dom.style[style$1] = value$1 + 'px';
@@ -1436,9 +1432,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
                 dom.style[style$1] = value$1;
             }
         }
-        var lastStyleKeys = Object.keys(lastAttrValue);
-        for (var i$2 = 0; i$2 < lastStyleKeys.length; i$2++) {
-            var style$2 = lastStyleKeys[i$2];
+        for (var style$2 in lastAttrValue) {
             if (isNullOrUndef(nextAttrValue[style$2])) {
                 dom.style[style$2] = '';
             }
@@ -2646,6 +2640,14 @@ function createElement(name, props) {
     return vNode;
 }
 
+function isValidElement(obj) {
+    var isNotANullObject = isObject(obj) && isNull(obj) === false;
+    if (isNotANullObject === false) {
+        return false;
+    }
+    return isVElement(obj) || isVComponent(obj) || isOptVElement(obj);
+}
+
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 var componentCallbackQueue = new Map();
 function addToQueue(component, force, callback) {
@@ -3106,6 +3108,7 @@ var version = '15.3.1';
 
 var index = {
 	render: render$1,
+	isValidElement: isValidElement,
 	createElement: createElement,
 	Component: Component,
 	unmountComponentAtNode: unmountComponentAtNode,
@@ -3133,6 +3136,7 @@ var index = {
 };
 
 exports.render = render$1;
+exports.isValidElement = isValidElement;
 exports.createElement = createElement;
 exports.Component = Component;
 exports.unmountComponentAtNode = unmountComponentAtNode;
