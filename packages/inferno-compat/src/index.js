@@ -1,7 +1,8 @@
 import { render, findDOMNode } from '../../../src/DOM/rendering';
 import { NO_OP } from '../../../src/shared';
 import createElement from '../../../src/factories/createElement';
-import { 
+import isValidElement from '../../../src/factories/isValidElement';
+import {
 	createVElement,
 	createStaticVElement,
 	createOptBlueprint,
@@ -61,6 +62,7 @@ const version = '15.3.1';
 
 export {
 	render,
+	isValidElement,
 	createElement,
 	Component,
 	unmountComponentAtNode,
@@ -89,6 +91,7 @@ export {
 
 export default {
 	render,
+	isValidElement,
 	createElement,
 	Component,
 	unmountComponentAtNode,
