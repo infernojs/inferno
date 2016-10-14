@@ -32,7 +32,7 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 
 ## Live Demos/Examples
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/avsmtvpf/)
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/rqwmkx40/)
 
 ## Install
 
