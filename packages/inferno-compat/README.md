@@ -15,6 +15,7 @@ It provides the same exports as `react` and `react-dom`, meaning you can use you
 - `React.PropTypes`
 - `React.Component`
 - `React.Children`
+- `React.isValidElement`
 
 Note: Inferno will not currently validate `PropTypes`
 
@@ -37,7 +38,6 @@ These features will hopefully be added in future versions
 
 - `React.DOM`
 - `React.createFactory`
-- `React.isValidElement`
 
 ## Usage with Webpack
 
