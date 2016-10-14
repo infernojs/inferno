@@ -41,6 +41,10 @@ class Comp3 extends Component {
 	}
 }
 
+function Comp4({children}) {
+	return <section>{children}</section>;
+}
+
 describe('SSR Hydration - (JSX)', () => {
 	[
 		{
@@ -67,6 +71,11 @@ describe('SSR Hydration - (JSX)', () => {
 			node: <div>Hello world</div>,
 			expect1: '<div data-infernoroot="">Hello world</div>',
 			expect2: '<div>Hello world</div>'
+		},
+		{
+			node: <Comp4><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></Comp4>,
+			expect1: '<section data-infernoroot=""><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></section>',
+			expect2: '<section><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></section>'
 		},
 		{
 			node: <div>Hello world, { 'Foo!' }</div>,
