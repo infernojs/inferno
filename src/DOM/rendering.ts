@@ -2,7 +2,7 @@ import Lifecycle from './lifecycle';
 import { mountChildrenWithUnknownType } from './mounting';
 import { patchChildrenWithUnknownType } from './patching';
 import {
-	isUndefined,
+	isNull,
 	isInvalid,
 	isNullOrUndef,
 	isBrowser,
@@ -13,21 +13,53 @@ import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
 import cloneVNode from '../factories/cloneVNode';
 import { devToolsStatus, sendRoots } from './devtools';
-import {InfernoElement} from '../factories/createElement';
+import { InfernoInput, InfernoElement } from '../core/shapes';
 
-export const roots = new Map<Node | SVGAElement, { input: any }>();
+interface Root {
+	dom: Node | SVGAElement,
+	input: InfernoInput
+};
+
+// rather than use a Map, like we did before, we can use an array here
+// given there shouldn't be THAT many roots on the page, the difference
+// in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
+export const roots: Array<Root> = [];
 export const componentToDOMNodeMap = new Map();
 
 export function findDOMNode(domNode) {
 	return componentToDOMNodeMap.get(domNode) || null;
 }
 
+function getRoot(dom): Root | null {
+	for (let i = 0; i < roots.length; i++) {
+		const root = roots[i];
+
+		if (root.dom === dom) {
+			return root;
+		}
+	}
+	return null;
+}
+
+function setRoot(dom, input): void {
+	roots.push({
+		dom,
+		input
+	});
+}
+
+function removeRoot(root): void {
+	for (let i = 0; i < roots.length; i++) {
+		if (roots[i] === root) {
+			roots.splice(i, 1);
+			return;
+		}
+	}
+}
+
 const documetBody = isBrowser ? document.body : null;
 
-export function render(input: InfernoElement | InfernoElement[], parentDom: Node | SVGAElement) {
-	const root = roots.get(parentDom);
-	const lifecycle = new Lifecycle();
-
+export function render(input: InfernoInput, parentDom: Node | SVGAElement) {
 	if (documetBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -37,7 +69,10 @@ export function render(input: InfernoElement | InfernoElement[], parentDom: Node
 	if ((input as any) === NO_OP) {
 		return;
 	}
-	if (isUndefined(root)) {
+	const root = getRoot(parentDom);
+	const lifecycle = new Lifecycle();
+
+	if (isNull(root)) {
 		if (!isInvalid(input)) {
 			if ((input as InfernoElement).dom) {
 				input = cloneVNode(input);
@@ -46,12 +81,12 @@ export function render(input: InfernoElement | InfernoElement[], parentDom: Node
 				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false, false);
 			}
 			lifecycle.trigger();
-			roots.set(parentDom, { input });
+			setRoot(parentDom, input);
 		}
 	} else {
 		if (isNullOrUndef(input)) {
 			unmount(root.input, parentDom, lifecycle, false, false);
-			roots.delete(parentDom);
+			removeRoot(root);
 		} else {
 			if ((input as InfernoElement).dom) {
 				input = cloneVNode(input);

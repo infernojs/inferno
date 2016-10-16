@@ -1,8 +1,7 @@
 import {
 	createVElement,
 	createVComponent,
-	VElement,
-	VComponent
+	InfernoElement
 } from '../core/shapes';
 import {
 	isAttrAnEvent,
@@ -20,8 +19,6 @@ const componentHooks = {
 	onComponentWillUpdate: true,
 	onComponentDidUpdate: true
 };
-
-export type InfernoElement = VElement | VComponent;
 
 export default function createElement(name: string | Function, props?: any, ..._children) {
 	if (isInvalid(name) || isObject(name)) {

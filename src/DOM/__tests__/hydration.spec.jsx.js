@@ -41,7 +41,7 @@ class Comp3 extends Component {
 	}
 }
 
-function Comp4({children}) {
+function Comp4({ children }) {
 	return <section>{children}</section>;
 }
 

@@ -11,6 +11,9 @@ export interface VType {
 	type: number;
 }
 
+export type InfernoInput = InfernoElement | InfernoElement[] | null | string | number;
+export type InfernoElement = VElement | VComponent;
+
 export interface VPlaceholder extends VType {
 	dom: null | Node | SVGAElement;
 }

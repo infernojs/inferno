@@ -32,13 +32,10 @@ function sendToDevTools(global, data) {
 }
 
 function rerenderRoots() {
-	const rootDomNodes = Array.from(roots.keys());
+	for (let i = 0; i < roots.length; i++) {
+		const root = roots[i];
 
-	for (let i = 0; i < rootDomNodes.length; i++) {
-		const rootDomNode = rootDomNodes[i];
-		const input = roots.get(rootDomNode).input;
-
-		render(input, rootDomNode);
+		render(root.input, root.dom);
 	}
 }
 
@@ -63,5 +60,5 @@ export function initDevToolsHooks(global) {
 }
 
 export function sendRoots(global) {
-	sendToDevTools(global, { type: 'roots', data: Array.from(roots.values()) });
+	sendToDevTools(global, { type: 'roots', data: roots });
 }
