@@ -70,7 +70,7 @@ describe('SSR Creation - (non-JSX)', () => {
 			result: '<div><span>stateless foo!</span></div>'
 		}, {
 			description: 'should render a stateful component with null children',
-			template: () => createElement('div', null, [null, createElement('span', null, ['emptyValue: ', null])]),
+			template: () => createElement('div', null, [ null, createElement('span', null, [ 'emptyValue: ', null ]) ]),
 			result: '<div><!--!--><span>emptyValue: <!--!--></span></div>'
 		}, {
 			description: 'should render a stateless component',

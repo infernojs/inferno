@@ -53,15 +53,12 @@ function renderChildren(children, context): string {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 			const isText = isStringOrNumber(child);
-			const invalid = isInvalid(child);
 
-			if (isText || invalid) {
-				if (insertComment === true) {
-					if (isInvalid(child)) {
-						childrenResult.push('<!--!-->');
-					} else {
-						childrenResult.push('<!---->');
-					}
+			if (isInvalid(child)) {
+				childrenResult.push('<!--!-->');
+			} else if (isText) {
+				if (insertComment) {
+					childrenResult.push('<!---->');
 				}
 				if (isText) {
 					childrenResult.push(escapeText(child));
