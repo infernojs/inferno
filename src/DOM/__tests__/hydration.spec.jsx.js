@@ -74,8 +74,8 @@ describe('SSR Hydration - (JSX)', () => {
 		},
 		{
 			node: <div><svg className={(() => 'foo')()} viewBox="0 0 64 64"></svg></div>,
-			expect1: '<div data-infernoroot=""><svg class="foo" viewBox="0 0 64 64"}></svg></div>',
-			expect2: '<div><svg class="foo" viewBox="0 0 64 64"}></svg></div>'
+			expect1: '<div data-infernoroot=""><svg class="foo" viewBox="0 0 64 64"></svg></div>',
+			expect2: '<div><svg class="foo" viewBox="0 0 64 64"></svg></div>'
 		},
 		{
 			node: <Comp4><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></Comp4>,
