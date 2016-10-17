@@ -39,8 +39,7 @@ function parseTag(tag, props) {
 		if (!tagName) {
 			tagName = part;
 		} else if (type === '.') {
-			classes = '';
-			classes += part.substring(1, part.length);
+			classes = part.substring(1, part.length);
 		} else if (type === '#' && noId) {
 			props.id = part.substring(1, part.length);
 		}
