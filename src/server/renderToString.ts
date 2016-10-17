@@ -47,34 +47,34 @@ function renderComponentToString(vComponent, isRoot, context) {
 
 function renderChildren(children, context): string {
 	if (children && isArray(children)) {
-		const childrenResult: Array<string> = [];
-		let insertComment = false;
+		let childrenResult: string = '';
+		let insertComment: boolean = false;
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 			const isText = isStringOrNumber(child);
 
 			if (isInvalid(child)) {
-				childrenResult.push('<!--!-->');
+				childrenResult += '<!--!-->';
 			} else if (isText) {
 				if (insertComment) {
-					childrenResult.push('<!---->');
+					childrenResult += '<!---->';
 				}
 				if (isText) {
-					childrenResult.push(escapeText(child));
+					childrenResult += escapeText(child);
 				}
 				insertComment = true;
 			} else if (isArray(child)) {
-				childrenResult.push('<!---->');
-				childrenResult.push(renderChildren(child, context));
-				childrenResult.push('<!--!-->');
+				childrenResult += '<!---->';
+				childrenResult += renderChildren(child, context);
+				childrenResult += '<!--!-->';
 				insertComment = true;
 			} else {
 				insertComment = false;
-				childrenResult.push(renderInputToString(child, context, false));
+				childrenResult += renderInputToString(child, context, false);
 			}
 		}
-		return childrenResult.join('');
+		return childrenResult;
 	} else if (!isInvalid(children)) {
 		if (isStringOrNumber(children)) {
 			return escapeText(children);
@@ -89,7 +89,7 @@ function renderStyleToString(style) {
 	if (isStringOrNumber(style)) {
 		return style;
 	} else {
-		const styles: Array<string> = [];
+		let styles: string = '';
 		const keys = Object.keys(style);
 
 		for (let i = 0; i < keys.length; i++) {
@@ -98,17 +98,17 @@ function renderStyleToString(style) {
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
-				styles.push(`${ toHyphenCase(styleName) }:${ escapeAttr(value) }${ px };`);
+				styles += `${ toHyphenCase(styleName) }:${ escapeAttr(value) }${ px };`;
 			}
 		}
-		return styles.join('');
+		return styles;
 	}
 }
 
 function renderVElementToString(vElement, isRoot, context) {
 	const tag = vElement.tag;
-	const outputProps: Array<string> = [];
 	const props = vElement.props;
+	let outputProps: string = '';
 	let propsKeys = (props && Object.keys(props)) || [];
 	let html = '';
 
@@ -119,24 +119,24 @@ function renderVElementToString(vElement, isRoot, context) {
 		if (prop === 'dangerouslySetInnerHTML') {
 			html = value.__html;
 		} else if (prop === 'style') {
-			outputProps.push('style="' + renderStyleToString(props.style) + '"');
+			outputProps += ' style="' + renderStyleToString(props.style) + '"';
 		} else if (prop === 'className') {
-			outputProps.push('class="' + value + '"');
+			outputProps += ' class="' + value + '"';
 		} else {
 			if (isStringOrNumber(value)) {
-				outputProps.push(escapeAttr(prop) + '="' + escapeAttr(value) + '"');
+				outputProps += ' ' + escapeAttr(prop) + '="' + escapeAttr(value) + '"';
 			} else if (isTrue(value)) {
-				outputProps.push(escapeAttr(prop));
+				outputProps += ' ' + escapeAttr(prop);
 			}
 		}
 	}
 	if (isRoot) {
-		outputProps.push('data-infernoroot');
+		outputProps += ' data-infernoroot';
 	}
 	if (isVoidElement(tag)) {
-		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps.join(' ') : '' }>`;
+		return `<${ tag }${ outputProps.length > 0 ? outputProps : '' }>`;
 	} else {
-		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps.join(' ') : '' }>${ html || renderChildren(vElement.children, context) }</${ tag }>`;
+		return `<${ tag }${ outputProps.length > 0 ? outputProps : '' }>${ html || renderChildren(vElement.children, context) }</${ tag }>`;
 	}
 }
 
