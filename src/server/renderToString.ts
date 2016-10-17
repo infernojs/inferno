@@ -119,24 +119,24 @@ function renderVElementToString(vElement, isRoot, context) {
 		if (prop === 'dangerouslySetInnerHTML') {
 			html = value.__html;
 		} else if (prop === 'style') {
-			outputProps += 'style="' + renderStyleToString(props.style) + '"';
+			outputProps += ' style="' + renderStyleToString(props.style) + '"';
 		} else if (prop === 'className') {
-			outputProps += 'class="' + value + '"';
+			outputProps += ' class="' + value + '"';
 		} else {
 			if (isStringOrNumber(value)) {
-				outputProps += escapeAttr(prop) + '="' + escapeAttr(value) + '"';
+				outputProps += ' ' + escapeAttr(prop) + '="' + escapeAttr(value) + '"';
 			} else if (isTrue(value)) {
-				outputProps += escapeAttr(prop);
+				outputProps += ' ' + escapeAttr(prop);
 			}
 		}
 	}
 	if (isRoot) {
-		outputProps += 'data-infernoroot';
+		outputProps += ' data-infernoroot';
 	}
 	if (isVoidElement(tag)) {
-		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps : '' }>`;
+		return `<${ tag }${ outputProps.length > 0 ? outputProps : '' }>`;
 	} else {
-		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps : '' }>${ html || renderChildren(vElement.children, context) }</${ tag }>`;
+		return `<${ tag }${ outputProps.length > 0 ? outputProps : '' }>${ html || renderChildren(vElement.children, context) }</${ tag }>`;
 	}
 }
 
