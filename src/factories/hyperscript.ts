@@ -12,7 +12,7 @@ import {
 } from '../core/shapes';
 import { ChildrenTypes } from '../core/constants';
 
-const classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
+const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;
 
 function parseTag(tag, props) {
@@ -39,17 +39,17 @@ function parseTag(tag, props) {
 		if (!tagName) {
 			tagName = part;
 		} else if (type === '.') {
-			classes = classes || [];
-			classes.push(part.substring(1, part.length));
+			classes = '';
+			classes += part.substring(1, part.length);
 		} else if (type === '#' && noId) {
 			props.id = part.substring(1, part.length);
 		}
 	}
 	if (classes) {
 		if (props.className) {
-			classes.push(props.className);
+			classes += ` ${props.className}`;
 		}
-		props.className = classes.join(' ');
+		props.className = classes;
 	}
 	return tagName ? tagName.toLowerCase() : "div";
 }
