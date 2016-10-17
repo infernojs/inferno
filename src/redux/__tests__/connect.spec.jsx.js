@@ -2,27 +2,8 @@ import connect from './../connect';
 import { createStore } from 'redux';
 import Component from './../../component/es2015';
 import { render } from './../../DOM/rendering';
-import {
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	createOptVElement
-} from './../../core/shapes';
-import {
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-} from './../../core/constants';
-
-const Inferno = {
-	createOptVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-};
+import Inferno from '../../testUtils/inferno';
+Inferno; // suppress ts 'never used' error
 const sinon = require('sinon/pkg/sinon');
 
 describe('connect', () => {

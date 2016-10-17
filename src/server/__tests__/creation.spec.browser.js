@@ -1,6 +1,8 @@
 import { renderToStaticMarkup } from './../renderToString';
 import Component from './../../component/es2015';
 import createElement from './../../factories/createElement';
+import Inferno from './../../testUtils/inferno';
+Inferno; // suppress ts 'never used' error
 
 class StatefulComponent extends Component {
 	render() {
@@ -69,13 +71,25 @@ describe('SSR Creation - (non-JSX)', () => {
 			template: (value) => createElement('div', null, createElement(StatefulComponent, { value })),
 			result: '<div><span>stateless foo!</span></div>'
 		}, {
-			description: 'should render a stateful component with null children',
-			template: () => createElement('div', null, [ null, createElement('span', null, [ 'emptyValue: ', null ]) ]),
+			description: 'should render a null component',
+			template: () => <div>{null}</div>,
+			result: '<div></div>'
+		}, {
+			description: 'should render a component with null children',
+			template: () => <div>{null}<span>emptyValue: {null}</span></div>,
 			result: '<div><!--!--><span>emptyValue: <!--!--></span></div>'
 		}, {
 			description: 'should render a stateless component',
 			template: (value) => createElement('div', null, createElement(FunctionalComponent, { value })),
 			result: '<div><span>stateless foo!</span></div>'
+		}, {
+			description: 'should render a stateful component with text',
+			template: () => <div>Hello world, { '1' }2{ '3' }</div>,
+			result: '<div>Hello world, <!---->1<!---->2<!---->3</div>'
+		}, {
+			description: 'should render a stateful component with comments',
+			template: () => <div>Hello world, {/*comment*/}</div>,
+			result: '<div>Hello world, </div>'
 		}, {
 			description: 'should render a div with styles',
 			template: () => createElement('div', { style: { display: 'block', width: '50px' } }),
@@ -85,7 +99,7 @@ describe('SSR Creation - (non-JSX)', () => {
 		it(test.description, () => {
 			const container = document.createElement('div');
 			const vDom = test.template('foo');
-			const output = renderToStaticMarkup(vDom, true);
+			const output = renderToStaticMarkup(vDom);
 
 			document.body.appendChild(container);
 			container.innerHTML = output;

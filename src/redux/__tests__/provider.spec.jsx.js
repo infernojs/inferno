@@ -5,27 +5,8 @@ import Route from '../../router/Route';
 import Router from '../../router/Router';
 import browserHistory from '../../router/browserHistory';
 import { createStore } from 'redux';
-import {
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	createOptVElement
-} from './../../core/shapes';
-import {
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-} from './../../core/constants';
-
-const Inferno = {
-	createOptVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-};
+import Inferno from '../../testUtils/inferno';
+Inferno; // suppress ts 'never used' error
 
 const sinon = require('sinon/pkg/sinon');
 

@@ -2,27 +2,9 @@ import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
 import createElement from './../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
-import {
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	createOptVElement
-} from './../../core/shapes';
-import {
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-} from './../../core/constants';
+import Inferno from '../../testUtils/inferno';
+Inferno; // suppress ts 'never used' error
 
-const Inferno = {
-	createOptVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-};
 const sinon = require('sinon/pkg/sinon');
 
 describe('Components (JSX)', () => {
