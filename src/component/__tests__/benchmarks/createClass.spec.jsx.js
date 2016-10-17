@@ -1,26 +1,7 @@
 import { render } from './../../../DOM/rendering';
 import createClass from './../../../component/createClass';
-import {
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	createOptVElement
-} from './../../../core/shapes';
-import {
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-} from './../../../core/constants';
-
-const Inferno = {
-	createOptVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-};
+import Inferno from '../../../testUtils/inferno';
+Inferno; // suppress ts 'never used' error
 
 function runBenchmark(container) {
 	var Link0 = createClass({
