@@ -504,23 +504,23 @@ function sendToDevTools(global, data) {
     global.dispatchEvent(event);
 }
 function rerenderRoots() {
-    var rootDomNodes = Array.from(roots.keys());
-    for (var i = 0; i < rootDomNodes.length; i++) {
-        var rootDomNode = rootDomNodes[i];
-        var input = roots.get(rootDomNode).input;
-        render(input, rootDomNode);
+    for (var i = 0; i < roots.length; i++) {
+        var root = roots[i];
+        render(root.input, root.dom);
     }
 }
 function initDevToolsHooks(global) {
-    global.__INFERNO_DEVTOOLS_GLOBAL_HOOK__ = true;
+    global.__INFERNO_DEVTOOLS_GLOBAL_HOOK__ = roots;
     global.addEventListener('inferno.devtools.message', function (message) {
         var detail = JSON.parse(message.detail);
         var type = detail.type;
         switch (type) {
             case 'get-roots':
-                devToolsStatus.connected = true;
-                rerenderRoots();
-                sendRoots(global);
+                if (!devToolsStatus.connected) {
+                    devToolsStatus.connected = true;
+                    rerenderRoots();
+                    sendRoots(global);
+                }
                 break;
             default:
                 // TODO:?
@@ -529,7 +529,7 @@ function initDevToolsHooks(global) {
     });
 }
 function sendRoots(global) {
-    sendToDevTools(global, { type: 'roots', data: Array.from(roots.values()) });
+    sendToDevTools(global, { type: 'roots', data: roots });
 }
 
 function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
@@ -1476,7 +1476,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 vElement.props = { className: value };
             }
             else {
-                debugger;
+                vElement.props.className = value;
             }
             break;
         case ValueTypes.PROP_DATA:
@@ -1490,7 +1490,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 vElement.props = { style: value };
             }
             else {
-                debugger;
+                vElement.props.style = value;
             }
             break;
         case ValueTypes.PROP_VALUE:
@@ -1498,7 +1498,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 vElement.props = { value: value };
             }
             else {
-                debugger;
+                vElement.props.value = value;
             }
             break;
         case ValueTypes.PROP:
@@ -2485,15 +2485,39 @@ function hydrateRoot(input, parentDom, lifecycle) {
     return false;
 }
 
-var roots = new Map();
+// rather than use a Map, like we did before, we can use an array here
+// given there shouldn't be THAT many roots on the page, the difference
+// in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
+var roots = [];
 var componentToDOMNodeMap = new Map();
 function findDOMNode(domNode) {
     return componentToDOMNodeMap.get(domNode) || null;
 }
+function getRoot(dom) {
+    for (var i = 0; i < roots.length; i++) {
+        var root = roots[i];
+        if (root.dom === dom) {
+            return root;
+        }
+    }
+    return null;
+}
+function setRoot(dom, input) {
+    roots.push({
+        dom: dom,
+        input: input
+    });
+}
+function removeRoot(root) {
+    for (var i = 0; i < roots.length; i++) {
+        if (roots[i] === root) {
+            roots.splice(i, 1);
+            return;
+        }
+    }
+}
 var documetBody = isBrowser ? document.body : null;
 function render(input, parentDom) {
-    var root = roots.get(parentDom);
-    var lifecycle = new Lifecycle();
     if (documetBody === parentDom) {
         if (process.env.NODE_ENV !== 'production') {
             throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -2503,7 +2527,9 @@ function render(input, parentDom) {
     if (input === NO_OP) {
         return;
     }
-    if (isUndefined(root)) {
+    var root = getRoot(parentDom);
+    var lifecycle = new Lifecycle();
+    if (isNull(root)) {
         if (!isInvalid(input)) {
             if (input.dom) {
                 input = cloneVNode(input);
@@ -2512,13 +2538,13 @@ function render(input, parentDom) {
                 mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false, false);
             }
             lifecycle.trigger();
-            roots.set(parentDom, { input: input });
+            setRoot(parentDom, input);
         }
     }
     else {
         if (isNullOrUndef(input)) {
             unmount(root.input, parentDom, lifecycle, false, false);
-            roots.delete(parentDom);
+            removeRoot(root);
         }
         else {
             if (input.dom) {

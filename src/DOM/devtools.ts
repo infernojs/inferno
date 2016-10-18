@@ -40,7 +40,7 @@ function rerenderRoots() {
 }
 
 export function initDevToolsHooks(global) {
-	global.__INFERNO_DEVTOOLS_GLOBAL_HOOK__ = true;
+	global.__INFERNO_DEVTOOLS_GLOBAL_HOOK__ = roots;
 
 	global.addEventListener('inferno.devtools.message', function (message) {
 		const detail = JSON.parse(message.detail);
@@ -48,9 +48,11 @@ export function initDevToolsHooks(global) {
 
 		switch (type) {
 			case 'get-roots':
-				devToolsStatus.connected = true;
-				rerenderRoots();
-				sendRoots(global);
+				if (!devToolsStatus.connected) {
+					devToolsStatus.connected = true;
+					rerenderRoots();
+					sendRoots(global);
+				}
 				break;
 			default:
 				// TODO:?

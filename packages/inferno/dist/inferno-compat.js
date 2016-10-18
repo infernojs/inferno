@@ -546,16 +546,14 @@ function sendToDevTools(global, data) {
     global.dispatchEvent(event);
 }
 function rerenderRoots() {
-    var rootDomNodes = Array.from(roots.keys());
-    for (var i = 0; i < rootDomNodes.length; i++) {
-        var rootDomNode = rootDomNodes[i];
-        var input = roots.get(rootDomNode).input;
-        render$1(input, rootDomNode);
+    for (var i = 0; i < roots.length; i++) {
+        var root = roots[i];
+        render$1(root.input, root.dom);
     }
 }
 
 function sendRoots(global) {
-    sendToDevTools(global, { type: 'roots', data: Array.from(roots.values()) });
+    sendToDevTools(global, { type: 'roots', data: roots });
 }
 
 function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
@@ -1502,7 +1500,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 vElement.props = { className: value };
             }
             else {
-                debugger;
+                vElement.props.className = value;
             }
             break;
         case ValueTypes.PROP_DATA:
@@ -1516,7 +1514,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 vElement.props = { style: value };
             }
             else {
-                debugger;
+                vElement.props.style = value;
             }
             break;
         case ValueTypes.PROP_VALUE:
@@ -1524,7 +1522,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 vElement.props = { value: value };
             }
             else {
-                debugger;
+                vElement.props.value = value;
             }
             break;
         case ValueTypes.PROP:
@@ -2511,15 +2509,39 @@ function hydrateRoot(input, parentDom, lifecycle) {
     return false;
 }
 
-var roots = new Map();
+// rather than use a Map, like we did before, we can use an array here
+// given there shouldn't be THAT many roots on the page, the difference
+// in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
+var roots = [];
 var componentToDOMNodeMap = new Map();
 function findDOMNode(domNode) {
     return componentToDOMNodeMap.get(domNode) || null;
 }
+function getRoot(dom) {
+    for (var i = 0; i < roots.length; i++) {
+        var root = roots[i];
+        if (root.dom === dom) {
+            return root;
+        }
+    }
+    return null;
+}
+function setRoot(dom, input) {
+    roots.push({
+        dom: dom,
+        input: input
+    });
+}
+function removeRoot(root) {
+    for (var i = 0; i < roots.length; i++) {
+        if (roots[i] === root) {
+            roots.splice(i, 1);
+            return;
+        }
+    }
+}
 var documetBody = isBrowser ? document.body : null;
 function render$1(input, parentDom) {
-    var root = roots.get(parentDom);
-    var lifecycle = new Lifecycle();
     if (documetBody === parentDom) {
         if (process.env.NODE_ENV !== 'production') {
             throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -2529,7 +2551,9 @@ function render$1(input, parentDom) {
     if (input === NO_OP) {
         return;
     }
-    if (isUndefined(root)) {
+    var root = getRoot(parentDom);
+    var lifecycle = new Lifecycle();
+    if (isNull(root)) {
         if (!isInvalid(input)) {
             if (input.dom) {
                 input = cloneVNode(input);
@@ -2538,13 +2562,13 @@ function render$1(input, parentDom) {
                 mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false, false);
             }
             lifecycle.trigger();
-            roots.set(parentDom, { input: input });
+            setRoot(parentDom, input);
         }
     }
     else {
         if (isNullOrUndef(input)) {
             unmount(root.input, parentDom, lifecycle, false, false);
-            roots.delete(parentDom);
+            removeRoot(root);
         }
         else {
             if (input.dom) {
@@ -2952,15 +2976,12 @@ function renderChildren(children, context) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             var isText = isStringOrNumber(child);
-            var invalid = isInvalid(child);
-            if (isText || invalid) {
-                if (insertComment === true) {
-                    if (isInvalid(child)) {
-                        childrenResult.push('<!--!-->');
-                    }
-                    else {
-                        childrenResult.push('<!---->');
-                    }
+            if (isInvalid(child)) {
+                childrenResult.push('<!--!-->');
+            }
+            else if (isText) {
+                if (insertComment) {
+                    childrenResult.push('<!---->');
                 }
                 if (isText) {
                     childrenResult.push(escapeText(child));

@@ -520,7 +520,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 vElement.props = { className: value };
             }
             else {
-                debugger;
+                vElement.props.className = value;
             }
             break;
         case ValueTypes.PROP_DATA:
@@ -534,7 +534,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 vElement.props = { style: value };
             }
             else {
-                debugger;
+                vElement.props.style = value;
             }
             break;
         case ValueTypes.PROP_VALUE:
@@ -542,7 +542,7 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
                 vElement.props = { value: value };
             }
             else {
-                debugger;
+                vElement.props.value = value;
             }
             break;
         case ValueTypes.PROP:
