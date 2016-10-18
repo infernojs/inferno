@@ -1,25 +1,6 @@
 import { render } from './../rendering';
-import {
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	createOptVElement
-} from './../../core/shapes';
-import {
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-} from './../../core/constants';
-
-const Inferno = {
-	createOptVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-};
+import Inferno from '../../testUtils/inferno';
+Inferno; // suppress ts 'never used' error
 
 function styleNode(style) {
 	return <div style={ style }></div>;

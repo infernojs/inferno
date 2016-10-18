@@ -1,15 +1,7 @@
 import { createRenderer } from './../rendering';
-import {
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	createOptVElement
-} from './../../core/shapes';
-import {
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-} from './../../core/constants';
+import Inferno from '../../testUtils/inferno';
+Inferno; // suppress ts 'never used' error
+
 import {
 	fromEvent,
 	map,
@@ -19,16 +11,6 @@ import { holdSubject } from 'most-subject';
 import fp from 'lodash/fp';
 import Type from 'union-type';
 // import { click } from '@most/dom-event'
-
-const Inferno = {
-	createOptVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-};
 
 describe('Functional methods (JSX)', () => {
 	let container;

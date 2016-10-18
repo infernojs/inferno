@@ -1,27 +1,8 @@
 import { render } from './../rendering';
 import { findDOMNode } from '../rendering';
 import Component from './../../component/es2015';
-import {
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	createOptVElement
-} from './../../core/shapes';
-import {
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-} from './../../core/constants';
-
-const Inferno = {
-	createOptVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-};
+import Inferno from '../../testUtils/inferno';
+Inferno; // suppress ts 'never used' error
 
 describe('findDOMNodes (JSX)', () => {
 	let container;

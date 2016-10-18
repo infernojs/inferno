@@ -1,28 +1,9 @@
 import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
-import {
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	createOptVElement
-} from './../../core/shapes';
-import {
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-} from './../../core/constants';
+import Inferno from '../../testUtils/inferno';
+Inferno; // suppress ts 'never used' error
 
 const sinon = require('sinon/pkg/sinon');
-
-const Inferno = {
-	createOptVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-};
 
 describe('Component lifecycle (JSX)', () => {
 	let container;

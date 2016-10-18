@@ -2,27 +2,8 @@ import { render } from './../../DOM/rendering';
 import Router from '../Router';
 import Route from '../Route';
 import browserHistory from '../browserHistory';
-import {
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	createOptVElement
-} from './../../core/shapes';
-import {
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-} from './../../core/constants';
-
-const Inferno = {
-	createOptVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-};
+import Inferno from '../../testUtils/inferno';
+Inferno; // suppress ts 'never used' error
 
 function TestComponent() {
 	return <div>Test!</div>;

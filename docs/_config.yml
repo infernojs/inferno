@@ -1,6 +1,9 @@
 name: Inferno
 description: > # An extremely fast, React-like JavaScript library for building modern user interfaces
-url: http://www.infernojs.org
+url: //infernojs.github.io/docs
+
+gems:
+  - jekyll-sitemap
 
 # Defaults
 defaults:
