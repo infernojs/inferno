@@ -16,9 +16,9 @@ import { devToolsStatus, sendRoots } from './devtools';
 import { InfernoInput, InfernoElement } from '../core/shapes';
 
 interface Root {
-	dom: Node | SVGAElement,
-	input: InfernoInput
-};
+	dom: Node | SVGAElement;
+	input: InfernoInput;
+}
 
 // rather than use a Map, like we did before, we can use an array here
 // given there shouldn't be THAT many roots on the page, the difference

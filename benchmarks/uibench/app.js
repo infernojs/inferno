@@ -146,7 +146,7 @@
 	}
 
 	function onClick(e) {
-		console.log('Clicked ' + e.target.value);
+		console.log('Clicked ' + e.target.textContent);
 		e.stopPropagation();
 	}
 
