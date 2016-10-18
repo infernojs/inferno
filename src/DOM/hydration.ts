@@ -263,6 +263,10 @@ function hydrateVText(vText, dom) {
 	vText.dom = dom;
 }
 
+function hydrateVPlaceholder(vPlaceholder, dom) {
+	vPlaceholder.dom = dom;
+}
+
 function hydrateVFragment(vFragment, currentDom, lifecycle, context) {
 	const children = vFragment.children;
 	const parentDom = currentDom.parentNode;
@@ -322,7 +326,7 @@ function hydrate(input, dom, lifecycle, context) {
 	} else if (isVFragment(input)) {
 		hydrateVFragment(input, dom, lifecycle, context);
 	} else if (isVPlaceholder(input)) {
-		debugger;
+		hydrateVPlaceholder(input, dom);
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('bad input argument called on hydrate(). Input argument may need normalising.');
