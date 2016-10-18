@@ -145,8 +145,8 @@
 		};
 	}
 
-	function onClick(e) {
-		console.log('Clicked ' + e.target.textContent);
+	function onClick(e, c, p) {
+		console.log('Clicked', p);
 		e.stopPropagation();
 	}
 

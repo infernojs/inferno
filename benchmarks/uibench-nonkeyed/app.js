@@ -7,7 +7,7 @@
 	var ValueTypes = Inferno.ValueTypes;
 	var NodeTypes = Inferno.NodeTypes;
 
-	uibench.init('Inferno', '1.0.0-beta4');
+	uibench.init('Inferno - non keyed', '1.0.0-beta4');
 
 	var treeLeafBp = bp(e('li', { className: 'TreeLeaf' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
 	var treeNodeBp = bp(e('ul', { className: 'TreeNode' }), ValueTypes.CHILDREN, ChildrenTypes.NON_KEYED, null, null, null, null, null, null);
@@ -145,8 +145,8 @@
 		};
 	}
 
-	function onClick(e) {
-		console.log('Clicked ' + e.target.textContent);
+	function onClick(e, c, p) {
+		console.log('Clicked', p);
 		e.stopPropagation();
 	}
 
