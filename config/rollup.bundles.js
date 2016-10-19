@@ -66,7 +66,7 @@ bundles.add({
 	path: 'packages/inferno-redux/'
 });
 
-bundles.only({
+bundles.add({
 	moduleGlobal: 'InfernoMobx',
 	moduleName: 'inferno-mobx',
 	moduleEntry: 'packages/inferno-mobx/src/index.js',

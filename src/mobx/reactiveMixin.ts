@@ -1,8 +1,8 @@
 import { isObservable, Reaction, extras } from 'mobx';
-import Component from 'component/es2015';
-import { findDOMNode } from 'DOM/rendering';
-import { throwError } from '../shared';
+import Component from 'inferno-component';
+import { findDOMNode } from 'inferno';
 import EventEmitter from './EventEmitter';
+import { throwError } from '../shared';
 
 /**
  * Dev tools support

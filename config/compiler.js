@@ -11,7 +11,7 @@ var buble = require('buble');
 var babel = require('babel-core');
 var convert = require('convert-source-map');
 var merge = require('merge-source-map');
-var virtuals = require('./virtuals');
+var virtuals = require('./aliases');
 
 var nodeVersion = /(?:0\.)?\d+/.exec(process.version)[0];
 var nodeModulesPattern = path.sep === '/' ? /\/node_modules\// : /\\node_modules\\/;

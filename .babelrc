@@ -10,9 +10,10 @@
         ["module-resolver", {
           "extensions": [".js", ".jsx", ".ts", ".tsx"],
           "alias": {
-            "component": "./src/component",
-            "factories": "./src/factories",
-            "DOM": "./src/DOM"
+            "inferno-component": "./src/component/es2015",
+            "inferno": "./src/DOM/rendering",
+            "inferno-create-class": "./src/component/createClass",
+            "inferno-create-element": "./src/factories/createElement"
           }
         }]
     ]

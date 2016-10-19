@@ -2,13 +2,6 @@ const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 
-module.exports.aliasMapping = {
-	'component/es2015': './inferno-component',
-	'component/createClass': './inferno-create-class',
-	'factories/createElement': './inferno-create-element',
-	'DOM/rendering': './inferno'
-};
-
 module.exports.aliases = findAliases()
 module.exports.compilerAliases = changePaths(module.exports.aliases)
 

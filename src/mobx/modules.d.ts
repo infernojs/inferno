@@ -1,4 +1,4 @@
-declare module 'component/es2015' {
+declare module 'inferno-component' {
 	class Component<P, C> {
 		props?: P;
 		context?: C;
@@ -10,16 +10,16 @@ declare module 'component/es2015' {
 	export default Component;
 }
 
-declare module 'DOM/rendering' {
+declare module 'inferno' {
 	export function findDOMNode(node: any): any
 }
 
-declare module 'component/createClass' {
+declare module 'inferno-create-class' {
 	function createClass(component: any): any
 	export = createClass;
 }
 
-declare module 'factories/createElement' {
+declare module 'inferno-create-element' {
 	function createElement(component: any, props: any, children: any): any
 	export = createElement;
 }

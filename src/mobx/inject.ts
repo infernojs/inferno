@@ -1,6 +1,6 @@
 import hoistStatics from 'hoist-non-inferno-statics';
-import createElement from 'factories/createElement';
-import createClass from 'component/createClass';
+import createElement from 'inferno-create-element';
+import createClass from 'inferno-create-class';
 
 interface IProps {
 	ref: any;
