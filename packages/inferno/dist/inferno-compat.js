@@ -120,6 +120,59 @@ function isNodeChildrenType(o) {
     return o === ChildrenTypes.NODE;
 }
 
+function mountStaticChildren(children, dom, isSVG) {
+    if (isArray(children)) {
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            mountStaticChildren(child, dom, isSVG);
+        }
+    }
+    else if (isStringOrNumber(children)) {
+        dom.appendChild(document.createTextNode(children));
+    }
+    else if (!isInvalid(children)) {
+        mountStaticNode(children, dom, isSVG);
+    }
+}
+function mountStaticNode(node, parentDom, isSVG) {
+    var tag = node.tag;
+    if (tag === 'svg') {
+        isSVG = true;
+    }
+    var dom = documentCreateElement(tag, isSVG);
+    var children = node.children;
+    if (!isNull(children)) {
+        mountStaticChildren(children, dom, isSVG);
+    }
+    var props = node.props;
+    if (!isNull(props)) {
+        for (var prop in props) {
+            if (!props.hasOwnProperty(prop)) {
+                continue;
+            }
+            patchProp(prop, null, props[prop], dom, isSVG);
+        }
+    }
+    if (parentDom) {
+        parentDom.appendChild(dom);
+    }
+    return dom;
+}
+function createStaticVElementClone(bp, isSVG) {
+    if (!isBrowser) {
+        return null;
+    }
+    var staticNode = bp.staticVElement;
+    var dom = mountStaticNode(staticNode, null, isSVG);
+    if (isSVG) {
+        bp.svgClone = dom;
+    }
+    else {
+        bp.clone = dom;
+    }
+    return dom.cloneNode(true);
+}
+
 function createOptVElement(bp, key, v0, v1, v2, v3) {
     return {
         bp: bp,
@@ -132,7 +185,7 @@ function createOptVElement(bp, key, v0, v1, v2, v3) {
         v3: v3
     };
 }
-function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3, renderer) {
+function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3) {
     var bp = {
         clone: null,
         svgClone: null,
@@ -151,9 +204,7 @@ function createOptBlueprint(staticVElement, v0, d0, v1, d1, v2, d2, v3, d3, rend
         v2: v2,
         v3: v3
     };
-    if (renderer) {
-        renderer.createStaticVElementClone(bp, false);
-    }
+    createStaticVElementClone(bp, false);
     return bp;
 }
 function createVComponent(component, props, key, hooks, ref) {
@@ -1813,59 +1864,6 @@ function resetFormInputProperties(dom) {
     }
 }
 
-function mountStaticChildren(children, dom, isSVG) {
-    if (isArray(children)) {
-        for (var i = 0; i < children.length; i++) {
-            var child = children[i];
-            mountStaticChildren(child, dom, isSVG);
-        }
-    }
-    else if (isStringOrNumber(children)) {
-        dom.appendChild(document.createTextNode(children));
-    }
-    else if (!isInvalid(children)) {
-        mountStaticNode(children, dom, isSVG);
-    }
-}
-function mountStaticNode(node, parentDom, isSVG) {
-    var tag = node.tag;
-    if (tag === 'svg') {
-        isSVG = true;
-    }
-    var dom = documentCreateElement(tag, isSVG);
-    var children = node.children;
-    if (!isNull(children)) {
-        mountStaticChildren(children, dom, isSVG);
-    }
-    var props = node.props;
-    if (!isNull(props)) {
-        for (var prop in props) {
-            if (!props.hasOwnProperty(prop)) {
-                continue;
-            }
-            patchProp(prop, null, props[prop], dom, isSVG);
-        }
-    }
-    if (parentDom) {
-        parentDom.appendChild(dom);
-    }
-    return dom;
-}
-function createStaticVElementClone(bp, isSVG) {
-    if (!isBrowser) {
-        return null;
-    }
-    var staticNode = bp.staticVElement;
-    var dom = mountStaticNode(staticNode, null, isSVG);
-    if (isSVG) {
-        bp.svgClone = dom;
-    }
-    else {
-        bp.clone = dom;
-    }
-    return dom.cloneNode(true);
-}
-
 function mount(input, parentDom, lifecycle, context, isSVG, shallowUnmount) {
     if (isOptVElement(input)) {
         return mountOptVElement(input, parentDom, lifecycle, context, isSVG, shallowUnmount);
@@ -2426,6 +2424,9 @@ function hydrateOptVElement(optVElement, dom, lifecycle, context) {
 function hydrateVText(vText, dom) {
     vText.dom = dom;
 }
+function hydrateVPlaceholder(vPlaceholder, dom) {
+    vPlaceholder.dom = dom;
+}
 function hydrateVFragment(vFragment, currentDom, lifecycle, context) {
     var children = vFragment.children;
     var parentDom = currentDom.parentNode;
@@ -2488,7 +2489,7 @@ function hydrate(input, dom, lifecycle, context) {
         hydrateVFragment(input, dom, lifecycle, context);
     }
     else if (isVPlaceholder(input)) {
-        debugger;
+        hydrateVPlaceholder(input, dom);
     }
     else {
         if (process.env.NODE_ENV !== 'production') {

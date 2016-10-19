@@ -14,14 +14,19 @@ import {
 	NodeTypes
 } from '../../../src/core/constants';
 import cloneVNode from '../../../src/factories/cloneVNode';
-import { warning, NO_OP } from '../../../src/shared';
+import { warning, NO_OP, isBrowser } from '../../../src/shared';
+import { render, findDOMNode, createRenderer } from '../../../src/DOM/rendering';
+import createStaticVElementClone from '../../../src/factories/createStaticVElementClone';
+import { disableRecycling } from '../../../src/DOM/recycling';
+import { initDevToolsHooks }  from '../../../src/DOM/devtools';
 
-if (typeof window !== 'undefined' && window.document) {
+if (isBrowser) {
 	window.process = {
 		env: {
 			NODE_ENV: 'development'
 		}
 	};
+	initDevToolsHooks(window);
 }
 
 if (process.env.NODE_ENV !== 'production') {
@@ -57,5 +62,12 @@ export default {
 	NodeTypes,
 
 	// TODO do we still need this? can we remove?
-	NO_OP
+	NO_OP,
+
+	//DOM
+	render,
+	findDOMNode,
+	createRenderer,
+	createStaticVElementClone,
+	disableRecycling
 };

@@ -11,13 +11,6 @@ bundles.add({
 });
 
 bundles.add({
-	moduleGlobal: 'InfernoDOM',
-	moduleName: 'inferno-dom',
-	moduleEntry: 'packages/inferno-dom/src/index.js',
-	path: 'packages/inferno-dom/'
-});
-
-bundles.add({
 	moduleGlobal: 'InfernoServer',
 	moduleName: 'inferno-server',
 	moduleEntry: 'packages/inferno-server/src/index.js',

@@ -3,6 +3,7 @@ import {
 	NodeTypes,
 	ChildrenTypes
 } from './constants';
+import createStaticVElementClone from '../factories/createStaticVElementClone';
 
 export interface IProps {
 	[index: string]: any;
@@ -90,7 +91,7 @@ export function createOptVElement(bp, key, v0, v1, v2, v3): OptVElement {
 	};
 }
 
-export function createOptBlueprint(staticVElement: StaticVElement, v0, d0, v1, d1, v2, d2, v3, d3, renderer): OptBlueprint {
+export function createOptBlueprint(staticVElement: StaticVElement, v0, d0, v1, d1, v2, d2, v3, d3): OptBlueprint {
 	const bp: OptBlueprint = {
 		clone: null,
 		svgClone: null,
@@ -109,9 +110,7 @@ export function createOptBlueprint(staticVElement: StaticVElement, v0, d0, v1, d
 		v2,
 		v3
 	};
-	if (renderer) {
-		renderer.createStaticVElementClone(bp, false);
-	}
+	createStaticVElementClone(bp, false);
 	return bp;
 }
 

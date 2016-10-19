@@ -287,10 +287,10 @@
 
 		uibench.run(
 			function(state) {
-				InfernoDOM.render(main(state), container);
+				Inferno.render(main(state), container);
 			},
 			function(samples) {
-				InfernoDOM.render({
+				Inferno.render({
 					bp: preBp,
 					dom: null,
 					key: null,

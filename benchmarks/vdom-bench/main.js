@@ -14,6 +14,8 @@
 	var bp1 = bp(e('div'), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
 	var bp2 = bp(e('span'), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
 
+	var OPT_ELEMENT = NodeTypes.OPT_ELEMENT;
+
 	function renderTree(nodes) {
 		var children = new Array(nodes.length);
 		var i;
@@ -26,7 +28,7 @@
 					bp: bp1,
 					dom: null,
 					key: n.key,
-					type: NodeTypes.OPT_ELEMENT,
+					type: OPT_ELEMENT,
 					v0: renderTree(n.children)
 				};
 			} else {
@@ -34,9 +36,9 @@
 					bp: bp2,
 					dom: null,
 					key: n.key,
-					type: NodeTypes.OPT_ELEMENT,
+					type: OPT_ELEMENT,
 					v0: n.key
-				}; 
+				};
 			}
 		}
 		return children;
@@ -52,16 +54,16 @@
 	};
 
 	BenchmarkImpl.prototype.tearDown = function() {
-		InfernoDOM.render(null, this.container);
+		Inferno.render(null, this.container);
 	};
 
 	BenchmarkImpl.prototype.render = function() {
-		InfernoDOM.render(
+		Inferno.render(
 			{
 				bp: bp1,
 				dom: null,
 				key: null,
-				type: NodeTypes.OPT_ELEMENT,
+				type: OPT_ELEMENT,
 				v0: renderTree(this.a)
 			},
 			this.container
@@ -69,12 +71,12 @@
 	};
 
 	BenchmarkImpl.prototype.update = function() {
-		InfernoDOM.render(
+		Inferno.render(
 			{
 				bp: bp1,
 				dom: null,
 				key: null,
-				type: NodeTypes.OPT_ELEMENT,
+				type: OPT_ELEMENT,
 				v0: renderTree(this.b)
 			},
 			this.container

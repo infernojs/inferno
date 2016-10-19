@@ -1,16 +1,1 @@
-import { render, findDOMNode, createRenderer } from '../../../src/DOM/rendering';
-import createStaticVElementClone from '../../../src/factories/createStaticVElementClone';
-import { disableRecycling } from '../../../src/DOM/recycling';
-import { initDevToolsHooks }  from '../../../src/DOM/devtools';
-
-if (typeof window !== 'undefined' && window.document) {
-	initDevToolsHooks(window);
-}
-
-export default {
-	render,
-	findDOMNode,
-	createRenderer,
-	createStaticVElementClone,
-	disableRecycling
-};
+throw new Error('`inferno-dom` has been deprecated in 1.0! Use `inferno` instead!')
