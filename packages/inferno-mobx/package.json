@@ -28,7 +28,6 @@
 		"inferno-component": "1.0.0-beta4",
 		"inferno-create-class": "1.0.0-beta4",
 		"inferno-create-element": "1.0.0-beta4",
-		"inferno-dom": "1.0.0-beta4",
 		"hoist-non-inferno-statics": "1.1.2"
 	}
 }
