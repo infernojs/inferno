@@ -5,7 +5,6 @@
 	</head>
 	<body>
 		<script src="../../packages/inferno/dist/inferno.min.js"></script>
-        <script src="../../packages/inferno/dist/inferno-dom.min.js"></script>
 		<script>
             var transform = function() {
                 return {
@@ -42,7 +41,7 @@
                 };
             }
 			var parentNode = document.getElementsByTagName('body')[0];
-			InfernoDOM.render(transform(), parentNode);
+			Inferno.render(transform(), parentNode);
 		</script>
 	</body>
 </html>

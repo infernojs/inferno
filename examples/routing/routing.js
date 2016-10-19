@@ -37,7 +37,7 @@
         );
     }
 
-	InfernoDOM.render((
+	Inferno.render((
         t(Router, { history: browserHistory, component: App, hashbang: true },
             t(Route, { path: '/foo', component: Foo }),
             t(Route, { path: '/bar', component: Bar })

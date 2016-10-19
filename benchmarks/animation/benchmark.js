@@ -223,7 +223,7 @@ var N = 200;
 	}
 
 	var infernoAnimate = function() {
-		InfernoDOM.render(bp1(createBoxes(counter++)), container);
+		Inferno.render(bp1(createBoxes(counter++)), container);
 	};
 
 	var counter;
@@ -234,7 +234,7 @@ var N = 200;
 
 	window.runInferno = function() {
 		var grid = document.getElementById('grid');
-		InfernoDOM.render(null, grid);
+		Inferno.render(null, grid);
 		reset();
 		infernoInit();
 		setTimeout(function () {

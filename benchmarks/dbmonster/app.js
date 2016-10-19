@@ -121,7 +121,7 @@
 			};
 		}
 
-		InfernoDOM.render(
+		Inferno.render(
 			{
 				bp: bp10,
 				dom: null,
