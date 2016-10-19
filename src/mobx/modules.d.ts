@@ -10,7 +10,7 @@ declare module 'inferno-component' {
 	export default Component;
 }
 
-declare module 'inferno-dom' {
+declare module 'inferno' {
 	export function findDOMNode(node: any): any
 }
 

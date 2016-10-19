@@ -10,6 +10,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import typescript from 'rollup-plugin-typescript';
 import { withNodeResolve, relativeModules, getPackageJSON, outputFileSize } from './rollup.helpers';
 import bundles from './rollup.bundles';
+import { aliases } from './aliases';
 
 const pkg = JSON.parse(fs.readFileSync('./package.json'));
 const dependencies = Object.keys(pkg.peerDependencies || {})
@@ -91,13 +92,14 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
 	};
 
 	const external = dependencies.concat(Object.keys(pack.dependencies || {}))
+	const virtuals = Object.keys(aliases)
 
 	// Skip bundling dependencies of each package
 	plugins = withNodeResolve(plugins, {
 		module: true,
 		jsnext: true,
 		main: true,
-		skip: external
+		skip: external.concat(virtuals)
 	});
 
 	return rollup({ entry, plugins, external }).then(({ write }) => write(bundleConfig)).catch(err => {

@@ -1,8 +1,8 @@
 import { isObservable, Reaction, extras } from 'mobx';
+import Component from 'inferno-component';
+import { findDOMNode } from 'inferno';
 import EventEmitter from './EventEmitter';
 import { throwError } from '../shared';
-import Component from 'inferno-component';
-import Inferno from 'inferno';
 
 /**
  * Dev tools support
@@ -14,7 +14,7 @@ export const renderReporter = new EventEmitter();
 
 function reportRendering (component) {
 	// TODO: Add return type to findDOMNode
-	const node = Inferno.findDOMNode(component);
+	const node = findDOMNode(component);
 	if (node && componentByNodeRegistery) {
 		componentByNodeRegistery.set(node, component);
 	}
@@ -96,7 +96,7 @@ export default {
 		this.render.$mobx && this.render.$mobx.dispose();
 		this.__$mobxIsUnmounted = true;
 		if (isDevtoolsEnabled) {
-			const node = Inferno.findDOMNode(this);
+			const node = findDOMNode(this);
 			if (node && componentByNodeRegistery) {
 				componentByNodeRegistery.delete(node);
 			}

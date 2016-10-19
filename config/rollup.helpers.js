@@ -1,4 +1,6 @@
+import { each } from 'lodash';
 import nodeResolve from 'rollup-plugin-node-resolve';
+import { aliases } from './aliases';
 
 export class Bundles {
 	constructor() {
@@ -41,21 +43,18 @@ export function withNodeResolve(arr, resolveConfig) {
 }
 
 // Try to reduce bundle size by reusing installed module
+// Maps inferno modules to a relative path
 export function relativeModules() {
 	return {
 		name: 'rollup-plugin-inferno-packager',
 		transformBundle(source, { format }) {
 			switch (format) {
 				case 'umd':
-					return source.replace(
-						/require\('inferno-([\w-]+)'/g,
-						`require('./inferno-$1'`
-					);
 				case 'cjs':
-					return source.replace(
-						/interopDefault\(require\('inferno-([\w-]+)'/g,
-						`interopDefault(require('./inferno-$1'`
-					);
+					Object.keys(aliases).forEach(alias => {
+						source = source.replace(new RegExp(`require\\('${alias}'`, 'g'), `require('./${alias}'`);
+					})
+					return source
 				default:
 					return source;
 			}
