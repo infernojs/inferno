@@ -1,4 +1,6 @@
+import { each } from 'lodash';
 import nodeResolve from 'rollup-plugin-node-resolve';
+import { aliasMapping } from './aliases';
 
 export class Bundles {
 	constructor() {
@@ -40,13 +42,20 @@ export function withNodeResolve(arr, resolveConfig) {
 	return newArray
 }
 
+const mapping = {
+	'component\/es2015': './inferno-component',
+	'component\/createClass': './inferno-create-class',
+	'factories\/createElement': './inferno-create-element',
+	'DOM\/rendering': './inferno'
+};
+
 // Try to reduce bundle size by reusing installed module
 export function relativeModules() {
 	return {
 		name: 'rollup-plugin-inferno-packager',
 		transformBundle(source, { format }) {
 			switch (format) {
-				case 'umd':
+				/*case 'umd':
 					return source.replace(
 						/require\('inferno-([\w-]+)'/g,
 						`require('./inferno-$1'`
@@ -55,7 +64,13 @@ export function relativeModules() {
 					return source.replace(
 						/interopDefault\(require\('inferno-([\w-]+)'/g,
 						`interopDefault(require('./inferno-$1'`
-					);
+					);*/
+				case 'umd':
+				case 'cjs':
+					Object.keys(aliasMapping).forEach(alias => {
+						source = source.replace(new RegExp(`require\\('${alias}'`, 'g'), `require('${aliasMapping[alias]}'`);
+					})
+					return source
 				default:
 					return source;
 			}

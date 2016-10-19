@@ -1,4 +1,4 @@
-import Component from 'inferno-component';
+import Component from 'component/es2015';
 import { warning } from '../shared';
 
 const specialKeys = {

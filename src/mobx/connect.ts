@@ -1,5 +1,5 @@
-import Component from 'inferno-component';
-import createClass from 'inferno-create-class';
+import Component from 'component/es2015';
+import createClass from 'component/createClass';
 import { throwError } from '../shared';
 import reactiveMixin from './reactiveMixin';
 import inject from './inject';
