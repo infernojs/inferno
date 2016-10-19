@@ -4,13 +4,12 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('mobx'), require('./inferno-dom'), require('./inferno-create-class'), require('hoist-non-inferno-statics'), require('./inferno-create-element')) :
-	typeof define === 'function' && define.amd ? define(['inferno-component', 'mobx', 'inferno-dom', 'inferno-create-class', 'hoist-non-inferno-statics', 'inferno-create-element'], factory) :
-	(global.InfernoMobx = factory(global.Component,global.mobx,global.InfernoDOM,global.createClass,global.hoistStatics,global.createElement));
-}(this, (function (Component,mobx,InfernoDOM,createClass,hoistStatics,createElement) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('mobx'), require('./inferno-create-class'), require('hoist-non-inferno-statics'), require('./inferno-create-element')) :
+	typeof define === 'function' && define.amd ? define(['inferno-component', 'mobx', 'inferno-create-class', 'hoist-non-inferno-statics', 'inferno-create-element'], factory) :
+	(global.InfernoMobx = factory(global.Component,global.mobx,global.createClass,global.hoistStatics,global.createElement));
+}(this, (function (Component,mobx,createClass,hoistStatics,createElement) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;
-InfernoDOM = 'default' in InfernoDOM ? InfernoDOM['default'] : InfernoDOM;
 createClass = 'default' in createClass ? createClass['default'] : createClass;
 hoistStatics = 'default' in hoistStatics ? hoistStatics['default'] : hoistStatics;
 createElement = 'default' in createElement ? createElement['default'] : createElement;
@@ -126,7 +125,7 @@ var componentByNodeRegistery = new WeakMap();
 var renderReporter = new EventEmitter();
 function reportRendering(component) {
     // TODO: Add return type to findDOMNode
-    var node = InfernoDOM.findDOMNode(component);
+    var node = Inferno.findDOMNode(component);
     if (node && componentByNodeRegistery) {
         componentByNodeRegistery.set(node, component);
     }
@@ -198,7 +197,7 @@ var reactiveMixin = {
         this.render.$mobx && this.render.$mobx.dispose();
         this.__$mobxIsUnmounted = true;
         if (isDevtoolsEnabled) {
-            var node = InfernoDOM.findDOMNode(this);
+            var node = Inferno.findDOMNode(this);
             if (node && componentByNodeRegistery) {
                 componentByNodeRegistery.delete(node);
             }

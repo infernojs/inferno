@@ -2,7 +2,6 @@ import { isObservable, Reaction, extras } from 'mobx';
 import EventEmitter from './EventEmitter';
 import { throwError } from '../shared';
 import Component from 'inferno-component';
-import InfernoDOM from 'inferno-dom';
 
 /**
  * Dev tools support
@@ -14,7 +13,7 @@ export const renderReporter = new EventEmitter();
 
 function reportRendering (component) {
 	// TODO: Add return type to findDOMNode
-	const node = InfernoDOM.findDOMNode(component);
+	const node = Inferno.findDOMNode(component);
 	if (node && componentByNodeRegistery) {
 		componentByNodeRegistery.set(node, component);
 	}
@@ -96,7 +95,7 @@ export default {
 		this.render.$mobx && this.render.$mobx.dispose();
 		this.__$mobxIsUnmounted = true;
 		if (isDevtoolsEnabled) {
-			const node = InfernoDOM.findDOMNode(this);
+			const node = Inferno.findDOMNode(this);
 			if (node && componentByNodeRegistery) {
 				componentByNodeRegistery.delete(node);
 			}
