@@ -6,6 +6,8 @@
 	var ChildrenTypes = Inferno.ChildrenTypes;
 	var ValueTypes = Inferno.ValueTypes;
 	var NodeTypes = Inferno.NodeTypes;
+	var COMPONENT = NodeTypes.COMPONENT;
+	var OPT_ELEMENT = NodeTypes.OPT_ELEMENT;
 
 	uibench.init('Inferno', '1.0.0-beta5');
 
@@ -17,7 +19,7 @@
 			bp: treeLeafBp,
 			dom: null,
 			key: null,
-			type: NodeTypes.OPT_ELEMENT,
+			type: OPT_ELEMENT,
 			v0: id,
 			v1: null,
 			v2: null
@@ -39,7 +41,7 @@
 					key: n.id,
 					props: n,
 					ref: null,
-					type: NodeTypes.COMPONENT
+					type: COMPONENT
 				};
 			} else {
 				children[i] = {
@@ -49,7 +51,7 @@
 					key: n.id,
 					props: n.id,
 					ref: null,
-					type: NodeTypes.COMPONENT
+					type: COMPONENT
 				};
 			}
 		}
@@ -57,7 +59,7 @@
 			bp: treeNodeBp,
 			dom: null,
 			key: null,
-			type: NodeTypes.OPT_ELEMENT,
+			type: OPT_ELEMENT,
 			v0: children,
 			v1: null,
 			v2: null
@@ -76,7 +78,7 @@
 			bp: treeBp,
 			dom: null,
 			key: null,
-			type: NodeTypes.OPT_ELEMENT,
+			type: OPT_ELEMENT,
 			v0: {
 				component: TreeNode,
 				dom: null,
@@ -84,7 +86,7 @@
 				key: null,
 				props: data.root,
 				ref: null,
-				type: NodeTypes.COMPONENT
+				type: COMPONENT
 			},
 			v1: null,
 			v2: null
@@ -102,7 +104,7 @@
 			bp: animBoxBp,
 			dom: null,
 			key: null,
-			type: NodeTypes.OPT_ELEMENT,
+			type: OPT_ELEMENT,
 			v0: style,
 			v1: data.id,
 			v2: null
@@ -131,14 +133,14 @@
 				key: item.id,
 				props: item,
 				ref: null,
-				type: NodeTypes.COMPONENT
+				type: COMPONENT
 			};
 		}
 		return {
 			bp: animBp,
 			dom: null,
 			key: null,
-			type: NodeTypes.OPT_ELEMENT,
+			type: OPT_ELEMENT,
 			v0: children,
 			v1: null,
 			v2: null
@@ -160,7 +162,7 @@
 			bp: tableCellBp,
 			dom: null,
 			key: null,
-			type: NodeTypes.OPT_ELEMENT,
+			type: OPT_ELEMENT,
 			v0: text,
 			v1: null,
 			v2: null
@@ -184,7 +186,7 @@
 			key: -1,
 			props: '#' + data.id,
 			ref: null,
-			type: NodeTypes.COMPONENT
+			type: COMPONENT
 		};
 
 		for (var i = 1; i < length; i++) {
@@ -195,14 +197,14 @@
 				key: i,
 				props: cells[i - 1],
 				ref: null,
-				type: NodeTypes.COMPONENT
+				type: COMPONENT
 			};
 		}
 		return {
 			bp: tableRowBp,
 			dom: null,
 			key: null,
-			type: NodeTypes.OPT_ELEMENT,
+			type: OPT_ELEMENT,
 			v0: classes,
 			v1: data.id,
 			v2: children
@@ -231,14 +233,14 @@
 				key: item.id,
 				props: item,
 				ref: null,
-				type: NodeTypes.COMPONENT
+				type: COMPONENT
 			};
 		}
 		return {
 			bp: tableBp,
 			dom: null,
 			key: null,
-			type: NodeTypes.OPT_ELEMENT,
+			type: OPT_ELEMENT,
 			v0: children,
 			v1: null,
 			v2: null
@@ -267,7 +269,7 @@
 			bp: mainBp,
 			dom: null,
 			key: null,
-			type: NodeTypes.OPT_ELEMENT,
+			type: OPT_ELEMENT,
 			v0: section,
 			v1: null,
 			v2: null
@@ -294,7 +296,7 @@
 					bp: preBp,
 					dom: null,
 					key: null,
-					type: NodeTypes.OPT_ELEMENT,
+					type: OPT_ELEMENT,
 					v0: JSON.stringify(samples, null, ' '),
 					v1: null,
 					v2: null
