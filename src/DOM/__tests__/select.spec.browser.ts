@@ -1,6 +1,7 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
+import {expect} from 'chai';
 
 describe('Select / select multiple (non-JSX)', () => {
 	let container;
@@ -14,7 +15,7 @@ describe('Select / select multiple (non-JSX)', () => {
 	});
 
 	it('should render "select" boolean on select options with numbers', () => {
-		const template = (val) => createElement('select', {
+		const template = (val?) => createElement('select', {
 			multiple: true,
 			value: val
 		}, createElement('option', {

@@ -1,5 +1,6 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
+import {expect} from 'chai';
 
 describe('Children - (non-JSX)', () => {
 
@@ -252,7 +253,7 @@ describe('Children - (non-JSX)', () => {
 		[{
 			description: 'should set dynamic children as ' + arg.name,
 
-			template: (child) => createElement('div', null, child)
+			template: (child?) => createElement('div', null, child)
 		}].forEach((test) => {
 
 			it(test.description, () => {
@@ -331,7 +332,7 @@ describe('Children - (non-JSX)', () => {
 
 		[{
 			description: 'should set deep dynamic children as ' + arg.name,
-			template: (child) => createElement('div', null, createElement('b', null, child))
+			template: (child?) => createElement('div', null, createElement('b', null, child))
 		}].forEach((test) => {
 
 			it(test.description, () => {
