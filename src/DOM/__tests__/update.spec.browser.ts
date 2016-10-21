@@ -1,6 +1,7 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
+import {expect} from 'chai';
 
 describe('Update (non-jsx)', () => {
 	let container;
@@ -64,7 +65,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should insert an additional tag node', () => {
 		const template = (child) => createElement('div', null, child);
-		const span = () => createElement('div');
+		// const span = () => createElement('div');
 
 		render(template(null), container);
 		expect(container.firstChild.innerHTML).to.equal('');
@@ -81,7 +82,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should render a node with dynamic values', () => {
-		const template = (val1, val2) => createElement('div', null, 'Hello world - ', val1, ' ', val2);
+		const template = (val1?, val2?) => createElement('div', null, 'Hello world - ', val1, ' ', val2);
 
 		render(template('Inferno', 'Owns'), container);
 		expect(
@@ -140,7 +141,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a wrapped text node', () => {
-		const template = (val1, val2) => createElement('div', null, val1, ' foo', val2);
+		const template = (val1?, val2?) => createElement('div', null, val1, ' foo', val2);
 
 		render(template(null), container);
 		expect(
@@ -172,7 +173,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a wrapped text node', () => {
-		const template = (val1, val2) => createElement('div', null, val1, ' foo', val2);
+		const template = (val1?, val2?) => createElement('div', null, val1, ' foo', val2);
 
 		render(template(null), container);
 		expect(
@@ -225,7 +226,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a wrapped text node with 4 arguments', () => {
-		const template = (val1, val2, val3, val4) => createElement('div', null,
+		const template = (val1?, val2?, val3?, val4?) => createElement('div', null,
 			val1,
 			val2,
 			val3,
@@ -298,7 +299,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a node with static text', () => {
-		const template = (val) => createElement('div', {
+		const template = (val?) => createElement('div', {
 			id: val
 		}, 'Hello, World');
 
@@ -387,7 +388,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should update a node with multiple children and static text #2', () => {
-		const template = (val1) => createElement('div', {
+		const template = (val1?) => createElement('div', {
 			id: val1
 		}, 'Hello, World');
 
@@ -456,7 +457,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should handle lots of dynamic variables', () => {
-		const template = function (val1, val2, val3, val4, val5, val6) {
+		const template = function (val1?, val2?, val3?, val4?, val5?, val6?) {
 			return createElement('div', {
 				className: val2,
 				id: val1
@@ -577,7 +578,7 @@ describe('Update (non-jsx)', () => {
 		).to.equal(
 			innerHTML('<div>Hello world!</div>')
 		);
-		const span2 = (child) => createElement('span', null, 'Im updated!');
+		const span2 = (child?) => createElement('span', null, 'Im updated!');
 
 		render(div(span2()), container);
 	});
@@ -623,7 +624,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should patch a tag node into a text node #2', () => {
-		const template = (child) => createElement('div', null, child);
+		const template = (child?) => createElement('div', null, child);
 
 		const span = () => createElement('span', null, 'Good bye!');
 		render(template(span()), container);
@@ -747,13 +748,8 @@ describe('Update (non-jsx)', () => {
 				custom_attr: val
 			}, 'Hello!!');
 		};
-		const span2 = function (val) {
-			return createElement('span', {
-				caught_fire: val
-			}, 'Hello, world');
-		};
 
-		render(template(span('id#1', span2('custom'))), container);
+		render(template(span('id#1')), container);
 		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1">Hello!!</span></div>');
 	});
 
@@ -809,7 +805,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should inject dynamic text various places', () => {
-		const div = (text) => createElement('div', null, 'There is ', text, ' spoon!');
+		const div = (text?) => createElement('div', null, 'There is ', text, ' spoon!');
 
 		render(div('no'), container);
 		expect(
@@ -876,7 +872,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	// TODO: There seems to be bug in JSDOM because styles dont get removed by assigning null or empty to dom.style[something]
-	if (typeof global !== 'undefined' && !global.usingJSDOM) {
+	if (typeof global !== 'undefined' && !(global as any).usingJSDOM) {
 		describe('should render styling on root node, and set and remove styling on multiple children', () => {
 			let template;
 
@@ -1074,7 +1070,6 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
 			});
 		});
-
 
 		describe('KEYED updates', () => {
 			it('variation-1', () => {
@@ -1351,4 +1346,3 @@ describe('Update (non-jsx)', () => {
 		});
 	});
 });
-

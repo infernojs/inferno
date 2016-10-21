@@ -59,7 +59,7 @@ function removeRoot(root): void {
 
 const documetBody = isBrowser ? document.body : null;
 
-export function render(input: InfernoInput, parentDom: Node | SVGAElement) {
+export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 	if (documetBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');

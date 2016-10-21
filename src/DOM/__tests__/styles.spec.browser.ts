@@ -1,6 +1,7 @@
 import { render } from './../rendering';
 import { style } from './../../tools/utils';
 import createElement from './../../factories/createElement';
+import {expect} from 'chai';
 
 const isPhantomJS = window && window.navigator && /PhantomJS/.test(window.navigator.userAgent);
 
@@ -116,7 +117,7 @@ describe('CSS style properties', () => {
 		expected: ['height: 200em; width: 200cm; margin-left: 200mm;']
 	}];
 
-	if (typeof global !== 'undefined' && !global.usingJSDOM) {
+	if (typeof global !== 'undefined' && !(global as any).usingJSDOM) {
 		if (isPhantomJS) {
 			preDefined.push({
 				name: 'support webkit transform',
@@ -171,10 +172,10 @@ describe('CSS style properties', () => {
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 			});
 			it(test.description, () => {
-				render(test.template(null), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-				render(test.template(null), container);
+				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 			});
@@ -184,7 +185,7 @@ describe('CSS style properties', () => {
 	preDefined.forEach((arg) => {
 		[{
 			description: 'should dynamically ' + arg.name + ' on root node',
-			template: (value) => createElement('div', {
+			template: (value?) => createElement('div', {
 				style: value
 			})
 		}].forEach((test) => {

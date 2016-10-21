@@ -38,7 +38,7 @@ module.exports = function (config) {
 			module: {
 				loaders: [
 					{
-						test: /\.ts/,
+						test: /\.tsx?/,
 						loaders: ['babel-loader', 'ts-loader'],
 						exclude: /node_modules/
 					},
@@ -58,7 +58,7 @@ module.exports = function (config) {
 				],
 			},
 			resolve: {
-				extensions: ['', '.js', '.ts']
+				extensions: ['', '.js', '.ts', '.tsx']
 			}
 		},
 		webpackMiddleware: {
