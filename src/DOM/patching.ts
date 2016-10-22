@@ -363,19 +363,19 @@ export function patchChildrenWithUnknownType(lastChildren, nextChildren, parentD
 }
 
 export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-	const lastComponent = lastVComponent.component;
-	const nextComponent = nextVComponent.component;
+	const lastType = lastVComponent.type;
+	const nextType = nextVComponent.type;
 	const nextProps = nextVComponent.props || {};
 
-	if (lastComponent !== nextComponent) {
+	if (lastType !== nextType) {
 		if (isStatefulComponent(nextVComponent)) {
-			const defaultProps = nextComponent.defaultProps;
+			const defaultProps = nextType.defaultProps;
 
 			if (!isUndefined(defaultProps)) {
 				nextVComponent.props = copyPropsTo(defaultProps, nextProps);
 			}
 			const lastInstance = lastVComponent.instance;
-			const nextInstance = createStatefulComponentInstance(nextComponent, nextProps, context, isSVG, devToolsStatus);
+			const nextInstance = createStatefulComponentInstance(nextType, nextProps, context, isSVG, devToolsStatus);
 			// we use || lastInstance because stateless components store their lastInstance
 			const lastInput = lastInstance._lastInput || lastInstance;
 			const nextInput = nextInstance._lastInput;
@@ -389,7 +389,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 			componentToDOMNodeMap.set(nextInstance, nextInput.dom);
 		} else {
 			const lastInput = lastVComponent.instance._lastInput || lastVComponent.instance;
-			const nextInput = createStatelessComponentInput(nextComponent, nextProps, context);
+			const nextInput = createStatelessComponentInput(nextType, nextProps, context);
 
 			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, true);
 			const dom = nextVComponent.dom = nextInput.dom;
@@ -408,7 +408,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				}
 				replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG, shallowUnmount), lastVComponent.dom);
 			} else {
-				const defaultProps = nextComponent.defaultProps;
+				const defaultProps = nextType.defaultProps;
 				const lastProps = instance.props;
 
 				if (instance._devToolsStatus.connected && !instance._devToolsId) {
@@ -469,7 +469,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
 					nextHooks.onComponentWillUpdate(lastProps, nextProps);
 				}
-				let nextInput = nextComponent(nextProps, context);
+				let nextInput = nextType(nextProps, context);
 
 				if (isInvalid(nextInput)) {
 					nextInput = createVPlaceholder();

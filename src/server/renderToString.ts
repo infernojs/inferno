@@ -22,11 +22,11 @@ import {
 import { convertVOptElementToVElement } from '../factories/cloneVNode';
 
 function renderComponentToString(vComponent, isRoot, context) {
-	const Component = vComponent.component;
+	const type = vComponent.type;
 	const props = vComponent.props;
 
 	if (isStatefulComponent(vComponent)) {
-		const instance = new Component(props);
+		const instance = new type(props);
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndef(childContext)) {
@@ -41,7 +41,7 @@ function renderComponentToString(vComponent, isRoot, context) {
 		instance._pendingSetState = false;
 		return renderInputToString(node, context, isRoot);
 	} else {
-		return renderInputToString(Component(props, context), context, isRoot);
+		return renderInputToString(type(props, context), context, isRoot);
 	}
 }
 

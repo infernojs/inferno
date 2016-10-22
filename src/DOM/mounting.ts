@@ -304,14 +304,14 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 			return dom;
 		}
 	}
-	const component = vComponent.component;
+	const type = vComponent.type;
 	const props = vComponent.props || EMPTY_OBJ;
 	const hooks = vComponent.hooks;
 	const ref = vComponent.ref;
 	let dom;
 
 	if (isStatefulComponent(vComponent)) {
-		const defaultProps = component.defaultProps;
+		const defaultProps = type.defaultProps;
 
 		if (!isUndefined(defaultProps)) {
 			copyPropsTo(defaultProps, props);
@@ -323,7 +323,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 			}
 			throwError();
 		}
-		const instance = createStatefulComponentInstance(component, props, context, isSVG, devToolsStatus);
+		const instance = createStatefulComponentInstance(type, props, context, isSVG, devToolsStatus);
 		const input = instance._lastInput;
 
 		instance._vComponent = vComponent;
@@ -341,7 +341,7 @@ export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG
 			}
 			throwError();
 		}
-		const input = createStatelessComponentInput(component, props, context);
+		const input = createStatelessComponentInput(type, props, context);
 
 		vComponent.dom = dom = mount(input, null, lifecycle, context, isSVG, shallowUnmount);
 		vComponent.instance = input;
