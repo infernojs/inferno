@@ -4,7 +4,6 @@ import resolve from './universal/resolve';
 import history from './history';
 
 export interface IRouterProps {
-	hashbang?: boolean;
 	url: string;
 	component?: Component<any, any>;
 }
@@ -22,7 +21,7 @@ export default class RouterAsync extends Component<IRouterProps, any> {
 		super(props, context);
 		this._didRoute = false;
 		this.state = {
-			location: props.url || history.location,
+			location: props.url ? { pathname: props.url } : history.location,
 			component: null,
 			params: null,
 			async: null
