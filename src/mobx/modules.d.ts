@@ -3,6 +3,7 @@ declare module 'inferno-component' {
 		props?: P;
 		context?: C;
 		constructor (props?: P, context?: C);
+		componentWillReact();
 		componentWillReceiveProps? (nextProps: P, nextContext: C): void;
 		forceUpdate (): void;
 		setState (v: Object, cb?: () => {}): boolean;
