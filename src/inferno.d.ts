@@ -17,6 +17,18 @@ declare module 'redux' {
 	export function bindActionCreators(actionCreation: any, dispatch: (action: any) => any): any;
 }
 
+declare module 'path-to-regexp' {
+	export * from 'path-to-regexp';
+}
+
+declare module 'history/createBrowserHistory' {
+	export * from 'history/createBrowserHistory';
+}
+
+declare module 'history/createMemoryHistory' {
+	export * from 'history/createMemoryHistory';
+}
+
 declare module 'sinon' {
 	export function spy(obj: any, event: string): any;
 	export const assert;

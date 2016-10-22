@@ -1,28 +1,29 @@
 {
-  "name": "inferno-router",
-  "version": "1.0.0-beta5",
-  "license": "MIT",
-  "description": "Provides routing functionality for Inferno",
-  "author": {
-    "name": "Dominic Gannaway",
-    "email": "dg@domgan.com"
-  },
-  "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
-  },
-  "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-router.js",
-  "keywords": [
-    "babel",
-    "react",
-    "inferno",
-    "framework",
-    "interfaces",
-    "user interfaces",
-    "router"
-  ],
-  "repository": "https://github.com/trueadm/inferno",
-  "dependencies": {
-    "inferno": "1.0.0-beta5"
-  }
+	"name": "inferno-router",
+	"version": "1.0.0-beta5",
+	"license": "MIT",
+	"description": "Provides routing functionality for Inferno",
+	"author": {
+		"name": "Dominic Gannaway",
+		"email": "dg@domgan.com"
+	},
+	"bugs": {
+		"url": "https://github.com/trueadm/inferno/issues"
+	},
+	"homepage": "https://github.com/trueadm/inferno#readme",
+	"main": "inferno-router.js",
+	"keywords": [
+		"babel",
+		"react",
+		"inferno",
+		"framework",
+		"interfaces",
+		"user interfaces",
+		"router"
+	],
+	"repository": "https://github.com/trueadm/inferno",
+	"dependencies": {
+		"inferno": "1.0.0-beta5",
+		"history": "4.3.0"
+	}
 }

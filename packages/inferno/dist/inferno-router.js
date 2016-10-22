@@ -2776,7 +2776,11 @@ var Route = (function (Component$$1) {
         var ref = this.props;
         var component = ref.component;
         var params = ref.params;
-        return createVComponent(component, { params: params, async: this.state.async });
+        console.info(this.props);
+        return createVComponent(component, {
+            params: params,
+            async: this.state.async
+        });
     };
 
     return Route;
@@ -2870,6 +2874,84 @@ function rank(url) {
     return (strip(url).match(/\/+/g) || '').length;
 }
 
+var isDevelopment = process.env.NODE_ENV !== 'production';
+/*
+export default class Router extends Component<IRouterProps, any> {
+    unlisten: any;
+
+    constructor(props?: any, context?: any) {
+        super(props, context);
+        this._didRoute = false;
+        this.state = {
+            location: props.url || props.history.location,
+            async: null
+        };
+    }
+
+    async() {
+        // const async = resolve(routes, location);
+        const { children } = this.props;
+        const { location } = this.state;
+
+        this.setState({
+            async: { status: ASYNC_STATUS.pending }
+        });
+        resolve(children, location).then(value => {
+            console.warn('RESOLVE:', value);
+            this.setState({
+                async: {
+                    status: ASYNC_STATUS.fulfilled,
+                    value
+                }
+            });
+        }).catch(err => this.reject(err));
+    }
+
+    reject(value) {
+        this.setState({
+            async: {
+                status: ASYNC_STATUS.rejected,
+                value
+            }
+        });
+    }
+
+    componentWillReceiveProps() {
+        this.async();
+    }
+
+    componentWillMount() {
+        const { location } = this.state;
+
+        if (typeof location !== 'string') {
+            this.unlisten = this.props.history.listen(loc => {
+                console.warn('Location:', loc);
+            });
+        }
+
+        this.async();
+    }
+
+    componentWillUnmount() {
+        if (this.unlisten) {
+            this.unlisten();
+        }
+    }
+
+    render() {
+        //const { component, params } = this.props;
+
+        console.info('RouterAsync:', this.state.async);
+
+        if (this.state.async && this.state.async.value) {
+            return createVComponent(this.state.async.value.component, {});
+        }
+
+        return createVComponent(() => {
+            return null;
+        }, null);
+    }
+}*/
 var Router = (function (Component$$1) {
     function Router(props, context) {
         Component$$1.call(this, props, context);
@@ -2877,9 +2959,11 @@ var Router = (function (Component$$1) {
             throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
         }
         this._didRoute = false;
+        var currentURL = props.history.location.pathname + props.history.location.search;
         this.state = {
-            url: props.url || props.history.getCurrentUrl()
+            url: props.url || currentURL
         };
+        // console.log(this.state)
     }
 
     if ( Component$$1 ) Router.__proto__ = Component$$1;
@@ -2892,18 +2976,28 @@ var Router = (function (Component$$1) {
         };
     };
     Router.prototype.componentWillMount = function componentWillMount () {
-        this.props.history.addRouter(this);
+        // this.props.history.addRouter(this);
+        this.unlisten = this.props.history.listen(function (location) {
+            console.warn('Location:', location);
+        });
     };
     Router.prototype.componentWillUnmount = function componentWillUnmount () {
-        this.props.history.removeRouter(this);
+        //this.props.history.removeRouter(this);
+        this.unlisten();
     };
     Router.prototype.handleRoutes = function handleRoutes (_routes, url, hashbang, wrapperComponent, lastPath) {
         var this$1 = this;
 
+        // console.log({ _routes, url, hashbang, wrapperComponent, lastPath })
+        // match(routes(stores), location)
         var routes = flatten(_routes);
         routes.sort(pathRankSort);
+        console.log({ routes: routes });
         for (var i = 0; i < routes.length; i++) {
             var route = routes[i];
+            if (isDevelopment && !isObject(route)) {
+                throw new Error(("Invalid prop \"routes\" (" + (typeof route) + "). Expected a component."));
+            }
             var ref = route.props;
             var path = ref.path;
             var fullPath = lastPath + path;
@@ -2917,6 +3011,7 @@ var Router = (function (Component$$1) {
             }
             if (params) {
                 if (wrapperComponent) {
+                    console.log({ wrapperComponent: wrapperComponent });
                     return createVComponent(wrapperComponent, {
                         params: params,
                         children: cloneVNode(route, {
@@ -2924,6 +3019,7 @@ var Router = (function (Component$$1) {
                         })
                     }, null, null, null);
                 }
+                console.info({ wrapperComponent: wrapperComponent });
                 return cloneVNode(route, {
                     params: params
                 });
@@ -2931,6 +3027,7 @@ var Router = (function (Component$$1) {
         }
         if (!lastPath && wrapperComponent) {
             this._didRoute = true;
+            console.warn({ wrapperComponent: wrapperComponent });
             return createVComponent(wrapperComponent, null, null, null, null);
         }
         return null;
@@ -2945,6 +3042,7 @@ var Router = (function (Component$$1) {
         var url = this.props.url || this.state.url;
         var wrapperComponent = this.props.component;
         var hashbang = this.props.hashbang;
+        // return this.handleRoutes(children, url, hashbang, wrapperComponent, '');
         return this.handleRoutes(children, url, hashbang, wrapperComponent, '');
     };
 

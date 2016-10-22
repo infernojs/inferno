@@ -1,7 +1,7 @@
 import { render } from './../../DOM/rendering';
 import Router from '../Router';
 import Route from '../Route';
-import browserHistory from '../browserHistory';
+import browserHistory from '../history';
 import Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 

@@ -5,7 +5,8 @@ declare module 'inferno-component' {
 		constructor (props?: P, context?: C);
 		componentWillReceiveProps? (nextProps: P, nextContext: C): void;
 		forceUpdate (): void;
-		isPrototypeOf (v: Object): boolean;
+		setState (v: Object, cb?: () => {}): boolean;
+		isPrototypeOf (v: Object): void;
 	}
 	export default Component;
 }

@@ -29,17 +29,6 @@ export function flatten(oldArray) {
 	return newArray;
 }
 
-export function convertToHashbang(url) {
-	if (url.indexOf('#') === -1) {
-		url = '/';
-	} else {
-		const splitHashUrl = url.split('#!');
-		splitHashUrl.shift();
-		url = splitHashUrl.join('');
-	}
-	return url;
-}
-
 // Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
 // Wildcard support is added on top of that.
 export function exec(url, route, opts: any = EMPTY) {

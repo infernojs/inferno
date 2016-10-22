@@ -1,66 +1,69 @@
 import Component from '../component/es2015';
-import {
-	isArray,
-	isNull
-} from '../shared';
-import {
-	exec,
-	convertToHashbang,
-	pathRankSort,
-	flatten
-} from './utils';
+import { isArray, isNull, isObject } from '../shared';
+import { exec, pathRankSort, flatten } from './utils';
 import { createVComponent } from '../core/shapes';
 import cloneVNode from '../factories/cloneVNode';
+import history from './history';
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export interface IRouterProps {
-	history?: any;
-	hashbang?: boolean;
 	url: string;
 	component?: Component<any, any>;
 }
 
 export default class Router extends Component<IRouterProps, any> {
 	_didRoute: boolean;
+	unlisten: any;
 
 	constructor(props?: any, context?: any) {
 		super(props, context);
-		if (!props.history) {
-			throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
-		}
 		this._didRoute = false;
 		this.state = {
-			url: props.url || props.history.getCurrentUrl()
+			url: props.url || (history.location.pathname + history.location.search)
 		};
 	}
 
 	getChildContext() {
 		return {
-			history: this.props.history,
-			hashbang: this.props.hashbang
+			history
 		};
 	}
 
 	componentWillMount() {
-		this.props.history.addRouter(this);
+		this.unlisten = history.listen(url => {
+			this.routeTo(url.pathname);
+		});
 	}
 
 	componentWillUnmount() {
-		this.props.history.removeRouter(this);
+		if (this.unlisten) {
+			this.unlisten();
+		}
 	}
 
-	handleRoutes(_routes, url, hashbang, wrapperComponent, lastPath) {
+	handleRoutes(_routes, url, wrapperComponent?, lastPath?) {
+
 		const routes = flatten(_routes);
 		routes.sort(pathRankSort);
 
 		for (let i = 0; i < routes.length; i++) {
 			const route = routes[i];
+
+			if (isDevelopment && !isObject(route)) {
+				throw new Error(`Invalid prop "routes" (${typeof route}). Expected a component.`);
+			}
+
 			const { path } = route.props;
 			const fullPath = lastPath + path;
-			const params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
+			const params = exec(url, fullPath);
 			const children = toArray(route.props.children);
 
 			if (children) {
-				const subRoute = this.handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
+				if (route.props.component) {
+					wrapperComponent = route.props.component;
+				}
+				const subRoute = this.handleRoutes(children, url, wrapperComponent, fullPath);
 
 				if (!isNull(subRoute)) {
 					return subRoute;
@@ -96,10 +99,8 @@ export default class Router extends Component<IRouterProps, any> {
 	render() {
 		const children = toArray(this.props.children);
 		const url = this.props.url || this.state.url;
-		const wrapperComponent = this.props.component;
-		const hashbang = this.props.hashbang;
 
-		return this.handleRoutes(children, url, hashbang, wrapperComponent, '');
+		return this.handleRoutes(children, url, null, '');
 	}
 }
 

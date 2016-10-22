@@ -3,7 +3,7 @@ import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
 import Route from '../../router/Route';
 import Router from '../../router/Router';
-import browserHistory from '../../router/browserHistory';
+import browserHistory from '../../router/history';
 import { createStore } from 'redux';
 import Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
