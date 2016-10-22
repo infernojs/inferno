@@ -1,5 +1,6 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
+import {expect} from 'chai';
 
 describe('SVG (non-jsx)', () => {
 	let container;
@@ -144,7 +145,7 @@ describe('SVG (non-jsx)', () => {
 	});
 
 	it('should handle SVG edge case (static)', () => {
-		const template = (child) => createElement('div', null, createElement('svg'));
+		const template = (child?) => createElement('div', null, createElement('svg'));
 
 		render(template(), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
@@ -155,9 +156,9 @@ describe('SVG (non-jsx)', () => {
 
 	it('should keep parent namespace (dynamic)', () => {
 		let child,
-			template = (child) => createElement('svg', {
+			template = (_child) => createElement('svg', {
 				xmlns: 'http://www.w3.org/2000/svg'
-			}, child);
+			}, _child);
 
 		child = () => createElement('circle');
 
@@ -316,9 +317,8 @@ describe('SVG (non-jsx)', () => {
 		expect(container.firstChild.getAttribute('class')).to.equal('class1 class2');
 	});
 
-
 	it('should be possible to remove className from SVG', () => {
-		const template = (val) => createElement('svg', {
+		const template = (val?) => createElement('svg', {
 			xmlns: 'http://www.w3.org/2000/svg',
 			className: val
 		});
@@ -331,11 +331,10 @@ describe('SVG (non-jsx)', () => {
 		expect(container.firstChild.getAttribute('class')).to.equal(null);
 	});
 
-
 	it('should follow last wins when both class and className are defined', () => {
 		const template = () => createElement('svg', {
 			xmlns: 'http://www.w3.org/2000/svg',
-			'class': 'test',
+			class: 'test',
 			className: 'class1 class2'
 		});
 
@@ -347,7 +346,7 @@ describe('SVG (non-jsx)', () => {
 		const template = () => createElement('svg', {
 			xmlns: 'http://www.w3.org/2000/svg',
 			className: 'class1 class2',
-			'class': 'test'
+			class: 'test'
 		});
 
 		render(template(), container);
