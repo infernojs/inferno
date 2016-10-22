@@ -154,9 +154,29 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
 		}
 		throwError();
 	}
-	const children = vElement.children;
 
+	const children = vElement.children;
+	const props = vElement.props;
 	vElement.dom = dom;
+
+	for (let prop in props) {
+		if (!props.hasOwnProperty(prop)) {
+			continue;
+		}
+
+		const value = props[prop];
+
+		if (prop === 'key') {
+			vNode.key = value;
+		} else if (prop === 'ref') {
+			debugger;
+		} else if (prop === 'children') {
+			debugger;
+		} else {
+			patchProp(prop, null, value, dom, false);
+		}
+	}
+
 	if (children) {
 		hydrateChildren(vElement.childrenType, children, dom, lifecycle, context);
 	}
