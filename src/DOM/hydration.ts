@@ -167,11 +167,11 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
 		const value = props[prop];
 
 		if (prop === 'key') {
-			vNode.key = value;
+			// TODO: Maybe ?
 		} else if (prop === 'ref') {
-			debugger;
+			// TODO: Maybe ?
 		} else if (prop === 'children') {
-			debugger;
+			// TODO: Maybe ?
 		} else {
 			patchProp(prop, null, value, dom, false);
 		}
