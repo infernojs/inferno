@@ -1,10 +1,7 @@
 import Component from '../component/es2015';
-import { isArray, isNull, isObject } from '../shared';
-import { exec, pathRankSort, flatten } from './utils';
+import { isArray } from '../shared';
+import { pathRankSort, flatten } from './utils';
 import { createVComponent } from '../core/shapes';
-import cloneVNode from '../factories/cloneVNode';
-
-const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export interface IRouterProps {
 	url: string;
@@ -44,51 +41,70 @@ export default class Router extends Component<IRouterProps, any> {
 		}
 	}
 
-	handleRoutes(_routes, url, wrapperComponent?, lastPath?) {
+	getRoutes(_routes, url) {
+
+		if (!_routes) {
+			return _routes;
+		}
+
+		const routes = toArray(_routes);
+
+		for (let i = 0; i < routes.length; i++) {
+			const route = routes[i].props;
+			const path = route.path[0] === '/' ? route.path.substring(1) : route.path;
+			const newURL = url[0] === '/' ? url.substring(1) : url;
+
+			if (newURL.indexOf(path) === 0) {
+				const newPath = newURL.substr(path.length);
+				const component = createVComponent(route.component, null, null, null, null);
+				component.props = {
+					children: this.getRoutes(route.children, newPath)
+				};
+				return component;
+			}
+		}
+	}
+
+	handleRoutes(_routes, url, wrappers?, lastPath?) {
 
 		const routes = flatten(_routes);
 		routes.sort(pathRankSort);
 
-		for (let i = 0; i < routes.length; i++) {
-			const route = routes[i];
+		const matchedComponent = this.getRoutes(routes, url);
 
-			if (isDevelopment && !isObject(route)) {
-				throw new Error(`Invalid prop "routes" (${typeof route}). Expected a component.`);
-			}
-
-			const { path } = route.props;
-			const fullPath = lastPath + path;
-			const params = exec(url, fullPath);
-			const children = toArray(route.props.children);
-
-			if (children) {
-				if (route.props.component) {
-					wrapperComponent = route.props.component;
-				}
-				const subRoute = this.handleRoutes(children, url, wrapperComponent, fullPath);
-
-				if (!isNull(subRoute)) {
-					return subRoute;
-				}
-			}
-			if (params) {
-				if (wrapperComponent) {
-					return createVComponent(wrapperComponent, {
-						params,
-						children: cloneVNode(route, {
-							params
-						})
-					}, null, null, null);
-				}
-				return cloneVNode(route, {
-					params
-				});
-			}
+		if (!lastPath && wrappers) {
+			return matchedComponent;
 		}
-		if (!lastPath && wrapperComponent) {
+
+		/*if (!lastPath && wrappers) {
 			this._didRoute = true;
-			return createVComponent(wrapperComponent, null, null, null, null);
-		}
+
+			const finalComponent = wrappers.map(wrapper => {
+				return createVComponent(wrapper, null, null, null, null);
+			});
+
+			// const wrapperComponent = wrappers.shift();
+
+			const finalComponent = wrappers.reduce(function(previous, current, index, array) {
+				const component = createVComponent(current, null, null, null, null);
+				if (!previous.type) {
+					previous = component;
+					return previous;
+				}
+
+				if (!previous.props) {
+					previous.props = {
+						children: component
+					};
+				}
+				return previous;
+			}, {});
+
+			debugger;
+			return finalComponent;
+
+			// return createVComponent(wrappers, null, null, null, null);
+		}*/
 		return null;
 	}
 
@@ -102,7 +118,7 @@ export default class Router extends Component<IRouterProps, any> {
 		const children = toArray(this.props.children);
 		const url = this.props.url || this.state.url;
 
-		return this.handleRoutes(children, url, null, '');
+		return this.handleRoutes(children, url, [], '');
 	}
 }
 
