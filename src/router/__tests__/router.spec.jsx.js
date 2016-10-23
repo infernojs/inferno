@@ -108,7 +108,7 @@ describe('Router tests (jsx)', () => {
 			});
 			it('it should render the TestComponent with the highest ranked path', () => {
 				render(
-					<Router url={ '/foo/bar/yar' } history={ browserHistory }>
+					<Router url={ '/foo/bar/yar' } history={ history }>
 						<Route path={ '*' } component={ () => <div>Bad Component</div> } />
 						<Route path={ '/foo/bar/*' } component={ () => <div>Bad Component</div> } />
 						<Route path={ '/foo/bar/yar' } component={ () => <div>Good Component</div> } />
@@ -118,7 +118,7 @@ describe('Router tests (jsx)', () => {
 				expect(container.innerHTML).to.equal('<div>Good Component</div>');
 
 				render(
-					<Router url={ '/foo/bar/yar' } history={ browserHistory }>
+					<Router url={ '/foo/bar/yar' } history={ history }>
 						<Route path={ '*' } component={ () => <div>Bad Component</div> } />
 						<Route path={ '/foo/bar/*' } component={ () => <div>Bad Component</div> } />
 						<Route path={ '/foo/bar/yar' } component={ () => <div>Good Component</div> } />
@@ -130,8 +130,8 @@ describe('Router tests (jsx)', () => {
 			});
 			it('it should render the correct nested route based on the path', () => {
 				render(
-					<Router url={ '/foo/bar' } history={ browserHistory }>
-						<Route path={ '/foo' } component={ () => <div>Bad Component</div> }>
+					<Router url={ '/foo/bar' } history={ history }>
+						<Route path={ '/foo' } component={ () => <div>Good Component</div> }>
 							<Route path={ '/bar' } component={ () => <div>Good Component</div> } />
 						</Route>
 					</Router>,
@@ -140,7 +140,7 @@ describe('Router tests (jsx)', () => {
 				expect(container.innerHTML).to.equal('<div>Good Component</div>');
 
 				render(
-					<Router url={ '/foo' } history={ browserHistory }>
+					<Router url={ '/foo' } history={ history }>
 						<Route path={ '/foo' } component={ () => <div>Good Component</div> }>
 							<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
 						</Route>
@@ -150,9 +150,11 @@ describe('Router tests (jsx)', () => {
 				expect(container.innerHTML).to.equal('<div>Good Component</div>');
 
 				render(
-					<Router url={ '/foo' } history={ browserHistory } component={ ({ children }) => <div>{ children }</div> }>
-						<Route path={ '/foo' } component={ () => <div>Good Component</div> }>
-							<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
+					<Router url={ '/foo' } history={ history }>
+						<Route component={ ({ children }) => <div>{ children }</div> }>
+							<Route path={ '/foo' } component={ () => <div>Good Component</div> }>
+								<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
+							</Route>
 						</Route>
 					</Router>,
 					container
@@ -161,8 +163,10 @@ describe('Router tests (jsx)', () => {
 			});
 			it('it should render the both components and both components should get the params prop passed down', () => {
 				render(
-					<Router url={ '/foo/bar' } history={ browserHistory } component={ ({ children }) => <div>{ children }</div> }>
-						<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> } />
+					<Router url={ '/foo/bar' } history={ history }>
+						<Route component={ ({ children }) => <div>{ children }</div> }>
+							<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> } />
+						</Route>
 					</Router>,
 					container
 				);
@@ -170,9 +174,11 @@ describe('Router tests (jsx)', () => {
 			});
 			it('it should render the both components and both components should get the params prop passed down (route in an array)', () => {
 				render(
-					<Router url={ '/foo/bar' } history={ browserHistory } component={ ({ children }) => <div>{ children }</div> }>
-						<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
-						{ [<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> } />] }
+					<Router url={ '/foo/bar' } history={ history }>
+						<Route component={ ({ children }) => <div>{ children }</div> }>
+							<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
+							{ [<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> } />] }
+						</Route>
 					</Router>,
 					container
 				);

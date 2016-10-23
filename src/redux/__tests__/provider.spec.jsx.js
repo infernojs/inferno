@@ -153,9 +153,11 @@ describe('Provider (JSX)', () => {
 		const _render = (url = '/') => {
 			render(
 				<Provider store={store}>
-					<Router url={ url } history={ history } component={ BasicRouter }>
-						<Route path='/next' component={ BasicComponent2 } />
-						<Route path='/' component={ BasicComponent1 } />
+					<Router url={ url } history={ history }>
+						<Route path='/' component={ BasicRouter } >
+							<Route path='/next' component={ BasicComponent2 } />
+							<Route path='/' component={ BasicComponent1 } />
+						</Route>
 					</Router>
 				</Provider>
 			, container);

@@ -49,14 +49,15 @@ export default class Router extends Component<IRouterProps, any> {
 		const routes = toArray(_routes);
 
 		for (let i = 0; i < routes.length; i++) {
-			const route = routes[i];
-			const path = route.props.path;
+			const route = isArray(routes[i]) ? this.getRoutes(routes[i], url, lastPath) : routes[i];
+			const path = route.props.path || '/';
 			const children = route.props.children;
 			const newURL = url.replace('//', '/');
 			const fullPath = (lastPath + path).replace('//', '/');
 			const match = matchPath(false, fullPath, newURL);
 
 			if (match) {
+				route.props.params = match.params;
 				route.props.children = this.getRoutes(children, url, fullPath);
 				return route;
 			}

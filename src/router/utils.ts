@@ -1,9 +1,10 @@
 import { isArray } from '../shared';
-// import pathToRegExp = require('path-to-regexp');
-import pathToRegExp from 'path-to-regexp';
+import pathToRegExp0 from 'path-to-regexp';
+import pathToRegExp1 = require('path-to-regexp');
+
+const pathToRegExp = pathToRegExp0 || pathToRegExp1;
 
 const cache = new Map();
-const emptyArray = [];
 const emptyObject = {};
 
 function decode(val) {
@@ -15,7 +16,7 @@ export function matchPath(end, routePath, urlPath, parentParams?) {
 	let regexp = cache.get(key);
 
 	if (!regexp) {
-		const keys = emptyArray;
+		const keys = [];
 		regexp = { pattern: pathToRegExp(routePath, keys, { end }), keys };
 		cache.set(key, regexp);
 	}
