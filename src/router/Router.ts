@@ -1,7 +1,6 @@
 import Component from '../component/es2015';
 import { isArray } from '../shared';
 import { flatten, matchPath, pathRankSort } from './utils';
-import { createVComponent } from '../core/shapes';
 
 export interface IRouterProps {
 	url: string;
@@ -50,22 +49,16 @@ export default class Router extends Component<IRouterProps, any> {
 		const routes = toArray(_routes);
 
 		for (let i = 0; i < routes.length; i++) {
-			const route = routes[i].props;
-			const path = route.path;
+			const route = routes[i];
+			const path = route.props.path;
+			const children = route.props.children;
 			const newURL = url.replace('//', '/');
 			const fullPath = (lastPath + path).replace('//', '/');
 			const match = matchPath(false, fullPath, newURL);
 
 			if (match) {
-				const props = {
-					params: match.params,
-					children: this.getRoutes(route.children, url, fullPath)
-				};
-				if (route.async) {
-					props.async = route.async;
-				}
-				const component = createVComponent(route.component, props, null, null, null);
-				return component;
+				route.props.children = this.getRoutes(children, url, fullPath);
+				return route;
 			}
 		}
 	}
@@ -75,7 +68,8 @@ export default class Router extends Component<IRouterProps, any> {
 		const routes = flatten(_routes);
 		routes.sort(pathRankSort);
 
-		return this.getRoutes(routes, url, lastPath);
+		const newRoutes = this.getRoutes(routes, url, lastPath);
+		return newRoutes;
 	}
 
 	routeTo(url) {

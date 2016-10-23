@@ -57,10 +57,10 @@ export default class Route extends Component<IRouteProps, any> {
 	}
 
 	render() {
-		const { component, params } = this.props;
-		console.log('--RouteRender:', this.state.async);
+		const { component, children, params } = this.props;
 		return createVComponent(component, {
 			params,
+			children,
 			async: this.state.async
 		});
 	}
