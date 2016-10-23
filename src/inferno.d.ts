@@ -18,7 +18,7 @@ declare module 'redux' {
 }
 
 declare module 'path-to-regexp' {
-	function pathToRegExp(routePath: any, keys: Array, end: any);
+	function pathToRegExp(routePath: any, keys: any, end: any);
 	export = pathToRegExp;
 }
 
