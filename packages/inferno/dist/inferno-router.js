@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.InfernoRouter = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.InfernoRouter = factory());
 }(this, (function () { 'use strict';
 
 var NO_OP = '$NO_OP';
@@ -2791,10 +2791,11 @@ var Route = (function (Component$$1) {
     Route.prototype.render = function render () {
         var ref = this.props;
         var component = ref.component;
+        var children = ref.children;
         var params = ref.params;
-        console.info(this.props);
         return createVComponent(component, {
             params: params,
+            children: children,
             async: this.state.async
         });
     };
@@ -2802,9 +2803,471 @@ var Route = (function (Component$$1) {
     return Route;
 }(Component));
 
-var EMPTY = {};
-function segmentize(url) {
-    return strip(url).split('/');
+var index$2 = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
+
+var isarray = index$2;
+
+/**
+ * Expose `pathToRegexp`.
+ */
+var index$1 = pathToRegexp;
+var parse_1 = parse;
+var compile_1 = compile;
+var tokensToFunction_1 = tokensToFunction;
+var tokensToRegExp_1 = tokensToRegExp;
+
+/**
+ * The main path matching regexp utility.
+ *
+ * @type {RegExp}
+ */
+var PATH_REGEXP = new RegExp([
+  // Match escaped characters that would otherwise appear in future matches.
+  // This allows the user to escape special characters that won't transform.
+  '(\\\\.)',
+  // Match Express-style parameters and un-named parameters with a prefix
+  // and optional suffixes. Matches appear as:
+  //
+  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
+  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
+  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
+  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?|(\\*))'
+].join('|'), 'g');
+
+/**
+ * Parse a string for the raw tokens.
+ *
+ * @param  {string}  str
+ * @param  {Object=} options
+ * @return {!Array}
+ */
+function parse (str, options) {
+  var tokens = [];
+  var key = 0;
+  var index = 0;
+  var path = '';
+  var defaultDelimiter = options && options.delimiter || '/';
+  var res;
+
+  while ((res = PATH_REGEXP.exec(str)) != null) {
+    var m = res[0];
+    var escaped = res[1];
+    var offset = res.index;
+    path += str.slice(index, offset);
+    index = offset + m.length;
+
+    // Ignore already escaped sequences.
+    if (escaped) {
+      path += escaped[1];
+      continue
+    }
+
+    var next = str[index];
+    var prefix = res[2];
+    var name = res[3];
+    var capture = res[4];
+    var group = res[5];
+    var modifier = res[6];
+    var asterisk = res[7];
+
+    // Push the current path onto the tokens.
+    if (path) {
+      tokens.push(path);
+      path = '';
+    }
+
+    var partial = prefix != null && next != null && next !== prefix;
+    var repeat = modifier === '+' || modifier === '*';
+    var optional = modifier === '?' || modifier === '*';
+    var delimiter = res[2] || defaultDelimiter;
+    var pattern = capture || group;
+
+    tokens.push({
+      name: name || key++,
+      prefix: prefix || '',
+      delimiter: delimiter,
+      optional: optional,
+      repeat: repeat,
+      partial: partial,
+      asterisk: !!asterisk,
+      pattern: pattern ? escapeGroup(pattern) : (asterisk ? '.*' : '[^' + escapeString(delimiter) + ']+?')
+    });
+  }
+
+  // Match any characters still remaining.
+  if (index < str.length) {
+    path += str.substr(index);
+  }
+
+  // If the path exists, push it onto the end.
+  if (path) {
+    tokens.push(path);
+  }
+
+  return tokens
+}
+
+/**
+ * Compile a string to a template function for the path.
+ *
+ * @param  {string}             str
+ * @param  {Object=}            options
+ * @return {!function(Object=, Object=)}
+ */
+function compile (str, options) {
+  return tokensToFunction(parse(str, options))
+}
+
+/**
+ * Prettier encoding of URI path segments.
+ *
+ * @param  {string}
+ * @return {string}
+ */
+function encodeURIComponentPretty (str) {
+  return encodeURI(str).replace(/[\/?#]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+  })
+}
+
+/**
+ * Encode the asterisk parameter. Similar to `pretty`, but allows slashes.
+ *
+ * @param  {string}
+ * @return {string}
+ */
+function encodeAsterisk (str) {
+  return encodeURI(str).replace(/[?#]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+  })
+}
+
+/**
+ * Expose a method for transforming tokens into the path function.
+ */
+function tokensToFunction (tokens) {
+  // Compile all the tokens into regexps.
+  var matches = new Array(tokens.length);
+
+  // Compile all the patterns before compilation.
+  for (var i = 0; i < tokens.length; i++) {
+    if (typeof tokens[i] === 'object') {
+      matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$');
+    }
+  }
+
+  return function (obj, opts) {
+    var path = '';
+    var data = obj || {};
+    var options = opts || {};
+    var encode = options.pretty ? encodeURIComponentPretty : encodeURIComponent;
+
+    for (var i = 0; i < tokens.length; i++) {
+      var token = tokens[i];
+
+      if (typeof token === 'string') {
+        path += token;
+
+        continue
+      }
+
+      var value = data[token.name];
+      var segment;
+
+      if (value == null) {
+        if (token.optional) {
+          // Prepend partial segment prefixes.
+          if (token.partial) {
+            path += token.prefix;
+          }
+
+          continue
+        } else {
+          throw new TypeError('Expected "' + token.name + '" to be defined')
+        }
+      }
+
+      if (isarray(value)) {
+        if (!token.repeat) {
+          throw new TypeError('Expected "' + token.name + '" to not repeat, but received `' + JSON.stringify(value) + '`')
+        }
+
+        if (value.length === 0) {
+          if (token.optional) {
+            continue
+          } else {
+            throw new TypeError('Expected "' + token.name + '" to not be empty')
+          }
+        }
+
+        for (var j = 0; j < value.length; j++) {
+          segment = encode(value[j]);
+
+          if (!matches[i].test(segment)) {
+            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received `' + JSON.stringify(segment) + '`')
+          }
+
+          path += (j === 0 ? token.prefix : token.delimiter) + segment;
+        }
+
+        continue
+      }
+
+      segment = token.asterisk ? encodeAsterisk(value) : encode(value);
+
+      if (!matches[i].test(segment)) {
+        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
+      }
+
+      path += token.prefix + segment;
+    }
+
+    return path
+  }
+}
+
+/**
+ * Escape a regular expression string.
+ *
+ * @param  {string} str
+ * @return {string}
+ */
+function escapeString (str) {
+  return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1')
+}
+
+/**
+ * Escape the capturing group by escaping special characters and meaning.
+ *
+ * @param  {string} group
+ * @return {string}
+ */
+function escapeGroup (group) {
+  return group.replace(/([=!:$\/()])/g, '\\$1')
+}
+
+/**
+ * Attach the keys as a property of the regexp.
+ *
+ * @param  {!RegExp} re
+ * @param  {Array}   keys
+ * @return {!RegExp}
+ */
+function attachKeys (re, keys) {
+  re.keys = keys;
+  return re
+}
+
+/**
+ * Get the flags for a regexp from the options.
+ *
+ * @param  {Object} options
+ * @return {string}
+ */
+function flags (options) {
+  return options.sensitive ? '' : 'i'
+}
+
+/**
+ * Pull out keys from a regexp.
+ *
+ * @param  {!RegExp} path
+ * @param  {!Array}  keys
+ * @return {!RegExp}
+ */
+function regexpToRegexp (path, keys) {
+  // Use a negative lookahead to match only capturing groups.
+  var groups = path.source.match(/\((?!\?)/g);
+
+  if (groups) {
+    for (var i = 0; i < groups.length; i++) {
+      keys.push({
+        name: i,
+        prefix: null,
+        delimiter: null,
+        optional: false,
+        repeat: false,
+        partial: false,
+        asterisk: false,
+        pattern: null
+      });
+    }
+  }
+
+  return attachKeys(path, keys)
+}
+
+/**
+ * Transform an array into a regexp.
+ *
+ * @param  {!Array}  path
+ * @param  {Array}   keys
+ * @param  {!Object} options
+ * @return {!RegExp}
+ */
+function arrayToRegexp (path, keys, options) {
+  var parts = [];
+
+  for (var i = 0; i < path.length; i++) {
+    parts.push(pathToRegexp(path[i], keys, options).source);
+  }
+
+  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options));
+
+  return attachKeys(regexp, keys)
+}
+
+/**
+ * Create a path regexp from string input.
+ *
+ * @param  {string}  path
+ * @param  {!Array}  keys
+ * @param  {!Object} options
+ * @return {!RegExp}
+ */
+function stringToRegexp (path, keys, options) {
+  return tokensToRegExp(parse(path, options), keys, options)
+}
+
+/**
+ * Expose a function for taking tokens and returning a RegExp.
+ *
+ * @param  {!Array}          tokens
+ * @param  {(Array|Object)=} keys
+ * @param  {Object=}         options
+ * @return {!RegExp}
+ */
+function tokensToRegExp (tokens, keys, options) {
+  if (!isarray(keys)) {
+    options = /** @type {!Object} */ (keys || options);
+    keys = [];
+  }
+
+  options = options || {};
+
+  var strict = options.strict;
+  var end = options.end !== false;
+  var route = '';
+  var lastToken = tokens[tokens.length - 1];
+  var endsWithSlash = typeof lastToken === 'string' && /\/$/.test(lastToken);
+
+  // Iterate over the tokens and create our regexp string.
+  for (var i = 0; i < tokens.length; i++) {
+    var token = tokens[i];
+
+    if (typeof token === 'string') {
+      route += escapeString(token);
+    } else {
+      var prefix = escapeString(token.prefix);
+      var capture = '(?:' + token.pattern + ')';
+
+      keys.push(token);
+
+      if (token.repeat) {
+        capture += '(?:' + prefix + capture + ')*';
+      }
+
+      if (token.optional) {
+        if (!token.partial) {
+          capture = '(?:' + prefix + '(' + capture + '))?';
+        } else {
+          capture = prefix + '(' + capture + ')?';
+        }
+      } else {
+        capture = prefix + '(' + capture + ')';
+      }
+
+      route += capture;
+    }
+  }
+
+  // In non-strict mode we allow a slash at the end of match. If the path to
+  // match already ends with a slash, we remove it for consistency. The slash
+  // is valid at the end of a path match, not in the middle. This is important
+  // in non-ending mode, where "/test/" shouldn't match "/test//route".
+  if (!strict) {
+    route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?';
+  }
+
+  if (end) {
+    route += '$';
+  } else {
+    // In non-ending mode, we need the capturing groups to match as much as
+    // possible by using a positive lookahead to the end or next path segment.
+    route += strict && endsWithSlash ? '' : '(?=\\/|$)';
+  }
+
+  return attachKeys(new RegExp('^' + route, flags(options)), keys)
+}
+
+/**
+ * Normalize the given path string, returning a regular expression.
+ *
+ * An empty array can be passed in for the keys, which will hold the
+ * placeholder key descriptions. For example, using `/user/:id`, `keys` will
+ * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
+ *
+ * @param  {(string|RegExp|Array)} path
+ * @param  {(Array|Object)=}       keys
+ * @param  {Object=}               options
+ * @return {!RegExp}
+ */
+function pathToRegexp (path, keys, options) {
+  if (!isarray(keys)) {
+    options = /** @type {!Object} */ (keys || options);
+    keys = [];
+  }
+
+  options = options || {};
+
+  if (path instanceof RegExp) {
+    return regexpToRegexp(path, /** @type {!Array} */ (keys))
+  }
+
+  if (isarray(path)) {
+    return arrayToRegexp(/** @type {!Array} */ (path), /** @type {!Array} */ (keys), options)
+  }
+
+  return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
+}
+
+index$1.parse = parse_1;
+index$1.compile = compile_1;
+index$1.tokensToFunction = tokensToFunction_1;
+index$1.tokensToRegExp = tokensToRegExp_1;
+
+var pathToRegExp = index$1 || pathToRegExp1;
+var cache = new Map();
+var emptyObject = {};
+function decode(val) {
+    return typeof val !== 'string' ? val : decodeURIComponent(val);
+}
+function matchPath(end, routePath, urlPath, parentParams) {
+    var key = routePath + "|" + end;
+    var regexp = cache.get(key);
+    if (!regexp) {
+        var keys = [];
+        regexp = { pattern: pathToRegExp(routePath, keys, { end: end }), keys: keys };
+        cache.set(key, regexp);
+    }
+    var m = regexp.pattern.exec(urlPath);
+    if (!m) {
+        return null;
+    }
+    var path = m[0];
+    var params = emptyObject;
+    if (parentParams) {
+        Object.assign(params, parentParams);
+    }
+    for (var i = 1; i < m.length; i += 1) {
+        params[regexp.keys[i - 1].name] = decode(m[i]);
+    }
+    return {
+        path: path === '' ? '/' : path,
+        params: params
+    };
 }
 function strip(url) {
     return url.replace(/(^\/+|\/+$)/g, '');
@@ -2825,64 +3288,8 @@ function flatten(oldArray) {
     flattenArray(oldArray, newArray);
     return newArray;
 }
-function convertToHashbang(url) {
-    if (url.indexOf('#') === -1) {
-        url = '/';
-    }
-    else {
-        var splitHashUrl = url.split('#!');
-        splitHashUrl.shift();
-        url = splitHashUrl.join('');
-    }
-    return url;
-}
-// Thanks goes to Preact for this function: https://github.com/developit/preact-router/blob/master/src/util.js#L4
-// Wildcard support is added on top of that.
-function exec(url, route, opts) {
-    if ( opts === void 0 ) opts = EMPTY;
-
-    var reg = /(?:\?([^#]*))?(#.*)?$/, c = url.match(reg), matches = {}, ret;
-    if (c && c[1]) {
-        var p = c[1].split('&');
-        for (var i = 0; i < p.length; i++) {
-            var r = p[i].split('=');
-            matches[decodeURIComponent(r[0])] = decodeURIComponent(r.slice(1).join('='));
-        }
-    }
-    url = segmentize(url.replace(reg, ''));
-    route = segmentize(route || '');
-    var max = Math.max(url.length, route.length);
-    var hasWildcard = false;
-    for (var i$1 = 0; i$1 < max; i$1++) {
-        if (route[i$1] && route[i$1].charAt(0) === ':') {
-            var param = route[i$1].replace(/(^\:|[+*?]+$)/g, ''), flags = (route[i$1].match(/[+*?]+$/) || EMPTY)[0] || '', plus = ~flags.indexOf('+'), star = ~flags.indexOf('*'), val = url[i$1] || '';
-            if (!val && !star && (flags.indexOf('?') < 0 || plus)) {
-                ret = false;
-                break;
-            }
-            matches[param] = decodeURIComponent(val);
-            if (plus || star) {
-                matches[param] = url.slice(i$1).map(decodeURIComponent).join('/');
-                break;
-            }
-        }
-        else if (route[i$1] !== url[i$1] && !hasWildcard) {
-            if (route[i$1] === '*' && route.length === i$1 + 1) {
-                hasWildcard = true;
-            }
-            else {
-                ret = false;
-                break;
-            }
-        }
-    }
-    if (opts.default !== true && ret === false) {
-        return false;
-    }
-    return matches;
-}
 function pathRankSort(a, b) {
-    var aAttr = a.props || EMPTY, bAttr = b.props || EMPTY;
+    var aAttr = a.props || emptyObject, bAttr = b.props || emptyObject;
     var diff = rank(bAttr.path) - rank(aAttr.path);
     return diff || (bAttr.path.length - aAttr.path.length);
 }
@@ -2890,96 +3297,13 @@ function rank(url) {
     return (strip(url).match(/\/+/g) || '').length;
 }
 
-var isDevelopment = process.env.NODE_ENV !== 'production';
-/*
-export default class Router extends Component<IRouterProps, any> {
-    unlisten: any;
-
-    constructor(props?: any, context?: any) {
-        super(props, context);
-        this._didRoute = false;
-        this.state = {
-            location: props.url || props.history.location,
-            async: null
-        };
-    }
-
-    async() {
-        // const async = resolve(routes, location);
-        const { children } = this.props;
-        const { location } = this.state;
-
-        this.setState({
-            async: { status: ASYNC_STATUS.pending }
-        });
-        resolve(children, location).then(value => {
-            console.warn('RESOLVE:', value);
-            this.setState({
-                async: {
-                    status: ASYNC_STATUS.fulfilled,
-                    value
-                }
-            });
-        }).catch(err => this.reject(err));
-    }
-
-    reject(value) {
-        this.setState({
-            async: {
-                status: ASYNC_STATUS.rejected,
-                value
-            }
-        });
-    }
-
-    componentWillReceiveProps() {
-        this.async();
-    }
-
-    componentWillMount() {
-        const { location } = this.state;
-
-        if (typeof location !== 'string') {
-            this.unlisten = this.props.history.listen(loc => {
-                console.warn('Location:', loc);
-            });
-        }
-
-        this.async();
-    }
-
-    componentWillUnmount() {
-        if (this.unlisten) {
-            this.unlisten();
-        }
-    }
-
-    render() {
-        //const { component, params } = this.props;
-
-        console.info('RouterAsync:', this.state.async);
-
-        if (this.state.async && this.state.async.value) {
-            return createVComponent(this.state.async.value.component, {});
-        }
-
-        return createVComponent(() => {
-            return null;
-        }, null);
-    }
-}*/
 var Router = (function (Component$$1) {
     function Router(props, context) {
         Component$$1.call(this, props, context);
-        if (!props.history) {
-            throw new Error('Inferno Error: "inferno-router" Router components require a "history" prop passed.');
-        }
         this._didRoute = false;
-        var currentURL = props.history.location.pathname + props.history.location.search;
         this.state = {
-            url: props.url || currentURL
+            url: props.url || (props.history.location.pathname + props.history.location.search)
         };
-        // console.log(this.state)
     }
 
     if ( Component$$1 ) Router.__proto__ = Component$$1;
@@ -2987,66 +3311,49 @@ var Router = (function (Component$$1) {
     Router.prototype.constructor = Router;
     Router.prototype.getChildContext = function getChildContext () {
         return {
-            history: this.props.history,
-            hashbang: this.props.hashbang
+            history: this.props.history
         };
     };
     Router.prototype.componentWillMount = function componentWillMount () {
-        // this.props.history.addRouter(this);
-        this.unlisten = this.props.history.listen(function (location) {
-            console.warn('Location:', location);
+        var this$1 = this;
+
+        var ref = this.props;
+        var history = ref.history;
+        this.unlisten = history.listen(function (url) {
+            this$1.routeTo(url.pathname);
         });
     };
     Router.prototype.componentWillUnmount = function componentWillUnmount () {
-        //this.props.history.removeRouter(this);
-        this.unlisten();
+        if (this.unlisten) {
+            this.unlisten();
+        }
     };
-    Router.prototype.handleRoutes = function handleRoutes (_routes, url, hashbang, wrapperComponent, lastPath) {
+    Router.prototype.getRoutes = function getRoutes (_routes, url, lastPath) {
         var this$1 = this;
 
-        // console.log({ _routes, url, hashbang, wrapperComponent, lastPath })
-        // match(routes(stores), location)
+        if (!_routes) {
+            return _routes;
+        }
+        var routes = toArray$1(_routes);
+        for (var i = 0; i < routes.length; i++) {
+            var route = isArray(routes[i]) ? this$1.getRoutes(routes[i], url, lastPath) : routes[i];
+            var path = route.props.path || '/';
+            var children = route.props.children;
+            var newURL = url.replace('//', '/');
+            var fullPath = (lastPath + path).replace('//', '/');
+            var match = matchPath(false, fullPath, newURL);
+            if (match) {
+                route.props.params = match.params;
+                route.props.children = this$1.getRoutes(children, url, fullPath);
+                return route;
+            }
+        }
+    };
+    Router.prototype.handleRoutes = function handleRoutes (_routes, url, lastPath) {
         var routes = flatten(_routes);
         routes.sort(pathRankSort);
-        console.log({ routes: routes });
-        for (var i = 0; i < routes.length; i++) {
-            var route = routes[i];
-            if (isDevelopment && !isObject(route)) {
-                throw new Error(("Invalid prop \"routes\" (" + (typeof route) + "). Expected a component."));
-            }
-            var ref = route.props;
-            var path = ref.path;
-            var fullPath = lastPath + path;
-            var params = exec(hashbang ? convertToHashbang(url) : url, fullPath);
-            var children = toArray$1(route.props.children);
-            if (children) {
-                var subRoute = this$1.handleRoutes(children, url, hashbang, wrapperComponent, fullPath);
-                if (!isNull(subRoute)) {
-                    return subRoute;
-                }
-            }
-            if (params) {
-                if (wrapperComponent) {
-                    console.log({ wrapperComponent: wrapperComponent });
-                    return createVComponent(wrapperComponent, {
-                        params: params,
-                        children: cloneVNode(route, {
-                            params: params
-                        })
-                    }, null, null, null);
-                }
-                console.info({ wrapperComponent: wrapperComponent });
-                return cloneVNode(route, {
-                    params: params
-                });
-            }
-        }
-        if (!lastPath && wrapperComponent) {
-            this._didRoute = true;
-            console.warn({ wrapperComponent: wrapperComponent });
-            return createVComponent(wrapperComponent, null, null, null, null);
-        }
-        return null;
+        var newRoutes = this.getRoutes(routes, url, lastPath);
+        return newRoutes;
     };
     Router.prototype.routeTo = function routeTo (url) {
         this._didRoute = false;
@@ -3056,10 +3363,7 @@ var Router = (function (Component$$1) {
     Router.prototype.render = function render () {
         var children = toArray$1(this.props.children);
         var url = this.props.url || this.state.url;
-        var wrapperComponent = this.props.component;
-        var hashbang = this.props.hashbang;
-        // return this.handleRoutes(children, url, hashbang, wrapperComponent, '');
-        return this.handleRoutes(children, url, hashbang, wrapperComponent, '');
+        return this.handleRoutes(children, url, '');
     };
 
     return Router;
@@ -3069,20 +3373,17 @@ function toArray$1(children) {
 }
 
 function Link(props, ref) {
-    var hashbang = ref.hashbang;
     var history = ref.history;
 
     var activeClassName = props.activeClassName;
     var activeStyle = props.activeStyle;
     var className = props.className;
     var to = props.to;
-    var href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to;
-    var elemProps = { href: href };
-    var element = createVElement('a', elemProps, props.children, null, null, null);
+    var elemProps = { href: to };
     if (className) {
         elemProps.className = className;
     }
-    if (history.isActive(to, hashbang)) {
+    if (history.location.pathname === to) {
         if (activeClassName) {
             elemProps.className = (className ? className + ' ' : '') + activeClassName;
         }
@@ -3090,70 +3391,21 @@ function Link(props, ref) {
             elemProps.style = Object.assign({}, props.style, activeStyle);
         }
     }
-    if (!hashbang) {
-        elemProps.onclick = function navigate(e) {
-            if (e.button !== 0 || e.ctrlKey || e.altKey) {
-                return;
-            }
-            e.preventDefault();
-            var target = e.target;
-            window.history.pushState(null, target.textContent, to);
-            history.routeTo(to);
-        };
-    }
+    elemProps.onclick = function navigate(e) {
+        if (e.button !== 0 || e.ctrlKey || e.altKey) {
+            return;
+        }
+        e.preventDefault();
+        history.push(to, e.target.textContent);
+    };
+    var element = createVElement('a', elemProps, props.children, null, null, null);
     return element;
 }
 
-var routers = [];
-function getCurrentUrl() {
-    var url = typeof location !== 'undefined' ? location : EMPTY;
-    return ("" + (url.pathname || '') + (url.search || '') + (url.hash || ''));
-}
-function getHashbangRoot() {
-    var url = typeof location !== 'undefined' ? location : EMPTY;
-    return ("" + (url.protocol + '//' || '') + (url.host || '') + (url.pathname || '') + (url.search || '') + "#!");
-}
-function isActive(path, hashbang) {
-    if (isBrowser) {
-        if (hashbang) {
-            var currentURL = getCurrentUrl() + (getCurrentUrl().indexOf('#!') === -1 ? '#!' : '');
-            var matchURL = currentURL.match(/#!(.*)/);
-            var matchHash = matchURL && typeof matchURL[1] !== 'undefined' && (matchURL[1] || '/');
-            return matchHash === path;
-        }
-        return location.pathname === path;
-    }
-    return false;
-}
-function routeTo$1(url) {
-    for (var i = 0; i < routers.length; i++) {
-        if (routers[i].routeTo(url) === true) {
-            return true;
-        }
-    }
-    return false;
-}
-if (isBrowser) {
-    window.addEventListener('popstate', function () { return routeTo$1(getCurrentUrl()); });
-}
-var browserHistory = {
-    addRouter: function addRouter(router) {
-        routers.push(router);
-    },
-    removeRouter: function removeRouter(router) {
-        routers.splice(routers.indexOf(router), 1);
-    },
-    getCurrentUrl: getCurrentUrl,
-    getHashbangRoot: getHashbangRoot,
-    isActive: isActive,
-    routeTo: routeTo$1
-};
-
 var index = {
-    Route: Route,
-    Router: Router,
-    Link: Link,
-    browserHistory: browserHistory
+	Route: Route,
+	Router: Router,
+	Link: Link
 };
 
 return index;
