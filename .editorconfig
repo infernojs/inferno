@@ -10,3 +10,8 @@ quote_type = single
 [*.{js,ts,json}]
 indent_style = tab
 indent_size = 2
+
+# Space indentation
+[package.json]
+indent_style = space
+indent_size = 2
