@@ -154,7 +154,7 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 		newVNode = Object.assign({}, vNodeToClone);
 	} else {
 		if (isVComponent(vNodeToClone)) {
-			newVNode = createVComponent(vNodeToClone.component,
+			newVNode = createVComponent(vNodeToClone.type,
 				Object.assign({}, vNodeToClone.props, props),
 				vNodeToClone.key,
 				vNodeToClone.hooks,

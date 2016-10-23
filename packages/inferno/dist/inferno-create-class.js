@@ -31,8 +31,8 @@ function isArray(obj) {
     return obj instanceof Array;
 }
 function isStatefulComponent(o) {
-    var component = o.component;
-    return !isUndefined(component.prototype) && !isUndefined(component.prototype.render);
+    var type = o.type;
+    return !isUndefined(type.prototype) && !isUndefined(type.prototype.render);
 }
 function isStringOrNumber(obj) {
     return isString(obj) || isNumber(obj);
@@ -204,14 +204,14 @@ function normaliseChildNodes(dom) {
     }
 }
 function hydrateVComponent(vComponent, dom, lifecycle, context) {
-    var component = vComponent.component;
+    var type = vComponent.type;
     var props = vComponent.props;
     var hooks = vComponent.hooks;
     var ref = vComponent.ref;
     vComponent.dom = dom;
     if (isStatefulComponent(vComponent)) {
         var isSVG = dom.namespaceURI === svgNS;
-        var instance = createStatefulComponentInstance(component, props, context, isSVG, createStaticVElementClone);
+        var instance = createStatefulComponentInstance(type, props, context, isSVG, createStaticVElementClone);
         var input = instance._lastInput;
         instance._vComponent = vComponent;
         hydrate(input, dom, lifecycle, instance._childContext);
@@ -220,7 +220,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
         vComponent.instance = instance;
     }
     else {
-        var input$1 = createStatelessComponentInput(component, props, context);
+        var input$1 = createStatelessComponentInput(type, props, context);
         hydrate(input$1, dom, lifecycle, context);
         vComponent.instance = input$1;
         vComponent.dom = input$1.dom;
@@ -236,7 +236,23 @@ function hydrateVElement(vElement, dom, lifecycle, context) {
         throwError();
     }
     var children = vElement.children;
+    var props = vElement.props;
     vElement.dom = dom;
+    for (var prop in props) {
+        if (!props.hasOwnProperty(prop)) {
+            continue;
+        }
+        var value = props[prop];
+        if (prop === 'key') {
+        }
+        else if (prop === 'ref') {
+        }
+        else if (prop === 'children') {
+        }
+        else {
+            patchProp(prop, null, value, dom, false);
+        }
+    }
     if (children) {
         hydrateChildren(vElement.childrenType, children, dom, lifecycle, context);
     }
@@ -451,9 +467,9 @@ function poolOptVElement(optVElement) {
     }
 }
 function recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount) {
-    var component = vComponent.component;
+    var type = vComponent.type;
     var key = vComponent.key;
-    var pools = vComponentPools.get(component);
+    var pools = vComponentPools.get(type);
     if (!isUndefined(pools)) {
         var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
         if (!isUndefined(pool)) {
@@ -469,7 +485,7 @@ function recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount
     return null;
 }
 function poolVComponent(vComponent) {
-    var component = vComponent.component;
+    var type = vComponent.type;
     var key = vComponent.key;
     var hooks = vComponent.hooks;
     var nonRecycleHooks = hooks && (hooks.onComponentWillMount ||
@@ -480,13 +496,13 @@ function poolVComponent(vComponent) {
     if (nonRecycleHooks) {
         return;
     }
-    var pools = vComponentPools.get(component);
+    var pools = vComponentPools.get(type);
     if (isUndefined(pools)) {
         pools = {
             nonKeyed: [],
             keyed: new Map()
         };
-        vComponentPools.set(component, pools);
+        vComponentPools.set(type, pools);
     }
     if (isNull(key)) {
         pools.nonKeyed.push(vComponent);
@@ -830,7 +846,7 @@ function cloneVNode(vNodeToClone, props) {
     }
     else {
         if (isVComponent(vNodeToClone)) {
-            newVNode = createVComponent(vNodeToClone.component, Object.assign({}, vNodeToClone.props, props), vNodeToClone.key, vNodeToClone.hooks, vNodeToClone.ref);
+            newVNode = createVComponent(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), vNodeToClone.key, vNodeToClone.hooks, vNodeToClone.ref);
         }
         else if (isVElement(vNodeToClone)) {
             newVNode = createVElement(vNodeToClone.tag, Object.assign({}, vNodeToClone.props, props), (props && props.children) || children || vNodeToClone.children, vNodeToClone.key, vNodeToClone.ref, ChildrenTypes.UNKNOWN);
@@ -1261,17 +1277,17 @@ function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lif
     }
 }
 function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-    var lastComponent = lastVComponent.component;
-    var nextComponent = nextVComponent.component;
+    var lastType = lastVComponent.type;
+    var nextType = nextVComponent.type;
     var nextProps = nextVComponent.props || {};
-    if (lastComponent !== nextComponent) {
+    if (lastType !== nextType) {
         if (isStatefulComponent(nextVComponent)) {
-            var defaultProps = nextComponent.defaultProps;
+            var defaultProps = nextType.defaultProps;
             if (!isUndefined(defaultProps)) {
                 nextVComponent.props = copyPropsTo(defaultProps, nextProps);
             }
             var lastInstance = lastVComponent.instance;
-            var nextInstance = createStatefulComponentInstance(nextComponent, nextProps, context, isSVG, devToolsStatus);
+            var nextInstance = createStatefulComponentInstance(nextType, nextProps, context, isSVG, devToolsStatus);
             // we use || lastInstance because stateless components store their lastInstance
             var lastInput = lastInstance._lastInput || lastInstance;
             var nextInput = nextInstance._lastInput;
@@ -1285,7 +1301,7 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
         }
         else {
             var lastInput$1 = lastVComponent.instance._lastInput || lastVComponent.instance;
-            var nextInput$1 = createStatelessComponentInput(nextComponent, nextProps, context);
+            var nextInput$1 = createStatelessComponentInput(nextType, nextProps, context);
             patch(lastInput$1, nextInput$1, parentDom, lifecycle, context, isSVG, true);
             var dom = nextVComponent.dom = nextInput$1.dom;
             nextVComponent.instance = nextInput$1;
@@ -1303,7 +1319,7 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG, shallowUnmount), lastVComponent.dom);
             }
             else {
-                var defaultProps$1 = nextComponent.defaultProps;
+                var defaultProps$1 = nextType.defaultProps;
                 var lastProps = instance.props;
                 if (instance._devToolsStatus.connected && !instance._devToolsId) {
                     componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
@@ -1363,7 +1379,7 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
                     nextHooks.onComponentWillUpdate(lastProps$1, nextProps);
                 }
-                var nextInput$3 = nextComponent(nextProps, context);
+                var nextInput$3 = nextType(nextProps, context);
                 if (isInvalid(nextInput$3)) {
                     nextInput$3 = createVPlaceholder();
                 }
@@ -2091,13 +2107,13 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
             return dom$1;
         }
     }
-    var component = vComponent.component;
+    var type = vComponent.type;
     var props = vComponent.props || EMPTY_OBJ;
     var hooks = vComponent.hooks;
     var ref = vComponent.ref;
     var dom;
     if (isStatefulComponent(vComponent)) {
-        var defaultProps = component.defaultProps;
+        var defaultProps = type.defaultProps;
         if (!isUndefined(defaultProps)) {
             copyPropsTo(defaultProps, props);
             vComponent.props = props;
@@ -2108,7 +2124,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
             }
             throwError();
         }
-        var instance = createStatefulComponentInstance(component, props, context, isSVG, devToolsStatus);
+        var instance = createStatefulComponentInstance(type, props, context, isSVG, devToolsStatus);
         var input = instance._lastInput;
         instance._vComponent = vComponent;
         vComponent.dom = dom = mount(input, null, lifecycle, instance._childContext, false, shallowUnmount);
@@ -2126,7 +2142,7 @@ function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shall
             }
             throwError();
         }
-        var input$1 = createStatelessComponentInput(component, props, context);
+        var input$1 = createStatelessComponentInput(type, props, context);
         vComponent.dom = dom = mount(input$1, null, lifecycle, context, isSVG, shallowUnmount);
         vComponent.instance = input$1;
         mountStatelessComponentCallbacks(hooks, dom, lifecycle);
@@ -2471,23 +2487,23 @@ function createStaticVElementClone(bp, isSVG) {
     return dom.cloneNode(true);
 }
 
-function createVComponent(component, props, key, hooks, ref) {
+function createVComponent(type, props, key, hooks, ref) {
     return {
-        component: component,
+        type: type,
         dom: null,
         hooks: hooks || null,
         instance: null,
         key: key,
+        nodeType: NodeTypes.COMPONENT,
         props: props,
-        ref: ref || null,
-        type: NodeTypes.COMPONENT
+        ref: ref || null
     };
 }
 function createVText(text) {
     return {
         dom: null,
         text: text,
-        type: NodeTypes.TEXT
+        nodeType: NodeTypes.TEXT
     };
 }
 function createVElement(tag, props, children, key, ref, childrenType) {
@@ -2496,10 +2512,10 @@ function createVElement(tag, props, children, key, ref, childrenType) {
         childrenType: childrenType || ChildrenTypes.UNKNOWN,
         dom: null,
         key: key,
+        nodeType: NodeTypes.ELEMENT,
         props: props,
         ref: ref || null,
-        tag: tag,
-        type: NodeTypes.ELEMENT
+        tag: tag
     };
 }
 
@@ -2508,36 +2524,36 @@ function createVFragment(children, childrenType) {
         children: children,
         childrenType: childrenType || ChildrenTypes.UNKNOWN,
         dom: null,
-        pointer: null,
-        type: NodeTypes.FRAGMENT
+        nodeType: NodeTypes.FRAGMENT,
+        pointer: null
     };
 }
 function createVPlaceholder() {
     return {
         dom: null,
-        type: NodeTypes.PLACEHOLDER
+        nodeType: NodeTypes.PLACEHOLDER
     };
 }
 function isVElement(o) {
-    return o.type === NodeTypes.ELEMENT;
+    return o.nodeType === NodeTypes.ELEMENT;
 }
 function isOptVElement(o) {
-    return o.type === NodeTypes.OPT_ELEMENT;
+    return o.nodeType === NodeTypes.OPT_ELEMENT;
 }
 function isVComponent(o) {
-    return o.type === NodeTypes.COMPONENT;
+    return o.nodeType === NodeTypes.COMPONENT;
 }
 function isVText(o) {
-    return o.type === NodeTypes.TEXT;
+    return o.nodeType === NodeTypes.TEXT;
 }
 function isVFragment(o) {
-    return o.type === NodeTypes.FRAGMENT;
+    return o.nodeType === NodeTypes.FRAGMENT;
 }
 function isVPlaceholder(o) {
-    return o.type === NodeTypes.PLACEHOLDER;
+    return o.nodeType === NodeTypes.PLACEHOLDER;
 }
 function isVNode(o) {
-    return !isUndefined(o.type);
+    return !isUndefined(o.nodeType);
 }
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';

@@ -57,14 +57,14 @@ export class RenderStream extends Readable {
 	}
 
 	renderComponent(vComponent, isRoot, context) {
-		const Component = vComponent.component;
+		const type = vComponent.type;
 		const props = vComponent.props;
 
 		if (!isStatefulComponent(vComponent)) {
-			return this.renderNode(Component(props), context, isRoot);
+			return this.renderNode(type(props), context, isRoot);
 		}
 
-		const instance = new Component(props);
+		const instance = new type(props);
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndef(childContext)) {

@@ -56,9 +56,9 @@ export function poolOptVElement(optVElement) {
 }
 
 export function recycleVComponent(vComponent: VComponent, lifecycle, context, isSVG, shallowUnmount) {
-	const component = vComponent.component;
+	const type = vComponent.type;
 	const key = vComponent.key;
-	let pools: Pools = vComponentPools.get(component);
+	let pools: Pools = vComponentPools.get(type);
 
 	if (!isUndefined(pools)) {
 		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
@@ -79,7 +79,7 @@ export function recycleVComponent(vComponent: VComponent, lifecycle, context, is
 }
 
 export function poolVComponent(vComponent) {
-	const component = vComponent.component;
+	const type = vComponent.type;
 	const key = vComponent.key;
 	const hooks = vComponent.hooks;
 	const nonRecycleHooks = hooks && (
@@ -92,14 +92,14 @@ export function poolVComponent(vComponent) {
 	if (nonRecycleHooks) {
 		return;
 	}
-	let pools: Pools = vComponentPools.get(component);
+	let pools: Pools = vComponentPools.get(type);
 
 	if (isUndefined(pools)) {
 		pools = {
 			nonKeyed: [],
 			keyed: new Map<string | number, Array<VComponent>>()
 		};
-		vComponentPools.set(component, pools);
+		vComponentPools.set(type, pools);
 	}
 	if (isNull(key)) {
 		pools.nonKeyed.push(vComponent);

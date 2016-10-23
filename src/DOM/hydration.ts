@@ -119,7 +119,7 @@ export function normaliseChildNodes(dom) {
 }
 
 function hydrateVComponent(vComponent, dom, lifecycle, context) {
-	const component = vComponent.component;
+	const type = vComponent.type;
 	const props = vComponent.props;
 	const hooks = vComponent.hooks;
 	const ref = vComponent.ref;
@@ -127,7 +127,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 	vComponent.dom = dom;
 	if (isStatefulComponent(vComponent)) {
 		const isSVG = dom.namespaceURI === svgNS;
-		const instance = createStatefulComponentInstance(component, props, context, isSVG, createStaticVElementClone);
+		const instance = createStatefulComponentInstance(type, props, context, isSVG, createStaticVElementClone);
 		const input = instance._lastInput;
 
 		instance._vComponent = vComponent;
@@ -136,7 +136,7 @@ function hydrateVComponent(vComponent, dom, lifecycle, context) {
 		componentToDOMNodeMap.set(instance, dom);
 		vComponent.instance = instance;
 	} else {
-		const input = createStatelessComponentInput(component, props, context);
+		const input = createStatelessComponentInput(type, props, context);
 
 		hydrate(input, dom, lifecycle, context);
 		vComponent.instance = input;
