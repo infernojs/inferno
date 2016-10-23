@@ -8,6 +8,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export interface IRouterProps {
 	url: string;
+	history?: any;
 	component?: Component<any, any>;
 }
 

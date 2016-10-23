@@ -1,9 +1,11 @@
 import { render } from './../../DOM/rendering';
 import Router from '../Router';
 import Route from '../Route';
-import browserHistory from '../history';
+import { createBrowserHistory } from 'history';
 import Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
+
+const history = createBrowserHistory();
 
 function TestComponent() {
 	return <div>Test!</div>;
@@ -20,7 +22,7 @@ function TestComponentAsync({ async }) {
 
 function createRouterWithSingleRoute(url, path, component) {
 	return (
-		<Router url={ url } history={ browserHistory }>
+		<Router url={ url } history={ history }>
 			<Route path={ path } component={ component } />
 		</Router>
 	);
@@ -28,7 +30,7 @@ function createRouterWithSingleRoute(url, path, component) {
 
 function createRouterWithSingleAsyncRoute(url, path, component, async) {
 	return (
-		<Router url={ url } history={ browserHistory }>
+		<Router url={ url } history={ history }>
 			<Route path={ path } component={ component } async={ async } />
 		</Router>
 	);
