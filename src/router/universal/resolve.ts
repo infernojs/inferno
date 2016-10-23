@@ -26,9 +26,10 @@ import matchRoute from './matchRoute';
 
 function resolve(routes, pathOrContext) {
 	const root = Array.isArray(routes) ? { path: '/', children: routes } : routes;
-	const context: any = typeof pathOrContext === 'string' || pathOrContext instanceof String
-		? { path: pathOrContext }
-		: { path: pathOrContext.pathname };
+	const context: any = typeof pathOrContext === 'object'
+		? { path: pathOrContext.pathname }
+		: { path: pathOrContext };
+
 	let match = matchRoute(root, '', context.path), result, value, done = false;
 
 	context.next = function() {
@@ -41,7 +42,7 @@ function resolve(routes, pathOrContext) {
 				return Promise.resolve({
 					context,
 					params: next.value.params,
-					component: next.value.route.component
+					component: next.value.route
 				});
 			} catch (err) {
 				return Promise.reject(err);
@@ -57,6 +58,9 @@ function resolve(routes, pathOrContext) {
 
 	function run() {
 		return context.next().then(function(r) {
+			r.context.next().then(e => console.log(e));
+
+
 			if (r !== undefined) {
 				result = r;
 				done = true;
@@ -65,6 +69,8 @@ function resolve(routes, pathOrContext) {
 				return result;
 			}
 			return run();
+		}).catch(function(err) {
+			return err;
 		});
 	}
 

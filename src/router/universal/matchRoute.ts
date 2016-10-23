@@ -39,7 +39,6 @@ function matchRoute(route, baseUrl, path, parentParams?) {
 								route,
 								baseUrl,
 								path: match.path,
-								keys: match.keys,
 								params: match.params
 							}
 						};
@@ -48,50 +47,47 @@ function matchRoute(route, baseUrl, path, parentParams?) {
 				return { done: true, value: undefined };
 			}
 
-			if (route.children) {
-
-				if (! match) {
-					match = matchPath(false, route.path, path);
-					if (match) {
-						return {
-							done: false,
-							value: {
-								route,
-								baseUrl,
-								path: match.path,
-								params: match.params,
-							}
-						};
-					}
+			if (!match) {
+				match = matchPath(false, route.path, path);
+				if (match) {
+					return {
+						done: false,
+						value: {
+							route,
+							baseUrl,
+							path: match.path,
+							params: match.params,
+						}
+					};
 				}
-
-				while (i < route.children.length) {
-
-					if (!childMatches) {
-						const childRoute = route.children[i];
-						const newPath = path.substr(match.path.length);
-						childMatches = matchRoute(
-							childRoute,
-							baseUrl + (match.path === '/' ? '' : match.path),
-							newPath.startsWith('/') ? newPath : `/${newPath}`,
-							match.params
-						);
-					}
-
-					let childMatch = childMatches.next();
-					if (childMatch.done) {
-						i++;
-						childMatches = null;
-					} else {
-						return {
-							done: false,
-							value: childMatch.value
-						};
-					}
-				}
-
-				return { done: true, value: undefined };
 			}
+
+			while (i < route.children.length) {
+
+				if (!childMatches) {
+					const childRoute = route.children[i];
+					const newPath = path.substr(match.path.length);
+					childMatches = matchRoute(
+						childRoute,
+						baseUrl + (match.path === '/' ? '' : match.path),
+						newPath.startsWith('/') ? newPath : `/${newPath}`,
+						match.params
+					);
+				}
+
+				let childMatch = childMatches.next();
+				if (childMatch.done) {
+					i++;
+					childMatches = null;
+				} else {
+					return {
+						done: false,
+						value: childMatch.value
+					};
+				}
+			}
+
+			return { done: true, value: undefined };
 		}
 	};
 }

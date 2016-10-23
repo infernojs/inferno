@@ -3,7 +3,6 @@ import { isArray, isNull, isObject } from '../shared';
 import { exec, pathRankSort, flatten } from './utils';
 import { createVComponent } from '../core/shapes';
 import cloneVNode from '../factories/cloneVNode';
-import history from './history';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -20,17 +19,19 @@ export default class Router extends Component<IRouterProps, any> {
 		super(props, context);
 		this._didRoute = false;
 		this.state = {
-			url: props.url || (history.location.pathname + history.location.search)
+			url: props.url || (props.history.location.pathname + props.history.location.search)
 		};
 	}
 
 	getChildContext() {
 		return {
-			history
+			history: this.props.history
 		};
 	}
 
 	componentWillMount() {
+		const { history } = this.props;
+
 		this.unlisten = history.listen(url => {
 			this.routeTo(url.pathname);
 		});
