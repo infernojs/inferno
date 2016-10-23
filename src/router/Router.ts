@@ -1,6 +1,6 @@
 import Component from '../component/es2015';
 import { isArray } from '../shared';
-import { pathRankSort, flatten } from './utils';
+import { flatten, matchPath, pathRankSort } from './utils';
 import { createVComponent } from '../core/shapes';
 
 export interface IRouterProps {
@@ -41,7 +41,7 @@ export default class Router extends Component<IRouterProps, any> {
 		}
 	}
 
-	getRoutes(_routes, url) {
+	getRoutes(_routes, url, lastPath?) {
 
 		if (!_routes) {
 			return _routes;
@@ -51,61 +51,31 @@ export default class Router extends Component<IRouterProps, any> {
 
 		for (let i = 0; i < routes.length; i++) {
 			const route = routes[i].props;
-			const path = route.path[0] === '/' ? route.path.substring(1) : route.path;
-			const newURL = url[0] === '/' ? url.substring(1) : url;
+			const path = route.path;
+			const newURL = url.replace('//', '/');
+			const fullPath = (lastPath + path).replace('//', '/');
+			const match = matchPath(false, fullPath, newURL);
 
-			if (newURL.indexOf(path) === 0) {
-				const newPath = newURL.substr(path.length);
-				const component = createVComponent(route.component, null, null, null, null);
-				component.props = {
-					children: this.getRoutes(route.children, newPath)
+			if (match) {
+				const props = {
+					params: match.params,
+					children: this.getRoutes(route.children, url, fullPath)
 				};
+				if (route.async) {
+					props.async = route.async;
+				}
+				const component = createVComponent(route.component, props, null, null, null);
 				return component;
 			}
 		}
 	}
 
-	handleRoutes(_routes, url, wrappers?, lastPath?) {
+	handleRoutes(_routes, url, lastPath?) {
 
 		const routes = flatten(_routes);
 		routes.sort(pathRankSort);
 
-		const matchedComponent = this.getRoutes(routes, url);
-
-		if (!lastPath && wrappers) {
-			return matchedComponent;
-		}
-
-		/*if (!lastPath && wrappers) {
-			this._didRoute = true;
-
-			const finalComponent = wrappers.map(wrapper => {
-				return createVComponent(wrapper, null, null, null, null);
-			});
-
-			// const wrapperComponent = wrappers.shift();
-
-			const finalComponent = wrappers.reduce(function(previous, current, index, array) {
-				const component = createVComponent(current, null, null, null, null);
-				if (!previous.type) {
-					previous = component;
-					return previous;
-				}
-
-				if (!previous.props) {
-					previous.props = {
-						children: component
-					};
-				}
-				return previous;
-			}, {});
-
-			debugger;
-			return finalComponent;
-
-			// return createVComponent(wrappers, null, null, null, null);
-		}*/
-		return null;
+		return this.getRoutes(routes, url, lastPath);
 	}
 
 	routeTo(url) {
@@ -118,7 +88,7 @@ export default class Router extends Component<IRouterProps, any> {
 		const children = toArray(this.props.children);
 		const url = this.props.url || this.state.url;
 
-		return this.handleRoutes(children, url, [], '');
+		return this.handleRoutes(children, url, '');
 	}
 }
 

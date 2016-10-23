@@ -18,7 +18,8 @@ declare module 'redux' {
 }
 
 declare module 'path-to-regexp' {
-	export * from 'path-to-regexp';
+	function pathToRegExp(routePath: any, keys: Array, end: any);
+	export = pathToRegExp;
 }
 
 declare module 'sinon' {
