@@ -334,6 +334,12 @@ function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom,
 }
 
 function hydrate(input, dom, lifecycle, context) {
+	if (process.env.NODE_ENV !== 'production') {
+		if (isInvalid(dom)) {
+			throwError(`failed to hydrate. Server-side render doesn't match client side.`);
+		}
+	}
+
 	normaliseChildNodes(dom);
 	if (isOptVElement(input)) {
 		hydrateOptVElement(input, dom, lifecycle, context);
