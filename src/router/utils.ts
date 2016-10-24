@@ -43,10 +43,6 @@ export function matchPath(end, routePath, urlPath, parentParams?) {
 	};
 }
 
-function strip(url) {
-	return url.replace(/(^\/+|\/+$)/g, '');
-}
-
 function flattenArray(oldArray, newArray) {
 	for (let i = 0; i < oldArray.length; i++) {
 		const item = oldArray[i];
@@ -67,12 +63,16 @@ export function flatten(oldArray) {
 }
 
 export function pathRankSort(a, b) {
-	let aAttr = a.props || emptyObject,
-		bAttr = b.props || emptyObject;
-	let diff = rank(bAttr.path) - rank(aAttr.path);
-	return diff || (bAttr.path.length - aAttr.path.length);
+	const aAttr = a.props || emptyObject;
+	const bAttr = b.props || emptyObject;
+	const diff = rank(bAttr.path) - rank(aAttr.path);
+	return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
 }
 
-function rank(url) {
+function strip(url) {
+	return url.replace(/(^\/+|\/+$)/g, '');
+}
+
+function rank(url = '') {
 	return (strip(url).match(/\/+/g) || '').length;
 }

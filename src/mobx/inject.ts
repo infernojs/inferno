@@ -4,6 +4,7 @@ import { createVComponent } from '../core/shapes';
 
 interface IProps {
 	ref: any;
+	children: any;
 }
 
 /**

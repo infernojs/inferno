@@ -1,6 +1,6 @@
 import Component from '../component/es2015';
 import { isArray } from '../shared';
-import { flatten, matchPath, pathRankSort } from './utils';
+import { matchPath, pathRankSort } from './utils';
 
 export interface IRouterProps {
 	url: string;
