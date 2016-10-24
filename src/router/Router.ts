@@ -22,16 +22,22 @@ export default class Router extends Component<IRouterProps, any> {
 
 	getChildContext() {
 		return {
-			history: this.props.history
+			history: this.props.history || {
+				location: {
+					pathname: this.props.url
+				}
+			}
 		};
 	}
 
 	componentWillMount() {
 		const { history } = this.props;
 
-		this.unlisten = history.listen(url => {
-			this.routeTo(url.pathname);
-		});
+		if (history) {
+			this.unlisten = history.listen(url => {
+				this.routeTo(url.pathname);
+			});
+		}
 	}
 
 	componentWillUnmount() {
@@ -47,6 +53,7 @@ export default class Router extends Component<IRouterProps, any> {
 		}
 
 		const routes = toArray(_routes);
+		routes.sort(pathRankSort);
 
 		for (let i = 0; i < routes.length; i++) {
 			const route = isArray(routes[i]) ? this.getRoutes(routes[i], url, lastPath) : routes[i];
@@ -64,15 +71,6 @@ export default class Router extends Component<IRouterProps, any> {
 		}
 	}
 
-	handleRoutes(_routes, url, lastPath?) {
-
-		const routes = flatten(_routes);
-		routes.sort(pathRankSort);
-
-		const newRoutes = this.getRoutes(routes, url, lastPath);
-		return newRoutes;
-	}
-
 	routeTo(url) {
 		this._didRoute = false;
 		this.setState({ url }, null);
@@ -80,10 +78,11 @@ export default class Router extends Component<IRouterProps, any> {
 	}
 
 	render() {
-		const children = toArray(this.props.children);
+		const routes = toArray(this.props.children);
 		const url = this.props.url || this.state.url;
 
-		return this.handleRoutes(children, url, '');
+		const newRoutes = this.getRoutes(routes, url, '');
+		return newRoutes;
 	}
 }
 

@@ -28,6 +28,8 @@ import InfernoDOM from 'inferno-dom';
 import { Router, Route, Link } from 'inferno-router';
 import createBrowserHistory from 'history/createBrowserHistory';
 
+const browserHistory = createBrowserHistory();
+
 function App({ children }) {
 	// ...
 }
@@ -44,17 +46,23 @@ function About({ User, params }) {
 	// ...
 }
 
-InfernoDOM.render((
-	<Router history={ createBrowserHistory() }>
-		<Route component={ App }>
-			<Route path="about" component={ About }/>
-			<Route path="users" component={ Users }>
-				<Route path="/user/:userId" component={ User }/>
-			</Route>
-			<Route path="*" component={ NoMatch }/>
-		</Route>
-	</Router>
-), container);
+function renderDOM(location) {
+    InfernoDOM.render((
+        <Router history={ browserHistory }>
+            <Route component={ App }>
+                <Route path="about" component={ About }/>
+                <Route path="users" component={ Users }>
+                    <Route path="/user/:userId" component={ User }/>
+                </Route>
+                <Route path="*" component={ NoMatch }/>
+            </Route>
+        </Router>
+    ), container);
+}
+
+// Render HTML on the browser
+renderDOM(history.location)
+browserHistory.listen(renderDOM)
 ```
 
 ## Async routing

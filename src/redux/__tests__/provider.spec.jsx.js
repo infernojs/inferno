@@ -8,7 +8,7 @@ import { createStore } from 'redux';
 import Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
-const history = createBrowserHistory();
+const browserHistory = createBrowserHistory();
 const sinon = require('sinon/pkg/sinon');
 
 describe('Provider (JSX)', () => {
@@ -153,7 +153,7 @@ describe('Provider (JSX)', () => {
 		const _render = (url = '/') => {
 			render(
 				<Provider store={store}>
-					<Router url={ url } history={ history }>
+					<Router url={ url } history={ browserHistory }>
 						<Route path='/' component={ BasicRouter } >
 							<Route path='/next' component={ BasicComponent2 } />
 							<Route path='/' component={ BasicComponent1 } />
@@ -226,7 +226,7 @@ describe('Provider (JSX)', () => {
 
 		render((
 			<Provider store={ store }>
-				<Router history={ history } component={ App }>
+				<Router history={ browserHistory } component={ App }>
 					<Route path='/next' component={ BasicComponent2 } />
 					<Route path='/' component={ BasicComponent1 } />
 				</Router>
