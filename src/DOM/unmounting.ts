@@ -21,13 +21,6 @@ import {
 	PROP_SPREAD
 } from '../core/ValueTypes';
 import {
-	NON_KEYED,
-	KEYED,
-	NODE,
-	TEXT as CHILDREN_TEXT,
-	UNKNOWN
-} from '../core/ChildrenTypes';
-import {
 	ELEMENT,
 	COMPONENT,
 	PLACEHOLDER,

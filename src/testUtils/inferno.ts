@@ -4,12 +4,9 @@ import {
 	createVComponent,
 	createOptVElement
 } from '../core/shapes';
-import {
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-} from '../core/constants';
-
+import ValueTypes from '../core/ValueTypes';
+import ChildrenTypes from '../core/ChildrenTypes';
+import NodeTypes from '../core/NodeTypes';
 // Import this to be able to use JSX in your tests
 export default {
 	createOptVElement,
