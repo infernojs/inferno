@@ -20,19 +20,12 @@ import {
 	PROP_SPREAD
 } from '../core/ValueTypes';
 import {
-	NON_KEYED,
-	KEYED,
-	NODE,
-	TEXT as CHILDREN_TEXT,
 	UNKNOWN
 } from '../core/ChildrenTypes';
 import {
 	ELEMENT,
 	COMPONENT,
-	PLACEHOLDER,
-	OPT_ELEMENT,
-	FRAGMENT,
-	TEXT
+	OPT_ELEMENT
 } from '../core/NodeTypes';
 
 export function convertVOptElementToVElement(optVElement: OptVElement) {

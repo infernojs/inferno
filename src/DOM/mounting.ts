@@ -288,13 +288,13 @@ export function mountArrayChildrenWithoutType(children, dom, lifecycle, context,
 	for (let i = 0; i < children.length; i++) {
 		const child = normaliseChild(children, i);
 
-		if (isVText(child)) {
+		if (child === TEXT) {
 			mountVText(child, dom);
 			children.complex = true;
-		} else if (isVPlaceholder(child)) {
+		} else if (child === PLACEHOLDER) {
 			mountVPlaceholder(child, dom);
 			children.complex = true;
-		} else if (isVFragment(child)) {
+		} else if (child === FRAGMENT) {
 			mountVFragment(child, dom, lifecycle, context, isSVG, shallowUnmount);
 			children.complex = true;
 		} else {
@@ -412,7 +412,7 @@ function mountProps(vNode, props, dom, lifecycle, context, isSVG, isSpread, shal
 		} else if (prop === 'children') {
 			if (isSpread) {
 				mountChildrenWithUnknownType(value, dom, lifecycle, context, isSVG, shallowUnmount);
-			} else if (isVElement(vNode)) {
+			} else if (vNode === ELEMENT) {
 				vNode.children = value;
 			}
 		} else {

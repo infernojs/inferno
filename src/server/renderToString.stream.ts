@@ -13,11 +13,7 @@ import {
 import { Readable } from 'stream';
 import {
 	ELEMENT,
-	COMPONENT,
-	PLACEHOLDER,
-	OPT_ELEMENT,
-	FRAGMENT,
-	TEXT
+	COMPONENT
 } from '../core/NodeTypes';
 import {
 	renderStyleToString,

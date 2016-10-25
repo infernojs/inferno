@@ -17,10 +17,7 @@ import {
 import {
 	ELEMENT,
 	COMPONENT,
-	PLACEHOLDER,
-	OPT_ELEMENT,
-	FRAGMENT,
-	TEXT
+	OPT_ELEMENT
 } from '../core/NodeTypes';
 import { convertVOptElementToVElement } from '../factories/cloneVNode';
 

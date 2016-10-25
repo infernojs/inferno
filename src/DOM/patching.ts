@@ -60,7 +60,6 @@ import {
 	PROP_DATA,
 	PROP_STYLE,
 	PROP,
-	PROP_REF,
 	PROP_SPREAD
 } from '../core/ValueTypes';
 import {
