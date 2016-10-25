@@ -17,7 +17,10 @@ import {
 import {
 	ELEMENT,
 	COMPONENT,
-	OPT_ELEMENT
+	PLACEHOLDER,
+	OPT_ELEMENT,
+	FRAGMENT,
+	TEXT
 } from '../core/NodeTypes';
 import { convertVOptElementToVElement } from '../factories/cloneVNode';
 
@@ -145,16 +148,19 @@ function renderOptVElementToString(optVElement, isRoot, context) {
 }
 
 function renderInputToString(input, context, isRoot) {
-	if (!isInvalid(input)) {
-		if (input === OPT_ELEMENT) {
+	switch (input.nodeType) {
+		case OPT_ELEMENT:
 			return renderOptVElementToString(input, isRoot, context);
-		} else if (input === ELEMENT) {
-			return renderVElementToString(input, isRoot, context);
-		} else if (input === COMPONENT) {
+		case COMPONENT:
 			return renderComponentToString(input, isRoot, context);
-		}
+		case ELEMENT:
+			return renderVElementToString(input, isRoot, context);
+		case TEXT:
+		case FRAGMENT:
+		case PLACEHOLDER:
+		default:
+			throw Error('Inferno Error: Bad input argument called on renderInputToString(). Input argument may need normalising.');
 	}
-	throw Error('Inferno Error: Bad input argument called on renderInputToString(). Input argument may need normalising.');
 }
 
 export default function renderToString(input) {

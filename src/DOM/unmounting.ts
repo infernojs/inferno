@@ -10,13 +10,7 @@ import {
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	PROP_VALUE,
 	CHILDREN,
-	PROP_CLASS_NAME,
-	PROP_DATA,
-	PROP_STYLE,
-	PROP_VALUE,
-	PROP,
 	PROP_REF,
 	PROP_SPREAD
 } from '../core/ValueTypes';

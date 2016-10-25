@@ -6,7 +6,9 @@ import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
 import createElement from './../../factories/createElement';
 import { createOptBlueprint, createStaticVElement, createVComponent, createOptVElement } from '../../core/shapes';
-import { ValueTypes, NodeTypes, ChildrenTypes } from '../../core/constants';
+import ChildrenTypes from '../../core/ChildrenTypes';
+import ValueTypes from '../../core/ValueTypes';
+import NodeTypes from '../../core/NodeTypes';
 
 const Inferno = {
 	createElement,
@@ -671,13 +673,13 @@ describe('Elements (JSX)', () => {
 	});
 
 	it('should not update when switching between null/undefined', () => {
-		render(<div dir={null} />, container);
-		render(<div dir={123} />, container);
-		render(<div dir={null} />, container);
-		render(<div dir={undefined} />, container);
+		render(<div id={null} />, container);
+		render(<div id={123} />, container);
+		render(<div id={null} />, container);
+		render(<div id={undefined} />, container);
 		render(<div />, container);
-		render(<div dir="ltr" />, container);
-		render(<div dir={[]} />, container);
+		render(<div id="ltr" />, container);
+		render(<div id={[]} />, container);
 	});
 
 	it('should render an iframe', () => {
