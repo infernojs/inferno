@@ -369,7 +369,7 @@ function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
             case TEXT:
                 return unmountVText(input, parentDom);
             case PLACEHOLDER:
-                unmountVPlaceholder(input, parentDom);
+                return unmountVPlaceholder(input, parentDom);
             default:
         }
     }
@@ -428,7 +428,7 @@ function unmountVFragment(vFragment, parentDom, removePointer, lifecycle, shallo
     if (!shallowUnmount && childrenLength > 0) {
         for (var i = 0; i < childrenLength; i++) {
             var child = children[i];
-            if (child === FRAGMENT) {
+            if (child.nodeType === FRAGMENT) {
                 unmountVFragment(child, parentDom, true, lifecycle, false);
             }
             else {
@@ -473,7 +473,7 @@ function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, shallow
         if (isNullOrUndef(lastInput)) {
             lastInput = instance;
         }
-        if (lastInput === FRAGMENT) {
+        if (lastInput.nodeType === FRAGMENT) {
             unmountVFragment(lastInput, parentDom, true, lifecycle, true);
         }
         else {
@@ -1629,13 +1629,14 @@ function cloneVNode(vNodeToClone, props) {
         newVNode = Object.assign({}, vNodeToClone);
     }
     else {
-        if (vNodeToClone === COMPONENT) {
+        var nodeType = vNodeToClone.nodeType;
+        if (nodeType === COMPONENT) {
             newVNode = createVComponent(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), vNodeToClone.key, vNodeToClone.hooks, vNodeToClone.ref);
         }
-        else if (vNodeToClone === ELEMENT) {
+        else if (nodeType === ELEMENT) {
             newVNode = createVElement(vNodeToClone.tag, Object.assign({}, vNodeToClone.props, props), (props && props.children) || children || vNodeToClone.children, vNodeToClone.key, vNodeToClone.ref, UNKNOWN);
         }
-        else if (vNodeToClone === OPT_ELEMENT) {
+        else if (nodeType === OPT_ELEMENT) {
             newVNode = cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
         }
     }
@@ -1679,13 +1680,13 @@ function createStatefulComponentInstance(Component, props, context, isSVG, devTo
     return instance;
 }
 function replaceVNode(parentDom, dom, vNode, shallowUnmount, lifecycle) {
-    var nodeType = vNode.nodeType;
-    if (nodeType === COMPONENT) {
+    // we cannot cache nodeType here as vNode might be re-assigned below
+    if (vNode.nodeType === COMPONENT) {
         // if we are accessing a stateful or stateless component, we want to access their last rendered input
         // accessing their DOM node is not useful to us here
         vNode = vNode.instance._lastInput || vNode.instance;
     }
-    else if (nodeType === FRAGMENT) {
+    if (vNode.nodeType === FRAGMENT) {
         replaceVFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
     }
     else {
@@ -2066,15 +2067,15 @@ function mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG,
     children.complex = false;
     for (var i = 0; i < children.length; i++) {
         var child = normaliseChild(children, i);
-        if (isVText(child)) {
+        if (child === TEXT) {
             mountVText(child, dom);
             children.complex = true;
         }
-        else if (isVPlaceholder(child)) {
+        else if (child === PLACEHOLDER) {
             mountVPlaceholder(child, dom);
             children.complex = true;
         }
-        else if (isVFragment(child)) {
+        else if (child === FRAGMENT) {
             mountVFragment(child, dom, lifecycle, context, isSVG, shallowUnmount);
             children.complex = true;
         }
@@ -2186,7 +2187,7 @@ function mountProps(vNode, props, dom, lifecycle, context, isSVG, isSpread, shal
             if (isSpread) {
                 mountChildrenWithUnknownType(value, dom, lifecycle, context, isSVG, shallowUnmount);
             }
-            else if (isVElement(vNode)) {
+            else if (vNode === ELEMENT) {
                 vNode.children = value;
             }
         }
@@ -2213,7 +2214,8 @@ function mountRef(dom, value, lifecycle) {
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
     var domNode = childNodes[counter.i];
-    if (child === TEXT) {
+    var childNodeType = child.nodeType;
+    if (childNodeType === TEXT) {
         var text = child.text;
         child.dom = domNode;
         if (domNode.nodeType === 3 && text !== '') {
@@ -2226,10 +2228,10 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context)
             child.dom = newDomNode;
         }
     }
-    else if (child === PLACEHOLDER) {
+    else if (childNodeType === PLACEHOLDER) {
         child.dom = domNode;
     }
-    else if (child === FRAGMENT) {
+    else if (childNodeType === FRAGMENT) {
         var items = child.items;
         // this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
         child.dom = document.createDocumentFragment();
@@ -3067,18 +3069,19 @@ function renderOptVElementToString(optVElement, isRoot, context) {
     return renderInputToString(convertVOptElementToVElement(optVElement), context, isRoot);
 }
 function renderInputToString(input, context, isRoot) {
-    if (!isInvalid(input)) {
-        if (input === OPT_ELEMENT) {
+    switch (input.nodeType) {
+        case OPT_ELEMENT:
             return renderOptVElementToString(input, isRoot, context);
-        }
-        else if (input === ELEMENT) {
-            return renderVElementToString(input, isRoot, context);
-        }
-        else if (input === COMPONENT) {
+        case COMPONENT:
             return renderComponentToString(input, isRoot, context);
-        }
+        case ELEMENT:
+            return renderVElementToString(input, isRoot, context);
+        case TEXT:
+        case FRAGMENT:
+        case PLACEHOLDER:
+        default:
+            throw Error('Inferno Error: Bad input argument called on renderInputToString(). Input argument may need normalising.');
     }
-    throw Error('Inferno Error: Bad input argument called on renderInputToString(). Input argument may need normalising.');
 }
 function renderToString(input) {
     return renderInputToString(input, null, true);
