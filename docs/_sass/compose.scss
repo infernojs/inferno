@@ -1,8 +1,15 @@
+// CSS Reset
 @import "vendor/normalize";
+@import "vendor/syntax";
 
+// Variables
 @import "variables";
 
+// Default Layout and Typography
 @import "components/_index";
 @import "defaults";
+@import "layout";
+@import "typography";
 
+// Pages
 @import "index-page";
