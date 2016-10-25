@@ -12,9 +12,13 @@ import {
 } from './utils';
 import { Readable } from 'stream';
 import {
-	isVElement,
-	isVComponent
-} from './../core/shapes';
+	ELEMENT,
+	COMPONENT,
+	PLACEHOLDER,
+	OPT_ELEMENT,
+	FRAGMENT,
+	TEXT
+} from '../core/NodeTypes';
 import {
 	renderStyleToString,
 	renderAttributes
@@ -49,9 +53,9 @@ export class RenderStream extends Readable {
 	renderNode(node, context, isRoot) {
 		if (isInvalid(node)) {
 			return;
-		} else if (isVComponent(node)) {
+		} else if (node === COMPONENT) {
 			return this.renderComponent(node, isRoot, context);
-		} else if (isVElement(node)) {
+		} else if (node === ELEMENT) {
 			return this.renderNative(node, isRoot, context);
 		}
 	}

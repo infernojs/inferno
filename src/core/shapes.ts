@@ -1,8 +1,16 @@
 import { isUndefined } from '../shared';
 import {
-	NodeTypes,
-	ChildrenTypes
-} from './constants';
+	OPT_ELEMENT,
+	OPT_BLUEPRINT,
+	COMPONENT,
+	TEXT,
+	ELEMENT,
+	FRAGMENT,
+	PLACEHOLDER
+} from './NodeTypes';
+import {
+	UNKNOWN
+} from './ChildrenTypes';
 import createStaticVElementClone from '../factories/createStaticVElementClone';
 
 export interface IProps {
@@ -83,7 +91,7 @@ export function createOptVElement(bp, key, v0, v1, v2, v3): OptVElement {
 		bp,
 		dom: null,
 		key,
-		nodeType: NodeTypes.OPT_ELEMENT,
+		nodeType: OPT_ELEMENT,
 		v0,
 		v1,
 		v2,
@@ -99,7 +107,7 @@ export function createOptBlueprint(staticVElement: StaticVElement, v0, d0, v1, d
 		d1,
 		d2,
 		d3,
-		nodeType: NodeTypes.OPT_BLUEPRINT,
+		nodeType: OPT_BLUEPRINT,
 		pools: {
 			nonKeyed: [],
 			keyed: new Map<string | number, OptVElement>()
@@ -121,7 +129,7 @@ export function createVComponent(type: any, props: IProps, key?, hooks?, ref?): 
 		hooks: hooks || null,
 		instance: null,
 		key,
-		nodeType: NodeTypes.COMPONENT,
+		nodeType: COMPONENT,
 		props,
 		ref: ref || null
 	};
@@ -131,17 +139,17 @@ export function createVText(text) {
 	return {
 		dom: null,
 		text,
-		nodeType: NodeTypes.TEXT
+		nodeType: TEXT
 	};
 }
 
 export function createVElement(tag, props: IProps, children, key, ref, childrenType): VElement {
 	return {
 		children,
-		childrenType: childrenType || ChildrenTypes.UNKNOWN,
+		childrenType: childrenType || UNKNOWN,
 		dom: null,
 		key,
-		nodeType: NodeTypes.ELEMENT,
+		nodeType: ELEMENT,
 		props,
 		ref: ref || null,
 		tag
@@ -151,7 +159,7 @@ export function createVElement(tag, props: IProps, children, key, ref, childrenT
 export function createStaticVElement(tag, props: IProps, children): StaticVElement {
 	return {
 		children,
-		nodeType: NodeTypes.ELEMENT,
+		nodeType: ELEMENT,
 		props,
 		tag
 	};
@@ -160,9 +168,9 @@ export function createStaticVElement(tag, props: IProps, children): StaticVEleme
 export function createVFragment(children, childrenType): VFragment {
 	return {
 		children,
-		childrenType: childrenType || ChildrenTypes.UNKNOWN,
+		childrenType: childrenType || UNKNOWN,
 		dom: null,
-		nodeType: NodeTypes.FRAGMENT,
+		nodeType: FRAGMENT,
 		pointer: null
 	};
 }
@@ -170,32 +178,8 @@ export function createVFragment(children, childrenType): VFragment {
 export function createVPlaceholder(): VNode {
 	return {
 		dom: null,
-		nodeType: NodeTypes.PLACEHOLDER
+		nodeType: PLACEHOLDER
 	};
-}
-
-export function isVElement(o: VType): boolean {
-	return o.nodeType === NodeTypes.ELEMENT;
-}
-
-export function isOptVElement(o: VType): boolean {
-	return o.nodeType === NodeTypes.OPT_ELEMENT;
-}
-
-export function isVComponent(o: VType): boolean {
-	return o.nodeType === NodeTypes.COMPONENT;
-}
-
-export function isVText(o: VType): boolean {
-	return o.nodeType === NodeTypes.TEXT;
-}
-
-export function isVFragment(o: VType): boolean {
-	return o.nodeType === NodeTypes.FRAGMENT;
-}
-
-export function isVPlaceholder(o: VType): boolean {
-	return o.nodeType === NodeTypes.PLACEHOLDER;
 }
 
 export function isVNode(o: VType): boolean {

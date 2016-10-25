@@ -17,11 +17,9 @@ import createClass from '../../../src/component/createClass';
 import renderToString, { renderToStaticMarkup } from '../../../src/server/renderToString';
 import PropTypes from 'proptypes';
 import cloneVNode from '../../../src/factories/cloneVNode';
-import {
-	ValueTypes,
-	ChildrenTypes,
-	NodeTypes
-} from '../../../src/core/constants';
+import ValueTypes from '../../../src/core/ValueTypes';
+import ChildrenTypes from '../../../src/core/ChildrenTypes';
+import NodeTypes from '../../../src/core/NodeTypes';
 
 function unmountComponentAtNode(container) {
 	render(null, container);

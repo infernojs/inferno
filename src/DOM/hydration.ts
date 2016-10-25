@@ -22,21 +22,28 @@ import {
 	mountChildren
 } from './mounting';
 import {
-	isVPlaceholder,
-	isVFragment,
-	isVText,
-	isVElement,
-	isVComponent,
-	isOptVElement
-} from '../core/shapes';
+	PROP_VALUE,
+	CHILDREN,
+	PROP_DATA,
+	PROP_STYLE,
+	PROP,
+	PROP_SPREAD
+} from '../core/ValueTypes';
 import {
-	ValueTypes,
-	isKeyedListChildrenType,
-	isTextChildrenType,
-	isNodeChildrenType,
-	isNonKeyedListChildrenType,
-	isUnknownChildrenType
-} from '../core/constants';
+	NON_KEYED,
+	KEYED,
+	NODE,
+	TEXT as CHILDREN_TEXT,
+	UNKNOWN
+} from '../core/ChildrenTypes';
+import {
+	ELEMENT,
+	COMPONENT,
+	PLACEHOLDER,
+	OPT_ELEMENT,
+	FRAGMENT,
+	TEXT
+} from '../core/NodeTypes';
 import {
 	patchProp,
 	patchStyle
@@ -48,7 +55,7 @@ import createStaticVElementClone from '../factories/createStaticVElementClone';
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];
 
-	if (isVText(child)) {
+	if (child === TEXT) {
 		const text = child.text;
 
 		child.dom = domNode;
@@ -61,9 +68,9 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context)
 			childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
 			child.dom = newDomNode;
 		}
-	} else if (isVPlaceholder(child)) {
+	} else if (child === PLACEHOLDER) {
 		child.dom = domNode;
-	} else if (isVFragment(child)) {
+	} else if (child === FRAGMENT) {
 		const items = child.items;
 
 		// this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
@@ -207,13 +214,13 @@ function hydrateChildrenWithUnknownType(children, dom, lifecycle, context) {
 }
 
 function hydrateChildren(childrenType, children, dom, lifecycle, context, isSVG = false) {
-	if (isNodeChildrenType(childrenType)) {
+	if (childrenType === NODE) {
 		hydrate(children, dom.firstChild, lifecycle, context);
-	} else if (isKeyedListChildrenType(childrenType) || isNonKeyedListChildrenType(childrenType)) {
+	} else if (childrenType === KEYED || childrenType === NON_KEYED) {
 		hydrateArrayChildrenWithType(children, dom, lifecycle, context);
-	} else if (isUnknownChildrenType(childrenType)) {
+	} else if (childrenType === UNKNOWN) {
 		hydrateChildrenWithUnknownType(children, dom, lifecycle, context);
-	} else if (!isTextChildrenType(childrenType)) {
+	} else if (childrenType !== CHILDREN_TEXT) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('Bad childrenType value specified when attempting to hydrateChildren.');
 		}
@@ -306,26 +313,26 @@ function hydrateVFragment(vFragment, currentDom, lifecycle, context) {
 
 function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom, lifecycle, context, isSVG = false) {
 	switch (valueType) {
-		case ValueTypes.CHILDREN:
+		case CHILDREN:
 			if (value === null) {
 				mountChildren(descriptor, value, dom, lifecycle, context, isSVG, false);
 			} else {
 				hydrateChildren(descriptor, value, dom, lifecycle, context, isSVG);
 			}
 			break;
-		case ValueTypes.PROP_SPREAD:
+		case PROP_SPREAD:
 			debugger;
 			break;
-		case ValueTypes.PROP_DATA:
+		case PROP_DATA:
 			dom.dataset[descriptor] = value;
 			break;
-		case ValueTypes.PROP_STYLE:
+		case PROP_STYLE:
 			patchStyle(null, value, dom);
 			break;
-		case ValueTypes.PROP_VALUE:
+		case PROP_VALUE:
 			dom.value = isNullOrUndef(value) ? '' : value;
 			break;
-		case ValueTypes.PROP:
+		case PROP:
 			patchProp(descriptor, null, value, dom, false);
 			break;
 		default:
@@ -335,23 +342,24 @@ function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom,
 
 function hydrate(input, dom, lifecycle, context) {
 	normaliseChildNodes(dom);
-	if (isOptVElement(input)) {
-		hydrateOptVElement(input, dom, lifecycle, context);
-	} else if (isVComponent(input)) {
-		hydrateVComponent(input, dom, lifecycle, context);
-	} else if (isVElement(input)) {
-		hydrateVElement(input, dom, lifecycle, context);
-	} else if (isVText(input)) {
-		hydrateVText(input, dom);
-	} else if (isVFragment(input)) {
-		hydrateVFragment(input, dom, lifecycle, context);
-	} else if (isVPlaceholder(input)) {
-		hydrateVPlaceholder(input, dom);
-	} else {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError('bad input argument called on hydrate(). Input argument may need normalising.');
-		}
-		throwError();
+	switch (input.nodeType) {
+		case OPT_ELEMENT:
+			return hydrateOptVElement(input, dom, lifecycle, context);
+		case COMPONENT:
+			return hydrateVComponent(input, dom, lifecycle, context);
+		case ELEMENT:
+			return hydrateVElement(input, dom, lifecycle, context);
+		case TEXT:
+			return hydrateVText(input, dom);
+		case FRAGMENT:
+			return hydrateVFragment(input, dom, lifecycle, context);
+		case PLACEHOLDER:
+			return hydrateVPlaceholder(input, dom);
+		default:
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('bad input argument called on hydrate(). Input argument may need normalising.');
+			}
+			throwError();
 	}
 }
 

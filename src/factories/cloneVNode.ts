@@ -5,17 +5,35 @@ import {
 	isNullOrUndef
 } from '../shared';
 import {
-	isVComponent,
-	isVElement,
-	isOptVElement,
 	createVElement,
 	createVComponent,
 	OptVElement
 } from '../core/shapes';
 import {
-	ValueTypes,
-	ChildrenTypes
-} from '../core/constants';
+	PROP_VALUE,
+	CHILDREN,
+	PROP_CLASS_NAME,
+	PROP_DATA,
+	PROP_STYLE,
+	PROP,
+	PROP_REF,
+	PROP_SPREAD
+} from '../core/ValueTypes';
+import {
+	NON_KEYED,
+	KEYED,
+	NODE,
+	TEXT as CHILDREN_TEXT,
+	UNKNOWN
+} from '../core/ChildrenTypes';
+import {
+	ELEMENT,
+	COMPONENT,
+	PLACEHOLDER,
+	OPT_ELEMENT,
+	FRAGMENT,
+	TEXT
+} from '../core/NodeTypes';
 
 export function convertVOptElementToVElement(optVElement: OptVElement) {
 	const bp = optVElement.bp;
@@ -60,7 +78,7 @@ export function convertVOptElementToVElement(optVElement: OptVElement) {
 
 function attachOptVElementValue(vElement, vOptElement, valueType, value, descriptor) {
 	switch (valueType) {
-		case ValueTypes.CHILDREN:
+		case CHILDREN:
 			vElement.childrenType = descriptor;
 			if (isNullOrUndef(vElement.children)) {
 				vElement.children = value;
@@ -68,43 +86,43 @@ function attachOptVElementValue(vElement, vOptElement, valueType, value, descrip
 				debugger;
 			}
 			break;
-		case ValueTypes.PROP_CLASS_NAME:
+		case PROP_CLASS_NAME:
 			if (!vElement.props) {
 				vElement.props = { className: value };
 			} else {
 				vElement.props.className = value;
 			}
 			break;
-		case ValueTypes.PROP_DATA:
+		case PROP_DATA:
 			if (!vElement.props) {
 				vElement.props = {};
 			}
 			vElement.props['data-' + descriptor] = value;
 			break;
-		case ValueTypes.PROP_STYLE:
+		case PROP_STYLE:
 			if (!vElement.props) {
 				vElement.props = { style: value };
 			} else {
 				vElement.props.style = value;
 			}
 			break;
-		case ValueTypes.PROP_VALUE:
+		case PROP_VALUE:
 			if (!vElement.props) {
 				vElement.props = { value };
 			} else {
 				vElement.props.value = value;
 			}
 			break;
-		case ValueTypes.PROP:
+		case PROP:
 			if (!vElement.props) {
 				vElement.props = {};
 			}
 			vElement.props[descriptor] = value;
 			break;
-		case ValueTypes.PROP_REF:
+		case PROP_REF:
 			vElement.ref = value;
 			break;
-		case ValueTypes.PROP_SPREAD:
+		case PROP_SPREAD:
 			if (!vElement.props) {
 				vElement.props = value;
 			} else {
@@ -153,22 +171,22 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 	} else if (isNullOrUndef(props) && isNullOrUndef(children)) {
 		newVNode = Object.assign({}, vNodeToClone);
 	} else {
-		if (isVComponent(vNodeToClone)) {
+		if (vNodeToClone === COMPONENT) {
 			newVNode = createVComponent(vNodeToClone.type,
 				Object.assign({}, vNodeToClone.props, props),
 				vNodeToClone.key,
 				vNodeToClone.hooks,
 				vNodeToClone.ref
 			);
-		} else if (isVElement(vNodeToClone)) {
+		} else if (vNodeToClone === ELEMENT) {
 			newVNode = createVElement(vNodeToClone.tag,
 				Object.assign({}, vNodeToClone.props, props),
 				(props && props.children) || children || vNodeToClone.children,
 				vNodeToClone.key,
 				vNodeToClone.ref,
-				ChildrenTypes.UNKNOWN
+				UNKNOWN
 			);
-		} else if (isOptVElement(vNodeToClone)) {
+		} else if (vNodeToClone === OPT_ELEMENT) {
 			newVNode = cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
 		}
 	}

@@ -15,10 +15,13 @@ import {
 	isVoidElement
 } from './utils';
 import {
-	isVElement,
-	isVComponent,
-	isOptVElement
-} from './../core/shapes';
+	ELEMENT,
+	COMPONENT,
+	PLACEHOLDER,
+	OPT_ELEMENT,
+	FRAGMENT,
+	TEXT
+} from '../core/NodeTypes';
 import { convertVOptElementToVElement } from '../factories/cloneVNode';
 
 function renderComponentToString(vComponent, isRoot, context) {
@@ -146,11 +149,11 @@ function renderOptVElementToString(optVElement, isRoot, context) {
 
 function renderInputToString(input, context, isRoot) {
 	if (!isInvalid(input)) {
-		if (isOptVElement(input)) {
+		if (input === OPT_ELEMENT) {
 			return renderOptVElementToString(input, isRoot, context);
-		} else if (isVElement(input)) {
+		} else if (input === ELEMENT) {
 			return renderVElementToString(input, isRoot, context);
-		} else if (isVComponent(input)) {
+		} else if (input === COMPONENT) {
 			return renderComponentToString(input, isRoot, context);
 		}
 	}

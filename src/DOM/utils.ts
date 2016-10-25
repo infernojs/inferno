@@ -16,10 +16,16 @@ import {
 	createVText,
 	createVPlaceholder,
 	createVFragment,
-	isVFragment,
-	isVComponent,
 	isVNode
 } from '../core/shapes';
+import {
+	ELEMENT,
+	COMPONENT,
+	PLACEHOLDER,
+	OPT_ELEMENT,
+	FRAGMENT,
+	TEXT
+} from '../core/NodeTypes';
 import cloneVNode from '../factories/cloneVNode';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
@@ -63,12 +69,13 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 }
 
 export function replaceVNode(parentDom, dom, vNode, shallowUnmount, lifecycle) {
-	if (isVComponent(vNode)) {
+	const nodeType = vNode.nodeType;
+
+	if (nodeType === COMPONENT) {
 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
 		// accessing their DOM node is not useful to us here
 		vNode = vNode.instance._lastInput || vNode.instance;
-	}
-	if (isVFragment(vNode)) {
+	} else if (nodeType === FRAGMENT) {
 		replaceVFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
 	} else {
 		replaceChild(parentDom, dom, vNode.dom);

@@ -10,7 +10,9 @@ import {
 	VComponent,
 	VElement
 } from '../core/shapes';
-import { ChildrenTypes } from '../core/constants';
+import {
+	UNKNOWN
+} from '../core/ChildrenTypes';
 
 const classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;
@@ -65,7 +67,7 @@ function extractProps(_props, _tag) {
 	let ref = null;
 	let hooks: null | Object = null;
 	let children = null;
-	let childrenType = ChildrenTypes.UNKNOWN;
+	let childrenType = UNKNOWN;
 
 	for (let prop in _props) {
 		if (prop === 'key') {
