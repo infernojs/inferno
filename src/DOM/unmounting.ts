@@ -10,14 +10,24 @@ import {
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	isOptVElement,
-	isVComponent,
-	isVElement,
-	isVText,
-	isVPlaceholder,
-	isVFragment
-} from '../core/shapes';
-import { ValueTypes } from '../core/constants';
+	PROP_VALUE,
+	CHILDREN,
+	PROP_CLASS_NAME,
+	PROP_DATA,
+	PROP_STYLE,
+	PROP_VALUE,
+	PROP,
+	PROP_REF,
+	PROP_SPREAD
+} from '../core/ValueTypes';
+import {
+	ELEMENT,
+	COMPONENT,
+	PLACEHOLDER,
+	OPT_ELEMENT,
+	FRAGMENT,
+	TEXT
+} from '../core/NodeTypes';
 import {
 	poolOptVElement,
 	poolVComponent,
@@ -26,18 +36,21 @@ import {
 
 export function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	if (!isInvalid(input)) {
-		if (isOptVElement(input)) {
-			unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
-		} else if (isVComponent(input)) {
-			unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
-		} else if (isVElement(input)) {
-			unmountVElement(input, parentDom, lifecycle, shallowUnmount);
-		} else if (isVFragment(input)) {
-			unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
-		} else if (isVText(input)) {
-			unmountVText(input, parentDom);
-		} else if (isVPlaceholder(input)) {
-			unmountVPlaceholder(input, parentDom);
+		switch (input.nodeType) {
+			case OPT_ELEMENT:
+				return unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+			case COMPONENT:
+				return unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+			case ELEMENT:
+				return unmountVElement(input, parentDom, lifecycle, shallowUnmount);
+			case FRAGMENT:
+				return unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
+			case TEXT:
+				return unmountVText(input, parentDom);
+			case PLACEHOLDER:
+				unmountVPlaceholder(input, parentDom);
+			default:
+				// TODO
 		}
 	}
 }
@@ -83,13 +96,13 @@ function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle, shall
 
 function unmountOptVElementValue(optVElement, valueType, value, lifecycle, shallowUnmount) {
 	switch (valueType) {
-		case ValueTypes.CHILDREN:
+		case CHILDREN:
 			unmountChildren(value, lifecycle, shallowUnmount);
 			break;
-		case ValueTypes.PROP_REF:
+		case PROP_REF:
 			unmountRef(value);
 			break;
-		case ValueTypes.PROP_SPREAD:
+		case PROP_SPREAD:
 			unmountProps(value, lifecycle);
 			break;
 		default:
@@ -106,7 +119,7 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle,
 		for (let i = 0; i < childrenLength; i++) {
 			const child = children[i];
 
-			if (isVFragment(child)) {
+			if (child === FRAGMENT) {
 				unmountVFragment(child, parentDom, true, lifecycle, false);
 			} else {
 				unmount(child, parentDom, lifecycle, false, shallowUnmount);
@@ -155,7 +168,7 @@ export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, 
 		if (isNullOrUndef(lastInput)) {
 			lastInput = instance;
 		}
-		if (isVFragment(lastInput)) {
+		if (lastInput === FRAGMENT) {
 			unmountVFragment(lastInput, parentDom, true, lifecycle, true);
 		} else {
 			removeChild(parentDom, vComponent.dom);

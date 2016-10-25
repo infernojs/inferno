@@ -47,12 +47,6 @@ import {
 import { componentToDOMNodeMap } from './rendering';
 import {
 	isVNode,
-	isVElement,
-	isOptVElement,
-	isVFragment,
-	isVComponent,
-	isVPlaceholder,
-	isVText,
 	createVPlaceholder,
 	createVFragment,
 	VComponent,
@@ -60,13 +54,29 @@ import {
 	VElement
 } from '../core/shapes';
 import {
-	ValueTypes,
-	isKeyedListChildrenType,
-	isNonKeyedListChildrenType,
-	isNodeChildrenType,
-	isTextChildrenType,
-	isUnknownChildrenType
-} from '../core/constants';
+	PROP_VALUE,
+	CHILDREN,
+	PROP_CLASS_NAME,
+	PROP_DATA,
+	PROP_STYLE,
+	PROP,
+	PROP_SPREAD
+} from '../core/ValueTypes';
+import {
+	NON_KEYED,
+	KEYED,
+	NODE,
+	TEXT as CHILDREN_TEXT,
+	UNKNOWN
+} from '../core/ChildrenTypes';
+import {
+	ELEMENT,
+	COMPONENT,
+	PLACEHOLDER,
+	OPT_ELEMENT,
+	FRAGMENT,
+	TEXT
+} from '../core/NodeTypes';
 import { unmount } from './unmounting';
 import {
 	isUnitlessNumber,
@@ -83,53 +93,56 @@ function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, 
 
 export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	if (lastInput !== nextInput) {
-		if (isOptVElement(nextInput)) {
-			if (isOptVElement(lastInput)) {
+		const lastNodeType = lastInput.nodeType;
+		const nextNodeType = nextInput.nodeType;
+
+		if (nextNodeType === OPT_ELEMENT) {
+			if (lastNodeType === OPT_ELEMENT) {
 				patchOptVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 			} else {
 				replaceVNode(parentDom, mountOptVElement(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
 			}
-		} else if (isOptVElement(lastInput)) {
+		} else if (lastNodeType === OPT_ELEMENT) {
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
-		} else if (isVComponent(nextInput)) {
-			if (isVComponent(lastInput)) {
+		} else if (nextNodeType === COMPONENT) {
+			if (lastNodeType === COMPONENT) {
 				patchVComponent(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 			} else {
 				replaceVNode(parentDom, mountVComponent(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
 			}
-		} else if (isVComponent(lastInput)) {
+		} else if (lastNodeType === COMPONENT) {
 			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
-		} else if (isVElement(nextInput)) {
-			if (isVElement(lastInput)) {
+		} else if (nextNodeType === ELEMENT) {
+			if (lastNodeType === ELEMENT) {
 				patchVElement(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 			} else {
 				replaceVNode(parentDom, mountVElement(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
 			}
-		} else if (isVFragment(nextInput)) {
-			if (isVFragment(lastInput)) {
+		} else if (lastNodeType === ELEMENT) {
+			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
+		} else if (nextNodeType === FRAGMENT) {
+			if (lastNodeType === FRAGMENT) {
 				patchVFragment(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 			} else {
 				replaceVNode(parentDom, mountVFragment(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
 			}
-		} else if (isVFragment(lastInput)) {
+		} else if (lastNodeType === FRAGMENT) {
 			replaceVFragmentWithNode(parentDom, lastInput, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lifecycle, shallowUnmount);
-		} else if (isVElement(lastInput)) {
-			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
-		} else if (isVText(nextInput)) {
-			if (isVText(lastInput)) {
+		} else if (nextNodeType === TEXT) {
+			if (lastNodeType === TEXT) {
 				patchVText(lastInput, nextInput);
 			} else {
 				replaceVNode(parentDom, mountVText(nextInput, null), lastInput, shallowUnmount, lifecycle);
 			}
-		} else if (isVText(lastInput)) {
+		} else if (lastNodeType === TEXT) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
-		} else if (isVPlaceholder(nextInput)) {
-			if (isVPlaceholder(lastInput)) {
+		} else if (nextNodeType === PLACEHOLDER) {
+			if (lastNodeType === PLACEHOLDER) {
 				patchVPlaceholder(lastInput, nextInput);
 			} else {
 				replaceVNode(parentDom, mountVPlaceholder(nextInput, null), lastInput, shallowUnmount, lifecycle);
 			}
-		} else if (isVPlaceholder(lastInput)) {
+		} else if (lastNodeType === PLACEHOLDER) {
 			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
@@ -248,17 +261,17 @@ export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, li
 			}
 		}
 		if (tag === 'select') {
-			formSelectValue(dom, getPropFromOptElement(nextOptVElement, ValueTypes.PROP_VALUE));
+			formSelectValue(dom, getPropFromOptElement(nextOptVElement, PROP_VALUE));
 		}
 	}
 }
 
 function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, descriptor, dom, lifecycle, context, isSVG, shallowUnmount) {
 	switch (valueType) {
-		case ValueTypes.CHILDREN:
+		case CHILDREN:
 			patchChildren(descriptor, lastValue, nextValue, dom, lifecycle, context, isSVG, shallowUnmount);
 			break;
-		case ValueTypes.PROP_CLASS_NAME:
+		case PROP_CLASS_NAME:
 			if (isNullOrUndef(nextValue)) {
 				dom.removeAttribute('class');
 			} else {
@@ -269,19 +282,19 @@ function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, des
 				}
 			}
 			break;
-		case ValueTypes.PROP_DATA:
+		case PROP_DATA:
 			dom.dataset[descriptor] = nextValue;
 			break;
-		case ValueTypes.PROP_STYLE:
+		case PROP_STYLE:
 			patchStyle(lastValue, nextValue, dom);
 			break;
-		case ValueTypes.PROP_VALUE:
+		case PROP_VALUE:
 			dom.value = isNullOrUndef(nextValue) ? '' : nextValue;
 			break;
-		case ValueTypes.PROP:
+		case PROP:
 			patchProp(descriptor, lastValue, nextValue, dom, isSVG);
 			break;
-		case ValueTypes.PROP_SPREAD:
+		case PROP_SPREAD:
 			patchProps(optVElement, lastValue, nextValue, dom, shallowUnmount, true, isSVG, lifecycle, context);
 			break;
 		default:
@@ -290,15 +303,15 @@ function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, des
 }
 
 function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-	if (isTextChildrenType(childrenType)) {
+	if (childrenType === CHILDREN_TEXT) {
 		updateTextContent(parentDom, nextChildren);
-	} else if (isNodeChildrenType(childrenType)) {
+	} else if (childrenType === NODE) {
 		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-	} else if (isKeyedListChildrenType(childrenType)) {
+	} else if (childrenType === KEYED) {
 		patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
-	} else if (isNonKeyedListChildrenType(childrenType)) {
+	} else if (childrenType === NON_KEYED) {
 		patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
-	} else if (isUnknownChildrenType(childrenType)) {
+	} else if (childrenType === UNKNOWN) {
 		patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
@@ -516,9 +529,9 @@ function patchVFragment(lastVFragment, nextVFragment, parentDom, lifecycle, cont
 		const nextChildrenType = nextVFragment.childrenType;
 
 		if (lastChildrenType === nextChildrenType) {
-			if (isKeyedListChildrenType(nextChildrenType)) {
+			if (nextChildrenType === KEYED) {
 				return patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, shallowUnmount);
-			} else if (isNonKeyedListChildrenType(nextChildrenType)) {
+			} else if (nextChildrenType === NON_KEYED) {
 				return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, false, shallowUnmount);
 			}
 		}
@@ -912,7 +925,7 @@ function patchProps(vNode, lastProps, nextProps, dom, shallowUnmount, isSpread, 
 		} else if (prop === 'children') {
 			if (isSpread) {
 				patchChildrenWithUnknownType(lastValue, nextValue, dom, lifecycle, context, isSVG, shallowUnmount);
-			} else if (isVElement(vNode)) {
+			} else if (vNode === ELEMENT) {
 				vNode.children = nextValue;
 			}
 		} else {

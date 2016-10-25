@@ -8,11 +8,9 @@ import {
 	createVPlaceholder,
 	createVText
 } from '../../../src/core/shapes';
-import {
-	ValueTypes,
-	ChildrenTypes,
-	NodeTypes
-} from '../../../src/core/constants';
+import ValueTypes from '../../../src/core/ValueTypes';
+import ChildrenTypes from '../../../src/core/ChildrenTypes';
+import NodeTypes from '../../../src/core/NodeTypes';
 import cloneVNode from '../../../src/factories/cloneVNode';
 import { warning, NO_OP, isBrowser } from '../../../src/shared';
 import { render, findDOMNode, createRenderer } from '../../../src/DOM/rendering';
