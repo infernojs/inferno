@@ -8,6 +8,31 @@ export interface IRouterProps {
 	component?: Component<any, any>;
 }
 
+export function getRoutes(_routes, url, lastPath = '') {
+
+	if (!_routes) {
+		return _routes;
+	}
+
+	const routes = toArray(_routes);
+	routes.sort(pathRankSort);
+
+	for (let i = 0; i < routes.length; i++) {
+		const route = isArray(routes[i]) ? getRoutes(routes[i], url, lastPath) : routes[i];
+		const path = route.props.path || '/';
+		const children = route.props.children;
+		const newURL = url.replace('//', '/');
+		const fullPath = (lastPath + path).replace('//', '/');
+		const match = matchPath(false, fullPath, newURL);
+
+		if (match) {
+			route.props.params = match.params;
+			route.props.children = getRoutes(children, url, fullPath);
+			return route;
+		}
+	}
+}
+
 export default class Router extends Component<IRouterProps, any> {
 	_didRoute: boolean;
 	unlisten: any;
@@ -46,31 +71,6 @@ export default class Router extends Component<IRouterProps, any> {
 		}
 	}
 
-	getRoutes(_routes, url, lastPath?) {
-
-		if (!_routes) {
-			return _routes;
-		}
-
-		const routes = toArray(_routes);
-		routes.sort(pathRankSort);
-
-		for (let i = 0; i < routes.length; i++) {
-			const route = isArray(routes[i]) ? this.getRoutes(routes[i], url, lastPath) : routes[i];
-			const path = route.props.path || '/';
-			const children = route.props.children;
-			const newURL = url.replace('//', '/');
-			const fullPath = (lastPath + path).replace('//', '/');
-			const match = matchPath(false, fullPath, newURL);
-
-			if (match) {
-				route.props.params = match.params;
-				route.props.children = this.getRoutes(children, url, fullPath);
-				return route;
-			}
-		}
-	}
-
 	routeTo(url) {
 		this._didRoute = false;
 		this.setState({ url }, null);
@@ -81,7 +81,7 @@ export default class Router extends Component<IRouterProps, any> {
 		const routes = toArray(this.props.children);
 		const url = this.props.url || this.state.url;
 
-		const newRoutes = this.getRoutes(routes, url, '');
+		const newRoutes = getRoutes(routes, url, '');
 		return newRoutes;
 	}
 }
