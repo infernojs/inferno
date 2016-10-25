@@ -19,12 +19,8 @@ import {
 	isVNode
 } from '../core/shapes';
 import {
-	ELEMENT,
 	COMPONENT,
-	PLACEHOLDER,
-	OPT_ELEMENT,
-	FRAGMENT,
-	TEXT
+	FRAGMENT
 } from '../core/NodeTypes';
 import cloneVNode from '../factories/cloneVNode';
 import { componentToDOMNodeMap } from './rendering';

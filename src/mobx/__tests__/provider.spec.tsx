@@ -3,10 +3,12 @@ import { expect } from 'chai';
 
 import Provider from '../Provider';
 import connect from '../connect';
-import { render } from './../../DOM/rendering';
-import Component from './../../component/es2015';
-import { createStaticVElement, createOptBlueprint, createVComponent, createOptVElement } from './../../core/shapes';
-import { ChildrenTypes, ValueTypes, NodeTypes } from './../../core/constants';
+import { render } from '../../DOM/rendering';
+import Component from '../../component/es2015';
+import { createStaticVElement, createOptBlueprint, createVComponent, createOptVElement } from '../../core/shapes';
+import ChildrenTypes from '../../core/ChildrenTypes';
+import ValueTypes from '../../core/ValueTypes';
+import NodeTypes from '../../core/NodeTypes';
 
 const Inferno = {
 	createOptVElement,
