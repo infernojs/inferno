@@ -164,14 +164,16 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 	} else if (isNullOrUndef(props) && isNullOrUndef(children)) {
 		newVNode = Object.assign({}, vNodeToClone);
 	} else {
-		if (vNodeToClone === COMPONENT) {
+		const nodeType = vNodeToClone.nodeType;
+
+		if (nodeType === COMPONENT) {
 			newVNode = createVComponent(vNodeToClone.type,
 				Object.assign({}, vNodeToClone.props, props),
 				vNodeToClone.key,
 				vNodeToClone.hooks,
 				vNodeToClone.ref
 			);
-		} else if (vNodeToClone === ELEMENT) {
+		} else if (nodeType === ELEMENT) {
 			newVNode = createVElement(vNodeToClone.tag,
 				Object.assign({}, vNodeToClone.props, props),
 				(props && props.children) || children || vNodeToClone.children,
@@ -179,7 +181,7 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 				vNodeToClone.ref,
 				UNKNOWN
 			);
-		} else if (vNodeToClone === OPT_ELEMENT) {
+		} else if (nodeType === OPT_ELEMENT) {
 			newVNode = cloneVNode(convertVOptElementToVElement(vNodeToClone), props, children);
 		}
 	}

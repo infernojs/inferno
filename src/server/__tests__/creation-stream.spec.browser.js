@@ -11,7 +11,7 @@ class StatefulComponent extends Component {
 
 const FunctionalComponent = ({ value }) => createElement('span', null, `stateless ${ value }!`);
 
-describe('SSR Creation - (non-JSX)', () => {
+describe('SSR Creation Streams - (non-JSX)', () => {
 	[
 		{
 			description: 'should render div with span child',

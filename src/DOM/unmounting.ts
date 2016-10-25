@@ -42,7 +42,7 @@ export function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount)
 			case TEXT:
 				return unmountVText(input, parentDom);
 			case PLACEHOLDER:
-				unmountVPlaceholder(input, parentDom);
+				return unmountVPlaceholder(input, parentDom);
 			default:
 				// TODO
 		}
@@ -113,7 +113,7 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle,
 		for (let i = 0; i < childrenLength; i++) {
 			const child = children[i];
 
-			if (child === FRAGMENT) {
+			if (child.nodeType === FRAGMENT) {
 				unmountVFragment(child, parentDom, true, lifecycle, false);
 			} else {
 				unmount(child, parentDom, lifecycle, false, shallowUnmount);
@@ -162,7 +162,7 @@ export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, 
 		if (isNullOrUndef(lastInput)) {
 			lastInput = instance;
 		}
-		if (lastInput === FRAGMENT) {
+		if (lastInput.nodeType === FRAGMENT) {
 			unmountVFragment(lastInput, parentDom, true, lifecycle, true);
 		} else {
 			removeChild(parentDom, vComponent.dom);
