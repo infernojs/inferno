@@ -65,13 +65,13 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 }
 
 export function replaceVNode(parentDom, dom, vNode, shallowUnmount, lifecycle) {
-	const nodeType = vNode.nodeType;
-
-	if (nodeType === COMPONENT) {
+	// we cannot cache nodeType here as vNode might be re-assigned below
+	if (vNode.nodeType === COMPONENT) {
 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
 		// accessing their DOM node is not useful to us here
 		vNode = vNode.instance._lastInput || vNode.instance;
-	} else if (nodeType === FRAGMENT) {
+	}
+	if (vNode.nodeType === FRAGMENT) {
 		replaceVFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
 	} else {
 		replaceChild(parentDom, dom, vNode.dom);

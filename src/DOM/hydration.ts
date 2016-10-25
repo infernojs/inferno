@@ -54,8 +54,9 @@ import createStaticVElementClone from '../factories/createStaticVElementClone';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];
+	const childNodeType = child.nodeType;
 
-	if (child === TEXT) {
+	if (childNodeType === TEXT) {
 		const text = child.text;
 
 		child.dom = domNode;
@@ -68,9 +69,9 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context)
 			childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
 			child.dom = newDomNode;
 		}
-	} else if (child === PLACEHOLDER) {
+	} else if (childNodeType === PLACEHOLDER) {
 		child.dom = domNode;
-	} else if (child === FRAGMENT) {
+	} else if (childNodeType === FRAGMENT) {
 		const items = child.items;
 
 		// this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList

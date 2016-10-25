@@ -1,8 +1,7 @@
 ---
-id: benefits/list-rendering
 title: List Rendering
-permalink: /benefits/list-rendering
-next: /benefits/list-rendering
+permalink: /guides/benefits/list-rendering/
+next: /guides/benefits/list-rendering/
 ---
 
 ## List Rendering

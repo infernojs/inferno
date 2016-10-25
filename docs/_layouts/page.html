@@ -1,0 +1,17 @@
+---
+layout: default
+---
+
+
+<div class="docs-container">
+  {% include nav/side.html %}
+  <section class="container">
+    {% include nav/top.html %}
+    <article class="docs-article">
+      <h1>
+        {{ page.title }}
+      </h1>
+      {{ content }}
+    </article>
+  </section>
+</div>

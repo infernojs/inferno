@@ -3,49 +3,56 @@
   display: block;
   width: 100%;
   height: 500px;
-  background-image: url('../static/img/stripe.png');
+  background-image: url('../img/stripe.png');
   background-position: left top;
   background-repeat: repeat;
-  margin-bottom: 50px;
   overflow: hidden;
 
   .diagonal-shapes {
     width: 100%;
     height: 500px;
-    background-image: url('../static/img/diagonal_shape.png');
+    background-image: url('../img/diagonal_shape.png');
     background-position: center bottom;
     background-size: cover;
     background-repeat: no-repeat;
     margin-top: -380px;
   }
+
+  > nav.nav-top {
+    text-align: center;
+  }
 }
 
 .tagline {
-  width: 428px;
-  font-size: 22px;
+  width: 100%;
+  max-width: 428px;
+  font-size: 18px;
   text-align: center;
   line-height: 30px;
   margin: 0 auto 35px;
+  padding: 0 15px;
+
+  @media (min-width: 420px) {
+    font-size: 22px;
+  }
 }
 
 .button-enclose {
-  width: 150px;
-  margin: 0 auto;
+  width: 100%;
+  text-align: center;
   overflow: hidden;
   cursor: pointer;
 }
 
-.link-button {
-  float: left;
-}
-
 .key-features {
   margin-bottom: 100px;
-  overflow: hidden;
+  text-align: center;
 
   li {
-    float: left;
-    width: 25%;
+    text-align: left;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 64px;
 
     .kf-icon {
       float: left;
@@ -61,7 +68,8 @@
 }
 
 .inferno-intro {
-  width: 580px;
+  width: 100%;
+  max-width: 600px;
   margin-bottom: 100px;
 
   li {
@@ -71,44 +79,57 @@
 
 .banner-bottom {
   width: 100%;
-  height: 110px;
   background: $brand-primary;
-  overflow: hidden;
+  padding: 32px;
+}
 
-  .button-enclose {
-    margin: 31px auto;
+.contributors .title,
+.license a {
+  color: white;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 
 .contributors {
-  float: left;
-  margin-top: 28px;
-  overflow: hidden;
-
-  .icon {
-    float: left;
+  .icon, .title {
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 10px;
     margin-right: 10px;
-  }
-
-  .title {
-    float: left;
-    margin-top: 3px;
-    color: white;
   }
 }
 
-.license {
-  float: right;
-  margin-top: 7px;
-  text-align: right;
-  overflow: hidden;
+@media (min-width: 480px) {
+  .contributors {
+    display: inline-block;
+    vertical-align: top;
 
-  div:first-child {
-    margin-bottom: 10px;
+    .icon {
+      display: inline-block;
+      vertical-align: top;
+      margin-right: 10px;
+    }
+
+    .title {
+      display: inline-block;
+      vertical-align: top;
+      color: white;
+    }
   }
 
-  a {
-    color: white;
-    text-decoration: underline;
+  .license {
+    float: right;
+    text-align: right;
+
+    div:first-child {
+      margin-bottom: 10px;
+    }
+
+    a {
+      color: white;
+      text-decoration: underline;
+    }
   }
 }

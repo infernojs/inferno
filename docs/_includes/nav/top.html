@@ -1,0 +1,13 @@
+<nav class="nav-top">
+  {% for link in site.data.nav.top %}
+  {% assign current = nil %}
+  
+  {% if page.url == link.url %}
+    {% assign current = 'active' %}
+  {% endif %}
+  
+  <a class="{{ current }}" href="{{site.url}}{{ link.url }}">
+    {{ link.text }}
+  </a>
+  {% endfor %}
+</nav>

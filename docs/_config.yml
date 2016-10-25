@@ -4,6 +4,9 @@ url: //infernojs.github.io/docs
 
 gems:
   - jekyll-sitemap
+  - jekyll-redirect-from
+
+permalink: pretty
 
 # Defaults
 defaults:

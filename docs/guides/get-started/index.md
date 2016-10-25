@@ -1,11 +1,7 @@
 ---
-id: get-started/overview
-title: Overview
-permalink: /get-started/overview
-next: /get-started/overview
+title: Get Started
+next: /get-started/installation
 ---
-
-## Overview
 
 Let's start with some code. As you can see, Inferno intentionally keeps the same, good, design ideas as React regarding components: one-way data flow and separation of concerns.
 In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a simple way to express Inferno virtual DOM.

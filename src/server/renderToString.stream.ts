@@ -49,9 +49,9 @@ export class RenderStream extends Readable {
 	renderNode(node, context, isRoot) {
 		if (isInvalid(node)) {
 			return;
-		} else if (node === COMPONENT) {
+		} else if (node.nodeType === COMPONENT) {
 			return this.renderComponent(node, isRoot, context);
-		} else if (node === ELEMENT) {
+		} else if (node.nodeType === ELEMENT) {
 			return this.renderNative(node, isRoot, context);
 		}
 	}

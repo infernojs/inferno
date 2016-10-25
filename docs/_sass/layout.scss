@@ -1,0 +1,11 @@
+.docs-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+
+  .docs-article {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+}
