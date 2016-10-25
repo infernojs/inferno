@@ -1,0 +1,40 @@
+// Base text
+
+$text_size: 15px;
+$text_color: #574C4C;
+$line_height: 26px;
+
+
+// h1
+
+$h1_size: 30px;
+$h1_color: #494949;
+$h1_line_height: 38px;
+
+
+// h3
+
+$h3_size: 22px;
+$h3_color: #494949;
+$h3_line_height: 28px;
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: $text_size;
+  color: $text_color;
+  line-height: $line_height;
+}
+
+h1 {
+  font-size: $h1_size;
+  color: $h1_color;
+  line-height: $h1_line_height;
+  margin: 0 0 26px 0;
+}
+
+h3 {
+  font-size: $h3_size;
+  color: $h3_color;
+  line-height: $h3_line_height;
+  margin: 0 0 12px 0;
+}

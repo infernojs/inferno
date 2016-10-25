@@ -1,0 +1,29 @@
+<nav class="side-nav">
+  <a class="side-nav__legend" href="{{site.url}}">
+    <img src="{{site.url}}/static/img/inferno_icon.png">
+    <span class="inferno">Inferno</span> Docs
+  </a>
+  <ul>
+  {% for section in site.data.nav.side %}
+  <li class="side-nav__section">
+    <div class="side-nav__header">
+      {{ section.title }}
+    </div>
+    <ul class="side-nav__list">
+      {% for link in section.items %}
+      
+      {% assign current = nil %}
+      
+      {% if page.url == link.url %}
+        {% assign current = 'active' %}
+      {% endif %}
+
+      <a href="{{site.url}}{{ link.url }}" class="{{ current }}">
+        {{ link.text }}
+      </a>
+      {% endfor %}
+    </ul>
+  </li>
+  {% endfor %}
+  </ul>
+</nav>
