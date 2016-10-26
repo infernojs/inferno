@@ -1,9 +1,10 @@
 import hoistStatics from 'hoist-non-inferno-statics';
-import createElement from 'inferno-create-element';
 import createClass from 'inferno-create-class';
+import { createVComponent } from '../core/shapes';
 
 interface IProps {
 	ref: any;
+	children: any;
 }
 
 /**
@@ -11,7 +12,7 @@ interface IProps {
  */
 function createStoreInjector (grabStoresFn, component) {
 	const Injector: any = createClass({
-		displayName: 'MobXStoreInjector',
+		displayName: component.name,
 		render() {
 			const newProps = <IProps> {};
 			for (let key in this.props) {
@@ -23,16 +24,15 @@ function createStoreInjector (grabStoresFn, component) {
 			for ( let key in additionalProps ) {
 				newProps[ key ] = additionalProps[ key ];
 			}
+			newProps.children = this.props.children;
 			newProps.ref = instance => {
 				this.wrappedInstance = instance;
 			};
-
-			return createElement(component, newProps, this.props.children);
+			return createVComponent(component, newProps);
 		}
 	});
 
 	Injector.contextTypes = { mobxStores() {} };
-	Injector.wrappedComponent = component;
 	hoistStatics(Injector, component);
 
 	return Injector;

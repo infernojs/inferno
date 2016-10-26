@@ -17,6 +17,11 @@ declare module 'redux' {
 	export function bindActionCreators(actionCreation: any, dispatch: (action: any) => any): any;
 }
 
+declare module 'path-to-regexp' {
+	function pathToRegExp(routePath: any, keys: any, end: any);
+	export = pathToRegExp;
+}
+
 declare module 'sinon' {
 	export function spy(obj: any, event: string): any;
 	export const assert;

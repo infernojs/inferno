@@ -1,17 +1,13 @@
 import { createVElement } from '../core/shapes';
-import { convertToHashbang } from './utils';
 
-export default function Link(props, { hashbang, history }) {
+export default function Link(props, { history }) {
 	const { activeClassName, activeStyle, className, to } = props;
-	const href = hashbang ? history.getHashbangRoot() + convertToHashbang('#!' + to) : to;
-	const elemProps: any = { href };
-	const element = createVElement('a', elemProps, props.children, null, null, null);
-
+	const elemProps: any = { href: to };
 	if (className) {
 		elemProps.className = className;
 	}
 
-	if (history.isActive(to, hashbang)) {
+	if (history.location.pathname === to) {
 		if (activeClassName) {
 			elemProps.className = (className ? className + ' ' : '') + activeClassName;
 		}
@@ -20,17 +16,14 @@ export default function Link(props, { hashbang, history }) {
 		}
 	}
 
-	if (!hashbang) {
-		elemProps.onclick = function navigate(e) {
-			if (e.button !== 0 || e.ctrlKey || e.altKey) {
-				return;
-			}
-			e.preventDefault();
-			const target = e.target;
-			window.history.pushState(null, target.textContent, to);
-			history.routeTo(to);
-		};
-	}
+	elemProps.onclick = function navigate(e) {
+		if (e.button !== 0 || e.ctrlKey || e.altKey) {
+			return;
+		}
+		e.preventDefault();
+		history.push(to, e.target.textContent);
+	};
 
+	const element = createVElement('a', elemProps, props.children, null, null, null);
 	return element;
 }

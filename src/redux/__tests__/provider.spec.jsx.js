@@ -3,11 +3,12 @@ import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
 import Route from '../../router/Route';
 import Router from '../../router/Router';
-import browserHistory from '../../router/browserHistory';
+import { createBrowserHistory } from 'history';
 import { createStore } from 'redux';
 import Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
+const browserHistory = createBrowserHistory();
 const sinon = require('sinon/pkg/sinon');
 
 describe('Provider (JSX)', () => {
@@ -152,9 +153,11 @@ describe('Provider (JSX)', () => {
 		const _render = (url = '/') => {
 			render(
 				<Provider store={store}>
-					<Router url={ url } history={ browserHistory } component={ BasicRouter }>
-						<Route path='/next' component={ BasicComponent2 } />
-						<Route path='/' component={ BasicComponent1 } />
+					<Router url={ url } history={ browserHistory }>
+						<Route path='/' component={ BasicRouter } >
+							<Route path='/next' component={ BasicComponent2 } />
+							<Route path='/' component={ BasicComponent1 } />
+						</Route>
 					</Router>
 				</Provider>
 			, container);
