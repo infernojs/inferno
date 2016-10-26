@@ -1,12 +1,12 @@
 import { render, findDOMNode } from '../../../src/DOM/rendering';
 import { NO_OP } from '../../../src/shared';
-import createElement from '../../../src/factories/createElement';
+import infernoCreateElement from '../../../src/factories/createElement';
 import isValidElement from '../../../src/factories/isValidElement';
 import {
+	createVComponent as infernoCreateVComponent,
 	createVElement,
 	createStaticVElement,
 	createOptBlueprint,
-	createVComponent,
 	createOptVElement,
 	createVFragment,
 	createVPlaceholder,
@@ -57,6 +57,12 @@ Component.prototype.isReactComponent = {};
 
 const cloneElement = cloneVNode;
 const version = '15.3.1';
+
+const createElement = (name, props, ...children) =>
+	infernoCreateElement(name, props || {}, ...children);
+
+const createVComponent = (type, props, key, hooks, ref) =>
+	infernoCreateVComponent(type, props || {}, key, hooks, ref);
 
 export {
 	render,
