@@ -5,6 +5,7 @@ import { matchPath, pathRankSort } from './utils';
 export interface IRouterProps {
 	url: string;
 	history?: any;
+	matched?: any;
 	component?: Component<any, any>;
 }
 
@@ -73,16 +74,20 @@ export default class Router extends Component<IRouterProps, any> {
 
 	routeTo(url) {
 		this._didRoute = false;
-		this.setState({ url }, null);
+		this.setState({ url });
 		return this._didRoute;
 	}
 
 	render() {
-		const routes = toArray(this.props.children);
-		const url = this.props.url || this.state.url;
+		// If we're injecting a single route (ex: result from getRoutes)
+		// then we don't need to go through all routes again
+		const { matched, children, url } = this.props;
+		if (matched) {
+			return matched;
+		}
 
-		const newRoutes = getRoutes(routes, url, '');
-		return newRoutes;
+		const routes = toArray(children);
+		return getRoutes(routes, url || this.state.url, '');
 	}
 }
 
