@@ -53,13 +53,32 @@ const Children = {
 	}
 };
 
+let currentComponent = null;
+
 Component.prototype.isReactComponent = {};
+Component.prototype.beforeRender = function() {
+	currentComponent = this;
+};
+Component.prototype.afterRender = function() {
+	currentComponent = null;
+};
 
 const cloneElement = cloneVNode;
 const version = '15.3.1';
 
-const createElement = (name, props, ...children) =>
-	infernoCreateElement(name, props || {}, ...children);
+const createElement = (name, _props, ...children) => {
+	let props = _props || {};
+	const ref = props.ref;
+
+	if (typeof ref === 'string') {
+		props.ref = function (val) {
+			if (this && this.refs) {
+				this.refs[ref] = val;
+			}
+		}.bind(currentComponent || null);
+	}
+	return infernoCreateElement(name, props, ...children);
+}
 
 const createVComponent = (type, props, key, hooks, ref) =>
 	infernoCreateVComponent(type, props || {}, key, hooks, ref);

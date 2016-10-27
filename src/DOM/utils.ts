@@ -50,8 +50,10 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	instance._pendingSetState = true;
 	instance._isSVG = isSVG;
 	instance.componentWillMount();
+	instance.beforeRender && instance.beforeRender();
 	let input = instance.render(props, context);
 
+	instance.afterRender && instance.afterRender();
 	if (isArray(input)) {
 		input = createVFragment(input, null);
 	} else if (isInvalid(input)) {

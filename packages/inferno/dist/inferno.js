@@ -408,6 +408,11 @@ function hydrateOptVElementValue(optVElement, valueType, value, descriptor, dom,
     }
 }
 function hydrate(input, dom, lifecycle, context) {
+    if (process.env.NODE_ENV !== 'production') {
+        if (isInvalid(dom)) {
+            throwError("failed to hydrate. Server-side render doesn't match client side.");
+        }
+    }
     normaliseChildNodes(dom);
     switch (input.nodeType) {
         case OPT_ELEMENT:
@@ -1394,7 +1399,6 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 }
                 instance._lastInput = nextInput$2;
                 instance._vComponent = nextVComponent;
-                instance._lastInput = nextInput$2;
                 if (didUpdate) {
                     patch(lastInput$2, nextInput$2, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
                     instance.componentDidUpdate(lastProps, lastState);
@@ -2269,7 +2273,6 @@ function copyPropsTo(copyFrom, copyTo) {
 function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
     var instance = new Component(props, context);
     instance.context = context;
-    instance._patch = patch;
     instance._devToolsStatus = devToolsStatus;
     instance._componentToDOMNodeMap = componentToDOMNodeMap;
     var childContext = instance.getChildContext();
@@ -2283,7 +2286,9 @@ function createStatefulComponentInstance(Component, props, context, isSVG, devTo
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
     instance.componentWillMount();
+    instance.beforeRender && instance.beforeRender();
     var input = instance.render(props, context);
+    instance.afterRender && instance.afterRender();
     if (isArray(input)) {
         input = createVFragment(input, null);
     }

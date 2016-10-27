@@ -143,6 +143,8 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	props: P & {children?: any};
 	context: any;
 	componentDidMount: any;
+	beforeRender: any;
+	afterRender: any;
 	_processingSetState = false;
 	_blockRender = false;
 	_blockSetState = false;
@@ -244,7 +246,11 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				this.props = nextProps;
 				this.state = nextState;
 				this.context = context;
-				return this.render(nextProps, context);
+				this.beforeRender && this.beforeRender();
+				const render = this.render(nextProps, context);
+
+				this.afterRender && this.afterRender();
+				return render;
 			}
 		}
 		return NO_OP;
