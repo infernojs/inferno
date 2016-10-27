@@ -42,14 +42,14 @@ export default class Route extends Component<IRouteProps, any> {
 	onEnter() {
 		const { onEnter } = this.props;
 		if (onEnter) {
-			onEnter(this.props);
+			onEnter(this.props, this.context.router);
 		}
 	}
 
 	onLeave() {
 		const { onLeave } = this.props;
 		if (onLeave) {
-			onLeave(this.props);
+			onLeave(this.props, this.context.router);
 		}
 	}
 
