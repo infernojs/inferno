@@ -458,7 +458,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 
 				instance._lastInput = nextInput;
 				instance._vComponent = nextVComponent;
-				instance._lastInput = nextInput;
+
 				if (didUpdate) {
 					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
 					instance.componentDidUpdate(lastProps, lastState);
