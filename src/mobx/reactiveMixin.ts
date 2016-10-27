@@ -121,12 +121,6 @@ export default {
 	},
 
 	shouldComponentUpdate(nextProps, nextState) {
-		// TODO: if context changed, return true..
-		// If props or state did change, but a render was scheduled already, no additional render needs to be scheduled
-		if (this.render.$mobx && this.render.$mobx.isScheduled() === true) {
-			return false;
-		}
-
 		// Update on any state changes (as is the default)
 		if (this.state !== nextState) {
 			return true;
