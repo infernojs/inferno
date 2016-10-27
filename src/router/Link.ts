@@ -1,13 +1,13 @@
 import { createVElement } from '../core/shapes';
 
-export default function Link(props, { history }) {
+export default function Link(props, { router }) {
 	const { activeClassName, activeStyle, className, to } = props;
 	const elemProps: any = { href: to };
 	if (className) {
 		elemProps.className = className;
 	}
 
-	if (history.location.pathname === to) {
+	if (router.location.pathname === to) {
 		if (activeClassName) {
 			elemProps.className = (className ? className + ' ' : '') + activeClassName;
 		}
@@ -21,7 +21,13 @@ export default function Link(props, { history }) {
 			return;
 		}
 		e.preventDefault();
-		history.push(to, e.target.textContent);
+		if (props.onEnter) {
+			props.onEnter(props, (confirm) => {
+				router.push(to, e.target.textContent);
+			});
+		} else {
+			router.push(to, e.target.textContent);
+		}
 	};
 
 	const element = createVElement('a', elemProps, props.children, null, null, null);
