@@ -3,6 +3,13 @@ import Component from '../../component/es2015';
 import createElement from './../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
 import Inferno from '../../testUtils/inferno';
+
+/* These must be in their own files for test to reproduce */
+import {ParentFirstSeparate} from '../../../testdata/separate-render/parentfirstseparate.jsx.js';
+import {ParentSecondSeparate} from '../../../testdata/separate-render/parentsecondseparate.jsx.js';
+import {ParentFirstCommon} from '../../../testdata/common-render/parentfirstcommon.jsx';
+import {ParentSecondCommon} from '../../../testdata/common-render/parentsecondcommon.jsx';
+
 Inferno; // suppress ts 'never used' error
 
 const sinon = require('sinon/pkg/sinon');
@@ -2558,6 +2565,30 @@ describe('Components (JSX)', () => {
 			container.firstChild.firstChild.click();
 			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
 			render(<ParentSecond />, container);
+			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
+		});
+	});
+
+
+	describe('Inheritance with 1 component per file Common BASE', () => {
+		it('Should not reuse children if parent changes', () => {
+			render(<ParentFirstCommon />, container);
+			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
+			container.firstChild.firstChild.click();
+			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
+			render(<ParentSecondCommon />, container);
+			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
+		});
+	});
+
+	// THIS STRANGELY WORKS :)
+	describe('Inheritance with 1 component per file SEPARATE RENDER', () => {
+		it('Should not reuse children if parent changes', () => {
+			render(<ParentFirstSeparate />, container);
+			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
+			container.firstChild.firstChild.click();
+			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
+			render(<ParentSecondSeparate />, container);
 			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
 		});
 	});
