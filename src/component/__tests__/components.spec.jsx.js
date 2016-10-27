@@ -2419,6 +2419,146 @@ describe('Components (JSX)', () => {
 			expect(mountedColumnSpy.callCount).to.equal(1);
 			expect(unmountColumnSpy.callCount).to.equal(1);
 			expect(container.innerHTML).to.equal('');
-		})
+		});
+	});
+
+	describe('Inheritance with common render', () => {
+		class Child extends Component {
+			constructor(props) {
+				super(props);
+
+				this._update = this._update.bind(this);
+			}
+
+			_update() {
+				this.setState({
+					data: 'bar'
+				});
+			}
+
+			componentWillMount() {
+				this.setState({
+					data: 'foo'
+				});
+			}
+
+			render() {
+				return (
+					<div onclick={this._update}>
+						{this.props.name}
+						{this.state.data}
+					</div>
+				);
+			}
+		}
+
+		class ParentBase extends Component {
+			render() {
+				return (
+					<div>
+						<Child name={this.foo} />
+					</div>
+				);
+			}
+		}
+
+		class ParentFirst extends ParentBase {
+			constructor(props) {
+				super(props);
+
+				this.foo = 'First';
+			}
+		}
+
+		class ParentSecond extends ParentBase {
+			constructor(props) {
+				super(props);
+
+				this.foo = 'Second';
+			}
+		}
+
+		it('Should not reuse children if parent changes', () => {
+			render(<ParentFirst />, container);
+			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
+			container.firstChild.firstChild.click();
+			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
+			render(<ParentSecond />, container);
+			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
+		});
+	});
+
+
+	describe('Inheritance with duplicate render', () => {
+		class Child extends Component {
+			constructor(props) {
+				super(props);
+
+				this._update = this._update.bind(this);
+			}
+
+			_update() {
+				this.setState({
+					data: 'bar'
+				});
+			}
+
+			componentWillMount() {
+				this.setState({
+					data: 'foo'
+				});
+			}
+
+			render() {
+				return (
+					<div onclick={this._update}>
+						{this.props.name}
+						{this.state.data}
+					</div>
+				);
+			}
+		}
+
+		class ParentFirst extends Component {
+			constructor(props) {
+				super(props);
+
+				this.foo = 'First';
+			}
+
+			render() {
+				return (
+					<div>
+						<Child name={this.foo} />
+					</div>
+				);
+			}
+
+		}
+
+		class ParentSecond extends Component {
+			constructor(props) {
+				super(props);
+
+				this.foo = 'Second';
+			}
+
+			render() {
+				return (
+					<div>
+						<Child name={this.foo} />
+					</div>
+				);
+			}
+		}
+
+		it('Should not reuse children if parent changes', () => {
+			render(<ParentFirst />, container);
+			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
+			container.firstChild.firstChild.click();
+			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
+			render(<ParentSecond />, container);
+			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
+		});
 	});
 });
