@@ -39,6 +39,20 @@ export default class Route extends Component<IRouteProps, any> {
 		}
 	}
 
+	onEnter() {
+		const { onEnter } = this.props;
+		if (onEnter) {
+			onEnter(this.props);
+		}
+	}
+
+	onLeave() {
+		const { onLeave } = this.props;
+		if (onLeave) {
+			onLeave(this.props);
+		}
+	}
+
 	reject(value) {
 		this.setState({
 			async: {
@@ -50,10 +64,15 @@ export default class Route extends Component<IRouteProps, any> {
 
 	componentWillReceiveProps() {
 		this.async();
+		this.onLeave();
 	}
 
 	componentWillMount() {
 		this.async();
+	}
+
+	componentDidUpdate() {
+		this.onEnter();
 	}
 
 	render() {

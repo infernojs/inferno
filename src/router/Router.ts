@@ -42,19 +42,21 @@ export function getRoutes(_routes, url, lastPath = '') {
 
 export default class Router extends Component<IRouterProps, any> {
 	_didRoute: boolean;
+	router: any;
 	unlisten: any;
 
 	constructor(props?: any, context?: any) {
 		super(props, context);
 		this._didRoute = false;
+		this.router = props.history;
 		this.state = {
-			url: props.url || (props.history.location.pathname + props.history.location.search)
+			url: props.url || (this.router.location.pathname + this.router.location.search)
 		};
 	}
 
 	getChildContext() {
 		return {
-			history: this.props.history || {
+			router: this.router || {
 				location: {
 					pathname: this.props.url
 				}
@@ -63,10 +65,8 @@ export default class Router extends Component<IRouterProps, any> {
 	}
 
 	componentWillMount() {
-		const { history } = this.props;
-
-		if (history) {
-			this.unlisten = history.listen(url => {
+		if (this.router) {
+			this.unlisten = this.router.listen(url => {
 				this.routeTo(url.pathname);
 			});
 		}
