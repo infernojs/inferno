@@ -1,4 +1,5 @@
 import Lifecycle from './../DOM/lifecycle';
+import { patch } from '../DOM/patching';
 import {
 	isNullOrUndef,
 	NO_OP,
@@ -124,7 +125,7 @@ function applyState(component: Component<any, any>, force, callback): void {
 				childContext = Object.assign({}, context, component._childContext);
 			}
 
-			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
+			patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
 			subLifecycle.trigger();
 			component.componentDidUpdate(props, prevState);
 		}
@@ -155,7 +156,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_devToolsId = null;
 
 	_childContext = null;
-	_patch = null;
 	_isSVG = false;
 	_componentToDOMNodeMap = null;
 
