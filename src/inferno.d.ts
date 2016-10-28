@@ -13,13 +13,19 @@ declare module 'hoist-non-inferno-statics' {
 	export = hoistStatics;
 }
 
-declare module 'redux' {
-	export function bindActionCreators(actionCreation: any, dispatch: (action: any) => any): any;
-}
-
 declare module 'path-to-regexp' {
 	function pathToRegExp(routePath: any, keys: any, end: any);
 	export = pathToRegExp;
+}
+
+declare module 'concat-stream' {
+	function concatStream(func?: any);
+	export = concatStream;
+}
+
+declare module 'history/createBrowserHistory' {
+	function createBrowserHistory(options?: any);
+	export = createBrowserHistory;
 }
 
 declare module 'sinon' {
