@@ -303,21 +303,27 @@ function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, des
 }
 
 function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-	if (childrenType === CHILDREN_TEXT) {
-		updateTextContent(parentDom, nextChildren);
-	} else if (childrenType === NODE) {
-		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-	} else if (childrenType === KEYED) {
-		patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
-	} else if (childrenType === NON_KEYED) {
-		patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
-	} else if (childrenType === UNKNOWN) {
-		patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-	} else {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError('bad childrenType value specified when attempting to patchChildren.');
-		}
-		throwError();
+	switch (childrenType) {
+		case CHILDREN_TEXT:
+			updateTextContent(parentDom, nextChildren);
+			break;
+		case NODE:
+			patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
+			break;
+		case KEYED:
+			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
+			break;
+		case NON_KEYED:
+			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
+			break;
+		case UNKNOWN:
+			patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
+			break;
+		default:
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('bad childrenType value specified when attempting to patchChildren.');
+			}
+			throwError();
 	}
 }
 

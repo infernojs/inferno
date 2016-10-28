@@ -536,17 +536,23 @@ function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
     if (!isInvalid(input)) {
         switch (input.nodeType) {
             case OPT_ELEMENT:
-                return unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+                unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+                break;
             case COMPONENT:
-                return unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+                unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+                break;
             case ELEMENT:
-                return unmountVElement(input, parentDom, lifecycle, shallowUnmount);
+                unmountVElement(input, parentDom, lifecycle, shallowUnmount);
+                break;
             case FRAGMENT:
-                return unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
+                unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
+                break;
             case TEXT:
-                return unmountVText(input, parentDom);
+                unmountVText(input, parentDom);
+                break;
             case PLACEHOLDER:
-                return unmountVPlaceholder(input, parentDom);
+                unmountVPlaceholder(input, parentDom);
+                break;
             default:
         }
     }
@@ -1234,26 +1240,27 @@ function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, des
     }
 }
 function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-    if (childrenType === TEXT$1) {
-        updateTextContent(parentDom, nextChildren);
-    }
-    else if (childrenType === NODE) {
-        patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-    }
-    else if (childrenType === KEYED) {
-        patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
-    }
-    else if (childrenType === NON_KEYED) {
-        patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
-    }
-    else if (childrenType === UNKNOWN) {
-        patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-    }
-    else {
-        if (process.env.NODE_ENV !== 'production') {
-            throwError('bad childrenType value specified when attempting to patchChildren.');
-        }
-        throwError();
+    switch (childrenType) {
+        case TEXT$1:
+            updateTextContent(parentDom, nextChildren);
+            break;
+        case NODE:
+            patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
+            break;
+        case KEYED:
+            patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
+            break;
+        case NON_KEYED:
+            patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
+            break;
+        case UNKNOWN:
+            patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
+            break;
+        default:
+            if (process.env.NODE_ENV !== 'production') {
+                throwError('bad childrenType value specified when attempting to patchChildren.');
+            }
+            throwError();
     }
 }
 function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
