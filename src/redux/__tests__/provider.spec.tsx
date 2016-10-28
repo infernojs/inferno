@@ -1,19 +1,18 @@
+import { expect } from 'chai';
 import Provider from '../Provider';
 import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
 import Route from '../../router/Route';
 import Router from '../../router/Router';
-import { createBrowserHistory } from 'history';
+import createBrowserHistory from 'history/createBrowserHistory';
 import { createStore } from 'redux';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 const browserHistory = createBrowserHistory();
-const sinon = require('sinon/pkg/sinon');
 
 describe('Provider (JSX)', () => {
 	let container;
-	let Inner;
 	let attachedListener = null;
 	let renderedName = null;
 
@@ -32,7 +31,7 @@ describe('Provider (JSX)', () => {
 		render(null, container);
 	});
 
-	class BasicRouter extends Component {
+	class BasicRouter extends Component<any, any> {
 		render() {
 			return <div>
 				{ this.props.children }
@@ -40,7 +39,7 @@ describe('Provider (JSX)', () => {
 		}
 	}
 
-	class BasicComponent1 extends Component {
+	class BasicComponent1 extends Component<any, any> {
 		render() {
 			const store = this.context.store;
 			const state = store.getState();
@@ -63,7 +62,7 @@ describe('Provider (JSX)', () => {
 		}
 	}
 
-	class BasicComponent2 extends Component {
+	class BasicComponent2 extends Component<any, any> {
 		render() {
 			const store = this.context.store;
 			const state = store.getState();
@@ -99,15 +98,16 @@ describe('Provider (JSX)', () => {
 	});
 
 	it('should add the store to the child context', () => {
-		const store = createStore((state = {
-			name: 'Tom'
-		}, action) => {
+		/*const reducer = (state = { name: 'Tom' }, action?: any) => {
+			switch (action.type) {
+				default:
+					return state;
+			}
+		};*/
+		const store = createStore((state = { name: 'Tom' }, action?: any) => {
 			switch (action.type) {
 				case 'CHANGE_NAME':
-					return {
-						...state,
-						name: action.name
-					};
+					return Object.assign({}, state, { name: action.name });
 				default:
 					return state;
 			}
@@ -136,15 +136,10 @@ describe('Provider (JSX)', () => {
 	});
 
 	it('should work with routing', () => {
-		const store = createStore((state = {
-			name: 'Tom'
-		}, action) => {
+		const store = createStore((state = { name: 'Tom' }, action?: any) => {
 			switch (action.type) {
 				case 'CHANGE_NAME':
-					return {
-						...state,
-						name: action.name
-					};
+					return Object.assign({}, state, { name: action.name });
 				default:
 					return state;
 			}
@@ -178,7 +173,7 @@ describe('Provider (JSX)', () => {
 	});
 
 	it('should render the example correctly', () => {
-		class App extends Component {
+		class App extends Component<any, any> {
 			render() {
 				return <div>
 					{ this.props.children }
@@ -186,7 +181,7 @@ describe('Provider (JSX)', () => {
 			}
 		}
 
-		class BasicComponent1 extends Component {
+		class BasicComponent1 extends Component<any, any> {
 			render() {
 				const store = this.context.store;
 				const state = store.getState();
@@ -209,7 +204,7 @@ describe('Provider (JSX)', () => {
 			}
 		}
 
-		class BasicComponent2 extends Component {
+		class BasicComponent2 extends Component<any, any> {
 			render() {
 				const store = this.context.store;
 				const state = store.getState();
