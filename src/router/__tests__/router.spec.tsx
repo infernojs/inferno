@@ -1,8 +1,9 @@
+import { expect } from 'chai';
 import { render } from './../../DOM/rendering';
 import Router from '../Router';
 import Route from '../Route';
-import { createBrowserHistory } from 'history';
-import Inferno from '../../testUtils/inferno';
+import createBrowserHistory from 'history/createBrowserHistory';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 const browserHistory = createBrowserHistory();
@@ -18,7 +19,6 @@ function TestComponentParams({ params }) {
 function TestComponentAsync({ async }) {
 	return <div>{ async.status } - { async.value }</div>;
 }
-
 
 function createRouterWithSingleRoute(url, path, component) {
 	return (
