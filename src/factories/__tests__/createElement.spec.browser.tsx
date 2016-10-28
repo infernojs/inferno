@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import { render } from './../../DOM/rendering';
 import createElement from './../createElement';
 

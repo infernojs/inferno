@@ -1,6 +1,7 @@
+import { expect } from 'chai';
 import { render } from '../../DOM/rendering';
 import cloneVNode from '../cloneVNode';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('cloneVNode (JSX)', () => {
