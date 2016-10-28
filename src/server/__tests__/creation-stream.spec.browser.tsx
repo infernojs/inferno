@@ -1,9 +1,10 @@
+import { expect } from 'chai';
 import streamAsString from './../renderToString.stream';
-import concatStream from 'concat-stream';
+import concatStream = require('concat-stream');
 import Component from './../../component/es2015';
 import createElement from './../../factories/createElement';
 
-class StatefulComponent extends Component {
+class StatefulComponent extends Component<any, any> {
 	render() {
 		return createElement('span', null, `stateless ${ this.props.value }!`);
 	}
@@ -11,7 +12,14 @@ class StatefulComponent extends Component {
 
 const FunctionalComponent = ({ value }) => createElement('span', null, `stateless ${ value }!`);
 
+interface ITestEntry {
+	description: any;
+	template: any;
+	result: any;
+}
+
 describe('SSR Creation Streams - (non-JSX)', () => {
+	const testEntries: ITestEntry[] =
 	[
 		{
 			description: 'should render div with span child',
@@ -74,20 +82,21 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			template: (value) => createElement('div', null, createElement(FunctionalComponent, { value })),
 			result: '<div><span>stateless foo!</span></div>'
 		}
-	].forEach(test => {
+	];
+
+	testEntries.forEach(test => {
 		it(test.description, () => {
 			const container = document.createElement('div');
 			const vDom = test.template('foo');
 			return streamPromise(vDom).then(function (output) {
 				document.body.appendChild(container);
-				container.innerHTML = output;
+				container.innerHTML = output as string;
 				expect(output).to.equal(test.result);
 				document.body.removeChild(container);
 			});
 		});
 	});
 });
-
 
 function streamPromise(dom) {
 	return new Promise(function (res, rej) {
