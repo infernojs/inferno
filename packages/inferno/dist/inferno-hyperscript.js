@@ -2203,6 +2203,7 @@ function copyPropsTo(copyFrom, copyTo) {
 function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
     var instance = new Component(props, context);
     instance.context = context;
+    instance._patch = patch;
     instance._devToolsStatus = devToolsStatus;
     instance._componentToDOMNodeMap = componentToDOMNodeMap;
     var childContext = instance.getChildContext();

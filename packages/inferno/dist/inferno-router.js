@@ -2203,6 +2203,7 @@ function copyPropsTo(copyFrom, copyTo) {
 function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
     var instance = new Component(props, context);
     instance.context = context;
+    instance._patch = patch;
     instance._devToolsStatus = devToolsStatus;
     instance._componentToDOMNodeMap = componentToDOMNodeMap;
     var childContext = instance.getChildContext();
@@ -2586,7 +2587,7 @@ function applyState(component, force, callback) {
             else {
                 childContext = Object.assign({}, context, component._childContext);
             }
-            patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
+            component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
             subLifecycle.trigger();
             component.componentDidUpdate(props, prevState);
         }
@@ -2612,6 +2613,7 @@ var Component = function Component(props, context) {
     this._devToolsStatus = null;
     this._devToolsId = null;
     this._childContext = null;
+    this._patch = null;
     this._isSVG = false;
     this._componentToDOMNodeMap = null;
     /** @type {object} */
