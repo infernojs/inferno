@@ -8,7 +8,7 @@ import ValueTypes from '../core/ValueTypes';
 import ChildrenTypes from '../core/ChildrenTypes';
 import NodeTypes from '../core/NodeTypes';
 // Import this to be able to use JSX in your tests
-export default {
+export {
 	createOptVElement,
 	createStaticVElement,
 	createOptBlueprint,
