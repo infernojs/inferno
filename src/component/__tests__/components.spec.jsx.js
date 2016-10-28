@@ -2254,32 +2254,6 @@ describe('Components (JSX)', () => {
 		});
 	});
 
-	describe('tracking DOM state', () => {
-		class ComponentA extends Component {
-			render() {
-				return <div><span>Something</span></div>;
-			}
-		}
-
-		class ComponentB extends Component {
-			render() {
-				return <div><span>Something</span></div>;
-			}
-		}
-
-		it('patching component A to component B, given they have the same children, should not change the DOM tree', () => {
-			render(<ComponentA />, container);
-			expect(container.innerHTML).to.equal('<div><span>Something</span></div>');
-			const trackElemDiv = container.firstChild;
-			const trackElemSpan = container.firstChild.firstChild;
-
-			render(<ComponentB />, container);
-			expect(container.innerHTML).to.equal('<div><span>Something</span></div>');
-			expect(container.firstChild === trackElemDiv).to.equal(true);
-			expect(container.firstChild.firstChild === trackElemSpan).to.equal(true);
-		});
-	});
-
 	it('mixing JSX components with non-JSX components', () => {
 		function Comp() {
 			return createElement('div');
