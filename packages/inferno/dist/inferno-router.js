@@ -2736,6 +2736,20 @@ var Route = (function (Component$$1) {
             }, this.reject).catch(this.reject);
         }
     };
+    Route.prototype.onEnter = function onEnter () {
+        var ref = this.props;
+        var onEnter = ref.onEnter;
+        if (onEnter) {
+            onEnter(this.props, this.context.router);
+        }
+    };
+    Route.prototype.onLeave = function onLeave () {
+        var ref = this.props;
+        var onLeave = ref.onLeave;
+        if (onLeave) {
+            onLeave(this.props, this.context.router);
+        }
+    };
     Route.prototype.reject = function reject (value) {
         this.setState({
             async: {
@@ -2746,9 +2760,13 @@ var Route = (function (Component$$1) {
     };
     Route.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
         this.async();
+        this.onLeave();
     };
     Route.prototype.componentWillMount = function componentWillMount () {
         this.async();
+    };
+    Route.prototype.componentDidUpdate = function componentDidUpdate () {
+        this.onEnter();
     };
     Route.prototype.render = function render () {
         var ref = this.props;
@@ -2964,12 +2982,11 @@ function getRoutes(_routes, url, lastPath) {
     for (var i = 0; i < routes.length; i++) {
         var route = isArray(routes[i]) ? getRoutes(routes[i], url, lastPath) : routes[i];
         var path = route.props.path || '/';
-        var newURL = url.replace('//', '/');
         var fullPath = (lastPath + path).replace('//', '/');
-        var match = matchPath(false, fullPath, newURL);
+        var children = route.props.children;
+        var match = matchPath(children ? false : true, fullPath, url.replace('//', '/'));
         if (match) {
             route.props.params = match.params;
-            var children = route.props.children;
             if (children) {
                 route.props.children = getRoutes(children, url, fullPath);
             }
@@ -2986,8 +3003,9 @@ var Router = (function (Component$$1) {
     function Router(props, context) {
         Component$$1.call(this, props, context);
         this._didRoute = false;
+        this.router = props.history;
         this.state = {
-            url: props.url || (props.history.location.pathname + props.history.location.search)
+            url: props.url || (this.router.location.pathname + this.router.location.search)
         };
     }
 
@@ -2996,7 +3014,7 @@ var Router = (function (Component$$1) {
     Router.prototype.constructor = Router;
     Router.prototype.getChildContext = function getChildContext () {
         return {
-            history: this.props.history || {
+            router: this.router || {
                 location: {
                     pathname: this.props.url
                 }
@@ -3006,10 +3024,8 @@ var Router = (function (Component$$1) {
     Router.prototype.componentWillMount = function componentWillMount () {
         var this$1 = this;
 
-        var ref = this.props;
-        var history = ref.history;
-        if (history) {
-            this.unlisten = history.listen(function (url) {
+        if (this.router) {
+            this.unlisten = this.router.listen(function (url) {
                 this$1.routeTo(url.pathname);
             });
         }
@@ -3045,7 +3061,7 @@ function toArray$1(children) {
 }
 
 function Link(props, ref) {
-    var history = ref.history;
+    var router = ref.router;
 
     var activeClassName = props.activeClassName;
     var activeStyle = props.activeStyle;
@@ -3055,7 +3071,7 @@ function Link(props, ref) {
     if (className) {
         elemProps.className = className;
     }
-    if (history.location.pathname === to) {
+    if (router.location.pathname === to) {
         if (activeClassName) {
             elemProps.className = (className ? className + ' ' : '') + activeClassName;
         }
@@ -3068,7 +3084,14 @@ function Link(props, ref) {
             return;
         }
         e.preventDefault();
-        history.push(to, e.target.textContent);
+        if (props.onEnter) {
+            props.onEnter(props, function (confirm) {
+                router.push(to, e.target.textContent);
+            });
+        }
+        else {
+            router.push(to, e.target.textContent);
+        }
     };
     var element = createVElement('a', elemProps, props.children, null, null, null);
     return element;

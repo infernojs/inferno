@@ -2429,7 +2429,7 @@ describe('Components (JSX)', () => {
 		});
 	});
 
-	describe('Inheritance with common render', () => {
+	describe('Render issue inheritance same file', () => {
 		class Child extends Component {
 			constructor(props) {
 				super(props);
@@ -2485,7 +2485,7 @@ describe('Components (JSX)', () => {
 			}
 		}
 
-		it('Should not reuse children if parent changes', () => {
+		it('Should render correctly', () => {
 			render(<ParentFirst />, container);
 			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
 			container.firstChild.firstChild.click();
@@ -2496,7 +2496,7 @@ describe('Components (JSX)', () => {
 	});
 
 
-	describe('Inheritance with duplicate render', () => {
+	describe('Render issue no inheritance all in same file', () => {
 		class Child extends Component {
 			constructor(props) {
 				super(props);
@@ -2559,7 +2559,7 @@ describe('Components (JSX)', () => {
 			}
 		}
 
-		it('Should not reuse children if parent changes', () => {
+		it('Should render correctly', () => {
 			render(<ParentFirst />, container);
 			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
 			container.firstChild.firstChild.click();
@@ -2570,8 +2570,8 @@ describe('Components (JSX)', () => {
 	});
 
 
-	describe('Inheritance with 1 component per file Common BASE', () => {
-		it('Should not reuse children if parent changes', () => {
+	describe('Render issue inheritance, separate files', () => {
+		it('Should render correctly', () => {
 			render(<ParentFirstCommon />, container);
 			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
 			container.firstChild.firstChild.click();
@@ -2582,8 +2582,8 @@ describe('Components (JSX)', () => {
 	});
 
 	// THIS STRANGELY WORKS :)
-	describe('Inheritance with 1 component per file SEPARATE RENDER', () => {
-		it('Should not reuse children if parent changes', () => {
+	describe('Render issue no inheritance, separate files', () => {
+		it('Should render correctly', () => {
 			render(<ParentFirstSeparate />, container);
 			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
 			container.firstChild.firstChild.click();
