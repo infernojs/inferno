@@ -66,7 +66,7 @@ describe('Components createClass (non-JSX)', () => {
 	});
 	it('should have propTypes on created class', () => {
 		const propTypes = {
-			value: 'not important'
+			value() {}
 		};
 		const Component = createClass({
 			propTypes,

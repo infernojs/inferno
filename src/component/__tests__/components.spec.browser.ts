@@ -7,6 +7,12 @@ import {
 	waits
 } from '../../tools/utils';
 
+interface Global {
+	usingJSDOM: boolean;
+}
+
+let global: Global;
+
 describe('Components (non-JSX)', () => {
 	let container;
 
@@ -951,6 +957,8 @@ describe('Components (non-JSX)', () => {
 		};
 
 		class TEST extends Component<any, any> {
+			makeVisible: any;
+
 			constructor(props) {
 				super(props);
 				this.state = {
@@ -1026,6 +1034,8 @@ describe('Components (non-JSX)', () => {
 		};
 
 		class SomeError extends Component<any, any> {
+			toggle: any;
+
 			constructor(props) {
 				super(props);
 				this.state = {
