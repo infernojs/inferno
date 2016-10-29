@@ -51,7 +51,6 @@ describe('Basic event tests', () => {
 		calledFirstTest = false;
 		calledSecondTest = false;
 
-
 		render(null, container);
 		divs = Array.prototype.slice.call(container.querySelectorAll('div'));
 		divs.forEach(div => div.click());
@@ -119,7 +118,6 @@ describe('Basic event tests', () => {
 		expect(container.firstChild.innerHTML).to.equal('2');
 	});
 
-
 	it('should not leak memory when child changes', () => {
 		const eventHandler = function (){};
 
@@ -141,7 +139,6 @@ describe('Basic event tests', () => {
 			}, children.slice(0));
 		}
 
-
 		render(App(childrenArray), container);
 		expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div><div>2</div></p>');
 
@@ -153,5 +150,3 @@ describe('Basic event tests', () => {
 		expect(container.innerHTML).to.equal('<p>2</p>');
 	});
 });
-
-

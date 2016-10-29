@@ -417,7 +417,6 @@ describe('CSS style properties', () => {
 	 });
 	 }); */
 
-
 	it('should support CSS background property', () => {
 		const template = () => createElement('div', {
 			style: {
@@ -430,4 +429,3 @@ describe('CSS style properties', () => {
 		expect(container.innerHTML).to.equal('<div style="width: 200px; height: 200px; background-color: red;"></div>');
 	});
 });
-

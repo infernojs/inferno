@@ -2696,71 +2696,27 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
     return NO_OP;
 };
 
-var ASYNC_STATUS = {
-    pending: 'pending',
-    fulfilled: 'fulfilled',
-    rejected: 'rejected'
-};
 var Route = (function (Component$$1) {
     function Route(props, context) {
         Component$$1.call(this, props, context);
-        this.state = {
-            async: null
-        };
     }
 
     if ( Component$$1 ) Route.__proto__ = Component$$1;
     Route.prototype = Object.create( Component$$1 && Component$$1.prototype );
     Route.prototype.constructor = Route;
-    Route.prototype.async = function async () {
-        var this$1 = this;
-
-        var async = this.props.async;
-        if (async) {
-            this.setState({
-                async: { status: ASYNC_STATUS.pending }
-            });
-            async(this.props.params).then(function (value) {
-                this$1.setState({
-                    async: {
-                        status: ASYNC_STATUS.fulfilled,
-                        value: value
-                    }
-                });
-            }, this.reject).catch(this.reject);
-        }
-    };
-    Route.prototype.onEnter = function onEnter () {
+    Route.prototype.componentWillMount = function componentWillMount () {
         var ref = this.props;
         var onEnter = ref.onEnter;
         if (onEnter) {
             onEnter(this.props, this.context.router);
         }
     };
-    Route.prototype.onLeave = function onLeave () {
+    Route.prototype.componentWillUnmount = function componentWillUnmount () {
         var ref = this.props;
         var onLeave = ref.onLeave;
         if (onLeave) {
-            onLeave(this.props, this.context.router);
+            onLeave(this.props, this.context);
         }
-    };
-    Route.prototype.reject = function reject (value) {
-        this.setState({
-            async: {
-                status: ASYNC_STATUS.rejected,
-                value: value
-            }
-        });
-    };
-    Route.prototype.componentWillReceiveProps = function componentWillReceiveProps () {
-        this.async();
-        this.onLeave();
-    };
-    Route.prototype.componentWillMount = function componentWillMount () {
-        this.async();
-    };
-    Route.prototype.componentDidUpdate = function componentDidUpdate () {
-        this.onEnter();
     };
     Route.prototype.render = function render () {
         var ref = this.props;
