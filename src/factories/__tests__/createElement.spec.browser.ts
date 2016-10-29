@@ -25,7 +25,7 @@ describe('CreateElement (non-JSX)', () => {
 						triggered = !triggered;
 					}
 				}, 'Do a thing')
-			)
+			);
 		};
 
 		render(App(), container);
