@@ -11,6 +11,7 @@
 		],
 		"trailing-comma": false,
 		"ordered-imports": false,
+		"no-namespace": false,
 		"variable-name": [
 			false
 		],
