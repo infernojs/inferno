@@ -1,5 +1,5 @@
 import Component from '../component/es2015';
-import { isArray } from '../shared';
+import { isArray, toArray } from '../shared';
 import { matchPath, pathRankSort } from './utils';
 
 export interface IRouterProps {
@@ -94,8 +94,4 @@ export default class Router extends Component<IRouterProps, any> {
 		const routes = toArray(children);
 		return getRoutes(routes, url || this.state.url, '');
 	}
-}
-
-function toArray(children) {
-	return isArray(children) ? children : (children ? [children] : children);
 }

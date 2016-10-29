@@ -1,5 +1,9 @@
-import { expect } from 'chai';
-import { render } from './../../DOM/rendering';
+import {
+	expect
+} from 'chai';
+import {
+	render
+} from './../../DOM/rendering';
 import Router from '../Router';
 import Route from '../Route';
 import createBrowserHistory from 'history/createBrowserHistory';

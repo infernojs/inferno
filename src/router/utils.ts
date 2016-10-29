@@ -1,4 +1,3 @@
-import { isArray } from '../shared';
 import pathToRegExp0 from 'path-to-regexp';
 import pathToRegExp1 = require('path-to-regexp');
 
@@ -42,25 +41,6 @@ export function matchPath(end: boolean, routePath: string, urlPath: string, pare
 		path: path === '' ? '/' : path,
 		params
 	};
-}
-
-function flattenArray(oldArray: any, newArray: any): void {
-	for (let i = 0; i < oldArray.length; i++) {
-		const item = oldArray[i];
-
-		if (isArray(item)) {
-			flattenArray(item, newArray);
-		} else {
-			newArray.push(item);
-		}
-	}
-}
-
-export function flatten(oldArray: any): any {
-	const newArray = [];
-
-	flattenArray(oldArray, newArray);
-	return newArray;
 }
 
 export function pathRankSort(a: any, b: any) {
