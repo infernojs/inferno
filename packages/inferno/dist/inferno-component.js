@@ -2648,6 +2648,8 @@ Component$1.prototype.setState = function setState (newState, callback) {
 };
 Component$1.prototype.componentWillMount = function componentWillMount () {
 };
+Component$1.prototype.componentDidMount = function componentDidMount () {
+};
 Component$1.prototype.componentWillUnmount = function componentWillUnmount () {
 };
 Component$1.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState, prevContext) {

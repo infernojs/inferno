@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 describe('patching keyed lists (non-jsx)', () => {
 	function createDataModels() {

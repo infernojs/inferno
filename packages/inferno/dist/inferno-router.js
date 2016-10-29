@@ -2648,6 +2648,8 @@ Component.prototype.setState = function setState (newState, callback) {
 };
 Component.prototype.componentWillMount = function componentWillMount () {
 };
+Component.prototype.componentDidMount = function componentDidMount () {
+};
 Component.prototype.componentWillUnmount = function componentWillUnmount () {
 };
 Component.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState, prevContext) {
@@ -2882,10 +2884,7 @@ function matchPath(end, routePath, urlPath, parentParams) {
         return null;
     }
     var path = m[0];
-    var params = emptyObject;
-    if (parentParams) {
-        Object.assign(params, parentParams);
-    }
+    var params = Object.assign({}, parentParams);
     for (var i = 1; i < m.length; i += 1) {
         params[regexp.keys[i - 1].name] = decode(m[i]);
     }
@@ -3017,7 +3016,9 @@ function Link(props, ref) {
     var activeStyle = props.activeStyle;
     var className = props.className;
     var to = props.to;
-    var elemProps = { href: to };
+    var elemProps = {
+        href: to
+    };
     if (className) {
         elemProps.className = className;
     }
@@ -3043,8 +3044,7 @@ function Link(props, ref) {
             router.push(to, e.target.textContent);
         }
     };
-    var element = createVElement('a', elemProps, props.children, null, null, null);
-    return element;
+    return createVElement('a', elemProps, props.children, null, null, null);
 }
 
 var index = {

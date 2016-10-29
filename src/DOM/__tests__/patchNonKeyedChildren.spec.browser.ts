@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 function generateNodes(array) {
 	let i, id;
@@ -23,7 +23,7 @@ function spanTagWithText(text) {
 describe('Non Keyed nodes', () => {
 	let container;
 
-	let template = function (child) {
+	let template = function(child) {
 		return createElement('div', null, child);
 	};
 

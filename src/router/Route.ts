@@ -5,6 +5,8 @@ export interface IRouteProps {
 	onEnter?: (props?: any, router?: any) => Promise<any>;
 	onLeave?: (props?: any, router?: any) => Promise<any>;
 	params?: any;
+	onEnter?: any;
+	onLeave?: any;
 	component?: Component<any, any>;
 }
 

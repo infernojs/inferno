@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 describe('SVG (non-jsx)', () => {
 	let container;
@@ -216,7 +216,7 @@ describe('SVG (non-jsx)', () => {
 		render(template(['bar']), container);
 		expect(container.firstChild.getAttribute('class')).to.equal('bar');
 
-		render(template([ 'bar', 'zoo' ]), container);
+		render(template(['bar', 'zoo']), container);
 		expect(container.firstChild.getAttribute('class')).to.equal('bar,zoo');
 
 		// TODO! Fix this

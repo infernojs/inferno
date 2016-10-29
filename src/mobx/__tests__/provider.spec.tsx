@@ -1,24 +1,10 @@
 import { observable } from 'mobx';
 import { expect } from 'chai';
-
 import Provider from '../Provider';
 import connect from '../connect';
 import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
-import { createStaticVElement, createOptBlueprint, createVComponent, createOptVElement } from '../../core/shapes';
-import ChildrenTypes from '../../core/ChildrenTypes';
-import ValueTypes from '../../core/ValueTypes';
-import NodeTypes from '../../core/NodeTypes';
-
-const Inferno = {
-	createOptVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ChildrenTypes,
-	ValueTypes,
-	NodeTypes
-};
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('MobX Provider', () => {
@@ -30,7 +16,7 @@ describe('MobX Provider', () => {
 	});
 
 	beforeEach(() => {
-		container = document.createElement('div');
+		container = document.createElement('div') as HTMLElement;
 		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
@@ -78,7 +64,7 @@ describe('MobX Provider', () => {
 	it('should update a statefull component', () => {
 		render(<Provider form={stores.form}><Statefull/></Provider>, container);
 
-		const link = container.querySelector('#update');
+		const link = container.querySelector('#update') as HTMLElement;
 		link.click();
 
 		expect(container.innerHTML).to.equal('<article><a id="update">update</a><span>Statefull</span></article>');
@@ -87,7 +73,7 @@ describe('MobX Provider', () => {
 	it('should update a stateless component', () => {
 		render(<Provider form={stores.form}><Stateless/></Provider>, container);
 
-		const link = container.querySelector('#update');
+		const link = container.querySelector('#update') as HTMLElement;
 		link.click();
 
 		expect(container.innerHTML).to.equal('<article><a id="update">update</a><span>Stateless</span></article>');
@@ -96,7 +82,7 @@ describe('MobX Provider', () => {
 	it('should update a stateless component with stores', () => {
 		render(<Provider form={stores.form}><StatelessWithStores/></Provider>, container);
 
-		const link = container.querySelector('#update');
+		const link = container.querySelector('#update') as HTMLElement;
 		link.click();
 
 		expect(container.innerHTML).to.equal('<article><a id="update">update</a><span>StatelessWithStores</span></article>');

@@ -1,7 +1,7 @@
 import { render } from './../rendering';
 import { style } from './../../tools/utils';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 const isPhantomJS = window && window.navigator && /PhantomJS/.test(window.navigator.userAgent);
 
@@ -36,7 +36,7 @@ describe('CSS style properties', () => {
 			backgroundColor: null,
 			display: 'null'
 		},
-		expected: [ null, '', 'display: null;' ]
+		expected: [null, '', 'display: null;']
 	}, {
 		name: 'ignore null styles',
 		value: {},
@@ -54,7 +54,7 @@ describe('CSS style properties', () => {
 			backgroundColor: undefined,
 			display: 'undefined'
 		},
-		expected: [ null, '', 'display: undefined;' ]
+		expected: [null, '', 'display: undefined;']
 	}, {
 		name: 'ignore undefined styles',
 		value: {

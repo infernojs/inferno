@@ -137,11 +137,11 @@ function applyState(component: Component<any, any>, force, callback): void {
 }
 
 export default class Component<P, S> implements ComponentLifecycle<P, S> {
+	static defaultProps: any;
 	state: S = {} as S;
 	refs: any = {};
 	props: P & {children?: any};
 	context: any;
-	componentDidMount: any;
 	beforeRender: any;
 	afterRender: any;
 	_processingSetState = false;
@@ -176,7 +176,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	render(nextProps?: P, nextContext?) {
 	}
 
-	forceUpdate(callback) {
+	forceUpdate(callback?) {
 		if (this._unmounted) {
 			throw Error(noOp);
 		}
@@ -198,6 +198,9 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	}
 
 	componentWillMount() {
+	}
+
+	componentDidMount() {
 	}
 
 	componentWillUnmount() {

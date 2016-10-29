@@ -1,6 +1,1 @@
-require('ts-node').register({
-	compilerOptions: {
-        jsx: 'preserve'
-    },
-	lazy: true
-});
+require('ts-node/register');

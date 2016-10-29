@@ -92,7 +92,7 @@ function extractProps(_props, _tag) {
 	return { tag, props, key, ref, children, childrenType, hooks };
 }
 
-export default function hyperscript(_tag, _props, _children, _childrenType): VComponent | VElement {
+export default function hyperscript(_tag, _props?, _children?, _childrenType?): VComponent | VElement {
 	// If a child array or text node are passed as the second argument, shift them
 	if (!_children && isChildren(_props)) {
 		_children = _props;

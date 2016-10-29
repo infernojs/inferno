@@ -14,15 +14,15 @@ import { throwError } from '../shared';
 import { isPlainObject } from './helpers';
 
 export interface WrapWithConnect {
-	(WrappedComponent: Component<any, any>): void;
+	(WrappedComponent: any): any;
 }
 
 export interface MapStateToProps {
-	(state: {[index: string]: any}, props: IProps): {[index: string]: any};
+	(state: any, props?: IProps): any;
 }
 
 export interface MapDispatchToPropsFunction {
-	(dispatch: (action: any) => void, props?: IProps) : {[index: string]: () => any};
+	(dispatch: (action: any) => void, props?: IProps) : any;
 }
 
 export interface MapDispatchToPropsFactory {
@@ -76,7 +76,7 @@ export default function connect(
 	// Helps track hot reloading.
 	const version = nextVersion++;
 
-	return function wrapWithConnect(WrappedComponent) {
+	return function wrapWithConnect(WrappedComponent: Component<any, any>) {
 		const connectDisplayName = `Connect(${getDisplayName(WrappedComponent)})`;
 
 		function checkStateShape(props, methodName) {
