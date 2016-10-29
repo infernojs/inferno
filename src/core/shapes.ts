@@ -20,7 +20,7 @@ export interface VType {
 	nodeType: number;
 }
 
-export type InfernoInput = InfernoElement | InfernoElement[] | null | string | number;
+export type InfernoInput = InfernoElement | InfernoElement[] | null | string| string[] | number | number[];
 export type InfernoElement = VElement | VComponent;
 
 export interface VNode extends VType {

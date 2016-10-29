@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 function generateKeyNodes(array) {
 
@@ -25,7 +25,7 @@ function generateKeyNodes(array) {
 describe('keyed-nodes', () => {
 	let container;
 
-	let template = function (child) {
+	let template = function(child) {
 		return createElement('div', null, child);
 	};
 

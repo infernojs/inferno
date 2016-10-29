@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 describe('Text', () => {
 	let container;
@@ -281,17 +281,17 @@ describe('Text', () => {
 	const multiArray = [
 		{
 			name: 'multiple text',
-			value: [ 'Hello', ' World' ],
+			value: ['Hello', ' World'],
 			expected: 'Hello World',
 			children: 2
 		}, {
 			name: 'multiple numbers (cast to string)',
-			value: [ '12', '3' ],
+			value: ['12', '3'],
 			expected: '123',
 			children: 2
 		}, {
 			name: 'multiple numbers',
-			value: [ 12, 3 ],
+			value: [12, 3],
 			expected: '123',
 			children: 2
 		}, {
@@ -336,12 +336,12 @@ describe('Text', () => {
 			children: 1
 		}, {
 			name: 'multiple numbers (Addition)',
-			value: [ 12 + 3, 3 ],
+			value: [12 + 3, 3],
 			expected: '153',
 			children: 2
 		}, {
 			name: 'multiple numbers (subtraction)',
-			value: [ 12 - 3, 3 ],
+			value: [12 - 3, 3],
 			expected: '93',
 			children: 2
 		}, {
@@ -351,7 +351,7 @@ describe('Text', () => {
 			children: 1
 		}, {
 			name: 'multiple numbers (mixed math)',
-			value: [ 12 - 3, 3 * 4 - 1 ],
+			value: [12 - 3, 3 * 4 - 1],
 			expected: '911',
 			children: 2
 		}

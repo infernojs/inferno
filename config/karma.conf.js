@@ -41,8 +41,7 @@ module.exports = function (config) {
 						test: /\.tsx?/,
 						loaders: ['babel-loader', 'ts-loader'],
 						exclude: /node_modules/
-					},
-										{
+					}, {
 						test: /\.js/,
 						loader: 'babel-loader',
 						exclude: /node_modules/,

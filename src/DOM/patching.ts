@@ -22,7 +22,6 @@ import {
 	mountVPlaceholder,
 	mountArrayChildrenWithType,
 	mountArrayChildrenWithoutType,
-	mountStatefulComponentCallbacks,
 	mountStatelessComponentCallbacks
 } from './mounting';
 import {
@@ -39,7 +38,6 @@ import {
 	replaceChild,
 	normalise,
 	getPropFromOptElement,
-	createStatefulComponentInstance,
 	createStatelessComponentInput,
 	copyPropsTo,
 	replaceVNode
@@ -84,7 +82,7 @@ import {
 	strictProps,
 	namespaces
 } from './constants';
-import { getIncrementalId, componentIdMap, devToolsStatus } from './devtools';
+import { getIncrementalId, componentIdMap } from './devtools';
 
 function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);

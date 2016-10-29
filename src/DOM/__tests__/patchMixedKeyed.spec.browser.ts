@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 function spanTagWithText(text) {
 	return createElement('span', {
@@ -15,7 +15,7 @@ function spanTagWithKeyAndText(key, text) {
 	}, text);
 }
 
-let template = function (child) {
+let template = function(child) {
 	return createElement('div', null, child);
 };
 

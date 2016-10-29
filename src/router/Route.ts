@@ -10,6 +10,8 @@ const ASYNC_STATUS = {
 export interface IRouteProps {
 	async?: (params?: any) => Promise<any>;
 	params?: any;
+	onEnter?: any;
+	onLeave?: any;
 	component?: Component<any, any>;
 }
 
