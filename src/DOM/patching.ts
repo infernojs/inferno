@@ -22,7 +22,6 @@ import {
 	mountVPlaceholder,
 	mountArrayChildrenWithType,
 	mountArrayChildrenWithoutType,
-	mountStatefulComponentCallbacks,
 	mountStatelessComponentCallbacks
 } from './mounting';
 import {
@@ -39,7 +38,6 @@ import {
 	replaceChild,
 	normalise,
 	getPropFromOptElement,
-	createStatefulComponentInstance,
 	createStatelessComponentInput,
 	copyPropsTo,
 	replaceVNode
@@ -84,7 +82,7 @@ import {
 	strictProps,
 	namespaces
 } from './constants';
-import { getIncrementalId, componentIdMap, devToolsStatus } from './devtools';
+import { getIncrementalId, componentIdMap } from './devtools';
 
 function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
@@ -303,21 +301,27 @@ function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, des
 }
 
 function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-	if (childrenType === CHILDREN_TEXT) {
-		updateTextContent(parentDom, nextChildren);
-	} else if (childrenType === NODE) {
-		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-	} else if (childrenType === KEYED) {
-		patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
-	} else if (childrenType === NON_KEYED) {
-		patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
-	} else if (childrenType === UNKNOWN) {
-		patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-	} else {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError('bad childrenType value specified when attempting to patchChildren.');
-		}
-		throwError();
+	switch (childrenType) {
+		case CHILDREN_TEXT:
+			updateTextContent(parentDom, nextChildren);
+			break;
+		case NODE:
+			patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
+			break;
+		case KEYED:
+			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
+			break;
+		case NON_KEYED:
+			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
+			break;
+		case UNKNOWN:
+			patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
+			break;
+		default:
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('bad childrenType value specified when attempting to patchChildren.');
+			}
+			throwError();
 	}
 }
 
@@ -382,24 +386,7 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 
 	if (lastType !== nextType) {
 		if (isStatefulComponent(nextVComponent)) {
-			const defaultProps = nextType.defaultProps;
-
-			if (!isUndefined(defaultProps)) {
-				nextVComponent.props = copyPropsTo(defaultProps, nextProps);
-			}
-			const lastInstance = lastVComponent.instance;
-			const nextInstance = createStatefulComponentInstance(nextType, nextProps, context, isSVG, devToolsStatus);
-			// we use || lastInstance because stateless components store their lastInstance
-			const lastInput = lastInstance._lastInput || lastInstance;
-			const nextInput = nextInstance._lastInput;
-			const ref = nextVComponent.ref;
-
-			nextInstance._vComponent = nextVComponent;
-			nextVComponent.instance = nextInstance;
-			patch(lastInput, nextInput, parentDom, lifecycle, nextInstance._childContext, isSVG, true);
-			mountStatefulComponentCallbacks(ref, nextInstance, lifecycle);
-			nextVComponent.dom = nextInput.dom;
-			componentToDOMNodeMap.set(nextInstance, nextInput.dom);
+			replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG, shallowUnmount);
 		} else {
 			const lastInput = lastVComponent.instance._lastInput || lastVComponent.instance;
 			const nextInput = createStatelessComponentInput(nextType, nextProps, context);
@@ -409,8 +396,8 @@ export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifec
 
 			nextVComponent.instance = nextInput;
 			mountStatelessComponentCallbacks(nextVComponent.hooks, dom, lifecycle);
+			unmount(lastVComponent, null, lifecycle, false, shallowUnmount);
 		}
-		unmount(lastVComponent, null, lifecycle, false, shallowUnmount);
 	} else {
 		if (isStatefulComponent(nextVComponent)) {
 			const instance = lastVComponent.instance;

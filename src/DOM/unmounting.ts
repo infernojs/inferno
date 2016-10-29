@@ -32,17 +32,23 @@ export function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount)
 	if (!isInvalid(input)) {
 		switch (input.nodeType) {
 			case OPT_ELEMENT:
-				return unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+				unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+				break;
 			case COMPONENT:
-				return unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+				unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+				break;
 			case ELEMENT:
-				return unmountVElement(input, parentDom, lifecycle, shallowUnmount);
+				unmountVElement(input, parentDom, lifecycle, shallowUnmount);
+				break;
 			case FRAGMENT:
-				return unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
+				unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
+				break;
 			case TEXT:
-				return unmountVText(input, parentDom);
+				unmountVText(input, parentDom);
+				break;
 			case PLACEHOLDER:
-				return unmountVPlaceholder(input, parentDom);
+				unmountVPlaceholder(input, parentDom);
+				break;
 			default:
 				// TODO
 		}

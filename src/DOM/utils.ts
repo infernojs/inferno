@@ -1,4 +1,5 @@
 import { mount } from './mounting';
+import { patch } from './patching';
 import {
 	isArray,
 	isNullOrUndef,
@@ -37,6 +38,7 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	const instance = new Component(props, context);
 
 	instance.context = context;
+	instance._patch = patch;
 	instance._devToolsStatus = devToolsStatus;
 	instance._componentToDOMNodeMap = componentToDOMNodeMap;
 	const childContext = instance.getChildContext();

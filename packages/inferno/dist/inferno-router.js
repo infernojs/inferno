@@ -503,17 +503,23 @@ function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
     if (!isInvalid(input)) {
         switch (input.nodeType) {
             case OPT_ELEMENT:
-                return unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+                unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+                break;
             case COMPONENT:
-                return unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+                unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+                break;
             case ELEMENT:
-                return unmountVElement(input, parentDom, lifecycle, shallowUnmount);
+                unmountVElement(input, parentDom, lifecycle, shallowUnmount);
+                break;
             case FRAGMENT:
-                return unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
+                unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
+                break;
             case TEXT:
-                return unmountVText(input, parentDom);
+                unmountVText(input, parentDom);
+                break;
             case PLACEHOLDER:
-                return unmountVPlaceholder(input, parentDom);
+                unmountVPlaceholder(input, parentDom);
+                break;
             default:
         }
     }
@@ -1172,26 +1178,27 @@ function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, des
     }
 }
 function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-    if (childrenType === TEXT$1) {
-        updateTextContent(parentDom, nextChildren);
-    }
-    else if (childrenType === NODE) {
-        patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-    }
-    else if (childrenType === KEYED) {
-        patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
-    }
-    else if (childrenType === NON_KEYED) {
-        patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
-    }
-    else if (childrenType === UNKNOWN) {
-        patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-    }
-    else {
-        if (process.env.NODE_ENV !== 'production') {
-            throwError('bad childrenType value specified when attempting to patchChildren.');
-        }
-        throwError();
+    switch (childrenType) {
+        case TEXT$1:
+            updateTextContent(parentDom, nextChildren);
+            break;
+        case NODE:
+            patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
+            break;
+        case KEYED:
+            patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
+            break;
+        case NON_KEYED:
+            patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
+            break;
+        case UNKNOWN:
+            patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
+            break;
+        default:
+            if (process.env.NODE_ENV !== 'production') {
+                throwError('bad childrenType value specified when attempting to patchChildren.');
+            }
+            throwError();
     }
 }
 function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
@@ -1264,32 +1271,17 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
     var nextProps = nextVComponent.props || {};
     if (lastType !== nextType) {
         if (isStatefulComponent(nextVComponent)) {
-            var defaultProps = nextType.defaultProps;
-            if (!isUndefined(defaultProps)) {
-                nextVComponent.props = copyPropsTo(defaultProps, nextProps);
-            }
-            var lastInstance = lastVComponent.instance;
-            var nextInstance = createStatefulComponentInstance(nextType, nextProps, context, isSVG, devToolsStatus);
-            // we use || lastInstance because stateless components store their lastInstance
-            var lastInput = lastInstance._lastInput || lastInstance;
-            var nextInput = nextInstance._lastInput;
-            var ref = nextVComponent.ref;
-            nextInstance._vComponent = nextVComponent;
-            nextVComponent.instance = nextInstance;
-            patch(lastInput, nextInput, parentDom, lifecycle, nextInstance._childContext, isSVG, true);
-            mountStatefulComponentCallbacks(ref, nextInstance, lifecycle);
-            nextVComponent.dom = nextInput.dom;
-            componentToDOMNodeMap.set(nextInstance, nextInput.dom);
+            replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG, shallowUnmount);
         }
         else {
-            var lastInput$1 = lastVComponent.instance._lastInput || lastVComponent.instance;
-            var nextInput$1 = createStatelessComponentInput(nextType, nextProps, context);
-            patch(lastInput$1, nextInput$1, parentDom, lifecycle, context, isSVG, true);
-            var dom = nextVComponent.dom = nextInput$1.dom;
-            nextVComponent.instance = nextInput$1;
+            var lastInput = lastVComponent.instance._lastInput || lastVComponent.instance;
+            var nextInput = createStatelessComponentInput(nextType, nextProps, context);
+            patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, true);
+            var dom = nextVComponent.dom = nextInput.dom;
+            nextVComponent.instance = nextInput;
             mountStatelessComponentCallbacks(nextVComponent.hooks, dom, lifecycle);
+            unmount(lastVComponent, null, lifecycle, false, shallowUnmount);
         }
-        unmount(lastVComponent, null, lifecycle, false, shallowUnmount);
     }
     else {
         if (isStatefulComponent(nextVComponent)) {
@@ -1301,12 +1293,12 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG, shallowUnmount), lastVComponent.dom);
             }
             else {
-                var defaultProps$1 = nextType.defaultProps;
+                var defaultProps = nextType.defaultProps;
                 var lastProps = instance.props;
                 if (instance._devToolsStatus.connected && !instance._devToolsId) {
                     componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
                 }
-                if (!isUndefined(defaultProps$1)) {
+                if (!isUndefined(defaultProps)) {
                     copyPropsTo(lastProps, nextProps);
                     nextVComponent.props = nextProps;
                 }
@@ -1321,28 +1313,28 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 else {
                     childContext = context;
                 }
-                var lastInput$2 = instance._lastInput;
-                var nextInput$2 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
+                var lastInput$1 = instance._lastInput;
+                var nextInput$1 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
                 var didUpdate = true;
                 instance._childContext = childContext;
-                if (isInvalid(nextInput$2)) {
-                    nextInput$2 = createVPlaceholder();
+                if (isInvalid(nextInput$1)) {
+                    nextInput$1 = createVPlaceholder();
                 }
-                else if (isArray(nextInput$2)) {
-                    nextInput$2 = createVFragment(nextInput$2, null);
+                else if (isArray(nextInput$1)) {
+                    nextInput$1 = createVFragment(nextInput$1, null);
                 }
-                else if (nextInput$2 === NO_OP) {
-                    nextInput$2 = lastInput$2;
+                else if (nextInput$1 === NO_OP) {
+                    nextInput$1 = lastInput$1;
                     didUpdate = false;
                 }
-                instance._lastInput = nextInput$2;
+                instance._lastInput = nextInput$1;
                 instance._vComponent = nextVComponent;
                 if (didUpdate) {
-                    patch(lastInput$2, nextInput$2, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
+                    patch(lastInput$1, nextInput$1, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
                     instance.componentDidUpdate(lastProps, lastState);
-                    componentToDOMNodeMap.set(instance, nextInput$2.dom);
+                    componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
-                nextVComponent.dom = nextInput$2.dom;
+                nextVComponent.dom = nextInput$1.dom;
             }
         }
         else {
@@ -1350,9 +1342,9 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
             var lastProps$1 = lastVComponent.props;
             var nextHooks = nextVComponent.hooks;
             var nextHooksDefined = !isNullOrUndef(nextHooks);
-            var lastInput$3 = lastVComponent.instance;
+            var lastInput$2 = lastVComponent.instance;
             nextVComponent.dom = lastVComponent.dom;
-            nextVComponent.instance = lastInput$3;
+            nextVComponent.instance = lastInput$2;
             if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
                 shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps$1, nextProps);
             }
@@ -1360,18 +1352,18 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
                     nextHooks.onComponentWillUpdate(lastProps$1, nextProps);
                 }
-                var nextInput$3 = nextType(nextProps, context);
-                if (isInvalid(nextInput$3)) {
-                    nextInput$3 = createVPlaceholder();
+                var nextInput$2 = nextType(nextProps, context);
+                if (isInvalid(nextInput$2)) {
+                    nextInput$2 = createVPlaceholder();
                 }
-                else if (isArray(nextInput$3)) {
-                    nextInput$3 = createVFragment(nextInput$3, null);
+                else if (isArray(nextInput$2)) {
+                    nextInput$2 = createVFragment(nextInput$2, null);
                 }
-                else if (nextInput$3 === NO_OP) {
+                else if (nextInput$2 === NO_OP) {
                     return false;
                 }
-                patch(lastInput$3, nextInput$3, parentDom, lifecycle, context, isSVG, shallowUnmount);
-                nextVComponent.instance = nextInput$3;
+                patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG, shallowUnmount);
+                nextVComponent.instance = nextInput$2;
                 if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
                     nextHooks.onComponentDidUpdate(lastProps$1, nextProps);
                 }
@@ -2211,6 +2203,7 @@ function copyPropsTo(copyFrom, copyTo) {
 function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
     var instance = new Component(props, context);
     instance.context = context;
+    instance._patch = patch;
     instance._devToolsStatus = devToolsStatus;
     instance._componentToDOMNodeMap = componentToDOMNodeMap;
     var childContext = instance.getChildContext();
@@ -2594,7 +2587,7 @@ function applyState(component, force, callback) {
             else {
                 childContext = Object.assign({}, context, component._childContext);
             }
-            patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
+            component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
             subLifecycle.trigger();
             component.componentDidUpdate(props, prevState);
         }
@@ -2620,6 +2613,7 @@ var Component = function Component(props, context) {
     this._devToolsStatus = null;
     this._devToolsId = null;
     this._childContext = null;
+    this._patch = null;
     this._isSVG = false;
     this._componentToDOMNodeMap = null;
     /** @type {object} */

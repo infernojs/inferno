@@ -78,25 +78,6 @@ function throwError(message) {
 
 var EMPTY_OBJ = {};
 
-var CHILDREN = 1;
-var PROP_CLASS_NAME = 2;
-var PROP_STYLE = 3;
-var PROP_DATA = 4;
-var PROP_REF = 5;
-var PROP_SPREAD = 6;
-var PROP_VALUE = 7;
-var PROP = 8;
-var ValueTypes = {
-    CHILDREN: CHILDREN,
-    PROP_CLASS_NAME: PROP_CLASS_NAME,
-    PROP_STYLE: PROP_STYLE,
-    PROP_DATA: PROP_DATA,
-    PROP_REF: PROP_REF,
-    PROP_SPREAD: PROP_SPREAD,
-    PROP_VALUE: PROP_VALUE,
-    PROP: PROP
-};
-
 var ELEMENT = 1;
 var OPT_ELEMENT = 2;
 var TEXT = 3;
@@ -270,6 +251,298 @@ function createVPlaceholder() {
 }
 function isVNode(o) {
     return !isUndefined(o.nodeType);
+}
+
+var CHILDREN = 1;
+var PROP_CLASS_NAME = 2;
+var PROP_STYLE = 3;
+var PROP_DATA = 4;
+var PROP_REF = 5;
+var PROP_SPREAD = 6;
+var PROP_VALUE = 7;
+var PROP = 8;
+var ValueTypes = {
+    CHILDREN: CHILDREN,
+    PROP_CLASS_NAME: PROP_CLASS_NAME,
+    PROP_STYLE: PROP_STYLE,
+    PROP_DATA: PROP_DATA,
+    PROP_REF: PROP_REF,
+    PROP_SPREAD: PROP_SPREAD,
+    PROP_VALUE: PROP_VALUE,
+    PROP: PROP
+};
+
+var recyclingEnabled = true;
+var vComponentPools = new Map();
+
+function recycleOptVElement(optVElement, lifecycle, context, isSVG, shallowUnmount) {
+    var bp = optVElement.bp;
+    var key = optVElement.key;
+    var pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed.get(key);
+    if (!isUndefined(pool)) {
+        var recycledOptVElement = pool.pop();
+        if (!isUndefined(recycledOptVElement)) {
+            patchOptVElement(recycledOptVElement, optVElement, null, lifecycle, context, isSVG, shallowUnmount);
+            return optVElement.dom;
+        }
+    }
+    return null;
+}
+function poolOptVElement(optVElement) {
+    var bp = optVElement.bp;
+    var key = optVElement.key;
+    var pools = bp.pools;
+    if (isNull(key)) {
+        pools.nonKeyed.push(optVElement);
+    }
+    else {
+        var pool = pools.keyed.get(key);
+        if (isUndefined(pool)) {
+            pool = [];
+            pools.keyed.set(key, pool);
+        }
+        pool.push(optVElement);
+    }
+}
+function recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount) {
+    var type = vComponent.type;
+    var key = vComponent.key;
+    var pools = vComponentPools.get(type);
+    if (!isUndefined(pools)) {
+        var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
+        if (!isUndefined(pool)) {
+            var recycledVComponent = pool.pop();
+            if (!isUndefined(recycledVComponent)) {
+                var failed = patchVComponent(recycledVComponent, vComponent, null, lifecycle, context, isSVG, shallowUnmount);
+                if (!failed) {
+                    return vComponent.dom;
+                }
+            }
+        }
+    }
+    return null;
+}
+function poolVComponent(vComponent) {
+    var type = vComponent.type;
+    var key = vComponent.key;
+    var hooks = vComponent.hooks;
+    var nonRecycleHooks = hooks && (hooks.onComponentWillMount ||
+        hooks.onComponentWillUnmount ||
+        hooks.onComponentDidMount ||
+        hooks.onComponentWillUpdate ||
+        hooks.onComponentDidUpdate);
+    if (nonRecycleHooks) {
+        return;
+    }
+    var pools = vComponentPools.get(type);
+    if (isUndefined(pools)) {
+        pools = {
+            nonKeyed: [],
+            keyed: new Map()
+        };
+        vComponentPools.set(type, pools);
+    }
+    if (isNull(key)) {
+        pools.nonKeyed.push(vComponent);
+    }
+    else {
+        var pool = pools.keyed.get(key);
+        if (isUndefined(pool)) {
+            pool = [];
+            pools.keyed.set(key, pool);
+        }
+        pool.push(vComponent);
+    }
+}
+
+function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
+    if (!isInvalid(input)) {
+        switch (input.nodeType) {
+            case OPT_ELEMENT:
+                unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+                break;
+            case COMPONENT:
+                unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
+                break;
+            case ELEMENT:
+                unmountVElement(input, parentDom, lifecycle, shallowUnmount);
+                break;
+            case FRAGMENT:
+                unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
+                break;
+            case TEXT:
+                unmountVText(input, parentDom);
+                break;
+            case PLACEHOLDER:
+                unmountVPlaceholder(input, parentDom);
+                break;
+            default:
+        }
+    }
+}
+function unmountVPlaceholder(vPlaceholder, parentDom) {
+    if (parentDom) {
+        removeChild(parentDom, vPlaceholder.dom);
+    }
+}
+function unmountVText(vText, parentDom) {
+    if (parentDom) {
+        removeChild(parentDom, vText.dom);
+    }
+}
+function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle, shallowUnmount) {
+    var bp = optVElement.bp;
+    var bp0 = bp.v0;
+    if (!shallowUnmount) {
+        if (!isNull(bp0)) {
+            unmountOptVElementValue(optVElement, bp0, optVElement.v0, lifecycle, shallowUnmount);
+            var bp1 = bp.v1;
+            if (!isNull(bp1)) {
+                unmountOptVElementValue(optVElement, bp1, optVElement.v1, lifecycle, shallowUnmount);
+                var bp2 = bp.v2;
+                if (!isNull(bp2)) {
+                    unmountOptVElementValue(optVElement, bp2, optVElement.v2, lifecycle, shallowUnmount);
+                }
+            }
+        }
+    }
+    if (!isNull(parentDom)) {
+        parentDom.removeChild(optVElement.dom);
+    }
+    if (recyclingEnabled && (parentDom || canRecycle)) {
+        poolOptVElement(optVElement);
+    }
+}
+function unmountOptVElementValue(optVElement, valueType, value, lifecycle, shallowUnmount) {
+    switch (valueType) {
+        case CHILDREN:
+            unmountChildren(value, lifecycle, shallowUnmount);
+            break;
+        case PROP_REF:
+            unmountRef(value);
+            break;
+        case PROP_SPREAD:
+            unmountProps(value, lifecycle);
+            break;
+        default:
+    }
+}
+function unmountVFragment(vFragment, parentDom, removePointer, lifecycle, shallowUnmount) {
+    var children = vFragment.children;
+    var childrenLength = children.length;
+    var pointer = vFragment.pointer;
+    if (!shallowUnmount && childrenLength > 0) {
+        for (var i = 0; i < childrenLength; i++) {
+            var child = children[i];
+            if (child.nodeType === FRAGMENT) {
+                unmountVFragment(child, parentDom, true, lifecycle, false);
+            }
+            else {
+                unmount(child, parentDom, lifecycle, false, shallowUnmount);
+            }
+        }
+    }
+    if (parentDom && removePointer) {
+        removeChild(parentDom, pointer);
+    }
+}
+function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, shallowUnmount) {
+    var instance = vComponent.instance;
+    if (!shallowUnmount) {
+        var instanceHooks = null;
+        vComponent.unmounted = true;
+        if (!isNullOrUndef(instance)) {
+            var ref = vComponent.ref;
+            if (ref) {
+                ref(null);
+            }
+            instanceHooks = instance.hooks;
+            if (instance.render !== undefined) {
+                instance.componentWillUnmount();
+                instance._unmounted = true;
+                componentToDOMNodeMap.delete(instance);
+                unmount(instance._lastInput, null, lifecycle, false, shallowUnmount);
+            }
+            else {
+                unmount(instance, null, lifecycle, false, shallowUnmount);
+            }
+        }
+        var hooks = vComponent.hooks || instanceHooks;
+        if (!isNullOrUndef(hooks)) {
+            if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
+                hooks.onComponentWillUnmount();
+            }
+        }
+    }
+    if (parentDom) {
+        var lastInput = instance._lastInput;
+        if (isNullOrUndef(lastInput)) {
+            lastInput = instance;
+        }
+        if (lastInput.nodeType === FRAGMENT) {
+            unmountVFragment(lastInput, parentDom, true, lifecycle, true);
+        }
+        else {
+            removeChild(parentDom, vComponent.dom);
+        }
+    }
+    if (recyclingEnabled && (parentDom || canRecycle)) {
+        poolVComponent(vComponent);
+    }
+}
+function unmountVElement(vElement, parentDom, lifecycle, shallowUnmount) {
+    var dom = vElement.dom;
+    var ref = vElement.ref;
+    if (!shallowUnmount) {
+        if (ref) {
+            unmountRef(ref);
+        }
+        var children = vElement.children;
+        if (!isNullOrUndef(children)) {
+            unmountChildren(children, lifecycle, shallowUnmount);
+        }
+    }
+    if (parentDom) {
+        removeChild(parentDom, dom);
+    }
+}
+function unmountChildren(children, lifecycle, shallowUnmount) {
+    if (isArray(children)) {
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            if (isObject(child)) {
+                unmount(child, null, lifecycle, false, shallowUnmount);
+            }
+        }
+    }
+    else if (isObject(children)) {
+        unmount(children, null, lifecycle, false, shallowUnmount);
+    }
+}
+function unmountRef(ref) {
+    if (isFunction(ref)) {
+        ref(null);
+    }
+    else {
+        if (isInvalid(ref)) {
+            return;
+        }
+        if (process.env.NODE_ENV !== 'production') {
+            throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+        }
+        throwError();
+    }
+}
+function unmountProps(props, lifecycle) {
+    for (var prop in props) {
+        if (!props.hasOwnProperty(prop)) {
+            continue;
+        }
+        var value = props[prop];
+        if (prop === 'ref') {
+            unmountRef(value);
+        }
+    }
 }
 
 function constructDefaults(string, object, value) {
@@ -549,26 +822,27 @@ function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, des
     }
 }
 function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-    if (childrenType === TEXT$1) {
-        updateTextContent(parentDom, nextChildren);
-    }
-    else if (childrenType === NODE) {
-        patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-    }
-    else if (childrenType === KEYED) {
-        patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
-    }
-    else if (childrenType === NON_KEYED) {
-        patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
-    }
-    else if (childrenType === UNKNOWN) {
-        patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-    }
-    else {
-        if (process.env.NODE_ENV !== 'production') {
-            throwError('bad childrenType value specified when attempting to patchChildren.');
-        }
-        throwError();
+    switch (childrenType) {
+        case TEXT$1:
+            updateTextContent(parentDom, nextChildren);
+            break;
+        case NODE:
+            patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
+            break;
+        case KEYED:
+            patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
+            break;
+        case NON_KEYED:
+            patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
+            break;
+        case UNKNOWN:
+            patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
+            break;
+        default:
+            if (process.env.NODE_ENV !== 'production') {
+                throwError('bad childrenType value specified when attempting to patchChildren.');
+            }
+            throwError();
     }
 }
 function patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
@@ -641,32 +915,17 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
     var nextProps = nextVComponent.props || {};
     if (lastType !== nextType) {
         if (isStatefulComponent(nextVComponent)) {
-            var defaultProps = nextType.defaultProps;
-            if (!isUndefined(defaultProps)) {
-                nextVComponent.props = copyPropsTo(defaultProps, nextProps);
-            }
-            var lastInstance = lastVComponent.instance;
-            var nextInstance = createStatefulComponentInstance(nextType, nextProps, context, isSVG, devToolsStatus);
-            // we use || lastInstance because stateless components store their lastInstance
-            var lastInput = lastInstance._lastInput || lastInstance;
-            var nextInput = nextInstance._lastInput;
-            var ref = nextVComponent.ref;
-            nextInstance._vComponent = nextVComponent;
-            nextVComponent.instance = nextInstance;
-            patch(lastInput, nextInput, parentDom, lifecycle, nextInstance._childContext, isSVG, true);
-            mountStatefulComponentCallbacks(ref, nextInstance, lifecycle);
-            nextVComponent.dom = nextInput.dom;
-            componentToDOMNodeMap.set(nextInstance, nextInput.dom);
+            replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG, shallowUnmount);
         }
         else {
-            var lastInput$1 = lastVComponent.instance._lastInput || lastVComponent.instance;
-            var nextInput$1 = createStatelessComponentInput(nextType, nextProps, context);
-            patch(lastInput$1, nextInput$1, parentDom, lifecycle, context, isSVG, true);
-            var dom = nextVComponent.dom = nextInput$1.dom;
-            nextVComponent.instance = nextInput$1;
+            var lastInput = lastVComponent.instance._lastInput || lastVComponent.instance;
+            var nextInput = createStatelessComponentInput(nextType, nextProps, context);
+            patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, true);
+            var dom = nextVComponent.dom = nextInput.dom;
+            nextVComponent.instance = nextInput;
             mountStatelessComponentCallbacks(nextVComponent.hooks, dom, lifecycle);
+            unmount(lastVComponent, null, lifecycle, false, shallowUnmount);
         }
-        unmount(lastVComponent, null, lifecycle, false, shallowUnmount);
     }
     else {
         if (isStatefulComponent(nextVComponent)) {
@@ -678,12 +937,12 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG, shallowUnmount), lastVComponent.dom);
             }
             else {
-                var defaultProps$1 = nextType.defaultProps;
+                var defaultProps = nextType.defaultProps;
                 var lastProps = instance.props;
                 if (instance._devToolsStatus.connected && !instance._devToolsId) {
                     componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
                 }
-                if (!isUndefined(defaultProps$1)) {
+                if (!isUndefined(defaultProps)) {
                     copyPropsTo(lastProps, nextProps);
                     nextVComponent.props = nextProps;
                 }
@@ -698,28 +957,28 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 else {
                     childContext = context;
                 }
-                var lastInput$2 = instance._lastInput;
-                var nextInput$2 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
+                var lastInput$1 = instance._lastInput;
+                var nextInput$1 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
                 var didUpdate = true;
                 instance._childContext = childContext;
-                if (isInvalid(nextInput$2)) {
-                    nextInput$2 = createVPlaceholder();
+                if (isInvalid(nextInput$1)) {
+                    nextInput$1 = createVPlaceholder();
                 }
-                else if (isArray(nextInput$2)) {
-                    nextInput$2 = createVFragment(nextInput$2, null);
+                else if (isArray(nextInput$1)) {
+                    nextInput$1 = createVFragment(nextInput$1, null);
                 }
-                else if (nextInput$2 === NO_OP) {
-                    nextInput$2 = lastInput$2;
+                else if (nextInput$1 === NO_OP) {
+                    nextInput$1 = lastInput$1;
                     didUpdate = false;
                 }
-                instance._lastInput = nextInput$2;
+                instance._lastInput = nextInput$1;
                 instance._vComponent = nextVComponent;
                 if (didUpdate) {
-                    patch(lastInput$2, nextInput$2, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
+                    patch(lastInput$1, nextInput$1, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
                     instance.componentDidUpdate(lastProps, lastState);
-                    componentToDOMNodeMap.set(instance, nextInput$2.dom);
+                    componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
-                nextVComponent.dom = nextInput$2.dom;
+                nextVComponent.dom = nextInput$1.dom;
             }
         }
         else {
@@ -727,9 +986,9 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
             var lastProps$1 = lastVComponent.props;
             var nextHooks = nextVComponent.hooks;
             var nextHooksDefined = !isNullOrUndef(nextHooks);
-            var lastInput$3 = lastVComponent.instance;
+            var lastInput$2 = lastVComponent.instance;
             nextVComponent.dom = lastVComponent.dom;
-            nextVComponent.instance = lastInput$3;
+            nextVComponent.instance = lastInput$2;
             if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
                 shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps$1, nextProps);
             }
@@ -737,18 +996,18 @@ function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, c
                 if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
                     nextHooks.onComponentWillUpdate(lastProps$1, nextProps);
                 }
-                var nextInput$3 = nextType(nextProps, context);
-                if (isInvalid(nextInput$3)) {
-                    nextInput$3 = createVPlaceholder();
+                var nextInput$2 = nextType(nextProps, context);
+                if (isInvalid(nextInput$2)) {
+                    nextInput$2 = createVPlaceholder();
                 }
-                else if (isArray(nextInput$3)) {
-                    nextInput$3 = createVFragment(nextInput$3, null);
+                else if (isArray(nextInput$2)) {
+                    nextInput$2 = createVFragment(nextInput$2, null);
                 }
-                else if (nextInput$3 === NO_OP) {
+                else if (nextInput$2 === NO_OP) {
                     return false;
                 }
-                patch(lastInput$3, nextInput$3, parentDom, lifecycle, context, isSVG, shallowUnmount);
-                nextVComponent.instance = nextInput$3;
+                patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG, shallowUnmount);
+                nextVComponent.instance = nextInput$2;
                 if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
                     nextHooks.onComponentDidUpdate(lastProps$1, nextProps);
                 }
@@ -1220,273 +1479,6 @@ function removeProp(prop, dom) {
     }
 }
 
-var recyclingEnabled = true;
-var vComponentPools = new Map();
-
-function recycleOptVElement(optVElement, lifecycle, context, isSVG, shallowUnmount) {
-    var bp = optVElement.bp;
-    var key = optVElement.key;
-    var pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed.get(key);
-    if (!isUndefined(pool)) {
-        var recycledOptVElement = pool.pop();
-        if (!isUndefined(recycledOptVElement)) {
-            patchOptVElement(recycledOptVElement, optVElement, null, lifecycle, context, isSVG, shallowUnmount);
-            return optVElement.dom;
-        }
-    }
-    return null;
-}
-function poolOptVElement(optVElement) {
-    var bp = optVElement.bp;
-    var key = optVElement.key;
-    var pools = bp.pools;
-    if (isNull(key)) {
-        pools.nonKeyed.push(optVElement);
-    }
-    else {
-        var pool = pools.keyed.get(key);
-        if (isUndefined(pool)) {
-            pool = [];
-            pools.keyed.set(key, pool);
-        }
-        pool.push(optVElement);
-    }
-}
-function recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount) {
-    var type = vComponent.type;
-    var key = vComponent.key;
-    var pools = vComponentPools.get(type);
-    if (!isUndefined(pools)) {
-        var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
-        if (!isUndefined(pool)) {
-            var recycledVComponent = pool.pop();
-            if (!isUndefined(recycledVComponent)) {
-                var failed = patchVComponent(recycledVComponent, vComponent, null, lifecycle, context, isSVG, shallowUnmount);
-                if (!failed) {
-                    return vComponent.dom;
-                }
-            }
-        }
-    }
-    return null;
-}
-function poolVComponent(vComponent) {
-    var type = vComponent.type;
-    var key = vComponent.key;
-    var hooks = vComponent.hooks;
-    var nonRecycleHooks = hooks && (hooks.onComponentWillMount ||
-        hooks.onComponentWillUnmount ||
-        hooks.onComponentDidMount ||
-        hooks.onComponentWillUpdate ||
-        hooks.onComponentDidUpdate);
-    if (nonRecycleHooks) {
-        return;
-    }
-    var pools = vComponentPools.get(type);
-    if (isUndefined(pools)) {
-        pools = {
-            nonKeyed: [],
-            keyed: new Map()
-        };
-        vComponentPools.set(type, pools);
-    }
-    if (isNull(key)) {
-        pools.nonKeyed.push(vComponent);
-    }
-    else {
-        var pool = pools.keyed.get(key);
-        if (isUndefined(pool)) {
-            pool = [];
-            pools.keyed.set(key, pool);
-        }
-        pool.push(vComponent);
-    }
-}
-
-function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
-    if (!isInvalid(input)) {
-        switch (input.nodeType) {
-            case OPT_ELEMENT:
-                return unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
-            case COMPONENT:
-                return unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
-            case ELEMENT:
-                return unmountVElement(input, parentDom, lifecycle, shallowUnmount);
-            case FRAGMENT:
-                return unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
-            case TEXT:
-                return unmountVText(input, parentDom);
-            case PLACEHOLDER:
-                return unmountVPlaceholder(input, parentDom);
-            default:
-        }
-    }
-}
-function unmountVPlaceholder(vPlaceholder, parentDom) {
-    if (parentDom) {
-        removeChild(parentDom, vPlaceholder.dom);
-    }
-}
-function unmountVText(vText, parentDom) {
-    if (parentDom) {
-        removeChild(parentDom, vText.dom);
-    }
-}
-function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle, shallowUnmount) {
-    var bp = optVElement.bp;
-    var bp0 = bp.v0;
-    if (!shallowUnmount) {
-        if (!isNull(bp0)) {
-            unmountOptVElementValue(optVElement, bp0, optVElement.v0, lifecycle, shallowUnmount);
-            var bp1 = bp.v1;
-            if (!isNull(bp1)) {
-                unmountOptVElementValue(optVElement, bp1, optVElement.v1, lifecycle, shallowUnmount);
-                var bp2 = bp.v2;
-                if (!isNull(bp2)) {
-                    unmountOptVElementValue(optVElement, bp2, optVElement.v2, lifecycle, shallowUnmount);
-                }
-            }
-        }
-    }
-    if (!isNull(parentDom)) {
-        parentDom.removeChild(optVElement.dom);
-    }
-    if (recyclingEnabled && (parentDom || canRecycle)) {
-        poolOptVElement(optVElement);
-    }
-}
-function unmountOptVElementValue(optVElement, valueType, value, lifecycle, shallowUnmount) {
-    switch (valueType) {
-        case CHILDREN:
-            unmountChildren(value, lifecycle, shallowUnmount);
-            break;
-        case PROP_REF:
-            unmountRef(value);
-            break;
-        case PROP_SPREAD:
-            unmountProps(value, lifecycle);
-            break;
-        default:
-    }
-}
-function unmountVFragment(vFragment, parentDom, removePointer, lifecycle, shallowUnmount) {
-    var children = vFragment.children;
-    var childrenLength = children.length;
-    var pointer = vFragment.pointer;
-    if (!shallowUnmount && childrenLength > 0) {
-        for (var i = 0; i < childrenLength; i++) {
-            var child = children[i];
-            if (child.nodeType === FRAGMENT) {
-                unmountVFragment(child, parentDom, true, lifecycle, false);
-            }
-            else {
-                unmount(child, parentDom, lifecycle, false, shallowUnmount);
-            }
-        }
-    }
-    if (parentDom && removePointer) {
-        removeChild(parentDom, pointer);
-    }
-}
-function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, shallowUnmount) {
-    var instance = vComponent.instance;
-    if (!shallowUnmount) {
-        var instanceHooks = null;
-        vComponent.unmounted = true;
-        if (!isNullOrUndef(instance)) {
-            var ref = vComponent.ref;
-            if (ref) {
-                ref(null);
-            }
-            instanceHooks = instance.hooks;
-            if (instance.render !== undefined) {
-                instance.componentWillUnmount();
-                instance._unmounted = true;
-                componentToDOMNodeMap.delete(instance);
-                unmount(instance._lastInput, null, lifecycle, false, shallowUnmount);
-            }
-            else {
-                unmount(instance, null, lifecycle, false, shallowUnmount);
-            }
-        }
-        var hooks = vComponent.hooks || instanceHooks;
-        if (!isNullOrUndef(hooks)) {
-            if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-                hooks.onComponentWillUnmount();
-            }
-        }
-    }
-    if (parentDom) {
-        var lastInput = instance._lastInput;
-        if (isNullOrUndef(lastInput)) {
-            lastInput = instance;
-        }
-        if (lastInput.nodeType === FRAGMENT) {
-            unmountVFragment(lastInput, parentDom, true, lifecycle, true);
-        }
-        else {
-            removeChild(parentDom, vComponent.dom);
-        }
-    }
-    if (recyclingEnabled && (parentDom || canRecycle)) {
-        poolVComponent(vComponent);
-    }
-}
-function unmountVElement(vElement, parentDom, lifecycle, shallowUnmount) {
-    var dom = vElement.dom;
-    var ref = vElement.ref;
-    if (!shallowUnmount) {
-        if (ref) {
-            unmountRef(ref);
-        }
-        var children = vElement.children;
-        if (!isNullOrUndef(children)) {
-            unmountChildren(children, lifecycle, shallowUnmount);
-        }
-    }
-    if (parentDom) {
-        removeChild(parentDom, dom);
-    }
-}
-function unmountChildren(children, lifecycle, shallowUnmount) {
-    if (isArray(children)) {
-        for (var i = 0; i < children.length; i++) {
-            var child = children[i];
-            if (isObject(child)) {
-                unmount(child, null, lifecycle, false, shallowUnmount);
-            }
-        }
-    }
-    else if (isObject(children)) {
-        unmount(children, null, lifecycle, false, shallowUnmount);
-    }
-}
-function unmountRef(ref) {
-    if (isFunction(ref)) {
-        ref(null);
-    }
-    else {
-        if (isInvalid(ref)) {
-            return;
-        }
-        if (process.env.NODE_ENV !== 'production') {
-            throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
-        }
-        throwError();
-    }
-}
-function unmountProps(props, lifecycle) {
-    for (var prop in props) {
-        if (!props.hasOwnProperty(prop)) {
-            continue;
-        }
-        var value = props[prop];
-        if (prop === 'ref') {
-            unmountRef(value);
-        }
-    }
-}
-
 function convertVOptElementToVElement(optVElement) {
     var bp = optVElement.bp;
     var staticElement = bp.staticVElement;
@@ -1653,6 +1645,7 @@ function copyPropsTo(copyFrom, copyTo) {
 function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
     var instance = new Component(props, context);
     instance.context = context;
+    instance._patch = patch;
     instance._devToolsStatus = devToolsStatus;
     instance._componentToDOMNodeMap = componentToDOMNodeMap;
     var childContext = instance.getChildContext();
@@ -2754,7 +2747,7 @@ function applyState(component, force, callback) {
             else {
                 childContext = Object.assign({}, context, component._childContext);
             }
-            patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
+            component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
             subLifecycle.trigger();
             component.componentDidUpdate(props, prevState);
         }
@@ -2780,6 +2773,7 @@ var Component = function Component(props, context) {
     this._devToolsStatus = null;
     this._devToolsId = null;
     this._childContext = null;
+    this._patch = null;
     this._isSVG = false;
     this._componentToDOMNodeMap = null;
     /** @type {object} */
