@@ -1,7 +1,8 @@
+import { expect } from 'chai';
 import { render } from './../rendering';
 import { findDOMNode } from '../rendering';
 import Component from './../../component/es2015';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('findDOMNodes (JSX)', () => {
@@ -22,21 +23,21 @@ describe('findDOMNodes (JSX)', () => {
 		let instance2;
 		let instance3;
 
-		class Example1 extends Component {
+		class Example1 extends Component<any, any> {
 			render() {
 				instance1 = this;
 				return <div id="example1"></div>;
 			}
 		}
 
-		class Example2 extends Component {
+		class Example2 extends Component<any, any> {
 			render() {
 				instance2 = this;
 				return <div id="example2"></div>;
 			}
 		}
 
-		class Example3 extends Component {
+		class Example3 extends Component<any, any> {
 			render() {
 				instance3 = this;
 				return <div id="example3"><Example2 /><Example1 /></div>;

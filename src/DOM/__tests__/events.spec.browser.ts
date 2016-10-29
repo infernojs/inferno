@@ -1,6 +1,6 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 describe('Basic event tests', () => {
 	let container;
@@ -22,11 +22,14 @@ describe('Basic event tests', () => {
 		});
 
 		let calledFirstTest = false;
+
 		function test() {
 			calledFirstTest = true;
 		}
+
 		// different event
 		let calledSecondTest = false;
+
 		function test2() {
 			calledSecondTest = true;
 		}
@@ -51,7 +54,6 @@ describe('Basic event tests', () => {
 		calledFirstTest = false;
 		calledSecondTest = false;
 
-
 		render(null, container);
 		divs = Array.prototype.slice.call(container.querySelectorAll('div'));
 		divs.forEach(div => div.click());
@@ -67,12 +69,13 @@ describe('Basic event tests', () => {
 		};
 
 		function onClick(d) {
-			return function (e) {
+			return function(e) {
 				data = { count: d.count + 1 };
 
 				renderIt();
 			};
 		}
+
 		function App(d) {
 			return createElement('button', {
 				onclick: onClick(d)
@@ -97,7 +100,8 @@ describe('Basic event tests', () => {
 	});
 
 	it('should not leak memory', () => {
-		const eventHandler = function (){};
+		const eventHandler = function() {
+		};
 
 		function AppTwo() {
 			return createElement('button', null, [2]);
@@ -119,9 +123,9 @@ describe('Basic event tests', () => {
 		expect(container.firstChild.innerHTML).to.equal('2');
 	});
 
-
 	it('should not leak memory when child changes', () => {
-		const eventHandler = function (){};
+		const eventHandler = function() {
+		};
 
 		function smallComponent() {
 			return createElement('div', {
@@ -129,7 +133,7 @@ describe('Basic event tests', () => {
 			}, '2');
 		}
 
-		const childrenArray = [ smallComponent(), smallComponent(), smallComponent() ];
+		const childrenArray = [smallComponent(), smallComponent(), smallComponent()];
 
 		function AppTwo() {
 			return createElement('p', null, ['2']);
@@ -140,7 +144,6 @@ describe('Basic event tests', () => {
 				onkeydown: eventHandler
 			}, children.slice(0));
 		}
-
 
 		render(App(childrenArray), container);
 		expect(container.innerHTML).to.equal('<p><div>2</div><div>2</div><div>2</div></p>');
@@ -153,5 +156,3 @@ describe('Basic event tests', () => {
 		expect(container.innerHTML).to.equal('<p>2</p>');
 	});
 });
-
-

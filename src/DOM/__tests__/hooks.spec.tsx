@@ -1,18 +1,19 @@
+import { expect } from 'chai';
 import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
-const sinon = require('sinon/pkg/sinon');
+import sinon = require('sinon');
 
 describe('Component lifecycle (JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		container.innerHTML = '';
 	});
 
@@ -21,7 +22,7 @@ describe('Component lifecycle (JSX)', () => {
 		it('Should trigger UnMount for all children', () => {
 			let updater = null;
 
-			class A extends Component {
+			class A extends Component<any, any> {
 				constructor(props) {
 					super(props);
 
@@ -48,13 +49,13 @@ describe('Component lifecycle (JSX)', () => {
 								}
 								return <B />;
 							})()}
-							<button onClick={this.updateme} >btn</button>
+							<button onClick={this.updateme}>btn</button>
 						</div>
 					);
 				}
 			}
 
-			class B extends Component {
+			class B extends Component<any, any> {
 				render() {
 					return (
 						<div>
@@ -64,7 +65,7 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			class C extends Component {
+			class C extends Component<any, any> {
 				render() {
 					return (
 						<div>
@@ -74,7 +75,7 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			class D extends Component {
+			class D extends Component<any, any> {
 				render() {
 					return (
 						<div>
@@ -116,7 +117,7 @@ describe('Component lifecycle (JSX)', () => {
 		it('Should not trigger unmount for new node', () => {
 			let updater = null;
 
-			class A extends Component {
+			class A extends Component<any, any> {
 				constructor(props) {
 					super(props);
 
@@ -139,35 +140,35 @@ describe('Component lifecycle (JSX)', () => {
 						<div>
 							{(() => {
 								if (this.state.foo) {
-									return null
+									return null;
 								}
-								return <B />
+								return <B />;
 							})()}
-							<button onClick={this.updateme} >btn</button>
+							<button onClick={this.updateme}>btn</button>
 						</div>
-					)
+					);
 				}
 			}
 
-			class B extends Component {
+			class B extends Component<any, any> {
 				render() {
-					return (<C />)
+					return (<C />);
 				}
 			}
 
-			class C extends Component {
+			class C extends Component<any, any> {
 				render() {
-					return (<D />)
+					return (<D />);
 				}
 			}
 
-			class D extends Component {
+			class D extends Component<any, any> {
 				render() {
 					return (
 						<div>
 							Terve
 						</div>
-					)
+					);
 				}
 			}
 
@@ -201,24 +202,23 @@ describe('Component lifecycle (JSX)', () => {
 		});
 
 		it('Should trigger unMount once for direct nested children', () => {
-			class B extends Component {
+			class B extends Component<any, any> {
 				render() {
 					return <div>B</div>;
 				}
 			}
 
-			class C extends Component {
+			class C extends Component<any, any> {
 				render() {
 					return <div>C</div>;
 				}
 			}
 
-			class D extends Component {
+			class D extends Component<any, any> {
 				render() {
 					return <div>D</div>;
 				}
 			}
-
 
 			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
 			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
@@ -251,34 +251,33 @@ describe('Component lifecycle (JSX)', () => {
 			calledOnce(DSpy);
 		});
 
-
 		it('Should trigger unmount once for children', () => {
 			let updater = null;
 
-			class B extends Component {
+			class B extends Component<any, any> {
 				render() {
 					return (
 						<div>
 							<B1 />
 							<B2 />
 						</div>
-					)
+					);
 				}
 			}
 
-			class B1 extends Component {
+			class B1 extends Component<any, any> {
 				render() {
 					return <p>B1</p>;
 				}
 			}
 
-			class B2 extends Component {
+			class B2 extends Component<any, any> {
 				render() {
 					return <p>B2</p>;
 				}
 			}
 
-			class C extends Component {
+			class C extends Component<any, any> {
 				constructor(props) {
 					super(props);
 
@@ -306,18 +305,17 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			class C1 extends Component {
+			class C1 extends Component<any, any> {
 				render() {
 					return <p>C1</p>;
 				}
 			}
 
-			class C2 extends Component {
+			class C2 extends Component<any, any> {
 				render() {
 					return <p>C2</p>;
 				}
 			}
-
 
 			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
 			const B1spy = sinon.spy(B1.prototype, 'componentWillUnmount');
@@ -348,55 +346,68 @@ describe('Component lifecycle (JSX)', () => {
 	});
 
 	describe('Stateless component hooks', () => {
-		let container;
+		let _container;
+
 		function StatelessComponent() {
 			return (
 				<div>
 					Hello world
 				</div>
-			)
+			);
 		}
 
 		afterEach(() => {
-			render(null, container);
+			render(null, _container);
 		});
 
 		beforeEach(() => {
-			container = document.createElement('div');
+			_container = document.createElement('div');
 		});
 
 		it('"onComponentWillMount" hook should fire', () => {
-			const spyObj = {fn: () => {}};
+			const spyObj = {
+				fn: () => {
+				}
+			};
 			const spy = sinon.spy(spyObj, 'fn');
-			render(<StatelessComponent onComponentWillMount={spyObj.fn} />, container);
+			render(<StatelessComponent onComponentWillMount={spyObj.fn}/>, _container);
 
 			expect(spy.callCount).to.equal(1);
 		});
 
 		it('"onComponentDidMount" hook should fire, args DOM', () => {
-			const spyObj = {fn: () => {}};
+			const spyObj = {
+				fn: () => {
+				}
+			};
 			const spy = sinon.spy(spyObj, 'fn');
-			render(<StatelessComponent onComponentDidMount={spyObj.fn} />, container);
+			render(<StatelessComponent onComponentDidMount={spyObj.fn}/>, _container);
 
 			expect(spy.callCount).to.equal(1);
-			expect(spy.getCall(0).args[0]).to.equal(container.firstChild);
+			expect(spy.getCall(0).args[0]).to.equal(_container.firstChild);
 		});
 
 		it('"onComponentWillUnmount" hook should fire', () => {
-			const spyObj = {fn: () => {}};
+			const spyObj = {
+				fn: () => {
+				}
+			};
 			const spy = sinon.spy(spyObj, 'fn');
-			render(<StatelessComponent onComponentWillUnmount={spyObj.fn} />, container);
+			render(<StatelessComponent onComponentWillUnmount={spyObj.fn}/>, _container);
 			expect(spy.callCount).to.equal(0);
 			// do unmount
-			render(null, container);
+			render(null, _container);
 
 			expect(spy.callCount).to.equal(1);
 		});
 
 		it('"onComponentWillUpdate" hook should fire', () => {
-			const spyObj = {fn: () => {}};
+			const spyObj = {
+				fn: () => {
+				}
+			};
 			const spy = sinon.spy(spyObj, 'fn');
-			render(<StatelessComponent onComponentWillUpdate={spyObj.fn} />, container);
+			render(<StatelessComponent onComponentWillUpdate={spyObj.fn}/>, _container);
 			expect(spy.callCount).to.equal(0);
 
 			// console.log(spy.getCall(0).args);
@@ -406,24 +417,30 @@ describe('Component lifecycle (JSX)', () => {
 		});
 
 		it('"onComponentDidUpdate" hook should fire', () => {
-			const spyObj = {fn: () => {}};
+			const spyObj = {
+				fn: () => {
+				}
+			};
 			const spy = sinon.spy(spyObj, 'fn');
-			render(<StatelessComponent onComponentDidUpdate={spyObj.fn} />, container);
+			render(<StatelessComponent onComponentDidUpdate={spyObj.fn}/>, _container);
 			expect(spy.callCount).to.equal(0); // Update 1
-			render(<StatelessComponent onComponentDidUpdate={spyObj.fn} />, container);
+			render(<StatelessComponent onComponentDidUpdate={spyObj.fn}/>, _container);
 			expect(spy.callCount).to.equal(1); // Update 2
 		});
 
 		it('"onComponentShouldUpdate" hook should fire, should call render when return true', () => {
 			let onComponentShouldUpdateCount = 0;
 			let renderCount = 0;
-			const StatelessComponent = () => { renderCount++; return null; };
+			const StatelessComponent = () => {
+				renderCount++;
+				return null;
+			};
 
-			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return true; }} />, container);
+			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return true; }}/>, _container);
 			expect(onComponentShouldUpdateCount).to.equal(0, 'should have called shouldUpdate none'); // Update 1
 			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
 
-			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return true; }} />, container);
+			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return true; }}/>, _container);
 			expect(onComponentShouldUpdateCount).to.equal(1, 'should have called shouldUpdate once'); // Update 2
 			expect(renderCount).to.equal(2, 'should have called "render" twice'); // Rendered 2 time
 		});
@@ -431,13 +448,16 @@ describe('Component lifecycle (JSX)', () => {
 		it('"onComponentShouldUpdate" hook should fire, should not call render when return false', () => {
 			let onComponentShouldUpdateCount = 0;
 			let renderCount = 0;
-			const StatelessComponent = () => { renderCount++; return null; };
+			const StatelessComponent = () => {
+				renderCount++;
+				return null;
+			};
 
-			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return false; }} />, container);
+			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return false; }}/>, _container);
 			expect(onComponentShouldUpdateCount).to.equal(0, 'should have called shouldUpdate none'); // Update 1
 			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
 
-			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return false; }} />, container);
+			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return false; }}/>, _container);
 			expect(onComponentShouldUpdateCount).to.equal(1, 'should have called shouldUpdate once'); // Update 2
 			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
 		});

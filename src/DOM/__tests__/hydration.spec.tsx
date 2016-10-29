@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import renderToString from './../../server/renderToString';
 import Component from './../../component/es2015';
 import { render } from './../../DOM/rendering';
@@ -5,7 +6,7 @@ import {
 	createContainerWithHTML,
 	validateNodeTree
 } from '../../tools/utils';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 function Comp1() {
@@ -16,7 +17,7 @@ function Comp2() {
 	return <em>Worked 2!</em>;
 }
 
-class Comp3 extends Component {
+class Comp3 extends Component<any, any> {
 	render() {
 		return <em>Works{ ' ' }<span>again</span>!</em>;
 	}
@@ -54,7 +55,9 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<div>Hello world</div>'
 		},
 		{
-			node: <div><svg className={(() => 'foo')()} viewBox="0 0 64 64"></svg></div>,
+			node: <div>
+				<svg className={(() => 'foo')()} viewBox="0 0 64 64"/>
+			</div>,
 			expect1: '<div data-infernoroot=""><svg viewBox="0 0 64 64" class="foo"></svg></div>',
 			expect2: '<div><svg viewBox="0 0 64 64" class="foo"></svg></div>'
 		},
@@ -69,7 +72,7 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<div>Hello world, Foo!</div>'
 		},
 		{
-			node: <div>Hello world, { [ 'Foo!', 'Bar!' ] }</div>,
+			node: <div>Hello world, { ['Foo!', 'Bar!'] }</div>,
 			expect1: '<div data-infernoroot="">Hello world, <!---->Foo!<!---->Bar!<!--!--></div>',
 			expect2: '<div>Hello world, Foo!Bar!</div>'
 		},
@@ -84,7 +87,11 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<div>Hello world, 123</div>'
 		},
 		{
-			node: <div id="1"><div id="2"><div id="3"></div></div></div>,
+			node: <div id="1">
+				<div id="2">
+					<div id="3"></div>
+				</div>
+			</div>,
 			expect1: '<div id="1" data-infernoroot=""><div id="2"><div id="3"></div></div></div>',
 			expect2: '<div id="1"><div id="2"><div id="3"></div></div></div>'
 		},
@@ -147,11 +154,23 @@ describe('SSR Hydration - (JSX)', () => {
 			expect3: '<div>Hello world, 123</div>'
 		},
 		{
-			node: <div id="1"><div id="2"><div id="3"></div></div></div>,
+			node: <div id="1">
+				<div id="2">
+					<div id="3"></div>
+				</div>
+			</div>,
 			expect1: '<div id="1" data-infernoroot=""><div id="2"><div id="3"></div></div></div>',
-			node2: <div id="3"><div id="2"><div id="1"></div></div></div>,
+			node2: <div id="3">
+				<div id="2">
+					<div id="1"></div>
+				</div>
+			</div>,
 			expect2: '<div id="3"><div id="2"><div id="1"></div></div></div>',
-			node3: <div id="1"><div id="2"><div id="3"></div></div></div>,
+			node3: <div id="1">
+				<div id="2">
+					<div id="3"></div>
+				</div>
+			</div>,
 			expect3: '<div id="1"><div id="2"><div id="3"></div></div></div>'
 		},
 		{

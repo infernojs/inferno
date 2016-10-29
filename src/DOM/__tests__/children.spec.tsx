@@ -1,22 +1,23 @@
+import { expect } from 'chai';
 import { render } from './../rendering';
 import Component from './../../component/es2015';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
+
+import sinon = require('sinon');
 
 describe('Children - (JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		container.innerHTML = '';
 	});
 
-	describe('keyed - children', function () {
-		let container;
-
+	describe('keyed - children', function() {
 		beforeEach(() => {
 			container = document.createElement('div');
 			document.body.appendChild(container);
@@ -28,29 +29,31 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should push to correct location when it keyed list has siblings', function() {
-			var tabs = [{title:"Item A"}, {title:"Item B"}];
-			function Tab({title, onSelect, key, id}) {
+			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+
+			function Tab({ title, onSelect, key, id }) {
 				return (
 					<div
-						id = {id}
-						key = {key}
-						onClick = {onSelect}>
+						id={id}
+						key={key}
+						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({title: "New " + tabs.length});
+					tabs.push({ title: "New " + tabs.length });
 					renderIt();
 				}
+
 				return (
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key      = { "Item " + i }
-							title    = { tab.title }
-							onSelect = { ()=>undefined }/>
+							key={ "Item " + i }
+							title={ tab.title }
+							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>
 					</div>
@@ -58,7 +61,7 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -79,29 +82,31 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should append child node to correct location when its empty at the beginning ', function() {
-			var tabs = [];
-			function Tab({title, onSelect, key, id}) {
+			const _tabs = [];
+
+			function Tab({ title, onSelect, key, id }) {
 				return (
 					<div
-						id = {id}
-						key = {key}
-						onClick = {onSelect}>
+						id={id}
+						key={key}
+						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({title: "New " + tabs.length});
+					tabs.push({ title: "New " + tabs.length });
 					renderIt();
 				}
+
 				return (
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key      = { "Item " + i }
-							title    = { tab.title }
-							onSelect = { ()=>undefined }/>
+							key={ "Item " + i }
+							title={ tab.title }
+							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>
 					</div>
@@ -109,7 +114,7 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -123,37 +128,39 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should append child node to correct location when its empty at the beginning ', function() {
-			var tabs = [];
-			function Tab({title, onSelect, key, id}) {
+			const _tabs = [];
+
+			function Tab({ title, onSelect, key, id }) {
 				return (
 					<div
-						id = {id}
-						key = {key}
-						onClick = {onSelect}>
+						id={id}
+						key={key}
+						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({title: "New " + tabs.length});
+					tabs.push({ title: "New " + tabs.length });
 					renderIt();
 				}
+
 				return (
 					<div class="tab-group">
 						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
 						<Tab
-							key      = { "Item " + i }
-							title    = { tab.title }
-							onSelect = { ()=>undefined }/>
+							key={ "Item " + i }
+							title={ tab.title }
+							onSelect={ () => undefined }/>
 					))}
 					</div>
 				);
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -167,42 +174,44 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should append child node to correct location when its empty at the beginning ', function() {
-			var tabs = [];
-			function Tab({title, onSelect, key, id}) {
+			const _tabs = [];
+
+			function Tab({ title, onSelect, key, id }) {
 				return (
 					<div
-						id = {id}
-						key = {key}
-						onClick = {onSelect}>
+						id={id}
+						key={key}
+						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({title: "New " + tabs.length});
+					tabs.push({ title: "New " + tabs.length });
 					renderIt();
 				}
+
 				return (
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key      = { "Item " + i }
-							title    = { tab.title }
-							onSelect = { ()=>undefined }/>
+							key={ "Item " + i }
+							title={ tab.title }
+							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
 							<Tab
-								key      = { "Item " + i }
-								title    = { tab.title }
-								onSelect = { ()=>undefined }/>
+								key={ "Item " + i }
+								title={ tab.title }
+								onSelect={ () => undefined }/>
 						))}
 					</div>
 				);
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -217,31 +226,33 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should appendx3 to correct location when it keyed list has siblings', function() {
-			var tabs = [{title:"Item A"}, {title:"Item B"}];
-			function Tab({title, onSelect, key, id}) {
+			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+
+			function Tab({ title, onSelect, key, id }) {
 				return (
 					<div
-						id = {id}
-						key = {key}
-						onClick = {onSelect}>
+						id={id}
+						key={key}
+						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({title: "New " + tabs.length});
-					tabs.push({title: "New " + tabs.length});
-					tabs.push({title: "New " + tabs.length});
+					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: "New " + tabs.length });
 					renderIt();
 				}
+
 				return (
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key      = { "Item " + i }
-							title    = { tab.title }
-							onSelect = { ()=>undefined }/>
+							key={ "Item " + i }
+							title={ tab.title }
+							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>
 					</div>
@@ -249,7 +260,7 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -261,31 +272,33 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should unshiftx3 to correct location when it keyed list has siblings', function() {
-			var tabs = [{title:"Item A"}, {title:"Item B"}];
-			function Tab({title, onSelect, key, id}) {
+			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+
+			function Tab({ title, onSelect, key, id }) {
 				return (
 					<div
-						id = {id}
-						key = {key}
-						onClick = {onSelect}>
+						id={id}
+						key={key}
+						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.unshift({title: "New " + tabs.length});
-					tabs.unshift({title: "New " + tabs.length});
-					tabs.unshift({title: "New " + tabs.length});
+					tabs.unshift({ title: "New " + tabs.length });
+					tabs.unshift({ title: "New " + tabs.length });
+					tabs.unshift({ title: "New " + tabs.length });
 					renderIt();
 				}
+
 				return (
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key      = { "Item " + i }
-							title    = { tab.title }
-							onSelect = { ()=>undefined }/>
+							key={ "Item " + i }
+							title={ tab.title }
+							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>
 					</div>
@@ -293,7 +306,7 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -305,78 +318,79 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Inline text element before array list', function() {
-			var tabs = [];
-			function Tab({title, onSelect, key, id}) {
+			const _tabs = [];
+
+			function Tab({ title, key }) {
 				return (
-					<div key = {key}>
+					<div key={key}>
 						{title}
 					</div>
-				)
+				);
 			}
 
 			function TabGroup({ tabs }) {
 				return (
 					<div class="tab-group">inlineText{tabs.map((tab, i) => (
 						<Tab
-							key      = { "Item " + i }
-							title    = { tab.title } />
+							key={ "Item " + i }
+							title={ tab.title }/>
 					))}
 					</div>
 				);
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group">inlineText</div>');
 
-			tabs.push({title: "New " + tabs.length});
+			_tabs.push({ title: "New " + _tabs.length });
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group">inlineText<div>New 0</div></div>');
 		});
 
 		it('Inline text element after array list', function() {
-			var tabs = [];
-			function Tab({title, onSelect, key, id}) {
+			const _tabs = [];
+
+			function Tab({ title, key }) {
 				return (
-					<div key = {key}>
+					<div key={key}>
 						{title}
 					</div>
-				)
+				);
 			}
 
 			function TabGroup({ tabs }) {
 				return (
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key      = { "Item " + i }
-							title    = { tab.title } />
+							key={ "Item " + i }
+							title={ tab.title }/>
 					))}inlineText
 					</div>
 				);
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group">inlineText</div>');
 
-			tabs.push({title: "New " + tabs.length});
+			_tabs.push({ title: "New " + _tabs.length });
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div>inlineText</div>');
 		});
 	});
 
-	describe('nonKeyed - children', function () {
-		let container;
+	describe('nonKeyed - children', function() {
 
 		beforeEach(() => {
 			container = document.createElement('div');
@@ -388,22 +402,22 @@ describe('Children - (JSX)', () => {
 			container.innerHTML = '';
 		});
 
-		it('Should push to correct location when it keyed list has siblings', function () {
-			var tabs = [{title: "Item A"}, {title: "Item B"}];
+		it('Should push to correct location when it keyed list has siblings', function() {
+			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
 
-			function Tab({title, onSelect, key, id}) {
+			function Tab({ title, onSelect, id }) {
 				return (
 					<div
 						id={id}
 						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
-			function TabGroup({tabs}) {
+			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({title: "New " + tabs.length});
+					tabs.push({ title: "New " + tabs.length });
 					renderIt();
 				}
 
@@ -411,7 +425,7 @@ describe('Children - (JSX)', () => {
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
-							onSelect={ ()=>undefined }/>
+							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>
 					</div>
@@ -419,7 +433,7 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}></TabGroup>, container);
 			}
 
 			renderIt();
@@ -439,22 +453,22 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div>New 5</div><div id="add">Add</div></div>');
 		});
 
-		it('Should append child node to correct location when its empty at the beginning ', function () {
-			var tabs = [];
+		it('Should append child node to correct location when its empty at the beginning ', function() {
+			const _tabs = [];
 
-			function Tab({title, onSelect, id}) {
+			function Tab({ title, onSelect, id }) {
 				return (
 					<div
 						id={id}
 						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
-			function TabGroup({tabs}) {
+			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({title: "New " + tabs.length});
+					tabs.push({ title: "New " + tabs.length });
 					renderIt();
 				}
 
@@ -462,7 +476,7 @@ describe('Children - (JSX)', () => {
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
-							onSelect={ ()=>undefined }/>
+							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>
 					</div>
@@ -470,9 +484,8 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
-
 
 			renderIt();
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div></div>');
@@ -484,22 +497,22 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div></div>');
 		});
 
-		it('Should append child node to correct location when its empty at the beginning ', function () {
-			var tabs = [];
+		it('Should append child node to correct location when its empty at the beginning ', function() {
+			const _tabs = [];
 
-			function Tab({title, onSelect, id}) {
+			function Tab({ title, onSelect, id }) {
 				return (
 					<div
 						id={id}
 						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
-			function TabGroup({tabs}) {
+			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({title: "New " + tabs.length});
+					tabs.push({ title: "New " + tabs.length });
 					renderIt();
 				}
 
@@ -508,14 +521,14 @@ describe('Children - (JSX)', () => {
 						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
-							onSelect={ ()=>undefined }/>
+							onSelect={ () => undefined }/>
 					))}
 					</div>
 				);
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -528,22 +541,22 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div id="add">Add</div><div>New 0</div><div>New 1</div></div>');
 		});
 
-		it('Should append child node to correct location when its empty at the beginning ', function () {
-			var tabs = [];
+		it('Should append child node to correct location when its empty at the beginning ', function() {
+			const _tabs = [];
 
-			function Tab({title, onSelect, id}) {
+			function Tab({ title, onSelect, id }) {
 				return (
 					<div
 						id={id}
 						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
-			function TabGroup({tabs}) {
+			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({title: "New " + tabs.length});
+					tabs.push({ title: "New " + tabs.length });
 					renderIt();
 				}
 
@@ -551,19 +564,19 @@ describe('Children - (JSX)', () => {
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
-							onSelect={ ()=>undefined }/>
+							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
 							<Tab
 								title={ tab.title }
-								onSelect={ ()=>undefined }/>
+								onSelect={ () => undefined }/>
 						))}
 					</div>
 				);
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -577,24 +590,24 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>');
 		});
 
-		it('Should appendx3 to correct location when it list has siblings', function () {
-			var tabs = [{title: "Item A"}, {title: "Item B"}];
+		it('Should appendx3 to correct location when it list has siblings', function() {
+			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
 
-			function Tab({title, onSelect, key, id}) {
+			function Tab({ title, onSelect, id }) {
 				return (
 					<div
 						id={id}
 						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
-			function TabGroup({tabs}) {
+			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({title: "New " + tabs.length});
-					tabs.push({title: "New " + tabs.length});
-					tabs.push({title: "New " + tabs.length});
+					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: "New " + tabs.length });
 					renderIt();
 				}
 
@@ -602,7 +615,7 @@ describe('Children - (JSX)', () => {
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
-							onSelect={ ()=>undefined }/>
+							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>
 					</div>
@@ -610,7 +623,7 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -621,24 +634,24 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>');
 		});
 
-		it('Should unshiftx3 to correct location when it list has siblings', function () {
-			var tabs = [{title: "Item A"}, {title: "Item B"}];
+		it('Should unshiftx3 to correct location when it list has siblings', function() {
+			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
 
-			function Tab({title, onSelect, key, id}) {
+			function Tab({ title, onSelect, id }) {
 				return (
 					<div
 						id={id}
 						onClick={onSelect}>
 						{title}
 					</div>
-				)
+				);
 			}
 
-			function TabGroup({tabs}) {
+			function TabGroup({ tabs }) {
 				function create() {
-					tabs.unshift({title: "New " + tabs.length});
-					tabs.unshift({title: "New " + tabs.length});
-					tabs.unshift({title: "New " + tabs.length});
+					tabs.unshift({ title: "New " + tabs.length });
+					tabs.unshift({ title: "New " + tabs.length });
+					tabs.unshift({ title: "New " + tabs.length });
 					renderIt();
 				}
 
@@ -646,7 +659,7 @@ describe('Children - (JSX)', () => {
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
-							onSelect={ ()=>undefined }/>
+							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>
 					</div>
@@ -654,7 +667,7 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -665,18 +678,18 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 4</div><div>New 3</div><div>New 2</div><div>Item A</div><div>Item B</div><div id="add">Add</div></div>');
 		});
 
-		it('Inline text element before array list', function () {
-			var tabs = [];
+		it('Inline text element before array list', function() {
+			const _tabs = [];
 
-			function Tab({title, onSelect, id}) {
+			function Tab({ title }) {
 				return (
 					<div>
 						{title}
 					</div>
-				)
+				);
 			}
 
-			function TabGroup({tabs}) {
+			function TabGroup({ tabs }) {
 				return (
 					<div class="tab-group">inlineText{tabs.map((tab, i) => (
 						<Tab
@@ -687,31 +700,31 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group">inlineText</div>');
 
-			tabs.push({title: "New " + tabs.length});
+			_tabs.push({ title: "New " + _tabs.length });
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group">inlineText<div>New 0</div></div>');
 		});
 
-		it('Inline text element after array list', function () {
-			var tabs = [];
+		it('Inline text element after array list', function() {
+			const _tabs = [];
 
-			function Tab({title, onSelect, id}) {
+			function Tab({ title }) {
 				return (
 					<div>
 						{title}
 					</div>
-				)
+				);
 			}
 
-			function TabGroup({tabs}) {
+			function TabGroup({ tabs }) {
 				return (
 					<div class="tab-group">{tabs.map((tab, i) => (
 						<Tab
@@ -722,39 +735,37 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group">inlineText</div>');
 
-			tabs.push({title: "New " + tabs.length});
+			_tabs.push({ title: "New " + _tabs.length });
 			renderIt();
 
 			expect(container.innerHTML).to.equal('<div class="tab-group"><div>New 0</div>inlineText</div>');
 		});
 	});
 
-	describe('mixed children edge cases', function () {
+	describe('mixed children edge cases', function() {
 		it('NONKEYED - should remove children from correct location when there is dynamic static item', function() {
-			var items = ['a','b','c'];
-			var emptyArray = [];
-			var items3 = ['v', 'a'];
-			var visible = false;
+			const items = ['a', 'b', 'c'];
+			const emptyArray = [];
+			const items3 = ['v', 'a'];
+			let visible = false;
+			let activeOne;
 
-
-			var activeOne;
-
-			function Loop({text}) {
+			function Loop({ text }) {
 				return (
 					<p>
 						{text}
 					</p>
-				)
+				);
 			}
 
-			function Looper({collectionOne, visibleStatic}) {
+			function Looper({ collectionOne, visibleStatic }) {
 				return (
 					<div class="c">
 						{visibleStatic ? <Loop text="static"/> : null}
@@ -767,7 +778,7 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<Looper collectionOne={activeOne} visibleStatic={visible}></Looper>, container);
+				render(<Looper collectionOne={activeOne} visibleStatic={visible}/>, container);
 			}
 
 			visible = true;
@@ -779,7 +790,6 @@ describe('Children - (JSX)', () => {
 			activeOne = items3;
 			renderIt();
 			expect(container.innerHTML).to.equal('<div class="c"><p>v</p><p>a</p></div>');
-
 
 			visible = true;
 			activeOne = items3;
@@ -793,25 +803,24 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('NONKEYED - should remove children from correct location when there is 2 dynamic static items and 2 lists', function() {
-			var items = ['a','b','c'];
-			var emptyArray = [];
-			var items3 = ['v', 'a'];
+			let items = ['a', 'b', 'c'];
+			let emptyArray = [];
+			let items3 = ['v', 'a'];
 
+			let activeOne;
+			let activeTwo;
+			let visibleOne = false;
+			let visibleTwo = false;
 
-			var activeOne;
-			var activeTwo;
-			var visibleOne = false;
-			var visibleTwo = false;
-
-			function Loop({text}) {
+			function Loop({ text }) {
 				return (
 					<p>
 						{text}
 					</p>
-				)
+				);
 			}
 
-			function Looper({collectionOne, visibleStaticOne, collectionTwo, visibleStaticTwo}) {
+			function Looper({ collectionOne, visibleStaticOne, collectionTwo, visibleStaticTwo }) {
 				return (
 					<div class="c">
 						{visibleStaticOne ? <Loop text="static"/> : null}
@@ -829,7 +838,7 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<Looper collectionOne={activeOne} visibleStaticOne={visibleOne} collectionTwo={activeTwo} visibleStaticTwo={visibleTwo}></Looper>, container);
+				render(<Looper collectionOne={activeOne} visibleStaticOne={visibleOne} collectionTwo={activeTwo} visibleStaticTwo={visibleTwo}/>, container);
 			}
 
 			visibleOne = true;
@@ -845,7 +854,6 @@ describe('Children - (JSX)', () => {
 			activeTwo = items;
 			renderIt();
 			expect(container.innerHTML).to.equal('<div class="c"><p>static</p><p>static</p><p>a</p><p>b</p><p>c</p></div>');
-
 
 			visibleOne = false;
 			activeOne = items3;
@@ -863,36 +871,35 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('KEYED - should remove children from correct location when there is dynamic static item', function() {
-			var items = ['a','b','c'];
-			var emptyArray = [];
-			var items3 = ['v', 'a'];
-			var visible = false;
+			let items = ['a', 'b', 'c'];
+			let emptyArray = [];
+			let items3 = ['v', 'a'];
+			let visible = false;
 
+			let activeOne;
 
-			var activeOne;
-
-			function Loop({text}) {
+			function Loop({ text }) {
 				return (
 					<p>
 						{text}
 					</p>
-				)
+				);
 			}
 
-			function Looper({collectionOne, visibleStatic}) {
+			function Looper({ collectionOne, visibleStatic }) {
 				return (
 					<div class="c">
 						{visibleStatic ? <Loop i={-1} text="static"/> : null}
 						{collectionOne.map((text, i) => (
 							<Loop key={i}
-							      text={ text }/>
+										text={ text }/>
 						))}
 					</div>
 				);
 			}
 
 			function renderIt() {
-				render(<Looper collectionOne={activeOne} visibleStatic={visible}></Looper>, container);
+				render(<Looper collectionOne={activeOne} visibleStatic={visible}/>, container);
 			}
 
 			visible = true;
@@ -904,7 +911,6 @@ describe('Children - (JSX)', () => {
 			activeOne = items3;
 			renderIt();
 			expect(container.innerHTML).to.equal('<div class="c"><p>v</p><p>a</p></div>');
-
 
 			visible = true;
 			activeOne = items3;
@@ -924,7 +930,7 @@ describe('Children - (JSX)', () => {
 			let updaterFirst = null;
 			let updaterSecond = null;
 
-			class A extends Component {
+			class A extends Component<any, any> {
 				constructor(props) {
 					super(props);
 
@@ -933,8 +939,8 @@ describe('Children - (JSX)', () => {
 						second: true
 					};
 
-					updaterFirst = () => this.setState({first: !this.state.first});
-					updaterSecond = () => this.setState({second: !this.state.second});
+					updaterFirst = () => this.setState({ first: !this.state.first });
+					updaterSecond = () => this.setState({ second: !this.state.second });
 				}
 
 				render() {
@@ -956,10 +962,9 @@ describe('Children - (JSX)', () => {
 							}.call(this)}
 							<p>3</p>
 						</div>
-					)
+					);
 				}
 			}
-
 
 			render(<A />, container);
 			expect(container.innerHTML).to.equal('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>');
@@ -976,7 +981,7 @@ describe('Children - (JSX)', () => {
 
 	describe('JSX plugin', () => {
 		it('Should not have undefined properties', () => {
-			class A extends Component {
+			class A extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
@@ -986,23 +991,24 @@ describe('Children - (JSX)', () => {
 						<div>
 							{this.props.children}
 						</div>
-					)
+					);
 				}
 			}
 
-			class B extends Component {
+			class B extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
 
-				callback() {}
+				callback() {
+				}
 
 				render() {
 					return (
 						<A>
 							<div onclick={this.callback}>B</div>
 						</A>
-					)
+					);
 				}
 			}
 
@@ -1012,7 +1018,7 @@ describe('Children - (JSX)', () => {
 
 	describe('Rendering null on child node', () => {
 		it('Should trigger unmount', () => {
-			class A extends Component {
+			class A extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
@@ -1022,28 +1028,29 @@ describe('Children - (JSX)', () => {
 						<div>
 							{this.props.test}
 						</div>
-					)
+					);
 				}
 			}
 
-			class B extends Component {
+			class B extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
 
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
 						<p>B</p>
-					)
+					);
 				}
 			}
 
 			const unmountSpy = sinon.spy(B.prototype, 'componentWillUnmount');
-			render(<A test={<B />} />, container);
+			render(<A test={<B />}/>, container);
 			expect(container.innerHTML).to.equal('<div><p>B</p></div>');
-			render(<A test={null} />, container);
+			render(<A test={null}/>, container);
 			expect(container.innerHTML).to.equal('<div></div>');
 			expect(unmountSpy.callCount).to.equal(1);
 		});

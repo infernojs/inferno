@@ -1,7 +1,8 @@
+import { expect } from 'chai';
 import { render } from './../rendering';
 import Component from './../../component/es2015';
 import { innerHTML } from '../../tools/utils';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('Blueprints (JSX)', () => {
@@ -12,19 +13,21 @@ describe('Blueprints (JSX)', () => {
 	});
 
 	describe('Should have parentDOM defined #1', () => {
-		class A extends Component {
+		class A extends Component<any, any> {
 			render() {
 				return <div>A</div>;
 			}
 		}
 
-		class B extends Component {
+		class B extends Component<any, any> {
 			render() {
 				return <span>B</span>;
 			}
 		}
 
-		class Counter extends Component {
+		class Counter extends Component<any, any> {
+			props: any;
+
 			constructor(props) {
 				super(props);
 				this.state = {
@@ -32,12 +35,14 @@ describe('Blueprints (JSX)', () => {
 				};
 				this.btnCount = this.btnCount.bind(this);
 			}
-			btnCount(){
+
+			btnCount() {
 				this.setState({
 					bool: !this.state.bool
 				});
 			}
-			render(){
+
+			render() {
 				return (
 					<div class="my-component">
 						<h1>{ this.props.car } { this.state.bool ? <A /> : <B /> }</h1>
@@ -47,15 +52,16 @@ describe('Blueprints (JSX)', () => {
 			}
 		}
 
-		class Wrapper extends Component {
+		class Wrapper extends Component<any, any> {
 			constructor(props) {
 				super(props);
 			}
+
 			render() {
 				return (
 					<div>
-						{ [ 'Saab', 'Volvo', 'BMW' ].map(function (c) {
-							return (<Counter car={ c } />);
+						{ ['Saab', 'Volvo', 'BMW'].map(function(c) {
+							return (<Counter car={ c }/>);
 						}) }
 					</div>
 				);
@@ -95,7 +101,9 @@ describe('Blueprints (JSX)', () => {
 
 	describe('Infinite loop issue', () => {
 		it('Should not get stuck when doing setState from ref callback', () => {
-			class A extends Component {
+			class A extends Component<any, any> {
+				props: any;
+
 				constructor(props) {
 					super(props);
 
@@ -122,7 +130,7 @@ describe('Blueprints (JSX)', () => {
 						<div ref={this.onWilAttach}>
 							{this.state.text}
 						</div>
-					)
+					);
 				}
 			}
 
@@ -135,7 +143,10 @@ describe('Blueprints (JSX)', () => {
 
 	describe('Refs inside components', () => {
 		it('Should have refs defined when componentDidMount is called', () => {
-			class Com extends Component {
+			class Com extends Component<any, any> {
+				_first: any;
+				_second: any;
+
 				constructor(props) {
 					super(props);
 					this._first = null;
@@ -153,7 +164,7 @@ describe('Blueprints (JSX)', () => {
 							<span>1</span>
 							<span ref={(node) => this._second = node}>2</span>
 						</div>
-					)
+					);
 				}
 			}
 
@@ -163,7 +174,9 @@ describe('Blueprints (JSX)', () => {
 
 	describe('Spread operator and templates', () => {
 		it('Should be able to update property', () => {
-			class A extends Component {
+			class A extends Component<any, any> {
+				props: any;
+
 				constructor(props) {
 					super(props);
 				}
@@ -171,17 +184,17 @@ describe('Blueprints (JSX)', () => {
 				render() {
 					return (
 						<div>
-							<input disabled={this.props.disabled} {...this.props.args} />
+							<input disabled={ this.props.disabled } {...this.props.args} />
 						</div>
-					)
+					);
 				}
 			}
 
-			render(<A disabled={true} />, container);
+			render(<A disabled={true}/>, container);
 			let input = container.querySelector('input');
 			expect(input.disabled).to.equal(true);
 
-			render(<A disabled={false} />, container);
+			render(<A disabled={false}/>, container);
 			input = container.querySelector('input');
 			expect(input.disabled).to.equal(false);
 		});

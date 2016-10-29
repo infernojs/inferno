@@ -1,16 +1,16 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 describe('Children - (non-JSX)', () => {
 
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		container.innerHTML = '';
 	});
 
@@ -76,51 +76,51 @@ describe('Children - (non-JSX)', () => {
 		expected: '-153065.25'
 	}, {
 		name: 'number array',
-		value: [ 1, 2, 3 ],
+		value: [1, 2, 3],
 		expected: '123'
 	}, {
 		name: 'number array (long array)',
-		value: [ 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3 ],
+		value: [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3],
 		expected: '123123123123'
 	}, {
 		name: 'number array (long mixed array)',
-		value: [ 1, '2', 3, '1', 2, 3, '1', 2, 3, 1, 2, '3' ],
+		value: [1, '2', 3, '1', 2, 3, '1', 2, 3, 1, 2, '3'],
 		expected: '123123123123'
 	}, {
 		name: 'number array (long mixed array) and undefined and empty string',
-		value: [ 1, '2', '', '1', 2, 3, '1', 2, undefined, 1, 2, '3' ],
+		value: [1, '2', '', '1', 2, 3, '1', 2, undefined, 1, 2, '3'],
 		expected: '1212312123'
 	}, {
 		name: 'number array (cast to string)',
-		value: [ '1', '2', '3' ],
+		value: ['1', '2', '3'],
 		expected: '123'
 	}, {
 		name: 'number array (cast to string) and various whitespaces',
-		value: [ ' 1 ', '2', '3  ' ],
+		value: [' 1 ', '2', '3  '],
 		expected: ' 1 23  '
 	}, {
 		name: 'single undefined in an array',
-		value: [ 1, 2, undefined ],
+		value: [1, 2, undefined],
 		expected: '12'
 	}, {
 		name: 'undefined in the middle of an array',
-		value: [ 1, undefined, 3 ],
+		value: [1, undefined, 3],
 		expected: '13'
 	}, {
 		name: 'dobule undefined in an array',
-		value: [ 1, undefined, undefined ],
+		value: [1, undefined, undefined],
 		expected: '1'
 	}, {
 		name: 'triple undefined in an array',
-		value: [ undefined, undefined, undefined ],
+		value: [undefined, undefined, undefined],
 		expected: ''
 	}, {
 		name: 'triple empty string in an array',
-		value: [ '', '', '' ],
+		value: ['', '', ''],
 		expected: ''
 	}, {
 		name: 'triple null in an array',
-		value: [ null, null, null ],
+		value: [null, null, null],
 		expected: ''
 	}, {
 		name: 'single null in an array',
@@ -132,54 +132,54 @@ describe('Children - (non-JSX)', () => {
 		expected: '{}'
 	}, {
 		name: 'mix of null and undefined in an array',
-		value: [ null, undefined ],
+		value: [null, undefined],
 		expected: ''
 	}, {
 		name: 'mix of null, undefined and empty string in an array',
-		value: [ null, undefined, '' ],
+		value: [null, undefined, ''],
 		expected: ''
 	}, {
 		name: 'mix of null, undefined and a number in an array',
-		value: [ null, undefined, 123 ],
+		value: [null, undefined, 123],
 		expected: '123'
 	}, {
 		name: 'mix of null, undefined and a number in an array',
-		value: [ null, undefined, 123, ' ', undefined, null, undefined ],
+		value: [null, undefined, 123, ' ', undefined, null, undefined],
 		expected: '123 '
 	}, {
 		name: 'single empty string in an array',
-		value: [ 1, 2, '' ],
+		value: [1, 2, ''],
 		expected: '12'
 	}, {
 		name: 'dobule empty string in an array',
-		value: [ 1, '', '' ],
+		value: [1, '', ''],
 		expected: '1'
 	}, {
 		name: 'triple empty string in an array',
-		value: [ '', '', '' ],
+		value: ['', '', ''],
 		expected: ''
 	}, {
 		name: 'cast to string value, + single number in an array',
-		value: [ '1', 2, 3 ],
+		value: ['1', 2, 3],
 		expected: '123'
 	}, {
 		name: 'cast to strng value, + single number + a letter in an array',
-		value: [ '1', 2, 'a' ],
+		value: ['1', 2, 'a'],
 		expected: '12a'
 	}, {
 		name: 'cast to strng value, + single number + a letter in an array',
-		value: [ '1', null, 'a' ],
+		value: ['1', null, 'a'],
 		expected: '1a'
 	}, {
 		name: 'cast to strng value, + single number + a letter in an array',
-		value: [ undefined, null, 'a' ],
+		value: [undefined, null, 'a'],
 		expected: 'a'
 	}, {
 		name: 'cast to strng value, + single number + a letter in an array',
-		value: [ undefined, null, 123, undefined, null ],
+		value: [undefined, null, 123, undefined, null],
 		expected: '123'
 	}
-];
+	];
 
 	preDefined.forEach((arg) => {
 

@@ -5,7 +5,7 @@ import {
 	validateNodeTree
 } from '../../tools/utils';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 describe('SSR Hydration - (non-JSX)', () => {
 	[

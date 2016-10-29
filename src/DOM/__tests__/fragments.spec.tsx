@@ -1,5 +1,6 @@
+import { expect } from 'chai';
 import { render } from './../rendering';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 const Comp = () => [
@@ -17,13 +18,13 @@ describe('Fragments (JSX)', () => {
 	});
 
 	it('should mount and patch a fragment from render', () => {
-		render([ 1, 2, 3 ], container);
+		render([1, 2, 3], container);
 		expect(container.innerHTML).to.equal('123');
-		render([ 3, 2, 1 ], container);
+		render([3, 2, 1], container);
 		expect(container.innerHTML).to.equal('321');
 		render(<div />, container);
 		expect(container.innerHTML).to.equal('<div></div>');
-		render([ 1, 2, 3 ], container);
+		render([1, 2, 3], container);
 		expect(container.innerHTML).to.equal('123');
 	});
 
@@ -63,17 +64,17 @@ describe('Fragments (JSX)', () => {
 	it('should mount and patch a fragment from stateless component render #2', () => {
 		render((
 			<div>
-				<Comp key='1' />
-				<Comp2 key='2' />
-				<Comp key='3' />
+				<Comp key='1'/>
+				<Comp2 key='2'/>
+				<Comp key='3'/>
 			</div>
 		), container);
 		expect(container.innerHTML).to.equal('<div>123321123</div>');
 		render((
 			<div>
-				<Comp2 key='2' />
-				<Comp key='1' />
-				<Comp key='3' />
+				<Comp2 key='2'/>
+				<Comp key='1'/>
+				<Comp key='3'/>
 			</div>
 		), container);
 		expect(container.innerHTML).to.equal('<div>321123123</div>');

@@ -1,12 +1,13 @@
 import { render } from './../../DOM/rendering';
 import createElement from './../../factories/createElement';
-import {expect} from 'chai';
+import { expect } from 'chai';
 import sinon = require('sinon');
 
 describe('lifecycle hooks', () => {
 	describe('Stateless component hooks', () => {
 		let template;
 		let container;
+
 		function StatelessComponent() {
 			const divTemplate = () => {
 				return createElement('div', null, 'Hello world!');
@@ -34,7 +35,10 @@ describe('lifecycle hooks', () => {
 		});
 
 		it('"onComponentWillMount" hook should fire', () => {
-			const spyObj = {fn: () => {}};
+			const spyObj = {
+				fn: () => {
+				}
+			};
 			const spy = sinon.spy(spyObj, 'fn');
 			const node = template(spyObj.fn, null, null, null, null, null, StatelessComponent);
 			render(node, container);
@@ -43,7 +47,10 @@ describe('lifecycle hooks', () => {
 		});
 
 		it('"onComponentDidMount" hook should fire, args DOM', () => {
-			const spyObj = {fn: () => {}};
+			const spyObj = {
+				fn: () => {
+				}
+			};
 			const spy = sinon.spy(spyObj, 'fn');
 			const node = template(null, spyObj.fn, null, null, null, null, StatelessComponent);
 			render(node, container);
@@ -53,7 +60,10 @@ describe('lifecycle hooks', () => {
 		});
 
 		it('"onComponentWillUnmount" hook should fire', () => {
-			const spyObj = {fn: () => {}};
+			const spyObj = {
+				fn: () => {
+				}
+			};
 			const spy = sinon.spy(spyObj, 'fn');
 			const node = template(null, null, spyObj.fn, null, null, null, StatelessComponent);
 			render(node, container);
@@ -65,7 +75,10 @@ describe('lifecycle hooks', () => {
 		});
 
 		it('"onComponentWillUpdate" hook should fire', () => {
-			const spyObj = {fn: () => {}};
+			const spyObj = {
+				fn: () => {
+				}
+			};
 			const spy = sinon.spy(spyObj, 'fn');
 			const node = template(null, null, null, spyObj.fn, null, null, StatelessComponent);
 			render(node, container);
@@ -78,7 +91,10 @@ describe('lifecycle hooks', () => {
 		});
 
 		it('"onComponentDidUpdate" hook should fire', () => {
-			const spyObj = {fn: () => {}};
+			const spyObj = {
+				fn: () => {
+				}
+			};
 			const spy = sinon.spy(spyObj, 'fn');
 			const node = template(null, null, null, null, spyObj.fn, null, StatelessComponent);
 			render(node, container);
@@ -90,8 +106,14 @@ describe('lifecycle hooks', () => {
 		it('"onComponentShouldUpdate" hook should fire, should call render when return true', () => {
 			let onComponentShouldUpdateCount = 0;
 			let renderCount = 0;
-			const StatelessComponent = () => { renderCount++; return null; };
-			const node = template(null, null, null, null, null, () => { onComponentShouldUpdateCount++; return true; }, StatelessComponent);
+			const StatelessComponent = () => {
+				renderCount++;
+				return null;
+			};
+			const node = template(null, null, null, null, null, () => {
+				onComponentShouldUpdateCount++;
+				return true;
+			}, StatelessComponent);
 
 			render(node, container);
 			expect(onComponentShouldUpdateCount).to.equal(0, 'should have called shouldUpdate none'); // Update 1
@@ -105,8 +127,14 @@ describe('lifecycle hooks', () => {
 		it('"onComponentShouldUpdate" hook should fire, should not call render when return false', () => {
 			let onComponentShouldUpdateCount = 0;
 			let renderCount = 0;
-			const StatelessComponent = () => { renderCount++; return null; };
-			const node = template(null, null, null, null, null, () => { onComponentShouldUpdateCount++; return false; }, StatelessComponent);
+			const StatelessComponent = () => {
+				renderCount++;
+				return null;
+			};
+			const node = template(null, null, null, null, null, () => {
+				onComponentShouldUpdateCount++;
+				return false;
+			}, StatelessComponent);
 
 			render(node, container);
 			expect(onComponentShouldUpdateCount).to.equal(0, 'should have called shouldUpdate none'); // Update 1

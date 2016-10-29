@@ -1,25 +1,9 @@
-
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-
 import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
 import createElement from './../../factories/createElement';
-import { createOptBlueprint, createStaticVElement, createVComponent, createOptVElement } from '../../core/shapes';
-import ChildrenTypes from '../../core/ChildrenTypes';
-import ValueTypes from '../../core/ValueTypes';
-import NodeTypes from '../../core/NodeTypes';
-
-const Inferno = {
-	createElement,
-	createOptBlueprint,
-	createStaticVElement,
-	createOptVElement,
-	createVComponent,
-	ValueTypes,
-	NodeTypes,
-	ChildrenTypes,
-};
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('Elements (JSX)', () => {
@@ -41,27 +25,27 @@ describe('Elements (JSX)', () => {
 	});
 
 	it('should render a simple div with multiple children', () => {
-		render(<div><span></span></div>, container);
+		render(<div><span/></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
-		render(<div><span></span></div>, container);
+		render(<div><span/></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
 		render(<div></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
-		render(<div><span></span><span></span><span></span><span></span><span></span></div>, container);
+		render(<div><span/><span/><span/><span/><span/></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(5);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
-		render(<div><span></span><span></span><span></span></div>, container);
+		render(<div><span/><span/><span/></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(3);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
 		render(undefined, container);
-		render(<div><span></span><b>Hello, World!</b><span></span></div>, container);
+		render(<div><span/><b>Hello, World!</b><span/></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(3);
 		expect(container.firstChild.firstChild.nodeName).to.equal('SPAN');
@@ -129,7 +113,7 @@ describe('Elements (JSX)', () => {
 
 	it('should render a simple div with dynamic span child', () => {
 
-		const child = <span></span>;
+		const child = <span/>;
 
 		render(<div>{undefined}</div>, container);
 		render(<div>{child}</div>, container);
@@ -154,7 +138,9 @@ describe('Elements (JSX)', () => {
 
 		attrs = 'id#1';
 
-		render(<div><div id={attrs}></div></div>, container);
+		render(<div>
+			<div id={attrs}></div>
+		</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
@@ -162,7 +148,9 @@ describe('Elements (JSX)', () => {
 
 		attrs = null;
 
-		render(<div><div id={attrs}></div></div>, container);
+		render(<div>
+			<div id={attrs}></div>
+		</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
@@ -177,7 +165,9 @@ describe('Elements (JSX)', () => {
 
 		attrs = 'id#4';
 
-		render(<div><div id={attrs}></div></div>, container);
+		render(<div>
+			<div id={attrs}></div>
+		</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
@@ -185,7 +175,7 @@ describe('Elements (JSX)', () => {
 
 		attrs = 13 - 44 * 4 / 4;
 
-		let b = <b className={123} >Hello, World!</b>;
+		let b = <b className={123}>Hello, World!</b>;
 		let n = <n>{b}</n>;
 
 		render(<div class="Hello, World!"><span><div id={attrs}>{n}</div></span></div>, container);
@@ -202,7 +192,7 @@ describe('Elements (JSX)', () => {
 
 		attrs = 13 - 44 * 4 / 4;
 
-		b = <b className={1243} >Hello, World!</b>;
+		b = <b className={1243}>Hello, World!</b>;
 		n = <n>{b}</n>;
 
 		render(<div class="Hello, World!"><span><div id={attrs}>{n}</div></span></div>, container);
@@ -224,7 +214,9 @@ describe('Elements (JSX)', () => {
 
 		attrs = 'id#444';
 
-		render(<div class="Hello, Dominic" id={attrs}><div id={attrs}></div></div>, container);
+		render(<div class="Hello, Dominic" id={attrs}>
+			<div id={attrs}></div>
+		</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
@@ -234,7 +226,9 @@ describe('Elements (JSX)', () => {
 
 		attrs = ('id#' as any) + 333 - 333 / 3;
 
-		render(<div class="Hello, Dominic" id={attrs}><div id={attrs}></div></div>, container);
+		render(<div class="Hello, Dominic" id={attrs}>
+			<div id={attrs}></div>
+		</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
@@ -250,7 +244,7 @@ describe('Elements (JSX)', () => {
 	});
 
 	it('should render a simple div with dynamic span child and update to div child', () => {
-		let child = <span></span>;
+		let child = <span/>;
 
 		render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -266,7 +260,17 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.nodeName).to.equal('DIV');
 
-		child = <div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>;
+		child = (<div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>);
 
 		render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -292,7 +296,7 @@ describe('Elements (JSX)', () => {
 
 		let child;
 
-		child = <span><span></span><span></span></span>;
+		child = <span><span/><span/></span>;
 
 		render(<div>{child}</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -348,12 +352,16 @@ describe('Elements (JSX)', () => {
 
 	it('should render a simple div children set to null', () => {
 
-		render(<div><div>{null}</div></div>, container);
+		render(<div>
+			<div>{null}</div>
+		</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
 
-		render(<div><div>{null}</div></div>, container);
+		render(<div>
+			<div>{null}</div>
+		</div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.firstChild.textContent).to.equal('');
@@ -379,7 +387,7 @@ describe('Elements (JSX)', () => {
 
 	it('should render a single div with text node', () => {
 
-		render(<div><span></span><span></span></div>, container);
+		render(<div><span/><span/></div>, container);
 
 		expect(container.nodeName).to.equal('DIV');
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -450,46 +458,46 @@ describe('Elements (JSX)', () => {
 		// render(<div className='' />, container);
 		// expect(container.firstChild.className).to.eql('');
 
-		render(<div class="123" />, container);
+		render(<div class="123"/>, container);
 		expect(container.firstChild.getAttribute('class')).to.eql('123');
 
-		render(<div className={null} />, container);
+		render(<div className={null}/>, container);
 		expect(container.firstChild.className).to.eql('');
 
-		render(<div className={undefined} />, container);
+		render(<div className={undefined}/>, container);
 		expect(container.firstChild.className).to.eql('');
 
-		render(<div className="Inferno rocks!" />, container);
+		render(<div className="Inferno rocks!"/>, container);
 		expect(container.firstChild.getAttribute('class')).to.eql('Inferno rocks!');
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<div class="Inferno rocks!"></div>')
-			);
+		);
 	});
 
 	it('shouldn\'t render null value', () => {
 
-		render(<input values={null} />, container);
+		render(<input values={null}/>, container);
 
 		expect(container.value).to.equal(undefined);
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<input>')
-			);
+		);
 
-		render(<input values={undefined} />, container);
+		render(<input values={undefined}/>, container);
 		expect(container.value).to.equal(undefined);
 
-		render(<input values={null} />, container);
+		render(<input values={null}/>, container);
 		expect(container.value).to.equal(undefined);
 
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<input>')
-			);
+		);
 
 		// unset
 		render(null, container);
@@ -500,32 +508,32 @@ describe('Elements (JSX)', () => {
 
 	it('should set values as properties by default', () => {
 
-		render(<input title="Tip!" />, container);
+		render(<input title="Tip!"/>, container);
 
 		expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<input title="Tip!">')
-			);
+		);
 
-		render(<input name="Tip!" />, container);
+		render(<input name="Tip!"/>, container);
 
 		expect(container.firstChild.getAttribute('name')).to.eql('Tip!');
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<input name="Tip!">')
-			);
+		);
 
-		render(<input title="Tip!" />, container);
+		render(<input title="Tip!"/>, container);
 
 		expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<input title="Tip!">')
-			);
+		);
 	});
 
 	it('should render a simple div with dynamic values and props', () => {
@@ -566,7 +574,7 @@ describe('Elements (JSX)', () => {
 
 		val1 = 'false';
 
-		render(<input download={val1}></input>, container);
+		render(<input download={val1}/>, container);
 
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
@@ -574,7 +582,7 @@ describe('Elements (JSX)', () => {
 
 		val1 = 'true';
 
-		render(<input download={val1}></input>, container);
+		render(<input download={val1}/>, container);
 
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
@@ -583,13 +591,13 @@ describe('Elements (JSX)', () => {
 
 	it('should properly render "className" property on a custom element', () => {
 
-		render(<custom-elem className="Hello, world!"></custom-elem>, container);
+		render(<custom-elem className="Hello, world!"/>, container);
 
 		expect(container.firstChild.nodeName).to.equal('CUSTOM-ELEM');
 		expect(container.childNodes.length).to.equal(1);
 		expect(container.firstChild.getAttribute('class')).to.equal('Hello, world!');
 
-		render(<custom-elem className="Hello, world!"></custom-elem>, container);
+		render(<custom-elem className="Hello, world!"/>, container);
 
 		expect(container.firstChild.nodeName).to.equal('CUSTOM-ELEM');
 		expect(container.childNodes.length).to.equal(1);
@@ -598,7 +606,7 @@ describe('Elements (JSX)', () => {
 
 	it('should properly render "width" and "height" attributes', () => {
 
-		render(<img src='' alt="Smiley face" height={42} width={42}></img>, container);
+		render(<img src='' alt="Smiley face" height={42} width={42}/>, container);
 
 		expect(container.firstChild.nodeName).to.equal('IMG');
 		expect(container.childNodes.length).to.equal(1);
@@ -607,7 +615,7 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.getAttribute('height')).to.equal('42');
 		expect(container.firstChild.getAttribute('width')).to.equal('42');
 
-		render(<img src='' alt="Smiley face" height={42} width={42} fooBar={[]}></img>, container);
+		render(<img src='' alt="Smiley face" height={42} width={42} fooBar={[]}/>, container);
 
 		expect(container.firstChild.nodeName).to.equal('IMG');
 		expect(container.childNodes.length).to.equal(1);
@@ -619,7 +627,7 @@ describe('Elements (JSX)', () => {
 
 	it('should properly render "width" and "height" attributes', () => {
 
-		render(<input type="file" multiple="multiple" capture="capture" accept="image/*"></input>, container);
+		render(<input type="file" multiple="multiple" capture="capture" accept="image/*"/>, container);
 
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
@@ -628,7 +636,7 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.capture).to.equal(true);
 		expect(container.firstChild.getAttribute('accept')).to.equal('image/*');
 
-		render(<input type="file" multiple="multiple" capture="capture" accept="image/*"></input>, container);
+		render(<input type="file" multiple="multiple" capture="capture" accept="image/*"/>, container);
 
 		expect(container.firstChild.nodeName).to.equal('INPUT');
 		expect(container.childNodes.length).to.equal(1);
@@ -640,46 +648,46 @@ describe('Elements (JSX)', () => {
 
 	it('should handle className', () => {
 
-		render(<div className={'foo'} />, container);
+		render(<div className={'foo'}/>, container);
 		expect(container.firstChild.className).to.equal('foo');
-		render(<div className={'bar'} />, container);
+		render(<div className={'bar'}/>, container);
 		expect(container.firstChild.className).to.equal('bar');
-		render(<div className={null} />, container);
+		render(<div className={null}/>, container);
 		expect(container.firstChild.className).to.equal('');
-		render(<div className={undefined} />, container);
+		render(<div className={undefined}/>, container);
 		expect(container.firstChild.className).to.equal('');
-		render(<svg class={'fooBar'} />, container);
+		render(<svg class={'fooBar'}/>, container);
 		expect(container.firstChild.getAttribute('class')).to.equal('fooBar');
 	});
 
 	it('should remove attributes', () => {
-		render(<img height="17" />, container);
+		render(<img height="17"/>, container);
 		expect(container.firstChild.hasAttribute('height')).to.equal(true);
 		render(<img />, container);
 		expect(container.firstChild.hasAttribute('height')).to.equal(false);
-		render(<img height={null} />, container);
+		render(<img height={null}/>, container);
 		expect(container.firstChild.hasAttribute('height')).to.equal(false);
 	});
 
 	it('should remove properties #2', () => {
-		render(<div class="monkey" />, container);
+		render(<div class="monkey"/>, container);
 		expect(container.firstChild.getAttribute('class')).to.equal('monkey');
 		render(<div />, container);
 		expect(container.firstChild.className).to.equal('');
-		render(<svg class="monkey" />, container);
+		render(<svg class="monkey"/>, container);
 		expect(container.firstChild.getAttribute('class')).to.equal('monkey');
 		render(<svg />, container);
 		expect(container.firstChild.getAttribute('class')).to.equal(null);
 	});
 
 	it('should not update when switching between null/undefined', () => {
-		render(<div id={null} />, container);
-		render(<div id={123} />, container);
-		render(<div id={null} />, container);
-		render(<div id={undefined} />, container);
+		render(<div id={null}/>, container);
+		render(<div id={123}/>, container);
+		render(<div id={null}/>, container);
+		render(<div id={undefined}/>, container);
 		render(<div />, container);
-		render(<div id="ltr" />, container);
-		render(<div id={[]} />, container);
+		render(<div id="ltr"/>, container);
+		render(<div id={[]}/>, container);
 	});
 
 	it('should render an iframe', () => {
@@ -693,7 +701,7 @@ describe('Elements (JSX)', () => {
 		document.body.appendChild(container);
 		render((
 			<video width="400" controls volume={0}>
-				<source src="http://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+				<source src="http://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
 			</video>
 		), container);
 		expect(container.firstChild.volume).to.not.equal(undefined);
@@ -703,7 +711,7 @@ describe('Elements (JSX)', () => {
 
 	it('should dangerously set innerHTML', () => {
 		render((
-			<div dangerouslySetInnerHTML={{ __html: 'Hello world!' }} />
+			<div dangerouslySetInnerHTML={{ __html: 'Hello world!' }}/>
 		), container);
 		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
 	});
@@ -733,8 +741,14 @@ describe('Elements (JSX)', () => {
 	});
 
 	it('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
-		function test() { }
-		const obj = { fn () { }, click () { } };
+		function test() {
+		}
+
+		const obj = {
+			fn () {
+			}, click () {
+			}
+		};
 		const bool = false;
 		const newValue = 't';
 		const spread = { id: 'test' };
@@ -743,10 +757,10 @@ describe('Elements (JSX)', () => {
 
 		// TODO: Fails to creation of node fix needed
 		render(<input type="text" ref={obj.fn} spellcheck="false"
-			readOnly={bool ? 'readonly' : false} disabled={bool}
-			ondragenter={test} ondragover={test} value={newValue} oninput={test}
-			onclick={obj.click} class="edit-field" onkeydown={test} onkeyup={test}
-			onBlur={test} {...spread} />, container);
+									readOnly={bool ? 'readonly' : false} disabled={bool}
+									ondragenter={test} ondragover={test} value={newValue} oninput={test}
+									onclick={obj.click} class="edit-field" onkeydown={test} onkeyup={test}
+									onBlur={test} {...spread} />, container);
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		document.body.appendChild(container);
 		const input = container.querySelector('#test');

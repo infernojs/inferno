@@ -1,20 +1,14 @@
+import { expect } from 'chai';
 import { render } from './../rendering';
 import Component from './../../component/es2015';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
-const sinon = require('sinon/pkg/sinon');
+import sinon = require('sinon');
 
 describe('Stateful Component updates', () => {
 
 	let container;
-
-	let template = function (child) {
-		return {
-			tag: 'div',
-			children: child
-		};
-	};
 
 	beforeEach(() => {
 		container = document.createElement('div');
@@ -27,7 +21,7 @@ describe('Stateful Component updates', () => {
 	it('Should forget old updates', (done) => {
 		let updatesAfromOutside;
 
-		class A extends Component {
+		class A extends Component<any, any> {
 			constructor(props) {
 				super(props);
 
@@ -41,7 +35,7 @@ describe('Stateful Component updates', () => {
 			updateMe() {
 				this.setState({
 					stuff: false
-				})
+				});
 			}
 
 			render() {
@@ -49,7 +43,7 @@ describe('Stateful Component updates', () => {
 			}
 		}
 
-		class B extends Component {
+		class B extends Component<any, any> {
 			constructor(props) {
 				super(props);
 			}
@@ -60,7 +54,7 @@ describe('Stateful Component updates', () => {
 		}
 
 		// Render A
-		var spy = sinon.spy(A.prototype, 'componentWillUnmount');
+		const spy = sinon.spy(A.prototype, 'componentWillUnmount');
 		render(<A />, container);
 		expect(container.innerHTML).to.equal('<div>A Component A</div>');
 		// Render B
@@ -80,7 +74,7 @@ describe('Stateful Component updates', () => {
 
 		// Following test simulates situation that setState is called when mounting process has not finished, fe. in constructor
 
-		class Parent extends Component {
+		class Parent extends Component<any, any> {
 			constructor(props) {
 				super(props);
 
@@ -112,8 +106,7 @@ describe('Stateful Component updates', () => {
 			}
 		}
 
-
-		class Child extends Component {
+		class Child extends Component<any, any> {
 			constructor(props) {
 				super(props);
 			}
@@ -124,7 +117,7 @@ describe('Stateful Component updates', () => {
 						{this.props.show ? <span class="hr red"><span class="hr-text">Late</span></span> : null}
 						<p>More content</p>
 					</div>
-				)
+				);
 			}
 		}
 
@@ -134,15 +127,15 @@ describe('Stateful Component updates', () => {
 	it('Should update boolean properties when children change same time', () => {
 		let updateCaller = null;
 
-		class A extends Component {
+		class A extends Component<any, any> {
 			constructor(props) {
 				super(props);
 
 				this.state = {
 					values: [
-						{checked: false},
-						{checked: false},
-						{checked: false}
+						{ checked: false },
+						{ checked: false },
+						{ checked: false }
 					]
 				};
 
@@ -153,8 +146,8 @@ describe('Stateful Component updates', () => {
 			updateCaller() {
 				this.setState({
 					values: [
-						{checked: false},
-						{checked: false}
+						{ checked: false },
+						{ checked: false }
 					]
 				});
 			}
@@ -162,11 +155,11 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						{this.state.values.map(function (value) {
-							return <input type="checkbox" checked={value.checked}/>
+						{this.state.values.map(function(value) {
+							return <input type="checkbox" checked={value.checked}/>;
 						})}
 					</div>
-				)
+				);
 			}
 		}
 
@@ -192,7 +185,7 @@ describe('Stateful Component updates', () => {
 		let updateCaller = null;
 
 		// This parent is used for setting up Test scenario, not much related
-		class Parent extends Component {
+		class Parent extends Component<any, any> {
 			constructor(props) {
 				super(props);
 			}
@@ -200,14 +193,14 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						<A></A>
+						<A/>
 					</div>
-				)
+				);
 			}
 		}
 
 		// A component holds all the stuff together
-		class A extends Component {
+		class A extends Component<any, any> {
 			constructor(props) {
 				super(props);
 
@@ -232,21 +225,21 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						<B data={this.state.obj}></B>
+						<B data={this.state.obj}/>
 					</div>
-				)
+				);
 			}
 		}
 		// B has direct child C, B Is simple wrapper component
-		class B extends Component {
+		class B extends Component<any, any> {
 			constructor(props) {
 				super(props);
 			}
 
 			render() {
 				return (
-					<C data={this.props.data}></C>
-				)
+					<C data={this.props.data}/>
+				);
 			}
 		}
 
@@ -254,7 +247,7 @@ describe('Stateful Component updates', () => {
 
 		// C is real component which does the job
 		// C is the one that gets unmounted...
-		class C extends Component {
+		class C extends Component<any, any> {
 			constructor(props) {
 				super(props);
 
@@ -278,7 +271,7 @@ describe('Stateful Component updates', () => {
 						{this.props.data.test + ''}
 						{this.state.b + ''}
 					</div>
-				)
+				);
 			}
 		}
 
@@ -304,7 +297,7 @@ describe('Stateful Component updates', () => {
 		let updateCaller = null;
 
 		// This parent is used for setting up Test scenario, not much related
-		class Parent extends Component {
+		class Parent extends Component<any, any> {
 			constructor(props) {
 				super(props);
 			}
@@ -312,14 +305,14 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						<A></A>
+						<A/>
 					</div>
-				)
+				);
 			}
 		}
 
 		// A component holds all the stuff together
-		class A extends Component {
+		class A extends Component<any, any> {
 			constructor(props) {
 				super(props);
 
@@ -344,21 +337,21 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						<B data={this.state.obj}></B>
+						<B data={this.state.obj}/>
 					</div>
-				)
+				);
 			}
 		}
 		// B has direct child C, B Is simple wrapper component
-		class B extends Component {
+		class B extends Component<any, any> {
 			constructor(props) {
 				super(props);
 			}
 
 			render() {
 				return (
-					<C data={this.props.data}></C>
-				)
+					<C data={this.props.data}/>
+				);
 			}
 		}
 
@@ -366,7 +359,7 @@ describe('Stateful Component updates', () => {
 
 		// C is real component which does the job
 		// C is the one that gets unmounted...
-		class C extends Component {
+		class C extends Component<any, any> {
 			constructor(props) {
 				super(props);
 
@@ -390,7 +383,7 @@ describe('Stateful Component updates', () => {
 						{this.props.data.test + ''}
 						{this.state.b + ''}
 					</div>
-				)
+				);
 			}
 		}
 
@@ -419,11 +412,10 @@ describe('Stateful Component updates', () => {
 	it('Should keep order of nodes', () => {
 		let setItems = null;
 
-		class InnerComponentToGetUnmounted extends Component {
+		class InnerComponentToGetUnmounted extends Component<any, any> {
 			constructor(props) {
 				super(props);
 			}
-
 
 			render() {
 				return (
@@ -444,17 +436,16 @@ describe('Stateful Component updates', () => {
 			}
 		}
 
-		const DropdownItem = ({children}) => (
+		const DropdownItem = ({ children }) => (
 			<li>{children}</li>
 		);
 
-		class Looper extends Component {
+		class Looper extends Component<any, any> {
 			constructor(props) {
 				super(props);
 
 				this.state = {
-					items: [
-					]
+					items: []
 				};
 
 				this.setItems = this.setItems.bind(this);
@@ -472,10 +463,10 @@ describe('Stateful Component updates', () => {
 				return (
 					<div>
 						<ul>
-							{this.state.items.map(function (item, i) {
+							{this.state.items.map(function(item, i) {
 								return (
 									<DropdownItem key={item.value}>
-										<InnerComponentToGetUnmounted key={0} i={i} value={item.value}></InnerComponentToGetUnmounted>
+										<InnerComponentToGetUnmounted key={0} i={i} value={item.value}/>
 										<span key={1}>{item.text}</span>
 									</DropdownItem>
 								);
@@ -489,25 +480,25 @@ describe('Stateful Component updates', () => {
 		render(<Looper />, container);
 		expect(container.innerHTML).to.equal('<div><ul></ul></div>');
 		setItems([
-			{value: 'val1', text: 'key1'},
-			{value: 'val2', text: 'key2'},
-			{value: 'val3', text: 'key3'},
-			{value: 'val4', text: 'key4'}
+			{ value: 'val1', text: 'key1' },
+			{ value: 'val2', text: 'key2' },
+			{ value: 'val3', text: 'key3' },
+			{ value: 'val4', text: 'key4' }
 		]);
 
 		expect(container.innerHTML).to.equal('<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>');
 
 		setItems([
-			{value: 'val2', text: 'key2'},
-			{value: 'val3', text: 'key3'}
+			{ value: 'val2', text: 'key2' },
+			{ value: 'val3', text: 'key3' }
 		]);
 		expect(container.innerHTML).to.equal('<div><ul><li><div class="common-root"><div>DIVval2</div></div><span>key2</span></li><li><div class="common-root"><span>SPANval3</span></div><span>key3</span></li></ul></div>');
 
 		setItems([
-			{value: 'val1', text: 'key1'},
-			{value: 'val2', text: 'key2'},
-			{value: 'val3', text: 'key3'},
-			{value: 'val4', text: 'key4'}
+			{ value: 'val1', text: 'key1' },
+			{ value: 'val2', text: 'key2' },
+			{ value: 'val3', text: 'key3' },
+			{ value: 'val4', text: 'key4' }
 		]);
 		expect(container.innerHTML).to.equal('<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>');
 	});
@@ -516,15 +507,17 @@ describe('Stateful Component updates', () => {
 		let updater = null;
 		const stuff = [<div >{['Test']}</div>, <span>1</span>];
 		const orig = [[<span ref={function(){}}>{'1'}</span>]];
-		class Stuff extends Component {
+		class Stuff extends Component<any, any> {
 			constructor(props) {
 				super(props);
 
 				this.state = {
-					stuff: stuff
+					stuff
 				};
 
-				updater = (stuff) => {this.setState({stuff: stuff})}
+				updater = (_stuff) => {
+					this.setState({ stuff: _stuff });
+				};
 			}
 
 			render() {
@@ -534,7 +527,7 @@ describe('Stateful Component updates', () => {
 							{this.state.stuff}
 						</div>
 					</div>
-				)
+				);
 			}
 		}
 

@@ -1,19 +1,20 @@
+import { expect } from 'chai';
 import { render } from './../rendering';
 import Component from './../../component/es2015';
 import { isNullOrUndef } from '../../shared';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
-const sinon = require('sinon/pkg/sinon');
+import sinon = require('sinon');
 
 describe('Columns like tests - (JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		container.innerHTML = '';
 	});
 
@@ -23,76 +24,76 @@ describe('Columns like tests - (JSX)', () => {
 				{
 					name: 'add one column -' + suffix,
 					initial: [
-						Row(1, Item(1,1), Item(2,2)),
-						Row(2, Item(3,3), Item(4,4))
+						Row(1, Item(1, 1), Item(2, 2)),
+						Row(2, Item(3, 3), Item(4, 4))
 					],
 					update: [
-						Row(1, Item(1,1), Item(2,2)),
-						Row(2, Item(3,3), Item(4,4)),
-						Row(3, Item(5,5))
+						Row(1, Item(1, 1), Item(2, 2)),
+						Row(2, Item(3, 3), Item(4, 4)),
+						Row(3, Item(5, 5))
 					]
 				},
 				{
 					name: 'add one item -' + suffix,
 					initial: [
-						Row(1, Item(1,1), Item(2,2)),
-						Row(2, Item(3,3), Item(4,4))
+						Row(1, Item(1, 1), Item(2, 2)),
+						Row(2, Item(3, 3), Item(4, 4))
 					],
 					update: [
-						Row(1, Item(1,1), Item(2,2), Item(5,5)),
-						Row(2, Item(3,3), Item(4,4))
+						Row(1, Item(1, 1), Item(2, 2), Item(5, 5)),
+						Row(2, Item(3, 3), Item(4, 4))
 					]
 				},
 				{
 					name: 'add one column and item -' + suffix,
 					initial: [
-						Row(1, Item(1,1), Item(2,2)),
-						Row(2, Item(3,3), Item(4,4))
+						Row(1, Item(1, 1), Item(2, 2)),
+						Row(2, Item(3, 3), Item(4, 4))
 					],
 					update: [
-						Row(1, Item(1,1), Item(2,2)),
-						Row(2, Item(3,3), Item(4,4), Item(6,6)),
-						Row(3, Item(5,5))
+						Row(1, Item(1, 1), Item(2, 2)),
+						Row(2, Item(3, 3), Item(4, 4), Item(6, 6)),
+						Row(3, Item(5, 5))
 					]
 				},
 				{
 					name: 'swap all items -' + suffix,
 					initial: [
-						Row(1, Item(1,1), Item(2,2)),
-						Row(2, Item(3,3), Item(4,4))
+						Row(1, Item(1, 1), Item(2, 2)),
+						Row(2, Item(3, 3), Item(4, 4))
 					],
 					update: [
-						Row(1, Item(2,2), Item(1,1)),
-						Row(2, Item(4,4), Item(3,3))
+						Row(1, Item(2, 2), Item(1, 1)),
+						Row(2, Item(4, 4), Item(3, 3))
 					]
 				},
 				{
 					name: 'remove first item -' + suffix,
 					initial: [
-						Row(1, Item(1,1), Item(2,2)),
-						Row(2, Item(3,3), Item(4,4))
+						Row(1, Item(1, 1), Item(2, 2)),
+						Row(2, Item(3, 3), Item(4, 4))
 					],
 					update: [
-						Row(1, Item(2,2)),
-						Row(2, Item(4,4))
+						Row(1, Item(2, 2)),
+						Row(2, Item(4, 4))
 					]
 				},
 				{
 					name: 'remove last item -' + suffix,
 					initial: [
-						Row(1, Item(1,1), Item(2,2)),
-						Row(2, Item(3,3), Item(4,4))
+						Row(1, Item(1, 1), Item(2, 2)),
+						Row(2, Item(3, 3), Item(4, 4))
 					],
 					update: [
-						Row(1, Item(1,1)),
-						Row(2, Item(3,3))
+						Row(1, Item(1, 1)),
+						Row(2, Item(3, 3))
 					]
 				},
 				{
 					name: 'remove all items-' + suffix,
 					initial: [
-						Row(1, Item(1,1), Item(2,2)),
-						Row(2, Item(3,3), Item(4,4))
+						Row(1, Item(1, 1), Item(2, 2)),
+						Row(2, Item(3, 3), Item(4, 4))
 					],
 					update: [
 						Row(1),
@@ -102,11 +103,10 @@ describe('Columns like tests - (JSX)', () => {
 				{
 					name: 'remove all columns-' + suffix,
 					initial: [
-						Row(1, Item(1,1), Item(2,2)),
-						Row(2, Item(3,3), Item(4,4))
+						Row(1, Item(1, 1), Item(2, 2)),
+						Row(2, Item(3, 3), Item(4, 4))
 					],
-					update: [
-					]
+					update: []
 				}
 			];
 		}
@@ -127,9 +127,9 @@ describe('Columns like tests - (JSX)', () => {
 			return nodes;
 		}
 
-		function verifyRenderResult(columns, container) {
+		function verifyRenderResult(columns, _container) {
 			// Verify root
-			const root = container.firstChild;
+			const root = _container.firstChild;
 			const rootChildNodes = filterPlaceholders(root.childNodes);
 
 			expect(rootChildNodes.length).to.equal(columns.length);
@@ -145,7 +145,7 @@ describe('Columns like tests - (JSX)', () => {
 				// Skip first - its hardcoded
 				for (let j = 1; j < columnChildNodes.length; j++) {
 					let itemRoot = columnChildNodes[j];
-					expect(itemRoot.innerHTML).to.equal(columns[i].items[j-1].text.toString(), 'item content check');
+					expect(itemRoot.innerHTML).to.equal(columns[i].items[j - 1].text.toString(), 'item content check');
 				}
 			}
 		}
@@ -153,7 +153,7 @@ describe('Columns like tests - (JSX)', () => {
 		function getDifferentObjects(arr1, arr2) {
 			return arr1.filter(function(obj) {
 				return !arr2.some(function(obj2) {
-					return obj._testKey === obj2._testKey
+					return obj._testKey === obj2._testKey;
 				});
 			});
 		}
@@ -161,7 +161,7 @@ describe('Columns like tests - (JSX)', () => {
 		function getSameObjects(arr1, arr2) {
 			return arr1.filter(function(obj) {
 				return arr2.some(function(obj2) {
-					return obj._testKey === obj2._testKey
+					return obj._testKey === obj2._testKey;
 				});
 			});
 		}
@@ -169,33 +169,35 @@ describe('Columns like tests - (JSX)', () => {
 		describe('columns KEYED', () => {
 			// Item Keyed
 			function BuildItemKeyed(key, text) {
-				return {_testKey: key, id: key, text: text}
+				return { _testKey: key, id: key, text };
 			}
 
 			// Row Keyed
 			function BuildRowKeyed(key, ...items) {
-				return {_testKey: key, id: key, items: items}
+				return { _testKey: key, id: key, items };
 			}
 
 			const keyedTests = buildTestCases(BuildRowKeyed, BuildItemKeyed, 'KEYED');
 
-			class ItemKeyed extends Component {
+			class ItemKeyed extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
+
 				render() {
 					return (
 						<div>
 							{this.props.text}
 						</div>
-					)
+					);
 				}
 			}
 
-			class ColumnKeyed extends Component {
+			class ColumnKeyed extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
+
 				render() {
 					const items = this.props.items;
 
@@ -204,13 +206,13 @@ describe('Columns like tests - (JSX)', () => {
 							<span>column</span>
 							{items.map((item) => <ItemKeyed key={item.id} text={item.text}/>)}
 						</div>
-					)
+					);
 				}
 			}
 
-			const ViewKeyed = ({columns}) => (
+			const ViewKeyed = ({ columns }) => (
 				<div>
-					{columns.map((column) => <ColumnKeyed key={column.id} items={column.items} />)}
+					{columns.map((column) => <ColumnKeyed key={column.id} items={column.items}/>)}
 				</div>
 			);
 
@@ -274,7 +276,7 @@ describe('Columns like tests - (JSX)', () => {
 					}
 
 					// Do initial render
-					render(<ViewKeyed columns={testCase.initial} />, container);
+					render(<ViewKeyed columns={testCase.initial}/>, container);
 					verifyRenderResult(testCase.initial, container);
 					expect(mountedColumnSpy.callCount).to.equal(testCase.initial.length, 'Column Initial MOUNT'); // Initial all mounted
 					expect(unmountColumnSpy.callCount).to.equal(0, 'Column Initial unMount'); // Initial render none unmounted
@@ -293,7 +295,7 @@ describe('Columns like tests - (JSX)', () => {
 					unmountItemSpy.reset();
 
 					// Do update
-					render(<ViewKeyed columns={testCase.update} />, container);
+					render(<ViewKeyed columns={testCase.update}/>, container);
 					verifyRenderResult(testCase.update, container);
 
 					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length); // mount count should equal to added count
@@ -306,52 +308,53 @@ describe('Columns like tests - (JSX)', () => {
 			});
 		});
 
-
 		describe('columns NON-KEYED', () => {
 			// Item Keyed
 			function BuildItem(key, text) {
-				return {_testKey: key, text: text}
+				return { _testKey: key, text };
 			}
 
 			// Row Keyed
 			function BuildRow(key, ...items) {
-				return {_testKey: key, items: items}
+				return { _testKey: key, items };
 			}
 
 			const nonKeyedTestCases = buildTestCases(BuildRow, BuildItem, 'NON-KEYED');
 
-			class Item extends Component {
+			class Item extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
+
 				render() {
 					return (
 						<div>
 							{this.props.text}
 						</div>
-					)
+					);
 				}
 			}
 
-			class Column extends Component {
+			class Column extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
+
 				render() {
 					const items = this.props.items;
 
 					return (
 						<div>
 							<span>column</span>
-							{items.map((item) => <Item text={item.text} />)}
+							{items.map((item) => <Item text={item.text}/>)}
 						</div>
-					)
+					);
 				}
 			}
 
-			const View = ({columns}) => (
+			const View = ({ columns }) => (
 				<div>
-					{columns.map((column) => <Column items={column.items} />)}
+					{columns.map((column) => <Column items={column.items}/>)}
 				</div>
 			);
 
@@ -415,7 +418,7 @@ describe('Columns like tests - (JSX)', () => {
 					}
 
 					// Do initial render
-					render(<View columns={testCase.initial} />, container);
+					render(<View columns={testCase.initial}/>, container);
 					verifyRenderResult(testCase.initial, container);
 					expect(mountedColumnSpy.callCount).to.equal(testCase.initial.length, 'Column Initial MOUNT'); // Initial all mounted
 					expect(unmountColumnSpy.callCount).to.equal(0, 'Column Initial unMount'); // Initial render none unmounted
@@ -434,7 +437,7 @@ describe('Columns like tests - (JSX)', () => {
 					unmountItemSpy.reset();
 
 					// Do update
-					render(<View columns={testCase.update} />, container);
+					render(<View columns={testCase.update}/>, container);
 					verifyRenderResult(testCase.update, container);
 
 					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length); // mount count should equal to added count
@@ -450,49 +453,51 @@ describe('Columns like tests - (JSX)', () => {
 		describe('columns ARRAYS', () => {
 			// Item Keyed
 			function BuildItem(key, text) {
-				return {_testKey: key, text: text}
+				return { _testKey: key, text };
 			}
 
 			// Row Keyed
 			function BuildRow(key, ...items) {
-				return {_testKey: key, items: items}
+				return { _testKey: key, items };
 			}
 
 			const arrayTestCases = buildTestCases(BuildRow, BuildItem, 'ARRAYS');
 
-			class Item extends Component {
+			class Item extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
+
 				render() {
 					return (
 						<div>
 							{this.props.text}
 						</div>
-					)
+					);
 				}
 			}
 
-			class Column extends Component {
+			class Column extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
+
 				render() {
 					const items = this.props.items;
 
-					return items.map((item) => <Item text={item.text} />);
+					return items.map((item) => <Item text={item.text}/>);
 				}
 			}
 
-			const View = ({columns}) => (
+			const View = ({ columns }) => (
 				<div>
-					{columns.map((column) => <Column items={column.items} />)}
+					{columns.map((column) => <Column items={column.items}/>)}
 				</div>
 			);
 
-			function verifyRenderResultArrays(columns, container) {
+			function verifyRenderResultArrays(columns, _container) {
 				// Verify root
-				const root = container.firstChild;
+				const root = _container.firstChild;
 				const rootChildNodes = filterPlaceholders(root.childNodes);
 
 				let counter = 0;
@@ -566,7 +571,7 @@ describe('Columns like tests - (JSX)', () => {
 					}
 
 					// Do initial render
-					render(<View columns={testCase.initial} />, container);
+					render(<View columns={testCase.initial}/>, container);
 					verifyRenderResultArrays(testCase.initial, container);
 					expect(mountedColumnSpy.callCount).to.equal(testCase.initial.length, 'Column Initial MOUNT'); // Initial all mounted
 					expect(unmountColumnSpy.callCount).to.equal(0, 'Column Initial unMount'); // Initial render none unmounted
@@ -585,7 +590,7 @@ describe('Columns like tests - (JSX)', () => {
 					unmountItemSpy.reset();
 
 					// Do update
-					render(<View columns={testCase.update} />, container);
+					render(<View columns={testCase.update}/>, container);
 					verifyRenderResultArrays(testCase.update, container);
 
 					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length, 'mount count');

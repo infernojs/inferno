@@ -1,5 +1,6 @@
+import { expect } from 'chai';
 import { render } from './../rendering';
-import Inferno from '../../testUtils/inferno';
+import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('HTML Form Elements', () => {
@@ -15,7 +16,7 @@ describe('HTML Form Elements', () => {
 
 	describe('After external change', () => {
 		it('Should update input check property', () => {
-			render(<input type="checkbox" checked={true} />, container);
+			render(<input type="checkbox" checked={true}/>, container);
 			expect(container.innerHTML).to.equal('<input type="checkbox">');
 			expect(container.firstChild.checked).to.equal(true);
 
@@ -32,13 +33,13 @@ describe('HTML Form Elements', () => {
 			// New Render
 			//
 
-			render(<input type="checkbox" checked={true} />, container);
+			render(<input type="checkbox" checked={true}/>, container);
 			expect(container.innerHTML).to.equal('<input type="checkbox">');
 			expect(container.firstChild.checked).to.equal(true);
 		});
 
 		it('Should update textarea value', () => {
-			render(<textarea value="Hey People" />, container);
+			render(<textarea value="Hey People"/>, container);
 			expect(container.innerHTML).to.equal('<textarea></textarea>');
 			expect(container.firstChild.value).to.equal("Hey People");
 
@@ -55,7 +56,7 @@ describe('HTML Form Elements', () => {
 			// New Render
 			//
 
-			render(<textarea value="Hey People" />, container);
+			render(<textarea value="Hey People"/>, container);
 			expect(container.innerHTML).to.equal('<textarea></textarea>');
 			expect(container.firstChild.value).to.equal("Hey People");
 
@@ -63,13 +64,13 @@ describe('HTML Form Elements', () => {
 			// New Render, new value
 			//
 
-			render(<textarea value="Hey People again" />, container);
+			render(<textarea value="Hey People again"/>, container);
 			expect(container.innerHTML).to.equal('<textarea></textarea>');
 			expect(container.firstChild.value).to.equal("Hey People again");
 		});
 
 		it('Should update text input value', () => {
-			render(<input type="text" value="Hey People" />, container);
+			render(<input type="text" value="Hey People"/>, container);
 			expect(container.innerHTML).to.equal('<input type="text">');
 			expect(container.firstChild.value).to.equal("Hey People");
 
@@ -86,7 +87,7 @@ describe('HTML Form Elements', () => {
 			// New Render
 			//
 
-			render(<input type="text" value="Hey People" />, container);
+			render(<input type="text" value="Hey People"/>, container);
 			expect(container.innerHTML).to.equal('<input type="text">');
 			expect(container.firstChild.value).to.equal("Hey People");
 
@@ -94,7 +95,7 @@ describe('HTML Form Elements', () => {
 			// New Render, new value
 			//
 
-			render(<input type="text" value="Hey People again" />, container);
+			render(<input type="text" value="Hey People again"/>, container);
 			expect(container.innerHTML).to.equal('<input type="text">');
 			expect(container.firstChild.value).to.equal("Hey People again");
 		});
@@ -102,7 +103,7 @@ describe('HTML Form Elements', () => {
 		it('Should update radio button', () => {
 			render(
 				<div>
-					<input type="radio" name="gender" value="male" checked /> Male
+					<input type="radio" name="gender" value="male" checked/> Male
 					<input type="radio" name="gender" value="female"/> Female
 					<input type="radio" name="gender" value="other"/> Other
 				</div>, container);
@@ -124,7 +125,7 @@ describe('HTML Form Elements', () => {
 
 			render(
 				<div>
-					<input type="radio" name="gender" value="male" checked /> Male
+					<input type="radio" name="gender" value="male" checked/> Male
 					<input type="radio" name="gender" value="female"/> Female
 					<input type="radio" name="gender" value="other"/> Other
 				</div>, container);
@@ -132,14 +133,13 @@ describe('HTML Form Elements', () => {
 			expect(container.firstChild.firstChild.value).to.equal("male");
 			expect(container.firstChild.firstChild.checked).to.equal(true, 'this fails');
 
-
 			//
 			// New Render, new value
 			//
 
 			render(
 				<div>
-					<input type="radio" name="gender" value="male" /> Male
+					<input type="radio" name="gender" value="male"/> Male
 					<input type="radio" name="gender" checked value="female"/> Female
 					<input type="radio" name="gender" value="other"/> Other
 				</div>, container);
