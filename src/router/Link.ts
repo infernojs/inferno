@@ -1,8 +1,8 @@
-import { createVElement, IProps } from '../core/shapes';
+import { createVElement } from '../core/shapes';
 
 export default function Link(props, { router }) {
 	const { activeClassName, activeStyle, className, to } = props;
-	const elemProps: IProps = {
+	const elemProps: any = {
 		href: to
 	};
 

@@ -3,7 +3,7 @@ import pathToRegExp0 from 'path-to-regexp';
 import pathToRegExp1 = require('path-to-regexp');
 
 const pathToRegExp: any = pathToRegExp0 || pathToRegExp1;
-const cache: Map = new Map();
+const cache: Map<string, IMatchRegex> = new Map();
 const emptyObject: Object = {};
 
 function decode(val: any): any {
