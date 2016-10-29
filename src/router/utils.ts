@@ -28,10 +28,7 @@ export function matchPath(end, routePath, urlPath, parentParams?) {
 	}
 
 	const path = m[0];
-	const params = emptyObject;
-	if (parentParams) {
-		Object.assign(params, parentParams);
-	}
+	const params = Object.assign({}, parentParams);
 
 	for (let i = 1; i < m.length; i += 1) {
 		params[regexp.keys[i - 1].name] = decode(m[i]);
