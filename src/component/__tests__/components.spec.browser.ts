@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import { render } from './../../DOM/rendering';
 import Component from './../es2015';
 import createElement from './../../factories/createElement';
@@ -20,7 +21,7 @@ describe('Components (non-JSX)', () => {
 		render(null, container);
 	});
 
-	class BasicComponent1 extends Component {
+	class BasicComponent1 extends Component<any, any> {
 		render() {
 			const template = (name, title) =>
 				createElement('div', {
@@ -38,7 +39,7 @@ describe('Components (non-JSX)', () => {
 		let template = (Component, title) =>
 			createElement('div', null,
 				createElement(Component, {
-					title: title,
+					title,
 					name: 'basic-render'
 				})
 			);
@@ -100,7 +101,7 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('The title is 1234');
 	});
 
-	class BasicComponent1b extends Component {
+	class BasicComponent1b extends Component<any, any> {
 		render() {
 			const template = (isChecked, title) =>
 				createElement('div', {
@@ -150,7 +151,7 @@ describe('Components (non-JSX)', () => {
 		expect(container.querySelector('input').checked).to.equal(false);
 	});
 
-	class BasicComponent1c extends Component {
+	class BasicComponent1c extends Component<any, any> {
 		render() {
 			const template = (isEnabled, title, type) =>
 				createElement('div', {
@@ -197,7 +198,7 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.textContent).to.equal('The title is abc');
 	});
 
-	class BasicComponent1d extends Component {
+	class BasicComponent1d extends Component<any, any> {
 		render() {
 			const template = (isDisabled, title) =>
 				createElement('div', { className: 'basic' },
@@ -324,7 +325,7 @@ describe('Components (non-JSX)', () => {
 		);
 	});
 
-	class BasicComponent2 extends Component {
+	class BasicComponent2 extends Component<any, any> {
 		render() {
 			const template = (name, title, children) =>
 					createElement('div', {
@@ -349,7 +350,6 @@ describe('Components (non-JSX)', () => {
 					},
 					createElement('span', null, 'I\'m a child')
 				)
-
 			);
 
 		render(template(BasicComponent2, 'abc', 'basic-render'), container);
@@ -369,7 +369,6 @@ describe('Components (non-JSX)', () => {
 
 		render(
 			template(BasicComponent2, '123', 'basic-update'), container
-
 		);
 		expect(
 			container.innerHTML
@@ -378,7 +377,6 @@ describe('Components (non-JSX)', () => {
 		);
 		render(
 			template(BasicComponent2, '1234', 'basic-update'), container
-
 		);
 		expect(
 			container.innerHTML
@@ -387,7 +385,7 @@ describe('Components (non-JSX)', () => {
 		);
 	});
 
-	class BasicComponent2b extends Component {
+	class BasicComponent2b extends Component<any, any> {
 		render() {
 			const template = (children) =>
 					createElement('div', null,
@@ -399,7 +397,7 @@ describe('Components (non-JSX)', () => {
 		}
 	}
 
-	class BasicComponent2c extends Component {
+	class BasicComponent2c extends Component<any, any> {
 		render() {
 			const template = (children) =>
 					createElement('div', null,
@@ -411,7 +409,7 @@ describe('Components (non-JSX)', () => {
 		}
 	}
 
-	class BasicComponent3 extends Component {
+	class BasicComponent3 extends Component<any, any> {
 		render() {
 			const template = (styles, title) =>
 					createElement('div', {
@@ -431,7 +429,7 @@ describe('Components (non-JSX)', () => {
 		it('should render a basic component with styling', () => {
 
 			let template = (Component, props) =>
-					createElement(Component, props);
+				createElement(Component, props);
 
 			render(template(BasicComponent3, {
 				title: 'styled!',
@@ -538,15 +536,16 @@ describe('Components (non-JSX)', () => {
 		let template;
 		let componentWillMountCount;
 
-		class ComponentLifecycleCheck extends Component {
+		class ComponentLifecycleCheck extends Component<any, any> {
 			render() {
-				const template = (children) =>
+				const _template = (children) =>
 					createElement('div', null,
 						createElement('span', null, 'component!'),
 						createElement('div', null, children)
 					);
-				return template(this.props.children);
+				return _template(this.props.children);
 			}
+
 			componentWillMount() {
 				componentWillMountCount++;
 			}
@@ -612,17 +611,19 @@ describe('Components (non-JSX)', () => {
 		let unmountCount;
 		let template;
 
-		class ComponentLifecycleCheck extends Component {
+		class ComponentLifecycleCheck extends Component<any, any> {
 			render() {
-				const template = () =>
+				const _template = () =>
 					createElement('div', null,
 						createElement('span', null)
 					);
-				return template();
+				return _template();
 			}
+
 			componentDidMount() {
 				mountCount++;
 			}
+
 			componentWillUnmount() {
 				unmountCount++;
 			}
@@ -643,15 +644,17 @@ describe('Components (non-JSX)', () => {
 		let mountCount;
 		let unmountCount;
 
-		class ComponentLifecycleCheck extends Component {
+		class ComponentLifecycleCheck extends Component<any, any> {
 			render() {
 				return createElement('div', null,
 					createElement('span', null)
 				);
 			}
+
 			componentDidMount() {
 				mountCount++;
 			}
+
 			componentWillUnmount() {
 				unmountCount++;
 			}
@@ -672,27 +675,25 @@ describe('Components (non-JSX)', () => {
 
 	describe('state changes should trigger all lifecycle events for an update', () => {
 		let componentWillMountCount;
-		let shouldComponentUpdateCount;
-		let componentDidUpdateCount;
-		let componentWillUpdateCount;
-		let componentWillReceivePropsCount;
 		let template;
 
-		class ComponentLifecycleCheck extends Component {
+		class ComponentLifecycleCheck extends Component<any, any> {
 			constructor() {
 				super(null);
 				this.state = {
 					counter: 0
 				};
 			}
+
 			render() {
-				const template = (counter) =>
+				const _template = (counter) =>
 						createElement('div', null,
 							createElement('span', {}, counter)
 						)
 					;
-				return template(this.state.counter);
+				return _template(this.state.counter);
 			}
+
 			componentWillMount() {
 				componentWillMountCount++;
 				this.setState({
@@ -727,36 +728,41 @@ describe('Components (non-JSX)', () => {
 		let componentWillUpdateCount;
 		let template;
 
-		class ComponentLifecycleCheck extends Component {
+		class ComponentLifecycleCheck extends Component<any, any> {
 			constructor() {
 				super(null);
 				this.state = {
 					counter: 0
 				};
 			}
+
 			render() {
-				const template = (counter) =>
+				const _template = (counter) =>
 						createElement('div', null,
 							createElement('span', {}, counter)
 						)
 					;
-				return template(this.state.counter);
+				return _template(this.state.counter);
 			}
+
 			componentWillMount() {
 				componentWillMountCount++;
 				setTimeout(() => {
 					this.setState({
 						counter: this.state.counter + 1
 					});
-				}, 1)
+				}, 1);
 			}
+
 			shouldComponentUpdate() {
 				shouldComponentUpdateCount++;
 				return true;
 			}
+
 			componentDidUpdate() {
 				componentDidUpdateCount++;
 			}
+
 			componentWillUpdate() {
 				componentWillUpdateCount++;
 			}
@@ -794,27 +800,27 @@ describe('Components (non-JSX)', () => {
 	});
 
 	describe('should render a basic component with conditional fragment', () => {
-		const tpl3625453295 = function () {
+		const tpl3625453295 = function() {
 			return createElement('h1', null, 'BIG');
 		};
-		const tpl4021787591 = function () {
+		const tpl4021787591 = function() {
 			return createElement('h2', null, 'small');
 		};
 
-		class conditionalComponent extends Component {
+		class ConditionalComponent extends Component<any, any> {
 			render() {
-				return createElement('div', null, [ this.props.condition ? tpl3625453295() : tpl4021787591(),
+				return createElement('div', null, [this.props.condition ? tpl3625453295() : tpl4021787591(),
 					createElement('p', null, 'test')
 				]);
 			}
 		}
 
 		it('Initial render (creation)', () => {
-			render(createElement(conditionalComponent, { condition: true }), container);
+			render(createElement(ConditionalComponent, { condition: true }), container);
 			expect(container.innerHTML).to.equal(
 				'<div><h1>BIG</h1><p>test</p></div>'
 			);
-			render(createElement(conditionalComponent, { condition: false }), container);
+			render(createElement(ConditionalComponent, { condition: false }), container);
 			expect(container.innerHTML).to.equal(
 				'<div><h2>small</h2><p>test</p></div>'
 			);
@@ -822,21 +828,21 @@ describe('Components (non-JSX)', () => {
 	});
 
 	describe('should render a basic component with a list of values from state', () => {
-		const tpl2026545261 = function (v0) {
+		const tpl2026545261 = function(v0) {
 			return createElement('ul', { class: 'login-organizationlist' },
 				'',
 				v0,
 				''
 			);
 		};
-		const tpl3192647933 = function (v0) {
+		const tpl3192647933 = function(v0) {
 			return createElement('li', null, v0);
 		};
-		const tpl1546018623 = function (v0) {
+		const tpl1546018623 = function(v0) {
 			return createElement(v0);
 		};
 
-		class valueComponent extends Component {
+		class ValueComponent extends Component<any, any> {
 			constructor(props) {
 				super(props);
 				this.state = {
@@ -850,23 +856,24 @@ describe('Components (non-JSX)', () => {
 					]
 				};
 			}
+
 			render() {
-				return tpl2026545261(this.state.organizations.map(function (result) {
+				return tpl2026545261(this.state.organizations.map(function(result) {
 					return tpl3192647933(result.name);
 				}));
 			}
 		}
 
 		it('Initial render (creation)', () => {
-			render(tpl1546018623(valueComponent), container);
+			render(tpl1546018623(ValueComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
 			);
-			render(tpl1546018623(valueComponent), container);
+			render(tpl1546018623(ValueComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
 			);
-			render(tpl1546018623(valueComponent), container);
+			render(tpl1546018623(ValueComponent), container);
 			expect(container.innerHTML).to.equal(
 				'<ul class="login-organizationlist"><li>test1</li><li>test2</li><li>test3</li><li>test4</li><li>test5</li><li>test6</li></ul>'
 			);
@@ -878,23 +885,23 @@ describe('Components (non-JSX)', () => {
 		title
 	}) {
 
-		const template = (name, title) =>
+		const template = (_name, _title) =>
 				createElement('div', {
 						className: 'basic'
 					},
 					createElement('span', {
-						className: name
-					}, 'The title is ', title)
+						className: _name
+					}, 'The title is ', _title)
 				)
 			;
 		return template(name, title);
 	}
 
 	it('should render a stateless component', () => {
-		let template = (Component, title) =>
+		let template = (Component, title?) =>
 				createElement('div', null,
 					createElement(Component, {
-						title: title,
+						title,
 						name: 'Hello, World!'
 					})
 				)
@@ -930,27 +937,27 @@ describe('Components (non-JSX)', () => {
 	});
 
 	describe('should render a component with a conditional state item', () => {
-		const tpl3578458729 = function (v0) {
+		const tpl3578458729 = function(v0) {
 			return createElement('div', { className: 'login-view bg-visma' }, v0);
 		};
-		const tpl188998005 = function () {
+		const tpl188998005 = function() {
 			return createElement('div', null, 'VISIBLE');
 		};
 
-		const tpl3754840163 = function (v0) {
+		const tpl3754840163 = function(v0) {
 			return createElement('div', null,
 				createElement('button', { onclick: v0 }, 'Make visible')
 			);
 		};
 
-		class TEST extends Component {
+		class TEST extends Component<any, any> {
 			constructor(props) {
 				super(props);
 				this.state = {
 					show: false
 				};
 
-				this.makeVisible = function () {
+				this.makeVisible = function() {
 					this.setState({
 						show: true
 					});
@@ -958,9 +965,9 @@ describe('Components (non-JSX)', () => {
 			}
 
 			render() {
-				return tpl3578458729((function () {
+				return tpl3578458729((function() {
 					if (this.state.show === true) {
-						return tpl188998005(null);
+						return tpl188998005();
 					} else {
 						return tpl3754840163(this.makeVisible);
 					}
@@ -968,7 +975,7 @@ describe('Components (non-JSX)', () => {
 			}
 		}
 
-		const tpl79713834 = function (v0) {
+		const tpl79713834 = function(v0) {
 			return createElement(v0);
 		};
 
@@ -1000,7 +1007,7 @@ describe('Components (non-JSX)', () => {
 	});
 
 	describe('should render a component with a list of divs', () => {
-		const BaseView = function (v0, v1) {
+		const BaseView = function(v0, v1) {
 			return createElement('div', { class: 'login-view' },
 				createElement('button', { onclick: v0 }, 'ADD'),
 				createElement('br'),
@@ -1008,28 +1015,28 @@ describe('Components (non-JSX)', () => {
 			);
 		};
 
-		const Looper = function (v0) {
+		const Looper = function(v0) {
 			return createElement('div', null,
 				createElement('h1', null, v0)
 			);
 		};
 
-		const starter = function (v0) {
+		const starter = function(v0) {
 			return createElement(v0);
 		};
 
-		class SomeError extends Component {
+		class SomeError extends Component<any, any> {
 			constructor(props) {
 				super(props);
 				this.state = {
-					list: [ 'SS', 'SS1' ]
+					list: ['SS', 'SS1']
 				};
 			}
 
 			render() {
 				/* eslint new-cap:0 */
-				return BaseView(this.toggle, (function () {
-					return this.state.list.map(function (result){
+				return BaseView(this.toggle, (function() {
+					return this.state.list.map(function(result) {
 						return Looper(result);
 					});
 				}).call(this));
@@ -1056,19 +1063,19 @@ describe('Components (non-JSX)', () => {
 	});
 
 	describe('should render a component with a list of text nodes', () => {
-		const root = function (children) {
+		const root = function(children) {
 			return createElement('div', null, children);
 		};
 
-		const header = function (children) {
+		const header = function(children) {
 			return createElement('div', null, children);
 		};
 
-		const view = function (state) {
+		const view = function(state) {
 			return root([
 				(state
 					? header(['Foo'])
-					: header([ 'Bar', 'Qux' ]))
+					: header(['Bar', 'Qux']))
 			]);
 		};
 
