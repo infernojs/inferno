@@ -2,18 +2,22 @@ import { isArray } from '../shared';
 import pathToRegExp0 from 'path-to-regexp';
 import pathToRegExp1 = require('path-to-regexp');
 
-const pathToRegExp = pathToRegExp0 || pathToRegExp1;
+const pathToRegExp: any = pathToRegExp0 || pathToRegExp1;
+const cache: Map = new Map();
+const emptyObject: Object = {};
 
-const cache = new Map();
-const emptyObject = {};
-
-function decode(val) {
+function decode(val: any): any {
 	return typeof val !== 'string' ? val : decodeURIComponent(val);
 }
 
-export function matchPath(end, routePath, urlPath, parentParams?) {
+interface IMatchRegex {
+	keys: any;
+	pattern: RegExp;
+}
+
+export function matchPath(end: boolean, routePath: string, urlPath: string, parentParams?): any {
 	const key = `${routePath}|${end}`;
-	let regexp = cache.get(key);
+	let regexp: IMatchRegex = cache.get(key);
 
 	if (!regexp) {
 		const keys = [];
@@ -27,7 +31,7 @@ export function matchPath(end, routePath, urlPath, parentParams?) {
 		return null;
 	}
 
-	const path = m[0];
+	const path: string = m[0];
 	const params = Object.assign({}, parentParams);
 
 	for (let i = 1; i < m.length; i += 1) {
@@ -40,7 +44,7 @@ export function matchPath(end, routePath, urlPath, parentParams?) {
 	};
 }
 
-function flattenArray(oldArray, newArray) {
+function flattenArray(oldArray: any, newArray: any): void {
 	for (let i = 0; i < oldArray.length; i++) {
 		const item = oldArray[i];
 
@@ -52,24 +56,24 @@ function flattenArray(oldArray, newArray) {
 	}
 }
 
-export function flatten(oldArray) {
+export function flatten(oldArray: any): any {
 	const newArray = [];
 
 	flattenArray(oldArray, newArray);
 	return newArray;
 }
 
-export function pathRankSort(a, b) {
+export function pathRankSort(a: any, b: any) {
 	const aAttr = a.props || emptyObject;
 	const bAttr = b.props || emptyObject;
 	const diff = rank(bAttr.path) - rank(aAttr.path);
 	return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
 }
 
-function strip(url) {
+function strip(url: string): string {
 	return url.replace(/(^\/+|\/+$)/g, '');
 }
 
-function rank(url = '') {
+function rank(url: string = ''): number {
 	return (strip(url).match(/\/+/g) || '').length;
 }

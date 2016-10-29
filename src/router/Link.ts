@@ -1,10 +1,13 @@
-import { createVElement } from '../core/shapes';
+import { createVElement, IProps } from '../core/shapes';
 
 export default function Link(props, { router }) {
 	const { activeClassName, activeStyle, className, to } = props;
-	const elemProps: any = { href: to };
+	const elemProps: IProps = {
+		href: to
+	};
+
 	if (className) {
-		elemProps.className = className;
+		elemProps.className = className as string;
 	}
 
 	if (router.location.pathname === to) {
@@ -12,7 +15,7 @@ export default function Link(props, { router }) {
 			elemProps.className = (className ? className + ' ' : '') + activeClassName;
 		}
 		if (activeStyle) {
-			elemProps.style = Object.assign({}, props.style, activeStyle);
+			elemProps.style = Object.assign({}, props.style, activeStyle) as Object;
 		}
 	}
 
@@ -30,6 +33,5 @@ export default function Link(props, { router }) {
 		}
 	};
 
-	const element = createVElement('a', elemProps, props.children, null, null, null);
-	return element;
+	return createVElement('a', elemProps, props.children, null, null, null);
 }
