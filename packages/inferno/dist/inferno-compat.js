@@ -1,14 +1,15 @@
 /*!
- * inferno-compat v1.0.0-beta5
+ * inferno-compat v1.0.0-beta6
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('proptypes')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'proptypes'], factory) :
-	(factory((global.InfernoCompat = global.InfernoCompat || {}),global.PropTypes));
-}(this, (function (exports,PropTypes) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('./inferno-component'), require('proptypes')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'inferno-component', 'proptypes'], factory) :
+	(factory((global.InfernoCompat = global.InfernoCompat || {}),global.Component,global.PropTypes));
+}(this, (function (exports,Component,PropTypes) { 'use strict';
 
+Component = 'default' in Component ? Component['default'] : Component;
 PropTypes = 'default' in PropTypes ? PropTypes['default'] : PropTypes;
 
 var Lifecycle = function Lifecycle() {
@@ -1638,8 +1639,8 @@ function copyPropsTo(copyFrom, copyTo) {
         }
     }
 }
-function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
-    var instance = new Component(props, context);
+function createStatefulComponentInstance(Component$$1, props, context, isSVG, devToolsStatus) {
+    var instance = new Component$$1(props, context);
     instance.context = context;
     instance._patch = patch;
     instance._devToolsStatus = devToolsStatus;
@@ -2775,7 +2776,7 @@ function applyState(component, force, callback) {
         }
     }
 }
-var Component = function Component(props, context) {
+var Component$1 = function Component$1(props, context) {
     this.state = {};
     this.refs = {};
     this._processingSetState = false;
@@ -2801,15 +2802,15 @@ var Component = function Component(props, context) {
         this.componentDidMount = null;
     }
 };
-Component.prototype.render = function render (nextProps, nextContext) {
+Component$1.prototype.render = function render (nextProps, nextContext) {
 };
-Component.prototype.forceUpdate = function forceUpdate (callback) {
+Component$1.prototype.forceUpdate = function forceUpdate (callback) {
     if (this._unmounted) {
         throw Error(noOp);
     }
     applyState(this, true, callback);
 };
-Component.prototype.setState = function setState (newState, callback) {
+Component$1.prototype.setState = function setState (newState, callback) {
     if (this._unmounted) {
         throw Error(noOp);
     }
@@ -2823,24 +2824,24 @@ Component.prototype.setState = function setState (newState, callback) {
         throwError();
     }
 };
-Component.prototype.componentWillMount = function componentWillMount () {
+Component$1.prototype.componentWillMount = function componentWillMount () {
 };
-Component.prototype.componentDidMount = function componentDidMount () {
+Component$1.prototype.componentDidMount = function componentDidMount () {
 };
-Component.prototype.componentWillUnmount = function componentWillUnmount () {
+Component$1.prototype.componentWillUnmount = function componentWillUnmount () {
 };
-Component.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState, prevContext) {
+Component$1.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState, prevContext) {
 };
-Component.prototype.shouldComponentUpdate = function shouldComponentUpdate (nextProps, nextState, context) {
+Component$1.prototype.shouldComponentUpdate = function shouldComponentUpdate (nextProps, nextState, context) {
     return true;
 };
-Component.prototype.componentWillReceiveProps = function componentWillReceiveProps (nextProps, context) {
+Component$1.prototype.componentWillReceiveProps = function componentWillReceiveProps (nextProps, context) {
 };
-Component.prototype.componentWillUpdate = function componentWillUpdate (nextProps, nextState, nextContext) {
+Component$1.prototype.componentWillUpdate = function componentWillUpdate (nextProps, nextState, nextContext) {
 };
-Component.prototype.getChildContext = function getChildContext () {
+Component$1.prototype.getChildContext = function getChildContext () {
 };
-Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, context, force) {
+Component$1.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, context, force) {
     if (this._unmounted === true) {
         throw new Error('You can\'t update an unmounted component!');
     }
@@ -3144,11 +3145,11 @@ var Children = {
 
 var currentComponent = null;
 
-Component.prototype.isReactComponent = {};
-Component.prototype.beforeRender = function() {
+Component$1.prototype.isReactComponent = {};
+Component$1.prototype.beforeRender = function() {
 	currentComponent = this;
 };
-Component.prototype.afterRender = function() {
+Component$1.prototype.afterRender = function() {
 	currentComponent = null;
 };
 
@@ -3178,7 +3179,7 @@ var index = {
 	render: render$1,
 	isValidElement: isValidElement,
 	createElement: createElement,
-	Component: Component,
+	Component: Component$1,
 	unmountComponentAtNode: unmountComponentAtNode,
 	cloneElement: cloneElement,
 	PropTypes: PropTypes,
@@ -3206,7 +3207,7 @@ var index = {
 exports.render = render$1;
 exports.isValidElement = isValidElement;
 exports.createElement = createElement;
-exports.Component = Component;
+exports.Component = Component$1;
 exports.unmountComponentAtNode = unmountComponentAtNode;
 exports.cloneElement = cloneElement;
 exports.PropTypes = PropTypes;
