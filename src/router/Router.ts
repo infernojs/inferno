@@ -103,6 +103,6 @@ export default class Router extends Component<IRouterProps, any> {
 		}
 
 		const routes = toArray(children);
-		return getRoutes(routes, url || this.state.url, '');
+		return getRoutes(routes, url || this.state.url);
 	}
 }
