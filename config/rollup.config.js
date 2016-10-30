@@ -91,8 +91,8 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
 		sourceMap: false
 	};
 
-	const external = dependencies.concat(Object.keys(pack.dependencies || {}))
-	const virtuals = Object.keys(aliases)
+	const external = dependencies.concat(Object.keys(pack.dependencies || {}));
+	const virtuals = Object.keys(aliases);
 
 	// Skip bundling dependencies of each package
 	plugins = withNodeResolve(plugins, {

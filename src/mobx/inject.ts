@@ -1,6 +1,6 @@
 import hoistStatics from 'hoist-non-inferno-statics';
 import createClass from 'inferno-create-class';
-import { createVComponent } from '../core/shapes';
+import createElement from 'inferno-create-element';
 
 interface IProps {
 	ref: any;
@@ -24,11 +24,10 @@ function createStoreInjector (grabStoresFn, component) {
 			for ( let key in additionalProps ) {
 				newProps[ key ] = additionalProps[ key ];
 			}
-			newProps.children = this.props.children;
 			newProps.ref = instance => {
 				this.wrappedInstance = instance;
 			};
-			return createVComponent(component, newProps);
+			return createElement(component, newProps, this.props.children);
 		}
 	});
 

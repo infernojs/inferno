@@ -2,8 +2,8 @@ const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 
-module.exports.aliases = findAliases()
-module.exports.compilerAliases = changePaths(module.exports.aliases)
+module.exports.aliases = findAliases();
+module.exports.compilerAliases = changePaths(module.exports.aliases);
 
 /**
  * Finds aliases inside .babelrc
@@ -19,7 +19,7 @@ function findAliases(plugins) {
 			result = plugin[1].alias
 		}
 		return result;
-	}, {})
+	}, {});
 }
 
 /**
@@ -30,7 +30,7 @@ function findAliases(plugins) {
 function changePaths(hashmap) {
 	Object.keys(hashmap).forEach(key => {
 		hashmap[key] = hashmap[key].replace('./src', '../../src')
-	})
+	});
 	return hashmap;
 }
 

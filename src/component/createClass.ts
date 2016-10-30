@@ -1,4 +1,5 @@
-import Component, {ComponentSpec} from './es2015';
+import {ComponentSpec} from './es2015';
+import Component from 'inferno-component';
 import { isNullOrUndef } from '../shared';
 
 // don't autobind these methods since they already have guaranteed context.

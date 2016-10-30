@@ -1,10 +1,11 @@
-import { createVComponent } from '../core/shapes';
-import Component from '../component/es2015';
+import Component from 'inferno-component';
+import createElement from 'inferno-create-element';
 
 export interface IRouteProps {
-	onEnter?: (props?: any, router?: any) => Promise<any>;
-	onLeave?: (props?: any, router?: any) => Promise<any>;
 	params?: any;
+	onEnter?: any;
+	onLeave?: any;
+	children?: any;
 	component?: Component<any, any>;
 }
 
@@ -29,7 +30,7 @@ export default class Route extends Component<IRouteProps, any> {
 
 	render() {
 		const { component, children, params } = this.props;
-		return createVComponent(component, {
+		return createElement(component, {
 			params,
 			children
 		});

@@ -1,14 +1,15 @@
 /*!
- * inferno-router v1.0.0-beta5
+ * inferno-router v1.0.0-beta6
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.InfernoRouter = factory());
-}(this, (function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('./inferno-create-element')) :
+  typeof define === 'function' && define.amd ? define(['inferno-component', 'inferno-create-element'], factory) :
+  (global.InfernoRouter = factory(global.Component,global.createElement));
+}(this, (function (Component,createElement) { 'use strict';
 
+<<<<<<< HEAD
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 var isBrowser = typeof window !== 'undefined' && window.document;
@@ -2716,6 +2717,10 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
     }
     return NO_OP;
 };
+=======
+Component = 'default' in Component ? Component['default'] : Component;
+createElement = 'default' in createElement ? createElement['default'] : createElement;
+>>>>>>> dev
 
 var Route = (function (Component$$1) {
     function Route(props, context) {
@@ -2744,15 +2749,21 @@ var Route = (function (Component$$1) {
         var component = ref.component;
         var children = ref.children;
         var params = ref.params;
-        return createVComponent(component, {
+        return createElement(component, {
             params: params,
-            children: children,
             async: this.state.async
-        });
+        }, children);
     };
 
     return Route;
 }(Component));
+
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
+function isArray(obj) {
+    return obj instanceof Array;
+}
 
 /**
  * Expose `pathtoRegexp`.
@@ -2890,6 +2901,9 @@ var emptyObject = {};
 function decode(val) {
     return typeof val !== 'string' ? val : decodeURIComponent(val);
 }
+function isEmpty(children) {
+    return !children || !(isArray(children) ? children : Object.keys(children)).length;
+}
 function matchPath(end, routePath, urlPath, parentParams) {
     var key = routePath + "|" + end;
     var regexp = cache.get(key);
@@ -2927,6 +2941,7 @@ function rank(url) {
     return (strip(url).match(/\/+/g) || '').length;
 }
 
+<<<<<<< HEAD
 function getRoutes(_routes, url, lastPath) {
     if ( lastPath === void 0 ) lastPath = '';
 
@@ -2943,17 +2958,42 @@ function getRoutes(_routes, url, lastPath) {
         var match = matchPath(children ? false : true, fullPath, url.replace('//', '/'));
         if (match) {
             route.props.params = match.params;
+=======
+function getRoutes(routing, currentURL) {
+    var params = {};
+    function grabRoutes(_routes, url, lastPath) {
+        if (!_routes) {
+            return _routes;
+        }
+        var routes = toArray$$1(_routes);
+        routes.sort(pathRankSort);
+        for (var i = 0; i < routes.length; i++) {
+            var route = routes[i];
+            if (isArray(route)) {
+                return grabRoutes(route, url, lastPath);
+            }
+            var ref = route.props;
+            var children = ref.children;
+            var path = ref.path; if ( path === void 0 ) path = '/';
+            var fullPath = (lastPath + path).replace('//', '/');
+            var isLast = isEmpty(children);
+>>>>>>> dev
             if (children) {
-                route.props.children = getRoutes(children, url, fullPath);
+                route.props.children = grabRoutes(children, url, fullPath);
             }
-            if (route.instance) {
-                return route.type(route.instance.props, route.instance.context);
-            }
-            else {
-                return route;
+            var match = matchPath(isLast, fullPath, url.replace('//', '/'));
+            if (match) {
+                route.props.params = Object.assign(params, match.params);
+                if (route.instance) {
+                    return route.type(route.instance.props, route.instance.context);
+                }
+                else {
+                    return route;
+                }
             }
         }
     }
+    return grabRoutes(routing, currentURL, '');
 }
 var Router = (function (Component$$1) {
     function Router(props, context) {
@@ -3006,12 +3046,23 @@ var Router = (function (Component$$1) {
         if (matched) {
             return matched;
         }
+<<<<<<< HEAD
         var routes = toArray(children);
         return getRoutes(routes, url || this.state.url, '');
+=======
+        var routes = toArray$$1(children);
+        return getRoutes(routes, url || this.state.url);
+>>>>>>> dev
     };
 
     return Router;
 }(Component));
+<<<<<<< HEAD
+=======
+function toArray$$1(children) {
+    return isArray(children) ? children : (children ? [children] : children);
+}
+>>>>>>> dev
 
 function Link(props, ref) {
     var router = ref.router;
@@ -3048,7 +3099,7 @@ function Link(props, ref) {
             router.push(to, e.target.textContent);
         }
     };
-    return createVElement('a', elemProps, props.children, null, null, null);
+    return createElement('a', elemProps, props.children);
 }
 
 var index = {
