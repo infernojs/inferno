@@ -10,10 +10,10 @@ export interface IRouterProps {
 	component?: Component<any, any>;
 }
 
-export function getRoutes(routing, currentURL) {
+export function getRoutes(routing, currentURL: string) {
 	let params = {};
 
-	function grabRoutes(_routes, url, lastPath) {
+	function grabRoutes(_routes, url: string, lastPath: string) {
 		if (!_routes) {
 			return _routes;
 		}
