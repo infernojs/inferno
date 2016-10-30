@@ -40,7 +40,8 @@ import {
 	getPropFromOptElement,
 	createStatelessComponentInput,
 	copyPropsTo,
-	replaceVNode
+	replaceVNode,
+	replaceLastChildAndUnmount
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import {
@@ -83,11 +84,6 @@ import {
 	namespaces
 } from './constants';
 import { getIncrementalId, componentIdMap } from './devtools';
-
-function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
-	unmount(lastInput, null, lifecycle, false, shallowUnmount);
-}
 
 export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	if (lastInput !== nextInput) {
@@ -133,7 +129,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 				replaceVNode(parentDom, mountVText(nextInput, null), lastInput, shallowUnmount, lifecycle);
 			}
 		} else if (lastNodeType === TEXT) {
-			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
+			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 		} else if (nextNodeType === PLACEHOLDER) {
 			if (lastNodeType === PLACEHOLDER) {
 				patchVPlaceholder(lastInput, nextInput);
@@ -141,7 +137,7 @@ export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG
 				replaceVNode(parentDom, mountVPlaceholder(nextInput, null), lastInput, shallowUnmount, lifecycle);
 			}
 		} else if (lastNodeType === PLACEHOLDER) {
-			replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
+			replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError('bad input argument called on patch(). Input argument may need normalising.');

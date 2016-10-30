@@ -2,9 +2,9 @@ const webpack = require('webpack');
 const glob = require('glob');
 const path = require('path');
 
-const testFiles = glob.sync('./src/**/*__tests__*/**/*spec.browser.js')
-	.concat(glob.sync('./src/**/*__tests__*/**/*spec.jsx.js'))
-	.concat(glob.sync('./src/**/*__tests__*/**/*spec.ssr.js'));
+const testFiles = glob.sync('./src/**/*__tests__*/**/*spec.browser.ts')
+	.concat(glob.sync('./src/**/*__tests__*/**/*spec.tsx'))
+	.concat(glob.sync('./src/**/*__tests__*/**/*spec.ssr.ts'));
 
 module.exports = {
 	watch: true,
@@ -21,19 +21,11 @@ module.exports = {
 		loaders: [
 			// Perform babel transpiling on all non-source, test files.
 			{
-				test: /\.ts$/,
+				test: /\.tsx?$/,
 				exclude: [
 					path.resolve('node_modules/')
 				],
 				loaders: ['babel-loader', 'ts-loader']
-			},
-			{
-				test: /\.js$/,
-				exclude: [
-					path.resolve('node_modules/')
-				],
-				loader: 'babel-loader',
-				cacheDirectory: true
 			}
 		]
 	},
@@ -46,7 +38,7 @@ module.exports = {
 	
 	},
 	resolve: {
-		extensions: ['', '.js', '.ts']
+		extensions: ['', '.js', '.ts', '.tsx']
 	},
 	plugins: [
 		// By default, webpack does `n=>n` compilation with entry files. This concatenates

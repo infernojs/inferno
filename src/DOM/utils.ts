@@ -66,12 +66,33 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	return instance;
 }
 
+// export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
+
+// 	if (lastInput.nodeType === COMPONENT) {
+// 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
+// 		// accessing their DOM node is not useful to us here
+// 		lastInput = lastInput.instance._lastInput || lastInput.instance;
+// 	}
+// 	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
+// 	unmount(lastInput, null, lifecycle, false, shallowUnmount);
+// }
+
+export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
+	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
+}
+
 export function replaceVNode(parentDom, dom, vNode, shallowUnmount, lifecycle) {
 	// we cannot cache nodeType here as vNode might be re-assigned below
 	if (vNode.nodeType === COMPONENT) {
 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
 		// accessing their DOM node is not useful to us here
+		// #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
+		unmount(vNode, null, lifecycle, false, false);
 		vNode = vNode.instance._lastInput || vNode.instance;
+		// #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
+		if (vNode.nodeType !== FRAGMENT) {
+			shallowUnmount = true;
+		}
 	}
 	if (vNode.nodeType === FRAGMENT) {
 		replaceVFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
