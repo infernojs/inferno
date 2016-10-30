@@ -1,5 +1,6 @@
 import pathToRegExp0 from 'path-to-regexp';
 import pathToRegExp1 = require('path-to-regexp');
+import { isArray } from '../shared';
 
 const pathToRegExp: any = pathToRegExp0 || pathToRegExp1;
 const cache: Map<string, IMatchRegex> = new Map();
@@ -7,6 +8,10 @@ const emptyObject: Object = {};
 
 function decode(val: any): any {
 	return typeof val !== 'string' ? val : decodeURIComponent(val);
+}
+
+export function isEmpty(children): boolean {
+	return !children || !(isArray(children) ? children : Object.keys(children)).length;
 }
 
 interface IMatchRegex {
