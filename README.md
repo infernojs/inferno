@@ -19,7 +19,7 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 
 - One of the fastest front-end frameworks for rendering UI in the DOM
 - Components have a similar API to React ES2015 components with `inferno-component`
-- Stateless components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
+- Stateless components are fully supported and have more usability thanks to Inferno's [stateless component hooks](#stateless-component-hooks)
 - Isomorphic/universal for easy server-side rendering with `inferno-server`
 
 ## Benchmarks
@@ -42,18 +42,18 @@ NPM:
 Core package:
 
 ```sh
-npm install --save inferno
+npm install --save inferno@beta6
 ```
 
 Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component
+npm install --save inferno-component@beta6
 # server-side rendering
-npm install --save inferno-server
+npm install --save inferno-server@beta6
 # routing
-npm install --save inferno-router
+npm install --save inferno-router@beta6
 ``` 
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
@@ -66,22 +66,22 @@ https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0/inferno.min.js
 
 ### JSX:
 ```sh
-npm install --save-dev babel-plugin-inferno
+npm install --save-dev babel-plugin-inferno@beta6
 ```
 
 ### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript
+npm install --save inferno-hyperscript@beta6
 ```
 
 ### createElement:
 ```sh
-npm install --save inferno-create-element
+npm install --save inferno-create-element@beta6
 ```
 
 ## Compatability with existing React apps
 ```sh
-npm install --save-dev inferno-compat
+npm install --save-dev inferno-compat@beta6
 ```
 
 Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
