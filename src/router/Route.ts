@@ -31,8 +31,7 @@ export default class Route extends Component<IRouteProps, any> {
 		const { component, children, params } = this.props;
 		return createVComponent(component, {
 			params,
-			children,
-			async: this.state.async
+			children
 		});
 	}
 }
