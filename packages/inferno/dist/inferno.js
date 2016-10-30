@@ -1017,10 +1017,6 @@ function createRenderer() {
     };
 }
 
-function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-    replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
-    unmount(lastInput, null, lifecycle, false, shallowUnmount);
-}
 function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
     if (lastInput !== nextInput) {
         var lastNodeType = lastInput.nodeType;
@@ -1078,7 +1074,7 @@ function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shall
             }
         }
         else if (lastNodeType === TEXT) {
-            replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
+            replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
         }
         else if (nextNodeType === PLACEHOLDER) {
             if (lastNodeType === PLACEHOLDER) {
@@ -1089,7 +1085,7 @@ function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shall
             }
         }
         else if (lastNodeType === PLACEHOLDER) {
-            replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
+            replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
         }
         else {
             if (process.env.NODE_ENV !== 'production') {
@@ -2292,12 +2288,30 @@ function createStatefulComponentInstance(Component, props, context, isSVG, devTo
     instance._lastInput = input;
     return instance;
 }
+// export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
+// 	if (lastInput.nodeType === COMPONENT) {
+// 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
+// 		// accessing their DOM node is not useful to us here
+// 		lastInput = lastInput.instance._lastInput || lastInput.instance;
+// 	}
+// 	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
+// 	unmount(lastInput, null, lifecycle, false, shallowUnmount);
+// }
+function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
+    replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
+}
 function replaceVNode(parentDom, dom, vNode, shallowUnmount, lifecycle) {
     // we cannot cache nodeType here as vNode might be re-assigned below
     if (vNode.nodeType === COMPONENT) {
         // if we are accessing a stateful or stateless component, we want to access their last rendered input
         // accessing their DOM node is not useful to us here
+        // #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
+        unmount(vNode, null, lifecycle, false, false);
         vNode = vNode.instance._lastInput || vNode.instance;
+        // #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
+        if (vNode.nodeType !== FRAGMENT) {
+            shallowUnmount = true;
+        }
     }
     if (vNode.nodeType === FRAGMENT) {
         replaceVFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
@@ -2389,6 +2403,9 @@ function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, i
     }
 }
 function replaceChild(parentDom, nextDom, lastDom) {
+    if (!parentDom) {
+        parentDom = lastDom.parentNode;
+    }
     parentDom.replaceChild(nextDom, lastDom);
 }
 function normalise(object) {

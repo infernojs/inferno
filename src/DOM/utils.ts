@@ -195,6 +195,9 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 }
 
 export function replaceChild(parentDom, nextDom, lastDom) {
+	if (!parentDom) {
+		parentDom = lastDom.parentNode;
+	}
 	parentDom.replaceChild(nextDom, lastDom);
 }
 
