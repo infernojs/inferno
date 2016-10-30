@@ -1,5 +1,6 @@
 declare module 'inferno-component' {
 	class Component<P, C> {
+		refs?: any;
 		state?: any;
 		props?: P;
 		context?: C;
@@ -23,7 +24,7 @@ declare module 'inferno-create-class' {
 }
 
 declare module 'inferno-create-element' {
-	function createElement(component: any, props: any, children: any): any
+	function createElement(component: any, props: any, ...children): any
 	export = createElement;
 }
 

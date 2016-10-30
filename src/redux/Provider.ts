@@ -1,4 +1,4 @@
-import Component from '../component/es2015';
+import Component from 'inferno-component';
 import { warning } from './utils';
 import {
 	isNullOrUndef,

@@ -1,14 +1,12 @@
-import Component from '../component/es2015';
+import Component from 'inferno-component';
+import createElement from 'inferno-create-element';
 import {
 	warning,
 	shallowEqual,
 	wrapActionCreators
 } from './utils';
 import { isFunction } from '../shared';
-import {
-	createVComponent,
-	IProps
-} from '../core/shapes';
+import { IProps } from '../core/shapes';
 import hoistStatics from 'hoist-non-inferno-statics';
 import { throwError } from '../shared';
 import { isPlainObject } from './helpers';
@@ -114,6 +112,8 @@ export default function connect(
 			haveStatePropsBeenPrecalculated: boolean;
 			statePropsPrecalculationError: any;
 			renderedElement: any;
+			componentDidMount: any;
+			componentWillUpdate: any;
 
 			constructor(props, context) {
 				super(props, context);
@@ -343,11 +343,11 @@ export default function connect(
 					return renderedElement;
 				}
 				if (withRef) {
-					this.renderedElement = createVComponent(WrappedComponent,
+					this.renderedElement = createElement(WrappedComponent,
 						Object.assign({}, this.mergedProps, { ref: 'wrappedInstance' })
 					);
 				} else {
-					this.renderedElement = createVComponent(WrappedComponent,
+					this.renderedElement = createElement(WrappedComponent,
 						this.mergedProps
 					);
 				}
