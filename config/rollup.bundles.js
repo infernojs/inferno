@@ -45,7 +45,7 @@ bundles.add({
 	path: 'packages/inferno-compat/'
 });
 
-bundles.only({
+bundles.add({
 	moduleGlobal: 'InfernoRouter',
 	moduleName: 'inferno-router',
 	moduleEntry: 'packages/inferno-router/src/index.js',

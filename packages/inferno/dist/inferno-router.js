@@ -12,7 +12,9 @@
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 var isBrowser = typeof window !== 'undefined' && window.document;
-
+function toArray(children) {
+    return isArray(children) ? children : (children ? [children] : children);
+}
 function isArray(obj) {
     return obj instanceof Array;
 }
@@ -2893,18 +2895,6 @@ function matchPath(end, routePath, urlPath, parentParams) {
         params: params
     };
 }
-function flattenArray(oldArray, newArray) {
-    for (var i = 0; i < oldArray.length; i++) {
-        var item = oldArray[i];
-        if (isArray(item)) {
-            flattenArray(item, newArray);
-        }
-        else {
-            newArray.push(item);
-        }
-    }
-}
-
 function pathRankSort(a, b) {
     var aAttr = a.props || emptyObject;
     var bAttr = b.props || emptyObject;
@@ -2926,7 +2916,7 @@ function getRoutes(_routes, url, lastPath) {
     if (!_routes) {
         return _routes;
     }
-    var routes = toArray$1(_routes);
+    var routes = toArray(_routes);
     routes.sort(pathRankSort);
     for (var i = 0; i < routes.length; i++) {
         var route = isArray(routes[i]) ? getRoutes(routes[i], url, lastPath) : routes[i];
@@ -2999,15 +2989,12 @@ var Router = (function (Component$$1) {
         if (matched) {
             return matched;
         }
-        var routes = toArray$1(children);
+        var routes = toArray(children);
         return getRoutes(routes, url || this.state.url, '');
     };
 
     return Router;
 }(Component));
-function toArray$1(children) {
-    return isArray(children) ? children : (children ? [children] : children);
-}
 
 function Link(props, ref) {
     var router = ref.router;
