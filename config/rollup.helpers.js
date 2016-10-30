@@ -53,8 +53,8 @@ export function relativeModules() {
 				case 'cjs':
 					Object.keys(aliases).forEach(alias => {
 						source = source.replace(new RegExp(`require\\('${alias}'`, 'g'), `require('./${alias}'`);
-					})
-					return source
+					});
+					return source;
 				default:
 					return source;
 			}

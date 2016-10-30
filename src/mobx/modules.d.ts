@@ -1,5 +1,6 @@
 declare module 'inferno-component' {
 	class Component<P, C> {
+		state?: any;
 		props?: P;
 		context?: C;
 		constructor (props?: P, context?: C);

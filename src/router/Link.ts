@@ -1,4 +1,4 @@
-import { createVElement } from '../core/shapes';
+import createElement from 'inferno-create-element';
 
 export default function Link(props, { router }) {
 	const { activeClassName, activeStyle, className, to } = props;
@@ -33,5 +33,5 @@ export default function Link(props, { router }) {
 		}
 	};
 
-	return createVElement('a', elemProps, props.children, null, null, null);
+	return createElement('a', elemProps, props.children);
 }

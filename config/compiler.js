@@ -82,13 +82,13 @@ function registerExtension(ext) {
 					console.log('Error compiling ' + filename + ':\n---');
 					console.log(err.snippet);
 					console.log(err.message);
-					console.log('')
+					console.log('');
 					process.exit(1);
 				}
 				throw err;
 			}
 			return _compile.call(this, compiled, filename);
-		}
+		};
 		return old(m, filename);
 	};
 }

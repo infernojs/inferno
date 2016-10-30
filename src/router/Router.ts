@@ -1,4 +1,4 @@
-import Component from '../component/es2015';
+import Component from 'inferno-component';
 import { isArray } from '../shared';
 import { isEmpty, matchPath, pathRankSort } from './utils';
 
@@ -6,6 +6,7 @@ export interface IRouterProps {
 	url: string;
 	history?: any;
 	matched?: any;
+	children?: any;
 	component?: Component<any, any>;
 }
 
@@ -103,7 +104,7 @@ export default class Router extends Component<IRouterProps, any> {
 		}
 
 		const routes = toArray(children);
-		return getRoutes(routes, url || this.state.url, '');
+		return getRoutes(routes, url || this.state.url);
 	}
 }
 
