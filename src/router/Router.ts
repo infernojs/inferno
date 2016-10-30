@@ -1,6 +1,6 @@
 import Component from '../component/es2015';
 import { isArray } from '../shared';
-import { matchPath, pathRankSort } from './utils';
+import { isEmpty, matchPath, pathRankSort } from './utils';
 
 export interface IRouterProps {
 	url: string;
@@ -9,34 +9,45 @@ export interface IRouterProps {
 	component?: Component<any, any>;
 }
 
-export function getRoutes(_routes, url, lastPath = '') {
+export function getRoutes(routing, currentURL) {
+	let params = {};
 
-	if (!_routes) {
-		return _routes;
-	}
+	function grabRoutes(_routes, url, lastPath) {
+		if (!_routes) {
+			return _routes;
+		}
 
-	const routes = toArray(_routes);
-	routes.sort(pathRankSort);
+		const routes = toArray(_routes);
+		routes.sort(pathRankSort);
 
-	for (let i = 0; i < routes.length; i++) {
-		const route = isArray(routes[i]) ? getRoutes(routes[i], url, lastPath) : routes[i];
-		const path = route.props.path || '/';
-		const fullPath = (lastPath + path).replace('//', '/');
-		const children = route.props.children;
-		const match = matchPath(children ? false : true, fullPath, url.replace('//', '/'));
+		for (let i = 0; i < routes.length; i++) {
+			const route = routes[i];
 
-		if (match) {
-			route.props.params = match.params;
-			if (children) {
-				route.props.children = getRoutes(children, url, fullPath);
+			if (isArray(route)) {
+				return grabRoutes(route, url, lastPath);
 			}
-			if (route.instance) {
-				return route.type(route.instance.props, route.instance.context);
-			} else {
-				return route;
+
+			const { children, path = '/' } = route.props;
+			const fullPath = (lastPath + path).replace('//', '/');
+			const isLast = isEmpty(children);
+
+			if (children) {
+				route.props.children = grabRoutes(children, url, fullPath);
+			}
+
+			const match = matchPath(isLast, fullPath, url.replace('//', '/'));
+			if (match) {
+				route.props.params = Object.assign(params, match.params);
+				if (route.instance) {
+					return route.type(route.instance.props, route.instance.context);
+				} else {
+					return route;
+				}
 			}
 		}
 	}
+
+	return grabRoutes(routing, currentURL, '');
 }
 
 export default class Router extends Component<IRouterProps, any> {

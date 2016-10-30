@@ -10,6 +10,10 @@ function decode(val: any): any {
 	return typeof val !== 'string' ? val : decodeURIComponent(val);
 }
 
+export function isEmpty(children): boolean {
+	return !children || !(isArray(children) ? children : Object.keys(children)).length;
+}
+
 interface IMatchRegex {
 	keys: any;
 	pattern: RegExp;
