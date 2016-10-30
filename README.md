@@ -7,6 +7,7 @@
 [![MIT](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 [![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg?style=flat-square)](https://www.npmjs.org/package/inferno-dom)
+[![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
 
 Inferno is an isomorphic library for building high-performance user interfaces, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Virtual-dom, Snabbdom and Om, Inferno uses techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
 
@@ -18,10 +19,8 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 
 - One of the fastest front-end frameworks for rendering UI in the DOM
 - Components have a similar API to React ES2015 components with `inferno-component`
-- Stateless functional components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
+- Stateless components are fully supported and have more usability thanks to Inferno's [hooks](#hooks) system
 - Isomorphic/universal for easy server-side rendering with `inferno-server`
-- can be swapped in for react utilising `inferno-compat`
-- small payload-comes in around 8kb gzipped
 
 ## Benchmarks
 
@@ -32,11 +31,11 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 - [JS Web Frameworks Benchmark - Round 4](http://stefankrause.net/js-frameworks-benchmark4/webdriver-ts/table.html)
 
-## Install
+## Live Demos/Examples
 
-Very much like React, Inferno requires the `inferno` and the `inferno-dom` packages for consumption in the browser's DOM. Inferno also has the `inferno-server` package for
-server-side rendering of virtual DOM to HTML strings (differing from React's route of using `react-dom/server` for server-side rendering). Furthermore, rather than include the
-ES2015 component with class syntax in core (like React), the component is in a separate package `inferno-component` to allow for better modularity.
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/rqwmkx40/)
+
+## Install
 
 NPM:
 
@@ -44,55 +43,40 @@ Core package:
 
 ```sh
 npm install --save inferno
-```
- 
- ES2015 stateful components (with lifecycle events) package:
- 
-```sh
-npm install --save inferno-component 
-```
- 
-Browser DOM rendering package:
-
-```sh
-npm install --save inferno-dom 
-```
-
-Helper for creating Inferno VNodes (similar to `React.createElement`):
-
-```sh
-npm install --save inferno-create-element 
-```
-
-Helper for creating Inferno Components via ES5 (similar to `React.createClass`):
-
-```sh
-npm install --save inferno-create-class
-```
-
-Server-side rendering package:
-
-```sh
-npm install --save inferno-server 
-```
-
-Basic routing functionality:
-
-```sh
-npm install --save inferno-router 
+npm install --save inferno-component // ES2015 stateful components
+npm install --save inferno-server // server-side rendering
+npm install --save inferno-router // a router 
 ```
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
  
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.17/inferno.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.17/inferno-create-element.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.17/inferno-create-class.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.17/inferno-component.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.17/inferno-dom.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.17/inferno-server.min.js
-https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.17/inferno-router.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0/inferno.min.js
 ```
+
+## Creating virtual DOM
+
+### JSX:
+```sh
+npm install --save-dev babel-plugin-inferno
+```
+
+### Hyperscript:
+```sh
+npm install --save inferno-hyperscript
+```
+
+### createElement:
+```sh
+npm install --save inferno-create-element
+```
+
+## Compatability with existing React apps
+```sh
+npm install --save-dev inferno-compat
+```
+
+Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
 
 ## Overview
 
@@ -101,11 +85,10 @@ In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github
 
 ```javascript
 import Inferno from 'inferno';
-import InfernoDOM from 'inferno-dom';
 
 const message = "Hello world";
 
-InfernoDOM.render(
+Inferno.render(
   <MyComponent message={ message } />,
   document.getElementById("app")
 )
@@ -115,7 +98,6 @@ Furthermore, Inferno also uses ES6 components like React:
 ```javascript
 import Inferno from 'inferno';
 import Component from 'inferno-component';
-import InfernoDOM from 'inferno-dom';
 
 class MyComponent extends Component {
   constructor(props) {
@@ -134,53 +116,41 @@ class MyComponent extends Component {
   }
 }
 
-InfernoDOM.render(<MyComponent />, document.body);
+Inferno.render(<MyComponent />, document.body);
 ```
-The real difference between React and Inferno is the performance offered at run-time. Inferno can handle large, complex DOM models without breaking a sweat.
-This is essential for low-powered devices such as tablets and phones, where users are quickly demanding desktop-like performance on their slower hardware.
 
 ## Inferno Top-Level API
 
-### Inferno.createVElement
-
-Creates an Inferno VElement object. VElement's represent DOM nodes directly. As such there shape and factory method is:
+### `Inferno.render`
 
 ```javascript
+import Inferno from 'inferno';
+
+Inferno.render(<div />, document.body);
 ```
 
-```javascript
-import createVNode from `inferno`;
+Render a virtual node into the DOM in the supplied container given the supplied virtual DOM. If the virtual node was previously rendered
+into the container, this will perform an update on it and only mutate the DOM as necessary, to reflect the latest Inferno virtual node.
 
-InfernoDOM.render(createVNode().setTag('div').setClassName('foo').setAttrs({ id: 'test' }).setChildren('Hello world!'), document.body);
-```
+Warning: If the container element is not empty before rendering, the content of the container will be overwriten on the initial render.
 
-### Inferno.createBlueprint
+### `Inferno.createRenderer`
+### `Inferno.cloneVNode`
+### `Inferno.findDOMNode`
 
-Creates an Inferno VNode using a predefined blueprint. Using the reference to the blueprint, it allows for faster optimisations with little overhead.
+### Virtual DOM factories
 
-```javascript
-import InfernoDOM from 'inferno-dom';
-
-const myBlueprint = Inferno.createBlueprint({
-    tag: 'div',
-    attrs: {
-        id: 'foo'
-    },
-    children: { arg: 0 }
-});
-
-InfernoDOM.render(myBlueprint('foo'), document.body);
-```
-
-For each property on the object passed as the argument to `createBlueprint`, anything that has been defined with `{ arg: X }` is regarded as a dynamic value (matching the argument of calling this blueprint), otherwise the properties are regarded as static.
-For example: if my object is `const blueprint = Inferno.createBlueprint({ tag: { arg: 0 } })`, then you'd expect to call `blueprint('div')` with the `argument 0` (first argument) being the tag for the VNode.
+### `Inferno.createVElement`
+### `Inferno.createVFragment`
+### `Inferno.createVPlaceholder`
+### `Inferno.createVComponent`
+### `Inferno.createVText`
 
 ### InfernoCreateElement
 
 Creates an Inferno VNode using a similar API to that found with React's `createElement`
 
 ```javascript
-import InfernoDOM from 'inferno-dom';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
 
@@ -196,7 +166,7 @@ class BasicComponent extends Component {
     }
 }
 
-InfernoDOM.render(createElement(BasicComponent, { title: 'abc' }), document.body);
+Inferno.render(createElement(BasicComponent, { title: 'abc' }), document.body);
 ```
 
 ### InfernoComponent
@@ -215,7 +185,7 @@ class MyComponent extends Component {
 
 This is the base class for Inferno Components when they're defined using ES6 classes.
 
-**Stateless functional component:**
+**Stateless component:**
 
 ```javascript
 import Inferno from 'inferno';
@@ -227,69 +197,57 @@ const MyComponent = ({ name, age }) => (
 
 Stateless components are first-class functions where their first argument is the `props` passed through from their parent.
 
-### InfernoDOM.render
-
-```javascript
-import Inferno from 'inferno';
-import InfernoDOM from 'inferno-dom';
-
-InfernoDOM.render(<div />, document.body);
-```
-
-Render a virtual node into the DOM in the supplied container given the supplied virtual DOM. If the virtual node was previously rendered
-into the container, this will perform an update on it and only mutate the DOM as necessary, to reflect the latest Inferno virtual node.
-
-Warning: If the container element is not empty before rendering, the content of the container will be overwriten on the initial render.
-
 ### renderToString
 
 ```javascript
 import Inferno from 'inferno';
 import InfernoServer from 'inferno-server';
 
-InfernoServer.renderToString(<div />, document.body);
+InfernoServer.renderToString(<div />);
 ```
 
 Render a virtual node into an HTML string, given the supplied virtual DOM.
 
-## Hooks
+## Stateless component hooks
 
-Please note: hooks are provided by `inferno-dom`;
-
-Inferno supports many of the basic events on DOM nodes, such as `onClick`, `onMouseOver` and `onTouchStart`. Furthermore, Inferno allows you to attach
-common hooks directly onto components and DOM nodes. Below is the table of all possible hooks available in `inferno-dom`.
-
-| Name                      | Triggered when                                                          | Arguments to callback              |
-| -----------               | --------------                                                          | -----------------------            |
-| `ref`                     | a DOM node has just been mounted / unmounted                            | `domNode` if mounted `null` if not |
-| `onComponentWillMount`    | a stateless function component is about to mount                        |                                    |
-| `onComponentDidMount`     | a stateless function component has mounted successfully                 | `domNode`                          |
-| `onComponentWillUnmount`  | a stateless function component is about to be unmounted                 |                                    |
-| `onComponentShouldUpdate` | a stateless function component has been triggered to updated            | `lastProps, nextProps`             |
-| `onComponentWillUpdate`   | a stateless function component is about to perform an update            | `lastProps, nextProps`             |
-| `onComponentDidUpdate`    | a stateless function component has performed an updated                 |                                    |
+| Name                      | Triggered when                                                 | Arguments to callback           |
+| -----------               | --------------                                                 | -----------------------         |
+| `onComponentWillMount`    | a stateless component is about to mount                        |                                 |
+| `onComponentDidMount`     | a stateless component has mounted successfully                 | `domNode`                       |
+| `onComponentWillUnmount`  | a stateless component is about to be unmounted                 |                                 |
+| `onComponentShouldUpdate` | a stateless component has been triggered to updated            | `lastProps, nextProps`          |
+| `onComponentWillUpdate`   | a stateless component is about to perform an update            | `lastProps, nextProps`          |
+| `onComponentDidUpdate`    | a stateless component has performed an updated                 | `lastProps, nextProps`          |
 
 ### Using hooks
 
-It's simple to implicitly assign hooks to both DOM nodes and stateless functional components.
+It's simple to implicitly assign hooks to both DOM nodes and stateless components.
 Please note: stateful components (ES2015 classes) from `inferno-component` **do not** support hooks.
 
 ```javascript
 function createdCallback(domNode, props) {
-  // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
-	// [props] will only be passed for stateless functional components
+    // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
+	// [props] will only be passed for stateless components
 }
 
-InfernoDOM.render(<div onCreated={ createdCallback } />, document.body);
+Inferno.render(<div onCreated={ createdCallback } />, document.body);
 
-function StatelessFunctionalComponent({ props }) {
+function StatelessComponent({ props }) {
 	return <div>Hello world</div>;
 }
 
-InfernoDOM.render(<StatelessFunctionalComponent onComponentWillMount={ createdCallback } />, document.body);
+Inferno.render(<StatelessComponent onComponentWillMount={ createdCallback } />, document.body);
 ```
 
-Hooks provide powerful lifecycle events to stateless functional components, allowing you to build components without being forced to use ES2015 classes.
+Hooks provide powerful lifecycle events to stateless components, allowing you to build components without being forced to use ES2015 classes.
+
+## Third-party state libraries
+
+Inferno now has bindings available for some of the major state management libraries out there:
+
+- [Redux](https://github.com/trueadm/inferno/tree/master/packages/inferno-redux) via `inferno-redux`
+- [MobX](https://github.com/trueadm/inferno/tree/master/packages/inferno-mobx) via `inferno-mobx`
+- [Cerebral](https://github.com/cerebral/cerebral-view-inferno) via `cerebral-view-inferno`
 
 ## Performance
 
@@ -320,6 +278,8 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 Inferno strives to be compatible with much of React's basic API. However, in some places, alternative implementations have been used.
 Non-performant features have been removed or replaced where an alternative solution is easy to adopt without too many changes.
 
+Inferno doesn't have react's synthetic events, which means DOM elements have their events triggered in the same manner as you'd expect from the browser you're running.
+
 ### Custom namespaces
 
 Inferno wants to always deliver great performance and in order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work; so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
@@ -327,7 +287,7 @@ Inferno wants to always deliver great performance and in order to do so, it has 
 ### The stateful ES2015 Component is located in its own package
  
 React's ES2015 component is referenced as `React.Component`. To reduce the bloat on the core of `Inferno`, we've extracted the ES2015 component
-into its own package, specifically `inferno-component` rather than `Inferno.Component`. Many users are opting to use stateless functional components with
+into its own package, specifically `inferno-component` rather than `Inferno.Component`. Many users are opting to use stateless components with
 Inferno's `hooks` to give similar functionality as that provided by ES2015 components.
 
 ## Contributing
@@ -349,10 +309,9 @@ npm run build
 ### Linting
 
 ```sh
-npm run eslint:source  # lint the source
+npm run lint:source // lint the source
 ```
 
 ### Inferno is supported by BrowserStack
 
 <img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
-
