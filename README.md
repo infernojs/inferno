@@ -43,10 +43,18 @@ Core package:
 
 ```sh
 npm install --save inferno
-npm install --save inferno-component // ES2015 stateful components
-npm install --save inferno-server // server-side rendering
-npm install --save inferno-router // a router 
 ```
+
+Addons:
+
+```sh
+# ES2015 stateful components
+npm install --save inferno-component
+# server-side rendering
+npm install --save inferno-server
+# routing
+npm install --save inferno-router
+``` 
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
  
