@@ -112,7 +112,8 @@
       "src/**/*.ts"
     ],
     "exclude": [
-      "typings"
+      "typings",
+      "src/**/*__tests__*/**"
     ],
     "extension": [
       ".ts"

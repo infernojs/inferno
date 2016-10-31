@@ -7,5 +7,6 @@
 --timeout 15000
 --bail
 
+src/**/*__tests__*/**/*spec.ts
 src/**/*__tests__*/**/*spec.tsx
 src/**/*__tests__*/**/*spec.browser.ts
