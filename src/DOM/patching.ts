@@ -83,7 +83,10 @@ import {
 	strictProps,
 	namespaces
 } from './constants';
-import { getIncrementalId, componentIdMap } from './devtools';
+import {
+	getIncrementalId,
+	componentIdMap
+} from './devtools';
 
 export function patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 	if (lastInput !== nextInput) {

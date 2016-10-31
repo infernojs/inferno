@@ -439,5 +439,4 @@ describe('keyed-nodes', () => {
 		});
 	});
 
-
 });

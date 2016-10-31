@@ -1,5 +1,9 @@
-import { expect } from 'chai';
-import { render } from './../../DOM/rendering';
+import {
+	expect
+} from 'chai';
+import {
+	render
+} from './../../DOM/rendering';
 import Router from '../Router';
 import Route from '../Route';
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -16,22 +20,10 @@ function TestComponentParams({ params }) {
 	return <div>Test! { params.test }</div>;
 }
 
-function TestComponentAsync({ async }) {
-	return <div>{ async.status } - { async.value }</div>;
-}
-
 function createRouterWithSingleRoute(url, path, component) {
 	return (
 		<Router url={ url } history={ browserHistory }>
 			<Route path={ path } component={ component } />
-		</Router>
-	);
-}
-
-function createRouterWithSingleAsyncRoute(url, path, component, async) {
-	return (
-		<Router url={ url } history={ browserHistory }>
-			<Route path={ path } component={ component } async={ async } />
 		</Router>
 	);
 }
@@ -93,18 +85,6 @@ describe('Router tests (jsx)', () => {
 					container
 				);
 				expect(container.innerHTML).to.equal('<div>Test! yar</div>');
-			});
-			it('it should render the TestComponent with given a async route that resolves', done => {
-				const promise = params => new Promise(resolve => setTimeout(resolve.bind(null, 'Hello world!'), 10));
-				render(
-					createRouterWithSingleAsyncRoute('/foo', '/:test', TestComponentAsync, promise),
-					container
-				);
-				expect(container.innerHTML).to.equal('<div>pending - </div>');
-				setTimeout(() => {
-					expect(container.innerHTML).to.equal('<div>fulfilled - Hello world!</div>');
-					done();
-				}, 11);
 			});
 			it('it should render the TestComponent with the highest ranked path', () => {
 				render(

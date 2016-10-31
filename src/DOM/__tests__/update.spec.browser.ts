@@ -433,7 +433,7 @@ describe('Update (non-jsx)', () => {
 			class: 'hello, world'
 		}, child);
 
-		const b = () => createElement('span', null, '1', '2', '3');
+		const spanList = () => createElement('span', null, '1', '2', '3');
 
 		const span = (_b) => createElement('span', null, _b);
 
@@ -443,7 +443,7 @@ describe('Update (non-jsx)', () => {
 		expect(container.firstChild.childNodes.length).to.equal(0);
 		expect(container.firstChild.tagName).to.equal('DIV');
 
-		render(template(span(b())), container);
+		render(template(span(spanList())), container);
 		expect(container.firstChild.nodeType).to.equal(1);
 		expect(container.firstChild.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.firstChild.firstChild.childNodes.length).to.equal(3);

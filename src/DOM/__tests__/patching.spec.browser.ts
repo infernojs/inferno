@@ -28,7 +28,7 @@ describe('patching keyed lists (non-jsx)', () => {
 	}
 
 	function shuffle(dataModel) {
-		for (let e, t, n = dataModel.length; n !== 0;) {
+		for (let e, t, n = dataModel.length; n !== 0; ) {
 			e = Math.floor(Math.random() * n--);
 			t = dataModel[n];
 			dataModel[n] = dataModel[e];
@@ -82,9 +82,9 @@ describe('patching keyed lists (non-jsx)', () => {
 	});
 
 	function renderTree(nodes) {
-		var children = new Array(nodes.length);
-		var i;
-		var n;
+		let children = new Array(nodes.length);
+		let i;
+		let n;
 
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];

@@ -214,7 +214,6 @@ describe('Text', () => {
 		});
 	});
 
-
 	emptyDefinitions.forEach((arg) => {
 		[{
 			description: 'should create a dynamic text node with ' + arg.name + ' - deeper child with text property ',
