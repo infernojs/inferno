@@ -118,8 +118,9 @@
       ".ts"
     ],
     "reporter": [
-      "json",
-      "html"
+      "lcov",
+      "html",
+      "text"
     ]
   },
   "repository": {
@@ -143,7 +144,7 @@
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
     "prepush": "npm run eslint:source && npm lint:source && npm test",
-    "server:cov": "cross-env nyc --reporter=lcov --reporter=text mocha --opts config/mocha.opts",
+    "server:cov": "cross-env nyc mocha --opts config/mocha.opts",
     "server:cov:publish": "npm run server:cov && coveralls < coverage/lcov.info && rimraf coverage",
     "test": "npm run test:browser && npm run test:server",
     "test:browser": "karma start config/karma.conf.js",
