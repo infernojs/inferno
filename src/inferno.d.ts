@@ -30,6 +30,7 @@ declare module 'history/createBrowserHistory' {
 
 declare module 'sinon' {
 	export function spy(obj: any, event: string): any;
+	export function stub(obj: any, event: string, callback: any): any;
 	export const assert;
 }
 

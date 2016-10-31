@@ -1,4 +1,6 @@
-import { isVNode } from '../core/shapes';
+import {
+	isVNode
+} from '../core/shapes';
 import {
 	isStringOrNumber,
 	isNullOrUndef,
@@ -12,7 +14,7 @@ export function innerHTML(HTML) {
 	return comparer.innerHTML;
 }
 
-function createStyler(CSS) {
+export function createStyler(CSS) {
 	if (typeof CSS === 'undefined' || CSS === null) {
 		return CSS;
 	}

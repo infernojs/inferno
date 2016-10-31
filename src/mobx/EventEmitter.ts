@@ -12,7 +12,15 @@ export default class EventEmitter {
 		};
 	}
 
-	public emit(data) {
+	public emit(data: any) {
 		this.listeners.forEach(fn => fn(data));
 	};
+
+	public getTotalListeners(): number {
+		return this.listeners.length;
+	}
+
+	public clearListeners(): void {
+		this.listeners = [];
+	}
 }
