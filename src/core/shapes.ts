@@ -32,13 +32,13 @@ export interface VNode {
 
 export function createVNode(type, props, children, flags, key, ref): VNode {
 	return {
-    children,
-    dom: null,
-    flags,
-    key,
-    props,
-    ref,
-    type
+        children,
+        dom: null,
+        flags,
+        key,
+        props,
+        ref,
+        type
 	};
 }
 

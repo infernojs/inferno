@@ -33,6 +33,12 @@ function createVNode(type, props, children, flags, key, ref) {
         type: type
     };
 }
+function createFragmentVNode(children) {
+    return createVNode(null, null, children, VNodeFlags.Fragment, null, null);
+}
+function createVoidVNode() {
+    return createVNode(null, null, null, VNodeFlags.Void, null, null);
+}
 function isVNode(o) {
     return !!o.flags;
 }
@@ -47,10 +53,10 @@ function isArray(obj) {
 
 
 function isNullOrUndef(obj) {
-    return isUndefined(obj) || isNull(obj);
+    return isUndefined$1(obj) || isNull(obj);
 }
-function isInvalid$1(obj) {
-    return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
+function isInvalid(obj) {
+    return isNull(obj) || obj === false || isTrue(obj) || isUndefined$1(obj);
 }
 function isFunction(obj) {
     return typeof obj === 'function';
@@ -70,10 +76,12 @@ function isNull(obj) {
 function isTrue(obj) {
     return obj === true;
 }
-function isUndefined(obj) {
+function isUndefined$1(obj) {
     return obj === undefined;
 }
-
+function isObject(o) {
+    return typeof o === 'object';
+}
 function throwError(message) {
     if (!message) {
         message = ERROR_MSG;
@@ -85,6 +93,7 @@ function warning(condition, message) {
         console.error(message);
     }
 }
+var EMPTY_OBJ = {};
 
 var Lifecycle = function Lifecycle() {
     this._listeners = [];
@@ -99,6 +108,148 @@ Lifecycle.prototype.trigger = function trigger () {
         this$1._listeners[i]();
     }
 };
+
+function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
+    var flags = vNode.flags;
+    switch (flags) {
+        case VNodeFlags.ComponentClass:
+        case VNodeFlags.ComponentFunction:
+            unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+            break;
+        case VNodeFlags.HtmlElement:
+        case VNodeFlags.SvgElement:
+        case VNodeFlags.InputElement:
+        case VNodeFlags.TextAreaElement:
+            unmountElement(vNode, parentDom, lifecycle, shallowUnmount);
+            break;
+        case VNodeFlags.Fragment:
+            unmountFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
+            break;
+        case VNodeFlags.Text:
+            unmountText(vNode, parentDom);
+            break;
+        case VNodeFlags.Void:
+            unmountPlaceholder(vNode, parentDom);
+            break;
+        default:
+    }
+}
+function unmountPlaceholder(vPlaceholder, parentDom) {
+    if (parentDom) {
+        removeChild(parentDom, vPlaceholder.dom);
+    }
+}
+function unmountText(vText, parentDom) {
+    if (parentDom) {
+        removeChild(parentDom, vText.dom);
+    }
+}
+function unmountFragment(vFragment, parentDom, removePointer, lifecycle, shallowUnmount) {
+    var children = vFragment.children;
+    var childrenLength = children.length;
+    var pointer = vFragment.pointer;
+    if (!shallowUnmount && childrenLength > 0) {
+        for (var i = 0; i < childrenLength; i++) {
+            var child = children[i];
+            if (child.flags === VNodeFlags.Fragment) {
+                unmountFragment(child, parentDom, true, lifecycle, false);
+            }
+            else {
+                unmount(child, parentDom, lifecycle, false, shallowUnmount);
+            }
+        }
+    }
+    if (parentDom && removePointer) {
+        removeChild(parentDom, pointer);
+    }
+}
+function unmountComponent(vComponent, parentDom, lifecycle, canRecycle, shallowUnmount) {
+    var instance = vComponent.instance;
+    if (!shallowUnmount) {
+        var instanceHooks = null;
+        vComponent.unmounted = true;
+        if (!isNullOrUndef(instance)) {
+            var ref = vComponent.ref;
+            if (ref) {
+                ref(null);
+            }
+            instanceHooks = instance.hooks;
+            if (instance.render !== undefined) {
+                instance.componentWillUnmount();
+                instance._unmounted = true;
+                componentToDOMNodeMap.delete(instance);
+                unmount(instance._lastInput, null, lifecycle, false, shallowUnmount);
+            }
+            else {
+                unmount(instance, null, lifecycle, false, shallowUnmount);
+            }
+        }
+        var hooks = vComponent.hooks || instanceHooks;
+        if (!isNullOrUndef(hooks)) {
+            if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
+                hooks.onComponentWillUnmount();
+            }
+        }
+    }
+    if (parentDom) {
+        var lastInput = instance._lastInput;
+        if (isNullOrUndef(lastInput)) {
+            lastInput = instance;
+        }
+        if (lastInput.flags === VNodeFlags.Fragment) {
+            unmountFragment(lastInput, parentDom, true, lifecycle, true);
+        }
+        else {
+            removeChild(parentDom, vComponent.dom);
+        }
+    }
+    // if (recyclingEnabled && (parentDom || canRecycle)) {
+    // 	poolVComponent(vComponent);
+    // }
+}
+function unmountElement(vElement, parentDom, lifecycle, shallowUnmount) {
+    var dom = vElement.dom;
+    var ref = vElement.ref;
+    if (!shallowUnmount) {
+        if (ref) {
+            unmountRef(ref);
+        }
+        var children = vElement.children;
+        if (!isNullOrUndef(children)) {
+            unmountChildren(children, lifecycle, shallowUnmount);
+        }
+    }
+    if (parentDom) {
+        removeChild(parentDom, dom);
+    }
+}
+function unmountChildren(children, lifecycle, shallowUnmount) {
+    if (isArray(children)) {
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            if (isObject(child)) {
+                unmount(child, null, lifecycle, false, shallowUnmount);
+            }
+        }
+    }
+    else if (isObject(children)) {
+        unmount(children, null, lifecycle, false, shallowUnmount);
+    }
+}
+function unmountRef(ref) {
+    if (isFunction(ref)) {
+        ref(null);
+    }
+    else {
+        if (isInvalid(ref)) {
+            return;
+        }
+        if (process.env.NODE_ENV !== 'production') {
+            throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+        }
+        throwError();
+    }
+}
 
 function constructDefaults(string, object, value) {
     /* eslint no-return-assign: 0 */
@@ -117,344 +268,90 @@ constructDefaults('volume,value,defaultValue,defaultChecked', strictProps, true)
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-// export function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
-// 	const instance = new Component(props, context);
-// 	instance.context = context;
-// 	instance._patch = patch;
-// 	instance._devToolsStatus = devToolsStatus;
-// 	instance._componentToDOMNodeMap = componentToDOMNodeMap;
-// 	const childContext = instance.getChildContext();
-// 	if (!isNullOrUndef(childContext)) {
-// 		instance._childContext = Object.assign({}, context, childContext);
-// 	} else {
-// 		instance._childContext = context;
-// 	}
-// 	instance._unmounted = false;
-// 	instance._pendingSetState = true;
-// 	instance._isSVG = isSVG;
-// 	instance.componentWillMount();
-// 	instance.beforeRender && instance.beforeRender();
-// 	let input = instance.render(props, context);
-// 	instance.afterRender && instance.afterRender();
-// 	if (isArray(input)) {
-// 		input = createVFragment(input, null);
-// 	} else if (isInvalid(input)) {
-// 		input = createVPlaceholder();
-// 	}
-// 	instance._pendingSetState = false;
-// 	instance._lastInput = input;
-// 	return instance;
-// }
-// export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
-// }
-// export function replaceVNode(parentDom, dom, vNode, shallowUnmount, lifecycle) {
-// 	// we cannot cache nodeType here as vNode might be re-assigned below
-// 	if (vNode.nodeType === COMPONENT) {
-// 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
-// 		// accessing their DOM node is not useful to us here
-// 		// #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
-// 		unmount(vNode, null, lifecycle, false, false);
-// 		vNode = vNode.instance._lastInput || vNode.instance;
-// 		// #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
-// 		if (vNode.nodeType !== FRAGMENT) {
-// 			shallowUnmount = true;
-// 		}
-// 	}
-// 	if (vNode.nodeType === FRAGMENT) {
-// 		replaceVFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
-// 	} else {
-// 		replaceChild(parentDom, dom, vNode.dom);
-// 		unmount(vNode, null, lifecycle, false, shallowUnmount);
-// 	}
-// }
-// export function createStatelessComponentInput(component, props, context) {
-// 	let input = component(props, context);
-// 	if (isArray(input)) {
-// 		input = createVFragment(input, null);
-// 	} else if (isInvalid(input)) {
-// 		input = createVPlaceholder();
-// 	}
-// 	return input;
-// }
-function setTextContent(dom, text) {
-    if (text !== '') {
-        dom.textContent = text;
-    }
-    else {
-        dom.appendChild(document.createTextNode(''));
-    }
-}
-
-function appendChild(parentDom, dom) {
-    parentDom.appendChild(dom);
-}
-
-// export function replaceVFragmentWithNode(parentDom, vFragment, dom, lifecycle, shallowUnmount) {
-// 	const pointer = vFragment.pointer;
-// 	unmountVFragment(vFragment, parentDom, false, lifecycle, shallowUnmount);
-// 	replaceChild(parentDom, dom, pointer);
-// }
-// export function getPropFromOptElement(optVElement, valueType) {
-// 	const bp = optVElement.bp;
-// 	// TODO check "prop" and "spread"
-// 	if (!isNull(bp.v0)) {
-// 		if (bp.v0 === valueType) {
-// 			return optVElement.v0;
-// 		}
-// 		if (!isNull(bp.v1)) {
-// 			if (bp.v1 === valueType) {
-// 				return optVElement.v1;
-// 			}
-// 			if (!isNull(bp.v2)) {
-// 				if (bp.v2 === valueType) {
-// 					return optVElement.v2;
-// 				}
-// 			}
-// 		}
-// 	}
-// }
-function documentCreateElement(tag, isSVG) {
-    var dom;
-    if (isSVG === true) {
-        dom = document.createElementNS(svgNS, tag);
-    }
-    else {
-        dom = document.createElement(tag);
-    }
-    return dom;
-}
-// export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	let lastInstance: any = null;
-// 	const instanceLastNode = lastNode._lastInput;
-// 	if (!isNullOrUndef(instanceLastNode)) {
-// 		lastInstance = lastNode;
-// 		lastNode = instanceLastNode;
-// 	}
-// 	unmount(lastNode, null, lifecycle, true, shallowUnmount);
-// 	const dom = mount(nextNode, null, lifecycle, context, isSVG, shallowUnmount);
-// 	nextNode.dom = dom;
-// 	replaceChild(parentDom, dom, lastNode.dom);
-// 	if (lastInstance !== null) {
-// 		lastInstance._lasInput = nextNode;
-// 	}
-// }
-// export function replaceChild(parentDom, nextDom, lastDom) {
-// 	if (!parentDom) {
-// 		parentDom = lastDom.parentNode;
-// 	}
-// 	parentDom.replaceChild(nextDom, lastDom);
-// }
-// export function normalise(object) {
-// 	if (isStringOrNumber(object)) {
-// 		return createVText(object);
-// 	} else if (isInvalid(object)) {
-// 		return createVPlaceholder();
-// 	} else if (isArray(object)) {
-// 		return createVFragment(object, null);
-// 	} else if (isVNode(object) && object.dom) {
-// 		return cloneVNode(object);
-// 	}
-// 	return object;
-// }
-// export function normaliseChild(children, i) {
-// 	const child = children[i];
-// 	children[i] = normalise(child);
-// 	return children[i];
-// }
-// export function removeChild(parentDom, dom) {
-// 	parentDom.removeChild(dom);
-// }
-// export function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
-// 	dom.textContent = '';
-// 	for (let i = 0; i < children.length; i++) {
-// 		const child = children[i];
-// 		if (!isInvalid(child)) {
-// 			unmount(child, null, lifecycle, true, shallowUnmount);
-// 		}
-// 	}
-// }
-// export function isKeyed(lastChildren, nextChildren) {
-// 	if (lastChildren.complex) {
-// 		return false;
-// 	}
-// 	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
-// 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
-// }
-// function formSelectValueFindOptions(dom, value, isMap) {
-// 	let child = dom.firstChild;
-// 	while (child) {
-// 		const tagName = child.tagName;
-// 		if (tagName === 'OPTION') {
-// 			child.selected = !!((!isMap && child.value === value) || (isMap && value.get(child.value)));
-// 		} else if (tagName === 'OPTGROUP') {
-// 			formSelectValueFindOptions(child, value, isMap);
-// 		}
-// 		child = child.nextSibling;
-// 	}
-// }
-// export function formSelectValue(dom, value) {
-// 	let isMap = false;
-// 	if (!isNullOrUndef(value)) {
-// 		if (isArray(value)) {
-// 			// Map vs Object v using reduce here for perf?
-// 			value = value.reduce((o, v) => o.set(v, true), new Map());
-// 			isMap = true;
-// 		} else {
-// 			// convert to string
-// 			value = value + '';
-// 		}
-// 		formSelectValueFindOptions(dom, value, isMap);
-// 	}
-// }
-// export function resetFormInputProperties(dom) {
-// 	if (dom.checked) {
-// 		dom.checked = false;
-// 	}
-// 	if (dom.disabled) {
-// 		dom.disabled = false;
-// 	}
-// }
-
 // import {
 // 	getIncrementalId,
 // 	componentIdMap
 // } from './devtools';
-
-// function patchVElement(lastVElement, nextVElement, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	const nextTag = nextVElement.tag;
-// 	const lastTag = lastVElement.tag;
-// 	if (nextTag === 'svg') {
-// 		isSVG = true;
-// 	}
-// 	if (lastTag !== nextTag) {
-// 		replaceWithNewNode(lastVElement, nextVElement, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 	} else {
-// 		const dom = lastVElement.dom;
-// 		const lastProps = lastVElement.props;
-// 		const nextProps = nextVElement.props;
-// 		const lastChildren = lastVElement.children;
-// 		const nextChildren = nextVElement.children;
-// 		nextVElement.dom = dom;
-// 		if (lastChildren !== nextChildren) {
-// 			const lastChildrenType = lastVElement.childrenType;
-// 			const nextChildrenType = nextVElement.childrenType;
-// 			if (lastChildrenType === nextChildrenType) {
-// 				patchChildren(lastChildrenType, lastChildren, nextChildren, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			} else {
-// 				patchChildrenWithUnknownType(lastChildren, nextChildren, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			}
-// 		}
-// 		if (lastProps !== nextProps) {
-// 			const formValue = patchProps(nextVElement, lastProps, nextProps, dom, shallowUnmount, false, isSVG, lifecycle, context);
-// 			if (nextTag === 'select') {
-// 				formSelectValue(dom, formValue);
-// 			}
-// 		}
-// 	}
-// }
-// export function patchOptVElement(lastOptVElement, nextOptVElement, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	const dom = lastOptVElement.dom;
-// 	const lastBp = lastOptVElement.bp;
-// 	const nextBp = nextOptVElement.bp;
-// 	nextOptVElement.dom = dom;
-// 	if (lastBp !== nextBp) {
-// 		const newDom = mountOptVElement(nextOptVElement, null, lifecycle, context, isSVG, shallowUnmount);
-// 		replaceChild(parentDom, newDom, dom);
-// 		unmount(lastOptVElement, null, lifecycle, true, shallowUnmount);
-// 	} else {
-// 		const bp0 = nextBp.v0;
-// 		const tag = nextBp.staticVElement.tag;
-// 		let ignoreDiff = false;
-// 		if (tag === 'svg') {
-// 			isSVG = true;
-// 		} else if (tag === 'input') {
-// 			// input elements are problematic due to the large amount of internal state that hold
-// 			// so instead of making lots of assumptions, we instead reset common values and re-apply
-// 			// the the patching each time
-// 			resetFormInputProperties(dom);
-// 			ignoreDiff = true;
-// 		} else if (tag === 'textarea') {
-// 			// textarea elements are like input elements, except they have sligthly less internal state to
-// 			// worry about
-// 			ignoreDiff = true;
-// 		}
-// 		if (!isNull(bp0)) {
-// 			const lastV0 = lastOptVElement.v0;
-// 			const nextV0 = nextOptVElement.v0;
-// 			const bp1 = nextBp.v1;
-// 			if (lastV0 !== nextV0 || ignoreDiff) {
-// 				patchOptVElementValue(nextOptVElement, bp0, lastV0, nextV0, nextBp.d0, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			}
-// 			if (!isNull(bp1)) {
-// 				const lastV1 = lastOptVElement.v1;
-// 				const nextV1 = nextOptVElement.v1;
-// 				const bp2 = nextBp.v2;
-// 				if (lastV1 !== nextV1 || ignoreDiff) {
-// 					patchOptVElementValue(nextOptVElement, bp1, lastV1, nextV1, nextBp.d1, dom, lifecycle, context, isSVG, shallowUnmount);
-// 				}
-// 				if (!isNull(bp2)) {
-// 					const lastV2 = lastOptVElement.v2;
-// 					const nextV2 = nextOptVElement.v2;
-// 					const bp3 = nextBp.v3;
-// 					if (lastV2 !== nextV2 || ignoreDiff) {
-// 						patchOptVElementValue(nextOptVElement, bp2, lastV2, nextV2, nextBp.d2, dom, lifecycle, context, isSVG, shallowUnmount);
-// 					}
-// 					if (!isNull(bp3)) {
-// 						const d3 = nextBp.d3;
-// 						const lastV3s = lastOptVElement.v3;
-// 						const nextV3s = nextOptVElement.v3;
-// 						for (let i = 0; i < lastV3s.length; i++) {
-// 							const lastV3 = lastV3s[i];
-// 							const nextV3 = nextV3s[i];
-// 							if (lastV3 !== nextV3 || ignoreDiff) {
-// 								patchOptVElementValue(nextOptVElement, bp3[i], lastV3, nextV3, d3[i], dom, lifecycle, context, isSVG, shallowUnmount);
-// 							}
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-// 		if (tag === 'select') {
-// 			formSelectValue(dom, getPropFromOptElement(nextOptVElement, PROP_VALUE));
-// 		}
-// 	}
-// }
-// function patchOptVElementValue(optVElement, valueType, lastValue, nextValue, descriptor, dom, lifecycle, context, isSVG, shallowUnmount) {
-// 	switch (valueType) {
-// 		case CHILDREN:
-// 			patchChildren(descriptor, lastValue, nextValue, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			break;
-// 		case PROP_CLASS_NAME:
-// 			if (isNullOrUndef(nextValue)) {
-// 				dom.removeAttribute('class');
-// 			} else {
-// 				if (isSVG) {
-// 					dom.setAttribute('class', nextValue);
-// 				} else {
-// 					dom.className = nextValue;
-// 				}
-// 			}
-// 			break;
-// 		case PROP_DATA:
-// 			dom.dataset[descriptor] = nextValue;
-// 			break;
-// 		case PROP_STYLE:
-// 			patchStyle(lastValue, nextValue, dom);
-// 			break;
-// 		case PROP_VALUE:
-// 			dom.value = isNullOrUndef(nextValue) ? '' : nextValue;
-// 			break;
-// 		case PROP:
-// 			patchProp(descriptor, lastValue, nextValue, dom, isSVG);
-// 			break;
-// 		case PROP_SPREAD:
-// 			patchProps(optVElement, lastValue, nextValue, dom, shallowUnmount, true, isSVG, lifecycle, context);
-// 			break;
-// 		default:
-// 			// TODO
-// 	}
-// }
+function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+    if (lastVNode !== nextVNode) {
+        var lastFlags = lastVNode.flags;
+        var nextFlags = nextVNode.flags;
+        switch (nextFlags) {
+            case VNodeFlags.ComponentClass:
+            case VNodeFlags.ComponentFunction:
+                switch (lastFlags) {
+                    case VNodeFlags.ComponentClass:
+                    case VNodeFlags.ComponentFunction:
+                        patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+                        break;
+                    default:
+                        replaceVNode(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextFlags === VNodeFlags.ComponentClass), lastVNode, lifecycle);
+                }
+                break;
+            case VNodeFlags.HtmlElement:
+            case VNodeFlags.SvgElement:
+            case VNodeFlags.InputElement:
+            case VNodeFlags.TextAreaElement:
+            case VNodeFlags.MediaElement:
+                switch (lastFlags) {
+                    case VNodeFlags.HtmlElement:
+                    case VNodeFlags.SvgElement:
+                    case VNodeFlags.InputElement:
+                    case VNodeFlags.TextAreaElement:
+                    case VNodeFlags.MediaElement:
+                        patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+                        break;
+                    default:
+                        replaceVNode(parentDom, mountElement(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
+                }
+                break;
+            default:
+                switch (lastFlags) {
+                    case VNodeFlags.ComponentClass:
+                    case VNodeFlags.ComponentFunction:
+                        replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+                        break;
+                    default:
+                        if (process.env.NODE_ENV !== 'production') {
+                            throwError('bad input argument called on patch(). Input argument may need normalising.');
+                        }
+                        throwError();
+                }
+        }
+    }
+}
+function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+    var nextTag = nextVNode.type;
+    var lastTag = lastVNode.type;
+    if (lastTag !== nextTag) {
+    }
+    else {
+        var dom = lastVNode.dom;
+        var lastProps = lastVNode.props;
+        var nextProps = nextVNode.props;
+        var lastChildren = lastVNode.children;
+        var nextChildren = nextVNode.children;
+        nextVNode.dom = dom;
+        if (lastChildren !== nextChildren) {
+            if (isString(lastChildren) && isString(nextChildren)) {
+                updateTextContent(dom, nextChildren);
+            }
+            else if (isVNode(lastChildren) && isVNode(nextChildren)) {
+                patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+            }
+            else {
+                if (isArray(nextChildren)) {
+                    if (isArray(lastChildren)) {
+                        patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+                    }
+                }
+            }
+        }
+        if (lastProps !== nextProps) {
+            patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG);
+        }
+    }
+}
 // function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
 // 	switch (childrenType) {
 // 		case CHILDREN_TEXT:
@@ -479,7 +376,6 @@ function documentCreateElement(tag, isSVG) {
 // 			throwError();
 // 	}
 // }
-
 // 	if (isInvalid(nextChildren)) {
 // 		if (!isInvalid(lastChildren)) {
 // 			if (isVNode(lastChildren)) {
@@ -530,159 +426,128 @@ function documentCreateElement(tag, isSVG) {
 // 		throwError();
 // 	}
 // }
-// export function patchVComponent(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	const lastType = lastVComponent.type;
-// 	const nextType = nextVComponent.type;
-// 	const nextProps = nextVComponent.props || {};
-// 	if (lastType !== nextType) {
-// 		if (isStatefulComponent(nextVComponent)) {
-// 			replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 		} else {
-// 			const lastInput = lastVComponent.instance._lastInput || lastVComponent.instance;
-// 			const nextInput = createStatelessComponentInput(nextType, nextProps, context);
-// 			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, true);
-// 			const dom = nextVComponent.dom = nextInput.dom;
-// 			nextVComponent.instance = nextInput;
-// 			mountStatelessComponentCallbacks(nextVComponent.hooks, dom, lifecycle);
-// 			unmount(lastVComponent, null, lifecycle, false, shallowUnmount);
-// 		}
-// 	} else {
-// 		if (isStatefulComponent(nextVComponent)) {
-// 			const instance = lastVComponent.instance;
-// 			if (instance._unmounted) {
-// 				if (isNull(parentDom)) {
-// 					return true;
-// 				}
-// 				replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG, shallowUnmount), lastVComponent.dom);
-// 			} else {
-// 				const defaultProps = nextType.defaultProps;
-// 				const lastProps = instance.props;
-// 				if (instance._devToolsStatus.connected && !instance._devToolsId) {
-// 					componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
-// 				}
-// 				if (!isUndefined(defaultProps)) {
-// 					copyPropsTo(lastProps, nextProps);
-// 					nextVComponent.props = nextProps;
-// 				}
-// 				const lastState = instance.state;
-// 				const nextState = instance.state;
-// 				let childContext = instance.getChildContext();
-// 				nextVComponent.instance = instance;
-// 				instance._isSVG = isSVG;
-// 				if (!isNullOrUndef(childContext)) {
-// 					childContext = Object.assign({}, context, childContext);
-// 				} else {
-// 					childContext = context;
-// 				}
-// 				const lastInput = instance._lastInput;
-// 				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
-// 				let didUpdate = true;
-// 				instance._childContext = childContext;
-// 				if (isInvalid(nextInput)) {
-// 					nextInput = createVPlaceholder();
-// 				} else if (isArray(nextInput)) {
-// 					nextInput = createVFragment(nextInput, null);
-// 				} else if (nextInput === NO_OP) {
-// 					nextInput = lastInput;
-// 					didUpdate = false;
-// 				}
-// 				instance._lastInput = nextInput;
-// 				instance._vComponent = nextVComponent;
-// 				if (didUpdate) {
-// 					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
-// 					instance.componentDidUpdate(lastProps, lastState);
-// 					componentToDOMNodeMap.set(instance, nextInput.dom);
-// 				}
-// 				nextVComponent.dom = nextInput.dom;
-// 			}
-// 		} else {
-// 			let shouldUpdate = true;
-// 			const lastProps = lastVComponent.props;
-// 			const nextHooks = nextVComponent.hooks;
-// 			const nextHooksDefined = !isNullOrUndef(nextHooks);
-// 			const lastInput = lastVComponent.instance;
-// 			nextVComponent.dom = lastVComponent.dom;
-// 			nextVComponent.instance = lastInput;
-// 			if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
-// 				shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps, nextProps);
-// 			}
-// 			if (shouldUpdate !== false) {
-// 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
-// 					nextHooks.onComponentWillUpdate(lastProps, nextProps);
-// 				}
-// 				let nextInput = nextType(nextProps, context);
-// 				if (isInvalid(nextInput)) {
-// 					nextInput = createVPlaceholder();
-// 				} else if (isArray(nextInput)) {
-// 					nextInput = createVFragment(nextInput, null);
-// 				} else if (nextInput === NO_OP) {
-// 					return false;
-// 				}
-// 				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 				nextVComponent.instance = nextInput;
-// 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
-// 					nextHooks.onComponentDidUpdate(lastProps, nextProps);
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return false;
-// }
-// export function patchVText(lastVText, nextVText) {
-// 	const nextText = nextVText.text;
-// 	const dom = lastVText.dom;
-// 	nextVText.dom = dom;
-// 	if (lastVText.text !== nextText) {
-// 		dom.nodeValue = nextText;
-// 	}
-// }
-// export function patchVPlaceholder(lastVPlacholder, nextVPlacholder) {
-// 	nextVPlacholder.dom = lastVPlacholder.dom;
-// }
-// function patchVFragment(lastVFragment, nextVFragment, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	const lastChildren = lastVFragment.children;
-// 	const nextChildren = nextVFragment.children;
-// 	const pointer = lastVFragment.pointer;
-// 	nextVFragment.dom = lastVFragment.dom;
-// 	nextVFragment.pointer = pointer;
-// 	if (!lastChildren !== nextChildren) {
-// 		const lastChildrenType = lastVFragment.childrenType;
-// 		const nextChildrenType = nextVFragment.childrenType;
-// 		if (lastChildrenType === nextChildrenType) {
-// 			if (nextChildrenType === KEYED) {
-// 				return patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, shallowUnmount);
-// 			} else if (nextChildrenType === NON_KEYED) {
-// 				return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, false, shallowUnmount);
-// 			}
-// 		}
-// 		if (isKeyed(lastChildren, nextChildren)) {
-// 			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, shallowUnmount);
-// 		} else {
-// 			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, true, shallowUnmount);
-// 		}
-// 	}
-// }
-// export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, parentVList, shouldNormalise, shallowUnmount) {
-// 	let lastChildrenLength = lastChildren.length;
-// 	let nextChildrenLength = nextChildren.length;
-// 	let commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
-// 	let i = 0;
-// 	for (; i < commonLength; i++) {
-// 		const lastChild = lastChildren[i];
-// 		const nextChild = shouldNormalise ? normaliseChild(nextChildren, i) : nextChildren[i];
-// 		patch(lastChild, nextChild, dom, lifecycle, context, isSVG, shallowUnmount);
-// 	}
-// 	if (lastChildrenLength < nextChildrenLength) {
-// 		for (i = commonLength; i < nextChildrenLength; i++) {
-// 			const child = normaliseChild(nextChildren, i);
-// 			insertOrAppend(dom, mount(child, null, lifecycle, context, isSVG, shallowUnmount), parentVList && parentVList.pointer);
-// 		}
-// 	} else if (lastChildrenLength > nextChildrenLength) {
-// 		for (i = commonLength; i < lastChildrenLength; i++) {
-// 			unmount(lastChildren[i], dom, lifecycle, false, shallowUnmount);
-// 		}
-// 	}
-// }
+function patchComponent(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG) {
+    // 	const lastType = lastVComponent.type;
+    // 	const nextType = nextVComponent.type;
+    // 	const nextProps = nextVComponent.props || {};
+    // 	if (lastType !== nextType) {
+    // 		if (isStatefulComponent(nextVComponent)) {
+    // 			replaceWithNewNode(lastVComponent, nextVComponent, parentDom, lifecycle, context, isSVG, shallowUnmount);
+    // 		} else {
+    // 			const lastInput = lastVComponent.instance._lastInput || lastVComponent.instance;
+    // 			const nextInput = createStatelessComponentInput(nextType, nextProps, context);
+    // 			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, true);
+    // 			const dom = nextVComponent.dom = nextInput.dom;
+    // 			nextVComponent.instance = nextInput;
+    // 			mountStatelessComponentCallbacks(nextVComponent.hooks, dom, lifecycle);
+    // 			unmount(lastVComponent, null, lifecycle, false, shallowUnmount);
+    // 		}
+    // 	} else {
+    // 		if (isStatefulComponent(nextVComponent)) {
+    // 			const instance = lastVComponent.instance;
+    // 			if (instance._unmounted) {
+    // 				if (isNull(parentDom)) {
+    // 					return true;
+    // 				}
+    // 				replaceChild(parentDom, mountVComponent(nextVComponent, null, lifecycle, context, isSVG, shallowUnmount), lastVComponent.dom);
+    // 			} else {
+    // 				const defaultProps = nextType.defaultProps;
+    // 				const lastProps = instance.props;
+    // 				if (instance._devToolsStatus.connected && !instance._devToolsId) {
+    // 					componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
+    // 				}
+    // 				if (!isUndefined(defaultProps)) {
+    // 					copyPropsTo(lastProps, nextProps);
+    // 					nextVComponent.props = nextProps;
+    // 				}
+    // 				const lastState = instance.state;
+    // 				const nextState = instance.state;
+    // 				let childContext = instance.getChildContext();
+    // 				nextVComponent.instance = instance;
+    // 				instance._isSVG = isSVG;
+    // 				if (!isNullOrUndef(childContext)) {
+    // 					childContext = Object.assign({}, context, childContext);
+    // 				} else {
+    // 					childContext = context;
+    // 				}
+    // 				const lastInput = instance._lastInput;
+    // 				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
+    // 				let didUpdate = true;
+    // 				instance._childContext = childContext;
+    // 				if (isInvalid(nextInput)) {
+    // 					nextInput = createVPlaceholder();
+    // 				} else if (isArray(nextInput)) {
+    // 					nextInput = createVFragment(nextInput, null);
+    // 				} else if (nextInput === NO_OP) {
+    // 					nextInput = lastInput;
+    // 					didUpdate = false;
+    // 				}
+    // 				instance._lastInput = nextInput;
+    // 				instance._vComponent = nextVComponent;
+    // 				if (didUpdate) {
+    // 					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, shallowUnmount);
+    // 					instance.componentDidUpdate(lastProps, lastState);
+    // 					componentToDOMNodeMap.set(instance, nextInput.dom);
+    // 				}
+    // 				nextVComponent.dom = nextInput.dom;
+    // 			}
+    // 		} else {
+    // 			let shouldUpdate = true;
+    // 			const lastProps = lastVComponent.props;
+    // 			const nextHooks = nextVComponent.hooks;
+    // 			const nextHooksDefined = !isNullOrUndef(nextHooks);
+    // 			const lastInput = lastVComponent.instance;
+    // 			nextVComponent.dom = lastVComponent.dom;
+    // 			nextVComponent.instance = lastInput;
+    // 			if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
+    // 				shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps, nextProps);
+    // 			}
+    // 			if (shouldUpdate !== false) {
+    // 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
+    // 					nextHooks.onComponentWillUpdate(lastProps, nextProps);
+    // 				}
+    // 				let nextInput = nextType(nextProps, context);
+    // 				if (isInvalid(nextInput)) {
+    // 					nextInput = createVPlaceholder();
+    // 				} else if (isArray(nextInput)) {
+    // 					nextInput = createVFragment(nextInput, null);
+    // 				} else if (nextInput === NO_OP) {
+    // 					return false;
+    // 				}
+    // 				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount);
+    // 				nextVComponent.instance = nextInput;
+    // 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
+    // 					nextHooks.onComponentDidUpdate(lastProps, nextProps);
+    // 				}
+    // 			}
+    // 		}
+    // 	}
+    // 	return false;
+}
+
+
+function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+    var lastChildrenLength = lastChildren.length;
+    var nextChildrenLength = nextChildren.length;
+    var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
+    var i = 0;
+    for (; i < commonLength; i++) {
+        var lastChild = lastChildren[i];
+        var nextChild = nextChildren[i];
+        patch(lastChild, nextChild, dom, lifecycle, context, isSVG);
+    }
+    if (lastChildrenLength < nextChildrenLength) {
+        for (i = commonLength; i < nextChildrenLength; i++) {
+            var child = nextChildren[i];
+            appendChild(dom, mount(child, null, lifecycle, context, isSVG));
+        }
+    }
+    else if (lastChildrenLength > nextChildrenLength) {
+        for (i = commonLength; i < lastChildrenLength; i++) {
+            unmount(lastChildren[i], dom, lifecycle, false, false);
+        }
+    }
+}
 // export function patchKeyedChildren(
 // 	a: Array<VComponent | OptVElement | VElement>,
 // 	b: Array<VComponent | OptVElement | VElement>,
@@ -1002,38 +867,25 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
     }
     return true;
 }
-// function patchProps(vNode, lastProps, nextProps, dom, shallowUnmount, isSpread, isSVG, lifecycle, context) {
-// 	lastProps = lastProps || {};
-// 	nextProps = nextProps || {};
-// 	let formValue;
-// 	for (let prop in nextProps) {
-// 		if (!nextProps.hasOwnProperty(prop)) {
-// 			continue;
-// 		}
-// 		const nextValue = nextProps[prop];
-// 		const lastValue = lastProps[prop];
-// 		if (prop === 'value') {
-// 			formValue = nextValue;
-// 		}
-// 		if (isNullOrUndef(nextValue)) {
-// 			removeProp(prop, dom);
-// 		} else if (prop === 'children') {
-// 			if (isSpread) {
-// 				patchChildrenWithUnknownType(lastValue, nextValue, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			} else if (vNode === ELEMENT) {
-// 				vNode.children = nextValue;
-// 			}
-// 		} else {
-// 			patchProp(prop, lastValue, nextValue, dom, isSVG);
-// 		}
-// 	}
-// 	for (let prop in lastProps) {
-// 		if (isNullOrUndef(nextProps[prop])) {
-// 			removeProp(prop, dom);
-// 		}
-// 	}
-// 	return formValue;
-// }
+function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
+    lastProps = lastProps || {};
+    nextProps = nextProps || {};
+    for (var prop in nextProps) {
+        var nextValue = nextProps[prop];
+        var lastValue = lastProps[prop];
+        if (isNullOrUndef(nextValue)) {
+            removeProp(prop, dom);
+        }
+        else {
+            patchProp(prop, lastValue, nextValue, dom, isSVG);
+        }
+    }
+    for (var prop$1 in lastProps) {
+        if (isNullOrUndef(nextProps[prop$1])) {
+            removeProp(prop$1, dom);
+        }
+    }
+}
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
     if (isString(nextAttrValue)) {
         dom.style.cssText = nextAttrValue;
@@ -1071,45 +923,262 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
         }
     }
 }
-// function removeProp(prop, dom) {
-// 	if (prop === 'className') {
-// 		dom.removeAttribute('class');
-// 	} else if (prop === 'value') {
-// 		dom.value = '';
-// 	} else {
-// 		dom.removeAttribute(prop);
+function removeProp(prop, dom) {
+    if (prop === 'className') {
+        dom.removeAttribute('class');
+    }
+    else if (prop === 'value') {
+        dom.value = '';
+    }
+    else {
+        dom.removeAttribute(prop);
+    }
+}
+
+function copyPropsTo(copyFrom, copyTo) {
+    for (var prop in copyFrom) {
+        if (isUndefined$1(copyTo[prop])) {
+            copyTo[prop] = copyFrom[prop];
+        }
+    }
+}
+function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
+    var instance = new Component(props, context);
+    instance.context = context;
+    instance._patch = patch;
+    instance._devToolsStatus = devToolsStatus;
+    instance._componentToDOMNodeMap = componentToDOMNodeMap;
+    var childContext = instance.getChildContext();
+    if (!isNullOrUndef(childContext)) {
+        instance._childContext = Object.assign({}, context, childContext);
+    }
+    else {
+        instance._childContext = context;
+    }
+    instance._unmounted = false;
+    instance._pendingSetState = true;
+    instance._isSVG = isSVG;
+    instance.componentWillMount();
+    instance.beforeRender && instance.beforeRender();
+    var input = instance.render(props, context);
+    instance.afterRender && instance.afterRender();
+    if (isArray(input)) {
+        input = createFragmentVNode(input);
+    }
+    else if (isInvalid(input)) {
+        input = createVoidVNode();
+    }
+    instance._pendingSetState = false;
+    instance._lastInput = input;
+    return instance;
+}
+function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
+    replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle);
+}
+function replaceVNode(parentDom, dom, vNode, lifecycle) {
+    var shallowUnmount = false;
+    // we cannot cache nodeType here as vNode might be re-assigned below
+    if (vNode.flags === VNodeFlags.ComponentClass || vNode.flags === VNodeFlags.ComponentFunction) {
+        // if we are accessing a stateful or stateless component, we want to access their last rendered input
+        // accessing their DOM node is not useful to us here
+        // #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
+        unmount(vNode, null, lifecycle, false, false);
+        vNode = vNode.instance._lastInput || vNode.instance;
+        // #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
+        if (vNode.flags !== VNodeFlags.Fragment) {
+            shallowUnmount = true;
+        }
+    }
+    if (vNode.flags === VNodeFlags.Fragment) {
+        replaceFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
+    }
+    else {
+        replaceChild(parentDom, dom, vNode.dom);
+        unmount(vNode, null, lifecycle, false, shallowUnmount);
+    }
+}
+function createStatelessComponentInput(component, props, context) {
+    var input = component(props, context);
+    if (isArray(input)) {
+        input = createFragmentVNode(input);
+    }
+    else if (isInvalid(input)) {
+        input = createVoidVNode();
+    }
+    return input;
+}
+function setTextContent(dom, text) {
+    if (text !== '') {
+        dom.textContent = text;
+    }
+    else {
+        dom.appendChild(document.createTextNode(''));
+    }
+}
+function updateTextContent(dom, text) {
+    dom.firstChild.nodeValue = text;
+}
+function appendChild(parentDom, dom) {
+    parentDom.appendChild(dom);
+}
+
+function replaceFragmentWithNode(parentDom, vFragment, dom, lifecycle, shallowUnmount) {
+    var pointer = vFragment.pointer;
+    unmountFragment(vFragment, parentDom, false, lifecycle, shallowUnmount);
+    replaceChild(parentDom, dom, pointer);
+}
+function documentCreateElement(tag, isSVG) {
+    var dom;
+    if (isSVG === true) {
+        dom = document.createElementNS(svgNS, tag);
+    }
+    else {
+        dom = document.createElement(tag);
+    }
+    return dom;
+}
+
+function replaceChild(parentDom, nextDom, lastDom) {
+    if (!parentDom) {
+        parentDom = lastDom.parentNode;
+    }
+    parentDom.replaceChild(nextDom, lastDom);
+}
+// export function normalise(object) {
+// 	if (isStringOrNumber(object)) {
+// 		return createVText(object);
+// 	} else if (isInvalid(object)) {
+// 		return createVPlaceholder();
+// 	} else if (isArray(object)) {
+// 		return createVFragment(object, null);
+// 	} else if (isVNode(object) && object.dom) {
+// 		return cloneVNode(object);
+// 	}
+// 	return object;
+// }
+// export function normaliseChild(children, i) {
+// 	const child = children[i];
+// 	children[i] = normalise(child);
+// 	return children[i];
+// }
+function removeChild(parentDom, dom) {
+    parentDom.removeChild(dom);
+}
+
+// export function isKeyed(lastChildren, nextChildren) {
+// 	if (lastChildren.complex) {
+// 		return false;
+// 	}
+// 	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
+// 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
+// }
+// function formSelectValueFindOptions(dom, value, isMap) {
+// 	let child = dom.firstChild;
+// 	while (child) {
+// 		const tagName = child.tagName;
+// 		if (tagName === 'OPTION') {
+// 			child.selected = !!((!isMap && child.value === value) || (isMap && value.get(child.value)));
+// 		} else if (tagName === 'OPTGROUP') {
+// 			formSelectValueFindOptions(child, value, isMap);
+// 		}
+// 		child = child.nextSibling;
 // 	}
 // }
+// export function formSelectValue(dom, value) {
+// 	let isMap = false;
+// 	if (!isNullOrUndef(value)) {
+// 		if (isArray(value)) {
+// 			// Map vs Object v using reduce here for perf?
+// 			value = value.reduce((o, v) => o.set(v, true), new Map());
+// 			isMap = true;
+// 		} else {
+// 			// convert to string
+// 			value = value + '';
+// 		}
+// 		formSelectValueFindOptions(dom, value, isMap);
+// 	}
+// }
+// export function resetFormInputProperties(dom) {
+// 	if (dom.checked) {
+// 		dom.checked = false;
+// 	}
+// 	if (dom.disabled) {
+// 		dom.disabled = false;
+// 	}
+// }
+
+var devToolsStatus = {
+    connected: false
+};
+
+
+function sendToDevTools(global, data) {
+    var event = new CustomEvent('inferno.client.message', {
+        detail: JSON.stringify(data, function (key, val) {
+            if (!isNull(val) && !isUndefined$1(val)) {
+                if (key === '_vComponent' || !isUndefined$1(val.nodeType)) {
+                    return;
+                }
+                else if (isFunction(val)) {
+                    return ("$$f:" + (val.name));
+                }
+            }
+            return val;
+        })
+    });
+    global.dispatchEvent(event);
+}
+function rerenderRoots() {
+    for (var i = 0; i < roots.length; i++) {
+        var root = roots[i];
+        render(root.input, root.dom);
+    }
+}
+
+function sendRoots(global) {
+    sendToDevTools(global, { type: 'roots', data: roots });
+}
 
 function mount(vNode, parentDom, lifecycle, context, isSVG) {
     var flags = vNode.flags;
     switch (flags) {
         case VNodeFlags.HtmlElement:
         case VNodeFlags.SvgElement:
+        case VNodeFlags.InputElement:
+        case VNodeFlags.TextAreaElement:
             return mountElement(vNode, parentDom, lifecycle, context, flags === VNodeFlags.SvgElement || isSVG);
-        // case COMPONENT:
-        // 	return mountComponent(input, parentDom, lifecycle, context, isSVG, shallowUnmount);
-        // case PLACEHOLDER:
-        // 	return mountVPlaceholder(input, parentDom);
-        // case FRAGMENT:
-        // 	return mountVFragment(input, parentDom, lifecycle, context, isSVG, shallowUnmount);
+        case VNodeFlags.ComponentClass:
+        case VNodeFlags.ComponentFunction:
+            return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags === VNodeFlags.ComponentClass);
+        case VNodeFlags.Void:
+            return mountVoid(vNode, parentDom);
+        case VNodeFlags.Fragment:
+            return mountFragment(vNode, parentDom, lifecycle, context, isSVG);
         case VNodeFlags.Text:
-        // return mountVText(vNode, parentDom);
+            return mountText(vNode, parentDom);
         default:
             if (process.env.NODE_ENV !== 'production') {
-                throwError('bad VNode passed to mount(). The value needs to be a valid VNode object.');
+                throwError(("mount() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
             }
             throwError();
     }
 }
-// export function mountVPlaceholder(vPlaceholder, parentDom) {
-// 	const dom = document.createTextNode('');
-// 	vPlaceholder.dom = dom;
-// 	if (parentDom) {
-// 		appendChild(parentDom, dom);
-// 	}
-// 	return dom;
-// }
+function mountText(vNode, parentDom) {
+    var dom = document.createTextNode(vNode.children);
+    vNode.dom = dom;
+    if (parentDom) {
+        appendChild(parentDom, dom);
+    }
+    return dom;
+}
+function mountVoid(vNode, parentDom) {
+    var dom = document.createTextNode('');
+    vNode.dom = dom;
+    if (parentDom) {
+        appendChild(parentDom, dom);
+    }
+    return dom;
+}
 function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
     var tag = vNode.type;
     var dom = documentCreateElement(tag, isSVG);
@@ -1122,8 +1191,8 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
         mountRef(dom, ref, lifecycle);
     }
     if (hasProps) {
-        // do not add a hasOwnProperty check here, it affects performance
         for (var prop in props) {
+            // do not add a hasOwnProperty check here, it affects performance
             patchProp(prop, null, props[prop], dom, isSVG);
         }
     }
@@ -1139,254 +1208,94 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
         else if (isVNode(children)) {
             mount(children, dom, lifecycle, context, isSVG);
         }
-        else {
-            if (process.env.NODE_ENV !== 'production') {
-                throwError('bad "children" set on VNode during mountElement(). VNode "children" needs to be a VNode, Array<VNode> or string.');
-            }
-            throwError();
-        }
     }
     if (!isNull(parentDom)) {
         appendChild(parentDom, dom);
     }
     return dom;
 }
-// export function mountVFragment(vFragment, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	const children = vFragment.children;
-// 	const pointer = document.createTextNode('');
-// 	const dom = document.createDocumentFragment();
-// 	const childrenType = vFragment.childrenType;
-// 	if (childrenType === KEYED || childrenType === NON_KEYED) {
-// 		mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG, shallowUnmount);
-// 	} else if (childrenType === UNKNOWN) {
-// 		mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG, shallowUnmount);
-// 	}
-// 	vFragment.pointer = pointer;
-// 	vFragment.dom = dom;
-// 	appendChild(dom, pointer);
-// 	if (parentDom) {
-// 		appendChild(parentDom, dom);
-// 	}
-// 	return dom;
-// }
-// export function mountVText(vText, parentDom) {
-// 	const dom = document.createTextNode(vText.text);
-// 	vText.dom = dom;
-// 	if (!isNull(parentDom)) {
-// 		appendChild(parentDom, dom);
-// 	}
-// 	return dom;
-// }
-// export function mountOptVElement(optVElement, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	const bp = optVElement.bp;
-// 	let dom = null;
-// 	if (recyclingEnabled) {
-// 		dom = recycleOptVElement(optVElement, lifecycle, context, isSVG, shallowUnmount);
-// 	}
-// 	const tag = bp.staticVElement.tag;
-// 	if (isNull(dom)) {
-// 		if (isSVG || tag === 'svg') {
-// 			isSVG = true;
-// 			dom = (bp.svgClone && bp.svgClone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
-// 		} else {
-// 			dom = (bp.clone && bp.clone.cloneNode(true)) || createStaticVElementClone(bp, isSVG);
-// 		}
-// 		optVElement.dom = dom;
-// 		const bp0 = bp.v0;
-// 		if (!isNull(bp0)) {
-// 			mountOptVElementValue(optVElement, bp0, optVElement.v0, bp.d0, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			const bp1 = bp.v1;
-// 			if (!isNull(bp1)) {
-// 				mountOptVElementValue(optVElement, bp1, optVElement.v1, bp.d1, dom, lifecycle, context, isSVG, shallowUnmount);
-// 				const bp2 = bp.v2;
-// 				if (!isNull(bp2)) {
-// 					mountOptVElementValue(optVElement, bp2, optVElement.v2, bp.d2, dom, lifecycle, context, isSVG, shallowUnmount);
-// 					const bp3 = bp.v3;
-// 					if (!isNull(bp3)) {
-// 						const v3 = optVElement.v3;
-// 						const d3 = bp.d3;
-// 						const bp3 = bp.v3;
-// 						for (let i = 0; i < bp3.length; i++) {
-// 							mountOptVElementValue(optVElement, bp3[i], v3[i], d3[i], dom, lifecycle, context, isSVG, shallowUnmount);
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-// 		if (tag === 'select') {
-// 			formSelectValue(dom, getPropFromOptElement(optVElement, PROP_VALUE));
-// 		}
-// 	}
-// 	if (!isNull(parentDom)) {
-// 		parentDom.appendChild(dom);
-// 	}
-// 	return dom;
-// }
-// function mountOptVElementValue(optVElement, valueType, value, descriptor, dom, lifecycle, context, isSVG, shallowUnmount) {
-// 	switch (valueType) {
-// 		case CHILDREN:
-// 			mountChildren(descriptor, value, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			break;
-// 		case PROP_CLASS_NAME:
-// 			if (!isNullOrUndef(value)) {
-// 				if (isSVG) {
-// 					dom.setAttribute('class', value);
-// 				} else {
-// 					dom.className = value;
-// 				}
-// 			}
-// 			break;
-// 		case PROP_DATA:
-// 			dom.dataset[descriptor] = value;
-// 			break;
-// 		case PROP_STYLE:
-// 			patchStyle(null, value, dom);
-// 			break;
-// 		case PROP_VALUE:
-// 			dom.value = isNullOrUndef(value) ? '' : value;
-// 			break;
-// 		case PROP:
-// 			patchProp(descriptor, null, value, dom, isSVG);
-// 			break;
-// 		case PROP_REF:
-// 			mountRef(dom, value, lifecycle);
-// 			break;
-// 		case PROP_SPREAD:
-// 			mountProps(optVElement, value, dom, lifecycle, context, isSVG, true, shallowUnmount);
-// 			break;
-// 		default:
-// 			// TODO
-// 	}
-// }
-// export function mountChildren(childrenType, children, dom, lifecycle, context, isSVG, shallowUnmount) {
-// 	if (childrenType === CHILDREN_TEXT) {
-// 		setTextContent(dom, children);
-// 	} else if (childrenType === NODE) {
-// 		mount(children, dom, lifecycle, context, isSVG, shallowUnmount);
-// 	} else if (childrenType === KEYED || childrenType === NON_KEYED) {
-// 		mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG, shallowUnmount);
-// 	} else if (childrenType === UNKNOWN) {
-// 		mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG, shallowUnmount);
-// 	} else {
-// 		if (process.env.NODE_ENV !== 'production') {
-// 			throwError('bad childrenType value specified when attempting to mountChildren.');
-// 		}
-// 		throwError();
-// 	}
-// }
-// export function mountArrayChildrenWithType(children, dom, lifecycle, context, isSVG, shallowUnmount) {
-// 	for (let i = 0; i < children.length; i++) {
-// 		mount(children[i], dom, lifecycle, context, isSVG, shallowUnmount);
-// 	}
-// }
-// export function mountChildrenWithUnknownType(children, dom, lifecycle, context, isSVG, shallowUnmount) {
-// 	if (isArray(children)) {
-// 		mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG, shallowUnmount);
-// 	} else if (isStringOrNumber(children)) {
-// 		setTextContent(dom, children);
-// 	} else if (!isInvalid(children)) {
-// 		mount(children, dom, lifecycle, context, isSVG, shallowUnmount);
-// 	}
-// }
-// export function mountArrayChildrenWithoutType(children, dom, lifecycle, context, isSVG, shallowUnmount) {
-// 	children.complex = false;
-// 	for (let i = 0; i < children.length; i++) {
-// 		const child = normaliseChild(children, i);
-// 		if (child === TEXT) {
-// 			mountVText(child, dom);
-// 			children.complex = true;
-// 		} else if (child === PLACEHOLDER) {
-// 			mountVPlaceholder(child, dom);
-// 			children.complex = true;
-// 		} else if (child === FRAGMENT) {
-// 			mountVFragment(child, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			children.complex = true;
-// 		} else {
-// 			mount(child, dom, lifecycle, context, isSVG, shallowUnmount);
-// 		}
-// 	}
-// }
-// export function mountVComponent(vComponent, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	if (recyclingEnabled) {
-// 		const dom = recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount);
-// 		if (!isNull(dom)) {
-// 			if (!isNull(parentDom)) {
-// 				appendChild(parentDom, dom);
-// 			}
-// 			return dom;
-// 		}
-// 	}
-// 	const type = vComponent.type;
-// 	const props = vComponent.props || EMPTY_OBJ;
-// 	const hooks = vComponent.hooks;
-// 	const ref = vComponent.ref;
-// 	let dom;
-// 	if (isStatefulComponent(vComponent)) {
-// 		const defaultProps = type.defaultProps;
-// 		if (!isUndefined(defaultProps)) {
-// 			copyPropsTo(defaultProps, props);
-// 			vComponent.props = props;
-// 		}
-// 		if (hooks) {
-// 			if (process.env.NODE_ENV !== 'production') {
-// 				throwError('"hooks" are not supported on stateful components.');
-// 			}
-// 			throwError();
-// 		}
-// 		const instance = createStatefulComponentInstance(type, props, context, isSVG, devToolsStatus);
-// 		const input = instance._lastInput;
-// 		instance._vComponent = vComponent;
-// 		vComponent.dom = dom = mount(input, null, lifecycle, instance._childContext, false, shallowUnmount);
-// 		if (!isNull(parentDom)) {
-// 			appendChild(parentDom, dom);
-// 		}
-// 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
-// 		componentToDOMNodeMap.set(instance, dom);
-// 		vComponent.instance = instance;
-// 	} else {
-// 		if (ref) {
-// 			if (process.env.NODE_ENV !== 'production') {
-// 				throwError('"refs" are not supported on stateless components.');
-// 			}
-// 			throwError();
-// 		}
-// 		const input = createStatelessComponentInput(type, props, context);
-// 		vComponent.dom = dom = mount(input, null, lifecycle, context, isSVG, shallowUnmount);
-// 		vComponent.instance = input;
-// 		mountStatelessComponentCallbacks(hooks, dom, lifecycle);
-// 		if (!isNull(parentDom)) {
-// 			appendChild(parentDom, dom);
-// 		}
-// 	}
-// 	return dom;
-// }
-// export function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
-// 	if (ref) {
-// 		if (isFunction(ref)) {
-// 			lifecycle.addListener(() => ref(instance));
-// 		} else {
-// 			if (process.env.NODE_ENV !== 'production') {
-// 				throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
-// 			}
-// 			throwError();
-// 		}
-// 	}
-// 	if (!isNull(instance.componentDidMount)) {
-// 		lifecycle.addListener(() => {
-// 			instance.componentDidMount();
-// 		});
-// 	}
-// }
-// export function mountStatelessComponentCallbacks(hooks, dom, lifecycle) {
-// 	if (!isNullOrUndef(hooks)) {
-// 		if (!isNullOrUndef(hooks.onComponentWillMount)) {
-// 			hooks.onComponentWillMount();
-// 		}
-// 		if (!isNullOrUndef(hooks.onComponentDidMount)) {
-// 			lifecycle.addListener(() => hooks.onComponentDidMount(dom));
-// 		}
-// 	}
-// }
+function mountFragment(vNode, parentDom, lifecycle, context, isSVG) {
+    var children = vNode.children;
+    var dom = document.createDocumentFragment();
+    for (var i = 0; i < children.length; i++) {
+        mount(children[i], dom, lifecycle, context, isSVG);
+    }
+    vNode.dom = dom;
+    if (parentDom) {
+        appendChild(parentDom, dom);
+    }
+    return dom;
+}
+function mountComponent(vComponent, parentDom, lifecycle, context, isSVG, isClass) {
+    // 	if (recyclingEnabled) {
+    // 		const dom = recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount);
+    // 		if (!isNull(dom)) {
+    // 			if (!isNull(parentDom)) {
+    // 				appendChild(parentDom, dom);
+    // 			}
+    // 			return dom;
+    // 		}
+    // 	}
+    var type = vComponent.type;
+    var props = vComponent.props || EMPTY_OBJ;
+    var ref = vComponent.ref;
+    var dom;
+    if (isClass) {
+        var defaultProps = type.defaultProps;
+        if (!isUndefined(defaultProps)) {
+            copyPropsTo(defaultProps, props);
+            vComponent.props = props;
+        }
+        var instance = createStatefulComponentInstance(type, props, context, isSVG, devToolsStatus);
+        var input = instance._lastInput;
+        instance._vComponent = vComponent;
+        vComponent.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
+        if (!isNull(parentDom)) {
+            appendChild(parentDom, dom);
+        }
+        mountStatefulComponentCallbacks(ref, instance, lifecycle);
+        componentToDOMNodeMap.set(instance, dom);
+        vComponent.instance = instance;
+    }
+    else {
+        var input$1 = createStatelessComponentInput(type, props, context);
+        vComponent.dom = dom = mount(input$1, null, lifecycle, context, isSVG);
+        vComponent.instance = input$1;
+        mountStatelessComponentCallbacks(ref, dom, lifecycle);
+        if (!isNull(parentDom)) {
+            appendChild(parentDom, dom);
+        }
+    }
+    return dom;
+}
+function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
+    if (ref) {
+        if (isFunction(ref)) {
+            lifecycle.addListener(function () { return ref(instance); });
+        }
+        else {
+            if (process.env.NODE_ENV !== 'production') {
+                throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+            }
+            throwError();
+        }
+    }
+    if (!isNull(instance.componentDidMount)) {
+        lifecycle.addListener(function () {
+            instance.componentDidMount();
+        });
+    }
+}
+function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
+    if (ref) {
+        if (!isNullOrUndef(ref.onComponentWillMount)) {
+            ref.onComponentWillMount();
+        }
+        if (!isNullOrUndef(ref.onComponentDidMount)) {
+            lifecycle.addListener(function () { return ref.onComponentDidMount(dom); });
+        }
+    }
+}
 function mountRef(dom, value, lifecycle) {
     if (isFunction(value)) {
         lifecycle.addListener(function () { return value(dom); });
@@ -1447,7 +1356,7 @@ function render(input, parentDom) {
     var root = getRoot(parentDom);
     var lifecycle = new Lifecycle();
     if (isNull(root)) {
-        if (!isInvalid$1(input)) {
+        if (!isInvalid(input)) {
             if (input.dom) {
             }
             // if (!hydrateRoot(input, parentDom, lifecycle)) {
@@ -1459,12 +1368,13 @@ function render(input, parentDom) {
     }
     else {
         if (isNullOrUndef(input)) {
-            // unmount(root.input, parentDom, lifecycle, false, false);
+            unmount(root.input, parentDom, lifecycle, false, false);
             removeRoot(root);
         }
         else {
             if (input.dom) {
             }
+            patch(root.input, input, parentDom, lifecycle, {}, false);
         }
         lifecycle.trigger();
         root.input = input;

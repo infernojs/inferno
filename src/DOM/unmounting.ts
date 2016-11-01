@@ -1,7 +1,7 @@
 import {
 	isNullOrUndef,
 	isArray,
-	isNull,
+	// isNull,
 	isInvalid,
 	isFunction,
 	throwError,
@@ -22,41 +22,41 @@ export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount)
 	switch (flags) {
 		case VNodeFlags.ComponentClass:
 		case VNodeFlags.ComponentFunction:
-			unmountVComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+			unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
 			break;
 		case VNodeFlags.HtmlElement:
 		case VNodeFlags.SvgElement:
 		case VNodeFlags.InputElement:
 		case VNodeFlags.TextAreaElement:
-			unmountVElement(vNode, parentDom, lifecycle, shallowUnmount);
+			unmountElement(vNode, parentDom, lifecycle, shallowUnmount);
 			break;
 		case VNodeFlags.Fragment:
-			unmountVFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
+			unmountFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
 			break;
 		case VNodeFlags.Text:
-			unmountVText(vNode, parentDom);
+			unmountText(vNode, parentDom);
 			break;
 		case VNodeFlags.Void:
-			unmountVPlaceholder(vNode, parentDom);
+			unmountPlaceholder(vNode, parentDom);
 			break;
 		default:
 			// TODO
 	}
 }
 
-function unmountVPlaceholder(vPlaceholder, parentDom) {
+function unmountPlaceholder(vPlaceholder, parentDom) {
 	if (parentDom) {
 		removeChild(parentDom, vPlaceholder.dom);
 	}
 }
 
-function unmountVText(vText, parentDom) {
+function unmountText(vText, parentDom) {
 	if (parentDom) {
 		removeChild(parentDom, vText.dom);
 	}
 }
 
-export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle, shallowUnmount) {
+export function unmountFragment(vFragment, parentDom, removePointer, lifecycle, shallowUnmount) {
 	const children = vFragment.children;
 	const childrenLength = children.length;
 	const pointer = vFragment.pointer;
@@ -65,8 +65,8 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle,
 		for (let i = 0; i < childrenLength; i++) {
 			const child = children[i];
 
-			if (child.nodeType === FRAGMENT) {
-				unmountVFragment(child, parentDom, true, lifecycle, false);
+			if (child.flags === VNodeFlags.Fragment) {
+				unmountFragment(child, parentDom, true, lifecycle, false);
 			} else {
 				unmount(child, parentDom, lifecycle, false, shallowUnmount);
 			}
@@ -77,7 +77,7 @@ export function unmountVFragment(vFragment, parentDom, removePointer, lifecycle,
 	}
 }
 
-export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, shallowUnmount) {
+export function unmountComponent(vComponent, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	const instance = vComponent.instance;
 
 	if (!shallowUnmount) {
@@ -114,18 +114,18 @@ export function unmountVComponent(vComponent, parentDom, lifecycle, canRecycle, 
 		if (isNullOrUndef(lastInput)) {
 			lastInput = instance;
 		}
-		if (lastInput.nodeType === FRAGMENT) {
-			unmountVFragment(lastInput, parentDom, true, lifecycle, true);
+		if (lastInput.flags === VNodeFlags.Fragment) {
+			unmountFragment(lastInput, parentDom, true, lifecycle, true);
 		} else {
 			removeChild(parentDom, vComponent.dom);
 		}
 	}
-	if (recyclingEnabled && (parentDom || canRecycle)) {
-		poolVComponent(vComponent);
-	}
+	// if (recyclingEnabled && (parentDom || canRecycle)) {
+	// 	poolVComponent(vComponent);
+	// }
 }
 
-export function unmountVElement(vElement, parentDom, lifecycle, shallowUnmount) {
+export function unmountElement(vElement, parentDom, lifecycle, shallowUnmount) {
 	const dom = vElement.dom;
 	const ref = vElement.ref;
 

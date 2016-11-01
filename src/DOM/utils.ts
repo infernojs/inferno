@@ -4,16 +4,16 @@ import {
 	isArray,
 	isNullOrUndef,
 	isInvalid,
-	isStringOrNumber,
-	isNull,
+	// isStringOrNumber,
+	// isNull,
 	isUndefined
 } from './../shared';
 import {
-	unmountVFragment,
+	unmountFragment,
 	unmount
 } from './unmounting';
 import {
-	isVNode,
+	// isVNode,
 	VNodeFlags,
 	createFragmentVNode,
 	createVoidVNode
@@ -61,7 +61,7 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	instance._lastInput = input;
 	return instance;
 }
-export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
+export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
 	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle);
 }
 
@@ -75,12 +75,12 @@ export function replaceVNode(parentDom, dom, vNode, lifecycle) {
 		unmount(vNode, null, lifecycle, false, false);
 		vNode = vNode.instance._lastInput || vNode.instance;
 		// #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
-		if (vNode.nodeType !== VNodeFlags.Fragment) {
+		if (vNode.flags !== VNodeFlags.Fragment) {
 			shallowUnmount = true;
 		}
 	}
-	if (vNode.nodeType === VNodeFlags.Fragment) {
-		replaceVFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
+	if (vNode.flags === VNodeFlags.Fragment) {
+		replaceFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
 	} else {
 		replaceChild(parentDom, dom, vNode.dom);
 		unmount(vNode, null, lifecycle, false, shallowUnmount);
@@ -122,10 +122,10 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 	}
 }
 
-export function replaceVFragmentWithNode(parentDom, vFragment, dom, lifecycle, shallowUnmount) {
+export function replaceFragmentWithNode(parentDom, vFragment, dom, lifecycle, shallowUnmount) {
 	const pointer = vFragment.pointer;
 
-	unmountVFragment(vFragment, parentDom, false, lifecycle, shallowUnmount);
+	unmountFragment(vFragment, parentDom, false, lifecycle, shallowUnmount);
 	replaceChild(parentDom, dom, pointer);
 }
 

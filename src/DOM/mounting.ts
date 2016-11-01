@@ -5,8 +5,7 @@ import {
 	isString,
 	isInvalid,
 	isNull,
-	throwError
-	isUndefined,
+	throwError,
 	EMPTY_OBJ
 } from '../shared';
 import {

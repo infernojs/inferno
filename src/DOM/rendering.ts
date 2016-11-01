@@ -1,6 +1,6 @@
 import Lifecycle from './lifecycle';
 import { mount } from './mounting';
-// import { patchChildrenWithUnknownType } from './patching';
+import { patch } from './patching';
 import {
 	isNull,
 	isInvalid,
@@ -10,7 +10,7 @@ import {
 	NO_OP
 } from '../shared';
 // import hydrateRoot from './hydration';
-// import { unmount } from './unmounting';
+import { unmount } from './unmounting';
 // import cloneVNode from '../factories/cloneVNode';
 // import { devToolsStatus, sendRoots } from './devtools';
 import { InfernoInput, VNode } from '../core/shapes';
@@ -85,13 +85,13 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 		}
 	} else {
 		if (isNullOrUndef(input)) {
-			// unmount(root.input, parentDom, lifecycle, false, false);
+			unmount(root.input, parentDom, lifecycle, false, false);
 			removeRoot(root);
 		} else {
 			if ((input as VNode).dom) {
 				// input = cloneVNode(input);
 			}
-			// patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false, false);
+			patch(root.input, input, parentDom, lifecycle, {}, false);
 		}
 		lifecycle.trigger();
 		root.input = input;
