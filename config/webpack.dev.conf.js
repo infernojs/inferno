@@ -35,10 +35,9 @@ module.exports = {
 		noInfo: false,
 		hot: true,
 		inline: true
-	
 	},
 	resolve: {
-		extensions: ['', '.js', '.ts', '.tsx']
+		extensions: ['.js', '.ts', '.tsx']
 	},
 	plugins: [
 		// By default, webpack does `n=>n` compilation with entry files. This concatenates

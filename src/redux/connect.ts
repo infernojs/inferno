@@ -5,10 +5,9 @@ import {
 	shallowEqual,
 	wrapActionCreators
 } from './utils';
-import { isFunction } from '../shared';
 import { IProps } from '../core/shapes';
 import hoistStatics from 'hoist-non-inferno-statics';
-import { throwError } from '../shared';
+import { isFunction, throwError } from '../shared';
 import { isPlainObject } from './helpers';
 
 export interface WrapWithConnect {

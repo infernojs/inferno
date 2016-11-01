@@ -11,7 +11,7 @@ import {
 import ValueTypes from '../../../src/core/ValueTypes';
 import ChildrenTypes from '../../../src/core/ChildrenTypes';
 import NodeTypes from '../../../src/core/NodeTypes';
-import cloneVNode from '../../../src/factories/cloneVNode';
+import cloneVNode, { convertVOptElementToVElement } from '../../../src/factories/cloneVNode';
 import { warning, NO_OP, isBrowser } from '../../../src/shared';
 import { render, findDOMNode, createRenderer } from '../../../src/DOM/rendering';
 import createStaticVElementClone from '../../../src/factories/createStaticVElementClone';
@@ -52,7 +52,7 @@ export default {
 	createVText,
 
 	// cloning
-	cloneVNode,	
+	cloneVNode,
 
 	// enums
 	ValueTypes,
@@ -67,5 +67,8 @@ export default {
 	findDOMNode,
 	createRenderer,
 	createStaticVElementClone,
-	disableRecycling
+	disableRecycling,
+
+	// bundle size helpers
+	convertVOptElementToVElement
 };

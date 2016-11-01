@@ -1,5 +1,5 @@
-import Component from '../component/es2015';
-import { isArray, toArray } from '../shared';
+import Component from 'inferno-component';
+import { isArray, isString, toArray } from '../shared';
 import { isEmpty, matchPath, pathRankSort } from './utils';
 
 export interface IRouterProps {
@@ -10,8 +10,13 @@ export interface IRouterProps {
 	component?: Component<any, any>;
 }
 
-export function getRoutes(routing, currentURL: string) {
+function getURLString(location) {
+	return isString(location) ? location : (location.pathname + location.search);
+}
+
+export function getRoutes(routing, locationOrContext: any) {
 	let params = {};
+	const location: string = getURLString(locationOrContext);
 
 	function grabRoutes(_routes, url: string, lastPath: string) {
 		if (!_routes) {
@@ -48,7 +53,7 @@ export function getRoutes(routing, currentURL: string) {
 		}
 	}
 
-	return grabRoutes(routing, currentURL, '');
+	return grabRoutes(routing, location, '');
 }
 
 export default class Router extends Component<IRouterProps, any> {

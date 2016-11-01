@@ -165,28 +165,6 @@ describe('createTree - SVG (JSX)', () => {
 		expect(container.firstChild.hasAttribute('viewBox')).to.equal(false);
 	});
 
-	it.skip('should remove namespaced SVG attributes', () => {
-		// render(<svg>
-		// 	<image xlink:href="http://i.imgur.com/w7GCRPb.png" />
-		// </svg>, container);
-		//
-		// expect(container.firstChild.tagName).to.eql('svg');
-		// expect(container.firstChild.firstChild.hasAttributeNS(
-		// 	'http://www.w3.org/1999/xlink',
-		// 	'href'
-		// )).to.equal(true);
-		//
-		// render(<svg>
-		// 	<image />
-		// </svg>, container);
-		//
-		// expect(container.firstChild.tagName).to.eql('svg');
-		// expect(container.firstChild.firstChild.hasAttributeNS(
-		// 	'http://www.w3.org/1999/xlink',
-		// 	'href'
-		// )).to.equal(false);
-	});
-
 	it('should remove arbitrary SVG camel case attributes', () => {
 
 		render(<svg theWord="theBird"/>, container);
@@ -194,28 +172,6 @@ describe('createTree - SVG (JSX)', () => {
 		expect(container.firstChild.hasAttribute('theWord')).to.equal(true);
 		render(<svg />, container);
 		expect(container.firstChild.hasAttribute('theWord')).to.equal(false);
-	});
-
-	it.skip('should update namespaced SVG attributes', () => {
-		// render(<svg>
-		// 	<image xlink:href="http://i.imgur.com/w7GCRPb.png" />
-		// </svg>, container);
-		//
-		// expect(container.firstChild.tagName).to.eql('svg');
-		// expect(container.firstChild.firstChild.hasAttributeNS(
-		// 	'http://www.w3.org/1999/xlink',
-		// 	'href'
-		// )).to.equal(true);
-		//
-		// render(<svg>
-		// 	<image xlink:href="http://i.imgur.com/JvqCM2p.png" />
-		// </svg>, container);
-		//
-		// expect(container.firstChild.tagName).to.eql('svg');
-		// expect(container.firstChild.firstChild.getAttributeNS(
-		// 	'http://www.w3.org/1999/xlink',
-		// 	'href'
-		// )).to.equal('http://i.imgur.com/JvqCM2p.png');
 	});
 
 	it('should remove namespaced SVG attributes', () => {
@@ -261,32 +217,4 @@ describe('createTree - SVG (JSX)', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<svg id="test"></svg>'));
 	});
 
-	it.skip('should add / change / remove xlink:href attribute', () => {
-		// render(<svg>
-		// 	<use xlink:href="#test"/>
-		// </svg>, container);
-		//
-		// expect(container.firstChild.firstChild.getAttributeNS(
-		// 	'http://www.w3.org/1999/xlink',
-		// 	'href'
-		// )).to.equal('#test');
-		//
-		// render(<svg>
-		// 	<use xlink-href="#changed"/>
-		// </svg>, container);
-		//
-		// expect(container.firstChild.firstChild.getAttributeNS(
-		// 	'http://www.w3.org/1999/xlink',
-		// 	'href'
-		// )).to.equal('#changed');
-		//
-		// render(<svg>
-		// 	<use/>
-		// </svg>, container);
-		//
-		// expect(container.firstChild.firstChild.hasAttributeNS(
-		// 	'http://www.w3.org/1999/xlink',
-		// 	'href'
-		// )).to.equal(false);
-	});
 });

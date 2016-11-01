@@ -12,7 +12,7 @@ global.chai = require('chai');
 global.expect = global.chai.expect;
 global.sinon = require('sinon');
 
-//JSDOM doesn't support localStrage by default, so lets just fake it..
+//JSDOM doesn't support localStorage by default, so lets just fake it..
 if (!global.window.localStorage) {
 	global.window.localStorage = {
 		getItem() { return '{}'; },

@@ -5,11 +5,16 @@ import {
 	isUndefined
 } from '../shared';
 import {
-	createVElement,
-	createVComponent,
 	VComponent,
 	VElement
 } from '../core/shapes';
+
+import { default as Inferno } from 'inferno';
+const {
+	createVElement,
+	createVComponent,
+} = Inferno;
+
 import {
 	UNKNOWN
 } from '../core/ChildrenTypes';

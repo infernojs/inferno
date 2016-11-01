@@ -1,11 +1,7 @@
 import hoistStatics from 'hoist-non-inferno-statics';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
-
-interface IProps {
-	ref: any;
-	children: any;
-}
+import { IProps } from '../core/shapes';
 
 /**
  * Store Injection
@@ -14,7 +10,11 @@ function createStoreInjector (grabStoresFn, component) {
 	const Injector: any = createClass({
 		displayName: component.name,
 		render() {
-			const newProps = <IProps> {};
+			const newProps = <IProps> {
+				ref: instance => {
+					this.wrappedInstance = instance;
+				}
+			};
 			for (let key in this.props) {
 				if (this.props.hasOwnProperty(key)) {
 					newProps[key] = this.props[key];
@@ -24,9 +24,6 @@ function createStoreInjector (grabStoresFn, component) {
 			for ( let key in additionalProps ) {
 				newProps[ key ] = additionalProps[ key ];
 			}
-			newProps.ref = instance => {
-				this.wrappedInstance = instance;
-			};
 			return createElement(component, newProps, this.props.children);
 		}
 	});

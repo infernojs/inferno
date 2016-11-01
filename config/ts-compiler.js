@@ -1,1 +1,0 @@
-require('ts-node/register');
