@@ -13,16 +13,12 @@ import {
 	unmount
 } from './unmounting';
 import {
-	createVText,
-	createVPlaceholder,
-	createVFragment,
-	isVNode
+	isVNode,
+	VNodeFlags,
+	createFragmentVNode,
+	createVoidVNode
 } from '../core/shapes';
-import {
-	COMPONENT,
-	FRAGMENT
-} from '../core/NodeTypes';
-import cloneVNode from '../factories/cloneVNode';
+// import cloneVNode from '../factories/cloneVNode';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
 
@@ -57,44 +53,33 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 
 	instance.afterRender && instance.afterRender();
 	if (isArray(input)) {
-		input = createVFragment(input, null);
+		input = createFragmentVNode(input);
 	} else if (isInvalid(input)) {
-		input = createVPlaceholder();
+		input = createVoidVNode();
 	}
 	instance._pendingSetState = false;
 	instance._lastInput = input;
 	return instance;
 }
-
-// export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-
-// 	if (lastInput.nodeType === COMPONENT) {
-// 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
-// 		// accessing their DOM node is not useful to us here
-// 		lastInput = lastInput.instance._lastInput || lastInput.instance;
-// 	}
-// 	replaceChild(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput.dom);
-// 	unmount(lastInput, null, lifecycle, false, shallowUnmount);
-// }
-
 export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG, shallowUnmount), lastInput, shallowUnmount, lifecycle);
+	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle);
 }
 
-export function replaceVNode(parentDom, dom, vNode, shallowUnmount, lifecycle) {
+export function replaceVNode(parentDom, dom, vNode, lifecycle) {
+	let shallowUnmount = false;
 	// we cannot cache nodeType here as vNode might be re-assigned below
-	if (vNode.nodeType === COMPONENT) {
+	if (vNode.flags === VNodeFlags.ComponentClass || vNode.flags === VNodeFlags.ComponentFunction) {
 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
 		// accessing their DOM node is not useful to us here
 		// #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
 		unmount(vNode, null, lifecycle, false, false);
 		vNode = vNode.instance._lastInput || vNode.instance;
 		// #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
-		if (vNode.nodeType !== FRAGMENT) {
+		if (vNode.nodeType !== VNodeFlags.Fragment) {
 			shallowUnmount = true;
 		}
 	}
-	if (vNode.nodeType === FRAGMENT) {
+	if (vNode.nodeType === VNodeFlags.Fragment) {
 		replaceVFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
 	} else {
 		replaceChild(parentDom, dom, vNode.dom);
@@ -106,9 +91,9 @@ export function createStatelessComponentInput(component, props, context) {
 	let input = component(props, context);
 
 	if (isArray(input)) {
-		input = createVFragment(input, null);
+		input = createFragmentVNode(input);
 	} else if (isInvalid(input)) {
-		input = createVPlaceholder();
+		input = createVoidVNode();
 	}
 	return input;
 }
@@ -144,27 +129,6 @@ export function replaceVFragmentWithNode(parentDom, vFragment, dom, lifecycle, s
 	replaceChild(parentDom, dom, pointer);
 }
 
-export function getPropFromOptElement(optVElement, valueType) {
-	const bp = optVElement.bp;
-
-	// TODO check "prop" and "spread"
-	if (!isNull(bp.v0)) {
-		if (bp.v0 === valueType) {
-			return optVElement.v0;
-		}
-		if (!isNull(bp.v1)) {
-			if (bp.v1 === valueType) {
-				return optVElement.v1;
-			}
-			if (!isNull(bp.v2)) {
-				if (bp.v2 === valueType) {
-					return optVElement.v2;
-				}
-			}
-		}
-	}
-}
-
 export function documentCreateElement(tag, isSVG) {
 	let dom;
 
@@ -176,7 +140,7 @@ export function documentCreateElement(tag, isSVG) {
 	return dom;
 }
 
-export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, shallowUnmount) {
+export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG) {
 	let lastInstance: any = null;
 	const instanceLastNode = lastNode._lastInput;
 
@@ -184,8 +148,8 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	unmount(lastNode, null, lifecycle, true, shallowUnmount);
-	const dom = mount(nextNode, null, lifecycle, context, isSVG, shallowUnmount);
+	unmount(lastNode, null, lifecycle, true, false);
+	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode.dom = dom;
 	replaceChild(parentDom, dom, lastNode.dom);
@@ -201,25 +165,25 @@ export function replaceChild(parentDom, nextDom, lastDom) {
 	parentDom.replaceChild(nextDom, lastDom);
 }
 
-export function normalise(object) {
-	if (isStringOrNumber(object)) {
-		return createVText(object);
-	} else if (isInvalid(object)) {
-		return createVPlaceholder();
-	} else if (isArray(object)) {
-		return createVFragment(object, null);
-	} else if (isVNode(object) && object.dom) {
-		return cloneVNode(object);
-	}
-	return object;
-}
+// export function normalise(object) {
+// 	if (isStringOrNumber(object)) {
+// 		return createVText(object);
+// 	} else if (isInvalid(object)) {
+// 		return createVPlaceholder();
+// 	} else if (isArray(object)) {
+// 		return createVFragment(object, null);
+// 	} else if (isVNode(object) && object.dom) {
+// 		return cloneVNode(object);
+// 	}
+// 	return object;
+// }
 
-export function normaliseChild(children, i) {
-	const child = children[i];
+// export function normaliseChild(children, i) {
+// 	const child = children[i];
 
-	children[i] = normalise(child);
-	return children[i];
-}
+// 	children[i] = normalise(child);
+// 	return children[i];
+// }
 
 export function removeChild(parentDom, dom) {
 	parentDom.removeChild(dom);
@@ -236,50 +200,50 @@ export function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
 	}
 }
 
-export function isKeyed(lastChildren, nextChildren) {
-	if (lastChildren.complex) {
-		return false;
-	}
-	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
-		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
-}
+// export function isKeyed(lastChildren, nextChildren) {
+// 	if (lastChildren.complex) {
+// 		return false;
+// 	}
+// 	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
+// 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
+// }
 
-function formSelectValueFindOptions(dom, value, isMap) {
-	let child = dom.firstChild;
+// function formSelectValueFindOptions(dom, value, isMap) {
+// 	let child = dom.firstChild;
 
-	while (child) {
-		const tagName = child.tagName;
+// 	while (child) {
+// 		const tagName = child.tagName;
 
-		if (tagName === 'OPTION') {
-			child.selected = !!((!isMap && child.value === value) || (isMap && value.get(child.value)));
-		} else if (tagName === 'OPTGROUP') {
-			formSelectValueFindOptions(child, value, isMap);
-		}
-		child = child.nextSibling;
-	}
-}
+// 		if (tagName === 'OPTION') {
+// 			child.selected = !!((!isMap && child.value === value) || (isMap && value.get(child.value)));
+// 		} else if (tagName === 'OPTGROUP') {
+// 			formSelectValueFindOptions(child, value, isMap);
+// 		}
+// 		child = child.nextSibling;
+// 	}
+// }
 
-export function formSelectValue(dom, value) {
-	let isMap = false;
+// export function formSelectValue(dom, value) {
+// 	let isMap = false;
 
-	if (!isNullOrUndef(value)) {
-		if (isArray(value)) {
-			// Map vs Object v using reduce here for perf?
-			value = value.reduce((o, v) => o.set(v, true), new Map());
-			isMap = true;
-		} else {
-			// convert to string
-			value = value + '';
-		}
-		formSelectValueFindOptions(dom, value, isMap);
-	}
-}
+// 	if (!isNullOrUndef(value)) {
+// 		if (isArray(value)) {
+// 			// Map vs Object v using reduce here for perf?
+// 			value = value.reduce((o, v) => o.set(v, true), new Map());
+// 			isMap = true;
+// 		} else {
+// 			// convert to string
+// 			value = value + '';
+// 		}
+// 		formSelectValueFindOptions(dom, value, isMap);
+// 	}
+// }
 
-export function resetFormInputProperties(dom) {
-	if (dom.checked) {
-		dom.checked = false;
-	}
-	if (dom.disabled) {
-		dom.disabled = false;
-	}
-}
+// export function resetFormInputProperties(dom) {
+// 	if (dom.checked) {
+// 		dom.checked = false;
+// 	}
+// 	if (dom.disabled) {
+// 		dom.disabled = false;
+// 	}
+// }

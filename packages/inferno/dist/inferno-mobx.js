@@ -117,6 +117,13 @@ EventEmitter.prototype.emit = function emit (data) {
     this.listeners.forEach(function (fn) { return fn(data); });
 };
 
+EventEmitter.prototype.getTotalListeners = function getTotalListeners () {
+    return this.listeners.length;
+};
+EventEmitter.prototype.clearListeners = function clearListeners () {
+    this.listeners = [];
+};
+
 /**
  * Dev tools support
  */

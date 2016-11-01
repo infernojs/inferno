@@ -1,22 +1,11 @@
 import {
-	createOptVElement,
-	createOptBlueprint,
-	createVElement,
-	createStaticVElement,
-	createVFragment,
-	createVComponent,
-	createVPlaceholder,
-	createVText
+	createVNode
 } from '../../../src/core/shapes';
-import ValueTypes from '../../../src/core/ValueTypes';
-import ChildrenTypes from '../../../src/core/ChildrenTypes';
-import NodeTypes from '../../../src/core/NodeTypes';
-import cloneVNode from '../../../src/factories/cloneVNode';
+// import cloneVNode from '../../../src/factories/cloneVNode';
 import { warning, NO_OP, isBrowser } from '../../../src/shared';
 import { render, findDOMNode, createRenderer } from '../../../src/DOM/rendering';
-import createStaticVElementClone from '../../../src/factories/createStaticVElementClone';
-import { disableRecycling } from '../../../src/DOM/recycling';
-import { initDevToolsHooks }  from '../../../src/DOM/devtools';
+// import { disableRecycling } from '../../../src/DOM/recycling';
+// import { initDevToolsHooks }  from '../../../src/DOM/devtools';
 
 if (isBrowser) {
 	window.process = {
@@ -24,7 +13,7 @@ if (isBrowser) {
 			NODE_ENV: 'development'
 		}
 	};
-	initDevToolsHooks(window);
+	// initDevToolsHooks(window);
 }
 
 if (process.env.NODE_ENV !== 'production') {
@@ -39,25 +28,11 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default {
-	// JSX optimisations
-	createOptVElement,
-	createOptBlueprint,
-	createStaticVElement,
-
 	// core shapes
-	createVElement,
-	createVFragment,
-	createVPlaceholder,
-	createVComponent,
-	createVText,
+	createVNode,
 
 	// cloning
-	cloneVNode,	
-
-	// enums
-	ValueTypes,
-	ChildrenTypes,
-	NodeTypes,
+	//cloneVNode,	
 
 	// TODO do we still need this? can we remove?
 	NO_OP,
@@ -65,7 +40,6 @@ export default {
 	//DOM
 	render,
 	findDOMNode,
-	createRenderer,
-	createStaticVElementClone,
-	disableRecycling
+	createRenderer
+	// disableRecycling
 };

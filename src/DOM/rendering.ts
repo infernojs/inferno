@@ -1,6 +1,6 @@
 import Lifecycle from './lifecycle';
-import { mountChildrenWithUnknownType } from './mounting';
-import { patchChildrenWithUnknownType } from './patching';
+import { mount } from './mounting';
+// import { patchChildrenWithUnknownType } from './patching';
 import {
 	isNull,
 	isInvalid,
@@ -9,11 +9,11 @@ import {
 	throwError,
 	NO_OP
 } from '../shared';
-import hydrateRoot from './hydration';
-import { unmount } from './unmounting';
-import cloneVNode from '../factories/cloneVNode';
-import { devToolsStatus, sendRoots } from './devtools';
-import { InfernoInput, InfernoElement } from '../core/shapes';
+// import hydrateRoot from './hydration';
+// import { unmount } from './unmounting';
+// import cloneVNode from '../factories/cloneVNode';
+// import { devToolsStatus, sendRoots } from './devtools';
+import { InfernoInput, VNode } from '../core/shapes';
 
 interface Root {
 	dom: Node | SVGAElement;
@@ -74,31 +74,31 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 
 	if (isNull(root)) {
 		if (!isInvalid(input)) {
-			if ((input as InfernoElement).dom) {
-				input = cloneVNode(input);
+			if ((input as VNode).dom) {
+				// input = cloneVNode(input);
 			}
-			if (!hydrateRoot(input, parentDom, lifecycle)) {
-				mountChildrenWithUnknownType(input, parentDom, lifecycle, {}, false, false);
-			}
+			// if (!hydrateRoot(input, parentDom, lifecycle)) {
+			mount(input, parentDom, lifecycle, {}, false);
+			// }
 			lifecycle.trigger();
 			setRoot(parentDom, input);
 		}
 	} else {
 		if (isNullOrUndef(input)) {
-			unmount(root.input, parentDom, lifecycle, false, false);
+			// unmount(root.input, parentDom, lifecycle, false, false);
 			removeRoot(root);
 		} else {
-			if ((input as InfernoElement).dom) {
-				input = cloneVNode(input);
+			if ((input as VNode).dom) {
+				// input = cloneVNode(input);
 			}
-			patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false, false);
+			// patchChildrenWithUnknownType(root.input, input, parentDom, lifecycle, {}, false, false);
 		}
 		lifecycle.trigger();
 		root.input = input;
 	}
-	if (devToolsStatus.connected) {
-		sendRoots(window);
-	}
+	// if (devToolsStatus.connected) {
+		// sendRoots(window);
+	// }
 }
 
 export function createRenderer() {

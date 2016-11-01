@@ -1,20 +1,6 @@
 (function() {
 	var t = InfernoCreateElement;
 
-	var template = Inferno.createBlueprint(function () {
-		return {
-			tag: "div",
-			style: {
-				width: "200px",
-				height: "200px",
-				backgroundColor: "red",
-
-				border: "5px solid black",
-				borderRadius: "5px"
-			}
-		};
-	});
-
 	Inferno.render(t('div', null,
 		t('span', { className: 'foo'}, 'This is a span!')
 	), document.getElementById('app'));

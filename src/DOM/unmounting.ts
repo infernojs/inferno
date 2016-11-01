@@ -9,49 +9,38 @@ import {
 } from '../shared';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
-import {
-	CHILDREN,
-	PROP_REF,
-	PROP_SPREAD
-} from '../core/ValueTypes';
-import {
-	ELEMENT,
-	COMPONENT,
-	PLACEHOLDER,
-	OPT_ELEMENT,
-	FRAGMENT,
-	TEXT
-} from '../core/NodeTypes';
-import {
-	poolOptVElement,
-	poolVComponent,
-	recyclingEnabled
-} from './recycling';
+// import {
+// 	poolOptVElement,
+// 	poolVComponent,
+// 	recyclingEnabled
+// } from './recycling';
+import { VNodeFlags } from '../core/shapes';
 
-export function unmount(input, parentDom, lifecycle, canRecycle, shallowUnmount) {
-	if (!isInvalid(input)) {
-		switch (input.nodeType) {
-			case OPT_ELEMENT:
-				unmountOptVElement(input, parentDom, lifecycle, canRecycle, shallowUnmount);
-				break;
-			case COMPONENT:
-				unmountVComponent(input, parentDom, lifecycle, canRecycle, shallowUnmount);
-				break;
-			case ELEMENT:
-				unmountVElement(input, parentDom, lifecycle, shallowUnmount);
-				break;
-			case FRAGMENT:
-				unmountVFragment(input, parentDom, true, lifecycle, shallowUnmount);
-				break;
-			case TEXT:
-				unmountVText(input, parentDom);
-				break;
-			case PLACEHOLDER:
-				unmountVPlaceholder(input, parentDom);
-				break;
-			default:
-				// TODO
-		}
+export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
+	const flags = vNode.flags;
+
+	switch (flags) {
+		case VNodeFlags.ComponentClass:
+		case VNodeFlags.ComponentFunction:
+			unmountVComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+			break;
+		case VNodeFlags.HtmlElement:
+		case VNodeFlags.SvgElement:
+		case VNodeFlags.InputElement:
+		case VNodeFlags.TextAreaElement:
+			unmountVElement(vNode, parentDom, lifecycle, shallowUnmount);
+			break;
+		case VNodeFlags.Fragment:
+			unmountVFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
+			break;
+		case VNodeFlags.Text:
+			unmountVText(vNode, parentDom);
+			break;
+		case VNodeFlags.Void:
+			unmountVPlaceholder(vNode, parentDom);
+			break;
+		default:
+			// TODO
 	}
 }
 
@@ -64,49 +53,6 @@ function unmountVPlaceholder(vPlaceholder, parentDom) {
 function unmountVText(vText, parentDom) {
 	if (parentDom) {
 		removeChild(parentDom, vText.dom);
-	}
-}
-
-function unmountOptVElement(optVElement, parentDom, lifecycle, canRecycle, shallowUnmount) {
-	const bp = optVElement.bp;
-	const bp0 = bp.v0;
-
-	if (!shallowUnmount) {
-		if (!isNull(bp0)) {
-			unmountOptVElementValue(optVElement, bp0, optVElement.v0, lifecycle, shallowUnmount);
-			const bp1 = bp.v1;
-
-			if (!isNull(bp1)) {
-				unmountOptVElementValue(optVElement, bp1, optVElement.v1, lifecycle, shallowUnmount);
-				const bp2 = bp.v2;
-
-				if (!isNull(bp2)) {
-					unmountOptVElementValue(optVElement, bp2, optVElement.v2, lifecycle, shallowUnmount);
-				}
-			}
-		}
-	}
-	if (!isNull(parentDom)) {
-		parentDom.removeChild(optVElement.dom);
-	}
-	if (recyclingEnabled && (parentDom || canRecycle)) {
-		poolOptVElement(optVElement);
-	}
-}
-
-function unmountOptVElementValue(optVElement, valueType, value, lifecycle, shallowUnmount) {
-	switch (valueType) {
-		case CHILDREN:
-			unmountChildren(value, lifecycle, shallowUnmount);
-			break;
-		case PROP_REF:
-			unmountRef(value);
-			break;
-		case PROP_SPREAD:
-			unmountProps(value, lifecycle);
-			break;
-		default:
-			// TODO
 	}
 }
 
@@ -223,19 +169,5 @@ function unmountRef(ref) {
 			throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
 		}
 		throwError();
-	}
-}
-
-function unmountProps(props, lifecycle) {
-	for (let prop in props) {
-		if (!props.hasOwnProperty(prop)) {
-			continue;
-		}
-
-		const value = props[prop];
-
-		if (prop === 'ref') {
-			unmountRef(value);
-		}
 	}
 }

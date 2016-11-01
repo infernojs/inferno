@@ -1,14 +1,15 @@
 import {
-	createVElement,
-	createVComponent,
-	InfernoElement
+	createVNode,
+	VNodeFlags,
+	VNode
 } from '../core/shapes';
 import {
 	isAttrAnEvent,
 	isString,
 	isInvalid,
 	isUndefined,
-	isObject
+	isObject,
+	isStatefulComponent
 } from './../shared';
 
 const componentHooks = {
@@ -25,7 +26,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
 	let children: any = _children;
-	let vNode: InfernoElement;
+	let vNode: VNode;
 
 	if (_children) {
 		if (_children.length === 1) {
@@ -35,7 +36,14 @@ export default function createElement(name: string | Function, props?: any, ..._
 		}
 	}
 	if (isString(name)) {
-		vNode = createVElement(name, null, null, null, null, null);
+		vNode = createVNode(
+			name,
+			null,
+			null,
+			name === 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement,
+			null,
+			null
+		);
 
 		for (let prop in props) {
 			if (prop === 'key') {
@@ -60,7 +68,14 @@ export default function createElement(name: string | Function, props?: any, ..._
 		}
 	} else {
 		let hooks;
-		vNode = createVComponent(name, null, null, null, null);
+		vNode = createVNode(
+			name,
+			null,
+			null,
+			isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction,
+			null,
+			null
+		);
 
 		if (!isUndefined(children)) {
 			if (!props) {
@@ -81,7 +96,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 		}
 		vNode.props = props;
 		if (hooks) {
-			vNode.hooks = hooks;
+			vNode.ref = hooks;
 		}
 	}
 	return vNode;
