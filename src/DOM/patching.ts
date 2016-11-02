@@ -742,6 +742,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 
 	if (nextProps !== EMPTY_OBJ) {
 		for (let prop in nextProps) {
+			// do not add a hasOwnProperty check here, it affects performance
 			const nextValue = nextProps[prop];
 			const lastValue = lastProps[prop];
 
@@ -754,6 +755,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 	}
 	if (lastProps !== EMPTY_OBJ) {
 		for (let prop in lastProps) {
+			// do not add a hasOwnProperty check here, it affects performance
 			if (isNullOrUndef(nextProps[prop])) {
 				removeProp(prop, dom);
 			}
@@ -767,6 +769,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	} else if (isNullOrUndef(lastAttrValue)) {
 		if (!isNullOrUndef(nextAttrValue)) {
 			for (let style in nextAttrValue) {
+				// do not add a hasOwnProperty check here, it affects performance
 				const value = nextAttrValue[style];
 
 				if (isNumber(value) && !isUnitlessNumber[style]) {
@@ -780,6 +783,7 @@ export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 		dom.removeAttribute('style');
 	} else {
 		for (let style in nextAttrValue) {
+			// do not add a hasOwnProperty check here, it affects performance
 			const value = nextAttrValue[style];
 
 			if (isNumber(value) && !isUnitlessNumber[style]) {

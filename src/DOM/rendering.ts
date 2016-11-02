@@ -9,9 +9,9 @@ import {
 	throwError,
 	NO_OP
 } from '../shared';
-// import hydrateRoot from './hydration';
+import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
-// import cloneVNode from '../factories/cloneVNode';
+import cloneVNode from '../factories/cloneVNode';
 // import { devToolsStatus, sendRoots } from './devtools';
 import { InfernoInput, VNode } from '../core/shapes';
 
@@ -75,11 +75,11 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 	if (isNull(root)) {
 		if (!isInvalid(input)) {
 			if ((input as VNode).dom) {
-				// input = cloneVNode(input);
+				input = cloneVNode(input);
 			}
-			// if (!hydrateRoot(input, parentDom, lifecycle)) {
-			mount(input, parentDom, lifecycle, {}, false);
-			// }
+			if (!hydrateRoot(input, parentDom, lifecycle)) {
+				mount(input, parentDom, lifecycle, {}, false);
+			}
 			lifecycle.trigger();
 			setRoot(parentDom, input);
 		}
@@ -89,7 +89,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 			removeRoot(root);
 		} else {
 			if ((input as VNode).dom) {
-				// input = cloneVNode(input);
+				input = cloneVNode(input);
 			}
 			patch(root.input, input, parentDom, lifecycle, {}, false);
 		}

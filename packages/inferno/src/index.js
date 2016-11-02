@@ -1,10 +1,10 @@
 import {
 	createVNode
 } from '../../../src/core/shapes';
-// import cloneVNode from '../../../src/factories/cloneVNode';
+import cloneVNode from '../../../src/factories/cloneVNode';
 import { warning, NO_OP, isBrowser } from '../../../src/shared';
 import { render, findDOMNode, createRenderer } from '../../../src/DOM/rendering';
-// import { disableRecycling } from '../../../src/DOM/recycling';
+import { disableRecycling } from '../../../src/DOM/recycling';
 // import { initDevToolsHooks }  from '../../../src/DOM/devtools';
 
 if (isBrowser) {
@@ -32,7 +32,7 @@ export default {
 	createVNode,
 
 	// cloning
-	//cloneVNode,	
+	cloneVNode,
 
 	// TODO do we still need this? can we remove?
 	NO_OP,
@@ -40,6 +40,6 @@ export default {
 	//DOM
 	render,
 	findDOMNode,
-	createRenderer
-	// disableRecycling
+	createRenderer,
+	disableRecycling
 };

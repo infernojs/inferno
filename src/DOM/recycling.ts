@@ -23,7 +23,7 @@ export function disableRecycling() {
 	elementPools.clear();
 }
 
-export function recycleElement(vNode, lifecycle, context, isSVG, shallowUnmount) {
+export function recycleElement(vNode, lifecycle, context, isSVG) {
 	const tag = vNode.type;
 	const key = vNode.key;
 	let pools: Pools = elementPools.get(tag);
