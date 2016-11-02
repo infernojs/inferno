@@ -29,7 +29,6 @@ export enum VNodeFlags {
 
 export interface VNode {
 	children: string | Array<string | VNode> | VNode | null;
-	className: string | null;
 	dom: Node | null;
 	flags: VNodeFlags;
 	key: string | number | null;
@@ -38,10 +37,9 @@ export interface VNode {
 	type: string | Function | null;
 }
 
-export function createVNode(type, props, children, flags, key, ref, className): VNode {
+export function createVNode(type, props, children, flags, key, ref): VNode {
 	return {
 		children: children || null,
-		className: className || null,
 		dom: null,
 		flags,
 		key: key === undefined ? null : key,
@@ -52,11 +50,11 @@ export function createVNode(type, props, children, flags, key, ref, className): 
 }
 
 export function createFragmentVNode(children) {
-	return createVNode(null, null, children, VNodeFlags.Fragment, null, null, null);
+	return createVNode(null, null, children, VNodeFlags.Fragment, null, null);
 }
 
 export function createVoidVNode() {
-	return createVNode(null, null, null, VNodeFlags.Void, null, null, null);
+	return createVNode(null, null, null, VNodeFlags.Void, null, null);
 }
 
 export function isVNode(o: VType): boolean {
