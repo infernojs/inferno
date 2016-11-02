@@ -35,7 +35,7 @@ export function createVNode(type, props, children, flags, key, ref): VNode {
         children: children || null,
         dom: null,
         flags,
-        key: ref || null,
+        key: key === undefined ? null : key,
         props: props || null,
         ref: ref || null,
         type

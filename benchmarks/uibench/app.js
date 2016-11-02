@@ -118,7 +118,7 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = createVNode(TableRow, item, null, 1 << 9, null, shouldDataUpdate);
+			children[i] = createVNode(TableRow, item, null, 1 << 9, item.id, shouldDataUpdate);
 		}
 		return createVNode('table', tableProps, children, 1 << 1);
 	}

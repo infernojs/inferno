@@ -100,9 +100,7 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 		if (isString(children)) {
 			setTextContent(dom, children);
 		} else if (isArray(children)) {
-			for (let i = 0; i < children.length; i++) {
-				mount(children[i], dom, lifecycle, context, isSVG);
-			}
+			mountArrayChildren(children, dom, lifecycle, context, isSVG);
 		} else if (isVNode(children)) {
 			mount(children, dom, lifecycle, context, isSVG);
 		}
@@ -113,13 +111,16 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 	return dom;
 }
 
+export function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
+		for (let i = 0; i < children.length; i++) {
+			mount(children[i], dom, lifecycle, context, isSVG);
+		}
+}
+
 export function mountFragment(vNode, parentDom, lifecycle, context, isSVG) {
-	const children = vNode.children;
 	const dom = document.createDocumentFragment();
 
-	for (let i = 0; i < children.length; i++) {
-		mount(children[i], dom, lifecycle, context, isSVG);
-	}
+	mountArrayChildren(vNode.children, dom, lifecycle, context, isSVG);
 	vNode.dom = dom;
 	if (parentDom) {
 		appendChild(parentDom, dom);

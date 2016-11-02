@@ -27,7 +27,7 @@ function createVNode(type, props, children, flags, key, ref) {
         children: children || null,
         dom: null,
         flags: flags,
-        key: ref || null,
+        key: key === undefined ? null : key,
         props: props || null,
         ref: ref || null,
         type: type

@@ -18,11 +18,12 @@ import {
 	// mountText,
 	// mountFragment,
 	mountComponent,
-	mountStatelessComponentCallbacks
+	mountStatelessComponentCallbacks,
 	// mountVoid
+	mountArrayChildren
 } from './mounting';
 import {
-	// insertOrAppend,
+	insertOrAppend,
 	// isKeyed,
 	// replaceFragmentWithNode,
 	// normaliseChild,
@@ -53,7 +54,8 @@ import {
 	VNodeFlags,
 	isVNode,
 	createVoidVNode,
-	createFragmentVNode
+	createFragmentVNode,
+	VNode
 } from '../core/shapes';
 // import {
 // 	getIncrementalId,
@@ -188,7 +190,8 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 			} else {
 				if (isArray(nextChildren)) {
 					if (isArray(lastChildren)) {
-						patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+						// patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
 					} else {
 						// debugger;
 					}
@@ -472,286 +475,284 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 	}
 }
 
-// export function patchKeyedChildren(
-// 	a: Array<VComponent | OptVElement | VElement>,
-// 	b: Array<VComponent | OptVElement | VElement>,
-// 	dom,
-// 	lifecycle,
-// 	context,
-// 	isSVG,
-// 	parentVList,
-// 	shallowUnmount
-// ) {
-// 	let aLength = a.length;
-// 	let bLength = b.length;
-// 	let aEnd = aLength - 1;
-// 	let bEnd = bLength - 1;
-// 	let aStart = 0;
-// 	let bStart = 0;
-// 	let i;
-// 	let j;
-// 	let aStartNode = a[aStart];
-// 	let bStartNode = b[bStart];
-// 	let aEndNode = a[aEnd];
-// 	let bEndNode = b[bEnd];
-// 	let aNode;
-// 	let bNode;
-// 	let nextNode;
-// 	let nextPos;
-// 	let node;
+export function patchKeyedChildren(
+	a: Array<VNode>,
+	b: Array<VNode>,
+	dom,
+	lifecycle,
+	context,
+	isSVG
+) {
+	let aLength = a.length;
+	let bLength = b.length;
+	let aEnd = aLength - 1;
+	let bEnd = bLength - 1;
+	let aStart = 0;
+	let bStart = 0;
+	let i;
+	let j;
+	let aStartNode = a[aStart];
+	let bStartNode = b[bStart];
+	let aEndNode = a[aEnd];
+	let bEndNode = b[bEnd];
+	let aNode;
+	let bNode;
+	let nextNode;
+	let nextPos;
+	let node;
 
-// 	if (aLength === 0) {
-// 		if (bLength !== 0) {
-// 			mountArrayChildrenWithType(b, dom, lifecycle, context, isSVG, shallowUnmount);
-// 		}
-// 		return;
-// 	} else if (bLength === 0) {
-// 		if (aLength !== 0) {
-// 			removeAllChildren(dom, a, lifecycle, shallowUnmount);
-// 		}
-// 		return;
-// 	}
-// 	// Step 1
-// 	/* eslint no-constant-condition: 0 */
-// 	outer: while (true) {
-// 		// Sync nodes with the same key at the beginning.
-// 		while (aStartNode.key === bStartNode.key) {
-// 			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			aStart++;
-// 			bStart++;
-// 			if (aStart > aEnd || bStart > bEnd) {
-// 				break outer;
-// 			}
-// 			aStartNode = a[aStart];
-// 			bStartNode = b[bStart];
-// 		}
+	if (aLength === 0) {
+		if (bLength !== 0) {
+			mountArrayChildren(b, dom, lifecycle, context, isSVG);
+		}
+		return;
+	} else if (bLength === 0) {
+		if (aLength !== 0) {
+			removeAllChildren(dom, a, lifecycle, false);
+		}
+		return;
+	}
+	// Step 1
+	/* eslint no-constant-condition: 0 */
+	outer: while (true) {
+		// Sync nodes with the same key at the beginning.
+		while (aStartNode.key === bStartNode.key) {
+			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG);
+			aStart++;
+			bStart++;
+			if (aStart > aEnd || bStart > bEnd) {
+				break outer;
+			}
+			aStartNode = a[aStart];
+			bStartNode = b[bStart];
+		}
 
-// 		// Sync nodes with the same key at the end.
-// 		while (aEndNode.key === bEndNode.key) {
-// 			patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			aEnd--;
-// 			bEnd--;
-// 			if (aStart > aEnd || bStart > bEnd) {
-// 				break outer;
-// 			}
-// 			aEndNode = a[aEnd];
-// 			bEndNode = b[bEnd];
-// 		}
+		// Sync nodes with the same key at the end.
+		while (aEndNode.key === bEndNode.key) {
+			patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG);
+			aEnd--;
+			bEnd--;
+			if (aStart > aEnd || bStart > bEnd) {
+				break outer;
+			}
+			aEndNode = a[aEnd];
+			bEndNode = b[bEnd];
+		}
 
-// 		// Move and sync nodes from right to left.
-// 		if (aEndNode.key === bStartNode.key) {
-// 			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
-// 			aEnd--;
-// 			bStart++;
-// 			if (aStart > aEnd || bStart > bEnd) {
-// 				break;
-// 			}
-// 			aEndNode = a[aEnd];
-// 			bStartNode = b[bStart];
-// 			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
-// 			// immediately jump to the start of this prefix/suffix algo.
-// 			continue;
-// 		}
+		// Move and sync nodes from right to left.
+		if (aEndNode.key === bStartNode.key) {
+			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
+			insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
+			aEnd--;
+			bStart++;
+			if (aStart > aEnd || bStart > bEnd) {
+				break;
+			}
+			aEndNode = a[aEnd];
+			bStartNode = b[bStart];
+			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
+			// immediately jump to the start of this prefix/suffix algo.
+			continue;
+		}
 
-// 		// Move and sync nodes from left to right.
-// 		if (aStartNode.key === bEndNode.key) {
-// 			patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG, shallowUnmount);
-// 			nextPos = bEnd + 1;
-// 			nextNode = nextPos < b.length ? b[nextPos].dom : parentVList && parentVList.pointer;
-// 			insertOrAppend(dom, bEndNode.dom, nextNode);
-// 			aStart++;
-// 			bEnd--;
-// 			if (aStart > aEnd || bStart > bEnd) {
-// 				break;
-// 			}
-// 			aStartNode = a[aStart];
-// 			bEndNode = b[bEnd];
-// 			continue;
-// 		}
-// 		break;
-// 	}
+		// Move and sync nodes from left to right.
+		if (aStartNode.key === bEndNode.key) {
+			patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG);
+			nextPos = bEnd + 1;
+			nextNode = nextPos < b.length ? b[nextPos].dom : null;
+			insertOrAppend(dom, bEndNode.dom, nextNode);
+			aStart++;
+			bEnd--;
+			if (aStart > aEnd || bStart > bEnd) {
+				break;
+			}
+			aStartNode = a[aStart];
+			bEndNode = b[bEnd];
+			continue;
+		}
+		break;
+	}
 
-// 	if (aStart > aEnd) {
-// 		if (bStart <= bEnd) {
-// 			nextPos = bEnd + 1;
-// 			nextNode = nextPos < b.length ? b[nextPos].dom : parentVList && parentVList.pointer;
-// 			while (bStart <= bEnd) {
-// 				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG, shallowUnmount), nextNode);
-// 			}
-// 		}
-// 	} else if (bStart > bEnd) {
-// 		while (aStart <= aEnd) {
-// 			unmount(a[aStart++], dom, lifecycle, false, shallowUnmount);
-// 		}
-// 	} else {
-// 		aLength = aEnd - aStart + 1;
-// 		bLength = bEnd - bStart + 1;
-// 		const aNullable: Array<VComponent | OptVElement | VElement | null> = a;
-// 		const sources = new Array(bLength);
+	if (aStart > aEnd) {
+		if (bStart <= bEnd) {
+			nextPos = bEnd + 1;
+			nextNode = nextPos < b.length ? b[nextPos].dom : null;
+			while (bStart <= bEnd) {
+				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), nextNode);
+			}
+		}
+	} else if (bStart > bEnd) {
+		while (aStart <= aEnd) {
+			unmount(a[aStart++], dom, lifecycle, false, false);
+		}
+	} else {
+		aLength = aEnd - aStart + 1;
+		bLength = bEnd - bStart + 1;
+		const aNullable: Array<VNode | null> = a;
+		const sources = new Array(bLength);
 
-// 		// Mark all nodes as inserted.
-// 		for (i = 0; i < bLength; i++) {
-// 			sources[i] = -1;
-// 		}
-// 		let moved = false;
-// 		let pos = 0;
-// 		let patched = 0;
+		// Mark all nodes as inserted.
+		for (i = 0; i < bLength; i++) {
+			sources[i] = -1;
+		}
+		let moved = false;
+		let pos = 0;
+		let patched = 0;
 
-// 		if ((bLength <= 4) || (aLength * bLength <= 16)) {
-// 			for (i = aStart; i <= aEnd; i++) {
-// 				aNode = a[i];
-// 				if (patched < bLength) {
-// 					for (j = bStart; j <= bEnd; j++) {
-// 						bNode = b[j];
-// 						if (aNode.key === bNode.key) {
-// 							sources[j - bStart] = i;
+		if ((bLength <= 4) || (aLength * bLength <= 16)) {
+			for (i = aStart; i <= aEnd; i++) {
+				aNode = a[i];
+				if (patched < bLength) {
+					for (j = bStart; j <= bEnd; j++) {
+						bNode = b[j];
+						if (aNode.key === bNode.key) {
+							sources[j - bStart] = i;
 
-// 							if (pos > j) {
-// 								moved = true;
-// 							} else {
-// 								pos = j;
-// 							}
-// 							patch(aNode, bNode, dom, lifecycle, context, isSVG, shallowUnmount);
-// 							patched++;
-// 							aNullable[i] = null;
-// 							break;
-// 						}
-// 					}
-// 				}
-// 			}
-// 		} else {
-// 			const keyIndex = new Map();
+							if (pos > j) {
+								moved = true;
+							} else {
+								pos = j;
+							}
+							patch(aNode, bNode, dom, lifecycle, context, isSVG);
+							patched++;
+							aNullable[i] = null;
+							break;
+						}
+					}
+				}
+			}
+		} else {
+			const keyIndex = new Map();
 
-// 			for (i = bStart; i <= bEnd; i++) {
-// 				node = b[i];
-// 				keyIndex.set(node.key, i);
-// 			}
-// 			for (i = aStart; i <= aEnd; i++) {
-// 				aNode = a[i];
+			for (i = bStart; i <= bEnd; i++) {
+				node = b[i];
+				keyIndex.set(node.key, i);
+			}
+			for (i = aStart; i <= aEnd; i++) {
+				aNode = a[i];
 
-// 				if (patched < bLength) {
-// 					j = keyIndex.get(aNode.key);
+				if (patched < bLength) {
+					j = keyIndex.get(aNode.key);
 
-// 					if (!isUndefined(j)) {
-// 						bNode = b[j];
-// 						sources[j - bStart] = i;
-// 						if (pos > j) {
-// 							moved = true;
-// 						} else {
-// 							pos = j;
-// 						}
-// 						patch(aNode, bNode, dom, lifecycle, context, isSVG, shallowUnmount);
-// 						patched++;
-// 						aNullable[i] = null;
-// 					}
-// 				}
-// 			}
-// 		}
-// 		if (aLength === a.length && patched === 0) {
-// 			removeAllChildren(dom, a, lifecycle, shallowUnmount);
-// 			while (bStart < bLength) {
-// 				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG, shallowUnmount), null);
-// 			}
-// 		} else {
-// 			i = aLength - patched;
-// 			while (i > 0) {
-// 				aNode = aNullable[aStart++];
-// 				if (!isNull(aNode)) {
-// 					unmount(aNode, dom, lifecycle, false, shallowUnmount);
-// 					i--;
-// 				}
-// 			}
-// 			if (moved) {
-// 				let seq = lis_algorithm(sources);
-// 				j = seq.length - 1;
-// 				for (i = bLength - 1; i >= 0; i--) {
-// 					if (sources[i] === -1) {
-// 						pos = i + bStart;
-// 						node = b[pos];
-// 						nextPos = pos + 1;
-// 						nextNode = nextPos < b.length ? b[nextPos].dom : parentVList && parentVList.pointer;
-// 						insertOrAppend(dom, mount(node, dom, lifecycle, context, isSVG, shallowUnmount), nextNode);
-// 					} else {
-// 						if (j < 0 || i !== seq[j]) {
-// 							pos = i + bStart;
-// 							node = b[pos];
-// 							nextPos = pos + 1;
-// 							nextNode = nextPos < b.length ? b[nextPos].dom : parentVList && parentVList.pointer;
-// 							insertOrAppend(dom, node.dom, nextNode);
-// 						} else {
-// 							j--;
-// 						}
-// 					}
-// 				}
-// 			} else if (patched !== bLength) {
-// 				for (i = bLength - 1; i >= 0; i--) {
-// 					if (sources[i] === -1) {
-// 						pos = i + bStart;
-// 						node = b[pos];
-// 						nextPos = pos + 1;
-// 						nextNode = nextPos < b.length ? b[nextPos].dom : parentVList && parentVList.pointer;
-// 						insertOrAppend(dom, mount(node, null, lifecycle, context, isSVG, shallowUnmount), nextNode);
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-// }
+					if (!isUndefined(j)) {
+						bNode = b[j];
+						sources[j - bStart] = i;
+						if (pos > j) {
+							moved = true;
+						} else {
+							pos = j;
+						}
+						patch(aNode, bNode, dom, lifecycle, context, isSVG);
+						patched++;
+						aNullable[i] = null;
+					}
+				}
+			}
+		}
+		if (aLength === a.length && patched === 0) {
+			removeAllChildren(dom, a, lifecycle, false);
+			while (bStart < bLength) {
+				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), null);
+			}
+		} else {
+			i = aLength - patched;
+			while (i > 0) {
+				aNode = aNullable[aStart++];
+				if (!isNull(aNode)) {
+					unmount(aNode, dom, lifecycle, false, false);
+					i--;
+				}
+			}
+			if (moved) {
+				let seq = lis_algorithm(sources);
+				j = seq.length - 1;
+				for (i = bLength - 1; i >= 0; i--) {
+					if (sources[i] === -1) {
+						pos = i + bStart;
+						node = b[pos];
+						nextPos = pos + 1;
+						nextNode = nextPos < b.length ? b[nextPos].dom : null;
+						insertOrAppend(dom, mount(node, dom, lifecycle, context, isSVG), nextNode);
+					} else {
+						if (j < 0 || i !== seq[j]) {
+							pos = i + bStart;
+							node = b[pos];
+							nextPos = pos + 1;
+							nextNode = nextPos < b.length ? b[nextPos].dom : null;
+							insertOrAppend(dom, node.dom, nextNode);
+						} else {
+							j--;
+						}
+					}
+				}
+			} else if (patched !== bLength) {
+				for (i = bLength - 1; i >= 0; i--) {
+					if (sources[i] === -1) {
+						pos = i + bStart;
+						node = b[pos];
+						nextPos = pos + 1;
+						nextNode = nextPos < b.length ? b[nextPos].dom : null;
+						insertOrAppend(dom, mount(node, null, lifecycle, context, isSVG), nextNode);
+					}
+				}
+			}
+		}
+	}
+}
 
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
-// function lis_algorithm(a) {
-// 	let p = a.slice(0);
-// 	let result: Array<any> = [];
-// 	result.push(0);
-// 	let i;
-// 	let j;
-// 	let u;
-// 	let v;
-// 	let c;
+function lis_algorithm(a) {
+	let p = a.slice(0);
+	let result: Array<any> = [];
+	result.push(0);
+	let i;
+	let j;
+	let u;
+	let v;
+	let c;
 
-// 	for (i = 0; i < a.length; i++) {
-// 		if (a[i] === -1) {
-// 			continue;
-// 		}
+	for (i = 0; i < a.length; i++) {
+		if (a[i] === -1) {
+			continue;
+		}
 
-// 		j = result[result.length - 1];
-// 		if (a[j] < a[i]) {
-// 			p[i] = j;
-// 			result.push(i);
-// 			continue;
-// 		}
+		j = result[result.length - 1];
+		if (a[j] < a[i]) {
+			p[i] = j;
+			result.push(i);
+			continue;
+		}
 
-// 		u = 0;
-// 		v = result.length - 1;
+		u = 0;
+		v = result.length - 1;
 
-// 		while (u < v) {
-// 			c = ((u + v) / 2) | 0;
-// 			if (a[result[c]] < a[i]) {
-// 				u = c + 1;
-// 			} else {
-// 				v = c;
-// 			}
-// 		}
+		while (u < v) {
+			c = ((u + v) / 2) | 0;
+			if (a[result[c]] < a[i]) {
+				u = c + 1;
+			} else {
+				v = c;
+			}
+		}
 
-// 		if (a[i] < a[result[u]]) {
-// 			if (u > 0) {
-// 				p[i] = result[u - 1];
-// 			}
-// 			result[u] = i;
-// 		}
-// 	}
+		if (a[i] < a[result[u]]) {
+			if (u > 0) {
+				p[i] = result[u - 1];
+			}
+			result[u] = i;
+		}
+	}
 
-// 	u = result.length;
-// 	v = result[u - 1];
+	u = result.length;
+	v = result[u - 1];
 
-// 	while (u-- > 0) {
-// 		result[u] = v;
-// 		v = p[v];
-// 	}
+	while (u-- > 0) {
+		result[u] = v;
+		v = p[v];
+	}
 
-// 	return result;
-// }
+	return result;
+}
 
 // // returns true if a property has been applied that can't be cloned via elem.cloneNode()
 export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
