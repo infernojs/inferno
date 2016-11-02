@@ -26,10 +26,9 @@ var VNodeFlags;
     VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
     VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
 })(VNodeFlags || (VNodeFlags = {}));
-function createVNode(type, props, children, flags, key, ref, className) {
+function createVNode(type, props, children, flags, key, ref) {
     return {
         children: children || null,
-        className: className || null,
         dom: null,
         flags: flags,
         key: key === undefined ? null : key,
@@ -39,10 +38,10 @@ function createVNode(type, props, children, flags, key, ref, className) {
     };
 }
 function createFragmentVNode(children) {
-    return createVNode(null, null, children, VNodeFlags.Fragment, null, null, null);
+    return createVNode(null, null, children, VNodeFlags.Fragment, null, null);
 }
 function createVoidVNode() {
-    return createVNode(null, null, null, VNodeFlags.Void, null, null, null);
+    return createVNode(null, null, null, VNodeFlags.Void, null, null);
 }
 function isVNode(o) {
     return !!o.flags;
