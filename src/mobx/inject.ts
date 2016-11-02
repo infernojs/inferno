@@ -1,10 +1,10 @@
 import hoistStatics from 'hoist-non-inferno-statics';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
+import { IProps } from '../core/shapes';
 
-interface IProps {
+interface IStoreProps extends IProps {
 	ref: any;
-	children: any;
 }
 
 /**
@@ -14,7 +14,7 @@ function createStoreInjector (grabStoresFn, component) {
 	const Injector: any = createClass({
 		displayName: component.name,
 		render() {
-			const newProps = <IProps> {};
+			const newProps = <IStoreProps> {};
 			for (let key in this.props) {
 				if (this.props.hasOwnProperty(key)) {
 					newProps[key] = this.props[key];
@@ -27,14 +27,37 @@ function createStoreInjector (grabStoresFn, component) {
 			newProps.ref = instance => {
 				this.wrappedInstance = instance;
 			};
-			return createElement(component, newProps, this.props.children);
+
+			return createElement(component, newProps);
 		}
 	});
 
 	Injector.contextTypes = { mobxStores() {} };
+	injectStaticWarnings(Injector, component);
 	hoistStatics(Injector, component);
 
 	return Injector;
+}
+
+function injectStaticWarnings(hoc, component) {
+	if (typeof process === "undefined" || !process.env || process.env.NODE_ENV === "production") {
+		return;
+	}
+
+	['propTypes', 'defaultProps', 'contextTypes'].forEach(prop => {
+		const propValue = hoc[prop];
+		Object.defineProperty(hoc, prop, {
+			set (_) {
+				// enable for testing:
+				const name = component.displayName || component.name;
+				console.warn(`Mobx Injector: you are trying to attach ${prop} to HOC instead of ${name}. Use 'wrappedComponent' property.`);
+			},
+			get () {
+				return propValue;
+			},
+			configurable: true
+		});
+	});
 }
 
 const grabStoresByName = (storeNames) => (baseStores, nextProps) => {
@@ -63,7 +86,7 @@ const grabStoresByName = (storeNames) => (baseStores, nextProps) => {
  * or a function that manually maps the available stores from the context to props:
  * storesToProps(mobxStores, props, context) => newProps
  */
-function inject (grabStoresFn): any {
+export default function inject (grabStoresFn): any {
 
 	if (typeof grabStoresFn !== 'function') {
 
@@ -77,5 +100,3 @@ function inject (grabStoresFn): any {
 
 	return componentClass => createStoreInjector(grabStoresFn, componentClass);
 }
-
-export default inject;
