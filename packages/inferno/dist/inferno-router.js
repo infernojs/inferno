@@ -9,7 +9,59 @@
   (global.InfernoRouter = factory(global.Component,global.createElement));
 }(this, (function (Component,createElement) { 'use strict';
 
-<<<<<<< HEAD
+Component = 'default' in Component ? Component['default'] : Component;
+createElement = 'default' in createElement ? createElement['default'] : createElement;
+
+var Route = (function (Component$$1) {
+    function Route(props, context) {
+        Component$$1.call(this, props, context);
+    }
+
+    if ( Component$$1 ) Route.__proto__ = Component$$1;
+    Route.prototype = Object.create( Component$$1 && Component$$1.prototype );
+    Route.prototype.constructor = Route;
+    Route.prototype.componentWillMount = function componentWillMount () {
+        var ref = this.props;
+        var onEnter = ref.onEnter;
+        if (onEnter) {
+            onEnter(this.props, this.context.router);
+        }
+    };
+    Route.prototype.componentWillUnmount = function componentWillUnmount () {
+        var ref = this.props;
+        var onLeave = ref.onLeave;
+        if (onLeave) {
+            onLeave(this.props, this.context);
+        }
+    };
+    Route.prototype.render = function render () {
+        var ref = this.props;
+        var component = ref.component;
+        var children = ref.children;
+        var params = ref.params;
+        return createElement(component, {
+            params: params,
+            children: children
+        });
+    };
+
+    return Route;
+}(Component));
+
+var Lifecycle = function Lifecycle() {
+    this._listeners = [];
+};
+Lifecycle.prototype.addListener = function addListener (callback) {
+    this._listeners.push(callback);
+};
+Lifecycle.prototype.trigger = function trigger () {
+        var this$1 = this;
+
+    for (var i = 0; i < this._listeners.length; i++) {
+        this$1._listeners[i]();
+    }
+};
+
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 var isBrowser = typeof window !== 'undefined' && window.document;
@@ -78,20 +130,6 @@ var KEYED = 2;
 var NODE = 3;
 var TEXT$1 = 4;
 var UNKNOWN = 5;
-
-var Lifecycle = function Lifecycle() {
-    this._listeners = [];
-};
-Lifecycle.prototype.addListener = function addListener (callback) {
-    this._listeners.push(callback);
-};
-Lifecycle.prototype.trigger = function trigger () {
-        var this$1 = this;
-
-    for (var i = 0; i < this._listeners.length; i++) {
-        this$1._listeners[i]();
-    }
-};
 
 var CHILDREN = 1;
 var PROP_CLASS_NAME = 2;
@@ -2199,8 +2237,8 @@ function copyPropsTo(copyFrom, copyTo) {
         }
     }
 }
-function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
-    var instance = new Component(props, context);
+function createStatefulComponentInstance(Component$$1, props, context, isSVG, devToolsStatus) {
+    var instance = new Component$$1(props, context);
     instance.context = context;
     instance._patch = patch;
     instance._devToolsStatus = devToolsStatus;
@@ -2618,7 +2656,7 @@ function applyState(component, force, callback) {
         }
     }
 }
-var Component = function Component(props, context) {
+var Component$1 = function Component$1(props, context) {
     this.state = {};
     this.refs = {};
     this._processingSetState = false;
@@ -2644,15 +2682,15 @@ var Component = function Component(props, context) {
         this.componentDidMount = null;
     }
 };
-Component.prototype.render = function render (nextProps, nextContext) {
+Component$1.prototype.render = function render (nextProps, nextContext) {
 };
-Component.prototype.forceUpdate = function forceUpdate (callback) {
+Component$1.prototype.forceUpdate = function forceUpdate (callback) {
     if (this._unmounted) {
         throw Error(noOp);
     }
     applyState(this, true, callback);
 };
-Component.prototype.setState = function setState (newState, callback) {
+Component$1.prototype.setState = function setState (newState, callback) {
     if (this._unmounted) {
         throw Error(noOp);
     }
@@ -2666,24 +2704,24 @@ Component.prototype.setState = function setState (newState, callback) {
         throwError();
     }
 };
-Component.prototype.componentWillMount = function componentWillMount () {
+Component$1.prototype.componentWillMount = function componentWillMount () {
 };
-Component.prototype.componentDidMount = function componentDidMount () {
+Component$1.prototype.componentDidMount = function componentDidMount () {
 };
-Component.prototype.componentWillUnmount = function componentWillUnmount () {
+Component$1.prototype.componentWillUnmount = function componentWillUnmount () {
 };
-Component.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState, prevContext) {
+Component$1.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState, prevContext) {
 };
-Component.prototype.shouldComponentUpdate = function shouldComponentUpdate (nextProps, nextState, context) {
+Component$1.prototype.shouldComponentUpdate = function shouldComponentUpdate (nextProps, nextState, context) {
     return true;
 };
-Component.prototype.componentWillReceiveProps = function componentWillReceiveProps (nextProps, context) {
+Component$1.prototype.componentWillReceiveProps = function componentWillReceiveProps (nextProps, context) {
 };
-Component.prototype.componentWillUpdate = function componentWillUpdate (nextProps, nextState, nextContext) {
+Component$1.prototype.componentWillUpdate = function componentWillUpdate (nextProps, nextState, nextContext) {
 };
-Component.prototype.getChildContext = function getChildContext () {
+Component$1.prototype.getChildContext = function getChildContext () {
 };
-Component.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, context, force) {
+Component$1.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, context, force) {
     if (this._unmounted === true) {
         throw new Error('You can\'t update an unmounted component!');
     }
@@ -2717,53 +2755,6 @@ Component.prototype._updateComponent = function _updateComponent (prevState, nex
     }
     return NO_OP;
 };
-=======
-Component = 'default' in Component ? Component['default'] : Component;
-createElement = 'default' in createElement ? createElement['default'] : createElement;
->>>>>>> dev
-
-var Route = (function (Component$$1) {
-    function Route(props, context) {
-        Component$$1.call(this, props, context);
-    }
-
-    if ( Component$$1 ) Route.__proto__ = Component$$1;
-    Route.prototype = Object.create( Component$$1 && Component$$1.prototype );
-    Route.prototype.constructor = Route;
-    Route.prototype.componentWillMount = function componentWillMount () {
-        var ref = this.props;
-        var onEnter = ref.onEnter;
-        if (onEnter) {
-            onEnter(this.props, this.context.router);
-        }
-    };
-    Route.prototype.componentWillUnmount = function componentWillUnmount () {
-        var ref = this.props;
-        var onLeave = ref.onLeave;
-        if (onLeave) {
-            onLeave(this.props, this.context);
-        }
-    };
-    Route.prototype.render = function render () {
-        var ref = this.props;
-        var component = ref.component;
-        var children = ref.children;
-        var params = ref.params;
-        return createElement(component, {
-            params: params,
-            async: this.state.async
-        }, children);
-    };
-
-    return Route;
-}(Component));
-
-var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-
-function isArray(obj) {
-    return obj instanceof Array;
-}
 
 /**
  * Expose `pathtoRegexp`.
@@ -2941,31 +2932,13 @@ function rank(url) {
     return (strip(url).match(/\/+/g) || '').length;
 }
 
-<<<<<<< HEAD
-function getRoutes(_routes, url, lastPath) {
-    if ( lastPath === void 0 ) lastPath = '';
-
-    if (!_routes) {
-        return _routes;
-    }
-    var routes = toArray(_routes);
-    routes.sort(pathRankSort);
-    for (var i = 0; i < routes.length; i++) {
-        var route = isArray(routes[i]) ? getRoutes(routes[i], url, lastPath) : routes[i];
-        var path = route.props.path || '/';
-        var fullPath = (lastPath + path).replace('//', '/');
-        var children = route.props.children;
-        var match = matchPath(children ? false : true, fullPath, url.replace('//', '/'));
-        if (match) {
-            route.props.params = match.params;
-=======
 function getRoutes(routing, currentURL) {
     var params = {};
     function grabRoutes(_routes, url, lastPath) {
         if (!_routes) {
             return _routes;
         }
-        var routes = toArray$$1(_routes);
+        var routes = toArray(_routes);
         routes.sort(pathRankSort);
         for (var i = 0; i < routes.length; i++) {
             var route = routes[i];
@@ -2977,7 +2950,6 @@ function getRoutes(routing, currentURL) {
             var path = ref.path; if ( path === void 0 ) path = '/';
             var fullPath = (lastPath + path).replace('//', '/');
             var isLast = isEmpty(children);
->>>>>>> dev
             if (children) {
                 route.props.children = grabRoutes(children, url, fullPath);
             }
@@ -3046,23 +3018,12 @@ var Router = (function (Component$$1) {
         if (matched) {
             return matched;
         }
-<<<<<<< HEAD
         var routes = toArray(children);
-        return getRoutes(routes, url || this.state.url, '');
-=======
-        var routes = toArray$$1(children);
         return getRoutes(routes, url || this.state.url);
->>>>>>> dev
     };
 
     return Router;
-}(Component));
-<<<<<<< HEAD
-=======
-function toArray$$1(children) {
-    return isArray(children) ? children : (children ? [children] : children);
-}
->>>>>>> dev
+}(Component$1));
 
 function Link(props, ref) {
     var router = ref.router;

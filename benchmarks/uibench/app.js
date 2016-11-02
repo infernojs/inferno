@@ -9,7 +9,7 @@
 	var COMPONENT = NodeTypes.COMPONENT;
 	var OPT_ELEMENT = NodeTypes.OPT_ELEMENT;
 
-	uibench.init('Inferno', '1.0.0-beta6');
+	uibench.init('Inferno', '1.0.0-beta6 *dev*');
 
 	var treeLeafBp = bp(e('li', { className: 'TreeLeaf' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
 	var treeNodeBp = bp(e('ul', { className: 'TreeNode' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
@@ -19,7 +19,7 @@
 			bp: treeLeafBp,
 			dom: null,
 			key: null,
-			type: OPT_ELEMENT,
+			nodeType: OPT_ELEMENT,
 			v0: id,
 			v1: null,
 			v2: null
@@ -35,23 +35,23 @@
 
 			if (n.container) {
 				children[i] = {
-					component: TreeNode,
+					type: TreeNode,
 					dom: null,
 					hooks: shouldDataUpdate,
 					key: n.id,
 					props: n,
 					ref: null,
-					type: COMPONENT
+					nodeType: COMPONENT
 				};
 			} else {
 				children[i] = {
-					component: TreeLeaf,
+					type: TreeLeaf,
 					dom: null,
 					hooks: shouldDataUpdate,
 					key: n.id,
 					props: n.id,
 					ref: null,
-					type: COMPONENT
+					nodeType: COMPONENT
 				};
 			}
 		}
@@ -59,7 +59,7 @@
 			bp: treeNodeBp,
 			dom: null,
 			key: null,
-			type: OPT_ELEMENT,
+			nodeType: OPT_ELEMENT,
 			v0: children,
 			v1: null,
 			v2: null
@@ -78,19 +78,19 @@
 			bp: treeBp,
 			dom: null,
 			key: null,
-			type: OPT_ELEMENT,
+			nodeType: OPT_ELEMENT,
 			v0: {
-				component: TreeNode,
+				type: TreeNode,
 				dom: null,
 				hooks: shouldDataUpdate,
 				key: null,
 				props: data.root,
 				ref: null,
-				type: COMPONENT
+				nodeType: COMPONENT
 			},
 			v1: null,
 			v2: null
-		};			
+		};
 	}
 
 	var animBoxBp = bp(e('div', { className: 'AnimBox' }), ValueTypes.PROP_STYLE, null, ValueTypes.PROP_DATA, 'id', null, null, null, null);
@@ -104,11 +104,11 @@
 			bp: animBoxBp,
 			dom: null,
 			key: null,
-			type: OPT_ELEMENT,
+			nodeType: OPT_ELEMENT,
 			v0: style,
 			v1: data.id,
 			v2: null
-		};		
+		};
 	}
 
 	var animBp = bp(e('div', { className: 'Anim' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
@@ -127,20 +127,20 @@
 			var item = items[i];
 
 			children[i] = {
-				component: AnimBox,
+				type: AnimBox,
 				dom: null,
 				hooks: shouldDataUpdate,
 				key: item.id,
 				props: item,
 				ref: null,
-				type: COMPONENT
+				nodeType: COMPONENT
 			};
 		}
 		return {
 			bp: animBp,
 			dom: null,
 			key: null,
-			type: OPT_ELEMENT,
+			nodeType: OPT_ELEMENT,
 			v0: children,
 			v1: null,
 			v2: null
@@ -162,7 +162,7 @@
 			bp: tableCellBp,
 			dom: null,
 			key: null,
-			type: OPT_ELEMENT,
+			nodeType: OPT_ELEMENT,
 			v0: text,
 			v1: null,
 			v2: null
@@ -180,31 +180,31 @@
 		var children = new Array(length);
 
 		children[0] = {
-			component: TableCell,
+			type: TableCell,
 			dom: null,
 			hooks: shouldDataUpdate,
 			key: -1,
 			props: '#' + data.id,
 			ref: null,
-			type: COMPONENT
+			nodeType: COMPONENT
 		};
 
 		for (var i = 1; i < length; i++) {
 			children[i] = {
-				component: TableCell,
+				type: TableCell,
 				dom: null,
 				hooks: shouldDataUpdate,
 				key: i,
 				props: cells[i - 1],
 				ref: null,
-				type: COMPONENT
+				nodeType: COMPONENT
 			};
 		}
 		return {
 			bp: tableRowBp,
 			dom: null,
 			key: null,
-			type: OPT_ELEMENT,
+			nodeType: OPT_ELEMENT,
 			v0: classes,
 			v1: data.id,
 			v2: children
@@ -227,20 +227,20 @@
 			var item = items[i];
 
 			children[i] = {
-				component: TableRow,
+				type: TableRow,
 				dom: null,
 				hooks: shouldDataUpdate,
 				key: item.id,
 				props: item,
 				ref: null,
-				type: COMPONENT
+				nodeType: COMPONENT
 			};
 		}
 		return {
 			bp: tableBp,
 			dom: null,
 			key: null,
-			type: OPT_ELEMENT,
+			nodeType: OPT_ELEMENT,
 			v0: children,
 			v1: null,
 			v2: null
@@ -269,7 +269,7 @@
 			bp: mainBp,
 			dom: null,
 			key: null,
-			type: OPT_ELEMENT,
+			nodeType: OPT_ELEMENT,
 			v0: section,
 			v1: null,
 			v2: null
@@ -296,7 +296,7 @@
 					bp: preBp,
 					dom: null,
 					key: null,
-					type: OPT_ELEMENT,
+					nodeType: OPT_ELEMENT,
 					v0: JSON.stringify(samples, null, ' '),
 					v1: null,
 					v2: null

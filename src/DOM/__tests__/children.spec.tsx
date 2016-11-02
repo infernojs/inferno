@@ -1055,4 +1055,50 @@ describe('Children - (JSX)', () => {
 			expect(unmountSpy.callCount).to.equal(1);
 		});
 	});
+
+	describe('VFragment within other nodes', () => {
+		it('Should not clear nodes when non keyed', () => {
+			const Nodes = ({items}) => (
+				<div>
+					<div>test</div>
+					{items.map((item) => <span>{item}</span>)}
+					<div>end</div>
+				</div>
+			);
+
+			render(<Nodes items={[1,2,3]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>');
+
+			render(<Nodes items={[3,2,1]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>');
+
+			render(<Nodes items={[9,8,7]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>');
+
+			render(<Nodes items={[]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><div>end</div></div>');
+		});
+
+		it('Should not clear nodes when keyed inside vFragment', () => {
+			const Nodes = ({items}) => (
+				<div>
+					<div>test</div>
+					{items.map((item) => <span key={item}>{item}</span>)}
+					<div>end</div>
+				</div>
+			);
+
+			render(<Nodes items={[1,2,3]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>');
+
+			render(<Nodes items={[3,2,1]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>');
+
+			render(<Nodes items={[9,8,7]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>');
+
+			render(<Nodes items={[]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><div>end</div></div>');
+		});
+	});
 });
