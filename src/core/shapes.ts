@@ -10,14 +10,21 @@ export type InfernoInput = VNode | VNode[] | null | string | string[] | number |
 export enum VNodeFlags {
     Text = 1,
     HtmlElement = 1 << 1,
-    SvgElement = 1 << 2,
-    MediaElement = 1 << 3,
-    InputElement = 1 << 4,
-    TextAreaElement = 1 << 5,
-    Fragment = 1 << 6,
-    Void = 1 << 7,
-    ComponentClass = 1 << 8,
-    ComponentFunction = 1 << 9
+
+    ComponentClass = 1 << 2,
+    ComponentFunction = 1 << 3,
+
+		HasKeyedChildren = 1 << 4,
+		HasNonKeyedChildren = 1 << 5,
+
+		SvgElement = 1 << 6,
+    MediaElement = 1 << 7,
+    InputElement = 1 << 8,
+    TextAreaElement = 1 << 9,
+		Fragment = 1 << 10,
+    Void = 1 << 11,
+		Element = HtmlElement | SvgElement | MediaElement | InputElement | TextAreaElement,
+		Component = ComponentFunction | ComponentClass
 }
 
 export interface VNode {

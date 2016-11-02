@@ -35,26 +35,21 @@ import { VNodeFlags, isVNode } from '../core/shapes';
 export function mount(vNode, parentDom, lifecycle, context, isSVG) {
 	const flags = vNode.flags;
 
-	switch (flags) {
-		case VNodeFlags.HtmlElement:
-		case VNodeFlags.SvgElement:
-		case VNodeFlags.InputElement:
-		case VNodeFlags.TextAreaElement:
-			return mountElement(vNode, parentDom, lifecycle, context, isSVG || flags & VNodeFlags.SvgElement);
-		case VNodeFlags.ComponentClass:
-		case VNodeFlags.ComponentFunction:
-			return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
-		case VNodeFlags.Void:
-			return mountVoid(vNode, parentDom);
-		case VNodeFlags.Fragment:
-			return mountFragment(vNode, parentDom, lifecycle, context, isSVG);
-		case VNodeFlags.Text:
-			return mountText(vNode, parentDom);
-		default:
-			if (process.env.NODE_ENV !== 'production') {
-				throwError(`mount() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
-			}
-			throwError();
+	if (flags & VNodeFlags.Element) {
+		return mountElement(vNode, parentDom, lifecycle, context, isSVG || flags & VNodeFlags.SvgElement);
+	} else if (flags & VNodeFlags.Component) {
+		return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
+	} else if (flags & VNodeFlags.Void) {
+		return mountVoid(vNode, parentDom);
+	} else if (flags & VNodeFlags.Fragment) {
+		return mountFragment(vNode, parentDom, lifecycle, context, isSVG);
+	} else if (flags & VNodeFlags.Text) {
+		return mountText(vNode, parentDom);
+	} else {
+		if (process.env.NODE_ENV !== 'production') {
+			throwError(`mount() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+		}
+		throwError();
 	}
 }
 

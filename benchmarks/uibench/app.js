@@ -26,12 +26,12 @@
 			var n = data.children[i];
 
 			if (n.container) {
-				children[i] = createVNode(TreeNode, n, null, 1 << 9, n.id, shouldDataUpdate);
+				children[i] = createVNode(TreeNode, n, null, 1 << 3, n.id, shouldDataUpdate);
 			} else {
-				children[i] = createVNode(TreeLeaf, n.id, null, 1 << 9, n.id, shouldDataUpdate);
+				children[i] = createVNode(TreeLeaf, n.id, null, 1 << 3, n.id, shouldDataUpdate);
 			}
 		}
-		return createVNode('ul', treeNodeProps, children, 1 << 1);
+		return createVNode('ul', treeNodeProps, children, 1 << 1 | 1 << 4);
 	}
 
 	var treeProps = { className: 'Tree' };
@@ -42,7 +42,7 @@
 			return Inferno.NO_OP;
 		}
 		lastTreeData = data;
-		return createVNode('div', treeProps, createVNode(TreeNode, data.root, null, 1 << 9, null, shouldDataUpdate), 1 << 1);
+		return createVNode('div', treeProps, createVNode(TreeNode, data.root, null, 1 << 3, null, shouldDataUpdate), 1 << 1);
 	}
 
 	function AnimBox(data) {
@@ -68,9 +68,9 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = createVNode(AnimBox, item, null, 1 << 9, item.id, shouldDataUpdate);
+			children[i] = createVNode(AnimBox, item, null, 1 << 3, item.id, shouldDataUpdate);
 		}
-		return createVNode('div', animProps, children, 1 << 1);
+		return createVNode('div', animProps, children, 1 << 1 | 1 << 4);
 	}
 
 	function onClick(e, c, p) {
@@ -95,12 +95,12 @@
 		var length = cells.length + 1;
 		var children = new Array(length);
 
-		children[0] = createVNode(TableCell, '#' + data.id, null, 1 << 9, -1, shouldDataUpdate);
+		children[0] = createVNode(TableCell, '#' + data.id, null, 1 << 3, -1, shouldDataUpdate);
 
 		for (var i = 1; i < length; i++) {
-			children[i] = createVNode(TableCell, cells[i - 1], null, 1 << 9, i, shouldDataUpdate);
+			children[i] = createVNode(TableCell, cells[i - 1], null, 1 << 3, i, shouldDataUpdate);
 		}
-		return createVNode('tr', { className: classes, 'data-id': data.id }, children, 1 << 1);
+		return createVNode('tr', { className: classes, 'data-id': data.id }, children, 1 << 1 | 1 << 4);
 	}
 
 	var tableProps = { className: 'Table' };
@@ -118,9 +118,9 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = createVNode(TableRow, item, null, 1 << 9, item.id, shouldDataUpdate);
+			children[i] = createVNode(TableRow, item, null, 1 << 3, item.id, shouldDataUpdate);
 		}
-		return createVNode('table', tableProps, children, 1 << 1);
+		return createVNode('table', tableProps, children, 1 << 1 | 1 << 4);
 	}
 
 	var mainProps = { className: 'Main' };
@@ -172,5 +172,5 @@
 //     Fragment = 1 << 6,
 //     Void = 1 << 7,
 //     ComponentClass = 1 << 8,
-//     ComponentFunction = 1 << 9
+//     ComponentFunction = 1 << 3
 // }

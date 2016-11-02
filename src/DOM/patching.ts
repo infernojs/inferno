@@ -10,7 +10,8 @@ import {
 	isNumber,
 	isArray,
 	isAttrAnEvent,
-	throwError
+	throwError,
+	EMPTY_OBJ
 } from './../shared';
 import {
 	mount,
@@ -67,71 +68,59 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 		const lastFlags = lastVNode.flags;
 		const nextFlags = nextVNode.flags;
 
-		switch (nextFlags) {
-			case VNodeFlags.ComponentClass:
-			case VNodeFlags.ComponentFunction:
-				switch (lastFlags) {
-					case VNodeFlags.ComponentClass:
-					case VNodeFlags.ComponentFunction:
-						patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG , nextFlags & VNodeFlags.ComponentClass);
-						break;
-					default:
-						replaceVNode(
-							parentDom,
-							mountComponent(
-								nextVNode,
-								null,
-								lifecycle,
-								context,
-								isSVG,
-								nextFlags === VNodeFlags.ComponentClass
-							), 
-							lastVNode,
-							lifecycle
-						);
-				}
-				break;
-			case VNodeFlags.HtmlElement:
-			case VNodeFlags.SvgElement:
-			case VNodeFlags.InputElement:
-			case VNodeFlags.TextAreaElement:
-			case VNodeFlags.MediaElement:
-				switch (lastFlags) {
-					case VNodeFlags.HtmlElement:
-					case VNodeFlags.SvgElement:
-					case VNodeFlags.InputElement:
-					case VNodeFlags.TextAreaElement:
-					case VNodeFlags.MediaElement:
-						patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-						break;
-					default:
-						replaceVNode(
-							parentDom, 
-							mountElement(
-								nextVNode, 
-								null, 
-								lifecycle,
-								context,
-								isSVG
-							),
-							lastVNode,
-							lifecycle
-						);
-				}
-				break;
-			default:
-				switch (lastFlags) {
-					case VNodeFlags.ComponentClass:
-					case VNodeFlags.ComponentFunction:
-						replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-						break;
-					default:
-						if (process.env.NODE_ENV !== 'production') {
-							throwError('bad input argument called on patch(). Input argument may need normalising.');
-						}
-						throwError();
-				}
-		} 
+		if (nextFlags & VNodeFlags.Component) {
+			if (lastFlags & VNodeFlags.Component) {
+				patchComponent(
+					lastVNode,
+					nextVNode,
+					parentDom,
+					lifecycle,
+					context,
+					isSVG,
+					nextFlags & VNodeFlags.ComponentClass
+				);
+			} else {
+				replaceVNode(
+					parentDom,
+					mountComponent(
+						nextVNode,
+						null,
+						lifecycle,
+						context,
+						isSVG,
+						nextFlags & VNodeFlags.ComponentClass
+					),
+					lastVNode,
+					lifecycle
+				);
+			}
+	} else if (nextFlags & VNodeFlags.Element) {
+		if (lastFlags & VNodeFlags.Element) {
+			patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+		} else {
+			replaceVNode(
+				parentDom,
+				mountElement(
+					nextVNode,
+					null,
+					lifecycle,
+					context,
+					isSVG
+				),
+				lastVNode,
+				lifecycle
+			);
+		}
+	} else {
+		if (lastFlags & (VNodeFlags.Component | VNodeFlags.Element)) {
+			replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+		} else {
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('bad input argument called on patch(). Input argument may need normalising.');
+			}
+			throwError();
+		}
+	}
 
 		// } else if (lastFlags === ELEMENT) {
 		// 	replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
@@ -180,6 +169,8 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 		const nextProps = nextVNode.props;
 		const lastChildren = lastVNode.children;
 		const nextChildren = nextVNode.children;
+		const lastFlags = lastVNode.flags;
+		const nextFlags = nextVNode.flags;
 
 		nextVNode.dom = dom;
 		if (lastChildren !== nextChildren) {
@@ -190,8 +181,16 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 			} else {
 				if (isArray(nextChildren)) {
 					if (isArray(lastChildren)) {
-						// patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
-						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+						// check if we can do keyed updates
+						if ((lastFlags & VNodeFlags.HasKeyedChildren) && (nextFlags & VNodeFlags.HasKeyedChildren)) {
+							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+						// check if we can do non-keyed updates without having to validate
+						} else if (nextFlags & VNodeFlags.HasNonKeyedChildren) {
+							patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+						} else {
+							// we can do a validation check here, but for now just do non keyed
+							patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+						}
 					} else {
 						// debugger;
 					}
@@ -291,7 +290,7 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass) {
 	const lastType = lastVNode.type;
 	const nextType = nextVNode.type;
-	const nextProps = nextVNode.props || {};
+	const nextProps = nextVNode.props || EMPTY_OBJ;
 
 	if (lastType !== nextType) {
 		if (isClass) {
@@ -810,22 +809,26 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 }
 
 function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
-	lastProps = lastProps || {};
-	nextProps = nextProps || {};
+	lastProps = lastProps || EMPTY_OBJ;
+	nextProps = nextProps || EMPTY_OBJ;
 
-	for (let prop in nextProps) {
-		const nextValue = nextProps[prop];
-		const lastValue = lastProps[prop];
+	if (nextProps !== EMPTY_OBJ) {
+		for (let prop in nextProps) {
+			const nextValue = nextProps[prop];
+			const lastValue = lastProps[prop];
 
-		if (isNullOrUndef(nextValue)) {
-			removeProp(prop, dom);
-		} else {
-			patchProp(prop, lastValue, nextValue, dom, isSVG);
+			if (isNullOrUndef(nextValue)) {
+				removeProp(prop, dom);
+			} else {
+				patchProp(prop, lastValue, nextValue, dom, isSVG);
+			}
 		}
 	}
-	for (let prop in lastProps) {
-		if (isNullOrUndef(nextProps[prop])) {
-			removeProp(prop, dom);
+	if (lastProps !== EMPTY_OBJ) {
+		for (let prop in lastProps) {
+			if (isNullOrUndef(nextProps[prop])) {
+				removeProp(prop, dom);
+			}
 		}
 	}
 }

@@ -13,14 +13,18 @@ var VNodeFlags;
 (function (VNodeFlags) {
     VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
     VNodeFlags[VNodeFlags["HtmlElement"] = 2] = "HtmlElement";
-    VNodeFlags[VNodeFlags["SvgElement"] = 4] = "SvgElement";
-    VNodeFlags[VNodeFlags["MediaElement"] = 8] = "MediaElement";
-    VNodeFlags[VNodeFlags["InputElement"] = 16] = "InputElement";
-    VNodeFlags[VNodeFlags["TextAreaElement"] = 32] = "TextAreaElement";
-    VNodeFlags[VNodeFlags["Fragment"] = 64] = "Fragment";
-    VNodeFlags[VNodeFlags["Void"] = 128] = "Void";
-    VNodeFlags[VNodeFlags["ComponentClass"] = 256] = "ComponentClass";
-    VNodeFlags[VNodeFlags["ComponentFunction"] = 512] = "ComponentFunction";
+    VNodeFlags[VNodeFlags["ComponentClass"] = 4] = "ComponentClass";
+    VNodeFlags[VNodeFlags["ComponentFunction"] = 8] = "ComponentFunction";
+    VNodeFlags[VNodeFlags["HasKeyedChildren"] = 16] = "HasKeyedChildren";
+    VNodeFlags[VNodeFlags["HasNonKeyedChildren"] = 32] = "HasNonKeyedChildren";
+    VNodeFlags[VNodeFlags["SvgElement"] = 64] = "SvgElement";
+    VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
+    VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
+    VNodeFlags[VNodeFlags["TextAreaElement"] = 512] = "TextAreaElement";
+    VNodeFlags[VNodeFlags["Fragment"] = 1024] = "Fragment";
+    VNodeFlags[VNodeFlags["Void"] = 2048] = "Void";
+    VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
+    VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
 })(VNodeFlags || (VNodeFlags = {}));
 function createVNode(type, props, children, flags, key, ref) {
     return {
@@ -111,30 +115,23 @@ Lifecycle.prototype.trigger = function trigger () {
 
 function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
     var flags = vNode.flags;
-    switch (flags) {
-        case VNodeFlags.ComponentClass:
-        case VNodeFlags.ComponentFunction:
-            unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
-            break;
-        case VNodeFlags.HtmlElement:
-        case VNodeFlags.SvgElement:
-        case VNodeFlags.InputElement:
-        case VNodeFlags.TextAreaElement:
-            unmountElement(vNode, parentDom, lifecycle, shallowUnmount);
-            break;
-        case VNodeFlags.Fragment:
-            unmountFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
-            break;
-        case VNodeFlags.Text:
-            unmountText(vNode, parentDom);
-            break;
-        case VNodeFlags.Void:
-            unmountPlaceholder(vNode, parentDom);
-            break;
-        default:
+    if (flags & VNodeFlags.Component) {
+        unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+    }
+    else if (flags & VNodeFlags.Element) {
+        unmountElement(vNode, parentDom, lifecycle, shallowUnmount);
+    }
+    else if (flags & VNodeFlags.Fragment) {
+        unmountFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
+    }
+    else if (flags & VNodeFlags.Text) {
+        unmountText(vNode, parentDom);
+    }
+    else if (flags & VNodeFlags.Void) {
+        unmountVoid(vNode, parentDom);
     }
 }
-function unmountPlaceholder(vNode, parentDom) {
+function unmountVoid(vNode, parentDom) {
     if (parentDom) {
         removeChild(parentDom, vNode.dom);
     }
@@ -276,47 +273,32 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
     if (lastVNode !== nextVNode) {
         var lastFlags = lastVNode.flags;
         var nextFlags = nextVNode.flags;
-        switch (nextFlags) {
-            case VNodeFlags.ComponentClass:
-            case VNodeFlags.ComponentFunction:
-                switch (lastFlags) {
-                    case VNodeFlags.ComponentClass:
-                    case VNodeFlags.ComponentFunction:
-                        patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, nextFlags & VNodeFlags.ComponentClass);
-                        break;
-                    default:
-                        replaceVNode(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextFlags === VNodeFlags.ComponentClass), lastVNode, lifecycle);
+        if (nextFlags & VNodeFlags.Component) {
+            if (lastFlags & VNodeFlags.Component) {
+                patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, nextFlags & VNodeFlags.ComponentClass);
+            }
+            else {
+                replaceVNode(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextFlags & VNodeFlags.ComponentClass), lastVNode, lifecycle);
+            }
+        }
+        else if (nextFlags & VNodeFlags.Element) {
+            if (lastFlags & VNodeFlags.Element) {
+                patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+            }
+            else {
+                replaceVNode(parentDom, mountElement(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
+            }
+        }
+        else {
+            if (lastFlags & (VNodeFlags.Component | VNodeFlags.Element)) {
+                replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+            }
+            else {
+                if (process.env.NODE_ENV !== 'production') {
+                    throwError('bad input argument called on patch(). Input argument may need normalising.');
                 }
-                break;
-            case VNodeFlags.HtmlElement:
-            case VNodeFlags.SvgElement:
-            case VNodeFlags.InputElement:
-            case VNodeFlags.TextAreaElement:
-            case VNodeFlags.MediaElement:
-                switch (lastFlags) {
-                    case VNodeFlags.HtmlElement:
-                    case VNodeFlags.SvgElement:
-                    case VNodeFlags.InputElement:
-                    case VNodeFlags.TextAreaElement:
-                    case VNodeFlags.MediaElement:
-                        patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-                        break;
-                    default:
-                        replaceVNode(parentDom, mountElement(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
-                }
-                break;
-            default:
-                switch (lastFlags) {
-                    case VNodeFlags.ComponentClass:
-                    case VNodeFlags.ComponentFunction:
-                        replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-                        break;
-                    default:
-                        if (process.env.NODE_ENV !== 'production') {
-                            throwError('bad input argument called on patch(). Input argument may need normalising.');
-                        }
-                        throwError();
-                }
+                throwError();
+            }
         }
     }
 }
@@ -332,6 +314,8 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
         var nextProps = nextVNode.props;
         var lastChildren = lastVNode.children;
         var nextChildren = nextVNode.children;
+        var lastFlags = lastVNode.flags;
+        var nextFlags = nextVNode.flags;
         nextVNode.dom = dom;
         if (lastChildren !== nextChildren) {
             if (isString(lastChildren) && isString(nextChildren)) {
@@ -343,8 +327,17 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
             else {
                 if (isArray(nextChildren)) {
                     if (isArray(lastChildren)) {
-                        // patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
-                        patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+                        // check if we can do keyed updates
+                        if ((lastFlags & VNodeFlags.HasKeyedChildren) && (nextFlags & VNodeFlags.HasKeyedChildren)) {
+                            patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+                        }
+                        else if (nextFlags & VNodeFlags.HasNonKeyedChildren) {
+                            patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+                        }
+                        else {
+                            // we can do a validation check here, but for now just do non keyed
+                            patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+                        }
                     }
                     else {
                     }
@@ -441,7 +434,7 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass) {
     var lastType = lastVNode.type;
     var nextType = nextVNode.type;
-    var nextProps = nextVNode.props || {};
+    var nextProps = nextVNode.props || EMPTY_OBJ;
     if (lastType !== nextType) {
         if (isClass) {
             replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
@@ -547,7 +540,28 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
 }
 
 
-
+function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+    var lastChildrenLength = lastChildren.length;
+    var nextChildrenLength = nextChildren.length;
+    var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
+    var i = 0;
+    for (; i < commonLength; i++) {
+        var lastChild = lastChildren[i];
+        var nextChild = nextChildren[i];
+        patch(lastChild, nextChild, dom, lifecycle, context, isSVG);
+    }
+    if (lastChildrenLength < nextChildrenLength) {
+        for (i = commonLength; i < nextChildrenLength; i++) {
+            var child = nextChildren[i];
+            appendChild(dom, mount(child, null, lifecycle, context, isSVG));
+        }
+    }
+    else if (lastChildrenLength > nextChildrenLength) {
+        for (i = commonLength; i < lastChildrenLength; i++) {
+            unmount(lastChildren[i], dom, lifecycle, false, false);
+        }
+    }
+}
 function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
     var aLength = a.length;
     var bLength = b.length;
@@ -870,21 +884,25 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
     return true;
 }
 function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
-    lastProps = lastProps || {};
-    nextProps = nextProps || {};
-    for (var prop in nextProps) {
-        var nextValue = nextProps[prop];
-        var lastValue = lastProps[prop];
-        if (isNullOrUndef(nextValue)) {
-            removeProp(prop, dom);
-        }
-        else {
-            patchProp(prop, lastValue, nextValue, dom, isSVG);
+    lastProps = lastProps || EMPTY_OBJ;
+    nextProps = nextProps || EMPTY_OBJ;
+    if (nextProps !== EMPTY_OBJ) {
+        for (var prop in nextProps) {
+            var nextValue = nextProps[prop];
+            var lastValue = lastProps[prop];
+            if (isNullOrUndef(nextValue)) {
+                removeProp(prop, dom);
+            }
+            else {
+                patchProp(prop, lastValue, nextValue, dom, isSVG);
+            }
         }
     }
-    for (var prop$1 in lastProps) {
-        if (isNullOrUndef(nextProps[prop$1])) {
-            removeProp(prop$1, dom);
+    if (lastProps !== EMPTY_OBJ) {
+        for (var prop$1 in lastProps) {
+            if (isNullOrUndef(nextProps[prop$1])) {
+                removeProp(prop$1, dom);
+            }
         }
     }
 }
@@ -1172,26 +1190,26 @@ function sendRoots(global) {
 
 function mount(vNode, parentDom, lifecycle, context, isSVG) {
     var flags = vNode.flags;
-    switch (flags) {
-        case VNodeFlags.HtmlElement:
-        case VNodeFlags.SvgElement:
-        case VNodeFlags.InputElement:
-        case VNodeFlags.TextAreaElement:
-            return mountElement(vNode, parentDom, lifecycle, context, isSVG || flags & VNodeFlags.SvgElement);
-        case VNodeFlags.ComponentClass:
-        case VNodeFlags.ComponentFunction:
-            return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
-        case VNodeFlags.Void:
-            return mountVoid(vNode, parentDom);
-        case VNodeFlags.Fragment:
-            return mountFragment(vNode, parentDom, lifecycle, context, isSVG);
-        case VNodeFlags.Text:
-            return mountText(vNode, parentDom);
-        default:
-            if (process.env.NODE_ENV !== 'production') {
-                throwError(("mount() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
-            }
-            throwError();
+    if (flags & VNodeFlags.Element) {
+        return mountElement(vNode, parentDom, lifecycle, context, isSVG || flags & VNodeFlags.SvgElement);
+    }
+    else if (flags & VNodeFlags.Component) {
+        return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
+    }
+    else if (flags & VNodeFlags.Void) {
+        return mountVoid(vNode, parentDom);
+    }
+    else if (flags & VNodeFlags.Fragment) {
+        return mountFragment(vNode, parentDom, lifecycle, context, isSVG);
+    }
+    else if (flags & VNodeFlags.Text) {
+        return mountText(vNode, parentDom);
+    }
+    else {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError(("mount() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+        }
+        throwError();
     }
 }
 function mountText(vNode, parentDom) {

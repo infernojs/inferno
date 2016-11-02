@@ -13,14 +13,18 @@ var VNodeFlags;
 (function (VNodeFlags) {
     VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
     VNodeFlags[VNodeFlags["HtmlElement"] = 2] = "HtmlElement";
-    VNodeFlags[VNodeFlags["SvgElement"] = 4] = "SvgElement";
-    VNodeFlags[VNodeFlags["MediaElement"] = 8] = "MediaElement";
-    VNodeFlags[VNodeFlags["InputElement"] = 16] = "InputElement";
-    VNodeFlags[VNodeFlags["TextAreaElement"] = 32] = "TextAreaElement";
-    VNodeFlags[VNodeFlags["Fragment"] = 64] = "Fragment";
-    VNodeFlags[VNodeFlags["Void"] = 128] = "Void";
-    VNodeFlags[VNodeFlags["ComponentClass"] = 256] = "ComponentClass";
-    VNodeFlags[VNodeFlags["ComponentFunction"] = 512] = "ComponentFunction";
+    VNodeFlags[VNodeFlags["ComponentClass"] = 4] = "ComponentClass";
+    VNodeFlags[VNodeFlags["ComponentFunction"] = 8] = "ComponentFunction";
+    VNodeFlags[VNodeFlags["HasKeyedChildren"] = 16] = "HasKeyedChildren";
+    VNodeFlags[VNodeFlags["HasNonKeyedChildren"] = 32] = "HasNonKeyedChildren";
+    VNodeFlags[VNodeFlags["SvgElement"] = 64] = "SvgElement";
+    VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
+    VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
+    VNodeFlags[VNodeFlags["TextAreaElement"] = 512] = "TextAreaElement";
+    VNodeFlags[VNodeFlags["Fragment"] = 1024] = "Fragment";
+    VNodeFlags[VNodeFlags["Void"] = 2048] = "Void";
+    VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
+    VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
 })(VNodeFlags || (VNodeFlags = {}));
 function createVNode(type, props, children, flags, key, ref) {
     return {

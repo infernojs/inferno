@@ -19,32 +19,20 @@ import { VNodeFlags } from '../core/shapes';
 export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	const flags = vNode.flags;
 
-	switch (flags) {
-		case VNodeFlags.ComponentClass:
-		case VNodeFlags.ComponentFunction:
-			unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
-			break;
-		case VNodeFlags.HtmlElement:
-		case VNodeFlags.SvgElement:
-		case VNodeFlags.InputElement:
-		case VNodeFlags.TextAreaElement:
-			unmountElement(vNode, parentDom, lifecycle, shallowUnmount);
-			break;
-		case VNodeFlags.Fragment:
-			unmountFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
-			break;
-		case VNodeFlags.Text:
-			unmountText(vNode, parentDom);
-			break;
-		case VNodeFlags.Void:
-			unmountPlaceholder(vNode, parentDom);
-			break;
-		default:
-			// TODO
+	if (flags & VNodeFlags.Component) {
+		unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+	} else if (flags & VNodeFlags.Element) {
+		unmountElement(vNode, parentDom, lifecycle, shallowUnmount);
+	} else if (flags & VNodeFlags.Fragment) {
+		unmountFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
+	} else if (flags & VNodeFlags.Text) {
+		unmountText(vNode, parentDom);
+	} else if (flags & VNodeFlags.Void) {
+		unmountVoid(vNode, parentDom);
 	}
 }
 
-function unmountPlaceholder(vNode, parentDom) {
+function unmountVoid(vNode, parentDom) {
 	if (parentDom) {
 		removeChild(parentDom, vNode.dom);
 	}
