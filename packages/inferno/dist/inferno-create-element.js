@@ -24,12 +24,12 @@ var VNodeFlags;
 })(VNodeFlags || (VNodeFlags = {}));
 function createVNode(type, props, children, flags, key, ref) {
     return {
-        children: children,
+        children: children || null,
         dom: null,
         flags: flags,
-        key: key,
-        props: props,
-        ref: ref,
+        key: ref || null,
+        props: props || null,
+        ref: ref || null,
         type: type
     };
 }

@@ -34,7 +34,7 @@
 				key: null,
 				props: dbName,
 				ref: null,
-				type: 'td'				
+				type: 'td'
 			};
 			children[1] = {
 				children: {
@@ -46,14 +46,14 @@
 						className: lastSample.countClassName
 					},
 					ref: null,
-					type: 'span'					
+					type: 'span'
 				},
 				dom: null,
 				flags: 1 << 1,
 				key: null,
 				props: dbQueryCount,
 				ref: null,
-				type: 'td'				
+				type: 'td'
 			};
 
 			for (var i2 = 0; i2 < 5; i2++) {
@@ -98,57 +98,17 @@
 						className: query.elapsedClassName
 					},
 					ref: null,
-					type: 'td'					
+					type: 'td'
 				}
-			// 	children[i2 + 2] = {
-			// 		bp: bp1,
-			// 		dom: null,
-			// 		type: OPT_ELEMENT,
-			// 		v0: query.elapsedClassName,
-			// 		v1: [
-			// 			{
-			// 				bp: bp2,
-			// 				dom: null,
-			// 				type: OPT_ELEMENT,
-			// 				v0: {
-			// 					dom: null,
-			// 					type: TEXT,
-			// 					text: query.formatElapsed
-			// 				},
-			// 				v1: null
-			// 			},
-			// 			{
-			// 				bp: bp3,
-			// 				dom: null,
-			// 				type: OPT_ELEMENT,
-			// 				v0: [
-			// 					{
-			// 						bp: bp4,
-			// 						dom: null,
-			// 						type: OPT_ELEMENT,
-			// 						v0: {
-			// 							dom: null,
-			// 							type: NodeTypes.TEXT,
-			// 							text: query.query
-			// 						},
-			// 						v1: null
-			// 					},
-			// 					staticNode
-			// 				],
-			// 				v1: null
-			// 			}
-			// 		]
-			// 	};
-			}
-			databases[i] = {
-				children: children,
-				dom: null,
-				flags: 1 << 1,
-				key: null,
-				props: null,
-				ref: null,
-				type: 'tr'
-			};
+				databases[i] = {
+					children: children,
+					dom: null,
+					flags: 1 << 1,
+					key: null,
+					props: null,
+					ref: null,
+					type: 'tr'
+				};
 		}
 
 		Inferno.render({
@@ -188,19 +148,6 @@
 	var popoverContent = {
 		className: 'popover-content'
 	};
-
-// export enum VNodeFlags {
-//     Text = 1,
-//     HtmlElement = 1 << 1 === 2,
-//     SvgElement = 1 << 2 === 4,
-//     MediaElement = 1 << 3,
-//     InputElement = 1 << 4,
-//     TextAreaElement = 1 << 5,
-//     Fragment = 1 << 6,
-//     Void = 1 << 7,
-//     ComponentClass = 1 << 8,
-//     ComponentFunction = 1 << 9
-// }
 
 	function render() {
 		var dbs = ENV.generateData(false).toArray();

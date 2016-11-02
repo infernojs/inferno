@@ -4,6 +4,7 @@ import {
 	isNullOrUndef,
 	isString,
 	isInvalid,
+	isUndefined,
 	isNull,
 	throwError,
 	EMPTY_OBJ
@@ -39,10 +40,10 @@ export function mount(vNode, parentDom, lifecycle, context, isSVG) {
 		case VNodeFlags.SvgElement:
 		case VNodeFlags.InputElement:
 		case VNodeFlags.TextAreaElement:
-			return mountElement(vNode, parentDom, lifecycle, context, flags === VNodeFlags.SvgElement || isSVG);
+			return mountElement(vNode, parentDom, lifecycle, context, isSVG || flags & VNodeFlags.SvgElement);
 		case VNodeFlags.ComponentClass:
 		case VNodeFlags.ComponentFunction:
-			return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags === VNodeFlags.ComponentClass);
+			return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
 		case VNodeFlags.Void:
 			return mountVoid(vNode, parentDom);
 		case VNodeFlags.Fragment:
@@ -126,7 +127,7 @@ export function mountFragment(vNode, parentDom, lifecycle, context, isSVG) {
 	return dom;
 }
 
-export function mountComponent(vComponent, parentDom, lifecycle, context, isSVG, isClass) {
+export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
 // 	if (recyclingEnabled) {
 // 		const dom = recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount);
 
@@ -137,9 +138,9 @@ export function mountComponent(vComponent, parentDom, lifecycle, context, isSVG,
 // 			return dom;
 // 		}
 // 	}
-	const type = vComponent.type;
-	const props = vComponent.props || EMPTY_OBJ;
-	const ref = vComponent.ref;
+	const type = vNode.type;
+	const props = vNode.props || EMPTY_OBJ;
+	const ref = vNode.ref;
 	let dom;
 
 	if (isClass) {
@@ -147,24 +148,24 @@ export function mountComponent(vComponent, parentDom, lifecycle, context, isSVG,
 
 		if (!isUndefined(defaultProps)) {
 			copyPropsTo(defaultProps, props);
-			vComponent.props = props;
+			vNode.props = props;
 		}
 		const instance = createStatefulComponentInstance(type, props, context, isSVG, devToolsStatus);
 		const input = instance._lastInput;
 
-		instance._vComponent = vComponent;
-		vComponent.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
+		instance._vNode = vNode;
+		vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
 		componentToDOMNodeMap.set(instance, dom);
-		vComponent.instance = instance;
+		vNode.children = instance;
 	} else {
 		const input = createStatelessComponentInput(type, props, context);
 
-		vComponent.dom = dom = mount(input, null, lifecycle, context, isSVG);
-		vComponent.instance = input;
+		vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);
+		vNode.children = input;
 		mountStatelessComponentCallbacks(ref, dom, lifecycle);
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);

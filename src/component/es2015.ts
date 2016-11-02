@@ -128,7 +128,7 @@ function applyState(component: Component<any, any>, force, callback): void {
 			subLifecycle.trigger();
 			component.componentDidUpdate(props, prevState);
 		}
-		component._vComponent.dom = nextInput.dom;
+		component._vNode.dom = nextInput.dom;
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
 		if (!isNullOrUndef(callback)) {
 			callback();
@@ -151,7 +151,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_pendingSetState = false;
 	_pendingState = {};
 	_lastInput = null;
-	_vComponent = null;
+	_vNode = null;
 	_unmounted = true;
 	_devToolsStatus = null;
 	_devToolsId = null;

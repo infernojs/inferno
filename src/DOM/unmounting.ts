@@ -44,22 +44,22 @@ export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount)
 	}
 }
 
-function unmountPlaceholder(vPlaceholder, parentDom) {
+function unmountPlaceholder(vNode, parentDom) {
 	if (parentDom) {
-		removeChild(parentDom, vPlaceholder.dom);
+		removeChild(parentDom, vNode.dom);
 	}
 }
 
-function unmountText(vText, parentDom) {
+function unmountText(vNode, parentDom) {
 	if (parentDom) {
-		removeChild(parentDom, vText.dom);
+		removeChild(parentDom, vNode.dom);
 	}
 }
 
-export function unmountFragment(vFragment, parentDom, removePointer, lifecycle, shallowUnmount) {
-	const children = vFragment.children;
+export function unmountFragment(vNode, parentDom, removePointer, lifecycle, shallowUnmount) {
+	const children = vNode.children;
 	const childrenLength = children.length;
-	const pointer = vFragment.pointer;
+	// const pointer = vNode.pointer;
 
 	if (!shallowUnmount && childrenLength > 0) {
 		for (let i = 0; i < childrenLength; i++) {
@@ -72,26 +72,26 @@ export function unmountFragment(vFragment, parentDom, removePointer, lifecycle, 
 			}
 		}
 	}
-	if (parentDom && removePointer) {
-		removeChild(parentDom, pointer);
-	}
+	// if (parentDom && removePointer) {
+	// 	removeChild(parentDom, pointer);
+	// }
 }
 
-export function unmountComponent(vComponent, parentDom, lifecycle, canRecycle, shallowUnmount) {
-	const instance = vComponent.instance;
+export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
+	const instance = vNode.children;
 
 	if (!shallowUnmount) {
 		let instanceHooks = null;
 
-		vComponent.unmounted = true;
+		vNode.unmounted = true;
 		if (!isNullOrUndef(instance)) {
-			const ref = vComponent.ref;
-
-			if (ref) {
-				ref(null);
-			}
-			instanceHooks = instance.hooks;
+			instanceHooks = instance.ref;
 			if (instance.render !== undefined) {
+				const ref = vNode.ref;
+
+				if (ref) {
+					ref(null);
+				}
 				instance.componentWillUnmount();
 				instance._unmounted = true;
 				componentToDOMNodeMap.delete(instance);
@@ -100,7 +100,7 @@ export function unmountComponent(vComponent, parentDom, lifecycle, canRecycle, s
 				unmount(instance, null, lifecycle, false, shallowUnmount);
 			}
 		}
-		const hooks = vComponent.hooks || instanceHooks;
+		const hooks = vNode.ref || instanceHooks;
 
 		if (!isNullOrUndef(hooks)) {
 			if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
@@ -117,7 +117,7 @@ export function unmountComponent(vComponent, parentDom, lifecycle, canRecycle, s
 		if (lastInput.flags === VNodeFlags.Fragment) {
 			unmountFragment(lastInput, parentDom, true, lifecycle, true);
 		} else {
-			removeChild(parentDom, vComponent.dom);
+			removeChild(parentDom, vNode.dom);
 		}
 	}
 	// if (recyclingEnabled && (parentDom || canRecycle)) {
@@ -125,15 +125,15 @@ export function unmountComponent(vComponent, parentDom, lifecycle, canRecycle, s
 	// }
 }
 
-export function unmountElement(vElement, parentDom, lifecycle, shallowUnmount) {
-	const dom = vElement.dom;
-	const ref = vElement.ref;
+export function unmountElement(vNode, parentDom, lifecycle, shallowUnmount) {
+	const dom = vNode.dom;
+	const ref = vNode.ref;
 
 	if (!shallowUnmount) {
 		if (ref) {
 			unmountRef(ref);
 		}
-		const children = vElement.children;
+		const children = vNode.children;
 
 		if (!isNullOrUndef(children)) {
 			unmountChildren(children, lifecycle, shallowUnmount);

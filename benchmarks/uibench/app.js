@@ -1,30 +1,22 @@
 (function() {
 	"use strict";
 
-	var bp = Inferno.createOptBlueprint;
-	var e = Inferno.createStaticVElement;
-	var ChildrenTypes = Inferno.ChildrenTypes;
-	var ValueTypes = Inferno.ValueTypes;
-	var NodeTypes = Inferno.NodeTypes;
-	var COMPONENT = NodeTypes.COMPONENT;
-	var OPT_ELEMENT = NodeTypes.OPT_ELEMENT;
+	var createVNode = Inferno.createVNode;
 
 	uibench.init('Inferno', '1.0.0-beta6');
 
-	var treeLeafBp = bp(e('li', { className: 'TreeLeaf' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
-	var treeNodeBp = bp(e('ul', { className: 'TreeNode' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
+	var treeLeafProps = { className: 'TreeLeaf' };
 
 	function TreeLeaf(id) {
-		return {
-			bp: treeLeafBp,
-			dom: null,
-			key: null,
-			type: OPT_ELEMENT,
-			v0: id,
-			v1: null,
-			v2: null
-		};
+		return createVNode('li', treeLeafProps, id + '', 1 << 1);
 	}
+
+	var shouldDataUpdate = {
+		onComponentShouldUpdate: function (lastProps, nextProps) {
+			return lastProps !== nextProps;
+		}
+	};
+	var treeNodeProps = { className: 'TreeNode' };
 
 	function TreeNode(data) {
 		var length = data.children.length;
@@ -34,39 +26,15 @@
 			var n = data.children[i];
 
 			if (n.container) {
-				children[i] = {
-					component: TreeNode,
-					dom: null,
-					hooks: shouldDataUpdate,
-					key: n.id,
-					props: n,
-					ref: null,
-					type: COMPONENT
-				};
+				children[i] = createVNode(TreeNode, n, null, 1 << 9, n.id, shouldDataUpdate);
 			} else {
-				children[i] = {
-					component: TreeLeaf,
-					dom: null,
-					hooks: shouldDataUpdate,
-					key: n.id,
-					props: n.id,
-					ref: null,
-					type: COMPONENT
-				};
+				children[i] = createVNode(TreeLeaf, n.id, null, 1 << 9, n.id, shouldDataUpdate);
 			}
 		}
-		return {
-			bp: treeNodeBp,
-			dom: null,
-			key: null,
-			type: OPT_ELEMENT,
-			v0: children,
-			v1: null,
-			v2: null
-		};
+		return createVNode('ul', treeNodeProps, children, 1 << 1);
 	}
 
-	var treeBp = bp(e('div', { className: 'Tree' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null, null, null);
+	var treeProps = { className: 'Tree' };
 	var lastTreeData;
 
 	function tree(data) {
@@ -74,44 +42,18 @@
 			return Inferno.NO_OP;
 		}
 		lastTreeData = data;
-		return {
-			bp: treeBp,
-			dom: null,
-			key: null,
-			type: OPT_ELEMENT,
-			v0: {
-				component: TreeNode,
-				dom: null,
-				hooks: shouldDataUpdate,
-				key: null,
-				props: data.root,
-				ref: null,
-				type: COMPONENT
-			},
-			v1: null,
-			v2: null
-		};			
+		return createVNode('div', treeProps, createVNode(TreeNode, data.root, null, 1 << 9, null, shouldDataUpdate), 1 << 1);
 	}
-
-	var animBoxBp = bp(e('div', { className: 'AnimBox' }), ValueTypes.PROP_STYLE, null, ValueTypes.PROP_DATA, 'id', null, null, null, null);
 
 	function AnimBox(data) {
 		var time = data.time;
 		var style = 'border-radius:' + (time % 10) + 'px;' +
 			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')';
 
-		return {
-			bp: animBoxBp,
-			dom: null,
-			key: null,
-			type: OPT_ELEMENT,
-			v0: style,
-			v1: data.id,
-			v2: null
-		};		
+		return createVNode('div', { className: 'AnimBox', style: style, 'data-id': data.id }, null, 1 << 1);
 	}
 
-	var animBp = bp(e('div', { className: 'Anim' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
+	var animProps = { className: 'Anim' };
 	var lastAnimData;
 
 	function anim(data) {
@@ -126,25 +68,9 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = {
-				component: AnimBox,
-				dom: null,
-				hooks: shouldDataUpdate,
-				key: item.id,
-				props: item,
-				ref: null,
-				type: COMPONENT
-			};
+			children[i] = createVNode(AnimBox, item, null, 1 << 9, item.id, shouldDataUpdate);
 		}
-		return {
-			bp: animBp,
-			dom: null,
-			key: null,
-			type: OPT_ELEMENT,
-			v0: children,
-			v1: null,
-			v2: null
-		};
+		return createVNode('div', animProps, children, 1 << 1);
 	}
 
 	function onClick(e, c, p) {
@@ -153,20 +79,10 @@
 	}
 
 	document.addEventListener('click', onClick);
-
-	var tableCellBp = bp(e('td', { className: 'TableCell' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
-	var tableRowBp = bp(e('tr'), ValueTypes.PROP_CLASS_NAME, null, ValueTypes.PROP_DATA, 'id', ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null);
+	var tableCellProps = { className: 'TableCell' };
 
 	function TableCell(text) {
-		return {
-			bp: tableCellBp,
-			dom: null,
-			key: null,
-			type: OPT_ELEMENT,
-			v0: text,
-			v1: null,
-			v2: null
-		};
+		return createVNode('td', tableCellProps, text, 1 << 1);
 	}
 
 	function TableRow(data) {
@@ -179,39 +95,15 @@
 		var length = cells.length + 1;
 		var children = new Array(length);
 
-		children[0] = {
-			component: TableCell,
-			dom: null,
-			hooks: shouldDataUpdate,
-			key: -1,
-			props: '#' + data.id,
-			ref: null,
-			type: COMPONENT
-		};
+		children[0] = createVNode(TableCell, '#' + data.id, null, 1 << 9, -1, shouldDataUpdate);
 
 		for (var i = 1; i < length; i++) {
-			children[i] = {
-				component: TableCell,
-				dom: null,
-				hooks: shouldDataUpdate,
-				key: i,
-				props: cells[i - 1],
-				ref: null,
-				type: COMPONENT
-			};
+			children[i] = createVNode(TableCell, cells[i - 1], null, 1 << 9, i, shouldDataUpdate);
 		}
-		return {
-			bp: tableRowBp,
-			dom: null,
-			key: null,
-			type: OPT_ELEMENT,
-			v0: classes,
-			v1: data.id,
-			v2: children
-		};
+		return createVNode('tr', { className: classes, 'data-id': data.id }, children, 1 << 1);
 	}
 
-	var tableBp = bp(e('table', { className: 'Table' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
+	var tableProps = { className: 'Table' };
 	var lastTableData;
 
 	function table(data) {
@@ -226,28 +118,12 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = {
-				component: TableRow,
-				dom: null,
-				hooks: shouldDataUpdate,
-				key: item.id,
-				props: item,
-				ref: null,
-				type: COMPONENT
-			};
+			children[i] = createVNode(TableRow, item, null, 1 << 9, null, shouldDataUpdate);
 		}
-		return {
-			bp: tableBp,
-			dom: null,
-			key: null,
-			type: OPT_ELEMENT,
-			v0: children,
-			v1: null,
-			v2: null
-		};
+		return createVNode('table', tableProps, children, 1 << 1);
 	}
 
-	var mainBp = bp(e('div', { className: 'Main' }), ValueTypes.CHILDREN, ChildrenTypes.NODE, null, null, null, null, null, null);
+	var mainProps = { className: 'Main' };
 	var lastMainData;
 
 	function main(data) {
@@ -265,24 +141,8 @@
 		} else if (location === 'tree') {
 			section = tree(data.tree);
 		}
-		return {
-			bp: mainBp,
-			dom: null,
-			key: null,
-			type: OPT_ELEMENT,
-			v0: section,
-			v1: null,
-			v2: null
-		};
+		return createVNode('div', mainProps, section, 1 << 1);
 	}
-
-	var preBp = bp(e('pre'), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
-
-	var shouldDataUpdate = {
-		onComponentShouldUpdate: function(lastProps, nextProps) {
-			return lastProps !== nextProps;
-		}
-	};
 
 	document.addEventListener('DOMContentLoaded', function(e) {
 		var container = document.querySelector('#App');
@@ -292,16 +152,25 @@
 				Inferno.render(main(state), container);
 			},
 			function(samples) {
-				Inferno.render({
-					bp: preBp,
-					dom: null,
-					key: null,
-					type: OPT_ELEMENT,
-					v0: JSON.stringify(samples, null, ' '),
-					v1: null,
-					v2: null
-				}, container);
+				Inferno.render(
+					createVNode('pre', null, JSON.stringify(samples, null, ' '), 1 << 1), container
+				);
 			}
 		);
 	});
 })();
+
+// type, props, children, flags, key, ref
+
+// export enum VNodeFlags {
+//     Text = 1,
+//     HtmlElement = 1 << 1 === 2,
+//     SvgElement = 1 << 2 === 4,
+//     MediaElement = 1 << 3,
+//     InputElement = 1 << 4,
+//     TextAreaElement = 1 << 5,
+//     Fragment = 1 << 6,
+//     Void = 1 << 7,
+//     ComponentClass = 1 << 8,
+//     ComponentFunction = 1 << 9
+// }
