@@ -25,9 +25,8 @@ function connect (arg1: any, arg2 = null): any {
 			// invoked as decorator
 			return componentClass => connect(arg1, componentClass);
 		} else {
-			return arg2;
 			// TODO: deprecate this invocation style
-			// return inject.apply(null, arg1)(connect(arg2));
+			return inject.apply(null, arg1)(connect(arg2));
 		}
 	}
 	const componentClass = arg1;
