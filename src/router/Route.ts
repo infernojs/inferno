@@ -30,9 +30,7 @@ export default class Route extends Component<IRouteProps, any> {
 
 	render() {
 		const { component, children, params } = this.props;
-		return createElement(component, {
-			params,
-			children
-		});
+		console.debug(component.name || component.displayName, '--', params, children);
+		return createElement(component, { params }, children);
 	}
 }
