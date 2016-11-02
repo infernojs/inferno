@@ -9,11 +9,11 @@ import {
 } from '../shared';
 import { removeChild } from './utils';
 import { componentToDOMNodeMap } from './rendering';
-// import {
-// 	poolOptVElement,
-// 	poolVComponent,
-// 	recyclingEnabled
-// } from './recycling';
+import {
+	poolElement,
+	poolComponent,
+	recyclingEnabled
+} from './recycling';
 import { VNodeFlags } from '../core/shapes';
 
 export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
@@ -108,9 +108,9 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 			removeChild(parentDom, vNode.dom);
 		}
 	}
-	// if (recyclingEnabled && (parentDom || canRecycle)) {
-	// 	poolVComponent(vComponent);
-	// }
+	if (recyclingEnabled && (parentDom || canRecycle)) {
+		poolComponent(vNode);
+	}
 }
 
 export function unmountElement(vNode, parentDom, lifecycle, shallowUnmount) {

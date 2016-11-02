@@ -16,17 +16,17 @@ import {
 import {
 	mount,
 	mountElement,
-	// mountText,
-	// mountFragment,
+	mountText,
+	mountFragment,
 	mountComponent,
 	mountStatelessComponentCallbacks,
-	// mountVoid
+	mountVoid,
 	mountArrayChildren
 } from './mounting';
 import {
 	insertOrAppend,
-	// isKeyed,
-	// replaceFragmentWithNode,
+	isKeyed,
+	replaceFragmentWithNode,
 	// normaliseChild,
 	// resetFormInputProperties,
 	removeAllChildren,
@@ -94,70 +94,80 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 					lifecycle
 				);
 			}
-	} else if (nextFlags & VNodeFlags.Element) {
-		if (lastFlags & VNodeFlags.Element) {
-			patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-		} else {
-			replaceVNode(
-				parentDom,
-				mountElement(
-					nextVNode,
-					null,
-					lifecycle,
-					context,
-					isSVG
-				),
-				lastVNode,
-				lifecycle
-			);
-		}
-	} else {
-		if (lastFlags & (VNodeFlags.Component | VNodeFlags.Element)) {
-			replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-		} else {
-			if (process.env.NODE_ENV !== 'production') {
-				throwError('bad input argument called on patch(). Input argument may need normalising.');
+		} else if (nextFlags & VNodeFlags.Element) {
+			if (lastFlags & VNodeFlags.Element) {
+				patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+			} else {
+				replaceVNode(
+					parentDom,
+					mountElement(
+						nextVNode,
+						null,
+						lifecycle,
+						context,
+						isSVG
+					),
+					lastVNode,
+					lifecycle
+				);
 			}
-			throwError();
+		} else if (nextFlags & VNodeFlags.Fragment) {
+			if (lastFlags & VNodeFlags.Fragment) {
+				patchFragment(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+			} else {
+				replaceVNode(
+					parentDom,
+					mountFragment(
+						nextVNode,
+						null,
+						lifecycle,
+						context,
+						isSVG
+					),
+					lastVNode,
+					lifecycle
+				);
+			}
+		} else if (nextFlags & VNodeFlags.Text) {
+			if (lastFlags & VNodeFlags.Text) {
+				patchText(lastVNode, nextVNode);
+			} else {
+				replaceVNode(parentDom, mountText(nextVNode, null), lastVNode, lifecycle);
+			}
+		} else if (nextFlags & VNodeFlags.Void) {
+			if (lastFlags & VNodeFlags.Void) {
+				patchVoid(lastVNode, nextVNode);
+			} else {
+				replaceVNode(parentDom, mountVoid(nextVNode, null), lastVNode, lifecycle);
+			}
+		} else {
+			if (lastFlags & (VNodeFlags.Component | VNodeFlags.Element | VNodeFlags.Text | VNodeFlags.Void)) {
+				replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+			} else if (lastFlags & VNodeFlags.Fragment) {
+				replaceFragmentWithNode(
+					parentDom,
+					lastVNode,
+					mount(
+						nextVNode,
+						null,
+						lifecycle,
+						context,
+						isSVG
+					),
+					lifecycle,
+					false
+				);
+			} else {
+				if (process.env.NODE_ENV !== 'production') {
+					throwError(`patch() expects a valid VNode, instead it received an object with the type "${ typeof nextVNode }".`);
+				}
+				throwError();
+			}
 		}
-	}
-
-		// } else if (lastFlags === ELEMENT) {
-		// 	replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-		// } else if (nextFlags === FRAGMENT) {
-		// 	if (lastFlags === FRAGMENT) {
-		// 		patchFragment(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-		// 	} else {
-		// 		replaceVNode(parentDom, mountFragment(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
-		// 	}
-		// } else if (lastFlags === FRAGMENT) {
-		// 	replaceFragmentWithNode(parentDom, lastVNode, mount(nextVNode, null, lifecycle, context, isSVG), lifecycle);
-		// } else if (nextFlags === TEXT) {
-		// 	if (lastFlags === TEXT) {
-		// 		patchText(lastVNode, nextVNode);
-		// 	} else {
-		// 		replaceVNode(parentDom, mountText(nextVNode, null), lastVNode, lifecycle);
-		// 	}
-		// } else if (lastFlags === TEXT) {
-		// 	replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-		// } else if (nextFlags === PLACEHOLDER) {
-		// 	if (lastFlags === PLACEHOLDER) {
-		// 		patchVoid(lastVNode, nextVNode);
-		// 	} else {
-		// 		replaceVNode(parentDom, mountVoid(nextVNode, null), lastVNode, lifecycle);
-		// 	}
-		// } else if (lastFlags === PLACEHOLDER) {
-		// 	replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-		// } else {
-		// 	if (process.env.NODE_ENV !== 'production') {
-		// 		throwError('bad input argument called on patch(). Input argument may need normalising.');
-		// 	}
-		// 	throwError();
-		// }
 	}
 }
 
-function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
 	const nextTag = nextVNode.type;
 	const lastTag = lastVNode.type;
 
@@ -181,14 +191,19 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 			} else {
 				if (isArray(nextChildren)) {
 					if (isArray(lastChildren)) {
+						let patchKeyed = false;
 						// check if we can do keyed updates
 						if ((lastFlags & VNodeFlags.HasKeyedChildren) && (nextFlags & VNodeFlags.HasKeyedChildren)) {
-							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+							patchKeyed = true;
 						// check if we can do non-keyed updates without having to validate
-						} else if (nextFlags & VNodeFlags.HasNonKeyedChildren) {
-							patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+						} else if (!(nextFlags & VNodeFlags.HasNonKeyedChildren)) {
+							if (isKeyed(lastChildren, nextChildren)) {
+								patchKeyed = true;
+							}
+						}
+						if (patchKeyed) {
+							patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
 						} else {
-							// we can do a validation check here, but for now just do non keyed
 							patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
 						}
 					} else {
@@ -209,83 +224,6 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 		}
 	}
 }
-// function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	switch (childrenType) {
-// 		case CHILDREN_TEXT:
-// 			updateTextContent(parentDom, nextChildren);
-// 			break;
-// 		case NODE:
-// 			patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 			break;
-// 		case KEYED:
-// 			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
-// 			break;
-// 		case NON_KEYED:
-// 			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
-// 			break;
-// 		case UNKNOWN:
-// 			patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 			break;
-// 		default:
-// 			if (process.env.NODE_ENV !== 'production') {
-// 				throwError('bad childrenType value specified when attempting to patchChildren.');
-// 			}
-// 			throwError();
-// 	}
-// }
-
-// 	if (isInvalid(nextChildren)) {
-// 		if (!isInvalid(lastChildren)) {
-// 			if (isVNode(lastChildren)) {
-// 				unmount(lastChildren, parentDom, lifecycle, true, shallowUnmount);
-// 			} else { // If lastChildren ain't VNode we assume its array
-// 				removeAllChildren(parentDom, lastChildren, lifecycle, shallowUnmount);
-// 			}
-// 		}
-// 	} else if (isInvalid(lastChildren)) {
-// 		if (isStringOrNumber(nextChildren)) {
-// 			setTextContent(parentDom, nextChildren);
-// 		} else if (!isInvalid(nextChildren)) {
-// 			if (isArray(nextChildren)) {
-// 				mountArrayChildrenWithoutType(nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 			} else {
-// 				mount(nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 			}
-// 		}
-// 	} else if (isVNode(lastChildren) && isVNode(nextChildren)) {
-// 		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 	} else if (isStringOrNumber(nextChildren)) {
-// 		if (isStringOrNumber(lastChildren)) {
-// 			updateTextContent(parentDom, nextChildren);
-// 		} else {
-// 			setTextContent(parentDom, nextChildren);
-// 		}
-// 	} else if (isStringOrNumber(lastChildren)) {
-// 		const child = normalise(lastChildren);
-
-// 		child.dom = parentDom.firstChild;
-// 		patchChildrenWithUnknownType(child, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 	} else if (isArray(nextChildren)) {
-// 		if (isArray(lastChildren)) {
-// 			nextChildren.complex = lastChildren.complex;
-
-// 			if (isKeyed(lastChildren, nextChildren)) {
-// 				patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
-// 			} else {
-// 				patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, true, shallowUnmount);
-// 			}
-// 		} else {
-// 			patchNonKeyedChildren([lastChildren], nextChildren, parentDom, lifecycle, context, isSVG, null, true, shallowUnmount);
-// 		}
-// 	} else if (isArray(lastChildren)) {
-// 		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null, true, shallowUnmount);
-// 	} else {
-// 		if (process.env.NODE_ENV !== 'production') {
-// 			throwError('bad input argument called on patchChildrenWithUnknownType(). Input argument may need normalising.');
-// 		}
-// 		throwError();
-// 	}
-// }
 
 export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass) {
 	const lastType = lastVNode.type;
@@ -423,30 +361,20 @@ export function patchVoid(lastVNode, nextVNode) {
 	nextVNode.dom = lastVNode.dom;
 }
 
-function patchFragment(lastVFragment, nextVFragment, parentDom, lifecycle, context, isSVG) {
-// 	const lastChildren = lastVFragment.children;
-// 	const nextChildren = nextVFragment.children;
-// 	const pointer = lastVFragment.pointer;
+function patchFragment(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+	const lastChildren = lastVNode.children;
+	const nextChildren = nextVNode.children;
+	// const pointer = lastVFragment.pointer;
 
-// 	nextVFragment.dom = lastVFragment.dom;
-// 	nextVFragment.pointer = pointer;
-// 	if (!lastChildren !== nextChildren) {
-// 		const lastChildrenType = lastVFragment.childrenType;
-// 		const nextChildrenType = nextVFragment.childrenType;
-
-// 		if (lastChildrenType === nextChildrenType) {
-// 			if (nextChildrenType === KEYED) {
-// 				return patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, shallowUnmount);
-// 			} else if (nextChildrenType === NON_KEYED) {
-// 				return patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, false, shallowUnmount);
-// 			}
-// 		}
-// 		if (isKeyed(lastChildren, nextChildren)) {
-// 			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, shallowUnmount);
-// 		} else {
-// 			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, nextVFragment, true, shallowUnmount);
-// 		}
-// 	}
+	nextVNode.dom = lastVNode.dom;
+	// nextVFragment.pointer = pointer;
+	if (!lastChildren !== nextChildren) {
+		if (isKeyed(lastChildren, nextChildren)) {
+			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
+		} else {
+			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
+		}
+	}
 }
 
 export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {

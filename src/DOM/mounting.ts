@@ -24,11 +24,11 @@ import {
 	patchProp
 } from './patching';
 import { componentToDOMNodeMap } from './rendering';
-// import {
-// 	recycleOptVElement,
-// 	recyclingEnabled,
-// 	recycleVComponent
-// } from './recycling';
+import {
+	recycleElement,
+	recyclingEnabled,
+	recycleComponent
+} from './recycling';
 import { devToolsStatus } from './devtools';
 import { VNodeFlags, isVNode } from '../core/shapes';
 
@@ -74,6 +74,16 @@ export function mountVoid(vNode, parentDom) {
 }
 
 export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
+	if (recyclingEnabled) {
+		const dom = recycleElement(vNode, lifecycle, context, isSVG);
+
+		if (!isNull(dom)) {
+			if (!isNull(parentDom)) {
+				appendChild(parentDom, dom);
+			}
+			return dom;
+		}
+	}	
 	const tag = vNode.type;
 	const dom = documentCreateElement(tag, isSVG);
 	const children = vNode.children;
@@ -123,16 +133,16 @@ export function mountFragment(vNode, parentDom, lifecycle, context, isSVG) {
 }
 
 export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
-// 	if (recyclingEnabled) {
-// 		const dom = recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount);
+	if (recyclingEnabled) {
+		const dom = recycleComponent(vNode, lifecycle, context, isSVG);
 
-// 		if (!isNull(dom)) {
-// 			if (!isNull(parentDom)) {
-// 				appendChild(parentDom, dom);
-// 			}
-// 			return dom;
-// 		}
-// 	}
+		if (!isNull(dom)) {
+			if (!isNull(parentDom)) {
+				appendChild(parentDom, dom);
+			}
+			return dom;
+		}
+	}
 	const type = vNode.type;
 	const props = vNode.props || EMPTY_OBJ;
 	const ref = vNode.ref;

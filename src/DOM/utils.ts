@@ -200,13 +200,10 @@ export function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
 	}
 }
 
-// export function isKeyed(lastChildren, nextChildren) {
-// 	if (lastChildren.complex) {
-// 		return false;
-// 	}
-// 	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
-// 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
-// }
+export function isKeyed(lastChildren, nextChildren) {
+	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
+		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
+}
 
 // function formSelectValueFindOptions(dom, value, isMap) {
 // 	let child = dom.firstChild;

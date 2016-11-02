@@ -3,47 +3,50 @@ import {
 	isNull
 } from './../shared';
 import {
-	patchOptVElement,
-	patchVComponent
+	patchElement,
+	patchComponent
 } from './patching';
-import { VComponent } from '../core/shapes';
+import { VNode, VNodeFlags } from '../core/shapes';
 
 export let recyclingEnabled = true;
-let vComponentPools = new Map<Function | null, Pools>();
+let componentPools = new Map<Function | null, Pools>();
+let elementPools = new Map<string | null, Pools>();
 
 interface Pools {
-  nonKeyed: Array<VComponent>;
-  keyed: Map<string | number, Array<VComponent>>;
+  nonKeyed: Array<VNode>;
+  keyed: Map<string | number, Array<VNode>>;
 }
 
 export function disableRecycling() {
 	recyclingEnabled = false;
-	vComponentPools.clear();
+	componentPools.clear();
+	elementPools.clear();
 }
 
-export function recycleOptVElement(optVElement, lifecycle, context, isSVG, shallowUnmount) {
-	const bp = optVElement.bp;
-	const key = optVElement.key;
-	const pool = key === null ? bp.pools.nonKeyed : bp.pools.keyed.get(key);
+export function recycleElement(vNode, lifecycle, context, isSVG, shallowUnmount) {
+	const tag = vNode.type;
+	const key = vNode.key;
+	let pools: Pools = elementPools.get(tag);
 
-	if (!isUndefined(pool)) {
+	if (!isUndefined(pools)) {
+		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
 		const recycledOptVElement = pool.pop();
 
 		if (!isUndefined(recycledOptVElement)) {
-			patchOptVElement(recycledOptVElement, optVElement, null, lifecycle, context, isSVG, shallowUnmount);
-			return optVElement.dom;
+			patchElement(recycledOptVElement, vNode, null, lifecycle, context, isSVG);
+			return vNode.dom;
 		}
 	}
 	return null;
 }
 
-export function poolOptVElement(optVElement) {
-	const bp = optVElement.bp;
-	const key = optVElement.key;
-	const pools = bp.pools;
+export function poolElement(vNode) {
+	const tag = vNode.type;
+	const key = vNode.key;
+	let pools: Pools = elementPools.get(tag);
 
 	if (isNull(key)) {
-		pools.nonKeyed.push(optVElement);
+		pools.nonKeyed.push(vNode);
 	} else {
 		let pool = pools.keyed.get(key);
 
@@ -51,26 +54,35 @@ export function poolOptVElement(optVElement) {
 			pool = [];
 			pools.keyed.set(key, pool);
 		}
-		pool.push(optVElement);
+		pool.push(vNode);
 	}
 }
 
-export function recycleVComponent(vComponent: VComponent, lifecycle, context, isSVG, shallowUnmount) {
-	const type = vComponent.type;
-	const key = vComponent.key;
-	let pools: Pools = vComponentPools.get(type);
+export function recycleComponent(vNode: VNode, lifecycle, context, isSVG) {
+	const type = vNode.type as Function;
+	const key = vNode.key;
+	let pools: Pools = componentPools.get(type);
 
 	if (!isUndefined(pools)) {
 		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
 
 		if (!isUndefined(pool)) {
-			const recycledVComponent = pool.pop();
+			const recycledVNode = pool.pop();
 
-			if (!isUndefined(recycledVComponent)) {
-				const failed = patchVComponent(recycledVComponent, vComponent, null, lifecycle, context, isSVG, shallowUnmount);
+			if (!isUndefined(recycledVNode)) {
+				const flags = vNode.flags;
+				const failed = patchComponent(
+					recycledVNode,
+					vNode,
+					null,
+					lifecycle,
+					context,
+					isSVG,
+					flags & VNodeFlags.ComponentClass
+				);
 
 				if (!failed) {
-					return vComponent.dom;
+					return vNode.dom;
 				}
 			}
 		}
@@ -78,10 +90,10 @@ export function recycleVComponent(vComponent: VComponent, lifecycle, context, is
 	return null;
 }
 
-export function poolVComponent(vComponent) {
-	const type = vComponent.type;
-	const key = vComponent.key;
-	const hooks = vComponent.hooks;
+export function poolComponent(vNode) {
+	const type = vNode.type;
+	const key = vNode.key;
+	const hooks = vNode.ref;
 	const nonRecycleHooks = hooks && (
 		hooks.onComponentWillMount ||
 		hooks.onComponentWillUnmount ||
@@ -92,17 +104,17 @@ export function poolVComponent(vComponent) {
 	if (nonRecycleHooks) {
 		return;
 	}
-	let pools: Pools = vComponentPools.get(type);
+	let pools: Pools = componentPools.get(type);
 
 	if (isUndefined(pools)) {
 		pools = {
 			nonKeyed: [],
-			keyed: new Map<string | number, Array<VComponent>>()
+			keyed: new Map<string | number, Array<VNode>>()
 		};
-		vComponentPools.set(type, pools);
+		componentPools.set(type, pools);
 	}
 	if (isNull(key)) {
-		pools.nonKeyed.push(vComponent);
+		pools.nonKeyed.push(vNode);
 	} else {
 		let pool = pools.keyed.get(key);
 
@@ -110,6 +122,6 @@ export function poolVComponent(vComponent) {
 			pool = [];
 			pools.keyed.set(key, pool);
 		}
-		pool.push(vComponent);
+		pool.push(vNode);
 	}
 }

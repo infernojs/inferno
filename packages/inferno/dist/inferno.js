@@ -113,6 +113,77 @@ Lifecycle.prototype.trigger = function trigger () {
     }
 };
 
+var recyclingEnabled = true;
+var componentPools = new Map();
+var elementPools = new Map();
+
+function recycleElement(vNode, lifecycle, context, isSVG, shallowUnmount) {
+    var tag = vNode.type;
+    var key = vNode.key;
+    var pools = elementPools.get(tag);
+    if (!isUndefined(pools)) {
+        var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
+        var recycledOptVElement = pool.pop();
+        if (!isUndefined(recycledOptVElement)) {
+            patchElement(recycledOptVElement, vNode, null, lifecycle, context, isSVG);
+            return vNode.dom;
+        }
+    }
+    return null;
+}
+
+function recycleComponent(vNode, lifecycle, context, isSVG) {
+    var type = vNode.type;
+    var key = vNode.key;
+    var pools = componentPools.get(type);
+    if (!isUndefined(pools)) {
+        var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
+        if (!isUndefined(pool)) {
+            var recycledVNode = pool.pop();
+            if (!isUndefined(recycledVNode)) {
+                var flags = vNode.flags;
+                var failed = patchComponent(recycledVNode, vNode, null, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
+                if (!failed) {
+                    return vNode.dom;
+                }
+            }
+        }
+    }
+    return null;
+}
+function poolComponent(vNode) {
+    var type = vNode.type;
+    var key = vNode.key;
+    var hooks = vNode.ref;
+    var nonRecycleHooks = hooks && (hooks.onComponentWillMount ||
+        hooks.onComponentWillUnmount ||
+        hooks.onComponentDidMount ||
+        hooks.onComponentWillUpdate ||
+        hooks.onComponentDidUpdate);
+    if (nonRecycleHooks) {
+        return;
+    }
+    var pools = componentPools.get(type);
+    if (isUndefined(pools)) {
+        pools = {
+            nonKeyed: [],
+            keyed: new Map()
+        };
+        componentPools.set(type, pools);
+    }
+    if (isNull(key)) {
+        pools.nonKeyed.push(vNode);
+    }
+    else {
+        var pool = pools.keyed.get(key);
+        if (isUndefined(pool)) {
+            pool = [];
+            pools.keyed.set(key, pool);
+        }
+        pool.push(vNode);
+    }
+}
+
 function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
     var flags = vNode.flags;
     if (flags & VNodeFlags.Component) {
@@ -200,9 +271,9 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
             removeChild(parentDom, vNode.dom);
         }
     }
-    // if (recyclingEnabled && (parentDom || canRecycle)) {
-    // 	poolVComponent(vComponent);
-    // }
+    if (recyclingEnabled && (parentDom || canRecycle)) {
+        poolComponent(vNode);
+    }
 }
 function unmountElement(vNode, parentDom, lifecycle, shallowUnmount) {
     var dom = vNode.dom;
@@ -289,13 +360,40 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
                 replaceVNode(parentDom, mountElement(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
             }
         }
+        else if (nextFlags & VNodeFlags.Fragment) {
+            if (lastFlags & VNodeFlags.Fragment) {
+                patchFragment(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+            }
+            else {
+                replaceVNode(parentDom, mountFragment(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
+            }
+        }
+        else if (nextFlags & VNodeFlags.Text) {
+            if (lastFlags & VNodeFlags.Text) {
+                patchText(lastVNode, nextVNode);
+            }
+            else {
+                replaceVNode(parentDom, mountText(nextVNode, null), lastVNode, lifecycle);
+            }
+        }
+        else if (nextFlags & VNodeFlags.Void) {
+            if (lastFlags & VNodeFlags.Void) {
+                patchVoid(lastVNode, nextVNode);
+            }
+            else {
+                replaceVNode(parentDom, mountVoid(nextVNode, null), lastVNode, lifecycle);
+            }
+        }
         else {
-            if (lastFlags & (VNodeFlags.Component | VNodeFlags.Element)) {
+            if (lastFlags & (VNodeFlags.Component | VNodeFlags.Element | VNodeFlags.Text | VNodeFlags.Void)) {
                 replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+            }
+            else if (lastFlags & VNodeFlags.Fragment) {
+                replaceFragmentWithNode(parentDom, lastVNode, mount(nextVNode, null, lifecycle, context, isSVG), lifecycle, false);
             }
             else {
                 if (process.env.NODE_ENV !== 'production') {
-                    throwError('bad input argument called on patch(). Input argument may need normalising.');
+                    throwError(("patch() expects a valid VNode, instead it received an object with the type \"" + (typeof nextVNode) + "\"."));
                 }
                 throwError();
             }
@@ -327,15 +425,20 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
             else {
                 if (isArray(nextChildren)) {
                     if (isArray(lastChildren)) {
+                        var patchKeyed = false;
                         // check if we can do keyed updates
                         if ((lastFlags & VNodeFlags.HasKeyedChildren) && (nextFlags & VNodeFlags.HasKeyedChildren)) {
+                            patchKeyed = true;
+                        }
+                        else if (!(nextFlags & VNodeFlags.HasNonKeyedChildren)) {
+                            if (isKeyed(lastChildren, nextChildren)) {
+                                patchKeyed = true;
+                            }
+                        }
+                        if (patchKeyed) {
                             patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
                         }
-                        else if (nextFlags & VNodeFlags.HasNonKeyedChildren) {
-                            patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
-                        }
                         else {
-                            // we can do a validation check here, but for now just do non keyed
                             patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
                         }
                     }
@@ -357,80 +460,6 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
         }
     }
 }
-// function patchChildren(childrenType, lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount) {
-// 	switch (childrenType) {
-// 		case CHILDREN_TEXT:
-// 			updateTextContent(parentDom, nextChildren);
-// 			break;
-// 		case NODE:
-// 			patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 			break;
-// 		case KEYED:
-// 			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
-// 			break;
-// 		case NON_KEYED:
-// 			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, false, shallowUnmount);
-// 			break;
-// 		case UNKNOWN:
-// 			patchChildrenWithUnknownType(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 			break;
-// 		default:
-// 			if (process.env.NODE_ENV !== 'production') {
-// 				throwError('bad childrenType value specified when attempting to patchChildren.');
-// 			}
-// 			throwError();
-// 	}
-// }
-// 	if (isInvalid(nextChildren)) {
-// 		if (!isInvalid(lastChildren)) {
-// 			if (isVNode(lastChildren)) {
-// 				unmount(lastChildren, parentDom, lifecycle, true, shallowUnmount);
-// 			} else { // If lastChildren ain't VNode we assume its array
-// 				removeAllChildren(parentDom, lastChildren, lifecycle, shallowUnmount);
-// 			}
-// 		}
-// 	} else if (isInvalid(lastChildren)) {
-// 		if (isStringOrNumber(nextChildren)) {
-// 			setTextContent(parentDom, nextChildren);
-// 		} else if (!isInvalid(nextChildren)) {
-// 			if (isArray(nextChildren)) {
-// 				mountArrayChildrenWithoutType(nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 			} else {
-// 				mount(nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 			}
-// 		}
-// 	} else if (isVNode(lastChildren) && isVNode(nextChildren)) {
-// 		patch(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 	} else if (isStringOrNumber(nextChildren)) {
-// 		if (isStringOrNumber(lastChildren)) {
-// 			updateTextContent(parentDom, nextChildren);
-// 		} else {
-// 			setTextContent(parentDom, nextChildren);
-// 		}
-// 	} else if (isStringOrNumber(lastChildren)) {
-// 		const child = normalise(lastChildren);
-// 		child.dom = parentDom.firstChild;
-// 		patchChildrenWithUnknownType(child, nextChildren, parentDom, lifecycle, context, isSVG, shallowUnmount);
-// 	} else if (isArray(nextChildren)) {
-// 		if (isArray(lastChildren)) {
-// 			nextChildren.complex = lastChildren.complex;
-// 			if (isKeyed(lastChildren, nextChildren)) {
-// 				patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, shallowUnmount);
-// 			} else {
-// 				patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG, null, true, shallowUnmount);
-// 			}
-// 		} else {
-// 			patchNonKeyedChildren([lastChildren], nextChildren, parentDom, lifecycle, context, isSVG, null, true, shallowUnmount);
-// 		}
-// 	} else if (isArray(lastChildren)) {
-// 		patchNonKeyedChildren(lastChildren, [nextChildren], parentDom, lifecycle, context, isSVG, null, true, shallowUnmount);
-// 	} else {
-// 		if (process.env.NODE_ENV !== 'production') {
-// 			throwError('bad input argument called on patchChildrenWithUnknownType(). Input argument may need normalising.');
-// 		}
-// 		throwError();
-// 	}
-// }
 function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass) {
     var lastType = lastVNode.type;
     var nextType = nextVNode.type;
@@ -538,8 +567,32 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
     }
     return false;
 }
-
-
+function patchText(lastVNode, nextVNode) {
+    var nextText = nextVNode.children;
+    var dom = lastVNode.dom;
+    nextVNode.dom = dom;
+    if (lastVNode.text !== nextText) {
+        dom.nodeValue = nextText;
+    }
+}
+function patchVoid(lastVNode, nextVNode) {
+    nextVNode.dom = lastVNode.dom;
+}
+function patchFragment(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+    var lastChildren = lastVNode.children;
+    var nextChildren = nextVNode.children;
+    // const pointer = lastVFragment.pointer;
+    nextVNode.dom = lastVNode.dom;
+    // nextVFragment.pointer = pointer;
+    if (!lastChildren !== nextChildren) {
+        if (isKeyed(lastChildren, nextChildren)) {
+            patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
+        }
+        else {
+            patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
+        }
+    }
+}
 function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
     var lastChildrenLength = lastChildren.length;
     var nextChildrenLength = nextChildren.length;
@@ -1114,13 +1167,10 @@ function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
         }
     }
 }
-// export function isKeyed(lastChildren, nextChildren) {
-// 	if (lastChildren.complex) {
-// 		return false;
-// 	}
-// 	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
-// 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
-// }
+function isKeyed(lastChildren, nextChildren) {
+    return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
+        && lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
+}
 // function formSelectValueFindOptions(dom, value, isMap) {
 // 	let child = dom.firstChild;
 // 	while (child) {
@@ -1229,6 +1279,15 @@ function mountVoid(vNode, parentDom) {
     return dom;
 }
 function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
+    if (recyclingEnabled) {
+        var dom$1 = recycleElement(vNode, lifecycle, context, isSVG);
+        if (!isNull(dom$1)) {
+            if (!isNull(parentDom)) {
+                appendChild(parentDom, dom$1);
+            }
+            return dom$1;
+        }
+    }
     var tag = vNode.type;
     var dom = documentCreateElement(tag, isSVG);
     var children = vNode.children;
@@ -1275,15 +1334,15 @@ function mountFragment(vNode, parentDom, lifecycle, context, isSVG) {
     return dom;
 }
 function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
-    // 	if (recyclingEnabled) {
-    // 		const dom = recycleVComponent(vComponent, lifecycle, context, isSVG, shallowUnmount);
-    // 		if (!isNull(dom)) {
-    // 			if (!isNull(parentDom)) {
-    // 				appendChild(parentDom, dom);
-    // 			}
-    // 			return dom;
-    // 		}
-    // 	}
+    if (recyclingEnabled) {
+        var dom$1 = recycleComponent(vNode, lifecycle, context, isSVG);
+        if (!isNull(dom$1)) {
+            if (!isNull(parentDom)) {
+                appendChild(parentDom, dom$1);
+            }
+            return dom$1;
+        }
+    }
     var type = vNode.type;
     var props = vNode.props || EMPTY_OBJ;
     var ref = vNode.ref;
