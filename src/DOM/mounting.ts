@@ -79,13 +79,12 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 	const children = vNode.children;
 	const props = vNode.props;
 	const ref = vNode.ref;
-	const hasProps = !isNullOrUndef(props);
 
 	vNode.dom = dom;
-	if (!isNullOrUndef(ref)) {
+	if (!isNull(ref)) {
 		mountRef(dom, ref, lifecycle);
 	}
-	if (hasProps) {
+	if (!isNull(props)) {
 		for (let prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchProp(prop, null, props[prop], dom, isSVG);

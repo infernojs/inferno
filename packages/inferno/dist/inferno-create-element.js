@@ -26,9 +26,10 @@ var VNodeFlags;
     VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
     VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
 })(VNodeFlags || (VNodeFlags = {}));
-function createVNode(type, props, children, flags, key, ref) {
+function createVNode(type, props, children, flags, key, ref, className) {
     return {
         children: children || null,
+        className: className || null,
         dom: null,
         flags: flags,
         key: key === undefined ? null : key,

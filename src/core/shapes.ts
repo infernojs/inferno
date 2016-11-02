@@ -28,33 +28,35 @@ export enum VNodeFlags {
 }
 
 export interface VNode {
-    children: String | Array<String | VNode> | VNode | null;
-    dom: Node | null;
-    flags: VNodeFlags;
-    key: String | null;
-    props: Object | null;
-    ref: Function | null;
-    type: String | Function;
+	children: string | Array<string | VNode> | VNode | null;
+	className: string | null;
+	dom: Node | null;
+	flags: VNodeFlags;
+	key: string | number | null;
+	props: Object | null;
+	ref: Function | null;
+	type: string | Function | null;
 }
 
-export function createVNode(type, props, children, flags, key, ref): VNode {
+export function createVNode(type, props, children, flags, key, ref, className): VNode {
 	return {
-        children: children || null,
-        dom: null,
-        flags,
-        key: key === undefined ? null : key,
-        props: props || null,
-        ref: ref || null,
-        type
+		children: children || null,
+		className: className || null,
+		dom: null,
+		flags,
+		key: key === undefined ? null : key,
+		props: props || null,
+		ref: ref || null,
+		type
 	};
 }
 
 export function createFragmentVNode(children) {
-	return createVNode(null, null, children, VNodeFlags.Fragment, null, null);
+	return createVNode(null, null, children, VNodeFlags.Fragment, null, null, null);
 }
 
 export function createVoidVNode() {
-	return createVNode(null, null, null, VNodeFlags.Void, null, null);
+	return createVNode(null, null, null, VNodeFlags.Void, null, null, null);
 }
 
 export function isVNode(o: VType): boolean {

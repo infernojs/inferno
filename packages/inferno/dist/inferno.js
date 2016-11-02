@@ -26,9 +26,10 @@ var VNodeFlags;
     VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
     VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
 })(VNodeFlags || (VNodeFlags = {}));
-function createVNode(type, props, children, flags, key, ref) {
+function createVNode(type, props, children, flags, key, ref, className) {
     return {
         children: children || null,
+        className: className || null,
         dom: null,
         flags: flags,
         key: key === undefined ? null : key,
@@ -38,10 +39,10 @@ function createVNode(type, props, children, flags, key, ref) {
     };
 }
 function createFragmentVNode(children) {
-    return createVNode(null, null, children, VNodeFlags.Fragment, null, null);
+    return createVNode(null, null, children, VNodeFlags.Fragment, null, null, null);
 }
 function createVoidVNode() {
-    return createVNode(null, null, null, VNodeFlags.Void, null, null);
+    return createVNode(null, null, null, VNodeFlags.Void, null, null, null);
 }
 function isVNode(o) {
     return !!o.flags;
@@ -445,7 +446,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
             patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
             var dom = nextVNode.dom = nextInput.dom;
             nextVNode.children = nextInput;
-            mountStatelessComponentCallbacks(nextVNode.hooks, dom, lifecycle);
+            mountStatelessComponentCallbacks(nextVNode.ref, dom, lifecycle);
             unmount(lastVNode, null, lifecycle, false, false);
         }
     }
@@ -506,7 +507,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
         else {
             var shouldUpdate = true;
             var lastProps$1 = lastVNode.props;
-            var nextHooks = nextVNode.hooks;
+            var nextHooks = nextVNode.ref;
             var nextHooksDefined = !isNullOrUndef(nextHooks);
             var lastInput$2 = lastVNode.children;
             nextVNode.dom = lastVNode.dom;
@@ -1234,12 +1235,11 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
     var children = vNode.children;
     var props = vNode.props;
     var ref = vNode.ref;
-    var hasProps = !isNullOrUndef(props);
     vNode.dom = dom;
-    if (!isNullOrUndef(ref)) {
+    if (!isNull(ref)) {
         mountRef(dom, ref, lifecycle);
     }
-    if (hasProps) {
+    if (!isNull(props)) {
         for (var prop in props) {
             // do not add a hasOwnProperty check here, it affects performance
             patchProp(prop, null, props[prop], dom, isSVG);

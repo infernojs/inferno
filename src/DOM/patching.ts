@@ -303,7 +303,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 			const dom = nextVNode.dom = nextInput.dom;
 
 			nextVNode.children = nextInput;
-			mountStatelessComponentCallbacks(nextVNode.hooks, dom, lifecycle);
+			mountStatelessComponentCallbacks(nextVNode.ref, dom, lifecycle);
 			unmount(lastVNode, null, lifecycle, false, false);
 		}
 	} else {
@@ -375,7 +375,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 		} else {
 			let shouldUpdate = true;
 			const lastProps = lastVNode.props;
-			const nextHooks = nextVNode.hooks;
+			const nextHooks = nextVNode.ref;
 			const nextHooksDefined = !isNullOrUndef(nextHooks);
 			const lastInput = lastVNode.children;
 
