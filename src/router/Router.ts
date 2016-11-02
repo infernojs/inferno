@@ -1,6 +1,7 @@
+import { createVComponent } from 'inferno';
 import Component from 'inferno-component';
 import { isArray, isString, toArray } from '../shared';
-import { VComponent, createVComponent } from '../core/shapes';
+import { VComponent } from '../core/shapes';
 import { isEmpty, matchPath, pathRankSort } from './utils';
 
 export interface IRouterProps {
@@ -37,8 +38,8 @@ function matchRoutes(_routes, pathToMatch = '/', lastPath = '/') {
 		}
 
 		const urlToMatch = (lastPath + (route.props.path || '/')).replace('//', '/');
-		// const isMatch = pathToMatch.indexOf((route.props.path || '/')) === 0;
-		const match = matchPath(false, urlToMatch, pathToMatch);
+		const isLast = isEmpty(route.props.children);
+		const match = matchPath(isLast, urlToMatch, pathToMatch);
 
 		if (match) {
 			if (isArray(route.props.children)) {
@@ -48,13 +49,14 @@ function matchRoutes(_routes, pathToMatch = '/', lastPath = '/') {
 				}
 				props.children = matchedRoutes;
 			}
-			Object.assign(props.params, match.params);
-			props.component = route.props.component;
+			Object.assign(props, {
+				params: match.params,
+				component: route.props.component
+			});
 			const node: VComponent = createVComponent(route.type, props);
-
-			if (route.instance) {
+			/*if (route.instance) {
 				return route.type(route.instance.props, route.instance.context);
-			}
+			}*/
 			return node;
 		}
 	}
@@ -65,7 +67,7 @@ export function getRoutes(routing, currentURL: any) {
 	const routes2 = toArray(routing);
 
 	function grabRoutes(_routes, url: string, lastPath: string) {
-		if (!_routes) {
+		/*if (!_routes) {
 			return _routes;
 		}
 
@@ -97,7 +99,7 @@ export function getRoutes(routing, currentURL: any) {
 					return route;
 				}
 			}
-		}
+		}*/
 	}
 
 	const location: string = getURLString(currentURL);
