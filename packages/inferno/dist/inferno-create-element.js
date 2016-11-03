@@ -18,7 +18,9 @@ function isArray(obj) {
 function isStatefulComponent(o) {
     return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
-
+function isStringOrNumber(obj) {
+    return isString(obj) || isNumber(obj);
+}
 
 function isInvalid(obj) {
     return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
@@ -63,43 +65,42 @@ var VNodeFlags;
     VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
     VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
 })(VNodeFlags || (VNodeFlags = {}));
+function _normaliseVNodes(nodes, result, i) {
+    for (; i < nodes.length; i++) {
+        var n = nodes[i];
+        if (!isInvalid(n)) {
+            if (Array.isArray(n)) {
+                _normaliseVNodes(n, result, 0);
+            }
+            else {
+                if (isStringOrNumber(n)) {
+                    n = createTextVNode(n);
+                }
+                result.push(n);
+            }
+        }
+    }
+}
 function normaliseVNodes(nodes) {
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        if (isNull(n) || isArray(n)) {
-            var copy = nodes.slice(i);
-            var flatten = nodes.slice(i);
-            while (copy.length > 0) {
-                var item = copy.shift();
-                if (!isNull(item)) {
-                    if (isArray(item)) {
-                        copy = item.concat(copy);
-                    }
-                    else {
-                        if (isString(item)) {
-                            item = createTextVNode(item);
-                        }
-                        else if (isNumber(item)) {
-                            item = createTextVNode(item + '');
-                        }
-                        flatten.push(item);
-                    }
-                }
-            }
-            return flatten;
+        if (isInvalid(n) || Array.isArray(n)) {
+            var result = nodes.slice(0, i);
+            _normaliseVNodes(nodes, result, i);
+            return result;
         }
-        else if (isString(n)) {
+        else if (isStringOrNumber(n)) {
             nodes[i] = createTextVNode(n);
-        }
-        else if (isNumber(n)) {
-            nodes[i] = createTextVNode(n + '');
         }
     }
     return nodes;
 }
 function createVNode(flags, type, props, children, key, ref) {
+    if (isArray(children)) {
+        children = normaliseVNodes(children);
+    }
     return {
-        children: (isArray(children) ? normaliseVNodes(children) : children) || null,
+        children: isUndefined(children) ? null : children,
         dom: null,
         flags: flags || 0,
         key: key === undefined ? null : key,
@@ -143,7 +144,7 @@ function createElement$1(name, props) {
         }
     }
     if (isString(name)) {
-        flags = VNodeFlags.SvgElement;
+        flags = name === 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement;
         for (var prop in props) {
             if (prop === 'key') {
                 key = props.key;
@@ -162,10 +163,6 @@ function createElement$1(name, props) {
                     delete props[prop];
                 }
             }
-        }
-        vNode.props = props;
-        if (!isUndefined(children)) {
-            vNode.children = children;
         }
     }
     else {

@@ -1,22 +1,18 @@
 import {
-	VElement
+	VNodeFlags,
+	VNode
 } from '../core/shapes';
 import {
 	isNull,
 	isObject
 } from './../shared';
-import {
-	ELEMENT,
-	COMPONENT,
-	OPT_ELEMENT
-} from '../core/NodeTypes';
 
-export default function isValidElement(obj: VElement) {
+export default function isValidElement(obj: VNode): boolean {
 	const isNotANullObject = isObject(obj) && isNull(obj) === false;
 	if (isNotANullObject === false) {
 		return false;
 	}
-	const nodeType = obj.nodeType;
+	const flags = obj.flags;
 
-	return nodeType === ELEMENT || nodeType === COMPONENT || nodeType === OPT_ELEMENT;
+	return !!(flags & (VNodeFlags.Component | VNodeFlags.Element)) as boolean;
 };

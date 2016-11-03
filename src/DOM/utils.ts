@@ -73,7 +73,7 @@ export function replaceVNode(parentDom, dom, vNode, lifecycle) {
 		// accessing their DOM node is not useful to us here
 		// #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
 		unmount(vNode, null, lifecycle, false, false);
-		vNode = vNode.instance._lastInput || vNode.instance;
+		vNode = vNode.children._lastInput || vNode.instance;
 		// #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
 		if (vNode.flags !== VNodeFlags.Fragment) {
 			shallowUnmount = true;
@@ -148,7 +148,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	unmount(lastNode, null, lifecycle, true, false);
+	unmount(lastNode, null, lifecycle, false, false);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode.dom = dom;

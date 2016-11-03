@@ -8,8 +8,8 @@ import {
 	isInvalid
 } from '../shared';
 import {
-	createVPlaceholder,
-	createVFragment
+	createVoidVNode,
+	createFragmentVNode
 } from './../core/shapes';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
@@ -102,9 +102,9 @@ function applyState(component: Component<any, any>, force, callback): void {
 		let didUpdate = true;
 
 		if (isInvalid(nextInput)) {
-			nextInput = createVPlaceholder();
+			nextInput = createVoidVNode();
 		} else if (isArray(nextInput)) {
-			nextInput = createVFragment(nextInput, null);
+			nextInput = createFragmentVNode(nextInput);
 		} else if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 			didUpdate = false;

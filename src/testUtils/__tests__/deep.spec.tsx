@@ -1,26 +1,26 @@
-/*
-import createTestTree from './../createTree';
-import deepRender from './../deepRender';
-import createTemplate from './../../core/createTemplate';
-import Component from './../../component/Component';
-import { addTreeConstructor } from './../../core/createTemplate';
 
-const Inferno = { createTemplate };
+// import createTestTree from './../createTree';
+// import deepRender from './../deepRender';
+// import createTemplate from './../../core/createTemplate';
+// import Component from './../../component/Component';
+// import { addTreeConstructor } from './../../core/createTemplate';
 
-addTreeConstructor('test', createTestTree);
+// const Inferno = { createTemplate };
 
-describe('TestUtils - Deep Rendering', () => {
-	it('Basic example should render of elements', () => {
-		const output = deepRender(<div />);
-		expect(output.tag).to.equal('div');
-	});
+// addTreeConstructor('test', createTestTree);
 
-	it('Basic example should render of elements #2', () => {
-		const value = 'Hello world!';
-		const output = deepRender(<span><div><div>{ value }</div></div></span>);
+// describe('TestUtils - Deep Rendering', () => {
+// 	it('Basic example should render of elements', () => {
+// 		const output = deepRender(<div />);
+// 		expect(output.tag).to.equal('div');
+// 	});
 
-		expect(output.tag).to.equal('span');
-		expect(output.children.children.children).to.equal('Hello world!');
-	});
-});
-*/
+// 	it('Basic example should render of elements #2', () => {
+// 		const value = 'Hello world!';
+// 		const output = deepRender(<span><div><div>{ value }</div></div></span>);
+
+// 		expect(output.tag).to.equal('span');
+// 		expect(output.children.children.children).to.equal('Hello world!');
+// 	});
+// });
+// */

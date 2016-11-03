@@ -13,7 +13,7 @@ describe('SVG (non-jsx)', () => {
 		render(null, container);
 	});
 
-	it('should set "class" attribute', () => {
+	it('should set attributes correctly', () => {
 
 		const template = (val1) =>
 			createElement('svg', { height: val1 });
@@ -340,16 +340,5 @@ describe('SVG (non-jsx)', () => {
 
 		render(template(), container);
 		expect(container.firstChild.getAttribute('class')).to.equal('class1 class2');
-	});
-
-	it('should follow last wins when both class and className are defined #1', () => {
-		const template = () => createElement('svg', {
-			xmlns: 'http://www.w3.org/2000/svg',
-			className: 'class1 class2',
-			class: 'test'
-		});
-
-		render(template(), container);
-		expect(container.firstChild.getAttribute('class')).to.equal('test');
 	});
 });

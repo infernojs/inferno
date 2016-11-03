@@ -39,7 +39,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 		}
 	}
 	if (isString(name)) {
-		flags = 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement;
+		flags = name === 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement;
 		for (let prop in props) {
 			if (prop === 'key') {
 				key = props.key;
@@ -56,10 +56,6 @@ export default function createElement(name: string | Function, props?: any, ..._
 					delete props[prop];
 				}
 			}
-		}
-		vNode.props = props;
-		if (!isUndefined(children)) {
-			vNode.children = children;
 		}
 	} else {
 		flags = isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;

@@ -2,17 +2,14 @@ import {
 	isStringOrNumber,
 	isArray,
 	isString,
-	isUndefined
+	isUndefined,
+	isStatefulComponent
 } from '../shared';
 import {
-	createVElement,
-	createVComponent,
-	VComponent,
-	VElement
+	createVNode,
+	VNode,
+	VNodeFlags,
 } from '../core/shapes';
-import {
-	UNKNOWN
-} from '../core/ChildrenTypes';
 
 const classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;
@@ -65,9 +62,7 @@ function extractProps(_props, _tag) {
 	const props = {};
 	let key = null;
 	let ref = null;
-	let hooks: null | Object = null;
 	let children = null;
-	let childrenType = UNKNOWN;
 
 	for (let prop in _props) {
 		if (prop === 'key') {
@@ -75,34 +70,36 @@ function extractProps(_props, _tag) {
 		} else if (prop === 'ref') {
 			ref = _props[prop];
 		} else if (prop.substr(0, 11) === 'onComponent') {
-			if (!hooks) {
-				hooks = {};
+			if (!ref) {
+				ref = {};
 			}
-			hooks[prop] = _props[prop];
+			ref[prop] = _props[prop];
 		} else if (prop === 'hooks') {
-			hooks = _props[prop];
+			ref = _props[prop];
 		} else if (prop === 'children') {
 			children = _props[prop];
-		} else if (prop === 'childrenType') {
-			childrenType = _props[prop];
 		} else {
 			props[prop] = _props[prop];
 		}
 	}
-	return { tag, props, key, ref, children, childrenType, hooks };
+	return { tag, props, key, ref, children };
 }
 
-export default function hyperscript(_tag, _props?, _children?, _childrenType?): VComponent | VElement {
+export default function hyperscript(_tag, _props?, _children?, _childrenType?): VNode {
 	// If a child array or text node are passed as the second argument, shift them
 	if (!_children && isChildren(_props)) {
 		_children = _props;
 		_props = {};
 	}
-	const { tag, props, key, ref, children, childrenType, hooks } = extractProps(_props, _tag);
+	const { tag, props, key, ref, children } = extractProps(_props, _tag);
 
 	if (isString(tag)) {
-		return createVElement(tag, props, _children || children, key, ref, _childrenType || childrenType);
+		const flags = tag === 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement;
+
+		return createVNode(flags, tag, props, _children || children, key, ref);
 	} else {
-		return createVComponent(tag, props, key, hooks, ref);
+		const flags = isStatefulComponent(tag) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
+
+		return createVNode(flags, tag, props, null, key, ref);
 	}
 }

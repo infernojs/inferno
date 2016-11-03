@@ -38,8 +38,8 @@ describe('Components createClass (non-JSX)', () => {
 			}
 		});
 
-		render(createElement(LifecycleComponent1 as Function), container);
-		render(createElement(LifecycleComponent1 as Function), container);
+		render(createElement(LifecycleComponent1 as Function, {}), container);
+		render(createElement(LifecycleComponent1 as Function, {}), container);
 		expect(componentWillUpdate).to.equal(true);
 	});
 	it('should render a basic component with methods bound', done => {

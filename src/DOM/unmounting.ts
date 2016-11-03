@@ -22,7 +22,7 @@ export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount)
 	if (flags & VNodeFlags.Component) {
 		unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
 	} else if (flags & VNodeFlags.Element) {
-		unmountElement(vNode, parentDom, lifecycle, shallowUnmount);
+		unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
 	} else if (flags & VNodeFlags.Fragment) {
 		unmountFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
 	} else if (flags & VNodeFlags.Text) {
@@ -113,7 +113,7 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 	}
 }
 
-export function unmountElement(vNode, parentDom, lifecycle, shallowUnmount) {
+export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	const dom = vNode.dom;
 	const ref = vNode.ref;
 
@@ -129,6 +129,9 @@ export function unmountElement(vNode, parentDom, lifecycle, shallowUnmount) {
 	}
 	if (parentDom) {
 		removeChild(parentDom, dom);
+	}
+	if (recyclingEnabled && (parentDom || canRecycle)) {
+		poolElement(vNode);
 	}
 }
 

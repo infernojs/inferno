@@ -1,8 +1,8 @@
 import {
-	isString,
-	isNumber,
+	isStringOrNumber,
 	isArray,
-	isNull
+	isInvalid,
+	isUndefined
 } from '../shared';
 
 export interface IProps {
@@ -48,14 +48,12 @@ function _normaliseVNodes(nodes: any[], result: VNode[], i: number): void {
 	for (; i < nodes.length; i++) {
 		let n = nodes[i];
 
-		if (n !== null) {
+		if (!isInvalid(n)) {
 			if (Array.isArray(n)) {
 				_normaliseVNodes(n, result, 0);
 			} else {
-				if (isString(n)) {
+				if (isStringOrNumber(n)) {
 					n = createTextVNode(n);
-				} else if (isNumber(n)) {
-					n = createTextVNode(n + '');
 				}
 				result.push(n as VNode);
 			}
@@ -67,23 +65,24 @@ export function normaliseVNodes(nodes: any[]): VNode[] {
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
 
-		if (n === null || Array.isArray(n)) {
+		if (isInvalid(n) || Array.isArray(n)) {
 			const result = nodes.slice(0, i) as VNode[];
 
 			_normaliseVNodes(nodes, result, i);
 			return result;
-		} else if (isString(n)) {
+		} else if (isStringOrNumber(n)) {
 			nodes[i] = createTextVNode(n);
-		} else if (isNumber(n)) {
-			nodes[i] = createTextVNode(n + '');
 		}
 	}
 	return nodes as VNode[];
 }
 
 export function createVNode(flags, type?, props?, children?, key?, ref?): VNode {
+	if (isArray(children)) {
+		children = normaliseVNodes(children)
+	}
 	return {
-		children: (isArray(children) ? normaliseVNodes(children) : children) || null,
+		children: isUndefined(children) ? null : children,
 		dom: null,
 		flags: flags || 0,
 		key: key === undefined ? null : key,

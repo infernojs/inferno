@@ -37,37 +37,37 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with three span children and unset middle child',
 		template: () => createElement('div', null, createElement('span'), null, createElement('span')),
 		tagName: 'div',
-		children: 3,
+		children: 2,
 		textContent: ''
 	}, {
 		description: 'should render div with three span children and unset first, and middle child',
 		template: () => createElement('div', null, null, null, createElement('span')),
 		tagName: 'div',
-		children: 3,
+		children: 1,
 		textContent: ''
 	}, {
 		description: 'should render div with three span children and unset first, and middle child',
 		template: () => createElement('div', null, null, null, null),
 		tagName: 'div',
-		children: 3,
+		children: 0,
 		textContent: ''
 	}, {
 		description: 'should render div with two null children and one text node',
 		template: () => createElement('div', null, null, 'Baboy', null),
 		tagName: 'div',
-		children: 3,
+		children: 1,
 		textContent: 'Baboy'
 	}, {
 		description: 'should render div with one textNode and a span children',
 		template: () => createElement('div', null, 'Hello!', null, createElement('span')),
 		tagName: 'div',
-		children: 3,
+		children: 2,
 		textContent: 'Hello!'
 	}, {
 		description: 'should render div with two textNodes and a span children',
 		template: () => createElement('div', null, 'Hello, ', null, 'World!', createElement('span')),
 		tagName: 'div',
-		children: 4,
+		children: 3,
 		textContent: 'Hello, World!'
 	}, {
 		description: 'should render div with two textNodes and a two span children',
@@ -85,7 +85,7 @@ describe('Creation - (non-JSX)', () => {
 		description: 'should render div with tree null values in an array for children',
 		template: () => createElement('div', null, null, null, null),
 		tagName: 'div',
-		children: 3,
+		children: 0,
 		textContent: ''
 	}, {
 		description: 'should render div with b child, and tree null values in an array for children',

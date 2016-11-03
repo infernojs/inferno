@@ -2,7 +2,7 @@ import {
 	isArray,
 	isFunction,
 	isNullOrUndef,
-	isString,
+	isStringOrNumber,
 	isInvalid,
 	isUndefined,
 	isNull,
@@ -36,7 +36,7 @@ export function mount(vNode, parentDom, lifecycle, context, isSVG) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Element) {
-		return mountElement(vNode, parentDom, lifecycle, context, isSVG || flags & VNodeFlags.SvgElement);
+		return mountElement(vNode, parentDom, lifecycle, context, isSVG);
 	} else if (flags & VNodeFlags.Component) {
 		return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
 	} else if (flags & VNodeFlags.Void) {
@@ -85,6 +85,11 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 		}
 	}	
 	const tag = vNode.type;
+	const flags = vNode.flags;
+
+	if (isSVG || (flags & VNodeFlags.SvgElement) || tag === 'svg') {
+		isSVG = true;
+	}
 	const dom = documentCreateElement(tag, isSVG);
 	const children = vNode.children;
 	const props = vNode.props;
@@ -101,7 +106,7 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 		}
 	}
 	if (!isNull(children)) {
-		if (isString(children)) {
+		if (isStringOrNumber(children)) {
 			setTextContent(dom, children);
 		} else if (isArray(children)) {
 			mountArrayChildren(children, dom, lifecycle, context, isSVG);

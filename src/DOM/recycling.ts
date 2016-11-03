@@ -30,11 +30,14 @@ export function recycleElement(vNode, lifecycle, context, isSVG) {
 
 	if (!isUndefined(pools)) {
 		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
-		const recycledOptVElement = pool.pop();
 
-		if (!isUndefined(recycledOptVElement)) {
-			patchElement(recycledOptVElement, vNode, null, lifecycle, context, isSVG);
-			return vNode.dom;
+		if (!isUndefined(pool)) {
+			const recycledVNode = pool.pop();
+
+			if (!isUndefined(recycledVNode)) {
+				patchElement(recycledVNode, vNode, null, lifecycle, context, isSVG);
+				return vNode.dom;
+			}
 		}
 	}
 	return null;
@@ -45,6 +48,13 @@ export function poolElement(vNode) {
 	const key = vNode.key;
 	let pools: Pools = elementPools.get(tag);
 
+	if (isUndefined(pools)) {
+		pools = {
+			nonKeyed: [],
+			keyed: new Map<string | number, Array<VNode>>()
+		};
+		elementPools.set(tag, pools);
+	}
 	if (isNull(key)) {
 		pools.nonKeyed.push(vNode);
 	} else {
