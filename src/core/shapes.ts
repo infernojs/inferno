@@ -44,31 +44,34 @@ export interface VNode {
 	type: string | Function | null;
 }
 
+function _normaliseVNodes(nodes: any[], result: VNode[], i: number): void {
+	for (; i < nodes.length; i++) {
+		let n = nodes[i];
+
+		if (n !== null) {
+			if (Array.isArray(n)) {
+				_normaliseVNodes(n, result, 0);
+			} else {
+				if (isString(n)) {
+					n = createTextVNode(n);
+				} else if (isNumber(n)) {
+					n = createTextVNode(n + '');
+				}
+				result.push(n as VNode);
+			}
+		}
+	}
+}
+
 export function normaliseVNodes(nodes: any[]): VNode[] {
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
 
-		if (isNull(n) || isArray(n)) {
-			let copy = nodes.slice(i);
-			const flatten = nodes.slice(i) as VNode[];
+		if (n === null || Array.isArray(n)) {
+			const result = nodes.slice(0, i) as VNode[];
 
-			while (copy.length > 0) {
-				let item = copy.shift();
-
-				if (!isNull(item)) {
-					if (isArray(item)) {
-						copy = (item as any).concat(copy);
-					} else {
-						if (isString(item)) {
-							item = createTextVNode(item);
-						} else if (isNumber(item)) {
-							item = createTextVNode(item + '');
-						}
-						flatten.push(item as VNode);
-					}
-				}
-			}
-			return flatten;
+			_normaliseVNodes(nodes, result, i);
+			return result;
 		} else if (isString(n)) {
 			nodes[i] = createTextVNode(n);
 		} else if (isNumber(n)) {
