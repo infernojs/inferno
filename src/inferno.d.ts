@@ -61,16 +61,6 @@ declare module 'invariant' {
 	export = invariant;
 }
 
-declare module 'mobx' {
-	export const extras: any;
-	export function observable(value: any): any;
-	export function isObservable(value: any, property?: string): boolean;
-	export class Reaction {
-		constructor(name?: string, onInvalidate?: any)
-		track(param: any): void
-	}
-}
-
 declare module 'hoist-non-inferno-statics' {
 	function hoistStatics(connectClass: any, wrappedComponent: any): {[index: string]: any};
 	export = hoistStatics;

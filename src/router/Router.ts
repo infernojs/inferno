@@ -1,6 +1,6 @@
-import { createVComponent } from 'inferno';
+import { cloneVNode } from 'inferno';
 import Component from 'inferno-component';
-import { isArray, isString, toArray } from '../shared';
+import { isString, toArray } from '../shared';
 import { VComponent } from '../core/shapes';
 import { isEmpty, matchPath, pathRankSort } from './utils';
 
@@ -12,98 +12,49 @@ export interface IRouterProps {
 	component?: Component<any, any>;
 }
 
-interface IMatchRoutes {
-	params?: any;
-	children?: any;
-	component?: Component<any, any>;
-}
-
 function getURLString(location) {
 	return isString(location) ? location : (location.pathname + location.search);
 }
 
 function matchRoutes(_routes, pathToMatch = '/', lastPath = '/') {
+
+	if (!Object.keys(_routes).length) {
+		return _routes;
+	}
+	const params = {};
 	const routes = toArray(_routes);
 	routes.sort(pathRankSort);
 
 	for (let i = 0; i < routes.length; i++) {
 		const route = routes[i];
-		const props: IMatchRoutes = {
-			params: {},
-			component: null
-		};
-
-		if (route.instance) {
-			debugger;
-		}
-
-		const urlToMatch = (lastPath + (route.props.path || '/')).replace('//', '/');
+		const fullPath = (lastPath + (route.props.path || '/')).replace('//', '/');
 		const isLast = isEmpty(route.props.children);
-		const match = matchPath(isLast, urlToMatch, pathToMatch);
+		const match = matchPath(isLast, fullPath, pathToMatch);
 
 		if (match) {
-			if (isArray(route.props.children)) {
-				const matchedRoutes = matchRoutes(route.props.children, pathToMatch, urlToMatch);
-				if (matchedRoutes && matchedRoutes.instance) {
-					debugger;
+			let children = null;
+			if (route.props.children) {
+				const matched = matchRoutes(route.props.children, pathToMatch, fullPath);
+				if (matched) {
+					children = matched;
+					Object.assign(params, matched.props.params);
 				}
-				props.children = matchedRoutes;
 			}
-			Object.assign(props, {
-				params: match.params,
-				component: route.props.component
+			const node: VComponent = cloneVNode(route, {
+				children,
+				params: Object.assign(params, match.params),
+				component:  route.props.component
 			});
-			const node: VComponent = createVComponent(route.type, props);
-			/*if (route.instance) {
-				return route.type(route.instance.props, route.instance.context);
-			}*/
+
 			return node;
 		}
 	}
 }
 
-export function getRoutes(routing, currentURL: any) {
-	const params = {};
-	const routes2 = toArray(routing);
-
-	function grabRoutes(_routes, url: string, lastPath: string) {
-		/*if (!_routes) {
-			return _routes;
-		}
-
-		const routes = toArray(_routes);
-		routes.sort(pathRankSort);
-
-		for (let i = 0; i < routes.length; i++) {
-			const route = routes[i];
-
-			if (isArray(route)) {
-				return grabRoutes(route, url, lastPath);
-			}
-
-			const { children, path = '/' } = route.props;
-			const fullPath = (lastPath + path).replace('//', '/');
-			const isLast = isEmpty(children);
-			const match = matchPath(isLast, fullPath, url.replace('//', '/'));
-
-			if (match) {
-				Object.assign(params, match.params);
-				route.props.params = params;
-				if (children) {
-					route.props.children = grabRoutes(children, url, fullPath);
-				}
-				if (route.instance) {
-					route.instance.props.params = params;
-					return route.type(route.instance.props, route.instance.context);
-				} else {
-					return route;
-				}
-			}
-		}*/
-	}
-
+export function getRoutes(_routes, currentURL: any) {
+	const routes = toArray(_routes);
 	const location: string = getURLString(currentURL);
-	const matched = matchRoutes(routes2, location, '/');
+	const matched = matchRoutes(routes, location, '/');
 	return matched;
 }
 
@@ -158,7 +109,7 @@ export default class Router extends Component<IRouterProps, any> {
 		if (matched) {
 			return matched;
 		}
-
-		return getRoutes(toArray(children), url);
+		const node = getRoutes(toArray(children), url);
+		return node;
 	}
 }
