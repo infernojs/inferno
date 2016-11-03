@@ -9,44 +9,6 @@
 	(global.Inferno = factory());
 }(this, (function () { 'use strict';
 
-var VNodeFlags;
-(function (VNodeFlags) {
-    VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
-    VNodeFlags[VNodeFlags["HtmlElement"] = 2] = "HtmlElement";
-    VNodeFlags[VNodeFlags["ComponentClass"] = 4] = "ComponentClass";
-    VNodeFlags[VNodeFlags["ComponentFunction"] = 8] = "ComponentFunction";
-    VNodeFlags[VNodeFlags["HasKeyedChildren"] = 16] = "HasKeyedChildren";
-    VNodeFlags[VNodeFlags["HasNonKeyedChildren"] = 32] = "HasNonKeyedChildren";
-    VNodeFlags[VNodeFlags["SvgElement"] = 64] = "SvgElement";
-    VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
-    VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
-    VNodeFlags[VNodeFlags["TextAreaElement"] = 512] = "TextAreaElement";
-    VNodeFlags[VNodeFlags["Fragment"] = 1024] = "Fragment";
-    VNodeFlags[VNodeFlags["Void"] = 2048] = "Void";
-    VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
-    VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
-})(VNodeFlags || (VNodeFlags = {}));
-function createVNode(type, props, children, flags, key, ref) {
-    return {
-        children: children || null,
-        dom: null,
-        flags: flags,
-        key: key === undefined ? null : key,
-        props: props || null,
-        ref: ref || null,
-        type: type
-    };
-}
-function createFragmentVNode(children) {
-    return createVNode(null, null, children, VNodeFlags.Fragment, null, null);
-}
-function createVoidVNode() {
-    return createVNode(null, null, null, VNodeFlags.Void, null, null);
-}
-function isVNode(o) {
-    return !!o.flags;
-}
-
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 var isBrowser = typeof window !== 'undefined' && window.document;
@@ -99,6 +61,137 @@ function warning(condition, message) {
 }
 var EMPTY_OBJ = {};
 
+var VNodeFlags;
+(function (VNodeFlags) {
+    VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
+    VNodeFlags[VNodeFlags["HtmlElement"] = 2] = "HtmlElement";
+    VNodeFlags[VNodeFlags["ComponentClass"] = 4] = "ComponentClass";
+    VNodeFlags[VNodeFlags["ComponentFunction"] = 8] = "ComponentFunction";
+    VNodeFlags[VNodeFlags["HasKeyedChildren"] = 16] = "HasKeyedChildren";
+    VNodeFlags[VNodeFlags["HasNonKeyedChildren"] = 32] = "HasNonKeyedChildren";
+    VNodeFlags[VNodeFlags["SvgElement"] = 64] = "SvgElement";
+    VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
+    VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
+    VNodeFlags[VNodeFlags["TextAreaElement"] = 512] = "TextAreaElement";
+    VNodeFlags[VNodeFlags["Fragment"] = 1024] = "Fragment";
+    VNodeFlags[VNodeFlags["Void"] = 2048] = "Void";
+    VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
+    VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
+})(VNodeFlags || (VNodeFlags = {}));
+function normaliseVNodes(nodes) {
+    for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        if (isNull(n) || isArray(n)) {
+            var copy = nodes.slice(i);
+            var flatten = nodes.slice(i);
+            while (copy.length > 0) {
+                var item = copy.shift();
+                if (!isNull(item)) {
+                    if (isArray(item)) {
+                        copy = item.concat(copy);
+                    }
+                    else {
+                        if (isString(item)) {
+                            item = createTextVNode(item);
+                        }
+                        else if (isNumber(item)) {
+                            item = createTextVNode(item + '');
+                        }
+                        flatten.push(item);
+                    }
+                }
+            }
+            return flatten;
+        }
+        else if (isString(n)) {
+            nodes[i] = createTextVNode(n);
+        }
+        else if (isNumber(n)) {
+            nodes[i] = createTextVNode(n + '');
+        }
+    }
+    return nodes;
+}
+function createVNode(flags, type, props, children, key, ref) {
+    return {
+        children: (isArray(children) ? normaliseVNodes(children) : children) || null,
+        dom: null,
+        flags: flags || 0,
+        key: key === undefined ? null : key,
+        props: props || null,
+        ref: ref || null,
+        type: type
+    };
+}
+function createFragmentVNode(children) {
+    return createVNode(VNodeFlags.Fragment, null, null, children);
+}
+function createVoidVNode() {
+    return createVNode(VNodeFlags.Void);
+}
+function createTextVNode(text) {
+    return createVNode(VNodeFlags.Text, null, null, text);
+}
+function isVNode(o) {
+    return !!o.flags;
+}
+
+function cloneVNode(vNodeToClone, props) {
+    var _children = [], len = arguments.length - 2;
+    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
+
+    var children = _children;
+    if (_children.length > 0 && !isNull(_children[0])) {
+        if (!props) {
+            props = {};
+        }
+        if (_children.length === 1) {
+            children = _children[0];
+        }
+        if (isUndefined(props.children)) {
+            props.children = children;
+        }
+        else {
+            if (isArray(children)) {
+                if (isArray(props.children)) {
+                    props.children = props.children.concat(children);
+                }
+                else {
+                    props.children = [props.children].concat(children);
+                }
+            }
+            else {
+                if (isArray(props.children)) {
+                    props.children.push(children);
+                }
+                else {
+                    props.children = [props.children];
+                    props.children.push(children);
+                }
+            }
+        }
+    }
+    children = null;
+    var newVNode;
+    if (isArray(vNodeToClone)) {
+        newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
+    }
+    else if (isNullOrUndef(props) && isNullOrUndef(children)) {
+        newVNode = Object.assign({}, vNodeToClone);
+    }
+    else {
+        var flags = vNodeToClone.flags;
+        if (flags & VNodeFlags.Component) {
+            newVNode = createVNode(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, flags, vNodeToClone.key, vNodeToClone.ref);
+        }
+        else if (flags & VNodeFlags.Element) {
+            newVNode = createVNode(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), (props && props.children) || children || vNodeToClone.children, flags, vNodeToClone.key, vNodeToClone.ref);
+        }
+    }
+    newVNode.dom = null;
+    return newVNode;
+}
+
 var Lifecycle = function Lifecycle() {
     this._listeners = [];
 };
@@ -116,7 +209,11 @@ Lifecycle.prototype.trigger = function trigger () {
 var recyclingEnabled = true;
 var componentPools = new Map();
 var elementPools = new Map();
-
+function disableRecycling() {
+    recyclingEnabled = false;
+    componentPools.clear();
+    elementPools.clear();
+}
 function recycleElement(vNode, lifecycle, context, isSVG) {
     var tag = vNode.type;
     var key = vNode.key;
@@ -1754,62 +1851,6 @@ function hydrateRoot(input, parentDom, lifecycle) {
     return false;
 }
 
-function cloneVNode(vNodeToClone, props) {
-    var _children = [], len = arguments.length - 2;
-    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
-
-    var children = _children;
-    if (_children.length > 0 && !isNull(_children[0])) {
-        if (!props) {
-            props = {};
-        }
-        if (_children.length === 1) {
-            children = _children[0];
-        }
-        if (isUndefined(props.children)) {
-            props.children = children;
-        }
-        else {
-            if (isArray(children)) {
-                if (isArray(props.children)) {
-                    props.children = props.children.concat(children);
-                }
-                else {
-                    props.children = [props.children].concat(children);
-                }
-            }
-            else {
-                if (isArray(props.children)) {
-                    props.children.push(children);
-                }
-                else {
-                    props.children = [props.children];
-                    props.children.push(children);
-                }
-            }
-        }
-    }
-    children = null;
-    var newVNode;
-    if (isArray(vNodeToClone)) {
-        newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
-    }
-    else if (isNullOrUndef(props) && isNullOrUndef(children)) {
-        newVNode = Object.assign({}, vNodeToClone);
-    }
-    else {
-        var flags = vNodeToClone.flags;
-        if (flags & VNodeFlags.Component) {
-            newVNode = createVNode(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, flags, vNodeToClone.key, vNodeToClone.ref);
-        }
-        else if (flags & VNodeFlags.Element) {
-            newVNode = createVNode(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), (props && props.children) || children || vNodeToClone.children, flags, vNodeToClone.key, vNodeToClone.ref);
-        }
-    }
-    newVNode.dom = null;
-    return newVNode;
-}
-
 // rather than use a Map, like we did before, we can use an array here
 // given there shouldn't be THAT many roots on the page, the difference
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
@@ -1894,8 +1935,6 @@ function createRenderer() {
     };
 }
 
-// import cloneVNode from '../../../src/factories/cloneVNode';
-// import { disableRecycling } from '../../../src/DOM/recycling';
 // import { initDevToolsHooks }  from '../../../src/DOM/devtools';
 
 if (isBrowser) {
@@ -1923,7 +1962,7 @@ var index = {
 	createVNode: createVNode,
 
 	// cloning
-	//cloneVNode,	
+	cloneVNode: cloneVNode,
 
 	// TODO do we still need this? can we remove?
 	NO_OP: NO_OP,
@@ -1931,8 +1970,8 @@ var index = {
 	//DOM
 	render: render,
 	findDOMNode: findDOMNode,
-	createRenderer: createRenderer
-	// disableRecycling
+	createRenderer: createRenderer,
+	disableRecycling: disableRecycling
 };
 
 return index;

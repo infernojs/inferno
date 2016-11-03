@@ -9,6 +9,43 @@
     (global.InfernoCreateElement = factory());
 }(this, (function () { 'use strict';
 
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
+function isArray(obj) {
+    return obj instanceof Array;
+}
+function isStatefulComponent(o) {
+    return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
+}
+
+
+function isInvalid(obj) {
+    return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
+}
+
+function isAttrAnEvent(attr) {
+    return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+}
+function isString(obj) {
+    return typeof obj === 'string';
+}
+function isNumber(obj) {
+    return typeof obj === 'number';
+}
+function isNull(obj) {
+    return obj === null;
+}
+function isTrue(obj) {
+    return obj === true;
+}
+function isUndefined(obj) {
+    return obj === undefined;
+}
+function isObject(o) {
+    return typeof o === 'object';
+}
+
 var VNodeFlags;
 (function (VNodeFlags) {
     VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
@@ -26,11 +63,45 @@ var VNodeFlags;
     VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
     VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
 })(VNodeFlags || (VNodeFlags = {}));
-function createVNode(type, props, children, flags, key, ref) {
+function normaliseVNodes(nodes) {
+    for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        if (isNull(n) || isArray(n)) {
+            var copy = nodes.slice(i);
+            var flatten = nodes.slice(i);
+            while (copy.length > 0) {
+                var item = copy.shift();
+                if (!isNull(item)) {
+                    if (isArray(item)) {
+                        copy = item.concat(copy);
+                    }
+                    else {
+                        if (isString(item)) {
+                            item = createTextVNode(item);
+                        }
+                        else if (isNumber(item)) {
+                            item = createTextVNode(item + '');
+                        }
+                        flatten.push(item);
+                    }
+                }
+            }
+            return flatten;
+        }
+        else if (isString(n)) {
+            nodes[i] = createTextVNode(n);
+        }
+        else if (isNumber(n)) {
+            nodes[i] = createTextVNode(n + '');
+        }
+    }
+    return nodes;
+}
+function createVNode(flags, type, props, children, key, ref) {
     return {
-        children: children || null,
+        children: (isArray(children) ? normaliseVNodes(children) : children) || null,
         dom: null,
-        flags: flags,
+        flags: flags || 0,
         key: key === undefined ? null : key,
         props: props || null,
         ref: ref || null,
@@ -38,38 +109,9 @@ function createVNode(type, props, children, flags, key, ref) {
     };
 }
 
-var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
-
-
-function isStatefulComponent(o) {
-    var type = o.type;
-    return !isUndefined(type.prototype) && !isUndefined(type.prototype.render);
-}
-
-
-function isInvalid(obj) {
-    return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
-}
-
-function isAttrAnEvent(attr) {
-    return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
-}
-function isString(obj) {
-    return typeof obj === 'string';
-}
-
-function isNull(obj) {
-    return obj === null;
-}
-function isTrue(obj) {
-    return obj === true;
-}
-function isUndefined(obj) {
-    return obj === undefined;
-}
-function isObject(o) {
-    return typeof o === 'object';
+function createTextVNode(text) {
+    return createVNode(VNodeFlags.Text, null, null, text);
 }
 
 var componentHooks = {
@@ -88,7 +130,10 @@ function createElement$1(name, props) {
         throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
     }
     var children = _children;
-    var vNode;
+    var vNode = createVNode(0);
+    var ref = null;
+    var key = null;
+    var flags = 0;
     if (_children) {
         if (_children.length === 1) {
             children = _children[0];
@@ -98,17 +143,17 @@ function createElement$1(name, props) {
         }
     }
     if (isString(name)) {
-        vNode = createVNode(name, null, null, name === 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement, null, null);
+        flags = VNodeFlags.SvgElement;
         for (var prop in props) {
             if (prop === 'key') {
-                vNode.key = props.key;
+                key = props.key;
                 delete props.key;
             }
             else if (prop === 'children' && isUndefined(children)) {
-                vNode.children = props.children; // always favour children args, default to props
+                children = props.children; // always favour children args, default to props
             }
             else if (prop === 'ref') {
-                vNode.ref = props.ref; // TODO: Verify it works - tests
+                ref = props.ref;
             }
             else if (isAttrAnEvent(prop)) {
                 var lowerCase = prop.toLowerCase();
@@ -124,8 +169,7 @@ function createElement$1(name, props) {
         }
     }
     else {
-        var hooks;
-        vNode = createVNode(name, null, null, isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction, null, null);
+        flags = isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
         if (!isUndefined(children)) {
             if (!props) {
                 props = {};
@@ -134,22 +178,19 @@ function createElement$1(name, props) {
         }
         for (var prop$1 in props) {
             if (componentHooks[prop$1]) {
-                if (!hooks) {
-                    hooks = {};
+                if (!ref) {
+                    ref = {};
                 }
-                hooks[prop$1] = props[prop$1];
+                ref[prop$1] = props[prop$1];
             }
             else if (prop$1 === 'key') {
-                vNode.key = props.key;
+                key = props.key;
                 delete props.key;
             }
         }
         vNode.props = props;
-        if (hooks) {
-            vNode.ref = hooks;
-        }
     }
-    return vNode;
+    return createVNode(flags, name, props, children, key, ref);
 }
 
 return createElement$1;

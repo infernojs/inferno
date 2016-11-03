@@ -21,12 +21,15 @@ const componentHooks = {
 	onComponentDidUpdate: true
 };
 
-export default function createElement(name: string | Function, props?: any, ..._children) {
+export default function createElement(name: string | Function, props?: any, ..._children): VNode {
 	if (isInvalid(name) || isObject(name)) {
 		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
 	let children: any = _children;
-	let vNode: VNode;
+	let vNode = createVNode(0);
+	let ref = null;
+	let key = null;
+	let flags = 0;
 
 	if (_children) {
 		if (_children.length === 1) {
@@ -36,23 +39,15 @@ export default function createElement(name: string | Function, props?: any, ..._
 		}
 	}
 	if (isString(name)) {
-		vNode = createVNode(
-			name,
-			null,
-			null,
-			name === 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement,
-			null,
-			null
-		);
-
+		flags = 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement;
 		for (let prop in props) {
 			if (prop === 'key') {
-				vNode.key = props.key;
+				key = props.key;
 				delete props.key;
 			} else if (prop === 'children' && isUndefined(children)) {
-				vNode.children = props.children; // always favour children args, default to props
+				children = props.children; // always favour children args, default to props
 			} else if (prop === 'ref') {
-				vNode.ref = props.ref; // TODO: Verify it works - tests
+				ref = props.ref;
 			} else if (isAttrAnEvent(prop)) {
 				const lowerCase = prop.toLowerCase();
 
@@ -67,16 +62,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 			vNode.children = children;
 		}
 	} else {
-		let hooks;
-		vNode = createVNode(
-			name,
-			null,
-			null,
-			isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction,
-			null,
-			null
-		);
-
+		flags = isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 		if (!isUndefined(children)) {
 			if (!props) {
 				props = {};
@@ -85,19 +71,23 @@ export default function createElement(name: string | Function, props?: any, ..._
 		}
 		for (let prop in props) {
 			if (componentHooks[prop]) {
-				if (!hooks) {
-					hooks = {};
+				if (!ref) {
+					ref = {};
 				}
-				hooks[prop] = props[prop];
+				ref[prop] = props[prop];
 			} else if (prop === 'key') {
-				vNode.key = props.key;
+				key = props.key;
 				delete props.key;
 			}
 		}
 		vNode.props = props;
-		if (hooks) {
-			vNode.ref = hooks;
-		}
 	}
-	return vNode;
+	return createVNode(
+		flags,
+		name,
+		props,
+		children,
+		key,
+		ref
+	);
 }
