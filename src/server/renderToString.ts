@@ -22,7 +22,8 @@ import {
 	FRAGMENT,
 	TEXT
 } from '../core/NodeTypes';
-import { convertVOptElementToVElement } from '../factories/cloneVNode';
+import { default as Inferno } from 'inferno';
+const { convertVOptElementToVElement } = Inferno;
 
 function renderComponentToString(vComponent, isRoot, context) {
 	const type = vComponent.type;

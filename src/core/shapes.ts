@@ -69,6 +69,7 @@ export interface OptVElement extends VNode {
 }
 
 export interface VComponent extends VNode {
+	children?: string | null | number | Array<any>;
 	type: Function | null;
 	hooks: any;
 	instance: null | Object;
@@ -80,6 +81,7 @@ export interface VComponent extends VNode {
 export interface VElement extends VNode {
 	children: string | null | number | Array<any>;
 	childrenType: number;
+	hooks?: any;
 	key: null | string | number;
 	props: IProps;
 	ref: Function | null;

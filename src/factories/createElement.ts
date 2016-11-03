@@ -1,8 +1,11 @@
 import {
-	createVElement,
-	createVComponent,
 	InfernoElement
 } from '../core/shapes';
+import { default as Inferno } from 'inferno';
+const {
+	createVElement,
+	createVComponent,
+} = Inferno;
 import {
 	isAttrAnEvent,
 	isString,

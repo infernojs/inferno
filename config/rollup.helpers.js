@@ -1,11 +1,9 @@
-import { each } from 'lodash';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import { aliases } from './aliases';
 
 export class Bundles {
 	constructor() {
 		this.bundles = [];
-		this.skipped = [];
 		this._only = [];
 	}
 	add(bundle) {
@@ -36,9 +34,9 @@ export function getPackageJSON(moduleName, defaultPackage) {
 }
 
 export function withNodeResolve(arr, resolveConfig) {
-	const newArray = Array.from(arr)
-	const index = newArray.findIndex(plugin => plugin.name === 'buble')
-	newArray.splice(index + 1, 0, nodeResolve(resolveConfig))
+	const newArray = Array.from(arr);
+	const index = newArray.findIndex(plugin => plugin.name === 'buble');
+	newArray.splice(index + 1, 0, nodeResolve(resolveConfig));
 	return newArray
 }
 

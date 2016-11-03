@@ -6,12 +6,6 @@ import { innerHTML } from '../../tools/utils';
 import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
-/* These must be in their own files for test to reproduce */
-import { ParentFirstSeparate } from '../../../testdata/separate-render/parentfirstseparate';
-import { ParentSecondSeparate } from '../../../testdata/separate-render/parentsecondseparate';
-import { ParentFirstCommon } from '../../../testdata/common-render/parentfirstcommon';
-import { ParentSecondCommon } from '../../../testdata/common-render/parentsecondcommon';
-
 import sinon = require('sinon');
 
 describe('Components (JSX)', () => {
@@ -431,44 +425,6 @@ describe('Components (JSX)', () => {
 		).to.equal(
 			innerHTML('<div><span>The title is styles are removed!</span></div>')
 		);
-	});
-
-	it.skip('should render a basic component with SVG', () => {
-		// class SvgComponent extends Component<any, any> {
-		// 	constructor(props) {
-		// 		super(props);
-		// 	}
-		//
-		// 	render() {
-		// 		return (
-		// 			<svg class="alert-icon">
-		// 				<use xlink:href="#error"></use>
-		// 			</svg>
-		// 		);
-		// 	}
-		// }
-		//
-		// render(<SvgComponent />, container);
-		//
-		// expect(container.firstChild.firstChild.hasAttributeNS(
-		// 	'http://www.w3.org/1999/xlink',
-		// 	'href'
-		// )).to.equal(true);
-		// // unset
-		// render(null, container);
-		//
-		// expect(
-		// 	container.innerHTML
-		// ).to.equal(
-		// 	''
-		// );
-		//
-		// render(<SvgComponent />, container);
-		//
-		// expect(container.firstChild.firstChild.hasAttributeNS(
-		// 	'http://www.w3.org/1999/xlink',
-		// 	'href'
-		// )).to.equal(true);
 	});
 
 	class SuperComponent extends Component<any, any> {
@@ -2261,32 +2217,6 @@ describe('Components (JSX)', () => {
 		});
 	});
 
-	describe('tracking DOM state', () => {
-		class ComponentA extends Component<any, any> {
-			render() {
-				return <div><span>Something</span></div>;
-			}
-		}
-
-		class ComponentB extends Component<any, any> {
-			render() {
-				return <div><span>Something</span></div>;
-			}
-		}
-
-		it.skip('patching component A to component B, given they have the same children, should not change the DOM tree', () => {
-			render(<ComponentA />, container);
-			expect(container.innerHTML).to.equal('<div><span>Something</span></div>');
-			const trackElemDiv = container.firstChild;
-			const trackElemSpan = container.firstChild.firstChild;
-
-			render(<ComponentB />, container);
-			expect(container.innerHTML).to.equal('<div><span>Something</span></div>');
-			expect(container.firstChild === trackElemDiv).to.equal(true);
-			expect(container.firstChild.firstChild === trackElemSpan).to.equal(true);
-		});
-	});
-
 	it('mixing JSX components with non-JSX components', () => {
 		function Comp() {
 			return createElement('div');
@@ -2428,180 +2358,6 @@ describe('Components (JSX)', () => {
 			expect(mountedColumnSpy.callCount).to.equal(1);
 			expect(unmountColumnSpy.callCount).to.equal(1);
 			expect(container.innerHTML).to.equal('');
-		});
-	});
-
-	describe('Inheritance with common render', () => {
-		class Child extends Component<any, any> {
-			constructor(props) {
-				super(props);
-
-				this._update = this._update.bind(this);
-			}
-
-			_update() {
-				this.setState({
-					data: 'bar'
-				});
-			}
-
-			componentWillMount() {
-				this.setState({
-					data: 'foo'
-				});
-			}
-
-			render() {
-				return (
-					<div onclick={this._update}>
-						{this.props.name}
-						{this.state.data}
-					</div>
-				);
-			}
-		}
-
-		class ParentBase extends Component<any, any> {
-			foo: string;
-
-			render() {
-				return (
-					<div>
-						<Child name={this.foo}/>
-					</div>
-				);
-			}
-		}
-
-		class ParentFirst extends ParentBase {
-			foo: string;
-
-			constructor(props) {
-				super(props);
-
-				this.foo = 'First';
-			}
-		}
-
-		class ParentSecond extends ParentBase {
-			foo: string;
-
-			constructor(props) {
-				super(props);
-
-				this.foo = 'Second';
-			}
-		}
-
-		// For some reason this one breaks but if components are imported separately, it works
-		it.skip('Should not reuse children if parent changes', () => {
-			render(<ParentFirst />, container);
-			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
-			container.firstChild.firstChild.click();
-			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
-			render(<ParentSecond />, container);
-			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
-		});
-	});
-
-	describe('Inheritance with duplicate render', () => {
-		class Child extends Component<any, any> {
-			constructor(props) {
-				super(props);
-
-				this._update = this._update.bind(this);
-			}
-
-			_update() {
-				this.setState({
-					data: 'bar'
-				});
-			}
-
-			componentWillMount() {
-				this.setState({
-					data: 'foo'
-				});
-			}
-
-			render() {
-				return (
-					<div onclick={this._update}>
-						{this.props.name}
-						{this.state.data}
-					</div>
-				);
-			}
-		}
-
-		class ParentFirst extends Component<any, any> {
-			foo: string;
-
-			constructor(props) {
-				super(props);
-
-				this.foo = 'First';
-			}
-
-			render() {
-				return (
-					<div>
-						<Child name={this.foo}/>
-					</div>
-				);
-			}
-
-		}
-
-		class ParentSecond extends Component<any, any> {
-			foo: string;
-
-			constructor(props) {
-				super(props);
-
-				this.foo = 'Second';
-			}
-
-			render() {
-				return (
-					<div>
-						<Child name={this.foo}/>
-					</div>
-				);
-			}
-		}
-
-	// For some reason this one breaks but if components are imported separately, it works
-		it.skip('Should not reuse children if parent changes', () => {
-			render(<ParentFirst />, container);
-			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
-			container.firstChild.firstChild.click();
-			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
-			render(<ParentSecond />, container);
-			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
-		});
-	});
-
-	describe.skip('Inheritance with 1 component per file Common BASE', () => {
-		it('Should not reuse children if parent changes', () => {
-			render(<ParentFirstCommon />, container);
-			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
-			container.firstChild.firstChild.click();
-			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
-			render(<ParentSecondCommon />, container);
-			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
-		});
-	});
-
-	// THIS STRANGELY WORKS :)
-	describe('Inheritance with 1 component per file SEPARATE RENDER', () => {
-		it('Should not reuse children if parent changes', () => {
-			render(<ParentFirstSeparate />, container);
-			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
-			container.firstChild.firstChild.click();
-			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
-			render(<ParentSecondSeparate />, container);
-			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
 		});
 	});
 });

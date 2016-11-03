@@ -1,20 +1,22 @@
 {
-    "presets": [
-        "es2015",
-        "stage-0"
-    ],
-    "plugins": [
-        "transform-object-rest-spread",
-        "babel-plugin-syntax-jsx",
-        "babel-plugin-inferno",
-        ["module-resolver", {
-          "extensions": [".js", ".jsx", ".ts", ".tsx"],
-          "alias": {
-            "inferno-component": "./src/component/es2015",
-            "inferno": "./src/DOM/rendering",
-            "inferno-create-class": "./src/component/createClass",
-            "inferno-create-element": "./src/factories/createElement"
-          }
-        }]
-    ]
+  "presets": [
+    "es2015",
+    "stage-0"
+  ],
+  "plugins": [
+    "transform-object-rest-spread",
+    "babel-plugin-syntax-jsx",
+    "babel-plugin-inferno",
+    ["module-resolver", {
+      "extensions": [".js", ".jsx", ".ts", ".tsx"],
+      "alias": {
+        "inferno": "./packages/inferno/src/index",
+        "inferno-component": "./packages/inferno-component/src/index",
+        "inferno-create-class": "./packages/inferno-create-class/src/index",
+        "inferno-create-element": "./packages/inferno-create-element/src/index",
+        "inferno-router": "./packages/inferno-router/src/index",
+        "inferno-server": "./packages/inferno-server/src/index"
+      }
+    }]
+  ]
 }

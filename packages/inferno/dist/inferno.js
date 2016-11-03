@@ -2663,7 +2663,7 @@ var index = {
 	createVText: createVText,
 
 	// cloning
-	cloneVNode: cloneVNode,	
+	cloneVNode: cloneVNode,
 
 	// enums
 	ValueTypes: ValueTypes,
@@ -2678,7 +2678,10 @@ var index = {
 	findDOMNode: findDOMNode,
 	createRenderer: createRenderer,
 	createStaticVElementClone: createStaticVElementClone,
-	disableRecycling: disableRecycling
+	disableRecycling: disableRecycling,
+
+	// bundle size helpers
+	convertVOptElementToVElement: convertVOptElementToVElement
 };
 
 return index;
