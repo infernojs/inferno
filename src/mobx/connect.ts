@@ -1,15 +1,8 @@
 import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
 import { throwError } from '../shared';
-import reactiveMixin from './reactiveMixin';
 import inject from './inject';
-
-const lifecycleMethods = [
-	'componentWillMount',
-	'componentWillUnmount',
-	'componentDidMount',
-	'componentDidUpdate'
-];
+import observer from './observer';
 
 /**
  * Wraps a component and provides stores as props
@@ -56,32 +49,8 @@ function connect (arg1: any, arg2 = null): any {
 		throwError('Please pass a valid component to "observer"');
 	}
 
-	const target = componentClass.prototype || componentClass;
-
-	lifecycleMethods.forEach(funcName => patch(target, funcName));
-
-	if (!target.shouldComponentUpdate) {
-		target.shouldComponentUpdate = reactiveMixin.shouldComponentUpdate;
-	}
-
 	componentClass.isMobXReactObserver = true;
-	return componentClass;
-}
-
-/**
- * Patch the component with reactive properties
- */
-function patch (target, funcName) {
-	const base = target[funcName];
-	const mixinFunc = reactiveMixin[funcName];
-	if (!base) {
-		target[funcName] = mixinFunc;
-	} else {
-		target[funcName] = function() {
-			base.apply(this, arguments);
-			mixinFunc.apply(this, arguments);
-		};
-	}
+	return observer(componentClass);
 }
 
 export default connect;
