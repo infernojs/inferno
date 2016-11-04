@@ -10,19 +10,19 @@ bundles.add({
 	path: 'packages/inferno/'
 });
 
-// bundles.add({
-// 	moduleGlobal: 'InfernoServer',
-// 	moduleName: 'inferno-server',
-// 	moduleEntry: 'packages/inferno-server/src/index.js',
-// 	path: 'packages/inferno-server/'
-// });
+bundles.add({
+	moduleGlobal: 'InfernoServer',
+	moduleName: 'inferno-server',
+	moduleEntry: 'packages/inferno-server/src/index.js',
+	path: 'packages/inferno-server/'
+});
 
-// bundles.add({
-// 	moduleGlobal: 'InfernoComponent',
-// 	moduleName: 'inferno-component',
-// 	moduleEntry: 'packages/inferno-component/src/index.js',
-// 	path: 'packages/inferno-component/'
-// });
+bundles.add({
+	moduleGlobal: 'InfernoComponent',
+	moduleName: 'inferno-component',
+	moduleEntry: 'packages/inferno-component/src/index.js',
+	path: 'packages/inferno-component/'
+});
 
 // bundles.add({
 // 	moduleGlobal: 'InfernoTestUtils',
@@ -52,12 +52,12 @@ bundles.add({
 // 	path: 'packages/inferno-router/'
 // });
 
-// bundles.add({
-// 	moduleGlobal: 'InfernoCreateClass',
-// 	moduleName: 'inferno-create-class',
-// 	moduleEntry: 'packages/inferno-create-class/src/index.js',
-// 	path: 'packages/inferno-create-class/'
-// });
+bundles.add({
+	moduleGlobal: 'InfernoCreateClass',
+	moduleName: 'inferno-create-class',
+	moduleEntry: 'packages/inferno-create-class/src/index.js',
+	path: 'packages/inferno-create-class/'
+});
 
 // bundles.add({
 // 	moduleGlobal: 'InfernoRedux',
@@ -73,11 +73,11 @@ bundles.add({
 // 	path: 'packages/inferno-mobx/'
 // });
 
-// bundles.add({
-// 	moduleGlobal: 'InfernoHyperscript',
-// 	moduleName: 'inferno-hyperscript',
-// 	moduleEntry: 'packages/inferno-hyperscript/src/index.js',
-// 	path: 'packages/inferno-hyperscript/'
-// });
+bundles.add({
+	moduleGlobal: 'InfernoHyperscript',
+	moduleName: 'inferno-hyperscript',
+	moduleEntry: 'packages/inferno-hyperscript/src/index.js',
+	path: 'packages/inferno-hyperscript/'
+});
 
 export default bundles;

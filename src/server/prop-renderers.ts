@@ -37,11 +37,11 @@ export function renderAttributes(props): string[] {
 	propsKeys.forEach((propKey, i) => {
 		const value = props[propKey];
 		switch (propKey) {
-			case 'dangerouslySetInnerHTML' :
-			case 'className' :
-			case 'style' :
+			case 'dangerouslySetInnerHTML':
+			case 'className':
+			case 'style':
 				return;
-			default :
+			default:
 				if (isStringOrNumber(value)) {
 					outputAttrs.push(escapeAttr(propKey) + '="' + escapeAttr(value) + '"');
 				} else if (isTrue(value)) {

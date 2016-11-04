@@ -166,6 +166,9 @@ function createElement$1(name, props) {
         }
     }
     else {
+        // components use "children" for component instances, not for actual children
+        // children are stored only in the props
+        children = null;
         flags = isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
         if (!isUndefined(children)) {
             if (!props) {
