@@ -57,7 +57,7 @@ module.exports = function (config) {
 				],
 			},
 			resolve: {
-				extensions: ['', '.js', '.ts', '.tsx']
+				extensions: ['.js', '.ts', '.tsx']
 			}
 		},
 		webpackMiddleware: {

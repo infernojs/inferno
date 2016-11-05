@@ -7,10 +7,11 @@ import {
 	isArray,
 	isInvalid
 } from '../shared';
-import {
+import { default as Inferno } from 'inferno';
+const {
 	createVPlaceholder,
 	createVFragment
-} from './../core/shapes';
+} = Inferno;
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 const componentCallbackQueue = new Map();
@@ -26,15 +27,15 @@ export interface ComponentLifecycle<P, S> {
 }
 
 export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
-        statics?: {
-            [key: string]: any;
-        };
+	statics?: {
+		[key: string]: any;
+	};
 
-        displayName?: string;
-        propTypes?: {[index: string]: Function};
+	displayName?: string;
+	propTypes?: {[index: string]: Function};
 
-        getDefaultProps?(): P;
-		getInitialState?(): S;
+	getDefaultProps?(): P;
+	getInitialState?(): S;
 }
 
 export interface ComponentSpec<P, S> extends Mixin<P, S> {

@@ -1,6 +1,6 @@
 import Component from '../component/es2015';
-import { toArray } from '../shared';
-import { getRoutes } from './utils';
+import { isArray, toArray } from '../shared';
+import { isEmpty, matchPath, pathRankSort } from './utils';
 
 export interface IRouterProps {
 	url: string;
@@ -10,6 +10,47 @@ export interface IRouterProps {
 	component?: Component<any, any>;
 }
 
+export function getRoutes(routing, currentURL: string) {
+	let params = {};
+
+	function grabRoutes(_routes, url: string, lastPath: string) {
+		if (!_routes) {
+			return _routes;
+		}
+
+		const routes = toArray(_routes);
+		routes.sort(pathRankSort);
+
+		for (let i = 0; i < routes.length; i++) {
+			const route = routes[i];
+
+			if (isArray(route)) {
+				return grabRoutes(route, url, lastPath);
+			}
+
+			const { children, path = '/' } = route.props;
+			const fullPath = (lastPath + path).replace('//', '/');
+			const isLast = isEmpty(children);
+
+			if (children) {
+				route.props.children = grabRoutes(children, url, fullPath);
+			}
+
+			const match = matchPath(isLast, fullPath, url.replace('//', '/'));
+			if (match) {
+				route.props.params = Object.assign(params, match.params);
+				if (route.instance) {
+					return route.type(route.instance.props, route.instance.context);
+				} else {
+					return route;
+				}
+			}
+		}
+	}
+
+	return grabRoutes(routing, currentURL, '');
+}
+
 export default class Router extends Component<IRouterProps, any> {
 	_didRoute: boolean;
 	router: any;
@@ -17,9 +58,6 @@ export default class Router extends Component<IRouterProps, any> {
 
 	constructor(props?: any, context?: any) {
 		super(props, context);
-		if (!props.history && !props.matched) {
-			throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed, or a matched Route');
-		}
 		this._didRoute = false;
 		this.router = props.history;
 		this.state = {

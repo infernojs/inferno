@@ -1,6 +1,6 @@
 import pathToRegExp0 from 'path-to-regexp';
 import pathToRegExp1 = require('path-to-regexp');
-import { isArray, toArray } from '../shared';
+import { isArray } from '../shared';
 
 const pathToRegExp: any = pathToRegExp0 || pathToRegExp1;
 const cache: Map<string, IMatchRegex> = new Map();
@@ -8,47 +8,6 @@ const emptyObject: Object = {};
 
 function decode(val: any): any {
 	return typeof val !== 'string' ? val : decodeURIComponent(val);
-}
-
-export function getRoutes(routing, currentURL: string) {
-	let params = {};
-
-	function grabRoutes(_routes, url: string, lastPath: string) {
-		if (!_routes) {
-			return _routes;
-		}
-
-		const routes = toArray(_routes);
-		routes.sort(pathRankSort);
-
-		for (let i = 0; i < routes.length; i++) {
-			const route = routes[i];
-
-			if (isArray(route)) {
-				return grabRoutes(route, url, lastPath);
-			}
-
-			const { children, path = '/' } = route.props;
-			const fullPath = (lastPath + path).replace('//', '/');
-			const isLast = isEmpty(children);
-
-			if (children) {
-				route.props.children = grabRoutes(children, url, fullPath);
-			}
-
-			const match = matchPath(isLast, fullPath, url.replace('//', '/'));
-			if (match) {
-				route.props.params = Object.assign(params, match.params);
-				if (route.instance) {
-					return route.type(route.instance.props, route.instance.context);
-				} else {
-					return route;
-				}
-			}
-		}
-	}
-
-	return grabRoutes(routing, currentURL, '');
 }
 
 export function isEmpty(children): boolean {
