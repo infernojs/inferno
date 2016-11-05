@@ -30,6 +30,7 @@ var bubleOptions = {
 var babelOptions = {
 	babelrc: false,
 	sourceMaps: true,
+	compact: false,
 	presets: [],
 	plugins: [
 		"transform-es2015-modules-commonjs",
