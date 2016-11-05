@@ -25,6 +25,9 @@ export default class Router extends Component<IRouterProps, any> {
 
 	constructor(props?: any, context?: any) {
 		super(props, context);
+		if (!props.history && !props.matched) {
+			throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed, or a matched Route');
+		}
 		this._didRoute = false;
 		this.router = props.history;
 		this.state = {
