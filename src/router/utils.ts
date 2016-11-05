@@ -27,7 +27,7 @@ export function mapSearchParams(search): any {
 		const [k, v] = fragment[i].split('=').map(mapFragment);
 
 		if (map[k]) {
-			map[k] = Array.isArray(map[k]) ? map[k] : [map[k]];
+			map[k] = isArray(map[k]) ? map[k] : [map[k]];
 			map[k].push(v);
 		} else {
 			map[k] = v;
