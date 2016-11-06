@@ -7,6 +7,7 @@ import {
 import ValueTypes from '../core/ValueTypes';
 import ChildrenTypes from '../core/ChildrenTypes';
 import NodeTypes from '../core/NodeTypes';
+import cloneVNode, { convertVOptElementToVElement } from '../factories/cloneVNode';
 // Import this to be able to use JSX in your tests
 export {
 	createOptVElement,
@@ -15,5 +16,7 @@ export {
 	createVComponent,
 	ChildrenTypes,
 	ValueTypes,
-	NodeTypes
+	NodeTypes,
+	cloneVNode,
+	convertVOptElementToVElement
 };
