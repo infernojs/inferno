@@ -1,13 +1,6 @@
 import Component from 'inferno-component';
+import { IRouterProps } from './Router';
 import match from './match';
-
-export interface IRouterProps {
-	url: string;
-	history?: any;
-	matched?: any;
-	children?: any;
-	component?: Component<any, any>;
-}
 
 export default class RouterContext extends Component<IRouterProps, any> {
 	_didRoute: boolean;
