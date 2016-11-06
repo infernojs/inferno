@@ -10,6 +10,13 @@ export function isEmpty(children): boolean {
 	return !children || !(isArray(children) ? children : Object.keys(children)).length;
 }
 
+export function flatten(oldArray) {
+	const newArray = [];
+
+	flattenArray(oldArray, newArray);
+	return newArray;
+}
+
 export function getURLString(location): string {
 	return isString(location) ? location : (location.pathname + location.search);
 }
@@ -53,4 +60,16 @@ function strip(url: string): string {
 
 function rank(url: string = ''): number {
 	return (strip(url).match(/\/+/g) || '').length;
+}
+
+function flattenArray(oldArray, newArray) {
+	for (let i = 0; i < oldArray.length; i++) {
+		const item = oldArray[i];
+
+		if (isArray(item)) {
+			flattenArray(item, newArray);
+		} else {
+			newArray.push(item);
+		}
+	}
 }

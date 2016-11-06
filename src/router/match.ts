@@ -1,5 +1,5 @@
-import { toArray } from '../shared';
-import { decode, isEmpty, pathRankSort, mapSearchParams } from './utils';
+import { toArray, isArray } from '../shared';
+import { decode, isEmpty, pathRankSort, mapSearchParams, flatten } from './utils';
 import { VComponent } from '../core/shapes';
 import pathToRegExp0 from 'path-to-regexp';
 import pathToRegExp1 = require('path-to-regexp');
@@ -14,7 +14,7 @@ export function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 		return _routes;
 	}
 
-	const routes = toArray(_routes);
+	const routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
 	const [pathToMatch, search = ''] = urlToMatch.split('?');
 	const params = mapSearchParams(search);
 
