@@ -40,7 +40,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list; fi
   - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get update -qq; fi
   - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get install -y -qq yarn; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo brew install yarn; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install yarn; fi
   - yarn install
 cache:
   directories:
