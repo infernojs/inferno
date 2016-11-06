@@ -32,7 +32,7 @@ module.exports = function (config) {
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
-			'./../src/**/__tests__/**': ['webpack'],
+			'./../src/**/__tests__/**': ['webpack']
 		},
 		webpack: {
 			module: {
@@ -46,15 +46,16 @@ module.exports = function (config) {
 						loader: 'babel-loader',
 						exclude: /node_modules/,
 						query: {
+							compact: false,
 							presets: ['es2015'],
 							plugins: [
 								'transform-object-rest-spread',
 								'babel-plugin-syntax-jsx',
 								'babel-plugin-inferno'
 							]
-						},
+						}
 					}
-				],
+				]
 			},
 			resolve: {
 				extensions: ['.js', '.ts', '.tsx']

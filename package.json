@@ -135,13 +135,16 @@
     "build:dev": "cross-env NODE_ENV=development babel-node --presets es2015 config/rollup.config.js",
     "build:prod": "cross-env NODE_ENV=production babel-node --presets es2015 config/rollup.config.js",
     "clean": "rimraf coverage/ dist/",
+    "eslint": "npm run eslint:source && npm run eslint:test",
     "eslint:source": "eslint ./src/**/*.js",
     "eslint:test": "eslint ./src/**/__tests__/*.js",
     "karma:firefox": "karma start config/karma.conf.js --browsers=Firefox",
     "karma:chrome": "karma start config/karma.conf.js --browsers=Chrome",
     "karma:ie": "karma start config/karma.conf.js --browsers=IE",
     "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
-    "lint:source": "tslint 'src/**/*.ts'",
+    "lint": "npm run lint:source && npm run lint:test",
+    "lint:source": "tslint src/**/*.ts",
+    "lint:test": "tslint src/**/__tests__/**/*.ts*",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
@@ -153,8 +156,8 @@
     "test:server": "cross-env mocha --opts config/mocha.opts"
   },
   "pre-commit": [
-    "eslint:source",
-    "lint:source",
+    "eslint",
+    "lint",
     "test"
   ],
   "dependencies": {}
