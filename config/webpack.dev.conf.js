@@ -40,7 +40,10 @@ module.exports = {
 		port: 8080,
 		noInfo: false,
 		hot: true,
-		inline: true
+		inline: true,
+		historyApiFallback: {
+			index: '/config/index.html'
+		}
 	},
 	resolve: {
 		extensions: ['.js', 'jsx', '.ts', '.tsx']
