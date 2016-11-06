@@ -32,7 +32,7 @@ module.exports = function (config) {
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
-			'./../src/**/__tests__/**': ['webpack'],
+			'./../src/**/__tests__/**': ['webpack']
 		},
 		webpack: {
 			module: {
@@ -53,9 +53,9 @@ module.exports = function (config) {
 								'babel-plugin-syntax-jsx',
 								'babel-plugin-inferno'
 							]
-						},
+						}
 					}
-				],
+				]
 			},
 			resolve: {
 				extensions: ['.js', '.ts', '.tsx']
