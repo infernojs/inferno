@@ -6,7 +6,6 @@ os:
 
 node_js:
   - '6' 
-  - '7'
 
 # Use container-based Travis infrastructure.
 sudo: required
