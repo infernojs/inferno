@@ -36,11 +36,11 @@ before_install:
   # Repo for newer Node.js versions
   # - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
   # Repo for Yarn
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get update -qq
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get install -y -qq yarn
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo brew install yarn
+  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg; fi
+  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list; fi
+  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get update -qq; fi
+  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get install -y -qq yarn; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo brew install yarn; fi
   - yarn install
 cache:
   directories:
