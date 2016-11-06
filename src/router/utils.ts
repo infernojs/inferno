@@ -1,92 +1,46 @@
-import pathToRegExp0 from 'path-to-regexp';
-import pathToRegExp1 = require('path-to-regexp');
-import { isArray, toArray } from '../shared';
+import { isArray, isString } from '../shared';
 
-const pathToRegExp: any = pathToRegExp0 || pathToRegExp1;
-const cache: Map<string, IMatchRegex> = new Map();
-const emptyObject: Object = {};
+const emptyObject = Object.create(null);
 
-function decode(val: any): any {
+export function decode(val: any): any {
 	return typeof val !== 'string' ? val : decodeURIComponent(val);
-}
-
-export function getRoutes(routing, currentURL: string) {
-	let params = {};
-
-	function grabRoutes(_routes, url: string, lastPath: string) {
-		if (!_routes) {
-			return _routes;
-		}
-
-		const routes = toArray(_routes);
-		routes.sort(pathRankSort);
-
-		for (let i = 0; i < routes.length; i++) {
-			const route = routes[i];
-
-			if (isArray(route)) {
-				return grabRoutes(route, url, lastPath);
-			}
-
-			const { children, path = '/' } = route.props;
-			const fullPath = (lastPath + path).replace('//', '/');
-			const isLast = isEmpty(children);
-
-			if (children) {
-				route.props.children = grabRoutes(children, url, fullPath);
-			}
-
-			const match = matchPath(isLast, fullPath, url.replace('//', '/'));
-			if (match) {
-				route.props.params = Object.assign(params, match.params);
-				if (route.instance) {
-					return route.type(route.instance.props, route.instance.context);
-				} else {
-					return route;
-				}
-			}
-		}
-	}
-
-	return grabRoutes(routing, currentURL, '');
 }
 
 export function isEmpty(children): boolean {
 	return !children || !(isArray(children) ? children : Object.keys(children)).length;
 }
 
-interface IMatchRegex {
-	keys: any;
-	pattern: RegExp;
+export function flatten(oldArray) {
+	const newArray = [];
+
+	flattenArray(oldArray, newArray);
+	return newArray;
 }
 
-export function matchPath(end: boolean, routePath: string, urlPath: string, parentParams?): any {
-	const key = `${routePath}|${end}`;
-	let regexp: IMatchRegex = cache.get(key);
+export function getURLString(location): string {
+	return isString(location) ? location : (location.pathname + location.search);
+}
 
-	if (!regexp) {
-		const keys = [];
-		regexp = { pattern: pathToRegExp(routePath, keys, { end }), keys };
-		cache.set(key, regexp);
+export function mapSearchParams(search): any {
+	if (search === '') {
+		return emptyObject;
 	}
 
-	const m = regexp.pattern.exec(urlPath);
+	// Create an object with no prototype
+	const map = Object.create(null);
+	const fragment = search.split('&');
 
-	if (!m) {
-		return null;
+	for (let i = 0; i < fragment.length; i++) {
+		const [k, v] = fragment[i].split('=').map(mapFragment);
+
+		if (map[k]) {
+			map[k] = isArray(map[k]) ? map[k] : [map[k]];
+			map[k].push(v);
+		} else {
+			map[k] = v;
+		}
 	}
-
-	const path: string = m[0];
-	const params = Object.assign({}, parentParams);
-
-	for (let i = 1; i < m.length; i += 1) {
-		params[regexp.keys[i - 1].name] = decode(m[i]);
-	}
-
-	return {
-		path: path === '' ? '/' : path,
-		params
-	};
+	return map;
 }
 
 export function pathRankSort(a: any, b: any) {
@@ -96,10 +50,26 @@ export function pathRankSort(a: any, b: any) {
 	return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
 }
 
+function mapFragment(p: string, isVal: number): string {
+	return decodeURIComponent(isVal | 0 ? p : p.replace('[]', ''));
+}
+
 function strip(url: string): string {
 	return url.replace(/(^\/+|\/+$)/g, '');
 }
 
 function rank(url: string = ''): number {
 	return (strip(url).match(/\/+/g) || '').length;
+}
+
+function flattenArray(oldArray, newArray) {
+	for (let i = 0; i < oldArray.length; i++) {
+		const item = oldArray[i];
+
+		if (isArray(item)) {
+			flattenArray(item, newArray);
+		} else {
+			newArray.push(item);
+		}
+	}
 }

@@ -44,16 +44,7 @@ module.exports = function (config) {
 					}, {
 						test: /\.jsx?$/,
 						loader: 'babel-loader',
-						exclude: /node_modules/,
-						query: {
-							compact: false,
-							presets: ['es2015'],
-							plugins: [
-								'transform-object-rest-spread',
-								'babel-plugin-syntax-jsx',
-								'babel-plugin-inferno'
-							]
-						}
+						exclude: /node_modules/
 					}
 				]
 			},
