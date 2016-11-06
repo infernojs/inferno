@@ -38,11 +38,11 @@ module.exports = function (config) {
 			module: {
 				loaders: [
 					{
-						test: /\.tsx?/,
+						test: /\.tsx?$/,
 						loaders: ['babel-loader', 'ts-loader'],
 						exclude: /node_modules/
 					}, {
-						test: /\.js/,
+						test: /\.jsx?$/,
 						loader: 'babel-loader',
 						exclude: /node_modules/,
 						query: {

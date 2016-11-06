@@ -16,11 +16,11 @@ module.exports = {
 	module: {
 		loaders: [
 			{
-				test: /\.ts(x?)$/,
+				test: /\.tsx?$/,
 				loaders: ['babel-loader', 'ts-loader'],
 				exclude: /node_modules/
 			}, {
-				test: /\.js(x?)$/,
+				test: /\.jsx?$/,
 				loader: 'babel-loader',
 				exclude: /node_modules/,
 				query: {

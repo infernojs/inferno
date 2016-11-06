@@ -1651,9 +1651,16 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, parentVList, s
             }
         }
         if (aLength === a.length && patched === 0) {
-            removeAllChildren(dom, a, lifecycle, shallowUnmount);
+            if (parentVList === null) {
+                removeAllChildren(dom, a, lifecycle, shallowUnmount);
+                nextNode = null;
+            }
+            else {
+                removeChildren(dom, a, lifecycle, shallowUnmount);
+                nextNode = parentVList.pointer;
+            }
             while (bStart < bLength) {
-                insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG, shallowUnmount), null);
+                insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG, shallowUnmount), nextNode);
             }
         }
         else {
@@ -2433,10 +2440,13 @@ function removeChild(parentDom, dom) {
 }
 function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
     dom.textContent = '';
+    removeChildren(null, children, lifecycle, shallowUnmount);
+}
+function removeChildren(dom, children, lifecycle, shallowUnmount) {
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
         if (!isInvalid(child)) {
-            unmount(child, null, lifecycle, true, shallowUnmount);
+            unmount(child, dom, lifecycle, true, shallowUnmount);
         }
     }
 }
