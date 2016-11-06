@@ -38,22 +38,13 @@ module.exports = function (config) {
 			module: {
 				loaders: [
 					{
-						test: /\.tsx?/,
+						test: /\.tsx?$/,
 						loaders: ['babel-loader', 'ts-loader'],
 						exclude: /node_modules/
 					}, {
-						test: /\.js/,
+						test: /\.jsx?$/,
 						loader: 'babel-loader',
-						exclude: /node_modules/,
-						query: {
-							compact: false,
-							presets: ['es2015'],
-							plugins: [
-								'transform-object-rest-spread',
-								'babel-plugin-syntax-jsx',
-								'babel-plugin-inferno'
-							]
-						}
+						exclude: /node_modules/
 					}
 				]
 			},

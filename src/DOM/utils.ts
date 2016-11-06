@@ -227,11 +227,15 @@ export function removeChild(parentDom, dom) {
 
 export function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
 	dom.textContent = '';
+	removeChildren(null, children, lifecycle, shallowUnmount);
+}
+
+export function removeChildren(dom, children, lifecycle, shallowUnmount) {
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
 		if (!isInvalid(child)) {
-			unmount(child, null, lifecycle, true, shallowUnmount);
+			unmount(child, dom, lifecycle, true, shallowUnmount);
 		}
 	}
 }

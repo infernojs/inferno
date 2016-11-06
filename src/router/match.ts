@@ -23,12 +23,12 @@ export function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 	for (let i = 0; i < routes.length; i++) {
 		const route = routes[i];
 		const fullPath = (lastPath + (route.props && route.props.path || '/')).replace('//', '/');
-		const isLast = isEmpty(route.props.children);
+		const isLast = !route.props || isEmpty(route.props.children);
 		const match = matchPath(isLast, fullPath, pathToMatch);
 
 		if (match) {
 			let children = null;
-			if (route.props.children) {
+			if (route.props && route.props.children) {
 				const matched = matchRoutes(route.props.children, pathToMatch, fullPath);
 				if (matched) {
 					children = matched;

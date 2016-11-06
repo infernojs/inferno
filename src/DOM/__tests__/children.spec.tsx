@@ -1100,5 +1100,27 @@ describe('Children - (JSX)', () => {
 			render(<Nodes items={[]} />, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><div>end</div></div>');
 		});
+
+		it('Should not clear nodes when keyed inside vFragment #2', () => {
+			const Nodes = ({items}) => (
+				<div>
+					<div>test</div>
+					{items.map((item) => <span key={item}>{item}</span>)}
+					<div>end</div>
+				</div>
+			);
+
+			render(<Nodes items={[1]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><span>1</span><div>end</div></div>');
+
+			render(<Nodes items={[]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><div>end</div></div>');
+
+			render(null, container);
+			expect(container.innerHTML).to.equal('');
+
+			render(<Nodes items={[1, 2, 3]} />, container);
+			expect(container.innerHTML).to.equal('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>');
+		});
 	});
 });
