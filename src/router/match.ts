@@ -1,5 +1,5 @@
 import { toArray, isArray } from '../shared';
-import { decode, isEmpty, pathRankSort, mapSearchParams, flatten } from './utils';
+import { decode, isEmpty, pathRankSort, mapSearchParams, flatten, getURLString } from './utils';
 import { VComponent } from '../core/shapes';
 import pathToRegExp0 from 'path-to-regexp';
 import pathToRegExp1 = require('path-to-regexp');
@@ -8,7 +8,27 @@ import { default as Inferno } from 'inferno';
 const pathToRegExp: any = pathToRegExp0 || pathToRegExp1;
 const cache: Map<string, IMatchRegex> = new Map();
 
-export function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
+/**
+ * Returns a node containing only the matched components
+ * @param routes
+ * @param currentURL
+ * @returns {any|VComponent}
+ */
+export default function match(routes, currentURL: any) {
+	const location: string = getURLString(currentURL);
+	const matched = matchRoutes(toArray(routes), location, '/');
+	return matched;
+}
+
+/**
+ * Go through every route and create a new node
+ * with the matched components
+ * @param _routes
+ * @param urlToMatch
+ * @param lastPath
+ * @returns {any}
+ */
+function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 
 	if (!Object.keys(_routes).length) {
 		return _routes;
@@ -24,20 +44,20 @@ export function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 		const route = routes[i];
 		const fullPath = (lastPath + (route.props && route.props.path || '/')).replace('//', '/');
 		const isLast = !route.props || isEmpty(route.props.children);
-		const match = matchPath(isLast, fullPath, pathToMatch);
+		const matchBase = matchPath(isLast, fullPath, pathToMatch);
 
-		if (match) {
+		if (matchBase) {
 			let children = null;
 			if (route.props && route.props.children) {
-				const matched = matchRoutes(route.props.children, pathToMatch, fullPath);
-				if (matched) {
-					children = matched;
-					Object.assign(params, matched.props.params);
+				const matchChild = match(route.props.children, pathToMatch, fullPath);
+				if (matchChild) {
+					children = matchChild;
+					Object.assign(params, matchChild.props.params);
 				}
 			}
 			const node: VComponent = Inferno.cloneVNode(route, {
 				children,
-				params: Object.assign(params, match.params),
+				params: Object.assign(params, matchBase.params),
 				component:  route.props.component
 			});
 
@@ -51,7 +71,15 @@ interface IMatchRegex {
 	pattern: RegExp;
 }
 
-export function matchPath(end: boolean, routePath: string, urlPath: string, parentParams?): any {
+/**
+ * Converts path to a regex, if a match is found then we extract params from it
+ * @param end
+ * @param routePath
+ * @param urlPath
+ * @param parentParams
+ * @returns {any}
+ */
+function matchPath(end: boolean, routePath: string, urlPath: string, parentParams?): any {
 	const key = `${routePath}|${end}`;
 	let regexp: IMatchRegex = cache.get(key);
 

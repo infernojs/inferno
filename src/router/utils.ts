@@ -21,6 +21,12 @@ export function getURLString(location): string {
 	return isString(location) ? location : (location.pathname + location.search);
 }
 
+/**
+ * Maps a querystring to an object
+ * Supports arrays and utf-8 characters
+ * @param search
+ * @returns {any}
+ */
 export function mapSearchParams(search): any {
 	if (search === '') {
 		return emptyObject;
@@ -43,6 +49,12 @@ export function mapSearchParams(search): any {
 	return map;
 }
 
+/**
+ * Sorts an array according to its `path` prop length
+ * @param a
+ * @param b
+ * @returns {number}
+ */
 export function pathRankSort(a: any, b: any) {
 	const aAttr = a.props || emptyObject;
 	const bAttr = b.props || emptyObject;
@@ -50,6 +62,9 @@ export function pathRankSort(a: any, b: any) {
 	return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
 }
 
+/**
+ * Helper function for parsing querystring arrays
+ */
 function mapFragment(p: string, isVal: number): string {
 	return decodeURIComponent(isVal | 0 ? p : p.replace('[]', ''));
 }

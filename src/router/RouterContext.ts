@@ -9,7 +9,7 @@ export interface IRouterProps {
 	component?: Component<any, any>;
 }
 
-export default class Router extends Component<IRouterProps, any> {
+export default class RouterContext extends Component<IRouterProps, any> {
 	_didRoute: boolean;
 	router: any;
 	unlisten: any;
