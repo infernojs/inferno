@@ -31,6 +31,7 @@ import {
 	normaliseChild,
 	resetFormInputProperties,
 	removeAllChildren,
+	removeChildren,
 	replaceWithNewNode,
 	formSelectValue,
 	updateTextContent,
@@ -731,9 +732,15 @@ export function patchKeyedChildren(
 			}
 		}
 		if (aLength === a.length && patched === 0) {
-			removeAllChildren(dom, a, lifecycle, shallowUnmount);
+			if (parentVList === null) {
+				removeAllChildren(dom, a, lifecycle, shallowUnmount);
+				nextNode = null;
+			} else {
+				removeChildren(dom, a, lifecycle, shallowUnmount);
+				nextNode = parentVList.pointer;
+			}
 			while (bStart < bLength) {
-				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG, shallowUnmount), null);
+				insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG, shallowUnmount), nextNode);
 			}
 		} else {
 			i = aLength - patched;
