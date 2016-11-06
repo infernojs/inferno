@@ -14,9 +14,9 @@ module.exports = {
 	},
 	// devtool: 'inline-source-map',
 	// *optional* babel options: isparta will use it as well as babel-loader
-	babel: {
-		presets: ['es2015']
-	},
+	// babel: {
+	// 	presets: ['es2015']
+	// },
 	module: {
 		loaders: [
 			// Perform babel transpiling on all non-source, test files.
@@ -25,7 +25,10 @@ module.exports = {
 				exclude: [
 					path.resolve('node_modules/')
 				],
-				loaders: ['babel-loader', 'ts-loader']
+				loaders: [
+					'babel-loader?presets[]=es2015',
+					'ts-loader'
+				]
 			}
 		]
 	},
