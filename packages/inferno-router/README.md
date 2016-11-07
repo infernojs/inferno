@@ -68,37 +68,6 @@ const routes = (
 Inferno.render(routes, document.getElementById('root'));
 ```
 
-## onEnter / onLeave hooks
-
-In some cases, you may need to execute some logic before or after routing.
-You can easily do this by passing a `function` to the `Route` component via a prop, as shown below:
-
-```js
-import Inferno from 'inferno';
-import { Router, IndexRoute } from 'inferno-router';
-import createBrowserHistory from 'history/createBrowserHistory';
-
-function Home({ params }) {
-  // ...
-}
-
-function authorizedOnly(props, router) {
-  if (!props.loggedIn) {
-    router.push('/login');
-  }
-}
-
-function sayGoodBye(props, router) {
-  alert('Good bye!')
-}
-
-Inferno.render((
-  <Router history={ createBrowserHistory() }>
-    <IndexRoute component={ Home } onEnter={ authorizedOnly } onLeave={ sayGoodBye } />
-  </Router>
-), container);
-```
-
 ## Server-side rendering (express)
 
 ```js
@@ -164,7 +133,39 @@ app.use(async(ctx, next) => {
 });
 ```
 
+## onEnter / onLeave hooks
+
+In some cases, you may need to execute some logic before or after routing.
+You can easily do this by passing a `function` to the `Route` component via a prop, as shown below:
+
+```js
+import Inferno from 'inferno';
+import { Router, IndexRoute } from 'inferno-router';
+import createBrowserHistory from 'history/createBrowserHistory';
+
+function Home({ params }) {
+  // ...
+}
+
+function authorizedOnly(props, router) {
+  if (!props.loggedIn) {
+    router.push('/login');
+  }
+}
+
+function sayGoodBye(props, router) {
+  alert('Good bye!')
+}
+
+Inferno.render((
+  <Router history={ createBrowserHistory() }>
+    <IndexRoute component={ Home } onEnter={ authorizedOnly } onLeave={ sayGoodBye } />
+  </Router>
+), container);
+```
+
 ## Notes
 
 * `IndexRoute` is the same as `Route` with `path` set to `/`
 * `IndexLink` is the same as `Link` with `to` set to `/`
+
