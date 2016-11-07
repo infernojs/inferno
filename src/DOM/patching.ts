@@ -259,6 +259,9 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 				debugger;
 			}
 		}
+		if (nextFlags & VNodeFlags.InputElement) {
+			validateInputWrapper(nextVNode, dom, null);
+		}		
 		if (lastProps !== nextProps) {
 			patchProps(
 				lastProps,
@@ -268,9 +271,6 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 				context,
 				isSVG
 			);
-		}
-		if (nextFlags & VNodeFlags.InputElement) {
-			validateInputWrapper(nextVNode, dom, null);
 		}
 	}
 }
@@ -733,10 +733,18 @@ function lis_algorithm(a) {
 
 // // returns true if a property has been applied that can't be cloned via elem.cloneNode()
 export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
-	if (prop === 'children') {
+	if (prop === 'children' || prop === 'ref' || prop === 'key') {
 		return;
 	}
-	if (lastValue !== nextValue) {
+	if (booleanProps[prop]) {
+		dom[prop] = nextValue ? true : false;
+	} else if (strictProps[prop]) {
+		const value = isNullOrUndef(nextValue) ? '' : nextValue;
+
+		if (dom[prop] !== value) {
+			dom[prop] = value;
+		}
+	} else if (lastValue !== nextValue) {
 		if (isNullOrUndef(nextValue)) {
 			dom.removeAttribute(prop);
 		} else if (prop === 'className') {
@@ -748,11 +756,12 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 		} else if (prop === 'style') {
 			patchStyle(lastValue, nextValue, dom);
 		} else if (isAttrAnEvent(prop)) {
-			dom[prop.toLowerCase()] = nextValue;
-		} else if (booleanProps[prop]) {
-			dom[prop] = nextValue ? true : false;
-		} else if (strictProps[prop]) {
-			dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
+			const eventName = prop.toLowerCase();
+			const event = dom[eventName];
+
+			if (!event || !event.wrapped) {
+				dom[eventName] = nextValue;
+			}
 		} else if (prop === 'dangerouslySetInnerHTML') {
 			const lastHtml = lastValue && lastValue.__html;
 			const nextHtml = nextValue && nextValue.__html;

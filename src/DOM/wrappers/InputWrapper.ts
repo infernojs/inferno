@@ -2,12 +2,14 @@ import {
 	EMPTY_OBJ,
 	isNullOrUndef
 } from './../../shared';
+import wrappers from './map';
 
-const inputWrappers = new WeakMap();
+function isCheckedType(type) {
+	return type === 'checkbox' || type === 'radio';
+}
 
 function isControlled(props) {
-	const type = props.type;
-	const usesChecked = type === 'checkbox' || type === 'radio';
+	const usesChecked = isCheckedType(props.type);
 
 	return usesChecked ? !isNullOrUndef(props.checked) : !isNullOrUndef(props.value);
 }
@@ -30,27 +32,31 @@ export function attachInputWrapper(vNode, dom) {
 
 	if (isControlled(props)) {
 		const inputWrapper = {
-			vNode,
-			onChange: null
+			vNode
 		};
 		const type = props.type;
 
-		if (type === 'text' || '') {
-			inputWrapper.onChange = onTextInputChange.bind(inputWrapper);
-			dom.oninput = inputWrapper.onChange;
+		if (isCheckedType(type)) {
+		} else {
+			dom.oninput = onTextInputChange.bind(inputWrapper);
+			dom.oninput.wrapped = true;
 		}
-		inputWrappers.set(dom, inputWrapper);
+		wrappers.set(dom, inputWrapper);
 		validateInputWrapper(vNode, dom, inputWrapper);
 	}
 }
 
 export function validateInputWrapper(vNode, dom, inputWrapper) {
-	if (!inputWrapper) {
-		inputWrapper = inputWrappers.get(dom);
+	const props = vNode.props || EMPTY_OBJ;
+
+	if (isControlled(props)) {
+		if (!inputWrapper) {
+			inputWrapper = wrappers.get(dom);
+		}
+		if (!inputWrapper) {
+			attachInputWrapper(vNode, dom);
+			return;
+		}
+		inputWrapper.vNode = vNode;
 	}
-	if (!inputWrapper) {
-		attachInputWrapper(vNode, dom);
-		return;
-	}
-	inputWrapper.vNode = vNode;
 }

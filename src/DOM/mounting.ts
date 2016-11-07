@@ -109,14 +109,14 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 			mount(children, dom, lifecycle, context, isSVG);
 		}
 	}
+	if (flags & VNodeFlags.InputElement) {
+		attachInputWrapper(vNode, dom);
+	}
 	if (!isNull(props)) {
 		for (let prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchProp(prop, null, props[prop], dom, isSVG);
 		}
-	}	
-	if (flags & VNodeFlags.InputElement) {
-		attachInputWrapper(vNode, dom);
 	}
 	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
@@ -125,9 +125,9 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 }
 
 export function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
-		for (let i = 0; i < children.length; i++) {
-			mount(children[i], dom, lifecycle, context, isSVG);
-		}
+	for (let i = 0; i < children.length; i++) {
+		mount(children[i], dom, lifecycle, context, isSVG);
+	}
 }
 
 export function mountFragment(vNode, parentDom, lifecycle, context, isSVG) {

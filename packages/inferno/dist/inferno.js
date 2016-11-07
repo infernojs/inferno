@@ -461,10 +461,13 @@ constructDefaults('volume,value,defaultValue,defaultChecked', strictProps, true)
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-var inputWrappers = new WeakMap();
+var wrappers = new WeakMap();
+
+function isCheckedType(type) {
+    return type === 'checkbox' || type === 'radio';
+}
 function isControlled(props) {
-    var type = props.type;
-    var usesChecked = type === 'checkbox' || type === 'radio';
+    var usesChecked = isCheckedType(props.type);
     return usesChecked ? !isNullOrUndef(props.checked) : !isNullOrUndef(props.value);
 }
 function onTextInputChange(e) {
@@ -483,27 +486,31 @@ function attachInputWrapper(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
     if (isControlled(props)) {
         var inputWrapper = {
-            vNode: vNode,
-            onChange: null
+            vNode: vNode
         };
         var type = props.type;
-        if (type === 'text' || '') {
-            inputWrapper.onChange = onTextInputChange.bind(inputWrapper);
-            dom.oninput = inputWrapper.onChange;
+        if (isCheckedType(type)) {
         }
-        inputWrappers.set(dom, inputWrapper);
+        else {
+            dom.oninput = onTextInputChange.bind(inputWrapper);
+            dom.oninput.wrapped = true;
+        }
+        wrappers.set(dom, inputWrapper);
         validateInputWrapper(vNode, dom, inputWrapper);
     }
 }
 function validateInputWrapper(vNode, dom, inputWrapper) {
-    if (!inputWrapper) {
-        inputWrapper = inputWrappers.get(dom);
+    var props = vNode.props || EMPTY_OBJ;
+    if (isControlled(props)) {
+        if (!inputWrapper) {
+            inputWrapper = wrappers.get(dom);
+        }
+        if (!inputWrapper) {
+            attachInputWrapper(vNode, dom);
+            return;
+        }
+        inputWrapper.vNode = vNode;
     }
-    if (!inputWrapper) {
-        attachInputWrapper(vNode, dom);
-        return;
-    }
-    inputWrapper.vNode = vNode;
 }
 
 // import {
@@ -670,11 +677,11 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
                 debugger;
             }
         }
-        if (lastProps !== nextProps) {
-            patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG);
-        }
         if (nextFlags & VNodeFlags.InputElement) {
             validateInputWrapper(nextVNode, dom, null);
+        }
+        if (lastProps !== nextProps) {
+            patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG);
         }
     }
 }
@@ -1097,10 +1104,19 @@ function lis_algorithm(a) {
 }
 // // returns true if a property has been applied that can't be cloned via elem.cloneNode()
 function patchProp(prop, lastValue, nextValue, dom, isSVG) {
-    if (prop === 'children') {
+    if (prop === 'children' || prop === 'ref' || prop === 'key') {
         return;
     }
-    if (lastValue !== nextValue) {
+    if (booleanProps[prop]) {
+        dom[prop] = nextValue ? true : false;
+    }
+    else if (strictProps[prop]) {
+        var value = isNullOrUndef(nextValue) ? '' : nextValue;
+        if (dom[prop] !== value) {
+            dom[prop] = value;
+        }
+    }
+    else if (lastValue !== nextValue) {
         if (isNullOrUndef(nextValue)) {
             dom.removeAttribute(prop);
         }
@@ -1116,13 +1132,11 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
             patchStyle(lastValue, nextValue, dom);
         }
         else if (isAttrAnEvent(prop)) {
-            dom[prop.toLowerCase()] = nextValue;
-        }
-        else if (booleanProps[prop]) {
-            dom[prop] = nextValue ? true : false;
-        }
-        else if (strictProps[prop]) {
-            dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
+            var eventName = prop.toLowerCase();
+            var event = dom[eventName];
+            if (!event || !event.wrapped) {
+                dom[eventName] = nextValue;
+            }
         }
         else if (prop === 'dangerouslySetInnerHTML') {
             var lastHtml = lastValue && lastValue.__html;
@@ -1526,14 +1540,14 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
             mount(children, dom, lifecycle, context, isSVG);
         }
     }
+    if (flags & VNodeFlags.InputElement) {
+        attachInputWrapper(vNode, dom);
+    }
     if (!isNull(props)) {
         for (var prop in props) {
             // do not add a hasOwnProperty check here, it affects performance
             patchProp(prop, null, props[prop], dom, isSVG);
         }
-    }
-    if (flags & VNodeFlags.InputElement) {
-        attachInputWrapper(vNode, dom);
     }
     if (!isNull(parentDom)) {
         appendChild(parentDom, dom);
