@@ -461,29 +461,49 @@ constructDefaults('volume,value,defaultValue,defaultChecked', strictProps, true)
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-var proxyMap = new WeakMap();
-function controlElementProp(dom, prop, value) {
-    var proxy = proxyMap.get(dom);
-    if (!proxy) {
-        proxy = {};
-        proxyMap.set(dom, proxy);
+var inputWrappers = new WeakMap();
+function isControlled(props) {
+    var type = props.type;
+    var usesChecked = type === 'checkbox' || type === 'radio';
+    return usesChecked ? !isNullOrUndef(props.checked) : !isNullOrUndef(props.value);
+}
+function onTextInputChange(e) {
+    var vNode = this.vNode;
+    var props = vNode.props;
+    var dom = vNode.dom;
+    dom.value = props.value;
+    if (props.onInput) {
+        props.onInput(e);
     }
-    if (isUndefined(proxy[prop])) {
-        dom[prop] = value;
-        dom.addEventListener('input', function () {
-            dom[prop] = proxy[prop];
-        });
-        Object.defineProperty(dom, prop, {
-            enumerable: true,
-            get: function get() {
-                return proxy[prop];
-            },
-            set: function set() {
-                dom.value = 123;
-            }
-        });
+    else if (props.oninput) {
+        props.oninput(e);
     }
-    proxy[prop] = value;
+}
+function attachInputWrapper(vNode, dom) {
+    var props = vNode.props || EMPTY_OBJ;
+    if (isControlled(props)) {
+        var inputWrapper = {
+            vNode: vNode,
+            onChange: null
+        };
+        var type = props.type;
+        if (type === 'text' || '') {
+            inputWrapper.onChange = onTextInputChange.bind(inputWrapper);
+            dom.oninput = inputWrapper.onChange;
+        }
+        inputWrappers.set(dom, inputWrapper);
+        validateInputWrapper(vNode, dom, inputWrapper);
+    }
+}
+function validateInputWrapper(vNode, dom, inputWrapper) {
+    if (!inputWrapper) {
+        inputWrapper = inputWrappers.get(dom);
+    }
+    if (!inputWrapper) {
+        attachInputWrapper(vNode, dom);
+        return;
+    }
+    inputWrapper.vNode = vNode;
 }
 
 // import {
@@ -651,7 +671,10 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
             }
         }
         if (lastProps !== nextProps) {
-            patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG, nextFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement));
+            patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG);
+        }
+        if (nextFlags & VNodeFlags.InputElement) {
+            validateInputWrapper(nextVNode, dom, null);
         }
     }
 }
@@ -1073,7 +1096,7 @@ function lis_algorithm(a) {
     return result;
 }
 // // returns true if a property has been applied that can't be cloned via elem.cloneNode()
-function patchProp(prop, lastValue, nextValue, dom, isSVG, isControlled) {
+function patchProp(prop, lastValue, nextValue, dom, isSVG) {
     if (prop === 'children') {
         return;
     }
@@ -1099,13 +1122,7 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG, isControlled) {
             dom[prop] = nextValue ? true : false;
         }
         else if (strictProps[prop]) {
-            var value = isNullOrUndef(nextValue) ? '' : nextValue;
-            if (isControlled) {
-                controlElementProp(dom, prop, value);
-            }
-            else {
-                dom[prop] = value;
-            }
+            dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
         }
         else if (prop === 'dangerouslySetInnerHTML') {
             var lastHtml = lastValue && lastValue.__html;
@@ -1131,7 +1148,7 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG, isControlled) {
         }
     }
 }
-function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG, isControlled) {
+function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
     lastProps = lastProps || EMPTY_OBJ;
     nextProps = nextProps || EMPTY_OBJ;
     if (nextProps !== EMPTY_OBJ) {
@@ -1143,7 +1160,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG, isCont
                 removeProp(prop, dom);
             }
             else {
-                patchProp(prop, lastValue, nextValue, dom, isSVG, isControlled);
+                patchProp(prop, lastValue, nextValue, dom, isSVG);
             }
         }
     }
@@ -1498,12 +1515,6 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
     if (!isNull(ref)) {
         mountRef(dom, ref, lifecycle);
     }
-    if (!isNull(props)) {
-        for (var prop in props) {
-            // do not add a hasOwnProperty check here, it affects performance
-            patchProp(prop, null, props[prop], dom, isSVG, flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement));
-        }
-    }
     if (!isNull(children)) {
         if (isStringOrNumber(children)) {
             setTextContent(dom, children);
@@ -1514,6 +1525,15 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
         else if (isVNode(children)) {
             mount(children, dom, lifecycle, context, isSVG);
         }
+    }
+    if (!isNull(props)) {
+        for (var prop in props) {
+            // do not add a hasOwnProperty check here, it affects performance
+            patchProp(prop, null, props[prop], dom, isSVG);
+        }
+    }
+    if (flags & VNodeFlags.InputElement) {
+        attachInputWrapper(vNode, dom);
     }
     if (!isNull(parentDom)) {
         appendChild(parentDom, dom);

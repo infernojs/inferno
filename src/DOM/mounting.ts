@@ -31,6 +31,7 @@ import {
 } from './recycling';
 import { devToolsStatus } from './devtools';
 import { VNodeFlags, isVNode } from '../core/shapes';
+import { attachInputWrapper } from './wrappers/InputWrapper';
 
 export function mount(vNode, parentDom, lifecycle, context, isSVG) {
 	const flags = vNode.flags;
@@ -99,19 +100,6 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 	if (!isNull(ref)) {
 		mountRef(dom, ref, lifecycle);
 	}
-	if (!isNull(props)) {
-		for (let prop in props) {
-			// do not add a hasOwnProperty check here, it affects performance
-			patchProp(
-				prop,
-				null,
-				props[prop],
-				dom,
-				isSVG,
-				flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)
-			);
-		}
-	}
 	if (!isNull(children)) {
 		if (isStringOrNumber(children)) {
 			setTextContent(dom, children);
@@ -120,6 +108,15 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 		} else if (isVNode(children)) {
 			mount(children, dom, lifecycle, context, isSVG);
 		}
+	}
+	if (!isNull(props)) {
+		for (let prop in props) {
+			// do not add a hasOwnProperty check here, it affects performance
+			patchProp(prop, null, props[prop], dom, isSVG);
+		}
+	}	
+	if (flags & VNodeFlags.InputElement) {
+		attachInputWrapper(vNode, dom);
 	}
 	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);

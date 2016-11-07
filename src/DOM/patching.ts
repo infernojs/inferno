@@ -60,8 +60,8 @@ import {
 	VNode
 } from '../core/shapes';
 import {
-	controlElementProp
-} from './controlled';
+	validateInputWrapper
+} from './wrappers/InputWrapper';
 // import {
 // 	getIncrementalId,
 // 	componentIdMap
@@ -266,9 +266,11 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 				dom,
 				lifecycle,
 				context,
-				isSVG,
-				nextFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)
+				isSVG
 			);
+		}
+		if (nextFlags & VNodeFlags.InputElement) {
+			validateInputWrapper(nextVNode, dom, null);
 		}
 	}
 }
@@ -730,7 +732,7 @@ function lis_algorithm(a) {
 }
 
 // // returns true if a property has been applied that can't be cloned via elem.cloneNode()
-export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, isControlled) {
+export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 	if (prop === 'children') {
 		return;
 	}
@@ -750,13 +752,7 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, isCon
 		} else if (booleanProps[prop]) {
 			dom[prop] = nextValue ? true : false;
 		} else if (strictProps[prop]) {
-			const value = isNullOrUndef(nextValue) ? '' : nextValue;
-
-			if (isControlled) {
-				controlElementProp(dom, prop, value);
-			} else {
-				dom[prop] = value;
-			}
+			dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
 		} else if (prop === 'dangerouslySetInnerHTML') {
 			const lastHtml = lastValue && lastValue.__html;
 			const nextHtml = nextValue && nextValue.__html;
@@ -782,7 +778,7 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, isCon
 	}
 }
 
-function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG, isControlled) {
+function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 	lastProps = lastProps || EMPTY_OBJ;
 	nextProps = nextProps || EMPTY_OBJ;
 
@@ -795,7 +791,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG, isCont
 			if (isNullOrUndef(nextValue)) {
 				removeProp(prop, dom);
 			} else {
-				patchProp(prop, lastValue, nextValue, dom, isSVG, isControlled);
+				patchProp(prop, lastValue, nextValue, dom, isSVG);
 			}
 		}
 	}
