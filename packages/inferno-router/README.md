@@ -32,43 +32,40 @@ import createBrowserHistory from 'history/createBrowserHistory';
 const browserHistory = createBrowserHistory();
 
 function App({ children }) {
-	// ...
+  // ...
 }
 
 function NoMatch({ children }) {
-	// ...
+  // ...
 }
 
 function Home({ children }) {
-	// ...
+  // ...
 }
 
 // `children` in this case will be the `User` component
 function Users({ children, params }) {
-	return <div>{ children }</div>
+  return <div>{ children }</div>
 }
 
 function User({ params }) {
-	return <div>{ params.username }</div>
+  return <div>{ params.username }</div>
 }
 
-function renderDOM(location) {
-    Inferno.render((
-        <Router history={ browserHistory }>
-            <Route component={ App }>
-                <IndexRoute component={ Home }/>
-                <Route path="users" component={ Users }>
-                    <Route path="/user/:username" component={ User }/>
-                </Route>
-                <Route path="*" component={ NoMatch }/>
-            </Route>
-        </Router>
-    ), container);
-}
+const routes = (
+ <Router history={ browserHistory }>
+   <Route component={ App }>
+     <IndexRoute component={ Home }/>
+       <Route path="users" component={ Users }>
+         <Route path="/user/:username" component={ User }/>
+       </Route>
+     <Route path="*" component={ NoMatch }/>
+  </Route>
+</Router>
+);
 
 // Render HTML on the browser
-renderDOM(history.location)
-browserHistory.listen(renderDOM)
+Inferno.render(routes, document.getElementById('root'));
 ```
 
 ## onEnter / onLeave hooks
@@ -82,26 +79,24 @@ import { Router, IndexRoute } from 'inferno-router';
 import createBrowserHistory from 'history/createBrowserHistory';
 
 function Home({ params }) {
-	// ...
+  // ...
 }
 
 function authorizedOnly(props, router) {
-    if (!props.loggedIn) {
-      router.push('/login');
-    }
+  if (!props.loggedIn) {
+    router.push('/login');
+  }
 }
 
 function sayGoodBye(props, router) {
-    alert('Good bye!')
+  alert('Good bye!')
 }
 
-function expressRoute(req, res) {
-    Inferno.render((
-        <Router url={ req.originalUrl } history={ createBrowserHistory() }>
-            <IndexRoute component={ Home } onEnter={ authorizedOnly } onLeave={ sayGoodBye } />
-        </Router>
-    ), container);
-}
+Inferno.render((
+  <Router history={ createBrowserHistory() }>
+    <IndexRoute component={ Home } onEnter={ authorizedOnly } onLeave={ sayGoodBye } />
+  </Router>
+), container);
 ```
 
 ## Server-side rendering (express)
@@ -109,38 +104,30 @@ function expressRoute(req, res) {
 ```js
 import Inferno from 'inferno';
 import { renderToString } from 'inferno-server'
-import { Router, IndexRoute } from 'inferno-router';
+import { RouterContext, match } from 'inferno-router';
 import express from 'express';
+import routes from './routes';
 
-function App({ children }) {
-	return (
-	<html>
-        <head>
-          <title>My Application</title>
-        </head>
-        <body>
-            <div>{children}</div>
-        </body>
-    </html>
-    );
-}
-
-function Home() {
-	return <p>Home sweet home</p>;
+function Html({ children }) {
+  return (
+    <html>
+      <head>
+        <title>My Application</title>
+      </head>
+      <body>
+        <div id="root">{children}</div>
+      </body>
+  </html>
+  );
 }
 
 const app = express();
 
 app.use((req, res) => {
+  const renderProps = match(routes, req.originalUrl);
+  const content = (<Html><RouterContext {...renderProps}/></Html>);
 
-    function renderComponent() {
-        return <Router url={ req.originalUrl }>
-            <Route component={ App }>
-                <IndexRoute component={ Home }/>
-            </Route>
-        </Router>;
-    }
-    res.send('<!DOCTYPE html>\n' + renderToString( renderComponent() ));
+  res.send('<!DOCTYPE html>\n' + renderToString(content));
 });
 ```
 
@@ -149,40 +136,31 @@ app.use((req, res) => {
 ```js
 import Inferno from 'inferno';
 import { renderToString } from 'inferno-server'
-import { Router, Route } from 'inferno-router';
+import { RouterContext, match } from 'inferno-router';
 import Koa from 'koa';
+import routes from './routes';
 
-function App({ children }) {
-	return (
-	<html>
-        <head>
-          <title>My Application</title>
-        </head>
-        <body>
-            <div>{children}</div>
-        </body>
-    </html>
-    );
-}
-
-function Home() {
-	return <p>Home sweet home</p>;
+function Html({ children }) {
+  return (
+    <html>
+      <head>
+        <title>My Application</title>
+      </head>
+      <body>
+        <div id="root">{children}</div>
+      </body>
+  </html>
+  );
 }
 
 const app = new Koa()
 
 app.use(async(ctx, next) => { 
-
-    function renderComponent() {
-        return <Router url={ ctx.originalUrl }>
-            <Route component={ App }>
-                <Route path="/" component={ Home }/>
-            </Route>
-        </Router>;
-    }
-    
-    ctx.body = '<!DOCTYPE html>\n' + renderToString( renderComponent() );
-    await next();
+  const renderProps = match(routes, ctx.url);
+  const content = (<Html><RouterContext {...renderProps}/></Html>);
+  
+  ctx.body = '<!DOCTYPE html>\n' + renderToString(content);
+  await next();
 });
 ```
 

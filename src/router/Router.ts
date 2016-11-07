@@ -1,5 +1,6 @@
 import Component from 'inferno-component';
-import match from './match';
+import createElement from 'inferno-create-element';
+import RouterContext from './RouterContext';
 
 export interface IRouterProps {
 	url: string;
@@ -26,16 +27,6 @@ export default class Router extends Component<IRouterProps, any> {
 		};
 	}
 
-	getChildContext() {
-		return {
-			router: this.router || {
-				location: {
-					pathname: this.props.url
-				}
-			}
-		};
-	}
-
 	componentWillMount() {
 		if (this.router) {
 			this.unlisten = this.router.listen(url => {
@@ -57,13 +48,10 @@ export default class Router extends Component<IRouterProps, any> {
 	}
 
 	render() {
-		// If we're injecting a single route (ex: result from getRoutes)
-		// then we don't need to go through all routes again
-		const { matched, children, url = this.state.url } = this.props;
-		if (matched) {
-			return matched;
-		}
-		const node = match(children, url);
-		return node;
+		const { children, url } = this.props;
+		return createElement(RouterContext, {
+			location: url || this.state.url,
+			router: this.router
+		}, children);
 	}
 }

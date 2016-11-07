@@ -1,62 +1,39 @@
 import Component from 'inferno-component';
+
 import { IRouterProps } from './Router';
 import match from './match';
 
 export default class RouterContext extends Component<IRouterProps, any> {
-	_didRoute: boolean;
-	router: any;
-	unlisten: any;
-
 	constructor(props?: any, context?: any) {
 		super(props, context);
-		if (!props.history && !props.matched) {
-			throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed, or a matched Route');
+		if (process.env.NODE_ENV !== 'production') {
+			if (!props.location) {
+				throw new ReferenceError('"inferno-router" requires a "location" prop passed');
+			}
+			if (!props.matched && !props.children) {
+				throw new ReferenceError('"inferno-router" requires a "matched" prop or "Route" components passed');
+			}
 		}
-		this._didRoute = false;
-		this.router = props.history;
-		this.state = {
-			url: props.url || (this.router.location.pathname + this.router.location.search)
-		};
 	}
 
 	getChildContext() {
 		return {
-			router: this.router || {
+			router: this.props.router || {
 				location: {
-					pathname: this.props.url
+					pathname: this.props.location
 				}
 			}
 		};
 	}
 
-	componentWillMount() {
-		if (this.router) {
-			this.unlisten = this.router.listen(url => {
-				this.routeTo(url.pathname);
-			});
-		}
-	}
-
-	componentWillUnmount() {
-		if (this.unlisten) {
-			this.unlisten();
-		}
-	}
-
-	routeTo(url) {
-		this._didRoute = false;
-		this.setState({ url });
-		return this._didRoute;
-	}
-
 	render() {
 		// If we're injecting a single route (ex: result from getRoutes)
 		// then we don't need to go through all routes again
-		const { matched, children, url = this.state.url } = this.props;
+		const { children, location, matched = null } = this.props;
 		if (matched) {
 			return matched;
 		}
-		const node = match(children, url);
-		return node;
+		const node = match(children, location);
+		return node.matched;
 	}
 }

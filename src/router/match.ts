@@ -1,6 +1,5 @@
 import { toArray, isArray } from '../shared';
 import { decode, isEmpty, pathRankSort, mapSearchParams, flatten, getURLString } from './utils';
-import { VComponent } from '../core/shapes';
 import pathToRegExp0 from 'path-to-regexp';
 import pathToRegExp1 = require('path-to-regexp');
 import { default as Inferno } from 'inferno';
@@ -16,8 +15,8 @@ const cache: Map<string, IMatchRegex> = new Map();
  */
 export default function match(routes, currentURL: any) {
 	const location: string = getURLString(currentURL);
-	const matched = matchRoutes(toArray(routes), location, '/');
-	return matched;
+	const renderProps = matchRoutes(toArray(routes), location, '/');
+	return renderProps;
 }
 
 /**
@@ -42,26 +41,28 @@ function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 
 	for (let i = 0; i < routes.length; i++) {
 		const route = routes[i];
-		const fullPath = (lastPath + (route.props && route.props.path || '/')).replace('//', '/');
+		const location = (lastPath + (route.props && route.props.path || '/')).replace('//', '/');
 		const isLast = !route.props || isEmpty(route.props.children);
-		const matchBase = matchPath(isLast, fullPath, pathToMatch);
+		const matchBase = matchPath(isLast, location, pathToMatch);
 
 		if (matchBase) {
 			let children = null;
 			if (route.props && route.props.children) {
-				const matchChild = match(route.props.children, pathToMatch, fullPath);
+				const matchChild = matchRoutes(route.props.children, pathToMatch, location);
 				if (matchChild) {
-					children = matchChild;
-					Object.assign(params, matchChild.props.params);
+					children = matchChild.matched;
+					Object.assign(params, matchChild.matched.props.params);
 				}
 			}
-			const node: VComponent = Inferno.cloneVNode(route, {
-				children,
-				params: Object.assign(params, matchBase.params),
-				component:  route.props.component
-			});
 
-			return node;
+			return {
+				location,
+				matched: Inferno.cloneVNode(route, {
+					children,
+					params: Object.assign(params, matchBase.params),
+					component:  route.props.component
+				})
+			};
 		}
 	}
 }
