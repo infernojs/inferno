@@ -39,7 +39,19 @@ export default function createElement(name: string | Function, props?: any, ..._
 		}
 	}
 	if (isString(name)) {
-		flags = name === 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement;
+		flags = VNodeFlags.HtmlElement;
+		
+		switch (name) {
+			case 'svg':
+				flags = VNodeFlags.SvgElement;
+				break;
+			case 'input':
+				flags = VNodeFlags.InputElement;
+				break;
+			case 'textarea':
+				flags = VNodeFlags.TextAreaElement;
+				break;
+		}
 		for (let prop in props) {
 			if (prop === 'key') {
 				key = props.key;

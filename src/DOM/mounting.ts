@@ -87,7 +87,7 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 	const tag = vNode.type;
 	const flags = vNode.flags;
 
-	if (isSVG || (flags & VNodeFlags.SvgElement) || tag === 'svg') {
+	if (isSVG || (flags & VNodeFlags.SvgElement)) {
 		isSVG = true;
 	}
 	const dom = documentCreateElement(tag, isSVG);
@@ -102,7 +102,14 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 	if (!isNull(props)) {
 		for (let prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchProp(prop, null, props[prop], dom, isSVG);
+			patchProp(
+				prop,
+				null,
+				props[prop],
+				dom,
+				isSVG,
+				flags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)
+			);
 		}
 	}
 	if (!isNull(children)) {

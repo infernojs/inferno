@@ -130,14 +130,11 @@ export function replaceFragmentWithNode(parentDom, vFragment, dom, lifecycle, sh
 }
 
 export function documentCreateElement(tag, isSVG) {
-	let dom;
-
 	if (isSVG === true) {
-		dom = document.createElementNS(svgNS, tag);
+		return document.createElementNS(svgNS, tag);
 	} else {
-		dom = document.createElement(tag);
+		return document.createElement(tag);
 	}
-	return dom;
 }
 
 export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG) {

@@ -59,6 +59,9 @@ import {
 	createFragmentVNode,
 	VNode
 } from '../core/shapes';
+import {
+	controlElementProp
+} from './controlled';
 // import {
 // 	getIncrementalId,
 // 	componentIdMap
@@ -221,7 +224,9 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 				if (isArray(lastChildren)) {
 					let patchKeyed = false;
 					// check if we can do keyed updates
-					if ((lastFlags & VNodeFlags.HasKeyedChildren) && (nextFlags & VNodeFlags.HasKeyedChildren)) {
+					if ((lastFlags & VNodeFlags.HasKeyedChildren) &&
+						(nextFlags & VNodeFlags.HasKeyedChildren)
+					) {
 						patchKeyed = true;
 					// check if we can do non-keyed updates without having to validate
 					} else if (!(nextFlags & VNodeFlags.HasNonKeyedChildren)) {
@@ -255,7 +260,15 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 			}
 		}
 		if (lastProps !== nextProps) {
-			patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG);
+			patchProps(
+				lastProps,
+				nextProps,
+				dom,
+				lifecycle,
+				context,
+				isSVG,
+				nextFlags & (VNodeFlags.InputElement | VNodeFlags.TextAreaElement)
+			);
 		}
 	}
 }
@@ -717,56 +730,59 @@ function lis_algorithm(a) {
 }
 
 // // returns true if a property has been applied that can't be cloned via elem.cloneNode()
-export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
+export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, isControlled) {
 	if (prop === 'children') {
 		return;
 	}
-	if (strictProps[prop]) {
-		dom[prop] = isNullOrUndef(nextValue) ? '' : nextValue;
-	} else if (booleanProps[prop]) {
-		dom[prop] = nextValue ? true : false;
-	} else {
-		if (lastValue !== nextValue) {
-			if (isNullOrUndef(nextValue)) {
-				dom.removeAttribute(prop);
+	if (lastValue !== nextValue) {
+		if (isNullOrUndef(nextValue)) {
+			dom.removeAttribute(prop);
+		} else if (prop === 'className') {
+			if (isSVG) {
+				dom.setAttribute('class', nextValue);
+			} else {
+				dom.className = nextValue;
 			}
-			if (prop === 'className') {
-				if (isSVG) {
-					dom.setAttribute('class', nextValue);
-				} else {
-					dom.className = nextValue;
-				}
-			} else if (prop === 'style') {
-				patchStyle(lastValue, nextValue, dom);
-			} else if (isAttrAnEvent(prop)) {
-				dom[prop.toLowerCase()] = nextValue;
-			} else if (prop === 'dangerouslySetInnerHTML') {
-				const lastHtml = lastValue && lastValue.__html;
-				const nextHtml = nextValue && nextValue.__html;
+		} else if (prop === 'style') {
+			patchStyle(lastValue, nextValue, dom);
+		} else if (isAttrAnEvent(prop)) {
+			dom[prop.toLowerCase()] = nextValue;
+		} else if (booleanProps[prop]) {
+			dom[prop] = nextValue ? true : false;
+		} else if (strictProps[prop]) {
+			const value = isNullOrUndef(nextValue) ? '' : nextValue;
 
-				if (isNullOrUndef(nextHtml)) {
-					if (process.env.NODE_ENV !== 'production') {
-						throwError('dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
-					}
-					throwError();
-				}
-				if (lastHtml !== nextHtml) {
-					dom.innerHTML = nextHtml;
-				}
-			} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
-				const ns = namespaces[prop];
+			if (isControlled) {
+				controlElementProp(dom, prop, value);
+			} else {
+				dom[prop] = value;
+			}
+		} else if (prop === 'dangerouslySetInnerHTML') {
+			const lastHtml = lastValue && lastValue.__html;
+			const nextHtml = nextValue && nextValue.__html;
 
-				if (ns) {
-					dom.setAttributeNS(ns, prop, nextValue);
-				} else {
-					dom.setAttribute(prop, nextValue);
+			if (isNullOrUndef(nextHtml)) {
+				if (process.env.NODE_ENV !== 'production') {
+					throwError('dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
 				}
+				throwError();
+			}
+			if (lastHtml !== nextHtml) {
+				dom.innerHTML = nextHtml;
+			}
+		} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
+			const ns = namespaces[prop];
+
+			if (ns) {
+				dom.setAttributeNS(ns, prop, nextValue);
+			} else {
+				dom.setAttribute(prop, nextValue);
 			}
 		}
 	}
 }
 
-function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
+function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG, isControlled) {
 	lastProps = lastProps || EMPTY_OBJ;
 	nextProps = nextProps || EMPTY_OBJ;
 
@@ -779,7 +795,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 			if (isNullOrUndef(nextValue)) {
 				removeProp(prop, dom);
 			} else {
-				patchProp(prop, lastValue, nextValue, dom, isSVG);
+				patchProp(prop, lastValue, nextValue, dom, isSVG, isControlled);
 			}
 		}
 	}

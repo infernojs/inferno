@@ -144,7 +144,18 @@ function createElement$1(name, props) {
         }
     }
     if (isString(name)) {
-        flags = name === 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement;
+        flags = VNodeFlags.HtmlElement;
+        switch (name) {
+            case 'svg':
+                flags = VNodeFlags.SvgElement;
+                break;
+            case 'input':
+                flags = VNodeFlags.InputElement;
+                break;
+            case 'textarea':
+                flags = VNodeFlags.TextAreaElement;
+                break;
+        }
         for (var prop in props) {
             if (prop === 'key') {
                 key = props.key;
@@ -166,9 +177,6 @@ function createElement$1(name, props) {
         }
     }
     else {
-        // components use "children" for component instances, not for actual children
-        // children are stored only in the props
-        children = null;
         flags = isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
         if (!isUndefined(children)) {
             if (!props) {

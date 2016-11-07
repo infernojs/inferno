@@ -58,6 +58,7 @@ function isChildren(x) {
 }
 
 function extractProps(_props, _tag) {
+	_props = _props || {};
 	const tag = isString(_tag) ? parseTag(_tag, _props) : _tag;
 	const props = {};
 	let key = null;
@@ -94,8 +95,19 @@ export default function hyperscript(_tag, _props?, _children?, _childrenType?): 
 	const { tag, props, key, ref, children } = extractProps(_props, _tag);
 
 	if (isString(tag)) {
-		const flags = tag === 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement;
-
+		let flags = VNodeFlags.HtmlElement;
+		
+		switch (tag) {
+			case 'svg':
+				flags = VNodeFlags.SvgElement;
+				break;
+			case 'input':
+				flags = VNodeFlags.InputElement;
+				break;
+			case 'textarea':
+				flags = VNodeFlags.TextAreaElement;
+				break;
+		}
 		return createVNode(flags, tag, props, _children || children, key, ref);
 	} else {
 		const flags = isStatefulComponent(tag) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;

@@ -152,6 +152,7 @@ function isChildren(x) {
     return isStringOrNumber(x) || (x && isArray(x));
 }
 function extractProps(_props, _tag) {
+    _props = _props || {};
     var tag = isString(_tag) ? parseTag(_tag, _props) : _tag;
     var props = {};
     var key = null;
@@ -195,7 +196,18 @@ function hyperscript$1(_tag, _props, _children, _childrenType) {
     var ref = ref$1.ref;
     var children = ref$1.children;
     if (isString(tag)) {
-        var flags = tag === 'svg' ? VNodeFlags.SvgElement : VNodeFlags.HtmlElement;
+        var flags = VNodeFlags.HtmlElement;
+        switch (tag) {
+            case 'svg':
+                flags = VNodeFlags.SvgElement;
+                break;
+            case 'input':
+                flags = VNodeFlags.InputElement;
+                break;
+            case 'textarea':
+                flags = VNodeFlags.TextAreaElement;
+                break;
+        }
         return createVNode(flags, tag, props, _children || children, key, ref);
     }
     else {

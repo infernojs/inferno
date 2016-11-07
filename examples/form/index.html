@@ -36,32 +36,17 @@
 	</style>
 </head>
 <body>
-
-<script src="../../packages/inferno/dist/inferno.min.js"></script>
-<script>
-	Inferno.render({
-		tag: 'form',
-		className: 'form',
-		children: [
-			{
-				tag: 'div',
-				className: 'form-group',
-				children: [
-					{
-						tag: 'label',
-						children: 'Please enter your name:'
-					},
-					{
-						tag: 'input',
-						attrs: {
-							type: 'text',
-							placeholder: 'Joe Bloggs'
-						}
-					}
-				]
-			}
-		]
-	}, document.body);
-</script>
+	<div id="app"></div>
+	<script src="../../packages/inferno/dist/inferno.js"></script>
+	<script src="../../packages/inferno/dist/inferno-hyperscript.js"></script>
+	<script>
+		var h = InfernoHyperscript;
+		Inferno.render(h('form.form', [
+			h('div.form-group', [
+				h('label', 'Please enter your name:'),
+				h('input', { type: 'text', placeholder: 'Joe Bloggs', value: '123' })
+			])
+		]), document.getElementById('app'));
+	</script>
 </body>
 </html>
