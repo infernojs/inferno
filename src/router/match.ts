@@ -1,10 +1,8 @@
 import { toArray, isArray } from '../shared';
-import { decode, isEmpty, pathRankSort, mapSearchParams, flatten, getURLString } from './utils';
-import pathToRegExp0 from 'path-to-regexp';
-import pathToRegExp1 = require('path-to-regexp');
+import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort } from './utils';
+import { default as pathToRegExp } from 'path-to-regexp';
 import { default as Inferno } from 'inferno';
 
-const pathToRegExp: any = pathToRegExp0 || pathToRegExp1;
 const cache: Map<string, IMatchRegex> = new Map();
 
 /**

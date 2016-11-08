@@ -9,7 +9,7 @@
 	var COMPONENT = NodeTypes.COMPONENT;
 	var OPT_ELEMENT = NodeTypes.OPT_ELEMENT;
 
-	uibench.init('Inferno', '1.0.0-beta6 *dev*');
+	uibench.init('Inferno', '1.0.0-beta7 *dev*');
 
 	var treeLeafBp = bp(e('li', { className: 'TreeLeaf' }), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
 	var treeNodeBp = bp(e('ul', { className: 'TreeNode' }), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
