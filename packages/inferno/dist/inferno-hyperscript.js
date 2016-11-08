@@ -4,15 +4,12 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno')) :
-    typeof define === 'function' && define.amd ? define(['inferno'], factory) :
-    (global.InfernoHyperscript = factory(global.Inferno));
-}(this, (function (Inferno) { 'use strict';
-
-Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.InfernoHyperscript = factory());
+}(this, (function () { 'use strict';
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-<<<<<<< HEAD
 
 
 function isArray(obj) {
@@ -21,25 +18,13 @@ function isArray(obj) {
 function isStatefulComponent(o) {
     return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
-=======
-
-
-function isArray(obj) {
-    return obj instanceof Array;
-}
-
->>>>>>> dev
 function isStringOrNumber(obj) {
     return isString(obj) || isNumber(obj);
 }
 
-<<<<<<< HEAD
 function isInvalid(obj) {
     return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
-=======
-
->>>>>>> dev
 
 
 function isString(obj) {
@@ -48,22 +33,16 @@ function isString(obj) {
 function isNumber(obj) {
     return typeof obj === 'number';
 }
-<<<<<<< HEAD
 function isNull(obj) {
     return obj === null;
 }
 function isTrue(obj) {
     return obj === true;
 }
-=======
-
-
->>>>>>> dev
 function isUndefined(obj) {
     return obj === undefined;
 }
 
-<<<<<<< HEAD
 var VNodeFlags;
 (function (VNodeFlags) {
     VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
@@ -76,9 +55,10 @@ var VNodeFlags;
     VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
     VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
     VNodeFlags[VNodeFlags["TextAreaElement"] = 512] = "TextAreaElement";
-    VNodeFlags[VNodeFlags["Fragment"] = 1024] = "Fragment";
-    VNodeFlags[VNodeFlags["Void"] = 2048] = "Void";
-    VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
+    VNodeFlags[VNodeFlags["SelectElement"] = 1024] = "SelectElement";
+    VNodeFlags[VNodeFlags["Fragment"] = 2048] = "Fragment";
+    VNodeFlags[VNodeFlags["Void"] = 4096] = "Void";
+    VNodeFlags[VNodeFlags["Element"] = 1986] = "Element";
     VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
 })(VNodeFlags || (VNodeFlags = {}));
 function _normaliseVNodes(nodes, result, i) {
@@ -131,12 +111,6 @@ function createTextVNode(text) {
     return createVNode(VNodeFlags.Text, null, null, text);
 }
 
-=======
-var UNKNOWN = 5;
-
-var createVElement = Inferno.createVElement;
-var createVComponent = Inferno.createVComponent;
->>>>>>> dev
 var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
 var notClassId = /^\.|#/;
 function parseTag(tag, props) {
@@ -234,6 +208,10 @@ function hyperscript$1(_tag, _props, _children, _childrenType) {
             case 'textarea':
                 flags = VNodeFlags.TextAreaElement;
                 break;
+            case 'select':
+                flags = VNodeFlags.SelectElement;
+                break;
+            default:
         }
         return createVNode(flags, tag, props, _children || children, key, ref);
     }

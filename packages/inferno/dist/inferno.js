@@ -75,9 +75,10 @@ var VNodeFlags;
     VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
     VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
     VNodeFlags[VNodeFlags["TextAreaElement"] = 512] = "TextAreaElement";
-    VNodeFlags[VNodeFlags["Fragment"] = 1024] = "Fragment";
-    VNodeFlags[VNodeFlags["Void"] = 2048] = "Void";
-    VNodeFlags[VNodeFlags["Element"] = 962] = "Element";
+    VNodeFlags[VNodeFlags["SelectElement"] = 1024] = "SelectElement";
+    VNodeFlags[VNodeFlags["Fragment"] = 2048] = "Fragment";
+    VNodeFlags[VNodeFlags["Void"] = 4096] = "Void";
+    VNodeFlags[VNodeFlags["Element"] = 1986] = "Element";
     VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
 })(VNodeFlags || (VNodeFlags = {}));
 function _normaliseVNodes(nodes, result, i) {
@@ -1041,22 +1042,9 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
             }
         }
         if (aLength === a.length && patched === 0) {
-<<<<<<< HEAD
             removeAllChildren(dom, a, lifecycle, false);
             while (bStart < bLength) {
                 insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), null);
-=======
-            if (parentVList === null) {
-                removeAllChildren(dom, a, lifecycle, shallowUnmount);
-                nextNode = null;
-            }
-            else {
-                removeChildren(dom, a, lifecycle, shallowUnmount);
-                nextNode = parentVList.pointer;
-            }
-            while (bStart < bLength) {
-                insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG, shallowUnmount), nextNode);
->>>>>>> dev
             }
         }
         else {
@@ -1439,10 +1427,13 @@ function removeChild(parentDom, dom) {
 }
 function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
     dom.textContent = '';
+    removeChildren(null, children, lifecycle, shallowUnmount);
+}
+function removeChildren(dom, children, lifecycle, shallowUnmount) {
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
         if (!isInvalid(child)) {
-            unmount(child, null, lifecycle, true, shallowUnmount);
+            unmount(child, dom, lifecycle, true, shallowUnmount);
         }
     }
 }
@@ -1515,6 +1506,9 @@ function rerenderRoots() {
 
 function sendRoots(global) {
     sendToDevTools(global, { type: 'roots', data: roots });
+}
+
+function attachSelectWrapper(vNode, dom) {
 }
 
 function mount(vNode, parentDom, lifecycle, context, isSVG) {
@@ -1593,6 +1587,9 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
     }
     if (flags & VNodeFlags.InputElement) {
         attachInputWrapper(vNode, dom);
+    }
+    else if (flags & VNodeFlags.SelectElement) {
+        attachSelectWrapper(vNode, dom);
     }
     if (!isNull(props)) {
         for (var prop in props) {
@@ -1824,7 +1821,6 @@ function hydrateText(vNode, dom) {
 function hydrateVoid(vNode, dom) {
     vNode.dom = dom;
 }
-<<<<<<< HEAD
 function hydrateFragment(vNode, currentDom, lifecycle, context) {
     var children = vNode.children;
     // const parentDom = currentDom.parentNode;
@@ -1834,17 +1830,6 @@ function hydrateFragment(vNode, currentDom, lifecycle, context) {
         var childDom = currentDom;
         if (isObject(child)) {
             hydrate(child, childDom, lifecycle, context);
-=======
-function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
-    dom.textContent = '';
-    removeChildren(null, children, lifecycle, shallowUnmount);
-}
-function removeChildren(dom, children, lifecycle, shallowUnmount) {
-    for (var i = 0; i < children.length; i++) {
-        var child = children[i];
-        if (!isInvalid(child)) {
-            unmount(child, dom, lifecycle, true, shallowUnmount);
->>>>>>> dev
         }
         currentDom = currentDom.nextSibling;
     }
@@ -2003,14 +1988,6 @@ var index = {
 
 	// cloning
 	cloneVNode: cloneVNode,
-<<<<<<< HEAD
-=======
-
-	// enums
-	ValueTypes: ValueTypes,
-	ChildrenTypes: ChildrenTypes,
-	NodeTypes: NodeTypes,
->>>>>>> dev
 
 	// TODO do we still need this? can we remove?
 	NO_OP: NO_OP,
@@ -2019,15 +1996,7 @@ var index = {
 	render: render,
 	findDOMNode: findDOMNode,
 	createRenderer: createRenderer,
-<<<<<<< HEAD
 	disableRecycling: disableRecycling
-=======
-	createStaticVElementClone: createStaticVElementClone,
-	disableRecycling: disableRecycling,
-
-	// bundle size helpers
-	convertVOptElementToVElement: convertVOptElementToVElement
->>>>>>> dev
 };
 
 return index;
