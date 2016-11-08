@@ -28,8 +28,7 @@ export default class Route extends Component<IRouteProps, any> {
 		}
 	}
 
-	render() {
-		const { component, children, params } = this.props;
+	render({ component, children, params }) {
 		return createElement(component, {
 			params,
 			children

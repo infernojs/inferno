@@ -6,12 +6,12 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-create-element'), require('./inferno-component'), require('path-to-regexp'), require('./inferno')) :
 	typeof define === 'function' && define.amd ? define(['inferno-create-element', 'inferno-component', 'path-to-regexp', 'inferno'], factory) :
-	(global.InfernoRouter = factory(global.createElement,global.Component,global.pathToRegExp0,global.Inferno));
-}(this, (function (createElement,Component,pathToRegExp0,Inferno) { 'use strict';
+	(global.InfernoRouter = factory(global.createElement,global.Component,global.pathToRegExp,global.Inferno));
+}(this, (function (createElement,Component,pathToRegExp,Inferno) { 'use strict';
 
 createElement = 'default' in createElement ? createElement['default'] : createElement;
 Component = 'default' in Component ? Component['default'] : Component;
-pathToRegExp0 = 'default' in pathToRegExp0 ? pathToRegExp0['default'] : pathToRegExp0;
+pathToRegExp = 'default' in pathToRegExp ? pathToRegExp['default'] : pathToRegExp;
 Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 
 function Link(props, ref) {
@@ -40,16 +40,14 @@ function Link(props, ref) {
             return;
         }
         e.preventDefault();
-        if (props.onEnter) {
-            props.onEnter(props, function (confirm) {
-                router.push(to, e.target.textContent);
-            });
-        }
-        else {
-            router.push(to, e.target.textContent);
-        }
+        router.push(to, e.target.textContent);
     };
     return createElement('a', elemProps, props.children);
+}
+
+function IndexLink(props) {
+    props.to = '/';
+    return createElement(Link, props);
 }
 
 var Route = (function (Component$$1) {
@@ -74,11 +72,11 @@ var Route = (function (Component$$1) {
             onLeave(this.props, this.context);
         }
     };
-    Route.prototype.render = function render () {
-        var ref = this.props;
+    Route.prototype.render = function render (ref) {
         var component = ref.component;
         var children = ref.children;
         var params = ref.params;
+
         return createElement(component, {
             params: params,
             children: children
@@ -87,6 +85,31 @@ var Route = (function (Component$$1) {
 
     return Route;
 }(Component));
+
+var IndexRoute = (function (Route$$1) {
+    function IndexRoute () {
+        Route$$1.apply(this, arguments);
+    }
+
+    if ( Route$$1 ) IndexRoute.__proto__ = Route$$1;
+    IndexRoute.prototype = Object.create( Route$$1 && Route$$1.prototype );
+    IndexRoute.prototype.constructor = IndexRoute;
+
+    IndexRoute.prototype.render = function render (ref) {
+        var component = ref.component;
+        var children = ref.children;
+        var params = ref.params;
+        var path = ref.path; if ( path === void 0 ) path = '/';
+
+        return createElement(component, {
+            path: path,
+            params: params,
+            children: children
+        });
+    };
+
+    return IndexRoute;
+}(Route));
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
@@ -121,6 +144,12 @@ function flatten(oldArray) {
 function getURLString(location) {
     return isString(location) ? location : (location.pathname + location.search);
 }
+/**
+ * Maps a querystring to an object
+ * Supports arrays and utf-8 characters
+ * @param search
+ * @returns {any}
+ */
 function mapSearchParams(search) {
     if (search === '') {
         return emptyObject;
@@ -142,12 +171,21 @@ function mapSearchParams(search) {
     }
     return map;
 }
+/**
+ * Sorts an array according to its `path` prop length
+ * @param a
+ * @param b
+ * @returns {number}
+ */
 function pathRankSort(a, b) {
     var aAttr = a.props || emptyObject;
     var bAttr = b.props || emptyObject;
     var diff = rank(bAttr.path) - rank(aAttr.path);
     return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
 }
+/**
+ * Helper function for parsing querystring arrays
+ */
 function mapFragment(p, isVal) {
     return decodeURIComponent(isVal | 0 ? p : p.replace('[]', ''));
 }
@@ -171,8 +209,26 @@ function flattenArray(oldArray, newArray) {
     }
 }
 
-var pathToRegExp = pathToRegExp0 || pathToRegExp1;
 var cache = new Map();
+/**
+ * Returns a node containing only the matched components
+ * @param routes
+ * @param currentURL
+ * @returns {any|VComponent}
+ */
+function match(routes, currentURL) {
+    var location = getURLString(currentURL);
+    var renderProps = matchRoutes(toArray(routes), location, '/');
+    return renderProps;
+}
+/**
+ * Go through every route and create a new node
+ * with the matched components
+ * @param _routes
+ * @param urlToMatch
+ * @param lastPath
+ * @returns {any}
+ */
 function matchRoutes(_routes, urlToMatch, lastPath) {
     if ( urlToMatch === void 0 ) urlToMatch = '/';
     if ( lastPath === void 0 ) lastPath = '/';
@@ -188,27 +244,37 @@ function matchRoutes(_routes, urlToMatch, lastPath) {
     routes.sort(pathRankSort);
     for (var i = 0; i < routes.length; i++) {
         var route = routes[i];
-        var fullPath = (lastPath + (route.props && route.props.path || '/')).replace('//', '/');
+        var location = (lastPath + (route.props && route.props.path || '/')).replace('//', '/');
         var isLast = !route.props || isEmpty(route.props.children);
-        var match = matchPath(isLast, fullPath, pathToMatch);
-        if (match) {
+        var matchBase = matchPath(isLast, location, pathToMatch);
+        if (matchBase) {
             var children = null;
             if (route.props && route.props.children) {
-                var matched = matchRoutes(route.props.children, pathToMatch, fullPath);
-                if (matched) {
-                    children = matched;
-                    Object.assign(params, matched.props.params);
+                var matchChild = matchRoutes(route.props.children, pathToMatch, location);
+                if (matchChild) {
+                    children = matchChild.matched;
+                    Object.assign(params, matchChild.matched.props.params);
                 }
             }
-            var node = Inferno.cloneVNode(route, {
-                children: children,
-                params: Object.assign(params, match.params),
-                component: route.props.component
-            });
-            return node;
+            return {
+                location: location,
+                matched: Inferno.cloneVNode(route, {
+                    children: children,
+                    params: Object.assign(params, matchBase.params),
+                    component: route.props.component
+                })
+            };
         }
     }
 }
+/**
+ * Converts path to a regex, if a match is found then we extract params from it
+ * @param end
+ * @param routePath
+ * @param urlPath
+ * @param parentParams
+ * @returns {any}
+ */
 function matchPath(end, routePath, urlPath, parentParams) {
     var key = routePath + "|" + end;
     var regexp = cache.get(key);
@@ -232,12 +298,48 @@ function matchPath(end, routePath, urlPath, parentParams) {
     };
 }
 
-function getRoutes(_routes, currentURL) {
-    var routes = toArray(_routes);
-    var location = getURLString(currentURL);
-    var matched = matchRoutes(routes, location, '/');
-    return matched;
-}
+var RouterContext = (function (Component$$1) {
+    function RouterContext(props, context) {
+        Component$$1.call(this, props, context);
+        if (process.env.NODE_ENV !== 'production') {
+            if (!props.location) {
+                throw new ReferenceError('"inferno-router" requires a "location" prop passed');
+            }
+            if (!props.matched && !props.children) {
+                throw new ReferenceError('"inferno-router" requires a "matched" prop or "Route" components passed');
+            }
+        }
+    }
+
+    if ( Component$$1 ) RouterContext.__proto__ = Component$$1;
+    RouterContext.prototype = Object.create( Component$$1 && Component$$1.prototype );
+    RouterContext.prototype.constructor = RouterContext;
+    RouterContext.prototype.getChildContext = function getChildContext () {
+        return {
+            router: this.props.router || {
+                location: {
+                    pathname: this.props.location
+                }
+            }
+        };
+    };
+    RouterContext.prototype.render = function render (ref) {
+        var children = ref.children;
+        var location = ref.location;
+        var matched = ref.matched; if ( matched === void 0 ) matched = null;
+
+        // If we're injecting a single route (ex: result from getRoutes)
+        // then we don't need to go through all routes again
+        if (matched) {
+            return matched;
+        }
+        var node = match(children, location);
+        return node.matched;
+    };
+
+    return RouterContext;
+}(Component));
+
 var Router = (function (Component$$1) {
     function Router(props, context) {
         Component$$1.call(this, props, context);
@@ -254,15 +356,6 @@ var Router = (function (Component$$1) {
     if ( Component$$1 ) Router.__proto__ = Component$$1;
     Router.prototype = Object.create( Component$$1 && Component$$1.prototype );
     Router.prototype.constructor = Router;
-    Router.prototype.getChildContext = function getChildContext () {
-        return {
-            router: this.router || {
-                location: {
-                    pathname: this.props.url
-                }
-            }
-        };
-    };
     Router.prototype.componentWillMount = function componentWillMount () {
         var this$1 = this;
 
@@ -282,18 +375,14 @@ var Router = (function (Component$$1) {
         this.setState({ url: url });
         return this._didRoute;
     };
-    Router.prototype.render = function render () {
-        // If we're injecting a single route (ex: result from getRoutes)
-        // then we don't need to go through all routes again
-        var ref = this.props;
-        var matched = ref.matched;
+    Router.prototype.render = function render (ref) {
         var children = ref.children;
-        var url = ref.url; if ( url === void 0 ) url = this.state.url;
-        if (matched) {
-            return matched;
-        }
-        var node = getRoutes(toArray(children), url);
-        return node;
+        var url = ref.url;
+
+        return createElement(RouterContext, {
+            location: url || this.state.url,
+            router: this.router
+        }, children);
     };
 
     return Router;
@@ -301,9 +390,12 @@ var Router = (function (Component$$1) {
 
 var index = {
 	Route: Route,
+	IndexRoute: IndexRoute,
 	Router: Router,
+	RouterContext: RouterContext,
 	Link: Link,
-	getRoutes: getRoutes
+	IndexLink: IndexLink,
+	match: match
 };
 
 return index;

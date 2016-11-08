@@ -1,8 +1,17 @@
 import createElement from 'inferno-create-element';
 
+interface ILinkProps {
+	href: any;
+	className?: string;
+	activeClassName?: string;
+	style?: any;
+	activeStyle?: any;
+	onclick?: (event?: any) => void;
+}
+
 export default function Link(props, { router }) {
 	const { activeClassName, activeStyle, className, to } = props;
-	const elemProps: any = {
+	const elemProps: ILinkProps = {
 		href: to
 	};
 
@@ -24,13 +33,7 @@ export default function Link(props, { router }) {
 			return;
 		}
 		e.preventDefault();
-		if (props.onEnter) {
-			props.onEnter(props, (confirm) => {
-				router.push(to, e.target.textContent);
-			});
-		} else {
-			router.push(to, e.target.textContent);
-		}
+		router.push(to, e.target.textContent);
 	};
 
 	return createElement('a', elemProps, props.children);

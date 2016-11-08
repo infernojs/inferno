@@ -1,6 +1,6 @@
 import { toArray, isArray } from '../shared';
 import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort } from './utils';
-import { default as pathToRegExp } from 'path-to-regexp';
+import pathToRegExp = require('path-to-regexp');
 import { default as Inferno } from 'inferno';
 
 const cache: Map<string, IMatchRegex> = new Map();
@@ -27,12 +27,15 @@ export default function match(routes, currentURL: any) {
  */
 function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 
-	if (!Object.keys(_routes).length) {
-		return _routes;
+	if (isEmpty(_routes)) {
+		return {
+			location: lastPath,
+			matched: _routes
+		};
 	}
 
 	const routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
-	const [pathToMatch, search = ''] = urlToMatch.split('?');
+	const [pathToMatch = '/', search = ''] = urlToMatch.split('?');
 	const params = mapSearchParams(search);
 
 	routes.sort(pathRankSort);
@@ -74,11 +77,10 @@ interface IMatchRegex {
  * Converts path to a regex, if a match is found then we extract params from it
  * @param end
  * @param routePath
- * @param urlPath
- * @param parentParams
+ * @param pathToMatch
  * @returns {any}
  */
-function matchPath(end: boolean, routePath: string, urlPath: string, parentParams?): any {
+function matchPath(end: boolean, routePath: string, pathToMatch: string): any {
 	const key = `${routePath}|${end}`;
 	let regexp: IMatchRegex = cache.get(key);
 
@@ -88,14 +90,14 @@ function matchPath(end: boolean, routePath: string, urlPath: string, parentParam
 		cache.set(key, regexp);
 	}
 
-	const m = regexp.pattern.exec(urlPath);
+	const m = regexp.pattern.exec(pathToMatch);
 
 	if (!m) {
 		return null;
 	}
 
 	const path: string = m[0];
-	const params = Object.assign({}, parentParams);
+	const params = Object.create(null);
 
 	for (let i = 1; i < m.length; i += 1) {
 		params[regexp.keys[i - 1].name] = decode(m[i]);

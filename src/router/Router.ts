@@ -3,10 +3,10 @@ import createElement from 'inferno-create-element';
 import RouterContext from './RouterContext';
 
 export interface IRouterProps {
-	url: string;
 	history?: any;
-	matched?: any;
 	children?: any;
+	router: any;
+	location: any;
 	component?: Component<any, any>;
 }
 
@@ -17,13 +17,14 @@ export default class Router extends Component<IRouterProps, any> {
 
 	constructor(props?: any, context?: any) {
 		super(props, context);
-		if (!props.history && !props.matched) {
-			throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed, or a matched Route');
+		if (!props.history) {
+			throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed');
 		}
 		this._didRoute = false;
 		this.router = props.history;
+		const location = this.router.location.pathname + this.router.location.search;
 		this.state = {
-			url: props.url || (this.router.location.pathname + this.router.location.search)
+			url: props.url || (location !== 'blank' ? location : '/')
 		};
 	}
 
@@ -47,8 +48,7 @@ export default class Router extends Component<IRouterProps, any> {
 		return this._didRoute;
 	}
 
-	render() {
-		const { children, url } = this.props;
+	render({ children, url }) {
 		return createElement(RouterContext, {
 			location: url || this.state.url,
 			router: this.router

@@ -76,6 +76,11 @@ declare module 'history/createBrowserHistory' {
 	export = createBrowserHistory;
 }
 
+declare module 'history/createMemoryHistory' {
+	function createMemoryHistory(options?: any);
+	export = createMemoryHistory;
+}
+
 declare module 'sinon' {
 	export function spy(obj: any, event: string): any;
 	export function stub(obj: any, event: string, callback: any): any;

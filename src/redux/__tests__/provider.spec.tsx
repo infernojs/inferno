@@ -3,13 +3,15 @@ import Provider from '../Provider';
 import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
 import Route from '../../router/Route';
+import IndexRoute from '../../router/IndexRoute';
 import Router from '../../router/Router';
 import createBrowserHistory from 'history/createBrowserHistory';
+import createMemoryHistory from 'history/createMemoryHistory';
 import { createStore } from 'redux';
 import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
-const browserHistory = createBrowserHistory();
+const browserHistory = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
 
 describe('Provider (JSX)', () => {
 	let container;
@@ -149,10 +151,10 @@ describe('Provider (JSX)', () => {
 			render(
 				<Provider store={store}>
 					<Router url={ url } history={ browserHistory }>
-						<Route path='/' component={ BasicRouter } >
+						<IndexRoute component={ BasicRouter } >
 							<Route path='/next' component={ BasicComponent2 } />
-							<Route path='/' component={ BasicComponent1 } />
-						</Route>
+							<IndexRoute component={ BasicComponent1 } />
+						</IndexRoute>
 					</Router>
 				</Provider>
 			, container);
@@ -174,9 +176,9 @@ describe('Provider (JSX)', () => {
 
 	it('should render the example correctly', () => {
 		class App extends Component<any, any> {
-			render() {
+			render({ children }) {
 				return <div>
-					{ this.props.children }
+					{ children }
 				</div>;
 			}
 		}
@@ -221,9 +223,11 @@ describe('Provider (JSX)', () => {
 
 		render((
 			<Provider store={ store }>
-				<Router history={ browserHistory } component={ App }>
-					<Route path='/next' component={ BasicComponent2 } />
-					<Route path='/' component={ BasicComponent1 } />
+				<Router history={ browserHistory }>
+					<Route component={ App }>
+						<Route path='/next' component={ BasicComponent2 } />
+						<IndexRoute component={ BasicComponent1 } />
+					</Route>
 				</Router>
 			</Provider>
 		), container);

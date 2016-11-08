@@ -11,7 +11,7 @@ export default class RouterContext extends Component<IRouterProps, any> {
 				throw new ReferenceError('"inferno-router" requires a "location" prop passed');
 			}
 			if (!props.matched && !props.children) {
-				throw new ReferenceError('"inferno-router" requires a "matched" prop or "Route" components passed');
+				throw new ReferenceError('"inferno-router" requires a "matched" prop passed or "Route" children defined');
 			}
 		}
 	}
@@ -26,10 +26,9 @@ export default class RouterContext extends Component<IRouterProps, any> {
 		};
 	}
 
-	render() {
+	render({ children, location, matched = null }) {
 		// If we're injecting a single route (ex: result from getRoutes)
 		// then we don't need to go through all routes again
-		const { children, location, matched = null } = this.props;
 		if (matched) {
 			return matched;
 		}
