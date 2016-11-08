@@ -241,7 +241,6 @@ describe('Select / select multiple (non-JSX)', () => {
 			value: 'd'
 		}, 'd'));
 		render(template(['a', 'b', 'c']), container);
-
 		expect(container.firstChild.children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].selected).to.eql(true);
 		expect(container.firstChild.children[2].selected).to.eql(true);

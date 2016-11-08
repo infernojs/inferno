@@ -60,9 +60,8 @@ import {
 	createFragmentVNode,
 	VNode
 } from '../core/shapes';
-import {
-	validateInputWrapper
-} from './wrappers/InputWrapper';
+import { processInput } from './wrappers/InputWrapper';
+import { processSelect } from './wrappers/SelectWrapper';
 // import {
 // 	getIncrementalId,
 // 	componentIdMap
@@ -261,7 +260,9 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 			}
 		}
 		if (nextFlags & VNodeFlags.InputElement) {
-			validateInputWrapper(nextVNode, dom, null);
+			processInput(nextVNode, dom);
+		} else if (nextFlags & VNodeFlags.SelectElement) {
+			processSelect(nextVNode, dom);
 		}
 		if (lastProps !== nextProps) {
 			patchProps(
@@ -732,9 +733,19 @@ function lis_algorithm(a) {
 	return result;
 }
 
-// // returns true if a property has been applied that can't be cloned via elem.cloneNode()
+// these are handled by other parts of Inferno, e.g. input wrappers
+const skipProps = {
+	children: true,
+	ref: true,
+	key: true,
+	selected: true,
+	checked: true,
+	value: true,
+	multiple: true
+};
+
 export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
-	if (prop === 'children' || prop === 'ref' || prop === 'key') {
+	if (skipProps[prop]) {
 		return;
 	}
 	if (booleanProps[prop]) {

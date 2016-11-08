@@ -31,8 +31,8 @@ import {
 } from './recycling';
 import { devToolsStatus } from './devtools';
 import { VNodeFlags, isVNode } from '../core/shapes';
-import { attachInputWrapper } from './wrappers/InputWrapper';
-import { attachSelectWrapper } from './wrappers/SelectWrapper';
+import { processInput } from './wrappers/InputWrapper';
+import { processSelect } from './wrappers/SelectWrapper';
 
 export function mount(vNode, parentDom, lifecycle, context, isSVG) {
 	const flags = vNode.flags;
@@ -111,9 +111,9 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 		}
 	}
 	if (flags & VNodeFlags.InputElement) {
-		attachInputWrapper(vNode, dom);
+		processInput(vNode, dom);
 	} else if (flags & VNodeFlags.SelectElement) {
-		attachSelectWrapper(vNode, dom);
+		processSelect(vNode, dom);
 	}
 	if (!isNull(props)) {
 		for (let prop in props) {

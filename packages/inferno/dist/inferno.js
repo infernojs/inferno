@@ -458,8 +458,8 @@ var namespaces = {};
 var isUnitlessNumber = {};
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,value,defaultValue,defaultChecked', strictProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
+constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
 var wrappers = new Map();
@@ -475,7 +475,7 @@ function onTextInputChange(e) {
     var vNode = this.vNode;
     var props = vNode.props;
     var dom = vNode.dom;
-    validateInputWrapper(vNode, dom, this);
+    applyValue(vNode, dom, false);
     if (props.onInput) {
         props.onInput(e);
     }
@@ -487,7 +487,7 @@ function onCheckboxChange(e) {
     var vNode = this.vNode;
     var props = vNode.props;
     var dom = vNode.dom;
-    validateInputWrapper(vNode, dom, this);
+    applyValue(vNode, dom, false);
     if (props.onClick) {
         props.onClick(e);
     }
@@ -497,58 +497,115 @@ function onCheckboxChange(e) {
 }
 function handleAssociatedRadioInputs(name) {
     var inputs = document.querySelectorAll(("input[type=\"radio\"][name=\"" + name + "\"]"));
-    [].forEach.call(inputs, function (el) { return validateInputWrapper(null, el, null); });
+    [].forEach.call(inputs, function (dom) {
+        var inputWrapper = wrappers.get(dom);
+        if (inputWrapper) {
+            var props = inputWrapper.vNode.props;
+            if (props) {
+                dom.checked = inputWrapper.vNode.props.checked;
+            }
+        }
+    });
 }
-function attachInputWrapper(vNode, dom) {
+function processInput(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
+    applyValue(vNode, dom, true);
     if (isControlled(props)) {
-        var inputWrapper = {
-            vNode: vNode
-        };
-        var type = props.type;
-        if (isCheckedType(type)) {
-            dom.onclick = onCheckboxChange.bind(inputWrapper);
-            dom.onclick.wrapped = true;
-        }
-        else {
-            dom.oninput = onTextInputChange.bind(inputWrapper);
-            dom.oninput.wrapped = true;
-        }
-        wrappers.set(dom, inputWrapper);
-        validateInputWrapper(vNode, dom, inputWrapper);
-    }
-}
-function validateInputWrapper(vNode, dom, inputWrapper) {
-    var props = vNode && (vNode.props || EMPTY_OBJ);
-    var associate = !!props;
-    if (!vNode || isControlled(props)) {
+        var inputWrapper = wrappers.get(dom);
         if (!inputWrapper) {
-            inputWrapper = wrappers.get(dom);
-        }
-        if (!inputWrapper && vNode) {
-            attachInputWrapper(vNode, dom);
-            return;
-        }
-        else if (!vNode) {
-            if (inputWrapper) {
-                vNode = inputWrapper.vNode;
-                props = vNode.props;
+            inputWrapper = {
+                vNode: vNode
+            };
+            if (isCheckedType(props.type)) {
+                dom.onclick = onCheckboxChange.bind(inputWrapper);
+                dom.onclick.wrapped = true;
             }
             else {
-                return;
+                dom.oninput = onTextInputChange.bind(inputWrapper);
+                dom.oninput.wrapped = true;
             }
+            wrappers.set(dom, inputWrapper);
         }
-        var type = props.type;
         inputWrapper.vNode = vNode;
-        if (isCheckedType(type)) {
-            dom.checked = vNode.props.checked;
-            if (associate && props.type === 'radio' && props.name) {
-                handleAssociatedRadioInputs(props.name);
-            }
+    }
+}
+function applyValue(vNode, dom, force) {
+    var props = vNode.props || EMPTY_OBJ;
+    var type = props.type;
+    if (force || type !== dom.type) {
+        dom.type = type;
+    }
+    if (isCheckedType(type)) {
+        dom.checked = vNode.props.checked;
+        if (type === 'radio' && props.name) {
+            handleAssociatedRadioInputs(props.name);
         }
-        else {
-            dom.value = vNode.props.value;
+    }
+    else {
+        var value = vNode.props.value;
+        if (force || dom.value !== value) {
+            dom.value = value;
         }
+    }
+}
+
+function isControlled$1(props) {
+    return !isNullOrUndef(props.value);
+}
+function updateChildOption(vNode, value) {
+    var props = vNode.props || EMPTY_OBJ;
+    var dom = vNode.dom;
+    // we do this as multiple may have changed
+    dom.value = props.value;
+    if ((isArray(value) && value.indexOf(props.value) !== -1) || props.value === value) {
+        dom.selected = true;
+    }
+    else {
+        dom.selected = props.selected || false;
+    }
+}
+function onSelectChange(e) {
+    var vNode = this.vNode;
+    var props = vNode.props;
+    var dom = vNode.dom;
+    applyValue$1(vNode, dom);
+    if (props.onChange) {
+        props.onChange(e);
+    }
+    else if (props.onchange) {
+        props.onchange(e);
+    }
+}
+function processSelect(vNode, dom) {
+    var props = vNode.props || EMPTY_OBJ;
+    applyValue$1(vNode, dom);
+    if (isControlled$1(props)) {
+        var selectWrapper = wrappers.get(dom);
+        if (!selectWrapper) {
+            selectWrapper = {
+                vNode: vNode
+            };
+            dom.onchange = onSelectChange.bind(selectWrapper);
+            dom.onchange.wrapped = true;
+            wrappers.set(dom, selectWrapper);
+        }
+        selectWrapper.vNode = vNode;
+    }
+}
+function applyValue$1(vNode, dom) {
+    var props = vNode.props || EMPTY_OBJ;
+    if (props.multiple !== dom.multiple) {
+        dom.multiple = props.multiple;
+    }
+    var children = vNode.children;
+    var value = props.value;
+    if (isArray(children)) {
+        for (var i = 0; i < children.length; i++) {
+            updateChildOption(children[i], value);
+        }
+    }
+    else if (isVNode(children)) {
+        updateChildOption(children, value);
     }
 }
 
@@ -717,7 +774,10 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
             }
         }
         if (nextFlags & VNodeFlags.InputElement) {
-            validateInputWrapper(nextVNode, dom, null);
+            processInput(nextVNode, dom);
+        }
+        else if (nextFlags & VNodeFlags.SelectElement) {
+            processSelect(nextVNode, dom);
         }
         if (lastProps !== nextProps) {
             patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG);
@@ -1141,9 +1201,18 @@ function lis_algorithm(a) {
     }
     return result;
 }
-// // returns true if a property has been applied that can't be cloned via elem.cloneNode()
+// these are handled by other parts of Inferno, e.g. input wrappers
+var skipProps = {
+    children: true,
+    ref: true,
+    key: true,
+    selected: true,
+    checked: true,
+    value: true,
+    multiple: true
+};
 function patchProp(prop, lastValue, nextValue, dom, isSVG) {
-    if (prop === 'children' || prop === 'ref' || prop === 'key') {
+    if (skipProps[prop]) {
         return;
     }
     if (booleanProps[prop]) {
@@ -1508,9 +1577,6 @@ function sendRoots(global) {
     sendToDevTools(global, { type: 'roots', data: roots });
 }
 
-function attachSelectWrapper(vNode, dom) {
-}
-
 function mount(vNode, parentDom, lifecycle, context, isSVG) {
     var flags = vNode.flags;
     if (flags & VNodeFlags.Element) {
@@ -1586,10 +1652,10 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
         }
     }
     if (flags & VNodeFlags.InputElement) {
-        attachInputWrapper(vNode, dom);
+        processInput(vNode, dom);
     }
     else if (flags & VNodeFlags.SelectElement) {
-        attachSelectWrapper(vNode, dom);
+        processSelect(vNode, dom);
     }
     if (!isNull(props)) {
         for (var prop in props) {

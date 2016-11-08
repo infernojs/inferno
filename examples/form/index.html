@@ -61,7 +61,15 @@
 					h('input', { type: 'radio', name: 'food', checked: true }),
 					h('span', 'Pasta')
 				])
-			])
+			]),
+			h('div.form-group', [
+				h('label', 'Location:'),
+				h('select', { value: 'United Kingdom' }, [
+					h('option', { selected: false }, 'United States'),
+					h('option', { selected: true }, 'United Kingdom'),
+					h('option', { selected: false }, 'France')
+				])
+			]),
 		]), document.getElementById('app'));
 	</script>
 </body>
