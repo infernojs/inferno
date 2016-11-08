@@ -40,7 +40,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 	}
 	if (isString(name)) {
 		flags = VNodeFlags.HtmlElement;
-		
+
 		switch (name) {
 			case 'svg':
 				flags = VNodeFlags.SvgElement;
@@ -51,6 +51,10 @@ export default function createElement(name: string | Function, props?: any, ..._
 			case 'textarea':
 				flags = VNodeFlags.TextAreaElement;
 				break;
+			case 'select':
+				flags = VNodeFlags.SelectElement;
+				break;
+			default:
 		}
 		for (let prop in props) {
 			if (prop === 'key') {

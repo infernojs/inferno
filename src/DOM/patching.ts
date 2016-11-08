@@ -261,7 +261,7 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 		}
 		if (nextFlags & VNodeFlags.InputElement) {
 			validateInputWrapper(nextVNode, dom, null);
-		}		
+		}
 		if (lastProps !== nextProps) {
 			patchProps(
 				lastProps,

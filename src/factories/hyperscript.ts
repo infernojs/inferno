@@ -96,7 +96,7 @@ export default function hyperscript(_tag, _props?, _children?, _childrenType?): 
 
 	if (isString(tag)) {
 		let flags = VNodeFlags.HtmlElement;
-		
+
 		switch (tag) {
 			case 'svg':
 				flags = VNodeFlags.SvgElement;
@@ -107,6 +107,10 @@ export default function hyperscript(_tag, _props?, _children?, _childrenType?): 
 			case 'textarea':
 				flags = VNodeFlags.TextAreaElement;
 				break;
+			case 'select':
+				flags = VNodeFlags.SelectElement;
+				break;
+			default:
 		}
 		return createVNode(flags, tag, props, _children || children, key, ref);
 	} else {
