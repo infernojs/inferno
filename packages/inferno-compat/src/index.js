@@ -1,27 +1,11 @@
 import isValidElement from '../../../src/factories/isValidElement';
-import PropTypes from 'proptypes';
-import ValueTypes from '../../../src/core/ValueTypes';
-import ChildrenTypes from '../../../src/core/ChildrenTypes';
-import NodeTypes from '../../../src/core/NodeTypes';
-import createClass from 'inferno-create-class';
-import infernoCreateElement from 'inferno-create-element';
-import renderToString, { renderToStaticMarkup } from 'inferno-server';
-import { default as Inferno } from 'inferno';
+import createClass from '../../../src/component/createClass';
+import infernoCreateElement from '../../../src/factories/createElement';
+import cloneVNode from '../../../src/factories/cloneVNode';
+import { render, findDOMNode } from '../../../src/DOM/rendering';
+import { createVNode } from '../../../src/core/shapes';
 import Component from 'inferno-component';
-const {
-	createVComponent: infernoCreateVComponent,
-	createVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createOptVElement,
-	createVFragment,
-	createVPlaceholder,
-	createVText,
-	cloneVNode,
-	findDOMNode,
-	render,
-	NO_OP
-} = Inferno;
+import { NO_OP } from '../../../src/shared';
 
 function unmountComponentAtNode(container) {
 	render(null, container);
@@ -82,10 +66,8 @@ const createElement = (name, _props, ...children) => {
 	return infernoCreateElement(name, props, ...children);
 }
 
-const createVComponent = (type, props, key, hooks, ref) =>
-	infernoCreateVComponent(type, props || {}, key, hooks, ref);
-
 export {
+	createVNode,
 	render,
 	isValidElement,
 	createElement,
@@ -95,26 +77,14 @@ export {
 	PropTypes,
 	createClass,
 	findDOMNode,
-	renderToString,
-	renderToStaticMarkup,
-	createVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ValueTypes,
-	ChildrenTypes,
-	NodeTypes,
 	Children,
-	createOptVElement,
-	createVFragment,
-	createVPlaceholder,
-	createVText,
 	cloneVNode,
 	NO_OP,
 	version
 };
 
 export default {
+	createVNode,
 	render,
 	isValidElement,
 	createElement,
@@ -124,20 +94,7 @@ export default {
 	PropTypes,
 	createClass,
 	findDOMNode,
-	renderToString,
-	renderToStaticMarkup,
-	createVElement,
-	createStaticVElement,
-	createOptBlueprint,
-	createVComponent,
-	ValueTypes,
-	ChildrenTypes,
-	NodeTypes,
 	Children,
-	createOptVElement,
-	createVFragment,
-	createVPlaceholder,
-	createVText,
 	cloneVNode,
 	NO_OP,
 	version

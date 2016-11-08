@@ -38,12 +38,12 @@ bundles.add({
 	path: 'packages/inferno-create-element/'
 });
 
-// bundles.add({
-// 	moduleGlobal: 'InfernoCompat',
-// 	moduleName: 'inferno-compat',
-// 	moduleEntry: 'packages/inferno-compat/src/index.js',
-// 	path: 'packages/inferno-compat/'
-// });
+bundles.add({
+	moduleGlobal: 'InfernoCompat',
+	moduleName: 'inferno-compat',
+	moduleEntry: 'packages/inferno-compat/src/index.js',
+	path: 'packages/inferno-compat/'
+});
 
 // bundles.add({
 // 	moduleGlobal: 'InfernoRouter',
