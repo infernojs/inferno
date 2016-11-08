@@ -88,12 +88,12 @@ export function applyValue(vNode, dom, force) {
 		dom.type = type;
 	}
 	if (isCheckedType(type)) {
-		dom.checked = vNode.props.checked;
+		dom.checked = props.checked;
 		if (type === 'radio' && props.name) {
 			handleAssociatedRadioInputs(props.name);
 		}
 	} else {
-		const value = vNode.props.value;
+		const value = props.value;
 
 		if (force || dom.value !== value) {
 			dom.value = value;

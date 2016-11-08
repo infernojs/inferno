@@ -50,7 +50,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 				flags = VNodeFlags.InputElement;
 				break;
 			case 'textarea':
-				flags = VNodeFlags.TextAreaElement;
+				flags = VNodeFlags.TextareaElement;
 				break;
 			case 'select':
 				flags = VNodeFlags.SelectElement;

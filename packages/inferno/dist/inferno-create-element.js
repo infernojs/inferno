@@ -59,7 +59,7 @@ var VNodeFlags;
     VNodeFlags[VNodeFlags["SvgElement"] = 64] = "SvgElement";
     VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
     VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
-    VNodeFlags[VNodeFlags["TextAreaElement"] = 512] = "TextAreaElement";
+    VNodeFlags[VNodeFlags["TextareaElement"] = 512] = "TextareaElement";
     VNodeFlags[VNodeFlags["SelectElement"] = 1024] = "SelectElement";
     VNodeFlags[VNodeFlags["Fragment"] = 2048] = "Fragment";
     VNodeFlags[VNodeFlags["Void"] = 4096] = "Void";
@@ -154,7 +154,7 @@ function createElement$1(name, props) {
                 flags = VNodeFlags.InputElement;
                 break;
             case 'textarea':
-                flags = VNodeFlags.TextAreaElement;
+                flags = VNodeFlags.TextareaElement;
                 break;
             case 'select':
                 flags = VNodeFlags.SelectElement;

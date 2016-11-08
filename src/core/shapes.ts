@@ -27,11 +27,11 @@ export const enum VNodeFlags {
 	SvgElement = 1 << 6,
 	MediaElement = 1 << 7,
 	InputElement = 1 << 8,
-	TextAreaElement = 1 << 9,
+	TextareaElement = 1 << 9,
 	SelectElement = 1 << 10,
 	Fragment = 1 << 11,
 	Void = 1 << 12,
-	Element = HtmlElement | SvgElement | MediaElement | InputElement | TextAreaElement | SelectElement,
+	Element = HtmlElement | SvgElement | MediaElement | InputElement | TextareaElement | SelectElement,
 	Component = ComponentFunction | ComponentClass
 }
 

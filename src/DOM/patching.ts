@@ -60,8 +60,7 @@ import {
 	createFragmentVNode,
 	VNode
 } from '../core/shapes';
-import { processInput } from './wrappers/InputWrapper';
-import { processSelect } from './wrappers/SelectWrapper';
+import processElement from './wrappers/processElement';
 // import {
 // 	getIncrementalId,
 // 	componentIdMap
@@ -171,7 +170,7 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 	}
 }
 
-function unmountVNodeChildren(children, dom, lifecycle) {
+function unmountChildren(children, dom, lifecycle) {
 	if (isVNode(children)) {
 		unmount(children, dom, lifecycle, true, false);
 	} else if (isArray(children)) {
@@ -197,72 +196,14 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 		const nextFlags = nextVNode.flags;
 
 		nextVNode.dom = dom;
-		if (isSVG || (nextFlags & VNodeFlags.SvgElement) || nextVNode.tag === 'svg') {
+		if (isSVG || (nextFlags & VNodeFlags.SvgElement)) {
 			isSVG = true;
 		}
 		if (lastChildren !== nextChildren) {
-			if (isInvalid(nextChildren)) {
-				unmountVNodeChildren(lastChildren, dom, lifecycle);
-			} else if (isInvalid(lastChildren)) {
-				if (isStringOrNumber(nextChildren)) {
-					setTextContent(dom, nextChildren);
-				} else {
-					if (isArray(nextChildren)) {
-						mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
-					} else {
-						mount(nextChildren, dom, lifecycle, context, isSVG);
-					}
-				}
-			} else if (isStringOrNumber(nextChildren)) {
-				if (isStringOrNumber(lastChildren)) {
-					updateTextContent(dom, nextChildren);
-				} else {
-					unmountVNodeChildren(lastChildren, dom, lifecycle);
-					setTextContent(dom, nextChildren);
-				}
-			} else if (isArray(nextChildren)) {
-				if (isArray(lastChildren)) {
-					let patchKeyed = false;
-					// check if we can do keyed updates
-					if ((lastFlags & VNodeFlags.HasKeyedChildren) &&
-						(nextFlags & VNodeFlags.HasKeyedChildren)
-					) {
-						patchKeyed = true;
-					// check if we can do non-keyed updates without having to validate
-					} else if (!(nextFlags & VNodeFlags.HasNonKeyedChildren)) {
-						if (isKeyed(lastChildren, nextChildren)) {
-							patchKeyed = true;
-						}
-					}
-					if (patchKeyed) {
-						patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
-					} else {
-						patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
-					}
-				} else {
-					unmountVNodeChildren(lastChildren, dom, lifecycle);
-					mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
-				}
-			} else if (isArray(lastChildren)) {
-				removeAllChildren(dom, lastChildren, lifecycle, false);
-				mount(nextChildren, dom, lifecycle, context, isSVG);
-			} else if (isVNode(nextChildren)) {
-				if (isVNode(lastChildren)) {
-					patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
-				} else {
-					unmountVNodeChildren(lastChildren, dom, lifecycle);
-					mount(nextChildren, dom, lifecycle, context, isSVG);
-				}
-			} else if (isVNode(lastChildren)) {
-				debugger;
-			} else {
-				debugger;
-			}
+			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG);
 		}
-		if (nextFlags & VNodeFlags.InputElement) {
-			processInput(nextVNode, dom);
-		} else if (nextFlags & VNodeFlags.SelectElement) {
-			processSelect(nextVNode, dom);
+		if (!(nextFlags & VNodeFlags.HtmlElement)) {
+			processElement(nextFlags, nextVNode, dom);
 		}
 		if (lastProps !== nextProps) {
 			patchProps(
@@ -274,6 +215,66 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 				isSVG
 			);
 		}
+	}
+}
+
+function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+	if (isInvalid(nextChildren)) {
+		unmountChildren(lastChildren, dom, lifecycle);
+	} else if (isInvalid(lastChildren)) {
+		if (isStringOrNumber(nextChildren)) {
+			setTextContent(dom, nextChildren);
+		} else {
+			if (isArray(nextChildren)) {
+				mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
+			} else {
+				mount(nextChildren, dom, lifecycle, context, isSVG);
+			}
+		}
+	} else if (isStringOrNumber(nextChildren)) {
+		if (isStringOrNumber(lastChildren)) {
+			updateTextContent(dom, nextChildren);
+		} else {
+			unmountChildren(lastChildren, dom, lifecycle);
+			setTextContent(dom, nextChildren);
+		}
+	} else if (isArray(nextChildren)) {
+		if (isArray(lastChildren)) {
+			let patchKeyed = false;
+			// check if we can do keyed updates
+			if ((lastFlags & VNodeFlags.HasKeyedChildren) &&
+				(nextFlags & VNodeFlags.HasKeyedChildren)
+			) {
+				patchKeyed = true;
+			// check if we can do non-keyed updates without having to validate
+			} else if (!(nextFlags & VNodeFlags.HasNonKeyedChildren)) {
+				if (isKeyed(lastChildren, nextChildren)) {
+					patchKeyed = true;
+				}
+			}
+			if (patchKeyed) {
+				patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			} else {
+				patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			}
+		} else {
+			unmountChildren(lastChildren, dom, lifecycle);
+			mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
+		}
+	} else if (isArray(lastChildren)) {
+		removeAllChildren(dom, lastChildren, lifecycle, false);
+		mount(nextChildren, dom, lifecycle, context, isSVG);
+	} else if (isVNode(nextChildren)) {
+		if (isVNode(lastChildren)) {
+			patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+		} else {
+			unmountChildren(lastChildren, dom, lifecycle);
+			mount(nextChildren, dom, lifecycle, context, isSVG);
+		}
+	} else if (isVNode(lastChildren)) {
+		debugger;
+	} else {
+		debugger;
 	}
 }
 

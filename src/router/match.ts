@@ -1,6 +1,6 @@
 import { toArray, isArray } from '../shared';
 import { decode, isEmpty, pathRankSort, mapSearchParams, flatten } from './utils';
-import { VComponent } from '../core/shapes';
+import { VNode } from '../core/shapes';
 import pathToRegExp0 from 'path-to-regexp';
 import pathToRegExp1 = require('path-to-regexp');
 import { default as Inferno } from 'inferno';
@@ -35,7 +35,7 @@ export function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 					Object.assign(params, matched.props.params);
 				}
 			}
-			const node: VComponent = Inferno.cloneVNode(route, {
+			const node: VNode = Inferno.cloneVNode(route, {
 				children,
 				params: Object.assign(params, match.params),
 				component:  route.props.component

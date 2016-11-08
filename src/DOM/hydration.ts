@@ -1,6 +1,5 @@
 import {
 	isArray,
-	isString,
 	isInvalid,
 	throwError,
 	isObject,
@@ -27,6 +26,7 @@ import { svgNS } from './constants';
 import {
 	VNodeFlags
 } from '../core/shapes';
+import processElement from './wrappers/processElement';
 
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
 	const domNode = childNodes[counter.i];
@@ -129,22 +129,25 @@ function hydrateComponent(vNode, dom, lifecycle, context, isClass) {
 	}
 }
 
-function hydrateElement(vElement, dom, lifecycle, context) {
-	const tag = vElement.type;
-	const children = vElement.children;
-	const props = vElement.props;
-	vElement.dom = dom;
+function hydrateElement(vNode, dom, lifecycle, context) {
+	const tag = vNode.type;
+	const children = vNode.children;
+	const props = vNode.props;
+	const flags = vNode.flags;
 
+	vNode.dom = dom;
 	if (dom.tagName.toLowerCase() !== tag) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError(`hydrateElement() failed due to mismatch on DOM element tag name. Ensure server-side logic matches client side logic.`);
 		}
 	}
+	if (children) {
+		hydrateChildren(children, dom, lifecycle, context);
+	}
+	if (!(flags & VNodeFlags.HtmlElement)) {
+		processElement(flags, vNode, dom);
+	}
 	for (let prop in props) {
-		if (!props.hasOwnProperty(prop)) {
-			continue;
-		}
-
 		const value = props[prop];
 
 		if (prop === 'key') {
@@ -156,10 +159,6 @@ function hydrateElement(vElement, dom, lifecycle, context) {
 		} else {
 			patchProp(prop, null, value, dom, false);
 		}
-	}
-
-	if (children) {
-		hydrateChildren(children, dom, lifecycle, context);
 	}
 }
 

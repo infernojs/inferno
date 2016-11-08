@@ -105,7 +105,7 @@ export default function hyperscript(_tag, _props?, _children?, _childrenType?): 
 				flags = VNodeFlags.InputElement;
 				break;
 			case 'textarea':
-				flags = VNodeFlags.TextAreaElement;
+				flags = VNodeFlags.TextareaElement;
 				break;
 			case 'select':
 				flags = VNodeFlags.SelectElement;
