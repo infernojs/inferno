@@ -20,6 +20,7 @@
 			display: block;
 			overflow: hidden;
 			position: relative;
+			margin-bottom: 20px;
 		}
 		.form-group label {
 			display: block;
@@ -33,6 +34,10 @@
 			font-size: 14px;
 			padding: 5px;
 		}
+		.form-group .inline input {
+			display: inline-block;
+			margin-right: 10px;
+		}
 	</style>
 </head>
 <body>
@@ -44,7 +49,18 @@
 		Inferno.render(h('form.form', [
 			h('div.form-group', [
 				h('label', 'Please enter your name:'),
-				h('input', { type: 'text', placeholder: 'Joe Bloggs', value: '123', onInput: () => {} })
+				h('input', { type: 'text', placeholder: 'Joe Bloggs', value: 'Fred' })
+			]),
+			h('div.form-group', [
+				h('label', 'Favourite food:'),
+				h('div.inline', [
+					h('input', { type: 'radio', name: 'food', checked: false }),
+					h('span', 'Pizza')
+				]),
+				h('div.inline', [
+					h('input', { type: 'radio', name: 'food', checked: true }),
+					h('span', 'Pasta')
+				])
 			])
 		]), document.getElementById('app'));
 	</script>

@@ -19,12 +19,32 @@ function onTextInputChange(e) {
 	const props = vNode.props;
 	const dom = vNode.dom;
 
-	dom.value = props.value;
+	validateInputWrapper(vNode, dom, this);
 	if (props.onInput) {
 		props.onInput(e);
 	} else if (props.oninput) {
 		props.oninput(e);
 	}
+}
+
+function onCheckboxChange(e) {
+	const vNode = this.vNode;
+	const props = vNode.props;
+	const dom = vNode.dom;
+
+	validateInputWrapper(vNode, dom, this);
+	if (props.onClick) {
+		props.onClick(e);
+	} else if (props.onclick) {
+		props.onclick(e);
+	}
+}
+
+function handleAssociatedRadioInputs(name) {
+	const inputs: any = document.querySelectorAll(`input[type="radio"][name="${ name }"]`);
+	[].forEach.call(inputs,
+		el => validateInputWrapper(null, el, null)
+	);
 }
 
 export function attachInputWrapper(vNode, dom) {
@@ -37,6 +57,8 @@ export function attachInputWrapper(vNode, dom) {
 		const type = props.type;
 
 		if (isCheckedType(type)) {
+			dom.onclick = onCheckboxChange.bind(inputWrapper);
+			dom.onclick.wrapped = true;
 		} else {
 			dom.oninput = onTextInputChange.bind(inputWrapper);
 			dom.oninput.wrapped = true;
@@ -47,16 +69,34 @@ export function attachInputWrapper(vNode, dom) {
 }
 
 export function validateInputWrapper(vNode, dom, inputWrapper) {
-	const props = vNode.props || EMPTY_OBJ;
+	let props = vNode && (vNode.props || EMPTY_OBJ);
+	const associate = !!props;
 
-	if (isControlled(props)) {
+	if (!vNode || isControlled(props)) {
 		if (!inputWrapper) {
 			inputWrapper = wrappers.get(dom);
 		}
-		if (!inputWrapper) {
+		if (!inputWrapper && vNode) {
 			attachInputWrapper(vNode, dom);
 			return;
+		} else if (!vNode) {
+			if (inputWrapper) {
+				vNode = inputWrapper.vNode;
+				props = vNode.props;
+			} else {
+				return;
+			}
 		}
+		const type = props.type;
+
 		inputWrapper.vNode = vNode;
+		if (isCheckedType(type)) {
+			dom.checked = vNode.props.checked;
+			if (associate && props.type === 'radio' && props.name) {
+				handleAssociatedRadioInputs(props.name);
+			}
+		} else {
+			dom.value = vNode.props.value;
+		}
 	}
 }

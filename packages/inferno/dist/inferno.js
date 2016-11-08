@@ -461,7 +461,7 @@ constructDefaults('volume,value,defaultValue,defaultChecked', strictProps, true)
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,selected,readonly,multiple,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-var wrappers = new WeakMap();
+var wrappers = new Map();
 
 function isCheckedType(type) {
     return type === 'checkbox' || type === 'radio';
@@ -474,13 +474,29 @@ function onTextInputChange(e) {
     var vNode = this.vNode;
     var props = vNode.props;
     var dom = vNode.dom;
-    dom.value = props.value;
+    validateInputWrapper(vNode, dom, this);
     if (props.onInput) {
         props.onInput(e);
     }
     else if (props.oninput) {
         props.oninput(e);
     }
+}
+function onCheckboxChange(e) {
+    var vNode = this.vNode;
+    var props = vNode.props;
+    var dom = vNode.dom;
+    validateInputWrapper(vNode, dom, this);
+    if (props.onClick) {
+        props.onClick(e);
+    }
+    else if (props.onclick) {
+        props.onclick(e);
+    }
+}
+function handleAssociatedRadioInputs(name) {
+    var inputs = document.querySelectorAll(("input[type=\"radio\"][name=\"" + name + "\"]"));
+    [].forEach.call(inputs, function (el) { return validateInputWrapper(null, el, null); });
 }
 function attachInputWrapper(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
@@ -490,6 +506,8 @@ function attachInputWrapper(vNode, dom) {
         };
         var type = props.type;
         if (isCheckedType(type)) {
+            dom.onclick = onCheckboxChange.bind(inputWrapper);
+            dom.onclick.wrapped = true;
         }
         else {
             dom.oninput = onTextInputChange.bind(inputWrapper);
@@ -500,16 +518,36 @@ function attachInputWrapper(vNode, dom) {
     }
 }
 function validateInputWrapper(vNode, dom, inputWrapper) {
-    var props = vNode.props || EMPTY_OBJ;
-    if (isControlled(props)) {
+    var props = vNode && (vNode.props || EMPTY_OBJ);
+    var associate = !!props;
+    if (!vNode || isControlled(props)) {
         if (!inputWrapper) {
             inputWrapper = wrappers.get(dom);
         }
-        if (!inputWrapper) {
+        if (!inputWrapper && vNode) {
             attachInputWrapper(vNode, dom);
             return;
         }
+        else if (!vNode) {
+            if (inputWrapper) {
+                vNode = inputWrapper.vNode;
+                props = vNode.props;
+            }
+            else {
+                return;
+            }
+        }
+        var type = props.type;
         inputWrapper.vNode = vNode;
+        if (isCheckedType(type)) {
+            dom.checked = vNode.props.checked;
+            if (associate && props.type === 'radio' && props.name) {
+                handleAssociatedRadioInputs(props.name);
+            }
+        }
+        else {
+            dom.value = vNode.props.value;
+        }
     }
 }
 
