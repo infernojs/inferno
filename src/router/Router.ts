@@ -1,6 +1,7 @@
-import Component from '../component/es2015';
-import { isArray, toArray } from '../shared';
-import { isEmpty, matchPath, pathRankSort } from './utils';
+import Component from 'inferno-component';
+import { toArray } from '../shared';
+import { matchRoutes } from './match';
+import { getURLString } from './utils';
 
 export interface IRouterProps {
 	url: string;
@@ -10,45 +11,11 @@ export interface IRouterProps {
 	component?: Component<any, any>;
 }
 
-export function getRoutes(routing, currentURL: string) {
-	let params = {};
-
-	function grabRoutes(_routes, url: string, lastPath: string) {
-		if (!_routes) {
-			return _routes;
-		}
-
-		const routes = toArray(_routes);
-		routes.sort(pathRankSort);
-
-		for (let i = 0; i < routes.length; i++) {
-			const route = routes[i];
-
-			if (isArray(route)) {
-				return grabRoutes(route, url, lastPath);
-			}
-
-			const { children, path = '/' } = route.props;
-			const fullPath = (lastPath + path).replace('//', '/');
-			const isLast = isEmpty(children);
-
-			if (children) {
-				route.props.children = grabRoutes(children, url, fullPath);
-			}
-
-			const match = matchPath(isLast, fullPath, url.replace('//', '/'));
-			if (match) {
-				route.props.params = Object.assign(params, match.params);
-				if (route.instance) {
-					return route.type(route.instance.props, route.instance.context);
-				} else {
-					return route;
-				}
-			}
-		}
-	}
-
-	return grabRoutes(routing, currentURL, '');
+export function getRoutes(_routes, currentURL: any) {
+	const routes = toArray(_routes);
+	const location: string = getURLString(currentURL);
+	const matched = matchRoutes(routes, location, '/');
+	return matched;
 }
 
 export default class Router extends Component<IRouterProps, any> {
@@ -58,6 +25,9 @@ export default class Router extends Component<IRouterProps, any> {
 
 	constructor(props?: any, context?: any) {
 		super(props, context);
+		if (!props.history && !props.matched) {
+			throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed, or a matched Route');
+		}
 		this._didRoute = false;
 		this.router = props.history;
 		this.state = {
@@ -98,12 +68,11 @@ export default class Router extends Component<IRouterProps, any> {
 	render() {
 		// If we're injecting a single route (ex: result from getRoutes)
 		// then we don't need to go through all routes again
-		const { matched, children, url } = this.props;
+		const { matched, children, url = this.state.url } = this.props;
 		if (matched) {
 			return matched;
 		}
-
-		const routes = toArray(children);
-		return getRoutes(routes, url || this.state.url);
+		const node = getRoutes(toArray(children), url);
+		return node;
 	}
 }

@@ -31,6 +31,7 @@ import {
 	// normaliseChild,
 	// resetFormInputProperties,
 	removeAllChildren,
+	// removeChildren,
 	replaceWithNewNode,
 	// formSelectValue,
 	updateTextContent,

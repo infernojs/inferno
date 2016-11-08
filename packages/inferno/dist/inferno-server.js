@@ -1,13 +1,15 @@
 /*!
- * inferno-server v1.0.0-beta6
+ * inferno-server v1.0.0-beta7
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('stream')) :
-	typeof define === 'function' && define.amd ? define(['stream'], factory) :
-	(global.InfernoServer = factory(global.stream));
-}(this, (function (stream) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno'), require('stream')) :
+	typeof define === 'function' && define.amd ? define(['inferno', 'stream'], factory) :
+	(global.InfernoServer = factory(global.Inferno,global.stream));
+}(this, (function (Inferno,stream) { 'use strict';
+
+Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
@@ -15,7 +17,14 @@ var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment
 function isArray(obj) {
     return obj instanceof Array;
 }
+<<<<<<< HEAD
 
+=======
+function isStatefulComponent(o) {
+    var type = o.type;
+    return !isUndefined(type.prototype) && !isUndefined(type.prototype.render);
+}
+>>>>>>> dev
 function isStringOrNumber(obj) {
     return isString(obj) || isNumber(obj);
 }
@@ -43,6 +52,7 @@ function isUndefined(obj) {
     return obj === undefined;
 }
 
+<<<<<<< HEAD
 function throwError(message) {
     if (!message) {
         message = ERROR_MSG;
@@ -50,6 +60,8 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
+=======
+>>>>>>> dev
 function constructDefaults(string, object, value) {
     /* eslint no-return-assign: 0 */
     string.split(',').forEach(function (i) { return object[i] = value; });
@@ -106,6 +118,7 @@ function isVoidElement(str) {
     return !!voidElements[str];
 }
 
+<<<<<<< HEAD
 var VNodeFlags;
 (function (VNodeFlags) {
     VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
@@ -177,6 +190,18 @@ function isVNode(o) {
 }
 
 function renderComponentToString(vComponent, isRoot, context, isClass) {
+=======
+var ELEMENT = 1;
+var OPT_ELEMENT = 2;
+var TEXT = 3;
+var FRAGMENT = 4;
+
+var COMPONENT = 6;
+var PLACEHOLDER = 7;
+
+var convertVOptElementToVElement = Inferno.convertVOptElementToVElement;
+function renderComponentToString(vComponent, isRoot, context) {
+>>>>>>> dev
     var type = vComponent.type;
     var props = vComponent.props;
     if (isClass) {

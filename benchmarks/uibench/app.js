@@ -3,7 +3,7 @@
 
 	var createVNode = Inferno.createVNode;
 
-	uibench.init('Inferno', '1.0.0-beta6');
+	uibench.init('Inferno', '1.0.0-beta7 *dev*');
 
 	var treeLeafProps = { className: 'TreeLeaf' };
 
@@ -159,18 +159,3 @@
 		);
 	});
 })();
-
-// type, props, children, flags, key, ref
-
-// export enum VNodeFlags {
-//     Text = 1,
-//     HtmlElement = 1 << 1 === 2,
-//     SvgElement = 1 << 2 === 4,
-//     MediaElement = 1 << 3,
-//     InputElement = 1 << 4,
-//     TextAreaElement = 1 << 5,
-//     Fragment = 1 << 6,
-//     Void = 1 << 7,
-//     ComponentClass = 1 << 8,
-//     ComponentFunction = 1 << 3
-// }

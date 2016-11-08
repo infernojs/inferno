@@ -13,13 +13,12 @@ var convert = require('convert-source-map');
 var merge = require('merge-source-map');
 var virtuals = require('./aliases');
 
-var nodeVersion = /(?:0\.)?\d+/.exec(process.version)[0];
 var nodeModulesPattern = path.sep === '/' ? /\/node_modules\// : /\\node_modules\\/;
 
 var bubleOptions = {
 	objectAssign: 'Object.assign',
 	target: {
-		node: nodeVersion
+		node: 6
 	},
 	transforms: {
 		modules: false,
@@ -30,6 +29,7 @@ var bubleOptions = {
 var babelOptions = {
 	babelrc: false,
 	sourceMaps: true,
+	compact: false,
 	presets: [],
 	plugins: [
 		"transform-es2015-modules-commonjs",

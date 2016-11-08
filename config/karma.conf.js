@@ -32,32 +32,24 @@ module.exports = function (config) {
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
-			'./../src/**/__tests__/**': ['webpack'],
+			'./../src/**/__tests__/**': ['webpack']
 		},
 		webpack: {
 			module: {
 				loaders: [
 					{
-						test: /\.tsx?/,
+						test: /\.tsx?$/,
 						loaders: ['babel-loader', 'ts-loader'],
 						exclude: /node_modules/
 					}, {
-						test: /\.js/,
+						test: /\.jsx?$/,
 						loader: 'babel-loader',
-						exclude: /node_modules/,
-						query: {
-							presets: ['es2015'],
-							plugins: [
-								'transform-object-rest-spread',
-								'babel-plugin-syntax-jsx',
-								'babel-plugin-inferno'
-							]
-						},
+						exclude: /node_modules/
 					}
-				],
+				]
 			},
 			resolve: {
-				extensions: ['', '.js', '.ts', '.tsx']
+				extensions: ['.js', '.ts', '.tsx']
 			}
 		},
 		webpackMiddleware: {

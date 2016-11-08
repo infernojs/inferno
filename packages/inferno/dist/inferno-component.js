@@ -1,13 +1,15 @@
 /*!
- * inferno-component v1.0.0-beta6
+ * inferno-component v1.0.0-beta7
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.InfernoComponent = factory());
-}(this, (function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno')) :
+    typeof define === 'function' && define.amd ? define(['inferno'], factory) :
+    (global.InfernoComponent = factory(global.Inferno));
+}(this, (function (Inferno) { 'use strict';
+
+Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 
 var Lifecycle = function Lifecycle() {
     this._listeners = [];
@@ -31,9 +33,13 @@ function isArray(obj) {
     return obj instanceof Array;
 }
 
+<<<<<<< HEAD
 function isStringOrNumber(obj) {
     return isString(obj) || isNumber(obj);
 }
+=======
+
+>>>>>>> dev
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
@@ -44,12 +50,17 @@ function isFunction(obj) {
     return typeof obj === 'function';
 }
 
+<<<<<<< HEAD
 function isString(obj) {
     return typeof obj === 'string';
 }
 function isNumber(obj) {
     return typeof obj === 'number';
 }
+=======
+
+
+>>>>>>> dev
 function isNull(obj) {
     return obj === null;
 }
@@ -67,6 +78,7 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
+<<<<<<< HEAD
 var VNodeFlags;
 (function (VNodeFlags) {
     VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
@@ -138,6 +150,10 @@ function createTextVNode(text) {
     return createVNode(VNodeFlags.Text, null, null, text);
 }
 
+=======
+var createVPlaceholder = Inferno.createVPlaceholder;
+var createVFragment = Inferno.createVFragment;
+>>>>>>> dev
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 var componentCallbackQueue = new Map();
 function addToQueue(component, force, callback) {

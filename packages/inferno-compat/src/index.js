@@ -1,25 +1,27 @@
-import { render, findDOMNode } from '../../../src/DOM/rendering';
-import { NO_OP } from '../../../src/shared';
-import infernoCreateElement from '../../../src/factories/createElement';
 import isValidElement from '../../../src/factories/isValidElement';
-import {
-	createVComponent as infernoCreateVComponent,
+import PropTypes from 'proptypes';
+import ValueTypes from '../../../src/core/ValueTypes';
+import ChildrenTypes from '../../../src/core/ChildrenTypes';
+import NodeTypes from '../../../src/core/NodeTypes';
+import createClass from 'inferno-create-class';
+import infernoCreateElement from 'inferno-create-element';
+import renderToString, { renderToStaticMarkup } from 'inferno-server';
+import { default as Inferno } from 'inferno';
+import Component from 'inferno-component';
+const {
+	createVComponent: infernoCreateVComponent,
 	createVElement,
 	createStaticVElement,
 	createOptBlueprint,
 	createOptVElement,
 	createVFragment,
 	createVPlaceholder,
-	createVText
-} from '../../../src/core/shapes';
-import Component from '../../../src/component/es2015';
-import createClass from '../../../src/component/createClass';
-import renderToString, { renderToStaticMarkup } from '../../../src/server/renderToString';
-import PropTypes from 'proptypes';
-import cloneVNode from '../../../src/factories/cloneVNode';
-import ValueTypes from '../../../src/core/ValueTypes';
-import ChildrenTypes from '../../../src/core/ChildrenTypes';
-import NodeTypes from '../../../src/core/NodeTypes';
+	createVText,
+	cloneVNode,
+	findDOMNode,
+	render,
+	NO_OP
+} = Inferno;
 
 function unmountComponentAtNode(container) {
 	render(null, container);

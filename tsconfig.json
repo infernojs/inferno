@@ -21,6 +21,9 @@
 		"strictNullChecks": false,
 		"removeComments": false
 	},
+	"include": [
+		"src/**/*"
+  ],
 	"exclude": [
 		"node_modules"
 	]

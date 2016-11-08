@@ -35,12 +35,15 @@ You can inject props using the following syntax
 ```javascript
 import Inferno from 'inferno'
 import Component from 'inferno-component'
-import { connect } from 'mobx-inferno'
+import { connect } from 'inferno-mobx'
 
-@connect(['model'])
+@connect(['helloStore', 'frenchStore'])
 class MyComponent extends Component {
-    render() {
-        return <p>{this.props.model.hello}</p>
+    render({ englishStore, frenchStore }) {
+        return <div>
+          <p>{ englishStore.title }</p>
+          <p>{ frenchStore.title }</p>
+        </div>
     }
 }
 ```
@@ -49,15 +52,18 @@ Just make sure that you provided your stores using the `Provider`. Ex:
 
 ```javascript
 import Inferno from 'inferno'
-import InfernoDOM from 'inferno-dom'
-import { Provider } from 'mobx-inferno'
+import { Provider } from 'inferno-mobx'
 import { observable } from 'mobx'
 
-const model = observable({
-    hello: 'world'
+const englishStore = observable({
+    title: 'Hello World'
 })
 
-InfernoDOM.render(<Provider model={model}>
-            <MyComponent/>
-        </Provider>, document.getElementById('root'))
+const frenchStore = observable({
+    title: 'Bonjour tout le monde'
+})
+
+Inferno.render(<Provider englishStore={ englishStore } frenchStore={ frenchStore }>
+    <MyComponent/>
+</Provider>, document.getElementById('root'))
 ```

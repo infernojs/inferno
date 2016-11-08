@@ -26,15 +26,15 @@ export interface ComponentLifecycle<P, S> {
 }
 
 export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
-        statics?: {
-            [key: string]: any;
-        };
+	statics?: {
+		[key: string]: any;
+	};
 
-        displayName?: string;
-        propTypes?: {[index: string]: Function};
+	displayName?: string;
+	propTypes?: {[index: string]: Function};
 
-        getDefaultProps?(): P;
-		getInitialState?(): S;
+	getDefaultProps?(): P;
+	getInitialState?(): S;
 }
 
 export interface ComponentSpec<P, S> extends Mixin<P, S> {

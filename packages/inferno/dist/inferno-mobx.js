@@ -1,5 +1,5 @@
 /*!
- * inferno-mobx v1.0.0-beta6
+ * inferno-mobx v1.0.0-beta7
  * (c) 2016 Ryan Megidov
  * Released under the MIT License.
  */
@@ -152,57 +152,45 @@ function trackComponents() {
         isDevtoolsEnabled = true;
     }
 }
-var reactiveMixin = {
-    componentWillMount: function componentWillMount() {
+function observer(componentClass) {
+    var target = componentClass.prototype || componentClass;
+    var baseDidMount = target.componentDidMount;
+    var baseWillMount = target.componentWillMount;
+    var baseUnmount = target.componentWillUnmount;
+    var reaction;
+    target.componentWillMount = function () {
+        if (typeof this.componentWillReact === 'function') {
+            this.componentWillReact();
+        }
+        if (baseWillMount) {
+            baseWillMount.call(this);
+        }
+    };
+    target.componentDidMount = function () {
         var this$1 = this;
 
-        // Generate friendly name for debugging
         var initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || "<component>";
-        var rootNodeID = this._reactInternalInstance && this._reactInternalInstance._rootNodeID;
-        var baseRender = this.render.bind(this);
-        var reaction;
-        var isRenderingPending = false;
-        var initialRender = function (nextProps, nextContext) {
-            // Inject props & state
-            var enhancedRender = function () { return baseRender(nextProps, nextContext); };
-            var reactiveRender = function () {
-                isRenderingPending = false;
-                var rendering = undefined;
-                reaction.track(function () {
-                    if (isDevtoolsEnabled) {
-                        this$1.__$mobRenderStart = Date.now();
-                    }
-                    rendering = mobx.extras.allowStateChanges(false, enhancedRender);
-                    if (isDevtoolsEnabled) {
-                        this$1.__$mobRenderEnd = Date.now();
-                    }
-                });
-                return rendering;
-            };
-            reaction = new mobx.Reaction((initialName + "#" + rootNodeID + ".render()"), function () {
-                if (!isRenderingPending) {
-                    // N.B. Getting here *before mounting* means that a component constructor has side effects
-                    isRenderingPending = true;
-                    if (typeof this$1.componentWillReact === 'function') {
-                        this$1.componentWillReact(); // TODO: wrap in action?
-                    }
-                    if (this$1.__$mobxIsUnmounted !== true) {
-                        // If we are unmounted at this point, componentWillReact() had a side effect causing the component to unmounted
-                        // TODO: remove this check? Then Inferno will properly warn about the fact that this should not happen? See #73
-                        // However, people also claim this migth happen during unit tests..
-                        Component.prototype.forceUpdate.call(this$1);
-                    }
-                }
+        reaction = new mobx.Reaction((initialName + ".render()"), function () {
+            reaction.track(function () {
+                this$1.render(this$1.props, this$1.context);
+                this$1.forceUpdate();
             });
-            reactiveRender.$mobx = reaction;
-            this$1.render = reactiveRender;
-            return reactiveRender();
-        };
-        this.render = initialRender;
-    },
-    componentWillUnmount: function componentWillUnmount() {
-        this.render.$mobx && this.render.$mobx.dispose();
-        this.__$mobxIsUnmounted = true;
+        });
+        // Start or schedule the just created reaction
+        reaction.runReaction();
+        this.disposer = reaction.getDisposer();
+        if (isDevtoolsEnabled) {
+            reportRendering(this);
+        }
+        if (baseDidMount) {
+            baseDidMount.call(this);
+        }
+    };
+    target.componentWillUnmount = function () {
+        this.disposer();
+        if (baseUnmount) {
+            baseUnmount.call(this);
+        }
         if (isDevtoolsEnabled) {
             var node = inferno.findDOMNode(this);
             if (node && componentByNodeRegistery) {
@@ -214,18 +202,8 @@ var reactiveMixin = {
                 node: node
             });
         }
-    },
-    componentDidMount: function componentDidMount() {
-        if (isDevtoolsEnabled) {
-            reportRendering(this);
-        }
-    },
-    componentDidUpdate: function componentDidUpdate() {
-        if (isDevtoolsEnabled) {
-            reportRendering(this);
-        }
-    },
-    shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+    };
+    target.shouldComponentUpdate = function (nextProps, nextState) {
         var this$1 = this;
 
         // Update on any state changes (as is the default)
@@ -249,9 +227,10 @@ var reactiveMixin = {
                 return true;
             }
         }
-        return false;
-    }
-};
+        return true;
+    };
+    return componentClass;
+}
 
 /**
  * Store Injection
@@ -275,12 +254,32 @@ function createStoreInjector(grabStoresFn, component) {
             newProps.ref = function (instance) {
                 this$1.wrappedInstance = instance;
             };
-            return createElement(component, newProps, this.props.children);
+            return createElement(component, newProps);
         }
     });
     Injector.contextTypes = { mobxStores: function mobxStores() { } };
+    injectStaticWarnings(Injector, component);
     hoistStatics(Injector, component);
     return Injector;
+}
+function injectStaticWarnings(hoc, component) {
+    if (typeof process === "undefined" || !process.env || process.env.NODE_ENV === "production") {
+        return;
+    }
+    ['propTypes', 'defaultProps', 'contextTypes'].forEach(function (prop) {
+        var propValue = hoc[prop];
+        Object.defineProperty(hoc, prop, {
+            set: function set(_) {
+                // enable for testing:
+                var name = component.displayName || component.name;
+                console.warn(("Mobx Injector: you are trying to attach " + prop + " to HOC instead of " + name + ". Use 'wrappedComponent' property."));
+            },
+            get: function get() {
+                return propValue;
+            },
+            configurable: true
+        });
+    });
 }
 var grabStoresByName = function (storeNames) { return function (baseStores, nextProps) {
     storeNames.forEach(function (storeName) {
@@ -315,12 +314,6 @@ function inject(grabStoresFn) {
     return function (componentClass) { return createStoreInjector(grabStoresFn, componentClass); };
 }
 
-var lifecycleMethods = [
-    'componentWillMount',
-    'componentWillUnmount',
-    'componentDidMount',
-    'componentDidUpdate'
-];
 /**
  * Wraps a component and provides stores as props
  */
@@ -363,33 +356,13 @@ function connect(arg1, arg2) {
     if (!componentClass) {
         throwError('Please pass a valid component to "observer"');
     }
-    var target = componentClass.prototype || componentClass;
-    lifecycleMethods.forEach(function (funcName) { return patch(target, funcName); });
-    if (!target.shouldComponentUpdate) {
-        target.shouldComponentUpdate = reactiveMixin.shouldComponentUpdate;
-    }
     componentClass.isMobXReactObserver = true;
-    return componentClass;
-}
-/**
- * Patch the component with reactive properties
- */
-function patch(target, funcName) {
-    var base = target[funcName];
-    var mixinFunc = reactiveMixin[funcName];
-    if (!base) {
-        target[funcName] = mixinFunc;
-    }
-    else {
-        target[funcName] = function () {
-            base.apply(this, arguments);
-            mixinFunc.apply(this, arguments);
-        };
-    }
+    return observer(componentClass);
 }
 
 var index = {
 	Provider: Provider,
+	inject: inject,
 	connect: connect,
 	observer: connect,
 	trackComponents: trackComponents,
