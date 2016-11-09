@@ -7,11 +7,11 @@ export default class RouterContext extends Component<IRouterProps, any> {
 	constructor(props?: any, context?: any) {
 		super(props, context);
 		if (process.env.NODE_ENV !== 'production') {
-			if (!props.location) {
-				throw new ReferenceError('"inferno-router" requires a "location" prop passed');
+			if (!props.matched && !props.location) {
+				throw new TypeError('"inferno-router" requires a "location" prop passed');
 			}
 			if (!props.matched && !props.children) {
-				throw new ReferenceError('"inferno-router" requires a "matched" prop passed or "Route" children defined');
+				throw new TypeError('"inferno-router" requires a "matched" prop passed or "Route" children defined');
 			}
 		}
 	}
@@ -32,6 +32,7 @@ export default class RouterContext extends Component<IRouterProps, any> {
 		if (matched) {
 			return matched;
 		}
+
 		const node = match(children, location);
 		return node.matched;
 	}

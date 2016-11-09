@@ -24,7 +24,7 @@ export default class Route extends Component<IRouteProps, any> {
 	componentWillUnmount() {
 		const { onLeave } = this.props;
 		if (onLeave) {
-			onLeave(this.props, this.context);
+			onLeave(this.props, this.context.router);
 		}
 	}
 
