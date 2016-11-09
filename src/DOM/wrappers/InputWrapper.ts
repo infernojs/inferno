@@ -84,7 +84,7 @@ export function applyValue(vNode, dom, force) {
 	const props = vNode.props || EMPTY_OBJ;
 	const type = props.type;
 
-	if (force || type !== dom.type) {
+	if ((force || type !== dom.type) && type) {
 		dom.type = type;
 	}
 	if (isCheckedType(type)) {
@@ -95,8 +95,10 @@ export function applyValue(vNode, dom, force) {
 	} else {
 		const value = props.value;
 
-		if (force || dom.value !== value) {
+		if (!isNullOrUndef(value) && (force || dom.value !== value)) {
 			dom.value = value;
+		} else if (!isNullOrUndef(props.checked)) {
+			dom.checked = props.checked;
 		}
 	}
 }

@@ -5,7 +5,8 @@ import {
 	throwError,
 	isFunction,
 	isArray,
-	isInvalid
+	isInvalid,
+	EMPTY_OBJ
 } from '../shared';
 import {
 	createVoidVNode,
@@ -229,8 +230,8 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
 			nextProps.children = prevProps.children;
 		}
-		if (prevProps !== nextProps || prevState !== nextState || force) {
-			if (prevProps !== nextProps) {
+		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
+			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
 				this._blockRender = true;
 				this.componentWillReceiveProps(nextProps, context);
 				this._blockRender = false;

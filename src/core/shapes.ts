@@ -2,7 +2,9 @@ import {
 	isStringOrNumber,
 	isArray,
 	isInvalid,
-	isUndefined
+	isUndefined,
+	isNull,
+	isStatefulComponent
 } from '../shared';
 
 export interface IProps {
@@ -81,6 +83,9 @@ export function normaliseVNodes(nodes: any[]): VNode[] {
 export function createVNode(flags, type?, props?, children?, key?, ref?): VNode {
 	if (isArray(children)) {
 		children = normaliseVNodes(children)
+	}
+	if (isNull(flags)) {
+		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
 	return {
 		children: isUndefined(children) ? null : children,

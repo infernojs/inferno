@@ -77,6 +77,9 @@ function createVNode(flags, type, props, children, key, ref) {
     if (isArray(children)) {
         children = normaliseVNodes(children);
     }
+    if (isNull(flags)) {
+        flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
+    }
     return {
         children: isUndefined(children) ? null : children,
         dom: null,

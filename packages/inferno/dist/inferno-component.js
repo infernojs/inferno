@@ -30,7 +30,9 @@ var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment
 function isArray(obj) {
     return obj instanceof Array;
 }
-
+function isStatefulComponent(o) {
+    return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
+}
 function isStringOrNumber(obj) {
     return isString(obj) || isNumber(obj);
 }
@@ -100,6 +102,9 @@ function normaliseVNodes(nodes) {
 function createVNode(flags, type, props, children, key, ref) {
     if (isArray(children)) {
         children = normaliseVNodes(children);
+    }
+    if (isNull(flags)) {
+        flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
     return {
         children: isUndefined(children) ? null : children,

@@ -68,14 +68,14 @@ export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, life
 export function replaceVNode(parentDom, dom, vNode, lifecycle) {
 	let shallowUnmount = false;
 	// we cannot cache nodeType here as vNode might be re-assigned below
-	if (vNode.flags === VNodeFlags.ComponentClass || vNode.flags === VNodeFlags.ComponentFunction) {
+	if (vNode.flags & VNodeFlags.Component) {
 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
 		// accessing their DOM node is not useful to us here
 		// #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
 		unmount(vNode, null, lifecycle, false, false);
-		vNode = vNode.children._lastInput || vNode.instance;
+		vNode = vNode.children._lastInput || vNode.children;
 		// #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
-		if (vNode.flags !== VNodeFlags.Fragment) {
+		if (!(vNode.flags & VNodeFlags.Fragment)) {
 			shallowUnmount = true;
 		}
 	}
