@@ -486,7 +486,7 @@ babel-plugin-external-helpers@^6.4.0:
 
 babel-plugin-inferno@infernojs/babel-plugin-inferno#vnode-refactor:
   version "1.1.0-beta7"
-  resolved "https://codeload.github.com/infernojs/babel-plugin-inferno/tar.gz/158839d4ee96c2d736d55715b563e61f2de90fb6"
+  resolved "https://codeload.github.com/infernojs/babel-plugin-inferno/tar.gz/b8c0767c12fb5140cf347b20770654d5b8b13b63"
   dependencies:
     babel-plugin-syntax-jsx "^6.13.0"
 

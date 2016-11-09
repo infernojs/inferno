@@ -69,6 +69,8 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
+var EMPTY_OBJ = {};
+
 function _normaliseVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
@@ -287,8 +289,8 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
     if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
         nextProps.children = prevProps.children;
     }
-    if (prevProps !== nextProps || prevState !== nextState || force) {
-        if (prevProps !== nextProps) {
+    if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
+        if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
             this._blockRender = true;
             this.componentWillReceiveProps(nextProps, context);
             this._blockRender = false;

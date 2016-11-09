@@ -665,7 +665,7 @@ function processInput(vNode, dom) {
 function applyValue(vNode, dom, force) {
     var props = vNode.props || EMPTY_OBJ;
     var type = props.type;
-    if (force || type !== dom.type) {
+    if ((force || type !== dom.type) && type) {
         dom.type = type;
     }
     if (isCheckedType(type)) {
@@ -676,8 +676,11 @@ function applyValue(vNode, dom, force) {
     }
     else {
         var value = props.value;
-        if (force || dom.value !== value) {
+        if (!isNullOrUndef(value) && (force || dom.value !== value)) {
             dom.value = value;
+        }
+        else if (!isNullOrUndef(props.checked)) {
+            dom.checked = props.checked;
         }
     }
 }
@@ -1548,14 +1551,14 @@ function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, 
 function replaceVNode(parentDom, dom, vNode, lifecycle) {
     var shallowUnmount = false;
     // we cannot cache nodeType here as vNode might be re-assigned below
-    if (vNode.flags === 4 /* ComponentClass */ || vNode.flags === 8 /* ComponentFunction */) {
+    if (vNode.flags & 12 /* Component */) {
         // if we are accessing a stateful or stateless component, we want to access their last rendered input
         // accessing their DOM node is not useful to us here
         // #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
         unmount(vNode, null, lifecycle, false, false);
-        vNode = vNode.children._lastInput || vNode.instance;
+        vNode = vNode.children._lastInput || vNode.children;
         // #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
-        if (vNode.flags !== 2048 /* Fragment */) {
+        if (!(vNode.flags & 2048 /* Fragment */)) {
             shallowUnmount = true;
         }
     }
@@ -2335,8 +2338,8 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
     if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
         nextProps.children = prevProps.children;
     }
-    if (prevProps !== nextProps || prevState !== nextState || force) {
-        if (prevProps !== nextProps) {
+    if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
+        if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
             this._blockRender = true;
             this.componentWillReceiveProps(nextProps, context);
             this._blockRender = false;
