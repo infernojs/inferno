@@ -2,7 +2,7 @@ import {
 	EMPTY_OBJ,
 	isNullOrUndef
 } from './../../shared';
-import wrappers from './map';
+import { wrappers } from './processElement';
 
 function isCheckedType(type) {
 	return type === 'checkbox' || type === 'radio';

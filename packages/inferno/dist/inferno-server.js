@@ -15,7 +15,9 @@ var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment
 function isArray(obj) {
     return obj instanceof Array;
 }
-
+function isStatefulComponent(o) {
+    return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
+}
 function isStringOrNumber(obj) {
     return isString(obj) || isNumber(obj);
 }
@@ -106,24 +108,6 @@ function isVoidElement(str) {
     return !!voidElements[str];
 }
 
-var VNodeFlags;
-(function (VNodeFlags) {
-    VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
-    VNodeFlags[VNodeFlags["HtmlElement"] = 2] = "HtmlElement";
-    VNodeFlags[VNodeFlags["ComponentClass"] = 4] = "ComponentClass";
-    VNodeFlags[VNodeFlags["ComponentFunction"] = 8] = "ComponentFunction";
-    VNodeFlags[VNodeFlags["HasKeyedChildren"] = 16] = "HasKeyedChildren";
-    VNodeFlags[VNodeFlags["HasNonKeyedChildren"] = 32] = "HasNonKeyedChildren";
-    VNodeFlags[VNodeFlags["SvgElement"] = 64] = "SvgElement";
-    VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
-    VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
-    VNodeFlags[VNodeFlags["TextareaElement"] = 512] = "TextareaElement";
-    VNodeFlags[VNodeFlags["SelectElement"] = 1024] = "SelectElement";
-    VNodeFlags[VNodeFlags["Fragment"] = 2048] = "Fragment";
-    VNodeFlags[VNodeFlags["Void"] = 4096] = "Void";
-    VNodeFlags[VNodeFlags["Element"] = 1986] = "Element";
-    VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
-})(VNodeFlags || (VNodeFlags = {}));
 function _normaliseVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
@@ -158,6 +142,9 @@ function createVNode(flags, type, props, children, key, ref) {
     if (isArray(children)) {
         children = normaliseVNodes(children);
     }
+    if (isNull(flags)) {
+        flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
+    }
     return {
         children: isUndefined(children) ? null : children,
         dom: null,
@@ -171,7 +158,7 @@ function createVNode(flags, type, props, children, key, ref) {
 
 
 function createTextVNode(text) {
-    return createVNode(VNodeFlags.Text, null, null, text);
+    return createVNode(1 /* Text */, null, null, text);
 }
 function isVNode(o) {
     return !!o.flags;
@@ -224,7 +211,7 @@ function renderChildrenToString(children, context) {
                 insertComment = true;
             }
             else if (isVNode(child)) {
-                if (child.flags & VNodeFlags.Text) {
+                if (child.flags & 1 /* Text */) {
                     if (insertComment) {
                         childrenResult.push('<!---->');
                     }
@@ -307,13 +294,13 @@ function renderTextToString(vNode, context, isRoot) {
 }
 function renderVNodeToString(vNode, context, isRoot) {
     var flags = vNode.flags;
-    if (flags & VNodeFlags.Component) {
-        return renderComponentToString(vNode, isRoot, context, flags & VNodeFlags.ComponentClass);
+    if (flags & 12 /* Component */) {
+        return renderComponentToString(vNode, isRoot, context, flags & 4 /* ComponentClass */);
     }
-    else if (flags & VNodeFlags.Element) {
+    else if (flags & 1986 /* Element */) {
         return renderElementToString(vNode, isRoot, context);
     }
-    else if (flags & VNodeFlags.Text) {
+    else if (flags & 1 /* Text */) {
         return renderTextToString(vNode, isRoot, context);
     }
     else {
@@ -399,10 +386,10 @@ var RenderStream = (function (Readable$$1) {
         }
         else {
             var flags = vNode.flags;
-            if (flags & VNodeFlags.Component) {
-                return this.renderComponent(vNode, isRoot, context, flags & VNodeFlags.ComponentClass);
+            if (flags & 12 /* Component */) {
+                return this.renderComponent(vNode, isRoot, context, flags & 4 /* ComponentClass */);
             }
-            else if (flags & VNodeFlags.Element) {
+            else if (flags & 1986 /* Element */) {
                 return this.renderElement(vNode, isRoot, context);
             }
             else {
@@ -474,7 +461,7 @@ var RenderStream = (function (Readable$$1) {
                     });
                 }
                 else {
-                    if (child.flags & VNodeFlags.Text) {
+                    if (child.flags & 1 /* Text */) {
                         if (insertComment) {
                             this$1.push('<!---->');
                         }
@@ -483,7 +470,7 @@ var RenderStream = (function (Readable$$1) {
                     }
                     return this$1.renderNode(child, context, false)
                         .then(function (insertComment) {
-                        if (child.flags & VNodeFlags.Text) {
+                        if (child.flags & 1 /* Text */) {
                             return true;
                         }
                         return false;

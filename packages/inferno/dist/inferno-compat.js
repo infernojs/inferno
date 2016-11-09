@@ -595,8 +595,6 @@ constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-var wrappers = new Map();
-
 function isCheckedType(type) {
     return type === 'checkbox' || type === 'radio';
 }
@@ -758,6 +756,7 @@ function applyValue$2(vNode, dom) {
     }
 }
 
+var wrappers = new Map();
 function processElement(flags, vNode, dom) {
     if (flags & 256 /* InputElement */) {
         processInput(vNode, dom);

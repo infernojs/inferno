@@ -1,5 +1,5 @@
-import renderToString, { renderToStaticMarkup } from '../../../src/server/renderToString';
-import streamAsString, { RenderStream, streamAsStaticMarkup } from '../../../src/server/renderToString.stream';
+import renderToString, { renderToStaticMarkup } from '../../../build/server/renderToString';
+import streamAsString, { RenderStream, streamAsStaticMarkup } from '../../../build/server/renderToString.stream';
 
 export default {
 	renderToString,

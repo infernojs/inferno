@@ -3,7 +3,7 @@ import {
 	EMPTY_OBJ,
 	isNullOrUndef
 } from './../../shared';
-import wrappers from './map';
+import { wrappers } from './processElement';
 import { isVNode } from '../../core/shapes';
 
 function isControlled(props) {
