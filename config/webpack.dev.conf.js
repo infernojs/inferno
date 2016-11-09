@@ -3,6 +3,7 @@ const glob = require('glob');
 const path = require('path');
 
 const testFiles = glob.sync('./src/**/*__tests__*/**/*spec.browser.ts')
+	.concat(glob.sync('./src/**/*__tests__*/**/compononts.spec.tsx'))
 	// .concat(glob.sync('./src/**/*__tests__*/**/*spec.tsx'))
 	// .concat(glob.sync('./src/**/*__tests__*/**/*spec.ssr.ts'));
 

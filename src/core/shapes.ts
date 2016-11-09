@@ -33,7 +33,7 @@ export const enum VNodeFlags {
 	Void = 1 << 12,
 	Element = HtmlElement | SvgElement | MediaElement | InputElement | TextareaElement | SelectElement,
 	Component = ComponentFunction | ComponentClass
-}
+};
 
 export interface VNode {
 	children: string | Array<string | VNode> | VNode | null;
