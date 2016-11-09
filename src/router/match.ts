@@ -2,10 +2,9 @@ import { toArray, isArray } from '../shared';
 import { decode, isEmpty, pathRankSort, mapSearchParams, flatten } from './utils';
 import { VNode } from '../core/shapes';
 import pathToRegExp0 from 'path-to-regexp';
-import pathToRegExp1 = require('path-to-regexp');
 import { default as Inferno } from 'inferno';
 
-const pathToRegExp: any = pathToRegExp0 || pathToRegExp1;
+const pathToRegExp: any = pathToRegExp0;
 const cache: Map<string, IMatchRegex> = new Map();
 
 export function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {

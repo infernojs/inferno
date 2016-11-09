@@ -62,7 +62,7 @@
     "most": "^1.0.5",
     "most-subject": "^4.1.3",
     "nyc": "^8.4.0",
-    "path-to-regexp": "1.6.0",
+    "path-to-regexp": "^1.7.0",
     "pre-commit": "^1.1.3",
     "proptypes": "^0.14.3",
     "redux": "^3.6.0",
@@ -129,10 +129,10 @@
   },
   "scripts": {
     "browser": "webpack-dev-server --config config/webpack.dev.conf.js",
-    "build": "npm run clean && mkdirp dist && npm run build:dev && npm run build:prod",
+    "build": "npm run clean && mkdirp build && tsc --outDir build --module es6 && npm run build:dev && npm run build:prod",
     "build:dev": "cross-env NODE_ENV=development babel-node --presets es2015 config/rollup.config.js",
     "build:prod": "cross-env NODE_ENV=production babel-node --presets es2015 config/rollup.config.js",
-    "clean": "rimraf coverage/ dist/",
+    "clean": "rimraf coverage/ build/",
     "eslint": "npm run eslint:source && npm run eslint:test",
     "eslint:source": "eslint ./src/**/*.js",
     "eslint:test": "eslint ./src/**/__tests__/*.js",
@@ -157,6 +157,5 @@
     "eslint",
     "lint",
     "test"
-  ],
-  "dependencies": {}
+  ]
 }

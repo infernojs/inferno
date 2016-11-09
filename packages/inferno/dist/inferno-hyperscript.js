@@ -43,24 +43,6 @@ function isUndefined(obj) {
     return obj === undefined;
 }
 
-var VNodeFlags;
-(function (VNodeFlags) {
-    VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
-    VNodeFlags[VNodeFlags["HtmlElement"] = 2] = "HtmlElement";
-    VNodeFlags[VNodeFlags["ComponentClass"] = 4] = "ComponentClass";
-    VNodeFlags[VNodeFlags["ComponentFunction"] = 8] = "ComponentFunction";
-    VNodeFlags[VNodeFlags["HasKeyedChildren"] = 16] = "HasKeyedChildren";
-    VNodeFlags[VNodeFlags["HasNonKeyedChildren"] = 32] = "HasNonKeyedChildren";
-    VNodeFlags[VNodeFlags["SvgElement"] = 64] = "SvgElement";
-    VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
-    VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
-    VNodeFlags[VNodeFlags["TextareaElement"] = 512] = "TextareaElement";
-    VNodeFlags[VNodeFlags["SelectElement"] = 1024] = "SelectElement";
-    VNodeFlags[VNodeFlags["Fragment"] = 2048] = "Fragment";
-    VNodeFlags[VNodeFlags["Void"] = 4096] = "Void";
-    VNodeFlags[VNodeFlags["Element"] = 1986] = "Element";
-    VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
-})(VNodeFlags || (VNodeFlags = {}));
 function _normaliseVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
@@ -108,7 +90,7 @@ function createVNode(flags, type, props, children, key, ref) {
 
 
 function createTextVNode(text) {
-    return createVNode(VNodeFlags.Text, null, null, text);
+    return createVNode(1 /* Text */, null, null, text);
 }
 
 var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
@@ -197,26 +179,26 @@ function hyperscript$1(_tag, _props, _children, _childrenType) {
     var ref = ref$1.ref;
     var children = ref$1.children;
     if (isString(tag)) {
-        var flags = VNodeFlags.HtmlElement;
+        var flags = 2;
         switch (tag) {
             case 'svg':
-                flags = VNodeFlags.SvgElement;
+                flags = 64 /* SvgElement */;
                 break;
             case 'input':
-                flags = VNodeFlags.InputElement;
+                flags = 256 /* InputElement */;
                 break;
             case 'textarea':
-                flags = VNodeFlags.TextareaElement;
+                flags = 512 /* TextareaElement */;
                 break;
             case 'select':
-                flags = VNodeFlags.SelectElement;
+                flags = 1024 /* SelectElement */;
                 break;
             default:
         }
         return createVNode(flags, tag, props, _children || children, key, ref);
     }
     else {
-        var flags$1 = isStatefulComponent(tag) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
+        var flags$1 = isStatefulComponent(tag) ? 4 /* ComponentClass */ : 8;
         return createVNode(flags$1, tag, props, null, key, ref);
     }
 }

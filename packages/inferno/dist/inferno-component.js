@@ -67,24 +67,6 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
-var VNodeFlags;
-(function (VNodeFlags) {
-    VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
-    VNodeFlags[VNodeFlags["HtmlElement"] = 2] = "HtmlElement";
-    VNodeFlags[VNodeFlags["ComponentClass"] = 4] = "ComponentClass";
-    VNodeFlags[VNodeFlags["ComponentFunction"] = 8] = "ComponentFunction";
-    VNodeFlags[VNodeFlags["HasKeyedChildren"] = 16] = "HasKeyedChildren";
-    VNodeFlags[VNodeFlags["HasNonKeyedChildren"] = 32] = "HasNonKeyedChildren";
-    VNodeFlags[VNodeFlags["SvgElement"] = 64] = "SvgElement";
-    VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
-    VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
-    VNodeFlags[VNodeFlags["TextareaElement"] = 512] = "TextareaElement";
-    VNodeFlags[VNodeFlags["SelectElement"] = 1024] = "SelectElement";
-    VNodeFlags[VNodeFlags["Fragment"] = 2048] = "Fragment";
-    VNodeFlags[VNodeFlags["Void"] = 4096] = "Void";
-    VNodeFlags[VNodeFlags["Element"] = 1986] = "Element";
-    VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
-})(VNodeFlags || (VNodeFlags = {}));
 function _normaliseVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
@@ -130,13 +112,13 @@ function createVNode(flags, type, props, children, key, ref) {
     };
 }
 function createFragmentVNode(children) {
-    return createVNode(VNodeFlags.Fragment, null, null, children);
+    return createVNode(2048 /* Fragment */, null, null, children);
 }
 function createVoidVNode() {
-    return createVNode(VNodeFlags.Void);
+    return createVNode(4096 /* Void */);
 }
 function createTextVNode(text) {
-    return createVNode(VNodeFlags.Text, null, null, text);
+    return createVNode(1 /* Text */, null, null, text);
 }
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';

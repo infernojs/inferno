@@ -1,3 +1,3 @@
-import hyperscript from '../../../src/factories/hyperscript';
+import hyperscript from '../../../build/factories/hyperscript';
 
 export default hyperscript;

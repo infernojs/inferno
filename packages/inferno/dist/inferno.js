@@ -63,24 +63,6 @@ function warning(condition, message) {
 }
 var EMPTY_OBJ = {};
 
-var VNodeFlags;
-(function (VNodeFlags) {
-    VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
-    VNodeFlags[VNodeFlags["HtmlElement"] = 2] = "HtmlElement";
-    VNodeFlags[VNodeFlags["ComponentClass"] = 4] = "ComponentClass";
-    VNodeFlags[VNodeFlags["ComponentFunction"] = 8] = "ComponentFunction";
-    VNodeFlags[VNodeFlags["HasKeyedChildren"] = 16] = "HasKeyedChildren";
-    VNodeFlags[VNodeFlags["HasNonKeyedChildren"] = 32] = "HasNonKeyedChildren";
-    VNodeFlags[VNodeFlags["SvgElement"] = 64] = "SvgElement";
-    VNodeFlags[VNodeFlags["MediaElement"] = 128] = "MediaElement";
-    VNodeFlags[VNodeFlags["InputElement"] = 256] = "InputElement";
-    VNodeFlags[VNodeFlags["TextareaElement"] = 512] = "TextareaElement";
-    VNodeFlags[VNodeFlags["SelectElement"] = 1024] = "SelectElement";
-    VNodeFlags[VNodeFlags["Fragment"] = 2048] = "Fragment";
-    VNodeFlags[VNodeFlags["Void"] = 4096] = "Void";
-    VNodeFlags[VNodeFlags["Element"] = 1986] = "Element";
-    VNodeFlags[VNodeFlags["Component"] = 12] = "Component";
-})(VNodeFlags || (VNodeFlags = {}));
 function _normaliseVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
@@ -126,13 +108,13 @@ function createVNode(flags, type, props, children, key, ref) {
     };
 }
 function createFragmentVNode(children) {
-    return createVNode(VNodeFlags.Fragment, null, null, children);
+    return createVNode(2048 /* Fragment */, null, null, children);
 }
 function createVoidVNode() {
-    return createVNode(VNodeFlags.Void);
+    return createVNode(4096 /* Void */);
 }
 function createTextVNode(text) {
-    return createVNode(VNodeFlags.Text, null, null, text);
+    return createVNode(1 /* Text */, null, null, text);
 }
 function isVNode(o) {
     return !!o.flags;
@@ -183,10 +165,10 @@ function cloneVNode(vNodeToClone, props) {
     }
     else {
         var flags = vNodeToClone.flags;
-        if (flags & VNodeFlags.Component) {
+        if (flags & 12 /* Component */) {
             newVNode = createVNode(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, flags, vNodeToClone.key, vNodeToClone.ref);
         }
-        else if (flags & VNodeFlags.Element) {
+        else if (flags & 1986 /* Element */) {
             newVNode = createVNode(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), (props && props.children) || children || vNodeToClone.children, flags, vNodeToClone.key, vNodeToClone.ref);
         }
     }
@@ -265,7 +247,7 @@ function recycleComponent(vNode, lifecycle, context, isSVG) {
             var recycledVNode = pool.pop();
             if (!isUndefined(recycledVNode)) {
                 var flags = vNode.flags;
-                var failed = patchComponent(recycledVNode, vNode, null, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
+                var failed = patchComponent(recycledVNode, vNode, null, lifecycle, context, isSVG, flags & 4 /* ComponentClass */);
                 if (!failed) {
                     return vNode.dom;
                 }
@@ -309,19 +291,19 @@ function poolComponent(vNode) {
 
 function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
     var flags = vNode.flags;
-    if (flags & VNodeFlags.Component) {
+    if (flags & 12 /* Component */) {
         unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
     }
-    else if (flags & VNodeFlags.Element) {
+    else if (flags & 1986 /* Element */) {
         unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
     }
-    else if (flags & VNodeFlags.Fragment) {
+    else if (flags & 2048 /* Fragment */) {
         unmountFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
     }
-    else if (flags & VNodeFlags.Text) {
+    else if (flags & 1 /* Text */) {
         unmountText(vNode, parentDom);
     }
-    else if (flags & VNodeFlags.Void) {
+    else if (flags & 4096 /* Void */) {
         unmountVoid(vNode, parentDom);
     }
 }
@@ -342,7 +324,7 @@ function unmountFragment(vNode, parentDom, removePointer, lifecycle, shallowUnmo
     if (!shallowUnmount && childrenLength > 0) {
         for (var i = 0; i < childrenLength; i++) {
             var child = children[i];
-            if (child.flags === VNodeFlags.Fragment) {
+            if (child.flags === 2048 /* Fragment */) {
                 unmountFragment(child, parentDom, true, lifecycle, false);
             }
             else {
@@ -387,7 +369,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         if (isNullOrUndef(lastInput)) {
             lastInput = instance;
         }
-        if (lastInput.flags === VNodeFlags.Fragment) {
+        if (lastInput.flags === 2048 /* Fragment */) {
             unmountFragment(lastInput, parentDom, true, lifecycle, true);
         }
         else {
@@ -623,13 +605,13 @@ function applyValue$2(vNode, dom) {
 }
 
 function processElement(flags, vNode, dom) {
-    if (flags & VNodeFlags.InputElement) {
+    if (flags & 256 /* InputElement */) {
         processInput(vNode, dom);
     }
-    else if (flags & VNodeFlags.SelectElement) {
+    else if (flags & 1024 /* SelectElement */) {
         processSelect(vNode, dom);
     }
-    else if (flags & VNodeFlags.TextareaElement) {
+    else if (flags & 512 /* TextareaElement */) {
         processTextarea(vNode, dom);
     }
 }
@@ -642,40 +624,40 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
     if (lastVNode !== nextVNode) {
         var lastFlags = lastVNode.flags;
         var nextFlags = nextVNode.flags;
-        if (nextFlags & VNodeFlags.Component) {
-            if (lastFlags & VNodeFlags.Component) {
-                patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, nextFlags & VNodeFlags.ComponentClass);
+        if (nextFlags & 12 /* Component */) {
+            if (lastFlags & 12 /* Component */) {
+                patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */);
             }
             else {
-                replaceVNode(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextFlags & VNodeFlags.ComponentClass), lastVNode, lifecycle);
+                replaceVNode(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */), lastVNode, lifecycle);
             }
         }
-        else if (nextFlags & VNodeFlags.Element) {
-            if (lastFlags & VNodeFlags.Element) {
+        else if (nextFlags & 1986 /* Element */) {
+            if (lastFlags & 1986 /* Element */) {
                 patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
             }
             else {
                 replaceVNode(parentDom, mountElement(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
             }
         }
-        else if (nextFlags & VNodeFlags.Fragment) {
-            if (lastFlags & VNodeFlags.Fragment) {
+        else if (nextFlags & 2048 /* Fragment */) {
+            if (lastFlags & 2048 /* Fragment */) {
                 patchFragment(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
             }
             else {
                 replaceVNode(parentDom, mountFragment(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
             }
         }
-        else if (nextFlags & VNodeFlags.Text) {
-            if (lastFlags & VNodeFlags.Text) {
+        else if (nextFlags & 1 /* Text */) {
+            if (lastFlags & 1 /* Text */) {
                 patchText(lastVNode, nextVNode);
             }
             else {
                 replaceVNode(parentDom, mountText(nextVNode, null), lastVNode, lifecycle);
             }
         }
-        else if (nextFlags & VNodeFlags.Void) {
-            if (lastFlags & VNodeFlags.Void) {
+        else if (nextFlags & 4096 /* Void */) {
+            if (lastFlags & 4096 /* Void */) {
                 patchVoid(lastVNode, nextVNode);
             }
             else {
@@ -683,10 +665,10 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
             }
         }
         else {
-            if (lastFlags & (VNodeFlags.Component | VNodeFlags.Element | VNodeFlags.Text | VNodeFlags.Void)) {
+            if (lastFlags & (12 /* Component */ | 1986 /* Element */ | 1 /* Text */ | 4096 /* Void */)) {
                 replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
             }
-            else if (lastFlags & VNodeFlags.Fragment) {
+            else if (lastFlags & 2048 /* Fragment */) {
                 replaceFragmentWithNode(parentDom, lastVNode, mount(nextVNode, null, lifecycle, context, isSVG), lifecycle, false);
             }
             else {
@@ -724,13 +706,13 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
         var lastFlags = lastVNode.flags;
         var nextFlags = nextVNode.flags;
         nextVNode.dom = dom;
-        if (isSVG || (nextFlags & VNodeFlags.SvgElement)) {
+        if (isSVG || (nextFlags & 64 /* SvgElement */)) {
             isSVG = true;
         }
         if (lastChildren !== nextChildren) {
             patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG);
         }
-        if (!(nextFlags & VNodeFlags.HtmlElement)) {
+        if (!(nextFlags & 2 /* HtmlElement */)) {
             processElement(nextFlags, nextVNode, dom);
         }
         if (lastProps !== nextProps) {
@@ -768,11 +750,11 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
         if (isArray(lastChildren)) {
             var patchKeyed = false;
             // check if we can do keyed updates
-            if ((lastFlags & VNodeFlags.HasKeyedChildren) &&
-                (nextFlags & VNodeFlags.HasKeyedChildren)) {
+            if ((lastFlags & 16 /* HasKeyedChildren */) &&
+                (nextFlags & 16 /* HasKeyedChildren */)) {
                 patchKeyed = true;
             }
-            else if (!(nextFlags & VNodeFlags.HasNonKeyedChildren)) {
+            else if (!(nextFlags & 32 /* HasNonKeyedChildren */)) {
                 if (isKeyed(lastChildren, nextChildren)) {
                     patchKeyed = true;
                 }
@@ -834,7 +816,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 if (isNull(parentDom)) {
                     return true;
                 }
-                replaceChild(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextVNode.flags & VNodeFlags.ComponentClass), lastVNode.dom);
+                replaceChild(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextVNode.flags & 4 /* ComponentClass */), lastVNode.dom);
             }
             else {
                 var defaultProps = nextType.defaultProps;
@@ -1414,18 +1396,18 @@ function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, 
 function replaceVNode(parentDom, dom, vNode, lifecycle) {
     var shallowUnmount = false;
     // we cannot cache nodeType here as vNode might be re-assigned below
-    if (vNode.flags === VNodeFlags.ComponentClass || vNode.flags === VNodeFlags.ComponentFunction) {
+    if (vNode.flags === 4 /* ComponentClass */ || vNode.flags === 8 /* ComponentFunction */) {
         // if we are accessing a stateful or stateless component, we want to access their last rendered input
         // accessing their DOM node is not useful to us here
         // #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
         unmount(vNode, null, lifecycle, false, false);
         vNode = vNode.children._lastInput || vNode.instance;
         // #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
-        if (vNode.flags !== VNodeFlags.Fragment) {
+        if (vNode.flags !== 2048 /* Fragment */) {
             shallowUnmount = true;
         }
     }
-    if (vNode.flags === VNodeFlags.Fragment) {
+    if (vNode.flags === 2048 /* Fragment */) {
         replaceFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
     }
     else {
@@ -1604,19 +1586,19 @@ function sendRoots(global) {
 
 function mount(vNode, parentDom, lifecycle, context, isSVG) {
     var flags = vNode.flags;
-    if (flags & VNodeFlags.Element) {
+    if (flags & 1986 /* Element */) {
         return mountElement(vNode, parentDom, lifecycle, context, isSVG);
     }
-    else if (flags & VNodeFlags.Component) {
-        return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
+    else if (flags & 12 /* Component */) {
+        return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & 4 /* ComponentClass */);
     }
-    else if (flags & VNodeFlags.Void) {
+    else if (flags & 4096 /* Void */) {
         return mountVoid(vNode, parentDom);
     }
-    else if (flags & VNodeFlags.Fragment) {
+    else if (flags & 2048 /* Fragment */) {
         return mountFragment(vNode, parentDom, lifecycle, context, isSVG);
     }
-    else if (flags & VNodeFlags.Text) {
+    else if (flags & 1 /* Text */) {
         return mountText(vNode, parentDom);
     }
     else {
@@ -1654,7 +1636,7 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
     }
     var tag = vNode.type;
     var flags = vNode.flags;
-    if (isSVG || (flags & VNodeFlags.SvgElement)) {
+    if (isSVG || (flags & 64 /* SvgElement */)) {
         isSVG = true;
     }
     var dom = documentCreateElement(tag, isSVG);
@@ -1676,7 +1658,7 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
             mount(children, dom, lifecycle, context, isSVG);
         }
     }
-    if (!(flags & VNodeFlags.HtmlElement)) {
+    if (!(flags & 2 /* HtmlElement */)) {
         processElement(flags, vNode, dom);
     }
     if (!isNull(props)) {
@@ -1792,7 +1774,7 @@ function mountRef(dom, value, lifecycle) {
 function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
     var domNode = childNodes[counter.i];
     var flags = child.flags;
-    if (flags & VNodeFlags.Text) {
+    if (flags & 1 /* Text */) {
         var text = child.text;
         child.dom = domNode;
         if (domNode.nodeType === 3 && text !== '') {
@@ -1805,10 +1787,10 @@ function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context)
             child.dom = newDomNode;
         }
     }
-    else if (flags & VNodeFlags.Void) {
+    else if (flags & 4096 /* Void */) {
         child.dom = domNode;
     }
-    else if (flags & VNodeFlags.Fragment) {
+    else if (flags & 2048 /* Fragment */) {
         var items = child.items;
         // this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
         child.dom = document.createDocumentFragment();
@@ -1874,7 +1856,7 @@ function hydrateElement(vNode, dom, lifecycle, context) {
     if (children) {
         hydrateChildren(children, dom, lifecycle, context);
     }
-    if (!(flags & VNodeFlags.HtmlElement)) {
+    if (!(flags & 2 /* HtmlElement */)) {
         processElement(flags, vNode, dom);
     }
     for (var prop in props) {
@@ -1931,19 +1913,19 @@ function hydrate(vNode, dom, lifecycle, context) {
         }
     }
     var flags = vNode.flags;
-    if (flags & VNodeFlags.Component) {
-        return hydrateComponent(vNode, dom, lifecycle, context, flags & VNodeFlags.ComponentClass);
+    if (flags & 12 /* Component */) {
+        return hydrateComponent(vNode, dom, lifecycle, context, flags & 4 /* ComponentClass */);
     }
-    else if (flags & VNodeFlags.Element) {
+    else if (flags & 1986 /* Element */) {
         return hydrateElement(vNode, dom, lifecycle, context);
     }
-    else if (flags & VNodeFlags.Text) {
+    else if (flags & 1 /* Text */) {
         return hydrateText(vNode, dom);
     }
-    else if (flags & VNodeFlags.Fragment) {
+    else if (flags & 2048 /* Fragment */) {
         return hydrateFragment(vNode, dom, lifecycle, context);
     }
-    else if (flags & VNodeFlags.Void) {
+    else if (flags & 4096 /* Void */) {
         return hydrateVoid(vNode, dom);
     }
     else {

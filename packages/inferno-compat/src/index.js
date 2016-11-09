@@ -1,11 +1,11 @@
-import isValidElement from '../../../src/factories/isValidElement';
-import createClass from '../../../src/component/createClass';
-import infernoCreateElement from '../../../src/factories/createElement';
-import cloneVNode from '../../../src/factories/cloneVNode';
-import { render, findDOMNode } from '../../../src/DOM/rendering';
-import { createVNode } from '../../../src/core/shapes';
-import Component from '../../../src/component/es2015';
-import { NO_OP } from '../../../src/shared';
+import isValidElement from '../../../build/factories/isValidElement';
+import createClass from '../../../build/component/createClass';
+import infernoCreateElement from '../../../build/factories/createElement';
+import cloneVNode from '../../../build/factories/cloneVNode';
+import { render, findDOMNode } from '../../../build/DOM/rendering';
+import { createVNode } from '../../../build/core/shapes';
+import Component from '../../../build/component/es2015';
+import { NO_OP } from '../../../build/shared';
 
 function unmountComponentAtNode(container) {
 	render(null, container);

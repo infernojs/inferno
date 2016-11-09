@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import streamAsString from './../renderToString.stream';
-import concatStream = require('concat-stream');
+import concatStream from 'concat-stream';
 import Component from './../../component/es2015';
 import createElement from './../../factories/createElement';
 

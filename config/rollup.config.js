@@ -7,7 +7,6 @@ import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
 import commonjs from 'rollup-plugin-commonjs';
-import typescript from 'rollup-plugin-typescript';
 import { withNodeResolve, relativeModules, getPackageJSON, outputFileSize } from './rollup.helpers';
 import bundles from './rollup.bundles';
 import { aliases } from './aliases';
@@ -18,9 +17,6 @@ const dependencies = Object.keys(pkg.peerDependencies || {})
 													 .concat(Object.keys(pkg.devDependencies || {}));
 
 let plugins = [
-	typescript({
-		typescript: require('typescript')
-	}),
 	buble({
 		objectAssign: 'Object.assign'
 	}),

@@ -1,7 +1,7 @@
 import { render } from './../../DOM/rendering';
 import createElement from './../../factories/createElement';
 import { expect } from 'chai';
-import sinon = require('sinon');
+import sinon from 'sinon';
 
 describe('lifecycle hooks', () => {
 	describe('Stateless component hooks', () => {
