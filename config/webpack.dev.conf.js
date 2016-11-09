@@ -6,6 +6,9 @@ const testFiles = glob.sync('./src/**/*__tests__*/**/*spec.browser.ts')
 	.concat(glob.sync('./src/**/*__tests__*/**/components.spec.tsx'))
 	.concat(glob.sync('./src/**/*__tests__*/**/createClass.spec.tsx'))
 	.concat(glob.sync('./src/**/*__tests__*/**/functionalComponent.spec.tsx'))
+	.concat(glob.sync('./src/**/*__tests__*/**/children.spec.tsx'))
+	.concat(glob.sync('./src/**/*__tests__*/**/blueprints.spec.tsx'))
+	.concat(glob.sync('./src/**/*__tests__*/**/columnrender.spec.tsx'))
 	// .concat(glob.sync('./src/**/*__tests__*/**/*spec.tsx'))
 	// .concat(glob.sync('./src/**/*__tests__*/**/*spec.ssr.ts'));
 
