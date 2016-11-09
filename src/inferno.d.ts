@@ -66,6 +66,11 @@ declare module 'hoist-non-inferno-statics' {
 	export = hoistStatics;
 }
 
+declare module 'path-to-regexp' {
+	function pathToRegExp(routePath: any, keys: any, end: any);
+	export = pathToRegExp;
+}
+
 declare module 'concat-stream' {
 	function concatStream(func?: any);
 	export = concatStream;
@@ -75,6 +80,7 @@ declare module 'history/createBrowserHistory' {
 	function createBrowserHistory(options?: any);
 	export = createBrowserHistory;
 }
+
 
 declare module 'history/createMemoryHistory' {
 	function createMemoryHistory(options?: any);
