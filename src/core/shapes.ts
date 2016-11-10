@@ -3,9 +3,11 @@ import {
 	isArray,
 	isInvalid,
 	isUndefined,
+	isNullOrUndef,
 	isNull,
 	isStatefulComponent
 } from '../shared';
+import cloneVNode from '../factories/cloneVNode';
 
 export interface IProps {
 	[index: string]: any;
@@ -56,6 +58,8 @@ function _normaliseVNodes(nodes: any[], result: VNode[], i: number): void {
 			} else {
 				if (isStringOrNumber(n)) {
 					n = createTextVNode(n);
+				} else if (isVNode(n) && n.dom) {
+					n = cloneVNode(n);
 				}
 				result.push(n as VNode);
 			}
@@ -64,22 +68,38 @@ function _normaliseVNodes(nodes: any[], result: VNode[], i: number): void {
 }
 
 export function normaliseVNodes(nodes: any[]): VNode[] {
+	let newNodes;
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
 
 		if (isInvalid(n) || Array.isArray(n)) {
-			const result = nodes.slice(0, i) as VNode[];
+			const result = (newNodes || nodes).slice(0, i) as VNode[];
 
 			_normaliseVNodes(nodes, result, i);
 			return result;
 		} else if (isStringOrNumber(n)) {
-			nodes[i] = createTextVNode(n);
+			if (!newNodes) {
+				newNodes = nodes.slice(0, i) as VNode[];
+			}
+			newNodes.push(createTextVNode(n));
+		} else if (isVNode(n) && n.dom) {
+			if (!newNodes) {
+				newNodes = nodes.slice(0, i) as VNode[];
+			}
+			newNodes.push(cloneVNode(n));
+		} else if (newNodes) {
+			newNodes.push(cloneVNode(n));
 		}
 	}
-	return nodes as VNode[];
+	return newNodes || nodes as VNode[];
 }
 
 export function createVNode(flags, type?, props?, children?, key?, ref?): VNode {
+	if (props) {
+		if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
+			children = props.children;
+		}
+	}
 	if (isArray(children)) {
 		children = normaliseVNodes(children)
 	}

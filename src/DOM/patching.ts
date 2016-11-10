@@ -394,7 +394,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 
 	for (; i < commonLength; i++) {
 		const lastChild = lastChildren[i];
-		const nextChild = nextChildren[i];
+		let nextChild = nextChildren[i];
 
 		patch(lastChild, nextChild, dom, lifecycle, context, isSVG);
 	}
@@ -825,6 +825,9 @@ function removeProp(prop, dom) {
 		dom.removeAttribute('class');
 	} else if (prop === 'value') {
 		dom.value = '';
+	} else if (prop === 'style') {
+		dom.style = '';
+		dom.removeAttribute('style');
 	} else {
 		dom.removeAttribute(prop);
 	}

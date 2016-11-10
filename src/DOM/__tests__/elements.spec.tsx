@@ -625,7 +625,7 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.getAttribute('width')).to.equal('42');
 	});
 
-	it('should properly render "width" and "height" attributes', () => {
+	it('should properly render "width" and "height" attributes #2', () => {
 
 		render(<input type="file" multiple="multiple" capture="capture" accept="image/*"/>, container);
 
@@ -786,8 +786,8 @@ describe('Elements (JSX)', () => {
 		});
 
 		it('basic example #2 ', () => {
-			render([a, a, a], container);
-			expect(container.innerHTML).to.equal('<div>Hello world</div><div>Hello world</div><div>Hello world</div>');
+			render(<div>{ [a, a, a] }</div>, container);
+			expect(container.innerHTML).to.equal('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>');
 			render(b, container);
 			expect(container.innerHTML).to.equal('<span>This works!</span>');
 		});

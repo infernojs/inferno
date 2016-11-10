@@ -87,6 +87,9 @@ export function applyValue(vNode, dom, force) {
 	if ((force || type !== dom.type) && type) {
 		dom.type = type;
 	}
+	if (props.multiple !== dom.multiple) {
+		dom.multiple = props.multiple;
+	}	
 	if (isCheckedType(type)) {
 		dom.checked = props.checked;
 		if (type === 'radio' && props.name) {

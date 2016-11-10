@@ -966,7 +966,7 @@ describe('Update (non-jsx)', () => {
 			it('variation -2', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', null, createElement('td', null, 'text', createElement('br'))
-					))));
+				))));
 				const B = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['text'])))));
 				const C = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['value'], createElement('br'))))));
 
