@@ -39,16 +39,17 @@ nav {
     display: block;
     padding-bottom: 25px;
     font-size: 24px;
+    overflow: hidden;
 
     > img {
-      display: block;
+      float: left;
       width: 75px;
       height: 73px;
     }
   }
 
   &__section{
-    padding-bottom: 10px;
+    padding-bottom: 20px;
   }
 
   &__header {

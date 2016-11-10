@@ -4,9 +4,8 @@ body {
 
   > main {
     flex: 1;
-    display: flex;
     flex-direction: column;
-    
+
     > div {
       flex-grow: 1;
     }
@@ -17,8 +16,12 @@ body {
   box-sizing: border-box;
 }
 
-.inferno {
+.inferno-docs {
+  float: left;
+  font-size: 20px;
   color: $brand-primary;
+  font-weight: 600;
+  margin: 55px 0 0 5px;
 }
 
 ul {
