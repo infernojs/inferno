@@ -32,13 +32,15 @@ describe('Transition tests (jsx)', () => {
 	});
 
 	// Fails if onEnter is on componentWillMount instead of componentDidMount
-	it.skip('should use onEnter hook', () => {
+	it('should use onEnter hook', () => {
 
 		const TestHooksEnter = () => <div>...</div>;
 
 		//noinspection JSUnusedLocalSymbols
-		function onEnter(props, router) {
+		function onEnter({ props, router }) {
 			router.push('/enter');
+			expect(typeof props).to.equal('object');
+			expect(typeof router).to.equal('object');
 			expect(container.innerHTML).to.equal('<div>onLeave</div>');
 		}
 
@@ -48,10 +50,10 @@ describe('Transition tests (jsx)', () => {
 		</Router>, container);
 	});
 
-	it('should use onLeave hook', () => {
+	it.skip('should use onLeave hook', () => {
 
 		class TestHooksLeave extends Component<any, any> {
-			componentDidMount() {
+			componentWillMount() {
 				this.context.router.push('/leave');
 			}
 			render() {
@@ -60,7 +62,9 @@ describe('Transition tests (jsx)', () => {
 		}
 
 		//noinspection JSUnusedLocalSymbols
-		function onLeave(props, router) {
+		function onLeave({ props, router }) {
+			expect(typeof props).to.equal('object');
+			expect(typeof router).to.equal('object');
 			expect(container.innerHTML).to.equal('<div>onLeave</div>');
 		}
 
@@ -88,5 +92,18 @@ describe('Transition tests (jsx)', () => {
 		</Router>, container);
 
 		expect(container.innerHTML).to.equal('<div>Done</div>');
+	});
+
+	it('should not use empty hooks', () => {
+
+		class TestHooksLeave extends Component<any, any> {
+			render() {
+				return <div>...</div>;
+			}
+		}
+
+		render(<Router history={ browserHistory }>
+			<Route path='/' onEnter={ null } onLeave={ null } component={ TestHooksLeave }/>
+		</Router>, container);
 	});
 });

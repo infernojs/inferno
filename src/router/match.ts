@@ -29,13 +29,6 @@ export default function match(routes, currentURL: any) {
  */
 function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 
-	if (isEmpty(_routes)) {
-		return {
-			location: lastPath,
-			matched: _routes
-		};
-	}
-
 	const routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
 	const [pathToMatch = '/', search = ''] = urlToMatch.split('?');
 	const params = mapSearchParams(search);

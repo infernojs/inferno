@@ -11,7 +11,6 @@ export interface IRouterProps {
 }
 
 export default class Router extends Component<IRouterProps, any> {
-	_didRoute: boolean;
 	router: any;
 	unlisten: any;
 
@@ -20,7 +19,6 @@ export default class Router extends Component<IRouterProps, any> {
 		if (!props.history) {
 			throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed');
 		}
-		this._didRoute = false;
 		this.router = props.history;
 		const location = this.router.location.pathname + this.router.location.search;
 		this.state = {
@@ -43,9 +41,7 @@ export default class Router extends Component<IRouterProps, any> {
 	}
 
 	routeTo(url) {
-		this._didRoute = false;
-		this.setState({ url });
-		return this._didRoute;
+			this.setState({ url });
 	}
 
 	render({ children, url }) {
