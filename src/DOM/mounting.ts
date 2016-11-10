@@ -42,8 +42,6 @@ export function mount(vNode, parentDom, lifecycle, context, isSVG) {
 		return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
 	} else if (flags & VNodeFlags.Void) {
 		return mountVoid(vNode, parentDom);
-	} else if (flags & VNodeFlags.Fragment) {
-		return mountFragment(vNode, parentDom, lifecycle, context, isSVG);
 	} else if (flags & VNodeFlags.Text) {
 		return mountText(vNode, parentDom);
 	} else {
@@ -130,17 +128,6 @@ export function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
 	}
 }
 
-export function mountFragment(vNode, parentDom, lifecycle, context, isSVG) {
-	const dom = document.createDocumentFragment();
-
-	mountArrayChildren(vNode.children, dom, lifecycle, context, isSVG);
-	vNode.dom = dom;
-	if (parentDom) {
-		appendChild(parentDom, dom);
-	}
-	return dom;
-}
-
 export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
 	if (recyclingEnabled) {
 		const dom = recycleComponent(vNode, lifecycle, context, isSVG);
@@ -194,7 +181,7 @@ export function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
 			lifecycle.addListener(() => ref(instance));
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
-				throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+				throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
 			}
 			throwError();
 		}
@@ -225,7 +212,7 @@ function mountRef(dom, value, lifecycle) {
 			return;
 		}
 		if (process.env.NODE_ENV !== 'production') {
-			throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+			throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
 		}
 		throwError();
 	}

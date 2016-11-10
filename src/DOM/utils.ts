@@ -6,16 +6,15 @@ import {
 	isInvalid,
 	// isStringOrNumber,
 	// isNull,
-	isUndefined
+	isUndefined,
+	throwError
 } from './../shared';
 import {
-	unmountFragment,
 	unmount
 } from './unmounting';
 import {
 	// isVNode,
 	VNodeFlags,
-	createFragmentVNode,
 	createVoidVNode
 } from '../core/shapes';
 // import cloneVNode from '../factories/cloneVNode';
@@ -53,7 +52,10 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 
 	instance.afterRender && instance.afterRender();
 	if (isArray(input)) {
-		input = createFragmentVNode(input);
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+		}
+		throwError();
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
 	}
@@ -71,27 +73,21 @@ export function replaceVNode(parentDom, dom, vNode, lifecycle) {
 	if (vNode.flags & VNodeFlags.Component) {
 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
 		// accessing their DOM node is not useful to us here
-		// #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
 		unmount(vNode, null, lifecycle, false, false);
 		vNode = vNode.children._lastInput || vNode.children;
-		// #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
-		if (!(vNode.flags & VNodeFlags.Fragment)) {
-			shallowUnmount = true;
-		}
 	}
-	if (vNode.flags === VNodeFlags.Fragment) {
-		replaceFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
-	} else {
-		replaceChild(parentDom, dom, vNode.dom);
-		unmount(vNode, null, lifecycle, false, shallowUnmount);
-	}
+	replaceChild(parentDom, dom, vNode.dom);
+	unmount(vNode, null, lifecycle, false, shallowUnmount);
 }
 
 export function createStatelessComponentInput(component, props, context) {
 	let input = component(props, context);
 
 	if (isArray(input)) {
-		input = createFragmentVNode(input);
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+		}
+		throwError();
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
 	}
@@ -120,13 +116,6 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 	} else {
 		parentDom.insertBefore(newNode, nextNode);
 	}
-}
-
-export function replaceFragmentWithNode(parentDom, vFragment, dom, lifecycle, shallowUnmount) {
-	const pointer = vFragment.pointer;
-
-	unmountFragment(vFragment, parentDom, false, lifecycle, shallowUnmount);
-	replaceChild(parentDom, dom, pointer);
 }
 
 export function documentCreateElement(tag, isSVG) {
@@ -161,26 +150,6 @@ export function replaceChild(parentDom, nextDom, lastDom) {
 	}
 	parentDom.replaceChild(nextDom, lastDom);
 }
-
-// export function normalise(object) {
-// 	if (isStringOrNumber(object)) {
-// 		return createVText(object);
-// 	} else if (isInvalid(object)) {
-// 		return createVPlaceholder();
-// 	} else if (isArray(object)) {
-// 		return createVFragment(object, null);
-// 	} else if (isVNode(object) && object.dom) {
-// 		return cloneVNode(object);
-// 	}
-// 	return object;
-// }
-
-// export function normaliseChild(children, i) {
-// 	const child = children[i];
-
-// 	children[i] = normalise(child);
-// 	return children[i];
-// }
 
 export function removeChild(parentDom, dom) {
 	parentDom.removeChild(dom);

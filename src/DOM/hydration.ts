@@ -6,13 +6,11 @@ import {
 	// isNullOrUndef
 } from '../shared';
 import {
-	replaceChild,
 	// normaliseChild,
 	createStatelessComponentInput,
 	createStatefulComponentInstance
 } from './utils';
 import {
-	mountText,
 	mountStatelessComponentCallbacks,
 	mountStatefulComponentCallbacks,
 	// mountChildren
@@ -28,56 +26,34 @@ import {
 } from '../core/shapes';
 import processElement from './wrappers/processElement';
 
-function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
-	const domNode = childNodes[counter.i];
-	const flags = child.flags;
+// function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
+// 	const domNode = childNodes[counter.i];
+// 	const flags = child.flags;
 
-	if (flags & VNodeFlags.Text) {
-		const text = child.text;
+// 	if (flags & VNodeFlags.Text) {
+// 		const text = child.text;
 
-		child.dom = domNode;
-		if (domNode.nodeType === 3 && text !== '') {
-			domNode.nodeValue = text;
-		} else {
-			const newDomNode = mountText(text, null);
+// 		child.dom = domNode;
+// 		if (domNode.nodeType === 3 && text !== '') {
+// 			domNode.nodeValue = text;
+// 		} else {
+// 			const newDomNode = mountText(text, null);
 
-			replaceChild(parentDom, newDomNode, domNode);
-			childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
-			child.dom = newDomNode;
-		}
-	} else if (flags & VNodeFlags.Void) {
-		child.dom = domNode;
-	} else if (flags & VNodeFlags.Fragment) {
-		const items = child.items;
+// 			replaceChild(parentDom, newDomNode, domNode);
+// 			childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
+// 			child.dom = newDomNode;
+// 		}
+// 	} else if (flags & VNodeFlags.Void) {
+// 		child.dom = domNode;
+// 	} else {
+// 		const rebuild = hydrate(child, domNode, lifecycle, context);
 
-		// this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
-		child.dom = document.createDocumentFragment();
-		for (let i = 0; i < items.length; i++) {
-			const rebuild = hydrateChild(items[i], childNodes, counter, parentDom, lifecycle, context);
-
-			if (rebuild) {
-				return true;
-			}
-		}
-		// at the end of every VList, there should be a "pointer". It's an empty TextNode used for tracking the VList
-		const pointer = childNodes[counter.i++];
-
-		if (pointer && pointer.nodeType === 3) {
-			debugger;
-			// child.pointer = pointer;
-		} else {
-			// there is a problem, we need to rebuild this tree
-			return true;
-		}
-	} else {
-		const rebuild = hydrate(child, domNode, lifecycle, context);
-
-		if (rebuild) {
-			return true;
-		}
-	}
-	counter.i++;
-}
+// 		if (rebuild) {
+// 			return true;
+// 		}
+// 	}
+// 	counter.i++;
+// }
 
 export function normaliseChildNodes(dom) {
 	const rawChildNodes = dom.childNodes;
@@ -186,23 +162,6 @@ function hydrateVoid(vNode, dom) {
 	vNode.dom = dom;
 }
 
-function hydrateFragment(vNode, currentDom, lifecycle, context) {
-	const children = vNode.children;
-	// const parentDom = currentDom.parentNode;
-	// const pointer = vNode.pointer = document.createTextNode('');
-
-	for (let i = 0; i < children.length; i++) {
-		const child = children[i];
-		const childDom = currentDom;
-
-		if (isObject(child)) {
-			hydrate(child, childDom, lifecycle, context);
-		}
-		currentDom = currentDom.nextSibling;
-	}
-	// parentDom.insertBefore(pointer, currentDom);
-}
-
 function hydrate(vNode, dom, lifecycle, context) {
 	if (process.env.NODE_ENV !== 'production') {
 		if (isInvalid(dom)) {
@@ -217,15 +176,13 @@ function hydrate(vNode, dom, lifecycle, context) {
 		return hydrateElement(vNode, dom, lifecycle, context);
 	} else if (flags & VNodeFlags.Text) {
 		return hydrateText(vNode, dom);
-	} else if (flags & VNodeFlags.Fragment) {
-		return hydrateFragment(vNode, dom, lifecycle, context);
 	} else if (flags & VNodeFlags.Void) {
 		return hydrateVoid(vNode, dom);
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError(`hydrate() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
 		}
-		throwError();	
+		throwError();
 	}
 }
 

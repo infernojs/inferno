@@ -2318,45 +2318,4 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div>bar</div>');
 		});
 	});
-
-	describe('Support Arrays from Components', () => {
-
-		class RetArray extends Component<any, any> {
-			render() {
-				return [
-					this.props.foo
-				];
-			}
-		}
-
-		class A extends Component<any, any> {
-			render() {
-				return <div></div>;
-			}
-		}
-
-		it('Should be able to mount with array', () => {
-			render(<RetArray />, container);
-			expect(container.innerHTML).to.equal('');
-			render(null, container);
-		});
-
-		it('Should be able to mount with array', () => {
-			render(<RetArray foo={<div></div>}/>, container);
-			expect(container.innerHTML).to.equal('<div></div>');
-		});
-
-		it('Should be able to mount and unmount array', () => {
-			let mountedColumnSpy = sinon.spy(A.prototype, 'componentWillMount');
-			let unmountColumnSpy = sinon.spy(A.prototype, 'componentWillUnmount');
-			render(<RetArray foo={<A />}/>, container);
-			expect(mountedColumnSpy.callCount).to.equal(1);
-			expect(unmountColumnSpy.callCount).to.equal(0);
-			expect(container.innerHTML).to.equal('<div></div>');
-			render(<RetArray foo={null}/>, container);
-			expect(mountedColumnSpy.callCount).to.equal(1);
-			expect(unmountColumnSpy.callCount).to.equal(1);
-			expect(container.innerHTML).to.equal('');
-		});
-	});
 });

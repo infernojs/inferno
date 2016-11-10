@@ -112,11 +112,8 @@ function createVNode(flags, type, props, children, key, ref) {
         type: type
     };
 }
-function createFragmentVNode(children) {
-    return createVNode(2048 /* Fragment */, null, null, children);
-}
 function createVoidVNode() {
-    return createVNode(4096 /* Void */);
+    return createVNode(2048 /* Void */);
 }
 function createTextVNode(text) {
     return createVNode(1 /* Text */, null, null, text);
@@ -302,13 +299,10 @@ function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
     else if (flags & 1986 /* Element */) {
         unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
     }
-    else if (flags & 2048 /* Fragment */) {
-        unmountFragment(vNode, parentDom, true, lifecycle, shallowUnmount);
-    }
     else if (flags & 1 /* Text */) {
         unmountText(vNode, parentDom);
     }
-    else if (flags & 4096 /* Void */) {
+    else if (flags & 2048 /* Void */) {
         unmountVoid(vNode, parentDom);
     }
 }
@@ -321,25 +315,6 @@ function unmountText(vNode, parentDom) {
     if (parentDom) {
         removeChild(parentDom, vNode.dom);
     }
-}
-function unmountFragment(vNode, parentDom, removePointer, lifecycle, shallowUnmount) {
-    var children = vNode.children;
-    var childrenLength = children.length;
-    // const pointer = vNode.pointer;
-    if (!shallowUnmount && childrenLength > 0) {
-        for (var i = 0; i < childrenLength; i++) {
-            var child = children[i];
-            if (child.flags === 2048 /* Fragment */) {
-                unmountFragment(child, parentDom, true, lifecycle, false);
-            }
-            else {
-                unmount(child, parentDom, lifecycle, false, shallowUnmount);
-            }
-        }
-    }
-    // if (parentDom && removePointer) {
-    // 	removeChild(parentDom, pointer);
-    // }
 }
 function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
     var instance = vNode.children;
@@ -374,12 +349,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         if (isNullOrUndef(lastInput)) {
             lastInput = instance;
         }
-        if (lastInput.flags === 2048 /* Fragment */) {
-            unmountFragment(lastInput, parentDom, true, lifecycle, true);
-        }
-        else {
-            removeChild(parentDom, vNode.dom);
-        }
+        removeChild(parentDom, vNode.dom);
     }
     if (recyclingEnabled && (parentDom || canRecycle)) {
         poolComponent(vNode);
@@ -426,7 +396,7 @@ function unmountRef(ref) {
             return;
         }
         if (process.env.NODE_ENV !== 'production') {
-            throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+            throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
         }
         throwError();
     }
@@ -647,14 +617,6 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
                 replaceVNode(parentDom, mountElement(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
             }
         }
-        else if (nextFlags & 2048 /* Fragment */) {
-            if (lastFlags & 2048 /* Fragment */) {
-                patchFragment(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-            }
-            else {
-                replaceVNode(parentDom, mountFragment(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
-            }
-        }
         else if (nextFlags & 1 /* Text */) {
             if (lastFlags & 1 /* Text */) {
                 patchText(lastVNode, nextVNode);
@@ -663,8 +625,8 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
                 replaceVNode(parentDom, mountText(nextVNode, null), lastVNode, lifecycle);
             }
         }
-        else if (nextFlags & 4096 /* Void */) {
-            if (lastFlags & 4096 /* Void */) {
+        else if (nextFlags & 2048 /* Void */) {
+            if (lastFlags & 2048 /* Void */) {
                 patchVoid(lastVNode, nextVNode);
             }
             else {
@@ -672,11 +634,8 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
             }
         }
         else {
-            if (lastFlags & (12 /* Component */ | 1986 /* Element */ | 1 /* Text */ | 4096 /* Void */)) {
+            if (lastFlags & (12 /* Component */ | 1986 /* Element */ | 1 /* Text */ | 2048 /* Void */)) {
                 replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-            }
-            else if (lastFlags & 2048 /* Fragment */) {
-                replaceFragmentWithNode(parentDom, lastVNode, mount(nextVNode, null, lifecycle, context, isSVG), lifecycle, false);
             }
             else {
                 if (process.env.NODE_ENV !== 'production') {
@@ -854,7 +813,10 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextInput$1 = createVoidVNode();
                 }
                 else if (isArray(nextInput$1)) {
-                    nextInput$1 = createFragmentVNode(nextInput$1);
+                    if (process.env.NODE_ENV !== 'production') {
+                        throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+                    }
+                    throwError();
                 }
                 else if (nextInput$1 === NO_OP) {
                     nextInput$1 = lastInput$1;
@@ -890,7 +852,10 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextInput$2 = createVoidVNode();
                 }
                 else if (isArray(nextInput$2)) {
-                    nextInput$2 = createFragmentVNode(nextInput$2);
+                    if (process.env.NODE_ENV !== 'production') {
+                        throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+                    }
+                    throwError();
                 }
                 else if (nextInput$2 === NO_OP) {
                     return false;
@@ -915,21 +880,6 @@ function patchText(lastVNode, nextVNode) {
 }
 function patchVoid(lastVNode, nextVNode) {
     nextVNode.dom = lastVNode.dom;
-}
-function patchFragment(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
-    var lastChildren = lastVNode.children;
-    var nextChildren = nextVNode.children;
-    // const pointer = lastVFragment.pointer;
-    nextVNode.dom = lastVNode.dom;
-    // nextVFragment.pointer = pointer;
-    if (!lastChildren !== nextChildren) {
-        if (isKeyed(lastChildren, nextChildren)) {
-            patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
-        }
-        else {
-            patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
-        }
-    }
 }
 function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
     var lastChildrenLength = lastChildren.length;
@@ -1360,7 +1310,6 @@ function removeProp(prop, dom) {
     }
 }
 
-// import cloneVNode from '../factories/cloneVNode';
 function copyPropsTo(copyFrom, copyTo) {
     for (var prop in copyFrom) {
         if (isUndefined(copyTo[prop])) {
@@ -1389,7 +1338,10 @@ function createStatefulComponentInstance(Component, props, context, isSVG, devTo
     var input = instance.render(props, context);
     instance.afterRender && instance.afterRender();
     if (isArray(input)) {
-        input = createFragmentVNode(input);
+        if (process.env.NODE_ENV !== 'production') {
+            throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+        }
+        throwError();
     }
     else if (isInvalid(input)) {
         input = createVoidVNode();
@@ -1407,26 +1359,19 @@ function replaceVNode(parentDom, dom, vNode, lifecycle) {
     if (vNode.flags & 12 /* Component */) {
         // if we are accessing a stateful or stateless component, we want to access their last rendered input
         // accessing their DOM node is not useful to us here
-        // #related to below: unsure about this, but this prevents the lifeycle of components from being fired twice
         unmount(vNode, null, lifecycle, false, false);
         vNode = vNode.children._lastInput || vNode.children;
-        // #related to above: unsure about this, but this prevents the lifeycle of components from being fired twice
-        if (!(vNode.flags & 2048 /* Fragment */)) {
-            shallowUnmount = true;
-        }
     }
-    if (vNode.flags === 2048 /* Fragment */) {
-        replaceFragmentWithNode(parentDom, vNode, dom, lifecycle, shallowUnmount);
-    }
-    else {
-        replaceChild(parentDom, dom, vNode.dom);
-        unmount(vNode, null, lifecycle, false, shallowUnmount);
-    }
+    replaceChild(parentDom, dom, vNode.dom);
+    unmount(vNode, null, lifecycle, false, shallowUnmount);
 }
 function createStatelessComponentInput(component, props, context) {
     var input = component(props, context);
     if (isArray(input)) {
-        input = createFragmentVNode(input);
+        if (process.env.NODE_ENV !== 'production') {
+            throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+        }
+        throwError();
     }
     else if (isInvalid(input)) {
         input = createVoidVNode();
@@ -1454,11 +1399,6 @@ function insertOrAppend(parentDom, newNode, nextNode) {
     else {
         parentDom.insertBefore(newNode, nextNode);
     }
-}
-function replaceFragmentWithNode(parentDom, vFragment, dom, lifecycle, shallowUnmount) {
-    var pointer = vFragment.pointer;
-    unmountFragment(vFragment, parentDom, false, lifecycle, shallowUnmount);
-    replaceChild(parentDom, dom, pointer);
 }
 function documentCreateElement(tag, isSVG) {
     if (isSVG === true) {
@@ -1489,23 +1429,6 @@ function replaceChild(parentDom, nextDom, lastDom) {
     }
     parentDom.replaceChild(nextDom, lastDom);
 }
-// export function normalise(object) {
-// 	if (isStringOrNumber(object)) {
-// 		return createVText(object);
-// 	} else if (isInvalid(object)) {
-// 		return createVPlaceholder();
-// 	} else if (isArray(object)) {
-// 		return createVFragment(object, null);
-// 	} else if (isVNode(object) && object.dom) {
-// 		return cloneVNode(object);
-// 	}
-// 	return object;
-// }
-// export function normaliseChild(children, i) {
-// 	const child = children[i];
-// 	children[i] = normalise(child);
-// 	return children[i];
-// }
 function removeChild(parentDom, dom) {
     parentDom.removeChild(dom);
 }
@@ -1600,11 +1523,8 @@ function mount(vNode, parentDom, lifecycle, context, isSVG) {
     else if (flags & 12 /* Component */) {
         return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & 4 /* ComponentClass */);
     }
-    else if (flags & 4096 /* Void */) {
+    else if (flags & 2048 /* Void */) {
         return mountVoid(vNode, parentDom);
-    }
-    else if (flags & 2048 /* Fragment */) {
-        return mountFragment(vNode, parentDom, lifecycle, context, isSVG);
     }
     else if (flags & 1 /* Text */) {
         return mountText(vNode, parentDom);
@@ -1685,15 +1605,6 @@ function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
         mount(children[i], dom, lifecycle, context, isSVG);
     }
 }
-function mountFragment(vNode, parentDom, lifecycle, context, isSVG) {
-    var dom = document.createDocumentFragment();
-    mountArrayChildren(vNode.children, dom, lifecycle, context, isSVG);
-    vNode.dom = dom;
-    if (parentDom) {
-        appendChild(parentDom, dom);
-    }
-    return dom;
-}
 function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
     if (recyclingEnabled) {
         var dom$1 = recycleComponent(vNode, lifecycle, context, isSVG);
@@ -1743,7 +1654,7 @@ function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
         }
         else {
             if (process.env.NODE_ENV !== 'production') {
-                throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+                throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
             }
             throwError();
         }
@@ -1773,59 +1684,36 @@ function mountRef(dom, value, lifecycle) {
             return;
         }
         if (process.env.NODE_ENV !== 'production') {
-            throwError('string "refs" are not supported in Inferno 0.8+. Use callback "refs" instead.');
+            throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
         }
         throwError();
     }
 }
 
-function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
-    var domNode = childNodes[counter.i];
-    var flags = child.flags;
-    if (flags & 1 /* Text */) {
-        var text = child.text;
-        child.dom = domNode;
-        if (domNode.nodeType === 3 && text !== '') {
-            domNode.nodeValue = text;
-        }
-        else {
-            var newDomNode = mountText(text, null);
-            replaceChild(parentDom, newDomNode, domNode);
-            childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
-            child.dom = newDomNode;
-        }
-    }
-    else if (flags & 4096 /* Void */) {
-        child.dom = domNode;
-    }
-    else if (flags & 2048 /* Fragment */) {
-        var items = child.items;
-        // this doesn't really matter, as it won't be used again, but it's what it should be given the purpose of VList
-        child.dom = document.createDocumentFragment();
-        for (var i = 0; i < items.length; i++) {
-            var rebuild = hydrateChild(items[i], childNodes, counter, parentDom, lifecycle, context);
-            if (rebuild) {
-                return true;
-            }
-        }
-        // at the end of every VList, there should be a "pointer". It's an empty TextNode used for tracking the VList
-        var pointer = childNodes[counter.i++];
-        if (pointer && pointer.nodeType === 3) {
-            debugger;
-        }
-        else {
-            // there is a problem, we need to rebuild this tree
-            return true;
-        }
-    }
-    else {
-        var rebuild$1 = hydrate(child, domNode, lifecycle, context);
-        if (rebuild$1) {
-            return true;
-        }
-    }
-    counter.i++;
-}
+// function hydrateChild(child, childNodes, counter, parentDom, lifecycle, context) {
+// 	const domNode = childNodes[counter.i];
+// 	const flags = child.flags;
+// 	if (flags & VNodeFlags.Text) {
+// 		const text = child.text;
+// 		child.dom = domNode;
+// 		if (domNode.nodeType === 3 && text !== '') {
+// 			domNode.nodeValue = text;
+// 		} else {
+// 			const newDomNode = mountText(text, null);
+// 			replaceChild(parentDom, newDomNode, domNode);
+// 			childNodes.splice(childNodes.indexOf(domNode), 1, newDomNode);
+// 			child.dom = newDomNode;
+// 		}
+// 	} else if (flags & VNodeFlags.Void) {
+// 		child.dom = domNode;
+// 	} else {
+// 		const rebuild = hydrate(child, domNode, lifecycle, context);
+// 		if (rebuild) {
+// 			return true;
+// 		}
+// 	}
+// 	counter.i++;
+// }
 
 function hydrateComponent(vNode, dom, lifecycle, context, isClass) {
     var type = vNode.type;
@@ -1900,20 +1788,6 @@ function hydrateText(vNode, dom) {
 function hydrateVoid(vNode, dom) {
     vNode.dom = dom;
 }
-function hydrateFragment(vNode, currentDom, lifecycle, context) {
-    var children = vNode.children;
-    // const parentDom = currentDom.parentNode;
-    // const pointer = vNode.pointer = document.createTextNode('');
-    for (var i = 0; i < children.length; i++) {
-        var child = children[i];
-        var childDom = currentDom;
-        if (isObject(child)) {
-            hydrate(child, childDom, lifecycle, context);
-        }
-        currentDom = currentDom.nextSibling;
-    }
-    // parentDom.insertBefore(pointer, currentDom);
-}
 function hydrate(vNode, dom, lifecycle, context) {
     if (process.env.NODE_ENV !== 'production') {
         if (isInvalid(dom)) {
@@ -1930,10 +1804,7 @@ function hydrate(vNode, dom, lifecycle, context) {
     else if (flags & 1 /* Text */) {
         return hydrateText(vNode, dom);
     }
-    else if (flags & 2048 /* Fragment */) {
-        return hydrateFragment(vNode, dom, lifecycle, context);
-    }
-    else if (flags & 4096 /* Void */) {
+    else if (flags & 2048 /* Void */) {
         return hydrateVoid(vNode, dom);
     }
     else {

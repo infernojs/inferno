@@ -91,7 +91,6 @@ function createVNode(flags, type, props, children, key, ref) {
     };
 }
 
-
 function createTextVNode(text) {
     return createVNode(1 /* Text */, null, null, text);
 }

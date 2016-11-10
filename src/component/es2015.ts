@@ -9,8 +9,7 @@ import {
 	EMPTY_OBJ
 } from '../shared';
 import {
-	createVoidVNode,
-	createFragmentVNode
+	createVoidVNode
 } from './../core/shapes';
 
 const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
@@ -105,7 +104,10 @@ function applyState(component: Component<any, any>, force, callback): void {
 		if (isInvalid(nextInput)) {
 			nextInput = createVoidVNode();
 		} else if (isArray(nextInput)) {
-			nextInput = createFragmentVNode(nextInput);
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+			}
+			throwError();
 		} else if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 			didUpdate = false;

@@ -118,11 +118,8 @@ function createVNode(flags, type, props, children, key, ref) {
         type: type
     };
 }
-function createFragmentVNode(children) {
-    return createVNode(2048 /* Fragment */, null, null, children);
-}
 function createVoidVNode() {
-    return createVNode(4096 /* Void */);
+    return createVNode(2048 /* Void */);
 }
 function createTextVNode(text) {
     return createVNode(1 /* Text */, null, null, text);
@@ -188,7 +185,10 @@ function applyState(component, force, callback) {
             nextInput = createVoidVNode();
         }
         else if (isArray(nextInput)) {
-            nextInput = createFragmentVNode(nextInput);
+            if (process.env.NODE_ENV !== 'production') {
+                throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+            }
+            throwError();
         }
         else if (nextInput === NO_OP) {
             nextInput = component._lastInput;

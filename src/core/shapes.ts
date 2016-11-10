@@ -31,8 +31,7 @@ export const enum VNodeFlags {
 	InputElement = 1 << 8,
 	TextareaElement = 1 << 9,
 	SelectElement = 1 << 10,
-	Fragment = 1 << 11,
-	Void = 1 << 12,
+	Void = 1 << 11,
 	Element = HtmlElement | SvgElement | MediaElement | InputElement | TextareaElement | SelectElement,
 	Component = ComponentFunction | ComponentClass
 };
@@ -96,10 +95,6 @@ export function createVNode(flags, type?, props?, children?, key?, ref?): VNode 
 		ref: ref || null,
 		type
 	};
-}
-
-export function createFragmentVNode(children) {
-	return createVNode(VNodeFlags.Fragment, null, null, children);
 }
 
 export function createVoidVNode() {

@@ -18,7 +18,6 @@ import {
 	mount,
 	mountElement,
 	mountText,
-	mountFragment,
 	mountComponent,
 	mountStatelessComponentCallbacks,
 	mountVoid,
@@ -27,7 +26,6 @@ import {
 import {
 	insertOrAppend,
 	isKeyed,
-	replaceFragmentWithNode,
 	// normaliseChild,
 	// resetFormInputProperties,
 	removeAllChildren,
@@ -57,7 +55,6 @@ import {
 	VNodeFlags,
 	isVNode,
 	createVoidVNode,
-	createFragmentVNode,
 	VNode
 } from '../core/shapes';
 import processElement from './wrappers/processElement';
@@ -114,23 +111,6 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 					lifecycle
 				);
 			}
-		} else if (nextFlags & VNodeFlags.Fragment) {
-			if (lastFlags & VNodeFlags.Fragment) {
-				patchFragment(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-			} else {
-				replaceVNode(
-					parentDom,
-					mountFragment(
-						nextVNode,
-						null,
-						lifecycle,
-						context,
-						isSVG
-					),
-					lastVNode,
-					lifecycle
-				);
-			}
 		} else if (nextFlags & VNodeFlags.Text) {
 			if (lastFlags & VNodeFlags.Text) {
 				patchText(lastVNode, nextVNode);
@@ -146,20 +126,6 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 		} else {
 			if (lastFlags & (VNodeFlags.Component | VNodeFlags.Element | VNodeFlags.Text | VNodeFlags.Void)) {
 				replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-			} else if (lastFlags & VNodeFlags.Fragment) {
-				replaceFragmentWithNode(
-					parentDom,
-					lastVNode,
-					mount(
-						nextVNode,
-						null,
-						lifecycle,
-						context,
-						isSVG
-					),
-					lifecycle,
-					false
-				);
 			} else {
 				if (process.env.NODE_ENV !== 'production') {
 					throwError(`patch() expects a valid VNode, instead it received an object with the type "${ typeof nextVNode }".`);
@@ -347,7 +313,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				if (isInvalid(nextInput)) {
 					nextInput = createVoidVNode();
 				} else if (isArray(nextInput)) {
-					nextInput = createFragmentVNode(nextInput);
+					if (process.env.NODE_ENV !== 'production') {
+						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+					}
+					throwError();
 				} else if (nextInput === NO_OP) {
 					nextInput = lastInput;
 					didUpdate = false;
@@ -384,7 +353,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				if (isInvalid(nextInput)) {
 					nextInput = createVoidVNode();
 				} else if (isArray(nextInput)) {
-					nextInput = createFragmentVNode(nextInput);
+					if (process.env.NODE_ENV !== 'production') {
+						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+					}
+					throwError();
 				} else if (nextInput === NO_OP) {
 					return false;
 				}
@@ -412,22 +384,6 @@ export function patchText(lastVNode, nextVNode) {
 
 export function patchVoid(lastVNode, nextVNode) {
 	nextVNode.dom = lastVNode.dom;
-}
-
-function patchFragment(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
-	const lastChildren = lastVNode.children;
-	const nextChildren = nextVNode.children;
-	// const pointer = lastVFragment.pointer;
-
-	nextVNode.dom = lastVNode.dom;
-	// nextVFragment.pointer = pointer;
-	if (!lastChildren !== nextChildren) {
-		if (isKeyed(lastChildren, nextChildren)) {
-			patchKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
-		} else {
-			patchNonKeyedChildren(lastChildren, nextChildren, parentDom, lifecycle, context, isSVG);
-		}
-	}
 }
 
 export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
