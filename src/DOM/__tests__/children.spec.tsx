@@ -1124,7 +1124,7 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should not crash when changing vragment to node', () => {
-			class Nodes extends Component {
+			class Nodes extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}
@@ -1138,7 +1138,7 @@ describe('Children - (JSX)', () => {
 				}
 			}
 
-			class NodesB extends Component {
+			class NodesB extends Component<any, any> {
 				constructor(props) {
 					super(props);
 				}

@@ -23,7 +23,7 @@ const componentHooks = {
 	onComponentDidUpdate: true
 };
 
-export default function createElement(name: string | Function, props?: any, ..._children) {
+export default function createElement(name: string | Function, props?: any, ..._children): InfernoElement {
 	if (isInvalid(name) || isObject(name)) {
 		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
