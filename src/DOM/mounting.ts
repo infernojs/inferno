@@ -95,9 +95,6 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
-	if (!isNull(ref)) {
-		mountRef(dom, ref, lifecycle);
-	}
 	if (!isNull(children)) {
 		if (isStringOrNumber(children)) {
 			setTextContent(dom, children);
@@ -116,6 +113,9 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 			patchProp(prop, null, props[prop], dom, isSVG);
 		}
 	}
+	if (!isNull(ref)) {
+		mountRef(dom, ref, lifecycle);
+	}	
 	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
 	}
@@ -204,7 +204,7 @@ export function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
 	}
 }
 
-function mountRef(dom, value, lifecycle) {
+export function mountRef(dom, value, lifecycle) {
 	if (isFunction(value)) {
 		lifecycle.addListener(() => value(dom));
 	} else {

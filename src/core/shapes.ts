@@ -99,6 +99,12 @@ export function createVNode(flags, type?, props?, children?, key?, ref?): VNode 
 		if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
 			children = props.children;
 		}
+		if (props.ref) {
+			ref = props.ref;
+		}
+		if (!isNullOrUndef(props.key)) {
+			key = props.key;
+		}
 	}
 	if (isArray(children)) {
 		children = normaliseVNodes(children)

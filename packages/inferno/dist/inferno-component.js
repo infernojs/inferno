@@ -71,6 +71,62 @@ function throwError(message) {
 
 var EMPTY_OBJ = {};
 
+function cloneVNode(vNodeToClone, props) {
+    var _children = [], len = arguments.length - 2;
+    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
+
+    var children = _children;
+    if (_children.length > 0 && !isNull(_children[0])) {
+        if (!props) {
+            props = {};
+        }
+        if (_children.length === 1) {
+            children = _children[0];
+        }
+        if (isUndefined(props.children)) {
+            props.children = children;
+        }
+        else {
+            if (isArray(children)) {
+                if (isArray(props.children)) {
+                    props.children = props.children.concat(children);
+                }
+                else {
+                    props.children = [props.children].concat(children);
+                }
+            }
+            else {
+                if (isArray(props.children)) {
+                    props.children.push(children);
+                }
+                else {
+                    props.children = [props.children];
+                    props.children.push(children);
+                }
+            }
+        }
+    }
+    children = null;
+    var newVNode;
+    if (isArray(vNodeToClone)) {
+        newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
+    }
+    else if (isNullOrUndef(props) && isNullOrUndef(children)) {
+        newVNode = Object.assign({}, vNodeToClone);
+    }
+    else {
+        var flags = vNodeToClone.flags;
+        if (flags & 12 /* Component */) {
+            newVNode = createVNode(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, flags, vNodeToClone.key, vNodeToClone.ref);
+        }
+        else if (flags & 1986 /* Element */) {
+            newVNode = createVNode(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), (props && props.children) || children || vNodeToClone.children, flags, vNodeToClone.key, vNodeToClone.ref);
+        }
+    }
+    newVNode.dom = null;
+    return newVNode;
+}
+
 function _normaliseVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
@@ -82,26 +138,53 @@ function _normaliseVNodes(nodes, result, i) {
                 if (isStringOrNumber(n)) {
                     n = createTextVNode(n);
                 }
+                else if (isVNode(n) && n.dom) {
+                    n = cloneVNode(n);
+                }
                 result.push(n);
             }
         }
     }
 }
 function normaliseVNodes(nodes) {
+    var newNodes;
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
         if (isInvalid(n) || Array.isArray(n)) {
-            var result = nodes.slice(0, i);
+            var result = (newNodes || nodes).slice(0, i);
             _normaliseVNodes(nodes, result, i);
             return result;
         }
         else if (isStringOrNumber(n)) {
-            nodes[i] = createTextVNode(n);
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push(createTextVNode(n));
+        }
+        else if (isVNode(n) && n.dom) {
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push(cloneVNode(n));
+        }
+        else if (newNodes) {
+            newNodes.push(cloneVNode(n));
         }
     }
-    return nodes;
+    return newNodes || nodes;
 }
 function createVNode(flags, type, props, children, key, ref) {
+    if (props) {
+        if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
+            children = props.children;
+        }
+        if (props.ref) {
+            ref = props.ref;
+        }
+        if (!isNullOrUndef(props.key)) {
+            key = props.key;
+        }
+    }
     if (isArray(children)) {
         children = normaliseVNodes(children);
     }
@@ -123,6 +206,9 @@ function createVoidVNode() {
 }
 function createTextVNode(text) {
     return createVNode(1 /* Text */, null, null, text);
+}
+function isVNode(o) {
+    return !!o.flags;
 }
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';

@@ -75,6 +75,7 @@ export function replaceVNode(parentDom, dom, vNode, lifecycle) {
 		// accessing their DOM node is not useful to us here
 		unmount(vNode, null, lifecycle, false, false);
 		vNode = vNode.children._lastInput || vNode.children;
+		shallowUnmount = true;
 	}
 	replaceChild(parentDom, dom, vNode.dom);
 	unmount(vNode, null, lifecycle, false, shallowUnmount);

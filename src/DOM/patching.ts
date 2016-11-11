@@ -4,8 +4,6 @@ import {
 	isNull,
 	isString,
 	isStringOrNumber,
-	// isStatefulComponent,
-	// isStringOrNumber,
 	isInvalid,
 	NO_OP,
 	isNumber,
@@ -21,22 +19,17 @@ import {
 	mountComponent,
 	mountStatelessComponentCallbacks,
 	mountVoid,
-	mountArrayChildren
+	mountArrayChildren,
+	mountRef
 } from './mounting';
 import {
 	insertOrAppend,
 	isKeyed,
-	// normaliseChild,
-	// resetFormInputProperties,
 	removeAllChildren,
-	// removeChildren,
 	replaceWithNewNode,
-	// formSelectValue,
 	updateTextContent,
 	setTextContent,
 	replaceChild,
-	// normalise,
-	// getPropFromOptElement,
 	createStatelessComponentInput,
 	copyPropsTo,
 	replaceVNode,
@@ -160,6 +153,8 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 		const nextChildren = nextVNode.children;
 		const lastFlags = lastVNode.flags;
 		const nextFlags = nextVNode.flags;
+		const lastRef = lastVNode.ref;
+		const nextRef = nextVNode.ref;
 
 		nextVNode.dom = dom;
 		if (isSVG || (nextFlags & VNodeFlags.SvgElement)) {
@@ -180,6 +175,9 @@ export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context
 				context,
 				isSVG
 			);
+		}
+		if (lastRef !== nextRef) {
+			mountRef(dom, nextRef, lifecycle);
 		}
 	}
 }
