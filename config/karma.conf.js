@@ -12,7 +12,7 @@ module.exports = function (config) {
 		files: [
 			'./../node_modules/babel-polyfill/dist/polyfill.js',
 			'./../node_modules/sinon/pkg/sinon.js',
-			'./../src/**/__tests__/**'
+			'./../src/mobx/__tests__/**'
 		],
 		// Start these browsers, currently available:
 		// - Chrome
@@ -32,7 +32,7 @@ module.exports = function (config) {
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
-			'./../src/**/__tests__/**': ['webpack']
+			'./../src/mobx/__tests__/**': ['webpack']
 		},
 		webpack: {
 			module: {
