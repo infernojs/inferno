@@ -81,6 +81,22 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			description: 'should render a stateless component',
 			template: (value) => createElement('div', null, createElement(FunctionalComponent, { value })),
 			result: '<div><span>stateless foo!</span></div>'
+		}, {
+			description: 'should render a stateless component with object props',
+			template: (value) => createElement('a', { [value]: true }),
+			result: '<a foo></a>'
+		}, {
+			description: 'should render with array text children',
+			template: (value) => createElement('a', null, ['a', 'b']),
+			result: '<a>a<!---->b</a>'
+		}, {
+			description: 'should render with array children containing an array of text children',
+			template: (value) => createElement('a', null, [['a', 'b']]),
+			result: '<a><!---->a<!---->b<!--!--></a>'
+		}, {
+			description: 'should render with array null children',
+			template: (value) => createElement('a', null, ['a', null]),
+			result: '<a>a<!--!--></a>'
 		}
 	];
 
