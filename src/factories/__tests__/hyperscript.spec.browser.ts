@@ -93,7 +93,7 @@ describe('HyperScript (non-JSX)', () => {
 		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
 	});
 
-	it('Should handle tag with invalid id', () => {
+	it('Should handle tag with no tag name but id is present', () => {
 		const ComponentHooks = () => h('#myId',);
 		render(
 			h(ComponentHooks),
