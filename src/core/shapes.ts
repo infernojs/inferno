@@ -94,7 +94,7 @@ export function normaliseVNodes(nodes: any[]): VNode[] {
 	return newNodes || nodes as VNode[];
 }
 
-export function createVNode(flags, type?, props?, children?, key?, ref?): VNode {
+export function createVNode(flags, type?, props?, children?, key?, ref?, noNormalise?: boolean): VNode {
 	if (props) {
 		if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
 			children = props.children;
@@ -106,7 +106,7 @@ export function createVNode(flags, type?, props?, children?, key?, ref?): VNode 
 			key = props.key;
 		}
 	}
-	if (isArray(children)) {
+	if (!noNormalise && isArray(children)) {
 		children = normaliseVNodes(children)
 	}
 	if (isNull(flags)) {

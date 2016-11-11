@@ -167,7 +167,7 @@ function normaliseVNodes(nodes) {
     }
     return newNodes || nodes;
 }
-function createVNode(flags, type, props, children, key, ref) {
+function createVNode(flags, type, props, children, key, ref, noNormalise) {
     if (props) {
         if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
             children = props.children;
@@ -179,7 +179,7 @@ function createVNode(flags, type, props, children, key, ref) {
             key = props.key;
         }
     }
-    if (isArray(children)) {
+    if (!noNormalise && isArray(children)) {
         children = normaliseVNodes(children);
     }
     if (isNull(flags)) {

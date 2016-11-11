@@ -8,7 +8,7 @@
 	var treeLeafProps = { className: 'TreeLeaf' };
 
 	function TreeLeaf(id) {
-		return createVNode('li', treeLeafProps, id + '', 1 << 1);
+		return createVNode(1 << 1, 'li', treeLeafProps, id + '');
 	}
 
 	var shouldDataUpdate = {
@@ -26,12 +26,12 @@
 			var n = data.children[i];
 
 			if (n.container) {
-				children[i] = createVNode(TreeNode, n, null, 1 << 3, n.id, shouldDataUpdate);
+				children[i] = createVNode(1 << 3, TreeNode, n, null, n.id, shouldDataUpdate, true);
 			} else {
-				children[i] = createVNode(TreeLeaf, n.id, null, 1 << 3, n.id, shouldDataUpdate);
+				children[i] = createVNode(1 << 3, TreeLeaf, n.id, null, n.id, shouldDataUpdate);
 			}
 		}
-		return createVNode('ul', treeNodeProps, children, 1 << 1 | 1 << 4);
+		return createVNode(1 << 1 | 1 << 4, 'ul', treeNodeProps, children, null, null, true);
 	}
 
 	var treeProps = { className: 'Tree' };
@@ -42,7 +42,7 @@
 			return Inferno.NO_OP;
 		}
 		lastTreeData = data;
-		return createVNode('div', treeProps, createVNode(TreeNode, data.root, null, 1 << 3, null, shouldDataUpdate), 1 << 1);
+		return createVNode(1 << 1, 'div', treeProps, createVNode(1 << 3, TreeNode, data.root, null, null, shouldDataUpdate, true));
 	}
 
 	function AnimBox(data) {
@@ -50,7 +50,7 @@
 		var style = 'border-radius:' + (time % 10) + 'px;' +
 			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')';
 
-		return createVNode('div', { className: 'AnimBox', style: style, 'data-id': data.id }, null, 1 << 1);
+		return createVNode(1 << 1, 'div', { className: 'AnimBox', style: style, 'data-id': data.id });
 	}
 
 	var animProps = { className: 'Anim' };
@@ -68,9 +68,9 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = createVNode(AnimBox, item, null, 1 << 3, item.id, shouldDataUpdate);
+			children[i] = createVNode(1 << 3, AnimBox, item, null, item.id, shouldDataUpdate);
 		}
-		return createVNode('div', animProps, children, 1 << 1 | 1 << 4);
+		return createVNode(1 << 1 | 1 << 4, 'div', animProps, children, null, null, true);
 	}
 
 	function onClick(e, c, p) {
@@ -82,7 +82,7 @@
 	var tableCellProps = { className: 'TableCell' };
 
 	function TableCell(text) {
-		return createVNode('td', tableCellProps, text, 1 << 1);
+		return createVNode(1 << 1, 'td', tableCellProps, text);
 	}
 
 	function TableRow(data) {
@@ -95,12 +95,12 @@
 		var length = cells.length + 1;
 		var children = new Array(length);
 
-		children[0] = createVNode(TableCell, '#' + data.id, null, 1 << 3, -1, shouldDataUpdate);
+		children[0] = createVNode(1 << 3, TableCell, '#' + data.id, null, -1, shouldDataUpdate);
 
 		for (var i = 1; i < length; i++) {
-			children[i] = createVNode(TableCell, cells[i - 1], null, 1 << 3, i, shouldDataUpdate);
+			children[i] = createVNode(1 << 3, TableCell, cells[i - 1], null, i, shouldDataUpdate);
 		}
-		return createVNode('tr', { className: classes, 'data-id': data.id }, children, 1 << 1 | 1 << 4);
+		return createVNode(1 << 1 | 1 << 4, 'tr', { className: classes, 'data-id': data.id }, children, null, null, true);
 	}
 
 	var tableProps = { className: 'Table' };
@@ -118,9 +118,9 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = createVNode(TableRow, item, null, 1 << 3, item.id, shouldDataUpdate);
+			children[i] = createVNode(1 << 3, TableRow, item, null, item.id, shouldDataUpdate, true);
 		}
-		return createVNode('table', tableProps, children, 1 << 1 | 1 << 4);
+		return createVNode(1 << 1 | 1 << 4, 'table', tableProps, children, null, null, true);
 	}
 
 	var mainProps = { className: 'Main' };
@@ -141,7 +141,7 @@
 		} else if (location === 'tree') {
 			section = tree(data.tree);
 		}
-		return createVNode('div', mainProps, section, 1 << 1);
+		return createVNode(1 << 1, 'div', mainProps, section, null, null, true);
 	}
 
 	document.addEventListener('DOMContentLoaded', function(e) {
@@ -153,7 +153,7 @@
 			},
 			function(samples) {
 				Inferno.render(
-					createVNode('pre', null, JSON.stringify(samples, null, ' '), 1 << 1), container
+					createVNode(1 << 1, 'pre', null, JSON.stringify(samples, null, ' '), null, null, true), container
 				);
 			}
 		);
