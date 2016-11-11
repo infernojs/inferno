@@ -23,6 +23,31 @@ describe('cloneVNode (JSX)', () => {
 		expect(container.innerHTML).to.equal('<a></a><a></a>');
 	});
 
+	it('should clone with third argument array', () => {
+		const node = cloneVNode(<div/>, null, [<span/>]);
+		render(node, container);
+		expect(container.innerHTML).to.equal('<div><span></span></div>');
+	});
+
+	it('should clone with third argument array + props children array', () => {
+		const node = cloneVNode(<div/>, { children: 'x' }, [<a/>]);
+		render(node, container);
+		expect(container.innerHTML).to.equal('<div>x<a></a></div>');
+	});
+
+	it('should clone OPT_ELEMENT', () => {
+		const noop = () => {};
+		const node = cloneVNode(<div
+			onComponentWillMount={ noop }
+			onComponentDidMount={ noop }
+			onComponentWillUnmount={ noop }
+			onComponentShouldUpdate={ noop }
+			onComponentWillUpdate={ noop }
+		/>, { children: [<span/>] });
+		render(node, container);
+		expect(container.innerHTML).to.equal('<div><span></span></div>');
+	});
+
 	it('should clone a basic element with array children', () => {
 		const node = cloneVNode(<div/>, { children: [<span/>] });
 		render(node, container);
