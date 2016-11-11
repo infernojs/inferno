@@ -33,31 +33,9 @@ function createStoreInjector (grabStoresFn, component) {
 	});
 
 	Injector.contextTypes = { mobxStores() {} };
-	injectStaticWarnings(Injector, component);
 	hoistStatics(Injector, component);
 
 	return Injector;
-}
-
-function injectStaticWarnings(hoc, component) {
-	if (typeof process === "undefined" || !process.env || process.env.NODE_ENV === "production") {
-		return;
-	}
-
-	['propTypes', 'defaultProps', 'contextTypes'].forEach(prop => {
-		const propValue = hoc[prop];
-		Object.defineProperty(hoc, prop, {
-			set (_) {
-				// enable for testing:
-				const name = component.displayName || component.name;
-				console.warn(`Mobx Injector: you are trying to attach ${prop} to HOC instead of ${name}. Use 'wrappedComponent' property.`);
-			},
-			get () {
-				return propValue;
-			},
-			configurable: true
-		});
-	});
 }
 
 const grabStoresByName = (storeNames) => (baseStores, nextProps) => {
@@ -86,7 +64,7 @@ const grabStoresByName = (storeNames) => (baseStores, nextProps) => {
  * or a function that manually maps the available stores from the context to props:
  * storesToProps(mobxStores, props, context) => newProps
  */
-export default function inject (grabStoresFn): any {
+export default function inject (grabStoresFn?: Function | string): any {
 
 	if (typeof grabStoresFn !== 'function') {
 
