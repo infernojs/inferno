@@ -1,7 +1,7 @@
-import Provider from '../../../src/mobx/Provider';
-import {trackComponents, renderReporter, componentByNodeRegistery} from '../../../src/mobx/observer';
-import connect from '../../../src/mobx/connect';
-import inject from '../../../src/mobx/inject';
+import Provider from '../../../build/mobx/Provider';
+import {trackComponents, renderReporter, componentByNodeRegistery} from '../../../build/mobx/observer';
+import connect from '../../../build/mobx/connect';
+import inject from '../../../build/mobx/inject';
 
 export default {
 	Provider,

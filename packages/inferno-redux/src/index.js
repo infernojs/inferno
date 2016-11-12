@@ -1,5 +1,5 @@
-import Provider from '../../../src/redux/Provider';
-import connect from '../../../src/redux/connect';
+import Provider from '../../../build/redux/Provider';
+import connect from '../../../build/redux/connect';
 
 export default {
 	Provider,
