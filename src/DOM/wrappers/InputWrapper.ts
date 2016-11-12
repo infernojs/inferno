@@ -83,6 +83,8 @@ export function processInput(vNode, dom) {
 export function applyValue(vNode, dom, force) {
 	const props = vNode.props || EMPTY_OBJ;
 	const type = props.type;
+	const value = props.value;
+	const checked = props.checked;
 
 	if ((force || type !== dom.type) && type) {
 		dom.type = type;
@@ -91,17 +93,18 @@ export function applyValue(vNode, dom, force) {
 		dom.multiple = props.multiple;
 	}	
 	if (isCheckedType(type)) {
-		dom.checked = props.checked;
+		if (!isNullOrUndef(value)) {
+			dom.value = value;
+		}
+		dom.checked = checked;
 		if (type === 'radio' && props.name) {
 			handleAssociatedRadioInputs(props.name);
 		}
 	} else {
-		const value = props.value;
-
 		if (!isNullOrUndef(value) && (force || dom.value !== value)) {
 			dom.value = value;
-		} else if (!isNullOrUndef(props.checked)) {
-			dom.checked = props.checked;
+		} else if (!isNullOrUndef(checked)) {
+			dom.checked = checked;
 		}
 	}
 }

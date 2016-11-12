@@ -24,12 +24,12 @@ bundles.add({
 	path: 'packages/inferno-component/'
 });
 
-// bundles.add({
-// 	moduleGlobal: 'InfernoTestUtils',
-// 	moduleName: 'inferno-test-utils',
-// 	moduleEntry: 'packages/inferno-test-utils/src/index.js',
-// 	path: 'packages/inferno-test-utils/'
-// });
+bundles.add({
+	moduleGlobal: 'InfernoTestUtils',
+	moduleName: 'inferno-test-utils',
+	moduleEntry: 'packages/inferno-test-utils/src/index.js',
+	path: 'packages/inferno-test-utils/'
+});
 
 bundles.add({
 	moduleGlobal: 'InfernoCreateElement',
@@ -45,12 +45,12 @@ bundles.add({
 	path: 'packages/inferno-compat/'
 });
 
-// bundles.add({
-// 	moduleGlobal: 'InfernoRouter',
-// 	moduleName: 'inferno-router',
-// 	moduleEntry: 'packages/inferno-router/src/index.js',
-// 	path: 'packages/inferno-router/'
-// });
+bundles.add({
+	moduleGlobal: 'InfernoRouter',
+	moduleName: 'inferno-router',
+	moduleEntry: 'packages/inferno-router/src/index.js',
+	path: 'packages/inferno-router/'
+});
 
 bundles.add({
 	moduleGlobal: 'InfernoCreateClass',
@@ -59,19 +59,19 @@ bundles.add({
 	path: 'packages/inferno-create-class/'
 });
 
-// bundles.add({
-// 	moduleGlobal: 'InfernoRedux',
-// 	moduleName: 'inferno-redux',
-// 	moduleEntry: 'packages/inferno-redux/src/index.js',
-// 	path: 'packages/inferno-redux/'
-// });
+bundles.add({
+	moduleGlobal: 'InfernoRedux',
+	moduleName: 'inferno-redux',
+	moduleEntry: 'packages/inferno-redux/src/index.js',
+	path: 'packages/inferno-redux/'
+});
 
-// bundles.add({
-// 	moduleGlobal: 'InfernoMobx',
-// 	moduleName: 'inferno-mobx',
-// 	moduleEntry: 'packages/inferno-mobx/src/index.js',
-// 	path: 'packages/inferno-mobx/'
-// });
+bundles.add({
+	moduleGlobal: 'InfernoMobx',
+	moduleName: 'inferno-mobx',
+	moduleEntry: 'packages/inferno-mobx/src/index.js',
+	path: 'packages/inferno-mobx/'
+});
 
 bundles.add({
 	moduleGlobal: 'InfernoHyperscript',

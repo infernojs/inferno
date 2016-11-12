@@ -58,8 +58,8 @@ describe('SSR Hydration - (JSX)', () => {
 			node: <div>
 				<svg className={(() => 'foo')()} viewBox="0 0 64 64"/>
 			</div>,
-			expect1: '<div data-infernoroot=""><svg viewBox="0 0 64 64" class="foo"></svg></div>',
-			expect2: '<div><svg viewBox="0 0 64 64" class="foo"></svg></div>'
+			expect1: '<div data-infernoroot=""><svg class="foo" viewBox="0 0 64 64"></svg></div>',
+			expect2: '<div><svg class="foo" viewBox="0 0 64 64"></svg></div>'
 		},
 		{
 			node: <Comp4><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></Comp4>,
@@ -73,12 +73,12 @@ describe('SSR Hydration - (JSX)', () => {
 		},
 		{
 			node: <div>Hello world, { ['Foo!', 'Bar!'] }</div>,
-			expect1: '<div data-infernoroot="">Hello world, <!---->Foo!<!---->Bar!<!--!--></div>',
+			expect1: '<div data-infernoroot="">Hello world, <!---->Foo!<!---->Bar!</div>',
 			expect2: '<div>Hello world, Foo!Bar!</div>'
 		},
 		{
 			node: <div>Hello world!{ null }</div>,
-			expect1: '<div data-infernoroot="">Hello world!<!--!--></div>',
+			expect1: '<div data-infernoroot="">Hello world!</div>',
 			expect2: '<div>Hello world!</div>'
 		},
 		{

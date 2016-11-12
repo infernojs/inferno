@@ -6,6 +6,7 @@ import {
 	isNullOrUndef,
 	isArray
 } from '../shared';
+import { VNodeFlags } from '../core/shapes';
 
 const comparer = document.createElement('div');
 
@@ -48,35 +49,26 @@ export function validateNodeTree(node) {
 		return false;
 	}
 	const children = node.children;
+	const flags = node.flags;
 
-	if (!isNullOrUndef(children)) {
-		if (isArray(children)) {
-			for (let i = 0; i < children.length; i++) {
-				const val = validateNodeTree(children[i]);
+	if (flags & VNodeFlags.Element) {
+		if (!isNullOrUndef(children)) {
+			if (isArray(children)) {
+				for (let i = 0; i < children.length; i++) {
+					const val = validateNodeTree(children[i]);
+
+					if (!val) {
+						return false;
+					}
+				}
+			} else {
+				const val = validateNodeTree(children);
 
 				if (!val) {
 					return false;
 				}
 			}
-		} else {
-			const val = validateNodeTree(children);
-
-			if (!val) {
-				return false;
-			}
 		}
-	}
-	const v0 = node._v0;
-
-	if (!isNullOrUndef(v0)) {
-		if (isVNode(v0)) {
-			return validateNodeTree(v0);
-		}
-	}
-	const v1 = node._v1;
-
-	if (!isNullOrUndef(v1)) {
-		debugger; // eslint-disable-line no-debugger
 	}
 	return true;
 }

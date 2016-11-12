@@ -48,7 +48,10 @@ describe('HyperScript (non-JSX)', () => {
 	});
 
 	it('Should handle a hooks example #1', () => {
-		const ComponentHooks = () => h('div', {
+		const Component = ({ children }) => {
+			return h('div', children);
+		}
+		const ComponentHooks = () => h(Component, {
 			hooks: {
 				onComponentDidUnmount() {
 					console.log('onComponentDidUnmount');
@@ -64,7 +67,7 @@ describe('HyperScript (non-JSX)', () => {
 		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
 	});
 
-	it('Should handle different props (key, class, id, ref, children, childrenType)', () => {
+	it('Should handle different props (key, class, id, ref, children)', () => {
 		const ComponentHooks = () => h('div#myId.test', {
 			onComponentDidMount() {
 				console.log('onComponentDidMount');
@@ -72,7 +75,6 @@ describe('HyperScript (non-JSX)', () => {
 			key: 'myKey',
 			ref: (c) => c,
 			className: 'myClass',
-			childrenType: TEXT,
 			children: 'Hello world!'
 		});
 
@@ -98,7 +100,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal('<div></div>');
+		expect(container.innerHTML).to.equal('<div id="myId"></div>');
 	});
 
 });

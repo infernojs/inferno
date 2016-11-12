@@ -116,6 +116,9 @@ export default function hyperscript(_tag, _props?, _children?, _childrenType?): 
 	} else {
 		const flags = isStatefulComponent(tag) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 
+		if (children) {
+			props['children'] = children;
+		}
 		return createVNode(flags, tag, props, null, key, ref);
 	}
 }

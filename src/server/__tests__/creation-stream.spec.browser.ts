@@ -92,11 +92,11 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 		}, {
 			description: 'should render with array children containing an array of text children',
 			template: (value) => createElement('a', null, [['a', 'b']]),
-			result: '<a><!---->a<!---->b<!--!--></a>'
+			result: '<a>a<!---->b</a>'
 		}, {
 			description: 'should render with array null children',
 			template: (value) => createElement('a', null, ['a', null]),
-			result: '<a>a<!--!--></a>'
+			result: '<a>a</a>'
 		}
 	];
 
