@@ -76,7 +76,7 @@
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-plugin-uglify": "^1.0.1",
-    "sinon": "2.0.0-pre",
+    "sinon-es6": "0.0.3",
     "ts-loader": "^1.0.0",
     "ts-node": "^1.6.1",
     "tslint": "^3.15.1",

@@ -1,7 +1,4 @@
 import {
-	isVNode
-} from '../core/shapes';
-import {
 	isStringOrNumber,
 	isNullOrUndef,
 	isArray
