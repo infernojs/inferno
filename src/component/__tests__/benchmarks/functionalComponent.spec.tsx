@@ -3,53 +3,53 @@ import * as Inferno from '../../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 function runBenchmark(container) {
-	var Link0 = function() {
+	let Link0 = function() {
 		return <a href={'/'} className={'_5ljn'} rel={undefined} onClick={function () { } }/>;
-	}
+	};
 
-	var ReactImage1 = function() {
+	let ReactImage1 = function() {
 		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_7e56e9'} src={null}/>;
-	}
+	};
 
-	var Link2 = function() {
+	let Link2 = function() {
 		return (
-			<a style={{ 'maxWidth': '200px' }} image={null} label={null} imageRight={{}} className={'_387r _55pi _2agf _387r _55pi _4jy0 _4jy3 _517h _51sy _42ft'} href={'#'} haschevron={true}
+			<a style={{ maxWidth: '200px' }} image={null} label={null} imageRight={{}} className={'_387r _55pi _2agf _387r _55pi _4jy0 _4jy3 _517h _51sy _42ft'} href={'#'} haschevron={true}
 				 onClick={function () { } } onToggle={function () { } } size={'medium'} use={'default'} borderShade={'light'} suppressed={false} disabled={null} rel={undefined}>
 				{null}
-				<span className={'_55pe'} style={{ 'maxWidth': '186px' }}>
+				<span className={'_55pe'} style={{ maxWidth: '186px' }}>
 					{null}
 					{'Dick Madanson (10149999073643408)'}
 				</span>
 				<ReactImage1 />
 			</a>
 		);
-	}
+	};
 
-	var AbstractButton3 = function() {
+	let AbstractButton3 = function() {
 		return <Link2 />;
-	}
+	};
 
-	var XUIButton4 = function() {
+	let XUIButton4 = function() {
 		return <AbstractButton3 />;
-	}
+	};
 
-	var AbstractPopoverButton5 = function() {
+	let AbstractPopoverButton5 = function() {
 		return <XUIButton4 />;
-	}
+	};
 
-	var ReactXUIPopoverButton6 = function() {
+	let ReactXUIPopoverButton6 = function() {
 		return <AbstractPopoverButton5 />;
-	}
+	};
 
-	var AdsPEAccountSelector7 = function() {
+	let AdsPEAccountSelector7 = function() {
 		return <ReactXUIPopoverButton6 />;
-	}
+	};
 
-	var AdsPEAccountSelectorContainer8 = function() {
+	let AdsPEAccountSelectorContainer8 = function() {
 		return <AdsPEAccountSelector7 />;
-	}
+	};
 
-	var AbstractButton9 = function() {
+	let AbstractButton9 = function() {
 		return (
 			<button id={'downloadButton'} className={'_5lk0 _4jy0 _4jy3 _517h _51sy _42ft'} label={null} onClick={function () { } } use={'default'} size={'medium'} borderShade={'light'} suppressed={false}
 							type='submit' value={'1'}>
@@ -58,13 +58,13 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton10 = function() {
+	let XUIButton10 = function() {
 		return <AbstractButton9 />;
-	}
+	};
 
-	var DownloadUploadTimestamp11 = function() {
+	let DownloadUploadTimestamp11 = function() {
 		return (
 			<div>
 				{'Last downloaded'}
@@ -72,13 +72,13 @@ function runBenchmark(container) {
 				<abbr className={'livetimestamp'} data-utime={1446062352} data-shorten={false}>{'a few seconds ago'}</abbr>
 			</div>
 		);
-	}
+	};
 
-	var ReactImage12 = function() {
+	let ReactImage12 = function() {
 		return <i alt={''} className={'_3-8_ img sp_UuU9HmrQ397 sx_dbc06a'} src={null}/>;
-	}
+	};
 
-	var AbstractButton13 = function() {
+	let AbstractButton13 = function() {
 		return (
 			<button id={'uploadButton'} className={'_5lk0 _4jy0 _4jy3 _517h _51sy _42ft'} image={{}} use={'default'} label={null} onClick={function () { } } size={'medium'} borderShade={'light'}
 							suppressed={false} type='submit' value={'1'}>
@@ -87,17 +87,17 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton14 = function() {
+	let XUIButton14 = function() {
 		return <AbstractButton13 />;
-	}
+	};
 
-	var DownloadUploadTimestamp15 = function() {
+	let DownloadUploadTimestamp15 = function() {
 		return <div></div>;
-	}
+	};
 
-	var AbstractButton16 = function() {
+	let AbstractButton16 = function() {
 		return (
 			<button className={'_5ljz _4jy0 _4jy3 _517h _51sy _42ft'} label={null} onClick={function () { } } use={'default'} size={'medium'} borderShade={'light'} suppressed={false} type='submit'
 							value={'1'}>
@@ -106,17 +106,17 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton17 = function() {
+	let XUIButton17 = function() {
 		return <AbstractButton16 />;
-	}
+	};
 
-	var ReactImage18 = function() {
+	let ReactImage18 = function() {
 		return <i src={null} className={'img sp_UuU9HmrQ397 sx_d5a685'}/>;
-	}
+	};
 
-	var AbstractButton19 = function() {
+	let AbstractButton19 = function() {
 		return (
 			<button className={'_5ljw _p _4jy0 _4jy3 _517h _51sy _42ft'} image={{}} use={'default'} size={'medium'} borderShade={'light'} suppressed={false} label={null} type='submit' value={'1'}>
 				<ReactImage18 />
@@ -124,38 +124,38 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton20 = function() {
+	let XUIButton20 = function() {
 		return <AbstractButton19 />;
-	}
+	};
 
-	var InlineBlock21 = function() {
+	let InlineBlock21 = function() {
 		return (
 			<div className={'_5ljz uiPopover _6a _6b'} alignh={'right'} menu={{}} alignv={'middle'} disabled={null} fullWidth={false}>
 				<XUIButton20 key={'/.0'}/>
 			</div>
 		);
-	}
+	};
 
-	var ReactPopoverMenu22 = function() {
+	let ReactPopoverMenu22 = function() {
 		return <InlineBlock21 />;
-	}
+	};
 
-	var XUIButtonGroup23 = function() {
+	let XUIButtonGroup23 = function() {
 		return (
 			<div className={'_13xj _51xa'} id={'helpButton'}>
 				<XUIButton17 />
 				<ReactPopoverMenu22 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEResetDialog24 = function() {
+	let AdsPEResetDialog24 = function() {
 		return <span/>;
-	}
+	};
 
-	var AdsPETopNav25 = function() {
+	let AdsPETopNav25 = function() {
 		return (
 			<div className={'_5ljl'} id={'ads_pe_top_nav'}>
 				<div className={'_5ljm'}>
@@ -193,13 +193,13 @@ function runBenchmark(container) {
 				<AdsPEResetDialog24 />
 			</div>
 		);
-	}
+	};
 
-	var FluxContainer_ja_26 = function() {
+	let FluxContainer_ja_26 = function() {
 		return <AdsPETopNav25 />;
-	}
+	};
 
-	var Wrapper27 = function() {
+	let Wrapper27 = function() {
 		return (
 			<li selected={true} focused={false} tabIndex={null} hideFocusRing={true} onClick={function () { } } onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } }
 					className={'_5vwz _5vwy _45hc _1hqh'} wrapper={function () { } } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
@@ -209,45 +209,50 @@ function runBenchmark(container) {
 				</a>
 			</li>
 		);
-	}
+	};
 
-	var TabBarItem28 = function() {
+	let TabBarItem28 = function() {
 		return <Wrapper27 />;
-	}
+	};
 
-	var XUIPageNavigationItem29 = function() {
+	let XUIPageNavigationItem29 = function() {
 		return <TabBarItem28 />;
-	}
+	};
 
-	var TabBarItemWrapper30 = function() {
+	let TabBarItemWrapper30 = function() {
 		return <XUIPageNavigationItem29 key={'MANAGE_ADS'}/>;
-	}
+	};
 
-	var Wrapper31 = function() {
+	let Wrapper31 = function() {
 		return (
-			<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function () { } } onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } }
-					className={'_5vwz _45hc'} wrapper={function () { } } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
-				<a aria-selected={false} onKeyDown={function () { } }>
-					<div className={'_4jq5'}>{'Audiences'}</div>
-					<span className={'_13xf'}/>
-				</a>
+			<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function() {
+			} } onMouseDown={function() {
+			} } onFocus={function() {
+			} } onBlur={function() {
+			} }
+				className={'_5vwz _45hc'} wrapper={function() {
+			} } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
+			<a aria-selected={false} onKeyDown={function () { } }>
+				<div className={'_4jq5'}>{'Audiences'}</div>
+				<span className={'_13xf'}/>
+			</a>
 			</li>
 		);
-	}
+	};
 
-	var TabBarItem32 = function() {
+	let TabBarItem32 = function() {
 		return <Wrapper31 />;
-	}
+	};
 
-	var XUIPageNavigationItem33 = function() {
+	let XUIPageNavigationItem33 = function() {
 		return <TabBarItem32 />;
-	}
+	};
 
-	var TabBarItemWrapper34 = function() {
+	let TabBarItemWrapper34 = function() {
 		return <XUIPageNavigationItem33 key={'AUDIENCES'}/>;
-	}
+	};
 
-	var Wrapper35 = function() {
+	let Wrapper35 = function() {
 		return (
 			<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function () { } } onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } }
 					className={'_5vwz _45hc'} wrapper={function () { } } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
@@ -257,21 +262,21 @@ function runBenchmark(container) {
 				</a>
 			</li>
 		);
-	}
+	};
 
-	var TabBarItem36 = function() {
+	let TabBarItem36 = function() {
 		return <Wrapper35 />;
-	}
+	};
 
-	var XUIPageNavigationItem37 = function() {
+	let XUIPageNavigationItem37 = function() {
 		return <TabBarItem36 />;
-	}
+	};
 
-	var TabBarItemWrapper38 = function() {
+	let TabBarItemWrapper38 = function() {
 		return <XUIPageNavigationItem37 key={'IMAGES'}/>;
-	}
+	};
 
-	var Wrapper39 = function() {
+	let Wrapper39 = function() {
 		return (
 			<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function () { } } onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } }
 					className={'_5vwz _45hc'} wrapper={function () { } } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
@@ -284,21 +289,21 @@ function runBenchmark(container) {
 				</a>
 			</li>
 		);
-	}
+	};
 
-	var TabBarItem40 = function() {
+	let TabBarItem40 = function() {
 		return <Wrapper39 />;
-	}
+	};
 
-	var XUIPageNavigationItem41 = function() {
+	let XUIPageNavigationItem41 = function() {
 		return <TabBarItem40 />;
-	}
+	};
 
-	var TabBarItemWrapper42 = function() {
+	let TabBarItemWrapper42 = function() {
 		return <XUIPageNavigationItem41 key={'REPORTING'}/>;
-	}
+	};
 
-	var Wrapper43 = function() {
+	let Wrapper43 = function() {
 		return (
 			<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function () { } } onMouseDown={function () { } } onFocus={function () { } } onBlur={function () { } }
 					className={'_5vwz _45hc'} wrapper={function () { } } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
@@ -308,21 +313,21 @@ function runBenchmark(container) {
 				</a>
 			</li>
 		);
-	}
+	};
 
-	var TabBarItem44 = function() {
+	let TabBarItem44 = function() {
 		return <Wrapper43 />;
-	}
+	};
 
-	var XUIPageNavigationItem45 = function() {
+	let XUIPageNavigationItem45 = function() {
 		return <TabBarItem44 />;
-	}
+	};
 
-	var TabBarItemWrapper46 = function() {
+	let TabBarItemWrapper46 = function() {
 		return <XUIPageNavigationItem45 key={'PAGES'}/>;
-	}
+	};
 
-	var TabBarItem47 = function() {
+	let TabBarItem47 = function() {
 		return (
 			<a aria-selected={false}>
 				<span className={'_1b0'}>
@@ -331,29 +336,29 @@ function runBenchmark(container) {
 				</span>
 			</a>
 		);
-	}
+	};
 
-	var InlineBlock48 = function() {
+	let InlineBlock48 = function() {
 		return (
 			<div menu={{}} layerBehaviors={{}} alignv={'middle'} className={'uiPopover _6a _6b'} disabled={null} fullWidth={false}>
 				<TabBarItem47 key={'/.0'}/>
 			</div>
 		);
-	}
+	};
 
-	var ReactPopoverMenu49 = function() {
+	let ReactPopoverMenu49 = function() {
 		return <InlineBlock48 />;
-	}
+	};
 
-	var TabBarDropdownItem50 = function() {
+	let TabBarDropdownItem50 = function() {
 		return (
 			<li className={' _45hd'} role={'tab'}>
 				<ReactPopoverMenu49 />
 			</li>
 		);
-	}
+	};
 
-	var TabBar51 = function() {
+	let TabBar51 = function() {
 		return (
 			<ul onTabClick={function () { } } activeTabKey={'MANAGE_ADS'} onWidthCalculated={function () { } } width={null} maxTabsVisible={5} moreLabel={'Tools'} alwaysShowActive={true}
 					dropdownTabComponent={function () { } } shouldCalculateVisibleTabs={true} className={'_43o4'} role={'tablist'} onKeyDown={function () { } } onKeyUp={function () { } }>
@@ -365,13 +370,13 @@ function runBenchmark(container) {
 				<TabBarDropdownItem50 key={'_dropdown'}/>
 			</ul>
 		);
-	}
+	};
 
-	var XUIPageNavigationGroup52 = function() {
+	let XUIPageNavigationGroup52 = function() {
 		return <TabBar51 />;
-	}
+	};
 
-	var LeftRight53 = function() {
+	let LeftRight53 = function() {
 		return (
 			<div className={'_5vx7 clearfix'}>
 				<div key={'left'} className={'_ohe lfloat'}>
@@ -380,37 +385,37 @@ function runBenchmark(container) {
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var XUIPageNavigation54 = function() {
+	let XUIPageNavigation54 = function() {
 		return (
 			<div className={'_5vx2 _5vx4 _5vx6 _5kkt'}>
 				<LeftRight53 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPENavigationBar55 = function() {
+	let AdsPENavigationBar55 = function() {
 		return (
 			<div className={'_5_a'} id={'ads_pe_navigation_bar'}>
 				<XUIPageNavigation54 />
 			</div>
 		);
-	}
+	};
 
-	var FluxContainer_w_56 = function() {
+	let FluxContainer_w_56 = function() {
 		return <AdsPENavigationBar55 />;
-	}
+	};
 
-	var ReactImage57 = function() {
+	let ReactImage57 = function() {
 		return (
 			<i alt={'Warning'} className={'_585p img sp_R48dKBxiJkP sx_aed870'} src={null}>
 				<u>{'Warning'}</u>
 			</i>
 		);
-	}
+	};
 
-	var Link58 = function() {
+	let Link58 = function() {
 		return (
 			<a className={'_585q _50zy _50-0 _50z- _5upp _42ft'} href={'#'} onClick={function () { } } size={'medium'} shade={'dark'} type={null} label={null} title={'Remove'} aria-label={undefined}
 				 data-hover={undefined} data-tooltip-alignh={undefined} disabled={null} rel={undefined}>
@@ -419,33 +424,33 @@ function runBenchmark(container) {
 				{undefined}
 			</a>
 		);
-	}
+	};
 
-	var AbstractButton59 = function() {
+	let AbstractButton59 = function() {
 		return <Link58 />;
-	}
+	};
 
-	var XUIAbstractGlyphButton60 = function() {
+	let XUIAbstractGlyphButton60 = function() {
 		return <AbstractButton59 />;
-	}
+	};
 
-	var XUICloseButton61 = function() {
+	let XUICloseButton61 = function() {
 		return <XUIAbstractGlyphButton60 />;
-	}
+	};
 
-	var XUIText62 = function() {
+	let XUIText62 = function() {
 		return <span weight={'bold'} size={'inherit'} display={'inline'} className={' _50f7'}>{'Ads Manager'}</span>;
-	}
+	};
 
-	var Link63 = function() {
+	let Link63 = function() {
 		return (
 			<a href={'/ads/manage/billing.php?act=10149999073643408'} target={'_blank'} rel={undefined} onClick={function () { } }>
 				<XUIText62 />
 			</a>
 		);
-	}
+	};
 
-	var XUINotice64 = function() {
+	let XUINotice64 = function() {
 		return (
 			<div size={'medium'} className={'_585n _585o _2wdd'}>
 				<ReactImage57 />
@@ -457,127 +462,129 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var ReactCSSTransitionGroupChild65 = function() {
+	let ReactCSSTransitionGroupChild65 = function() {
 		return <XUINotice64 />;
-	}
+	};
 
-	var ReactTransitionGroup66 = function() {
+	let ReactTransitionGroup66 = function() {
 		return (
-			<span transitionEnterTimeout={500} transitionLeaveTimeout={500} transitionName={{}} transitionAppear={false} transitionEnter={true} transitionLeave={true} childFactory={function () { } }
-						component={'span'}>
+			<span transitionEnterTimeout={500} transitionLeaveTimeout={500} transitionName={{}} transitionAppear={false} transitionEnter={true} transitionLeave={true} childFactory={function() {
+			} }
+				component={'span'}>
 				<ReactCSSTransitionGroupChild65 key={'.0'}/>
 			</span>
 		);
-	}
+	};
 
-	var ReactCSSTransitionGroup67 = function() {
+	let ReactCSSTransitionGroup67 = function() {
 		return <ReactTransitionGroup66 />;
-	}
+	};
 
-	var AdsPETopError68 = function() {
+	let AdsPETopError68 = function() {
 		return (
 			<div className={'_2wdc'}>
 				<ReactCSSTransitionGroup67 />
 			</div>
 		);
-	}
+	};
 
-	var FluxContainer_r_69 = function() {
+	let FluxContainer_r_69 = function() {
 		return <AdsPETopError68 />;
-	}
+	};
 
-	var ReactImage70 = function() {
+	let ReactImage70 = function() {
 		return <i className={'_3-8_ img sp_UuU9HmrQ397 sx_bae57d'} src={null}></i>;
-	}
+	};
 
-	var ReactImage71 = function() {
+	let ReactImage71 = function() {
 		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_7e56e9'} src={null}></i>;
-	}
+	};
 
-	var Link72 = function() {
+	let Link72 = function() {
 		return (
-			<a style={{ 'maxWidth': '200px' }} image={null} label={null} imageRight={{}} className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'} href={'#'} haschevron={true}
-				 onClick={function () { } } size={'large'} use={'default'} borderShade={'light'} suppressed={false} disabled={null} rel={undefined}>
+			<a style={{ maxWidth: '200px' }} image={null} label={null} imageRight={{}} className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'} href={'#'} haschevron={true}
+				onClick={function() {
+			} } size={'large'} use={'default'} borderShade={'light'} suppressed={false} disabled={null} rel={undefined}>
 				{null}
-				<span className={'_55pe'} style={{ 'maxWidth': '186px' }}>
+			<span className={'_55pe'} style={{ maxWidth: '186px' }}>
 					<ReactImage70 />
-					{'Search'}
+				{'Search'}
 				</span>
-				<ReactImage71 />
+			<ReactImage71 />
 			</a>
 		);
-	}
+	};
 
-	var AbstractButton73 = function() {
+	let AbstractButton73 = function() {
 		return <Link72 />;
-	}
+	};
 
-	var XUIButton74 = function() {
+	let XUIButton74 = function() {
 		return <AbstractButton73 />;
-	}
+	};
 
-	var AbstractPopoverButton75 = function() {
+	let AbstractPopoverButton75 = function() {
 		return <XUIButton74 />;
-	}
+	};
 
-	var ReactXUIPopoverButton76 = function() {
+	let ReactXUIPopoverButton76 = function() {
 		return <AbstractPopoverButton75 />;
-	}
+	};
 
-	var ReactImage77 = function() {
+	let ReactImage77 = function() {
 		return <i className={'_3-8_ img sp_UuU9HmrQ397 sx_81d5f0'} src={null}></i>;
-	}
+	};
 
-	var ReactImage78 = function() {
+	let ReactImage78 = function() {
 		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_7e56e9'} src={null}></i>;
-	}
+	};
 
-	var Link79 = function() {
+	let Link79 = function() {
 		return (
-			<a style={{ 'maxWidth': '200px' }} image={null} label={null} imageRight={{}} className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'} href={'#'} haschevron={true}
+			<a style={{ maxWidth: '200px' }} image={null} label={null} imageRight={{}} className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'} href={'#'} haschevron={true}
 				 onClick={function () { } } size={'large'} use={'default'} borderShade={'light'} suppressed={false} disabled={null} rel={undefined}>
 				{null}
-				<span className={'_55pe'} style={{ 'maxWidth': '186px' }}>
+				<span className={'_55pe'} style={{ maxWidth: '186px' }}>
 					<ReactImage77 />
 					{'Filters'}
 				</span>
 				<ReactImage78 />
 			</a>
 		);
-	}
+	};
 
-	var AbstractButton80 = function() {
+	let AbstractButton80 = function() {
 		return <Link79 />;
-	}
+	};
 
-	var XUIButton81 = function() {
+	let XUIButton81 = function() {
 		return <AbstractButton80 />;
-	}
+	};
 
-	var AbstractPopoverButton82 = function() {
+	let AbstractPopoverButton82 = function() {
 		return <XUIButton81 />;
-	}
+	};
 
-	var ReactXUIPopoverButton83 = function() {
+	let ReactXUIPopoverButton83 = function() {
 		return <AbstractPopoverButton82 />;
-	}
+	};
 
-	var AdsPEFiltersPopover84 = function() {
+	let AdsPEFiltersPopover84 = function() {
 		return (
 			<span className={'_5b-l  _5bbe'}>
 				<ReactXUIPopoverButton76 />
 				<ReactXUIPopoverButton83 />
 			</span>
 		);
-	}
+	};
 
-	var ReactImage85 = function() {
+	let ReactImage85 = function() {
 		return <i className={'_3yz6 _5whs img sp_UuU9HmrQ397 sx_5fe5c2'} src={null}></i>;
-	}
+	};
 
-	var AbstractButton86 = function() {
+	let AbstractButton86 = function() {
 		return (
 			<button className={'_3yz9 _1t-2 _50z_ _50zy _50zz _50z- _5upp _42ft'} size={'small'} onClick={function () { } } shade={'dark'} type={'button'} label={null} title={'Remove'}
 							aria-label={undefined} data-hover={undefined} data-tooltip-alignh={undefined}>
@@ -586,38 +593,38 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIAbstractGlyphButton87 = function() {
+	let XUIAbstractGlyphButton87 = function() {
 		return <AbstractButton86 />;
-	}
+	};
 
-	var XUICloseButton88 = function() {
+	let XUICloseButton88 = function() {
 		return <XUIAbstractGlyphButton87 />;
-	}
+	};
 
-	var ReactImage89 = function() {
+	let ReactImage89 = function() {
 		return <i className={'_5b5p _4gem img sp_UuU9HmrQ397 sx_5fe5c2'} src={null}></i>;
-	}
+	};
 
-	var ReactImage90 = function() {
+	let ReactImage90 = function() {
 		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'}></i>;
-	}
+	};
 
-	var AdsPopoverLink91 = function() {
+	let AdsPopoverLink91 = function() {
 		return (
 			<span onMouseEnter={function () { } } onMouseLeave={function () { } }>
 				<span className={'_3o_j'}></span>
 				<ReactImage90 />
 			</span>
 		);
-	}
+	};
 
-	var AdsHelpLink92 = function() {
+	let AdsHelpLink92 = function() {
 		return <AdsPopoverLink91 />;
-	}
+	};
 
-	var AbstractButton93 = function() {
+	let AbstractButton93 = function() {
 		return (
 			<button className={'_5b5u _5b5v _4jy0 _4jy3 _517h _51sy _42ft'} label={null} use={'default'} onClick={function () { } } size={'medium'} borderShade={'light'} suppressed={false} type='submit'
 							value={'1'}>
@@ -626,13 +633,13 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton94 = function() {
+	let XUIButton94 = function() {
 		return <AbstractButton93 />;
-	}
+	};
 
-	var BUIFilterTokenInput95 = function() {
+	let BUIFilterTokenInput95 = function() {
 		return (
 			<div className={'_5b5o _3yz3 _4cld'}>
 				<div className={'_5b5t _2d2k'}>
@@ -645,9 +652,9 @@ function runBenchmark(container) {
 				<XUIButton94 />
 			</div>
 		);
-	}
+	};
 
-	var BUIFilterToken96 = function() {
+	let BUIFilterToken96 = function() {
 		return (
 			<div className={'_3yz1 _3yz2 _3dad'}>
 				<div aria-hidden={false}>
@@ -661,13 +668,13 @@ function runBenchmark(container) {
 				<BUIFilterTokenInput95 />
 			</div>
 		);
-	}
+	};
 
-	var ReactImage97 = function() {
+	let ReactImage97 = function() {
 		return <i src={null} className={'img sp_UuU9HmrQ397 sx_158e8d'}></i>;
-	}
+	};
 
-	var AbstractButton98 = function() {
+	let AbstractButton98 = function() {
 		return (
 			<button className={'_1wdf _4jy0 _517i _517h _51sy _42ft'} size={'small'} onClick={function () { } } image={{}} use={'default'} borderShade={'light'} suppressed={false} label={null}
 							type='submit' value={'1'}>
@@ -676,21 +683,21 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton99 = function() {
+	let XUIButton99 = function() {
 		return <AbstractButton98 />;
-	}
+	};
 
-	var BUIFilterTokenCreateButton100 = function() {
+	let BUIFilterTokenCreateButton100 = function() {
 		return (
 			<div className={'_1tc'}>
 				<XUIButton99 />
 			</div>
 		);
-	}
+	};
 
-	var BUIFilterTokenizer101 = function() {
+	let BUIFilterTokenizer101 = function() {
 		return (
 			<div className={'_5b-m _3o1v clearfix'}>
 				{undefined}
@@ -701,13 +708,13 @@ function runBenchmark(container) {
 				<div className={'_49u3'}></div>
 			</div>
 		);
-	}
+	};
 
-	var AdsPEAmbientNUXMegaphone102 = function() {
+	let AdsPEAmbientNUXMegaphone102 = function() {
 		return <span></span>;
-	}
+	};
 
-	var AdsPEFilters103 = function() {
+	let AdsPEFilters103 = function() {
 		return (
 			<div className={'_4rw_'}>
 				<AdsPEFiltersPopover84 />
@@ -717,88 +724,88 @@ function runBenchmark(container) {
 				<AdsPEAmbientNUXMegaphone102 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEFilterContainer104 = function() {
+	let AdsPEFilterContainer104 = function() {
 		return <AdsPEFilters103 />;
-	}
+	};
 
-	var AdsPECampaignTimeLimitNotice105 = function() {
+	let AdsPECampaignTimeLimitNotice105 = function() {
 		return <div></div>;
-	}
+	};
 
-	var AdsPECampaignTimeLimitNoticeContainer106 = function() {
+	let AdsPECampaignTimeLimitNoticeContainer106 = function() {
 		return <AdsPECampaignTimeLimitNotice105 />;
-	}
+	};
 
-	var AdsPETablePager107 = function() {
+	let AdsPETablePager107 = function() {
 		return null;
-	}
+	};
 
-	var AdsPEAdgroupTablePagerContainer108 = function() {
+	let AdsPEAdgroupTablePagerContainer108 = function() {
 		return <AdsPETablePager107 />;
-	}
+	};
 
-	var AdsPETablePagerContainer109 = function() {
+	let AdsPETablePagerContainer109 = function() {
 		return <AdsPEAdgroupTablePagerContainer108 />;
-	}
+	};
 
-	var ReactImage110 = function() {
+	let ReactImage110 = function() {
 		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_132804'} src={null}></i>;
-	}
+	};
 
-	var Link111 = function() {
+	let Link111 = function() {
 		return (
-			<a style={{ 'maxWidth': '200px' }} image={null} label={null} imageRight={{}} className={'_55pi _2agf _55pi _4jy0 _4jy4 _517h _51sy _42ft'} href={'#'} disabled={null} maxwidth={undefined}
+			<a style={{ maxWidth: '200px' }} image={null} label={null} imageRight={{}} className={'_55pi _2agf _55pi _4jy0 _4jy4 _517h _51sy _42ft'} href={'#'} disabled={null} maxwidth={undefined}
 				 size={'large'} suppressed={false} chevron={{}} use={'default'} borderShade={'light'} onClick={function () { } } rel={undefined}>
 				{null}
-				<span className={'_55pe'} style={{ 'maxWidth': '186px' }}>
+				<span className={'_55pe'} style={{ maxWidth: '186px' }}>
 					{null}
 					{'Lifetime'}
 				</span>
 				<ReactImage110 />
 			</a>
 		);
-	}
+	};
 
-	var AbstractButton112 = function() {
+	let AbstractButton112 = function() {
 		return <Link111 />;
-	}
+	};
 
-	var XUIButton113 = function() {
+	let XUIButton113 = function() {
 		return <AbstractButton112 />;
-	}
+	};
 
-	var AbstractPopoverButton114 = function() {
+	let AbstractPopoverButton114 = function() {
 		return <XUIButton113 />;
-	}
+	};
 
-	var ReactXUIPopoverButton115 = function() {
+	let ReactXUIPopoverButton115 = function() {
 		return <AbstractPopoverButton114 />;
-	}
+	};
 
-	var XUISingleSelectorButton116 = function() {
+	let XUISingleSelectorButton116 = function() {
 		return <ReactXUIPopoverButton115 />;
-	}
+	};
 
-	var InlineBlock117 = function() {
+	let InlineBlock117 = function() {
 		return (
 			<div className={'_3c5o _3c5p _6a _6b'} defaultValue={'LIFETIME'} size={'large'} onChange={function () { } } disabled={false} alignv={'middle'} fullWidth={false}>
 				<input type={'hidden'} autoComplete={'off'} name={undefined} value={'LIFETIME'}/>
 				<XUISingleSelectorButton116 />
 			</div>
 		);
-	}
+	};
 
-	var XUISingleSelector118 = function() {
+	let XUISingleSelector118 = function() {
 		return <InlineBlock117 />;
-	}
+	};
 
-	var ReactImage119 = function() {
+	let ReactImage119 = function() {
 		return <i src={null} className={'img sp_UuU9HmrQ397 sx_6c732d'}/>;
-	}
+	};
 
-	var AbstractButton120 = function() {
+	let AbstractButton120 = function() {
 		return (
 			<button aria-label={'List Settings'} className={'_u_k _3c5o _1-r0 _4jy0 _4jy4 _517h _51sy _42ft'} data-hover={'tooltip'} image={{}} size={'large'} onClick={function () { } } use={'default'}
 							borderShade={'light'} suppressed={false} label={null} type='submit' value={'1'}>
@@ -807,13 +814,13 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton121 = function() {
+	let XUIButton121 = function() {
 		return <AbstractButton120 />;
-	}
+	};
 
-	var AdsPEStatRange122 = function() {
+	let AdsPEStatRange122 = function() {
 		return (
 			<div className={'_3c5k'}>
 				<span className={'_3c5j'}>{'Stats:'}</span>
@@ -824,13 +831,13 @@ function runBenchmark(container) {
 				</span>
 			</div>
 		);
-	}
+	};
 
-	var AdsPEStatRangeContainer123 = function() {
+	let AdsPEStatRangeContainer123 = function() {
 		return <AdsPEStatRange122 />;
-	}
+	};
 
-	var Column124 = function() {
+	let Column124 = function() {
 		return (
 			<div className={'_4bl8 _4bl7'}>
 				<div className={'_3c5f'}>
@@ -841,13 +848,13 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var ReactImage125 = function() {
+	let ReactImage125 = function() {
 		return <i alt={''} className={'_3-8_ img sp_UuU9HmrQ397 sx_158e8d'} src={null}/>;
-	}
+	};
 
-	var AbstractButton126 = function() {
+	let AbstractButton126 = function() {
 		return (
 			<button className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'} label={null} size={'large'} onClick={function () { } } image={{}} use={'default'} borderShade={'light'} suppressed={false}
 							type='submit' value={'1'}>
@@ -856,17 +863,17 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton127 = function() {
+	let XUIButton127 = function() {
 		return <AbstractButton126 />;
-	}
+	};
 
-	var ReactImage128 = function() {
+	let ReactImage128 = function() {
 		return <i src={null} className={'img sp_UuU9HmrQ397 sx_d5a685'}/>;
-	}
+	};
 
-	var AbstractButton129 = function() {
+	let AbstractButton129 = function() {
 		return (
 			<button className={'_u_k _p _4jy0 _4jy4 _517h _51sy _42ft'} image={{}} size={'large'} use={'default'} borderShade={'light'} suppressed={false} label={null} type='submit' value={'1'}>
 				<ReactImage128 />
@@ -874,38 +881,38 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton130 = function() {
+	let XUIButton130 = function() {
 		return <AbstractButton129 />;
-	}
+	};
 
-	var InlineBlock131 = function() {
+	let InlineBlock131 = function() {
 		return (
 			<div menu={{}} alignh={'right'} layerBehaviors={{}} alignv={'middle'} className={'uiPopover _6a _6b'} disabled={null} fullWidth={false}>
 				<XUIButton130 key={'/.0'}/>
 			</div>
 		);
-	}
+	};
 
-	var ReactPopoverMenu132 = function() {
+	let ReactPopoverMenu132 = function() {
 		return <InlineBlock131 />;
-	}
+	};
 
-	var XUIButtonGroup133 = function() {
+	let XUIButtonGroup133 = function() {
 		return (
 			<div className={'_5n7z _51xa'}>
 				<XUIButton127 />
 				<ReactPopoverMenu132 />
 			</div>
 		);
-	}
+	};
 
-	var ReactImage134 = function() {
+	let ReactImage134 = function() {
 		return <i alt={''} className={'_3-8_ img sp_UuU9HmrQ397 sx_990b54'} src={null}/>;
-	}
+	};
 
-	var AbstractButton135 = function() {
+	let AbstractButton135 = function() {
 		return (
 			<button size={'large'} disabled={false} className={'_d2_ _u_k _5n7z _4jy0 _4jy4 _517h _51sy _42ft'} image={{}} data-hover={'tooltip'} aria-label={'Edit Ads (Ctrl+U)'} onClick={function () { } }
 							use={'default'} label={null} borderShade={'light'} suppressed={false} type='submit' value={'1'}>
@@ -914,17 +921,17 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton136 = function() {
+	let XUIButton136 = function() {
 		return <AbstractButton135 />;
-	}
+	};
 
-	var ReactImage137 = function() {
+	let ReactImage137 = function() {
 		return <i src={null} className={'img sp_UuU9HmrQ397 sx_203adb'}/>;
-	}
+	};
 
-	var AbstractButton138 = function() {
+	let AbstractButton138 = function() {
 		return (
 			<button aria-label={'Duplicate'} className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'} data-hover={'tooltip'} disabled={false} image={{}} size={'large'} onClick={function () { } } use={'default'}
 							borderShade={'light'} suppressed={false} label={null} type='submit' value={'1'}>
@@ -933,36 +940,39 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton139 = function() {
+	let XUIButton139 = function() {
 		return <AbstractButton138 />;
-	}
+	};
 
-	var ReactImage140 = function() {
+	let ReactImage140 = function() {
 		return <i src={null} className={'img sp_UuU9HmrQ397 sx_0c342e'}/>;
-	}
+	};
 
-	var AbstractButton141 = function() {
+	let AbstractButton141 = function() {
 		return (
-			<button aria-label={'Revert'} className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft _42fr'} data-hover={'tooltip'} disabled={true} image={{}} size={'large'} onClick={function () { } } use={'default'}
-							borderShade={'light'} suppressed={false} label={null} type='submit' value={'1'}>
+			<button aria-label={'Revert'} className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft _42fr'} data-hover={'tooltip'} disabled={true} image={{}} size={'large'} onClick={function() {
+			} } use={'default'}
+				borderShade={'light'} suppressed={false} label={null} type='submit' value={'1'}>
 				<ReactImage140 />
 				{undefined}
 				{undefined}
-			</button>
-		);
-	}
+			</button
+		>
+		)
+		;
+	};
 
-	var XUIButton142 = function() {
+	let XUIButton142 = function() {
 		return <AbstractButton141 />;
-	}
+	};
 
-	var ReactImage143 = function() {
+	let ReactImage143 = function() {
 		return <i src={null} className={'img sp_UuU9HmrQ397 sx_0e75f5'}/>;
-	}
+	};
 
-	var AbstractButton144 = function() {
+	let AbstractButton144 = function() {
 		return (
 			<button aria-label={'Delete'} className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'} image={{}} data-hover={'tooltip'} disabled={false} size={'large'} onClick={function () { } } use={'default'}
 							borderShade={'light'} suppressed={false} label={null} type='submit' value={'1'}>
@@ -971,13 +981,13 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton145 = function() {
+	let XUIButton145 = function() {
 		return <AbstractButton144 />;
-	}
+	};
 
-	var XUIButtonGroup146 = function() {
+	let XUIButtonGroup146 = function() {
 		return (
 			<div className={'_5n7z _51xa'}>
 				<XUIButton139 key={'duplicate'}/>
@@ -985,13 +995,13 @@ function runBenchmark(container) {
 				<XUIButton145 key={'delete'}/>
 			</div>
 		);
-	}
+	};
 
-	var ReactImage147 = function() {
+	let ReactImage147 = function() {
 		return <i src={null} className={'img sp_UuU9HmrQ397 sx_8c19ae'}/>;
-	}
+	};
 
-	var AbstractButton148 = function() {
+	let AbstractButton148 = function() {
 		return (
 			<button size={'large'} disabled={false} className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'} image={{}} data-hover={'tooltip'} aria-label={'Save Audience'} onClick={function () { } } use={'default'}
 							borderShade={'light'} suppressed={false} label={null} type='submit' value={'1'}>
@@ -1000,17 +1010,17 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton149 = function() {
+	let XUIButton149 = function() {
 		return <AbstractButton148 />;
-	}
+	};
 
-	var ReactImage150 = function() {
+	let ReactImage150 = function() {
 		return <i src={null} className={'img sp_UuU9HmrQ397 sx_d2b33c'}/>;
-	}
+	};
 
-	var AbstractButton151 = function() {
+	let AbstractButton151 = function() {
 		return (
 			<button size={'large'} className={'_u_k noMargin _p _4jy0 _4jy4 _517h _51sy _42ft'} onClick={function () { } } image={{}} data-hover={'tooltip'} aria-label={'Export & Import'} use={'default'}
 							borderShade={'light'} suppressed={false} label={null} type='submit' value={'1'}>
@@ -1019,41 +1029,41 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton152 = function() {
+	let XUIButton152 = function() {
 		return <AbstractButton151 />;
-	}
+	};
 
-	var InlineBlock153 = function() {
+	let InlineBlock153 = function() {
 		return (
 			<div menu={{}} size={'large'} alignv={'middle'} className={'uiPopover _6a _6b'} disabled={null} fullWidth={false}>
 				<XUIButton152 key={'/.0'}/>
 			</div>
 		);
-	}
+	};
 
-	var ReactPopoverMenu154 = function() {
+	let ReactPopoverMenu154 = function() {
 		return <InlineBlock153 />;
-	}
+	};
 
-	var AdsPEExportImportMenu155 = function() {
+	let AdsPEExportImportMenu155 = function() {
 		return <ReactPopoverMenu154 key={'export'}/>;
-	}
+	};
 
-	var FluxContainer_x_156 = function() {
+	let FluxContainer_x_156 = function() {
 		return null;
-	}
+	};
 
-	var AdsPEExportAsTextDialog157 = function() {
+	let AdsPEExportAsTextDialog157 = function() {
 		return null;
-	}
+	};
 
-	var FluxContainer_q_158 = function() {
+	let FluxContainer_q_158 = function() {
 		return <AdsPEExportAsTextDialog157 />;
-	}
+	};
 
-	var AdsPEExportImportMenuContainer159 = function() {
+	let AdsPEExportImportMenuContainer159 = function() {
 		return (
 			<span>
 				<AdsPEExportImportMenu155 />
@@ -1062,29 +1072,29 @@ function runBenchmark(container) {
 				{null}
 			</span>
 		);
-	}
+	};
 
-	var ReactImage160 = function() {
+	let ReactImage160 = function() {
 		return <i src={null} className={'img sp_UuU9HmrQ397 sx_872db1'}/>;
-	}
+	};
 
-	var AbstractButton161 = function() {
+	let AbstractButton161 = function() {
 		return (
 			<button size={'large'} disabled={false} onClick={function () { } } className={'_u_k _5n7z _4jy0 _4jy4 _517h _51sy _42ft'} image={{}}
-							style={{ 'boxSizing': 'border-box', 'height': '28px', 'width': '48px' }} data-hover={'tooltip'} aria-label={'Create Report'} use={'default'} borderShade={'light'} suppressed={false}
+							style={{ boxSizing: 'border-box', height: '28px', width: '48px' }} data-hover={'tooltip'} aria-label={'Create Report'} use={'default'} borderShade={'light'} suppressed={false}
 							label={null} type='submit' value={'1'}>
 				<ReactImage160 />
 				{undefined}
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton162 = function() {
+	let XUIButton162 = function() {
 		return <AbstractButton161 />;
-	}
+	};
 
-	var AbstractButton163 = function() {
+	let AbstractButton163 = function() {
 		return (
 			<button size={'large'} disabled={true} className={'hidden_elem _5n7z _4jy0 _4jy4 _517h _51sy _42ft _42fr'} label={null} onClick={function () { } } use={'default'} borderShade={'light'}
 							suppressed={false} type='submit' value={'1'}>
@@ -1093,13 +1103,13 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton164 = function() {
+	let XUIButton164 = function() {
 		return <AbstractButton163 />;
-	}
+	};
 
-	var XUIButtonGroup165 = function() {
+	let XUIButtonGroup165 = function() {
 		return (
 			<div className={'_5n7z _51xa'}>
 				<XUIButton149 key={'saveAudience'}/>
@@ -1108,9 +1118,9 @@ function runBenchmark(container) {
 				<XUIButton164 key={'variations'}/>
 			</div>
 		);
-	}
+	};
 
-	var FillColumn166 = function() {
+	let FillColumn166 = function() {
 		return (
 			<div className={'_4bl9'}>
 				<span className={'_3c5e'}>
@@ -1123,35 +1133,35 @@ function runBenchmark(container) {
 				</span>
 			</div>
 		);
-	}
+	};
 
-	var Layout167 = function() {
+	let Layout167 = function() {
 		return (
 			<div className={'clearfix'}>
 				<Column124 key={'1'}/>
 				<FillColumn166 key={'0'}/>
 			</div>
 		);
-	}
+	};
 
-	var AdsPEMainPaneToolbar168 = function() {
+	let AdsPEMainPaneToolbar168 = function() {
 		return (
 			<div className={'_3c5b clearfix'}>
 				<Layout167 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEAdgroupToolbarContainer169 = function() {
+	let AdsPEAdgroupToolbarContainer169 = function() {
 		return (
 			<div>
 				<AdsPEMainPaneToolbar168 />
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var AbstractButton170 = function() {
+	let AbstractButton170 = function() {
 		return (
 			<button className={'_tm3 _tm6 _4jy0 _4jy6 _517h _51sy _42ft'} label={null} data-tooltip-position={'right'} aria-label={'Campaigns'} data-hover={'tooltip'} onClick={function () { } }
 							size={'xxlarge'} use={'default'} borderShade={'light'} suppressed={false} type='submit' value={'1'}>
@@ -1164,13 +1174,13 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton171 = function() {
+	let XUIButton171 = function() {
 		return <AbstractButton170 />;
-	}
+	};
 
-	var AbstractButton172 = function() {
+	let AbstractButton172 = function() {
 		return (
 			<button className={'_tm4 _tm6 _4jy0 _4jy6 _517h _51sy _42ft'} label={null} data-tooltip-position={'right'} aria-label={'Ad Sets'} data-hover={'tooltip'} onClick={function () { } }
 							size={'xxlarge'} use={'default'} borderShade={'light'} suppressed={false} type='submit' value={'1'}>
@@ -1183,13 +1193,13 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton173 = function() {
+	let XUIButton173 = function() {
 		return <AbstractButton172 />;
-	}
+	};
 
-	var AbstractButton174 = function() {
+	let AbstractButton174 = function() {
 		return (
 			<button className={'_tm5 _tm6 _tm7 _4jy0 _4jy6 _517h _51sy _42ft'} label={null} data-tooltip-position={'right'} aria-label={'Ads'} data-hover={'tooltip'} onClick={function () { } }
 							size={'xxlarge'} use={'default'} borderShade={'light'} suppressed={false} type='submit' value={'1'}>
@@ -1202,13 +1212,13 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton175 = function() {
+	let XUIButton175 = function() {
 		return <AbstractButton174 />;
-	}
+	};
 
-	var AdsPESimpleOrganizer176 = function() {
+	let AdsPESimpleOrganizer176 = function() {
 		return (
 			<div className={'_tm2'}>
 				<XUIButton171 />
@@ -1216,41 +1226,41 @@ function runBenchmark(container) {
 				<XUIButton175 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEOrganizerContainer177 = function() {
+	let AdsPEOrganizerContainer177 = function() {
 		return (
 			<div>
 				<AdsPESimpleOrganizer176 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableColumnResizeHandle178 = function() {
+	let FixedDataTableColumnResizeHandle178 = function() {
 		return (
-			<div className={'_3487 _3488 _3489'} style={{ 'width': 0, 'height': 532, 'left': 0 }}>
-				<div className={'_348a'} style={{ 'height': 532 }}></div>
+			<div className={'_3487 _3488 _3489'} style={{ width: 0, height: 532, left: 0 }}>
+				<div className={'_348a'} style={{ height: 532 }}></div>
 			</div>
 		);
-	}
+	};
 
-	var ReactImage179 = function() {
+	let ReactImage179 = function() {
 		return <i className={'_1cie _1cif img sp_R48dKBxiJkP sx_dc0ad2'} src={null}/>;
-	}
+	};
 
-	var AdsPETableHeader180 = function() {
+	let AdsPETableHeader180 = function() {
 		return (
 			<div className={'_1cig _1ksv _1vd7 _4h2r'}>
 				<ReactImage179 />
 				<span className={'_1cid'}>{'Ads'}</span>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell181 = function() {
+	let TransitionCell181 = function() {
 		return (
 			<div isHeaderCell={true} label={'Ads'} dataKey={0} groupHeaderRenderer={function () { } } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={521} rowIndex={0}
-					 className={'_4lgc _4h2u'} style={{ 'height': 40, 'width': 521 }}>
+					 className={'_4lgc _4h2u'} style={{ height: 40, width: 521 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader180 />
@@ -1258,46 +1268,46 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell182 = function() {
+	let FixedDataTableCell182 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 40, 'width': 521, 'left': 0 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 40, width: 521, left: 0 }}>
 				{undefined}
 				<TransitionCell181 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroupImpl183 = function() {
+	let FixedDataTableCellGroupImpl183 = function() {
 		return (
-			<div className={'_3pzj'} style={{ 'height': 40, 'position': 'absolute', 'width': 521, 'zIndex': 2, 'transform': 'translate3d(0px,0px,0)', 'backfaceVisibility': 'hidden' }}>
+			<div className={'_3pzj'} style={{ height: 40, position: 'absolute', width: 521, zIndex: 2, transform: 'translate3d(0px,0px,0)', backfaceVisibility: 'hidden' }}>
 				<FixedDataTableCell182 key={'cell_0'}/>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroup184 = function() {
+	let FixedDataTableCellGroup184 = function() {
 		return (
-			<div style={{ 'height': 40, 'left': 0 }} className={'_3pzk'}>
+			<div style={{ height: 40, left: 0 }} className={'_3pzk'}>
 				<FixedDataTableCellGroupImpl183 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader185 = function() {
+	let AdsPETableHeader185 = function() {
 		return (
 			<div className={'_1cig _1vd7 _4h2r'}>
 				{null}
 				<span className={'_1cid'}>{'Delivery'}</span>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell186 = function() {
+	let TransitionCell186 = function() {
 		return (
 			<div isHeaderCell={true} label={'Delivery'} dataKey={1} groupHeaderRenderer={function () { } } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={298}
-					 rowIndex={0} className={'_4lgc _4h2u'} style={{ 'height': 40, 'width': 298 }}>
+					 rowIndex={0} className={'_4lgc _4h2u'} style={{ height: 40, width: 298 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader185 />
@@ -1305,123 +1315,126 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell187 = function() {
+	let FixedDataTableCell187 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 40, 'width': 298, 'left': 0 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 40, width: 298, left: 0 }}>
 				{undefined}
 				<TransitionCell186 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader188 = function() {
+	let AdsPETableHeader188 = function() {
 		return (
 			<div className={'_1cig _1vd7 _4h2r'}>
 				{null}
 				<span className={'_1cid'}>{'Performance'}</span>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell189 = function() {
+	let TransitionCell189 = function() {
 		return (
-			<div isHeaderCell={true} label={'Performance'} dataKey={2} groupHeaderRenderer={function () { } } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={490}
-					 rowIndex={0} className={'_4lgc _4h2u'} style={{ 'height': 40, 'width': 490 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<AdsPETableHeader188 />
-					</div>
+			<div isHeaderCell={true} label={'Performance'} dataKey={2} groupHeaderRenderer={function() {
+			} } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={490}
+				rowIndex={0} className={'_4lgc _4h2u'} style={{ height: 40, width: 490 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
+					<AdsPETableHeader188 />
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell190 = function() {
+	let FixedDataTableCell190 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 40, 'width': 490, 'left': 298 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 40, width: 490, left: 298 }}>
 				{undefined}
 				<TransitionCell189 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader191 = function() {
+	let AdsPETableHeader191 = function() {
 		return (
 			<div className={'_1cig _1vd7 _4h2r'}>
 				{null}
 				<span className={'_1cid'}>{'Overview'}</span>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell192 = function() {
+	let TransitionCell192 = function() {
 		return (
-			<div isHeaderCell={true} label={'Overview'} dataKey={3} groupHeaderRenderer={function () { } } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={972}
-					 rowIndex={0} className={'_4lgc _4h2u'} style={{ 'height': 40, 'width': 972 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
+			<div isHeaderCell={true} label={'Overview'} dataKey={3} groupHeaderRenderer={function() {
+			} } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={972}
+				rowIndex={0} className={'_4lgc _4h2u'} style={{ height: 40, width: 972 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader191 />
-					</div>
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell193 = function() {
+	let FixedDataTableCell193 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 40, 'width': 972, 'left': 788 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 40, width: 972, left: 788 }}>
 				{undefined}
 				<TransitionCell192 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader194 = function() {
+	let AdsPETableHeader194 = function() {
 		return (
 			<div className={'_1cig _1vd7 _4h2r'}>
 				{null}
 				<span className={'_1cid'}>{'Creative Assets'}</span>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell195 = function() {
+	let TransitionCell195 = function() {
 		return (
-			<div isHeaderCell={true} label={'Creative Assets'} dataKey={4} groupHeaderRenderer={function () { } } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={514}
-					 rowIndex={0} className={'_4lgc _4h2u'} style={{ 'height': 40, 'width': 514 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<AdsPETableHeader194 />
-					</div>
-				</div>
+			<div isHeaderCell={true} label={'Creative Assets'} dataKey={4} groupHeaderRenderer={function() {
+			} } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={514}
+				rowIndex={0} className={'_4lgc _4h2u'} style={{ height: 40, width: 514 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
+				<AdsPETableHeader194 />
+			</div>
+			</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell196 = function() {
+	let FixedDataTableCell196 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 40, 'width': 514, 'left': 1760 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 40, width: 514, left: 1760 }}>
 				{undefined}
 				<TransitionCell195 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader197 = function() {
+	let AdsPETableHeader197 = function() {
 		return (
 			<div className={'_1cig _1vd7 _4h2r'}>
 				{null}
 				<span className={'_1cid'}>{'Toplines'}</span>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell198 = function() {
+	let TransitionCell198 = function() {
 		return (
 			<div isHeaderCell={true} label={'Toplines'} dataKey={5} groupHeaderRenderer={function () { } } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={0}
-					 rowIndex={0} className={'_4lgc _4h2u'} style={{ 'height': 40, 'width': 0 }}>
+					 rowIndex={0} className={'_4lgc _4h2u'} style={{ height: 40, width: 0 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader197 />
@@ -1429,25 +1442,25 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell199 = function() {
+	let FixedDataTableCell199 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 40, 'width': 0, 'left': 2274 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 40, width: 0, left: 2274 }}>
 				{undefined}
 				<TransitionCell198 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader200 = function() {
+	let AdsPETableHeader200 = function() {
 		return <div className={'_1cig _1vd7 _4h2r'}></div>;
-	}
+	};
 
-	var TransitionCell201 = function() {
+	let TransitionCell201 = function() {
 		return (
 			<div isHeaderCell={true} label={''} dataKey={6} groupHeaderRenderer={function () { } } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={25} rowIndex={0}
-					 className={'_4lgc _4h2u'} style={{ 'height': 40, 'width': 25 }}>
+					 className={'_4lgc _4h2u'} style={{ height: 40, width: 25 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader200 />
@@ -1455,20 +1468,20 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell202 = function() {
+	let FixedDataTableCell202 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 40, 'width': 25, 'left': 2274 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 40, width: 25, left: 2274 }}>
 				{undefined}
 				<TransitionCell201 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroupImpl203 = function() {
+	let FixedDataTableCellGroupImpl203 = function() {
 		return (
-			<div className={'_3pzj'} style={{ 'height': 40, 'position': 'absolute', 'width': 2299, 'zIndex': 0, 'transform': 'translate3d(0px,0px,0)', 'backfaceVisibility': 'hidden' }}>
+			<div className={'_3pzj'} style={{ height: 40, position: 'absolute', width: 2299, zIndex: 0, transform: 'translate3d(0px,0px,0)', backfaceVisibility: 'hidden' }}>
 				<FixedDataTableCell187 key={'cell_0'}/>
 				<FixedDataTableCell190 key={'cell_1'}/>
 				<FixedDataTableCell193 key={'cell_2'}/>
@@ -1477,53 +1490,55 @@ function runBenchmark(container) {
 				<FixedDataTableCell202 key={'cell_5'}/>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroup204 = function() {
+	let FixedDataTableCellGroup204 = function() {
 		return (
-			<div style={{ 'height': 40, 'left': 521 }} className={'_3pzk'}>
+			<div style={{ height: 40, left: 521 }} className={'_3pzk'}>
 				<FixedDataTableCellGroupImpl203 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableRowImpl205 = function() {
+	let FixedDataTableRowImpl205 = function() {
 		return (
-			<div className={'_1gd4 _4li _52no _3h1a _1mib'} onClick={null} onDoubleClick={null} onMouseDown={null} onMouseEnter={null} onMouseLeave={null} style={{ 'width': 1083, 'height': 40 }}>
+			<div className={'_1gd4 _4li _52no _3h1a _1mib'} onClick={null} onDoubleClick={null} onMouseDown={null} onMouseEnter={null} onMouseLeave={null} style={{ width: 1083, height: 40 }}>
 				<div className={'_1gd5'}>
 					<FixedDataTableCellGroup184 key={'fixed_cells'}/>
 					<FixedDataTableCellGroup204 key={'scrollable_cells'}/>
-					<div className={'_1gd6 _1gd8'} style={{ 'left': 521, 'height': 40 }}></div>
+					<div className={'_1gd6 _1gd8'} style={{ left: 521, height: 40 }}>
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableRow206 = function() {
+	let FixedDataTableRow206 = function() {
 		return (
-			<div style={{ 'width': 1083, 'height': 40, 'zIndex': 1, 'transform': 'translate3d(0px,0px,0)', 'backfaceVisibility': 'hidden' }} className={'_1gda'}>
+			<div style={{ width: 1083, height: 40, zIndex: 1, transform: 'translate3d(0px,0px,0)', backfaceVisibility: 'hidden' }} className={'_1gda'}>
 				<FixedDataTableRowImpl205 />
 			</div>
 		);
-	}
+	};
 
-	var AbstractCheckboxInput207 = function() {
+	let AbstractCheckboxInput207 = function() {
 		return (
 			<label className={'_4h2r _55sg _kv1'}>
-				<input checked={undefined} onChange={function () { } } className={null} type={'checkbox'}/>
+				<input checked={undefined} onChange={function() {
+			} } className={null} type={'checkbox'}/>
 				<span data-hover={null} aria-label={undefined}/>
 			</label>
 		);
-	}
+	};
 
-	var XUICheckboxInput208 = function() {
+	let XUICheckboxInput208 = function() {
 		return <AbstractCheckboxInput207 />;
-	}
+	};
 
-	var TransitionCell209 = function() {
+	let TransitionCell209 = function() {
 		return (
 			<div isHeaderCell={true} label={undefined} width={42} dataKey={'common.id'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'common.id'} height={25} style={{ 'height': 25, 'width': 42 }}>
+					 columnKey={'common.id'} height={25} style={{ height: 25, width: 42 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<XUICheckboxInput208 />
@@ -1531,27 +1546,27 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell210 = function() {
+	let FixedDataTableCell210 = function() {
 		return (
-			<div className={'_4lg0 _4lg6 _4h2m'} style={{ 'height': 25, 'width': 42, 'left': 0 }}>
+			<div className={'_4lg0 _4lg6 _4h2m'} style={{ height: 25, width: 42, left: 0 }}>
 				{undefined}
 				<TransitionCell209 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader211 = function() {
+	let AdsPETableHeader211 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Ad Name'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader212 = function() {
+	let FixedDataTableAbstractSortableHeader212 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -1560,16 +1575,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader213 = function() {
+	let FixedDataTableSortableHeader213 = function() {
 		return <FixedDataTableAbstractSortableHeader212 />;
-	}
+	};
 
-	var TransitionCell214 = function() {
+	let TransitionCell214 = function() {
 		return (
 			<div isHeaderCell={true} label={'Ad Name'} width={200} dataKey={'ad.name'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'ad.name'} height={25} style={{ 'height': 25, 'width': 200 }}>
+					 columnKey={'ad.name'} height={25} style={{ height: 25, width: 200 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader213 />
@@ -1577,51 +1592,52 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell215 = function() {
+	let FixedDataTableCell215 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 200, 'left': 42 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 200, left: 42 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell214 />
 			</div>
 		);
-	}
+	};
 
-	var ReactImage216 = function() {
+	let ReactImage216 = function() {
 		return <i className={'_1cie img sp_UuU9HmrQ397 sx_844e7d'} src={null}></i>;
-	}
+	};
 
-	var AdsPETableHeader217 = function() {
+	let AdsPETableHeader217 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				<ReactImage216 />
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader218 = function() {
+	let FixedDataTableAbstractSortableHeader218 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _1kst _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader217 />
-				</div>
+				</div
+				>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader219 = function() {
+	let FixedDataTableSortableHeader219 = function() {
 		return <FixedDataTableAbstractSortableHeader218 />;
-	}
+	};
 
-	var TransitionCell220 = function() {
+	let TransitionCell220 = function() {
 		return (
 			<div isHeaderCell={true} label={undefined} width={33} dataKey={'edit_status'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'edit_status'} height={25} style={{ 'height': 25, 'width': 33 }}>
+					 columnKey={'edit_status'} height={25} style={{ height: 25, width: 33 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader219 />
@@ -1629,31 +1645,31 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell221 = function() {
+	let FixedDataTableCell221 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 33, 'left': 242 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 33, left: 242 }}>
 				{undefined}
 				<TransitionCell220 />
 			</div>
 		);
-	}
+	};
 
-	var ReactImage222 = function() {
+	let ReactImage222 = function() {
 		return <i className={'_1cie img sp_UuU9HmrQ397 sx_36dc45'} src={null}></i>;
-	}
+	};
 
-	var AdsPETableHeader223 = function() {
+	let AdsPETableHeader223 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				<ReactImage222 />
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader224 = function() {
+	let FixedDataTableAbstractSortableHeader224 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _1kst _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -1662,16 +1678,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader225 = function() {
+	let FixedDataTableSortableHeader225 = function() {
 		return <FixedDataTableAbstractSortableHeader224 />;
-	}
+	};
 
-	var TransitionCell226 = function() {
+	let TransitionCell226 = function() {
 		return (
 			<div isHeaderCell={true} label={undefined} width={36} dataKey={'errors'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'errors'} height={25} style={{ 'height': 25, 'width': 36 }}>
+					 columnKey={'errors'} height={25} style={{ height: 25, width: 36 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader225 />
@@ -1679,27 +1695,27 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell227 = function() {
+	let FixedDataTableCell227 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 36, 'left': 275 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 36, left: 275 }}>
 				{undefined}
 				<TransitionCell226 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader228 = function() {
+	let AdsPETableHeader228 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Status'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader229 = function() {
+	let FixedDataTableAbstractSortableHeader229 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -1708,16 +1724,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader230 = function() {
+	let FixedDataTableSortableHeader230 = function() {
 		return <FixedDataTableAbstractSortableHeader229 />;
-	}
+	};
 
-	var TransitionCell231 = function() {
+	let TransitionCell231 = function() {
 		return (
 			<div isHeaderCell={true} label={'Status'} width={60} dataKey={'ad.adgroup_status'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'ad.adgroup_status'} height={25} style={{ 'height': 25, 'width': 60 }}>
+					 columnKey={'ad.adgroup_status'} height={25} style={{ height: 25, width: 60 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader230 />
@@ -1725,27 +1741,27 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell232 = function() {
+	let FixedDataTableCell232 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 60, 'left': 311 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 60, left: 311 }}>
 				{undefined}
 				<TransitionCell231 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader233 = function() {
+	let AdsPETableHeader233 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Delivery'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader234 = function() {
+	let FixedDataTableAbstractSortableHeader234 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -1754,16 +1770,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader235 = function() {
+	let FixedDataTableSortableHeader235 = function() {
 		return <FixedDataTableAbstractSortableHeader234 />;
-	}
+	};
 
-	var TransitionCell236 = function() {
+	let TransitionCell236 = function() {
 		return (
 			<div isHeaderCell={true} label={'Delivery'} width={150} dataKey={'ukiAdData.computed_activity_status'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'ukiAdData.computed_activity_status'} height={25} style={{ 'height': 25, 'width': 150 }}>
+					 headerDataGetter={function () { } } columnKey={'ukiAdData.computed_activity_status'} height={25} style={{ height: 25, width: 150 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader235 />
@@ -1771,22 +1787,22 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell237 = function() {
+	let FixedDataTableCell237 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 150, 'left': 371 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 150, left: 371 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell236 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroupImpl238 = function() {
+	let FixedDataTableCellGroupImpl238 = function() {
 		return (
-			<div className={'_3pzj'} style={{ 'height': 25, 'position': 'absolute', 'width': 521, 'zIndex': 2, 'transform': 'translate3d(0px,0px,0)', 'backfaceVisibility': 'hidden' }}>
+			<div className={'_3pzj'} style={{ height: 25, position: 'absolute', width: 521, zIndex: 2, transform: 'translate3d(0px,0px,0)', backfaceVisibility: 'hidden' }}>
 				<FixedDataTableCell210 key={'cell_0'}/>
 				<FixedDataTableCell215 key={'cell_1'}/>
 				<FixedDataTableCell221 key={'cell_2'}/>
@@ -1795,26 +1811,26 @@ function runBenchmark(container) {
 				<FixedDataTableCell237 key={'cell_5'}/>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroup239 = function() {
+	let FixedDataTableCellGroup239 = function() {
 		return (
-			<div style={{ 'height': 25, 'left': 0 }} className={'_3pzk'}>
+			<div style={{ height: 25, left: 0 }} className={'_3pzk'}>
 				<FixedDataTableCellGroupImpl238 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader240 = function() {
+	let AdsPETableHeader240 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Reach'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader241 = function() {
+	let FixedDataTableAbstractSortableHeader241 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -1823,16 +1839,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader242 = function() {
+	let FixedDataTableSortableHeader242 = function() {
 		return <FixedDataTableAbstractSortableHeader241 />;
-	}
+	};
 
-	var TransitionCell243 = function() {
+	let TransitionCell243 = function() {
 		return (
 			<div isHeaderCell={true} label={'Reach'} width={60} dataKey={'stats.unique_impressions'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'stats.unique_impressions'} height={25} style={{ 'height': 25, 'width': 60 }}>
+					 headerDataGetter={function () { } } columnKey={'stats.unique_impressions'} height={25} style={{ height: 25, width: 60 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader242 />
@@ -1840,29 +1856,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell244 = function() {
+	let FixedDataTableCell244 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 25, 'width': 60, 'left': 0 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 60, left: 0 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell243 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader245 = function() {
+	let AdsPETableHeader245 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Ad Impressions'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader246 = function() {
+	let FixedDataTableAbstractSortableHeader246 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -1871,16 +1887,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader247 = function() {
+	let FixedDataTableSortableHeader247 = function() {
 		return <FixedDataTableAbstractSortableHeader246 />;
-	}
+	};
 
-	var TransitionCell248 = function() {
+	let TransitionCell248 = function() {
 		return (
 			<div isHeaderCell={true} label={'Ad Impressions'} width={80} dataKey={'stats.impressions'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'stats.impressions'} height={25} style={{ 'height': 25, 'width': 80 }}>
+					 headerDataGetter={function () { } } columnKey={'stats.impressions'} height={25} style={{ height: 25, width: 80 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader247 />
@@ -1888,29 +1904,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell249 = function() {
+	let FixedDataTableCell249 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 25, 'width': 80, 'left': 60 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 80, left: 60 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell248 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader250 = function() {
+	let AdsPETableHeader250 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Avg. CPM'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader251 = function() {
+	let FixedDataTableAbstractSortableHeader251 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -1919,16 +1935,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader252 = function() {
+	let FixedDataTableSortableHeader252 = function() {
 		return <FixedDataTableAbstractSortableHeader251 />;
-	}
+	};
 
-	var TransitionCell253 = function() {
+	let TransitionCell253 = function() {
 		return (
 			<div isHeaderCell={true} label={'Avg. CPM'} width={80} dataKey={'stats.avg_cpm'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'stats.avg_cpm'} height={25} style={{ 'height': 25, 'width': 80 }}>
+					 columnKey={'stats.avg_cpm'} height={25} style={{ height: 25, width: 80 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader252 />
@@ -1936,29 +1952,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell254 = function() {
+	let FixedDataTableCell254 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 25, 'width': 80, 'left': 140 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 80, left: 140 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell253 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader255 = function() {
+	let AdsPETableHeader255 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Avg. CPC'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader256 = function() {
+	let FixedDataTableAbstractSortableHeader256 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -1967,16 +1983,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader257 = function() {
+	let FixedDataTableSortableHeader257 = function() {
 		return <FixedDataTableAbstractSortableHeader256 />;
-	}
+	};
 
-	var TransitionCell258 = function() {
+	let TransitionCell258 = function() {
 		return (
 			<div isHeaderCell={true} label={'Avg. CPC'} width={78} dataKey={'stats.avg_cpc'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'stats.avg_cpc'} height={25} style={{ 'height': 25, 'width': 78 }}>
+					 columnKey={'stats.avg_cpc'} height={25} style={{ height: 25, width: 78 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader257 />
@@ -1984,95 +2000,101 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell259 = function() {
+	let FixedDataTableCell259 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 25, 'width': 78, 'left': 220 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 78, left: 220 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell258 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader260 = function() {
+	let AdsPETableHeader260 = function() {
 		return (
 			<div className={'_1cig _25fg _4h2r'}>
 				{null}
 				<span className={'_1cid'}>{'Results'}</span>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell261 = function() {
+	let TransitionCell261 = function() {
 		return (
-			<div isHeaderCell={true} label={'Results'} width={140} dataKey={'stats.actions'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'stats.actions'} height={25} style={{ 'height': 25, 'width': 140 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<AdsPETableHeader260 />
-					</div>
-				</div>
+			<div isHeaderCell={true} label={'Results'} width={140} dataKey={'stats.actions'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function() {
+			} } headerDataGetter={function() {
+			} }
+				columnKey={'stats.actions'} height={25} style={{ height: 25, width: 140 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
+					<AdsPETableHeader260 />
+				</div
+				>
+			</div
+				>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell262 = function() {
+	let FixedDataTableCell262 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 25, 'width': 140, 'left': 298 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 140, left: 298 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell261 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader263 = function() {
+	let AdsPETableHeader263 = function() {
 		return (
 			<div className={'_1cig _25fg _4h2r'}>
 				{null}
 				<span className={'_1cid'}>{'Cost'}</span>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell264 = function() {
+	let TransitionCell264 = function() {
 		return (
-			<div isHeaderCell={true} label={'Cost'} width={140} dataKey={'stats.cpa'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'stats.cpa'} height={25} style={{ 'height': 25, 'width': 140 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<AdsPETableHeader263 />
-					</div>
+			<div isHeaderCell={true} label={'Cost'} width={140} dataKey={'stats.cpa'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function() {
+			} } headerDataGetter={function() {
+			} }
+				columnKey={'stats.cpa'} height={25} style={{ height: 25, width: 140 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
+					<AdsPETableHeader263 />
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell265 = function() {
+	let FixedDataTableCell265 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 25, 'width': 140, 'left': 438 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 140, left: 438 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell264 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader266 = function() {
+	let AdsPETableHeader266 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Clicks'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader267 = function() {
+	let FixedDataTableAbstractSortableHeader267 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2081,46 +2103,47 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader268 = function() {
+	let FixedDataTableSortableHeader268 = function() {
 		return <FixedDataTableAbstractSortableHeader267 />;
-	}
+	};
 
-	var TransitionCell269 = function() {
+	let TransitionCell269 = function() {
 		return (
-			<div isHeaderCell={true} label={'Clicks'} width={60} dataKey={'stats.clicks'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'stats.clicks'} height={25} style={{ 'height': 25, 'width': 60 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<FixedDataTableSortableHeader268 />
-					</div>
+			<div isHeaderCell={true} label={'Clicks'} width={60} dataKey={'stats.clicks'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function() {
+			} }
+				columnKey={'stats.clicks'} height={25} style={{ height: 25, width: 60 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
+					<FixedDataTableSortableHeader268 />
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell270 = function() {
+	let FixedDataTableCell270 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 25, 'width': 60, 'left': 578 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 60, left: 578 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell269 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader271 = function() {
+	let AdsPETableHeader271 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'CTR %'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader272 = function() {
+	let FixedDataTableAbstractSortableHeader272 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2129,16 +2152,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader273 = function() {
+	let FixedDataTableSortableHeader273 = function() {
 		return <FixedDataTableAbstractSortableHeader272 />;
-	}
+	};
 
-	var TransitionCell274 = function() {
+	let TransitionCell274 = function() {
 		return (
 			<div isHeaderCell={true} label={'CTR %'} width={70} dataKey={'stats.ctr'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'stats.ctr'} height={25} style={{ 'height': 25, 'width': 70 }}>
+					 columnKey={'stats.ctr'} height={25} style={{ height: 25, width: 70 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader273 />
@@ -2146,29 +2169,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell275 = function() {
+	let FixedDataTableCell275 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 25, 'width': 70, 'left': 638 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 70, left: 638 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell274 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader276 = function() {
+	let AdsPETableHeader276 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Social %'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader277 = function() {
+	let FixedDataTableAbstractSortableHeader277 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2177,46 +2200,48 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader278 = function() {
+	let FixedDataTableSortableHeader278 = function() {
 		return <FixedDataTableAbstractSortableHeader277 />;
-	}
+	};
 
-	var TransitionCell279 = function() {
+	let TransitionCell279 = function() {
 		return (
-			<div isHeaderCell={true} label={'Social %'} width={80} dataKey={'stats.social_percent'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'stats.social_percent'} height={25} style={{ 'height': 25, 'width': 80 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<FixedDataTableSortableHeader278 />
-					</div>
+			<div isHeaderCell={true} label={'Social %'} width={80} dataKey={'stats.social_percent'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function() {
+			} }
+				headerDataGetter={function() {
+			} } columnKey={'stats.social_percent'} height={25} style={{ height: 25, width: 80 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
+					<FixedDataTableSortableHeader278 />
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell280 = function() {
+	let FixedDataTableCell280 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 25, 'width': 80, 'left': 708 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 80, left: 708 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell279 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader281 = function() {
+	let AdsPETableHeader281 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Ad Set Name'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader282 = function() {
+	let FixedDataTableAbstractSortableHeader282 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2225,16 +2250,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader283 = function() {
+	let FixedDataTableSortableHeader283 = function() {
 		return <FixedDataTableAbstractSortableHeader282 />;
-	}
+	};
 
-	var TransitionCell284 = function() {
+	let TransitionCell284 = function() {
 		return (
 			<div isHeaderCell={true} label={'Ad Set Name'} width={100} dataKey={'campaign.name'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'campaign.name'} height={25} style={{ 'height': 25, 'width': 100 }}>
+					 columnKey={'campaign.name'} height={25} style={{ height: 25, width: 100 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader283 />
@@ -2242,29 +2267,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell285 = function() {
+	let FixedDataTableCell285 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 100, 'left': 788 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 100, left: 788 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell284 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader286 = function() {
+	let AdsPETableHeader286 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Campaign Name'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader287 = function() {
+	let FixedDataTableAbstractSortableHeader287 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2273,16 +2298,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader288 = function() {
+	let FixedDataTableSortableHeader288 = function() {
 		return <FixedDataTableAbstractSortableHeader287 />;
-	}
+	};
 
-	var TransitionCell289 = function() {
+	let TransitionCell289 = function() {
 		return (
 			<div isHeaderCell={true} label={'Campaign Name'} width={150} dataKey={'campaignGroup.name'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'campaignGroup.name'} height={25} style={{ 'height': 25, 'width': 150 }}>
+					 headerDataGetter={function () { } } columnKey={'campaignGroup.name'} height={25} style={{ height: 25, width: 150 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader288 />
@@ -2290,29 +2315,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell290 = function() {
+	let FixedDataTableCell290 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 150, 'left': 888 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 150, left: 888 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell289 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader291 = function() {
+	let AdsPETableHeader291 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Ad ID'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader292 = function() {
+	let FixedDataTableAbstractSortableHeader292 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2321,16 +2346,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader293 = function() {
+	let FixedDataTableSortableHeader293 = function() {
 		return <FixedDataTableAbstractSortableHeader292 />;
-	}
+	};
 
-	var TransitionCell294 = function() {
+	let TransitionCell294 = function() {
 		return (
 			<div isHeaderCell={true} label={'Ad ID'} width={120} dataKey={'ad.id'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'ad.id'} height={25} style={{ 'height': 25, 'width': 120 }}>
+					 columnKey={'ad.id'} height={25} style={{ height: 25, width: 120 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader293 />
@@ -2338,29 +2363,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell295 = function() {
+	let FixedDataTableCell295 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 120, 'left': 1038 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 120, left: 1038 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell294 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader296 = function() {
+	let AdsPETableHeader296 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Objective'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader297 = function() {
+	let FixedDataTableAbstractSortableHeader297 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2369,16 +2394,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader298 = function() {
+	let FixedDataTableSortableHeader298 = function() {
 		return <FixedDataTableAbstractSortableHeader297 />;
-	}
+	};
 
-	var TransitionCell299 = function() {
+	let TransitionCell299 = function() {
 		return (
 			<div isHeaderCell={true} label={'Objective'} width={80} dataKey={'campaignGroup.objective'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'campaignGroup.objective'} height={25} style={{ 'height': 25, 'width': 80 }}>
+					 headerDataGetter={function () { } } columnKey={'campaignGroup.objective'} height={25} style={{ height: 25, width: 80 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader298 />
@@ -2386,29 +2411,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell300 = function() {
+	let FixedDataTableCell300 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 80, 'left': 1158 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 80, left: 1158 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell299 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader301 = function() {
+	let AdsPETableHeader301 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Spent'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader302 = function() {
+	let FixedDataTableAbstractSortableHeader302 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2417,16 +2442,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader303 = function() {
+	let FixedDataTableSortableHeader303 = function() {
 		return <FixedDataTableAbstractSortableHeader302 />;
-	}
+	};
 
-	var TransitionCell304 = function() {
+	let TransitionCell304 = function() {
 		return (
 			<div isHeaderCell={true} label={'Spent'} width={70} dataKey={'stats.spent_100'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'stats.spent_100'} height={25} style={{ 'height': 25, 'width': 70 }}>
+					 columnKey={'stats.spent_100'} height={25} style={{ height: 25, width: 70 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader303 />
@@ -2434,29 +2459,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell305 = function() {
+	let FixedDataTableCell305 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 25, 'width': 70, 'left': 1238 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 70, left: 1238 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell304 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader306 = function() {
+	let AdsPETableHeader306 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Start'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader307 = function() {
+	let FixedDataTableAbstractSortableHeader307 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2465,16 +2490,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader308 = function() {
+	let FixedDataTableSortableHeader308 = function() {
 		return <FixedDataTableAbstractSortableHeader307 />;
-	}
+	};
 
-	var TransitionCell309 = function() {
+	let TransitionCell309 = function() {
 		return (
 			<div isHeaderCell={true} label={'Start'} width={113} dataKey={'derivedCampaign.startDate'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'derivedCampaign.startDate'} height={25} style={{ 'height': 25, 'width': 113 }}>
+					 headerDataGetter={function () { } } columnKey={'derivedCampaign.startDate'} height={25} style={{ height: 25, width: 113 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader308 />
@@ -2482,29 +2507,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell310 = function() {
+	let FixedDataTableCell310 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 113, 'left': 1308 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1308 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell309 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader311 = function() {
+	let AdsPETableHeader311 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'End'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader312 = function() {
+	let FixedDataTableAbstractSortableHeader312 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2513,16 +2538,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader313 = function() {
+	let FixedDataTableSortableHeader313 = function() {
 		return <FixedDataTableAbstractSortableHeader312 />;
-	}
+	};
 
-	var TransitionCell314 = function() {
+	let TransitionCell314 = function() {
 		return (
 			<div isHeaderCell={true} label={'End'} width={113} dataKey={'derivedCampaign.endDate'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'derivedCampaign.endDate'} height={25} style={{ 'height': 25, 'width': 113 }}>
+					 headerDataGetter={function () { } } columnKey={'derivedCampaign.endDate'} height={25} style={{ height: 25, width: 113 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader313 />
@@ -2530,29 +2555,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell315 = function() {
+	let FixedDataTableCell315 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 113, 'left': 1421 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1421 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell314 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader316 = function() {
+	let AdsPETableHeader316 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Date created'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader317 = function() {
+	let FixedDataTableAbstractSortableHeader317 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2561,16 +2586,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader318 = function() {
+	let FixedDataTableSortableHeader318 = function() {
 		return <FixedDataTableAbstractSortableHeader317 />;
-	}
+	};
 
-	var TransitionCell319 = function() {
+	let TransitionCell319 = function() {
 		return (
 			<div isHeaderCell={true} label={'Date created'} width={113} dataKey={'ad.created_time'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'ad.created_time'} height={25} style={{ 'height': 25, 'width': 113 }}>
+					 headerDataGetter={function () { } } columnKey={'ad.created_time'} height={25} style={{ height: 25, width: 113 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader318 />
@@ -2578,29 +2603,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell320 = function() {
+	let FixedDataTableCell320 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 113, 'left': 1534 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1534 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell319 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader321 = function() {
+	let AdsPETableHeader321 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Date last edited'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader322 = function() {
+	let FixedDataTableAbstractSortableHeader322 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2609,16 +2634,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader323 = function() {
+	let FixedDataTableSortableHeader323 = function() {
 		return <FixedDataTableAbstractSortableHeader322 />;
-	}
+	};
 
-	var TransitionCell324 = function() {
+	let TransitionCell324 = function() {
 		return (
 			<div isHeaderCell={true} label={'Date last edited'} width={113} dataKey={'ad.updated_time'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'ad.updated_time'} height={25} style={{ 'height': 25, 'width': 113 }}>
+					 headerDataGetter={function () { } } columnKey={'ad.updated_time'} height={25} style={{ height: 25, width: 113 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader323 />
@@ -2626,29 +2651,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell325 = function() {
+	let FixedDataTableCell325 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 113, 'left': 1647 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1647 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell324 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader326 = function() {
+	let AdsPETableHeader326 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Title'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader327 = function() {
+	let FixedDataTableAbstractSortableHeader327 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2657,16 +2682,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader328 = function() {
+	let FixedDataTableSortableHeader328 = function() {
 		return <FixedDataTableAbstractSortableHeader327 />;
-	}
+	};
 
-	var TransitionCell329 = function() {
+	let TransitionCell329 = function() {
 		return (
 			<div isHeaderCell={true} label={'Title'} width={80} dataKey={'ad.title'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'ad.title'} height={25} style={{ 'height': 25, 'width': 80 }}>
+					 columnKey={'ad.title'} height={25} style={{ height: 25, width: 80 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader328 />
@@ -2674,29 +2699,30 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell330 = function() {
+	let FixedDataTableCell330 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 80, 'left': 1760 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
-				</div>
-				<TransitionCell329 />
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 80, left: 1760 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
+			} }>
+			<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+			</div>
+			<TransitionCell329/>
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader331 = function() {
+	let AdsPETableHeader331 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Body'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader332 = function() {
+	let FixedDataTableAbstractSortableHeader332 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2705,16 +2731,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader333 = function() {
+	let FixedDataTableSortableHeader333 = function() {
 		return <FixedDataTableAbstractSortableHeader332 />;
-	}
+	};
 
-	var TransitionCell334 = function() {
+	let TransitionCell334 = function() {
 		return (
 			<div isHeaderCell={true} label={'Body'} width={80} dataKey={'ad.creative.body'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'ad.creative.body'} height={25} style={{ 'height': 25, 'width': 80 }}>
+					 columnKey={'ad.creative.body'} height={25} style={{ height: 25, width: 80 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader333 />
@@ -2722,29 +2748,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell335 = function() {
+	let FixedDataTableCell335 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 80, 'left': 1840 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 80, left: 1840 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell334 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader336 = function() {
+	let AdsPETableHeader336 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Destination'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader337 = function() {
+	let FixedDataTableAbstractSortableHeader337 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2753,16 +2779,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader338 = function() {
+	let FixedDataTableSortableHeader338 = function() {
 		return <FixedDataTableAbstractSortableHeader337 />;
-	}
+	};
 
-	var TransitionCell339 = function() {
+	let TransitionCell339 = function() {
 		return (
 			<div isHeaderCell={true} label={'Destination'} width={92} dataKey={'destination'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'destination'} height={25} style={{ 'height': 25, 'width': 92 }}>
+					 columnKey={'destination'} height={25} style={{ height: 25, width: 92 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader338 />
@@ -2770,29 +2796,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell340 = function() {
+	let FixedDataTableCell340 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 92, 'left': 1920 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 92, left: 1920 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell339 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader341 = function() {
+	let AdsPETableHeader341 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Link'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader342 = function() {
+	let FixedDataTableAbstractSortableHeader342 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2801,16 +2827,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader343 = function() {
+	let FixedDataTableSortableHeader343 = function() {
 		return <FixedDataTableAbstractSortableHeader342 />;
-	}
+	};
 
-	var TransitionCell344 = function() {
+	let TransitionCell344 = function() {
 		return (
 			<div isHeaderCell={true} label={'Link'} width={70} dataKey={'ad.creative.link_url'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'ad.creative.link_url'} height={25} style={{ 'height': 25, 'width': 70 }}>
+					 columnKey={'ad.creative.link_url'} height={25} style={{ height: 25, width: 70 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader343 />
@@ -2818,29 +2844,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell345 = function() {
+	let FixedDataTableCell345 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 70, 'left': 2012 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 70, left: 2012 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell344 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader346 = function() {
+	let AdsPETableHeader346 = function() {
 		return (
 			<div className={'_1cig _25fg'}>
 				{null}
 				<span className={'_1cid'}>{'Related Page'}</span>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableAbstractSortableHeader347 = function() {
+	let FixedDataTableAbstractSortableHeader347 = function() {
 		return (
 			<div onClick={function () { } } className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
@@ -2849,16 +2875,16 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableSortableHeader348 = function() {
+	let FixedDataTableSortableHeader348 = function() {
 		return <FixedDataTableAbstractSortableHeader347 />;
-	}
+	};
 
-	var TransitionCell349 = function() {
+	let TransitionCell349 = function() {
 		return (
 			<div isHeaderCell={true} label={'Related Page'} width={92} dataKey={'page'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'page'} height={25} style={{ 'height': 25, 'width': 92 }}>
+					 columnKey={'page'} height={25} style={{ height: 25, width: 92 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader348 />
@@ -2866,32 +2892,32 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell350 = function() {
+	let FixedDataTableCell350 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 92, 'left': 2082 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 92, left: 2082 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell349 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader351 = function() {
+	let AdsPETableHeader351 = function() {
 		return (
 			<div className={'_1cig _25fg _4h2r'}>
 				{null}
 				<span className={'_1cid'}>{'Preview Link'}</span>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell352 = function() {
+	let TransitionCell352 = function() {
 		return (
 			<div isHeaderCell={true} label={'Preview Link'} width={100} dataKey={'ad.demolink_hash'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } }
-					 headerDataGetter={function () { } } columnKey={'ad.demolink_hash'} height={25} style={{ 'height': 25, 'width': 100 }}>
+					 headerDataGetter={function () { } } columnKey={'ad.demolink_hash'} height={25} style={{ height: 25, width: 100 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader351 />
@@ -2899,27 +2925,27 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell353 = function() {
+	let FixedDataTableCell353 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 100, 'left': 2174 }}>
-				<div className={'_4lg9'} style={{ 'height': 25 }} onMouseDown={function () { } }>
-					<div className={'_4lga _4lgb'} style={{ 'height': 25 }}></div>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 100, left: 2174 }}>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () { } }>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 				</div>
 				<TransitionCell352 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPETableHeader354 = function() {
+	let AdsPETableHeader354 = function() {
 		return <div className={'_1cig _25fg _4h2r'}></div>;
-	}
+	};
 
-	var TransitionCell355 = function() {
+	let TransitionCell355 = function() {
 		return (
 			<div isHeaderCell={true} label={''} width={25} dataKey={'scrollbar_spacer'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () { } } headerDataGetter={function () { } }
-					 columnKey={'scrollbar_spacer'} height={25} style={{ 'height': 25, 'width': 25 }}>
+					 columnKey={'scrollbar_spacer'} height={25} style={{ height: 25, width: 25 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader354 />
@@ -2927,20 +2953,20 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell356 = function() {
+	let FixedDataTableCell356 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 25, 'width': 25, 'left': 2274 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 25, left: 2274 }}>
 				{undefined}
 				<TransitionCell355 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroupImpl357 = function() {
+	let FixedDataTableCellGroupImpl357 = function() {
 		return (
-			<div className={'_3pzj'} style={{ 'height': 25, 'position': 'absolute', 'width': 2299, 'zIndex': 0, 'transform': 'translate3d(0px,0px,0)', 'backfaceVisibility': 'hidden' }}>
+			<div className={'_3pzj'} style={{ height: 25, position: 'absolute', width: 2299, zIndex: 0, transform: 'translate3d(0px,0px,0)', backfaceVisibility: 'hidden' }}>
 				<FixedDataTableCell244 key={'cell_0'}/>
 				<FixedDataTableCell249 key={'cell_1'}/>
 				<FixedDataTableCell254 key={'cell_2'}/>
@@ -2968,76 +2994,78 @@ function runBenchmark(container) {
 				<FixedDataTableCell356 key={'cell_24'}/>
 			</div
 			>
-		)
-			;
-	}
+		);
+	};
 
-	var FixedDataTableCellGroup358 = function() {
+	let FixedDataTableCellGroup358 = function() {
 		return (
-			<div style={{ 'height': 25, 'left': 521 }} className={'_3pzk'}>
+			<div style={{ height: 25, left: 521 }} className={'_3pzk'}>
 				<FixedDataTableCellGroupImpl357 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableRowImpl359 = function() {
+	let FixedDataTableRowImpl359 = function() {
 		return (
-			<div className={'_1gd4 _4li _3h1a _1mib'} onClick={null} onDoubleClick={null} onMouseDown={null} onMouseEnter={null} onMouseLeave={null} style={{ 'width': 1083, 'height': 25 }}>
+		<div className={'_1gd4 _4li _3h1a _1mib'} onClick={null} onDoubleClick={null} onMouseDown={null} onMouseEnter={null} onMouseLeave={null} style={{ width: 1083, height: 25 }}>
 				<div className={'_1gd5'}>
 					<FixedDataTableCellGroup239 key={'fixed_cells'}/>
 					<FixedDataTableCellGroup358 key={'scrollable_cells'}/>
-					<div className={'_1gd6 _1gd8'} style={{ 'left': 521, 'height': 25 }}></div>
-				</div>
-			</div>
+		<div className={'_1gd6 _1gd8'} style={{ left: 521, height: 25 }}></div>
+		</div>
+		</div>
 		);
-	}
+	};
 
-	var FixedDataTableRow360 = function() {
+	let FixedDataTableRow360 = function() {
 		return (
-			<div style={{ 'width': 1083, 'height': 25, 'zIndex': 1, 'transform': 'translate3d(0px,40px,0)', 'backfaceVisibility': 'hidden' }} className={'_1gda'}>
+			<div style={{ width: 1083, height: 25, zIndex: 1, transform: 'translate3d(0px,40px,0)', backfaceVisibility: 'hidden' }} className={'_1gda'}>
 				<FixedDataTableRowImpl359 />
 			</div>
 		);
-	}
+	};
 
-	var AbstractCheckboxInput361 = function() {
+	let AbstractCheckboxInput361 = function() {
 		return (
 			<label className={'_5hhv _55sg _kv1'}>
 				<input className={null} disabled={false} inline={true} checked={true} value={undefined} onChange={function () { } } type={'checkbox'}/>
 				<span data-hover={null} aria-label={undefined}/>
 			</label>
 		);
-	}
+	};
 
-	var XUICheckboxInput362 = function() {
+	let XUICheckboxInput362 = function() {
 		return <AbstractCheckboxInput361 />;
-	}
+	};
 
-	var TransitionCell363 = function() {
+	let TransitionCell363 = function() {
 		return (
-			<div dataKey={'common.id'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={42} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'common.id'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 42 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
+			<div dataKey={'common.id'} className={'_4lgc _4h2u'} rowGetter={function() {
+			} } width={42} columnData={{}} cellDataGetter={function() {
+			} } cellRenderer={function() {
+			} }
+				columnKey={'common.id'} height={32} rowIndex={0} style={{ height: 32, width: 42 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
 						<span className={'_5hhu _4h2r'} onMouseDown={function () { } }>
 							<XUICheckboxInput362 />
 						</span>
-					</div>
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell364 = function() {
+	let FixedDataTableCell364 = function() {
 		return (
-			<div className={'_4lg0 _4lg6 _4h2m'} style={{ 'height': 32, 'width': 42, 'left': 0 }}>
+			<div className={'_4lg0 _4lg6 _4h2m'} style={{ height: 32, width: 42, left: 0 }}>
 				{undefined}
 				<TransitionCell363 />
 			</div>
 		);
-	}
+	};
 
-	var AdsEditableTextCellDisplay365 = function() {
+	let AdsEditableTextCellDisplay365 = function() {
 		return (
 			<div className={'_vew'} onDoubleClick={function () { } } onMouseEnter={function () { } } onMouseLeave={function () { } }>
 				<div className={'_vex _5w6k'}>
@@ -3046,20 +3074,20 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var AdsEditableCell366 = function() {
+	let AdsEditableCell366 = function() {
 		return (
 			<div className={'_2d6h _2-ev _4h2r _5abb'}>
 				<AdsEditableTextCellDisplay365 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell367 = function() {
+	let TransitionCell367 = function() {
 		return (
 			<div dataKey={'ad.name'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={200} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'ad.name'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 200 }}>
+					 columnKey={'ad.name'} height={32} rowIndex={0} style={{ height: 32, width: 200 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsEditableCell366 />
@@ -3067,21 +3095,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell368 = function() {
+	let FixedDataTableCell368 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 200, 'left': 42 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 200, left: 42 }}>
 				{undefined}
 				<TransitionCell367 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellDefault369 = function() {
+	let FixedDataTableCellDefault369 = function() {
 		return (
 			<div dataKey={'edit_status'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={33} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'edit_status'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 33 }}>
+					 columnKey={'edit_status'} height={32} rowIndex={0} style={{ height: 32, width: 33 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_4h2r'}>{''}</div>
@@ -3089,25 +3117,25 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell370 = function() {
+	let TransitionCell370 = function() {
 		return <FixedDataTableCellDefault369 />;
-	}
+	};
 
-	var FixedDataTableCell371 = function() {
+	let FixedDataTableCell371 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 33, 'left': 242 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 33, left: 242 }}>
 				{undefined}
 				<TransitionCell370 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellDefault372 = function() {
+	let FixedDataTableCellDefault372 = function() {
 		return (
 			<div dataKey={'errors'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={36} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } } columnKey={'errors'}
-					 height={32} rowIndex={0} style={{ 'height': 32, 'width': 36 }}>
+					 height={32} rowIndex={0} style={{ height: 32, width: 36 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_4h2r'}></div>
@@ -3115,22 +3143,22 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell373 = function() {
+	let TransitionCell373 = function() {
 		return <FixedDataTableCellDefault372 />;
-	}
+	};
 
-	var FixedDataTableCell374 = function() {
+	let FixedDataTableCell374 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 36, 'left': 275 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 36, left: 275 }}>
 				{undefined}
 				<TransitionCell373 />
 			</div>
 		);
-	}
+	};
 
-	var BUISwitch375 = function() {
+	let BUISwitch375 = function() {
 		return (
 			<div value={true} disabled={true} onToggle={function () { } } data-hover={'tooltip'} data-tooltip-position={'below'} aria-label={'Currently active and you can not deactivate it.'} animate={true}
 					 className={'_128j _128k _128m _128n'} role={'checkbox'} aria-checked={'true'}>
@@ -3140,20 +3168,20 @@ function runBenchmark(container) {
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var AdsStatusSwitchInternal376 = function() {
+	let AdsStatusSwitchInternal376 = function() {
 		return <BUISwitch375 />;
-	}
+	};
 
-	var AdsStatusSwitch377 = function() {
+	let AdsStatusSwitch377 = function() {
 		return <AdsStatusSwitchInternal376 />;
-	}
+	};
 
-	var TransitionCell378 = function() {
+	let TransitionCell378 = function() {
 		return (
 			<div dataKey={'ad.adgroup_status'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={60} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'ad.adgroup_status'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 60 }}>
+					 columnKey={'ad.adgroup_status'} height={32} rowIndex={0} style={{ height: 32, width: 60 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_15si _4h2r'}>
@@ -3163,22 +3191,22 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell379 = function() {
+	let FixedDataTableCell379 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 60, 'left': 311 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 60, left: 311 }}>
 				{undefined}
 				<TransitionCell378 />
 			</div>
 		);
-	}
+	};
 
-	var ReactImage380 = function() {
+	let ReactImage380 = function() {
 		return <i aria-label={'Pending Review'} data-hover={'tooltip'} className={'_4ms8 img sp_UuU9HmrQ397 sx_ced63f'} src={null} width={'7'} height={'7'}></i>;
-	}
+	};
 
-	var AdsPEActivityStatusIndicator381 = function() {
+	let AdsPEActivityStatusIndicator381 = function() {
 		return (
 			<div className={'_k4-'}>
 				<ReactImage380 />
@@ -3186,12 +3214,12 @@ function runBenchmark(container) {
 				{undefined}
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell382 = function() {
+	let TransitionCell382 = function() {
 		return (
 			<div dataKey={'ukiAdData.computed_activity_status'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={150} columnData={{}} cellDataGetter={function () { } }
-					 cellRenderer={function () { } } columnKey={'ukiAdData.computed_activity_status'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 150 }}>
+					 cellRenderer={function () { } } columnKey={'ukiAdData.computed_activity_status'} height={32} rowIndex={0} style={{ height: 32, width: 150 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>
@@ -3201,20 +3229,20 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell383 = function() {
+	let FixedDataTableCell383 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 150, 'left': 371 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 150, left: 371 }}>
 				{undefined}
 				<TransitionCell382 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroupImpl384 = function() {
+	let FixedDataTableCellGroupImpl384 = function() {
 		return (
-			<div className={'_3pzj'} style={{ 'height': 32, 'position': 'absolute', 'width': 521, 'zIndex': 2, 'transform': 'translate3d(0px,0px,0)', 'backfaceVisibility': 'hidden' }}>
+			<div className={'_3pzj'} style={{ height: 32, position: 'absolute', width: 521, zIndex: 2, transform: 'translate3d(0px,0px,0)', backfaceVisibility: 'hidden' }}>
 				<FixedDataTableCell364 key={'cell_0'}/>
 				<FixedDataTableCell368 key={'cell_1'}/>
 				<FixedDataTableCell371 key={'cell_2'}/>
@@ -3223,20 +3251,20 @@ function runBenchmark(container) {
 				<FixedDataTableCell383 key={'cell_5'}/>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroup385 = function() {
+	let FixedDataTableCellGroup385 = function() {
 		return (
-			<div style={{ 'height': 32, 'left': 0 }} className={'_3pzk'}>
+			<div style={{ height: 32, left: 0 }} className={'_3pzk'}>
 				<FixedDataTableCellGroupImpl384 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell386 = function() {
+	let TransitionCell386 = function() {
 		return (
 			<div dataKey={'stats.unique_impressions'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={60} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'stats.unique_impressions'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 60 }}>
+					 columnKey={'stats.unique_impressions'} height={32} rowIndex={0} style={{ height: 32, width: 60 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3244,21 +3272,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell387 = function() {
+	let FixedDataTableCell387 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 32, 'width': 60, 'left': 0 }}>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 32, width: 60, left: 0 }}>
 				{undefined}
 				<TransitionCell386 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell388 = function() {
+	let TransitionCell388 = function() {
 		return (
 			<div dataKey={'stats.impressions'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={80} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'stats.impressions'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 80 }}>
+					 columnKey={'stats.impressions'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3266,21 +3294,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell389 = function() {
+	let FixedDataTableCell389 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 32, 'width': 80, 'left': 60 }}>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 32, width: 80, left: 60 }}>
 				{undefined}
 				<TransitionCell388 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell390 = function() {
+	let TransitionCell390 = function() {
 		return (
 			<div dataKey={'stats.avg_cpm'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={80} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'stats.avg_cpm'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 80 }}>
+					 columnKey={'stats.avg_cpm'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3288,21 +3316,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell391 = function() {
+	let FixedDataTableCell391 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 32, 'width': 80, 'left': 140 }}>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 32, width: 80, left: 140 }}>
 				{undefined}
 				<TransitionCell390 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell392 = function() {
+	let TransitionCell392 = function() {
 		return (
 			<div dataKey={'stats.avg_cpc'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={78} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'stats.avg_cpc'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 78 }}>
+					 columnKey={'stats.avg_cpc'} height={32} rowIndex={0} style={{ height: 32, width: 78 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3310,21 +3338,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell393 = function() {
+	let FixedDataTableCell393 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 32, 'width': 78, 'left': 220 }}>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 32, width: 78, left: 220 }}>
 				{undefined}
 				<TransitionCell392 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell394 = function() {
+	let TransitionCell394 = function() {
 		return (
 			<div dataKey={'stats.actions'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={140} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'stats.actions'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 140 }}>
+					 columnKey={'stats.actions'} height={32} rowIndex={0} style={{ height: 32, width: 140 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3332,21 +3360,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell395 = function() {
+	let FixedDataTableCell395 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 32, 'width': 140, 'left': 298 }}>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 32, width: 140, left: 298 }}>
 				{undefined}
 				<TransitionCell394 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell396 = function() {
+	let TransitionCell396 = function() {
 		return (
 			<div dataKey={'stats.cpa'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={140} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'stats.cpa'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 140 }}>
+					 columnKey={'stats.cpa'} height={32} rowIndex={0} style={{ height: 32, width: 140 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3354,21 +3382,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell397 = function() {
+	let FixedDataTableCell397 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 32, 'width': 140, 'left': 438 }}>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 32, width: 140, left: 438 }}>
 				{undefined}
 				<TransitionCell396 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell398 = function() {
+	let TransitionCell398 = function() {
 		return (
 			<div dataKey={'stats.clicks'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={60} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'stats.clicks'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 60 }}>
+					 columnKey={'stats.clicks'} height={32} rowIndex={0} style={{ height: 32, width: 60 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3376,43 +3404,43 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell399 = function() {
+	let FixedDataTableCell399 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 32, 'width': 60, 'left': 578 }}>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 32, width: 60, left: 578 }}>
 				{undefined}
 				<TransitionCell398 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell400 = function() {
+	let TransitionCell400 = function() {
 		return (
 			<div dataKey={'stats.ctr'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={70} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'stats.ctr'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 70 }}>
+					 columnKey={'stats.ctr'} height={32} rowIndex={0} style={{ height: 32, width: 70 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
-					</div>
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell401 = function() {
+	let FixedDataTableCell401 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 32, 'width': 70, 'left': 638 }}>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 32, width: 70, left: 638 }}>
 				{undefined}
 				<TransitionCell400 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell402 = function() {
+	let TransitionCell402 = function() {
 		return (
 			<div dataKey={'stats.social_percent'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={80} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'stats.social_percent'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 80 }}>
+					 columnKey={'stats.social_percent'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3420,73 +3448,76 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell403 = function() {
+	let FixedDataTableCell403 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 32, 'width': 80, 'left': 708 }}>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 32, width: 80, left: 708 }}>
 				{undefined}
 				<TransitionCell402 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellDefault404 = function() {
+	let FixedDataTableCellDefault404 = function() {
 		return (
-			<div dataKey={'campaign.name'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={100} columnData={{}} cellDataGetter={function () { } } cellRenderer={undefined}
-					 columnKey={'campaign.name'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 100 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<div className={'_4h2r'}>{'Test Ad Set'}</div>
-					</div>
+			<div dataKey={'campaign.name'} className={'_4lgc _4h2u'} rowGetter={function() {
+			} } width={100} columnData={{}} cellDataGetter={function() {
+			} } cellRenderer={undefined}
+				columnKey={'campaign.name'} height={32} rowIndex={0} style={{ height: 32, width: 100 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
+					<div className={'_4h2r'}>{'Test Ad Set'}</div
+					>
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var TransitionCell405 = function() {
+	let TransitionCell405 = function() {
 		return <FixedDataTableCellDefault404 />;
-	}
+	};
 
-	var FixedDataTableCell406 = function() {
+	let FixedDataTableCell406 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 100, 'left': 788 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 100, left: 788 }}>
 				{undefined}
 				<TransitionCell405 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellDefault407 = function() {
+	let FixedDataTableCellDefault407 = function() {
 		return (
 			<div dataKey={'campaignGroup.name'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={150} columnData={{}} cellDataGetter={function () { } } cellRenderer={undefined}
-					 columnKey={'campaignGroup.name'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 150 }}>
+					 columnKey={'campaignGroup.name'} height={32} rowIndex={0} style={{ height: 32, width: 150 }}>
 				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<div className={'_4h2r'}>{'Test Campaign'}</div>
-					</div>
-				</div>
+			<div className={'_4lge _4h2x'}>
+				<div className={'_4h2r'}>{'Test Campaign'}</div>
+			</div>
+			</div>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell408 = function() {
+	let TransitionCell408 = function() {
 		return <FixedDataTableCellDefault407 />;
-	}
+	};
 
-	var FixedDataTableCell409 = function() {
+	let FixedDataTableCell409 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 150, 'left': 888 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 150, left: 888 }}>
 				{undefined}
 				<TransitionCell408 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell410 = function() {
+	let TransitionCell410 = function() {
 		return (
 			<div dataKey={'ad.id'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={120} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } } columnKey={'ad.id'}
-					 height={32} rowIndex={0} style={{ 'height': 32, 'width': 120 }}>
+					 height={32} rowIndex={0} style={{ height: 32, width: 120 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>{'98010048849345'}</div>
@@ -3494,43 +3525,43 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell411 = function() {
+	let FixedDataTableCell411 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 120, 'left': 1038 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 120, left: 1038 }}>
 				{undefined}
 				<TransitionCell410 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell412 = function() {
+	let TransitionCell412 = function() {
 		return (
 			<div dataKey={'campaignGroup.objective'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={80} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'campaignGroup.objective'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 80 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<div className={'_2d6h _4h2r'}>{'Clicks to Website'}</div>
-					</div>
+					 columnKey={'campaignGroup.objective'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
+					<div className={'_2d6h _4h2r'}>{'Clicks to Website'}</div>
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell413 = function() {
+	let FixedDataTableCell413 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 80, 'left': 1158 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 80, left: 1158 }}>
 				{undefined}
 				<TransitionCell412 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell414 = function() {
+	let TransitionCell414 = function() {
 		return (
 			<div dataKey={'stats.spent_100'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={70} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'stats.spent_100'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 70 }}>
+					 columnKey={'stats.spent_100'} height={32} rowIndex={0} style={{ height: 32, width: 70 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3538,25 +3569,25 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell415 = function() {
+	let FixedDataTableCell415 = function() {
 		return (
-			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ 'height': 32, 'width': 70, 'left': 1238 }}>
+			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 32, width: 70, left: 1238 }}>
 				{undefined}
 				<TransitionCell414 />
 			</div>
 		);
-	}
+	};
 
-	var ReactDate416 = function() {
+	let ReactDate416 = function() {
 		return <span>{'10/24/2015'}</span>;
-	}
+	};
 
-	var TransitionCell417 = function() {
+	let TransitionCell417 = function() {
 		return (
 			<div dataKey={'derivedCampaign.startDate'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={113} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'derivedCampaign.startDate'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 113 }}>
+					 columnKey={'derivedCampaign.startDate'} height={32} rowIndex={0} style={{ height: 32, width: 113 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>
@@ -3566,21 +3597,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell418 = function() {
+	let FixedDataTableCell418 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 113, 'left': 1308 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 113, left: 1308 }}>
 				{undefined}
 				<TransitionCell417 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell419 = function() {
+	let TransitionCell419 = function() {
 		return (
 			<div dataKey={'derivedCampaign.endDate'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={113} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'derivedCampaign.endDate'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 113 }}>
+					 columnKey={'derivedCampaign.endDate'} height={32} rowIndex={0} style={{ height: 32, width: 113 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>{'Ongoing'}</div>
@@ -3588,25 +3619,25 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell420 = function() {
+	let FixedDataTableCell420 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 113, 'left': 1421 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 113, left: 1421 }}>
 				{undefined}
 				<TransitionCell419 />
 			</div>
 		);
-	}
+	};
 
-	var ReactDate421 = function() {
+	let ReactDate421 = function() {
 		return <span>{'10/24/2015'}</span>;
-	}
+	};
 
-	var TransitionCell422 = function() {
+	let TransitionCell422 = function() {
 		return (
 			<div dataKey={'ad.created_time'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={113} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'ad.created_time'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 113 }}>
+					 columnKey={'ad.created_time'} height={32} rowIndex={0} style={{ height: 32, width: 113 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>
@@ -3616,71 +3647,77 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell423 = function() {
+	let FixedDataTableCell423 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 113, 'left': 1534 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 113, left: 1534 }}>
 				{undefined}
 				<TransitionCell422 />
 			</div>
 		);
-	}
+	};
 
-	var ReactDate424 = function() {
+	let ReactDate424 = function() {
 		return <span>{'10/24/2015'}</span>;
-	}
+	};
 
-	var TransitionCell425 = function() {
+	let TransitionCell425 = function() {
 		return (
-			<div dataKey={'ad.updated_time'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={113} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'ad.updated_time'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 113 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<div className={'_2d6h _4h2r'}>
-							<ReactDate424 />
-						</div>
+			<div dataKey={'ad.updated_time'} className={'_4lgc _4h2u'} rowGetter={function() {
+			} } width={113} columnData={{}} cellDataGetter={function() {
+			} } cellRenderer={function() {
+			} }
+				columnKey={'ad.updated_time'} height={32} rowIndex={0} style={{ height: 32, width: 113 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
+					<div className={'_2d6h _4h2r'}>
+						<ReactDate424 />
 					</div>
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell426 = function() {
+	let FixedDataTableCell426 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 113, 'left': 1647 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 113, left: 1647 }}>
 				{undefined}
 				<TransitionCell425 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell427 = function() {
+	let TransitionCell427 = function() {
 		return (
-			<div dataKey={'ad.title'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={80} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'ad.title'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 80 }}>
-				<div className={'_4lgd _4h2w'}>
-					<div className={'_4lge _4h2x'}>
-						<div className={'_2d6h _4h2r'}>{'Example'}</div>
-					</div>
+			<div dataKey={'ad.title'} className={'_4lgc _4h2u'} rowGetter={function() {
+			} } width={80} columnData={{}} cellDataGetter={function() {
+			} } cellRenderer={function() {
+			} }
+				columnKey={'ad.title'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
+			<div className={'_4lgd _4h2w'}>
+				<div className={'_4lge _4h2x'}>
+					<div className={'_2d6h _4h2r'}>{'Example'}</div>
 				</div>
 			</div>
+			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell428 = function() {
+	let FixedDataTableCell428 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 80, 'left': 1760 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 80, left: 1760 }}>
 				{undefined}
 				<TransitionCell427 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell429 = function() {
+	let TransitionCell429 = function() {
 		return (
 			<div dataKey={'ad.creative.body'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={80} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'ad.creative.body'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 80 }}>
+					 columnKey={'ad.creative.body'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>{`It's an example.`}</div>
@@ -3688,21 +3725,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell430 = function() {
+	let FixedDataTableCell430 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 80, 'left': 1840 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 80, left: 1840 }}>
 				{undefined}
 				<TransitionCell429 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell431 = function() {
+	let TransitionCell431 = function() {
 		return (
 			<div dataKey={'destination'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={92} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'destination'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 92 }}>
+					 columnKey={'destination'} height={32} rowIndex={0} style={{ height: 32, width: 92 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}></div>
@@ -3710,21 +3747,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell432 = function() {
+	let FixedDataTableCell432 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 92, 'left': 1920 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 92, left: 1920 }}>
 				{undefined}
 				<TransitionCell431 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell433 = function() {
+	let TransitionCell433 = function() {
 		return (
 			<div dataKey={'ad.creative.link_url'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={70} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'ad.creative.link_url'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 70 }}>
+					 columnKey={'ad.creative.link_url'} height={32} rowIndex={0} style={{ height: 32, width: 70 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>{'http://www.example.com/'}</div>
@@ -3732,21 +3769,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell434 = function() {
+	let FixedDataTableCell434 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 70, 'left': 2012 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 70, left: 2012 }}>
 				{undefined}
 				<TransitionCell433 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellDefault435 = function() {
+	let FixedDataTableCellDefault435 = function() {
 		return (
 			<div dataKey={'page'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={92} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } } columnKey={'page'}
-					 height={32} rowIndex={0} style={{ 'height': 32, 'width': 92 }}>
+					 height={32} rowIndex={0} style={{ height: 32, width: 92 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_4h2r'}></div>
@@ -3754,46 +3791,46 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell436 = function() {
+	let TransitionCell436 = function() {
 		return <FixedDataTableCellDefault435 />;
-	}
+	};
 
-	var FixedDataTableCell437 = function() {
+	let FixedDataTableCell437 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 92, 'left': 2082 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 92, left: 2082 }}>
 				{undefined}
 				<TransitionCell436 />
 			</div>
 		);
-	}
+	};
 
-	var Link438 = function() {
+	let Link438 = function() {
 		return <a href={'https://www.facebook.com/?demo_ad=98010048849345&h=AQA24w3temAtB-5f#pagelet_ego_pane'} target={'_blank'} rel={undefined} onClick={function () { } }>{'Preview Ad'}</a>;
-	}
+	};
 
-	var ReactImage439 = function() {
+	let ReactImage439 = function() {
 		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'}></i>;
-	}
+	};
 
-	var AdsPopoverLink440 = function() {
+	let AdsPopoverLink440 = function() {
 		return (
 			<span onMouseEnter={function () { } } onMouseLeave={function () { } }>
 				<span className={'_3o_j'}></span>
 				<ReactImage439 />
 			</span>
 		);
-	}
+	};
 
-	var AdsHelpLink441 = function() {
+	let AdsHelpLink441 = function() {
 		return <AdsPopoverLink440 />;
-	}
+	};
 
-	var TransitionCell442 = function() {
+	let TransitionCell442 = function() {
 		return (
 			<div dataKey={'ad.demolink_hash'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={100} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'ad.demolink_hash'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 100 }}>
+					 columnKey={'ad.demolink_hash'} height={32} rowIndex={0} style={{ height: 32, width: 100 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_4h2r'}>
@@ -3804,21 +3841,21 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell443 = function() {
+	let FixedDataTableCell443 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 100, 'left': 2174 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 100, left: 2174 }}>
 				{undefined}
 				<TransitionCell442 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionCell444 = function() {
+	let TransitionCell444 = function() {
 		return (
 			<div dataKey={'scrollbar_spacer'} className={'_4lgc _4h2u'} rowGetter={function () { } } width={25} columnData={{}} cellDataGetter={function () { } } cellRenderer={function () { } }
-					 columnKey={'scrollbar_spacer'} height={32} rowIndex={0} style={{ 'height': 32, 'width': 25 }}>
+					 columnKey={'scrollbar_spacer'} height={32} rowIndex={0} style={{ height: 32, width: 25 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}></div>
@@ -3826,20 +3863,20 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCell445 = function() {
+	let FixedDataTableCell445 = function() {
 		return (
-			<div className={'_4lg0 _4h2m'} style={{ 'height': 32, 'width': 25, 'left': 2274 }}>
+			<div className={'_4lg0 _4h2m'} style={{ height: 32, width: 25, left: 2274 }}>
 				{undefined}
 				<TransitionCell444 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroupImpl446 = function() {
+	let FixedDataTableCellGroupImpl446 = function() {
 		return (
-			<div className={'_3pzj'} style={{ 'height': 32, 'position': 'absolute', 'width': 2299, 'zIndex': 0, 'transform': 'translate3d(0px,0px,0)', 'backfaceVisibility': 'hidden' }}>
+			<div className={'_3pzj'} style={{ height: 32, position: 'absolute', width: 2299, zIndex: 0, transform: 'translate3d(0px,0px,0)', backfaceVisibility: 'hidden' }}>
 				<FixedDataTableCell387 key={'cell_0'}/>
 				<FixedDataTableCell389 key={'cell_1'}/>
 				<FixedDataTableCell391 key={'cell_2'}/>
@@ -3867,68 +3904,68 @@ function runBenchmark(container) {
 				<FixedDataTableCell445 key={'cell_24'}/>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableCellGroup447 = function() {
+	let FixedDataTableCellGroup447 = function() {
 		return (
-			<div style={{ 'height': 32, 'left': 521 }} className={'_3pzk'}>
+			<div style={{ height: 32, left: 521 }} className={'_3pzk'}>
 				<FixedDataTableCellGroupImpl446 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableRowImpl448 = function() {
+	let FixedDataTableRowImpl448 = function() {
 		return (
 			<div className={'_1gd4 _4li _52no _35m0 _35m1 _3c7k _4efq _4efs'} onClick={null} onDoubleClick={null} onMouseDown={function () { } } onMouseEnter={null} onMouseLeave={null}
-					 style={{ 'width': 1083, 'height': 32 }}>
+					 style={{ width: 1083, height: 32 }}>
 				<div className={'_1gd5'}>
 					<FixedDataTableCellGroup385 key={'fixed_cells'}/>
 					<FixedDataTableCellGroup447 key={'scrollable_cells'}/>
-					<div className={'_1gd6 _1gd8'} style={{ 'left': 521, 'height': 32 }}></div>
+					<div className={'_1gd6 _1gd8'} style={{ left: 521, height: 32 }}></div>
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableRow449 = function() {
+	let FixedDataTableRow449 = function() {
 		return (
-			<div style={{ 'width': 1083, 'height': 32, 'zIndex': 0, 'transform': 'translate3d(0px,0px,0)', 'backfaceVisibility': 'hidden' }} className={'_1gda'}>
+			<div style={{ width: 1083, height: 32, zIndex: 0, transform: 'translate3d(0px,0px,0)', backfaceVisibility: 'hidden' }} className={'_1gda'}>
 				<FixedDataTableRowImpl448 />
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTableBufferedRows450 = function() {
+	let FixedDataTableBufferedRows450 = function() {
 		return (
-			<div style={{ 'position': 'absolute', 'pointerEvents': 'auto', 'transform': 'translate3d(0px,65px,0)', 'backfaceVisibility': 'hidden' }}>
+			<div style={{ position: 'absolute', pointerEvents: 'auto', transform: 'translate3d(0px,65px,0)', backfaceVisibility: 'hidden' }}>
 				<FixedDataTableRow449 key={'0'}/>
 			</div>
 		);
-	}
+	};
 
-	var Scrollbar451 = function() {
+	let Scrollbar451 = function() {
 		return (
 			<div onFocus={function () { } } onBlur={function () { } } onKeyDown={function () { } } onMouseDown={function () { } } onWheel={function () { } } className={'_1t0r _1t0t _4jdr _1t0u'}
-					 style={{ 'width': 1083, 'zIndex': 99 }} tabIndex={0}>
-				<div style={{ 'width': 407.918085106383, 'transform': 'translate3d(4px,0px,0)', 'backfaceVisibility': 'hidden' }}></div>
+					 style={{ width: 1083, zIndex: 99 }} tabIndex={0}>
+				<div style={{ width: 407.918085106383, transform: 'translate3d(4px,0px,0)', backfaceVisibility: 'hidden' }}></div>
 			</div>
 		);
-	}
+	};
 
-	var HorizontalScrollbar452 = function() {
+	let HorizontalScrollbar452 = function() {
 		return (
-			<div className={'_3h1k _3h1m'} style={{ 'height': 15, 'width': 1083 }}>
-				<div style={{ 'height': 15, 'position': 'absolute', 'overflow': 'hidden', 'width': 1083, 'transform': 'translate3d(0px,0px,0)', 'backfaceVisibility': 'hidden' }}>
+			<div className={'_3h1k _3h1m'} style={{ height: 15, width: 1083 }}>
+				<div style={{ height: 15, position: 'absolute', overflow: 'hidden', width: 1083, transform: 'translate3d(0px,0px,0)', backfaceVisibility: 'hidden' }}>
 					<Scrollbar451 />
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FixedDataTable453 = function() {
+	let FixedDataTable453 = function() {
 		return (
-			<div className={'_3h1i _1mie'} onWheel={function () { } } style={{ 'height': 532, 'width': 1083 }}>
-				<div className={'_3h1j'} style={{ 'height': 515, 'width': 1083 }}>
+			<div className={'_3h1i _1mie'} onWheel={function () { } } style={{ height: 532, width: 1083 }}>
+				<div className={'_3h1j'} style={{ height: 515, width: 1083 }}>
 					<FixedDataTableColumnResizeHandle178 />
 					<FixedDataTableRow206 key={'group_header'}/>
 					<FixedDataTableRow360 key={'header'}/>
@@ -3941,37 +3978,37 @@ function runBenchmark(container) {
 				<HorizontalScrollbar452 />
 			</div>
 		);
-	}
+	};
 
-	var TransitionTable454 = function() {
+	let TransitionTable454 = function() {
 		return <FixedDataTable453 />;
-	}
+	};
 
-	var AdsSelectableFixedDataTable455 = function() {
+	let AdsSelectableFixedDataTable455 = function() {
 		return (
 			<div className={'_5hht'}>
 				<TransitionTable454 />
 			</div>
 		);
-	}
+	};
 
-	var AdsDataTableKeyboardSupportDecorator456 = function() {
+	let AdsDataTableKeyboardSupportDecorator456 = function() {
 		return (
 			<div onKeyDown={function () { } }>
 				<AdsSelectableFixedDataTable455 />
 			</div>
 		);
-	}
+	};
 
-	var AdsEditableDataTableDecorator457 = function() {
+	let AdsEditableDataTableDecorator457 = function() {
 		return (
 			<div onCopy={function () { } }>
 				<AdsDataTableKeyboardSupportDecorator456 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEDataTableContainer458 = function() {
+	let AdsPEDataTableContainer458 = function() {
 		return (
 			<div className={'_35l_'}>
 				{null}
@@ -3979,9 +4016,9 @@ function runBenchmark(container) {
 				<AdsEditableDataTableDecorator457 />
 			</div>
 		);
-	}
+	};
 
-	var ResponsiveBlock459 = function() {
+	let ResponsiveBlock459 = function() {
 		return (
 			<div onResize={function () { } } className={'_4u-c'}>
 				<AdsPEDataTableContainer458 />
@@ -3990,13 +4027,13 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var AdsPEAdTableContainer460 = function() {
+	let AdsPEAdTableContainer460 = function() {
 		return <ResponsiveBlock459 />;
-	}
+	};
 
-	var AdsPEManageAdsPaneContainer461 = function() {
+	let AdsPEManageAdsPaneContainer461 = function() {
 		return (
 			<div className={'_2utw'}>
 				{null}
@@ -4018,39 +4055,39 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var AdsPEContentContainer462 = function() {
+	let AdsPEContentContainer462 = function() {
 		return <AdsPEManageAdsPaneContainer461 />;
-	}
+	};
 
-	var FluxContainer_r_463 = function() {
+	let FluxContainer_r_463 = function() {
 		return (
-			<div className={'mainWrapper'} style={{ 'width': 1192 }}>
+			<div className={'mainWrapper'} style={{ width: 1192 }}>
 				<FluxContainer_r_69 />
 				<AdsPEContentContainer462 />
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var FluxContainer_q_464 = function() {
+	let FluxContainer_q_464 = function() {
 		return null;
-	}
+	};
 
-	var AdsPEUploadDialog465 = function() {
+	let AdsPEUploadDialog465 = function() {
 		return null;
-	}
+	};
 
-	var FluxContainer_y_466 = function() {
+	let FluxContainer_y_466 = function() {
 		return <AdsPEUploadDialog465 />;
-	}
+	};
 
-	var ReactImage467 = function() {
+	let ReactImage467 = function() {
 		return <i className={'_1-lx img sp_UuU9HmrQ397 sx_990b54'} src={null}></i>;
-	}
+	};
 
-	var AdsPESideTrayTabButton468 = function() {
+	let AdsPESideTrayTabButton468 = function() {
 		return (
 			<div onClick={function () { } } className={'_1-ly _59j9 _d9a'}>
 				<ReactImage467 />
@@ -4058,17 +4095,17 @@ function runBenchmark(container) {
 				<div className={'_vf8'}></div>
 			</div>
 		);
-	}
+	};
 
-	var AdsPEEditorTrayTabButton469 = function() {
+	let AdsPEEditorTrayTabButton469 = function() {
 		return <AdsPESideTrayTabButton468 />;
-	}
+	};
 
-	var ReactImage470 = function() {
+	let ReactImage470 = function() {
 		return <i className={'_1-lx img sp_UuU9HmrQ397 sx_94017f'} src={null}></i>;
-	}
+	};
 
-	var AdsPESideTrayTabButton471 = function() {
+	let AdsPESideTrayTabButton471 = function() {
 		return (
 			<div onClick={function () { } } className={' _1-lz _d9a'}>
 				<ReactImage470 />
@@ -4076,43 +4113,43 @@ function runBenchmark(container) {
 				<div className={'_vf8'}></div>
 			</div>
 		);
-	}
+	};
 
-	var AdsPEInsightsTrayTabButton472 = function() {
+	let AdsPEInsightsTrayTabButton472 = function() {
 		return <AdsPESideTrayTabButton471 />;
-	}
+	};
 
-	var AdsPESideTrayTabButton473 = function() {
+	let AdsPESideTrayTabButton473 = function() {
 		return null;
-	}
+	};
 
-	var AdsPENekoDebuggerTrayTabButton474 = function() {
+	let AdsPENekoDebuggerTrayTabButton474 = function() {
 		return <AdsPESideTrayTabButton473 />;
-	}
+	};
 
-	var FBDragHandle475 = function() {
-		return <div style={{ 'height': 550 }} className={'_4a2j _2ciy _2ciz'} horizontal={true} onStart={function () { } } onEnd={function () { } } onChange={function () { } }
+	let FBDragHandle475 = function() {
+		return <div style={{ height: 550 }} className={'_4a2j _2ciy _2ciz'} horizontal={true} onStart={function () { } } onEnd={function () { } } onChange={function () { } }
 								initialData={function () { } } vertical={false} throttle={25} delay={0} threshold={0} onMouseDown={function () { } } onMouseUp={function () { } }
 								onMouseLeave={function () { } }></div>;
-	}
+	};
 
-	var XUIText476 = function() {
+	let XUIText476 = function() {
 		return <span size={'large'} weight={'bold'} className={'_2x9f  _50f5 _50f7'} display={'inline'}>{'Editing Ad'}</span>;
-	}
+	};
 
-	var XUIText477 = function() {
+	let XUIText477 = function() {
 		return <span size={'large'} weight={'bold'} display={'inline'} className={' _50f5 _50f7'}>{'Test Ad'}</span>;
-	}
+	};
 
-	var AdsPEEditorChildLink478 = function() {
+	let AdsPEEditorChildLink478 = function() {
 		return null;
-	}
+	};
 
-	var AdsPEEditorChildLinkContainer479 = function() {
+	let AdsPEEditorChildLinkContainer479 = function() {
 		return <AdsPEEditorChildLink478 />;
-	}
+	};
 
-	var AdsPEHeaderSection480 = function() {
+	let AdsPEHeaderSection480 = function() {
 		return (
 			<div className={'_yke'}>
 				<div className={'_2x9d _pry'}></div>
@@ -4126,25 +4163,25 @@ function runBenchmark(container) {
 				<AdsPEEditorChildLinkContainer479 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEAdgroupHeaderSectionContainer481 = function() {
+	let AdsPEAdgroupHeaderSectionContainer481 = function() {
 		return <AdsPEHeaderSection480 />;
-	}
+	};
 
-	var AdsPEAdgroupDisapprovalMessage482 = function() {
+	let AdsPEAdgroupDisapprovalMessage482 = function() {
 		return null;
-	}
+	};
 
-	var FluxContainer_r_483 = function() {
+	let FluxContainer_r_483 = function() {
 		return <AdsPEAdgroupDisapprovalMessage482 />;
-	}
+	};
 
-	var AdsPEAdgroupAutoNamingConfirmationContainer484 = function() {
+	let AdsPEAdgroupAutoNamingConfirmationContainer484 = function() {
 		return null;
-	}
+	};
 
-	var AdsLabeledField485 = function() {
+	let AdsLabeledField485 = function() {
 		return (
 			<div className={'_5ir9 _3bvz'} label={'Ad Name'} labelSize={'small'}>
 				<label className={'_4el4 _3qwj _3hy-'} htmlFor={undefined}>
@@ -4156,14 +4193,14 @@ function runBenchmark(container) {
 				<div className={'_3bv-'}></div>
 			</div>
 		);
-	}
+	};
 
-	var ReactXUIError486 = function() {
+	let ReactXUIError486 = function() {
 		return (
 			<div className={'_5ira _2vl4 _1h18'}>
 				{null}
 				{null}
-				<div className={'_2vl9 _1h1f'} style={{ 'backgroundColor': '#fff' }}>
+				<div className={'_2vl9 _1h1f'} style={{ backgroundColor: '#fff' }}>
 					<div className={'_2vla _1h1g'}>
 						<div>
 							{null}
@@ -4176,29 +4213,29 @@ function runBenchmark(container) {
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var AdsTextInput487 = function() {
+	let AdsTextInput487 = function() {
 		return <ReactXUIError486 />;
-	}
+	};
 
-	var Link488 = function() {
+	let Link488 = function() {
 		return <a className={'_5ir9'} label={'Rename using available fields'} onMouseDown={function () { } } href={'#'} rel={undefined} onClick={function () { } }>{'Rename using available fields'}</a>;
-	}
+	};
 
-	var AdsAutoNamingTemplateDialog489 = function() {
+	let AdsAutoNamingTemplateDialog489 = function() {
 		return <Link488 />;
-	}
+	};
 
-	var AdsPEAmbientNUXMegaphone490 = function() {
+	let AdsPEAmbientNUXMegaphone490 = function() {
 		return (
 			<span >
 				<AdsAutoNamingTemplateDialog489 />
 			</span>
 		);
-	}
+	};
 
-	var AdsLabeledField491 = function() {
+	let AdsLabeledField491 = function() {
 		return (
 			<div className={'_5ir9 _3bvz'} label={'Status'} labelSize={'small'}>
 				<label className={'_4el4 _3qwj _3hy-'} htmlFor={undefined}>
@@ -4210,29 +4247,30 @@ function runBenchmark(container) {
 				<div className={'_3bv-'}></div>
 			</div>
 		);
-	}
+	};
 
-	var BUISwitch492 = function() {
+	let BUISwitch492 = function() {
 		return (
-			<div value={true} disabled={true} onToggle={function () { } } data-hover={'tooltip'} data-tooltip-position={'below'} aria-label={'Currently active and you can not deactivate it.'} animate={true}
-					 className={'_128j _128k _128m _128n'} role={'checkbox'} aria-checked={'true'}>
-				<div className={'_128o'} onClick={function () { } } onKeyDown={function () { } } onMouseDown={function () { } } tabIndex={'-1'}>
-					<div className={'_128p'}></div>
-				</div>
+			<div value={true} disabled={true} onToggle={function() {
+			} } data-hover={'tooltip'} data-tooltip-position={'below'} aria-label={'Currently active and you can not deactivate it.'} animate={true}
+				className={'_128j _128k _128m _128n'} role={'checkbox'} aria-checked={'true'}>
+			<div className={'_128o'} onClick={function () { } } onKeyDown={function () { } } onMouseDown={function () { } } tabIndex={'-1'}>
+				<div className={'_128p'}></div>
+			</div>
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var AdsStatusSwitchInternal493 = function() {
+	let AdsStatusSwitchInternal493 = function() {
 		return <BUISwitch492 />;
-	}
+	};
 
-	var AdsStatusSwitch494 = function() {
+	let AdsStatusSwitch494 = function() {
 		return <AdsStatusSwitchInternal493 />;
-	}
+	};
 
-	var LeftRight495 = function() {
+	let LeftRight495 = function() {
 		return (
 			<div className={'clearfix'}>
 				<div key={'left'} className={'_ohe lfloat'}>
@@ -4254,33 +4292,33 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var XUICard496 = function() {
+	let XUICard496 = function() {
 		return (
 			<div className={'_5ir8 _12k2 _4-u2  _4-u8'} xuiErrorPosition={'above'} background={'white'}>
 				<LeftRight495 />
 			</div>
 		);
-	}
+	};
 
-	var ReactXUIError497 = function() {
+	let ReactXUIError497 = function() {
 		return <XUICard496 />;
-	}
+	};
 
-	var AdsCard498 = function() {
+	let AdsCard498 = function() {
 		return <ReactXUIError497 />;
-	}
+	};
 
-	var AdsPENameSection499 = function() {
+	let AdsPENameSection499 = function() {
 		return <AdsCard498 />;
-	}
+	};
 
-	var AdsPEAdgroupNameSectionContainer500 = function() {
+	let AdsPEAdgroupNameSectionContainer500 = function() {
 		return <AdsPENameSection499 />;
-	}
+	};
 
-	var XUICardHeaderTitle501 = function() {
+	let XUICardHeaderTitle501 = function() {
 		return (
 			<span itemComponent={'span'} className={'_38my'}>
 				{'Ad Links'}
@@ -4288,9 +4326,9 @@ function runBenchmark(container) {
 				<span className={'_c1c'}></span>
 			</span>
 		);
-	}
+	};
 
-	var XUICardSection502 = function() {
+	let XUICardSection502 = function() {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
 				{[
@@ -4301,113 +4339,113 @@ function runBenchmark(container) {
 				<div className={'_3s3-'}></div>
 			</div>
 		);
-	}
+	};
 
-	var XUICardHeader503 = function() {
+	let XUICardHeader503 = function() {
 		return <XUICardSection502 />;
-	}
+	};
 
-	var AdsCardHeader504 = function() {
+	let AdsCardHeader504 = function() {
 		return <XUICardHeader503 />;
-	}
+	};
 
-	var XUIText505 = function() {
+	let XUIText505 = function() {
 		return <div className={'_502s'} display={'block'} size={'inherit'} weight={'inherit'}>{'Ad ID 98010048849345'}</div>;
-	}
+	};
 
-	var Link506 = function() {
+	let Link506 = function() {
 		return <a target={'_blank'} href={'/ads/manager/ad/?ids=98010048849345'} onClick={function () { } } rel={undefined}>{'Open in Ads Manager'}</a>;
-	}
+	};
 
-	var Link507 = function() {
+	let Link507 = function() {
 		return <a target={'_blank'} href={'#'} onClick={function () { } } rel={undefined}>{'Open in Ads Reporting'}</a>;
-	}
+	};
 
-	var Link508 = function() {
+	let Link508 = function() {
 		return <a target={'_blank'} href={'https://www.facebook.com/?demo_ad=98010048849345&h=AQA24w3temAtB-5f#pagelet_ego_pane'} onClick={function () { } }
 							rel={undefined}>{'View on Desktop Right Column'}</a>;
-	}
+	};
 
-	var Link509 = function() {
+	let Link509 = function() {
 		return <a target={'_blank'} href={'/ads/manage/powereditor/?act=10149999073643408&adgroup=98010048849345'} onClick={function () { } }
 							rel={undefined}>{'Open Power Editor with this ad selected'}</a>;
-	}
+	};
 
-	var List510 = function() {
+	let List510 = function() {
 		return (
 			<ul spacing={'small'} border={'none'} direction={'vertical'} valign={'top'} className={'uiList _4kg _6-i _6-h _704'}>
 				{null}
-				<li key={'/ads/manager/ad/?ids=98010048849345'}>
-					<Link506 />
-				</li>
-				<li key={'#'}>
-					<Link507 />
-				</li>
+			<li key={'/ads/manager/ad/?ids=98010048849345'}>
+				<Link506 />
+			</li>
+			<li key={'#'}>
+				<Link507 />
+			</li>
 				{null}
-				<li key={'https://www.facebook.com/?demo_ad=98010048849345&h=AQA24w3temAtB-5f#pagelet_ego_pane'}>
-					<Link508 />
-				</li>
+			<li key={'https://www.facebook.com/?demo_ad=98010048849345&h=AQA24w3temAtB-5f#pagelet_ego_pane'}>
+				<Link508 />
+			</li>
 				{null}
 				{null}
 				{null}
-				<li key={'/ads/manage/powereditor/?act=10149999073643408&adgroup=98010048849345'}>
-					<Link509 />
-				</li>
+			<li key={'/ads/manage/powereditor/?act=10149999073643408&adgroup=98010048849345'}>
+				<Link509 />
+			</li>
 				{null}
 			</ul>
 		);
-	}
+	};
 
-	var XUICardSection511 = function() {
+	let XUICardSection511 = function() {
 		return (
-			<div className={'_12jy _4-u3'} background={'transparent'}>
+		<div className={'_12jy _4-u3'} background={'transparent'}>
 				<div className={'_3-8j'}>
 					<XUIText505 />
-					<List510 />
-				</div>
-			</div>
+		<List510 />
+		</div>
+		</div>
 		);
-	}
+	};
 
-	var AdsCardSection512 = function() {
+	let AdsCardSection512 = function() {
 		return <XUICardSection511 />;
-	}
+	};
 
-	var XUICard513 = function() {
+	let XUICard513 = function() {
 		return (
 			<div xuiErrorPosition={'above'} className={'_12k2 _4-u2  _4-u8'} background={'white'}>
 				<AdsCardHeader504 />
 				<AdsCardSection512 />
 			</div>
 		);
-	}
+	};
 
-	var ReactXUIError514 = function() {
+	let ReactXUIError514 = function() {
 		return <XUICard513 />;
-	}
+	};
 
-	var AdsCard515 = function() {
+	let AdsCard515 = function() {
 		return <ReactXUIError514 />;
-	}
+	};
 
-	var AdsPELinkList516 = function() {
+	let AdsPELinkList516 = function() {
 		return <AdsCard515 />;
-	}
+	};
 
-	var AdsPEAdgroupLinksSection517 = function() {
+	let AdsPEAdgroupLinksSection517 = function() {
 		return <AdsPELinkList516 />;
-	}
+	};
 
-	var AdsPEAdgroupLinksSectionContainer518 = function() {
+	let AdsPEAdgroupLinksSectionContainer518 = function() {
 		return (
 			<div>
 				<AdsPEAdgroupLinksSection517 />
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var XUICardHeaderTitle519 = function() {
+	let XUICardHeaderTitle519 = function() {
 		return (
 			<span itemComponent={'span'} className={'_38my'}>
 				{'Preview'}
@@ -4415,9 +4453,9 @@ function runBenchmark(container) {
 				<span className={'_c1c'}></span>
 			</span>
 		);
-	}
+	};
 
-	var XUICardSection520 = function() {
+	let XUICardSection520 = function() {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
 				{[
@@ -4428,21 +4466,21 @@ function runBenchmark(container) {
 				<div className={'_3s3-'}></div>
 			</div>
 		);
-	}
+	};
 
-	var XUICardHeader521 = function() {
+	let XUICardHeader521 = function() {
 		return <XUICardSection520 />;
-	}
+	};
 
-	var AdsCardHeader522 = function() {
+	let AdsCardHeader522 = function() {
 		return <XUICardHeader521 />;
-	}
+	};
 
-	var PillButton523 = function() {
+	let PillButton523 = function() {
 		return <a label={null} selected={true} onClick={function () { } } href={'#'} className={'uiPillButton uiPillButtonSelected'}>{'Desktop Right Column'}</a>;
-	}
+	};
 
-	var List524 = function() {
+	let List524 = function() {
 		return (
 			<ul className={'uiList  _4ki _509- _6-i _6-h _704'} border={'none'} direction={'horizontal'} spacing={'small'} valign={'top'}>
 				<li key={'0/.$RIGHT_COLUMN_STANDARD'}>
@@ -4450,13 +4488,13 @@ function runBenchmark(container) {
 				</li>
 			</ul>
 		);
-	}
+	};
 
-	var PillList525 = function() {
+	let PillList525 = function() {
 		return <List524 />;
-	}
+	};
 
-	var XUICardSection526 = function() {
+	let XUICardSection526 = function() {
 		return (
 			<div background={'light-wash'} className={'_14p9 _12jy _4-u3  _57d8'}>
 				<div className={'_3-8j'}>
@@ -4464,29 +4502,29 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var AdsCardSection527 = function() {
+	let AdsCardSection527 = function() {
 		return <XUICardSection526 />;
-	}
+	};
 
-	var AdsPEPreviewPillList528 = function() {
+	let AdsPEPreviewPillList528 = function() {
 		return <AdsCardSection527 />;
-	}
+	};
 
-	var XUISpinner529 = function() {
+	let XUISpinner529 = function() {
 		return <span size={'large'} className={'hidden_elem img _55ym _55yq _55yo'} showOnAsync={false} background={'light'} aria-label={'Loading...'} aria-busy={true}/>;
-	}
+	};
 
-	var ReactImage530 = function() {
+	let ReactImage530 = function() {
 		return (
 			<i alt={'Warning'} className={'_585p img sp_R48dKBxiJkP sx_aed870'} src={null}>
 				<u>{'Warning'}</u>
 			</i>
 		);
-	}
+	};
 
-	var XUINotice531 = function() {
+	let XUINotice531 = function() {
 		return (
 			<div size={'medium'} className={'_585n _585o'}>
 				<ReactImage530 />
@@ -4494,9 +4532,9 @@ function runBenchmark(container) {
 				<div className={'_585r _50f4'}>{'Unable to display a preview for this ad.'}</div>
 			</div>
 		);
-	}
+	};
 
-	var AdPreview532 = function() {
+	let AdPreview532 = function() {
 		return (
 			<div className={'_2hm6'}>
 				<div className={undefined}>
@@ -4510,11 +4548,11 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var XUICardSection533 = function() {
+	let XUICardSection533 = function() {
 		return (
-			<div className={'_3m4g _12jy _4-u3'} style={{ 'maxHeight': '425px' }} background={'transparent'}>
+			<div className={'_3m4g _12jy _4-u3'} style={{ maxHeight: '425px' }} background={'transparent'}>
 				<div className={'_3-8j'}>
 					<div className={'_14p7'}>
 						<div className={'_14p8'}>
@@ -4524,13 +4562,13 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var AdsCardSection534 = function() {
+	let AdsCardSection534 = function() {
 		return <XUICardSection533 />;
-	}
+	};
 
-	var AdsPEPreview535 = function() {
+	let AdsPEPreview535 = function() {
 		return (
 			<div>
 				<AdsPEPreviewPillList528 />
@@ -4538,17 +4576,17 @@ function runBenchmark(container) {
 				<AdsCardSection534 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEStandardPreview536 = function() {
+	let AdsPEStandardPreview536 = function() {
 		return <AdsPEPreview535 />;
-	}
+	};
 
-	var AdsPEStandardPreviewContainer537 = function() {
+	let AdsPEStandardPreviewContainer537 = function() {
 		return <AdsPEStandardPreview536 />;
-	}
+	};
 
-	var XUICard538 = function() {
+	let XUICard538 = function() {
 		return (
 			<div xuiErrorPosition={'above'} className={'_12k2 _4-u2  _4-u8'} background={'white'}>
 				<AdsCardHeader522 />
@@ -4556,25 +4594,25 @@ function runBenchmark(container) {
 				<AdsPEStandardPreviewContainer537 />
 			</div>
 		);
-	}
+	};
 
-	var ReactXUIError539 = function() {
+	let ReactXUIError539 = function() {
 		return <XUICard538 />;
-	}
+	};
 
-	var AdsCard540 = function() {
+	let AdsCard540 = function() {
 		return <ReactXUIError539 />;
-	}
+	};
 
-	var AdsPEAdgroupPreviewSection541 = function() {
+	let AdsPEAdgroupPreviewSection541 = function() {
 		return <AdsCard540 />;
-	}
+	};
 
-	var AdsPEAdgroupPreviewSectionContainer542 = function() {
+	let AdsPEAdgroupPreviewSectionContainer542 = function() {
 		return <AdsPEAdgroupPreviewSection541 />;
-	}
+	};
 
-	var AdsPEStickyArea543 = function() {
+	let AdsPEStickyArea543 = function() {
 		return (
 			<div>
 				{null}
@@ -4583,9 +4621,9 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var XUICardHeaderTitle544 = function() {
+	let XUICardHeaderTitle544 = function() {
 		return (
 			<span itemComponent={'span'} className={'_38my'}>
 				{'Facebook Page'}
@@ -4593,9 +4631,9 @@ function runBenchmark(container) {
 				<span className={'_c1c'}></span>
 			</span>
 		);
-	}
+	};
 
-	var XUICardSection545 = function() {
+	let XUICardSection545 = function() {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
 				{[
@@ -4606,34 +4644,34 @@ function runBenchmark(container) {
 				<div className={'_3s3-'}></div>
 			</div>
 		);
-	}
+	};
 
-	var XUICardHeader546 = function() {
+	let XUICardHeader546 = function() {
 		return <XUICardSection545 />;
-	}
+	};
 
-	var AdsCardHeader547 = function() {
+	let AdsCardHeader547 = function() {
 		return <XUICardHeader546 />;
-	}
+	};
 
-	var Link548 = function() {
+	let Link548 = function() {
 		return <a className={'fwb'} onClick={function () { } } href={'#'} rel={undefined}>{'Connect a Facebook Page'}</a>;
-	}
+	};
 
-	var AdsPEWebsiteNoPageDestinationSection549 = function() {
+	let AdsPEWebsiteNoPageDestinationSection549 = function() {
 		return (
 			<div>
 				<div className={'_3-95'}>{'This ad is not connected to a Facebook Page. It will not show in News Feed.'}</div>
 				<Link548 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEWebsiteNoPageDestinationSectionContainer550 = function() {
+	let AdsPEWebsiteNoPageDestinationSectionContainer550 = function() {
 		return <AdsPEWebsiteNoPageDestinationSection549 />;
-	}
+	};
 
-	var XUICardSection551 = function() {
+	let XUICardSection551 = function() {
 		return (
 			<div className={'_12jy _4-u3'} background={'transparent'}>
 				<div className={'_3-8j'}>
@@ -4641,38 +4679,38 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var AdsCardSection552 = function() {
+	let AdsCardSection552 = function() {
 		return <XUICardSection551 />;
-	}
+	};
 
-	var XUICard553 = function() {
+	let XUICard553 = function() {
 		return (
 			<div xuiErrorPosition={'above'} className={'_12k2 _4-u2  _4-u8'} background={'white'}>
 				<AdsCardHeader547 />
 				<AdsCardSection552 />
 			</div>
 		);
-	}
+	};
 
-	var ReactXUIError554 = function() {
+	let ReactXUIError554 = function() {
 		return <XUICard553 />;
-	}
+	};
 
-	var AdsCard555 = function() {
+	let AdsCard555 = function() {
 		return <ReactXUIError554 />;
-	}
+	};
 
-	var AdsPEAdgroupDestinationSection556 = function() {
+	let AdsPEAdgroupDestinationSection556 = function() {
 		return <AdsCard555 />;
-	}
+	};
 
-	var AdsPEAdgroupDestinationSectionContainer557 = function() {
+	let AdsPEAdgroupDestinationSectionContainer557 = function() {
 		return <AdsPEAdgroupDestinationSection556 />;
-	}
+	};
 
-	var XUICardHeaderTitle558 = function() {
+	let XUICardHeaderTitle558 = function() {
 		return (
 			<span itemComponent={'span'} className={'_38my'}>
 				{'Creative'}
@@ -4680,9 +4718,9 @@ function runBenchmark(container) {
 				<span className={'_c1c'}/>
 			</span>
 		);
-	}
+	};
 
-	var XUICardSection559 = function() {
+	let XUICardSection559 = function() {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
 				{[
@@ -4693,34 +4731,34 @@ function runBenchmark(container) {
 				<div className={'_3s3-'}></div>
 			</div>
 		);
-	}
+	};
 
-	var XUICardHeader560 = function() {
+	let XUICardHeader560 = function() {
 		return <XUICardSection559 />;
-	}
+	};
 
-	var AdsCardHeader561 = function() {
+	let AdsCardHeader561 = function() {
 		return <XUICardHeader560 />;
-	}
+	};
 
-	var ReactImage562 = function() {
+	let ReactImage562 = function() {
 		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'}/>;
-	}
+	};
 
-	var AdsPopoverLink563 = function() {
+	let AdsPopoverLink563 = function() {
 		return (
 			<span onMouseEnter={function () { } } onMouseLeave={function () { } }>
 				<span className={'_3o_j'}/>
 				<ReactImage562 />
 			</span>
 		);
-	}
+	};
 
-	var AdsHelpLink564 = function() {
+	let AdsHelpLink564 = function() {
 		return <AdsPopoverLink563 />;
-	}
+	};
 
-	var AdsLabeledField565 = function() {
+	let AdsLabeledField565 = function() {
 		return (
 			<div htmlFor={undefined} label={'Website URL'} helpText={'Enter the website URL you want to promote. Ex: http://www.example.com/page'} helpLinger={undefined} optional={undefined}
 					 labelSize={'small'} className={'_3bvz'}>
@@ -4733,14 +4771,14 @@ function runBenchmark(container) {
 				<div className={'_3bv-'}></div>
 			</div>
 		);
-	}
+	};
 
-	var ReactXUIError566 = function() {
+	let ReactXUIError566 = function() {
 		return (
 			<div className={'_gon _2vl4 _1h18'}>
 				<div className={'_2vln'}>{1001}</div>
 				<AdsLabeledField565 />
-				<div className={'_2vl9 _1h1f'} style={{ 'backgroundColor': '#fff' }}>
+				<div className={'_2vl9 _1h1f'} style={{ backgroundColor: '#fff' }}>
 					<div className={'_2vla _1h1g'}>
 						<div>
 							{null}
@@ -4753,38 +4791,38 @@ function runBenchmark(container) {
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var AdsTextInput567 = function() {
+	let AdsTextInput567 = function() {
 		return <ReactXUIError566 />;
-	}
+	};
 
-	var AdsBulkTextInput568 = function() {
+	let AdsBulkTextInput568 = function() {
 		return <AdsTextInput567 />;
-	}
+	};
 
-	var AdsPEWebsiteURLField569 = function() {
+	let AdsPEWebsiteURLField569 = function() {
 		return <AdsBulkTextInput568 />;
-	}
+	};
 
-	var ReactImage570 = function() {
+	let ReactImage570 = function() {
 		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'}/>;
-	}
+	};
 
-	var AdsPopoverLink571 = function() {
+	let AdsPopoverLink571 = function() {
 		return (
 			<span onMouseEnter={function () { } } onMouseLeave={function () { } }>
 				<span className={'_3o_j'}/>
 				<ReactImage570 />
 			</span>
 		);
-	}
+	};
 
-	var AdsHelpLink572 = function() {
+	let AdsHelpLink572 = function() {
 		return <AdsPopoverLink571 />;
-	}
+	};
 
-	var AdsLabeledField573 = function() {
+	let AdsLabeledField573 = function() {
 		return (
 			<div htmlFor={undefined} label={'Headline'}
 					 helpText={'Your headline text will appear differently depending on the placement of your ad. Check the previews to make sure your headline looks the way you want in the placements it appears in.'}
@@ -4798,14 +4836,14 @@ function runBenchmark(container) {
 				<div className={'_3bv-'}></div>
 			</div>
 		);
-	}
+	};
 
-	var ReactXUIError574 = function() {
+	let ReactXUIError574 = function() {
 		return (
 			<div className={'_gon _2vl4 _1h18'}>
 				<div className={'_2vln'}>{18}</div>
 				<AdsLabeledField573 />
-				<div className={'_2vl9 _1h1f'} style={{ 'backgroundColor': '#fff' }}>
+				<div className={'_2vl9 _1h1f'} style={{ backgroundColor: '#fff' }}>
 					<div className={'_2vla _1h1g'}>
 						<div>
 							{null}
@@ -4818,21 +4856,21 @@ function runBenchmark(container) {
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var AdsTextInput575 = function() {
+	let AdsTextInput575 = function() {
 		return <ReactXUIError574 />;
-	}
+	};
 
-	var AdsBulkTextInput576 = function() {
+	let AdsBulkTextInput576 = function() {
 		return <AdsTextInput575 />;
-	}
+	};
 
-	var AdsPEHeadlineField577 = function() {
+	let AdsPEHeadlineField577 = function() {
 		return <AdsBulkTextInput576 />;
-	}
+	};
 
-	var AdsLabeledField578 = function() {
+	let AdsLabeledField578 = function() {
 		return (
 			<div htmlFor={undefined} label={'Text'} helpText={undefined} helpLinger={undefined} optional={undefined} labelSize={'small'} className={'_3bvz'}>
 				<label className={'_4el4 _3qwj _3hy-'} htmlFor={undefined}>
@@ -4844,14 +4882,14 @@ function runBenchmark(container) {
 				<div className={'_3bv-'}></div>
 			</div>
 		);
-	}
+	};
 
-	var ReactXUIError579 = function() {
+	let ReactXUIError579 = function() {
 		return (
 			<div className={'_gon _2vl4 _2vl6 _1h18 _1h1a'}>
 				<div className={'_2vln'}>{74}</div>
 				<AdsLabeledField578 />
-				<div className={'_2vl9 _1h1f'} style={{ 'backgroundColor': '#fff' }}>
+				<div className={'_2vl9 _1h1f'} style={{ backgroundColor: '#fff' }}>
 					<div className={'_2vla _1h1g'}>
 						<div>
 							{null}
@@ -4864,26 +4902,26 @@ function runBenchmark(container) {
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var AdsTextInput580 = function() {
+	let AdsTextInput580 = function() {
 		return <ReactXUIError579 />;
-	}
+	};
 
-	var AdsBulkTextInput581 = function() {
+	let AdsBulkTextInput581 = function() {
 		return <AdsTextInput580 />;
-	}
+	};
 
-	var AdsPEMessageField582 = function() {
+	let AdsPEMessageField582 = function() {
 		return (
 			<div>
 				<AdsBulkTextInput581 />
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var AbstractButton583 = function() {
+	let AbstractButton583 = function() {
 		return (
 			<button label={null} onClick={function () { } } size={'large'} use={'default'} borderShade={'light'} suppressed={false} className={'_4jy0 _4jy4 _517h _51sy _42ft'} type='submit' value={'1'}>
 				{undefined}
@@ -4891,33 +4929,33 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton584 = function() {
+	let XUIButton584 = function() {
 		return <AbstractButton583 />;
-	}
+	};
 
-	var BackgroundImage585 = function() {
+	let BackgroundImage585 = function() {
 		return (
 			<div src={'https://scontent.xx.fbcdn.net/hads-xap1/t45.1600-4/12124737_98010048849339_1665004369_n.png'} width={114.6} height={60} backgroundSize={'contain'} optimizeResizeSpeed={false}
-					 loadingIndicatorStyle={'none'} className={'_5f0d'} style={{ 'width': '114.6px', 'height': '60px' }} onContextMenu={undefined}>
-				<img alt={''} className={'_5i4g'} style={{ 'width': '90px', 'height': '60px', 'left': '12px', 'top': '0px' }}
+					 loadingIndicatorStyle={'none'} className={'_5f0d'} style={{ width: '114.6px', height: '60px' }} onContextMenu={undefined}>
+				<img alt={''} className={'_5i4g'} style={{ width: '90px', height: '60px', left: '12px', top: '0px' }}
 						 src={'https://scontent.xx.fbcdn.net/hads-xap1/t45.1600-4/12124737_98010048849339_1665004369_n.png'}/>
 				{undefined}
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var XUIText586 = function() {
+	let XUIText586 = function() {
 		return <span shade={'light'} className={'_50f8'} size={'inherit'} weight={'inherit'} display={'inline'}>{'1000 × 667'}</span>;
-	}
+	};
 
-	var XUIGrayText587 = function() {
+	let XUIGrayText587 = function() {
 		return <XUIText586 />;
-	}
+	};
 
-	var XUIText588 = function() {
+	let XUIText588 = function() {
 		return (
 			<div className={'_3-95  _50f7'} display={'block'} weight={'bold'} size={'inherit'}>
 				{'untitled – '}
@@ -4925,9 +4963,9 @@ function runBenchmark(container) {
 				{''}
 			</div>
 		);
-	}
+	};
 
-	var CenteredContainer589 = function() {
+	let CenteredContainer589 = function() {
 		return (
 			<div className={'_50vi'} horizontal={false} vertical={true} fullHeight={false}>
 				<div className={'_3bwv'}>
@@ -4940,13 +4978,13 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var Link590 = function() {
+	let Link590 = function() {
 		return <a href={'/business/ads-guide/'} target={'_blank'} rel={undefined} onClick={function () { } }>{'Facebook Ad Guidelines'}</a>;
-	}
+	};
 
-	var XUIText591 = function() {
+	let XUIText591 = function() {
 		return (
 			<div className={'_3-96'} display={'block'} size={'inherit'} weight={'inherit'}>
 				{'For questions and more information, see the '}
@@ -4954,9 +4992,9 @@ function runBenchmark(container) {
 				{'.'}
 			</div>
 		);
-	}
+	};
 
-	var AdsImageInput592 = function() {
+	let AdsImageInput592 = function() {
 		return (
 			<div>
 				<div>
@@ -4979,13 +5017,13 @@ function runBenchmark(container) {
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var AdsBulkImageInput593 = function() {
+	let AdsBulkImageInput593 = function() {
 		return <AdsImageInput592 />;
-	}
+	};
 
-	var AdsLabeledField594 = function() {
+	let AdsLabeledField594 = function() {
 		return (
 			<div className={'_3-96 _3bvz'} label={'Image'} labelSize={'small'}>
 				<label className={'_4el4 _3qwj _3hy-'} htmlFor={undefined}>
@@ -4999,17 +5037,17 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var AdsPEImageSelector595 = function() {
+	let AdsPEImageSelector595 = function() {
 		return <AdsLabeledField594 />;
-	}
+	};
 
-	var AdsPEImageSelectorContainer596 = function() {
+	let AdsPEImageSelectorContainer596 = function() {
 		return <AdsPEImageSelector595 />;
-	}
+	};
 
-	var AdsPEWebsiteNoPageCreative597 = function() {
+	let AdsPEWebsiteNoPageCreative597 = function() {
 		return (
 			<div>
 				<AdsPEWebsiteURLField569 />
@@ -5018,13 +5056,13 @@ function runBenchmark(container) {
 				<AdsPEImageSelectorContainer596 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEWebsiteNoPageCreativeContainer598 = function() {
+	let AdsPEWebsiteNoPageCreativeContainer598 = function() {
 		return <AdsPEWebsiteNoPageCreative597 />;
-	}
+	};
 
-	var XUICardSection599 = function() {
+	let XUICardSection599 = function() {
 		return (
 			<div className={'_12jy _4-u3'} background={'transparent'}>
 				<div className={'_3-8j'}>
@@ -5033,46 +5071,46 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var AdsCardSection600 = function() {
+	let AdsCardSection600 = function() {
 		return <XUICardSection599 />;
-	}
+	};
 
-	var XUICard601 = function() {
+	let XUICard601 = function() {
 		return (
 			<div xuiErrorPosition={'above'} className={'_12k2 _4-u2  _4-u8'} background={'white'}>
 				<AdsCardHeader561 />
 				<AdsCardSection600 />
 			</div>
 		);
-	}
+	};
 
-	var ReactXUIError602 = function() {
+	let ReactXUIError602 = function() {
 		return <XUICard601 />;
-	}
+	};
 
-	var AdsCard603 = function() {
+	let AdsCard603 = function() {
 		return <ReactXUIError602 />;
-	}
+	};
 
-	var AdsPEAdgroupCreativeSection604 = function() {
+	let AdsPEAdgroupCreativeSection604 = function() {
 		return <AdsCard603 />;
-	}
+	};
 
-	var AdsPEAdgroupCreativeSectionContainer605 = function() {
+	let AdsPEAdgroupCreativeSectionContainer605 = function() {
 		return <AdsPEAdgroupCreativeSection604 />;
-	}
+	};
 
-	var AdsPELeadGenFormSection606 = function() {
+	let AdsPELeadGenFormSection606 = function() {
 		return null;
-	}
+	};
 
-	var AdsPELeadGenFormContainer607 = function() {
+	let AdsPELeadGenFormContainer607 = function() {
 		return <AdsPELeadGenFormSection606 />;
-	}
+	};
 
-	var XUICardHeaderTitle608 = function() {
+	let XUICardHeaderTitle608 = function() {
 		return (
 			<span itemComponent={'span'} className={'_38my'}>
 					{'Tracking'}
@@ -5080,9 +5118,9 @@ function runBenchmark(container) {
 				<span className={'_c1c'}/>
 				</span>
 		);
-	}
+	};
 
-	var XUICardSection609 = function() {
+	let XUICardSection609 = function() {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
 				{[
@@ -5093,75 +5131,75 @@ function runBenchmark(container) {
 				<div className={'_3s3-'}></div>
 			</div>
 		);
-	}
+	};
 
-	var XUICardHeader610 = function() {
+	let XUICardHeader610 = function() {
 		return <XUICardSection609 />;
-	}
+	};
 
-	var AdsCardHeader611 = function() {
+	let AdsCardHeader611 = function() {
 		return <XUICardHeader610 />;
-	}
+	};
 
-	var XUIText612 = function() {
+	let XUIText612 = function() {
 		return <span weight={'bold'} className={'_3ga-  _50f7'} size={'inherit'} display={'inline'}>{'Conversion Tracking'}</span>;
-	}
+	};
 
-	var ReactImage613 = function() {
+	let ReactImage613 = function() {
 		return <i src={null} className={'_5s_w _541d img sp_R48dKBxiJkP sx_dc2cdb'}/>;
-	}
+	};
 
-	var AdsPopoverLink614 = function() {
+	let AdsPopoverLink614 = function() {
 		return (
 			<span onMouseEnter={function () { } } onMouseLeave={function () { } }>
 					<span className={'_3o_j'}/>
 					<ReactImage613 />
 				</span>
 		);
-	}
+	};
 
-	var AdsHelpLink615 = function() {
+	let AdsHelpLink615 = function() {
 		return <AdsPopoverLink614 />;
-	}
+	};
 
-	var AdsCFHelpLink616 = function() {
+	let AdsCFHelpLink616 = function() {
 		return <AdsHelpLink615 />;
-	}
+	};
 
-	var AdsPixelTrackingLabel617 = function() {
+	let AdsPixelTrackingLabel617 = function() {
 		return (
 			<div className={'_3gay'}>
 				<XUIText612 />
 				<AdsCFHelpLink616 />
 			</div>
 		);
-	}
+	};
 
-	var ReactImage618 = function() {
+	let ReactImage618 = function() {
 		return <i src={null} className={'img _8o _8r img sp_UuU9HmrQ397 sx_ad67ef'}/>;
-	}
+	};
 
-	var XUIText619 = function() {
+	let XUIText619 = function() {
 		return <div size={'medium'} weight={'bold'} shade={'medium'} display={'block'} className={'_3-8m  _c24  _50f4 _50f7'}>{'Facebook Pixel'}</div>;
-	}
+	};
 
-	var XUIGrayText620 = function() {
+	let XUIGrayText620 = function() {
 		return <XUIText619 />;
-	}
+	};
 
-	var XUIText621 = function() {
+	let XUIText621 = function() {
 		return <span size={'medium'} weight={'inherit'} display={'inline'} className={' _50f4'}>{'Learn More'}</span>;
-	}
+	};
 
-	var Link622 = function() {
+	let Link622 = function() {
 		return (
 			<a href={'/help/336923339852238'} target={'_blank'} rel={undefined} onClick={function () { } }>
 				<XUIText621 />
 			</a>
 		);
-	}
+	};
 
-	var XUIText623 = function() {
+	let XUIText623 = function() {
 		return (
 			<span shade={'medium'} size={'medium'} className={' _c24  _50f4'} weight={'inherit'} display={'inline'}>
 				{'You can now create one pixel for tracking, optimization and remarketing.'}
@@ -5170,13 +5208,13 @@ function runBenchmark(container) {
 				</span>
 			</span>
 		);
-	}
+	};
 
-	var XUIGrayText624 = function() {
+	let XUIGrayText624 = function() {
 		return <XUIText623 />;
-	}
+	};
 
-	var AbstractButton625 = function() {
+	let AbstractButton625 = function() {
 		return (
 			<button className={'_23ng _4jy0 _4jy4 _4jy1 _51sy selected _42ft'} label={null} onClick={function () { } } size={'large'} use={'confirm'} borderShade={'light'} suppressed={false} type='submit'
 							value={'1'}>
@@ -5185,17 +5223,17 @@ function runBenchmark(container) {
 				{undefined}
 			</button>
 		);
-	}
+	};
 
-	var XUIButton626 = function() {
+	let XUIButton626 = function() {
 		return <AbstractButton625 />;
-	}
+	};
 
-	var AdsPixelCreateButton627 = function() {
+	let AdsPixelCreateButton627 = function() {
 		return <XUIButton626 />;
-	}
+	};
 
-	var LeftRight628 = function() {
+	let LeftRight628 = function() {
 		return (
 			<div className={'_23nf clearfix'} direction={'left'}>
 				<div key={'left'} className={'_ohe lfloat'}>
@@ -5214,13 +5252,13 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var ImageBlock629 = function() {
+	let ImageBlock629 = function() {
 		return <LeftRight628 />;
-	}
+	};
 
-	var AdsPixelCreationCard630 = function() {
+	let AdsPixelCreationCard630 = function() {
 		return (
 			<div className={'_2pie'} horizontal={true}>
 				<div className={'_23ne _4fsl'}>
@@ -5228,17 +5266,17 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var AdsPixelTrackingSelector631 = function() {
+	let AdsPixelTrackingSelector631 = function() {
 		return (
 			<div className={'_3-8x _4fsk'}>
 				<AdsPixelCreationCard630 key={'FacebookPixelNUX'}/>
 			</div>
 		);
-	}
+	};
 
-	var AdsPixelTracking632 = function() {
+	let AdsPixelTracking632 = function() {
 		return (
 			<div className={undefined}>
 				<AdsPixelTrackingLabel617 />
@@ -5248,21 +5286,21 @@ function runBenchmark(container) {
 				<AdsPixelTrackingSelector631 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEPixelTracking633 = function() {
+	let AdsPEPixelTracking633 = function() {
 		return <AdsPixelTracking632 key={'tracking'}/>;
-	}
+	};
 
-	var AdsPEPixelTrackingContainer634 = function() {
+	let AdsPEPixelTrackingContainer634 = function() {
 		return <AdsPEPixelTracking633 />;
-	}
+	};
 
-	var AdsPEAdgroupAppTrackingSelectorContainer635 = function() {
+	let AdsPEAdgroupAppTrackingSelectorContainer635 = function() {
 		return null;
-	}
+	};
 
-	var AdsPEStandardTrackingSection636 = function() {
+	let AdsPEStandardTrackingSection636 = function() {
 		return (
 			<div>
 				{null}
@@ -5275,13 +5313,13 @@ function runBenchmark(container) {
 				{null}
 			</div>
 		);
-	}
+	};
 
-	var AdsPEStandardTrackingContainer637 = function() {
+	let AdsPEStandardTrackingContainer637 = function() {
 		return <AdsPEStandardTrackingSection636 />;
-	}
+	};
 
-	var XUICardSection638 = function() {
+	let XUICardSection638 = function() {
 		return (
 			<div className={'_12jy _4-u3'} background={'transparent'}>
 				<div className={'_3-8j'}>
@@ -5289,46 +5327,46 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var AdsCardSection639 = function() {
+	let AdsCardSection639 = function() {
 		return <XUICardSection638 />;
-	}
+	};
 
-	var XUICard640 = function() {
+	let XUICard640 = function() {
 		return (
 			<div xuiErrorPosition={'above'} className={'_12k2 _4-u2  _4-u8'} background={'white'}>
 				<AdsCardHeader611 />
 				<AdsCardSection639 />
 			</div>
 		);
-	}
+	};
 
-	var ReactXUIError641 = function() {
+	let ReactXUIError641 = function() {
 		return <XUICard640 />;
-	}
+	};
 
-	var AdsCard642 = function() {
+	let AdsCard642 = function() {
 		return <ReactXUIError641 />;
-	}
+	};
 
-	var AdsPEAdgroupTrackingSection643 = function() {
+	let AdsPEAdgroupTrackingSection643 = function() {
 		return <AdsCard642 />;
-	}
+	};
 
-	var AdsPEAdgroupTrackingSectionContainer644 = function() {
+	let AdsPEAdgroupTrackingSectionContainer644 = function() {
 		return <AdsPEAdgroupTrackingSection643 />;
-	}
+	};
 
-	var AdsPEAdgroupIOSection645 = function() {
+	let AdsPEAdgroupIOSection645 = function() {
 		return null;
-	}
+	};
 
-	var AdsPEAdgroupIOSectionContainer646 = function() {
+	let AdsPEAdgroupIOSectionContainer646 = function() {
 		return <AdsPEAdgroupIOSection645 />;
-	}
+	};
 
-	var LeftRight647 = function() {
+	let LeftRight647 = function() {
 		return (
 			<div flex={'left'} direction={'right'} className={'clearfix'}>
 				<div key={'right'} className={'_ohf rfloat'}>
@@ -5353,13 +5391,13 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FlexibleBlock648 = function() {
+	let FlexibleBlock648 = function() {
 		return <LeftRight647 />;
-	}
+	};
 
-	var AdsPEMultiColumnEditor649 = function() {
+	let AdsPEMultiColumnEditor649 = function() {
 		return (
 			<div className={'_2j_c _ykd'}>
 				<div>
@@ -5371,36 +5409,36 @@ function runBenchmark(container) {
 				<FlexibleBlock648 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEAdgroupEditor650 = function() {
+	let AdsPEAdgroupEditor650 = function() {
 		return (
 			<div>
 				<AdsPEAdgroupHeaderSectionContainer481 />
 				<AdsPEMultiColumnEditor649 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEAdgroupEditorContainer651 = function() {
+	let AdsPEAdgroupEditorContainer651 = function() {
 		return <AdsPEAdgroupEditor650 key={'98010048849345'}/>;
-	}
+	};
 
-	var AdsPESideTrayTabContent652 = function() {
+	let AdsPESideTrayTabContent652 = function() {
 		return (
 			<div className={'_1o_8 _44ra _5cyn'}>
 				<AdsPEAdgroupEditorContainer651 />
 			</div>
 		);
-	}
+	};
 
-	var AdsPEEditorTrayTabContent653 = function() {
+	let AdsPEEditorTrayTabContent653 = function() {
 		return <AdsPESideTrayTabContent652 />;
-	}
+	};
 
-	var AdsPEMultiTabDrawer654 = function() {
+	let AdsPEMultiTabDrawer654 = function() {
 		return (
-			<div style={{ 'height': 550, 'width': 1027 }} tabButtons={{}} tabContentPanes={{}} enableAnimation={true} showButton={true} className={'_2kev _2kew _2kex'}>
+			<div style={{ height: 550, width: 1027 }} tabButtons={{}} tabContentPanes={{}} enableAnimation={true} showButton={true} className={'_2kev _2kew _2kex'}>
 				<div className={'_2kf0'}>
 					<AdsPEEditorTrayTabButton469 key={'editor_tray_button'}/>
 					<AdsPEInsightsTrayTabButton472 key={'insights_tray_button'}/>
@@ -5413,62 +5451,62 @@ function runBenchmark(container) {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	var FluxContainer_x_655 = function() {
+	let FluxContainer_x_655 = function() {
 		return <AdsPEMultiTabDrawer654 />;
-	}
+	};
 
-	var AdsBugReportContainer656 = function() {
+	let AdsBugReportContainer656 = function() {
 		return null;
-	}
+	};
 
-	var AdsPEAudienceSplittingDialog657 = function() {
+	let AdsPEAudienceSplittingDialog657 = function() {
 		return null;
-	}
+	};
 
-	var AdsPEAudienceSplittingDialogContainer658 = function() {
+	let AdsPEAudienceSplittingDialogContainer658 = function() {
 		return (
 			<div>
 				<AdsPEAudienceSplittingDialog657 />
 			</div>
 		);
-	}
+	};
 
-	var FluxContainer_p_659 = function() {
+	let FluxContainer_p_659 = function() {
 		return null;
 	};
 
-	var AdsPECreateDialogContainer660 = function() {
+	let AdsPECreateDialogContainer660 = function() {
 		return null;
-	}
+	};
 
-	var AdsPEContainer661 = function() {
+	let AdsPEContainer661 = function() {
 		return (
 			<div id={'ads_pe_container'}>
 				{null}
 				<FluxContainer_ja_26 />
 				<FluxContainer_w_56 />
 				<FluxContainer_r_463 />
-				<FluxContainer_q_464 />
-				<FluxContainer_y_466 />
+			<FluxContainer_q_464 />
+			<FluxContainer_y_466 />
 				{null}
-				<FluxContainer_x_655 />
-				<AdsBugReportContainer656 />
+			<FluxContainer_x_655 />
+			<AdsBugReportContainer656 />
 				{null}
-				<AdsPEAudienceSplittingDialogContainer658 />
+			<AdsPEAudienceSplittingDialogContainer658 />
 				{null}
 				{null}
 				{null}
-				<FluxContainer_p_659 />
+			<FluxContainer_p_659 />
 				<AdsPECreateDialogContainer660 />
 			</div>
 		);
-	}
+	};
 
-	var Benchmark = function() {
+	let Benchmark = function() {
 		return <AdsPEContainer661 />;
-	}
+	};
 
 	render(<Benchmark />, container);
 }
@@ -5478,7 +5516,7 @@ describe('Benchmark - functionalComponent (JSX)', () => {
 
 	beforeEach(function() {
 		container = document.createElement('div');
-		document.body.appendChild(container)
+		document.body.appendChild(container);
 	});
 
 	afterEach(function() {
@@ -5487,6 +5525,6 @@ describe('Benchmark - functionalComponent (JSX)', () => {
 	});
 
 	it('Run the benchmark once', () => {
-		runBenchmark(container)
+		runBenchmark(container);
 	});
 });

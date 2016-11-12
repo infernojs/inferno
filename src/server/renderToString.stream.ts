@@ -48,7 +48,7 @@ export class RenderStream extends Readable {
 		if (isInvalid(vNode)) {
 			return;
 		} else {
-			const flags = vNode.flags; 
+			const flags = vNode.flags;
 
 			if (flags & VNodeFlags.Component) {
 				return this.renderComponent(vNode, isRoot, context, flags & VNodeFlags.ComponentClass);
@@ -126,12 +126,12 @@ export class RenderStream extends Readable {
 				} else {
 					if (child.flags & VNodeFlags.Text) {
 						if (insertComment) {
-							this.push('<!---->')
-						};
+							this.push('<!---->');
+						}
 						insertComment = true;
 					}
 					return this.renderNode(child, context, false)
-						.then(insertComment => {
+						.then(_insertComment => {
 							if (child.flags & VNodeFlags.Text) {
 								return true;
 							}
@@ -146,7 +146,7 @@ export class RenderStream extends Readable {
 		return Promise.resolve().then(insertComment => {
 			this.push(vNode.children);
 			return insertComment;
-		})
+		});
 	}
 
 	renderElement(vElement, isRoot, context) {

@@ -91,7 +91,7 @@ export function applyValue(vNode, dom, force) {
 	}
 	if (props.multiple !== dom.multiple) {
 		dom.multiple = props.multiple;
-	}	
+	}
 	if (isCheckedType(type)) {
 		if (!isNullOrUndef(value)) {
 			dom.value = value;

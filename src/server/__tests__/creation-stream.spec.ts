@@ -31,7 +31,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
 				return { hello: 'world' };
 			},
 			render() {
-				return createElement('a', null, this.context.hello)
+				return createElement('a', null, this.context.hello);
 			}
 		});
 		return streamPromise(createElement(TestComponent)).then(function (output) {

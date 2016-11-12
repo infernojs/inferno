@@ -43,26 +43,27 @@ describe('MobX inject()', () => {
 		render({ testStore }) {
 			return createElement('span', null, testStore);
 		}
-	};
+	}
 
 	/*it('should inject without second argument', () => {
 
-		class TestComponent extends Component<any, any> {
-			static defaultProps = { hello: 'world' };
-			render() {
-				return 'Test';
-			}
-		};
-		const tryInject = () => inject()(TestComponent);
-		console.log(createElement(tryInject));
-		//expect(tryInject).to.not.throw(Error);
-	});*/
+	 class TestComponent extends Component<any, any> {
+	 static defaultProps = { hello: 'world' };
+	 render() {
+	 return 'Test';
+	 }
+	 };
+	 const tryInject = () => inject()(TestComponent);
+	 console.log(createElement(tryInject));
+	 //expect(tryInject).to.not.throw(Error);
+	 });*/
 
 	it('should fail if store is not provided', () => {
 
 		function App() {
 			return createElement(Provider, null, createElement(inject('hello')(createElement('span'))));
 		}
+
 		expect(() => render(App(), container)).to.throw(Error, /is not available!/);
 	});
 
@@ -96,10 +97,11 @@ describe('MobX inject()', () => {
 			static defaultProps = {
 				world: 'world'
 			};
+
 			render({ hello, world }) {
 				return createElement('span', null, hello + ' ' + world);
 			}
-		};
+		}
 
 		function App() {
 			return createElement(Provider, {
