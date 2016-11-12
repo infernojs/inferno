@@ -147,25 +147,29 @@ function normaliseVNodes(nodes) {
     }
     return newNodes || nodes;
 }
-function createVNode(flags, type, props, children, key, ref, noNormalise) {
+function normalise(vNode) {
+    var props = vNode.props;
+    var children = vNode.children;
     if (props) {
         if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
-            children = props.children;
+            vNode.children = props.children;
         }
         if (props.ref) {
-            ref = props.ref;
+            vNode.ref = props.ref;
         }
         if (!isNullOrUndef(props.key)) {
-            key = props.key;
+            vNode.key = props.key;
         }
     }
-    if (!noNormalise && isArray(children)) {
-        children = normaliseVNodes(children);
+    if (isArray(children)) {
+        vNode.children = normaliseVNodes(children);
     }
+}
+function createVNode(flags, type, props, children, key, ref, noNormalise) {
     if (isNull(flags)) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
-    return {
+    var vNode = {
         children: isUndefined(children) ? null : children,
         dom: null,
         flags: flags || 0,
@@ -174,6 +178,10 @@ function createVNode(flags, type, props, children, key, ref, noNormalise) {
         ref: ref || null,
         type: type
     };
+    if (!noNormalise) {
+        normalise(vNode);
+    }
+    return vNode;
 }
 
 function createTextVNode(text) {

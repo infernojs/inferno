@@ -94,25 +94,31 @@ export function normaliseVNodes(nodes: any[]): VNode[] {
 	return newNodes || nodes as VNode[];
 }
 
-export function createVNode(flags, type?, props?, children?, key?, ref?, noNormalise?: boolean): VNode {
+function normalise(vNode) {
+	const props = vNode.props;
+	const children = vNode.children;
+
 	if (props) {
 		if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
-			children = props.children;
+			vNode.children = props.children;
 		}
 		if (props.ref) {
-			ref = props.ref;
+			vNode.ref = props.ref;
 		}
 		if (!isNullOrUndef(props.key)) {
-			key = props.key;
+			vNode.key = props.key;
 		}
 	}
-	if (!noNormalise && isArray(children)) {
-		children = normaliseVNodes(children)
+	if (isArray(children)) {
+		vNode.children = normaliseVNodes(children)
 	}
+}
+
+export function createVNode(flags, type?, props?, children?, key?, ref?, noNormalise?: boolean): VNode {
 	if (isNull(flags)) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
-	return {
+	const vNode = {
 		children: isUndefined(children) ? null : children,
 		dom: null,
 		flags: flags || 0,
@@ -121,6 +127,10 @@ export function createVNode(flags, type?, props?, children?, key?, ref?, noNorma
 		ref: ref || null,
 		type
 	};
+	if (!noNormalise) {
+		normalise(vNode);
+	}
+	return vNode;
 }
 
 export function createVoidVNode() {
