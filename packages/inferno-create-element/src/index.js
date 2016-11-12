@@ -1,3 +1,3 @@
-import createElement from '../../../src/factories/createElement';
+import createElement from '../../../build/factories/createElement';
 
 export default createElement;
