@@ -25,7 +25,7 @@ describe('SSR Creation (JSX)', () => {
 	}, {
 		description: 'should render a component with null children',
 		template: () => <div>{ null }<span>emptyValue: { null }</span></div>,
-		result: '<div><!--!--><span>emptyValue: <!--!--></span></div>'
+		result: '<div><span>emptyValue: </span></div>'
 	}, {
 		description: 'should render a stateless component with text',
 		template: () => <div>Hello world, { '1' }2{ '3' }</div>,
