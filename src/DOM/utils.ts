@@ -4,8 +4,6 @@ import {
 	isArray,
 	isNullOrUndef,
 	isInvalid,
-	// isStringOrNumber,
-	// isNull,
 	isUndefined,
 	throwError
 } from './../shared';
@@ -13,11 +11,9 @@ import {
 	unmount
 } from './unmounting';
 import {
-	// isVNode,
 	VNodeFlags,
 	createVoidVNode
 } from '../core/shapes';
-// import cloneVNode from '../factories/cloneVNode';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
 
@@ -175,43 +171,3 @@ export function isKeyed(lastChildren, nextChildren) {
 	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
-
-// function formSelectValueFindOptions(dom, value, isMap) {
-// 	let child = dom.firstChild;
-
-// 	while (child) {
-// 		const tagName = child.tagName;
-
-// 		if (tagName === 'OPTION') {
-// 			child.selected = !!((!isMap && child.value === value) || (isMap && value.get(child.value)));
-// 		} else if (tagName === 'OPTGROUP') {
-// 			formSelectValueFindOptions(child, value, isMap);
-// 		}
-// 		child = child.nextSibling;
-// 	}
-// }
-
-// export function formSelectValue(dom, value) {
-// 	let isMap = false;
-
-// 	if (!isNullOrUndef(value)) {
-// 		if (isArray(value)) {
-// 			// Map vs Object v using reduce here for perf?
-// 			value = value.reduce((o, v) => o.set(v, true), new Map());
-// 			isMap = true;
-// 		} else {
-// 			// convert to string
-// 			value = value + '';
-// 		}
-// 		formSelectValueFindOptions(dom, value, isMap);
-// 	}
-// }
-
-// export function resetFormInputProperties(dom) {
-// 	if (dom.checked) {
-// 		dom.checked = false;
-// 	}
-// 	if (dom.disabled) {
-// 		dom.disabled = false;
-// 	}
-// }

@@ -48,7 +48,6 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 	if (!shallowUnmount) {
 		let instanceHooks = null;
 
-		vNode.unmounted = true;
 		if (!isNullOrUndef(instance)) {
 			instanceHooks = instance.ref;
 			if (instance.render !== undefined) {

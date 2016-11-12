@@ -347,7 +347,6 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
     var instance = vNode.children;
     if (!shallowUnmount) {
         var instanceHooks = null;
-        vNode.unmounted = true;
         if (!isNullOrUndef(instance)) {
             instanceHooks = instance.ref;
             if (instance.render !== undefined) {
@@ -664,7 +663,7 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
             }
         }
         else {
-            if (lastFlags & (12 /* Component */ | 1986 /* Element */ | 1 /* Text */ | 2048 /* Void */)) {
+            if (lastFlags) {
                 replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
             }
             else {
@@ -786,10 +785,8 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
         }
     }
     else if (isVNode(lastChildren)) {
-        debugger;
     }
     else {
-        debugger;
     }
 }
 function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass) {
@@ -1488,40 +1485,6 @@ function isKeyed(lastChildren, nextChildren) {
     return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
         && lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
-// function formSelectValueFindOptions(dom, value, isMap) {
-// 	let child = dom.firstChild;
-// 	while (child) {
-// 		const tagName = child.tagName;
-// 		if (tagName === 'OPTION') {
-// 			child.selected = !!((!isMap && child.value === value) || (isMap && value.get(child.value)));
-// 		} else if (tagName === 'OPTGROUP') {
-// 			formSelectValueFindOptions(child, value, isMap);
-// 		}
-// 		child = child.nextSibling;
-// 	}
-// }
-// export function formSelectValue(dom, value) {
-// 	let isMap = false;
-// 	if (!isNullOrUndef(value)) {
-// 		if (isArray(value)) {
-// 			// Map vs Object v using reduce here for perf?
-// 			value = value.reduce((o, v) => o.set(v, true), new Map());
-// 			isMap = true;
-// 		} else {
-// 			// convert to string
-// 			value = value + '';
-// 		}
-// 		formSelectValueFindOptions(dom, value, isMap);
-// 	}
-// }
-// export function resetFormInputProperties(dom) {
-// 	if (dom.checked) {
-// 		dom.checked = false;
-// 	}
-// 	if (dom.disabled) {
-// 		dom.disabled = false;
-// 	}
-// }
 
 var devToolsStatus = {
     connected: false

@@ -117,7 +117,7 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 				replaceVNode(parentDom, mountVoid(nextVNode, null), lastVNode, lifecycle);
 			}
 		} else {
-			if (lastFlags & (VNodeFlags.Component | VNodeFlags.Element | VNodeFlags.Text | VNodeFlags.Void)) {
+			if (lastFlags) {
 				replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
 			} else {
 				if (process.env.NODE_ENV !== 'production') {
@@ -236,9 +236,9 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
 			mount(nextChildren, dom, lifecycle, context, isSVG);
 		}
 	} else if (isVNode(lastChildren)) {
-		debugger;
+		// debugger;
 	} else {
-		debugger;
+		// debugger;
 	}
 }
 

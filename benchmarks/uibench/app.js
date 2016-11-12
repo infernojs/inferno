@@ -28,7 +28,7 @@
 			if (n.container) {
 				children[i] = createVNode(1 << 3, TreeNode, n, null, n.id, shouldDataUpdate, true);
 			} else {
-				children[i] = createVNode(1 << 3, TreeLeaf, n.id, null, n.id, shouldDataUpdate);
+				children[i] = createVNode(1 << 3, TreeLeaf, n.id, null, n.id, shouldDataUpdate, true);
 			}
 		}
 		return createVNode(1 << 1 | 1 << 4, 'ul', treeNodeProps, children, null, null, true);
@@ -50,7 +50,7 @@
 		var style = 'border-radius:' + (time % 10) + 'px;' +
 			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')';
 
-		return createVNode(1 << 1, 'div', { className: 'AnimBox', style: style, 'data-id': data.id });
+		return createVNode(1 << 1, 'div', { className: 'AnimBox', style: style, 'data-id': data.id }, null, null, null, true);
 	}
 
 	var animProps = { className: 'Anim' };
