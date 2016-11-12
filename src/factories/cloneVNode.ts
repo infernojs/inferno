@@ -58,7 +58,7 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 		} else if (flags & VNodeFlags.Element) {
 			newVNode = createVNode(flags, vNodeToClone.type,
 				Object.assign({}, vNodeToClone.props, props),
-				(props && props.children) || children || vNodeToClone.children,
+				children || (props && props.children) || vNodeToClone.children,
 				vNodeToClone.key,
 				vNodeToClone.ref
 			);

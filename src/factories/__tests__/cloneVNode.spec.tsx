@@ -17,12 +17,6 @@ describe('cloneVNode (JSX)', () => {
 		expect(container.innerHTML).to.equal('<a></a>');
 	});
 
-	it('should clone an array', () => {
-		const node = cloneVNode([<a/>, <a/>], null);
-		render(node, container);
-		expect(container.innerHTML).to.equal('<a></a><a></a>');
-	});
-
 	it('should clone with third argument array', () => {
 		const node = cloneVNode(<div/>, null, [<span/>]);
 		render(node, container);

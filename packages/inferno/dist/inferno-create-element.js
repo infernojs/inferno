@@ -96,10 +96,10 @@ function cloneVNode(vNodeToClone, props) {
     else {
         var flags = vNodeToClone.flags;
         if (flags & 12 /* Component */) {
-            newVNode = createVNode(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, flags, vNodeToClone.key, vNodeToClone.ref);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref);
         }
         else if (flags & 1986 /* Element */) {
-            newVNode = createVNode(vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), (props && props.children) || children || vNodeToClone.children, flags, vNodeToClone.key, vNodeToClone.ref);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children || (props && props.children) || vNodeToClone.children, vNodeToClone.key, vNodeToClone.ref);
         }
     }
     newVNode.dom = null;
