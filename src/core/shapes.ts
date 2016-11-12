@@ -48,13 +48,13 @@ export interface VNode {
 	type: string | Function | null;
 }
 
-function _normaliseVNodes(nodes: any[], result: VNode[], i: number): void {
+function _normalizeVNodes(nodes: any[], result: VNode[], i: number): void {
 	for (; i < nodes.length; i++) {
 		let n = nodes[i];
 
 		if (!isInvalid(n)) {
 			if (Array.isArray(n)) {
-				_normaliseVNodes(n, result, 0);
+				_normalizeVNodes(n, result, 0);
 			} else {
 				if (isStringOrNumber(n)) {
 					n = createTextVNode(n);
@@ -67,7 +67,7 @@ function _normaliseVNodes(nodes: any[], result: VNode[], i: number): void {
 	}
 }
 
-export function normaliseVNodes(nodes: any[]): VNode[] {
+export function normalizeVNodes(nodes: any[]): VNode[] {
 	let newNodes;
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
@@ -75,7 +75,7 @@ export function normaliseVNodes(nodes: any[]): VNode[] {
 		if (isInvalid(n) || Array.isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
 
-			_normaliseVNodes(nodes, result, i);
+			_normalizeVNodes(nodes, result, i);
 			return result;
 		} else if (isStringOrNumber(n)) {
 			if (!newNodes) {
@@ -94,7 +94,7 @@ export function normaliseVNodes(nodes: any[]): VNode[] {
 	return newNodes || nodes as VNode[];
 }
 
-function normalise(vNode) {
+function normalize(vNode) {
 	const props = vNode.props;
 	const children = vNode.children;
 
@@ -110,7 +110,7 @@ function normalise(vNode) {
 		}
 	}
 	if (isArray(children)) {
-		vNode.children = normaliseVNodes(children)
+		vNode.children = normalizeVNodes(children)
 	}
 }
 
@@ -128,7 +128,7 @@ export function createVNode(flags, type?, props?, children?, key?, ref?, noNorma
 		type
 	};
 	if (!noNormalise) {
-		normalise(vNode);
+		normalize(vNode);
 	}
 	return vNode;
 }

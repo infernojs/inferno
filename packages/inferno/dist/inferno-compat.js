@@ -181,12 +181,12 @@ function cloneVNode(vNodeToClone, props) {
     return newVNode;
 }
 
-function _normaliseVNodes(nodes, result, i) {
+function _normalizeVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
         if (!isInvalid(n)) {
             if (Array.isArray(n)) {
-                _normaliseVNodes(n, result, 0);
+                _normalizeVNodes(n, result, 0);
             }
             else {
                 if (isStringOrNumber(n)) {
@@ -200,13 +200,13 @@ function _normaliseVNodes(nodes, result, i) {
         }
     }
 }
-function normaliseVNodes(nodes) {
+function normalizeVNodes(nodes) {
     var newNodes;
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
         if (isInvalid(n) || Array.isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
-            _normaliseVNodes(nodes, result, i);
+            _normalizeVNodes(nodes, result, i);
             return result;
         }
         else if (isStringOrNumber(n)) {
@@ -227,7 +227,7 @@ function normaliseVNodes(nodes) {
     }
     return newNodes || nodes;
 }
-function normalise(vNode) {
+function normalize(vNode) {
     var props = vNode.props;
     var children = vNode.children;
     if (props) {
@@ -242,7 +242,7 @@ function normalise(vNode) {
         }
     }
     if (isArray(children)) {
-        vNode.children = normaliseVNodes(children);
+        vNode.children = normalizeVNodes(children);
     }
 }
 function createVNode(flags, type, props, children, key, ref, noNormalise) {
@@ -259,7 +259,7 @@ function createVNode(flags, type, props, children, key, ref, noNormalise) {
         type: type
     };
     if (!noNormalise) {
-        normalise(vNode);
+        normalize(vNode);
     }
     return vNode;
 }
@@ -2298,7 +2298,11 @@ Component$1.prototype.afterRender = function() {
 };
 
 var cloneElement = cloneVNode;
-var version = '15.3.1';
+var version = '15.3.4';
+
+function normalizeProps(name, props) {
+
+}
 
 var createElement = function (name, _props) {
 	var children = [], len = arguments.length - 2;
@@ -2313,6 +2317,9 @@ var createElement = function (name, _props) {
 				this.refs[ref] = val;
 			}
 		}.bind(currentComponent || null);
+	}
+	if (typeof name === 'string') {
+		normalizeProps(name, props);
 	}
 	return createElement$1.apply(void 0, [ name, props ].concat( children ));
 };

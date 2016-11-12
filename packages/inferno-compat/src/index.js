@@ -50,7 +50,13 @@ Component.prototype.afterRender = function() {
 };
 
 const cloneElement = cloneVNode;
-const version = '15.3.1';
+const version = '15.3.4';
+
+function normalizeProps(name, props) {
+	if (nodeName === 'input') {
+		// TODO normalize onChnage
+	}
+}
 
 const createElement = (name, _props, ...children) => {
 	let props = _props || {};
@@ -62,6 +68,9 @@ const createElement = (name, _props, ...children) => {
 				this.refs[ref] = val;
 			}
 		}.bind(currentComponent || null);
+	}
+	if (typeof name === 'string') {
+		normalizeProps(name, props);
 	}
 	return infernoCreateElement(name, props, ...children);
 }

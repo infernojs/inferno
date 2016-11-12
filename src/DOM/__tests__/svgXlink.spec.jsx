@@ -4,7 +4,6 @@ import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('createTree - SVG (JSX)', () => {
-
 	let container;
 
 	beforeEach(() => {
