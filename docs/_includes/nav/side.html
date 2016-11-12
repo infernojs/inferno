@@ -1,7 +1,7 @@
 <nav class="side-nav">
   <a class="side-nav__legend" href="{{site.url}}">
-    <img src="{{site.url}}/static/img/inferno_icon.png">
-    <span class="inferno">Inferno</span> Docs
+    <img src="{{site.url}}/static/img/inferno.png">
+    <span class="inferno-docs">Docs</span>
   </a>
   <ul>
   {% for section in site.data.nav.side %}
@@ -11,9 +11,9 @@
     </div>
     <ul class="side-nav__list">
       {% for link in section.items %}
-      
+
       {% assign current = nil %}
-      
+
       {% if page.url == link.url %}
         {% assign current = 'active' %}
       {% endif %}

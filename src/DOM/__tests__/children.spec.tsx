@@ -1122,5 +1122,51 @@ describe('Children - (JSX)', () => {
 			render(<Nodes items={[1, 2, 3]} />, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>');
 		});
+
+		it('Should not crash when changing vragment to node', () => {
+			class Nodes extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				}
+
+				render() {
+					return [
+						<div>test</div>,
+						this.props.children,
+						<div>end</div>
+					];
+				}
+			}
+
+			class NodesB extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				}
+
+				render() {
+					return [
+						<div>test</div>,
+						this.props.children,
+						<div>end</div>
+					];
+				}
+			}
+
+			let items = [1];
+			render(<Nodes>{items.map((item) => <span key={item}>{item}</span>)}</Nodes>, container);
+			expect(container.innerHTML).to.equal('<div>test</div><span>1</span><div>end</div>');
+
+			items = [];
+			render(<NodesB>{items.map((item) => <span key={item}>{item}</span>)}</NodesB>, container);
+			expect(container.innerHTML).to.equal('<div>test</div><div>end</div>');
+
+			items = [1,2,3];
+			render(<Nodes>{items.map((item) => <span key={item}>{item}</span>)}</Nodes>, container);
+			expect(container.innerHTML).to.equal('<div>test</div><span>1</span><span>2</span><span>3</span><div>end</div>');
+
+			items = <div>foobar</div>;
+			render(<NodesB>{items}</NodesB>, container);
+			expect(container.innerHTML).to.equal('<div>test</div><div>foobar</div><div>end</div>');
+		});
 	});
 });

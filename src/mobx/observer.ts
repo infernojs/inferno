@@ -1,7 +1,8 @@
 import { isObservable, Reaction } from 'mobx';
 import { throwError } from '../shared';
-import { findDOMNode } from 'inferno';
+import { default as Inferno } from 'inferno';
 import EventEmitter from './EventEmitter';
+const { findDOMNode } = Inferno;
 
 /**
  * Dev tools support

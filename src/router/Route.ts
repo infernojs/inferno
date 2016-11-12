@@ -1,12 +1,16 @@
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
 
+interface IRouteHook {
+	(props?: any, router?: any): void
+}
+
 export interface IRouteProps {
 	params?: any;
-	onEnter?: any;
-	onLeave?: any;
+	onEnter?: IRouteHook;
+	onLeave?: IRouteHook;
 	children?: any;
-	component?: Component<any, any>;
+	component: Component<any, any>;
 }
 
 export default class Route extends Component<IRouteProps, any> {
@@ -16,20 +20,25 @@ export default class Route extends Component<IRouteProps, any> {
 
 	componentWillMount() {
 		const { onEnter } = this.props;
+		const { router } = this.context;
+
 		if (onEnter) {
-			onEnter(this.props, this.context.router);
+			setImmediate(() => {
+				onEnter({ props: this.props, router });
+			});
 		}
 	}
 
 	componentWillUnmount() {
 		const { onLeave } = this.props;
+		const { router } = this.context;
+
 		if (onLeave) {
-			onLeave(this.props, this.context);
+			onLeave({ props: this.props, router });
 		}
 	}
 
-	render() {
-		const { component, children, params } = this.props;
+	render({ component, children, params }) {
 		return createElement(component, {
 			params,
 			children

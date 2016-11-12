@@ -4,6 +4,7 @@ import {
 import {
 	render
 } from './../../DOM/rendering';
+import RouterContext from '../RouterContext';
 import Router from '../Router';
 import Route from '../Route';
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -42,7 +43,7 @@ describe('Router tests (jsx)', () => {
 
 	describe('with browser history', () => {
 		describe('and with no wrapper component', () => {
-			it('it should render the TestComponent with given paths', () => {
+			it('should render the TestComponent with given paths', () => {
 				render(
 					createRouterWithSingleRoute('/', '/', TestComponent),
 					container
@@ -67,7 +68,7 @@ describe('Router tests (jsx)', () => {
 				);
 				expect(container.innerHTML).to.equal('<div>Test!</div>');
 			});
-			it('it should render the TestComponent with given paths (and params)', () => {
+			it('should render the TestComponent with given paths (and params)', () => {
 				render(
 					createRouterWithSingleRoute('/foo', '/:test', TestComponentParams),
 					container
@@ -86,7 +87,7 @@ describe('Router tests (jsx)', () => {
 				);
 				expect(container.innerHTML).to.equal('<div>Test! yar</div>');
 			});
-			it('it should render the TestComponent with the highest ranked path', () => {
+			it('should render the TestComponent with the highest ranked path', () => {
 				render(
 					<Router url={ '/foo/bar/yar' } history={ browserHistory }>
 						<Route path={ '*' } component={ () => <div>Bad Component</div> } />
@@ -108,7 +109,7 @@ describe('Router tests (jsx)', () => {
 				);
 				expect(container.innerHTML).to.equal('<div>Good Component</div>');
 			});
-			it('it should render the correct nested route based on the path', () => {
+			it('should render the correct nested route based on the path', () => {
 				render(
 					<Router url={ '/foo/bar' } history={ browserHistory }>
 						<Route path={ '/foo' } component={ () => <div>Good Component</div> }>
@@ -141,7 +142,7 @@ describe('Router tests (jsx)', () => {
 				);
 				expect(container.innerHTML).to.equal('<div><div>Good Component</div></div>');
 			});
-			it('it should render the both components and both components should get the params prop passed down', () => {
+			it('should render the both components and both components should get the params prop passed down', () => {
 				render(
 					<Router url={ '/foo/bar' } history={ browserHistory }>
 						<Route component={ ({ children }) => <div>{ children }</div> }>
@@ -152,7 +153,7 @@ describe('Router tests (jsx)', () => {
 				);
 				expect(container.innerHTML).to.equal('<div><div>Param is bar</div></div>');
 			});
-			it('it should render the both components and both components should get the params prop passed down (route in an array)', () => {
+			it('should render the both components and both components should get the params prop passed down (route in an array)', () => {
 				render(
 					<Router url={ '/foo/bar' } history={ browserHistory }>
 						<Route component={ ({ children }) => <div>{ children }</div> }>
@@ -164,6 +165,28 @@ describe('Router tests (jsx)', () => {
 				);
 				expect(container.innerHTML).to.equal('<div><div>Param is bar</div></div>');
 			});
+			it('should fail on empty routes', () => {
+				expect(
+					() => render(<Router url={ '/foo/bar' } history={ browserHistory }/>, container)
+				).to.throw(TypeError);
+			});
+		});
+	});
+	describe('with RouterContext only', () => {
+		it('should fail when `location` is not provided', () => {
+			expect(
+				() => render(<RouterContext location={ null }/>, container)
+			).to.throw(TypeError);
+		});
+		it('should fail when `matched` or children are not provided', () => {
+			expect(
+				() => render(<RouterContext matched={ null }/>, container)
+			).to.throw(TypeError);
+		});
+		it('should display correctly when `matched` prop is provided', () => {
+			render(<RouterContext location='/' matched={ <TestComponent/> }/>, container);
+
+			expect(container.innerHTML).to.equal('<div>Test!</div>');
 		});
 	});
 });
