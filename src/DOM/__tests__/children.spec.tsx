@@ -4,7 +4,7 @@ import Component from './../../component/es2015';
 import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
-import sinon from 'sinon';
+import sinon from 'sinon-es';
 
 describe('Children - (JSX)', () => {
 	let container;

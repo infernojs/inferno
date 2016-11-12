@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
 import * as Inferno from '../../testUtils/inferno';
-import sinon from 'sinon';
+import sinon from 'sinon-es';
 Inferno; // suppress ts 'never used' error
 
 describe('Component lifecycle (JSX)', () => {

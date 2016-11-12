@@ -10,7 +10,7 @@ import {
 import {
 	spy,
 	stub
-} from 'sinon';
+} from 'sinon-es';
 
 describe('Utils - innerHTML', () => {
 	it('should return the correct innerHTML', () => {

@@ -1,9 +1,8 @@
 import { toArray, isArray } from '../shared';
 import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort } from './utils';
-import pathToRegExp0 from 'path-to-regexp';
+import pathToRegExp from 'path-to-regexp-es6';
 import { default as Inferno } from 'inferno';
 
-const pathToRegExp: any = pathToRegExp0;
 const cache: Map<string, IMatchRegex> = new Map();
 
 /**

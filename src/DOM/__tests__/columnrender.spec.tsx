@@ -5,7 +5,7 @@ import { isNullOrUndef } from '../../shared';
 import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
-import sinon from 'sinon';
+import sinon from 'sinon-es';
 
 describe('Columns like tests - (JSX)', () => {
 	let container;

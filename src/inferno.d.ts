@@ -65,14 +65,14 @@ declare module 'hoist-non-inferno-statics' {
 	export = hoistStatics;
 }
 
-declare module 'path-to-regexp' {
+declare module 'path-to-regexp-es6' {
 	function pathToRegExp(routePath: any, keys: any, end: any);
-	export = pathToRegExp;
+	export default pathToRegExp;
 }
 
-declare module 'concat-stream' {
+declare module 'concat-stream-es6' {
 	function concatStream(func?: any);
-	export = concatStream;
+	export default concatStream;
 }
 
 declare module 'history/createBrowserHistory' {
@@ -80,18 +80,36 @@ declare module 'history/createBrowserHistory' {
 	export = createBrowserHistory;
 }
 
-
 declare module 'history/createMemoryHistory' {
 	function createMemoryHistory(options?: any);
 	export = createMemoryHistory;
 }
 
-declare module 'sinon' {
+declare module 'mobx' {
+	export function toJS(value: any): any;
+	export function observable(value: any): any;
+	export function isObservable(value: any, property?: string): boolean;
+	export function extendObservable(...rest): any;
+	export class Reaction {
+		constructor(name?: string, onInvalidate?: any);
+		track(param: any): void;
+		runReaction();
+		getDisposer(): any;
+	}
+	export const extras: any;
+}
+
+declare module 'redux' {
+	export function createStore(callback: any): any;
+	export function bindActionCreators(actionCreators: any, dispatch: any): any;
+}
+
+declare module 'sinon-es' {
 	export function spy(obj: any, event: string): any;
 	export function stub(obj: any, event: string, callback: any): any;
 	export const assert;
 }
 
-declare module 'sinon.assert' {
+declare module 'sinon-es.assert' {
 	export function calledOnce(obj: any): any;
 }

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { streamAsStaticMarkup } from './../renderToString.stream';
-import concatStream = require('concat-stream');
+import concatStream from 'concat-stream-es6';
 import createElement from './../../factories/createElement';
 import createClass from './../../component/createClass';
 
