@@ -1,10 +1,10 @@
 import {
 	createVNode
-} from '../../../build/core/shapes';
-import cloneVNode from '../../../build/factories/cloneVNode';
-import { warning, NO_OP, isBrowser } from '../../../build/shared';
-import { render, findDOMNode, createRenderer } from '../../../build/DOM/rendering';
-import { disableRecycling } from '../../../build/DOM/recycling';
+} from '../../../src/core/shapes';
+import cloneVNode from '../../../src/factories/cloneVNode';
+import { warning, NO_OP, isBrowser } from '../../../src/shared';
+import { render, findDOMNode, createRenderer } from '../../../src/DOM/rendering';
+import { disableRecycling } from '../../../src/DOM/recycling';
 // import { initDevToolsHooks }  from '../../../src/DOM/devtools';
 
 if (isBrowser) {

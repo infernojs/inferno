@@ -1,3 +1,3 @@
-import Component from '../../../build/component/es2015';
+import Component from '../../../src/component/es2015';
 
 export default Component;
