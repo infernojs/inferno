@@ -8,10 +8,10 @@ import {
 import {
 	createVNode,
 	VNode,
-	VNodeFlags,
+	VNodeFlags
 } from '../core/shapes';
 
-const classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
+const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;
 
 function parseTag(tag, props) {
@@ -117,7 +117,7 @@ export default function hyperscript(_tag, _props?, _children?, _childrenType?): 
 		const flags = isStatefulComponent(tag) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 
 		if (children) {
-			props.children = children;
+			(props as any).children = children;
 		}
 		return createVNode(flags, tag, props, null, key, ref);
 	}
