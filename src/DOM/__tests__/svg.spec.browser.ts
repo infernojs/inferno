@@ -75,7 +75,7 @@ describe('SVG (non-jsx)', () => {
 
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		render(template(null), container);
+		render(template(), container);
 
 		template = () => createElement('svg', null, createElement('path'));
 
