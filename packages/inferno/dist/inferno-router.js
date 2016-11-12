@@ -4,8 +4,8 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-create-element'), require('./inferno-component'), require('path-to-regexp'), require('./inferno')) :
-	typeof define === 'function' && define.amd ? define(['inferno-create-element', 'inferno-component', 'path-to-regexp', 'inferno'], factory) :
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-create-element'), require('./inferno-component'), require('path-to-regexp-es6'), require('./inferno')) :
+	typeof define === 'function' && define.amd ? define(['inferno-create-element', 'inferno-component', 'path-to-regexp-es6', 'inferno'], factory) :
 	(global.InfernoRouter = factory(global.createElement,global.Component,global.pathToRegExp,global.Inferno));
 }(this, (function (createElement,Component,pathToRegExp,Inferno) { 'use strict';
 
@@ -59,17 +59,25 @@ var Route = (function (Component$$1) {
     Route.prototype = Object.create( Component$$1 && Component$$1.prototype );
     Route.prototype.constructor = Route;
     Route.prototype.componentWillMount = function componentWillMount () {
+        var this$1 = this;
+
         var ref = this.props;
         var onEnter = ref.onEnter;
+        var ref$1 = this.context;
+        var router = ref$1.router;
         if (onEnter) {
-            onEnter(this.props, this.context.router);
+            setImmediate(function () {
+                onEnter({ props: this$1.props, router: router });
+            });
         }
     };
     Route.prototype.componentWillUnmount = function componentWillUnmount () {
         var ref = this.props;
         var onLeave = ref.onLeave;
+        var ref$1 = this.context;
+        var router = ref$1.router;
         if (onLeave) {
-            onLeave(this.props, this.context);
+            onLeave({ props: this.props, router: router });
         }
     };
     Route.prototype.render = function render (ref) {
@@ -233,12 +241,9 @@ function matchRoutes(_routes, urlToMatch, lastPath) {
     if ( urlToMatch === void 0 ) urlToMatch = '/';
     if ( lastPath === void 0 ) lastPath = '/';
 
-    if (!Object.keys(_routes).length) {
-        return _routes;
-    }
     var routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
     var ref = urlToMatch.split('?');
-    var pathToMatch = ref[0];
+    var pathToMatch = ref[0]; if ( pathToMatch === void 0 ) pathToMatch = '/';
     var search = ref[1]; if ( search === void 0 ) search = '';
     var params = mapSearchParams(search);
     routes.sort(pathRankSort);
@@ -271,11 +276,10 @@ function matchRoutes(_routes, urlToMatch, lastPath) {
  * Converts path to a regex, if a match is found then we extract params from it
  * @param end
  * @param routePath
- * @param urlPath
- * @param parentParams
+ * @param pathToMatch
  * @returns {any}
  */
-function matchPath(end, routePath, urlPath, parentParams) {
+function matchPath(end, routePath, pathToMatch) {
     var key = routePath + "|" + end;
     var regexp = cache.get(key);
     if (!regexp) {
@@ -283,12 +287,12 @@ function matchPath(end, routePath, urlPath, parentParams) {
         regexp = { pattern: pathToRegExp(routePath, keys, { end: end }), keys: keys };
         cache.set(key, regexp);
     }
-    var m = regexp.pattern.exec(urlPath);
+    var m = regexp.pattern.exec(pathToMatch);
     if (!m) {
         return null;
     }
     var path = m[0];
-    var params = Object.assign({}, parentParams);
+    var params = Object.create(null);
     for (var i = 1; i < m.length; i += 1) {
         params[regexp.keys[i - 1].name] = decode(m[i]);
     }
@@ -302,11 +306,11 @@ var RouterContext = (function (Component$$1) {
     function RouterContext(props, context) {
         Component$$1.call(this, props, context);
         if (process.env.NODE_ENV !== 'production') {
-            if (!props.location) {
-                throw new ReferenceError('"inferno-router" requires a "location" prop passed');
+            if (!props.matched && !props.location) {
+                throw new TypeError('"inferno-router" requires a "location" prop passed');
             }
             if (!props.matched && !props.children) {
-                throw new ReferenceError('"inferno-router" requires a "matched" prop or "Route" components passed');
+                throw new TypeError('"inferno-router" requires a "matched" prop passed or "Route" children defined');
             }
         }
     }
@@ -343,13 +347,13 @@ var RouterContext = (function (Component$$1) {
 var Router = (function (Component$$1) {
     function Router(props, context) {
         Component$$1.call(this, props, context);
-        if (!props.history && !props.matched) {
-            throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed, or a matched Route');
+        if (!props.history) {
+            throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed');
         }
-        this._didRoute = false;
         this.router = props.history;
+        var location = this.router.location.pathname + this.router.location.search;
         this.state = {
-            url: props.url || (this.router.location.pathname + this.router.location.search)
+            url: props.url || (location !== 'blank' ? location : '/')
         };
     }
 
@@ -371,9 +375,7 @@ var Router = (function (Component$$1) {
         }
     };
     Router.prototype.routeTo = function routeTo (url) {
-        this._didRoute = false;
         this.setState({ url: url });
-        return this._didRoute;
     };
     Router.prototype.render = function render (ref) {
         var children = ref.children;

@@ -191,7 +191,7 @@ function isVNode(o) {
     return !!o.flags;
 }
 
-var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
+var classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 var notClassId = /^\.|#/;
 function parseTag(tag, props) {
     if (!tag) {
@@ -298,7 +298,7 @@ function hyperscript$1(_tag, _props, _children, _childrenType) {
     else {
         var flags$1 = isStatefulComponent(tag) ? 4 /* ComponentClass */ : 8;
         if (children) {
-            props['children'] = children;
+            props.children = children;
         }
         return createVNode(flags$1, tag, props, null, key, ref);
     }

@@ -1879,11 +1879,11 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
     var ref = vNode.ref;
     vNode.dom = dom;
     if (isClass) {
-        var isSVG$1 = dom.namespaceURI === svgNS;
-        var instance = createStatefulComponentInstance(type, props, context, isSVG$1, null);
+        var _isSVG = dom.namespaceURI === svgNS;
+        var instance = createStatefulComponentInstance(type, props, context, _isSVG, null);
         var input = instance._lastInput;
         instance._vComponent = vNode;
-        hydrate(input, dom, lifecycle, instance._childContext, isSVG$1);
+        hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
         componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
@@ -2301,7 +2301,9 @@ var cloneElement = cloneVNode;
 var version = '15.3.4';
 
 function normalizeProps(name, props) {
-
+	if (nodeName === 'input') {
+		// TODO normalize onChnage
+	}
 }
 
 var createElement = function (name, _props) {
@@ -2332,7 +2334,6 @@ var index = {
 	Component: Component$1,
 	unmountComponentAtNode: unmountComponentAtNode,
 	cloneElement: cloneElement,
-	PropTypes: PropTypes,
 	createClass: createClass,
 	findDOMNode: findDOMNode,
 	Children: Children,
@@ -2348,7 +2349,6 @@ exports.createElement = createElement;
 exports.Component = Component$1;
 exports.unmountComponentAtNode = unmountComponentAtNode;
 exports.cloneElement = cloneElement;
-exports.PropTypes = PropTypes;
 exports.createClass = createClass;
 exports.findDOMNode = findDOMNode;
 exports.Children = Children;

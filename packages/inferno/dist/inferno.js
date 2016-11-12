@@ -1733,11 +1733,11 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
     var ref = vNode.ref;
     vNode.dom = dom;
     if (isClass) {
-        var isSVG$1 = dom.namespaceURI === svgNS;
-        var instance = createStatefulComponentInstance(type, props, context, isSVG$1, null);
+        var _isSVG = dom.namespaceURI === svgNS;
+        var instance = createStatefulComponentInstance(type, props, context, _isSVG, null);
         var input = instance._lastInput;
         instance._vComponent = vNode;
-        hydrate(input, dom, lifecycle, instance._childContext, isSVG$1);
+        hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
         componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;

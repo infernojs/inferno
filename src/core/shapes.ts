@@ -110,7 +110,7 @@ function normalize(vNode) {
 		}
 	}
 	if (isArray(children)) {
-		vNode.children = normalizeVNodes(children)
+		vNode.children = normalizeVNodes(children);
 	}
 }
 

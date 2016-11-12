@@ -555,11 +555,10 @@ var RenderStream = (function (Readable$$1) {
                         if (insertComment) {
                             this$1.push('<!---->');
                         }
-                        
                         insertComment = true;
                     }
                     return this$1.renderNode(child, context, false)
-                        .then(function (insertComment) {
+                        .then(function (_insertComment) {
                         if (child.flags & 1 /* Text */) {
                             return true;
                         }
