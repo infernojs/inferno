@@ -82,7 +82,7 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 			}
 			return dom;
 		}
-	}	
+	}
 	const tag = vNode.type;
 	const flags = vNode.flags;
 
@@ -115,7 +115,7 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 	}
 	if (!isNull(ref)) {
 		mountRef(dom, ref, lifecycle);
-	}	
+	}
 	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
 	}

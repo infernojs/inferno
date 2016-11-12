@@ -50,11 +50,10 @@ describe('HyperScript (non-JSX)', () => {
 	it('Should handle a hooks example #1', () => {
 		const Component = ({ children }) => {
 			return h('div', children);
-		}
+		};
 		const ComponentHooks = () => h(Component, {
 			hooks: {
 				onComponentDidUnmount() {
-					console.log('onComponentDidUnmount');
 				},
 			},
 			children: 'Hello world!'
@@ -70,7 +69,6 @@ describe('HyperScript (non-JSX)', () => {
 	it('Should handle different props (key, class, id, ref, children)', () => {
 		const ComponentHooks = () => h('div#myId.test', {
 			onComponentDidMount() {
-				console.log('onComponentDidMount');
 			},
 			key: 'myKey',
 			ref: (c) => c,
@@ -95,7 +93,7 @@ describe('HyperScript (non-JSX)', () => {
 	});
 
 	it('Should handle tag with no tag name but id is present', () => {
-		const ComponentHooks = () => h('#myId',);
+		const ComponentHooks = () => h('#myId');
 		render(
 			h(ComponentHooks),
 			container

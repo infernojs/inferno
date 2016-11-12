@@ -57,12 +57,12 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 
 	vNode.dom = dom;
 	if (isClass) {
-		const isSVG = dom.namespaceURI === svgNS;
-		const instance = createStatefulComponentInstance(type, props, context, isSVG, null);
+		const _isSVG = dom.namespaceURI === svgNS;
+		const instance = createStatefulComponentInstance(type, props, context, _isSVG, null);
 		const input = instance._lastInput;
 
 		instance._vComponent = vNode;
-		hydrate(input, dom, lifecycle, instance._childContext, isSVG);
+		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
 		componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
@@ -86,7 +86,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 
 	if (isSVG || (flags & VNodeFlags.SvgElement)) {
 		isSVG = true;
-	}	
+	}
 	if (dom.tagName.toLowerCase() !== tag) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError(`hydrateElement() failed due to mismatch on DOM element tag name. Ensure server-side logic matches client side logic.`);

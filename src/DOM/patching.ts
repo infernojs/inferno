@@ -44,7 +44,7 @@ import {
 	strictProps,
 	namespaces
 } from './constants';
-import { 
+import {
 	VNodeFlags,
 	isVNode,
 	createVoidVNode,

@@ -5,8 +5,6 @@ import * as Inferno from '../../testUtils/inferno';
 import sinon from 'sinon-es';
 Inferno; // suppress ts 'never used' error
 
-
-
 describe('Stateful Component updates', () => {
 
 	let container;

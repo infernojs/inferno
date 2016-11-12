@@ -36,7 +36,7 @@ describe('Transition tests (jsx)', () => {
 
 		const TestHooksEnter = () => <div>...</div>;
 
-		//noinspection JSUnusedLocalSymbols
+		// noinspection JSUnusedLocalSymbols
 		function onEnter({ props, router }) {
 			router.push('/enter');
 			expect(typeof props).to.equal('object');
@@ -61,7 +61,7 @@ describe('Transition tests (jsx)', () => {
 			}
 		}
 
-		//noinspection JSUnusedLocalSymbols
+		// noinspection JSUnusedLocalSymbols
 		function onLeave({ props, router }) {
 			expect(typeof props).to.equal('object');
 			expect(typeof router).to.equal('object');
@@ -73,7 +73,6 @@ describe('Transition tests (jsx)', () => {
 			<Route path='/leave' component={ () => <div>onLeave</div> } />
 		</Router>, container);
 	});
-
 
 	it('should route correctly using context router object', () => {
 

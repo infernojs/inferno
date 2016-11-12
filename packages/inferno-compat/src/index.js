@@ -73,7 +73,7 @@ const createElement = (name, _props, ...children) => {
 		normalizeProps(name, props);
 	}
 	return infernoCreateElement(name, props, ...children);
-}
+};
 
 export {
 	createVNode,
@@ -83,7 +83,6 @@ export {
 	Component,
 	unmountComponentAtNode,
 	cloneElement,
-	PropTypes,
 	createClass,
 	findDOMNode,
 	Children,
@@ -100,7 +99,6 @@ export default {
 	Component,
 	unmountComponentAtNode,
 	cloneElement,
-	PropTypes,
 	createClass,
 	findDOMNode,
 	Children,
