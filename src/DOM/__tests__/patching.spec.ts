@@ -63,4 +63,37 @@ describe('patching routine', () => {
 		render(validNode, container);
 		expect(container.innerHTML).to.eql('<span>a</span>')
 	});
+
+	it('Patch operation when nextChildren is NOT Invalid/Array/StringOrNumber/VNode', () => {
+		const validNode = createVNode(
+			VNodeFlags.HtmlElement,
+			'span',
+			null,
+			createVNode(
+				VNodeFlags.HtmlElement,
+				'span',
+				null,
+				createTextVNode('a'),
+				null,
+				null,
+				false
+			),
+			null,
+			null,
+			false
+		);
+
+		const invalidChildNode = createVNode(
+			VNodeFlags.HtmlElement,
+			'span',
+			null,
+			createVNode(0, 'span'),
+			null,
+			null,
+			false
+		);
+
+		render(validNode, container);
+		render(invalidChildNode, container);
+	});
 });

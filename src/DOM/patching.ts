@@ -230,6 +230,7 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
 			mount(nextChildren, dom, lifecycle, context, isSVG);
 		}
 	} else if (isVNode(lastChildren)) {
+		// TODO: One test hits this line when passing invalid children what should be done?
 		// debugger;
 	} else {
 		// debugger;
