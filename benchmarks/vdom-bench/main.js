@@ -16,21 +16,9 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = {
-					bp: bp1,
-					dom: null,
-					key: n.key,
-					type: OPT_ELEMENT,
-					v0: renderTree(n.children)
-				};
+				children[i] = createVNode(34, 'div', null, renderTree(n.children), n.key, null, true);
 			} else {
-				children[i] = {
-					bp: bp2,
-					dom: null,
-					key: n.key,
-					type: OPT_ELEMENT,
-					v0: n.key
-				};
+				children[i] = createVNode(2, 'span', null, n.key, n.key, null, true);
 			}
 		}
 		return children;
@@ -51,27 +39,14 @@
 
 	BenchmarkImpl.prototype.render = function () {
 		Inferno.render(
-			createVNode(1 << 1,)
-			{
-				bp: bp1,
-				dom: null,
-				key: null,
-				type: OPT_ELEMENT,
-				v0: renderTree(this.a)
-			},
+			createVNode(34, 'div', null, renderTree(this.a), null, null, true),
 			this.container
 		);
 	};
 
 	BenchmarkImpl.prototype.update = function () {
 		Inferno.render(
-			{
-				bp: bp1,
-				dom: null,
-				key: null,
-				type: OPT_ELEMENT,
-				v0: renderTree(this.b)
-			},
+			createVNode(34, 'div', null, renderTree(this.b), null, null, true),
 			this.container
 		);
 	};
