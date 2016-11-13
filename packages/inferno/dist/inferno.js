@@ -110,10 +110,10 @@ function cloneVNode(vNodeToClone, props) {
     }
     else {
         var flags = vNodeToClone.flags;
-        if (flags & 12 /* Component */) {
+        if (flags & 28 /* Component */) {
             newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref);
         }
-        else if (flags & 1986 /* Element */) {
+        else if (flags & 3970 /* Element */) {
             newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children || (props && props.children) || vNodeToClone.children, vNodeToClone.key, vNodeToClone.ref);
         }
     }
@@ -186,7 +186,7 @@ function normalize(vNode) {
     }
 }
 function createVNode(flags, type, props, children, key, ref, noNormalise) {
-    if (isNull(flags)) {
+    if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
     var vNode = {
@@ -204,7 +204,7 @@ function createVNode(flags, type, props, children, key, ref, noNormalise) {
     return vNode;
 }
 function createVoidVNode() {
-    return createVNode(2048 /* Void */);
+    return createVNode(4096 /* Void */);
 }
 function createTextVNode(text) {
     return createVNode(1 /* Text */, null, null, text);
@@ -328,16 +328,16 @@ function poolComponent(vNode) {
 
 function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
     var flags = vNode.flags;
-    if (flags & 12 /* Component */) {
+    if (flags & 28 /* Component */) {
         unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
     }
-    else if (flags & 1986 /* Element */) {
+    else if (flags & 3970 /* Element */) {
         unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
     }
     else if (flags & 1 /* Text */) {
         unmountText(vNode, parentDom);
     }
-    else if (flags & 2048 /* Void */) {
+    else if (flags & 4096 /* Void */) {
         unmountVoid(vNode, parentDom);
     }
 }
@@ -623,13 +623,13 @@ function applyValue$2(vNode, dom) {
 
 var wrappers = new Map();
 function processElement(flags, vNode, dom) {
-    if (flags & 256 /* InputElement */) {
+    if (flags & 512 /* InputElement */) {
         processInput(vNode, dom);
     }
-    else if (flags & 1024 /* SelectElement */) {
+    else if (flags & 2048 /* SelectElement */) {
         processSelect(vNode, dom);
     }
-    else if (flags & 512 /* TextareaElement */) {
+    else if (flags & 1024 /* TextareaElement */) {
         processTextarea(vNode, dom);
     }
 }
@@ -642,16 +642,16 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
     if (lastVNode !== nextVNode) {
         var lastFlags = lastVNode.flags;
         var nextFlags = nextVNode.flags;
-        if (nextFlags & 12 /* Component */) {
-            if (lastFlags & 12 /* Component */) {
+        if (nextFlags & 28 /* Component */) {
+            if (lastFlags & 28 /* Component */) {
                 patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */);
             }
             else {
                 replaceVNode(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */), lastVNode, lifecycle);
             }
         }
-        else if (nextFlags & 1986 /* Element */) {
-            if (lastFlags & 1986 /* Element */) {
+        else if (nextFlags & 3970 /* Element */) {
+            if (lastFlags & 3970 /* Element */) {
                 patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
             }
             else {
@@ -666,8 +666,8 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
                 replaceVNode(parentDom, mountText(nextVNode, null), lastVNode, lifecycle);
             }
         }
-        else if (nextFlags & 2048 /* Void */) {
-            if (lastFlags & 2048 /* Void */) {
+        else if (nextFlags & 4096 /* Void */) {
+            if (lastFlags & 4096 /* Void */) {
                 patchVoid(lastVNode, nextVNode);
             }
             else {
@@ -715,7 +715,7 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
         var lastRef = lastVNode.ref;
         var nextRef = nextVNode.ref;
         nextVNode.dom = dom;
-        if (isSVG || (nextFlags & 64 /* SvgElement */)) {
+        if (isSVG || (nextFlags & 128 /* SvgElement */)) {
             isSVG = true;
         }
         if (lastChildren !== nextChildren) {
@@ -762,11 +762,11 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
         if (isArray(lastChildren)) {
             var patchKeyed = false;
             // check if we can do keyed updates
-            if ((lastFlags & 16 /* HasKeyedChildren */) &&
-                (nextFlags & 16 /* HasKeyedChildren */)) {
+            if ((lastFlags & 32 /* HasKeyedChildren */) &&
+                (nextFlags & 32 /* HasKeyedChildren */)) {
                 patchKeyed = true;
             }
-            else if (!(nextFlags & 32 /* HasNonKeyedChildren */)) {
+            else if (!(nextFlags & 64 /* HasNonKeyedChildren */)) {
                 if (isKeyed(lastChildren, nextChildren)) {
                     patchKeyed = true;
                 }
@@ -1404,7 +1404,7 @@ function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, 
 function replaceVNode(parentDom, dom, vNode, lifecycle) {
     var shallowUnmount = false;
     // we cannot cache nodeType here as vNode might be re-assigned below
-    if (vNode.flags & 12 /* Component */) {
+    if (vNode.flags & 28 /* Component */) {
         // if we are accessing a stateful or stateless component, we want to access their last rendered input
         // accessing their DOM node is not useful to us here
         unmount(vNode, null, lifecycle, false, false);
@@ -1532,13 +1532,13 @@ function sendRoots(global) {
 
 function mount(vNode, parentDom, lifecycle, context, isSVG) {
     var flags = vNode.flags;
-    if (flags & 1986 /* Element */) {
+    if (flags & 3970 /* Element */) {
         return mountElement(vNode, parentDom, lifecycle, context, isSVG);
     }
-    else if (flags & 12 /* Component */) {
+    else if (flags & 28 /* Component */) {
         return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & 4 /* ComponentClass */);
     }
-    else if (flags & 2048 /* Void */) {
+    else if (flags & 4096 /* Void */) {
         return mountVoid(vNode, parentDom);
     }
     else if (flags & 1 /* Text */) {
@@ -1579,7 +1579,7 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
     }
     var tag = vNode.type;
     var flags = vNode.flags;
-    if (isSVG || (flags & 64 /* SvgElement */)) {
+    if (isSVG || (flags & 128 /* SvgElement */)) {
         isSVG = true;
     }
     var dom = documentCreateElement(tag, isSVG);
@@ -1756,7 +1756,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     var props = vNode.props;
     var flags = vNode.flags;
     vNode.dom = dom;
-    if (isSVG || (flags & 64 /* SvgElement */)) {
+    if (isSVG || (flags & 128 /* SvgElement */)) {
         isSVG = true;
     }
     if (dom.tagName.toLowerCase() !== tag) {
@@ -1811,16 +1811,16 @@ function hydrate(vNode, dom, lifecycle, context, isSVG) {
         }
     }
     var flags = vNode.flags;
-    if (flags & 12 /* Component */) {
+    if (flags & 28 /* Component */) {
         return hydrateComponent(vNode, dom, lifecycle, context, isSVG, flags & 4 /* ComponentClass */);
     }
-    else if (flags & 1986 /* Element */) {
+    else if (flags & 3970 /* Element */) {
         return hydrateElement(vNode, dom, lifecycle, context, isSVG);
     }
     else if (flags & 1 /* Text */) {
         return hydrateText(vNode, dom);
     }
-    else if (flags & 2048 /* Void */) {
+    else if (flags & 4096 /* Void */) {
         return hydrateVoid(vNode, dom);
     }
     else {

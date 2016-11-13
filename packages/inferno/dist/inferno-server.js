@@ -153,10 +153,10 @@ function cloneVNode(vNodeToClone, props) {
     }
     else {
         var flags = vNodeToClone.flags;
-        if (flags & 12 /* Component */) {
+        if (flags & 28 /* Component */) {
             newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref);
         }
-        else if (flags & 1986 /* Element */) {
+        else if (flags & 3970 /* Element */) {
             newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children || (props && props.children) || vNodeToClone.children, vNodeToClone.key, vNodeToClone.ref);
         }
     }
@@ -229,7 +229,7 @@ function normalize(vNode) {
     }
 }
 function createVNode(flags, type, props, children, key, ref, noNormalise) {
-    if (isNull(flags)) {
+    if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
     var vNode = {
@@ -384,10 +384,10 @@ function renderTextToString(vNode, context, isRoot) {
 }
 function renderVNodeToString(vNode, context, isRoot) {
     var flags = vNode.flags;
-    if (flags & 12 /* Component */) {
+    if (flags & 28 /* Component */) {
         return renderComponentToString(vNode, isRoot, context, flags & 4 /* ComponentClass */);
     }
-    else if (flags & 1986 /* Element */) {
+    else if (flags & 3970 /* Element */) {
         return renderElementToString(vNode, isRoot, context);
     }
     else if (flags & 1 /* Text */) {
@@ -476,10 +476,10 @@ var RenderStream = (function (Readable$$1) {
         }
         else {
             var flags = vNode.flags;
-            if (flags & 12 /* Component */) {
+            if (flags & 28 /* Component */) {
                 return this.renderComponent(vNode, isRoot, context, flags & 4 /* ComponentClass */);
             }
-            else if (flags & 1986 /* Element */) {
+            else if (flags & 3970 /* Element */) {
                 return this.renderElement(vNode, isRoot, context);
             }
             else {

@@ -90,10 +90,10 @@ function cloneVNode(vNodeToClone, props) {
     }
     else {
         var flags = vNodeToClone.flags;
-        if (flags & 12 /* Component */) {
+        if (flags & 28 /* Component */) {
             newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref);
         }
-        else if (flags & 1986 /* Element */) {
+        else if (flags & 3970 /* Element */) {
             newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children || (props && props.children) || vNodeToClone.children, vNodeToClone.key, vNodeToClone.ref);
         }
     }
@@ -166,7 +166,7 @@ function normalize(vNode) {
     }
 }
 function createVNode(flags, type, props, children, key, ref, noNormalise) {
-    if (isNull(flags)) {
+    if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
     var vNode = {
@@ -280,16 +280,16 @@ function hyperscript$1(_tag, _props, _children, _childrenType) {
         var flags = 2;
         switch (tag) {
             case 'svg':
-                flags = 64 /* SvgElement */;
+                flags = 128 /* SvgElement */;
                 break;
             case 'input':
-                flags = 256 /* InputElement */;
+                flags = 512 /* InputElement */;
                 break;
             case 'textarea':
-                flags = 512 /* TextareaElement */;
+                flags = 1024 /* TextareaElement */;
                 break;
             case 'select':
-                flags = 1024 /* SelectElement */;
+                flags = 2048 /* SelectElement */;
                 break;
             default:
         }

@@ -116,10 +116,10 @@ function cloneVNode(vNodeToClone, props) {
     }
     else {
         var flags = vNodeToClone.flags;
-        if (flags & 12 /* Component */) {
+        if (flags & 28 /* Component */) {
             newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref);
         }
-        else if (flags & 1986 /* Element */) {
+        else if (flags & 3970 /* Element */) {
             newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children || (props && props.children) || vNodeToClone.children, vNodeToClone.key, vNodeToClone.ref);
         }
     }
@@ -192,7 +192,7 @@ function normalize(vNode) {
     }
 }
 function createVNode(flags, type, props, children, key, ref, noNormalise) {
-    if (isNull(flags)) {
+    if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
     var vNode = {
@@ -210,7 +210,7 @@ function createVNode(flags, type, props, children, key, ref, noNormalise) {
     return vNode;
 }
 function createVoidVNode() {
-    return createVNode(2048 /* Void */);
+    return createVNode(4096 /* Void */);
 }
 function createTextVNode(text) {
     return createVNode(1 /* Text */, null, null, text);
