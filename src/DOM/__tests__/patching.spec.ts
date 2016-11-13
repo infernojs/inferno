@@ -40,7 +40,6 @@ describe('patching routine', () => {
 		expect(container.innerHTML).to.eql('<span><span>a</span></span>');
 	});
 
-	// TODO: Try to make lastVNode have invalid flags
 	it('Should mount nextNode if lastNode crashed', () => {
 		const validNode = createVNode(
 			VNodeFlags.HtmlElement,
@@ -52,9 +51,8 @@ describe('patching routine', () => {
 			false
 		);
 		const invalidNode = createVNode(0, 'span');
-		debugger;
+
 		render(validNode, container);
-		debugger;
 		try {
 			render(invalidNode, container);
 		} catch (e) {

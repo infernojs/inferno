@@ -117,14 +117,8 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 				replaceVNode(parentDom, mountVoid(nextVNode, null), lastVNode, lifecycle);
 			}
 		} else {
-			if (lastFlags) {
-				replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
-			} else {
-				if (process.env.NODE_ENV !== 'production') {
-					throwError(`patch() expects a valid VNode, instead it received an object with the type "${ typeof nextVNode }".`);
-				}
-				throwError();
-			}
+			// Error case: mount new one replacing old one
+			replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
 		}
 	}
 }
