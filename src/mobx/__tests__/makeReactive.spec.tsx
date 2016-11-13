@@ -1,6 +1,6 @@
 import { observable, extendObservable, toJS } from 'mobx';
 import { expect } from 'chai';
-import observer from '../observer';
+import makeReactive from '../makeReactive';
 import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
 import * as Inferno from '../../testUtils/inferno';
@@ -24,13 +24,13 @@ describe('MobX Observer', () => {
 		render(null, container);
 	});
 
-	const TodoItem = observer(function({ todo }) {
+	const TodoItem = makeReactive(function({ todo }) {
 		return <li>{ todo }</li>;
 	});
 
 	let todoListRenderings = 0;
 	let todoListWillReactCount = 0;
-	const TodoList = observer(class extends Component<any, any> {
+	const TodoList = makeReactive(class extends Component<any, any> {
 		componentWillReact() {
 			todoListWillReactCount++;
 		}
@@ -58,7 +58,7 @@ describe('MobX Observer', () => {
 	});
 
 	it('should render a todo list with non observale item', () => {
-		const FlatList = observer(class extends Component<any, any> {
+		const FlatList = makeReactive(class extends Component<any, any> {
 			render({ extra }) {
 				return <div>{store.todos.map(title => <li>{ title }{ extra.test }</li>)}</div>;
 			}

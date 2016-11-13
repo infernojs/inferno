@@ -7,7 +7,7 @@ declare module 'inferno' {
 	export function createVPlaceholder(...rest);
 	export function createVComponent(type, props, key?, hooks?, ref?);
 	export function createVText(...rest);
-	export function cloneVNode(...rest);
+	export function cloneVNode(node, props?, ...children);
 	export function ValueTypes(...rest);
 	export function ChildrenTypes(...rest);
 	export function NodeTypes(...rest);
@@ -94,6 +94,7 @@ declare module 'mobx' {
 		constructor(name?: string, onInvalidate?: any);
 		track(param: any): void;
 		runReaction();
+		dispose();
 		getDisposer(): any;
 	}
 	export const extras: any;

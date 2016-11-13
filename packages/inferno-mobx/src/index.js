@@ -1,5 +1,5 @@
 import Provider from '../../../build/mobx/Provider';
-import {trackComponents, renderReporter, componentByNodeRegistery} from '../../../build/mobx/observer';
+import {trackComponents, renderReporter, componentByNodeRegistery} from '../../../build/mobx/makeReactive';
 import connect from '../../../build/mobx/connect';
 import inject from '../../../build/mobx/inject';
 

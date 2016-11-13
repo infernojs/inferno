@@ -6,13 +6,12 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-create-element'), require('./inferno-component'), require('path-to-regexp-es6'), require('./inferno')) :
 	typeof define === 'function' && define.amd ? define(['inferno-create-element', 'inferno-component', 'path-to-regexp-es6', 'inferno'], factory) :
-	(global.InfernoRouter = factory(global.createElement,global.Component,global.pathToRegExp,global.Inferno));
-}(this, (function (createElement,Component,pathToRegExp,Inferno) { 'use strict';
+	(global.InfernoRouter = factory(global.createElement,global.Component,global.pathToRegExp,global.inferno));
+}(this, (function (createElement,Component,pathToRegExp,inferno) { 'use strict';
 
 createElement = 'default' in createElement ? createElement['default'] : createElement;
 Component = 'default' in Component ? Component['default'] : Component;
 pathToRegExp = 'default' in pathToRegExp ? pathToRegExp['default'] : pathToRegExp;
-Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 
 function Link(props, ref) {
     var router = ref.router;
@@ -263,7 +262,7 @@ function matchRoutes(_routes, urlToMatch, lastPath) {
             }
             return {
                 location: location,
-                matched: Inferno.cloneVNode(route, {
+                matched: inferno.cloneVNode(route, {
                     children: children,
                     params: Object.assign(params, matchBase.params),
                     component: route.props.component
