@@ -12,7 +12,6 @@ import {
 import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
 import cloneVNode from '../factories/cloneVNode';
-// import { devToolsStatus, sendRoots } from './devtools';
 import { InfernoInput, VNode } from '../core/shapes';
 
 interface Root {

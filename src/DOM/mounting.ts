@@ -12,15 +12,12 @@ import {
 import {
 	setTextContent,
 	appendChild,
-// 	formSelectValue,
-// 	getPropFromOptElement,
 	createStatefulComponentInstance,
 	createStatelessComponentInput,
 	documentCreateElement,
 	copyPropsTo
 } from './utils';
 import {
-	// patchStyle,
 	patchProp
 } from './patching';
 import { componentToDOMNodeMap } from './rendering';

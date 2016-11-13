@@ -2,22 +2,18 @@ import {
 	isArray,
 	isInvalid,
 	throwError,
-	isObject,
-	// isNullOrUndef
+	isObject
 } from '../shared';
 import {
-	// normaliseChild,
 	createStatelessComponentInput,
 	createStatefulComponentInstance
 } from './utils';
 import {
 	mountStatelessComponentCallbacks,
-	mountStatefulComponentCallbacks,
-	// mountChildren
+	mountStatefulComponentCallbacks
 } from './mounting';
 import {
-	patchProp,
-	// patchStyle
+	patchProp
 } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
