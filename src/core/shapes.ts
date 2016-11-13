@@ -24,18 +24,19 @@ export const enum VNodeFlags {
 
 	ComponentClass = 1 << 2,
 	ComponentFunction = 1 << 3,
+	ComponentUnknown = 1 << 4,
 
-	HasKeyedChildren = 1 << 4,
-	HasNonKeyedChildren = 1 << 5,
+	HasKeyedChildren = 1 << 5,
+	HasNonKeyedChildren = 1 << 6,
 
-	SvgElement = 1 << 6,
-	MediaElement = 1 << 7,
-	InputElement = 1 << 8,
-	TextareaElement = 1 << 9,
-	SelectElement = 1 << 10,
-	Void = 1 << 11,
+	SvgElement = 1 << 7,
+	MediaElement = 1 << 8,
+	InputElement = 1 << 9,
+	TextareaElement = 1 << 10,
+	SelectElement = 1 << 11,
+	Void = 1 << 12,
 	Element = HtmlElement | SvgElement | MediaElement | InputElement | TextareaElement | SelectElement,
-	Component = ComponentFunction | ComponentClass
+	Component = ComponentFunction | ComponentClass | ComponentUnknown
 }
 
 export interface VNode {
@@ -115,7 +116,7 @@ function normalize(vNode) {
 }
 
 export function createVNode(flags, type?, props?, children?, key?, ref?, noNormalise?: boolean): VNode {
-	if (isNull(flags)) {
+	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
 	const vNode = {

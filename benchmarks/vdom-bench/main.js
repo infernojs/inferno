@@ -2,19 +2,11 @@
 	'use strict';
 
 	var benchmark = require('vdom-benchmark-base');
-	var ValueTypes = Inferno.ValueTypes;
-	var ChildrenTypes = Inferno.ChildrenTypes;
-	var bp = Inferno.createOptBlueprint;
-	var e = Inferno.createStaticVElement;
-	var NodeTypes = Inferno.NodeTypes;
 
 	var NAME = 'inferno';
-	var VERSION = '1.0.0-beta7';
+	var VERSION = '1.0.0-beta8';
 
-	var bp1 = bp(e('div'), ValueTypes.CHILDREN, ChildrenTypes.KEYED, null, null, null, null, null, null);
-	var bp2 = bp(e('span'), ValueTypes.CHILDREN, ChildrenTypes.TEXT, null, null, null, null, null, null);
-
-	var OPT_ELEMENT = NodeTypes.OPT_ELEMENT;
+	var createVNode = Inferno.createVNode;
 
 	function renderTree(nodes) {
 		var children = new Array(nodes.length);
@@ -50,15 +42,16 @@
 		this.b = b;
 	}
 
-	BenchmarkImpl.prototype.setUp = function() {
+	BenchmarkImpl.prototype.setUp = function () {
 	};
 
-	BenchmarkImpl.prototype.tearDown = function() {
+	BenchmarkImpl.prototype.tearDown = function () {
 		Inferno.render(null, this.container);
 	};
 
-	BenchmarkImpl.prototype.render = function() {
+	BenchmarkImpl.prototype.render = function () {
 		Inferno.render(
+			createVNode(1 << 1,)
 			{
 				bp: bp1,
 				dom: null,
@@ -70,7 +63,7 @@
 		);
 	};
 
-	BenchmarkImpl.prototype.update = function() {
+	BenchmarkImpl.prototype.update = function () {
 		Inferno.render(
 			{
 				bp: bp1,
@@ -83,7 +76,7 @@
 		);
 	};
 
-	document.addEventListener('DOMContentLoaded', function() {
+	document.addEventListener('DOMContentLoaded', function () {
 		benchmark(NAME, VERSION, BenchmarkImpl);
 	}, false);
 
