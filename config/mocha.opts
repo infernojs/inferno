@@ -7,5 +7,5 @@
 --timeout 15000
 
 src/**/*__tests__*/**/*.ts
-src/**/*__tests__*/**/*.jsx
 src/**/*__tests__*/**/*.tsx
+src/**/*__tests__*/**/*.jsx

@@ -2,10 +2,9 @@ const webpack = require('webpack');
 const glob = require('glob');
 const path = require('path');
 
-const testFiles = glob.sync('./src/**/*__tests__*/**/*spec.browser.ts')
-	.concat(glob.sync('./src/**/*__tests__*/**/*spec.tsx'))
-	.concat(glob.sync('./src/**/*__tests__*/**/*spec.ssr.ts'))
-	.concat(glob.sync('./src/**/*__tests__*/**/*spec.jsx'));
+const testFiles = glob.sync('./src/**/*__tests__*/**/*.ts')
+	.concat(glob.sync('./src/**/*__tests__*/**/*.tsx'))
+	.concat(glob.sync('./src/**/*__tests__*/**/*.jsx'));
 
 module.exports = {
 	watch: true,
