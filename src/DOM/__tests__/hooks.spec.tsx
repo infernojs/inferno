@@ -462,4 +462,89 @@ describe('Component lifecycle (JSX)', () => {
 		});
 	});
 
+	describe('ref hook', () => {
+		const fakeObj = {
+			outerCallback: function() {},
+			innerCallback: function () {},
+			innerSecondCallback: function () {}
+		};
+
+		const calledOnce = sinon.assert.calledOnce;
+		const notCalled = sinon.assert.notCalled;
+
+		const RefTester = ({inner, innersecond}) => {
+			let content = null;
+			if (inner) {
+				let contentTwo = null;
+				if (innersecond) {
+					contentTwo = <span ref={fakeObj.innerSecondCallback}>dfg</span>;
+				}
+				content = (
+					<div ref={fakeObj.innerCallback}>
+						{contentTwo}
+					</div>
+				)
+			}
+
+			return (
+				<div>
+					<span ref={fakeObj.outerCallback}>abc</span>
+					{content}
+				</div>
+			);
+		};
+		const spyOuter = sinon.spy(fakeObj, 'outerCallback');
+		const spyInner = sinon.spy(fakeObj, 'innerCallback');
+		const spyInnerSecond = sinon.spy(fakeObj, 'innerSecondCallback');
+
+		afterEach(() => {
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+		});
+
+		it('Should call function when node is attached', () => {
+			notCalled(spyOuter);
+			notCalled(spyInner);
+			notCalled(spyInnerSecond);
+			render(<RefTester inner={false} innersecond={false} />, container);
+
+			calledOnce(spyOuter);
+			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
+			notCalled(spyInner);
+			notCalled(spyInnerSecond);
+
+			render(<RefTester inner={true} innersecond={false} />, container);
+			calledOnce(spyInner);
+			calledOnce(spyOuter);
+			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div></div>');
+			notCalled(spyInnerSecond);
+
+
+
+			render(<RefTester inner={true} innersecond={true} />, container);
+			calledOnce(spyInner);
+			calledOnce(spyOuter);
+			calledOnce(spyInnerSecond);
+			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+		});
+
+		it('Should call ref functions in order: child to parent', () => {
+			notCalled(spyOuter);
+			notCalled(spyInner);
+			notCalled(spyInnerSecond);
+
+			render(<RefTester inner={true} innersecond={true} />, container);
+
+			calledOnce(spyOuter);
+			calledOnce(spyInner);
+			calledOnce(spyInnerSecond);
+			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
+			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+
+			spyInnerSecond.calledBefore(spyInner);
+			spyInner.calledBefore(spyOuter);
+		});
+	});
 });
