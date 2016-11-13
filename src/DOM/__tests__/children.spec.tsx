@@ -1211,5 +1211,92 @@ describe('Children - (JSX)', () => {
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
 		});
+
+		it('Should handle previous being empty array', () => {
+			const CollectionKeyed = ({children}) => (
+				<div hasKeyedChildren>
+					{children}
+				</div>
+			);
+
+			const child = [];
+			render(
+				<CollectionKeyed>
+					{child}
+				</CollectionKeyed>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div></div>');
+
+			render(
+				<CollectionKeyed>
+					<div key="1">1</div>
+					<div key="2">2</div>
+					<div key="3">3</div>
+				</CollectionKeyed>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
+		});
+
+		it('Should handle next being empty array', () => {
+			const CollectionKeyed = ({children}) => (
+				<div hasKeyedChildren>
+					{children}
+				</div>
+			);
+
+			render(
+				<CollectionKeyed>
+					<div key="1">1</div>
+					<div key="2">2</div>
+					<div key="3">3</div>
+				</CollectionKeyed>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
+
+			const child = [];
+			render(
+				<CollectionKeyed>
+					{child}
+				</CollectionKeyed>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div></div>');
+		});
+
+		it('Should handle last/next being empty', () => {
+			const CollectionKeyed = ({children}) => (
+				<div hasKeyedChildren>
+					{children}
+				</div>
+			);
+
+			const child = [];
+			render(
+				<CollectionKeyed>
+					{child}
+				</CollectionKeyed>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div></div>');
+
+			const childB = [];
+
+			render(
+				<CollectionKeyed>
+					{childB}
+				</CollectionKeyed>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div></div>');
+		});
 	});
 });

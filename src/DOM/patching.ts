@@ -51,12 +51,11 @@ import {
 	VNode
 } from '../core/shapes';
 import processElement from './wrappers/processElement';
-// import {
-// 	getIncrementalId,
-// 	componentIdMap
-// } from './devtools';
+import Lifecycle from "./lifecycle";
 
 export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+	// TODO: Our nodes are not immutable and hoisted nodes get cloned. Is there any possibility to make this check true
+	// TODO: Remove check or write test case to verify this behavior
 	if (lastVNode !== nextVNode) {
 		const lastFlags = lastVNode.flags;
 		const nextFlags = nextVNode.flags;
@@ -133,7 +132,7 @@ function unmountChildren(children, dom, lifecycle) {
 	}
 }
 
-export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node, lifecycle: Lifecycle, context, isSVG) {
 	const nextTag = nextVNode.type;
 	const lastTag = lastVNode.type;
 
@@ -410,9 +409,9 @@ export function patchKeyedChildren(
 	a: Array<VNode>,
 	b: Array<VNode>,
 	dom,
-	lifecycle,
+	lifecycle: Lifecycle,
 	context,
-	isSVG
+	isSVG: boolean
 ) {
 	let aLength = a.length;
 	let bLength = b.length;
@@ -438,9 +437,7 @@ export function patchKeyedChildren(
 		}
 		return;
 	} else if (bLength === 0) {
-		if (aLength !== 0) {
 			removeAllChildren(dom, a, lifecycle, false);
-		}
 		return;
 	}
 	// Step 1

@@ -780,11 +780,9 @@ function processElement(flags, vNode, dom) {
     }
 }
 
-// import {
-// 	getIncrementalId,
-// 	componentIdMap
-// } from './devtools';
 function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+    // TODO: Our nodes are not immutable and hoisted nodes get cloned. Is there any possibility to make this check true
+    // TODO: Remove check or write test case to verify this behavior
     if (lastVNode !== nextVNode) {
         var lastFlags = lastVNode.flags;
         var nextFlags = nextVNode.flags;
@@ -1112,9 +1110,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
         return;
     }
     else if (bLength === 0) {
-        if (aLength !== 0) {
-            removeAllChildren(dom, a, lifecycle, false);
-        }
+        removeAllChildren(dom, a, lifecycle, false);
         return;
     }
     // Step 1
