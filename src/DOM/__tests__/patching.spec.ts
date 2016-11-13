@@ -96,4 +96,11 @@ describe('patching routine', () => {
 		render(validNode, container);
 		render(invalidChildNode, container);
 	});
+
+	it('Should not access real DOM property when text does not change', () => {
+		render(createTextVNode('a'), container);
+		expect(container.innerHTML).to.eql('a');
+		render(createTextVNode('a'), container);
+		expect(container.innerHTML).to.eql('a');
+	});
 });

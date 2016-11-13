@@ -1048,6 +1048,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
                     nextHooks.onComponentDidUpdate(lastProps$1, nextProps);
                 }
+                nextVNode.dom = nextInput$2.dom;
             }
         }
     }
@@ -1057,7 +1058,7 @@ function patchText(lastVNode, nextVNode) {
     var nextText = nextVNode.children;
     var dom = lastVNode.dom;
     nextVNode.dom = dom;
-    if (lastVNode.text !== nextText) {
+    if (lastVNode.children !== nextText) {
         dom.nodeValue = nextText;
     }
 }

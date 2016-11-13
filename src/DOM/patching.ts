@@ -359,18 +359,20 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
 					nextHooks.onComponentDidUpdate(lastProps, nextProps);
 				}
+				nextVNode.dom = nextInput.dom;
 			}
 		}
 	}
 	return false;
 }
 
-export function patchText(lastVNode, nextVNode) {
-	const nextText = nextVNode.children;
+export function patchText(lastVNode: VNode, nextVNode: VNode) {
+	const nextText = nextVNode.children as string;
 	const dom = lastVNode.dom;
 
 	nextVNode.dom = dom;
-	if (lastVNode.text !== nextText) {
+
+	if (lastVNode.children !== nextText) {
 		dom.nodeValue = nextText;
 	}
 }
