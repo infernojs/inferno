@@ -104,7 +104,7 @@ declare module 'redux' {
 	export function bindActionCreators(actionCreators: any, dispatch: any): any;
 }
 
-declare module 'sinon-es' {
+declare module 'sinon' {
 	export function spy(obj: any, event: string): any;
 	export function stub(obj: any, event: string, callback: any): any;
 	export const assert;

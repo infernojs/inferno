@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import sinon from 'sinon-es';
+import sinon from 'sinon';
 import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
 import createElement from './../../factories/createElement';

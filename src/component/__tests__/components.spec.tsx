@@ -4,7 +4,7 @@ import Component from '../../component/es2015';
 import createElement from './../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
 import * as Inferno from '../../testUtils/inferno';
-import sinon from 'sinon-es';
+import sinon from 'sinon';
 Inferno; // suppress ts 'never used' error
 
 describe('Components (JSX)', () => {
