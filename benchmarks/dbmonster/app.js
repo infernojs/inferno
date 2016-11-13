@@ -6,130 +6,8 @@
 	perfMonitor.startMemMonitor();
 	perfMonitor.initProfiler('view update');
 
-	var staticNode = {
-		children: null,
-		dom: null,
-		flags: 1 << 1,
-		key: null,
-		props: {
-			className: 'arrow'
-		},
-		ref: null,
-		type: 'div'
-	};
-
-	function renderBenchmark(dbs) {
-		var length = dbs.length;
-		var databases = new Array(length);
-
-		for (var i = 0; i < length; i++) {
-			var db = dbs[i];
-			var lastSample = db.lastSample;
-			var children = new Array(7);
-
-			children[0] = {
-				children: db.dbname,
-				dom: null,
-				flags: 1 << 1,
-				key: null,
-				props: dbName,
-				ref: null,
-				type: 'td'
-			};
-			children[1] = {
-				children: {
-					children: lastSample.nbQueries + '',
-					dom: null,
-					flags: 1 << 1,
-					key: null,
-					props: {
-						className: lastSample.countClassName
-					},
-					ref: null,
-					type: 'span'
-				},
-				dom: null,
-				flags: 1 << 1,
-				key: null,
-				props: dbQueryCount,
-				ref: null,
-				type: 'td'
-			};
-
-			for (var i2 = 0; i2 < 5; i2++) {
-				var query = lastSample.topFiveQueries[i2];
-
-				children[i2 + 2] = {
-					children: [
-						{
-							children: query.formatElapsed,
-							dom: null,
-							flags: 1 << 1,
-							key: null,
-							props: foo,
-							ref: null,
-							type: 'div'
-						},
-						{
-							children: [
-								{
-									children: query.query,
-									dom: null,
-									flags: 1 << 1,
-									key: null,
-									props: popoverContent,
-									ref: null,
-									type: 'div'
-								},
-								staticNode
-							],
-							dom: null,
-							flags: 1 << 1,
-							key: null,
-							props: popoverLeft,
-							ref: null,
-							type: 'div'
-						}
-					],
-					dom: null,
-					flags: 1 << 1,
-					key: null,
-					props: {
-						className: query.elapsedClassName
-					},
-					ref: null,
-					type: 'td'
-				}
-				databases[i] = {
-					children: children,
-					dom: null,
-					flags: 1 << 1,
-					key: null,
-					props: null,
-					ref: null,
-					type: 'tr'
-				};
-		}
-
-		Inferno.render({
-			children: {
-				children: databases,
-				dom: null,
-				flags: 1 << 1,
-				key: null,
-				props: null,
-				ref: null,
-				type: 'tbody'
-			},
-			dom: null,
-			flags: 1 << 1,
-			key: null,
-			props: tableProps,
-			ref: null,
-			type: 'table'
-		}, elem);
-	}
-
+	var createVNode = Inferno.createVNode;
+	var staticNode = createVNode(2, 'div', { className: 'arrow' }, null, null, null, true);
 	var tableProps = {
 		className: 'table table-striped latest-data'
 	};
@@ -148,6 +26,41 @@
 	var popoverContent = {
 		className: 'popover-content'
 	};
+
+	function renderBenchmark(dbs) {
+		var length = dbs.length;
+		var databases = new Array(length);
+
+		for (var i = 0; i < length; i++) {
+			var db = dbs[i];
+			var lastSample = db.lastSample;
+			var children = new Array(7);
+
+			children[0] = createVNode(2, 'td', dbName, db.dbname, null, null, true);
+			children[1] = createVNode(2, 'td', dbQueryCount, createVNode(2, 'span', {
+				className: lastSample.countClassName
+			}, lastSample.nbQueries, null, null, true), null, null, true);
+
+			for (var i2 = 0; i2 < 5; i2++) {
+				var query = lastSample.topFiveQueries[i2];
+
+				children[i2 + 2] = createVNode(66, 'td', {
+					className: query.elapsedClassName
+				}, [
+					createVNode(2, 'div', foo, query.formatElapsed, null, null, true),
+					createVNode(66, 'div', popoverLeft, [
+						createVNode(2, 'div', popoverContent, query.query, null, null, true),
+						staticNode
+					], null, null, true)
+				], null, null, true);
+				databases[i] = createVNode(66, 'tr', null, children, null, null, true);
+			}
+		}
+
+		Inferno.render(
+			createVNode(2, 'table', tableProps, createVNode(66, 'tbody', null, databases, null, null, true), null, null, true),
+		elem);
+	}
 
 	function render() {
 		var dbs = ENV.generateData(false).toArray();
