@@ -5,7 +5,7 @@ node_js:
 
 # Use container-based Travis infrastructure.
 sudo: required
-dist: xenial
+dist: trusty
 
 env:
   - CXX=g++-4.8
