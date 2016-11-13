@@ -6,6 +6,6 @@
 --recursive
 --timeout 15000
 
-src/**/*__tests__*/**/*spec.ts
-src/**/*__tests__*/**/*spec.tsx
-src/**/*__tests__*/**/*spec.browser.ts
+src/**/*__tests__*/**/*.ts
+src/**/*__tests__*/**/*.jsx
+src/**/*__tests__*/**/*.tsx

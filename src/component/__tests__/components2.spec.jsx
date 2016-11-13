@@ -8,7 +8,7 @@ Inferno; // suppress ts 'never used' error
 import { ParentFirstCommon } from '../../../testdata/common-render/parentfirstcommon';
 import { ParentSecondCommon } from '../../../testdata/common-render/parentsecondcommon';
 
-describe('Components (JSX)', () => {
+describe('Components (JSX) #2', () => {
     let container;
     let Inner;
     let attachedListener = null;
