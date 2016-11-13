@@ -42,7 +42,7 @@ describe('patching routine', () => {
 
 	// TODO: Try to make lastVNode have invalid flags
 	it('Should mount nextNode if lastNode crashed', () => {
-		const nextNode = createVNode(
+		const validNode = createVNode(
 			VNodeFlags.HtmlElement,
 			'span',
 			null,
@@ -51,17 +51,18 @@ describe('patching routine', () => {
 			null,
 			false
 		);
-		const lastNode = createVNode(0, 'span');
-
+		const invalidNode = createVNode(0, 'span');
+		debugger;
+		render(validNode, container);
 		debugger;
 		try {
-			render(lastNode, container);
+			render(invalidNode, container);
 		} catch (e) {
 			expect(e.message).to.eql('Inferno Error: mount() expects a valid VNode, instead it received an object with the type "object".');
 		}
-		expect(container.innerHTML).to.eql('');
-		debugger;
-		render(nextNode, container);
+		expect(container.innerHTML).to.eql('<span>a</span>');
+
+		render(validNode, container);
 		expect(container.innerHTML).to.eql('<span>a</span>')
 	});
 });
