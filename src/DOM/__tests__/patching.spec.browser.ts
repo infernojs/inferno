@@ -45,8 +45,12 @@ describe('patching keyed lists (non-jsx)', () => {
 			if (n.children !== null) {
 				e = document.createElement('div');
 				render(n.children, e);
-
-				return e.children;
+				// This code is here to make typescript happy... lol
+				for (let a = 0; a < e.children.length; a++) {
+					children.push(e.children[a]);
+				}
+				// We could just return e.children, but that conflicts with typescript types...
+				return children;
 			} else {
 				e = document.createElement('span');
 				e.textContent = n.key.toString();
