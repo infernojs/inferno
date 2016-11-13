@@ -1123,4 +1123,93 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>');
 		});
 	});
+
+	describe('Forced keyed children', () => {
+		it('Should always go keyed algorithm when parent has hasKeyedChildren', () => {
+			const Collection = ({children}) => (
+				<div hasKeyedChildren>
+					{children}
+				</div>
+			);
+
+			render(
+				<Collection>
+					<div key="1">1</div>
+					<div key="2">2</div>
+					<div key="3">3</div>
+				</Collection>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
+
+			render(
+				<Collection>
+					<div key="3">3</div>
+					<div key="2">2</div>
+					<div key="1">1</div>
+				</Collection>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>1</div></div>');
+
+			render(
+				<Collection>
+					<div key="3">3</div>
+					<div key="2">2</div>
+					<div key="11">11</div>
+				</Collection>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
+		});
+
+		it('Should be able to swap from keyed to nonkeyed when nextNode no longer is keyed', () => {
+			const CollectionKeyed = ({children}) => (
+				<div hasKeyedChildren>
+					{children}
+				</div>
+			);
+
+			const CollectionNonKeyed = ({children}) => (
+				<div hasNonKeyedChildren>
+					{children}
+				</div>
+			);
+
+			render(
+				<CollectionKeyed>
+					<div key="1">1</div>
+					<div key="2">2</div>
+					<div key="3">3</div>
+				</CollectionKeyed>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
+
+			render(
+				<CollectionNonKeyed>
+					<div>3</div>
+					<div>2</div>
+				</CollectionNonKeyed>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div></div>');
+
+			render(
+				<CollectionKeyed>
+					<div key="3">3</div>
+					<div key="2">2</div>
+					<div key="11">11</div>
+				</CollectionKeyed>
+				,container
+			);
+
+			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
+		});
+	});
 });
