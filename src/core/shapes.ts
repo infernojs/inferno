@@ -4,7 +4,6 @@ import {
 	isInvalid,
 	isUndefined,
 	isNullOrUndef,
-	isNull,
 	isStatefulComponent
 } from '../shared';
 import cloneVNode from '../factories/cloneVNode';
