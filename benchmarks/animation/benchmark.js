@@ -189,44 +189,32 @@ var N = 200;
 // The Inferno implementation:
 (function(){
 
-	var bp1 = Inferno.createBlueprint({
-		tag: 'div',
-		children: {arg: 0}
-	}, 4);
-
-	var bp2 = Inferno.createBlueprint({
-		tag: 'div',
-		className: 'box-view',
-		children: {arg: 0}
-	}, 2);
-
-	var bp3 = Inferno.createBlueprint({
-		tag: 'div',
-		className: 'box',
-		style: {arg: 0},
-		children: {arg: 1}
-	}, 1);
-
+	var createVNode = Inferno.createVNode; 
 	var container = document.getElementById('grid');
+
+	var counter;
+	var boxViewProps = { className: 'box-view' };
 
 	function createBoxes(count) {
 		var boxes = [];
 		for (var i = 0; i < N; i++) {
 			var style = 'top:' + Math.sin(count / 10) * 10 + 'px;' +
 					'left:' + Math.cos(count / 10) * 10 + 'px;' +
-					'background-color:' + 'rgb(0, 0,' + count % 255 + ');'
+					'background-color:' + 'rgb(0, 0,' + count % 255 + ');';
 
-			boxes.push(bp2(bp3(style, count % 100)));
+			boxes.push(createVNode(2, 'div', boxViewProps, createVNode(2, 'div', { className: 'box', style: style }, count % 100, null, null, true), null, null, true));
 
 		}
 		return boxes;
 	}
 
 	var infernoAnimate = function() {
-		Inferno.render(bp1(createBoxes(counter++)), container);
+		Inferno.render(
+			createVNode(66, 'div', null, createBoxes(counter++), null, null, true),
+			container
+		);
 	};
 
-	var counter;
 	var infernoInit = function() {
 		counter = -1;
 		infernoAnimate();
