@@ -104,7 +104,6 @@ describe('patching keyed lists (non-jsx)', () => {
 
 		renderModel(dataModel);
 
-		debugger;
 		expect(container.innerHTML).to.equal(
 			createExpected(dataModel)
 		);
