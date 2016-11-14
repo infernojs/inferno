@@ -39,7 +39,7 @@ Let's start with some code. As you can see, Inferno intentionally keeps the same
 
 In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a simple way to express Inferno virtual DOM.
 
-```javascript
+```jsx
 import Inferno from 'inferno';
 
 const message = "Hello world";
@@ -51,7 +51,7 @@ Inferno.render(
 ```
 Furthermore, Inferno also uses ES6 components like React:
 
-```javascript
+```jsx
 import Inferno from 'inferno';
 import Component from 'inferno-component';
 
