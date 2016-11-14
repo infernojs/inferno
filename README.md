@@ -11,7 +11,7 @@
 
 Inferno is an insanely fast, `6kb` React-like library for building high-performance user interfaces on both the client and server.
 
-Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption, faster parse/initiral load times and compatability with existing React projects via [`inferno-compat`](todo).
+Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their existing React projects to Inferno in a few lines of code using [`inferno-compat`](todo).
 
 For those not familiar with React... TODO
 
