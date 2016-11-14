@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
+import { assert, spy } from 'sinon';
 import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
 import createElement from './../../factories/createElement';
@@ -752,8 +752,8 @@ describe('Elements (JSX)', () => {
 		const bool = false;
 		const newValue = 't';
 		const spread = { id: 'test' };
-		const spy = sinon.spy(obj, 'fn');
-		const spyClick = sinon.spy(obj, 'click');
+		const sinonSpy = spy(obj, 'fn');
+		const spyClick = spy(obj, 'click');
 
 		// TODO: Fails to creation of node fix needed
 		render(<input type="text" ref={obj.fn} spellcheck="false"
@@ -764,10 +764,10 @@ describe('Elements (JSX)', () => {
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		document.body.appendChild(container);
 		const input = container.querySelector('#test');
-		sinon.assert.calledOnce(spy); // Verify hook works
+		assert.calledOnce(sinonSpy); // Verify hook works
 		input.click(); // Focus fails with async tests - changed to tests
 		requestAnimationFrame(() => {
-			sinon.assert.calledOnce(spyClick); // Verify hook works
+			assert.calledOnce(spyClick); // Verify hook works
 			document.body.removeChild(container);
 			done();
 		});

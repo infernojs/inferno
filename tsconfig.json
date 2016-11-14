@@ -13,6 +13,7 @@
 		"types": [
 			"node",
 			"mocha",
+			"sinon",
 			"chai"
 		],
 		"jsx": "preserve",

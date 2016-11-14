@@ -1,8 +1,8 @@
 import { expect } from 'chai';
+import { assert, spy } from 'sinon';
 import { render } from './../rendering';
 import Component from './../../component/es2015';
 import * as Inferno from '../../testUtils/inferno';
-import sinon from 'sinon';
 Inferno; // suppress ts 'never used' error
 
 describe('Stateful Component updates', () => {
@@ -53,14 +53,14 @@ describe('Stateful Component updates', () => {
 		}
 
 		// Render A
-		const spy = sinon.spy(A.prototype, 'componentWillUnmount');
+		const sinonSpy = spy(A.prototype, 'componentWillUnmount');
 		render(<A />, container);
 		expect(container.innerHTML).to.equal('<div>A Component A</div>');
 		// Render B
 		render(<B />, container);
 		expect(container.innerHTML).to.equal('<div>B Component B</div>');
-		sinon.assert.calledOnce(spy); // componentUnMount should have been called
-		spy.restore();
+		assert.calledOnce(sinonSpy); // componentUnMount should have been called
+		sinonSpy.restore();
 
 		// delayed update triggers for A
 		expect(() => updatesAfromOutside()).to.throw();

@@ -1,10 +1,9 @@
 import { expect } from 'chai';
+import { spy } from 'sinon';
 import { render } from './../rendering';
 import Component from './../../component/es2015';
 import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
-
-import sinon from 'sinon';
 
 describe('Children - (JSX)', () => {
 	let container;
@@ -1047,7 +1046,7 @@ describe('Children - (JSX)', () => {
 				}
 			}
 
-			const unmountSpy = sinon.spy(B.prototype, 'componentWillUnmount');
+			const unmountSpy = spy(B.prototype, 'componentWillUnmount');
 			render(<A test={<B />}/>, container);
 			expect(container.innerHTML).to.equal('<div><p>B</p></div>');
 			render(<A test={null}/>, container);
@@ -1058,7 +1057,7 @@ describe('Children - (JSX)', () => {
 
 	describe('VFragment within other nodes', () => {
 		it('Should not clear nodes when non keyed', () => {
-			const Nodes = ({items}) => (
+			const Nodes = ({ items }) => (
 				<div>
 					<div>test</div>
 					{items.map((item) => <span>{item}</span>)}
@@ -1066,21 +1065,21 @@ describe('Children - (JSX)', () => {
 				</div>
 			);
 
-			render(<Nodes items={[1,2,3]} />, container);
+			render(<Nodes items={[1,2,3]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>');
 
-			render(<Nodes items={[3,2,1]} />, container);
+			render(<Nodes items={[3,2,1]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>');
 
-			render(<Nodes items={[9,8,7]} />, container);
+			render(<Nodes items={[9,8,7]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>');
 
-			render(<Nodes items={[]} />, container);
+			render(<Nodes items={[]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><div>end</div></div>');
 		});
 
 		it('Should not clear nodes when keyed inside vFragment', () => {
-			const Nodes = ({items}) => (
+			const Nodes = ({ items }) => (
 				<div>
 					<div>test</div>
 					{items.map((item) => <span key={item}>{item}</span>)}
@@ -1088,21 +1087,21 @@ describe('Children - (JSX)', () => {
 				</div>
 			);
 
-			render(<Nodes items={[1,2,3]} />, container);
+			render(<Nodes items={[1,2,3]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>');
 
-			render(<Nodes items={[3,2,1]} />, container);
+			render(<Nodes items={[3,2,1]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>');
 
-			render(<Nodes items={[9,8,7]} />, container);
+			render(<Nodes items={[9,8,7]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>');
 
-			render(<Nodes items={[]} />, container);
+			render(<Nodes items={[]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><div>end</div></div>');
 		});
 
 		it('Should not clear nodes when keyed inside vFragment #2', () => {
-			const Nodes = ({items}) => (
+			const Nodes = ({ items }) => (
 				<div>
 					<div>test</div>
 					{items.map((item) => <span key={item}>{item}</span>)}
@@ -1110,23 +1109,23 @@ describe('Children - (JSX)', () => {
 				</div>
 			);
 
-			render(<Nodes items={[1]} />, container);
+			render(<Nodes items={[1]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><span>1</span><div>end</div></div>');
 
-			render(<Nodes items={[]} />, container);
+			render(<Nodes items={[]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><div>end</div></div>');
 
 			render(null, container);
 			expect(container.innerHTML).to.equal('');
 
-			render(<Nodes items={[1, 2, 3]} />, container);
+			render(<Nodes items={[1, 2, 3]}/>, container);
 			expect(container.innerHTML).to.equal('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>');
 		});
 	});
 
 	describe('Forced keyed children', () => {
 		it('Should always go keyed algorithm when parent has hasKeyedChildren', () => {
-			const Collection = ({children}) => (
+			const Collection = ({ children }) => (
 				<div hasKeyedChildren>
 					{children}
 				</div>
@@ -1138,7 +1137,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</Collection>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1149,7 +1148,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="1">1</div>
 				</Collection>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>1</div></div>');
@@ -1160,20 +1159,20 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="11">11</div>
 				</Collection>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
 		});
 
 		it('Should be able to swap from keyed to nonkeyed when nextNode no longer is keyed', () => {
-			const CollectionKeyed = ({children}) => (
+			const CollectionKeyed = ({ children }) => (
 				<div hasKeyedChildren>
 					{children}
 				</div>
 			);
 
-			const CollectionNonKeyed = ({children}) => (
+			const CollectionNonKeyed = ({ children }) => (
 				<div hasNonKeyedChildren>
 					{children}
 				</div>
@@ -1185,7 +1184,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1195,7 +1194,7 @@ describe('Children - (JSX)', () => {
 					<div>3</div>
 					<div>2</div>
 				</CollectionNonKeyed>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div></div>');
@@ -1206,14 +1205,14 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="11">11</div>
 				</CollectionKeyed>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
 		});
 
 		it('Should handle previous being empty array', () => {
-			const CollectionKeyed = ({children}) => (
+			const CollectionKeyed = ({ children }) => (
 				<div hasKeyedChildren>
 					{children}
 				</div>
@@ -1224,7 +1223,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1235,14 +1234,14 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
 		});
 
 		it('Should handle next being empty array', () => {
-			const CollectionKeyed = ({children}) => (
+			const CollectionKeyed = ({ children }) => (
 				<div hasKeyedChildren>
 					{children}
 				</div>
@@ -1254,7 +1253,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1264,14 +1263,14 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
 		});
 
 		it('Should handle last/next being empty', () => {
-			const CollectionKeyed = ({children}) => (
+			const CollectionKeyed = ({ children }) => (
 				<div hasKeyedChildren>
 					{children}
 				</div>
@@ -1282,7 +1281,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1293,7 +1292,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{childB}
 				</CollectionKeyed>
-				,container
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');

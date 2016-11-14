@@ -1,7 +1,7 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
 import { expect } from 'chai';
-import {VNode, createVNode, VNodeFlags, createTextVNode} from "../../core/shapes";
+import { VNode, createVNode, VNodeFlags, createTextVNode } from "../../core/shapes";
 
 function generateKeyNodes(array) {
 
@@ -420,20 +420,20 @@ describe('keyed-nodes', () => {
 		});
 
 		it('Should handle massive arrays shifting once by 2', () => {
-			items = items.concat(items.splice(0,2));
+			items = items.concat(items.splice(0, 2));
 			render(template(generateKeyNodes(items)), container);
 
 			expect(container.textContent).to.eql(items.join(''));
 		});
 
 		for (let i = 0; i < 10; i++) {
-			it('Should handle massive arrays shifting ' + i + ' times by ' + i , () => {
+			it('Should handle massive arrays shifting ' + i + ' times by ' + i, () => {
 				for (let j = 0; j < i; j++) {
-					items = items.concat(items.splice(i,j));
+					items = items.concat(items.splice(i, j));
 				}
 				render(template(generateKeyNodes(items)), container);
 				expect(container.textContent).to.eql(items.join(''));
-			})
+			});
 		}
 	});
 
@@ -603,36 +603,36 @@ describe('keyed-nodes', () => {
 			[[0, 1, 2, 3, 4, 5], [6, 7, 3, 2, 4]],
 			[[0, 2, 3, 4, 5], [6, 1, 7, 3, 2, 4]],
 
-			[[{key: 0, children: [0]}],
-				[{key: 0, children: []}]],
+			[[{ key: 0, children: [0] }],
+				[{ key: 0, children: [] }]],
 
-			[[0, 1, {children: [0], key: 2}],
-				[{key: 2, children: []}]],
+			[[0, 1, { children: [0], key: 2 }],
+				[{ key: 2, children: [] }]],
 
-			[[{key: 0, children: []}],
-				[1, 2, {key: 0, children: [0]}]],
+			[[{ key: 0, children: [] }],
+				[1, 2, { key: 0, children: [0] }]],
 
-			[[0, {key: 1, children: [0, 1]}, 2],
-				[3, 2, {key: 1, children: [1, 0]}]],
+			[[0, { key: 1, children: [0, 1] }, 2],
+				[3, 2, { key: 1, children: [1, 0] }]],
 
-			[[0, {key: 1, children: [0, 1]}, 2],
-				[2, {key: 1, children: [1, 0]}, 3]],
+			[[0, { key: 1, children: [0, 1] }, 2],
+				[2, { key: 1, children: [1, 0] }, 3]],
 
-			[[{key: 1, children: [0, 1]}, {key: 2, children: [0, 1]}, 0],
-				[{key: 2, children: [1, 0]}, {key: 1, children: [1, 0]}, 3]],
+			[[{ key: 1, children: [0, 1] }, { key: 2, children: [0, 1] }, 0],
+				[{ key: 2, children: [1, 0] }, { key: 1, children: [1, 0] }, 3]],
 
-			[[{key: 1, children: [0, 1]}, {key: 2, children: []}, 0],
-				[3, {key: 2, children: [1, 0]}, {key: 1, children: []}]],
+			[[{ key: 1, children: [0, 1] }, { key: 2, children: [] }, 0],
+				[3, { key: 2, children: [1, 0] }, { key: 1, children: [] }]],
 
-			[[0, {key: 1, children: []}, 2, {key: 3, children: [1, 0]}, 4, 5],
-				[6, {key: 1, children: [0, 1]}, {key: 3, children: []}, 2, 4, 7]],
+			[[0, { key: 1, children: [] }, 2, { key: 3, children: [1, 0] }, 4, 5],
+				[6, { key: 1, children: [0, 1] }, { key: 3, children: [] }, 2, 4, 7]],
 
-			[[0, {key: 1, children: []}, {key: 2, children: []}, {key: 3, children: []}, {key: 4, children: []}, 5],
-				[{key: 6, children: [{key: 1, children: [1]}]}, 7, {key: 3, children: [1]}, {key: 2, children: [1]},
-					{key: 4, children: [1]}]],
+			[[0, { key: 1, children: [] }, { key: 2, children: [] }, { key: 3, children: [] }, { key: 4, children: [] }, 5],
+				[{ key: 6, children: [{ key: 1, children: [1] }] }, 7, { key: 3, children: [1] }, { key: 2, children: [1] },
+					{ key: 4, children: [1] }]],
 
-			[[0, 1, {key: 2, children: [0]}, 3, {key: 4, children: [0]}, 5],
-				[6, 7, 3, {key: 2, children: []}, {key: 4, children: []}]],
+			[[0, 1, { key: 2, children: [0] }, 3, { key: 4, children: [0] }, 5],
+				[6, 7, 3, { key: 2, children: [] }, { key: 4, children: [] }]],
 		];
 
 		describe("syncChildren string children", () => {
@@ -696,20 +696,20 @@ describe('keyed-nodes', () => {
 					return result;
 				} else {
 					if (keys) {
-						return createElement("div", {key: item.key}, gen(item.children, keys));
+						return createElement("div", { key: item.key }, gen(item.children, keys));
 					} else {
-						return createElement("div", null, gen(item.children, keys))
+						return createElement("div", null, gen(item.children, keys));
 					}
 				}
 			}
 
 			function checkInnerHtmlEquals(ax: VNode[], bx: VNode[], cx: VNode[], keys: boolean): void {
-				let a,b,c;
+				let a, b, c;
 
 				if (keys) {
-					a = createElement("div", {key: ax}, ax);
-					b = createElement("div", {key: bx}, bx);
-					c = createElement("div", {key: cx}, cx);
+					a = createElement("div", { key: ax }, ax);
+					b = createElement("div", { key: bx }, bx);
+					c = createElement("div", { key: cx }, cx);
 				} else {
 					a = createElement("div", null, ax);
 					b = createElement("div", null, bx);

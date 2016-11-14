@@ -1,10 +1,10 @@
 import { expect } from 'chai';
+import { assert, spy } from 'sinon';
 import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
 import createElement from './../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
 import * as Inferno from '../../testUtils/inferno';
-import sinon from 'sinon';
 Inferno; // suppress ts 'never used' error
 
 describe('Components (JSX)', () => {
@@ -1789,9 +1789,9 @@ describe('Components (JSX)', () => {
 			}
 		};
 
-		const calledOnce = sinon.assert.calledOnce;
-		const notCalled = sinon.assert.notCalled;
-		const spy = sinon.spy(obj, 'fn');
+		const calledOnce = assert.calledOnce;
+		const notCalled = assert.notCalled;
+		const sinonSpy = spy(obj, 'fn');
 
 		class Bar extends Component<any, any> {
 			constructor(props) {
@@ -1826,11 +1826,11 @@ describe('Components (JSX)', () => {
 
 		render(<Bar />, container);
 		expect(container.innerHTML).to.equal('<div>Hello world</div>');
-		notCalled(spy);
+		notCalled(sinonSpy);
 
 		updater();
 		expect(container.innerHTML).to.equal('<div><div>Hello world2</div></div>');
-		calledOnce(spy);
+		calledOnce(sinonSpy);
 	});
 
 	describe('Should be able to swap between invalid node and valid node', () => {

@@ -61,7 +61,7 @@ describe('patching routine', () => {
 		expect(container.innerHTML).to.eql('<span>a</span>');
 
 		render(validNode, container);
-		expect(container.innerHTML).to.eql('<span>a</span>')
+		expect(container.innerHTML).to.eql('<span>a</span>');
 	});
 
 	it('Patch operation when nextChildren is NOT Invalid/Array/StringOrNumber/VNode', () => {

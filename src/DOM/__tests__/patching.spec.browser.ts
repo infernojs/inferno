@@ -3,7 +3,7 @@ import createElement from './../../factories/createElement';
 import { expect } from 'chai';
 
 describe('patching keyed lists (non-jsx)', () => {
-	function createDataModels() : Array<Object> {
+	function createDataModels(): Array<Object> {
 		let dataModels = [];
 
 		dataModels.push(addGroupSingleChild(500));
@@ -16,7 +16,7 @@ describe('patching keyed lists (non-jsx)', () => {
 		return dataModels;
 	}
 
-	function addGroupSingleChild(count) : Array<Object> {
+	function addGroupSingleChild(count): Array<Object> {
 		let dataModel = [];
 		for (let i = 0; i < count; i++) {
 			dataModel.push({
@@ -36,7 +36,7 @@ describe('patching keyed lists (non-jsx)', () => {
 		}
 	}
 
-	function createExpectedChildren(nodes) : Array<Node> {
+	function createExpectedChildren(nodes): Array<Node> {
 		const children = [];
 		let i, e, n;
 

@@ -14,6 +14,7 @@
     "@types/core-js": "^0.9.34",
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.46",
+    "@types/sinon": "^1.16.31",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
     "babel-eslint": "^7.1.0",
