@@ -85,7 +85,7 @@ Note: Make sure you read more about [`inferno-compat`](https://github.com/truead
 
 NPM:
 
-Create Inferno App:
+[Create Inferno App](todo):
 
 ```sh
 npm install -g create-inferno-app
