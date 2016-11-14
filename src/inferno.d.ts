@@ -118,3 +118,5 @@ declare module 'lodash/fp' {
 declare module 'union-type' {
 	export default function (obj: any): any
 }
+
+interface Window { process: any; }

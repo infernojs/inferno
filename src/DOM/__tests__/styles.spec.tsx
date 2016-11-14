@@ -115,4 +115,13 @@ describe('CSS style properties (JSX)', () => {
 		render(styleNode(stylesThree), container);
 		expect(container.firstChild.style.color).to.equal('orange');
 	});
+
+	it('Should remove style attribute when next value is null', () => {
+		const stylesOne = { float: 'left' };
+		render(styleNode(stylesOne), container);
+		expect(container.firstChild.style.float).to.equal('left');
+
+		render(styleNode(null), container);
+		expect(container.innerHTML).to.eql('<div></div>');
+	});
 });

@@ -15,29 +15,14 @@ describe('patching routine', () => {
 
 	// TODO: Try to cover patching lastVNode !== nextVNode. requires no normalise and hoisting
 	it('Should do nothing if lastVNode strictly equals nextVnode', () => {
-		const vNode = createVNode(
-			VNodeFlags.HtmlElement,
-			'span',
-			null,
-			createVNode(
-				VNodeFlags.HtmlElement,
-				'span',
-				null,
-				createTextVNode('a'),
-				null,
-				null,
-				false
-			),
-			null,
-			null,
-			false
-		);
+		const bar = createVNode(2, 'div', null, '123', null, null, true);
+		const foo = createVNode(2, 'div', null, bar, null, null, true);
 
-		render(vNode, container);
-		expect(container.innerHTML).to.eql('<span><span>a</span></span>');
+		render(foo, container);
+		expect(container.innerHTML).to.eql('<div><div>123</div></div>');
 
-		render(vNode, container);
-		expect(container.innerHTML).to.eql('<span><span>a</span></span>');
+		render(foo, container);
+		expect(container.innerHTML).to.eql('<div><div>123</div></div>');
 	});
 
 	it('Should mount nextNode if lastNode crashed', () => {

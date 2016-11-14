@@ -716,6 +716,33 @@ describe('Elements (JSX)', () => {
 		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
 	});
 
+	it('Should not dangerously set innerHTML when previous is same as new one', () => {
+		render((
+			<div dangerouslySetInnerHTML={{ __html: 'same' }}/>
+		), container);
+		expect(container.innerHTML).to.equal('<div>same</div>');
+
+		render((
+			<div dangerouslySetInnerHTML={{ __html: 'same' }}/>
+		), container);
+		expect(container.innerHTML).to.equal('<div>same</div>');
+
+		render((
+			<div dangerouslySetInnerHTML={{ __html: 'change' }}/>
+		), container);
+		expect(container.innerHTML).to.equal('<div>change</div>');
+	});
+
+	it('Should throw error if __html property is not set', () => {
+		try {
+			render((
+				<div dangerouslySetInnerHTML={{ __html: null }}/>
+			), container);
+		} catch (e) {
+			expect(e.message).to.eql('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
+		}
+	});
+
 	it('handles JSX spread props (including children)', () => {
 		const foo = {
 			children: 'Hello world!',

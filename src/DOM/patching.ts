@@ -474,14 +474,8 @@ export function patchKeyedChildren(
 			insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
 			aEnd--;
 			bStart++;
-			// TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
-			if (aStart > aEnd || bStart > bEnd) {
-				break;
-			}
 			aEndNode = a[aEnd];
 			bStartNode = b[bStart];
-			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
-			// immediately jump to the start of this prefix/suffix algo.
 			continue;
 		}
 
@@ -493,10 +487,6 @@ export function patchKeyedChildren(
 			insertOrAppend(dom, bEndNode.dom, nextNode);
 			aStart++;
 			bEnd--;
-			// TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
-			if (aStart > aEnd || bStart > bEnd) {
-				break;
-			}
 			aStartNode = a[aStart];
 			bEndNode = b[bEnd];
 			continue;
@@ -533,7 +523,6 @@ export function patchKeyedChildren(
 		if ((bLength <= 4) || (aLength * bLength <= 16)) {
 			for (i = aStart; i <= aEnd; i++) {
 				aNode = a[i];
-				// TODO: How to make this statement false? Add test to verify logic or remove IF
 				if (patched < bLength) {
 					for (j = bStart; j <= bEnd; j++) {
 						bNode = b[j];
@@ -779,24 +768,22 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 	}
 }
 
+// We are assuming here that we come from patchProp routine
+// -nextAttrValue cannot be null or undefined
 export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
 	} else if (isNullOrUndef(lastAttrValue)) {
-		if (!isNullOrUndef(nextAttrValue)) {
-			for (let style in nextAttrValue) {
-				// do not add a hasOwnProperty check here, it affects performance
-				const value = nextAttrValue[style];
+		for (let style in nextAttrValue) {
+			// do not add a hasOwnProperty check here, it affects performance
+			const value = nextAttrValue[style];
 
-				if (isNumber(value) && !isUnitlessNumber[style]) {
-					dom.style[style] = value + 'px';
-				} else {
-					dom.style[style] = value;
-				}
+			if (isNumber(value) && !isUnitlessNumber[style]) {
+				dom.style[style] = value + 'px';
+			} else {
+				dom.style[style] = value;
 			}
 		}
-	} else if (isNullOrUndef(nextAttrValue)) {
-		dom.removeAttribute('style');
 	} else {
 		for (let style in nextAttrValue) {
 			// do not add a hasOwnProperty check here, it affects performance
