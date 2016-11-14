@@ -106,12 +106,15 @@
     "rollup"
   ],
   "nyc": {
+    "sourceMap": false,
+		"all": true,
     "include": [
       "src/*.ts",
       "src/**/*.ts"
     ],
     "exclude": [
       "typings",
+      "src/inferno.d.ts",
       "src/**/*__tests__*/**"
     ],
     "extension": [
@@ -121,6 +124,10 @@
       "lcov",
       "html",
       "text"
+    ],
+    "require": [
+      "./config/compiler.js",
+      "babel-register"
     ]
   },
   "repository": {
