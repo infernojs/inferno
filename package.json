@@ -81,8 +81,8 @@
     "tslint": "^3.15.1",
     "typescript": "^2.0.9",
     "union-type": "^0.3.3",
-    "webpack": "^2.1.0-beta.25",
-    "webpack-dev-server": "^2.1.0-beta.10"
+    "webpack": "^2.1.0-beta.26",
+    "webpack-dev-server": "^2.1.0-beta.11"
   },
   "files": [
     "src"
