@@ -102,7 +102,7 @@ function bindAll(ctx) {
     }
 }
 function createClass(obj) {
-    return _a = (function (Component$$1) {
+    return (Cl_1 = (function (Component$$1) {
         function Cl(props) {
                 Component$$1.call(this, props);
                 extend(this, obj);
@@ -118,11 +118,11 @@ function createClass(obj) {
 
         return Cl;
     }(Component)),
-        _a.displayName = obj.displayName || 'Component',
-        _a.propTypes = obj.propTypes,
-        _a.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined,
-        _a;
-    var _a;
+        Cl_1.displayName = obj.displayName || 'Component',
+        Cl_1.propTypes = obj.propTypes,
+        Cl_1.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined,
+        Cl_1);
+    var Cl_1;
 }
 
 function cloneVNode(vNodeToClone, props) {
@@ -171,10 +171,11 @@ function cloneVNode(vNodeToClone, props) {
     else {
         var flags = vNodeToClone.flags;
         if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref, true);
         }
         else if (flags & 3970 /* Element */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children || (props && props.children) || vNodeToClone.children, vNodeToClone.key, vNodeToClone.ref);
+            children = (props && props.children) || vNodeToClone.children;
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, !children);
         }
     }
     newVNode.dom = null;
@@ -1145,14 +1146,8 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
             insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
             aEnd--;
             bStart++;
-            // TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
-            if (aStart > aEnd || bStart > bEnd) {
-                break;
-            }
             aEndNode = a[aEnd];
             bStartNode = b[bStart];
-            // In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
-            // immediately jump to the start of this prefix/suffix algo.
             continue;
         }
         // Move and sync nodes from left to right.
@@ -1163,10 +1158,6 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
             insertOrAppend(dom, bEndNode.dom, nextNode);
             aStart++;
             bEnd--;
-            // TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
-            if (aStart > aEnd || bStart > bEnd) {
-                break;
-            }
             aStartNode = a[aStart];
             bEndNode = b[bEnd];
             continue;
@@ -1202,7 +1193,6 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
         if ((bLength <= 4) || (aLength * bLength <= 16)) {
             for (i = aStart; i <= aEnd; i++) {
                 aNode = a[i];
-                // TODO: How to make this statement false? Add test to verify logic or remove IF
                 if (patched < bLength) {
                     for (j = bStart; j <= bEnd; j++) {
                         bNode = b[j];
@@ -1443,26 +1433,23 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
         }
     }
 }
+// We are assuming here that we come from patchProp routine
+// -nextAttrValue cannot be null or undefined
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
     if (isString(nextAttrValue)) {
         dom.style.cssText = nextAttrValue;
     }
     else if (isNullOrUndef(lastAttrValue)) {
-        if (!isNullOrUndef(nextAttrValue)) {
-            for (var style in nextAttrValue) {
-                // do not add a hasOwnProperty check here, it affects performance
-                var value = nextAttrValue[style];
-                if (isNumber(value) && !isUnitlessNumber[style]) {
-                    dom.style[style] = value + 'px';
-                }
-                else {
-                    dom.style[style] = value;
-                }
+        for (var style in nextAttrValue) {
+            // do not add a hasOwnProperty check here, it affects performance
+            var value = nextAttrValue[style];
+            if (isNumber(value) && !isUnitlessNumber[style]) {
+                dom.style[style] = value + 'px';
+            }
+            else {
+                dom.style[style] = value;
             }
         }
-    }
-    else if (isNullOrUndef(nextAttrValue)) {
-        dom.removeAttribute('style');
     }
     else {
         for (var style$1 in nextAttrValue) {
@@ -2052,9 +2039,9 @@ function render$1(input, parentDom) {
         lifecycle.trigger();
         root.input = input;
     }
-    // if (devToolsStatus.connected) {
-    // sendRoots(window);
-    // }
+    if (devToolsStatus.connected) {
+        sendRoots(window);
+    }
 }
 
 var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';

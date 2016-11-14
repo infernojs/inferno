@@ -63,7 +63,7 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 				children,
 				vNodeToClone.key,
 				vNodeToClone.ref,
-				children ? false: true
+				!children
 			);
 		}
 	}
