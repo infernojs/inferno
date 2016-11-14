@@ -9,18 +9,18 @@
 [![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg?style=flat-square)](https://www.npmjs.org/package/inferno-dom)
 [![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
 
-Inferno is an isomorphic library for building high-performance user interfaces, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Virtual-dom, Snabbdom and Om, Inferno uses techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
+Inferno is an insanely fast, `6kb` React-like library for building high-performance user interfaces on both the client and server.
 
-In addition to this, we've carefully optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently one of the fastest virtual DOM implementation out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
+Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption, faster parse/initiral load times and compatability with existing React projects via [`inferno-compat`](todo).
 
-In principle, Inferno is compatible with the standard React API, allowing painless transition from React to Inferno. Furthermore, Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno virtual DOM.
+For those not familiar with React... TODO
 
-## Key Features
+## Summary
 
 - One of the fastest front-end frameworks for rendering UI in the DOM
-- Components have a similar API to React ES2015 components with `inferno-component`
-- Stateless components are fully supported and have more usability thanks to Inferno's [stateless component hooks](#stateless-component-hooks)
-- Isomorphic/universal for easy server-side rendering with `inferno-server`
+- React-like API, concepts and component lifecycle events
+- Lightweight filesize of only 6kb
+- Isomorphic rendering on both client and server with `inferno-server`
 
 ## Benchmarks
 
