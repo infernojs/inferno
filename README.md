@@ -127,12 +127,12 @@ npm install --save-dev babel-plugin-inferno@beta6
 npm install --save inferno-hyperscript@beta6
 ```
 
-### createElement:
+#### createElement:
 ```sh
 npm install --save inferno-create-element@beta6
 ```
 
-### Compatability with existing React apps
+#### Compatability with existing React apps
 ```sh
 npm install --save-dev inferno-compat@beta6
 ```
