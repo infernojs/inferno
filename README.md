@@ -22,7 +22,7 @@ For those not familiar with React... TODO
 - React-like API, concepts and component lifecycle events
 - Lightweight filesize of only 6kb
 - Isomorphic rendering on both client and server with `inferno-server`
-- Highly modular with very little opionatation in how things should be done
+- Highly modular with very little opinionation on how things should be done
 
 ## Benchmarks
 
