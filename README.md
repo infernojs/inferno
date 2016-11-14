@@ -129,7 +129,7 @@ Inferno.render(<MyComponent />, document.body);
 
 ## Inferno Top-Level API
 
-### `Inferno.render`
+### `render` (package: `inferno`)
 
 ```javascript
 import Inferno from 'inferno';
@@ -142,19 +142,24 @@ into the container, this will perform an update on it and only mutate the DOM as
 
 Warning: If the container element is not empty before rendering, the content of the container will be overwriten on the initial render.
 
-### `Inferno.createRenderer`
-### `Inferno.cloneVNode`
-### `Inferno.findDOMNode`
+### `createRenderer` (package: `inferno`)
 
-### Virtual DOM factories
+`createRenderer` allows for functional composition when rendering content to the DOM. An example of this is shown below:
 
-### `Inferno.createVElement`
-### `Inferno.createVFragment`
-### `Inferno.createVPlaceholder`
-### `Inferno.createVComponent`
-### `Inferno.createVText`
+```javascript
+import Inferno from 'inferno';
+import { scan, map } from 'most';
 
-### InfernoCreateElement
+...
+const model$ = scan(update, 0, actions$);
+const vNodes$ = map(view(actions$), model$);
+const renderer = Inferno.createRenderer();
+const runApp = () => scan(renderer, container, vNodes$).drain();
+
+runApp();
+```
+
+### `createElement` (package: `inferno-create-element`)
 
 Creates an Inferno VNode using a similar API to that found with React's `createElement`
 
@@ -177,7 +182,7 @@ class BasicComponent extends Component {
 Inferno.render(createElement(BasicComponent, { title: 'abc' }), document.body);
 ```
 
-### InfernoComponent
+### `Component` (package: `inferno-component`)
 
 **Stateful component:**
 
@@ -193,6 +198,31 @@ class MyComponent extends Component {
 
 This is the base class for Inferno Components when they're defined using ES6 classes.
 
+### `createVNode` (package: `inferno`)
+
+Create a new Inferno `VNode` using `createVNode`. A `VNode` is a virtual DOM object that is used to 
+describe a single element of the UI. Typically `createElement`, `hyperscript` or JSX are used to create
+`VNode`s for Inferno, but under the hood they all use `createVNode`. Below is an example of using
+of `createVNode` usage:
+
+```javascript
+import Inferno from 'inferno';
+
+const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+
+Inferno.render(vNode, container);
+```
+
+The first argument for `createVNode` is a value from [`VNodeFlags`]('linktoreadmeforthis'), this is numerical value that used to tell Inferno what the VNode is meant to describe on the page.
+
+### `cloneVNode` (package: `inferno`)
+
+TODO
+
+### `findDOMNode` (package: `inferno`)
+
+TODO
+
 **Stateless component:**
 
 ```javascript
@@ -205,7 +235,7 @@ const MyComponent = ({ name, age }) => (
 
 Stateless components are first-class functions where their first argument is the `props` passed through from their parent.
 
-### renderToString
+### `renderToString` (package: `inferno-server`)
 
 ```javascript
 import Inferno from 'inferno';
@@ -272,6 +302,7 @@ time a library offered more fun without compromising performance.
 Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support IE8+, Inferno requires polyfills for the following JavaScript features:
 
 - [Map object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+- [WeakMap object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
 - [Object.keys](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
 - [Object.assign](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
 
