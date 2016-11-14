@@ -1,7 +1,7 @@
 import { toArray, isArray } from '../shared';
 import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort } from './utils';
 import pathToRegExp from 'path-to-regexp-es6';
-import { cloneVNode } from 'inferno';
+import { default as Inferno } from 'inferno';
 
 const cache: Map<string, IMatchRegex> = new Map();
 
@@ -51,7 +51,7 @@ function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 
 			return {
 				location,
-				matched: cloneVNode(route, {
+				matched: Inferno.cloneVNode(route, {
 					children,
 					params: Object.assign(params, matchBase.params),
 					component:  route.props.component

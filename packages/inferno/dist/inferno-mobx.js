@@ -6,10 +6,11 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('mobx'), require('./inferno'), require('./inferno-create-class'), require('hoist-non-inferno-statics'), require('./inferno-create-element')) :
 	typeof define === 'function' && define.amd ? define(['inferno-component', 'mobx', 'inferno', 'inferno-create-class', 'hoist-non-inferno-statics', 'inferno-create-element'], factory) :
-	(global.InfernoMobx = factory(global.Component,global.mobx,global.inferno,global.createClass,global.hoistStatics,global.createElement));
-}(this, (function (Component,mobx,inferno,createClass,hoistStatics,createElement) { 'use strict';
+	(global.InfernoMobx = factory(global.Component,global.mobx,global.Inferno,global.createClass,global.hoistStatics,global.createElement));
+}(this, (function (Component,mobx,Inferno,createClass,hoistStatics,createElement) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;
+Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 createClass = 'default' in createClass ? createClass['default'] : createClass;
 hoistStatics = 'default' in hoistStatics ? hoistStatics['default'] : hoistStatics;
 createElement = 'default' in createElement ? createElement['default'] : createElement;
@@ -125,6 +126,7 @@ EventEmitter.prototype.clearListeners = function clearListeners () {
     this.listeners = [];
 };
 
+var findDOMNode = Inferno.findDOMNode;
 /**
  * Dev tools support
  */
@@ -132,7 +134,7 @@ var isDevtoolsEnabled = false;
 var componentByNodeRegistery = new WeakMap();
 var renderReporter = new EventEmitter();
 function reportRendering(component) {
-    var node = inferno.findDOMNode(component);
+    var node = findDOMNode(component);
     if (node && componentByNodeRegistery) {
         componentByNodeRegistery.set(node, component);
     }
@@ -216,7 +218,7 @@ function makeReactive(componentClass) {
         this.render.$mobx && this.render.$mobx.dispose();
         this.__$mobxIsUnmounted = true;
         if (isDevtoolsEnabled) {
-            var node = inferno.findDOMNode(this);
+            var node = findDOMNode(this);
             if (node && componentByNodeRegistery) {
                 componentByNodeRegistery.delete(node);
             }

@@ -1,22 +1,13 @@
 declare module 'inferno' {
-	export function createOptVElement(...rest);
-	export function createOptBlueprint(...rest);
-	export function createStaticVElement(...rest);
-	export function createVElement(...rest);
-	export function createVFragment(...rest);
-	export function createVPlaceholder(...rest);
-	export function createVComponent(type, props, key?, hooks?, ref?);
-	export function createVText(...rest);
+	export function createVNode(flags, type?, props?, children?, key?, ref?, noNormalise?: boolean): any;
+	export function createVoidVNode(): any;
+	export function createTextVNode(text): any;
 	export function cloneVNode(node, props?, ...children);
-	export function ValueTypes(...rest);
-	export function ChildrenTypes(...rest);
-	export function NodeTypes(...rest);
 	export function NO_OP(...rest);
-	export function render(...rest);
+	export function render(...rest)
 	export function findDOMNode(node: any): any;
 	export function createRenderer(...rest);
 	export function disableRecycling(...rest);
-	export function convertVOptElementToVElement(...rest);
 }
 
 declare module 'inferno-component' {
@@ -113,4 +104,5 @@ declare module 'sinon' {
 
 declare module 'sinon-es.assert' {
 	export function calledOnce(obj: any): any;
+	export function notCalled(obj: any): any;
 }

@@ -464,9 +464,9 @@ describe('Component lifecycle (JSX)', () => {
 
 	describe('ref hook', () => {
 		const fakeObj = {
-			outerCallback: function() {},
-			innerCallback: function () {},
-			innerSecondCallback: function () {}
+			outerCallback () {},
+			innerCallback () {},
+			innerSecondCallback () {}
 		};
 
 		const calledOnce = sinon.assert.calledOnce;
@@ -483,7 +483,7 @@ describe('Component lifecycle (JSX)', () => {
 					<div ref={fakeObj.innerCallback}>
 						{contentTwo}
 					</div>
-				)
+				);
 			}
 
 			return (
@@ -519,8 +519,6 @@ describe('Component lifecycle (JSX)', () => {
 			calledOnce(spyOuter);
 			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div></div>');
 			notCalled(spyInnerSecond);
-
-
 
 			render(<RefTester inner={true} innersecond={true} />, container);
 			calledOnce(spyInner);
