@@ -33,13 +33,64 @@ For those not familiar with React... TODO
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 - [JS Web Frameworks Benchmark - Round 4](http://stefankrause.net/js-frameworks-benchmark4/webdriver-ts/table.html)
 
-## Live Demos/Examples
+## Code Example
+
+Let's start with some code. As you can see, Inferno intentionally keeps the same, good, design ideas as React regarding components: one-way data flow and separation of concerns.
+
+In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a simple way to express Inferno virtual DOM.
+
+```javascript
+import Inferno from 'inferno';
+
+const message = "Hello world";
+
+Inferno.render(
+  <MyComponent message={ message } />,
+  document.getElementById("app")
+)
+```
+Furthermore, Inferno also uses ES6 components like React:
+
+```javascript
+import Inferno from 'inferno';
+import Component from 'inferno-component';
+
+class MyComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      counter: 0
+    }
+  }
+  render() {
+    return (
+      <div>
+        <h1>Header!</h1>
+        <span>Counter is at: { this.state.counter }</span>
+      </div>
+    )
+  }
+}
+
+Inferno.render(<MyComponent />, document.body);
+```
+
+### More Examples
 
 - [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/rqwmkx40/)
 
-## Install
+Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
+
+## Getting Started
 
 NPM:
+
+Create Inferno App:
+
+```sh
+npm install -g create-inferno-app
+create-inferno-app MyApp
+```
 
 Core package:
 
@@ -84,50 +135,6 @@ npm install --save inferno-create-element@beta6
 ## Compatability with existing React apps
 ```sh
 npm install --save-dev inferno-compat@beta6
-```
-
-Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
-
-## Overview
-
-Let's start with some code. As you can see, Inferno intentionally keeps the same, good, design ideas as React regarding components: one-way data flow and separation of concerns.
-
-In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a simple way to express Inferno virtual DOM.
-
-```javascript
-import Inferno from 'inferno';
-
-const message = "Hello world";
-
-Inferno.render(
-  <MyComponent message={ message } />,
-  document.getElementById("app")
-)
-```
-Furthermore, Inferno also uses ES6 components like React:
-
-```javascript
-import Inferno from 'inferno';
-import Component from 'inferno-component';
-
-class MyComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      counter: 0
-    }
-  }
-  render() {
-    return (
-      <div>
-        <h1>Header!</h1>
-        <span>Counter is at: { this.state.counter }</span>
-      </div>
-    )
-  }
-}
-
-Inferno.render(<MyComponent />, document.body);
 ```
 
 ## Inferno Top-Level API
