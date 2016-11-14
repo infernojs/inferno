@@ -53,14 +53,17 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 				Object.assign({}, vNodeToClone.props, props),
 				null,
 				vNodeToClone.key,
-				vNodeToClone.ref
+				vNodeToClone.ref,
+				true
 			);
 		} else if (flags & VNodeFlags.Element) {
+			children = (props && props.children) || vNodeToClone.children;
 			newVNode = createVNode(flags, vNodeToClone.type,
 				Object.assign({}, vNodeToClone.props, props),
-				children || (props && props.children) || vNodeToClone.children,
+				children,
 				vNodeToClone.key,
-				vNodeToClone.ref
+				vNodeToClone.ref,
+				children ? false: true
 			);
 		}
 	}

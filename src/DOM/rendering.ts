@@ -13,6 +13,10 @@ import hydrateRoot from './hydration';
 import { unmount } from './unmounting';
 import cloneVNode from '../factories/cloneVNode';
 import { InfernoInput, VNode } from '../core/shapes';
+import {
+	devToolsStatus,
+	sendRoots
+} from './devtools';
 
 interface Root {
 	dom: Node | SVGAElement;
@@ -95,9 +99,9 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 		lifecycle.trigger();
 		root.input = input;
 	}
-	// if (devToolsStatus.connected) {
-		// sendRoots(window);
-	// }
+	if (devToolsStatus.connected) {
+		sendRoots(window);
+	}
 }
 
 export function createRenderer() {
