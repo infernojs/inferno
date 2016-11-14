@@ -49,11 +49,11 @@ Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta6
+npm install --save inferno-component@beta8
 # server-side rendering
-npm install --save inferno-server@beta6
+npm install --save inferno-server@beta8
 # routing
-npm install --save inferno-router@beta6
+npm install --save inferno-router@beta8
 ``` 
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
