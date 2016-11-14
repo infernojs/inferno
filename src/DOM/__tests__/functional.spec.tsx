@@ -1,16 +1,11 @@
 import { expect } from 'chai';
 import { createRenderer } from './../rendering';
 import * as Inferno from '../../testUtils/inferno';
-Inferno; // suppress ts 'never used' error
-
-import {
-	map,
-	scan
-} from 'most';
-import { holdSubject } from 'most-subject';
-import fp from 'lodash/fp';
+import {map, scan} from 'most';
+import { hold } from 'most-subject';
+import {curry} from 'lodash/fp';
 import Type from 'union-type';
-// import { click } from '@most/dom-event'
+Inferno; // suppress ts 'never used' error
 
 describe('Functional methods (JSX)', () => {
 	let container;
@@ -28,7 +23,7 @@ describe('Functional methods (JSX)', () => {
 			Decrement: _ => model - 1
 		}, action);
 
-		const actions$ = holdSubject();
+		const actions$ = hold();
 
 		const emitAction = action => actions$.next(action);
 		const emitDecrement = _ => emitAction(Action.Decrement());
@@ -43,7 +38,7 @@ describe('Functional methods (JSX)', () => {
 		};
 
 		// noinspection TypeScriptUnresolvedFunction
-		const view = fp.curry((actions, model) =>
+		const view = curry((actions, model) =>
 			<div style={countStyle}>
 				<button id='decrement' onClick={emitDecrement}>-</button>
 				<div style={countStyle}>{model}</div>

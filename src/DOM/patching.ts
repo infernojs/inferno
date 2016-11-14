@@ -438,7 +438,7 @@ export function patchKeyedChildren(
 		}
 		return;
 	} else if (bLength === 0) {
-			removeAllChildren(dom, a, lifecycle, false);
+		removeAllChildren(dom, a, lifecycle, false);
 		return;
 	}
 	// Step 1

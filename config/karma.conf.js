@@ -14,6 +14,7 @@ module.exports = function (config) {
 			'./../node_modules/sinon/pkg/sinon.js',
 			'./../src/**/*__tests__*/**/*.ts',
 			'./../src/**/*__tests__*/**/*.tsx',
+			'./../src/**/*__tests__*/**/*.js',
 			'./../src/**/*__tests__*/**/*.jsx'
 		],
 		// Start these browsers, currently available:
@@ -36,6 +37,7 @@ module.exports = function (config) {
 		preprocessors: {
 			'./../src/**/*__tests__*/**/*.ts': ['webpack'],
 			'./../src/**/*__tests__*/**/*.tsx': ['webpack'],
+			'./../src/**/*__tests__*/**/*.js': ['webpack'],
 			'./../src/**/*__tests__*/**/*.jsx': ['webpack']
 		},
 		webpack: {
@@ -53,7 +55,7 @@ module.exports = function (config) {
 				]
 			},
 			resolve: {
-				extensions: ['.js', '.ts', '.tsx']
+				extensions: ['.js', '.jsx', '.ts', '.tsx']
 			}
 		},
 		webpackMiddleware: {

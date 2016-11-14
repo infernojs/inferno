@@ -102,7 +102,19 @@ declare module 'sinon' {
 	export const assert;
 }
 
-declare module 'sinon-es.assert' {
-	export function calledOnce(obj: any): any;
-	export function notCalled(obj: any): any;
+declare module 'most' {
+	export function map(f?: any, stream?: any): any;
+	export function scan(f?: any, initial?: any, stream?: any): any;
+}
+
+declare module 'most-subject' {
+	export function hold(bufferSize?: number, subject?: any): any
+}
+
+declare module 'lodash/fp' {
+	export function curry(obj: any): any
+}
+
+declare module 'union-type' {
+	export default function (obj: any): any
 }
