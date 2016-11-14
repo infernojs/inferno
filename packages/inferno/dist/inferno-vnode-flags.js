@@ -1,5 +1,5 @@
 /*!
- * inferno-vnode-flags v1.0.0-beta7
+ * inferno-vnode-flags v1.0.0-beta8
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
