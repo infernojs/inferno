@@ -6,7 +6,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('./inferno-component')) :
 	typeof define === 'function' && define.amd ? define(['exports', 'inferno-component'], factory) :
-	(factory((global.InfernoCompat = global.InfernoCompat || {}),global.Component));
+	(factory((global.Inferno = global.Inferno || {}),global.Component));
 }(this, (function (exports,Component) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;
@@ -2295,8 +2295,13 @@ var cloneElement = cloneVNode;
 var version = '15.3.4';
 
 function normalizeProps(name, props) {
-	if (nodeName === 'input') {
-		// TODO normalize onChnage
+	if (name === 'input' && props.onChange) {
+		var eventName = props.type === 'checkbox' ? 'onclick' : 'oninput';
+		
+		if (!props[eventName]) {
+			props[eventName] = props.onChange;
+			delete props.onChange; 
+		}
 	}
 }
 

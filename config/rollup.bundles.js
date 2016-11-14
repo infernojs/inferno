@@ -18,7 +18,7 @@ bundles.add({
 });
 
 bundles.add({
-	moduleGlobal: 'InfernoComponent',
+	moduleGlobal: 'Component',
 	moduleName: 'inferno-component',
 	moduleEntry: 'packages/inferno-component/src/index.js',
 	path: 'packages/inferno-component/'
@@ -32,14 +32,14 @@ bundles.add({
 });
 
 bundles.add({
-	moduleGlobal: 'InfernoCreateElement',
+	moduleGlobal: 'createElement',
 	moduleName: 'inferno-create-element',
 	moduleEntry: 'packages/inferno-create-element/src/index.js',
 	path: 'packages/inferno-create-element/'
 });
 
 bundles.add({
-	moduleGlobal: 'InfernoCompat',
+	moduleGlobal: 'Inferno',
 	moduleName: 'inferno-compat',
 	moduleEntry: 'packages/inferno-compat/src/index.js',
 	path: 'packages/inferno-compat/'
@@ -53,7 +53,7 @@ bundles.add({
 });
 
 bundles.add({
-	moduleGlobal: 'InfernoCreateClass',
+	moduleGlobal: 'createClass',
 	moduleName: 'inferno-create-class',
 	moduleEntry: 'packages/inferno-create-class/src/index.js',
 	path: 'packages/inferno-create-class/'
@@ -74,10 +74,17 @@ bundles.add({
 });
 
 bundles.add({
-	moduleGlobal: 'InfernoHyperscript',
+	moduleGlobal: 'h',
 	moduleName: 'inferno-hyperscript',
 	moduleEntry: 'packages/inferno-hyperscript/src/index.js',
 	path: 'packages/inferno-hyperscript/'
+});
+
+bundles.add({
+	moduleGlobal: 'VNodeFlags',
+	moduleName: 'inferno-vnode-flags',
+	moduleEntry: 'packages/inferno-vnode-flags/src/index.js',
+	path: 'packages/inferno-vnode-flags/'
 });
 
 export default bundles;

@@ -6,7 +6,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component')) :
     typeof define === 'function' && define.amd ? define(['inferno-component'], factory) :
-    (global.InfernoCreateClass = factory(global.Component));
+    (global.createClass = factory(global.Component));
 }(this, (function (Component) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;

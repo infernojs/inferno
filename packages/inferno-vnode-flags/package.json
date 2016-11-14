@@ -1,0 +1,36 @@
+{
+  "name": "inferno-vnode-flags",
+  "version": "1.0.0-beta7",
+  "license": "MIT",
+  "description": "Provides an enum of all possible VNode Flags used when calling Inferno.createVNode",
+  "author": {
+    "name": "Dominic Gannaway",
+    "email": "dg@domgan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/trueadm/inferno/issues"
+  },
+  "homepage": "https://github.com/trueadm/inferno#readme",
+  "keywords": [
+    "babel",
+    "react",
+    "inferno",
+    "framework",
+    "interfaces",
+    "user interfaces",
+    "html",
+    "renderToString",
+    "server",
+    "dom",
+    "browser",
+    "rollup",
+    "vnode",
+    "createVNode",
+    "flags"
+  ],
+  "main": "inferno-vnode-flags.js",
+  "repository": "https://github.com/trueadm/inferno",
+  "dependencies": {
+    "inferno": "1.0.0-beta7"
+  }
+}
