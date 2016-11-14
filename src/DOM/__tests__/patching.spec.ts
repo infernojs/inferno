@@ -1,6 +1,7 @@
 import {expect} from 'chai';
 import {render} from './../rendering';
 import {createVNode, VNodeFlags, createTextVNode} from "../../core/shapes";
+import {disableRecycling, recyclingEnabled, enableRecycling} from "../recycling";
 
 describe('patching routine', () => {
 	let container;
@@ -91,4 +92,14 @@ describe('patching routine', () => {
 		render(createTextVNode('a'), container);
 		expect(container.innerHTML).to.eql('a');
 	});
+});
+
+describe('Recyling', () => {
+	it('Should be possible to disable it', () => {
+		expect(recyclingEnabled).to.eql(true);
+		disableRecycling();
+		expect(recyclingEnabled).to.eql(false);
+		enableRecycling();
+		expect(recyclingEnabled).to.eql(true);
+	})
 });

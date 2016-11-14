@@ -236,6 +236,7 @@ function disableRecycling() {
     componentPools.clear();
     elementPools.clear();
 }
+
 function recycleElement(vNode, lifecycle, context, isSVG) {
     var tag = vNode.type;
     var key = vNode.key;

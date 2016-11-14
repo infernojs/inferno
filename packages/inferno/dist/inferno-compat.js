@@ -382,6 +382,7 @@ var recyclingEnabled = true;
 var componentPools = new Map();
 var elementPools = new Map();
 
+
 function recycleElement(vNode, lifecycle, context, isSVG) {
     var tag = vNode.type;
     var key = vNode.key;
