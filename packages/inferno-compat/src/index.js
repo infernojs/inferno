@@ -53,8 +53,13 @@ const cloneElement = cloneVNode;
 const version = '15.3.4';
 
 function normalizeProps(name, props) {
-	if (nodeName === 'input') {
-		// TODO normalize onChnage
+	if (name === 'input' && props.onChange) {
+		const eventName = props.type === 'checkbox' ? 'onclick' : 'oninput'
+		
+		if (!props[eventName]) {
+			props[eventName] = props.onChange;
+			delete props.onChange; 
+		}
 	}
 }
 
