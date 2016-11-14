@@ -46,25 +46,21 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 	const instance = vNode.children;
 
 	if (!shallowUnmount) {
-		let instanceHooks = null;
+		if (instance.render !== undefined) {
+			const ref = vNode.ref;
 
-		if (!isNullOrUndef(instance)) {
-			instanceHooks = instance.ref;
-			if (instance.render !== undefined) {
-				const ref = vNode.ref;
-
-				if (ref) {
-					ref(null);
-				}
-				instance.componentWillUnmount();
-				instance._unmounted = true;
-				componentToDOMNodeMap.delete(instance);
-				unmount(instance._lastInput, null, lifecycle, false, shallowUnmount);
-			} else {
-				unmount(instance, null, lifecycle, false, shallowUnmount);
+			if (ref) {
+				ref(null);
 			}
+			instance.componentWillUnmount();
+			instance._unmounted = true;
+			componentToDOMNodeMap.delete(instance);
+			unmount(instance._lastInput, null, lifecycle, false, shallowUnmount);
+		} else {
+			unmount(instance, null, lifecycle, false, shallowUnmount);
 		}
-		const hooks = vNode.ref || instanceHooks;
+
+		const hooks = vNode.ref || instance.ref;
 
 		if (!isNullOrUndef(hooks)) {
 			if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
