@@ -134,7 +134,6 @@ var isDevtoolsEnabled = false;
 var componentByNodeRegistery = new WeakMap();
 var renderReporter = new EventEmitter();
 function reportRendering(component) {
-    // TODO: Add return type to findDOMNode
     var node = findDOMNode(component);
     if (node && componentByNodeRegistery) {
         componentByNodeRegistery.set(node, component);
@@ -155,45 +154,69 @@ function trackComponents() {
         isDevtoolsEnabled = true;
     }
 }
-function observer(componentClass) {
+function makeReactive(componentClass) {
     var target = componentClass.prototype || componentClass;
     var baseDidMount = target.componentDidMount;
     var baseWillMount = target.componentWillMount;
     var baseUnmount = target.componentWillUnmount;
-    var reaction;
     target.componentWillMount = function () {
-        if (typeof this.componentWillReact === 'function') {
-            this.componentWillReact();
-        }
-        if (baseWillMount) {
-            baseWillMount.call(this);
-        }
-    };
-    target.componentDidMount = function () {
         var this$1 = this;
 
+        // Call original
+        baseWillMount && baseWillMount.call(this);
+        var reaction;
+        var isRenderingPending = false;
         var initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || "<component>";
-        reaction = new mobx.Reaction((initialName + ".render()"), function () {
-            reaction.track(function () {
-                this$1.render(this$1.props, this$1.context);
-                this$1.forceUpdate();
+        var baseRender = this.render.bind(this);
+        var initialRender = function (nextProps, nextContext) {
+            reaction = new mobx.Reaction((initialName + ".render()"), function () {
+                if (!isRenderingPending) {
+                    isRenderingPending = true;
+                    if (this$1.__$mobxIsUnmounted !== true) {
+                        var hasError = true;
+                        try {
+                            Component.prototype.forceUpdate.call(this$1);
+                            hasError = false;
+                        }
+                        finally {
+                            if (hasError) {
+                                reaction.dispose();
+                            }
+                        }
+                    }
+                }
             });
-        });
-        // Start or schedule the just created reaction
-        reaction.runReaction();
-        this.disposer = reaction.getDisposer();
-        if (isDevtoolsEnabled) {
-            reportRendering(this);
-        }
-        if (baseDidMount) {
-            baseDidMount.call(this);
-        }
+            reactiveRender.$mobx = reaction;
+            this$1.render = reactiveRender;
+            return reactiveRender(nextProps, nextContext);
+        };
+        var reactiveRender = function (nextProps, nextContext) {
+            isRenderingPending = false;
+            var rendering = undefined;
+            reaction.track(function () {
+                if (isDevtoolsEnabled) {
+                    this$1.__$mobRenderStart = Date.now();
+                }
+                rendering = mobx.extras.allowStateChanges(false, baseRender.bind(this$1, nextProps, nextContext));
+                if (isDevtoolsEnabled) {
+                    this$1.__$mobRenderEnd = Date.now();
+                }
+            });
+            return rendering;
+        };
+        this.render = initialRender;
+    };
+    target.componentDidMount = function () {
+        isDevtoolsEnabled && reportRendering(this);
+        // Call original
+        baseDidMount && baseDidMount.call(this);
     };
     target.componentWillUnmount = function () {
-        this.disposer();
-        if (baseUnmount) {
-            baseUnmount.call(this);
-        }
+        // Call original
+        baseUnmount && baseUnmount.call(this);
+        // Dispose observables
+        this.render.$mobx && this.render.$mobx.dispose();
+        this.__$mobxIsUnmounted = true;
         if (isDevtoolsEnabled) {
             var node = findDOMNode(this);
             if (node && componentByNodeRegistery) {
@@ -340,7 +363,7 @@ function connect(arg1, arg2) {
         throwError('Please pass a valid component to "observer"');
     }
     componentClass.isMobXReactObserver = true;
-    return observer(componentClass);
+    return makeReactive(componentClass);
 }
 
 var index = {

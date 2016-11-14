@@ -2,7 +2,7 @@ import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
 import { throwError } from '../shared';
 import inject from './inject';
-import observer from './observer';
+import makeReactive from './makeReactive';
 
 /**
  * Wraps a component and provides stores as props
@@ -50,7 +50,7 @@ function connect (arg1: any, arg2 = null): any {
 	}
 
 	componentClass.isMobXReactObserver = true;
-	return observer(componentClass);
+	return makeReactive(componentClass);
 }
 
 export default connect;

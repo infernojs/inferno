@@ -780,11 +780,10 @@ function processElement(flags, vNode, dom) {
     }
 }
 
-// import {
-// 	getIncrementalId,
-// 	componentIdMap
-// } from './devtools';
 function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+    // TODO: Our nodes are not immutable and hoisted nodes get cloned. Is there any possibility to make this check true
+    // TODO: Remove check or write test case to verify this behavior
+    // TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
     if (lastVNode !== nextVNode) {
         var lastFlags = lastVNode.flags;
         var nextFlags = nextVNode.flags;
@@ -1048,6 +1047,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
                     nextHooks.onComponentDidUpdate(lastProps$1, nextProps);
                 }
+                nextVNode.dom = nextInput$2.dom;
             }
         }
     }
@@ -1057,7 +1057,7 @@ function patchText(lastVNode, nextVNode) {
     var nextText = nextVNode.children;
     var dom = lastVNode.dom;
     nextVNode.dom = dom;
-    if (lastVNode.text !== nextText) {
+    if (lastVNode.children !== nextText) {
         dom.nodeValue = nextText;
     }
 }
@@ -1111,9 +1111,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
         return;
     }
     else if (bLength === 0) {
-        if (aLength !== 0) {
-            removeAllChildren(dom, a, lifecycle, false);
-        }
+        removeAllChildren(dom, a, lifecycle, false);
         return;
     }
     // Step 1
@@ -1147,6 +1145,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
             insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
             aEnd--;
             bStart++;
+            // TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
             if (aStart > aEnd || bStart > bEnd) {
                 break;
             }
@@ -1164,6 +1163,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
             insertOrAppend(dom, bEndNode.dom, nextNode);
             aStart++;
             bEnd--;
+            // TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
             if (aStart > aEnd || bStart > bEnd) {
                 break;
             }
@@ -1202,6 +1202,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
         if ((bLength <= 4) || (aLength * bLength <= 16)) {
             for (i = aStart; i <= aEnd; i++) {
                 aNode = a[i];
+                // TODO: How to make this statement false? Add test to verify logic or remove IF
                 if (patched < bLength) {
                     for (j = bStart; j <= bEnd; j++) {
                         bNode = b[j];

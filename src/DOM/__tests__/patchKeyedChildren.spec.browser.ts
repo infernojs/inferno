@@ -1,6 +1,7 @@
 import { render } from './../rendering';
 import createElement from './../../factories/createElement';
 import { expect } from 'chai';
+import {VNode, createVNode, VNodeFlags, createTextVNode} from "../../core/shapes";
 
 function generateKeyNodes(array) {
 
@@ -393,6 +394,49 @@ describe('keyed-nodes', () => {
 		expect(container.firstChild.childNodes.length).to.equal(4);
 	});
 
+	it('should do move and sync nodes from right to left', () => {
+		render(template(generateKeyNodes(['a', 'b', 'c', 'd'])), container);
+		expect(container.textContent).to.equal('abcd');
+		expect(container.firstChild.childNodes.length).to.equal(4);
+		render(template(generateKeyNodes(['c', 'l', 1, 2, 3, 4, 5, 6, 7, 8, 9, 'd', 'g', 'b'])), container);
+		expect(container.textContent).to.equal('cl123456789dgb');
+		expect(container.firstChild.childNodes.length).to.equal(14);
+	});
+
+	describe('Should handle massive large arrays', () => {
+		let items;
+
+		beforeEach(() => {
+			items = new Array(1000);
+			for (let i = 0; i < 1000; i++) {
+				items[i] = i;
+			}
+		});
+
+		it('Should handle massive large arrays - initial', () => {
+			render(template(generateKeyNodes(items)), container);
+
+			expect(container.textContent).to.eql(items.join(''));
+		});
+
+		it('Should handle massive arrays shifting once by 2', () => {
+			items = items.concat(items.splice(0,2));
+			render(template(generateKeyNodes(items)), container);
+
+			expect(container.textContent).to.eql(items.join(''));
+		});
+
+		for (let i = 0; i < 10; i++) {
+			it('Should handle massive arrays shifting ' + i + ' times by ' + i , () => {
+				for (let j = 0; j < i; j++) {
+					items = items.concat(items.splice(i,j));
+				}
+				render(template(generateKeyNodes(items)), container);
+				expect(container.textContent).to.eql(items.join(''));
+			})
+		}
+	});
+
 	describe('Calendar like layout', () => {
 		function o(text) {
 			return createElement('span', {
@@ -439,4 +483,274 @@ describe('keyed-nodes', () => {
 		});
 	});
 
+	// VDom tests ported from Kivi - credits: https://github.com/localvoid
+	// https://github.com/localvoid/kivi/blob/master/tests/vdom.spec.ts
+	describe("children", () => {
+		const TESTS = [
+			[[0], [0]],
+			[[0, 1, 2], [0, 1, 2]],
+
+			[[], [1]],
+			[[], [4, 9]],
+			[[], [9, 3, 6, 1, 0]],
+
+			[[999], [1]],
+			[[999], [1, 999]],
+			[[999], [999, 1]],
+			[[999], [4, 9, 999]],
+			[[999], [999, 4, 9]],
+			[[999], [9, 3, 6, 1, 0, 999]],
+			[[999], [999, 9, 3, 6, 1, 0]],
+			[[999], [0, 999, 1]],
+			[[999], [0, 3, 999, 1, 4]],
+			[[999], [0, 999, 1, 4, 5]],
+
+			[[998, 999], [1, 998, 999]],
+			[[998, 999], [998, 999, 1]],
+			[[998, 999], [998, 1, 999]],
+			[[998, 999], [1, 2, 998, 999]],
+			[[998, 999], [998, 999, 1, 2]],
+			[[998, 999], [1, 998, 999, 2]],
+			[[998, 999], [1, 998, 2, 999, 3]],
+			[[998, 999], [1, 4, 998, 2, 5, 999, 3, 6]],
+			[[998, 999], [1, 998, 2, 999]],
+			[[998, 999], [998, 1, 999, 2]],
+			[[998, 999], [1, 2, 998, 3, 4, 999]],
+			[[998, 999], [998, 1, 2, 999, 3, 4]],
+			[[998, 999], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 998, 999]],
+			[[998, 999], [998, 999, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]],
+			[[998, 999], [0, 1, 2, 3, 4, 998, 999, 5, 6, 7, 8, 9]],
+			[[998, 999], [0, 1, 2, 998, 3, 4, 5, 6, 999, 7, 8, 9]],
+			[[998, 999], [0, 1, 2, 3, 4, 998, 5, 6, 7, 8, 9, 999]],
+			[[998, 999], [998, 0, 1, 2, 3, 4, 999, 5, 6, 7, 8, 9]],
+
+			[[1], []],
+			[[1, 2], [2]],
+			[[1, 2], [1]],
+			[[1, 2, 3], [2, 3]],
+			[[1, 2, 3], [1, 2]],
+			[[1, 2, 3], [1, 3]],
+			[[1, 2, 3, 4, 5], [2, 3, 4, 5]],
+			[[1, 2, 3, 4, 5], [1, 2, 3, 4]],
+			[[1, 2, 3, 4, 5], [1, 2, 4, 5]],
+
+			[[1, 2], []],
+			[[1, 2, 3], [3]],
+			[[1, 2, 3], [1]],
+			[[1, 2, 3, 4], [3, 4]],
+			[[1, 2, 3, 4], [1, 2]],
+			[[1, 2, 3, 4], [1, 4]],
+			[[1, 2, 3, 4, 5, 6], [2, 3, 4, 5]],
+			[[1, 2, 3, 4, 5, 6], [2, 3, 5, 6]],
+			[[1, 2, 3, 4, 5, 6], [1, 2, 3, 5]],
+			[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [2, 3, 4, 5, 6, 7, 8, 9]],
+			[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 4, 5, 6, 7]],
+			[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 6, 7, 8, 9]],
+			[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 4, 6, 7, 8]],
+			[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [0, 1, 2, 4, 6, 7, 8, 9]],
+
+			[[0, 1], [1, 0]],
+			[[0, 1, 2, 3], [3, 2, 1, 0]],
+			[[0, 1, 2, 3, 4], [1, 2, 3, 4, 0]],
+			[[0, 1, 2, 3, 4], [4, 0, 1, 2, 3]],
+			[[0, 1, 2, 3, 4], [1, 0, 2, 3, 4]],
+			[[0, 1, 2, 3, 4], [2, 0, 1, 3, 4]],
+			[[0, 1, 2, 3, 4], [0, 1, 4, 2, 3]],
+			[[0, 1, 2, 3, 4], [0, 1, 3, 4, 2]],
+			[[0, 1, 2, 3, 4], [0, 1, 3, 2, 4]],
+			[[0, 1, 2, 3, 4, 5, 6], [2, 1, 0, 3, 4, 5, 6]],
+			[[0, 1, 2, 3, 4, 5, 6], [0, 3, 4, 1, 2, 5, 6]],
+			[[0, 1, 2, 3, 4, 5, 6], [0, 2, 3, 5, 6, 1, 4]],
+			[[0, 1, 2, 3, 4, 5, 6], [0, 1, 5, 3, 2, 4, 6]],
+			[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [8, 1, 3, 4, 5, 6, 0, 7, 2, 9]],
+			[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [9, 5, 0, 7, 1, 2, 3, 4, 6, 8]],
+
+			[[0, 1], [2, 1, 0]],
+			[[0, 1], [1, 0, 2]],
+			[[0, 1, 2], [3, 0, 2, 1]],
+			[[0, 1, 2], [0, 2, 1, 3]],
+			[[0, 1, 2], [0, 2, 3, 1]],
+			[[0, 1, 2], [1, 2, 3, 0]],
+			[[0, 1, 2, 3, 4], [5, 4, 3, 2, 1, 0]],
+			[[0, 1, 2, 3, 4], [5, 4, 3, 6, 2, 1, 0]],
+			[[0, 1, 2, 3, 4], [5, 4, 3, 6, 2, 1, 0, 7]],
+
+			[[0, 1, 2], [1, 0]],
+			[[2, 0, 1], [1, 0]],
+			[[7, 0, 1, 8, 2, 3, 4, 5, 9], [7, 5, 4, 8, 3, 2, 1, 0]],
+			[[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 8, 3, 2, 1, 0, 9]],
+			[[7, 0, 1, 8, 2, 3, 4, 5, 9], [7, 5, 4, 3, 2, 1, 0, 9]],
+			[[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 3, 2, 1, 0, 9]],
+			[[7, 0, 1, 8, 2, 3, 4, 5, 9], [5, 4, 3, 2, 1, 0]],
+
+			[[0], [1]],
+			[[0], [1, 2]],
+			[[0, 2], [1]],
+			[[0, 2], [1, 2]],
+			[[0, 2], [2, 1]],
+			[[0, 1, 2], [3, 4, 5]],
+			[[0, 1, 2], [2, 4, 5]],
+			[[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]],
+			[[0, 1, 2, 3, 4, 5], [6, 1, 7, 3, 4, 8]],
+			[[0, 1, 2, 3, 4, 5], [6, 7, 3, 8]],
+
+			[[0, 1, 2], [3, 2, 1]],
+			[[0, 1, 2], [2, 1, 3]],
+			[[1, 2, 0], [2, 1, 3]],
+			[[1, 2, 0], [3, 2, 1]],
+			[[0, 1, 2, 3, 4, 5], [6, 1, 3, 2, 4, 7]],
+			[[0, 1, 2, 3, 4, 5], [6, 1, 7, 3, 2, 4]],
+			[[0, 1, 2, 3, 4, 5], [6, 7, 3, 2, 4]],
+			[[0, 2, 3, 4, 5], [6, 1, 7, 3, 2, 4]],
+
+			[[{key: 0, children: [0]}],
+				[{key: 0, children: []}]],
+
+			[[0, 1, {children: [0], key: 2}],
+				[{key: 2, children: []}]],
+
+			[[{key: 0, children: []}],
+				[1, 2, {key: 0, children: [0]}]],
+
+			[[0, {key: 1, children: [0, 1]}, 2],
+				[3, 2, {key: 1, children: [1, 0]}]],
+
+			[[0, {key: 1, children: [0, 1]}, 2],
+				[2, {key: 1, children: [1, 0]}, 3]],
+
+			[[{key: 1, children: [0, 1]}, {key: 2, children: [0, 1]}, 0],
+				[{key: 2, children: [1, 0]}, {key: 1, children: [1, 0]}, 3]],
+
+			[[{key: 1, children: [0, 1]}, {key: 2, children: []}, 0],
+				[3, {key: 2, children: [1, 0]}, {key: 1, children: []}]],
+
+			[[0, {key: 1, children: []}, 2, {key: 3, children: [1, 0]}, 4, 5],
+				[6, {key: 1, children: [0, 1]}, {key: 3, children: []}, 2, 4, 7]],
+
+			[[0, {key: 1, children: []}, {key: 2, children: []}, {key: 3, children: []}, {key: 4, children: []}, 5],
+				[{key: 6, children: [{key: 1, children: [1]}]}, 7, {key: 3, children: [1]}, {key: 2, children: [1]},
+					{key: 4, children: [1]}]],
+
+			[[0, 1, {key: 2, children: [0]}, 3, {key: 4, children: [0]}, 5],
+				[6, 7, 3, {key: 2, children: []}, {key: 4, children: []}]],
+		];
+
+		describe("syncChildren string children", () => {
+			it("null => 'abc'", () => {
+				const f = document.createDocumentFragment();
+				const a = createElement("div");
+				const b = createElement("div", null, "abc");
+				render(a, f);
+				render(b, f);
+				expect((f.firstChild as Element).childNodes.length).to.equal(1);
+				expect((f.firstChild as Element).firstChild.nodeValue).to.equal("abc");
+			});
+
+			it("'abc' => null", () => {
+				const f = document.createDocumentFragment();
+				const a = createElement("div", null, "abc");
+				const b = createElement("div");
+				render(a, f);
+				render(b, f);
+				expect((f.firstChild as Element).childNodes.length).to.equal(0);
+			});
+
+			it("'abc' => 'cde'", () => {
+				const f = document.createDocumentFragment();
+				const a = createElement("div", null, "abc");
+				const b = createElement("div", null, "cde");
+				render(a, f);
+				render(b, f);
+				expect((f.firstChild as Element).childNodes.length).to.equal(1);
+				expect((f.firstChild as Element).firstChild.nodeValue).to.equal("cde");
+			});
+
+			it("[div] => 'cde'", () => {
+				const f = document.createDocumentFragment();
+				const a = createElement("div", null, createElement("div"));
+				const b = createElement("div", null, "cde");
+				render(a, f);
+				render(b, f);
+				expect((f.firstChild as Element).childNodes.length).to.equal(1);
+				expect((f.firstChild as Element).firstChild.nodeValue).to.equal("cde");
+			});
+
+			it("'cde' => [div]", () => {
+				const f = document.createDocumentFragment();
+				const a = createElement("div", null, "cde");
+				const b = createElement("div", null, createElement("div"));
+				render(a, f);
+				render(b, f);
+				expect((f.firstChild as Element).childNodes.length).to.equal(1);
+				expect((f.firstChild.firstChild as Element).tagName).to.equal("DIV");
+			});
+
+			function gen(item: any, keys: boolean): VNode | VNode[] {
+				if (typeof item === "number") {
+					return keys ? createVNode(VNodeFlags.Text, null, null, item, item) : createTextVNode(item);
+				} else if (Array.isArray(item)) {
+					let result: VNode[] = [];
+					for (let i = 0; i < item.length; i++) {
+						result.push(gen(item[i], keys) as VNode);
+					}
+					return result;
+				} else {
+					if (keys) {
+						return createElement("div", {key: item.key}, gen(item.children, keys));
+					} else {
+						return createElement("div", null, gen(item.children, keys))
+					}
+				}
+			}
+
+			function checkInnerHtmlEquals(ax: VNode[], bx: VNode[], cx: VNode[], keys: boolean): void {
+				let a,b,c;
+
+				if (keys) {
+					a = createElement("div", {key: ax}, ax);
+					b = createElement("div", {key: bx}, bx);
+					c = createElement("div", {key: cx}, cx);
+				} else {
+					a = createElement("div", null, ax);
+					b = createElement("div", null, bx);
+					c = createElement("div", null, cx);
+				}
+
+				const aDiv = document.createElement("div");
+				const bDiv = document.createElement("div");
+				render(a, aDiv);
+				render(b, bDiv);
+
+				render(c, aDiv);
+
+				expect(aDiv.innerHTML).to.equal(bDiv.innerHTML);
+			}
+
+			describe("Keyed algorithm", () => {
+				TESTS.forEach((t) => {
+					const name = JSON.stringify(t[0]) + " => " + JSON.stringify(t[1]);
+					const testFn = () => {
+						checkInnerHtmlEquals(gen(t[0], true) as VNode[],
+							gen(t[1], true) as VNode[],
+							gen(t[1], true) as VNode[],
+							true);
+					};
+					it(name, testFn);
+				});
+			});
+
+			describe("Non keyed algorithm", () => {
+				TESTS.forEach((t) => {
+					const name = JSON.stringify(t[0]) + " => " + JSON.stringify(t[1]);
+					const testFn = () => {
+						checkInnerHtmlEquals(gen(t[0], false) as VNode[],
+							gen(t[1], false) as VNode[],
+							gen(t[1], false) as VNode[],
+							false);
+					};
+					it(name, testFn);
+				});
+			});
+		});
+	});
 });

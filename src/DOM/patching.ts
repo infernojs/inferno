@@ -51,12 +51,12 @@ import {
 	VNode
 } from '../core/shapes';
 import processElement from './wrappers/processElement';
-// import {
-// 	getIncrementalId,
-// 	componentIdMap
-// } from './devtools';
+import Lifecycle from "./lifecycle";
 
 export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+	// TODO: Our nodes are not immutable and hoisted nodes get cloned. Is there any possibility to make this check true
+	// TODO: Remove check or write test case to verify this behavior
+	// TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
 	if (lastVNode !== nextVNode) {
 		const lastFlags = lastVNode.flags;
 		const nextFlags = nextVNode.flags;
@@ -133,7 +133,7 @@ function unmountChildren(children, dom, lifecycle) {
 	}
 }
 
-export function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node, lifecycle: Lifecycle, context, isSVG) {
 	const nextTag = nextVNode.type;
 	const lastTag = lastVNode.type;
 
@@ -359,18 +359,20 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
 					nextHooks.onComponentDidUpdate(lastProps, nextProps);
 				}
+				nextVNode.dom = nextInput.dom;
 			}
 		}
 	}
 	return false;
 }
 
-export function patchText(lastVNode, nextVNode) {
-	const nextText = nextVNode.children;
+export function patchText(lastVNode: VNode, nextVNode: VNode) {
+	const nextText = nextVNode.children as string;
 	const dom = lastVNode.dom;
 
 	nextVNode.dom = dom;
-	if (lastVNode.text !== nextText) {
+
+	if (lastVNode.children !== nextText) {
 		dom.nodeValue = nextText;
 	}
 }
@@ -408,9 +410,9 @@ export function patchKeyedChildren(
 	a: Array<VNode>,
 	b: Array<VNode>,
 	dom,
-	lifecycle,
+	lifecycle: Lifecycle,
 	context,
-	isSVG
+	isSVG: boolean
 ) {
 	let aLength = a.length;
 	let bLength = b.length;
@@ -436,9 +438,7 @@ export function patchKeyedChildren(
 		}
 		return;
 	} else if (bLength === 0) {
-		if (aLength !== 0) {
 			removeAllChildren(dom, a, lifecycle, false);
-		}
 		return;
 	}
 	// Step 1
@@ -474,6 +474,7 @@ export function patchKeyedChildren(
 			insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
 			aEnd--;
 			bStart++;
+			// TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
 			if (aStart > aEnd || bStart > bEnd) {
 				break;
 			}
@@ -492,6 +493,7 @@ export function patchKeyedChildren(
 			insertOrAppend(dom, bEndNode.dom, nextNode);
 			aStart++;
 			bEnd--;
+			// TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
 			if (aStart > aEnd || bStart > bEnd) {
 				break;
 			}
@@ -531,6 +533,7 @@ export function patchKeyedChildren(
 		if ((bLength <= 4) || (aLength * bLength <= 16)) {
 			for (i = aStart; i <= aEnd; i++) {
 				aNode = a[i];
+				// TODO: How to make this statement false? Add test to verify logic or remove IF
 				if (patched < bLength) {
 					for (j = bStart; j <= bEnd; j++) {
 						bNode = b[j];

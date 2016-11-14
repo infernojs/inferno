@@ -311,34 +311,6 @@ describe('Components (JSX)', () => {
 		);
 	});
 
-	/* no more templates
-	 it('should throw error when a component is included as a child without a template', () => {
-
-	 class BasicComponent1c extends Component<any, any> {
-	 render() {
-	 return (<span>Hello World</span>);
-	 }
-	 }
-
-	 expect(() => render((
-	 <div>
-	 <BasicComponent2 title="abc" name="basic-render">
-	 <span>A child</span>
-	 <BasicComponent1c/>
-	 </BasicComponent2>
-	 </div>
-	 ), container)).to.throw('Inferno Error: Children must be provided as templates.');
-
-	 expect(() => render((
-	 <div>
-	 <BasicComponent2 title="abc" name="basic-render">
-	 <span>A child</span>
-	 <BasicComponent1c/>
-	 </BasicComponent2>
-	 </div>
-	 ), container)).to.throw('Inferno Error: Children must be provided as templates.');
-	 }); */
-
 	it('should render multiple components', () => {
 
 		render((
@@ -2316,6 +2288,90 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.equal('<div>yar</div>');
 			reference();
 			expect(container.innerHTML).to.equal('<div>bar</div>');
+		});
+	});
+
+	describe('node change in updateComponent', () => {
+		it('Should not crash when invalid node returned - statefull', () => {
+			class Comp1 extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				}
+
+				render() {
+					if (this.props.foo) {
+						return null;
+					}
+
+					return <div>rendered</div>;
+				}
+			}
+
+			render(<Comp1 />, container);
+			expect(container.innerHTML).to.eql('<div>rendered</div>');
+			render(<Comp1 foo={true}/>, container);
+			expect(container.innerHTML).to.eql('');
+		});
+
+		it('Should not crash when invalid node returned - stateless', () => {
+			const Comp1 = ({foo}) => {
+				if (foo) {
+					return null;
+				}
+
+				return <div>rendered</div>;
+			};
+
+			render(<Comp1 />, container);
+			expect(container.innerHTML).to.eql('<div>rendered</div>');
+			render(<Comp1 foo={true}/>, container);
+			expect(container.innerHTML).to.eql('');
+		});
+
+		it('Should throw when array returned - statefull', () => {
+			class Comp1 extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				}
+
+				render() {
+					if (this.props.foo) {
+						return [<div>rendered1</div>, <div>rendered2</div>];
+					}
+
+					return <div>rendered</div>;
+				}
+			}
+
+			render(<Comp1 />, container);
+			expect(container.innerHTML).to.eql('<div>rendered</div>');
+			try {
+				render(<Comp1 foo={true}/>, container);
+			} catch (e) {
+				expect(e.message).to.eql('Inferno Error: a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+			}
+
+			expect(container.innerHTML).to.eql('<div>rendered</div>');
+		});
+
+		it('Should throw when array returned - stateless', () => {
+			const Comp1 = ({foo}) => {
+				if (foo) {
+					return [<div>rendered1</div>, <div>rendered2</div>];
+				}
+
+				return <div>rendered</div>;
+			};
+
+			render(<Comp1 />, container);
+			expect(container.innerHTML).to.eql('<div>rendered</div>');
+			try {
+				render(<Comp1 foo={true}/>, container);
+			} catch (e) {
+				expect(e.message).to.eql('Inferno Error: a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+			}
+
+			expect(container.innerHTML).to.eql('<div>rendered</div>');
 		});
 	});
 });

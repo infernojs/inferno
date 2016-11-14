@@ -1,7 +1,8 @@
-import { isObservable, Reaction } from 'mobx';
-import { throwError } from '../shared';
+import { isObservable, Reaction, extras } from 'mobx';
 import { default as Inferno } from 'inferno';
+import { throwError } from '../shared';
 import EventEmitter from './EventEmitter';
+import Component from 'inferno-component';
 const { findDOMNode } = Inferno;
 
 /**
@@ -12,8 +13,7 @@ let isDevtoolsEnabled = false;
 export const componentByNodeRegistery: WeakMap<any, any> = new WeakMap();
 export const renderReporter = new EventEmitter();
 
-function reportRendering (component) {
-	// TODO: Add return type to findDOMNode
+function reportRendering(component) {
 	const node = findDOMNode(component);
 	if (node && componentByNodeRegistery) {
 		componentByNodeRegistery.set(node, component);
@@ -37,51 +37,83 @@ export function trackComponents() {
 	}
 }
 
-export default function observer (componentClass) {
+interface IReactiveRender {
+	$mobx?: Reaction;
+	(nextProps, nextContext): void;
+}
+
+export default function makeReactive(componentClass) {
 
 	const target = componentClass.prototype || componentClass;
 	const baseDidMount = target.componentDidMount;
 	const baseWillMount = target.componentWillMount;
 	const baseUnmount = target.componentWillUnmount;
-	let reaction: Reaction;
 
-	target.componentWillMount = function () {
-		if (typeof this.componentWillReact === 'function') {
-			this.componentWillReact();
-		}
-		if (baseWillMount) {
-			baseWillMount.call(this);
-		}
-	};
+	target.componentWillMount = function() {
 
-	target.componentDidMount = function () {
+		// Call original
+		baseWillMount && baseWillMount.call(this);
+
+		let reaction: Reaction;
+		let isRenderingPending = false;
+
 		const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || "<component>";
+		const baseRender = this.render.bind(this);
 
-		reaction = new Reaction(`${initialName}.render()`, () => {
-			reaction.track(() => {
-				this.render(this.props, this.context);
-				this.forceUpdate();
+		const initialRender = (nextProps, nextContext) => {
+			reaction = new Reaction(`${initialName}.render()`, () => {
+				if (!isRenderingPending) {
+					isRenderingPending = true;
+					if (this.__$mobxIsUnmounted !== true) {
+						let hasError = true;
+						try {
+							Component.prototype.forceUpdate.call(this);
+							hasError = false;
+						} finally {
+							if (hasError) {
+								reaction.dispose();
+							}
+						}
+					}
+				}
 			});
-		});
+			reactiveRender.$mobx = reaction;
+			this.render = reactiveRender;
+			return reactiveRender(nextProps, nextContext);
+		};
 
-		// Start or schedule the just created reaction
-		reaction.runReaction();
-		this.disposer = reaction.getDisposer();
+		const reactiveRender: IReactiveRender = (nextProps, nextContext) => {
+			isRenderingPending = false;
+			let rendering = undefined;
+			reaction.track(() => {
+				if (isDevtoolsEnabled) {
+					this.__$mobRenderStart = Date.now();
+				}
+				rendering = extras.allowStateChanges(false, baseRender.bind(this, nextProps, nextContext));
+				if (isDevtoolsEnabled) {
+					this.__$mobRenderEnd = Date.now();
+				}
+			});
+			return rendering;
+		};
 
-		if (isDevtoolsEnabled) {
-			reportRendering(this);
-		}
-		if (baseDidMount) {
-			baseDidMount.call(this);
-		}
+		this.render = initialRender;
 	};
 
-	target.componentWillUnmount = function () {
-		this.disposer();
+	target.componentDidMount = function() {
+		isDevtoolsEnabled && reportRendering(this);
 
-		if (baseUnmount) {
-			baseUnmount.call(this);
-		}
+		// Call original
+		baseDidMount && baseDidMount.call(this);
+	};
+
+	target.componentWillUnmount = function() {
+		// Call original
+		baseUnmount && baseUnmount.call(this);
+
+		// Dispose observables
+		this.render.$mobx && this.render.$mobx.dispose();
+		this.__$mobxIsUnmounted = true;
 
 		if (isDevtoolsEnabled) {
 			const node = findDOMNode(this);
@@ -96,7 +128,7 @@ export default function observer (componentClass) {
 		}
 	};
 
-	target.shouldComponentUpdate = function (nextProps, nextState) {
+	target.shouldComponentUpdate = function(nextProps, nextState) {
 		// Update on any state changes (as is the default)
 		if (this.state !== nextState) {
 			return true;
