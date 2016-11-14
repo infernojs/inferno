@@ -17,10 +17,12 @@ For those not familiar with React... TODO
 
 ## Summary
 
+- Component driven + one-way data flow archietecture
 - One of the fastest front-end frameworks for rendering UI in the DOM
 - React-like API, concepts and component lifecycle events
 - Lightweight filesize of only 6kb
 - Isomorphic rendering on both client and server with `inferno-server`
+- Highly modular with very little opionatation in how things should be done
 
 ## Benchmarks
 
@@ -62,7 +64,7 @@ Pre-bundled files for browser consumption can be found on [our cdnjs](https://cd
 https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0/inferno.min.js
 ```
 
-## Creating virtual DOM
+## Creating Virtual DOM
 
 ### JSX:
 ```sh
@@ -89,6 +91,7 @@ Note: Make sure you read more about [`inferno-compat`](https://github.com/truead
 ## Overview
 
 Let's start with some code. As you can see, Inferno intentionally keeps the same, good, design ideas as React regarding components: one-way data flow and separation of concerns.
+
 In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a simple way to express Inferno virtual DOM.
 
 ```javascript
