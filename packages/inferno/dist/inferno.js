@@ -356,6 +356,7 @@ function unmountText(vNode, parentDom) {
 }
 function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
     var instance = vNode.children;
+    var hooks = vNode.ref;
     if (!shallowUnmount && !lifecycle.fastUnmount) {
         if (instance.render !== undefined) {
             var ref = vNode.ref;
@@ -370,11 +371,11 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         else {
             unmount(instance, null, lifecycle, false, shallowUnmount);
         }
-        var hooks = vNode.ref || instance.ref;
-        if (!isNullOrUndef(hooks)) {
-            if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-                hooks.onComponentWillUnmount();
-            }
+        hooks = vNode.ref || instance.ref;
+    }
+    if (!isNullOrUndef(hooks)) {
+        if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
+            hooks.onComponentWillUnmount();
         }
     }
     if (parentDom) {
