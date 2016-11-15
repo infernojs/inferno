@@ -69,7 +69,7 @@ bundles.add({
 	moduleGlobals: {
 		'inferno': 'Inferno',
 		'inferno-component': 'Inferno.Component',
-		'inferno-create-element': 'Inferno.createElement',
+		'inferno-create-element': 'Inferno.createElement'
 	},
 	path: 'packages/inferno-router/'
 });

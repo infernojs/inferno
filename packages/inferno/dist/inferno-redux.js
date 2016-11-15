@@ -4,14 +4,13 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('redux'), require('./inferno-create-element'), require('hoist-non-inferno-statics')) :
-	typeof define === 'function' && define.amd ? define(['inferno-component', 'redux', 'inferno-create-element', 'hoist-non-inferno-statics'], factory) :
-	(global.Inferno = global.Inferno || {}, global.Inferno.Redux = factory(global.Inferno.Component,global.redux,global.Inferno.createElement,global.hoistStatics));
-}(this, (function (Component,redux,createElement,hoistStatics) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('redux'), require('./inferno-create-element')) :
+	typeof define === 'function' && define.amd ? define(['inferno-component', 'redux', 'inferno-create-element'], factory) :
+	(global.Inferno = global.Inferno || {}, global.Inferno.Redux = factory(global.Inferno.Component,global.redux,global.Inferno.createElement));
+}(this, (function (Component,redux,createElement) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;
 createElement = 'default' in createElement ? createElement['default'] : createElement;
-hoistStatics = 'default' in hoistStatics ? hoistStatics['default'] : hoistStatics;
 
 /**
  * Prints a warning in the console if it exists.
@@ -132,6 +131,61 @@ if (process.env.NODE_ENV !== 'production') {
         }
     };
 }
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var index$1 = createCommonjsModule(function (module) {
+'use strict';
+
+var INFERNO_STATICS = {
+    childContextTypes: true,
+    contextTypes: true,
+    defaultProps: true,
+    displayName: true,
+    getDefaultProps: true,
+    propTypes: true,
+    type: true
+};
+
+var KNOWN_STATICS = {
+    name: true,
+    length: true,
+    prototype: true,
+    caller: true,
+    arguments: true,
+    arity: true
+};
+
+var isGetOwnPropertySymbolsAvailable = typeof Object.getOwnPropertySymbols === 'function';
+
+function hoistNonReactStatics(targetComponent, sourceComponent, customStatics) {
+    if (typeof sourceComponent !== 'string') { // don't hoist over string (html) components
+        var keys = Object.getOwnPropertyNames(sourceComponent);
+
+        /* istanbul ignore else */
+        if (isGetOwnPropertySymbolsAvailable) {
+            keys = keys.concat(Object.getOwnPropertySymbols(sourceComponent));
+        }
+
+        for (var i = 0; i < keys.length; ++i) {
+            if (!INFERNO_STATICS[keys[i]] && !KNOWN_STATICS[keys[i]] && (!customStatics || !customStatics[keys[i]])) {
+                try {
+                    targetComponent[keys[i]] = sourceComponent[keys[i]];
+                } catch (error) {
+
+                }
+            }
+        }
+    }
+
+    return targetComponent;
+}
+
+module.exports = hoistNonReactStatics;
+module.exports.default = module.exports;
+});
 
 // From https://github.com/lodash/lodash/blob/es
 function overArg(func, transform) {
@@ -437,7 +491,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
                 this.clearCache();
             };
         }
-        return hoistStatics(Connect, WrappedComponent);
+        return index$1(Connect, WrappedComponent);
     };
 }
 

@@ -4,15 +4,14 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('mobx'), require('./inferno'), require('./inferno-create-class'), require('hoist-non-inferno-statics'), require('./inferno-create-element')) :
-	typeof define === 'function' && define.amd ? define(['inferno-component', 'mobx', 'inferno', 'inferno-create-class', 'hoist-non-inferno-statics', 'inferno-create-element'], factory) :
-	(global.Inferno = global.Inferno || {}, global.Inferno.Mobx = factory(global.Inferno.Component,global.mobx,global.Inferno,global.Inferno.createClass,global.hoistStatics,global.Inferno.createElement));
-}(this, (function (Component,mobx,Inferno,createClass,hoistStatics,createElement) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('mobx'), require('./inferno'), require('./inferno-create-class'), require('./inferno-create-element')) :
+	typeof define === 'function' && define.amd ? define(['inferno-component', 'mobx', 'inferno', 'inferno-create-class', 'inferno-create-element'], factory) :
+	(global.Inferno = global.Inferno || {}, global.Inferno.Mobx = factory(global.Inferno.Component,global.mobx,global.Inferno,global.Inferno.createClass,global.Inferno.createElement));
+}(this, (function (Component,mobx,Inferno,createClass,createElement) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;
 Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 createClass = 'default' in createClass ? createClass['default'] : createClass;
-hoistStatics = 'default' in hoistStatics ? hoistStatics['default'] : hoistStatics;
 createElement = 'default' in createElement ? createElement['default'] : createElement;
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
@@ -258,6 +257,61 @@ function makeReactive(componentClass) {
     return componentClass;
 }
 
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var index$1 = createCommonjsModule(function (module) {
+'use strict';
+
+var INFERNO_STATICS = {
+    childContextTypes: true,
+    contextTypes: true,
+    defaultProps: true,
+    displayName: true,
+    getDefaultProps: true,
+    propTypes: true,
+    type: true
+};
+
+var KNOWN_STATICS = {
+    name: true,
+    length: true,
+    prototype: true,
+    caller: true,
+    arguments: true,
+    arity: true
+};
+
+var isGetOwnPropertySymbolsAvailable = typeof Object.getOwnPropertySymbols === 'function';
+
+function hoistNonReactStatics(targetComponent, sourceComponent, customStatics) {
+    if (typeof sourceComponent !== 'string') { // don't hoist over string (html) components
+        var keys = Object.getOwnPropertyNames(sourceComponent);
+
+        /* istanbul ignore else */
+        if (isGetOwnPropertySymbolsAvailable) {
+            keys = keys.concat(Object.getOwnPropertySymbols(sourceComponent));
+        }
+
+        for (var i = 0; i < keys.length; ++i) {
+            if (!INFERNO_STATICS[keys[i]] && !KNOWN_STATICS[keys[i]] && (!customStatics || !customStatics[keys[i]])) {
+                try {
+                    targetComponent[keys[i]] = sourceComponent[keys[i]];
+                } catch (error) {
+
+                }
+            }
+        }
+    }
+
+    return targetComponent;
+}
+
+module.exports = hoistNonReactStatics;
+module.exports.default = module.exports;
+});
+
 /**
  * Store Injection
  */
@@ -284,7 +338,7 @@ function createStoreInjector(grabStoresFn, component) {
         }
     });
     Injector.contextTypes = { mobxStores: function mobxStores() { } };
-    hoistStatics(Injector, component);
+    index$1(Injector, component);
     return Injector;
 }
 var grabStoresByName = function (storeNames) { return function (baseStores, nextProps) {

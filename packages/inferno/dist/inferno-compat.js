@@ -102,7 +102,7 @@ function bindAll(ctx) {
     }
 }
 function createClass(obj) {
-    return (Cl_1 = (function (Component$$1) {
+    return _a = (function (Component$$1) {
         function Cl(props) {
                 Component$$1.call(this, props);
                 extend(this, obj);
@@ -118,11 +118,11 @@ function createClass(obj) {
 
         return Cl;
     }(Component)),
-        Cl_1.displayName = obj.displayName || 'Component',
-        Cl_1.propTypes = obj.propTypes,
-        Cl_1.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined,
-        Cl_1);
-    var Cl_1;
+        _a.displayName = obj.displayName || 'Component',
+        _a.propTypes = obj.propTypes,
+        _a.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined,
+        _a;
+    var _a;
 }
 
 function cloneVNode(vNodeToClone, props) {
