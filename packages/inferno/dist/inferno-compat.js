@@ -869,7 +869,16 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
     }
 }
 function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
-    if (isInvalid(nextChildren)) {
+    var patchArray = false;
+    var patchKeyed = false;
+    if (nextFlags & 64 /* HasNonKeyedChildren */) {
+        patchArray = true;
+    }
+    else if ((lastFlags & 32 /* HasKeyedChildren */) && (nextFlags & 32 /* HasKeyedChildren */)) {
+        patchKeyed = true;
+        patchArray = true;
+    }
+    else if (isInvalid(nextChildren)) {
         unmountChildren(lastChildren, dom, lifecycle);
     }
     else if (isInvalid(lastChildren)) {
@@ -896,22 +905,9 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
     }
     else if (isArray(nextChildren)) {
         if (isArray(lastChildren)) {
-            var patchKeyed = false;
-            // check if we can do keyed updates
-            if ((lastFlags & 32 /* HasKeyedChildren */) &&
-                (nextFlags & 32 /* HasKeyedChildren */)) {
+            patchArray = true;
+            if (isKeyed(lastChildren, nextChildren)) {
                 patchKeyed = true;
-            }
-            else if (!(nextFlags & 64 /* HasNonKeyedChildren */)) {
-                if (isKeyed(lastChildren, nextChildren)) {
-                    patchKeyed = true;
-                }
-            }
-            if (patchKeyed) {
-                patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
-            }
-            else {
-                patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
             }
         }
         else {
@@ -935,6 +931,14 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
     else if (isVNode(lastChildren)) {
     }
     else {
+    }
+    if (patchArray) {
+        if (patchKeyed) {
+            patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+        }
+        else {
+            patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+        }
     }
 }
 function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass) {
