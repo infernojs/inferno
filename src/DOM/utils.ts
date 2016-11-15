@@ -154,7 +154,9 @@ export function removeChild(parentDom, dom) {
 
 export function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
 	dom.textContent = '';
-	removeChildren(null, children, lifecycle, shallowUnmount);
+	if (!lifecycle.fastUnmount) {
+		removeChildren(null, children, lifecycle, shallowUnmount);
+	}
 }
 
 export function removeChildren(dom, children, lifecycle, shallowUnmount) {

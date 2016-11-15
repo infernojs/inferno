@@ -52,6 +52,10 @@ import {
 } from '../core/shapes';
 import processElement from './wrappers/processElement';
 import Lifecycle from "./lifecycle";
+import {
+	componentIdMap,
+	getIncrementalId
+} from './devtools';
 
 export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
 	// TODO: Our nodes are not immutable and hoisted nodes get cloned. Is there any possibility to make this check true
@@ -282,9 +286,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				const defaultProps = nextType.defaultProps;
 				const lastProps = instance.props;
 
-				// if (instance._devToolsStatus.connected && !instance._devToolsId) {
-				// 	componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
-				// }
+				if (instance._devToolsStatus.connected && !instance._devToolsId) {
+					componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
+				}
+				lifecycle.fastUnmount = false;
 				if (!isUndefined(defaultProps)) {
 					copyPropsTo(lastProps, nextProps);
 					nextVNode.props = nextProps;
@@ -341,6 +346,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 			}
 			if (shouldUpdate !== false) {
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
+					lifecycle.fastUnmount = false;
 					nextHooks.onComponentWillUpdate(lastProps, nextProps);
 				}
 				let nextInput = nextType(nextProps, context);
@@ -359,6 +365,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 				nextVNode.children = nextInput;
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
+					lifecycle.fastUnmount = false;
 					nextHooks.onComponentDidUpdate(lastProps, nextProps);
 				}
 				nextVNode.dom = nextInput.dom;

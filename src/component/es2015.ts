@@ -118,7 +118,14 @@ function applyState(component: Component<any, any>, force, callback): void {
 
 		component._lastInput = nextInput;
 		if (didUpdate) {
-			const subLifecycle = new Lifecycle();
+			let subLifecycle: Lifecycle = component._lifecycle;
+
+			if (!subLifecycle) {
+				subLifecycle = new Lifecycle();
+			} else {
+				subLifecycle.listeners = [];
+			}
+			component._lifecycle = subLifecycle;
 			let childContext = component.getChildContext();
 
 			if (!isNullOrUndef(childContext)) {
@@ -158,7 +165,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_unmounted = true;
 	_devToolsStatus = null;
 	_devToolsId = null;
-
+	_lifecycle = null;
 	_childContext = null;
 	_patch = null;
 	_isSVG = false;

@@ -45,7 +45,7 @@ function unmountText(vNode, parentDom) {
 export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	const instance = vNode.children;
 
-	if (!shallowUnmount) {
+	if (!shallowUnmount && !lifecycle.fastUnmount) {
 		if (instance.render !== undefined) {
 			const ref = vNode.ref;
 
@@ -85,7 +85,7 @@ export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowU
 	const dom = vNode.dom;
 	const ref = vNode.ref;
 
-	if (!shallowUnmount) {
+	if (!shallowUnmount && !lifecycle.fastUnmount) {
 		if (ref) {
 			unmountRef(ref);
 		}

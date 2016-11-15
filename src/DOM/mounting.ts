@@ -144,6 +144,7 @@ export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isCl
 	if (isClass) {
 		const defaultProps = type.defaultProps;
 
+		lifecycle.fastUnmount = false;
 		if (!isUndefined(defaultProps)) {
 			copyPropsTo(defaultProps, props);
 			vNode.props = props;
@@ -192,6 +193,7 @@ export function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
 
 export function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
 	if (ref) {
+		lifecycle.fastUnmount = false;
 		if (!isNullOrUndef(ref.onComponentWillMount)) {
 			ref.onComponentWillMount();
 		}
@@ -203,6 +205,7 @@ export function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
 
 export function mountRef(dom, value, lifecycle) {
 	if (isFunction(value)) {
+		lifecycle.fastUnmount = false;
 		lifecycle.addListener(() => value(dom));
 	} else {
 		if (isInvalid(value)) {

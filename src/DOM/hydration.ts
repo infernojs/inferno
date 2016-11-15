@@ -21,6 +21,7 @@ import {
 	VNodeFlags
 } from '../core/shapes';
 import processElement from './wrappers/processElement';
+import { devToolsStatus } from './devtools';
 
 export function normaliseChildNodes(dom) {
 	const rawChildNodes = dom.childNodes;
@@ -54,7 +55,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 	vNode.dom = dom;
 	if (isClass) {
 		const _isSVG = dom.namespaceURI === svgNS;
-		const instance = createStatefulComponentInstance(type, props, context, _isSVG, null);
+		const instance = createStatefulComponentInstance(type, props, context, _isSVG, devToolsStatus);
 		const input = instance._lastInput;
 
 		instance._vComponent = vNode;
