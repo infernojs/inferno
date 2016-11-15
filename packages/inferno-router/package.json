@@ -23,6 +23,9 @@
   ],
   "repository": "https://github.com/trueadm/inferno",
   "dependencies": {
-    "inferno": "1.0.0-beta8"
+    "inferno": "1.0.0-beta8",
+    "inferno-component": "1.0.0-beta8",
+    "inferno-create-element": "1.0.0-beta8",
+    "path-to-regexp-es6": "0.0.2"
   }
 }
