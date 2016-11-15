@@ -1825,11 +1825,12 @@ function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
 }
 function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
     if (ref) {
-        lifecycle.fastUnmount = false;
         if (!isNullOrUndef(ref.onComponentWillMount)) {
+            lifecycle.fastUnmount = false;
             ref.onComponentWillMount();
         }
         if (!isNullOrUndef(ref.onComponentDidMount)) {
+            lifecycle.fastUnmount = false;
             lifecycle.addListener(function () { return ref.onComponentDidMount(dom); });
         }
     }
