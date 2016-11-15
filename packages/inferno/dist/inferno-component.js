@@ -1,12 +1,12 @@
 /*!
- * inferno-component v1.0.0-beta8
+ * inferno-component v1.0.0-beta9
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-    (global.Component = factory());
+    (global.Inferno = global.Inferno || {}, global.Inferno.Component = factory());
 }(this, (function () { 'use strict';
 
 var Lifecycle = function Lifecycle() {

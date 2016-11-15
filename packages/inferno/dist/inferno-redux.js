@@ -1,12 +1,12 @@
 /*!
- * inferno-redux v1.0.0-beta8
+ * inferno-redux v1.0.0-beta9
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('redux'), require('./inferno-create-element'), require('hoist-non-inferno-statics')) :
 	typeof define === 'function' && define.amd ? define(['inferno-component', 'redux', 'inferno-create-element', 'hoist-non-inferno-statics'], factory) :
-	(global.InfernoRedux = factory(global.Component,global.redux,global.createElement,global.hoistStatics));
+	(global.Inferno = global.Inferno || {}, global.Inferno.Redux = factory(global.Inferno.Component,global.redux,global.Inferno.createElement,global.hoistStatics));
 }(this, (function (Component,redux,createElement,hoistStatics) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;

@@ -65,7 +65,7 @@ if (process.env.NODE_ENV === 'production') {
 // Filesize plugin needs to be last to report correct filesizes when minified
 plugins.push(filesize());
 
-function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
+function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, path) {
 	const pack = getPackageJSON(moduleName, pkg);
 	const copyright =
 		'/*!\n' +
@@ -80,9 +80,9 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry }, path) {
 		dest,
 		format: 'umd',
 		moduleName: moduleGlobal,
-		globals: {
+		globals: Object.assign({
 			moduleGlobal: moduleGlobal
-		},
+		}, moduleGlobals),
 		banner: copyright,
 		sourceMap: false
 	};

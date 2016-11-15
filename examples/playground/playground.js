@@ -1,5 +1,5 @@
 (function() {
-	var t = InfernoCreateElement;
+	var t = Inferno.createElement;
 
 	Inferno.render(t('div', null,
 		t('span', { className: 'foo'}, 'This is a span!')

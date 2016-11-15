@@ -19,12 +19,12 @@ function onTextInputChange(e) {
 	const props = vNode.props;
 	const dom = vNode.dom;
 
-	applyValue(vNode, dom, false);
 	if (props.onInput) {
 		props.onInput(e);
 	} else if (props.oninput) {
 		props.oninput(e);
 	}
+	applyValue(vNode, dom, false);
 }
 
 function onCheckboxChange(e) {

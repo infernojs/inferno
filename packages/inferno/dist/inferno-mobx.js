@@ -1,12 +1,12 @@
 /*!
- * inferno-mobx v1.0.0-beta8
+ * inferno-mobx v1.0.0-beta9
  * (c) 2016 Ryan Megidov
  * Released under the MIT License.
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('mobx'), require('./inferno'), require('./inferno-create-class'), require('hoist-non-inferno-statics'), require('./inferno-create-element')) :
 	typeof define === 'function' && define.amd ? define(['inferno-component', 'mobx', 'inferno', 'inferno-create-class', 'hoist-non-inferno-statics', 'inferno-create-element'], factory) :
-	(global.InfernoMobx = factory(global.Component,global.mobx,global.Inferno,global.createClass,global.hoistStatics,global.createElement));
+	(global.Inferno = global.Inferno || {}, global.Inferno.Mobx = factory(global.Inferno.Component,global.mobx,global.Inferno,global.Inferno.createClass,global.hoistStatics,global.Inferno.createElement));
 }(this, (function (Component,mobx,Inferno,createClass,hoistStatics,createElement) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;

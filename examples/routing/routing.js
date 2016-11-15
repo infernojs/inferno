@@ -1,9 +1,9 @@
 (function() {
-	var t = InfernoCreateElement;
-    var Router = InfernoRouter.Router;
-    var Route = InfernoRouter.Route;
-    var Link = InfernoRouter.Link;
-    var browserHistory = InfernoRouter.browserHistory;
+	const t = Inferno.createElement;
+    const { Router } = Inferno.Router;
+    const Route = Inferno.Router.Route;
+    const Link = Inferno.Router.Link;
+    const browserHistory = Inferno.Router.browserHistory;
 
     function App({ children }) {
         return t('div', null,

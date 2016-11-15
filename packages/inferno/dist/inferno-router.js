@@ -1,12 +1,12 @@
 /*!
- * inferno-router v1.0.0-beta8
+ * inferno-router v1.0.0-beta9
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-create-element'), require('./inferno-component'), require('path-to-regexp-es6'), require('./inferno')) :
 	typeof define === 'function' && define.amd ? define(['inferno-create-element', 'inferno-component', 'path-to-regexp-es6', 'inferno'], factory) :
-	(global.InfernoRouter = factory(global.createElement,global.Component,global.pathToRegExp,global.Inferno));
+	(global.Inferno = global.Inferno || {}, global.Inferno.Router = factory(global.Inferno.createElement,global.Inferno.Component,global.pathToRegExp,global.Inferno));
 }(this, (function (createElement,Component,pathToRegExp,Inferno) { 'use strict';
 
 createElement = 'default' in createElement ? createElement['default'] : createElement;

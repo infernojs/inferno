@@ -1,6 +1,6 @@
 {
 	"name": "inferno-mobx",
-	"version": "1.0.0-beta8",
+	"version": "1.0.0-beta9",
 	"license": "MIT",
 	"description": "Official Inferno bindings for Mobx",
 	"author": {
@@ -24,7 +24,7 @@
 	],
 	"repository": "https://github.com/trueadm/inferno",
 	"dependencies": {
-		"inferno": "1.0.0-beta8",
+		"inferno": "1.0.0-beta9",
 		"hoist-non-inferno-statics": "1.1.2"
 	}
 }

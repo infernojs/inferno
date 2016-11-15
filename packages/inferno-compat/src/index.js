@@ -4,7 +4,7 @@ import infernoCreateElement from '../../../build/factories/createElement';
 import cloneVNode from '../../../build/factories/cloneVNode';
 import { render, findDOMNode } from '../../../build/DOM/rendering';
 import { createVNode } from '../../../build/core/shapes';
-import Component from '../../../build/component/es2015';
+import Component from 'inferno-component';
 import { NO_OP } from '../../../build/shared';
 
 function unmountComponentAtNode(container) {

@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta8
+ * inferno v1.0.0-beta9
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -462,13 +462,13 @@ function onTextInputChange(e) {
     var vNode = this.vNode;
     var props = vNode.props;
     var dom = vNode.dom;
-    applyValue(vNode, dom, false);
     if (props.onInput) {
         props.onInput(e);
     }
     else if (props.oninput) {
         props.oninput(e);
     }
+    applyValue(vNode, dom, false);
 }
 function onCheckboxChange(e) {
     var vNode = this.vNode;
@@ -565,13 +565,13 @@ function onSelectChange(e) {
     var vNode = this.vNode;
     var props = vNode.props;
     var dom = vNode.dom;
-    applyValue$1(vNode, dom);
     if (props.onChange) {
         props.onChange(e);
     }
     else if (props.onchange) {
         props.onchange(e);
     }
+    applyValue$1(vNode, dom);
 }
 function processSelect(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;

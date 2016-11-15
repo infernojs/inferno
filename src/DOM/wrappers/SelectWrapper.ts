@@ -28,12 +28,12 @@ function onSelectChange(e) {
 	const props = vNode.props;
 	const dom = vNode.dom;
 
-	applyValue(vNode, dom);
 	if (props.onChange) {
 		props.onChange(e);
 	} else if (props.onchange) {
 		props.onchange(e);
 	}
+	applyValue(vNode, dom);
 }
 
 export function processSelect(vNode, dom) {

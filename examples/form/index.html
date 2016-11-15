@@ -45,11 +45,11 @@
 	<script src="../../packages/inferno/dist/inferno.js"></script>
 	<script src="../../packages/inferno/dist/inferno-hyperscript.js"></script>
 	<script>
-		var h = InfernoHyperscript;
+		var h = Inferno.h;
 		Inferno.render(h('form.form', [
 			h('div.form-group', [
 				h('label', 'Please enter your name:'),
-				h('input', { type: 'text', placeholder: 'Joe Bloggs', value: 'Fred' })
+				h('input', { type: 'text', placeholder: 'Joe Bloggs' })
 			]),
 			h('div.form-group', [
 				h('label', 'Favourite food:'),

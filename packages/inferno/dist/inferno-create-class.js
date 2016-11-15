@@ -1,12 +1,12 @@
 /*!
- * inferno-create-class v1.0.0-beta8
+ * inferno-create-class v1.0.0-beta9
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component')) :
     typeof define === 'function' && define.amd ? define(['inferno-component'], factory) :
-    (global.createClass = factory(global.Component));
+    (global.Inferno = global.Inferno || {}, global.Inferno.createClass = factory(global.Inferno.Component));
 }(this, (function (Component) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;
