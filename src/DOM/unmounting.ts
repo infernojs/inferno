@@ -44,6 +44,7 @@ function unmountText(vNode, parentDom) {
 
 export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	const instance = vNode.children;
+	let hooks = vNode.ref;
 
 	if (!shallowUnmount && !lifecycle.fastUnmount) {
 		if (instance.render !== undefined) {
@@ -59,15 +60,13 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 		} else {
 			unmount(instance, null, lifecycle, false, shallowUnmount);
 		}
-
-		const hooks = vNode.ref || instance.ref;
-
-		if (!isNullOrUndef(hooks)) {
-			if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-				hooks.onComponentWillUnmount();
-			}
-		}
+		hooks = vNode.ref || instance.ref;
 	}
+	if (!isNullOrUndef(hooks)) {
+		if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
+			hooks.onComponentWillUnmount();
+		}
+	}	
 	if (parentDom) {
 		let lastInput = instance._lastInput;
 
