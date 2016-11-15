@@ -401,6 +401,8 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 
 			appendChild(dom, mount(child, null, lifecycle, context, isSVG));
 		}
+	} else if (nextChildrenLength === 0) {
+		removeAllChildren(dom, lastChildren, lifecycle, false);
 	} else if (lastChildrenLength > nextChildrenLength) {
 		for (i = commonLength; i < lastChildrenLength; i++) {
 			unmount(lastChildren[i], dom, lifecycle, false, false);
