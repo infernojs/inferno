@@ -12,9 +12,7 @@ import bundles from './rollup.bundles';
 import { aliases } from './aliases';
 
 const pkg = JSON.parse(fs.readFileSync('./package.json'));
-const dependencies = Object.keys(pkg.peerDependencies || {})
-													 .concat(Object.keys(pkg.dependencies || {}))
-													 .concat(Object.keys(pkg.devDependencies || {}));
+const dependencies = Object.keys(pkg.peerDependencies || {});
 
 let plugins = [
 	buble({
@@ -87,7 +85,7 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 		sourceMap: false
 	};
 
-	const external = dependencies.concat(Object.keys(pack.dependencies || {}));
+	const external = dependencies.concat(getDependenciesArray(pack));
 	const virtuals = Object.keys(aliases);
 
 	// Skip bundling dependencies of each package
@@ -101,6 +99,16 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 	return rollup({ entry, plugins, external }).then(({ write }) => write(bundleConfig)).catch(err => {
 		console.log(err)
 	});
+}
+
+/**
+ * Get dependencies from package.json
+ * So we can exclude them from the bundle
+ * @param pack
+ * @returns {Array.<String>}
+ */
+function getDependenciesArray(pack) {
+	return Object.keys(pack.dependencies || {}).concat(Object.keys(pack.devDependencies || {}));
 }
 
 Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));

@@ -101,5 +101,5 @@ describe('Recyling', () => {
 		expect(recyclingEnabled).to.eql(false);
 		enableRecycling();
 		expect(recyclingEnabled).to.eql(true);
-	})
+	});
 });
