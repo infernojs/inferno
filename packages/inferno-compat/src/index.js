@@ -1,3 +1,4 @@
+import PropTypes from 'proptypes';
 import isValidElement from '../../../build/factories/isValidElement';
 import createClass from '../../../build/component/createClass';
 import infernoCreateElement from '../../../build/factories/createElement';
@@ -88,6 +89,7 @@ export {
 	Component,
 	unmountComponentAtNode,
 	cloneElement,
+	PropTypes,
 	createClass,
 	findDOMNode,
 	Children,
@@ -104,6 +106,7 @@ export default {
 	Component,
 	unmountComponentAtNode,
 	cloneElement,
+	PropTypes,
 	createClass,
 	findDOMNode,
 	Children,
