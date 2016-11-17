@@ -15,7 +15,7 @@ function isControlled(props) {
 }
 
 function onTextInputChange(e) {
-	const vNode = this.vNode;
+	let vNode = this.vNode;
 	const props = vNode.props;
 	const dom = vNode.dom;
 
@@ -24,7 +24,9 @@ function onTextInputChange(e) {
 	} else if (props.oninput) {
 		props.oninput(e);
 	}
-	applyValue(vNode, dom, false);
+	// the user may have updated the vNode from the above onInput events
+	// so we need to get it from the context of `this` again
+	applyValue(this.vNode, dom, false);
 }
 
 function onCheckboxChange(e) {
@@ -32,12 +34,14 @@ function onCheckboxChange(e) {
 	const props = vNode.props;
 	const dom = vNode.dom;
 
-	applyValue(vNode, dom, false);
 	if (props.onClick) {
 		props.onClick(e);
 	} else if (props.onclick) {
 		props.onclick(e);
 	}
+	// the user may have updated the vNode from the above onClick events
+	// so we need to get it from the context of `this` again
+	applyValue(this.vNode, dom, false);
 }
 
 function handleAssociatedRadioInputs(name) {

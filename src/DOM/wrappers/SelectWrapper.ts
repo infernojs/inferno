@@ -33,7 +33,9 @@ function onSelectChange(e) {
 	} else if (props.onchange) {
 		props.onchange(e);
 	}
-	applyValue(vNode, dom);
+	// the user may have updated the vNode from the above onChange events
+	// so we need to get it from the context of `this` again
+	applyValue(this.vNode, dom);
 }
 
 export function processSelect(vNode, dom) {
