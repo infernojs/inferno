@@ -32,7 +32,7 @@
     "coveralls": "^2.11.12",
     "cross-env": "^3.0.0",
     "eslint": "^3.4.0",
-    "eslint-plugin-babel": "^3.3.0",
+    "eslint-plugin-babel": "^4.0.0",
     "glob": "^7.0.6",
     "hoist-non-inferno-statics": "^1.1.1",
     "invariant": "^2.2.1",
