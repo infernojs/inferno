@@ -644,7 +644,7 @@ function handleAssociatedRadioInputs(name) {
 }
 function processInput(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
-    applyValue(vNode, dom, true);
+    applyValue(vNode, dom, false);
     if (isControlled(props)) {
         var inputWrapper = wrappers.get(dom);
         if (!inputWrapper) {

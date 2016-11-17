@@ -46,31 +46,56 @@
 	<script src="../../packages/inferno/dist/inferno-hyperscript.js"></script>
 	<script>
 		var h = Inferno.h;
-		Inferno.render(h('form.form', [
-			h('div.form-group', [
-				h('label', 'Please enter your name:'),
-				h('input', { type: 'text', placeholder: 'Joe Bloggs' })
-			]),
-			h('div.form-group', [
-				h('label', 'Favourite food:'),
-				h('div.inline', [
-					h('input', { type: 'radio', name: 'food', checked: false }),
-					h('span', 'Pizza')
+		
+		let name = 'Dominic';
+		let age = 28;
+
+		function textHandler(e) {
+			const val = e.target.value;
+
+			name = val;
+			setTimeout(render, 0);
+		}
+
+		function numberHandler(e) {
+			const val = e.target.value;
+
+			age = val;
+			setTimeout(render, 0);
+		}
+
+		function render() {
+			Inferno.render(h('form.form', [
+				h('div.form-group', [
+					h('label', 'Please enter your name:'),
+					h('input', { type: 'text', placeholder: 'Joe Bloggs', value: name, onInput: textHandler })
 				]),
-				h('div.inline', [
-					h('input', { type: 'radio', name: 'food', checked: true }),
-					h('span', 'Pasta')
-				])
-			]),
-			h('div.form-group', [
-				h('label', 'Location:'),
-				h('select', { value: 'United Kingdom' }, [
-					h('option', { selected: false }, 'United States'),
-					h('option', { selected: true }, 'United Kingdom'),
-					h('option', { selected: false }, 'France')
-				])
-			]),
-		]), document.getElementById('app'));
+				h('div.form-group', [
+					h('label', 'Please enter your age:'),
+					h('input', { type: 'number', value: age, min: 0, max: 99, onInput: numberHandler })
+				]),
+				h('div.form-group', [
+					h('label', 'Favourite food:'),
+					h('div.inline', [
+						h('input', { type: 'radio', name: 'food', checked: false }),
+						h('span', 'Pizza')
+					]),
+					h('div.inline', [
+						h('input', { type: 'radio', name: 'food', checked: true }),
+						h('span', 'Pasta')
+					])
+				]),
+				h('div.form-group', [
+					h('label', 'Location:'),
+					h('select', { value: 'United Kingdom' }, [
+						h('option', { selected: false }, 'United States'),
+						h('option', { selected: true }, 'United Kingdom'),
+						h('option', { selected: false }, 'France')
+					])
+				]),
+			]), document.getElementById('app'));
+		}
+		render();
 	</script>
 </body>
 </html>
