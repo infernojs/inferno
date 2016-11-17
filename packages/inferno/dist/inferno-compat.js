@@ -4,11 +4,12 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('./inferno-component')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'inferno-component'], factory) :
-	(factory((global.Inferno = global.Inferno || {}),global.Inferno.Component));
-}(this, (function (exports,Component) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('proptypes'), require('./inferno-component')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'proptypes', 'inferno-component'], factory) :
+	(factory((global.Inferno = global.Inferno || {}),global.PropTypes,global.Inferno.Component));
+}(this, (function (exports,PropTypes,Component) { 'use strict';
 
+PropTypes = 'default' in PropTypes ? PropTypes['default'] : PropTypes;
 Component = 'default' in Component ? Component['default'] : Component;
 
 var NO_OP = '$NO_OP';
@@ -644,7 +645,7 @@ function handleAssociatedRadioInputs(name) {
 }
 function processInput(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
-    applyValue(vNode, dom, false);
+    applyValue(vNode, dom, true);
     if (isControlled(props)) {
         var inputWrapper = wrappers.get(dom);
         if (!inputWrapper) {
@@ -2151,6 +2152,7 @@ var index = {
 	Component: Component,
 	unmountComponentAtNode: unmountComponentAtNode,
 	cloneElement: cloneElement,
+	PropTypes: PropTypes,
 	createClass: createClass,
 	findDOMNode: findDOMNode,
 	Children: Children,
@@ -2166,6 +2168,7 @@ exports.createElement = createElement;
 exports.Component = Component;
 exports.unmountComponentAtNode = unmountComponentAtNode;
 exports.cloneElement = cloneElement;
+exports.PropTypes = PropTypes;
 exports.createClass = createClass;
 exports.findDOMNode = findDOMNode;
 exports.Children = Children;

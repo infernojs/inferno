@@ -21,8 +21,10 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "1.0.0-beta9",
-    "inferno-component": "1.0.0-beta9",
-    "proptypes": "^0.14.3"
+    "inferno": "1.0.0-beta9"
+  },
+  "devDependencies": {
+    "proptypes": "^0.14.3",
+    "inferno-component": "1.0.0-beta9"
   }
 }
