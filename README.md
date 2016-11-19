@@ -11,7 +11,7 @@
 
 Inferno is an insanely fast, `6kb` React-like library for building high-performance user interfaces on both the client and server.
 
-Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their existing React projects to Inferno in a few lines of code using [`inferno-compat`](todo).
+Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their existing React projects to Inferno in a few lines of code using [`inferno-compat`](https://github.com/trueadm/inferno/tree/dev/packages/inferno-compat).
 
 For those not familiar with React... TODO
 
@@ -95,18 +95,18 @@ create-inferno-app MyApp
 Core package:
 
 ```sh
-npm install --save inferno@beta6
+npm install --save inferno@beta11
 ```
 
 Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta8
+npm install --save inferno-component@beta11
 # server-side rendering
-npm install --save inferno-server@beta8
+npm install --save inferno-server@beta11
 # routing
-npm install --save inferno-router@beta8
+npm install --save inferno-router@beta11
 ``` 
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
@@ -293,8 +293,8 @@ Hooks provide powerful lifecycle events to stateless components, allowing you to
 
 Inferno now has bindings available for some of the major state management libraries out there:
 
-- [Redux](https://github.com/trueadm/inferno/tree/master/packages/inferno-redux) via `inferno-redux`
-- [MobX](https://github.com/trueadm/inferno/tree/master/packages/inferno-mobx) via `inferno-mobx`
+- [Redux](https://github.com/trueadm/inferno/tree/dev/packages/inferno-redux) via `inferno-redux`
+- [MobX](https://github.com/trueadm/inferno/tree/dev/packages/inferno-mobx) via `inferno-mobx`
 - [Cerebral](https://github.com/cerebral/cerebral-view-inferno) via `cerebral-view-inferno`
 
 ## Performance
