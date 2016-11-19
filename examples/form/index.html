@@ -49,6 +49,7 @@
 		
 		let name = 'Dominic';
 		let age = 28;
+		let description = 'I don\'t know?';
 
 		function textHandler(e) {
 			const val = e.target.value;
@@ -61,6 +62,13 @@
 			const val = e.target.value;
 
 			age = val;
+			render()
+		}
+
+		function descHandler(e) {
+			const val = e.target.value;
+
+			description = val;
 			render()
 		}
 
@@ -95,7 +103,7 @@
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter a description:'),
-					h('textarea', { value: 'I don\'t know?' })
+					h('textarea', { value: description, onInput: descHandler })
 				]),
 			]), document.getElementById('app'));
 		}

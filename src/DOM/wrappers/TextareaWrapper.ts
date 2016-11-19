@@ -38,6 +38,7 @@ export function processTextarea(vNode, dom) {
 			dom.oninput.wrapped = true;
 			wrappers.set(dom, textareaWrapper);
 		}
+		textareaWrapper.vNode = vNode;
 	}
 }
 

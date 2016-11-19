@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-beta11
+ * inferno-compat v1.0.0-beta12
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -619,7 +619,7 @@ function onTextInputChange(e) {
     }
     // the user may have updated the vNode from the above onInput events
     // so we need to get it from the context of `this` again
-    applyValue(this.vNode, dom, false);
+    applyValue(this.vNode, dom);
 }
 function onCheckboxChange(e) {
     var vNode = this.vNode;
@@ -633,7 +633,7 @@ function onCheckboxChange(e) {
     }
     // the user may have updated the vNode from the above onClick events
     // so we need to get it from the context of `this` again
-    applyValue(this.vNode, dom, false);
+    applyValue(this.vNode, dom);
 }
 function handleAssociatedRadioInputs(name) {
     var inputs = document.querySelectorAll(("input[type=\"radio\"][name=\"" + name + "\"]"));
@@ -649,7 +649,7 @@ function handleAssociatedRadioInputs(name) {
 }
 function processInput(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
-    applyValue(vNode, dom, true);
+    applyValue(vNode, dom);
     if (isControlled(props)) {
         var inputWrapper = wrappers.get(dom);
         if (!inputWrapper) {
@@ -669,12 +669,12 @@ function processInput(vNode, dom) {
         inputWrapper.vNode = vNode;
     }
 }
-function applyValue(vNode, dom, force) {
+function applyValue(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
     var type = props.type;
     var value = props.value;
     var checked = props.checked;
-    if ((force || type !== dom.type) && type) {
+    if (type !== dom.type && type) {
         dom.type = type;
     }
     if (props.multiple !== dom.multiple) {
@@ -690,7 +690,7 @@ function applyValue(vNode, dom, force) {
         }
     }
     else {
-        if (!isNullOrUndef(value) && (force || dom.value !== value)) {
+        if (!isNullOrUndef(value) && dom.value !== value) {
             dom.value = value;
         }
         else if (!isNullOrUndef(checked)) {
@@ -792,6 +792,7 @@ function processTextarea(vNode, dom) {
             dom.oninput.wrapped = true;
             wrappers.set(dom, textareaWrapper);
         }
+        textareaWrapper.vNode = vNode;
     }
 }
 function applyValue$2(vNode, dom) {

@@ -1,5 +1,5 @@
 /*!
- * inferno-redux v1.0.0-beta11
+ * inferno-redux v1.0.0-beta12
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
