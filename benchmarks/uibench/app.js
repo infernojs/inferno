@@ -3,7 +3,7 @@
 
 	var createVNode = Inferno.createVNode;
 
-	uibench.init('Inferno', '1.0.0-beta9 *dev*');
+	uibench.init('Inferno', '1.0.0-beta10 *dev*');
 
 	var treeLeafProps = { className: 'TreeLeaf' };
 

@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta9
+ * inferno v1.0.0-beta10
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -614,10 +614,32 @@ function applyValue$1(vNode, dom) {
     }
 }
 
-// import wrappers from './map';
 // import { isVNode } from '../../core/shapes';
+function onTextareaInputChange(e) {
+    var vNode = this.vNode;
+    var props = vNode.props;
+    var dom = vNode.dom;
+    if (props.onInput) {
+        props.onInput(e);
+    }
+    else if (props.oninput) {
+        props.oninput(e);
+    }
+    // the user may have updated the vNode from the above onInput events
+    // so we need to get it from the context of `this` again
+    applyValue$2(this.vNode, dom);
+}
 function processTextarea(vNode, dom) {
     applyValue$2(vNode, dom);
+    var textareaWrapper = wrappers.get(dom);
+    if (!textareaWrapper) {
+        textareaWrapper = {
+            vNode: vNode
+        };
+        dom.oninput = onTextareaInputChange.bind(textareaWrapper);
+        dom.oninput.wrapped = true;
+        wrappers.set(dom, textareaWrapper);
+    }
 }
 function applyValue$2(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;

@@ -75,7 +75,7 @@
 					h('input', { type: 'number', value: age, min: 0, max: 99, onInput: numberHandler })
 				]),
 				h('div.form-group', [
-					h('label', 'Favourite food:'),
+					h('label', 'What is your favourite food:'),
 					h('div.inline', [
 						h('input', { type: 'radio', name: 'food', checked: false }),
 						h('span', 'Pizza')
@@ -86,12 +86,16 @@
 					])
 				]),
 				h('div.form-group', [
-					h('label', 'Location:'),
+					h('label', 'Please enter your location:'),
 					h('select', { value: 'United Kingdom' }, [
 						h('option', { selected: false }, 'United States'),
 						h('option', { selected: true }, 'United Kingdom'),
 						h('option', { selected: false }, 'France')
 					])
+				]),
+				h('div.form-group', [
+					h('label', 'Please enter a description:'),
+					h('textarea', { value: 'I don\'t know?' })
 				]),
 			]), document.getElementById('app'));
 		}
