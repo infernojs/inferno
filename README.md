@@ -95,18 +95,18 @@ create-inferno-app MyApp
 Core package:
 
 ```sh
-npm install --save inferno@beta11
+npm install --save inferno@beta12
 ```
 
 Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta11
+npm install --save inferno-component@beta12
 # server-side rendering
-npm install --save inferno-server@beta11
+npm install --save inferno-server@beta12
 # routing
-npm install --save inferno-router@beta11
+npm install --save inferno-router@beta12
 ``` 
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
@@ -119,22 +119,22 @@ https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0/inferno.min.js
 
 #### JSX:
 ```sh
-npm install --save-dev babel-plugin-inferno@beta6
+npm install --save-dev babel-plugin-inferno@beta11
 ```
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta6
+npm install --save inferno-hyperscript@beta12
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta6
+npm install --save inferno-create-element@beta12
 ```
 
 ### Compatability with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta6
+npm install --save-dev inferno-compat@beta12
 ```
 
 ## Inferno Top-Level API
