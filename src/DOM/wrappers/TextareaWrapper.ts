@@ -1,8 +1,13 @@
 import {
 	EMPTY_OBJ,
+	isNullOrUndef
 } from './../../shared';
 import { wrappers } from './processElement';
 // import { isVNode } from '../../core/shapes';
+
+function isControlled(props) {
+	return !isNullOrUndef(props.value);
+}
 
 function onTextareaInputChange(e) {
 	let vNode = this.vNode;
@@ -20,16 +25,19 @@ function onTextareaInputChange(e) {
 }
 
 export function processTextarea(vNode, dom) {
+	const props = vNode.props || EMPTY_OBJ;
 	applyValue(vNode, dom);
 	let textareaWrapper = wrappers.get(dom);
 
-	if (!textareaWrapper) {
-		textareaWrapper = {
-			vNode
-		};
-		dom.oninput = onTextareaInputChange.bind(textareaWrapper);
-		dom.oninput.wrapped = true;
-		wrappers.set(dom, textareaWrapper);
+	if (isControlled(props)) {
+		if (!textareaWrapper) {
+			textareaWrapper = {
+				vNode
+			};
+			dom.oninput = onTextareaInputChange.bind(textareaWrapper);
+			dom.oninput.wrapped = true;
+			wrappers.set(dom, textareaWrapper);
+		}
 	}
 }
 

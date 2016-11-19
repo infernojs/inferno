@@ -54,7 +54,7 @@ const cloneElement = cloneVNode;
 const version = '15.3.4';
 
 function normalizeProps(name, props) {
-	if (name === 'input' && props.onChange) {
+	if ((name === 'input' || name === 'textarea') && props.onChange) {
 		const eventName = props.type === 'checkbox' ? 'onclick' : 'oninput'
 		
 		if (!props[eventName]) {

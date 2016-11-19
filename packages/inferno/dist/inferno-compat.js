@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-beta10
+ * inferno-compat v1.0.0-beta11
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -762,6 +762,9 @@ function applyValue$1(vNode, dom) {
 }
 
 // import { isVNode } from '../../core/shapes';
+function isControlled$2(props) {
+    return !isNullOrUndef(props.value);
+}
 function onTextareaInputChange(e) {
     var vNode = this.vNode;
     var props = vNode.props;
@@ -777,15 +780,18 @@ function onTextareaInputChange(e) {
     applyValue$2(this.vNode, dom);
 }
 function processTextarea(vNode, dom) {
+    var props = vNode.props || EMPTY_OBJ;
     applyValue$2(vNode, dom);
     var textareaWrapper = wrappers.get(dom);
-    if (!textareaWrapper) {
-        textareaWrapper = {
-            vNode: vNode
-        };
-        dom.oninput = onTextareaInputChange.bind(textareaWrapper);
-        dom.oninput.wrapped = true;
-        wrappers.set(dom, textareaWrapper);
+    if (isControlled$2(props)) {
+        if (!textareaWrapper) {
+            textareaWrapper = {
+                vNode: vNode
+            };
+            dom.oninput = onTextareaInputChange.bind(textareaWrapper);
+            dom.oninput.wrapped = true;
+            wrappers.set(dom, textareaWrapper);
+        }
     }
 }
 function applyValue$2(vNode, dom) {
@@ -2142,7 +2148,7 @@ var cloneElement = cloneVNode;
 var version = '15.3.4';
 
 function normalizeProps(name, props) {
-	if (name === 'input' && props.onChange) {
+	if ((name === 'input' || name === 'textarea') && props.onChange) {
 		var eventName = props.type === 'checkbox' ? 'onclick' : 'oninput';
 		
 		if (!props[eventName]) {
