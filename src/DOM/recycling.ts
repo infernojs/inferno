@@ -39,7 +39,7 @@ export function recycleElement(vNode, lifecycle, context, isSVG) {
 			const recycledVNode = pool.pop();
 
 			if (!isUndefined(recycledVNode)) {
-				patchElement(recycledVNode, vNode, null, lifecycle, context, isSVG);
+				patchElement(recycledVNode, vNode, null, lifecycle, context, isSVG, true);
 				return vNode.dom;
 			}
 		}
@@ -92,7 +92,8 @@ export function recycleComponent(vNode: VNode, lifecycle, context, isSVG) {
 					lifecycle,
 					context,
 					isSVG,
-					flags & VNodeFlags.ComponentClass
+					flags & VNodeFlags.ComponentClass,
+					true
 				);
 
 				if (!failed) {

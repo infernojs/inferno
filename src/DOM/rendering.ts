@@ -100,7 +100,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 			if ((input as VNode).dom) {
 				input = cloneVNode(input);
 			}
-			patch(root.input, input, parentDom, lifecycle, {}, false);
+			patch(root.input, input, parentDom, lifecycle, {}, false, false);
 		}
 		lifecycle.trigger();
 		root.input = input;

@@ -57,7 +57,7 @@ import {
 	getIncrementalId
 } from './devtools';
 
-export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG: boolean, isRecycling: boolean) {
 	// TODO: Our nodes are not immutable and hoisted nodes get cloned. Is there any possibility to make this check true
 	// TODO: Remove check or write test case to verify this behavior
 	// TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
@@ -74,7 +74,8 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 					lifecycle,
 					context,
 					isSVG,
-					nextFlags & VNodeFlags.ComponentClass
+					nextFlags & VNodeFlags.ComponentClass,
+					isRecycling
 				);
 			} else {
 				replaceVNode(
@@ -93,7 +94,7 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 			}
 		} else if (nextFlags & VNodeFlags.Element) {
 			if (lastFlags & VNodeFlags.Element) {
-				patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+				patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
 			} else {
 				replaceVNode(
 					parentDom,
@@ -137,7 +138,7 @@ function unmountChildren(children, dom, lifecycle) {
 	}
 }
 
-export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node, lifecycle: Lifecycle, context, isSVG) {
+export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
 	const nextTag = nextVNode.type;
 	const lastTag = lastVNode.type;
 
@@ -159,7 +160,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 			isSVG = true;
 		}
 		if (lastChildren !== nextChildren) {
-			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
 		}
 		if (!(nextFlags & VNodeFlags.HtmlElement)) {
 			processElement(nextFlags, nextVNode, dom);
@@ -174,13 +175,15 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 				isSVG
 			);
 		}
-		if (lastRef !== nextRef) {
-			mountRef(dom, nextRef, lifecycle);
+		if (nextRef) {
+			if (lastRef !== nextRef || isRecycling) {
+				mountRef(dom, nextRef, lifecycle);
+			}
 		}
 	}
 }
 
-function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling) {
 	let patchArray = false;
 	let patchKeyed = false;
 
@@ -223,7 +226,7 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
 		mount(nextChildren, dom, lifecycle, context, isSVG);
 	} else if (isVNode(nextChildren)) {
 		if (isVNode(lastChildren)) {
-			patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
 		} else {
 			unmountChildren(lastChildren, dom, lifecycle);
 			mount(nextChildren, dom, lifecycle, context, isSVG);
@@ -236,14 +239,14 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
 	}
 	if (patchArray) {
 		if (patchKeyed) {
-			patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
 		} else {
-			patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+			patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
 		}
 	}
 }
 
-export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass) {
+export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass, isRecycling: boolean) {
 	const lastType = lastVNode.type;
 	const nextType = nextVNode.type;
 	const nextProps = nextVNode.props || EMPTY_OBJ;
@@ -255,7 +258,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 			const lastInput = lastVNode.children._lastInput || lastVNode.children;
 			const nextInput = createStatelessComponentInput(nextType, nextProps, context);
 
-			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
 			const dom = nextVNode.dom = nextInput.dom;
 
 			nextVNode.children = nextInput;
@@ -326,7 +329,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				instance._vNode = nextVNode;
 
 				if (didUpdate) {
-					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG);
+					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
 					instance.componentDidUpdate(lastProps, lastState);
 					componentToDOMNodeMap.set(instance, nextInput.dom);
 				}
@@ -362,7 +365,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 					return false;
 				}
 
-				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
 				nextVNode.children = nextInput;
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
 					lifecycle.fastUnmount = false;
@@ -390,7 +393,7 @@ export function patchVoid(lastVNode, nextVNode) {
 	nextVNode.dom = lastVNode.dom;
 }
 
-export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling) {
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
 	let commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
@@ -400,7 +403,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 		const lastChild = lastChildren[i];
 		let nextChild = nextChildren[i];
 
-		patch(lastChild, nextChild, dom, lifecycle, context, isSVG);
+		patch(lastChild, nextChild, dom, lifecycle, context, isSVG, isRecycling);
 	}
 	if (lastChildrenLength < nextChildrenLength) {
 		for (i = commonLength; i < nextChildrenLength; i++) {
@@ -423,7 +426,8 @@ export function patchKeyedChildren(
 	dom,
 	lifecycle: Lifecycle,
 	context,
-	isSVG: boolean
+	isSVG: boolean,
+	isRecycling: boolean
 ) {
 	let aLength = a.length;
 	let bLength = b.length;
@@ -457,7 +461,7 @@ export function patchKeyedChildren(
 	outer: while (true) {
 		// Sync nodes with the same key at the beginning.
 		while (aStartNode.key === bStartNode.key) {
-			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG);
+			patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG, isRecycling);
 			aStart++;
 			bStart++;
 			if (aStart > aEnd || bStart > bEnd) {
@@ -469,7 +473,7 @@ export function patchKeyedChildren(
 
 		// Sync nodes with the same key at the end.
 		while (aEndNode.key === bEndNode.key) {
-			patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG);
+			patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG, isRecycling);
 			aEnd--;
 			bEnd--;
 			if (aStart > aEnd || bStart > bEnd) {
@@ -481,7 +485,7 @@ export function patchKeyedChildren(
 
 		// Move and sync nodes from right to left.
 		if (aEndNode.key === bStartNode.key) {
-			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
+			patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG, isRecycling);
 			insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
 			aEnd--;
 			bStart++;
@@ -492,7 +496,7 @@ export function patchKeyedChildren(
 
 		// Move and sync nodes from left to right.
 		if (aStartNode.key === bEndNode.key) {
-			patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG);
+			patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG, isRecycling);
 			nextPos = bEnd + 1;
 			nextNode = nextPos < b.length ? b[nextPos].dom : null;
 			insertOrAppend(dom, bEndNode.dom, nextNode);
@@ -545,7 +549,7 @@ export function patchKeyedChildren(
 							} else {
 								pos = j;
 							}
-							patch(aNode, bNode, dom, lifecycle, context, isSVG);
+							patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
 							patched++;
 							aNullable[i] = null;
 							break;
@@ -574,7 +578,7 @@ export function patchKeyedChildren(
 						} else {
 							pos = j;
 						}
-						patch(aNode, bNode, dom, lifecycle, context, isSVG);
+						patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
 						patched++;
 						aNullable[i] = null;
 					}
