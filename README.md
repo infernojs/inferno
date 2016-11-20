@@ -102,11 +102,11 @@ Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta12
+npm install --save inferno-component@beta13
 # server-side rendering
-npm install --save inferno-server@beta12
+npm install --save inferno-server@beta13
 # routing
-npm install --save inferno-router@beta12
+npm install --save inferno-router@beta13
 ``` 
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
@@ -124,17 +124,17 @@ npm install --save-dev babel-plugin-inferno@beta11
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta12
+npm install --save inferno-hyperscript@beta13
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta12
+npm install --save inferno-create-element@beta13
 ```
 
 ### Compatability with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta12
+npm install --save-dev inferno-compat@beta13
 ```
 
 ## Inferno Top-Level API
