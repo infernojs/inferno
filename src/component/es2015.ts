@@ -6,13 +6,18 @@ import {
 	isFunction,
 	isArray,
 	isInvalid,
-	EMPTY_OBJ
+	EMPTY_OBJ,
+	ERROR_MSG
 } from '../shared';
 import {
 	createVoidVNode
 } from './../core/shapes';
 
-const noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+let noOp = ERROR_MSG;
+
+if (process.env.NODE_ENV !== 'production') {
+	noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+}
 const componentCallbackQueue = new Map();
 
 export interface ComponentLifecycle<P, S> {
@@ -227,7 +232,10 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 
 	_updateComponent(prevState: S, nextState: S, prevProps: P & {children: any}, nextProps: P & {children: any}, context: any, force: boolean): any {
 		if (this._unmounted === true) {
-			throw new Error('You can\'t update an unmounted component!');
+			if (process.env.NODE_ENV !== 'production') {
+				throwError(noOp);
+			}
+			throwError();
 		}
 		if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
 			nextProps.children = prevProps.children;

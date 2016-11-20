@@ -1,5 +1,5 @@
 export const NO_OP = '$NO_OP';
-const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+export const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 export const isBrowser = typeof window !== 'undefined' && window.document;
 

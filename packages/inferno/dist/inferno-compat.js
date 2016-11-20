@@ -171,10 +171,11 @@ function cloneVNode(vNodeToClone, props) {
     else {
         var flags = vNodeToClone.flags;
         if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref, true);
         }
         else if (flags & 3970 /* Element */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children || (props && props.children) || vNodeToClone.children, vNodeToClone.key, vNodeToClone.ref);
+            children = (props && props.children) || vNodeToClone.children;
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, children ? false : true);
         }
     }
     newVNode.dom = null;
@@ -2052,12 +2053,15 @@ function render$1(input, parentDom) {
         lifecycle.trigger();
         root.input = input;
     }
-    // if (devToolsStatus.connected) {
-    // sendRoots(window);
-    // }
+    if (devToolsStatus.connected) {
+        sendRoots(window);
+    }
 }
 
-var noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+var noOp = ERROR_MSG;
+if (process.env.NODE_ENV !== 'production') {
+    noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+}
 var componentCallbackQueue = new Map();
 function addToQueue(component, force, callback) {
     // TODO this function needs to be revised and improved on
@@ -2216,7 +2220,10 @@ Component$1.prototype.getChildContext = function getChildContext () {
 };
 Component$1.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, context, force) {
     if (this._unmounted === true) {
-        throw new Error('You can\'t update an unmounted component!');
+        if (process.env.NODE_ENV !== 'production') {
+            throwError(noOp);
+        }
+        throwError();
     }
     if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
         nextProps.children = prevProps.children;
