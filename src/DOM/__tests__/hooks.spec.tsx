@@ -544,5 +544,64 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 		});
+
+		it('Should call ref when node is re-attached and re-unmounted', () => {
+			notCalled(spyOuter);
+			notCalled(spyInner);
+			notCalled(spyInnerSecond);
+
+			render(<RefTester inner={true} innersecond={true} />, container);
+
+			calledOnce(spyOuter);
+			calledOnce(spyInner);
+			calledOnce(spyInnerSecond);
+			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
+			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+
+			spyInnerSecond.calledBefore(spyInner);
+			spyInner.calledBefore(spyOuter);
+
+			//reset
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+
+			render(<RefTester inner={false} innersecond={true}/>, container);
+
+			// Verify divs are removed from DOM
+			expect(container.innerHTML).to.eql('<div><span>abc</span></div>');
+
+			// Verify ref callbacks
+			notCalled(spyOuter);
+			calledOnce(spyInner);
+			calledOnce(spyInnerSecond);
+			expect(spyInner.getCall(0).args[0]).to.eql(null);
+			expect(spyInnerSecond.getCall(0).args[0]).to.eql(null);
+
+
+			//reset
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+
+
+			render(<RefTester inner={true} innersecond={true}/>, container);
+
+			// Verify divs are attached
+			expect(container.innerHTML).to.eql('<div><span>abc</span><div><span>dfg</span></div></div>');
+
+			// Verify ref callbacks
+			notCalled(spyOuter);
+			calledOnce(spyInner);
+			calledOnce(spyInnerSecond);
+			expect(spyInner.getCall(0).args[0].innerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[0].innerHTML).to.eql('<span>dfg</span>');
+
+			//reset
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+		});
 	});
 });
