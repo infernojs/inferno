@@ -394,7 +394,7 @@ function recycleElement(vNode, lifecycle, context, isSVG) {
         if (!isUndefined(pool)) {
             var recycledVNode = pool.pop();
             if (!isUndefined(recycledVNode)) {
-                patchElement(recycledVNode, vNode, null, lifecycle, context, isSVG);
+                patchElement(recycledVNode, vNode, null, lifecycle, context, isSVG, true);
                 return vNode.dom;
             }
         }
@@ -434,7 +434,7 @@ function recycleComponent(vNode, lifecycle, context, isSVG) {
             var recycledVNode = pool.pop();
             if (!isUndefined(recycledVNode)) {
                 var flags = vNode.flags;
-                var failed = patchComponent(recycledVNode, vNode, null, lifecycle, context, isSVG, flags & 4 /* ComponentClass */);
+                var failed = patchComponent(recycledVNode, vNode, null, lifecycle, context, isSVG, flags & 4 /* ComponentClass */, true);
                 if (!failed) {
                     return vNode.dom;
                 }
@@ -853,16 +853,13 @@ function sendRoots(global) {
     sendToDevTools(global, { type: 'roots', data: roots });
 }
 
-function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
-    // TODO: Our nodes are not immutable and hoisted nodes get cloned. Is there any possibility to make this check true
-    // TODO: Remove check or write test case to verify this behavior
-    // TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
+function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling) {
     if (lastVNode !== nextVNode) {
         var lastFlags = lastVNode.flags;
         var nextFlags = nextVNode.flags;
         if (nextFlags & 28 /* Component */) {
             if (lastFlags & 28 /* Component */) {
-                patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */);
+                patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */, isRecycling);
             }
             else {
                 replaceVNode(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */), lastVNode, lifecycle);
@@ -870,7 +867,7 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
         }
         else if (nextFlags & 3970 /* Element */) {
             if (lastFlags & 3970 /* Element */) {
-                patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+                patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
             }
             else {
                 replaceVNode(parentDom, mountElement(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
@@ -909,7 +906,7 @@ function unmountChildren(children, dom, lifecycle) {
         dom.textContent = '';
     }
 }
-function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
+function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling) {
     var nextTag = nextVNode.type;
     var lastTag = lastVNode.type;
     if (lastTag !== nextTag) {
@@ -930,7 +927,7 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
             isSVG = true;
         }
         if (lastChildren !== nextChildren) {
-            patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+            patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
         }
         if (!(nextFlags & 2 /* HtmlElement */)) {
             processElement(nextFlags, nextVNode, dom);
@@ -938,12 +935,14 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
         if (lastProps !== nextProps) {
             patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG);
         }
-        if (lastRef !== nextRef) {
-            mountRef(dom, nextRef, lifecycle);
+        if (nextRef) {
+            if (lastRef !== nextRef || isRecycling) {
+                mountRef(dom, nextRef, lifecycle);
+            }
         }
     }
 }
-function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling) {
     var patchArray = false;
     var patchKeyed = false;
     if (nextFlags & 64 /* HasNonKeyedChildren */) {
@@ -996,7 +995,7 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
     }
     else if (isVNode(nextChildren)) {
         if (isVNode(lastChildren)) {
-            patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+            patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
         }
         else {
             unmountChildren(lastChildren, dom, lifecycle);
@@ -1009,14 +1008,14 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
     }
     if (patchArray) {
         if (patchKeyed) {
-            patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+            patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
         }
         else {
-            patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+            patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
         }
     }
 }
-function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass) {
+function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass, isRecycling) {
     var lastType = lastVNode.type;
     var nextType = nextVNode.type;
     var nextProps = nextVNode.props || EMPTY_OBJ;
@@ -1027,11 +1026,11 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
         else {
             var lastInput = lastVNode.children._lastInput || lastVNode.children;
             var nextInput = createStatelessComponentInput(nextType, nextProps, context);
-            patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
+            patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
             var dom = nextVNode.dom = nextInput.dom;
             nextVNode.children = nextInput;
             mountStatelessComponentCallbacks(nextVNode.ref, dom, lifecycle);
-            unmount(lastVNode, null, lifecycle, false, false);
+            unmount(lastVNode, null, lifecycle, false, true);
         }
     }
     else {
@@ -1085,7 +1084,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 instance._lastInput = nextInput$1;
                 instance._vNode = nextVNode;
                 if (didUpdate) {
-                    patch(lastInput$1, nextInput$1, parentDom, lifecycle, childContext, isSVG);
+                    patch(lastInput$1, nextInput$1, parentDom, lifecycle, childContext, isSVG, isRecycling);
                     instance.componentDidUpdate(lastProps, lastState);
                     componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
@@ -1121,7 +1120,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 else if (nextInput$2 === NO_OP) {
                     return false;
                 }
-                patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG);
+                patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG, isRecycling);
                 nextVNode.children = nextInput$2;
                 if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
                     lifecycle.fastUnmount = false;
@@ -1144,7 +1143,7 @@ function patchText(lastVNode, nextVNode) {
 function patchVoid(lastVNode, nextVNode) {
     nextVNode.dom = lastVNode.dom;
 }
-function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
+function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling) {
     var lastChildrenLength = lastChildren.length;
     var nextChildrenLength = nextChildren.length;
     var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
@@ -1152,7 +1151,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     for (; i < commonLength; i++) {
         var lastChild = lastChildren[i];
         var nextChild = nextChildren[i];
-        patch(lastChild, nextChild, dom, lifecycle, context, isSVG);
+        patch(lastChild, nextChild, dom, lifecycle, context, isSVG, isRecycling);
     }
     if (lastChildrenLength < nextChildrenLength) {
         for (i = commonLength; i < nextChildrenLength; i++) {
@@ -1169,7 +1168,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
         }
     }
 }
-function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
+function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
     var aLength = a.length;
     var bLength = b.length;
     var aEnd = aLength - 1;
@@ -1202,7 +1201,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
     outer: while (true) {
         // Sync nodes with the same key at the beginning.
         while (aStartNode.key === bStartNode.key) {
-            patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG);
+            patch(aStartNode, bStartNode, dom, lifecycle, context, isSVG, isRecycling);
             aStart++;
             bStart++;
             if (aStart > aEnd || bStart > bEnd) {
@@ -1213,7 +1212,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
         }
         // Sync nodes with the same key at the end.
         while (aEndNode.key === bEndNode.key) {
-            patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG);
+            patch(aEndNode, bEndNode, dom, lifecycle, context, isSVG, isRecycling);
             aEnd--;
             bEnd--;
             if (aStart > aEnd || bStart > bEnd) {
@@ -1224,7 +1223,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
         }
         // Move and sync nodes from right to left.
         if (aEndNode.key === bStartNode.key) {
-            patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG);
+            patch(aEndNode, bStartNode, dom, lifecycle, context, isSVG, isRecycling);
             insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
             aEnd--;
             bStart++;
@@ -1234,7 +1233,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
         }
         // Move and sync nodes from left to right.
         if (aStartNode.key === bEndNode.key) {
-            patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG);
+            patch(aStartNode, bEndNode, dom, lifecycle, context, isSVG, isRecycling);
             nextPos = bEnd + 1;
             nextNode = nextPos < b.length ? b[nextPos].dom : null;
             insertOrAppend(dom, bEndNode.dom, nextNode);
@@ -1286,7 +1285,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
                             else {
                                 pos = j;
                             }
-                            patch(aNode, bNode, dom, lifecycle, context, isSVG);
+                            patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
                             patched++;
                             aNullable[i] = null;
                             break;
@@ -1314,7 +1313,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG) {
                         else {
                             pos = j;
                         }
-                        patch(aNode, bNode, dom, lifecycle, context, isSVG);
+                        patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
                         patched++;
                         aNullable[i] = null;
                     }
@@ -2093,7 +2092,7 @@ function render(input, parentDom) {
             if (input.dom) {
                 input = cloneVNode(input);
             }
-            patch(root.input, input, parentDom, lifecycle$1, {}, false);
+            patch(root.input, input, parentDom, lifecycle$1, {}, false, false);
         }
         lifecycle$1.trigger();
         root.input = input;
