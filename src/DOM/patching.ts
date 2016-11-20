@@ -52,6 +52,10 @@ import {
 } from '../core/shapes';
 import processElement from './wrappers/processElement';
 import Lifecycle from "./lifecycle";
+import {
+	componentIdMap,
+	getIncrementalId
+} from './devtools';
 
 export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG) {
 	// TODO: Our nodes are not immutable and hoisted nodes get cloned. Is there any possibility to make this check true
@@ -177,7 +181,15 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 }
 
 function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG) {
-	if (isInvalid(nextChildren)) {
+	let patchArray = false;
+	let patchKeyed = false;
+
+	if (nextFlags & VNodeFlags.HasNonKeyedChildren) {
+		patchArray = true;
+	} else if ((lastFlags & VNodeFlags.HasKeyedChildren)  && (nextFlags & VNodeFlags.HasKeyedChildren)) {
+		patchKeyed = true;
+		patchArray = true;
+	} else if (isInvalid(nextChildren)) {
 		unmountChildren(lastChildren, dom, lifecycle);
 	} else if (isInvalid(lastChildren)) {
 		if (isStringOrNumber(nextChildren)) {
@@ -198,22 +210,9 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
 		}
 	} else if (isArray(nextChildren)) {
 		if (isArray(lastChildren)) {
-			let patchKeyed = false;
-			// check if we can do keyed updates
-			if ((lastFlags & VNodeFlags.HasKeyedChildren) &&
-				(nextFlags & VNodeFlags.HasKeyedChildren)
-			) {
+			patchArray = true;
+			if (isKeyed(lastChildren, nextChildren)) {
 				patchKeyed = true;
-			// check if we can do non-keyed updates without having to validate
-			} else if (!(nextFlags & VNodeFlags.HasNonKeyedChildren)) {
-				if (isKeyed(lastChildren, nextChildren)) {
-					patchKeyed = true;
-				}
-			}
-			if (patchKeyed) {
-				patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
-			} else {
-				patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
 			}
 		} else {
 			unmountChildren(lastChildren, dom, lifecycle);
@@ -234,6 +233,13 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
 		// debugger;
 	} else {
 		// debugger;
+	}
+	if (patchArray) {
+		if (patchKeyed) {
+			patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+		} else {
+			patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG);
+		}
 	}
 }
 
@@ -280,9 +286,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				const defaultProps = nextType.defaultProps;
 				const lastProps = instance.props;
 
-				// if (instance._devToolsStatus.connected && !instance._devToolsId) {
-				// 	componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
-				// }
+				if (instance._devToolsStatus.connected && !instance._devToolsId) {
+					componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
+				}
+				lifecycle.fastUnmount = false;
 				if (!isUndefined(defaultProps)) {
 					copyPropsTo(lastProps, nextProps);
 					nextVNode.props = nextProps;
@@ -339,6 +346,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 			}
 			if (shouldUpdate !== false) {
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
+					lifecycle.fastUnmount = false;
 					nextHooks.onComponentWillUpdate(lastProps, nextProps);
 				}
 				let nextInput = nextType(nextProps, context);
@@ -357,6 +365,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG);
 				nextVNode.children = nextInput;
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
+					lifecycle.fastUnmount = false;
 					nextHooks.onComponentDidUpdate(lastProps, nextProps);
 				}
 				nextVNode.dom = nextInput.dom;
@@ -399,6 +408,8 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 
 			appendChild(dom, mount(child, null, lifecycle, context, isSVG));
 		}
+	} else if (nextChildrenLength === 0) {
+		removeAllChildren(dom, lastChildren, lifecycle, false);
 	} else if (lastChildrenLength > nextChildrenLength) {
 		for (i = commonLength; i < lastChildrenLength; i++) {
 			unmount(lastChildren[i], dom, lifecycle, false, false);
@@ -474,14 +485,8 @@ export function patchKeyedChildren(
 			insertOrAppend(dom, bStartNode.dom, aStartNode.dom);
 			aEnd--;
 			bStart++;
-			// TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
-			if (aStart > aEnd || bStart > bEnd) {
-				break;
-			}
 			aEndNode = a[aEnd];
 			bStartNode = b[bStart];
-			// In a real-world scenarios there is a higher chance that next node after the move will be the same, so we
-			// immediately jump to the start of this prefix/suffix algo.
 			continue;
 		}
 
@@ -493,10 +498,6 @@ export function patchKeyedChildren(
 			insertOrAppend(dom, bEndNode.dom, nextNode);
 			aStart++;
 			bEnd--;
-			// TODO: How to make this statement false? Add test to verify logic or remove IF - UNREACHABLE CODE
-			if (aStart > aEnd || bStart > bEnd) {
-				break;
-			}
 			aStartNode = a[aStart];
 			bEndNode = b[bEnd];
 			continue;
@@ -533,7 +534,6 @@ export function patchKeyedChildren(
 		if ((bLength <= 4) || (aLength * bLength <= 16)) {
 			for (i = aStart; i <= aEnd; i++) {
 				aNode = a[i];
-				// TODO: How to make this statement false? Add test to verify logic or remove IF
 				if (patched < bLength) {
 					for (j = bStart; j <= bEnd; j++) {
 						bNode = b[j];
@@ -779,24 +779,22 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 	}
 }
 
+// We are assuming here that we come from patchProp routine
+// -nextAttrValue cannot be null or undefined
 export function patchStyle(lastAttrValue, nextAttrValue, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
 	} else if (isNullOrUndef(lastAttrValue)) {
-		if (!isNullOrUndef(nextAttrValue)) {
-			for (let style in nextAttrValue) {
-				// do not add a hasOwnProperty check here, it affects performance
-				const value = nextAttrValue[style];
+		for (let style in nextAttrValue) {
+			// do not add a hasOwnProperty check here, it affects performance
+			const value = nextAttrValue[style];
 
-				if (isNumber(value) && !isUnitlessNumber[style]) {
-					dom.style[style] = value + 'px';
-				} else {
-					dom.style[style] = value;
-				}
+			if (isNumber(value) && !isUnitlessNumber[style]) {
+				dom.style[style] = value + 'px';
+			} else {
+				dom.style[style] = value;
 			}
 		}
-	} else if (isNullOrUndef(nextAttrValue)) {
-		dom.removeAttribute('style');
 	} else {
 		for (let style in nextAttrValue) {
 			// do not add a hasOwnProperty check here, it affects performance

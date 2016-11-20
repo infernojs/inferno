@@ -115,4 +115,25 @@ describe('CSS style properties (JSX)', () => {
 		render(styleNode(stylesThree), container);
 		expect(container.firstChild.style.color).to.equal('orange');
 	});
+
+	it('Should remove style attribute when next value is null', () => {
+		const stylesOne = { float: 'left' };
+		render(styleNode(stylesOne), container);
+		expect(container.firstChild.style.float).to.equal('left');
+
+		render(styleNode(null), container);
+		expect(container.innerHTML).to.eql('<div></div>');
+	});
+
+	it('Should remove style attribute when single prop value is null', () => {
+		const stylesOne = { float: 'left', color: 'red', display: 'block' };
+		render(styleNode(stylesOne), container);
+		expect(container.firstChild.style.float).to.equal('left');
+
+		const stylesTwo = { float: 'left', display: 'none' };
+		render(styleNode(stylesTwo), container);
+		expect(container.firstChild.style.float).to.equal('left');
+		expect(container.firstChild.style.display).to.equal('none');
+		expect(container.firstChild.style.color).to.equal('');
+	});
 });

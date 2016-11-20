@@ -1,25 +1,26 @@
 /*!
- * inferno-component v1.0.0-beta7
+ * inferno-component v1.0.0-beta12
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-    (global.Component = factory());
+    (global.Inferno = global.Inferno || {}, global.Inferno.Component = factory());
 }(this, (function () { 'use strict';
 
 var Lifecycle = function Lifecycle() {
-    this._listeners = [];
+    this.listeners = [];
+    this.fastUnmount = true;
 };
 Lifecycle.prototype.addListener = function addListener (callback) {
-    this._listeners.push(callback);
+    this.listeners.push(callback);
 };
 Lifecycle.prototype.trigger = function trigger () {
         var this$1 = this;
 
-    for (var i = 0; i < this._listeners.length; i++) {
-        this$1._listeners[i]();
+    for (var i = 0; i < this.listeners.length; i++) {
+        this$1.listeners[i]();
     }
 };
 
@@ -121,7 +122,7 @@ function cloneVNode(vNodeToClone, props) {
         }
         else if (flags & 3970 /* Element */) {
             children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, children ? false : true);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, !children);
         }
     }
     newVNode.dom = null;
@@ -296,7 +297,14 @@ function applyState(component, force, callback) {
         var parentDom = lastInput.dom.parentNode;
         component._lastInput = nextInput;
         if (didUpdate) {
-            var subLifecycle = new Lifecycle();
+            var subLifecycle = component._lifecycle;
+            if (!subLifecycle) {
+                subLifecycle = new Lifecycle();
+            }
+            else {
+                subLifecycle.listeners = [];
+            }
+            component._lifecycle = subLifecycle;
             var childContext = component.getChildContext();
             if (!isNullOrUndef(childContext)) {
                 childContext = Object.assign({}, context, component._childContext, childContext);
@@ -329,6 +337,7 @@ var Component$1 = function Component$1(props, context) {
     this._unmounted = true;
     this._devToolsStatus = null;
     this._devToolsId = null;
+    this._lifecycle = null;
     this._childContext = null;
     this._patch = null;
     this._isSVG = false;

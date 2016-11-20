@@ -44,34 +44,29 @@ function unmountText(vNode, parentDom) {
 
 export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
 	const instance = vNode.children;
+	let hooks = vNode.ref;
 
-	if (!shallowUnmount) {
-		let instanceHooks = null;
+	if (!shallowUnmount && !lifecycle.fastUnmount) {
+		if (instance.render !== undefined) {
+			const ref = vNode.ref;
 
-		if (!isNullOrUndef(instance)) {
-			instanceHooks = instance.ref;
-			if (instance.render !== undefined) {
-				const ref = vNode.ref;
-
-				if (ref) {
-					ref(null);
-				}
-				instance.componentWillUnmount();
-				instance._unmounted = true;
-				componentToDOMNodeMap.delete(instance);
-				unmount(instance._lastInput, null, lifecycle, false, shallowUnmount);
-			} else {
-				unmount(instance, null, lifecycle, false, shallowUnmount);
+			if (ref) {
+				ref(null);
 			}
+			instance.componentWillUnmount();
+			instance._unmounted = true;
+			componentToDOMNodeMap.delete(instance);
+			unmount(instance._lastInput, null, lifecycle, false, shallowUnmount);
+		} else {
+			unmount(instance, null, lifecycle, false, shallowUnmount);
 		}
-		const hooks = vNode.ref || instanceHooks;
-
-		if (!isNullOrUndef(hooks)) {
-			if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-				hooks.onComponentWillUnmount();
-			}
-		}
+		hooks = vNode.ref || instance.ref;
 	}
+	if (!isNullOrUndef(hooks)) {
+		if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
+			hooks.onComponentWillUnmount();
+		}
+	}	
 	if (parentDom) {
 		let lastInput = instance._lastInput;
 
@@ -89,7 +84,7 @@ export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowU
 	const dom = vNode.dom;
 	const ref = vNode.ref;
 
-	if (!shallowUnmount) {
+	if (!shallowUnmount && !lifecycle.fastUnmount) {
 		if (ref) {
 			unmountRef(ref);
 		}

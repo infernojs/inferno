@@ -1,7 +1,7 @@
 {
   "name": "inferno-src",
   "license": "MIT",
-  "version": "1.0.0-beta7",
+  "version": "1.0.0-beta12",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -12,20 +12,21 @@
   "devDependencies": {
     "@types/chai": "^3.4.34",
     "@types/core-js": "^0.9.34",
-    "@types/mocha": "^2.2.32",
-    "@types/node": "^6.0.46",
+    "@types/mocha": "^2.2.33",
+    "@types/node": "^6.0.48",
+    "@types/sinon": "^1.16.32",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
-    "babel-eslint": "^7.1.0",
-    "babel-loader": "^6.2.7",
-    "babel-plugin-inferno": "infernojs/babel-plugin-inferno#master",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.8",
+    "babel-plugin-inferno": "^1.2.0-beta10",
     "babel-plugin-module-resolver": "^2.3.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-es2015-modules-umd": "^6.18.0",
     "babel-plugin-transform-inline-environment-variables": "^6.8.0",
     "babel-plugin-transform-object-assign": "^6.8.0",
-    "babel-plugin-transform-object-rest-spread": "^6.16.0",
+    "babel-plugin-transform-object-rest-spread": "^6.19.0",
     "babel-plugin-transform-undefined-to-void": "^6.8.0",
     "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.18.0",
@@ -38,8 +39,8 @@
     "convert-source-map": "^1.3.0",
     "coveralls": "^2.11.15",
     "cross-env": "^3.1.3",
-    "eslint": "^3.10.0",
-    "eslint-plugin-babel": "^3.3.0",
+    "eslint": "^3.10.2",
+    "eslint-plugin-babel": "^4.0.0",
     "glob": "^7.1.1",
     "history": "4.4.0",
     "hoist-non-inferno-statics": "^1.1.2",
@@ -50,17 +51,17 @@
     "karma-firefox-launcher": "^1.0.0",
     "karma-ie-launcher": "^1.0.0",
     "karma-mocha": "^1.3.0",
-    "karma-mocha-reporter": "^2.2.0",
+    "karma-mocha-reporter": "^2.2.1",
     "karma-webpack": "^1.8.0",
-    "lodash": "^4.17.0",
+    "lodash": "^4.17.2",
     "merge-source-map": "^1.0.3",
     "mkdirp": "^0.5.1",
-    "mobx": "^2.6.2",
+    "mobx": "^2.6.3",
     "mocha": "^3.1.2",
     "mocha-lcov-reporter": "^1.2.0",
     "most": "^1.1.0",
     "most-subject": "^5.2.0",
-    "nyc": "^8.4.0",
+    "nyc": "^9.0.1",
     "path-to-regexp-es6": "0.0.2",
     "pre-commit": "^1.1.3",
     "proptypes": "^0.14.3",
@@ -76,10 +77,10 @@
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-plugin-uglify": "^1.0.1",
     "sinon": "2.0.0-pre.4",
-    "ts-loader": "^1.2.0",
+    "ts-loader": "^1.2.2",
     "ts-node": "^1.7.0",
-    "tslint": "^3.15.1",
-    "typescript": "^2.0.9",
+    "tslint": "^4.0.1",
+    "typescript": "^2.0.10",
     "union-type": "^0.3.3",
     "webpack": "^2.1.0-beta.26",
     "webpack-dev-server": "^2.1.0-beta.11"
@@ -105,12 +106,15 @@
     "rollup"
   ],
   "nyc": {
+    "sourceMap": false,
+		"all": true,
     "include": [
       "src/*.ts",
       "src/**/*.ts"
     ],
     "exclude": [
       "typings",
+      "src/inferno.d.ts",
       "src/**/*__tests__*/**"
     ],
     "extension": [
@@ -120,6 +124,10 @@
       "lcov",
       "html",
       "text"
+    ],
+    "require": [
+      "./config/compiler.js",
+      "babel-register"
     ]
   },
   "repository": {

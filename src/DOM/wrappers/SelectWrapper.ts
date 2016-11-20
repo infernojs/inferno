@@ -28,12 +28,14 @@ function onSelectChange(e) {
 	const props = vNode.props;
 	const dom = vNode.dom;
 
-	applyValue(vNode, dom);
 	if (props.onChange) {
 		props.onChange(e);
 	} else if (props.onchange) {
 		props.onchange(e);
 	}
+	// the user may have updated the vNode from the above onChange events
+	// so we need to get it from the context of `this` again
+	applyValue(this.vNode, dom);
 }
 
 export function processSelect(vNode, dom) {

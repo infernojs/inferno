@@ -1,13 +1,13 @@
 declare module 'inferno' {
 	export function createVNode(flags, type?, props?, children?, key?, ref?, noNormalise?: boolean): any;
+	export function createTextVNode(text: string): any;
 	export function createVoidVNode(): any;
-	export function createTextVNode(text): any;
 	export function cloneVNode(node, props?, ...children);
-	export function NO_OP(...rest);
 	export function render(...rest)
 	export function findDOMNode(node: any): any;
 	export function createRenderer(...rest);
 	export function disableRecycling(...rest);
+	export const NO_OP;
 }
 
 declare module 'inferno-component' {
@@ -118,3 +118,5 @@ declare module 'lodash/fp' {
 declare module 'union-type' {
 	export default function (obj: any): any
 }
+
+interface Window { process: any; }

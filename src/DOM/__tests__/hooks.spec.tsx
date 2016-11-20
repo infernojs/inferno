@@ -1,8 +1,8 @@
 import { expect } from 'chai';
+import { assert, spy } from 'sinon';
 import { render } from './../../DOM/rendering';
 import Component from './../../component/es2015';
 import * as Inferno from '../../testUtils/inferno';
-import sinon from 'sinon';
 Inferno; // suppress ts 'never used' error
 
 describe('Component lifecycle (JSX)', () => {
@@ -84,11 +84,11 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			const Aspy = sinon.spy(A.prototype, 'componentWillUnmount');
-			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
-			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
-			const DSpy = sinon.spy(D.prototype, 'componentWillUnmount');
-			const notCalled = sinon.assert.notCalled;
+			const Aspy = spy(A.prototype, 'componentWillUnmount');
+			const Bspy = spy(B.prototype, 'componentWillUnmount');
+			const CSpy = spy(C.prototype, 'componentWillUnmount');
+			const DSpy = spy(D.prototype, 'componentWillUnmount');
+			const notCalled = assert.notCalled;
 
 			render(<A />, container);
 			expect(container.innerHTML).to.equal('<div><button>btn</button></div>');
@@ -107,7 +107,7 @@ describe('Component lifecycle (JSX)', () => {
 			updater();
 			expect(container.innerHTML).to.equal('<div><button>btn</button></div>');
 			notCalled(Aspy);
-			const calledOnce = sinon.assert.calledOnce;
+			const calledOnce = assert.calledOnce;
 			calledOnce(Bspy);
 			calledOnce(CSpy);
 			calledOnce(DSpy);
@@ -171,11 +171,11 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			const Aspy = sinon.spy(A.prototype, 'componentWillUnmount');
-			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
-			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
-			const DSpy = sinon.spy(D.prototype, 'componentWillUnmount');
-			const notCalled = sinon.assert.notCalled;
+			const Aspy = spy(A.prototype, 'componentWillUnmount');
+			const Bspy = spy(B.prototype, 'componentWillUnmount');
+			const CSpy = spy(C.prototype, 'componentWillUnmount');
+			const DSpy = spy(D.prototype, 'componentWillUnmount');
+			const notCalled = assert.notCalled;
 
 			render(<A />, container);
 			expect(container.innerHTML).to.equal('<div><button>btn</button></div>');
@@ -194,7 +194,7 @@ describe('Component lifecycle (JSX)', () => {
 			updater();
 			expect(container.innerHTML).to.equal('<div><button>btn</button></div>');
 			notCalled(Aspy);
-			const calledOnce = sinon.assert.calledOnce;
+			const calledOnce = assert.calledOnce;
 			calledOnce(Bspy);
 			calledOnce(CSpy);
 			calledOnce(DSpy);
@@ -219,11 +219,11 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
-			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
-			const DSpy = sinon.spy(D.prototype, 'componentWillUnmount');
-			const notCalled = sinon.assert.notCalled;
-			const calledOnce = sinon.assert.calledOnce;
+			const Bspy = spy(B.prototype, 'componentWillUnmount');
+			const CSpy = spy(C.prototype, 'componentWillUnmount');
+			const DSpy = spy(D.prototype, 'componentWillUnmount');
+			const notCalled = assert.notCalled;
+			const calledOnce = assert.calledOnce;
 
 			render(<B />, container);
 			expect(container.innerHTML).to.equal('<div>B</div>');
@@ -316,12 +316,12 @@ describe('Component lifecycle (JSX)', () => {
 				}
 			}
 
-			const Bspy = sinon.spy(B.prototype, 'componentWillUnmount');
-			const B1spy = sinon.spy(B1.prototype, 'componentWillUnmount');
-			const B2spy = sinon.spy(B2.prototype, 'componentWillUnmount');
-			const CSpy = sinon.spy(C.prototype, 'componentWillUnmount');
-			const notCalled = sinon.assert.notCalled;
-			const calledOnce = sinon.assert.calledOnce;
+			const Bspy = spy(B.prototype, 'componentWillUnmount');
+			const B1spy = spy(B1.prototype, 'componentWillUnmount');
+			const B2spy = spy(B2.prototype, 'componentWillUnmount');
+			const CSpy = spy(C.prototype, 'componentWillUnmount');
+			const notCalled = assert.notCalled;
+			const calledOnce = assert.calledOnce;
 
 			render(<B />, container);
 			expect(container.innerHTML).to.equal('<div><p>B1</p><p>B2</p></div>');
@@ -368,10 +368,10 @@ describe('Component lifecycle (JSX)', () => {
 				fn: () => {
 				}
 			};
-			const spy = sinon.spy(spyObj, 'fn');
+			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillMount={spyObj.fn}/>, _container);
 
-			expect(spy.callCount).to.equal(1);
+			expect(sinonSpy.callCount).to.equal(1);
 		});
 
 		it('"onComponentDidMount" hook should fire, args DOM', () => {
@@ -379,11 +379,11 @@ describe('Component lifecycle (JSX)', () => {
 				fn: () => {
 				}
 			};
-			const spy = sinon.spy(spyObj, 'fn');
+			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentDidMount={spyObj.fn}/>, _container);
 
-			expect(spy.callCount).to.equal(1);
-			expect(spy.getCall(0).args[0]).to.equal(_container.firstChild);
+			expect(sinonSpy.callCount).to.equal(1);
+			expect(sinonSpy.getCall(0).args[0]).to.equal(_container.firstChild);
 		});
 
 		it('"onComponentWillUnmount" hook should fire', () => {
@@ -391,13 +391,13 @@ describe('Component lifecycle (JSX)', () => {
 				fn: () => {
 				}
 			};
-			const spy = sinon.spy(spyObj, 'fn');
+			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillUnmount={spyObj.fn}/>, _container);
-			expect(spy.callCount).to.equal(0);
+			expect(sinonSpy.callCount).to.equal(0);
 			// do unmount
 			render(null, _container);
 
-			expect(spy.callCount).to.equal(1);
+			expect(sinonSpy.callCount).to.equal(1);
 		});
 
 		it('"onComponentWillUpdate" hook should fire', () => {
@@ -405,9 +405,9 @@ describe('Component lifecycle (JSX)', () => {
 				fn: () => {
 				}
 			};
-			const spy = sinon.spy(spyObj, 'fn');
+			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillUpdate={spyObj.fn}/>, _container);
-			expect(spy.callCount).to.equal(0);
+			expect(sinonSpy.callCount).to.equal(0);
 
 			// console.log(spy.getCall(0).args);
 			// TODO: How can we verify last props in unit test
@@ -420,11 +420,11 @@ describe('Component lifecycle (JSX)', () => {
 				fn: () => {
 				}
 			};
-			const spy = sinon.spy(spyObj, 'fn');
+			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentDidUpdate={spyObj.fn}/>, _container);
-			expect(spy.callCount).to.equal(0); // Update 1
+			expect(sinonSpy.callCount).to.equal(0); // Update 1
 			render(<StatelessComponent onComponentDidUpdate={spyObj.fn}/>, _container);
-			expect(spy.callCount).to.equal(1); // Update 2
+			expect(sinonSpy.callCount).to.equal(1); // Update 2
 		});
 
 		it('"onComponentShouldUpdate" hook should fire, should call render when return true', () => {
@@ -469,8 +469,8 @@ describe('Component lifecycle (JSX)', () => {
 			innerSecondCallback () {}
 		};
 
-		const calledOnce = sinon.assert.calledOnce;
-		const notCalled = sinon.assert.notCalled;
+		const calledOnce = assert.calledOnce;
+		const notCalled = assert.notCalled;
 
 		const RefTester = ({inner, innersecond}) => {
 			let content = null;
@@ -493,9 +493,9 @@ describe('Component lifecycle (JSX)', () => {
 				</div>
 			);
 		};
-		const spyOuter = sinon.spy(fakeObj, 'outerCallback');
-		const spyInner = sinon.spy(fakeObj, 'innerCallback');
-		const spyInnerSecond = sinon.spy(fakeObj, 'innerSecondCallback');
+		const spyOuter = spy(fakeObj, 'outerCallback');
+		const spyInner = spy(fakeObj, 'innerCallback');
+		const spyInnerSecond = spy(fakeObj, 'innerSecondCallback');
 
 		afterEach(() => {
 			spyOuter.reset();
@@ -543,6 +543,183 @@ describe('Component lifecycle (JSX)', () => {
 
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
+		});
+
+		it('Should call ref when node is re-attached and re-unmounted', () => {
+			notCalled(spyOuter);
+			notCalled(spyInner);
+			notCalled(spyInnerSecond);
+
+			render(<RefTester inner={true} innersecond={true} />, container);
+
+			calledOnce(spyOuter);
+			calledOnce(spyInner);
+			calledOnce(spyInnerSecond);
+			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
+			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+
+			spyInnerSecond.calledBefore(spyInner);
+			spyInner.calledBefore(spyOuter);
+
+			//reset
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+
+			render(<RefTester inner={false} innersecond={true}/>, container);
+
+			// Verify divs are removed from DOM
+			expect(container.innerHTML).to.eql('<div><span>abc</span></div>');
+
+			// Verify ref callbacks
+			notCalled(spyOuter);
+			calledOnce(spyInner);
+			calledOnce(spyInnerSecond);
+			expect(spyInner.getCall(0).args[0]).to.eql(null);
+			expect(spyInnerSecond.getCall(0).args[0]).to.eql(null);
+
+
+			//reset
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+
+
+			render(<RefTester inner={true} innersecond={true}/>, container);
+
+			// Verify divs are attached
+			expect(container.innerHTML).to.eql('<div><span>abc</span><div><span>dfg</span></div></div>');
+
+			// Verify ref callbacks
+			notCalled(spyOuter);
+			calledOnce(spyInner);
+			calledOnce(spyInnerSecond);
+			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+
+			//reset
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+		});
+	});
+
+	describe('ref hook complex', () => {
+		const fakeObj = {
+			outerCallback () {},
+			innerCallback () {},
+			innerSecondCallback () {}
+		};
+
+		const calledOnce = assert.calledOnce;
+		const notCalled = assert.notCalled;
+
+		const RefTester = ({inner, innersecond}) => {
+			let content = null;
+			if (inner) {
+				let contentTwo = null;
+				if (innersecond) {
+					contentTwo = <span ref={fakeObj.innerSecondCallback}>dfg</span>;
+				}
+				content = (
+					<div ref={fakeObj.innerCallback}>
+						{contentTwo}
+					</div>
+				);
+			}
+
+			return (
+				<div>
+					<span ref={fakeObj.outerCallback}>abc</span>
+					{content}
+				</div>
+			);
+		};
+		const spyOuter = spy(fakeObj, 'outerCallback');
+		const spyInner = spy(fakeObj, 'innerCallback');
+		const spyInnerSecond = spy(fakeObj, 'innerSecondCallback');
+
+		const PlainDiv = () => <div>plaindiv</div>;
+
+		const RefParent = ({bool, inner, innersecond}) => {
+
+			return (
+				<div>
+					{bool ? <RefTester inner={inner} innersecond={innersecond}/> : <PlainDiv />}
+				</div>
+			);
+		};
+
+		afterEach(() => {
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+		});
+
+		it('Should not call ref unmount when node is not mounted', () => {
+			notCalled(spyOuter);
+			notCalled(spyInner);
+			notCalled(spyInnerSecond);
+			render(<RefParent bool={true} inner={false} innersecond={false} />, container);
+
+			calledOnce(spyOuter);
+			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
+			notCalled(spyInner);
+			notCalled(spyInnerSecond);
+
+			expect(container.innerHTML).to.eql('<div><div><span>abc</span></div></div>');
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+
+
+
+			// RENDER INNER DIVS
+			render(<RefParent bool={true} inner={true} innersecond={true} />, container);
+			notCalled(spyOuter);
+			calledOnce(spyInner);
+			calledOnce(spyInnerSecond);
+			//verify order
+			spyInnerSecond.calledBefore(spyInner);
+			spyInner.calledBefore(spyOuter);
+
+			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+
+
+			expect(container.innerHTML).to.eql('<div><div><span>abc</span><div><span>dfg</span></div></div></div>');
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+
+			// UNMOUNT INNER DIVS
+			render(<RefParent bool={true} inner={false} innersecond={false} />, container);
+			notCalled(spyOuter);
+			calledOnce(spyInner);
+			calledOnce(spyInnerSecond);
+			//verify order
+			spyInnerSecond.calledBefore(spyInner);
+			spyInner.calledBefore(spyOuter);
+
+			expect(spyInner.getCall(0).args[0]).to.eql(null);
+			expect(spyInnerSecond.getCall(0).args[0]).to.eql(null);
+
+			expect(container.innerHTML).to.eql('<div><div><span>abc</span></div></div>');
+			spyOuter.reset();
+			spyInner.reset();
+			spyInnerSecond.reset();
+
+			// Inner and InnerSecond divs are now unmounted
+			// and unmounting parent should not cause them to unmounted again
+
+
+			// REPLACE PARENT
+			render(<RefParent bool={false} inner={false} innersecond={false} />, container);
+			calledOnce(spyOuter);
+			notCalled(spyInner);
+			notCalled(spyInnerSecond);
+			expect(container.innerHTML).to.eql('<div><div>plaindiv</div></div>');
 		});
 	});
 });

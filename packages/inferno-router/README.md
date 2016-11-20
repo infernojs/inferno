@@ -6,7 +6,7 @@
 
 Inferno Router is a routing library for [Inferno](https://github.com/trueadm/inferno).
 
-Usage of `inferno-router` is similar to that of [react-router](https://github.com/reactjs/react-router).  
+Usage of `inferno-router` is similar to that of [react-router](https://github.com/ReactTraining/react-router/blob/master/docs/API.md).  
 
 ## Install
 
@@ -14,13 +14,14 @@ Usage of `inferno-router` is similar to that of [react-router](https://github.co
 npm install inferno-router
 ```
 
-## Contents
+## Features
 
-* Router
+* Router / RouterContext
 * Route / IndexRoute
 * Link / IndexLink
 * browserHistory / memoryHistory
 * onEnter / onLeave hooks
+* params / querystring parsing
 
 ## Usage (client-side)
 
@@ -53,15 +54,15 @@ function User({ params }) {
 }
 
 const routes = (
- <Router history={ browserHistory }>
-   <Route component={ App }>
-     <IndexRoute component={ Home }/>
-       <Route path="users" component={ Users }>
-         <Route path="/user/:username" component={ User }/>
-       </Route>
-     <Route path="*" component={ NoMatch }/>
-  </Route>
-</Router>
+  <Router history={ browserHistory }>
+    <Route component={ App }>
+      <IndexRoute component={ Home }/>
+      <Route path="users" component={ Users }>
+        <Route path="/user/:username" component={ User }/>
+      </Route>
+      <Route path="*" component={ NoMatch }/>
+    </Route>
+  </Router>
 );
 
 // Render HTML on the browser
@@ -166,6 +167,6 @@ Inferno.render((
 
 ## Notes
 
-* `IndexRoute` is the same as `Route` with `path` set to `/`
-* `IndexLink` is the same as `Link` with `to` set to `/`
+* `<IndexRoute>` is the same as `<Route path="/">"`
+* `<IndexLink>` is the same as `<Link to="/">`
 

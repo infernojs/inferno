@@ -1,12 +1,12 @@
 /*!
- * inferno-server v1.0.0-beta7
+ * inferno-server v1.0.0-beta12
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('stream')) :
 	typeof define === 'function' && define.amd ? define(['stream'], factory) :
-	(global.InfernoServer = factory(global.stream));
+	(global.Inferno = global.Inferno || {}, global.Inferno.Server = factory(global.stream));
 }(this, (function (stream) { 'use strict';
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
@@ -158,7 +158,7 @@ function cloneVNode(vNodeToClone, props) {
         }
         else if (flags & 3970 /* Element */) {
             children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, children ? false : true);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, !children);
         }
     }
     newVNode.dom = null;

@@ -39,10 +39,11 @@ nav {
     display: block;
     padding-bottom: 25px;
     font-size: 24px;
+    font-weight: 400;
     overflow: hidden;
 
     > img {
-      float: left;
+      display: block;
       width: 75px;
       height: 73px;
     }

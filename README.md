@@ -9,18 +9,20 @@
 [![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg?style=flat-square)](https://www.npmjs.org/package/inferno-dom)
 [![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
 
-Inferno is an isomorphic library for building high-performance user interfaces, which is crucial when targeting mobile devices. Unlike typical virtual DOM libraries like React, Mithril, Virtual-dom, Snabbdom and Om, Inferno uses techniques to separate static and dynamic content. This allows Inferno to only "diff" renders that have dynamic values.
+Inferno is an insanely fast, `6kb` React-like library for building high-performance user interfaces on both the client and server.
 
-In addition to this, we've carefully optimized the code to ensure there is as little overhead as possible. We believe that Inferno is currently one of the fastest virtual DOM implementation out there - as shown by some of our [benchmarks](#benchmarks). Inferno is all about performance, whilst keeping a robust API that replicates the best features from libraries such as React.
+Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their existing React projects to Inferno in a few lines of code using [`inferno-compat`](https://github.com/trueadm/inferno/tree/dev/packages/inferno-compat).
 
-In principle, Inferno is compatible with the standard React API, allowing painless transition from React to Inferno. Furthermore, Inferno has a Babel plugin allowing JSX syntax to transpile to optimised Inferno virtual DOM.
+For those not familiar with React... TODO
 
-## Key Features
+## Summary
 
+- Component driven + one-way data flow archietecture
 - One of the fastest front-end frameworks for rendering UI in the DOM
-- Components have a similar API to React ES2015 components with `inferno-component`
-- Stateless components are fully supported and have more usability thanks to Inferno's [stateless component hooks](#stateless-component-hooks)
-- Isomorphic/universal for easy server-side rendering with `inferno-server`
+- React-like API, concepts and component lifecycle events
+- Lightweight filesize of only 6kb
+- Isomorphic rendering on both client and server with `inferno-server`
+- Highly modular with very little opinionation on how things should be done
 
 ## Benchmarks
 
@@ -31,67 +33,13 @@ In principle, Inferno is compatible with the standard React API, allowing painle
 - [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
 - [JS Web Frameworks Benchmark - Round 4](http://stefankrause.net/js-frameworks-benchmark4/webdriver-ts/table.html)
 
-## Live Demos/Examples
-
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/rqwmkx40/)
-
-## Install
-
-NPM:
-
-Core package:
-
-```sh
-npm install --save inferno@beta6
-```
-
-Addons:
-
-```sh
-# ES2015 stateful components
-npm install --save inferno-component@beta8
-# server-side rendering
-npm install --save inferno-server@beta8
-# routing
-npm install --save inferno-router@beta8
-``` 
-
-Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
- 
-```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0/inferno.min.js
-```
-
-## Creating virtual DOM
-
-### JSX:
-```sh
-npm install --save-dev babel-plugin-inferno@beta6
-```
-
-### Hyperscript:
-```sh
-npm install --save inferno-hyperscript@beta6
-```
-
-### createElement:
-```sh
-npm install --save inferno-create-element@beta6
-```
-
-## Compatability with existing React apps
-```sh
-npm install --save-dev inferno-compat@beta6
-```
-
-Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
-
-## Overview
+## Code Example
 
 Let's start with some code. As you can see, Inferno intentionally keeps the same, good, design ideas as React regarding components: one-way data flow and separation of concerns.
+
 In these examples, JSX is used via the [Inferno JSX Babel Plugin](https://github.com/trueadm/babel-plugin-inferno) to provide a simple way to express Inferno virtual DOM.
 
-```javascript
+```jsx
 import Inferno from 'inferno';
 
 const message = "Hello world";
@@ -103,7 +51,7 @@ Inferno.render(
 ```
 Furthermore, Inferno also uses ES6 components like React:
 
-```javascript
+```jsx
 import Inferno from 'inferno';
 import Component from 'inferno-component';
 
@@ -125,6 +73,68 @@ class MyComponent extends Component {
 }
 
 Inferno.render(<MyComponent />, document.body);
+```
+
+### More Examples
+
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/rqwmkx40/)
+
+Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
+
+## Getting Started
+
+NPM:
+
+[Create Inferno App](todo):
+
+```sh
+npm install -g create-inferno-app
+create-inferno-app MyApp
+```
+
+Core package:
+
+```sh
+npm install --save inferno@beta12
+```
+
+Addons:
+
+```sh
+# ES2015 stateful components
+npm install --save inferno-component@beta12
+# server-side rendering
+npm install --save inferno-server@beta12
+# routing
+npm install --save inferno-router@beta12
+``` 
+
+Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
+ 
+```
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0/inferno.min.js
+```
+
+### Creating Virtual DOM
+
+#### JSX:
+```sh
+npm install --save-dev babel-plugin-inferno@beta11
+```
+
+#### Hyperscript:
+```sh
+npm install --save inferno-hyperscript@beta12
+```
+
+#### createElement:
+```sh
+npm install --save inferno-create-element@beta12
+```
+
+### Compatability with existing React apps
+```sh
+npm install --save-dev inferno-compat@beta12
 ```
 
 ## Inferno Top-Level API
@@ -283,8 +293,8 @@ Hooks provide powerful lifecycle events to stateless components, allowing you to
 
 Inferno now has bindings available for some of the major state management libraries out there:
 
-- [Redux](https://github.com/trueadm/inferno/tree/master/packages/inferno-redux) via `inferno-redux`
-- [MobX](https://github.com/trueadm/inferno/tree/master/packages/inferno-mobx) via `inferno-mobx`
+- [Redux](https://github.com/trueadm/inferno/tree/dev/packages/inferno-redux) via `inferno-redux`
+- [MobX](https://github.com/trueadm/inferno/tree/dev/packages/inferno-mobx) via `inferno-mobx`
 - [Cerebral](https://github.com/cerebral/cerebral-view-inferno) via `cerebral-view-inferno`
 
 ## Performance

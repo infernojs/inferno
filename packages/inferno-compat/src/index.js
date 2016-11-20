@@ -1,10 +1,11 @@
+import PropTypes from 'proptypes';
 import isValidElement from '../../../build/factories/isValidElement';
 import createClass from '../../../build/component/createClass';
 import infernoCreateElement from '../../../build/factories/createElement';
 import cloneVNode from '../../../build/factories/cloneVNode';
 import { render, findDOMNode } from '../../../build/DOM/rendering';
 import { createVNode } from '../../../build/core/shapes';
-import Component from '../../../build/component/es2015';
+import Component from 'inferno-component';
 import { NO_OP } from '../../../build/shared';
 
 function unmountComponentAtNode(container) {
@@ -53,7 +54,7 @@ const cloneElement = cloneVNode;
 const version = '15.3.4';
 
 function normalizeProps(name, props) {
-	if (name === 'input' && props.onChange) {
+	if ((name === 'input' || name === 'textarea') && props.onChange) {
 		const eventName = props.type === 'checkbox' ? 'onclick' : 'oninput'
 		
 		if (!props[eventName]) {
@@ -88,6 +89,7 @@ export {
 	Component,
 	unmountComponentAtNode,
 	cloneElement,
+	PropTypes,
 	createClass,
 	findDOMNode,
 	Children,
@@ -104,6 +106,7 @@ export default {
 	Component,
 	unmountComponentAtNode,
 	cloneElement,
+	PropTypes,
 	createClass,
 	findDOMNode,
 	Children,

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
+import { assert, spy } from 'sinon';
 import { render } from './../rendering';
 import { innerHTML } from '../../tools/utils';
 import createElement from './../../factories/createElement';
@@ -716,6 +716,33 @@ describe('Elements (JSX)', () => {
 		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
 	});
 
+	it('Should not dangerously set innerHTML when previous is same as new one', () => {
+		render((
+			<div dangerouslySetInnerHTML={{ __html: 'same' }}/>
+		), container);
+		expect(container.innerHTML).to.equal('<div>same</div>');
+
+		render((
+			<div dangerouslySetInnerHTML={{ __html: 'same' }}/>
+		), container);
+		expect(container.innerHTML).to.equal('<div>same</div>');
+
+		render((
+			<div dangerouslySetInnerHTML={{ __html: 'change' }}/>
+		), container);
+		expect(container.innerHTML).to.equal('<div>change</div>');
+	});
+
+	it('Should throw error if __html property is not set', () => {
+		try {
+			render((
+				<div dangerouslySetInnerHTML={{ __html: null }}/>
+			), container);
+		} catch (e) {
+			expect(e.message).to.eql('Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
+		}
+	});
+
 	it('handles JSX spread props (including children)', () => {
 		const foo = {
 			children: 'Hello world!',
@@ -752,8 +779,8 @@ describe('Elements (JSX)', () => {
 		const bool = false;
 		const newValue = 't';
 		const spread = { id: 'test' };
-		const spy = sinon.spy(obj, 'fn');
-		const spyClick = sinon.spy(obj, 'click');
+		const sinonSpy = spy(obj, 'fn');
+		const spyClick = spy(obj, 'click');
 
 		// TODO: Fails to creation of node fix needed
 		render(<input type="text" ref={obj.fn} spellcheck="false"
@@ -764,10 +791,10 @@ describe('Elements (JSX)', () => {
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		document.body.appendChild(container);
 		const input = container.querySelector('#test');
-		sinon.assert.calledOnce(spy); // Verify hook works
+		assert.calledOnce(sinonSpy); // Verify hook works
 		input.click(); // Focus fails with async tests - changed to tests
 		requestAnimationFrame(() => {
-			sinon.assert.calledOnce(spyClick); // Verify hook works
+			assert.calledOnce(spyClick); // Verify hook works
 			document.body.removeChild(container);
 			done();
 		});

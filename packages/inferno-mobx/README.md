@@ -33,27 +33,32 @@ npm install --save mobx
 You can inject props using the following syntax
 
 ```javascript
+// MyComponent.js
 import Inferno from 'inferno'
 import Component from 'inferno-component'
 import { connect } from 'inferno-mobx'
 
-@connect(['helloStore', 'frenchStore'])
+@connect(['englishStore', 'frenchStore'])
 class MyComponent extends Component {
     render({ englishStore, frenchStore }) {
         return <div>
-          <p>{ englishStore.title }</p>
-          <p>{ frenchStore.title }</p>
+            <p>{ englishStore.title }</p>
+            <p>{ frenchStore.title }</p>
         </div>
     }
 }
+
+export default MyComponent
 ```
 
 Just make sure that you provided your stores using the `Provider`. Ex:
 
 ```javascript
+// index.js
 import Inferno from 'inferno'
 import { Provider } from 'inferno-mobx'
 import { observable } from 'mobx'
+import MyComponent from './MyComponent'
 
 const englishStore = observable({
     title: 'Hello World'

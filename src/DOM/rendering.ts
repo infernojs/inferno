@@ -21,6 +21,7 @@ import {
 interface Root {
 	dom: Node | SVGAElement;
 	input: InfernoInput;
+	lifecycle: Lifecycle
 }
 
 // rather than use a Map, like we did before, we can use an array here
@@ -44,10 +45,11 @@ function getRoot(dom): Root | null {
 	return null;
 }
 
-function setRoot(dom, input): void {
+function setRoot(dom, input, lifecycle): void {
 	roots.push({
 		dom,
-		input
+		input,
+		lifecycle
 	});
 }
 
@@ -73,9 +75,10 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 		return;
 	}
 	const root = getRoot(parentDom);
-	const lifecycle = new Lifecycle();
 
 	if (isNull(root)) {
+		const lifecycle = new Lifecycle();
+
 		if (!isInvalid(input)) {
 			if ((input as VNode).dom) {
 				input = cloneVNode(input);
@@ -84,9 +87,12 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 				mount(input, parentDom, lifecycle, {}, false);
 			}
 			lifecycle.trigger();
-			setRoot(parentDom, input);
+			setRoot(parentDom, input, lifecycle);
 		}
 	} else {
+		const lifecycle = root.lifecycle;
+	
+		lifecycle.listeners = [];
 		if (isNullOrUndef(input)) {
 			unmount(root.input, parentDom, lifecycle, false, false);
 			removeRoot(root);

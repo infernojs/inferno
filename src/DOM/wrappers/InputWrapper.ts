@@ -15,16 +15,18 @@ function isControlled(props) {
 }
 
 function onTextInputChange(e) {
-	const vNode = this.vNode;
+	let vNode = this.vNode;
 	const props = vNode.props;
 	const dom = vNode.dom;
 
-	applyValue(vNode, dom, false);
 	if (props.onInput) {
 		props.onInput(e);
 	} else if (props.oninput) {
 		props.oninput(e);
 	}
+	// the user may have updated the vNode from the above onInput events
+	// so we need to get it from the context of `this` again
+	applyValue(this.vNode, dom);
 }
 
 function onCheckboxChange(e) {
@@ -32,12 +34,14 @@ function onCheckboxChange(e) {
 	const props = vNode.props;
 	const dom = vNode.dom;
 
-	applyValue(vNode, dom, false);
 	if (props.onClick) {
 		props.onClick(e);
 	} else if (props.onclick) {
 		props.onclick(e);
 	}
+	// the user may have updated the vNode from the above onClick events
+	// so we need to get it from the context of `this` again
+	applyValue(this.vNode, dom);
 }
 
 function handleAssociatedRadioInputs(name) {
@@ -58,7 +62,7 @@ function handleAssociatedRadioInputs(name) {
 export function processInput(vNode, dom) {
 	const props = vNode.props || EMPTY_OBJ;
 
-	applyValue(vNode, dom, true);
+	applyValue(vNode, dom);
 	if (isControlled(props)) {
 		let inputWrapper = wrappers.get(dom);
 
@@ -80,13 +84,13 @@ export function processInput(vNode, dom) {
 	}
 }
 
-export function applyValue(vNode, dom, force) {
+export function applyValue(vNode, dom) {
 	const props = vNode.props || EMPTY_OBJ;
 	const type = props.type;
 	const value = props.value;
 	const checked = props.checked;
 
-	if ((force || type !== dom.type) && type) {
+	if (type !== dom.type && type) {
 		dom.type = type;
 	}
 	if (props.multiple !== dom.multiple) {
@@ -101,7 +105,7 @@ export function applyValue(vNode, dom, force) {
 			handleAssociatedRadioInputs(props.name);
 		}
 	} else {
-		if (!isNullOrUndef(value) && (force || dom.value !== value)) {
+		if (!isNullOrUndef(value) && dom.value !== value) {
 			dom.value = value;
 		} else if (!isNullOrUndef(checked)) {
 			dom.checked = checked;
