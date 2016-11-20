@@ -108,7 +108,7 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
  * @returns {Array.<String>}
  */
 function getDependenciesArray(pack) {
-	return Object.keys(pack.dependencies || {}).concat(Object.keys(pack.devDependencies || {}));
+	return Object.keys(pack.dependencies || {});
 }
 
 Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));

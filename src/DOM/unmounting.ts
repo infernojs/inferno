@@ -66,7 +66,7 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 		if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
 			hooks.onComponentWillUnmount();
 		}
-	}	
+	}
 	if (parentDom) {
 		let lastInput = instance._lastInput;
 

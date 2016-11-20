@@ -21,7 +21,7 @@ import {
 interface Root {
 	dom: Node | SVGAElement;
 	input: InfernoInput;
-	lifecycle: Lifecycle
+	lifecycle: Lifecycle;
 }
 
 // rather than use a Map, like we did before, we can use an array here
@@ -91,7 +91,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 		}
 	} else {
 		const lifecycle = root.lifecycle;
-	
+
 		lifecycle.listeners = [];
 		if (isNullOrUndef(input)) {
 			unmount(root.input, parentDom, lifecycle, false, false);
