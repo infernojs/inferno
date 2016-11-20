@@ -130,7 +130,8 @@ exports.extras = {
     spyReport: spyReport,
     spyReportEnd: spyReportEnd,
     spyReportStart: spyReportStart,
-    trackTransitions: trackTransitions
+    trackTransitions: trackTransitions,
+    setReactionScheduler: setReactionScheduler
 };
 exports._ = {
     getAdministration: getAdministration,
@@ -1427,9 +1428,13 @@ var Reaction = (function () {
 }());
 exports.Reaction = Reaction;
 var MAX_REACTION_ITERATIONS = 100;
+var reactionScheduler = function (f) { return f(); };
 function runReactions() {
     if (globalState.isRunningReactions === true || globalState.inTransaction > 0)
         { return; }
+    reactionScheduler(runReactionsHelper);
+}
+function runReactionsHelper() {
     globalState.isRunningReactions = true;
     var allReactions = globalState.pendingReactions;
     var iterations = 0;
@@ -1446,6 +1451,10 @@ function runReactions() {
     globalState.isRunningReactions = false;
 }
 var isReaction = createInstanceofPredicate("Reaction", Reaction);
+function setReactionScheduler(fn) {
+    var baseScheduler = reactionScheduler;
+    reactionScheduler = function (f) { return fn(function () { return baseScheduler(f); }); };
+}
 function isSpyEnabled() {
     return !!globalState.spyListeners.length;
 }
@@ -1492,9 +1501,12 @@ function transaction(action, thisArg, report) {
     if (thisArg === void 0) { thisArg = undefined; }
     if (report === void 0) { report = true; }
     transactionStart((action.name) || "anonymous transaction", thisArg, report);
-    var res = action.call(thisArg);
-    transactionEnd(report);
-    return res;
+    try {
+        return action.call(thisArg);
+    }
+    finally {
+        transactionEnd(report);
+    }
 }
 exports.transaction = transaction;
 function transactionStart(name, thisArg, report) {
