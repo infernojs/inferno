@@ -1769,9 +1769,16 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
     vNode.dom = dom;
     if (isClass) {
         var _isSVG = dom.namespaceURI === svgNS;
+        var defaultProps = type.defaultProps;
+        lifecycle.fastUnmount = false;
+        if (!isUndefined(defaultProps)) {
+            copyPropsTo(defaultProps, props);
+            vNode.props = props;
+        }
         var instance = createStatefulComponentInstance(type, props, context, _isSVG, devToolsStatus);
         var input = instance._lastInput;
         instance._vComponent = vNode;
+        instance._vNode = vNode;
         hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
         componentToDOMNodeMap.set(instance, dom);

@@ -2,11 +2,13 @@ import {
 	isArray,
 	isInvalid,
 	throwError,
-	isObject
+	isObject,
+	isUndefined
 } from '../shared';
 import {
 	createStatelessComponentInput,
-	createStatefulComponentInstance
+	createStatefulComponentInstance,
+	copyPropsTo
 } from './utils';
 import {
 	mountStatelessComponentCallbacks,
@@ -55,10 +57,18 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 	vNode.dom = dom;
 	if (isClass) {
 		const _isSVG = dom.namespaceURI === svgNS;
+		const defaultProps = type.defaultProps;
+
+		lifecycle.fastUnmount = false;
+		if (!isUndefined(defaultProps)) {
+			copyPropsTo(defaultProps, props);
+			vNode.props = props;
+		}		
 		const instance = createStatefulComponentInstance(type, props, context, _isSVG, devToolsStatus);
 		const input = instance._lastInput;
 
 		instance._vComponent = vNode;
+		instance._vNode = vNode;		
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
 		componentToDOMNodeMap.set(instance, dom);
