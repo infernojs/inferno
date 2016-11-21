@@ -90,13 +90,15 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 	const children = vNode.children;
 	const props = vNode.props;
 	const flags = vNode.flags;
-	let rebuildVNode = false;
 
 	if (isSVG || (flags & VNodeFlags.SvgElement)) {
 		isSVG = true;
 	}
 	if (dom.tagName.toLowerCase() !== tag) {
-		rebuildVNode = true;
+		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
+
+		vNode.dom = newDom;
+		replaceChild(dom.parentNode, newDom, dom);
 	} else {
 		vNode.dom = dom;
 		if (children) {
@@ -110,12 +112,6 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 
 			patchProp(prop, null, value, dom, isSVG);
 		}
-	}
-	if (rebuildVNode) {
-		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
-
-		vNode.dom = newDom;
-		replaceChild(dom.parentNode, newDom, dom);
 	}
 }
 

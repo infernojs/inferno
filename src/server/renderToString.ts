@@ -5,8 +5,8 @@ import {
 	isInvalid,
 	isNull,
 	isNumber,
-	isTrue
-	// throwError,
+	isTrue,
+	throwError
 } from './../shared';
 import { isUnitlessNumber } from '../DOM/constants';
 import {
@@ -16,8 +16,7 @@ import {
 	isVoidElement as _isVoidElement
 } from './utils';
 import {
-	VNodeFlags,
-	// isVNode
+	VNodeFlags
 } from '../core/shapes';
 
 function renderStylesToString(styles) {
@@ -55,7 +54,6 @@ function renderVNodeToString(vNode, context, firstChild) {
 				context = Object.assign({}, context, childContext);
 			}
 			instance.context = context;
-			// Block setting state - we should render only once, using latest state
 			instance._pendingSetState = true;
 			instance.componentWillMount();
 			const nextVNode = instance.render(props, vNode.context);
@@ -69,7 +67,7 @@ function renderVNodeToString(vNode, context, firstChild) {
 		let renderedString = `<${ type }`;
 		let html;
 		const isVoidElement = _isVoidElement(type);
-		// handle props
+
 		if (!isNull(props)) {
 			for (let prop in props) {
 				const value = props[prop];
@@ -89,7 +87,6 @@ function renderVNodeToString(vNode, context, firstChild) {
 				}
 			}
 		}
-		// check if
 		if (isVoidElement) {
 			renderedString += `>`;
 		} else {
@@ -115,7 +112,10 @@ function renderVNodeToString(vNode, context, firstChild) {
 	} else if (flags & VNodeFlags.Text) {
 		return (firstChild ? '' : '<!---->') + escapeText(children);
 	} else {
-		// throw some error here
+		if (process.env.NODE_ENV !== 'production') {
+			throwError(`renderToString() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+		}
+		throwError();
 	}
 }
 

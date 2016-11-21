@@ -43,6 +43,13 @@ function isUndefined(obj) {
     return obj === undefined;
 }
 
+function throwError(message) {
+    if (!message) {
+        message = ERROR_MSG;
+    }
+    throw new Error(("Inferno Error: " + message));
+}
+
 function constructDefaults(string, object, value) {
     /* eslint no-return-assign: 0 */
     string.split(',').forEach(function (i) { return object[i] = value; });
@@ -104,17 +111,18 @@ function renderStylesToString(styles) {
         return styles;
     }
     else {
+        var renderedString = '';
         for (var styleName in styles) {
             var value = styles[styleName];
             var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
             if (!isNullOrUndef(value)) {
-                styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
+                renderedString += (toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";";
             }
         }
-        return styles.join('');
+        return renderedString;
     }
 }
-function renderVNodeToString(vNode, context) {
+function renderVNodeToString(vNode, context, firstChild) {
     var flags = vNode.flags;
     var props = vNode.props;
     var type = vNode.type;
@@ -128,22 +136,20 @@ function renderVNodeToString(vNode, context) {
                 context = Object.assign({}, context, childContext);
             }
             instance.context = context;
-            // Block setting state - we should render only once, using latest state
             instance._pendingSetState = true;
             instance.componentWillMount();
             var nextVNode = instance.render(props, vNode.context);
             instance._pendingSetState = false;
-            return renderVNodeToString(nextVNode, context);
+            return renderVNodeToString(nextVNode, context, true);
         }
         else {
-            return renderVNodeToString(type(props, context), context);
+            return renderVNodeToString(type(props, context), context, true);
         }
     }
     else if (flags & 3970 /* Element */) {
         var renderedString = "<" + type;
         var html;
         var isVoidElement$$1 = isVoidElement(type);
-        // handle props
         if (!isNull(props)) {
             for (var prop in props) {
                 var value = props[prop];
@@ -154,7 +160,7 @@ function renderVNodeToString(vNode, context) {
                     renderedString += " style=\"" + (renderStylesToString(props.style)) + "\"";
                 }
                 else if (prop === 'className') {
-                    renderedString += "class=\"" + value + "\"";
+                    renderedString += " class=\"" + value + "\"";
                 }
                 else {
                     if (isStringOrNumber(value)) {
@@ -166,24 +172,26 @@ function renderVNodeToString(vNode, context) {
                 }
             }
         }
-        // check if
         if (isVoidElement$$1) {
-            renderedString += " />";
+            renderedString += ">";
         }
         else {
             renderedString += ">";
             if (!isInvalid(children)) {
                 if (isArray(children)) {
                     for (var i = 0; i < children.length; i++) {
-                        renderedString += renderVNodeToString(children[i], context);
+                        renderedString += renderVNodeToString(children[i], context, i === 0);
                     }
                 }
                 else if (isStringOrNumber(children)) {
-                    renderedString += children;
+                    renderedString += escapeText(children);
                 }
                 else {
-                    renderedString += renderVNodeToString(children, context);
+                    renderedString += renderVNodeToString(children, context, true);
                 }
+            }
+            else if (html) {
+                renderedString += html;
             }
             if (!isVoidElement$$1) {
                 renderedString += "</" + type + ">";
@@ -192,16 +200,20 @@ function renderVNodeToString(vNode, context) {
         return renderedString;
     }
     else if (flags & 1 /* Text */) {
-        return children;
+        return (firstChild ? '' : '<!---->') + escapeText(children);
     }
     else {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError(("renderToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+        }
+        throwError();
     }
 }
 function renderToString(input) {
-    return renderVNodeToString(input, null);
+    return renderVNodeToString(input, null, true);
 }
 function renderToStaticMarkup(input) {
-    return renderVNodeToString(input, null);
+    return renderVNodeToString(input, null, true);
 }
 
 function renderStyleToString(style) {
