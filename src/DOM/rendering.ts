@@ -94,7 +94,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 
 		lifecycle.listeners = [];
 		if (isNullOrUndef(input)) {
-			unmount(root.input, parentDom, lifecycle, false, false);
+			unmount(root.input, parentDom, lifecycle, false, false, false);
 			removeRoot(root);
 		} else {
 			if ((input as VNode).dom) {

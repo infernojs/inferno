@@ -16,13 +16,13 @@ import {
 } from './recycling';
 import { VNodeFlags } from '../core/shapes';
 
-export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
+export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Component) {
-		unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+		unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
 	} else if (flags & VNodeFlags.Element) {
-		unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+		unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
 	} else if (flags & VNodeFlags.Text) {
 		unmountText(vNode, parentDom);
 	} else if (flags & VNodeFlags.Void) {
@@ -42,31 +42,39 @@ function unmountText(vNode, parentDom) {
 	}
 }
 
-export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
+export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
 	const instance = vNode.children;
+	const flags = vNode.flags;
+	const isStatefulComponent = flags & VNodeFlags.ComponentClass;
 	let hooks = vNode.ref;
 
-	if (!shallowUnmount && !lifecycle.fastUnmount) {
-		if (instance.render !== undefined) {
-			const ref = vNode.ref;
+	if (!isRecycling) {
+		if (!shallowUnmount && !lifecycle.fastUnmount) {
+			if (isStatefulComponent) {
+				if (!instance._unmounted) {
+					const ref = vNode.ref;
 
-			if (ref) {
-				ref(null);
+					if (ref && !isRecycling) {
+						ref(null);
+					}
+					instance.componentWillUnmount();
+					componentToDOMNodeMap.delete(instance);
+					unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
+				}
+			} else {
+				unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
 			}
-			instance.componentWillUnmount();
+			hooks = vNode.ref || instance.ref;
+		}
+		if (isStatefulComponent) {
 			instance._unmounted = true;
-			componentToDOMNodeMap.delete(instance);
-			unmount(instance._lastInput, null, lifecycle, false, shallowUnmount);
-		} else {
-			unmount(instance, null, lifecycle, false, shallowUnmount);
-		}
-		hooks = vNode.ref || instance.ref;
-	}
-	if (!isNullOrUndef(hooks)) {
-		if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-			hooks.onComponentWillUnmount();
+		} else if (!isNullOrUndef(hooks)) {
+			if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
+				hooks.onComponentWillUnmount();
+			}
 		}
 	}
+
 	if (parentDom) {
 		let lastInput = instance._lastInput;
 
@@ -80,18 +88,18 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 	}
 }
 
-export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
+export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
 	const dom = vNode.dom;
 	const ref = vNode.ref;
 
 	if (!shallowUnmount && !lifecycle.fastUnmount) {
-		if (ref) {
+		if (ref && !isRecycling) {
 			unmountRef(ref);
 		}
 		const children = vNode.children;
 
 		if (!isNullOrUndef(children)) {
-			unmountChildren(children, lifecycle, shallowUnmount);
+			unmountChildren(children, lifecycle, shallowUnmount, isRecycling);
 		}
 	}
 	if (parentDom) {
@@ -102,17 +110,17 @@ export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowU
 	}
 }
 
-function unmountChildren(children, lifecycle, shallowUnmount) {
+function unmountChildren(children, lifecycle, shallowUnmount, isRecycling) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 
 			if (isObject(child)) {
-				unmount(child, null, lifecycle, false, shallowUnmount);
+				unmount(child, null, lifecycle, false, shallowUnmount, isRecycling);
 			}
 		}
 	} else if (isObject(children)) {
-		unmount(children, null, lifecycle, false, shallowUnmount);
+		unmount(children, null, lifecycle, false, shallowUnmount, isRecycling);
 	}
 }
 

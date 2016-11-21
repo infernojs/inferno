@@ -995,7 +995,6 @@ describe('Component lifecycle (JSX)', () => {
 			// Inner and InnerSecond divs are now unmounted
 			// and unmounting parent should not cause them to unmounted again
 
-
 			// REPLACE PARENT
 			render(<RefParent bool={false} inner={false} innersecond={false} />, container);
 			calledOnce(spyOuter);

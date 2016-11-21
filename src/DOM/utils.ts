@@ -59,22 +59,22 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	instance._lastInput = input;
 	return instance;
 }
-export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
-	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle);
+export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling) {
+	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle, isRecycling);
 }
 
-export function replaceVNode(parentDom, dom, vNode, lifecycle) {
+export function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
 	let shallowUnmount = false;
 	// we cannot cache nodeType here as vNode might be re-assigned below
 	if (vNode.flags & VNodeFlags.Component) {
 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
 		// accessing their DOM node is not useful to us here
-		unmount(vNode, null, lifecycle, false, false);
+		unmount(vNode, null, lifecycle, false, false, isRecycling);
 		vNode = vNode.children._lastInput || vNode.children;
 		shallowUnmount = true;
 	}
 	replaceChild(parentDom, dom, vNode.dom);
-	unmount(vNode, null, lifecycle, false, shallowUnmount);
+	unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
 }
 
 export function createStatelessComponentInput(component, props, context) {
@@ -123,7 +123,7 @@ export function documentCreateElement(tag, isSVG) {
 	}
 }
 
-export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG) {
+export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, isRecycling) {
 	let lastInstance: any = null;
 	const instanceLastNode = lastNode._lastInput;
 
@@ -131,7 +131,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	unmount(lastNode, null, lifecycle, false, false);
+	unmount(lastNode, null, lifecycle, false, false, isRecycling);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode.dom = dom;
@@ -152,19 +152,19 @@ export function removeChild(parentDom, dom) {
 	parentDom.removeChild(dom);
 }
 
-export function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
+export function removeAllChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
 	dom.textContent = '';
 	if (!lifecycle.fastUnmount) {
-		removeChildren(null, children, lifecycle, shallowUnmount);
+		removeChildren(null, children, lifecycle, shallowUnmount, isRecycling);
 	}
 }
 
-export function removeChildren(dom, children, lifecycle, shallowUnmount) {
+export function removeChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
 		if (!isInvalid(child)) {
-			unmount(child, dom, lifecycle, true, shallowUnmount);
+			unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
 		}
 	}
 }
