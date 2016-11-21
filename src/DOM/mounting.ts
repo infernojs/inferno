@@ -121,7 +121,10 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 
 export function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
 	for (let i = 0; i < children.length; i++) {
-		mount(children[i], dom, lifecycle, context, isSVG);
+		let child = children[i];
+		if (!isInvalid(child)) {
+			mount(children[i], dom, lifecycle, context, isSVG);
+		}
 	}
 }
 

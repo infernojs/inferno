@@ -72,7 +72,12 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
 
-		if (isInvalid(n) || Array.isArray(n)) {
+		if (isInvalid(n)) {
+			if (!newNodes) {
+				newNodes = nodes.slice(0, i) as VNode[];
+			}
+			newNodes.push(n);
+		} else if (Array.isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
 
 			_normalizeVNodes(nodes, result, i);

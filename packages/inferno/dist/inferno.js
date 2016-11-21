@@ -145,7 +145,13 @@ function normalizeVNodes(nodes) {
     var newNodes;
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        if (isInvalid(n) || Array.isArray(n)) {
+        if (isInvalid(n)) {
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push(n);
+        }
+        else if (Array.isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
             _normalizeVNodes(nodes, result, i);
             return result;
@@ -420,7 +426,7 @@ function unmountChildren$1(children, lifecycle, shallowUnmount, isRecycling) {
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
-            if (isObject(child)) {
+            if (!isInvalid(child) && isObject(child)) {
                 unmount(child, null, lifecycle, false, shallowUnmount, isRecycling);
             }
         }
@@ -1008,16 +1014,19 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     var lastChildrenLength = lastChildren.length;
     var nextChildrenLength = nextChildren.length;
     var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
-    var i = 0;
-    for (; i < commonLength; i++) {
-        var lastChild = lastChildren[i];
-        var nextChild = nextChildren[i];
-        patch(lastChild, nextChild, dom, lifecycle, context, isSVG, isRecycling);
-    }
+    var i;
+    var nextNode = null;
+    var newNode;
+    /* Loop backwards so we can use insertBefore */
+    // debugger;
     if (lastChildrenLength < nextChildrenLength) {
-        for (i = commonLength; i < nextChildrenLength; i++) {
+        for (i = nextChildrenLength - 1; i >= commonLength; i--) {
             var child = nextChildren[i];
-            appendChild(dom, mount(child, null, lifecycle, context, isSVG));
+            if (!isInvalid(child)) {
+                newNode = mount(child, null, lifecycle, context, isSVG);
+                insertOrAppend(dom, newNode, nextNode);
+                nextNode = newNode;
+            }
         }
     }
     else if (nextChildrenLength === 0) {
@@ -1025,7 +1034,28 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     }
     else if (lastChildrenLength > nextChildrenLength) {
         for (i = commonLength; i < lastChildrenLength; i++) {
-            unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
+            var child$1 = lastChildren[i];
+            if (!isInvalid(child$1)) {
+                unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
+            }
+        }
+    }
+    for (i = commonLength - 1; i >= 0; i--) {
+        var lastChild = lastChildren[i];
+        var nextChild = nextChildren[i];
+        if (isInvalid(nextChild)) {
+            if (!isInvalid(lastChild)) {
+                unmount(lastChild, dom, lifecycle, true, false, isRecycling);
+            }
+        }
+        else if (isInvalid(lastChild)) {
+            newNode = mount(nextChild, null, lifecycle, context, isSVG);
+            insertOrAppend(dom, newNode, nextNode);
+            nextNode = newNode;
+        }
+        else {
+            patch(lastChild, nextChild, dom, lifecycle, context, isSVG, isRecycling);
+            nextNode = nextChild.dom;
         }
     }
 }
@@ -1656,7 +1686,10 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 }
 function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
     for (var i = 0; i < children.length; i++) {
-        mount(children[i], dom, lifecycle, context, isSVG);
+        var child = children[i];
+        if (!isInvalid(child)) {
+            mount(children[i], dom, lifecycle, context, isSVG);
+        }
     }
 }
 function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
