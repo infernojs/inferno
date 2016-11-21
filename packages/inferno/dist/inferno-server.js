@@ -67,14 +67,14 @@ constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-function escapeText(str) {
-    return (str + '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;')
-        .replace(/\//g, '&#x2F;');
+var ENTITY_RE = /[&<>"'/]/g;
+function escapeText(s) {
+    return String(s).replace(ENTITY_RE, function (s) { return s === '&' ? '&amp;' :
+        s === '<' ? '&lt;' :
+            s === '>' ? '&gt;' :
+                s === '"' ? '&quot;' :
+                    s === '\'' ? '&#039;' :
+                        s === '/' ? '&#x2f;' : ''; });
 }
 function escapeAttr(str) {
     return (str + '')

@@ -1,11 +1,13 @@
-export function escapeText(str) {
-	return (str + '')
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&#039;')
-		.replace(/\//g, '&#x2F;');
+const ENTITY_RE = /[&<>"'/]/g
+
+export function escapeText(s) {
+	return String(s).replace(ENTITY_RE, s =>
+		s === '&' ? '&amp;' :
+		s === '<' ? '&lt;' :
+		s === '>' ? '&gt;' :
+		s === '"' ? '&quot;' :
+		s === '\'' ? '&#039;' :
+		s === '/' ? '&#x2f;' : '')
 }
 
 export function escapeAttr(str) {
