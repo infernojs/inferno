@@ -1,1 +1,1 @@
-module.exports = require('./../inferno/dist/inferno-component');
+module.exports = require('inferno/dist/inferno-component');
