@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { spy } from 'sinon';
+import { assert, spy } from 'sinon';
 import { render } from './../rendering';
 import Component from './../../component/es2015';
 import * as Inferno from '../../testUtils/inferno';
@@ -1296,6 +1296,50 @@ describe('Children - (JSX)', () => {
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
+		});
+	});
+
+
+	describe('Unmount behavior in lists', () => {
+		it('Should not call unmount when changing list length', () => {
+			class UnMountTest extends Component<any, any> {
+				componentWillUnmount() {
+					// Should not be here
+				}
+
+				render() {
+					return <span>1</span>
+				}
+			}
+
+			class Parent extends Component<any, any> {
+				render() {
+					let firstClassCitizen = null;
+					if (this.props.firstClassCitizenIsBack) {
+						firstClassCitizen = <div>b</div>
+					}
+
+					return (
+						<div>
+							<div>a</div>
+							{firstClassCitizen}
+							<UnMountTest/>
+							<div>C</div>
+						</div>
+					);
+				}
+			}
+
+			const spyUnmount = spy(UnMountTest.prototype, 'componentWillUnmount');
+			const notCalled = assert.notCalled;
+
+			render(<Parent firstClassCitizenIsBack={false}/>, container); // initial render
+			expect(container.innerHTML).to.eql('<div><div>a</div><span>1</span><div>C</div></div>');
+			notCalled(spyUnmount);
+
+			render(<Parent firstClassCitizenIsBack={true}/>, container);
+			expect(container.innerHTML).to.eql('<div><div>a</div><div>b</div><span>1</span><div>C</div></div>');
+			notCalled(spyUnmount);
 		});
 	});
 });

@@ -329,13 +329,13 @@ function poolComponent(vNode) {
     }
 }
 
-function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
+function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
     var flags = vNode.flags;
     if (flags & 28 /* Component */) {
-        unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+        unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
     }
     else if (flags & 3970 /* Element */) {
-        unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+        unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
     }
     else if (flags & 1 /* Text */) {
         unmountText(vNode, parentDom);
@@ -354,28 +354,36 @@ function unmountText(vNode, parentDom) {
         removeChild(parentDom, vNode.dom);
     }
 }
-function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
+function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
     var instance = vNode.children;
+    var flags = vNode.flags;
+    var isStatefulComponent$$1 = flags & 4;
     var hooks = vNode.ref;
-    if (!shallowUnmount && !lifecycle.fastUnmount) {
-        if (instance.render !== undefined) {
-            var ref = vNode.ref;
-            if (ref) {
-                ref(null);
+    if (!isRecycling) {
+        if (!shallowUnmount && !lifecycle.fastUnmount) {
+            if (isStatefulComponent$$1) {
+                if (!instance._unmounted) {
+                    var ref = vNode.ref;
+                    if (ref && !isRecycling) {
+                        ref(null);
+                    }
+                    instance.componentWillUnmount();
+                    componentToDOMNodeMap.delete(instance);
+                    unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
+                }
             }
-            instance.componentWillUnmount();
+            else {
+                unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
+            }
+            hooks = vNode.ref || instance.ref;
+        }
+        if (isStatefulComponent$$1) {
             instance._unmounted = true;
-            componentToDOMNodeMap.delete(instance);
-            unmount(instance._lastInput, null, lifecycle, false, shallowUnmount);
         }
-        else {
-            unmount(instance, null, lifecycle, false, shallowUnmount);
-        }
-        hooks = vNode.ref || instance.ref;
-    }
-    if (!isNullOrUndef(hooks)) {
-        if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-            hooks.onComponentWillUnmount();
+        else if (!isNullOrUndef(hooks)) {
+            if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
+                hooks.onComponentWillUnmount();
+            }
         }
     }
     if (parentDom) {
@@ -389,16 +397,16 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         poolComponent(vNode);
     }
 }
-function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
+function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
     var dom = vNode.dom;
     var ref = vNode.ref;
     if (!shallowUnmount && !lifecycle.fastUnmount) {
-        if (ref) {
+        if (ref && !isRecycling) {
             unmountRef(ref);
         }
         var children = vNode.children;
         if (!isNullOrUndef(children)) {
-            unmountChildren$1(children, lifecycle, shallowUnmount);
+            unmountChildren$1(children, lifecycle, shallowUnmount, isRecycling);
         }
     }
     if (parentDom) {
@@ -408,17 +416,17 @@ function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount)
         poolElement(vNode);
     }
 }
-function unmountChildren$1(children, lifecycle, shallowUnmount) {
+function unmountChildren$1(children, lifecycle, shallowUnmount, isRecycling) {
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             if (isObject(child)) {
-                unmount(child, null, lifecycle, false, shallowUnmount);
+                unmount(child, null, lifecycle, false, shallowUnmount, isRecycling);
             }
         }
     }
     else if (isObject(children)) {
-        unmount(children, null, lifecycle, false, shallowUnmount);
+        unmount(children, null, lifecycle, false, shallowUnmount, isRecycling);
     }
 }
 function unmountRef(ref) {
@@ -715,7 +723,7 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRec
                 patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */, isRecycling);
             }
             else {
-                replaceVNode(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */), lastVNode, lifecycle);
+                replaceVNode(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */), lastVNode, lifecycle, isRecycling);
             }
         }
         else if (nextFlags & 3970 /* Element */) {
@@ -723,7 +731,7 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRec
                 patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
             }
             else {
-                replaceVNode(parentDom, mountElement(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
+                replaceVNode(parentDom, mountElement(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle, isRecycling);
             }
         }
         else if (nextFlags & 1 /* Text */) {
@@ -731,7 +739,7 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRec
                 patchText(lastVNode, nextVNode);
             }
             else {
-                replaceVNode(parentDom, mountText(nextVNode, null), lastVNode, lifecycle);
+                replaceVNode(parentDom, mountText(nextVNode, null), lastVNode, lifecycle, isRecycling);
             }
         }
         else if (nextFlags & 4096 /* Void */) {
@@ -739,21 +747,21 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRec
                 patchVoid(lastVNode, nextVNode);
             }
             else {
-                replaceVNode(parentDom, mountVoid(nextVNode, null), lastVNode, lifecycle);
+                replaceVNode(parentDom, mountVoid(nextVNode, null), lastVNode, lifecycle, isRecycling);
             }
         }
         else {
             // Error case: mount new one replacing old one
-            replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+            replaceLastChildAndUnmount(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
         }
     }
 }
-function unmountChildren(children, dom, lifecycle) {
+function unmountChildren(children, dom, lifecycle, isRecycling) {
     if (isVNode(children)) {
-        unmount(children, dom, lifecycle, true, false);
+        unmount(children, dom, lifecycle, true, false, isRecycling);
     }
     else if (isArray(children)) {
-        removeAllChildren(dom, children, lifecycle, false);
+        removeAllChildren(dom, children, lifecycle, false, isRecycling);
     }
     else {
         dom.textContent = '';
@@ -763,7 +771,7 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
     var nextTag = nextVNode.type;
     var lastTag = lastVNode.type;
     if (lastTag !== nextTag) {
-        replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+        replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
     }
     else {
         var dom = lastVNode.dom;
@@ -806,7 +814,7 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
         patchArray = true;
     }
     else if (isInvalid(nextChildren)) {
-        unmountChildren(lastChildren, dom, lifecycle);
+        unmountChildren(lastChildren, dom, lifecycle, isRecycling);
     }
     else if (isInvalid(lastChildren)) {
         if (isStringOrNumber(nextChildren)) {
@@ -826,7 +834,7 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
             updateTextContent(dom, nextChildren);
         }
         else {
-            unmountChildren(lastChildren, dom, lifecycle);
+            unmountChildren(lastChildren, dom, lifecycle, isRecycling);
             setTextContent(dom, nextChildren);
         }
     }
@@ -838,12 +846,12 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
             }
         }
         else {
-            unmountChildren(lastChildren, dom, lifecycle);
+            unmountChildren(lastChildren, dom, lifecycle, isRecycling);
             mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
         }
     }
     else if (isArray(lastChildren)) {
-        removeAllChildren(dom, lastChildren, lifecycle, false);
+        removeAllChildren(dom, lastChildren, lifecycle, false, isRecycling);
         mount(nextChildren, dom, lifecycle, context, isSVG);
     }
     else if (isVNode(nextChildren)) {
@@ -851,7 +859,7 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
             patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
         }
         else {
-            unmountChildren(lastChildren, dom, lifecycle);
+            unmountChildren(lastChildren, dom, lifecycle, isRecycling);
             mount(nextChildren, dom, lifecycle, context, isSVG);
         }
     }
@@ -874,7 +882,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
     var nextProps = nextVNode.props || EMPTY_OBJ;
     if (lastType !== nextType) {
         if (isClass) {
-            replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
+            replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
         }
         else {
             var lastInput = lastVNode.children._lastInput || lastVNode.children;
@@ -883,7 +891,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
             var dom = nextVNode.dom = nextInput.dom;
             nextVNode.children = nextInput;
             mountStatelessComponentCallbacks(nextVNode.ref, dom, lifecycle);
-            unmount(lastVNode, null, lifecycle, false, true);
+            unmount(lastVNode, null, lifecycle, false, true, isRecycling);
         }
     }
     else {
@@ -1013,11 +1021,11 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
         }
     }
     else if (nextChildrenLength === 0) {
-        removeAllChildren(dom, lastChildren, lifecycle, false);
+        removeAllChildren(dom, lastChildren, lifecycle, false, isRecycling);
     }
     else if (lastChildrenLength > nextChildrenLength) {
         for (i = commonLength; i < lastChildrenLength; i++) {
-            unmount(lastChildren[i], dom, lifecycle, false, false);
+            unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
         }
     }
 }
@@ -1046,7 +1054,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
         return;
     }
     else if (bLength === 0) {
-        removeAllChildren(dom, a, lifecycle, false);
+        removeAllChildren(dom, a, lifecycle, false, isRecycling);
         return;
     }
     // Step 1
@@ -1109,7 +1117,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
     }
     else if (bStart > bEnd) {
         while (aStart <= aEnd) {
-            unmount(a[aStart++], dom, lifecycle, false, false);
+            unmount(a[aStart++], dom, lifecycle, false, false, isRecycling);
         }
     }
     else {
@@ -1174,7 +1182,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
             }
         }
         if (aLength === a.length && patched === 0) {
-            removeAllChildren(dom, a, lifecycle, false);
+            removeAllChildren(dom, a, lifecycle, false, isRecycling);
             while (bStart < bLength) {
                 insertOrAppend(dom, mount(b[bStart++], null, lifecycle, context, isSVG), null);
             }
@@ -1184,7 +1192,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
             while (i > 0) {
                 aNode = aNullable[aStart++];
                 if (!isNull(aNode)) {
-                    unmount(aNode, dom, lifecycle, false, false);
+                    unmount(aNode, dom, lifecycle, false, false, isRecycling);
                     i--;
                 }
             }
@@ -1459,21 +1467,21 @@ function createStatefulComponentInstance(Component, props, context, isSVG, devTo
     instance._lastInput = input;
     return instance;
 }
-function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
-    replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle);
+function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling) {
+    replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle, isRecycling);
 }
-function replaceVNode(parentDom, dom, vNode, lifecycle) {
+function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
     var shallowUnmount = false;
     // we cannot cache nodeType here as vNode might be re-assigned below
     if (vNode.flags & 28 /* Component */) {
         // if we are accessing a stateful or stateless component, we want to access their last rendered input
         // accessing their DOM node is not useful to us here
-        unmount(vNode, null, lifecycle, false, false);
+        unmount(vNode, null, lifecycle, false, false, isRecycling);
         vNode = vNode.children._lastInput || vNode.children;
         shallowUnmount = true;
     }
     replaceChild(parentDom, dom, vNode.dom);
-    unmount(vNode, null, lifecycle, false, shallowUnmount);
+    unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
 }
 function createStatelessComponentInput(component, props, context) {
     var input = component(props, context);
@@ -1518,14 +1526,14 @@ function documentCreateElement(tag, isSVG) {
         return document.createElement(tag);
     }
 }
-function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG) {
+function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, isRecycling) {
     var lastInstance = null;
     var instanceLastNode = lastNode._lastInput;
     if (!isNullOrUndef(instanceLastNode)) {
         lastInstance = lastNode;
         lastNode = instanceLastNode;
     }
-    unmount(lastNode, null, lifecycle, false, false);
+    unmount(lastNode, null, lifecycle, false, false, isRecycling);
     var dom = mount(nextNode, null, lifecycle, context, isSVG);
     nextNode.dom = dom;
     replaceChild(parentDom, dom, lastNode.dom);
@@ -1542,17 +1550,17 @@ function replaceChild(parentDom, nextDom, lastDom) {
 function removeChild(parentDom, dom) {
     parentDom.removeChild(dom);
 }
-function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
+function removeAllChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
     dom.textContent = '';
     if (!lifecycle.fastUnmount) {
-        removeChildren(null, children, lifecycle, shallowUnmount);
+        removeChildren(null, children, lifecycle, shallowUnmount, isRecycling);
     }
 }
-function removeChildren(dom, children, lifecycle, shallowUnmount) {
+function removeChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
         if (!isInvalid(child)) {
-            unmount(child, dom, lifecycle, true, shallowUnmount);
+            unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
         }
     }
 }
@@ -1945,7 +1953,7 @@ function render(input, parentDom) {
         var lifecycle$1 = root.lifecycle;
         lifecycle$1.listeners = [];
         if (isNullOrUndef(input)) {
-            unmount(root.input, parentDom, lifecycle$1, false, false);
+            unmount(root.input, parentDom, lifecycle$1, false, false, false);
             removeRoot(root);
         }
         else {

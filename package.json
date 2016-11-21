@@ -13,7 +13,7 @@
     "@types/chai": "^3.4.34",
     "@types/core-js": "^0.9.34",
     "@types/mocha": "^2.2.33",
-    "@types/node": "^6.0.48",
+    "@types/node": "^6.0.49",
     "@types/sinon": "^1.16.32",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
