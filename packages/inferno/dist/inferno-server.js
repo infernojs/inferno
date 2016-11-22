@@ -67,19 +67,29 @@ constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-var ENTITY_RE = /[&<>"'/]/g;
-var ENTITY_RE2 = /[&"]/g;
-function escapeText(s) {
-    return String(s).replace(ENTITY_RE, function (s) { return s === '&' ? '&amp;' :
-        s === '<' ? '&lt;' :
-            s === '>' ? '&gt;' :
-                s === '"' ? '&quot;' :
-                    s === '\'' ? '&#039;' :
-                        s === '/' ? '&#x2f;' : ''; });
-}
-function escapeAttr(s) {
-    return String(s).replace(ENTITY_RE2, function (s) { return s === '&' ? '&amp;' :
-        s === '"' ? '&quot;' : ''; });
+function escapeText(_string) {
+    var string = _string + '';
+    var length = string.length;
+    var characters = '';
+    for (var i = 0; i < length; i++) {
+        switch (string.charCodeAt(i)) {
+            case 38:
+                characters += '&amp;';
+                break;
+            case 34:
+                characters += '&quot;';
+                break;
+            case 60:
+                characters += '&lt;';
+                break;
+            case 62:
+                characters += '&gt;';
+                break;
+            default:
+                characters += string[i];
+        }
+    }
+    return characters;
 }
 function toHyphenCase(str) {
     return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
@@ -116,7 +126,7 @@ function renderStylesToString(styles) {
             var value = styles[styleName];
             var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
             if (!isNullOrUndef(value)) {
-                renderedString += (toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";";
+                renderedString += (toHyphenCase(styleName)) + ":" + (escapeText(value)) + px + ";";
             }
         }
         return renderedString;
@@ -160,11 +170,11 @@ function renderVNodeToString(vNode, context, firstChild) {
                     renderedString += " style=\"" + (renderStylesToString(props.style)) + "\"";
                 }
                 else if (prop === 'className') {
-                    renderedString += " class=\"" + (escapeAttr(value)) + "\"";
+                    renderedString += " class=\"" + (escapeText(value)) + "\"";
                 }
                 else {
                     if (isStringOrNumber(value)) {
-                        renderedString += " " + prop + "=\"" + (escapeAttr(value)) + "\"";
+                        renderedString += " " + prop + "=\"" + (escapeText(value)) + "\"";
                     }
                     else if (isTrue(value)) {
                         renderedString += " \"" + prop + "\"";
@@ -228,7 +238,7 @@ function renderStyleToString(style) {
             var value = style[styleName];
             var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
             if (!isNullOrUndef(value)) {
-                styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
+                styles.push(((toHyphenCase(styleName)) + ":" + (escapeText(value)) + px + ";"));
             }
         }
         return styles.join();
@@ -246,10 +256,10 @@ function renderAttributes(props) {
                 return;
             default:
                 if (isStringOrNumber(value)) {
-                    outputAttrs.push(escapeAttr(propKey) + '="' + escapeAttr(value) + '"');
+                    outputAttrs.push(escapeText(propKey) + '="' + escapeText(value) + '"');
                 }
                 else if (isTrue(value)) {
-                    outputAttrs.push(escapeAttr(propKey));
+                    outputAttrs.push(escapeText(propKey));
                 }
         }
     });
@@ -398,7 +408,7 @@ var RenderStream = (function (Readable$$1) {
         if (props) {
             var className = props.className;
             if (className) {
-                outputAttrs.push('class="' + escapeAttr(className) + '"');
+                outputAttrs.push('class="' + escapeText(className) + '"');
             }
             var style = props.style;
             if (style) {

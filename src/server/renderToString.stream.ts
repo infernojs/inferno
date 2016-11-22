@@ -6,7 +6,6 @@ import {
 } from './../shared';
 import {
 	escapeText,
-	escapeAttr,
 	isVoidElement
 } from './utils';
 import { Readable } from 'stream';
@@ -159,7 +158,7 @@ export class RenderStream extends Readable {
 		if (props) {
 			const className = props.className;
 			if (className) {
-				outputAttrs.push('class="' + escapeAttr(className) + '"');
+				outputAttrs.push('class="' + escapeText(className) + '"');
 			}
 
 			const style = props.style;

@@ -12,7 +12,6 @@ import { isUnitlessNumber } from '../DOM/constants';
 import {
 	toHyphenCase,
 	escapeText,
-	escapeAttr,
 	isVoidElement as _isVoidElement
 } from './utils';
 import {
@@ -30,7 +29,7 @@ function renderStylesToString(styles) {
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
-				renderedString += `${ toHyphenCase(styleName) }:${ escapeAttr(value) }${ px };`;
+				renderedString += `${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`;
 			}
 		}
 		return renderedString;
@@ -77,10 +76,10 @@ function renderVNodeToString(vNode, context, firstChild) {
 				} else if (prop === 'style') {
 					renderedString += ` style="${ renderStylesToString(props.style) }"`;
 				} else if (prop === 'className') {
-					renderedString += ` class="${ escapeAttr(value) }"`;
+					renderedString += ` class="${ escapeText(value) }"`;
 				} else {
 					if (isStringOrNumber(value)) {
-						renderedString += ` ${ prop }="${ escapeAttr(value) }"`;
+						renderedString += ` ${ prop }="${ escapeText(value) }"`;
 					} else if (isTrue(value)) {
 						renderedString += ` "${ prop }"`;
 					}

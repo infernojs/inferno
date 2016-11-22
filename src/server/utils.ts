@@ -1,20 +1,27 @@
-const ENTITY_RE = /[&<>"'/]/g
-const ENTITY_RE2 = /[&"]/g
+export function escapeText(_string) {
+		const string = _string + '';
+		const length = string.length;
+		let characters = '';
 
-export function escapeText(s) {
-	return String(s).replace(ENTITY_RE, s =>
-		s === '&' ? '&amp;' :
-		s === '<' ? '&lt;' :
-		s === '>' ? '&gt;' :
-		s === '"' ? '&quot;' :
-		s === '\'' ? '&#039;' :
-		s === '/' ? '&#x2f;' : '');
-}
-
-export function escapeAttr(s) {
-	return String(s).replace(ENTITY_RE2, s =>
-		s === '&' ? '&amp;' :
-		s === '"' ? '&quot;' : '');
+		for (let i = 0; i < length; i++) {
+			switch (string.charCodeAt(i)) {
+				case 38:
+					characters += '&amp;';
+					break;
+				case 34:
+					characters += '&quot;';
+					break;
+				case 60:
+					characters += '&lt;';
+					break;
+				case 62:
+					characters += '&gt;';
+					break;
+				default:
+					characters += string[i];
+			}
+		}
+		return characters;
 }
 
 export function toHyphenCase(str) {
