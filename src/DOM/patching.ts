@@ -396,25 +396,50 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
 	let commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
-	let i = 0;
+	let i;
+	let nextNode = null;
+	let newNode;
 
-	for (; i < commonLength; i++) {
-		const lastChild = lastChildren[i];
-		let nextChild = nextChildren[i];
+	/* Loop backwards so we can use insertBefore */
 
-		patch(lastChild, nextChild, dom, lifecycle, context, isSVG, isRecycling);
-	}
+	// debugger;
 	if (lastChildrenLength < nextChildrenLength) {
-		for (i = commonLength; i < nextChildrenLength; i++) {
+		for (i = nextChildrenLength - 1; i >= commonLength; i--) {
 			const child = nextChildren[i];
 
-			appendChild(dom, mount(child, null, lifecycle, context, isSVG));
+			if (!isInvalid(child)) {
+				newNode = mount(child, null, lifecycle, context, isSVG);
+				insertOrAppend(dom, newNode, nextNode);
+				nextNode = newNode;
+			}
 		}
 	} else if (nextChildrenLength === 0) {
 		removeAllChildren(dom, lastChildren, lifecycle, false, isRecycling);
 	} else if (lastChildrenLength > nextChildrenLength) {
 		for (i = commonLength; i < lastChildrenLength; i++) {
-			unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
+			const child = lastChildren[i];
+
+			if (!isInvalid(child)) {
+				unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
+			}
+		}
+	}
+
+	for (i = commonLength - 1; i >= 0; i--) {
+		const lastChild = lastChildren[i];
+		const nextChild = nextChildren[i];
+
+		if (isInvalid(nextChild)) {
+			if (!isInvalid(lastChild)) {
+				unmount(lastChild, dom, lifecycle, true, false, isRecycling);
+			}
+		} else if (isInvalid(lastChild)) {
+			newNode = mount(nextChild, null, lifecycle, context, isSVG);
+			insertOrAppend(dom, newNode, nextNode);
+			nextNode = newNode;
+		} else {
+			patch(lastChild, nextChild, dom, lifecycle, context, isSVG, isRecycling);
+			nextNode = nextChild.dom;
 		}
 	}
 }

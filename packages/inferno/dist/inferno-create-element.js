@@ -130,7 +130,13 @@ function normalizeVNodes(nodes) {
     var newNodes;
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        if (isInvalid(n) || Array.isArray(n)) {
+        if (isInvalid(n)) {
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push(n);
+        }
+        else if (Array.isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
             _normalizeVNodes(nodes, result, i);
             return result;
