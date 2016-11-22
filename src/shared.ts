@@ -7,11 +7,9 @@ export function toArray(children) {
 	return isArray(children) ? children : (children ? [children] : children);
 }
 
-export function isArray(obj) {
-	// this is MUCH faster than .constructor === Array and instanceof Array
-	// in Node 7 and the later versions of V8, slower in older versions though
-	return Array.isArray(obj);
-}
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+export const isArray = Array.isArray;
 
 export function isStatefulComponent(o) {
 	return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
