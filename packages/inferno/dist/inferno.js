@@ -1841,7 +1841,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     if (isSVG || (flags & 128 /* SvgElement */)) {
         isSVG = true;
     }
-    if (dom.tagName.toLowerCase() !== tag) {
+    if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
         var newDom = mountElement(vNode, null, lifecycle, context, isSVG);
         vNode.dom = newDom;
         replaceChild(dom.parentNode, newDom, dom);
