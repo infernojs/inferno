@@ -33,8 +33,7 @@ import {
 	createStatelessComponentInput,
 	copyPropsTo,
 	replaceVNode,
-	replaceLastChildAndUnmount,
-	appendChild
+	replaceLastChildAndUnmount
 } from './utils';
 import { componentToDOMNodeMap } from './rendering';
 import { unmount } from './unmounting';
