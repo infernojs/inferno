@@ -68,6 +68,7 @@ constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,reado
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
 var ENTITY_RE = /[&<>"'/]/g;
+var ENTITY_RE2 = /[&"]/g;
 function escapeText(s) {
     return String(s).replace(ENTITY_RE, function (s) { return s === '&' ? '&amp;' :
         s === '<' ? '&lt;' :
@@ -76,10 +77,9 @@ function escapeText(s) {
                     s === '\'' ? '&#039;' :
                         s === '/' ? '&#x2f;' : ''; });
 }
-function escapeAttr(str) {
-    return (str + '')
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;');
+function escapeAttr(s) {
+    return String(s).replace(ENTITY_RE2, function (s) { return s === '&' ? '&amp;' :
+        s === '"' ? '&quot;' : ''; });
 }
 function toHyphenCase(str) {
     return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
@@ -160,11 +160,11 @@ function renderVNodeToString(vNode, context, firstChild) {
                     renderedString += " style=\"" + (renderStylesToString(props.style)) + "\"";
                 }
                 else if (prop === 'className') {
-                    renderedString += " class=\"" + value + "\"";
+                    renderedString += " class=\"" + (escapeAttr(value)) + "\"";
                 }
                 else {
                     if (isStringOrNumber(value)) {
-                        renderedString += " " + prop + "=\"" + value + "\"";
+                        renderedString += " " + prop + "=\"" + (escapeAttr(value)) + "\"";
                     }
                     else if (isTrue(value)) {
                         renderedString += " \"" + prop + "\"";

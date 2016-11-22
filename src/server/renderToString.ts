@@ -77,10 +77,10 @@ function renderVNodeToString(vNode, context, firstChild) {
 				} else if (prop === 'style') {
 					renderedString += ` style="${ renderStylesToString(props.style) }"`;
 				} else if (prop === 'className') {
-					renderedString += ` class="${ value }"`;
+					renderedString += ` class="${ escapeAttr(value) }"`;
 				} else {
 					if (isStringOrNumber(value)) {
-						renderedString += ` ${ prop }="${ value }"`;
+						renderedString += ` ${ prop }="${ escapeAttr(value) }"`;
 					} else if (isTrue(value)) {
 						renderedString += ` "${ prop }"`;
 					}
