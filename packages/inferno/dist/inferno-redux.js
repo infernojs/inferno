@@ -714,7 +714,9 @@ function toArray(children) {
     return isArray(children) ? children : (children ? [children] : children);
 }
 function isArray(obj) {
-    return obj instanceof Array;
+    // this is MUCH faster than .constructor === Array and instanceof Array
+    // in Node 7 and the later versions of V8, slower in older versions though
+    return Array.isArray(obj);
 }
 
 
