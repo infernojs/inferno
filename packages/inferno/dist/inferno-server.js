@@ -12,12 +12,10 @@
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 
-function isArray(obj) {
-    return obj instanceof Array;
-}
-function isStatefulComponent(o) {
-    return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
-}
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+var isArray = Array.isArray;
+
 function isStringOrNumber(obj) {
     return isString(obj) || isNumber(obj);
 }
@@ -69,19 +67,29 @@ constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
-function escapeText(str) {
-    return (str + '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;')
-        .replace(/\//g, '&#x2F;');
-}
-function escapeAttr(str) {
-    return (str + '')
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;');
+function escapeText(_string) {
+    var string = _string + '';
+    var length = string.length;
+    var characters = '';
+    for (var i = 0; i < length; i++) {
+        switch (string.charCodeAt(i)) {
+            case 38:
+                characters += '&amp;';
+                break;
+            case 34:
+                characters += '&quot;';
+                break;
+            case 60:
+                characters += '&lt;';
+                break;
+            case 62:
+                characters += '&gt;';
+                break;
+            default:
+                characters += string[i];
+        }
+    }
+    return characters;
 }
 function toHyphenCase(str) {
     return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
@@ -108,230 +116,116 @@ function isVoidElement(str) {
     return !!voidElements[str];
 }
 
-function cloneVNode(vNodeToClone, props) {
-    var _children = [], len = arguments.length - 2;
-    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
-
-    var children = _children;
-    if (_children.length > 0 && !isNull(_children[0])) {
-        if (!props) {
-            props = {};
-        }
-        if (_children.length === 1) {
-            children = _children[0];
-        }
-        if (isUndefined(props.children)) {
-            props.children = children;
-        }
-        else {
-            if (isArray(children)) {
-                if (isArray(props.children)) {
-                    props.children = props.children.concat(children);
-                }
-                else {
-                    props.children = [props.children].concat(children);
-                }
-            }
-            else {
-                if (isArray(props.children)) {
-                    props.children.push(children);
-                }
-                else {
-                    props.children = [props.children];
-                    props.children.push(children);
-                }
-            }
-        }
-    }
-    children = null;
-    var newVNode;
-    if (isArray(vNodeToClone)) {
-        newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
-    }
-    else if (isNullOrUndef(props) && isNullOrUndef(children)) {
-        newVNode = Object.assign({}, vNodeToClone);
+function renderStylesToString(styles) {
+    if (isStringOrNumber(styles)) {
+        return styles;
     }
     else {
-        var flags = vNodeToClone.flags;
-        if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref, true);
-        }
-        else if (flags & 3970 /* Element */) {
-            children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, !children);
-        }
-    }
-    newVNode.dom = null;
-    return newVNode;
-}
-
-function _normalizeVNodes(nodes, result, i) {
-    for (; i < nodes.length; i++) {
-        var n = nodes[i];
-        if (!isInvalid(n)) {
-            if (Array.isArray(n)) {
-                _normalizeVNodes(n, result, 0);
-            }
-            else {
-                if (isStringOrNumber(n)) {
-                    n = createTextVNode(n);
-                }
-                else if (isVNode(n) && n.dom) {
-                    n = cloneVNode(n);
-                }
-                result.push(n);
+        var renderedString = '';
+        for (var styleName in styles) {
+            var value = styles[styleName];
+            var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+            if (!isNullOrUndef(value)) {
+                renderedString += (toHyphenCase(styleName)) + ":" + (escapeText(value)) + px + ";";
             }
         }
+        return renderedString;
     }
 }
-function normalizeVNodes(nodes) {
-    var newNodes;
-    for (var i = 0; i < nodes.length; i++) {
-        var n = nodes[i];
-        if (isInvalid(n)) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(n);
-        }
-        else if (Array.isArray(n)) {
-            var result = (newNodes || nodes).slice(0, i);
-            _normalizeVNodes(nodes, result, i);
-            return result;
-        }
-        else if (isStringOrNumber(n)) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(createTextVNode(n));
-        }
-        else if (isVNode(n) && n.dom) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(cloneVNode(n));
-        }
-        else if (newNodes) {
-            newNodes.push(cloneVNode(n));
-        }
-    }
-    return newNodes || nodes;
-}
-function normalize(vNode) {
+function renderVNodeToString(vNode, context, firstChild) {
+    var flags = vNode.flags;
     var props = vNode.props;
+    var type = vNode.type;
     var children = vNode.children;
-    if (props) {
-        if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
-            vNode.children = props.children;
-        }
-        if (props.ref) {
-            vNode.ref = props.ref;
-        }
-        if (!isNullOrUndef(props.key)) {
-            vNode.key = props.key;
-        }
-    }
-    if (isArray(children)) {
-        vNode.children = normalizeVNodes(children);
-    }
-}
-function createVNode(flags, type, props, children, key, ref, noNormalise) {
-    if (flags & 16 /* ComponentUnknown */) {
-        flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
-    }
-    var vNode = {
-        children: isUndefined(children) ? null : children,
-        dom: null,
-        flags: flags || 0,
-        key: key === undefined ? null : key,
-        props: props || null,
-        ref: ref || null,
-        type: type
-    };
-    if (!noNormalise) {
-        normalize(vNode);
-    }
-    return vNode;
-}
-
-function createTextVNode(text) {
-    return createVNode(1 /* Text */, null, null, text);
-}
-function isVNode(o) {
-    return !!o.flags;
-}
-
-function renderComponentToString(vComponent, isRoot, context, isClass) {
-    var type = vComponent.type;
-    var props = vComponent.props;
-    if (isClass) {
-        var instance = new type(props);
-        var childContext = instance.getChildContext();
-        if (!isNullOrUndef(childContext)) {
-            context = Object.assign({}, context, childContext);
-        }
-        instance.context = context;
-        // Block setting state - we should render only once, using latest state
-        instance._pendingSetState = true;
-        instance.componentWillMount();
-        var node = instance.render(props, vComponent.context);
-        instance._pendingSetState = false;
-        return renderVNodeToString(node, context, isRoot);
-    }
-    else {
-        return renderVNodeToString(type(props, context), context, isRoot);
-    }
-}
-function renderChildrenToString(children, context) {
-    if (children && isArray(children)) {
-        var childrenResult = [];
-        var insertComment = false;
-        for (var i = 0; i < children.length; i++) {
-            var child = children[i];
-            var isText = isStringOrNumber(child);
-            if (isInvalid(child)) {
-                childrenResult.push('<!--!-->');
+    if (flags & 28 /* Component */) {
+        var isClass = flags & 4;
+        if (isClass) {
+            var instance = new type(props);
+            var childContext = instance.getChildContext();
+            if (!isNullOrUndef(childContext)) {
+                context = Object.assign({}, context, childContext);
             }
-            else if (isText) {
-                if (insertComment) {
-                    childrenResult.push('<!---->');
-                }
-                if (isText) {
-                    childrenResult.push(escapeText(child));
-                }
-                insertComment = true;
-            }
-            else if (isArray(child)) {
-                childrenResult.push('<!---->');
-                childrenResult.push(renderChildrenToString(child, context));
-                childrenResult.push('<!--!-->');
-                insertComment = true;
-            }
-            else if (isVNode(child)) {
-                if (child.flags & 1 /* Text */) {
-                    if (insertComment) {
-                        childrenResult.push('<!---->');
-                    }
-                    insertComment = true;
-                }
-                else {
-                    insertComment = false;
-                }
-                childrenResult.push(renderVNodeToString(child, context, false));
-            }
-        }
-        return childrenResult.join('');
-    }
-    else if (!isInvalid(children)) {
-        if (isStringOrNumber(children)) {
-            return escapeText(children);
+            instance.context = context;
+            instance._pendingSetState = true;
+            instance.componentWillMount();
+            var nextVNode = instance.render(props, vNode.context);
+            instance._pendingSetState = false;
+            return renderVNodeToString(nextVNode, context, true);
         }
         else {
-            return renderVNodeToString(children, context, false) || '';
+            return renderVNodeToString(type(props, context), context, true);
         }
     }
-    return '';
+    else if (flags & 3970 /* Element */) {
+        var renderedString = "<" + type;
+        var html;
+        var isVoidElement$$1 = isVoidElement(type);
+        if (!isNull(props)) {
+            for (var prop in props) {
+                var value = props[prop];
+                if (prop === 'dangerouslySetInnerHTML') {
+                    html = value.__html;
+                }
+                else if (prop === 'style') {
+                    renderedString += " style=\"" + (renderStylesToString(props.style)) + "\"";
+                }
+                else if (prop === 'className') {
+                    renderedString += " class=\"" + (escapeText(value)) + "\"";
+                }
+                else {
+                    if (isStringOrNumber(value)) {
+                        renderedString += " " + prop + "=\"" + (escapeText(value)) + "\"";
+                    }
+                    else if (isTrue(value)) {
+                        renderedString += " \"" + prop + "\"";
+                    }
+                }
+            }
+        }
+        if (isVoidElement$$1) {
+            renderedString += ">";
+        }
+        else {
+            renderedString += ">";
+            if (!isInvalid(children)) {
+                if (isArray(children)) {
+                    for (var i = 0; i < children.length; i++) {
+                        renderedString += renderVNodeToString(children[i], context, i === 0);
+                    }
+                }
+                else if (isStringOrNumber(children)) {
+                    renderedString += escapeText(children);
+                }
+                else {
+                    renderedString += renderVNodeToString(children, context, true);
+                }
+            }
+            else if (html) {
+                renderedString += html;
+            }
+            if (!isVoidElement$$1) {
+                renderedString += "</" + type + ">";
+            }
+        }
+        return renderedString;
+    }
+    else if (flags & 1 /* Text */) {
+        return (firstChild ? '' : '<!---->') + escapeText(children);
+    }
+    else {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError(("renderToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+        }
+        throwError();
+    }
 }
+function renderToString(input) {
+    return renderVNodeToString(input, null, true);
+}
+function renderToStaticMarkup(input) {
+    return renderVNodeToString(input, null, true);
+}
+
 function renderStyleToString(style) {
     if (isStringOrNumber(style)) {
         return style;
@@ -344,86 +238,7 @@ function renderStyleToString(style) {
             var value = style[styleName];
             var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
             if (!isNullOrUndef(value)) {
-                styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
-            }
-        }
-        return styles.join('');
-    }
-}
-function renderElementToString(vNode, isRoot, context) {
-    var tag = vNode.type;
-    var outputProps = [];
-    var props = vNode.props;
-    var html = '';
-    for (var prop in props) {
-        var value = props[prop];
-        if (prop === 'dangerouslySetInnerHTML') {
-            html = value.__html;
-        }
-        else if (prop === 'style') {
-            outputProps.push('style="' + renderStyleToString(props.style) + '"');
-        }
-        else if (prop === 'className') {
-            outputProps.push('class="' + value + '"');
-        }
-        else {
-            if (isStringOrNumber(value)) {
-                outputProps.push(escapeAttr(prop) + '="' + escapeAttr(value) + '"');
-            }
-            else if (isTrue(value)) {
-                outputProps.push(escapeAttr(prop));
-            }
-        }
-    }
-    if (isRoot) {
-        outputProps.push('data-infernoroot');
-    }
-    if (isVoidElement(tag)) {
-        return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">");
-    }
-    else {
-        var content = html || renderChildrenToString(vNode.children, context);
-        return ("<" + tag + (outputProps.length > 0 ? ' ' + outputProps.join(' ') : '') + ">" + content + "</" + tag + ">");
-    }
-}
-function renderTextToString(vNode, context, isRoot) {
-    return escapeText(vNode.children);
-}
-function renderVNodeToString(vNode, context, isRoot) {
-    var flags = vNode.flags;
-    if (flags & 28 /* Component */) {
-        return renderComponentToString(vNode, isRoot, context, flags & 4 /* ComponentClass */);
-    }
-    else if (flags & 3970 /* Element */) {
-        return renderElementToString(vNode, isRoot, context);
-    }
-    else if (flags & 1 /* Text */) {
-        return renderTextToString(vNode, isRoot, context);
-    }
-    else {
-        throwError(("renderVNodeToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
-    }
-}
-function renderToString(input) {
-    return renderVNodeToString(input, null, true);
-}
-function renderToStaticMarkup(input) {
-    return renderVNodeToString(input, null, false);
-}
-
-function renderStyleToString$1(style) {
-    if (isStringOrNumber(style)) {
-        return style;
-    }
-    else {
-        var styles = [];
-        var keys = Object.keys(style);
-        for (var i = 0; i < keys.length; i++) {
-            var styleName = keys[i];
-            var value = style[styleName];
-            var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
-            if (!isNullOrUndef(value)) {
-                styles.push(((toHyphenCase(styleName)) + ":" + (escapeAttr(value)) + px + ";"));
+                styles.push(((toHyphenCase(styleName)) + ":" + (escapeText(value)) + px + ";"));
             }
         }
         return styles.join();
@@ -441,10 +256,10 @@ function renderAttributes(props) {
                 return;
             default:
                 if (isStringOrNumber(value)) {
-                    outputAttrs.push(escapeAttr(propKey) + '="' + escapeAttr(value) + '"');
+                    outputAttrs.push(escapeText(propKey) + '="' + escapeText(value) + '"');
                 }
                 else if (isTrue(value)) {
-                    outputAttrs.push(escapeAttr(propKey));
+                    outputAttrs.push(escapeText(propKey));
                 }
         }
     });
@@ -593,11 +408,11 @@ var RenderStream = (function (Readable$$1) {
         if (props) {
             var className = props.className;
             if (className) {
-                outputAttrs.push('class="' + escapeAttr(className) + '"');
+                outputAttrs.push('class="' + escapeText(className) + '"');
             }
             var style = props.style;
             if (style) {
-                outputAttrs.push('style="' + renderStyleToString$1(style) + '"');
+                outputAttrs.push('style="' + renderStyleToString(style) + '"');
             }
             if (props.dangerouslySetInnerHTML) {
                 html = props.dangerouslySetInnerHTML.__html;

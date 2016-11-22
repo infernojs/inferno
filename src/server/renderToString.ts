@@ -3,6 +3,7 @@ import {
 	isStringOrNumber,
 	isNullOrUndef,
 	isInvalid,
+	isNull,
 	isNumber,
 	isTrue,
 	throwError
@@ -11,154 +12,109 @@ import { isUnitlessNumber } from '../DOM/constants';
 import {
 	toHyphenCase,
 	escapeText,
-	escapeAttr,
-	isVoidElement
+	isVoidElement as _isVoidElement
 } from './utils';
 import {
-	VNodeFlags,
-	isVNode
+	VNodeFlags
 } from '../core/shapes';
 
-function renderComponentToString(vComponent, isRoot, context, isClass) {
-	const type = vComponent.type;
-	const props = vComponent.props;
-
-	if (isClass) {
-		const instance = new type(props);
-		const childContext = instance.getChildContext();
-
-		if (!isNullOrUndef(childContext)) {
-			context = Object.assign({}, context, childContext);
-		}
-		instance.context = context;
-		// Block setting state - we should render only once, using latest state
-		instance._pendingSetState = true;
-		instance.componentWillMount();
-		const node = instance.render(props, vComponent.context);
-
-		instance._pendingSetState = false;
-		return renderVNodeToString(node, context, isRoot);
+function renderStylesToString(styles) {
+	if (isStringOrNumber(styles)) {
+		return styles;
 	} else {
-		return renderVNodeToString(type(props, context), context, isRoot);
-	}
-}
-
-function renderChildrenToString(children, context): string {
-	if (children && isArray(children)) {
-		const childrenResult: Array<string> = [];
-		let insertComment = false;
-
-		for (let i = 0; i < children.length; i++) {
-			const child = children[i];
-			const isText = isStringOrNumber(child);
-
-			if (isInvalid(child)) {
-				childrenResult.push('<!--!-->');
-			} else if (isText) {
-				if (insertComment) {
-					childrenResult.push('<!---->');
-				}
-				if (isText) {
-					childrenResult.push(escapeText(child));
-				}
-				insertComment = true;
-			} else if (isArray(child)) {
-				childrenResult.push('<!---->');
-				childrenResult.push(renderChildrenToString(child, context));
-				childrenResult.push('<!--!-->');
-				insertComment = true;
-			} else if (isVNode(child)) {
-				if (child.flags & VNodeFlags.Text) {
-					if (insertComment) {
-						childrenResult.push('<!---->');
-					}
-					insertComment = true;
-				} else {
-					insertComment = false;
-				}
-				childrenResult.push(renderVNodeToString(child, context, false));
-			}
-		}
-		return childrenResult.join('');
-	} else if (!isInvalid(children)) {
-		if (isStringOrNumber(children)) {
-			return escapeText(children);
-		} else {
-			return renderVNodeToString(children, context, false) || '';
-		}
-	}
-	return '';
-}
-
-function renderStyleToString(style) {
-	if (isStringOrNumber(style)) {
-		return style;
-	} else {
-		const styles: Array<string> = [];
-		const keys = Object.keys(style);
-
-		for (let i = 0; i < keys.length; i++) {
-			const styleName = keys[i];
-			const value = style[styleName];
+		let renderedString = '';
+	
+		for (let styleName in styles) {
+			const value = styles[styleName];
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
-				styles.push(`${ toHyphenCase(styleName) }:${ escapeAttr(value) }${ px };`);
+				renderedString += `${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`;
 			}
 		}
-		return styles.join('');
+		return renderedString;
 	}
 }
 
-function renderElementToString(vNode, isRoot, context) {
-	const tag = vNode.type;
-	const outputProps: Array<string> = [];
-	const props = vNode.props;
-	let html = '';
-
-	for (let prop in props) {
-		const value = props[prop];
-
-		if (prop === 'dangerouslySetInnerHTML') {
-			html = value.__html;
-		} else if (prop === 'style') {
-			outputProps.push('style="' + renderStyleToString(props.style) + '"');
-		} else if (prop === 'className') {
-			outputProps.push('class="' + value + '"');
-		} else {
-			if (isStringOrNumber(value)) {
-				outputProps.push(escapeAttr(prop) + '="' + escapeAttr(value) + '"');
-			} else if (isTrue(value)) {
-				outputProps.push(escapeAttr(prop));
-			}
-		}
-	}
-	if (isRoot) {
-		outputProps.push('data-infernoroot');
-	}
-	if (isVoidElement(tag)) {
-		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps.join(' ') : '' }>`;
-	} else {
-		const content = html || renderChildrenToString(vNode.children, context);
-		return `<${ tag }${ outputProps.length > 0 ? ' ' + outputProps.join(' ') : '' }>${ content }</${ tag }>`;
-	}
-}
-
-function renderTextToString(vNode, context, isRoot) {
-	return escapeText(vNode.children);
-}
-
-function renderVNodeToString(vNode, context, isRoot) {
+function renderVNodeToString(vNode, context, firstChild) {
 	const flags = vNode.flags;
+	const props = vNode.props;
+	const type = vNode.type;
+	const children = vNode.children;
 
 	if (flags & VNodeFlags.Component) {
-		return renderComponentToString(vNode, isRoot, context, flags & VNodeFlags.ComponentClass);
+		const isClass = flags & VNodeFlags.ComponentClass;
+
+		if (isClass) {
+			const instance = new type(props);
+			const childContext = instance.getChildContext();
+
+			if (!isNullOrUndef(childContext)) {
+				context = Object.assign({}, context, childContext);
+			}
+			instance.context = context;
+			instance._pendingSetState = true;
+			instance.componentWillMount();
+			const nextVNode = instance.render(props, vNode.context);
+
+			instance._pendingSetState = false;
+			return renderVNodeToString(nextVNode, context, true);
+		} else {
+			return renderVNodeToString(type(props, context), context, true);
+		}
 	} else if (flags & VNodeFlags.Element) {
-		return renderElementToString(vNode, isRoot, context);
+		let renderedString = `<${ type }`;
+		let html;
+		const isVoidElement = _isVoidElement(type);
+
+		if (!isNull(props)) {
+			for (let prop in props) {
+				const value = props[prop];
+
+				if (prop === 'dangerouslySetInnerHTML') {
+					html = value.__html;
+				} else if (prop === 'style') {
+					renderedString += ` style="${ renderStylesToString(props.style) }"`;
+				} else if (prop === 'className') {
+					renderedString += ` class="${ escapeText(value) }"`;
+				} else {
+					if (isStringOrNumber(value)) {
+						renderedString += ` ${ prop }="${ escapeText(value) }"`;
+					} else if (isTrue(value)) {
+						renderedString += ` "${ prop }"`;
+					}
+				}
+			}
+		}
+		if (isVoidElement) {
+			renderedString += `>`;
+		} else {
+			renderedString += `>`;
+			if (!isInvalid(children)) {
+				if (isArray(children)) {
+					for (let i = 0; i < children.length; i++) {
+						renderedString += renderVNodeToString(children[i], context, i === 0);
+					}
+				} else if (isStringOrNumber(children)) {
+					renderedString += escapeText(children);
+				} else {
+					renderedString += renderVNodeToString(children, context, true);
+				}
+			} else if (html) {
+				renderedString += html;
+			}
+			if (!isVoidElement) {
+				renderedString += `</${ type }>`;
+			}
+		}
+		return renderedString;
 	} else if (flags & VNodeFlags.Text) {
-		return renderTextToString(vNode, isRoot, context);
+		return (firstChild ? '' : '<!---->') + escapeText(children);
 	} else {
-		throwError(`renderVNodeToString() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+		if (process.env.NODE_ENV !== 'production') {
+			throwError(`renderToString() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+		}
+		throwError();
 	}
 }
 
@@ -167,5 +123,5 @@ export default function renderToString(input) {
 }
 
 export function renderToStaticMarkup(input) {
-	return renderVNodeToString(input, null, false);
+	return renderVNodeToString(input, null, true);
 }

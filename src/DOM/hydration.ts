@@ -8,11 +8,13 @@ import {
 import {
 	createStatelessComponentInput,
 	createStatefulComponentInstance,
-	copyPropsTo
+	copyPropsTo,
+	replaceChild
 } from './utils';
 import {
 	mountStatelessComponentCallbacks,
-	mountStatefulComponentCallbacks
+	mountStatefulComponentCallbacks,
+	mountElement
 } from './mounting';
 import {
 	patchProp
@@ -89,32 +91,25 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 	const props = vNode.props;
 	const flags = vNode.flags;
 
-	vNode.dom = dom;
-
 	if (isSVG || (flags & VNodeFlags.SvgElement)) {
 		isSVG = true;
 	}
 	if (dom.tagName.toLowerCase() !== tag) {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError(`hydrateElement() failed due to mismatch on DOM element tag name. Ensure server-side logic matches client side logic.`);
-		}
-	}
-	if (children) {
-		hydrateChildren(children, dom, lifecycle, context, isSVG);
-	}
-	if (!(flags & VNodeFlags.HtmlElement)) {
-		processElement(flags, vNode, dom);
-	}
-	for (let prop in props) {
-		const value = props[prop];
+		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
 
-		if (prop === 'key') {
-			// TODO: Maybe ?
-		} else if (prop === 'ref') {
-			// TODO: Maybe ?
-		} else if (prop === 'children') {
-			// TODO: Maybe ?
-		} else {
+		vNode.dom = newDom;
+		replaceChild(dom.parentNode, newDom, dom);
+	} else {
+		vNode.dom = dom;
+		if (children) {
+			hydrateChildren(children, dom, lifecycle, context, isSVG);
+		}
+		if (!(flags & VNodeFlags.HtmlElement)) {
+			processElement(flags, vNode, dom);
+		}
+		for (let prop in props) {
+			const value = props[prop];
+
 			patchProp(prop, null, value, dom, isSVG);
 		}
 	}
@@ -170,14 +165,9 @@ function hydrate(vNode, dom, lifecycle, context, isSVG) {
 }
 
 export default function hydrateRoot(input, parentDom, lifecycle) {
-	if (parentDom && parentDom.nodeType === 1) {
-		const rootNode = parentDom.querySelector('[data-infernoroot]');
-
-		if (rootNode && rootNode.parentNode === parentDom) {
-			rootNode.removeAttribute('data-infernoroot');
-			hydrate(input, rootNode, lifecycle, {}, false);
-			return true;
-		}
+	if (parentDom && parentDom.nodeType === 1 && parentDom.firstChild) {
+		hydrate(input, parentDom.firstChild, lifecycle, {}, false);
+		return true;
 	}
 	return false;
 }

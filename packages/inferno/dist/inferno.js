@@ -13,9 +13,9 @@ var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 var isBrowser = typeof window !== 'undefined' && window.document;
 
-function isArray(obj) {
-    return obj instanceof Array;
-}
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+var isArray = Array.isArray;
 function isStatefulComponent(o) {
     return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
@@ -1838,30 +1838,24 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     var children = vNode.children;
     var props = vNode.props;
     var flags = vNode.flags;
-    vNode.dom = dom;
     if (isSVG || (flags & 128 /* SvgElement */)) {
         isSVG = true;
     }
     if (dom.tagName.toLowerCase() !== tag) {
-        if (process.env.NODE_ENV !== 'production') {
-            throwError("hydrateElement() failed due to mismatch on DOM element tag name. Ensure server-side logic matches client side logic.");
-        }
+        var newDom = mountElement(vNode, null, lifecycle, context, isSVG);
+        vNode.dom = newDom;
+        replaceChild(dom.parentNode, newDom, dom);
     }
-    if (children) {
-        hydrateChildren(children, dom, lifecycle, context, isSVG);
-    }
-    if (!(flags & 2 /* HtmlElement */)) {
-        processElement(flags, vNode, dom);
-    }
-    for (var prop in props) {
-        var value = props[prop];
-        if (prop === 'key') {
+    else {
+        vNode.dom = dom;
+        if (children) {
+            hydrateChildren(children, dom, lifecycle, context, isSVG);
         }
-        else if (prop === 'ref') {
+        if (!(flags & 2 /* HtmlElement */)) {
+            processElement(flags, vNode, dom);
         }
-        else if (prop === 'children') {
-        }
-        else {
+        for (var prop in props) {
+            var value = props[prop];
             patchProp(prop, null, value, dom, isSVG);
         }
     }
@@ -1914,13 +1908,9 @@ function hydrate(vNode, dom, lifecycle, context, isSVG) {
     }
 }
 function hydrateRoot(input, parentDom, lifecycle) {
-    if (parentDom && parentDom.nodeType === 1) {
-        var rootNode = parentDom.querySelector('[data-infernoroot]');
-        if (rootNode && rootNode.parentNode === parentDom) {
-            rootNode.removeAttribute('data-infernoroot');
-            hydrate(input, rootNode, lifecycle, {}, false);
-            return true;
-        }
+    if (parentDom && parentDom.nodeType === 1 && parentDom.firstChild) {
+        hydrate(input, parentDom.firstChild, lifecycle, {}, false);
+        return true;
     }
     return false;
 }

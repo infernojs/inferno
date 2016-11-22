@@ -12,9 +12,9 @@
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 
-function isArray(obj) {
-    return obj instanceof Array;
-}
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+var isArray = Array.isArray;
 function isStatefulComponent(o) {
     return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }

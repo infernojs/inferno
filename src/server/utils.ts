@@ -1,17 +1,27 @@
-export function escapeText(str) {
-	return (str + '')
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&#039;')
-		.replace(/\//g, '&#x2F;');
-}
+export function escapeText(_string) {
+		const string = _string + '';
+		const length = string.length;
+		let characters = '';
 
-export function escapeAttr(str) {
-	return (str + '')
-		.replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;');
+		for (let i = 0; i < length; i++) {
+			switch (string.charCodeAt(i)) {
+				case 38:
+					characters += '&amp;';
+					break;
+				case 34:
+					characters += '&quot;';
+					break;
+				case 60:
+					characters += '&lt;';
+					break;
+				case 62:
+					characters += '&gt;';
+					break;
+				default:
+					characters += string[i];
+			}
+		}
+		return characters;
 }
 
 export function toHyphenCase(str) {
