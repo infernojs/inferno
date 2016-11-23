@@ -154,6 +154,137 @@ var EMPTY_OBJ = exports.EMPTY_OBJ = {};
 
 /***/ },
 /* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.VNodeFlags = undefined;
+exports.normalizeVNodes = normalizeVNodes;
+exports.createVNode = createVNode;
+exports.createVoidVNode = createVoidVNode;
+exports.createTextVNode = createTextVNode;
+exports.isVNode = isVNode;
+
+var _shared = __webpack_require__(0);
+
+var _cloneVNode = __webpack_require__(12);
+
+var _cloneVNode2 = _interopRequireDefault(_cloneVNode);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var VNodeFlags = exports.VNodeFlags = undefined;
+(function (VNodeFlags) {
+    VNodeFlags[VNodeFlags["Text"] = 1] = "Text";
+    VNodeFlags[VNodeFlags["HtmlElement"] = 2] = "HtmlElement";
+    VNodeFlags[VNodeFlags["ComponentClass"] = 4] = "ComponentClass";
+    VNodeFlags[VNodeFlags["ComponentFunction"] = 8] = "ComponentFunction";
+    VNodeFlags[VNodeFlags["ComponentUnknown"] = 16] = "ComponentUnknown";
+    VNodeFlags[VNodeFlags["HasKeyedChildren"] = 32] = "HasKeyedChildren";
+    VNodeFlags[VNodeFlags["HasNonKeyedChildren"] = 64] = "HasNonKeyedChildren";
+    VNodeFlags[VNodeFlags["SvgElement"] = 128] = "SvgElement";
+    VNodeFlags[VNodeFlags["MediaElement"] = 256] = "MediaElement";
+    VNodeFlags[VNodeFlags["InputElement"] = 512] = "InputElement";
+    VNodeFlags[VNodeFlags["TextareaElement"] = 1024] = "TextareaElement";
+    VNodeFlags[VNodeFlags["SelectElement"] = 2048] = "SelectElement";
+    VNodeFlags[VNodeFlags["Void"] = 4096] = "Void";
+    VNodeFlags[VNodeFlags["Element"] = 3970] = "Element";
+    VNodeFlags[VNodeFlags["Component"] = 28] = "Component";
+})(VNodeFlags || (exports.VNodeFlags = VNodeFlags = {}));
+function _normalizeVNodes(nodes, result, i) {
+    for (; i < nodes.length; i++) {
+        var n = nodes[i];
+        if (!(0, _shared.isInvalid)(n)) {
+            if (Array.isArray(n)) {
+                _normalizeVNodes(n, result, 0);
+            } else {
+                if ((0, _shared.isStringOrNumber)(n)) {
+                    n = createTextVNode(n);
+                } else if (isVNode(n) && n.dom) {
+                    n = (0, _cloneVNode2.default)(n);
+                }
+                result.push(n);
+            }
+        }
+    }
+}
+function normalizeVNodes(nodes) {
+    var newNodes = void 0;
+    for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        if ((0, _shared.isInvalid)(n) || Array.isArray(n)) {
+            var result = (newNodes || nodes).slice(0, i);
+            _normalizeVNodes(nodes, result, i);
+            return result;
+        } else if ((0, _shared.isStringOrNumber)(n)) {
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push(createTextVNode(n));
+        } else if (isVNode(n) && n.dom) {
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push((0, _cloneVNode2.default)(n));
+        } else if (newNodes) {
+            newNodes.push((0, _cloneVNode2.default)(n));
+        }
+    }
+    return newNodes || nodes;
+}
+function normalize(vNode) {
+    var props = vNode.props;
+    var children = vNode.children;
+    if (props) {
+        if ((0, _shared.isNullOrUndef)(children) && !(0, _shared.isNullOrUndef)(props.children)) {
+            vNode.children = props.children;
+        }
+        if (props.ref) {
+            vNode.ref = props.ref;
+        }
+        if (!(0, _shared.isNullOrUndef)(props.key)) {
+            vNode.key = props.key;
+        }
+    }
+    if ((0, _shared.isArray)(children)) {
+        vNode.children = normalizeVNodes(children);
+    }
+}
+function createVNode(flags, type, props, children, key, ref, noNormalise) {
+    if (flags & VNodeFlags.ComponentUnknown) {
+        flags = (0, _shared.isStatefulComponent)(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
+    }
+    var vNode = {
+        children: (0, _shared.isUndefined)(children) ? null : children,
+        dom: null,
+        flags: flags || 0,
+        key: key === undefined ? null : key,
+        props: props || null,
+        ref: ref || null,
+        type: type
+    };
+    if (!noNormalise) {
+        normalize(vNode);
+    }
+    return vNode;
+}
+function createVoidVNode() {
+    return createVNode(VNodeFlags.Void);
+}
+function createTextVNode(text) {
+    return createVNode(VNodeFlags.Text, null, null, text);
+}
+function isVNode(o) {
+    return !!o.flags;
+}
+//# sourceMappingURL=shapes.js.map
+
+/***/ },
+/* 2 */
 /***/ function(module, exports) {
 
 // shim for using process in browser
@@ -339,7 +470,7 @@ process.umask = function() { return 0; };
 
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -353,27 +484,27 @@ exports.findDOMNode = findDOMNode;
 exports.render = render;
 exports.createRenderer = createRenderer;
 
+var _shared = __webpack_require__(0);
+
+var _devtools = __webpack_require__(6);
+
 var _lifecycle2 = __webpack_require__(13);
 
 var _lifecycle3 = _interopRequireDefault(_lifecycle2);
-
-var _mounting = __webpack_require__(7);
-
-var _patching = __webpack_require__(5);
-
-var _shared = __webpack_require__(0);
-
-var _hydration = __webpack_require__(16);
-
-var _hydration2 = _interopRequireDefault(_hydration);
-
-var _unmounting = __webpack_require__(11);
 
 var _cloneVNode = __webpack_require__(12);
 
 var _cloneVNode2 = _interopRequireDefault(_cloneVNode);
 
-var _devtools = __webpack_require__(6);
+var _hydration = __webpack_require__(16);
+
+var _hydration2 = _interopRequireDefault(_hydration);
+
+var _mounting = __webpack_require__(7);
+
+var _patching = __webpack_require__(5);
+
+var _unmounting = __webpack_require__(11);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -462,119 +593,7 @@ function createRenderer() {
     };
 }
 //# sourceMappingURL=rendering.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.normalizeVNodes = normalizeVNodes;
-exports.createVNode = createVNode;
-exports.createVoidVNode = createVoidVNode;
-exports.createTextVNode = createTextVNode;
-exports.isVNode = isVNode;
-
-var _shared = __webpack_require__(0);
-
-var _cloneVNode = __webpack_require__(12);
-
-var _cloneVNode2 = _interopRequireDefault(_cloneVNode);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _normalizeVNodes(nodes, result, i) {
-    for (; i < nodes.length; i++) {
-        var n = nodes[i];
-        if (!(0, _shared.isInvalid)(n)) {
-            if (Array.isArray(n)) {
-                _normalizeVNodes(n, result, 0);
-            } else {
-                if ((0, _shared.isStringOrNumber)(n)) {
-                    n = createTextVNode(n);
-                } else if (isVNode(n) && n.dom) {
-                    n = (0, _cloneVNode2.default)(n);
-                }
-                result.push(n);
-            }
-        }
-    }
-}
-function normalizeVNodes(nodes) {
-    var newNodes = void 0;
-    for (var i = 0; i < nodes.length; i++) {
-        var n = nodes[i];
-        if ((0, _shared.isInvalid)(n) || Array.isArray(n)) {
-            var result = (newNodes || nodes).slice(0, i);
-            _normalizeVNodes(nodes, result, i);
-            return result;
-        } else if ((0, _shared.isStringOrNumber)(n)) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(createTextVNode(n));
-        } else if (isVNode(n) && n.dom) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push((0, _cloneVNode2.default)(n));
-        } else if (newNodes) {
-            newNodes.push((0, _cloneVNode2.default)(n));
-        }
-    }
-    return newNodes || nodes;
-}
-function normalize(vNode) {
-    var props = vNode.props;
-    var children = vNode.children;
-    if (props) {
-        if ((0, _shared.isNullOrUndef)(children) && !(0, _shared.isNullOrUndef)(props.children)) {
-            vNode.children = props.children;
-        }
-        if (props.ref) {
-            vNode.ref = props.ref;
-        }
-        if (!(0, _shared.isNullOrUndef)(props.key)) {
-            vNode.key = props.key;
-        }
-    }
-    if ((0, _shared.isArray)(children)) {
-        vNode.children = normalizeVNodes(children);
-    }
-}
-function createVNode(flags, type, props, children, key, ref, noNormalise) {
-    if (flags & 16 /* ComponentUnknown */) {
-            flags = (0, _shared.isStatefulComponent)(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
-        }
-    var vNode = {
-        children: (0, _shared.isUndefined)(children) ? null : children,
-        dom: null,
-        flags: flags || 0,
-        key: key === undefined ? null : key,
-        props: props || null,
-        ref: ref || null,
-        type: type
-    };
-    if (!noNormalise) {
-        normalize(vNode);
-    }
-    return vNode;
-}
-function createVoidVNode() {
-    return createVNode(4096 /* Void */);
-}
-function createTextVNode(text) {
-    return createVNode(1 /* Text */, null, null, text);
-}
-function isVNode(o) {
-    return !!o.flags;
-}
-//# sourceMappingURL=shapes.js.map
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 4 */
@@ -589,6 +608,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.wrappers = undefined;
 exports.default = processElement;
 
+var _shapes = __webpack_require__(1);
+
 var _InputWrapper = __webpack_require__(17);
 
 var _SelectWrapper = __webpack_require__(18);
@@ -597,13 +618,13 @@ var _TextareaWrapper = __webpack_require__(19);
 
 var wrappers = exports.wrappers = new Map();
 function processElement(flags, vNode, dom) {
-    if (flags & 512 /* InputElement */) {
-            (0, _InputWrapper.processInput)(vNode, dom);
-        } else if (flags & 2048 /* SelectElement */) {
-            (0, _SelectWrapper.processSelect)(vNode, dom);
-        } else if (flags & 1024 /* TextareaElement */) {
-            (0, _TextareaWrapper.processTextarea)(vNode, dom);
-        }
+    if (flags & _shapes.VNodeFlags.InputElement) {
+        (0, _InputWrapper.processInput)(vNode, dom);
+    } else if (flags & _shapes.VNodeFlags.SelectElement) {
+        (0, _SelectWrapper.processSelect)(vNode, dom);
+    } else if (flags & _shapes.VNodeFlags.TextareaElement) {
+        (0, _TextareaWrapper.processTextarea)(vNode, dom);
+    }
 }
 //# sourceMappingURL=processElement.js.map
 
@@ -633,13 +654,13 @@ var _mounting = __webpack_require__(7);
 
 var _utils = __webpack_require__(8);
 
-var _rendering = __webpack_require__(2);
+var _rendering = __webpack_require__(3);
 
 var _unmounting = __webpack_require__(11);
 
 var _constants = __webpack_require__(9);
 
-var _shapes = __webpack_require__(3);
+var _shapes = __webpack_require__(1);
 
 var _processElement = __webpack_require__(4);
 
@@ -653,31 +674,31 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRec
     if (lastVNode !== nextVNode) {
         var lastFlags = lastVNode.flags;
         var nextFlags = nextVNode.flags;
-        if (nextFlags & 28 /* Component */) {
-                if (lastFlags & 28 /* Component */) {
-                        patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */, isRecycling);
-                    } else {
-                    (0, _utils.replaceVNode)(parentDom, (0, _mounting.mountComponent)(nextVNode, null, lifecycle, context, isSVG, nextFlags & 4 /* ComponentClass */), lastVNode, lifecycle);
-                }
-            } else if (nextFlags & 3970 /* Element */) {
-                if (lastFlags & 3970 /* Element */) {
-                        patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
-                    } else {
-                    (0, _utils.replaceVNode)(parentDom, (0, _mounting.mountElement)(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
-                }
-            } else if (nextFlags & 1 /* Text */) {
-                if (lastFlags & 1 /* Text */) {
-                        patchText(lastVNode, nextVNode);
-                    } else {
-                    (0, _utils.replaceVNode)(parentDom, (0, _mounting.mountText)(nextVNode, null), lastVNode, lifecycle);
-                }
-            } else if (nextFlags & 4096 /* Void */) {
-                if (lastFlags & 4096 /* Void */) {
-                        patchVoid(lastVNode, nextVNode);
-                    } else {
-                    (0, _utils.replaceVNode)(parentDom, (0, _mounting.mountVoid)(nextVNode, null), lastVNode, lifecycle);
-                }
+        if (nextFlags & _shapes.VNodeFlags.Component) {
+            if (lastFlags & _shapes.VNodeFlags.Component) {
+                patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, nextFlags & _shapes.VNodeFlags.ComponentClass, isRecycling);
             } else {
+                (0, _utils.replaceVNode)(parentDom, (0, _mounting.mountComponent)(nextVNode, null, lifecycle, context, isSVG, nextFlags & _shapes.VNodeFlags.ComponentClass), lastVNode, lifecycle);
+            }
+        } else if (nextFlags & _shapes.VNodeFlags.Element) {
+            if (lastFlags & _shapes.VNodeFlags.Element) {
+                patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
+            } else {
+                (0, _utils.replaceVNode)(parentDom, (0, _mounting.mountElement)(nextVNode, null, lifecycle, context, isSVG), lastVNode, lifecycle);
+            }
+        } else if (nextFlags & _shapes.VNodeFlags.Text) {
+            if (lastFlags & _shapes.VNodeFlags.Text) {
+                patchText(lastVNode, nextVNode);
+            } else {
+                (0, _utils.replaceVNode)(parentDom, (0, _mounting.mountText)(nextVNode, null), lastVNode, lifecycle);
+            }
+        } else if (nextFlags & _shapes.VNodeFlags.Void) {
+            if (lastFlags & _shapes.VNodeFlags.Void) {
+                patchVoid(lastVNode, nextVNode);
+            } else {
+                (0, _utils.replaceVNode)(parentDom, (0, _mounting.mountVoid)(nextVNode, null), lastVNode, lifecycle);
+            }
+        } else {
             // Error case: mount new one replacing old one
             (0, _utils.replaceLastChildAndUnmount)(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG);
         }
@@ -708,13 +729,13 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
         var lastRef = lastVNode.ref;
         var nextRef = nextVNode.ref;
         nextVNode.dom = dom;
-        if (isSVG || nextFlags & 128 /* SvgElement */) {
+        if (isSVG || nextFlags & _shapes.VNodeFlags.SvgElement) {
             isSVG = true;
         }
         if (lastChildren !== nextChildren) {
             patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
         }
-        if (!(nextFlags & 2 /* HtmlElement */)) {
+        if (!(nextFlags & _shapes.VNodeFlags.HtmlElement)) {
             (0, _processElement2.default)(nextFlags, nextVNode, dom);
         }
         if (lastProps !== nextProps) {
@@ -730,9 +751,9 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling) {
     var patchArray = false;
     var patchKeyed = false;
-    if (nextFlags & 64 /* HasNonKeyedChildren */) {
-            patchArray = true;
-        } else if (lastFlags & 32 /* HasKeyedChildren */ && nextFlags & 32 /* HasKeyedChildren */) {
+    if (nextFlags & _shapes.VNodeFlags.HasNonKeyedChildren) {
+        patchArray = true;
+    } else if (lastFlags & _shapes.VNodeFlags.HasKeyedChildren && nextFlags & _shapes.VNodeFlags.HasKeyedChildren) {
         patchKeyed = true;
         patchArray = true;
     } else if ((0, _shared.isInvalid)(nextChildren)) {
@@ -806,7 +827,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 if ((0, _shared.isNull)(parentDom)) {
                     return true;
                 }
-                (0, _utils.replaceChild)(parentDom, (0, _mounting.mountComponent)(nextVNode, null, lifecycle, context, isSVG, nextVNode.flags & 4 /* ComponentClass */), lastVNode.dom);
+                (0, _utils.replaceChild)(parentDom, (0, _mounting.mountComponent)(nextVNode, null, lifecycle, context, isSVG, nextVNode.flags & _shapes.VNodeFlags.ComponentClass), lastVNode.dom);
             } else {
                 var defaultProps = nextType.defaultProps;
                 var lastProps = instance.props;
@@ -1295,7 +1316,7 @@ function removeProp(prop, dom) {
     }
 }
 //# sourceMappingURL=patching.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 6 */
@@ -1314,7 +1335,7 @@ exports.sendRoots = sendRoots;
 
 var _shared = __webpack_require__(0);
 
-var _rendering = __webpack_require__(2);
+var _rendering = __webpack_require__(3);
 
 var devToolsStatus = exports.devToolsStatus = {
     connected: false
@@ -1400,13 +1421,13 @@ var _utils = __webpack_require__(8);
 
 var _patching = __webpack_require__(5);
 
-var _rendering = __webpack_require__(2);
+var _rendering = __webpack_require__(3);
 
 var _recycling = __webpack_require__(10);
 
 var _devtools = __webpack_require__(6);
 
-var _shapes = __webpack_require__(3);
+var _shapes = __webpack_require__(1);
 
 var _processElement = __webpack_require__(4);
 
@@ -1416,15 +1437,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function mount(vNode, parentDom, lifecycle, context, isSVG) {
     var flags = vNode.flags;
-    if (flags & 3970 /* Element */) {
-            return mountElement(vNode, parentDom, lifecycle, context, isSVG);
-        } else if (flags & 28 /* Component */) {
-            return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & 4 /* ComponentClass */);
-        } else if (flags & 4096 /* Void */) {
-            return mountVoid(vNode, parentDom);
-        } else if (flags & 1 /* Text */) {
-            return mountText(vNode, parentDom);
-        } else {
+    if (flags & _shapes.VNodeFlags.Element) {
+        return mountElement(vNode, parentDom, lifecycle, context, isSVG);
+    } else if (flags & _shapes.VNodeFlags.Component) {
+        return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & _shapes.VNodeFlags.ComponentClass);
+    } else if (flags & _shapes.VNodeFlags.Void) {
+        return mountVoid(vNode, parentDom);
+    } else if (flags & _shapes.VNodeFlags.Text) {
+        return mountText(vNode, parentDom);
+    } else {
         if (process.env.NODE_ENV !== 'production') {
             (0, _shared.throwError)('mount() expects a valid VNode, instead it received an object with the type "' + (typeof vNode === 'undefined' ? 'undefined' : _typeof(vNode)) + '".');
         }
@@ -1459,7 +1480,7 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
     }
     var tag = vNode.type;
     var flags = vNode.flags;
-    if (isSVG || flags & 128 /* SvgElement */) {
+    if (isSVG || flags & _shapes.VNodeFlags.SvgElement) {
         isSVG = true;
     }
     var dom = (0, _utils.documentCreateElement)(tag, isSVG);
@@ -1476,7 +1497,7 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
             mount(children, dom, lifecycle, context, isSVG);
         }
     }
-    if (!(flags & 2 /* HtmlElement */)) {
+    if (!(flags & _shapes.VNodeFlags.HtmlElement)) {
         (0, _processElement2.default)(flags, vNode, dom);
     }
     if (!(0, _shared.isNull)(props)) {
@@ -1590,7 +1611,7 @@ function mountRef(dom, value, lifecycle) {
     }
 }
 //# sourceMappingURL=mounting.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 8 */
@@ -1627,9 +1648,9 @@ var _shared = __webpack_require__(0);
 
 var _unmounting = __webpack_require__(11);
 
-var _shapes = __webpack_require__(3);
+var _shapes = __webpack_require__(1);
 
-var _rendering = __webpack_require__(2);
+var _rendering = __webpack_require__(3);
 
 var _constants = __webpack_require__(9);
 
@@ -1677,13 +1698,13 @@ function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, 
 function replaceVNode(parentDom, dom, vNode, lifecycle) {
     var shallowUnmount = false;
     // we cannot cache nodeType here as vNode might be re-assigned below
-    if (vNode.flags & 28 /* Component */) {
-            // if we are accessing a stateful or stateless component, we want to access their last rendered input
-            // accessing their DOM node is not useful to us here
-            (0, _unmounting.unmount)(vNode, null, lifecycle, false, false);
-            vNode = vNode.children._lastInput || vNode.children;
-            shallowUnmount = true;
-        }
+    if (vNode.flags & _shapes.VNodeFlags.Component) {
+        // if we are accessing a stateful or stateless component, we want to access their last rendered input
+        // accessing their DOM node is not useful to us here
+        (0, _unmounting.unmount)(vNode, null, lifecycle, false, false);
+        vNode = vNode.children._lastInput || vNode.children;
+        shallowUnmount = true;
+    }
     replaceChild(parentDom, dom, vNode.dom);
     (0, _unmounting.unmount)(vNode, null, lifecycle, false, shallowUnmount);
 }
@@ -1768,7 +1789,7 @@ function isKeyed(lastChildren, nextChildren) {
     return nextChildren.length && !(0, _shared.isNullOrUndef)(nextChildren[0]) && !(0, _shared.isNullOrUndef)(nextChildren[0].key) && lastChildren.length && !(0, _shared.isNullOrUndef)(lastChildren[0]) && !(0, _shared.isNullOrUndef)(lastChildren[0].key);
 }
 //# sourceMappingURL=utils.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 9 */
@@ -1821,6 +1842,8 @@ exports.poolComponent = poolComponent;
 var _shared = __webpack_require__(0);
 
 var _patching = __webpack_require__(5);
+
+var _shapes = __webpack_require__(1);
 
 var recyclingEnabled = exports.recyclingEnabled = true;
 var componentPools = new Map();
@@ -1881,7 +1904,7 @@ function recycleComponent(vNode, lifecycle, context, isSVG) {
             var recycledVNode = pool.pop();
             if (!(0, _shared.isUndefined)(recycledVNode)) {
                 var flags = vNode.flags;
-                var failed = (0, _patching.patchComponent)(recycledVNode, vNode, null, lifecycle, context, isSVG, flags & 4 /* ComponentClass */, true);
+                var failed = (0, _patching.patchComponent)(recycledVNode, vNode, null, lifecycle, context, isSVG, flags & _shapes.VNodeFlags.ComponentClass, true);
                 if (!failed) {
                     return vNode.dom;
                 }
@@ -1937,21 +1960,23 @@ var _shared = __webpack_require__(0);
 
 var _utils = __webpack_require__(8);
 
-var _rendering = __webpack_require__(2);
+var _rendering = __webpack_require__(3);
 
 var _recycling = __webpack_require__(10);
 
+var _shapes = __webpack_require__(1);
+
 function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount) {
     var flags = vNode.flags;
-    if (flags & 28 /* Component */) {
-            unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
-        } else if (flags & 3970 /* Element */) {
-            unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
-        } else if (flags & 1 /* Text */) {
-            unmountText(vNode, parentDom);
-        } else if (flags & 4096 /* Void */) {
-            unmountVoid(vNode, parentDom);
-        }
+    if (flags & _shapes.VNodeFlags.Component) {
+        unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+    } else if (flags & _shapes.VNodeFlags.Element) {
+        unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount);
+    } else if (flags & _shapes.VNodeFlags.Text) {
+        unmountText(vNode, parentDom);
+    } else if (flags & _shapes.VNodeFlags.Void) {
+        unmountVoid(vNode, parentDom);
+    }
 }
 function unmountVoid(vNode, parentDom) {
     if (parentDom) {
@@ -2042,7 +2067,7 @@ function unmountRef(ref) {
     }
 }
 //# sourceMappingURL=unmounting.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 12 */
@@ -2058,7 +2083,7 @@ exports.default = cloneVNode;
 
 var _shared = __webpack_require__(0);
 
-var _shapes = __webpack_require__(3);
+var _shapes = __webpack_require__(1);
 
 function cloneVNode(vNodeToClone, props) {
     for (var _len = arguments.length, _children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
@@ -2102,12 +2127,12 @@ function cloneVNode(vNodeToClone, props) {
         newVNode = Object.assign({}, vNodeToClone);
     } else {
         var flags = vNodeToClone.flags;
-        if (flags & 28 /* Component */) {
-                newVNode = (0, _shapes.createVNode)(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref, true);
-            } else if (flags & 3970 /* Element */) {
-                children = props && props.children || vNodeToClone.children;
-                newVNode = (0, _shapes.createVNode)(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, !children);
-            }
+        if (flags & _shapes.VNodeFlags.Component) {
+            newVNode = (0, _shapes.createVNode)(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref, true);
+        } else if (flags & _shapes.VNodeFlags.Element) {
+            children = props && props.children || vNodeToClone.children;
+            newVNode = (0, _shapes.createVNode)(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, !children);
+        }
     }
     newVNode.dom = null;
     return newVNode;
@@ -2188,15 +2213,15 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _shared = __webpack_require__(0);
-
-var _rendering = __webpack_require__(2);
+var _shapes = __webpack_require__(1);
 
 var _cloneVNode = __webpack_require__(12);
 
 var _cloneVNode2 = _interopRequireDefault(_cloneVNode);
 
-var _shapes = __webpack_require__(3);
+var _shared = __webpack_require__(0);
+
+var _rendering = __webpack_require__(3);
 
 var _recycling = __webpack_require__(10);
 
@@ -2215,7 +2240,7 @@ if (_shared.isBrowser) {
 
 if (process.env.NODE_ENV !== 'production') {
 	var testFunc = function testFn() {};
-	(0, _shared.warning)((testFunc.name || testFunc.toString()).indexOf('testFn') !== -1, 'It looks like you\'re using a minified copy of the development build ' + 'of Inferno. When deploying Inferno apps to production, make sure to use ' + 'the production build which skips development warnings and is faster. ' + 'See http://infernojs.org/guides/installation for more details.');
+	(0, _shared.warning)((testFunc.name || testFunc.toString()).indexOf('testFn') !== -1, 'It looks like you\'re using a minified copy of the development build ' + 'of Inferno. When deploying Inferno apps to production, make sure to use ' + 'the production build which skips development warnings and is faster. ' + 'See http://infernojs.org for more details.');
 }
 
 exports.default = {
@@ -2234,7 +2259,7 @@ exports.default = {
 	createRenderer: _rendering.createRenderer,
 	disableRecycling: _recycling.disableRecycling
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 16 */
@@ -2260,9 +2285,11 @@ var _mounting = __webpack_require__(7);
 
 var _patching = __webpack_require__(5);
 
-var _rendering = __webpack_require__(2);
+var _rendering = __webpack_require__(3);
 
 var _constants = __webpack_require__(9);
+
+var _shapes = __webpack_require__(1);
 
 var _processElement = __webpack_require__(4);
 
@@ -2327,7 +2354,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     var props = vNode.props;
     var flags = vNode.flags;
     vNode.dom = dom;
-    if (isSVG || flags & 128 /* SvgElement */) {
+    if (isSVG || flags & _shapes.VNodeFlags.SvgElement) {
         isSVG = true;
     }
     if (dom.tagName.toLowerCase() !== tag) {
@@ -2338,7 +2365,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     if (children) {
         hydrateChildren(children, dom, lifecycle, context, isSVG);
     }
-    if (!(flags & 2 /* HtmlElement */)) {
+    if (!(flags & _shapes.VNodeFlags.HtmlElement)) {
         (0, _processElement2.default)(flags, vNode, dom);
     }
     for (var prop in props) {
@@ -2375,15 +2402,15 @@ function hydrate(vNode, dom, lifecycle, context, isSVG) {
         }
     }
     var flags = vNode.flags;
-    if (flags & 28 /* Component */) {
-            return hydrateComponent(vNode, dom, lifecycle, context, isSVG, flags & 4 /* ComponentClass */);
-        } else if (flags & 3970 /* Element */) {
-            return hydrateElement(vNode, dom, lifecycle, context, isSVG);
-        } else if (flags & 1 /* Text */) {
-            return hydrateText(vNode, dom);
-        } else if (flags & 4096 /* Void */) {
-            return hydrateVoid(vNode, dom);
-        } else {
+    if (flags & _shapes.VNodeFlags.Component) {
+        return hydrateComponent(vNode, dom, lifecycle, context, isSVG, flags & _shapes.VNodeFlags.ComponentClass);
+    } else if (flags & _shapes.VNodeFlags.Element) {
+        return hydrateElement(vNode, dom, lifecycle, context, isSVG);
+    } else if (flags & _shapes.VNodeFlags.Text) {
+        return hydrateText(vNode, dom);
+    } else if (flags & _shapes.VNodeFlags.Void) {
+        return hydrateVoid(vNode, dom);
+    } else {
         if (process.env.NODE_ENV !== 'production') {
             (0, _shared.throwError)('hydrate() expects a valid VNode, instead it received an object with the type "' + (typeof vNode === 'undefined' ? 'undefined' : _typeof(vNode)) + '".');
         }
@@ -2402,7 +2429,7 @@ function hydrateRoot(input, parentDom, lifecycle) {
     return false;
 }
 //# sourceMappingURL=hydration.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 17 */
@@ -2533,7 +2560,7 @@ var _shared = __webpack_require__(0);
 
 var _processElement = __webpack_require__(4);
 
-var _shapes = __webpack_require__(3);
+var _shapes = __webpack_require__(1);
 
 function isControlled(props) {
     return !(0, _shared.isNullOrUndef)(props.value);
@@ -2673,7 +2700,7 @@ var _lifecycle2 = _interopRequireDefault(_lifecycle);
 
 var _shared = __webpack_require__(0);
 
-var _shapes = __webpack_require__(3);
+var _shapes = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2906,7 +2933,7 @@ var Component = function () {
 
 
 exports.default = Component;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 21 */,

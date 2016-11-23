@@ -23,9 +23,8 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
-  - _snippets
+  - _examples
   - _site
-  - _sass
   - .babelrc
   - Procfile
   - webpack.config.js
@@ -38,7 +37,7 @@ gems:
   - jekyll-redirect-from
 
 sass:
-  sass_dir: src/_sass
+  sass_dir: _sass
   style: compressed
 
 highlighter: pygments
