@@ -163,6 +163,7 @@
     "prepublish": "npm run build",
     "prepush": "npm run eslint:source && npm run lint:source && npm test",
     "server:cov": "npm run test:server && coveralls < coverage/lcov.info && rimraf coverage",
+    "pretest": "npm run lint",
     "test": "npm run test:browser && npm run test:server",
     "test:browser": "karma start config/karma.conf.js",
     "test:server": "cross-env nyc mocha --opts config/mocha.opts"

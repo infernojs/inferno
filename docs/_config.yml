@@ -2,6 +2,7 @@
 name: Inferno
 description: A Blazing fast, React-like, javascript library for building modern user interfaces 
 
+permalink: pretty
 defaults:
   - scope:
       path: ''

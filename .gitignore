@@ -5,6 +5,7 @@ _site
 .idea
 .jshintrc
 .nyc_output
+.sass-cache
 .vscode
 build
 coverage

@@ -9,7 +9,7 @@ However, this does not mean that you cannot use the same ES6 `Component` API as 
 
 ## Inferno Component 
 
-Inferno Component exists to give the same ES2015 API as `React.Component`. It defines a stateful component with all the [lifecycle methods](/guides/life)
+Inferno Component exists to give the same ES2015 API as `React.Component`. It defines a stateful component with all the [lifecycle methods](/guides/lifecycle)
 
 ## Inferno Create Class
 

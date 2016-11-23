@@ -13,7 +13,6 @@ It provides the same exports as `react` and `react-dom`, meaning you can use you
 - `React.cloneElement`
 - `React.Component`
 - `React.PropTypes`
-- `React.Component`
 - `React.Children`
 - `React.isValidElement`
 
