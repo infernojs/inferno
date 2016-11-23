@@ -11,9 +11,14 @@
 
 Inferno is an insanely fast, `7kb` React-like library for building high-performance user interfaces on both the client and server.
 
+To quote a member of the React core team at Facebook:
+> Inferno 1.0 is really well written. It's how I would've rewritten React. I'd recommend reading its source to learn.
+
 Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their existing React projects to Inferno in a few lines of code using [`inferno-compat`](https://github.com/trueadm/inferno/tree/dev/packages/inferno-compat).
 
-For those not familiar with React... TODO
+For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. You literally learn once, write anywhere, as Inferno doesn't impose any restrictions on how you create components. Your literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
+
+In terms of performance, Inferno is currently the **fastest** JavaScript UI library there is – both in benchmarks and actual real-world scenarios. It excels on the browser at inital page load, parse times, render times and update times. Inferno's server-side rendering is around 10-20x faster than React and Preact, it's around 5x faster than Vue and Angular2.
 
 ## Summary
 
@@ -23,6 +28,9 @@ For those not familiar with React... TODO
 - Lightweight filesize of only 7kb
 - Isomorphic rendering on both client and server with `inferno-server`
 - Highly modular with very little opinionation on how things should be done
+- Unlike React and Preact, Inferno has lifecycle events on functional components
+- Supports asynchronous component rendering using `requestIdleCallback`
+- Unlike Preact and other React-like libraries, Inferno has controlled components for input/select/textarea elements
 
 ## Benchmarks
 
