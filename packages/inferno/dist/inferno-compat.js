@@ -2497,9 +2497,9 @@ function removeRoot(root) {
         }
     }
 }
-var documetBody = isBrowser ? document.body : null;
+var documentBody = isBrowser ? document.body : null;
 function render(input, parentDom) {
-    if (documetBody === parentDom) {
+    if (documentBody === parentDom) {
         if (process.env.NODE_ENV !== 'production') {
             throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
         }
