@@ -1,30 +1,15 @@
-export function escapeText(_string) {
-		const string = _string + '';
-		const length = string.length;
-		let characters = '';
+const unsafeCharsPattern = /[<>"'&]/g;
+const htmlChars = {
+	'<': '&lt;',
+	'>': '&gt;',
+	'"': '&quot;',
+	"'": '&#39;',
+	'&': '&amp;'
+};
 
-		for (let i = 0; i < length; i++) {
-			switch (string.charCodeAt(i)) {
-				case 38:
-					characters += '&amp;';
-					break;
-				case 39:
-					characters += '&#039;';
-					break;
-				case 34:
-					characters += '&quot;';
-					break;
-				case 60:
-					characters += '&lt;';
-					break;
-				case 62:
-					characters += '&gt;';
-					break;
-				default:
-					characters += string[i];
-			}
-		}
-		return characters;
+export function escapeText(_string) {
+	const string = _string + '';
+	return string.replace(unsafeCharsPattern, char => htmlChars[char]);
 }
 
 export function toHyphenCase(str) {
