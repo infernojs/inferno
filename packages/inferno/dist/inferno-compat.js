@@ -727,21 +727,6 @@ Lifecycle.prototype.trigger = function trigger () {
     }
 };
 
-var Lifecycle$2 = function Lifecycle$2() {
-    this.listeners = [];
-    this.fastUnmount = true;
-};
-Lifecycle$2.prototype.addListener = function addListener (callback) {
-    this.listeners.push(callback);
-};
-Lifecycle$2.prototype.trigger = function trigger () {
-        var this$1 = this;
-
-    for (var i = 0; i < this.listeners.length; i++) {
-        this$1.listeners[i]();
-    }
-};
-
 var recyclingEnabled = true;
 var componentPools = new Map();
 var elementPools = new Map();
@@ -2226,7 +2211,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
         instance._vNode = vNode;
         vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
         // we now create a lifecycle for this component and store the fastUnmount value
-        var subLifecycle = instance._lifecycle = new Lifecycle$2();
+        var subLifecycle = instance._lifecycle = new Lifecycle();
         subLifecycle.fastUnmount = lifecycle.fastUnmount;
         // we then set the lifecycle fastUnmount value back to what it was before the mount
         lifecycle.fastUnmount = fastUnmount;
@@ -2338,7 +2323,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         instance._vComponent = vNode;
         instance._vNode = vNode;
         hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
-        var subLifecycle = instance._lifecycle = new Lifecycle$2();
+        var subLifecycle = instance._lifecycle = new Lifecycle();
         subLifecycle.fastUnmount = lifecycle.fastUnmount;
         // we then set the lifecycle fastUnmount value back to what it was before the mount
         lifecycle.fastUnmount = fastUnmount;

@@ -6,7 +6,7 @@ import {
 	isUndefined,
 	isNull
 } from '../shared';
-import Lifecycle from './Lifecycle';
+import Lifecycle from './lifecycle';
 import {
 	createStatelessComponentInput,
 	createStatefulComponentInstance,

@@ -9,7 +9,7 @@ import {
 	throwError,
 	EMPTY_OBJ
 } from '../shared';
-import Lifecycle from './Lifecycle';
+import Lifecycle from './lifecycle';
 import {
 	setTextContent,
 	appendChild,

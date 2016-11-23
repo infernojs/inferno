@@ -1539,7 +1539,6 @@ describe('Children - (JSX)', () => {
 			const unMountSpy2 = spy(Foo.prototype, 'componentWillUnmount');
 
 			const calledOnce = assert.calledOnce;
-			const notCalled = assert.notCalled;
 
 			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em>f</em><em>f</em></span></div>');
 
@@ -1635,7 +1634,6 @@ describe('Children - (JSX)', () => {
 			const unMountSpy = spy(Test5.prototype, 'componentWillUnmount');
 
 			const calledOnce = assert.calledOnce;
-			const notCalled = assert.notCalled;
 
 			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>');
 
