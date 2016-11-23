@@ -44,4 +44,4 @@ notifications:
   email: true
 
 after_script:
-  - npm run server:cov:publish
+  - npm run server:cov
