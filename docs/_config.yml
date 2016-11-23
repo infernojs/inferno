@@ -1,46 +1,41 @@
+---
 name: Inferno
-description: > # An extremely fast, React-like JavaScript library for building modern user interfaces
-url: //infernojs.github.io/docs
+description: A Blazing fast, React-like, javascript library for building modern user interfaces 
 
-gems:
-  - jekyll-sitemap
-  - jekyll-redirect-from
-
-permalink: pretty
-
-# Defaults
 defaults:
-- scope:
-    path: ''
-    type: pages
-  values:
-    layout: page
-- scope:
-    path: get-started
-    type: pages
-  values:
-    layout: get-started
-- scope:
-    path: benefits
-    type: pages
-  values:
-    layout: benefits
-- scope:
-    path: learning-resources
-    type: pages
-  values:
-    layout: learning-resources
-
-# Build settings
-markdown: kramdown
-
-# Sass settings
-sass:
-  sass_dir: _sass
+  - scope:
+      path: guides
+      type: pages
+    values:
+      layout: page
+  - scope:
+      path: api
+      type: pages
+    values:
+      layout: page
 
 exclude:
-- Gemfile
-- Gemfile.lock
-- Rakefile
-- node_modules
-- README.md
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - _snippets
+  - _site
+  - _sass
+  - .babelrc
+  - Procfile
+  - webpack.config.js
+port: 8080
+source: src
+
+gems:
+  - jekyll-assets
+  - jekyll-paginate
+  - jekyll-redirect-from
+
+highlighter: pygments
+markdown: redcarpet
+redcarpet:
+  extensions:
+    - fenced_code_blocks
+    - footnotes
+

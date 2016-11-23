@@ -36,6 +36,7 @@
     "buble": "^0.14.2",
     "chai": "^3.5.0",
     "concat-stream-es6": "0.0.1",
+    "concurrently": "^3.1.0",
     "convert-source-map": "^1.3.0",
     "coveralls": "^2.11.15",
     "cross-env": "^3.1.3",
@@ -107,7 +108,7 @@
   ],
   "nyc": {
     "sourceMap": false,
-		"all": true,
+    "all": true,
     "include": [
       "src/*.ts",
       "src/**/*.ts"
@@ -140,6 +141,7 @@
     "build:dev": "cross-env NODE_ENV=development babel-node --presets es2015 config/rollup.config.js",
     "build:prod": "cross-env NODE_ENV=production babel-node --presets es2015 config/rollup.config.js",
     "clean": "rimraf coverage/ build/",
+    "docs": "cross-env webpack --config docs/webpack.config.js",
     "eslint": "npm run eslint:source && npm run eslint:test",
     "eslint:source": "eslint ./src/**/*.js",
     "eslint:test": "eslint ./src/**/__tests__/*.js",
@@ -152,6 +154,7 @@
     "lint:test": "tslint src/**/__tests__/**/*.ts*",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
+    "postinstall": "cd docs && bundle install",
     "prepublish": "npm run build",
     "prepush": "npm run eslint:source && npm run lint:source && npm test",
     "server:cov": "cross-env nyc mocha --opts config/mocha.opts",

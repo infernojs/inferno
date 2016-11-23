@@ -1,6 +1,11 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 ruby "2.3.0"
 
-gem 'github-pages', group: :jekyll_plugins
-gem 'jekyll-sitemap'
+# Jekyll Setup
+gem 'jekyll'
+
+gem 'jekyll-assets'
 gem 'jekyll-redirect-from'
+gem 'jekyll-paginate'
+
+gem 'github-pages', group: :jekyll_plugins

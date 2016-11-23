@@ -1,29 +1,30 @@
 import {
-	isArray,
-	isInvalid,
-	throwError,
-	isObject,
-	isUndefined
-} from '../shared';
-import {
-	createStatelessComponentInput,
+	copyPropsTo,
 	createStatefulComponentInstance,
-	copyPropsTo
+	createStatelessComponentInput,
 } from './utils';
 import {
+	isArray,
+	isInvalid,
+	isObject,
+	isUndefined,
+	throwError,
+} from '../shared';
+import {
+	mountStatefulComponentCallbacks,
 	mountStatelessComponentCallbacks,
-	mountStatefulComponentCallbacks
 } from './mounting';
+
 import {
-	patchProp
-} from './patching';
-import { componentToDOMNodeMap } from './rendering';
-import { svgNS } from './constants';
-import {
-	VNodeFlags
+	VNodeFlags,
 } from '../core/shapes';
-import processElement from './wrappers/processElement';
+import { componentToDOMNodeMap } from './rendering';
 import { devToolsStatus } from './devtools';
+import {
+	patchProp,
+} from './patching';
+import processElement from './wrappers/processElement';
+import { svgNS } from './constants';
 
 export function normaliseChildNodes(dom) {
 	const rawChildNodes = dom.childNodes;
@@ -63,12 +64,12 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 		if (!isUndefined(defaultProps)) {
 			copyPropsTo(defaultProps, props);
 			vNode.props = props;
-		}		
+		}
 		const instance = createStatefulComponentInstance(type, props, context, _isSVG, devToolsStatus);
 		const input = instance._lastInput;
 
 		instance._vComponent = vNode;
-		instance._vNode = vNode;		
+		instance._vNode = vNode;
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
 		componentToDOMNodeMap.set(instance, dom);

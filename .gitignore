@@ -17,3 +17,5 @@ node_modules
 *.swp
 *~
 .nyc_output
+docs/Gemfile.lock
+_site
