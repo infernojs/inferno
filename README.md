@@ -9,7 +9,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg?style=flat-square)](https://www.npmjs.org/package/inferno-dom)
 [![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
 
-Inferno is an insanely fast, `6kb` React-like library for building high-performance user interfaces on both the client and server.
+Inferno is an insanely fast, `7kb` React-like library for building high-performance user interfaces on both the client and server.
 
 Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their existing React projects to Inferno in a few lines of code using [`inferno-compat`](https://github.com/trueadm/inferno/tree/dev/packages/inferno-compat).
 
@@ -20,7 +20,7 @@ For those not familiar with React... TODO
 - Component driven + one-way data flow archietecture
 - One of the fastest front-end frameworks for rendering UI in the DOM
 - React-like API, concepts and component lifecycle events
-- Lightweight filesize of only 6kb
+- Lightweight filesize of only 7kb
 - Isomorphic rendering on both client and server with `inferno-server`
 - Highly modular with very little opinionation on how things should be done
 
@@ -95,18 +95,18 @@ create-inferno-app MyApp
 Core package:
 
 ```sh
-npm install --save inferno@beta12
+npm install --save inferno@beta14
 ```
 
 Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta13
+npm install --save inferno-component@beta14
 # server-side rendering
-npm install --save inferno-server@beta13
+npm install --save inferno-server@beta14
 # routing
-npm install --save inferno-router@beta13
+npm install --save inferno-router@beta14
 ``` 
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
@@ -124,17 +124,17 @@ npm install --save-dev babel-plugin-inferno@beta11
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta13
+npm install --save inferno-hyperscript@beta14
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta13
+npm install --save inferno-create-element@beta14
 ```
 
 ### Compatability with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta13
+npm install --save-dev inferno-compat@beta14
 ```
 
 ## Inferno Top-Level API

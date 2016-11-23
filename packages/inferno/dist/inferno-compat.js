@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-beta13
+ * inferno-compat v1.0.0-beta14
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -1392,7 +1392,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
         }
         else {
             var lastInput = lastVNode.children._lastInput || lastVNode.children;
-            var nextInput = createStatelessComponentInput(nextType, nextProps, context);
+            var nextInput = createStatelessComponentInput(nextVNode, nextType, nextProps, context);
             patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
             var dom = nextVNode.dom = nextInput.dom;
             nextVNode.children = nextInput;
@@ -1470,6 +1470,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
             var nextHooks = nextVNode.ref;
             var nextHooksDefined = !isNullOrUndef(nextHooks);
             var lastInput$2 = lastVNode.children;
+            var nextInput$2 = lastInput$2;
             nextVNode.dom = lastVNode.dom;
             nextVNode.children = lastInput$2;
             if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
@@ -1480,7 +1481,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     lifecycle.fastUnmount = false;
                     nextHooks.onComponentWillUpdate(lastProps$1, nextProps);
                 }
-                var nextInput$2 = nextType(nextProps, context);
+                nextInput$2 = nextType(nextProps, context);
                 if (isInvalid(nextInput$2)) {
                     nextInput$2 = createVoidVNode();
                 }
@@ -1490,16 +1491,21 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     }
                     throwError();
                 }
-                else if (nextInput$2 === NO_OP) {
-                    return false;
+                if (nextInput$2 !== NO_OP) {
+                    patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG, isRecycling);
+                    nextVNode.children = nextInput$2;
+                    if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
+                        lifecycle.fastUnmount = false;
+                        nextHooks.onComponentDidUpdate(lastProps$1, nextProps);
+                    }
+                    nextVNode.dom = nextInput$2.dom;
                 }
-                patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG, isRecycling);
-                nextVNode.children = nextInput$2;
-                if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
-                    lifecycle.fastUnmount = false;
-                    nextHooks.onComponentDidUpdate(lastProps$1, nextProps);
-                }
-                nextVNode.dom = nextInput$2.dom;
+            }
+            if (nextInput$2.flags & 28 /* Component */) {
+                nextInput$2.parentVNode = nextVNode;
+            }
+            else if (lastInput$2.flags & 28 /* Component */) {
+                lastInput$2.parentVNode = nextVNode;
             }
         }
     }
@@ -1523,8 +1529,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     var i;
     var nextNode = null;
     var newNode;
-    /* Loop backwards so we can use insertBefore */
-    // debugger;
+    // Loop backwards so we can use insertBefore
     if (lastChildrenLength < nextChildrenLength) {
         for (i = nextChildrenLength - 1; i >= commonLength; i--) {
             var child = nextChildren[i];
@@ -2026,7 +2031,7 @@ function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
     replaceChild(parentDom, dom, vNode.dom);
     unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
 }
-function createStatelessComponentInput(component, props, context) {
+function createStatelessComponentInput(vNode, component, props, context) {
     var input = component(props, context);
     if (isArray(input)) {
         if (process.env.NODE_ENV !== 'production') {
@@ -2036,6 +2041,13 @@ function createStatelessComponentInput(component, props, context) {
     }
     else if (isInvalid(input)) {
         input = createVoidVNode();
+    }
+    else if (input.flags & 28 /* Component */) {
+        // if we have an input that is also a component, we run into a tricky situation
+        // where the root vNode needs to always have the correct DOM entry
+        // so we break monomorphism on our input and supply it our vNode as parentVNode
+        // we can optimise this in the future, but this gets us out of a lot of issues
+        input.parentVNode = vNode;
     }
     return input;
 }
@@ -2247,7 +2259,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
         vNode.children = instance;
     }
     else {
-        var input$1 = createStatelessComponentInput(type, props, context);
+        var input$1 = createStatelessComponentInput(vNode, type, props, context);
         vNode.dom = dom = mount(input$1, null, lifecycle, context, isSVG);
         vNode.children = input$1;
         mountStatelessComponentCallbacks(ref, dom, lifecycle);
@@ -2356,7 +2368,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         vNode.children = instance;
     }
     else {
-        var input$1 = createStatelessComponentInput(type, props, context);
+        var input$1 = createStatelessComponentInput(vNode, type, props, context);
         hydrate(input$1, dom, lifecycle, context, isSVG);
         vNode.children = input$1;
         vNode.dom = input$1.dom;

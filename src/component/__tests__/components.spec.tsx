@@ -2375,7 +2375,7 @@ describe('Components (JSX)', () => {
 		});
 	});
 
-	describe('Root handling issues', () => {
+	describe('Root handling issues #1', () => {
 		let div;
 
 		class A extends Component<any, any> {
@@ -2458,6 +2458,180 @@ describe('Components (JSX)', () => {
 			// click "SWAP ROWS"
 			container.querySelector('button').click();
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>');
+		});
+	});
+
+	describe('Root handling issues #2', () => {
+		let div;
+
+		class A extends Component<any, any> {
+			public onClick;
+
+			constructor(props) {
+
+				super(props);
+				this.state = { n: false };
+				
+				this.onClick = () => {
+					this.setState({ n: !this.state.n });
+				}
+			}
+			
+			render() {
+				if (this.state.n) {
+					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>
+				}
+				return <span onClick={this.onClick}>SPAN</span>
+			}
+		}
+
+		function F() {
+			return <A />
+		}
+
+		class B extends Component<any, any> {
+			shouldComponentUpdate() {
+				return false;
+			}
+
+			render() {
+				return <F />;
+			}
+		}
+
+		class Test extends Component<any, any> {
+			constructor(props) {
+				super(props);
+				this.state = {
+					reverse: false,
+				};
+			}
+
+			render() {
+				const children = [
+					<B key="b"></B>,
+					<div key="a">ROW</div>
+				];
+				if (this.state.reverse) {
+					children.reverse();
+				}
+			
+				return (
+					<div>
+						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<div>
+							{ children }
+						</div>
+					</div>
+				);
+			}
+		}
+
+		// this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
+		it('should correct swap rows', () => {
+			render(<Test />, container);
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
+			// click on "SPAN" 
+			container.querySelector('span').click();
+			// "SPAN" should now be "DIV"
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
+			// click "SWAP ROWS"
+			container.querySelector('button').click();
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>ROW</div><div>DIV</div></div></div>');
+			// click "SWAP ROWS"
+			container.querySelector('button').click();
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
+			// click on "DIV" 
+			div.click();
+			// "DIV" should now be "SPAN"
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
+			// click "SWAP ROWS"
+			container.querySelector('button').click();
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>');
+		});
+	});
+
+	describe('Root handling issues #3', () => {
+		let div;
+
+		class A extends Component<any, any> {
+			public onClick;
+
+			constructor(props) {
+
+				super(props);
+				this.state = { n: false };
+				
+				this.onClick = () => {
+					this.setState({ n: !this.state.n });
+				}
+			}
+			
+			render() {
+				if (this.state.n) {
+					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>
+				}
+				return <span onClick={this.onClick}>SPAN</span>
+			}
+		}
+
+		function F() {
+			return <A />
+		}
+
+		function B () {
+			return <F onComponentShouldUpdate={ () => false } />;
+		}
+
+		class Test extends Component<any, any> {
+			constructor(props) {
+				super(props);
+				this.state = {
+					reverse: false,
+				};
+			}
+
+			render() {
+				const children = [
+					<B key="b" onComponentShouldUpdate={ () => false }></B>,
+					<div key="a">ROW</div>
+				];
+				if (this.state.reverse) {
+					children.reverse();
+				}
+			
+				return (
+					<div>
+						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<div>
+							{ children }
+						</div>
+					</div>
+				);
+			}
+		}
+
+		// this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
+		it('should correct swap rows', () => {
+			render(<Test />, container);
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
+			// click on "SPAN" 
+			container.querySelector('span').click();
+			// "SPAN" should now be "DIV"
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
+			// // click "SWAP ROWS"
+			container.querySelector('button').click();
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>ROW</div><div>DIV</div></div></div>');
+			// // click "SWAP ROWS"
+			container.querySelector('button').click();
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
+			// // click on "DIV" 
+			div.click();
+			// // "DIV" should now be "SPAN"
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
+			// // click "SWAP ROWS"
+			container.querySelector('button').click();
+			// expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>');
 		});
 	});
 });

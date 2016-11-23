@@ -83,7 +83,7 @@ export function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
 	unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
 }
 
-export function createStatelessComponentInput(component, props, context) {
+export function createStatelessComponentInput(vNode, component, props, context) {
 	let input = component(props, context);
 
 	if (isArray(input)) {
@@ -93,6 +93,12 @@ export function createStatelessComponentInput(component, props, context) {
 		throwError();
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
+	} else if (input.flags & VNodeFlags.Component) {
+		// if we have an input that is also a component, we run into a tricky situation
+		// where the root vNode needs to always have the correct DOM entry
+		// so we break monomorphism on our input and supply it our vNode as parentVNode
+		// we can optimise this in the future, but this gets us out of a lot of issues
+		input.parentVNode = vNode;
 	}
 	return input;
 }

@@ -254,7 +254,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 			replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
 		} else {
 			const lastInput = lastVNode.children._lastInput || lastVNode.children;
-			const nextInput = createStatelessComponentInput(nextType, nextProps, context);
+			const nextInput = createStatelessComponentInput(nextVNode, nextType, nextProps, context);
 
 			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
 			const dom = nextVNode.dom = nextInput.dom;
@@ -342,6 +342,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 			const nextHooks = nextVNode.ref;
 			const nextHooksDefined = !isNullOrUndef(nextHooks);
 			const lastInput = lastVNode.children;
+			let nextInput = lastInput;
 
 			nextVNode.dom = lastVNode.dom;
 			nextVNode.children = lastInput;
@@ -353,7 +354,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 					lifecycle.fastUnmount = false;
 					nextHooks.onComponentWillUpdate(lastProps, nextProps);
 				}
-				let nextInput = nextType(nextProps, context);
+				nextInput = nextType(nextProps, context);
 
 				if (isInvalid(nextInput)) {
 					nextInput = createVoidVNode();
@@ -362,17 +363,21 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 					}
 					throwError();
-				} else if (nextInput === NO_OP) {
-					return false;
 				}
-
-				patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
-				nextVNode.children = nextInput;
-				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
-					lifecycle.fastUnmount = false;
-					nextHooks.onComponentDidUpdate(lastProps, nextProps);
+				if (nextInput !== NO_OP) {
+					patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
+					nextVNode.children = nextInput;
+					if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
+						lifecycle.fastUnmount = false;
+						nextHooks.onComponentDidUpdate(lastProps, nextProps);
+					}
+					nextVNode.dom = nextInput.dom;
 				}
-				nextVNode.dom = nextInput.dom;
+			}
+			if (nextInput.flags & VNodeFlags.Component) {
+				nextInput.parentVNode = nextVNode;
+			} else if (lastInput.flags & VNodeFlags.Component) {
+				lastInput.parentVNode = nextVNode;
 			}
 		}
 	}
@@ -402,9 +407,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 	let nextNode = null;
 	let newNode;
 
-	/* Loop backwards so we can use insertBefore */
-
-	// debugger;
+	// Loop backwards so we can use insertBefore
 	if (lastChildrenLength < nextChildrenLength) {
 		for (i = nextChildrenLength - 1; i >= commonLength; i--) {
 			const child = nextChildren[i];

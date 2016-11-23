@@ -175,7 +175,7 @@ export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isCl
 		componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
-		const input = createStatelessComponentInput(type, props, context);
+		const input = createStatelessComponentInput(vNode, type, props, context);
 
 		vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);
 		vNode.children = input;
