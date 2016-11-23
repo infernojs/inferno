@@ -216,6 +216,18 @@ class MyComponent extends Component {
 
 This is the base class for Inferno Components when they're defined using ES6 classes.
 
+**Stateless component:**
+
+```javascript
+import Inferno from 'inferno';
+
+const MyComponent = ({ name, age }) => (
+  <span>My name is: { name } and my age is: {age}</span>  
+);
+```
+
+Stateless components are first-class functions where their first argument is the `props` passed through from their parent.
+
 ### `createVNode` (package: `inferno`)
 
 Create a new Inferno `VNode` using `createVNode`. A `VNode` is a virtual DOM object that is used to 
@@ -240,18 +252,6 @@ TODO
 ### `findDOMNode` (package: `inferno`)
 
 TODO
-
-**Stateless component:**
-
-```javascript
-import Inferno from 'inferno';
-
-const MyComponent = ({ name, age }) => (
-  <span>My name is: { name } and my age is: {age}</span>  
-);
-```
-
-Stateless components are first-class functions where their first argument is the `props` passed through from their parent.
 
 ### `renderToString` (package: `inferno-server`)
 
