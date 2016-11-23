@@ -10,6 +10,7 @@ import {
 	ERROR_MSG
 } from '../shared';
 import {
+	updateParentComponentVNodes,
 	createVoidVNode
 } from './../core/shapes';
 
@@ -143,8 +144,11 @@ function applyState(component: Component<any, any>, force, callback): void {
 			subLifecycle.trigger();
 			component.componentDidUpdate(props, prevState);
 		}
-		component._vNode.dom = nextInput.dom;
+		const vNode = component._vNode;
+		const dom = vNode.dom = nextInput.dom;
+
 		component._componentToDOMNodeMap.set(component, nextInput.dom);
+		updateParentComponentVNodes(vNode, dom);
 		if (!isNullOrUndef(callback)) {
 			callback();
 		}
@@ -157,8 +161,8 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	refs: any = {};
 	props: P & {children?: any};
 	context: any;
-	beforeRender: any;
-	afterRender: any;
+	_beforeRender: any;
+	_afterRender: any;
 	_processingSetState = false;
 	_blockRender = false;
 	_blockSetState = false;
@@ -267,10 +271,10 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				this.props = nextProps;
 				this.state = nextState;
 				this.context = context;
-				this.beforeRender && this.beforeRender();
+				this._beforeRender && this._beforeRender();
 				const render = this.render(nextProps, context);
 
-				this.afterRender && this.afterRender();
+				this._afterRender && this._afterRender();
 				return render;
 			}
 		}

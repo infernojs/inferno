@@ -43,10 +43,10 @@ const Children = {
 let currentComponent = null;
 
 Component.prototype.isReactComponent = {};
-Component.prototype.beforeRender = function() {
+Component.prototype._beforeRender = function() {
 	currentComponent = this;
 };
-Component.prototype.afterRender = function() {
+Component.prototype._afterRender = function() {
 	currentComponent = null;
 };
 

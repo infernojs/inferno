@@ -322,10 +322,13 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 					nextInput = lastInput;
 					didUpdate = false;
 				}
-
+				if (nextInput.flags & VNodeFlags.Component) {
+					nextInput.parentVNode = nextVNode;
+				} else if (lastInput.flags & VNodeFlags.Component) {
+					lastInput.parentVNode = nextVNode;
+				}
 				instance._lastInput = nextInput;
 				instance._vNode = nextVNode;
-
 				if (didUpdate) {
 					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
 					instance.componentDidUpdate(lastProps, lastState);

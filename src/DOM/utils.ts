@@ -25,7 +25,7 @@ export function copyPropsTo(copyFrom, copyTo) {
 	}
 }
 
-export function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
+export function createStatefulComponentInstance(vNode, Component, props, context, isSVG, devToolsStatus) {
 	const instance = new Component(props, context);
 
 	instance.context = context;
@@ -43,10 +43,10 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	instance._pendingSetState = true;
 	instance._isSVG = isSVG;
 	instance.componentWillMount();
-	instance.beforeRender && instance.beforeRender();
+	instance._beforeRender && instance._beforeRender();
 	let input = instance.render(props, context);
 
-	instance.afterRender && instance.afterRender();
+	instance._afterRender && instance._afterRender();
 	if (isArray(input)) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
@@ -54,6 +54,12 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 		throwError();
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
+	} else if (input.flags & VNodeFlags.Component) {
+		// if we have an input that is also a component, we run into a tricky situation
+		// where the root vNode needs to always have the correct DOM entry
+		// so we break monomorphism on our input and supply it our vNode as parentVNode
+		// we can optimise this in the future, but this gets us out of a lot of issues
+		input.parentVNode = vNode;
 	}
 	instance._pendingSetState = false;
 	instance._lastInput = input;

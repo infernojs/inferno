@@ -612,6 +612,17 @@ function createVNode(flags, type, props, children, key, ref, noNormalise) {
     }
     return vNode;
 }
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+function updateParentComponentVNodes(vNode, dom) {
+    if (vNode.flags & 28 /* Component */) {
+        var parentVNode = vNode.parentVNode;
+        if (parentVNode) {
+            parentVNode.dom = dom;
+            updateParentComponentVNodes(parentVNode, dom);
+        }
+    }
+}
 function createVoidVNode() {
     return createVNode(4096 /* Void */);
 }
@@ -1437,6 +1448,12 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextInput$1 = lastInput$1;
                     didUpdate = false;
                 }
+                if (nextInput$1.flags & 28 /* Component */) {
+                    nextInput$1.parentVNode = nextVNode;
+                }
+                else if (lastInput$1.flags & 28 /* Component */) {
+                    lastInput$1.parentVNode = nextVNode;
+                }
                 instance._lastInput = nextInput$1;
                 instance._vNode = nextVNode;
                 if (didUpdate) {
@@ -1953,7 +1970,7 @@ function copyPropsTo(copyFrom, copyTo) {
         }
     }
 }
-function createStatefulComponentInstance(Component$$1, props, context, isSVG, devToolsStatus) {
+function createStatefulComponentInstance(vNode, Component$$1, props, context, isSVG, devToolsStatus) {
     var instance = new Component$$1(props, context);
     instance.context = context;
     instance._patch = patch;
@@ -1970,9 +1987,9 @@ function createStatefulComponentInstance(Component$$1, props, context, isSVG, de
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
     instance.componentWillMount();
-    instance.beforeRender && instance.beforeRender();
+    instance._beforeRender && instance._beforeRender();
     var input = instance.render(props, context);
-    instance.afterRender && instance.afterRender();
+    instance._afterRender && instance._afterRender();
     if (isArray(input)) {
         if (process.env.NODE_ENV !== 'production') {
             throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
@@ -1981,6 +1998,13 @@ function createStatefulComponentInstance(Component$$1, props, context, isSVG, de
     }
     else if (isInvalid(input)) {
         input = createVoidVNode();
+    }
+    else if (input.flags & 28 /* Component */) {
+        // if we have an input that is also a component, we run into a tricky situation
+        // where the root vNode needs to always have the correct DOM entry
+        // so we break monomorphism on our input and supply it our vNode as parentVNode
+        // we can optimise this in the future, but this gets us out of a lot of issues
+        input.parentVNode = vNode;
     }
     instance._pendingSetState = false;
     instance._lastInput = input;
@@ -2202,7 +2226,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
             copyPropsTo(defaultProps, props);
             vNode.props = props;
         }
-        var instance = createStatefulComponentInstance(type, props, context, isSVG, devToolsStatus);
+        var instance = createStatefulComponentInstance(vNode, type, props, context, isSVG, devToolsStatus);
         var input = instance._lastInput;
         var fastUnmount = lifecycle.fastUnmount;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
@@ -2314,7 +2338,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
             copyPropsTo(defaultProps, props);
             vNode.props = props;
         }
-        var instance = createStatefulComponentInstance(type, props, context, _isSVG, devToolsStatus);
+        var instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG, devToolsStatus);
         var input = instance._lastInput;
         var fastUnmount = lifecycle.fastUnmount;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
@@ -2542,10 +2566,10 @@ var Children = {
 var currentComponent = null;
 
 Component.prototype.isReactComponent = {};
-Component.prototype.beforeRender = function() {
+Component.prototype._beforeRender = function() {
 	currentComponent = this;
 };
-Component.prototype.afterRender = function() {
+Component.prototype._afterRender = function() {
 	currentComponent = null;
 };
 

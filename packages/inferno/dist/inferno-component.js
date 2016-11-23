@@ -217,6 +217,17 @@ function createVNode(flags, type, props, children, key, ref, noNormalise) {
     }
     return vNode;
 }
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+function updateParentComponentVNodes(vNode, dom) {
+    if (vNode.flags & 28 /* Component */) {
+        var parentVNode = vNode.parentVNode;
+        if (parentVNode) {
+            parentVNode.dom = dom;
+            updateParentComponentVNodes(parentVNode, dom);
+        }
+    }
+}
 function createVoidVNode() {
     return createVNode(4096 /* Void */);
 }
@@ -322,8 +333,10 @@ function applyState(component, force, callback) {
             subLifecycle.trigger();
             component.componentDidUpdate(props, prevState);
         }
-        component._vNode.dom = nextInput.dom;
+        var vNode = component._vNode;
+        var dom = vNode.dom = nextInput.dom;
         component._componentToDOMNodeMap.set(component, nextInput.dom);
+        updateParentComponentVNodes(vNode, dom);
         if (!isNullOrUndef(callback)) {
             callback();
         }
@@ -424,9 +437,9 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
             this.props = nextProps;
             this.state = nextState;
             this.context = context;
-            this.beforeRender && this.beforeRender();
+            this._beforeRender && this._beforeRender();
             var render = this.render(nextProps, context);
-            this.afterRender && this.afterRender();
+            this._afterRender && this._afterRender();
             return render;
         }
     }

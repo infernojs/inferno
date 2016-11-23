@@ -138,6 +138,19 @@ export function createVNode(flags, type?, props?, children?, key?, ref?, noNorma
 	return vNode;
 }
 
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+export function updateParentComponentVNodes(vNode, dom) {
+	if (vNode.flags & VNodeFlags.Component) {
+		const parentVNode = vNode.parentVNode;
+
+		if (parentVNode) {
+			parentVNode.dom = dom;
+			updateParentComponentVNodes(parentVNode, dom);
+		}
+	}
+}
+
 export function createVoidVNode() {
 	return createVNode(VNodeFlags.Void);
 }

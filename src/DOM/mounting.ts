@@ -153,7 +153,7 @@ export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isCl
 			copyPropsTo(defaultProps, props);
 			vNode.props = props;
 		}
-		const instance = createStatefulComponentInstance(type, props, context, isSVG, devToolsStatus);
+		const instance = createStatefulComponentInstance(vNode, type, props, context, isSVG, devToolsStatus);
 		const input = instance._lastInput;
 		const fastUnmount = lifecycle.fastUnmount;
 

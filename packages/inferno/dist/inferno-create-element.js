@@ -195,6 +195,17 @@ function createVNode(flags, type, props, children, key, ref, noNormalise) {
     }
     return vNode;
 }
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+function updateParentComponentVNodes(vNode, dom) {
+    if (vNode.flags & 28 /* Component */) {
+        var parentVNode = vNode.parentVNode;
+        if (parentVNode) {
+            parentVNode.dom = dom;
+            updateParentComponentVNodes(parentVNode, dom);
+        }
+    }
+}
 
 function createTextVNode(text) {
     return createVNode(1 /* Text */, null, null, text);
