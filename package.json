@@ -23,6 +23,7 @@
     "babel-plugin-module-resolver": "^2.3.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
     "babel-plugin-transform-es2015-modules-umd": "^6.18.0",
     "babel-plugin-transform-inline-environment-variables": "^6.8.0",
     "babel-plugin-transform-object-assign": "^6.8.0",
@@ -107,7 +108,7 @@
   ],
   "nyc": {
     "sourceMap": false,
-		"all": true,
+    "all": true,
     "include": [
       "src/*.ts",
       "src/**/*.ts"
