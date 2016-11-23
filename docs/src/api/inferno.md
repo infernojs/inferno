@@ -3,7 +3,7 @@ title: Inferno API
 ---
 
 ## createVNode
- ```typescript
+ ```
 Inferno.createVNode(
   vNodeFlag, 
   type?, 
@@ -20,7 +20,7 @@ Create and return a new virtual DOM node of the given VNode flag and given type.
 ## cloneVNode
 
 ## render
-```typescript
+```
 render(
   element: InfernoInput, 
   container?: Node | SVGAElement
@@ -28,8 +28,6 @@ render(
 ```
 
 Renders a valid Inferno Node into the dom with a root at the specified container node in the DOM. 
-
-{% include warning.html message="If the container element is not empty before rendering the content of the container witll be overwritten on the initial render %}
 
 ## findDOMNode
 

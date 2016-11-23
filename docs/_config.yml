@@ -4,6 +4,11 @@ description: A Blazing fast, React-like, javascript library for building modern 
 
 defaults:
   - scope:
+      path: ''
+      type: pages
+    values:
+      layout: default
+  - scope:
       path: guides
       type: pages
     values:
@@ -31,6 +36,10 @@ gems:
   - jekyll-assets
   - jekyll-paginate
   - jekyll-redirect-from
+
+sass:
+  sass_dir: src/_sass
+  style: compressed
 
 highlighter: pygments
 markdown: redcarpet
