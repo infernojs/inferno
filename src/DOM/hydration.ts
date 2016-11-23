@@ -3,8 +3,10 @@ import {
 	isInvalid,
 	throwError,
 	isObject,
-	isUndefined
+	isUndefined,
+	isNull
 } from '../shared';
+import Lifecycle from './Lifecycle';
 import {
 	createStatelessComponentInput,
 	createStatefulComponentInstance,
@@ -14,7 +16,8 @@ import {
 import {
 	mountStatelessComponentCallbacks,
 	mountStatefulComponentCallbacks,
-	mountElement
+	mountElement,
+	mountText
 } from './mounting';
 import {
 	patchProp
@@ -68,10 +71,19 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 		}		
 		const instance = createStatefulComponentInstance(type, props, context, _isSVG, devToolsStatus);
 		const input = instance._lastInput;
+		const fastUnmount = lifecycle.fastUnmount;
 
+		// we store the fastUnmount value, but we set it back to true on the lifecycle
+		// we do this so we can determine if the component render has a fastUnmount or not		
+		lifecycle.fastUnmount = true;
 		instance._vComponent = vNode;
 		instance._vNode = vNode;		
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
+		const subLifecycle = instance._lifecycle = new Lifecycle();
+
+		subLifecycle.fastUnmount = lifecycle.fastUnmount;
+		// we then set the lifecycle fastUnmount value back to what it was before the mount
+		lifecycle.fastUnmount = fastUnmount;
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
 		componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
@@ -118,13 +130,14 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 function hydrateChildren(children, dom, lifecycle, context, isSVG) {
 	normaliseChildNodes(dom);
 	const domNodes = Array.prototype.slice.call(dom.childNodes);
+	let childNodeIndex = 0;
 
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 
-			if (isObject(child)) {
-				hydrate(child, domNodes[i], lifecycle, context, isSVG);
+			if (isObject(child) && !isNull(child)) {
+				hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
 			}
 		}
 	} else if (isObject(children)) {
@@ -133,7 +146,14 @@ function hydrateChildren(children, dom, lifecycle, context, isSVG) {
 }
 
 function hydrateText(vNode, dom) {
-	vNode.dom = dom;
+	if (dom.nodeType === 3) {
+		const newDom = mountText(vNode, null);
+
+		vNode.dom = newDom;
+		replaceChild(dom.parentNode, newDom, dom);
+	} else {
+		vNode.dom = dom;
+	}
 }
 
 function hydrateVoid(vNode, dom) {

@@ -46,31 +46,32 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 	const instance = vNode.children;
 	const flags = vNode.flags;
 	const isStatefulComponent = flags & VNodeFlags.ComponentClass;
-	let hooks = vNode.ref;
+	const ref = vNode.ref;
 
 	if (!isRecycling) {
-		if (!shallowUnmount && !lifecycle.fastUnmount) {
+		if (!shallowUnmount) {
 			if (isStatefulComponent) {
-				if (!instance._unmounted) {
-					const ref = vNode.ref;
+				const subLifecycle = instance._lifecycle;
 
-					if (ref && !isRecycling) {
-						ref(null);
-					}
-					instance.componentWillUnmount();
-					componentToDOMNodeMap.delete(instance);
+				if (!subLifecycle.fastUnmount) {
 					unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
 				}
 			} else {
-				unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
+				if (!lifecycle.fastUnmount) {
+					unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
+				}
 			}
-			hooks = vNode.ref || instance.ref;
 		}
 		if (isStatefulComponent) {
+			instance.componentWillUnmount();
+			if (ref && !isRecycling) {
+				ref(null);
+			}			
 			instance._unmounted = true;
-		} else if (!isNullOrUndef(hooks)) {
-			if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-				hooks.onComponentWillUnmount();
+			componentToDOMNodeMap.delete(instance);
+		} else if (!isNullOrUndef(ref)) {
+			if (!isNullOrUndef(ref.onComponentWillUnmount)) {
+				ref.onComponentWillUnmount();
 			}
 		}
 	}

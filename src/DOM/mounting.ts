@@ -9,6 +9,7 @@ import {
 	throwError,
 	EMPTY_OBJ
 } from '../shared';
+import Lifecycle from './Lifecycle';
 import {
 	setTextContent,
 	appendChild,
@@ -154,9 +155,19 @@ export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isCl
 		}
 		const instance = createStatefulComponentInstance(type, props, context, isSVG, devToolsStatus);
 		const input = instance._lastInput;
+		const fastUnmount = lifecycle.fastUnmount;
 
+		// we store the fastUnmount value, but we set it back to true on the lifecycle
+		// we do this so we can determine if the component render has a fastUnmount or not
+		lifecycle.fastUnmount = true;
 		instance._vNode = vNode;
 		vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
+		// we now create a lifecycle for this component and store the fastUnmount value
+		const subLifecycle = instance._lifecycle = new Lifecycle();
+
+		subLifecycle.fastUnmount = lifecycle.fastUnmount;
+		// we then set the lifecycle fastUnmount value back to what it was before the mount
+		lifecycle.fastUnmount = fastUnmount;
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}

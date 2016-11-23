@@ -8,6 +8,9 @@ export function escapeText(_string) {
 				case 38:
 					characters += '&amp;';
 					break;
+				case 39:
+					characters += '&#039;';
+					break;
 				case 34:
 					characters += '&quot;';
 					break;

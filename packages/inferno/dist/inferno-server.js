@@ -76,6 +76,9 @@ function escapeText(_string) {
             case 38:
                 characters += '&amp;';
                 break;
+            case 39:
+                characters += '&#039;';
+                break;
             case 34:
                 characters += '&quot;';
                 break;
@@ -190,7 +193,10 @@ function renderVNodeToString(vNode, context, firstChild) {
             if (!isInvalid(children)) {
                 if (isArray(children)) {
                     for (var i = 0; i < children.length; i++) {
-                        renderedString += renderVNodeToString(children[i], context, i === 0);
+                        var child = children[i];
+                        if (!isInvalid(child)) {
+                            renderedString += renderVNodeToString(child, context, i === 0);
+                        }
                     }
                 }
                 else if (isStringOrNumber(children)) {
@@ -350,15 +356,9 @@ var RenderStream = (function (Readable$$1) {
         return children.reduce(function (p, child) {
             return p.then(function (insertComment) {
                 var isText = isStringOrNumber(child);
-                var childIsInvalid = isInvalid(child);
-                if (isText || childIsInvalid) {
+                if (isText) {
                     if (insertComment === true) {
-                        if (childIsInvalid) {
-                            this$1.push('<!--!-->');
-                        }
-                        else {
-                            this$1.push('<!---->');
-                        }
+                        this$1.push('<!---->');
                     }
                     if (isText) {
                         this$1.push(escapeText(child));
@@ -372,7 +372,7 @@ var RenderStream = (function (Readable$$1) {
                         return true;
                     });
                 }
-                else {
+                else if (!isInvalid(child)) {
                     if (child.flags & 1 /* Text */) {
                         if (insertComment) {
                             this$1.push('<!---->');

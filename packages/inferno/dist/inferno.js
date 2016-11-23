@@ -235,6 +235,21 @@ Lifecycle.prototype.trigger = function trigger () {
     }
 };
 
+var Lifecycle$2 = function Lifecycle$2() {
+    this.listeners = [];
+    this.fastUnmount = true;
+};
+Lifecycle$2.prototype.addListener = function addListener (callback) {
+    this.listeners.push(callback);
+};
+Lifecycle$2.prototype.trigger = function trigger () {
+        var this$1 = this;
+
+    for (var i = 0; i < this.listeners.length; i++) {
+        this$1.listeners[i]();
+    }
+};
+
 var recyclingEnabled = true;
 var componentPools = new Map();
 var elementPools = new Map();
@@ -364,31 +379,32 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
     var instance = vNode.children;
     var flags = vNode.flags;
     var isStatefulComponent$$1 = flags & 4;
-    var hooks = vNode.ref;
+    var ref = vNode.ref;
     if (!isRecycling) {
-        if (!shallowUnmount && !lifecycle.fastUnmount) {
+        if (!shallowUnmount) {
             if (isStatefulComponent$$1) {
-                if (!instance._unmounted) {
-                    var ref = vNode.ref;
-                    if (ref && !isRecycling) {
-                        ref(null);
-                    }
-                    instance.componentWillUnmount();
-                    componentToDOMNodeMap.delete(instance);
+                var subLifecycle = instance._lifecycle;
+                if (!subLifecycle.fastUnmount) {
                     unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
                 }
             }
             else {
-                unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
+                if (!lifecycle.fastUnmount) {
+                    unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
+                }
             }
-            hooks = vNode.ref || instance.ref;
         }
         if (isStatefulComponent$$1) {
+            instance.componentWillUnmount();
+            if (ref && !isRecycling) {
+                ref(null);
+            }
             instance._unmounted = true;
+            componentToDOMNodeMap.delete(instance);
         }
-        else if (!isNullOrUndef(hooks)) {
-            if (!isNullOrUndef(hooks.onComponentWillUnmount)) {
-                hooks.onComponentWillUnmount();
+        else if (!isNullOrUndef(ref)) {
+            if (!isNullOrUndef(ref.onComponentWillUnmount)) {
+                ref.onComponentWillUnmount();
             }
         }
     }
@@ -1715,8 +1731,17 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
         }
         var instance = createStatefulComponentInstance(type, props, context, isSVG, devToolsStatus);
         var input = instance._lastInput;
+        var fastUnmount = lifecycle.fastUnmount;
+        // we store the fastUnmount value, but we set it back to true on the lifecycle
+        // we do this so we can determine if the component render has a fastUnmount or not
+        lifecycle.fastUnmount = true;
         instance._vNode = vNode;
         vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
+        // we now create a lifecycle for this component and store the fastUnmount value
+        var subLifecycle = instance._lifecycle = new Lifecycle$2();
+        subLifecycle.fastUnmount = lifecycle.fastUnmount;
+        // we then set the lifecycle fastUnmount value back to what it was before the mount
+        lifecycle.fastUnmount = fastUnmount;
         if (!isNull(parentDom)) {
             appendChild(parentDom, dom);
         }
@@ -1818,9 +1843,17 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         }
         var instance = createStatefulComponentInstance(type, props, context, _isSVG, devToolsStatus);
         var input = instance._lastInput;
+        var fastUnmount = lifecycle.fastUnmount;
+        // we store the fastUnmount value, but we set it back to true on the lifecycle
+        // we do this so we can determine if the component render has a fastUnmount or not		
+        lifecycle.fastUnmount = true;
         instance._vComponent = vNode;
         instance._vNode = vNode;
         hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
+        var subLifecycle = instance._lifecycle = new Lifecycle$2();
+        subLifecycle.fastUnmount = lifecycle.fastUnmount;
+        // we then set the lifecycle fastUnmount value back to what it was before the mount
+        lifecycle.fastUnmount = fastUnmount;
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
         componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
@@ -1863,11 +1896,12 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 function hydrateChildren(children, dom, lifecycle, context, isSVG) {
     normaliseChildNodes(dom);
     var domNodes = Array.prototype.slice.call(dom.childNodes);
+    var childNodeIndex = 0;
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
-            if (isObject(child)) {
-                hydrate(child, domNodes[i], lifecycle, context, isSVG);
+            if (isObject(child) && !isNull(child)) {
+                hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
             }
         }
     }
@@ -1876,7 +1910,14 @@ function hydrateChildren(children, dom, lifecycle, context, isSVG) {
     }
 }
 function hydrateText(vNode, dom) {
-    vNode.dom = dom;
+    if (dom.nodeType === 3) {
+        var newDom = mountText(vNode, null);
+        vNode.dom = newDom;
+        replaceChild(dom.parentNode, newDom, dom);
+    }
+    else {
+        vNode.dom = dom;
+    }
 }
 function hydrateVoid(vNode, dom) {
     vNode.dom = dom;

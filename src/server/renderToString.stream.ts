@@ -102,15 +102,10 @@ export class RenderStream extends Readable {
 		return children.reduce((p, child) => {
 			return p.then((insertComment) => {
 				const isText = isStringOrNumber(child);
-				const childIsInvalid = isInvalid(child);
 
-				if (isText || childIsInvalid) {
+				if (isText) {
 					if (insertComment === true) {
-						if (childIsInvalid) {
-							this.push('<!--!-->');
-						} else {
-							this.push('<!---->');
-						}
+						this.push('<!---->');
 					}
 					if (isText) {
 						this.push(escapeText(child));
@@ -122,7 +117,7 @@ export class RenderStream extends Readable {
 						this.push('<!--!-->');
 						return true;
 					});
-				} else {
+				} else if (!isInvalid(child)) {
 					if (child.flags & VNodeFlags.Text) {
 						if (insertComment) {
 							this.push('<!---->');
