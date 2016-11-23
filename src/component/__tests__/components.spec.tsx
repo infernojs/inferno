@@ -2378,9 +2378,12 @@ describe('Components (JSX)', () => {
 	describe('Root handling issues', () => {
 		let div;
 
-		class A extends Component {
-			constructor() {
-				super(...arguments);
+		class A extends Component<any, any> {
+			public onClick;
+
+			constructor(props) {
+
+				super(props);
 				this.state = { n: false };
 				
 				this.onClick = () => {
@@ -2396,7 +2399,7 @@ describe('Components (JSX)', () => {
 			}
 		}
 
-		class B extends Component {
+		class B extends Component<any, any> {
 			shouldComponentUpdate() {
 				return false;
 			}
@@ -2406,9 +2409,9 @@ describe('Components (JSX)', () => {
 			}
 		}
 
-		class Test extends Component {
-			constructor() {
-				super(...arguments);
+		class Test extends Component<any, any> {
+			constructor(props) {
+				super(props);
 				this.state = {
 					reverse: false,
 				};
