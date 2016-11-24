@@ -91,15 +91,6 @@ Note: Make sure you read more about [`inferno-compat`](https://github.com/truead
 
 ## Getting Started
 
-NPM:
-
-[Create Inferno App](todo):
-
-```sh
-npm install -g create-inferno-app
-create-inferno-app MyApp
-```
-
 Core package:
 
 ```sh
@@ -120,7 +111,7 @@ npm install --save inferno-router@beta14
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
  
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta14/inferno.min.js
 ```
 
 ### Creating Virtual DOM
