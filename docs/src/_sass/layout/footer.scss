@@ -1,0 +1,11 @@
+@import '../colors';
+
+footer.infernoFooter {
+  background: $black;
+  color: $white;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
