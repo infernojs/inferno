@@ -94,46 +94,46 @@ Note: Make sure you read more about [`inferno-compat`](https://github.com/truead
 Core package:
 
 ```sh
-npm install --save inferno@beta14
+npm install --save inferno@beta15
 ```
 
 Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta14
+npm install --save inferno-component@beta15
 # server-side rendering
-npm install --save inferno-server@beta14
+npm install --save inferno-server@beta15
 # routing
-npm install --save inferno-router@beta14
+npm install --save inferno-router@beta15
 ``` 
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
  
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta14/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta15/inferno.min.js
 ```
 
 ### Creating Virtual DOM
 
 #### JSX:
-```sh
+```shÏ
 npm install --save-dev babel-plugin-inferno@beta11
 ```
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta14
+npm install --save inferno-hyperscript@beta15
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta14
+npm install --save inferno-create-element@beta15
 ```
 
 ### Compatability with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta14
+npm install --save-dev inferno-compat@beta15
 ```
 
 ## Inferno Top-Level API
