@@ -16,7 +16,7 @@ To quote a member of the React core team at Facebook:
 
 Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their **existing React projects** to Inferno in a few lines of code using [`inferno-compat`](https://github.com/trueadm/inferno/tree/dev/packages/inferno-compat).
 
-For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. You literally learn once, write anywhere, as Inferno doesn't impose any restrictions on how you create components. Your literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
+For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. Based on the concept of *learn once, write anywhere*, Inferno doesn't impose any restrictions on how you create components. Your literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
 
 In terms of performance, Inferno is currently the **fastest** JavaScript UI library there is – both in benchmarks and actual real-world scenarios. It excels on the browser at inital page load, parse times, render times and update times. Inferno's server-side rendering is around 10-20x faster than React and Preact, it's around 5x faster than Vue and Angular2.
 
@@ -91,15 +91,6 @@ Note: Make sure you read more about [`inferno-compat`](https://github.com/truead
 
 ## Getting Started
 
-NPM:
-
-[Create Inferno App](todo):
-
-```sh
-npm install -g create-inferno-app
-create-inferno-app MyApp
-```
-
 Core package:
 
 ```sh
@@ -120,7 +111,7 @@ npm install --save inferno-router@beta14
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
  
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta14/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -322,10 +313,23 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 ## Differences from React
 
-Inferno strives to be compatible with much of React's basic API. However, in some places, alternative implementations have been used.
-Non-performant features have been removed or replaced where an alternative solution is easy to adopt without too many changes.
+- Inferno is much smaller in size, `7kb` vs `45kb` gzip. This means Inferno is faster to transfer over the network but more imoportantly, is *much* faster to parse – this makes a big impact on mobile.
+- Inferno is considerably faster than React. This doesn't apply to only benchmarks, but real-world applications that companies have converted to Inferno from React. Ranging from 40% - 110% performance improvement with Inferno `1.0`. No other React-like library gets close to this performance gain over React.
+- Inferno doesn't have a synthetic event system like React does. There are pros and cons (size and performance vs delegation and unification of browser events) to having one and we beleive that by default, using the native brownser event system is "good enough" for most apps today. We however plan on adding an add-on syntethic event system in the future to cater for those who need it.
+- Inferno doesn't support React Native. Inferno was only designed for the browser/server with the DOM in mind.
+- Inferno doesn't support string refs – although this can be enabled using `inferno-compat`. We don't recommend using them, they are the source of many memory leaks and performance issues in real-world apps. Stick with function callback refs instead.
+- Inferno includes `render` on the main core package, rather than have a `InfernoDOM` package like React does. We used to do it that way, but we found people simply didn't like it given we don't support native. Furthermore, by not splitting them, we improved performance and bundle sizes.
+- Inferno provides lifecycle events on stateless components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
+- Inferno has its own devtools debugger (still in development) that differs from the React implementation. Inferno's debugger is on average, 4x faster – fixing lots of the issues with slow, laggy interfaces when developers are debugging.
 
-Inferno doesn't have react's synthetic events, which means DOM elements have their events triggered in the same manner as you'd expect from the browser you're running.
+## Differences from Preact
+
+- Inferno is larger in size, `7kb` vs `3kb` gzip. This means that Preact should parse faster than Inferno – if only slightly.
+- Inferno is *much* faster than Preact in rendering, updating and removing elements from the DOM. Inferno diffs against virtual DOM, rather than the real DOM (except for when loading from sever-side rendered content) which means it can make drastic improvements. Unfortuantely, diffing against the real DOM has a 30-40% overhead cost in operations.
+- Inferno fully supports controlled components for `input`/`select`/`textarea` elements. This prevents lots of edgecases where the virtual DOM is not the source of truth (it should always be). Preact pushes the source of truth to the DOM itself.
+- Inferno provides lifecycle events on stateless components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
+- Inferno has its own devtools debugger (still in development) that differs from the Preact (React bound) implementation. Inferno's debugger is on average, 4x faster – fixing lots of the issues with slow, laggy interfaces when developers are debugging.
+- Preact has `linkState` helpers built into core to help users link state to form elements. Inferno does not.
 
 ### Custom namespaces
 
