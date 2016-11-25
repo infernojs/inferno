@@ -376,6 +376,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
     var flags = vNode.flags;
     var isStatefulComponent$$1 = flags & 4;
     var ref = vNode.ref;
+    var dom = vNode.dom;
     if (!isRecycling) {
         if (!shallowUnmount) {
             if (isStatefulComponent$$1) {
@@ -400,7 +401,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         }
         else if (!isNullOrUndef(ref)) {
             if (!isNullOrUndef(ref.onComponentWillUnmount)) {
-                ref.onComponentWillUnmount();
+                ref.onComponentWillUnmount(dom);
             }
         }
     }
@@ -409,7 +410,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         if (isNullOrUndef(lastInput)) {
             lastInput = instance;
         }
-        removeChild(parentDom, vNode.dom);
+        removeChild(parentDom, dom);
     }
     if (recyclingEnabled && (parentDom || canRecycle)) {
         poolComponent(vNode);
