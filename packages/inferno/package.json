@@ -26,5 +26,6 @@
     "rollup"
   ],
   "main": "inferno.js",
+  "typings": "inferno.d.ts",
   "repository": "https://github.com/trueadm/inferno"
 }
