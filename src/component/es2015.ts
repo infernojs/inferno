@@ -55,7 +55,7 @@ function addToQueue(component: Component<any, any>, force, callback): void {
 	if (!queue) {
 		queue = [];
 		componentCallbackQueue.set(component, queue);
-		requestAnimationFrame(() => {
+		Promise.resolve().then(() => {
 			applyState(component, force, () => {
 				for (let i = 0; i < queue.length; i++) {
 					queue[i]();
