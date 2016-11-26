@@ -263,7 +263,7 @@ Clone and return a new Inferno `VNode` using a `VNode` as the starting point. Th
 <VNode.type {...VNode.props} {...props}>{children}</VNode.type>
 ```
 
-An example of using `cloneVNode()`:
+An example of using `cloneVNode`:
 
 ```javascript
 import Inferno from 'inferno';
