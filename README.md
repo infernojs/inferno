@@ -14,7 +14,7 @@ Inferno is an insanely fast, `7kb` React-like library for building high-performa
 To quote a member of the React core team at Facebook:
 > Inferno 1.0 is really well written. It's how I would've rewritten React. I'd recommend reading its source to learn.
 
-Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their **existing React projects** to Inferno in a few lines of code using [`inferno-compat`](https://github.com/trueadm/inferno/tree/dev/packages/inferno-compat).
+Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their **existing React projects** to Inferno in a few lines of code using [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat).
 
 For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. Based on the concept of *learn once, write anywhere*, Inferno doesn't impose any restrictions on how you create components. Your literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
 
@@ -220,6 +220,17 @@ const MyComponent = ({ name, age }) => (
 Stateless components are first-class functions where their first argument is the `props` passed through from their parent.
 
 ### `createVNode` (package: `inferno`)
+```js
+Inferno.createVNode(
+  flags,
+  type,
+  [props],
+  [...children],
+  [key],
+  [ref],
+  [isNormalized]
+)
+```
 
 Create a new Inferno `VNode` using `createVNode`. A `VNode` is a virtual DOM object that is used to 
 describe a single element of the UI. Typically `createElement`, `hyperscript` or JSX are used to create
@@ -237,8 +248,31 @@ Inferno.render(vNode, container);
 The first argument for `createVNode` is a value from [`VNodeFlags`]('linktoreadmeforthis'), this is numerical value that used to tell Inferno what the VNode is meant to describe on the page.
 
 ### `cloneVNode` (package: `inferno`)
+```js
+Inferno.cloneVNode(
+  vNode,
+  [props],
+  [...children]
+)
+```
 
-TODO
+Clone and return a new Inferno `VNode` using a `VNode` as the starting point. The resulting `VNode` will have the original `VNode`'s props with the new props merged in shallowly. New children will replace existing children. key and ref from the original `VNode` will be preserved.
+
+`cloneVNode()` is almost equivalent to:
+```jsx
+<VNode.type {...VNode.props} {...props}>{children}</VNode.type>
+```
+
+An example of using `cloneVNode()`:
+
+```javascript
+import Inferno from 'inferno';
+
+const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+const newVNode = Inferno.cloneVNode(vNode, { id: 'new' }); // we are adding an id prop to the VNode
+
+Inferno.render(newVNode, container);
+```
 
 ### `findDOMNode` (package: `inferno`)
 
