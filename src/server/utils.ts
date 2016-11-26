@@ -27,8 +27,11 @@ export function escapeText(_string) {
 		return characters;
 }
 
+const uppercasePattern = /[A-Z]/g;
+const msPattern = /^ms-/;
+
 export function toHyphenCase(str) {
-	return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+	return str.replace(uppercasePattern, '-$&').toLowerCase().replace(msPattern, '-ms-'); 
 }
 
 const voidElements = {
