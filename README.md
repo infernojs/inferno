@@ -274,9 +274,22 @@ const newVNode = Inferno.cloneVNode(vNode, { id: 'new' }); // we are adding an i
 Inferno.render(newVNode, container);
 ```
 
+If you're using JSX:
+
+```jsx
+import Inferno from 'inferno';
+
+const vNode = <div className="example">Hello world</div>;
+const newVNode = Inferno.cloneVNode(vNode, { id: 'new' }); // we are adding an id prop to the VNode
+
+Inferno.render(newVNode, container);
+```
+
 ### `findDOMNode` (package: `inferno`)
 
-TODO
+Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode`. `findDOMNode` cannot be used on functional components.
+
+If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements. In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode` at all. When render returns null or false, `findDOMNode` returns null.
 
 ### `renderToString` (package: `inferno-server`)
 
