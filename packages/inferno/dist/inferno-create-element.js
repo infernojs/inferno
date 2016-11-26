@@ -128,6 +128,15 @@ function _normalizeVNodes(nodes, result, i) {
 }
 function normalizeVNodes(nodes) {
     var newNodes;
+    // we assign $ which basically means we've flagged this array for future note
+    // if it comes back again, we need to clone it, as people are using it
+    // in an immutable way
+    if (nodes['$']) {
+        nodes = nodes.slice();
+    }
+    else {
+        nodes['$'] = true;
+    }
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
         if (isInvalid(n)) {
@@ -173,8 +182,13 @@ function normalize(vNode) {
             vNode.key = props.key;
         }
     }
-    if (isArray(children)) {
-        vNode.children = normalizeVNodes(children);
+    if (!isInvalid(children)) {
+        if (isArray(children)) {
+            vNode.children = normalizeVNodes(children);
+        }
+        else if (isVNode(children) && children.dom) {
+            vNode.children = cloneVNode(children);
+        }
     }
 }
 function createVNode(flags, type, props, children, key, ref, noNormalise) {
