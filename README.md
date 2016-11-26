@@ -245,7 +245,7 @@ const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello wor
 Inferno.render(vNode, container);
 ```
 
-The first argument for `createVNode` is a value from [`VNodeFlags`]('linktoreadmeforthis'), this is numerical value that used to tell Inferno what the VNode is meant to describe on the page.
+The first argument for `createVNode` is a value from [`VNodeFlags`](https://github.com/trueadm/inferno/tree/master/packages/inferno-vnode-flags), this is numerical value that used to tell Inferno what the VNode is meant to describe on the page.
 
 ### `cloneVNode` (package: `inferno`)
 ```js
