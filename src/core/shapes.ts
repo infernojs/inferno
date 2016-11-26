@@ -69,6 +69,15 @@ function _normalizeVNodes(nodes: any[], result: VNode[], i: number): void {
 
 export function normalizeVNodes(nodes: any[]): VNode[] {
 	let newNodes;
+
+	// we assign $ which basically means we've flagged this array for future note
+	// if it comes back again, we need to clone it, as people are using it
+	// in an immutable way
+	if (nodes['$']) {
+		nodes = nodes.slice();
+	} else {
+		nodes['$'] = true;
+	}
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
 
@@ -114,8 +123,12 @@ function normalize(vNode) {
 			vNode.key = props.key;
 		}
 	}
-	if (isArray(children)) {
-		vNode.children = normalizeVNodes(children);
+	if (!isInvalid(children)) {
+		if (isArray(children)) {
+			vNode.children = normalizeVNodes(children);
+		} else if (isVNode(children) && children.dom) {
+			vNode.children = cloneVNode(children);
+		} 
 	}
 }
 

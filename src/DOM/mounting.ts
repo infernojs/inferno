@@ -30,6 +30,7 @@ import {
 import { devToolsStatus } from './devtools';
 import { VNodeFlags, isVNode } from '../core/shapes';
 import processElement from './wrappers/processElement';
+import cloneVNode from '../factories/cloneVNode';
 
 export function mount(vNode, parentDom, lifecycle, context, isSVG) {
 	const flags = vNode.flags;
@@ -123,7 +124,11 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 export function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
 	for (let i = 0; i < children.length; i++) {
 		let child = children[i];
+
 		if (!isInvalid(child)) {
+			if (child.dom) {
+				children[i] = child = cloneVNode(child); 
+			}
 			mount(children[i], dom, lifecycle, context, isSVG);
 		}
 	}

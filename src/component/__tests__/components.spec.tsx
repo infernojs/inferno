@@ -2619,19 +2619,97 @@ describe('Components (JSX)', () => {
 			container.querySelector('span').click();
 			// "SPAN" should now be "DIV"
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
-			// // click "SWAP ROWS"
+			// click "SWAP ROWS"
 			container.querySelector('button').click();
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>ROW</div><div>DIV</div></div></div>');
-			// // click "SWAP ROWS"
+			// click "SWAP ROWS"
 			container.querySelector('button').click();
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
-			// // click on "DIV" 
+			// click on "DIV" 
 			div.click();
-			// // "DIV" should now be "SPAN"
+			// "DIV" should now be "SPAN"
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
-			// // click "SWAP ROWS"
+			// click "SWAP ROWS"
 			container.querySelector('button').click();
 			// expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>ROW</div><span>SPAN</span></div></div>');
+		});
+	});
+
+	describe('Cloned children issues #1', () => {
+
+		class Test extends Component<any, any> {
+			constructor(props) {
+				super(props);
+				this.state = {
+					reverse: false,
+				};
+			}
+
+			render() {
+				var a = <div key="b">B</div>;
+				var b = <div key="a">A</div>;
+			
+				return (
+					<div>
+						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<div>
+							{ this.state.reverse ? [a, b].reverse() : [a, b] }
+						</div>
+						<div>
+							{ this.state.reverse ? [a, b].reverse() : [a, b] }
+						</div>
+					</div>
+				);
+			}
+		}
+
+		// this test is to replicate https://jsfiddle.net/localvoid/fmznjwxv/
+		it('should correct swap rows', () => {
+			render(<Test />, container);
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>');
+			// click "SWAP ROWS"
+			container.querySelector('button').click();
+		});
+	});
+	describe('Cloned children issues #2', () => {
+
+		class Test extends Component<any, any> {
+			constructor(props) {
+				super(props);
+				this.state = {
+					reverse: false,
+				};
+			}
+
+			render() {
+				const children = [
+					<div key="b">B</div>,
+					<div key="a">A</div>
+				];
+				if (this.state.reverse) {
+					children.reverse();
+				}
+			
+				return (
+					<div>
+						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<div>
+							{ children }
+						</div>
+						<div>
+							{ children }
+						</div>
+					</div>
+				);
+			}
+		}
+
+		// this test is to replicate https://jsfiddle.net/localvoid/fmznjwxv/
+		it('should correct swap rows', () => {
+			render(<Test />, container);
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>');
+			// click "SWAP ROWS"
+			container.querySelector('button').click();
 		});
 	});
 });
