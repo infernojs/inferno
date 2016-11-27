@@ -512,12 +512,14 @@ function cloneVNode(vNodeToClone, props) {
     }
     else {
         var flags = vNodeToClone.flags;
+        var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
+        var ref = vNodeToClone.ref || props.ref;
         if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref, true);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, key, ref, true);
         }
         else if (flags & 3970 /* Element */) {
             children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, !children);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, key, ref, !children);
         }
     }
     newVNode.dom = null;
@@ -2341,7 +2343,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
 function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
     if (ref) {
         if (isFunction(ref)) {
-            lifecycle.addListener(function () { return ref(instance); });
+            ref(instance);
         }
         else {
             if (process.env.NODE_ENV !== 'production') {
@@ -2371,7 +2373,7 @@ function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
 function mountRef(dom, value, lifecycle) {
     if (isFunction(value)) {
         lifecycle.fastUnmount = false;
-        lifecycle.addListener(function () { return value(dom); });
+        value(dom);
     }
     else {
         if (isInvalid(value)) {

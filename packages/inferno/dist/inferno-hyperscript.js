@@ -90,12 +90,14 @@ function cloneVNode(vNodeToClone, props) {
     }
     else {
         var flags = vNodeToClone.flags;
+        var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
+        var ref = vNodeToClone.ref || props.ref;
         if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, vNodeToClone.key, vNodeToClone.ref, true);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, key, ref, true);
         }
         else if (flags & 3970 /* Element */) {
             children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, vNodeToClone.key, vNodeToClone.ref, !children);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, key, ref, !children);
         }
     }
     newVNode.dom = null;

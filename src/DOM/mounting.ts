@@ -195,7 +195,7 @@ export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isCl
 export function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
 	if (ref) {
 		if (isFunction(ref)) {
-			lifecycle.addListener(() => ref(instance));
+			ref(instance);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
