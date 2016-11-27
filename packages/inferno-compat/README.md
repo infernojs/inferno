@@ -4,6 +4,13 @@ This module is a compatibility layer that makes React-based modules work with In
 
 It provides the same exports as `react` and `react-dom`, meaning you can use your build tool of choice to drop it in where React is being depended on.
 
+## How to install?
+
+```bash
+npm install --save inferno@beta15
+npm install --save inferno-compat@beta15
+```
+
 ## What is currently supported?
 
 ### `react`

@@ -62,10 +62,10 @@ function removeRoot(root): void {
 	}
 }
 
-const documetBody = isBrowser ? document.body : null;
+const documentBody = isBrowser ? document.body : null;
 
 export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
-	if (documetBody === parentDom) {
+	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
 		}
@@ -94,7 +94,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 
 		lifecycle.listeners = [];
 		if (isNullOrUndef(input)) {
-			unmount(root.input, parentDom, lifecycle, false, false);
+			unmount(root.input, parentDom, lifecycle, false, false, false);
 			removeRoot(root);
 		} else {
 			if ((input as VNode).dom) {

@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-beta13
+ * inferno-component v1.0.0-beta15
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -28,9 +28,9 @@ var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 
-function isArray(obj) {
-    return obj instanceof Array;
-}
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+var isArray = Array.isArray;
 function isStatefulComponent(o) {
     return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
@@ -152,7 +152,13 @@ function normalizeVNodes(nodes) {
     var newNodes;
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        if (isInvalid(n) || Array.isArray(n)) {
+        if (isInvalid(n)) {
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push(n);
+        }
+        else if (Array.isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
             _normalizeVNodes(nodes, result, i);
             return result;
@@ -211,6 +217,17 @@ function createVNode(flags, type, props, children, key, ref, noNormalise) {
     }
     return vNode;
 }
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+function updateParentComponentVNodes(vNode, dom) {
+    if (vNode.flags & 28 /* Component */) {
+        var parentVNode = vNode.parentVNode;
+        if (parentVNode) {
+            parentVNode.dom = dom;
+            updateParentComponentVNodes(parentVNode, dom);
+        }
+    }
+}
 function createVoidVNode() {
     return createVNode(4096 /* Void */);
 }
@@ -232,7 +249,7 @@ function addToQueue(component, force, callback) {
     if (!queue) {
         queue = [];
         componentCallbackQueue.set(component, queue);
-        requestAnimationFrame(function () {
+        Promise.resolve().then(function () {
             applyState(component, force, function () {
                 for (var i = 0; i < queue.length; i++) {
                     queue[i]();
@@ -316,8 +333,10 @@ function applyState(component, force, callback) {
             subLifecycle.trigger();
             component.componentDidUpdate(props, prevState);
         }
-        component._vNode.dom = nextInput.dom;
+        var vNode = component._vNode;
+        var dom = vNode.dom = nextInput.dom;
         component._componentToDOMNodeMap.set(component, nextInput.dom);
+        updateParentComponentVNodes(vNode, dom);
         if (!isNullOrUndef(callback)) {
             callback();
         }
@@ -418,9 +437,9 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
             this.props = nextProps;
             this.state = nextState;
             this.context = context;
-            this.beforeRender && this.beforeRender();
+            this._beforeRender && this._beforeRender();
             var render = this.render(nextProps, context);
-            this.afterRender && this.afterRender();
+            this._afterRender && this._afterRender();
             return render;
         }
     }

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { spy } from 'sinon';
+import { assert, spy } from 'sinon';
 import { render } from './../rendering';
 import Component from './../../component/es2015';
 import * as Inferno from '../../testUtils/inferno';
@@ -1296,6 +1296,354 @@ describe('Children - (JSX)', () => {
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
+		});
+	});
+
+
+	describe('Unmount behavior in lists', () => {
+		it('Should not call unmount when changing list length', () => {
+			class UnMountTest extends Component<any, any> {
+				componentWillUnmount() {
+					// Should not be here
+				}
+
+				render() {
+					return <span>1</span>
+				}
+			}
+
+			class Parent extends Component<any, any> {
+				render() {
+					let firstClassCitizen = null;
+					if (this.props.firstClassCitizenIsBack) {
+						firstClassCitizen = <div>b</div>
+					}
+
+					return (
+						<div>
+							<div>a</div>
+							{firstClassCitizen}
+							<UnMountTest/>
+							<div>C</div>
+						</div>
+					);
+				}
+			}
+
+			const spyUnmount = spy(UnMountTest.prototype, 'componentWillUnmount');
+			const notCalled = assert.notCalled;
+
+			render(<Parent firstClassCitizenIsBack={false}/>, container); // initial render
+			expect(container.innerHTML).to.eql('<div><div>a</div><span>1</span><div>C</div></div>');
+			notCalled(spyUnmount);
+
+			render(<Parent firstClassCitizenIsBack={true}/>, container);
+			expect(container.innerHTML).to.eql('<div><div>a</div><div>b</div><span>1</span><div>C</div></div>');
+			notCalled(spyUnmount);
+		});
+	});
+
+	describe('Children lifecycle with fastUnmount', () => {
+		it('Should call componentWillUnmount for children', () => {
+			let toggle;
+
+			class Wrapper extends Component<any, any> {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						bool: true
+					};
+
+					toggle = () => {
+						this.setState({
+							bool: !this.state.bool
+						});
+					}
+				}
+
+
+				render() {
+					return (
+						<div>
+							<span>foobar</span>
+							{this.state.bool ? <FooBar/> : null}
+						</div>
+					);
+				}
+			}
+
+			class FooBar extends Component<any, any> {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						text: 'initial'
+					};
+				}
+
+				render() {
+					return (
+						<span>
+							{this.state.text}
+						</span>
+					);
+				}
+			}
+
+
+			render(<Wrapper/>, container);
+
+			const unMountSpy = spy(FooBar.prototype, 'componentWillUnmount');
+			const mountSpy = spy(FooBar.prototype, 'componentWillMount');
+
+			const calledOnce = assert.calledOnce;
+			const notCalled = assert.notCalled;
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span>initial</span></div>');
+
+			mountSpy.reset();
+			unMountSpy.reset();
+
+
+			toggle(); // Unmount child component
+			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+
+			calledOnce(unMountSpy);
+			notCalled(mountSpy);
+		});
+
+		it('Should call componentWillUnmount for nested children', () => {
+			let toggle;
+
+			class Wrapper extends Component<any, any> {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						bool: true
+					};
+
+					toggle = () => {
+						this.setState({
+							bool: !this.state.bool
+						});
+					}
+				}
+
+
+				render() {
+					return (
+						<div>
+							<span>foobar</span>
+							{this.state.bool ? <FooBar/> : null}
+						</div>
+					);
+				}
+			}
+
+			class FooBar extends Component<any, any> {
+				render() {
+					return (
+						<span>
+							<Test/>
+						</span>
+					);
+				}
+			}
+
+			class Test extends Component<any, any> {
+				render() {
+					return <em>f</em>;
+				}
+			}
+
+
+			render(<Wrapper/>, container);
+
+			const unMountSpy = spy(Test.prototype, 'componentWillUnmount');
+			const mountSpy = spy(Test.prototype, 'componentWillMount');
+
+			const calledOnce = assert.calledOnce;
+			const notCalled = assert.notCalled;
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em>f</em></span></div>');
+
+			mountSpy.reset();
+			unMountSpy.reset();
+
+
+			toggle(); // Unmount child component
+			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+
+			calledOnce(unMountSpy);
+			notCalled(mountSpy);
+		});
+
+		it('Should call componentWillUnmount for nested children #2', () => {
+			let toggle;
+
+			class Wrapper extends Component<any, any> {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						bool: true
+					};
+
+					toggle = () => {
+						this.setState({
+							bool: !this.state.bool
+						});
+					}
+				}
+
+
+				render() {
+					return (
+						<div>
+							<span>foobar</span>
+							{this.state.bool ? <FooBar/> : null}
+						</div>
+					);
+				}
+			}
+
+			class FooBar extends Component<any, any> {
+				render() {
+					return (
+						<span>
+							<Test/>
+							<Foo/>
+						</span>
+					);
+				}
+			}
+
+			class Test extends Component<any, any> {
+				render() {
+					return <em>f</em>;
+				}
+			}
+
+			class Foo extends Component<any, any> {
+				render() {
+					return <em>f</em>;
+				}
+			}
+
+
+			render(<Wrapper/>, container);
+
+			const unMountSpy = spy(Test.prototype, 'componentWillUnmount');
+			const unMountSpy2 = spy(Foo.prototype, 'componentWillUnmount');
+
+			const calledOnce = assert.calledOnce;
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em>f</em><em>f</em></span></div>');
+
+			unMountSpy2.reset();
+			unMountSpy.reset();
+
+
+			toggle(); // Unmount child component
+			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+			calledOnce(unMountSpy2);
+			calledOnce(unMountSpy);
+		});
+
+
+		it('Should call componentWillUnmount for deeply nested children', () => {
+			let toggle;
+
+			class Wrapper extends Component<any, any> {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						bool: true
+					};
+
+					toggle = () => {
+						this.setState({
+							bool: !this.state.bool
+						});
+					}
+				}
+
+
+				render() {
+					return (
+						<div>
+							<span>foobar</span>
+							{this.state.bool ? <FooBar/> : null}
+						</div>
+					);
+				}
+			}
+
+			class FooBar extends Component<any, any> {
+				render() {
+					return (
+						<span>
+							<span>
+								<span>
+									<span>
+										<Test/>
+									</span>
+								</span>
+							</span>
+						</span>
+					);
+				}
+			}
+
+			class Test extends Component<any, any> {
+				render() {
+					return <Test2/>;
+				}
+			}
+
+			class Test2 extends Component<any, any> {
+				render() {
+					return <Test4/>;
+				}
+			}
+
+			class Test4 extends Component<any, any> {
+				render() {
+					return (
+						<div>
+							<span></span>
+							<Test5/>
+							<span></span>
+						</div>
+					)
+				}
+			}
+
+			class Test5 extends Component<any, any> {
+				render() {
+					return <h1>ShouldUnMountMe</h1>
+				}
+			}
+
+
+			render(<Wrapper/>, container);
+
+			const unMountSpy = spy(Test5.prototype, 'componentWillUnmount');
+
+			const calledOnce = assert.calledOnce;
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>');
+
+			unMountSpy.reset();
+
+
+			toggle(); // Unmount child component
+			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+
+			calledOnce(unMountSpy);
 		});
 	});
 });

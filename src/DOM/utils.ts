@@ -25,7 +25,7 @@ export function copyPropsTo(copyFrom, copyTo) {
 	}
 }
 
-export function createStatefulComponentInstance(Component, props, context, isSVG, devToolsStatus) {
+export function createStatefulComponentInstance(vNode, Component, props, context, isSVG, devToolsStatus) {
 	const instance = new Component(props, context);
 
 	instance.context = context;
@@ -43,10 +43,10 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 	instance._pendingSetState = true;
 	instance._isSVG = isSVG;
 	instance.componentWillMount();
-	instance.beforeRender && instance.beforeRender();
+	instance._beforeRender && instance._beforeRender();
 	let input = instance.render(props, context);
 
-	instance.afterRender && instance.afterRender();
+	instance._afterRender && instance._afterRender();
 	if (isArray(input)) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
@@ -54,30 +54,36 @@ export function createStatefulComponentInstance(Component, props, context, isSVG
 		throwError();
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
+	} else if (input.flags & VNodeFlags.Component) {
+		// if we have an input that is also a component, we run into a tricky situation
+		// where the root vNode needs to always have the correct DOM entry
+		// so we break monomorphism on our input and supply it our vNode as parentVNode
+		// we can optimise this in the future, but this gets us out of a lot of issues
+		input.parentVNode = vNode;
 	}
 	instance._pendingSetState = false;
 	instance._lastInput = input;
 	return instance;
 }
-export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG) {
-	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle);
+export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling) {
+	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle, isRecycling);
 }
 
-export function replaceVNode(parentDom, dom, vNode, lifecycle) {
+export function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
 	let shallowUnmount = false;
 	// we cannot cache nodeType here as vNode might be re-assigned below
 	if (vNode.flags & VNodeFlags.Component) {
 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
 		// accessing their DOM node is not useful to us here
-		unmount(vNode, null, lifecycle, false, false);
+		unmount(vNode, null, lifecycle, false, false, isRecycling);
 		vNode = vNode.children._lastInput || vNode.children;
 		shallowUnmount = true;
 	}
 	replaceChild(parentDom, dom, vNode.dom);
-	unmount(vNode, null, lifecycle, false, shallowUnmount);
+	unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
 }
 
-export function createStatelessComponentInput(component, props, context) {
+export function createStatelessComponentInput(vNode, component, props, context) {
 	let input = component(props, context);
 
 	if (isArray(input)) {
@@ -87,6 +93,12 @@ export function createStatelessComponentInput(component, props, context) {
 		throwError();
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
+	} else if (input.flags & VNodeFlags.Component) {
+		// if we have an input that is also a component, we run into a tricky situation
+		// where the root vNode needs to always have the correct DOM entry
+		// so we break monomorphism on our input and supply it our vNode as parentVNode
+		// we can optimise this in the future, but this gets us out of a lot of issues
+		input.parentVNode = vNode;
 	}
 	return input;
 }
@@ -123,7 +135,7 @@ export function documentCreateElement(tag, isSVG) {
 	}
 }
 
-export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG) {
+export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, isRecycling) {
 	let lastInstance: any = null;
 	const instanceLastNode = lastNode._lastInput;
 
@@ -131,7 +143,7 @@ export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, con
 		lastInstance = lastNode;
 		lastNode = instanceLastNode;
 	}
-	unmount(lastNode, null, lifecycle, false, false);
+	unmount(lastNode, null, lifecycle, false, false, isRecycling);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode.dom = dom;
@@ -152,19 +164,19 @@ export function removeChild(parentDom, dom) {
 	parentDom.removeChild(dom);
 }
 
-export function removeAllChildren(dom, children, lifecycle, shallowUnmount) {
+export function removeAllChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
 	dom.textContent = '';
 	if (!lifecycle.fastUnmount) {
-		removeChildren(null, children, lifecycle, shallowUnmount);
+		removeChildren(null, children, lifecycle, shallowUnmount, isRecycling);
 	}
 }
 
-export function removeChildren(dom, children, lifecycle, shallowUnmount) {
+export function removeChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
 		if (!isInvalid(child)) {
-			unmount(child, dom, lifecycle, true, shallowUnmount);
+			unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
 		}
 	}
 }

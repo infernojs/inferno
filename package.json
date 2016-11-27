@@ -1,7 +1,7 @@
 {
   "name": "inferno-src",
   "license": "MIT",
-  "version": "1.0.0-beta13",
+  "version": "1.0.0-beta15",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -13,7 +13,7 @@
     "@types/chai": "^3.4.34",
     "@types/core-js": "^0.9.34",
     "@types/mocha": "^2.2.33",
-    "@types/node": "^6.0.48",
+    "@types/node": "^6.0.50",
     "@types/sinon": "^1.16.32",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
@@ -23,6 +23,7 @@
     "babel-plugin-module-resolver": "^2.3.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
     "babel-plugin-transform-es2015-modules-umd": "^6.18.0",
     "babel-plugin-transform-inline-environment-variables": "^6.8.0",
     "babel-plugin-transform-object-assign": "^6.8.0",
@@ -62,7 +63,7 @@
     "mocha-lcov-reporter": "^1.2.0",
     "most": "^1.1.0",
     "most-subject": "^5.2.0",
-    "nyc": "^9.0.1",
+    "nyc": "^10.0.0",
     "path-to-regexp-es6": "0.0.2",
     "pre-commit": "^1.1.3",
     "proptypes": "^0.14.3",
@@ -108,12 +109,7 @@
   ],
   "nyc": {
     "sourceMap": false,
-		"all": true,
-    "lines": 90,
-    "statements": 90,
-    "functions": 90,
-    "branches": 80,
-    "check-coverage": true,
+    "all": true,
     "include": [
       "src/*.ts",
       "src/**/*.ts"

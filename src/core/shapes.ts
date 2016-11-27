@@ -72,7 +72,12 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
 
-		if (isInvalid(n) || Array.isArray(n)) {
+		if (isInvalid(n)) {
+			if (!newNodes) {
+				newNodes = nodes.slice(0, i) as VNode[];
+			}
+			newNodes.push(n);
+		} else if (Array.isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
 
 			_normalizeVNodes(nodes, result, i);
@@ -131,6 +136,19 @@ export function createVNode(flags, type?, props?, children?, key?, ref?, noNorma
 		normalize(vNode);
 	}
 	return vNode;
+}
+
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+export function updateParentComponentVNodes(vNode, dom) {
+	if (vNode.flags & VNodeFlags.Component) {
+		const parentVNode = vNode.parentVNode;
+
+		if (parentVNode) {
+			parentVNode.dom = dom;
+			updateParentComponentVNodes(parentVNode, dom);
+		}
+	}
 }
 
 export function createVoidVNode() {

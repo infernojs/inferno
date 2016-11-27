@@ -1,5 +1,5 @@
 /*!
- * inferno-router v1.0.0-beta13
+ * inferno-router v1.0.0-beta15
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -123,9 +123,9 @@ var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment
 function toArray(children) {
     return isArray(children) ? children : (children ? [children] : children);
 }
-function isArray(obj) {
-    return obj instanceof Array;
-}
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+var isArray = Array.isArray;
 
 
 

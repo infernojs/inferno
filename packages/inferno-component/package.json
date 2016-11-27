@@ -1,6 +1,6 @@
 {
   "name": "inferno-component",
-  "version": "1.0.0-beta13",
+  "version": "1.0.0-beta15",
   "license": "MIT",
   "description": "Provides ES2015 stateful components (with lifecycle events) to Inferno",
   "author": {
@@ -27,7 +27,7 @@
     "rollup"
   ],
   "dependencies": {
-    "inferno": "1.0.0-beta13"
+    "inferno": "1.0.0-beta15"
   },
   "devDependencies": {
     "typescript": "^2.0.2"

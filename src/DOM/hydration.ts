@@ -11,10 +11,11 @@ import {
 	throwError,
 } from '../shared';
 import {
-	mountStatefulComponentCallbacks,
-	mountStatelessComponentCallbacks,
+mountStatefulComponentCallbacks,
+mountStatelessComponentCallbacks,
 } from './mounting';
 
+import Lifecycle from './lifecycle';
 import {
 	VNodeFlags,
 } from '../core/shapes';
@@ -65,17 +66,26 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 			copyPropsTo(defaultProps, props);
 			vNode.props = props;
 		}
-		const instance = createStatefulComponentInstance(type, props, context, _isSVG, devToolsStatus);
+		const instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG, devToolsStatus);
 		const input = instance._lastInput;
+		const fastUnmount = lifecycle.fastUnmount;
 
+		// we store the fastUnmount value, but we set it back to true on the lifecycle
+		// we do this so we can determine if the component render has a fastUnmount or not		
+		lifecycle.fastUnmount = true;
 		instance._vComponent = vNode;
 		instance._vNode = vNode;
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
+		const subLifecycle = instance._lifecycle = new Lifecycle();
+
+		subLifecycle.fastUnmount = lifecycle.fastUnmount;
+		// we then set the lifecycle fastUnmount value back to what it was before the mount
+		lifecycle.fastUnmount = fastUnmount;
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
 		componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
-		const input = createStatelessComponentInput(type, props, context);
+		const input = createStatelessComponentInput(vNode, type, props, context);
 
 		hydrate(input, dom, lifecycle, context, isSVG);
 		vNode.children = input;
@@ -90,32 +100,25 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 	const props = vNode.props;
 	const flags = vNode.flags;
 
-	vNode.dom = dom;
-
 	if (isSVG || (flags & VNodeFlags.SvgElement)) {
 		isSVG = true;
 	}
-	if (dom.tagName.toLowerCase() !== tag) {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError(`hydrateElement() failed due to mismatch on DOM element tag name. Ensure server-side logic matches client side logic.`);
-		}
-	}
-	if (children) {
-		hydrateChildren(children, dom, lifecycle, context, isSVG);
-	}
-	if (!(flags & VNodeFlags.HtmlElement)) {
-		processElement(flags, vNode, dom);
-	}
-	for (let prop in props) {
-		const value = props[prop];
+	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
+		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
 
-		if (prop === 'key') {
-			// TODO: Maybe ?
-		} else if (prop === 'ref') {
-			// TODO: Maybe ?
-		} else if (prop === 'children') {
-			// TODO: Maybe ?
-		} else {
+		vNode.dom = newDom;
+		replaceChild(dom.parentNode, newDom, dom);
+	} else {
+		vNode.dom = dom;
+		if (children) {
+			hydrateChildren(children, dom, lifecycle, context, isSVG);
+		}
+		if (!(flags & VNodeFlags.HtmlElement)) {
+			processElement(flags, vNode, dom);
+		}
+		for (let prop in props) {
+			const value = props[prop];
+
 			patchProp(prop, null, value, dom, isSVG);
 		}
 	}
@@ -124,13 +127,14 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 function hydrateChildren(children, dom, lifecycle, context, isSVG) {
 	normaliseChildNodes(dom);
 	const domNodes = Array.prototype.slice.call(dom.childNodes);
+	let childNodeIndex = 0;
 
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 
-			if (isObject(child)) {
-				hydrate(child, domNodes[i], lifecycle, context, isSVG);
+			if (isObject(child) && !isNull(child)) {
+				hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
 			}
 		}
 	} else if (isObject(children)) {
@@ -139,7 +143,14 @@ function hydrateChildren(children, dom, lifecycle, context, isSVG) {
 }
 
 function hydrateText(vNode, dom) {
-	vNode.dom = dom;
+	if (dom.nodeType === 3) {
+		const newDom = mountText(vNode, null);
+
+		vNode.dom = newDom;
+		replaceChild(dom.parentNode, newDom, dom);
+	} else {
+		vNode.dom = dom;
+	}
 }
 
 function hydrateVoid(vNode, dom) {
@@ -171,14 +182,9 @@ function hydrate(vNode, dom, lifecycle, context, isSVG) {
 }
 
 export default function hydrateRoot(input, parentDom, lifecycle) {
-	if (parentDom && parentDom.nodeType === 1) {
-		const rootNode = parentDom.querySelector('[data-infernoroot]');
-
-		if (rootNode && rootNode.parentNode === parentDom) {
-			rootNode.removeAttribute('data-infernoroot');
-			hydrate(input, rootNode, lifecycle, {}, false);
-			return true;
-		}
+	if (parentDom && parentDom.nodeType === 1 && parentDom.firstChild) {
+		hydrate(input, parentDom.firstChild, lifecycle, {}, false);
+		return true;
 	}
 	return false;
 }

@@ -1,5 +1,5 @@
 /*!
- * inferno-hyperscript v1.0.0-beta13
+ * inferno-hyperscript v1.0.0-beta15
  * (c) 2016 undefined
  * Released under the MIT License.
  */
@@ -12,9 +12,9 @@
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 
-function isArray(obj) {
-    return obj instanceof Array;
-}
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+var isArray = Array.isArray;
 function isStatefulComponent(o) {
     return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
@@ -125,7 +125,13 @@ function normalizeVNodes(nodes) {
     var newNodes;
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        if (isInvalid(n) || Array.isArray(n)) {
+        if (isInvalid(n)) {
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push(n);
+        }
+        else if (Array.isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
             _normalizeVNodes(nodes, result, i);
             return result;
@@ -183,6 +189,17 @@ function createVNode(flags, type, props, children, key, ref, noNormalise) {
         normalize(vNode);
     }
     return vNode;
+}
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+function updateParentComponentVNodes(vNode, dom) {
+    if (vNode.flags & 28 /* Component */) {
+        var parentVNode = vNode.parentVNode;
+        if (parentVNode) {
+            parentVNode.dom = dom;
+            updateParentComponentVNodes(parentVNode, dom);
+        }
+    }
 }
 
 function createTextVNode(text) {

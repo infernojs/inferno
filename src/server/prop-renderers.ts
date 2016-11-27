@@ -7,7 +7,7 @@ import {
 import { isUnitlessNumber } from '../DOM/constants';
 import {
 	toHyphenCase,
-	escapeAttr
+	escapeText
 } from './utils';
 
 export function renderStyleToString(style): string {
@@ -23,7 +23,7 @@ export function renderStyleToString(style): string {
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
-				styles.push(`${ toHyphenCase(styleName) }:${ escapeAttr(value) }${ px };`);
+				styles.push(`${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`);
 			}
 		}
 		return styles.join();
@@ -43,9 +43,9 @@ export function renderAttributes(props): string[] {
 				return;
 			default:
 				if (isStringOrNumber(value)) {
-					outputAttrs.push(escapeAttr(propKey) + '="' + escapeAttr(value) + '"');
+					outputAttrs.push(escapeText(propKey) + '="' + escapeText(value) + '"');
 				} else if (isTrue(value)) {
-					outputAttrs.push(escapeAttr(propKey));
+					outputAttrs.push(escapeText(propKey));
 				}
 		}
 	});

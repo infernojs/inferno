@@ -1,5 +1,5 @@
 /*!
- * inferno-create-class v1.0.0-beta13
+ * inferno-create-class v1.0.0-beta15
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -14,6 +14,8 @@ Component = 'default' in Component ? Component['default'] : Component;
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
 
 
 

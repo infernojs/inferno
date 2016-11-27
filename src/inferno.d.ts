@@ -1,7 +1,5 @@
 declare module 'inferno' {
 	export function createVNode(flags, type?, props?, children?, key?, ref?, noNormalise?: boolean): any;
-	export function createTextVNode(text: string): any;
-	export function createVoidVNode(): any;
 	export function cloneVNode(node, props?, ...children);
 	export function render(...rest)
 	export function findDOMNode(node: any): any;

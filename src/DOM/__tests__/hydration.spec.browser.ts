@@ -11,7 +11,7 @@ describe('SSR Hydration - (non-JSX)', () => {
 	[
 		{
 			node: createElement('div', null, createElement('span', null, 'Hello world')),
-			expect1: '<div data-infernoroot=""><span>Hello world</span></div>',
+			expect1: '<div><span>Hello world</span></div>',
 			expect2: '<div><span>Hello world</span></div>'
 		}
 		// {

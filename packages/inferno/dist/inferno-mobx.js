@@ -1,5 +1,5 @@
 /*!
- * inferno-mobx v1.0.0-beta13
+ * inferno-mobx v1.0.0-beta15
  * (c) 2016 Ryan Megidov
  * Released under the MIT License.
  */
@@ -17,6 +17,8 @@ createElement = 'default' in createElement ? createElement['default'] : createEl
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
 
 
 
