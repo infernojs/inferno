@@ -44,7 +44,7 @@ export function createStatefulComponentInstance(vNode, Component, props, context
 	instance._isSVG = isSVG;
 	instance.componentWillMount();
 	instance._beforeRender && instance._beforeRender();
-	let input = instance.render(props, context);
+	let input = instance.render(props, instance.state, context);
 
 	instance._afterRender && instance._afterRender();
 	if (isArray(input)) {

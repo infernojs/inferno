@@ -2059,7 +2059,7 @@ function createStatefulComponentInstance(vNode, Component$$1, props, context, is
     instance._isSVG = isSVG;
     instance.componentWillMount();
     instance._beforeRender && instance._beforeRender();
-    var input = instance.render(props, context);
+    var input = instance.render(props, instance.state, context);
     instance._afterRender && instance._afterRender();
     if (isArray(input)) {
         if (process.env.NODE_ENV !== 'production') {

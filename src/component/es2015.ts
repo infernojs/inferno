@@ -192,7 +192,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 	}
 
-	render(nextProps?: P, nextContext?) {
+	render(nextProps?: P, nextState?, nextContext?) {
 	}
 
 	forceUpdate(callback?) {
@@ -269,10 +269,11 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				this.componentWillUpdate(nextProps, nextState, context);
 				this._blockSetState = false;
 				this.props = nextProps;
-				this.state = nextState;
+				const state = this.state = nextState;
+
 				this.context = context;
 				this._beforeRender && this._beforeRender();
-				const render = this.render(nextProps, context);
+				const render = this.render(nextProps, state, context);
 
 				this._afterRender && this._afterRender();
 				return render;

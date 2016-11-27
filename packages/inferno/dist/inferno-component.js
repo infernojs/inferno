@@ -383,7 +383,7 @@ var Component$1 = function Component$1(props, context) {
         this.componentDidMount = null;
     }
 };
-Component$1.prototype.render = function render (nextProps, nextContext) {
+Component$1.prototype.render = function render (nextProps, nextState, nextContext) {
 };
 Component$1.prototype.forceUpdate = function forceUpdate (callback) {
     if (this._unmounted) {
@@ -449,10 +449,10 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
             this.componentWillUpdate(nextProps, nextState, context);
             this._blockSetState = false;
             this.props = nextProps;
-            this.state = nextState;
+            var state = this.state = nextState;
             this.context = context;
             this._beforeRender && this._beforeRender();
-            var render = this.render(nextProps, context);
+            var render = this.render(nextProps, state, context);
             this._afterRender && this._afterRender();
             return render;
         }
