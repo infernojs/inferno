@@ -1,6 +1,5 @@
 .history
 .git
-lib
 build
 .build
 .jshintrc
