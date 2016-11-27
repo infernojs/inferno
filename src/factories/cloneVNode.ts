@@ -47,13 +47,15 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 		newVNode = Object.assign({}, vNodeToClone);
 	} else {
 		const flags = vNodeToClone.flags;
+		const key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
+		const ref = vNodeToClone.ref || props.ref;
 
 		if (flags & VNodeFlags.Component) {
 			newVNode = createVNode(flags, vNodeToClone.type,
 				Object.assign({}, vNodeToClone.props, props),
 				null,
-				vNodeToClone.key,
-				vNodeToClone.ref,
+				key,
+				ref,
 				true
 			);
 		} else if (flags & VNodeFlags.Element) {
@@ -61,8 +63,8 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 			newVNode = createVNode(flags, vNodeToClone.type,
 				Object.assign({}, vNodeToClone.props, props),
 				children,
-				vNodeToClone.key,
-				vNodeToClone.ref,
+				key,
+				ref,
 				!children
 			);
 		}
