@@ -109,6 +109,11 @@
   "nyc": {
     "sourceMap": false,
     "all": true,
+    "lines": 90,
+    "statements": 90,
+    "functions": 90,
+    "branches": 80,
+    "check-coverage": true,
     "include": [
       "src/*.ts",
       "src/**/*.ts"
