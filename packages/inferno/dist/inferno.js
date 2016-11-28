@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta17
+ * inferno v1.0.0-beta18
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -1915,7 +1915,7 @@ function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
 function mountRef(dom, value, lifecycle) {
     if (isFunction(value)) {
         lifecycle.fastUnmount = false;
-        value(dom);
+        lifecycle.addListener(function () { return value(dom); });
     }
     else {
         if (isInvalid(value)) {

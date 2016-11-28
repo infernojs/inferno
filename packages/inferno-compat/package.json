@@ -1,6 +1,6 @@
 {
   "name": "inferno-compat",
-  "version": "1.0.0-beta17",
+  "version": "1.0.0-beta18",
   "license": "MIT",
   "description": "Provides a compatibility with React codebases",
   "author": {
@@ -21,11 +21,11 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "1.0.0-beta17",
+    "inferno": "1.0.0-beta18",
     "inferno-transition-group": "^1.1.0"
   },
   "devDependencies": {
     "proptypes": "^0.14.3",
-    "inferno-component": "1.0.0-beta17"
+    "inferno-component": "1.0.0-beta18"
   }
 }
