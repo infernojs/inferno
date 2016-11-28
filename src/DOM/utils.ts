@@ -16,6 +16,7 @@ import {
 } from '../core/shapes';
 import { componentToDOMNodeMap } from './rendering';
 import { svgNS } from './constants';
+import cloneVNode from '../factories/cloneVNode';
 
 export function copyPropsTo(copyFrom, copyTo) {
 	for (let prop in copyFrom) {
@@ -54,12 +55,17 @@ export function createStatefulComponentInstance(vNode, Component, props, context
 		throwError();
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
-	} else if (input.flags & VNodeFlags.Component) {
-		// if we have an input that is also a component, we run into a tricky situation
-		// where the root vNode needs to always have the correct DOM entry
-		// so we break monomorphism on our input and supply it our vNode as parentVNode
-		// we can optimise this in the future, but this gets us out of a lot of issues
-		input.parentVNode = vNode;
+	} else {
+		if (input.dom) {
+			input = cloneVNode(input);
+		}
+		if (input.flags & VNodeFlags.Component) {
+			// if we have an input that is also a component, we run into a tricky situation
+			// where the root vNode needs to always have the correct DOM entry
+			// so we break monomorphism on our input and supply it our vNode as parentVNode
+			// we can optimise this in the future, but this gets us out of a lot of issues
+			input.parentVNode = vNode;
+		}		
 	}
 	instance._pendingSetState = false;
 	instance._lastInput = input;
@@ -93,13 +99,18 @@ export function createStatelessComponentInput(vNode, component, props, context) 
 		throwError();
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
-	} else if (input.flags & VNodeFlags.Component) {
-		// if we have an input that is also a component, we run into a tricky situation
-		// where the root vNode needs to always have the correct DOM entry
-		// so we break monomorphism on our input and supply it our vNode as parentVNode
-		// we can optimise this in the future, but this gets us out of a lot of issues
-		input.parentVNode = vNode;
-	}
+	} else {
+		if (input.dom) {
+			input = cloneVNode(input);
+		}
+		if (input.flags & VNodeFlags.Component) {
+			// if we have an input that is also a component, we run into a tricky situation
+			// where the root vNode needs to always have the correct DOM entry
+			// so we break monomorphism on our input and supply it our vNode as parentVNode
+			// we can optimise this in the future, but this gets us out of a lot of issues
+			input.parentVNode = vNode;
+		}
+	} 
 	return input;
 }
 

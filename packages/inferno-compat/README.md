@@ -7,8 +7,8 @@ It provides the same exports as `react` and `react-dom`, meaning you can use you
 ## How to install?
 
 ```bash
-npm install --save inferno@beta16
-npm install --save inferno-compat@beta16
+npm install --save inferno@beta17
+npm install --save inferno-compat@beta17
 ```
 
 ## What is currently supported?

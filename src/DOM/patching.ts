@@ -10,7 +10,8 @@ import {
 	isArray,
 	isAttrAnEvent,
 	throwError,
-	EMPTY_OBJ
+	EMPTY_OBJ,
+	isObject
 } from './../shared';
 import {
 	mount,
@@ -322,6 +323,8 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				} else if (nextInput === NO_OP) {
 					nextInput = lastInput;
 					didUpdate = false;
+				} else if (isObject(nextInput) && nextInput.dom) {
+					nextInput = cloneVNode(nextInput);
 				}
 				if (nextInput.flags & VNodeFlags.Component) {
 					nextInput.parentVNode = nextVNode;
@@ -364,6 +367,8 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 					}
 					throwError();
+				} else if (isObject(nextInput) && nextInput.dom) {
+					nextInput = cloneVNode(nextInput);
 				}
 				if (nextInput !== NO_OP) {
 					patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);

@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-beta16
+ * inferno-compat v1.0.0-beta17
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -1482,6 +1482,9 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextInput$1 = lastInput$1;
                     didUpdate = false;
                 }
+                else if (isObject(nextInput$1) && nextInput$1.dom) {
+                    nextInput$1 = cloneVNode(nextInput$1);
+                }
                 if (nextInput$1.flags & 28 /* Component */) {
                     nextInput$1.parentVNode = nextVNode;
                 }
@@ -1524,6 +1527,9 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                         throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
                     }
                     throwError();
+                }
+                else if (isObject(nextInput$2) && nextInput$2.dom) {
+                    nextInput$2 = cloneVNode(nextInput$2);
                 }
                 if (nextInput$2 !== NO_OP) {
                     patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG, isRecycling);
@@ -2042,7 +2048,7 @@ function removeProp(prop, dom) {
         dom.value = '';
     }
     else if (prop === 'style') {
-        dom.style = '';
+        dom.style.cssText = null;
         dom.removeAttribute('style');
     }
     else {
@@ -2086,12 +2092,17 @@ function createStatefulComponentInstance(vNode, Component$$1, props, context, is
     else if (isInvalid(input)) {
         input = createVoidVNode();
     }
-    else if (input.flags & 28 /* Component */) {
-        // if we have an input that is also a component, we run into a tricky situation
-        // where the root vNode needs to always have the correct DOM entry
-        // so we break monomorphism on our input and supply it our vNode as parentVNode
-        // we can optimise this in the future, but this gets us out of a lot of issues
-        input.parentVNode = vNode;
+    else {
+        if (input.dom) {
+            input = cloneVNode(input);
+        }
+        if (input.flags & 28 /* Component */) {
+            // if we have an input that is also a component, we run into a tricky situation
+            // where the root vNode needs to always have the correct DOM entry
+            // so we break monomorphism on our input and supply it our vNode as parentVNode
+            // we can optimise this in the future, but this gets us out of a lot of issues
+            input.parentVNode = vNode;
+        }
     }
     instance._pendingSetState = false;
     instance._lastInput = input;
@@ -2124,12 +2135,17 @@ function createStatelessComponentInput(vNode, component, props, context) {
     else if (isInvalid(input)) {
         input = createVoidVNode();
     }
-    else if (input.flags & 28 /* Component */) {
-        // if we have an input that is also a component, we run into a tricky situation
-        // where the root vNode needs to always have the correct DOM entry
-        // so we break monomorphism on our input and supply it our vNode as parentVNode
-        // we can optimise this in the future, but this gets us out of a lot of issues
-        input.parentVNode = vNode;
+    else {
+        if (input.dom) {
+            input = cloneVNode(input);
+        }
+        if (input.flags & 28 /* Component */) {
+            // if we have an input that is also a component, we run into a tricky situation
+            // where the root vNode needs to always have the correct DOM entry
+            // so we break monomorphism on our input and supply it our vNode as parentVNode
+            // we can optimise this in the future, but this gets us out of a lot of issues
+            input.parentVNode = vNode;
+        }
     }
     return input;
 }
