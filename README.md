@@ -118,7 +118,7 @@ https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta18/inferno.min.js
 
 #### JSX:
 ```shÏ
-npm install --save-dev babel-plugin-inferno@beta11
+npm install --save-dev babel-plugin-inferno@beta12
 ```
 
 #### Hyperscript:
