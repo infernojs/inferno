@@ -226,7 +226,7 @@ export function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
 export function mountRef(dom, value, lifecycle) {
 	if (isFunction(value)) {
 		lifecycle.fastUnmount = false;
-		value(dom);
+		lifecycle.addListener(() => value(dom));
 	} else {
 		if (isInvalid(value)) {
 			return;
