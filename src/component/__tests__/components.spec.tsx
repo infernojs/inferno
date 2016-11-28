@@ -2635,6 +2635,82 @@ describe('Components (JSX)', () => {
 		});
 	});
 
+	describe('Root handling issues #4', () => {
+
+		class A extends Component<any, any> {
+			public onClick;
+
+			constructor(props) {
+				super(props);
+				this.state = { n: false };
+				
+				this.onClick = () => {
+				this.setState({ n: !this.state.n });
+				}
+			}
+		
+			render() {
+				if (this.state.n) {
+				return <div onClick={this.onClick}>DIV</div>
+				}
+				return <span onClick={this.onClick}>SPAN</span>
+			}
+		}
+
+		class B extends Component<any, any> {
+			shouldComponentUpdate() {
+				return false;
+			}
+
+			render() {
+				return this.props.children;
+			}
+		}
+
+		class Test extends Component<any, any> {
+			constructor(props) {
+				super(props);
+				this.state = {
+					reverse: false,
+				};
+			}
+
+			render() {
+				const children = [
+					<B key="b"><A /></B>,
+					<div key="a">A</div>
+				];
+				if (this.state.reverse) {
+					children.reverse();
+				}
+			
+				return (
+					<div>
+						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<div>
+							{ children }
+						</div>
+						<div>
+							{ children }
+						</div>
+					</div>
+				);
+			}
+		}
+
+
+		it('should correct swap rows', () => {
+			render(<Test />, container);
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>');
+			// click "SWAP ROWS"
+			container.querySelector('button').click();
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>A</div><span>SPAN</span></div><div><div>A</div><span>SPAN</span></div></div>');
+			// click "SWAP ROWS"
+			container.querySelector('button').click();
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>');
+		});
+	});
+
 	describe('Cloned children issues #1', () => {
 
 		class Test extends Component<any, any> {

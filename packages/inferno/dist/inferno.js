@@ -101,6 +101,7 @@ function cloneVNode(vNodeToClone, props) {
         }
     }
     children = null;
+    var flags = vNodeToClone.flags;
     var newVNode;
     if (isArray(vNodeToClone)) {
         newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
@@ -109,7 +110,6 @@ function cloneVNode(vNodeToClone, props) {
         newVNode = Object.assign({}, vNodeToClone);
     }
     else {
-        var flags = vNodeToClone.flags;
         var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
         var ref = vNodeToClone.ref || props.ref;
         if (flags & 28 /* Component */) {
@@ -119,6 +119,23 @@ function cloneVNode(vNodeToClone, props) {
             children = (props && props.children) || vNodeToClone.children;
             newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, key, ref, !children);
         }
+    }
+    if (flags & 28 /* Component */) {
+        var props$1 = newVNode.props;
+        // we need to also clone component children that are in props
+        // as the children may also have been hoisted
+        if (props$1 && props$1.children) {
+            var children$1 = props$1.children;
+            if (isArray(children$1)) {
+                for (var i = 0; i < children$1.length; i++) {
+                    props$1.children[i] = cloneVNode(children$1[i]);
+                }
+            }
+            else if (isVNode(children$1)) {
+                props$1.children = cloneVNode(children$1);
+            }
+        }
+        newVNode.children = null;
     }
     newVNode.dom = null;
     return newVNode;
@@ -189,7 +206,7 @@ function normalize(vNode) {
     var props = vNode.props;
     var children = vNode.children;
     if (props) {
-        if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
+        if (!(vNode.flags & 28 /* Component */) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
             vNode.children = props.children;
         }
         if (props.ref) {
@@ -750,9 +767,6 @@ function sendRoots(global) {
 }
 
 function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling) {
-    if (nextVNode.dom) {
-        debugger;
-    }
     if (lastVNode !== nextVNode) {
         var lastFlags = lastVNode.flags;
         var nextFlags = nextVNode.flags;
@@ -1119,10 +1133,6 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
     var bStart = 0;
     var i;
     var j;
-    var aStartNode = a[aStart];
-    var bStartNode = b[bStart];
-    var aEndNode = a[aEnd];
-    var bEndNode = b[bEnd];
     var aNode;
     var bNode;
     var nextNode;
@@ -1138,6 +1148,10 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
         removeAllChildren(dom, a, lifecycle, false, isRecycling);
         return;
     }
+    var aStartNode = a[aStart];
+    var bStartNode = b[bStart];
+    var aEndNode = a[aEnd];
+    var bEndNode = b[bEnd];
     if (bStartNode.dom) {
         b[bStart] = bStartNode = cloneVNode(bStartNode);
     }

@@ -113,7 +113,7 @@ function normalize(vNode) {
 	const children = vNode.children;
 
 	if (props) {
-		if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
+		if (!(vNode.flags & VNodeFlags.Component) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
 			vNode.children = props.children;
 		}
 		if (props.ref) {

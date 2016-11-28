@@ -58,9 +58,6 @@ import {
 import cloneVNode from '../factories/cloneVNode';
 
 export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG: boolean, isRecycling: boolean) {
-	if (nextVNode.dom) {
-		debugger;		
-	}
 	if (lastVNode !== nextVNode) {
 		const lastFlags = lastVNode.flags;
 		const nextFlags = nextVNode.flags;
@@ -478,10 +475,6 @@ export function patchKeyedChildren(
 	let bStart = 0;
 	let i;
 	let j;
-	let aStartNode = a[aStart];
-	let bStartNode = b[bStart];
-	let aEndNode = a[aEnd];
-	let bEndNode = b[bEnd];
 	let aNode;
 	let bNode;
 	let nextNode;
@@ -497,6 +490,11 @@ export function patchKeyedChildren(
 		removeAllChildren(dom, a, lifecycle, false, isRecycling);
 		return;
 	}
+	let aStartNode = a[aStart];
+	let bStartNode = b[bStart];
+	let aEndNode = a[aEnd];
+	let bEndNode = b[bEnd];
+
 	if (bStartNode.dom) {
 		b[bStart] = bStartNode = cloneVNode(bStartNode);
 	}

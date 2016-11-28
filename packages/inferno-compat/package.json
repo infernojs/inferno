@@ -21,11 +21,11 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "1.0.0-beta15"
+    "inferno": "1.0.0-beta15",
+    "inferno-transition-group": "^1.1.0"
   },
   "devDependencies": {
     "proptypes": "^0.14.3",
-    "inferno-component": "1.0.0-beta15",
-    "preact-transition-group": "^1.1.0"
+    "inferno-component": "1.0.0-beta15"
   }
 }
