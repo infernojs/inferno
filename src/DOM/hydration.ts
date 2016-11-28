@@ -2,17 +2,21 @@ import {
 	copyPropsTo,
 	createStatefulComponentInstance,
 	createStatelessComponentInput,
+	replaceChild,
 } from './utils';
 import {
 	isArray,
 	isInvalid,
+	isNull,
 	isObject,
 	isUndefined,
 	throwError,
 } from '../shared';
 import {
-mountStatefulComponentCallbacks,
-mountStatelessComponentCallbacks,
+	mountElement,
+	mountStatefulComponentCallbacks,
+	mountStatelessComponentCallbacks,
+	mountText,
 } from './mounting';
 
 import Lifecycle from './lifecycle';
@@ -74,7 +78,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 		// we do this so we can determine if the component render has a fastUnmount or not		
 		lifecycle.fastUnmount = true;
 		instance._vComponent = vNode;
-		instance._vNode = vNode;
+		instance._vNode = vNode;		
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
 		const subLifecycle = instance._lifecycle = new Lifecycle();
 
