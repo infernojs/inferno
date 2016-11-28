@@ -1,20 +1,20 @@
 import {
-	isNullOrUndef,
 	isArray,
-	// isNull,
-	isInvalid,
 	isFunction,
+	isInvalid,
+	isNullOrUndef,
+	isObject,
 	throwError,
-	isObject
 } from '../shared';
-import { removeChild } from './utils';
-import { componentToDOMNodeMap } from './rendering';
 import {
-	poolElement,
 	poolComponent,
-	recyclingEnabled
+	poolElement,
+	recyclingEnabled,
 } from './recycling';
+
 import { VNodeFlags } from '../core/shapes';
+import { componentToDOMNodeMap } from './rendering';
+import { removeChild } from './utils';
 
 export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
 	const flags = vNode.flags;
@@ -67,7 +67,7 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 			instance.componentWillUnmount();
 			if (ref && !isRecycling) {
 				ref(null);
-			}			
+			}
 			instance._unmounted = true;
 			componentToDOMNodeMap.delete(instance);
 		} else if (!isNullOrUndef(ref)) {

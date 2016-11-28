@@ -1,22 +1,23 @@
-import { mount } from './mounting';
-import { patch } from './patching';
-import {
-	isArray,
-	isNullOrUndef,
-	isInvalid,
-	isUndefined,
-	throwError
-} from './../shared';
-import {
-	unmount
-} from './unmounting';
 import {
 	VNodeFlags,
-	createVoidVNode
+	createVoidVNode,
 } from '../core/shapes';
-import { componentToDOMNodeMap } from './rendering';
-import { svgNS } from './constants';
+import {
+	isArray,
+	isInvalid,
+	isNullOrUndef,
+	isUndefined,
+	throwError,
+} from './../shared';
+
 import cloneVNode from '../factories/cloneVNode';
+import { componentToDOMNodeMap } from './rendering';
+import { mount } from './mounting';
+import { patch } from './patching';
+import { svgNS } from './constants';
+import {
+	unmount,
+} from './unmounting';
 
 export function copyPropsTo(copyFrom, copyTo) {
 	for (let prop in copyFrom) {
@@ -65,7 +66,7 @@ export function createStatefulComponentInstance(vNode, Component, props, context
 			// so we break monomorphism on our input and supply it our vNode as parentVNode
 			// we can optimise this in the future, but this gets us out of a lot of issues
 			input.parentVNode = vNode;
-		}		
+		}
 	}
 	instance._pendingSetState = false;
 	instance._lastInput = input;
@@ -110,7 +111,7 @@ export function createStatelessComponentInput(vNode, component, props, context) 
 			// we can optimise this in the future, but this gets us out of a lot of issues
 			input.parentVNode = vNode;
 		}
-	} 
+	}
 	return input;
 }
 
