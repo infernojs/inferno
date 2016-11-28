@@ -10,10 +10,12 @@ describe('Component lifecycle (JSX)', () => {
 
 	beforeEach(function() {
 		container = document.createElement('div');
+        document.body.appendChild(container);
 	});
 
 	afterEach(function() {
 		container.innerHTML = '';
+        document.body.removeChild(container);
 	});
 
 	describe('componentWillUnmount', () => {
@@ -602,6 +604,36 @@ describe('Component lifecycle (JSX)', () => {
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
+		});
+
+		it('Should have width defined when html node is attached', () => {
+			let node = null;
+
+
+			class Hello extends Component<any, any> {
+			    constructor(props) {
+			        super(props);
+                }
+
+                componentDidMount() {
+                    expect(node.offsetWidth, 'ref node should have width in Didmount').not.to.eql(0);
+                }
+
+                ref(n) {
+                    expect(n.offsetWidth, 'ref node should have width in callback').not.to.eql(0);
+                    node = n;
+                }
+
+                render() {
+			        return (
+			            <div ref={this.ref}>
+                            Hello World
+                        </div>
+                    )
+                }
+            }
+
+			render(<Hello/>, container);
 		});
 	});
 

@@ -1,4 +1,7 @@
 _site
+.history
+.git
+build
 .build
 .git
 .history

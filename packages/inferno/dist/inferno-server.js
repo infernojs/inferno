@@ -1,5 +1,5 @@
 /*!
- * inferno-server v1.0.0-beta15
+ * inferno-server v1.0.0-beta18
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -94,8 +94,10 @@ function escapeText(_string) {
     }
     return characters;
 }
+var uppercasePattern = /[A-Z]/g;
+var msPattern = /^ms-/;
 function toHyphenCase(str) {
-    return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+    return str.replace(uppercasePattern, '-$&').toLowerCase().replace(msPattern, '-ms-');
 }
 var voidElements = {
     area: true,
