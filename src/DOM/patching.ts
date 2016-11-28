@@ -903,7 +903,7 @@ function removeProp(prop, dom) {
 	} else if (prop === 'value') {
 		dom.value = '';
 	} else if (prop === 'style') {
-		dom.style = '';
+		dom.style.cssText = null;
 		dom.removeAttribute('style');
 	} else {
 		dom.removeAttribute(prop);
