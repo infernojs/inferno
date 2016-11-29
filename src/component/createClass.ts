@@ -87,12 +87,12 @@ function applyMixins(inst, mixins) {
 }
 
 export default function createClass<P, S>(obj: ComponentSpec<P, S>) {
-	return class Cl extends Component<P, S> {
+	class Cl extends Component<P, S> {
 		static displayName = obj.displayName || 'Component';
 		static propTypes = obj.propTypes;
 		static defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
 		static mixins = obj.mixins && collateMixins(obj.mixins);
-		public isMounted = () => !this._unmounted;
+		public isMounted = function() { return !this._unmounted };
 
 		constructor(props) {
 			super(props);
@@ -106,4 +106,8 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>) {
 			}
 		}
 	};
+	if (obj.statics) {
+		extend(Cl, obj.statics);
+	}
+	return Cl;
 }

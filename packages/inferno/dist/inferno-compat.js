@@ -491,34 +491,35 @@ function applyMixins(inst, mixins) {
     }
 }
 function createClass(obj) {
-    return (Cl_1 = (function (Component$$1) {
+    var Cl = (function (Component$$1) {
         function Cl(props) {
-                var this$1 = this;
-
-                Component$$1.call(this, props);
-                this.isMounted = function () { return !this$1._unmounted; };
-                extend(this, obj);
-                if (Cl.mixins) {
-                    applyMixins(this, Cl.mixins);
-                }
-                bindAll(this);
-                if (obj.getInitialState) {
-                    this.state = obj.getInitialState.call(this);
-                }
+            Component$$1.call(this, props);
+            this.isMounted = function () { return !this._unmounted; };
+            extend(this, obj);
+            if (Cl.mixins) {
+                applyMixins(this, Cl.mixins);
             }
+            bindAll(this);
+            if (obj.getInitialState) {
+                this.state = obj.getInitialState.call(this);
+            }
+        }
 
         if ( Component$$1 ) Cl.__proto__ = Component$$1;
         Cl.prototype = Object.create( Component$$1 && Component$$1.prototype );
         Cl.prototype.constructor = Cl;
 
         return Cl;
-    }(Component)),
-        Cl_1.displayName = obj.displayName || 'Component',
-        Cl_1.propTypes = obj.propTypes,
-        Cl_1.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined,
-        Cl_1.mixins = obj.mixins && collateMixins(obj.mixins),
-        Cl_1);
-    var Cl_1;
+    }(Component));
+    Cl.displayName = obj.displayName || 'Component';
+    Cl.propTypes = obj.propTypes;
+    Cl.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
+    Cl.mixins = obj.mixins && collateMixins(obj.mixins);
+    
+    if (obj.statics) {
+        extend(Cl, obj.statics);
+    }
+    return Cl;
 }
 
 function cloneVNode(vNodeToClone, props) {
