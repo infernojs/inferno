@@ -92,24 +92,24 @@ Inferno.render(<MyComponent />, document.body);
 Core package:
 
 ```sh
-npm install --save inferno@beta19
+npm install --save inferno@beta20
 ```
 
 Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta19
+npm install --save inferno-component@beta20
 # server-side rendering
-npm install --save inferno-server@beta19
+npm install --save inferno-server@beta20
 # routing
-npm install --save inferno-router@beta19
+npm install --save inferno-router@beta20
 ```
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta19/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta20/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -121,17 +121,17 @@ npm install --save-dev babel-plugin-inferno@beta12
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta19
+npm install --save inferno-hyperscript@beta20
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta19
+npm install --save inferno-create-element@beta20
 ```
 
 ### Compatability with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta19
+npm install --save-dev inferno-compat@beta20
 ```
 
 Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
