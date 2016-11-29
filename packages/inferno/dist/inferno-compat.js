@@ -443,7 +443,6 @@ function bindAll(ctx) {
         }
     }
 }
-// Flatten an Array of mixins to a map of method name to mixin implementations
 function collateMixins(mixins) {
     var keyed = {};
     for (var i = 0; i < mixins.length; i++) {
@@ -456,15 +455,40 @@ function collateMixins(mixins) {
     }
     return keyed;
 }
-// apply a mapping of Arrays of mixin methods to a component instance
-function applyMixins(inst, mixins) {
-    var loop = function ( key ) {
-        if (mixins.hasOwnProperty(key)) {
-            inst[key] = function () { return mixins[key].forEach(function (mixin) { return mixin.call(inst); }); };
-        }
-    };
+function applyMixin(key, inst, mixin) {
+    var original = inst[key];
+    inst[key] = function () {
+        var arguments$1 = arguments;
 
-    for (var key in mixins) loop( key );
+        var ret;
+        for (var i = 0; i < mixin.length; i++) {
+            var method = mixin[i];
+            var _ret = method.apply(inst, arguments$1);
+            if (!isUndefined(_ret)) {
+                ret = _ret;
+            }
+        }
+        if (original) {
+            var _ret$1 = original.call(inst);
+            if (!isUndefined(_ret$1)) {
+                ret = _ret$1;
+            }
+        }
+        return ret;
+    };
+}
+function applyMixins(inst, mixins) {
+    for (var key in mixins) {
+        if (mixins.hasOwnProperty(key)) {
+            var mixin = mixins[key];
+            if (isFunction(mixin[0])) {
+                applyMixin(key, inst, mixin);
+            }
+            else {
+                inst[key] = mixin;
+            }
+        }
+    }
 }
 function createClass(obj) {
     return (Cl_1 = (function (Component$$1) {
@@ -473,10 +497,10 @@ function createClass(obj) {
 
                 Component$$1.call(this, props);
                 this.isMounted = function () { return !this$1._unmounted; };
+                extend(this, obj);
                 if (Cl.mixins) {
                     applyMixins(this, Cl.mixins);
                 }
-                extend(this, obj);
                 bindAll(this);
                 if (obj.getInitialState) {
                     this.state = obj.getInitialState.call(this);
@@ -560,7 +584,9 @@ function cloneVNode(vNodeToClone, props) {
             var children$1 = props$1.children;
             if (isArray(children$1)) {
                 for (var i = 0; i < children$1.length; i++) {
-                    props$1.children[i] = cloneVNode(children$1[i]);
+                    if (isVNode(children$1[i])) {
+                        props$1.children[i] = cloneVNode(children$1[i]);
+                    }
                 }
             }
             else if (isVNode(children$1)) {
@@ -943,6 +969,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
             }
         }
         if (isStatefulComponent$$1) {
+            instance._ignoreSetState = true;
             instance.componentWillUnmount();
             if (ref && !isRecycling) {
                 ref(null);

@@ -79,7 +79,9 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 
 			if (isArray(children)) {
 				for (let i = 0; i < children.length; i++) {
-					props.children[i] = cloneVNode(children[i])
+					if (isVNode(children[i])) {
+						props.children[i] = cloneVNode(children[i])
+					}
 				}
 			} else if (isVNode(children)) {
 				props.children = cloneVNode(children)

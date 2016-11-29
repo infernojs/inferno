@@ -1,6 +1,6 @@
 import {ComponentSpec} from './es2015';
 import Component from 'inferno-component';
-import { isNullOrUndef } from '../shared';
+import { isNullOrUndef, isFunction, isUndefined } from '../shared';
 
 // don't autobind these methods since they already have guaranteed context.
 const AUTOBIND_BLACKLIST = {
@@ -34,13 +34,12 @@ function bindAll(ctx) {
 	}
 }
 
-// Flatten an Array of mixins to a map of method name to mixin implementations
 function collateMixins(mixins) {
 	let keyed = {};
 	for (let i=0; i<mixins.length; i++) {
 		let mixin = mixins[i];
 		for (let key in mixin) {
-			if (mixin.hasOwnProperty(key) && typeof mixin[key]==='function') {
+			if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
 				(keyed[key] || (keyed[key]=[])).push(mixin[key]);
 			}
 		}
@@ -48,12 +47,41 @@ function collateMixins(mixins) {
 	return keyed;
 }
 
+function applyMixin(key, inst, mixin) {
+	const original = inst[key];
 
-// apply a mapping of Arrays of mixin methods to a component instance
+	inst[key] = function () {
+		let ret;
+
+		for (let i = 0; i < mixin.length; i++) {
+			const method = mixin[i];
+			const _ret = method.apply(inst, arguments);
+
+			if (!isUndefined(_ret)) {
+				ret = _ret;
+			}
+		}
+		if (original) {
+			const _ret = original.call(inst);
+
+			if (!isUndefined(_ret)) {
+                ret = _ret;
+            }
+		}
+		return ret;
+	}
+}
+
 function applyMixins(inst, mixins) {
 	for (let key in mixins) {
 		if (mixins.hasOwnProperty(key)) {
-			inst[key] = () => mixins[key].forEach(mixin => mixin.call(inst));
+			const mixin = mixins[key];
+
+			if (isFunction(mixin[0])) {
+				applyMixin(key, inst, mixin);
+			} else {
+				inst[key] = mixin;
+			}
 		}
 	}
 }
@@ -68,10 +96,10 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>) {
 
 		constructor(props) {
 			super(props);
+			extend(this, obj);
 			if (Cl.mixins) {
 				applyMixins(this, Cl.mixins);
-			}
-			extend(this, obj);
+			}			
 			bindAll(this);
 			if (obj.getInitialState) {
 				this.state = obj.getInitialState.call(this);
