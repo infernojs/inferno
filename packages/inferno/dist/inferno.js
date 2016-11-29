@@ -1470,10 +1470,10 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
         else if (prop === 'dangerouslySetInnerHTML') {
             var lastHtml = lastValue && lastValue.__html;
             var nextHtml = nextValue && nextValue.__html;
-            if (isNullOrUndef(nextHtml)) {
-                
-            } else if (lastHtml !== nextHtml) {
-                dom.innerHTML = nextHtml;
+            if (lastHtml !== nextHtml) {
+                if (!isNullOrUndef(nextHtml)) {
+                    dom.innerHTML = nextHtml;
+                }
             }
         }
         else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
