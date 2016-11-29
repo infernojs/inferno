@@ -16,7 +16,7 @@ To quote a member of the React core team at Facebook:
 
 Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their **existing React projects** to Inferno in a few lines of code using [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat).
 
-For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. Based on the concept of *learn once, write anywhere*, Inferno doesn't impose any restrictions on how you create components. Your literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
+For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. Based on the concept of *learn once, write anywhere*, Inferno doesn't impose any restrictions on how you create components. You literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
 
 In terms of performance, Inferno is currently the **fastest** JavaScript UI library there is – both in benchmarks and actual real-world scenarios. It excels on the browser at inital page load, parse times, render times and update times. Inferno's server-side rendering is around 10-20x faster than React and Preact, it's around 5x faster than Vue and Angular2.
 
@@ -117,7 +117,7 @@ https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta19/inferno.min.js
 ### Creating Virtual DOM
 
 #### JSX:
-```shÏ
+```sh
 npm install --save-dev babel-plugin-inferno@beta12
 ```
 
