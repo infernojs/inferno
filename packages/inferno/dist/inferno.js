@@ -1471,12 +1471,8 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
             var lastHtml = lastValue && lastValue.__html;
             var nextHtml = nextValue && nextValue.__html;
             if (isNullOrUndef(nextHtml)) {
-                if (process.env.NODE_ENV !== 'production') {
-                    throwError('dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
-                }
-                throwError();
-            }
-            if (lastHtml !== nextHtml) {
+                
+            } else if (lastHtml !== nextHtml) {
                 dom.innerHTML = nextHtml;
             }
         }
