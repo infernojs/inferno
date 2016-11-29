@@ -34,14 +34,43 @@ function bindAll(ctx) {
 	}
 }
 
+// Flatten an Array of mixins to a map of method name to mixin implementations
+function collateMixins(mixins) {
+	let keyed = {};
+	for (let i=0; i<mixins.length; i++) {
+		let mixin = mixins[i];
+		for (let key in mixin) {
+			if (mixin.hasOwnProperty(key) && typeof mixin[key]==='function') {
+				(keyed[key] || (keyed[key]=[])).push(mixin[key]);
+			}
+		}
+	}
+	return keyed;
+}
+
+
+// apply a mapping of Arrays of mixin methods to a component instance
+function applyMixins(inst, mixins) {
+	for (let key in mixins) {
+		if (mixins.hasOwnProperty(key)) {
+			inst[key] = () => mixins[key].forEach(mixin => mixin.call(inst));
+		}
+	}
+}
+
 export default function createClass<P, S>(obj: ComponentSpec<P, S>) {
 	return class Cl extends Component<P, S> {
 		static displayName = obj.displayName || 'Component';
 		static propTypes = obj.propTypes;
 		static defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
+		static mixins = obj.mixins && collateMixins(obj.mixins);
+		public isMounted = () => !this._unmounted;
 
 		constructor(props) {
 			super(props);
+			if (Cl.mixins) {
+				applyMixins(this, Cl.mixins);
+			}
 			extend(this, obj);
 			bindAll(this);
 			if (obj.getInitialState) {

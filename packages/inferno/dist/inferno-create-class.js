@@ -64,10 +64,39 @@ function bindAll(ctx) {
         }
     }
 }
+// Flatten an Array of mixins to a map of method name to mixin implementations
+function collateMixins(mixins) {
+    var keyed = {};
+    for (var i = 0; i < mixins.length; i++) {
+        var mixin = mixins[i];
+        for (var key in mixin) {
+            if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
+                (keyed[key] || (keyed[key] = [])).push(mixin[key]);
+            }
+        }
+    }
+    return keyed;
+}
+// apply a mapping of Arrays of mixin methods to a component instance
+function applyMixins(inst, mixins) {
+    var loop = function ( key ) {
+        if (mixins.hasOwnProperty(key)) {
+            inst[key] = function () { return mixins[key].forEach(function (mixin) { return mixin.call(inst); }); };
+        }
+    };
+
+    for (var key in mixins) loop( key );
+}
 function createClass$1(obj) {
     return (Cl_1 = (function (Component$$1) {
         function Cl(props) {
+                var this$1 = this;
+
                 Component$$1.call(this, props);
+                this.isMounted = function () { return !this$1._unmounted; };
+                if (Cl.mixins) {
+                    applyMixins(this, Cl.mixins);
+                }
                 extend(this, obj);
                 bindAll(this);
                 if (obj.getInitialState) {
@@ -84,6 +113,7 @@ function createClass$1(obj) {
         Cl_1.displayName = obj.displayName || 'Component',
         Cl_1.propTypes = obj.propTypes,
         Cl_1.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined,
+        Cl_1.mixins = obj.mixins && collateMixins(obj.mixins),
         Cl_1);
     var Cl_1;
 }

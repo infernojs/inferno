@@ -45,6 +45,7 @@ export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
 
 export interface ComponentSpec<P, S> extends Mixin<P, S> {
 	render(props?, context?): any;
+	mixins?: any;
 	[propertyName: string]: any;
 }
 
