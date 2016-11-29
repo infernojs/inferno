@@ -81,7 +81,7 @@ function renderVNodeToString(vNode, context, firstChild) {
 					if (isStringOrNumber(value)) {
 						renderedString += ` ${ prop }="${ escapeText(value) }"`;
 					} else if (isTrue(value)) {
-						renderedString += ` "${ prop }"`;
+						renderedString += ` ${ prop }`;
 					}
 				}
 			}

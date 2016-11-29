@@ -27,6 +27,10 @@ describe('SSR Creation (JSX)', () => {
 		template: () => <div>{ null }<span>emptyValue: { null }</span></div>,
 		result: '<div><span>emptyValue: </span></div>'
 	}, {
+		description: 'should render a component with valueless attribute',
+		template: () => <script src="foo" async></script>,
+		result: '<script src="foo" async></script>'
+	}, {
 		description: 'should render a stateless component with text',
 		template: () => <div>Hello world, { '1' }2{ '3' }</div>,
 		result: '<div>Hello world, <!---->1<!---->2<!---->3</div>'
