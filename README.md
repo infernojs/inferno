@@ -87,8 +87,6 @@ Inferno.render(<MyComponent />, document.body);
 
 - [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/trueadm/d5o3oza0/)
 
-Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
-
 ## Getting Started
 
 Core package:
@@ -135,6 +133,8 @@ npm install --save inferno-create-element@beta19
 ```sh
 npm install --save-dev inferno-compat@beta19
 ```
+
+Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
 
 ## Inferno Top-Level API
 
