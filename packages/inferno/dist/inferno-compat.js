@@ -2752,7 +2752,7 @@ Component.prototype._afterRender = function() {
 };
 
 var cloneElement = cloneVNode;
-var version = '15.3.4';
+var version = '15.4.1';
 
 function normalizeProps(name, props) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
@@ -2763,6 +2763,18 @@ function normalizeProps(name, props) {
 			delete props.onChange; 
 		}
 	}
+	for (var prop in props) {
+		if (prop[0] === 'o' && prop[1] === 'n' && prop.length > 4) {
+			proxyEvent(props, prop, props[prop]);
+		}
+	}
+}
+
+function proxyEvent(props, prop, oldValue) {
+	props[prop] = function (e) {
+		e.persist = function () {};
+		oldValue(e);
+	};
 }
 
 var createElement = function (name, _props) {
