@@ -1,29 +1,30 @@
 import {
-	isArray,
-	isStringOrNumber,
-	isNullOrUndef,
-	isInvalid,
-	isNull,
-	isNumber,
-	isTrue,
-	throwError
-} from './../shared';
-import { isUnitlessNumber } from '../DOM/constants';
-import {
-	toHyphenCase,
+	isVoidElement as _isVoidElement,
 	escapeText,
-	isVoidElement as _isVoidElement
+	toHyphenCase,
 } from './utils';
 import {
-	VNodeFlags
+	isArray,
+	isInvalid,
+	isNull,
+	isNullOrUndef,
+	isNumber,
+	isStringOrNumber,
+	isTrue,
+	throwError,
+} from './../shared';
+
+import {
+	VNodeFlags,
 } from '../core/shapes';
+import { isUnitlessNumber } from '../DOM/constants';
 
 function renderStylesToString(styles) {
 	if (isStringOrNumber(styles)) {
 		return styles;
 	} else {
 		let renderedString = '';
-	
+
 		for (let styleName in styles) {
 			const value = styles[styleName];
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
