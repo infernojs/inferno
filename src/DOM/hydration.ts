@@ -1,34 +1,35 @@
 import {
-	isArray,
-	isInvalid,
-	throwError,
-	isObject,
-	isUndefined,
-	isNull
-} from '../shared';
-import Lifecycle from './lifecycle';
-import {
-	createStatelessComponentInput,
-	createStatefulComponentInstance,
 	copyPropsTo,
-	replaceChild
+	createStatefulComponentInstance,
+	createStatelessComponentInput,
+	replaceChild,
 } from './utils';
 import {
-	mountStatelessComponentCallbacks,
-	mountStatefulComponentCallbacks,
+	isArray,
+	isInvalid,
+	isNull,
+	isObject,
+	isUndefined,
+	throwError,
+} from '../shared';
+import {
 	mountElement,
-	mountText
+	mountStatefulComponentCallbacks,
+	mountStatelessComponentCallbacks,
+	mountText,
 } from './mounting';
+
+import Lifecycle from './lifecycle';
 import {
-	patchProp
-} from './patching';
-import { componentToDOMNodeMap } from './rendering';
-import { svgNS } from './constants';
-import {
-	VNodeFlags
+	VNodeFlags,
 } from '../core/shapes';
-import processElement from './wrappers/processElement';
+import { componentToDOMNodeMap } from './rendering';
 import { devToolsStatus } from './devtools';
+import {
+	patchProp,
+} from './patching';
+import processElement from './wrappers/processElement';
+import { svgNS } from './constants';
 
 export function normaliseChildNodes(dom) {
 	const rawChildNodes = dom.childNodes;
@@ -77,7 +78,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 		// we do this so we can determine if the component render has a fastUnmount or not		
 		lifecycle.fastUnmount = true;
 		instance._vComponent = vNode;
-		instance._vNode = vNode;		
+		instance._vNode = vNode;
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
 		const subLifecycle = instance._lifecycle = new Lifecycle();
 
