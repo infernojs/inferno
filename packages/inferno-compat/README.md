@@ -99,6 +99,17 @@ First, install it: `npm install --save-dev aliasify`
 }
 ```
 
+## React Addons
+
+Some React Addons use intenal require calls on the React package, such as `react-addons-css-transition-group`. You can also alis these packages as shown below:
+```js
+alias: {
+	... // previous aliases
+	'react-addons-css-transition-group': 'rc-css-transition-group'
+}
+```
+Be sure to install `rc-css-transition-group` with `npm install --save rc-css-transition-group`.
+
 ## Once Aliased
 
 With the above Webpack or Browserify aliases in place, existing React modules should work nicely:
