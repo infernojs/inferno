@@ -1,13 +1,14 @@
-import Component from 'inferno-component';
-import createElement from 'inferno-create-element';
-import {
-	warning,
-	shallowEqual,
-	wrapActionCreators
-} from './utils';
-import { IProps } from '../core/shapes';
-import hoistStatics from 'hoist-non-inferno-statics';
 import { isFunction, throwError } from '../shared';
+import {
+	shallowEqual,
+	warning,
+	wrapActionCreators,
+} from './utils';
+
+import Component from 'inferno-component';
+import { IProps } from '../core/shapes';
+import createElement from 'inferno-create-element';
+import hoistStatics from 'hoist-non-inferno-statics';
 import { isPlainObject } from './helpers';
 
 export interface WrapWithConnect {
@@ -29,8 +30,8 @@ export interface MapDispatchToPropsFactory {
 type MapDispatchToProps = MapDispatchToPropsFunction | {[index: string]: MapDispatchToPropsFunction} | MapDispatchToPropsFactory;
 
 const errorObject = { value: null };
-const defaultMapStateToProps = state => ({}); // eslint-disable-line no-unused-vars
-const defaultMapDispatchToProps = dispatch => ({ dispatch });
+const defaultMapStateToProps = (state) => ({}); // eslint-disable-line no-unused-vars
+const defaultMapDispatchToProps = (dispatch) => ({ dispatch });
 const defaultMergeProps = (stateProps, dispatchProps, parentProps) => Object.assign({},
 	parentProps,
 	stateProps,
