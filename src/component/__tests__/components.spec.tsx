@@ -2784,7 +2784,51 @@ describe('Components (JSX)', () => {
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>A</div><span>SPAN</span></div><div><div>A</div><span>SPAN</span></div></div>');
 			// click "SWAP ROWS"
 			container.querySelector('button').click();
-			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>');			
+			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>');
+		});
+	});
+
+	describe('Root handling issues #6', () => {
+
+		let i;
+
+		beforeEach(() => {
+			i = 1;
+		});
+
+		class B extends Component<any, any> {
+			constructor(props) {
+			super(props);
+		}
+
+			shouldComponentUpdate() {
+				return false;
+			}
+
+			render() {
+				return <div>{i}</div>;
+			}
+		}
+
+		class Test extends Component<any, any> {
+			render() {
+				return (
+					<div>
+						<button onClick={() => { i++; this.setState({}); }}>Replace</button>
+						<div>
+					<B key={i} />
+						</div>
+					</div>
+				);
+			}
+		}
+
+		it('should replace keyed component if key changes', () => {
+			render(<Test />, container);
+			expect(container.innerHTML).to.eql('<div><button>Replace</button><div><div>1</div></div></div>');
+			// click "Replace"
+			container.querySelector('button').click();
+			expect(container.innerHTML).to.eql('<div><button>Replace</button><div><div>2</div></div></div>');
 		});
 	});
 

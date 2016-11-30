@@ -267,6 +267,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 		}
 	} else {
 		if (isClass) {
+			if (lastVNode.key !== nextVNode.key) {
+				replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
+				return false;
+			}
 			const instance = lastVNode.children;
 
 			if (instance._unmounted) {
