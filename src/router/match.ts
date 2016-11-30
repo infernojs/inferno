@@ -1,7 +1,8 @@
-import { toArray, isArray } from '../shared';
 import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort } from './utils';
-import pathToRegExp from 'path-to-regexp-es6';
+import { isArray, toArray } from '../shared';
+
 import { default as Inferno } from 'inferno';
+import pathToRegExp from 'path-to-regexp-es6';
 
 const cache: Map<string, IMatchRegex> = new Map();
 
@@ -33,8 +34,7 @@ function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 
 	routes.sort(pathRankSort);
 
-	for (let i = 0; i < routes.length; i++) {
-		const route = routes[i];
+	for (let route of routes) {
 		const location = (lastPath + (route.props && route.props.path || '/')).replace('//', '/');
 		const isLast = !route.props || isEmpty(route.props.children);
 		const matchBase = matchPath(isLast, location, pathToMatch);
