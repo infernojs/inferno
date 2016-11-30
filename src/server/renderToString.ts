@@ -17,9 +17,7 @@ import {
 import {
 	VNodeFlags,
 } from '../core/shapes';
-import {
-	isUnitlessNumber,
-} from '../DOM/constants';
+import { isUnitlessNumber } from '../DOM/constants';
 
 function renderStylesToString(styles) {
 	if (isStringOrNumber(styles)) {
@@ -84,7 +82,7 @@ function renderVNodeToString(vNode, context, firstChild) {
 					if (isStringOrNumber(value)) {
 						renderedString += ` ${ prop }="${ escapeText(value) }"`;
 					} else if (isTrue(value)) {
-						renderedString += ` "${ prop }"`;
+						renderedString += ` ${ prop }`;
 					}
 				}
 			}

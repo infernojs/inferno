@@ -1,5 +1,5 @@
 /*!
- * inferno-test-utils v1.0.0-beta17
+ * inferno-test-utils v1.0.0-beta21
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */

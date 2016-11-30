@@ -74,11 +74,10 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	// we assign $ which basically means we've flagged this array for future note
 	// if it comes back again, we need to clone it, as people are using it
 	// in an immutable way
-	/* tslint:disable */
-	if (nodes['$']) {
+	if (nodes['$']) { // tslint:disable-line 
 		nodes = nodes.slice();
 	} else {
-		nodes['$'] = true;
+		nodes['$'] = true; //tslint:disable-line 
 	}
 	/* tslint:enable */
 	for (let i = 0; i < nodes.length; i++) {

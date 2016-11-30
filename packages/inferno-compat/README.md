@@ -7,8 +7,8 @@ It provides the same exports as `react` and `react-dom`, meaning you can use you
 ## How to install?
 
 ```bash
-npm install --save inferno@beta17
-npm install --save inferno-compat@beta17
+npm install --save inferno@beta21
+npm install --save inferno-compat@beta21
 ```
 
 ## What is currently supported?
@@ -98,6 +98,17 @@ First, install it: `npm install --save-dev aliasify`
     // ...
 }
 ```
+
+## React Addons
+
+Some React Addons use intenal require calls on the React package, such as `react-addons-css-transition-group`. You can also alis these packages as shown below:
+```js
+alias: {
+	... // previous aliases
+	'react-addons-css-transition-group': 'rc-css-transition-group'
+}
+```
+Be sure to install `rc-css-transition-group` with `npm install --save rc-css-transition-group`.
 
 ## Once Aliased
 

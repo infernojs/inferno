@@ -819,14 +819,10 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 			const lastHtml = lastValue && lastValue.__html;
 			const nextHtml = nextValue && nextValue.__html;
 
-			if (isNullOrUndef(nextHtml)) {
-				if (process.env.NODE_ENV !== 'production') {
-					throwError('dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.');
-				}
-				throwError();
-			}
 			if (lastHtml !== nextHtml) {
-				dom.innerHTML = nextHtml;
+				if (!isNullOrUndef(nextHtml)) {
+					dom.innerHTML = nextHtml;
+				}
 			}
 		} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
 			const ns = namespaces[prop];

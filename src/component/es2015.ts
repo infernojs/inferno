@@ -45,6 +45,7 @@ export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
 
 export interface ComponentSpec<P, S> extends Mixin<P, S> {
 	render(props?, context?): any;
+	mixins?: any;
 	[propertyName: string]: any;
 }
 
@@ -165,6 +166,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_afterRender: any;
 	_processingSetState = false;
 	_blockRender = false;
+	_ignoreSetState = false;
 	_blockSetState = false;
 	_deferSetState = false;
 	_pendingSetState = false;
@@ -206,8 +208,10 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		if (this._unmounted) {
 			throw Error(noOp);
 		}
-		if (this._blockSetState === false) {
-			queueStateChanges(this, newState, callback);
+		if (!this._blockSetState) {
+			if (!this._ignoreSetState) {
+				queueStateChanges(this, newState, callback);
+			}
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError('cannot update state via setState() in componentWillUpdate().');
