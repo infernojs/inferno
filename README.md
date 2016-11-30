@@ -319,9 +319,8 @@ It's simple to implicitly assign hooks to both DOM nodes and stateless component
 Please note: stateful components (ES2015 classes) from `inferno-component` **do not** support hooks.
 
 ```javascript
-function createdCallback(domNode, props) {
+function mounted(domNode) {
     // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
-	// [props] will only be passed for stateless components
 }
 
 Inferno.render(<div onCreated={ createdCallback } />, document.body);
@@ -330,7 +329,7 @@ function StatelessComponent({ props }) {
 	return <div>Hello world</div>;
 }
 
-Inferno.render(<StatelessComponent onComponentWillMount={ createdCallback } />, document.body);
+Inferno.render(<StatelessComponent onComponentDidMount={ mounted } />, document.body);
 ```
 
 Hooks provide powerful lifecycle events to stateless components, allowing you to build components without being forced to use ES2015 classes.
