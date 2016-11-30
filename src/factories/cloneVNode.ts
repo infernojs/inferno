@@ -1,14 +1,14 @@
 import {
-	isUndefined,
+	VNodeFlags,
+	createVNode,
+	isVNode,
+} from '../core/shapes';
+import {
 	isArray,
 	isNull,
-	isNullOrUndef
+	isNullOrUndef,
+	isUndefined,
 } from '../shared';
-import {
-	createVNode,
-	VNodeFlags,
-	isVNode
-} from '../core/shapes';
 
 export default function cloneVNode(vNodeToClone, props?, ..._children) {
 	let children: any = _children;
@@ -71,20 +71,20 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 		}
 	}
 	if (flags & VNodeFlags.Component) {
-		const props = newVNode.props;
-		// we need to also clone component children that are in props
+		const newProps = newVNode.props;
+		// we need to also clone component children that are in newProps
 		// as the children may also have been hoisted
-		if (props && props.children) {
-			const children = props.children;
+		if (newProps && newProps.children) {
+			const newChildren = newProps.children;
 
-			if (isArray(children)) {
-				for (let i = 0; i < children.length; i++) {
-					if (isVNode(children[i])) {
-						props.children[i] = cloneVNode(children[i])
+			if (isArray(newChildren)) {
+				for (let i = 0; i < newChildren.length; i++) {
+					if (isVNode(newChildren[i])) {
+						newProps.children[i] = cloneVNode(newChildren[i]);
 					}
 				}
 			} else if (isVNode(children)) {
-				props.children = cloneVNode(children)
+				newProps.children = cloneVNode(newChildren);
 			}
 		}
 		newVNode.children = null;
