@@ -67,7 +67,7 @@ function normalizeProps(name, props) {
 			const value = props[prop];
 
 			if (typeof value === 'function') {
-				proxyEvent(props, prop, props[prop]);
+				proxyEvent(props, prop, value);
 			}
 		}
 	}

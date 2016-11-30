@@ -2765,7 +2765,11 @@ function normalizeProps(name, props) {
 	}
 	for (var prop in props) {
 		if (prop[0] === 'o' && prop[1] === 'n' && prop.length > 4) {
-			proxyEvent(props, prop, props[prop]);
+			var value = props[prop];
+
+			if (typeof value === 'function') {
+				proxyEvent(props, prop, value);
+			}
 		}
 	}
 }
