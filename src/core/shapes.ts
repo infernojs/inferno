@@ -79,7 +79,6 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	} else {
 		nodes['$'] = true; //tslint:disable-line 
 	}
-	/* tslint:enable */
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
 
