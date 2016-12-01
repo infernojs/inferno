@@ -1,18 +1,19 @@
-import Lifecycle from './../DOM/lifecycle';
 import {
-	isNullOrUndef,
-	NO_OP,
-	throwError,
-	isFunction,
-	isArray,
-	isInvalid,
 	EMPTY_OBJ,
-	ERROR_MSG
+	ERROR_MSG,
+	NO_OP,
+	isArray,
+	isFunction,
+	isInvalid,
+	isNullOrUndef,
+	throwError,
 } from '../shared';
 import {
+	createVoidVNode,
 	updateParentComponentVNodes,
-	createVoidVNode
 } from './../core/shapes';
+
+import Lifecycle from './../DOM/lifecycle';
 
 let noOp = ERROR_MSG;
 
@@ -44,9 +45,9 @@ export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
 }
 
 export interface ComponentSpec<P, S> extends Mixin<P, S> {
-	render(props?, context?): any;
 	mixins?: any;
 	[propertyName: string]: any;
+	render(props?, context?): any;
 }
 
 function addToQueue(component: Component<any, any>, force, callback): void {
