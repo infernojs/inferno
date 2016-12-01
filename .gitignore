@@ -12,7 +12,6 @@ build
 .vscode
 build
 coverage
-lib
 jsconfig.json
 Gemfile.lock
 node_modules
