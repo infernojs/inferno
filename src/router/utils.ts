@@ -79,9 +79,7 @@ function rank(url: string = ''): number {
 }
 
 function flattenArray(oldArray, newArray) {
-	for (let i = 0; i < oldArray.length; i++) {
-		const item = oldArray[i];
-
+	for (let item of oldArray) {
 		if (isArray(item)) {
 			flattenArray(item, newArray);
 		} else {
