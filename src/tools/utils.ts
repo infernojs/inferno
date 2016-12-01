@@ -1,8 +1,9 @@
 import {
-	isStringOrNumber,
+	isArray,
 	isNullOrUndef,
-	isArray
+	isStringOrNumber,
 } from '../shared';
+
 import { VNodeFlags } from '../core/shapes';
 
 const comparer = document.createElement('div');
@@ -51,8 +52,8 @@ export function validateNodeTree(node) {
 	if (flags & VNodeFlags.Element) {
 		if (!isNullOrUndef(children)) {
 			if (isArray(children)) {
-				for (let i = 0; i < children.length; i++) {
-					const val = validateNodeTree(children[i]);
+				for (let child of children) {
+					const val = validateNodeTree(child);
 
 					if (!val) {
 						return false;

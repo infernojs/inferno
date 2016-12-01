@@ -14,6 +14,7 @@ declare module 'inferno-component' {
 		state?: any;
 		props?: P;
 		context?: C;
+		_unmounted?: boolean;
 		constructor (props?: P, context?: C);
 		componentWillReact();
 		componentWillReceiveProps? (nextProps: P, nextContext: C): void;

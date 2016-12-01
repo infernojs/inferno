@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-beta18
+ * inferno-component v1.0.0-beta21
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -135,7 +135,9 @@ function cloneVNode(vNodeToClone, props) {
             var children$1 = props$1.children;
             if (isArray(children$1)) {
                 for (var i = 0; i < children$1.length; i++) {
-                    props$1.children[i] = cloneVNode(children$1[i]);
+                    if (isVNode(children$1[i])) {
+                        props$1.children[i] = cloneVNode(children$1[i]);
+                    }
                 }
             }
             else if (isVNode(children$1)) {
@@ -380,6 +382,7 @@ var Component$1 = function Component$1(props, context) {
     this.refs = {};
     this._processingSetState = false;
     this._blockRender = false;
+    this._ignoreSetState = false;
     this._blockSetState = false;
     this._deferSetState = false;
     this._pendingSetState = false;
@@ -414,8 +417,10 @@ Component$1.prototype.setState = function setState (newState, callback) {
     if (this._unmounted) {
         throw Error(noOp);
     }
-    if (this._blockSetState === false) {
-        queueStateChanges(this, newState, callback);
+    if (!this._blockSetState) {
+        if (!this._ignoreSetState) {
+            queueStateChanges(this, newState, callback);
+        }
     }
     else {
         if (process.env.NODE_ENV !== 'production') {

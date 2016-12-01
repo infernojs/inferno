@@ -16,7 +16,7 @@ To quote a member of the React core team at Facebook:
 
 Inferno aims to provide all the great benefits that React does, plus other great features for people already familiar with the React ecosystem, such as: lifecycle events on functional components, server side render streams, better real-world performance, lower memory consumption and faster parse/load times. Furthermore, Inferno allows people to switch their **existing React projects** to Inferno in a few lines of code using [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat).
 
-For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. Based on the concept of *learn once, write anywhere*, Inferno doesn't impose any restrictions on how you create components. Your literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
+For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. Based on the concept of *learn once, write anywhere*, Inferno doesn't impose any restrictions on how you create components. You literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
 
 In terms of performance, Inferno is currently the **fastest** JavaScript UI library there is – both in benchmarks and actual real-world scenarios. It excels on the browser at inital page load, parse times, render times and update times. Inferno's server-side rendering is around 10-20x faster than React and Preact, it's around 5x faster than Vue and Angular2.
 
@@ -87,54 +87,54 @@ Inferno.render(<MyComponent />, document.body);
 
 - [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/trueadm/d5o3oza0/)
 
-Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
-
 ## Getting Started
 
 Core package:
 
 ```sh
-npm install --save inferno@beta18
+npm install --save inferno@beta21
 ```
 
 Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta18
+npm install --save inferno-component@beta21
 # server-side rendering
-npm install --save inferno-server@beta18
+npm install --save inferno-server@beta21
 # routing
-npm install --save inferno-router@beta18
-``` 
+npm install --save inferno-router@beta21
+```
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
- 
+
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta18/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta21/inferno.min.js
 ```
 
 ### Creating Virtual DOM
 
 #### JSX:
-```shÏ
-npm install --save-dev babel-plugin-inferno@beta11
+```sh
+npm install --save-dev babel-plugin-inferno@beta12
 ```
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta18
+npm install --save inferno-hyperscript@beta21
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta18
+npm install --save inferno-create-element@beta21
 ```
 
 ### Compatability with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta18
+npm install --save-dev inferno-compat@beta21
 ```
+
+Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
 
 ## Inferno Top-Level API
 
@@ -232,7 +232,7 @@ Inferno.createVNode(
 )
 ```
 
-Create a new Inferno `VNode` using `createVNode`. A `VNode` is a virtual DOM object that is used to 
+Create a new Inferno `VNode` using `createVNode`. A `VNode` is a virtual DOM object that is used to
 describe a single element of the UI. Typically `createElement`, `hyperscript` or JSX are used to create
 `VNode`s for Inferno, but under the hood they all use `createVNode`. Below is an example of using
 of `createVNode` usage:
@@ -319,9 +319,8 @@ It's simple to implicitly assign hooks to both DOM nodes and stateless component
 Please note: stateful components (ES2015 classes) from `inferno-component` **do not** support hooks.
 
 ```javascript
-function createdCallback(domNode, props) {
+function mounted(domNode) {
     // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
-	// [props] will only be passed for stateless components
 }
 
 Inferno.render(<div onCreated={ createdCallback } />, document.body);
@@ -330,7 +329,7 @@ function StatelessComponent({ props }) {
 	return <div>Hello world</div>;
 }
 
-Inferno.render(<StatelessComponent onComponentWillMount={ createdCallback } />, document.body);
+Inferno.render(<StatelessComponent onComponentDidMount={ mounted } />, document.body);
 ```
 
 Hooks provide powerful lifecycle events to stateless components, allowing you to build components without being forced to use ES2015 classes.
@@ -355,14 +354,14 @@ Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support
 Potential solutions including using the [es5-shim](https://github.com/es-shims/es5-shim) for ES5 features and [es6-shim](https://github.com/paulmillr/es6-shim) from ES2015 features.
 
 ## JSX
- 
+
 Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-inferno).
 
 ## Differences from React
 
-- Inferno is much smaller in size, `7kb` vs `45kb` gzip. This means Inferno is faster to transfer over the network but more imoportantly, is *much* faster to parse – this makes a big impact on mobile.
+- Inferno is much smaller in size, `7kb` vs `45kb` gzip. This means Inferno is faster to transfer over the network but more importantly, is *much* faster to parse – this makes a big impact on mobile.
 - Inferno is considerably faster than React. This doesn't apply to only benchmarks, but real-world applications that companies have converted to Inferno from React. Ranging from 40% - 110% performance improvement with Inferno `1.0`. No other React-like library gets close to this performance gain over React.
-- Inferno doesn't have a synthetic event system like React does. There are pros and cons (size and performance vs delegation and unification of browser events) to having one and we beleive that by default, using the native brownser event system is "good enough" for most apps today. We however plan on adding an add-on syntethic event system in the future to cater for those who need it.
+- Inferno doesn't have a synthetic event system like React does. There are pros and cons (size and performance vs delegation and unification of browser events) to having one and we believe that by default, using the native browser event system is "good enough" for most apps today. We however plan on adding an add-on synthetic event system in the future to cater for those who need it.
 - Inferno doesn't support React Native. Inferno was only designed for the browser/server with the DOM in mind.
 - Inferno doesn't support string refs – although this can be enabled using `inferno-compat`. We don't recommend using them, they are the source of many memory leaks and performance issues in real-world apps. Stick with function callback refs instead.
 - Inferno includes `render` on the main core package, rather than have a `InfernoDOM` package like React does. We used to do it that way, but we found people simply didn't like it given we don't support native. Furthermore, by not splitting them, we improved performance and bundle sizes.
@@ -372,7 +371,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 ## Differences from Preact
 
 - Inferno is larger in size, `7kb` vs `3kb` gzip. This means that Preact should parse faster than Inferno – if only slightly.
-- Inferno is *much* faster than Preact in rendering, updating and removing elements from the DOM. Inferno diffs against virtual DOM, rather than the real DOM (except for when loading from sever-side rendered content) which means it can make drastic improvements. Unfortuantely, diffing against the real DOM has a 30-40% overhead cost in operations.
+- Inferno is *much* faster than Preact in rendering, updating and removing elements from the DOM. Inferno diffs against virtual DOM, rather than the real DOM (except for when loading from sever-side rendered content) which means it can make drastic improvements. Unfortunately, diffing against the real DOM has a 30-40% overhead cost in operations.
 - Inferno fully supports controlled components for `input`/`select`/`textarea` elements. This prevents lots of edgecases where the virtual DOM is not the source of truth (it should always be). Preact pushes the source of truth to the DOM itself.
 - Inferno provides lifecycle events on stateless components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
 - Inferno has its own devtools debugger (still in development) that differs from the Preact (React bound) implementation. Inferno's debugger is on average, 4x faster – fixing lots of the issues with slow, laggy interfaces when developers are debugging.
@@ -383,7 +382,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 Inferno wants to always deliver great performance and in order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work; so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
 
 ### The stateful ES2015 Component is located in its own package
- 
+
 React's ES2015 component is referenced as `React.Component`. To reduce the bloat on the core of `Inferno`, we've extracted the ES2015 component
 into its own package, specifically `inferno-component` rather than `Inferno.Component`. Many users are opting to use stateless components with
 Inferno's `hooks` to give similar functionality as that provided by ES2015 components.

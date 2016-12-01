@@ -1,13 +1,13 @@
 export default class Lifecycle {
-	public listeners: Array<Function> = [];
+	public listeners: Function[] = [];
 	public fastUnmount = true;
 
 	addListener(callback) {
 		this.listeners.push(callback);
 	}
 	trigger() {
-		for (let i = 0; i < this.listeners.length; i++) {
-			this.listeners[i]();
+		for (let listener of this.listeners) {
+			listener();
 		}
 	}
 }

@@ -78,7 +78,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 		// we do this so we can determine if the component render has a fastUnmount or not		
 		lifecycle.fastUnmount = true;
 		instance._vComponent = vNode;
-		instance._vNode = vNode;		
+		instance._vNode = vNode;
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
 		const subLifecycle = instance._lifecycle = new Lifecycle();
 
@@ -134,9 +134,7 @@ function hydrateChildren(children, dom, lifecycle, context, isSVG) {
 	let childNodeIndex = 0;
 
 	if (isArray(children)) {
-		for (let i = 0; i < children.length; i++) {
-			const child = children[i];
-
+		for (let child of children) {
 			if (isObject(child) && !isNull(child)) {
 				hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
 			}

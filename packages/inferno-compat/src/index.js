@@ -51,7 +51,7 @@ Component.prototype._afterRender = function() {
 };
 
 const cloneElement = cloneVNode;
-const version = '15.3.4';
+const version = '15.4.1';
 
 function normalizeProps(name, props) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
@@ -62,6 +62,22 @@ function normalizeProps(name, props) {
 			delete props.onChange; 
 		}
 	}
+	for (let prop in props) {
+		if (prop[0] === 'o' && prop[1] === 'n' && prop.length > 4) {
+			const value = props[prop];
+
+			if (typeof value === 'function') {
+				proxyEvent(props, prop, value);
+			}
+		}
+	}
+}
+
+function proxyEvent(props, prop, oldValue) {
+	props[prop] = e => {
+		e.persist = () => {};
+		oldValue(e);
+	};
 }
 
 const createElement = (name, _props, ...children) => {

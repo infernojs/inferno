@@ -1,11 +1,12 @@
 import {
-	isStringOrNumber,
 	isArray,
 	isInvalid,
-	isUndefined,
 	isNullOrUndef,
-	isStatefulComponent
+	isStatefulComponent,
+	isStringOrNumber,
+	isUndefined,
 } from '../shared';
+
 import cloneVNode from '../factories/cloneVNode';
 
 export interface IProps {
@@ -73,10 +74,10 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	// we assign $ which basically means we've flagged this array for future note
 	// if it comes back again, we need to clone it, as people are using it
 	// in an immutable way
-	if (nodes['$']) {
+	if (nodes['$']) { // tslint:disable-line
 		nodes = nodes.slice();
 	} else {
-		nodes['$'] = true;
+		nodes['$'] = true; // tslint:disable-line
 	}
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
@@ -128,7 +129,7 @@ function normalize(vNode) {
 			vNode.children = normalizeVNodes(children);
 		} else if (isVNode(children) && children.dom) {
 			vNode.children = cloneVNode(children);
-		} 
+		}
 	}
 }
 

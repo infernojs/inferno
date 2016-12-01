@@ -1,36 +1,37 @@
 import {
+	EMPTY_OBJ,
 	isArray,
 	isFunction,
+	isInvalid,
+	isNull,
 	isNullOrUndef,
 	isStringOrNumber,
-	isInvalid,
 	isUndefined,
-	isNull,
 	throwError,
-	EMPTY_OBJ
 } from '../shared';
-import Lifecycle from './lifecycle';
+import { VNodeFlags, isVNode } from '../core/shapes';
 import {
-	setTextContent,
 	appendChild,
+	copyPropsTo,
 	createStatefulComponentInstance,
 	createStatelessComponentInput,
 	documentCreateElement,
-	copyPropsTo
+	setTextContent,
 } from './utils';
 import {
-	patchProp
-} from './patching';
-import { componentToDOMNodeMap } from './rendering';
-import {
+	recycleComponent,
 	recycleElement,
 	recyclingEnabled,
-	recycleComponent
 } from './recycling';
-import { devToolsStatus } from './devtools';
-import { VNodeFlags, isVNode } from '../core/shapes';
-import processElement from './wrappers/processElement';
+
+import Lifecycle from './lifecycle';
 import cloneVNode from '../factories/cloneVNode';
+import { componentToDOMNodeMap } from './rendering';
+import { devToolsStatus } from './devtools';
+import {
+	patchProp,
+} from './patching';
+import processElement from './wrappers/processElement';
 
 export function mount(vNode, parentDom, lifecycle, context, isSVG) {
 	const flags = vNode.flags;
@@ -122,12 +123,10 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 }
 
 export function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
-	for (let i = 0; i < children.length; i++) {
-		let child = children[i];
-
+	for (let [ i, child ] of children.entries()) {
 		if (!isInvalid(child)) {
 			if (child.dom) {
-				children[i] = child = cloneVNode(child); 
+				children[i] = child = cloneVNode(child);
 			}
 			mount(children[i], dom, lifecycle, context, isSVG);
 		}

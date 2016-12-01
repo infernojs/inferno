@@ -1,5 +1,5 @@
 /*!
- * inferno-server v1.0.0-beta18
+ * inferno-server v1.0.0-beta21
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -182,7 +182,7 @@ function renderVNodeToString(vNode, context, firstChild) {
                         renderedString += " " + prop + "=\"" + (escapeText(value)) + "\"";
                     }
                     else if (isTrue(value)) {
-                        renderedString += " \"" + prop + "\"";
+                        renderedString += " " + prop;
                     }
                 }
             }

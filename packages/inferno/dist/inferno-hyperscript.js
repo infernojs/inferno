@@ -1,5 +1,5 @@
 /*!
- * inferno-hyperscript v1.0.0-beta18
+ * inferno-hyperscript v1.0.0-beta21
  * (c) 2016 undefined
  * Released under the MIT License.
  */
@@ -108,7 +108,9 @@ function cloneVNode(vNodeToClone, props) {
             var children$1 = props$1.children;
             if (isArray(children$1)) {
                 for (var i = 0; i < children$1.length; i++) {
-                    props$1.children[i] = cloneVNode(children$1[i]);
+                    if (isVNode(children$1[i])) {
+                        props$1.children[i] = cloneVNode(children$1[i]);
+                    }
                 }
             }
             else if (isVNode(children$1)) {

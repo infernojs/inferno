@@ -1,6 +1,6 @@
 import Component from 'inferno-component';
-import createElement from 'inferno-create-element';
 import RouterContext from './RouterContext';
+import createElement from 'inferno-create-element';
 
 export interface IRouterProps {
 	history?: any;
@@ -28,7 +28,7 @@ export default class Router extends Component<IRouterProps, any> {
 
 	componentWillMount() {
 		if (this.router) {
-			this.unlisten = this.router.listen(url => {
+			this.unlisten = this.router.listen((url) => {
 				this.routeTo(url.pathname);
 			});
 		}
