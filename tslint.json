@@ -29,8 +29,6 @@
 		],
 		"one-variable-per-declaration": false,
 		"no-unused-expression": false,
-		"no-bitwise": false,
-		"prefer-for-of": false,
-		"arrow-parens": false
+		"no-bitwise": false
 	}
 }
