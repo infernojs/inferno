@@ -1,5 +1,5 @@
 import { isFunction, isNull, isUndefined } from '../shared';
-import { roots, render } from './rendering';
+import { render, roots } from './rendering';
 
 export const devToolsStatus = {
 	connected: false
@@ -32,9 +32,7 @@ function sendToDevTools(global, data) {
 }
 
 function rerenderRoots() {
-	for (let i = 0; i < roots.length; i++) {
-		const root = roots[i];
-
+	for (let root of roots) {
 		render(root.input, root.dom);
 	}
 }
