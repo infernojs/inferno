@@ -140,7 +140,7 @@ function cloneVNode(vNodeToClone, props) {
                     }
                 }
             }
-            else if (isVNode(children)) {
+            else if (isVNode(newChildren)) {
                 newProps.children = cloneVNode(newChildren);
             }
         }
