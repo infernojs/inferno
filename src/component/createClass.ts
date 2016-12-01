@@ -37,7 +37,9 @@ function bindAll(ctx) {
 
 function collateMixins(mixins) {
 	let keyed = {};
-	for (let mixin of mixins) {
+	for (let i = 0; i < mixins.length; i++) {
+		const mixin = mixins[i];
+
 		for (let key in mixin) {
 			if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
 				(keyed[key] || (keyed[key] = [])).push(mixin[key]);

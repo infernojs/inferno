@@ -121,20 +121,20 @@ function cloneVNode(vNodeToClone, props) {
         }
     }
     if (flags & 28 /* Component */) {
-        var props$1 = newVNode.props;
+        var newProps = newVNode.props;
         // we need to also clone component children that are in props
         // as the children may also have been hoisted
-        if (props$1 && props$1.children) {
-            var children$1 = props$1.children;
-            if (isArray(children$1)) {
-                for (var i = 0; i < children$1.length; i++) {
-                    if (isVNode(children$1[i])) {
-                        props$1.children[i] = cloneVNode(children$1[i]);
+        if (newProps && newProps.children) {
+            var newChildren = newProps.children;
+            if (isArray(newChildren)) {
+                for (var i = 0; i < newChildren.length; i++) {
+                    if (isVNode(newChildren[i])) {
+                        newProps.children[i] = cloneVNode(newChildren[i]);
                     }
                 }
             }
-            else if (isVNode(children$1)) {
-                props$1.children = cloneVNode(children$1);
+            else if (isVNode(newChildren)) {
+                newProps.children = cloneVNode(newChildren);
             }
         }
         newVNode.children = null;
@@ -171,7 +171,7 @@ function normalizeVNodes(nodes) {
         nodes = nodes.slice();
     }
     else {
-        nodes['$'] = true;
+        nodes['$'] = true; // tslint:disable-line
     }
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
@@ -266,6 +266,43 @@ function isVNode(o) {
     return !!o.flags;
 }
 
+var devToolsStatus = {
+    connected: false
+};
+var internalIncrementer = {
+    id: 0
+};
+var componentIdMap = new Map();
+function getIncrementalId() {
+    return internalIncrementer.id++;
+}
+function sendToDevTools(global, data) {
+    var event = new CustomEvent('inferno.client.message', {
+        detail: JSON.stringify(data, function (key, val) {
+            if (!isNull(val) && !isUndefined(val)) {
+                if (key === '_vComponent' || !isUndefined(val.nodeType)) {
+                    return;
+                }
+                else if (isFunction(val)) {
+                    return ("$$f:" + (val.name));
+                }
+            }
+            return val;
+        })
+    });
+    global.dispatchEvent(event);
+}
+function rerenderRoots() {
+    for (var i = 0; i < roots.length; i++) {
+        var root = roots[i];
+        render(root.input, root.dom);
+    }
+}
+
+function sendRoots(global) {
+    sendToDevTools(global, { type: 'roots', data: roots });
+}
+
 var Lifecycle = function Lifecycle() {
     this.listeners = [];
     this.fastUnmount = true;
@@ -280,224 +317,6 @@ Lifecycle.prototype.trigger = function trigger () {
         this$1.listeners[i]();
     }
 };
-
-var recyclingEnabled = true;
-var componentPools = new Map();
-var elementPools = new Map();
-function disableRecycling() {
-    recyclingEnabled = false;
-    componentPools.clear();
-    elementPools.clear();
-}
-
-function recycleElement(vNode, lifecycle, context, isSVG) {
-    var tag = vNode.type;
-    var key = vNode.key;
-    var pools = elementPools.get(tag);
-    if (!isUndefined(pools)) {
-        var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
-        if (!isUndefined(pool)) {
-            var recycledVNode = pool.pop();
-            if (!isUndefined(recycledVNode)) {
-                patchElement(recycledVNode, vNode, null, lifecycle, context, isSVG, true);
-                return vNode.dom;
-            }
-        }
-    }
-    return null;
-}
-function poolElement(vNode) {
-    var tag = vNode.type;
-    var key = vNode.key;
-    var pools = elementPools.get(tag);
-    if (isUndefined(pools)) {
-        pools = {
-            nonKeyed: [],
-            keyed: new Map()
-        };
-        elementPools.set(tag, pools);
-    }
-    if (isNull(key)) {
-        pools.nonKeyed.push(vNode);
-    }
-    else {
-        var pool = pools.keyed.get(key);
-        if (isUndefined(pool)) {
-            pool = [];
-            pools.keyed.set(key, pool);
-        }
-        pool.push(vNode);
-    }
-}
-function recycleComponent(vNode, lifecycle, context, isSVG) {
-    var type = vNode.type;
-    var key = vNode.key;
-    var pools = componentPools.get(type);
-    if (!isUndefined(pools)) {
-        var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
-        if (!isUndefined(pool)) {
-            var recycledVNode = pool.pop();
-            if (!isUndefined(recycledVNode)) {
-                var flags = vNode.flags;
-                var failed = patchComponent(recycledVNode, vNode, null, lifecycle, context, isSVG, flags & 4 /* ComponentClass */, true);
-                if (!failed) {
-                    return vNode.dom;
-                }
-            }
-        }
-    }
-    return null;
-}
-function poolComponent(vNode) {
-    var type = vNode.type;
-    var key = vNode.key;
-    var hooks = vNode.ref;
-    var nonRecycleHooks = hooks && (hooks.onComponentWillMount ||
-        hooks.onComponentWillUnmount ||
-        hooks.onComponentDidMount ||
-        hooks.onComponentWillUpdate ||
-        hooks.onComponentDidUpdate);
-    if (nonRecycleHooks) {
-        return;
-    }
-    var pools = componentPools.get(type);
-    if (isUndefined(pools)) {
-        pools = {
-            nonKeyed: [],
-            keyed: new Map()
-        };
-        componentPools.set(type, pools);
-    }
-    if (isNull(key)) {
-        pools.nonKeyed.push(vNode);
-    }
-    else {
-        var pool = pools.keyed.get(key);
-        if (isUndefined(pool)) {
-            pool = [];
-            pools.keyed.set(key, pool);
-        }
-        pool.push(vNode);
-    }
-}
-
-function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
-    var flags = vNode.flags;
-    if (flags & 28 /* Component */) {
-        unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
-    }
-    else if (flags & 3970 /* Element */) {
-        unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
-    }
-    else if (flags & 1 /* Text */) {
-        unmountText(vNode, parentDom);
-    }
-    else if (flags & 4096 /* Void */) {
-        unmountVoid(vNode, parentDom);
-    }
-}
-function unmountVoid(vNode, parentDom) {
-    if (parentDom) {
-        removeChild(parentDom, vNode.dom);
-    }
-}
-function unmountText(vNode, parentDom) {
-    if (parentDom) {
-        removeChild(parentDom, vNode.dom);
-    }
-}
-function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
-    var instance = vNode.children;
-    var flags = vNode.flags;
-    var isStatefulComponent$$1 = flags & 4;
-    var ref = vNode.ref;
-    var dom = vNode.dom;
-    if (!isRecycling) {
-        if (!shallowUnmount) {
-            if (isStatefulComponent$$1) {
-                var subLifecycle = instance._lifecycle;
-                if (!subLifecycle.fastUnmount) {
-                    unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
-                }
-            }
-            else {
-                if (!lifecycle.fastUnmount) {
-                    unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
-                }
-            }
-        }
-        if (isStatefulComponent$$1) {
-            instance._ignoreSetState = true;
-            instance.componentWillUnmount();
-            if (ref && !isRecycling) {
-                ref(null);
-            }
-            instance._unmounted = true;
-            componentToDOMNodeMap.delete(instance);
-        }
-        else if (!isNullOrUndef(ref)) {
-            if (!isNullOrUndef(ref.onComponentWillUnmount)) {
-                ref.onComponentWillUnmount(dom);
-            }
-        }
-    }
-    if (parentDom) {
-        var lastInput = instance._lastInput;
-        if (isNullOrUndef(lastInput)) {
-            lastInput = instance;
-        }
-        removeChild(parentDom, dom);
-    }
-    if (recyclingEnabled && (parentDom || canRecycle)) {
-        poolComponent(vNode);
-    }
-}
-function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
-    var dom = vNode.dom;
-    var ref = vNode.ref;
-    if (!shallowUnmount && !lifecycle.fastUnmount) {
-        if (ref && !isRecycling) {
-            unmountRef(ref);
-        }
-        var children = vNode.children;
-        if (!isNullOrUndef(children)) {
-            unmountChildren$1(children, lifecycle, shallowUnmount, isRecycling);
-        }
-    }
-    if (parentDom) {
-        removeChild(parentDom, dom);
-    }
-    if (recyclingEnabled && (parentDom || canRecycle)) {
-        poolElement(vNode);
-    }
-}
-function unmountChildren$1(children, lifecycle, shallowUnmount, isRecycling) {
-    if (isArray(children)) {
-        for (var i = 0; i < children.length; i++) {
-            var child = children[i];
-            if (!isInvalid(child) && isObject(child)) {
-                unmount(child, null, lifecycle, false, shallowUnmount, isRecycling);
-            }
-        }
-    }
-    else if (isObject(children)) {
-        unmount(children, null, lifecycle, false, shallowUnmount, isRecycling);
-    }
-}
-function unmountRef(ref) {
-    if (isFunction(ref)) {
-        ref(null);
-    }
-    else {
-        if (isInvalid(ref)) {
-            return;
-        }
-        if (process.env.NODE_ENV !== 'production') {
-            throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-        }
-        throwError();
-    }
-}
 
 function constructDefaults(string, object, value) {
     /* eslint no-return-assign: 0 */
@@ -732,41 +551,122 @@ function processElement(flags, vNode, dom) {
     }
 }
 
-var devToolsStatus = {
-    connected: false
-};
-var internalIncrementer = {
-    id: 0
-};
-var componentIdMap = new Map();
-function getIncrementalId() {
-    return internalIncrementer.id++;
-}
-function sendToDevTools(global, data) {
-    var event = new CustomEvent('inferno.client.message', {
-        detail: JSON.stringify(data, function (key, val) {
-            if (!isNull(val) && !isUndefined(val)) {
-                if (key === '_vComponent' || !isUndefined(val.nodeType)) {
-                    return;
-                }
-                else if (isFunction(val)) {
-                    return ("$$f:" + (val.name));
-                }
-            }
-            return val;
-        })
-    });
-    global.dispatchEvent(event);
-}
-function rerenderRoots() {
-    for (var i = 0; i < roots.length; i++) {
-        var root = roots[i];
-        render(root.input, root.dom);
+function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
+    var flags = vNode.flags;
+    if (flags & 28 /* Component */) {
+        unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
+    }
+    else if (flags & 3970 /* Element */) {
+        unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
+    }
+    else if (flags & 1 /* Text */) {
+        unmountText(vNode, parentDom);
+    }
+    else if (flags & 4096 /* Void */) {
+        unmountVoid(vNode, parentDom);
     }
 }
-
-function sendRoots(global) {
-    sendToDevTools(global, { type: 'roots', data: roots });
+function unmountVoid(vNode, parentDom) {
+    if (parentDom) {
+        removeChild(parentDom, vNode.dom);
+    }
+}
+function unmountText(vNode, parentDom) {
+    if (parentDom) {
+        removeChild(parentDom, vNode.dom);
+    }
+}
+function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
+    var instance = vNode.children;
+    var flags = vNode.flags;
+    var isStatefulComponent$$1 = flags & 4;
+    var ref = vNode.ref;
+    var dom = vNode.dom;
+    if (!isRecycling) {
+        if (!shallowUnmount) {
+            if (isStatefulComponent$$1) {
+                var subLifecycle = instance._lifecycle;
+                if (!subLifecycle.fastUnmount) {
+                    unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
+                }
+            }
+            else {
+                if (!lifecycle.fastUnmount) {
+                    unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
+                }
+            }
+        }
+        if (isStatefulComponent$$1) {
+            instance._ignoreSetState = true;
+            instance.componentWillUnmount();
+            if (ref && !isRecycling) {
+                ref(null);
+            }
+            instance._unmounted = true;
+            componentToDOMNodeMap.delete(instance);
+        }
+        else if (!isNullOrUndef(ref)) {
+            if (!isNullOrUndef(ref.onComponentWillUnmount)) {
+                ref.onComponentWillUnmount(dom);
+            }
+        }
+    }
+    if (parentDom) {
+        var lastInput = instance._lastInput;
+        if (isNullOrUndef(lastInput)) {
+            lastInput = instance;
+        }
+        removeChild(parentDom, dom);
+    }
+    if (recyclingEnabled && (parentDom || canRecycle)) {
+        poolComponent(vNode);
+    }
+}
+function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
+    var dom = vNode.dom;
+    var ref = vNode.ref;
+    if (!shallowUnmount && !lifecycle.fastUnmount) {
+        if (ref && !isRecycling) {
+            unmountRef(ref);
+        }
+        var children = vNode.children;
+        if (!isNullOrUndef(children)) {
+            unmountChildren$1(children, lifecycle, shallowUnmount, isRecycling);
+        }
+    }
+    if (parentDom) {
+        removeChild(parentDom, dom);
+    }
+    if (recyclingEnabled && (parentDom || canRecycle)) {
+        poolElement(vNode);
+    }
+}
+function unmountChildren$1(children, lifecycle, shallowUnmount, isRecycling) {
+    if (isArray(children)) {
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            if (!isInvalid(child) && isObject(child)) {
+                unmount(child, null, lifecycle, false, shallowUnmount, isRecycling);
+            }
+        }
+    }
+    else if (isObject(children)) {
+        unmount(children, null, lifecycle, false, shallowUnmount, isRecycling);
+    }
+}
+function unmountRef(ref) {
+    if (isFunction(ref)) {
+        ref(null);
+    }
+    else {
+        if (isInvalid(ref)) {
+            return;
+        }
+        if (process.env.NODE_ENV !== 'production') {
+            throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+        }
+        throwError();
+    }
 }
 
 function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling) {
@@ -1578,170 +1478,104 @@ function removeProp(prop, dom) {
     }
 }
 
-function copyPropsTo(copyFrom, copyTo) {
-    for (var prop in copyFrom) {
-        if (isUndefined(copyTo[prop])) {
-            copyTo[prop] = copyFrom[prop];
+var recyclingEnabled = true;
+var componentPools = new Map();
+var elementPools = new Map();
+function disableRecycling() {
+    recyclingEnabled = false;
+    componentPools.clear();
+    elementPools.clear();
+}
+
+function recycleElement(vNode, lifecycle, context, isSVG) {
+    var tag = vNode.type;
+    var key = vNode.key;
+    var pools = elementPools.get(tag);
+    if (!isUndefined(pools)) {
+        var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
+        if (!isUndefined(pool)) {
+            var recycledVNode = pool.pop();
+            if (!isUndefined(recycledVNode)) {
+                patchElement(recycledVNode, vNode, null, lifecycle, context, isSVG, true);
+                return vNode.dom;
+            }
         }
     }
+    return null;
 }
-function createStatefulComponentInstance(vNode, Component, props, context, isSVG, devToolsStatus) {
-    var instance = new Component(props, context);
-    instance.context = context;
-    instance._patch = patch;
-    instance._devToolsStatus = devToolsStatus;
-    instance._componentToDOMNodeMap = componentToDOMNodeMap;
-    var childContext = instance.getChildContext();
-    if (!isNullOrUndef(childContext)) {
-        instance._childContext = Object.assign({}, context, childContext);
+function poolElement(vNode) {
+    var tag = vNode.type;
+    var key = vNode.key;
+    var pools = elementPools.get(tag);
+    if (isUndefined(pools)) {
+        pools = {
+            nonKeyed: [],
+            keyed: new Map()
+        };
+        elementPools.set(tag, pools);
+    }
+    if (isNull(key)) {
+        pools.nonKeyed.push(vNode);
     }
     else {
-        instance._childContext = context;
-    }
-    instance._unmounted = false;
-    instance._pendingSetState = true;
-    instance._isSVG = isSVG;
-    instance.componentWillMount();
-    instance._beforeRender && instance._beforeRender();
-    var input = instance.render(props, instance.state, context);
-    instance._afterRender && instance._afterRender();
-    if (isArray(input)) {
-        if (process.env.NODE_ENV !== 'production') {
-            throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+        var pool = pools.keyed.get(key);
+        if (isUndefined(pool)) {
+            pool = [];
+            pools.keyed.set(key, pool);
         }
-        throwError();
+        pool.push(vNode);
     }
-    else if (isInvalid(input)) {
-        input = createVoidVNode();
+}
+function recycleComponent(vNode, lifecycle, context, isSVG) {
+    var type = vNode.type;
+    var key = vNode.key;
+    var pools = componentPools.get(type);
+    if (!isUndefined(pools)) {
+        var pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
+        if (!isUndefined(pool)) {
+            var recycledVNode = pool.pop();
+            if (!isUndefined(recycledVNode)) {
+                var flags = vNode.flags;
+                var failed = patchComponent(recycledVNode, vNode, null, lifecycle, context, isSVG, flags & 4 /* ComponentClass */, true);
+                if (!failed) {
+                    return vNode.dom;
+                }
+            }
+        }
+    }
+    return null;
+}
+function poolComponent(vNode) {
+    var type = vNode.type;
+    var key = vNode.key;
+    var hooks = vNode.ref;
+    var nonRecycleHooks = hooks && (hooks.onComponentWillMount ||
+        hooks.onComponentWillUnmount ||
+        hooks.onComponentDidMount ||
+        hooks.onComponentWillUpdate ||
+        hooks.onComponentDidUpdate);
+    if (nonRecycleHooks) {
+        return;
+    }
+    var pools = componentPools.get(type);
+    if (isUndefined(pools)) {
+        pools = {
+            nonKeyed: [],
+            keyed: new Map()
+        };
+        componentPools.set(type, pools);
+    }
+    if (isNull(key)) {
+        pools.nonKeyed.push(vNode);
     }
     else {
-        if (input.dom) {
-            input = cloneVNode(input);
+        var pool = pools.keyed.get(key);
+        if (isUndefined(pool)) {
+            pool = [];
+            pools.keyed.set(key, pool);
         }
-        if (input.flags & 28 /* Component */) {
-            // if we have an input that is also a component, we run into a tricky situation
-            // where the root vNode needs to always have the correct DOM entry
-            // so we break monomorphism on our input and supply it our vNode as parentVNode
-            // we can optimise this in the future, but this gets us out of a lot of issues
-            input.parentVNode = vNode;
-        }
+        pool.push(vNode);
     }
-    instance._pendingSetState = false;
-    instance._lastInput = input;
-    return instance;
-}
-function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling) {
-    replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle, isRecycling);
-}
-function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
-    var shallowUnmount = false;
-    // we cannot cache nodeType here as vNode might be re-assigned below
-    if (vNode.flags & 28 /* Component */) {
-        // if we are accessing a stateful or stateless component, we want to access their last rendered input
-        // accessing their DOM node is not useful to us here
-        unmount(vNode, null, lifecycle, false, false, isRecycling);
-        vNode = vNode.children._lastInput || vNode.children;
-        shallowUnmount = true;
-    }
-    replaceChild(parentDom, dom, vNode.dom);
-    unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
-}
-function createStatelessComponentInput(vNode, component, props, context) {
-    var input = component(props, context);
-    if (isArray(input)) {
-        if (process.env.NODE_ENV !== 'production') {
-            throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-        }
-        throwError();
-    }
-    else if (isInvalid(input)) {
-        input = createVoidVNode();
-    }
-    else {
-        if (input.dom) {
-            input = cloneVNode(input);
-        }
-        if (input.flags & 28 /* Component */) {
-            // if we have an input that is also a component, we run into a tricky situation
-            // where the root vNode needs to always have the correct DOM entry
-            // so we break monomorphism on our input and supply it our vNode as parentVNode
-            // we can optimise this in the future, but this gets us out of a lot of issues
-            input.parentVNode = vNode;
-        }
-    }
-    return input;
-}
-function setTextContent(dom, text) {
-    if (text !== '') {
-        dom.textContent = text;
-    }
-    else {
-        dom.appendChild(document.createTextNode(''));
-    }
-}
-function updateTextContent(dom, text) {
-    dom.firstChild.nodeValue = text;
-}
-function appendChild(parentDom, dom) {
-    parentDom.appendChild(dom);
-}
-function insertOrAppend(parentDom, newNode, nextNode) {
-    if (isNullOrUndef(nextNode)) {
-        appendChild(parentDom, newNode);
-    }
-    else {
-        parentDom.insertBefore(newNode, nextNode);
-    }
-}
-function documentCreateElement(tag, isSVG) {
-    if (isSVG === true) {
-        return document.createElementNS(svgNS, tag);
-    }
-    else {
-        return document.createElement(tag);
-    }
-}
-function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, isRecycling) {
-    var lastInstance = null;
-    var instanceLastNode = lastNode._lastInput;
-    if (!isNullOrUndef(instanceLastNode)) {
-        lastInstance = lastNode;
-        lastNode = instanceLastNode;
-    }
-    unmount(lastNode, null, lifecycle, false, false, isRecycling);
-    var dom = mount(nextNode, null, lifecycle, context, isSVG);
-    nextNode.dom = dom;
-    replaceChild(parentDom, dom, lastNode.dom);
-    if (lastInstance !== null) {
-        lastInstance._lasInput = nextNode;
-    }
-}
-function replaceChild(parentDom, nextDom, lastDom) {
-    if (!parentDom) {
-        parentDom = lastDom.parentNode;
-    }
-    parentDom.replaceChild(nextDom, lastDom);
-}
-function removeChild(parentDom, dom) {
-    parentDom.removeChild(dom);
-}
-function removeAllChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
-    dom.textContent = '';
-    if (!lifecycle.fastUnmount) {
-        removeChildren(null, children, lifecycle, shallowUnmount, isRecycling);
-    }
-}
-function removeChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
-    for (var i = 0; i < children.length; i++) {
-        var child = children[i];
-        if (!isInvalid(child)) {
-            unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
-        }
-    }
-}
-function isKeyed(lastChildren, nextChildren) {
-    return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
-        && lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
 
 function mount(vNode, parentDom, lifecycle, context, isSVG) {
@@ -1936,6 +1770,172 @@ function mountRef(dom, value, lifecycle) {
         }
         throwError();
     }
+}
+
+function copyPropsTo(copyFrom, copyTo) {
+    for (var prop in copyFrom) {
+        if (isUndefined(copyTo[prop])) {
+            copyTo[prop] = copyFrom[prop];
+        }
+    }
+}
+function createStatefulComponentInstance(vNode, Component, props, context, isSVG, devToolsStatus) {
+    var instance = new Component(props, context);
+    instance.context = context;
+    instance._patch = patch;
+    instance._devToolsStatus = devToolsStatus;
+    instance._componentToDOMNodeMap = componentToDOMNodeMap;
+    var childContext = instance.getChildContext();
+    if (!isNullOrUndef(childContext)) {
+        instance._childContext = Object.assign({}, context, childContext);
+    }
+    else {
+        instance._childContext = context;
+    }
+    instance._unmounted = false;
+    instance._pendingSetState = true;
+    instance._isSVG = isSVG;
+    instance.componentWillMount();
+    instance._beforeRender && instance._beforeRender();
+    var input = instance.render(props, instance.state, context);
+    instance._afterRender && instance._afterRender();
+    if (isArray(input)) {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+        }
+        throwError();
+    }
+    else if (isInvalid(input)) {
+        input = createVoidVNode();
+    }
+    else {
+        if (input.dom) {
+            input = cloneVNode(input);
+        }
+        if (input.flags & 28 /* Component */) {
+            // if we have an input that is also a component, we run into a tricky situation
+            // where the root vNode needs to always have the correct DOM entry
+            // so we break monomorphism on our input and supply it our vNode as parentVNode
+            // we can optimise this in the future, but this gets us out of a lot of issues
+            input.parentVNode = vNode;
+        }
+    }
+    instance._pendingSetState = false;
+    instance._lastInput = input;
+    return instance;
+}
+function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling) {
+    replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle, isRecycling);
+}
+function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
+    var shallowUnmount = false;
+    // we cannot cache nodeType here as vNode might be re-assigned below
+    if (vNode.flags & 28 /* Component */) {
+        // if we are accessing a stateful or stateless component, we want to access their last rendered input
+        // accessing their DOM node is not useful to us here
+        unmount(vNode, null, lifecycle, false, false, isRecycling);
+        vNode = vNode.children._lastInput || vNode.children;
+        shallowUnmount = true;
+    }
+    replaceChild(parentDom, dom, vNode.dom);
+    unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
+}
+function createStatelessComponentInput(vNode, component, props, context) {
+    var input = component(props, context);
+    if (isArray(input)) {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+        }
+        throwError();
+    }
+    else if (isInvalid(input)) {
+        input = createVoidVNode();
+    }
+    else {
+        if (input.dom) {
+            input = cloneVNode(input);
+        }
+        if (input.flags & 28 /* Component */) {
+            // if we have an input that is also a component, we run into a tricky situation
+            // where the root vNode needs to always have the correct DOM entry
+            // so we break monomorphism on our input and supply it our vNode as parentVNode
+            // we can optimise this in the future, but this gets us out of a lot of issues
+            input.parentVNode = vNode;
+        }
+    }
+    return input;
+}
+function setTextContent(dom, text) {
+    if (text !== '') {
+        dom.textContent = text;
+    }
+    else {
+        dom.appendChild(document.createTextNode(''));
+    }
+}
+function updateTextContent(dom, text) {
+    dom.firstChild.nodeValue = text;
+}
+function appendChild(parentDom, dom) {
+    parentDom.appendChild(dom);
+}
+function insertOrAppend(parentDom, newNode, nextNode) {
+    if (isNullOrUndef(nextNode)) {
+        appendChild(parentDom, newNode);
+    }
+    else {
+        parentDom.insertBefore(newNode, nextNode);
+    }
+}
+function documentCreateElement(tag, isSVG) {
+    if (isSVG === true) {
+        return document.createElementNS(svgNS, tag);
+    }
+    else {
+        return document.createElement(tag);
+    }
+}
+function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, isRecycling) {
+    var lastInstance = null;
+    var instanceLastNode = lastNode._lastInput;
+    if (!isNullOrUndef(instanceLastNode)) {
+        lastInstance = lastNode;
+        lastNode = instanceLastNode;
+    }
+    unmount(lastNode, null, lifecycle, false, false, isRecycling);
+    var dom = mount(nextNode, null, lifecycle, context, isSVG);
+    nextNode.dom = dom;
+    replaceChild(parentDom, dom, lastNode.dom);
+    if (lastInstance !== null) {
+        lastInstance._lasInput = nextNode;
+    }
+}
+function replaceChild(parentDom, nextDom, lastDom) {
+    if (!parentDom) {
+        parentDom = lastDom.parentNode;
+    }
+    parentDom.replaceChild(nextDom, lastDom);
+}
+function removeChild(parentDom, dom) {
+    parentDom.removeChild(dom);
+}
+function removeAllChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
+    dom.textContent = '';
+    if (!lifecycle.fastUnmount) {
+        removeChildren(null, children, lifecycle, shallowUnmount, isRecycling);
+    }
+}
+function removeChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
+    for (var i = 0; i < children.length; i++) {
+        var child = children[i];
+        if (!isInvalid(child)) {
+            unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
+        }
+    }
+}
+function isKeyed(lastChildren, nextChildren) {
+    return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
+        && lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
 
 function normaliseChildNodes(dom) {

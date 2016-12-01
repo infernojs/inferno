@@ -52,7 +52,9 @@ export function validateNodeTree(node) {
 	if (flags & VNodeFlags.Element) {
 		if (!isNullOrUndef(children)) {
 			if (isArray(children)) {
-				for (let val of children) {
+				for (let child of children) {
+					const val = validateNodeTree(child);
+
 					if (!val) {
 						return false;
 					}

@@ -62,22 +62,16 @@ function normalizeProps(name, props) {
 			delete props.onChange; 
 		}
 	}
-	for (let prop in props) {
-		if (prop[0] === 'o' && prop[1] === 'n' && prop.length > 4) {
-			const value = props[prop];
-
-			if (typeof value === 'function') {
-				proxyEvent(props, prop, value);
-			}
-		}
-	}
 }
 
-function proxyEvent(props, prop, oldValue) {
-	props[prop] = e => {
-		e.persist = () => {};
-		oldValue(e);
-	};
+// we need to add persist() to Event (as React has it for synthetic events)
+// this is a hack and we really shouldn't be modifying a global object this way, 
+// but there isn't a performant way of doing this apart from trying to proxy
+// every prop event that starts with "on", i.e. onClick or onKeyPress
+// but in reality devs use onSomething for many things, not only for
+// input events
+if (Event && !Event.prototype.persist) {
+	Event.prototype.persist = function () {};
 }
 
 const createElement = (name, _props, ...children) => {
@@ -97,12 +91,28 @@ const createElement = (name, _props, ...children) => {
 	return infernoCreateElement(name, props, ...children);
 };
 
+// Credit: preact-compat - https://github.com/developit/preact-compat :)
+function shallowDiffers (a, b) {
+	for (let i in a) if (!(i in b)) return true;
+	for (let i in b) if (a[i] !== b[i]) return true;
+	return false;
+}
+
+function PureComponent(props, context) {
+	Component.call(this, props, context);
+}
+
+PureComponent.prototype = new Component({});
+PureComponent.prototype.shouldComponentUpdate = (props, state) =>
+	shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
+
 export {
 	createVNode,
 	render,
 	isValidElement,
 	createElement,
 	Component,
+	PureComponent,
 	unmountComponentAtNode,
 	cloneElement,
 	PropTypes,
@@ -120,6 +130,7 @@ export default {
 	isValidElement,
 	createElement,
 	Component,
+	PureComponent,
 	unmountComponentAtNode,
 	cloneElement,
 	PropTypes,
