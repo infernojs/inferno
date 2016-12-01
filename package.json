@@ -106,16 +106,17 @@
     "rollup"
   ],
   "nyc": {
-    "sourceMap": false,
     "all": true,
+    "sourceMap": false,
     "include": [
       "src/*.ts",
       "src/**/*.ts"
     ],
     "exclude": [
-      "typings",
+      "packages",
       "src/inferno.d.ts",
-      "src/**/*__tests__*/**"
+      "src/**/*__tests__*/**",
+      "typings"
     ],
     "extension": [
       ".ts"
