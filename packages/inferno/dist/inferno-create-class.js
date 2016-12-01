@@ -68,7 +68,7 @@ function bindAll(ctx) {
 }
 function collateMixins(mixins) {
     var keyed = {};
-    for (var i = 0; i < mixins.lenth; i++) {
+    for (var i = 0; i < mixins.length; i++) {
         var mixin = mixins[i];
         for (var key in mixin) {
             if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
