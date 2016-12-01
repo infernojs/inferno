@@ -108,9 +108,9 @@
   "nyc": {
     "all": true,
     "check-coverage": true,
-    "lines": 90,
-    "statements": 90,
-    "functions": 90,
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
     "branches": 80,
     "sourceMap": false,
     "include": [
