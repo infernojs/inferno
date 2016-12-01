@@ -1,5 +1,5 @@
 /*!
- * inferno-hyperscript v1.0.0-beta21
+ * inferno-hyperscript v1.0.0-beta22
  * (c) 2016 undefined
  * Released under the MIT License.
  */
@@ -151,7 +151,7 @@ function normalizeVNodes(nodes) {
         nodes = nodes.slice();
     }
     else {
-        nodes['$'] = true; // tslint:disable-line
+        nodes['$'] = true; //tslint:disable-line 
     }
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];

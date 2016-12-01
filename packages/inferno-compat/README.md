@@ -4,13 +4,11 @@ This module is a compatibility layer that makes React-based modules work with In
 
 It provides the same exports as `react` and `react-dom`, meaning you can use your build tool of choice to drop it in where React is being depended on.
 
-Do note however, as with almost all compatability layer libraries, there is an associated cost of extra overhead. As such, you should never expect native Inferno performance when using `inferno-compat`.
-
 ## How to install?
 
 ```bash
-npm install --save inferno@beta21
-npm install --save inferno-compat@beta21
+npm install --save inferno@beta22
+npm install --save inferno-compat@beta22
 ```
 
 ## What is currently supported?
@@ -78,30 +76,6 @@ If you plan on using the Inferno JSX module `babel-plugin-inferno`, you must als
 }
 ```
 
-Using `babel-plugin-inferno` with `inferno-compat` can provide much better performance at the cost of having less compatability.
-
-## Usage with Babel
-
-Install the Babel plugin for module aliasing: `npm install --save-dev babel-plugin-module-resolver`.
-
-Babel can now alias `react` and `react-dom` to `inferno` by adding the following to your `.babelrc` file:
-
-```js
-{
-    "plugins": [
-        ["module-resolver", {
-        "root": ["."],
-        "alias": {
-            "react": "inferno-compat",
-            "react-dom": "inferno-compat"
-        }
-        }]
-    ]
-}
-```
-
-Please note, this method may not allow for usage of `babel-plugin-inferno`.
-
 ## Usage with Browserify
 
 Using `inferno-compat` with Browserify is as simple as installing and configuring [aliasify](http://npm.im/aliasify).
@@ -125,6 +99,15 @@ First, install it: `npm install --save-dev aliasify`
 }
 ```
 
+## React Addons
+
+Some React Addons use intenal require calls on the React package, such as `react-addons-css-transition-group`. You can also alis these packages as shown below:
+```js
+alias: {
+	... // previous aliases
+	'react-addons-css-transition-group': 'rc-css-transition-group'
+}
+```
 Be sure to install `rc-css-transition-group` with `npm install --save rc-css-transition-group`.
 
 ## Once Aliased
