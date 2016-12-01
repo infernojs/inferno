@@ -98,14 +98,6 @@ function shallowDiffers (a, b) {
 	return false;
 }
 
-module.exports = function (instance, nextProps, nextState) {
-	return (
-		shallowDiffers(instance.props, nextProps) ||
-		shallowDiffers(instance.state, nextState)
-	)
-}
-
-
 function PureComponent(props, context) {
 	Component.call(this, props, context);
 }
