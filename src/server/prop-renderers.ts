@@ -1,14 +1,15 @@
 import {
-	isStringOrNumber,
+	escapeText,
+	toHyphenCase,
+} from './utils';
+import {
 	isNullOrUndef,
 	isNumber,
-	isTrue
+	isStringOrNumber,
+	isTrue,
 } from './../shared';
+
 import { isUnitlessNumber } from '../DOM/constants';
-import {
-	toHyphenCase,
-	escapeText
-} from './utils';
 
 export function renderStyleToString(style): string {
 	if (isStringOrNumber(style)) {
@@ -17,8 +18,7 @@ export function renderStyleToString(style): string {
 		const styles: string[] = [];
 		const keys = Object.keys(style);
 
-		for (let i = 0; i < keys.length; i++) {
-			const styleName = keys[i];
+		for (let styleName of keys) {
 			const value = style[styleName];
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
