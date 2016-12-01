@@ -53,7 +53,7 @@ import {
 	mountVoid,
 } from './mounting';
 
-import Lifecycle from "./lifecycle";
+import Lifecycle from './lifecycle';
 import cloneVNode from '../factories/cloneVNode';
 import { componentToDOMNodeMap } from './rendering';
 import processElement from './wrappers/processElement';

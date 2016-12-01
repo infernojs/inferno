@@ -23,7 +23,7 @@ function parseTag(tag, props) {
 	let tagName: null | string = null;
 
 	if (notClassId.test(tagParts[1])) {
-		tagName = "div";
+		tagName = 'div';
 	}
 	let classes;
 
@@ -50,7 +50,7 @@ function parseTag(tag, props) {
 		}
 		props.className = classes.join(' ');
 	}
-	return tagName ? tagName.toLowerCase() : "div";
+	return tagName ? tagName.toLowerCase() : 'div';
 }
 
 function isChildren(x) {

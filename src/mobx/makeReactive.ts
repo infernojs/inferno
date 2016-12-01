@@ -1,8 +1,9 @@
-import { isObservable, Reaction, extras } from 'mobx';
+import { Reaction, extras, isObservable } from 'mobx';
+
+import Component from 'inferno-component';
+import EventEmitter from './EventEmitter';
 import { default as Inferno } from 'inferno';
 import { throwError } from '../shared';
-import EventEmitter from './EventEmitter';
-import Component from 'inferno-component';
 const { findDOMNode } = Inferno;
 
 /**
@@ -57,7 +58,7 @@ export default function makeReactive(componentClass) {
 		let reaction: Reaction;
 		let isRenderingPending = false;
 
-		const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || "<component>";
+		const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || '<component>';
 		const baseRender = this.render.bind(this);
 
 		const initialRender = (nextProps, nextContext) => {

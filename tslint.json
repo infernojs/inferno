@@ -2,9 +2,7 @@
 	"extends": "tslint:latest",
 	"rules": {
 		"quotemark": [
-			true,
-			"single",
-			"jsx-double"
+			"single"
 		],
 		"forin": false,
 		"no-empty": false,
