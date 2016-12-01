@@ -101,20 +101,20 @@ function cloneVNode(vNodeToClone, props) {
         }
     }
     if (flags & 28 /* Component */) {
-        var props$1 = newVNode.props;
+        var newProps = newVNode.props;
         // we need to also clone component children that are in props
         // as the children may also have been hoisted
-        if (props$1 && props$1.children) {
-            var children$1 = props$1.children;
-            if (isArray(children$1)) {
-                for (var i = 0; i < children$1.length; i++) {
-                    if (isVNode(children$1[i])) {
-                        props$1.children[i] = cloneVNode(children$1[i]);
+        if (newProps && newProps.children) {
+            var newChildren = newProps.children;
+            if (isArray(newChildren)) {
+                for (var i = 0; i < newChildren.length; i++) {
+                    if (isVNode(newChildren[i])) {
+                        newProps.children[i] = cloneVNode(newChildren[i]);
                     }
                 }
             }
-            else if (isVNode(children$1)) {
-                props$1.children = cloneVNode(children$1);
+            else if (isVNode(newChildren)) {
+                newProps.children = cloneVNode(newChildren);
             }
         }
         newVNode.children = null;
@@ -151,7 +151,7 @@ function normalizeVNodes(nodes) {
         nodes = nodes.slice();
     }
     else {
-        nodes['$'] = true;
+        nodes['$'] = true; // tslint:disable-line
     }
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];

@@ -36,7 +36,8 @@ export function mapSearchParams(search): any {
 	const map = Object.create(null);
 	const fragments = search.split('&');
 
-	for (let fragment of fragments) {
+	for (let i = 0; i < fragments.length; i++) {
+		const fragment = fragments[i];
 		const [k, v] = fragment.split('=').map(mapFragment);
 
 		if (map[k]) {
@@ -78,7 +79,9 @@ function rank(url: string = ''): number {
 }
 
 function flattenArray(oldArray, newArray) {
-	for (let item of oldArray) {
+	for (let i = 0; i < oldArray.length; i++) {
+		const item = oldArray[i];
+
 		if (isArray(item)) {
 			flattenArray(item, newArray);
 		} else {

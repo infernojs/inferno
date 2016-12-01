@@ -184,7 +184,9 @@ export function removeAllChildren(dom, children, lifecycle, shallowUnmount, isRe
 }
 
 export function removeChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
-	for (let child of children) {
+	for (let i = 0; i < children.length; i++) {
+		const child = children[i];
+
 		if (!isInvalid(child)) {
 			unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
 		}

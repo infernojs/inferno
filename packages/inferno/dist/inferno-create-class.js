@@ -68,7 +68,7 @@ function bindAll(ctx) {
 }
 function collateMixins(mixins) {
     var keyed = {};
-    for (var i = 0; i < mixins.length; i++) {
+    for (var i = 0; i < mixins.lenth; i++) {
         var mixin = mixins[i];
         for (var key in mixin) {
             if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
@@ -138,7 +138,6 @@ function createClass$1(obj) {
     Cl.propTypes = obj.propTypes;
     Cl.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
     Cl.mixins = obj.mixins && collateMixins(obj.mixins);
-    
     if (obj.statics) {
         extend(Cl, obj.statics);
     }

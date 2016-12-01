@@ -97,12 +97,36 @@ const createElement = (name, _props, ...children) => {
 	return infernoCreateElement(name, props, ...children);
 };
 
+// Credit: preact-compat - https://github.com/developit/preact-compat :)
+function shallowDiffers (a, b) {
+	for (let i in a) if (!(i in b)) return true;
+	for (let i in b) if (a[i] !== b[i]) return true;
+	return false;
+}
+
+module.exports = function (instance, nextProps, nextState) {
+	return (
+		shallowDiffers(instance.props, nextProps) ||
+		shallowDiffers(instance.state, nextState)
+	)
+}
+
+
+function PureComponent(props, context) {
+	Component.call(this, props, context);
+}
+
+PureComponent.prototype = new Component({});
+PureComponent.prototype.shouldComponentUpdate = (props, state) =>
+	shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
+
 export {
 	createVNode,
 	render,
 	isValidElement,
 	createElement,
 	Component,
+	PureComponent,
 	unmountComponentAtNode,
 	cloneElement,
 	PropTypes,
@@ -120,6 +144,7 @@ export default {
 	isValidElement,
 	createElement,
 	Component,
+	PureComponent,
 	unmountComponentAtNode,
 	cloneElement,
 	PropTypes,
