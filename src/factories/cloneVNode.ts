@@ -72,7 +72,7 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 	}
 	if (flags & VNodeFlags.Component) {
 		const newProps = newVNode.props;
-		// we need to also clone component children that are in newProps
+		// we need to also clone component children that are in props
 		// as the children may also have been hoisted
 		if (newProps && newProps.children) {
 			const newChildren = newProps.children;
