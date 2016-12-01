@@ -1,21 +1,22 @@
 import {
+	escapeText,
+	isVoidElement,
+} from './utils';
+import {
 	isArray,
-	isStringOrNumber,
-	isNullOrUndef,
 	isInvalid,
+	isNullOrUndef,
+	isStringOrNumber,
 } from './../shared';
 import {
-	escapeText,
-	isVoidElement
-} from './utils';
+	renderAttributes,
+	renderStyleToString,
+} from './prop-renderers';
+
 import { Readable } from 'stream';
 import {
-	VNodeFlags
+	VNodeFlags,
 } from '../core/shapes';
-import {
-	renderStyleToString,
-	renderAttributes
-} from './prop-renderers';
 
 export class RenderStream extends Readable {
 	initNode: any;
@@ -125,7 +126,7 @@ export class RenderStream extends Readable {
 						insertComment = true;
 					}
 					return this.renderNode(child, context, false)
-						.then(_insertComment => {
+						.then((_insertComment) => {
 							if (child.flags & VNodeFlags.Text) {
 								return true;
 							}
@@ -137,7 +138,7 @@ export class RenderStream extends Readable {
 	}
 
 	renderText(vNode, isRoot, context) {
-		return Promise.resolve().then(insertComment => {
+		return Promise.resolve().then((insertComment) => {
 			this.push(vNode.children);
 			return insertComment;
 		});

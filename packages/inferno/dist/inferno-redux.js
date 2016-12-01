@@ -1,5 +1,5 @@
 /*!
- * inferno-redux v1.0.0-beta21
+ * inferno-redux v1.0.0-beta22
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -697,8 +697,9 @@ function shallowEqual(objA, objB) {
     // Test for A's keys different from B.
     var hasOwn = Object.prototype.hasOwnProperty;
     for (var i = 0; i < keysA.length; i++) {
-        if (!hasOwn.call(objB, keysA[i]) ||
-            objA[keysA[i]] !== objB[keysA[i]]) {
+        var key = keysA[i];
+        if (!hasOwn.call(objB, key) ||
+            objA[key] !== objB[key]) {
             return false;
         }
     }

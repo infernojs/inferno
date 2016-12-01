@@ -1,5 +1,5 @@
 import { isFunction, isNull, isUndefined } from '../shared';
-import { roots, render } from './rendering';
+import { render, roots } from './rendering';
 
 export const devToolsStatus = {
 	connected: false

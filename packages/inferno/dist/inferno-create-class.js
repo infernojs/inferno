@@ -1,5 +1,5 @@
 /*!
- * inferno-create-class v1.0.0-beta21
+ * inferno-create-class v1.0.0-beta22
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -138,7 +138,6 @@ function createClass$1(obj) {
     Cl.propTypes = obj.propTypes;
     Cl.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
     Cl.mixins = obj.mixins && collateMixins(obj.mixins);
-    
     if (obj.statics) {
         extend(Cl, obj.statics);
     }

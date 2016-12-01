@@ -1,5 +1,5 @@
 /*!
- * inferno-router v1.0.0-beta21
+ * inferno-router v1.0.0-beta22
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -163,9 +163,10 @@ function mapSearchParams(search) {
     }
     // Create an object with no prototype
     var map = Object.create(null);
-    var fragment = search.split('&');
-    for (var i = 0; i < fragment.length; i++) {
-        var ref = fragment[i].split('=').map(mapFragment);
+    var fragments = search.split('&');
+    for (var i = 0; i < fragments.length; i++) {
+        var fragment = fragments[i];
+        var ref = fragment.split('=').map(mapFragment);
         var k = ref[0];
         var v = ref[1];
         if (map[k]) {

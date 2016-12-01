@@ -34,10 +34,11 @@ export function mapSearchParams(search): any {
 
 	// Create an object with no prototype
 	const map = Object.create(null);
-	const fragment = search.split('&');
+	const fragments = search.split('&');
 
-	for (let i = 0; i < fragment.length; i++) {
-		const [k, v] = fragment[i].split('=').map(mapFragment);
+	for (let i = 0; i < fragments.length; i++) {
+		const fragment = fragments[i];
+		const [k, v] = fragment.split('=').map(mapFragment);
 
 		if (map[k]) {
 			map[k] = isArray(map[k]) ? map[k] : [map[k]];

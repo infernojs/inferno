@@ -38,8 +38,10 @@ export function shallowEqual(objA, objB) {
 	// Test for A's keys different from B.
 	const hasOwn = Object.prototype.hasOwnProperty;
 	for (let i = 0; i < keysA.length; i++) {
-		if (!hasOwn.call(objB, keysA[i]) ||
-			objA[keysA[i]] !== objB[keysA[i]]) {
+		const key = keysA[i];
+
+		if (!hasOwn.call(objB, key) ||
+			objA[key] !== objB[key]) {
 			return false;
 		}
 	}
@@ -47,5 +49,5 @@ export function shallowEqual(objA, objB) {
 }
 
 export function wrapActionCreators(actionCreators) {
-	return dispatch => bindActionCreators(actionCreators, dispatch);
+	return (dispatch) => bindActionCreators(actionCreators, dispatch);
 }

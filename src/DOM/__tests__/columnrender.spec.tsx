@@ -202,7 +202,7 @@ describe('Columns like tests - (JSX)', () => {
 
 					return (
 						<div>
-							<span>column</span>
+							<span key="column">column</span>
 							{items.map((item) => <ItemKeyed key={item.id} text={item.text}/>)}
 						</div>
 					);

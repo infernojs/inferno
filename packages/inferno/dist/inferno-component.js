@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-beta21
+ * inferno-component v1.0.0-beta22
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -8,21 +8,6 @@
     typeof define === 'function' && define.amd ? define(factory) :
     (global.Inferno = global.Inferno || {}, global.Inferno.Component = factory());
 }(this, (function () { 'use strict';
-
-var Lifecycle = function Lifecycle() {
-    this.listeners = [];
-    this.fastUnmount = true;
-};
-Lifecycle.prototype.addListener = function addListener (callback) {
-    this.listeners.push(callback);
-};
-Lifecycle.prototype.trigger = function trigger () {
-        var this$1 = this;
-
-    for (var i = 0; i < this.listeners.length; i++) {
-        this$1.listeners[i]();
-    }
-};
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
@@ -129,7 +114,7 @@ function cloneVNode(vNodeToClone, props) {
     }
     if (flags & 28 /* Component */) {
         var newProps = newVNode.props;
-        // we need to also clone component children that are in newProps
+        // we need to also clone component children that are in props
         // as the children may also have been hoisted
         if (newProps && newProps.children) {
             var newChildren = newProps.children;
@@ -272,6 +257,21 @@ function createTextVNode(text) {
 function isVNode(o) {
     return !!o.flags;
 }
+
+var Lifecycle = function Lifecycle() {
+    this.listeners = [];
+    this.fastUnmount = true;
+};
+Lifecycle.prototype.addListener = function addListener (callback) {
+    this.listeners.push(callback);
+};
+Lifecycle.prototype.trigger = function trigger () {
+        var this$1 = this;
+
+    for (var i = 0; i < this.listeners.length; i++) {
+        this$1.listeners[i]();
+    }
+};
 
 var noOp = ERROR_MSG;
 if (process.env.NODE_ENV !== 'production') {

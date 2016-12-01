@@ -1,6 +1,7 @@
-import {ComponentSpec} from './es2015';
+import { isFunction, isNullOrUndef, isUndefined } from '../shared';
+
 import Component from 'inferno-component';
-import { isNullOrUndef, isFunction, isUndefined } from '../shared';
+import {ComponentSpec} from './es2015';
 
 // don't autobind these methods since they already have guaranteed context.
 const AUTOBIND_BLACKLIST = {
@@ -36,11 +37,12 @@ function bindAll(ctx) {
 
 function collateMixins(mixins) {
 	let keyed = {};
-	for (let i=0; i<mixins.length; i++) {
-		let mixin = mixins[i];
+	for (let i = 0; i < mixins.length; i++) {
+		const mixin = mixins[i];
+
 		for (let key in mixin) {
 			if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
-				(keyed[key] || (keyed[key]=[])).push(mixin[key]);
+				(keyed[key] || (keyed[key] = [])).push(mixin[key]);
 			}
 		}
 	}
@@ -69,7 +71,7 @@ function applyMixin(key, inst, mixin) {
             }
 		}
 		return ret;
-	}
+	};
 }
 
 function applyMixins(inst, mixins) {
@@ -92,20 +94,21 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>) {
 		static propTypes = obj.propTypes;
 		static defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
 		static mixins = obj.mixins && collateMixins(obj.mixins);
-		public isMounted = function() { return !this._unmounted };
 
 		constructor(props) {
 			super(props);
 			extend(this, obj);
 			if (Cl.mixins) {
 				applyMixins(this, Cl.mixins);
-			}			
+			}
 			bindAll(this);
 			if (obj.getInitialState) {
 				this.state = obj.getInitialState.call(this);
 			}
 		}
-	};
+
+		public isMounted = function() { return !this._unmounted; };
+	}
 	if (obj.statics) {
 		extend(Cl, obj.statics);
 	}

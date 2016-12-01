@@ -1,5 +1,5 @@
 /*!
- * inferno-hyperscript v1.0.0-beta21
+ * inferno-hyperscript v1.0.0-beta22
  * (c) 2016 undefined
  * Released under the MIT License.
  */
@@ -102,7 +102,7 @@ function cloneVNode(vNodeToClone, props) {
     }
     if (flags & 28 /* Component */) {
         var newProps = newVNode.props;
-        // we need to also clone component children that are in newProps
+        // we need to also clone component children that are in props
         // as the children may also have been hoisted
         if (newProps && newProps.children) {
             var newChildren = newProps.children;

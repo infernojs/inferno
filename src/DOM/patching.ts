@@ -1,62 +1,63 @@
 import {
-	isNullOrUndef,
-	isUndefined,
-	isNull,
-	isString,
-	isStringOrNumber,
-	isInvalid,
+	EMPTY_OBJ,
 	NO_OP,
-	isNumber,
 	isArray,
 	isAttrAnEvent,
+	isInvalid,
+	isNull,
+	isNullOrUndef,
+	isNumber,
+	isObject,
+	isString,
+	isStringOrNumber,
+	isUndefined,
 	throwError,
-	EMPTY_OBJ,
-	isObject
 } from './../shared';
 import {
-	mount,
-	mountElement,
-	mountText,
-	mountComponent,
-	mountStatelessComponentCallbacks,
-	mountVoid,
-	mountArrayChildren,
-	mountRef
-} from './mounting';
+	VNode,
+	VNodeFlags,
+	createVoidVNode,
+	isVNode,
+} from '../core/shapes';
 import {
+	booleanProps,
+	isUnitlessNumber,
+	namespaces,
+	strictProps,
+} from './constants';
+import {
+	componentIdMap,
+	getIncrementalId,
+} from './devtools';
+import {
+	copyPropsTo,
+	createStatelessComponentInput,
 	insertOrAppend,
 	isKeyed,
 	removeAllChildren,
-	replaceWithNewNode,
-	updateTextContent,
-	setTextContent,
 	replaceChild,
-	createStatelessComponentInput,
-	copyPropsTo,
+	replaceLastChildAndUnmount,
 	replaceVNode,
-	replaceLastChildAndUnmount
+	replaceWithNewNode,
+	setTextContent,
+	updateTextContent,
 } from './utils';
-import { componentToDOMNodeMap } from './rendering';
-import { unmount } from './unmounting';
 import {
-	isUnitlessNumber,
-	booleanProps,
-	strictProps,
-	namespaces
-} from './constants';
-import {
-	VNodeFlags,
-	isVNode,
-	createVoidVNode,
-	VNode
-} from '../core/shapes';
-import processElement from './wrappers/processElement';
+	mount,
+	mountArrayChildren,
+	mountComponent,
+	mountElement,
+	mountRef,
+	mountStatelessComponentCallbacks,
+	mountText,
+	mountVoid,
+} from './mounting';
+
 import Lifecycle from "./lifecycle";
-import {
-	componentIdMap,
-	getIncrementalId
-} from './devtools';
 import cloneVNode from '../factories/cloneVNode';
+import { componentToDOMNodeMap } from './rendering';
+import processElement from './wrappers/processElement';
+import { unmount } from './unmounting';
 
 export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG: boolean, isRecycling: boolean) {
 	if (lastVNode !== nextVNode) {
@@ -250,6 +251,8 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 	const lastType = lastVNode.type;
 	const nextType = nextVNode.type;
 	const nextProps = nextVNode.props || EMPTY_OBJ;
+	const lastKey = lastVNode.key;
+	const nextKey = nextVNode.key;
 
 	if (lastType !== nextType) {
 		if (isClass) {
@@ -267,6 +270,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 		}
 	} else {
 		if (isClass) {
+			if (lastKey !== nextKey) {
+				replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
+				return false;
+			}
 			const instance = lastVNode.children;
 
 			if (instance._unmounted) {
@@ -350,8 +357,12 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 
 			nextVNode.dom = lastVNode.dom;
 			nextVNode.children = lastInput;
-			if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
-				shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps, nextProps);
+			if (lastKey !== nextKey) {
+				shouldUpdate = true;
+			} else {
+				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
+					shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps, nextProps);
+				}
 			}
 			if (shouldUpdate !== false) {
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
@@ -464,8 +475,8 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 }
 
 export function patchKeyedChildren(
-	a: Array<VNode>,
-	b: Array<VNode>,
+	a: VNode[],
+	b: VNode[],
 	dom,
 	lifecycle: Lifecycle,
 	context,
@@ -723,7 +734,7 @@ export function patchKeyedChildren(
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 function lis_algorithm(a) {
 	let p = a.slice(0);
-	let result: Array<any> = [];
+	let result: any[] = [];
 	result.push(0);
 	let i;
 	let j;
