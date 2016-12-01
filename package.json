@@ -1,7 +1,7 @@
 {
   "name": "inferno-src",
   "license": "MIT",
-  "version": "1.0.0-beta21",
+  "version": "1.0.0-beta22",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -106,21 +106,22 @@
     "rollup"
   ],
   "nyc": {
-    "sourceMap": false,
     "all": true,
-    "lines": 90,
-    "statements": 90,
-    "functions": 90,
-    "branches": 80,
     "check-coverage": true,
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 80,
+    "sourceMap": false,
     "include": [
       "src/*.ts",
       "src/**/*.ts"
     ],
     "exclude": [
-      "typings",
+      "packages",
       "src/inferno.d.ts",
-      "src/**/*__tests__*/**"
+      "src/**/*__tests__*/**",
+      "typings"
     ],
     "extension": [
       ".ts"
@@ -155,7 +156,6 @@
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
-    "server:cov": "cross-env nyc mocha --opts config/mocha.opts",
     "server:cov:publish": "npm run server:cov && coveralls < coverage/lcov.info && rimraf coverage",
     "test": "npm run lint && npm run test:browser && npm run test:server",
     "test:browser": "karma start config/karma.conf.js",
