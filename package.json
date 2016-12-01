@@ -107,15 +107,12 @@
   ],
   "nyc": {
     "all": true,
-<<<<<<< HEAD
     "check-coverage": true,
     "lines": 90,
     "statements": 90,
     "functions": 90,
     "branches": 80,
-=======
     "sourceMap": false,
->>>>>>> dev
     "include": [
       "src/*.ts",
       "src/**/*.ts"
