@@ -163,9 +163,10 @@ function mapSearchParams(search) {
     }
     // Create an object with no prototype
     var map = Object.create(null);
-    var fragment = search.split('&');
-    for (var i = 0; i < fragment.length; i++) {
-        var ref = fragment[i].split('=').map(mapFragment);
+    var fragments = search.split('&');
+    for (var i = 0; i < fragments.length; i++) {
+        var fragment = fragments[i];
+        var ref = fragment.split('=').map(mapFragment);
         var k = ref[0];
         var v = ref[1];
         if (map[k]) {

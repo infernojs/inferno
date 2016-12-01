@@ -17,7 +17,6 @@
     "@types/sinon": "^1.16.32",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
-    "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.8",
     "babel-plugin-inferno": "^1.2.0-beta12",
     "babel-plugin-module-resolver": "^2.3.0",
@@ -146,9 +145,6 @@
     "build:dev": "cross-env NODE_ENV=development babel-node --presets es2015 config/rollup.config.js",
     "build:prod": "cross-env NODE_ENV=production babel-node --presets es2015 config/rollup.config.js",
     "clean": "rimraf coverage/ build/",
-    "eslint": "npm run eslint:source && npm run eslint:test",
-    "eslint:source": "eslint ./src/**/*.js",
-    "eslint:test": "eslint ./src/**/__tests__/*.js",
     "karma:firefox": "karma start config/karma.conf.js --browsers=Firefox",
     "karma:chrome": "karma start config/karma.conf.js --browsers=Chrome",
     "karma:ie": "karma start config/karma.conf.js --browsers=IE",
@@ -166,7 +162,6 @@
     "test:server": "cross-env nyc mocha --opts config/mocha.opts"
   },
   "pre-commit": [
-    "eslint",
     "lint",
     "test"
   ]

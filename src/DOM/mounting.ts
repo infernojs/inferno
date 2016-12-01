@@ -123,7 +123,9 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 }
 
 export function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
-	for (let [ i, child ] of children.entries()) {
+	for (let i = 0; i < children.length; i++) {
+		let child = children[i];
+
 		if (!isInvalid(child)) {
 			if (child.dom) {
 				children[i] = child = cloneVNode(child);

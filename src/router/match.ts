@@ -34,7 +34,8 @@ function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 
 	routes.sort(pathRankSort);
 
-	for (let route of routes) {
+	for (let i = 0; i < routes.length; i++) {
+		const route = routes[i];
 		const location = (lastPath + (route.props && route.props.path || '/')).replace('//', '/');
 		const isLast = !route.props || isEmpty(route.props.children);
 		const matchBase = matchPath(isLast, location, pathToMatch);

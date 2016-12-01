@@ -138,7 +138,6 @@ function createClass$1(obj) {
     Cl.propTypes = obj.propTypes;
     Cl.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
     Cl.mixins = obj.mixins && collateMixins(obj.mixins);
-    
     if (obj.statics) {
         extend(Cl, obj.statics);
     }

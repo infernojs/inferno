@@ -4,28 +4,34 @@
 		<title>Inferno CSS transform example</title>
 	</head>
 	<body>
-        <div id="app"></div>
-        <script>window.PropTypes = {};</script>
-        <script src="../../packages/inferno/dist/inferno-component.js"></script>
+		<div id="app"></div>
+		<script>
+			window.process = {
+				env: {
+					NODE_ENV: 'development'
+				}
+			};
+		</script>
+		<script src="../../packages/inferno/dist/inferno-component.js"></script>
 		<script src="../../packages/inferno/dist/inferno-compat.js"></script>
 		<script>
-            "use strict";
-            var createElement = Inferno.createElement;
+			"use strict";
+			var createElement = Inferno.createElement;
 
-            class MyFoo extends Inferno.Component {
-                render() {
-                    return createElement('div', { ref: 'hey' }, 'Hello world!')
-                }
-                componentDidMount() {
-                    if (this.refs.hey) {
-                        console.log('inferno-compat string refs work :)')
-                    } else {
-                        console.log('inferno-compat string refs do not work :(')
-                    }
-                }
-            } 
+			class MyFoo extends Inferno.Component {
+				render() {
+					return createElement('div', { ref: 'hey' }, 'Hello world!')
+				}
+				componentDidMount() {
+					if (this.refs.hey) {
+						console.log('inferno-compat string refs work :)')
+					} else {
+						console.log('inferno-compat string refs do not work :(')
+					}
+				}
+			} 
 
-            Inferno.render(createElement(MyFoo, {}), document.getElementById('app'));
+			Inferno.render(createElement(MyFoo, {}), document.getElementById('app'));
 		</script>
 	</body>
 </html>

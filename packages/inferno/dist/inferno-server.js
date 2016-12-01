@@ -9,6 +9,60 @@
 	(global.Inferno = global.Inferno || {}, global.Inferno.Server = factory(global.stream));
 }(this, (function (stream) { 'use strict';
 
+function escapeText(_string) {
+    var string = _string + '';
+    var length = string.length;
+    var characters = '';
+    for (var i = 0; i < length; i++) {
+        switch (string.charCodeAt(i)) {
+            case 38:
+                characters += '&amp;';
+                break;
+            case 39:
+                characters += '&#039;';
+                break;
+            case 34:
+                characters += '&quot;';
+                break;
+            case 60:
+                characters += '&lt;';
+                break;
+            case 62:
+                characters += '&gt;';
+                break;
+            default:
+                characters += string[i];
+        }
+    }
+    return characters;
+}
+var uppercasePattern = /[A-Z]/g;
+var msPattern = /^ms-/;
+function toHyphenCase(str) {
+    return str.replace(uppercasePattern, '-$&').toLowerCase().replace(msPattern, '-ms-');
+}
+var voidElements = {
+    area: true,
+    base: true,
+    br: true,
+    col: true,
+    command: true,
+    embed: true,
+    hr: true,
+    img: true,
+    input: true,
+    keygen: true,
+    link: true,
+    meta: true,
+    param: true,
+    source: true,
+    track: true,
+    wbr: true
+};
+function isVoidElement(str) {
+    return !!voidElements[str];
+}
+
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 
@@ -66,60 +120,6 @@ constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
-
-function escapeText(_string) {
-    var string = _string + '';
-    var length = string.length;
-    var characters = '';
-    for (var i = 0; i < length; i++) {
-        switch (string.charCodeAt(i)) {
-            case 38:
-                characters += '&amp;';
-                break;
-            case 39:
-                characters += '&#039;';
-                break;
-            case 34:
-                characters += '&quot;';
-                break;
-            case 60:
-                characters += '&lt;';
-                break;
-            case 62:
-                characters += '&gt;';
-                break;
-            default:
-                characters += string[i];
-        }
-    }
-    return characters;
-}
-var uppercasePattern = /[A-Z]/g;
-var msPattern = /^ms-/;
-function toHyphenCase(str) {
-    return str.replace(uppercasePattern, '-$&').toLowerCase().replace(msPattern, '-ms-');
-}
-var voidElements = {
-    area: true,
-    base: true,
-    br: true,
-    col: true,
-    command: true,
-    embed: true,
-    hr: true,
-    img: true,
-    input: true,
-    keygen: true,
-    link: true,
-    meta: true,
-    param: true,
-    source: true,
-    track: true,
-    wbr: true
-};
-function isVoidElement(str) {
-    return !!voidElements[str];
-}
 
 function renderStylesToString(styles) {
     if (isStringOrNumber(styles)) {
@@ -240,9 +240,7 @@ function renderStyleToString(style) {
     }
     else {
         var styles = [];
-        var keys = Object.keys(style);
-        for (var i = 0; i < keys.length; i++) {
-            var styleName = keys[i];
+        for (var styleName in style) {
             var value = style[styleName];
             var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
             if (!isNullOrUndef(value)) {
