@@ -935,6 +935,8 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
     var lastType = lastVNode.type;
     var nextType = nextVNode.type;
     var nextProps = nextVNode.props || EMPTY_OBJ;
+    var lastKey = lastVNode.key;
+    var nextKey = nextVNode.key;
     if (lastType !== nextType) {
         if (isClass) {
             replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
@@ -951,6 +953,10 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
     }
     else {
         if (isClass) {
+            if (lastKey !== nextKey) {
+                replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
+                return false;
+            }
             var instance = lastVNode.children;
             if (instance._unmounted) {
                 if (isNull(parentDom)) {
@@ -1025,8 +1031,13 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
             var nextInput$2 = lastInput$2;
             nextVNode.dom = lastVNode.dom;
             nextVNode.children = lastInput$2;
-            if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
-                shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps$1, nextProps);
+            if (lastKey !== nextKey) {
+                shouldUpdate = true;
+            }
+            else {
+                if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
+                    shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps$1, nextProps);
+                }
             }
             if (shouldUpdate !== false) {
                 if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {

@@ -251,6 +251,8 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 	const lastType = lastVNode.type;
 	const nextType = nextVNode.type;
 	const nextProps = nextVNode.props || EMPTY_OBJ;
+	const lastKey = lastVNode.key;
+	const nextKey = nextVNode.key;
 
 	if (lastType !== nextType) {
 		if (isClass) {
@@ -268,6 +270,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 		}
 	} else {
 		if (isClass) {
+			if (lastKey !== nextKey) {
+				replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
+				return false;
+			}
 			const instance = lastVNode.children;
 
 			if (instance._unmounted) {
@@ -351,8 +357,12 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 
 			nextVNode.dom = lastVNode.dom;
 			nextVNode.children = lastInput;
-			if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
-				shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps, nextProps);
+			if (lastKey !== nextKey) {
+				shouldUpdate = true;
+			} else {
+				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentShouldUpdate)) {
+					shouldUpdate = nextHooks.onComponentShouldUpdate(lastProps, nextProps);
+				}
 			}
 			if (shouldUpdate !== false) {
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
