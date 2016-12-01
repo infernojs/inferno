@@ -1,7 +1,7 @@
 {
   "name": "inferno-src",
   "license": "MIT",
-  "version": "1.0.0-beta21",
+  "version": "1.0.0-beta22",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -106,21 +106,25 @@
     "rollup"
   ],
   "nyc": {
-    "sourceMap": false,
     "all": true,
+<<<<<<< HEAD
     "check-coverage": true,
     "lines": 90,
     "statements": 90,
     "functions": 90,
     "branches": 80,
+=======
+    "sourceMap": false,
+>>>>>>> dev
     "include": [
       "src/*.ts",
       "src/**/*.ts"
     ],
     "exclude": [
-      "typings",
+      "packages",
       "src/inferno.d.ts",
-      "src/**/*__tests__*/**"
+      "src/**/*__tests__*/**",
+      "typings"
     ],
     "extension": [
       ".ts"
