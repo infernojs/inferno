@@ -24,6 +24,20 @@ Inspiration was taken from `react-redux` to provide Inferno with a similar API.
 import Inferno from 'inferno';
 import { Router, Route, browserHistory } from 'inferno-router';
 import { Provider } from 'inferno-redux';
+import { createStore } from 'redux';
+
+const store = createStore(function(state, action) {
+  switch (action.type) {
+    case 'CHANGE_NAME':    
+      return {
+        name: action.name
+      }
+    default:
+      return {
+        name: 'TOM'
+      };
+  }
+})
 
 class App extends Component {
     render() {
