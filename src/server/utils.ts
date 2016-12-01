@@ -31,7 +31,7 @@ const uppercasePattern = /[A-Z]/g;
 const msPattern = /^ms-/;
 
 export function toHyphenCase(str) {
-	return str.replace(uppercasePattern, '-$&').toLowerCase().replace(msPattern, '-ms-'); 
+	return str.replace(uppercasePattern, '-$&').toLowerCase().replace(msPattern, '-ms-');
 }
 
 const voidElements = {
