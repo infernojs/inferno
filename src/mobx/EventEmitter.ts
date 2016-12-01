@@ -13,7 +13,7 @@ export default class EventEmitter {
 	}
 
 	public emit(data: any) {
-		this.listeners.forEach(fn => fn(data));
+		this.listeners.forEach((fn) => fn(data));
 	};
 
 	public getTotalListeners(): number {

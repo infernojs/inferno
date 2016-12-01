@@ -1,7 +1,7 @@
-import hoistStatics from 'hoist-non-inferno-statics';
+import { IProps } from '../core/shapes';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
-import { IProps } from '../core/shapes';
+import hoistStatics from 'hoist-non-inferno-statics';
 
 interface IStoreProps extends IProps {
 	ref: any;
@@ -24,7 +24,7 @@ function createStoreInjector (grabStoresFn, component) {
 			for ( let key in additionalProps ) {
 				newProps[ key ] = additionalProps[ key ];
 			}
-			newProps.ref = instance => {
+			newProps.ref = (instance) => {
 				this.wrappedInstance = instance;
 			};
 
@@ -76,5 +76,5 @@ export default function inject (grabStoresFn?: Function | string): any {
 		grabStoresFn = grabStoresByName(storesNames);
 	}
 
-	return componentClass => createStoreInjector(grabStoresFn, componentClass);
+	return (componentClass) => createStoreInjector(grabStoresFn, componentClass);
 }

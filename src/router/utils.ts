@@ -34,10 +34,10 @@ export function mapSearchParams(search): any {
 
 	// Create an object with no prototype
 	const map = Object.create(null);
-	const fragment = search.split('&');
+	const fragments = search.split('&');
 
-	for (let i = 0; i < fragment.length; i++) {
-		const [k, v] = fragment[i].split('=').map(mapFragment);
+	for (let fragment of fragments) {
+		const [k, v] = fragment.split('=').map(mapFragment);
 
 		if (map[k]) {
 			map[k] = isArray(map[k]) ? map[k] : [map[k]];
@@ -78,9 +78,7 @@ function rank(url: string = ''): number {
 }
 
 function flattenArray(oldArray, newArray) {
-	for (let i = 0; i < oldArray.length; i++) {
-		const item = oldArray[i];
-
+	for (let item of oldArray) {
 		if (isArray(item)) {
 			flattenArray(item, newArray);
 		} else {

@@ -1,15 +1,15 @@
 import {
-	isStringOrNumber,
-	isArray,
-	isString,
-	isUndefined,
-	isStatefulComponent
-} from '../shared';
-import {
-	createVNode,
 	VNode,
-	VNodeFlags
+	VNodeFlags,
+	createVNode,
 } from '../core/shapes';
+import {
+	isArray,
+	isStatefulComponent,
+	isString,
+	isStringOrNumber,
+	isUndefined,
+} from '../shared';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;
@@ -27,9 +27,7 @@ function parseTag(tag, props) {
 	}
 	let classes;
 
-	for (let i = 0; i < tagParts.length; i++) {
-		const part = tagParts[i];
-
+	for (let part of tagParts) {
 		if (!part) {
 			continue;
 		}
