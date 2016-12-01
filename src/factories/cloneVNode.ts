@@ -44,7 +44,7 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 	let newVNode;
 
 	if (isArray(vNodeToClone)) {
-		newVNode = vNodeToClone.map(vNode => cloneVNode(vNode));
+		newVNode = vNodeToClone.map((vNode) => cloneVNode(vNode));
 	} else if (isNullOrUndef(props) && isNullOrUndef(children)) {
 		newVNode = Object.assign({}, vNodeToClone);
 	} else {
