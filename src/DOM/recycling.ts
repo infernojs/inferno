@@ -1,20 +1,20 @@
+import { VNode, VNodeFlags } from '../core/shapes';
 import {
+	isNull,
 	isUndefined,
-	isNull
 } from './../shared';
 import {
+	patchComponent,
 	patchElement,
-	patchComponent
 } from './patching';
-import { VNode, VNodeFlags } from '../core/shapes';
 
 export let recyclingEnabled = true;
 let componentPools = new Map<Function | null, Pools>();
 let elementPools = new Map<string | null, Pools>();
 
 interface Pools {
-  nonKeyed: Array<VNode>;
-  keyed: Map<string | number, Array<VNode>>;
+  nonKeyed: VNode[];
+  keyed: Map<string | number, VNode[]>;
 }
 
 export function disableRecycling() {
@@ -55,7 +55,7 @@ export function poolElement(vNode) {
 	if (isUndefined(pools)) {
 		pools = {
 			nonKeyed: [],
-			keyed: new Map<string | number, Array<VNode>>()
+			keyed: new Map<string | number, VNode[]>()
 		};
 		elementPools.set(tag, pools);
 	}
@@ -124,7 +124,7 @@ export function poolComponent(vNode) {
 	if (isUndefined(pools)) {
 		pools = {
 			nonKeyed: [],
-			keyed: new Map<string | number, Array<VNode>>()
+			keyed: new Map<string | number, VNode[]>()
 		};
 		componentPools.set(type, pools);
 	}

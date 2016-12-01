@@ -1,5 +1,5 @@
 export default class Lifecycle {
-	public listeners: Array<Function> = [];
+	public listeners: Function[] = [];
 	public fastUnmount = true;
 
 	addListener(callback) {

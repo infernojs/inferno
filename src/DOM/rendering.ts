@@ -1,22 +1,23 @@
-import Lifecycle from './lifecycle';
-import { mount } from './mounting';
-import { patch } from './patching';
-import {
-	isNull,
-	isInvalid,
-	isNullOrUndef,
-	isBrowser,
-	throwError,
-	NO_OP
-} from '../shared';
-import hydrateRoot from './hydration';
-import { unmount } from './unmounting';
-import cloneVNode from '../factories/cloneVNode';
 import { InfernoInput, VNode } from '../core/shapes';
 import {
+	NO_OP,
+	isBrowser,
+	isInvalid,
+	isNull,
+	isNullOrUndef,
+	throwError,
+} from '../shared';
+import {
 	devToolsStatus,
-	sendRoots
+	sendRoots,
 } from './devtools';
+
+import Lifecycle from './lifecycle';
+import cloneVNode from '../factories/cloneVNode';
+import hydrateRoot from './hydration';
+import { mount } from './mounting';
+import { patch } from './patching';
+import { unmount } from './unmounting';
 
 interface Root {
 	dom: Node | SVGAElement;
@@ -27,7 +28,7 @@ interface Root {
 // rather than use a Map, like we did before, we can use an array here
 // given there shouldn't be THAT many roots on the page, the difference
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
-export const roots: Array<Root> = [];
+export const roots: Root[] = [];
 export const componentToDOMNodeMap = new Map();
 
 export function findDOMNode(domNode) {
