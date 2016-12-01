@@ -163,7 +163,7 @@ function normalizeVNodes(nodes) {
         nodes = nodes.slice();
     }
     else {
-        nodes['$'] = true; // tslint:disable-line
+        nodes['$'] = true; //tslint:disable-line 
     }
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
