@@ -107,6 +107,11 @@
   ],
   "nyc": {
     "all": true,
+    "check-coverage": true,
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 80,
     "sourceMap": false,
     "include": [
       "src/*.ts",
@@ -151,11 +156,10 @@
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
-    "server:cov": "cross-env nyc mocha --opts config/mocha.opts",
     "server:cov:publish": "npm run server:cov && coveralls < coverage/lcov.info && rimraf coverage",
     "test": "npm run lint && npm run test:browser && npm run test:server",
     "test:browser": "karma start config/karma.conf.js",
-    "test:server": "cross-env mocha --opts config/mocha.opts"
+    "test:server": "cross-env nyc mocha --opts config/mocha.opts"
   },
   "pre-commit": [
     "lint",

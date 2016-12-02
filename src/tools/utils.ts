@@ -83,7 +83,7 @@ export function triggerEvent(name, element) {
 	} else if (name === 'focus' || name === 'change' || name === 'blur' || name === 'select') {
 		eventType = 'HTMLEvents';
 	} else {
-		throw new Error("Unsupported `'" + name + "'`event");
+		throw new Error('Unsupported `"' + name + '"`event');
 
 	}
 	const event = document.createEvent(eventType);
