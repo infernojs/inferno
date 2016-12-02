@@ -2116,8 +2116,9 @@ function hydrateRoot(input, parentDom, lifecycle) {
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 var roots = [];
 var componentToDOMNodeMap = new Map();
-function findDOMNode(domNode) {
-    return componentToDOMNodeMap.get(domNode) || domNode || null;
+function findDOMNode(ref) {
+    var dom = ref && ref.nodeType ? ref : null;
+    return componentToDOMNodeMap.get(ref) || dom;
 }
 function getRoot(dom) {
     for (var i = 0; i < roots.length; i++) {
