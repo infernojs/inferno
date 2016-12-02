@@ -601,27 +601,6 @@ function cloneVNode(vNodeToClone, props) {
     newVNode.dom = null;
     return newVNode;
 }
-// 	if (flags & VNodeFlags.Component) {
-// 		const newProps = newVNode.props;
-// 		// we need to also clone component children that are in props
-// 		// as the children may also have been hoisted
-// 		if (newProps && newProps.children) {
-// 			const newChildren = newProps.children;
-// 			if (isArray(newChildren)) {
-// 				for (let i = 0; i < newChildren.length; i++) {
-// 					if (!isInvalid(newChildren[i]) && isVNode(newChildren[i])) {
-// 						newProps.children[i] = cloneVNode(newChildren[i]);
-// 					}
-// 				}
-// 			} else if (!isInvalid(newChildren) && isVNode(newChildren)) {
-// 				newProps.children = cloneVNode(newChildren);
-// 			}
-// 		}
-// 		newVNode.children = null;
-// 	}
-// 	newVNode.dom = null;
-// 	return newVNode;
-// }
 
 function _normalizeVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
@@ -2734,7 +2713,6 @@ function render(input, parentDom) {
     }
 }
 
-var this$1 = undefined;
 function unmountComponentAtNode(container) {
 	render(null, container);
 	return true;
@@ -2833,7 +2811,9 @@ function PureComponent(props, context) {
 }
 
 PureComponent.prototype = new Component({});
-PureComponent.prototype.shouldComponentUpdate = function (props, state) { return shallowDiffers(this$1.props, props) || shallowDiffers(this$1.state, state); };
+PureComponent.prototype.shouldComponentUpdate = function (props, state) {
+	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
+};
 
 var index = {
 	createVNode: createVNode,
