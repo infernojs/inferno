@@ -308,10 +308,10 @@ Render a virtual node into an HTML string, given the supplied virtual DOM.
 | -----------               | --------------                                                 | -----------------------         |
 | `onComponentWillMount`    | a stateless component is about to mount                        |                                 |
 | `onComponentDidMount`     | a stateless component has mounted successfully                 | `domNode`                       |
-| `onComponentWillUnmount`  | a stateless component is about to be unmounted                 | `domNode`                       |
 | `onComponentShouldUpdate` | a stateless component has been triggered to updated            | `lastProps, nextProps`          |
 | `onComponentWillUpdate`   | a stateless component is about to perform an update            | `lastProps, nextProps`          |
 | `onComponentDidUpdate`    | a stateless component has performed an updated                 | `lastProps, nextProps`          |
+| `onComponentWillUnmount`  | a stateless component is about to be unmounted                 |                                 |
 
 ### Using hooks
 

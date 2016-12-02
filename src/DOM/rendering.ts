@@ -36,9 +36,7 @@ export function findDOMNode(domNode) {
 }
 
 function getRoot(dom): Root | null {
-	for (let i = 0; i < roots.length; i++) {
-		const root = roots[i];
-
+	for (let root of roots) {
 		if (root.dom === dom) {
 			return root;
 		}

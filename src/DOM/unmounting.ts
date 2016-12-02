@@ -115,9 +115,7 @@ export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowU
 
 function unmountChildren(children, lifecycle, shallowUnmount, isRecycling) {
 	if (isArray(children)) {
-		for (let i = 0; i < children.length; i++) {
-			const child = children[i];
-
+		for (let child of children) {
 			if (!isInvalid(child) && isObject(child)) {
 				unmount(child, null, lifecycle, false, shallowUnmount, isRecycling);
 			}

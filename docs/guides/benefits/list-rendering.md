@@ -1,7 +1,5 @@
 ---
 title: List Rendering
-permalink: /guides/benefits/list-rendering/
-next: /guides/benefits/list-rendering/
 ---
 
 ## List Rendering

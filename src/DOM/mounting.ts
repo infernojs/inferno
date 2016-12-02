@@ -123,7 +123,7 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 }
 
 export function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
-	for (let i = 0; i < children.length; i++) {
+	for (let i = 0; i < children.length; i++) { // tslint:disable-line
 		let child = children[i];
 
 		if (!isInvalid(child)) {
