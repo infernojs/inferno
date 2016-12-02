@@ -103,8 +103,9 @@ function PureComponent(props, context) {
 }
 
 PureComponent.prototype = new Component({});
-PureComponent.prototype.shouldComponentUpdate = (props, state) =>
-	shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
+PureComponent.prototype.shouldComponentUpdate = function (props, state) {
+	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
+}
 
 export {
 	createVNode,

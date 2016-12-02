@@ -2713,7 +2713,6 @@ function render(input, parentDom) {
     }
 }
 
-var this$1 = undefined;
 function unmountComponentAtNode(container) {
 	render(null, container);
 	return true;
@@ -2812,7 +2811,9 @@ function PureComponent(props, context) {
 }
 
 PureComponent.prototype = new Component({});
-PureComponent.prototype.shouldComponentUpdate = function (props, state) { return shallowDiffers(this$1.props, props) || shallowDiffers(this$1.state, state); };
+PureComponent.prototype.shouldComponentUpdate = function (props, state) {
+	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
+};
 
 var index = {
 	createVNode: createVNode,
