@@ -24,7 +24,7 @@ function isStringOrNumber(obj) {
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
-function isInvalid$1(obj) {
+function isInvalid(obj) {
     return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
 
@@ -131,7 +131,7 @@ function cloneVNode(vNodeToClone, props) {
 function _normalizeVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
-        if (!isInvalid$1(n)) {
+        if (!isInvalid(n)) {
             if (Array.isArray(n)) {
                 _normalizeVNodes(n, result, 0);
             }
@@ -160,7 +160,7 @@ function normalizeVNodes(nodes) {
     }
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        if (isInvalid$1(n)) {
+        if (isInvalid(n)) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
@@ -203,7 +203,7 @@ function normalize(vNode) {
             vNode.key = props.key;
         }
     }
-    if (!isInvalid$1(children)) {
+    if (!isInvalid(children)) {
         if (isArray(children)) {
             vNode.children = normalizeVNodes(children);
         }
@@ -261,7 +261,7 @@ function createElement$1(name, props) {
     var _children = [], len = arguments.length - 2;
     while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
 
-    if (isInvalid$1(name) || isObject(name)) {
+    if (isInvalid(name) || isObject(name)) {
         throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
     }
     var children = _children;

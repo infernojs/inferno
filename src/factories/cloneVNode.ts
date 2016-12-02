@@ -8,6 +8,7 @@ import {
 	isNull,
 	isNullOrUndef,
 	isUndefined,
+	isInvalid
 } from '../shared';
 
 export default function cloneVNode(vNodeToClone, props?, ..._children) {
