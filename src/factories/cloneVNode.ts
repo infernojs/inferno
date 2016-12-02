@@ -73,20 +73,23 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 	}
 	if (flags & VNodeFlags.Component) {
 		const newProps = newVNode.props;
-		const newChildren = newProps.children;
-		// we need to also clone component children that are in props
-		// as the children may also have been hoisted
-		if (newProps && newChildren) {
-			if (isArray(newChildren)) {
-				for (let i = 0; i < newChildren.length; i++) {
-					const child = newChildren[i];
 
-					if (!isInvalid(child) && isVNode(child)) {
-						newProps.children[i] = cloneVNode(child);
+		if (newProps) {
+			const newChildren = newProps.children;
+			// we need to also clone component children that are in props
+			// as the children may also have been hoisted
+			if (newChildren) {
+				if (isArray(newChildren)) {
+					for (let i = 0; i < newChildren.length; i++) {
+						const child = newChildren[i];
+
+						if (!isInvalid(child) && isVNode(child)) {
+							newProps.children[i] = cloneVNode(child);
+						}
 					}
+				} else if (isVNode(newChildren)) {
+					newProps.children = cloneVNode(newChildren);
 				}
-			} else if (isVNode(newChildren)) {
-				newProps.children = cloneVNode(newChildren);
 			}
 		}
 		newVNode.children = null;
@@ -94,3 +97,26 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 	newVNode.dom = null;
 	return newVNode;
 }
+
+// 	if (flags & VNodeFlags.Component) {
+// 		const newProps = newVNode.props;
+// 		// we need to also clone component children that are in props
+// 		// as the children may also have been hoisted
+// 		if (newProps && newProps.children) {
+// 			const newChildren = newProps.children;
+
+// 			if (isArray(newChildren)) {
+// 				for (let i = 0; i < newChildren.length; i++) {
+// 					if (!isInvalid(newChildren[i]) && isVNode(newChildren[i])) {
+// 						newProps.children[i] = cloneVNode(newChildren[i]);
+// 					}
+// 				}
+// 			} else if (!isInvalid(newChildren) && isVNode(newChildren)) {
+// 				newProps.children = cloneVNode(newChildren);
+// 			}
+// 		}
+// 		newVNode.children = null;
+// 	}
+// 	newVNode.dom = null;
+// 	return newVNode;
+// }
