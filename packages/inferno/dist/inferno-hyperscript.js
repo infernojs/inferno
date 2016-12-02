@@ -147,12 +147,14 @@ function normalizeVNodes(nodes) {
     // we assign $ which basically means we've flagged this array for future note
     // if it comes back again, we need to clone it, as people are using it
     // in an immutable way
+    // tslint:disable
     if (nodes['$']) {
         nodes = nodes.slice();
     }
     else {
-        nodes['$'] = true; //tslint:disable-line 
+        nodes['$'] = true;
     }
+    // tslint:enable
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
         if (isInvalid(n)) {
@@ -254,7 +256,7 @@ function parseTag(tag, props) {
     var tagParts = tag.split(classIdSplit);
     var tagName = null;
     if (notClassId.test(tagParts[1])) {
-        tagName = "div";
+        tagName = 'div';
     }
     var classes;
     for (var i = 0; i < tagParts.length; i++) {
@@ -280,7 +282,7 @@ function parseTag(tag, props) {
         }
         props.className = classes.join(' ');
     }
-    return tagName ? tagName.toLowerCase() : "div";
+    return tagName ? tagName.toLowerCase() : 'div';
 }
 function isChildren(x) {
     return isStringOrNumber(x) || (x && isArray(x));

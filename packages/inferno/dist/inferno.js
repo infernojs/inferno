@@ -167,12 +167,14 @@ function normalizeVNodes(nodes) {
     // we assign $ which basically means we've flagged this array for future note
     // if it comes back again, we need to clone it, as people are using it
     // in an immutable way
+    // tslint:disable
     if (nodes['$']) {
         nodes = nodes.slice();
     }
     else {
-        nodes['$'] = true; //tslint:disable-line 
+        nodes['$'] = true;
     }
+    // tslint:enable
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
         if (isInvalid(n)) {
