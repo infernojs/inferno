@@ -24,7 +24,7 @@ function isStringOrNumber(obj) {
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
-function isInvalid(obj) {
+function isInvalid$1(obj) {
     return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
 
@@ -108,12 +108,12 @@ function cloneVNode(vNodeToClone, props) {
             var newChildren = newProps.children;
             if (isArray(newChildren)) {
                 for (var i = 0; i < newChildren.length; i++) {
-                    if (isVNode(newChildren[i])) {
+                    if (!isInvalid(newChildren[i]) && isVNode(newChildren[i])) {
                         newProps.children[i] = cloneVNode(newChildren[i]);
                     }
                 }
             }
-            else if (isVNode(newChildren)) {
+            else if (!isInvalid(newChildren) && isVNode(newChildren)) {
                 newProps.children = cloneVNode(newChildren);
             }
         }
@@ -126,7 +126,7 @@ function cloneVNode(vNodeToClone, props) {
 function _normalizeVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
-        if (!isInvalid(n)) {
+        if (!isInvalid$1(n)) {
             if (Array.isArray(n)) {
                 _normalizeVNodes(n, result, 0);
             }
@@ -155,7 +155,7 @@ function normalizeVNodes(nodes) {
     }
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        if (isInvalid(n)) {
+        if (isInvalid$1(n)) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
@@ -198,7 +198,7 @@ function normalize(vNode) {
             vNode.key = props.key;
         }
     }
-    if (!isInvalid(children)) {
+    if (!isInvalid$1(children)) {
         if (isArray(children)) {
             vNode.children = normalizeVNodes(children);
         }

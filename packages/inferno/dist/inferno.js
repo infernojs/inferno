@@ -25,7 +25,7 @@ function isStringOrNumber(obj) {
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
-function isInvalid(obj) {
+function isInvalid$1(obj) {
     return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
 function isFunction(obj) {
@@ -128,12 +128,12 @@ function cloneVNode(vNodeToClone, props) {
             var newChildren = newProps.children;
             if (isArray(newChildren)) {
                 for (var i = 0; i < newChildren.length; i++) {
-                    if (isVNode(newChildren[i])) {
+                    if (!isInvalid(newChildren[i]) && isVNode(newChildren[i])) {
                         newProps.children[i] = cloneVNode(newChildren[i]);
                     }
                 }
             }
-            else if (isVNode(newChildren)) {
+            else if (!isInvalid(newChildren) && isVNode(newChildren)) {
                 newProps.children = cloneVNode(newChildren);
             }
         }
@@ -146,7 +146,7 @@ function cloneVNode(vNodeToClone, props) {
 function _normalizeVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
-        if (!isInvalid(n)) {
+        if (!isInvalid$1(n)) {
             if (Array.isArray(n)) {
                 _normalizeVNodes(n, result, 0);
             }
@@ -175,7 +175,7 @@ function normalizeVNodes(nodes) {
     }
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        if (isInvalid(n)) {
+        if (isInvalid$1(n)) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
@@ -218,7 +218,7 @@ function normalize(vNode) {
             vNode.key = props.key;
         }
     }
-    if (!isInvalid(children)) {
+    if (!isInvalid$1(children)) {
         if (isArray(children)) {
             vNode.children = normalizeVNodes(children);
         }
@@ -645,7 +645,7 @@ function unmountChildren$1(children, lifecycle, shallowUnmount, isRecycling) {
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
-            if (!isInvalid(child) && isObject(child)) {
+            if (!isInvalid$1(child) && isObject(child)) {
                 unmount(child, null, lifecycle, false, shallowUnmount, isRecycling);
             }
         }
@@ -659,7 +659,7 @@ function unmountRef(ref) {
         ref(null);
     }
     else {
-        if (isInvalid(ref)) {
+        if (isInvalid$1(ref)) {
             return;
         }
         if (process.env.NODE_ENV !== 'production') {
@@ -768,10 +768,10 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
         patchKeyed = true;
         patchArray = true;
     }
-    else if (isInvalid(nextChildren)) {
+    else if (isInvalid$1(nextChildren)) {
         unmountChildren(lastChildren, dom, lifecycle, isRecycling);
     }
-    else if (isInvalid(lastChildren)) {
+    else if (isInvalid$1(lastChildren)) {
         if (isStringOrNumber(nextChildren)) {
             setTextContent(dom, nextChildren);
         }
@@ -890,7 +890,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 var nextInput$1 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
                 var didUpdate = true;
                 instance._childContext = childContext;
-                if (isInvalid(nextInput$1)) {
+                if (isInvalid$1(nextInput$1)) {
                     nextInput$1 = createVoidVNode();
                 }
                 else if (isArray(nextInput$1)) {
@@ -945,7 +945,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextHooks.onComponentWillUpdate(lastProps$1, nextProps);
                 }
                 nextInput$2 = nextType(nextProps, context);
-                if (isInvalid(nextInput$2)) {
+                if (isInvalid$1(nextInput$2)) {
                     nextInput$2 = createVoidVNode();
                 }
                 else if (isArray(nextInput$2)) {
@@ -999,7 +999,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     if (lastChildrenLength < nextChildrenLength) {
         for (i = nextChildrenLength - 1; i >= commonLength; i--) {
             var child = nextChildren[i];
-            if (!isInvalid(child)) {
+            if (!isInvalid$1(child)) {
                 if (child.dom) {
                     nextChildren[i] = child = cloneVNode(child);
                 }
@@ -1015,7 +1015,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     else if (lastChildrenLength > nextChildrenLength) {
         for (i = commonLength; i < lastChildrenLength; i++) {
             var child$1 = lastChildren[i];
-            if (!isInvalid(child$1)) {
+            if (!isInvalid$1(child$1)) {
                 unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
             }
         }
@@ -1023,8 +1023,8 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     for (i = commonLength - 1; i >= 0; i--) {
         var lastChild = lastChildren[i];
         var nextChild = nextChildren[i];
-        if (isInvalid(nextChild)) {
-            if (!isInvalid(lastChild)) {
+        if (isInvalid$1(nextChild)) {
+            if (!isInvalid$1(lastChild)) {
                 unmount(lastChild, dom, lifecycle, true, false, isRecycling);
             }
         }
@@ -1032,7 +1032,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
             if (nextChild.dom) {
                 nextChildren[i] = nextChild = cloneVNode(nextChild);
             }
-            if (isInvalid(lastChild)) {
+            if (isInvalid$1(lastChild)) {
                 newNode = mount(nextChild, null, lifecycle, context, isSVG);
                 insertOrAppend(dom, newNode, nextNode);
                 nextNode = newNode;
@@ -1666,7 +1666,7 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
-        if (!isInvalid(child)) {
+        if (!isInvalid$1(child)) {
             if (child.dom) {
                 children[i] = child = cloneVNode(child);
             }
@@ -1762,7 +1762,7 @@ function mountRef(dom, value, lifecycle) {
         lifecycle.addListener(function () { return value(dom); });
     }
     else {
-        if (isInvalid(value)) {
+        if (isInvalid$1(value)) {
             return;
         }
         if (process.env.NODE_ENV !== 'production') {
@@ -1805,7 +1805,7 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
         }
         throwError();
     }
-    else if (isInvalid(input)) {
+    else if (isInvalid$1(input)) {
         input = createVoidVNode();
     }
     else {
@@ -1848,7 +1848,7 @@ function createStatelessComponentInput(vNode, component, props, context) {
         }
         throwError();
     }
-    else if (isInvalid(input)) {
+    else if (isInvalid$1(input)) {
         input = createVoidVNode();
     }
     else {
@@ -1928,7 +1928,7 @@ function removeAllChildren(dom, children, lifecycle, shallowUnmount, isRecycling
 function removeChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
-        if (!isInvalid(child)) {
+        if (!isInvalid$1(child)) {
             unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
         }
     }
@@ -2056,7 +2056,7 @@ function hydrateVoid(vNode, dom) {
 }
 function hydrate(vNode, dom, lifecycle, context, isSVG) {
     if (process.env.NODE_ENV !== 'production') {
-        if (isInvalid(dom)) {
+        if (isInvalid$1(dom)) {
             throwError("failed to hydrate. The server-side render doesn't match client side.");
         }
     }
@@ -2134,7 +2134,7 @@ function render(input, parentDom) {
     var root = getRoot(parentDom);
     if (isNull(root)) {
         var lifecycle = new Lifecycle();
-        if (!isInvalid(input)) {
+        if (!isInvalid$1(input)) {
             if (input.dom) {
                 input = cloneVNode(input);
             }
