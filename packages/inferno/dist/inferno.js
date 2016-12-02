@@ -167,12 +167,14 @@ function normalizeVNodes(nodes) {
     // we assign $ which basically means we've flagged this array for future note
     // if it comes back again, we need to clone it, as people are using it
     // in an immutable way
+    // tslint:disable
     if (nodes['$']) {
         nodes = nodes.slice();
     }
     else {
-        nodes['$'] = true; //tslint:disable-line 
+        nodes['$'] = true;
     }
+    // tslint:enable
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
         if (isInvalid(n)) {
@@ -298,7 +300,25 @@ function rerenderRoots() {
         render(root.input, root.dom);
     }
 }
-
+function initDevToolsHooks(global) {
+    global.__INFERNO_DEVTOOLS_GLOBAL_HOOK__ = roots;
+    global.addEventListener('inferno.devtools.message', function (message) {
+        var detail = JSON.parse(message.detail);
+        var type = detail.type;
+        switch (type) {
+            case 'get-roots':
+                if (!devToolsStatus.connected) {
+                    devToolsStatus.connected = true;
+                    rerenderRoots();
+                    sendRoots(global);
+                }
+                break;
+            default:
+                // TODO:?
+                break;
+        }
+    });
+}
 function sendRoots(global) {
     sendToDevTools(global, { type: 'roots', data: roots });
 }
@@ -2175,15 +2195,13 @@ function createRenderer() {
     };
 }
 
-// import { initDevToolsHooks }  from '../../../src/DOM/devtools';
-
 if (isBrowser) {
 	window.process = {
 		env: {
 			NODE_ENV: 'development'
 		}
 	};
-	// initDevToolsHooks(window);
+	initDevToolsHooks(window);
 }
 
 if (process.env.NODE_ENV !== 'production') {
