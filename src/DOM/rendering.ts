@@ -32,7 +32,7 @@ export const roots: Root[] = [];
 export const componentToDOMNodeMap = new Map();
 
 export function findDOMNode(domNode) {
-	return componentToDOMNodeMap.get(domNode) || null;
+	return componentToDOMNodeMap.get(domNode) || domNode || null;
 }
 
 function getRoot(dom): Root | null {
