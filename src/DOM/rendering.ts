@@ -31,8 +31,10 @@ interface Root {
 export const roots: Root[] = [];
 export const componentToDOMNodeMap = new Map();
 
-export function findDOMNode(domNode) {
-	return componentToDOMNodeMap.get(domNode) || domNode || null;
+export function findDOMNode(ref) {
+	const dom = ref && ref.nodeType ? ref : null;
+
+	return componentToDOMNodeMap.get(ref) || dom;
 }
 
 function getRoot(dom): Root | null {

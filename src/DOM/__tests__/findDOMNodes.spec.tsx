@@ -22,6 +22,8 @@ describe('findDOMNodes (JSX)', () => {
 		let instance1;
 		let instance2;
 		let instance3;
+		let ref;
+		const refFunc = (dom) => { if (dom) { ref = dom } }
 
 		class Example1 extends Component<any, any> {
 			render() {
@@ -40,7 +42,7 @@ describe('findDOMNodes (JSX)', () => {
 		class Example3 extends Component<any, any> {
 			render() {
 				instance3 = this;
-				return <div id="example3"><Example2 /><Example1 /></div>;
+				return <div id="example3" ref={ refFunc }><Example2 /><Example1 /></div>;
 			}
 		}
 
@@ -61,6 +63,7 @@ describe('findDOMNodes (JSX)', () => {
 			expect(findDOMNode(instance1) === null).to.equal(true);
 			expect(findDOMNode(instance2) === null).to.equal(true);
 			expect(findDOMNode(instance3) === null).to.equal(true);
+			expect(findDOMNode(ref) === ref).to.equal(true);
 		});
 	});
 });
