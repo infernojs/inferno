@@ -6,8 +6,8 @@ export default class Lifecycle {
 		this.listeners.push(callback);
 	}
 	trigger() {
-		for (let listener of this.listeners) {
-			listener();
+		for (let i = 0; i < this.listeners.length; i++) {
+			this.listeners[i]();
 		}
 	}
 }

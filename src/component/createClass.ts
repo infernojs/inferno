@@ -55,7 +55,8 @@ function applyMixin(key, inst, mixin) {
 	inst[key] = function () {
 		let ret;
 
-		for (let method of mixin) {
+		for (let i = 0; i < mixin.length; i++) {
+			const method = mixin[i];
 			const _ret = method.apply(inst, arguments);
 
 			if (!isUndefined(_ret)) {
@@ -106,9 +107,7 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>) {
 			}
 		}
 
-		public isMounted = function() {
-			return !this._unmounted;
-		};
+		public isMounted = function() { return !this._unmounted; };
 	}
 	if (obj.statics) {
 		extend(Cl, obj.statics);

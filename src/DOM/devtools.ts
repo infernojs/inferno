@@ -32,7 +32,9 @@ function sendToDevTools(global, data) {
 }
 
 function rerenderRoots() {
-	for (let root of roots) {
+	for (let i = 0; i < roots.length; i++) {
+		const root = roots[i];
+
 		render(root.input, root.dom);
 	}
 }
