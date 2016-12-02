@@ -120,12 +120,12 @@ function cloneVNode(vNodeToClone, props) {
             var newChildren = newProps.children;
             if (isArray(newChildren)) {
                 for (var i = 0; i < newChildren.length; i++) {
-                    if (isVNode(newChildren[i])) {
+                    if (!isInvalid(newChildren[i]) && isVNode(newChildren[i])) {
                         newProps.children[i] = cloneVNode(newChildren[i]);
                     }
                 }
             }
-            else if (isVNode(newChildren)) {
+            else if (!isInvalid(newChildren) && isVNode(newChildren)) {
                 newProps.children = cloneVNode(newChildren);
             }
         }
