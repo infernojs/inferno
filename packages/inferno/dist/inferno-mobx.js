@@ -1,5 +1,5 @@
 /*!
- * inferno-mobx v1.0.0-beta22
+ * inferno-mobx v1.0.0-beta23
  * (c) 2016 Ryan Megidov
  * Released under the MIT License.
  */
@@ -3012,7 +3012,7 @@ function makeReactive(componentClass) {
         baseWillMount && baseWillMount.call(this);
         var reaction$$1;
         var isRenderingPending = false;
-        var initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || "<component>";
+        var initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || '<component>';
         var baseRender = this.render.bind(this);
         var initialRender = function (nextProps, nextContext) {
             reaction$$1 = new Reaction((initialName + ".render()"), function () {

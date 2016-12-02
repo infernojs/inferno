@@ -1,6 +1,6 @@
 {
   "name": "inferno-server",
-  "version": "1.0.0-beta22",
+  "version": "1.0.0-beta23",
   "license": "MIT",
   "description": "Provides methods to render HTML strings from Inferno elements",
   "author": {
@@ -28,6 +28,6 @@
   "main": "inferno-server.js",
   "repository": "https://github.com/trueadm/inferno",
   "dependencies": {
-    "inferno": "1.0.0-beta22"
+    "inferno": "1.0.0-beta23"
   }
 }
