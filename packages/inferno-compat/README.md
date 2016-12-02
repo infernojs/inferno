@@ -9,8 +9,8 @@ Do note however, as with almost all compatability layer libraries, there is an a
 ## How to install?
 
 ```bash
-npm install --save inferno@beta23
-npm install --save inferno-compat@beta23
+npm install --save inferno@beta24
+npm install --save inferno-compat@beta24
 ```
 
 ## What is currently supported?

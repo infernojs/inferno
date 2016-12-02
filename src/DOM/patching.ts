@@ -785,6 +785,7 @@ function lis_algorithm(a) {
 	return result;
 }
 
+// TODO we can shorten this code and put it in constants for smaller size bundles
 // these are handled by other parts of Inferno, e.g. input wrappers
 const skipProps = {
 	children: true,
@@ -794,6 +795,10 @@ const skipProps = {
 	checked: true,
 	value: true,
 	multiple: true
+};
+
+const dehyphenProps = {
+	textAnchor: 'text-anchor'
 };
 
 export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
@@ -836,12 +841,13 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 				}
 			}
 		} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
+			const dehyphenProp = dehyphenProps[prop];
 			const ns = namespaces[prop];
 
 			if (ns) {
-				dom.setAttributeNS(ns, prop, nextValue);
+				dom.setAttributeNS(ns, dehyphenProp || prop, nextValue);
 			} else {
-				dom.setAttribute(prop, nextValue);
+				dom.setAttribute(dehyphenProp || prop, nextValue);
 			}
 		}
 	}

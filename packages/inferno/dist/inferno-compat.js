@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-beta23
+ * inferno-compat v1.0.0-beta24
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -1887,6 +1887,7 @@ function lis_algorithm(a) {
     }
     return result;
 }
+// TODO we can shorten this code and put it in constants for smaller size bundles
 // these are handled by other parts of Inferno, e.g. input wrappers
 var skipProps = {
     children: true,
@@ -1896,6 +1897,9 @@ var skipProps = {
     checked: true,
     value: true,
     multiple: true
+};
+var dehyphenProps = {
+    textAnchor: 'text-anchor'
 };
 function patchProp(prop, lastValue, nextValue, dom, isSVG) {
     if (skipProps[prop]) {
@@ -1942,12 +1946,13 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
             }
         }
         else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
+            var dehyphenProp = dehyphenProps[prop];
             var ns = namespaces[prop];
             if (ns) {
-                dom.setAttributeNS(ns, prop, nextValue);
+                dom.setAttributeNS(ns, dehyphenProp || prop, nextValue);
             }
             else {
-                dom.setAttribute(prop, nextValue);
+                dom.setAttribute(dehyphenProp || prop, nextValue);
             }
         }
     }
