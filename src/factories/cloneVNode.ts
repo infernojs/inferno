@@ -72,20 +72,21 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 		}
 	}
 	if (flags & VNodeFlags.Component) {
-		const newProps = newVNode.props;
+		const props = newVNode.props;
+		const children = newProps.children;
 		// we need to also clone component children that are in props
 		// as the children may also have been hoisted
-		if (newProps && newProps.children) {
-			const newChildren = newProps.children;
+		if (newPrpropsops && children) {
+			if (isArray(children)) {
+				for (let i = 0; i < children.length; i++) {
+					const child = children[i];
 
-			if (isArray(newChildren)) {
-				for (let i = 0; i < newChildren.length; i++) {
-					if (!isInvalid(newChildren[i]) && isVNode(newChildren[i])) {
-						newProps.children[i] = cloneVNode(newChildren[i]);
+					if (!isInvalid(child) && isVNode(child)) {
+						props.children[i] = cloneVNode(child);
 					}
 				}
-			} else if (!isInvalid(newChildren) && isVNode(newChildren)) {
-				newProps.children = cloneVNode(newChildren);
+			} else if (isVNode(children)) {
+				props.children = cloneVNode(children);
 			}
 		}
 		newVNode.children = null;
