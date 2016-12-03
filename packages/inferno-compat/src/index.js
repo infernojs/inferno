@@ -3,6 +3,7 @@ import isValidElement from '../../../build/factories/isValidElement';
 import createClass from '../../../build/component/createClass';
 import infernoCreateElement from '../../../build/factories/createElement';
 import cloneVNode from '../../../build/factories/cloneVNode';
+import renderToString, { renderToStaticMarkup } from '../../../build/server/renderToString';
 import { render, findDOMNode } from '../../../build/DOM/rendering';
 import { createVNode } from '../../../build/core/shapes';
 import Component from 'inferno-component';
@@ -122,7 +123,9 @@ export {
 	Children,
 	cloneVNode,
 	NO_OP,
-	version
+	version,
+	renderToString,
+	renderToStaticMarkup
 };
 
 export default {
@@ -140,5 +143,7 @@ export default {
 	Children,
 	cloneVNode,
 	NO_OP,
-	version
+	version,
+	renderToString,
+	renderToStaticMarkup
 };
