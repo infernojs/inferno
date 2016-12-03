@@ -4,6 +4,9 @@ import {
 	toHyphenCase,
 } from './utils';
 import {
+	copyPropsTo
+} from '../DOM/utils'
+import {
 	isArray,
 	isInvalid,
 	isNull,
@@ -13,7 +16,7 @@ import {
 	isTrue,
 	isFunction,
 	throwError,
-} from './../shared';
+} from '../shared';
 
 import {
 	VNodeFlags,
@@ -40,15 +43,21 @@ function renderStylesToString(styles) {
 
 function renderVNodeToString(vNode, context, firstChild) {
 	const flags = vNode.flags;
-	const props = vNode.props;
 	const type = vNode.type;
+	let props = vNode.props;
 	const children = vNode.children;
 
 	if (flags & VNodeFlags.Component) {
 		const isClass = flags & VNodeFlags.ComponentClass;
 
+		// Primitive node doesn't have defaultProps, only Component
+		if (!isNullOrUndef(type.defaultProps)) {
+			copyPropsTo(type.defaultProps, props);
+			vNode.props = props;
+		}
+
 		if (isClass) {
-			const instance = new type(props);
+			const instance = new type(props, context);
 			const childContext = instance.getChildContext();
 
 			if (!isNullOrUndef(childContext)) {
