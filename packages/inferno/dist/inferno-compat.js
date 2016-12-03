@@ -817,6 +817,192 @@ function createElement$1(name, props) {
     return createVNode(flags, name, props, children, key, ref);
 }
 
+function escapeText(_string) {
+    var string = _string + '';
+    var length = string.length;
+    var characters = '';
+    for (var i = 0; i < length; i++) {
+        switch (string.charCodeAt(i)) {
+            case 38:
+                characters += '&amp;';
+                break;
+            case 39:
+                characters += '&#039;';
+                break;
+            case 34:
+                characters += '&quot;';
+                break;
+            case 60:
+                characters += '&lt;';
+                break;
+            case 62:
+                characters += '&gt;';
+                break;
+            default:
+                characters += string[i];
+        }
+    }
+    return characters;
+}
+var uppercasePattern = /[A-Z]/g;
+var msPattern = /^ms-/;
+function toHyphenCase(str) {
+    return str.replace(uppercasePattern, '-$&').toLowerCase().replace(msPattern, '-ms-');
+}
+var voidElements = {
+    area: true,
+    base: true,
+    br: true,
+    col: true,
+    command: true,
+    embed: true,
+    hr: true,
+    img: true,
+    input: true,
+    keygen: true,
+    link: true,
+    meta: true,
+    param: true,
+    source: true,
+    track: true,
+    wbr: true
+};
+function isVoidElement(str) {
+    return !!voidElements[str];
+}
+
+function constructDefaults(string, object, value) {
+    /* eslint no-return-assign: 0 */
+    string.split(',').forEach(function (i) { return object[i] = value; });
+}
+var xlinkNS = 'http://www.w3.org/1999/xlink';
+var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+var svgNS = 'http://www.w3.org/2000/svg';
+var strictProps = {};
+var booleanProps = {};
+var namespaces = {};
+var isUnitlessNumber = {};
+constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
+constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+
+function renderStylesToString(styles) {
+    if (isStringOrNumber(styles)) {
+        return styles;
+    }
+    else {
+        var renderedString = '';
+        for (var styleName in styles) {
+            var value = styles[styleName];
+            var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+            if (!isNullOrUndef(value)) {
+                renderedString += (toHyphenCase(styleName)) + ":" + (escapeText(value)) + px + ";";
+            }
+        }
+        return renderedString;
+    }
+}
+function renderVNodeToString(vNode, context, firstChild) {
+    var flags = vNode.flags;
+    var props = vNode.props;
+    var type = vNode.type;
+    var children = vNode.children;
+    if (flags & 28 /* Component */) {
+        var isClass = flags & 4;
+        if (isClass) {
+            var instance = new type(props);
+            var childContext = instance.getChildContext();
+            if (!isNullOrUndef(childContext)) {
+                context = Object.assign({}, context, childContext);
+            }
+            instance.context = context;
+            instance._pendingSetState = true;
+            if (isFunction(instance.componentWillMount)) {
+                instance.componentWillMount();
+            }
+            var nextVNode = instance.render(props, vNode.context);
+            instance._pendingSetState = false;
+            return renderVNodeToString(nextVNode, context, true);
+        }
+        else {
+            return renderVNodeToString(type(props, context), context, true);
+        }
+    }
+    else if (flags & 3970 /* Element */) {
+        var renderedString = "<" + type;
+        var html;
+        var isVoidElement$$1 = isVoidElement(type);
+        if (!isNull(props)) {
+            for (var prop in props) {
+                var value = props[prop];
+                if (prop === 'dangerouslySetInnerHTML') {
+                    html = value.__html;
+                }
+                else if (prop === 'style') {
+                    renderedString += " style=\"" + (renderStylesToString(props.style)) + "\"";
+                }
+                else if (prop === 'className') {
+                    renderedString += " class=\"" + (escapeText(value)) + "\"";
+                }
+                else {
+                    if (isStringOrNumber(value)) {
+                        renderedString += " " + prop + "=\"" + (escapeText(value)) + "\"";
+                    }
+                    else if (isTrue(value)) {
+                        renderedString += " " + prop;
+                    }
+                }
+            }
+        }
+        if (isVoidElement$$1) {
+            renderedString += ">";
+        }
+        else {
+            renderedString += ">";
+            if (!isInvalid(children)) {
+                if (isArray(children)) {
+                    for (var i = 0; i < children.length; i++) {
+                        var child = children[i];
+                        if (!isInvalid(child)) {
+                            renderedString += renderVNodeToString(child, context, i === 0);
+                        }
+                    }
+                }
+                else if (isStringOrNumber(children)) {
+                    renderedString += escapeText(children);
+                }
+                else {
+                    renderedString += renderVNodeToString(children, context, true);
+                }
+            }
+            else if (html) {
+                renderedString += html;
+            }
+            if (!isVoidElement$$1) {
+                renderedString += "</" + type + ">";
+            }
+        }
+        return renderedString;
+    }
+    else if (flags & 1 /* Text */) {
+        return (firstChild ? '' : '<!---->') + escapeText(children);
+    }
+    else {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError(("renderToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+        }
+        throwError();
+    }
+}
+function renderToString(input) {
+    return renderVNodeToString(input, null, true);
+}
+function renderToStaticMarkup(input) {
+    return renderVNodeToString(input, null, true);
+}
+
 var devToolsStatus = {
     connected: false
 };
@@ -868,23 +1054,6 @@ Lifecycle.prototype.trigger = function trigger () {
         this$1.listeners[i]();
     }
 };
-
-function constructDefaults(string, object, value) {
-    /* eslint no-return-assign: 0 */
-    string.split(',').forEach(function (i) { return object[i] = value; });
-}
-var xlinkNS = 'http://www.w3.org/1999/xlink';
-var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-var svgNS = 'http://www.w3.org/2000/svg';
-var strictProps = {};
-var booleanProps = {};
-var namespaces = {};
-var isUnitlessNumber = {};
-constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
 function isCheckedType(type) {
     return type === 'checkbox' || type === 'radio';
@@ -2839,7 +3008,9 @@ var index = {
 	Children: Children,
 	cloneVNode: cloneVNode,
 	NO_OP: NO_OP,
-	version: version
+	version: version,
+	renderToString: renderToString,
+	renderToStaticMarkup: renderToStaticMarkup
 };
 
 exports.createVNode = createVNode;
@@ -2857,6 +3028,8 @@ exports.Children = Children;
 exports.cloneVNode = cloneVNode;
 exports.NO_OP = NO_OP;
 exports.version = version;
+exports.renderToString = renderToString;
+exports.renderToStaticMarkup = renderToStaticMarkup;
 exports['default'] = index;
 
 Object.defineProperty(exports, '__esModule', { value: true });
