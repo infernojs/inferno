@@ -2264,6 +2264,10 @@ function renderVNodeToString(vNode, context, firstChild) {
             }
             var nextVNode = instance.render(props, vNode.context);
             instance._pendingSetState = false;
+            // In case render returns invalid stuff
+            if (!nextVNode) {
+                return '';
+            }
             return renderVNodeToString(nextVNode, context, true);
         }
         else {
