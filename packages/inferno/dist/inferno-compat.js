@@ -2781,7 +2781,7 @@ function normalizeProps(name, props) {
 // every prop event that starts with "on", i.e. onClick or onKeyPress
 // but in reality devs use onSomething for many things, not only for
 // input events
-if (Event && !Event.prototype.persist) {
+if (typeof Event !== 'undefined' && !Event.prototype.persist) {
 	Event.prototype.persist = function () {};
 }
 
