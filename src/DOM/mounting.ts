@@ -30,6 +30,7 @@ import { componentToDOMNodeMap } from './rendering';
 import { devToolsStatus } from './devtools';
 import {
 	patchProp,
+	patchEvent
 } from './patching';
 import processElement from './wrappers/processElement';
 
@@ -92,6 +93,7 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 	const dom = documentCreateElement(tag, isSVG);
 	const children = vNode.children;
 	const props = vNode.props;
+	const events = vNode.events;
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
@@ -110,9 +112,15 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 	if (!isNull(props)) {
 		for (let prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchProp(prop, null, props[prop], dom, isSVG);
+			patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
 		}
 	}
+	if (!isNull(events)) {
+		for (let name in events) {
+			// do not add a hasOwnProperty check here, it affects performance
+			patchEvent(name, null, events[name], dom, lifecycle);
+		}
+	}	
 	if (!isNull(ref)) {
 		mountRef(dom, ref, lifecycle);
 	}

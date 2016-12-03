@@ -688,13 +688,14 @@ function normalize(vNode) {
         }
     }
 }
-function createVNode(flags, type, props, children, key, ref, noNormalise) {
+function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
     var vNode = {
         children: isUndefined(children) ? null : children,
         dom: null,
+        events: events || null,
         flags: flags || 0,
         key: key === undefined ? null : key,
         props: props || null,
@@ -880,11 +881,61 @@ var strictProps = {};
 var booleanProps = {};
 var namespaces = {};
 var isUnitlessNumber = {};
+var skipProps = {};
+var dehyphenProps = {
+    textAnchor: 'text-anchor'
+};
+var delegatedProps = {};
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
+constructDefaults('children,ref,key,selected,checked,value,multiple', skipProps, true);
+constructDefaults('onClick,onMouseDown,onMouseUp,onMouseMove', delegatedProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+
+var delegatedEvents = new Map();
+function handleEvent(name, lastEvent, nextEvent, dom) {
+    var delegatedRoots = delegatedEvents.get(name);
+    if (!delegatedRoots) {
+        delegatedRoots = new Map();
+        delegatedEvents.set(name, delegatedRoots);
+        attachEventToDocument(name, delegatedRoots);
+    }
+    if (nextEvent) {
+        delegatedRoots.set(dom, nextEvent);
+    }
+    else {
+        delegatedRoots.remove(dom);
+    }
+}
+function dispatchEvent(event, dom, delegatedRoots, eventData) {
+    var eventsToTrigger = delegatedRoots.get(dom);
+    var parentDom = dom.parentNode;
+    if (eventsToTrigger) {
+        eventsToTrigger(event);
+        if (eventData.stopPropagation) {
+            return;
+        }
+    }
+    if (parentDom || parentDom === document.body) {
+        dispatchEvent(event, parentDom, delegatedRoots, eventData);
+    }
+}
+function normalizeEventName(name) {
+    return name.substr(2).toLowerCase();
+}
+function attachEventToDocument(name, delegatedRoots) {
+    document.addEventListener(normalizeEventName(name), function (event) {
+        var eventData = {
+            stopPropagation: false
+        };
+        event.stopPropagation = function () {
+            eventData.stopPropagation = true;
+        };
+        dispatchEvent(event, event.target, delegatedRoots, eventData);
+    });
+}
 
 function isCheckedType(type) {
     return type === 'checkbox' || type === 'radio';
@@ -1887,20 +1938,6 @@ function lis_algorithm(a) {
     }
     return result;
 }
-// TODO we can shorten this code and put it in constants for smaller size bundles
-// these are handled by other parts of Inferno, e.g. input wrappers
-var skipProps = {
-    children: true,
-    ref: true,
-    key: true,
-    selected: true,
-    checked: true,
-    value: true,
-    multiple: true
-};
-var dehyphenProps = {
-    textAnchor: 'text-anchor'
-};
 function patchProp(prop, lastValue, nextValue, dom, isSVG) {
     if (skipProps[prop]) {
         return;
@@ -1915,7 +1952,10 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
         }
     }
     else if (lastValue !== nextValue) {
-        if (isNullOrUndef(nextValue)) {
+        if (delegatedProps[prop]) {
+            handleEvent(prop, lastValue, nextValue, dom);
+        }
+        else if (isNullOrUndef(nextValue)) {
             dom.removeAttribute(prop);
         }
         else if (prop === 'className') {
@@ -2028,6 +2068,9 @@ function removeProp(prop, dom) {
     else if (prop === 'style') {
         dom.style.cssText = null;
         dom.removeAttribute('style');
+    }
+    else if (delegatedProps[prop]) {
+        handleEvent(prop, null, null, dom);
     }
     else {
         dom.removeAttribute(prop);

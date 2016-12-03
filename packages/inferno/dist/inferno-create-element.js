@@ -217,13 +217,14 @@ function normalize(vNode) {
         }
     }
 }
-function createVNode(flags, type, props, children, key, ref, noNormalise) {
+function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
     var vNode = {
         children: isUndefined(children) ? null : children,
         dom: null,
+        events: events || null,
         flags: flags || 0,
         key: key === undefined ? null : key,
         props: props || null,

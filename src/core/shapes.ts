@@ -42,6 +42,7 @@ export const enum VNodeFlags {
 export interface VNode {
 	children: string | Array<string | VNode> | VNode | null;
 	dom: Node | null;
+	events: Object | null;
 	flags: VNodeFlags;
 	key: string | number | null;
 	props: Object | null;

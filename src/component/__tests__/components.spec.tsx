@@ -2439,6 +2439,7 @@ describe('Components (JSX)', () => {
 
 		// this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
 		it('should correct swap rows', () => {
+			debugger;
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
 			// click on "SPAN" 
