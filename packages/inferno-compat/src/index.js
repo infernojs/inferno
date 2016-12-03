@@ -102,7 +102,7 @@ function PureComponent(props, context) {
 	Component.call(this, props, context);
 }
 
-PureComponent.prototype = new Component({});
+PureComponent.prototype = new Component({}, {});
 PureComponent.prototype.shouldComponentUpdate = function (props, state) {
 	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
 }
