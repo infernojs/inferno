@@ -135,13 +135,14 @@ function normalize(vNode) {
 	}
 }
 
-export function createVNode(flags, type?, props?, children?, key?, ref?, noNormalise?: boolean): VNode {
+export function createVNode(flags, type?, props?, children?, events?, key?, ref?, noNormalise?: boolean): VNode {
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
 	const vNode = {
 		children: isUndefined(children) ? null : children,
 		dom: null,
+		events: events || null,
 		flags: flags || 0,
 		key: key === undefined ? null : key,
 		props: props || null,

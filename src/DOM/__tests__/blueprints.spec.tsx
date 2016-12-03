@@ -10,7 +10,13 @@ describe('Blueprints (JSX)', () => {
 
 	beforeEach(() => {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
+
+	afterEach(() => {
+		document.body.removeChild(container);
+		container = null;
+	})
 
 	describe('Should have parentDOM defined #1', () => {
 		class A extends Component<any, any> {

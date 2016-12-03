@@ -24,6 +24,9 @@ import {
 	isUnitlessNumber,
 	namespaces,
 	strictProps,
+	delegatedProps,
+	skipProps,
+	dehyphenProps
 } from './constants';
 import {
 	componentIdMap,
@@ -52,6 +55,9 @@ import {
 	mountText,
 	mountVoid,
 } from './mounting';
+import {
+	handleEvent
+} from './events/delegation';
 
 import Lifecycle from './lifecycle';
 import cloneVNode from '../factories/cloneVNode';
@@ -785,22 +791,6 @@ function lis_algorithm(a) {
 	return result;
 }
 
-// TODO we can shorten this code and put it in constants for smaller size bundles
-// these are handled by other parts of Inferno, e.g. input wrappers
-const skipProps = {
-	children: true,
-	ref: true,
-	key: true,
-	selected: true,
-	checked: true,
-	value: true,
-	multiple: true
-};
-
-const dehyphenProps = {
-	textAnchor: 'text-anchor'
-};
-
 export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 	if (skipProps[prop]) {
 		return;
@@ -814,7 +804,9 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 			dom[prop] = value;
 		}
 	} else if (lastValue !== nextValue) {
-		if (isNullOrUndef(nextValue)) {
+		if (delegatedProps[prop]) {
+			handleEvent(prop, lastValue, nextValue, dom);
+		} else if (isNullOrUndef(nextValue)) {
 			dom.removeAttribute(prop);
 		} else if (prop === 'className') {
 			if (isSVG) {
@@ -923,6 +915,8 @@ function removeProp(prop, dom) {
 	} else if (prop === 'style') {
 		dom.style.cssText = null;
 		dom.removeAttribute('style');
+	} else if (delegatedProps[prop]) {
+		handleEvent(prop, null, null, dom);
 	} else {
 		dom.removeAttribute(prop);
 	}
