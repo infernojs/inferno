@@ -11,6 +11,7 @@ describe('CreateElement (non-JSX)', () => {
 	});
 
 	afterEach(() => {
+		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
 	});

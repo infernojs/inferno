@@ -899,44 +899,65 @@ constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,bo
 var delegatedEvents = new Map();
 function handleEvent(name, lastEvent, nextEvent, dom) {
     var delegatedRoots = delegatedEvents.get(name);
-    if (!delegatedRoots) {
-        delegatedRoots = new Map();
-        delegatedEvents.set(name, delegatedRoots);
-        attachEventToDocument(name, delegatedRoots);
-    }
     if (nextEvent) {
-        delegatedRoots.set(dom, nextEvent);
+        if (!delegatedRoots) {
+            delegatedRoots = { items: new Map(), count: 0, docEvent: null };
+            var docEvent = attachEventToDocument(name, delegatedRoots);
+            delegatedRoots.docEvent = docEvent;
+            delegatedEvents.set(name, delegatedRoots);
+        }
+        if (!lastEvent) {
+            delegatedRoots.count++;
+        }
+        delegatedRoots.items.set(dom, nextEvent);
     }
-    else {
-        delegatedRoots.remove(dom);
+    else if (delegatedRoots) {
+        delegatedRoots.count--;
+        delegatedRoots.items.delete(dom);
+        if (delegatedRoots.count === 0) {
+            document.removeEventListener(name, delegatedRoots.docEvent);
+            delegatedEvents.delete(name);
+        }
     }
 }
-function dispatchEvent(event, dom, delegatedRoots, eventData) {
-    var eventsToTrigger = delegatedRoots.get(dom);
-    var parentDom = dom.parentNode;
+function dispatchEvent(event, dom, items, count, eventData) {
+    var eventsToTrigger = items.get(dom);
     if (eventsToTrigger) {
-        eventsToTrigger(event);
+        count--;
+        // linkEvent object
+        if (eventsToTrigger.event) {
+            eventsToTrigger.event(eventsToTrigger.data, event);
+        }
+        else {
+            eventsToTrigger(event);
+        }
         if (eventData.stopPropagation) {
             return;
         }
     }
-    if (parentDom || parentDom === document.body) {
-        dispatchEvent(event, parentDom, delegatedRoots, eventData);
+    var parentDom = dom.parentNode;
+    if (count > 0 && (parentDom || parentDom === document.body)) {
+        dispatchEvent(event, parentDom, items, count, eventData);
     }
 }
 function normalizeEventName(name) {
     return name.substr(2).toLowerCase();
 }
 function attachEventToDocument(name, delegatedRoots) {
-    document.addEventListener(normalizeEventName(name), function (event) {
+    var docEvent = function (event) {
         var eventData = {
             stopPropagation: false
         };
         event.stopPropagation = function () {
             eventData.stopPropagation = true;
         };
-        dispatchEvent(event, event.target, delegatedRoots, eventData);
-    });
+        var count = delegatedRoots.count;
+        if (count > 0) {
+            dispatchEvent(event, event.target, delegatedRoots.items, count, eventData);
+        }
+    };
+    document.addEventListener(normalizeEventName(name), docEvent);
+    return docEvent;
 }
 
 function isCheckedType(type) {
@@ -2023,7 +2044,7 @@ function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
     }
 }
 function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
-    if (lastValue !== nextValue) {
+    if (lastValue !== nextValue || isNull(nextValue)) {
         if (delegatedProps[name]) {
             lifecycle.fastUnmount = false;
             handleEvent(name, lastValue, nextValue, dom);
