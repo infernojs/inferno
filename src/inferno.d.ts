@@ -31,13 +31,11 @@ declare module 'inferno-server' {
 }
 
 declare module 'inferno-create-class' {
-	function createClass(component: any): any
-	export = createClass;
+	export default function createClass(component: any): any
 }
 
 declare module 'inferno-create-element' {
-	function createElement(component: any, props: any, ...children): any
-	export = createElement;
+	export default function createElement(component: any, props: any, ...children): any
 }
 
 declare module 'lodash/isPlainObject' {
