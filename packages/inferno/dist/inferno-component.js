@@ -94,6 +94,7 @@ function cloneVNode(vNodeToClone, props) {
     }
     children = null;
     var flags = vNodeToClone.flags;
+    var events = vNodeToClone.events || (props && props.events) || null;
     var newVNode;
     if (isArray(vNodeToClone)) {
         newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
@@ -105,11 +106,11 @@ function cloneVNode(vNodeToClone, props) {
         var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
         var ref = vNodeToClone.ref || props.ref;
         if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, key, ref, true);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
         }
         else if (flags & 3970 /* Element */) {
             children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, key, ref, !children);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
         }
     }
     if (flags & 28 /* Component */) {

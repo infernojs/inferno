@@ -82,6 +82,7 @@ function cloneVNode(vNodeToClone, props) {
     }
     children = null;
     var flags = vNodeToClone.flags;
+    var events = vNodeToClone.events || (props && props.events) || null;
     var newVNode;
     if (isArray(vNodeToClone)) {
         newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
@@ -93,11 +94,11 @@ function cloneVNode(vNodeToClone, props) {
         var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
         var ref = vNodeToClone.ref || props.ref;
         if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, key, ref, true);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
         }
         else if (flags & 3970 /* Element */) {
             children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, key, ref, !children);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
         }
     }
     if (flags & 28 /* Component */) {
@@ -293,11 +294,13 @@ function isChildren(x) {
 }
 function extractProps(_props, _tag) {
     _props = _props || {};
-    var tag = isString(_tag) ? parseTag(_tag, _props) : _tag;
+    var isComponent = !isString(_tag);
+    var tag = !isComponent ? parseTag(_tag, _props) : _tag;
     var props = {};
     var key = null;
     var ref = null;
     var children = null;
+    var events = null;
     for (var prop in _props) {
         if (prop === 'key') {
             key = _props[prop];
@@ -305,11 +308,17 @@ function extractProps(_props, _tag) {
         else if (prop === 'ref') {
             ref = _props[prop];
         }
-        else if (prop.substr(0, 11) === 'onComponent') {
+        else if (prop.substr(0, 11) === 'onComponent' && isComponent) {
             if (!ref) {
                 ref = {};
             }
             ref[prop] = _props[prop];
+        }
+        else if (prop.substr(0, 2) === 'on' && !isComponent) {
+            if (!events) {
+                events = {};
+            }
+            events[prop] = _props[prop];
         }
         else if (prop === 'hooks') {
             ref = _props[prop];
@@ -321,7 +330,7 @@ function extractProps(_props, _tag) {
             props[prop] = _props[prop];
         }
     }
-    return { tag: tag, props: props, key: key, ref: ref, children: children };
+    return { tag: tag, props: props, key: key, ref: ref, children: children, events: events };
 }
 function hyperscript$1(_tag, _props, _children, _childrenType) {
     // If a child array or text node are passed as the second argument, shift them
@@ -335,6 +344,7 @@ function hyperscript$1(_tag, _props, _children, _childrenType) {
     var key = ref$1.key;
     var ref = ref$1.ref;
     var children = ref$1.children;
+    var events = ref$1.events;
     if (isString(tag)) {
         var flags = 2;
         switch (tag) {
@@ -352,14 +362,14 @@ function hyperscript$1(_tag, _props, _children, _childrenType) {
                 break;
             default:
         }
-        return createVNode(flags, tag, props, _children || children, key, ref);
+        return createVNode(flags, tag, props, _children || children, events, key, ref);
     }
     else {
         var flags$1 = isStatefulComponent(tag) ? 4 /* ComponentClass */ : 8;
         if (children) {
             props.children = children;
         }
-        return createVNode(flags$1, tag, props, null, key, ref);
+        return createVNode(flags$1, tag, props, null, null, key, ref);
     }
 }
 

@@ -87,6 +87,7 @@ function cloneVNode(vNodeToClone, props) {
     }
     children = null;
     var flags = vNodeToClone.flags;
+    var events = vNodeToClone.events || (props && props.events) || null;
     var newVNode;
     if (isArray(vNodeToClone)) {
         newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
@@ -98,11 +99,11 @@ function cloneVNode(vNodeToClone, props) {
         var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
         var ref = vNodeToClone.ref || props.ref;
         if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, key, ref, true);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
         }
         else if (flags & 3970 /* Element */) {
             children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, key, ref, !children);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
         }
     }
     if (flags & 28 /* Component */) {
@@ -274,6 +275,7 @@ function createElement$1(name, props) {
     var vNode = createVNode(0);
     var ref = null;
     var key = null;
+    var events = null;
     var flags = 0;
     if (_children) {
         if (_children.length === 1) {
@@ -312,11 +314,11 @@ function createElement$1(name, props) {
                 ref = props.ref;
             }
             else if (isAttrAnEvent(prop)) {
-                var lowerCase = prop.toLowerCase();
-                if (lowerCase !== prop) {
-                    props[prop.toLowerCase()] = props[prop];
-                    delete props[prop];
+                if (!events) {
+                    events = {};
                 }
+                events[prop] = props[prop];
+                delete props[prop];
             }
         }
     }
@@ -342,7 +344,7 @@ function createElement$1(name, props) {
         }
         vNode.props = props;
     }
-    return createVNode(flags, name, props, children, key, ref);
+    return createVNode(flags, name, props, children, events, key, ref);
 }
 
 return createElement$1;
