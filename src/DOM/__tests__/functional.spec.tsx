@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { createRenderer } from './../rendering';
 import * as Inferno from '../../testUtils/inferno';
-import {map, scan} from 'most';
-import { hold } from 'most-subject';
+import {map, scan, reduce} from 'most';
+import { hold, sync } from 'most-subject';
 import {curry} from 'lodash/fp';
 import Type from 'union-type';
 Inferno; // suppress ts 'never used' error
@@ -23,7 +23,7 @@ describe('Functional methods (JSX)', () => {
 			Decrement: _ => model - 1
 		}, action);
 
-		const actions$ = hold();
+		const actions$ = hold(1, sync());
 
 		const emitAction = action => actions$.next(action);
 		const emitDecrement = _ => emitAction(Action.Decrement());
@@ -54,7 +54,7 @@ describe('Functional methods (JSX)', () => {
 
 		const renderer = createRenderer();
 
-		const runApp = () => scan(renderer, container, vNodes$).drain();
+		const runApp = () => reduce(renderer, container, vNodes$);
 
 		runApp();
 		setTimeout(() => {
