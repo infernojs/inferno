@@ -58,7 +58,7 @@ export function normaliseChildNodes(dom) {
 
 function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 	const type = vNode.type;
-	const props = vNode.props;
+	const props = vNode.props || {};
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
