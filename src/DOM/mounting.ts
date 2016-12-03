@@ -120,7 +120,7 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchEvent(name, null, events[name], dom, lifecycle);
 		}
-	}	
+	}
 	if (!isNull(ref)) {
 		mountRef(dom, ref, lifecycle);
 	}

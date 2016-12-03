@@ -860,7 +860,7 @@ export function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
 				patchEvent(name, lastEvents[name], null, dom, lifecycle);
 			}
 		}
-	}	
+	}
 }
 
 export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {

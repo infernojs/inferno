@@ -115,7 +115,7 @@ export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowU
 			// do not add a hasOwnProperty check here, it affects performance
 			patchEvent(name, null, null, dom, lifecycle);
 		}
-	}		
+	}
 	if (parentDom) {
 		removeChild(parentDom, dom);
 	}
