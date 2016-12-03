@@ -101,11 +101,13 @@ declare module 'sinon' {
 
 declare module 'most' {
 	export function map(f?: any, stream?: any): any;
+	export function reduce(f?: any, intitial?: any, stream?: any): any;
 	export function scan(f?: any, initial?: any, stream?: any): any;
 }
 
 declare module 'most-subject' {
 	export function hold(bufferSize?: number, subject?: any): any
+	export function sync(): void;
 }
 
 declare module 'lodash/fp' {

@@ -3,6 +3,7 @@ import isValidElement from '../../../build/factories/isValidElement';
 import createClass from '../../../build/component/createClass';
 import infernoCreateElement from '../../../build/factories/createElement';
 import cloneVNode from '../../../build/factories/cloneVNode';
+import renderToString, { renderToStaticMarkup } from '../../../build/server/renderToString';
 import { render, findDOMNode } from '../../../build/DOM/rendering';
 import { createVNode } from '../../../build/core/shapes';
 import Component from 'inferno-component';
@@ -70,7 +71,7 @@ function normalizeProps(name, props) {
 // every prop event that starts with "on", i.e. onClick or onKeyPress
 // but in reality devs use onSomething for many things, not only for
 // input events
-if (Event && !Event.prototype.persist) {
+if (typeof Event !== 'undefined' && !Event.prototype.persist) {
 	Event.prototype.persist = function () {};
 }
 
@@ -102,7 +103,7 @@ function PureComponent(props, context) {
 	Component.call(this, props, context);
 }
 
-PureComponent.prototype = new Component({});
+PureComponent.prototype = new Component({}, {});
 PureComponent.prototype.shouldComponentUpdate = function (props, state) {
 	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
 }
@@ -122,7 +123,9 @@ export {
 	Children,
 	cloneVNode,
 	NO_OP,
-	version
+	version,
+	renderToString,
+	renderToStaticMarkup
 };
 
 export default {
@@ -140,5 +143,7 @@ export default {
 	Children,
 	cloneVNode,
 	NO_OP,
-	version
+	version,
+	renderToString,
+	renderToStaticMarkup
 };

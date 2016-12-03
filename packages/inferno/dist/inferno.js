@@ -1917,6 +1917,9 @@ function copyPropsTo(copyFrom, copyTo) {
     }
 }
 function createStatefulComponentInstance(vNode, Component, props, context, isSVG, devToolsStatus) {
+    if (isUndefined(context)) {
+        context = {};
+    }
     var instance = new Component(props, context);
     instance.context = context;
     instance._patch = patch;
