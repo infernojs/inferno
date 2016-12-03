@@ -66,10 +66,16 @@ function bindAll(ctx) {
         }
     }
 }
-function collateMixins(mixins) {
-    var keyed = {};
+function collateMixins(mixins, keyed) {
+    if ( keyed === void 0 ) keyed = {};
+
     for (var i = 0; i < mixins.length; i++) {
         var mixin = mixins[i];
+        // Surprise: Mixins can have mixins
+        if (mixin.mixins) {
+            // Recursively collate sub-mixins
+            collateMixins(mixin.mixins, keyed);
+        }
         for (var key in mixin) {
             if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
                 (keyed[key] || (keyed[key] = [])).push(mixin[key]);

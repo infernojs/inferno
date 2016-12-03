@@ -35,10 +35,15 @@ function bindAll(ctx) {
 	}
 }
 
-function collateMixins(mixins) {
-	let keyed = {};
+function collateMixins(mixins, keyed = {}) {
 	for (let i = 0; i < mixins.length; i++) {
 		const mixin = mixins[i];
+		
+		// Surprise: Mixins can have mixins
+		if (mixin.mixins) {
+			// Recursively collate sub-mixins
+			collateMixins(mixin.mixins, keyed);
+		}
 
 		for (let key in mixin) {
 			if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
@@ -67,8 +72,8 @@ function applyMixin(key, inst, mixin) {
 			const _ret = original.call(inst);
 
 			if (!isUndefined(_ret)) {
-                ret = _ret;
-            }
+				ret = _ret;
+			}
 		}
 		return ret;
 	};
