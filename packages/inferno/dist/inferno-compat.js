@@ -871,138 +871,6 @@ function isVoidElement(str) {
     return !!voidElements[str];
 }
 
-function constructDefaults(string, object, value) {
-    /* eslint no-return-assign: 0 */
-    string.split(',').forEach(function (i) { return object[i] = value; });
-}
-var xlinkNS = 'http://www.w3.org/1999/xlink';
-var xmlNS = 'http://www.w3.org/XML/1998/namespace';
-var svgNS = 'http://www.w3.org/2000/svg';
-var strictProps = {};
-var booleanProps = {};
-var namespaces = {};
-var isUnitlessNumber = {};
-constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
-constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
-
-function renderStylesToString(styles) {
-    if (isStringOrNumber(styles)) {
-        return styles;
-    }
-    else {
-        var renderedString = '';
-        for (var styleName in styles) {
-            var value = styles[styleName];
-            var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
-            if (!isNullOrUndef(value)) {
-                renderedString += (toHyphenCase(styleName)) + ":" + (escapeText(value)) + px + ";";
-            }
-        }
-        return renderedString;
-    }
-}
-function renderVNodeToString(vNode, context, firstChild) {
-    var flags = vNode.flags;
-    var props = vNode.props;
-    var type = vNode.type;
-    var children = vNode.children;
-    if (flags & 28 /* Component */) {
-        var isClass = flags & 4;
-        if (isClass) {
-            var instance = new type(props);
-            var childContext = instance.getChildContext();
-            if (!isNullOrUndef(childContext)) {
-                context = Object.assign({}, context, childContext);
-            }
-            instance.context = context;
-            instance._pendingSetState = true;
-            if (isFunction(instance.componentWillMount)) {
-                instance.componentWillMount();
-            }
-            var nextVNode = instance.render(props, vNode.context);
-            instance._pendingSetState = false;
-            return renderVNodeToString(nextVNode, context, true);
-        }
-        else {
-            return renderVNodeToString(type(props, context), context, true);
-        }
-    }
-    else if (flags & 3970 /* Element */) {
-        var renderedString = "<" + type;
-        var html;
-        var isVoidElement$$1 = isVoidElement(type);
-        if (!isNull(props)) {
-            for (var prop in props) {
-                var value = props[prop];
-                if (prop === 'dangerouslySetInnerHTML') {
-                    html = value.__html;
-                }
-                else if (prop === 'style') {
-                    renderedString += " style=\"" + (renderStylesToString(props.style)) + "\"";
-                }
-                else if (prop === 'className') {
-                    renderedString += " class=\"" + (escapeText(value)) + "\"";
-                }
-                else {
-                    if (isStringOrNumber(value)) {
-                        renderedString += " " + prop + "=\"" + (escapeText(value)) + "\"";
-                    }
-                    else if (isTrue(value)) {
-                        renderedString += " " + prop;
-                    }
-                }
-            }
-        }
-        if (isVoidElement$$1) {
-            renderedString += ">";
-        }
-        else {
-            renderedString += ">";
-            if (!isInvalid(children)) {
-                if (isArray(children)) {
-                    for (var i = 0; i < children.length; i++) {
-                        var child = children[i];
-                        if (!isInvalid(child)) {
-                            renderedString += renderVNodeToString(child, context, i === 0);
-                        }
-                    }
-                }
-                else if (isStringOrNumber(children)) {
-                    renderedString += escapeText(children);
-                }
-                else {
-                    renderedString += renderVNodeToString(children, context, true);
-                }
-            }
-            else if (html) {
-                renderedString += html;
-            }
-            if (!isVoidElement$$1) {
-                renderedString += "</" + type + ">";
-            }
-        }
-        return renderedString;
-    }
-    else if (flags & 1 /* Text */) {
-        return (firstChild ? '' : '<!---->') + escapeText(children);
-    }
-    else {
-        if (process.env.NODE_ENV !== 'production') {
-            throwError(("renderToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
-        }
-        throwError();
-    }
-}
-function renderToString(input) {
-    return renderVNodeToString(input, null, true);
-}
-function renderToStaticMarkup(input) {
-    return renderVNodeToString(input, null, true);
-}
-
 var devToolsStatus = {
     connected: false
 };
@@ -1054,6 +922,23 @@ Lifecycle.prototype.trigger = function trigger () {
         this$1.listeners[i]();
     }
 };
+
+function constructDefaults(string, object, value) {
+    /* eslint no-return-assign: 0 */
+    string.split(',').forEach(function (i) { return object[i] = value; });
+}
+var xlinkNS = 'http://www.w3.org/1999/xlink';
+var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+var svgNS = 'http://www.w3.org/2000/svg';
+var strictProps = {};
+var booleanProps = {};
+var namespaces = {};
+var isUnitlessNumber = {};
+constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
+constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
+constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
+constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
 function isCheckedType(type) {
     return type === 'checkbox' || type === 'radio';
@@ -2493,175 +2378,6 @@ function mountRef(dom, value, lifecycle) {
     }
 }
 
-function copyPropsTo(copyFrom, copyTo) {
-    for (var prop in copyFrom) {
-        if (isUndefined(copyTo[prop])) {
-            copyTo[prop] = copyFrom[prop];
-        }
-    }
-}
-function createStatefulComponentInstance(vNode, Component$$1, props, context, isSVG, devToolsStatus) {
-    if (isUndefined(context)) {
-        context = {};
-    }
-    var instance = new Component$$1(props, context);
-    instance.context = context;
-    instance._patch = patch;
-    instance._devToolsStatus = devToolsStatus;
-    instance._componentToDOMNodeMap = componentToDOMNodeMap;
-    var childContext = instance.getChildContext();
-    if (!isNullOrUndef(childContext)) {
-        instance._childContext = Object.assign({}, context, childContext);
-    }
-    else {
-        instance._childContext = context;
-    }
-    instance._unmounted = false;
-    instance._pendingSetState = true;
-    instance._isSVG = isSVG;
-    instance.componentWillMount();
-    instance._beforeRender && instance._beforeRender();
-    var input = instance.render(props, instance.state, context);
-    instance._afterRender && instance._afterRender();
-    if (isArray(input)) {
-        if (process.env.NODE_ENV !== 'production') {
-            throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-        }
-        throwError();
-    }
-    else if (isInvalid(input)) {
-        input = createVoidVNode();
-    }
-    else {
-        if (input.dom) {
-            input = cloneVNode(input);
-        }
-        if (input.flags & 28 /* Component */) {
-            // if we have an input that is also a component, we run into a tricky situation
-            // where the root vNode needs to always have the correct DOM entry
-            // so we break monomorphism on our input and supply it our vNode as parentVNode
-            // we can optimise this in the future, but this gets us out of a lot of issues
-            input.parentVNode = vNode;
-        }
-    }
-    instance._pendingSetState = false;
-    instance._lastInput = input;
-    return instance;
-}
-function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling) {
-    replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle, isRecycling);
-}
-function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
-    var shallowUnmount = false;
-    // we cannot cache nodeType here as vNode might be re-assigned below
-    if (vNode.flags & 28 /* Component */) {
-        // if we are accessing a stateful or stateless component, we want to access their last rendered input
-        // accessing their DOM node is not useful to us here
-        unmount(vNode, null, lifecycle, false, false, isRecycling);
-        vNode = vNode.children._lastInput || vNode.children;
-        shallowUnmount = true;
-    }
-    replaceChild(parentDom, dom, vNode.dom);
-    unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
-}
-function createStatelessComponentInput(vNode, component, props, context) {
-    var input = component(props, context);
-    if (isArray(input)) {
-        if (process.env.NODE_ENV !== 'production') {
-            throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-        }
-        throwError();
-    }
-    else if (isInvalid(input)) {
-        input = createVoidVNode();
-    }
-    else {
-        if (input.dom) {
-            input = cloneVNode(input);
-        }
-        if (input.flags & 28 /* Component */) {
-            // if we have an input that is also a component, we run into a tricky situation
-            // where the root vNode needs to always have the correct DOM entry
-            // so we break monomorphism on our input and supply it our vNode as parentVNode
-            // we can optimise this in the future, but this gets us out of a lot of issues
-            input.parentVNode = vNode;
-        }
-    }
-    return input;
-}
-function setTextContent(dom, text) {
-    if (text !== '') {
-        dom.textContent = text;
-    }
-    else {
-        dom.appendChild(document.createTextNode(''));
-    }
-}
-function updateTextContent(dom, text) {
-    dom.firstChild.nodeValue = text;
-}
-function appendChild(parentDom, dom) {
-    parentDom.appendChild(dom);
-}
-function insertOrAppend(parentDom, newNode, nextNode) {
-    if (isNullOrUndef(nextNode)) {
-        appendChild(parentDom, newNode);
-    }
-    else {
-        parentDom.insertBefore(newNode, nextNode);
-    }
-}
-function documentCreateElement(tag, isSVG) {
-    if (isSVG === true) {
-        return document.createElementNS(svgNS, tag);
-    }
-    else {
-        return document.createElement(tag);
-    }
-}
-function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, isRecycling) {
-    var lastInstance = null;
-    var instanceLastNode = lastNode._lastInput;
-    if (!isNullOrUndef(instanceLastNode)) {
-        lastInstance = lastNode;
-        lastNode = instanceLastNode;
-    }
-    unmount(lastNode, null, lifecycle, false, false, isRecycling);
-    var dom = mount(nextNode, null, lifecycle, context, isSVG);
-    nextNode.dom = dom;
-    replaceChild(parentDom, dom, lastNode.dom);
-    if (lastInstance !== null) {
-        lastInstance._lasInput = nextNode;
-    }
-}
-function replaceChild(parentDom, nextDom, lastDom) {
-    if (!parentDom) {
-        parentDom = lastDom.parentNode;
-    }
-    parentDom.replaceChild(nextDom, lastDom);
-}
-function removeChild(parentDom, dom) {
-    parentDom.removeChild(dom);
-}
-function removeAllChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
-    dom.textContent = '';
-    if (!lifecycle.fastUnmount) {
-        removeChildren(null, children, lifecycle, shallowUnmount, isRecycling);
-    }
-}
-function removeChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
-    for (var i = 0; i < children.length; i++) {
-        var child = children[i];
-        if (!isInvalid(child)) {
-            unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
-        }
-    }
-}
-function isKeyed(lastChildren, nextChildren) {
-    return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
-        && lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
-}
-
 function normaliseChildNodes(dom) {
     var rawChildNodes = dom.childNodes;
     var length = rawChildNodes.length;
@@ -2889,6 +2605,295 @@ function render(input, parentDom) {
     if (devToolsStatus.connected) {
         sendRoots(window);
     }
+}
+
+function copyPropsTo(copyFrom, copyTo) {
+    for (var prop in copyFrom) {
+        if (isUndefined(copyTo[prop])) {
+            copyTo[prop] = copyFrom[prop];
+        }
+    }
+}
+function createStatefulComponentInstance(vNode, Component$$1, props, context, isSVG, devToolsStatus) {
+    if (isUndefined(context)) {
+        context = {};
+    }
+    var instance = new Component$$1(props, context);
+    instance.context = context;
+    instance._patch = patch;
+    instance._devToolsStatus = devToolsStatus;
+    instance._componentToDOMNodeMap = componentToDOMNodeMap;
+    var childContext = instance.getChildContext();
+    if (!isNullOrUndef(childContext)) {
+        instance._childContext = Object.assign({}, context, childContext);
+    }
+    else {
+        instance._childContext = context;
+    }
+    instance._unmounted = false;
+    instance._pendingSetState = true;
+    instance._isSVG = isSVG;
+    instance.componentWillMount();
+    instance._beforeRender && instance._beforeRender();
+    var input = instance.render(props, instance.state, context);
+    instance._afterRender && instance._afterRender();
+    if (isArray(input)) {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+        }
+        throwError();
+    }
+    else if (isInvalid(input)) {
+        input = createVoidVNode();
+    }
+    else {
+        if (input.dom) {
+            input = cloneVNode(input);
+        }
+        if (input.flags & 28 /* Component */) {
+            // if we have an input that is also a component, we run into a tricky situation
+            // where the root vNode needs to always have the correct DOM entry
+            // so we break monomorphism on our input and supply it our vNode as parentVNode
+            // we can optimise this in the future, but this gets us out of a lot of issues
+            input.parentVNode = vNode;
+        }
+    }
+    instance._pendingSetState = false;
+    instance._lastInput = input;
+    return instance;
+}
+function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling) {
+    replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle, isRecycling);
+}
+function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
+    var shallowUnmount = false;
+    // we cannot cache nodeType here as vNode might be re-assigned below
+    if (vNode.flags & 28 /* Component */) {
+        // if we are accessing a stateful or stateless component, we want to access their last rendered input
+        // accessing their DOM node is not useful to us here
+        unmount(vNode, null, lifecycle, false, false, isRecycling);
+        vNode = vNode.children._lastInput || vNode.children;
+        shallowUnmount = true;
+    }
+    replaceChild(parentDom, dom, vNode.dom);
+    unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
+}
+function createStatelessComponentInput(vNode, component, props, context) {
+    var input = component(props, context);
+    if (isArray(input)) {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+        }
+        throwError();
+    }
+    else if (isInvalid(input)) {
+        input = createVoidVNode();
+    }
+    else {
+        if (input.dom) {
+            input = cloneVNode(input);
+        }
+        if (input.flags & 28 /* Component */) {
+            // if we have an input that is also a component, we run into a tricky situation
+            // where the root vNode needs to always have the correct DOM entry
+            // so we break monomorphism on our input and supply it our vNode as parentVNode
+            // we can optimise this in the future, but this gets us out of a lot of issues
+            input.parentVNode = vNode;
+        }
+    }
+    return input;
+}
+function setTextContent(dom, text) {
+    if (text !== '') {
+        dom.textContent = text;
+    }
+    else {
+        dom.appendChild(document.createTextNode(''));
+    }
+}
+function updateTextContent(dom, text) {
+    dom.firstChild.nodeValue = text;
+}
+function appendChild(parentDom, dom) {
+    parentDom.appendChild(dom);
+}
+function insertOrAppend(parentDom, newNode, nextNode) {
+    if (isNullOrUndef(nextNode)) {
+        appendChild(parentDom, newNode);
+    }
+    else {
+        parentDom.insertBefore(newNode, nextNode);
+    }
+}
+function documentCreateElement(tag, isSVG) {
+    if (isSVG === true) {
+        return document.createElementNS(svgNS, tag);
+    }
+    else {
+        return document.createElement(tag);
+    }
+}
+function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, isRecycling) {
+    var lastInstance = null;
+    var instanceLastNode = lastNode._lastInput;
+    if (!isNullOrUndef(instanceLastNode)) {
+        lastInstance = lastNode;
+        lastNode = instanceLastNode;
+    }
+    unmount(lastNode, null, lifecycle, false, false, isRecycling);
+    var dom = mount(nextNode, null, lifecycle, context, isSVG);
+    nextNode.dom = dom;
+    replaceChild(parentDom, dom, lastNode.dom);
+    if (lastInstance !== null) {
+        lastInstance._lasInput = nextNode;
+    }
+}
+function replaceChild(parentDom, nextDom, lastDom) {
+    if (!parentDom) {
+        parentDom = lastDom.parentNode;
+    }
+    parentDom.replaceChild(nextDom, lastDom);
+}
+function removeChild(parentDom, dom) {
+    parentDom.removeChild(dom);
+}
+function removeAllChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
+    dom.textContent = '';
+    if (!lifecycle.fastUnmount) {
+        removeChildren(null, children, lifecycle, shallowUnmount, isRecycling);
+    }
+}
+function removeChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
+    for (var i = 0; i < children.length; i++) {
+        var child = children[i];
+        if (!isInvalid(child)) {
+            unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
+        }
+    }
+}
+function isKeyed(lastChildren, nextChildren) {
+    return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
+        && lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
+}
+
+function renderStylesToString(styles) {
+    if (isStringOrNumber(styles)) {
+        return styles;
+    }
+    else {
+        var renderedString = '';
+        for (var styleName in styles) {
+            var value = styles[styleName];
+            var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+            if (!isNullOrUndef(value)) {
+                renderedString += (toHyphenCase(styleName)) + ":" + (escapeText(value)) + px + ";";
+            }
+        }
+        return renderedString;
+    }
+}
+function renderVNodeToString(vNode, context, firstChild) {
+    var flags = vNode.flags;
+    var type = vNode.type;
+    var props = vNode.props;
+    var children = vNode.children;
+    if (flags & 28 /* Component */) {
+        var isClass = flags & 4;
+        // Primitive node doesn't have defaultProps, only Component
+        if (!isNullOrUndef(type.defaultProps)) {
+            copyPropsTo(type.defaultProps, props);
+            vNode.props = props;
+        }
+        if (isClass) {
+            var instance = new type(props, context);
+            var childContext = instance.getChildContext();
+            if (!isNullOrUndef(childContext)) {
+                context = Object.assign({}, context, childContext);
+            }
+            instance.context = context;
+            instance._pendingSetState = true;
+            if (isFunction(instance.componentWillMount)) {
+                instance.componentWillMount();
+            }
+            var nextVNode = instance.render(props, vNode.context);
+            instance._pendingSetState = false;
+            return renderVNodeToString(nextVNode, context, true);
+        }
+        else {
+            return renderVNodeToString(type(props, context), context, true);
+        }
+    }
+    else if (flags & 3970 /* Element */) {
+        var renderedString = "<" + type;
+        var html;
+        var isVoidElement$$1 = isVoidElement(type);
+        if (!isNull(props)) {
+            for (var prop in props) {
+                var value = props[prop];
+                if (prop === 'dangerouslySetInnerHTML') {
+                    html = value.__html;
+                }
+                else if (prop === 'style') {
+                    renderedString += " style=\"" + (renderStylesToString(props.style)) + "\"";
+                }
+                else if (prop === 'className') {
+                    renderedString += " class=\"" + (escapeText(value)) + "\"";
+                }
+                else {
+                    if (isStringOrNumber(value)) {
+                        renderedString += " " + prop + "=\"" + (escapeText(value)) + "\"";
+                    }
+                    else if (isTrue(value)) {
+                        renderedString += " " + prop;
+                    }
+                }
+            }
+        }
+        if (isVoidElement$$1) {
+            renderedString += ">";
+        }
+        else {
+            renderedString += ">";
+            if (!isInvalid(children)) {
+                if (isArray(children)) {
+                    for (var i = 0; i < children.length; i++) {
+                        var child = children[i];
+                        if (!isInvalid(child)) {
+                            renderedString += renderVNodeToString(child, context, i === 0);
+                        }
+                    }
+                }
+                else if (isStringOrNumber(children)) {
+                    renderedString += escapeText(children);
+                }
+                else {
+                    renderedString += renderVNodeToString(children, context, true);
+                }
+            }
+            else if (html) {
+                renderedString += html;
+            }
+            if (!isVoidElement$$1) {
+                renderedString += "</" + type + ">";
+            }
+        }
+        return renderedString;
+    }
+    else if (flags & 1 /* Text */) {
+        return (firstChild ? '' : '<!---->') + escapeText(children);
+    }
+    else {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError(("renderToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+        }
+        throwError();
+    }
+}
+function renderToString(input) {
+    return renderVNodeToString(input, null, true);
+}
+function renderToStaticMarkup(input) {
+    return renderVNodeToString(input, null, true);
 }
 
 function unmountComponentAtNode(container) {
