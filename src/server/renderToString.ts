@@ -11,6 +11,7 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
+	isFunction,
 	throwError,
 } from './../shared';
 
@@ -55,7 +56,9 @@ function renderVNodeToString(vNode, context, firstChild) {
 			}
 			instance.context = context;
 			instance._pendingSetState = true;
-			instance.componentWillMount();
+			if (isFunction(instance.componentWillMount)) {
+				instance.componentWillMount();
+			}
 			const nextVNode = instance.render(props, vNode.context);
 
 			instance._pendingSetState = false;

@@ -79,7 +79,9 @@ function isNullOrUndef(obj) {
 function isInvalid(obj) {
     return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
 }
-
+function isFunction(obj) {
+    return typeof obj === 'function';
+}
 
 function isString(obj) {
     return typeof obj === 'string';
@@ -152,7 +154,9 @@ function renderVNodeToString(vNode, context, firstChild) {
             }
             instance.context = context;
             instance._pendingSetState = true;
-            instance.componentWillMount();
+            if (isFunction(instance.componentWillMount)) {
+                instance.componentWillMount();
+            }
             var nextVNode = instance.render(props, vNode.context);
             instance._pendingSetState = false;
             return renderVNodeToString(nextVNode, context, true);

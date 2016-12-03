@@ -2332,6 +2332,9 @@ function copyPropsTo(copyFrom, copyTo) {
     }
 }
 function createStatefulComponentInstance(vNode, Component$$1, props, context, isSVG, devToolsStatus) {
+    if (isUndefined(context)) {
+        context = {};
+    }
     var instance = new Component$$1(props, context);
     instance.context = context;
     instance._patch = patch;
@@ -2816,7 +2819,7 @@ function PureComponent(props, context) {
 	Component.call(this, props, context);
 }
 
-PureComponent.prototype = new Component({});
+PureComponent.prototype = new Component({}, {});
 PureComponent.prototype.shouldComponentUpdate = function (props, state) {
 	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
 };
