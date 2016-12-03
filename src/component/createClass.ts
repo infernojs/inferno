@@ -38,7 +38,7 @@ function bindAll(ctx) {
 function collateMixins(mixins, keyed = {}) {
 	for (let i = 0; i < mixins.length; i++) {
 		const mixin = mixins[i];
-		
+
 		// Surprise: Mixins can have mixins
 		if (mixin.mixins) {
 			// Recursively collate sub-mixins
