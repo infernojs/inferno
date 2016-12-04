@@ -1,29 +1,41 @@
 const config = {};
 
-['Windows 10', 'OS X 10.11'].forEach((platform) => {
-  ['beta', '54, 53'].forEach((version) => {
-    config['sl_chrome-' + platform + '-' + version] = {
-      base: 'SauceLabs',
-      browserName: 'chrome',
-      platform,
-      version
-    };
-  });
+['beta', '54, 53'].forEach((version) => {
+  config['sl_chrome-win-' + version] = {
+    base: 'SauceLabs',
+    browserName: 'chrome',
+    platform: 'Windows 10',
+    version
+  };
 
-  ['beta', '50, 49'].forEach((version) => {
-    config['sl_chrome-' + platform + '-' + version] = {
-      base: 'SauceLabs',
-      browserName: 'chrome',
-      platform,
-      version
-    };
-  });
+  config['sl_chrome-osx-' + version] = {
+    base: 'SauceLabs',
+    browserName: 'chrome',
+    platform: 'OS X 10.11',
+    version
+  };
 });
 
-['10', '9'].forEach((version) => {
-  config['sl_safair-linux-' + version] = {
+['48', '47'].forEach((version) => {
+  config['sl_firefox-linux-' + version] = {
     base: 'SauceLabs',
-    browserName: 'safari',
+    browserName: 'chrome',
+    platform: 'Linux',
+    version
+  };
+});
+
+['beta', '50, 49'].forEach((version) => {
+  config['sl_chrome-win-' + version] = {
+    base: 'SauceLabs',
+    browserName: 'chrome',
+    platform: 'Windows 10',
+    version
+  };
+  
+  config['sl_chrome-osx-' + version] = {
+    base: 'SauceLabs',
+    browserName: 'chrome',
     platform: 'OS X 10.11',
     version
   };
@@ -37,6 +49,16 @@ const config = {};
     version
   };
 });
+
+['10', '9'].forEach((version) => {
+  config['sl_safair-linux-' + version] = {
+    base: 'SauceLabs',
+    browserName: 'safari',
+    platform: 'OS X 10.11',
+    version
+  };
+});
+
 
 config['sl_edge'] = {
   base: 'SauceLabs',
