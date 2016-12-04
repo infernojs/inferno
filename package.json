@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
-    "@types/core-js": "^0.9.34",
+    "@types/core-js": "^0.9.35",
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.0.51",
     "@types/sinon": "^1.16.32",
@@ -19,7 +19,7 @@
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
     "babel-plugin-inferno": "1.2.0-beta13",
-    "babel-plugin-module-resolver": "^2.3.0",
+    "babel-plugin-module-resolver": "^2.4.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
@@ -56,10 +56,10 @@
     "lodash": "^4.17.2",
     "merge-source-map": "^1.0.3",
     "mkdirp": "^0.5.1",
-    "mobx": "^2.6.3",
+    "mobx": "^2.6.4",
     "mocha": "^3.2.0",
     "mocha-lcov-reporter": "^1.2.0",
-    "most": "^1.1.0",
+    "most": "^1.1.1",
     "most-subject": "^5.2.0",
     "nyc": "^10.0.0",
     "path-to-regexp-es6": "0.0.2",
@@ -82,8 +82,8 @@
     "tslint": "^4.0.2",
     "typescript": "^2.0.10",
     "union-type": "^0.3.3",
-    "webpack": "^2.1.0-beta.26",
-    "webpack-dev-server": "^2.1.0-beta.11"
+    "webpack": "^2.1.0-beta.27",
+    "webpack-dev-server": "^2.1.0-beta.12"
   },
   "files": [
     "src"
