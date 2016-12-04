@@ -78,7 +78,7 @@ const config = {};
   EDGE
 ================= */
 ['14', '13'].forEach((version) => {
-  config['sl_edge'] = {
+  config['sl_edge-' + version] = {
     base: 'SauceLabs',
     browserName: 'MicrosoftEdge',
     platform: 'Windows 10',
@@ -86,4 +86,5 @@ const config = {};
   };
 })
 
+console.log(config);
 module.exports = config;
