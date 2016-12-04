@@ -3,7 +3,7 @@ const config = {};
 /* =============
     CHROME
 ============== */
-['beta', '54, 53'].forEach((version) => {
+['beta', '54', '53'].forEach((version) => {
   // Windows
   config['sl_chrome-win-' + version] = {
     base: 'SauceLabs',
@@ -34,7 +34,7 @@ const config = {};
 /* =============
   FIREFOX
 ============= */
-['beta', '50, 49'].forEach((version) => {
+['beta', '50', '49'].forEach((version) => {
   // Windows
   config['sl_chrome-win-' + version] = {
     base: 'SauceLabs',
