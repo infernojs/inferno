@@ -62,6 +62,7 @@ module.exports = function (config) {
 		CI,
 		TRAVIS,
 		TRAVIS_BRANCH,
+		TRAVIS_BUILD_NUMBER,
 		TRAVIS_PULL_REQUEST,
 	} = process.env;
 
@@ -125,7 +126,7 @@ module.exports = function (config) {
 		};
 		config.set({
 			sauceLabs: {
-					testName: 'Inferno Browser Unit Tests'
+					testName: 'Inferno Browser Unit Tests: ' + (TRAVIS_BUILD_NUMBER || 'Local')
 			},
 			concurrency: 2,
 			customLaunchers: customLaunchers,
