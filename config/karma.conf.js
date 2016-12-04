@@ -64,6 +64,7 @@ module.exports = function (config) {
 		TRAVIS,
 		TRAVIS_BRANCH,
 		TRAVIS_BUILD_NUMBER,
+		TRAVIS_JOB_NUMBER,
 		TRAVIS_PULL_REQUEST,
 	} = process.env;
 
@@ -87,8 +88,8 @@ module.exports = function (config) {
 	if (CI && TRAVIS_PULL_REQUEST && TRAVIS_BRANCH === 'sauce-labs') {
 		config.set({
 			sauceLabs: {
-				testName: 'Inferno Browser Karma Tests',
-				build: (TRAVIS_BUILD_NUMBER || 'Local'),
+				testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,
+				build: (TRAVIS_JOB_NUMBER || 'Local'),
 				public: true
 			},
 			concurrency: 2,
