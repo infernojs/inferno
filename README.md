@@ -30,7 +30,7 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 
 ## Summary
 
-- Component driven + one-way data flow archietecture
+- Component driven + one-way data flow architecture
 - One of the fastest front-end frameworks for rendering UI in the DOM
 - React-like API, concepts and component lifecycle events
 - Partial synthetic event system, providing delegation to certain events for better performance
