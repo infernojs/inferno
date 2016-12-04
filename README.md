@@ -9,7 +9,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg?style=flat-square)](https://www.npmjs.org/package/inferno-dom)
 [![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
 
-Inferno is an insanely fast, `7kb` React-like library for building high-performance user interfaces on both the client and server.
+Inferno is an insanely fast, `8kb` React-like library for building high-performance user interfaces on both the client and server.
 
 To quote a member of the React core team at Facebook:
 > Inferno 1.0 is really well written. It's how I would've rewritten React. I'd recommend reading its source to learn.
@@ -33,7 +33,9 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 - Component driven + one-way data flow archietecture
 - One of the fastest front-end frameworks for rendering UI in the DOM
 - React-like API, concepts and component lifecycle events
-- Lightweight filesize of only 7kb
+- Partial synthetic event system, providing delegation to certain events for better performance
+- Inferno's `linkEvent` feature removes the need to use arrow functions or binding event callbacks (for delegated events)
+- Lightweight filesize of only 8kb
 - Isomorphic rendering on both client and server with `inferno-server`
 - Highly modular with very little opinionation on how things should be done
 - Unlike React and Preact, Inferno has lifecycle events on functional components
@@ -124,7 +126,7 @@ https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta24/inferno.min.js
 
 #### JSX:
 ```sh
-npm install --save-dev babel-plugin-inferno@beta12
+npm install --save-dev babel-plugin-inferno@beta13
 ```
 
 #### Hyperscript:
@@ -158,9 +160,9 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 ## Differences from React
 
-- Inferno is much smaller in size, `7kb` vs `45kb` gzip. This means Inferno is faster to transfer over the network but more importantly, is *much* faster to parse – this makes a big impact on mobile.
+- Inferno is much smaller in size, `8kb` vs `45kb` gzip. This means Inferno is faster to transfer over the network but more importantly, is *much* faster to parse – this makes a big impact on mobile.
 - Inferno is considerably faster than React. This doesn't apply to only benchmarks, but real-world applications that companies have converted to Inferno from React. Ranging from 40% - 110% performance improvement with Inferno `1.0`. No other React-like library gets close to this performance gain over React.
-- Inferno doesn't have a synthetic event system like React does. There are pros and cons (size and performance vs delegation and unification of browser events) to having one and we believe that by default, using the native browser event system is "good enough" for most apps today. We however plan on adding an add-on synthetic event system in the future to cater for those who need it.
+- Inferno doesn't have a fully synthetic event system like React does. Inferno has a partially synthetic event system, instead opting to only delegate certain events (such as `onClick`).
 - Inferno doesn't support React Native. Inferno was only designed for the browser/server with the DOM in mind.
 - Inferno doesn't support string refs – although this can be enabled using `inferno-compat`. We don't recommend using them, they are the source of many memory leaks and performance issues in real-world apps. Stick with function callback refs instead.
 - Inferno includes `render` on the main core package, rather than have a `InfernoDOM` package like React does. We used to do it that way, but we found people simply didn't like it given we don't support native. Furthermore, by not splitting them, we improved performance and bundle sizes.
@@ -169,7 +171,8 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 ## Differences from Preact
 
-- Inferno is larger in size, `7kb` vs `3kb` gzip. This means that Preact should parse faster than Inferno – if only slightly.
+- Inferno is larger in size, `8kb` vs `3kb` gzip. This means that Preact should parse faster than Inferno – if only slightly.
+- Inferno has a partial synthetic event system, resulting in better performance via delegation of certain events.
 - Inferno is *much* faster than Preact in rendering, updating and removing elements from the DOM. Inferno diffs against virtual DOM, rather than the real DOM (except for when loading from server-side rendered content) which means it can make drastic improvements. Unfortunately, diffing against the real DOM has a 30-40% overhead cost in operations.
 - Inferno fully supports controlled components for `input`/`select`/`textarea` elements. This prevents lots of edgecases where the virtual DOM is not the source of truth (it should always be). Preact pushes the source of truth to the DOM itself.
 - Inferno provides lifecycle events on stateless components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
