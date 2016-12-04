@@ -89,7 +89,7 @@ module.exports = function (config) {
 		});
 	}
 
-	if (CI && TRAVIS_PULL_REQUEST && TRAVIS_BRANCH === 'sauce-labs') {
+	if (CI && TRAVIS_PULL_REQUEST && TRAVIS_BRANCH === 'master') {
 		config.set({
 			sauceLabs: {
 				testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,

@@ -18,25 +18,5 @@ module.exports = {
     base: 'SauceLabs',
     browserName: 'MicrosoftEdge',
     platform: 'Windows 10'
-  },
-  sl_ios_safari_8: {
-    base: 'SauceLabs',
-    browserName: 'iphone',
-    version: '8.4'
-  },
-  sl_ios_safari_9: {
-    base: 'SauceLabs',
-    browserName: 'iphone',
-    version: '9.3'
-  },
-  sl_android_4_2: {
-    base: 'SauceLabs',
-    browserName: 'android',
-    version: '4.2'
-  },
-  sl_android_5_1: {
-    base: 'SauceLabs',
-    browserName: 'android',
-    version: '5.1'
   }
 };
