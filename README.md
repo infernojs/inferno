@@ -213,7 +213,7 @@ runApp();
 
 ### `createElement` (package: `inferno-create-element`)
 
-Creates an Inferno VNode using a similar API to that found with React's `createElement`
+Creates an Inferno VNode using a similar API to that found with React's `createElement()`
 
 ```javascript
 import Component from 'inferno-component';
@@ -275,9 +275,9 @@ Inferno.createVNode(
 )
 ```
 
-Create a new Inferno `VNode` using `createVNode`. A `VNode` is a virtual DOM object that is used to
-describe a single element of the UI. Typically `createElement`, `hyperscript` or JSX are used to create
-`VNode`s for Inferno, but under the hood they all use `createVNode`. Below is an example of using
+Create a new Inferno `VNode` using `createVNode()`. A `VNode` is a virtual DOM object that is used to
+describe a single element of the UI. Typically `createElement()` (package: `inferno-create-element`), `h()` (package: `inferno-hyperscript`) or JSX are used to create
+`VNode`s for Inferno, but under the hood they all use `createVNode()`. Below is an example of using
 of `createVNode` usage:
 
 ```javascript
@@ -288,7 +288,7 @@ const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello wor
 Inferno.render(vNode, container);
 ```
 
-The first argument for `createVNode` is a value from [`VNodeFlags`](https://github.com/trueadm/inferno/tree/master/packages/inferno-vnode-flags), this is numerical value that used to tell Inferno what the VNode is meant to describe on the page.
+The first argument for `createVNode()` is a value from [`VNodeFlags`](https://github.com/trueadm/inferno/tree/master/packages/inferno-vnode-flags), this is numerical value that used to tell Inferno what the VNode is meant to describe on the page.
 
 ### `cloneVNode` (package: `inferno`)
 ```js
@@ -328,11 +328,18 @@ const newVNode = Inferno.cloneVNode(vNode, { id: 'new' }); // we are adding an i
 Inferno.render(newVNode, container);
 ```
 
+### `enableFindDOMNode` (package: `inferno`)
+
+This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
+
 ### `findDOMNode` (package: `inferno`)
 
-Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode`. `findDOMNode` cannot be used on functional components.
+Once enabled via `enableFindDOMNode()` at the start of an application, `findDOMNode()` is enabled.
 
-If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements. In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode` at all. When render returns null or false, `findDOMNode` returns null.
+Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode()`. `findDOMNode()` cannot be used on functional components and it introduces a significant impact to performance.
+
+If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements. 
+In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode()` at all. When render returns null or false, `findDOMNode()` returns null.
 
 ### `renderToString` (package: `inferno-server`)
 

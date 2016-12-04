@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { render } from './../rendering';
-import { findDOMNode } from '../rendering';
+import { findDOMNode, enableFindDOMNode } from '../rendering';
 import Component from './../../component/es2015';
 import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
@@ -19,6 +19,7 @@ describe('findDOMNodes (JSX)', () => {
 	});
 
 	describe('various tests to see if the DOM node is right for the component', () => {
+		enableFindDOMNode();
 		let instance1;
 		let instance2;
 		let instance3;

@@ -11,7 +11,7 @@ import {
 } from './../shared';
 
 import cloneVNode from '../factories/cloneVNode';
-import { componentToDOMNodeMap } from './rendering';
+import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { svgNS } from './constants';
@@ -36,7 +36,9 @@ export function createStatefulComponentInstance(vNode, Component, props, context
 	instance.context = context;
 	instance._patch = patch;
 	instance._devToolsStatus = devToolsStatus;
-	instance._componentToDOMNodeMap = componentToDOMNodeMap;
+	if (findDOMNodeEnabled) {
+		instance._componentToDOMNodeMap = componentToDOMNodeMap;
+	}
 	const childContext = instance.getChildContext();
 
 	if (!isNullOrUndef(childContext)) {
