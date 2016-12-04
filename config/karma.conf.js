@@ -9,13 +9,13 @@ module.exports = function (config) {
 		basePath: path.join(__dirname, '..'),
 		frameworks: [
 			'chai',
-			'mocha'
+			'mocha',
 		],
 		files: [
 			'./node_modules/babel-polyfill/dist/polyfill.js',
 			'./node_modules/sinon/pkg/sinon.js',
 			'./src/**/*__tests__*/**/*.ts',
-			'./src/**/*__tests__*/**/*.tsx',
+			'./src/**/z*__tests__*/**/*.tsx',
 			'./src/**/*__tests__*/**/*.js',
 			'./src/**/*__tests__*/**/*.jsx'
 		],
@@ -34,17 +34,17 @@ module.exports = function (config) {
 					{
 						test: /\.tsx?$/,
 						loaders: ['babel-loader', 'ts-loader'],
-						exclude: /node_modules/
+						exclude: /node_modules/,
 					}, {
 						test: /\.jsx?$/,
 						loader: 'babel-loader',
-						exclude: /node_modules/
-					}
-				]
+						exclude: /node_modules/,
+					},
+				],
 			},
 			resolve: {
-				extensions: ['.js', '.jsx', '.ts', '.tsx']
-			}
+				extensions: ['.js', '.jsx', '.ts', '.tsx'],
+			},
 		},
 		webpackMiddleware: {
 			noInfo: true,
