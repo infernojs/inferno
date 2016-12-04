@@ -5,12 +5,16 @@ import {
 	isNullOrUndef,
 	isObject,
 	throwError,
+	isNull,
 } from '../shared';
 import {
 	poolComponent,
 	poolElement,
 	recyclingEnabled,
 } from './recycling';
+import {
+	patchEvent
+} from './patching';
 
 import { VNodeFlags } from '../core/shapes';
 import { componentToDOMNodeMap } from './rendering';
@@ -94,6 +98,7 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
 	const dom = vNode.dom;
 	const ref = vNode.ref;
+	const events = vNode.events;
 
 	if (!shallowUnmount && !lifecycle.fastUnmount) {
 		if (ref && !isRecycling) {
@@ -103,6 +108,12 @@ export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowU
 
 		if (!isNullOrUndef(children)) {
 			unmountChildren(children, lifecycle, shallowUnmount, isRecycling);
+		}
+	}
+	if (!isNull(events)) {
+		for (let name in events) {
+			// do not add a hasOwnProperty check here, it affects performance
+			patchEvent(name, null, null, dom, lifecycle);
 		}
 	}
 	if (parentDom) {

@@ -42,6 +42,7 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 	}
 	children = null;
 	const flags = vNodeToClone.flags;
+	const events = vNodeToClone.events || (props && props.events) || null;
 	let newVNode;
 
 	if (isArray(vNodeToClone)) {
@@ -56,6 +57,7 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 			newVNode = createVNode(flags, vNodeToClone.type,
 				Object.assign({}, vNodeToClone.props, props),
 				null,
+				events,
 				key,
 				ref,
 				true
@@ -65,6 +67,7 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 			newVNode = createVNode(flags, vNodeToClone.type,
 				Object.assign({}, vNodeToClone.props, props),
 				children,
+				events,
 				key,
 				ref,
 				!children

@@ -27,6 +27,7 @@ import { componentToDOMNodeMap } from './rendering';
 import { devToolsStatus } from './devtools';
 import {
 	patchProp,
+	patchEvent
 } from './patching';
 import processElement from './wrappers/processElement';
 import { svgNS } from './constants';
@@ -57,7 +58,7 @@ export function normaliseChildNodes(dom) {
 
 function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 	const type = vNode.type;
-	const props = vNode.props;
+	const props = vNode.props || {};
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
@@ -102,6 +103,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 	const tag = vNode.type;
 	const children = vNode.children;
 	const props = vNode.props;
+	const events = vNode.events;
 	const flags = vNode.flags;
 
 	if (isSVG || (flags & VNodeFlags.SvgElement)) {
@@ -121,9 +123,10 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 			processElement(flags, vNode, dom);
 		}
 		for (let prop in props) {
-			const value = props[prop];
-
-			patchProp(prop, null, value, dom, isSVG);
+			patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+		}
+		for (let name in events) {
+			patchEvent(name, null, events[name], dom, lifecycle);
 		}
 	}
 }

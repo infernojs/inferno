@@ -564,6 +564,7 @@ function cloneVNode(vNodeToClone, props) {
     }
     children = null;
     var flags = vNodeToClone.flags;
+    var events = vNodeToClone.events || (props && props.events) || null;
     var newVNode;
     if (isArray(vNodeToClone)) {
         newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
@@ -575,11 +576,11 @@ function cloneVNode(vNodeToClone, props) {
         var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
         var ref = vNodeToClone.ref || props.ref;
         if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, key, ref, true);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
         }
         else if (flags & 3970 /* Element */) {
             children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, key, ref, !children);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
         }
     }
     if (flags & 28 /* Component */) {
@@ -694,13 +695,14 @@ function normalize(vNode) {
         }
     }
 }
-function createVNode(flags, type, props, children, key, ref, noNormalise) {
+function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
     var vNode = {
         children: isUndefined(children) ? null : children,
         dom: null,
+        events: events || null,
         flags: flags || 0,
         key: key === undefined ? null : key,
         props: props || null,
@@ -752,6 +754,7 @@ function createElement$1(name, props) {
     var vNode = createVNode(0);
     var ref = null;
     var key = null;
+    var events = null;
     var flags = 0;
     if (_children) {
         if (_children.length === 1) {
@@ -790,11 +793,11 @@ function createElement$1(name, props) {
                 ref = props.ref;
             }
             else if (isAttrAnEvent(prop)) {
-                var lowerCase = prop.toLowerCase();
-                if (lowerCase !== prop) {
-                    props[prop.toLowerCase()] = props[prop];
-                    delete props[prop];
+                if (!events) {
+                    events = {};
                 }
+                events[prop] = props[prop];
+                delete props[prop];
             }
         }
     }
@@ -820,7 +823,7 @@ function createElement$1(name, props) {
         }
         vNode.props = props;
     }
-    return createVNode(flags, name, props, children, key, ref);
+    return createVNode(flags, name, props, children, events, key, ref);
 }
 
 function escapeText(_string) {
@@ -940,11 +943,82 @@ var strictProps = {};
 var booleanProps = {};
 var namespaces = {};
 var isUnitlessNumber = {};
+var skipProps = {};
+var dehyphenProps = {
+    textAnchor: 'text-anchor'
+};
+var delegatedProps = {};
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
+constructDefaults('children,ref,key,selected,checked,value,multiple', skipProps, true);
+constructDefaults('onClick,onMouseDown,onMouseUp,onMouseMove', delegatedProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+
+var delegatedEvents = new Map();
+function handleEvent(name, lastEvent, nextEvent, dom) {
+    var delegatedRoots = delegatedEvents.get(name);
+    if (nextEvent) {
+        if (!delegatedRoots) {
+            delegatedRoots = { items: new Map(), count: 0, docEvent: null };
+            var docEvent = attachEventToDocument(name, delegatedRoots);
+            delegatedRoots.docEvent = docEvent;
+            delegatedEvents.set(name, delegatedRoots);
+        }
+        if (!lastEvent) {
+            delegatedRoots.count++;
+        }
+        delegatedRoots.items.set(dom, nextEvent);
+    }
+    else if (delegatedRoots) {
+        delegatedRoots.count--;
+        delegatedRoots.items.delete(dom);
+        if (delegatedRoots.count === 0) {
+            document.removeEventListener(name, delegatedRoots.docEvent);
+            delegatedEvents.delete(name);
+        }
+    }
+}
+function dispatchEvent(event, dom, items, count, eventData) {
+    var eventsToTrigger = items.get(dom);
+    if (eventsToTrigger) {
+        count--;
+        // linkEvent object
+        if (eventsToTrigger.event) {
+            eventsToTrigger.event(eventsToTrigger.data, event);
+        }
+        else {
+            eventsToTrigger(event);
+        }
+        if (eventData.stopPropagation) {
+            return;
+        }
+    }
+    var parentDom = dom.parentNode;
+    if (count > 0 && (parentDom || parentDom === document.body)) {
+        dispatchEvent(event, parentDom, items, count, eventData);
+    }
+}
+function normalizeEventName(name) {
+    return name.substr(2).toLowerCase();
+}
+function attachEventToDocument(name, delegatedRoots) {
+    var docEvent = function (event) {
+        var eventData = {
+            stopPropagation: false
+        };
+        event.stopPropagation = function () {
+            eventData.stopPropagation = true;
+        };
+        var count = delegatedRoots.count;
+        if (count > 0) {
+            dispatchEvent(event, event.target, delegatedRoots.items, count, eventData);
+        }
+    };
+    document.addEventListener(normalizeEventName(name), docEvent);
+    return docEvent;
+}
 
 function isCheckedType(type) {
     return type === 'checkbox' || type === 'radio';
@@ -1236,6 +1310,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
 function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
     var dom = vNode.dom;
     var ref = vNode.ref;
+    var events = vNode.events;
     if (!shallowUnmount && !lifecycle.fastUnmount) {
         if (ref && !isRecycling) {
             unmountRef(ref);
@@ -1243,6 +1318,12 @@ function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount,
         var children = vNode.children;
         if (!isNullOrUndef(children)) {
             unmountChildren$1(children, lifecycle, shallowUnmount, isRecycling);
+        }
+    }
+    if (!isNull(events)) {
+        for (var name in events) {
+            // do not add a hasOwnProperty check here, it affects performance
+            patchEvent(name, null, null, dom, lifecycle);
         }
     }
     if (parentDom) {
@@ -1349,6 +1430,8 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
         var nextFlags = nextVNode.flags;
         var lastRef = lastVNode.ref;
         var nextRef = nextVNode.ref;
+        var lastEvents = lastVNode.events;
+        var nextEvents = nextVNode.events;
         nextVNode.dom = dom;
         if (isSVG || (nextFlags & 128 /* SvgElement */)) {
             isSVG = true;
@@ -1361,6 +1444,9 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
         }
         if (lastProps !== nextProps) {
             patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG);
+        }
+        if (lastEvents !== nextEvents) {
+            patchEvents(lastEvents, nextEvents, dom, lifecycle);
         }
         if (nextRef) {
             if (lastRef !== nextRef || isRecycling) {
@@ -1947,21 +2033,7 @@ function lis_algorithm(a) {
     }
     return result;
 }
-// TODO we can shorten this code and put it in constants for smaller size bundles
-// these are handled by other parts of Inferno, e.g. input wrappers
-var skipProps = {
-    children: true,
-    ref: true,
-    key: true,
-    selected: true,
-    checked: true,
-    value: true,
-    multiple: true
-};
-var dehyphenProps = {
-    textAnchor: 'text-anchor'
-};
-function patchProp(prop, lastValue, nextValue, dom, isSVG) {
+function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
     if (skipProps[prop]) {
         return;
     }
@@ -1973,6 +2045,9 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
         if (dom[prop] !== value) {
             dom[prop] = value;
         }
+    }
+    else if (isAttrAnEvent(prop)) {
+        patchEvent(prop, lastValue, nextValue, dom, lifecycle);
     }
     else if (lastValue !== nextValue) {
         if (isNullOrUndef(nextValue)) {
@@ -1988,13 +2063,6 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
         }
         else if (prop === 'style') {
             patchStyle(lastValue, nextValue, dom);
-        }
-        else if (isAttrAnEvent(prop)) {
-            var eventName = prop.toLowerCase();
-            var event = dom[eventName];
-            if (!event || !event.wrapped) {
-                dom[eventName] = nextValue;
-            }
         }
         else if (prop === 'dangerouslySetInnerHTML') {
             var lastHtml = lastValue && lastValue.__html;
@@ -2017,6 +2085,38 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG) {
         }
     }
 }
+function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
+    lastEvents = lastEvents || EMPTY_OBJ;
+    nextEvents = nextEvents || EMPTY_OBJ;
+    if (nextEvents !== EMPTY_OBJ) {
+        for (var name in nextEvents) {
+            // do not add a hasOwnProperty check here, it affects performance
+            patchEvent(name, lastEvents[name], nextEvents[name], dom, lifecycle);
+        }
+    }
+    if (lastEvents !== EMPTY_OBJ) {
+        for (var name$1 in lastEvents) {
+            // do not add a hasOwnProperty check here, it affects performance
+            if (isNullOrUndef(nextEvents[name$1])) {
+                patchEvent(name$1, lastEvents[name$1], null, dom, lifecycle);
+            }
+        }
+    }
+}
+function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
+    if (lastValue !== nextValue || isNull(nextValue)) {
+        if (delegatedProps[name]) {
+            lifecycle.fastUnmount = false;
+            handleEvent(name, lastValue, nextValue, dom);
+        }
+        else {
+            var event = dom[name];
+            if (!event || !event.wrapped) {
+                dom[name] = nextValue;
+            }
+        }
+    }
+}
 function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
     lastProps = lastProps || EMPTY_OBJ;
     nextProps = nextProps || EMPTY_OBJ;
@@ -2029,7 +2129,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
                 removeProp(prop, dom);
             }
             else {
-                patchProp(prop, lastValue, nextValue, dom, isSVG);
+                patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle);
             }
         }
     }
@@ -2088,6 +2188,9 @@ function removeProp(prop, dom) {
     else if (prop === 'style') {
         dom.style.cssText = null;
         dom.removeAttribute('style');
+    }
+    else if (delegatedProps[prop]) {
+        handleEvent(prop, null, null, dom);
     }
     else {
         dom.removeAttribute(prop);
@@ -2245,6 +2348,7 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
     var dom = documentCreateElement(tag, isSVG);
     var children = vNode.children;
     var props = vNode.props;
+    var events = vNode.events;
     var ref = vNode.ref;
     vNode.dom = dom;
     if (!isNull(children)) {
@@ -2264,7 +2368,13 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
     if (!isNull(props)) {
         for (var prop in props) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchProp(prop, null, props[prop], dom, isSVG);
+            patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+        }
+    }
+    if (!isNull(events)) {
+        for (var name in events) {
+            // do not add a hasOwnProperty check here, it affects performance
+            patchEvent(name, null, events[name], dom, lifecycle);
         }
     }
     if (!isNull(ref)) {
@@ -2408,7 +2518,7 @@ function normaliseChildNodes(dom) {
 }
 function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
     var type = vNode.type;
-    var props = vNode.props;
+    var props = vNode.props || {};
     var ref = vNode.ref;
     vNode.dom = dom;
     if (isClass) {
@@ -2448,6 +2558,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     var tag = vNode.type;
     var children = vNode.children;
     var props = vNode.props;
+    var events = vNode.events;
     var flags = vNode.flags;
     if (isSVG || (flags & 128 /* SvgElement */)) {
         isSVG = true;
@@ -2466,8 +2577,10 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
             processElement(flags, vNode, dom);
         }
         for (var prop in props) {
-            var value = props[prop];
-            patchProp(prop, null, value, dom, isSVG);
+            patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+        }
+        for (var name in events) {
+            patchEvent(name, null, events[name], dom, lifecycle);
         }
     }
 }
