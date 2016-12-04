@@ -5,7 +5,8 @@ import cloneVNode from '../../../build/factories/cloneVNode';
 import { warning, NO_OP, isBrowser } from '../../../build/shared';
 import { render, findDOMNode, createRenderer } from '../../../build/DOM/rendering';
 import { disableRecycling } from '../../../build/DOM/recycling';
-import { initDevToolsHooks }  from '../../../build/DOM/devtools';
+import { initDevToolsHooks } from '../../../build/DOM/devtools';
+import linkEvent from '../../../build/DOM/events/linkEvent';
 
 if (isBrowser) {
 	window.process = {
@@ -28,6 +29,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default {
+	linkEvent,
 	// core shapes
 	createVNode,
 

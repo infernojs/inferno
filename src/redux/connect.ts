@@ -114,11 +114,13 @@ export default function connect(
 			renderedElement: any;
 			componentDidMount: any;
 			componentWillUpdate: any;
+			wrappedInstance: any;
 
 			constructor(props, context) {
 				super(props, context);
 
 				this.version = version;
+				this.wrappedInstance = null;
 				this.store = (props && props.store) || (context && context.store);
 				this.componentDidMount = () => {
 					this.trySubscribe();
@@ -286,7 +288,7 @@ export default function connect(
 			}
 
 			getWrappedInstance() {
-				return this.refs.wrappedInstance;
+				return this.wrappedInstance;
 			}
 
 			render() {
@@ -344,7 +346,7 @@ export default function connect(
 				}
 				if (withRef) {
 					this.renderedElement = createElement(WrappedComponent,
-						Object.assign({}, this.mergedProps, { ref: 'wrappedInstance' })
+						Object.assign({}, this.mergedProps, { ref: (instance) => this.wrappedInstance = instance })
 					);
 				} else {
 					this.renderedElement = createElement(WrappedComponent,

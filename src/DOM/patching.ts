@@ -24,6 +24,9 @@ import {
 	isUnitlessNumber,
 	namespaces,
 	strictProps,
+	delegatedProps,
+	skipProps,
+	dehyphenProps
 } from './constants';
 import {
 	componentIdMap,
@@ -52,6 +55,9 @@ import {
 	mountText,
 	mountVoid,
 } from './mounting';
+import {
+	handleEvent
+} from './events/delegation';
 
 import Lifecycle from './lifecycle';
 import cloneVNode from '../factories/cloneVNode';
@@ -155,6 +161,8 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 		const nextFlags = nextVNode.flags;
 		const lastRef = lastVNode.ref;
 		const nextRef = nextVNode.ref;
+		const lastEvents = lastVNode.events;
+		const nextEvents = nextVNode.events;
 
 		nextVNode.dom = dom;
 		if (isSVG || (nextFlags & VNodeFlags.SvgElement)) {
@@ -175,6 +183,9 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 				context,
 				isSVG
 			);
+		}
+		if (lastEvents !== nextEvents) {
+			patchEvents(lastEvents, nextEvents, dom, lifecycle);
 		}
 		if (nextRef) {
 			if (lastRef !== nextRef || isRecycling) {
@@ -785,23 +796,7 @@ function lis_algorithm(a) {
 	return result;
 }
 
-// TODO we can shorten this code and put it in constants for smaller size bundles
-// these are handled by other parts of Inferno, e.g. input wrappers
-const skipProps = {
-	children: true,
-	ref: true,
-	key: true,
-	selected: true,
-	checked: true,
-	value: true,
-	multiple: true
-};
-
-const dehyphenProps = {
-	textAnchor: 'text-anchor'
-};
-
-export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
+export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, lifecycle) {
 	if (skipProps[prop]) {
 		return;
 	}
@@ -813,6 +808,8 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 		if (dom[prop] !== value) {
 			dom[prop] = value;
 		}
+	} else if (isAttrAnEvent(prop)) {
+		patchEvent(prop, lastValue, nextValue, dom, lifecycle);
 	} else if (lastValue !== nextValue) {
 		if (isNullOrUndef(nextValue)) {
 			dom.removeAttribute(prop);
@@ -824,13 +821,6 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 			}
 		} else if (prop === 'style') {
 			patchStyle(lastValue, nextValue, dom);
-		} else if (isAttrAnEvent(prop)) {
-			const eventName = prop.toLowerCase();
-			const event = dom[eventName];
-
-			if (!event || !event.wrapped) {
-				dom[eventName] = nextValue;
-			}
 		} else if (prop === 'dangerouslySetInnerHTML') {
 			const lastHtml = lastValue && lastValue.__html;
 			const nextHtml = nextValue && nextValue.__html;
@@ -853,6 +843,41 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean) {
 	}
 }
 
+export function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
+	lastEvents = lastEvents || EMPTY_OBJ;
+	nextEvents = nextEvents || EMPTY_OBJ;
+
+	if (nextEvents !== EMPTY_OBJ) {
+		for (let name in nextEvents) {
+			// do not add a hasOwnProperty check here, it affects performance
+			patchEvent(name, lastEvents[name], nextEvents[name], dom, lifecycle);
+		}
+	}
+	if (lastEvents !== EMPTY_OBJ) {
+		for (let name in lastEvents) {
+			// do not add a hasOwnProperty check here, it affects performance
+			if (isNullOrUndef(nextEvents[name])) {
+				patchEvent(name, lastEvents[name], null, dom, lifecycle);
+			}
+		}
+	}
+}
+
+export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
+	if (lastValue !== nextValue || isNull(nextValue)) {
+		if (delegatedProps[name]) {
+			lifecycle.fastUnmount = false;
+			handleEvent(name, lastValue, nextValue, dom);
+		} else {
+			const event = dom[name];
+
+			if (!event || !event.wrapped) {
+				dom[name] = nextValue;
+			}
+		}
+	}
+}
+
 function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 	lastProps = lastProps || EMPTY_OBJ;
 	nextProps = nextProps || EMPTY_OBJ;
@@ -866,7 +891,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 			if (isNullOrUndef(nextValue)) {
 				removeProp(prop, dom);
 			} else {
-				patchProp(prop, lastValue, nextValue, dom, isSVG);
+				patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle);
 			}
 		}
 	}
@@ -923,6 +948,8 @@ function removeProp(prop, dom) {
 	} else if (prop === 'style') {
 		dom.style.cssText = null;
 		dom.removeAttribute('style');
+	} else if (delegatedProps[prop]) {
+		handleEvent(prop, null, null, dom);
 	} else {
 		dom.removeAttribute(prop);
 	}

@@ -59,22 +59,29 @@ function isChildren(x) {
 
 function extractProps(_props, _tag) {
 	_props = _props || {};
-	const tag = isString(_tag) ? parseTag(_tag, _props) : _tag;
+	const isComponent = !isString(_tag);
+	const tag = !isComponent ? parseTag(_tag, _props) : _tag;
 	const props = {};
 	let key = null;
 	let ref = null;
 	let children = null;
+	let events = null;
 
 	for (let prop in _props) {
 		if (prop === 'key') {
 			key = _props[prop];
 		} else if (prop === 'ref') {
 			ref = _props[prop];
-		} else if (prop.substr(0, 11) === 'onComponent') {
+		} else if (prop.substr(0, 11) === 'onComponent' && isComponent) {
 			if (!ref) {
 				ref = {};
 			}
 			ref[prop] = _props[prop];
+		} else if (prop.substr(0, 2) === 'on' && !isComponent) {
+			if (!events) {
+				events = {};
+			}
+			events[prop] = _props[prop];
 		} else if (prop === 'hooks') {
 			ref = _props[prop];
 		} else if (prop === 'children') {
@@ -83,7 +90,7 @@ function extractProps(_props, _tag) {
 			props[prop] = _props[prop];
 		}
 	}
-	return { tag, props, key, ref, children };
+	return { tag, props, key, ref, children, events };
 }
 
 export default function hyperscript(_tag, _props?, _children?, _childrenType?): VNode {
@@ -92,7 +99,7 @@ export default function hyperscript(_tag, _props?, _children?, _childrenType?): 
 		_children = _props;
 		_props = {};
 	}
-	const { tag, props, key, ref, children } = extractProps(_props, _tag);
+	const { tag, props, key, ref, children, events } = extractProps(_props, _tag);
 
 	if (isString(tag)) {
 		let flags = VNodeFlags.HtmlElement;
@@ -112,13 +119,13 @@ export default function hyperscript(_tag, _props?, _children?, _childrenType?): 
 				break;
 			default:
 		}
-		return createVNode(flags, tag, props, _children || children, key, ref);
+		return createVNode(flags, tag, props, _children || children, events, key, ref);
 	} else {
 		const flags = isStatefulComponent(tag) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 
 		if (children) {
 			(props as any).children = children;
 		}
-		return createVNode(flags, tag, props, null, key, ref);
+		return createVNode(flags, tag, props, null, null, key, ref);
 	}
 }

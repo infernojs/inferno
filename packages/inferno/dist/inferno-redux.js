@@ -930,6 +930,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 
                 Component$$1.call(this, props, context);
                 this.version = version;
+                this.wrappedInstance = null;
                 this.store = (props && props.store) || (context && context.store);
                 this.componentDidMount = function () {
                     this$1.trySubscribe();
@@ -1074,9 +1075,11 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
                 this.setState({ storeState: storeState });
             };
             Connect.prototype.getWrappedInstance = function getWrappedInstance () {
-                return this.refs.wrappedInstance;
+                return this.wrappedInstance;
             };
             Connect.prototype.render = function render () {
+                var this$1 = this;
+
                 var ref = this;
                 var haveOwnPropsChanged = ref.haveOwnPropsChanged;
                 var hasStoreStateChanged = ref.hasStoreStateChanged;
@@ -1121,7 +1124,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
                     return renderedElement;
                 }
                 if (withRef) {
-                    this.renderedElement = createElement(WrappedComponent, Object.assign({}, this.mergedProps, { ref: 'wrappedInstance' }));
+                    this.renderedElement = createElement(WrappedComponent, Object.assign({}, this.mergedProps, { ref: function (instance) { return this$1.wrappedInstance = instance; } }));
                 }
                 else {
                     this.renderedElement = createElement(WrappedComponent, this.mergedProps);

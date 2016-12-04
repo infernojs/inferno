@@ -21,6 +21,7 @@ npm install --save inferno-compat@beta24
 - `React.createElement`
 - `React.cloneElement`
 - `React.Component`
+- `React.PureComponent`
 - `React.PropTypes`
 - `React.Children`
 - `React.isValidElement`

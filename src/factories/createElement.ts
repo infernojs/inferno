@@ -29,6 +29,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 	let vNode = createVNode(0);
 	let ref = null;
 	let key = null;
+	let events = null;
 	let flags = 0;
 
 	if (_children) {
@@ -65,12 +66,11 @@ export default function createElement(name: string | Function, props?: any, ..._
 			} else if (prop === 'ref') {
 				ref = props.ref;
 			} else if (isAttrAnEvent(prop)) {
-				const lowerCase = prop.toLowerCase();
-
-				if (lowerCase !== prop) {
-					props[prop.toLowerCase()] = props[prop];
-					delete props[prop];
+				if (!events) {
+					events = {};
 				}
+				events[prop] = props[prop];
+				delete props[prop];
 			}
 		}
 	} else {
@@ -99,6 +99,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 		name,
 		props,
 		children,
+		events,
 		key,
 		ref
 	);

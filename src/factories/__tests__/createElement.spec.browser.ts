@@ -7,10 +7,13 @@ describe('CreateElement (non-JSX)', () => {
 
 	beforeEach(() => {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
 	afterEach(() => {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	it('Should handle events correctly when having multiple children', () => {
