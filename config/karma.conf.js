@@ -1,4 +1,6 @@
 /* global module */
+/* tslint:disable */
+
 module.exports = function (config) {
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
@@ -115,10 +117,52 @@ module.exports = function (config) {
 		singleRun: true
 	});
 
-	if (process.env.TRAVIS) {
+	const varToBool = (processVar) => !String(processVar).match(/^(0|false|undefined)$/gi);
+
+	if (varToBool(process.env.TRAVIS)) {
 		config.browsers = ['Chrome_travis_ci'];
 		// Used by Travis to push coveralls info corretly to example coveralls.io
 		// Karma (with socket.io 1.x) buffers by 50 and 50 tests can take a long time on IEs;-)
 		config.browserNoActivityTimeout = 120000;
+	}
+
+	if (varToBool(process.env.TRAVIS) && !varToBool(process.env.TRAVIS_PULL_REQUEST)) {
+		const customLaunchers = {
+			sl_chrome: {
+				base: 'SauceLabs',
+				browserName: 'chrome',
+				platform: 'Windows 7',
+				version: '35'
+			},
+			sl_firefox: {
+				base: 'SauceLabs',
+				browserName: 'firefox',
+				version: '30'
+			},
+			sl_ios_safari: {
+				base: 'SauceLabs',
+				browserName: 'iphone',
+				platform: 'OS X 10.9',
+				version: '7.1'
+			},
+			sl_ie_11: {
+				base: 'SauceLabs',
+				browserName: 'internet explorer',
+				platform: 'Windows 8.1',
+				version: '11'
+			}
+		};
+		config.set({
+			sauceLabs: {
+					testName: 'Inferno Browser Unit Tests'
+			},
+			customLaunchers: customLaunchers,
+			browsers: Object.keys(customLaunchers),
+			reporters: [
+				'progress',
+				'saucelabs'
+			],
+			singleRun: true
+		})
 	}
 };
