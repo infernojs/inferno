@@ -113,11 +113,20 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	return newNodes || nodes as VNode[];
 }
 
+function normalizeChildren(children) {
+	if (isArray(children)) {
+		return normalizeVNodes(children);
+	} else if (isVNode(children) && children.dom) {
+		return cloneVNode(children);
+	}
+	return children;
+}
+
 function normalize(vNode) {
 	const props = vNode.props;
 	const children = vNode.children;
 
-	//convert a wrongly created type back to element
+	// convert a wrongly created type back to element
 	if (isString(vNode.type) && (vNode.flags & VNodeFlags.Component)) {
 		vNode.flags = VNodeFlags.Element;
 	}
@@ -136,11 +145,10 @@ function normalize(vNode) {
 		}
 	}
 	if (!isInvalid(children)) {
-		if (isArray(children)) {
-			vNode.children = normalizeVNodes(children);
-		} else if (isVNode(children) && children.dom) {
-			vNode.children = cloneVNode(children);
-		}
+		vNode.children = normalizeChildren(children);
+	}
+	if (props && !isInvalid(props.children)) {
+		props.children = normalizeChildren(props.children);
 	}
 }
 
