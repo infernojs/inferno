@@ -1961,7 +1961,7 @@ function normaliseChildNodes(dom) {
 }
 function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
     var type = vNode.type;
-    var props = vNode.props;
+    var props = vNode.props || {};
     var ref = vNode.ref;
     vNode.dom = dom;
     if (isClass) {
