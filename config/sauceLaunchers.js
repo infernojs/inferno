@@ -6,7 +6,8 @@ module.exports = {
   },
   sl_firefox: {
     base: 'SauceLabs',
-    browserName: 'firefox'
+    browserName: 'firefox',
+    platform: 'OS X 10.11'
   },
   sl_mac_safari: {
     base: 'SauceLabs',
