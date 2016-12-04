@@ -33,7 +33,7 @@ for (let version in ['48', '47']) {
   config['sl_chrome-linux-' + version] = {
     base: 'SauceLabs',
     browserName: 'chrome',
-    platform,
+    platform: 'Linux',
     version
   }
 }
@@ -42,7 +42,7 @@ for (let version in ['45', '44']) {
   config['sl_chrome-linux-' + version] = {
     base: 'SauceLabs',
     browserName: 'firefox',
-    platform,
+    platform: 'Linux',
     version
   }
 }

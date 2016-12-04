@@ -148,7 +148,7 @@ function applyState(component: Component<any, any>, force, callback): void {
 		}
 		const vNode = component._vNode;
 		const dom = vNode.dom = nextInput.dom;
-		const componentToDOMNodeMap = component._componentToDOMNodeMap; 
+		const componentToDOMNodeMap = component._componentToDOMNodeMap;
 
 		componentToDOMNodeMap && componentToDOMNodeMap.set(component, nextInput.dom);
 		updateParentComponentVNodes(vNode, dom);

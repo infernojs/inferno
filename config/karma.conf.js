@@ -89,8 +89,9 @@ module.exports = function (config) {
 		});
 	}
 
-	console.log(CI, TRAVIS_PULL_REQUEST, TRAVIS_BRANCH, ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1)
-	if (CI && !TRAVIS_PULL_REQUEST && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
+	const varToBool = (sVar) => !String(sVar).match(/^(0|false|undefined)$/gi)
+
+	if (varToBool(CI) && !varToBool(TRAVIS_PULL_REQUEST) && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
 		config.set({
 			sauceLabs: {
 				testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,
