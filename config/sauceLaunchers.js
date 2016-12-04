@@ -2,7 +2,7 @@ const config = {};
 
 for (let platform in ['Windows 10', 'OS X 10.11']) {
   for (let version in ['beta', '54, 53']) {
-    config['sl_chrome-' + browser + '-' + version] = {
+    config['sl_chrome-' + platform + '-' + version] = {
       base: 'SauceLabs',
       browserName: 'chrome',
       platform,
@@ -11,7 +11,7 @@ for (let platform in ['Windows 10', 'OS X 10.11']) {
   }
 
   for (let version in ['beta', '50, 49']) {
-    config['sl_chrome-' + browser + '-' + version] = {
+    config['sl_chrome-' + platform + '-' + version] = {
       base: 'SauceLabs',
       browserName: 'firefox',
       platform,
