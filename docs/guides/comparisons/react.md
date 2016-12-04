@@ -34,4 +34,4 @@ We've also had overwhlming feedback from developers who create applications that
 
 ### Can't React get faster?
 
-It definitely can get faster and the Inferno team will help as much as possible. Personally, I've taken an acive approach to try and port these improvements and ideas back into React core where possible. The open-source community strives best when there is competition from others. We can all learn a lot from one another – our tools/libraries/frameworks will only get better for everyone if the teams behind them are willing to embrace new ideas and work together.
+It definitely can get faster and the Inferno team will help as much as possible. Personally, I've taken an active approach to try and port these improvements and ideas back into React core where possible. The open-source community strives best when there is competition from others. We can all learn a lot from one another – our tools/libraries/frameworks will only get better for everyone if the teams behind them are willing to embrace new ideas and work together.
