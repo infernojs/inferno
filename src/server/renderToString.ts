@@ -5,7 +5,7 @@ import {
 } from './utils';
 import {
 	copyPropsTo
-} from '../DOM/utils'
+} from '../DOM/utils';
 import {
 	isArray,
 	isInvalid,
