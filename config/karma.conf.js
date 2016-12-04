@@ -3,20 +3,20 @@
 module.exports = function (config) {
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: "",
+		basePath: '',
 		// frameworks to use
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
 		frameworks: [
-			"chai",
-			"mocha",
+			'chai',
+			'mocha',
 		],
 		files: [
-			"./../node_modules/babel-polyfill/dist/polyfill.js",
-			"./../node_modules/sinon/pkg/sinon.js",
-			"./../src/**/*__tests__*/**/*.ts",
-			"./../src/**/*__tests__*/**/*.tsx",
-			"./../src/**/*__tests__*/**/*.js",
-			"./../src/**/*__tests__*/**/*.jsx",
+			'./../node_modules/babel-polyfill/dist/polyfill.js',
+			'./../node_modules/sinon/pkg/sinon.js',
+			'./../src/**/*__tests__*/**/*.ts',
+			'./../src/**/*__tests__*/**/*.tsx',
+			'./../src/**/*__tests__*/**/*.js',
+			'./../src/**/*__tests__*/**/*.jsx',
 		],
 		// Start these browsers, currently available:
 		// - Chrome
@@ -26,37 +26,37 @@ module.exports = function (config) {
 		// - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
 		// - PhantomJS
 		// - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-		browsers: ["Chrome"],
+		browsers: ['Chrome'],
 		customLaunchers: {
 			Chrome_travis_ci: {
-				base: "Chrome",
-				flags: ["--no-sandbox"],
+				base: 'Chrome',
+				flags: ['--no-sandbox'],
 			},
 		},
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
-			"./../src/**/*__tests__*/**/*.ts": ["webpack"],
-			"./../src/**/*__tests__*/**/*.tsx": ["webpack"],
-			"./../src/**/*__tests__*/**/*.js": ["webpack"],
-			"./../src/**/*__tests__*/**/*.jsx": ["webpack"],
+			'./../src/**/*__tests__*/**/*.ts': ['webpack'],
+			'./../src/**/*__tests__*/**/*.tsx': ['webpack'],
+			'./../src/**/*__tests__*/**/*.js': ['webpack'],
+			'./../src/**/*__tests__*/**/*.jsx': ['webpack'],
 		},
 		webpack: {
 			module: {
 				loaders: [
 					{
 						test: /\.tsx?$/,
-						loaders: ["babel-loader", "ts-loader"],
+						loaders: ['babel-loader', 'ts-loader'],
 						exclude: /node_modules/,
 					}, {
 						test: /\.jsx?$/,
-						loader: "babel-loader",
+						loader: 'babel-loader',
 						exclude: /node_modules/,
 					},
 				],
 			},
 			resolve: {
-				extensions: [".js", ".jsx", ".ts", ".tsx"],
+				extensions: ['.js', '.jsx', '.ts', '.tsx'],
 			},
 		},
 		webpackMiddleware: {
@@ -95,7 +95,7 @@ module.exports = function (config) {
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: ["progress"],
+		reporters: ['progress'],
 
 		browserDisconnectTimeout: 10000,
 		browserDisconnectTolerance: 2,
@@ -119,10 +119,10 @@ module.exports = function (config) {
 	if (process.env.TRAVIS) {
 		config.set({
 			browsers: [
-				"Chrome_travis_ci",
+				'Chrome_travis_ci',
 			],
 			reporters: [
-				"failed",
+				'failed',
 			],
 			browserNoActivityTimeout: 120000
 		});
