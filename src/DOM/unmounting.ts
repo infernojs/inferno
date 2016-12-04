@@ -17,7 +17,7 @@ import {
 } from './patching';
 
 import { VNodeFlags } from '../core/shapes';
-import { componentToDOMNodeMap } from './rendering';
+import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import { removeChild } from './utils';
 
 export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
@@ -74,7 +74,7 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 				ref(null);
 			}
 			instance._unmounted = true;
-			componentToDOMNodeMap.delete(instance);
+			findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
 		} else if (!isNullOrUndef(ref)) {
 			if (!isNullOrUndef(ref.onComponentWillUnmount)) {
 				ref.onComponentWillUnmount(dom);

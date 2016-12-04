@@ -62,7 +62,7 @@ import {
 
 import Lifecycle from './lifecycle';
 import cloneVNode from '../factories/cloneVNode';
-import { componentToDOMNodeMap } from './rendering';
+import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import processElement from './wrappers/processElement';
 import { unmount } from './unmounting';
 
@@ -361,7 +361,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 					subLifecycle.fastUnmount = lifecycle.unmount;
 					lifecycle.fastUnmount = fastUnmount;
 					instance.componentDidUpdate(lastProps, lastState);
-					componentToDOMNodeMap.set(instance, nextInput.dom);
+					findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
 				}
 				nextVNode.dom = nextInput.dom;
 			}
