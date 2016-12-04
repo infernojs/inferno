@@ -9,21 +9,7 @@
 	(global.Inferno = global.Inferno || {}, global.Inferno.TestUtils = factory());
 }(this, (function () { 'use strict';
 
-function shallowRender() {
-}
-
-function deepRender() {
-}
-
-function renderIntoDocument() {
-}
-
-var index = {
-	shallowRender: shallowRender,
-	deepRender: deepRender,
-	renderIntoDocument: renderIntoDocument
-	// Simulate
-};
+var index = {};
 
 return index;
 
