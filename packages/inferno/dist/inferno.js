@@ -2131,7 +2131,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         // we then set the lifecycle fastUnmount value back to what it was before the mount
         lifecycle.fastUnmount = fastUnmount;
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
-        componentToDOMNodeMap.set(instance, dom);
+        findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
     else {
