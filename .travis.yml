@@ -4,7 +4,9 @@ node_js:
   - '6'
 
 notifications:
-  email: true
+  email:
+    on_success: change
+    on_failure: always
 
 # Use container-based Travis infrastructure.
 sudo: required
