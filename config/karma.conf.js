@@ -22,7 +22,6 @@ module.exports = function (config) {
 		],
 		
 		browsers: [
-			'Safari',
 			'Chrome'
 		],
 		reporters: [
@@ -79,10 +78,12 @@ module.exports = function (config) {
 			}
 		};
 		config.set({
+			customLaunchers: travisLaunchers,
 			reporters: [
 				'failed',
 			],
 			browsers: [
+				'Firefox',
 				'Chrome_travis_ci'
 			],
 		});
