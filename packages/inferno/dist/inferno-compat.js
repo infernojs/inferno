@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-beta24
+ * inferno-compat v1.0.0-beta25
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -672,10 +672,19 @@ function normalizeVNodes(nodes) {
     }
     return newNodes || nodes;
 }
+function normalizeChildren(children) {
+    if (isArray(children)) {
+        return normalizeVNodes(children);
+    }
+    else if (isVNode(children) && children.dom) {
+        return cloneVNode(children);
+    }
+    return children;
+}
 function normalize(vNode) {
     var props = vNode.props;
     var children = vNode.children;
-    //convert a wrongly created type back to element
+    // convert a wrongly created type back to element
     if (isString(vNode.type) && (vNode.flags & 28 /* Component */)) {
         vNode.flags = 3970 /* Element */;
     }
@@ -694,12 +703,10 @@ function normalize(vNode) {
         }
     }
     if (!isInvalid(children)) {
-        if (isArray(children)) {
-            vNode.children = normalizeVNodes(children);
-        }
-        else if (isVNode(children) && children.dom) {
-            vNode.children = cloneVNode(children);
-        }
+        vNode.children = normalizeChildren(children);
+    }
+    if (props && !isInvalid(props.children)) {
+        props.children = normalizeChildren(props.children);
     }
 }
 function createVNode(flags, type, props, children, events, key, ref, noNormalise) {

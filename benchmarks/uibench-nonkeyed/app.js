@@ -4,7 +4,7 @@
 	/* (flags, type, props, children, key, ref, noNormalise) */
 	var createVNode = Inferno.createVNode;
 
-	uibench.init('Inferno', '1.0.0-beta24 -non-keyed *dev*');
+	uibench.init('Inferno', '1.0.0-beta25 -non-keyed *dev*');
 
 	var treeLeafProps = { className: 'TreeLeaf' };
 
