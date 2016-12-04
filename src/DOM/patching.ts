@@ -18,6 +18,7 @@ import {
 	VNodeFlags,
 	createVoidVNode,
 	isVNode,
+	Styles,
 } from '../core/shapes';
 import {
 	booleanProps,
@@ -907,32 +908,25 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 
 // We are assuming here that we come from patchProp routine
 // -nextAttrValue cannot be null or undefined
-export function patchStyle(lastAttrValue, nextAttrValue, dom) {
+export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string | Styles, dom) {
 	if (isString(nextAttrValue)) {
 		dom.style.cssText = nextAttrValue;
-	} else if (isNullOrUndef(lastAttrValue)) {
-		for (let style in nextAttrValue) {
-			// do not add a hasOwnProperty check here, it affects performance
-			const value = nextAttrValue[style];
+		return;
+	}
 
-			if (isNumber(value) && !isUnitlessNumber[style]) {
-				dom.style[style] = value + 'px';
-			} else {
-				dom.style[style] = value;
-			}
-		}
-	} else {
-		for (let style in nextAttrValue) {
-			// do not add a hasOwnProperty check here, it affects performance
-			const value = nextAttrValue[style];
+	for (const style in nextAttrValue as Styles) {
+		// do not add a hasOwnProperty check here, it affects performance
+		const value = nextAttrValue[style];
 
-			if (isNumber(value) && !isUnitlessNumber[style]) {
-				dom.style[style] = value + 'px';
-			} else {
-				dom.style[style] = value;
-			}
+		if (isNumber(value) && !isUnitlessNumber[style]) {
+			dom.style[style] = value + 'px';
+		} else {
+			dom.style[style] = value;
 		}
-		for (let style in lastAttrValue) {
+	}
+
+	if (!isNullOrUndef(lastAttrValue)) {
+		for (const style in lastAttrValue as Styles) {
 			if (isNullOrUndef(nextAttrValue[style])) {
 				dom.style[style] = '';
 			}

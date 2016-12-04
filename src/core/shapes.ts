@@ -10,6 +10,10 @@ import {
 
 import cloneVNode from '../factories/cloneVNode';
 
+export interface Styles {
+	[key: string]: number | string;
+}
+
 export interface IProps {
 	[index: string]: any;
 }
