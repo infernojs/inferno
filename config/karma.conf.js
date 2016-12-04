@@ -72,7 +72,7 @@ module.exports = function (config) {
 
 	if (TRAVIS) {
 		const travisLaunchers = {
-			chrome_travis: {
+			Chrome_travis_ci: {
 				base: 'Chrome',
 				flags: ['--no-sandbox']
 			}
@@ -84,12 +84,12 @@ module.exports = function (config) {
 			],
 			browsers: [
 				'Firefox',
-				'Chrome_travis_ci'
+				'Chrome'
 			],
 		});
 	}
 
-	if (CI && !TRAVIS_PULL_REQUEST && (TRAVIS_BRANCH === 'master' || TRAVIS_BRANCH === 'dev')) {
+	if (CI && !TRAVIS_PULL_REQUEST && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
 		config.set({
 			sauceLabs: {
 				testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,
