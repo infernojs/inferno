@@ -151,21 +151,11 @@ export function documentCreateElement(tag, isSVG) {
 }
 
 export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, isRecycling) {
-	let lastInstance: any = null;
-	const instanceLastNode = lastNode._lastInput;
-
-	if (!isNullOrUndef(instanceLastNode)) {
-		lastInstance = lastNode;
-		lastNode = instanceLastNode;
-	}
 	unmount(lastNode, null, lifecycle, false, false, isRecycling);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode.dom = dom;
 	replaceChild(parentDom, dom, lastNode.dom);
-	if (lastInstance !== null) {
-		lastInstance._lasInput = nextNode;
-	}
 }
 
 export function replaceChild(parentDom, nextDom, lastDom) {

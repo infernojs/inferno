@@ -353,7 +353,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 				instance._lastInput = nextInput;
 				instance._vNode = nextVNode;
 				if (didUpdate) {
-					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
+					patch(lastInput, nextInput, parentDom, instance._lifecycle, childContext, isSVG, isRecycling);
 					instance.componentDidUpdate(lastProps, lastState);
 					componentToDOMNodeMap.set(instance, nextInput.dom);
 				}

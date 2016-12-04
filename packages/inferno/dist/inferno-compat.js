@@ -1317,7 +1317,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         }
         removeChild(parentDom, dom);
     }
-    if (recyclingEnabled && (parentDom || canRecycle)) {
+    if (recyclingEnabled && !isStatefulComponent$$1 && (parentDom || canRecycle)) {
         poolComponent(vNode);
     }
 }
@@ -1626,7 +1626,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 instance._lastInput = nextInput$1;
                 instance._vNode = nextVNode;
                 if (didUpdate) {
-                    patch(lastInput$1, nextInput$1, parentDom, lifecycle, childContext, isSVG, isRecycling);
+                    patch(lastInput$1, nextInput$1, parentDom, instance._lifecycle, childContext, isSVG, isRecycling);
                     instance.componentDidUpdate(lastProps, lastState);
                     componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
@@ -2856,19 +2856,10 @@ function documentCreateElement(tag, isSVG) {
     }
 }
 function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, isRecycling) {
-    var lastInstance = null;
-    var instanceLastNode = lastNode._lastInput;
-    if (!isNullOrUndef(instanceLastNode)) {
-        lastInstance = lastNode;
-        lastNode = instanceLastNode;
-    }
     unmount(lastNode, null, lifecycle, false, false, isRecycling);
     var dom = mount(nextNode, null, lifecycle, context, isSVG);
     nextNode.dom = dom;
     replaceChild(parentDom, dom, lastNode.dom);
-    if (lastInstance !== null) {
-        lastInstance._lasInput = nextNode;
-    }
 }
 function replaceChild(parentDom, nextDom, lastDom) {
     if (!parentDom) {
