@@ -21,7 +21,10 @@ module.exports = function (config) {
 			'./src/**/__tests__/**/*.jsx'
 		],
 		
-		browsers: ['Chrome'],
+		browsers: [
+			'Safari',
+			'Chrome'
+		],
 		reporters: [
 			'progress'
 		],
