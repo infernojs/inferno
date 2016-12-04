@@ -4,13 +4,12 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('./inferno'), require('./inferno-create-class'), require('./inferno-create-element')) :
-	typeof define === 'function' && define.amd ? define(['inferno-component', 'inferno', 'inferno-create-class', 'inferno-create-element'], factory) :
-	(global.Inferno = global.Inferno || {}, global.Inferno.Mobx = factory(global.Inferno.Component,global.Inferno,global.Inferno.createClass,global.Inferno.createElement));
-}(this, (function (Component,Inferno,createClass,createElement) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('./inferno-create-class'), require('./inferno-create-element')) :
+	typeof define === 'function' && define.amd ? define(['inferno-component', 'inferno-create-class', 'inferno-create-element'], factory) :
+	(global.Inferno = global.Inferno || {}, global.Inferno.Mobx = factory(global.Inferno.Component,global.Inferno.createClass,global.Inferno.createElement));
+}(this, (function (Component,createClass,createElement) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;
-Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 createClass = 'default' in createClass ? createClass['default'] : createClass;
 createElement = 'default' in createElement ? createElement['default'] : createElement;
 
@@ -2981,7 +2980,6 @@ EventEmitter.prototype.clearListeners = function clearListeners () {
     this.listeners = [];
 };
 
-var findDOMNode = Inferno.findDOMNode;
 /**
  * Dev tools support
  */
@@ -2989,7 +2987,7 @@ var isDevtoolsEnabled = false;
 var componentByNodeRegistery = new WeakMap();
 var renderReporter = new EventEmitter();
 function reportRendering(component) {
-    var node = findDOMNode(component);
+    var node = component._vNode.dom;
     if (node && componentByNodeRegistery) {
         componentByNodeRegistery.set(node, component);
     }
@@ -3073,7 +3071,7 @@ function makeReactive(componentClass) {
         this.render.$mobx && this.render.$mobx.dispose();
         this.__$mobxIsUnmounted = true;
         if (isDevtoolsEnabled) {
-            var node = findDOMNode(this);
+            var node = this._vNode.dom;
             if (node && componentByNodeRegistery) {
                 componentByNodeRegistery.delete(node);
             }
