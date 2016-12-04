@@ -95,7 +95,7 @@ module.exports = function (config) {
 		browserDisconnectTimeout: 10000,
 		browserDisconnectTolerance: 2,
 		// concurrency level how many browser should be started simultaneously
-		concurrency: 4,
+		concurrency: 2,
 		// If browser does not capture in given timeout [ms], kill it
 		captureTimeout: 100000,
 		browserNoActivityTimeout: 30000,
