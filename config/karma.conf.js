@@ -1,4 +1,5 @@
 /* global module */
+/* tslint:disable */
 module.exports = function (config) {
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
@@ -7,7 +8,7 @@ module.exports = function (config) {
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
 		frameworks: [
 			'chai',
-			'mocha'
+			'mocha',
 		],
 		files: [
 			'./../node_modules/babel-polyfill/dist/polyfill.js',
@@ -15,7 +16,7 @@ module.exports = function (config) {
 			'./../src/**/*__tests__*/**/*.ts',
 			'./../src/**/*__tests__*/**/*.tsx',
 			'./../src/**/*__tests__*/**/*.js',
-			'./../src/**/*__tests__*/**/*.jsx'
+			'./../src/**/*__tests__*/**/*.jsx',
 		],
 		// Start these browsers, currently available:
 		// - Chrome
@@ -29,8 +30,8 @@ module.exports = function (config) {
 		customLaunchers: {
 			Chrome_travis_ci: {
 				base: 'Chrome',
-				flags: ['--no-sandbox']
-			}
+				flags: ['--no-sandbox'],
+			},
 		},
 		// list of files to exclude
 		exclude: [],
@@ -38,7 +39,7 @@ module.exports = function (config) {
 			'./../src/**/*__tests__*/**/*.ts': ['webpack'],
 			'./../src/**/*__tests__*/**/*.tsx': ['webpack'],
 			'./../src/**/*__tests__*/**/*.js': ['webpack'],
-			'./../src/**/*__tests__*/**/*.jsx': ['webpack']
+			'./../src/**/*__tests__*/**/*.jsx': ['webpack'],
 		},
 		webpack: {
 			module: {
@@ -46,17 +47,17 @@ module.exports = function (config) {
 					{
 						test: /\.tsx?$/,
 						loaders: ['babel-loader', 'ts-loader'],
-						exclude: /node_modules/
+						exclude: /node_modules/,
 					}, {
 						test: /\.jsx?$/,
 						loader: 'babel-loader',
-						exclude: /node_modules/
-					}
-				]
+						exclude: /node_modules/,
+					},
+				],
 			},
 			resolve: {
-				extensions: ['.js', '.jsx', '.ts', '.tsx']
-			}
+				extensions: ['.js', '.jsx', '.ts', '.tsx'],
+			},
 		},
 		webpackMiddleware: {
 			noInfo: true,
@@ -88,8 +89,8 @@ module.exports = function (config) {
 				// Add the origins of chunks and chunk merging info
 				chunkOrigins: false,
 				// Add messages from child loaders
-				children: false
-			}
+				children: false,
+			},
 		},
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
@@ -112,13 +113,18 @@ module.exports = function (config) {
 		autoWatch: false,
 		// Continuous Integration mode
 		// if true, Karma captures browsers, runs the tests and exits
-		singleRun: true
+		singleRun: true,
 	});
 
 	if (process.env.TRAVIS) {
-		config.browsers = ['Chrome_travis_ci'];
-		// Used by Travis to push coveralls info corretly to example coveralls.io
-		// Karma (with socket.io 1.x) buffers by 50 and 50 tests can take a long time on IEs;-)
-		config.browserNoActivityTimeout = 120000;
+		config.set({
+			browsers: [
+				'Chrome_travis_ci',
+			],
+			reporters: [
+				'failed',
+			],
+			browserNoActivityTimeout: 120000
+		});
 	}
 };

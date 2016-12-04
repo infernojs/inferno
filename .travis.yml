@@ -4,7 +4,9 @@ node_js:
   - '6'
 
 notifications:
-  email: true
+  email:
+    on_success: change
+    on_failure: always
 
 # Use container-based Travis infrastructure.
 sudo: required
@@ -29,7 +31,6 @@ addons:
 
 before_install:
   - "nvm use $TRAVIS_NODE_VERSION"
-  - npm config set loglevel http
   # Repo for newer Node.js versions
   - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 
