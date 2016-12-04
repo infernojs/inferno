@@ -5,6 +5,7 @@ import {
 	isStatefulComponent,
 	isStringOrNumber,
 	isUndefined,
+	isString
 } from '../shared';
 
 import cloneVNode from '../factories/cloneVNode';
@@ -116,12 +117,19 @@ function normalize(vNode) {
 	const props = vNode.props;
 	const children = vNode.children;
 
+	//convert a wrongly created type back to element
+	if (isString(vNode.type) && (vNode.flags & VNodeFlags.Component)) {
+		vNode.flags = VNodeFlags.Element;
+	}
 	if (props) {
 		if (!(vNode.flags & VNodeFlags.Component) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
 			vNode.children = props.children;
 		}
 		if (props.ref) {
 			vNode.ref = props.ref;
+		}
+		if (props.events) {
+			vNode.events = props.events;
 		}
 		if (!isNullOrUndef(props.key)) {
 			vNode.key = props.key;
