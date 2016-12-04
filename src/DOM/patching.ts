@@ -914,7 +914,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 		return;
 	}
 
-	for (const style in nextAttrValue as Styles) {
+	for (let style in nextAttrValue as Styles) {
 		// do not add a hasOwnProperty check here, it affects performance
 		const value = nextAttrValue[style];
 
