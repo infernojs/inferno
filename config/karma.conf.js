@@ -2,6 +2,7 @@
 /* tslint:disable */
 
 const path = require('path');
+const sauceLaunchers = require('./sauceLaunchers');
 
 module.exports = function (config) {
 	config.set({
@@ -84,53 +85,13 @@ module.exports = function (config) {
 	}
 
 	if (CI && TRAVIS_PULL_REQUEST && TRAVIS_BRANCH === 'sauce-labs') {
-		const customLaunchers = {
-			sl_chrome: {
-				base: 'SauceLabs',
-				browserName: 'chrome',
-				platform: 'Windows 10'
-			},
-			sl_firefox: {
-				base: 'SauceLabs',
-				browserName: 'firefox',
-				platform: 'Windows 10'
-			},
-			sl_safari: {
-				base: 'SauceLabs',
-				browserName: 'safari',
-				platform: 'OS X 10.11'
-			},
-			sl_edge: {
-				base: 'SauceLabs',
-				browserName: 'MicrosoftEdge',
-				platform: 'Windows 10'
-			},
-			sl_ie_11: {
-				base: 'SauceLabs',
-				browserName: 'internet explorer',
-				version: '11.103',
-				platform: 'Windows 10'
-			},
-			sl_ie_10: {
-				base: 'SauceLabs',
-				browserName: 'internet explorer',
-				version: '10.0',
-				platform: 'Windows 7'
-			},
-			sl_ie_9: {
-				base: 'SauceLabs',
-				browserName: 'internet explorer',
-				version: '9.0',
-				platform: 'Windows 7'
-			}
-		};
 		config.set({
 			sauceLabs: {
 					testName: 'Inferno Browser Unit Tests: ' + (TRAVIS_BUILD_NUMBER || 'Local')
 			},
 			concurrency: 2,
-			customLaunchers: customLaunchers,
-			browsers: Object.keys(customLaunchers),
+			customLaunchers: sauceLaunchers,
+			browsers: Object.keys(sauceLaunchers),
 			reporters: [
 				'failed',
 				'saucelabs'
