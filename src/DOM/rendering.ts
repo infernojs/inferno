@@ -41,7 +41,7 @@ export function findDOMNode(ref) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
 		}
-		throwError();		
+		throwError();
 	}
 	const dom = ref && ref.nodeType ? ref : null;
 
