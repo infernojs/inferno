@@ -681,6 +681,20 @@ function normalizeChildren(children) {
     }
     return children;
 }
+function normalizeProps$1(vNode, props, children) {
+    if (!(vNode.flags & 28 /* Component */) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
+        vNode.children = props.children;
+    }
+    if (props.ref) {
+        vNode.ref = props.ref;
+    }
+    if (props.events) {
+        vNode.events = props.events;
+    }
+    if (!isNullOrUndef(props.key)) {
+        vNode.key = props.key;
+    }
+}
 function normalize(vNode) {
     var props = vNode.props;
     var children = vNode.children;
@@ -689,18 +703,7 @@ function normalize(vNode) {
         vNode.flags = 3970 /* Element */;
     }
     if (props) {
-        if (!(vNode.flags & 28 /* Component */) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
-            vNode.children = props.children;
-        }
-        if (props.ref) {
-            vNode.ref = props.ref;
-        }
-        if (props.events) {
-            vNode.events = props.events;
-        }
-        if (!isNullOrUndef(props.key)) {
-            vNode.key = props.key;
-        }
+        normalizeProps$1(vNode, props, children);
     }
     if (!isInvalid(children)) {
         vNode.children = normalizeChildren(children);
@@ -1626,7 +1629,12 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 instance._lastInput = nextInput$1;
                 instance._vNode = nextVNode;
                 if (didUpdate) {
-                    patch(lastInput$1, nextInput$1, parentDom, instance._lifecycle, childContext, isSVG, isRecycling);
+                    var fastUnmount = lifecycle.fastUnmount;
+                    var subLifecycle = instance._lifecycle;
+                    lifecycle.fastUnmount = subLifecycle.fastUnmount;
+                    patch(lastInput$1, nextInput$1, parentDom, lifecycle, childContext, isSVG, isRecycling);
+                    subLifecycle.fastUnmount = lifecycle.unmount;
+                    lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
                     componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
