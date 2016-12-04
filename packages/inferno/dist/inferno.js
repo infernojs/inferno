@@ -1572,33 +1572,22 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 function patchStyle(lastAttrValue, nextAttrValue, dom) {
     if (isString(nextAttrValue)) {
         dom.style.cssText = nextAttrValue;
+        return;
     }
-    else if (isNullOrUndef(lastAttrValue)) {
-        for (var style in nextAttrValue) {
-            // do not add a hasOwnProperty check here, it affects performance
-            var value = nextAttrValue[style];
-            if (isNumber(value) && !isUnitlessNumber[style]) {
-                dom.style[style] = value + 'px';
-            }
-            else {
-                dom.style[style] = value;
-            }
+    for (var style in nextAttrValue) {
+        // do not add a hasOwnProperty check here, it affects performance
+        var value = nextAttrValue[style];
+        if (isNumber(value) && !isUnitlessNumber[style]) {
+            dom.style[style] = value + 'px';
+        }
+        else {
+            dom.style[style] = value;
         }
     }
-    else {
-        for (var style$1 in nextAttrValue) {
-            // do not add a hasOwnProperty check here, it affects performance
-            var value$1 = nextAttrValue[style$1];
-            if (isNumber(value$1) && !isUnitlessNumber[style$1]) {
-                dom.style[style$1] = value$1 + 'px';
-            }
-            else {
-                dom.style[style$1] = value$1;
-            }
-        }
-        for (var style$2 in lastAttrValue) {
-            if (isNullOrUndef(nextAttrValue[style$2])) {
-                dom.style[style$2] = '';
+    if (!isNullOrUndef(lastAttrValue)) {
+        for (var style$1 in lastAttrValue) {
+            if (isNullOrUndef(nextAttrValue[style$1])) {
+                dom.style[style$1] = '';
             }
         }
     }
