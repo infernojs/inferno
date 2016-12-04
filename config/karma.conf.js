@@ -28,12 +28,6 @@ module.exports = function (config) {
 		// - PhantomJS
 		// - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
 		browsers: ['Chrome'],
-		customLaunchers: {
-			Chrome_travis_ci: {
-				base: 'Chrome',
-				flags: ['--no-sandbox']
-			}
-		},
 		// list of files to exclude
 		exclude: [],
 		preprocessors: {
@@ -120,10 +114,20 @@ module.exports = function (config) {
 	const varToBool = (processVar) => !String(processVar).match(/^(0|false|undefined)$/gi);
 
 	if (varToBool(process.env.TRAVIS)) {
-		config.browsers = ['Chrome_travis_ci'];
-		// Used by Travis to push coveralls info corretly to example coveralls.io
-		// Karma (with socket.io 1.x) buffers by 50 and 50 tests can take a long time on IEs;-)
-		config.browserNoActivityTimeout = 120000;
+		const travisLaunchers = {
+			chrome_travis: {
+				base: 'Chrome',
+				flags: ['--no-sandbox']
+			}
+		};
+		config.set({
+			browsers: [
+				'Chrome_travis_ci'
+			],
+			// Used by Travis to push coveralls info corretly to example coveralls.io
+			// Karma (with socket.io 1.x) buffers by 50 and 50 tests can take a long time on IEs;-)
+			browserNoActivityTimeout: 120000
+		});
 	}
 
 	if (varToBool(process.env.TRAVIS) && !varToBool(process.env.TRAVIS_PULL_REQUEST)) {
@@ -131,18 +135,40 @@ module.exports = function (config) {
 			sl_chrome: {
 				base: 'SauceLabs',
 				browserName: 'chrome',
-				version: '54'
+				platform: 'Windows 10'
 			},
 			sl_firefox: {
 				base: 'SauceLabs',
 				browserName: 'firefox',
-				version: '45'
+				platform: 'Windows 10'
+			},
+			sl_safari: {
+				base: 'SauceLabs',
+				browserName: 'safari',
+				platform: 'OS X 10.11'
+			},
+			sl_edge: {
+				base: 'SauceLabs',
+				browserName: 'MicrosoftEdge',
+				platform: 'Windows 10'
 			},
 			sl_ie_11: {
 				base: 'SauceLabs',
 				browserName: 'internet explorer',
-				platform: 'Windows 8.1',
-				version: '11'
+				version: '11.103',
+				platform: 'Windows 10'
+			},
+			sl_ie_10: {
+				base: 'SauceLabs',
+				browserName: 'internet explorer',
+				version: '10.0',
+				platform: 'Windows 7'
+			},
+			sl_ie_9: {
+				base: 'SauceLabs',
+				browserName: 'internet explorer',
+				version: '9.0',
+				platform: 'Windows 7'
 			}
 		};
 		config.set({
@@ -154,8 +180,7 @@ module.exports = function (config) {
 			reporters: [
 				'progress',
 				'saucelabs'
-			],
-			singleRun: true
+			]
 		})
 	}
 };
