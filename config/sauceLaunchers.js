@@ -2,7 +2,7 @@ module.exports = {
   sl_chrome: {
     base: 'SauceLabs',
     browserName: 'chrome',
-    platform: 'Windows 7'
+    platform: 'OS X 10.11'
   },
   sl_firefox: {
     base: 'SauceLabs',
@@ -11,7 +11,7 @@ module.exports = {
   sl_mac_safari: {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.10'
+    platform: 'OS X 10.11'
   },
   sl_edge: {
     base: 'SauceLabs',
