@@ -87,7 +87,9 @@ module.exports = function (config) {
 	if (CI && TRAVIS_PULL_REQUEST && TRAVIS_BRANCH === 'sauce-labs') {
 		config.set({
 			sauceLabs: {
-					testName: 'Inferno Browser Unit Tests: ' + (TRAVIS_BUILD_NUMBER || 'Local')
+				testName: 'Inferno Browser Karma Tests',
+				build: (TRAVIS_BUILD_NUMBER || 'Local'),
+				public: true
 			},
 			concurrency: 2,
 			customLaunchers: sauceLaunchers,
