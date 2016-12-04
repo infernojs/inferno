@@ -204,6 +204,20 @@ function normalizeChildren(children) {
     }
     return children;
 }
+function normalizeProps(vNode, props, children) {
+    if (!(vNode.flags & 28 /* Component */) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
+        vNode.children = props.children;
+    }
+    if (props.ref) {
+        vNode.ref = props.ref;
+    }
+    if (props.events) {
+        vNode.events = props.events;
+    }
+    if (!isNullOrUndef(props.key)) {
+        vNode.key = props.key;
+    }
+}
 function normalize(vNode) {
     var props = vNode.props;
     var children = vNode.children;
@@ -212,18 +226,7 @@ function normalize(vNode) {
         vNode.flags = 3970 /* Element */;
     }
     if (props) {
-        if (!(vNode.flags & 28 /* Component */) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
-            vNode.children = props.children;
-        }
-        if (props.ref) {
-            vNode.ref = props.ref;
-        }
-        if (props.events) {
-            vNode.events = props.events;
-        }
-        if (!isNullOrUndef(props.key)) {
-            vNode.key = props.key;
-        }
+        normalizeProps(vNode, props, children);
     }
     if (!isInvalid(children)) {
         vNode.children = normalizeChildren(children);
