@@ -84,11 +84,12 @@ module.exports = function (config) {
 			],
 			browsers: [
 				'Firefox',
-				'Chrome'
+				'Chrome_travis_ci'
 			],
 		});
 	}
 
+	console.log(CI, TRAVIS_PULL_REQUEST, TRAVIS_BRANCH, ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1)
 	if (CI && !TRAVIS_PULL_REQUEST && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
 		config.set({
 			sauceLabs: {
