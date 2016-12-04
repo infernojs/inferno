@@ -13,7 +13,7 @@ import {
 	expect,
 } from 'chai';
 
-const styleStringToArray = (styleString: string) => styleString.split(';');
+const styleStringToArray = (styleString: string) => styleString.split(';').map((s) => s.trim());
 
 describe('Utils - innerHTML', () => {
 	it('should return the correct innerHTML', () => {

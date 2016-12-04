@@ -15,10 +15,10 @@ module.exports = function (config) {
 		files: [
 			'./node_modules/babel-polyfill/dist/polyfill.js',
 			'./node_modules/sinon/pkg/sinon.js',
-			'./src/**/*__tests__*/**/*.ts',
-			'./src/**/z*__tests__*/**/*.tsx',
-			'./src/**/*__tests__*/**/*.js',
-			'./src/**/*__tests__*/**/*.jsx'
+			'./src/**/__tests__/**/*.ts',
+			'./src/**/__tests__/**/*.tsx',
+			'./src/**/__tests__/**/*.js',
+			'./src/**/__tests__/**/*.jsx'
 		],
 		
 		browsers: ['Chrome'],
