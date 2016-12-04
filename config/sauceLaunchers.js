@@ -38,7 +38,7 @@ const config = {};
   // Windows
   config['sl_chrome-win-' + version] = {
     base: 'SauceLabs',
-    browserName: 'chrome',
+    browserName: 'firefox',
     platform: 'Windows 10',
     version
   };
@@ -46,7 +46,7 @@ const config = {};
   // MAC
   config['sl_chrome-osx-' + version] = {
     base: 'SauceLabs',
-    browserName: 'chrome',
+    browserName: 'firefox',
     platform: 'OS X 10.11',
     version
   };
@@ -83,5 +83,4 @@ config['sl_edge'] = {
   platform: 'Windows 10'
 };
 
-console.log(config);
 module.exports = config;
