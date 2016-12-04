@@ -1,6 +1,10 @@
 const config = {};
 
+/* =============
+    CHROME
+============== */
 ['beta', '54, 53'].forEach((version) => {
+  // Windows
   config['sl_chrome-win-' + version] = {
     base: 'SauceLabs',
     browserName: 'chrome',
@@ -8,6 +12,7 @@ const config = {};
     version
   };
 
+  // MAC
   config['sl_chrome-osx-' + version] = {
     base: 'SauceLabs',
     browserName: 'chrome',
@@ -16,6 +21,7 @@ const config = {};
   };
 });
 
+// LINUX
 ['48', '47'].forEach((version) => {
   config['sl_firefox-linux-' + version] = {
     base: 'SauceLabs',
@@ -25,7 +31,11 @@ const config = {};
   };
 });
 
+/* =============
+  FIREFOX
+============= */
 ['beta', '50, 49'].forEach((version) => {
+  // Windows
   config['sl_chrome-win-' + version] = {
     base: 'SauceLabs',
     browserName: 'chrome',
@@ -33,6 +43,7 @@ const config = {};
     version
   };
   
+  // MAC
   config['sl_chrome-osx-' + version] = {
     base: 'SauceLabs',
     browserName: 'chrome',
@@ -41,6 +52,7 @@ const config = {};
   };
 });
 
+// Linux
 ['45', '44'].forEach((version) => {
   config['sl_firefox-linux-' + version] = {
     base: 'SauceLabs',
@@ -50,6 +62,9 @@ const config = {};
   };
 });
 
+/* =============
+  SAFARI
+=============== */
 ['10', '9'].forEach((version) => {
   config['sl_safair-linux-' + version] = {
     base: 'SauceLabs',
@@ -59,7 +74,9 @@ const config = {};
   };
 });
 
-
+/* ===============
+  EDGE
+================= */
 config['sl_edge'] = {
   base: 'SauceLabs',
   browserName: 'MicrosoftEdge',
