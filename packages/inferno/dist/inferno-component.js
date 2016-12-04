@@ -394,7 +394,8 @@ function applyState(component, force, callback) {
         }
         var vNode = component._vNode;
         var dom = vNode.dom = nextInput.dom;
-        component._componentToDOMNodeMap.set(component, nextInput.dom);
+        var componentToDOMNodeMap = component._componentToDOMNodeMap;
+        componentToDOMNodeMap && componentToDOMNodeMap.set(component, nextInput.dom);
         updateParentComponentVNodes(vNode, dom);
         if (!isNullOrUndef(callback)) {
             callback();

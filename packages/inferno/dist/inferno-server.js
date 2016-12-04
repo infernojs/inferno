@@ -748,7 +748,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
                 ref(null);
             }
             instance._unmounted = true;
-            componentToDOMNodeMap.delete(instance);
+            findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
         }
         else if (!isNullOrUndef(ref)) {
             if (!isNullOrUndef(ref.onComponentWillUnmount)) {
@@ -1079,7 +1079,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     subLifecycle.fastUnmount = lifecycle.unmount;
                     lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
-                    componentToDOMNodeMap.set(instance, nextInput$1.dom);
+                    findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
                 nextVNode.dom = nextInput$1.dom;
             }
@@ -1888,7 +1888,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
             appendChild(parentDom, dom);
         }
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
-        componentToDOMNodeMap.set(instance, dom);
+        findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
     else {
@@ -2106,6 +2106,8 @@ function hydrateRoot(input, parentDom, lifecycle) {
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 var roots = [];
 var componentToDOMNodeMap = new Map();
+var findDOMNodeEnabled = false;
+
 
 function getRoot(dom) {
     for (var i = 0; i < roots.length; i++) {
@@ -2192,7 +2194,9 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
     instance.context = context;
     instance._patch = patch;
     instance._devToolsStatus = devToolsStatus;
-    instance._componentToDOMNodeMap = componentToDOMNodeMap;
+    if (findDOMNodeEnabled) {
+        instance._componentToDOMNodeMap = componentToDOMNodeMap;
+    }
     var childContext = instance.getChildContext();
     if (!isNullOrUndef(childContext)) {
         instance._childContext = Object.assign({}, context, childContext);
