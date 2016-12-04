@@ -36,7 +36,7 @@ export function createContainerWithHTML(html) {
 	return container;
 }
 
-export function validateNodeTree(node) : boolean {
+export function validateNodeTree(node): boolean {
 	if (!node) {
 		return true;
 	}
