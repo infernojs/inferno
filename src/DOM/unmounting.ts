@@ -90,7 +90,7 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 		}
 		removeChild(parentDom, dom);
 	}
-	if (recyclingEnabled && (parentDom || canRecycle)) {
+	if (recyclingEnabled && !isStatefulComponent && (parentDom || canRecycle)) {
 		poolComponent(vNode);
 	}
 }
