@@ -22,6 +22,8 @@ module.exports = function (config) {
 		],
 		
 		browsers: [
+			// 'Firefox',
+			// 'Safari',
 			'Chrome'
 		],
 		reporters: [
@@ -83,7 +85,6 @@ module.exports = function (config) {
 				'failed',
 			],
 			browsers: [
-				'Firefox',
 				'Chrome_travis_ci'
 			],
 		});
