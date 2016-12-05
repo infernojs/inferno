@@ -27,20 +27,12 @@ export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount,
 		unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
 	} else if (flags & VNodeFlags.Element) {
 		unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
-	} else if (flags & VNodeFlags.Text) {
-		unmountText(vNode, parentDom);
-	} else if (flags & VNodeFlags.Void) {
-		unmountVoid(vNode, parentDom);
+	} else if (flags & (VNodeFlags.Text | VNodeFlags.Void)) {
+		unmountVoidOrText(vNode, parentDom);
 	}
 }
 
-function unmountVoid(vNode, parentDom) {
-	if (parentDom) {
-		removeChild(parentDom, vNode.dom);
-	}
-}
-
-function unmountText(vNode, parentDom) {
+function unmountVoidOrText(vNode, parentDom) {
 	if (parentDom) {
 		removeChild(parentDom, vNode.dom);
 	}

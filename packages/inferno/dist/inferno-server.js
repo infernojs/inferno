@@ -703,19 +703,11 @@ function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecy
     else if (flags & 3970 /* Element */) {
         unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
     }
-    else if (flags & 1 /* Text */) {
-        unmountText(vNode, parentDom);
-    }
-    else if (flags & 4096 /* Void */) {
-        unmountVoid(vNode, parentDom);
+    else if (flags & (1 /* Text */ | 4096 /* Void */)) {
+        unmountVoidOrText(vNode, parentDom);
     }
 }
-function unmountVoid(vNode, parentDom) {
-    if (parentDom) {
-        removeChild(parentDom, vNode.dom);
-    }
-}
-function unmountText(vNode, parentDom) {
+function unmountVoidOrText(vNode, parentDom) {
     if (parentDom) {
         removeChild(parentDom, vNode.dom);
     }
