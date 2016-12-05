@@ -84,7 +84,20 @@ const config = {};
     platform: 'Windows 10',
     version
   };
-})
+});
+
+['8', '9', '10', '11'].forEach((version) => {
+  config['sl_ie-' + version] = {
+    base: 'SauceLabs',
+    browserName: 'Internet Explorer',
+    platform: 'Windows 7',
+    version
+  };
+});
+
+/* ==============
+    IE 
+================== */
 
 console.log(config);
 module.exports = config;
