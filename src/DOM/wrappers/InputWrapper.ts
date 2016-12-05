@@ -16,13 +16,13 @@ function isControlled(props) {
 
 function onTextInputChange(e) {
 	let vNode = this.vNode;
-	const props = vNode.props;
+	const events = vNode.events || EMPTY_OBJ;
 	const dom = vNode.dom;
 
-	if (props.onInput) {
-		props.onInput(e);
-	} else if (props.oninput) {
-		props.oninput(e);
+	if (events.onInput) {
+		events.onInput(e);
+	} else if (events.oninput) {
+		events.oninput(e);
 	}
 	// the user may have updated the vNode from the above onInput events
 	// so we need to get it from the context of `this` again
@@ -31,13 +31,13 @@ function onTextInputChange(e) {
 
 function onCheckboxChange(e) {
 	const vNode = this.vNode;
-	const props = vNode.props;
+	const events = vNode.events || EMPTY_OBJ;
 	const dom = vNode.dom;
 
-	if (props.onClick) {
-		props.onClick(e);
-	} else if (props.onclick) {
-		props.onclick(e);
+	if (events.onClick) {
+		events.onClick(e);
+	} else if (events.onclick) {
+		events.onclick(e);
 	}
 	// the user may have updated the vNode from the above onClick events
 	// so we need to get it from the context of `this` again

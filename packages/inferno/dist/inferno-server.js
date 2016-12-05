@@ -489,13 +489,13 @@ function isControlled(props) {
 }
 function onTextInputChange(e) {
     var vNode = this.vNode;
-    var props = vNode.props;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
-    if (props.onInput) {
-        props.onInput(e);
+    if (events.onInput) {
+        events.onInput(e);
     }
-    else if (props.oninput) {
-        props.oninput(e);
+    else if (events.oninput) {
+        events.oninput(e);
     }
     // the user may have updated the vNode from the above onInput events
     // so we need to get it from the context of `this` again
@@ -503,13 +503,13 @@ function onTextInputChange(e) {
 }
 function onCheckboxChange(e) {
     var vNode = this.vNode;
-    var props = vNode.props;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
-    if (props.onClick) {
-        props.onClick(e);
+    if (events.onClick) {
+        events.onClick(e);
     }
-    else if (props.onclick) {
-        props.onclick(e);
+    else if (events.onclick) {
+        events.onclick(e);
     }
     // the user may have updated the vNode from the above onClick events
     // so we need to get it from the context of `this` again
@@ -596,13 +596,13 @@ function updateChildOption(vNode, value) {
 }
 function onSelectChange(e) {
     var vNode = this.vNode;
-    var props = vNode.props;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
-    if (props.onChange) {
-        props.onChange(e);
+    if (events.onChange) {
+        events.onChange(e);
     }
-    else if (props.onchange) {
-        props.onchange(e);
+    else if (events.onchange) {
+        events.onchange(e);
     }
     // the user may have updated the vNode from the above onChange events
     // so we need to get it from the context of `this` again
@@ -641,19 +641,18 @@ function applyValue$1(vNode, dom) {
     }
 }
 
-// import { isVNode } from '../../core/shapes';
 function isControlled$2(props) {
     return !isNullOrUndef(props.value);
 }
 function onTextareaInputChange(e) {
     var vNode = this.vNode;
-    var props = vNode.props;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
-    if (props.onInput) {
-        props.onInput(e);
+    if (events.events) {
+        events.onInput(e);
     }
-    else if (props.oninput) {
-        props.oninput(e);
+    else if (events.oninput) {
+        events.oninput(e);
     }
     // the user may have updated the vNode from the above onInput events
     // so we need to get it from the context of `this` again

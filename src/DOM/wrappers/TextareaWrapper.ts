@@ -3,7 +3,6 @@ import {
 	isNullOrUndef
 } from './../../shared';
 import { wrappers } from './processElement';
-// import { isVNode } from '../../core/shapes';
 
 function isControlled(props) {
 	return !isNullOrUndef(props.value);
@@ -11,13 +10,13 @@ function isControlled(props) {
 
 function onTextareaInputChange(e) {
 	let vNode = this.vNode;
-	const props = vNode.props;
+	const events = vNode.events || EMPTY_OBJ;
 	const dom = vNode.dom;
 
-	if (props.onInput) {
-		props.onInput(e);
-	} else if (props.oninput) {
-		props.oninput(e);
+	if (events.events) {
+		events.onInput(e);
+	} else if (events.oninput) {
+		events.oninput(e);
 	}
 	// the user may have updated the vNode from the above onInput events
 	// so we need to get it from the context of `this` again
