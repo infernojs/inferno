@@ -179,6 +179,10 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 - Inferno has its own devtools debugger (still in development) that differs from the Preact (React bound) implementation. Inferno's debugger is on average, 4x faster – fixing lots of the issues with slow, laggy interfaces when developers are debugging.
 - Preact has `linkState` helpers built into core to help users link state to form elements. Inferno does not.
 
+## Inferno's Event System
+
+Like React, Inferno also uses a light-weight syntethic event system in certain places (although both event systems differ massively). Inferno's event system provides highly effecient delegation and an event helper called `linkEvent`. Currently, Inferno only provides this event system for mouse events (`onClick`, `onMouseMove`, `onMouseDown`, `onMouseUp`). More events are expected to be supported in future versions (as this is feature is a very recent addition to Inferno).
+
 ## Inferno Top-Level API
 
 ### `render` (package: `inferno`)
