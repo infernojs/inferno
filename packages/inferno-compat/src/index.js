@@ -4,10 +4,12 @@ import createClass from '../../../build/component/createClass';
 import infernoCreateElement from '../../../build/factories/createElement';
 import cloneVNode from '../../../build/factories/cloneVNode';
 import renderToString, { renderToStaticMarkup } from '../../../build/server/renderToString';
-import { render, findDOMNode } from '../../../build/DOM/rendering';
+import { render, findDOMNode, enableFindDOMNode } from '../../../build/DOM/rendering';
 import { createVNode } from '../../../build/core/shapes';
 import Component from 'inferno-component';
 import { NO_OP } from '../../../build/shared';
+
+enableFindDOMNode();
 
 function unmountComponentAtNode(container) {
 	render(null, container);
@@ -60,7 +62,7 @@ function normalizeProps(name, props) {
 		
 		if (!props[eventName]) {
 			props[eventName] = props.onChange;
-			delete props.onChange; 
+			delete props.onChange;
 		}
 	}
 }

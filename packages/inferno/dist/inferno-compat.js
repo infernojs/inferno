@@ -2664,7 +2664,9 @@ function hydrateRoot(input, parentDom, lifecycle) {
 var roots = [];
 var componentToDOMNodeMap = new Map();
 var findDOMNodeEnabled = false;
-
+function enableFindDOMNode() {
+    findDOMNodeEnabled = true;
+}
 function findDOMNode(ref) {
     if (!findDOMNodeEnabled) {
         if (process.env.NODE_ENV !== 'production') {
@@ -3031,6 +3033,8 @@ function renderToStaticMarkup(input) {
     return renderVNodeToString(input, null, true);
 }
 
+enableFindDOMNode();
+
 function unmountComponentAtNode(container) {
 	render(null, container);
 	return true;
@@ -3082,7 +3086,7 @@ function normalizeProps(name, props) {
 		
 		if (!props[eventName]) {
 			props[eventName] = props.onChange;
-			delete props.onChange; 
+			delete props.onChange;
 		}
 	}
 }

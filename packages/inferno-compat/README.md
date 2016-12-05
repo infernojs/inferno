@@ -60,25 +60,11 @@ All you have to do is add an alias for `react` and `react-dom`:
 		alias: {
 			'react': 'inferno-compat',
 			'react-dom': 'inferno-compat',
-            'react-dom/server': 'inferno-compat',
+            'react-dom/server': 'inferno-compat'
 		}
 	}
 }
 ```
-
-If you plan on using the Inferno JSX module `babel-plugin-inferno`, you must also apply the following:
-
-```js
-{
-    plugins: [
-        new webpack.ProvidePlugin({
-            'Inferno': 'react'
-        })
-    ]
-}
-```
-
-Using `babel-plugin-inferno` with `inferno-compat` can provide much better performance at the cost of having less compatability.
 
 ## Usage with Babel
 
@@ -90,17 +76,16 @@ Babel can now alias `react` and `react-dom` to `inferno` by adding the following
 {
     "plugins": [
         ["module-resolver", {
-        "root": ["."],
-        "alias": {
-            "react": "inferno-compat",
-            "react-dom": "inferno-compat"
-        }
+            "root": ["."],
+            "alias": {
+                "react": "inferno-compat",
+                "react-dom": "inferno-compat",
+                "react-dom/server": "inferno-compat"
+            }
         }]
     ]
 }
 ```
-
-Please note, this method may not allow for usage of `babel-plugin-inferno`.
 
 ## Usage with Browserify
 
@@ -117,15 +102,12 @@ First, install it: `npm install --save-dev aliasify`
         "aliases": {
             "react": "inferno-compat",
             "react-dom": "inferno-compat",
-            "react-dom/server": "inferno-compat",
-            'inferno': 'inferno-compat' // for usage of babel-plugin-inferno
+            "react-dom/server": "inferno-compat"
         }
     }
     // ...
 }
 ```
-
-Be sure to install `rc-css-transition-group` with `npm install --save rc-css-transition-group`.
 
 ## Once Aliased
 
