@@ -423,7 +423,7 @@ var Component$1 = function Component$1(props, context) {
     this._isSVG = false;
     this._componentToDOMNodeMap = null;
     /** @type {object} */
-    this.props = props || {};
+    this.props = props;
     /** @type {object} */
     this.context = context || {};
     if (!this.componentDidMount) {

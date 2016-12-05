@@ -186,7 +186,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 
 	constructor(props?: P, context?: any) {
 		/** @type {object} */
-		this.props = props || ({} as P);
+		this.props = props;
 
 		/** @type {object} */
 		this.context = context || {};
