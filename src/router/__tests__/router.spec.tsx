@@ -1,14 +1,17 @@
+import * as Inferno from '../../testUtils/inferno';
+
+import IndexRoute from '../IndexRoute';
+import Route from '../Route';
+import Router from '../Router';
+import RouterContext from '../RouterContext';
+import createBrowserHistory from 'history/createBrowserHistory';
 import {
-	expect
+	expect,
 } from 'chai';
 import {
-	render
+	render,
 } from './../../DOM/rendering';
-import RouterContext from '../RouterContext';
-import Router from '../Router';
-import Route from '../Route';
-import createBrowserHistory from 'history/createBrowserHistory';
-import * as Inferno from '../../testUtils/inferno';
+
 Inferno; // suppress ts 'never used' error
 
 const browserHistory = createBrowserHistory();
@@ -164,6 +167,17 @@ describe('Router tests (jsx)', () => {
 					container
 				);
 				expect(container.innerHTML).to.equal('<div><div>Param is bar</div></div>');
+			});
+			it('Should render IndexRoute correctly', () => {
+				render(
+					<Router url={ '/foo' } history={ browserHistory }>
+						<Route path={ '/foo' } component={ ({ children }) => children }>
+							<IndexRoute component={ () => <div>Good Component</div> } />
+						</Route>
+					</Router>,
+					container
+				);
+				expect(container.innerHTML).to.equal('<div>Good Component</div>');
 			});
 			it('should fail on empty routes', () => {
 				expect(
