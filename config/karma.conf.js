@@ -91,6 +91,8 @@ module.exports = function (config) {
 	}
 
 	const varToBool = (sVar) => !String(sVar).match(/^(0|false|undefined)$/gi)
+	console.log(CI, TRAVIS_PULL_REQUEST, TRAVIS_BRANCH);
+	console.log(varToBool(CI), !varToBool(TRAVIS_PULL_REQUEST), ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1)
 	if (varToBool(CI) && !varToBool(TRAVIS_PULL_REQUEST) && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
 		config.set({
 			sauceLabs: {
