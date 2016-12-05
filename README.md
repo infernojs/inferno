@@ -181,7 +181,16 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 ## Event System
 
-Like React, Inferno also uses a light-weight syntethic event system in certain places (although both event systems differ massively). Inferno's event system provides highly effecient delegation and an event helper called `linkEvent`. Currently, Inferno only provides this event system for mouse events (`onClick`, `onMouseMove`, `onMouseDown`, `onMouseUp`). More events are expected to be supported in future versions (as this is feature is a very recent addition to Inferno).
+Like React, Inferno also uses a light-weight syntethic event system in certain places (although both event systems differ massively). Inferno's event system provides highly effecient delegation and an event helper called [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno). 
+
+
+As this is feature is a very recent addition to Inferno, there are only a handful of events that use Inferno's event system. They are outlined below:
+- `onClick`
+- `onMouseMove`
+- `onMouseDown`
+- `onMouseUp`
+
+More events are expected to be supported in future versions.
 
 ## Inferno Top-Level API
 
