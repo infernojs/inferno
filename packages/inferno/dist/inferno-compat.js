@@ -2759,6 +2759,7 @@ function createStatefulComponentInstance(vNode, Component$$1, props, context, is
     }
     var instance = new Component$$1(props, context);
     instance.context = context;
+    instance.props = props;
     instance._patch = patch;
     instance._devToolsStatus = devToolsStatus;
     if (findDOMNodeEnabled) {

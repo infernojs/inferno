@@ -34,6 +34,7 @@ export function createStatefulComponentInstance(vNode, Component, props, context
 	const instance = new Component(props, context);
 
 	instance.context = context;
+	instance.props = props;
 	instance._patch = patch;
 	instance._devToolsStatus = devToolsStatus;
 	if (findDOMNodeEnabled) {
