@@ -345,6 +345,24 @@ Note: we recommend using a `ref` callback on a component to find its instance, r
 If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements. 
 In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode()` at all. When render returns null or false, `findDOMNode()` returns null.
 
+### `linkEvent` (package: `inferno`)
+
+`linkEvent()` is a helper function that allows attachment of `props`/`state` or other data to events without needing to `bind()` them or use arrow functions/closures. It works by hooking into Inferno's event system (so make sure the event you are using will use Inferno's event system). This is extremely useful when dealing with events in functional/stateless components. Below is an example:
+
+```jsx
+import Inferno, { linkEvent } from 'inferno';
+
+function handleClick(props, event) {
+	props.validateValue(event.target.value);
+}
+
+function MyComponent(props) {
+	return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
+}
+```
+
+`linkEvent()` offers better performance than binding an event in a class constructor and using arrow functions, so where possible, it should be used.
+
 ### `renderToString` (package: `inferno-server`)
 
 ```javascript
