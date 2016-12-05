@@ -3,13 +3,14 @@
 
 	/* (flags, type, props, children, key, ref, noNormalise) */
 	var createVNode = Inferno.createVNode;
+	var linkEvent = Inferno.linkEvent;
 
 	uibench.init('Inferno', '1.0.0-beta25 *dev*');
 
 	var treeLeafProps = { className: 'TreeLeaf' };
 
 	function TreeLeaf(id) {
-		return createVNode(2, 'li', treeLeafProps, id + '', null, null, true);
+		return createVNode(2, 'li', treeLeafProps, id + '', null, null, null, true);
 	}
 
 	var shouldDataUpdate = {
@@ -27,12 +28,12 @@
 			var n = data.children[i];
 
 			if (n.container) {
-				children[i] = createVNode(8, TreeNode, n, null, n.id, shouldDataUpdate, true);
+				children[i] = createVNode(8, TreeNode, n, null, null, n.id, shouldDataUpdate, true);
 			} else {
-				children[i] = createVNode(8, TreeLeaf, n.id, null, n.id, shouldDataUpdate, true);
+				children[i] = createVNode(8, TreeLeaf, n.id, null, null, n.id, shouldDataUpdate, true);
 			}
 		}
-		return createVNode(34, 'ul', treeNodeProps, children, null, null, true);
+		return createVNode(34, 'ul', treeNodeProps, children, null, null, null, true);
 	}
 
 	var treeProps = { className: 'Tree' };
@@ -43,7 +44,7 @@
 			return Inferno.NO_OP;
 		}
 		lastTreeData = data;
-		return createVNode(2, 'div', treeProps, createVNode(8, TreeNode, data.root, null, null, shouldDataUpdate, true), null, null, true);
+		return createVNode(2, 'div', treeProps, createVNode(8, TreeNode, data.root, null, null, null, shouldDataUpdate, true), null, null, null, true);
 	}
 
 	function AnimBox(data) {
@@ -51,7 +52,7 @@
 		var style = 'border-radius:' + (time % 10) + 'px;' +
 			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')';
 
-		return createVNode(2, 'div', { className: 'AnimBox', style: style, 'data-id': data.id }, null, null, null, true);
+		return createVNode(2, 'div', { className: 'AnimBox', style: style, 'data-id': data.id }, null, null, null, null, true);
 	}
 
 	var animProps = { className: 'Anim' };
@@ -69,21 +70,20 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = createVNode(8, AnimBox, item, null, item.id, shouldDataUpdate, true);
+			children[i] = createVNode(8, AnimBox, item, null, null, item.id, shouldDataUpdate, true);
 		}
-		return createVNode(34, 'div', animProps, children, null, null, true);
+		return createVNode(34, 'div', animProps, children, null, null, null, true);
 	}
 
-	function onClick(e, c, p) {
-		console.log('Clicked', p);
+	function onClick(text, e) {
+		console.log('Clicked', text);
 		e.stopPropagation();
 	}
 
-	document.addEventListener('click', onClick);
 	var tableCellProps = { className: 'TableCell' };
 
 	function TableCell(text) {
-		return createVNode(2, 'td', tableCellProps, text, null, null, true);
+		return createVNode(2, 'td', tableCellProps, text, { onClick: linkEvent(text, onClick) }, null, null, true);
 	}
 
 	function TableRow(data) {
@@ -96,12 +96,12 @@
 		var length = cells.length + 1;
 		var children = new Array(length);
 
-		children[0] = createVNode(8, TableCell, '#' + data.id, null, -1, shouldDataUpdate, true);
+		children[0] = createVNode(8, TableCell, '#' + data.id, null, null, -1, shouldDataUpdate, true);
 
 		for (var i = 1; i < length; i++) {
-			children[i] = createVNode(8, TableCell, cells[i - 1], null, i, shouldDataUpdate, true);
+			children[i] = createVNode(8, TableCell, cells[i - 1], null, null, i, shouldDataUpdate, true);
 		}
-		return createVNode(34, 'tr', { className: classes, 'data-id': data.id }, children, null, null, true);
+		return createVNode(34, 'tr', { className: classes, 'data-id': data.id }, children, null, null, null, true);
 	}
 
 	var tableProps = { className: 'Table' };
@@ -119,9 +119,9 @@
 		for (var i = 0; i < length; i++) {
 			var item = items[i];
 
-			children[i] = createVNode(8, TableRow, item, null, item.id, shouldDataUpdate, true);
+			children[i] = createVNode(8, TableRow, item, null, null, item.id, shouldDataUpdate, true);
 		}
-		return createVNode(34, 'table', tableProps, children, null, null, true);
+		return createVNode(34, 'table', tableProps, children, null, null, null, true);
 	}
 
 	var mainProps = { className: 'Main' };
@@ -142,7 +142,7 @@
 		} else if (location === 'tree') {
 			section = tree(data.tree);
 		}
-		return createVNode(2, 'div', mainProps, section, null, null, true);
+		return createVNode(2, 'div', mainProps, section, null, null, null, true);
 	}
 
 	document.addEventListener('DOMContentLoaded', function(e) {
@@ -154,7 +154,7 @@
 			},
 			function(samples) {
 				Inferno.render(
-					createVNode(2, 'pre', null, JSON.stringify(samples, null, ' '), null, null, true), container
+					createVNode(2, 'pre', null, JSON.stringify(samples, null, ' '), null, null, null, true), container
 				);
 			}
 		);
