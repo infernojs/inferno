@@ -18,7 +18,7 @@ Inferno aims to provide all the great benefits that React does, plus other great
 
 For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. Based on the concept of *learn once, write anywhere*, Inferno doesn't impose any restrictions on how you create components. You literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
 
-In terms of performance, Inferno is currently the **fastest** JavaScript UI library there is – both in benchmarks and actual real-world scenarios. It excels on the browser at inital page load, parse times, render times and update times. Inferno's server-side rendering is around 10-20x faster than React and Preact, it's around 5x faster than Vue and Angular2.
+In terms of performance, Inferno is currently the **fastest** JavaScript UI library there is – both in benchmarks and actual real-world scenarios. It excels on the browser at initial page load, parse times, render times and update times. Inferno's server-side rendering is around 10-20x faster than React and Preact, it's around 5x faster than Vue and Angular2.
 
 ## But why?
 
@@ -37,7 +37,7 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 - Inferno's `linkEvent` feature removes the need to use arrow functions or binding event callbacks (for delegated events)
 - Lightweight filesize of only 8kb
 - Isomorphic rendering on both client and server with `inferno-server`
-- Highly modular with very little opinionation on how things should be done
+- Highly modular with very few opinions on how things should be done
 - Unlike React and Preact, Inferno has lifecycle events on functional components
 - Supports asynchronous component rendering using `requestIdleCallback`
 - Unlike Preact and other React-like libraries, Inferno has controlled components for input/select/textarea elements
@@ -139,7 +139,7 @@ npm install --save inferno-hyperscript@beta25
 npm install --save inferno-create-element@beta25
 ```
 
-### Compatability with existing React apps
+### Compatibility with existing React apps
 ```sh
 npm install --save-dev inferno-compat@beta25
 ```
@@ -180,7 +180,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 ## Event System
 
-Like React, Inferno also uses a light-weight syntethic event system in certain places (although both event systems differ massively). Inferno's event system provides highly effecient delegation and an event helper called [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno). 
+Like React, Inferno also uses a light-weight synthetic event system in certain places (although both event systems differ massively). Inferno's event system provides highly efficient delegation and an event helper called [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno). 
 
 
 As this is feature is a very recent addition to Inferno, there are only a handful of events that use Inferno's event system. They are outlined below:
@@ -204,7 +204,7 @@ Inferno.render(<div />, document.body);
 Render a virtual node into the DOM in the supplied container given the supplied virtual DOM. If the virtual node was previously rendered
 into the container, this will perform an update on it and only mutate the DOM as necessary, to reflect the latest Inferno virtual node.
 
-Warning: If the container element is not empty before rendering, the content of the container will be overwriten on the initial render.
+Warning: If the container element is not empty before rendering, the content of the container will be overwritten on the initial render.
 
 ### `createRenderer` (package: `inferno`)
 
