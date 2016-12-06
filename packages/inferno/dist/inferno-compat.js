@@ -1340,7 +1340,8 @@ function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount,
     if (!isNull(events)) {
         for (var name in events) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchEvent(name, null, null, dom, lifecycle);
+            patchEvent(name, events[name], null, dom, lifecycle);
+            events[name] = null;
         }
     }
     if (parentDom) {
@@ -2126,7 +2127,7 @@ function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
     }
 }
 function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
-    if (lastValue !== nextValue || isNull(nextValue)) {
+    if (lastValue !== nextValue) {
         if (delegatedProps[name]) {
             lifecycle.fastUnmount = false;
             handleEvent(name, lastValue, nextValue, dom);

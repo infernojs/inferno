@@ -871,7 +871,7 @@ export function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
 }
 
 export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
-	if (lastValue !== nextValue || isNull(nextValue)) {
+	if (lastValue !== nextValue) {
 		if (delegatedProps[name]) {
 			lifecycle.fastUnmount = false;
 			handleEvent(name, lastValue, nextValue, dom);

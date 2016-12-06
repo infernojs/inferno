@@ -105,7 +105,8 @@ export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowU
 	if (!isNull(events)) {
 		for (let name in events) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchEvent(name, null, null, dom, lifecycle);
+			patchEvent(name, events[name], null, dom, lifecycle);
+			events[name] = null;
 		}
 	}
 	if (parentDom) {
