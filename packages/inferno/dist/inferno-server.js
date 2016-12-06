@@ -432,11 +432,13 @@ function handleEvent(name, lastEvent, nextEvent, dom) {
         delegatedRoots.items.set(dom, nextEvent);
     }
     else if (delegatedRoots) {
-        delegatedRoots.count--;
-        delegatedRoots.items.delete(dom);
-        if (delegatedRoots.count === 0) {
-            document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
-            delegatedEvents.delete(name);
+        if (delegatedRoots.items.has(dom)) {
+            delegatedRoots.count--;
+            delegatedRoots.items.delete(dom);
+            if (delegatedRoots.count === 0) {
+                document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
+                delegatedEvents.delete(name);
+            }
         }
     }
 }

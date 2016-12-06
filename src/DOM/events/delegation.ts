@@ -7,20 +7,22 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 		if (!delegatedRoots) {
 			delegatedRoots = { items: new Map(), count: 0, docEvent: null };
 			const docEvent = attachEventToDocument(name, delegatedRoots);
-		
+
 			delegatedRoots.docEvent = docEvent;
 			delegatedEvents.set(name, delegatedRoots);
-		}	
+		}
 		if (!lastEvent) {
 			delegatedRoots.count++;
 		}
 		delegatedRoots.items.set(dom, nextEvent);
 	} else if (delegatedRoots) {
-		delegatedRoots.count--;
-		delegatedRoots.items.delete(dom);
-		if (delegatedRoots.count === 0) {
-			document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
-			delegatedEvents.delete(name);
+		if (delegatedRoots.items.has(dom)) {
+			delegatedRoots.count--;
+			delegatedRoots.items.delete(dom);
+			if (delegatedRoots.count === 0) {
+				document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
+				delegatedEvents.delete(name);
+			}
 		}
 	}
 }
