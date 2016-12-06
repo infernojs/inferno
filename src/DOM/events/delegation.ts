@@ -31,8 +31,8 @@ function dispatchEvent(event, dom, items, count, eventData) {
 	if (eventsToTrigger) {
 		count--;
 		// linkEvent object
+		event.currentTarget = dom;
 		if (eventsToTrigger.event) {
-			event.currentTarget = dom;
 			eventsToTrigger.event(eventsToTrigger.data, event);
 		} else {
 			eventsToTrigger(event);
