@@ -171,7 +171,7 @@ describe('Provider (JSX)', () => {
 		const link = container.querySelector('#dispatch');
 		link.click();
 
-		expect(container.innerHTML).to.equal('<div><div class="basic2">You\'re a mouse!</div></div>');
+		expect(container.innerHTML).to.equal('<div class="basic2">You\'re a mouse!</div>');
 	});
 
 	it('should render the example correctly', () => {

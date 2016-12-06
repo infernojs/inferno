@@ -122,7 +122,7 @@ module.exports = function (config) {
 				'Chrome_travis_ci',
 			],
 			reporters: [
-				'failed',
+				'progress',
 			],
 			browserNoActivityTimeout: 120000
 		});
