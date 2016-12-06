@@ -34,7 +34,7 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 - One of the fastest front-end frameworks for rendering UI in the DOM
 - React-like API, concepts and component lifecycle events
 - Partial synthetic event system, providing delegation to certain events for better performance
-- Inferno's `linkEvent` feature removes the need to use arrow functions or binding event callbacks (for delegated events)
+- Inferno's [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno) feature removes the need to use arrow functions or binding event callbacks (for delegated events)
 - Lightweight filesize of only 8kb
 - Isomorphic rendering on both client and server with `inferno-server`
 - Highly modular with very few opinions on how things should be done
