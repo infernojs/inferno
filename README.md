@@ -285,6 +285,7 @@ Inferno.createVNode(
   type,
   [props],
   [...children],
+  [events],
   [key],
   [ref],
   [isNormalized]
