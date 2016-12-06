@@ -1,5 +1,5 @@
 /*!
- * inferno-mobx v1.0.0-beta26
+ * inferno-mobx v1.0.0-beta27
  * (c) 2016 Ryan Megidov
  * Released under the MIT License.
  */
@@ -359,7 +359,7 @@ var computedDecorator = createClassPropertyDecorator(function (target, name, _, 
     this.$mobx.values[name].set(value);
 }, false, true);
 function computed(targetOrExpr, keyOrScopeOrSetter, baseDescriptor, options) {
-    if ((typeof targetOrExpr === "function" || isModifierWrapper(targetOrExpr)) && arguments.length < 3) {
+    if (typeof targetOrExpr === "function" && arguments.length < 3) {
         if (typeof keyOrScopeOrSetter === "function")
             { return computedExpr(targetOrExpr, keyOrScopeOrSetter, undefined); }
         else
@@ -1546,19 +1546,15 @@ function registerInterceptor(interceptable, handler) {
 }
 function interceptChange(interceptable, change) {
     var prevU = untrackedStart();
-    try {
-        var interceptors = interceptable.interceptors;
-        for (var i = 0, l = interceptors.length; i < l; i++) {
-            change = interceptors[i](change);
-            invariant(!change || change.type, "Intercept handlers should return nothing or a change object");
-            if (!change)
-                { break; }
-        }
-        return change;
+    var interceptors = interceptable.interceptors;
+    for (var i = 0, l = interceptors.length; i < l; i++) {
+        change = interceptors[i](change);
+        invariant(!change || change.type, "Intercept handlers should return nothing or a change object");
+        if (!change)
+            { return null; }
     }
-    finally {
-        untrackedEnd(prevU);
-    }
+    untrackedEnd(prevU);
+    return change;
 }
 function hasListeners(listenable) {
     return listenable.changeListeners && listenable.changeListeners.length > 0;
@@ -1595,7 +1591,6 @@ var ValueMode;
     ValueMode[ValueMode["Structure"] = 2] = "Structure";
     ValueMode[ValueMode["Flat"] = 3] = "Flat";
 })(ValueMode || (ValueMode = {}));
-exports.ValueMode = ValueMode;
 function withModifier(modifier, value) {
     assertUnwrapped(value, "Modifiers are not allowed to be nested");
     return {
@@ -1640,9 +1635,6 @@ function getValueModeFromModifierFunc(func) {
     var mod = getModifier(func);
     invariant(mod !== null, "Cannot determine value mode from function. Please pass in one of these: mobx.asReference, mobx.asStructure or mobx.asFlat, got: " + func);
     return mod;
-}
-function isModifierWrapper(value) {
-    return value.mobxModifier !== undefined;
 }
 function makeChildObservable(value, parentMode, name) {
     var childMode;
@@ -2908,7 +2900,6 @@ function isArrayLike(x) {
 }
 exports.isArrayLike = isArrayLike;
 });
-
 
 
 
