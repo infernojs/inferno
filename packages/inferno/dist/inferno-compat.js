@@ -2128,16 +2128,18 @@ function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
 }
 function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
     if (lastValue !== nextValue) {
+        var nameLowerCase = name.toLowerCase();
+        var domEvent = dom[nameLowerCase];
+        // if the function is wrapped, that means it's been controlled by a wrapper
+        if (domEvent && domEvent.wrapped) {
+            return;
+        }
         if (delegatedProps[name]) {
             lifecycle.fastUnmount = false;
             handleEvent(name, lastValue, nextValue, dom);
         }
         else {
-            name = name.toLowerCase();
-            var event = dom[name];
-            if (!event || !event.wrapped) {
-                dom[name] = nextValue;
-            }
+            dom[nameLowerCase] = nextValue;
         }
     }
 }

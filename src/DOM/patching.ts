@@ -2,6 +2,7 @@ import {
 	EMPTY_OBJ,
 	NO_OP,
 	isArray,
+	isFunction,
 	isAttrAnEvent,
 	isInvalid,
 	isNull,
@@ -872,16 +873,17 @@ export function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
 
 export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
 	if (lastValue !== nextValue) {
+		const nameLowerCase = name.toLowerCase();
+		const domEvent = dom[nameLowerCase];
+		// if the function is wrapped, that means it's been controlled by a wrapper
+		if (domEvent && domEvent.wrapped) {
+			return;
+		}
 		if (delegatedProps[name]) {
 			lifecycle.fastUnmount = false;
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
-			name = name.toLowerCase();
-			const event = dom[name];
-
-			if (!event || !event.wrapped) {
-				dom[name] = nextValue;
-			}
+			dom[nameLowerCase] = nextValue;
 		}
 	}
 }
