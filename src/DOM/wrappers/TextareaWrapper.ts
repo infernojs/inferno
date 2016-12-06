@@ -13,7 +13,7 @@ function onTextareaInputChange(e) {
 	const events = vNode.events || EMPTY_OBJ;
 	const dom = vNode.dom;
 
-	if (events.events) {
+	if (events.onInput) {
 		events.onInput(e);
 	} else if (events.oninput) {
 		events.oninput(e);

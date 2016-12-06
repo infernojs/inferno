@@ -7,7 +7,7 @@ Inferno Redux passes `context.store` value to each component.
 ## Install
 
 ```
-npm install inferno-redux@beta29
+npm install inferno-redux@beta30
 ```
 
 ## Contents

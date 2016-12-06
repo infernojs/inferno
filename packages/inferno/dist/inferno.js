@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta29
+ * inferno v1.0.0-beta30
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -625,7 +625,7 @@ function onTextareaInputChange(e) {
     var vNode = this.vNode;
     var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
-    if (events.events) {
+    if (events.onInput) {
         events.onInput(e);
     }
     else if (events.oninput) {
