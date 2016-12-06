@@ -446,6 +446,7 @@ function dispatchEvent(event, dom, items, count, eventData) {
         count--;
         // linkEvent object
         if (eventsToTrigger.event) {
+            event.currentTarget = dom;
             eventsToTrigger.event(eventsToTrigger.data, event);
         }
         else {
