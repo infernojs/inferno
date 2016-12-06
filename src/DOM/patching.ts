@@ -876,6 +876,7 @@ export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
 			lifecycle.fastUnmount = false;
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
+			name = name.toLowerCase();
 			const event = dom[name];
 
 			if (!event || !event.wrapped) {

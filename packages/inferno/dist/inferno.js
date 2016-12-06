@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta26
+ * inferno v1.0.0-beta28
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -1534,6 +1534,7 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
             handleEvent(name, lastValue, nextValue, dom);
         }
         else {
+            name = name.toLowerCase();
             var event = dom[name];
             if (!event || !event.wrapped) {
                 dom[name] = nextValue;
