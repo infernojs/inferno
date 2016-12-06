@@ -2,7 +2,6 @@ import {
 	EMPTY_OBJ,
 	NO_OP,
 	isArray,
-	isFunction,
 	isAttrAnEvent,
 	isInvalid,
 	isNull,
