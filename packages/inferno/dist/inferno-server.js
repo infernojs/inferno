@@ -472,7 +472,10 @@ function attachEventToDocument(name, delegatedRoots) {
             stopPropagation: false,
             dom: document
         };
+        // we have to do this as some browsers recycle the same Event between calls
+        // so we need to make the property configurable
         Object.defineProperty(event, 'currentTarget', {
+            configurable: true,
             get: function get() {
                 return eventData.dom;
             }
