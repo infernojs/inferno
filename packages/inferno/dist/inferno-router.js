@@ -104,11 +104,13 @@ var IndexRoute = (function (Route$$1) {
 
     IndexRoute.prototype.render = function render (ref) {
         var component = ref.component;
+        var children = ref.children;
         var params = ref.params;
 
         return createElement(component, {
             path: '/',
-            params: params
+            params: params,
+            children: children
         });
     };
 
