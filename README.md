@@ -99,6 +99,10 @@ Inferno.render(<MyComponent />, document.body);
 
 ## Getting Started
 
+If you want to get stuck into Inferno, we recommend checking out the [Inferno Boilerplate](https://github.com/infernojs/inferno-boilerplate) for a very simple setup. For a more advanced example demonstrating how Inferno might be used, we recommend trying out [Inferno Starter Project](https://github.com/nightwolfz/inferno-starter) by [nightwolfz](https://github.com/nightwolfz/).
+
+For those looking for Create Inferno App, we have one in the late stages of development and should be availble soon!
+
 Core package:
 
 ```sh
