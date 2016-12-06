@@ -1,5 +1,5 @@
 /*!
- * inferno-hyperscript v1.0.0-beta30
+ * inferno-hyperscript v1.0.0-beta31
  * (c) 2016 undefined
  * Released under the MIT License.
  */
