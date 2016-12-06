@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "1.0.0-beta28",
+  "version": "1.0.0-beta29",
   "license": "MIT",
   "description": "An extremely fast, isomorphic JavaScript library for building modern user interfaces",
   "author": {
