@@ -31,7 +31,7 @@ function dispatchEvent(event, dom, items, count, eventData) {
 	if (eventsToTrigger) {
 		count--;
 		// linkEvent object
-		event.currentTarget = dom;
+		eventData.dom = dom;
 		if (eventsToTrigger.event) {
 			eventsToTrigger.event(eventsToTrigger.data, event);
 		} else {
@@ -55,8 +55,14 @@ function normalizeEventName(name) {
 function attachEventToDocument(name, delegatedRoots) {
 	const docEvent = (event: Event) => {
 		const eventData = {
-			stopPropagation: false
+			stopPropagation: false,
+			dom: document
 		};
+		Object.defineProperty(event, 'currentTarget', {
+			get() {
+				return eventData.dom;
+			}
+		});
 		event.stopPropagation = () => {
 			eventData.stopPropagation = true;
 		};
