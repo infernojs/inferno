@@ -19,7 +19,7 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 		delegatedRoots.count--;
 		delegatedRoots.items.delete(dom);
 		if (delegatedRoots.count === 0) {
-			document.removeEventListener(name, delegatedRoots.docEvent);
+			document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
 			delegatedEvents.delete(name);
 		}
 	}
@@ -65,7 +65,6 @@ function attachEventToDocument(name, delegatedRoots) {
 			dispatchEvent(event, event.target, delegatedRoots.items, count, eventData);
 		}
 	};
-
 	document.addEventListener(normalizeEventName(name), docEvent);
 	return docEvent;
 }

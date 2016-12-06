@@ -992,7 +992,7 @@ function handleEvent(name, lastEvent, nextEvent, dom) {
         delegatedRoots.count--;
         delegatedRoots.items.delete(dom);
         if (delegatedRoots.count === 0) {
-            document.removeEventListener(name, delegatedRoots.docEvent);
+            document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
             delegatedEvents.delete(name);
         }
     }
