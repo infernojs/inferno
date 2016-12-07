@@ -28,7 +28,28 @@ if (process.env.NODE_ENV !== 'production') {
 	);
 }
 
+// we duplicate it so it plays nicely with different module loading systems
 export default {
+	linkEvent,
+	// core shapes
+	createVNode,
+
+	// cloning
+	cloneVNode,
+
+	// used to shared common items between Inferno libs
+	NO_OP,
+	EMPTY_OBJ,
+
+	//DOM
+	render,
+	findDOMNode,
+	createRenderer,
+	disableRecycling,
+	enableFindDOMNode
+};
+
+export {
 	linkEvent,
 	// core shapes
 	createVNode,

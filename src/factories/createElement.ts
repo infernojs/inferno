@@ -2,7 +2,7 @@ import {
 	VNodeFlags,
 	VNode
 } from '../core/shapes';
-import Inferno from 'inferno';
+import { createVNode } from 'inferno';
 import {
 	isAttrAnEvent,
 	isString,
@@ -93,7 +93,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 			}
 		}
 	}
-	return Inferno.createVNode(
+	return createVNode(
 		flags,
 		name,
 		props,

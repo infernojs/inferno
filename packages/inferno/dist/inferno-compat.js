@@ -7,10 +7,9 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('./inferno-component'), require('./inferno')) :
   typeof define === 'function' && define.amd ? define(['exports', 'inferno-component', 'inferno'], factory) :
   (factory((global.Inferno = global.Inferno || {}),global.Inferno.Component,global.Inferno));
-}(this, (function (exports,Component,Inferno) { 'use strict';
+}(this, (function (exports,Component,inferno) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;
-var Inferno__default = 'default' in Inferno ? Inferno['default'] : Inferno;
 
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -587,6 +586,7 @@ function createElement$1(name, props) {
                 props = {};
             }
             props.children = children;
+            children = null;
         }
         for (var prop$1 in props) {
             if (componentHooks[prop$1]) {
@@ -601,13 +601,13 @@ function createElement$1(name, props) {
             }
         }
     }
-    return Inferno__default.createVNode(flags, name, props, children, events, key, ref);
+    return inferno.createVNode(flags, name, props, children, events, key, ref);
 }
 
-Inferno.enableFindDOMNode();
+inferno.enableFindDOMNode();
 
 function unmountComponentAtNode(container) {
-	Inferno.render(null, container);
+	inferno.render(null, container);
 	return true;
 }
 
@@ -648,7 +648,7 @@ Component.prototype._afterRender = function() {
 	currentComponent = null;
 };
 
-var cloneElement = Inferno.cloneVNode;
+var cloneElement = inferno.cloneVNode;
 var version = '15.4.1';
 
 function normalizeProps(name, props) {
@@ -709,8 +709,8 @@ PureComponent.prototype.shouldComponentUpdate = function (props, state) {
 };
 
 var index = {
-	createVNode: Inferno.createVNode,
-	render: Inferno.render,
+	createVNode: inferno.createVNode,
+	render: inferno.render,
 	isValidElement: isValidElement,
 	createElement: createElement,
 	Component: Component,
@@ -719,15 +719,15 @@ var index = {
 	cloneElement: cloneElement,
 	PropTypes: index$1,
 	createClass: createClass,
-	findDOMNode: Inferno.findDOMNode,
+	findDOMNode: inferno.findDOMNode,
 	Children: Children,
-	cloneVNode: Inferno.cloneVNode,
-	NO_OP: Inferno.NO_OP,
+	cloneVNode: inferno.cloneVNode,
+	NO_OP: inferno.NO_OP,
 	version: version
 };
 
-exports.createVNode = Inferno.createVNode;
-exports.render = Inferno.render;
+exports.createVNode = inferno.createVNode;
+exports.render = inferno.render;
 exports.isValidElement = isValidElement;
 exports.createElement = createElement;
 exports.Component = Component;
@@ -736,10 +736,10 @@ exports.unmountComponentAtNode = unmountComponentAtNode;
 exports.cloneElement = cloneElement;
 exports.PropTypes = index$1;
 exports.createClass = createClass;
-exports.findDOMNode = Inferno.findDOMNode;
+exports.findDOMNode = inferno.findDOMNode;
 exports.Children = Children;
-exports.cloneVNode = Inferno.cloneVNode;
-exports.NO_OP = Inferno.NO_OP;
+exports.cloneVNode = inferno.cloneVNode;
+exports.NO_OP = inferno.NO_OP;
 exports.version = version;
 exports['default'] = index;
 

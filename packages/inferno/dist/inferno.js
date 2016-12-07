@@ -4,10 +4,10 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.Inferno = factory());
-}(this, (function () { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.Inferno = global.Inferno || {})));
+}(this, (function (exports) { 'use strict';
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
@@ -2356,6 +2356,7 @@ if (process.env.NODE_ENV !== 'production') {
 	);
 }
 
+// we duplicate it so it plays nicely with different module loading systems
 var index = {
 	linkEvent: linkEvent,
 	// core shapes
@@ -2376,6 +2377,18 @@ var index = {
 	enableFindDOMNode: enableFindDOMNode
 };
 
-return index;
+exports['default'] = index;
+exports.linkEvent = linkEvent;
+exports.createVNode = createVNode;
+exports.cloneVNode = cloneVNode;
+exports.NO_OP = NO_OP;
+exports.EMPTY_OBJ = EMPTY_OBJ;
+exports.render = render;
+exports.findDOMNode = findDOMNode;
+exports.createRenderer = createRenderer;
+exports.disableRecycling = disableRecycling;
+exports.enableFindDOMNode = enableFindDOMNode;
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
