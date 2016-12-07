@@ -4,24 +4,19 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.Inferno = global.Inferno || {}, global.Inferno.Component = factory());
-}(this, (function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno')) :
+    typeof define === 'function' && define.amd ? define(['inferno'], factory) :
+    (global.Inferno = global.Inferno || {}, global.Inferno.Component = factory(global.Inferno));
+}(this, (function (inferno) { 'use strict';
 
-var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though
 var isArray = Array.isArray;
-function isStatefulComponent(o) {
-    return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
-}
-function isStringOrNumber(obj) {
-    return isString(obj) || isNumber(obj);
-}
+
+
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
@@ -32,12 +27,8 @@ function isFunction(obj) {
     return typeof obj === 'function';
 }
 
-function isString(obj) {
-    return typeof obj === 'string';
-}
-function isNumber(obj) {
-    return typeof obj === 'number';
-}
+
+
 function isNull(obj) {
     return obj === null;
 }
@@ -53,233 +44,6 @@ function throwError(message) {
         message = ERROR_MSG;
     }
     throw new Error(("Inferno Error: " + message));
-}
-
-var EMPTY_OBJ = {};
-
-function cloneVNode(vNodeToClone, props) {
-    var _children = [], len = arguments.length - 2;
-    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
-
-    var children = _children;
-    if (_children.length > 0 && !isNull(_children[0])) {
-        if (!props) {
-            props = {};
-        }
-        if (_children.length === 1) {
-            children = _children[0];
-        }
-        if (isUndefined(props.children)) {
-            props.children = children;
-        }
-        else {
-            if (isArray(children)) {
-                if (isArray(props.children)) {
-                    props.children = props.children.concat(children);
-                }
-                else {
-                    props.children = [props.children].concat(children);
-                }
-            }
-            else {
-                if (isArray(props.children)) {
-                    props.children.push(children);
-                }
-                else {
-                    props.children = [props.children];
-                    props.children.push(children);
-                }
-            }
-        }
-    }
-    children = null;
-    var flags = vNodeToClone.flags;
-    var events = vNodeToClone.events || (props && props.events) || null;
-    var newVNode;
-    if (isArray(vNodeToClone)) {
-        newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
-    }
-    else if (isNullOrUndef(props) && isNullOrUndef(children)) {
-        newVNode = Object.assign({}, vNodeToClone);
-    }
-    else {
-        var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
-        var ref = vNodeToClone.ref || props.ref;
-        if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
-        }
-        else if (flags & 3970 /* Element */) {
-            children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
-        }
-    }
-    if (flags & 28 /* Component */) {
-        var newProps = newVNode.props;
-        if (newProps) {
-            var newChildren = newProps.children;
-            // we need to also clone component children that are in props
-            // as the children may also have been hoisted
-            if (newChildren) {
-                if (isArray(newChildren)) {
-                    for (var i = 0; i < newChildren.length; i++) {
-                        var child = newChildren[i];
-                        if (!isInvalid(child) && isVNode(child)) {
-                            newProps.children[i] = cloneVNode(child);
-                        }
-                    }
-                }
-                else if (isVNode(newChildren)) {
-                    newProps.children = cloneVNode(newChildren);
-                }
-            }
-        }
-        newVNode.children = null;
-    }
-    newVNode.dom = null;
-    return newVNode;
-}
-
-function _normalizeVNodes(nodes, result, i) {
-    for (; i < nodes.length; i++) {
-        var n = nodes[i];
-        if (!isInvalid(n)) {
-            if (Array.isArray(n)) {
-                _normalizeVNodes(n, result, 0);
-            }
-            else {
-                if (isStringOrNumber(n)) {
-                    n = createTextVNode(n);
-                }
-                else if (isVNode(n) && n.dom) {
-                    n = cloneVNode(n);
-                }
-                result.push(n);
-            }
-        }
-    }
-}
-function normalizeVNodes(nodes) {
-    var newNodes;
-    // we assign $ which basically means we've flagged this array for future note
-    // if it comes back again, we need to clone it, as people are using it
-    // in an immutable way
-    // tslint:disable
-    if (nodes['$']) {
-        nodes = nodes.slice();
-    }
-    else {
-        nodes['$'] = true;
-    }
-    // tslint:enable
-    for (var i = 0; i < nodes.length; i++) {
-        var n = nodes[i];
-        if (isInvalid(n)) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(n);
-        }
-        else if (Array.isArray(n)) {
-            var result = (newNodes || nodes).slice(0, i);
-            _normalizeVNodes(nodes, result, i);
-            return result;
-        }
-        else if (isStringOrNumber(n)) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(createTextVNode(n));
-        }
-        else if (isVNode(n) && n.dom) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(cloneVNode(n));
-        }
-        else if (newNodes) {
-            newNodes.push(cloneVNode(n));
-        }
-    }
-    return newNodes || nodes;
-}
-function normalizeChildren(children) {
-    if (isArray(children)) {
-        return normalizeVNodes(children);
-    }
-    else if (isVNode(children) && children.dom) {
-        return cloneVNode(children);
-    }
-    return children;
-}
-function normalizeProps(vNode, props, children) {
-    if (!(vNode.flags & 28 /* Component */) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
-        vNode.children = props.children;
-    }
-    if (props.ref) {
-        vNode.ref = props.ref;
-    }
-    if (props.events) {
-        vNode.events = props.events;
-    }
-    if (!isNullOrUndef(props.key)) {
-        vNode.key = props.key;
-    }
-}
-function normalize(vNode) {
-    var props = vNode.props;
-    var children = vNode.children;
-    // convert a wrongly created type back to element
-    if (isString(vNode.type) && (vNode.flags & 28 /* Component */)) {
-        vNode.flags = 3970 /* Element */;
-    }
-    if (props) {
-        normalizeProps(vNode, props, children);
-    }
-    if (!isInvalid(children)) {
-        vNode.children = normalizeChildren(children);
-    }
-    if (props && !isInvalid(props.children)) {
-        props.children = normalizeChildren(props.children);
-    }
-}
-function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
-    if (flags & 16 /* ComponentUnknown */) {
-        flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
-    }
-    var vNode = {
-        children: isUndefined(children) ? null : children,
-        dom: null,
-        events: events || null,
-        flags: flags || 0,
-        key: key === undefined ? null : key,
-        props: props || null,
-        ref: ref || null,
-        type: type
-    };
-    if (!noNormalise) {
-        normalize(vNode);
-    }
-    return vNode;
-}
-// when a components root VNode is also a component, we can run into issues
-// this will recursively look for vNode.parentNode if the VNode is a component
-function updateParentComponentVNodes(vNode, dom) {
-    if (vNode.flags & 28 /* Component */) {
-        var parentVNode = vNode.parentVNode;
-        if (parentVNode) {
-            parentVNode.dom = dom;
-            updateParentComponentVNodes(parentVNode, dom);
-        }
-    }
-}
-function createVoidVNode() {
-    return createVNode(4096 /* Void */);
-}
-function createTextVNode(text) {
-    return createVNode(1 /* Text */, null, null, text);
-}
-function isVNode(o) {
-    return !!o.flags;
 }
 
 var Lifecycle = function Lifecycle() {
@@ -302,6 +66,21 @@ if (process.env.NODE_ENV !== 'production') {
     noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 }
 var componentCallbackQueue = new Map();
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+function updateParentComponentVNodes(vNode, dom) {
+    if (vNode.flags & 28 /* Component */) {
+        var parentVNode = vNode.parentVNode;
+        if (parentVNode) {
+            parentVNode.dom = dom;
+            updateParentComponentVNodes(parentVNode, dom);
+        }
+    }
+}
+// this is in shapes too, but we don't want to import from shapes as it will pull in a duplicate of createVNode
+function createVoidVNode() {
+    return inferno.createVNode(4096 /* Void */);
+}
 function addToQueue(component, force, callback) {
     // TODO this function needs to be revised and improved on
     var queue = componentCallbackQueue.get(component);
@@ -365,7 +144,7 @@ function applyState(component, force, callback) {
             }
             throwError();
         }
-        else if (nextInput === NO_OP) {
+        else if (nextInput === inferno.NO_OP) {
             nextInput = component._lastInput;
             didUpdate = false;
         }
@@ -423,7 +202,7 @@ var Component$1 = function Component$1(props, context) {
     this._isSVG = false;
     this._componentToDOMNodeMap = null;
     /** @type {object} */
-    this.props = props || EMPTY_OBJ;
+    this.props = props || inferno.EMPTY_OBJ;
     /** @type {object} */
     this.context = context || {};
     if (!this.componentDidMount) {
@@ -481,8 +260,8 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
     if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
         nextProps.children = prevProps.children;
     }
-    if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
-        if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
+    if ((prevProps !== nextProps || nextProps === inferno.EMPTY_OBJ) || prevState !== nextState || force) {
+        if (prevProps !== nextProps || nextProps === inferno.EMPTY_OBJ) {
             this._blockRender = true;
             this.componentWillReceiveProps(nextProps, context);
             this._blockRender = false;
@@ -506,7 +285,7 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
             return render;
         }
     }
-    return NO_OP;
+    return inferno.NO_OP;
 };
 
 return Component$1;

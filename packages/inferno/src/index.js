@@ -2,7 +2,7 @@ import {
 	createVNode
 } from '../../../build/core/shapes';
 import cloneVNode from '../../../build/factories/cloneVNode';
-import { warning, NO_OP, isBrowser } from '../../../build/shared';
+import { warning, NO_OP, isBrowser, EMPTY_OBJ } from '../../../build/shared';
 import { render, findDOMNode, createRenderer, enableFindDOMNode } from '../../../build/DOM/rendering';
 import { disableRecycling } from '../../../build/DOM/recycling';
 import { initDevToolsHooks } from '../../../build/DOM/devtools';
@@ -36,8 +36,9 @@ export default {
 	// cloning
 	cloneVNode,
 
-	// TODO do we still need this? can we remove?
+	// used to shared common items between Inferno libs
 	NO_OP,
+	EMPTY_OBJ,
 
 	//DOM
 	render,

@@ -2,12 +2,10 @@ import PropTypes from 'proptypes';
 import isValidElement from '../../../build/factories/isValidElement';
 import createClass from '../../../build/component/createClass';
 import infernoCreateElement from '../../../build/factories/createElement';
-import cloneVNode from '../../../build/factories/cloneVNode';
 import renderToString, { renderToStaticMarkup } from '../../../build/server/renderToString';
-import { render, findDOMNode, enableFindDOMNode } from '../../../build/DOM/rendering';
-import { createVNode } from '../../../build/core/shapes';
+import {createVNode, NO_OP, render, findDOMNode, enableFindDOMNode, cloneVNode } from 'inferno';
 import Component from 'inferno-component';
-import { NO_OP } from '../../../build/shared';
+import {  } from '../../../build/shared';
 
 enableFindDOMNode();
 

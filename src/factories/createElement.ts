@@ -1,8 +1,8 @@
 import {
-	createVNode,
 	VNodeFlags,
 	VNode
 } from '../core/shapes';
+import { createVNode } from 'inferno';
 import {
 	isAttrAnEvent,
 	isString,

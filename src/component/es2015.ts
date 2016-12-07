@@ -1,16 +1,14 @@
+import { NO_OP, createVNode, EMPTY_OBJ } from 'inferno';
 import {
-	EMPTY_OBJ,
-	ERROR_MSG,
-	NO_OP,
 	isArray,
 	isFunction,
 	isInvalid,
 	isNullOrUndef,
 	throwError,
+	ERROR_MSG
 } from '../shared';
 import {
-	createVoidVNode,
-	updateParentComponentVNodes,
+	VNodeFlags
 } from './../core/shapes';
 
 import Lifecycle from './../DOM/lifecycle';
@@ -21,6 +19,19 @@ if (process.env.NODE_ENV !== 'production') {
 	noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 }
 const componentCallbackQueue = new Map();
+
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+function updateParentComponentVNodes(vNode, dom) {
+	if (vNode.flags & VNodeFlags.Component) {
+		const parentVNode = vNode.parentVNode;
+
+		if (parentVNode) {
+			parentVNode.dom = dom;
+			updateParentComponentVNodes(parentVNode, dom);
+		}
+	}
+}
 
 export interface ComponentLifecycle<P, S> {
 	componentDidMount?: () => void;
@@ -48,6 +59,11 @@ export interface ComponentSpec<P, S> extends Mixin<P, S> {
 	mixins?: any;
 	[propertyName: string]: any;
 	render(props?, context?): any;
+}
+
+// this is in shapes too, but we don't want to import from shapes as it will pull in a duplicate of createVNode
+function createVoidVNode() {
+	return createVNode(VNodeFlags.Void);
 }
 
 function addToQueue(component: Component<any, any>, force, callback): void {

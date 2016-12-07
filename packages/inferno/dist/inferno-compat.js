@@ -4,10 +4,10 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('./inferno-component')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'inferno-component'], factory) :
-  (factory((global.Inferno = global.Inferno || {}),global.Inferno.Component));
-}(this, (function (exports,Component) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('./inferno-component'), require('./inferno')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'inferno-component', 'inferno'], factory) :
+  (factory((global.Inferno = global.Inferno || {}),global.Inferno.Component,global.Inferno));
+}(this, (function (exports,Component,inferno) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;
 
@@ -353,7 +353,7 @@ var index$1 = createCommonjsModule(function (module, exports) {
 
 });
 
-var NO_OP = '$NO_OP';
+var NO_OP$1 = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 var isBrowser = typeof window !== 'undefined' && window.document;
 
@@ -527,231 +527,6 @@ function createClass(obj) {
     return Cl;
 }
 
-function cloneVNode(vNodeToClone, props) {
-    var _children = [], len = arguments.length - 2;
-    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
-
-    var children = _children;
-    if (_children.length > 0 && !isNull(_children[0])) {
-        if (!props) {
-            props = {};
-        }
-        if (_children.length === 1) {
-            children = _children[0];
-        }
-        if (isUndefined(props.children)) {
-            props.children = children;
-        }
-        else {
-            if (isArray(children)) {
-                if (isArray(props.children)) {
-                    props.children = props.children.concat(children);
-                }
-                else {
-                    props.children = [props.children].concat(children);
-                }
-            }
-            else {
-                if (isArray(props.children)) {
-                    props.children.push(children);
-                }
-                else {
-                    props.children = [props.children];
-                    props.children.push(children);
-                }
-            }
-        }
-    }
-    children = null;
-    var flags = vNodeToClone.flags;
-    var events = vNodeToClone.events || (props && props.events) || null;
-    var newVNode;
-    if (isArray(vNodeToClone)) {
-        newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
-    }
-    else if (isNullOrUndef(props) && isNullOrUndef(children)) {
-        newVNode = Object.assign({}, vNodeToClone);
-    }
-    else {
-        var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
-        var ref = vNodeToClone.ref || props.ref;
-        if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
-        }
-        else if (flags & 3970 /* Element */) {
-            children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
-        }
-    }
-    if (flags & 28 /* Component */) {
-        var newProps = newVNode.props;
-        if (newProps) {
-            var newChildren = newProps.children;
-            // we need to also clone component children that are in props
-            // as the children may also have been hoisted
-            if (newChildren) {
-                if (isArray(newChildren)) {
-                    for (var i = 0; i < newChildren.length; i++) {
-                        var child = newChildren[i];
-                        if (!isInvalid(child) && isVNode(child)) {
-                            newProps.children[i] = cloneVNode(child);
-                        }
-                    }
-                }
-                else if (isVNode(newChildren)) {
-                    newProps.children = cloneVNode(newChildren);
-                }
-            }
-        }
-        newVNode.children = null;
-    }
-    newVNode.dom = null;
-    return newVNode;
-}
-
-function _normalizeVNodes(nodes, result, i) {
-    for (; i < nodes.length; i++) {
-        var n = nodes[i];
-        if (!isInvalid(n)) {
-            if (Array.isArray(n)) {
-                _normalizeVNodes(n, result, 0);
-            }
-            else {
-                if (isStringOrNumber(n)) {
-                    n = createTextVNode(n);
-                }
-                else if (isVNode(n) && n.dom) {
-                    n = cloneVNode(n);
-                }
-                result.push(n);
-            }
-        }
-    }
-}
-function normalizeVNodes(nodes) {
-    var newNodes;
-    // we assign $ which basically means we've flagged this array for future note
-    // if it comes back again, we need to clone it, as people are using it
-    // in an immutable way
-    // tslint:disable
-    if (nodes['$']) {
-        nodes = nodes.slice();
-    }
-    else {
-        nodes['$'] = true;
-    }
-    // tslint:enable
-    for (var i = 0; i < nodes.length; i++) {
-        var n = nodes[i];
-        if (isInvalid(n)) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(n);
-        }
-        else if (Array.isArray(n)) {
-            var result = (newNodes || nodes).slice(0, i);
-            _normalizeVNodes(nodes, result, i);
-            return result;
-        }
-        else if (isStringOrNumber(n)) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(createTextVNode(n));
-        }
-        else if (isVNode(n) && n.dom) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(cloneVNode(n));
-        }
-        else if (newNodes) {
-            newNodes.push(cloneVNode(n));
-        }
-    }
-    return newNodes || nodes;
-}
-function normalizeChildren(children) {
-    if (isArray(children)) {
-        return normalizeVNodes(children);
-    }
-    else if (isVNode(children) && children.dom) {
-        return cloneVNode(children);
-    }
-    return children;
-}
-function normalizeProps$1(vNode, props, children) {
-    if (!(vNode.flags & 28 /* Component */) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
-        vNode.children = props.children;
-    }
-    if (props.ref) {
-        vNode.ref = props.ref;
-    }
-    if (props.events) {
-        vNode.events = props.events;
-    }
-    if (!isNullOrUndef(props.key)) {
-        vNode.key = props.key;
-    }
-}
-function normalize(vNode) {
-    var props = vNode.props;
-    var children = vNode.children;
-    // convert a wrongly created type back to element
-    if (isString(vNode.type) && (vNode.flags & 28 /* Component */)) {
-        vNode.flags = 3970 /* Element */;
-    }
-    if (props) {
-        normalizeProps$1(vNode, props, children);
-    }
-    if (!isInvalid(children)) {
-        vNode.children = normalizeChildren(children);
-    }
-    if (props && !isInvalid(props.children)) {
-        props.children = normalizeChildren(props.children);
-    }
-}
-function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
-    if (flags & 16 /* ComponentUnknown */) {
-        flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
-    }
-    var vNode = {
-        children: isUndefined(children) ? null : children,
-        dom: null,
-        events: events || null,
-        flags: flags || 0,
-        key: key === undefined ? null : key,
-        props: props || null,
-        ref: ref || null,
-        type: type
-    };
-    if (!noNormalise) {
-        normalize(vNode);
-    }
-    return vNode;
-}
-// when a components root VNode is also a component, we can run into issues
-// this will recursively look for vNode.parentNode if the VNode is a component
-function updateParentComponentVNodes(vNode, dom) {
-    if (vNode.flags & 28 /* Component */) {
-        var parentVNode = vNode.parentVNode;
-        if (parentVNode) {
-            parentVNode.dom = dom;
-            updateParentComponentVNodes(parentVNode, dom);
-        }
-    }
-}
-function createVoidVNode() {
-    return createVNode(4096 /* Void */);
-}
-function createTextVNode(text) {
-    return createVNode(1 /* Text */, null, null, text);
-}
-function isVNode(o) {
-    return !!o.flags;
-}
-
 var componentHooks = {
     onComponentWillMount: true,
     onComponentDidMount: true,
@@ -768,7 +543,7 @@ function createElement$1(name, props) {
         throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
     }
     var children = _children;
-    var vNode = createVNode(0);
+    var vNode = inferno.createVNode(0);
     var ref = null;
     var key = null;
     var events = null;
@@ -840,7 +615,7 @@ function createElement$1(name, props) {
         }
         vNode.props = props;
     }
-    return createVNode(flags, name, props, children, events, key, ref);
+    return inferno.createVNode(flags, name, props, children, events, key, ref);
 }
 
 function escapeText(_string) {
@@ -897,6 +672,220 @@ function isVoidElement(str) {
     return !!voidElements[str];
 }
 
+function cloneVNode$1(vNodeToClone, props) {
+    var _children = [], len = arguments.length - 2;
+    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
+
+    var children = _children;
+    if (_children.length > 0 && !isNull(_children[0])) {
+        if (!props) {
+            props = {};
+        }
+        if (_children.length === 1) {
+            children = _children[0];
+        }
+        if (isUndefined(props.children)) {
+            props.children = children;
+        }
+        else {
+            if (isArray(children)) {
+                if (isArray(props.children)) {
+                    props.children = props.children.concat(children);
+                }
+                else {
+                    props.children = [props.children].concat(children);
+                }
+            }
+            else {
+                if (isArray(props.children)) {
+                    props.children.push(children);
+                }
+                else {
+                    props.children = [props.children];
+                    props.children.push(children);
+                }
+            }
+        }
+    }
+    children = null;
+    var flags = vNodeToClone.flags;
+    var events = vNodeToClone.events || (props && props.events) || null;
+    var newVNode;
+    if (isArray(vNodeToClone)) {
+        newVNode = vNodeToClone.map(function (vNode) { return cloneVNode$1(vNode); });
+    }
+    else if (isNullOrUndef(props) && isNullOrUndef(children)) {
+        newVNode = Object.assign({}, vNodeToClone);
+    }
+    else {
+        var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
+        var ref = vNodeToClone.ref || props.ref;
+        if (flags & 28 /* Component */) {
+            newVNode = createVNode$1(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
+        }
+        else if (flags & 3970 /* Element */) {
+            children = (props && props.children) || vNodeToClone.children;
+            newVNode = createVNode$1(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
+        }
+    }
+    if (flags & 28 /* Component */) {
+        var newProps = newVNode.props;
+        if (newProps) {
+            var newChildren = newProps.children;
+            // we need to also clone component children that are in props
+            // as the children may also have been hoisted
+            if (newChildren) {
+                if (isArray(newChildren)) {
+                    for (var i = 0; i < newChildren.length; i++) {
+                        var child = newChildren[i];
+                        if (!isInvalid(child) && isVNode(child)) {
+                            newProps.children[i] = cloneVNode$1(child);
+                        }
+                    }
+                }
+                else if (isVNode(newChildren)) {
+                    newProps.children = cloneVNode$1(newChildren);
+                }
+            }
+        }
+        newVNode.children = null;
+    }
+    newVNode.dom = null;
+    return newVNode;
+}
+
+function _normalizeVNodes(nodes, result, i) {
+    for (; i < nodes.length; i++) {
+        var n = nodes[i];
+        if (!isInvalid(n)) {
+            if (Array.isArray(n)) {
+                _normalizeVNodes(n, result, 0);
+            }
+            else {
+                if (isStringOrNumber(n)) {
+                    n = createTextVNode(n);
+                }
+                else if (isVNode(n) && n.dom) {
+                    n = cloneVNode$1(n);
+                }
+                result.push(n);
+            }
+        }
+    }
+}
+function normalizeVNodes(nodes) {
+    var newNodes;
+    // we assign $ which basically means we've flagged this array for future note
+    // if it comes back again, we need to clone it, as people are using it
+    // in an immutable way
+    // tslint:disable
+    if (nodes['$']) {
+        nodes = nodes.slice();
+    }
+    else {
+        nodes['$'] = true;
+    }
+    // tslint:enable
+    for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        if (isInvalid(n)) {
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push(n);
+        }
+        else if (Array.isArray(n)) {
+            var result = (newNodes || nodes).slice(0, i);
+            _normalizeVNodes(nodes, result, i);
+            return result;
+        }
+        else if (isStringOrNumber(n)) {
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push(createTextVNode(n));
+        }
+        else if (isVNode(n) && n.dom) {
+            if (!newNodes) {
+                newNodes = nodes.slice(0, i);
+            }
+            newNodes.push(cloneVNode$1(n));
+        }
+        else if (newNodes) {
+            newNodes.push(cloneVNode$1(n));
+        }
+    }
+    return newNodes || nodes;
+}
+function normalizeChildren(children) {
+    if (isArray(children)) {
+        return normalizeVNodes(children);
+    }
+    else if (isVNode(children) && children.dom) {
+        return cloneVNode$1(children);
+    }
+    return children;
+}
+function normalizeProps$1(vNode, props, children) {
+    if (!(vNode.flags & 28 /* Component */) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
+        vNode.children = props.children;
+    }
+    if (props.ref) {
+        vNode.ref = props.ref;
+    }
+    if (props.events) {
+        vNode.events = props.events;
+    }
+    if (!isNullOrUndef(props.key)) {
+        vNode.key = props.key;
+    }
+}
+function normalize(vNode) {
+    var props = vNode.props;
+    var children = vNode.children;
+    // convert a wrongly created type back to element
+    if (isString(vNode.type) && (vNode.flags & 28 /* Component */)) {
+        vNode.flags = 3970 /* Element */;
+    }
+    if (props) {
+        normalizeProps$1(vNode, props, children);
+    }
+    if (!isInvalid(children)) {
+        vNode.children = normalizeChildren(children);
+    }
+    if (props && !isInvalid(props.children)) {
+        props.children = normalizeChildren(props.children);
+    }
+}
+function createVNode$1(flags, type, props, children, events, key, ref, noNormalise) {
+    if (flags & 16 /* ComponentUnknown */) {
+        flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
+    }
+    var vNode = {
+        children: isUndefined(children) ? null : children,
+        dom: null,
+        events: events || null,
+        flags: flags || 0,
+        key: key === undefined ? null : key,
+        props: props || null,
+        ref: ref || null,
+        type: type
+    };
+    if (!noNormalise) {
+        normalize(vNode);
+    }
+    return vNode;
+}
+function createVoidVNode() {
+    return createVNode$1(4096 /* Void */);
+}
+function createTextVNode(text) {
+    return createVNode$1(1 /* Text */, null, null, text);
+}
+function isVNode(o) {
+    return !!o.flags;
+}
+
 var devToolsStatus = {
     connected: false
 };
@@ -926,7 +915,7 @@ function sendToDevTools(global, data) {
 function rerenderRoots() {
     for (var i = 0; i < roots.length; i++) {
         var root = roots[i];
-        render(root.input, root.dom);
+        render$1(root.input, root.dom);
     }
 }
 
@@ -1617,12 +1606,12 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     }
                     throwError();
                 }
-                else if (nextInput$1 === NO_OP) {
+                else if (nextInput$1 === NO_OP$1) {
                     nextInput$1 = lastInput$1;
                     didUpdate = false;
                 }
                 else if (isObject(nextInput$1) && nextInput$1.dom) {
-                    nextInput$1 = cloneVNode(nextInput$1);
+                    nextInput$1 = cloneVNode$1(nextInput$1);
                 }
                 if (nextInput$1.flags & 28 /* Component */) {
                     nextInput$1.parentVNode = nextVNode;
@@ -1678,9 +1667,9 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     throwError();
                 }
                 else if (isObject(nextInput$2) && nextInput$2.dom) {
-                    nextInput$2 = cloneVNode(nextInput$2);
+                    nextInput$2 = cloneVNode$1(nextInput$2);
                 }
-                if (nextInput$2 !== NO_OP) {
+                if (nextInput$2 !== NO_OP$1) {
                     patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG, isRecycling);
                     nextVNode.children = nextInput$2;
                     if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
@@ -1724,7 +1713,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
             var child = nextChildren[i];
             if (!isInvalid(child)) {
                 if (child.dom) {
-                    nextChildren[i] = child = cloneVNode(child);
+                    nextChildren[i] = child = cloneVNode$1(child);
                 }
                 newNode = mount(child, null, lifecycle, context, isSVG);
                 insertOrAppend(dom, newNode, nextNode);
@@ -1753,7 +1742,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
         }
         else {
             if (nextChild.dom) {
-                nextChildren[i] = nextChild = cloneVNode(nextChild);
+                nextChildren[i] = nextChild = cloneVNode$1(nextChild);
             }
             if (isInvalid(lastChild)) {
                 newNode = mount(nextChild, null, lifecycle, context, isSVG);
@@ -1796,10 +1785,10 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
     var aEndNode = a[aEnd];
     var bEndNode = b[bEnd];
     if (bStartNode.dom) {
-        b[bStart] = bStartNode = cloneVNode(bStartNode);
+        b[bStart] = bStartNode = cloneVNode$1(bStartNode);
     }
     if (bEndNode.dom) {
-        b[bEnd] = bEndNode = cloneVNode(bEndNode);
+        b[bEnd] = bEndNode = cloneVNode$1(bEndNode);
     }
     // Step 1
     /* eslint no-constant-condition: 0 */
@@ -1815,7 +1804,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
             aStartNode = a[aStart];
             bStartNode = b[bStart];
             if (bStartNode.dom) {
-                b[bStart] = bStartNode = cloneVNode(bStartNode);
+                b[bStart] = bStartNode = cloneVNode$1(bStartNode);
             }
         }
         // Sync nodes with the same key at the end.
@@ -1829,7 +1818,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
             aEndNode = a[aEnd];
             bEndNode = b[bEnd];
             if (bEndNode.dom) {
-                b[bEnd] = bEndNode = cloneVNode(bEndNode);
+                b[bEnd] = bEndNode = cloneVNode$1(bEndNode);
             }
         }
         // Move and sync nodes from right to left.
@@ -1841,7 +1830,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
             aEndNode = a[aEnd];
             bStartNode = b[bStart];
             if (bStartNode.dom) {
-                b[bStart] = bStartNode = cloneVNode(bStartNode);
+                b[bStart] = bStartNode = cloneVNode$1(bStartNode);
             }
             continue;
         }
@@ -1856,7 +1845,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
             aStartNode = a[aStart];
             bEndNode = b[bEnd];
             if (bEndNode.dom) {
-                b[bEnd] = bEndNode = cloneVNode(bEndNode);
+                b[bEnd] = bEndNode = cloneVNode$1(bEndNode);
             }
             continue;
         }
@@ -1869,7 +1858,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
             while (bStart <= bEnd) {
                 node = b[bStart];
                 if (node.dom) {
-                    b[bStart] = node = cloneVNode(node);
+                    b[bStart] = node = cloneVNode$1(node);
                 }
                 bStart++;
                 insertOrAppend(dom, mount(node, null, lifecycle, context, isSVG), nextNode);
@@ -1908,7 +1897,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
                                 pos = j;
                             }
                             if (bNode.dom) {
-                                b[j] = bNode = cloneVNode(bNode);
+                                b[j] = bNode = cloneVNode$1(bNode);
                             }
                             patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
                             patched++;
@@ -1939,7 +1928,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
                             pos = j;
                         }
                         if (bNode.dom) {
-                            b[j] = bNode = cloneVNode(bNode);
+                            b[j] = bNode = cloneVNode$1(bNode);
                         }
                         patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
                         patched++;
@@ -1953,7 +1942,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
             while (bStart < bLength) {
                 node = b[bStart];
                 if (node.dom) {
-                    b[bStart] = node = cloneVNode(node);
+                    b[bStart] = node = cloneVNode$1(node);
                 }
                 bStart++;
                 insertOrAppend(dom, mount(node, null, lifecycle, context, isSVG), null);
@@ -1976,7 +1965,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
                         pos = i + bStart;
                         node = b[pos];
                         if (node.dom) {
-                            b[pos] = node = cloneVNode(node);
+                            b[pos] = node = cloneVNode$1(node);
                         }
                         nextPos = pos + 1;
                         nextNode = nextPos < b.length ? b[nextPos].dom : null;
@@ -2002,7 +1991,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
                         pos = i + bStart;
                         node = b[pos];
                         if (node.dom) {
-                            b[pos] = node = cloneVNode(node);
+                            b[pos] = node = cloneVNode$1(node);
                         }
                         nextPos = pos + 1;
                         nextNode = nextPos < b.length ? b[nextPos].dom : null;
@@ -2408,7 +2397,7 @@ function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
         var child = children[i];
         if (!isInvalid(child)) {
             if (child.dom) {
-                children[i] = child = cloneVNode(child);
+                children[i] = child = cloneVNode$1(child);
             }
             mount(children[i], dom, lifecycle, context, isSVG);
         }
@@ -2671,19 +2660,8 @@ function hydrateRoot(input, parentDom, lifecycle) {
 var roots = [];
 var componentToDOMNodeMap = new Map();
 var findDOMNodeEnabled = false;
-function enableFindDOMNode() {
-    findDOMNodeEnabled = true;
-}
-function findDOMNode(ref) {
-    if (!findDOMNodeEnabled) {
-        if (process.env.NODE_ENV !== 'production') {
-            throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
-        }
-        throwError();
-    }
-    var dom = ref && ref.nodeType ? ref : null;
-    return componentToDOMNodeMap.get(ref) || dom;
-}
+
+
 function getRoot(dom) {
     for (var i = 0; i < roots.length; i++) {
         var root = roots[i];
@@ -2709,14 +2687,14 @@ function removeRoot(root) {
     }
 }
 var documentBody = isBrowser ? document.body : null;
-function render(input, parentDom) {
+function render$1(input, parentDom) {
     if (documentBody === parentDom) {
         if (process.env.NODE_ENV !== 'production') {
             throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
         }
         throwError();
     }
-    if (input === NO_OP) {
+    if (input === NO_OP$1) {
         return;
     }
     var root = getRoot(parentDom);
@@ -2724,7 +2702,7 @@ function render(input, parentDom) {
         var lifecycle = new Lifecycle();
         if (!isInvalid(input)) {
             if (input.dom) {
-                input = cloneVNode(input);
+                input = cloneVNode$1(input);
             }
             if (!hydrateRoot(input, parentDom, lifecycle)) {
                 mount(input, parentDom, lifecycle, {}, false);
@@ -2742,7 +2720,7 @@ function render(input, parentDom) {
         }
         else {
             if (input.dom) {
-                input = cloneVNode(input);
+                input = cloneVNode$1(input);
             }
             patch(root.input, input, parentDom, lifecycle$1, {}, false, false);
         }
@@ -2800,7 +2778,7 @@ function createStatefulComponentInstance(vNode, Component$$1, props, context, is
     }
     else {
         if (input.dom) {
-            input = cloneVNode(input);
+            input = cloneVNode$1(input);
         }
         if (input.flags & 28 /* Component */) {
             // if we have an input that is also a component, we run into a tricky situation
@@ -2843,7 +2821,7 @@ function createStatelessComponentInput(vNode, component, props, context) {
     }
     else {
         if (input.dom) {
-            input = cloneVNode(input);
+            input = cloneVNode$1(input);
         }
         if (input.flags & 28 /* Component */) {
             // if we have an input that is also a component, we run into a tricky situation
@@ -3043,10 +3021,10 @@ function renderToStaticMarkup(input) {
     return renderVNodeToString(input, null, true);
 }
 
-enableFindDOMNode();
+inferno.enableFindDOMNode();
 
 function unmountComponentAtNode(container) {
-	render(null, container);
+	inferno.render(null, container);
 	return true;
 }
 
@@ -3087,7 +3065,7 @@ Component.prototype._afterRender = function() {
 	currentComponent = null;
 };
 
-var cloneElement = cloneVNode;
+var cloneElement = inferno.cloneVNode;
 var version = '15.4.1';
 
 function normalizeProps(name, props) {
@@ -3148,8 +3126,8 @@ PureComponent.prototype.shouldComponentUpdate = function (props, state) {
 };
 
 var index = {
-	createVNode: createVNode,
-	render: render,
+	createVNode: inferno.createVNode,
+	render: inferno.render,
 	isValidElement: isValidElement,
 	createElement: createElement,
 	Component: Component,
@@ -3158,17 +3136,17 @@ var index = {
 	cloneElement: cloneElement,
 	PropTypes: index$1,
 	createClass: createClass,
-	findDOMNode: findDOMNode,
+	findDOMNode: inferno.findDOMNode,
 	Children: Children,
-	cloneVNode: cloneVNode,
-	NO_OP: NO_OP,
+	cloneVNode: inferno.cloneVNode,
+	NO_OP: inferno.NO_OP,
 	version: version,
 	renderToString: renderToString,
 	renderToStaticMarkup: renderToStaticMarkup
 };
 
-exports.createVNode = createVNode;
-exports.render = render;
+exports.createVNode = inferno.createVNode;
+exports.render = inferno.render;
 exports.isValidElement = isValidElement;
 exports.createElement = createElement;
 exports.Component = Component;
@@ -3177,10 +3155,10 @@ exports.unmountComponentAtNode = unmountComponentAtNode;
 exports.cloneElement = cloneElement;
 exports.PropTypes = index$1;
 exports.createClass = createClass;
-exports.findDOMNode = findDOMNode;
+exports.findDOMNode = inferno.findDOMNode;
 exports.Children = Children;
-exports.cloneVNode = cloneVNode;
-exports.NO_OP = NO_OP;
+exports.cloneVNode = inferno.cloneVNode;
+exports.NO_OP = inferno.NO_OP;
 exports.version = version;
 exports.renderToString = renderToString;
 exports.renderToStaticMarkup = renderToStaticMarkup;

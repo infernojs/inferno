@@ -1,8 +1,8 @@
 import {
 	VNode,
-	VNodeFlags,
-	createVNode,
+	VNodeFlags
 } from '../core/shapes';
+import { createVNode } from 'inferno';
 import {
 	isArray,
 	isStatefulComponent,

@@ -6,6 +6,8 @@ declare module 'inferno' {
 	export function createRenderer(...rest);
 	export function disableRecycling(...rest);
 	export const NO_OP;
+	export const ERROR_MSG;
+	export const EMPTY_OBJ;
 }
 
 declare module 'inferno-component' {
