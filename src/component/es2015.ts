@@ -270,9 +270,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			}
 			throwError();
 		}
-		if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
-			nextProps.children = prevProps.children;
-		}
 		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
 			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
 				this._blockRender = true;

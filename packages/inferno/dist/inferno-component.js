@@ -257,9 +257,6 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
         }
         throwError();
     }
-    if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
-        nextProps.children = prevProps.children;
-    }
     if ((prevProps !== nextProps || nextProps === inferno.EMPTY_OBJ) || prevState !== nextState || force) {
         if (prevProps !== nextProps || nextProps === inferno.EMPTY_OBJ) {
             this._blockRender = true;

@@ -26,7 +26,6 @@ export default function createElement(name: string | Function, props?: any, ..._
 		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
 	let children: any = _children;
-	let vNode = createVNode(0);
 	let ref = null;
 	let key = null;
 	let events = null;
@@ -92,7 +91,6 @@ export default function createElement(name: string | Function, props?: any, ..._
 				delete props.key;
 			}
 		}
-		vNode.props = props;
 	}
 	return createVNode(
 		flags,

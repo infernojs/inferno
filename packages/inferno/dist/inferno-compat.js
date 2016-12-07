@@ -530,7 +530,6 @@ function createElement$1(name, props) {
         throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
     }
     var children = _children;
-    var vNode = inferno.createVNode(0);
     var ref = null;
     var key = null;
     var events = null;
@@ -600,7 +599,6 @@ function createElement$1(name, props) {
                 delete props.key;
             }
         }
-        vNode.props = props;
     }
     return inferno.createVNode(flags, name, props, children, events, key, ref);
 }
