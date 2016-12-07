@@ -2,10 +2,8 @@ import PropTypes from 'proptypes';
 import isValidElement from '../../../build/factories/isValidElement';
 import createClass from '../../../build/component/createClass';
 import infernoCreateElement from '../../../build/factories/createElement';
-import renderToString, { renderToStaticMarkup } from '../../../build/server/renderToString';
 import {createVNode, NO_OP, render, findDOMNode, enableFindDOMNode, cloneVNode } from 'inferno';
 import Component from 'inferno-component';
-import {  } from '../../../build/shared';
 
 enableFindDOMNode();
 
@@ -123,9 +121,7 @@ export {
 	Children,
 	cloneVNode,
 	NO_OP,
-	version,
-	renderToString,
-	renderToStaticMarkup
+	version
 };
 
 export default {
@@ -143,7 +139,5 @@ export default {
 	Children,
 	cloneVNode,
 	NO_OP,
-	version,
-	renderToString,
-	renderToStaticMarkup
+	version
 };
