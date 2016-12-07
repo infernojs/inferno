@@ -4,7 +4,7 @@ import {
 	createContainerWithHTML,
 	validateNodeTree
 } from '../../tools/utils';
-import createElement from 'inferno-create-element';
+import createElement from '../../factories/createElement';
 import { expect } from 'chai';
 
 describe('SSR Hydration - (non-JSX)', () => {
