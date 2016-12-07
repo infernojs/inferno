@@ -1,6 +1,3 @@
-import * as Inferno from '../../testUtils/inferno';
-
-import Component from '../../component/es2015';
 import IndexRoute from '../../router/IndexRoute';
 import Provider from '../Provider';
 import Route from '../../router/Route';
@@ -9,9 +6,10 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import createMemoryHistory from 'history/createMemoryHistory';
 import { createStore } from 'redux';
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
+import Component from 'inferno-component';
+import Inferno from 'inferno';
 
-Inferno; // suppress ts 'never used' error
+const render = Inferno.render;
 
 const browserHistory = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
 

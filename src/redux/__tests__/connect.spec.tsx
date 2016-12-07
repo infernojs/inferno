@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import connect from '../connect';
 import { createStore } from 'redux';
-import Component from '../../component/es2015';
-import { render } from '../../DOM/rendering';
-import * as Inferno from '../../testUtils/inferno';
-Inferno; // suppress ts 'never used' error
+import Component from 'inferno-component';
+import Inferno from 'inferno';
+
+const render = Inferno.render;
 
 class BasicComponent extends Component<any, any> {
 	props: any;
