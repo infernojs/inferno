@@ -159,7 +159,7 @@
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
-    "server:cov:publish": "npm run server:cov && coveralls < coverage/lcov.info && rimraf coverage",
+    "server:cov:publish": "npm run test:server && coveralls < coverage/lcov.info && rimraf coverage",
     "test": "npm run lint && npm run test:browser && npm run test:server",
     "test:browser": "karma start config/karma.conf.js",
     "test:server": "cross-env nyc mocha --opts config/mocha.opts"
