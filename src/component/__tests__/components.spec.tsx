@@ -1,9 +1,10 @@
-import { expect } from 'chai';
 import { assert, spy } from 'sinon';
-import { innerHTML } from '../../tools/utils';
+
 import Component from 'inferno-component';
-import createElement from 'inferno-create-element';
 import Inferno from 'inferno';
+import createElement from 'inferno-create-element';
+import { expect } from 'chai';
+import { innerHTML } from '../../tools/utils';
 
 const render = Inferno.render;
 
@@ -738,7 +739,7 @@ describe('Components (JSX)', () => {
 								);
 							} else {
 								return (
-									<h1>Hello guys</h1>
+									<h1>Hello folks</h1>
 								);
 							}
 						}.call(this)}
@@ -757,7 +758,7 @@ describe('Components (JSX)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				innerHTML('<div><h1>Hello guys</h1><button>toggle</button></div>')
+				innerHTML('<div><h1>Hello folks</h1><button>toggle</button></div>')
 			);
 		});
 
@@ -2190,11 +2191,11 @@ describe('Components (JSX)', () => {
 
 	it('mixing JSX components with non-JSX components', () => {
 		function Comp() {
-			return createElement('div');
+			return createElement('div', {});
 		}
 
 		function Comp2() {
-			return createElement('span');
+			return createElement('span', {});
 		}
 
 		function Comp3() {
@@ -2218,28 +2219,30 @@ describe('Components (JSX)', () => {
 				super(props);
 			}
 
+			static defaultProps = {
+				a: 'A',
+				b: 'B'
+			};
+
 			render() {
 				return <div className={this.props.a} id={this.props.b}>Hello {this.props.c}!</div>;
 			}
 		}
-		Comp1.defaultProps = {
-			a: 'A',
-			b: 'B'
-		};
 
 		class Comp2 extends Component<any, any> {
 			constructor(props) {
 				super(props);
 			}
 
+			static defaultProps = {
+				a: 'aye',
+				b: 'bee'
+			};
+
 			render() {
 				return <div className={this.props.a} id={this.props.b}>Hello {this.props.c}!</div>;
 			}
 		}
-		Comp2.defaultProps = {
-			a: 'aye',
-			b: 'bee'
-		};
 
 		it('should mount component with defaultProps', () => {
 			render(<Comp1 c='C'/>, container);
