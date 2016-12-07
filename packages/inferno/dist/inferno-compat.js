@@ -708,6 +708,35 @@ PureComponent.prototype.shouldComponentUpdate = function (props, state) {
 	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
 };
 
+var WrapperComponent = (function (Component$$1) {
+	function WrapperComponent () {
+		Component$$1.apply(this, arguments);
+	}
+
+	if ( Component$$1 ) WrapperComponent.__proto__ = Component$$1;
+	WrapperComponent.prototype = Object.create( Component$$1 && Component$$1.prototype );
+	WrapperComponent.prototype.constructor = WrapperComponent;
+
+	WrapperComponent.prototype.getChildContext = function getChildContext () {
+		return this.props.context;
+	};
+	WrapperComponent.prototype.render = function render$1 (props) {
+		return props.children;
+	};
+
+	return WrapperComponent;
+}(Component));
+
+function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, callback) {
+	var wrapperVNode = inferno.createVNode(4, WrapperComponent, { context: parentComponent.context, children: vNode });
+	var component = inferno.render(wrapperVNode, container);
+
+	if (callback) {
+		callback(component);
+	}
+	return component;
+}
+
 var index = {
 	createVNode: inferno.createVNode,
 	render: inferno.render,
@@ -723,7 +752,8 @@ var index = {
 	Children: Children,
 	cloneVNode: inferno.cloneVNode,
 	NO_OP: inferno.NO_OP,
-	version: version
+	version: version,
+	unstable_renderSubtreeIntoContainer: unstable_renderSubtreeIntoContainer
 };
 
 exports.createVNode = inferno.createVNode;
@@ -741,6 +771,7 @@ exports.Children = Children;
 exports.cloneVNode = inferno.cloneVNode;
 exports.NO_OP = inferno.NO_OP;
 exports.version = version;
+exports.unstable_renderSubtreeIntoContainer = unstable_renderSubtreeIntoContainer;
 exports['default'] = index;
 
 Object.defineProperty(exports, '__esModule', { value: true });

@@ -2,7 +2,7 @@ import PropTypes from 'proptypes';
 import isValidElement from '../../../build/factories/isValidElement';
 import createClass from '../../../build/component/createClass';
 import infernoCreateElement from '../../../build/factories/createElement';
-import {createVNode, NO_OP, render, findDOMNode, enableFindDOMNode, cloneVNode } from 'inferno';
+import { createVNode, NO_OP, render, findDOMNode, enableFindDOMNode, cloneVNode } from 'inferno';
 import Component from 'inferno-component';
 
 enableFindDOMNode();
@@ -106,6 +106,25 @@ PureComponent.prototype.shouldComponentUpdate = function (props, state) {
 	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
 }
 
+class WrapperComponent extends Component {
+	getChildContext() {
+		return this.props.context;
+	}
+	render(props) {
+		return props.children;
+	}
+}
+
+function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, callback) {
+	const wrapperVNode = createVNode(4, WrapperComponent, { context: parentComponent.context, children: vNode });
+	const component = render(wrapperVNode, container);
+
+	if (callback) {
+		callback(component);
+	}
+	return component;
+}
+
 export {
 	createVNode,
 	render,
@@ -121,7 +140,8 @@ export {
 	Children,
 	cloneVNode,
 	NO_OP,
-	version
+	version,
+	unstable_renderSubtreeIntoContainer
 };
 
 export default {
@@ -139,5 +159,6 @@ export default {
 	Children,
 	cloneVNode,
 	NO_OP,
-	version
+	version,
+	unstable_renderSubtreeIntoContainer
 };
