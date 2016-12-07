@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 import { assert, spy } from 'sinon';
-import { render } from '../../DOM/rendering';
-import Component from '../../component/es2015';
-import createElement from '../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
-import * as Inferno from '../../testUtils/inferno';
-Inferno; // suppress ts 'never used' error
+import Component from 'inferno-component';
+import createElement from 'inferno-create-element';
+import Inferno from 'inferno';
+
+const render = Inferno.render;
 
 describe('Components (JSX)', () => {
 	let container;
@@ -2160,7 +2160,7 @@ describe('Components (JSX)', () => {
 	});
 
 	describe('handling componentWillReceiveProps lifecycle event', () => {
-		it('should correctly handle setState within the lifecycle funciton', () => {
+		it('should correctly handle setState within the lifecycle function', () => {
 			let renderCount = 0;
 			class Comp1 extends Component<any, any> {
 				constructor(props) {
