@@ -10,7 +10,7 @@ import {
 } from 'chai';
 import {
 	render,
-} from './../../DOM/rendering';
+} from '../../DOM/rendering';
 
 Inferno; // suppress ts 'never used' error
 

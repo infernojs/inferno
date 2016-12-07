@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { render } from './../rendering';
-import createElement from './../../factories/createElement';
+import { render } from '../rendering';
+import createElement from '../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
 
 describe('Update (non-jsx)', () => {

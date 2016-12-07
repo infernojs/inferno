@@ -9,6 +9,7 @@
 		"indent": [
 			"tabs"
 		],
+		"arrow-parens": false,
 		"trailing-comma": false,
 		"ordered-imports": false,
 		"no-namespace": false,
@@ -20,6 +21,7 @@
 		"interface-name": [
 			false
 		],
+		"max-classes-per-file": false,
 		"max-line-length": [
 			false
 		],

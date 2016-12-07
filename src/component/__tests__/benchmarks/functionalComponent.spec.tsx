@@ -1,4 +1,4 @@
-import { render } from './../../../DOM/rendering';
+import { render } from '../../../DOM/rendering';
 import * as Inferno from '../../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 

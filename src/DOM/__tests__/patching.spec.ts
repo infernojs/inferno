@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {render} from './../rendering';
+import {render} from '../rendering';
 import {createVNode, VNodeFlags, createTextVNode} from "../../core/shapes";
 import {disableRecycling, recyclingEnabled, enableRecycling} from "../recycling";
 

@@ -1,5 +1,5 @@
-import { render } from './../../../DOM/rendering';
-import createClass from './../../../component/createClass';
+import { render } from '../../../DOM/rendering';
+import createClass from '../../../component/createClass';
 import * as Inferno from '../../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
