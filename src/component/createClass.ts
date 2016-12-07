@@ -8,7 +8,7 @@ const AUTOBIND_BLACKLIST = {
 	constructor: 1,
 	render: 1,
 	shouldComponentUpdate: 1,
-	componentWillRecieveProps: 1,
+	componentWillReceiveProps: 1,
 	componentWillUpdate: 1,
 	componentDidUpdate: 1,
 	componentWillMount: 1,
