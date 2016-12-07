@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { render } from './../rendering';
-import Component from './../../component/es2015';
+import { render } from '../rendering';
+import Component from '../../component/es2015';
 import { innerHTML } from '../../tools/utils';
 import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
@@ -16,7 +16,7 @@ describe('Blueprints (JSX)', () => {
 	afterEach(() => {
 		document.body.removeChild(container);
 		container = null;
-	})
+	});
 
 	describe('Should have parentDOM defined #1', () => {
 		class A extends Component<any, any> {

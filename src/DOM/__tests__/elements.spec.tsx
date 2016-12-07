@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { assert, spy } from 'sinon';
-import { render } from './../rendering';
+import { render } from '../rendering';
 import { innerHTML } from '../../tools/utils';
-import createElement from './../../factories/createElement';
+import createElement from '../../factories/createElement';
 import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 

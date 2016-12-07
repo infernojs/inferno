@@ -9,7 +9,7 @@ import {
 } from '../shared';
 import {
 	VNodeFlags
-} from './../core/shapes';
+} from '../core/shapes';
 
 import Lifecycle from './../DOM/lifecycle';
 

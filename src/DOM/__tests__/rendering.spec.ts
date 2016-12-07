@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {render} from './../rendering';
+import {render} from '../rendering';
 import {createVNode, VNodeFlags} from "../../core/shapes";
 import {NO_OP} from "../../shared";
 

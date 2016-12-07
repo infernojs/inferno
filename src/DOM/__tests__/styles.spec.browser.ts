@@ -1,6 +1,6 @@
-import { render } from './../rendering';
-import { style } from './../../tools/utils';
-import createElement from './../../factories/createElement';
+import { render } from '../rendering';
+import { style } from '../../tools/utils';
+import createElement from '../../factories/createElement';
 import { expect } from 'chai';
 
 const isPhantomJS = window && window.navigator && /PhantomJS/.test(window.navigator.userAgent);

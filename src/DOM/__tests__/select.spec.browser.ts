@@ -1,5 +1,5 @@
-import { render } from './../rendering';
-import createElement from './../../factories/createElement';
+import { render } from '../rendering';
+import createElement from '../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
 import { expect } from 'chai';
 

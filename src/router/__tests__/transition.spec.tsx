@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { render } from './../../DOM/rendering';
+import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
 import Router from '../Router';
 import Route from '../Route';

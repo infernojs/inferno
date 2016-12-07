@@ -2,7 +2,7 @@ import {
 	isArray,
 	EMPTY_OBJ,
 	isNullOrUndef
-} from './../../shared';
+} from '../../shared';
 import { wrappers } from './processElement';
 import { isVNode } from '../../core/shapes';
 

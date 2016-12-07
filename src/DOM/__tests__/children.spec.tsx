@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { assert, spy } from 'sinon';
-import { render } from './../rendering';
-import Component from './../../component/es2015';
+import { render } from '../rendering';
+import Component from '../../component/es2015';
 import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
@@ -432,7 +432,7 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<TabGroup tabs={_tabs}></TabGroup>, container);
+				render(<TabGroup tabs={_tabs}/>, container);
 			}
 
 			renderIt();
@@ -1299,7 +1299,6 @@ describe('Children - (JSX)', () => {
 		});
 	});
 
-
 	describe('Unmount behavior in lists', () => {
 		it('Should not call unmount when changing list length', () => {
 			class UnMountTest extends Component<any, any> {
@@ -1308,7 +1307,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				render() {
-					return <span>1</span>
+					return <span>1</span>;
 				}
 			}
 
@@ -1316,7 +1315,7 @@ describe('Children - (JSX)', () => {
 				render() {
 					let firstClassCitizen = null;
 					if (this.props.firstClassCitizenIsBack) {
-						firstClassCitizen = <div>b</div>
+						firstClassCitizen = <div>b</div>;
 					}
 
 					return (
@@ -1359,9 +1358,8 @@ describe('Children - (JSX)', () => {
 						this.setState({
 							bool: !this.state.bool
 						});
-					}
+					};
 				}
-
 
 				render() {
 					return (
@@ -1391,7 +1389,6 @@ describe('Children - (JSX)', () => {
 				}
 			}
 
-
 			render(<Wrapper/>, container);
 
 			const unMountSpy = spy(FooBar.prototype, 'componentWillUnmount');
@@ -1404,7 +1401,6 @@ describe('Children - (JSX)', () => {
 
 			mountSpy.reset();
 			unMountSpy.reset();
-
 
 			toggle(); // Unmount child component
 			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
@@ -1428,9 +1424,8 @@ describe('Children - (JSX)', () => {
 						this.setState({
 							bool: !this.state.bool
 						});
-					}
-				}
-
+					};
+				};
 
 				render() {
 					return (
@@ -1458,7 +1453,6 @@ describe('Children - (JSX)', () => {
 				}
 			}
 
-
 			render(<Wrapper/>, container);
 
 			const unMountSpy = spy(Test.prototype, 'componentWillUnmount');
@@ -1471,7 +1465,6 @@ describe('Children - (JSX)', () => {
 
 			mountSpy.reset();
 			unMountSpy.reset();
-
 
 			toggle(); // Unmount child component
 			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
@@ -1495,9 +1488,8 @@ describe('Children - (JSX)', () => {
 						this.setState({
 							bool: !this.state.bool
 						});
-					}
+					};
 				}
-
 
 				render() {
 					return (
@@ -1532,7 +1524,6 @@ describe('Children - (JSX)', () => {
 				}
 			}
 
-
 			render(<Wrapper/>, container);
 
 			const unMountSpy = spy(Test.prototype, 'componentWillUnmount');
@@ -1545,13 +1536,11 @@ describe('Children - (JSX)', () => {
 			unMountSpy2.reset();
 			unMountSpy.reset();
 
-
 			toggle(); // Unmount child component
 			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
 			calledOnce(unMountSpy2);
 			calledOnce(unMountSpy);
 		});
-
 
 		it('Should call componentWillUnmount for deeply nested children', () => {
 			let toggle;
@@ -1568,9 +1557,8 @@ describe('Children - (JSX)', () => {
 						this.setState({
 							bool: !this.state.bool
 						});
-					}
+					};
 				}
-
 
 				render() {
 					return (
@@ -1618,16 +1606,15 @@ describe('Children - (JSX)', () => {
 							<Test5/>
 							<span></span>
 						</div>
-					)
+					);
 				}
 			}
 
 			class Test5 extends Component<any, any> {
 				render() {
-					return <h1>ShouldUnMountMe</h1>
+					return <h1>ShouldUnMountMe</h1>;
 				}
 			}
-
 
 			render(<Wrapper/>, container);
 
@@ -1638,7 +1625,6 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>');
 
 			unMountSpy.reset();
-
 
 			toggle(); // Unmount child component
 			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');

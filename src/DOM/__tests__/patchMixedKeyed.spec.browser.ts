@@ -1,5 +1,5 @@
-import { render } from './../rendering';
-import createElement from './../../factories/createElement';
+import { render } from '../rendering';
+import createElement from '../../factories/createElement';
 import { expect } from 'chai';
 
 function spanTagWithText(text) {
