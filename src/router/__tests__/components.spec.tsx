@@ -46,7 +46,7 @@ describe('Router component tests (jsx)', () => {
 		render(null, container);
 	});
 
-	describe.only('<Link>', () => {
+	describe('<Link>', () => {
 		it('should render with all possible props', () => {
 			render(createRoutes('/',
 				<Link to="/" activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>Link</Link>
