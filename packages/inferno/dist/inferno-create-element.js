@@ -7,7 +7,9 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno')) :
     typeof define === 'function' && define.amd ? define(['inferno'], factory) :
     (global.Inferno = global.Inferno || {}, global.Inferno.createElement = factory(global.Inferno));
-}(this, (function (inferno) { 'use strict';
+}(this, (function (Inferno) { 'use strict';
+
+Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
@@ -130,7 +132,7 @@ function createElement$1(name, props) {
             }
         }
     }
-    return inferno.createVNode(flags, name, props, children, events, key, ref);
+    return Inferno.createVNode(flags, name, props, children, events, key, ref);
 }
 
 return createElement$1;
