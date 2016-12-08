@@ -1403,7 +1403,7 @@ describe('Components (JSX)', () => {
 							{!this.state.x ? <ChildA /> : <ChildB />}
 						</div>
 					);
-				};
+				}
 			}
 
 			class ChildB extends Component<any, any> {
@@ -1413,7 +1413,7 @@ describe('Components (JSX)', () => {
 
 				render() {
 					return (<div>Y</div>);
-				};
+				}
 			}
 
 			class ChildA extends Component<any, any> {
@@ -1431,7 +1431,7 @@ describe('Components (JSX)', () => {
 						return (<div>A</div>);
 					}
 					return (<SubChild />);
-				};
+				}
 			}
 
 			class SubChild extends Component<any, any> {
@@ -1441,7 +1441,7 @@ describe('Components (JSX)', () => {
 
 				render() {
 					return (<div>B</div>);
-				};
+				}
 			}
 
 			render(<Parent />, container);
@@ -1554,7 +1554,7 @@ describe('Components (JSX)', () => {
 				setTimeout(() => {
 					this.setState({ x: true });
 				}, 10);
-			};
+			}
 
 			render() {
 				return (
@@ -1562,7 +1562,7 @@ describe('Components (JSX)', () => {
 						{!this.state.x ? <MakeA /> : <MakeY />}
 					</div>
 				);
-			};
+			}
 		}
 
 		class MakeY extends Component<any, any> {
@@ -1572,7 +1572,7 @@ describe('Components (JSX)', () => {
 
 			render() {
 				return (<div>Y</div>);
-			};
+			}
 		}
 
 		class MakeA extends Component<any, any> {
@@ -1585,7 +1585,7 @@ describe('Components (JSX)', () => {
 				setTimeout(() => {
 					expect(() => this.setState({ z: true })).to.throw();
 				}, 20);
-			};
+			}
 
 			render() {
 				if (!this.state.z) {
@@ -1593,7 +1593,7 @@ describe('Components (JSX)', () => {
 				}
 
 				return (<MakeB />);
-			};
+			}
 		}
 
 		class MakeB extends Component<any, any> {
@@ -2391,14 +2391,14 @@ describe('Components (JSX)', () => {
 
 				this.onClick = () => {
 					this.setState({ n: !this.state.n });
-				}
+				};
 			}
 
 			render() {
 				if (this.state.n) {
-					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>
+					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>;
 				}
-				return <span onClick={this.onClick}>SPAN</span>
+				return <span onClick={this.onClick}>SPAN</span>;
 			}
 		}
 
@@ -2477,19 +2477,19 @@ describe('Components (JSX)', () => {
 
 				this.onClick = () => {
 					this.setState({ n: !this.state.n });
-				}
+				};
 			}
 
 			render() {
 				if (this.state.n) {
-					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>
+					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>;
 				}
-				return <span onClick={this.onClick}>SPAN</span>
+				return <span onClick={this.onClick}>SPAN</span>;
 			}
 		}
 
 		function F() {
-			return <A />
+			return <A />;
 		}
 
 		class B extends Component<any, any> {
@@ -2567,19 +2567,19 @@ describe('Components (JSX)', () => {
 
 				this.onClick = () => {
 					this.setState({ n: !this.state.n });
-				}
+				};
 			}
 
 			render() {
 				if (this.state.n) {
-					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>
+					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>;
 				}
-				return <span onClick={this.onClick}>SPAN</span>
+				return <span onClick={this.onClick}>SPAN</span>;
 			}
 		}
 
 		function F() {
-			return <A />
+			return <A />;
 		}
 
 		function B () {
@@ -2648,15 +2648,15 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-				this.setState({ n: !this.state.n });
-				}
+					this.setState({ n: !this.state.n });
+				};
 			}
 
 			render() {
 				if (this.state.n) {
-				return <div onClick={this.onClick}>DIV</div>
+					return <div onClick={this.onClick}>DIV</div>;
 				}
-				return <span onClick={this.onClick}>SPAN</span>
+				return <span onClick={this.onClick}>SPAN</span>;
 			}
 		}
 
@@ -2701,7 +2701,6 @@ describe('Components (JSX)', () => {
 			}
 		}
 
-
 		it('should correct swap rows', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>');
@@ -2724,15 +2723,15 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-				this.setState({ n: !this.state.n });
-				}
+					this.setState({ n: !this.state.n });
+				};
 			}
 
 			render() {
 				if (this.state.n) {
-				return <div onClick={this.onClick}>DIV</div>
+					return <div onClick={this.onClick}>DIV</div>;
 				}
-				return <span onClick={this.onClick}>SPAN</span>
+				return <span onClick={this.onClick}>SPAN</span>;
 			}
 		}
 
@@ -2846,8 +2845,8 @@ describe('Components (JSX)', () => {
 			}
 
 			render() {
-				var a = <div key="b">B</div>;
-				var b = <div key="a">A</div>;
+				const a = <div key="b">B</div>;
+				const b = <div key="a">A</div>;
 
 				return (
 					<div>

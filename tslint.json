@@ -25,6 +25,7 @@
 		"max-line-length": [
 			false
 		],
+		"member-ordering": false,
 		"only-arrow-functions": false,
 		"member-access": [
 			false
