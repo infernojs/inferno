@@ -103,11 +103,11 @@ const config = {};
     version: '54'
   };
 
-  config['sl_chrome-55-' + platform] = {
+  config['sl_chrome-beta-' + platform] = {
     base: 'SauceLabs',
     browserName: 'chrome',
     platform,
-    version: '55'
+    version: 'beta'
   };
 });
 
