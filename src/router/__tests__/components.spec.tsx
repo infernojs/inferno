@@ -99,11 +99,9 @@ describe('Router components (jsx)', () => {
 });
 
 function clickOnLink(element) {
-	element.click();
-	// the below breaks `npm run browser`
-	// if (typeof window.__karma__ !== 'undefined') {
-	// 	element.click();
-	// } else {
-	// 	browserHistory.push(element.href);
-	// }
+	if (typeof window.__karma__ !== 'undefined' || typeof window.mocha !== 'undefined') {
+		element.click();
+	} else {
+		browserHistory.push(element.href);
+	}
 }
