@@ -10,19 +10,34 @@ export interface IRouterProps {
 	component?: Component<any, any>;
 }
 
+function createrRouter(history) {
+	if (!history) {
+		throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed');
+	}
+	return {
+		push: history.push,
+		listen: history.listen,
+		get location() {
+			return history.location.pathname !== 'blank' ? history.location : {
+				pathname: '/',
+				search: ''
+			};
+		},
+		get url() {
+			return this.location.pathname + this.location.search;
+		}
+	};
+}
+
 export default class Router extends Component<IRouterProps, any> {
 	router: any;
 	unlisten: any;
 
 	constructor(props?: any, context?: any) {
 		super(props, context);
-		if (!props.history) {
-			throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed');
-		}
-		this.router = props.history;
-		const location = this.router.location.pathname + this.router.location.search;
+		this.router = createrRouter(props.history);
 		this.state = {
-			url: props.url || (location !== 'blank' ? location : '/')
+			url: props.url || this.router.url
 		};
 	}
 
@@ -47,7 +62,8 @@ export default class Router extends Component<IRouterProps, any> {
 	render({ children, url }) {
 		return createElement(RouterContext, {
 			location: url || this.state.url,
-			router: this.router
-		}, children);
+			router: this.router,
+			routes: children
+		});
 	}
 }

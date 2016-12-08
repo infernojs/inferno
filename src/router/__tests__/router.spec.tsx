@@ -32,16 +32,17 @@ function createRouterWithSingleRoute(url, path, component) {
 	);
 }
 
-describe('Router tests (jsx)', () => {
+describe('Router (jsx)', () => {
 	let container;
 
 	beforeEach(() => {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
 	afterEach(() => {
+		document.body.removeChild(container);
 		render(null, container);
-		container.innerHTML = '';
 	});
 
 	describe('with browser history', () => {
@@ -191,16 +192,6 @@ describe('Router tests (jsx)', () => {
 			expect(
 				() => render(<RouterContext location={ null }/>, container)
 			).to.throw(TypeError);
-		});
-		it('should fail when `matched` or children are not provided', () => {
-			expect(
-				() => render(<RouterContext matched={ null }/>, container)
-			).to.throw(TypeError);
-		});
-		it('should display correctly when `matched` prop is provided', () => {
-			render(<RouterContext location='/' matched={ <TestComponent/> }/>, container);
-
-			expect(container.innerHTML).to.equal('<div>Test!</div>');
 		});
 	});
 });
