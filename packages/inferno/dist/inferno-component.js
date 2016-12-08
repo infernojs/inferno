@@ -149,7 +149,8 @@ function applyState(component, force, callback) {
             didUpdate = false;
         }
         var lastInput = component._lastInput;
-        var parentDom = lastInput.dom.parentNode;
+        var vNode = component._vNode;
+        var parentDom = (lastInput.dom && lastInput.dom.parentNode) || (lastInput.dom = vNode.dom);
         component._lastInput = nextInput;
         if (didUpdate) {
             var subLifecycle = component._lifecycle;
@@ -171,7 +172,6 @@ function applyState(component, force, callback) {
             subLifecycle.trigger();
             component.componentDidUpdate(props, prevState);
         }
-        var vNode = component._vNode;
         var dom = vNode.dom = nextInput.dom;
         var componentToDOMNodeMap = component._componentToDOMNodeMap;
         componentToDOMNodeMap && componentToDOMNodeMap.set(component, nextInput.dom);

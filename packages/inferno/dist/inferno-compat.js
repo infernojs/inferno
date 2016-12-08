@@ -676,9 +676,6 @@ var createElement = function (name, _props) {
 	var children = [], len = arguments.length - 2;
 	while ( len-- > 0 ) children[ len ] = arguments[ len + 2 ];
 
-	if (name && typeof name === 'object' && name.flags) {
-		return name;
-	}
 	var props = _props || {};
 	var ref = props.ref;
 
