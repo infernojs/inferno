@@ -51,6 +51,19 @@ export function mapSearchParams(search): any {
 }
 
 /**
+ * Gets the relevant part of the URL for matching
+ * @param fullURL
+ * @param partURL
+ * @returns {string}
+ */
+export function toPartialURL(fullURL: string, partURL: string) {
+	if (fullURL.indexOf(partURL) === 0) {
+		return fullURL.substr(partURL.length);
+	}
+	return fullURL;
+}
+
+/**
  * Sorts an array according to its `path` prop length
  * @param a
  * @param b

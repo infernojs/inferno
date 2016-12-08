@@ -108,7 +108,7 @@ describe('SVG (non-jsx)', () => {
 
 	it('should unset a namespaced attributes', () => {
 		const template = (val) => createElement('image', {
-			xmlns: 'http://www.w3.org/2000/svg',
+			'xmlns': 'http://www.w3.org/2000/svg',
 			'xlink:href': val
 		});
 

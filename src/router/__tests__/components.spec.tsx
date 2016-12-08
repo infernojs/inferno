@@ -27,12 +27,12 @@ function createRoutes(component) {
 	return (
 		<Router history={ browserHistory }>
 			<IndexRoute component={ () => component }/>
-			<Route path={'/test'} component={ () => <div>Good Component</div> }/>
+			<Route path={'/test'} component={ () => <div>Good</div> }/>
 		</Router>
 	);
 }
 
-describe('Router component (jsx)', () => {
+describe('Router components (jsx)', () => {
 	let container;
 
 	beforeEach(() => {
@@ -46,7 +46,7 @@ describe('Router component (jsx)', () => {
 		render(null, container);
 	});
 
-	describe('<Link>', () => {
+	describe('#Link', () => {
 		it('should render with all possible props', () => {
 			render(createRoutes(
 				<Link to="/" activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>Link</Link>
@@ -55,23 +55,22 @@ describe('Router component (jsx)', () => {
 			expect(container.innerHTML).to.equal('<a href="/" class="linkClass linkActiveClass" style="font-weight: bold;">Link</a>');
 		});
 
-		// @TODO: Works on browser but not on the server?
-		it.skip('should route on click', (done) => {
+		it('should route on click', (done) => {
 			render(createRoutes(<TestComponent/>), container);
 
 			expect(container.innerHTML).to.equal('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>');
 
 			const link = container.querySelector('a[href="/test"]');
-			link.click();
+			clickOnLink(link);
 
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal('<div>Good Component</div>');
+				expect(container.innerHTML).to.equal('<div>Good</div>');
 				done();
 			});
 		});
 	});
 
-	describe('<IndexLink>', () => {
+	describe('#IndexLink', () => {
 		it('should render with all possible props', () => {
 			render(createRoutes(
 				<IndexLink activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>IndexLink</IndexLink>
@@ -79,5 +78,30 @@ describe('Router component (jsx)', () => {
 
 			expect(container.innerHTML).to.equal('<a href="/" class="linkClass linkActiveClass" style="font-weight: bold;">IndexLink</a>');
 		});
+
+		it('should route on click', (done) => {
+			render(<Router url={ '/test' } history={ browserHistory }>
+				<IndexRoute component={ () => <div>Good</div> }/>
+				<Route path={'/test'} component={ () => <TestComponent/> }/>
+			</Router>, container);
+
+			expect(container.innerHTML).to.equal('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>');
+
+			const link = container.querySelector('a[href="/"]');
+			clickOnLink(link);
+
+			requestAnimationFrame(() => {
+				expect(container.innerHTML).to.equal('<div>Good</div>');
+				done();
+			});
+		});
 	});
 });
+
+function clickOnLink(element) {
+	if (typeof window.__karma__ !== 'undefined') {
+		element.click();
+	} else {
+		browserHistory.push(element.href);
+	}
+}

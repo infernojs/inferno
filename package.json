@@ -165,5 +165,7 @@
     "test:server": "cross-env nyc mocha --opts config/mocha.opts"
   },
   "pre-commit": [
+    "lint",
+    "test"
   ]
 }

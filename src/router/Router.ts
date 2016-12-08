@@ -49,6 +49,12 @@ export default class Router extends Component<IRouterProps, any> {
 		}
 	}
 
+	componentWillReceiveProps(nextProps) {
+		this.setState({
+			url: nextProps.url
+		});
+	}
+
 	componentWillUnmount() {
 		if (this.unlisten) {
 			this.unlisten();
@@ -59,11 +65,11 @@ export default class Router extends Component<IRouterProps, any> {
 			this.setState({ url });
 	}
 
-	render({ children, url }) {
+	render() {
 		return createElement(RouterContext, {
-			location: url || this.state.url,
+			location: this.state.url,
 			router: this.router,
-			routes: children
+			routes: this.props.children
 		});
 	}
 }

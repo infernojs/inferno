@@ -59,7 +59,7 @@ describe('CSS style properties', () => {
 		name: 'ignore undefined styles',
 		value: {
 			'background-color': undefined,
-			display: 'none'
+			'display': 'none'
 		},
 		expected: ['display: none;']
 	}, {
