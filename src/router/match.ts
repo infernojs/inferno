@@ -1,9 +1,8 @@
-import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort } from './utils';
+import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort, toPartialURL } from './utils';
 import { isArray, toArray } from '../shared';
-
-import { default as Inferno } from 'inferno';
 import pathToRegExp from 'path-to-regexp-es6';
 
+import * as Inferno from 'inferno';
 const cache: Map<string, IMatchRegex> = new Map();
 
 /**
@@ -23,10 +22,10 @@ export default function match(routes, currentURL: any) {
  * with the matched components
  * @param _routes
  * @param urlToMatch
- * @param lastPath
- * @returns {any}
+ * @param parentPath
+ * @returns {object}
  */
-function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
+function matchRoutes(_routes, urlToMatch = '/', parentPath = '/') {
 
 	const routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
 	const [pathToMatch = '/', search = ''] = urlToMatch.split('?');
@@ -36,7 +35,8 @@ function matchRoutes(_routes, urlToMatch = '/', lastPath = '/') {
 
 	for (let i = 0; i < routes.length; i++) {
 		const route = routes[i];
-		const location = (lastPath + (route.props && route.props.path || '/')).replace('//', '/');
+		const routePath = (route.props && route.props.path || '/');
+		const location = parentPath + toPartialURL(routePath, parentPath).replace(/\/\//g, '/');
 		const isLast = !route.props || isEmpty(route.props.children);
 		const matchBase = matchPath(isLast, location, pathToMatch);
 

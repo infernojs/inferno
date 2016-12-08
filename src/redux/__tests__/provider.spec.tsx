@@ -7,10 +7,9 @@ import createMemoryHistory from 'history/createMemoryHistory';
 import { createStore } from 'redux';
 import { expect } from 'chai';
 import Component from 'inferno-component';
-import Inferno from 'inferno';
+import * as Inferno from 'inferno';
 
 const render = Inferno.render;
-
 const browserHistory = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
 
 describe('Provider (JSX)', () => {

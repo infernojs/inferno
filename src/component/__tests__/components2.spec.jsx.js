@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import Component from 'inferno-component';
-import createElement from 'inferno-create-element';
-import Inferno from 'inferno';
+import * as Inferno from 'inferno';
 
 const render = Inferno.render;
 

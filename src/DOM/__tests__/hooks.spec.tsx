@@ -10,12 +10,12 @@ describe('Component lifecycle (JSX)', () => {
 
 	beforeEach(function() {
 		container = document.createElement('div');
-        document.body.appendChild(container);
+		document.body.appendChild(container);
 	});
 
 	afterEach(function() {
 		container.innerHTML = '';
-        document.body.removeChild(container);
+		document.body.removeChild(container);
 	});
 
 	describe('componentWillUnmount', () => {
@@ -466,15 +466,18 @@ describe('Component lifecycle (JSX)', () => {
 
 	describe('ref hook', () => {
 		const fakeObj = {
-			outerCallback () {},
-			innerCallback () {},
-			innerSecondCallback () {}
+			outerCallback () {
+			},
+			innerCallback () {
+			},
+			innerSecondCallback () {
+			}
 		};
 
 		const calledOnce = assert.calledOnce;
 		const notCalled = assert.notCalled;
 
-		const RefTester = ({inner, innersecond}) => {
+		const RefTester = ({ inner, innersecond }) => {
 			let content = null;
 			if (inner) {
 				let contentTwo = null;
@@ -509,20 +512,20 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyOuter);
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
-			render(<RefTester inner={false} innersecond={false} />, container);
+			render(<RefTester inner={false} innersecond={false}/>, container);
 
 			calledOnce(spyOuter);
 			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
 
-			render(<RefTester inner={true} innersecond={false} />, container);
+			render(<RefTester inner={true} innersecond={false}/>, container);
 			calledOnce(spyInner);
 			calledOnce(spyOuter);
 			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div></div>');
 			notCalled(spyInnerSecond);
 
-			render(<RefTester inner={true} innersecond={true} />, container);
+			render(<RefTester inner={true} innersecond={true}/>, container);
 			calledOnce(spyInner);
 			calledOnce(spyOuter);
 			calledOnce(spyInnerSecond);
@@ -534,7 +537,7 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
 
-			render(<RefTester inner={true} innersecond={true} />, container);
+			render(<RefTester inner={true} innersecond={true}/>, container);
 
 			calledOnce(spyOuter);
 			calledOnce(spyInner);
@@ -552,7 +555,7 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
 
-			render(<RefTester inner={true} innersecond={true} />, container);
+			render(<RefTester inner={true} innersecond={true}/>, container);
 
 			calledOnce(spyOuter);
 			calledOnce(spyInner);
@@ -564,7 +567,7 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 
-			//reset
+			// reset
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
@@ -581,12 +584,10 @@ describe('Component lifecycle (JSX)', () => {
 			expect(spyInner.getCall(0).args[0]).to.eql(null);
 			expect(spyInnerSecond.getCall(0).args[0]).to.eql(null);
 
-
-			//reset
+			// reset
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
-
 
 			render(<RefTester inner={true} innersecond={true}/>, container);
 
@@ -600,7 +601,7 @@ describe('Component lifecycle (JSX)', () => {
 			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
 			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
 
-			//reset
+			// reset
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
@@ -609,29 +610,28 @@ describe('Component lifecycle (JSX)', () => {
 		it('Should have width defined when html node is attached', () => {
 			let node = null;
 
-
 			class Hello extends Component<any, any> {
-			    constructor(props) {
-			        super(props);
-                }
+				constructor(props) {
+					super(props);
+				}
 
-                componentDidMount() {
-                    expect(node.offsetWidth, 'ref node should have width in Didmount').not.to.eql(0);
-                }
+				componentDidMount() {
+					expect(node.offsetWidth, 'ref node should have width in Didmount').not.to.eql(0);
+				}
 
-                ref(n) {
-                    expect(n.offsetWidth, 'ref node should have width in callback').not.to.eql(0);
-                    node = n;
-                }
+				ref(n) {
+					expect(n.offsetWidth, 'ref node should have width in callback').not.to.eql(0);
+					node = n;
+				}
 
-                render() {
-			        return (
-			            <div ref={this.ref}>
-                            Hello World
-                        </div>
-                    )
-                }
-            }
+				render() {
+					return (
+						<div ref={this.ref}>
+							Hello World
+						</div>
+					);
+				}
+			}
 
 			render(<Hello/>, container);
 		});
@@ -639,15 +639,18 @@ describe('Component lifecycle (JSX)', () => {
 
 	describe('ref hook complex', () => {
 		const fakeObj = {
-			outerCallback () {},
-			innerCallback () {},
-			innerSecondCallback () {}
+			outerCallback () {
+			},
+			innerCallback () {
+			},
+			innerSecondCallback () {
+			}
 		};
 
 		const calledOnce = assert.calledOnce;
 		const notCalled = assert.notCalled;
 
-		const RefTester = ({inner, innersecond}) => {
+		const RefTester = ({ inner, innersecond }) => {
 			let content = null;
 			if (inner) {
 				let contentTwo = null;
@@ -674,7 +677,7 @@ describe('Component lifecycle (JSX)', () => {
 
 		const PlainDiv = () => <div>plaindiv</div>;
 
-		const RefParent = ({bool, inner, innersecond}) => {
+		const RefParent = ({ bool, inner, innersecond }) => {
 
 			return (
 				<div>
@@ -693,7 +696,7 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyOuter);
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
-			render(<RefParent bool={true} inner={false} innersecond={false} />, container);
+			render(<RefParent bool={true} inner={false} innersecond={false}/>, container);
 
 			calledOnce(spyOuter);
 			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
@@ -705,20 +708,17 @@ describe('Component lifecycle (JSX)', () => {
 			spyInner.reset();
 			spyInnerSecond.reset();
 
-
-
 			// RENDER INNER DIVS
-			render(<RefParent bool={true} inner={true} innersecond={true} />, container);
+			render(<RefParent bool={true} inner={true} innersecond={true}/>, container);
 			notCalled(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			//verify order
+			// verify order
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 
 			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
 			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
-
 
 			expect(container.innerHTML).to.eql('<div><div><span>abc</span><div><span>dfg</span></div></div></div>');
 			spyOuter.reset();
@@ -726,11 +726,11 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.reset();
 
 			// UNMOUNT INNER DIVS
-			render(<RefParent bool={true} inner={false} innersecond={false} />, container);
+			render(<RefParent bool={true} inner={false} innersecond={false}/>, container);
 			notCalled(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			//verify order
+			// verify order
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 
@@ -745,9 +745,8 @@ describe('Component lifecycle (JSX)', () => {
 			// Inner and InnerSecond divs are now unmounted
 			// and unmounting parent should not cause them to unmounted again
 
-
 			// REPLACE PARENT
-			render(<RefParent bool={false} inner={false} innersecond={false} />, container);
+			render(<RefParent bool={false} inner={false} innersecond={false}/>, container);
 			calledOnce(spyOuter);
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
@@ -757,9 +756,12 @@ describe('Component lifecycle (JSX)', () => {
 
 	describe('ref hook #2 with statefull components', () => {
 		const fakeObj = {
-			outerCallback () {},
-			innerCallback () {},
-			innerSecondCallback () {}
+			outerCallback () {
+			},
+			innerCallback () {
+			},
+			innerSecondCallback () {
+			}
 		};
 
 		const calledOnce = assert.calledOnce;
@@ -807,20 +809,20 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyOuter);
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
-			render(<RefTester inner={false} innersecond={false} />, container);
+			render(<RefTester inner={false} innersecond={false}/>, container);
 
 			calledOnce(spyOuter);
 			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
 
-			render(<RefTester inner={true} innersecond={false} />, container);
+			render(<RefTester inner={true} innersecond={false}/>, container);
 			calledOnce(spyInner);
 			calledOnce(spyOuter);
 			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div></div>');
 			notCalled(spyInnerSecond);
 
-			render(<RefTester inner={true} innersecond={true} />, container);
+			render(<RefTester inner={true} innersecond={true}/>, container);
 			calledOnce(spyInner);
 			calledOnce(spyOuter);
 			calledOnce(spyInnerSecond);
@@ -832,7 +834,7 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
 
-			render(<RefTester inner={true} innersecond={true} />, container);
+			render(<RefTester inner={true} innersecond={true}/>, container);
 
 			calledOnce(spyOuter);
 			calledOnce(spyInner);
@@ -850,7 +852,7 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
 
-			render(<RefTester inner={true} innersecond={true} />, container);
+			render(<RefTester inner={true} innersecond={true}/>, container);
 
 			calledOnce(spyOuter);
 			calledOnce(spyInner);
@@ -862,7 +864,7 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 
-			//reset
+			// reset
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
@@ -879,12 +881,10 @@ describe('Component lifecycle (JSX)', () => {
 			expect(spyInner.getCall(0).args[0]).to.eql(null);
 			expect(spyInnerSecond.getCall(0).args[0]).to.eql(null);
 
-
-			//reset
+			// reset
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
-
 
 			render(<RefTester inner={true} innersecond={true}/>, container);
 
@@ -898,7 +898,7 @@ describe('Component lifecycle (JSX)', () => {
 			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
 			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
 
-			//reset
+			// reset
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
@@ -907,9 +907,12 @@ describe('Component lifecycle (JSX)', () => {
 
 	describe('ref hook complex #2 statefull components', () => {
 		const fakeObj = {
-			outerCallback () {},
-			innerCallback () {},
-			innerSecondCallback () {}
+			outerCallback () {
+			},
+			innerCallback () {
+			},
+			innerSecondCallback () {
+			}
 		};
 
 		const calledOnce = assert.calledOnce;
@@ -955,7 +958,7 @@ describe('Component lifecycle (JSX)', () => {
 
 		class RefParent extends Component<any, any> {
 			render() {
-				const {bool, inner, innersecond} = this.props;
+				const { bool, inner, innersecond } = this.props;
 
 				return (
 					<div>
@@ -975,7 +978,7 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyOuter);
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
-			render(<RefParent bool={true} inner={false} innersecond={false} />, container);
+			render(<RefParent bool={true} inner={false} innersecond={false}/>, container);
 
 			calledOnce(spyOuter);
 			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
@@ -987,20 +990,17 @@ describe('Component lifecycle (JSX)', () => {
 			spyInner.reset();
 			spyInnerSecond.reset();
 
-
-
 			// RENDER INNER DIVS
-			render(<RefParent bool={true} inner={true} innersecond={true} />, container);
+			render(<RefParent bool={true} inner={true} innersecond={true}/>, container);
 			notCalled(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			//verify order
+			// verify order
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 
 			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
 			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
-
 
 			expect(container.innerHTML).to.eql('<div><div><span>abc</span><div><span>dfg</span></div></div></div>');
 			spyOuter.reset();
@@ -1008,11 +1008,11 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.reset();
 
 			// UNMOUNT INNER DIVS
-			render(<RefParent bool={true} inner={false} innersecond={false} />, container);
+			render(<RefParent bool={true} inner={false} innersecond={false}/>, container);
 			notCalled(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			//verify order
+			// verify order
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 
@@ -1028,7 +1028,7 @@ describe('Component lifecycle (JSX)', () => {
 			// and unmounting parent should not cause them to unmounted again
 
 			// REPLACE PARENT
-			render(<RefParent bool={false} inner={false} innersecond={false} />, container);
+			render(<RefParent bool={false} inner={false} innersecond={false}/>, container);
 			calledOnce(spyOuter);
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);

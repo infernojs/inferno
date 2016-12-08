@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import { createRenderer } from '../rendering';
-import * as Inferno from '../../testUtils/inferno';
-import {map, scan, reduce} from 'most';
+import * as Inferno from 'inferno';
+import { map, scan, reduce } from 'most';
 import { hold, sync } from 'most-subject';
-import {curry} from 'lodash/fp';
-import Type from 'union-type';
+import { curry } from 'lodash/fp';
+import Type from 'union-type-es';
 Inferno; // suppress ts 'never used' error
 
 describe('Functional methods (JSX)', () => {

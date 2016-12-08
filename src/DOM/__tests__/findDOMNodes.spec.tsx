@@ -24,7 +24,11 @@ describe('findDOMNodes (JSX)', () => {
 		let instance2;
 		let instance3;
 		let ref;
-		const refFunc = (dom) => { if (dom) { ref = dom } }
+		const refFunc = (dom) => {
+			if (dom) {
+				ref = dom;
+			}
+		};
 
 		class Example1 extends Component<any, any> {
 			render() {

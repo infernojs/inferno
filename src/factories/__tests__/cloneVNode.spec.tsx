@@ -74,7 +74,7 @@ describe('cloneVNode (JSX)', () => {
 
 		expect(node.key).to.equal('foo');
 		expect(node.ref).to.equal(ref);
-	});	
+	});
 
 	it('should clone a basic element with different children and props', () => {
 		const node1 = <div>Hello world</div>;
