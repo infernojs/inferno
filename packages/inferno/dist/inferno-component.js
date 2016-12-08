@@ -213,13 +213,13 @@ Component$1.prototype.render = function render (nextProps, nextState, nextContex
 };
 Component$1.prototype.forceUpdate = function forceUpdate (callback) {
     if (this._unmounted) {
-        throw Error(noOp);
+        return;
     }
     applyState(this, true, callback);
 };
 Component$1.prototype.setState = function setState (newState, callback) {
     if (this._unmounted) {
-        throw Error(noOp);
+        return;
     }
     if (!this._blockSetState) {
         if (!this._ignoreSetState) {

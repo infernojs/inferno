@@ -217,14 +217,14 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 
 	forceUpdate(callback?) {
 		if (this._unmounted) {
-			throw Error(noOp);
+			return;
 		}
 		applyState(this, true, callback);
 	}
 
 	setState(newState, callback?) {
 		if (this._unmounted) {
-			throw Error(noOp);
+			return;
 		}
 		if (!this._blockSetState) {
 			if (!this._ignoreSetState) {

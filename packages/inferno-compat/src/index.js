@@ -74,6 +74,9 @@ if (typeof Event !== 'undefined' && !Event.prototype.persist) {
 }
 
 const createElement = (name, _props, ...children) => {
+	if (name && typeof name === 'object' && name.flags) {
+		return name;
+	}
 	let props = _props || {};
 	const ref = props.ref;
 
