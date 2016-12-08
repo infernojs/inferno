@@ -50,7 +50,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo' } history={ browserHistory }>
 					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
-						<Route path={ '/foo/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
 					</Route>
 				</Router>,
 				container
@@ -60,8 +60,8 @@ describe('Router (jsx)', () => {
 		it('should render the child and inherit parent (partial URL)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
-					<Route path={ '/foo/' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
-						<Route path={ ':test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
+					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
 					</Route>
 				</Router>,
 				container
@@ -72,7 +72,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
 					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
-						<Route path={ '/foo/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
 					</Route>
 				</Router>,
 				container
