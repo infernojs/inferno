@@ -2190,11 +2190,11 @@ describe('Components (JSX)', () => {
 
 	it('mixing JSX components with non-JSX components', () => {
 		function Comp() {
-			return createElement('div');
+			return createElement('div', null);
 		}
 
 		function Comp2() {
-			return createElement('span');
+			return createElement('span', null);
 		}
 
 		function Comp3() {
@@ -2217,7 +2217,7 @@ describe('Components (JSX)', () => {
 			constructor(props) {
 				super(props);
 			}
-
+			static defaultProps: any;
 			render() {
 				return <div className={this.props.a} id={this.props.b}>Hello {this.props.c}!</div>;
 			}
@@ -2231,7 +2231,7 @@ describe('Components (JSX)', () => {
 			constructor(props) {
 				super(props);
 			}
-
+			static defaultProps: any;
 			render() {
 				return <div className={this.props.a} id={this.props.b}>Hello {this.props.c}!</div>;
 			}
