@@ -122,6 +122,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 	if (devToolsStatus.connected) {
 		sendRoots(window);
 	}
+	return input;
 }
 
 export function createRenderer() {

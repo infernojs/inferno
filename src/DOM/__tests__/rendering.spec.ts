@@ -41,4 +41,10 @@ describe('rendering routine', () => {
 		expect(container.innerHTML).to.eql('<div><div>123</div></div>');
 	});
 
+	it('Should return Inferno instance of rendered input', () => {
+		const input = createVNode(VNodeFlags.Element, 'div', null, '289', null, null, true);
+
+		const result = render(input, container);
+		expect(result).to.eql(input);
+	})
 });
