@@ -64,7 +64,6 @@ module.exports = function (config) {
 	});
 
 	const {
-		CI,
 		TRAVIS,
 		TRAVIS_BRANCH,
 		TRAVIS_BUILD_NUMBER,
@@ -91,7 +90,7 @@ module.exports = function (config) {
 	}
 
 	const varToBool = (sVar) => !String(sVar).match(/^(0|false|undefined)$/gi)
-	if (varToBool(CI) && !varToBool(TRAVIS_PULL_REQUEST) && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
+	if (varToBool(TRAVIS) && !varToBool(TRAVIS_PULL_REQUEST) && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
 		config.set({
 			sauceLabs: {
 				testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,
