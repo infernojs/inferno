@@ -121,4 +121,4 @@ declare module 'union-type-es' {
 	export default function (obj: any): any;
 }
 
-interface Window { process: any; __karma__: any; }
+interface Window { process: any; __karma__: any; mocha: any; }
