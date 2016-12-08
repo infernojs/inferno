@@ -89,7 +89,7 @@ module.exports = function (config) {
 		});
 	}
 
-	const varToBool = (sVar) => !String(sVar).match(/^(0|false|undefined)$/gi)
+	const varToBool = (sVar) => !!String(sVar).match('true')
 	if (varToBool(TRAVIS) && !varToBool(TRAVIS_PULL_REQUEST) && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
 		config.set({
 			sauceLabs: {
