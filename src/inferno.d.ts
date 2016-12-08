@@ -5,6 +5,7 @@ declare module 'inferno' {
 	export function findDOMNode(node: any): any;
 	export function createRenderer(...rest);
 	export function disableRecycling(...rest);
+	export function linkEvent(data, event: Function);
 	export const NO_OP;
 	export const ERROR_MSG;
 	export const EMPTY_OBJ;
