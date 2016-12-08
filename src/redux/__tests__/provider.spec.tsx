@@ -1,16 +1,15 @@
-import { expect } from 'chai';
-import Provider from '../Provider';
-import { render } from './../../DOM/rendering';
-import Component from './../../component/es2015';
-import Route from '../../router/Route';
 import IndexRoute from '../../router/IndexRoute';
+import Provider from '../Provider';
+import Route from '../../router/Route';
 import Router from '../../router/Router';
 import createBrowserHistory from 'history/createBrowserHistory';
 import createMemoryHistory from 'history/createMemoryHistory';
 import { createStore } from 'redux';
-import * as Inferno from '../../testUtils/inferno';
-Inferno; // suppress ts 'never used' error
+import { expect } from 'chai';
+import Component from 'inferno-component';
+import * as Inferno from 'inferno';
 
+const render = Inferno.render;
 const browserHistory = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
 
 describe('Provider (JSX)', () => {
@@ -151,10 +150,8 @@ describe('Provider (JSX)', () => {
 			render(
 				<Provider store={store}>
 					<Router url={ url } history={ browserHistory }>
-						<IndexRoute component={ BasicRouter } >
-							<Route path='/next' component={ BasicComponent2 } />
-							<IndexRoute component={ BasicComponent1 } />
-						</IndexRoute>
+						<Route path='/next' component={ BasicComponent2 } />
+						<IndexRoute component={ BasicComponent1 } />
 					</Router>
 				</Provider>
 			, container);
@@ -166,12 +163,12 @@ describe('Provider (JSX)', () => {
 			_render(state.name === 'Tom' ? '/' : '/next');
 		});
 
-		expect(container.innerHTML).to.equal('<div><div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div></div>');
+		expect(container.innerHTML).to.equal('<div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div>');
 
 		const link = container.querySelector('#dispatch');
 		link.click();
 
-		expect(container.innerHTML).to.equal('<div><div class="basic2">You\'re a mouse!</div></div>');
+		expect(container.innerHTML).to.equal('<div class="basic2">You\'re a mouse!</div>');
 	});
 
 	it('should render the example correctly', () => {

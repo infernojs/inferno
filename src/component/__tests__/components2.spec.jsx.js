@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
-import Component from '../../component/es2015';
-import * as Inferno from '../../testUtils/inferno';
-Inferno; // suppress ts 'never used' error
+import Component from 'inferno-component';
+import * as Inferno from 'inferno';
+
+const render = Inferno.render;
 
 /* These must be in their own files for test to reproduce */
 import { ParentFirstCommon } from '../../../testdata/common-render/parentfirstcommon';

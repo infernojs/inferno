@@ -7,20 +7,22 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 		if (!delegatedRoots) {
 			delegatedRoots = { items: new Map(), count: 0, docEvent: null };
 			const docEvent = attachEventToDocument(name, delegatedRoots);
-		
+
 			delegatedRoots.docEvent = docEvent;
 			delegatedEvents.set(name, delegatedRoots);
-		}	
+		}
 		if (!lastEvent) {
 			delegatedRoots.count++;
 		}
 		delegatedRoots.items.set(dom, nextEvent);
 	} else if (delegatedRoots) {
-		delegatedRoots.count--;
-		delegatedRoots.items.delete(dom);
-		if (delegatedRoots.count === 0) {
-			document.removeEventListener(name, delegatedRoots.docEvent);
-			delegatedEvents.delete(name);
+		if (delegatedRoots.items.has(dom)) {
+			delegatedRoots.count--;
+			delegatedRoots.items.delete(dom);
+			if (delegatedRoots.count === 0) {
+				document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
+				delegatedEvents.delete(name);
+			}
 		}
 	}
 }
@@ -31,6 +33,7 @@ function dispatchEvent(event, dom, items, count, eventData) {
 	if (eventsToTrigger) {
 		count--;
 		// linkEvent object
+		eventData.dom = dom;
 		if (eventsToTrigger.event) {
 			eventsToTrigger.event(eventsToTrigger.data, event);
 		} else {
@@ -54,8 +57,17 @@ function normalizeEventName(name) {
 function attachEventToDocument(name, delegatedRoots) {
 	const docEvent = (event: Event) => {
 		const eventData = {
-			stopPropagation: false
+			stopPropagation: false,
+			dom: document
 		};
+		// we have to do this as some browsers recycle the same Event between calls
+		// so we need to make the property configurable
+		Object.defineProperty(event, 'currentTarget', {
+			configurable: true,
+			get() {
+				return eventData.dom;
+			}
+		});
 		event.stopPropagation = () => {
 			eventData.stopPropagation = true;
 		};
@@ -65,7 +77,6 @@ function attachEventToDocument(name, delegatedRoots) {
 			dispatchEvent(event, event.target, delegatedRoots.items, count, eventData);
 		}
 	};
-
 	document.addEventListener(normalizeEventName(name), docEvent);
 	return docEvent;
 }

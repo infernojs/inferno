@@ -5,7 +5,7 @@ import {
 import {
 	isNull,
 	isObject
-} from './../shared';
+} from '../shared';
 
 export default function isValidElement(obj: VNode): boolean {
 	const isNotANullObject = isObject(obj) && isNull(obj) === false;

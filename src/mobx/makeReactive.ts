@@ -2,9 +2,7 @@ import { Reaction, extras, isObservable } from 'mobx';
 
 import Component from 'inferno-component';
 import EventEmitter from './EventEmitter';
-import { default as Inferno } from 'inferno';
 import { throwError } from '../shared';
-const { findDOMNode } = Inferno;
 
 /**
  * Dev tools support
@@ -15,7 +13,7 @@ export const componentByNodeRegistery: WeakMap<any, any> = new WeakMap();
 export const renderReporter = new EventEmitter();
 
 function reportRendering(component) {
-	const node = findDOMNode(component);
+	const node = component._vNode.dom;
 	if (node && componentByNodeRegistery) {
 		componentByNodeRegistery.set(node, component);
 	}
@@ -117,7 +115,7 @@ export default function makeReactive(componentClass) {
 		this.__$mobxIsUnmounted = true;
 
 		if (isDevtoolsEnabled) {
-			const node = findDOMNode(this);
+			const node = this._vNode.dom;
 			if (node && componentByNodeRegistery) {
 				componentByNodeRegistery.delete(node);
 			}

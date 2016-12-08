@@ -1,5 +1,5 @@
 /*!
- * inferno-server v1.0.0-beta25
+ * inferno-server v1.0.0-beta32
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -319,17 +319,6 @@ function createVNode(flags, type, props, children, events, key, ref, noNormalise
     }
     return vNode;
 }
-// when a components root VNode is also a component, we can run into issues
-// this will recursively look for vNode.parentNode if the VNode is a component
-function updateParentComponentVNodes(vNode, dom) {
-    if (vNode.flags & 28 /* Component */) {
-        var parentVNode = vNode.parentVNode;
-        if (parentVNode) {
-            parentVNode.dom = dom;
-            updateParentComponentVNodes(parentVNode, dom);
-        }
-    }
-}
 function createVoidVNode() {
     return createVNode(4096 /* Void */);
 }
@@ -432,11 +421,13 @@ function handleEvent(name, lastEvent, nextEvent, dom) {
         delegatedRoots.items.set(dom, nextEvent);
     }
     else if (delegatedRoots) {
-        delegatedRoots.count--;
-        delegatedRoots.items.delete(dom);
-        if (delegatedRoots.count === 0) {
-            document.removeEventListener(name, delegatedRoots.docEvent);
-            delegatedEvents.delete(name);
+        if (delegatedRoots.items.has(dom)) {
+            delegatedRoots.count--;
+            delegatedRoots.items.delete(dom);
+            if (delegatedRoots.count === 0) {
+                document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
+                delegatedEvents.delete(name);
+            }
         }
     }
 }
@@ -445,6 +436,7 @@ function dispatchEvent(event, dom, items, count, eventData) {
     if (eventsToTrigger) {
         count--;
         // linkEvent object
+        eventData.dom = dom;
         if (eventsToTrigger.event) {
             eventsToTrigger.event(eventsToTrigger.data, event);
         }
@@ -466,8 +458,17 @@ function normalizeEventName(name) {
 function attachEventToDocument(name, delegatedRoots) {
     var docEvent = function (event) {
         var eventData = {
-            stopPropagation: false
+            stopPropagation: false,
+            dom: document
         };
+        // we have to do this as some browsers recycle the same Event between calls
+        // so we need to make the property configurable
+        Object.defineProperty(event, 'currentTarget', {
+            configurable: true,
+            get: function get() {
+                return eventData.dom;
+            }
+        });
         event.stopPropagation = function () {
             eventData.stopPropagation = true;
         };
@@ -489,13 +490,13 @@ function isControlled(props) {
 }
 function onTextInputChange(e) {
     var vNode = this.vNode;
-    var props = vNode.props;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
-    if (props.onInput) {
-        props.onInput(e);
+    if (events.onInput) {
+        events.onInput(e);
     }
-    else if (props.oninput) {
-        props.oninput(e);
+    else if (events.oninput) {
+        events.oninput(e);
     }
     // the user may have updated the vNode from the above onInput events
     // so we need to get it from the context of `this` again
@@ -503,13 +504,13 @@ function onTextInputChange(e) {
 }
 function onCheckboxChange(e) {
     var vNode = this.vNode;
-    var props = vNode.props;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
-    if (props.onClick) {
-        props.onClick(e);
+    if (events.onClick) {
+        events.onClick(e);
     }
-    else if (props.onclick) {
-        props.onclick(e);
+    else if (events.onclick) {
+        events.onclick(e);
     }
     // the user may have updated the vNode from the above onClick events
     // so we need to get it from the context of `this` again
@@ -596,13 +597,13 @@ function updateChildOption(vNode, value) {
 }
 function onSelectChange(e) {
     var vNode = this.vNode;
-    var props = vNode.props;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
-    if (props.onChange) {
-        props.onChange(e);
+    if (events.onChange) {
+        events.onChange(e);
     }
-    else if (props.onchange) {
-        props.onchange(e);
+    else if (events.onchange) {
+        events.onchange(e);
     }
     // the user may have updated the vNode from the above onChange events
     // so we need to get it from the context of `this` again
@@ -641,19 +642,18 @@ function applyValue$1(vNode, dom) {
     }
 }
 
-// import { isVNode } from '../../core/shapes';
 function isControlled$2(props) {
     return !isNullOrUndef(props.value);
 }
 function onTextareaInputChange(e) {
     var vNode = this.vNode;
-    var props = vNode.props;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
-    if (props.onInput) {
-        props.onInput(e);
+    if (events.onInput) {
+        events.onInput(e);
     }
-    else if (props.oninput) {
-        props.oninput(e);
+    else if (events.oninput) {
+        events.oninput(e);
     }
     // the user may have updated the vNode from the above onInput events
     // so we need to get it from the context of `this` again
@@ -704,19 +704,11 @@ function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecy
     else if (flags & 3970 /* Element */) {
         unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
     }
-    else if (flags & 1 /* Text */) {
-        unmountText(vNode, parentDom);
-    }
-    else if (flags & 4096 /* Void */) {
-        unmountVoid(vNode, parentDom);
+    else if (flags & (1 /* Text */ | 4096 /* Void */)) {
+        unmountVoidOrText(vNode, parentDom);
     }
 }
-function unmountVoid(vNode, parentDom) {
-    if (parentDom) {
-        removeChild(parentDom, vNode.dom);
-    }
-}
-function unmountText(vNode, parentDom) {
+function unmountVoidOrText(vNode, parentDom) {
     if (parentDom) {
         removeChild(parentDom, vNode.dom);
     }
@@ -748,7 +740,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
                 ref(null);
             }
             instance._unmounted = true;
-            componentToDOMNodeMap.delete(instance);
+            findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
         }
         else if (!isNullOrUndef(ref)) {
             if (!isNullOrUndef(ref.onComponentWillUnmount)) {
@@ -783,7 +775,8 @@ function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount,
     if (!isNull(events)) {
         for (var name in events) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchEvent(name, null, null, dom, lifecycle);
+            patchEvent(name, events[name], null, dom, lifecycle);
+            events[name] = null;
         }
     }
     if (parentDom) {
@@ -994,6 +987,11 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
     var nextProps = nextVNode.props || EMPTY_OBJ;
     var lastKey = lastVNode.key;
     var nextKey = nextVNode.key;
+    var defaultProps = nextType.defaultProps;
+    if (!isUndefined(defaultProps)) {
+        copyPropsTo(defaultProps, nextProps);
+        nextVNode.props = nextProps;
+    }
     if (lastType !== nextType) {
         if (isClass) {
             replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
@@ -1022,18 +1020,13 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 replaceChild(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextVNode.flags & 4 /* ComponentClass */), lastVNode.dom);
             }
             else {
-                var defaultProps = nextType.defaultProps;
-                var lastProps = instance.props;
                 if (instance._devToolsStatus.connected && !instance._devToolsId) {
                     componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
                 }
                 lifecycle.fastUnmount = false;
-                if (!isUndefined(defaultProps)) {
-                    copyPropsTo(lastProps, nextProps);
-                    nextVNode.props = nextProps;
-                }
                 var lastState = instance.state;
                 var nextState = instance.state;
+                var lastProps = instance.props;
                 var childContext = instance.getChildContext();
                 nextVNode.children = instance;
                 instance._isSVG = isSVG;
@@ -1079,7 +1072,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     subLifecycle.fastUnmount = lifecycle.unmount;
                     lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
-                    componentToDOMNodeMap.set(instance, nextInput$1.dom);
+                    findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
                 nextVNode.dom = nextInput$1.dom;
             }
@@ -1569,16 +1562,19 @@ function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
     }
 }
 function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
-    if (lastValue !== nextValue || isNull(nextValue)) {
+    if (lastValue !== nextValue) {
+        var nameLowerCase = name.toLowerCase();
+        var domEvent = dom[nameLowerCase];
+        // if the function is wrapped, that means it's been controlled by a wrapper
+        if (domEvent && domEvent.wrapped) {
+            return;
+        }
         if (delegatedProps[name]) {
             lifecycle.fastUnmount = false;
             handleEvent(name, lastValue, nextValue, dom);
         }
         else {
-            var event = dom[name];
-            if (!event || !event.wrapped) {
-                dom[name] = nextValue;
-            }
+            dom[nameLowerCase] = nextValue;
         }
     }
 }
@@ -1862,15 +1858,15 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
     }
     var type = vNode.type;
     var props = vNode.props || EMPTY_OBJ;
+    var defaultProps = type.defaultProps;
     var ref = vNode.ref;
     var dom;
+    if (!isUndefined(defaultProps)) {
+        copyPropsTo(defaultProps, props);
+        vNode.props = props;
+    }
     if (isClass) {
-        var defaultProps = type.defaultProps;
         lifecycle.fastUnmount = false;
-        if (!isUndefined(defaultProps)) {
-            copyPropsTo(defaultProps, props);
-            vNode.props = props;
-        }
         var instance = createStatefulComponentInstance(vNode, type, props, context, isSVG, devToolsStatus);
         var input = instance._lastInput;
         var fastUnmount = lifecycle.fastUnmount;
@@ -1888,7 +1884,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
             appendChild(parentDom, dom);
         }
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
-        componentToDOMNodeMap.set(instance, dom);
+        findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
     else {
@@ -1997,7 +1993,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         // we then set the lifecycle fastUnmount value back to what it was before the mount
         lifecycle.fastUnmount = fastUnmount;
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
-        componentToDOMNodeMap.set(instance, dom);
+        findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
     else {
@@ -2106,6 +2102,8 @@ function hydrateRoot(input, parentDom, lifecycle) {
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 var roots = [];
 var componentToDOMNodeMap = new Map();
+var findDOMNodeEnabled = false;
+
 
 function getRoot(dom) {
     for (var i = 0; i < roots.length; i++) {
@@ -2190,9 +2188,14 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
     }
     var instance = new Component(props, context);
     instance.context = context;
+    if (instance.props === EMPTY_OBJ) {
+        instance.props = props;
+    }
     instance._patch = patch;
     instance._devToolsStatus = devToolsStatus;
-    instance._componentToDOMNodeMap = componentToDOMNodeMap;
+    if (findDOMNodeEnabled) {
+        instance._componentToDOMNodeMap = componentToDOMNodeMap;
+    }
     var childContext = instance.getChildContext();
     if (!isNullOrUndef(childContext)) {
         instance._childContext = Object.assign({}, context, childContext);

@@ -1,14 +1,14 @@
 import { isFunction, isNullOrUndef, isUndefined } from '../shared';
 
 import Component from 'inferno-component';
-import {ComponentSpec} from './es2015';
+import { ComponentSpec } from './es2015';
 
 // don't autobind these methods since they already have guaranteed context.
 const AUTOBIND_BLACKLIST = {
 	constructor: 1,
 	render: 1,
 	shouldComponentUpdate: 1,
-	componentWillRecieveProps: 1,
+	componentWillReceiveProps: 1,
 	componentWillUpdate: 1,
 	componentDidUpdate: 1,
 	componentWillMount: 1,

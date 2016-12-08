@@ -12,7 +12,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-} from './../shared';
+} from '../shared';
 import {
 	VNode,
 	VNodeFlags,
@@ -62,7 +62,7 @@ import {
 
 import Lifecycle from './lifecycle';
 import cloneVNode from '../factories/cloneVNode';
-import { componentToDOMNodeMap } from './rendering';
+import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import processElement from './wrappers/processElement';
 import { unmount } from './unmounting';
 
@@ -265,6 +265,12 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 	const nextProps = nextVNode.props || EMPTY_OBJ;
 	const lastKey = lastVNode.key;
 	const nextKey = nextVNode.key;
+	const defaultProps = nextType.defaultProps;
+
+	if (!isUndefined(defaultProps)) {
+		copyPropsTo(defaultProps, nextProps);
+		nextVNode.props = nextProps;
+	}
 
 	if (lastType !== nextType) {
 		if (isClass) {
@@ -305,19 +311,13 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 					lastVNode.dom
 				);
 			} else {
-				const defaultProps = nextType.defaultProps;
-				const lastProps = instance.props;
-
 				if (instance._devToolsStatus.connected && !instance._devToolsId) {
 					componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
 				}
 				lifecycle.fastUnmount = false;
-				if (!isUndefined(defaultProps)) {
-					copyPropsTo(lastProps, nextProps);
-					nextVNode.props = nextProps;
-				}
 				const lastState = instance.state;
 				const nextState = instance.state;
+				const lastProps = instance.props;
 				let childContext = instance.getChildContext();
 
 				nextVNode.children = instance;
@@ -361,7 +361,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 					subLifecycle.fastUnmount = lifecycle.unmount;
 					lifecycle.fastUnmount = fastUnmount;
 					instance.componentDidUpdate(lastProps, lastState);
-					componentToDOMNodeMap.set(instance, nextInput.dom);
+					findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
 				}
 				nextVNode.dom = nextInput.dom;
 			}
@@ -871,16 +871,18 @@ export function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
 }
 
 export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
-	if (lastValue !== nextValue || isNull(nextValue)) {
+	if (lastValue !== nextValue) {
+		const nameLowerCase = name.toLowerCase();
+		const domEvent = dom[nameLowerCase];
+		// if the function is wrapped, that means it's been controlled by a wrapper
+		if (domEvent && domEvent.wrapped) {
+			return;
+		}
 		if (delegatedProps[name]) {
 			lifecycle.fastUnmount = false;
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
-			const event = dom[name];
-
-			if (!event || !event.wrapped) {
-				dom[name] = nextValue;
-			}
+			dom[nameLowerCase] = nextValue;
 		}
 	}
 }

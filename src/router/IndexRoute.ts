@@ -1,12 +1,8 @@
-import createElement from 'inferno-create-element';
 import Route from './Route';
 
 export default class IndexRoute extends Route {
-	render({ component, children, params, path = '/' }) {
-		return createElement(component, {
-			path,
-			params,
-			children
-		});
+	constructor(props?: any, context?: any) {
+		super(props, context);
+		props.path = '/';
 	}
 }

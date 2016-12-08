@@ -1,8 +1,8 @@
 import {
-	createVNode,
 	VNodeFlags,
 	VNode
 } from '../core/shapes';
+import { createVNode } from 'inferno';
 import {
 	isAttrAnEvent,
 	isString,
@@ -10,7 +10,7 @@ import {
 	isUndefined,
 	isObject,
 	isStatefulComponent
-} from './../shared';
+} from '../shared';
 
 const componentHooks = {
 	onComponentWillMount: true,
@@ -26,7 +26,6 @@ export default function createElement(name: string | Function, props?: any, ..._
 		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
 	let children: any = _children;
-	let vNode = createVNode(0);
 	let ref = null;
 	let key = null;
 	let events = null;
@@ -80,6 +79,7 @@ export default function createElement(name: string | Function, props?: any, ..._
 				props = {};
 			}
 			props.children = children;
+			children = null;
 		}
 		for (let prop in props) {
 			if (componentHooks[prop]) {
@@ -92,7 +92,6 @@ export default function createElement(name: string | Function, props?: any, ..._
 				delete props.key;
 			}
 		}
-		vNode.props = props;
 	}
 	return createVNode(
 		flags,

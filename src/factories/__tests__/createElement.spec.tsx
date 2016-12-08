@@ -1,6 +1,6 @@
 // import { expect } from 'chai';
-// import { render } from './../../DOM/rendering';
-// import createElement from './../createElement';
+// import { render } from '../../DOM/rendering';
+// import createElement from '../createElement';
 // import * as Inferno from '../../testUtils/inferno';
 // Inferno; // suppress ts 'never used' error
 //

@@ -1,17 +1,15 @@
+import { NO_OP, createVNode, EMPTY_OBJ } from 'inferno';
 import {
-	EMPTY_OBJ,
-	ERROR_MSG,
-	NO_OP,
 	isArray,
 	isFunction,
 	isInvalid,
 	isNullOrUndef,
 	throwError,
+	ERROR_MSG
 } from '../shared';
 import {
-	createVoidVNode,
-	updateParentComponentVNodes,
-} from './../core/shapes';
+	VNodeFlags
+} from '../core/shapes';
 
 import Lifecycle from './../DOM/lifecycle';
 
@@ -21,6 +19,19 @@ if (process.env.NODE_ENV !== 'production') {
 	noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 }
 const componentCallbackQueue = new Map();
+
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+function updateParentComponentVNodes(vNode, dom) {
+	if (vNode.flags & VNodeFlags.Component) {
+		const parentVNode = vNode.parentVNode;
+
+		if (parentVNode) {
+			parentVNode.dom = dom;
+			updateParentComponentVNodes(parentVNode, dom);
+		}
+	}
+}
 
 export interface ComponentLifecycle<P, S> {
 	componentDidMount?: () => void;
@@ -48,6 +59,11 @@ export interface ComponentSpec<P, S> extends Mixin<P, S> {
 	mixins?: any;
 	[propertyName: string]: any;
 	render(props?, context?): any;
+}
+
+// this is in shapes too, but we don't want to import from shapes as it will pull in a duplicate of createVNode
+function createVoidVNode() {
+	return createVNode(VNodeFlags.Void);
 }
 
 function addToQueue(component: Component<any, any>, force, callback): void {
@@ -97,7 +113,7 @@ function queueStateChanges(component: Component<any, any>, newState, callback): 
 }
 
 function applyState(component: Component<any, any>, force, callback): void {
-	if ((!component._deferSetState || force) && !component._blockRender) {
+	if ((!component._deferSetState || force) && !component._blockRender && !component._unmounted) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
 		const prevState = component.state;
@@ -122,7 +138,8 @@ function applyState(component: Component<any, any>, force, callback): void {
 		}
 
 		const lastInput = component._lastInput;
-		const parentDom = lastInput.dom.parentNode;
+		const vNode = component._vNode;
+		const parentDom = (lastInput.dom && lastInput.dom.parentNode) || (lastInput.dom = vNode.dom);
 
 		component._lastInput = nextInput;
 		if (didUpdate) {
@@ -146,10 +163,10 @@ function applyState(component: Component<any, any>, force, callback): void {
 			subLifecycle.trigger();
 			component.componentDidUpdate(props, prevState);
 		}
-		const vNode = component._vNode;
 		const dom = vNode.dom = nextInput.dom;
+		const componentToDOMNodeMap = component._componentToDOMNodeMap;
 
-		component._componentToDOMNodeMap.set(component, nextInput.dom);
+		componentToDOMNodeMap && componentToDOMNodeMap.set(component, nextInput.dom);
 		updateParentComponentVNodes(vNode, dom);
 		if (!isNullOrUndef(callback)) {
 			callback();
@@ -185,7 +202,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 
 	constructor(props?: P, context?: any) {
 		/** @type {object} */
-		this.props = props || ({} as P);
+		this.props = props || (EMPTY_OBJ as P);
 
 		/** @type {object} */
 		this.context = context || {};
@@ -200,14 +217,14 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 
 	forceUpdate(callback?) {
 		if (this._unmounted) {
-			throw Error(noOp);
+			return;
 		}
 		applyState(this, true, callback);
 	}
 
 	setState(newState, callback?) {
 		if (this._unmounted) {
-			throw Error(noOp);
+			return;
 		}
 		if (!this._blockSetState) {
 			if (!this._ignoreSetState) {
@@ -252,9 +269,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				throwError(noOp);
 			}
 			throwError();
-		}
-		if (!isNullOrUndef(nextProps) && isNullOrUndef(nextProps.children)) {
-			nextProps.children = prevProps.children;
 		}
 		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
 			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {

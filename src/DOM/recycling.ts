@@ -2,7 +2,7 @@ import { VNode, VNodeFlags } from '../core/shapes';
 import {
 	isNull,
 	isUndefined,
-} from './../shared';
+} from '../shared';
 import {
 	patchComponent,
 	patchElement,

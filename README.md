@@ -21,7 +21,7 @@ Inferno aims to provide all the great benefits that React does, plus other great
 
 For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. Based on the concept of *learn once, write anywhere*, Inferno doesn't impose any restrictions on how you create components. You literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
 
-In terms of performance, Inferno is currently the **fastest** JavaScript UI library there is – both in benchmarks and actual real-world scenarios. It excels on the browser at inital page load, parse times, render times and update times. Inferno's server-side rendering is around 10-20x faster than React and Preact, it's around 5x faster than Vue and Angular2.
+In terms of performance, Inferno is currently the **fastest** JavaScript UI library there is – both in benchmarks and actual real-world scenarios. It excels on the browser at initial page load, parse times, render times and update times. Inferno's server-side rendering is around 10x faster than React, 7x faster than Preact and around 5x faster than Vue and Angular 2.
 
 ## But why?
 
@@ -37,10 +37,10 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 - One of the fastest front-end frameworks for rendering UI in the DOM
 - React-like API, concepts and component lifecycle events
 - Partial synthetic event system, providing delegation to certain events for better performance
-- Inferno's `linkEvent` feature removes the need to use arrow functions or binding event callbacks (for delegated events)
+- Inferno's [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno) feature removes the need to use arrow functions or binding event callbacks (for delegated events)
 - Lightweight filesize of only 8kb
 - Isomorphic rendering on both client and server with `inferno-server`
-- Highly modular with very little opinionation on how things should be done
+- Highly modular with very few opinions on how things should be done
 - Unlike React and Preact, Inferno has lifecycle events on functional components
 - Supports asynchronous component rendering using `requestIdleCallback`
 - Unlike Preact and other React-like libraries, Inferno has controlled components for input/select/textarea elements
@@ -102,27 +102,31 @@ Inferno.render(<MyComponent />, document.body);
 
 ## Getting Started
 
+The best way to start to use Inferno is by using [Create Inferno App](https://github.com/infernojs/create-inferno-app). You can get setup and running within a few minutes.
+
+Alternatively, you can get started with Inferno using the [Inferno Boilerplate](https://github.com/infernojs/inferno-boilerplate) for a very simple setup. For a more advanced example demonstrating how Inferno might be used, we recommend trying out [Inferno Starter Project](https://github.com/nightwolfz/inferno-starter) by [nightwolfz](https://github.com/nightwolfz/).
+
 Core package:
 
 ```sh
-npm install --save inferno@beta25
+npm install --save inferno@beta32
 ```
 
 Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta25
+npm install --save inferno-component@beta32
 # server-side rendering
-npm install --save inferno-server@beta25
+npm install --save inferno-server@beta32
 # routing
-npm install --save inferno-router@beta25
+npm install --save inferno-router@beta32
 ```
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta25/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta32/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -134,17 +138,17 @@ npm install --save-dev babel-plugin-inferno@beta13
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta25
+npm install --save inferno-hyperscript@beta32
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta25
+npm install --save inferno-create-element@beta32
 ```
 
-### Compatability with existing React apps
+### Compatibility with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta25
+npm install --save-dev inferno-compat@beta32
 ```
 
 Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
@@ -180,7 +184,19 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 - Inferno fully supports controlled components for `input`/`select`/`textarea` elements. This prevents lots of edgecases where the virtual DOM is not the source of truth (it should always be). Preact pushes the source of truth to the DOM itself.
 - Inferno provides lifecycle events on stateless components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
 - Inferno has its own devtools debugger (still in development) that differs from the Preact (React bound) implementation. Inferno's debugger is on average, 4x faster – fixing lots of the issues with slow, laggy interfaces when developers are debugging.
-- Preact has `linkState` helpers built into core to help users link state to form elements. Inferno does not.
+
+## Event System
+
+Like React, Inferno also uses a light-weight synthetic event system in certain places (although both event systems differ massively). Inferno's event system provides highly efficient delegation and an event helper called [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno). 
+
+
+As this is feature is a very recent addition to Inferno, there are only a handful of events that use Inferno's event system. They are outlined below:
+- `onClick`
+- `onMouseMove`
+- `onMouseDown`
+- `onMouseUp`
+
+More events are expected to be supported in future versions.
 
 ## Inferno Top-Level API
 
@@ -195,7 +211,7 @@ Inferno.render(<div />, document.body);
 Render a virtual node into the DOM in the supplied container given the supplied virtual DOM. If the virtual node was previously rendered
 into the container, this will perform an update on it and only mutate the DOM as necessary, to reflect the latest Inferno virtual node.
 
-Warning: If the container element is not empty before rendering, the content of the container will be overwriten on the initial render.
+Warning: If the container element is not empty before rendering, the content of the container will be overwritten on the initial render.
 
 ### `createRenderer` (package: `inferno`)
 
@@ -216,7 +232,7 @@ runApp();
 
 ### `createElement` (package: `inferno-create-element`)
 
-Creates an Inferno VNode using a similar API to that found with React's `createElement`
+Creates an Inferno VNode using a similar API to that found with React's `createElement()`
 
 ```javascript
 import Component from 'inferno-component';
@@ -272,15 +288,16 @@ Inferno.createVNode(
   type,
   [props],
   [...children],
+  [events],
   [key],
   [ref],
   [isNormalized]
 )
 ```
 
-Create a new Inferno `VNode` using `createVNode`. A `VNode` is a virtual DOM object that is used to
-describe a single element of the UI. Typically `createElement`, `hyperscript` or JSX are used to create
-`VNode`s for Inferno, but under the hood they all use `createVNode`. Below is an example of using
+Create a new Inferno `VNode` using `createVNode()`. A `VNode` is a virtual DOM object that is used to
+describe a single element of the UI. Typically `createElement()` (package: `inferno-create-element`), `h()` (package: `inferno-hyperscript`) or JSX are used to create
+`VNode`s for Inferno, but under the hood they all use `createVNode()`. Below is an example of using
 of `createVNode` usage:
 
 ```javascript
@@ -291,7 +308,7 @@ const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello wor
 Inferno.render(vNode, container);
 ```
 
-The first argument for `createVNode` is a value from [`VNodeFlags`](https://github.com/trueadm/inferno/tree/master/packages/inferno-vnode-flags), this is numerical value that used to tell Inferno what the VNode is meant to describe on the page.
+The first argument for `createVNode()` is a value from [`VNodeFlags`](https://github.com/trueadm/inferno/tree/master/packages/inferno-vnode-flags), this is numerical value that used to tell Inferno what the VNode is meant to describe on the page.
 
 ### `cloneVNode` (package: `inferno`)
 ```js
@@ -331,11 +348,54 @@ const newVNode = Inferno.cloneVNode(vNode, { id: 'new' }); // we are adding an i
 Inferno.render(newVNode, container);
 ```
 
+### `enableFindDOMNode` (package: `inferno`)
+
+This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
+
 ### `findDOMNode` (package: `inferno`)
 
-Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode`. `findDOMNode` cannot be used on functional components.
+Once enabled via `enableFindDOMNode()` at the start of an application, `findDOMNode()` is enabled.
 
-If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements. In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode` at all. When render returns null or false, `findDOMNode` returns null.
+Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode()`. `findDOMNode()` cannot be used on functional components and it introduces a significant impact to performance.
+
+If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements. 
+In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode()` at all. When render returns null or false, `findDOMNode()` returns null.
+
+### `linkEvent` (package: `inferno`)
+
+`linkEvent()` is a helper function that allows attachment of `props`/`state`/`context` or other data to events without needing to `bind()` them or use arrow functions/closures. It works by hooking into Inferno's event system (so make sure the event you are using will use Inferno's event system). This is extremely useful when dealing with events in functional/stateless components. Below is an example:
+
+```jsx
+import Inferno, { linkEvent } from 'inferno';
+
+function handleClick(props, event) {
+	props.validateValue(event.target.value);
+}
+
+function MyComponent(props) {
+	return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
+}
+```
+
+This is an example of using it with ES2015 classes:
+
+
+```jsx
+import Inferno, { linkEvent } from 'inferno';
+import Component from 'inferno-component';
+
+function handleClick(instance, event) {
+	instance.setState({ data: event.target.value });
+}
+
+class MyComponent extends Component {
+	render () {
+		return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
+	}
+}
+```
+
+`linkEvent()` offers better performance than binding an event in a class constructor and using arrow functions, so where possible, it should be used.
 
 ### `renderToString` (package: `inferno-server`)
 

@@ -26,7 +26,7 @@ import {
 
 import Lifecycle from './lifecycle';
 import cloneVNode from '../factories/cloneVNode';
-import { componentToDOMNodeMap } from './rendering';
+import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import { devToolsStatus } from './devtools';
 import {
 	patchProp,
@@ -156,17 +156,16 @@ export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isCl
 	}
 	const type = vNode.type;
 	const props = vNode.props || EMPTY_OBJ;
+	const defaultProps = type.defaultProps;
 	const ref = vNode.ref;
 	let dom;
 
+	if (!isUndefined(defaultProps)) {
+		copyPropsTo(defaultProps, props);
+		vNode.props = props;
+	}
 	if (isClass) {
-		const defaultProps = type.defaultProps;
-
 		lifecycle.fastUnmount = false;
-		if (!isUndefined(defaultProps)) {
-			copyPropsTo(defaultProps, props);
-			vNode.props = props;
-		}
 		const instance = createStatefulComponentInstance(vNode, type, props, context, isSVG, devToolsStatus);
 		const input = instance._lastInput;
 		const fastUnmount = lifecycle.fastUnmount;
@@ -186,7 +185,7 @@ export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isCl
 			appendChild(parentDom, dom);
 		}
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
-		componentToDOMNodeMap.set(instance, dom);
+		findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
 		const input = createStatelessComponentInput(vNode, type, props, context);

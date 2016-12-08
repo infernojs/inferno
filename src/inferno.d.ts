@@ -1,11 +1,14 @@
 declare module 'inferno' {
 	export function createVNode(flags, type?, props?, children?, key?, ref?, noNormalise?: boolean): any;
 	export function cloneVNode(node, props?, ...children);
-	export function render(...rest)
+	export function render(...rest);
 	export function findDOMNode(node: any): any;
 	export function createRenderer(...rest);
 	export function disableRecycling(...rest);
+	export function linkEvent(data, event: Function);
 	export const NO_OP;
+	export const ERROR_MSG;
+	export const EMPTY_OBJ;
 }
 
 declare module 'inferno-component' {
@@ -31,11 +34,11 @@ declare module 'inferno-server' {
 }
 
 declare module 'inferno-create-class' {
-	export default function createClass(component: any): any
+	export default function createClass(component: any): any;
 }
 
 declare module 'inferno-create-element' {
-	export default function createElement(component: any, props: any, ...children): any
+	export default function createElement(component: any, props: any, ...children): any;
 }
 
 declare module 'lodash/isPlainObject' {
@@ -106,16 +109,16 @@ declare module 'most' {
 }
 
 declare module 'most-subject' {
-	export function hold(bufferSize?: number, subject?: any): any
+	export function hold(bufferSize?: number, subject?: any): any;
 	export function sync(): void;
 }
 
 declare module 'lodash/fp' {
-	export function curry(obj: any): any
+	export function curry(obj: any): any;
 }
 
-declare module 'union-type' {
-	export default function (obj: any): any
+declare module 'union-type-es' {
+	export default function (obj: any): any;
 }
 
-interface Window { process: any; }
+interface Window { process: any; __karma__: any; }

@@ -72,6 +72,10 @@
 			render()
 		}
 
+		function handleToggle(e) {
+			console.log('Checkbox clicked!')
+		}
+
 		function render() {
 			Inferno.render(h('form.form', [
 				h('div.form-group', [
@@ -85,11 +89,11 @@
 				h('div.form-group', [
 					h('label', 'What is your favourite food:'),
 					h('div.inline', [
-						h('input', { type: 'radio', name: 'food', checked: false }),
+						h('input', { type: 'radio', name: 'food', checked: false, onClick: handleToggle }),
 						h('span', 'Pizza')
 					]),
 					h('div.inline', [
-						h('input', { type: 'radio', name: 'food', checked: true }),
+						h('input', { type: 'radio', name: 'food', checked: true, onClick: handleToggle }),
 						h('span', 'Pasta')
 					])
 				]),

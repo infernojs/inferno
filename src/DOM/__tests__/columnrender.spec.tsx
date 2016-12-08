@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { spy } from 'sinon';
-import { render } from './../rendering';
-import Component from './../../component/es2015';
+import { render } from '../rendering';
+import Component from '../../component/es2015';
 import { isNullOrUndef } from '../../shared';
 import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error

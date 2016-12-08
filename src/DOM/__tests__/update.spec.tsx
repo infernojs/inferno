@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { assert, spy } from 'sinon';
-import { render } from './../rendering';
-import Component from './../../component/es2015';
-import * as Inferno from '../../testUtils/inferno';
+import { render } from '../rendering';
+import Component from '../../component/es2015';
+import * as Inferno from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('Stateful Component updates', () => {
@@ -11,10 +11,12 @@ describe('Stateful Component updates', () => {
 
 	beforeEach(() => {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
 	afterEach(() => {
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	it('Should forget old updates', (done) => {
@@ -63,7 +65,7 @@ describe('Stateful Component updates', () => {
 		sinonSpy.restore();
 
 		// delayed update triggers for A
-		expect(() => updatesAfromOutside()).to.throw();
+		updatesAfromOutside();
 		expect(container.innerHTML).to.equal('<div>B Component B</div>');
 
 		done();
@@ -534,5 +536,31 @@ describe('Stateful Component updates', () => {
 		updater(orig);
 		expect(container.innerHTML).to.equal('<div><div><span>1</span></div></div>');
 
+	});
+
+	it('Should allow camelCase properties when using JSX plugin', () => {
+		const fakeObj = {func() {}};
+		const submitSpy = spy(fakeObj, 'func');
+
+		class Tester extends Component<any, any> {
+			constructor(props) {
+				super(props);
+			}
+
+			render() {
+				return (
+					<form>
+						<input id="inputId" onFocus={fakeObj.func} type="text"/>
+					</form>
+				);
+			}
+		}
+
+		render(<Tester/>, container);
+		expect(container.innerHTML).to.eql('<form><input type="text" id="inputId"></form>');
+		const input = container.querySelector('#inputId');
+		expect(assert.notCalled(submitSpy));
+		input.focus();
+		expect(assert.calledOnce(submitSpy));
 	});
 });

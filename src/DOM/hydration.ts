@@ -23,7 +23,7 @@ import Lifecycle from './lifecycle';
 import {
 	VNodeFlags,
 } from '../core/shapes';
-import { componentToDOMNodeMap } from './rendering';
+import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import { devToolsStatus } from './devtools';
 import {
 	patchProp,
@@ -87,7 +87,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 		// we then set the lifecycle fastUnmount value back to what it was before the mount
 		lifecycle.fastUnmount = fastUnmount;
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
-		componentToDOMNodeMap.set(instance, dom);
+		findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
 		const input = createStatelessComponentInput(vNode, type, props, context);

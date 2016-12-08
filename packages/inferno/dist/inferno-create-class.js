@@ -1,5 +1,5 @@
 /*!
- * inferno-create-class v1.0.0-beta25
+ * inferno-create-class v1.0.0-beta32
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -42,7 +42,7 @@ var AUTOBIND_BLACKLIST = {
     constructor: 1,
     render: 1,
     shouldComponentUpdate: 1,
-    componentWillRecieveProps: 1,
+    componentWillReceiveProps: 1,
     componentWillUpdate: 1,
     componentDidUpdate: 1,
     componentWillMount: 1,

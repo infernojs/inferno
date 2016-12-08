@@ -1,11 +1,12 @@
-import { expect } from 'chai';
 import { assert, spy } from 'sinon';
-import { render } from '../../DOM/rendering';
-import Component from '../../component/es2015';
-import createElement from './../../factories/createElement';
+
+import Component from 'inferno-component';
+import * as Inferno from 'inferno';
+import createElement from 'inferno-create-element';
+import { expect } from 'chai';
 import { innerHTML } from '../../tools/utils';
-import * as Inferno from '../../testUtils/inferno';
-Inferno; // suppress ts 'never used' error
+
+const render = Inferno.render;
 
 describe('Components (JSX)', () => {
 	let container;
@@ -738,7 +739,7 @@ describe('Components (JSX)', () => {
 								);
 							} else {
 								return (
-									<h1>Hello guys</h1>
+									<h1>Hello folks</h1>
 								);
 							}
 						}.call(this)}
@@ -757,7 +758,7 @@ describe('Components (JSX)', () => {
 			expect(
 				container.innerHTML
 			).to.equal(
-				innerHTML('<div><h1>Hello guys</h1><button>toggle</button></div>')
+				innerHTML('<div><h1>Hello folks</h1><button>toggle</button></div>')
 			);
 		});
 
@@ -1402,7 +1403,7 @@ describe('Components (JSX)', () => {
 							{!this.state.x ? <ChildA /> : <ChildB />}
 						</div>
 					);
-				};
+				}
 			}
 
 			class ChildB extends Component<any, any> {
@@ -1412,7 +1413,7 @@ describe('Components (JSX)', () => {
 
 				render() {
 					return (<div>Y</div>);
-				};
+				}
 			}
 
 			class ChildA extends Component<any, any> {
@@ -1430,7 +1431,7 @@ describe('Components (JSX)', () => {
 						return (<div>A</div>);
 					}
 					return (<SubChild />);
-				};
+				}
 			}
 
 			class SubChild extends Component<any, any> {
@@ -1440,7 +1441,7 @@ describe('Components (JSX)', () => {
 
 				render() {
 					return (<div>B</div>);
-				};
+				}
 			}
 
 			render(<Parent />, container);
@@ -1553,7 +1554,7 @@ describe('Components (JSX)', () => {
 				setTimeout(() => {
 					this.setState({ x: true });
 				}, 10);
-			};
+			}
 
 			render() {
 				return (
@@ -1561,7 +1562,7 @@ describe('Components (JSX)', () => {
 						{!this.state.x ? <MakeA /> : <MakeY />}
 					</div>
 				);
-			};
+			}
 		}
 
 		class MakeY extends Component<any, any> {
@@ -1571,7 +1572,7 @@ describe('Components (JSX)', () => {
 
 			render() {
 				return (<div>Y</div>);
-			};
+			}
 		}
 
 		class MakeA extends Component<any, any> {
@@ -1582,9 +1583,9 @@ describe('Components (JSX)', () => {
 
 			componentWillMount() {
 				setTimeout(() => {
-					expect(() => this.setState({ z: true })).to.throw();
+					this.setState({ z: true })
 				}, 20);
-			};
+			}
 
 			render() {
 				if (!this.state.z) {
@@ -1592,7 +1593,7 @@ describe('Components (JSX)', () => {
 				}
 
 				return (<MakeB />);
-			};
+			}
 		}
 
 		class MakeB extends Component<any, any> {
@@ -2160,7 +2161,7 @@ describe('Components (JSX)', () => {
 	});
 
 	describe('handling componentWillReceiveProps lifecycle event', () => {
-		it('should correctly handle setState within the lifecycle funciton', () => {
+		it('should correctly handle setState within the lifecycle function', () => {
 			let renderCount = 0;
 			class Comp1 extends Component<any, any> {
 				constructor(props) {
@@ -2190,11 +2191,11 @@ describe('Components (JSX)', () => {
 
 	it('mixing JSX components with non-JSX components', () => {
 		function Comp() {
-			return createElement('div');
+			return createElement('div', {});
 		}
 
 		function Comp2() {
-			return createElement('span');
+			return createElement('span', {});
 		}
 
 		function Comp3() {
@@ -2218,28 +2219,30 @@ describe('Components (JSX)', () => {
 				super(props);
 			}
 
+			static defaultProps = {
+				a: 'A',
+				b: 'B'
+			};
+
 			render() {
 				return <div className={this.props.a} id={this.props.b}>Hello {this.props.c}!</div>;
 			}
 		}
-		Comp1.defaultProps = {
-			a: 'A',
-			b: 'B'
-		};
 
 		class Comp2 extends Component<any, any> {
 			constructor(props) {
 				super(props);
 			}
 
+			static defaultProps = {
+				a: 'aye',
+				b: 'bee'
+			};
+
 			render() {
 				return <div className={this.props.a} id={this.props.b}>Hello {this.props.c}!</div>;
 			}
 		}
-		Comp2.defaultProps = {
-			a: 'aye',
-			b: 'bee'
-		};
 
 		it('should mount component with defaultProps', () => {
 			render(<Comp1 c='C'/>, container);
@@ -2385,17 +2388,17 @@ describe('Components (JSX)', () => {
 
 				super(props);
 				this.state = { n: false };
-				
+
 				this.onClick = () => {
 					this.setState({ n: !this.state.n });
-				}
+				};
 			}
-			
+
 			render() {
 				if (this.state.n) {
-					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>
+					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>;
 				}
-				return <span onClick={this.onClick}>SPAN</span>
+				return <span onClick={this.onClick}>SPAN</span>;
 			}
 		}
 
@@ -2425,7 +2428,7 @@ describe('Components (JSX)', () => {
 				if (this.state.reverse) {
 					children.reverse();
 				}
-			
+
 				return (
 					<div>
 						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
@@ -2441,7 +2444,7 @@ describe('Components (JSX)', () => {
 		it('should correct swap rows', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
-			// click on "SPAN" 
+			// click on "SPAN"
 			container.querySelector('span').click();
 			// "SPAN" should now be "DIV"
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
@@ -2451,7 +2454,7 @@ describe('Components (JSX)', () => {
 			// click "SWAP ROWS"
 			container.querySelector('button').click();
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
-			// click on "DIV" 
+			// click on "DIV"
 			div.click();
 			// "DIV" should now be "SPAN"
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
@@ -2471,22 +2474,22 @@ describe('Components (JSX)', () => {
 
 				super(props);
 				this.state = { n: false };
-				
+
 				this.onClick = () => {
 					this.setState({ n: !this.state.n });
-				}
+				};
 			}
-			
+
 			render() {
 				if (this.state.n) {
-					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>
+					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>;
 				}
-				return <span onClick={this.onClick}>SPAN</span>
+				return <span onClick={this.onClick}>SPAN</span>;
 			}
 		}
 
 		function F() {
-			return <A />
+			return <A />;
 		}
 
 		class B extends Component<any, any> {
@@ -2515,7 +2518,7 @@ describe('Components (JSX)', () => {
 				if (this.state.reverse) {
 					children.reverse();
 				}
-			
+
 				return (
 					<div>
 						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
@@ -2531,7 +2534,7 @@ describe('Components (JSX)', () => {
 		it('should correct swap rows', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
-			// click on "SPAN" 
+			// click on "SPAN"
 			container.querySelector('span').click();
 			// "SPAN" should now be "DIV"
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
@@ -2541,7 +2544,7 @@ describe('Components (JSX)', () => {
 			// click "SWAP ROWS"
 			container.querySelector('button').click();
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
-			// click on "DIV" 
+			// click on "DIV"
 			div.click();
 			// "DIV" should now be "SPAN"
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
@@ -2561,22 +2564,22 @@ describe('Components (JSX)', () => {
 
 				super(props);
 				this.state = { n: false };
-				
+
 				this.onClick = () => {
 					this.setState({ n: !this.state.n });
-				}
+				};
 			}
-			
+
 			render() {
 				if (this.state.n) {
-					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>
+					return <div ref={ dom => div = dom } onClick={this.onClick}>DIV</div>;
 				}
-				return <span onClick={this.onClick}>SPAN</span>
+				return <span onClick={this.onClick}>SPAN</span>;
 			}
 		}
 
 		function F() {
-			return <A />
+			return <A />;
 		}
 
 		function B () {
@@ -2599,7 +2602,7 @@ describe('Components (JSX)', () => {
 				if (this.state.reverse) {
 					children.reverse();
 				}
-			
+
 				return (
 					<div>
 						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
@@ -2615,7 +2618,7 @@ describe('Components (JSX)', () => {
 		it('should correct swap rows', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
-			// click on "SPAN" 
+			// click on "SPAN"
 			container.querySelector('span').click();
 			// "SPAN" should now be "DIV"
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
@@ -2625,7 +2628,7 @@ describe('Components (JSX)', () => {
 			// click "SWAP ROWS"
 			container.querySelector('button').click();
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
-			// click on "DIV" 
+			// click on "DIV"
 			div.click();
 			// "DIV" should now be "SPAN"
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
@@ -2643,17 +2646,17 @@ describe('Components (JSX)', () => {
 			constructor(props) {
 				super(props);
 				this.state = { n: false };
-				
+
 				this.onClick = () => {
-				this.setState({ n: !this.state.n });
-				}
+					this.setState({ n: !this.state.n });
+				};
 			}
-		
+
 			render() {
 				if (this.state.n) {
-				return <div onClick={this.onClick}>DIV</div>
+					return <div onClick={this.onClick}>DIV</div>;
 				}
-				return <span onClick={this.onClick}>SPAN</span>
+				return <span onClick={this.onClick}>SPAN</span>;
 			}
 		}
 
@@ -2683,7 +2686,7 @@ describe('Components (JSX)', () => {
 				if (this.state.reverse) {
 					children.reverse();
 				}
-			
+
 				return (
 					<div>
 						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
@@ -2697,7 +2700,6 @@ describe('Components (JSX)', () => {
 				);
 			}
 		}
-
 
 		it('should correct swap rows', () => {
 			render(<Test />, container);
@@ -2715,21 +2717,21 @@ describe('Components (JSX)', () => {
 
 		class A extends Component<any, any> {
 			public onClick;
-			
+
 			constructor(props) {
 				super(props);
 				this.state = { n: false };
-				
+
 				this.onClick = () => {
-				this.setState({ n: !this.state.n });
-				}
+					this.setState({ n: !this.state.n });
+				};
 			}
-			
+
 			render() {
 				if (this.state.n) {
-				return <div onClick={this.onClick}>DIV</div>
+					return <div onClick={this.onClick}>DIV</div>;
 				}
-				return <span onClick={this.onClick}>SPAN</span>
+				return <span onClick={this.onClick}>SPAN</span>;
 			}
 		}
 
@@ -2761,7 +2763,7 @@ describe('Components (JSX)', () => {
 				if (this.state.reverse) {
 					children.reverse();
 				}
-			
+
 				return (
 					<div>
 						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
@@ -2843,9 +2845,9 @@ describe('Components (JSX)', () => {
 			}
 
 			render() {
-				var a = <div key="b">B</div>;
-				var b = <div key="a">A</div>;
-			
+				const a = <div key="b">B</div>;
+				const b = <div key="a">A</div>;
+
 				return (
 					<div>
 						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
@@ -2886,7 +2888,7 @@ describe('Components (JSX)', () => {
 				if (this.state.reverse) {
 					children.reverse();
 				}
-			
+
 				return (
 					<div>
 						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>

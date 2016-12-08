@@ -1,7 +1,8 @@
 {
-  "name": "inferno-src",
+  "name": "inferno-build",
+  "private": true,
   "license": "MIT",
-  "version": "1.0.0-beta25",
+  "version": "1.0.0-beta32",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -17,7 +18,7 @@
     "@types/sinon": "^1.16.32",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
-    "babel-loader": "^6.2.8",
+    "babel-loader": "^6.2.9",
     "babel-plugin-inferno": "1.2.0-beta13",
     "babel-plugin-module-resolver": "^2.4.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
@@ -59,7 +60,7 @@
     "lodash": "^4.17.2",
     "merge-source-map": "^1.0.3",
     "mkdirp": "^0.5.1",
-    "mobx": "^2.6.4",
+    "mobx": "^2.6.5",
     "mocha": "^3.2.0",
     "mocha-lcov-reporter": "^1.2.0",
     "most": "^1.1.1",
@@ -80,11 +81,11 @@
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-plugin-uglify": "^1.0.1",
     "sinon": "2.0.0-pre.4",
-    "ts-loader": "^1.2.2",
+    "ts-loader": "^1.3.0",
     "ts-node": "^1.7.0",
     "tslint": "^4.0.2",
-    "typescript": "^2.0.10",
-    "union-type": "^0.3.3",
+    "typescript": "^2.1.4",
+    "union-type-es": "^0.1.0",
     "webpack": "^2.1.0-beta.27",
     "webpack-dev-server": "^2.1.0-beta.12"
   },
@@ -111,9 +112,9 @@
   "nyc": {
     "all": true,
     "check-coverage": true,
-    "lines": 90,
-    "statements": 90,
-    "functions": 90,
+    "lines": 85,
+    "statements": 85,
+    "functions": 85,
     "branches": 80,
     "sourceMap": false,
     "include": [
@@ -160,7 +161,7 @@
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
-    "server:cov:publish": "npm run server:cov && coveralls < coverage/lcov.info && rimraf coverage",
+    "server:cov:publish": "npm run test:server && coveralls < coverage/lcov.info && rimraf coverage",
     "test": "npm run lint && npm run test:browser && npm run test:server",
     "test:browser": "karma start config/karma.conf.js",
     "test:server": "cross-env nyc mocha --opts config/mocha.opts"

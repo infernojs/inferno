@@ -17,7 +17,7 @@ import {
 } from './patching';
 
 import { VNodeFlags } from '../core/shapes';
-import { componentToDOMNodeMap } from './rendering';
+import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import { removeChild } from './utils';
 
 export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
@@ -27,20 +27,12 @@ export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount,
 		unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
 	} else if (flags & VNodeFlags.Element) {
 		unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
-	} else if (flags & VNodeFlags.Text) {
-		unmountText(vNode, parentDom);
-	} else if (flags & VNodeFlags.Void) {
-		unmountVoid(vNode, parentDom);
+	} else if (flags & (VNodeFlags.Text | VNodeFlags.Void)) {
+		unmountVoidOrText(vNode, parentDom);
 	}
 }
 
-function unmountVoid(vNode, parentDom) {
-	if (parentDom) {
-		removeChild(parentDom, vNode.dom);
-	}
-}
-
-function unmountText(vNode, parentDom) {
+function unmountVoidOrText(vNode, parentDom) {
 	if (parentDom) {
 		removeChild(parentDom, vNode.dom);
 	}
@@ -74,7 +66,7 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 				ref(null);
 			}
 			instance._unmounted = true;
-			componentToDOMNodeMap.delete(instance);
+			findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
 		} else if (!isNullOrUndef(ref)) {
 			if (!isNullOrUndef(ref.onComponentWillUnmount)) {
 				ref.onComponentWillUnmount(dom);
@@ -113,7 +105,8 @@ export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowU
 	if (!isNull(events)) {
 		for (let name in events) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchEvent(name, null, null, dom, lifecycle);
+			patchEvent(name, events[name], null, dom, lifecycle);
+			events[name] = null;
 		}
 	}
 	if (parentDom) {
