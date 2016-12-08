@@ -13,7 +13,7 @@ export function innerHTML(HTML) {
 	return comparer.innerHTML;
 }
 
-export function createStyler(CSS) {
+export function createStyler(CSS: string): string {
 	if (typeof CSS === 'undefined' || CSS === null) {
 		return CSS;
 	}
@@ -21,7 +21,7 @@ export function createStyler(CSS) {
 	return comparer.style.cssText;
 }
 
-export function style(CSS) {
+export function style(CSS: string[] | string): any {
 	if (CSS instanceof Array) {
 		return CSS.map(createStyler);
 	} else {
@@ -36,7 +36,7 @@ export function createContainerWithHTML(html) {
 	return container;
 }
 
-export function validateNodeTree(node) {
+export function validateNodeTree(node): boolean {
 	if (!node) {
 		return true;
 	}

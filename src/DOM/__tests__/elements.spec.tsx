@@ -1,9 +1,12 @@
-import { expect } from 'chai';
-import { assert, spy } from 'sinon';
-import { render } from '../rendering';
-import { innerHTML } from '../../tools/utils';
-import createElement from '../../factories/createElement';
 import * as Inferno from '../../testUtils/inferno';
+
+import { assert, spy } from 'sinon';
+
+import createElement from './../../factories/createElement';
+import { expect } from 'chai';
+import { innerHTML } from '../../tools/utils';
+import { render } from './../rendering';
+
 Inferno; // suppress ts 'never used' error
 
 describe('Elements (JSX)', () => {
@@ -468,12 +471,8 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.className).to.eql('');
 
 		render(<div className="Inferno rocks!"/>, container);
-		expect(container.firstChild.getAttribute('class')).to.eql('Inferno rocks!');
-		expect(
-			container.innerHTML
-		).to.equal(
-			innerHTML('<div class="Inferno rocks!"></div>')
-		);
+		expect(container.firstChild.className).to.eql('Inferno rocks!');
+		expect(container.firstChild.innerHTML).to.equal('');
 	});
 
 	it('shouldn\'t render null value', () => {

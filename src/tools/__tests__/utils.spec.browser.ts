@@ -1,16 +1,19 @@
 import {
-	expect
-} from 'chai';
-import {
 	createStyler,
 	innerHTML,
 	style,
-	triggerEvent
+	triggerEvent,
 } from '../utils';
 import {
 	spy,
-	stub
+	stub,
 } from 'sinon';
+
+import {
+	expect,
+} from 'chai';
+
+const styleStringToArray = (styleString: string) => styleString.split(';').map((s) => s.trim());
 
 describe('Utils - innerHTML', () => {
 	it('should return the correct innerHTML', () => {
@@ -40,7 +43,7 @@ describe('Utils - createStyler', () => {
 		`;
 		const validCSS = 'position: relative; right: 10px;';
 
-		expect(createStyler(CSS)).to.equal(validCSS);
+		expect(styleStringToArray(createStyler(CSS))).to.have.members(styleStringToArray(validCSS));
 	});
 });
 
@@ -55,13 +58,14 @@ describe('Utils - style', () => {
 	});
 
 	it('return the created style', () => {
-		const CSS = `
+		const CSS: string = `
 			position: relative;
 			top: -20
 			left: 5;
 			right: 10px;
 		`;
-		expect(style(CSS)).to.equal(createStyler(CSS));
+
+		expect(styleStringToArray(style(CSS))).to.have.members(styleStringToArray(createStyler(CSS)));
 	});
 });
 

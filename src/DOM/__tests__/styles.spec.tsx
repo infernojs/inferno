@@ -1,6 +1,8 @@
+import * as Inferno from '../../testUtils/inferno';
+
 import { expect } from 'chai';
 import { render } from '../rendering';
-import * as Inferno from '../../testUtils/inferno';
+
 Inferno; // suppress ts 'never used' error
 
 function styleNode(style) {
@@ -122,7 +124,8 @@ describe('CSS style properties (JSX)', () => {
 		expect(container.firstChild.style.float).to.equal('left');
 
 		render(styleNode(null), container);
-		expect(container.innerHTML).to.eql('<div></div>');
+		expect(container.firstChild.style.cssText).to.equal('');
+		// expect(container.innerHTML).to.eql('<div></div>');
 	});
 
 	it('Should remove style attribute when single prop value is null', () => {

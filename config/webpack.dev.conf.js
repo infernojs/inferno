@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 const webpack = require('webpack');
 const glob = require('glob');
 const path = require('path');
@@ -13,7 +15,6 @@ module.exports = {
 	output: {
 		filename: '__spec-build.js'
 	},
-	// devtool: 'inline-source-map',
 	module: {
 		loaders: [
 			{

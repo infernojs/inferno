@@ -1,45 +1,37 @@
 /* global module */
 /* tslint:disable */
+
+const path = require('path');
+const sauceLaunchers = require('./sauceLaunchers');
+
 module.exports = function (config) {
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: '',
-		// frameworks to use
-		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
+		basePath: path.join(__dirname, '..'),
 		frameworks: [
 			'chai',
 			'mocha',
 		],
 		files: [
-			'./../node_modules/babel-polyfill/dist/polyfill.js',
-			'./../node_modules/sinon/pkg/sinon.js',
-			'./../src/**/*__tests__*/**/*.ts',
-			'./../src/**/*__tests__*/**/*.tsx',
-			'./../src/**/*__tests__*/**/*.js',
-			'./../src/**/*__tests__*/**/*.jsx',
+			'./node_modules/babel-polyfill/dist/polyfill.js',
+			'./node_modules/sinon/pkg/sinon.js',
+			'./src/**/__tests__/**/*.ts',
+			'./src/**/__tests__/**/*.tsx',
+			'./src/**/__tests__/**/*.js',
+			'./src/**/__tests__/**/*.jsx'
 		],
-		// Start these browsers, currently available:
-		// - Chrome
-		// - ChromeCanary
-		// - Firefox
-		// - Opera (has to be installed with `npm install karma-opera-launcher`)
-		// - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
-		// - PhantomJS
-		// - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-		browsers: ['Chrome'],
-		customLaunchers: {
-			Chrome_travis_ci: {
-				base: 'Chrome',
-				flags: ['--no-sandbox'],
-			},
-		},
-		// list of files to exclude
-		exclude: [],
+		
+		browsers: [
+			// 'Firefox',
+			// 'Safari',
+			'Chrome'
+		],
+		reporters: [
+			'progress'
+		],
+		
 		preprocessors: {
-			'./../src/**/*__tests__*/**/*.ts': ['webpack'],
-			'./../src/**/*__tests__*/**/*.tsx': ['webpack'],
-			'./../src/**/*__tests__*/**/*.js': ['webpack'],
-			'./../src/**/*__tests__*/**/*.jsx': ['webpack'],
+			'./src/**/__tests__/**/*': ['webpack']
 		},
 		webpack: {
 			module: {
@@ -61,70 +53,57 @@ module.exports = function (config) {
 		},
 		webpackMiddleware: {
 			noInfo: true,
-			stats: {
-				// With console colors
-				colors: true,
-				// Add the hash of the compilation
-				hash: false,
-				// Add webpack version information
-				version: false,
-				// Add timing information
-				timings: true,
-				// Add assets information
-				assets: false,
-				// Add chunk information
-				chunks: false,
-				// Add built modules information to chunk information
-				chunkModules: false,
-				// Add built modules information
-				modules: false,
-				// Add also information about cached (not built) modules
-				cached: false,
-				// Add information about the reasons why modules are included
-				reasons: false,
-				// Add the source code of modules
-				source: false,
-				// Add details to errors (like resolving log)
-				errorDetails: true,
-				// Add the origins of chunks and chunk merging info
-				chunkOrigins: false,
-				// Add messages from child loaders
-				children: false,
-			},
 		},
-		// test results reporter to use
-		// possible values: 'dots', 'progress'
-		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: ['progress'],
 
 		browserDisconnectTimeout: 10000,
 		browserDisconnectTolerance: 2,
-		// concurrency level how many browser should be started simultaneously
-		concurrency: 4,
-		// If browser does not capture in given timeout [ms], kill it
-		captureTimeout: 100000,
-		browserNoActivityTimeout: 30000,
-		// enable / disable colors in the output (reporters and logs)
-		colors: true,
-		// level of logging
-		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		logLevel: config.LOG_INFO,
-		// enable / disable watching file and executing tests whenever any file changes
+		captureTimeout: 2 * 60 * 10000,
+		browserNoActivityTimeout: 2 * 60 * 1000,
 		autoWatch: false,
-		// Continuous Integration mode
-		// if true, Karma captures browsers, runs the tests and exits
-		singleRun: true,
+		singleRun: true
 	});
 
-	if (process.env.TRAVIS) {
+	const {
+		TRAVIS,
+		TRAVIS_BRANCH,
+		TRAVIS_BUILD_NUMBER,
+		TRAVIS_JOB_NUMBER,
+		TRAVIS_PULL_REQUEST,
+	} = process.env;
+
+	if (TRAVIS) {
+		const travisLaunchers = {
+			Chrome_travis_ci: {
+				base: 'Chrome',
+				flags: ['--no-sandbox']
+			}
+		};
 		config.set({
-			browsers: [
-				'Chrome_travis_ci',
-			],
+			customLaunchers: travisLaunchers,
 			reporters: [
 				'progress',
 			],
-			browserNoActivityTimeout: 120000
+			browsers: [
+				'Chrome_travis_ci'
+			],
 		});
+	}
+
+	const varToBool = (sVar) => !String(sVar).match(/^(0|false|undefined)$/gi)
+	if (varToBool(TRAVIS) && !varToBool(TRAVIS_PULL_REQUEST) && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
+		config.set({
+			sauceLabs: {
+				testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,
+				build: (TRAVIS_JOB_NUMBER || 'Local'),
+				public: true
+			},
+			concurrency: 1,
+			customLaunchers: sauceLaunchers,
+			browsers: Object.keys(sauceLaunchers),
+			reporters: [
+				'progress',
+				'saucelabs'
+			]
+		})
 	}
 };
