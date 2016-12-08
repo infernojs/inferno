@@ -138,7 +138,8 @@ function applyState(component: Component<any, any>, force, callback): void {
 		}
 
 		const lastInput = component._lastInput;
-		const parentDom = lastInput.dom.parentNode;
+		const vNode = component._vNode;
+		const parentDom = (lastInput.dom && lastInput.dom.parentNode) || (lastInput.dom = vNode.dom);
 
 		component._lastInput = nextInput;
 		if (didUpdate) {
@@ -162,7 +163,6 @@ function applyState(component: Component<any, any>, force, callback): void {
 			subLifecycle.trigger();
 			component.componentDidUpdate(props, prevState);
 		}
-		const vNode = component._vNode;
 		const dom = vNode.dom = nextInput.dom;
 		const componentToDOMNodeMap = component._componentToDOMNodeMap;
 
@@ -217,14 +217,14 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 
 	forceUpdate(callback?) {
 		if (this._unmounted) {
-			throw Error(noOp);
+			return;
 		}
 		applyState(this, true, callback);
 	}
 
 	setState(newState, callback?) {
 		if (this._unmounted) {
-			throw Error(noOp);
+			return;
 		}
 		if (!this._blockSetState) {
 			if (!this._ignoreSetState) {

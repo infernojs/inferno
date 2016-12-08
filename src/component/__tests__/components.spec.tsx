@@ -1583,7 +1583,7 @@ describe('Components (JSX)', () => {
 
 			componentWillMount() {
 				setTimeout(() => {
-					expect(() => this.setState({ z: true })).to.throw();
+					this.setState({ z: true })
 				}, 20);
 			}
 

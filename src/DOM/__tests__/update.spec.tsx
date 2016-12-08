@@ -65,7 +65,7 @@ describe('Stateful Component updates', () => {
 		sinonSpy.restore();
 
 		// delayed update triggers for A
-		expect(() => updatesAfromOutside()).to.throw();
+		updatesAfromOutside();
 		expect(container.innerHTML).to.equal('<div>B Component B</div>');
 
 		done();

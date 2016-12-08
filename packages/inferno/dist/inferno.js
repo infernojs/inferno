@@ -955,6 +955,11 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
     var nextProps = nextVNode.props || EMPTY_OBJ;
     var lastKey = lastVNode.key;
     var nextKey = nextVNode.key;
+    var defaultProps = nextType.defaultProps;
+    if (!isUndefined(defaultProps)) {
+        copyPropsTo(defaultProps, nextProps);
+        nextVNode.props = nextProps;
+    }
     if (lastType !== nextType) {
         if (isClass) {
             replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
@@ -983,18 +988,13 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 replaceChild(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextVNode.flags & 4 /* ComponentClass */), lastVNode.dom);
             }
             else {
-                var defaultProps = nextType.defaultProps;
-                var lastProps = instance.props;
                 if (instance._devToolsStatus.connected && !instance._devToolsId) {
                     componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
                 }
                 lifecycle.fastUnmount = false;
-                if (!isUndefined(defaultProps)) {
-                    copyPropsTo(lastProps, nextProps);
-                    nextVNode.props = nextProps;
-                }
                 var lastState = instance.state;
                 var nextState = instance.state;
+                var lastProps = instance.props;
                 var childContext = instance.getChildContext();
                 nextVNode.children = instance;
                 instance._isSVG = isSVG;
@@ -1830,15 +1830,15 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
     }
     var type = vNode.type;
     var props = vNode.props || EMPTY_OBJ;
+    var defaultProps = type.defaultProps;
     var ref = vNode.ref;
     var dom;
+    if (!isUndefined(defaultProps)) {
+        copyPropsTo(defaultProps, props);
+        vNode.props = props;
+    }
     if (isClass) {
-        var defaultProps = type.defaultProps;
         lifecycle.fastUnmount = false;
-        if (!isUndefined(defaultProps)) {
-            copyPropsTo(defaultProps, props);
-            vNode.props = props;
-        }
         var instance = createStatefulComponentInstance(vNode, type, props, context, isSVG, devToolsStatus);
         var input = instance._lastInput;
         var fastUnmount = lifecycle.fastUnmount;
@@ -2346,6 +2346,7 @@ if (isBrowser) {
 }
 
 if (process.env.NODE_ENV !== 'production') {
+	Object.freeze(EMPTY_OBJ);
 	var testFunc = function testFn() {};
 	warning(
 		(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
