@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import connect from '../connect';
 import { createStore } from 'redux';
 import Component from 'inferno-component';
-import Inferno from 'inferno';
+import * as Inferno from 'inferno';
 
 const render = Inferno.render;
 

@@ -1,7 +1,7 @@
 import { assert, spy } from 'sinon';
 
 import Component from 'inferno-component';
-import Inferno from 'inferno';
+import * as Inferno from 'inferno';
 import createElement from 'inferno-create-element';
 import { expect } from 'chai';
 import { innerHTML } from '../../tools/utils';
