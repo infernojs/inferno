@@ -265,6 +265,12 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 	const nextProps = nextVNode.props || EMPTY_OBJ;
 	const lastKey = lastVNode.key;
 	const nextKey = nextVNode.key;
+	const defaultProps = nextType.defaultProps;
+
+	if (!isUndefined(defaultProps)) {
+		copyPropsTo(defaultProps, nextProps);
+		nextVNode.props = nextProps;
+	}
 
 	if (lastType !== nextType) {
 		if (isClass) {
@@ -305,19 +311,13 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 					lastVNode.dom
 				);
 			} else {
-				const defaultProps = nextType.defaultProps;
-				const lastProps = instance.props;
-
 				if (instance._devToolsStatus.connected && !instance._devToolsId) {
 					componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
 				}
 				lifecycle.fastUnmount = false;
-				if (!isUndefined(defaultProps)) {
-					copyPropsTo(lastProps, nextProps);
-					nextVNode.props = nextProps;
-				}
 				const lastState = instance.state;
 				const nextState = instance.state;
+				const lastProps = instance.props;
 				let childContext = instance.getChildContext();
 
 				nextVNode.children = instance;
