@@ -98,11 +98,11 @@ module.exports = function (config) {
 				build: (TRAVIS_JOB_NUMBER || 'Local'),
 				public: true
 			},
-			concurrency: 2,
+			concurrency: 1,
 			customLaunchers: sauceLaunchers,
 			browsers: Object.keys(sauceLaunchers),
 			reporters: [
-				'failed',
+				'progress',
 				'saucelabs'
 			]
 		})
