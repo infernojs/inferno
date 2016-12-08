@@ -2346,6 +2346,7 @@ if (isBrowser) {
 }
 
 if (process.env.NODE_ENV !== 'production') {
+	Object.freeze(EMPTY_OBJ);
 	var testFunc = function testFn() {};
 	warning(
 		(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
