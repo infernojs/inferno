@@ -112,7 +112,7 @@ declare module 'lodash/fp' {
 	export function curry(obj: any): any;
 }
 
-declare module 'union-type' {
+declare module 'union-type-es' {
 	export default function (obj: any): any;
 }
 
