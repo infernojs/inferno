@@ -233,12 +233,33 @@ function normalizeProps(vNode, props, children) {
         vNode.key = props.key;
     }
 }
+function normalizeElement(type, vNode) {
+    if (type === 'svg') {
+        vNode.flags = 128 /* SvgElement */;
+    }
+    else if (type === 'input') {
+        vNode.flags = 512 /* InputElement */;
+    }
+    else if (type === 'select') {
+        vNode.flags = 2048 /* SelectElement */;
+    }
+    else if (type === 'textarea') {
+        vNode.flags = 1024 /* TextareaElement */;
+    }
+    else if (type === 'media') {
+        vNode.flags = 256 /* MediaElement */;
+    }
+    else {
+        vNode.flags = 2 /* HtmlElement */;
+    }
+}
 function normalize(vNode) {
     var props = vNode.props;
+    var type = vNode.type;
     var children = vNode.children;
     // convert a wrongly created type back to element
-    if (isString(vNode.type) && (vNode.flags & 28 /* Component */)) {
-        vNode.flags = 2 /* HtmlElement */;
+    if (isString(type) && (vNode.flags & 28 /* Component */)) {
+        normalizeElement(type, vNode);
         if (props.children) {
             vNode.children = props.children;
             children = props.children;
