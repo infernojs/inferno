@@ -5,10 +5,12 @@ import sinon from 'sinon';
 describe('Redux Utils', () => {
   describe('warning', () => {
     it('should log message using console.error', () => {
-      const spy = sinon.spy(console, 'error');
+      // stub instead of spy to prevent console.error actually firing during test
+      const stub = sinon.stub(console, 'error', (message) => null);
       warning('warning!');
-      expect(spy.calledOnce).to.equal(true);
-      expect(spy.calledWith('warning!')).to.equal(true);
+      expect(stub.calledOnce).to.equal(true);
+      expect(stub.calledWith('warning!')).to.equal(true);
+      stub.restore();
     })
   })
   describe('shallowEqual', () => {
