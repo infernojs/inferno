@@ -2,7 +2,6 @@
 /* tslint:disable */
 
 const path = require('path');
-const sauceLaunchers = require('./sauceLaunchers');
 
 module.exports = function (config) {
 	config.set({
@@ -91,6 +90,7 @@ module.exports = function (config) {
 
 	const varToBool = (sVar) => !!String(sVar).match('true')
 	if (varToBool(TRAVIS) && !varToBool(TRAVIS_PULL_REQUEST) && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
+		const sauceLaunchers = require('./sauceLaunchers');
 		config.set({
 			sauceLabs: {
 				testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,
