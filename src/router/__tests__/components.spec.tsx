@@ -5,6 +5,7 @@ import Route from '../Route';
 import Router from '../Router';
 import IndexLink from '../IndexLink';
 import Link from '../Link';
+import { innerHTML } from '../../tools/utils';
 import createMemoryHistory from 'history/createMemoryHistory';
 import {
 	expect,
@@ -76,7 +77,7 @@ describe('Router components (jsx)', () => {
 				<IndexLink activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>IndexLink</IndexLink>
 			), container);
 
-			expect(container.innerHTML).to.equal('<a href="/" class="linkClass linkActiveClass" style="font-weight: bold;">IndexLink</a>');
+			expect(container.innerHTML).to.equal(innerHTML('<a href="/" class="linkClass linkActiveClass" style="font-weight: bold;">IndexLink</a>'));
 		});
 
 		it('should route on click', (done) => {
@@ -85,7 +86,7 @@ describe('Router components (jsx)', () => {
 				<Route path={'/test'} component={ () => <TestComponent/> }/>
 			</Router>, container);
 
-			expect(container.innerHTML).to.equal('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>'));
 
 			const link = container.querySelector('a[href="/"]');
 			clickOnLink(link);
