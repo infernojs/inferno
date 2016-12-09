@@ -46,4 +46,41 @@ describe('linkEvent', () => {
 			expect(test).to.equal('456');
 		});
 	});
+
+	describe('linkEvent on a input (onInput)', () => {
+		let test;
+		let event;
+
+		function simulateInput(elm, text) {
+			elm.dispatchEvent(new Event('input'));
+		}
+
+		function handleOnInput(props, e) {
+			test = props.test;
+			event = e;
+		}
+		function FunctionalComponent(props) {
+			return <input type="text" onInput={ linkEvent(props, handleOnInput) } value="" />;
+		}
+
+		class StatefulComponent extends Component<any, any> {
+			render() {
+				return <input type="text" onInput={ linkEvent(this.props, handleOnInput) } value="" />;
+			}
+		}
+
+		it('should work correctly for functional components', () => {
+			render(<FunctionalComponent test="123"/>, container);
+			simulateInput(container.querySelector('input'), '123')
+			expect(test).to.equal('123');
+			expect(event.target.nodeName).to.equal('INPUT');
+		});
+
+		it('should work correctly for stateful components', () => {
+			render(<StatefulComponent test="456"/>, container);
+			simulateInput(container.querySelector('input'), '123')
+			expect(test).to.equal('456');
+			expect(event.target.nodeName).to.equal('INPUT');
+		});
+	});	
 });

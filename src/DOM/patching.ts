@@ -2,9 +2,10 @@ import {
 	EMPTY_OBJ,
 	NO_OP,
 	isArray,
-	isAttrAnEvent,
+	isFunction,
 	isInvalid,
 	isNull,
+	isAttrAnEvent,
 	isNullOrUndef,
 	isNumber,
 	isObject,
@@ -815,10 +816,10 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, lifec
 		if (dom[prop] !== value) {
 			dom[prop] = value;
 		}
-	} else if (isAttrAnEvent(prop)) {
-		patchEvent(prop, lastValue, nextValue, dom, lifecycle);
 	} else if (lastValue !== nextValue) {
-		if (isNullOrUndef(nextValue)) {
+		if (isAttrAnEvent(prop)) {
+			patchEvent(prop, lastValue, nextValue, dom, lifecycle);
+		} else if (isNullOrUndef(nextValue)) {
 			dom.removeAttribute(prop);
 		} else if (prop === 'className') {
 			if (isSVG) {
@@ -882,6 +883,12 @@ export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
 			lifecycle.fastUnmount = false;
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
+			if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
+				if (process.env.NODE_ENV !== 'production') {
+					throwError(`an event on a VNode "${ name }". was not a function. Did you try and apply an eventLink to an unsupported event?`);
+				}
+				throwError();
+			}
 			dom[nameLowerCase] = nextValue;
 		}
 	}
@@ -898,7 +905,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 			const lastValue = lastProps[prop];
 
 			if (isNullOrUndef(nextValue)) {
-				removeProp(prop, dom);
+				removeProp(prop, nextValue, dom);
 			} else {
 				patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle);
 			}
@@ -908,7 +915,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
 		for (let prop in lastProps) {
 			// do not add a hasOwnProperty check here, it affects performance
 			if (isNullOrUndef(nextProps[prop])) {
-				removeProp(prop, dom);
+				removeProp(prop, lastProps[prop], dom);
 			}
 		}
 	}
@@ -942,7 +949,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 	}
 }
 
-function removeProp(prop, dom) {
+function removeProp(prop, lastValue, dom) {
 	if (prop === 'className') {
 		dom.removeAttribute('class');
 	} else if (prop === 'value') {
@@ -950,8 +957,8 @@ function removeProp(prop, dom) {
 	} else if (prop === 'style') {
 		dom.style.cssText = null;
 		dom.removeAttribute('style');
-	} else if (delegatedProps[prop]) {
-		handleEvent(prop, null, null, dom);
+	} else if (isAttrAnEvent(prop)) {
+		handleEvent(name, lastValue, null, dom);
 	} else {
 		dom.removeAttribute(prop);
 	}

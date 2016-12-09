@@ -369,7 +369,7 @@ constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:title
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
 constructDefaults('children,ref,key,selected,checked,value,multiple', skipProps, true);
-constructDefaults('onClick,onMouseDown,onMouseUp,onMouseMove', delegatedProps, true);
+constructDefaults('onClick,onMouseDown,onMouseUp,onMouseMove,onSubmit,onDblClick,onKeyDown,onKeyUp,onKeyPress', delegatedProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
@@ -461,7 +461,13 @@ function onTextInputChange(e) {
     var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
     if (events.onInput) {
-        events.onInput(e);
+        var event = events.onInput;
+        if (event.event) {
+            event.event(event.data, e);
+        }
+        else {
+            event(e);
+        }
     }
     else if (events.oninput) {
         events.oninput(e);
@@ -1472,11 +1478,11 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
             dom[prop] = value;
         }
     }
-    else if (isAttrAnEvent(prop)) {
-        patchEvent(prop, lastValue, nextValue, dom, lifecycle);
-    }
     else if (lastValue !== nextValue) {
-        if (isNullOrUndef(nextValue)) {
+        if (isAttrAnEvent(prop)) {
+            patchEvent(prop, lastValue, nextValue, dom, lifecycle);
+        }
+        else if (isNullOrUndef(nextValue)) {
             dom.removeAttribute(prop);
         }
         else if (prop === 'className') {
@@ -1542,6 +1548,12 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
             handleEvent(name, lastValue, nextValue, dom);
         }
         else {
+            if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
+                if (process.env.NODE_ENV !== 'production') {
+                    throwError(("an event on a VNode \"" + name + "\". was not a function. Did you try and apply an eventLink to an unsupported event?"));
+                }
+                throwError();
+            }
             dom[nameLowerCase] = nextValue;
         }
     }
@@ -1555,7 +1567,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
             var nextValue = nextProps[prop];
             var lastValue = lastProps[prop];
             if (isNullOrUndef(nextValue)) {
-                removeProp(prop, dom);
+                removeProp(prop, nextValue, dom);
             }
             else {
                 patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle);
@@ -1566,7 +1578,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
         for (var prop$1 in lastProps) {
             // do not add a hasOwnProperty check here, it affects performance
             if (isNullOrUndef(nextProps[prop$1])) {
-                removeProp(prop$1, dom);
+                removeProp(prop$1, lastProps[prop$1], dom);
             }
         }
     }
@@ -1596,7 +1608,7 @@ function patchStyle(lastAttrValue, nextAttrValue, dom) {
         }
     }
 }
-function removeProp(prop, dom) {
+function removeProp(prop, lastValue, dom) {
     if (prop === 'className') {
         dom.removeAttribute('class');
     }
@@ -1607,8 +1619,8 @@ function removeProp(prop, dom) {
         dom.style.cssText = null;
         dom.removeAttribute('style');
     }
-    else if (delegatedProps[prop]) {
-        handleEvent(prop, null, null, dom);
+    else if (isAttrAnEvent(prop)) {
+        handleEvent(name, lastValue, null, dom);
     }
     else {
         dom.removeAttribute(prop);
