@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { assert, spy } from 'sinon';
 import { render } from '../rendering';
 import Component from '../../component/es2015';
+import { innerHTML } from '../../tools/utils';
 import * as Inferno from 'inferno';
 Inferno; // suppress ts 'never used' error
 
@@ -557,7 +558,7 @@ describe('Stateful Component updates', () => {
 		}
 
 		render(<Tester/>, container);
-		expect(container.innerHTML).to.eql('<form><input type="text" id="inputId"></form>');
+		expect(container.innerHTML).to.eql(innerHTML('<form><input type="text" id="inputId"></form>'));
 		const input = container.querySelector('#inputId');
 		expect(assert.notCalled(submitSpy));
 		input.focus();
