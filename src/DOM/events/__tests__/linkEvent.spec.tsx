@@ -52,7 +52,13 @@ describe('linkEvent', () => {
 		let event;
 
 		function simulateInput(elm, text) {
-			elm.dispatchEvent(new Event('input'));
+			if (typeof Event !== 'undefined') {
+				elm.dispatchEvent(new Event('input'));
+			} else {
+				elm.oninput({
+					target: elm
+				});
+			}
 		}
 
 		function handleOnInput(props, e) {
