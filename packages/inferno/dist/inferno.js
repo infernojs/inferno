@@ -241,6 +241,7 @@ function normalize(vNode) {
         vNode.flags = 3970 /* Element */;
         if (props.children) {
             vNode.children = props.children;
+            children = props.children;
         }
     }
     if (props) {
