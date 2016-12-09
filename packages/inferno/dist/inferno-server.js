@@ -2473,10 +2473,10 @@ function renderVNodeToString(vNode, context, firstChild) {
     }
 }
 function renderToString(input) {
-    return renderVNodeToString(input, null, true);
+    return renderVNodeToString(input, {}, true);
 }
 function renderToStaticMarkup(input) {
-    return renderVNodeToString(input, null, true);
+    return renderVNodeToString(input, {}, true);
 }
 
 function renderStyleToString(style) {
