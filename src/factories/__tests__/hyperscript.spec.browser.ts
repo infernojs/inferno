@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { render } from '../../DOM/rendering';
 import h from '../hyperscript';
-
+import { innerHTML } from '../../tools/utils'
 describe('HyperScript (non-JSX)', () => {
 	let container;
 
@@ -80,7 +80,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal('<div class="test myClass" id="myId">Hello world!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div class="test myClass" id="myId">Hello world!</div>'));
 	});
 
 	it('Should handle tag with no name', () => {

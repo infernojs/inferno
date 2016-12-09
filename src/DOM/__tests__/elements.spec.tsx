@@ -754,7 +754,7 @@ describe('Elements (JSX)', () => {
 		render((
 			<div { ...foo } { ...bar } />
 		), container);
-		expect(container.innerHTML).to.equal('<div class="lol" id="test">Hello world!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div class="lol" id="test">Hello world!</div>'));
 	});
 
 	it('mixing JSX with non-JSX', () => {
