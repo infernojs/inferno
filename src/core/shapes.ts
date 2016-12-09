@@ -148,6 +148,9 @@ function normalize(vNode) {
 	// convert a wrongly created type back to element
 	if (isString(vNode.type) && (vNode.flags & VNodeFlags.Component)) {
 		vNode.flags = VNodeFlags.Element;
+		if (props.children) {
+			vNode.children = props.children;
+		}
 	}
 	if (props) {
 		normalizeProps(vNode, props, children);

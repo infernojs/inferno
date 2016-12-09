@@ -289,6 +289,9 @@ function normalize(vNode) {
     // convert a wrongly created type back to element
     if (isString(vNode.type) && (vNode.flags & 28 /* Component */)) {
         vNode.flags = 3970 /* Element */;
+        if (props.children) {
+            vNode.children = props.children;
+        }
     }
     if (props) {
         normalizeProps(vNode, props, children);
