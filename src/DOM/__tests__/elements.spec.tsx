@@ -3,8 +3,8 @@ import * as Inferno from '../../testUtils/inferno';
 import { assert, spy } from 'sinon';
 
 import createElement from './../../factories/createElement';
-import { expect } from 'chai';
 import { innerHTML } from '../../tools/utils';
+import { expect } from 'chai';
 import { render } from './../rendering';
 
 Inferno; // suppress ts 'never used' error

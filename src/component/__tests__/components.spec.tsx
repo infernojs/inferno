@@ -3,8 +3,8 @@ import { assert, spy } from 'sinon';
 import Component from 'inferno-component';
 import * as Inferno from 'inferno';
 import createElement from 'inferno-create-element';
-import { expect } from 'chai';
 import { innerHTML } from '../../tools/utils';
+import { expect } from 'chai';
 
 const render = Inferno.render;
 
