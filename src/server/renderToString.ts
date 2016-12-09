@@ -140,9 +140,9 @@ function renderVNodeToString(vNode, context, firstChild) {
 }
 
 export default function renderToString(input) {
-	return renderVNodeToString(input, null, true);
+	return renderVNodeToString(input, {}, true);
 }
 
 export function renderToStaticMarkup(input) {
-	return renderVNodeToString(input, null, true);
+	return renderVNodeToString(input, {}, true);
 }
