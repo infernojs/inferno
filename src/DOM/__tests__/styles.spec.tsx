@@ -1,7 +1,5 @@
-import * as Inferno from '../../testUtils/inferno';
-
+import Inferno, { render } from 'inferno';
 import { expect } from 'chai';
-import { render } from '../rendering';
 
 Inferno; // suppress ts 'never used' error
 

@@ -1,11 +1,10 @@
-import * as Inferno from '../../testUtils/inferno';
+import Inferno, { render } from 'inferno';
 
 import { assert, spy } from 'sinon';
 
-import createElement from './../../factories/createElement';
+import createElement from 'inferno-create-element';
 import { innerHTML } from '../../tools/utils';
 import { expect } from 'chai';
-import { render } from './../rendering';
 
 Inferno; // suppress ts 'never used' error
 

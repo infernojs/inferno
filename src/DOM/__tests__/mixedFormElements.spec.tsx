@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { render } from '../rendering';
-import * as Inferno from '../../testUtils/inferno';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('HTML Form Elements', () => {

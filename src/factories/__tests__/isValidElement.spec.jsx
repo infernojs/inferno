@@ -1,10 +1,9 @@
 import { expect } from 'chai';
-import createElement from '../createElement';
-import cloneVNode from '../cloneVNode';
+import createElement from 'inferno-create-element';
 import isValidElement from '../isValidElement';
-import h from '../hyperscript';
-import Component from '../../component/es2015';
-import * as Inferno from '../../testUtils/inferno';
+import h from 'inferno-hyperscript';
+import Component from 'inferno-component';
+import Inferno, { cloneVNode } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('isValidElement', () => {

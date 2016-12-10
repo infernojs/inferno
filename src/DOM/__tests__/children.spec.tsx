@@ -1,8 +1,7 @@
 import { expect } from 'chai';
 import { assert, spy } from 'sinon';
-import { render } from '../rendering';
-import Component from '../../component/es2015';
-import * as Inferno from '../../testUtils/inferno';
+import Component from 'inferno-component';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('Children - (JSX)', () => {

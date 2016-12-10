@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { streamAsStaticMarkup } from '../renderToString.stream';
 import concatStream from 'concat-stream-es6';
-import createElement from '../../factories/createElement';
-import createClass from '../../component/createClass';
+import createElement from 'inferno-create-element';
+import createClass from 'inferno-create-class';
 
 describe('SSR Root Creation Streams - (non-JSX)', () => {
 	let container;

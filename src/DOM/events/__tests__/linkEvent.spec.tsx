@@ -1,9 +1,7 @@
 import { expect } from 'chai';
-import Inferno from 'inferno';
+import Inferno, { render, linkEvent } from 'inferno';
 import Component from 'inferno-component';
-
-const render = Inferno.render;
-const linkEvent = Inferno.linkEvent;
+Inferno;
 
 describe('linkEvent', () => {
 	let container;

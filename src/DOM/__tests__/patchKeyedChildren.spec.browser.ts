@@ -1,7 +1,7 @@
-import { render } from '../rendering';
-import createElement from '../../factories/createElement';
+import { render, createVNode } from 'inferno';
+import createElement from 'inferno-create-element';
 import { expect } from 'chai';
-import { VNode, createVNode, VNodeFlags, createTextVNode } from "../../core/shapes";
+import { VNode, VNodeFlags, createTextVNode } from "../../core/shapes";
 
 function generateKeyNodes(array) {
 

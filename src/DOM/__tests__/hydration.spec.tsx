@@ -1,12 +1,11 @@
 import { expect } from 'chai';
 import renderToString from '../../server/renderToString';
-import Component from '../../component/es2015';
-import { render } from '../../DOM/rendering';
+import Component from 'inferno-component';
 import {
 	createContainerWithHTML,
 	validateNodeTree
 } from '../../tools/utils';
-import * as Inferno from '../../testUtils/inferno';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 function Comp1() {

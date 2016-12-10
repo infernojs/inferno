@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
-import createElement from '../createElement';
+import { render } from 'inferno';
+import createElement from 'inferno-create-element';
 
 describe('CreateElement (non-JSX)', () => {
 	let container;

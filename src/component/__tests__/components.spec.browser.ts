@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
-import Component from '../es2015';
-import createElement from '../../factories/createElement';
+import Component from 'inferno-component';
+import createElement from 'inferno-create-element';
+import { render } from 'inferno';
 import {
 	innerHTML,
 	waits

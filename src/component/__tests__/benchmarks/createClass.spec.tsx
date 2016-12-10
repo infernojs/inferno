@@ -1,6 +1,5 @@
-import { render } from '../../../DOM/rendering';
-import createClass from '../../../component/createClass';
-import * as Inferno from '../../../testUtils/inferno';
+import createClass from 'inferno-create-class';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 function runBenchmark(container) {

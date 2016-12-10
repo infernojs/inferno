@@ -1,7 +1,8 @@
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
-import h from '../hyperscript';
-import { innerHTML } from '../../tools/utils'
+import { render } from 'inferno';
+import h from 'inferno-hyperscript';
+import { innerHTML } from '../../tools/utils';
+
 describe('HyperScript (non-JSX)', () => {
 	let container;
 

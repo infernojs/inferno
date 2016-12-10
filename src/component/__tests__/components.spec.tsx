@@ -1,12 +1,11 @@
 import { assert, spy } from 'sinon';
 
 import Component from 'inferno-component';
-import * as Inferno from 'inferno';
+import Inferno, { render } from 'inferno';
 import createElement from 'inferno-create-element';
 import { innerHTML } from '../../tools/utils';
 import { expect } from 'chai';
-
-const render = Inferno.render;
+Inferno;
 
 describe('Components (JSX)', () => {
 	let container;

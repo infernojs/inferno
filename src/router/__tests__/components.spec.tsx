@@ -1,5 +1,4 @@
-import * as Inferno from '../../testUtils/inferno';
-
+import Inferno, { render } from 'inferno';
 import IndexRoute from '../IndexRoute';
 import Route from '../Route';
 import Router from '../Router';
@@ -10,9 +9,7 @@ import createMemoryHistory from 'history/createMemoryHistory';
 import {
 	expect,
 } from 'chai';
-import {
-	render,
-} from '../../DOM/rendering';
+
 Inferno; // suppress ts 'never used' error
 
 const browserHistory = createMemoryHistory();

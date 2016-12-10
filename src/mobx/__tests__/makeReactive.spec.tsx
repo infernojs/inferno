@@ -1,9 +1,8 @@
 import { observable, extendObservable, toJS } from 'mobx';
 import { expect } from 'chai';
 import makeReactive from '../makeReactive';
-import { render } from '../../DOM/rendering';
-import Component from '../../component/es2015';
-import * as Inferno from '../../testUtils/inferno';
+import Component from 'inferno-component';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('MobX Observer', () => {

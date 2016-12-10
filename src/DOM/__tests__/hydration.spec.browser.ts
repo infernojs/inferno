@@ -1,10 +1,10 @@
 import renderToString from '../../server/renderToString';
-import { render } from '../rendering';
+import { render } from 'inferno';
 import {
 	createContainerWithHTML,
 	validateNodeTree
 } from '../../tools/utils';
-import createElement from '../../factories/createElement';
+import createElement from 'inferno-create-element';
 import { expect } from 'chai';
 
 describe('SSR Hydration - (non-JSX)', () => {

@@ -1,9 +1,8 @@
 import { expect } from 'chai';
 import { assert, spy } from 'sinon';
-import { render } from '../rendering';
-import Component from '../../component/es2015';
+import Component from 'inferno-component';
 import { innerHTML } from '../../tools/utils';
-import * as Inferno from 'inferno';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('Stateful Component updates', () => {

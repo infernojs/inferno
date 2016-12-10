@@ -1,5 +1,5 @@
-import { render } from '../rendering';
-import createElement from '../../factories/createElement';
+import { render } from 'inferno';
+import createElement from 'inferno-create-element';
 import { expect } from 'chai';
 
 describe('patching keyed lists (non-jsx)', () => {

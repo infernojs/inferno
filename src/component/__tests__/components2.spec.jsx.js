@@ -1,8 +1,7 @@
 import { expect } from 'chai';
 import Component from 'inferno-component';
-import * as Inferno from 'inferno';
-
-const render = Inferno.render;
+import Inferno, { render } from 'inferno';
+Inferno;
 
 /* These must be in their own files for test to reproduce */
 import { ParentFirstCommon } from '../../../testdata/common-render/parentfirstcommon';
