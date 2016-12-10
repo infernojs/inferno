@@ -5,17 +5,17 @@ require('ts-node').register({
 	lazy: true
 });
 
-var fs = require('fs');
-var path = require('path');
-var buble = require('buble');
-var babel = require('babel-core');
-var convert = require('convert-source-map');
-var merge = require('merge-source-map');
-var virtuals = require('./aliases');
+const fs = require('fs');
+const path = require('path');
+const buble = require('buble');
+const babel = require('babel-core');
+const convert = require('convert-source-map');
+const merge = require('merge-source-map');
+const virtuals = require('./aliases');
 
-var nodeModulesPattern = path.sep === '/' ? /\/node_modules\// : /\\node_modules\\/;
+const nodeModulesPattern = path.sep === '/' ? /\/node_modules\// : /\\node_modules\\/;
 
-var bubleOptions = {
+const bubleOptions = {
 	objectAssign: 'Object.assign',
 	target: {
 		node: 6
@@ -26,7 +26,7 @@ var bubleOptions = {
 	}
 };
 
-var babelOptions = {
+const babelOptions = {
 	babelrc: false,
 	sourceMaps: true,
 	compact: false,
@@ -45,7 +45,7 @@ registerExtension('.tsx');
 
 function registerExtension(ext) {
 
-	var old = require.extensions[ext];
+	const old = require.extensions[ext];
 	if (!old) {
 		throw new Error('ts-node/register or equivalent compiler must be used before this compiler.')
 	}
@@ -53,9 +53,9 @@ function registerExtension(ext) {
 	require.extensions[ext] = function (m, filename) {
 
 		if (nodeModulesPattern.test(filename)) return old(m, filename);
-		var _compile = m._compile;
+		let _compile = m._compile;
 		m._compile = function (code, fileName) {
-			var compiled;
+			let compiled;
 			try {
 				// extract map from ts-node (ES6) output
 				const tsMap = convert.fromMapFileSource(code);

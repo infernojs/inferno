@@ -5,7 +5,11 @@ declare module 'inferno' {
 	export function findDOMNode(node: any): any;
 	export function createRenderer(...rest);
 	export function disableRecycling(...rest);
+	export function linkEvent(data, event: Function);
+	export function enableFindDOMNode();
 	export const NO_OP;
+	export const ERROR_MSG;
+	export const EMPTY_OBJ;
 }
 
 declare module 'inferno-component' {
@@ -36,6 +40,10 @@ declare module 'inferno-create-class' {
 
 declare module 'inferno-create-element' {
 	export default function createElement(component: any, props: any, ...children): any;
+}
+
+declare module 'inferno-hyperscript' {
+	export default function hyperscript(tag: any, props?: any, ...children): any;
 }
 
 declare module 'lodash/isPlainObject' {
@@ -101,11 +109,13 @@ declare module 'sinon' {
 
 declare module 'most' {
 	export function map(f?: any, stream?: any): any;
+	export function reduce(f?: any, intitial?: any, stream?: any): any;
 	export function scan(f?: any, initial?: any, stream?: any): any;
 }
 
 declare module 'most-subject' {
 	export function hold(bufferSize?: number, subject?: any): any;
+	export function sync(): void;
 }
 
 declare module 'lodash/fp' {
@@ -116,4 +126,4 @@ declare module 'union-type-es' {
 	export default function (obj: any): any;
 }
 
-interface Window { process: any; __karma__: any; }
+interface Window { process: any; __karma__: any; mocha: any; }

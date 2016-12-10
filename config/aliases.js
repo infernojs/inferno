@@ -10,12 +10,12 @@ module.exports.compilerAliases = changePaths(module.exports.aliases);
  * @param plugins
  * @returns {*}
  */
-function findAliases(plugins) {
+function findAliases() {
 	const babelrcPath = path.join(__dirname, '../.babelrc');
 	const babelrc = JSON.parse(fs.readFileSync(babelrcPath, 'utf-8'));
 
 	return _.reduce(babelrc.plugins, (result, plugin) => {
-		if (_.isArray(plugin) && plugin[1] && plugin[1].alias) {
+		if (Array.isArray(plugin) && plugin[1] && plugin[1].alias) {
 			result = plugin[1].alias
 		}
 		return result;
