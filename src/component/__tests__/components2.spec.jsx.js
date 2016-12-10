@@ -214,4 +214,13 @@ describe('Components (JSX) #2', () => {
 			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
 		});
 	});
+
+	// Ref: https://github.com/trueadm/inferno/issues/513
+	describe('String components (React compat)', () => {
+		it('Should render a string div', () => {
+			const Div = 'div';
+			render(<Div>Hello World</Div>, container);
+			expect(container.innerHTML).to.equal('<div>Hello World</div>');
+		});
+	});
 });
