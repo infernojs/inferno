@@ -757,11 +757,11 @@ describe('Elements (JSX)', () => {
 	});
 
 	it('mixing JSX with non-JSX', () => {
-		render(<div>{createElement('div')}</div>, container);
+		render(<div>{createElement('div', null)}</div>, container);
 		expect(container.innerHTML).to.equal('<div><div></div></div>');
-		render(<div>{createElement('span')}</div>, container);
+		render(<div>{createElement('span', null)}</div>, container);
 		expect(container.innerHTML).to.equal('<div><span></span></div>');
-		render(<span>{createElement('div')}</span>, container);
+		render(<span>{createElement('div', null)}</span>, container);
 		expect(container.innerHTML).to.equal('<span><div></div></span>');
 	});
 

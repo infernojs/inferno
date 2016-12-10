@@ -120,7 +120,7 @@ describe('CreateElement (non-JSX)', () => {
 	});
 
 	it('Should throw with invalid name', () => {
-		expect(() => createElement({} as Function)).to.throw(Error);
+		expect(() => createElement({} as Function, null)).to.throw(Error);
 	});
 
 	it('Should handle node with refs', (done) => {
@@ -137,6 +137,6 @@ describe('CreateElement (non-JSX)', () => {
 				}
 			});
 		};
-		render(createElement(app), container);
+		render(createElement(app, null), container);
 	});
 });

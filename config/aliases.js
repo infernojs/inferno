@@ -29,7 +29,7 @@ function findAliases(plugins) {
  */
 function changePaths(hashmap) {
 	Object.keys(hashmap).forEach(key => {
-		hashmap[key] = path.join(__dirname, '../packages', hashmap[key].replace('./packages', ''));
+		hashmap[key] = path.join(__dirname, '../', hashmap[key].replace('./packages', ''));
 	});
 	return hashmap;
 }

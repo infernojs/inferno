@@ -71,13 +71,13 @@ describe('SVG (non-jsx)', () => {
 	it('should set SVG as default namespace for <svg>', () => {
 		let template;
 
-		template = () => createElement('svg');
+		template = () => createElement('svg', null);
 
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		render(template(), container);
 
-		template = () => createElement('svg', null, createElement('path'));
+		template = () => createElement('svg', null, createElement('path', null));
 
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
@@ -122,7 +122,7 @@ describe('SVG (non-jsx)', () => {
 	it('should use the parent namespace by default (static)', () => {
 		let template;
 
-		template = () => createElement('svg', null, createElement('circle'));
+		template = () => createElement('svg', null, createElement('circle', null));
 
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
@@ -132,20 +132,20 @@ describe('SVG (non-jsx)', () => {
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
-		template = () => createElement('svg', null, createElement('path'));
+		template = () => createElement('svg', null, createElement('path', null));
 
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
-		template = () => createElement('svg');
+		template = () => createElement('svg', null);
 
 		render(template(), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	});
 
 	it('should handle SVG edge case (static)', () => {
-		const template = (child?) => createElement('div', null, createElement('svg'));
+		const template = (child?) => createElement('div', null, createElement('svg', null));
 
 		render(template(), container);
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
@@ -160,7 +160,7 @@ describe('SVG (non-jsx)', () => {
 				xmlns: 'http://www.w3.org/2000/svg'
 			}, _child);
 
-		child = () => createElement('circle');
+		child = () => createElement('circle', null);
 
 		render(template(child()), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
@@ -187,11 +187,11 @@ describe('SVG (non-jsx)', () => {
 		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
-		child = () => createElement('circle', null, createElement('circle', null, createElement('g', null, createElement('g'))));
+		child = () => createElement('circle', null, createElement('circle', null, createElement('g', null, createElement('g', null))));
 		render(template(child()), container);
 		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
-		child = () => createElement('circle', null, createElement('circle', null, createElement('g', null, createElement('g', null, createElement('circle')))));
+		child = () => createElement('circle', null, createElement('circle', null, createElement('g', null, createElement('g', null, createElement('circle', null)))));
 
 		render(template(null), container);
 		render(template(child()), container);
@@ -277,7 +277,7 @@ describe('SVG (non-jsx)', () => {
 	});
 
 	it('should solve SVG edge when wrapped inside a non-namespace element (static)', () => {
-		const template = () => createElement('div', null, createElement('svg'));
+		const template = () => createElement('div', null, createElement('svg', null));
 
 		render(template(), container);
 		// expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
@@ -288,7 +288,7 @@ describe('SVG (non-jsx)', () => {
 	it('should solve SVG edge case with XMLNS attribute when wrapped inside a non-namespace element (static)', () => {
 		const template = () => createElement('div', {
 			xmlns: 'http://www.w3.org/2000/svg'
-		}, createElement('svg'));
+		}, createElement('svg', null));
 
 		render(template(), container);
 		// expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
