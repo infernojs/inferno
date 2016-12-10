@@ -80,7 +80,7 @@ module.exports = function (config) {
 		config.set({
 			customLaunchers: travisLaunchers,
 			reporters: [
-				'progress',
+				'failed',
 			],
 			browsers: [
 				'Chrome_travis_ci'
