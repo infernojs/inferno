@@ -34,7 +34,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
 				return createElement('a', null, this.context.hello);
 			}
 		});
-		return streamPromise(createElement(TestComponent)).then(function (output) {
+		return streamPromise(createElement(TestComponent, null)).then(function (output) {
 			expect(output).to.equal('<a data-infernoroot>world</a>');
 		});
 	});

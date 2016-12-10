@@ -41,6 +41,10 @@ declare module 'inferno-create-class' {
 declare module 'inferno-create-element' {
 	export default function createElement(component: any, props: any, ...children): any;
 }
+declare module 'inferno-hyperscript' {
+	export default function hyperscript(tag: any, props?: any, ...children): any;
+}
+
 
 declare module 'lodash/isPlainObject' {
 	function isPlainObject(value: any): boolean;
