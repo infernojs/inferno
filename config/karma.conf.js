@@ -101,7 +101,7 @@ module.exports = function (config) {
 			customLaunchers: sauceLaunchers,
 			browsers: Object.keys(sauceLaunchers),
 			reporters: [
-				'progress',
+				'failed',
 				'saucelabs'
 			]
 		})
