@@ -101,12 +101,13 @@ export function applyValue(vNode, dom) {
 	const type = props.type;
 	const value = props.value;
 	const checked = props.checked;
+	const multiple = props.multiple;
 
-	if (type !== dom.type && type) {
+	if (type && type !== dom.type) {
 		dom.type = type;
 	}
-	if (props.multiple !== dom.multiple) {
-		dom.multiple = props.multiple;
+	if (multiple && multiple !== dom.multiple) {
+		dom.multiple = multiple;
 	}
 	if (isCheckedType(type)) {
 		if (!isNullOrUndef(value)) {

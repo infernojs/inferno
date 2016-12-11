@@ -592,11 +592,12 @@ function applyValue(vNode, dom) {
     var type = props.type;
     var value = props.value;
     var checked = props.checked;
-    if (type !== dom.type && type) {
+    var multiple = props.multiple;
+    if (type && type !== dom.type) {
         dom.type = type;
     }
-    if (props.multiple !== dom.multiple) {
-        dom.multiple = props.multiple;
+    if (multiple && multiple !== dom.multiple) {
+        dom.multiple = multiple;
     }
     if (isCheckedType(type)) {
         if (!isNullOrUndef(value)) {
