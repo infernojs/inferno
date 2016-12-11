@@ -41,7 +41,13 @@ function onCheckboxChange(e) {
 	const dom = vNode.dom;
 
 	if (events.onClick) {
-		events.onClick(e);
+		const event = events.onClick;
+
+		if (event.event) {
+			event.event(event.data, e);
+		} else {
+			event(e);
+		}
 	} else if (events.onclick) {
 		events.onclick(e);
 	}
