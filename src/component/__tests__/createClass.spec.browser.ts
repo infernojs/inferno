@@ -87,4 +87,34 @@ describe('Components createClass (non-JSX)', () => {
 
 		expect(Component.propTypes).to.be.undefined;
 	});
+	it('should have mixins on created class', () => {
+		const mixins = [{
+				func1: () => true
+			}]
+		const Component = createClass({
+			mixins,
+			render() {
+				return createElement('div', null, 'Hello world!');
+			}
+		});
+		render(createElement(Component as Function, {}), container);
+		expect(Component.mixins).to.have.property('func1');
+	});
+	it('should have nested mixins on created class', () => {
+		const mixins = [{
+				mixins: [{
+					mixins: [{
+						nestedMixin: () => true,
+					}]
+				}]
+			}]
+		const Component = createClass({
+			mixins,
+			render() {
+				return createElement('div', null, 'Hello world!');
+			}
+		});
+		render(createElement(Component as Function, {}), container);
+		expect(Component.mixins).to.have.property('nestedMixin');
+	});
 });
