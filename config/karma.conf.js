@@ -21,8 +21,8 @@ module.exports = function (config) {
 		],
 		
 		browsers: [
-			'Firefox',
-			'Safari',
+			// 'Firefox',
+			// 'Safari',
 			'Chrome'
 		],
 		reporters: [
