@@ -3,7 +3,7 @@ import { render } from '../../DOM/rendering';
 import createClass from '../createClass';
 import createElement from '../../factories/createElement';
 
-describe.only('Components createClass (non-JSX)', () => {
+describe('Components createClass (non-JSX)', () => {
 	let container;
 
 	beforeEach(() => {
