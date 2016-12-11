@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { render } from '../../DOM/rendering';
 import createClass from '../createClass';
 import createElement from '../../factories/createElement';
+import { innerHTML } from '../../tools/utils';
 
 describe('Components createClass (non-JSX)', () => {
 	let container;
@@ -25,7 +26,7 @@ describe('Components createClass (non-JSX)', () => {
 
 	it('should render a basic component', () => {
 		render(createElement(BasicComponent as Function), container);
-		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
 	});
 	it('should render a basic component with lifecycle', () => {
 		let componentWillUpdate = false;

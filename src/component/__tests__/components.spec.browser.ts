@@ -142,7 +142,7 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
-		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal(innerHTML('<input type="checkbox">The title is abc'));
 		expect(container.querySelector('input').checked).to.equal(true);
 
 		render(null, container);
@@ -153,7 +153,7 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
-		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal(innerHTML('<input type="checkbox">The title is abc'));
 		expect(container.querySelector('input').checked).to.equal(false);
 	});
 
