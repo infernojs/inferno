@@ -50,7 +50,11 @@ describe('Router components (jsx)', () => {
 				<Link to="/" activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>Link</Link>
 			), container);
 
-			expect(container.innerHTML).to.equal('<a href="/" class="linkClass linkActiveClass" style="font-weight: bold;">Link</a>');
+			expect(
+				innerHTML(container.innerHTML)
+			).to.equal(
+				'<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">Link</a>'
+			);
 		});
 
 		it('should route on click', (done) => {
@@ -74,7 +78,11 @@ describe('Router components (jsx)', () => {
 				<IndexLink activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>IndexLink</IndexLink>
 			), container);
 
-			expect(container.innerHTML).to.equal(innerHTML('<a href="/" class="linkClass linkActiveClass" style="font-weight: bold;">IndexLink</a>'));
+			expect(
+				innerHTML(container.innerHTML)
+			).to.equal(
+				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">IndexLink</a>')
+			);
 		});
 
 		it('should route on click', (done) => {

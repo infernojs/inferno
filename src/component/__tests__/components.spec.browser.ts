@@ -218,16 +218,16 @@ describe('Components (non-JSX)', () => {
 		}
 	}
 
-	it('should render a basic component with inputs #3', () => {
+	it('should render a basic component with inputs #3 #3', () => {
 		let template = (Component, title, isDisabled) =>
 			createElement('div', null,
 				createElement(Component, { title, isDisabled })
 			);
 		render(template(BasicComponent1d, 'abc', true), container);
 		expect(
-			container.innerHTML
+			innerHTML(container.innerHTML)
 		).to.equal(
-			innerHTML('<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>')
+			innerHTML('<div><div class="basic"><label><input disabled="" type="password">The title is abc</label></div></div>')
 		);
 		expect(
 			container.querySelector('input').disabled
@@ -237,7 +237,7 @@ describe('Components (non-JSX)', () => {
 
 		render(template(BasicComponent1d, '123', false), container);
 		expect(
-			container.innerHTML
+			innerHTML(container.innerHTML)
 		).to.equal(
 			'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
 		);

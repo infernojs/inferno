@@ -54,6 +54,7 @@ module.exports = function (config) {
 			noInfo: true,
 		},
 
+		concurrency: 1,
 		browserDisconnectTimeout: 10000,
 		browserDisconnectTolerance: 2,
 		captureTimeout: 2 * 60 * 10000,
