@@ -124,8 +124,8 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 	}
 }
 
-export function createRenderer() {
-	let parentDom;
+export function createRenderer(_parentDom) {
+	let parentDom = _parentDom || null;
 
 	return function renderer(lastInput, nextInput) {
 		if (!parentDom) {

@@ -2366,8 +2366,8 @@ function render(input, parentDom) {
         sendRoots(window);
     }
 }
-function createRenderer() {
-    var parentDom;
+function createRenderer(_parentDom) {
+    var parentDom = _parentDom || null;
     return function renderer(lastInput, nextInput) {
         if (!parentDom) {
             parentDom = lastInput;
