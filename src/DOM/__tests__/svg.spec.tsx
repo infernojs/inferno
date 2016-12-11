@@ -18,7 +18,7 @@ describe('createTree - SVG (JSX)', () => {
 	it('should render svg as <svg>', () => {
 		render(null, container);
 		render(<svg/>, container);
-		expect(container.innerHTML).to.equal('<svg></svg>');
+		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<svg></svg>'));
 	});
 
 	it('should use the parent namespace by default', () => {
@@ -26,7 +26,13 @@ describe('createTree - SVG (JSX)', () => {
 		render(<svg xmlns="http://www.w3.org/2000/svg">
 			<circle xmlns="http://www.w3.org/2000/svg"/>
 		</svg>, container);
-		expect(container.innerHTML).to.equal('<svg xmlns="http://www.w3.org/2000/svg"><circle xmlns="http://www.w3.org/2000/svg"></circle></svg>');
+		expect(
+			innerHTML(container.innerHTML)
+		).to.equal(
+			innerHTML(
+				'<svg xmlns="http://www.w3.org/2000/svg"><circle xmlns="http://www.w3.org/2000/svg"></circle></svg>'
+			)
+		);
 		render(null, container);
 		expect(container.innerHTML).to.equal('');
 	});
@@ -213,7 +219,15 @@ describe('createTree - SVG (JSX)', () => {
 		const spread = { id: 'test' };
 
 		render(<svg {...spread}/>, container);
-		expect(container.innerHTML).to.equal(innerHTML('<svg id="test"></svg>'));
+		expect(
+			innerHTML(
+				container.innerHTML
+			)
+		).to.equal(
+			innerHTML(
+				'<svg id="test"></svg>'
+			)
+		);
 	});
 
 });
