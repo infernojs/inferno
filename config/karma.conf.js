@@ -84,6 +84,7 @@ module.exports = function (config) {
 				'failed',
 			],
 			browsers: [
+				'Firefox',
 				'Chrome_travis_ci'
 			],
 		});
@@ -98,7 +99,6 @@ module.exports = function (config) {
 				build: (TRAVIS_JOB_NUMBER || 'Local'),
 				public: true
 			},
-			concurrency: 1,
 			customLaunchers: sauceLaunchers,
 			browsers: Object.keys(sauceLaunchers),
 			reporters: [
