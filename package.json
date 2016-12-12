@@ -73,7 +73,7 @@
     "redux": "^3.6.0",
     "rimraf": "^2.5.4",
     "rollup": "^0.37.0",
-    "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-babel": "^2.7.0",
     "rollup-plugin-buble": "^0.14.0",
     "rollup-plugin-commonjs": "^5.0.5",
     "rollup-plugin-filesize": "^1.0.1",
