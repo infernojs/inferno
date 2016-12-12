@@ -4540,7 +4540,7 @@ function runBenchmark(container) {
 						 columnKey={'ad.creative.body'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
 					<div className={'_4lgd _4h2w'}>
 						<div className={'_4lge _4h2x'}>
-							<div className={'_2d6h _4h2r'}>{'It's an example.'}</div>
+							<div className={'_2d6h _4h2r'}>{`It's an example.`}</div>
 							</div>
 						</div>
 					</div>
