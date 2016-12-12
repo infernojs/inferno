@@ -53,20 +53,20 @@ describe('Router (jsx)', () => {
 			expect(
 				innerHTML(container.innerHTML)
 			).to.equal(
-				'<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">Link</a>'
+				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">Link</a>')
 			);
 		});
 
 		it('should route on click', (done) => {
 			render(createRoutes(<TestComponent/>), container);
 
-			expect(container.innerHTML).to.equal('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>'));
 
 			const link = container.querySelector('a[href="/test"]');
 			clickOnLink(link);
 
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal('<div>Good</div>');
+				expect(container.innerHTML).to.equal(innerHTML('<div>Good</div>'));
 				done();
 			});
 		});
@@ -97,7 +97,7 @@ describe('Router (jsx)', () => {
 			clickOnLink(link);
 
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal('<div>Good</div>');
+				expect(container.innerHTML).to.equal(innerHTML('<div>Good</div>'));
 				done();
 			});
 		});

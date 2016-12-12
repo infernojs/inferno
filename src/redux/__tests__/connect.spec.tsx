@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import connect from '../connect';
 import { createStore } from 'redux';
+import { innerHTML } from '../../tools/utils';
 import Component from 'inferno-component';
 import * as Inferno from 'inferno';
 
@@ -60,7 +61,7 @@ describe('connect', () => {
 		const mapStateToProps = state => state;
 		const ConnectedComponent = connect(mapStateToProps)(BasicComponent);
 		render(<ConnectedComponent store={store}/>, container);
-		expect(container.innerHTML).to.equal('<div>1</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>1</div>'));
 	});
 
 	it('should have correct mapDispatchToProps', () => {
@@ -83,9 +84,9 @@ describe('connect', () => {
 			render(<ConnectedComponent store={store}/>, container);
 		});
 		store.dispatch({ type: '' } as any);
-		expect(container.innerHTML).to.equal('<a>1</a>');
+		expect(container.innerHTML).to.equal(innerHTML('<a>1</a>'));
 		container.querySelector('a').click();
-		expect(container.innerHTML).to.equal('<a>2</a>');
+		expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
 	});
 
 	it('should have correct mapDispatchToProps', () => {
@@ -108,9 +109,9 @@ describe('connect', () => {
 			render(<ConnectedComponent store={store}/>, container);
 		});
 		store.dispatch({ type: '' } as any);
-		expect(container.innerHTML).to.equal('<a>1</a>');
+		expect(container.innerHTML).to.equal(innerHTML('<a>1</a>'));
 		container.querySelector('a').click();
-		expect(container.innerHTML).to.equal('<a>2</a>');
+		expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
 	});
 
 	it('should have correct mapDispatchToProps using action creators map', () => {
@@ -131,8 +132,8 @@ describe('connect', () => {
 			render(<ConnectedComponent store={store}/>, container);
 		});
 		store.dispatch({ type: '' } as any);
-		expect(container.innerHTML).to.equal('<a>1</a>');
+		expect(container.innerHTML).to.equal(innerHTML('<a>1</a>'));
 		container.querySelector('a').click();
-		expect(container.innerHTML).to.equal('<a>2</a>');
+		expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
 	});
 });
