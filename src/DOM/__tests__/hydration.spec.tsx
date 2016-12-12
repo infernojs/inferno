@@ -120,12 +120,12 @@ describe('SSR Hydration - (JSX)', () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
-			expect(innerHTML(container.innerHTML)).to.equal(expect1);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect1));
 			render(node, container);
 			expect(validateNodeTree(node)).to.equal(true);
-			expect(innerHTML(container.innerHTML)).to.equal(expect2);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
 			render(node, container);
-			expect(innerHTML(container.innerHTML)).to.equal(expect2);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
 		});
 	});
 	[

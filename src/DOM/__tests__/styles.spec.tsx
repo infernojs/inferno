@@ -25,7 +25,7 @@ describe('CSS style properties (JSX)', () => {
 
 		render(<div style={ styles }/>, container);
 		expect(container.firstChild.style.fontFamily).to.equal('Arial');
-		expect(container.firstChild.style.lineHeight).to.equal(1.2.toLocaleString());
+		expect(container.firstChild.style.lineHeight).to.equal('1.2');
 
 		render(<div />, container);
 		expect(container.firstChild.style.fontFamily).to.equal('');
