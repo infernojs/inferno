@@ -49,13 +49,12 @@ Component.prototype._afterRender = function() {
 	currentComponent = null;
 };
 
-const cloneElement = cloneVNode;
 const version = '15.4.1';
 
 function normalizeProps(name, props) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
 		const eventName = props.type === 'checkbox' ? 'onclick' : 'oninput'
-		
+
 		if (!props[eventName]) {
 			props[eventName] = props.onChange;
 			delete props.onChange;
@@ -64,7 +63,7 @@ function normalizeProps(name, props) {
 }
 
 // we need to add persist() to Event (as React has it for synthetic events)
-// this is a hack and we really shouldn't be modifying a global object this way, 
+// this is a hack and we really shouldn't be modifying a global object this way,
 // but there isn't a performant way of doing this apart from trying to proxy
 // every prop event that starts with "on", i.e. onClick or onKeyPress
 // but in reality devs use onSomething for many things, not only for
@@ -73,22 +72,27 @@ if (typeof Event !== 'undefined' && !Event.prototype.persist) {
 	Event.prototype.persist = function () {};
 }
 
-const createElement = (name, _props, ...children) => {
-	let props = _props || {};
-	const ref = props.ref;
+const injectStringRefs = (originalFunction) => {
+	return function (name, _props, ...children) {
+		let props = _props || {};
+		const ref = props.ref;
 
-	if (typeof ref === 'string') {
-		props.ref = function (val) {
-			if (this && this.refs) {
-				this.refs[ref] = val;
-			}
-		}.bind(currentComponent || null);
-	}
-	if (typeof name === 'string') {
-		normalizeProps(name, props);
-	}
-	return infernoCreateElement(name, props, ...children);
-};
+		if (typeof ref === 'string') {
+			props.ref = function (val) {
+				if (this && this.refs) {
+					this.refs[ref] = val;
+				}
+			}.bind(currentComponent || null);
+		}
+		if (typeof name === 'string') {
+			normalizeProps(name, props);
+		}
+		return originalFunction(name, props, ...children);
+	};
+}
+
+const createElement = injectStringRefs(infernoCreateElement);
+const cloneElement = injectStringRefs(cloneVNode);
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
 function shallowDiffers (a, b) {
