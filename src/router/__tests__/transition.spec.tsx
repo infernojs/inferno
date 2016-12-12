@@ -9,7 +9,7 @@ Inferno; // suppress ts 'never used' error
 
 const browserHistory = createMemoryHistory();
 
-describe('Router transition (jsx)', () => {
+describe('Router (jsx) #transitions', () => {
 	let container;
 
 	beforeEach(() => {

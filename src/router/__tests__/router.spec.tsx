@@ -41,7 +41,7 @@ describe('Router (jsx)', () => {
 		render(null, container);
 	});
 
-	describe('with browser history', () => {
+	describe('#browserHistory', () => {
 		it('should render the parent component only', () => {
 			render(
 				<Router url={ '/foo' } history={ browserHistory }>
@@ -74,6 +74,17 @@ describe('Router (jsx)', () => {
 				container
 			);
 			expect(container.innerHTML).to.equal('<div><p>Parent Component</p><div>Child is bar</div></div>');
+		});
+		it('should render the child with the longest path', () => {
+			render(
+				<Router url={ '/level-one' } history={ browserHistory }>
+					<Route path={ '/lev' } component={ () => <div>lev</div> } />
+					<Route path={ '/level' } component={ () => <div>level</div> } />
+					<Route path={ '/level-one' } component={ () => <div>level-one</div> } />
+				</Router>,
+				container
+			);
+			expect(container.innerHTML).to.equal('<div>level-one</div>');
 		});
 		it('should render the TestComponent with given paths', () => {
 			render(
@@ -174,7 +185,7 @@ describe('Router (jsx)', () => {
 			);
 			expect(container.innerHTML).to.equal('<div><div>Good Component</div></div>');
 		});
-		it('should render the both components and both components should get the params prop passed down', () => {
+		it('should render the both components with same params prop passed down', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
 					<Route component={ ({ children }) => <div>{ children }</div> }>
@@ -185,7 +196,7 @@ describe('Router (jsx)', () => {
 			);
 			expect(container.innerHTML).to.equal('<div><div>Param is bar</div></div>');
 		});
-		it('should render the both components and both components should get the params prop passed down (route in an array)', () => {
+		it('should render the both components with same params prop passed down (route in an array)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
 					<Route component={ ({ children }) => <div>{ children }</div> }>
@@ -214,7 +225,7 @@ describe('Router (jsx)', () => {
 			).to.throw(TypeError);
 		});
 	});
-	describe('with RouterContext only', () => {
+	describe('#RouterContext', () => {
 		it('should fail when `location` is not provided', () => {
 			expect(
 				() => render(<RouterContext location={ null }/>, container)
