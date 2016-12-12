@@ -120,7 +120,9 @@ describe('MobX Provider', () => {
 			expect(container.innerHTML).to.equal('<div><span>one</span><span>two</span></div>');
 		});
 
-		// Unfinished
+		// TODO: UNFINISHED
+		// Commented out as travisCI does not honor skip syntax with all browsers
+		/*
 		it.skip('should warn if stores change', () => {
 
 			const TestComponent = connect(['store1'], class extends Component<any, any> {
@@ -140,6 +142,6 @@ describe('MobX Provider', () => {
 
 			expect(container.innerHTML).to.equal('<div>one</div>');
 		});
-
+		*/
 	});
 });
