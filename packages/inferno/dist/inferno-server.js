@@ -533,6 +533,17 @@ function onTextInputChange(e) {
     // so we need to get it from the context of `this` again
     applyValue(this.vNode, dom);
 }
+function wrappedOnChange(e) {
+    var vNode = this.vNode;
+    var events = vNode.events || EMPTY_OBJ;
+    var event = events.onChange;
+    if (event.event) {
+        event.event(event.data, e);
+    }
+    else {
+        event(e);
+    }
+}
 function onCheckboxChange(e) {
     var vNode = this.vNode;
     var events = vNode.events || EMPTY_OBJ;
@@ -581,6 +592,10 @@ function processInput(vNode, dom) {
             else {
                 dom.oninput = onTextInputChange.bind(inputWrapper);
                 dom.oninput.wrapped = true;
+            }
+            if (props.onChange) {
+                dom.onchange = wrappedOnChange.bind(inputWrapper);
+                dom.onchange.wrapped = true;
             }
             wrappers.set(dom, inputWrapper);
         }
@@ -638,7 +653,13 @@ function onSelectChange(e) {
     var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
     if (events.onChange) {
-        events.onChange(e);
+        var event = events.onChange;
+        if (event.event) {
+            event.event(event.data, e);
+        }
+        else {
+            event(e);
+        }
     }
     else if (events.onchange) {
         events.onchange(e);
@@ -688,7 +709,13 @@ function onTextareaInputChange(e) {
     var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
     if (events.onInput) {
-        events.onInput(e);
+        var event = events.onInput;
+        if (event.event) {
+            event.event(event.data, e);
+        }
+        else {
+            event(e);
+        }
     }
     else if (events.oninput) {
         events.oninput(e);

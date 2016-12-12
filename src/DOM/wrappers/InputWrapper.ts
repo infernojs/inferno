@@ -35,6 +35,18 @@ function onTextInputChange(e) {
 	applyValue(this.vNode, dom);
 }
 
+function wrappedOnChange(e) {
+	let vNode = this.vNode;
+	const events = vNode.events || EMPTY_OBJ;
+	const event = events.onChange;
+
+	if (event.event) {
+		event.event(event.data, e);
+	} else {
+		event(e);
+	}
+}
+
 function onCheckboxChange(e) {
 	const vNode = this.vNode;
 	const events = vNode.events || EMPTY_OBJ;
@@ -89,6 +101,10 @@ export function processInput(vNode, dom) {
 			} else {
 				dom.oninput = onTextInputChange.bind(inputWrapper);
 				dom.oninput.wrapped = true;
+			}
+			if (props.onChange) {
+				dom.onchange = wrappedOnChange.bind(inputWrapper);
+				dom.onchange.wrapped = true;
 			}
 			wrappers.set(dom, inputWrapper);
 		}
