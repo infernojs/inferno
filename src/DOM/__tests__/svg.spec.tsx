@@ -37,7 +37,7 @@ describe('createTree - SVG (JSX)', () => {
 			innerHTML(
 				container.firstChild.getAttribute('xmlns')
 			)
-		).to.equal('http://www.w3.org/2000/svg')
+		).to.equal('http://www.w3.org/2000/svg');
 
 		render(null, container);
 		expect(container.innerHTML).to.equal('');
