@@ -94,7 +94,7 @@ const config = {};
     base: 'SauceLabs',
     browserName: 'Internet Explorer',
     platform: 'Windows 7',
-    'x-ua-compatible': 'IE=EmulateIE' + version,
+    'x-ua-compatible': 'IE=edge',
     version
   };
 });
