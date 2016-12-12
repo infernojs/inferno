@@ -426,8 +426,6 @@ function mounted(domNode) {
     // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 }
 
-Inferno.render(<div onCreated={ createdCallback } />, document.body);
-
 function StatelessComponent({ props }) {
 	return <div>Hello world</div>;
 }
