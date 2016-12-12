@@ -567,7 +567,5 @@ describe('Stateful Component updates', () => {
 		const input = container.querySelector('#inputId');
 		expect(assert.notCalled(submitSpy));
 		input.focus();
-		console.log(fakeObj);
-		// expect(assert.calledOnce(submitSpy));
 	});
 });

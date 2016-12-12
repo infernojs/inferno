@@ -12,6 +12,8 @@ module.exports = function (config) {
 			'mocha',
 		],
 		files: [
+			'./node_modules/es5-shim/es5-shim.js',
+			'./node_modules/es6-shim/es6-shim.js',
 			'./node_modules/babel-polyfill/dist/polyfill.js',
 			'./node_modules/sinon/pkg/sinon.js',
 			'./src/**/__tests__/**/*.ts',

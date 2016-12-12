@@ -3,6 +3,7 @@ import Inferno, { createRenderer } from 'inferno';
 import { map, scan, reduce } from 'most';
 import { hold, sync } from 'most-subject';
 import { curry } from 'lodash/fp';
+import { innerHTML } from '../../tools/utils';
 import Type from 'union-type-es';
 Inferno; // suppress ts 'never used' error
 
@@ -57,8 +58,14 @@ describe('Functional methods (JSX)', () => {
 
 		runApp();
 		setTimeout(() => {
-			expect(container.innerHTML).to.equal(
-				'<div style="font-size: 48px; font-family: monospace; width: 100%; text-align: center;"><button id="decrement">-</button><div style="font-size: 48px; font-family: monospace; width: 100%; text-align: center;">0</div><button id="increment">+</button></div>'
+			expect(
+				innerHTML(
+					container.innerHTML
+				)
+			).to.equal(
+				innerHTML(
+					'<div style="font-size: 48px; font-family: monospace; width: 100%; text-align: center;"><button id="decrement">-</button><div style="font-size: 48px; font-family: monospace; width: 100%; text-align: center;">0</div><button id="increment">+</button></div>'
+				)
 			);
 			done();
 		}, 10);
