@@ -127,3 +127,11 @@ declare module 'union-type-es' {
 }
 
 interface Window { process: any; __karma__: any; mocha: any; }
+
+//noinspection TsLint
+declare namespace process {
+	//noinspection TsLint
+	export interface env {
+		NODE_ENV: any;
+	}
+}
