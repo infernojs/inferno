@@ -439,8 +439,6 @@ function mounted(domNode) {
     // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 }
 
-Inferno.render(<div onCreated={ createdCallback } />, document.body);
-
 function StatelessComponent({ props }) {
 	return <div>Hello world</div>;
 }
@@ -464,6 +462,10 @@ Potential solutions including using the [es5-shim](https://github.com/es-shims/e
 ### Custom namespaces
 
 Inferno wants to always deliver great performance and in order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work; so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
+
+## Community
+
+There is an [Inferno Slack](https://infernojs.slack.com). You can join via [inferno-slack.herokuapp.com](https://inferno-slack.herokuapp.com).
 
 ### Inferno is supported by BrowserStack
 
