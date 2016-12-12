@@ -955,7 +955,6 @@ function removeProp(prop, lastValue, dom) {
 	} else if (prop === 'value') {
 		dom.value = '';
 	} else if (prop === 'style') {
-		dom.style.cssText = null;
 		dom.removeAttribute('style');
 	} else if (isAttrAnEvent(prop)) {
 		handleEvent(name, lastValue, null, dom);

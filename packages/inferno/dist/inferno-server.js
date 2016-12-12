@@ -1707,7 +1707,6 @@ function removeProp(prop, lastValue, dom) {
         dom.value = '';
     }
     else if (prop === 'style') {
-        dom.style.cssText = null;
         dom.removeAttribute('style');
     }
     else if (isAttrAnEvent(prop)) {
