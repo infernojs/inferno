@@ -7,7 +7,7 @@ import Link from '../Link';
 import { innerHTML } from '../../tools/utils';
 import createMemoryHistory from 'history/createMemoryHistory';
 import {
-	expect,
+	expect
 } from 'chai';
 
 Inferno; // suppress ts 'never used' error

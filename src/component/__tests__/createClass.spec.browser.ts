@@ -89,8 +89,8 @@ describe('Components createClass (non-JSX)', () => {
 	});
 	it('should have mixins on created class', () => {
 		const mixins = [{
-				func1: () => true
-			}]
+			func1: () => true
+		}];
 		const Component = createClass({
 			mixins,
 			render() {
@@ -102,12 +102,12 @@ describe('Components createClass (non-JSX)', () => {
 	});
 	it('should have nested mixins on created class', () => {
 		const mixins = [{
+			mixins: [{
 				mixins: [{
-					mixins: [{
-						nestedMixin: () => true,
-					}]
+					nestedMixin: () => true,
 				}]
 			}]
+		}];
 		const Component = createClass({
 			mixins,
 			render() {

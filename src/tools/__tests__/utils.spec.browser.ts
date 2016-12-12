@@ -25,7 +25,7 @@ describe('Utils', () => {
 				)
 			).to.equal(
 				'<div aAttribute="inferno" bAttribute="running" zAttribute="test">Inferno <span cAttr="last" fAttribute="huh">is cool!</span></div>'
-			)
+			);
 		});
 	});
 
@@ -278,7 +278,3 @@ describe('Utils', () => {
 		});
 	});
 });
-
-
-
-

@@ -75,16 +75,16 @@ describe('linkEvent', () => {
 
 		it('should work correctly for functional components', () => {
 			render(<FunctionalComponent test="123"/>, container);
-			simulateInput(container.querySelector('input'), '123')
+			simulateInput(container.querySelector('input'), '123');
 			expect(test).to.equal('123');
 			expect(event.target.nodeName).to.equal('INPUT');
 		});
 
 		it('should work correctly for stateful components', () => {
 			render(<StatefulComponent test="456"/>, container);
-			simulateInput(container.querySelector('input'), '123')
+			simulateInput(container.querySelector('input'), '123');
 			expect(test).to.equal('456');
 			expect(event.target.nodeName).to.equal('INPUT');
 		});
-	});	
+	});
 });
