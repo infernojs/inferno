@@ -201,25 +201,25 @@ describe('CSS style properties', () => {
 			it(test.description, () => {
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 			});
 			it(test.description, () => {
 				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 
 				render(test.template(), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 			});
 			it(test.description, () => {
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
@@ -232,7 +232,7 @@ describe('CSS style properties', () => {
 
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 			});
 		});
 	});
@@ -255,7 +255,7 @@ describe('CSS style properties', () => {
 			it(test.description, () => {
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
@@ -263,26 +263,26 @@ describe('CSS style properties', () => {
 			it(test.description, () => {
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 			});
 			it(test.description, () => {
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 			});
 			it(test.description, () => {
 				render(test.template({}), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 				render(test.template({}), container);
 				expect(container.firstChild.nodeType).to.equal(1);
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 			});
 		});
 	});
@@ -317,13 +317,13 @@ describe('CSS style properties', () => {
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 			});
 			it(test.description, () => {
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 				render(test.template(arg.value), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
@@ -334,11 +334,11 @@ describe('CSS style properties', () => {
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 				render(test.template(null), container);
 				expect(container.firstChild.nodeType).to.equal(1);
 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
-				expect(container.firstChild.firstChild.getAttribute('style')).to.equal(null);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '']);
 			});
 		});
 	});
