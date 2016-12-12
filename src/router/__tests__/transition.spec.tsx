@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import Inferno, { render } from 'inferno';
 import Component from '../../component/es2015';
+import { innerHTML } from '../../tools/utils';
 import Router from '../Router';
 import Route from '../Route';
 import IndexRoute from '../IndexRoute';
@@ -42,7 +43,7 @@ describe('Router (jsx) #transitions', () => {
 			expect(typeof props).to.equal('object');
 			expect(typeof router).to.equal('object');
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal('<div>onLeave</div>');
+				expect(container.innerHTML).to.equal(innerHTML('<div>onLeave</div>'));
 				done();
 			});
 		}
@@ -68,7 +69,7 @@ describe('Router (jsx) #transitions', () => {
 			expect(typeof props).to.equal('object');
 			expect(typeof router).to.equal('object');
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal('<div>onLeave</div>');
+				expect(container.innerHTML).to.equal(innerHTML('<div>onLeave</div>'));
 				done();
 			});
 		};
@@ -94,7 +95,7 @@ describe('Router (jsx) #transitions', () => {
 			expect(typeof props).to.equal('object');
 			expect(typeof router).to.equal('object');
 			requestAnimationFrame(() => {
-				expect(container.innerHTML).to.equal('<div>onLeave</div>');
+				expect(container.innerHTML).to.equal(innerHTML('<div>onLeave</div>'));
 				done();
 			});
 		};
@@ -121,7 +122,7 @@ describe('Router (jsx) #transitions', () => {
 			<Route path='/final' component={ () => <div>Done</div> } />
 		</Router>, container);
 
-		expect(container.innerHTML).to.equal('<div>Done</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Done</div>'));
 	});
 
 	it('should not use empty hooks', () => {

@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
 import createElement from '../../factories/createElement';
+import { innerHTML } from '../../tools/utils';
 import Provider from '../Provider';
 import connect from '../connect';
 import inject from '../inject';
@@ -76,7 +77,7 @@ describe('MobX inject()', () => {
 		}
 
 		render(App(), container);
-		expect(container.innerHTML).to.equal('<span>works!</span>');
+		expect(container.innerHTML).to.equal(innerHTML('<span>works!</span>'));
 	});
 
 	it('should prefer props over stores', () => {
@@ -88,7 +89,7 @@ describe('MobX inject()', () => {
 		}
 
 		render(App(), container);
-		expect(container.innerHTML).to.equal('<span>works!</span>');
+		expect(container.innerHTML).to.equal(innerHTML('<span>works!</span>'));
 	});
 
 	it('should create class with injected stores', () => {
@@ -110,7 +111,7 @@ describe('MobX inject()', () => {
 		}
 
 		render(App(), container);
-		expect(container.innerHTML).to.equal('<span>hello world</span>');
+		expect(container.innerHTML).to.equal(innerHTML('<span>hello world</span>'));
 	});
 
 });

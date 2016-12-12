@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
+import { innerHTML } from '../../tools/utils';
 import createElement from 'inferno-create-element';
 
 describe('CreateElement (non-JSX)', () => {
@@ -32,7 +33,7 @@ describe('CreateElement (non-JSX)', () => {
 		};
 
 		render(App(), container);
-		expect(container.innerHTML).to.equal('<div><div class="title">Example</div><button type="button">Do a thing</button></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><div class="title">Example</div><button type="button">Do a thing</button></div>'));
 		expect(triggered).to.equal(false);
 
 		const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
@@ -56,7 +57,7 @@ describe('CreateElement (non-JSX)', () => {
 		};
 
 		render(app(), container);
-		expect(container.innerHTML).to.equal('<div><button type="button">Do a thing</button></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><button type="button">Do a thing</button></div>'));
 		expect(triggered).to.equal(false);
 
 		const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
@@ -76,7 +77,7 @@ describe('CreateElement (non-JSX)', () => {
 		};
 
 		render(app(), container);
-		expect(container.innerHTML).to.equal('<div><button type="button">Do a thing</button></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><button type="button">Do a thing</button></div>'));
 	});
 
 	it('Should allow passing childs through "children" property (custom component)', () => {
@@ -91,7 +92,7 @@ describe('CreateElement (non-JSX)', () => {
 		};
 
 		render(app(), container);
-		expect(container.innerHTML).to.equal('<div><button type="button">Do a thing</button></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><button type="button">Do a thing</button></div>'));
 	});
 
 	it('Should handle node with hooks and key', (done) => {
@@ -107,7 +108,7 @@ describe('CreateElement (non-JSX)', () => {
 		});
 
 		render(app, container);
-		expect(container.innerHTML).to.equal('<div>Hooks</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Hooks</div>'));
 	});
 
 	it('Should handle node with children but no props', () => {
@@ -116,7 +117,7 @@ describe('CreateElement (non-JSX)', () => {
 		const app = createElement(node as Function, null, 'Hooks');
 
 		render(app, container);
-		expect(container.innerHTML).to.equal('<div>Hooks</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Hooks</div>'));
 	});
 
 	it('Should throw with invalid name', () => {

@@ -1,5 +1,6 @@
 import Inferno, { render } from 'inferno';
 import IndexRoute from '../IndexRoute';
+import { innerHTML } from '../../tools/utils';
 import Route from '../Route';
 import Router from '../Router';
 import RouterContext from '../RouterContext';
@@ -51,7 +52,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div><p>Parent Component</p></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p></div>'));
 		});
 		it('should render the child and inherit parent (partial URL)', () => {
 			render(
@@ -62,7 +63,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div><p>Parent Component</p><div>Child is bar</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is bar</div></div>'));
 		});
 		it('should render the child and inherit parent (full URL)', () => {
 			render(
@@ -73,7 +74,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div><p>Parent Component</p><div>Child is bar</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is bar</div></div>'));
 		});
 		it('should render the child with the longest path', () => {
 			render(
@@ -84,51 +85,51 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>level-one</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>level-one</div>'));
 		});
 		it('should render the TestComponent with given paths', () => {
 			render(
 				createRouterWithSingleRoute('/', '/', TestComponent),
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Test!</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Test!</div>'));
 
 			render(
 				createRouterWithSingleRoute('/foo', '/foo', TestComponent),
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Test!</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Test!</div>'));
 
 			render(
 				createRouterWithSingleRoute('/foo/bar/yar', '*', TestComponent),
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Test!</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Test!</div>'));
 
 			render(
 				createRouterWithSingleRoute('/foo/bar', '/foo/*', TestComponent),
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Test!</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Test!</div>'));
 		});
 		it('should render the TestComponent with given paths (and params)', () => {
 			render(
 				createRouterWithSingleRoute('/foo', '/:test', TestComponentParams),
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Test! foo</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Test! foo</div>'));
 
 			render(
 				createRouterWithSingleRoute('/foo/bar', '/foo/:test', TestComponentParams),
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Test! bar</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Test! bar</div>'));
 
 			render(
 				createRouterWithSingleRoute('/foo/bar/yar', '/foo/bar/:test', TestComponentParams),
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Test! yar</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Test! yar</div>'));
 		});
 		it('should render the TestComponent with the highest ranked path', () => {
 			render(
@@ -139,7 +140,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Good Component</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 
 			render(
 				<Router url={ '/foo/bar/yar' } history={ browserHistory }>
@@ -150,7 +151,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Good Component</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 		});
 		it('should render the correct nested route based on the path', () => {
 			render(
@@ -161,7 +162,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Good Component</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 
 			render(
 				<Router url={ '/foo' } history={ browserHistory }>
@@ -171,7 +172,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Good Component</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 
 			render(
 				<Router url={ '/foo' } history={ browserHistory }>
@@ -183,7 +184,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div><div>Good Component</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Good Component</div></div>'));
 		});
 		it('should render the both components with same params prop passed down', () => {
 			render(
@@ -194,7 +195,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div><div>Param is bar</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Param is bar</div></div>'));
 		});
 		it('should render the both components with same params prop passed down (route in an array)', () => {
 			render(
@@ -206,7 +207,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div><div>Param is bar</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Param is bar</div></div>'));
 		});
 		it('Should render IndexRoute correctly', () => {
 			render(
@@ -217,7 +218,7 @@ describe('Router (jsx)', () => {
 				</Router>,
 				container
 			);
-			expect(container.innerHTML).to.equal('<div>Good Component</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 		});
 		it('should fail on empty routes', () => {
 			expect(
