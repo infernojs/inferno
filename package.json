@@ -157,7 +157,7 @@
     "karma:chrome": "karma start config/karma.conf.js --browsers=Chrome",
     "karma:ie": "karma start config/karma.conf.js --browsers=IE",
     "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
-    "lint": "tslint src/**/*",
+    "lint": "tslint src/**/*.ts src/**/*.tsx",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
