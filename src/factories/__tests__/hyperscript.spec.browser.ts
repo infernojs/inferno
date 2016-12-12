@@ -81,7 +81,15 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal(innerHTML('<div class="test myClass" id="myId">Hello world!</div>'));
+		expect(
+			innerHTML(
+				container.innerHTML
+			)
+		).to.equal(
+			innerHTML(
+				'<div class="test myClass" id="myId">Hello world!</div>'
+			)
+		);
 	});
 
 	it('Should handle tag with no name', () => {

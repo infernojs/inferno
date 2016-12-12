@@ -2039,7 +2039,15 @@ describe('Components (JSX)', () => {
 			render(
 				<Input />, container
 			);
-			expect(container.innerHTML).to.equal(innerHTML('<input class="foo" id="test">'));
+			expect(
+				innerHTML(
+					container.innerHTML
+				)
+			).to.equal(
+				innerHTML(
+					'<input class="foo" id="test">'
+				)
+			);
 		});
 	});
 
@@ -2245,20 +2253,20 @@ describe('Components (JSX)', () => {
 
 		it('should mount component with defaultProps', () => {
 			render(<Comp1 c='C'/>, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div class="A" id="B">Hello C!</div>'));
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="A" id="B">Hello C!</div>'));
 		});
 
 		it('should patch component with defaultProps', () => {
 			render(<Comp1 c='C'/>, container);
 			render(<Comp1 c='C2'/>, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div class="A" id="B">Hello C2!</div>'));
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="A" id="B">Hello C2!</div>'));
 		});
 		it('should patch component with defaultProps #2', () => {
 			render(<Comp1 c='C'/>, container);
 			render(<Comp2 c='C1'/>, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div class="aye" id="bee">Hello C1!</div>'));
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="aye" id="bee">Hello C1!</div>'));
 			render(<Comp1 c='C2'/>, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div class="A" id="B">Hello C2!</div>'));
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="A" id="B">Hello C2!</div>'));
 		});
 	});
 

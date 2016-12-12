@@ -3,6 +3,7 @@ import renderToString from '../../server/renderToString';
 import Component from 'inferno-component';
 import {
 	createContainerWithHTML,
+	innerHTML,
 	validateNodeTree
 } from '../../tools/utils';
 import Inferno, { render } from 'inferno';
@@ -119,12 +120,12 @@ describe('SSR Hydration - (JSX)', () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
-			expect(container.innerHTML).to.equal(expect1);
+			expect(innerHTML(container.innerHTML)).to.equal(expect1);
 			render(node, container);
 			expect(validateNodeTree(node)).to.equal(true);
-			expect(container.innerHTML).to.equal(expect2);
+			expect(innerHTML(container.innerHTML)).to.equal(expect2);
 			render(node, container);
-			expect(container.innerHTML).to.equal(expect2);
+			expect(innerHTML(container.innerHTML)).to.equal(expect2);
 		});
 	});
 	[
