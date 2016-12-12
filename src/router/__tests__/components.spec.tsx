@@ -30,7 +30,7 @@ function createRoutes(component) {
 	);
 }
 
-describe('Router components (jsx)', () => {
+describe('Router (jsx)', () => {
 	let container;
 
 	beforeEach(() => {
