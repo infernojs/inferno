@@ -664,7 +664,7 @@ describe('Components (JSX)', () => {
 
 			render() {
 				return (
-					<div class="login-view bg-visma">
+					<div className="login-view bg-visma">
 						<button onClick={this.toggle}>TOGGLE</button>
 						<br />
 						{function() {
@@ -2089,7 +2089,7 @@ describe('Components (JSX)', () => {
 						return <FooBar />;
 					} else {
 						return (
-							<div class="login-container">
+							<div className="login-container">
 								<h1>foo</h1>
 							</div>
 						);
@@ -2142,7 +2142,7 @@ describe('Components (JSX)', () => {
 						return <FooBar />;
 					} else {
 						return (
-							<div class="login-container">
+							<div className="login-container">
 								<h1>foo</h1>
 							</div>
 						);

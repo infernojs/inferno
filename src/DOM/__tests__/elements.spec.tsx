@@ -75,7 +75,7 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.childNodes.length).to.equal(0);
 		expect(container.firstChild.getAttribute('id')).to.equal(null);
 
-		render(<div class={'hello'}></div>, container);
+		render(<div className={'hello'}></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 		expect(container.firstChild.getAttribute('class')).to.equal('hello'); // 'class¨attribute exist!
@@ -102,7 +102,7 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 
-		render(<div class={'hello'}></div>, container);
+		render(<div className={'hello'}></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(0);
 		expect(container.firstChild.getAttribute('class')).to.equal('hello');
@@ -180,7 +180,7 @@ describe('Elements (JSX)', () => {
 		let b = <b className={123}>Hello, World!</b>;
 		let n = <n>{b}</n>;
 
-		render(<div class="Hello, World!"><span><div id={attrs}>{n}</div></span></div>, container);
+		render(<div className="Hello, World!"><span><div id={attrs}>{n}</div></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -197,7 +197,7 @@ describe('Elements (JSX)', () => {
 		b = <b className={1243}>Hello, World!</b>;
 		n = <n>{b}</n>;
 
-		render(<div class="Hello, World!"><span><div id={attrs}>{n}</div></span></div>, container);
+		render(<div className="Hello, World!"><span><div id={attrs}>{n}</div></span></div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.getAttribute('class')).to.equal('Hello, World!');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -216,7 +216,7 @@ describe('Elements (JSX)', () => {
 
 		attrs = 'id#444';
 
-		render(<div class="Hello, Dominic" id={attrs}>
+		render(<div className="Hello, Dominic" id={attrs}>
 			<div id={attrs}></div>
 		</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -228,7 +228,7 @@ describe('Elements (JSX)', () => {
 
 		attrs = ('id#' as any) + 333 - 333 / 3;
 
-		render(<div class="Hello, Dominic" id={attrs}>
+		render(<div className="Hello, Dominic" id={attrs}>
 			<div id={attrs}></div>
 		</div>, container);
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -455,12 +455,12 @@ describe('Elements (JSX)', () => {
 		// expect(
 		// 	container.innerHTML
 		// ).to.equal(
-		// 	innerHTML('<div class="Dominic rocks!"></div>')
+		// 	innerHTML('<div className="Dominic rocks!"></div>')
 		// );
 		// render(<div className='' />, container);
 		// expect(container.firstChild.className).to.eql('');
 
-		render(<div class="123"/>, container);
+		render(<div className="123"/>, container);
 		expect(container.firstChild.getAttribute('class')).to.eql('123');
 
 		render(<div className={null}/>, container);
@@ -654,7 +654,7 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.className).to.equal('');
 		render(<div className={undefined}/>, container);
 		expect(container.firstChild.className).to.equal('');
-		render(<svg class={'fooBar'}/>, container);
+		render(<svg className={'fooBar'}/>, container);
 		expect(container.firstChild.getAttribute('class')).to.equal('fooBar');
 	});
 
@@ -668,11 +668,11 @@ describe('Elements (JSX)', () => {
 	});
 
 	it('should remove properties #2', () => {
-		render(<div class="monkey"/>, container);
+		render(<div className="monkey"/>, container);
 		expect(container.firstChild.getAttribute('class')).to.equal('monkey');
 		render(<div />, container);
 		expect(container.firstChild.className).to.equal('');
-		render(<svg class="monkey"/>, container);
+		render(<svg className="monkey"/>, container);
 		expect(container.firstChild.getAttribute('class')).to.equal('monkey');
 		render(<svg />, container);
 		expect(container.firstChild.getAttribute('class')).to.equal(null);
@@ -792,7 +792,7 @@ describe('Elements (JSX)', () => {
 		render(<input type="text" ref={obj.fn} spellcheck="false"
 									readOnly={bool ? 'readonly' : false} disabled={bool}
 									ondragenter={test} ondragover={test} value={newValue} oninput={test}
-									onclick={obj.click} class="edit-field" onkeydown={test} onkeyup={test}
+									onclick={obj.click} className="edit-field" onkeydown={test} onkeyup={test}
 									onBlur={test} {...spread} />, container);
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		document.body.appendChild(container);

@@ -47,7 +47,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							key={ "Item " + i }
 							title={ tab.title }
@@ -100,7 +100,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							key={ "Item " + i }
 							title={ tab.title }
@@ -146,7 +146,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">
+					<div className="tab-group">
 						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
 						<Tab
 							key={ "Item " + i }
@@ -192,7 +192,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							key={ "Item " + i }
 							title={ tab.title }
@@ -246,7 +246,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							key={ "Item " + i }
 							title={ tab.title }
@@ -292,7 +292,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							key={ "Item " + i }
 							title={ tab.title }
@@ -328,7 +328,7 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				return (
-					<div class="tab-group">inlineText{tabs.map((tab, i) => (
+					<div className="tab-group">inlineText{tabs.map((tab, i) => (
 						<Tab
 							key={ "Item " + i }
 							title={ tab.title }/>
@@ -364,7 +364,7 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							key={ "Item " + i }
 							title={ tab.title }/>
@@ -420,7 +420,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
 							onSelect={ () => undefined }/>
@@ -471,7 +471,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
 							onSelect={ () => undefined }/>
@@ -515,7 +515,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">
+					<div className="tab-group">
 						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
@@ -559,7 +559,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
 							onSelect={ () => undefined }/>
@@ -610,7 +610,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
 							onSelect={ () => undefined }/>
@@ -654,7 +654,7 @@ describe('Children - (JSX)', () => {
 				}
 
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }
 							onSelect={ () => undefined }/>
@@ -689,7 +689,7 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				return (
-					<div class="tab-group">inlineText{tabs.map((tab, i) => (
+					<div className="tab-group">inlineText{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }/>
 					))}
@@ -724,7 +724,7 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				return (
-					<div class="tab-group">{tabs.map((tab, i) => (
+					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
 							title={ tab.title }/>
 					))}inlineText
@@ -765,7 +765,7 @@ describe('Children - (JSX)', () => {
 
 			function Looper({ collectionOne, visibleStatic }) {
 				return (
-					<div class="c">
+					<div className="c">
 						{visibleStatic ? <Loop text="static"/> : null}
 						{collectionOne.map((text) => (
 							<Loop
@@ -820,7 +820,7 @@ describe('Children - (JSX)', () => {
 
 			function Looper({ collectionOne, visibleStaticOne, collectionTwo, visibleStaticTwo }) {
 				return (
-					<div class="c">
+					<div className="c">
 						{visibleStaticOne ? <Loop text="static"/> : null}
 						{collectionOne.map((text) => (
 							<Loop
@@ -886,7 +886,7 @@ describe('Children - (JSX)', () => {
 
 			function Looper({ collectionOne, visibleStatic }) {
 				return (
-					<div class="c">
+					<div className="c">
 						{visibleStatic ? <Loop i={-1} text="static"/> : null}
 						{collectionOne.map((text, i) => (
 							<Loop key={i}

@@ -297,7 +297,7 @@ describe('Component lifecycle (JSX)', () => {
 
 				render() {
 					return (
-						<div class="c">
+						<div className="c">
 							<C1 />
 							<C2 />
 						</div>

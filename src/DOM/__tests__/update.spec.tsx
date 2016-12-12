@@ -115,7 +115,7 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						{this.props.show ? <span class="hr red"><span class="hr-text">Late</span></span> : null}
+						{this.props.show ? <span className="hr red"><span className="hr-text">Late</span></span> : null}
 						<p>More content</p>
 					</div>
 				);
@@ -420,7 +420,7 @@ describe('Stateful Component updates', () => {
 
 			render() {
 				return (
-					<div class="common-root">
+					<div className="common-root">
 						{(() => {
 							if (this.props.i % 2 === 0) {
 								return (

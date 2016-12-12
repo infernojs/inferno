@@ -107,7 +107,7 @@ describe('createTree - SVG (JSX)', () => {
 
 		let value = 'foo';
 
-		render(<svg class={ value }/>, container);
+		render(<svg className={ value }/>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.getAttribute('class')).to.equal('foo');
@@ -123,7 +123,7 @@ describe('createTree - SVG (JSX)', () => {
 
 		let value = 'foo';
 
-		render(<svg class={ value }/>, container);
+		render(<svg className={ value }/>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.getAttribute('class')).to.equal('foo');
@@ -137,16 +137,16 @@ describe('createTree - SVG (JSX)', () => {
 
 	it('should set static class attribute, update to dynamic attr, and remove', () => {
 
-		render(<svg class={ null }/>, container);
-		render(<svg class={ {}}/>, container);
-		render(<svg class="bar"/>, container);
+		render(<svg className={ null }/>, container);
+		render(<svg className={ {}}/>, container);
+		render(<svg className="bar"/>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.getAttribute('class')).to.equal('bar');
 
 		let value = 'foo';
 
-		render(<svg class={ value }/>, container);
+		render(<svg className={ value }/>, container);
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.getAttribute('class')).to.equal('foo');
 
