@@ -391,11 +391,10 @@ describe('Components (JSX)', () => {
 		render((
 			<BasicComponent3 title="styles are removed!" styles={null}/>
 		), container);
-		expect(
-			container.innerHTML
-		).to.equal(
-			innerHTML('<div><span>The title is styles are removed!</span></div>')
-		);
+
+		expect(container.firstChild.getAttribute('style')).to.be.oneOf([null, '']);
+		expect(container.firstChild.tagName).to.eql('DIV');
+		expect(container.firstChild.firstChild.innerHTML).to.eql('The title is styles are removed!');
 	});
 
 	class SuperComponent extends Component<any, any> {

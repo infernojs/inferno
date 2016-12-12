@@ -864,11 +864,7 @@ describe('Update (non-jsx)', () => {
 
 		render(template(null), container);
 
-		expect(
-			container.innerHTML
-		).to.equal(
-			innerHTML('<div></div>')
-		);
+		expect(container.firstChild.getAttribute('style')).to.be.oneOf([null, '']);
 	});
 
 	// TODO: There seems to be bug in JSDOM because styles dont get removed by assigning null or empty to dom.style[something]
@@ -912,13 +908,9 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('Second render (update)', () => {
-				render(template(null), container);
+				render(template(null), container); // change style to null
 
-				expect(
-					container.innerHTML
-				).to.equal(
-					innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div></div></div></div>')
-				);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf([null, '']);
 			});
 
 			it('Third render (update)', () => {
