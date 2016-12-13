@@ -97,6 +97,14 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			description: 'should render with array null children',
 			template: (value) => createElement('a', null, ['a', null]),
 			result: '<a>a</a>'
+		}, {
+			description: 'should ignore null className',
+			template: () => createElement('div', { className: null }),
+			result: '<div></div>'
+		}, {
+			description: 'should ignore undefined className',
+			template: () => createElement('div', { className: undefined }),
+			result: '<div></div>'
 		}
 	];
 
