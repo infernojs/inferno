@@ -181,13 +181,7 @@ function normalizeVNodes(nodes) {
     // tslint:enable
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        if (isInvalid(n)) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(n);
-        }
-        else if (Array.isArray(n)) {
+        if (isInvalid(n) || Array.isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
             _normalizeVNodes(nodes, result, i);
             return result;
@@ -1180,21 +1174,14 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     var lastChildrenLength = lastChildren.length;
     var nextChildrenLength = nextChildren.length;
     var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
-    var i;
-    var nextNode = null;
-    var newNode;
-    // Loop backwards so we can use insertBefore
+    var i = 0;
+    for (; i < commonLength; i++) {
+        patch(lastChildren[i], nextChildren[i], dom, lifecycle, context, isSVG, isRecycling);
+    }
     if (lastChildrenLength < nextChildrenLength) {
-        for (i = nextChildrenLength - 1; i >= commonLength; i--) {
+        for (i = commonLength; i < nextChildrenLength; i++) {
             var child = nextChildren[i];
-            if (!isInvalid(child)) {
-                if (child.dom) {
-                    nextChildren[i] = child = cloneVNode(child);
-                }
-                newNode = mount(child, null, lifecycle, context, isSVG);
-                insertOrAppend(dom, newNode, nextNode);
-                nextNode = newNode;
-            }
+            appendChild(dom, mount(child, null, lifecycle, context, isSVG));
         }
     }
     else if (nextChildrenLength === 0) {
@@ -1202,33 +1189,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     }
     else if (lastChildrenLength > nextChildrenLength) {
         for (i = commonLength; i < lastChildrenLength; i++) {
-            var child$1 = lastChildren[i];
-            if (!isInvalid(child$1)) {
-                unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
-            }
-        }
-    }
-    for (i = commonLength - 1; i >= 0; i--) {
-        var lastChild = lastChildren[i];
-        var nextChild = nextChildren[i];
-        if (isInvalid(nextChild)) {
-            if (!isInvalid(lastChild)) {
-                unmount(lastChild, dom, lifecycle, true, false, isRecycling);
-            }
-        }
-        else {
-            if (nextChild.dom) {
-                nextChildren[i] = nextChild = cloneVNode(nextChild);
-            }
-            if (isInvalid(lastChild)) {
-                newNode = mount(nextChild, null, lifecycle, context, isSVG);
-                insertOrAppend(dom, newNode, nextNode);
-                nextNode = newNode;
-            }
-            else {
-                patch(lastChild, nextChild, dom, lifecycle, context, isSVG, isRecycling);
-                nextNode = nextChild.dom;
-            }
+            unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
         }
     }
 }
