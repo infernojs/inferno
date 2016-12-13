@@ -161,10 +161,16 @@ function _normalizeVNodes(nodes, result, i) {
                 else if (isVNode(n) && n.dom) {
                     n = cloneVNode(n);
                 }
-                result.push(n);
+                result.push((applyKeyIfMissing(i, n)));
             }
         }
     }
+}
+function applyKeyIfMissing(index, vNode) {
+    if (isNull(vNode.key)) {
+        vNode.key = "." + index;
+    }
+    return vNode;
 }
 function normalizeVNodes(nodes) {
     var newNodes;
@@ -190,16 +196,16 @@ function normalizeVNodes(nodes) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
-            newNodes.push(createTextVNode(n));
+            newNodes.push(applyKeyIfMissing(i, createTextVNode(n)));
         }
-        else if (isVNode(n) && n.dom) {
+        else if ((isVNode(n) && n.dom) || (isNull(n.key) && !(n.flags & 64 /* HasNonKeyedChildren */))) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
-            newNodes.push(cloneVNode(n));
+            newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
         }
         else if (newNodes) {
-            newNodes.push(cloneVNode(n));
+            newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
         }
     }
     return newNodes || nodes;
@@ -389,7 +395,7 @@ constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
 constructDefaults('children,ref,key,selected,checked,value,multiple', skipProps, true);
 constructDefaults('onClick,onMouseDown,onMouseUp,onMouseMove,onSubmit,onDblClick,onKeyDown,onKeyUp,onKeyPress', delegatedProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readonly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readOnly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
 var delegatedEvents = new Map();
@@ -1176,12 +1182,19 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
     var i = 0;
     for (; i < commonLength; i++) {
-        patch(lastChildren[i], nextChildren[i], dom, lifecycle, context, isSVG, isRecycling);
+        var nextChild = nextChildren[i];
+        if (nextChild.dom) {
+            nextChild = nextChildren[i] = cloneVNode(nextChild);
+        }
+        patch(lastChildren[i], nextChild, dom, lifecycle, context, isSVG, isRecycling);
     }
     if (lastChildrenLength < nextChildrenLength) {
         for (i = commonLength; i < nextChildrenLength; i++) {
-            var child = nextChildren[i];
-            appendChild(dom, mount(child, null, lifecycle, context, isSVG));
+            var nextChild$1 = nextChildren[i];
+            if (nextChild$1.dom) {
+                nextChild$1 = nextChildren[i] = cloneVNode(nextChild$1);
+            }
+            appendChild(dom, mount(nextChild$1, null, lifecycle, context, isSVG));
         }
     }
     else if (nextChildrenLength === 0) {
