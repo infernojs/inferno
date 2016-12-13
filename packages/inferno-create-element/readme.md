@@ -13,7 +13,7 @@ npm install inferno-create-element
 import createElement from 'inferno-create-element';
 import InfernoDOM from 'inferno-dom';
 
-InfernoDOM.render(createElement('div', { className: 'test' }, 'I'm a child!'), document.body);
+InfernoDOM.render(createElement('div', { className: 'test' }, "I'm a child!"), document.body);
 ```
 
 
