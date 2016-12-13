@@ -5,7 +5,8 @@ import {
 	isStatefulComponent,
 	isStringOrNumber,
 	isUndefined,
-	isString
+	isString,
+	isNull
 } from '../shared';
 
 import cloneVNode from '../factories/cloneVNode';
@@ -68,10 +69,17 @@ function _normalizeVNodes(nodes: any[], result: VNode[], i: number): void {
 				} else if (isVNode(n) && n.dom) {
 					n = cloneVNode(n);
 				}
-				result.push(n as VNode);
+				result.push((applyKeyIfMissing(i, n as VNode)));
 			}
 		}
 	}
+}
+
+function applyKeyIfMissing(index, vNode) {
+	if (isNull(vNode.key)) {
+		vNode.key = `.${ index }`;
+	}
+	return vNode;
 }
 
 export function normalizeVNodes(nodes: any[]): VNode[] {
@@ -90,12 +98,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
 
-		if (isInvalid(n)) {
-			if (!newNodes) {
-				newNodes = nodes.slice(0, i) as VNode[];
-			}
-			newNodes.push(n);
-		} else if (Array.isArray(n)) {
+		if (isInvalid(n) || Array.isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
 
 			_normalizeVNodes(nodes, result, i);
@@ -104,14 +107,14 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
-			newNodes.push(createTextVNode(n));
-		} else if (isVNode(n) && n.dom) {
+			newNodes.push(applyKeyIfMissing(i, createTextVNode(n)));
+		} else if ((isVNode(n) && n.dom) || (isNull(n.key) && !(n.flags & VNodeFlags.HasNonKeyedChildren))) {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
-			newNodes.push(cloneVNode(n));
+			newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
 		} else if (newNodes) {
-			newNodes.push(cloneVNode(n));
+			newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
 		}
 	}
 	return newNodes || nodes as VNode[];
