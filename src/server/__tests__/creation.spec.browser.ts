@@ -81,6 +81,14 @@ describe('SSR Creation (non-JSX)', () => {
 		description: 'should render a div with styles',
 		template: () => createElement('div', { style: { display: 'block', width: '50px' } }),
 		result: '<div style="display:block;width:50px;"></div>'
+	}, {
+		description: 'should ignore null className',
+		template: () => createElement('div', { className: null }),
+		result: '<div></div>'
+	}, {
+		description: 'should ignore undefined className',
+		template: () => createElement('div', { className: undefined }),
+		result: '<div></div>'
 	}];
 
 	testEntries.forEach(test => {

@@ -92,7 +92,7 @@ function renderVNodeToString(vNode, context, firstChild) {
 					html = value.__html;
 				} else if (prop === 'style') {
 					renderedString += ` style="${ renderStylesToString(props.style) }"`;
-				} else if (prop === 'className') {
+				} else if (prop === 'className' && !isNullOrUndef(value)) {
 					renderedString += ` class="${ escapeText(value) }"`;
 				} else {
 					if (isStringOrNumber(value)) {
