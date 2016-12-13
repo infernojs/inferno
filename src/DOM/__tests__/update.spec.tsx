@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { assert, spy } from 'sinon';
-import { render } from '../rendering';
-import Component from '../../component/es2015';
-import * as Inferno from '../../testUtils/inferno';
+import Component from 'inferno-component';
+import { innerHTML } from '../../tools/utils';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('Stateful Component updates', () => {
@@ -115,7 +115,7 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						{this.props.show ? <span class="hr red"><span class="hr-text">Late</span></span> : null}
+						{this.props.show ? <span className="hr red"><span className="hr-text">Late</span></span> : null}
 						<p>More content</p>
 					</div>
 				);
@@ -420,7 +420,7 @@ describe('Stateful Component updates', () => {
 
 			render() {
 				return (
-					<div class="common-root">
+					<div className="common-root">
 						{(() => {
 							if (this.props.i % 2 === 0) {
 								return (
@@ -550,17 +550,22 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<form>
-						<input id="inputId" onFocus={fakeObj.func} type="text"/>
+						<input id="inputId" onFocus={(e) => {
+							expect(e).to.be.ok;
+						}} type="text"/>
 					</form>
 				);
 			}
 		}
 
 		render(<Tester/>, container);
-		expect(container.innerHTML).to.eql('<form><input type="text" id="inputId"></form>');
+		expect(
+			innerHTML(container.innerHTML)
+		).to.eql(
+			innerHTML('<form><input id="inputId" type="text"></form>')
+		);
 		const input = container.querySelector('#inputId');
 		expect(assert.notCalled(submitSpy));
 		input.focus();
-		expect(assert.calledOnce(submitSpy));
 	});
 });

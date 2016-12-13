@@ -1,6 +1,6 @@
 import Component from '../../src/component/es2015';
 import { ChildCommon } from './child';
-import * as Inferno from '../../src/testUtils/inferno';
+import Inferno from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 export class ParentBaseCommon extends Component<any, any> {

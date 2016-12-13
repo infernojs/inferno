@@ -1,5 +1,5 @@
 /*!
- * inferno-router v1.0.0-beta32
+ * inferno-router v1.0.0-beta33
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -11,7 +11,6 @@
 
 createElement = 'default' in createElement ? createElement['default'] : createElement;
 Component = 'default' in Component ? Component['default'] : Component;
-Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 
 function Link(props, ref) {
     var router = ref.router;
@@ -65,19 +64,27 @@ var Route = (function (Component$$1) {
         var ref$1 = this.context;
         var router = ref$1.router;
         if (onEnter) {
-            setImmediate(function () {
+            Promise.resolve().then(function () {
                 onEnter({ props: this$1.props, router: router });
             });
         }
     };
-    Route.prototype.componentWillUnmount = function componentWillUnmount () {
+    Route.prototype.onLeave = function onLeave (trigger) {
+        if ( trigger === void 0 ) trigger = false;
+
         var ref = this.props;
         var onLeave = ref.onLeave;
         var ref$1 = this.context;
         var router = ref$1.router;
-        if (onLeave) {
+        if (onLeave && trigger) {
             onLeave({ props: this.props, router: router });
         }
+    };
+    Route.prototype.componentWillUnmount = function componentWillUnmount () {
+        this.onLeave(true);
+    };
+    Route.prototype.componentWillReceiveProps = function componentWillReceiveProps (nextProps) {
+        this.onLeave(this.props.path !== nextProps.path);
     };
     Route.prototype.render = function render (ref) {
         var component = ref.component;
@@ -94,25 +101,14 @@ var Route = (function (Component$$1) {
 }(Component));
 
 var IndexRoute = (function (Route$$1) {
-    function IndexRoute () {
-        Route$$1.apply(this, arguments);
+    function IndexRoute(props, context) {
+        Route$$1.call(this, props, context);
+        props.path = '/';
     }
 
     if ( Route$$1 ) IndexRoute.__proto__ = Route$$1;
     IndexRoute.prototype = Object.create( Route$$1 && Route$$1.prototype );
     IndexRoute.prototype.constructor = IndexRoute;
-
-    IndexRoute.prototype.render = function render (ref) {
-        var component = ref.component;
-        var children = ref.children;
-        var params = ref.params;
-
-        return createElement(component, {
-            path: '/',
-            params: params,
-            children: children
-        });
-    };
 
     return IndexRoute;
 }(Route));
@@ -177,6 +173,18 @@ function mapSearchParams(search) {
         }
     }
     return map;
+}
+/**
+ * Gets the relevant part of the URL for matching
+ * @param fullURL
+ * @param partURL
+ * @returns {string}
+ */
+function toPartialURL(fullURL, partURL) {
+    if (fullURL.indexOf(partURL) === 0) {
+        return fullURL.substr(partURL.length);
+    }
+    return fullURL;
 }
 /**
  * Sorts an array according to its `path` prop length
@@ -687,12 +695,12 @@ function match(routes, currentURL) {
  * with the matched components
  * @param _routes
  * @param urlToMatch
- * @param lastPath
- * @returns {any}
+ * @param parentPath
+ * @returns {object}
  */
-function matchRoutes(_routes, urlToMatch, lastPath) {
+function matchRoutes(_routes, urlToMatch, parentPath) {
     if ( urlToMatch === void 0 ) urlToMatch = '/';
-    if ( lastPath === void 0 ) lastPath = '/';
+    if ( parentPath === void 0 ) parentPath = '/';
 
     var routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
     var ref = urlToMatch.split('?');
@@ -702,7 +710,8 @@ function matchRoutes(_routes, urlToMatch, lastPath) {
     routes.sort(pathRankSort);
     for (var i = 0; i < routes.length; i++) {
         var route = routes[i];
-        var location = (lastPath + (route.props && route.props.path || '/')).replace('//', '/');
+        var routePath = (route.props && route.props.path || '/');
+        var location = parentPath + toPartialURL(routePath, parentPath).replace(/\/\//g, '/');
         var isLast = !route.props || isEmpty(route.props.children);
         var matchBase = matchPath(isLast, location, pathToMatch);
         if (matchBase) {
@@ -762,7 +771,7 @@ var RouterContext = (function (Component$$1) {
             if (!props.matched && !props.location) {
                 throw new TypeError('"inferno-router" requires a "location" prop passed');
             }
-            if (!props.matched && !props.children) {
+            if (!props.matched && !props.routes) {
                 throw new TypeError('"inferno-router" requires a "matched" prop passed or "Route" children defined');
             }
         }
@@ -781,32 +790,40 @@ var RouterContext = (function (Component$$1) {
         };
     };
     RouterContext.prototype.render = function render (ref) {
-        var children = ref.children;
+        var routes = ref.routes;
         var location = ref.location;
-        var matched = ref.matched; if ( matched === void 0 ) matched = null;
 
-        // If we're injecting a single route (ex: result from getRoutes)
-        // then we don't need to go through all routes again
-        if (matched) {
-            return matched;
-        }
-        var node = match(children, location);
-        return node.matched;
+        var route = match(routes, location);
+        return route.matched;
     };
 
     return RouterContext;
 }(Component));
 
+function createrRouter(history) {
+    if (!history) {
+        throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed');
+    }
+    return {
+        push: history.push,
+        listen: history.listen,
+        get location() {
+            return history.location.pathname !== 'blank' ? history.location : {
+                pathname: '/',
+                search: ''
+            };
+        },
+        get url() {
+            return this.location.pathname + this.location.search;
+        }
+    };
+}
 var Router = (function (Component$$1) {
     function Router(props, context) {
         Component$$1.call(this, props, context);
-        if (!props.history) {
-            throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed');
-        }
-        this.router = props.history;
-        var location = this.router.location.pathname + this.router.location.search;
+        this.router = createrRouter(props.history);
         this.state = {
-            url: props.url || (location !== 'blank' ? location : '/')
+            url: props.url || this.router.url
         };
     }
 
@@ -822,6 +839,11 @@ var Router = (function (Component$$1) {
             });
         }
     };
+    Router.prototype.componentWillReceiveProps = function componentWillReceiveProps (nextProps) {
+        this.setState({
+            url: nextProps.url
+        });
+    };
     Router.prototype.componentWillUnmount = function componentWillUnmount () {
         if (this.unlisten) {
             this.unlisten();
@@ -830,14 +852,12 @@ var Router = (function (Component$$1) {
     Router.prototype.routeTo = function routeTo (url) {
         this.setState({ url: url });
     };
-    Router.prototype.render = function render (ref) {
-        var children = ref.children;
-        var url = ref.url;
-
+    Router.prototype.render = function render () {
         return createElement(RouterContext, {
-            location: url || this.state.url,
-            router: this.router
-        }, children);
+            location: this.state.url,
+            router: this.router,
+            routes: this.props.children
+        });
     };
 
     return Router;

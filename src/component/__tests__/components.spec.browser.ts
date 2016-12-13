@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
-import Component from '../es2015';
-import createElement from '../../factories/createElement';
+import Component from 'inferno-component';
+import createElement from 'inferno-create-element';
+import { render } from 'inferno';
 import {
 	innerHTML,
 	waits
@@ -142,7 +142,7 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
-		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal(innerHTML('<input type="checkbox">The title is abc'));
 		expect(container.querySelector('input').checked).to.equal(true);
 
 		render(null, container);
@@ -153,7 +153,7 @@ describe('Components (non-JSX)', () => {
 		expect(container.firstChild.firstChild.firstChild.firstChild.getAttribute('type')).to.equal('checkbox');
 		expect(container.firstChild.firstChild.tagName).to.equal('DIV');
 		expect(container.firstChild.firstChild.firstChild.tagName).to.equal('LABEL');
-		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal('<input type="checkbox">The title is abc');
+		expect(container.firstChild.firstChild.firstChild.innerHTML).to.equal(innerHTML('<input type="checkbox">The title is abc'));
 		expect(container.querySelector('input').checked).to.equal(false);
 	});
 
@@ -218,16 +218,16 @@ describe('Components (non-JSX)', () => {
 		}
 	}
 
-	it('should render a basic component with inputs #3', () => {
+	it('should render a basic component with inputs #3 #3', () => {
 		let template = (Component, title, isDisabled) =>
 			createElement('div', null,
 				createElement(Component, { title, isDisabled })
 			);
 		render(template(BasicComponent1d, 'abc', true), container);
 		expect(
-			container.innerHTML
+			innerHTML(container.innerHTML)
 		).to.equal(
-			innerHTML('<div><div class="basic"><label><input type="password" disabled="">The title is abc</label></div></div>')
+			innerHTML('<div><div class="basic"><label><input disabled="" type="password">The title is abc</label></div></div>')
 		);
 		expect(
 			container.querySelector('input').disabled
@@ -237,7 +237,7 @@ describe('Components (non-JSX)', () => {
 
 		render(template(BasicComponent1d, '123', false), container);
 		expect(
-			container.innerHTML
+			innerHTML(container.innerHTML)
 		).to.equal(
 			'<div><div class="basic"><label><input type="password">The title is 123</label></div></div>'
 		);
@@ -638,7 +638,7 @@ describe('Components (non-JSX)', () => {
 		mountCount = 0;
 		unmountCount = 0;
 		template = (Component) =>
-			createElement(Component);
+			createElement(Component, null);
 		render(template(ComponentLifecycleCheck), container);
 
 		expect(mountCount).to.equal(1);
@@ -669,11 +669,11 @@ describe('Components (non-JSX)', () => {
 		mountCount = 0;
 		unmountCount = 0;
 
-		render(createElement(ComponentLifecycleCheck), container);
+		render(createElement(ComponentLifecycleCheck, null), container);
 		expect(mountCount).to.equal(1);
 		render(null, container);
 		expect(unmountCount).to.equal(1);
-		render(createElement(ComponentLifecycleCheck), container);
+		render(createElement(ComponentLifecycleCheck, null), container);
 		expect(mountCount).to.equal(2);
 		render(null, container);
 		expect(unmountCount).to.equal(2);
@@ -711,7 +711,7 @@ describe('Components (non-JSX)', () => {
 		beforeEach((done) => {
 			componentWillMountCount = 0;
 			template = (Component) =>
-				createElement(Component)
+				createElement(Component, null)
 			;
 			render(template(ComponentLifecycleCheck), container);
 			waits(30, done);
@@ -780,7 +780,7 @@ describe('Components (non-JSX)', () => {
 			componentDidUpdateCount = 0;
 			componentWillUpdateCount = 0;
 			template = (Component) =>
-				createElement(Component)
+				createElement(Component, null)
 			;
 			render(template(ComponentLifecycleCheck), container);
 			waits(30, done);
@@ -845,7 +845,7 @@ describe('Components (non-JSX)', () => {
 			return createElement('li', null, v0);
 		};
 		const tpl1546018623 = function(v0) {
-			return createElement(v0);
+			return createElement(v0, null);
 		};
 
 		class ValueComponent extends Component<any, any> {
@@ -984,7 +984,7 @@ describe('Components (non-JSX)', () => {
 		}
 
 		const tpl79713834 = function(v0) {
-			return createElement(v0);
+			return createElement(v0, null);
 		};
 
 		it('Initial render (creation)', () => {
@@ -1018,7 +1018,7 @@ describe('Components (non-JSX)', () => {
 		const BaseView = function(v0, v1) {
 			return createElement('div', { class: 'login-view' },
 				createElement('button', { onclick: v0 }, 'ADD'),
-				createElement('br'),
+				createElement('br', null),
 				v1
 			);
 		};
@@ -1030,7 +1030,7 @@ describe('Components (non-JSX)', () => {
 		};
 
 		const starter = function(v0) {
-			return createElement(v0);
+			return createElement(v0, null);
 		};
 
 		class SomeError extends Component<any, any> {

@@ -14,7 +14,13 @@ function onTextareaInputChange(e) {
 	const dom = vNode.dom;
 
 	if (events.onInput) {
-		events.onInput(e);
+		const event = events.onInput;
+
+		if (event.event) {
+			event.event(event.data, e);
+		} else {
+			event(e);
+		}
 	} else if (events.oninput) {
 		events.oninput(e);
 	}

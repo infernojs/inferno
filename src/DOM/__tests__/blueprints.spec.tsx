@@ -1,8 +1,7 @@
 import { expect } from 'chai';
-import { render } from '../rendering';
-import Component from '../../component/es2015';
+import Component from 'inferno-component';
 import { innerHTML } from '../../tools/utils';
-import * as Inferno from '../../testUtils/inferno';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('Blueprints (JSX)', () => {
@@ -50,7 +49,7 @@ describe('Blueprints (JSX)', () => {
 
 			render() {
 				return (
-					<div class="my-component">
+					<div className="my-component">
 						<h1>{ this.props.car } { this.state.bool ? <A /> : <B /> }</h1>
 						<button type="button" onClick={ this.btnCount }>btn</button>
 					</div>

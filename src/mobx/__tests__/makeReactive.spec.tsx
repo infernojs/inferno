@@ -1,9 +1,9 @@
 import { observable, extendObservable, toJS } from 'mobx';
 import { expect } from 'chai';
+import { innerHTML } from '../../tools/utils';
 import makeReactive from '../makeReactive';
-import { render } from '../../DOM/rendering';
-import Component from '../../component/es2015';
-import * as Inferno from '../../testUtils/inferno';
+import Component from 'inferno-component';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('MobX Observer', () => {
@@ -48,13 +48,13 @@ describe('MobX Observer', () => {
 
 	it('should render a todo list', () => {
 		render(<TodoList/>, container);
-		expect(container.innerHTML).to.equal('<div><li>one</li><li>two</li></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><li>one</li><li>two</li></div>'));
 	});
 
 	it('should render a todo list with added todo item', () => {
 		store.todos.push('three');
 		render(<TodoList/>, container);
-		expect(container.innerHTML).to.equal('<div><li>one</li><li>two</li><li>three</li></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><li>one</li><li>two</li><li>three</li></div>'));
 	});
 
 	it('should render a todo list with non observale item', () => {
@@ -71,7 +71,7 @@ describe('MobX Observer', () => {
 			test: 'new entry'
 		});
 		render(<FlatList extra={ store.extra }/>, container);
-		expect(container.innerHTML).to.equal('<div><li>oneXXX</li><li>twoXXX</li><li>threeXXX</li></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><li>oneXXX</li><li>twoXXX</li><li>threeXXX</li></div>'));
 	});
 
 });

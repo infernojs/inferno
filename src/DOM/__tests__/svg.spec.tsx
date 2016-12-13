@@ -1,7 +1,6 @@
 import { expect } from 'chai';
-import { render } from '../rendering';
 import { innerHTML } from '../../tools/utils';
-import * as Inferno from '../../testUtils/inferno';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('createTree - SVG (JSX)', () => {
@@ -19,7 +18,7 @@ describe('createTree - SVG (JSX)', () => {
 	it('should render svg as <svg>', () => {
 		render(null, container);
 		render(<svg/>, container);
-		expect(container.innerHTML).to.equal('<svg></svg>');
+		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<svg></svg>'));
 	});
 
 	it('should use the parent namespace by default', () => {
@@ -27,7 +26,13 @@ describe('createTree - SVG (JSX)', () => {
 		render(<svg xmlns="http://www.w3.org/2000/svg">
 			<circle xmlns="http://www.w3.org/2000/svg"/>
 		</svg>, container);
-		expect(container.innerHTML).to.equal('<svg xmlns="http://www.w3.org/2000/svg"><circle xmlns="http://www.w3.org/2000/svg"></circle></svg>');
+		expect(innerHTML(container.firstChild.firstChild.tagName)).to.equal('circle');
+		expect(
+			innerHTML(
+				container.firstChild.getAttribute('xmlns')
+			)
+		).to.equal('http://www.w3.org/2000/svg');
+
 		render(null, container);
 		expect(container.innerHTML).to.equal('');
 	});
@@ -102,7 +107,7 @@ describe('createTree - SVG (JSX)', () => {
 
 		let value = 'foo';
 
-		render(<svg class={ value }/>, container);
+		render(<svg className={ value }/>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.getAttribute('class')).to.equal('foo');
@@ -118,7 +123,7 @@ describe('createTree - SVG (JSX)', () => {
 
 		let value = 'foo';
 
-		render(<svg class={ value }/>, container);
+		render(<svg className={ value }/>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.getAttribute('class')).to.equal('foo');
@@ -132,16 +137,16 @@ describe('createTree - SVG (JSX)', () => {
 
 	it('should set static class attribute, update to dynamic attr, and remove', () => {
 
-		render(<svg class={ null }/>, container);
-		render(<svg class={ {}}/>, container);
-		render(<svg class="bar"/>, container);
+		render(<svg className={ null }/>, container);
+		render(<svg className={ {}}/>, container);
+		render(<svg className="bar"/>, container);
 
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.getAttribute('class')).to.equal('bar');
 
 		let value = 'foo';
 
-		render(<svg class={ value }/>, container);
+		render(<svg className={ value }/>, container);
 		expect(container.firstChild.tagName).to.eql('svg');
 		expect(container.firstChild.getAttribute('class')).to.equal('foo');
 
@@ -214,7 +219,15 @@ describe('createTree - SVG (JSX)', () => {
 		const spread = { id: 'test' };
 
 		render(<svg {...spread}/>, container);
-		expect(container.innerHTML).to.equal(innerHTML('<svg id="test"></svg>'));
+		expect(
+			innerHTML(
+				container.innerHTML
+			)
+		).to.equal(
+			innerHTML(
+				'<svg id="test"></svg>'
+			)
+		);
 	});
 
 });

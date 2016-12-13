@@ -1,10 +1,11 @@
 import renderToString from '../../server/renderToString';
-import { render } from '../rendering';
+import { render } from 'inferno';
 import {
 	createContainerWithHTML,
+	innerHTML,
 	validateNodeTree
 } from '../../tools/utils';
-import createElement from '../../factories/createElement';
+import createElement from 'inferno-create-element';
 import { expect } from 'chai';
 
 describe('SSR Hydration - (non-JSX)', () => {
@@ -79,12 +80,12 @@ describe('SSR Hydration - (non-JSX)', () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
-			expect(container.innerHTML).to.equal(expect1);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect1));
 			render(node, container);
 			expect(validateNodeTree(node)).to.equal(true);
-			expect(container.innerHTML).to.equal(expect2);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
 			render(node, container);
-			expect(container.innerHTML).to.equal(expect2);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
 		});
 	});
 });

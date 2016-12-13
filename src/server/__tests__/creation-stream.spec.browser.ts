@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import streamAsString from '../renderToString.stream';
 import concatStream from 'concat-stream-es6';
-import Component from '../../component/es2015';
-import createElement from '../../factories/createElement';
+import Component from 'inferno-component';
+import createElement from 'inferno-create-element';
 
 class StatefulComponent extends Component<any, any> {
 	render() {
@@ -23,7 +23,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 	[
 		{
 			description: 'should render div with span child',
-			template: () => createElement('div', null, createElement('span')),
+			template: () => createElement('div', null, createElement('span', null)),
 			result: '<div><span></span></div>'
 		}, {
 			description: 'should render div with span child and styling',
@@ -55,7 +55,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			result: '<div>Hello<!----> world</div>'
 		}, {
 			description: 'should render a void element correct',
-			template: () => createElement('input'),
+			template: () => createElement('input', null),
 			result: '<input>'
 		}, {
 			description: 'should render div with node children',

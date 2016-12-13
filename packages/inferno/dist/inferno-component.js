@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-beta32
+ * inferno-component v1.0.0-beta33
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -125,7 +125,7 @@ function queueStateChanges(component, newState, callback) {
     }
 }
 function applyState(component, force, callback) {
-    if ((!component._deferSetState || force) && !component._blockRender) {
+    if ((!component._deferSetState || force) && !component._blockRender && !component._unmounted) {
         component._pendingSetState = false;
         var pendingState = component._pendingState;
         var prevState = component.state;

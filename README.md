@@ -1,5 +1,6 @@
 <p align="center"><img src="http://infernojs.org/img/inferno.png" width="150px"></p>
 <p>&nbsp;</p>
+
 [![Build Status](https://img.shields.io/travis/trueadm/inferno/master.svg?style=flat-square)](https://travis-ci.org/trueadm/inferno/branches)
 [![Coverage Status](https://img.shields.io/coveralls/trueadm/inferno/master.svg?style=flat-square)](https://coveralls.io/github/trueadm/inferno?branch=master)
 [![Dependencies](https://img.shields.io/david/trueadm/inferno.svg?style=flat-square)](https://david-dm.org/trueadm/inferno)
@@ -8,6 +9,8 @@
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
 [![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg?style=flat-square)](https://www.npmjs.org/package/inferno-dom)
 [![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
+
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/LukeSheard.svg)](https://saucelabs.com/u/LukeSheard)
 
 Inferno is an insanely fast, `8kb` React-like library for building high-performance user interfaces on both the client and server.
 
@@ -34,7 +37,7 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 - One of the fastest front-end frameworks for rendering UI in the DOM
 - React-like API, concepts and component lifecycle events
 - Partial synthetic event system, providing delegation to certain events for better performance
-- Inferno's [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno) feature removes the need to use arrow functions or binding event callbacks (for delegated events)
+- Inferno's [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno) feature removes the need to use arrow functions or binding event callbacks
 - Lightweight filesize of only 8kb
 - Isomorphic rendering on both client and server with `inferno-server`
 - Highly modular with very few opinions on how things should be done
@@ -106,24 +109,24 @@ Alternatively, you can get started with Inferno using the [Inferno Boilerplate](
 Core package:
 
 ```sh
-npm install --save inferno@beta32
+npm install --save inferno@beta33
 ```
 
 Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta32
+npm install --save inferno-component@beta33
 # server-side rendering
-npm install --save inferno-server@beta32
+npm install --save inferno-server@beta33
 # routing
-npm install --save inferno-router@beta32
+npm install --save inferno-router@beta33
 ```
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta32/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta33/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -135,17 +138,17 @@ npm install --save-dev babel-plugin-inferno@beta13
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta32
+npm install --save inferno-hyperscript@beta33
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta32
+npm install --save inferno-create-element@beta33
 ```
 
 ### Compatibility with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta32
+npm install --save-dev inferno-compat@beta33
 ```
 
 Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
@@ -184,14 +187,24 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 ## Event System
 
-Like React, Inferno also uses a light-weight synthetic event system in certain places (although both event systems differ massively). Inferno's event system provides highly efficient delegation and an event helper called [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno). 
-
+Like React, Inferno also uses a light-weight synthetic event system in certain places (although both event systems differ massively). Inferno's event system provides highly efficient delegation and an event helper called [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno).
+ 
+One major difference between Inferno and React is that Inferno does not rename events or changes how they work by default. Inferno only specifies that events should be camel cased, rather than lower case. Lower case events will bypass
+Inferno's event system in favour of using the native event system supplied by the browser. For example, when detecting changes on an `<input>` element, in React you'd use `onChange`, with Inferno you'd use `onInput` instead (the
+native DOM event is `oninput`).
 
 As this is feature is a very recent addition to Inferno, there are only a handful of events that use Inferno's event system. They are outlined below:
 - `onClick`
+- `onDblClick`
 - `onMouseMove`
 - `onMouseDown`
 - `onMouseUp`
+- `onSubmit`
+- `onKeyPress`
+- `onKeyDown`
+- `onKeyUp`
+- `onInput`
+- `onChange`
 
 More events are expected to be supported in future versions.
 
@@ -426,8 +439,6 @@ function mounted(domNode) {
     // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 }
 
-Inferno.render(<div onCreated={ createdCallback } />, document.body);
-
 function StatelessComponent({ props }) {
 	return <div>Hello world</div>;
 }
@@ -451,6 +462,10 @@ Potential solutions including using the [es5-shim](https://github.com/es-shims/e
 ### Custom namespaces
 
 Inferno wants to always deliver great performance and in order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work; so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
+
+## Community
+
+There is an [Inferno Slack](https://infernojs.slack.com). You can join via [inferno-slack.herokuapp.com](https://inferno-slack.herokuapp.com).
 
 ### Inferno is supported by BrowserStack
 

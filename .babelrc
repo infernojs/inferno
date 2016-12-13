@@ -2,7 +2,7 @@
   "compact": false,
   "presets": [
     "es2015",
-    "stage-0"
+    "stage-2"
   ],
   "plugins": [
     "transform-object-rest-spread",
@@ -11,10 +11,11 @@
     ["module-resolver", {
       "extensions": [".js", ".jsx", ".ts", ".tsx"],
       "alias": {
-        "inferno": "./packages/inferno/src/index",
-        "inferno-component": "./packages/inferno-component/src/index",
-        "inferno-create-class": "./packages/inferno-create-class/src/index",
-        "inferno-create-element": "./packages/inferno-create-element/src/index",
+        "inferno": "./src/testing/inferno",
+        "inferno-component": "./src/testing/inferno-component",
+        "inferno-create-class": "./src/testing/inferno-create-class",
+        "inferno-create-element": "./src/testing/inferno-create-element",
+        "inferno-hyperscript": "./src/testing/inferno-hyperscript",
         "inferno-router": "./packages/inferno-router/src/index",
         "inferno-server": "./packages/inferno-server/src/index"
       }

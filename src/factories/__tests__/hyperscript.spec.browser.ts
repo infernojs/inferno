@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
-import h from '../hyperscript';
+import { render } from 'inferno';
+import h from 'inferno-hyperscript';
+import { innerHTML } from '../../tools/utils';
 
 describe('HyperScript (non-JSX)', () => {
 	let container;
@@ -18,7 +19,7 @@ describe('HyperScript (non-JSX)', () => {
 			h('div'),
 			container
 		);
-		expect(container.innerHTML).to.equal('<div></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div></div>'));
 	});
 
 	it('Should handle a basic example #2', () => {
@@ -26,7 +27,7 @@ describe('HyperScript (non-JSX)', () => {
 			h('div', 'Hello world!'),
 			container
 		);
-		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
 	});
 
 	it('Should handle a basic example #3', () => {
@@ -34,7 +35,7 @@ describe('HyperScript (non-JSX)', () => {
 			h('div', { className: 'foo' }, 'Hello world!'),
 			container
 		);
-		expect(container.innerHTML).to.equal('<div class="foo">Hello world!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div class="foo">Hello world!</div>'));
 	});
 
 	const StatelesComponent = () => h('div', 'Hello world!');
@@ -44,7 +45,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(StatelesComponent),
 			container
 		);
-		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
 	});
 
 	it('Should handle a hooks example #1', () => {
@@ -63,7 +64,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
 	});
 
 	it('Should handle different props (key, class, id, ref, children)', () => {
@@ -80,7 +81,15 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal('<div class="test myClass" id="myId">Hello world!</div>');
+		expect(
+			innerHTML(
+				container.innerHTML
+			)
+		).to.equal(
+			innerHTML(
+				'<div class="test myClass" id="myId">Hello world!</div>'
+			)
+		);
 	});
 
 	it('Should handle tag with no name', () => {
@@ -89,7 +98,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
 	});
 
 	it('Should handle tag with no tag name but id is present', () => {
@@ -98,7 +107,7 @@ describe('HyperScript (non-JSX)', () => {
 			h(ComponentHooks),
 			container
 		);
-		expect(container.innerHTML).to.equal('<div id="myId"></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div id="myId"></div>'));
 	});
 
 });

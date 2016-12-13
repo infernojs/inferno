@@ -1,25 +1,27 @@
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
+import Inferno, { render } from 'inferno';
 import Component from '../../component/es2015';
+import { innerHTML } from '../../tools/utils';
 import Router from '../Router';
 import Route from '../Route';
+import IndexRoute from '../IndexRoute';
 import createMemoryHistory from 'history/createMemoryHistory';
-import * as Inferno from '../../testUtils/inferno';
 Inferno; // suppress ts 'never used' error
 
 const browserHistory = createMemoryHistory();
 
-describe('Transition tests (jsx)', () => {
+describe('Router (jsx) #transitions', () => {
 	let container;
 
 	beforeEach(() => {
 		browserHistory.push('/');
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
 	afterEach(() => {
+		document.body.removeChild(container);
 		render(null, container);
-		container.innerHTML = '';
 	});
 
 	it('should fail when `history` is not provided', () => {
@@ -31,8 +33,7 @@ describe('Transition tests (jsx)', () => {
 		expect(Router.prototype.routeTo).to.not.be.undefined;
 	});
 
-	// Fails if onEnter is on componentWillMount instead of componentDidMount
-	it('should use onEnter hook', () => {
+	it('should use onEnter hook', (done) => {
 
 		const TestHooksEnter = () => <div>...</div>;
 
@@ -41,7 +42,10 @@ describe('Transition tests (jsx)', () => {
 			router.push('/enter');
 			expect(typeof props).to.equal('object');
 			expect(typeof router).to.equal('object');
-			expect(container.innerHTML).to.equal('<div>onLeave</div>');
+			requestAnimationFrame(() => {
+				expect(container.innerHTML).to.equal(innerHTML('<div>onLeave</div>'));
+				done();
+			});
 		}
 
 		render(<Router history={ browserHistory }>
@@ -50,10 +54,10 @@ describe('Transition tests (jsx)', () => {
 		</Router>, container);
 	});
 
-	it.skip('should use onLeave hook', () => {
+	it('IndexRoute should use onLeave hook', (done) => {
 
 		class TestHooksLeave extends Component<any, any> {
-			componentWillMount() {
+			componentDidMount() {
 				this.context.router.push('/leave');
 			}
 			render() {
@@ -61,12 +65,40 @@ describe('Transition tests (jsx)', () => {
 			}
 		}
 
-		// noinspection JSUnusedLocalSymbols
-		function onLeave({ props, router }) {
+		const onLeave = ({ props, router }) => {
 			expect(typeof props).to.equal('object');
 			expect(typeof router).to.equal('object');
-			expect(container.innerHTML).to.equal('<div>onLeave</div>');
+			requestAnimationFrame(() => {
+				expect(container.innerHTML).to.equal(innerHTML('<div>onLeave</div>'));
+				done();
+			});
+		};
+
+		render(<Router history={ browserHistory }>
+			<IndexRoute onLeave={ onLeave } component={ TestHooksLeave }/>
+			<Route path='/leave' component={ () => <div>onLeave</div> } />
+		</Router>, container);
+	});
+
+	it('Route should use onLeave hook', (done) => {
+
+		class TestHooksLeave extends Component<any, any> {
+			componentDidMount() {
+				this.context.router.push('/leave');
+			}
+			render() {
+				return <div>...</div>;
+			}
 		}
+
+		const onLeave = ({ props, router }) => {
+			expect(typeof props).to.equal('object');
+			expect(typeof router).to.equal('object');
+			requestAnimationFrame(() => {
+				expect(container.innerHTML).to.equal(innerHTML('<div>onLeave</div>'));
+				done();
+			});
+		};
 
 		render(<Router history={ browserHistory }>
 			<Route path='/' onLeave={ onLeave } component={ TestHooksLeave }/>
@@ -90,7 +122,7 @@ describe('Transition tests (jsx)', () => {
 			<Route path='/final' component={ () => <div>Done</div> } />
 		</Router>, container);
 
-		expect(container.innerHTML).to.equal('<div>Done</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Done</div>'));
 	});
 
 	it('should not use empty hooks', () => {

@@ -1,7 +1,7 @@
-import { render } from '../rendering';
-import createElement from '../../factories/createElement';
+import { render, createVNode } from 'inferno';
+import createElement from 'inferno-create-element';
 import { expect } from 'chai';
-import { VNode, createVNode, VNodeFlags, createTextVNode } from "../../core/shapes";
+import { VNode, VNodeFlags, createTextVNode } from "../../core/shapes";
 
 function generateKeyNodes(array) {
 
@@ -638,7 +638,7 @@ describe('keyed-nodes', () => {
 		describe("syncChildren string children", () => {
 			it("null => 'abc'", () => {
 				const f = document.createDocumentFragment();
-				const a = createElement("div");
+				const a = createElement("div", null);
 				const b = createElement("div", null, "abc");
 				render(a, f);
 				render(b, f);
@@ -649,7 +649,7 @@ describe('keyed-nodes', () => {
 			it("'abc' => null", () => {
 				const f = document.createDocumentFragment();
 				const a = createElement("div", null, "abc");
-				const b = createElement("div");
+				const b = createElement("div", null);
 				render(a, f);
 				render(b, f);
 				expect((f.firstChild as Element).childNodes.length).to.equal(0);
@@ -667,7 +667,7 @@ describe('keyed-nodes', () => {
 
 			it("[div] => 'cde'", () => {
 				const f = document.createDocumentFragment();
-				const a = createElement("div", null, createElement("div"));
+				const a = createElement("div", null, createElement("div", null));
 				const b = createElement("div", null, "cde");
 				render(a, f);
 				render(b, f);
@@ -678,7 +678,7 @@ describe('keyed-nodes', () => {
 			it("'cde' => [div]", () => {
 				const f = document.createDocumentFragment();
 				const a = createElement("div", null, "cde");
-				const b = createElement("div", null, createElement("div"));
+				const b = createElement("div", null, createElement("div", null));
 				render(a, f);
 				render(b, f);
 				expect((f.firstChild as Element).childNodes.length).to.equal(1);

@@ -113,7 +113,7 @@ function queueStateChanges(component: Component<any, any>, newState, callback): 
 }
 
 function applyState(component: Component<any, any>, force, callback): void {
-	if ((!component._deferSetState || force) && !component._blockRender) {
+	if ((!component._deferSetState || force) && !component._blockRender && !component._unmounted) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
 		const prevState = component.state;
