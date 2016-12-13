@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { render } from '../rendering';
-import createElement from '../../factories/createElement';
+import { render } from 'inferno';
+import createElement from 'inferno-create-element';
 import { innerHTML } from '../../tools/utils';
 
 describe('Update (non-jsx)', () => {
@@ -32,7 +32,7 @@ describe('Update (non-jsx)', () => {
 		expect(container.firstChild.childNodes.length).to.equal(1);
 		expect(container.firstChild.textContent).to.equal('hello to');
 
-		span = () => createElement('div');
+		span = () => createElement('div', null);
 
 		render(template(span()), container);
 
@@ -43,7 +43,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should insert an additional tag node', () => {
 		const template = (child) => createElement('div', null, child);
-		const span = () => createElement('span');
+		const span = () => createElement('span', null);
 
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('<span></span>');
@@ -55,7 +55,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should insert an additional tag node', () => {
 		const template = (child) => createElement('div', null, child);
-		const div = () => createElement('div');
+		const div = () => createElement('div', null);
 
 		render(template(null), container);
 		expect(container.firstChild.innerHTML).to.equal('');
@@ -75,7 +75,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should insert multiple additional tag node', () => {
 		const template = (child) => createElement('div', null, child);
-		const span = () => createElement('div');
+		const span = () => createElement('div', null);
 
 		render(template(span()), container);
 		expect(container.firstChild.innerHTML).to.equal('<div></div>');
@@ -864,11 +864,7 @@ describe('Update (non-jsx)', () => {
 
 		render(template(null), container);
 
-		expect(
-			container.innerHTML
-		).to.equal(
-			innerHTML('<div></div>')
-		);
+		expect(container.firstChild.getAttribute('style')).to.be.oneOf([null, '']);
 	});
 
 	// TODO: There seems to be bug in JSDOM because styles dont get removed by assigning null or empty to dom.style[something]
@@ -912,13 +908,9 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('Second render (update)', () => {
-				render(template(null), container);
+				render(template(null), container); // change style to null
 
-				expect(
-					container.innerHTML
-				).to.equal(
-					innerHTML('<div style="width: 200px;"><div class="Hello, world!"><div></div></div></div>')
-				);
+				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf([null, '']);
 			});
 
 			it('Third render (update)', () => {
@@ -965,10 +957,10 @@ describe('Update (non-jsx)', () => {
 
 			it('variation -2', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null,
-					createElement('tr', null, createElement('td', null, 'text', createElement('br'))
+					createElement('tr', null, createElement('td', null, 'text', createElement('br', null))
 				))));
 				const B = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['text'])))));
-				const C = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['value'], createElement('br'))))));
+				const C = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['value'], createElement('br', null))))));
 
 				render(A, container);
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text<br></td></tr></table></div></div>');
@@ -979,13 +971,13 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('variation 3', () => {
-				const A = createElement('div', null, createElement('div', null, createElement('table')));
+				const A = createElement('div', null, createElement('div', null, createElement('table', null)));
 				const B = createElement('div', null, createElement('div', null, createElement('table', null,
-					createElement('tr'),
-					createElement('tr', null, createElement('td', null, 'A', createElement('br')), createElement('td', null, 'B', createElement('br'))),
-					createElement('tr')
+					createElement('tr', null),
+					createElement('tr', null, createElement('td', null, 'A', createElement('br', null)), createElement('td', null, 'B', createElement('br', null))),
+					createElement('tr', null)
 				)));
-				const C = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr'), createElement('tr', null, createElement('td', null, createElement('br'))))));
+				const C = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null), createElement('tr', null, createElement('td', null, createElement('br', null))))));
 
 				render(A, container);
 				expect(container.innerHTML).to.equal('<div><div><table></table></div></div>');
@@ -997,15 +989,15 @@ describe('Update (non-jsx)', () => {
 
 			it('variation 4', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null,
-					createElement('tr', null, createElement('td', null, 'text 1', createElement('br')))
+					createElement('tr', null, createElement('td', null, 'text 1', createElement('br', null)))
 				)));
 
 				const B = createElement('div', null, createElement('div', null, createElement('table', null,
-					createElement('tr', null, createElement('td', null, createElement('br')))
+					createElement('tr', null, createElement('td', null, createElement('br', null)))
 				)));
 
 				const C = createElement('div', null, createElement('div', null, createElement('table', null,
-					createElement('tr', null, createElement('td', null, 'text 2', createElement('br')))
+					createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null)))
 				)));
 
 				render(A, container);
@@ -1019,10 +1011,10 @@ describe('Update (non-jsx)', () => {
 			it('variation 5', () => {
 				const A = [];
 
-				A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br'))));
-				A[1] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', 'text a', createElement('br'))));
-				A[2] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br'))));
-				A[3] = createElement('table', null, createElement('tr', null, createElement('td', null, [createElement('br'), 'text 3'], createElement('br'))));
+				A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br', null))));
+				A[1] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', 'text a', createElement('br', null))));
+				A[2] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null))));
+				A[3] = createElement('table', null, createElement('tr', null, createElement('td', null, [createElement('br', null), 'text 3'], createElement('br', null))));
 				render(A[0], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
 				render(A[1], container);
@@ -1035,15 +1027,15 @@ describe('Update (non-jsx)', () => {
 
 			it('variation 6', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null,
-					createElement('td', null, 'text 1', createElement('br')),
+					createElement('td', null, 'text 1', createElement('br', null)),
 				))));
 
 				const B = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null,
-					createElement('td', null, createElement('br'))
+					createElement('td', null, createElement('br', null))
 				))));
 
 				const C = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null,
-					createElement('td', null, 'text 2', createElement('br'))
+					createElement('td', null, 'text 2', createElement('br', null))
 				))));
 
 				render(A, container);
@@ -1056,10 +1048,10 @@ describe('Update (non-jsx)', () => {
 
 			it('variation 7', () => {
 				const A = [];
-				A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br'))));
-				A[1] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', createElement('br'))));
-				A[2] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br'))));
-				A[3] = createElement('table', null, createElement('tr', null, createElement('td', null, [createElement('br')], 'text 3', createElement('br'))));
+				A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br', null))));
+				A[1] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', createElement('br', null))));
+				A[2] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null))));
+				A[3] = createElement('table', null, createElement('tr', null, createElement('td', null, [createElement('br', null)], 'text 3', createElement('br', null))));
 
 				render(A[0], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
@@ -1102,7 +1094,7 @@ describe('Update (non-jsx)', () => {
 
 			it('variation -2', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null,
-					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, ['text', createElement('br')]))
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, ['text', createElement('br', null)]))
 				)));
 
 				const B = createElement('div', null, createElement('div', null, createElement('table', null,
@@ -1110,7 +1102,7 @@ describe('Update (non-jsx)', () => {
 				)));
 
 				const C = createElement('div', null, createElement('div', null, createElement('table', null,
-					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, ['value', createElement('br')]))
+					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, ['value', createElement('br', null)]))
 				)));
 
 				render(A, container);
@@ -1122,15 +1114,15 @@ describe('Update (non-jsx)', () => {
 			});
 
 			it('variation 3', () => {
-				const A = createElement('div', null, createElement('div', null, createElement('table')));
+				const A = createElement('div', null, createElement('div', null, createElement('table', null)));
 				const B = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', { key: 'row1' }),
 					createElement('tr', { key: 'row2' },
 						createElement('td', { key: 'td2-1' },
-							'A', createElement('br')
+							'A', createElement('br', null)
 						),
 						createElement('td', { key: 'td2-2' },
-							'B', createElement('br')
+							'B', createElement('br', null)
 						)
 					),
 					createElement('tr', { key: 'row3' })
@@ -1139,7 +1131,7 @@ describe('Update (non-jsx)', () => {
 					createElement('tr', { key: 'row1' }),
 					createElement('tr', { key: 'row2' },
 						createElement('td', { key: 'td2-2' },
-							'', createElement('br')
+							'', createElement('br', null)
 						)
 					)
 				)));
@@ -1156,21 +1148,21 @@ describe('Update (non-jsx)', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' },
 						'text 1',
-						createElement('br')
+						createElement('br', null)
 					))
 				)));
 
 				const B = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' },
 						'',
-						createElement('br')
+						createElement('br', null)
 					))
 				)));
 
 				const C = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' },
 						'text 2',
-						createElement('br')
+						createElement('br', null)
 					))
 				)));
 
@@ -1188,28 +1180,28 @@ describe('Update (non-jsx)', () => {
 				A[0] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						'',
-						createElement('br')
+						createElement('br', null)
 					)
 				));
 
 				A[1] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						['text 1', 'text a'],
-						createElement('br')
+						createElement('br', null)
 					)
 				));
 
 				A[2] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						['text 2'],
-						createElement('br')
+						createElement('br', null)
 					)
 				));
 
 				A[3] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
-						[createElement('br'), 'text 3'],
-						createElement('br')
+						[createElement('br', null), 'text 3'],
+						createElement('br', null)
 					)
 				));
 
@@ -1227,21 +1219,21 @@ describe('Update (non-jsx)', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, [
 						'text 1',
-						createElement('br')
+						createElement('br', null)
 					]))
 				)));
 
 				const B = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, [
 						'',
-						createElement('br')
+						createElement('br', null)
 					]))
 				)));
 
 				const C = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1-1' }, [
 						'text 2',
-						createElement('br')
+						createElement('br', null)
 					]))
 				)));
 
@@ -1259,31 +1251,31 @@ describe('Update (non-jsx)', () => {
 				A[0] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						'',
-						createElement('br')
+						createElement('br', null)
 					)
 				));
 
 				A[1] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						'text 1',
-						createElement('br')
+						createElement('br', null)
 					)
 				));
 
 				A[2] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						'text 2',
-						createElement('br')
+						createElement('br', null)
 					)
 				));
 
 				A[3] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						[
-							createElement('br'),
+							createElement('br', null),
 							'text 3'
 						],
-						createElement('br')
+						createElement('br', null)
 					)
 				));
 
@@ -1306,7 +1298,7 @@ describe('Update (non-jsx)', () => {
 			A[0] = createElement('div', null, 'text 1');
 			A[1] = createElement('div', null,
 				'text 2',
-				createElement('br'),
+				createElement('br', null),
 				'text 3'
 			);
 			A[2] = createElement('div', null, 'text 4');
@@ -1326,7 +1318,7 @@ describe('Update (non-jsx)', () => {
 
 			A[0] = createElement('div', null,
 				'text 1',
-				createElement('br')
+				createElement('br', null)
 			);
 
 			A[1] = createElement('div', null,
@@ -1334,7 +1326,7 @@ describe('Update (non-jsx)', () => {
 			);
 
 			A[2] = createElement('div', null,
-				createElement('br'),
+				createElement('br', null),
 				'text 4'
 			);
 

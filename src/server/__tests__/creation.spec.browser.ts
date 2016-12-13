@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { renderToStaticMarkup } from '../renderToString';
 // import Component from '../../component/es2015';
-import createElement from '../../factories/createElement';
-import * as Inferno from '../../testUtils/inferno';
+import createElement from 'inferno-create-element';
+import Inferno from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 /*
@@ -23,7 +23,7 @@ interface ITestEntry {
 describe('SSR Creation (non-JSX)', () => {
 	const testEntries: ITestEntry[] = [{
 		description: 'should render div with span child',
-		template: () => createElement('div', null, createElement('span')),
+		template: () => createElement('div', null, createElement('span', null)),
 		result: '<div><span></span></div>'
 	}, {
 		description: 'should render div with span child and styling',
@@ -55,7 +55,7 @@ describe('SSR Creation (non-JSX)', () => {
 		result: '<div>Hello<!----> world</div>'
 	}, {
 		description: 'should render a void element correct',
-		template: () => createElement('input'),
+		template: () => createElement('input', null),
 		result: '<input>'
 	}, {
 		description: 'should render div with node children',

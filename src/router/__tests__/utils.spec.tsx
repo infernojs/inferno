@@ -4,7 +4,7 @@ import {
 	mapSearchParams
 } from '../utils';
 
-describe('Router utils tests', () => {
+describe('Router #utils', () => {
 	it('it should map search params to object', () => {
 		let params;
 		params = mapSearchParams('hello=world');

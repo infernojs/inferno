@@ -4,13 +4,13 @@ import Route from '../../router/Route';
 import Router from '../../router/Router';
 import createBrowserHistory from 'history/createBrowserHistory';
 import createMemoryHistory from 'history/createMemoryHistory';
+import { innerHTML } from '../../tools/utils';
 import { createStore } from 'redux';
 import { expect } from 'chai';
 import Component from 'inferno-component';
-import Inferno from 'inferno';
+import * as Inferno from 'inferno';
 
 const render = Inferno.render;
-
 const browserHistory = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
 
 describe('Provider (JSX)', () => {
@@ -129,12 +129,12 @@ describe('Provider (JSX)', () => {
 		_render();
 		store.subscribe(() => _render());
 
-		expect(container.innerHTML).to.equal('<div><div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div><div class="basic2">You\'re a cat!</div></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div><div class="basic2">You\'re a cat!</div></div>'));
 
 		const link = container.querySelector('#dispatch');
 		link.click();
 
-		expect(container.innerHTML).to.equal('<div><div class="basic"><a id="dispatch"><span>Hello Jerry</span></a></div><div class="basic2">You\'re a mouse!</div></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><div class="basic"><a id="dispatch"><span>Hello Jerry</span></a></div><div class="basic2">You\'re a mouse!</div></div>'));
 	});
 
 	it('should work with routing', () => {
@@ -164,12 +164,12 @@ describe('Provider (JSX)', () => {
 			_render(state.name === 'Tom' ? '/' : '/next');
 		});
 
-		expect(container.innerHTML).to.equal('<div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div>'));
 
 		const link = container.querySelector('#dispatch');
 		link.click();
 
-		expect(container.innerHTML).to.equal('<div class="basic2">You\'re a mouse!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div class="basic2">You\'re a mouse!</div>'));
 	});
 
 	it('should render the example correctly', () => {

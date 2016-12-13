@@ -1,12 +1,18 @@
 const delegatedEvents = new Map();
 
+interface IDelegate {
+	docEvent: any;
+	count: number;
+	items: any;
+}
+
 export function handleEvent(name, lastEvent, nextEvent, dom) {
-	let delegatedRoots = delegatedEvents.get(name);
+	let delegatedRoots = delegatedEvents.get(name) as IDelegate;
 
 	if (nextEvent) {
 		if (!delegatedRoots) {
 			delegatedRoots = { items: new Map(), count: 0, docEvent: null };
-			const docEvent = attachEventToDocument(name, delegatedRoots);
+			const docEvent: any = attachEventToDocument(name, delegatedRoots);
 
 			delegatedRoots.docEvent = docEvent;
 			delegatedEvents.set(name, delegatedRoots);

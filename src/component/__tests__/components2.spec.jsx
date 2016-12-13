@@ -1,9 +1,8 @@
 import { expect } from 'chai';
 import Component from 'inferno-component';
-import createElement from 'inferno-create-element';
-import Inferno from 'inferno';
-
-const render = Inferno.render;
+import { innerHTML } from '../../tools/utils';
+import Inferno, { render } from 'inferno';
+Inferno;
 
 /* These must be in their own files for test to reproduce */
 import { ParentFirstCommon } from '../../../testdata/common-render/parentfirstcommon';
@@ -51,17 +50,38 @@ describe('Components (JSX) #2', () => {
 			}
 		}
 
-		it.skip('patching component A to component B, given they have the same children, should not change the DOM tree', () => {
+		function ComA() {
+            return <div><span>Something</span></div>;
+		}
+
+		function ComB() {
+            return <div><span>Something</span></div>;
+		}
+
+		it('patching component A to component B, given they have the same children, should replace DOM tree ( for lifecycle ) with identical one', () => {
 			render(<ComponentA />, container);
-			expect(container.innerHTML).to.equal('<div><span>Something</span></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
 			const trackElemDiv = container.firstChild;
 			const trackElemSpan = container.firstChild.firstChild;
 
 			render(<ComponentB />, container);
-			expect(container.innerHTML).to.equal('<div><span>Something</span></div>');
-			expect(container.firstChild === trackElemDiv).to.equal(true);
-			expect(container.firstChild.firstChild === trackElemSpan).to.equal(true);
+			// These are same but not equal
+			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+			expect(container.firstChild === trackElemDiv).to.equal(false);
+			expect(container.firstChild.firstChild === trackElemSpan).to.equal(false);
 		});
+
+        it('patching component A to component B, given they have the same children, should not change the DOM tree when stateless components', () => {
+            render(<ComA />, container);
+            expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+            const trackElemDiv = container.firstChild;
+            const trackElemSpan = container.firstChild.firstChild;
+
+            render(<ComB />, container);
+            expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+            expect(container.firstChild === trackElemDiv).to.equal(true);
+            expect(container.firstChild.firstChild === trackElemSpan).to.equal(true);
+        });
 	});
 
 	describe('Inheritance with common render', () => {
@@ -123,11 +143,11 @@ describe('Components (JSX) #2', () => {
 		// For some reason this one breaks but if components are imported separately, it works
 		it('Should not reuse children if parent changes #1', () => {
 			render(<ParentFirst />, container);
-			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
-			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
 			render(<ParentSecond />, container);
-			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
 		});
 	});
 
@@ -197,22 +217,31 @@ describe('Components (JSX) #2', () => {
 		// For some reason this one breaks but if components are imported separately, it works
 		it('Should not reuse children if parent changes #2', () => {
 			render(<ParentFirst />, container);
-			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
-			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
 			render(<ParentSecond />, container);
-			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
 		});
 	});
 
 	describe('Inheritance with 1 component per file Common BASE', () => {
 		it('Should not reuse children if parent changes #3', () => {
 			render(<ParentFirstCommon />, container);
-			expect(container.innerHTML).to.equal('<div><div>Firstfoo</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
-			expect(container.innerHTML).to.equal('<div><div>Firstbar</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
 			render(<ParentSecondCommon />, container);
-			expect(container.innerHTML).to.equal('<div><div>Secondfoo</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
+		});
+	});
+
+	// Ref: https://github.com/trueadm/inferno/issues/513
+	describe('String components (React compat)', () => {
+		it('Should render a string div', () => {
+			const Div = 'div';
+			render(<Div>Hello World</Div>, container);
+			expect(container.innerHTML).to.equal(innerHTML('<div>Hello World</div>'));
 		});
 	});
 });

@@ -9,7 +9,7 @@ export interface IRouteProps {
 	params?: any;
 	onEnter?: IRouteHook;
 	onLeave?: IRouteHook;
-	children?: any;
+	path: string;
 	component: Component<any, any>;
 }
 
@@ -23,19 +23,27 @@ export default class Route extends Component<IRouteProps, any> {
 		const { router } = this.context;
 
 		if (onEnter) {
-			setImmediate(() => {
+			Promise.resolve().then(() => {
 				onEnter({ props: this.props, router });
 			});
 		}
 	}
 
-	componentWillUnmount() {
+	onLeave(trigger = false) {
 		const { onLeave } = this.props;
 		const { router } = this.context;
 
-		if (onLeave) {
+		if (onLeave && trigger) {
 			onLeave({ props: this.props, router });
 		}
+	}
+
+	componentWillUnmount() {
+		this.onLeave(true);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		this.onLeave(this.props.path !== nextProps.path);
 	}
 
 	render({ component, children, params }) {

@@ -10,12 +10,12 @@ module.exports.compilerAliases = changePaths(module.exports.aliases);
  * @param plugins
  * @returns {*}
  */
-function findAliases(plugins) {
+function findAliases() {
 	const babelrcPath = path.join(__dirname, '../.babelrc');
 	const babelrc = JSON.parse(fs.readFileSync(babelrcPath, 'utf-8'));
 
 	return _.reduce(babelrc.plugins, (result, plugin) => {
-		if (_.isArray(plugin) && plugin[1] && plugin[1].alias) {
+		if (Array.isArray(plugin) && plugin[1] && plugin[1].alias) {
 			result = plugin[1].alias
 		}
 		return result;
@@ -29,7 +29,7 @@ function findAliases(plugins) {
  */
 function changePaths(hashmap) {
 	Object.keys(hashmap).forEach(key => {
-		hashmap[key] = path.join(__dirname, '../packages', hashmap[key].replace('./packages', ''));
+		hashmap[key] = path.join(__dirname, '../', hashmap[key].replace('./packages', ''));
 	});
 	return hashmap;
 }

@@ -1,7 +1,6 @@
 import { expect } from 'chai';
-import { render } from '../rendering';
 import { innerHTML } from '../../tools/utils';
-import * as Inferno from '../../testUtils/inferno';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('Select / select multiple (JSX)', () => {

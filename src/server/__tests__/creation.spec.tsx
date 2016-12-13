@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { renderToStaticMarkup } from '../renderToString';
 // import Component from '../../component/es2015';
-import * as Inferno from '../../testUtils/inferno';
+import Inferno from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 /*

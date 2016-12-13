@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { render } from '../../DOM/rendering';
 import createClass from '../createClass';
 import createElement from '../../factories/createElement';
+import { innerHTML } from '../../tools/utils';
 
 describe('Components createClass (non-JSX)', () => {
 	let container;
@@ -25,7 +26,7 @@ describe('Components createClass (non-JSX)', () => {
 
 	it('should render a basic component', () => {
 		render(createElement(BasicComponent as Function), container);
-		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
 	});
 	it('should render a basic component with lifecycle', () => {
 		let componentWillUpdate = false;
@@ -85,5 +86,35 @@ describe('Components createClass (non-JSX)', () => {
 		});
 
 		expect(Component.propTypes).to.be.undefined;
+	});
+	it('should have mixins on created class', () => {
+		const mixins = [{
+			func1: () => true
+		}];
+		const Component = createClass({
+			mixins,
+			render() {
+				return createElement('div', null, 'Hello world!');
+			}
+		});
+		render(createElement(Component as Function, {}), container);
+		expect(Component.mixins).to.have.property('func1');
+	});
+	it('should have nested mixins on created class', () => {
+		const mixins = [{
+			mixins: [{
+				mixins: [{
+					nestedMixin: () => true,
+				}]
+			}]
+		}];
+		const Component = createClass({
+			mixins,
+			render() {
+				return createElement('div', null, 'Hello world!');
+			}
+		});
+		render(createElement(Component as Function, {}), container);
+		expect(Component.mixins).to.have.property('nestedMixin');
 	});
 });

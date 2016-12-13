@@ -5,6 +5,8 @@ declare module 'inferno' {
 	export function findDOMNode(node: any): any;
 	export function createRenderer(...rest);
 	export function disableRecycling(...rest);
+	export function linkEvent(data, event: Function);
+	export function enableFindDOMNode();
 	export const NO_OP;
 	export const ERROR_MSG;
 	export const EMPTY_OBJ;
@@ -38,6 +40,10 @@ declare module 'inferno-create-class' {
 
 declare module 'inferno-create-element' {
 	export default function createElement(component: any, props: any, ...children): any;
+}
+
+declare module 'inferno-hyperscript' {
+	export default function hyperscript(tag: any, props?: any, ...children): any;
 }
 
 declare module 'lodash/isPlainObject' {
@@ -116,8 +122,16 @@ declare module 'lodash/fp' {
 	export function curry(obj: any): any;
 }
 
-declare module 'union-type' {
+declare module 'union-type-es' {
 	export default function (obj: any): any;
 }
 
-interface Window { process: any; }
+interface Window { process: any; __karma__: any; mocha: any; }
+
+//noinspection TsLint
+declare namespace process {
+	//noinspection TsLint
+	export interface env {
+		NODE_ENV: any;
+	}
+}

@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { render } from '../rendering';
-import * as Inferno from '../../testUtils/inferno';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('HTML Form Elements', () => {
@@ -39,8 +38,11 @@ describe('HTML Form Elements', () => {
 		});
 
 		it('Should update textarea value', () => {
+			const expectedTextArea = document.createElement('textarea');
+			expectedTextArea.value = 'Hey People';
+
 			render(<textarea value="Hey People"/>, container);
-			expect(container.innerHTML).to.equal('<textarea></textarea>');
+			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
 			expect(container.firstChild.value).to.equal("Hey People");
 
 			//
@@ -49,7 +51,7 @@ describe('HTML Form Elements', () => {
 
 			const input = container.querySelector('textarea');
 			input.value = "Inferno is cool";
-			expect(container.innerHTML).to.equal('<textarea></textarea>');
+			expect(container.innerHTML).to.equal(input.outerHTML);
 			expect(container.firstChild.value).to.equal("Inferno is cool");
 
 			//
@@ -57,15 +59,17 @@ describe('HTML Form Elements', () => {
 			//
 
 			render(<textarea value="Hey People"/>, container);
-			expect(container.innerHTML).to.equal('<textarea></textarea>');
+			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
 			expect(container.firstChild.value).to.equal("Hey People");
 
 			//
 			// New Render, new value
 			//
 
+			expectedTextArea.value = 'Hey People again';
+
 			render(<textarea value="Hey People again"/>, container);
-			expect(container.innerHTML).to.equal('<textarea></textarea>');
+			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
 			expect(container.firstChild.value).to.equal("Hey People again");
 		});
 

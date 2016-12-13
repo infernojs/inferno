@@ -156,17 +156,16 @@ export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isCl
 	}
 	const type = vNode.type;
 	const props = vNode.props || EMPTY_OBJ;
+	const defaultProps = type.defaultProps;
 	const ref = vNode.ref;
 	let dom;
 
+	if (!isUndefined(defaultProps)) {
+		copyPropsTo(defaultProps, props);
+		vNode.props = props;
+	}
 	if (isClass) {
-		const defaultProps = type.defaultProps;
-
 		lifecycle.fastUnmount = false;
-		if (!isUndefined(defaultProps)) {
-			copyPropsTo(defaultProps, props);
-			vNode.props = props;
-		}
 		const instance = createStatefulComponentInstance(vNode, type, props, context, isSVG, devToolsStatus);
 		const input = instance._lastInput;
 		const fastUnmount = lifecycle.fastUnmount;

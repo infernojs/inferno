@@ -29,7 +29,13 @@ function onSelectChange(e) {
 	const dom = vNode.dom;
 
 	if (events.onChange) {
-		events.onChange(e);
+		const event = events.onChange;
+
+		if (event.event) {
+			event.event(event.data, e);
+		} else {
+			event(e);
+		}
 	} else if (events.onchange) {
 		events.onchange(e);
 	}

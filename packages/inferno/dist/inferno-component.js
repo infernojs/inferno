@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-beta32
+ * inferno-component v1.0.0-beta33
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -125,7 +125,7 @@ function queueStateChanges(component, newState, callback) {
     }
 }
 function applyState(component, force, callback) {
-    if ((!component._deferSetState || force) && !component._blockRender) {
+    if ((!component._deferSetState || force) && !component._blockRender && !component._unmounted) {
         component._pendingSetState = false;
         var pendingState = component._pendingState;
         var prevState = component.state;
@@ -149,7 +149,8 @@ function applyState(component, force, callback) {
             didUpdate = false;
         }
         var lastInput = component._lastInput;
-        var parentDom = lastInput.dom.parentNode;
+        var vNode = component._vNode;
+        var parentDom = (lastInput.dom && lastInput.dom.parentNode) || (lastInput.dom = vNode.dom);
         component._lastInput = nextInput;
         if (didUpdate) {
             var subLifecycle = component._lifecycle;
@@ -171,7 +172,6 @@ function applyState(component, force, callback) {
             subLifecycle.trigger();
             component.componentDidUpdate(props, prevState);
         }
-        var vNode = component._vNode;
         var dom = vNode.dom = nextInput.dom;
         var componentToDOMNodeMap = component._componentToDOMNodeMap;
         componentToDOMNodeMap && componentToDOMNodeMap.set(component, nextInput.dom);
@@ -213,13 +213,13 @@ Component$1.prototype.render = function render (nextProps, nextState, nextContex
 };
 Component$1.prototype.forceUpdate = function forceUpdate (callback) {
     if (this._unmounted) {
-        throw Error(noOp);
+        return;
     }
     applyState(this, true, callback);
 };
 Component$1.prototype.setState = function setState (newState, callback) {
     if (this._unmounted) {
-        throw Error(noOp);
+        return;
     }
     if (!this._blockSetState) {
         if (!this._ignoreSetState) {

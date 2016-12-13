@@ -1,5 +1,5 @@
 import { ParentBaseCommon } from './parentbase';
-import * as Inferno from '../../src/testUtils/inferno';
+import Inferno from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 export class ParentFirstCommon extends ParentBaseCommon {

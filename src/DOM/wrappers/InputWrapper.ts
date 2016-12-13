@@ -20,7 +20,13 @@ function onTextInputChange(e) {
 	const dom = vNode.dom;
 
 	if (events.onInput) {
-		events.onInput(e);
+		const event = events.onInput;
+
+		if (event.event) {
+			event.event(event.data, e);
+		} else {
+			event(e);
+		}
 	} else if (events.oninput) {
 		events.oninput(e);
 	}
@@ -29,13 +35,31 @@ function onTextInputChange(e) {
 	applyValue(this.vNode, dom);
 }
 
+function wrappedOnChange(e) {
+	let vNode = this.vNode;
+	const events = vNode.events || EMPTY_OBJ;
+	const event = events.onChange;
+
+	if (event.event) {
+		event.event(event.data, e);
+	} else {
+		event(e);
+	}
+}
+
 function onCheckboxChange(e) {
 	const vNode = this.vNode;
 	const events = vNode.events || EMPTY_OBJ;
 	const dom = vNode.dom;
 
 	if (events.onClick) {
-		events.onClick(e);
+		const event = events.onClick;
+
+		if (event.event) {
+			event.event(event.data, e);
+		} else {
+			event(e);
+		}
 	} else if (events.onclick) {
 		events.onclick(e);
 	}
@@ -78,6 +102,10 @@ export function processInput(vNode, dom) {
 				dom.oninput = onTextInputChange.bind(inputWrapper);
 				dom.oninput.wrapped = true;
 			}
+			if (props.onChange) {
+				dom.onchange = wrappedOnChange.bind(inputWrapper);
+				dom.onchange.wrapped = true;
+			}
 			wrappers.set(dom, inputWrapper);
 		}
 		inputWrapper.vNode = vNode;
@@ -89,12 +117,13 @@ export function applyValue(vNode, dom) {
 	const type = props.type;
 	const value = props.value;
 	const checked = props.checked;
+	const multiple = props.multiple;
 
-	if (type !== dom.type && type) {
+	if (type && type !== dom.type) {
 		dom.type = type;
 	}
-	if (props.multiple !== dom.multiple) {
-		dom.multiple = props.multiple;
+	if (multiple && multiple !== dom.multiple) {
+		dom.multiple = multiple;
 	}
 	if (isCheckedType(type)) {
 		if (!isNullOrUndef(value)) {

@@ -1,7 +1,6 @@
-import {expect} from 'chai';
-import {render} from '../rendering';
-import {createVNode, VNodeFlags} from "../../core/shapes";
-import {NO_OP} from "../../shared";
+import { expect } from 'chai';
+import { render, createVNode, NO_OP } from 'inferno';
+import { VNodeFlags } from "../../core/shapes";
 
 describe('rendering routine', () => {
 	let container;

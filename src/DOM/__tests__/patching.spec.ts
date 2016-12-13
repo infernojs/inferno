@@ -1,7 +1,7 @@
-import {expect} from 'chai';
-import {render} from '../rendering';
-import {createVNode, VNodeFlags, createTextVNode} from "../../core/shapes";
-import {disableRecycling, recyclingEnabled, enableRecycling} from "../recycling";
+import { expect } from 'chai';
+import { render, createVNode } from 'inferno';
+import { VNodeFlags, createTextVNode } from "../../core/shapes";
+import { disableRecycling, recyclingEnabled, enableRecycling } from "../recycling";
 
 describe('patching routine', () => {
 	let container;

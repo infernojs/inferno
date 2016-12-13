@@ -1,5 +1,5 @@
 import Component from '../../src/component/es2015';
-import * as Inferno from '../../src/testUtils/inferno';
+import Inferno from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 export class ChildCommon extends Component<any, any> {

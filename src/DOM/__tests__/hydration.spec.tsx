@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import renderToString from '../../server/renderToString';
-import Component from '../../component/es2015';
-import { render } from '../../DOM/rendering';
+import Component from 'inferno-component';
 import {
 	createContainerWithHTML,
+	innerHTML,
 	validateNodeTree
 } from '../../tools/utils';
-import * as Inferno from '../../testUtils/inferno';
+import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 function Comp1() {
@@ -120,12 +120,12 @@ describe('SSR Hydration - (JSX)', () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
-			expect(container.innerHTML).to.equal(expect1);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect1));
 			render(node, container);
 			expect(validateNodeTree(node)).to.equal(true);
-			expect(container.innerHTML).to.equal(expect2);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
 			render(node, container);
-			expect(container.innerHTML).to.equal(expect2);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
 		});
 	});
 	[

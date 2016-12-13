@@ -1,8 +1,6 @@
 import { expect } from 'chai';
-import { render } from '../rendering';
-import { findDOMNode, enableFindDOMNode } from '../rendering';
-import Component from '../../component/es2015';
-import * as Inferno from '../../testUtils/inferno';
+import Component from 'inferno-component';
+import Inferno, { findDOMNode, enableFindDOMNode, render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 
 describe('findDOMNodes (JSX)', () => {
@@ -24,7 +22,11 @@ describe('findDOMNodes (JSX)', () => {
 		let instance2;
 		let instance3;
 		let ref;
-		const refFunc = (dom) => { if (dom) { ref = dom } }
+		const refFunc = (dom) => {
+			if (dom) {
+				ref = dom;
+			}
+		};
 
 		class Example1 extends Component<any, any> {
 			render() {
