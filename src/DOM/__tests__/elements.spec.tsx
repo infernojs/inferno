@@ -711,24 +711,24 @@ describe('Elements (JSX)', () => {
 		render((
 			<div dangerouslySetInnerHTML={{ __html: 'Hello world!' }}/>
 		), container);
-		expect(container.innerHTML).to.equal('<div>Hello world!</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
 	});
 
 	it('Should not dangerously set innerHTML when previous is same as new one', () => {
 		render((
 			<div dangerouslySetInnerHTML={{ __html: 'same' }}/>
 		), container);
-		expect(container.innerHTML).to.equal('<div>same</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>same</div>'));
 
 		render((
 			<div dangerouslySetInnerHTML={{ __html: 'same' }}/>
 		), container);
-		expect(container.innerHTML).to.equal('<div>same</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>same</div>'));
 
 		render((
 			<div dangerouslySetInnerHTML={{ __html: 'change' }}/>
 		), container);
-		expect(container.innerHTML).to.equal('<div>change</div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div>change</div>'));
 	});
 
 	it('Should throw error if __html property is not set', () => {
@@ -766,11 +766,11 @@ describe('Elements (JSX)', () => {
 
 	it('mixing JSX with non-JSX', () => {
 		render(<div>{createElement('div', null)}</div>, container);
-		expect(container.innerHTML).to.equal('<div><div></div></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><div></div></div>'));
 		render(<div>{createElement('span', null)}</div>, container);
-		expect(container.innerHTML).to.equal('<div><span></span></div>');
+		expect(container.innerHTML).to.equal(innerHTML('<div><span></span></div>'));
 		render(<span>{createElement('div', null)}</span>, container);
-		expect(container.innerHTML).to.equal('<span><div></div></span>');
+		expect(container.innerHTML).to.equal(innerHTML('<span><div></div></span>'));
 	});
 
 	it('should be able to construct input with Hooks, Events, Attributes defined', (done) => {
@@ -813,30 +813,30 @@ describe('Elements (JSX)', () => {
 
 		it('basic example ', () => {
 			render(a, container);
-			expect(container.innerHTML).to.equal('<div>Hello world</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>Hello world</div>'));
 			render(b, container);
-			expect(container.innerHTML).to.equal('<span>This works!</span>');
+			expect(container.innerHTML).to.equal(innerHTML('<span>This works!</span>'));
 		});
 
 		it('basic example #2 ', () => {
 			render(<div>{ [a, a, a] }</div>, container);
-			expect(container.innerHTML).to.equal('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>'));
 			render(b, container);
-			expect(container.innerHTML).to.equal('<span>This works!</span>');
+			expect(container.innerHTML).to.equal(innerHTML('<span>This works!</span>'));
 		});
 
 		it('basic nested example ', () => {
 			render(<div>{a}{b}</div>, container);
-			expect(container.innerHTML).to.equal('<div><div>Hello world</div><span>This works!</span></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Hello world</div><span>This works!</span></div>'));
 			render(<div>{b}{a}</div>, container);
-			expect(container.innerHTML).to.equal('<div><span>This works!</span><div>Hello world</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><span>This works!</span><div>Hello world</div></div>'));
 		});
 
 		it('basic nested component example ', () => {
 			render(<C>{a}</C>, container);
-			expect(container.innerHTML).to.equal('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>'));
 			render(<C>{b}{a}</C>, container);
-			expect(container.innerHTML).to.equal('<div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div></div>'));
 		});
 	});
 });
