@@ -33,6 +33,7 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-stage-2": "^6.18.0",
     "babel-register": "^6.18.0",
+    "baseline": "^0.3.0",
     "buble": "^0.14.3",
     "chai": "^3.5.0",
     "concat-stream-es6": "0.0.1",
