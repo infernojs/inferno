@@ -66,12 +66,17 @@ module.exports = function (config) {
 	});
 
 	const {
-		TRAVIS,
+		CI,
 		TRAVIS_BRANCH,
 		TRAVIS_BUILD_NUMBER,
 		TRAVIS_JOB_NUMBER,
 		TRAVIS_PULL_REQUEST,
 	} = process.env;
+
+	const ci = String(CI).match(/^(1|true)$/gi);
+	const pullRequest = !String(process.env.TRAVIS_PULL_REQUEST).match(/^(0|false|undefined)$/gi);
+	const masterBranch = String(process.env.TRAVIS_BRANCH).match(/^master$/gi);
+	const sauce = ci && !pullRequest && masterBranch
 
 	if (TRAVIS) {
 		const travisLaunchers = {
