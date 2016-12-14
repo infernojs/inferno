@@ -4,8 +4,8 @@ import {
 	createStatelessComponentInput,
 	replaceChild,
 } from './utils';
+import { EMPTY_OBJ } from 'inferno';
 import {
-	EMPTY_OBJ,
 	isArray,
 	isInvalid,
 	isNull,
