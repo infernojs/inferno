@@ -137,7 +137,7 @@
       "text"
     ],
     "require": [
-      "./config/compiler.js",
+      "./test/mocha/compiler.js",
       "babel-register"
     ]
   },
@@ -159,10 +159,10 @@
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
-    "server:cov:publish": "npm run test:server && coveralls < coverage/lcov.info && rimraf coverage",
     "test": "npm run lint && npm run test:browser && npm run test:server",
-    "test:browser": "karma start config/karma.conf.js",
-    "test:server": "cross-env nyc mocha --opts config/mocha.opts"
+    "test:browser": "karma start test/karma.conf.js",
+    "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
+    "test:server": "cross-env nyc mocha --opts test/mocha.opts"
   },
   "pre-commit": [
     "lint",

@@ -1,21 +1,21 @@
 import {
 	createVNode
-} from '../core/shapes';
-import cloneVNode from '../factories/cloneVNode';
+} from '../../src/core/shapes';
+import cloneVNode from '../../src/factories/cloneVNode';
 import {
 	render,
 	createRenderer,
 	enableFindDOMNode,
 	findDOMNode
-} from '../DOM/rendering';
+} from '../../src/DOM/rendering';
 import {
 	disableRecycling
-} from '../DOM/recycling';
+} from '../../src/DOM/recycling';
 import {
 	EMPTY_OBJ,
 	NO_OP
-} from '../shared';
-import linkEvent from '../DOM/events/linkEvent';
+} from '../../src/shared';
+import linkEvent from '../../src/DOM/events/linkEvent';
 
 export {
 	createVNode,

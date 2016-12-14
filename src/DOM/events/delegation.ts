@@ -26,7 +26,7 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 			delegatedRoots.count--;
 			delegatedRoots.items.delete(dom);
 			if (delegatedRoots.count === 0) {
-				document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
+				document.removeEventListener(normaliseEventName(name), delegatedRoots.docEvent);
 				delegatedEvents.delete(name);
 			}
 		}
@@ -56,7 +56,7 @@ function dispatchEvent(event, dom, items, count, eventData) {
 	}
 }
 
-function normalizeEventName(name) {
+function normaliseEventName(name) {
 	return name.substr(2).toLowerCase();
 }
 
@@ -83,6 +83,6 @@ function attachEventToDocument(name, delegatedRoots) {
 			dispatchEvent(event, event.target, delegatedRoots.items, count, eventData);
 		}
 	};
-	document.addEventListener(normalizeEventName(name), docEvent);
+	document.addEventListener(normaliseEventName(name), docEvent);
 	return docEvent;
 }

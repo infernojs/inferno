@@ -56,13 +56,13 @@ export interface VNode {
 	type: string | Function | null;
 }
 
-function _normalizeVNodes(nodes: any[], result: VNode[], i: number): void {
+function _normaliseVNodes(nodes: any[], result: VNode[], i: number): void {
 	for (; i < nodes.length; i++) {
 		let n = nodes[i];
 
 		if (!isInvalid(n)) {
 			if (Array.isArray(n)) {
-				_normalizeVNodes(n, result, 0);
+				_normaliseVNodes(n, result, 0);
 			} else {
 				if (isStringOrNumber(n)) {
 					n = createTextVNode(n);
@@ -82,7 +82,7 @@ function applyKeyIfMissing(index, vNode) {
 	return vNode;
 }
 
-export function normalizeVNodes(nodes: any[]): VNode[] {
+export function normaliseVNodes(nodes: any[]): VNode[] {
 	let newNodes;
 
 	// we assign $ which basically means we've flagged this array for future note
@@ -101,7 +101,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 		if (isInvalid(n) || Array.isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
 
-			_normalizeVNodes(nodes, result, i);
+			_normaliseVNodes(nodes, result, i);
 			return result;
 		} else if (isStringOrNumber(n)) {
 			if (!newNodes) {
@@ -120,16 +120,16 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	return newNodes || nodes as VNode[];
 }
 
-function normalizeChildren(children) {
+function normaliseChildren(children) {
 	if (isArray(children)) {
-		return normalizeVNodes(children);
+		return normaliseVNodes(children);
 	} else if (isVNode(children) && children.dom) {
 		return cloneVNode(children);
 	}
 	return children;
 }
 
-function normalizeProps(vNode, props, children) {
+function normaliseProps(vNode, props, children) {
 	if (!(vNode.flags & VNodeFlags.Component) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
 		vNode.children = props.children;
 	}
@@ -144,7 +144,7 @@ function normalizeProps(vNode, props, children) {
 	}
 }
 
-function normalizeElement(type, vNode) {
+function normaliseElement(type, vNode) {
 	if (type === 'svg') {
 		vNode.flags = VNodeFlags.SvgElement;
 	} else if (type === 'input') {
@@ -160,27 +160,27 @@ function normalizeElement(type, vNode) {
 	}
 }
 
-function normalize(vNode) {
+function normalise(vNode) {
 	const props = vNode.props;
 	const type = vNode.type;
 	let children = vNode.children;
 
 	// convert a wrongly created type back to element
 	if (isString(type) && (vNode.flags & VNodeFlags.Component)) {
-		normalizeElement(type, vNode);
+		normaliseElement(type, vNode);
 		if (props.children) {
 			vNode.children = props.children;
 			children = props.children;
 		}
 	}
 	if (props) {
-		normalizeProps(vNode, props, children);
+		normaliseProps(vNode, props, children);
 	}
 	if (!isInvalid(children)) {
-		vNode.children = normalizeChildren(children);
+		vNode.children = normaliseChildren(children);
 	}
 	if (props && !isInvalid(props.children)) {
-		props.children = normalizeChildren(props.children);
+		props.children = normaliseChildren(props.children);
 	}
 }
 
@@ -199,7 +199,7 @@ export function createVNode(flags, type?, props?, children?, events?, key?, ref?
 		type
 	};
 	if (!noNormalise) {
-		normalize(vNode);
+		normalise(vNode);
 	}
 	return vNode;
 }

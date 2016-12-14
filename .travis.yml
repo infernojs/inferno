@@ -40,4 +40,4 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
 
 after_script:
-  - npm run server:cov:publish
+  - npm run test:publish

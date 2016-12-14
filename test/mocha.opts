@@ -1,5 +1,5 @@
---compilers ts:./config/compiler.js,js:babel-core/register
---require ./config/DOM.js
+--compilers ts:./test/mocha/compiler.js,js:babel-core/register
+--require ./test/mocha/DOM.js
 --full-trace
 --reporter spec
 --ui bdd

@@ -51,7 +51,7 @@ Component.prototype._afterRender = function() {
 
 const version = '15.4.1';
 
-function normalizeProps(name, props) {
+function normaliseProps(name, props) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
 		const eventName = props.type === 'checkbox' ? 'onclick' : 'oninput'
 
@@ -85,7 +85,7 @@ const injectStringRefs = (originalFunction) => {
 			}.bind(currentComponent || null);
 		}
 		if (typeof name === 'string') {
-			normalizeProps(name, props);
+			normaliseProps(name, props);
 		}
 		return originalFunction(name, props, ...children);
 	};

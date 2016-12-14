@@ -94,15 +94,15 @@ module.exports = function (config) {
 
 	const varToBool = (sVar) => !!String(sVar).match('true')
 	if (varToBool(TRAVIS) && !varToBool(TRAVIS_PULL_REQUEST) && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
-		const sauceLaunchers = require('./sauceLaunchers');
+		const sauceLaunchers = require('./karma/sauce');
 		config.set({
 			sauceLabs: {
 				testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,
 				build: (TRAVIS_JOB_NUMBER || 'Local'),
-				public: true
+				tags: [ ( TRAVIS_BRANCH || 'dev' ) ]
 			},
-			customLaunchers: sauceLaunchers,
-			browsers: Object.keys(sauceLaunchers),
+			customLaunchers: sauceLaunchers.launchers,
+			browsers: sauceLaunchers.browsers,
 			reporters: [
 				'failed',
 				'saucelabs'

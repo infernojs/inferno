@@ -11,7 +11,7 @@ module.exports.compilerAliases = changePaths(module.exports.aliases);
  * @returns {*}
  */
 function findAliases() {
-	const babelrcPath = path.join(__dirname, '../.babelrc');
+	const babelrcPath = path.join(__dirname, '../..', '.babelrc');
 	const babelrc = JSON.parse(fs.readFileSync(babelrcPath, 'utf-8'));
 
 	return _.reduce(babelrc.plugins, (result, plugin) => {
@@ -29,7 +29,7 @@ function findAliases() {
  */
 function changePaths(hashmap) {
 	Object.keys(hashmap).forEach(key => {
-		hashmap[key] = path.join(__dirname, '../', hashmap[key].replace('./packages', ''));
+		hashmap[key] = path.join(__dirname, '../../', hashmap[key].replace('./packages', ''));
 	});
 	return hashmap;
 }
