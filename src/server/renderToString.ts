@@ -6,6 +6,7 @@ import {
 import {
 	copyPropsTo
 } from '../DOM/utils';
+import { EMPTY_OBJ } from 'inferno';
 import {
 	isArray,
 	isInvalid,
@@ -44,7 +45,7 @@ function renderStylesToString(styles) {
 function renderVNodeToString(vNode, context, firstChild) {
 	const flags = vNode.flags;
 	const type = vNode.type;
-	let props = vNode.props;
+	const props = vNode.props || EMPTY_OBJ;
 	const children = vNode.children;
 
 	if (flags & VNodeFlags.Component) {
