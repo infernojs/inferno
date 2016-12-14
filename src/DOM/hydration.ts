@@ -5,6 +5,7 @@ import {
 	replaceChild,
 } from './utils';
 import {
+	EMPTY_OBJ,
 	isArray,
 	isInvalid,
 	isNull,
@@ -58,7 +59,7 @@ export function normaliseChildNodes(dom) {
 
 function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 	const type = vNode.type;
-	const props = vNode.props || {};
+	const props = vNode.props || EMPTY_OBJ;
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
@@ -76,7 +77,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 		const fastUnmount = lifecycle.fastUnmount;
 
 		// we store the fastUnmount value, but we set it back to true on the lifecycle
-		// we do this so we can determine if the component render has a fastUnmount or not		
+		// we do this so we can determine if the component render has a fastUnmount or not
 		lifecycle.fastUnmount = true;
 		instance._vComponent = vNode;
 		instance._vNode = vNode;
