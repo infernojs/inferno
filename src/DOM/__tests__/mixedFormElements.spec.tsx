@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import Inferno, { render } from 'inferno';
+import { innerHTML } from '../../tools/utils';
 Inferno; // suppress ts 'never used' error
 
 describe('HTML Form Elements', () => {
@@ -16,7 +17,7 @@ describe('HTML Form Elements', () => {
 	describe('After external change', () => {
 		it('Should update input check property', () => {
 			render(<input type="checkbox" checked={true}/>, container);
-			expect(container.innerHTML).to.equal('<input type="checkbox">');
+			expect(container.innerHTML).to.equal(innerHTML('<input type="checkbox">'));
 			expect(container.firstChild.checked).to.equal(true);
 
 			//
@@ -25,7 +26,7 @@ describe('HTML Form Elements', () => {
 
 			const input = container.querySelector('input');
 			input.checked = false;
-			expect(container.innerHTML).to.equal('<input type="checkbox">');
+			expect(container.innerHTML).to.equal(innerHTML('<input type="checkbox">'));
 			expect(container.firstChild.checked).to.equal(false);
 
 			//
@@ -33,7 +34,7 @@ describe('HTML Form Elements', () => {
 			//
 
 			render(<input type="checkbox" checked={true}/>, container);
-			expect(container.innerHTML).to.equal('<input type="checkbox">');
+			expect(container.innerHTML).to.equal(innerHTML('<input type="checkbox">'));
 			expect(container.firstChild.checked).to.equal(true);
 		});
 
@@ -75,7 +76,7 @@ describe('HTML Form Elements', () => {
 
 		it('Should update text input value', () => {
 			render(<input type="text" value="Hey People"/>, container);
-			expect(container.innerHTML).to.equal('<input type="text">');
+			expect(container.innerHTML).to.equal(innerHTML('<input type="text">'));
 			expect(container.firstChild.value).to.equal("Hey People");
 
 			//
@@ -84,7 +85,7 @@ describe('HTML Form Elements', () => {
 
 			const input = container.querySelector('input');
 			input.value = "Inferno is cool";
-			expect(container.innerHTML).to.equal('<input type="text">');
+			expect(container.innerHTML).to.equal(innerHTML('<input type="text">'));
 			expect(container.firstChild.value).to.equal("Inferno is cool");
 
 			//
@@ -92,7 +93,7 @@ describe('HTML Form Elements', () => {
 			//
 
 			render(<input type="text" value="Hey People"/>, container);
-			expect(container.innerHTML).to.equal('<input type="text">');
+			expect(container.innerHTML).to.equal(innerHTML('<input type="text">'));
 			expect(container.firstChild.value).to.equal("Hey People");
 
 			//
@@ -100,7 +101,7 @@ describe('HTML Form Elements', () => {
 			//
 
 			render(<input type="text" value="Hey People again"/>, container);
-			expect(container.innerHTML).to.equal('<input type="text">');
+			expect(container.innerHTML).to.equal(innerHTML('<input type="text">'));
 			expect(container.firstChild.value).to.equal("Hey People again");
 		});
 
