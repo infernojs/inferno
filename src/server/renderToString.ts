@@ -67,6 +67,7 @@ function renderVNodeToString(vNode, context, firstChild) {
 			}
 			instance.context = context;
 			instance._pendingSetState = true;
+			instance._unmounted = false;
 			if (isFunction(instance.componentWillMount)) {
 				instance.componentWillMount();
 			}

@@ -9,32 +9,16 @@
 	(global.Inferno = global.Inferno || {}, global.Inferno.Server = factory(global.Inferno,global.stream));
 }(this, (function (inferno,stream) { 'use strict';
 
-function escapeText(_string) {
-    var string = _string + '';
-    var length = string.length;
-    var characters = '';
-    for (var i = 0; i < length; i++) {
-        switch (string.charCodeAt(i)) {
-            case 38:
-                characters += '&amp;';
-                break;
-            case 39:
-                characters += '&#039;';
-                break;
-            case 34:
-                characters += '&quot;';
-                break;
-            case 60:
-                characters += '&lt;';
-                break;
-            case 62:
-                characters += '&gt;';
-                break;
-            default:
-                characters += string[i];
-        }
-    }
-    return characters;
+var ecapeCharacters = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '&': '&amp;'
+};
+var escapeChar = function (char) { return ecapeCharacters[char] || char; };
+function escapeText(text) {
+    return String(text).replace(/[<>"'&]/g, escapeChar);
 }
 var uppercasePattern = /[A-Z]/g;
 var msPattern = /^ms-/;
@@ -413,6 +397,7 @@ function renderVNodeToString(vNode, context, firstChild) {
             }
             instance.context = context;
             instance._pendingSetState = true;
+            instance._unmounted = false;
             if (isFunction(instance.componentWillMount)) {
                 instance.componentWillMount();
             }
