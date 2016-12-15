@@ -152,7 +152,7 @@ export function copyPropsTo(copyFrom, copyTo) {
 	}
 }
 
-function normalizeElement(type, vNode) {
+function normaliseElement(type, vNode) {
 	if (type === 'svg') {
 		vNode.flags = VNodeFlags.SvgElement;
 	} else if (type === 'input') {

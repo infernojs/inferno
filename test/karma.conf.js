@@ -74,11 +74,11 @@ module.exports = function (config) {
 	} = process.env;
 
 	const ci = String(CI).match(/^(1|true)$/gi);
-	const pullRequest = !String(process.env.TRAVIS_PULL_REQUEST).match(/^(0|false|undefined)$/gi);
-	const masterBranch = String(process.env.TRAVIS_BRANCH).match(/^master$/gi);
+	const pullRequest = !String(TRAVIS_PULL_REQUEST).match(/^(0|false|undefined)$/gi);
+	const masterBranch = String(TRAVIS_BRANCH).match(/^master$/gi);
 	const sauce = ci && !pullRequest && masterBranch
 
-	if (TRAVIS) {
+	if (ci) {
 		const travisLaunchers = {
 			Chrome_travis_ci: {
 				base: 'Chrome',
@@ -98,7 +98,7 @@ module.exports = function (config) {
 	}
 
 	const varToBool = (sVar) => !!String(sVar).match('true')
-	if (varToBool(TRAVIS) && !varToBool(TRAVIS_PULL_REQUEST) && ['master', 'dev', 'sauce-labs'].indexOf(TRAVIS_BRANCH) > -1) {
+	if (sauce) {
 		const sauceLaunchers = require('./karma/sauce');
 		config.set({
 			sauceLabs: {
