@@ -11,6 +11,7 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "devDependencies": {
+    "@types/benchmark": "^1.0.30",
     "@types/chai": "^3.4.34",
     "@types/core-js": "^0.9.35",
     "@types/mocha": "^2.2.33",
@@ -33,7 +34,6 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-stage-2": "^6.18.0",
     "babel-register": "^6.18.0",
-    "baseline": "^0.3.0",
     "buble": "^0.14.3",
     "chai": "^3.5.0",
     "concat-stream-es6": "0.0.1",
@@ -49,6 +49,8 @@
     "hoist-non-inferno-statics": "^1.1.2",
     "jsdom": "^9.8.3",
     "karma": "^1.3.0",
+    "karma-benchmark": "^0.6.0",
+    "karma-benchmark-reporter": "^0.1.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-failed-reporter": "0.0.3",
@@ -161,7 +163,8 @@
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
     "test": "npm run lint && npm run test:browser && npm run test:server",
-    "test:browser": "karma start test/karma.conf.js",
+    "test:benchmark": "karma start test/karma/karma.bench.conf.js",
+    "test:browser": "karma start test/karma/karma.unit.conf.js",
     "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
     "test:server": "cross-env nyc mocha --opts test/mocha.opts"
   },

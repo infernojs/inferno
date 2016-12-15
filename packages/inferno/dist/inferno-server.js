@@ -13,7 +13,7 @@ var ecapeCharacters = {
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
-    "'": '&#39;',
+    "'": '&#039;',
     '&': '&amp;'
 };
 var escapeChar = function (char) { return ecapeCharacters[char] || char; };
