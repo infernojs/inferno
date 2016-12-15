@@ -144,7 +144,15 @@ function normaliseProps(vNode, props, children) {
 	}
 }
 
-function normaliseElement(type, vNode) {
+export function copyPropsTo(copyFrom, copyTo) {
+	for (let prop in copyFrom) {
+		if (isUndefined(copyTo[prop])) {
+			copyTo[prop] = copyFrom[prop];
+		}
+	}
+}
+
+function normalizeElement(type, vNode) {
 	if (type === 'svg') {
 		vNode.flags = VNodeFlags.SvgElement;
 	} else if (type === 'input') {
