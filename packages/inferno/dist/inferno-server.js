@@ -408,6 +408,9 @@ function renderVNodeToString(vNode, context, firstChild) {
             if (!isNullOrUndef(childContext)) {
                 context = Object.assign({}, context, childContext);
             }
+            if (instance.props === inferno.EMPTY_OBJ) {
+                instance.props = props;
+            }
             instance.context = context;
             instance._pendingSetState = true;
             if (isFunction(instance.componentWillMount)) {
