@@ -3,9 +3,6 @@ import {
 	escapeText,
 	toHyphenCase,
 } from './utils';
-import {
-	copyPropsTo
-} from '../DOM/utils';
 import { EMPTY_OBJ } from 'inferno';
 import {
 	isArray,
@@ -21,6 +18,7 @@ import {
 
 import {
 	VNodeFlags,
+	copyPropsTo,
 } from '../core/shapes';
 import { isUnitlessNumber } from '../DOM/constants';
 

@@ -9,10 +9,9 @@ import {
 	isUndefined,
 	throwError,
 } from '../shared';
-import { VNodeFlags, isVNode } from '../core/shapes';
+import { VNodeFlags, isVNode, copyPropsTo } from '../core/shapes';
 import {
 	appendChild,
-	copyPropsTo,
 	createStatefulComponentInstance,
 	createStatelessComponentInput,
 	documentCreateElement,

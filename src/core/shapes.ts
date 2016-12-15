@@ -144,6 +144,14 @@ function normalizeProps(vNode, props, children) {
 	}
 }
 
+export function copyPropsTo(copyFrom, copyTo) {
+	for (let prop in copyFrom) {
+		if (isUndefined(copyTo[prop])) {
+			copyTo[prop] = copyFrom[prop];
+		}
+	}
+}
+
 function normalizeElement(type, vNode) {
 	if (type === 'svg') {
 		vNode.flags = VNodeFlags.SvgElement;

@@ -1,5 +1,4 @@
 import {
-	copyPropsTo,
 	createStatefulComponentInstance,
 	createStatelessComponentInput,
 	replaceChild,
@@ -23,6 +22,7 @@ import {
 import Lifecycle from './lifecycle';
 import {
 	VNodeFlags,
+	copyPropsTo,
 } from '../core/shapes';
 import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import { devToolsStatus } from './devtools';

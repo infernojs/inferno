@@ -20,6 +20,7 @@ import {
 	createVoidVNode,
 	isVNode,
 	Styles,
+	copyPropsTo,
 } from '../core/shapes';
 import {
 	booleanProps,
@@ -35,7 +36,6 @@ import {
 	getIncrementalId,
 } from './devtools';
 import {
-	copyPropsTo,
 	createStatelessComponentInput,
 	insertOrAppend,
 	appendChild,
