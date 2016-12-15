@@ -192,7 +192,7 @@ function normalize(vNode) {
 	}
 }
 
-export function createVNode(flags, type?, props?, children?, events?, key?, ref?, nonormalize?: boolean): VNode {
+export function createVNode(flags, type?, props?, children?, events?, key?, ref?, noNormalise?: boolean): VNode {
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
@@ -206,7 +206,7 @@ export function createVNode(flags, type?, props?, children?, events?, key?, ref?
 		ref: ref || null,
 		type
 	};
-	if (!nonormalize) {
+	if (!noNormalise) {
 		normalize(vNode);
 	}
 	return vNode;

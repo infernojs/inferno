@@ -282,7 +282,7 @@ function normalize(vNode) {
         props.children = normalizeChildren(props.children);
     }
 }
-function createVNode(flags, type, props, children, events, key, ref, nonormalize) {
+function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
@@ -296,7 +296,7 @@ function createVNode(flags, type, props, children, events, key, ref, nonormalize
         ref: ref || null,
         type: type
     };
-    if (!nonormalize) {
+    if (!noNormalise) {
         normalize(vNode);
     }
     return vNode;

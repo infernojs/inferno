@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	/* (flags, type, props, children, key, ref, nonormalize) */
+	/* (flags, type, props, children, key, ref, noNormalise) */
 	var createVNode = Inferno.createVNode;
 
 	uibench.init('Inferno', '1.0.0-beta34 -non-keyed *dev*');
