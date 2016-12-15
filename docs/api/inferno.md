@@ -30,7 +30,7 @@ Inferno.createVNode(
   children?, 
   key?, 
   ref?, 
-  noNormalise?: boolean
+  nonormalize?: boolean
 ): VNode
 ```
 

@@ -282,7 +282,7 @@ function normalize(vNode) {
         props.children = normalizeChildren(props.children);
     }
 }
-function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
+function createVNode(flags, type, props, children, events, key, ref, nonormalize) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
@@ -296,7 +296,7 @@ function createVNode(flags, type, props, children, events, key, ref, noNormalise
         ref: ref || null,
         type: type
     };
-    if (!noNormalise) {
+    if (!nonormalize) {
         normalize(vNode);
     }
     return vNode;
@@ -2125,7 +2125,7 @@ function isKeyed(lastChildren, nextChildren) {
         && lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
 
-function normaliseChildNodes(dom) {
+function normalizeChildNodes(dom) {
     var rawChildNodes = dom.childNodes;
     var length = rawChildNodes.length;
     var i = 0;
@@ -2216,7 +2216,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     }
 }
 function hydrateChildren(children, dom, lifecycle, context, isSVG) {
-    normaliseChildNodes(dom);
+    normalizeChildNodes(dom);
     var domNodes = Array.prototype.slice.call(dom.childNodes);
     var childNodeIndex = 0;
     if (isArray(children)) {

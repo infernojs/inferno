@@ -56,13 +56,13 @@ export interface VNode {
 	type: string | Function | null;
 }
 
-function _normaliseVNodes(nodes: any[], result: VNode[], i: number): void {
+function _normalizeVNodes(nodes: any[], result: VNode[], i: number): void {
 	for (; i < nodes.length; i++) {
 		let n = nodes[i];
 
 		if (!isInvalid(n)) {
 			if (Array.isArray(n)) {
-				_normaliseVNodes(n, result, 0);
+				_normalizeVNodes(n, result, 0);
 			} else {
 				if (isStringOrNumber(n)) {
 					n = createTextVNode(n);
@@ -82,7 +82,7 @@ function applyKeyIfMissing(index, vNode) {
 	return vNode;
 }
 
-export function normaliseVNodes(nodes: any[]): VNode[] {
+export function normalizeVNodes(nodes: any[]): VNode[] {
 	let newNodes;
 
 	// we assign $ which basically means we've flagged this array for future note
@@ -101,7 +101,7 @@ export function normaliseVNodes(nodes: any[]): VNode[] {
 		if (isInvalid(n) || Array.isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
 
-			_normaliseVNodes(nodes, result, i);
+			_normalizeVNodes(nodes, result, i);
 			return result;
 		} else if (isStringOrNumber(n)) {
 			if (!newNodes) {
@@ -120,16 +120,16 @@ export function normaliseVNodes(nodes: any[]): VNode[] {
 	return newNodes || nodes as VNode[];
 }
 
-function normaliseChildren(children) {
+function normalizeChildren(children) {
 	if (isArray(children)) {
-		return normaliseVNodes(children);
+		return normalizeVNodes(children);
 	} else if (isVNode(children) && children.dom) {
 		return cloneVNode(children);
 	}
 	return children;
 }
 
-function normaliseProps(vNode, props, children) {
+function normalizeProps(vNode, props, children) {
 	if (!(vNode.flags & VNodeFlags.Component) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
 		vNode.children = props.children;
 	}
@@ -152,7 +152,7 @@ export function copyPropsTo(copyFrom, copyTo) {
 	}
 }
 
-function normaliseElement(type, vNode) {
+function normalizeElement(type, vNode) {
 	if (type === 'svg') {
 		vNode.flags = VNodeFlags.SvgElement;
 	} else if (type === 'input') {
@@ -168,31 +168,31 @@ function normaliseElement(type, vNode) {
 	}
 }
 
-function normalise(vNode) {
+function normalize(vNode) {
 	const props = vNode.props;
 	const type = vNode.type;
 	let children = vNode.children;
 
 	// convert a wrongly created type back to element
 	if (isString(type) && (vNode.flags & VNodeFlags.Component)) {
-		normaliseElement(type, vNode);
+		normalizeElement(type, vNode);
 		if (props.children) {
 			vNode.children = props.children;
 			children = props.children;
 		}
 	}
 	if (props) {
-		normaliseProps(vNode, props, children);
+		normalizeProps(vNode, props, children);
 	}
 	if (!isInvalid(children)) {
-		vNode.children = normaliseChildren(children);
+		vNode.children = normalizeChildren(children);
 	}
 	if (props && !isInvalid(props.children)) {
-		props.children = normaliseChildren(props.children);
+		props.children = normalizeChildren(props.children);
 	}
 }
 
-export function createVNode(flags, type?, props?, children?, events?, key?, ref?, noNormalise?: boolean): VNode {
+export function createVNode(flags, type?, props?, children?, events?, key?, ref?, nonormalize?: boolean): VNode {
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
@@ -206,8 +206,8 @@ export function createVNode(flags, type?, props?, children?, events?, key?, ref?
 		ref: ref || null,
 		type
 	};
-	if (!noNormalise) {
-		normalise(vNode);
+	if (!nonormalize) {
+		normalize(vNode);
 	}
 	return vNode;
 }

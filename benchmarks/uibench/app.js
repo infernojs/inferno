@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	/* (flags, type, props, children, key, ref, noNormalise) */
+	/* (flags, type, props, children, key, ref, nonormalize) */
 	var createVNode = Inferno.createVNode;
 	var linkEvent = Inferno.linkEvent;
 
