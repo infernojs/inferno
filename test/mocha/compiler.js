@@ -11,7 +11,7 @@ const buble = require('buble');
 const babel = require('babel-core');
 const convert = require('convert-source-map');
 const merge = require('merge-source-map');
-const virtuals = require('./aliases');
+const virtuals = require('../../config/aliases');
 
 const nodeModulesPattern = path.sep === '/' ? /\/node_modules\// : /\\node_modules\\/;
 
