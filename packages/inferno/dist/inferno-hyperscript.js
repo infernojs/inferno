@@ -118,7 +118,7 @@ function extractProps(_props, _tag) {
     }
     return { tag: tag, props: props, key: key, ref: ref, children: children, events: events };
 }
-function hyperscript$1(_tag, _props, _children, _childrenType) {
+function hyperscript$1(_tag, _props, _children) {
     // If a child array or text node are passed as the second argument, shift them
     if (!_children && isChildren(_props)) {
         _children = _props;

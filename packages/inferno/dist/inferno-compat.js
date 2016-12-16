@@ -487,7 +487,9 @@ function createClass(obj) {
     var Cl = (function (Component$$1) {
         function Cl(props) {
             Component$$1.call(this, props);
-            this.isMounted = function () { return !this._unmounted; };
+            this.isMounted = function () {
+                return !this._unmounted;
+            };
             extend(this, obj);
             if (Cl.mixins) {
                 applyMixins(this, Cl.mixins);
