@@ -3,7 +3,6 @@ import {
 	createStatelessComponentInput,
 	replaceChild,
 } from './utils';
-import { EMPTY_OBJ } from 'inferno';
 import {
 	isArray,
 	isInvalid,
@@ -11,6 +10,7 @@ import {
 	isObject,
 	isUndefined,
 	throwError,
+	EMPTY_OBJ,
 } from '../shared';
 import {
 	mountElement,
