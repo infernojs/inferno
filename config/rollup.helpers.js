@@ -42,10 +42,6 @@ export function updatePackageVersion(moduleName, defaultPackage) {
 		const modulePackage = require(packagePath(moduleName));
 		modulePackage.version = defaultPackage.version;
 		fs.writeFileSync(packagePath(moduleName), JSON.stringify(modulePackage, null, 2), 'utf8');
-	} catch (e) {
-		console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-		console.log(e);
-		console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
 	} finally {
 		return getPackageJSON(moduleName, defaultPackage);
 	}
