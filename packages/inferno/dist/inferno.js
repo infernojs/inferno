@@ -390,6 +390,7 @@ var dehyphenProps = {
     // SVG
     // Regular attributes
     accentHeight: 'accent-height',
+    arabicForm: 'arabic-form',
     capHeight: 'cap-height',
     fontFamily: 'font-family',
     fontSize: 'font-size',
@@ -449,7 +450,7 @@ var dehyphenProps = {
     stopColor: 'stop-color',
     stopOpacity: 'stop-opacity',
     strokeDasharray: 'stroke-dasharray',
-    strokeOffset: 'stroke-offset',
+    strokeDashoffset: 'stroke-dashoffset',
     strokeLinecap: 'stroke-linecap',
     strokeLinejoin: 'stroke-linejoin',
     strokeMiterlimit: 'stroke-miterlimit',
