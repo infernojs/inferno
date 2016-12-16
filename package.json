@@ -164,7 +164,7 @@
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
-    "test": "npm run lint && npm run test:browser && npm run test:server && npm run test:bench",
+    "test": "npm run lint && npm run test:browser && npm run test:server",
     "pretest:bench": "karma start test/karma/karma.bench.conf.js",
     "test:bench": "node test/karma/bench.js",
     "test:browser": "karma start test/karma/karma.unit.conf.js",
