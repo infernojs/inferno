@@ -11,88 +11,11 @@ export const booleanProps = {};
 export const namespaces = {};
 export const isUnitlessNumber = {};
 export const skipProps = {};
-export const dehyphenProps = {
-	// SVG
-
-	// Regular attributes
-	accentHeight: 'accent-height',
-	arabicForm: 'arabic-form',
-	capHeight: 'cap-height',
-	fontFamily: 'font-family',
-	fontSize: 'font-size',
-	fontStretch: 'font-stretch',
-	fontStyle: 'font-style',
-	fontVariant: 'font-variant',
-	fontWeight: 'font-weight',
-	glyphName: 'glyph-name',
-	horizAdvX: 'horiz-adv-x',
-	horizOriginX: 'horiz-origin-x',
-	horizOriginY: 'horiz-origin-y',
-	overlinePosition: 'overline-position',
-	overlineThickness: 'overline-thickness',
-	panose1: 'panose-1',
-	renderingIntent: 'rendering-intent',
-	strikethroughPosition: 'strikethrough-position',
-	strikethroughThickness: 'strikethrough-thickness',
-	underlinePosition: 'underline-position',
-	underlineThickness: 'underline-thickness',
-	unicodeRange: 'unicode-range',
-	unitsPerEm: 'units-per-em',
-	vAlphabetic: 'v-alphabetic',
-	vHanging: 'v-hanging',
-	vIdeographic: 'v-ideographic',
-	vMathematical: 'v-mathematical',
-	vertAdvY: 'vert-adv-y',
-	vertOriginX: 'vert-origin-x',
-	vertOriginY: 'vert-origin-y',
-	xHeight: 'x-height',
-	// Presentation attributes
-	alignmentBaseline: 'alignment-baseline',
-	baselineShift: 'baseline-shift',
-	clipPath: 'clip-path',
-	clipRule: 'clip-rule',
-	colorInterpolationFilters: 'color-interpolation-filters',
-	colorInterpolation: 'color-interpolation',
-	colorProfile: 'color-profile',
-	colorRendering: 'color-rendering',
-	dominantBaseline: 'dominant-baseline',
-	enableBackground: 'enable-background',
-	fillOpacity: 'fill-opacity',
-	fillRule: 'fill-rule',
-	floodColor: 'flood-color',
-	floodOpacity: 'flood-opacity',
-	// many font-* are the same as in regular attributes
-	fontSizeAdjust: 'font-size-adjust',
-	glyphOrientationHorizontal: 'glyph-orientation-horizontal',
-	glyphOrientationVertical: 'glyph-orientation-vertical',
-	imageRendering: 'image-rendering',
-	letterSpacing: 'letter-spacing',
-	lightingColor: 'lighting-color',
-	markerEnd: 'marker-end',
-	markerMid: 'marker-mid',
-	markerStart: 'marker-start',
-	pointerEvents: 'pointer-events',
-	shapeRendering: 'shape-rendering',
-	stopColor: 'stop-color',
-	stopOpacity: 'stop-opacity',
-	strokeDasharray: 'stroke-dasharray',
-	strokeDashoffset: 'stroke-dashoffset',
-	strokeLinecap: 'stroke-linecap',
-	strokeLinejoin: 'stroke-linejoin',
-	strokeMiterlimit: 'stroke-miterlimit',
-	strokeOpacity: 'stroke-opacity',
-	strokeWidth: 'stroke-width',
-	textAnchor: 'text-anchor',
-	textDecoration: 'text-decoration',
-	textRendering: 'text-rendering',
-	unicodeBidi: 'unicode-bidi',
-	wordSpacing: 'word-spacing',
-	writingMode: 'writing-mode',
-
-	// HTML
-	httpEquiv: 'http-equiv',
-	acceptCharset: 'accept-charset'
-};
+export const dehyphenProps = {};
+export const probablyKebabProps = /^(accentH|arabicF|capH|font[FSVW]|glyph[NO]|horiz[AO]|panose1|renderingI|strikethrough[PT]|underline[PT]|v[AHIM]|vert[AO]|xH|alignmentB|baselineS|clip[PR]|color[IPR]|dominantB|enableB|fill[OR]|flood[COF]|imageR|letterS|lightingC|marker[EMS]|pointerE|shapeR|stop[CO]|stroke[DLMOW]|text[ADR]|unicodeB|wordS|writingM|httpE|acceptC).*/;
+export function kebabize(str, smallLetter, largeLetter) {
+	return `${smallLetter}-${largeLetter.toLowerCase()}`;
+}
 export const delegatedProps = {};
 
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);

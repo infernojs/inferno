@@ -28,7 +28,9 @@ import {
 	strictProps,
 	delegatedProps,
 	skipProps,
-	dehyphenProps
+	dehyphenProps,
+	probablyKebabProps,
+	kebabize
 } from './constants';
 import {
 	componentIdMap,
@@ -839,13 +841,21 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, lifec
 				}
 			}
 		} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
-			const dehyphenProp = dehyphenProps[prop];
+			let dehyphenProp;
+			if (dehyphenProps[prop]) {
+				dehyphenProp = dehyphenProps[prop];
+			} else if (prop.match(probablyKebabProps)) {
+				dehyphenProp = prop.replace(/([a-z])([A-Z]|1)/g, kebabize);
+				dehyphenProps[prop] = dehyphenProp;
+			} else {
+				dehyphenProp = prop;
+			}
 			const ns = namespaces[prop];
 
 			if (ns) {
-				dom.setAttributeNS(ns, dehyphenProp || prop, nextValue);
+				dom.setAttributeNS(ns, dehyphenProp, nextValue);
 			} else {
-				dom.setAttribute(dehyphenProp || prop, nextValue);
+				dom.setAttribute(dehyphenProp, nextValue);
 			}
 		}
 	}
