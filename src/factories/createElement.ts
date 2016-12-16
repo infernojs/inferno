@@ -1,4 +1,6 @@
 import {
+	Props,
+	InfernoChildren,
 	VNodeFlags,
 	VNode
 } from '../core/shapes';
@@ -21,7 +23,11 @@ const componentHooks = {
 	onComponentDidUpdate: true
 };
 
-export default function createElement(name: string | Function, props?: any, ..._children): VNode {
+export default function createElement<T>(
+	name: string | Function,
+	props?: T & Props,
+	..._children: InfernoChildren[]
+): VNode {
 	if (isInvalid(name) || isObject(name)) {
 		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
@@ -76,13 +82,13 @@ export default function createElement(name: string | Function, props?: any, ..._
 		flags = isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 		if (!isUndefined(children)) {
 			if (!props) {
-				props = {};
+				props = {} as T;
 			}
 			props.children = children;
 			children = null;
 		}
 		for (let prop in props) {
-			if (componentHooks[prop]) {
+			if (componentHooks[prop as string]) {
 				if (!ref) {
 					ref = {};
 				}

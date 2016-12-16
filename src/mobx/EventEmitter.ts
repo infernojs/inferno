@@ -1,8 +1,8 @@
 export default class EventEmitter {
 
-	private listeners: any = [];
+	private listeners: Function[] = [];
 
-	public on(cb: any) {
+	public on(cb: Function) {
 		this.listeners.push(cb);
 		return () => {
 			const index = this.listeners.indexOf(cb);

@@ -95,7 +95,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 
 		if (!isInvalid(input)) {
 			if ((input as VNode).dom) {
-				input = cloneVNode(input);
+				input = cloneVNode(input as VNode);
 			}
 			if (!hydrateRoot(input, parentDom, lifecycle)) {
 				mount(input, parentDom, lifecycle, {}, false);
@@ -112,7 +112,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 			removeRoot(root);
 		} else {
 			if ((input as VNode).dom) {
-				input = cloneVNode(input);
+				input = cloneVNode(input as VNode);
 			}
 			patch(root.input, input, parentDom, lifecycle, {}, false, false);
 		}
