@@ -7,12 +7,12 @@ import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
 import commonjs from 'rollup-plugin-commonjs';
-import { withNodeResolve, relativeModules, getPackageJSON, outputFileSize } from './rollup.helpers';
+import { withNodeResolve, relativeModules, updatePackageVersion, outputFileSize } from './rollup.helpers';
 import bundles from './rollup.bundles';
 import { aliases } from './aliases';
 
-const pkg = JSON.parse(fs.readFileSync('./package.json'));
-const dependencies = Object.keys(pkg.peerDependencies || {});
+const infernoPackage = JSON.parse(fs.readFileSync('./package.json'));
+const dependencies = Object.keys(infernoPackage.peerDependencies || {});
 
 let plugins = [
 	buble({
@@ -64,7 +64,7 @@ if (process.env.NODE_ENV === 'production') {
 plugins.push(filesize());
 
 function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, path) {
-	const pack = getPackageJSON(moduleName, pkg);
+	const pack = updatePackageVersion(moduleName, infernoPackage);
 	const copyright =
 		'/*!\n' +
 		' * ' + moduleName + ' v' + pack.version + '\n' +

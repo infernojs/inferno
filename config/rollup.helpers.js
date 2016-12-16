@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import { aliases } from './aliases';
 
@@ -25,11 +27,27 @@ export class Bundles {
 	}
 }
 
+const packagePath = (moduleName) => path.join(__dirname, '..', 'packages', moduleName, 'package.json');
+
 export function getPackageJSON(moduleName, defaultPackage) {
 	try {
-		return require('../packages/' + moduleName + '/package.json');
+		return require(packagePath(moduleName));
 	} catch (e) {
 		return defaultPackage;
+	}
+}
+
+export function updatePackageVersion(moduleName, defaultPackage) {
+	try {
+		const modulePackage = require(packagePath(moduleName));
+		modulePackage.version = defaultPackage.version;
+		fs.writeFileSync(packagePath(moduleName), JSON.stringify(modulePackage, null, 2), 'utf8');
+	} catch (e) {
+		console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+		console.log(e);
+		console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+	} finally {
+		return getPackageJSON(moduleName, defaultPackage);
 	}
 }
 
