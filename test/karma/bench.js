@@ -14,8 +14,15 @@ function loadResult(file, cb) {
 function calculateResult(testName, resultOps, baselineOps) {
   const testFailure = (baselineOps <= resultOps) || Math.abs(baselineOps - resultOps) <= baselineOps * 0.1;
   const testResultMessage = testFailure ? 'PASSED' : 'FAILED';
-  console.log(testResultMessage, ': ', testName, 'performs', resultOps, ' operations/s. Baseline: ', baselineOps, ' operations/s');
-  return testFailure;
+
+  const message = testResultMessage + ': ' + testName + 'performs' + resultOps + ' operations/s. Baseline: ' + baselineOps + ' operations/s';
+
+  if (!testFailure) {
+    console.log(message);
+
+  }
+
+  throw new Error(message);
 }
 
 loadResult('baseline.json', (baselineErr, baseline) => {
@@ -53,6 +60,10 @@ loadResult('baseline.json', (baselineErr, baseline) => {
       if (!result) {
         failed = true;
       }
+    }
+
+    if (failed) {
+      
     }
 
     process.exit(0);
