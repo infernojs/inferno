@@ -28,8 +28,8 @@ export class Bundles {
 export function getPackageJSON(moduleName, defaultPackage) {
 	try {
 		return require('../packages/' + moduleName + '/package.json');
-	} catch(e) {
-		return defaultPackage
+	} catch (e) {
+		return defaultPackage;
 	}
 }
 
@@ -37,7 +37,7 @@ export function withNodeResolve(arr, resolveConfig) {
 	const newArray = Array.from(arr);
 	const index = newArray.findIndex(plugin => plugin.name === 'buble');
 	newArray.splice(index + 1, 0, nodeResolve(resolveConfig));
-	return newArray
+	return newArray;
 }
 
 // Try to reduce bundle size by reusing installed module
@@ -57,5 +57,5 @@ export function relativeModules() {
 					return source;
 			}
 		}
-	}
+	};
 }

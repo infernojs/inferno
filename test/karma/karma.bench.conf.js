@@ -14,14 +14,14 @@ module.exports = function (config) {
 			'src/**/__benchmarks__/**/*.jsx'
 		],
 		frameworks: [
-      'benchmark'
-    ],
-    reporters: [
+			'benchmark'
+		],
+		reporters: [
 			'benchmark',
 			'json-result'
-    ],
+		],
 		jsonResultReporter: {
-			outputFile: path.join(__dirname, '..', "data/result.json"),
-    }
+			outputFile: path.join(__dirname, '..', 'data/result.json')
+		}
 	});
 };

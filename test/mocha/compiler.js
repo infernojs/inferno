@@ -32,10 +32,10 @@ const babelOptions = {
 	compact: false,
 	presets: [],
 	plugins: [
-		"transform-es2015-modules-commonjs",
-		"babel-plugin-inferno",
-		["module-resolver", {
-			"alias": virtuals.compilerAliases
+		'transform-es2015-modules-commonjs',
+		'babel-plugin-inferno',
+		[ 'module-resolver', {
+			alias: virtuals.compilerAliases
 		}]
 	]
 };
@@ -47,12 +47,14 @@ function registerExtension(ext) {
 
 	const old = require.extensions[ext];
 	if (!old) {
-		throw new Error('ts-node/register or equivalent compiler must be used before this compiler.')
+		throw new Error('ts-node/register or equivalent compiler must be used before this compiler.');
 	}
 
 	require.extensions[ext] = function (m, filename) {
 
-		if (nodeModulesPattern.test(filename)) return old(m, filename);
+		if (nodeModulesPattern.test(filename)) {
+			return old(m, filename);
+		}
 		let _compile = m._compile;
 		m._compile = function (code, fileName) {
 			let compiled;

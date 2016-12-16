@@ -181,7 +181,7 @@ function normalizeElement(type: string, vNode: VNode) {
 	}
 }
 
-export function normalize(vNode: VNode): void {{
+export function normalize(vNode: VNode): void {
 	const props = vNode.props;
 	const type = vNode.type;
 	let children = vNode.children;

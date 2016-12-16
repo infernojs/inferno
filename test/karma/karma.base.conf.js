@@ -1,34 +1,34 @@
 const path = require('path');
 
-module.exports = function(config) {
-  config.set({
+module.exports = function (config) {
+	config.set({
 		basePath: path.join(__dirname, '..', '..'),
-    browsers: [
+		browsers: [
 			'Chrome'
 		],
 		preprocessors: {
 			'src/**/*': ['webpack']
 		},
-    webpack: {
+		webpack: {
 			module: {
 				loaders: [
 					{
 						test: /\.tsx?$/,
-						loaders: ['babel-loader', 'ts-loader'],
-						exclude: /node_modules/,
+						loaders: [ 'babel-loader', 'ts-loader' ],
+						exclude: /node_modules/
 					}, {
 						test: /\.jsx?$/,
 						loader: 'babel-loader',
-						exclude: /node_modules/,
-					},
-				],
+						exclude: /node_modules/
+					}
+				]
 			},
 			resolve: {
-				extensions: ['.js', '.jsx', '.ts', '.tsx'],
-			},
+				extensions: [ '.js', '.jsx', '.ts', '.tsx' ]
+			}
 		},
 		webpackMiddleware: {
-			noInfo: true,
+			noInfo: true
 		},
 
 		concurrency: 1,
@@ -53,7 +53,7 @@ module.exports = function(config) {
 			browsers: [
 				'Firefox',
 				'Chrome_travis_ci'
-			],
+			]
 		});
 	}
-}
+};

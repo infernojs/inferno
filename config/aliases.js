@@ -16,7 +16,7 @@ function findAliases() {
 
 	return _.reduce(babelrc.plugins, (result, plugin) => {
 		if (Array.isArray(plugin) && plugin[1] && plugin[1].alias) {
-			result = plugin[1].alias
+			result = plugin[1].alias;
 		}
 		return result;
 	}, {});
