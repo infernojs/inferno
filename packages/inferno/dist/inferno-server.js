@@ -1,5 +1,5 @@
 /*!
- * inferno-server v1.0.0-beta34
+ * inferno-server v1.0.0-beta35
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -13,7 +13,7 @@ var ecapeCharacters = {
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
-    "'": '&#39;',
+    "'": '&#039;',
     '&': '&amp;'
 };
 var escapeChar = function (char) { return ecapeCharacters[char] || char; };

@@ -19,7 +19,7 @@ export function sortAttributes(html: string): string {
 	});
 }
 
-export function innerHTML(HTML) {
+export function innerHTML(HTML: string): string {
 	comparer.innerHTML = HTML;
 	return sortAttributes(comparer.innerHTML);
 }
@@ -32,7 +32,7 @@ export function createStyler(CSS: string): string {
 	return comparer.style.cssText;
 }
 
-export function style(CSS: string[] | string): any {
+export function style(CSS: string[] | string): string[] | string {
 	if (CSS instanceof Array) {
 		return CSS.map(createStyler);
 	} else {
@@ -40,14 +40,14 @@ export function style(CSS: string[] | string): any {
 	}
 }
 
-export function createContainerWithHTML(html) {
+export function createContainerWithHTML(html: string): HTMLDivElement {
 	const container = document.createElement('div');
 
 	container.innerHTML = html;
 	return container;
 }
 
-export function validateNodeTree(node): boolean {
+export function validateNodeTree(node: any): boolean {
 	if (!node) {
 		return true;
 	}
@@ -82,11 +82,11 @@ export function validateNodeTree(node): boolean {
 	return true;
 }
 
-export function waits(timer, done) {
+export function waits(timer: number, done: Function) {
 	setTimeout(done, timer);
 }
 
-export function triggerEvent(name, element) {
+export function triggerEvent(name: string, element: any) {
 	let eventType;
 
 	if (name === 'click' || name === 'dblclick' || name === 'mousedown' || name === 'mouseup') {

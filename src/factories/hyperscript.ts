@@ -1,4 +1,5 @@
 import {
+	InfernoChildren,
 	VNode,
 	VNodeFlags
 } from '../core/shapes';
@@ -14,7 +15,7 @@ import {
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;
 
-function parseTag(tag, props) {
+function parseTag(tag: string | null, props: any): string {
 	if (!tag) {
 		return 'div';
 	}
@@ -53,14 +54,14 @@ function parseTag(tag, props) {
 	return tagName ? tagName.toLowerCase() : 'div';
 }
 
-function isChildren(x) {
+function isChildren(x: any): boolean {
 	return isStringOrNumber(x) || (x && isArray(x));
 }
 
-function extractProps(_props, _tag) {
+function extractProps(_props: any, _tag: string | VNode): any {
 	_props = _props || {};
 	const isComponent = !isString(_tag);
-	const tag = !isComponent ? parseTag(_tag, _props) : _tag;
+	const tag = !isComponent ? parseTag(_tag as string, _props) : _tag;
 	const props = {};
 	let key = null;
 	let ref = null;
@@ -93,7 +94,7 @@ function extractProps(_props, _tag) {
 	return { tag, props, key, ref, children, events };
 }
 
-export default function hyperscript(_tag, _props?, _children?, _childrenType?): VNode {
+export default function hyperscript(_tag: string | VNode, _props?: any, _children?: InfernoChildren): VNode {
 	// If a child array or text node are passed as the second argument, shift them
 	if (!_children && isChildren(_props)) {
 		_children = _props;
