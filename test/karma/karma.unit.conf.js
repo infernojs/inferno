@@ -2,11 +2,12 @@
 /* tslint:disable */
 
 const path = require('path');
+const base = require('./karma.base.conf');
 
 module.exports = function (config) {
+	base(config);
+	
 	config.set({
-		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: path.join(__dirname, '../..'),
 		frameworks: [
 			'chai',
 			'mocha',
@@ -21,49 +22,11 @@ module.exports = function (config) {
 			'./src/**/__tests__/**/*.js',
 			'./src/**/__tests__/**/*.jsx'
 		],
-		
-		browsers: [
-			// 'Firefox',
-			// 'Safari',
-			'Chrome'
-		],
 		reporters: [
 			'progress'
-		],
-		
-		preprocessors: {
-			'./src/**/__tests__/**/*': ['webpack']
-		},
-		webpack: {
-			module: {
-				loaders: [
-					{
-						test: /\.tsx?$/,
-						loaders: ['babel-loader', 'ts-loader'],
-						exclude: /node_modules/,
-					}, {
-						test: /\.jsx?$/,
-						loader: 'babel-loader',
-						exclude: /node_modules/,
-					},
-				],
-			},
-			resolve: {
-				extensions: ['.js', '.jsx', '.ts', '.tsx'],
-			},
-		},
-		webpackMiddleware: {
-			noInfo: true,
-		},
-
-		concurrency: 1,
-		browserDisconnectTimeout: 10000,
-		browserDisconnectTolerance: 2,
-		captureTimeout: 2 * 60 * 10000,
-		browserNoActivityTimeout: 2 * 60 * 1000,
-		autoWatch: false,
-		singleRun: true
+		]
 	});
+		
 
 	const {
 		CI,
@@ -78,28 +41,9 @@ module.exports = function (config) {
 	const masterBranch = String(TRAVIS_BRANCH).match(/^master$/gi);
 	const sauce = ci && !pullRequest && masterBranch
 
-	if (ci) {
-		const travisLaunchers = {
-			Chrome_travis_ci: {
-				base: 'Chrome',
-				flags: ['--no-sandbox']
-			}
-		};
-		config.set({
-			customLaunchers: travisLaunchers,
-			reporters: [
-				'failed',
-			],
-			browsers: [
-				'Firefox',
-				'Chrome_travis_ci'
-			],
-		});
-	}
-
 	const varToBool = (sVar) => !!String(sVar).match('true')
 	if (sauce) {
-		const sauceLaunchers = require('./karma/sauce');
+		const sauceLaunchers = require('./sauce');
 		config.set({
 			sauceLabs: {
 				testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,

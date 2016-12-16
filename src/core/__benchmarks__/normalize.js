@@ -1,17 +1,18 @@
-import benchmark from 'benchmark';
-import { normalize } from 'inferno';
+import { normalize } from '../shapes';
 
-suite('Normalize', () => {
-  benchmark('Normalize', () => {
-    normalize({
-      children: null,
-      dom: null,
-      events: null,
-      flags: 1 << 12,
-      key: null,
-      props: null,
-      ref: null,
-      type: 'Text'
-    })
+suite('normalize benchmark', () => {
+  const vNode = {
+    children: null,
+    dom: null,
+    events: null,
+    flags: 0,
+    key: null,
+    props: null,
+    ref: null,
+    type: null
+  };
+  
+  benchmark('normalize should be quick', () => {
+    normalize(vNode);
   });
-}); 
+});

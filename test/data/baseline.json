@@ -1,0 +1,8 @@
+{
+    "normalize benchmark: normalize should be quick": {
+        "log": [],
+        "time": 0.00001833630236939484,
+        "status": "PASSED",
+        "noExpectationsWarning": false
+    }
+}
