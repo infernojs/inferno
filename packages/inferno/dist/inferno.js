@@ -2149,7 +2149,7 @@ function normaliseChildNodes(dom) {
 }
 function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
     var type = vNode.type;
-    var props = vNode.props || inferno.EMPTY_OBJ;
+    var props = vNode.props || EMPTY_OBJ$1;
     var ref = vNode.ref;
     vNode.dom = dom;
     if (isClass) {
