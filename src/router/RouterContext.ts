@@ -25,7 +25,10 @@ export default class RouterContext extends Component<IRouterProps, any> {
 		};
 	}
 
-	render({ routes, location }) {
+	render({ routes, matched, location }) {
+		if (matched) {
+			return matched;
+		}
 		const route = match(routes, location);
 		return route.matched;
 	}
