@@ -1,6 +1,5 @@
 import {
-	createVNode,
-	normalize
+	createVNode
 } from '../../src/core/shapes';
 import cloneVNode from '../../src/factories/cloneVNode';
 import {
@@ -26,7 +25,6 @@ export {
 	EMPTY_OBJ,
 	NO_OP,
 	linkEvent,
-	normalize,
 	enableFindDOMNode,
 	findDOMNode,
 	disableRecycling
@@ -40,7 +38,6 @@ export default {
 	EMPTY_OBJ,
 	NO_OP,
 	linkEvent,
-	normalize,
 	enableFindDOMNode,
 	findDOMNode,
 	disableRecycling
