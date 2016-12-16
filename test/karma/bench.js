@@ -2,51 +2,59 @@ const fs = require('fs');
 const path = require('path');
 Object.entries = Object.entries || require('object.entries');
 
-let testOutput;
-try {
-  testOutput = require('./data/result.json');
-} catch (e) {
-  process.exit(1);
+function loadResult(file, cb) {
+  try {
+    const result = require(path.join(__dirname, '../data/', file));
+    cb(null, result);
+  } catch (e) {
+    cb(e, null);
+  }
 }
 
-let baseline;
-try {
-  baseline = require('./data/baseline.json');
-} catch (e) {
-  if (!!baseline) {
-    const newbaselines = JSON.stringify(baseline);
-    fs.writeFile( path.join(__dirname, 'data/baseline.json'), newbaselines, (err) => {
-      if (err) {
-        process.exit(1);
+function calculateResult(testName, resultOps, baselineOps) {
+  const testFailure = (baselineOps <= resultOps) || Math.abs(baselineOps - resultOps) <= baselineOps * 0.1;
+  const testResultMessage = testFailure ? 'PASSED' : 'FAILED';
+  console.log(testResultMessage, ': ', testName, 'performs', resultOps, ' operations/s. Baseline: ', baselineOps, ' operations/s');
+  return testFailure;
+}
+
+loadResult('baseline.json', (baselineErr, baseline) => {
+  loadResult('result.json', (testResultErr, testResult) => {
+    if ((!testResult || testResultErr) && baselineErr) {
+      throw new Error(baselineErr);
+    }
+
+    if ((!baseline || baselineErr) && testResult) {
+      const newbaselines = JSON.stringify(baseline);
+      fs.writeFile( path.join(__dirname, 'data/baseline.json'), newbaselines, (err) => {
+        if (err) {
+          throw new Error(err);
+        }
+        console.log('New baseline written');
+        process.exit(0);
+      });
+    }
+
+    const baselineTests = Object.entries(baseline);
+    if (baselineTests.length !== Object.keys(testResult).length) {
+      throw new Error('Inconsistent number of tests, please regenerate baseline');
+    }
+
+    let failed = false;
+    if (failed) {
+      process.exit(1);
+    }
+
+    for (let i = 0; i < baselineTests.length; i += 1) {
+      const [ testName, baselineResult ] = baselineTests[i];
+      const resultMeta = testResult[ testName ];
+      const result = calculateResult( testName, parseInt( 1 / resultMeta.time , 10), parseInt( 1 / baselineResult.time , 10))
+      
+      if (!result) {
+        failed = true;
       }
-      process.exit(0);
-    });
-  }
+    }
 
-  process.exit(1);
-}
-
-const baselineTests = Object.entries(baseline);
-if (baselineTests.length !== Object.keys(testOutput).length) {
-  process.exit(1);
-}
-
-let failed = false;
-for (let i = 0; i < baselineTests.length; i += 1) {
-  const [ testName, baselineResult ] = baselineTests[i];
-  const testResult = testOutput[ testName ];
-  const testResultOps = parseInt( 1 / testResult.time, 10 );
-  const baselineResultOps = parseInt( 1 / baselineResult.time, 10 );
-  const testResultStatus = (baselineResultOps <= testResultOps) || Math.abs(baselineResultOps - testResultOps) <= baselineResultOps * 0.1;
-  if ( !testResultStatus ) {
-    failed = true;
-  }
-  const testResultMessage = testResultStatus ? "PASSED" : "FAILED";
-  console.log(testResultMessage, ': ', testName, 'performs', testResultOps, ' operations/s. Baseline: ', baselineResultOps, ' operations/s');
-}
-
-if (failed) {
-  process.exit(1);
-}
-
-process.exit(0);
+    process.exit(0);
+  });
+});
