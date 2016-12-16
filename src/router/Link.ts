@@ -10,7 +10,7 @@ interface ILinkProps {
 }
 
 export default function Link(props, { router }) {
-	const { activeClassName, activeStyle, className, to } = props;
+	const { activeClassName, activeStyle, className, onClick, to } = props;
 	const elemProps: ILinkProps = {
 		href: to
 	};
@@ -33,6 +33,9 @@ export default function Link(props, { router }) {
 			return;
 		}
 		e.preventDefault();
+		if (typeof onClick === 'function') {
+			onClick();
+		}
 		router.push(to, e.target.textContent);
 	};
 
