@@ -13,14 +13,13 @@ module.exports = function (config) {
 			'mocha',
 		],
 		files: [
-			'./node_modules/es5-shim/es5-shim.js',
-			'./node_modules/es6-shim/es6-shim.js',
-			'./node_modules/babel-polyfill/dist/polyfill.js',
-			'./node_modules/sinon/pkg/sinon.js',
-			'./src/**/__tests__/**/*.ts',
-			'./src/**/__tests__/**/*.tsx',
-			'./src/**/__tests__/**/*.js',
-			'./src/**/__tests__/**/*.jsx'
+			'node_modules/es5-shim/es5-shim.js',
+			'node_modules/es6-shim/es6-shim.js',
+			'node_modules/babel-polyfill/dist/polyfill.js',
+			'node_modules/sinon/pkg/sinon.js',
+			'src/**/__tests__/**/*.ts',
+			'src/**/__tests__/**/*.tsx',
+			'src/**/__tests__/**/*.jsx'
 		],
 		reporters: [
 			'progress'
@@ -48,7 +47,7 @@ module.exports = function (config) {
 			sauceLabs: {
 				testName: 'Inferno Browser Karma Tests: ' + TRAVIS_JOB_NUMBER,
 				build: (TRAVIS_JOB_NUMBER || 'Local'),
-				tags: [ ( TRAVIS_BRANCH || 'dev' ) ]
+				tags: [ ( TRAVIS_BRANCH || 'master' ) ]
 			},
 			customLaunchers: sauceLaunchers.launchers,
 			browsers: sauceLaunchers.browsers,
@@ -56,6 +55,6 @@ module.exports = function (config) {
 				'failed',
 				'saucelabs'
 			]
-		})
+		});
 	}
 };
