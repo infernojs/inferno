@@ -1,4 +1,7 @@
 import {
+	Props,
+	InfernoChildren,
+	VNode,
 	VNodeFlags,
 	createVNode,
 	isVNode,
@@ -11,7 +14,7 @@ import {
 	isInvalid
 } from '../shared';
 
-export default function cloneVNode(vNodeToClone, props?, ..._children) {
+export default function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: InfernoChildren[]): VNode {
 	let children: any = _children;
 
 	if (_children.length > 0 && !isNull(_children[0])) {
@@ -22,20 +25,20 @@ export default function cloneVNode(vNodeToClone, props?, ..._children) {
 			children = _children[0];
 		}
 		if (isUndefined(props.children)) {
-			props.children = children;
+			props.children = children as VNode;
 		} else {
 			if (isArray(children)) {
 				if (isArray(props.children)) {
 					props.children = props.children.concat(children);
 				} else {
-					props.children = [props.children].concat(children);
+					props.children = [props.children].concat(children) as any;
 				}
 			} else {
 				if (isArray(props.children)) {
 					props.children.push(children);
 				} else {
-					props.children = [props.children];
-					props.children.push(children);
+					props.children = [props.children] as any;
+					(props.children as any[]).push(children);
 				}
 			}
 		}
