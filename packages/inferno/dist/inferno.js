@@ -1,13 +1,13 @@
 /*!
- * inferno v1.0.0-beta34
+ * inferno v1.0.0-beta35
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('./inferno')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'inferno'], factory) :
-	(factory((global.Inferno = global.Inferno || {}),global.inferno));
-}(this, (function (exports,inferno) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.Inferno = global.Inferno || {})));
+}(this, (function (exports) { 'use strict';
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
@@ -63,7 +63,7 @@ function warning(condition, message) {
         console.error(message);
     }
 }
-var EMPTY_OBJ$1 = {};
+var EMPTY_OBJ = {};
 
 function cloneVNode(vNodeToClone, props) {
     var _children = [], len = arguments.length - 2;
@@ -490,7 +490,7 @@ function isControlled(props) {
 }
 function onTextInputChange(e) {
     var vNode = this.vNode;
-    var events = vNode.events || EMPTY_OBJ$1;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
     if (events.onInput) {
         var event = events.onInput;
@@ -510,7 +510,7 @@ function onTextInputChange(e) {
 }
 function wrappedOnChange(e) {
     var vNode = this.vNode;
-    var events = vNode.events || EMPTY_OBJ$1;
+    var events = vNode.events || EMPTY_OBJ;
     var event = events.onChange;
     if (event.event) {
         event.event(event.data, e);
@@ -521,7 +521,7 @@ function wrappedOnChange(e) {
 }
 function onCheckboxChange(e) {
     var vNode = this.vNode;
-    var events = vNode.events || EMPTY_OBJ$1;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
     if (events.onClick) {
         var event = events.onClick;
@@ -552,7 +552,7 @@ function handleAssociatedRadioInputs(name) {
     });
 }
 function processInput(vNode, dom) {
-    var props = vNode.props || EMPTY_OBJ$1;
+    var props = vNode.props || EMPTY_OBJ;
     applyValue(vNode, dom);
     if (isControlled(props)) {
         var inputWrapper = wrappers.get(dom);
@@ -578,7 +578,7 @@ function processInput(vNode, dom) {
     }
 }
 function applyValue(vNode, dom) {
-    var props = vNode.props || EMPTY_OBJ$1;
+    var props = vNode.props || EMPTY_OBJ;
     var type = props.type;
     var value = props.value;
     var checked = props.checked;
@@ -612,7 +612,7 @@ function isControlled$1(props) {
     return !isNullOrUndef(props.value);
 }
 function updateChildOption(vNode, value) {
-    var props = vNode.props || EMPTY_OBJ$1;
+    var props = vNode.props || EMPTY_OBJ;
     var dom = vNode.dom;
     // we do this as multiple may have changed
     dom.value = props.value;
@@ -625,7 +625,7 @@ function updateChildOption(vNode, value) {
 }
 function onSelectChange(e) {
     var vNode = this.vNode;
-    var events = vNode.events || EMPTY_OBJ$1;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
     if (events.onChange) {
         var event = events.onChange;
@@ -644,7 +644,7 @@ function onSelectChange(e) {
     applyValue$1(this.vNode, dom);
 }
 function processSelect(vNode, dom) {
-    var props = vNode.props || EMPTY_OBJ$1;
+    var props = vNode.props || EMPTY_OBJ;
     applyValue$1(vNode, dom);
     if (isControlled$1(props)) {
         var selectWrapper = wrappers.get(dom);
@@ -660,7 +660,7 @@ function processSelect(vNode, dom) {
     }
 }
 function applyValue$1(vNode, dom) {
-    var props = vNode.props || EMPTY_OBJ$1;
+    var props = vNode.props || EMPTY_OBJ;
     if (props.multiple !== dom.multiple) {
         dom.multiple = props.multiple;
     }
@@ -681,7 +681,7 @@ function isControlled$2(props) {
 }
 function onTextareaInputChange(e) {
     var vNode = this.vNode;
-    var events = vNode.events || EMPTY_OBJ$1;
+    var events = vNode.events || EMPTY_OBJ;
     var dom = vNode.dom;
     if (events.onInput) {
         var event = events.onInput;
@@ -700,7 +700,7 @@ function onTextareaInputChange(e) {
     applyValue$2(this.vNode, dom);
 }
 function processTextarea(vNode, dom) {
-    var props = vNode.props || EMPTY_OBJ$1;
+    var props = vNode.props || EMPTY_OBJ;
     applyValue$2(vNode, dom);
     var textareaWrapper = wrappers.get(dom);
     if (isControlled$2(props)) {
@@ -716,7 +716,7 @@ function processTextarea(vNode, dom) {
     }
 }
 function applyValue$2(vNode, dom) {
-    var props = vNode.props || EMPTY_OBJ$1;
+    var props = vNode.props || EMPTY_OBJ;
     var value = props.value;
     if (dom.value !== value) {
         dom.value = value;
@@ -1024,7 +1024,7 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
 function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass, isRecycling) {
     var lastType = lastVNode.type;
     var nextType = nextVNode.type;
-    var nextProps = nextVNode.props || EMPTY_OBJ$1;
+    var nextProps = nextVNode.props || EMPTY_OBJ;
     var lastKey = lastVNode.key;
     var nextKey = nextVNode.key;
     var defaultProps = nextType.defaultProps;
@@ -1558,15 +1558,15 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
     }
 }
 function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
-    lastEvents = lastEvents || EMPTY_OBJ$1;
-    nextEvents = nextEvents || EMPTY_OBJ$1;
-    if (nextEvents !== EMPTY_OBJ$1) {
+    lastEvents = lastEvents || EMPTY_OBJ;
+    nextEvents = nextEvents || EMPTY_OBJ;
+    if (nextEvents !== EMPTY_OBJ) {
         for (var name in nextEvents) {
             // do not add a hasOwnProperty check here, it affects performance
             patchEvent(name, lastEvents[name], nextEvents[name], dom, lifecycle);
         }
     }
-    if (lastEvents !== EMPTY_OBJ$1) {
+    if (lastEvents !== EMPTY_OBJ) {
         for (var name$1 in lastEvents) {
             // do not add a hasOwnProperty check here, it affects performance
             if (isNullOrUndef(nextEvents[name$1])) {
@@ -1599,9 +1599,9 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
     }
 }
 function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
-    lastProps = lastProps || EMPTY_OBJ$1;
-    nextProps = nextProps || EMPTY_OBJ$1;
-    if (nextProps !== EMPTY_OBJ$1) {
+    lastProps = lastProps || EMPTY_OBJ;
+    nextProps = nextProps || EMPTY_OBJ;
+    if (nextProps !== EMPTY_OBJ) {
         for (var prop in nextProps) {
             // do not add a hasOwnProperty check here, it affects performance
             var nextValue = nextProps[prop];
@@ -1614,7 +1614,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
             }
         }
     }
-    if (lastProps !== EMPTY_OBJ$1) {
+    if (lastProps !== EMPTY_OBJ) {
         for (var prop$1 in lastProps) {
             // do not add a hasOwnProperty check here, it affects performance
             if (isNullOrUndef(nextProps[prop$1])) {
@@ -1880,7 +1880,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
         }
     }
     var type = vNode.type;
-    var props = vNode.props || inferno.EMPTY_OBJ;
+    var props = vNode.props || EMPTY_OBJ;
     var defaultProps = type.defaultProps;
     var ref = vNode.ref;
     var dom;
@@ -1973,7 +1973,7 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
     }
     var instance = new Component(props, context);
     instance.context = context;
-    if (instance.props === EMPTY_OBJ$1) {
+    if (instance.props === EMPTY_OBJ) {
         instance.props = props;
     }
     instance._patch = patch;
@@ -2149,7 +2149,7 @@ function normaliseChildNodes(dom) {
 }
 function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
     var type = vNode.type;
-    var props = vNode.props || EMPTY_OBJ$1;
+    var props = vNode.props || EMPTY_OBJ;
     var ref = vNode.ref;
     vNode.dom = dom;
     if (isClass) {
@@ -2389,7 +2389,7 @@ if (isBrowser) {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-	Object.freeze(EMPTY_OBJ$1);
+	Object.freeze(EMPTY_OBJ);
 	var testFunc = function testFn() {};
 	warning(
 		(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
@@ -2411,7 +2411,7 @@ var index = {
 
 	// used to shared common items between Inferno libs
 	NO_OP: NO_OP,
-	EMPTY_OBJ: EMPTY_OBJ$1,
+	EMPTY_OBJ: EMPTY_OBJ,
 
 	//DOM
 	render: render,
@@ -2426,7 +2426,7 @@ exports.linkEvent = linkEvent;
 exports.createVNode = createVNode;
 exports.cloneVNode = cloneVNode;
 exports.NO_OP = NO_OP;
-exports.EMPTY_OBJ = EMPTY_OBJ$1;
+exports.EMPTY_OBJ = EMPTY_OBJ;
 exports.render = render;
 exports.findDOMNode = findDOMNode;
 exports.createRenderer = createRenderer;

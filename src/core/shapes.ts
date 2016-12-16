@@ -45,15 +45,28 @@ export const enum VNodeFlags {
 	Component = ComponentFunction | ComponentClass | ComponentUnknown
 }
 
+export type Key = string | number | null;
+export type Ref = Function | null;
+export type InfernoChildren = string | number | VNode | Array<string | VNode> | null;
+export type Type = string | Function | null;
+
+export interface Props {
+	children?: InfernoChildren;
+	ref?: Ref;
+	key?: Key;
+	events?: Object | null;
+}
+
 export interface VNode {
-	children: string | Array<string | VNode> | VNode | null;
+	children: InfernoChildren;
 	dom: Node | null;
 	events: Object | null;
 	flags: VNodeFlags;
-	key: string | number | null;
-	props: Object | null;
-	ref: Function | null;
-	type: string | Function | null;
+	key: Key;
+	props: Props | null;
+	ref: Ref;
+	type: Type;
+	parentVNode?: VNode;
 }
 
 function _normalizeVNodes(nodes: any[], result: VNode[], i: number): void {
@@ -75,7 +88,7 @@ function _normalizeVNodes(nodes: any[], result: VNode[], i: number): void {
 	}
 }
 
-function applyKeyIfMissing(index, vNode) {
+function applyKeyIfMissing(index: number, vNode: VNode): VNode {
 	if (isNull(vNode.key)) {
 		vNode.key = `.${ index }`;
 	}
@@ -89,7 +102,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	// if it comes back again, we need to clone it, as people are using it
 	// in an immutable way
 	// tslint:disable
-	if (nodes['$']) { 
+	if (nodes['$']) {
 		nodes = nodes.slice();
 	} else {
 		nodes['$'] = true;
@@ -120,16 +133,16 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	return newNodes || nodes as VNode[];
 }
 
-function normalizeChildren(children) {
+function normalizeChildren(children: InfernoChildren | null) {
 	if (isArray(children)) {
 		return normalizeVNodes(children);
-	} else if (isVNode(children) && children.dom) {
-		return cloneVNode(children);
+	} else if (isVNode(children as VNode) && (children as VNode).dom) {
+		return cloneVNode(children as VNode);
 	}
 	return children;
 }
 
-function normalizeProps(vNode, props, children) {
+function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
 	if (!(vNode.flags & VNodeFlags.Component) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
 		vNode.children = props.children;
 	}
@@ -144,7 +157,7 @@ function normalizeProps(vNode, props, children) {
 	}
 }
 
-export function copyPropsTo(copyFrom, copyTo) {
+export function copyPropsTo(copyFrom: Props, copyTo: Props) {
 	for (let prop in copyFrom) {
 		if (isUndefined(copyTo[prop])) {
 			copyTo[prop] = copyFrom[prop];
@@ -152,7 +165,7 @@ export function copyPropsTo(copyFrom, copyTo) {
 	}
 }
 
-function normalizeElement(type, vNode) {
+function normalizeElement(type: string, vNode: VNode) {
 	if (type === 'svg') {
 		vNode.flags = VNodeFlags.SvgElement;
 	} else if (type === 'input') {
@@ -168,14 +181,14 @@ function normalizeElement(type, vNode) {
 	}
 }
 
-function normalize(vNode) {
+function normalize(vNode: VNode) {
 	const props = vNode.props;
 	const type = vNode.type;
 	let children = vNode.children;
 
 	// convert a wrongly created type back to element
 	if (isString(type) && (vNode.flags & VNodeFlags.Component)) {
-		normalizeElement(type, vNode);
+		normalizeElement(type as string, vNode);
 		if (props.children) {
 			vNode.children = props.children;
 			children = props.children;
@@ -192,7 +205,16 @@ function normalize(vNode) {
 	}
 }
 
-export function createVNode(flags, type?, props?, children?, events?, key?, ref?, noNormalise?: boolean): VNode {
+export function createVNode(
+	flags: VNodeFlags,
+	type?,
+	props?: Props,
+	children?: InfernoChildren,
+	events?,
+	key?: Key,
+	ref?: Ref,
+	noNormalise?: boolean
+): VNode {
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
@@ -212,14 +234,14 @@ export function createVNode(flags, type?, props?, children?, events?, key?, ref?
 	return vNode;
 }
 
-export function createVoidVNode() {
+export function createVoidVNode(): VNode {
 	return createVNode(VNodeFlags.Void);
 }
 
-export function createTextVNode(text) {
+export function createTextVNode(text: string | number): VNode {
 	return createVNode(VNodeFlags.Text, null, null, text);
 }
 
-export function isVNode(o: VType): boolean {
+export function isVNode(o: VNode): boolean {
 	return !!o.flags;
 }

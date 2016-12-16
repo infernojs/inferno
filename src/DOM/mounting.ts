@@ -1,4 +1,3 @@
-import { EMPTY_OBJ } from 'inferno';
 import {
 	isArray,
 	isFunction,
@@ -8,6 +7,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
+	EMPTY_OBJ,
 } from '../shared';
 import { VNodeFlags, isVNode, copyPropsTo } from '../core/shapes';
 import {

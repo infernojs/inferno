@@ -79,7 +79,7 @@ describe('Utils', () => {
 				right: 10px;
 			`;
 
-			expect(styleStringToArray(style(CSS))).to.have.members(styleStringToArray(createStyler(CSS)));
+			expect(styleStringToArray(style(CSS) as string)).to.have.members(styleStringToArray(createStyler(CSS)));
 		});
 	});
 
