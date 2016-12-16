@@ -1,8 +1,1 @@
-{
-    "normalize benchmark: normalize should be quick": {
-        "log": [],
-        "time": 0.00001833630236939484,
-        "status": "PASSED",
-        "noExpectationsWarning": false
-    }
-}
+{"normalize benchmark: normalize should be quick":{"log":[],"time":0.000019670515177184922,"status":"PASSED","noExpectationsWarning":false}}

@@ -4,7 +4,7 @@ Object.entries = Object.entries || require('object.entries');
 
 function loadResult(file, cb) {
   try {
-    const result = require(path.join(__dirname, '../data/', file));
+    const result = require(path.join(__dirname, '..', 'data', file));
     cb(null, result);
   } catch (e) {
     cb(e, null);
@@ -15,31 +15,27 @@ function calculateResult(testName, resultOps, baselineOps) {
   const testFailure = (baselineOps <= resultOps) || Math.abs(baselineOps - resultOps) <= baselineOps * 0.1;
   const testResultMessage = testFailure ? 'PASSED' : 'FAILED';
 
-  const message = testResultMessage + ': ' + testName + 'performs' + resultOps + ' operations/s. Baseline: ' + baselineOps + ' operations/s';
+  const message = testResultMessage + ': ' + testName + ' performs ' + resultOps + ' ops/s. Baseline: ' + baselineOps + ' ops/s';
+  console.log(message);
 
-  if (!testFailure) {
-    console.log(message);
-
-  }
-
-  throw new Error(message);
+  return testFailure;
 }
 
 loadResult('baseline.json', (baselineErr, baseline) => {
   loadResult('result.json', (testResultErr, testResult) => {
-    if ((!testResult || testResultErr) && baselineErr) {
-      throw new Error(baselineErr);
-    }
-
-    if ((!baseline || baselineErr) && testResult) {
-      const newbaselines = JSON.stringify(baseline);
-      fs.writeFile( path.join(__dirname, 'data/baseline.json'), newbaselines, (err) => {
+    if (baseline === null && testResult !== null) {
+      const newbaselines = JSON.stringify(testResult);
+      return fs.writeFile( path.join(__dirname, '..', 'data', 'baseline.json'), newbaselines, (err) => {
         if (err) {
           throw new Error(err);
         }
         console.log('New baseline written');
         process.exit(0);
       });
+    } else if (baseline === null) {
+      throw new Error(baselineErr);
+    } else if (testResult === null) {
+      throw new Error(testResultErr);
     }
 
     const baselineTests = Object.entries(baseline);
@@ -49,7 +45,7 @@ loadResult('baseline.json', (baselineErr, baseline) => {
 
     let failed = false;
     if (failed) {
-      process.exit(1);
+      return process.exit(1);
     }
 
     for (let i = 0; i < baselineTests.length; i += 1) {
@@ -63,9 +59,9 @@ loadResult('baseline.json', (baselineErr, baseline) => {
     }
 
     if (failed) {
-      
+      return process.exit(1);
     }
 
-    process.exit(0);
+    return process.exit(0);
   });
 });
