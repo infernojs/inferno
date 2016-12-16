@@ -3,9 +3,7 @@ import {
 	escapeText,
 	toHyphenCase,
 } from './utils';
-import {
-	copyPropsTo
-} from '../DOM/utils';
+import { EMPTY_OBJ } from 'inferno';
 import {
 	isArray,
 	isInvalid,
@@ -20,6 +18,7 @@ import {
 
 import {
 	VNodeFlags,
+	copyPropsTo,
 } from '../core/shapes';
 import { isUnitlessNumber } from '../DOM/constants';
 
@@ -44,7 +43,7 @@ function renderStylesToString(styles) {
 function renderVNodeToString(vNode, context, firstChild) {
 	const flags = vNode.flags;
 	const type = vNode.type;
-	let props = vNode.props;
+	const props = vNode.props || EMPTY_OBJ;
 	const children = vNode.children;
 
 	if (flags & VNodeFlags.Component) {
@@ -63,8 +62,12 @@ function renderVNodeToString(vNode, context, firstChild) {
 			if (!isNullOrUndef(childContext)) {
 				context = Object.assign({}, context, childContext);
 			}
+			if (instance.props === EMPTY_OBJ) {
+				instance.props = props;
+			}
 			instance.context = context;
 			instance._pendingSetState = true;
+			instance._unmounted = false;
 			if (isFunction(instance.componentWillMount)) {
 				instance.componentWillMount();
 			}
@@ -92,7 +95,7 @@ function renderVNodeToString(vNode, context, firstChild) {
 					html = value.__html;
 				} else if (prop === 'style') {
 					renderedString += ` style="${ renderStylesToString(props.style) }"`;
-				} else if (prop === 'className') {
+				} else if (prop === 'className' && !isNullOrUndef(value)) {
 					renderedString += ` class="${ escapeText(value) }"`;
 				} else {
 					if (isStringOrNumber(value)) {

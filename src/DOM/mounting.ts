@@ -1,5 +1,4 @@
 import {
-	EMPTY_OBJ,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -8,11 +7,11 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
+	EMPTY_OBJ,
 } from '../shared';
-import { VNodeFlags, isVNode } from '../core/shapes';
+import { VNodeFlags, isVNode, copyPropsTo } from '../core/shapes';
 import {
 	appendChild,
-	copyPropsTo,
 	createStatefulComponentInstance,
 	createStatelessComponentInput,
 	documentCreateElement,

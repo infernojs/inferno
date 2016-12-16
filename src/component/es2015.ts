@@ -8,6 +8,8 @@ import {
 	ERROR_MSG
 } from '../shared';
 import {
+	Props,
+	VNode,
 	VNodeFlags
 } from '../core/shapes';
 
@@ -18,11 +20,11 @@ let noOp = ERROR_MSG;
 if (process.env.NODE_ENV !== 'production') {
 	noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 }
-const componentCallbackQueue = new Map();
+const componentCallbackQueue: Map<any, Function[]> = new Map();
 
 // when a components root VNode is also a component, we can run into issues
 // this will recursively look for vNode.parentNode if the VNode is a component
-function updateParentComponentVNodes(vNode, dom) {
+function updateParentComponentVNodes(vNode: VNode, dom: Node) {
 	if (vNode.flags & VNodeFlags.Component) {
 		const parentVNode = vNode.parentVNode;
 
@@ -62,11 +64,11 @@ export interface ComponentSpec<P, S> extends Mixin<P, S> {
 }
 
 // this is in shapes too, but we don't want to import from shapes as it will pull in a duplicate of createVNode
-function createVoidVNode() {
+function createVoidVNode(): VNode {
 	return createVNode(VNodeFlags.Void);
 }
 
-function addToQueue(component: Component<any, any>, force, callback): void {
+function addToQueue(component: Component<any, any>, force: boolean, callback?: Function): void {
 	// TODO this function needs to be revised and improved on
 	let queue: any = componentCallbackQueue.get(component);
 
@@ -90,7 +92,7 @@ function addToQueue(component: Component<any, any>, force, callback): void {
 	}
 }
 
-function queueStateChanges(component: Component<any, any>, newState, callback): void {
+function queueStateChanges<P, S>(component: Component<P, S>, newState, callback: Function): void {
 	if (isFunction(newState)) {
 		newState = newState(component.state);
 	}
@@ -112,7 +114,7 @@ function queueStateChanges(component: Component<any, any>, newState, callback): 
 	}
 }
 
-function applyState(component: Component<any, any>, force, callback): void {
+function applyState<P, S>(component: Component<P, S>, force: boolean, callback: Function): void {
 	if ((!component._deferSetState || force) && !component._blockRender && !component._unmounted) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
@@ -178,7 +180,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	static defaultProps: any;
 	state: S = {} as S;
 	refs: any = {};
-	props: P & {children?: any};
+	props: P & Props;
 	context: any;
 	_beforeRender: any;
 	_afterRender: any;
@@ -215,14 +217,14 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	render(nextProps?: P, nextState?, nextContext?) {
 	}
 
-	forceUpdate(callback?) {
+	forceUpdate(callback?: Function) {
 		if (this._unmounted) {
 			return;
 		}
 		applyState(this, true, callback);
 	}
 
-	setState(newState, callback?) {
+	setState(newState, callback?: Function) {
 		if (this._unmounted) {
 			return;
 		}
@@ -250,7 +252,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	componentDidUpdate(prevProps: P, prevState: S, prevContext?: any) {
 	}
 
-	shouldComponentUpdate(nextProps?: P, nextState?: S, context?: any) {
+	shouldComponentUpdate(nextProps?: P, nextState?: S, context?: any): boolean {
 		return true;
 	}
 
@@ -263,7 +265,14 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	getChildContext() {
 	}
 
-	_updateComponent(prevState: S, nextState: S, prevProps: P & {children: any}, nextProps: P & {children: any}, context: any, force: boolean): any {
+	_updateComponent(
+		prevState: S,
+		nextState: S,
+		prevProps: P & Props,
+		nextProps: P & Props,
+		context: any,
+		force: boolean
+	): any {
 		if (this._unmounted === true) {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError(noOp);
