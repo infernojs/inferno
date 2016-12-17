@@ -1,5 +1,5 @@
 /*!
- * inferno-router v1.0.0-beta35
+ * inferno-router v1.0.0-beta36
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -18,6 +18,7 @@ function Link(props, ref) {
     var activeClassName = props.activeClassName;
     var activeStyle = props.activeStyle;
     var className = props.className;
+    var onClick = props.onClick;
     var to = props.to;
     var elemProps = {
         href: to
@@ -38,6 +39,9 @@ function Link(props, ref) {
             return;
         }
         e.preventDefault();
+        if (typeof onClick === 'function') {
+            onClick();
+        }
         router.push(to, e.target.textContent);
     };
     return createElement('a', elemProps, props.children);
@@ -791,8 +795,12 @@ var RouterContext = (function (Component$$1) {
     };
     RouterContext.prototype.render = function render (ref) {
         var routes = ref.routes;
+        var matched = ref.matched;
         var location = ref.location;
 
+        if (matched) {
+            return matched;
+        }
         var route = match(routes, location);
         return route.matched;
     };
