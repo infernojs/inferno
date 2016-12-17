@@ -64,6 +64,30 @@ export function toPartialURL(fullURL: string, partURL: string) {
 }
 
 /**
+ * Simulates ... operator by returning first argument
+ * with the keys in the second argument excluded
+ * @param _args
+ * @param excluded
+ * @returns {{}}
+ */
+export function rest(_args, excluded) {
+	const t = {};
+	for (let p in _args) {
+		if (Object.prototype.hasOwnProperty.call(_args, p) && excluded.indexOf(p) < 0) {
+			t[p] = _args[p];
+		}
+	}
+	if (_args != null && typeof Object.getOwnPropertySymbols === "function") {
+		for (let i = 0, p = Object.getOwnPropertySymbols(_args); i < p.length; i++) {
+			if (excluded.indexOf(p[i]) < 0) {
+				t[p[i]] = _args[p[i]];
+			}
+		}
+	}
+	return t;
+};
+
+/**
  * Sorts an array according to its `path` prop length
  * @param a
  * @param b
