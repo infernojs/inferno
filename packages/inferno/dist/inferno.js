@@ -765,19 +765,6 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
     var ref = vNode.ref;
     var dom = vNode.dom;
     if (!isRecycling) {
-        if (!shallowUnmount) {
-            if (isStatefulComponent$$1) {
-                var subLifecycle = instance._lifecycle;
-                if (!subLifecycle.fastUnmount) {
-                    unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
-                }
-            }
-            else {
-                if (!lifecycle.fastUnmount) {
-                    unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
-                }
-            }
-        }
         if (isStatefulComponent$$1) {
             instance._ignoreSetState = true;
             instance.componentWillUnmount();
@@ -790,6 +777,19 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         else if (!isNullOrUndef(ref)) {
             if (!isNullOrUndef(ref.onComponentWillUnmount)) {
                 ref.onComponentWillUnmount(dom);
+            }
+        }
+        if (!shallowUnmount) {
+            if (isStatefulComponent$$1) {
+                var subLifecycle = instance._lifecycle;
+                if (!subLifecycle.fastUnmount) {
+                    unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
+                }
+            }
+            else {
+                if (!lifecycle.fastUnmount) {
+                    unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
+                }
             }
         }
     }
@@ -2140,7 +2140,7 @@ function isKeyed(lastChildren, nextChildren) {
         && lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
 
-function normaliseChildNodes(dom) {
+function normalizeChildNodes(dom) {
     var rawChildNodes = dom.childNodes;
     var length = rawChildNodes.length;
     var i = 0;
@@ -2231,7 +2231,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     }
 }
 function hydrateChildren(children, dom, lifecycle, context, isSVG) {
-    normaliseChildNodes(dom);
+    normalizeChildNodes(dom);
     var domNodes = Array.prototype.slice.call(dom.childNodes);
     var childNodeIndex = 0;
     if (isArray(children)) {

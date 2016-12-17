@@ -1,4 +1,4 @@
-import Component from '../../src/component/es2015';
+import Component from 'inferno-component';
 import Inferno from 'inferno';
 Inferno; // suppress ts 'never used' error
 

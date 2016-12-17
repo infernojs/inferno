@@ -11,7 +11,7 @@ const buble = require('buble');
 const babel = require('babel-core');
 const convert = require('convert-source-map');
 const merge = require('merge-source-map');
-const virtuals = require('./aliases');
+const virtuals = require('../../config/aliases');
 
 const nodeModulesPattern = path.sep === '/' ? /\/node_modules\// : /\\node_modules\\/;
 
@@ -32,10 +32,10 @@ const babelOptions = {
 	compact: false,
 	presets: [],
 	plugins: [
-		"transform-es2015-modules-commonjs",
-		"babel-plugin-inferno",
-		["module-resolver", {
-			"alias": virtuals.compilerAliases
+		'transform-es2015-modules-commonjs',
+		'babel-plugin-inferno',
+		[ 'module-resolver', {
+			alias: virtuals.compilerAliases
 		}]
 	]
 };
@@ -47,12 +47,14 @@ function registerExtension(ext) {
 
 	const old = require.extensions[ext];
 	if (!old) {
-		throw new Error('ts-node/register or equivalent compiler must be used before this compiler.')
+		throw new Error('ts-node/register or equivalent compiler must be used before this compiler.');
 	}
 
 	require.extensions[ext] = function (m, filename) {
 
-		if (nodeModulesPattern.test(filename)) return old(m, filename);
+		if (nodeModulesPattern.test(filename)) {
+			return old(m, filename);
+		}
 		let _compile = m._compile;
 		m._compile = function (code, fileName) {
 			let compiled;

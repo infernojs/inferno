@@ -46,19 +46,6 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 	const dom = vNode.dom;
 
 	if (!isRecycling) {
-		if (!shallowUnmount) {
-			if (isStatefulComponent) {
-				const subLifecycle = instance._lifecycle;
-
-				if (!subLifecycle.fastUnmount) {
-					unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
-				}
-			} else {
-				if (!lifecycle.fastUnmount) {
-					unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
-				}
-			}
-		}
 		if (isStatefulComponent) {
 			instance._ignoreSetState = true;
 			instance.componentWillUnmount();
@@ -70,6 +57,19 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 		} else if (!isNullOrUndef(ref)) {
 			if (!isNullOrUndef(ref.onComponentWillUnmount)) {
 				ref.onComponentWillUnmount(dom);
+			}
+		}
+		if (!shallowUnmount) {
+			if (isStatefulComponent) {
+				const subLifecycle = instance._lifecycle;
+
+				if (!subLifecycle.fastUnmount) {
+					unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
+				}
+			} else {
+				if (!lifecycle.fastUnmount) {
+					unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
+				}
 			}
 		}
 	}

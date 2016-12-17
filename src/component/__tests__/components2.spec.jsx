@@ -5,8 +5,8 @@ import Inferno, { render } from 'inferno';
 Inferno;
 
 /* These must be in their own files for test to reproduce */
-import { ParentFirstCommon } from '../../../testdata/common-render/parentfirstcommon';
-import { ParentSecondCommon } from '../../../testdata/common-render/parentsecondcommon';
+import { ParentFirstCommon } from '../../../test/data/common-render/parentfirstcommon';
+import { ParentSecondCommon } from '../../../test/data/common-render/parentsecondcommon';
 
 describe('Components (JSX) #2', () => {
 	let container;
