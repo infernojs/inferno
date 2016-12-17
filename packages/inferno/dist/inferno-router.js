@@ -11,6 +11,7 @@
 
 createElement = 'default' in createElement ? createElement['default'] : createElement;
 Component = 'default' in Component ? Component['default'] : Component;
+Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
 
 function Link(props, ref) {
     var router = ref.router;
@@ -52,6 +53,25 @@ function IndexLink(props) {
     return createElement(Link, props);
 }
 
+var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
+    var arguments$1 = arguments;
+
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments$1[i];
+        for (var p in s) { if (Object.prototype.hasOwnProperty.call(s, p))
+            { t[p] = s[p]; } }
+    }
+    return t;
+};
+var __rest = (undefined && undefined.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) { if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        { t[p] = s[p]; } }
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        { for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) { if (e.indexOf(p[i]) < 0)
+            { t[p[i]] = s[p[i]]; } } }
+    return t;
+};
 var Route = (function (Component$$1) {
     function Route(props, context) {
         Component$$1.call(this, props, context);
@@ -90,15 +110,12 @@ var Route = (function (Component$$1) {
     Route.prototype.componentWillReceiveProps = function componentWillReceiveProps (nextProps) {
         this.onLeave(this.props.path !== nextProps.path);
     };
-    Route.prototype.render = function render (ref) {
-        var component = ref.component;
-        var children = ref.children;
-        var params = ref.params;
-
-        return createElement(component, {
-            params: params,
-            children: children
-        });
+    Route.prototype.render = function render (_a) {
+        var component = _a.component;
+        var children = _a.children;
+        var params = _a.params;
+        var props = __rest(_a, ["component", "children", "params"]);
+        return createElement(component, __assign({ params: params }, props), children);
     };
 
     return Route;
@@ -116,117 +133,6 @@ var IndexRoute = (function (Route$$1) {
 
     return IndexRoute;
 }(Route));
-
-var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-function toArray(children) {
-    return isArray(children) ? children : (children ? [children] : children);
-}
-// this is MUCH faster than .constructor === Array and instanceof Array
-// in Node 7 and the later versions of V8, slower in older versions though
-var isArray = Array.isArray;
-
-
-
-
-
-
-function isString(obj) {
-    return typeof obj === 'string';
-}
-
-var emptyObject = Object.create(null);
-function decode(val) {
-    return typeof val !== 'string' ? val : decodeURIComponent(val);
-}
-function isEmpty(children) {
-    return !children || !(isArray(children) ? children : Object.keys(children)).length;
-}
-function flatten(oldArray) {
-    var newArray = [];
-    flattenArray(oldArray, newArray);
-    return newArray;
-}
-function getURLString(location) {
-    return isString(location) ? location : (location.pathname + location.search);
-}
-/**
- * Maps a querystring to an object
- * Supports arrays and utf-8 characters
- * @param search
- * @returns {any}
- */
-function mapSearchParams(search) {
-    if (search === '') {
-        return emptyObject;
-    }
-    // Create an object with no prototype
-    var map = Object.create(null);
-    var fragments = search.split('&');
-    for (var i = 0; i < fragments.length; i++) {
-        var fragment = fragments[i];
-        var ref = fragment.split('=').map(mapFragment);
-        var k = ref[0];
-        var v = ref[1];
-        if (map[k]) {
-            map[k] = isArray(map[k]) ? map[k] : [map[k]];
-            map[k].push(v);
-        }
-        else {
-            map[k] = v;
-        }
-    }
-    return map;
-}
-/**
- * Gets the relevant part of the URL for matching
- * @param fullURL
- * @param partURL
- * @returns {string}
- */
-function toPartialURL(fullURL, partURL) {
-    if (fullURL.indexOf(partURL) === 0) {
-        return fullURL.substr(partURL.length);
-    }
-    return fullURL;
-}
-/**
- * Sorts an array according to its `path` prop length
- * @param a
- * @param b
- * @returns {number}
- */
-function pathRankSort(a, b) {
-    var aAttr = a.props || emptyObject;
-    var bAttr = b.props || emptyObject;
-    var diff = rank(bAttr.path) - rank(aAttr.path);
-    return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
-}
-/**
- * Helper function for parsing querystring arrays
- */
-function mapFragment(p, isVal) {
-    return decodeURIComponent(isVal | 0 ? p : p.replace('[]', ''));
-}
-function strip(url) {
-    return url.replace(/(^\/+|\/+$)/g, '');
-}
-function rank(url) {
-    if ( url === void 0 ) url = '';
-
-    return (strip(url).match(/\/+/g) || '').length;
-}
-function flattenArray(oldArray, newArray) {
-    for (var i = 0; i < oldArray.length; i++) {
-        var item = oldArray[i];
-        if (isArray(item)) {
-            flattenArray(item, newArray);
-        }
-        else {
-            newArray.push(item);
-        }
-    }
-}
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -682,6 +588,117 @@ module.exports.tokensToRegExp = pathToRegExp.tokensToRegExp;
 module.exports['default'] = module.exports;
 });
 
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+function toArray(children) {
+    return isArray(children) ? children : (children ? [children] : children);
+}
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+var isArray = Array.isArray;
+
+
+
+
+
+
+function isString(obj) {
+    return typeof obj === 'string';
+}
+
+var emptyObject = Object.create(null);
+function decode(val) {
+    return typeof val !== 'string' ? val : decodeURIComponent(val);
+}
+function isEmpty(children) {
+    return !children || !(isArray(children) ? children : Object.keys(children)).length;
+}
+function flatten(oldArray) {
+    var newArray = [];
+    flattenArray(oldArray, newArray);
+    return newArray;
+}
+function getURLString(location) {
+    return isString(location) ? location : (location.pathname + location.search);
+}
+/**
+ * Maps a querystring to an object
+ * Supports arrays and utf-8 characters
+ * @param search
+ * @returns {any}
+ */
+function mapSearchParams(search) {
+    if (search === '') {
+        return emptyObject;
+    }
+    // Create an object with no prototype
+    var map = Object.create(null);
+    var fragments = search.split('&');
+    for (var i = 0; i < fragments.length; i++) {
+        var fragment = fragments[i];
+        var ref = fragment.split('=').map(mapFragment);
+        var k = ref[0];
+        var v = ref[1];
+        if (map[k]) {
+            map[k] = isArray(map[k]) ? map[k] : [map[k]];
+            map[k].push(v);
+        }
+        else {
+            map[k] = v;
+        }
+    }
+    return map;
+}
+/**
+ * Gets the relevant part of the URL for matching
+ * @param fullURL
+ * @param partURL
+ * @returns {string}
+ */
+function toPartialURL(fullURL, partURL) {
+    if (fullURL.indexOf(partURL) === 0) {
+        return fullURL.substr(partURL.length);
+    }
+    return fullURL;
+}
+/**
+ * Sorts an array according to its `path` prop length
+ * @param a
+ * @param b
+ * @returns {number}
+ */
+function pathRankSort(a, b) {
+    var aAttr = a.props || emptyObject;
+    var bAttr = b.props || emptyObject;
+    var diff = rank(bAttr.path) - rank(aAttr.path);
+    return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
+}
+/**
+ * Helper function for parsing querystring arrays
+ */
+function mapFragment(p, isVal) {
+    return decodeURIComponent(isVal | 0 ? p : p.replace('[]', ''));
+}
+function strip(url) {
+    return url.replace(/(^\/+|\/+$)/g, '');
+}
+function rank(url) {
+    if ( url === void 0 ) url = '';
+
+    return (strip(url).match(/\/+/g) || '').length;
+}
+function flattenArray(oldArray, newArray) {
+    for (var i = 0; i < oldArray.length; i++) {
+        var item = oldArray[i];
+        if (isArray(item)) {
+            flattenArray(item, newArray);
+        }
+        else {
+            newArray.push(item);
+        }
+    }
+}
+
 var cache = new Map();
 /**
  * Returns a node containing only the matched components
@@ -698,16 +715,16 @@ function match(routes, currentURL) {
  * Go through every route and create a new node
  * with the matched components
  * @param _routes
- * @param urlToMatch
+ * @param currentURL
  * @param parentPath
  * @returns {object}
  */
-function matchRoutes(_routes, urlToMatch, parentPath) {
-    if ( urlToMatch === void 0 ) urlToMatch = '/';
+function matchRoutes(_routes, currentURL, parentPath) {
+    if ( currentURL === void 0 ) currentURL = '/';
     if ( parentPath === void 0 ) parentPath = '/';
 
     var routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
-    var ref = urlToMatch.split('?');
+    var ref = currentURL.split('?');
     var pathToMatch = ref[0]; if ( pathToMatch === void 0 ) pathToMatch = '/';
     var search = ref[1]; if ( search === void 0 ) search = '';
     var params = mapSearchParams(search);
@@ -727,13 +744,12 @@ function matchRoutes(_routes, urlToMatch, parentPath) {
                     Object.assign(params, matchChild.matched.props.params);
                 }
             }
+            var matched = Inferno.cloneVNode(route, {
+                params: Object.assign(params, matchBase.params)
+            }, children);
             return {
                 location: location,
-                matched: Inferno.cloneVNode(route, {
-                    children: children,
-                    params: Object.assign(params, matchBase.params),
-                    component: route.props.component
-                })
+                matched: matched
             };
         }
     }
