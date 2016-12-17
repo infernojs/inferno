@@ -23,8 +23,8 @@ function createCommonjsModule(fn, module) {
 
 var index$1 = createCommonjsModule(function (module, exports) {
 (function (global, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define('PropTypes', ['exports', 'module'], factory);
+  if (typeof undefined === 'function' && undefined.amd) {
+    undefined('PropTypes', ['exports', 'module'], factory);
   } else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
     factory(exports, module);
   } else {
