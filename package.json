@@ -75,7 +75,7 @@
     "rollup": "^0.37.0",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-buble": "^0.14.0",
-    "rollup-plugin-commonjs": "^6.0.0",
+    "rollup-plugin-commonjs": "^5.0.5",
     "rollup-plugin-filesize": "^1.0.1",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
@@ -86,8 +86,8 @@
     "tslint": "^4.0.2",
     "typescript": "^2.1.4",
     "union-type-es": "^0.1.0",
-    "webpack": "^2.1.0-beta.27",
-    "webpack-dev-server": "^2.1.0-beta.12"
+    "webpack": "2.2.0-rc.1",
+    "webpack-dev-server": "2.2.0-rc.0"
   },
   "files": [
     "src"

@@ -15,6 +15,9 @@ module.exports = {
 	output: {
 		filename: '__spec-build.js'
 	},
+	performance: {
+		hints: false
+	},
 	module: {
 		loaders: [
 			{

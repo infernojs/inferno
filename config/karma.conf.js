@@ -35,6 +35,9 @@ module.exports = function (config) {
 			'./src/**/__tests__/**/*': ['webpack']
 		},
 		webpack: {
+			performance: {
+				hints: false
+			},
 			module: {
 				loaders: [
 					{
