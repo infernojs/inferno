@@ -11,11 +11,11 @@
     ["module-resolver", {
       "extensions": [".js", ".jsx", ".ts", ".tsx"],
       "alias": {
-        "inferno": "./src/testing/inferno",
-        "inferno-component": "./src/testing/inferno-component",
-        "inferno-create-class": "./src/testing/inferno-create-class",
-        "inferno-create-element": "./src/testing/inferno-create-element",
-        "inferno-hyperscript": "./src/testing/inferno-hyperscript",
+        "inferno": "./test/inferno/inferno",
+        "inferno-component": "./test/inferno/inferno-component",
+        "inferno-create-class": "./test/inferno/inferno-create-class",
+        "inferno-create-element": "./test/inferno/inferno-create-element",
+        "inferno-hyperscript": "./test/inferno/inferno-hyperscript",
         "inferno-router": "./packages/inferno-router/src/index",
         "inferno-server": "./packages/inferno-server/src/index"
       }

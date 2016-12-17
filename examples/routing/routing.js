@@ -1,4 +1,4 @@
-(function() {
+(function () {
 	const t = Inferno.createElement;
 	const { Router } = Inferno.Router;
 	const Route = Inferno.Router.Route;

@@ -14,7 +14,7 @@ describe('patching routine', () => {
 		container.innerHTML = '';
 	});
 
-	// TODO: Try to cover patching lastVNode !== nextVNode. requires no normalise and hoisting
+	// TODO: Try to cover patching lastVNode !== nextVNode. requires no normalize and hoisting
 	it('Should do nothing if lastVNode strictly equals nextVnode', () => {
 		const yar = createVNode(2, 'div', null, '123', null, null, true);
 		const bar = createVNode(2, 'div', null, '123', null, null, true);
