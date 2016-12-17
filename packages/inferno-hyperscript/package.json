@@ -1,20 +1,20 @@
 {
-	"name": "inferno-hyperscript",
-	"version": "1.0.0-beta36",
-	"license": "MIT",
-	"description": "Bridging hyperscript to InfernoJS",
-	"author": "Terin Stock <terinjokes@gmail.com> (https://terinstock.com/)",
-	"bugs": {
-		"url": "https://github.com/trueadm/inferno/issues"
-	},
-	"homepage": "https://github.com/trueadm/inferno#readme",
-	"main": "inferno-hyperscript.js",
-	"keywords": [
-		"inferno",
-		"hyperscript"
-	],
-	"repository": "https://github.com/trueadm/inferno",
-	"dependencies": {
-		"inferno": "1.0.0-beta36"
-	}
+  "name": "inferno-hyperscript",
+  "version": "1.0.0-beta36",
+  "license": "MIT",
+  "description": "Bridging hyperscript to InfernoJS",
+  "author": "Terin Stock <terinjokes@gmail.com> (https://terinstock.com/)",
+  "bugs": {
+    "url": "https://github.com/trueadm/inferno/issues"
+  },
+  "homepage": "https://github.com/trueadm/inferno#readme",
+  "main": "inferno-hyperscript.js",
+  "keywords": [
+    "inferno",
+    "hyperscript"
+  ],
+  "repository": "https://github.com/trueadm/inferno",
+  "dependencies": {
+    "inferno": "1.0.0-beta36"
+  }
 }
