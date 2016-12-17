@@ -25,7 +25,7 @@ In terms of performance, Inferno is currently the **fastest** JavaScript UI libr
 
 ## But why?
 
-Inferno started as an idea two years ago, to see if a UI library could really improve the experience, battery, memory usage and performance on mobile devices. At the time we really struggled to get good performance on *any* UI library/framework at the time – it simply wasn't happening, we spent a huge amount of time writing lots of vanilla JavaScript code and it did the job – but it was a mess.
+Inferno started as an idea two years ago, to see if a UI library could really improve the experience, battery, memory usage and performance on mobile devices. At the time we really struggled to get good performance on *any* UI library/framework – it simply wasn't happening, we spent a huge amount of time writing lots of vanilla JavaScript code and it did the job – but it was a mess.
 
 Since then, things haven't really improved much in the mobile space. Libraries have gotten smaller, but the time to parse a 2mb app can result in 5+ seconds time before the user can even see anything. Frameworks and libraries need to lose bloat, they need to care about performance. Developing on a MacBook Pro and seeing animations, routing, complex UIs instantly appear is *not* going to happen on an average mobile device (especially in emerging countries).
 
