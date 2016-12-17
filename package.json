@@ -11,6 +11,7 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "devDependencies": {
+    "@types/benchmark": "^1.0.30",
     "@types/chai": "^3.4.34",
     "@types/core-js": "^0.9.35",
     "@types/mocha": "^2.2.33",
@@ -18,6 +19,7 @@
     "@types/sinon": "^1.16.33",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.20.0",
+    "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.9",
     "babel-plugin-inferno": "1.3.0-beta15",
     "babel-plugin-module-resolver": "^2.4.0",
@@ -33,7 +35,7 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-stage-2": "^6.18.0",
     "babel-register": "^6.18.0",
-    "buble": "^0.14.2",
+    "buble": "^0.14.3",
     "chai": "^3.5.0",
     "concat-stream-es6": "0.0.1",
     "convert-source-map": "^1.3.0",
@@ -41,18 +43,21 @@
     "cross-env": "^3.1.3",
     "es5-shim": "^4.5.9",
     "es6-shim": "^0.35.2",
-    "eslint": "^3.12.1",
+    "eslint": "^3.12.2",
     "eslint-plugin-babel": "^4.0.0",
     "glob": "^7.1.1",
-    "history": "4.4.1",
+    "history": "4.5.0",
     "hoist-non-inferno-statics": "^1.1.2",
     "jsdom": "^9.8.3",
     "karma": "^1.3.0",
+    "karma-benchmark": "^0.6.0",
+    "karma-benchmark-reporter": "^0.1.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-failed-reporter": "0.0.3",
     "karma-firefox-launcher": "^1.0.0",
     "karma-ie-launcher": "^1.0.0",
+    "karma-json-result-reporter": "^1.0.0",
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.1",
     "karma-safari-launcher": "^1.0.0",
@@ -67,12 +72,13 @@
     "most": "^1.1.1",
     "most-subject": "^5.3.0",
     "nyc": "^10.0.0",
+    "object.entries": "^1.0.4",
     "path-to-regexp-es6": "0.0.2",
     "pre-commit": "^1.2.2",
     "proptypes": "^0.14.3",
     "redux": "^3.6.0",
     "rimraf": "^2.5.4",
-    "rollup": "^0.36.4",
+    "rollup": "^0.37.0",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-buble": "^0.14.0",
     "rollup-plugin-commonjs": "^5.0.5",
@@ -86,8 +92,8 @@
     "tslint": "^4.0.2",
     "typescript": "^2.1.4",
     "union-type-es": "^0.1.0",
-    "webpack": "^2.1.0-beta.27",
-    "webpack-dev-server": "^2.1.0-beta.12"
+    "webpack": "2.2.0-rc.1",
+    "webpack-dev-server": "2.2.0-rc.0"
   },
   "files": [
     "src"
@@ -137,7 +143,7 @@
       "text"
     ],
     "require": [
-      "./config/compiler.js",
+      "./test/mocha/compiler.js",
       "babel-register"
     ]
   },
@@ -155,14 +161,18 @@
     "karma:chrome": "karma start config/karma.conf.js --browsers=Chrome",
     "karma:ie": "karma start config/karma.conf.js --browsers=IE",
     "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
-    "lint": "tslint src/**/*.ts src/**/*.tsx",
+    "lint": "npm run lint:ts && npm run lint:js",
+    "lint:js": "eslint config examples src test",
+    "lint:ts": "tslint src/**/*.ts src/**/*.tsx test/**/*.ts",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",
-    "server:cov:publish": "npm run test:server && coveralls < coverage/lcov.info && rimraf coverage",
     "test": "npm run lint && npm run test:browser && npm run test:server",
-    "test:browser": "karma start config/karma.conf.js",
-    "test:server": "cross-env nyc mocha --opts config/mocha.opts"
+    "pretest:bench": "karma start test/karma/karma.bench.conf.js",
+    "test:bench": "node test/karma/bench.js",
+    "test:browser": "karma start test/karma/karma.unit.conf.js",
+    "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
+    "test:server": "cross-env nyc mocha --opts test/mocha/mocha.opts"
   },
   "pre-commit": [
     "lint",

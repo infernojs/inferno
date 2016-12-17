@@ -181,7 +181,7 @@ function normalizeElement(type: string, vNode: VNode) {
 	}
 }
 
-function normalize(vNode: VNode) {
+export function normalize(vNode: VNode): void {
 	const props = vNode.props;
 	const type = vNode.type;
 	let children = vNode.children;
@@ -218,7 +218,7 @@ export function createVNode(
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
-	const vNode = {
+	const vNode: VNode = {
 		children: isUndefined(children) ? null : children,
 		dom: null,
 		events: events || null,

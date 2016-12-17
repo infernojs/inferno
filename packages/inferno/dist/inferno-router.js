@@ -53,25 +53,134 @@ function IndexLink(props) {
     return createElement(Link, props);
 }
 
-var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
-    var arguments$1 = arguments;
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments$1[i];
-        for (var p in s) { if (Object.prototype.hasOwnProperty.call(s, p))
-            { t[p] = s[p]; } }
+function toArray(children) {
+    return isArray(children) ? children : (children ? [children] : children);
+}
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+var isArray = Array.isArray;
+
+
+
+
+
+
+function isString(obj) {
+    return typeof obj === 'string';
+}
+
+var emptyObject = Object.create(null);
+function decode(val) {
+    return typeof val !== 'string' ? val : decodeURIComponent(val);
+}
+function isEmpty(children) {
+    return !children || !(isArray(children) ? children : Object.keys(children)).length;
+}
+function flatten(oldArray) {
+    var newArray = [];
+    flattenArray(oldArray, newArray);
+    return newArray;
+}
+function getURLString(location) {
+    return isString(location) ? location : (location.pathname + location.search);
+}
+/**
+ * Maps a querystring to an object
+ * Supports arrays and utf-8 characters
+ * @param search
+ * @returns {any}
+ */
+function mapSearchParams(search) {
+    if (search === '') {
+        return emptyObject;
+    }
+    // Create an object with no prototype
+    var map = Object.create(null);
+    var fragments = search.split('&');
+    for (var i = 0; i < fragments.length; i++) {
+        var fragment = fragments[i];
+        var ref = fragment.split('=').map(mapFragment);
+        var k = ref[0];
+        var v = ref[1];
+        if (map[k]) {
+            map[k] = isArray(map[k]) ? map[k] : [map[k]];
+            map[k].push(v);
+        }
+        else {
+            map[k] = v;
+        }
+    }
+    return map;
+}
+/**
+ * Gets the relevant part of the URL for matching
+ * @param fullURL
+ * @param partURL
+ * @returns {string}
+ */
+function toPartialURL(fullURL, partURL) {
+    if (fullURL.indexOf(partURL) === 0) {
+        return fullURL.substr(partURL.length);
+    }
+    return fullURL;
+}
+/**
+ * Simulates ... operator by returning first argument
+ * with the keys in the second argument excluded
+ * @param _args
+ * @param excluded
+ * @returns {{}}
+ */
+function rest(_args, excluded) {
+    var t = {};
+    for (var p in _args) {
+        if (excluded.indexOf(p) < 0) {
+            t[p] = _args[p];
+        }
     }
     return t;
-};
-var __rest = (undefined && undefined.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) { if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        { t[p] = s[p]; } }
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        { for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) { if (e.indexOf(p[i]) < 0)
-            { t[p[i]] = s[p[i]]; } } }
-    return t;
-};
+}
+
+/**
+ * Sorts an array according to its `path` prop length
+ * @param a
+ * @param b
+ * @returns {number}
+ */
+function pathRankSort(a, b) {
+    var aAttr = a.props || emptyObject;
+    var bAttr = b.props || emptyObject;
+    var diff = rank(bAttr.path) - rank(aAttr.path);
+    return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
+}
+/**
+ * Helper function for parsing querystring arrays
+ */
+function mapFragment(p, isVal) {
+    return decodeURIComponent(isVal | 0 ? p : p.replace('[]', ''));
+}
+function strip(url) {
+    return url.replace(/(^\/+|\/+$)/g, '');
+}
+function rank(url) {
+    if ( url === void 0 ) url = '';
+
+    return (strip(url).match(/\/+/g) || '').length;
+}
+function flattenArray(oldArray, newArray) {
+    for (var i = 0; i < oldArray.length; i++) {
+        var item = oldArray[i];
+        if (isArray(item)) {
+            flattenArray(item, newArray);
+        }
+        else {
+            newArray.push(item);
+        }
+    }
+}
+
 var Route = (function (Component$$1) {
     function Route(props, context) {
         Component$$1.call(this, props, context);
@@ -110,12 +219,11 @@ var Route = (function (Component$$1) {
     Route.prototype.componentWillReceiveProps = function componentWillReceiveProps (nextProps) {
         this.onLeave(this.props.path !== nextProps.path);
     };
-    Route.prototype.render = function render (_a) {
-        var component = _a.component;
-        var children = _a.children;
-        var params = _a.params;
-        var props = __rest(_a, ["component", "children", "params"]);
-        return createElement(component, __assign({ params: params }, props), children);
+    Route.prototype.render = function render (_args) {
+        var component = _args.component;
+        var children = _args.children;
+        var props = rest(_args, ['component', 'children', 'path']);
+        return createElement(component, props, children);
     };
 
     return Route;
@@ -588,117 +696,6 @@ module.exports.tokensToRegExp = pathToRegExp.tokensToRegExp;
 module.exports['default'] = module.exports;
 });
 
-var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-function toArray(children) {
-    return isArray(children) ? children : (children ? [children] : children);
-}
-// this is MUCH faster than .constructor === Array and instanceof Array
-// in Node 7 and the later versions of V8, slower in older versions though
-var isArray = Array.isArray;
-
-
-
-
-
-
-function isString(obj) {
-    return typeof obj === 'string';
-}
-
-var emptyObject = Object.create(null);
-function decode(val) {
-    return typeof val !== 'string' ? val : decodeURIComponent(val);
-}
-function isEmpty(children) {
-    return !children || !(isArray(children) ? children : Object.keys(children)).length;
-}
-function flatten(oldArray) {
-    var newArray = [];
-    flattenArray(oldArray, newArray);
-    return newArray;
-}
-function getURLString(location) {
-    return isString(location) ? location : (location.pathname + location.search);
-}
-/**
- * Maps a querystring to an object
- * Supports arrays and utf-8 characters
- * @param search
- * @returns {any}
- */
-function mapSearchParams(search) {
-    if (search === '') {
-        return emptyObject;
-    }
-    // Create an object with no prototype
-    var map = Object.create(null);
-    var fragments = search.split('&');
-    for (var i = 0; i < fragments.length; i++) {
-        var fragment = fragments[i];
-        var ref = fragment.split('=').map(mapFragment);
-        var k = ref[0];
-        var v = ref[1];
-        if (map[k]) {
-            map[k] = isArray(map[k]) ? map[k] : [map[k]];
-            map[k].push(v);
-        }
-        else {
-            map[k] = v;
-        }
-    }
-    return map;
-}
-/**
- * Gets the relevant part of the URL for matching
- * @param fullURL
- * @param partURL
- * @returns {string}
- */
-function toPartialURL(fullURL, partURL) {
-    if (fullURL.indexOf(partURL) === 0) {
-        return fullURL.substr(partURL.length);
-    }
-    return fullURL;
-}
-/**
- * Sorts an array according to its `path` prop length
- * @param a
- * @param b
- * @returns {number}
- */
-function pathRankSort(a, b) {
-    var aAttr = a.props || emptyObject;
-    var bAttr = b.props || emptyObject;
-    var diff = rank(bAttr.path) - rank(aAttr.path);
-    return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
-}
-/**
- * Helper function for parsing querystring arrays
- */
-function mapFragment(p, isVal) {
-    return decodeURIComponent(isVal | 0 ? p : p.replace('[]', ''));
-}
-function strip(url) {
-    return url.replace(/(^\/+|\/+$)/g, '');
-}
-function rank(url) {
-    if ( url === void 0 ) url = '';
-
-    return (strip(url).match(/\/+/g) || '').length;
-}
-function flattenArray(oldArray, newArray) {
-    for (var i = 0; i < oldArray.length; i++) {
-        var item = oldArray[i];
-        if (isArray(item)) {
-            flattenArray(item, newArray);
-        }
-        else {
-            newArray.push(item);
-        }
-    }
-}
-
 var cache = new Map();
 /**
  * Returns a node containing only the matched components
@@ -736,17 +733,17 @@ function matchRoutes(_routes, currentURL, parentPath) {
         var isLast = !route.props || isEmpty(route.props.children);
         var matchBase = matchPath(isLast, location, pathToMatch);
         if (matchBase) {
-            var children = null;
             if (route.props && route.props.children) {
                 var matchChild = matchRoutes(route.props.children, pathToMatch, location);
+                route.props.children = null;
                 if (matchChild) {
-                    children = matchChild.matched;
+                    route.props.children = matchChild.matched;
                     Object.assign(params, matchChild.matched.props.params);
                 }
             }
             var matched = Inferno.cloneVNode(route, {
                 params: Object.assign(params, matchBase.params)
-            }, children);
+            });
             return {
                 location: location,
                 matched: matched
