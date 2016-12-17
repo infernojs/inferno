@@ -133,7 +133,7 @@ https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta36/inferno.min.js
 
 #### JSX:
 ```sh
-npm install --save-dev babel-plugin-inferno@beta13
+npm install --save-dev babel-plugin-inferno@beta15
 ```
 
 #### Hyperscript:
