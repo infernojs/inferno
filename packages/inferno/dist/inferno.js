@@ -394,8 +394,13 @@ var namespaces = {};
 var isUnitlessNumber = {};
 var skipProps = {};
 var dehyphenProps = {
-    textAnchor: 'text-anchor'
+    httpEquiv: 'http-equiv',
+    acceptCharset: 'accept-charset'
 };
+var probablyKebabProps = /^(accentH|arabicF|capH|font[FSVW]|glyph[NO]|horiz[AO]|panose1|renderingI|strikethrough[PT]|underline[PT]|v[AHIM]|vert[AO]|xH|alignmentB|baselineS|clip[PR]|color[IPR]|dominantB|enableB|fill[OR]|flood[COF]|imageR|letterS|lightingC|marker[EMS]|pointerE|shapeR|stop[CO]|stroke[DLMOW]|text[ADR]|unicodeB|wordS|writingM).*/;
+function kebabize(str, smallLetter, largeLetter) {
+    return (smallLetter + "-" + (largeLetter.toLowerCase()));
+}
 var delegatedProps = {};
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
@@ -1546,13 +1551,23 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
             }
         }
         else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
-            var dehyphenProp = dehyphenProps[prop];
-            var ns = namespaces[prop];
-            if (ns) {
-                dom.setAttributeNS(ns, dehyphenProp || prop, nextValue);
+            var dehyphenProp;
+            if (dehyphenProps[prop]) {
+                dehyphenProp = dehyphenProps[prop];
+            }
+            else if (isSVG && prop.match(probablyKebabProps)) {
+                dehyphenProp = prop.replace(/([a-z])([A-Z]|1)/g, kebabize);
+                dehyphenProps[prop] = dehyphenProp;
             }
             else {
-                dom.setAttribute(dehyphenProp || prop, nextValue);
+                dehyphenProp = prop;
+            }
+            var ns = namespaces[prop];
+            if (ns) {
+                dom.setAttributeNS(ns, dehyphenProp, nextValue);
+            }
+            else {
+                dom.setAttribute(dehyphenProp, nextValue);
             }
         }
     }
