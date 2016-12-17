@@ -844,7 +844,7 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, lifec
 			let dehyphenProp;
 			if (dehyphenProps[prop]) {
 				dehyphenProp = dehyphenProps[prop];
-			} else if (prop.match(probablyKebabProps)) {
+			} else if (isSVG && prop.match(probablyKebabProps)) {
 				dehyphenProp = prop.replace(/([a-z])([A-Z]|1)/g, kebabize);
 				dehyphenProps[prop] = dehyphenProp;
 			} else {
