@@ -1,8 +1,8 @@
+import Inferno from 'inferno';
+import pathToRegExp from 'path-to-regexp-es6';
 import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort, toPartialURL } from './utils';
 import { isArray, toArray } from '../shared';
-import pathToRegExp from 'path-to-regexp-es6';
 
-import * as Inferno from 'inferno';
 const cache: Map<string, IMatchRegex> = new Map();
 
 /**
@@ -21,14 +21,14 @@ export default function match(routes, currentURL: any) {
  * Go through every route and create a new node
  * with the matched components
  * @param _routes
- * @param urlToMatch
+ * @param currentURL
  * @param parentPath
  * @returns {object}
  */
-function matchRoutes(_routes, urlToMatch = '/', parentPath = '/') {
+function matchRoutes(_routes, currentURL = '/', parentPath = '/') {
 
 	const routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
-	const [pathToMatch = '/', search = ''] = urlToMatch.split('?');
+	const [pathToMatch = '/', search = ''] = currentURL.split('?');
 	const params = mapSearchParams(search);
 
 	routes.sort(pathRankSort);
@@ -41,22 +41,23 @@ function matchRoutes(_routes, urlToMatch = '/', parentPath = '/') {
 		const matchBase = matchPath(isLast, location, pathToMatch);
 
 		if (matchBase) {
-			let children = null;
 			if (route.props && route.props.children) {
 				const matchChild = matchRoutes(route.props.children, pathToMatch, location);
+				route.props.children = null;
+
 				if (matchChild) {
-					children = matchChild.matched;
+					route.props.children = matchChild.matched;
 					Object.assign(params, matchChild.matched.props.params);
 				}
 			}
 
+			const matched = Inferno.cloneVNode(route, {
+				params: Object.assign(params, matchBase.params)
+			});
+
 			return {
 				location,
-				matched: Inferno.cloneVNode(route, {
-					children,
-					params: Object.assign(params, matchBase.params),
-					component:  route.props.component
-				})
+				matched
 			};
 		}
 	}

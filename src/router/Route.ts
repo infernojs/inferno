@@ -1,5 +1,6 @@
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
+import { rest } from './utils';
 
 interface IRouteHook {
 	(props?: any, router?: any): void;
@@ -10,6 +11,7 @@ export interface IRouteProps {
 	onEnter?: IRouteHook;
 	onLeave?: IRouteHook;
 	path: string;
+	children: Array<Component<any, any>>;
 	component: Component<any, any>;
 }
 
@@ -46,10 +48,10 @@ export default class Route extends Component<IRouteProps, any> {
 		this.onLeave(this.props.path !== nextProps.path);
 	}
 
-	render({ component, children, params }) {
-		return createElement(component, {
-			params,
-			children
-		});
+	render(_args) {
+		const { component, children } = _args;
+		const props = rest(_args, ['component', 'children', 'path']);
+
+		return createElement(component, props, children);
 	}
 }

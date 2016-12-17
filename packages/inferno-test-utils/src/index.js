@@ -1,4 +1,4 @@
-import isValidElement from '../../../src/factories/isValidElement';
+import isValidElement from '../../../build/factories/isValidElement';
 
 export {
   isValidElement,
