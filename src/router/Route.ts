@@ -50,7 +50,7 @@ export default class Route extends Component<IRouteProps, any> {
 
 	render(_args) {
 		const { component, children } = _args;
-		const props = rest(_args, ['component', 'children']);
+		const props = rest(_args, ['component', 'children', 'path']);
 
 		return createElement(component, props, children);
 	}
