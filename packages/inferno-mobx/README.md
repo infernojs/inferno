@@ -19,7 +19,7 @@ Exports `observer` and `connect` decorators, a `Provider` and some development u
 ## Install
 
 ```
-npm install --save inferno-mobx@beta33
+npm install --save inferno-mobx@beta36
 ```
 
 Also install [mobx](https://github.com/mobxjs/mobx) dependency _(required)_ if you don't already have it

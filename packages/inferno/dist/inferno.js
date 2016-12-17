@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta33
+ * inferno v1.0.0-beta36
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -161,10 +161,16 @@ function _normalizeVNodes(nodes, result, i) {
                 else if (isVNode(n) && n.dom) {
                     n = cloneVNode(n);
                 }
-                result.push(n);
+                result.push((applyKeyIfMissing(i, n)));
             }
         }
     }
+}
+function applyKeyIfMissing(index, vNode) {
+    if (isNull(vNode.key)) {
+        vNode.key = "." + index;
+    }
+    return vNode;
 }
 function normalizeVNodes(nodes) {
     var newNodes;
@@ -181,13 +187,7 @@ function normalizeVNodes(nodes) {
     // tslint:enable
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        if (isInvalid(n)) {
-            if (!newNodes) {
-                newNodes = nodes.slice(0, i);
-            }
-            newNodes.push(n);
-        }
-        else if (Array.isArray(n)) {
+        if (isInvalid(n) || Array.isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
             _normalizeVNodes(nodes, result, i);
             return result;
@@ -196,16 +196,16 @@ function normalizeVNodes(nodes) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
-            newNodes.push(createTextVNode(n));
+            newNodes.push(applyKeyIfMissing(i, createTextVNode(n)));
         }
-        else if (isVNode(n) && n.dom) {
+        else if ((isVNode(n) && n.dom) || (isNull(n.key) && !(n.flags & 64 /* HasNonKeyedChildren */))) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
-            newNodes.push(cloneVNode(n));
+            newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
         }
         else if (newNodes) {
-            newNodes.push(cloneVNode(n));
+            newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
         }
     }
     return newNodes || nodes;
@@ -231,6 +231,13 @@ function normalizeProps(vNode, props, children) {
     }
     if (!isNullOrUndef(props.key)) {
         vNode.key = props.key;
+    }
+}
+function copyPropsTo(copyFrom, copyTo) {
+    for (var prop in copyFrom) {
+        if (isUndefined(copyTo[prop])) {
+            copyTo[prop] = copyFrom[prop];
+        }
     }
 }
 function normalizeElement(type, vNode) {
@@ -1185,21 +1192,21 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     var lastChildrenLength = lastChildren.length;
     var nextChildrenLength = nextChildren.length;
     var commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
-    var i;
-    var nextNode = null;
-    var newNode;
-    // Loop backwards so we can use insertBefore
+    var i = 0;
+    for (; i < commonLength; i++) {
+        var nextChild = nextChildren[i];
+        if (nextChild.dom) {
+            nextChild = nextChildren[i] = cloneVNode(nextChild);
+        }
+        patch(lastChildren[i], nextChild, dom, lifecycle, context, isSVG, isRecycling);
+    }
     if (lastChildrenLength < nextChildrenLength) {
-        for (i = nextChildrenLength - 1; i >= commonLength; i--) {
-            var child = nextChildren[i];
-            if (!isInvalid(child)) {
-                if (child.dom) {
-                    nextChildren[i] = child = cloneVNode(child);
-                }
-                newNode = mount(child, null, lifecycle, context, isSVG);
-                insertOrAppend(dom, newNode, nextNode);
-                nextNode = newNode;
+        for (i = commonLength; i < nextChildrenLength; i++) {
+            var nextChild$1 = nextChildren[i];
+            if (nextChild$1.dom) {
+                nextChild$1 = nextChildren[i] = cloneVNode(nextChild$1);
             }
+            appendChild(dom, mount(nextChild$1, null, lifecycle, context, isSVG));
         }
     }
     else if (nextChildrenLength === 0) {
@@ -1207,33 +1214,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     }
     else if (lastChildrenLength > nextChildrenLength) {
         for (i = commonLength; i < lastChildrenLength; i++) {
-            var child$1 = lastChildren[i];
-            if (!isInvalid(child$1)) {
-                unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
-            }
-        }
-    }
-    for (i = commonLength - 1; i >= 0; i--) {
-        var lastChild = lastChildren[i];
-        var nextChild = nextChildren[i];
-        if (isInvalid(nextChild)) {
-            if (!isInvalid(lastChild)) {
-                unmount(lastChild, dom, lifecycle, true, false, isRecycling);
-            }
-        }
-        else {
-            if (nextChild.dom) {
-                nextChildren[i] = nextChild = cloneVNode(nextChild);
-            }
-            if (isInvalid(lastChild)) {
-                newNode = mount(nextChild, null, lifecycle, context, isSVG);
-                insertOrAppend(dom, newNode, nextNode);
-                nextNode = newNode;
-            }
-            else {
-                patch(lastChild, nextChild, dom, lifecycle, context, isSVG, isRecycling);
-                nextNode = nextChild.dom;
-            }
+            unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
         }
     }
 }
@@ -2001,13 +1982,6 @@ function mountRef(dom, value, lifecycle) {
     }
 }
 
-function copyPropsTo(copyFrom, copyTo) {
-    for (var prop in copyFrom) {
-        if (isUndefined(copyTo[prop])) {
-            copyTo[prop] = copyFrom[prop];
-        }
-    }
-}
 function createStatefulComponentInstance(vNode, Component, props, context, isSVG, devToolsStatus) {
     if (isUndefined(context)) {
         context = {};
@@ -2190,7 +2164,7 @@ function normaliseChildNodes(dom) {
 }
 function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
     var type = vNode.type;
-    var props = vNode.props || {};
+    var props = vNode.props || EMPTY_OBJ;
     var ref = vNode.ref;
     vNode.dom = dom;
     if (isClass) {
@@ -2205,7 +2179,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         var input = instance._lastInput;
         var fastUnmount = lifecycle.fastUnmount;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
-        // we do this so we can determine if the component render has a fastUnmount or not		
+        // we do this so we can determine if the component render has a fastUnmount or not
         lifecycle.fastUnmount = true;
         instance._vComponent = vNode;
         instance._vNode = vNode;

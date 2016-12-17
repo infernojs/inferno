@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import { aliases } from './aliases';
 
@@ -25,11 +27,23 @@ export class Bundles {
 	}
 }
 
+const packagePath = (moduleName) => path.join(__dirname, '..', 'packages', moduleName, 'package.json');
+
 export function getPackageJSON(moduleName, defaultPackage) {
 	try {
-		return require('../packages/' + moduleName + '/package.json');
-	} catch(e) {
-		return defaultPackage
+		return require(packagePath(moduleName));
+	} catch (e) {
+		return defaultPackage;
+	}
+}
+
+export function updatePackageVersion(moduleName, defaultPackage) {
+	try {
+		const modulePackage = require(packagePath(moduleName));
+		modulePackage.version = defaultPackage.version;
+		fs.writeFileSync(packagePath(moduleName), JSON.stringify(modulePackage, null, 2), 'utf8');
+	} finally {
+		return getPackageJSON(moduleName, defaultPackage);
 	}
 }
 
@@ -37,7 +51,7 @@ export function withNodeResolve(arr, resolveConfig) {
 	const newArray = Array.from(arr);
 	const index = newArray.findIndex(plugin => plugin.name === 'buble');
 	newArray.splice(index + 1, 0, nodeResolve(resolveConfig));
-	return newArray
+	return newArray;
 }
 
 // Try to reduce bundle size by reusing installed module
@@ -57,5 +71,5 @@ export function relativeModules() {
 					return source;
 			}
 		}
-	}
+	};
 }

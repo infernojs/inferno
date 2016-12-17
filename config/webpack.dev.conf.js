@@ -19,7 +19,7 @@ module.exports = {
 		loaders: [
 			{
 				test: /\.tsx?$/,
-				loaders: ['babel-loader', 'ts-loader'],
+				loaders: [ 'babel-loader', 'ts-loader' ],
 				exclude: /node_modules/
 			}, {
 				test: /\.jsx?$/,
@@ -48,7 +48,7 @@ module.exports = {
 		}
 	},
 	resolve: {
-		extensions: ['.js', '.jsx', '.ts', '.tsx']
+		extensions: [ '.js', '.jsx', '.ts', '.tsx' ]
 	},
 	plugins: [
 		// By default, webpack does `n=>n` compilation with entry files. This concatenates

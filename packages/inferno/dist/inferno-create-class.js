@@ -1,5 +1,5 @@
 /*!
- * inferno-create-class v1.0.0-beta33
+ * inferno-create-class v1.0.0-beta36
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -123,7 +123,9 @@ function createClass$1(obj) {
     var Cl = (function (Component$$1) {
         function Cl(props) {
             Component$$1.call(this, props);
-            this.isMounted = function () { return !this._unmounted; };
+            this.isMounted = function () {
+                return !this._unmounted;
+            };
             extend(this, obj);
             if (Cl.mixins) {
                 applyMixins(this, Cl.mixins);

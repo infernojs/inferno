@@ -1,5 +1,5 @@
 /*!
- * inferno-mobx v1.0.0-beta33
+ * inferno-mobx v1.0.0-beta36
  * (c) 2016 Ryan Megidov
  * Released under the MIT License.
  */
@@ -341,20 +341,22 @@ function createStoreInjector(grabStoresFn, component) {
     index$1(Injector, component);
     return Injector;
 }
-var grabStoresByName = function (storeNames) { return function (baseStores, nextProps) {
-    storeNames.forEach(function (storeName) {
-        // Prefer props over stores
-        if (storeName in nextProps) {
-            return;
-        }
-        if (!(storeName in baseStores)) {
-            throw new Error("MobX observer: Store \"" + storeName + "\" is not available! " +
-                "Make sure it is provided by some Provider");
-        }
-        nextProps[storeName] = baseStores[storeName];
-    });
-    return nextProps;
-}; };
+var grabStoresByName = function (storeNames) {
+    return function (baseStores, nextProps) {
+        storeNames.forEach(function (storeName) {
+            // Prefer props over stores
+            if (storeName in nextProps) {
+                return;
+            }
+            if (!(storeName in baseStores)) {
+                throw new Error("MobX observer: Store \"" + storeName + "\" is not available! " +
+                    "Make sure it is provided by some Provider");
+            }
+            nextProps[storeName] = baseStores[storeName];
+        });
+        return nextProps;
+    };
+};
 /**
  * Higher order component that injects stores to a child.
  * takes either a varargs list of strings, which are stores read from the context,

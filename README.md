@@ -21,7 +21,7 @@ Inferno aims to provide all the great benefits that React does, plus other great
 
 For those not familiar with React, Inferno is a JavaScript library for building user interfaces in a **declarative** manner. Rather than working with MVC/MVVM style patterns, Inferno uses a **component-based** approach where data flows in one direction, making coding predictable, re-usable and highly testable. Based on the concept of *learn once, write anywhere*, Inferno doesn't impose any restrictions on how you create components. You literally write JavaScript to state how you'd like your UI to look – Inferno does all the rest. Inferno also renders content on the server via `inferno-server` and NodeJS, so you can write awesome UIs that get rendered full-stack.
 
-In terms of performance, Inferno is currently the **fastest** JavaScript UI library there is – both in benchmarks and actual real-world scenarios. It excels on the browser at initial page load, parse times, render times and update times. Inferno's server-side rendering is around 10x faster than React, 7x faster than Preact and around 5x faster than Vue and Angular 2.
+In terms of performance, Inferno is currently the **fastest** JavaScript UI library there is – both in benchmarks and actual real-world scenarios. It excels on the browser at initial page load, parse times, render times and update times. Inferno's server-side rendering is around 5x faster than React, around 3x faster than Angular 2 and around 1.5x faster than Preact and Vue.
 
 ## But why?
 
@@ -109,46 +109,46 @@ Alternatively, you can get started with Inferno using the [Inferno Boilerplate](
 Core package:
 
 ```sh
-npm install --save inferno@beta33
+npm install --save inferno@beta36
 ```
 
 Addons:
 
 ```sh
 # ES2015 stateful components
-npm install --save inferno-component@beta33
+npm install --save inferno-component@beta36
 # server-side rendering
-npm install --save inferno-server@beta33
+npm install --save inferno-server@beta36
 # routing
-npm install --save inferno-router@beta33
+npm install --save inferno-router@beta36
 ```
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta33/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta36/inferno.min.js
 ```
 
 ### Creating Virtual DOM
 
 #### JSX:
 ```sh
-npm install --save-dev babel-plugin-inferno@beta13
+npm install --save-dev babel-plugin-inferno@beta15
 ```
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta33
+npm install --save inferno-hyperscript@beta36
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta33
+npm install --save inferno-create-element@beta36
 ```
 
 ### Compatibility with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta33
+npm install --save-dev inferno-compat@beta36
 ```
 
 Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
@@ -453,7 +453,6 @@ Hooks provide powerful lifecycle events to stateless components, allowing you to
 Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support IE8+, Inferno requires polyfills for the following JavaScript features:
 
 - [Map object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
-- [WeakMap object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
 - [Object.keys](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
 - [Object.assign](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
 

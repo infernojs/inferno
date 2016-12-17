@@ -7,12 +7,12 @@ import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
 import commonjs from 'rollup-plugin-commonjs';
-import { withNodeResolve, relativeModules, getPackageJSON, outputFileSize } from './rollup.helpers';
+import { withNodeResolve, relativeModules, updatePackageVersion, outputFileSize } from './rollup.helpers';
 import bundles from './rollup.bundles';
 import { aliases } from './aliases';
 
-const pkg = JSON.parse(fs.readFileSync('./package.json'));
-const dependencies = Object.keys(pkg.peerDependencies || {});
+const infernoPackage = JSON.parse(fs.readFileSync('./package.json'));
+const dependencies = Object.keys(infernoPackage.peerDependencies || {});
 
 let plugins = [
 	buble({
@@ -21,7 +21,7 @@ let plugins = [
 	relativeModules(),
 	commonjs({
 		include: 'node_modules/**',
-		exclude: ['node_modules/symbol-observable/**', '**/*.css']
+		exclude: [ 'node_modules/symbol-observable/**', '**/*.css' ]
 	})
 ];
 
@@ -46,25 +46,25 @@ if (process.env.NODE_ENV === 'production') {
 			VERSION: pack.version,
 			'process.env.NODE_ENV': JSON.stringify('production')
 		})
-	)
+	);
 } else {
 	plugins.push(
 		replace({
-			VERSION: pack.version,
+			VERSION: pack.version
 			//
 			// Setting NODE_ENV: 'development' replaces production checks from bundle making
 			// it impossible for end user to build their own bundle without minified code
 			//
 			// 'process.env.NODE_ENV': JSON.stringify('development')
 		})
-	)
+	);
 }
 
 // Filesize plugin needs to be last to report correct filesizes when minified
 plugins.push(filesize());
 
 function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, path) {
-	const pack = getPackageJSON(moduleName, pkg);
+	const pack = updatePackageVersion(moduleName, infernoPackage);
 	const copyright =
 		'/*!\n' +
 		' * ' + moduleName + ' v' + pack.version + '\n' +
@@ -72,7 +72,7 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 		' * Released under the ' + pack.license + ' License.\n' +
 		' */';
 	const entry = p.resolve(moduleEntry);
-	const dest  = p.resolve(`${ path }${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
+	const dest = p.resolve(`${ path }${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
 
 	const bundleConfig = {
 		dest,
@@ -97,7 +97,7 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 	});
 
 	return rollup({ entry, plugins, external }).then(({ write }) => write(bundleConfig)).catch(err => {
-		console.log(err)
+		console.log(err);
 	});
 }
 

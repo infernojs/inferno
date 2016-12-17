@@ -46,11 +46,11 @@ describe('Update (non-jsx)', () => {
 		const span = () => createElement('span', null);
 
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<span></span>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<span></span>'));
 		render(template(null), container);
 		expect(container.firstChild.innerHTML).to.equal('');
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<span></span>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<span></span>'));
 	});
 
 	it('should insert an additional tag node', () => {
@@ -60,7 +60,7 @@ describe('Update (non-jsx)', () => {
 		render(template(null), container);
 		expect(container.firstChild.innerHTML).to.equal('');
 		render(template(div()), container);
-		expect(container.firstChild.innerHTML).to.equal('<div></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div></div>'));
 	});
 
 	it('should insert an additional tag node', () => {
@@ -78,7 +78,7 @@ describe('Update (non-jsx)', () => {
 		const span = () => createElement('div', null);
 
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<div></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div></div>'));
 	});
 
 	it('should render a node with dynamic values', () => {
@@ -661,9 +661,9 @@ describe('Update (non-jsx)', () => {
 		};
 
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<span>Hello World!</span>'));
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<span>Hello World!</span>'));
 
 	});
 
@@ -674,7 +674,7 @@ describe('Update (non-jsx)', () => {
 		};
 
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<span>Hello World!</span>'));
 	});
 
 	it('should update and array of text nodes to another array of text nodes', () => {
@@ -684,7 +684,7 @@ describe('Update (non-jsx)', () => {
 		};
 
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<span>Hello World</span>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<span>Hello World</span>'));
 	});
 
 	it('should update and array of text nodes to another array of text nodes #2', () => {
@@ -694,9 +694,9 @@ describe('Update (non-jsx)', () => {
 		};
 
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<span>Hello World!</span>'));
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<span>Hello World!</span>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<span>Hello World!</span>'));
 	});
 
 	it('should update an node with static child', () => {
@@ -705,12 +705,12 @@ describe('Update (non-jsx)', () => {
 		})));
 
 		render(template('id#1'), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span id="id#1"></span></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div><span id="id#1"></span></div>'));
 
 		render(template('id#2'), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span id="id#2"></span></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div><span id="id#2"></span></div>'));
 		render(template('id#3'), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span id="id#3"></span></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div><span id="id#3"></span></div>'));
 	});
 
 	it('should update an node with static child and dynamic custom attribute', () => {
@@ -722,9 +722,9 @@ describe('Update (non-jsx)', () => {
 		};
 
 		render(template(span('id#1')), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1"></span></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div><span custom_attr="id#1"></span></div>'));
 		render(template(span('id#1')), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1"></span></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div><span custom_attr="id#1"></span></div>'));
 	});
 
 	it('should update an node with static child and dynamic custom attribute and static text', () => {
@@ -736,9 +736,9 @@ describe('Update (non-jsx)', () => {
 		};
 
 		render(template(span('id#1')), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1">Hello!!</span></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div><span custom_attr="id#1">Hello!!</span></div>'));
 		render(template(span('id#2')), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#2">Hello!!</span></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div><span custom_attr="id#2">Hello!!</span></div>'));
 	});
 
 	it('should update an node with static child and dynamic custom attribute and static text #2', () => {
@@ -750,7 +750,7 @@ describe('Update (non-jsx)', () => {
 		};
 
 		render(template(span('id#1')), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span custom_attr="id#1">Hello!!</span></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div><span custom_attr="id#1">Hello!!</span></div>'));
 	});
 
 	it('should not ignore a empty text node', () => {
@@ -787,12 +787,12 @@ describe('Update (non-jsx)', () => {
 		const template = () => createElement('div', null, createElement('div', null, 'Hello, World'));
 
 		render(template(), container);
-		expect(container.firstChild.innerHTML).to.equal('<div>Hello, World</div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div>Hello, World</div>'));
 		render(template(), container);
-		expect(container.firstChild.innerHTML).to.equal('<div>Hello, World</div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div>Hello, World</div>'));
 
 		render(template(), container);
-		expect(container.firstChild.innerHTML).to.equal('<div>Hello, World</div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div>Hello, World</div>'));
 	});
 
 	it('should update an node with dynamic child', () => {
@@ -801,7 +801,7 @@ describe('Update (non-jsx)', () => {
 			return createElement('span', null, 'Hello ', 'World');
 		};
 		render(template(span()), container);
-		expect(container.firstChild.innerHTML).to.equal('<div><span>Hello World</span></div>');
+		expect(container.firstChild.innerHTML).to.equal(innerHTML('<div><span>Hello World</span></div>'));
 	});
 
 	it('should inject dynamic text various places', () => {
@@ -930,7 +930,7 @@ describe('Update (non-jsx)', () => {
 
 	describe('Github #142', () => {
 		describe('nonKeyed updates', () => {
-			it('variation-1', () => {
+			it('variation 1', () => {
 				function A() {
 					return createElement('div', null, createElement('div', null, createElement('table', null,
 						createElement('tr', null, createElement('td', null, 'Text'))
@@ -955,7 +955,7 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text1</td></tr></table></div></div>');
 			});
 
-			it('variation -2', () => {
+			it('variation 2', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', null, createElement('td', null, 'text', createElement('br', null))
 				))));
@@ -1065,7 +1065,7 @@ describe('Update (non-jsx)', () => {
 		});
 
 		describe('KEYED updates', () => {
-			it('variation-1', () => {
+			it('variation 1', () => {
 				function A() {
 					return createElement('div', null, createElement('div', null, createElement('table', null,
 						createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, 'Text'))
@@ -1092,7 +1092,7 @@ describe('Update (non-jsx)', () => {
 				expect(container.innerHTML).to.equal('<div><div><table><tr><td>text1</td></tr></table></div></div>');
 			});
 
-			it('variation -2', () => {
+			it('variation 2', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', { key: 'row1' }, createElement('td', { key: 'td1' }, ['text', createElement('br', null)]))
 				)));
@@ -1304,11 +1304,11 @@ describe('Update (non-jsx)', () => {
 			A[2] = createElement('div', null, 'text 4');
 
 			render(A[0], container);
-			expect(container.innerHTML).to.equal('<div>text 1</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>text 1</div>'));
 			render(A[1], container);
-			expect(container.innerHTML).to.equal('<div>text 2<br>text 3</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>text 2<br>text 3</div>'));
 			render(A[2], container);
-			expect(container.innerHTML).to.equal('<div>text 4</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>text 4</div>'));
 		});
 	});
 
@@ -1331,11 +1331,11 @@ describe('Update (non-jsx)', () => {
 			);
 
 			render(A[0], container);
-			expect(container.innerHTML).to.equal('<div>text 1<br></div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>text 1<br></div>'));
 			render(A[1], container);
-			expect(container.innerHTML).to.equal('<div>text 2</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div>text 2</div>'));
 			render(A[2], container);
-			expect(container.innerHTML).to.equal('<div><br>text 4</div>');
+			expect(container.innerHTML).to.equal(innerHTML('<div><br>text 4</div>'));
 		});
 	});
 });

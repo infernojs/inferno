@@ -10,6 +10,7 @@ export interface IRouteProps {
 	onEnter?: IRouteHook;
 	onLeave?: IRouteHook;
 	path: string;
+	children: Array<Component<any, any>>;
 	component: Component<any, any>;
 }
 
@@ -46,10 +47,7 @@ export default class Route extends Component<IRouteProps, any> {
 		this.onLeave(this.props.path !== nextProps.path);
 	}
 
-	render({ component, children, params }) {
-		return createElement(component, {
-			params,
-			children
-		});
+	render({ component, children, params, ...props }) {
+		return createElement(component, { params, ...props }, children);
 	}
 }

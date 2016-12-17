@@ -20,14 +20,6 @@ import {
 	unmount,
 } from './unmounting';
 
-export function copyPropsTo(copyFrom, copyTo) {
-	for (let prop in copyFrom) {
-		if (isUndefined(copyTo[prop])) {
-			copyTo[prop] = copyFrom[prop];
-		}
-	}
-}
-
 export function createStatefulComponentInstance(vNode, Component, props, context, isSVG, devToolsStatus) {
 	if (isUndefined(context)) {
 		context = {};
