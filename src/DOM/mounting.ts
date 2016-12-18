@@ -33,7 +33,7 @@ import {
 } from './patching';
 import processElement from './wrappers/processElement';
 
-export function mount(vNode, parentDom, lifecycle, context, isSVG) {
+export function mount(vNode, parentDom, lifecycle: Lifecycle, context, isSVG) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Element) {
@@ -72,7 +72,7 @@ export function mountVoid(vNode, parentDom) {
 	return dom;
 }
 
-export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
+export function mountElement(vNode, parentDom, lifecycle: Lifecycle, context, isSVG) {
 	if (recyclingEnabled) {
 		const dom = recycleElement(vNode, lifecycle, context, isSVG);
 
@@ -129,7 +129,7 @@ export function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 	return dom;
 }
 
-export function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
+export function mountArrayChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
 	for (let i = 0; i < children.length; i++) {
 		let child = children[i];
 
@@ -142,7 +142,7 @@ export function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
 	}
 }
 
-export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
+export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, isSVG: boolean, isClass: number) {
 	if (recyclingEnabled) {
 		const dom = recycleComponent(vNode, lifecycle, context, isSVG);
 
@@ -199,7 +199,7 @@ export function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isCl
 	return dom;
 }
 
-export function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
+export function mountStatefulComponentCallbacks(ref, instance, lifecycle: Lifecycle) {
 	if (ref) {
 		if (isFunction(ref)) {
 			ref(instance);
@@ -217,7 +217,7 @@ export function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
 	}
 }
 
-export function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
+export function mountStatelessComponentCallbacks(ref, dom, lifecycle: Lifecycle) {
 	if (ref) {
 		if (!isNullOrUndef(ref.onComponentWillMount)) {
 			lifecycle.fastUnmount = false;
@@ -230,7 +230,7 @@ export function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
 	}
 }
 
-export function mountRef(dom, value, lifecycle) {
+export function mountRef(dom, value, lifecycle: Lifecycle) {
 	if (isFunction(value)) {
 		lifecycle.fastUnmount = false;
 		lifecycle.addListener(() => value(dom));

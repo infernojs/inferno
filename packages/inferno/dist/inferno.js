@@ -1114,7 +1114,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     var subLifecycle = instance._lifecycle;
                     lifecycle.fastUnmount = subLifecycle.fastUnmount;
                     patch(lastInput$1, nextInput$1, parentDom, lifecycle, childContext, isSVG, isRecycling);
-                    subLifecycle.fastUnmount = lifecycle.unmount;
+                    subLifecycle.fastUnmount = lifecycle.fastUnmount;
                     lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
                     findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);

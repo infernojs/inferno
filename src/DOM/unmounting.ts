@@ -19,8 +19,9 @@ import {
 import { VNodeFlags } from '../core/shapes';
 import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import { removeChild } from './utils';
+import Lifecycle from "./lifecycle";
 
-export function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
+export function unmount(vNode, parentDom, lifecycle: Lifecycle, canRecycle, shallowUnmount, isRecycling) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Component) {
@@ -38,7 +39,7 @@ function unmountVoidOrText(vNode, parentDom) {
 	}
 }
 
-export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
+export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecycle, shallowUnmount, isRecycling) {
 	const instance = vNode.children;
 	const flags = vNode.flags;
 	const isStatefulComponent = flags & VNodeFlags.ComponentClass;
@@ -87,7 +88,7 @@ export function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallo
 	}
 }
 
-export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
+export function unmountElement(vNode, parentDom, lifecycle: Lifecycle, canRecycle, shallowUnmount, isRecycling) {
 	const dom = vNode.dom;
 	const ref = vNode.ref;
 	const events = vNode.events;
@@ -117,7 +118,7 @@ export function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowU
 	}
 }
 
-function unmountChildren(children, lifecycle, shallowUnmount, isRecycling) {
+function unmountChildren(children, lifecycle: Lifecycle, shallowUnmount, isRecycling) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];

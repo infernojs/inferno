@@ -57,7 +57,7 @@ export function normalizeChildNodes(dom) {
 	}
 }
 
-function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
+function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isClass) {
 	const type = vNode.type;
 	const props = vNode.props || EMPTY_OBJ;
 	const ref = vNode.ref;
@@ -100,7 +100,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
 	}
 }
 
-function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
+function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 	const tag = vNode.type;
 	const children = vNode.children;
 	const props = vNode.props;
@@ -132,7 +132,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 	}
 }
 
-function hydrateChildren(children, dom, lifecycle, context, isSVG) {
+function hydrateChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
 	normalizeChildNodes(dom);
 	const domNodes = Array.prototype.slice.call(dom.childNodes);
 	let childNodeIndex = 0;
@@ -165,7 +165,7 @@ function hydrateVoid(vNode, dom) {
 	vNode.dom = dom;
 }
 
-function hydrate(vNode, dom, lifecycle, context, isSVG) {
+function hydrate(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 	if (process.env.NODE_ENV !== 'production') {
 		if (isInvalid(dom)) {
 			throwError(`failed to hydrate. The server-side render doesn't match client side.`);
