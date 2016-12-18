@@ -70,7 +70,7 @@ import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import processElement from './wrappers/processElement';
 import { unmount } from './unmounting';
 
-export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG: boolean, isRecycling: boolean) {
+export function patch(lastVNode, nextVNode, parentDom, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
 	if (lastVNode !== nextVNode) {
 		const lastFlags = lastVNode.flags;
 		const nextFlags = nextVNode.flags;
@@ -140,7 +140,7 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
 	}
 }
 
-function unmountChildren(children, dom, lifecycle, isRecycling) {
+function unmountChildren(children, dom, lifecycle: Lifecycle, isRecycling: boolean) {
 	if (isVNode(children)) {
 		unmount(children, dom, lifecycle, true, false, isRecycling);
 	} else if (isArray(children)) {
@@ -200,7 +200,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 	}
 }
 
-function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling) {
+function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildren, nextChildren, dom, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
 	let patchArray = false;
 	let patchKeyed = false;
 
@@ -263,7 +263,7 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
 	}
 }
 
-export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isClass, isRecycling: boolean) {
+export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifecycle, context, isSVG: boolean, isClass: number, isRecycling: boolean) {
 	const lastType = lastVNode.type;
 	const nextType = nextVNode.type;
 	const nextProps = nextVNode.props || EMPTY_OBJ;
@@ -362,7 +362,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, conte
 
 					lifecycle.fastUnmount = subLifecycle.fastUnmount;
 					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
-					subLifecycle.fastUnmount = lifecycle.unmount;
+					subLifecycle.fastUnmount = lifecycle.fastUnmount;
 					lifecycle.fastUnmount = fastUnmount;
 					instance.componentDidUpdate(lastProps, lastState);
 					findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
@@ -434,11 +434,11 @@ export function patchText(lastVNode: VNode, nextVNode: VNode) {
 	}
 }
 
-export function patchVoid(lastVNode, nextVNode) {
+export function patchVoid(lastVNode: VNode, nextVNode: VNode) {
 	nextVNode.dom = lastVNode.dom;
 }
 
-export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling) {
+export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
 	let lastChildrenLength = lastChildren.length;
 	let nextChildrenLength = nextChildren.length;
 	let commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
@@ -781,7 +781,7 @@ function lis_algorithm(a) {
 	return result;
 }
 
-export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, lifecycle) {
+export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, lifecycle: Lifecycle) {
 	if (skipProps[prop]) {
 		return;
 	}
@@ -879,7 +879,7 @@ export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
 	}
 }
 
-function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
+function patchProps(lastProps, nextProps, dom, lifecycle: Lifecycle, context, isSVG: boolean) {
 	lastProps = lastProps || EMPTY_OBJ;
 	nextProps = nextProps || EMPTY_OBJ;
 

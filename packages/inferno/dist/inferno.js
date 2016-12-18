@@ -1114,7 +1114,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     var subLifecycle = instance._lifecycle;
                     lifecycle.fastUnmount = subLifecycle.fastUnmount;
                     patch(lastInput$1, nextInput$1, parentDom, lifecycle, childContext, isSVG, isRecycling);
-                    subLifecycle.fastUnmount = lifecycle.unmount;
+                    subLifecycle.fastUnmount = lifecycle.fastUnmount;
                     lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
                     findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
@@ -2327,6 +2327,7 @@ function setRoot(dom, input, lifecycle) {
         input: input,
         lifecycle: lifecycle
     });
+    return roots[roots.length - 1];
 }
 function removeRoot(root) {
     for (var i = 0; i < roots.length; i++) {
@@ -2358,7 +2359,7 @@ function render(input, parentDom) {
                 mount(input, parentDom, lifecycle, {}, false);
             }
             lifecycle.trigger();
-            setRoot(parentDom, input, lifecycle);
+            root = setRoot(parentDom, input, lifecycle);
         }
     }
     else {
@@ -2380,6 +2381,7 @@ function render(input, parentDom) {
     if (devToolsStatus.connected) {
         sendRoots(window);
     }
+    return root.input;
 }
 function createRenderer(_parentDom) {
     var parentDom = _parentDom || null;
@@ -2396,7 +2398,7 @@ function linkEvent(data, event) {
 }
 
 if (isBrowser) {
-	window.process = window.process || {}; 
+	window.process = window.process || {};
 	window.process.env = window.process.env || {
 		NODE_ENV: 'development'
 	};
@@ -2428,7 +2430,7 @@ var index = {
 	NO_OP: NO_OP,
 	EMPTY_OBJ: EMPTY_OBJ,
 
-	//DOM
+	// DOM
 	render: render,
 	findDOMNode: findDOMNode,
 	createRenderer: createRenderer,

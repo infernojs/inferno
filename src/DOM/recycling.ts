@@ -7,6 +7,7 @@ import {
 	patchComponent,
 	patchElement,
 } from './patching';
+import Lifecycle from "./lifecycle";
 
 export let recyclingEnabled = true;
 let componentPools = new Map<Function | null, Pools>();
@@ -27,7 +28,7 @@ export function enableRecycling() {
 	recyclingEnabled = true;
 }
 
-export function recycleElement(vNode, lifecycle, context, isSVG) {
+export function recycleElement(vNode, lifecycle: Lifecycle, context, isSVG) {
 	const tag = vNode.type;
 	const key = vNode.key;
 	let pools: Pools = elementPools.get(tag);
@@ -72,7 +73,7 @@ export function poolElement(vNode) {
 	}
 }
 
-export function recycleComponent(vNode: VNode, lifecycle, context, isSVG) {
+export function recycleComponent(vNode: VNode, lifecycle: Lifecycle, context, isSVG) {
 	const type = vNode.type as Function;
 	const key = vNode.key;
 	let pools: Pools = componentPools.get(type);

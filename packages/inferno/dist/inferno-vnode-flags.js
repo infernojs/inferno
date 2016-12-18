@@ -25,7 +25,7 @@ var index = {
 	InputElement: 1 << 9,
 	TextareaElement: 1 << 10,
 	SelectElement: 1 << 11,
-	Void: 1 << 12,
+	Void: 1 << 12
 };
 
 return index;

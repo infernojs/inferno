@@ -1,4 +1,5 @@
 export {
+<<<<<<< HEAD
   isElement,
   isElementOfType,
   isDOMComponent,
@@ -12,4 +13,11 @@ export default {
   isDOMComponent,
   isCompositeComponent,
   findAllInRenderedTree
+=======
+  isValidElement
+};
+
+export default {
+	isValidElement
+>>>>>>> dev
 };

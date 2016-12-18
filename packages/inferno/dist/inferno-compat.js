@@ -618,12 +618,12 @@ var ARR = [];
 var Children = {
 	map: function map(children, fn, ctx) {
 		children = Children.toArray(children);
-		if (ctx && ctx!==children) { fn = fn.bind(ctx); }
+		if (ctx && ctx !== children) {fn = fn.bind(ctx);}
 		return children.map(fn);
 	},
 	forEach: function forEach(children, fn, ctx) {
 		children = Children.toArray(children);
-		if (ctx && ctx!==children) { fn = fn.bind(ctx); }
+		if (ctx && ctx !== children) {fn = fn.bind(ctx);}
 		children.forEach(fn);
 	},
 	count: function count(children) {
@@ -632,7 +632,7 @@ var Children = {
 	},
 	only: function only(children) {
 		children = Children.toArray(children);
-		if (children.length!==1) { throw new Error('Children.only() expects only one child.'); }
+		if (children.length !== 1) {throw new Error('Children.only() expects only one child.');}
 		return children[0];
 	},
 	toArray: function toArray(children) {
@@ -643,10 +643,10 @@ var Children = {
 var currentComponent = null;
 
 Component.prototype.isReactComponent = {};
-Component.prototype._beforeRender = function() {
+Component.prototype._beforeRender = function () {
 	currentComponent = this;
 };
-Component.prototype._afterRender = function() {
+Component.prototype._afterRender = function () {
 	currentComponent = null;
 };
 
@@ -699,9 +699,9 @@ var createElement = injectStringRefs(createElement$1);
 var cloneElement = injectStringRefs(inferno.cloneVNode);
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
-function shallowDiffers (a, b) {
-	for (var i in a) { if (!(i in b)) { return true; } }
-	for (var i$1 in b) { if (a[i$1] !== b[i$1]) { return true; } }
+function shallowDiffers(a, b) {
+	for (var i in a) {if (!(i in b)) {return true;}}
+	for (var i$1 in b) {if (a[i$1] !== b[i$1]) {return true;}}
 	return false;
 }
 
