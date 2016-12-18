@@ -1,39 +1,68 @@
-import { render } from 'inferno';
-import { InfernoInput, VNode, VNodeFlags } from '../core/shapes';
+import { VNode, VNodeFlags } from '../core/shapes';
 import isValidElement from '../factories/isValidElement';
+import { throwError } from '../shared';
+// import Component from '../component/es2015';
 
-export const renderNode = (element: InfernoInput) => {
-	const div = document.createElement('div');
-
-	return render(element, div);
-};
-
-export const isElement = (element: any): element is VNode => {
+export function isElement(element: VNode): boolean {
 	return isValidElement(element);
 };
 
-export const isElementOfType = (inst: VNode, componentClass: Function) => {
+export function isElementOfType(inst: VNode, componentClass: Function): boolean {
 	return (
 		isValidElement(inst) &&
 		inst.type === componentClass
 	);
 };
 
-export const isDOMComponent = (inst: VNode) => {
-	return (
-		isElement(inst) &&
-    (inst.flags & VNodeFlags.HtmlElement) &&
-    (typeof inst.type === 'string')
+export function isDOMComponent(inst): boolean  {
+	return !!(
+		inst && 
+		inst.flags === VNodeFlags.Text && 
+		inst.tagName
+	);
+}
+
+export function isDOMComponentElement(inst): boolean {
+	return !!(inst &&
+		isValidElement(inst) &&
+		!!inst.tagName
 	);
 };
 
-export const isCompositeComponent = (inst: VNode) => {
+export function isCompositeComponent(inst): boolean {
 	if (isDOMComponent(inst)) {
 		return false;
 	}
-
 	return (
-		isElement(inst) &&
-		typeof inst.type === 'function'
+		inst != null &&
+		typeof inst.render === 'function' &&
+		typeof inst.setState === 'function'
 	);
+};
+
+export function isCompositeComponentWithType(inst, type: Function): boolean {
+	if (!isCompositeComponent(inst)) {
+		return false;
+	}
+
+	return (inst.type === type);
+}
+
+function findAllInTree(inst: any, testFn: Function): VNode[] {
+	if (!inst) {
+		return [];
+	}
+	var ret = testFn(inst) ? [inst] : [];
+	return ret;
+}
+
+export function findAllInRenderedTree(inst: VNode, testFn: Function): VNode[] {
+	const result: VNode[] = [];
+	if (!inst) {
+		return result;
+	}
+	if (isDOMComponent(inst)) {
+		throwError('findAllInRenderedTree(...): instance must be a composite component');
+	}
+	return findAllInTree(inst, testFn);
 }

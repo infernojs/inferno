@@ -1,9 +1,15 @@
-import isValidElement from '../../../build/factories/isValidElement';
-
 export {
-  isValidElement,
-};
+  isElement,
+  isElementOfType,
+  isDOMComponent,
+  isCompositeComponent,
+  findAllInRenderedTree,
+} from '../../../build/tools/test';
 
 export default {
-  isValidElement,
+	isElement,
+  isElementOfType,
+  isDOMComponent,
+  isCompositeComponent,
+  findAllInRenderedTree
 };

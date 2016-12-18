@@ -59,12 +59,13 @@ function getRoot(dom): Root | null {
 	return null;
 }
 
-function setRoot(dom, input, lifecycle): void {
+function setRoot(dom, input, lifecycle): Root {
 	roots.push({
 		dom,
 		input,
 		lifecycle
 	});
+	return roots[roots.length - 1];
 }
 
 function removeRoot(root): void {
@@ -88,7 +89,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 	if ((input as any) === NO_OP) {
 		return;
 	}
-	const root = getRoot(parentDom);
+	let root = getRoot(parentDom);
 
 	if (isNull(root)) {
 		const lifecycle = new Lifecycle();
@@ -101,7 +102,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 				mount(input, parentDom, lifecycle, {}, false);
 			}
 			lifecycle.trigger();
-			setRoot(parentDom, input, lifecycle);
+			root = setRoot(parentDom, input, lifecycle);
 		}
 	} else {
 		const lifecycle = root.lifecycle;
@@ -122,6 +123,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 	if (devToolsStatus.connected) {
 		sendRoots(window);
 	}
+	return root.input;
 }
 
 export function createRenderer(_parentDom) {
