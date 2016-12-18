@@ -1,20 +1,20 @@
 function isEndish(topLevelType) {
-  return topLevelType === 'topMouseUp' ||
+	return topLevelType === 'topMouseUp' ||
          topLevelType === 'topTouchEnd' ||
          topLevelType === 'topTouchCancel';
 }
 
 function isMoveish(topLevelType) {
-  return topLevelType === 'topMouseMove' ||
+	return topLevelType === 'topMouseMove' ||
          topLevelType === 'topTouchMove';
 }
 function isStartish(topLevelType) {
-  return topLevelType === 'topMouseDown' ||
+	return topLevelType === 'topMouseDown' ||
          topLevelType === 'topTouchStart';
 }
 
 module.exports = {
-  isEndish: isEndish,
-  isMoveish: isMoveish,
-  isStartish: isStartish
-}
+	isEndish: isEndish,
+	isMoveish: isMoveish,
+	isStartish: isStartish
+};

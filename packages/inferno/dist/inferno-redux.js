@@ -501,7 +501,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
 
 var index = {
 	Provider: Provider,
-	connect: connect,
+	connect: connect
 };
 
 return index;

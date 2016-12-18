@@ -3,5 +3,5 @@ import connect from '../../../build/redux/connect';
 
 export default {
 	Provider,
-	connect,
+	connect
 };

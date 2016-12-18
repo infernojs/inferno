@@ -17,12 +17,12 @@ const ARR = [];
 const Children = {
 	map(children, fn, ctx) {
 		children = Children.toArray(children);
-		if (ctx && ctx!==children) fn = fn.bind(ctx);
+		if (ctx && ctx !== children) {fn = fn.bind(ctx);}
 		return children.map(fn);
 	},
 	forEach(children, fn, ctx) {
 		children = Children.toArray(children);
-		if (ctx && ctx!==children) fn = fn.bind(ctx);
+		if (ctx && ctx !== children) {fn = fn.bind(ctx);}
 		children.forEach(fn);
 	},
 	count(children) {
@@ -31,7 +31,7 @@ const Children = {
 	},
 	only(children) {
 		children = Children.toArray(children);
-		if (children.length!==1) throw new Error('Children.only() expects only one child.');
+		if (children.length !== 1) {throw new Error('Children.only() expects only one child.');}
 		return children[0];
 	},
 	toArray(children) {
@@ -42,10 +42,10 @@ const Children = {
 let currentComponent = null;
 
 Component.prototype.isReactComponent = {};
-Component.prototype._beforeRender = function() {
+Component.prototype._beforeRender = function () {
 	currentComponent = this;
 };
-Component.prototype._afterRender = function() {
+Component.prototype._afterRender = function () {
 	currentComponent = null;
 };
 
@@ -53,7 +53,7 @@ const version = '15.4.1';
 
 function normalizeProps(name, props) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
-		const eventName = props.type === 'checkbox' ? 'onclick' : 'oninput'
+		const eventName = props.type === 'checkbox' ? 'onclick' : 'oninput';
 
 		if (!props[eventName]) {
 			props[eventName] = props.onChange;
@@ -89,15 +89,15 @@ const injectStringRefs = (originalFunction) => {
 		}
 		return originalFunction(name, props, ...children);
 	};
-}
+};
 
 const createElement = injectStringRefs(infernoCreateElement);
 const cloneElement = injectStringRefs(cloneVNode);
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
-function shallowDiffers (a, b) {
-	for (let i in a) if (!(i in b)) return true;
-	for (let i in b) if (a[i] !== b[i]) return true;
+function shallowDiffers(a, b) {
+	for (let i in a) {if (!(i in b)) {return true;}}
+	for (let i in b) {if (a[i] !== b[i]) {return true;}}
 	return false;
 }
 
@@ -108,7 +108,7 @@ function PureComponent(props, context) {
 PureComponent.prototype = new Component({}, {});
 PureComponent.prototype.shouldComponentUpdate = function (props, state) {
 	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
-}
+};
 
 class WrapperComponent extends Component {
 	getChildContext() {

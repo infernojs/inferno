@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (factory((global.Inferno = global.Inferno || {}, global.Inferno.TestUtils = global.Inferno.TestUtils || {})));
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.Inferno = global.Inferno || {}, global.Inferno.TestUtils = global.Inferno.TestUtils || {})));
 }(this, (function (exports) { 'use strict';
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
@@ -42,7 +42,7 @@ function isValidElement(obj) {
 }
 
 var index = {
-  isValidElement: isValidElement,
+	isValidElement: isValidElement
 };
 
 exports.isValidElement = isValidElement;

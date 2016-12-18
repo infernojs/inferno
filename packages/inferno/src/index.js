@@ -9,7 +9,7 @@ import { initDevToolsHooks } from '../../../build/DOM/devtools';
 import linkEvent from '../../../build/DOM/events/linkEvent';
 
 if (isBrowser) {
-	window.process = window.process || {}; 
+	window.process = window.process || {};
 	window.process.env = window.process.env || {
 		NODE_ENV: 'development'
 	};
@@ -41,7 +41,7 @@ export default {
 	NO_OP,
 	EMPTY_OBJ,
 
-	//DOM
+	// DOM
 	render,
 	findDOMNode,
 	createRenderer,
@@ -61,7 +61,7 @@ export {
 	NO_OP,
 	EMPTY_OBJ,
 
-	//DOM
+	// DOM
 	render,
 	findDOMNode,
 	createRenderer,

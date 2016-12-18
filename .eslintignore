@@ -1,0 +1,2 @@
+**/*.min.js
+packages/inferno/dist/*

@@ -1,9 +1,9 @@
 import isValidElement from '../../../build/factories/isValidElement';
 
 export {
-  isValidElement,
+  isValidElement
 };
 
 export default {
-  isValidElement,
+	isValidElement
 };

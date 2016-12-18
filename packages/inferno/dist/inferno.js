@@ -2396,7 +2396,7 @@ function linkEvent(data, event) {
 }
 
 if (isBrowser) {
-	window.process = window.process || {}; 
+	window.process = window.process || {};
 	window.process.env = window.process.env || {
 		NODE_ENV: 'development'
 	};
@@ -2428,7 +2428,7 @@ var index = {
 	NO_OP: NO_OP,
 	EMPTY_OBJ: EMPTY_OBJ,
 
-	//DOM
+	// DOM
 	render: render,
 	findDOMNode: findDOMNode,
 	createRenderer: createRenderer,
