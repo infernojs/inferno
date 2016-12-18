@@ -110,22 +110,6 @@ If a component has been mounted into the DOM, this returns the corresponding nat
 
 **Note**: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode`. `findDOMNode` cannot be used on functional components.
 
-## createRenderer
-
-`createRenderer` allows for functional composition when rendering content to the DOM. An example of this is shown below:
-
-```javascript
-import Inferno from 'inferno';
-import { scan, map } from 'most';
-
-...
-const model$ = scan(update, 0, actions$);
-const vNodes$ = map(view(actions$), model$);
-const renderer = Inferno.createRenderer();
-const runApp = () => scan(renderer, container, vNodes$).drain();
-
-runApp();
-```
 
 ## disableRecycling
 As an application changes components will be reused as they are mounted and unmounted from the DOM. By default Inferno enables *recycling* to have a pool of components which can be reused when components are mounted into the DOM. However if you wish to disable this feature you can. 
