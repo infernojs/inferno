@@ -52,11 +52,11 @@ function findAllInTree(inst: any, testFn: Function): VNode[] {
 	if (!inst || !inst.getPublicInstance) {
     return [];
   }
-  var publicInst = inst.getPublicInstance();
-  var ret = test(publicInst) ? [publicInst] : [];
-  var currentElement = inst._currentElement;
-  if (isDOMComponent(publicInst)) {
-    var renderedChildren = inst._renderedChildren;
+  let ret = test(inst) ? [inst] : [];
+  const currentElement = inst._vNode;
+  if (isDOMComponent(inst)) {
+		console.log()
+    var renderedChildren = currentElement.children;
     var key;
     for (key in renderedChildren) {
       if (!renderedChildren.hasOwnProperty(key)) {
