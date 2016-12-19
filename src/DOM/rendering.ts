@@ -58,16 +58,18 @@ function getRoot(dom): Root | null {
 	return null;
 }
 
-function setRoot(dom, input, lifecycle): Root {
-	roots.push({
+function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: Lifecycle): Root {
+	const root: Root = {
 		dom,
 		input,
 		lifecycle
-	});
-	return roots[roots.length - 1];
+	};
+
+	roots.push(root);
+	return root;
 }
 
-function removeRoot(root): void {
+function removeRoot(root: Root): void {
 	for (let i = 0; i < roots.length; i++) {
 		if (roots[i] === root) {
 			roots.splice(i, 1);
