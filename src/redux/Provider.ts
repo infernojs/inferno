@@ -3,7 +3,7 @@ import { warning } from './utils';
 import {
 	isNullOrUndef,
 	toArray
-} from '../tools/shared';
+} from '../shared';
 
 let didWarnAboutReceivingStore = false;
 function warnAboutReceivingStore() {

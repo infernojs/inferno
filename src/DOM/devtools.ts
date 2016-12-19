@@ -1,4 +1,4 @@
-import { isFunction, isNull, isUndefined } from '../tools/shared';
+import { isFunction, isNull, isUndefined } from '../shared';
 import { render, roots } from './rendering';
 
 export const devToolsStatus = {

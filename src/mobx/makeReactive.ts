@@ -2,7 +2,7 @@ import { Reaction, extras, isObservable } from 'mobx';
 
 import Component from 'inferno-component';
 import EventEmitter from './EventEmitter';
-import { throwError } from '../tools/shared';
+import { throwError } from '../shared';
 
 /**
  * Dev tools support

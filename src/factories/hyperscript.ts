@@ -10,7 +10,7 @@ import {
 	isString,
 	isStringOrNumber,
 	isUndefined,
-} from '../tools/shared';
+} from '../shared';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;

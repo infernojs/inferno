@@ -2,7 +2,7 @@ import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
 import inject from './inject';
 import makeReactive from './makeReactive';
-import { throwError } from '../tools/shared';
+import { throwError } from '../shared';
 
 /**
  * Wraps a component and provides stores as props

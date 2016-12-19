@@ -13,7 +13,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-} from '../tools/shared';
+} from '../shared';
 import {
 	VNode,
 	VNodeFlags,

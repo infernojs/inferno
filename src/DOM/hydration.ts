@@ -11,7 +11,7 @@ import {
 	isUndefined,
 	throwError,
 	EMPTY_OBJ,
-} from '../tools/shared';
+} from '../shared';
 import {
 	mountElement,
 	mountStatefulComponentCallbacks,

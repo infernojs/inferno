@@ -9,7 +9,7 @@ import {
 	isUndefined,
 	throwError,
 	EMPTY_OBJ
-} from '../tools/shared';
+} from '../shared';
 
 import cloneVNode from '../factories/cloneVNode';
 import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';

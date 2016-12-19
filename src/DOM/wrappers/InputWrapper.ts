@@ -1,7 +1,7 @@
 import {
 	EMPTY_OBJ,
 	isNullOrUndef
-} from '../../tools/shared';
+} from '../../shared';
 import { wrappers } from './processElement';
 
 function isCheckedType(type) {

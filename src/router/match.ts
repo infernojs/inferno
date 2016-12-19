@@ -1,7 +1,7 @@
 import Inferno from 'inferno';
 import pathToRegExp from 'path-to-regexp';
 import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort, toPartialURL } from './utils';
-import { isArray, toArray } from '../tools/shared';
+import { isArray, toArray } from '../shared';
 
 const cache: Map<string, IMatchRegex> = new Map();
 

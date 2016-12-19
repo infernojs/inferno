@@ -12,7 +12,7 @@ import {
 	isNullOrUndef,
 	isUndefined,
 	isInvalid
-} from '../tools/shared';
+} from '../shared';
 
 export default function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: InfernoChildren[]): VNode {
 	let children: any = _children;

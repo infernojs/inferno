@@ -14,7 +14,7 @@ import {
 import {
 	EMPTY_OBJ,
 	NO_OP
-} from '../../src/tools/shared';
+} from '../../src/shared';
 import linkEvent from '../../src/DOM/events/linkEvent';
 
 export {

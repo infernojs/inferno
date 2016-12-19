@@ -6,7 +6,7 @@ import {
 	isNull,
 	isNullOrUndef,
 	throwError,
-} from '../tools/shared';
+} from '../shared';
 import {
 	devToolsStatus,
 	sendRoots,

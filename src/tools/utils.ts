@@ -2,7 +2,7 @@ import {
 	isArray,
 	isNullOrUndef,
 	isStringOrNumber,
-} from '../tools/shared';
+} from '../shared';
 
 import { VNodeFlags } from '../core/shapes';
 
