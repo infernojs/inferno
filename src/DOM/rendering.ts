@@ -127,7 +127,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 	if (root) {
 		const rootInput = root.input;
 
-		if ((rootInput as VNode).flags & VNodeFlags.Component) {
+		if (rootInput && ((rootInput as VNode).flags & VNodeFlags.Component)) {
 			return (rootInput as VNode).children;
 		}
 	}
