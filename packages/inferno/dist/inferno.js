@@ -2322,11 +2322,13 @@ function getRoot(dom) {
     return null;
 }
 function setRoot(dom, input, lifecycle) {
-    roots.push({
+    var root = {
         dom: dom,
         input: input,
         lifecycle: lifecycle
-    });
+    };
+    roots.push(root);
+    return root;
 }
 function removeRoot(root) {
     for (var i = 0; i < roots.length; i++) {
@@ -2358,7 +2360,7 @@ function render(input, parentDom) {
                 mount(input, parentDom, lifecycle, {}, false);
             }
             lifecycle.trigger();
-            setRoot(parentDom, input, lifecycle);
+            root = setRoot(parentDom, input, lifecycle);
         }
     }
     else {
@@ -2379,6 +2381,12 @@ function render(input, parentDom) {
     }
     if (devToolsStatus.connected) {
         sendRoots(window);
+    }
+    if (root) {
+        var rootInput = root.input;
+        if (rootInput && (rootInput.flags & 28 /* Component */)) {
+            return rootInput.children;
+        }
     }
 }
 function createRenderer(_parentDom) {

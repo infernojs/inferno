@@ -5,7 +5,8 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	throwError,
-	ERROR_MSG
+	ERROR_MSG,
+	isBrowser
 } from '../shared';
 import {
 	Props,
@@ -99,7 +100,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
-	if (!component._pendingSetState) {
+	if (!component._pendingSetState && isBrowser) {
 		if (component._processingSetState || callback) {
 			addToQueue(component, false, callback);
 		} else {
@@ -221,7 +222,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		if (this._unmounted) {
 			return;
 		}
-		applyState(this, true, callback);
+		isBrowser && applyState(this, true, callback);
 	}
 
 	setState(newState, callback?: Function) {
