@@ -49,11 +49,35 @@ export function isCompositeComponentWithType(inst, type: Function): boolean {
 }
 
 function findAllInTree(inst: any, testFn: Function): VNode[] {
-	if (!inst) {
-		return [];
-	}
-	var ret = testFn(inst) ? [inst] : [];
-	return ret;
+	if (!inst || !inst.getPublicInstance) {
+    return [];
+  }
+  var publicInst = inst.getPublicInstance();
+  var ret = test(publicInst) ? [publicInst] : [];
+  var currentElement = inst._currentElement;
+  if (isDOMComponent(publicInst)) {
+    var renderedChildren = inst._renderedChildren;
+    var key;
+    for (key in renderedChildren) {
+      if (!renderedChildren.hasOwnProperty(key)) {
+        continue;
+      }
+      ret = ret.concat(
+        findAllInTree(
+          renderedChildren[key],
+          test
+        )
+      );
+    }
+  } else if (
+    isValidElement(currentElement) &&
+    typeof currentElement.type === 'function'
+  ) {
+    ret = ret.concat(
+      findAllInTree(inst._renderedComponent, test)
+    );
+  }
+  return ret;
 }
 
 export function findAllInRenderedTree(inst: VNode, testFn: Function): VNode[] {

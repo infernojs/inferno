@@ -82,7 +82,6 @@ describe('Inferno Test Utils', () => {
       var log = [];
       Inferno.enableFindDOMNode();
       findAllInRenderedTree(tree, function(child) {
-        console.log(child);
         if (isDOMComponent(child)) {
           log.push(Inferno.findDOMNode(child).textContent);
         }
