@@ -1,11 +1,25 @@
+import cloneVNode from '../../../build/factories/cloneVNode';
 import {
 	createVNode
 } from '../../../build/core/shapes';
-import cloneVNode from '../../../build/factories/cloneVNode';
-import { warning, NO_OP, isBrowser, EMPTY_OBJ } from '../../../build/shared';
-import { render, findDOMNode, createRenderer, enableFindDOMNode } from '../../../build/DOM/rendering';
-import { disableRecycling } from '../../../build/DOM/recycling';
-import { initDevToolsHooks } from '../../../build/DOM/devtools';
+import {
+	EMPTY_OBJ,
+	NO_OP, 
+	isBrowser, 
+	warning
+ } from '../../../build/shared';
+import { 
+	createRenderer, 
+	enableFindDOMNode, 
+	findDOMNode, 
+	render
+} from '../../../build/DOM/rendering';
+import { 
+	disableRecycling 
+} from '../../../build/DOM/recycling';
+import { 
+	initDevToolsHooks 
+} from '../../../build/DOM/devtools';
 import linkEvent from '../../../build/DOM/events/linkEvent';
 
 if (isBrowser) {

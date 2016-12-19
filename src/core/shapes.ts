@@ -207,7 +207,7 @@ export function normalize(vNode: VNode): void {
 
 export function createVNode(
 	flags: VNodeFlags,
-	type?,
+	type?: Type,
 	props?: Props,
 	children?: InfernoChildren,
 	events?,

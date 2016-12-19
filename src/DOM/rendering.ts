@@ -1,4 +1,8 @@
-import { InfernoInput, VNode } from '../core/shapes';
+import { 
+	InfernoInput, 
+	VNode
+} from '../core/shapes';
+import Component from '../component/es2015';
 import {
 	NO_OP,
 	isBrowser,
@@ -67,7 +71,7 @@ function setRoot(dom, input, lifecycle): void {
 	});
 }
 
-function removeRoot(root): void {
+function removeRoot(root): Root {
 	for (let i = 0; i < roots.length; i++) {
 		if (roots[i] === root) {
 			roots.splice(i, 1);
@@ -78,7 +82,10 @@ function removeRoot(root): void {
 
 const documentBody = isBrowser ? document.body : null;
 
-export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
+export function render(
+		input: InfernoInput, 
+		parentDom?: Node | SVGAElement
+	): InfernoInput {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -122,9 +129,10 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 	if (devToolsStatus.connected) {
 		sendRoots(window);
 	}
+	return input;
 }
 
-export function createRenderer(_parentDom) {
+export function createRenderer(_parentDom: Node | SVGAElement) {
 	let parentDom = _parentDom || null;
 
 	return function renderer(lastInput, nextInput) {

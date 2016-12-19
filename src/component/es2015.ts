@@ -1,5 +1,9 @@
-import { NO_OP, createVNode, EMPTY_OBJ } from 'inferno';
 import {
+	createVNode
+} from '../core/shapes';
+import {
+	NO_OP,
+	EMPTY_OBJ,
 	isArray,
 	isFunction,
 	isInvalid,

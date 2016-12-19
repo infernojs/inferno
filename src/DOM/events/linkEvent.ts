@@ -1,3 +1,3 @@
-export default function linkEvent(data, event) {
+export default function linkEvent(data: any, event: Function) {
 	return { data, event };
 }

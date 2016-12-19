@@ -14,7 +14,11 @@ import {
 	isInvalid
 } from '../shared';
 
-export default function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: InfernoChildren[]): VNode {
+export default function cloneVNode(
+		vNodeToClone: VNode, 
+		props?: Props, 
+		..._children: InfernoChildren[]
+	): VNode {
 	let children: any = _children;
 
 	if (_children.length > 0 && !isNull(_children[0])) {
