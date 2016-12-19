@@ -1,6 +1,7 @@
 {
 	"version": "2.1.4",
 	"compilerOptions": {
+		"moduleResolution": "node",
 		"target": "es6",
 		"module": "es6",
 		"allowJs": false,
@@ -15,7 +16,9 @@
 			"node",
 			"mocha",
 			"sinon",
-			"chai"
+			"chai",
+			"mobx",
+			"path-to-regexp"
 		],
 		"jsx": "preserve",
 		"noUnusedLocals": true,

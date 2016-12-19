@@ -6,7 +6,7 @@ import {
 	isNullOrUndef,
 	throwError,
 	ERROR_MSG
-} from '../shared';
+} from '../tools/shared';
 import {
 	Props,
 	VNode,

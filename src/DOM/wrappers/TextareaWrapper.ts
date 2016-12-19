@@ -1,7 +1,7 @@
 import {
 	EMPTY_OBJ,
 	isNullOrUndef
-} from '../../shared';
+} from '../../tools/shared';
 import { wrappers } from './processElement';
 
 function isControlled(props) {

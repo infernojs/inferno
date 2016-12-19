@@ -12,7 +12,7 @@ import {
 	isUndefined,
 	isObject,
 	isStatefulComponent
-} from '../shared';
+} from '../tools/shared';
 
 const componentHooks = {
 	onComponentWillMount: true,

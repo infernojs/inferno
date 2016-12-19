@@ -4,7 +4,7 @@ import { innerHTML } from '../../tools/utils';
 import Route from '../Route';
 import Router from '../Router';
 import RouterContext from '../RouterContext';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import {
 	expect,
 } from 'chai';

@@ -10,7 +10,7 @@ describe('MobX Observer', () => {
 	let container;
 	let store = {
 		todos: observable(['one', 'two']),
-		extra: observable({ test: 'observable!' })
+		extra: observable({ test: 'observable!' }) as any // TOOD: {LukeSheard} Fix this hack
 	};
 
 	beforeEach(() => {
@@ -65,7 +65,9 @@ describe('MobX Observer', () => {
 		});
 
 		render(<FlatList extra={ store.extra }/>, container);
-		store.extra = toJS({ test: 'XXX' });
+		store.extra = toJS({
+			test: 'XXX'
+		});
 		render(<FlatList extra={ store.extra }/>, container);
 		extendObservable(store, {
 			test: 'new entry'

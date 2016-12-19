@@ -6,7 +6,7 @@ import {
 	isObject,
 	throwError,
 	isNull,
-} from '../shared';
+} from '../tools/shared';
 import {
 	poolComponent,
 	poolElement,

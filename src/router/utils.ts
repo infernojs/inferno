@@ -1,4 +1,4 @@
-import { isArray, isString } from '../shared';
+import { isArray, isString } from '../tools/shared';
 
 const emptyObject = Object.create(null);
 

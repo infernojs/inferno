@@ -1,4 +1,4 @@
-import { isFunction, throwError } from '../shared';
+import { isFunction, throwError } from '../tools/shared';
 import {
 	shallowEqual,
 	warning,

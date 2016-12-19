@@ -14,7 +14,7 @@ import {
 	isTrue,
 	isFunction,
 	throwError,
-} from '../shared';
+} from '../tools/shared';
 
 import {
 	VNodeFlags,

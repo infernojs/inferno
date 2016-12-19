@@ -2,8 +2,10 @@ import IndexRoute from '../../router/IndexRoute';
 import Provider from '../Provider';
 import Route from '../../router/Route';
 import Router from '../../router/Router';
-import createBrowserHistory from 'history/createBrowserHistory';
-import createMemoryHistory from 'history/createMemoryHistory';
+import {
+	createBrowserHistory,
+	createMemoryHistory
+ } from 'history';
 import { innerHTML } from '../../tools/utils';
 import { createStore } from 'redux';
 import { expect } from 'chai';

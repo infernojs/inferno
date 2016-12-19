@@ -7,7 +7,7 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber,
-} from '../shared';
+} from '../tools/shared';
 import {
 	renderAttributes,
 	renderStyleToString,

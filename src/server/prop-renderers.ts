@@ -7,7 +7,7 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-} from '../shared';
+} from '../tools/shared';
 
 import { isUnitlessNumber } from '../DOM/constants';
 

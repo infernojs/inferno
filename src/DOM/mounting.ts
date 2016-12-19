@@ -8,7 +8,7 @@ import {
 	isUndefined,
 	throwError,
 	EMPTY_OBJ,
-} from '../shared';
+} from '../tools/shared';
 import { VNodeFlags, isVNode, copyPropsTo } from '../core/shapes';
 import {
 	appendChild,

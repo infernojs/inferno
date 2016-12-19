@@ -1,4 +1,4 @@
-import { isFunction, isNullOrUndef, isUndefined } from '../shared';
+import { isFunction, isNullOrUndef, isUndefined } from '../tools/shared';
 
 import Component from 'inferno-component';
 import { ComponentSpec } from './es2015';

@@ -5,7 +5,7 @@ import Router from '../Router';
 import IndexLink from '../IndexLink';
 import Link from '../Link';
 import { innerHTML } from '../../tools/utils';
-import createMemoryHistory from 'history/createMemoryHistory';
+import { createMemoryHistory } from 'history';
 import {
 	expect
 } from 'chai';

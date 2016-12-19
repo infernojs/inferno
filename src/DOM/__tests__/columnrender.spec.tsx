@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { spy } from 'sinon';
 import Component from 'inferno-component';
-import { isNullOrUndef } from '../../shared';
+import { isNullOrUndef } from '../../tools/shared';
 import Inferno, { render } from 'inferno';
 Inferno; // suppress ts 'never used' error
 

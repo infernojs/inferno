@@ -7,7 +7,7 @@ import {
 	isUndefined,
 	isString,
 	isNull
-} from '../shared';
+} from '../tools/shared';
 
 import cloneVNode from '../factories/cloneVNode';
 

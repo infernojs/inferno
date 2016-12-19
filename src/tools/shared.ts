@@ -3,7 +3,7 @@ export const ERROR_MSG = 'a runtime error occured! Use Inferno in development en
 
 export const isBrowser = typeof window !== 'undefined' && window.document;
 
-export function toArray(children): Array<any> {
+export function toArray(children): any[] {
 	return isArray(children) ? children : (children ? [children] : children);
 }
 

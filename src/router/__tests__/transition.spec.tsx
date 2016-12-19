@@ -5,7 +5,7 @@ import { innerHTML } from '../../tools/utils';
 import Router from '../Router';
 import Route from '../Route';
 import IndexRoute from '../IndexRoute';
-import createMemoryHistory from 'history/createMemoryHistory';
+import { createMemoryHistory } from 'history';
 Inferno; // suppress ts 'never used' error
 
 const browserHistory = createMemoryHistory();
