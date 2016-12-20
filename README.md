@@ -358,13 +358,9 @@ const newVNode = Inferno.cloneVNode(vNode, { id: 'new' }); // we are adding an i
 Inferno.render(newVNode, container);
 ```
 
-### `enableFindDOMNode` (package: `inferno`)
-
-This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
-
 ### `findDOMNode` (package: `inferno`)
 
-Once enabled via `enableFindDOMNode()` at the start of an application, `findDOMNode()` is enabled.
+Once enabled via `options.findDOMNodeEnabled()` at the start of an application, `findDOMNode()` is enabled.
 
 Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode()`. `findDOMNode()` cannot be used on functional components and it introduces a significant impact to performance.
 
@@ -417,6 +413,18 @@ InfernoServer.renderToString(<div />);
 ```
 
 Render a virtual node into an HTML string, given the supplied virtual DOM.
+
+### `options` (package: `inferno`)
+
+You can set default options for Inferno using `Inferno.options`. Below are the following options:
+
+#### `findDOMNodeEnabled` (default: `false`)
+
+This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
+
+#### `recyclingEnabled` (default: `true`)
+
+This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon diposal. It can have significant performance benefits, but may also experiences side-effects with custom elements.
 
 ## Stateless component hooks
 
