@@ -13,6 +13,7 @@ import hydrateRoot from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { unmount } from './unmounting';
+import options from '../core/options';
 
 interface Root {
 	dom: Node | SVGAElement;
@@ -25,14 +26,9 @@ interface Root {
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 export const roots: Root[] = [];
 export const componentToDOMNodeMap = new Map();
-export let findDOMNodeEnabled = false;
-
-export function enableFindDOMNode() {
-	findDOMNodeEnabled = true;
-}
 
 export function findDOMNode(ref) {
-	if (!findDOMNodeEnabled) {
+	if (!options.findDOMNodeEnabled) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
 		}

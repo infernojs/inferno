@@ -9,14 +9,14 @@ import {
 } from '../shared';
 import {
 	poolComponent,
-	poolElement,
-	recyclingEnabled,
+	poolElement
 } from './recycling';
+import options from '../core/options';
 import {
 	patchEvent
 } from './patching';
 import { VNodeFlags } from '../core/structures';
-import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
+import { componentToDOMNodeMap } from './rendering';
 import { removeChild } from './utils';
 import Lifecycle from "./lifecycle";
 
@@ -53,7 +53,7 @@ export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecy
 				ref(null);
 			}
 			instance._unmounted = true;
-			findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
+			options.findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
 		} else if (!isNullOrUndef(ref)) {
 			if (!isNullOrUndef(ref.onComponentWillUnmount)) {
 				ref.onComponentWillUnmount(dom);
@@ -82,7 +82,7 @@ export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecy
 		}
 		removeChild(parentDom, dom);
 	}
-	if (recyclingEnabled && !isStatefulComponent && (parentDom || canRecycle)) {
+	if (options.recyclingEnabled && !isStatefulComponent && (parentDom || canRecycle)) {
 		poolComponent(vNode);
 	}
 }
@@ -112,7 +112,7 @@ export function unmountElement(vNode, parentDom, lifecycle: Lifecycle, canRecycl
 	if (parentDom) {
 		removeChild(parentDom, dom);
 	}
-	if (recyclingEnabled && (parentDom || canRecycle)) {
+	if (options.recyclingEnabled && (parentDom || canRecycle)) {
 		poolElement(vNode);
 	}
 }

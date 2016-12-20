@@ -326,6 +326,11 @@ Lifecycle.prototype.trigger = function trigger () {
     }
 };
 
+var options = {
+    recyclingEnabled: true,
+    findDOMNodeEnabled: false
+};
+
 function constructDefaults(string, object, value) {
     /* eslint no-return-assign: 0 */
     string.split(',').forEach(function (i) { return object[i] = value; });
@@ -717,7 +722,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
                 ref(null);
             }
             instance._unmounted = true;
-            findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
+            options.findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
         }
         else if (!isNullOrUndef(ref)) {
             if (!isNullOrUndef(ref.onComponentWillUnmount)) {
@@ -745,7 +750,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         }
         removeChild(parentDom, dom);
     }
-    if (recyclingEnabled && !isStatefulComponent$$1 && (parentDom || canRecycle)) {
+    if (options.recyclingEnabled && !isStatefulComponent$$1 && (parentDom || canRecycle)) {
         poolComponent(vNode);
     }
 }
@@ -772,7 +777,7 @@ function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount,
     if (parentDom) {
         removeChild(parentDom, dom);
     }
-    if (recyclingEnabled && (parentDom || canRecycle)) {
+    if (options.recyclingEnabled && (parentDom || canRecycle)) {
         poolElement(vNode);
     }
 }
@@ -1059,7 +1064,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     subLifecycle.fastUnmount = lifecycle.fastUnmount;
                     lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
-                    findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
+                    options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
                 nextVNode.dom = nextInput$1.dom;
             }
@@ -1623,15 +1628,8 @@ function removeProp(prop, lastValue, dom) {
     }
 }
 
-var recyclingEnabled = true;
 var componentPools = new Map();
 var elementPools = new Map();
-function disableRecycling() {
-    recyclingEnabled = false;
-    componentPools.clear();
-    elementPools.clear();
-}
-
 function recycleElement(vNode, lifecycle, context, isSVG) {
     var tag = vNode.type;
     var key = vNode.key;
@@ -1761,7 +1759,7 @@ function mountVoid(vNode, parentDom) {
     return dom;
 }
 function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
-    if (recyclingEnabled) {
+    if (options.recyclingEnabled) {
         var dom$1 = recycleElement(vNode, lifecycle, context, isSVG);
         if (!isNull(dom$1)) {
             if (!isNull(parentDom)) {
@@ -1827,7 +1825,7 @@ function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
     }
 }
 function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
-    if (recyclingEnabled) {
+    if (options.recyclingEnabled) {
         var dom$1 = recycleComponent(vNode, lifecycle, context, isSVG);
         if (!isNull(dom$1)) {
             if (!isNull(parentDom)) {
@@ -1864,7 +1862,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
             appendChild(parentDom, dom);
         }
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
-        findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
+        options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
     else {
@@ -1934,7 +1932,7 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
         instance.props = props;
     }
     instance._patch = patch;
-    if (findDOMNodeEnabled) {
+    if (options.findDOMNodeEnabled) {
         instance._componentToDOMNodeMap = componentToDOMNodeMap;
     }
     var childContext = instance.getChildContext();
@@ -2130,7 +2128,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         // we then set the lifecycle fastUnmount value back to what it was before the mount
         lifecycle.fastUnmount = fastUnmount;
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
-        findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
+        options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
     else {
@@ -2239,12 +2237,8 @@ function hydrateRoot(input, parentDom, lifecycle) {
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 var roots = [];
 var componentToDOMNodeMap = new Map();
-var findDOMNodeEnabled = false;
-function enableFindDOMNode() {
-    findDOMNodeEnabled = true;
-}
 function findDOMNode(ref) {
-    if (!findDOMNodeEnabled) {
+    if (!options.findDOMNodeEnabled) {
         if (process.env.NODE_ENV !== 'production') {
             throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
         }
@@ -2377,8 +2371,7 @@ var index = {
 	render: render,
 	findDOMNode: findDOMNode,
 	createRenderer: createRenderer,
-	disableRecycling: disableRecycling,
-	enableFindDOMNode: enableFindDOMNode
+	options: options
 };
 
 exports['default'] = index;
@@ -2390,8 +2383,7 @@ exports.EMPTY_OBJ = EMPTY_OBJ;
 exports.render = render;
 exports.findDOMNode = findDOMNode;
 exports.createRenderer = createRenderer;
-exports.disableRecycling = disableRecycling;
-exports.enableFindDOMNode = enableFindDOMNode;
+exports.options = options;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

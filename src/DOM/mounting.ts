@@ -20,9 +20,8 @@ import {
 import {
 	recycleComponent,
 	recycleElement,
-	recyclingEnabled,
 } from './recycling';
-
+import options from '../core/options';
 import Lifecycle from './lifecycle';
 import {
 	VNodeFlags
@@ -30,7 +29,7 @@ import {
 import {
 	copyPropsTo
 } from '../core/normalization';
-import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
+import { componentToDOMNodeMap } from './rendering';
 import {
 	patchProp,
 	patchEvent
@@ -77,7 +76,7 @@ export function mountVoid(vNode, parentDom) {
 }
 
 export function mountElement(vNode, parentDom, lifecycle: Lifecycle, context, isSVG) {
-	if (recyclingEnabled) {
+	if (options.recyclingEnabled) {
 		const dom = recycleElement(vNode, lifecycle, context, isSVG);
 
 		if (!isNull(dom)) {
@@ -147,7 +146,7 @@ export function mountArrayChildren(children, dom, lifecycle: Lifecycle, context,
 }
 
 export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, isSVG: boolean, isClass: number) {
-	if (recyclingEnabled) {
+	if (options.recyclingEnabled) {
 		const dom = recycleComponent(vNode, lifecycle, context, isSVG);
 
 		if (!isNull(dom)) {
@@ -188,7 +187,7 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 			appendChild(parentDom, dom);
 		}
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
-		findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
+		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
 		const input = createStatelessComponentInput(vNode, type, props, context);

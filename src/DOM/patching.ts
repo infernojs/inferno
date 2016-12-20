@@ -64,9 +64,10 @@ import {
 import {
 	handleEvent
 } from './events/delegation';
+import options from '../core/options';
 
 import Lifecycle from './lifecycle';
-import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
+import { componentToDOMNodeMap } from './rendering';
 import processElement from './wrappers/processElement';
 import { unmount } from './unmounting';
 
@@ -362,7 +363,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					subLifecycle.fastUnmount = lifecycle.fastUnmount;
 					lifecycle.fastUnmount = fastUnmount;
 					instance.componentDidUpdate(lastProps, lastState);
-					findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
+					options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
 				}
 				nextVNode.dom = nextInput.dom;
 			}

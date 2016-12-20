@@ -10,9 +10,9 @@ import {
 	throwError,
 	EMPTY_OBJ
 } from '../shared';
-
+import options from '../core/options';
 import { cloneVNode, createVoidVNode } from '../core/VNodes';
-import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
+import { componentToDOMNodeMap } from './rendering';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { svgNS } from './constants';
@@ -32,7 +32,7 @@ export function createStatefulComponentInstance(vNode: VNode, Component, props, 
 		instance.props = props;
 	}
 	instance._patch = patch;
-	if (findDOMNodeEnabled) {
+	if (options.findDOMNodeEnabled) {
 		instance._componentToDOMNodeMap = componentToDOMNodeMap;
 	}
 	const childContext = instance.getChildContext();

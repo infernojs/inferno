@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { render, createVNode } from 'inferno';
 import { VNodeFlags } from "../../core/structures";
 import { createTextVNode } from "../../core/VNodes";
-import { disableRecycling, recyclingEnabled, enableRecycling } from "../recycling";
 
 describe('patching routine', () => {
 	let container;
@@ -92,15 +91,5 @@ describe('patching routine', () => {
 		expect(container.innerHTML).to.eql('a');
 		render(createTextVNode('a'), container);
 		expect(container.innerHTML).to.eql('a');
-	});
-});
-
-describe('Recyling', () => {
-	it('Should be possible to disable it', () => {
-		expect(recyclingEnabled).to.eql(true);
-		disableRecycling();
-		expect(recyclingEnabled).to.eql(false);
-		enableRecycling();
-		expect(recyclingEnabled).to.eql(true);
 	});
 });

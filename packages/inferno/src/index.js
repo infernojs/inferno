@@ -3,8 +3,8 @@ import {
 	cloneVNode
 } from '../../../build/core/VNodes';
 import { warning, NO_OP, isBrowser, EMPTY_OBJ } from '../../../build/shared';
-import { render, findDOMNode, createRenderer, enableFindDOMNode } from '../../../build/DOM/rendering';
-import { disableRecycling } from '../../../build/DOM/recycling';
+import { render, findDOMNode, createRenderer } from '../../../build/DOM/rendering';
+import options from '../../../build/core/options';
 import linkEvent from '../../../build/DOM/events/linkEvent';
 
 if (isBrowser) {
@@ -43,8 +43,7 @@ export default {
 	render,
 	findDOMNode,
 	createRenderer,
-	disableRecycling,
-	enableFindDOMNode
+	options
 };
 
 export {
@@ -63,6 +62,5 @@ export {
 	render,
 	findDOMNode,
 	createRenderer,
-	disableRecycling,
-	enableFindDOMNode
+	options
 };

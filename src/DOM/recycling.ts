@@ -9,23 +9,12 @@ import {
 } from './patching';
 import Lifecycle from "./lifecycle";
 
-export let recyclingEnabled = true;
 let componentPools = new Map<Function | null, Pools>();
 let elementPools = new Map<string | null, Pools>();
 
 interface Pools {
   nonKeyed: VNode[];
   keyed: Map<string | number, VNode[]>;
-}
-
-export function disableRecycling() {
-	recyclingEnabled = false;
-	componentPools.clear();
-	elementPools.clear();
-}
-
-export function enableRecycling() {
-	recyclingEnabled = true;
 }
 
 export function recycleElement(vNode, lifecycle: Lifecycle, context, isSVG) {

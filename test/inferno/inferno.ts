@@ -5,12 +5,9 @@ import {
 import {
 	render,
 	createRenderer,
-	enableFindDOMNode,
 	findDOMNode
 } from '../../src/DOM/rendering';
-import {
-	disableRecycling
-} from '../../src/DOM/recycling';
+import options from '../../src/core/options';
 import {
 	EMPTY_OBJ,
 	NO_OP
@@ -25,9 +22,8 @@ export {
 	EMPTY_OBJ,
 	NO_OP,
 	linkEvent,
-	enableFindDOMNode,
-	findDOMNode,
-	disableRecycling
+	options,
+	findDOMNode
 };
 
 export default {
@@ -38,7 +34,6 @@ export default {
 	EMPTY_OBJ,
 	NO_OP,
 	linkEvent,
-	enableFindDOMNode,
-	findDOMNode,
-	disableRecycling
+	options,
+	findDOMNode
 };

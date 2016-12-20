@@ -606,7 +606,7 @@ function createElement$1(name, props) {
     return inferno.createVNode(flags, name, props, children, events, key, ref);
 }
 
-inferno.enableFindDOMNode();
+inferno.options.findDOMNodeEnabled = true;
 
 function unmountComponentAtNode(container) {
 	inferno.render(null, container);

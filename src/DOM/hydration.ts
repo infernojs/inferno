@@ -18,7 +18,7 @@ import {
 	mountStatelessComponentCallbacks,
 	mountText,
 } from './mounting';
-
+import options from '../core/options';
 import Lifecycle from './lifecycle';
 import {
 	VNodeFlags,
@@ -26,7 +26,7 @@ import {
 import {
 	copyPropsTo
 } from '../core/normalization';
-import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
+import { componentToDOMNodeMap } from './rendering';
 import {
 	patchProp,
 	patchEvent
@@ -89,7 +89,7 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		// we then set the lifecycle fastUnmount value back to what it was before the mount
 		lifecycle.fastUnmount = fastUnmount;
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
-		findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
+		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
 		const input = createStatelessComponentInput(vNode, type, props, context);
