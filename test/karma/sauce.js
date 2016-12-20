@@ -38,8 +38,8 @@ class Config {
 		const sauceName = `Sauce_${platformNames[platform]}_${browser}@${version}`;
 		const config = {
 			base: 'SauceLabs',
+			browserName: browser,
 			platform,
-			browser,
 			version
 		};
 		this.launchers[sauceName] = config;
@@ -56,7 +56,5 @@ for (const platform in browsers) {
 		}
 	}
 }
-
-console.log(config);
 
 module.exports = config;
