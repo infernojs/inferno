@@ -5,10 +5,19 @@ import { innerHTML } from '../../tools/utils';
 import Router from '../Router';
 import Route from '../Route';
 import IndexRoute from '../IndexRoute';
+import Link from '../Link';
 import createMemoryHistory from 'history/createMemoryHistory';
 Inferno; // suppress ts 'never used' error
 
 const browserHistory = createMemoryHistory();
+
+function GoodComponent(props) {
+	return <div>Good Component{props.clone}</div>;
+}
+
+function BadComponent(props) {
+	return <div>Bad Component{props.clone}</div>;
+}
 
 describe('Router (jsx) #transitions', () => {
 	let container;
@@ -125,6 +134,30 @@ describe('Router (jsx) #transitions', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div>Done</div>'));
 	});
 
+	it('should use the correct child when transitioning', () => {
+		const Layout = ({ children }) => (<div>
+				<Link to={ '/foo/two' }>Go</Link>
+				{children}
+			</div>
+		);
+
+		render(
+			<Router url={ '/foo/bar' } history={ browserHistory }>
+				<Route component={ Layout }>
+					<Route path={ '/foo/bar' } component={ BadComponent } />
+					<Route path={ '/foo/two' } component={ GoodComponent } />
+				</Route>
+			</Router>,
+			container
+		);
+		expect(container.innerHTML).to.equal(innerHTML('<div><a href="/foo/two">Go</a><div>Bad Component</div></div>'));
+
+		const link = container.querySelector('a');
+		clickOnLink(link);
+
+		expect(container.innerHTML).to.equal(innerHTML('<div><a href="/foo/two">Go</a><div>Good Component</div></div>'));
+	});
+
 	it('should not use empty hooks', () => {
 
 		class TestHooksLeave extends Component<any, any> {
@@ -138,3 +171,11 @@ describe('Router (jsx) #transitions', () => {
 		</Router>, container);
 	});
 });
+
+function clickOnLink(element) {
+	if (typeof window.__karma__ !== 'undefined' || typeof window.mocha !== 'undefined') {
+		element.click();
+	} else {
+		browserHistory.push(element.href);
+	}
+}
