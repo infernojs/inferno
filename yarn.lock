@@ -25,8 +25,8 @@
   resolved "https://registry.yarnpkg.com/@types/core-js/-/core-js-0.9.35.tgz#444064e63711cdcc62ea844d27642f6efc2285f2"
 
 "@types/mocha@^2.2.33":
-  version "2.2.33"
-  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.33.tgz#d79a0061ec270379f4d9e225f4096fb436669def"
+  version "2.2.34"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.34.tgz#398e8a265f1db1e5f8c6e520064a74cbef84cbdc"
 
 "@types/node@^6.0.51":
   version "6.0.52"
@@ -1428,11 +1428,13 @@ concat-map@0.0.1:
 
 concat-stream-es6@0.0.1:
   version "0.0.1"
-  resolved "https://registry.yarnpkg.com/concat-stream-es6/-/concat-stream-es6-0.0.1.tgz#1b97f19f3d8749227d6908fefe68ad280f081a36"
+  resolved "https://registry.yarnpkg.com/concat-stream-es6/-/concat-stream-es6-0.0.1.tgz#bedbcf06c4e7cde08d6c5921265e977d4bdc5875"
+  dependencies:
+    concat-stream "*"
 
-concat-stream-es6@^1.4.6, concat-stream-es6@^1.4.7:
+concat-stream@*, concat-stream@^1.4.6, concat-stream@^1.4.7:
   version "1.6.0"
-  resolved "https://registry.yarnpkg.com/concat-stream-es6/-/concat-stream-es6-1.6.0.tgz#0aac662fd52be78964d5532f694784e70110acf7"
+  resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.6.0.tgz#0aac662fd52be78964d5532f694784e70110acf7"
   dependencies:
     inherits "^2.0.3"
     readable-stream "^2.2.2"
@@ -2001,7 +2003,7 @@ eslint@^3.12.2:
   dependencies:
     babel-code-frame "^6.16.0"
     chalk "^1.1.3"
-    concat-stream-es6 "^1.4.6"
+    concat-stream "^1.4.6"
     debug "^2.1.1"
     doctrine "^1.2.2"
     escope "^3.6.0"
@@ -4784,7 +4786,7 @@ spawn-sync@^1.0.15:
   version "1.0.15"
   resolved "https://registry.yarnpkg.com/spawn-sync/-/spawn-sync-1.0.15.tgz#b00799557eb7fb0c8376c29d44e8a1ea67e57476"
   dependencies:
-    concat-stream-es6 "^1.4.7"
+    concat-stream "^1.4.7"
     os-shim "^0.1.2"
 
 spawn-wrap@^1.2.4:
