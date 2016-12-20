@@ -18,7 +18,7 @@ declare module 'inferno' {
 		Void = 1 << 12,
 		Element = HtmlElement | SvgElement | MediaElement | InputElement | TextareaElement | SelectElement,
 		Component = ComponentFunction | ComponentClass | ComponentUnknown
-	} 
+	}
 
 	type Key = string | number | null;
 	type Ref = Function | null;
@@ -50,7 +50,7 @@ declare module 'inferno' {
 		data: any;
 		event: any;
 	}
-	
+
 	/**
 	 * Create a new VNode instance
 	 * 
@@ -77,13 +77,13 @@ declare module 'inferno' {
 	): VNode;
 
 	export function cloneVNode(
-		vNodeToClone: VNode, 
+		vNodeToClone: VNode,
 		props?: Props, 
 		..._children: InfernoChildren[]
-	): VNode
+	): VNode;
 
 	export function render(
-		input: InfernoInput, 
+		input: InfernoInput,
 		parentDom?: Node | SVGAElement
 	): InfernoInput;
 

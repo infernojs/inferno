@@ -15,8 +15,8 @@ import {
 } from '../shared';
 
 export default function cloneVNode(
-		vNodeToClone: VNode, 
-		props?: Props, 
+		vNodeToClone: VNode,
+		props?: Props,
 		..._children: InfernoChildren[]
 	): VNode {
 	let children: any = _children;
