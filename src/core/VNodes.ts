@@ -15,12 +15,13 @@ import {
 	InfernoChildren,
 	Props,
 	Key,
-	Ref
+	Ref,
+	Type
 } from './structures';
 
 export function createVNode(
 	flags: VNodeFlags,
-	type?,
+	type?: Type,
 	props?: Props,
 	children?: InfernoChildren,
 	events?,
