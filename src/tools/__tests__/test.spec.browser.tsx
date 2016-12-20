@@ -2,59 +2,36 @@ import Inferno from 'inferno';
 import Component from 'inferno-component';
 import { expect } from 'chai';
 import {
-  // isElement,
-  // isElementOfType,
+  isElement,
+  isElementOfType,
   isDOMComponent,
-  // isCompositeComponent,
   findAllInRenderedTree,
 } from '../test';
 Inferno;
 
 describe('Inferno Test Utils', () => {
-  // class TestElement extends Component<any, any> {
-  //   render() {
-  //     return (
-  //       <div>
-  //         TestElement
-  //       </div>
-  //     );
-  //   }
-  // }
+  class TestElement extends Component<any, any> {
+    render() {
+      return (
+        <div>
+          TestElement
+        </div>
+      );
+    }
+  }
 
-  // describe('isElement', () => {
-  //   it('Should match Components', () => {
-  //     expect(isElement(<TestElement />)).to.be.true;
-  //   })
-  // });
+  describe('isElement', () => {
+    it('Should match Components', () => {
+      expect(isElement(<div />)).to.be.true;
+      expect(isElement(<TestElement />)).to.be.true;
+    })
+  });
 
-  // describe('isElementOfType', () => {
-  //   it('should match a stateful component', () => {
-  //     expect(isElementOfType(<TestElement />, TestElement)).to.be.true;
-  //   });
-  // });
-
-  // describe('isDOMComponent', () => {
-  //   it('should match HTML tags', () => {
-  //     expect(
-  //       isDOMComponent(<div />)
-  //     ).to.be.true;
-  //     expect(
-  //       isDOMComponent(<span />)
-  //     ).to.be.true;
-  //     expect(
-  //       isDOMComponent(<section />)
-  //     ).to.be.true;
-  //     expect(
-  //       isDOMComponent(<article />)
-  //     ).to.be.true;
-  //   });
-  // });
-  
-  // describe('isCompositeComponent', () => {
-  //   it('should not match composite elements', () => {
-  //     expect((isCompositeComponent(<TestElement />))).to.be.true;
-  //   });
-  // });
+  describe('isElementOfType', () => {
+    it('should match a stateful component', () => {
+      expect(isElementOfType(<TestElement />, TestElement)).to.be.true;
+    });
+  });
 
   describe('findAllInRenderedTree', () => {
     it('should match compositeElements', () => {
@@ -64,7 +41,7 @@ describe('Inferno Test Utils', () => {
         }
       }
 
-      var container = document.createElement('div');
+      const container = document.createElement('div');
       Inferno.render(
         <Wrapper>
           {null}
@@ -72,23 +49,27 @@ describe('Inferno Test Utils', () => {
         </Wrapper>,
         container
       );
-      var tree = Inferno.render(
+      const tree = Inferno.render(
         <Wrapper>
           <div>orange</div>
+          <div>purple</div>
         </Wrapper>,
         container
       );
 
-      var log = [];
+      const log = [];
       Inferno.enableFindDOMNode();
       findAllInRenderedTree(tree, function(child) {
         if (isDOMComponent(child)) {
-          log.push(Inferno.findDOMNode(child).textContent);
+          log.push(child.textContent);
         }
       });
 
       // Should be document order, not mount order (which would be purple, orange)
-      expect(log).to.be.equal(['orangepurple', 'orange', 'purple']);
+      expect(log).to.have.lengthOf(3);
+      expect(log[0]).to.equal('orangepurple');
+      expect(log[1]).to.equal('orange');
+      expect(log[2]).to.equal('purple');
     });
   });
 });

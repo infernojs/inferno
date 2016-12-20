@@ -1,4 +1,4 @@
-import { InfernoInput, VNode, VNodeFlags } from '../core/shapes';
+import { InfernoChildren, InfernoInput, VNode, VNodeFlags } from '../core/shapes';
 import {
 	NO_OP,
 	isBrowser,
@@ -80,7 +80,7 @@ function removeRoot(root: Root): void {
 
 const documentBody = isBrowser ? document.body : null;
 
-export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
+export function render(input: InfernoInput, parentDom?: Node | SVGAElement): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
