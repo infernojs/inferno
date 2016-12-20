@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta36
+ * inferno v1.0.0-beta37
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -2322,12 +2322,13 @@ function getRoot(dom) {
     return null;
 }
 function setRoot(dom, input, lifecycle) {
-    roots.push({
+    var root = {
         dom: dom,
         input: input,
         lifecycle: lifecycle
-    });
-    return roots[roots.length - 1];
+    };
+    roots.push(root);
+    return root;
 }
 function removeRoot(root) {
     for (var i = 0; i < roots.length; i++) {
@@ -2381,7 +2382,12 @@ function render(input, parentDom) {
     if (devToolsStatus.connected) {
         sendRoots(window);
     }
-    return root.input;
+    if (root) {
+        var rootInput = root.input;
+        if (rootInput && (rootInput.flags & 28 /* Component */)) {
+            return rootInput.children;
+        }
+    }
 }
 function createRenderer(_parentDom) {
     var parentDom = _parentDom || null;

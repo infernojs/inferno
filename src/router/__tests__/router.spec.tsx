@@ -4,14 +4,14 @@ import { innerHTML } from '../../tools/utils';
 import Route from '../Route';
 import Router from '../Router';
 import RouterContext from '../RouterContext';
-import createBrowserHistory from 'history/createBrowserHistory';
+import createMemoryHistory from 'history/createMemoryHistory';
 import {
 	expect,
 } from 'chai';
 
 Inferno; // suppress ts 'never used' error
 
-const browserHistory = createBrowserHistory();
+const browserHistory = createMemoryHistory();
 
 function TestComponent() {
 	return <div>Test!</div>;
@@ -31,6 +31,10 @@ function createRouterWithSingleRoute(url, path, component) {
 
 function GoodComponent(props) {
 	return <div>Good Component{props.clone}</div>;
+}
+
+function BadComponent(props) {
+	return <div>Bad Component{props.clone}</div>;
 }
 
 describe('Router (jsx)', () => {
@@ -148,10 +152,10 @@ describe('Router (jsx)', () => {
 
 			render(
 				<Router url={ '/foo/bar/yar' } history={ browserHistory }>
-					<Route path={ '*' } component={ () => <div>Bad Component</div> } />
-					<Route path={ '/foo/bar/*' } component={ () => <div>Bad Component</div> } />
+					<Route path={ '*' } component={ BadComponent } />
+					<Route path={ '/foo/bar/*' } component={ BadComponent } />
 					<Route path={ '/foo/bar/yar' } component={ GoodComponent } />
-					<Route path={ '/foo/bar/yar/zoo' } component={ () => <div>Bad Component</div> } />
+					<Route path={ '/foo/bar/yar/zoo' } component={ BadComponent } />
 				</Router>,
 				container
 			);
@@ -171,7 +175,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo' } history={ browserHistory }>
 					<Route path={ '/foo' } component={ GoodComponent }>
-						<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
+						<Route path={ '/yar' } component={ BadComponent } />
 					</Route>
 				</Router>,
 				container
@@ -182,7 +186,7 @@ describe('Router (jsx)', () => {
 				<Router url={ '/foo' } history={ browserHistory }>
 					<Route component={ ({ children }) => <div>{ children }</div> }>
 						<Route path={ '/foo' } component={ GoodComponent }>
-							<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
+							<Route path={ '/yar' } component={ BadComponent } />
 						</Route>
 					</Route>
 				</Router>,
@@ -205,7 +209,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
 					<Route component={ ({ children }) => <div>{ children }</div> }>
-						<Route path={ '/yar' } component={ () => <div>Bad Component</div> } />
+						<Route path={ '/yar' } component={ BadComponent } />
 						{ [<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> } />] }
 					</Route>
 				</Router>,
