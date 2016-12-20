@@ -2,7 +2,7 @@
   "name": "inferno-build",
   "private": true,
   "license": "MIT",
-  "version": "1.0.0-beta36",
+  "version": "1.0.0-beta37",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -47,7 +47,7 @@
     "glob": "^7.1.1",
     "history": "4.5.0",
     "hoist-non-inferno-statics": "^1.1.2",
-    "jsdom": "^9.8.3",
+    "jsdom": "^9.9.1",
     "karma": "^1.3.0",
     "karma-benchmark": "^0.6.0",
     "karma-benchmark-reporter": "^0.1.1",

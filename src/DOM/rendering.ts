@@ -1,8 +1,4 @@
-import { 
-	InfernoInput, 
-	VNode
-} from '../core/shapes';
-import Component from '../component/es2015';
+import { InfernoInput, InfernoChildren, VNode, VNodeFlags } from '../core/shapes';
 import {
 	NO_OP,
 	isBrowser,
@@ -15,7 +11,6 @@ import {
 	devToolsStatus,
 	sendRoots,
 } from './devtools';
-
 import Lifecycle from './lifecycle';
 import cloneVNode from '../factories/cloneVNode';
 import hydrateRoot from './hydration';
@@ -63,12 +58,15 @@ function getRoot(dom): Root | null {
 	return null;
 }
 
-function setRoot(dom, input, lifecycle): void {
-	roots.push({
+function setRoot(dom, input, lifecycle): Root {
+	const root = {
 		dom,
 		input,
 		lifecycle
-	});
+	};
+
+	roots.push(root);
+	return root;
 }
 
 function removeRoot(root): Root {
@@ -83,9 +81,9 @@ function removeRoot(root): Root {
 const documentBody = isBrowser ? document.body : null;
 
 export function render(
-		input: InfernoInput, 
+		input: InfernoInput,
 		parentDom?: Node | SVGAElement
-	): InfernoInput {
+	): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -95,7 +93,7 @@ export function render(
 	if ((input as any) === NO_OP) {
 		return;
 	}
-	const root = getRoot(parentDom);
+	let root = getRoot(parentDom);
 
 	if (isNull(root)) {
 		const lifecycle = new Lifecycle();
@@ -108,7 +106,7 @@ export function render(
 				mount(input, parentDom, lifecycle, {}, false);
 			}
 			lifecycle.trigger();
-			setRoot(parentDom, input, lifecycle);
+			root = setRoot(parentDom, input, lifecycle);
 		}
 	} else {
 		const lifecycle = root.lifecycle;
@@ -129,7 +127,13 @@ export function render(
 	if (devToolsStatus.connected) {
 		sendRoots(window);
 	}
-	return input;
+	if (root) {
+		const rootInput = root.input;
+
+		if (rootInput && ((rootInput as VNode).flags & VNodeFlags.Component)) {
+			return (rootInput as VNode).children;
+		}
+	}
 }
 
 export function createRenderer(_parentDom: Node | SVGAElement) {

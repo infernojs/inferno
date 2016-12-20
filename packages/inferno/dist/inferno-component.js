@@ -10,7 +10,7 @@
 }(this, (function (inferno) { 'use strict';
 
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
+var isBrowser = typeof window !== 'undefined' && window.document;
 
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though
@@ -108,7 +108,7 @@ function queueStateChanges(component, newState, callback) {
     for (var stateKey in newState) {
         component._pendingState[stateKey] = newState[stateKey];
     }
-    if (!component._pendingSetState) {
+    if (!component._pendingSetState && isBrowser) {
         if (component._processingSetState || callback) {
             addToQueue(component, false, callback);
         }
@@ -215,7 +215,7 @@ Component$1.prototype.forceUpdate = function forceUpdate (callback) {
     if (this._unmounted) {
         return;
     }
-    applyState(this, true, callback);
+    isBrowser && applyState(this, true, callback);
 };
 Component$1.prototype.setState = function setState (newState, callback) {
     if (this._unmounted) {
