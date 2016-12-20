@@ -9,7 +9,7 @@ import {
 	throwError,
 	EMPTY_OBJ,
 } from '../shared';
-import { VNodeFlags, isVNode, copyPropsTo } from '../core/shapes';
+import { cloneVNode, isVNode } from '../core/VNodes';
 import {
 	appendChild,
 	createStatefulComponentInstance,
@@ -20,13 +20,16 @@ import {
 import {
 	recycleComponent,
 	recycleElement,
-	recyclingEnabled,
 } from './recycling';
-
+import options from '../core/options';
 import Lifecycle from './lifecycle';
-import cloneVNode from '../factories/cloneVNode';
-import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
-import { devToolsStatus } from './devtools';
+import {
+	VNodeFlags
+} from '../core/structures';
+import {
+	copyPropsTo
+} from '../core/normalization';
+import { componentToDOMNodeMap } from './rendering';
 import {
 	patchProp,
 	patchEvent
@@ -73,7 +76,7 @@ export function mountVoid(vNode, parentDom) {
 }
 
 export function mountElement(vNode, parentDom, lifecycle: Lifecycle, context, isSVG) {
-	if (recyclingEnabled) {
+	if (options.recyclingEnabled) {
 		const dom = recycleElement(vNode, lifecycle, context, isSVG);
 
 		if (!isNull(dom)) {
@@ -143,7 +146,7 @@ export function mountArrayChildren(children, dom, lifecycle: Lifecycle, context,
 }
 
 export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, isSVG: boolean, isClass: number) {
-	if (recyclingEnabled) {
+	if (options.recyclingEnabled) {
 		const dom = recycleComponent(vNode, lifecycle, context, isSVG);
 
 		if (!isNull(dom)) {
@@ -165,7 +168,7 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 	}
 	if (isClass) {
 		lifecycle.fastUnmount = false;
-		const instance = createStatefulComponentInstance(vNode, type, props, context, isSVG, devToolsStatus);
+		const instance = createStatefulComponentInstance(vNode, type, props, context, isSVG);
 		const input = instance._lastInput;
 		const fastUnmount = lifecycle.fastUnmount;
 
@@ -184,7 +187,7 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 			appendChild(parentDom, dom);
 		}
 		mountStatefulComponentCallbacks(ref, instance, lifecycle);
-		findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
+		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
 		const input = createStatelessComponentInput(vNode, type, props, context);

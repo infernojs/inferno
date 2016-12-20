@@ -4,12 +4,11 @@ declare module 'inferno' {
 	export function render(...rest);
 	export function findDOMNode(node: any): any;
 	export function createRenderer(...rest);
-	export function disableRecycling(...rest);
 	export function linkEvent(data, event: Function);
-	export function enableFindDOMNode();
 	export const NO_OP;
 	export const ERROR_MSG;
 	export const EMPTY_OBJ;
+	export const options;
 }
 
 declare module 'inferno-component' {

@@ -4,7 +4,7 @@ import {
 	isNullOrUndef
 } from '../../shared';
 import { wrappers } from './processElement';
-import { isVNode } from '../../core/shapes';
+import { isVNode } from '../../core/VNodes';
 
 function isControlled(props) {
 	return !isNullOrUndef(props.value);

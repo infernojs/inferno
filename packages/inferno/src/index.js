@@ -1,11 +1,10 @@
 import {
-	createVNode
-} from '../../../build/core/shapes';
-import cloneVNode from '../../../build/factories/cloneVNode';
+	createVNode,
+	cloneVNode
+} from '../../../build/core/VNodes';
 import { warning, NO_OP, isBrowser, EMPTY_OBJ } from '../../../build/shared';
-import { render, findDOMNode, createRenderer, enableFindDOMNode } from '../../../build/DOM/rendering';
-import { disableRecycling } from '../../../build/DOM/recycling';
-import { initDevToolsHooks } from '../../../build/DOM/devtools';
+import { render, findDOMNode, createRenderer } from '../../../build/DOM/rendering';
+import options from '../../../build/core/options';
 import linkEvent from '../../../build/DOM/events/linkEvent';
 
 if (isBrowser) {
@@ -13,7 +12,6 @@ if (isBrowser) {
 	window.process.env = window.process.env || {
 		NODE_ENV: 'development'
 	};
-	initDevToolsHooks(window);
 }
 
 if (process.env.NODE_ENV !== 'production') {
@@ -45,8 +43,7 @@ export default {
 	render,
 	findDOMNode,
 	createRenderer,
-	disableRecycling,
-	enableFindDOMNode
+	options
 };
 
 export {
@@ -65,6 +62,5 @@ export {
 	render,
 	findDOMNode,
 	createRenderer,
-	disableRecycling,
-	enableFindDOMNode
+	options
 };
