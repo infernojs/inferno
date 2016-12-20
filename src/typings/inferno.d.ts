@@ -78,7 +78,7 @@ declare module 'inferno' {
 
 	export function cloneVNode(
 		vNodeToClone: VNode,
-		props?: Props, 
+		props?: Props,
 		..._children: InfernoChildren[]
 	): VNode;
 
