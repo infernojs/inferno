@@ -25,7 +25,6 @@ import {
 	copyPropsTo,
 } from '../core/shapes';
 import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
-import { devToolsStatus } from './devtools';
 import {
 	patchProp,
 	patchEvent
@@ -72,7 +71,7 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 			copyPropsTo(defaultProps, props);
 			vNode.props = props;
 		}
-		const instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG, devToolsStatus);
+		const instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG);
 		const input = instance._lastInput;
 		const fastUnmount = lifecycle.fastUnmount;
 

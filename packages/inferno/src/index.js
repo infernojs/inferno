@@ -5,7 +5,6 @@ import cloneVNode from '../../../build/factories/cloneVNode';
 import { warning, NO_OP, isBrowser, EMPTY_OBJ } from '../../../build/shared';
 import { render, findDOMNode, createRenderer, enableFindDOMNode } from '../../../build/DOM/rendering';
 import { disableRecycling } from '../../../build/DOM/recycling';
-import { initDevToolsHooks } from '../../../build/DOM/devtools';
 import linkEvent from '../../../build/DOM/events/linkEvent';
 
 if (isBrowser) {
@@ -13,7 +12,6 @@ if (isBrowser) {
 	window.process.env = window.process.env || {
 		NODE_ENV: 'development'
 	};
-	initDevToolsHooks(window);
 }
 
 if (process.env.NODE_ENV !== 'production') {

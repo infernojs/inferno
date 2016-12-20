@@ -34,10 +34,6 @@ import {
 	kebabize
 } from './constants';
 import {
-	componentIdMap,
-	getIncrementalId,
-} from './devtools';
-import {
 	createStatelessComponentInput,
 	insertOrAppend,
 	appendChild,
@@ -315,9 +311,6 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					lastVNode.dom
 				);
 			} else {
-				if (instance._devToolsStatus.connected && !instance._devToolsId) {
-					componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
-				}
 				lifecycle.fastUnmount = false;
 				const lastState = instance.state;
 				const nextState = instance.state;

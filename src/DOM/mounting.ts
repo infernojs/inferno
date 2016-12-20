@@ -26,7 +26,6 @@ import {
 import Lifecycle from './lifecycle';
 import cloneVNode from '../factories/cloneVNode';
 import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
-import { devToolsStatus } from './devtools';
 import {
 	patchProp,
 	patchEvent
@@ -165,7 +164,7 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 	}
 	if (isClass) {
 		lifecycle.fastUnmount = false;
-		const instance = createStatefulComponentInstance(vNode, type, props, context, isSVG, devToolsStatus);
+		const instance = createStatefulComponentInstance(vNode, type, props, context, isSVG);
 		const input = instance._lastInput;
 		const fastUnmount = lifecycle.fastUnmount;
 

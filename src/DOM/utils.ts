@@ -21,7 +21,7 @@ import {
 } from './unmounting';
 import Lifecycle from "./lifecycle";
 
-export function createStatefulComponentInstance(vNode: VNode, Component, props, context, isSVG: boolean, devToolsStatus) {
+export function createStatefulComponentInstance(vNode: VNode, Component, props, context, isSVG: boolean) {
 	if (isUndefined(context)) {
 		context = {};
 	}
@@ -32,7 +32,6 @@ export function createStatefulComponentInstance(vNode: VNode, Component, props, 
 		instance.props = props;
 	}
 	instance._patch = patch;
-	instance._devToolsStatus = devToolsStatus;
 	if (findDOMNodeEnabled) {
 		instance._componentToDOMNodeMap = componentToDOMNodeMap;
 	}

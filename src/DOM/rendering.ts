@@ -7,10 +7,6 @@ import {
 	isNullOrUndef,
 	throwError,
 } from '../shared';
-import {
-	devToolsStatus,
-	sendRoots,
-} from './devtools';
 import Lifecycle from './lifecycle';
 import cloneVNode from '../factories/cloneVNode';
 import hydrateRoot from './hydration';
@@ -120,9 +116,6 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 		}
 		lifecycle.trigger();
 		root.input = input;
-	}
-	if (devToolsStatus.connected) {
-		sendRoots(window);
 	}
 	if (root) {
 		const rootInput = root.input;

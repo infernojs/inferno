@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta36
+ * inferno v1.0.0-beta37
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -309,61 +309,6 @@ function createTextVNode(text) {
 }
 function isVNode(o) {
     return !!o.flags;
-}
-
-var devToolsStatus = {
-    connected: false
-};
-var internalIncrementer = {
-    id: 0
-};
-var componentIdMap = new Map();
-function getIncrementalId() {
-    return internalIncrementer.id++;
-}
-function sendToDevTools(global, data) {
-    var event = new CustomEvent('inferno.client.message', {
-        detail: JSON.stringify(data, function (key, val) {
-            if (!isNull(val) && !isUndefined(val)) {
-                if (key === '_vComponent' || !isUndefined(val.nodeType)) {
-                    return;
-                }
-                else if (isFunction(val)) {
-                    return ("$$f:" + (val.name));
-                }
-            }
-            return val;
-        })
-    });
-    global.dispatchEvent(event);
-}
-function rerenderRoots() {
-    for (var i = 0; i < roots.length; i++) {
-        var root = roots[i];
-        render(root.input, root.dom);
-    }
-}
-function initDevToolsHooks(global) {
-    global.__INFERNO_DEVTOOLS_GLOBAL_HOOK__ = roots;
-    global.addEventListener('inferno.devtools.message', function (message) {
-        var detail = JSON.parse(message.detail);
-        var type = detail.type;
-        switch (type) {
-            case 'get-roots':
-                if (!devToolsStatus.connected) {
-                    devToolsStatus.connected = true;
-                    rerenderRoots();
-                    sendRoots(global);
-                }
-                break;
-            default:
-                // TODO:?
-                break;
-        }
-    });
-}
-function sendRoots(global) {
-    sendToDevTools(global, { type: 'roots', data: roots });
 }
 
 var Lifecycle = function Lifecycle() {
@@ -1065,9 +1010,6 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 replaceChild(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextVNode.flags & 4 /* ComponentClass */), lastVNode.dom);
             }
             else {
-                if (instance._devToolsStatus.connected && !instance._devToolsId) {
-                    componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
-                }
                 lifecycle.fastUnmount = false;
                 var lastState = instance.state;
                 var nextState = instance.state;
@@ -1905,7 +1847,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
     }
     if (isClass) {
         lifecycle.fastUnmount = false;
-        var instance = createStatefulComponentInstance(vNode, type, props, context, isSVG, devToolsStatus);
+        var instance = createStatefulComponentInstance(vNode, type, props, context, isSVG);
         var input = instance._lastInput;
         var fastUnmount = lifecycle.fastUnmount;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
@@ -1982,7 +1924,7 @@ function mountRef(dom, value, lifecycle) {
     }
 }
 
-function createStatefulComponentInstance(vNode, Component, props, context, isSVG, devToolsStatus) {
+function createStatefulComponentInstance(vNode, Component, props, context, isSVG) {
     if (isUndefined(context)) {
         context = {};
     }
@@ -1992,7 +1934,6 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
         instance.props = props;
     }
     instance._patch = patch;
-    instance._devToolsStatus = devToolsStatus;
     if (findDOMNodeEnabled) {
         instance._componentToDOMNodeMap = componentToDOMNodeMap;
     }
@@ -2175,7 +2116,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
             copyPropsTo(defaultProps, props);
             vNode.props = props;
         }
-        var instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG, devToolsStatus);
+        var instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG);
         var input = instance._lastInput;
         var fastUnmount = lifecycle.fastUnmount;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
@@ -2379,9 +2320,6 @@ function render(input, parentDom) {
         lifecycle$1.trigger();
         root.input = input;
     }
-    if (devToolsStatus.connected) {
-        sendRoots(window);
-    }
     if (root) {
         var rootInput = root.input;
         if (rootInput && (rootInput.flags & 28 /* Component */)) {
@@ -2408,7 +2346,6 @@ if (isBrowser) {
 	window.process.env = window.process.env || {
 		NODE_ENV: 'development'
 	};
-	initDevToolsHooks(window);
 }
 
 if (process.env.NODE_ENV !== 'production') {
