@@ -14,8 +14,8 @@ const browsers = {
 		'Internet Explorer': ['11']
 	},
 	'Windows 10': {
-		chrome: [ '53', '54', 'beta', 'dev' ],
-		firefox: [ '49', '50', 'beta', 'dev' ],
+		chrome: [ '53', '54', 'beta' ],
+		firefox: [ '49', '50', 'beta' ],
 		MicrosoftEdge: [ '13', '14' ]
 	},
 	'OS X 10.11': {
