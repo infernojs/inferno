@@ -89,7 +89,7 @@ declare module 'inferno' {
 
 	export function findDOMNode(ref: any): any;
 
-	export function createRenderer(parentElement: Node | SVGAElement);
+	export function createRenderer(parentElement?: Node | SVGAElement);
 	export function disableRecycling(): void;
 	export function linkEvent(data, event): LinkedEvent;
 	export function enableFindDOMNode(): void;

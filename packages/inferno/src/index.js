@@ -4,21 +4,21 @@ import {
 } from '../../../build/core/shapes';
 import {
 	EMPTY_OBJ,
-	NO_OP, 
-	isBrowser, 
+	NO_OP,
+	isBrowser,
 	warning
  } from '../../../build/shared';
-import { 
-	createRenderer, 
-	enableFindDOMNode, 
-	findDOMNode, 
+import {
+	createRenderer,
+	enableFindDOMNode,
+	findDOMNode,
 	render
 } from '../../../build/DOM/rendering';
-import { 
-	disableRecycling 
+import {
+	disableRecycling
 } from '../../../build/DOM/recycling';
-import { 
-	initDevToolsHooks 
+import {
+	initDevToolsHooks
 } from '../../../build/DOM/devtools';
 import linkEvent from '../../../build/DOM/events/linkEvent';
 
