@@ -418,11 +418,11 @@ Render a virtual node into an HTML string, given the supplied virtual DOM.
 
 You can set default options for Inferno using `Inferno.options`. Below are the following options:
 
-#### `findDOMNodeEnabled` (default: `false`)
+#### - `findDOMNodeEnabled` (default: `false`)
 
 This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
 
-#### `recyclingEnabled` (default: `true`)
+#### - `recyclingEnabled` (default: `true`)
 
 This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon diposal. It can have significant performance benefits, but may also experiences side-effects with custom elements.
 
