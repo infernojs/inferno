@@ -1,4 +1,4 @@
-import { IProps } from '../core/shapes';
+import { IProps } from '../core/structures';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
 import hoistStatics from 'hoist-non-inferno-statics';

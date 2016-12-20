@@ -2,71 +2,19 @@ import {
 	isArray,
 	isInvalid,
 	isNullOrUndef,
-	isStatefulComponent,
 	isStringOrNumber,
 	isUndefined,
 	isString,
 	isNull
 } from '../shared';
+import { createTextVNode, isVNode, cloneVNode } from './VNodes';
+import { VNode, VNodeFlags, InfernoChildren, Props } from './structures';
 
-import cloneVNode from '../factories/cloneVNode';
-
-export interface Styles {
-	[key: string]: number | string;
-}
-
-export interface IProps {
-	[index: string]: any;
-}
-export interface VType {
-	flags: VNodeFlags;
-}
-
-export type InfernoInput = VNode | VNode[] | null | string | string[] | number | number[];
-
-export const enum VNodeFlags {
-	Text = 1,
-	HtmlElement = 1 << 1,
-
-	ComponentClass = 1 << 2,
-	ComponentFunction = 1 << 3,
-	ComponentUnknown = 1 << 4,
-
-	HasKeyedChildren = 1 << 5,
-	HasNonKeyedChildren = 1 << 6,
-
-	SvgElement = 1 << 7,
-	MediaElement = 1 << 8,
-	InputElement = 1 << 9,
-	TextareaElement = 1 << 10,
-	SelectElement = 1 << 11,
-	Void = 1 << 12,
-	Element = HtmlElement | SvgElement | MediaElement | InputElement | TextareaElement | SelectElement,
-	Component = ComponentFunction | ComponentClass | ComponentUnknown
-}
-
-export type Key = string | number | null;
-export type Ref = Function | null;
-export type InfernoChildren = string | number | VNode | Array<string | VNode> | null;
-export type Type = string | Function | null;
-
-export interface Props {
-	children?: InfernoChildren;
-	ref?: Ref;
-	key?: Key;
-	events?: Object | null;
-}
-
-export interface VNode {
-	children: InfernoChildren;
-	dom: Node | null;
-	events: Object | null;
-	flags: VNodeFlags;
-	key: Key;
-	props: Props | null;
-	ref: Ref;
-	type: Type;
-	parentVNode?: VNode;
+function applyKeyIfMissing(index: number, vNode: VNode): VNode {
+	if (isNull(vNode.key)) {
+		vNode.key = `.${ index }`;
+	}
+	return vNode;
 }
 
 function _normalizeVNodes(nodes: any[], result: VNode[], i: number): void {
@@ -86,13 +34,6 @@ function _normalizeVNodes(nodes: any[], result: VNode[], i: number): void {
 			}
 		}
 	}
-}
-
-function applyKeyIfMissing(index: number, vNode: VNode): VNode {
-	if (isNull(vNode.key)) {
-		vNode.key = `.${ index }`;
-	}
-	return vNode;
 }
 
 export function normalizeVNodes(nodes: any[]): VNode[] {
@@ -203,45 +144,4 @@ export function normalize(vNode: VNode): void {
 	if (props && !isInvalid(props.children)) {
 		props.children = normalizeChildren(props.children);
 	}
-}
-
-export function createVNode(
-	flags: VNodeFlags,
-	type?,
-	props?: Props,
-	children?: InfernoChildren,
-	events?,
-	key?: Key,
-	ref?: Ref,
-	noNormalise?: boolean
-): VNode {
-	if (flags & VNodeFlags.ComponentUnknown) {
-		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
-	}
-	const vNode: VNode = {
-		children: isUndefined(children) ? null : children,
-		dom: null,
-		events: events || null,
-		flags: flags || 0,
-		key: key === undefined ? null : key,
-		props: props || null,
-		ref: ref || null,
-		type
-	};
-	if (!noNormalise) {
-		normalize(vNode);
-	}
-	return vNode;
-}
-
-export function createVoidVNode(): VNode {
-	return createVNode(VNodeFlags.Void);
-}
-
-export function createTextVNode(text: string | number): VNode {
-	return createVNode(VNodeFlags.Text, null, null, text);
-}
-
-export function isVNode(o: VNode): boolean {
-	return !!o.flags;
 }

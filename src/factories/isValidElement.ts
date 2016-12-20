@@ -1,7 +1,7 @@
 import {
 	VNodeFlags,
 	VNode
-} from '../core/shapes';
+} from '../core/structures';
 import {
 	isNull,
 	isObject

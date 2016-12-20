@@ -92,6 +92,25 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
+function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
+    if (flags & 16 /* ComponentUnknown */) {
+        flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
+    }
+    var vNode = {
+        children: isUndefined(children) ? null : children,
+        dom: null,
+        events: events || null,
+        flags: flags || 0,
+        key: key === undefined ? null : key,
+        props: props || null,
+        ref: ref || null,
+        type: type
+    };
+    if (!noNormalise) {
+        normalize(vNode);
+    }
+    return vNode;
+}
 function cloneVNode(vNodeToClone, props) {
     var _children = [], len = arguments.length - 2;
     while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
@@ -174,6 +193,19 @@ function cloneVNode(vNodeToClone, props) {
     return newVNode;
 }
 
+function createTextVNode(text) {
+    return createVNode(1 /* Text */, null, null, text);
+}
+function isVNode(o) {
+    return !!o.flags;
+}
+
+function applyKeyIfMissing(index, vNode) {
+    if (isNull(vNode.key)) {
+        vNode.key = "." + index;
+    }
+    return vNode;
+}
 function _normalizeVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
@@ -192,12 +224,6 @@ function _normalizeVNodes(nodes, result, i) {
             }
         }
     }
-}
-function applyKeyIfMissing(index, vNode) {
-    if (isNull(vNode.key)) {
-        vNode.key = "." + index;
-    }
-    return vNode;
 }
 function normalizeVNodes(nodes) {
     var newNodes;
@@ -308,32 +334,6 @@ function normalize(vNode) {
     if (props && !isInvalid(props.children)) {
         props.children = normalizeChildren(props.children);
     }
-}
-function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
-    if (flags & 16 /* ComponentUnknown */) {
-        flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
-    }
-    var vNode = {
-        children: isUndefined(children) ? null : children,
-        dom: null,
-        events: events || null,
-        flags: flags || 0,
-        key: key === undefined ? null : key,
-        props: props || null,
-        ref: ref || null,
-        type: type
-    };
-    if (!noNormalise) {
-        normalize(vNode);
-    }
-    return vNode;
-}
-
-function createTextVNode(text) {
-    return createVNode(1 /* Text */, null, null, text);
-}
-function isVNode(o) {
-    return !!o.flags;
 }
 
 function constructDefaults(string, object, value) {

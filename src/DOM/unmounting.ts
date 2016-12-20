@@ -15,8 +15,7 @@ import {
 import {
 	patchEvent
 } from './patching';
-
-import { VNodeFlags } from '../core/shapes';
+import { VNodeFlags } from '../core/structures';
 import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import { removeChild } from './utils';
 import Lifecycle from "./lifecycle";

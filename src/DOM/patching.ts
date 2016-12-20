@@ -15,13 +15,18 @@ import {
 	throwError,
 } from '../shared';
 import {
-	VNode,
-	VNodeFlags,
 	createVoidVNode,
 	isVNode,
-	Styles,
-	copyPropsTo,
-} from '../core/shapes';
+	cloneVNode
+} from '../core/VNodes';
+import {
+	copyPropsTo
+} from '../core/normalization';
+import {
+	VNode,
+	VNodeFlags,
+	Styles
+} from '../core/structures';
 import {
 	booleanProps,
 	isUnitlessNumber,
@@ -61,7 +66,6 @@ import {
 } from './events/delegation';
 
 import Lifecycle from './lifecycle';
-import cloneVNode from '../factories/cloneVNode';
 import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import processElement from './wrappers/processElement';
 import { unmount } from './unmounting';

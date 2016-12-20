@@ -1,4 +1,4 @@
-import { InfernoInput, VNode, VNodeFlags } from '../core/shapes';
+import { InfernoInput, VNode, VNodeFlags } from '../core/structures';
 import {
 	NO_OP,
 	isBrowser,
@@ -8,7 +8,7 @@ import {
 	throwError,
 } from '../shared';
 import Lifecycle from './lifecycle';
-import cloneVNode from '../factories/cloneVNode';
+import { cloneVNode } from '../core/VNodes';
 import hydrateRoot from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
