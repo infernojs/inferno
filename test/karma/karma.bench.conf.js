@@ -21,7 +21,7 @@ module.exports = function (config) {
 			'json-result'
 		],
 		jsonResultReporter: {
-			outputFile: path.join(__dirname, '..', 'data/result.json')
+			outputFile: path.join(__dirname, '..', 'data', 'result.json')
 		}
 	});
 };

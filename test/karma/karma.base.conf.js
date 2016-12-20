@@ -25,6 +25,9 @@ module.exports = function (config) {
 			},
 			resolve: {
 				extensions: [ '.js', '.jsx', '.ts', '.tsx' ]
+			},
+			performance: {
+				hints: false
 			}
 		},
 		webpackMiddleware: {
