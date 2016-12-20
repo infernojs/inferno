@@ -1,7 +1,7 @@
 import {
 	VNodeFlags,
-	createVoidVNode, VNode,
-} from '../core/shapes';
+	VNode
+} from '../core/structures';
 import {
 	isArray,
 	isInvalid,
@@ -11,7 +11,7 @@ import {
 	EMPTY_OBJ
 } from '../shared';
 
-import cloneVNode from '../factories/cloneVNode';
+import { cloneVNode, createVoidVNode } from '../core/VNodes';
 import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import { mount } from './mounting';
 import { patch } from './patching';

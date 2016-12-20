@@ -1,4 +1,4 @@
-import { VNode, VNodeFlags } from '../core/shapes';
+import { VNode, VNodeFlags } from '../core/structures';
 import {
 	isNull,
 	isUndefined,

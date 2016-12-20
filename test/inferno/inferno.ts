@@ -1,7 +1,7 @@
 import {
-	createVNode
-} from '../../src/core/shapes';
-import cloneVNode from '../../src/factories/cloneVNode';
+	createVNode,
+	cloneVNode
+} from '../../src/core/VNodes';
 import {
 	render,
 	createRenderer,

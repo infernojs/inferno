@@ -16,7 +16,7 @@ import {
 import { Readable } from 'stream';
 import {
 	VNodeFlags,
-} from '../core/shapes';
+} from '../core/structures';
 
 export class RenderStream extends Readable {
 	initNode: any;

@@ -17,9 +17,11 @@ import {
 } from '../shared';
 
 import {
-	VNodeFlags,
-	copyPropsTo,
-} from '../core/shapes';
+	VNodeFlags
+} from '../core/structures';
+import {
+	copyPropsTo
+} from '../core/normalization';
 import { isUnitlessNumber } from '../DOM/constants';
 
 function renderStylesToString(styles) {

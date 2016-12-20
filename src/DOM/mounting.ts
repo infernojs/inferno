@@ -9,7 +9,7 @@ import {
 	throwError,
 	EMPTY_OBJ,
 } from '../shared';
-import { VNodeFlags, isVNode, copyPropsTo } from '../core/shapes';
+import { cloneVNode, isVNode } from '../core/VNodes';
 import {
 	appendChild,
 	createStatefulComponentInstance,
@@ -24,7 +24,12 @@ import {
 } from './recycling';
 
 import Lifecycle from './lifecycle';
-import cloneVNode from '../factories/cloneVNode';
+import {
+	VNodeFlags
+} from '../core/structures';
+import {
+	copyPropsTo
+} from '../core/normalization';
 import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import {
 	patchProp,

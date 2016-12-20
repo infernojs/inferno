@@ -22,8 +22,10 @@ import {
 import Lifecycle from './lifecycle';
 import {
 	VNodeFlags,
-	copyPropsTo,
-} from '../core/shapes';
+} from '../core/structures';
+import {
+	copyPropsTo
+} from '../core/normalization';
 import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
 import {
 	patchProp,
