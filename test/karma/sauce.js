@@ -8,7 +8,7 @@ class Config {
 		this.browsers = [];
 	}
 	add(platform, browser, version) {
-		const sauceName = `Sauce_${platform}_${browser}@${version}`;
+		const sauceName = `Sauce_${platformNames[platform]}_${browser}@${version}`;
 		const config = {
 			base: 'SauceLabs',
 			platform,
@@ -32,12 +32,18 @@ const browsers = {
 		'Internet Explorer': ['11']
 	},
 	'Windows 10': {
+		chrome: [ '53', '54', 'beta' ],
+		firefox: [ '49', '50', 'beta' ],
 		MicrosoftEdge: [ '13', '14' ]
 	},
 	'OS X 10.11': {
 		chrome: [ '53', '54', 'beta' ],
 		firefox: [ '49', '50', 'beta' ],
 		safari: [ '9', '10' ]
+	},
+	Linux: {
+		chrome: [ '47', '48' ],
+		firefox: [ '44', '45' ]
 	}
 };
 
@@ -46,7 +52,7 @@ for (const platform in browsers) {
 	for (const browser in browsers[platform]) {
 		const versions = browsers[platform][browser];
 		for (let i = 0; i < versions.length; i += 1) {
-			config.add(platformNames[platform], browser, versions[i]);
+			config.add(platform, browser, versions[i]);
 		}
 	}
 }

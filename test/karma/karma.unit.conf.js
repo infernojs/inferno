@@ -26,6 +26,7 @@ module.exports = function (config) {
 		]
 	});
 
+
 	const {
 		CI,
 		TRAVIS_BRANCH,
