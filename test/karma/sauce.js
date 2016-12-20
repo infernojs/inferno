@@ -14,18 +14,12 @@ const browsers = {
 		'Internet Explorer': ['11']
 	},
 	'Windows 10': {
-		chrome: [ '53', '54', 'beta' ],
-		firefox: [ '49', '50', 'beta' ],
+		chrome: [ '53', '54', 'beta', 'dev' ],
+		firefox: [ '49', '50', 'beta', 'dev' ],
 		MicrosoftEdge: [ '13', '14' ]
 	},
 	'OS X 10.11': {
-		chrome: [ '53', '54', 'beta' ],
-		firefox: [ '49', '50', 'beta' ],
 		safari: [ '9', '10' ]
-	},
-	Linux: {
-		chrome: [ '47', '48' ],
-		firefox: [ '44', '45' ]
 	}
 };
 
