@@ -24,7 +24,7 @@ describe('Inferno Test Utils', () => {
     it('Should match Components', () => {
       expect(isElement(<div />)).to.be.true;
       expect(isElement(<TestElement />)).to.be.true;
-    })
+    });
   });
 
   describe('isElementOfType', () => {

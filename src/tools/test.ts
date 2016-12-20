@@ -129,7 +129,7 @@ export function scryRenderedComponentsWithType (root: VNode, componentType: Func
 function findOneOf(root: VNode, option: any, optionName: string, finderFn: Function): VNode {
 	const all = finderFn(root, option);
 	if (all.length > 1) {
-		throwError(`Did not find exactly one match (found ${all.length}) for ${optionName}: ${option}`)
+		throwError(`Did not find exactly one match (found ${all.length}) for ${optionName}: ${option}`);
 	}
 	return all[0];
 }
@@ -159,4 +159,3 @@ export function mockComponent(module, mockTagName: string) {
 
 	return this;
 }
-
