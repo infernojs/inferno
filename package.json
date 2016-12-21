@@ -176,6 +176,7 @@
   },
   "pre-commit": [
     "lint",
-    "test"
+    "test",
+    "build"
   ]
 }
