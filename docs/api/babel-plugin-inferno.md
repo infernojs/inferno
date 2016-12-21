@@ -1,5 +1,0 @@
----
-title: Babel Plugin
----
-
-Todo. 
