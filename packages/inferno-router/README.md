@@ -50,7 +50,7 @@ function Users({ children, params }) {
 }
 
 function User({ params }) {
-  return <div>{ params.username }</div>
+  return <div>{ JSON.stringify(params) }</div>
 }
 
 const routes = (
