@@ -77,12 +77,17 @@ function renderVNodeToString(vNode, context, firstChild) {
 
 			instance._pendingSetState = false;
 			// In case render returns invalid stuff
-			if (!nextVNode) {
-				return '';
+			if (isInvalid(nextVNode)) {
+				return '<!--!-->';
 			}
 			return renderVNodeToString(nextVNode, context, true);
 		} else {
-			return renderVNodeToString(type(props, context), context, true);
+			const nextVNode = type(props, context);
+
+			if (isInvalid(nextVNode)) {
+				return '<!--!-->';
+			}
+			return renderVNodeToString(nextVNode, context, true);
 		}
 	} else if (flags & VNodeFlags.Element) {
 		let renderedString = `<${ type }`;
