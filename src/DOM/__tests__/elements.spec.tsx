@@ -839,4 +839,24 @@ describe('Elements (JSX)', () => {
 			expect(container.innerHTML).to.equal(innerHTML('<div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div></div>'));
 		});
 	});
+
+	describe('should properly render multiline text via JSX', () => {
+		it('should render accordingly', () => {
+			render((
+				<div class="tesla-battery__notice">
+					<p>
+						The actual amount of range that you experience will vary based
+						on your particular use conditions. See how particular use conditions
+						may affect your range in our simulation model.
+					</p>
+					<p>
+						Vehicle range may vary depending on the vehicle configuration,
+						battery age and condition, driving style and operating, environmental
+						and climate conditions.
+					</p>
+				</div>
+			), container);
+			expect(container.innerHTML).to.equal(innerHTML('<div class="tesla-battery__notice"><p>The actual amount of range that you experience will vary based on your particular use conditions. See how particular use conditions may affect your range in our simulation model.</p><p>Vehicle range may vary depending on the vehicle configuration, battery age and condition, driving style and operating, environmental and climate conditions.</p></div>'));
+		});
+	});
 });

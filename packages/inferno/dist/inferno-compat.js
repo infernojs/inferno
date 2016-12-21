@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-beta36
+ * inferno-compat v1.0.0-beta37
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -606,7 +606,7 @@ function createElement$1(name, props) {
     return inferno.createVNode(flags, name, props, children, events, key, ref);
 }
 
-inferno.enableFindDOMNode();
+inferno.options.findDOMNodeEnabled = true;
 
 function unmountComponentAtNode(container) {
 	inferno.render(null, container);

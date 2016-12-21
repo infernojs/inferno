@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta36
+ * inferno v1.0.0-beta37
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -65,88 +65,12 @@ function warning(condition, message) {
 }
 var EMPTY_OBJ = {};
 
-function cloneVNode(vNodeToClone, props) {
-    var _children = [], len = arguments.length - 2;
-    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
-
-    var children = _children;
-    if (_children.length > 0 && !isNull(_children[0])) {
-        if (!props) {
-            props = {};
-        }
-        if (_children.length === 1) {
-            children = _children[0];
-        }
-        if (isUndefined(props.children)) {
-            props.children = children;
-        }
-        else {
-            if (isArray(children)) {
-                if (isArray(props.children)) {
-                    props.children = props.children.concat(children);
-                }
-                else {
-                    props.children = [props.children].concat(children);
-                }
-            }
-            else {
-                if (isArray(props.children)) {
-                    props.children.push(children);
-                }
-                else {
-                    props.children = [props.children];
-                    props.children.push(children);
-                }
-            }
-        }
+function applyKeyIfMissing(index, vNode) {
+    if (isNull(vNode.key)) {
+        vNode.key = "." + index;
     }
-    children = null;
-    var flags = vNodeToClone.flags;
-    var events = vNodeToClone.events || (props && props.events) || null;
-    var newVNode;
-    if (isArray(vNodeToClone)) {
-        newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
-    }
-    else if (isNullOrUndef(props) && isNullOrUndef(children)) {
-        newVNode = Object.assign({}, vNodeToClone);
-    }
-    else {
-        var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
-        var ref = vNodeToClone.ref || props.ref;
-        if (flags & 28 /* Component */) {
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
-        }
-        else if (flags & 3970 /* Element */) {
-            children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
-        }
-    }
-    if (flags & 28 /* Component */) {
-        var newProps = newVNode.props;
-        if (newProps) {
-            var newChildren = newProps.children;
-            // we need to also clone component children that are in props
-            // as the children may also have been hoisted
-            if (newChildren) {
-                if (isArray(newChildren)) {
-                    for (var i = 0; i < newChildren.length; i++) {
-                        var child = newChildren[i];
-                        if (!isInvalid(child) && isVNode(child)) {
-                            newProps.children[i] = cloneVNode(child);
-                        }
-                    }
-                }
-                else if (isVNode(newChildren)) {
-                    newProps.children = cloneVNode(newChildren);
-                }
-            }
-        }
-        newVNode.children = null;
-    }
-    newVNode.dom = null;
-    return newVNode;
+    return vNode;
 }
-
 function _normalizeVNodes(nodes, result, i) {
     for (; i < nodes.length; i++) {
         var n = nodes[i];
@@ -165,12 +89,6 @@ function _normalizeVNodes(nodes, result, i) {
             }
         }
     }
-}
-function applyKeyIfMissing(index, vNode) {
-    if (isNull(vNode.key)) {
-        vNode.key = "." + index;
-    }
-    return vNode;
 }
 function normalizeVNodes(nodes) {
     var newNodes;
@@ -282,6 +200,7 @@ function normalize(vNode) {
         props.children = normalizeChildren(props.children);
     }
 }
+
 function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
@@ -301,6 +220,87 @@ function createVNode(flags, type, props, children, events, key, ref, noNormalise
     }
     return vNode;
 }
+function cloneVNode(vNodeToClone, props) {
+    var _children = [], len = arguments.length - 2;
+    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
+
+    var children = _children;
+    if (_children.length > 0 && !isNull(_children[0])) {
+        if (!props) {
+            props = {};
+        }
+        if (_children.length === 1) {
+            children = _children[0];
+        }
+        if (isUndefined(props.children)) {
+            props.children = children;
+        }
+        else {
+            if (isArray(children)) {
+                if (isArray(props.children)) {
+                    props.children = props.children.concat(children);
+                }
+                else {
+                    props.children = [props.children].concat(children);
+                }
+            }
+            else {
+                if (isArray(props.children)) {
+                    props.children.push(children);
+                }
+                else {
+                    props.children = [props.children];
+                    props.children.push(children);
+                }
+            }
+        }
+    }
+    children = null;
+    var flags = vNodeToClone.flags;
+    var events = vNodeToClone.events || (props && props.events) || null;
+    var newVNode;
+    if (isArray(vNodeToClone)) {
+        newVNode = vNodeToClone.map(function (vNode) { return cloneVNode(vNode); });
+    }
+    else if (isNullOrUndef(props) && isNullOrUndef(children)) {
+        newVNode = Object.assign({}, vNodeToClone);
+    }
+    else {
+        var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
+        var ref = vNodeToClone.ref || props.ref;
+        if (flags & 28 /* Component */) {
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
+        }
+        else if (flags & 3970 /* Element */) {
+            children = (props && props.children) || vNodeToClone.children;
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
+        }
+    }
+    if (flags & 28 /* Component */) {
+        var newProps = newVNode.props;
+        if (newProps) {
+            var newChildren = newProps.children;
+            // we need to also clone component children that are in props
+            // as the children may also have been hoisted
+            if (newChildren) {
+                if (isArray(newChildren)) {
+                    for (var i = 0; i < newChildren.length; i++) {
+                        var child = newChildren[i];
+                        if (!isInvalid(child) && isVNode(child)) {
+                            newProps.children[i] = cloneVNode(child);
+                        }
+                    }
+                }
+                else if (isVNode(newChildren)) {
+                    newProps.children = cloneVNode(newChildren);
+                }
+            }
+        }
+        newVNode.children = null;
+    }
+    newVNode.dom = null;
+    return newVNode;
+}
 function createVoidVNode() {
     return createVNode(4096 /* Void */);
 }
@@ -309,61 +309,6 @@ function createTextVNode(text) {
 }
 function isVNode(o) {
     return !!o.flags;
-}
-
-var devToolsStatus = {
-    connected: false
-};
-var internalIncrementer = {
-    id: 0
-};
-var componentIdMap = new Map();
-function getIncrementalId() {
-    return internalIncrementer.id++;
-}
-function sendToDevTools(global, data) {
-    var event = new CustomEvent('inferno.client.message', {
-        detail: JSON.stringify(data, function (key, val) {
-            if (!isNull(val) && !isUndefined(val)) {
-                if (key === '_vComponent' || !isUndefined(val.nodeType)) {
-                    return;
-                }
-                else if (isFunction(val)) {
-                    return ("$$f:" + (val.name));
-                }
-            }
-            return val;
-        })
-    });
-    global.dispatchEvent(event);
-}
-function rerenderRoots() {
-    for (var i = 0; i < roots.length; i++) {
-        var root = roots[i];
-        render(root.input, root.dom);
-    }
-}
-function initDevToolsHooks(global) {
-    global.__INFERNO_DEVTOOLS_GLOBAL_HOOK__ = roots;
-    global.addEventListener('inferno.devtools.message', function (message) {
-        var detail = JSON.parse(message.detail);
-        var type = detail.type;
-        switch (type) {
-            case 'get-roots':
-                if (!devToolsStatus.connected) {
-                    devToolsStatus.connected = true;
-                    rerenderRoots();
-                    sendRoots(global);
-                }
-                break;
-            default:
-                // TODO:?
-                break;
-        }
-    });
-}
-function sendRoots(global) {
-    sendToDevTools(global, { type: 'roots', data: roots });
 }
 
 var Lifecycle = function Lifecycle() {
@@ -379,6 +324,11 @@ Lifecycle.prototype.trigger = function trigger () {
     for (var i = 0; i < this.listeners.length; i++) {
         this$1.listeners[i]();
     }
+};
+
+var options = {
+    recyclingEnabled: true,
+    findDOMNodeEnabled: false
 };
 
 function constructDefaults(string, object, value) {
@@ -772,7 +722,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
                 ref(null);
             }
             instance._unmounted = true;
-            findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
+            options.findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
         }
         else if (!isNullOrUndef(ref)) {
             if (!isNullOrUndef(ref.onComponentWillUnmount)) {
@@ -800,7 +750,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         }
         removeChild(parentDom, dom);
     }
-    if (recyclingEnabled && !isStatefulComponent$$1 && (parentDom || canRecycle)) {
+    if (options.recyclingEnabled && !isStatefulComponent$$1 && (parentDom || canRecycle)) {
         poolComponent(vNode);
     }
 }
@@ -827,7 +777,7 @@ function unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount,
     if (parentDom) {
         removeChild(parentDom, dom);
     }
-    if (recyclingEnabled && (parentDom || canRecycle)) {
+    if (options.recyclingEnabled && (parentDom || canRecycle)) {
         poolElement(vNode);
     }
 }
@@ -1065,9 +1015,6 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 replaceChild(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextVNode.flags & 4 /* ComponentClass */), lastVNode.dom);
             }
             else {
-                if (instance._devToolsStatus.connected && !instance._devToolsId) {
-                    componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
-                }
                 lifecycle.fastUnmount = false;
                 var lastState = instance.state;
                 var nextState = instance.state;
@@ -1117,7 +1064,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     subLifecycle.fastUnmount = lifecycle.fastUnmount;
                     lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
-                    findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
+                    options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
                 nextVNode.dom = nextInput$1.dom;
             }
@@ -1681,15 +1628,8 @@ function removeProp(prop, lastValue, dom) {
     }
 }
 
-var recyclingEnabled = true;
 var componentPools = new Map();
 var elementPools = new Map();
-function disableRecycling() {
-    recyclingEnabled = false;
-    componentPools.clear();
-    elementPools.clear();
-}
-
 function recycleElement(vNode, lifecycle, context, isSVG) {
     var tag = vNode.type;
     var key = vNode.key;
@@ -1819,7 +1759,7 @@ function mountVoid(vNode, parentDom) {
     return dom;
 }
 function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
-    if (recyclingEnabled) {
+    if (options.recyclingEnabled) {
         var dom$1 = recycleElement(vNode, lifecycle, context, isSVG);
         if (!isNull(dom$1)) {
             if (!isNull(parentDom)) {
@@ -1885,7 +1825,7 @@ function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
     }
 }
 function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
-    if (recyclingEnabled) {
+    if (options.recyclingEnabled) {
         var dom$1 = recycleComponent(vNode, lifecycle, context, isSVG);
         if (!isNull(dom$1)) {
             if (!isNull(parentDom)) {
@@ -1905,7 +1845,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
     }
     if (isClass) {
         lifecycle.fastUnmount = false;
-        var instance = createStatefulComponentInstance(vNode, type, props, context, isSVG, devToolsStatus);
+        var instance = createStatefulComponentInstance(vNode, type, props, context, isSVG);
         var input = instance._lastInput;
         var fastUnmount = lifecycle.fastUnmount;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
@@ -1922,7 +1862,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
             appendChild(parentDom, dom);
         }
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
-        findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
+        options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
     else {
@@ -1982,7 +1922,7 @@ function mountRef(dom, value, lifecycle) {
     }
 }
 
-function createStatefulComponentInstance(vNode, Component, props, context, isSVG, devToolsStatus) {
+function createStatefulComponentInstance(vNode, Component, props, context, isSVG) {
     if (isUndefined(context)) {
         context = {};
     }
@@ -1992,8 +1932,7 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
         instance.props = props;
     }
     instance._patch = patch;
-    instance._devToolsStatus = devToolsStatus;
-    if (findDOMNodeEnabled) {
+    if (options.findDOMNodeEnabled) {
         instance._componentToDOMNodeMap = componentToDOMNodeMap;
     }
     var childContext = instance.getChildContext();
@@ -2175,7 +2114,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
             copyPropsTo(defaultProps, props);
             vNode.props = props;
         }
-        var instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG, devToolsStatus);
+        var instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG);
         var input = instance._lastInput;
         var fastUnmount = lifecycle.fastUnmount;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
@@ -2189,7 +2128,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         // we then set the lifecycle fastUnmount value back to what it was before the mount
         lifecycle.fastUnmount = fastUnmount;
         mountStatefulComponentCallbacks(ref, instance, lifecycle);
-        findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
+        options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
     else {
@@ -2298,12 +2237,8 @@ function hydrateRoot(input, parentDom, lifecycle) {
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 var roots = [];
 var componentToDOMNodeMap = new Map();
-var findDOMNodeEnabled = false;
-function enableFindDOMNode() {
-    findDOMNodeEnabled = true;
-}
 function findDOMNode(ref) {
-    if (!findDOMNodeEnabled) {
+    if (!options.findDOMNodeEnabled) {
         if (process.env.NODE_ENV !== 'production') {
             throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
         }
@@ -2379,9 +2314,6 @@ function render(input, parentDom) {
         lifecycle$1.trigger();
         root.input = input;
     }
-    if (devToolsStatus.connected) {
-        sendRoots(window);
-    }
     if (root) {
         var rootInput = root.input;
         if (rootInput && (rootInput.flags & 28 /* Component */)) {
@@ -2408,7 +2340,6 @@ if (isBrowser) {
 	window.process.env = window.process.env || {
 		NODE_ENV: 'development'
 	};
-	initDevToolsHooks(window);
 }
 
 if (process.env.NODE_ENV !== 'production') {
@@ -2440,8 +2371,7 @@ var index = {
 	render: render,
 	findDOMNode: findDOMNode,
 	createRenderer: createRenderer,
-	disableRecycling: disableRecycling,
-	enableFindDOMNode: enableFindDOMNode
+	options: options
 };
 
 exports['default'] = index;
@@ -2453,8 +2383,7 @@ exports.EMPTY_OBJ = EMPTY_OBJ;
 exports.render = render;
 exports.findDOMNode = findDOMNode;
 exports.createRenderer = createRenderer;
-exports.disableRecycling = disableRecycling;
-exports.enableFindDOMNode = enableFindDOMNode;
+exports.options = options;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

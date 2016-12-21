@@ -16,7 +16,7 @@ import {
 	Props,
 	VNode,
 	VNodeFlags
-} from '../core/shapes';
+} from '../core/structures';
 
 import Lifecycle from './../DOM/lifecycle';
 

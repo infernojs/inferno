@@ -1,4 +1,4 @@
-import { InfernoInput, InfernoChildren, VNode, VNodeFlags } from '../core/shapes';
+import { InfernoInput, VNode, VNodeFlags } from '../core/structures';
 import {
 	NO_OP,
 	isBrowser,
@@ -7,14 +7,12 @@ import {
 	isNullOrUndef,
 	throwError,
 } from '../shared';
-import {
-	devToolsStatus,
-	sendRoots,
-} from './devtools';
+
 import Lifecycle from './lifecycle';
-import cloneVNode from '../factories/cloneVNode';
+import { cloneVNode } from '../core/VNodes';
 import hydrateRoot from './hydration';
 import { mount } from './mounting';
+import options from '../core/options';
 import { patch } from './patching';
 import { unmount } from './unmounting';
 
@@ -29,14 +27,9 @@ interface Root {
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 export const roots: Root[] = [];
 export const componentToDOMNodeMap = new Map();
-export let findDOMNodeEnabled = false;
-
-export function enableFindDOMNode() {
-	findDOMNodeEnabled = true;
-}
 
 export function findDOMNode(ref) {
-	if (!findDOMNodeEnabled) {
+	if (!options.findDOMNodeEnabled) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
 		}
@@ -123,9 +116,6 @@ export function render(
 		}
 		lifecycle.trigger();
 		root.input = input;
-	}
-	if (devToolsStatus.connected) {
-		sendRoots(window);
 	}
 	if (root) {
 		const rootInput = root.input;

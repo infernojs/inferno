@@ -1,7 +1,7 @@
 import {
 	VNodeFlags,
-	createVoidVNode, VNode,
-} from '../core/shapes';
+	VNode
+} from '../core/structures';
 import {
 	isArray,
 	isInvalid,
@@ -10,9 +10,9 @@ import {
 	throwError,
 	EMPTY_OBJ
 } from '../shared';
-
-import cloneVNode from '../factories/cloneVNode';
-import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
+import options from '../core/options';
+import { cloneVNode, createVoidVNode } from '../core/VNodes';
+import { componentToDOMNodeMap } from './rendering';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { svgNS } from './constants';
@@ -21,7 +21,7 @@ import {
 } from './unmounting';
 import Lifecycle from "./lifecycle";
 
-export function createStatefulComponentInstance(vNode: VNode, Component, props, context, isSVG: boolean, devToolsStatus) {
+export function createStatefulComponentInstance(vNode: VNode, Component, props, context, isSVG: boolean) {
 	if (isUndefined(context)) {
 		context = {};
 	}
@@ -32,8 +32,7 @@ export function createStatefulComponentInstance(vNode: VNode, Component, props, 
 		instance.props = props;
 	}
 	instance._patch = patch;
-	instance._devToolsStatus = devToolsStatus;
-	if (findDOMNodeEnabled) {
+	if (options.findDOMNodeEnabled) {
 		instance._componentToDOMNodeMap = componentToDOMNodeMap;
 	}
 	const childContext = instance.getChildContext();

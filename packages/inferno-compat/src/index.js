@@ -2,10 +2,10 @@ import PropTypes from 'proptypes';
 import isValidElement from '../../../build/factories/isValidElement';
 import createClass from '../../../build/component/createClass';
 import infernoCreateElement from '../../../build/factories/createElement';
-import { createVNode, NO_OP, render, findDOMNode, enableFindDOMNode, cloneVNode } from 'inferno';
+import { createVNode, NO_OP, render, findDOMNode, options, cloneVNode } from 'inferno';
 import Component from 'inferno-component';
 
-enableFindDOMNode();
+options.findDOMNodeEnabled = true;
 
 function unmountComponentAtNode(container) {
 	render(null, container);

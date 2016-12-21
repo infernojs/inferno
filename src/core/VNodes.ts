@@ -1,24 +1,55 @@
 import {
-	Props,
 	InfernoChildren,
+	Key,
+	Props,
+	Ref,
+	Type,
 	VNode,
 	VNodeFlags,
-	createVNode,
-	isVNode,
-} from '../core/shapes';
+} from './structures';
 import {
 	isArray,
+	isInvalid,
 	isNull,
 	isNullOrUndef,
+	isStatefulComponent,
 	isUndefined,
-	isInvalid
 } from '../shared';
 
-export default function cloneVNode(
-		vNodeToClone: VNode,
-		props?: Props,
-		..._children: InfernoChildren[]
-	): VNode {
+import {
+	normalize,
+} from './normalization';
+
+export function createVNode(
+	flags: VNodeFlags,
+	type?: Type,
+	props?: Props,
+	children?: InfernoChildren,
+	events?,
+	key?: Key,
+	ref?: Ref,
+	noNormalise?: boolean
+): VNode {
+	if (flags & VNodeFlags.ComponentUnknown) {
+		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
+	}
+	const vNode: VNode = {
+		children: isUndefined(children) ? null : children,
+		dom: null,
+		events: events || null,
+		flags: flags || 0,
+		key: key === undefined ? null : key,
+		props: props || null,
+		ref: ref || null,
+		type
+	};
+	if (!noNormalise) {
+		normalize(vNode);
+	}
+	return vNode;
+}
+
+export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: InfernoChildren[]): VNode {
 	let children: any = _children;
 
 	if (_children.length > 0 && !isNull(_children[0])) {
@@ -106,4 +137,16 @@ export default function cloneVNode(
 	}
 	newVNode.dom = null;
 	return newVNode;
+}
+
+export function createVoidVNode(): VNode {
+	return createVNode(VNodeFlags.Void);
+}
+
+export function createTextVNode(text: string | number): VNode {
+	return createVNode(VNodeFlags.Text, null, null, text);
+}
+
+export function isVNode(o: VNode): boolean {
+	return !!o.flags;
 }

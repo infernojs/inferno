@@ -15,13 +15,18 @@ import {
 	throwError,
 } from '../shared';
 import {
-	VNode,
-	VNodeFlags,
 	createVoidVNode,
 	isVNode,
-	Styles,
-	copyPropsTo,
-} from '../core/shapes';
+	cloneVNode
+} from '../core/VNodes';
+import {
+	copyPropsTo
+} from '../core/normalization';
+import {
+	VNode,
+	VNodeFlags,
+	Styles
+} from '../core/structures';
 import {
 	booleanProps,
 	isUnitlessNumber,
@@ -33,10 +38,6 @@ import {
 	probablyKebabProps,
 	kebabize
 } from './constants';
-import {
-	componentIdMap,
-	getIncrementalId,
-} from './devtools';
 import {
 	createStatelessComponentInput,
 	insertOrAppend,
@@ -63,10 +64,10 @@ import {
 import {
 	handleEvent
 } from './events/delegation';
+import options from '../core/options';
 
 import Lifecycle from './lifecycle';
-import cloneVNode from '../factories/cloneVNode';
-import { componentToDOMNodeMap, findDOMNodeEnabled } from './rendering';
+import { componentToDOMNodeMap } from './rendering';
 import processElement from './wrappers/processElement';
 import { unmount } from './unmounting';
 
@@ -315,9 +316,6 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					lastVNode.dom
 				);
 			} else {
-				if (instance._devToolsStatus.connected && !instance._devToolsId) {
-					componentIdMap.set(instance._devToolsId = getIncrementalId(), instance);
-				}
 				lifecycle.fastUnmount = false;
 				const lastState = instance.state;
 				const nextState = instance.state;
@@ -365,7 +363,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					subLifecycle.fastUnmount = lifecycle.fastUnmount;
 					lifecycle.fastUnmount = fastUnmount;
 					instance.componentDidUpdate(lastProps, lastState);
-					findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
+					options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
 				}
 				nextVNode.dom = nextInput.dom;
 			}
