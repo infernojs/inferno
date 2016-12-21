@@ -35,7 +35,8 @@ const Children = {
 		return children[0];
 	},
 	toArray(children) {
-		return Array.isArray && Array.isArray(children) ? children : ARR.concat(children);
+		const invalid = children === null || children === undefined
+		return invalid ? [] : Array.isArray && Array.isArray(children) ? children : ARR.concat(children);
 	}
 };
 
