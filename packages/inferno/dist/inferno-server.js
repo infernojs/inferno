@@ -377,6 +377,9 @@ function renderStylesToString(styles) {
     }
 }
 function renderVNodeToString(vNode, context, firstChild) {
+    if (vNode === null) {
+        return '';
+    }
     var flags = vNode.flags;
     var type = vNode.type;
     var props = vNode.props || inferno.EMPTY_OBJ;
@@ -476,7 +479,12 @@ function renderVNodeToString(vNode, context, firstChild) {
     }
     else {
         if (process.env.NODE_ENV !== 'production') {
-            throwError(("renderToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+            if (typeof vNode === 'object') {
+                throwError(("renderToString() received an object that's not a valid VNode, you should stringify it first. Object: \"" + (JSON.stringify(vNode)) + "\"."));
+            }
+            else {
+                throwError(("renderToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+            }
         }
         throwError();
     }
