@@ -1,12 +1,14 @@
-import Inferno from 'inferno';
-import Component from 'inferno-component';
-import { expect } from 'chai';
 import {
+  findAllInRenderedTree,
+  isDOMComponent,
   isElement,
   isElementOfType,
-  isDOMComponent,
-  findAllInRenderedTree,
 } from '../test';
+
+import Component from 'inferno-component';
+import Inferno from 'inferno';
+import { expect } from 'chai';
+
 Inferno;
 
 describe('Inferno Test Utils', () => {
@@ -19,6 +21,18 @@ describe('Inferno Test Utils', () => {
       );
     }
   }
+
+  describe('isDomComponent', () => {
+    it('should match DOM components', () => {
+      ['div', 'span', 'article'].forEach((tagName) => {
+        expect(isDOMComponent(document.createElement(tagName))).to.be.true;
+      });
+    });
+
+    it('should not match JSX', () => {
+      expect(isDOMComponent(<div />)).to.be.false;
+    });
+  });
 
   describe('isElement', () => {
     it('Should match Components', () => {
@@ -58,7 +72,7 @@ describe('Inferno Test Utils', () => {
       );
 
       const log = [];
-      Inferno.enableFindDOMNode();
+      Inferno.options.findDOMNodeEnabled = true;
       findAllInRenderedTree(tree, function(child) {
         if (isDOMComponent(child)) {
           log.push(child.textContent);

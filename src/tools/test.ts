@@ -1,8 +1,10 @@
-import { InfernoChildren, VNode } from '../core/shapes';
-import { render } from '../DOM/rendering';
-import isValidElement from '../factories/isValidElement';
+import { InfernoChildren, VNode } from '../core/structures';
 import { throwError, toArray } from '../shared';
+
+import ShallowRenderer from './shallowRenderer';
 import createElement from '../factories/createElement';
+import isValidElement from '../factories/isValidElement';
+import { render } from '../DOM/rendering';
 
 export function isElement(element: VNode): boolean {
 	return isValidElement(element);
@@ -158,4 +160,8 @@ export function mockComponent(module, mockTagName: string) {
 	});
 
 	return this;
+}
+
+export function createRenderer(): ShallowRenderer {
+	return new ShallowRenderer();
 }

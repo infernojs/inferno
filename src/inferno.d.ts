@@ -2,6 +2,7 @@ declare module 'inferno' {
 	export function createVNode(flags, type?, props?, children?, events?, key?, ref?, noNormalise?: boolean): any;
 	export function cloneVNode(node, props?, ...children);
 	export function render(...rest);
+	export function enableFindDOMNode();
 	export function findDOMNode(node: any): any;
 	export function createRenderer(...rest);
 	export function linkEvent(data, event: Function);

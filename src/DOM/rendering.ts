@@ -7,13 +7,14 @@ import {
 	isNullOrUndef,
 	throwError,
 } from '../shared';
+
 import Lifecycle from './lifecycle';
 import { cloneVNode } from '../core/VNodes';
 import hydrateRoot from './hydration';
 import { mount } from './mounting';
+import options from '../core/options';
 import { patch } from './patching';
 import { unmount } from './unmounting';
-import options from '../core/options';
 
 interface Root {
 	dom: Node | SVGAElement;
@@ -114,10 +115,10 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement): Inf
 		root.input = input;
 	}
 	if (root) {
-		const rootInput = root.input;
+		const rootInput: VNode = root.input as VNode;
 
-		if (rootInput && ((rootInput as VNode).flags & VNodeFlags.Component)) {
-			return (rootInput as VNode).children;
+		if (rootInput && (rootInput.flags & VNodeFlags.Component)) {
+			return rootInput.children;
 		}
 	}
 }
