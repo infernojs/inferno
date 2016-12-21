@@ -49,7 +49,11 @@ export function mount(vNode, parentDom, lifecycle: Lifecycle, context, isSVG) {
 		return mountText(vNode, parentDom);
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
-			throwError(`mount() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+			if (typeof vNode === 'object') {
+				throwError(`mount() received an object that's not a valid VNode, you should stringify it first. Object: "${ JSON.stringify(vNode) }".`);
+			} else {
+				throwError(`mount() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+			}
 		}
 		throwError();
 	}
