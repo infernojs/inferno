@@ -3,24 +3,24 @@ import {
 	escapeText,
 	toHyphenCase,
 } from './utils';
-import { EMPTY_OBJ } from 'inferno';
 import {
 	isArray,
+	isFunction,
 	isInvalid,
 	isNull,
 	isNullOrUndef,
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-	isFunction,
 	throwError,
 } from '../shared';
 
+import { EMPTY_OBJ } from 'inferno';
 import {
-	VNodeFlags
+	VNodeFlags,
 } from '../core/structures';
 import {
-	copyPropsTo
+	copyPropsTo,
 } from '../core/normalization';
 import { isUnitlessNumber } from '../DOM/constants';
 
@@ -43,6 +43,9 @@ function renderStylesToString(styles) {
 }
 
 function renderVNodeToString(vNode, context, firstChild) {
+	if (vNode === null) {
+		return '';
+	}
 	const flags = vNode.flags;
 	const type = vNode.type;
 	const props = vNode.props || EMPTY_OBJ;
