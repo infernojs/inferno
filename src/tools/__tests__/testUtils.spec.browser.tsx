@@ -50,11 +50,8 @@ describe('ReactTestUtils', () => {
       }
     }
 
-      const renderedComponent = renderIntoDocument(<Wrapper />);
-    const scryResults = scryRenderedDOMComponentsWithClass(
-      renderedComponent,
-      'x'
-    );
+    const renderedComponent = renderIntoDocument(<Wrapper />);
+    const scryResults       = scryRenderedDOMComponentsWithClass(renderedComponent, 'x');
     expect(scryResults.length).to.equal(1);
   });
 
@@ -110,7 +107,7 @@ describe('ReactTestUtils', () => {
         );
       }
     }
-    
+
     render(
       <Wrapper>
         {null}

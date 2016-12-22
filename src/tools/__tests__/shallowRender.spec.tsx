@@ -20,7 +20,7 @@ describe('ReactTestUtils', () => {
   afterEach(() => {
 		container.innerHTML = '';
 	});
-  
+
   describe('Shallow Renderer', () => {
     it('should have shallow rendering', () => {
       class SomeComponent extends Component<any, any> {
@@ -88,11 +88,13 @@ describe('ReactTestUtils', () => {
     });
 
     it('should have shallow unmounting', () => {
-      const obj = { fn () {} }; 
+      const obj = {
+        fn () {}
+      };
       const componentWillUnmount = spy(obj, 'fn');
 
       const SomeComponent = createClass({
-        render: function() {
+        render() {
           return (
             <div />
           );
@@ -138,9 +140,7 @@ describe('ReactTestUtils', () => {
       class SomeComponent extends Component<any, any> {
         state = {clicked: false};
 
-        onClick = () => {
-          this.setState({clicked: true});
-        };
+        onClick = () => this.setState({clicked: true});
 
         render() {
           const className = this.state.clicked ? 'was-clicked' : '';
@@ -177,18 +177,16 @@ describe('ReactTestUtils', () => {
       expect(updatedResult.type).to.equal('a');
 
       const mockEvent = {};
-      updatedResult.events['onClick'](mockEvent);
+      updatedResult.events.onClick(mockEvent);
 
       const updatedResultCausedByClick = shallowRenderer.getRenderOutput();
       expect(updatedResultCausedByClick.type).to.equal('a');
-      expect(updatedResultCausedByClick.props['className']).to.equal('was-clicked');
+      expect(updatedResultCausedByClick.props.className).to.equal('was-clicked');
     });
 
     it('can access the mounted component instance', () => {
       class SimpleComponent extends Component<any, any> {
-        someMethod = () => {
-          return this.props.n;
-        };
+        someMethod = () => this.props.n;
 
         render() {
           return (
@@ -206,9 +204,7 @@ describe('ReactTestUtils', () => {
       class SimpleComponent extends Component<any, any> {
         state = {clicked: false};
 
-        handleUserClick = () => {
-          this.setState({ clicked: true });
-        };
+        handleUserClick = () => this.setState({ clicked: true });
 
         render() {
           return (

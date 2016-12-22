@@ -60,11 +60,10 @@ function findAllInTree(inst: any, test: Function): VNode[] {
 	const currentElement = inst._vNode;
 
 	if (isDOMComponent(publicInst)) {
-		var renderedChildren = inst.children;
-    var key;
-    for (key in renderedChildren) {
+		const renderedChildren = inst.children;
+		for (let key in renderedChildren) {
       if (!renderedChildren.hasOwnProperty(key)) {
-        continue;
+				continue;
       }
       ret = ret.concat(
         findAllInTree(
@@ -74,7 +73,7 @@ function findAllInTree(inst: any, test: Function): VNode[] {
       );
     }
   }
-	
+
 	if (
     isValidElement(currentElement) &&
     typeof currentElement.type === 'function'
@@ -111,7 +110,7 @@ export function scryRenderedDOMComponentsWithClass(root: VNode, classNames: stri
 
 			let classNamesList = classNames;
 			if (!isArray(classNames)) {
-				classNamesList = classNames.split(/\s+/)
+				classNamesList = classNames.split(/\s+/);
 			}
 
 			classNamesList = toArray(classNamesList);

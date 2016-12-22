@@ -30,7 +30,7 @@ declare module 'inferno-component' {
 		refs?: any;
 		state?: S;
 		props?: P;
-		context?: C;
+		context?: Object;
 		_vNode;
 		_unmounted?: boolean;
 		constructor (props?: P, context?);

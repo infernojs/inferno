@@ -5,7 +5,7 @@ import { throwError } from '../shared';
 
 class ShallowComponentWrapper extends Component<any, any> {
   private _context: Object;
-  
+
   constructor(element, context) {
     super({ children: element });
     this._context = context;
@@ -26,7 +26,7 @@ export default class InfernoShallowRenderer {
   getMountedInstance() {
     return this._instance ? this._instance._vNode : null;
   }
-  
+
   render(element: VNode, context?: Object) {
     if (!isElement(element)) {
       throwError('ShallowRenderer render(): Invalid component element');
@@ -38,7 +38,7 @@ export default class InfernoShallowRenderer {
         inspecting the rendered output, look at 'el.props' directly instead.`
       );
     }
-    
+
     this._instance = new ShallowComponentWrapper(element, context);
 
     return this.getRenderOutput();

@@ -2287,6 +2287,7 @@ function getRoot(dom) {
     }
     return null;
 }
+
 function setRoot(dom, input, lifecycle) {
     var root = {
         dom: dom,
