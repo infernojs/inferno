@@ -1911,12 +1911,14 @@ function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle) {
 }
 function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
     if (ref) {
-        lifecycle.fastUnmount = isNullOrUndef(ref.onComponentWillUnmount);
         if (!isNullOrUndef(ref.onComponentWillMount)) {
             ref.onComponentWillMount();
         }
         if (!isNullOrUndef(ref.onComponentDidMount)) {
             lifecycle.addListener(function () { return ref.onComponentDidMount(dom); });
+        }
+        if (!isNullOrUndef(ref.onComponentWillUnmount)) {
+            lifecycle.fastUnmount = false;
         }
     }
 }

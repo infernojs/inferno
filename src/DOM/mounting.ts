@@ -227,13 +227,14 @@ export function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle:
 
 export function mountStatelessComponentCallbacks(ref, dom, lifecycle: Lifecycle) {
 	if (ref) {
-		lifecycle.fastUnmount = isNullOrUndef(ref.onComponentWillUnmount);
-
 		if (!isNullOrUndef(ref.onComponentWillMount)) {
 			ref.onComponentWillMount();
 		}
 		if (!isNullOrUndef(ref.onComponentDidMount)) {
 			lifecycle.addListener(() => ref.onComponentDidMount(dom));
+		}
+		if (!isNullOrUndef(ref.onComponentWillUnmount)) {
+			lifecycle.fastUnmount = false;
 		}
 	}
 }
