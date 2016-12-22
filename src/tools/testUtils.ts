@@ -1,6 +1,5 @@
 import { isArray, throwError, toArray } from '../shared';
 
-import ShallowRenderer from './shallowRenderer';
 import { VNode } from '../core/structures';
 import createElement from '../factories/createElement';
 import isValidElement from '../factories/isValidElement';
@@ -169,8 +168,4 @@ export function mockComponent(module, mockTagName: string) {
 	});
 
 	return this;
-}
-
-export function createRenderer(): ShallowRenderer {
-	return new ShallowRenderer();
 }

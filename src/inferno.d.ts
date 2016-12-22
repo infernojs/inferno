@@ -12,6 +12,13 @@ declare module 'inferno' {
 	interface Options {
 		recyclingEnabled: boolean;
 		findDOMNodeEnabled: boolean;
+		roots: any;
+		createVNode: Function | null;
+		beforeRender: Function | null;
+		afterRender: Function | null;
+		afterMount: Function | null;
+		afterUpdate: Function | null;
+		beforeUnmount: Function | null;
 	}
 	export const options: Options;
 }
@@ -30,7 +37,7 @@ declare module 'inferno-component' {
 		refs?: any;
 		state?: S;
 		props?: P;
-		context?: Object;
+		context?: any;
 		_vNode;
 		_unmounted?: boolean;
 		constructor (props?: P, context?);
