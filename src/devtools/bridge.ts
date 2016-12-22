@@ -97,7 +97,7 @@ export function createDevToolsBridge() {
 			return instance.node;
 		},
 		getClosestInstanceFromNode(dom) {
-			const vNode = findVNodeFromDom(null, dom)
+			const vNode = findVNodeFromDom(null, dom);
 
 			return vNode ? updateReactComponent(vNode, null) : null;
 		}
@@ -110,16 +110,14 @@ export function createDevToolsBridge() {
 
 	const Mount = {
 		_instancesByReactRootID: roots,
-		_renderNewRootComponent(instance?) { }
+		_renderNewRootComponent(instance?) {}
 	};
 
 	const Reconciler = {
 		mountComponent(instance?) { },
-		performUpdateIfNecessary(instance?) {
-			debugger;
-		},
-		receiveComponent(instance?) { },
-		unmountComponent(instance?) { }
+		performUpdateIfNecessary(instance?) {},
+		receiveComponent(instance?) {},
+		unmountComponent(instance?) {}
 	};
 
 	/** Notify devtools that a new component instance has been mounted into the DOM. */
