@@ -1,6 +1,6 @@
 import { options } from 'inferno';
 import { VNodeFlags } from '../core/structures';
-import { isArray, isStringOrNumber, isObject } from '../shared';
+import { isArray, isStringOrNumber, isObject, isInvalid } from '../shared';
 
 function findVNodeFromDom(vNode, dom) {
 	if (!vNode) {
@@ -255,9 +255,9 @@ function createReactDOMComponent(vNode, parentDom) {
 			type,
 			props
 		},
-		_renderedChildren: !isText && (isArray(children) ? children.map((child) =>
+		_renderedChildren: !isText && (isArray(children) ? children.filter(child => isInvalid(child)).map((child) =>
 			updateReactComponent(child, dom)
-		) : [updateReactComponent(children, dom)]),
+		) : !isInvalid(children) ? [updateReactComponent(children, dom)] : []),
 		_stringText: isText ? (children || vNode) : null,
 		_inDevTools: false,
 		node: dom || parentDom,
