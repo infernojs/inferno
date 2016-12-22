@@ -674,7 +674,9 @@ function applyValue$2(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
     var value = props.value;
     if (dom.value !== value) {
-        dom.value = value;
+        if (!isNullOrUndef(value)) {
+            dom.value = value;
+        }
     }
 }
 
