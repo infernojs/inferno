@@ -76,18 +76,16 @@ describe('SSR Hydration - (non-JSX)', () => {
 		// 	expect2: '<div><em>Works <span>again</span>!</em></div>'
 		// }
 	].forEach(({ node, expect1, expect2 }, i) => {
-		it(`Validate various structures #${ (i + 1) }`, (done) => {
+		it(`Validate various structures #${ (i + 1) }`, () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect1));
 			render(node, container);
-
-			setTimeout(function () {
-				expect(validateNodeTree(node)).to.equal(true);
-				expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
-				done();
-			}, 40);
+			expect(validateNodeTree(node)).to.equal(true);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
+			render(node, container);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
 		});
 	});
 });
