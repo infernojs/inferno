@@ -406,13 +406,17 @@ function renderVNodeToString(vNode, context, firstChild) {
             var nextVNode = instance.render(props, vNode.context);
             instance._pendingSetState = false;
             // In case render returns invalid stuff
-            if (!nextVNode) {
-                return '';
+            if (isInvalid(nextVNode)) {
+                return '<!--!-->';
             }
             return renderVNodeToString(nextVNode, context, true);
         }
         else {
-            return renderVNodeToString(type(props, context), context, true);
+            var nextVNode$1 = type(props, context);
+            if (isInvalid(nextVNode$1)) {
+                return '<!--!-->';
+            }
+            return renderVNodeToString(nextVNode$1, context, true);
         }
     }
     else if (flags & 3970 /* Element */) {

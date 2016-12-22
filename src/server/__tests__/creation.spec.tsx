@@ -38,6 +38,10 @@ describe('SSR Creation (JSX)', () => {
 		description: 'should render a stateless component with comments',
 		template: () => <div>Hello world, {/*comment*/}</div>,
 		result: '<div>Hello world, </div>'
+	}, {
+		description: 'should render mixed invalid/valid children',
+		template: () => <div>{[ null, '123', null, '456' ]}</div>,
+		result: '<div>123<!---->456</div>'
 	}];
 
 	testEntries.forEach(test => {
