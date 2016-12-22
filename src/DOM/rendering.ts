@@ -1,4 +1,4 @@
-import { InfernoInput, VNode, VNodeFlags } from '../core/structures';
+import { InfernoChildren, InfernoInput, VNode, VNodeFlags } from '../core/structures';
 import {
 	NO_OP,
 	isBrowser,
@@ -7,13 +7,14 @@ import {
 	isNullOrUndef,
 	throwError,
 } from '../shared';
+
 import Lifecycle from './lifecycle';
 import { cloneVNode } from '../core/VNodes';
 import hydrateRoot from './hydration';
 import { mount } from './mounting';
+import options from '../core/options';
 import { patch } from './patching';
 import { unmount } from './unmounting';
-import options from '../core/options';
 
 interface Root {
 	dom: Node | SVGAElement;
@@ -56,8 +57,8 @@ export function getRoots() {
 	return roots;
 }
 
-function setRoot(dom, input, lifecycle): Root {
-	const root = {
+function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: Lifecycle): Root {
+	const root: Root = {
 		dom,
 		input,
 		lifecycle
@@ -67,7 +68,7 @@ function setRoot(dom, input, lifecycle): Root {
 	return root;
 }
 
-function removeRoot(root): void {
+function removeRoot(root: Root): void {
 	for (let i = 0; i < roots.length; i++) {
 		if (roots[i] === root) {
 			roots.splice(i, 1);
@@ -78,7 +79,7 @@ function removeRoot(root): void {
 
 const documentBody = isBrowser ? document.body : null;
 
-export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
+export function render(input: InfernoInput, parentDom?: Node | SVGAElement): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -120,10 +121,10 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 		root.input = input;
 	}
 	if (root) {
-		const rootInput = root.input;
+		const rootInput: VNode = root.input as VNode;
 
-		if (rootInput && ((rootInput as VNode).flags & VNodeFlags.Component)) {
-			return (rootInput as VNode).children;
+		if (rootInput && (rootInput.flags & VNodeFlags.Component)) {
+			return rootInput.children;
 		}
 	}
 }

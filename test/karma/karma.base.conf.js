@@ -36,10 +36,16 @@ module.exports = function (config) {
 		},
 
 		concurrency: 1,
+		browserConsoleLogOptions: {
+			terminal: true
+		},
 		browserDisconnectTimeout: 10000,
 		browserDisconnectTolerance: 2,
-		captureTimeout: 2 * 60 * 10000,
+		browserLogOptions: {
+			terminal: true
+		},
 		browserNoActivityTimeout: 2 * 60 * 1000,
+		captureTimeout: 2 * 60 * 10000,
 		autoWatch: false,
 		singleRun: true
 	});

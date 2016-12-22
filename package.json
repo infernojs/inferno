@@ -174,7 +174,8 @@
     "test:bench": "node test/karma/bench.js",
     "test:browser": "karma start test/karma/karma.unit.conf.js",
     "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
-    "test:server": "cross-env nyc mocha --opts test/mocha/mocha.opts"
+    "test:quick": "cross-env mocha",
+    "test:server": "cross-env nyc mocha"
   },
   "pre-commit": [
     "lint",
