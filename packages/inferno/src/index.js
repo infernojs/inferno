@@ -4,8 +4,8 @@ import {
 } from '../../../build/core/VNodes';
 import { warning, NO_OP, isBrowser, EMPTY_OBJ } from '../../../build/shared';
 import { render, findDOMNode, createRenderer } from '../../../build/DOM/rendering';
-import options from '../../../build/core/options';
 import linkEvent from '../../../build/DOM/events/linkEvent';
+import options from '../../../build/core/options';
 
 if (isBrowser) {
 	window.process = window.process || {};

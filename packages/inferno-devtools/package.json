@@ -1,8 +1,8 @@
 {
-  "name": "inferno-vnode-flags",
+  "name": "inferno-devtools",
   "version": "1.0.0-beta38",
   "license": "MIT",
-  "description": "Provides an enum of all possible VNode Flags used when calling Inferno.createVNode",
+  "description": "Provides support for React's Dev Tools for Inferno",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -11,24 +11,15 @@
     "url": "https://github.com/trueadm/inferno/issues"
   },
   "homepage": "https://github.com/trueadm/inferno#readme",
+  "main": "inferno-devtools.js",
   "keywords": [
     "babel",
     "react",
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces",
-    "html",
-    "renderToString",
-    "server",
-    "dom",
-    "browser",
-    "rollup",
-    "vnode",
-    "createVNode",
-    "flags"
+    "user interfaces"
   ],
-  "main": "inferno-vnode-flags.js",
   "repository": "https://github.com/trueadm/inferno",
   "dependencies": {
     "inferno": "1.0.0-beta38"

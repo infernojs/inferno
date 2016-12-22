@@ -17,6 +17,7 @@ import {
 	mountStatefulComponentCallbacks,
 	mountStatelessComponentCallbacks,
 	mountText,
+	mountRef,
 } from './mounting';
 import options from '../core/options';
 import Lifecycle from './lifecycle';
@@ -88,7 +89,7 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		subLifecycle.fastUnmount = lifecycle.fastUnmount;
 		// we then set the lifecycle fastUnmount value back to what it was before the mount
 		lifecycle.fastUnmount = fastUnmount;
-		mountStatefulComponentCallbacks(ref, instance, lifecycle);
+		mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
@@ -107,6 +108,7 @@ function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 	const props = vNode.props;
 	const events = vNode.events;
 	const flags = vNode.flags;
+	const ref = vNode.ref;
 
 	if (isSVG || (flags & VNodeFlags.SvgElement)) {
 		isSVG = true;
@@ -124,18 +126,25 @@ function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 		if (!(flags & VNodeFlags.HtmlElement)) {
 			processElement(flags, vNode, dom);
 		}
-		for (let prop in props) {
-			patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+		if (props) {
+			for (let prop in props) {
+				patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+			}
 		}
-		for (let name in events) {
-			patchEvent(name, null, events[name], dom, lifecycle);
+		if (events) {
+			for (let name in events) {
+				patchEvent(name, null, events[name], dom, lifecycle);
+			}
+		}
+		if (ref) {
+			mountRef(dom, ref, lifecycle);
 		}
 	}
 }
 
 function hydrateChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
 	normalizeChildNodes(dom);
-	const domNodes = Array.prototype.slice.call(dom.childNodes);
+	const domNodes = dom.childNodes;
 	let childNodeIndex = 0;
 
 	if (isArray(children)) {
@@ -143,11 +152,11 @@ function hydrateChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
 			const child = children[i];
 
 			if (isObject(child) && !isNull(child)) {
-				hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
+				setTimeout(hydrate, 0, child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
 			}
 		}
 	} else if (isObject(children)) {
-		hydrate(children, dom.firstChild, lifecycle, context, isSVG);
+		setTimeout(hydrate, 0, children, dom.firstChild, lifecycle, context, isSVG);
 	}
 }
 

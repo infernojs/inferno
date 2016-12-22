@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-beta37
+ * inferno-component v1.0.0-beta38
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -171,6 +171,7 @@ function applyState(component, force, callback) {
             component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
             subLifecycle.trigger();
             component.componentDidUpdate(props, prevState);
+            inferno.options.afterUpdate && inferno.options.afterUpdate(vNode);
         }
         var dom = vNode.dom = nextInput.dom;
         var componentToDOMNodeMap = component._componentToDOMNodeMap;
@@ -276,9 +277,9 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
             this.props = nextProps;
             var state = this.state = nextState;
             this.context = context;
-            this._beforeRender && this._beforeRender();
+            inferno.options.beforeRender && inferno.options.beforeRender(this);
             var render = this.render(nextProps, state, context);
-            this._afterRender && this._afterRender();
+            inferno.options.afterRender && inferno.options.afterRender(this);
             return render;
         }
     }

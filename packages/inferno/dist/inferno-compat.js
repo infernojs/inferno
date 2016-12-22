@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-beta37
+ * inferno-compat v1.0.0-beta38
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -640,10 +640,10 @@ var Children = {
 var currentComponent = null;
 
 Component.prototype.isReactComponent = {};
-Component.prototype._beforeRender = function () {
-	currentComponent = this;
+inferno.options.beforeRender = function (component) {
+	currentComponent = component;
 };
-Component.prototype._afterRender = function () {
+inferno.options.afterRender = function () {
 	currentComponent = null;
 };
 

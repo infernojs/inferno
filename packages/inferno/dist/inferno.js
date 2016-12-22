@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta37
+ * inferno v1.0.0-beta38
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -201,6 +201,18 @@ function normalize(vNode) {
     }
 }
 
+var options = {
+    recyclingEnabled: true,
+    findDOMNodeEnabled: false,
+    roots: null,
+    createVNode: null,
+    beforeRender: null,
+    afterRender: null,
+    afterMount: null,
+    afterUpdate: null,
+    beforeUnmount: null
+};
+
 function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
@@ -217,6 +229,9 @@ function createVNode(flags, type, props, children, events, key, ref, noNormalise
     };
     if (!noNormalise) {
         normalize(vNode);
+    }
+    if (options.createVNode) {
+        options.createVNode(vNode);
     }
     return vNode;
 }
@@ -324,11 +339,6 @@ Lifecycle.prototype.trigger = function trigger () {
     for (var i = 0; i < this.listeners.length; i++) {
         this$1.listeners[i]();
     }
-};
-
-var options = {
-    recyclingEnabled: true,
-    findDOMNodeEnabled: false
 };
 
 function constructDefaults(string, object, value) {
@@ -719,6 +729,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
     if (!isRecycling) {
         if (isStatefulComponent$$1) {
             instance._ignoreSetState = true;
+            options.beforeUnmount && options.beforeUnmount(vNode);
             instance.componentWillUnmount();
             if (ref && !isRecycling) {
                 ref(null);
@@ -1066,6 +1077,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     subLifecycle.fastUnmount = lifecycle.fastUnmount;
                     lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
+                    options.afterUpdate && options.afterUpdate(nextVNode);
                     options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
                 nextVNode.dom = nextInput$1.dom;
@@ -1868,7 +1880,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
         if (!isNull(parentDom)) {
             appendChild(parentDom, dom);
         }
-        mountStatefulComponentCallbacks(ref, instance, lifecycle);
+        mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
         options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
@@ -1883,7 +1895,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
     }
     return dom;
 }
-function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
+function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle) {
     if (ref) {
         if (isFunction(ref)) {
             ref(instance);
@@ -1895,9 +1907,12 @@ function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
             throwError();
         }
     }
-    if (!isNull(instance.componentDidMount)) {
+    var cDM = instance.componentDidMount;
+    var afterMount = options.afterMount;
+    if (!isNull(cDM) || !isNull(afterMount)) {
         lifecycle.addListener(function () {
-            instance.componentDidMount();
+            afterMount && afterMount(vNode);
+            cDM && instance.componentDidMount();
         });
     }
 }
@@ -1953,9 +1968,9 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
     instance.componentWillMount();
-    instance._beforeRender && instance._beforeRender();
+    options.beforeRender && options.beforeRender(instance);
     var input = instance.render(props, instance.state, context);
-    instance._afterRender && instance._afterRender();
+    options.afterRender && options.afterRender(instance);
     if (isArray(input)) {
         if (process.env.NODE_ENV !== 'production') {
             throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
@@ -2134,7 +2149,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         subLifecycle.fastUnmount = lifecycle.fastUnmount;
         // we then set the lifecycle fastUnmount value back to what it was before the mount
         lifecycle.fastUnmount = fastUnmount;
-        mountStatefulComponentCallbacks(ref, instance, lifecycle);
+        mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
         options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
@@ -2152,6 +2167,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     var props = vNode.props;
     var events = vNode.events;
     var flags = vNode.flags;
+    var ref = vNode.ref;
     if (isSVG || (flags & 128 /* SvgElement */)) {
         isSVG = true;
     }
@@ -2168,28 +2184,35 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
         if (!(flags & 2 /* HtmlElement */)) {
             processElement(flags, vNode, dom);
         }
-        for (var prop in props) {
-            patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+        if (props) {
+            for (var prop in props) {
+                patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+            }
         }
-        for (var name in events) {
-            patchEvent(name, null, events[name], dom, lifecycle);
+        if (events) {
+            for (var name in events) {
+                patchEvent(name, null, events[name], dom, lifecycle);
+            }
+        }
+        if (ref) {
+            mountRef(dom, ref, lifecycle);
         }
     }
 }
 function hydrateChildren(children, dom, lifecycle, context, isSVG) {
     normalizeChildNodes(dom);
-    var domNodes = Array.prototype.slice.call(dom.childNodes);
+    var domNodes = dom.childNodes;
     var childNodeIndex = 0;
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             if (isObject(child) && !isNull(child)) {
-                hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
+                setTimeout(hydrate, 0, child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
             }
         }
     }
     else if (isObject(children)) {
-        hydrate(children, dom.firstChild, lifecycle, context, isSVG);
+        setTimeout(hydrate, 0, children, dom.firstChild, lifecycle, context, isSVG);
     }
 }
 function hydrateText(vNode, dom) {
@@ -2244,6 +2267,7 @@ function hydrateRoot(input, parentDom, lifecycle) {
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 var roots = [];
 var componentToDOMNodeMap = new Map();
+options.roots = roots;
 function findDOMNode(ref) {
     if (!options.findDOMNodeEnabled) {
         if (process.env.NODE_ENV !== 'production') {
@@ -2301,8 +2325,8 @@ function render(input, parentDom) {
             if (!hydrateRoot(input, parentDom, lifecycle)) {
                 mount(input, parentDom, lifecycle, {}, false);
             }
-            lifecycle.trigger();
             root = setRoot(parentDom, input, lifecycle);
+            lifecycle.trigger();
         }
     }
     else {
