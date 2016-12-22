@@ -181,7 +181,7 @@ function applyState(component, force, callback) {
         }
     }
 }
-var Component$1 = function Component$1(props, context) {
+var Component$1 = function Component(props, context) {
     this.state = {};
     this.refs = {};
     this._processingSetState = false;
