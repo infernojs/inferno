@@ -55,9 +55,8 @@ function findAllInTree(inst: any, test: Function): VNode[] {
 		return [];
 	}
 	const publicInst = inst.dom;
-	let ret = test(publicInst) ? [publicInst] : [];
 	const currentElement = inst._vNode;
-
+	let ret = test(publicInst) ? [inst] : [];
 	if (isDOMComponent(publicInst)) {
 		const renderedChildren = inst.children;
 		for (let key in renderedChildren) {

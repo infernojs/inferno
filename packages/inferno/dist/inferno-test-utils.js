@@ -1,5 +1,5 @@
 /*!
- * inferno-test-utils v1.0.0-beta38
+ * inferno-test-utils v1.0.0-beta39
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -10,11 +10,17 @@
 }(this, (function (exports,inferno) { 'use strict';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 
 =======
+>>>>>>> dev
+=======
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
 >>>>>>> dev
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though

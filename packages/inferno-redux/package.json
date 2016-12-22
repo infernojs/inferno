@@ -1,6 +1,6 @@
 {
   "name": "inferno-redux",
-  "version": "1.0.0-beta38",
+  "version": "1.0.0-beta39",
   "license": "MIT",
   "description": "Official Inferno bindings for Redux",
   "author": {
@@ -23,9 +23,9 @@
   ],
   "repository": "https://github.com/trueadm/inferno",
   "dependencies": {
-    "inferno": "1.0.0-beta38",
-    "inferno-component": "1.0.0-beta38",
-    "inferno-create-element": "1.0.0-beta38",
+    "inferno": "1.0.0-beta39",
+    "inferno-component": "1.0.0-beta39",
+    "inferno-create-element": "1.0.0-beta39",
     "redux": "*"
   }
 }
