@@ -1,4 +1,4 @@
-import { NO_OP, createVNode, EMPTY_OBJ } from 'inferno';
+import { NO_OP, createVNode, EMPTY_OBJ, options } from 'inferno';
 import {
 	isArray,
 	isFunction,
@@ -165,6 +165,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
 			subLifecycle.trigger();
 			component.componentDidUpdate(props, prevState);
+			options.afterUpdate && options.afterUpdate(vNode);
 		}
 		const dom = vNode.dom = nextInput.dom;
 		const componentToDOMNodeMap = component._componentToDOMNodeMap;

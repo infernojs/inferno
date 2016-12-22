@@ -13,9 +13,34 @@
 			"use strict";
 			var createElement = Inferno.createElement;
 
+			class MyBar extends Inferno.Component {
+				constructor(props) {
+					super(props)
+					this.state = {
+						test: '123'
+					}
+				}
+				render() {
+					return createElement('div', null, 'Works!');
+				}
+			}
+
+			function FunctionalComponent(props) {
+				return createElement('button', null, 'A button!');
+			}
+
 			class MyFoo extends Inferno.Component {
 				render() {
-					return createElement('div', { className: 'test' }, 'Hello world!')
+					return createElement('div', { className: 'test' },
+						createElement('span', { className: 'foo' }, 
+							'Hello world!'
+						),
+						createElement('span', { className: 'foo' }, 
+							'Hello world!'
+						),
+						createElement(MyBar, null),
+						createElement(FunctionalComponent, null)
+					)
 				}
 			} 
 

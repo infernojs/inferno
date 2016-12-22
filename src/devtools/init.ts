@@ -2,72 +2,80 @@ import {
 	options
 } from 'inferno';
 import {
-	isStatefulComponent
-} from '../shared';
-import {
-	wrapFunctionalComponent
-} from './wrappers';
-import {
 	createDevToolsBridge
 } from './bridge';
+import {
+	isStatefulComponent
+} from '../shared';
+import { VNodeFlags } from '../core/structures';
+import Component from 'inferno-component';
 
-// Credit: this a port of the great work done on Preact's dev tools proxy with React
+const functionalComponentWrappers = new Map();
+
+function wrapFunctionalComponent(vNode) {
+	const originalRender = vNode.type;
+	const name = vNode.type.name || '(Function.name missing)';
+	const wrappers = functionalComponentWrappers;
+
+	if (!wrappers.has(originalRender)) {
+		const wrapper = class extends Component<any, any> {
+			render(props, state, context) {
+				return originalRender(props, context);
+			}
+		};
+		// Expose the original component name. React Dev Tools will use
+		// this property if it exists or fall back to Function.name
+		// otherwise.
+		wrapper['displayName'] = name;
+		wrappers.set(originalRender, wrapper);
+	}
+	vNode.type = wrappers.get(originalRender);
+	vNode.flags = VNodeFlags.ComponentClass;
+}
+
+// Credit: this based on on the great work done with Preact and its devtools
 // https://github.com/developit/preact/blob/master/devtools/devtools.js
 
-/**
- * Create a bridge between the Inferno component tree and React's dev tools
- * and register it.
- *
- * After this function is called, the React Dev Tools should be able to detect
- * "React" on the page and show the component tree.
- *
- * This function hooks into Inferno VNode creation in order to expose functional
- * components correctly, so it should be called before the root component(s)
- * are rendered.
- *
- * Returns a cleanup function which unregisters the hooks.
- */
 export default function initDevTools() {
 	if (typeof window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] === 'undefined') {
 		// React DevTools are not installed
 		return;
 	}
-	// Hook into Inferno element creation in order to wrap functional components
-	// with stateful ones in order to make them visible in the devtools
-	const createVNode = options.createVNode;
-
+	const nextVNode = options.createVNode;
 	options.createVNode = (vNode) => {
-		if (!isStatefulComponent(vNode)) {
+		const flags = vNode.flags;
+
+		if ((flags & VNodeFlags.Component) && !isStatefulComponent(vNode.type)) {
 			wrapFunctionalComponent(vNode);
 		}
-		if (createVNode) {
-			return createVNode(vNode);
+		if (nextVNode) {
+			return nextVNode(vNode);
 		}
 	};
 	// Notify devtools when preact components are mounted, updated or unmounted
 	const bridge = createDevToolsBridge();
 	const nextAfterMount = options.afterMount;
 
-	options.afterMount = component => {
-		bridge.componentAdded(component);
+	options.afterMount = vNode => {
+		bridge.componentAdded(vNode);
 		if (nextAfterMount) {
-			nextAfterMount(component);
+			nextAfterMount(vNode);
 		}
 	};
 	const nextAfterUpdate = options.afterUpdate;
 
-	options.afterUpdate = component => {
-		bridge.componentUpdated(component);
+	options.afterUpdate = vNode => {
+		bridge.componentUpdated(vNode);
 		if (nextAfterUpdate) {
-			nextAfterUpdate(component);
+			nextAfterUpdate(vNode);
 		}
 	};
 	const nextBeforeUnmount = options.beforeUnmount;
 
-	options.beforeUnmount = component => {
-		bridge.componentRemoved(component);
+	options.beforeUnmount = vNode => {
+		bridge.componentRemoved(vNode);
 		if (nextBeforeUnmount) {
-			nextBeforeUnmount(component);
+			nextBeforeUnmount(vNode);
 		}
 	};
 	// Notify devtools about this instance of "React"
