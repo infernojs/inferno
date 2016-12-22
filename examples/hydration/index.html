@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Inferno Hydration Example</title>
+	</head>
+	<body>
+		<div id="app"></div>
+		<script>
+			stream = {
+				Readable: function () {
+
+				}
+			}
+			window.process = {
+				env: {
+					NODE_ENV: 'development'
+				}
+			};
+		</script>
+
+		<script src="../../packages/inferno/dist/inferno.js"></script>
+		<script src="../../packages/inferno/dist/inferno-component.js"></script>
+		<script src="../../packages/inferno/dist/inferno-server.js"></script>
+		<script src="../../packages/inferno/dist/inferno-create-element.js"></script>
+
+		<script>
+			"use strict";
+
+			var h = Inferno.createElement;
+			var Component = Inferno.Component;
+			var renderToString = Inferno.Server.renderToString;
+
+			var arr1 = [];
+			for (var i = 0; i < 100; i++) {
+				arr1[i] = i;
+			}
+
+			var arr2 = [];
+			for (var i = 0; i < 10; i++) {
+				arr2[i] = i;
+			}
+
+			class Empty extends Component {
+				render () {
+					return null;
+				}
+			}
+
+			function section (index) {
+				return h('section', null, 'Text', h('h4', null, 'Hello ' + index), h(Empty, null), 
+					h('div', null,
+						arr2.map(function (value) {
+							return ' World ' + value;
+						})
+					)
+				);
+			}
+
+			class Foo extends Component {
+				render() {
+					return h('div', null, 
+						arr1.map(function (value) {
+							return section(value);
+						})
+					);
+				}
+			}
+
+			var mount = document.getElementById('app');
+
+			mount.innerHTML = renderToString(h(Foo, null));			
+			Inferno.render(h(Foo, {}), mount);
+		</script>
+	</body>
+</html>
