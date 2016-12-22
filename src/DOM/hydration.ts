@@ -68,14 +68,14 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		const _isSVG = dom.namespaceURI === svgNS;
 		const defaultProps = type.defaultProps;
 
-		lifecycle.fastUnmount = false;
 		if (!isUndefined(defaultProps)) {
 			copyPropsTo(defaultProps, props);
 			vNode.props = props;
 		}
 		const instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG);
+		// If instance does not have componentWillUnmount specified we can enable fastUnmount
+		const fastUnmount = isUndefined(instance.componentWillUnmount);
 		const input = instance._lastInput;
-		const fastUnmount = lifecycle.fastUnmount;
 
 		// we store the fastUnmount value, but we set it back to true on the lifecycle
 		// we do this so we can determine if the component render has a fastUnmount or not

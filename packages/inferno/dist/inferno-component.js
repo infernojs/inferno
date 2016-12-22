@@ -205,9 +205,6 @@ var Component$1 = function Component(props, context) {
     this.props = props || inferno.EMPTY_OBJ;
     /** @type {object} */
     this.context = context || {};
-    if (!this.componentDidMount) {
-        this.componentDidMount = null;
-    }
 };
 Component$1.prototype.render = function render (nextProps, nextState, nextContext) {
 };
@@ -234,10 +231,6 @@ Component$1.prototype.setState = function setState (newState, callback) {
     }
 };
 Component$1.prototype.componentWillMount = function componentWillMount () {
-};
-Component$1.prototype.componentDidMount = function componentDidMount () {
-};
-Component$1.prototype.componentWillUnmount = function componentWillUnmount () {
 };
 Component$1.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState, prevContext) {
 };

@@ -48,7 +48,7 @@ export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecy
 	if (!isRecycling) {
 		if (isStatefulComponent) {
 			instance._ignoreSetState = true;
-			instance.componentWillUnmount();
+			instance.componentWillUnmount && instance.componentWillUnmount();
 			if (ref && !isRecycling) {
 				ref(null);
 			}
@@ -64,7 +64,7 @@ export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecy
 				const subLifecycle = instance._lifecycle;
 
 				if (!subLifecycle.fastUnmount) {
-					unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
+					unmount(instance._lastInput, null, subLifecycle, false, shallowUnmount, isRecycling);
 				}
 			} else {
 				if (!lifecycle.fastUnmount) {

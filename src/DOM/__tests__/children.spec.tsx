@@ -1380,6 +1380,10 @@ describe('Children - (JSX)', () => {
 					};
 				}
 
+				componentWillUnmount() {}
+
+				componentWillMount() {}
+
 				render() {
 					return (
 						<span>
@@ -1448,6 +1452,10 @@ describe('Children - (JSX)', () => {
 			}
 
 			class Test extends Component<any, any> {
+				componentWillUnmount() {}
+
+				componentWillMount() {}
+
 				render() {
 					return <em>f</em>;
 				}
@@ -1513,12 +1521,16 @@ describe('Children - (JSX)', () => {
 			}
 
 			class Test extends Component<any, any> {
+				componentWillUnmount() {}
+
 				render() {
 					return <em>f</em>;
 				}
 			}
 
 			class Foo extends Component<any, any> {
+				componentWillUnmount() {}
+
 				render() {
 					return <em>f</em>;
 				}
@@ -1611,6 +1623,8 @@ describe('Children - (JSX)', () => {
 			}
 
 			class Test5 extends Component<any, any> {
+				componentWillUnmount() {}
+
 				render() {
 					return <h1>ShouldUnMountMe</h1>;
 				}
