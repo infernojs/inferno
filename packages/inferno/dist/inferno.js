@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta37
+ * inferno v1.0.0-beta38
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -2159,6 +2159,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     var props = vNode.props;
     var events = vNode.events;
     var flags = vNode.flags;
+    var ref = vNode.ref;
     if (isSVG || (flags & 128 /* SvgElement */)) {
         isSVG = true;
     }
@@ -2175,11 +2176,18 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
         if (!(flags & 2 /* HtmlElement */)) {
             processElement(flags, vNode, dom);
         }
-        for (var prop in props) {
-            patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+        if (props) {
+            for (var prop in props) {
+                patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+            }
         }
-        for (var name in events) {
-            patchEvent(name, null, events[name], dom, lifecycle);
+        if (events) {
+            for (var name in events) {
+                patchEvent(name, null, events[name], dom, lifecycle);
+            }
+        }
+        if (ref) {
+            mountRef(dom, ref, lifecycle);
         }
     }
 }
