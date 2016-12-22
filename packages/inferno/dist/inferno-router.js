@@ -53,8 +53,6 @@ function IndexLink(props) {
     return createElement(Link, props);
 }
 
-var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
 function toArray(children) {
     return isArray(children) ? children : (children ? [children] : children);
 }
