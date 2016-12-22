@@ -358,7 +358,10 @@ describe('ReactTestUtils', () => {
     });
 
     // Should be document order, not mount order (which would be purple, orange)
-    expect(log).to.equal(['orangepurple', 'orange', 'purple']);
+    expect(log).lengthOf.to.equal(3);
+    expect(log[0]).to.equal('orangepurple');
+    expect(log[0]).to.equal('orange');
+    expect(log[0]).to.equal('purple');
   });
 
   it('can scry with stateless components involved', () => {
