@@ -27,6 +27,8 @@ interface Root {
 export const roots: Root[] = [];
 export const componentToDOMNodeMap = new Map();
 
+options.roots = roots;
+
 export function findDOMNode(ref) {
 	if (!options.findDOMNodeEnabled) {
 		if (process.env.NODE_ENV !== 'production') {
@@ -48,6 +50,10 @@ function getRoot(dom): Root | null {
 		}
 	}
 	return null;
+}
+
+export function getRoots() {
+	return roots;
 }
 
 function setRoot(dom, input, lifecycle): Root {
@@ -94,8 +100,8 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement) {
 			if (!hydrateRoot(input, parentDom, lifecycle)) {
 				mount(input, parentDom, lifecycle, {}, false);
 			}
-			lifecycle.trigger();
 			root = setRoot(parentDom, input, lifecycle);
+			lifecycle.trigger();
 		}
 	} else {
 		const lifecycle = root.lifecycle;

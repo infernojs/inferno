@@ -27,7 +27,7 @@ import {
  *
  * Returns a cleanup function which unregisters the hooks.
  */
-export function initDevTools() {
+export default function initDevTools() {
 	if (typeof window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] === 'undefined') {
 		// React DevTools are not installed
 		return;
@@ -36,15 +36,14 @@ export function initDevTools() {
 	// with stateful ones in order to make them visible in the devtools
 	const createVNode = options.createVNode;
 
-	options.createVNode = (vnode) => {
-		if (!isStatefulComponent(vnode)) {
-			wrapFunctionalComponent(vnode);
+	options.createVNode = (vNode) => {
+		if (!isStatefulComponent(vNode)) {
+			wrapFunctionalComponent(vNode);
 		}
 		if (createVNode) {
-			return createVNode(vnode);
+			return createVNode(vNode);
 		}
 	};
-
 	// Notify devtools when preact components are mounted, updated or unmounted
 	const bridge = createDevToolsBridge();
 	const nextAfterMount = options.afterMount;
@@ -55,26 +54,24 @@ export function initDevTools() {
 			nextAfterMount(component);
 		}
 	};
-
 	const nextAfterUpdate = options.afterUpdate;
+
 	options.afterUpdate = component => {
 		bridge.componentUpdated(component);
 		if (nextAfterUpdate) {
 			nextAfterUpdate(component);
 		}
 	};
-
 	const nextBeforeUnmount = options.beforeUnmount;
+
 	options.beforeUnmount = component => {
 		bridge.componentRemoved(component);
 		if (nextBeforeUnmount) {
 			nextBeforeUnmount(component);
 		}
 	};
-
 	// Notify devtools about this instance of "React"
 	window['__REACT_DEVTOOLS_GLOBAL_HOOK__'].inject(bridge);
-
 	return () => {
 		options.afterMount = nextAfterMount;
 		options.afterUpdate = nextAfterUpdate;

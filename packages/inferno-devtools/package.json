@@ -1,0 +1,27 @@
+{
+  "name": "inferno-devtools",
+  "version": "1.0.0-beta37",
+  "license": "MIT",
+  "description": "Provides support for React's Dev Tools for Inferno",
+  "author": {
+    "name": "Dominic Gannaway",
+    "email": "dg@domgan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/trueadm/inferno/issues"
+  },
+  "homepage": "https://github.com/trueadm/inferno#readme",
+  "main": "inferno-devtools.js",
+  "keywords": [
+    "babel",
+    "react",
+    "inferno",
+    "framework",
+    "interfaces",
+    "user interfaces"
+  ],
+  "repository": "https://github.com/trueadm/inferno",
+  "dependencies": {
+    "inferno": "1.0.0-beta37"
+  }
+}

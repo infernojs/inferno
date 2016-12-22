@@ -328,7 +328,11 @@ Lifecycle.prototype.trigger = function trigger () {
 
 var options = {
     recyclingEnabled: true,
-    findDOMNodeEnabled: false
+    findDOMNodeEnabled: false,
+    roots: null,
+    afterMount: null,
+    afterUpdate: null,
+    beforeUnmount: null
 };
 
 function constructDefaults(string, object, value) {
@@ -717,6 +721,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
     if (!isRecycling) {
         if (isStatefulComponent$$1) {
             instance._ignoreSetState = true;
+            options.beforeUnmount && options.beforeUnmount(instance);
             instance.componentWillUnmount();
             if (ref && !isRecycling) {
                 ref(null);
@@ -1064,6 +1069,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     subLifecycle.fastUnmount = lifecycle.fastUnmount;
                     lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
+                    options.afterUpdate && options.afterUpdate(instance);
                     options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
                 nextVNode.dom = nextInput$1.dom;
@@ -1895,6 +1901,7 @@ function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
     }
     if (!isNull(instance.componentDidMount)) {
         lifecycle.addListener(function () {
+            options.afterMount && options.afterMount(instance);
             instance.componentDidMount();
         });
     }
@@ -2242,6 +2249,7 @@ function hydrateRoot(input, parentDom, lifecycle) {
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 var roots = [];
 var componentToDOMNodeMap = new Map();
+options.roots = roots;
 function findDOMNode(ref) {
     if (!options.findDOMNodeEnabled) {
         if (process.env.NODE_ENV !== 'production') {
@@ -2261,6 +2269,7 @@ function getRoot(dom) {
     }
     return null;
 }
+
 function setRoot(dom, input, lifecycle) {
     var root = {
         dom: dom,
@@ -2299,8 +2308,8 @@ function render(input, parentDom) {
             if (!hydrateRoot(input, parentDom, lifecycle)) {
                 mount(input, parentDom, lifecycle, {}, false);
             }
-            lifecycle.trigger();
             root = setRoot(parentDom, input, lifecycle);
+            lifecycle.trigger();
         }
     }
     else {

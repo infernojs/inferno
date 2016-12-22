@@ -134,4 +134,15 @@ bundles.add({
 	path: 'packages/inferno-vnode-flags/'
 });
 
+bundles.add({
+	moduleGlobal: 'Inferno.DevTools',
+	moduleName: 'inferno-devtools',
+	moduleEntry: 'packages/inferno-devtools/src/index.js',
+	moduleGlobals: {
+		inferno: 'Inferno',
+		'inferno-component': 'Inferno.Component'
+	},
+	path: 'packages/inferno-devtools/'
+});
+
 export default bundles;

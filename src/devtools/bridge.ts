@@ -1,6 +1,15 @@
 import { options } from 'inferno';
 
 /**
+ * Map of Component|Node to ReactDOMComponent|ReactCompositeComponent-like
+ * object.
+ *
+ * The same React*Component instance must be used when notifying devtools
+ * about the initial mount of a component and subsequent updates.
+ */
+const instanceMap = new Map();
+
+/**
  * Create a bridge for exposing Inferno's component tree to React DevTools.
  *
  * It creates implementations of the interfaces that ReactDOM passes to
@@ -44,7 +53,7 @@ export function createDevToolsBridge() {
 
 		// Stub - React DevTools expects to find this method and replace it
 		// with a wrapper in order to observe new root components being added
-		_renderNewRootComponent(/* instance, ... */) { }
+		_renderNewRootComponent(instance?) { }
 	};
 
 	// ReactReconciler-like object
@@ -52,16 +61,16 @@ export function createDevToolsBridge() {
 		// Stubs - React DevTools expects to find these methods and replace them
 		// with wrappers in order to observe components being mounted, updated and
 		// unmounted
-		mountComponent(/* instance, ... */) { },
+		mountComponent(instance?) { },
 		performUpdateIfNecessary(/* instance, ... */) { },
-		receiveComponent(/* instance, ... */) { },
-		unmountComponent(/* instance, ... */) { }
+		receiveComponent(instance?) { },
+		unmountComponent(instance?) { }
 	};
 
 	/** Notify devtools that a new component instance has been mounted into the DOM. */
 	const componentAdded = component => {
 		const instance = updateReactComponent(component);
-		if (isRootComponent(component)) {
+		if (isRootComponent(roots, component)) {
 			instance._rootID = nextRootKey(roots);
 			roots[instance._rootID] = instance;
 			Mount._renderNewRootComponent(instance);
@@ -132,8 +141,8 @@ export function createDevToolsBridge() {
 	};
 }
 
-function isRootComponent(component) {
-	const dom = component._vNode.dom;
+function isRootComponent(roots, component) {
+	const dom = component._vNode.dom.parentNode;
 
 	for (let i = 0; i < roots.length; i++) {
 		const root = roots[i];
@@ -142,6 +151,164 @@ function isRootComponent(component) {
 			return root;
 		}
 	}
+}
 
-	return !component.base.parentElement || !component.base.parentElement[ATTR_KEY];
+/**
+ * Update (and create if necessary) the ReactDOMComponent|ReactCompositeComponent-like
+ * instance for a given preact component instance or DOM Node.
+ */
+function updateReactComponent(componentOrNode) {
+	const newInstance = componentOrNode instanceof Node ?
+		createReactDOMComponent(componentOrNode) :
+		createReactCompositeComponent(componentOrNode);
+	if (instanceMap.has(componentOrNode)) {
+		let inst = instanceMap.get(componentOrNode);
+		Object.assign(inst, newInstance);
+		return inst;
+	}
+	instanceMap.set(componentOrNode, newInstance);
+	return newInstance;
+}
+
+/**
+ * Create a ReactDOMComponent-compatible object for a given DOM node rendered
+ * by preact.
+ *
+ * This implements the subset of the ReactDOMComponent interface that
+ * React DevTools requires in order to display DOM nodes in the inspector with
+ * the correct type and properties.
+ */
+function createReactDOMComponent(node) {
+	const childNodes = node.nodeType === Node.ELEMENT_NODE ?
+		Array.from(node.childNodes) : [];
+
+	const isText = node.nodeType === Node.TEXT_NODE;
+
+	return {
+		// --- ReactDOMComponent interface
+		_currentElement: isText ? node.textContent : {
+			type: node.nodeName.toLowerCase(),
+			props: node.props
+		},
+		_renderedChildren: childNodes.map(child => {
+			// TODO
+			// if (child._component) {
+			// 	return updateReactComponent(child._component);
+			// }
+			return updateReactComponent(child);
+		}),
+		_stringText: isText ? node.textContent : null,
+
+		// --- Additional properties used by preact devtools
+
+		// A flag indicating whether the devtools have been notified about the
+		// existence of this component instance yet.
+		// This is used to send the appropriate notifications when DOM components
+		// are added or updated between composite component updates.
+		_inDevTools: false,
+		node
+	};
+}
+
+/**
+ * Return a ReactCompositeComponent-compatible object for a given preact
+ * component instance.
+ *
+ * This implements the subset of the ReactCompositeComponent interface that
+ * the DevTools requires in order to walk the component tree and inspect the
+ * component's properties.
+ *
+ * See https://github.com/facebook/react-devtools/blob/e31ec5825342eda570acfc9bcb43a44258fceb28/backend/getData.js
+ */
+function createReactCompositeComponent(component) {
+	const _currentElement = createReactElement(component);
+	const node = component._vNode.dom;
+
+	let instance = {
+		// --- ReactDOMComponent properties
+		getName() {
+			return typeName(_currentElement);
+		},
+		_currentElement: createReactElement(component),
+		props: component.props,
+		state: component.state,
+		forceUpdate: component.forceUpdate.bind(component),
+		setState: component.setState.bind(component),
+
+		// --- Additional properties used by preact devtools
+		node,
+		_instance: null,
+		_renderedComponent: null
+	};
+
+	// React DevTools exposes the `_instance` field of the selected item in the
+	// component tree as `$r` in the console.  `_instance` must refer to a
+	// React Component (or compatible) class instance with `props` and `state`
+	// fields and `setState()`, `forceUpdate()` methods.
+	instance._instance = component;
+
+	// If the root node returned by this component instance's render function
+	// was itself a composite component, there will be a `_component` property
+	// containing the child component instance.
+	if (component._component) {
+		instance._renderedComponent = updateReactComponent(component._component);
+	} else {
+		// Otherwise, if the render() function returned an HTML/SVG element,
+		// create a ReactDOMComponent-like object for the DOM node itself.
+		instance._renderedComponent = updateReactComponent(node);
+	}
+
+	return instance;
+}
+
+function nextRootKey(roots) {
+	return '.' + Object.keys(roots).length;
+}
+
+/**
+ * Visit all child instances of a ReactCompositeComponent-like object that are
+ * not composite components (ie. they represent DOM elements or text)
+ *
+ * @param {Component} component
+ * @param {(Component) => void} visitor
+ */
+function visitNonCompositeChildren(component, visitor?) {
+	if (component._renderedComponent) {
+		if (!component._renderedComponent._component) {
+			visitor(component._renderedComponent);
+			visitNonCompositeChildren(component._renderedComponent, visitor);
+		}
+	} else if (component._renderedChildren) {
+		component._renderedChildren.forEach(child => {
+			visitor(child);
+			if (!child._component)  {
+				visitNonCompositeChildren(child, visitor);
+			}
+		});
+	}
+}
+
+/**
+ * Return a ReactElement-compatible object for the current state of a preact
+ * component.
+ */
+function createReactElement(component) {
+	return {
+		type: component.constructor,
+		key: component.key,
+		ref: null, // Unsupported
+		props: component.props
+	};
+}
+
+/**
+ * Return the name of a component created by a `ReactElement`-like object.
+ *
+ * @param {ReactElement} element
+ */
+function typeName(element) {
+	if (typeof element.type === 'function') {
+		return element.type.displayName || element.type.name;
+	}
+	return element.type;
 }

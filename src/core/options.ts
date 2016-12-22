@@ -1,7 +1,8 @@
-import { roots } from '../DOM/rendering';
-
 export default {
 	recyclingEnabled: true,
 	findDOMNodeEnabled: false,
-	roots
+	roots: null,
+	afterMount: null,
+	afterUpdate: null,
+	beforeUnmount: null
 };

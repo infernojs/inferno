@@ -219,6 +219,7 @@ export function mountStatefulComponentCallbacks(ref, instance, lifecycle: Lifecy
 	}
 	if (!isNull(instance.componentDidMount)) {
 		lifecycle.addListener(() => {
+			options.afterMount && options.afterMount(instance);
 			instance.componentDidMount();
 		});
 	}
