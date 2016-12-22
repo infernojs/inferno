@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-beta38
+ * inferno-component v1.0.0-beta39
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -182,7 +182,7 @@ function applyState(component, force, callback) {
         }
     }
 }
-var Component$1 = function Component(props, context) {
+var Component$1 = function Component$1(props, context) {
     this.state = {};
     this.refs = {};
     this._processingSetState = false;

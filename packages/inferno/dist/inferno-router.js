@@ -1,5 +1,5 @@
 /*!
- * inferno-router v1.0.0-beta38
+ * inferno-router v1.0.0-beta39
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -52,6 +52,8 @@ function IndexLink(props) {
     props.to = '/';
     return createElement(Link, props);
 }
+
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 function toArray(children) {
     return isArray(children) ? children : (children ? [children] : children);

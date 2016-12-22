@@ -1,5 +1,5 @@
 /*!
- * inferno-hyperscript v1.0.0-beta38
+ * inferno-hyperscript v1.0.0-beta39
  * (c) 2016 undefined
  * Released under the MIT License.
  */
@@ -8,6 +8,9 @@
     typeof define === 'function' && define.amd ? define(['inferno'], factory) :
     (global.Inferno = global.Inferno || {}, global.Inferno.h = factory(global.Inferno));
 }(this, (function (inferno) { 'use strict';
+
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
 
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though
