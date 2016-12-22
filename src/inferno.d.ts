@@ -9,19 +9,34 @@ declare module 'inferno' {
 	export const NO_OP;
 	export const ERROR_MSG;
 	export const EMPTY_OBJ;
-	export const options;
+	interface Options {
+		recyclingEnabled: boolean;
+		findDOMNodeEnabled: boolean;
+	}
+	export const options: Options;
 }
 
 declare module 'inferno-component' {
-	class Component<P, C> {
+	interface ComponentLifecycle<P, S> {
+		componentDidMount?: () => void;
+		componentWillMount?(): void;
+		componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+		shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
+		componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
+		componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
+		componentWillUnmount?(): void;
+	}
+	class Component<P, S> implements ComponentLifecycle<P, S>  {
 		refs?: any;
-		state?: any;
+		state?: S;
 		props?: P;
 		context?: C;
+		_vNode;
 		_unmounted?: boolean;
-		constructor (props?: P, context?: C);
+		constructor (props?: P, context?);
 		componentWillReact();
-		componentWillReceiveProps? (nextProps: P, nextContext: C): void;
+		componentWillReceiveProps? (nextProps: P, nextContext: Object): void;
+		componentWillUnmount();
 		forceUpdate (): void;
 		setState (v: Object, cb?: () => {}): boolean;
 		isPrototypeOf (v: Object): void;

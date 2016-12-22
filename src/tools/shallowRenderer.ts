@@ -1,68 +1,61 @@
+import Component from 'inferno-component';
 import { VNode } from '../core/structures';
-import { isElement } from './test';
+import { isElement } from './testUtils';
 import { throwError } from '../shared';
 
-class ShallowComponentWrapper {
-  _vNode;
-  constructor(element) {
-    this._vNode = element;
+class ShallowComponentWrapper extends Component<any, any> {
+  private _context: Object;
+  
+  constructor(element, context) {
+    super({ children: element });
+    this._context = context;
+  }
+
+  getChildContext() {
+    return this._context;
+  }
+
+  render({ children }) {
+    return children;
   }
 }
 
-export default class ReactShallowRenderer {
+export default class InfernoShallowRenderer {
   private _instance: ShallowComponentWrapper | null = null;
+
   getMountedInstance() {
     return this._instance ? this._instance._vNode : null;
   }
-  render(element: VNode, context) {
+  
+  render(element: VNode, context?: Object) {
     if (!isElement(element)) {
       throwError('ShallowRenderer render(): Invalid component element');
     }
     if (typeof element.type !== 'string') {
       throwError(
-        `ReactShallowRenderer render(): Shallow rendering works only with custom
+        `InfernoShallowRenderer render(): Shallow rendering works only with custom
         components, not primitives (${element.type}). Instead of calling '.render(el)' and
         inspecting the rendered output, look at 'el.props' directly instead.`
       );
     }
-
-    if (!context) {
-      context = {};
-    }
-    // ReactUpdates.batchedUpdates(_batchedRender, this, element, context);
+    
+    this._instance = new ShallowComponentWrapper(element, context);
 
     return this.getRenderOutput();
   }
+
   getRenderOutput() {
     return (
       (
         this._instance &&
-        this._instance._vNode &&
-        this._instance._vNode.dom.InnerHTML
+        this._instance._vNode
       ) || null
     );
   }
-  unmount() {
+
+  unmount(): void {
     if (this._instance) {
-      // ReactReconciler.unmountComponent(
-      //   this._instance,
-      //   false, /* safely */
-      //   false /* skipLifecycle */
-      // );
-    }
-  }
-  _render(element, transaction, context) {
-    if (this._instance) {
-      // ReactReconciler.receiveComponent(
-      //   this._instance,
-      //   element,
-      //   transaction,
-      //   context
-      // );
-    } else {
-      const instance = new ShallowComponentWrapper(element);
-      // ReactReconciler.mountComponent(instance, transaction, null, null, context, 0);
-      this._instance = instance;
+      this._instance.componentWillUnmount();
     }
   }
 }
