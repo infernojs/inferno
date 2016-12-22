@@ -17,6 +17,7 @@ import {
 	mountStatefulComponentCallbacks,
 	mountStatelessComponentCallbacks,
 	mountText,
+	mountRef,
 } from './mounting';
 import options from '../core/options';
 import Lifecycle from './lifecycle';
@@ -107,6 +108,7 @@ function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 	const props = vNode.props;
 	const events = vNode.events;
 	const flags = vNode.flags;
+	const ref = vNode.ref;
 
 	if (isSVG || (flags & VNodeFlags.SvgElement)) {
 		isSVG = true;
@@ -124,11 +126,18 @@ function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 		if (!(flags & VNodeFlags.HtmlElement)) {
 			processElement(flags, vNode, dom);
 		}
-		for (let prop in props) {
-			patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+		if (props) {
+			for (let prop in props) {
+				patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+			}
 		}
-		for (let name in events) {
-			patchEvent(name, null, events[name], dom, lifecycle);
+		if (events) {
+			for (let name in events) {
+				patchEvent(name, null, events[name], dom, lifecycle);
+			}
+		}
+		if (ref) {
+			mountRef(dom, ref, lifecycle);
 		}
 	}
 }
