@@ -26,7 +26,9 @@ function wrapFunctionalComponent(vNode) {
 		// Expose the original component name. React Dev Tools will use
 		// this property if it exists or fall back to Function.name
 		// otherwise.
+		/* tslint:disable */
 		wrapper['displayName'] = name;
+		/* tslint:enable */
 		wrappers.set(originalRender, wrapper);
 	}
 	vNode.type = wrappers.get(originalRender);
@@ -37,7 +39,9 @@ function wrapFunctionalComponent(vNode) {
 // https://github.com/developit/preact/blob/master/devtools/devtools.js
 
 export default function initDevTools() {
+	/* tslint:disable */
 	if (typeof window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] === 'undefined') {
+	/* tslint:enable */
 		// React DevTools are not installed
 		return;
 	}
@@ -79,7 +83,9 @@ export default function initDevTools() {
 		}
 	};
 	// Notify devtools about this instance of "React"
+	/* tslint:disable */
 	window['__REACT_DEVTOOLS_GLOBAL_HOOK__'].inject(bridge);
+	/* tslint:enable */
 	return () => {
 		options.afterMount = nextAfterMount;
 		options.afterUpdate = nextAfterUpdate;

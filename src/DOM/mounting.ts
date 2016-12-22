@@ -220,7 +220,7 @@ export function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle:
 	const cDM = instance.componentDidMount;
 	const afterMount = options.afterMount;
 
-	if (!isNull(cDM) && !isNull(afterMount)) {
+	if (!isNull(cDM) || !isNull(afterMount)) {
 		lifecycle.addListener(() => {
 			afterMount && afterMount(vNode);
 			cDM && instance.componentDidMount();
