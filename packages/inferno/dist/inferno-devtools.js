@@ -24,7 +24,9 @@ function isStringOrNumber(obj) {
     return isString(obj) || isNumber(obj);
 }
 
-
+function isInvalid(obj) {
+    return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
+}
 
 
 function isString(obj) {
@@ -33,8 +35,12 @@ function isString(obj) {
 function isNumber(obj) {
     return typeof obj === 'number';
 }
-
-
+function isNull(obj) {
+    return obj === null;
+}
+function isTrue(obj) {
+    return obj === true;
+}
 function isUndefined(obj) {
     return obj === undefined;
 }
@@ -262,7 +268,7 @@ function createReactDOMComponent(vNode, parentDom) {
             type: type,
             props: props
         },
-        _renderedChildren: !isText && (isArray(children) ? children.map(function (child) { return updateReactComponent(child, dom); }) : [updateReactComponent(children, dom)]),
+        _renderedChildren: !isText && (isArray(children) ? children.filter(function (child) { return isInvalid(child); }).map(function (child) { return updateReactComponent(child, dom); }) : !isInvalid(children) ? [updateReactComponent(children, dom)] : []),
         _stringText: isText ? (children || vNode) : null,
         _inDevTools: false,
         node: dom || parentDom,
