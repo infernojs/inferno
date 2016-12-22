@@ -5,14 +5,14 @@ import createElement from '../factories/createElement';
 import isValidElement from '../factories/isValidElement';
 import { render } from '../DOM/rendering';
 
-export function isElement(element: VNode): boolean {
-	return isValidElement(element);
-};
-
 export function renderIntoDocument(element: VNode): VNode {
 	const div = document.createElement('div');
 	return render(element, div) as VNode;
 }
+
+export function isElement(element: VNode): boolean {
+	return isValidElement(element);
+};
 
 export function isElementOfType(inst: VNode, componentClass: Function): boolean {
 	return (

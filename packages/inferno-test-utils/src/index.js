@@ -1,4 +1,5 @@
 export {
+	renderIntoDocument,
 	isElement,
 	isElementOfType,
 	isDOMComponent,
@@ -11,6 +12,7 @@ export {
 } from '../../../build/tools/test';
 
 export default {
+	renderIntoDocument,
 	isElement,
 	isElementOfType,
 	isDOMComponent,
