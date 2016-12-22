@@ -4,10 +4,10 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.Inferno = global.Inferno || {})));
-}(this, (function (exports) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('util')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'util'], factory) :
+	(factory((global.Inferno = global.Inferno || {}),global.util));
+}(this, (function (exports,util) { 'use strict';
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
@@ -729,8 +729,8 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
     if (!isRecycling) {
         if (isStatefulComponent$$1) {
             instance._ignoreSetState = true;
-            instance.componentWillUnmount && instance.componentWillUnmount();
             options.beforeUnmount && options.beforeUnmount(vNode);
+            instance.componentWillUnmount && instance.componentWillUnmount();
             if (ref && !isRecycling) {
                 ref(null);
             }
@@ -1911,6 +1911,7 @@ function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle) {
 }
 function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
     if (ref) {
+        lifecycle.fastUnmount = util.isNullOrUndefined(ref.onComponentWillUnmount);
         if (!isNullOrUndef(ref.onComponentWillMount)) {
             ref.onComponentWillMount();
         }

@@ -35,6 +35,7 @@ import {
 	patchEvent
 } from './patching';
 import processElement from './wrappers/processElement';
+import {isNullOrUndefined} from "util";
 
 export function mount(vNode, parentDom, lifecycle: Lifecycle, context, isSVG) {
 	const flags = vNode.flags;
@@ -227,6 +228,8 @@ export function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle:
 
 export function mountStatelessComponentCallbacks(ref, dom, lifecycle: Lifecycle) {
 	if (ref) {
+		lifecycle.fastUnmount = isNullOrUndefined(ref.onComponentWillUnmount);
+
 		if (!isNullOrUndef(ref.onComponentWillMount)) {
 			ref.onComponentWillMount();
 		}

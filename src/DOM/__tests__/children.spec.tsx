@@ -1646,4 +1646,207 @@ describe('Children - (JSX)', () => {
 			calledOnce(unMountSpy);
 		});
 	});
+
+	describe('Children lifecycle with fastUnmount Functional Components', () => {
+		it('Should call componentWillUnmount for children', () => {
+			function Wrapper({bool}) {
+				return (
+					<div>
+						<span>foobar</span>
+						{bool ? <FooBar onComponentWillMount={FoobarLifecycle.componentWillMount}
+										onComponentWillUnmount={FoobarLifecycle.componentWillUnmount}/> : null}
+					</div>
+				);
+			}
+
+			let mountCalls = 0;
+			let unMountCalls = 0;
+			const FoobarLifecycle = {
+				componentWillUnmount: () => {
+					unMountCalls++;
+				},
+				componentWillMount: () => {
+					mountCalls++;
+				},
+			};
+			function FooBar() {
+				return (
+					<span>
+						initial
+					</span>
+				);
+			}
+
+			render(<Wrapper bool={true}/>, container);
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span>initial</span></div>');
+
+			expect(mountCalls).to.eql(1);
+			expect(unMountCalls).to.eql(0);
+
+			render(<Wrapper bool={false}/>, container); // Unmount child component
+			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+
+			expect(mountCalls).to.eql(1);
+			expect(unMountCalls).to.eql(1);
+		});
+
+		it('Should call componentWillUnmount for nested children', () => {
+			function Wrapper({bool}) {
+				return (
+					<div>
+						<span>foobar</span>
+						{bool ? <FooBar/> : null}
+					</div>
+				);
+			}
+
+			function FooBar() {
+				return (
+					<span>
+						<Test onComponentWillMount={TestLifecycle.componentWillMount} onComponentWillUnmount={TestLifecycle.componentWillUnmount}/>
+					</span>
+				);
+			}
+			let unMountCalls = 0, mountCalls = 0;
+
+			const TestLifecycle = {
+				componentWillUnmount: () => {
+					unMountCalls++;
+				},
+				componentWillMount: () => {
+					mountCalls++;
+				},
+			};
+			function Test() {
+				return (
+					<em>f</em>
+				);
+			}
+
+			render(<Wrapper bool={true}/>, container);
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em>f</em></span></div>');
+
+			expect(mountCalls).to.eql(1);
+			expect(unMountCalls).to.eql(0);
+
+			render(<Wrapper bool={false}/>, container); // Unmount child component
+			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+
+			expect(mountCalls).to.eql(1);
+			expect(unMountCalls).to.eql(1);
+		});
+
+		it('Should call componentWillUnmount for nested children #2', () => {
+			function Wrapper({bool}) {
+				return (
+					<div>
+						<span>foobar</span>
+						{bool ? <FooBar/> : null}
+					</div>
+				);
+			}
+
+			function FooBar() {
+				return (
+					<span>
+						<Test onComponentWillUnmount={TestLifecycle.componentWillUnmount}/>
+						<Foo onComponentWillUnmount={FooLifecycle.componentWillUnmount}/>
+					</span>
+				);
+			}
+
+			let unMountTest = 0, unMountFoo = 0;
+
+			const TestLifecycle = {
+				componentWillUnmount: () => {
+					unMountTest++;
+				},
+			};
+			function Test() {
+				return <em>f</em>;
+			}
+
+			const FooLifecycle = {
+				componentWillUnmount: () => {
+					unMountFoo++;
+				}
+			};
+			function Foo() {
+				return <em>f</em>;
+			}
+
+			render(<Wrapper bool={true}/>, container);
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em>f</em><em>f</em></span></div>');
+
+			render(<Wrapper bool={false}/>, container);
+			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+			expect(unMountTest).to.eql(1);
+			expect(unMountFoo).to.eql(1);
+		});
+
+		it('Should call componentWillUnmount for deeply nested children', () => {
+			function Wrapper({bool}) {
+				return (
+					<div>
+						<span>foobar</span>
+						{bool ? <FooBar/> : null}
+					</div>
+				);
+			}
+
+			function FooBar() {
+				return (
+					<span>
+						<span>
+							<span>
+								<span>
+									<Test/>
+								</span>
+							</span>
+						</span>
+					</span>
+				);
+			}
+
+			function Test() {
+				return <Test2/>;
+			}
+
+			function Test2() {
+				return <Test4/>;
+			}
+
+			function Test4() {
+				return (
+					<div>
+						<span></span>
+						<Test5 onComponentWillUnmount={TestLifecycle.componentWillUnmount}/>
+						<span></span>
+					</div>
+				);
+			}
+			let unMountTest = 0;
+
+			const TestLifecycle = {
+				componentWillUnmount: () => {
+					unMountTest++;
+				},
+			};
+			function Test5() {
+				return <h1>ShouldUnMountMe</h1>;
+			}
+
+			render(<Wrapper bool={true}/>, container);
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>');
+
+			render(<Wrapper bool={false}/>, container);
+			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+
+			expect(unMountTest).to.eql(1);
+		});
+	});
 });

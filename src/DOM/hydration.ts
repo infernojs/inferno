@@ -93,7 +93,6 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		vNode.children = instance;
 	} else {
 		const input = createStatelessComponentInput(vNode, type, props, context);
-
 		hydrate(input, dom, lifecycle, context, isSVG);
 		vNode.children = input;
 		vNode.dom = input.dom;

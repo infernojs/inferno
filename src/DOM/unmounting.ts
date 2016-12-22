@@ -48,8 +48,8 @@ export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecy
 	if (!isRecycling) {
 		if (isStatefulComponent) {
 			instance._ignoreSetState = true;
-			instance.componentWillUnmount && instance.componentWillUnmount();
 			options.beforeUnmount && options.beforeUnmount(vNode);
+			instance.componentWillUnmount && instance.componentWillUnmount();
 			if (ref && !isRecycling) {
 				ref(null);
 			}
