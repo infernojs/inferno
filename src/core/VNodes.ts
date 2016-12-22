@@ -18,6 +18,7 @@ import {
 	Ref,
 	Type
 } from './structures';
+import options from './options';
 
 export function createVNode(
 	flags: VNodeFlags,
@@ -44,6 +45,9 @@ export function createVNode(
 	};
 	if (!noNormalise) {
 		normalize(vNode);
+	}
+	if (options.createVNode) {
+		options.createVNode(vNode);
 	}
 	return vNode;
 }

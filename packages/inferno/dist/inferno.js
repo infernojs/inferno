@@ -201,6 +201,16 @@ function normalize(vNode) {
     }
 }
 
+var options = {
+    recyclingEnabled: true,
+    findDOMNodeEnabled: false,
+    roots: null,
+    createVNode: null,
+    afterMount: null,
+    afterUpdate: null,
+    beforeUnmount: null
+};
+
 function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
@@ -217,6 +227,9 @@ function createVNode(flags, type, props, children, events, key, ref, noNormalise
     };
     if (!noNormalise) {
         normalize(vNode);
+    }
+    if (options.createVNode) {
+        options.createVNode(vNode);
     }
     return vNode;
 }
@@ -324,11 +337,6 @@ Lifecycle.prototype.trigger = function trigger () {
     for (var i = 0; i < this.listeners.length; i++) {
         this$1.listeners[i]();
     }
-};
-
-var options = {
-    recyclingEnabled: true,
-    findDOMNodeEnabled: false
 };
 
 function constructDefaults(string, object, value) {
@@ -719,6 +727,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
     if (!isRecycling) {
         if (isStatefulComponent$$1) {
             instance._ignoreSetState = true;
+            options.beforeUnmount && options.beforeUnmount(vNode);
             instance.componentWillUnmount();
             if (ref && !isRecycling) {
                 ref(null);
@@ -1066,6 +1075,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     subLifecycle.fastUnmount = lifecycle.fastUnmount;
                     lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
+                    options.afterUpdate && options.afterUpdate(nextVNode);
                     options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
                 nextVNode.dom = nextInput$1.dom;
@@ -1868,7 +1878,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
         if (!isNull(parentDom)) {
             appendChild(parentDom, dom);
         }
-        mountStatefulComponentCallbacks(ref, instance, lifecycle);
+        mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
         options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
@@ -1883,7 +1893,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
     }
     return dom;
 }
-function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
+function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle) {
     if (ref) {
         if (isFunction(ref)) {
             ref(instance);
@@ -1895,9 +1905,12 @@ function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
             throwError();
         }
     }
-    if (!isNull(instance.componentDidMount)) {
+    var cDM = instance.componentDidMount;
+    var afterMount = options.afterMount;
+    if (!isNull(cDM) && !isNull(afterMount)) {
         lifecycle.addListener(function () {
-            instance.componentDidMount();
+            afterMount && afterMount(vNode);
+            cDM && instance.componentDidMount();
         });
     }
 }
@@ -2134,7 +2147,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         subLifecycle.fastUnmount = lifecycle.fastUnmount;
         // we then set the lifecycle fastUnmount value back to what it was before the mount
         lifecycle.fastUnmount = fastUnmount;
-        mountStatefulComponentCallbacks(ref, instance, lifecycle);
+        mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
         options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
@@ -2244,6 +2257,7 @@ function hydrateRoot(input, parentDom, lifecycle) {
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 var roots = [];
 var componentToDOMNodeMap = new Map();
+options.roots = roots;
 function findDOMNode(ref) {
     if (!options.findDOMNodeEnabled) {
         if (process.env.NODE_ENV !== 'production') {
@@ -2263,6 +2277,7 @@ function getRoot(dom) {
     }
     return null;
 }
+
 function setRoot(dom, input, lifecycle) {
     var root = {
         dom: dom,
@@ -2301,8 +2316,8 @@ function render(input, parentDom) {
             if (!hydrateRoot(input, parentDom, lifecycle)) {
                 mount(input, parentDom, lifecycle, {}, false);
             }
-            lifecycle.trigger();
             root = setRoot(parentDom, input, lifecycle);
+            lifecycle.trigger();
         }
     }
     else {

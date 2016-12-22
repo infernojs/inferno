@@ -171,6 +171,7 @@ function applyState(component, force, callback) {
             component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
             subLifecycle.trigger();
             component.componentDidUpdate(props, prevState);
+            inferno.options.afterUpdate && inferno.options.afterUpdate(vNode);
         }
         var dom = vNode.dom = nextInput.dom;
         var componentToDOMNodeMap = component._componentToDOMNodeMap;
