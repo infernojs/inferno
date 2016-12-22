@@ -182,7 +182,7 @@ function applyState(component, force, callback) {
         }
     }
 }
-var Component$1 = function Component(props, context) {
+var Component$1 = function Component$1(props, context) {
     this.state = {};
     this.refs = {};
     this._processingSetState = false;
@@ -277,9 +277,9 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
             this.props = nextProps;
             var state = this.state = nextState;
             this.context = context;
-            this._beforeRender && this._beforeRender();
+            inferno.options.beforeRender && inferno.options.beforeRender(this);
             var render = this.render(nextProps, state, context);
-            this._afterRender && this._afterRender();
+            inferno.options.afterRender && inferno.options.afterRender(this);
             return render;
         }
     }

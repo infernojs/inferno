@@ -137,9 +137,7 @@ function createDevToolsBridge() {
     };
     var Reconciler = {
         mountComponent: function mountComponent(instance) { },
-        performUpdateIfNecessary: function performUpdateIfNecessary(instance) {
-            debugger;
-        },
+        performUpdateIfNecessary: function performUpdateIfNecessary(instance) { },
         receiveComponent: function receiveComponent(instance) { },
         unmountComponent: function unmountComponent(instance) { }
     };
@@ -379,7 +377,9 @@ function wrapFunctionalComponent(vNode) {
         // Expose the original component name. React Dev Tools will use
         // this property if it exists or fall back to Function.name
         // otherwise.
+        /* tslint:disable */
         wrapper['displayName'] = name;
+        /* tslint:enable */
         wrappers.set(originalRender, wrapper);
     }
     vNode.type = wrappers.get(originalRender);
@@ -388,7 +388,9 @@ function wrapFunctionalComponent(vNode) {
 // Credit: this based on on the great work done with Preact and its devtools
 // https://github.com/developit/preact/blob/master/devtools/devtools.js
 function initDevTools() {
+    /* tslint:disable */
     if (typeof window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] === 'undefined') {
+        /* tslint:enable */
         // React DevTools are not installed
         return;
     }
@@ -426,7 +428,9 @@ function initDevTools() {
         }
     };
     // Notify devtools about this instance of "React"
+    /* tslint:disable */
     window['__REACT_DEVTOOLS_GLOBAL_HOOK__'].inject(bridge);
+    /* tslint:enable */
     return function () {
         inferno.options.afterMount = nextAfterMount;
         inferno.options.afterUpdate = nextAfterUpdate;

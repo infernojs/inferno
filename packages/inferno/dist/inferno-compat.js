@@ -353,6 +353,9 @@ var index$1 = createCommonjsModule(function (module, exports) {
 
 });
 
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though
 
@@ -640,10 +643,10 @@ var Children = {
 var currentComponent = null;
 
 Component.prototype.isReactComponent = {};
-Component.prototype._beforeRender = function () {
-	currentComponent = this;
+inferno.options.beforeRender = function (component) {
+	currentComponent = component;
 };
-Component.prototype._afterRender = function () {
+inferno.options.afterRender = function () {
 	currentComponent = null;
 };
 
@@ -723,7 +726,7 @@ var WrapperComponent = (function (Component$$1) {
 	WrapperComponent.prototype.getChildContext = function getChildContext () {
 		return this.props.context;
 	};
-	WrapperComponent.prototype.render = function render (props) {
+	WrapperComponent.prototype.render = function render$1 (props) {
 		return props.children;
 	};
 

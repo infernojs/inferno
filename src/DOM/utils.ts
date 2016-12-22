@@ -46,10 +46,10 @@ export function createStatefulComponentInstance(vNode: VNode, Component, props, 
 	instance._pendingSetState = true;
 	instance._isSVG = isSVG;
 	instance.componentWillMount();
-	instance._beforeRender && instance._beforeRender();
+	options.beforeRender && options.beforeRender(instance);
 	let input = instance.render(props, instance.state, context);
 
-	instance._afterRender && instance._afterRender();
+	options.afterRender && options.afterRender(instance);
 	if (isArray(input)) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');

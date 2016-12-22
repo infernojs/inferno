@@ -206,6 +206,8 @@ var options = {
     findDOMNodeEnabled: false,
     roots: null,
     createVNode: null,
+    beforeRender: null,
+    afterRender: null,
     afterMount: null,
     afterUpdate: null,
     beforeUnmount: null
@@ -1907,7 +1909,7 @@ function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle) {
     }
     var cDM = instance.componentDidMount;
     var afterMount = options.afterMount;
-    if (!isNull(cDM) && !isNull(afterMount)) {
+    if (!isNull(cDM) || !isNull(afterMount)) {
         lifecycle.addListener(function () {
             afterMount && afterMount(vNode);
             cDM && instance.componentDidMount();
@@ -1966,9 +1968,9 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
     instance.componentWillMount();
-    instance._beforeRender && instance._beforeRender();
+    options.beforeRender && options.beforeRender(instance);
     var input = instance.render(props, instance.state, context);
-    instance._afterRender && instance._afterRender();
+    options.afterRender && options.afterRender(instance);
     if (isArray(input)) {
         if (process.env.NODE_ENV !== 'production') {
             throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
@@ -2191,18 +2193,18 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 }
 function hydrateChildren(children, dom, lifecycle, context, isSVG) {
     normalizeChildNodes(dom);
-    var domNodes = Array.prototype.slice.call(dom.childNodes);
+    var domNodes = dom.childNodes;
     var childNodeIndex = 0;
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             if (isObject(child) && !isNull(child)) {
-                hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
+                setTimeout(hydrate, 0, child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
             }
         }
     }
     else if (isObject(children)) {
-        hydrate(children, dom.firstChild, lifecycle, context, isSVG);
+        setTimeout(hydrate, 0, children, dom.firstChild, lifecycle, context, isSVG);
     }
 }
 function hydrateText(vNode, dom) {
