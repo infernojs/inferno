@@ -52,6 +52,8 @@ export function applyValue(vNode, dom) {
 	const value = props.value;
 
 	if (dom.value !== value) {
-		dom.value = value;
+		if (!isNullOrUndef(value)) {
+			dom.value = value;
+		}
 	}
 }
