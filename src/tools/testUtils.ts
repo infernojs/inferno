@@ -55,12 +55,14 @@ function findAllInTree(inst: any, test: Function): VNode[] {
 	if (!inst) {
 		return [];
 	}
-	const publicInstance = inst.dom;
-	let ret = test(publicInstance) ? [publicInstance] : [];
+	const publicInst = inst.dom;
+	let ret = test(publicInst) ? [publicInst] : [];
 	const currentElement = inst._vNode;
-	if (isDOMComponent(publicInstance)) {
-		const renderedChildren = inst.props && inst.props.children;
-		for (let key in renderedChildren) {
+
+	if (isDOMComponent(publicInst)) {
+		var renderedChildren = inst.children;
+    var key;
+    for (key in renderedChildren) {
       if (!renderedChildren.hasOwnProperty(key)) {
         continue;
       }
@@ -71,14 +73,17 @@ function findAllInTree(inst: any, test: Function): VNode[] {
         )
       );
     }
-	} else if (
-		isValidElement(currentElement) &&
-		typeof currentElement.type === 'function'
-	) {
-		ret = ret.concat(
-      findAllInTree(currentElement, test)
+  }
+	
+	if (
+    isValidElement(currentElement) &&
+    typeof currentElement.type === 'function'
+  ) {
+    ret = ret.concat(
+      findAllInTree(inst._lastInput, test)
     );
-	}
+  }
+
 	return ret;
 }
 
