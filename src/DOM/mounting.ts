@@ -187,7 +187,7 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}
-		mountStatefulComponentCallbacks(ref, instance, lifecycle);
+		mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
@@ -203,7 +203,7 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 	return dom;
 }
 
-export function mountStatefulComponentCallbacks(ref, instance, lifecycle: Lifecycle) {
+export function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle: Lifecycle) {
 	if (ref) {
 		if (isFunction(ref)) {
 			ref(instance);
@@ -214,9 +214,13 @@ export function mountStatefulComponentCallbacks(ref, instance, lifecycle: Lifecy
 			throwError();
 		}
 	}
-	if (!isUndefined(instance.componentDidMount)) {
+	const cDM = instance.componentDidMount;
+	const afterMount = options.afterMount;
+
+	if (!isUndefined(cDM) || !isNull(afterMount)) {
 		lifecycle.addListener(() => {
-			instance.componentDidMount();
+			afterMount && afterMount(vNode);
+			cDM && instance.componentDidMount();
 		});
 	}
 }

@@ -640,10 +640,10 @@ var Children = {
 var currentComponent = null;
 
 Component.prototype.isReactComponent = {};
-Component.prototype._beforeRender = function () {
-	currentComponent = this;
+inferno.options.beforeRender = function (component) {
+	currentComponent = component;
 };
-Component.prototype._afterRender = function () {
+inferno.options.afterRender = function () {
 	currentComponent = null;
 };
 

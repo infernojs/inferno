@@ -27,12 +27,6 @@ function Comp4({ children }) {
 	return <section>{children}</section>;
 }
 
-class Comp5 extends Component<any, any> {
-	render() {
-		return null;
-	}
-}
-
 describe('SSR Hydration - (JSX)', () => {
 	[
 		{
@@ -122,16 +116,18 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<div><em>Works <span>again</span>!</em></div>'
 		}
 	].forEach(({ node, expect1, expect2 }, i) => {
-		it(`Validate various structures #${ (i + 1) }`, () => {
+		it(`Validate various structures #${ (i + 1) }`, (done) => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect1));
 			render(node, container);
-			expect(validateNodeTree(node)).to.equal(true);
-			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
-			render(node, container);
-			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
+
+			setTimeout (function () {
+				expect(validateNodeTree(node)).to.equal(true);
+				expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
+				done();
+			}, 100);
 		});
 	});
 	[
@@ -210,29 +206,31 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<div><span>Worked!</span><em>Works <span>again</span>!</em></div>',
 			node3: <div><Comp3 /></div>,
 			expect3: '<div><em>Works <span>again</span>!</em></div>'
-		},
-		{
-			node: <div><Comp5 /></div>,
-			expect1: '<div><!--!--></div>',
-			node2: <div><Comp5 /><Comp3 /><Comp5 /></div>,
-			expect2: '<div><em>Works <span>again</span>!</em></div>',
-			node3: <div><Comp5 /></div>,
-			expect3: '<div></div>'
 		}
 	].forEach(({ node, expect1, node2, node3, expect2, expect3 }, i) => {
-		it(`Update various structures #${ (i + 1) }`, () => {
+		it(`Update various structures #${ (i + 1) }`, (done) => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
 			expect(container.innerHTML).to.equal(expect1);
 			render(node, container);
-			expect(validateNodeTree(node)).to.equal(true);
-			render(node2, container);
-			expect(validateNodeTree(node2)).to.equal(true);
-			expect(container.innerHTML).to.equal(expect2);
-			render(node3, container);
-			expect(validateNodeTree(node3)).to.equal(true);
-			expect(container.innerHTML).to.equal(expect3);
+
+			setTimeout(function () {
+				expect(validateNodeTree(node)).to.equal(true);
+				render(node2, container);
+
+				setTimeout(function () {
+					expect(validateNodeTree(node2)).to.equal(true);
+					expect(container.innerHTML).to.equal(expect2);
+					render(node3, container);
+
+					setTimeout(function () {
+						expect(validateNodeTree(node3)).to.equal(true);
+						expect(container.innerHTML).to.equal(expect3);
+						done();
+					}, 40);
+				}, 40);
+			}, 40);
 		});
 	});
 });

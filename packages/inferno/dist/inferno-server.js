@@ -92,6 +92,18 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
+var options = {
+    recyclingEnabled: true,
+    findDOMNodeEnabled: false,
+    roots: null,
+    createVNode: null,
+    beforeRender: null,
+    afterRender: null,
+    afterMount: null,
+    afterUpdate: null,
+    beforeUnmount: null
+};
+
 function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
@@ -108,6 +120,9 @@ function createVNode(flags, type, props, children, events, key, ref, noNormalise
     };
     if (!noNormalise) {
         normalize(vNode);
+    }
+    if (options.createVNode) {
+        options.createVNode(vNode);
     }
     return vNode;
 }

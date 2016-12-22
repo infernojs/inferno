@@ -1,4 +1,4 @@
-import { NO_OP, createVNode, EMPTY_OBJ } from 'inferno';
+import { NO_OP, createVNode, EMPTY_OBJ, options } from 'inferno';
 import {
 	isArray,
 	isFunction,
@@ -165,6 +165,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
 			subLifecycle.trigger();
 			component.componentDidUpdate(props, prevState);
+			options.afterUpdate && options.afterUpdate(vNode);
 		}
 		const dom = vNode.dom = nextInput.dom;
 		const componentToDOMNodeMap = component._componentToDOMNodeMap;
@@ -183,8 +184,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	refs: any = {};
 	props: P & Props;
 	context: any;
-	_beforeRender: any;
-	_afterRender: any;
 	_processingSetState = false;
 	_blockRender = false;
 	_ignoreSetState = false;
@@ -291,10 +290,10 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				const state = this.state = nextState;
 
 				this.context = context;
-				this._beforeRender && this._beforeRender();
+				options.beforeRender && options.beforeRender(this);
 				const render = this.render(nextProps, state, context);
 
-				this._afterRender && this._afterRender();
+				options.afterRender && options.afterRender(this);
 				return render;
 			}
 		}

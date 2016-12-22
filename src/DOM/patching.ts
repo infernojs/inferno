@@ -362,6 +362,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					subLifecycle.fastUnmount = lifecycle.fastUnmount;
 					lifecycle.fastUnmount = fastUnmount;
 					instance.componentDidUpdate(lastProps, lastState);
+					options.afterUpdate && options.afterUpdate(nextVNode);
 					options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
 				}
 				nextVNode.dom = nextInput.dom;
