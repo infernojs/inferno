@@ -129,9 +129,11 @@
     ],
     "exclude": [
       "packages",
-      "src/DOM/devtools.ts",
+      "examples",
+      "benchmarks",
       "src/inferno.d.ts",
       "src/**/*__tests__*/**",
+      "src/devtools/**/*.ts",
       "typings"
     ],
     "extension": [
