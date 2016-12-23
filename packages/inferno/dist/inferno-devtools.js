@@ -11,9 +11,6 @@
 
 Component = 'default' in Component ? Component['default'] : Component;
 
-var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though
 var isArray = Array.isArray;
@@ -389,6 +386,7 @@ function wrapFunctionalComponent(vNode) {
         wrappers.set(originalRender, wrapper);
     }
     vNode.type = wrappers.get(originalRender);
+    vNode.ref = null;
     vNode.flags = 4 /* ComponentClass */;
 }
 // Credit: this based on on the great work done with Preact and its devtools

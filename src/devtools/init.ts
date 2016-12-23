@@ -32,6 +32,7 @@ function wrapFunctionalComponent(vNode) {
 		wrappers.set(originalRender, wrapper);
 	}
 	vNode.type = wrappers.get(originalRender);
+	vNode.ref = null;
 	vNode.flags = VNodeFlags.ComponentClass;
 }
 
