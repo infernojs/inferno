@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.0-beta40
+ * inferno-compat v1.0.0-beta41
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -360,7 +360,7 @@ function isStatefulComponent(o) {
     return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
 
-function isNullOrUndef(obj) {
+function isNullOrUndef$1(obj) {
     return isUndefined(obj) || isNull(obj);
 }
 function isInvalid(obj) {
@@ -413,7 +413,7 @@ var AUTOBIND_BLACKLIST = {
 };
 function extend(base, props, all) {
     for (var key in props) {
-        if (all === true || !isNullOrUndef(props[key])) {
+        if (all === true || !isNullOrUndef$1(props[key])) {
             base[key] = props[key];
         }
     }
@@ -610,15 +610,21 @@ function unmountComponentAtNode(container) {
 	return true;
 }
 
+function isNullOrUndef(children) {
+	return children === null || children === undefined;
+}
+
 var ARR = [];
 
 var Children = {
 	map: function map(children, fn, ctx) {
+		if (isNullOrUndef(children)) {return children;}
 		children = Children.toArray(children);
 		if (ctx && ctx !== children) {fn = fn.bind(ctx);}
 		return children.map(fn);
 	},
 	forEach: function forEach(children, fn, ctx) {
+		if (isNullOrUndef(children)) {return children;}
 		children = Children.toArray(children);
 		if (ctx && ctx !== children) {fn = fn.bind(ctx);}
 		children.forEach(fn);
@@ -633,6 +639,7 @@ var Children = {
 		return children[0];
 	},
 	toArray: function toArray(children) {
+		if (isNullOrUndef(children)) {return [];}
 		return Array.isArray && Array.isArray(children) ? children : ARR.concat(children);
 	}
 };
