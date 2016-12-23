@@ -135,6 +135,9 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 
 		if (isInvalid(nextInput)) {
 			nextInput = createVoidVNode();
+		} else if (nextInput === NO_OP) {
+			nextInput = component._lastInput;
+			didUpdate = false;
 		} else if (isStringOrNumber(nextInput)) {
 			nextInput = createTextVNode(nextInput);
 		} else if (isArray(nextInput)) {
@@ -142,9 +145,6 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 				throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 			}
 			throwError();
-		} else if (nextInput === NO_OP) {
-			nextInput = component._lastInput;
-			didUpdate = false;
 		}
 
 		const lastInput = component._lastInput;

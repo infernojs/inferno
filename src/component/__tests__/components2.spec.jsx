@@ -256,7 +256,13 @@ describe('Components (JSX) #2', () => {
 		}
 
 		it('should render the component with a key', () => {
-			render(<Comp key={1} />, container);
+			let val = '1';
+
+			render(<Comp key={ val } />, container);
+			expect(container.innerHTML).to.equal(innerHTML('bar'));
+			val = 2;
+			render(<Comp key={ val } />, container);
+			expect(container.innerHTML).to.equal(innerHTML('bar'));
 		});
 	});
 });
