@@ -3,6 +3,7 @@ import {
 	isArray,
 	isFunction,
 	isInvalid,
+	isStringOrNumber,
 	isNullOrUndef,
 	throwError,
 	ERROR_MSG,
@@ -69,6 +70,10 @@ function createVoidVNode(): VNode {
 	return createVNode(VNodeFlags.Void);
 }
 
+function createTextVNode(text): VNode {
+	return createVNode(VNodeFlags.Text, null, null, text);
+}
+
 function addToQueue(component: Component<any, any>, force: boolean, callback?: Function): void {
 	// TODO this function needs to be revised and improved on
 	let queue: any = componentCallbackQueue.get(component);
@@ -130,6 +135,8 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 
 		if (isInvalid(nextInput)) {
 			nextInput = createVoidVNode();
+		} else if (isStringOrNumber(nextInput)) {
+			nextInput = createTextVNode(nextInput);
 		} else if (isArray(nextInput)) {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');

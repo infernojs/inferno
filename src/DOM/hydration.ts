@@ -1,6 +1,6 @@
 import {
-	createStatefulComponentInstance,
-	createStatelessComponentInput,
+	createClassComponentInstance,
+	createFunctionalComponentInput,
 	replaceChild,
 } from './utils';
 import {
@@ -14,8 +14,8 @@ import {
 } from '../shared';
 import {
 	mountElement,
-	mountStatefulComponentCallbacks,
-	mountStatelessComponentCallbacks,
+	mountClassComponentCallbacks,
+	mountFunctionalComponentCallbacks,
 	mountText,
 	mountRef,
 } from './mounting';
@@ -73,7 +73,7 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 			copyPropsTo(defaultProps, props);
 			vNode.props = props;
 		}
-		const instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG);
+		const instance = createClassComponentInstance(vNode, type, props, context, _isSVG);
 		// If instance does not have componentWillUnmount specified we can enable fastUnmount
 		const fastUnmount = isUndefined(instance.componentWillUnmount);
 		const input = instance._lastInput;
@@ -89,15 +89,15 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		subLifecycle.fastUnmount = lifecycle.fastUnmount;
 		// we then set the lifecycle fastUnmount value back to what it was before the mount
 		lifecycle.fastUnmount = fastUnmount;
-		mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
+		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
-		const input = createStatelessComponentInput(vNode, type, props, context);
+		const input = createFunctionalComponentInput(vNode, type, props, context);
 		hydrate(input, dom, lifecycle, context, isSVG);
 		vNode.children = input;
 		vNode.dom = input.dom;
-		mountStatelessComponentCallbacks(ref, dom, lifecycle);
+		mountFunctionalComponentCallbacks(ref, dom, lifecycle);
 	}
 }
 

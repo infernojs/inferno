@@ -32,6 +32,7 @@ module.exports = {
 					compact: false,
 					presets: ['es2015'],
 					plugins: [
+						'transform-class-properties',
 						'transform-object-rest-spread',
 						'babel-plugin-syntax-jsx',
 						'babel-plugin-inferno'

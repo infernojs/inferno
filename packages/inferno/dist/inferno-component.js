@@ -16,7 +16,9 @@ var isBrowser = typeof window !== 'undefined' && window.document;
 // in Node 7 and the later versions of V8, slower in older versions though
 var isArray = Array.isArray;
 
-
+function isStringOrNumber(obj) {
+    return isString(obj) || isNumber(obj);
+}
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
@@ -27,8 +29,12 @@ function isFunction(obj) {
     return typeof obj === 'function';
 }
 
-
-
+function isString(obj) {
+    return typeof obj === 'string';
+}
+function isNumber(obj) {
+    return typeof obj === 'number';
+}
 function isNull(obj) {
     return obj === null;
 }
@@ -80,6 +86,9 @@ function updateParentComponentVNodes(vNode, dom) {
 // this is in shapes too, but we don't want to import from shapes as it will pull in a duplicate of createVNode
 function createVoidVNode() {
     return inferno.createVNode(4096 /* Void */);
+}
+function createTextVNode(text) {
+    return inferno.createVNode(1 /* Text */, null, null, text);
 }
 function addToQueue(component, force, callback) {
     // TODO this function needs to be revised and improved on
@@ -137,6 +146,9 @@ function applyState(component, force, callback) {
         var didUpdate = true;
         if (isInvalid(nextInput)) {
             nextInput = createVoidVNode();
+        }
+        else if (isStringOrNumber(nextInput)) {
+            nextInput = createTextVNode(nextInput);
         }
         else if (isArray(nextInput)) {
             if (process.env.NODE_ENV !== 'production') {

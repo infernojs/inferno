@@ -244,4 +244,19 @@ describe('Components (JSX) #2', () => {
 			expect(container.innerHTML).to.equal(innerHTML('<div>Hello World</div>'));
 		});
 	});
+
+	describe('should handle defaultProps and keys being pass into components', () => {
+		class Comp extends Component {
+			render() {
+				return this.props.foo;
+			}
+			static defaultProps = {
+				foo: 'bar'
+			}
+		}
+
+		it('should render the component with a key', () => {
+			render(<Comp key={1} />, container);
+		});
+	});
 });

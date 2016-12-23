@@ -5,13 +5,14 @@ import {
 import {
 	isArray,
 	isInvalid,
+	isStringOrNumber,
 	isNullOrUndef,
 	isUndefined,
 	throwError,
 	EMPTY_OBJ
 } from '../shared';
 import options from '../core/options';
-import { cloneVNode, createVoidVNode } from '../core/VNodes';
+import { cloneVNode, createVoidVNode, createTextVNode } from '../core/VNodes';
 import { componentToDOMNodeMap } from './rendering';
 import { mount } from './mounting';
 import { patch } from './patching';
@@ -21,7 +22,7 @@ import {
 } from './unmounting';
 import Lifecycle from "./lifecycle";
 
-export function createStatefulComponentInstance(vNode: VNode, Component, props, context, isSVG: boolean) {
+export function createClassComponentInstance(vNode: VNode, Component, props, context, isSVG: boolean) {
 	if (isUndefined(context)) {
 		context = {};
 	}
@@ -57,6 +58,8 @@ export function createStatefulComponentInstance(vNode: VNode, Component, props, 
 		throwError();
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
+	} else if (isStringOrNumber(input)) {
+		input = createTextVNode(input);
 	} else {
 		if (input.dom) {
 			input = cloneVNode(input);
@@ -91,7 +94,7 @@ export function replaceVNode(parentDom, dom, vNode, lifecycle: Lifecycle, isRecy
 	unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
 }
 
-export function createStatelessComponentInput(vNode, component, props, context) {
+export function createFunctionalComponentInput(vNode, component, props, context) {
 	let input = component(props, context);
 
 	if (isArray(input)) {
@@ -101,6 +104,8 @@ export function createStatelessComponentInput(vNode, component, props, context) 
 		throwError();
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
+	} else if (isStringOrNumber(input)) {
+		input = createTextVNode(input);
 	} else {
 		if (input.dom) {
 			input = cloneVNode(input);

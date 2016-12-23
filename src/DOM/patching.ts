@@ -16,6 +16,7 @@ import {
 } from '../shared';
 import {
 	createVoidVNode,
+	createTextVNode,
 	isVNode,
 	cloneVNode
 } from '../core/VNodes';
@@ -39,7 +40,7 @@ import {
 	kebabize
 } from './constants';
 import {
-	createStatelessComponentInput,
+	createFunctionalComponentInput,
 	insertOrAppend,
 	appendChild,
 	isKeyed,
@@ -57,7 +58,7 @@ import {
 	mountComponent,
 	mountElement,
 	mountRef,
-	mountStatelessComponentCallbacks,
+	mountFunctionalComponentCallbacks,
 	mountText,
 	mountVoid,
 } from './mounting';
@@ -282,13 +283,13 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 			replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
 		} else {
 			const lastInput = lastVNode.children._lastInput || lastVNode.children;
-			const nextInput = createStatelessComponentInput(nextVNode, nextType, nextProps, context);
+			const nextInput = createFunctionalComponentInput(nextVNode, nextType, nextProps, context);
 
 			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
 			const dom = nextVNode.dom = nextInput.dom;
 
 			nextVNode.children = nextInput;
-			mountStatelessComponentCallbacks(nextVNode.ref, dom, lifecycle);
+			mountFunctionalComponentCallbacks(nextVNode.ref, dom, lifecycle);
 			unmount(lastVNode, null, lifecycle, false, true, isRecycling);
 		}
 	} else {
@@ -335,6 +336,8 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				instance._childContext = childContext;
 				if (isInvalid(nextInput)) {
 					nextInput = createVoidVNode();
+				} else if (isStringOrNumber(nextInput)) {
+					nextInput = createTextVNode(nextInput);
 				} else if (isArray(nextInput)) {
 					if (process.env.NODE_ENV !== 'production') {
 						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
@@ -392,6 +395,8 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 
 				if (isInvalid(nextInput)) {
 					nextInput = createVoidVNode();
+				} else if (isStringOrNumber(nextInput)) {
+					nextInput = createTextVNode(nextInput);
 				} else if (isArray(nextInput)) {
 					if (process.env.NODE_ENV !== 'production') {
 						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');

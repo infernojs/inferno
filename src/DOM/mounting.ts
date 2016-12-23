@@ -12,8 +12,8 @@ import {
 import { cloneVNode, isVNode } from '../core/VNodes';
 import {
 	appendChild,
-	createStatefulComponentInstance,
-	createStatelessComponentInput,
+	createFunctionalComponentInput,
+	createClassComponentInstance,
 	documentCreateElement,
 	setTextContent,
 } from './utils';
@@ -171,7 +171,7 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 		vNode.props = props;
 	}
 	if (isClass) {
-		const instance = createStatefulComponentInstance(vNode, type, props, context, isSVG);
+		const instance = createClassComponentInstance(vNode, type, props, context, isSVG);
 		// If instance does not have componentWillUnmount specified we can enable fastUnmount
 		lifecycle.fastUnmount = isUndefined(instance.componentWillUnmount);
 		const input = instance._lastInput;
@@ -187,15 +187,15 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}
-		mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
+		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
-		const input = createStatelessComponentInput(vNode, type, props, context);
+		const input = createFunctionalComponentInput(vNode, type, props, context);
 
 		vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);
 		vNode.children = input;
-		mountStatelessComponentCallbacks(ref, dom, lifecycle);
+		mountFunctionalComponentCallbacks(ref, dom, lifecycle);
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}
@@ -203,7 +203,7 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 	return dom;
 }
 
-export function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle: Lifecycle) {
+export function mountClassComponentCallbacks(vNode, ref, instance, lifecycle: Lifecycle) {
 	if (ref) {
 		if (isFunction(ref)) {
 			ref(instance);
@@ -225,7 +225,7 @@ export function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle:
 	}
 }
 
-export function mountStatelessComponentCallbacks(ref, dom, lifecycle: Lifecycle) {
+export function mountFunctionalComponentCallbacks(ref, dom, lifecycle: Lifecycle) {
 	if (ref) {
 		if (!isNullOrUndef(ref.onComponentWillMount)) {
 			ref.onComponentWillMount();

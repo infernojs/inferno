@@ -115,7 +115,7 @@ npm install --save inferno@beta40
 Addons:
 
 ```sh
-# ES2015 stateful components
+# ES2015 class components
 npm install --save inferno-component@beta40
 # server-side rendering
 npm install --save inferno-server@beta40
@@ -173,7 +173,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 - Inferno doesn't support React Native. Inferno was only designed for the browser/server with the DOM in mind.
 - Inferno doesn't support string refs – although this can be enabled using `inferno-compat`. We don't recommend using them, they are the source of many memory leaks and performance issues in real-world apps. Stick with function callback refs instead.
 - Inferno includes `render` on the main core package, rather than have a `InfernoDOM` package like React does. We used to do it that way, but we found people simply didn't like it given we don't support native. Furthermore, by not splitting them, we improved performance and bundle sizes.
-- Inferno provides lifecycle events on stateless components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
+- Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
 - Inferno has its own devtools debugger (still in development) that differs from the React implementation. Inferno's debugger is on average, 4x faster – fixing lots of the issues with slow, laggy interfaces when developers are debugging.
 
 ## Differences from Preact
@@ -182,7 +182,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 - Inferno has a partial synthetic event system, resulting in better performance via delegation of certain events.
 - Inferno is *much* faster than Preact in rendering, updating and removing elements from the DOM. Inferno diffs against virtual DOM, rather than the real DOM (except for when loading from server-side rendered content) which means it can make drastic improvements. Unfortunately, diffing against the real DOM has a 30-40% overhead cost in operations.
 - Inferno fully supports controlled components for `input`/`select`/`textarea` elements. This prevents lots of edgecases where the virtual DOM is not the source of truth (it should always be). Preact pushes the source of truth to the DOM itself.
-- Inferno provides lifecycle events on stateless components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
+- Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
 - Inferno has its own devtools debugger (still in development) that differs from the Preact (React bound) implementation. Inferno's debugger is on average, 4x faster – fixing lots of the issues with slow, laggy interfaces when developers are debugging.
 
 ## Event System
@@ -265,7 +265,7 @@ Inferno.render(createElement(BasicComponent, { title: 'abc' }), document.body);
 
 ### `Component` (package: `inferno-component`)
 
-**Stateful component:**
+**Class component:**
 
 ```javascript
 import Component from 'inferno-component';
@@ -279,7 +279,7 @@ class MyComponent extends Component {
 
 This is the base class for Inferno Components when they're defined using ES6 classes.
 
-**Stateless component:**
+**Functional component:**
 
 ```javascript
 import Inferno from 'inferno';
@@ -289,7 +289,7 @@ const MyComponent = ({ name, age }) => (
 );
 ```
 
-Stateless components are first-class functions where their first argument is the `props` passed through from their parent.
+Functional components are first-class functions where their first argument is the `props` passed through from their parent.
 
 ### `createVNode` (package: `inferno`)
 ```js
@@ -369,7 +369,7 @@ In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode
 
 ### `linkEvent` (package: `inferno`)
 
-`linkEvent()` is a helper function that allows attachment of `props`/`state`/`context` or other data to events without needing to `bind()` them or use arrow functions/closures. It works by hooking into Inferno's event system (so make sure the event you are using will use Inferno's event system). This is extremely useful when dealing with events in functional/stateless components. Below is an example:
+`linkEvent()` is a helper function that allows attachment of `props`/`state`/`context` or other data to events without needing to `bind()` them or use arrow functions/closures. It works by hooking into Inferno's event system (so make sure the event you are using will use Inferno's event system). This is extremely useful when dealing with events in functional components. Below is an example:
 
 ```jsx
 import Inferno, { linkEvent } from 'inferno';
@@ -426,35 +426,35 @@ This enables `findDOMNode()`. We strongly recommend against using this API as it
 
 This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon diposal. It can have significant performance benefits, but may also experiences side-effects with custom elements.
 
-## Stateless component hooks
+## Functional component hooks
 
 | Name                      | Triggered when                                                 | Arguments to callback           |
 | -----------               | --------------                                                 | -----------------------         |
-| `onComponentWillMount`    | a stateless component is about to mount                        |                                 |
-| `onComponentDidMount`     | a stateless component has mounted successfully                 | `domNode`                       |
-| `onComponentShouldUpdate` | a stateless component has been triggered to updated            | `lastProps, nextProps`          |
-| `onComponentWillUpdate`   | a stateless component is about to perform an update            | `lastProps, nextProps`          |
-| `onComponentDidUpdate`    | a stateless component has performed an updated                 | `lastProps, nextProps`          |
-| `onComponentWillUnmount`  | a stateless component is about to be unmounted                 |                                 |
+| `onComponentWillMount`    | a functional component is about to mount                        |                                 |
+| `onComponentDidMount`     | a functional component has mounted successfully                 | `domNode`                       |
+| `onComponentShouldUpdate` | a functional component has been triggered to updated            | `lastProps, nextProps`          |
+| `onComponentWillUpdate`   | a functional component is about to perform an update            | `lastProps, nextProps`          |
+| `onComponentDidUpdate`    | a functional component has performed an updated                 | `lastProps, nextProps`          |
+| `onComponentWillUnmount`  | a functional component is about to be unmounted                 |                                 |
 
 ### Using hooks
 
-It's simple to implicitly assign hooks to both DOM nodes and stateless components.
-Please note: stateful components (ES2015 classes) from `inferno-component` **do not** support hooks.
+It's simple to implicitly assign hooks to both DOM nodes and functional components.
+Please note: class components (ES2015 classes) from `inferno-component` **do not** support hooks.
 
 ```javascript
 function mounted(domNode) {
     // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 }
 
-function StatelessComponent({ props }) {
+function FunctionalComponent({ props }) {
 	return <div>Hello world</div>;
 }
 
-Inferno.render(<StatelessComponent onComponentDidMount={ mounted } />, document.body);
+Inferno.render(<FunctionalComponent onComponentDidMount={ mounted } />, document.body);
 ```
 
-Hooks provide powerful lifecycle events to stateless components, allowing you to build components without being forced to use ES2015 classes.
+Hooks provide powerful lifecycle events to functional components, allowing you to build components without being forced to use ES2015 classes.
 
 ## Browser Support
 

@@ -1006,11 +1006,11 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
         }
         else {
             var lastInput = lastVNode.children._lastInput || lastVNode.children;
-            var nextInput = createStatelessComponentInput(nextVNode, nextType, nextProps, context);
+            var nextInput = createFunctionalComponentInput(nextVNode, nextType, nextProps, context);
             patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
             var dom = nextVNode.dom = nextInput.dom;
             nextVNode.children = nextInput;
-            mountStatelessComponentCallbacks(nextVNode.ref, dom, lifecycle);
+            mountFunctionalComponentCallbacks(nextVNode.ref, dom, lifecycle);
             unmount(lastVNode, null, lifecycle, false, true, isRecycling);
         }
     }
@@ -1046,6 +1046,9 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 instance._childContext = childContext;
                 if (isInvalid(nextInput$1)) {
                     nextInput$1 = createVoidVNode();
+                }
+                else if (isStringOrNumber(nextInput$1)) {
+                    nextInput$1 = createTextVNode(nextInput$1);
                 }
                 else if (isArray(nextInput$1)) {
                     if (process.env.NODE_ENV !== 'production') {
@@ -1106,6 +1109,9 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 nextInput$2 = nextType(nextProps, context);
                 if (isInvalid(nextInput$2)) {
                     nextInput$2 = createVoidVNode();
+                }
+                else if (isStringOrNumber(nextInput$2)) {
+                    nextInput$2 = createTextVNode(nextInput$2);
                 }
                 else if (isArray(nextInput$2)) {
                     if (process.env.NODE_ENV !== 'production') {
@@ -1859,7 +1865,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
         vNode.props = props;
     }
     if (isClass) {
-        var instance = createStatefulComponentInstance(vNode, type, props, context, isSVG);
+        var instance = createClassComponentInstance(vNode, type, props, context, isSVG);
         // If instance does not have componentWillUnmount specified we can enable fastUnmount
         lifecycle.fastUnmount = isUndefined(instance.componentWillUnmount);
         var input = instance._lastInput;
@@ -1873,22 +1879,22 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
         if (!isNull(parentDom)) {
             appendChild(parentDom, dom);
         }
-        mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
+        mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
         options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
     else {
-        var input$1 = createStatelessComponentInput(vNode, type, props, context);
+        var input$1 = createFunctionalComponentInput(vNode, type, props, context);
         vNode.dom = dom = mount(input$1, null, lifecycle, context, isSVG);
         vNode.children = input$1;
-        mountStatelessComponentCallbacks(ref, dom, lifecycle);
+        mountFunctionalComponentCallbacks(ref, dom, lifecycle);
         if (!isNull(parentDom)) {
             appendChild(parentDom, dom);
         }
     }
     return dom;
 }
-function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle) {
+function mountClassComponentCallbacks(vNode, ref, instance, lifecycle) {
     if (ref) {
         if (isFunction(ref)) {
             ref(instance);
@@ -1909,7 +1915,7 @@ function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle) {
         });
     }
 }
-function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
+function mountFunctionalComponentCallbacks(ref, dom, lifecycle) {
     if (ref) {
         if (!isNullOrUndef(ref.onComponentWillMount)) {
             ref.onComponentWillMount();
@@ -1938,7 +1944,7 @@ function mountRef(dom, value, lifecycle) {
     }
 }
 
-function createStatefulComponentInstance(vNode, Component, props, context, isSVG) {
+function createClassComponentInstance(vNode, Component, props, context, isSVG) {
     if (isUndefined(context)) {
         context = {};
     }
@@ -1974,6 +1980,9 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
     else if (isInvalid(input)) {
         input = createVoidVNode();
     }
+    else if (isStringOrNumber(input)) {
+        input = createTextVNode(input);
+    }
     else {
         if (input.dom) {
             input = cloneVNode(input);
@@ -2006,7 +2015,7 @@ function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
     replaceChild(parentDom, dom, vNode.dom);
     unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
 }
-function createStatelessComponentInput(vNode, component, props, context) {
+function createFunctionalComponentInput(vNode, component, props, context) {
     var input = component(props, context);
     if (isArray(input)) {
         if (process.env.NODE_ENV !== 'production') {
@@ -2016,6 +2025,9 @@ function createStatelessComponentInput(vNode, component, props, context) {
     }
     else if (isInvalid(input)) {
         input = createVoidVNode();
+    }
+    else if (isStringOrNumber(input)) {
+        input = createTextVNode(input);
     }
     else {
         if (input.dom) {
@@ -2129,7 +2141,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
             copyPropsTo(defaultProps, props);
             vNode.props = props;
         }
-        var instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG);
+        var instance = createClassComponentInstance(vNode, type, props, context, _isSVG);
         // If instance does not have componentWillUnmount specified we can enable fastUnmount
         var fastUnmount = isUndefined(instance.componentWillUnmount);
         var input = instance._lastInput;
@@ -2143,16 +2155,16 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         subLifecycle.fastUnmount = lifecycle.fastUnmount;
         // we then set the lifecycle fastUnmount value back to what it was before the mount
         lifecycle.fastUnmount = fastUnmount;
-        mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
+        mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
         options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
     else {
-        var input$1 = createStatelessComponentInput(vNode, type, props, context);
+        var input$1 = createFunctionalComponentInput(vNode, type, props, context);
         hydrate(input$1, dom, lifecycle, context, isSVG);
         vNode.children = input$1;
         vNode.dom = input$1.dom;
-        mountStatelessComponentCallbacks(ref, dom, lifecycle);
+        mountFunctionalComponentCallbacks(ref, dom, lifecycle);
     }
 }
 function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
