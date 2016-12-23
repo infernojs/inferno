@@ -12,15 +12,21 @@ function unmountComponentAtNode(container) {
 	return true;
 }
 
+function isNullOrUndef(children) {
+	return children === null || children === undefined;
+}
+
 const ARR = [];
 
 const Children = {
 	map(children, fn, ctx) {
+		if (isNullOrUndef(children)) {return children;}
 		children = Children.toArray(children);
 		if (ctx && ctx !== children) {fn = fn.bind(ctx);}
 		return children.map(fn);
 	},
 	forEach(children, fn, ctx) {
+		if (isNullOrUndef(children)) {return children;}
 		children = Children.toArray(children);
 		if (ctx && ctx !== children) {fn = fn.bind(ctx);}
 		children.forEach(fn);
@@ -35,6 +41,7 @@ const Children = {
 		return children[0];
 	},
 	toArray(children) {
+		if (isNullOrUndef(children)) {return [];}
 		return Array.isArray && Array.isArray(children) ? children : ARR.concat(children);
 	}
 };
