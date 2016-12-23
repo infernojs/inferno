@@ -386,6 +386,7 @@ function wrapFunctionalComponent(vNode) {
         wrappers.set(originalRender, wrapper);
     }
     vNode.type = wrappers.get(originalRender);
+    vNode.ref = null;
     vNode.flags = 4 /* ComponentClass */;
 }
 // Credit: this based on on the great work done with Preact and its devtools
