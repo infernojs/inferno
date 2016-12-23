@@ -9,7 +9,7 @@ export {
 	findAllInRenderedTree,
 	scryRenderedDOMComponentsWithClass,
 	findRenderedDOMComponentsWithClass
-} from '../../../build/tools/test';
+} from '../../../build/tools/testUtils';
 
 export default {
 	renderIntoDocument,
