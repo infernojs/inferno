@@ -254,6 +254,10 @@ function normalizeChildren(children, dom) {
  */
 function createReactDOMComponent(vNode, parentDom) {
 	const flags = vNode.flags;
+
+	if (flags & VNodeFlags.Void) {
+		return null;
+	}
 	const type = vNode.type;
 	const children = vNode.children;
 	const props = vNode.props;

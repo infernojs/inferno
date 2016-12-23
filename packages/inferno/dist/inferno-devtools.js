@@ -1,5 +1,5 @@
 /*!
- * inferno-devtools v1.0.0-beta41
+ * inferno-devtools v1.0.0-beta42
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -263,6 +263,9 @@ function normalizeChildren(children, dom) {
  */
 function createReactDOMComponent(vNode, parentDom) {
     var flags = vNode.flags;
+    if (flags & 4096 /* Void */) {
+        return null;
+    }
     var type = vNode.type;
     var children = vNode.children;
     var props = vNode.props;
@@ -367,7 +370,7 @@ function findRoots(roots) {
 var functionalComponentWrappers = new Map();
 function wrapFunctionalComponent(vNode) {
     var originalRender = vNode.type;
-    var name = vNode.type.name || '(Function.name missing)';
+    var name = vNode.type.name || 'Function (anonymous)';
     var wrappers = functionalComponentWrappers;
     if (!wrappers.has(originalRender)) {
         var wrapper = (function (Component$$1) {
