@@ -96,7 +96,7 @@ bundles.add({
 		'inferno-create-element': 'Inferno.createElement',
 		'inferno-create-class': 'Inferno.createClass',
 		'path-to-regexp-es6': 'Inferno.pathToRegExp',
-		redux: 'redux'
+		redux: 'Redux'
 	},
 	path: 'packages/inferno-redux/'
 });
