@@ -2,6 +2,7 @@ import {
 	isArray,
 	isFunction,
 	isInvalid,
+	isObject,
 	isNull,
 	isNullOrUndef,
 	isStringOrNumber,
@@ -209,7 +210,13 @@ export function mountClassComponentCallbacks(vNode, ref, instance, lifecycle: Li
 			ref(instance);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
-				throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+				if (isStringOrNumber(ref)) {
+					throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+				} else if (isObject(ref) && (vNode.flags & VNodeFlags.ComponentClass)) {
+					throwError('functional component lifecycle events are not supported on ES2015 class components.');
+				} else {
+					throwError(`a bad value for "ref" was used on component: "${ JSON.stringify(ref) }"`);
+				}
 			}
 			throwError();
 		}
