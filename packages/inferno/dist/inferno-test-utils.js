@@ -9,19 +9,12 @@
 	(factory((global.Inferno = global.Inferno || {}, global.Inferno.TestUtils = global.Inferno.TestUtils || {}),global.Inferno));
 }(this, (function (exports,inferno) { 'use strict';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-
-=======
->>>>>>> dev
-=======
-var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-
->>>>>>> dev
+var isBrowser = typeof window !== 'undefined' && window.document;
+function toArray(children) {
+    return isArray(children) ? children : (children ? [children] : children);
+}
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though
 var isArray = Array.isArray;
@@ -69,47 +62,6 @@ function throwError(message) {
 }
 
 var EMPTY_OBJ = {};
-
-var ShallowComponentWrapper = function ShallowComponentWrapper(element) {
-    this._vNode = element;
-};
-var ReactShallowRenderer = function ReactShallowRenderer() {
-    this._instance = null;
-};
-ReactShallowRenderer.prototype.getMountedInstance = function getMountedInstance () {
-    return this._instance ? this._instance._vNode : null;
-};
-ReactShallowRenderer.prototype.render = function render (element, context) {
-    if (!isElement$1(element)) {
-        throwError('ShallowRenderer render(): Invalid component element');
-    }
-    if (typeof element.type !== 'string') {
-        throwError(("ReactShallowRenderer render(): Shallow rendering works only with custom\n        components, not primitives (" + (element.type) + "). Instead of calling '.render(el)' and\n        inspecting the rendered output, look at 'el.props' directly instead."));
-    }
-    if (!context) {
-        context = {};
-    }
-    // ReactUpdates.batchedUpdates(_batchedRender, this, element, context);
-    return this.getRenderOutput();
-};
-ReactShallowRenderer.prototype.getRenderOutput = function getRenderOutput () {
-    return ((this._instance &&
-        this._instance._vNode &&
-        this._instance._vNode.dom.InnerHTML) || null);
-};
-ReactShallowRenderer.prototype.unmount = function unmount () {
-    if (this._instance) {
-    }
-};
-ReactShallowRenderer.prototype._render = function _render (element, transaction, context) {
-    if (this._instance) {
-    }
-    else {
-        var instance = new ShallowComponentWrapper(element);
-            // ReactReconciler.mountComponent(instance, transaction, null, null, context, 0);
-        this._instance = instance;
-    }
-};
 
 var componentHooks = {
     onComponentWillMount: true,
@@ -280,6 +232,18 @@ function normalize(vNode) {
     }
 }
 
+var options = {
+    recyclingEnabled: true,
+    findDOMNodeEnabled: false,
+    roots: null,
+    createVNode: null,
+    beforeRender: null,
+    afterRender: null,
+    afterMount: null,
+    afterUpdate: null,
+    beforeUnmount: null
+};
+
 function createVNode$1(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
@@ -296,6 +260,9 @@ function createVNode$1(flags, type, props, children, events, key, ref, noNormali
     };
     if (!noNormalise) {
         normalize(vNode);
+    }
+    if (options.createVNode) {
+        options.createVNode(vNode);
     }
     return vNode;
 }
@@ -389,11 +356,6 @@ function createTextVNode(text) {
 function isVNode(o) {
     return !!o.flags;
 }
-
-var options = {
-    recyclingEnabled: true,
-    findDOMNodeEnabled: false
-};
 
 function constructDefaults(string, object, value) {
     /* eslint no-return-assign: 0 */
@@ -738,7 +700,9 @@ function applyValue$2(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
     var value = props.value;
     if (dom.value !== value) {
-        dom.value = value;
+        if (!isNullOrUndef(value)) {
+            dom.value = value;
+        }
     }
 }
 
@@ -755,7 +719,7 @@ function processElement(flags, vNode, dom) {
     }
 }
 
-function unmount$1(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
+function unmount(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling) {
     var flags = vNode.flags;
     if (flags & 28 /* Component */) {
         unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
@@ -781,6 +745,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
     if (!isRecycling) {
         if (isStatefulComponent$$1) {
             instance._ignoreSetState = true;
+            options.beforeUnmount && options.beforeUnmount(vNode);
             instance.componentWillUnmount();
             if (ref && !isRecycling) {
                 ref(null);
@@ -797,12 +762,12 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
             if (isStatefulComponent$$1) {
                 var subLifecycle = instance._lifecycle;
                 if (!subLifecycle.fastUnmount) {
-                    unmount$1(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
+                    unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
                 }
             }
             else {
                 if (!lifecycle.fastUnmount) {
-                    unmount$1(instance, null, lifecycle, false, shallowUnmount, isRecycling);
+                    unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
                 }
             }
         }
@@ -850,12 +815,12 @@ function unmountChildren$1(children, lifecycle, shallowUnmount, isRecycling) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             if (!isInvalid(child) && isObject(child)) {
-                unmount$1(child, null, lifecycle, false, shallowUnmount, isRecycling);
+                unmount(child, null, lifecycle, false, shallowUnmount, isRecycling);
             }
         }
     }
     else if (isObject(children)) {
-        unmount$1(children, null, lifecycle, false, shallowUnmount, isRecycling);
+        unmount(children, null, lifecycle, false, shallowUnmount, isRecycling);
     }
 }
 function unmountRef(ref) {
@@ -917,7 +882,7 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRec
 }
 function unmountChildren(children, dom, lifecycle, isRecycling) {
     if (isVNode(children)) {
-        unmount$1(children, dom, lifecycle, true, false, isRecycling);
+        unmount(children, dom, lifecycle, true, false, isRecycling);
     }
     else if (isArray(children)) {
         removeAllChildren(dom, children, lifecycle, false, isRecycling);
@@ -1062,7 +1027,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
             var dom = nextVNode.dom = nextInput.dom;
             nextVNode.children = nextInput;
             mountStatelessComponentCallbacks(nextVNode.ref, dom, lifecycle);
-            unmount$1(lastVNode, null, lifecycle, false, true, isRecycling);
+            unmount(lastVNode, null, lifecycle, false, true, isRecycling);
         }
     }
     else {
@@ -1128,6 +1093,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     subLifecycle.fastUnmount = lifecycle.fastUnmount;
                     lifecycle.fastUnmount = fastUnmount;
                     instance.componentDidUpdate(lastProps, lastState);
+                    options.afterUpdate && options.afterUpdate(nextVNode);
                     options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput$1.dom);
                 }
                 nextVNode.dom = nextInput$1.dom;
@@ -1225,7 +1191,7 @@ function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle, conte
     }
     else if (lastChildrenLength > nextChildrenLength) {
         for (i = commonLength; i < lastChildrenLength; i++) {
-            unmount$1(lastChildren[i], dom, lifecycle, false, false, isRecycling);
+            unmount(lastChildren[i], dom, lifecycle, false, false, isRecycling);
         }
     }
 }
@@ -1340,7 +1306,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
     }
     else if (bStart > bEnd) {
         while (aStart <= aEnd) {
-            unmount$1(a[aStart++], dom, lifecycle, false, false, isRecycling);
+            unmount(a[aStart++], dom, lifecycle, false, false, isRecycling);
         }
     }
     else {
@@ -1426,7 +1392,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
             while (i > 0) {
                 aNode = aNullable[aStart++];
                 if (!isNull(aNode)) {
-                    unmount$1(aNode, dom, lifecycle, false, false, isRecycling);
+                    unmount(aNode, dom, lifecycle, false, false, isRecycling);
                     i--;
                 }
             }
@@ -1930,7 +1896,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
         if (!isNull(parentDom)) {
             appendChild(parentDom, dom);
         }
-        mountStatefulComponentCallbacks(ref, instance, lifecycle);
+        mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
         options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
     }
@@ -1945,7 +1911,7 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
     }
     return dom;
 }
-function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
+function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle) {
     if (ref) {
         if (isFunction(ref)) {
             ref(instance);
@@ -1957,9 +1923,12 @@ function mountStatefulComponentCallbacks(ref, instance, lifecycle) {
             throwError();
         }
     }
-    if (!isNull(instance.componentDidMount)) {
+    var cDM = instance.componentDidMount;
+    var afterMount = options.afterMount;
+    if (!isNull(cDM) || !isNull(afterMount)) {
         lifecycle.addListener(function () {
-            instance.componentDidMount();
+            afterMount && afterMount(vNode);
+            cDM && instance.componentDidMount();
         });
     }
 }
@@ -2015,9 +1984,9 @@ function createStatefulComponentInstance(vNode, Component, props, context, isSVG
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
     instance.componentWillMount();
-    instance._beforeRender && instance._beforeRender();
+    options.beforeRender && options.beforeRender(instance);
     var input = instance.render(props, instance.state, context);
-    instance._afterRender && instance._afterRender();
+    options.afterRender && options.afterRender(instance);
     if (isArray(input)) {
         if (process.env.NODE_ENV !== 'production') {
             throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
@@ -2052,12 +2021,12 @@ function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
     if (vNode.flags & 28 /* Component */) {
         // if we are accessing a stateful or stateless component, we want to access their last rendered input
         // accessing their DOM node is not useful to us here
-        unmount$1(vNode, null, lifecycle, false, false, isRecycling);
+        unmount(vNode, null, lifecycle, false, false, isRecycling);
         vNode = vNode.children._lastInput || vNode.children;
         shallowUnmount = true;
     }
     replaceChild(parentDom, dom, vNode.dom);
-    unmount$1(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
+    unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
 }
 function createStatelessComponentInput(vNode, component, props, context) {
     var input = component(props, context);
@@ -2115,7 +2084,7 @@ function documentCreateElement(tag, isSVG) {
     }
 }
 function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle, context, isSVG, isRecycling) {
-    unmount$1(lastNode, null, lifecycle, false, false, isRecycling);
+    unmount(lastNode, null, lifecycle, false, false, isRecycling);
     var dom = mount(nextNode, null, lifecycle, context, isSVG);
     nextNode.dom = dom;
     replaceChild(parentDom, dom, lastNode.dom);
@@ -2139,7 +2108,7 @@ function removeChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
         if (!isInvalid(child)) {
-            unmount$1(child, dom, lifecycle, true, shallowUnmount, isRecycling);
+            unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
         }
     }
 }
@@ -2148,16 +2117,257 @@ function isKeyed(lastChildren, nextChildren) {
         && lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
 
+function normalizeChildNodes(dom) {
+    var rawChildNodes = dom.childNodes;
+    var length = rawChildNodes.length;
+    var i = 0;
+    while (i < length) {
+        var rawChild = rawChildNodes[i];
+        if (rawChild.nodeType === 8) {
+            if (rawChild.data === '!') {
+                var placeholder = document.createTextNode('');
+                dom.replaceChild(placeholder, rawChild);
+                i++;
+            }
+            else {
+                dom.removeChild(rawChild);
+                length--;
+            }
+        }
+        else {
+            i++;
+        }
+    }
+}
+function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
+    var type = vNode.type;
+    var props = vNode.props || EMPTY_OBJ;
+    var ref = vNode.ref;
+    vNode.dom = dom;
+    if (isClass) {
+        var _isSVG = dom.namespaceURI === svgNS;
+        var defaultProps = type.defaultProps;
+        lifecycle.fastUnmount = false;
+        if (!isUndefined(defaultProps)) {
+            copyPropsTo(defaultProps, props);
+            vNode.props = props;
+        }
+        var instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG);
+        var input = instance._lastInput;
+        var fastUnmount = lifecycle.fastUnmount;
+        // we store the fastUnmount value, but we set it back to true on the lifecycle
+        // we do this so we can determine if the component render has a fastUnmount or not
+        lifecycle.fastUnmount = true;
+        instance._vComponent = vNode;
+        instance._vNode = vNode;
+        hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
+        var subLifecycle = instance._lifecycle = new Lifecycle();
+        subLifecycle.fastUnmount = lifecycle.fastUnmount;
+        // we then set the lifecycle fastUnmount value back to what it was before the mount
+        lifecycle.fastUnmount = fastUnmount;
+        mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle);
+        options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
+        vNode.children = instance;
+    }
+    else {
+        var input$1 = createStatelessComponentInput(vNode, type, props, context);
+        hydrate(input$1, dom, lifecycle, context, isSVG);
+        vNode.children = input$1;
+        vNode.dom = input$1.dom;
+        mountStatelessComponentCallbacks(ref, dom, lifecycle);
+    }
+}
+function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
+    var tag = vNode.type;
+    var children = vNode.children;
+    var props = vNode.props;
+    var events = vNode.events;
+    var flags = vNode.flags;
+    var ref = vNode.ref;
+    if (isSVG || (flags & 128 /* SvgElement */)) {
+        isSVG = true;
+    }
+    if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
+        var newDom = mountElement(vNode, null, lifecycle, context, isSVG);
+        vNode.dom = newDom;
+        replaceChild(dom.parentNode, newDom, dom);
+    }
+    else {
+        vNode.dom = dom;
+        if (children) {
+            hydrateChildren(children, dom, lifecycle, context, isSVG);
+        }
+        if (!(flags & 2 /* HtmlElement */)) {
+            processElement(flags, vNode, dom);
+        }
+        if (props) {
+            for (var prop in props) {
+                patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+            }
+        }
+        if (events) {
+            for (var name in events) {
+                patchEvent(name, null, events[name], dom, lifecycle);
+            }
+        }
+        if (ref) {
+            mountRef(dom, ref, lifecycle);
+        }
+    }
+}
+function hydrateChildren(children, dom, lifecycle, context, isSVG) {
+    normalizeChildNodes(dom);
+    var domNodes = Array.prototype.slice.call(dom.childNodes);
+    var childNodeIndex = 0;
+    if (isArray(children)) {
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            if (isObject(child) && !isNull(child)) {
+                hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
+            }
+        }
+    }
+    else if (isObject(children)) {
+        hydrate(children, dom.firstChild, lifecycle, context, isSVG);
+    }
+}
+function hydrateText(vNode, dom) {
+    if (dom.nodeType === 3) {
+        var newDom = mountText(vNode, null);
+        vNode.dom = newDom;
+        replaceChild(dom.parentNode, newDom, dom);
+    }
+    else {
+        vNode.dom = dom;
+    }
+}
+function hydrateVoid(vNode, dom) {
+    vNode.dom = dom;
+}
+function hydrate(vNode, dom, lifecycle, context, isSVG) {
+    if (process.env.NODE_ENV !== 'production') {
+        if (isInvalid(dom)) {
+            throwError("failed to hydrate. The server-side render doesn't match client side.");
+        }
+    }
+    var flags = vNode.flags;
+    if (flags & 28 /* Component */) {
+        return hydrateComponent(vNode, dom, lifecycle, context, isSVG, flags & 4 /* ComponentClass */);
+    }
+    else if (flags & 3970 /* Element */) {
+        return hydrateElement(vNode, dom, lifecycle, context, isSVG);
+    }
+    else if (flags & 1 /* Text */) {
+        return hydrateText(vNode, dom);
+    }
+    else if (flags & 4096 /* Void */) {
+        return hydrateVoid(vNode, dom);
+    }
+    else {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError(("hydrate() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+        }
+        throwError();
+    }
+}
+function hydrateRoot(input, parentDom, lifecycle) {
+    if (parentDom && parentDom.nodeType === 1 && parentDom.firstChild) {
+        hydrate(input, parentDom.firstChild, lifecycle, {}, false);
+        return true;
+    }
+    return false;
+}
+
 // rather than use a Map, like we did before, we can use an array here
 // given there shouldn't be THAT many roots on the page, the difference
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
-
+var roots = [];
 var componentToDOMNodeMap = new Map();
+options.roots = roots;
 
+function getRoot(dom) {
+    for (var i = 0; i < roots.length; i++) {
+        var root = roots[i];
+        if (root.dom === dom) {
+            return root;
+        }
+    }
+    return null;
+}
+
+function setRoot(dom, input, lifecycle) {
+    var root = {
+        dom: dom,
+        input: input,
+        lifecycle: lifecycle
+    };
+    roots.push(root);
+    return root;
+}
+function removeRoot(root) {
+    for (var i = 0; i < roots.length; i++) {
+        if (roots[i] === root) {
+            roots.splice(i, 1);
+            return;
+        }
+    }
+}
+var documentBody = isBrowser ? document.body : null;
+function render(input, parentDom) {
+    if (documentBody === parentDom) {
+        if (process.env.NODE_ENV !== 'production') {
+            throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
+        }
+        throwError();
+    }
+    if (input === NO_OP) {
+        return;
+    }
+    var root = getRoot(parentDom);
+    if (isNull(root)) {
+        var lifecycle = new Lifecycle();
+        if (!isInvalid(input)) {
+            if (input.dom) {
+                input = cloneVNode(input);
+            }
+            if (!hydrateRoot(input, parentDom, lifecycle)) {
+                mount(input, parentDom, lifecycle, {}, false);
+            }
+            root = setRoot(parentDom, input, lifecycle);
+            lifecycle.trigger();
+        }
+    }
+    else {
+        var lifecycle$1 = root.lifecycle;
+        lifecycle$1.listeners = [];
+        if (isNullOrUndef(input)) {
+            unmount(root.input, parentDom, lifecycle$1, false, false, false);
+            removeRoot(root);
+        }
+        else {
+            if (input.dom) {
+                input = cloneVNode(input);
+            }
+            patch(root.input, input, parentDom, lifecycle$1, {}, false, false);
+        }
+        lifecycle$1.trigger();
+        root.input = input;
+    }
+    if (root) {
+        var rootInput = root.input;
+        if (rootInput && (rootInput.flags & 28 /* Component */)) {
+            return rootInput.children;
+        }
+    }
+}
+
+function renderIntoDocument$1(element) {
+    var div = document.createElement('div');
+    return render(element, div);
+}
 function isElement$1(element) {
     return isValidElement(element);
 }
-
 
 function isElementOfType$1(inst, componentClass) {
     return (isValidElement(inst) &&
@@ -2167,7 +2377,11 @@ function isElementOfType$1(inst, componentClass) {
 function isDOMComponent$1(inst) {
     return !!(inst && inst.nodeType === 1 && inst.tagName);
 }
-
+function isDOMComponentElement$1(inst) {
+    return !!(inst &&
+        isValidElement(inst) &&
+        typeof inst.type === 'string');
+}
 
 function isCompositeComponent$1(inst) {
     if (isDOMComponent$1(inst)) {
@@ -2178,16 +2392,21 @@ function isCompositeComponent$1(inst) {
         typeof inst.type.setState === 'function');
 }
 
-
+function isCompositeComponentWithType$1(inst, type) {
+    if (!isCompositeComponent$1(inst)) {
+        return false;
+    }
+    return (inst.type === type);
+}
 function findAllInTree(inst, test) {
     if (!inst) {
         return [];
     }
-    var publicInstance = inst.dom;
-    var ret = test(publicInstance) ? [publicInstance] : [];
+    var publicInst = inst.dom;
     var currentElement = inst._vNode;
-    if (isDOMComponent$1(publicInstance)) {
-        var renderedChildren = inst.props && inst.props.children;
+    var ret = test(publicInst) ? [inst] : [];
+    if (isDOMComponent$1(publicInst)) {
+        var renderedChildren = inst.children;
         for (var key in renderedChildren) {
             if (!renderedChildren.hasOwnProperty(key)) {
                 continue;
@@ -2195,9 +2414,9 @@ function findAllInTree(inst, test) {
             ret = ret.concat(findAllInTree(renderedChildren[key], test));
         }
     }
-    else if (isValidElement(currentElement) &&
+    if (isValidElement(currentElement) &&
         typeof currentElement.type === 'function') {
-        ret = ret.concat(findAllInTree(currentElement, test));
+        ret = ret.concat(findAllInTree(inst._lastInput, test));
     }
     return ret;
 }
@@ -2211,21 +2430,69 @@ function findAllInRenderedTree$1(inst, test) {
     }
     return findAllInTree(inst, test);
 }
+function scryRenderedDOMComponentsWithClass$1(root, classNames) {
+    return findAllInRenderedTree$1(root, function (inst) {
+        if (isDOMComponent$1(inst)) {
+            var className = inst.className;
+            if (typeof className !== 'string') {
+                // SVG, probably.
+                className = inst.getAttribute('class') || '';
+            }
+            var classList = className.split(/\s+/);
+            var classNamesList = classNames;
+            if (!isArray(classNames)) {
+                classNamesList = classNames.split(/\s+/);
+            }
+            classNamesList = toArray(classNamesList);
+            return classNamesList.every(function (name) {
+                return classList.indexOf(name) !== -1;
+            });
+        }
+        return false;
+    });
+}
+
+
+function findOneOf(root, option, optionName, finderFn) {
+    var all = finderFn(root, option);
+    if (all.length > 1) {
+        throwError(("Did not find exactly one match (found " + (all.length) + ") for " + optionName + ": " + option));
+    }
+    return all[0];
+}
+function findRenderedDOMComponentsWithClass$1(root, classNames) {
+    return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass$1);
+}
 
 var index = {
+	renderIntoDocument: renderIntoDocument,
 	isElement: isElement,
 	isElementOfType: isElementOfType,
 	isDOMComponent: isDOMComponent,
+	isDOMComponentElement: isDOMComponentElement,
 	isCompositeComponent: isCompositeComponent,
-	findAllInRenderedTree: findAllInRenderedTree
+	isCompositeComponentWithType: isCompositeComponentWithType,
+	findAllInRenderedTree: findAllInRenderedTree,
+	scryRenderedDOMComponentsWithClass: scryRenderedDOMComponentsWithClass,
+	scryRenderedDOMComponentsWithTag: scryRenderedDOMComponentsWithTag,
+	scryRenderedComponentsWithType: scryRenderedComponentsWithType,
+	findRenderedDOMComponentsWithClass: findRenderedDOMComponentsWithClass,
+	findenderedDOMComponentsWithTag: findenderedDOMComponentsWithTag,
+	findRenderedComponentWithType: findRenderedComponentWithType,
+	mockComponent: mockComponent
 };
 
 exports['default'] = index;
+exports.renderIntoDocument = renderIntoDocument$1;
 exports.isElement = isElement$1;
 exports.isElementOfType = isElementOfType$1;
 exports.isDOMComponent = isDOMComponent$1;
+exports.isDOMComponentElement = isDOMComponentElement$1;
 exports.isCompositeComponent = isCompositeComponent$1;
+exports.isCompositeComponentWithType = isCompositeComponentWithType$1;
 exports.findAllInRenderedTree = findAllInRenderedTree$1;
+exports.scryRenderedDOMComponentsWithClass = scryRenderedDOMComponentsWithClass$1;
+exports.findRenderedDOMComponentsWithClass = findRenderedDOMComponentsWithClass$1;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
