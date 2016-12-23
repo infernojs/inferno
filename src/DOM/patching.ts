@@ -316,7 +316,6 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					lastVNode.dom
 				);
 			} else {
-				lifecycle.fastUnmount = false;
 				const lastState = instance.state;
 				const nextState = instance.state;
 				const lastProps = instance.props;
@@ -387,7 +386,6 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 			}
 			if (shouldUpdate !== false) {
 				if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
-					lifecycle.fastUnmount = false;
 					nextHooks.onComponentWillUpdate(lastProps, nextProps);
 				}
 				nextInput = nextType(nextProps, context);
@@ -406,7 +404,6 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
 					nextVNode.children = nextInput;
 					if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
-						lifecycle.fastUnmount = false;
 						nextHooks.onComponentDidUpdate(lastProps, nextProps);
 					}
 					nextVNode.dom = nextInput.dom;
@@ -864,7 +861,6 @@ export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
 			return;
 		}
 		if (delegatedProps[name]) {
-			lifecycle.fastUnmount = false;
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
 			if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {

@@ -730,7 +730,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
         if (isStatefulComponent$$1) {
             instance._ignoreSetState = true;
             options.beforeUnmount && options.beforeUnmount(vNode);
-            instance.componentWillUnmount();
+            instance.componentWillUnmount && instance.componentWillUnmount();
             if (ref && !isRecycling) {
                 ref(null);
             }
@@ -746,7 +746,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmoun
             if (isStatefulComponent$$1) {
                 var subLifecycle = instance._lifecycle;
                 if (!subLifecycle.fastUnmount) {
-                    unmount(instance._lastInput, null, lifecycle, false, shallowUnmount, isRecycling);
+                    unmount(instance._lastInput, null, subLifecycle, false, shallowUnmount, isRecycling);
                 }
             }
             else {
@@ -1028,7 +1028,6 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                 replaceChild(parentDom, mountComponent(nextVNode, null, lifecycle, context, isSVG, nextVNode.flags & 4 /* ComponentClass */), lastVNode.dom);
             }
             else {
-                lifecycle.fastUnmount = false;
                 var lastState = instance.state;
                 var nextState = instance.state;
                 var lastProps = instance.props;
@@ -1102,7 +1101,6 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
             }
             if (shouldUpdate !== false) {
                 if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentWillUpdate)) {
-                    lifecycle.fastUnmount = false;
                     nextHooks.onComponentWillUpdate(lastProps$1, nextProps);
                 }
                 nextInput$2 = nextType(nextProps, context);
@@ -1122,7 +1120,6 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     patch(lastInput$2, nextInput$2, parentDom, lifecycle, context, isSVG, isRecycling);
                     nextVNode.children = nextInput$2;
                     if (nextHooksDefined && !isNullOrUndef(nextHooks.onComponentDidUpdate)) {
-                        lifecycle.fastUnmount = false;
                         nextHooks.onComponentDidUpdate(lastProps$1, nextProps);
                     }
                     nextVNode.dom = nextInput$2.dom;
@@ -1560,7 +1557,6 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
             return;
         }
         if (delegatedProps[name]) {
-            lifecycle.fastUnmount = false;
             handleEvent(name, lastValue, nextValue, dom);
         }
         else {
@@ -1863,20 +1859,17 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
         vNode.props = props;
     }
     if (isClass) {
-        lifecycle.fastUnmount = false;
         var instance = createStatefulComponentInstance(vNode, type, props, context, isSVG);
+        // If instance does not have componentWillUnmount specified we can enable fastUnmount
+        lifecycle.fastUnmount = isUndefined(instance.componentWillUnmount);
         var input = instance._lastInput;
-        var fastUnmount = lifecycle.fastUnmount;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
         // we do this so we can determine if the component render has a fastUnmount or not
-        lifecycle.fastUnmount = true;
         instance._vNode = vNode;
         vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
         // we now create a lifecycle for this component and store the fastUnmount value
         var subLifecycle = instance._lifecycle = new Lifecycle();
         subLifecycle.fastUnmount = lifecycle.fastUnmount;
-        // we then set the lifecycle fastUnmount value back to what it was before the mount
-        lifecycle.fastUnmount = fastUnmount;
         if (!isNull(parentDom)) {
             appendChild(parentDom, dom);
         }
@@ -1909,7 +1902,7 @@ function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle) {
     }
     var cDM = instance.componentDidMount;
     var afterMount = options.afterMount;
-    if (!isNull(cDM) || !isNull(afterMount)) {
+    if (!isUndefined(cDM) || !isNull(afterMount)) {
         lifecycle.addListener(function () {
             afterMount && afterMount(vNode);
             cDM && instance.componentDidMount();
@@ -1919,12 +1912,13 @@ function mountStatefulComponentCallbacks(vNode, ref, instance, lifecycle) {
 function mountStatelessComponentCallbacks(ref, dom, lifecycle) {
     if (ref) {
         if (!isNullOrUndef(ref.onComponentWillMount)) {
-            lifecycle.fastUnmount = false;
             ref.onComponentWillMount();
         }
         if (!isNullOrUndef(ref.onComponentDidMount)) {
-            lifecycle.fastUnmount = false;
             lifecycle.addListener(function () { return ref.onComponentDidMount(dom); });
+        }
+        if (!isNullOrUndef(ref.onComponentWillUnmount)) {
+            lifecycle.fastUnmount = false;
         }
     }
 }
@@ -2131,14 +2125,14 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
     if (isClass) {
         var _isSVG = dom.namespaceURI === svgNS;
         var defaultProps = type.defaultProps;
-        lifecycle.fastUnmount = false;
         if (!isUndefined(defaultProps)) {
             copyPropsTo(defaultProps, props);
             vNode.props = props;
         }
         var instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG);
+        // If instance does not have componentWillUnmount specified we can enable fastUnmount
+        var fastUnmount = isUndefined(instance.componentWillUnmount);
         var input = instance._lastInput;
-        var fastUnmount = lifecycle.fastUnmount;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
         // we do this so we can determine if the component render has a fastUnmount or not
         lifecycle.fastUnmount = true;

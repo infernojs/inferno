@@ -6,7 +6,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('redux'), require('./inferno-create-element')) :
 	typeof define === 'function' && define.amd ? define(['inferno-component', 'redux', 'inferno-create-element'], factory) :
-	(global.Inferno = global.Inferno || {}, global.Inferno.Redux = factory(global.Inferno.Component,global.redux,global.Inferno.createElement));
+	(global.Inferno = global.Inferno || {}, global.Inferno.Redux = factory(global.Inferno.Component,global.Redux,global.Inferno.createElement));
 }(this, (function (Component,redux,createElement) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;

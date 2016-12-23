@@ -43,7 +43,7 @@ export interface ComponentLifecycle<P, S> {
 	shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
 	componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
 	componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
-	componentWillUnmount?(): void;
+	componentWillUnmount?: () => void;
 }
 
 export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
@@ -208,10 +208,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 
 		/** @type {object} */
 		this.context = context || {};
-
-		if (!this.componentDidMount) {
-			this.componentDidMount = null;
-		}
 	}
 
 	render(nextProps?: P, nextState?, nextContext?) {
@@ -241,12 +237,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	}
 
 	componentWillMount() {
-	}
-
-	componentDidMount() {
-	}
-
-	componentWillUnmount() {
 	}
 
 	componentDidUpdate(prevProps: P, prevState: S, prevContext?: any) {

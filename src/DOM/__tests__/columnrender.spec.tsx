@@ -182,6 +182,8 @@ describe('Columns like tests - (JSX)', () => {
 					super(props);
 				}
 
+				componentWillUnmount() {}
+
 				render() {
 					return (
 						<div>
@@ -195,6 +197,8 @@ describe('Columns like tests - (JSX)', () => {
 				constructor(props) {
 					super(props);
 				}
+
+				componentWillUnmount() {}
 
 				render() {
 					const items = this.props.items;
@@ -324,6 +328,8 @@ describe('Columns like tests - (JSX)', () => {
 					super(props);
 				}
 
+				componentWillUnmount() {}
+
 				render() {
 					return (
 						<div>
@@ -337,6 +343,8 @@ describe('Columns like tests - (JSX)', () => {
 				constructor(props) {
 					super(props);
 				}
+
+				componentWillUnmount() {}
 
 				render() {
 					const items = this.props.items;

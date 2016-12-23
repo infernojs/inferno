@@ -23,6 +23,8 @@ describe('Stateful Component updates', () => {
 		let updatesAfromOutside;
 
 		class A extends Component<any, any> {
+			componentWillUnmount() {}
+
 			constructor(props) {
 				super(props);
 
