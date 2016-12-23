@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta38
+ * inferno v1.0.0-beta40
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -2195,18 +2195,18 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
 }
 function hydrateChildren(children, dom, lifecycle, context, isSVG) {
     normalizeChildNodes(dom);
-    var domNodes = dom.childNodes;
+    var domNodes = Array.prototype.slice.call(dom.childNodes);
     var childNodeIndex = 0;
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             if (isObject(child) && !isNull(child)) {
-                setTimeout(hydrate, 0, child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
+                hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
             }
         }
     }
     else if (isObject(children)) {
-        setTimeout(hydrate, 0, children, dom.firstChild, lifecycle, context, isSVG);
+        hydrate(children, dom.firstChild, lifecycle, context, isSVG);
     }
 }
 function hydrateText(vNode, dom) {

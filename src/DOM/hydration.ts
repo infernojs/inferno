@@ -143,7 +143,7 @@ function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 
 function hydrateChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
 	normalizeChildNodes(dom);
-	const domNodes = dom.childNodes;
+	const domNodes = Array.prototype.slice.call(dom.childNodes);
 	let childNodeIndex = 0;
 
 	if (isArray(children)) {
@@ -151,11 +151,11 @@ function hydrateChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
 			const child = children[i];
 
 			if (isObject(child) && !isNull(child)) {
-				setTimeout(hydrate, 0, child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
+				hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
 			}
 		}
 	} else if (isObject(children)) {
-		setTimeout(hydrate, 0, children, dom.firstChild, lifecycle, context, isSVG);
+		hydrate(children, dom.firstChild, lifecycle, context, isSVG);
 	}
 }
 

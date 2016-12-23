@@ -1,9 +1,30 @@
-import isValidElement from '../../../build/factories/isValidElement';
-
 export {
-  isValidElement
-};
+	renderIntoDocument,
+	isElement,
+	isElementOfType,
+	isDOMComponent,
+	isDOMComponentElement,
+	isCompositeComponent,
+	isCompositeComponentWithType,
+	findAllInRenderedTree,
+	scryRenderedDOMComponentsWithClass,
+	findRenderedDOMComponentsWithClass
+} from '../../../build/tools/testUtils';
 
 export default {
-	isValidElement
+	renderIntoDocument,
+	isElement,
+	isElementOfType,
+	isDOMComponent,
+	isDOMComponentElement,
+	isCompositeComponent,
+	isCompositeComponentWithType,
+	findAllInRenderedTree,
+	scryRenderedDOMComponentsWithClass,
+	scryRenderedDOMComponentsWithTag,
+	scryRenderedComponentsWithType,
+	findRenderedDOMComponentsWithClass,
+	findenderedDOMComponentsWithTag,
+	findRenderedComponentWithType,
+	mockComponent
 };

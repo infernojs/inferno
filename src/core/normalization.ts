@@ -1,14 +1,14 @@
+import { InfernoChildren, Props, VNode, VNodeFlags } from './structures';
+import { cloneVNode, createTextVNode, isVNode } from './VNodes';
 import {
 	isArray,
 	isInvalid,
+	isNull,
 	isNullOrUndef,
+	isString,
 	isStringOrNumber,
 	isUndefined,
-	isString,
-	isNull
 } from '../shared';
-import { createTextVNode, isVNode, cloneVNode } from './VNodes';
-import { VNode, VNodeFlags, InfernoChildren, Props } from './structures';
 
 function applyKeyIfMissing(index: number, vNode: VNode): VNode {
 	if (isNull(vNode.key)) {

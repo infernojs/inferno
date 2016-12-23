@@ -11,7 +11,7 @@ Usage of `inferno-router` is similar to that of [react-router](https://github.co
 ## Install
 
 ```
-npm install inferno-router@beta38
+npm install inferno-router@beta40
 ```
 
 ## Features
