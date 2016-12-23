@@ -234,6 +234,16 @@ function updateReactComponent(vNode, parentDom) {
 
 }
 
+function normalizeChildren(children, dom) {
+	if (isArray(children)) {
+		return children.filter(child => !isInvalid(child)).map((child) =>
+			updateReactComponent(child, dom)
+		);
+	} else {
+		return !isInvalid(children) ? [updateReactComponent(children, dom)] : [];
+	}
+}
+
 /**
  * Create a ReactDOMComponent-compatible object for a given DOM node rendered
  * by Inferno.
@@ -255,9 +265,7 @@ function createReactDOMComponent(vNode, parentDom) {
 			type,
 			props
 		},
-		_renderedChildren: !isText && (isArray(children) ? children.filter(child => isInvalid(child)).map((child) =>
-			updateReactComponent(child, dom)
-		) : !isInvalid(children) ? [updateReactComponent(children, dom)] : []),
+		_renderedChildren: !isText && normalizeChildren(children, dom),
 		_stringText: isText ? (children || vNode) : null,
 		_inDevTools: false,
 		node: dom || parentDom,
