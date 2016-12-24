@@ -1,3 +1,16 @@
+import {
+	findAllInRenderedTree,
+	findRenderedDOMComponentsWithClass,
+	isCompositeComponent,
+	isCompositeComponentWithType,
+	isDOMComponent,
+	isDOMComponentElement,
+	isElement,
+	isElementOfType,
+	renderIntoDocument,
+	scryRenderedDOMComponentsWithClass,
+} from '../../../build/tools/testUtils';
+
 export {
 	renderIntoDocument,
 	isElement,
@@ -8,8 +21,13 @@ export {
 	isCompositeComponentWithType,
 	findAllInRenderedTree,
 	scryRenderedDOMComponentsWithClass,
-	findRenderedDOMComponentsWithClass
-} from '../../../build/tools/testUtils';
+	scryRenderedDOMComponentsWithTag,
+	scryRenderedComponentsWithType,
+	findRenderedDOMComponentsWithClass,
+	findenderedDOMComponentsWithTag,
+	findRenderedComponentWithType,
+	mockComponent
+};
 
 export default {
 	renderIntoDocument,
@@ -26,5 +44,5 @@ export default {
 	findRenderedDOMComponentsWithClass,
 	findenderedDOMComponentsWithTag,
 	findRenderedComponentWithType,
-	mockComponent
+	mockComponent,
 };
