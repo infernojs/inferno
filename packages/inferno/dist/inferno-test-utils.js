@@ -2375,30 +2375,30 @@ function render(input, parentDom) {
     }
 }
 
-function renderIntoDocument$1(element) {
+function renderIntoDocument(element) {
     var div = document.createElement('div');
     return render(element, div);
 }
-function isElement$1(element) {
+function isElement(element) {
     return isValidElement(element);
 }
 
-function isElementOfType$1(inst, componentClass) {
+function isElementOfType(inst, componentClass) {
     return (isValidElement(inst) &&
         inst.type === componentClass);
 }
 
-function isDOMComponent$1(inst) {
+function isDOMComponent(inst) {
     return !!(inst && inst.nodeType === 1 && inst.tagName);
 }
-function isDOMComponentElement$1(inst) {
+function isDOMComponentElement(inst) {
     return !!(inst &&
         isValidElement(inst) &&
         typeof inst.type === 'string');
 }
 
-function isCompositeComponent$1(inst) {
-    if (isDOMComponent$1(inst)) {
+function isCompositeComponent(inst) {
+    if (isDOMComponent(inst)) {
         return false;
     }
     return (inst != null &&
@@ -2406,8 +2406,8 @@ function isCompositeComponent$1(inst) {
         typeof inst.type.setState === 'function');
 }
 
-function isCompositeComponentWithType$1(inst, type) {
-    if (!isCompositeComponent$1(inst)) {
+function isCompositeComponentWithType(inst, type) {
+    if (!isCompositeComponent(inst)) {
         return false;
     }
     return (inst.type === type);
@@ -2419,7 +2419,7 @@ function findAllInTree(inst, test) {
     var publicInst = inst.dom;
     var currentElement = inst._vNode;
     var ret = test(publicInst) ? [inst] : [];
-    if (isDOMComponent$1(publicInst)) {
+    if (isDOMComponent(publicInst)) {
         var renderedChildren = inst.children;
         for (var key in renderedChildren) {
             if (!renderedChildren.hasOwnProperty(key)) {
@@ -2434,19 +2434,19 @@ function findAllInTree(inst, test) {
     }
     return ret;
 }
-function findAllInRenderedTree$1(inst, test) {
+function findAllInRenderedTree(inst, test) {
     var result = [];
     if (!inst) {
         return result;
     }
-    if (isDOMComponent$1(inst)) {
+    if (isDOMComponent(inst)) {
         throwError('findAllInRenderedTree(...): instance must be a composite component');
     }
     return findAllInTree(inst, test);
 }
-function scryRenderedDOMComponentsWithClass$1(root, classNames) {
-    return findAllInRenderedTree$1(root, function (inst) {
-        if (isDOMComponent$1(inst)) {
+function scryRenderedDOMComponentsWithClass(root, classNames) {
+    return findAllInRenderedTree(root, function (inst) {
+        if (isDOMComponent(inst)) {
             var className = inst.className;
             if (typeof className !== 'string') {
                 // SVG, probably.
@@ -2474,8 +2474,8 @@ function findOneOf(root, option, optionName, finderFn) {
     }
     return all[0];
 }
-function findRenderedDOMComponentsWithClass$1(root, classNames) {
-    return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass$1);
+function findRenderedDOMComponentsWithClass(root, classNames) {
+    return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass);
 }
 
 var index = {
@@ -2493,20 +2493,25 @@ var index = {
 	findRenderedDOMComponentsWithClass: findRenderedDOMComponentsWithClass,
 	findenderedDOMComponentsWithTag: findenderedDOMComponentsWithTag,
 	findRenderedComponentWithType: findRenderedComponentWithType,
-	mockComponent: mockComponent
+	mockComponent: mockComponent,
 };
 
+exports.renderIntoDocument = renderIntoDocument;
+exports.isElement = isElement;
+exports.isElementOfType = isElementOfType;
+exports.isDOMComponent = isDOMComponent;
+exports.isDOMComponentElement = isDOMComponentElement;
+exports.isCompositeComponent = isCompositeComponent;
+exports.isCompositeComponentWithType = isCompositeComponentWithType;
+exports.findAllInRenderedTree = findAllInRenderedTree;
+exports.scryRenderedDOMComponentsWithClass = scryRenderedDOMComponentsWithClass;
+exports.scryRenderedDOMComponentsWithTag = scryRenderedDOMComponentsWithTag;
+exports.scryRenderedComponentsWithType = scryRenderedComponentsWithType;
+exports.findRenderedDOMComponentsWithClass = findRenderedDOMComponentsWithClass;
+exports.findenderedDOMComponentsWithTag = findenderedDOMComponentsWithTag;
+exports.findRenderedComponentWithType = findRenderedComponentWithType;
+exports.mockComponent = mockComponent;
 exports['default'] = index;
-exports.renderIntoDocument = renderIntoDocument$1;
-exports.isElement = isElement$1;
-exports.isElementOfType = isElementOfType$1;
-exports.isDOMComponent = isDOMComponent$1;
-exports.isDOMComponentElement = isDOMComponentElement$1;
-exports.isCompositeComponent = isCompositeComponent$1;
-exports.isCompositeComponentWithType = isCompositeComponentWithType$1;
-exports.findAllInRenderedTree = findAllInRenderedTree$1;
-exports.scryRenderedDOMComponentsWithClass = scryRenderedDOMComponentsWithClass$1;
-exports.findRenderedDOMComponentsWithClass = findRenderedDOMComponentsWithClass$1;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
