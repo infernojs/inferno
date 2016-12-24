@@ -1,10 +1,10 @@
-import cloneVNode from '../../../build/factories/cloneVNode';
+import { EMPTY_OBJ, NO_OP, isBrowser, warning } from '../../../build/shared';
 import {
+	cloneVNode,
 	createVNode,
-	cloneVNode
 } from '../../../build/core/VNodes';
-import { warning, NO_OP, isBrowser, EMPTY_OBJ } from '../../../build/shared';
-import { render, findDOMNode, createRenderer } from '../../../build/DOM/rendering';
+import { createRenderer, findDOMNode, render } from '../../../build/DOM/rendering';
+
 import linkEvent from '../../../build/DOM/events/linkEvent';
 import options from '../../../build/core/options';
 

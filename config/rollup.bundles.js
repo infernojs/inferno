@@ -95,7 +95,7 @@ bundles.add({
 		'inferno-component': 'Inferno.Component',
 		'inferno-create-element': 'Inferno.createElement',
 		'inferno-create-class': 'Inferno.createClass',
-		'path-to-regexp-es6': 'Inferno.pathToRegExp',
+		'path-to-regexp': 'Inferno.pathToRegExp',
 		redux: 'Redux'
 	},
 	path: 'packages/inferno-redux/'
@@ -110,7 +110,7 @@ bundles.add({
 		'inferno-component': 'Inferno.Component',
 		'inferno-create-element': 'Inferno.createElement',
 		'inferno-create-class': 'Inferno.createClass',
-		'path-to-regexp-es6': 'Inferno.pathToRegExp',
+		'path-to-regexp': 'Inferno.pathToRegExp',
 		mobx: 'mobx'
 	},
 	path: 'packages/inferno-mobx/'
