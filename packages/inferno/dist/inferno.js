@@ -1568,7 +1568,7 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
         else {
             if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
                 if (process.env.NODE_ENV !== 'production') {
-                    throwError(("an event on a VNode \"" + name + "\". was not a function. Did you try and apply an eventLink to an unsupported event?"));
+                    throwError(("an event on a VNode \"" + name + "\". was not a function. Did you try and apply an eventLink to an unsupported event or to an uncontrolled component?"));
                 }
                 throwError();
             }
