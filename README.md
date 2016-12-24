@@ -189,11 +189,11 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 Like React, Inferno also uses a light-weight synthetic event system in certain places (although both event systems differ massively). Inferno's event system provides highly efficient delegation and an event helper called [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno).
  
-One major difference between Inferno and React is that Inferno does not rename events or changes how they work by default. Inferno only specifies that events should be camel cased, rather than lower case. Lower case events will bypass
+One major difference between Inferno and React is that Inferno does not rename events or change how they work by default. Inferno only specifies that events should be camel cased, rather than lower case. Lower case events will bypass
 Inferno's event system in favour of using the native event system supplied by the browser. For example, when detecting changes on an `<input>` element, in React you'd use `onChange`, with Inferno you'd use `onInput` instead (the
 native DOM event is `oninput`).
 
-As this is feature is a very recent addition to Inferno, there are only a handful of events that use Inferno's event system. They are outlined below:
+This feature is a very recent addition to Inferno, so there are only a handful of events that use Inferno's event system:
 - `onClick`
 - `onDblClick`
 - `onMouseMove`
@@ -225,7 +225,7 @@ Warning: If the container element is not empty before rendering, the content of 
 
 ### `createRenderer` (package: `inferno`)
 
-`createRenderer` allows for functional composition when rendering content to the DOM. An example of this is shown below:
+`createRenderer` allows for functional composition when rendering content to the DOM. Example:
 
 ```javascript
 import Inferno from 'inferno';
@@ -318,7 +318,7 @@ const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello wor
 Inferno.render(vNode, container);
 ```
 
-The first argument for `createVNode()` is a value from [`VNodeFlags`](https://github.com/trueadm/inferno/tree/master/packages/inferno-vnode-flags), this is numerical value that used to tell Inferno what the VNode is meant to describe on the page.
+The first argument for `createVNode()` is a value from [`VNodeFlags`](https://github.com/trueadm/inferno/tree/master/packages/inferno-vnode-flags), this is a numerical value that tells Inferno what the VNode describes on the page.
 
 ### `cloneVNode` (package: `inferno`)
 ```js
@@ -362,7 +362,7 @@ Inferno.render(newVNode, container);
 
 Once enabled via `options.findDOMNodeEnabled()` at the start of an application, `findDOMNode()` is enabled.
 
-Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode()`. `findDOMNode()` cannot be used on functional components and it introduces a significant impact to performance.
+Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode()`. `findDOMNode()` cannot be used on functional components and it introduces a significant performance impact.
 
 If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements. 
 In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode()` at all. When render returns null or false, `findDOMNode()` returns null.
@@ -401,7 +401,7 @@ class MyComponent extends Component {
 }
 ```
 
-`linkEvent()` offers better performance than binding an event in a class constructor and using arrow functions, so where possible, it should be used.
+`linkEvent()` offers better performance than binding an event in a class constructor and using arrow functions, so use it where possible.
 
 ### `renderToString` (package: `inferno-server`)
 
@@ -424,7 +424,7 @@ This enables `findDOMNode()`. We strongly recommend against using this API as it
 
 #### - `recyclingEnabled` (default: `true`)
 
-This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon diposal. It can have significant performance benefits, but may also experiences side-effects with custom elements.
+This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon diposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
 
 ## Functional component hooks
 
@@ -464,11 +464,11 @@ Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support
 - [Object.keys](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
 - [Object.assign](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
 
-Potential solutions including using the [es5-shim](https://github.com/es-shims/es5-shim) for ES5 features and [es6-shim](https://github.com/paulmillr/es6-shim) from ES2015 features.
+Potential solutions include using the [es5-shim](https://github.com/es-shims/es5-shim) for ES5 features and [es6-shim](https://github.com/paulmillr/es6-shim) from ES2015 features.
 
 ### Custom namespaces
 
-Inferno wants to always deliver great performance and in order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work; so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
+Inferno wants to always deliver great performance. In order to do so, it has to make intelligent assumptions about the state of the DOM and the elements available to mutate. Custom namespaces conflict with this idea and change the schema of how different elements and attributes might work, so Inferno makes no attempt to support namespaces. Instead, SVG namespaces are automatically applied to elements and attributes based on their `tag name`.
 
 ## Community
 
