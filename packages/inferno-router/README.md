@@ -11,7 +11,7 @@ Usage of `inferno-router` is similar to that of [react-router](https://github.co
 ## Install
 
 ```
-npm install inferno-router@beta37
+npm install inferno-router@beta42
 ```
 
 ## Features
@@ -50,7 +50,7 @@ function Users({ children, params }) {
 }
 
 function User({ params }) {
-  return <div>{ params.username }</div>
+  return <div>{ JSON.stringify(params) }</div>
 }
 
 const routes = (

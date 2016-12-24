@@ -201,6 +201,11 @@ describe('Select / select multiple (non-JSX)', () => {
 
 	});
 
+	it('should assure a `textarea` with no value should show no value', () => {
+		 render(createElement('textarea', null), container);
+		 expect(container.firstChild.value).to.eql('');
+	});
+
 	it('should assure the value attribute also set the value property for `textarea`', () => {
 
 		const template = (val) => createElement('textarea', {

@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.0-beta37
+ * inferno-component v1.0.0-beta42
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -16,7 +16,9 @@ var isBrowser = typeof window !== 'undefined' && window.document;
 // in Node 7 and the later versions of V8, slower in older versions though
 var isArray = Array.isArray;
 
-
+function isStringOrNumber(obj) {
+    return isString(obj) || isNumber(obj);
+}
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
 }
@@ -27,8 +29,12 @@ function isFunction(obj) {
     return typeof obj === 'function';
 }
 
-
-
+function isString(obj) {
+    return typeof obj === 'string';
+}
+function isNumber(obj) {
+    return typeof obj === 'number';
+}
 function isNull(obj) {
     return obj === null;
 }
@@ -80,6 +86,9 @@ function updateParentComponentVNodes(vNode, dom) {
 // this is in shapes too, but we don't want to import from shapes as it will pull in a duplicate of createVNode
 function createVoidVNode() {
     return inferno.createVNode(4096 /* Void */);
+}
+function createTextVNode(text) {
+    return inferno.createVNode(1 /* Text */, null, null, text);
 }
 function addToQueue(component, force, callback) {
     // TODO this function needs to be revised and improved on
@@ -138,15 +147,18 @@ function applyState(component, force, callback) {
         if (isInvalid(nextInput)) {
             nextInput = createVoidVNode();
         }
+        else if (nextInput === inferno.NO_OP) {
+            nextInput = component._lastInput;
+            didUpdate = false;
+        }
+        else if (isStringOrNumber(nextInput)) {
+            nextInput = createTextVNode(nextInput);
+        }
         else if (isArray(nextInput)) {
             if (process.env.NODE_ENV !== 'production') {
                 throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
             }
             throwError();
-        }
-        else if (nextInput === inferno.NO_OP) {
-            nextInput = component._lastInput;
-            didUpdate = false;
         }
         var lastInput = component._lastInput;
         var vNode = component._vNode;
@@ -171,6 +183,7 @@ function applyState(component, force, callback) {
             component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
             subLifecycle.trigger();
             component.componentDidUpdate(props, prevState);
+            inferno.options.afterUpdate && inferno.options.afterUpdate(vNode);
         }
         var dom = vNode.dom = nextInput.dom;
         var componentToDOMNodeMap = component._componentToDOMNodeMap;
@@ -181,7 +194,7 @@ function applyState(component, force, callback) {
         }
     }
 }
-var Component$1 = function Component$1(props, context) {
+var Component$1 = function Component(props, context) {
     this.state = {};
     this.refs = {};
     this._processingSetState = false;
@@ -194,8 +207,6 @@ var Component$1 = function Component$1(props, context) {
     this._lastInput = null;
     this._vNode = null;
     this._unmounted = true;
-    this._devToolsStatus = null;
-    this._devToolsId = null;
     this._lifecycle = null;
     this._childContext = null;
     this._patch = null;
@@ -205,9 +216,6 @@ var Component$1 = function Component$1(props, context) {
     this.props = props || inferno.EMPTY_OBJ;
     /** @type {object} */
     this.context = context || {};
-    if (!this.componentDidMount) {
-        this.componentDidMount = null;
-    }
 };
 Component$1.prototype.render = function render (nextProps, nextState, nextContext) {
 };
@@ -234,10 +242,6 @@ Component$1.prototype.setState = function setState (newState, callback) {
     }
 };
 Component$1.prototype.componentWillMount = function componentWillMount () {
-};
-Component$1.prototype.componentDidMount = function componentDidMount () {
-};
-Component$1.prototype.componentWillUnmount = function componentWillUnmount () {
 };
 Component$1.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState, prevContext) {
 };
@@ -276,9 +280,9 @@ Component$1.prototype._updateComponent = function _updateComponent (prevState, n
             this.props = nextProps;
             var state = this.state = nextState;
             this.context = context;
-            this._beforeRender && this._beforeRender();
+            inferno.options.beforeRender && inferno.options.beforeRender(this);
             var render = this.render(nextProps, state, context);
-            this._afterRender && this._afterRender();
+            inferno.options.afterRender && inferno.options.afterRender(this);
             return render;
         }
     }

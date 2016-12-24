@@ -96,7 +96,7 @@ bundles.add({
 		'inferno-create-element': 'Inferno.createElement',
 		'inferno-create-class': 'Inferno.createClass',
 		'path-to-regexp-es6': 'Inferno.pathToRegExp',
-		redux: 'redux'
+		redux: 'Redux'
 	},
 	path: 'packages/inferno-redux/'
 });
@@ -132,6 +132,17 @@ bundles.add({
 	moduleName: 'inferno-vnode-flags',
 	moduleEntry: 'packages/inferno-vnode-flags/src/index.js',
 	path: 'packages/inferno-vnode-flags/'
+});
+
+bundles.add({
+	moduleGlobal: 'Inferno.DevTools',
+	moduleName: 'inferno-devtools',
+	moduleEntry: 'packages/inferno-devtools/src/index.js',
+	moduleGlobals: {
+		inferno: 'Inferno',
+		'inferno-component': 'Inferno.Component'
+	},
+	path: 'packages/inferno-devtools/'
 });
 
 export default bundles;

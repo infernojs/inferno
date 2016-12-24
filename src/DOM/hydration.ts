@@ -1,6 +1,6 @@
 import {
-	createStatefulComponentInstance,
-	createStatelessComponentInput,
+	createClassComponentInstance,
+	createFunctionalComponentInput,
 	replaceChild,
 } from './utils';
 import {
@@ -14,9 +14,10 @@ import {
 } from '../shared';
 import {
 	mountElement,
-	mountStatefulComponentCallbacks,
-	mountStatelessComponentCallbacks,
+	mountClassComponentCallbacks,
+	mountFunctionalComponentCallbacks,
 	mountText,
+	mountRef,
 } from './mounting';
 import options from '../core/options';
 import Lifecycle from './lifecycle';
@@ -68,14 +69,14 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		const _isSVG = dom.namespaceURI === svgNS;
 		const defaultProps = type.defaultProps;
 
-		lifecycle.fastUnmount = false;
 		if (!isUndefined(defaultProps)) {
 			copyPropsTo(defaultProps, props);
 			vNode.props = props;
 		}
-		const instance = createStatefulComponentInstance(vNode, type, props, context, _isSVG);
+		const instance = createClassComponentInstance(vNode, type, props, context, _isSVG);
+		// If instance does not have componentWillUnmount specified we can enable fastUnmount
+		const fastUnmount = isUndefined(instance.componentWillUnmount);
 		const input = instance._lastInput;
-		const fastUnmount = lifecycle.fastUnmount;
 
 		// we store the fastUnmount value, but we set it back to true on the lifecycle
 		// we do this so we can determine if the component render has a fastUnmount or not
@@ -88,16 +89,15 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		subLifecycle.fastUnmount = lifecycle.fastUnmount;
 		// we then set the lifecycle fastUnmount value back to what it was before the mount
 		lifecycle.fastUnmount = fastUnmount;
-		mountStatefulComponentCallbacks(ref, instance, lifecycle);
+		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
-		const input = createStatelessComponentInput(vNode, type, props, context);
-
+		const input = createFunctionalComponentInput(vNode, type, props, context);
 		hydrate(input, dom, lifecycle, context, isSVG);
 		vNode.children = input;
 		vNode.dom = input.dom;
-		mountStatelessComponentCallbacks(ref, dom, lifecycle);
+		mountFunctionalComponentCallbacks(ref, dom, lifecycle);
 	}
 }
 
@@ -107,6 +107,7 @@ function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 	const props = vNode.props;
 	const events = vNode.events;
 	const flags = vNode.flags;
+	const ref = vNode.ref;
 
 	if (isSVG || (flags & VNodeFlags.SvgElement)) {
 		isSVG = true;
@@ -124,11 +125,18 @@ function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 		if (!(flags & VNodeFlags.HtmlElement)) {
 			processElement(flags, vNode, dom);
 		}
-		for (let prop in props) {
-			patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+		if (props) {
+			for (let prop in props) {
+				patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+			}
 		}
-		for (let name in events) {
-			patchEvent(name, null, events[name], dom, lifecycle);
+		if (events) {
+			for (let name in events) {
+				patchEvent(name, null, events[name], dom, lifecycle);
+			}
+		}
+		if (ref) {
+			mountRef(dom, ref, lifecycle);
 		}
 	}
 }

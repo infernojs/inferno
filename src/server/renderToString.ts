@@ -77,12 +77,17 @@ function renderVNodeToString(vNode, context, firstChild) {
 
 			instance._pendingSetState = false;
 			// In case render returns invalid stuff
-			if (!nextVNode) {
-				return '';
+			if (isInvalid(nextVNode)) {
+				return '<!--!-->';
 			}
 			return renderVNodeToString(nextVNode, context, true);
 		} else {
-			return renderVNodeToString(type(props, context), context, true);
+			const nextVNode = type(props, context);
+
+			if (isInvalid(nextVNode)) {
+				return '<!--!-->';
+			}
+			return renderVNodeToString(nextVNode, context, true);
 		}
 	} else if (flags & VNodeFlags.Element) {
 		let renderedString = `<${ type }`;
@@ -138,7 +143,11 @@ function renderVNodeToString(vNode, context, firstChild) {
 		return (firstChild ? '' : '<!---->') + escapeText(children);
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
-			throwError(`renderToString() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+			if (typeof vNode === 'object') {
+				throwError(`renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${ JSON.stringify(vNode) }".`);
+			} else {
+				throwError(`renderToString() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+			}
 		}
 		throwError();
 	}

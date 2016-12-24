@@ -1,5 +1,5 @@
 /*!
- * inferno-server v1.0.0-beta37
+ * inferno-server v1.0.0-beta42
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -92,6 +92,18 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
+var options = {
+    recyclingEnabled: true,
+    findDOMNodeEnabled: false,
+    roots: null,
+    createVNode: null,
+    beforeRender: null,
+    afterRender: null,
+    afterMount: null,
+    afterUpdate: null,
+    beforeUnmount: null
+};
+
 function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
@@ -108,6 +120,9 @@ function createVNode(flags, type, props, children, events, key, ref, noNormalise
     };
     if (!noNormalise) {
         normalize(vNode);
+    }
+    if (options.createVNode) {
+        options.createVNode(vNode);
     }
     return vNode;
 }
@@ -406,13 +421,17 @@ function renderVNodeToString(vNode, context, firstChild) {
             var nextVNode = instance.render(props, vNode.context);
             instance._pendingSetState = false;
             // In case render returns invalid stuff
-            if (!nextVNode) {
-                return '';
+            if (isInvalid(nextVNode)) {
+                return '<!--!-->';
             }
             return renderVNodeToString(nextVNode, context, true);
         }
         else {
-            return renderVNodeToString(type(props, context), context, true);
+            var nextVNode$1 = type(props, context);
+            if (isInvalid(nextVNode$1)) {
+                return '<!--!-->';
+            }
+            return renderVNodeToString(nextVNode$1, context, true);
         }
     }
     else if (flags & 3970 /* Element */) {
@@ -476,7 +495,12 @@ function renderVNodeToString(vNode, context, firstChild) {
     }
     else {
         if (process.env.NODE_ENV !== 'production') {
-            throwError(("renderToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+            if (typeof vNode === 'object') {
+                throwError(("renderToString() received an object that's not a valid VNode, you should stringify it first. Object: \"" + (JSON.stringify(vNode)) + "\"."));
+            }
+            else {
+                throwError(("renderToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+            }
         }
         throwError();
     }

@@ -1,4 +1,4 @@
-import { InfernoInput, VNode, VNodeFlags } from '../core/structures';
+import { InfernoChildren, InfernoInput, VNode, VNodeFlags } from '../core/structures';
 import {
 	NO_OP,
 	isBrowser,
@@ -28,6 +28,8 @@ interface Root {
 export const roots: Root[] = [];
 export const componentToDOMNodeMap = new Map();
 
+options.roots = roots;
+
 export function findDOMNode(ref) {
 	if (!options.findDOMNodeEnabled) {
 		if (process.env.NODE_ENV !== 'production') {
@@ -51,8 +53,12 @@ function getRoot(dom): Root | null {
 	return null;
 }
 
-function setRoot(dom, input, lifecycle): Root {
-	const root = {
+export function getRoots() {
+	return roots;
+}
+
+function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: Lifecycle): Root {
+	const root: Root = {
 		dom,
 		input,
 		lifecycle
@@ -62,11 +68,10 @@ function setRoot(dom, input, lifecycle): Root {
 	return root;
 }
 
-function removeRoot(root): Root {
+function removeRoot(root: Root): Root {
 	for (let i = 0; i < roots.length; i++) {
 		if (roots[i] === root) {
-			roots.splice(i, 1);
-			return;
+			return roots.splice(i, 1)[0];
 		}
 	}
 }
@@ -98,8 +103,8 @@ export function render(
 			if (!hydrateRoot(input, parentDom, lifecycle)) {
 				mount(input, parentDom, lifecycle, {}, false);
 			}
-			lifecycle.trigger();
 			root = setRoot(parentDom, input, lifecycle);
+			lifecycle.trigger();
 		}
 	} else {
 		const lifecycle = root.lifecycle;
@@ -118,10 +123,10 @@ export function render(
 		root.input = input;
 	}
 	if (root) {
-		const rootInput = root.input;
+		const rootInput: VNode = root.input as VNode;
 
-		if (rootInput && ((rootInput as VNode).flags & VNodeFlags.Component)) {
-			return (rootInput as VNode).children;
+		if (rootInput && (rootInput.flags & VNodeFlags.Component)) {
+			return rootInput.children;
 		}
 	}
 }
