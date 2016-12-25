@@ -16,8 +16,9 @@ import options from '../core/options';
 import { patch } from './patching';
 import { unmount } from './unmounting';
 
+type DOMNode = Node | SVGAElement
 interface Root {
-	dom: Node | SVGAElement;
+	dom: DOMNode;
 	input: InfernoInput;
 	lifecycle: Lifecycle;
 }
@@ -30,7 +31,7 @@ export const componentToDOMNodeMap = new Map();
 
 options.roots = roots;
 
-export function findDOMNode(ref) {
+export function findDOMNode(ref: DOMNode): DOMNode {
 	if (!options.findDOMNodeEnabled) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
@@ -131,7 +132,7 @@ export function render(
 	}
 }
 
-export function createRenderer(_parentDom: Node | SVGAElement) {
+export function createRenderer(_parentDom: DOMNode): Function {
 	let parentDom = _parentDom || null;
 
 	return function renderer(lastInput, nextInput) {

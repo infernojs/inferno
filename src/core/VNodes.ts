@@ -53,7 +53,11 @@ export function createVNode(
 	return vNode;
 }
 
-export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: InfernoChildren[]): VNode {
+export function cloneVNode(
+	vNodeToClone: VNode, 
+	props?: Props, 
+	..._children: InfernoChildren[]
+): VNode {
 	let children: any = _children;
 
 	if (_children.length > 0 && !isNull(_children[0])) {

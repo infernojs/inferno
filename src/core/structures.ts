@@ -55,3 +55,8 @@ export interface VNode {
 	type: Type;
 	parentVNode?: VNode;
 }
+
+export interface LinkedEventData {
+	data: any;
+	event: Function;
+}
