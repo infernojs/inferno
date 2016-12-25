@@ -19,7 +19,7 @@ declare enum VNodeFlags {
 	Component = ComponentFunction | ComponentClass | ComponentUnknown
 }
 
-type DOMNode = Node | SVGAElement
+type DOMNode = Node | SVGAElement;
 type Key = string | number | null;
 type Ref = Function | null;
 type Type = string | Function | null;
@@ -77,11 +77,11 @@ declare module 'inferno' {
 		ref?: Ref,
 		noNormalise?: boolean
 	): VNode;
-	
+
 	// cloning
 	export function cloneVNode(
-		vNodeToClone: VNode, 
-		props?: Props, 
+		vNodeToClone: VNode,
+		props?: Props,
 		..._children: InfernoChildren[]
 	): VNode;
 

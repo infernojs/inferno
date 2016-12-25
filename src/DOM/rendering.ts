@@ -16,7 +16,7 @@ import options from '../core/options';
 import { patch } from './patching';
 import { unmount } from './unmounting';
 
-type DOMNode = Node | SVGAElement
+type DOMNode = Node | SVGAElement;
 interface Root {
 	dom: DOMNode;
 	input: InfernoInput;
