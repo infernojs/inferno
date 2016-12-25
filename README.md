@@ -486,3 +486,5 @@ There is an [Inferno Slack](https://infernojs.slack.com). You can join via [infe
 ### Inferno is supported by BrowserStack
 
 <img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
+<img src="https://saucelabs.com/content/images/logo@3x.png" height="50px" alt="Supported by Sauce Labs" />
+<img src="https://www.digitalocean.com/assets/media/logos-badges/png/DO_Powered_by_Badge_black-a35c64eb.png" height="50px" alt="Supported by Digital Ocean" />
