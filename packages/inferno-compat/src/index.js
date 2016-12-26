@@ -94,6 +94,12 @@ const injectStringRefs = (originalFunction) => {
 		if (typeof name === 'string') {
 			normalizeProps(name, props);
 		}
+		if (children && children.length > 0) {
+			if (isNullOrUndef(props)) {
+				props = {};
+			}
+			props.children = children; // this should allow it to work with Radium Enhancer
+		}
 		return originalFunction(name, props, ...children);
 	};
 };
