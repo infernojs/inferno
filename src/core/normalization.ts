@@ -86,6 +86,8 @@ function normalizeChildren(children: InfernoChildren | null) {
 function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
 	if (!(vNode.flags & VNodeFlags.Component) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
 		vNode.children = props.children;
+	} else if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
+		props.children = children;
 	}
 	if (props.ref) {
 		vNode.ref = props.ref;
