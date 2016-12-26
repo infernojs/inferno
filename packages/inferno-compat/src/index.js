@@ -103,10 +103,13 @@ const cloneElement = injectStringRefs(cloneVNode);
 
 const oldCreateVNode = options.createVNode;
 
-option.createVNode = (vNode) => {
+options.createVNode = (vNode) => {
 	const children = vNode.children;
-	const props = vNode.props;
+	let props = vNode.props;
 
+	if (isNullOrUndef(vNode.props)) {
+		props = vNode.props = {};
+	}
 	if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
 		props.children = children;
 	}

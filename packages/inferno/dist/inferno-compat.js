@@ -704,10 +704,13 @@ var cloneElement = injectStringRefs(inferno.cloneVNode);
 
 var oldCreateVNode = inferno.options.createVNode;
 
-option.createVNode = function (vNode) {
+inferno.options.createVNode = function (vNode) {
 	var children = vNode.children;
 	var props = vNode.props;
 
+	if (isNullOrUndef(vNode.props)) {
+		props = vNode.props = {};
+	}
 	if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
 		props.children = children;
 	}
