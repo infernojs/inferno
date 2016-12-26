@@ -203,8 +203,8 @@ This feature is a very recent addition to Inferno, so there are only a handful o
 - `onKeyPress`
 - `onKeyDown`
 - `onKeyUp`
-- `onInput` (controlled components only)
-- `onChange` (controlled components only)
+- `onInput`
+- `onChange`
 
 More events are expected to be supported in future versions.
 
@@ -378,7 +378,7 @@ In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode
 
 ### `linkEvent` (package: `inferno`)
 
-`linkEvent()` is a helper function that allows attachment of `props`/`state`/`context` or other data to events without needing to `bind()` them or use arrow functions/closures. It works by hooking into Inferno's event system (so make sure the event you are using will use Inferno's event system). This is extremely useful when dealing with events in functional components. Below is an example:
+`linkEvent()` is a helper function that allows attachment of `props`/`state`/`context` or other data to events without needing to `bind()` them or use arrow functions/closures. This is extremely useful when dealing with events in functional components. Below is an example:
 
 ```jsx
 import Inferno, { linkEvent } from 'inferno';
