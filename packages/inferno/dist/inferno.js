@@ -1965,6 +1965,10 @@ function createClassComponentInstance(vNode, Component, props, context, isSVG) {
     if (options.findDOMNodeEnabled) {
         instance._componentToDOMNodeMap = componentToDOMNodeMap;
     }
+    instance._unmounted = false;
+    instance._pendingSetState = true;
+    instance._isSVG = isSVG;
+    instance.componentWillMount();
     var childContext = instance.getChildContext();
     if (!isNullOrUndef(childContext)) {
         instance._childContext = Object.assign({}, context, childContext);
@@ -1972,10 +1976,6 @@ function createClassComponentInstance(vNode, Component, props, context, isSVG) {
     else {
         instance._childContext = context;
     }
-    instance._unmounted = false;
-    instance._pendingSetState = true;
-    instance._isSVG = isSVG;
-    instance.componentWillMount();
     options.beforeRender && options.beforeRender(instance);
     var input = instance.render(props, instance.state, context);
     options.afterRender && options.afterRender(instance);
