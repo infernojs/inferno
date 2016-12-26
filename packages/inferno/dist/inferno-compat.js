@@ -702,6 +702,20 @@ var injectStringRefs = function (originalFunction) {
 var createElement = injectStringRefs(createElement$1);
 var cloneElement = injectStringRefs(inferno.cloneVNode);
 
+var oldCreateVNode = inferno.options.createVNode;
+
+option.createVNode = function (vNode) {
+	var children = vNode.children;
+	var props = vNode.props;
+
+	if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
+		props.children = children;
+	}
+	if (oldCreateVNode) {
+		oldCreateVNode(vNode);
+	}
+};
+
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
 function shallowDiffers(a, b) {
 	for (var i in a) {if (!(i in b)) {return true;}}

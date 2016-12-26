@@ -592,6 +592,23 @@ function applyValue(vNode, dom) {
 function isControlled$1(props) {
     return !isNullOrUndef(props.value);
 }
+function updateChildOptionGroup(vNode, value) {
+    var type = vNode.type;
+    if (type === 'optgroup') {
+        var children = vNode.children;
+        if (isArray(children)) {
+            for (var i = 0; i < children.length; i++) {
+                updateChildOption(children[i], value);
+            }
+        }
+        else if (isVNode(children)) {
+            updateChildOption(children, value);
+        }
+    }
+    else {
+        updateChildOption(vNode, value);
+    }
+}
 function updateChildOption(vNode, value) {
     var props = vNode.props || EMPTY_OBJ;
     var dom = vNode.dom;
@@ -649,11 +666,11 @@ function applyValue$1(vNode, dom) {
     var value = props.value;
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
-            updateChildOption(children[i], value);
+            updateChildOptionGroup(children[i], value);
         }
     }
     else if (isVNode(children)) {
-        updateChildOption(children, value);
+        updateChildOptionGroup(children, value);
     }
 }
 
