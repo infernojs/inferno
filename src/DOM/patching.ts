@@ -869,12 +869,22 @@ export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
 			if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
-				if (process.env.NODE_ENV !== 'production') {
-					throwError(`an event on a VNode "${ name }". was not a function. Did you try and apply an eventLink to an unsupported event or to an uncontrolled component?`);
+				const linkEvent = nextValue.event;
+
+				if (linkEvent && isFunction(linkEvent)) {
+					dom[nameLowerCase] = function (e) {
+						linkEvent(nextValue.data, e);
+					};
+					dom[nameLowerCase].wrapped = true;
+				} else {
+					if (process.env.NODE_ENV !== 'production') {
+						throwError(`an event on a VNode "${ name }". was not a function or a valid linkEvent.`);
+					}
+					throwError();
 				}
-				throwError();
+			} else {
+				dom[nameLowerCase] = nextValue;
 			}
-			dom[nameLowerCase] = nextValue;
 		}
 	}
 }
