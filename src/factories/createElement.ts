@@ -29,7 +29,7 @@ export default function createElement<T>(
 	..._children: InfernoChildren[]
 ): VNode {
 	if (isInvalid(name) || isObject(name)) {
-		throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
+		throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
 	let children: any = _children;
 	let ref = null;
