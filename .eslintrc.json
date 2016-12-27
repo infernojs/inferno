@@ -80,6 +80,7 @@
 		"wrap-iife": [2, "inside"],
 		"yoda": 2,
 		"strict": [2, "never"],
+		"no-mixed-operators": 2,
 		"no-delete-var": 2,
 		"no-shadow-restricted-names": 2,
 		"no-unused-vars": 0,
