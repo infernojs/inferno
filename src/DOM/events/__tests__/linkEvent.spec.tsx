@@ -72,7 +72,7 @@ describe('linkEvent', () => {
 			container.querySelector('button').click();
 			expect(test).to.equal('456');
 		});
-	});	
+	});
 
 	describe('linkEvent on a input (onInput)', () => {
 		let test;
