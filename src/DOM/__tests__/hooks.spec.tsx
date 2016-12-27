@@ -1066,4 +1066,54 @@ describe('Component lifecycle (JSX)', () => {
 			expect(container.innerHTML).to.eql('<div><div>plaindiv</div></div>');
 		});
 	});
+
+	describe('context with hooks', () => {
+		it('Should trigger componentWillMount before getting child context', () => {
+			class A extends Component<any, any> {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						foobar: null
+					};
+				}
+
+				getChildContext() {
+					return {
+						foobar: this.state.foobar
+					};
+				}
+
+				componentWillMount() {
+					this.setState({
+						foobar: 'hey'
+					});
+				}
+
+				render() {
+					return (
+						<div>
+							<Child/>
+						</div>
+					);
+				}
+			}
+
+			class Child extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				}
+
+				render() {
+					return (
+						<span>{this.context.foobar}</span>
+					);
+				}
+			}
+
+			render(<A/>, container);
+
+			expect(container.innerHTML).to.eql('<div><span>hey</span></div>');
+		});
+	});
 });

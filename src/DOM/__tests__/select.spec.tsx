@@ -116,6 +116,61 @@ describe('Select / select multiple (JSX)', () => {
 		);
 	});
 
+	it('should populate the value attribute on select multiple using groups', () => {
+		const template = (val) => <select	multiple={ true }	value={ val }>
+			<optgroup label='foo-group'>
+				<option value='foo'/>
+			</optgroup>
+			<optgroup label='bar-group' disabled>
+				<option value='bar'/>
+			</optgroup>
+		</select>;
+
+		// render(template(undefined), container);
+		render(template([ 'foo', 'bar' ]), container);
+
+		expect(container.firstChild.children[ 0 ].disabled).to.eql(false);
+		expect(container.firstChild.children[ 1 ].disabled).to.eql(true);
+
+		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
+
+		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(true);
+
+		render(template([]), container);
+
+		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
+
+		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(false);
+
+		render(template('foo'), container);
+
+		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
+
+		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(false);
+
+		render(template('bar'), container);
+
+		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
+
+		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(true);
+
+		render(template(null), container);
+
+		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
+
+		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(false);
+	});
+
 	it('should render "select" boolean on select options #3', () => {
 		render(<select multiple={ true } value={ 'foo' }>
 			<option value='foo'>foo</option>

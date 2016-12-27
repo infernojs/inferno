@@ -10,6 +10,25 @@ function isControlled(props) {
 	return !isNullOrUndef(props.value);
 }
 
+function updateChildOptionGroup(vNode, value) {
+	const type = vNode.type;
+
+	if(type === 'optgroup') {
+		const children = vNode.children;
+
+		if (isArray(children)) {
+			for (let i = 0; i < children.length; i++) {
+				updateChildOption(children[i], value);
+			}
+		} else if (isVNode(children)) {
+			updateChildOption(children, value);
+		}
+	}
+	else {
+		updateChildOption(vNode, value);
+	}
+}
+
 function updateChildOption(vNode, value) {
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
@@ -74,9 +93,9 @@ export function applyValue(vNode, dom) {
 
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
-			updateChildOption(children[i], value);
+			updateChildOptionGroup(children[i], value);
 		}
 	} else if (isVNode(children)) {
-		updateChildOption(children, value);
+		updateChildOptionGroup(children, value);
 	}
 }

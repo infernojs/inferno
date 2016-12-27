@@ -1,5 +1,5 @@
 /*!
- * inferno-mobx v1.0.0-beta42
+ * inferno-mobx v1.0.0-beta43
  * (c) 2016 Ryan Megidov
  * Released under the MIT License.
  */
@@ -87,7 +87,7 @@ var Provider = (function (Component$$1) {
     return Provider;
 }(Component));
 
-if (process.env.NODE_ENV !== 'production') {
+{
     Provider.prototype.componentWillReceiveProps = function (nextProps) {
         var this$1 = this;
 

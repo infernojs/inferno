@@ -43,7 +43,7 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 - Highly modular with very few opinions on how things should be done
 - Unlike React and Preact, Inferno has lifecycle events on functional components
 - Supports asynchronous component rendering using `requestIdleCallback`
-- Unlike Preact and other React-like libraries, Inferno has controlled components for input/select/textarea elements
+- Unlike Preact and other React-like libraries, Inferno has dd components for input/select/textarea elements
 
 ## Benchmarks
 
@@ -109,24 +109,24 @@ Alternatively, you can get started with Inferno using the [Inferno Boilerplate](
 Core package:
 
 ```sh
-npm install --save inferno@beta42
+npm install --save inferno@beta43
 ```
 
 Addons:
 
 ```sh
 # ES2015 class components
-npm install --save inferno-component@beta42
+npm install --save inferno-component@beta43
 # server-side rendering
-npm install --save inferno-server@beta42
+npm install --save inferno-server@beta43
 # routing
-npm install --save inferno-router@beta42
+npm install --save inferno-router@beta43
 ```
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta42/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta43/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -138,17 +138,17 @@ npm install --save-dev babel-plugin-inferno@beta17
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta42
+npm install --save inferno-hyperscript@beta43
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta42
+npm install --save inferno-create-element@beta43
 ```
 
 ### Compatibility with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta42
+npm install --save-dev inferno-compat@beta43
 ```
 
 Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
@@ -203,14 +203,14 @@ This feature is a very recent addition to Inferno, so there are only a handful o
 - `onKeyPress`
 - `onKeyDown`
 - `onKeyUp`
-- `onInput` (controlled components only)
-- `onChange` (controlled components only)
+- `onInput`
+- `onChange`
 
 More events are expected to be supported in future versions.
 
 ## Controlled Components
 
-In HTML, form elements such as <input>, <textarea>, and <select> typically maintain their own state and update it based on user input. 
+In HTML, form elements such as `<input>`, `<textarea>`, and `<select>` typically maintain their own state and update it based on user input. 
 In Inferno, mutable state is typically kept in the state property of components, and only updated with `setState()`.
 
 We can combine the two by making the Inferno state be the "single source of truth". Then the Inferno component that renders a form also 
@@ -378,7 +378,7 @@ In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode
 
 ### `linkEvent` (package: `inferno`)
 
-`linkEvent()` is a helper function that allows attachment of `props`/`state`/`context` or other data to events without needing to `bind()` them or use arrow functions/closures. It works by hooking into Inferno's event system (so make sure the event you are using will use Inferno's event system). This is extremely useful when dealing with events in functional components. Below is an example:
+`linkEvent()` is a helper function that allows attachment of `props`/`state`/`context` or other data to events without needing to `bind()` them or use arrow functions/closures. This is extremely useful when dealing with events in functional components. Below is an example:
 
 ```jsx
 import Inferno, { linkEvent } from 'inferno';

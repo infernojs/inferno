@@ -1,5 +1,5 @@
 /*!
- * inferno-server v1.0.0-beta42
+ * inferno-server v1.0.0-beta43
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -494,7 +494,7 @@ function renderVNodeToString(vNode, context, firstChild) {
         return (firstChild ? '' : '<!---->') + escapeText(children);
     }
     else {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             if (typeof vNode === 'object') {
                 throwError(("renderToString() received an object that's not a valid VNode, you should stringify it first. Object: \"" + (JSON.stringify(vNode)) + "\"."));
             }
