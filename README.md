@@ -43,7 +43,7 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 - Highly modular with very few opinions on how things should be done
 - Unlike React and Preact, Inferno has lifecycle events on functional components
 - Supports asynchronous component rendering using `requestIdleCallback`
-- Unlike Preact and other React-like libraries, Inferno has controlled components for input/select/textarea elements
+- Unlike Preact and other React-like libraries, Inferno has dd components for input/select/textarea elements
 
 ## Benchmarks
 
@@ -210,7 +210,7 @@ More events are expected to be supported in future versions.
 
 ## Controlled Components
 
-In HTML, form elements such as <input>, <textarea>, and <select> typically maintain their own state and update it based on user input. 
+In HTML, form elements such as `<input>`, `<textarea>`, and `<select>` typically maintain their own state and update it based on user input. 
 In Inferno, mutable state is typically kept in the state property of components, and only updated with `setState()`.
 
 We can combine the two by making the Inferno state be the "single source of truth". Then the Inferno component that renders a form also 
