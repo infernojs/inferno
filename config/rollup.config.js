@@ -58,6 +58,12 @@ if (process.env.NODE_ENV === 'production') {
 			// 'process.env.NODE_ENV': JSON.stringify('development')
 		})
 	);
+	plugins.push(
+		replace({
+			VERSION: pack.version,
+			'process.env.NODE_ENV': JSON.stringify('development')
+		})
+	);
 }
 
 // Filesize plugin needs to be last to report correct filesizes when minified
