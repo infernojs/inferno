@@ -4,7 +4,7 @@
 	var benchmark = require('vdom-benchmark-base');
 
 	var NAME = 'inferno';
-	var VERSION = '1.0.0-beta42';
+	var VERSION = '1.0.0-beta43';
 
 	var createVNode = Inferno.createVNode;
 

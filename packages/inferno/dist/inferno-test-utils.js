@@ -1,5 +1,5 @@
 /*!
- * inferno-test-utils v1.0.0-beta42
+ * inferno-test-utils v1.0.0-beta43
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -171,6 +171,9 @@ function normalizeChildren(children) {
 function normalizeProps(vNode, props, children) {
     if (!(vNode.flags & 28 /* Component */) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
         vNode.children = props.children;
+    }
+    else if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
+        props.children = children;
     }
     if (props.ref) {
         vNode.ref = props.ref;
