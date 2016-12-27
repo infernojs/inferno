@@ -45,7 +45,7 @@ describe('linkEvent', () => {
 		});
 	});
 
-	describe('linkEvent on a button (onclick)', () => {
+	describe('linkEvent on a button (onclick) - no delegation', () => {
 		let test;
 
 		function handleOnClick(props) {
