@@ -2926,7 +2926,7 @@ describe('Components (JSX)', () => {
 
 	describe('Asynchronous setStates', () => {
 		it('Should not fail when parent component calls setState on unmounting children', (done) => {
-			class Parent extends Component<any, any>{
+			class Parent extends Component<any, any> {
 				constructor(props) {
 					super(props);
 
@@ -2940,7 +2940,7 @@ describe('Components (JSX)', () => {
 				changeState() {
 					this.setState({
 						text: 'foo'
-					})
+					});
 				}
 
 				render() {
@@ -2949,10 +2949,9 @@ describe('Components (JSX)', () => {
 							<span>{this.state.text}</span>
 							{this.props.toggle ? [<Tester toggle={this.props.toggle} call={this.changeState}/>] : <span style={this.props.toggle ? {color: 'blue'} : null}>tester</span>}
 						</div>
-					)
+					);
 				}
 			}
-
 
 			class Tester extends Component<any, any> {
 				constructor(props) {
@@ -2969,10 +2968,9 @@ describe('Components (JSX)', () => {
 						<div>
 							<span style={this.props.toggle ? {color: 'blue'} : null}>foo</span>
 						</div>
-					)
+					);
 				}
 			}
-
 
 			render(<Parent toggle={true}/>, container);
 
@@ -2982,7 +2980,7 @@ describe('Components (JSX)', () => {
 
 			setTimeout(() => {
 				done();
-			}, 40)
-		})
+			}, 40);
+		});
 	});
 });
