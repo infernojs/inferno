@@ -141,9 +141,6 @@ function normalizeProps(vNode, props, children) {
     if (!(vNode.flags & 28 /* Component */) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
         vNode.children = props.children;
     }
-    else if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
-        props.children = children;
-    }
     if (props.ref) {
         vNode.ref = props.ref;
     }
