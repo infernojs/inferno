@@ -2923,4 +2923,66 @@ describe('Components (JSX)', () => {
 			container.querySelector('button').click();
 		});
 	});
+
+	describe('Asynchronous setStates', () => {
+		it('Should not fail when parent component calls setState on unmounting children', (done) => {
+			class Parent extends Component<any, any>{
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						text: 'bar'
+					};
+
+					this.changeState = this.changeState.bind(this);
+				}
+
+				changeState() {
+					this.setState({
+						text: 'foo'
+					})
+				}
+
+				render() {
+					return (
+						<div>
+							<span>{this.state.text}</span>
+							{this.props.toggle ? [<Tester toggle={this.props.toggle} call={this.changeState}/>] : <span style={this.props.toggle ? {color: 'blue'} : null}>tester</span>}
+						</div>
+					)
+				}
+			}
+
+
+			class Tester extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				}
+
+				componentWillUnmount() {
+					// parent will do setState
+					this.props.call();
+				}
+
+				render() {
+					return (
+						<div>
+							<span style={this.props.toggle ? {color: 'blue'} : null}>foo</span>
+						</div>
+					)
+				}
+			}
+
+
+			render(<Parent toggle={true}/>, container);
+
+			expect(container.innerHTML).to.eql('<div><span>bar</span><div><span style="color: blue;">foo</span></div></div>');
+
+			render(<Parent toggle={false}/>, container);
+
+			setTimeout(() => {
+				done();
+			}, 40)
+		})
+	});
 });
