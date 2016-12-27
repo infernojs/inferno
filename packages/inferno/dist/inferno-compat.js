@@ -526,7 +526,7 @@ function createElement$1(name, props) {
     while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
 
     if (isInvalid(name) || isObject(name)) {
-        throw new Error('Inferno Error: createElement() name paramater cannot be undefined, null, false or true, It must be a string, class or function.');
+        throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
     }
     var children = _children;
     var ref = null;

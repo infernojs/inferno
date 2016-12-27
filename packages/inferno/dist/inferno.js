@@ -1584,12 +1584,23 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
         }
         else {
             if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
-                {
-                    throwError(("an event on a VNode \"" + name + "\". was not a function. Did you try and apply an eventLink to an unsupported event or to an uncontrolled component?"));
+                var linkEvent = nextValue.event;
+                if (linkEvent && isFunction(linkEvent)) {
+                    dom[nameLowerCase] = function (e) {
+                        linkEvent(nextValue.data, e);
+                    };
+                    dom[nameLowerCase].wrapped = true;
                 }
-                throwError();
+                else {
+                    {
+                        throwError(("an event on a VNode \"" + name + "\". was not a function or a valid linkEvent."));
+                    }
+                    throwError();
+                }
             }
-            dom[nameLowerCase] = nextValue;
+            else {
+                dom[nameLowerCase] = nextValue;
+            }
         }
     }
 }
