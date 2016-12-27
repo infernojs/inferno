@@ -1,3 +1,4 @@
+
 declare enum VNodeFlags {
 	Text = 1,
 	HtmlElement = 1 << 1,
@@ -140,7 +141,21 @@ declare class Component<P, S> implements ComponentLifecycle<P, S>  {
 }
 
 declare module 'inferno-component' {
-	export = Component;
+	export default class Component<P, S> implements ComponentLifecycle<P, S>  {
+		refs?: any;
+		state?: S;
+		props?: P;
+		context?: any;
+		_vNode;
+		_unmounted?: boolean;
+		constructor (props?: P, context?);
+		componentWillReact();
+		componentWillReceiveProps? (nextProps: P, nextContext: Object): void;
+		componentWillUnmount();
+		forceUpdate (): void;
+		setState (v: Object, cb?: () => {}): boolean;
+		isPrototypeOf (v: Object): void;
+	}
 }
 
 declare module 'inferno-create-class' {
