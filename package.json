@@ -15,6 +15,7 @@
     "@types/core-js": "^0.9.35",
     "@types/mocha": "^2.2.35",
     "@types/node": "^6.0.54",
+    "@types/path-to-regexp": "^1.0.29",
     "@types/sinon": "^1.16.33",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.21.0",
@@ -92,7 +93,7 @@
     "tslint": "^4.2.0",
     "typescript": "^2.1.4",
     "union-type-es": "^0.1.0",
-    "webpack": "2.2.0-rc.1",
+    "webpack": "2.2.0-rc.2",
     "webpack-dev-server": "2.2.0-rc.0"
   },
   "files": [
@@ -131,11 +132,9 @@
       "benchmarks",
       "examples",
       "packages",
-      "src/inferno.d.ts",
+      "src/*.d.ts",
       "src/devtools/**/*.ts",
-      "src/typings/*.d.ts",
-      "src/**/*__tests__*/**",
-      "typings"
+      "src/**/*__tests__*/**"
     ],
     "extension": [
       ".ts"
