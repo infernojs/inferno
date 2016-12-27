@@ -7,13 +7,6 @@ import { render, findDOMNode, createRenderer } from '../../../build/DOM/renderin
 import linkEvent from '../../../build/DOM/events/linkEvent';
 import options from '../../../build/core/options';
 
-if (isBrowser) {
-	window.process = window.process || {};
-	window.process.env = window.process.env || {
-		NODE_ENV: 'development'
-	};
-}
-
 if (process.env.NODE_ENV !== 'production') {
 	Object.freeze(EMPTY_OBJ);
 	const testFunc = function testFn() {};

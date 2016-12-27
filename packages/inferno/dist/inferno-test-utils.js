@@ -848,7 +848,7 @@ function unmountRef(ref) {
         if (isInvalid(ref)) {
             return;
         }
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
         }
         throwError();
@@ -1088,7 +1088,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextInput$1 = createTextVNode(nextInput$1);
                 }
                 else if (isArray(nextInput$1)) {
-                    if (process.env.NODE_ENV !== 'production') {
+                    {
                         throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
                     }
                     throwError();
@@ -1147,7 +1147,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextInput$2 = createTextVNode(nextInput$2);
                 }
                 else if (isArray(nextInput$2)) {
-                    if (process.env.NODE_ENV !== 'production') {
+                    {
                         throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
                     }
                     throwError();
@@ -1600,7 +1600,7 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
         }
         else {
             if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
-                if (process.env.NODE_ENV !== 'production') {
+                {
                     throwError(("an event on a VNode \"" + name + "\". was not a function. Did you try and apply an eventLink to an unsupported event or to an uncontrolled component?"));
                 }
                 throwError();
@@ -1785,7 +1785,7 @@ function mount(vNode, parentDom, lifecycle, context, isSVG) {
         return mountText(vNode, parentDom);
     }
     else {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             if (typeof vNode === 'object') {
                 throwError(("mount() received an object that's not a valid VNode, you should stringify it first. Object: \"" + (JSON.stringify(vNode)) + "\"."));
             }
@@ -1933,7 +1933,7 @@ function mountClassComponentCallbacks(vNode, ref, instance, lifecycle) {
             ref(instance);
         }
         else {
-            if (process.env.NODE_ENV !== 'production') {
+            {
                 if (isStringOrNumber(ref)) {
                     throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
                 }
@@ -1978,7 +1978,7 @@ function mountRef(dom, value, lifecycle) {
         if (isInvalid(value)) {
             return;
         }
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
         }
         throwError();
@@ -2013,7 +2013,7 @@ function createClassComponentInstance(vNode, Component, props, context, isSVG) {
     var input = instance.render(props, instance.state, context);
     options.afterRender && options.afterRender(instance);
     if (isArray(input)) {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
         }
         throwError();
@@ -2059,7 +2059,7 @@ function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
 function createFunctionalComponentInput(vNode, component, props, context) {
     var input = component(props, context);
     if (isArray(input)) {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
         }
         throwError();
@@ -2276,7 +2276,7 @@ function hydrateVoid(vNode, dom) {
     vNode.dom = dom;
 }
 function hydrate(vNode, dom, lifecycle, context, isSVG) {
-    if (process.env.NODE_ENV !== 'production') {
+    {
         if (isInvalid(dom)) {
             throwError("failed to hydrate. The server-side render doesn't match client side.");
         }
@@ -2295,7 +2295,7 @@ function hydrate(vNode, dom, lifecycle, context, isSVG) {
         return hydrateVoid(vNode, dom);
     }
     else {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError(("hydrate() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
         }
         throwError();
@@ -2346,7 +2346,7 @@ function removeRoot(root) {
 var documentBody = isBrowser ? document.body : null;
 function render(input, parentDom) {
     if (documentBody === parentDom) {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
         }
         throwError();

@@ -494,7 +494,7 @@ function renderVNodeToString(vNode, context, firstChild) {
         return (firstChild ? '' : '<!---->') + escapeText(children);
     }
     else {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             if (typeof vNode === 'object') {
                 throwError(("renderToString() received an object that's not a valid VNode, you should stringify it first. Object: \"" + (JSON.stringify(vNode)) + "\"."));
             }
