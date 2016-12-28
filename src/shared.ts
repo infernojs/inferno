@@ -76,7 +76,7 @@ export const EMPTY_OBJ = {};
 
 let _process;
 
-if (typeof global !== 'undefined') {
+if (typeof global !== 'undefined' && global.process) {
 	_process = global.process;
 } else {
 	_process = {

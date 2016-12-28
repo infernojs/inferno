@@ -64,7 +64,7 @@ describe('connect', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div>1</div>'));
 	});
 
-	it('should have correct mapDispatchToProps', () => {
+	it('should have correct mapDispatchToProps', (done) => {
 		const store = createStore((state = { test: 1 }, action) => {
 			if (action && action.type === 'TEST_ACTION') {
 				return { test: 2 };
@@ -86,10 +86,13 @@ describe('connect', () => {
 		store.dispatch({ type: '' } as any);
 		expect(container.innerHTML).to.equal(innerHTML('<a>1</a>'));
 		container.querySelector('a').click();
-		expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
+		setTimeout(() => {
+			expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
+			done();
+		}, 10);
 	});
 
-	it('should have correct mapDispatchToProps', () => {
+	it('should have correct mapDispatchToProps #2', (done) => {
 		const store = createStore((state = { test: 1 }, action) => {
 			if (action && action.type === 'TEST_ACTION') {
 				return { test: 2 };
@@ -111,10 +114,13 @@ describe('connect', () => {
 		store.dispatch({ type: '' } as any);
 		expect(container.innerHTML).to.equal(innerHTML('<a>1</a>'));
 		container.querySelector('a').click();
-		expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
+		setTimeout(() => {
+			expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
+			done();
+		});
 	});
 
-	it('should have correct mapDispatchToProps using action creators map', () => {
+	it('should have correct mapDispatchToProps using action creators map', (done) => {
 		const store = createStore((state = { test: 1 }, action) => {
 			if (action && action.type === 'TEST_ACTION') {
 				return { test: 2 };
@@ -134,6 +140,9 @@ describe('connect', () => {
 		store.dispatch({ type: '' } as any);
 		expect(container.innerHTML).to.equal(innerHTML('<a>1</a>'));
 		container.querySelector('a').click();
-		expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
+		setTimeout(() => {
+			expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
+			done();
+		}, 10);
 	});
 });

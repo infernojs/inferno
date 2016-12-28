@@ -115,7 +115,7 @@ describe('Router (jsx) #transitions', () => {
 		</Router>, container);
 	});
 
-	it('should route correctly using context router object', () => {
+	it('should route correctly using context router object', (done) => {
 
 		class TestRouting extends Component<any, any> {
 			componentDidMount() {
@@ -131,10 +131,13 @@ describe('Router (jsx) #transitions', () => {
 			<Route path='/final' component={ () => <div>Done</div> } />
 		</Router>, container);
 
-		expect(container.innerHTML).to.equal(innerHTML('<div>Done</div>'));
+		setTimeout(() => {
+			expect(container.innerHTML).to.equal(innerHTML('<div>Done</div>'));
+			done();
+		}, 10);
 	});
 
-	it('should use the correct child when transitioning', () => {
+	it('should use the correct child when transitioning', (done) => {
 		const Layout = ({ children }) => (<div>
 				<Link to={ '/foo/two' }>Go</Link>
 				{children}
@@ -155,7 +158,10 @@ describe('Router (jsx) #transitions', () => {
 		const link = container.querySelector('a');
 		clickOnLink(link);
 
-		expect(container.innerHTML).to.equal(innerHTML('<div><a href="/foo/two">Go</a><div>Good Component</div></div>'));
+		setTimeout(() => {
+			expect(container.innerHTML).to.equal(innerHTML('<div><a href="/foo/two">Go</a><div>Good Component</div></div>'));
+			done();
+		}, 10);
 	});
 
 	it('should not use empty hooks', () => {

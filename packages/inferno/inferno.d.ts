@@ -24,6 +24,7 @@ declare module 'inferno-component' {
 		componentWillReceiveProps? (nextProps: P, nextContext: C): void;
 		forceUpdate (): void;
 		setState (v: Object, cb?: () => {}): boolean;
+		setStateSync (v: Object): boolean;
 		isPrototypeOf (v: Object): void;
 	}
 	export default Component;

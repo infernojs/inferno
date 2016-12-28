@@ -105,7 +105,7 @@ describe('Blueprints (JSX)', () => {
 	});
 
 	describe('Infinite loop issue', () => {
-		it('Should not get stuck when doing setState from ref callback', () => {
+		it('Should not get stuck when doing setState from ref callback', (done) => {
 			class A extends Component<any, any> {
 				props: any;
 
@@ -142,7 +142,10 @@ describe('Blueprints (JSX)', () => {
 			render(<A />, container);
 
 			render(<A open={true}/>, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div>animate</div>'));
+			setTimeout(() => {
+				expect(container.innerHTML).to.equal(innerHTML('<div>animate</div>'));
+				done();
+			}, 10);
 		});
 	});
 

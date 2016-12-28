@@ -938,8 +938,8 @@ describe('Children - (JSX)', () => {
 						second: true
 					};
 
-					updaterFirst = () => this.setState({ first: !this.state.first });
-					updaterSecond = () => this.setState({ second: !this.state.second });
+					updaterFirst = () => this.setStateSync({ first: !this.state.first });
+					updaterSecond = () => this.setStateSync({ second: !this.state.second });
 				}
 
 				render() {
@@ -1343,7 +1343,7 @@ describe('Children - (JSX)', () => {
 	});
 
 	describe('Children lifecycle with fastUnmount', () => {
-		it('Should call componentWillUnmount for children', () => {
+		it('Should call componentWillUnmount for children', (done) => {
 			let toggle;
 
 			class Wrapper extends Component<any, any> {
@@ -1407,13 +1407,16 @@ describe('Children - (JSX)', () => {
 			unMountSpy.reset();
 
 			toggle(); // Unmount child component
-			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
 
-			calledOnce(unMountSpy);
-			notCalled(mountSpy);
+				calledOnce(unMountSpy);
+				notCalled(mountSpy);
+				done();
+			}, 10);
 		});
 
-		it('Should call componentWillUnmount for nested children', () => {
+		it('Should call componentWillUnmount for nested children', (done) => {
 			let toggle;
 
 			class Wrapper extends Component<any, any> {
@@ -1475,13 +1478,16 @@ describe('Children - (JSX)', () => {
 			unMountSpy.reset();
 
 			toggle(); // Unmount child component
-			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
 
-			calledOnce(unMountSpy);
-			notCalled(mountSpy);
+				calledOnce(unMountSpy);
+				notCalled(mountSpy);
+				done();
+			}, 10);
 		});
 
-		it('Should call componentWillUnmount for nested children #2', () => {
+		it('Should call componentWillUnmount for nested children #2', (done) => {
 			let toggle;
 
 			class Wrapper extends Component<any, any> {
@@ -1549,12 +1555,15 @@ describe('Children - (JSX)', () => {
 			unMountSpy.reset();
 
 			toggle(); // Unmount child component
-			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
-			calledOnce(unMountSpy2);
-			calledOnce(unMountSpy);
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+				calledOnce(unMountSpy2);
+				calledOnce(unMountSpy);
+				done();
+			}, 10);
 		});
 
-		it('Should call componentWillUnmount for deeply nested children', () => {
+		it('Should call componentWillUnmount for deeply nested children', (done) => {
 			let toggle;
 
 			class Wrapper extends Component<any, any> {
@@ -1641,9 +1650,11 @@ describe('Children - (JSX)', () => {
 			unMountSpy.reset();
 
 			toggle(); // Unmount child component
-			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
-
-			calledOnce(unMountSpy);
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+				calledOnce(unMountSpy);
+				done();
+			});
 		});
 	});
 

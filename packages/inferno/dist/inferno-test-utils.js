@@ -63,7 +63,7 @@ function throwError(message) {
 
 var EMPTY_OBJ = {};
 var _process;
-if (typeof global !== 'undefined') {
+if (typeof global !== 'undefined' && global.process) {
     _process = global.process;
 }
 else {
@@ -1086,7 +1086,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     childContext = context;
                 }
                 var lastInput$1 = instance._lastInput;
-                var nextInput$1 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
+                var nextInput$1 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false, false);
                 var didUpdate = true;
                 instance._childContext = childContext;
                 if (isInvalid(nextInput$1)) {
@@ -1611,23 +1611,27 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
             handleEvent(name, lastValue, nextValue, dom);
         }
         else {
-            if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
-                var linkEvent = nextValue.event;
-                if (linkEvent && isFunction(linkEvent)) {
-                    dom[nameLowerCase] = function (e) {
-                        linkEvent(nextValue.data, e);
-                    };
-                    dom[nameLowerCase].wrapped = true;
+            if (lastValue !== nextValue) {
+                if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
+                    var linkEvent = nextValue.event;
+                    if (linkEvent && isFunction(linkEvent)) {
+                        if (!dom._data) {
+                            dom[nameLowerCase] = function (e) {
+                                linkEvent(e.currentTarget._data, e);
+                            };
+                        }
+                        dom._data = nextValue.data;
+                    }
+                    else {
+                        if (process.env.NODE_ENV !== 'production') {
+                            throwError(("an event on a VNode \"" + name + "\". was not a function or a valid linkEvent."));
+                        }
+                        throwError();
+                    }
                 }
                 else {
-                    if (process.env.NODE_ENV !== 'production') {
-                        throwError(("an event on a VNode \"" + name + "\". was not a function or a valid linkEvent."));
-                    }
-                    throwError();
+                    dom[nameLowerCase] = nextValue;
                 }
-            }
-            else {
-                dom[nameLowerCase] = nextValue;
             }
         }
     }

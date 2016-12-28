@@ -48,7 +48,7 @@ function isObject(o) {
 
 
 var _process;
-if (typeof global !== 'undefined') {
+if (typeof global !== 'undefined' && global.process) {
     _process = global.process;
 }
 else {

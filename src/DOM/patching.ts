@@ -331,7 +331,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					childContext = context;
 				}
 				const lastInput = instance._lastInput;
-				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
+				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false, false);
 				let didUpdate = true;
 
 				instance._childContext = childContext;
@@ -869,22 +869,26 @@ export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
 		if (delegatedProps[name]) {
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
-			if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
-				const linkEvent = nextValue.event;
+			if (lastValue !== nextValue) {
+				if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
+					const linkEvent = nextValue.event;
 
-				if (linkEvent && isFunction(linkEvent)) {
-					dom[nameLowerCase] = function (e) {
-						linkEvent(nextValue.data, e);
-					};
-					dom[nameLowerCase].wrapped = true;
-				} else {
-					if (process.env.NODE_ENV !== 'production') {
-						throwError(`an event on a VNode "${ name }". was not a function or a valid linkEvent.`);
+					if (linkEvent && isFunction(linkEvent)) {
+						if (!dom._data) {
+							dom[nameLowerCase] = function (e) {
+								linkEvent(e.currentTarget._data, e);
+							};
+						}
+						dom._data = nextValue.data;
+					} else {
+						if (process.env.NODE_ENV !== 'production') {
+							throwError(`an event on a VNode "${ name }". was not a function or a valid linkEvent.`);
+						}
+						throwError();
 					}
-					throwError();
+				} else {
+					dom[nameLowerCase] = nextValue;
 				}
-			} else {
-				dom[nameLowerCase] = nextValue;
 			}
 		}
 	}
