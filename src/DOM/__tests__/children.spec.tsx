@@ -1814,7 +1814,7 @@ describe('Children - (JSX)', () => {
 			}, 10);
 		});
 
-		it('Should render call componentWillUnmount for nested children (mixed components)', () => {
+		it('Should render call componentWillUnmount for children when later sibling has no lifecycle', () => {
 			class Parent extends Component<any, any> {
 				constructor(props) {
 					super(props);
@@ -1824,28 +1824,15 @@ describe('Children - (JSX)', () => {
 
 				render() {
 					return (
-						<Foo/>
+						<div>
+							<HasLife/>
+							<NoLife/>
+						</div>
 					)
 				};
 			}
 
-			function Foo() {
-				return (
-					<div>
-						<div>1</div>
-						<div>
-							<NoLife/>
-						</div>
-						<div>
-							<ExtendedLife/>
-						</div>
-						<div>
-							<NoLife/>
-						</div>
-					</div>
-				);
-			}
-
+			// This should be able to fastUnmount
 			class NoLife extends Component<any, any> {
 				render() {
 					return (
@@ -1854,20 +1841,13 @@ describe('Children - (JSX)', () => {
 				}
 			}
 
+			// This should have fastUnmount false
 			class HasLife extends Component<any, any> {
 				componentWillUnmount() {}
 
 				render() {
 					return (
-						<NoLife/>
-					);
-				}
-			}
-
-			class ExtendedLife extends HasLife {
-				render() {
-					return (
-						<NoLife/>
+						<span>haslife</span>
 					);
 				}
 			}
@@ -1884,7 +1864,7 @@ describe('Children - (JSX)', () => {
 			notCalled(unMountSpy);
 			notCalled(unMountSpy2);
 
-			expect(container.innerHTML).to.eql('<div><div>1</div><div><span>nolife</span></div><div><span>nolife</span></div><div><span>nolife</span></div></div>');
+			expect(container.innerHTML).to.eql('<div><span>haslife</span><span>nolife</span></div>');
 
 			render(null, container);
 
