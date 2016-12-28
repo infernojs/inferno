@@ -34,6 +34,21 @@ function isUndefined(obj) {
     return obj === undefined;
 }
 
+
+
+
+var _process;
+if (typeof global !== 'undefined') {
+    _process = global.process;
+}
+else {
+    _process = {
+        env: {
+            NODE_ENV: 'development'
+        }
+    };
+}
+
 // don't autobind these methods since they already have guaranteed context.
 var AUTOBIND_BLACKLIST = {
     constructor: 1,

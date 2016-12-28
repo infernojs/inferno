@@ -14,6 +14,7 @@ import {
 	isTrue,
 	isFunction,
 	throwError,
+	process
 } from '../shared';
 
 import {

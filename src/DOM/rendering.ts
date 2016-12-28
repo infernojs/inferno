@@ -6,6 +6,7 @@ import {
 	isNull,
 	isNullOrUndef,
 	throwError,
+	process
 } from '../shared';
 
 import Lifecycle from './lifecycle';

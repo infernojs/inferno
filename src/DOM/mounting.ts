@@ -9,6 +9,7 @@ import {
 	isUndefined,
 	throwError,
 	EMPTY_OBJ,
+	process
 } from '../shared';
 import { cloneVNode, isVNode } from '../core/VNodes';
 import {

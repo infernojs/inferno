@@ -41,6 +41,20 @@ function isObject(o) {
     return typeof o === 'object';
 }
 
+
+
+var _process;
+if (typeof global !== 'undefined') {
+    _process = global.process;
+}
+else {
+    _process = {
+        env: {
+            NODE_ENV: 'development'
+        }
+    };
+}
+
 var componentHooks = {
     onComponentWillMount: true,
     onComponentDidMount: true,

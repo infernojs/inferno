@@ -73,3 +73,17 @@ export function warning(condition: boolean, message: string) {
 }
 
 export const EMPTY_OBJ = {};
+
+let _process;
+
+if (typeof global !== 'undefined') {
+	_process = global.process;
+} else {
+	_process = {
+		env: {
+			NODE_ENV: 'development'
+		}
+	};
+}
+
+export const process = _process;

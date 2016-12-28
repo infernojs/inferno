@@ -69,6 +69,26 @@ function isString(obj) {
     return typeof obj === 'string';
 }
 
+
+
+
+
+
+
+
+var _process;
+if (typeof global !== 'undefined') {
+    _process = global.process;
+}
+else {
+    _process = {
+        env: {
+            NODE_ENV: 'development'
+        }
+    };
+}
+var process = _process;
+
 var emptyObject = Object.create(null);
 function decode(val) {
     return typeof val !== 'string' ? val : decodeURIComponent(val);
@@ -151,7 +171,7 @@ function pathRankSort(a, b) {
     var aAttr = a.props || emptyObject;
     var bAttr = b.props || emptyObject;
     var diff = rank(bAttr.path) - rank(aAttr.path);
-    return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
+    return diff || ((bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0);
 }
 /**
  * Helper function for parsing querystring arrays
@@ -785,7 +805,7 @@ function matchPath(end, routePath, pathToMatch) {
 var RouterContext = (function (Component$$1) {
     function RouterContext(props, context) {
         Component$$1.call(this, props, context);
-        {
+        if (process.env.NODE_ENV !== 'production') {
             if (!props.matched && !props.location) {
                 throw new TypeError('"inferno-router" requires a "location" prop passed');
             }

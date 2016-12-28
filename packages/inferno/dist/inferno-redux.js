@@ -92,6 +92,20 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
+
+var _process;
+if (typeof global !== 'undefined') {
+    _process = global.process;
+}
+else {
+    _process = {
+        env: {
+            NODE_ENV: 'development'
+        }
+    };
+}
+var process = _process;
+
 var didWarnAboutReceivingStore = false;
 function warnAboutReceivingStore() {
     if (didWarnAboutReceivingStore) {
@@ -122,7 +136,7 @@ var Provider = (function (Component$$1) {
     return Provider;
 }(Component));
 
-{
+if (process.env.NODE_ENV !== 'production') {
     Provider.prototype.componentWillReceiveProps = function (nextProps) {
         var ref = this;
         var store = ref.store;
@@ -267,7 +281,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
         }
         function computeMergedProps(stateProps, dispatchProps, parentProps) {
             var mergedProps = finalMergeProps(stateProps, dispatchProps, parentProps);
-            {
+            if (process.env.NODE_ENV !== 'production') {
                 checkStateShape(mergedProps, 'mergeProps');
             }
             return mergedProps;
@@ -484,7 +498,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
         }(Component));
         Connect.displayName = connectDisplayName;
         Connect.WrappedComponent = WrappedComponent;
-        {
+        if (process.env.NODE_ENV !== 'production') {
             Connect.prototype.componentWillUpdate = function componentWillUpdate() {
                 if (this.version === version) {
                     return;

@@ -43,6 +43,18 @@ function warning(condition, message) {
     }
 }
 
+var _process;
+if (typeof global !== 'undefined') {
+    _process = global.process;
+}
+else {
+    _process = {
+        env: {
+            NODE_ENV: 'development'
+        }
+    };
+}
+
 var specialKeys = {
     children: true,
     key: true,
@@ -87,7 +99,7 @@ var Provider = (function (Component$$1) {
     return Provider;
 }(Component));
 
-{
+if (process.env.NODE_ENV !== 'production') {
     Provider.prototype.componentWillReceiveProps = function (nextProps) {
         var this$1 = this;
 

@@ -34,6 +34,21 @@ function isUndefined(obj) {
     return obj === undefined;
 }
 
+
+
+
+var _process;
+if (typeof global !== 'undefined') {
+    _process = global.process;
+}
+else {
+    _process = {
+        env: {
+            NODE_ENV: 'development'
+        }
+    };
+}
+
 var classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 var notClassId = /^\.|#/;
 function parseTag(tag, props) {

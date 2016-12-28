@@ -6,6 +6,7 @@ import {
 	isObject,
 	throwError,
 	isNull,
+	process
 } from '../shared';
 import {
 	poolComponent,

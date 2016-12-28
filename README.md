@@ -465,6 +465,51 @@ Inferno.render(<FunctionalComponent onComponentDidMount={ mounted } />, document
 
 Hooks provide powerful lifecycle events to functional components, allowing you to build components without being forced to use ES2015 classes.
 
+## Development vs Production modes
+
+By default, Inferno will run in development mode. Development mode provides extra checks and better error messages at the cost of slower performance and larger code to parse.
+When using Inferno in a production environment, it is highly recommended that you turn off development mode.
+
+### Running Inferno on Node JS
+
+Ensure the environment variable `process.env.NODE_ENV` is set to `production`.
+
+## Building Inferno for use in a browser
+
+When running Inferno on the browser using Webpack or Rollup, a replacement will need to occur during your build.
+
+### Webpack
+
+Use the following configuration in your Webpack build:
+
+```js
+  ...
+	plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    })
+  ]
+```
+
+### Rollup
+
+Use the following configuration in your Rollup build:
+
+```js
+const replace = require('rollup-plugin-replace');
+```
+
+```js
+  ...
+	plugins: [
+		replace({
+			'process.env.NODE_ENV': JSON.stringify('production'),
+		})
+  ]
+```
+
 ## Browser Support
 
 Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support IE8+, Inferno requires polyfills for the following JavaScript features:

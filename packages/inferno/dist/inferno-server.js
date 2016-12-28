@@ -92,6 +92,20 @@ function throwError(message) {
     throw new Error(("Inferno Error: " + message));
 }
 
+
+var _process;
+if (typeof global !== 'undefined') {
+    _process = global.process;
+}
+else {
+    _process = {
+        env: {
+            NODE_ENV: 'development'
+        }
+    };
+}
+var process = _process;
+
 var options = {
     recyclingEnabled: true,
     findDOMNodeEnabled: false,
@@ -494,7 +508,7 @@ function renderVNodeToString(vNode, context, firstChild) {
         return (firstChild ? '' : '<!---->') + escapeText(children);
     }
     else {
-        {
+        if (process.env.NODE_ENV !== 'production') {
             if (typeof vNode === 'object') {
                 throwError(("renderToString() received an object that's not a valid VNode, you should stringify it first. Object: \"" + (JSON.stringify(vNode)) + "\"."));
             }

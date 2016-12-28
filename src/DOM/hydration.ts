@@ -11,6 +11,7 @@ import {
 	isUndefined,
 	throwError,
 	EMPTY_OBJ,
+	process
 } from '../shared';
 import {
 	mountElement,
