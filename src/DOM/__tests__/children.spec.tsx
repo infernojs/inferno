@@ -1813,6 +1813,84 @@ describe('Children - (JSX)', () => {
 				}, 10);
 			}, 10);
 		});
+
+		it('Should render call componentWillUnmount for nested children (mixed components)', () => {
+			class Parent extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				}
+
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<Foo/>
+					)
+				};
+			}
+
+			function Foo() {
+				return (
+					<div>
+						<div>1</div>
+						<div>
+							<NoLife/>
+						</div>
+						<div>
+							<ExtendedLife/>
+						</div>
+						<div>
+							<NoLife/>
+						</div>
+					</div>
+				);
+			}
+
+			class NoLife extends Component<any, any> {
+				render() {
+					return (
+						<span>nolife</span>
+					);
+				}
+			}
+
+			class HasLife extends Component<any, any> {
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<NoLife/>
+					);
+				}
+			}
+
+			class ExtendedLife extends HasLife {
+				render() {
+					return (
+						<NoLife/>
+					);
+				}
+			}
+
+
+			const unMountSpy = spy(Parent.prototype, 'componentWillUnmount');
+			const unMountSpy2 = spy(HasLife.prototype, 'componentWillUnmount');
+
+			const notCalled = assert.notCalled;
+			const calledOnce = assert.calledOnce;
+
+			render(<Parent/>, container);
+
+			notCalled(unMountSpy);
+			notCalled(unMountSpy2);
+
+			expect(container.innerHTML).to.eql('<div><div>1</div><div><span>nolife</span></div><div><span>nolife</span></div><div><span>nolife</span></div></div>');
+
+			render(null, container);
+
+			calledOnce(unMountSpy);
+			calledOnce(unMountSpy2);
+		});
 	});
 
 	describe('Children lifecycle with fastUnmount Functional Components', () => {
