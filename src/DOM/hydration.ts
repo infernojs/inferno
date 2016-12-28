@@ -76,7 +76,7 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		}
 		const instance = createClassComponentInstance(vNode, type, props, context, _isSVG);
 		// If instance does not have componentWillUnmount specified we can enable fastUnmount
-		const fastUnmount = isUndefined(instance.componentWillUnmount);
+		const prevFastUnmount = lifecycle.fastUnmount;
 		const input = instance._lastInput;
 
 		// we store the fastUnmount value, but we set it back to true on the lifecycle
@@ -85,11 +85,13 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		instance._vComponent = vNode;
 		instance._vNode = vNode;
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
+		// we now create a lifecycle for this component and store the fastUnmount value
 		const subLifecycle = instance._lifecycle = new Lifecycle();
 
-		subLifecycle.fastUnmount = lifecycle.fastUnmount;
-		// higher lifecycle can fastUnmount only if it originally had no callbacks and children has none
-		lifecycle.fastUnmount = fastUnmount && subLifecycle.fastUnmount;
+		// children lifecycle can fastUnmount if itself does need unmount callback and within its cycle there was none
+		subLifecycle.fastUnmount = isUndefined(instance.componentWillUnmount) && lifecycle.fastUnmount;
+		// higher lifecycle can fastUnmount only if previously it was able to and this children doesnt have any
+		lifecycle.fastUnmount = prevFastUnmount && subLifecycle.fastUnmount;
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;

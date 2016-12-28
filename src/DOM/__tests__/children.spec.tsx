@@ -1828,8 +1828,8 @@ describe('Children - (JSX)', () => {
 							<HasLife/>
 							<NoLife/>
 						</div>
-					)
-				};
+					);
+				}
 			}
 
 			// This should be able to fastUnmount
@@ -1851,7 +1851,6 @@ describe('Children - (JSX)', () => {
 					);
 				}
 			}
-
 
 			const unMountSpy = spy(Parent.prototype, 'componentWillUnmount');
 			const unMountSpy2 = spy(HasLife.prototype, 'componentWillUnmount');
