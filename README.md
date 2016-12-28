@@ -474,11 +474,11 @@ When using Inferno in a production environment, it is highly recommended that yo
 
 Ensure the environment variable `process.env.NODE_ENV` is set to `production`.
 
-## Building Inferno for use in a browser
+### Building Inferno for use in a browser
 
 When running Inferno on the browser using Webpack or Rollup, a replacement will need to occur during your build.
 
-### Webpack
+#### Webpack
 
 Use the following configuration in your Webpack build:
 
@@ -493,7 +493,7 @@ Use the following configuration in your Webpack build:
   ]
 ```
 
-### Rollup
+#### Rollup
 
 Use the following configuration in your Rollup build:
 
