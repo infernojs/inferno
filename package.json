@@ -93,7 +93,7 @@
     "tslint": "^4.2.0",
     "typescript": "^2.1.4",
     "union-type-es": "^0.1.0",
-    "webpack": "2.2.0-rc.1",
+    "webpack": "2.2.0-rc.3",
     "webpack-dev-server": "2.2.0-rc.0"
   },
   "files": [

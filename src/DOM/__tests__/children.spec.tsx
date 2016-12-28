@@ -1714,6 +1714,105 @@ describe('Children - (JSX)', () => {
 				done();
 			}, 10);
 		});
+
+		it('Should fastUnmount child component when only parent has unmount callback', (done) => {
+			class Wrapper extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				};
+
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<div>
+							<span>foobar</span>
+							<FooBar kill={this.props.kill}/>
+						</div>
+					);
+				}
+			}
+
+			class FooBar extends Component<any, any> {
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<span>
+							{!this.props.kill ? <Test/> : null}
+						</span>
+					);
+				}
+			}
+
+			class Test extends Component<any, any> {
+				render() {
+					return <em>
+						<FastUnMountThis/>
+					</em>;
+				}
+			}
+
+			let dirtyReference = null;
+			let updateFastUnmountedComponent = null;
+
+			class FastUnMountThis extends Component<any, any> {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						text: 'aa'
+					};
+
+					dirtyReference = this;
+					updateFastUnmountedComponent = () => {
+						this.changeText();
+					};
+				}
+
+				changeText() {
+					this.setStateSync({
+						text: 'foo'
+					});
+				}
+
+				render() {
+					return (
+						<div>{this.state.text}</div>
+					);
+				}
+			}
+
+			render(<Wrapper kill={false}/>, container);
+
+			const unMountSpy = spy(Wrapper.prototype, 'componentWillUnmount');
+			const unMountSpy2 = spy(FooBar.prototype, 'componentWillUnmount');
+
+			const notCalled = assert.notCalled;
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em><div>aa</div></em></span></div>');
+
+			render(<Wrapper kill={true}/>, container);
+
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('<div><span>foobar</span><span></span></div>');
+
+				notCalled(unMountSpy);
+				notCalled(unMountSpy2);
+
+				// This component is actually unmounted but fastUnmount skips unmount loop so unmounted remains false
+				expect(dirtyReference._unmounted).to.eql(false);
+				// Try to do setState and verify it doesn't fail
+				updateFastUnmountedComponent();
+
+				setTimeout(() => {
+					expect(dirtyReference._unmounted).to.eql(false);
+					expect(container.innerHTML).to.eql('<div><span>foobar</span><span></span></div>');
+
+					done();
+				}, 10);
+			}, 10);
+		});
 	});
 
 	describe('Children lifecycle with fastUnmount Functional Components', () => {
