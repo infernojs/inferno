@@ -175,17 +175,20 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 	if (isClass) {
 		const instance = createClassComponentInstance(vNode, type, props, context, isSVG);
 		// If instance does not have componentWillUnmount specified we can enable fastUnmount
-		lifecycle.fastUnmount = isUndefined(instance.componentWillUnmount);
+		const fastUnmount = isUndefined(instance.componentWillUnmount);
 		const input = instance._lastInput;
 
 		// we store the fastUnmount value, but we set it back to true on the lifecycle
 		// we do this so we can determine if the component render has a fastUnmount or not
+		lifecycle.fastUnmount = true;
 		instance._vNode = vNode;
 		vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
 		// we now create a lifecycle for this component and store the fastUnmount value
 		const subLifecycle = instance._lifecycle = new Lifecycle();
 
 		subLifecycle.fastUnmount = lifecycle.fastUnmount;
+		// higher lifecycle can fastUnmount only if it originally had no callbacks and children has none
+		lifecycle.fastUnmount = fastUnmount && subLifecycle.fastUnmount;
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}

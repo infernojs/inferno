@@ -1656,6 +1656,64 @@ describe('Children - (JSX)', () => {
 				done();
 			});
 		});
+
+		it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', (done) => {
+			class Wrapper extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				};
+
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<div>
+							<span>foobar</span>
+							<FooBar/>
+						</div>
+					);
+				}
+			}
+
+			class FooBar extends Component<any, any> {
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<span>
+							<Test/>
+						</span>
+					);
+				}
+			}
+
+			class Test extends Component<any, any> {
+				render() {
+					return <em>f</em>;
+				}
+			}
+
+			render(<Wrapper/>, container);
+
+			const unMountSpy = spy(Wrapper.prototype, 'componentWillUnmount');
+			const unMountSpy2 = spy(FooBar.prototype, 'componentWillUnmount');
+
+			const calledOnce = assert.calledOnce;
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em>f</em></span></div>');
+
+			unMountSpy.reset();
+			unMountSpy2.reset();
+
+			render(null, container);
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('');
+
+				calledOnce(unMountSpy);
+				calledOnce(unMountSpy2);
+				done();
+			}, 10);
+		});
 	});
 
 	describe('Children lifecycle with fastUnmount Functional Components', () => {
@@ -1858,6 +1916,54 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
 
 			expect(unMountTest).to.eql(1);
+		});
+
+		it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', (done) => {
+			function Wrapper() {
+				return (
+					<div>
+						<span>foobar</span>
+						<FooBar onComponentWillUnmount={TestLifecycle.componentWillUnmountTwo}/>
+					</div>
+				);
+			}
+
+			function FooBar() {
+				return (
+					<span>
+						<Test/>
+					</span>
+				);
+			}
+
+			function Test() {
+				return <em>f</em>;
+			}
+
+			let unMountTest = 0,
+				unMountTwoTest = 0;
+
+			const TestLifecycle = {
+				componentWillUnmount: () => {
+					unMountTest++;
+				},
+				componentWillUnmountTwo: () => {
+					unMountTwoTest++;
+				}
+			};
+
+			render(<Wrapper onComponentWillUnmount={TestLifecycle.componentWillUnmount}/>, container);
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em>f</em></span></div>');
+
+			render(null, container);
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('');
+
+				expect(unMountTest).to.eql(1);
+				expect(unMountTwoTest).to.eql(1);
+				done();
+			}, 10);
 		});
 	});
 });

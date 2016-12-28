@@ -351,6 +351,7 @@ var index$1 = createCommonjsModule(function (module, exports) {
   module.exports = ReactPropTypes;
 });
 
+
 });
 
 // this is MUCH faster than .constructor === Array and instanceof Array
@@ -761,7 +762,7 @@ var WrapperComponent = (function (Component$$1) {
 	WrapperComponent.prototype.getChildContext = function getChildContext () {
 		return this.props.context;
 	};
-	WrapperComponent.prototype.render = function render (props) {
+	WrapperComponent.prototype.render = function render$$1 (props) {
 		return props.children;
 	};
 

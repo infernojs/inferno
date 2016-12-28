@@ -88,8 +88,8 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		const subLifecycle = instance._lifecycle = new Lifecycle();
 
 		subLifecycle.fastUnmount = lifecycle.fastUnmount;
-		// we then set the lifecycle fastUnmount value back to what it was before the mount
-		lifecycle.fastUnmount = fastUnmount;
+		// higher lifecycle can fastUnmount only if it originally had no callbacks and children has none
+		lifecycle.fastUnmount = fastUnmount && subLifecycle.fastUnmount;
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
