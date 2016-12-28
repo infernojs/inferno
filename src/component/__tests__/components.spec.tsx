@@ -540,7 +540,7 @@ describe('Components (JSX)', () => {
 			setTimeout(() => {
 				expect(renderedName).to.equal('bar');
 				done();
-			}, 10)
+			}, 10);
 		});
 	});
 
