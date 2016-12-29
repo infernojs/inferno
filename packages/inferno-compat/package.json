@@ -22,11 +22,9 @@
   ],
   "dependencies": {
     "inferno": "1.0.0-beta44",
+    "inferno-component": "1.0.0-beta44",
     "inferno-transition-group": "1.1.0",
-    "rc-css-transition-group": "2.1.4"
-  },
-  "devDependencies": {
-    "proptypes": "0.14.3",
-    "inferno-component": "1.0.0-beta44"
+    "rc-css-transition-group": "2.1.4",
+    "proptypes": "0.14.3"
   }
 }
