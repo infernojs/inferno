@@ -109,24 +109,24 @@ Alternatively, you can get started with Inferno using the [Inferno Boilerplate](
 Core package:
 
 ```sh
-npm install --save inferno@beta44
+npm install --save inferno@beta45
 ```
 
 Addons:
 
 ```sh
 # ES2015 class components
-npm install --save inferno-component@beta44
+npm install --save inferno-component@beta45
 # server-side rendering
-npm install --save inferno-server@beta44
+npm install --save inferno-server@beta45
 # routing
-npm install --save inferno-router@beta44
+npm install --save inferno-router@beta45
 ```
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta44/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta45/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -138,17 +138,17 @@ npm install --save-dev babel-plugin-inferno@beta17
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta44
+npm install --save inferno-hyperscript@beta45
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta44
+npm install --save inferno-create-element@beta45
 ```
 
 ### Compatibility with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta44
+npm install --save-dev inferno-compat@beta45
 ```
 
 Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
