@@ -13,8 +13,7 @@ import {
 	isStringOrNumber,
 	isTrue,
 	isFunction,
-	throwError,
-	process
+	throwError
 } from '../shared';
 
 import {

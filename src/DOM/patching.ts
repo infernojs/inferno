@@ -12,8 +12,7 @@ import {
 	isString,
 	isStringOrNumber,
 	isUndefined,
-	throwError,
-	process
+	throwError
 } from '../shared';
 import {
 	createVoidVNode,

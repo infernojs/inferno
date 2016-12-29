@@ -1,7 +1,6 @@
 import {
 	isFunction,
-	throwError,
-	process
+	throwError
 } from '../shared';
 import {
 	shallowEqual,

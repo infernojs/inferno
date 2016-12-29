@@ -8,8 +8,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-	EMPTY_OBJ,
-	process
+	EMPTY_OBJ
 } from '../shared';
 import { cloneVNode, isVNode } from '../core/VNodes';
 import {

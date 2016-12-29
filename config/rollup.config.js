@@ -47,15 +47,17 @@ if (process.env.NODE_ENV === 'production') {
 			'process.env.NODE_ENV': JSON.stringify('production')
 		})
 	);
+} else if (process.env.NODE_ENV === 'browser') {
+	plugins.push(
+		replace({
+			VERSION: pack.version,
+			'process.env.NODE_ENV': JSON.stringify('development')
+		})
+	);
 } else {
 	plugins.push(
 		replace({
 			VERSION: pack.version
-			//
-			// Setting NODE_ENV: 'development' replaces production checks from bundle making
-			// it impossible for end user to build their own bundle without minified code
-			//
-			// 'process.env.NODE_ENV': JSON.stringify('development')
 		})
 	);
 }
@@ -111,4 +113,8 @@ function getDependenciesArray(pack) {
 	return Object.keys(pack.dependencies || {});
 }
 
-Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));
+if (process.env.NODE_ENV === 'development') {
+	Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));
+} else {
+	Promise.all(bundles.map(bundle => createBundle(bundle, 'dist/')));
+}

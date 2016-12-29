@@ -1,7 +1,6 @@
 import Component from 'inferno-component';
 import { IRouterProps } from './Router';
 import match from './match';
-import { process } from '../shared';
 
 export default class RouterContext extends Component<IRouterProps, any> {
 	constructor(props?: any, context?: any) {

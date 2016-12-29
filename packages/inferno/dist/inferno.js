@@ -64,18 +64,6 @@ function warning(condition, message) {
     }
 }
 var EMPTY_OBJ = {};
-var _process;
-if (typeof global !== 'undefined' && global.process) {
-    _process = global.process;
-}
-else {
-    _process = {
-        env: {
-            NODE_ENV: 'development'
-        }
-    };
-}
-var process = _process;
 
 function applyKeyIfMissing(index, vNode) {
     if (isNull(vNode.key)) {
@@ -154,7 +142,10 @@ function normalizeProps(vNode, props, children) {
         vNode.children = props.children;
     }
     if (props.ref) {
-        vNode.ref = props.ref;
+        delete props.ref;
+    }
+    if (props.key) {
+        delete props.key;
     }
     if (props.events) {
         vNode.events = props.events;

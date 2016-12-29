@@ -1,20 +1,18 @@
 /*!
- * inferno-test-utils v1.0.0-beta44
+ * inferno v1.0.0-beta44
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('./inferno')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'inferno'], factory) :
-	(factory((global.Inferno = global.Inferno || {}, global.Inferno.TestUtils = global.Inferno.TestUtils || {}),global.Inferno));
-}(this, (function (exports,inferno) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.Inferno = global.Inferno || {})));
+}(this, (function (exports) { 'use strict';
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 var isBrowser = typeof window !== 'undefined' && window.document;
-function toArray(children) {
-    return isArray(children) ? children : (children ? [children] : children);
-}
+
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though
 var isArray = Array.isArray;
@@ -60,122 +58,12 @@ function throwError(message) {
     }
     throw new Error(("Inferno Error: " + message));
 }
-
+function warning(condition, message) {
+    if (!condition) {
+        console.error(message);
+    }
+}
 var EMPTY_OBJ = {};
-
-var componentHooks = {
-    onComponentWillMount: true,
-    onComponentDidMount: true,
-    onComponentWillUnmount: true,
-    onComponentShouldUpdate: true,
-    onComponentWillUpdate: true,
-    onComponentDidUpdate: true
-};
-function createElement(name, props) {
-    var _children = [], len = arguments.length - 2;
-    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
-
-    if (isInvalid(name) || isObject(name)) {
-        throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
-    }
-    var children = _children;
-    var ref = null;
-    var key = null;
-    var events = null;
-    var flags = 0;
-    if (_children) {
-        if (_children.length === 1) {
-            children = _children[0];
-        }
-        else if (_children.length === 0) {
-            children = undefined;
-        }
-    }
-    if (isString(name)) {
-        flags = 2 /* HtmlElement */;
-        switch (name) {
-            case 'svg':
-                flags = 128 /* SvgElement */;
-                break;
-            case 'input':
-                flags = 512 /* InputElement */;
-                break;
-            case 'textarea':
-                flags = 1024 /* TextareaElement */;
-                break;
-            case 'select':
-                flags = 2048 /* SelectElement */;
-                break;
-            default:
-        }
-        for (var prop in props) {
-            if (prop === 'key') {
-                key = props.key;
-                delete props.key;
-            }
-            else if (prop === 'children' && isUndefined(children)) {
-                children = props.children; // always favour children args, default to props
-            }
-            else if (prop === 'ref') {
-                ref = props.ref;
-            }
-            else if (isAttrAnEvent(prop)) {
-                if (!events) {
-                    events = {};
-                }
-                events[prop] = props[prop];
-                delete props[prop];
-            }
-        }
-    }
-    else {
-        flags = isStatefulComponent(name) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
-        if (!isUndefined(children)) {
-            if (!props) {
-                props = {};
-            }
-            props.children = children;
-            children = null;
-        }
-        for (var prop$1 in props) {
-            if (componentHooks[prop$1]) {
-                if (!ref) {
-                    ref = {};
-                }
-                ref[prop$1] = props[prop$1];
-            }
-            else if (prop$1 === 'key') {
-                key = props.key;
-                delete props.key;
-            }
-        }
-    }
-    return inferno.createVNode(flags, name, props, children, events, key, ref);
-}
-
-function isValidElement(obj) {
-    var isNotANullObject = isObject(obj) && isNull(obj) === false;
-    if (isNotANullObject === false) {
-        return false;
-    }
-    var flags = obj.flags;
-    return !!(flags & (28 /* Component */ | 3970 /* Element */));
-}
-
-var Lifecycle = function Lifecycle() {
-    this.listeners = [];
-    this.fastUnmount = true;
-};
-Lifecycle.prototype.addListener = function addListener (callback) {
-    this.listeners.push(callback);
-};
-Lifecycle.prototype.trigger = function trigger () {
-        var this$1 = this;
-
-    for (var i = 0; i < this.listeners.length; i++) {
-        this$1.listeners[i]();
-    }
-};
 
 function applyKeyIfMissing(index, vNode) {
     if (isNull(vNode.key)) {
@@ -328,7 +216,7 @@ var options = {
     beforeUnmount: null
 };
 
-function createVNode$1(flags, type, props, children, events, key, ref, noNormalise) {
+function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
     if (flags & 16 /* ComponentUnknown */) {
         flags = isStatefulComponent(type) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     }
@@ -399,11 +287,11 @@ function cloneVNode(vNodeToClone, props) {
         var key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : props.key;
         var ref = vNodeToClone.ref || props.ref;
         if (flags & 28 /* Component */) {
-            newVNode = createVNode$1(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), null, events, key, ref, true);
         }
         else if (flags & 3970 /* Element */) {
             children = (props && props.children) || vNodeToClone.children;
-            newVNode = createVNode$1(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
+            newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
         }
     }
     if (flags & 28 /* Component */) {
@@ -432,14 +320,29 @@ function cloneVNode(vNodeToClone, props) {
     return newVNode;
 }
 function createVoidVNode() {
-    return createVNode$1(4096 /* Void */);
+    return createVNode(4096 /* Void */);
 }
 function createTextVNode(text) {
-    return createVNode$1(1 /* Text */, null, null, text);
+    return createVNode(1 /* Text */, null, null, text);
 }
 function isVNode(o) {
     return !!o.flags;
 }
+
+var Lifecycle = function Lifecycle() {
+    this.listeners = [];
+    this.fastUnmount = true;
+};
+Lifecycle.prototype.addListener = function addListener (callback) {
+    this.listeners.push(callback);
+};
+Lifecycle.prototype.trigger = function trigger () {
+        var this$1 = this;
+
+    for (var i = 0; i < this.listeners.length; i++) {
+        this$1.listeners[i]();
+    }
+};
 
 function constructDefaults(string, object, value) {
     /* eslint no-return-assign: 0 */
@@ -947,7 +850,7 @@ function unmountRef(ref) {
         if (isInvalid(ref)) {
             return;
         }
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
         }
         throwError();
@@ -1187,7 +1090,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextInput$1 = createTextVNode(nextInput$1);
                 }
                 else if (isArray(nextInput$1)) {
-                    if (process.env.NODE_ENV !== 'production') {
+                    {
                         throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
                     }
                     throwError();
@@ -1246,7 +1149,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextInput$2 = createTextVNode(nextInput$2);
                 }
                 else if (isArray(nextInput$2)) {
-                    if (process.env.NODE_ENV !== 'production') {
+                    {
                         throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
                     }
                     throwError();
@@ -1710,7 +1613,7 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
                         dom._data = nextValue.data;
                     }
                     else {
-                        if (process.env.NODE_ENV !== 'production') {
+                        {
                             throwError(("an event on a VNode \"" + name + "\". was not a function or a valid linkEvent."));
                         }
                         throwError();
@@ -1899,7 +1802,7 @@ function mount(vNode, parentDom, lifecycle, context, isSVG) {
         return mountText(vNode, parentDom);
     }
     else {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             if (typeof vNode === 'object') {
                 throwError(("mount() received an object that's not a valid VNode, you should stringify it first. Object: \"" + (JSON.stringify(vNode)) + "\"."));
             }
@@ -2051,7 +1954,7 @@ function mountClassComponentCallbacks(vNode, ref, instance, lifecycle) {
             ref(instance);
         }
         else {
-            if (process.env.NODE_ENV !== 'production') {
+            {
                 if (isStringOrNumber(ref)) {
                     throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
                 }
@@ -2096,7 +1999,7 @@ function mountRef(dom, value, lifecycle) {
         if (isInvalid(value)) {
             return;
         }
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
         }
         throwError();
@@ -2131,7 +2034,7 @@ function createClassComponentInstance(vNode, Component, props, context, isSVG) {
     var input = instance.render(props, instance.state, context);
     options.afterRender && options.afterRender(instance);
     if (isArray(input)) {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
         }
         throwError();
@@ -2177,7 +2080,7 @@ function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
 function createFunctionalComponentInput(vNode, component, props, context) {
     var input = component(props, context);
     if (isArray(input)) {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
         }
         throwError();
@@ -2396,7 +2299,7 @@ function hydrateVoid(vNode, dom) {
     vNode.dom = dom;
 }
 function hydrate(vNode, dom, lifecycle, context, isSVG) {
-    if (process.env.NODE_ENV !== 'production') {
+    {
         if (isInvalid(dom)) {
             throwError("failed to hydrate. The server-side render doesn't match client side.");
         }
@@ -2415,7 +2318,7 @@ function hydrate(vNode, dom, lifecycle, context, isSVG) {
         return hydrateVoid(vNode, dom);
     }
     else {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError(("hydrate() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
         }
         throwError();
@@ -2435,7 +2338,16 @@ function hydrateRoot(input, parentDom, lifecycle) {
 var roots = [];
 var componentToDOMNodeMap = new Map();
 options.roots = roots;
-
+function findDOMNode(ref) {
+    if (!options.findDOMNodeEnabled) {
+        {
+            throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
+        }
+        throwError();
+    }
+    var dom = ref && ref.nodeType ? ref : null;
+    return componentToDOMNodeMap.get(ref) || dom;
+}
 function getRoot(dom) {
     for (var i = 0; i < roots.length; i++) {
         var root = roots[i];
@@ -2466,7 +2378,7 @@ function removeRoot(root) {
 var documentBody = isBrowser ? document.body : null;
 function render(input, parentDom) {
     if (documentBody === parentDom) {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
         }
         throwError();
@@ -2511,161 +2423,62 @@ function render(input, parentDom) {
         }
     }
 }
-
-function renderIntoDocument(element) {
-    var div = document.createElement('div');
-    return render(element, div);
-}
-function isElement(element) {
-    return isValidElement(element);
-}
-function isElementOfType(inst, componentClass) {
-    return (isValidElement(inst) &&
-        inst.type === componentClass);
-}
-function isDOMComponent(inst) {
-    return !!(inst && inst.nodeType === 1 && inst.tagName);
-}
-function isDOMComponentElement(inst) {
-    return !!(inst &&
-        isValidElement(inst) &&
-        typeof inst.type === 'string');
-}
-function isCompositeComponent(inst) {
-    if (isDOMComponent(inst)) {
-        return false;
-    }
-    return (inst != null &&
-        typeof inst.type.render === 'function' &&
-        typeof inst.type.setState === 'function');
-}
-function isCompositeComponentWithType(inst, type) {
-    if (!isCompositeComponent(inst)) {
-        return false;
-    }
-    return (inst.type === type);
-}
-function findAllInTree(inst, test) {
-    if (!inst) {
-        return [];
-    }
-    var publicInst = inst.dom;
-    var currentElement = inst._vNode;
-    var ret = test(publicInst) ? [inst] : [];
-    if (isDOMComponent(publicInst)) {
-        var renderedChildren = inst.children;
-        for (var key in renderedChildren) {
-            if (!renderedChildren.hasOwnProperty(key)) {
-                continue;
-            }
-            ret = ret.concat(findAllInTree(renderedChildren[key], test));
+function createRenderer(_parentDom) {
+    var parentDom = _parentDom || null;
+    return function renderer(lastInput, nextInput) {
+        if (!parentDom) {
+            parentDom = lastInput;
         }
-    }
-    if (isValidElement(currentElement) &&
-        typeof currentElement.type === 'function') {
-        ret = ret.concat(findAllInTree(inst._lastInput, test));
-    }
-    return ret;
-}
-function findAllInRenderedTree(inst, test) {
-    var result = [];
-    if (!inst) {
-        return result;
-    }
-    if (isDOMComponent(inst)) {
-        throwError('findAllInRenderedTree(...): instance must be a composite component');
-    }
-    return findAllInTree(inst, test);
-}
-function scryRenderedDOMComponentsWithClass(root, classNames) {
-    return findAllInRenderedTree(root, function (inst) {
-        if (isDOMComponent(inst)) {
-            var className = inst.className;
-            if (typeof className !== 'string') {
-                // SVG, probably.
-                className = inst.getAttribute('class') || '';
-            }
-            var classList = className.split(/\s+/);
-            var classNamesList = classNames;
-            if (!isArray(classNames)) {
-                classNamesList = classNames.split(/\s+/);
-            }
-            classNamesList = toArray(classNamesList);
-            return classNamesList.every(function (name) {
-                return classList.indexOf(name) !== -1;
-            });
-        }
-        return false;
-    });
-}
-function scryRenderedDOMComponentsWithTag(root, tagName) {
-    return findAllInRenderedTree(root, function (inst) {
-        return isDOMComponent(inst) && inst.tagName.toUpperCase() === tagName.toUpperCase();
-    });
-}
-function scryRenderedComponentsWithType(root, componentType) {
-    return findAllInRenderedTree(root, function (inst) {
-        return isCompositeComponentWithType(inst, componentType);
-    });
-}
-function findOneOf(root, option, optionName, finderFn) {
-    var all = finderFn(root, option);
-    if (all.length > 1) {
-        throwError(("Did not find exactly one match (found " + (all.length) + ") for " + optionName + ": " + option));
-    }
-    return all[0];
-}
-function findRenderedDOMComponentsWithClass(root, classNames) {
-    return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass);
-}
-function findenderedDOMComponentsWithTag(root, tagName) {
-    return findOneOf(root, tagName, 'tag', scryRenderedDOMComponentsWithTag);
-}
-function findRenderedComponentWithType(root, componentClass) {
-    return findOneOf(root, componentClass, 'component', scryRenderedComponentsWithType);
-}
-function mockComponent(module, mockTagName) {
-    mockTagName = mockTagName || typeof module.type === 'string' ? module.type : 'div';
-    module.prototype.render.mockImplementation(function () {
-        return createElement(mockTagName, null, this.props.children);
-    });
-    return this;
+        render(nextInput, parentDom);
+    };
 }
 
+function linkEvent(data, event) {
+    return { data: data, event: event };
+}
+
+{
+	Object.freeze(EMPTY_OBJ);
+	var testFunc = function testFn() {};
+	warning(
+		(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
+		'It looks like you\'re using a minified copy of the development build ' +
+		'of Inferno. When deploying Inferno apps to production, make sure to use ' +
+		'the production build which skips development warnings and is faster. ' +
+		'See http://infernojs.org for more details.'
+	);
+}
+
+// we duplicate it so it plays nicely with different module loading systems
 var index = {
-	renderIntoDocument: renderIntoDocument,
-	isElement: isElement,
-	isElementOfType: isElementOfType,
-	isDOMComponent: isDOMComponent,
-	isDOMComponentElement: isDOMComponentElement,
-	isCompositeComponent: isCompositeComponent,
-	isCompositeComponentWithType: isCompositeComponentWithType,
-	findAllInRenderedTree: findAllInRenderedTree,
-	scryRenderedDOMComponentsWithClass: scryRenderedDOMComponentsWithClass,
-	scryRenderedDOMComponentsWithTag: scryRenderedDOMComponentsWithTag,
-	scryRenderedComponentsWithType: scryRenderedComponentsWithType,
-	findRenderedDOMComponentsWithClass: findRenderedDOMComponentsWithClass,
-	findenderedDOMComponentsWithTag: findenderedDOMComponentsWithTag,
-	findRenderedComponentWithType: findRenderedComponentWithType,
-	mockComponent: mockComponent,
+	linkEvent: linkEvent,
+	// core shapes
+	createVNode: createVNode,
+
+	// cloning
+	cloneVNode: cloneVNode,
+
+	// used to shared common items between Inferno libs
+	NO_OP: NO_OP,
+	EMPTY_OBJ: EMPTY_OBJ,
+
+	// DOM
+	render: render,
+	findDOMNode: findDOMNode,
+	createRenderer: createRenderer,
+	options: options
 };
 
-exports.renderIntoDocument = renderIntoDocument;
-exports.isElement = isElement;
-exports.isElementOfType = isElementOfType;
-exports.isDOMComponent = isDOMComponent;
-exports.isDOMComponentElement = isDOMComponentElement;
-exports.isCompositeComponent = isCompositeComponent;
-exports.isCompositeComponentWithType = isCompositeComponentWithType;
-exports.findAllInRenderedTree = findAllInRenderedTree;
-exports.scryRenderedDOMComponentsWithClass = scryRenderedDOMComponentsWithClass;
-exports.scryRenderedDOMComponentsWithTag = scryRenderedDOMComponentsWithTag;
-exports.scryRenderedComponentsWithType = scryRenderedComponentsWithType;
-exports.findRenderedDOMComponentsWithClass = findRenderedDOMComponentsWithClass;
-exports.findenderedDOMComponentsWithTag = findenderedDOMComponentsWithTag;
-exports.findRenderedComponentWithType = findRenderedComponentWithType;
-exports.mockComponent = mockComponent;
 exports['default'] = index;
+exports.linkEvent = linkEvent;
+exports.createVNode = createVNode;
+exports.cloneVNode = cloneVNode;
+exports.NO_OP = NO_OP;
+exports.EMPTY_OBJ = EMPTY_OBJ;
+exports.render = render;
+exports.findDOMNode = findDOMNode;
+exports.createRenderer = createRenderer;
+exports.options = options;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

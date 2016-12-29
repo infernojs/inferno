@@ -7,8 +7,7 @@ import {
 	isNullOrUndef,
 	throwError,
 	ERROR_MSG,
-	isBrowser,
-	process
+	isBrowser
 } from '../shared';
 import {
 	Props,

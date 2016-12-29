@@ -156,10 +156,11 @@
   },
   "scripts": {
     "browser": "webpack-dev-server --config config/webpack.dev.conf.js",
-    "build": "npm run clean && mkdirp build && (tsc --outDir build --module es6 || true) && npm run build:dev && npm run build:prod",
+    "build": "npm run clean && mkdirp build && mkdirp dist && (tsc --outDir build --module es6 || true) && npm run build:dev && npm run build:prod && npm run build:browser",
     "build:dev": "cross-env NODE_ENV=development babel-node --presets es2015 config/rollup.config.js",
     "build:prod": "cross-env NODE_ENV=production babel-node --presets es2015 config/rollup.config.js",
-    "clean": "rimraf coverage/ build/",
+    "build:browser": "cross-env NODE_ENV=browser babel-node --presets es2015 config/rollup.config.js",
+    "clean": "rimraf coverage/ build/ dist/",
     "karma:firefox": "karma start config/karma.conf.js --browsers=Firefox",
     "karma:chrome": "karma start config/karma.conf.js --browsers=Chrome",
     "karma:ie": "karma start config/karma.conf.js --browsers=IE",

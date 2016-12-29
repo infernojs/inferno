@@ -9,8 +9,7 @@ import {
 	isNullOrUndef,
 	isUndefined,
 	throwError,
-	EMPTY_OBJ,
-	process
+	EMPTY_OBJ
 } from '../shared';
 import options from '../core/options';
 import { cloneVNode, createVoidVNode, createTextVNode } from '../core/VNodes';

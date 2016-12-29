@@ -2,7 +2,7 @@ import {
 	createVNode,
 	cloneVNode
 } from '../../../build/core/VNodes';
-import { warning, NO_OP, EMPTY_OBJ, process } from '../../../build/shared';
+import { warning, NO_OP, EMPTY_OBJ } from '../../../build/shared';
 import { render, findDOMNode, createRenderer } from '../../../build/DOM/rendering';
 import linkEvent from '../../../build/DOM/events/linkEvent';
 import options from '../../../build/core/options';
