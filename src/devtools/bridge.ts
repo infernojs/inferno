@@ -120,37 +120,23 @@ export function createDevToolsBridge() {
 		unmountComponent(instance?) {}
 	};
 
-	const queuedUpdatesMap = {
-		mount: new Map(),
-		receive: new Map(),
-		unmount: new Map(),
-	};
+	const queuedMountComponents = new Map();
+	const queuedReceiveComponents = new Map();
+	const queuedUnmountComponents = new Map();
 
-	const queueUpdate = (update, component) => {
-		const componentMap = queuedUpdatesMap[update];
-		if (typeof componentMap === 'undefined') {
-			return;
-		}
-
-		let updater;
-		if (update === 'mount') {
-			updater = Reconciler.mountComponent;
-		} else if (update === 'receive') {
-			updater = Reconciler.receiveComponent;
-		} else if (update === 'unmount') {
-			updater = Reconciler.unmountComponent;
-		} else {
-			return;
-		}
-
-		if (!componentMap.has(component)) {
-            componentMap.set(component, true);
+	const queueUpdate = (updater, map, component) => {
+		if (!map.has(component)) {
+            map.set(component, true);
             requestAnimationFrame(function() {
                 updater(component);
-                componentMap.delete(component);
+                map.delete(component);
             });
         }
 	};
+
+	const queueMountComponent = (component) => queueUpdate(Reconciler.mountComponent, queuedMountComponents, component);
+	const queueReceiveComponent = (component) => queueUpdate(Reconciler.receiveComponent, queuedReceiveComponents, component);
+	const queueUnmountComponent = (component) => queueUpdate(Reconciler.unmountComponent, queuedUnmountComponents, component);
 
 	/** Notify devtools that a new component instance has been mounted into the DOM. */
 	const componentAdded = vNode => {
@@ -163,10 +149,10 @@ export function createDevToolsBridge() {
 		visitNonCompositeChildren(instance, childInst => {
 			if (childInst) {
 				childInst._inDevTools = true;
-				queueUpdate('mount', childInst);
+				queueMountComponent(childInst);
 			}
 		});
-		queueUpdate('mount', instance);
+		queueMountComponent(instance);
 	};
 
 	/** Notify devtools that a component has been updated with new props/state. */
@@ -180,15 +166,15 @@ export function createDevToolsBridge() {
 		// Notify devtools about updates to this component and any non-composite
 		// children
 		const instance = updateReactComponent(vNode, null);
-		queueUpdate('receive', instance);
+		queueReceiveComponent(instance);
 		visitNonCompositeChildren(instance, childInst => {
 			if (!childInst._inDevTools) {
 				// New DOM child component
 				childInst._inDevTools = true;
-				queueUpdate('mount', childInst);
+				queueMountComponent(childInst);
 			} else {
 				// Updated DOM child component
-				queueUpdate('receive', childInst);
+				queueReceiveComponent(childInst);
 			}
 		});
 
@@ -198,7 +184,7 @@ export function createDevToolsBridge() {
 		prevRenderedChildren.forEach(childInst => {
 			if (!document.body.contains(childInst.node)) {
 				deleteInstanceForVNode(childInst.vNode);
-				queueUpdate('unmount', childInst);
+				queueUnmountComponent(childInst);
 			}
 		});
 	};
@@ -209,9 +195,9 @@ export function createDevToolsBridge() {
 
 		visitNonCompositeChildren(childInst => {
 			deleteInstanceForVNode(childInst.vNode);
-			queueUpdate('unmount', childInst);
+			queueUnmountComponent(childInst);
 		});
-		queueUpdate('unmount', instance);
+		queueUnmountComponent(instance);
 		deleteInstanceForVNode(vNode);
 		if (instance._rootID) {
 			delete roots[instance._rootID];
