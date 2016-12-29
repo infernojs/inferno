@@ -88,7 +88,10 @@ function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
 		vNode.children = props.children;
 	}
 	if (props.ref) {
-		vNode.ref = props.ref;
+		delete props.ref;
+	}
+	if (props.key) {
+		delete props.key;
 	}
 	if (props.events) {
 		vNode.events = props.events;
