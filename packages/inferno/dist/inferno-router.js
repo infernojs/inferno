@@ -160,7 +160,6 @@ function rest(_args, excluded) {
     }
     return t;
 }
-
 /**
  * Sorts an array according to its `path` prop length
  * @param a

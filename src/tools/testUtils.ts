@@ -12,14 +12,14 @@ export function renderIntoDocument(element: VNode): VNode {
 
 export function isElement(element: VNode): boolean {
 	return isValidElement(element);
-};
+}
 
 export function isElementOfType(inst: VNode, componentClass: Function): boolean {
 	return (
 		isValidElement(inst) &&
 		inst.type === componentClass
 	);
-};
+}
 
 export function isDOMComponent(inst: any): boolean  {
 	return !!(inst && inst.nodeType === 1 && inst.tagName);
@@ -30,7 +30,7 @@ export function isDOMComponentElement(inst: VNode): boolean {
 		isValidElement(inst) &&
 		typeof inst.type === 'string'
 	);
-};
+}
 
 export function isCompositeComponent(inst): boolean {
 	if (isDOMComponent(inst)) {
@@ -41,7 +41,7 @@ export function isCompositeComponent(inst): boolean {
 		typeof inst.type.render === 'function' &&
 		typeof inst.type.setState === 'function'
 	);
-};
+}
 
 export function isCompositeComponentWithType(inst, type: Function): boolean {
 	if (!isCompositeComponent(inst)) {
