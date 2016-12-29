@@ -64,7 +64,7 @@ var Provider = (function (Component$$1) {
     function Provider(props, context) {
         Component$$1.call(this, props, context);
         this.contextTypes = { mobxStores: function mobxStores() { } };
-        this.childContextTypes = { mobxStores: function mobxStores() { } };
+        this.childContextTypes = { mobxStores: function mobxStores$1() { } };
         this.store = props.store;
     }
 
@@ -86,7 +86,7 @@ var Provider = (function (Component$$1) {
             }
         }
         // add own stores
-        for (var key$1 in this$1.props) {
+        for (var key$1 in this.props) {
             if (!specialKeys[key$1]) {
                 stores[key$1] = this$1.props[key$1];
             }
@@ -334,7 +334,7 @@ function createStoreInjector(grabStoresFn, component) {
             var this$1 = this;
 
             var newProps = {};
-            for (var key in this$1.props) {
+            for (var key in this.props) {
                 if (this$1.props.hasOwnProperty(key)) {
                     newProps[key] = this$1.props[key];
                 }

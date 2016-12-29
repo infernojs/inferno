@@ -673,6 +673,17 @@ function applyValue$1(vNode, dom) {
 function isControlled$2(props) {
     return !isNullOrUndef(props.value);
 }
+function wrappedOnChange$1(e) {
+    var vNode = this.vNode;
+    var events = vNode.events || EMPTY_OBJ;
+    var event = events.onChange;
+    if (event.event) {
+        event.event(event.data, e);
+    }
+    else {
+        event(e);
+    }
+}
 function onTextareaInputChange(e) {
     var vNode = this.vNode;
     var events = vNode.events || EMPTY_OBJ;
@@ -704,6 +715,10 @@ function processTextarea(vNode, dom) {
             };
             dom.oninput = onTextareaInputChange.bind(textareaWrapper);
             dom.oninput.wrapped = true;
+            if (props.onChange) {
+                dom.onchange = wrappedOnChange$1.bind(textareaWrapper);
+                dom.onchange.wrapped = true;
+            }
             wrappers.set(dom, textareaWrapper);
         }
         textareaWrapper.vNode = vNode;

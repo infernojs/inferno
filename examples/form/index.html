@@ -119,7 +119,7 @@
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter a description:'),
-					h('textarea', { value: description, onInput: descHandler })
+					h('textarea', { value: description, onInput: descHandler, onChange: () => {debugger} })
 				]),
 			]), document.getElementById('app'));
 		}

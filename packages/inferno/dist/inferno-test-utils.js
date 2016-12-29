@@ -83,6 +83,87 @@ var componentHooks = {
     onComponentWillUpdate: true,
     onComponentDidUpdate: true
 };
+function createElement(name, props) {
+    var _children = [], len = arguments.length - 2;
+    while ( len-- > 0 ) _children[ len ] = arguments[ len + 2 ];
+
+    if (isInvalid(name) || isObject(name)) {
+        throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
+    }
+    var children = _children;
+    var ref = null;
+    var key = null;
+    var events = null;
+    var flags = 0;
+    if (_children) {
+        if (_children.length === 1) {
+            children = _children[0];
+        }
+        else if (_children.length === 0) {
+            children = undefined;
+        }
+    }
+    if (isString(name)) {
+        flags = 2 /* HtmlElement */;
+        switch (name) {
+            case 'svg':
+                flags = 128 /* SvgElement */;
+                break;
+            case 'input':
+                flags = 512 /* InputElement */;
+                break;
+            case 'textarea':
+                flags = 1024 /* TextareaElement */;
+                break;
+            case 'select':
+                flags = 2048 /* SelectElement */;
+                break;
+            default:
+        }
+        for (var prop in props) {
+            if (prop === 'key') {
+                key = props.key;
+                delete props.key;
+            }
+            else if (prop === 'children' && isUndefined(children)) {
+                children = props.children; // always favour children args, default to props
+            }
+            else if (prop === 'ref') {
+                ref = props.ref;
+            }
+            else if (isAttrAnEvent(prop)) {
+                if (!events) {
+                    events = {};
+                }
+                events[prop] = props[prop];
+                delete props[prop];
+            }
+        }
+    }
+    else {
+        flags = isStatefulComponent(name) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
+        if (!isUndefined(children)) {
+            if (!props) {
+                props = {};
+            }
+            props.children = children;
+            children = null;
+        }
+        for (var prop$1 in props) {
+            if (componentHooks[prop$1]) {
+                if (!ref) {
+                    ref = {};
+                }
+                ref[prop$1] = props[prop$1];
+            }
+            else if (prop$1 === 'key') {
+                key = props.key;
+                delete props.key;
+            }
+        }
+    }
+    return inferno.createVNode(flags, name, props, children, events, key, ref);
+}
 
 function isValidElement(obj) {
     var isNotANullObject = isObject(obj) && isNull(obj) === false;
@@ -689,6 +770,17 @@ function applyValue$1(vNode, dom) {
 function isControlled$2(props) {
     return !isNullOrUndef(props.value);
 }
+function wrappedOnChange$1(e) {
+    var vNode = this.vNode;
+    var events = vNode.events || EMPTY_OBJ;
+    var event = events.onChange;
+    if (event.event) {
+        event.event(event.data, e);
+    }
+    else {
+        event(e);
+    }
+}
 function onTextareaInputChange(e) {
     var vNode = this.vNode;
     var events = vNode.events || EMPTY_OBJ;
@@ -720,6 +812,10 @@ function processTextarea(vNode, dom) {
             };
             dom.oninput = onTextareaInputChange.bind(textareaWrapper);
             dom.oninput.wrapped = true;
+            if (props.onChange) {
+                dom.onchange = wrappedOnChange$1.bind(textareaWrapper);
+                dom.onchange.wrapped = true;
+            }
             wrappers.set(dom, textareaWrapper);
         }
         textareaWrapper.vNode = vNode;
