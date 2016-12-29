@@ -144,6 +144,21 @@ function createDevToolsBridge() {
         receiveComponent: function receiveComponent(instance) { },
         unmountComponent: function unmountComponent(instance) { }
     };
+    var queuedMountComponents = new Map();
+    var queuedReceiveComponents = new Map();
+    var queuedUnmountComponents = new Map();
+    var queueUpdate = function (updater, map, component) {
+        if (!map.has(component)) {
+            map.set(component, true);
+            requestAnimationFrame(function () {
+                updater(component);
+                map.delete(component);
+            });
+        }
+    };
+    var queueMountComponent = function (component) { return queueUpdate(Reconciler.mountComponent, queuedMountComponents, component); };
+    var queueReceiveComponent = function (component) { return queueUpdate(Reconciler.receiveComponent, queuedReceiveComponents, component); };
+    var queueUnmountComponent = function (component) { return queueUpdate(Reconciler.unmountComponent, queuedUnmountComponents, component); };
     /** Notify devtools that a new component instance has been mounted into the DOM. */
     var componentAdded = function (vNode) {
         var instance = updateReactComponent(vNode, null);
@@ -155,10 +170,10 @@ function createDevToolsBridge() {
         visitNonCompositeChildren(instance, function (childInst) {
             if (childInst) {
                 childInst._inDevTools = true;
-                Reconciler.mountComponent(childInst);
+                queueMountComponent(childInst);
             }
         });
-        Reconciler.mountComponent(instance);
+        queueMountComponent(instance);
     };
     /** Notify devtools that a component has been updated with new props/state. */
     var componentUpdated = function (vNode) {
@@ -169,16 +184,16 @@ function createDevToolsBridge() {
         // Notify devtools about updates to this component and any non-composite
         // children
         var instance = updateReactComponent(vNode, null);
-        Reconciler.receiveComponent(instance);
+        queueReceiveComponent(instance);
         visitNonCompositeChildren(instance, function (childInst) {
             if (!childInst._inDevTools) {
                 // New DOM child component
                 childInst._inDevTools = true;
-                Reconciler.mountComponent(childInst);
+                queueMountComponent(childInst);
             }
             else {
                 // Updated DOM child component
-                Reconciler.receiveComponent(childInst);
+                queueReceiveComponent(childInst);
             }
         });
         // For any non-composite children that were removed by the latest render,
@@ -187,7 +202,7 @@ function createDevToolsBridge() {
         prevRenderedChildren.forEach(function (childInst) {
             if (!document.body.contains(childInst.node)) {
                 deleteInstanceForVNode(childInst.vNode);
-                Reconciler.unmountComponent(childInst);
+                queueUnmountComponent(childInst);
             }
         });
     };
@@ -196,9 +211,9 @@ function createDevToolsBridge() {
         var instance = updateReactComponent(vNode, null);
         visitNonCompositeChildren(function (childInst) {
             deleteInstanceForVNode(childInst.vNode);
-            Reconciler.unmountComponent(childInst);
+            queueUnmountComponent(childInst);
         });
-        Reconciler.unmountComponent(instance);
+        queueUnmountComponent(instance);
         deleteInstanceForVNode(vNode);
         if (instance._rootID) {
             delete roots[instance._rootID];
