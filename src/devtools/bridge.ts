@@ -120,6 +120,17 @@ export function createDevToolsBridge() {
 		unmountComponent(instance?) {}
 	};
 
+	const componentMap = new Map();
+	const queueUpdate = (updater, component) => {
+        if (!componentMap.has(component)) {
+            componentMap.set(component, true);
+            requestAnimationFrame(function() {
+                updater(component);
+                componentMap.delete(component);
+            });
+        }
+	};
+
 	/** Notify devtools that a new component instance has been mounted into the DOM. */
 	const componentAdded = vNode => {
 		const instance = updateReactComponent(vNode, null);
@@ -131,10 +142,10 @@ export function createDevToolsBridge() {
 		visitNonCompositeChildren(instance, childInst => {
 			if (childInst) {
 				childInst._inDevTools = true;
-				Reconciler.mountComponent(childInst);
+				queueUpdate(Reconciler.mountComponent, childInst);
 			}
 		});
-		Reconciler.mountComponent(instance);
+		queueUpdate(Reconciler.mountComponent, instance);
 	};
 
 	/** Notify devtools that a component has been updated with new props/state. */
@@ -148,15 +159,15 @@ export function createDevToolsBridge() {
 		// Notify devtools about updates to this component and any non-composite
 		// children
 		const instance = updateReactComponent(vNode, null);
-		Reconciler.receiveComponent(instance);
+		queueUpdate(Reconciler.receiveComponent, instance);
 		visitNonCompositeChildren(instance, childInst => {
 			if (!childInst._inDevTools) {
 				// New DOM child component
 				childInst._inDevTools = true;
-				Reconciler.mountComponent(childInst);
+				queueUpdate(Reconciler.mountComponent, childInst);
 			} else {
 				// Updated DOM child component
-				Reconciler.receiveComponent(childInst);
+				queueUpdate(Reconciler.receiveComponent, childInst);
 			}
 		});
 
@@ -166,7 +177,7 @@ export function createDevToolsBridge() {
 		prevRenderedChildren.forEach(childInst => {
 			if (!document.body.contains(childInst.node)) {
 				deleteInstanceForVNode(childInst.vNode);
-				Reconciler.unmountComponent(childInst);
+				queueUpdate(Reconciler.unmountComponent, childInst);
 			}
 		});
 	};
@@ -177,9 +188,9 @@ export function createDevToolsBridge() {
 
 		visitNonCompositeChildren(childInst => {
 			deleteInstanceForVNode(childInst.vNode);
-			Reconciler.unmountComponent(childInst);
+			queueUpdate(Reconciler.unmountComponent, childInst);
 		});
-		Reconciler.unmountComponent(instance);
+		queueUpdate(Reconciler.unmountComponent, instance);
 		deleteInstanceForVNode(vNode);
 		if (instance._rootID) {
 			delete roots[instance._rootID];
