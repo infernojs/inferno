@@ -2374,7 +2374,7 @@ function hydrateChildren(children, dom, lifecycle, context, isSVG) {
             var child = children[i];
             if (isObject(child) && !isNull(child)) {
                 var childDom = domNodes[childNodeIndex++];
-                if (dom) {
+                if (childDom) {
                     hydrate(child, childDom, lifecycle, context, isSVG);
                 }
                 else {

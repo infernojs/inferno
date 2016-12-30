@@ -156,7 +156,7 @@ function hydrateChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
 			if (isObject(child) && !isNull(child)) {
 				const childDom = domNodes[childNodeIndex++];
 
-				if (dom) {
+				if (childDom) {
 					hydrate(child, childDom, lifecycle, context, isSVG);
 				} else {
 					mount(child, dom, lifecycle, context, isSVG);
