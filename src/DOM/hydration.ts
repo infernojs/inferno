@@ -23,7 +23,7 @@ import options from '../core/options';
 import Lifecycle from './lifecycle';
 import {
 	VNodeFlags,
-} from '../core/structures';
+} from '../types';
 import {
 	copyPropsTo
 } from '../core/normalization';

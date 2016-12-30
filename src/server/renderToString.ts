@@ -18,7 +18,7 @@ import {
 
 import {
 	VNodeFlags
-} from '../core/structures';
+} from '../types';
 import {
 	copyPropsTo
 } from '../core/normalization';

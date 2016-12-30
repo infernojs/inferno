@@ -13,7 +13,7 @@ import {
 	Props,
 	VNode,
 	VNodeFlags,
-} from '../core/structures';
+} from '../types';
 
 import Lifecycle from './../DOM/lifecycle';
 

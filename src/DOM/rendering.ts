@@ -1,4 +1,4 @@
-import { InfernoChildren, InfernoInput, VNode, VNodeFlags } from '../core/structures';
+import { InfernoChildren, InfernoInput, VNode, VNodeFlags } from '../types';
 import {
 	NO_OP,
 	isBrowser,

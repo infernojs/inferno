@@ -2,7 +2,7 @@ import {
 	InfernoChildren,
 	VNode,
 	VNodeFlags
-} from '../core/structures';
+} from '../types';
 import { createVNode } from 'inferno';
 import {
 	isArray,

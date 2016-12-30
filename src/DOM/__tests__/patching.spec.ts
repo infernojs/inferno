@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { render, createVNode } from 'inferno';
-import { VNodeFlags } from "../../core/structures";
+import { VNodeFlags } from "../../types";
 import { createTextVNode } from "../../core/VNodes";
 
 describe('patching routine', () => {

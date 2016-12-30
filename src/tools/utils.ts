@@ -4,7 +4,7 @@ import {
 	isStringOrNumber,
 } from '../shared';
 
-import { VNodeFlags } from '../core/structures';
+import { VNodeFlags } from '../types';
 
 const comparer = document.createElement('div');
 

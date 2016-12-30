@@ -6,7 +6,7 @@ import {
 	Type,
 	VNode,
 	VNodeFlags,
-} from './structures';
+} from '../types';
 import {
 	isArray,
 	isInvalid,

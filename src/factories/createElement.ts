@@ -3,7 +3,7 @@ import {
 	InfernoChildren,
 	VNodeFlags,
 	VNode
-} from '../core/structures';
+} from '../types';
 import { createVNode } from 'inferno';
 import {
 	isAttrAnEvent,

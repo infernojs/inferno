@@ -27,7 +27,7 @@ import {
 	VNode,
 	VNodeFlags,
 	Styles
-} from '../core/structures';
+} from '../types';
 import {
 	booleanProps,
 	isUnitlessNumber,

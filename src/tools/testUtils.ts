@@ -1,6 +1,6 @@
 import { isArray, throwError, toArray } from '../shared';
 
-import { VNode } from '../core/structures';
+import { VNode } from '../types';
 import createElement from '../factories/createElement';
 import isValidElement from '../factories/isValidElement';
 import { render } from '../DOM/rendering';
