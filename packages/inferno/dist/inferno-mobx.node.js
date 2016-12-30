@@ -87,7 +87,7 @@ var Provider = (function (Component$$1) {
     return Provider;
 }(Component));
 
-{
+if (process.env.NODE_ENV !== 'production') {
     Provider.prototype.componentWillReceiveProps = function (nextProps) {
         var this$1 = this;
 

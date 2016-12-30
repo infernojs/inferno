@@ -122,7 +122,7 @@ var Provider = (function (Component$$1) {
     return Provider;
 }(Component));
 
-{
+if (process.env.NODE_ENV !== 'production') {
     Provider.prototype.componentWillReceiveProps = function (nextProps) {
         var ref = this;
         var store = ref.store;
@@ -267,7 +267,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
         }
         function computeMergedProps(stateProps, dispatchProps, parentProps) {
             var mergedProps = finalMergeProps(stateProps, dispatchProps, parentProps);
-            {
+            if (process.env.NODE_ENV !== 'production') {
                 checkStateShape(mergedProps, 'mergeProps');
             }
             return mergedProps;
@@ -484,7 +484,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
         }(Component));
         Connect.displayName = connectDisplayName;
         Connect.WrappedComponent = WrappedComponent;
-        {
+        if (process.env.NODE_ENV !== 'production') {
             Connect.prototype.componentWillUpdate = function componentWillUpdate() {
                 if (this.version === version) {
                     return;

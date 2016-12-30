@@ -1,3 +1,2 @@
-'use strict';
-
-module.exports = require('inferno/dist/inferno-test-utils');
+module.exports = require('inferno/dist/inferno-test-utils.node');
+module.exports.default = module.exports;

@@ -68,7 +68,7 @@ Lifecycle.prototype.trigger = function trigger () {
 };
 
 var noOp = ERROR_MSG;
-if (process.env.NODE_ENV !== 'production') {
+{
     noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 }
 var componentCallbackQueue = new Map();
@@ -152,7 +152,7 @@ function applyState(component, force, callback) {
             nextInput = createTextVNode(nextInput);
         }
         else if (isArray(nextInput)) {
-            if (process.env.NODE_ENV !== 'production') {
+            {
                 throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
             }
             throwError();
@@ -231,7 +231,7 @@ Component$1.prototype.setState = function setState (newState, callback) {
         }
     }
     else {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('cannot update state via setState() in componentWillUpdate().');
         }
         throwError();
@@ -247,7 +247,7 @@ Component$1.prototype.setStateSync = function setStateSync (newState) {
         }
     }
     else {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError('cannot update state via setState() in componentWillUpdate().');
         }
         throwError();
@@ -268,7 +268,7 @@ Component$1.prototype.getChildContext = function getChildContext () {
 };
 Component$1.prototype._updateComponent = function _updateComponent (prevState, nextState, prevProps, nextProps, context, force, fromSetState) {
     if (this._unmounted === true) {
-        if (process.env.NODE_ENV !== 'production') {
+        {
             throwError(noOp);
         }
         throwError();

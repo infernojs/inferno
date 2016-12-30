@@ -74,7 +74,7 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 		' * Released under the ' + pack.license + ' License.\n' +
 		' */';
 	const entry = p.resolve(moduleEntry);
-	const dest = p.resolve(`${ path }${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : 'js' }`);
+	const dest = p.resolve(`${ path }${ moduleName }.${ process.env.NODE_ENV === 'production' ? 'min.js' : process.env.NODE_ENV === 'development' ? 'node.js' : 'js' }`);
 
 	const bundleConfig = {
 		dest,
@@ -113,8 +113,4 @@ function getDependenciesArray(pack) {
 	return Object.keys(pack.dependencies || {});
 }
 
-if (process.env.NODE_ENV === 'development') {
-	Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));
-} else {
-	Promise.all(bundles.map(bundle => createBundle(bundle, 'dist/')));
-}
+Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));

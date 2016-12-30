@@ -784,7 +784,7 @@ function matchPath(end, routePath, pathToMatch) {
 var RouterContext = (function (Component$$1) {
     function RouterContext(props, context) {
         Component$$1.call(this, props, context);
-        {
+        if (process.env.NODE_ENV !== 'production') {
             if (!props.matched && !props.location) {
                 throw new TypeError('"inferno-router" requires a "location" prop passed');
             }
