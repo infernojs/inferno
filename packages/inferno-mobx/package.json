@@ -1,6 +1,6 @@
 {
   "name": "inferno-mobx",
-  "version": "1.0.0-beta45",
+  "version": "1.0.1",
   "license": "MIT",
   "description": "Official Inferno bindings for Mobx",
   "author": {
@@ -24,10 +24,10 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "1.0.0-beta45",
-    "inferno-component": "1.0.0-beta45",
-    "inferno-create-class": "1.0.0-beta45",
-    "inferno-create-element": "1.0.0-beta45",
+    "inferno": "1.0.1",
+    "inferno-component": "1.0.1",
+    "inferno-create-class": "1.0.1",
+    "inferno-create-element": "1.0.1",
     "mobx": "*"
   }
 }
