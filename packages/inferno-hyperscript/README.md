@@ -31,4 +31,4 @@ Returns an Inferno VNode from a Hyperscript representation.
 * **children** `(Array|String)` *(optional)* An array of `h()` children or strings, This will create childen or text nodes respectively.
 
 [hyperscript]: https://github.com/dominictarr/hyperscript
-[inferno]: https://github.com/trueadm/inferno
+[inferno]: https://github.com/infernojs/inferno

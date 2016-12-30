@@ -1,11 +1,11 @@
 # inferno-mobx
 
-[![MIT](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/trueadm/inferno/blob/master/LICENSE.md)
+[![MIT](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/infernojs/inferno/blob/master/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/inferno-mobx.svg?style=flat-square)](https://www.npmjs.com/package/inferno-mobx)
 [![#mobservable channel on reactiflux discord](https://img.shields.io/badge/discord-%23mobx%20%40reactiflux-blue.svg)](https://discord.gg/0ZcbPKXt5bYAa2J1)
 [![#inferno channel on slack](https://img.shields.io/badge/slack-%23inferno%20%40infernojs-red.svg)](https://infernojs.slack.com)
 
-This is a fork of [mobx-react](https://github.com/mobxjs/mobx-react) for [Inferno](https://github.com/trueadm/inferno)
+This is a fork of [mobx-react](https://github.com/mobxjs/mobx-react) for [Inferno](https://github.com/infernojs/inferno)
 
 *The module is compatible with Inferno v1, for older versions use [mobx-inferno](https://www.npmjs.com/package/mobx-inferno)*
 

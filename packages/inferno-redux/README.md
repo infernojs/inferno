@@ -1,6 +1,6 @@
 # inferno-redux
 
-Inferno Redux is a [redux](https://github.com/reactjs/redux) library for [Inferno](https://github.com/trueadm/inferno).
+Inferno Redux is a [redux](https://github.com/reactjs/redux) library for [Inferno](https://github.com/infernojs/inferno).
 
 Inferno Redux passes `context.store` value to each component.
 
