@@ -129,6 +129,12 @@ Pre-bundled files for browser consumption can be found on [our cdnjs](https://cd
 https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.3/inferno.min.js
 ```
 
+Or on unpkg.com:
+
+```
+https://unpkg.com/inferno@1.0.3/dist/inferno.min.js
+```
+
 ### Creating Virtual DOM
 
 #### JSX:
