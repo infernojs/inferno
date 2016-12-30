@@ -7,7 +7,7 @@
 [![devDependency Status](https://david-dm.org/infernojs/inferno/dev-status.svg?style=flat-square)](https://david-dm.org/infernojs/inferno#info=devDependencies)
 [![MIT](https://img.shields.io/npm/l/inferno.svg?style=flat-square)](https://github.com/infernojs/inferno/blob/master/LICENSE.md)
 [![NPM Version](https://img.shields.io/npm/v/inferno.svg?style=flat-square)](https://www.npmjs.com/package/inferno)
-[![npm downloads](https://img.shields.io/npm/dm/inferno-dom.svg?style=flat-square)](https://www.npmjs.org/package/inferno-dom)
+[![npm downloads](https://img.shields.io/npm/dm/inferno.svg?style=flat-square)](https://www.npmjs.org/package/inferno-dom)
 [![Slack Status](https://inferno-slack.herokuapp.com/badge.svg)](https://inferno-slack.herokuapp.com/)
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/LukeSheard.svg)](https://saucelabs.com/u/LukeSheard)
