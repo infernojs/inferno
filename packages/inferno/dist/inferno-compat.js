@@ -406,7 +406,7 @@ var WrapperComponent = (function (Component$$1) {
 	WrapperComponent.prototype.getChildContext = function getChildContext () {
 		return this.props.context;
 	};
-	WrapperComponent.prototype.render = function render$$1 (props) {
+	WrapperComponent.prototype.render = function render (props) {
 		return props.children;
 	};
 
