@@ -1,5 +1,5 @@
 /*!
- * inferno-devtools v1.0.2
+ * inferno-devtools v1.0.3
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */

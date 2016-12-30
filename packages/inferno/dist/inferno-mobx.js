@@ -1,5 +1,5 @@
 /*!
- * inferno-mobx v1.0.2
+ * inferno-mobx v1.0.3
  * (c) 2016 Ryan Megidov
  * Released under the MIT License.
  */

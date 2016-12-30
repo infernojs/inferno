@@ -126,7 +126,7 @@ npm install --save inferno-router
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.2/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.3/inferno.min.js
 ```
 
 ### Creating Virtual DOM
