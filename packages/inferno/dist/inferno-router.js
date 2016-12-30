@@ -239,24 +239,20 @@ var IndexRoute = (function (Route$$1) {
     return IndexRoute;
 }(Route));
 
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var index$4 = Array.isArray || function (arr) {
+var index$2 = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-var isarray = index$4;
+var isarray = index$2;
 
 /**
  * Expose `pathToRegexp`.
  */
-var index$2 = pathToRegexp;
-var parse_1 = parse$1;
-var compile_1 = compile$1;
-var tokensToFunction_1 = tokensToFunction$1;
-var tokensToRegExp_1 = tokensToRegExp$1;
+var index$1 = pathToRegexp;
+var parse_1 = parse;
+var compile_1 = compile;
+var tokensToFunction_1 = tokensToFunction;
+var tokensToRegExp_1 = tokensToRegExp;
 
 /**
  * The main path matching regexp utility.
@@ -283,7 +279,7 @@ var PATH_REGEXP = new RegExp([
  * @param  {Object=} options
  * @return {!Array}
  */
-function parse$1 (str, options) {
+function parse (str, options) {
   var tokens = [];
   var key = 0;
   var index = 0;
@@ -356,8 +352,8 @@ function parse$1 (str, options) {
  * @param  {Object=}            options
  * @return {!function(Object=, Object=)}
  */
-function compile$1 (str, options) {
-  return tokensToFunction$1(parse$1(str, options))
+function compile (str, options) {
+  return tokensToFunction(parse(str, options))
 }
 
 /**
@@ -387,7 +383,7 @@ function encodeAsterisk (str) {
 /**
  * Expose a method for transforming tokens into the path function.
  */
-function tokensToFunction$1 (tokens) {
+function tokensToFunction (tokens) {
   // Compile all the tokens into regexps.
   var matches = new Array(tokens.length);
 
@@ -568,7 +564,7 @@ function arrayToRegexp (path, keys, options) {
  * @return {!RegExp}
  */
 function stringToRegexp (path, keys, options) {
-  return tokensToRegExp$1(parse$1(path, options), keys, options)
+  return tokensToRegExp(parse(path, options), keys, options)
 }
 
 /**
@@ -579,7 +575,7 @@ function stringToRegexp (path, keys, options) {
  * @param  {Object=}         options
  * @return {!RegExp}
  */
-function tokensToRegExp$1 (tokens, keys, options) {
+function tokensToRegExp (tokens, keys, options) {
   if (!isarray(keys)) {
     options = /** @type {!Object} */ (keys || options);
     keys = [];
@@ -674,24 +670,10 @@ function pathToRegexp (path, keys, options) {
   return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
 }
 
-index$2.parse = parse_1;
-index$2.compile = compile_1;
-index$2.tokensToFunction = tokensToFunction_1;
-index$2.tokensToRegExp = tokensToRegExp_1;
-
-var index$1 = createCommonjsModule(function (module) {
-var pathToRegExp = index$2;
-
-/**
- * Expose `pathToRegexp` as ES6 module
- */
-module.exports = pathToRegExp;
-module.exports.parse = pathToRegExp.parse;
-module.exports.compile = pathToRegExp.compile;
-module.exports.tokensToFunction = pathToRegExp.tokensToFunction;
-module.exports.tokensToRegExp = pathToRegExp.tokensToRegExp;
-module.exports['default'] = module.exports;
-});
+index$1.parse = parse_1;
+index$1.compile = compile_1;
+index$1.tokensToFunction = tokensToFunction_1;
+index$1.tokensToRegExp = tokensToRegExp_1;
 
 var cache = new Map();
 /**

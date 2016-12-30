@@ -12,10 +12,6 @@
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@most/prelude/-/prelude-1.4.1.tgz#b940b5563096f27637401618a5351f42466ea8f3"
 
-"@types/benchmark@^1.0.30":
-  version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@types/benchmark/-/benchmark-1.0.30.tgz#f6bea0baceb178155968b9984f94546f63677592"
-
 "@types/chai@^3.4.34":
   version "3.4.34"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-3.4.34.tgz#d5335792823bb09cddd5e38c3d211b709183854d"
@@ -29,8 +25,12 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.34.tgz#398e8a265f1db1e5f8c6e520064a74cbef84cbdc"
 
 "@types/node@^6.0.52":
-  version "6.0.52"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.52.tgz#1ac3a99b42320f9e463482f25af4c2359473aaa6"
+  version "6.0.53"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.53.tgz#8c300ca8ba51f80f98f3525b932ff47c6efd6be1"
+
+"@types/path-to-regexp@^1.0.29":
+  version "1.0.29"
+  resolved "https://registry.yarnpkg.com/@types/path-to-regexp/-/path-to-regexp-1.0.29.tgz#61428c3738cd1dcee1571316dd7d02d13aac6e62"
 
 "@types/sinon@^1.16.33":
   version "1.16.33"
@@ -110,12 +110,12 @@ agent-base@2:
     semver "~5.0.1"
 
 ajv-keywords@^1.0.0, ajv-keywords@^1.1.1:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-1.3.0.tgz#b2dbcdb32ce40b7a64ce5bc6e4ec9b0a918b455a"
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-1.4.1.tgz#f080e635e230baae26537ce727f260ae62b43802"
 
 ajv@^4.7.0:
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.10.0.tgz#7ae6169180eb199192a8b9a19fd0f47fc9ac8764"
+  version "4.10.2"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.10.2.tgz#27a61437962cb6daf8023ca9ad2a30337d918dda"
   dependencies:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
@@ -1426,13 +1426,7 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
 
-concat-stream-es6@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/concat-stream-es6/-/concat-stream-es6-0.0.1.tgz#bedbcf06c4e7cde08d6c5921265e977d4bdc5875"
-  dependencies:
-    concat-stream "*"
-
-concat-stream@*, concat-stream@^1.4.6, concat-stream@^1.4.7:
+concat-stream@^1.4.6, concat-stream@^1.4.7, concat-stream@^1.5.2:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.6.0.tgz#0aac662fd52be78964d5532f694784e70110acf7"
   dependencies:
@@ -3277,8 +3271,8 @@ loader-utils@^0.2.11, loader-utils@^0.2.16, loader-utils@^0.2.5, loader-utils@^0
     object-assign "^4.0.1"
 
 lodash-es@^4.2.1:
-  version "4.17.2"
-  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.2.tgz#59011b585166e613eb9dd5fc256b2cd1a30f3712"
+  version "4.17.3"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.3.tgz#567a08d2f0c91d92b31ce35c5565e1f337fb81db"
 
 lodash._baseassign@^3.0.0:
   version "3.2.0"
@@ -3344,8 +3338,8 @@ lodash@4.16.2:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.16.2.tgz#3e626db827048a699281a8a125226326cfc0e652"
 
 lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.5.0, lodash@^4.6.1, lodash@^4.8.0:
-  version "4.17.2"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
+  version "4.17.3"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.3.tgz#557ed7d2a9438cac5fd5a43043ca60cb455e01f7"
 
 log-driver@1.2.5:
   version "1.2.5"

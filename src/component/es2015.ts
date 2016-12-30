@@ -1,19 +1,19 @@
-import { NO_OP, createVNode, EMPTY_OBJ, options } from 'inferno';
+import { EMPTY_OBJ, NO_OP, createVNode, options } from 'inferno';
 import {
+	ERROR_MSG,
 	isArray,
+	isBrowser,
 	isFunction,
 	isInvalid,
-	isStringOrNumber,
 	isNullOrUndef,
+	isStringOrNumber,
 	throwError,
-	ERROR_MSG,
-	isBrowser
 } from '../shared';
 import {
 	Props,
 	VNode,
-	VNodeFlags
-} from '../core/structures';
+	VNodeFlags,
+} from '../types';
 
 import Lifecycle from './../DOM/lifecycle';
 

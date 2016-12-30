@@ -1,4 +1,4 @@
-import { InfernoChildren, InfernoInput, VNode, VNodeFlags } from '../core/structures';
+import { InfernoChildren, InfernoInput, VNode, VNodeFlags } from '../types';
 import {
 	NO_OP,
 	isBrowser,
@@ -16,8 +16,9 @@ import options from '../core/options';
 import { patch } from './patching';
 import { unmount } from './unmounting';
 
+type DOMNode = Node | SVGAElement;
 interface Root {
-	dom: Node | SVGAElement;
+	dom: DOMNode;
 	input: InfernoInput;
 	lifecycle: Lifecycle;
 }
@@ -30,7 +31,7 @@ export const componentToDOMNodeMap = new Map();
 
 options.roots = roots;
 
-export function findDOMNode(ref) {
+export function findDOMNode(ref: DOMNode): DOMNode {
 	if (!options.findDOMNodeEnabled) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
@@ -68,18 +69,20 @@ function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: Lifecy
 	return root;
 }
 
-function removeRoot(root: Root): void {
+function removeRoot(root: Root): Root {
 	for (let i = 0; i < roots.length; i++) {
 		if (roots[i] === root) {
-			roots.splice(i, 1);
-			return;
+			return roots.splice(i, 1)[0];
 		}
 	}
 }
 
 const documentBody = isBrowser ? document.body : null;
 
-export function render(input: InfernoInput, parentDom?: Node | SVGAElement): InfernoChildren {
+export function render(
+		input: InfernoInput,
+		parentDom?: Node | SVGAElement
+	): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -129,7 +132,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement): Inf
 	}
 }
 
-export function createRenderer(_parentDom) {
+export function createRenderer(_parentDom: DOMNode): Function {
 	let parentDom = _parentDom || null;
 
 	return function renderer(lastInput, nextInput) {

@@ -168,24 +168,14 @@ declare module 'hoist-non-inferno-statics' {
 	export = hoistStatics;
 }
 
-declare module 'path-to-regexp-es6' {
-	function pathToRegExp(routePath: any, keys: any, end: any);
-	export default pathToRegExp;
-}
-
-declare module 'concat-stream-es6' {
+declare module 'concat-stream' {
 	function concatStream(func?: any);
 	export default concatStream;
 }
 
-declare module 'history/createBrowserHistory' {
-	function createBrowserHistory(options?: any);
-	export = createBrowserHistory;
-}
-
-declare module 'history/createMemoryHistory' {
-	function createMemoryHistory(options?: any);
-	export = createMemoryHistory;
+declare module 'history' {
+	export function createBrowserHistory(options?: any);
+	export function createMemoryHistory(options?: any);
 }
 
 declare module 'mobx' {

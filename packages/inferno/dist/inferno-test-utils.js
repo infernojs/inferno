@@ -2458,8 +2458,7 @@ function setRoot(dom, input, lifecycle) {
 function removeRoot(root) {
     for (var i = 0; i < roots.length; i++) {
         if (roots[i] === root) {
-            roots.splice(i, 1);
-            return;
+            return roots.splice(i, 1)[0];
         }
     }
 }

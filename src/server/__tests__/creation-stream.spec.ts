@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { streamAsStaticMarkup } from '../renderToString.stream';
-import concatStream from 'concat-stream-es6';
+import concatStream from 'concat-stream';
 import createElement from 'inferno-create-element';
 import createClass from 'inferno-create-class';
 

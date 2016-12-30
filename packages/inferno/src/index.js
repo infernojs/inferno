@@ -1,6 +1,7 @@
+import { EMPTY_OBJ, NO_OP, isBrowser, warning } from '../../../build/shared';
 import {
+	cloneVNode,
 	createVNode,
-	cloneVNode
 } from '../../../build/core/VNodes';
 import { warning, NO_OP, EMPTY_OBJ } from '../../../build/shared';
 import { render, findDOMNode, createRenderer } from '../../../build/DOM/rendering';

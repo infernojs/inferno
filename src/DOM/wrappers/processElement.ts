@@ -1,4 +1,4 @@
-import { VNodeFlags } from '../../core/structures';
+import { VNodeFlags } from '../../types';
 import { processInput } from './InputWrapper';
 import { processSelect } from './SelectWrapper';
 import { processTextarea } from './TextareaWrapper';

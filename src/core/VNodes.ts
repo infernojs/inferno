@@ -1,23 +1,24 @@
 import {
+	InfernoChildren,
+	Key,
+	Props,
+	Ref,
+	Type,
+	VNode,
+	VNodeFlags,
+} from '../types';
+import {
 	isArray,
 	isInvalid,
-	isNullOrUndef,
-	isUndefined,
 	isNull,
-	isStatefulComponent
+	isNullOrUndef,
+	isStatefulComponent,
+	isUndefined,
 } from '../shared';
+
 import {
-	normalize
+	normalize,
 } from './normalization';
-import {
-	VNodeFlags,
-	VNode,
-	InfernoChildren,
-	Props,
-	Key,
-	Ref,
-	Type
-} from './structures';
 import options from './options';
 
 export function createVNode(
@@ -52,7 +53,11 @@ export function createVNode(
 	return vNode;
 }
 
-export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: InfernoChildren[]): VNode {
+export function cloneVNode(
+	vNodeToClone: VNode,
+	props?: Props,
+	..._children: InfernoChildren[]
+): VNode {
 	let children: any = _children;
 
 	if (_children.length > 0 && !isNull(_children[0])) {

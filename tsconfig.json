@@ -15,7 +15,9 @@
 			"node",
 			"mocha",
 			"sinon",
-			"chai"
+			"chai",
+			"mobx",
+			"path-to-regexp"
 		],
 		"jsx": "preserve",
 		"noUnusedLocals": true,
