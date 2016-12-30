@@ -254,16 +254,15 @@ function normalizeProps(vNode, props, children) {
         vNode.children = props.children;
     }
     if (props.ref) {
+        vNode.ref = props.ref;
         delete props.ref;
-    }
-    if (props.key) {
-        delete props.key;
     }
     if (props.events) {
         vNode.events = props.events;
     }
     if (!isNullOrUndef(props.key)) {
         vNode.key = props.key;
+        delete props.key;
     }
 }
 function copyPropsTo(copyFrom, copyTo) {
