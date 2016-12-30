@@ -18,6 +18,7 @@ import {
 	mountFunctionalComponentCallbacks,
 	mountText,
 	mountRef,
+	mount
 } from './mounting';
 import options from '../core/options';
 import Lifecycle from './lifecycle';
@@ -153,7 +154,13 @@ function hydrateChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
 			const child = children[i];
 
 			if (isObject(child) && !isNull(child)) {
-				hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
+				const childDom = domNodes[childNodeIndex++];
+
+				if (dom) {
+					hydrate(child, childDom, lifecycle, context, isSVG);
+				} else {
+					mount(child, dom, lifecycle, context, isSVG);
+				}
 			}
 		}
 	} else if (isObject(children)) {

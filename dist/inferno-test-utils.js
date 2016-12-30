@@ -2373,7 +2373,13 @@ function hydrateChildren(children, dom, lifecycle, context, isSVG) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             if (isObject(child) && !isNull(child)) {
-                hydrate(child, domNodes[childNodeIndex++], lifecycle, context, isSVG);
+                var childDom = domNodes[childNodeIndex++];
+                if (dom) {
+                    hydrate(child, childDom, lifecycle, context, isSVG);
+                }
+                else {
+                    mount(child, dom, lifecycle, context, isSVG);
+                }
             }
         }
     }
