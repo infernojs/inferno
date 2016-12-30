@@ -41,7 +41,7 @@ function Link(props, ref) {
         }
         e.preventDefault();
         if (typeof onClick === 'function') {
-            onClick();
+            onClick(e);
         }
         router.push(to, e.target.textContent);
     };
