@@ -8,7 +8,7 @@
     "email": "dg@domgan.com"
   },
   "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
+    "url": "https://github.com/infernojs/inferno/issues"
   },
   "devDependencies": {
     "@types/benchmark": "^1.0.30",
@@ -99,7 +99,7 @@
   "files": [
     "src"
   ],
-  "homepage": "https://github.com/trueadm/inferno#readme",
+  "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "packages/inferno/dist/inferno.js",
   "jsnext:main": "packages/inferno/dist/inferno.es2015.js",
   "keywords": [
@@ -152,7 +152,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/trueadm/inferno.git"
+    "url": "git+ssh://git@github.com/infernojs/inferno.git"
   },
   "scripts": {
     "browser": "webpack-dev-server --config config/webpack.dev.conf.js",

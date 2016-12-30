@@ -5,15 +5,15 @@
   "description": "Bridging hyperscript to InfernoJS",
   "author": "Terin Stock <terinjokes@gmail.com> (https://terinstock.com/)",
   "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
+    "url": "https://github.com/infernojs/inferno/issues"
   },
-  "homepage": "https://github.com/trueadm/inferno#readme",
+  "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "inferno-hyperscript.js",
   "keywords": [
     "inferno",
     "hyperscript"
   ],
-  "repository": "https://github.com/trueadm/inferno",
+  "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
     "inferno": "1.0.0-beta45"
   }

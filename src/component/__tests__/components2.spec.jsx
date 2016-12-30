@@ -245,7 +245,7 @@ describe('Components (JSX) #2', () => {
 		});
 	});
 
-	// Ref: https://github.com/trueadm/inferno/issues/513
+	// Ref: https://github.com/infernojs/inferno/issues/513
 	describe('String components (React compat)', () => {
 		it('Should render a string div', () => {
 			const Div = 'div';

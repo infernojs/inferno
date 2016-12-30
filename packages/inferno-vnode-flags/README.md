@@ -1,6 +1,6 @@
 # inferno-vnode-flags
 
-Inferno VNode Flags is a small utility library for [Inferno](https://github.com/trueadm/inferno).
+Inferno VNode Flags is a small utility library for [Inferno](https://github.com/infernojs/inferno).
 
 Usage of `inferno-vnode-flags` should be limited to assigning `VNodeFlags` when using `Inferno.createVNode`.
 

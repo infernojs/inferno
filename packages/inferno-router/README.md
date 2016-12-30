@@ -4,7 +4,7 @@
 <p align="center"><img src="http://infernojs.org/img/inferno.png" width="150px"></p>
 <p>&nbsp;</p>
 
-Inferno Router is a routing library for [Inferno](https://github.com/trueadm/inferno).
+Inferno Router is a routing library for [Inferno](https://github.com/infernojs/inferno).
 
 Usage of `inferno-router` is similar to that of [react-router](https://github.com/ReactTraining/react-router/blob/master/docs/API.md).  
 

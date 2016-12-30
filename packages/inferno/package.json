@@ -8,9 +8,9 @@
     "email": "dg@domgan.com"
   },
   "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
+    "url": "https://github.com/infernojs/inferno/issues"
   },
-  "homepage": "https://github.com/trueadm/inferno#readme",
+  "homepage": "https://github.com/infernojs/inferno#readme",
   "keywords": [
     "babel",
     "react",
@@ -27,5 +27,5 @@
   ],
   "main": "inferno.js",
   "typings": "inferno.d.ts",
-  "repository": "https://github.com/trueadm/inferno"
+  "repository": "https://github.com/infernojs/inferno"
 }
