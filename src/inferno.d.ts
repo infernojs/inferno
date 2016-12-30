@@ -92,6 +92,7 @@ declare module 'inferno-component' {
 		componentWillUnmount();
 		forceUpdate (): void;
 		setState (v: Object, cb?: () => {}): boolean;
+		setStateSync (v: Object): boolean;
 		isPrototypeOf (v: Object): void;
 	}
 	export default Component;

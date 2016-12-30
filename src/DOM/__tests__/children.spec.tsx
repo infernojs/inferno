@@ -938,8 +938,8 @@ describe('Children - (JSX)', () => {
 						second: true
 					};
 
-					updaterFirst = () => this.setState({ first: !this.state.first });
-					updaterSecond = () => this.setState({ second: !this.state.second });
+					updaterFirst = () => this.setStateSync({ first: !this.state.first });
+					updaterSecond = () => this.setStateSync({ second: !this.state.second });
 				}
 
 				render() {
@@ -1343,7 +1343,7 @@ describe('Children - (JSX)', () => {
 	});
 
 	describe('Children lifecycle with fastUnmount', () => {
-		it('Should call componentWillUnmount for children', () => {
+		it('Should call componentWillUnmount for children', (done) => {
 			let toggle;
 
 			class Wrapper extends Component<any, any> {
@@ -1407,13 +1407,16 @@ describe('Children - (JSX)', () => {
 			unMountSpy.reset();
 
 			toggle(); // Unmount child component
-			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
 
-			calledOnce(unMountSpy);
-			notCalled(mountSpy);
+				calledOnce(unMountSpy);
+				notCalled(mountSpy);
+				done();
+			}, 10);
 		});
 
-		it('Should call componentWillUnmount for nested children', () => {
+		it('Should call componentWillUnmount for nested children', (done) => {
 			let toggle;
 
 			class Wrapper extends Component<any, any> {
@@ -1475,13 +1478,16 @@ describe('Children - (JSX)', () => {
 			unMountSpy.reset();
 
 			toggle(); // Unmount child component
-			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
 
-			calledOnce(unMountSpy);
-			notCalled(mountSpy);
+				calledOnce(unMountSpy);
+				notCalled(mountSpy);
+				done();
+			}, 10);
 		});
 
-		it('Should call componentWillUnmount for nested children #2', () => {
+		it('Should call componentWillUnmount for nested children #2', (done) => {
 			let toggle;
 
 			class Wrapper extends Component<any, any> {
@@ -1549,12 +1555,15 @@ describe('Children - (JSX)', () => {
 			unMountSpy.reset();
 
 			toggle(); // Unmount child component
-			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
-			calledOnce(unMountSpy2);
-			calledOnce(unMountSpy);
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+				calledOnce(unMountSpy2);
+				calledOnce(unMountSpy);
+				done();
+			}, 10);
 		});
 
-		it('Should call componentWillUnmount for deeply nested children', () => {
+		it('Should call componentWillUnmount for deeply nested children', (done) => {
 			let toggle;
 
 			class Wrapper extends Component<any, any> {
@@ -1641,9 +1650,225 @@ describe('Children - (JSX)', () => {
 			unMountSpy.reset();
 
 			toggle(); // Unmount child component
-			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
+				calledOnce(unMountSpy);
+				done();
+			});
+		});
+
+		it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', (done) => {
+			class Wrapper extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				};
+
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<div>
+							<span>foobar</span>
+							<FooBar/>
+						</div>
+					);
+				}
+			}
+
+			class FooBar extends Component<any, any> {
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<span>
+							<Test/>
+						</span>
+					);
+				}
+			}
+
+			class Test extends Component<any, any> {
+				render() {
+					return <em>f</em>;
+				}
+			}
+
+			render(<Wrapper/>, container);
+
+			const unMountSpy = spy(Wrapper.prototype, 'componentWillUnmount');
+			const unMountSpy2 = spy(FooBar.prototype, 'componentWillUnmount');
+
+			const calledOnce = assert.calledOnce;
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em>f</em></span></div>');
+
+			unMountSpy.reset();
+			unMountSpy2.reset();
+
+			render(null, container);
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('');
+
+				calledOnce(unMountSpy);
+				calledOnce(unMountSpy2);
+				done();
+			}, 10);
+		});
+
+		it('Should fastUnmount child component when only parent has unmount callback', (done) => {
+			class Wrapper extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				};
+
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<div>
+							<span>foobar</span>
+							<FooBar kill={this.props.kill}/>
+						</div>
+					);
+				}
+			}
+
+			class FooBar extends Component<any, any> {
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<span>
+							{!this.props.kill ? <Test/> : null}
+						</span>
+					);
+				}
+			}
+
+			class Test extends Component<any, any> {
+				render() {
+					return <em>
+						<FastUnMountThis/>
+					</em>;
+				}
+			}
+
+			let dirtyReference = null;
+			let updateFastUnmountedComponent = null;
+
+			class FastUnMountThis extends Component<any, any> {
+				constructor(props) {
+					super(props);
+
+					this.state = {
+						text: 'aa'
+					};
+
+					dirtyReference = this;
+					updateFastUnmountedComponent = () => {
+						this.changeText();
+					};
+				}
+
+				changeText() {
+					this.setStateSync({
+						text: 'foo'
+					});
+				}
+
+				render() {
+					return (
+						<div>{this.state.text}</div>
+					);
+				}
+			}
+
+			render(<Wrapper kill={false}/>, container);
+
+			const unMountSpy = spy(Wrapper.prototype, 'componentWillUnmount');
+			const unMountSpy2 = spy(FooBar.prototype, 'componentWillUnmount');
+
+			const notCalled = assert.notCalled;
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em><div>aa</div></em></span></div>');
+
+			render(<Wrapper kill={true}/>, container);
+
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('<div><span>foobar</span><span></span></div>');
+
+				notCalled(unMountSpy);
+				notCalled(unMountSpy2);
+
+				// This component is actually unmounted but fastUnmount skips unmount loop so unmounted remains false
+				expect(dirtyReference._unmounted).to.eql(false);
+				// Try to do setState and verify it doesn't fail
+				updateFastUnmountedComponent();
+
+				setTimeout(() => {
+					expect(dirtyReference._unmounted).to.eql(false);
+					expect(container.innerHTML).to.eql('<div><span>foobar</span><span></span></div>');
+
+					done();
+				}, 10);
+			}, 10);
+		});
+
+		it('Should render call componentWillUnmount for children when later sibling has no lifecycle', () => {
+			class Parent extends Component<any, any> {
+				constructor(props) {
+					super(props);
+				}
+
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<div>
+							<HasLife/>
+							<NoLife/>
+						</div>
+					);
+				}
+			}
+
+			// This should be able to fastUnmount
+			class NoLife extends Component<any, any> {
+				render() {
+					return (
+						<span>nolife</span>
+					);
+				}
+			}
+
+			// This should have fastUnmount false
+			class HasLife extends Component<any, any> {
+				componentWillUnmount() {}
+
+				render() {
+					return (
+						<span>haslife</span>
+					);
+				}
+			}
+
+			const unMountSpy = spy(Parent.prototype, 'componentWillUnmount');
+			const unMountSpy2 = spy(HasLife.prototype, 'componentWillUnmount');
+
+			const notCalled = assert.notCalled;
+			const calledOnce = assert.calledOnce;
+
+			render(<Parent/>, container);
+
+			notCalled(unMountSpy);
+			notCalled(unMountSpy2);
+
+			expect(container.innerHTML).to.eql('<div><span>haslife</span><span>nolife</span></div>');
+
+			render(null, container);
 
 			calledOnce(unMountSpy);
+			calledOnce(unMountSpy2);
 		});
 	});
 
@@ -1847,6 +2072,54 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.eql('<div><span>foobar</span></div>');
 
 			expect(unMountTest).to.eql(1);
+		});
+
+		it('Should call componentWillUnmount for parent when children dont have componentWIllUnmount', (done) => {
+			function Wrapper() {
+				return (
+					<div>
+						<span>foobar</span>
+						<FooBar onComponentWillUnmount={TestLifecycle.componentWillUnmountTwo}/>
+					</div>
+				);
+			}
+
+			function FooBar() {
+				return (
+					<span>
+						<Test/>
+					</span>
+				);
+			}
+
+			function Test() {
+				return <em>f</em>;
+			}
+
+			let unMountTest = 0,
+				unMountTwoTest = 0;
+
+			const TestLifecycle = {
+				componentWillUnmount: () => {
+					unMountTest++;
+				},
+				componentWillUnmountTwo: () => {
+					unMountTwoTest++;
+				}
+			};
+
+			render(<Wrapper onComponentWillUnmount={TestLifecycle.componentWillUnmount}/>, container);
+
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em>f</em></span></div>');
+
+			render(null, container);
+			setTimeout(() => {
+				expect(container.innerHTML).to.eql('');
+
+				expect(unMountTest).to.eql(1);
+				expect(unMountTwoTest).to.eql(1);
+				done();
+			}, 10);
 		});
 	});
 });

@@ -38,7 +38,7 @@ describe('Component lifecycle (JSX)', () => {
 				}
 
 				updateme() {
-					this.setState({
+					this.setStateSync({
 						foo: !this.state.foo
 					});
 				}
@@ -142,7 +142,7 @@ describe('Component lifecycle (JSX)', () => {
 				}
 
 				updateme() {
-					this.setState({
+					this.setStateSync({
 						foo: !this.state.foo
 					});
 				}

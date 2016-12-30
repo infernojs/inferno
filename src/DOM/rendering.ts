@@ -5,7 +5,7 @@ import {
 	isInvalid,
 	isNull,
 	isNullOrUndef,
-	throwError,
+	throwError
 } from '../shared';
 
 import Lifecycle from './lifecycle';

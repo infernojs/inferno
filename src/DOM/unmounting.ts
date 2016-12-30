@@ -5,7 +5,7 @@ import {
 	isNullOrUndef,
 	isObject,
 	throwError,
-	isNull,
+	isNull
 } from '../shared';
 import {
 	poolComponent,

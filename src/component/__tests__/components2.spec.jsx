@@ -93,13 +93,13 @@ describe('Components (JSX) #2', () => {
 			}
 
 			_update() {
-				this.setState({
+				this.setStateSync({
 					data: 'bar'
 				});
 			}
 
 			componentWillMount() {
-				this.setState({
+				this.setStateSync({
 					data: 'foo'
 				});
 			}
@@ -141,13 +141,16 @@ describe('Components (JSX) #2', () => {
 		}
 
 		// For some reason this one breaks but if components are imported separately, it works
-		it('Should not reuse children if parent changes #1', () => {
+		it('Should not reuse children if parent changes #1', (done) => {
 			render(<ParentFirst />, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
-			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
-			render(<ParentSecond />, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
+			setTimeout(() => {
+				expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
+				render(<ParentSecond />, container);
+				expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
+				done();
+			}, 10);
 		});
 	});
 
@@ -160,13 +163,13 @@ describe('Components (JSX) #2', () => {
 			}
 
 			_update() {
-				this.setState({
+				this.setStateSync({
 					data: 'bar'
 				});
 			}
 
 			componentWillMount() {
-				this.setState({
+				this.setStateSync({
 					data: 'foo'
 				});
 			}
@@ -215,24 +218,30 @@ describe('Components (JSX) #2', () => {
 		}
 
 		// For some reason this one breaks but if components are imported separately, it works
-		it('Should not reuse children if parent changes #2', () => {
+		it('Should not reuse children if parent changes #2', (done) => {
 			render(<ParentFirst />, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
-			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
-			render(<ParentSecond />, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
+			setTimeout(() => {
+				expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
+				render(<ParentSecond />, container);
+				expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
+				done();
+			}, 10);
 		});
 	});
 
 	describe('Inheritance with 1 component per file Common BASE', () => {
-		it('Should not reuse children if parent changes #3', () => {
+		it('Should not reuse children if parent changes #3', (done) => {
 			render(<ParentFirstCommon />, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
-			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
-			render(<ParentSecondCommon />, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
+			setTimeout(() => {
+				expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
+				render(<ParentSecondCommon />, container);
+				expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
+				done();
+			}, 10);
 		});
 	});
 

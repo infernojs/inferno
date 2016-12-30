@@ -1,4 +1,4 @@
-import { normalize } from '../shapes';
+import { normalize } from './../../core/normalization';
 
 suite('normalize benchmark', () => {
 	const vNode = {

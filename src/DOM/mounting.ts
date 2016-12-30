@@ -8,7 +8,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-	EMPTY_OBJ,
+	EMPTY_OBJ
 } from '../shared';
 import { cloneVNode, isVNode } from '../core/VNodes';
 import {
@@ -174,17 +174,20 @@ export function mountComponent(vNode, parentDom, lifecycle: Lifecycle, context, 
 	if (isClass) {
 		const instance = createClassComponentInstance(vNode, type, props, context, isSVG);
 		// If instance does not have componentWillUnmount specified we can enable fastUnmount
-		lifecycle.fastUnmount = isUndefined(instance.componentWillUnmount);
 		const input = instance._lastInput;
-
+		const prevFastUnmount = lifecycle.fastUnmount;
 		// we store the fastUnmount value, but we set it back to true on the lifecycle
 		// we do this so we can determine if the component render has a fastUnmount or not
+		lifecycle.fastUnmount = true;
 		instance._vNode = vNode;
 		vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
 		// we now create a lifecycle for this component and store the fastUnmount value
 		const subLifecycle = instance._lifecycle = new Lifecycle();
 
-		subLifecycle.fastUnmount = lifecycle.fastUnmount;
+		// children lifecycle can fastUnmount if itself does need unmount callback and within its cycle there was none
+		subLifecycle.fastUnmount = isUndefined(instance.componentWillUnmount) && lifecycle.fastUnmount;
+		// higher lifecycle can fastUnmount only if previously it was able to and this children doesnt have any
+		lifecycle.fastUnmount = prevFastUnmount && subLifecycle.fastUnmount;
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}

@@ -8,6 +8,18 @@ function isControlled(props) {
 	return !isNullOrUndef(props.value);
 }
 
+function wrappedOnChange(e) {
+	let vNode = this.vNode;
+	const events = vNode.events || EMPTY_OBJ;
+	const event = events.onChange;
+
+	if (event.event) {
+		event.event(event.data, e);
+	} else {
+		event(e);
+	}
+}
+
 function onTextareaInputChange(e) {
 	let vNode = this.vNode;
 	const events = vNode.events || EMPTY_OBJ;
@@ -41,6 +53,10 @@ export function processTextarea(vNode, dom) {
 			};
 			dom.oninput = onTextareaInputChange.bind(textareaWrapper);
 			dom.oninput.wrapped = true;
+			if (props.onChange) {
+				dom.onchange = wrappedOnChange.bind(textareaWrapper);
+				dom.onchange.wrapped = true;
+			}
 			wrappers.set(dom, textareaWrapper);
 		}
 		textareaWrapper.vNode = vNode;

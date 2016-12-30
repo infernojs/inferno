@@ -1,5 +1,5 @@
 /*!
- * inferno v1.0.0-beta43
+ * inferno v1.0.0-beta45
  * (c) 2016 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -142,7 +142,10 @@ function normalizeProps(vNode, props, children) {
         vNode.children = props.children;
     }
     if (props.ref) {
-        vNode.ref = props.ref;
+        delete props.ref;
+    }
+    if (props.key) {
+        delete props.key;
     }
     if (props.events) {
         vNode.events = props.events;
@@ -661,6 +664,17 @@ function applyValue$1(vNode, dom) {
 function isControlled$2(props) {
     return !isNullOrUndef(props.value);
 }
+function wrappedOnChange$1(e) {
+    var vNode = this.vNode;
+    var events = vNode.events || EMPTY_OBJ;
+    var event = events.onChange;
+    if (event.event) {
+        event.event(event.data, e);
+    }
+    else {
+        event(e);
+    }
+}
 function onTextareaInputChange(e) {
     var vNode = this.vNode;
     var events = vNode.events || EMPTY_OBJ;
@@ -692,6 +706,10 @@ function processTextarea(vNode, dom) {
             };
             dom.oninput = onTextareaInputChange.bind(textareaWrapper);
             dom.oninput.wrapped = true;
+            if (props.onChange) {
+                dom.onchange = wrappedOnChange$1.bind(textareaWrapper);
+                dom.onchange.wrapped = true;
+            }
             wrappers.set(dom, textareaWrapper);
         }
         textareaWrapper.vNode = vNode;
@@ -832,7 +850,7 @@ function unmountRef(ref) {
         if (isInvalid(ref)) {
             return;
         }
-        {
+        if (process.env.NODE_ENV !== 'production') {
             throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
         }
         throwError();
@@ -1058,7 +1076,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     childContext = context;
                 }
                 var lastInput$1 = instance._lastInput;
-                var nextInput$1 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false);
+                var nextInput$1 = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false, false);
                 var didUpdate = true;
                 instance._childContext = childContext;
                 if (isInvalid(nextInput$1)) {
@@ -1072,7 +1090,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextInput$1 = createTextVNode(nextInput$1);
                 }
                 else if (isArray(nextInput$1)) {
-                    {
+                    if (process.env.NODE_ENV !== 'production') {
                         throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
                     }
                     throwError();
@@ -1131,7 +1149,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isS
                     nextInput$2 = createTextVNode(nextInput$2);
                 }
                 else if (isArray(nextInput$2)) {
-                    {
+                    if (process.env.NODE_ENV !== 'production') {
                         throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
                     }
                     throwError();
@@ -1583,23 +1601,27 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
             handleEvent(name, lastValue, nextValue, dom);
         }
         else {
-            if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
-                var linkEvent = nextValue.event;
-                if (linkEvent && isFunction(linkEvent)) {
-                    dom[nameLowerCase] = function (e) {
-                        linkEvent(nextValue.data, e);
-                    };
-                    dom[nameLowerCase].wrapped = true;
+            if (lastValue !== nextValue) {
+                if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
+                    var linkEvent = nextValue.event;
+                    if (linkEvent && isFunction(linkEvent)) {
+                        if (!dom._data) {
+                            dom[nameLowerCase] = function (e) {
+                                linkEvent(e.currentTarget._data, e);
+                            };
+                        }
+                        dom._data = nextValue.data;
+                    }
+                    else {
+                        if (process.env.NODE_ENV !== 'production') {
+                            throwError(("an event on a VNode \"" + name + "\". was not a function or a valid linkEvent."));
+                        }
+                        throwError();
+                    }
                 }
                 else {
-                    {
-                        throwError(("an event on a VNode \"" + name + "\". was not a function or a valid linkEvent."));
-                    }
-                    throwError();
+                    dom[nameLowerCase] = nextValue;
                 }
-            }
-            else {
-                dom[nameLowerCase] = nextValue;
             }
         }
     }
@@ -1780,7 +1802,7 @@ function mount(vNode, parentDom, lifecycle, context, isSVG) {
         return mountText(vNode, parentDom);
     }
     else {
-        {
+        if (process.env.NODE_ENV !== 'production') {
             if (typeof vNode === 'object') {
                 throwError(("mount() received an object that's not a valid VNode, you should stringify it first. Object: \"" + (JSON.stringify(vNode)) + "\"."));
             }
@@ -1895,15 +1917,19 @@ function mountComponent(vNode, parentDom, lifecycle, context, isSVG, isClass) {
     if (isClass) {
         var instance = createClassComponentInstance(vNode, type, props, context, isSVG);
         // If instance does not have componentWillUnmount specified we can enable fastUnmount
-        lifecycle.fastUnmount = isUndefined(instance.componentWillUnmount);
         var input = instance._lastInput;
+        var prevFastUnmount = lifecycle.fastUnmount;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
         // we do this so we can determine if the component render has a fastUnmount or not
+        lifecycle.fastUnmount = true;
         instance._vNode = vNode;
         vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
         // we now create a lifecycle for this component and store the fastUnmount value
         var subLifecycle = instance._lifecycle = new Lifecycle();
-        subLifecycle.fastUnmount = lifecycle.fastUnmount;
+        // children lifecycle can fastUnmount if itself does need unmount callback and within its cycle there was none
+        subLifecycle.fastUnmount = isUndefined(instance.componentWillUnmount) && lifecycle.fastUnmount;
+        // higher lifecycle can fastUnmount only if previously it was able to and this children doesnt have any
+        lifecycle.fastUnmount = prevFastUnmount && subLifecycle.fastUnmount;
         if (!isNull(parentDom)) {
             appendChild(parentDom, dom);
         }
@@ -1928,7 +1954,7 @@ function mountClassComponentCallbacks(vNode, ref, instance, lifecycle) {
             ref(instance);
         }
         else {
-            {
+            if (process.env.NODE_ENV !== 'production') {
                 if (isStringOrNumber(ref)) {
                     throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
                 }
@@ -1973,7 +1999,7 @@ function mountRef(dom, value, lifecycle) {
         if (isInvalid(value)) {
             return;
         }
-        {
+        if (process.env.NODE_ENV !== 'production') {
             throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
         }
         throwError();
@@ -2008,7 +2034,7 @@ function createClassComponentInstance(vNode, Component, props, context, isSVG) {
     var input = instance.render(props, instance.state, context);
     options.afterRender && options.afterRender(instance);
     if (isArray(input)) {
-        {
+        if (process.env.NODE_ENV !== 'production') {
             throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
         }
         throwError();
@@ -2054,7 +2080,7 @@ function replaceVNode(parentDom, dom, vNode, lifecycle, isRecycling) {
 function createFunctionalComponentInput(vNode, component, props, context) {
     var input = component(props, context);
     if (isArray(input)) {
-        {
+        if (process.env.NODE_ENV !== 'production') {
             throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
         }
         throwError();
@@ -2179,7 +2205,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         }
         var instance = createClassComponentInstance(vNode, type, props, context, _isSVG);
         // If instance does not have componentWillUnmount specified we can enable fastUnmount
-        var fastUnmount = isUndefined(instance.componentWillUnmount);
+        var prevFastUnmount = lifecycle.fastUnmount;
         var input = instance._lastInput;
         // we store the fastUnmount value, but we set it back to true on the lifecycle
         // we do this so we can determine if the component render has a fastUnmount or not
@@ -2187,10 +2213,12 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         instance._vComponent = vNode;
         instance._vNode = vNode;
         hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
+        // we now create a lifecycle for this component and store the fastUnmount value
         var subLifecycle = instance._lifecycle = new Lifecycle();
-        subLifecycle.fastUnmount = lifecycle.fastUnmount;
-        // we then set the lifecycle fastUnmount value back to what it was before the mount
-        lifecycle.fastUnmount = fastUnmount;
+        // children lifecycle can fastUnmount if itself does need unmount callback and within its cycle there was none
+        subLifecycle.fastUnmount = isUndefined(instance.componentWillUnmount) && lifecycle.fastUnmount;
+        // higher lifecycle can fastUnmount only if previously it was able to and this children doesnt have any
+        lifecycle.fastUnmount = prevFastUnmount && subLifecycle.fastUnmount;
         mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
         options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
         vNode.children = instance;
@@ -2271,7 +2299,7 @@ function hydrateVoid(vNode, dom) {
     vNode.dom = dom;
 }
 function hydrate(vNode, dom, lifecycle, context, isSVG) {
-    {
+    if (process.env.NODE_ENV !== 'production') {
         if (isInvalid(dom)) {
             throwError("failed to hydrate. The server-side render doesn't match client side.");
         }
@@ -2290,7 +2318,7 @@ function hydrate(vNode, dom, lifecycle, context, isSVG) {
         return hydrateVoid(vNode, dom);
     }
     else {
-        {
+        if (process.env.NODE_ENV !== 'production') {
             throwError(("hydrate() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
         }
         throwError();
@@ -2312,7 +2340,7 @@ var componentToDOMNodeMap = new Map();
 options.roots = roots;
 function findDOMNode(ref) {
     if (!options.findDOMNodeEnabled) {
-        {
+        if (process.env.NODE_ENV !== 'production') {
             throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
         }
         throwError();
@@ -2349,7 +2377,7 @@ function removeRoot(root) {
 var documentBody = isBrowser ? document.body : null;
 function render(input, parentDom) {
     if (documentBody === parentDom) {
-        {
+        if (process.env.NODE_ENV !== 'production') {
             throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
         }
         throwError();
@@ -2408,7 +2436,7 @@ function linkEvent(data, event) {
     return { data: data, event: event };
 }
 
-{
+if (process.env.NODE_ENV !== 'production') {
 	Object.freeze(EMPTY_OBJ);
 	var testFunc = function testFn() {};
 	warning(

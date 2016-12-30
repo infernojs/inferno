@@ -2,7 +2,7 @@
   "name": "inferno-build",
   "private": true,
   "license": "MIT",
-  "version": "1.0.0-beta43",
+  "version": "1.0.0-beta45",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -79,10 +79,10 @@
     "proptypes": "^0.14.3",
     "redux": "^3.6.0",
     "rimraf": "^2.5.4",
-    "rollup": "^0.38.1",
+    "rollup": "^0.38.3",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-buble": "^0.15.0",
-    "rollup-plugin-commonjs": "^5.0.5",
+    "rollup-plugin-commonjs": "^7.0.0",
     "rollup-plugin-filesize": "^1.0.1",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
@@ -93,7 +93,7 @@
     "tslint": "^4.2.0",
     "typescript": "^2.1.4",
     "union-type-es": "^0.1.0",
-    "webpack": "2.2.0-rc.2",
+    "webpack": "2.2.0-rc.3",
     "webpack-dev-server": "2.2.0-rc.0"
   },
   "files": [
@@ -155,10 +155,11 @@
   },
   "scripts": {
     "browser": "webpack-dev-server --config config/webpack.dev.conf.js",
-    "build": "npm run clean && mkdirp build && (tsc --outDir build --module es6 || true) && npm run build:dev && npm run build:prod",
+    "build": "npm run clean && mkdirp build && mkdirp dist && (tsc --outDir build --module es6 || true) && npm run build:dev && npm run build:prod && npm run build:browser",
     "build:dev": "cross-env NODE_ENV=development babel-node --presets es2015 config/rollup.config.js",
     "build:prod": "cross-env NODE_ENV=production babel-node --presets es2015 config/rollup.config.js",
-    "clean": "rimraf coverage/ build/",
+    "build:browser": "cross-env NODE_ENV=browser babel-node --presets es2015 config/rollup.config.js",
+    "clean": "rimraf coverage/ build/ dist/",
     "karma:firefox": "karma start config/karma.conf.js --browsers=Firefox",
     "karma:chrome": "karma start config/karma.conf.js --browsers=Chrome",
     "karma:ie": "karma start config/karma.conf.js --browsers=IE",

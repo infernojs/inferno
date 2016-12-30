@@ -88,7 +88,6 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 				}
 			});
 			componentCallbackQueue.delete(component);
-			component._processingSetState = false;
 		});
 	}
 	if (callback) {
@@ -98,7 +97,7 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 	}
 }
 
-function queueStateChanges<P, S>(component: Component<P, S>, newState, callback: Function): void {
+function queueStateChanges<P, S>(component: Component<P, S>, newState, callback: Function, sync: boolean): void {
 	if (isFunction(newState)) {
 		newState = newState(component.state);
 	}
@@ -106,13 +105,11 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 		component._pendingState[stateKey] = newState[stateKey];
 	}
 	if (!component._pendingSetState && isBrowser) {
-		if (component._processingSetState || callback) {
-			addToQueue(component, false, callback);
-		} else {
+		if (sync || component._blockRender) {
 			component._pendingSetState = true;
-			component._processingSetState = true;
 			applyState(component, false, callback);
-			component._processingSetState = false;
+		} else {
+			addToQueue(component, false, callback);
 		}
 	} else {
 		component.state = Object.assign({}, component.state, component._pendingState);
@@ -130,7 +127,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		const context = component.context;
 
 		component._pendingState = {};
-		let nextInput = component._updateComponent(prevState, nextState, props, props, context, force);
+		let nextInput = component._updateComponent(prevState, nextState, props, props, context, force, true);
 		let didUpdate = true;
 
 		if (isInvalid(nextInput)) {
@@ -191,7 +188,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	refs: any = {};
 	props: P & Props;
 	context: any;
-	_processingSetState = false;
 	_blockRender = false;
 	_ignoreSetState = false;
 	_blockSetState = false;
@@ -231,7 +227,23 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 		if (!this._blockSetState) {
 			if (!this._ignoreSetState) {
-				queueStateChanges(this, newState, callback);
+				queueStateChanges(this, newState, callback, false);
+			}
+		} else {
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('cannot update state via setState() in componentWillUpdate().');
+			}
+			throwError();
+		}
+	}
+
+	setStateSync(newState) {
+		if (this._unmounted) {
+			return;
+		}
+		if (!this._blockSetState) {
+			if (!this._ignoreSetState) {
+				queueStateChanges(this, newState, null, true);
 			}
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
@@ -266,7 +278,8 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		prevProps: P & Props,
 		nextProps: P & Props,
 		context: any,
-		force: boolean
+		force: boolean,
+		fromSetState: boolean
 	): any {
 		if (this._unmounted === true) {
 			if (process.env.NODE_ENV !== 'production') {
@@ -276,9 +289,11 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
 			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
-				this._blockRender = true;
-				this.componentWillReceiveProps(nextProps, context);
-				this._blockRender = false;
+				if (!fromSetState) {
+					this._blockRender = true;
+					this.componentWillReceiveProps(nextProps, context);
+					this._blockRender = false;
+				}
 				if (this._pendingSetState) {
 					nextState = Object.assign({}, nextState, this._pendingState);
 					this._pendingSetState = false;

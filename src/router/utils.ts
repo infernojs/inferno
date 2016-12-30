@@ -78,7 +78,7 @@ export function rest(_args, excluded) {
 		}
 	}
 	return t;
-};
+}
 
 /**
  * Sorts an array according to its `path` prop length
@@ -90,7 +90,7 @@ export function pathRankSort(a: any, b: any) {
 	const aAttr = a.props || emptyObject;
 	const bAttr = b.props || emptyObject;
 	const diff = rank(bAttr.path) - rank(aAttr.path);
-	return diff || (bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0;
+	return diff || ((bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0);
 }
 
 /**

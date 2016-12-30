@@ -12,7 +12,7 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/LukeSheard.svg)](https://saucelabs.com/u/LukeSheard)
 
-Inferno is an insanely fast, `8kb` React-like library for building high-performance user interfaces on both the client and server.
+Inferno is an insanely fast, `9kb` React-like library for building high-performance user interfaces on both the client and server.
 
 To quote a member of the React core team at Facebook:
 > Inferno 1.0 is really well written. It's how I would've rewritten React. I'd recommend reading its source to learn.
@@ -38,7 +38,7 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 - React-like API, concepts and component lifecycle events
 - Partial synthetic event system, providing delegation to certain events for better performance
 - Inferno's [`linkEvent`](https://github.com/trueadm/inferno/blob/master/README.md#linkevent-package-inferno) feature removes the need to use arrow functions or binding event callbacks
-- Lightweight filesize of only 8kb
+- Lightweight filesize of only 9kb
 - Isomorphic rendering on both client and server with `inferno-server`
 - Highly modular with very few opinions on how things should be done
 - Unlike React and Preact, Inferno has lifecycle events on functional components
@@ -109,24 +109,24 @@ Alternatively, you can get started with Inferno using the [Inferno Boilerplate](
 Core package:
 
 ```sh
-npm install --save inferno@beta43
+npm install --save inferno@beta45
 ```
 
 Addons:
 
 ```sh
 # ES2015 class components
-npm install --save inferno-component@beta43
+npm install --save inferno-component@beta45
 # server-side rendering
-npm install --save inferno-server@beta43
+npm install --save inferno-server@beta45
 # routing
-npm install --save inferno-router@beta43
+npm install --save inferno-router@beta45
 ```
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta43/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.0-beta45/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -138,17 +138,17 @@ npm install --save-dev babel-plugin-inferno@beta17
 
 #### Hyperscript:
 ```sh
-npm install --save inferno-hyperscript@beta43
+npm install --save inferno-hyperscript@beta45
 ```
 
 #### createElement:
 ```sh
-npm install --save inferno-create-element@beta43
+npm install --save inferno-create-element@beta45
 ```
 
 ### Compatibility with existing React apps
 ```sh
-npm install --save-dev inferno-compat@beta43
+npm install --save-dev inferno-compat@beta45
 ```
 
 Note: Make sure you read more about [`inferno-compat`](https://github.com/trueadm/inferno/tree/master/packages/inferno-compat) before using it.
@@ -167,7 +167,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 ## Differences from React
 
-- Inferno is much smaller in size, `8kb` vs `45kb` gzip. This means Inferno is faster to transfer over the network but more importantly, is *much* faster to parse – this makes a big impact on mobile.
+- Inferno is much smaller in size, `9kb` vs `45kb` gzip. This means Inferno is faster to transfer over the network but more importantly, is *much* faster to parse – this makes a big impact on mobile.
 - Inferno is considerably faster than React. This doesn't apply to only benchmarks, but real-world applications that companies have converted to Inferno from React. Ranging from 40% - 110% performance improvement with Inferno `1.0`. No other React-like library gets close to this performance gain over React.
 - Inferno doesn't have a fully synthetic event system like React does. Inferno has a partially synthetic event system, instead opting to only delegate certain events (such as `onClick`).
 - Inferno doesn't support React Native. Inferno was only designed for the browser/server with the DOM in mind.
@@ -178,7 +178,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 
 ## Differences from Preact
 
-- Inferno is larger in size, `8kb` vs `3kb` gzip. This means that Preact should parse faster than Inferno – if only slightly.
+- Inferno is larger in size, `9kb` vs `3kb` gzip. This means that Preact should parse faster than Inferno – if only slightly.
 - Inferno has a partial synthetic event system, resulting in better performance via delegation of certain events.
 - Inferno is *much* faster than Preact in rendering, updating and removing elements from the DOM. Inferno diffs against virtual DOM, rather than the real DOM (except for when loading from server-side rendered content) which means it can make drastic improvements. Unfortunately, diffing against the real DOM has a 30-40% overhead cost in operations.
 - Inferno fully supports controlled components for `input`/`select`/`textarea` elements. This prevents lots of edgecases where the virtual DOM is not the source of truth (it should always be). Preact pushes the source of truth to the DOM itself.
@@ -465,10 +465,56 @@ Inferno.render(<FunctionalComponent onComponentDidMount={ mounted } />, document
 
 Hooks provide powerful lifecycle events to functional components, allowing you to build components without being forced to use ES2015 classes.
 
+## Development vs Production modes
+
+By default, Inferno will run in development mode. Development mode provides extra checks and better error messages at the cost of slower performance and larger code to parse.
+When using Inferno in a production environment, it is highly recommended that you turn off development mode.
+
+### Running Inferno on Node JS
+
+Ensure the environment variable `process.env.NODE_ENV` is set to `production`.
+
+### Building Inferno for use in a browser
+
+When running Inferno on the browser using Webpack or Rollup, a replacement will need to occur during your build.
+
+#### Webpack
+
+Use the following configuration in your Webpack build:
+
+```js
+  ...
+	plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    })
+  ]
+```
+
+#### Rollup
+
+Use the following configuration in your Rollup build:
+
+```js
+const replace = require('rollup-plugin-replace');
+```
+
+```js
+  ...
+	plugins: [
+		replace({
+			'process.env.NODE_ENV': JSON.stringify('production'),
+		})
+  ]
+```
+
 ## Browser Support
 
 Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support IE8+, Inferno requires polyfills for the following JavaScript features:
 
+- [Promise object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 - [Map object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
 - [Object.keys](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
 - [Object.assign](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)

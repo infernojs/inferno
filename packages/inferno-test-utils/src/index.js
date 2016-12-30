@@ -9,6 +9,11 @@ import {
 	isElementOfType,
 	renderIntoDocument,
 	scryRenderedDOMComponentsWithClass,
+	scryRenderedDOMComponentsWithTag,
+	scryRenderedComponentsWithType,
+	findenderedDOMComponentsWithTag,
+	findRenderedComponentWithType,
+	mockComponent
 } from '../../../build/tools/testUtils';
 
 export {
