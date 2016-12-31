@@ -17,27 +17,33 @@ function applyKeyIfMissing(index: number, vNode: VNode): VNode {
 	return vNode;
 }
 
-function _normalizeVNodes(nodes: any[], result: VNode[], i: number): void {
-	for (; i < nodes.length; i++) {
-		let n = nodes[i];
+function _normalizeVNodes(nodes: any[], result: VNode[], index: number, keyCounter: number): number {
+	for (; index < nodes.length; index++) {
+		let n = nodes[index];
 
 		if (!isInvalid(n)) {
 			if (Array.isArray(n)) {
-				_normalizeVNodes(n, result, 0);
+				keyCounter = _normalizeVNodes(n, result, 0, keyCounter);
 			} else {
 				if (isStringOrNumber(n)) {
 					n = createTextVNode(n);
 				} else if (isVNode(n) && n.dom) {
 					n = cloneVNode(n);
 				}
-				result.push((applyKeyIfMissing(i, n as VNode)));
+
+				result.push((applyKeyIfMissing(keyCounter++, n as VNode)));
 			}
+		} else {
+			// Support for nulls
+			keyCounter++;
 		}
 	}
+	return keyCounter;
 }
 
 export function normalizeVNodes(nodes: any[]): VNode[] {
-	let newNodes;
+	let newNodes,
+		  keyCounter = 0;
 
 	// we assign $ which basically means we've flagged this array for future note
 	// if it comes back again, we need to clone it, as people are using it
@@ -51,24 +57,25 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	// tslint:enable
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
+		keyCounter++;
 
 		if (isInvalid(n) || Array.isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
 
-			_normalizeVNodes(nodes, result, i);
+			keyCounter = _normalizeVNodes(nodes, result, i, keyCounter);
 			return result;
 		} else if (isStringOrNumber(n)) {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
-			newNodes.push(applyKeyIfMissing(i, createTextVNode(n)));
+			newNodes.push(applyKeyIfMissing(keyCounter, createTextVNode(n)));
 		} else if ((isVNode(n) && n.dom) || (isNull(n.key) && !(n.flags & VNodeFlags.HasNonKeyedChildren))) {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
-			newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
+			newNodes.push(applyKeyIfMissing(keyCounter, cloneVNode(n)));
 		} else if (newNodes) {
-			newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
+			newNodes.push(applyKeyIfMissing(keyCounter, cloneVNode(n)));
 		}
 	}
 	return newNodes || nodes as VNode[];

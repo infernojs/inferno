@@ -183,12 +183,12 @@ function applyKeyIfMissing(index, vNode) {
     }
     return vNode;
 }
-function _normalizeVNodes(nodes, result, i) {
-    for (; i < nodes.length; i++) {
-        var n = nodes[i];
+function _normalizeVNodes(nodes, result, index, keyCounter) {
+    for (; index < nodes.length; index++) {
+        var n = nodes[index];
         if (!isInvalid(n)) {
             if (Array.isArray(n)) {
-                _normalizeVNodes(n, result, 0);
+                keyCounter = _normalizeVNodes(n, result, 0, keyCounter);
             }
             else {
                 if (isStringOrNumber(n)) {
@@ -197,13 +197,18 @@ function _normalizeVNodes(nodes, result, i) {
                 else if (isVNode(n) && n.dom) {
                     n = cloneVNode(n);
                 }
-                result.push((applyKeyIfMissing(i, n)));
+                result.push((applyKeyIfMissing(keyCounter++, n)));
             }
         }
+        else {
+            // Support for nulls
+            keyCounter++;
+        }
     }
+    return keyCounter;
 }
 function normalizeVNodes(nodes) {
-    var newNodes;
+    var newNodes, keyCounter = 0;
     // we assign $ which basically means we've flagged this array for future note
     // if it comes back again, we need to clone it, as people are using it
     // in an immutable way
@@ -217,25 +222,26 @@ function normalizeVNodes(nodes) {
     // tslint:enable
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
+        keyCounter++;
         if (isInvalid(n) || Array.isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
-            _normalizeVNodes(nodes, result, i);
+            keyCounter = _normalizeVNodes(nodes, result, i, keyCounter);
             return result;
         }
         else if (isStringOrNumber(n)) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
-            newNodes.push(applyKeyIfMissing(i, createTextVNode(n)));
+            newNodes.push(applyKeyIfMissing(keyCounter, createTextVNode(n)));
         }
         else if ((isVNode(n) && n.dom) || (isNull(n.key) && !(n.flags & 64 /* HasNonKeyedChildren */))) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
-            newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
+            newNodes.push(applyKeyIfMissing(keyCounter, cloneVNode(n)));
         }
         else if (newNodes) {
-            newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
+            newNodes.push(applyKeyIfMissing(keyCounter, cloneVNode(n)));
         }
     }
     return newNodes || nodes;
