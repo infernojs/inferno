@@ -163,9 +163,9 @@ Note: Make sure you read more about [`inferno-compat`](https://github.com/infern
 
 Inferno now has bindings available for some of the major state management libraries out there:
 
-- [Redux](https://github.com/infernojs/inferno/tree/dev/packages/inferno-redux) via `inferno-redux`
-- [MobX](https://github.com/infernojs/inferno/tree/dev/packages/inferno-mobx) via `inferno-mobx`
-- [Cerebral](https://github.com/cerebral/cerebral-view-inferno) via `cerebral-view-inferno`
+- Redux via [`inferno-redux`](https://github.com/infernojs/inferno/tree/dev/packages/inferno-redux)
+- MobX via [`inferno-mobx`](https://github.com/infernojs/inferno/tree/dev/packages/inferno-mobx)
+- Cerebral via [`cerebral-view-inferno`](https://github.com/cerebral/cerebral-view-inferno)
 
 ## JSX
 
