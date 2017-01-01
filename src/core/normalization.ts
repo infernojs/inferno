@@ -22,7 +22,7 @@ function _normalizeVNodes(nodes: any[], result: VNode[], index: number, keyCount
 		let n = nodes[index];
 
 		if (!isInvalid(n)) {
-			if (Array.isArray(n)) {
+			if (isArray(n)) {
 				keyCounter = _normalizeVNodes(n, result, 0, keyCounter);
 			} else {
 				if (isStringOrNumber(n)) {
@@ -59,7 +59,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 		const n = nodes[i];
 		keyCounter++;
 
-		if (isInvalid(n) || Array.isArray(n)) {
+		if (isInvalid(n) || isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
 
 			keyCounter = _normalizeVNodes(nodes, result, i, keyCounter);

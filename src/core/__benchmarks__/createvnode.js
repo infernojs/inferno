@@ -19,8 +19,7 @@ suite('createVNode (normalize) benchmark', () => {
 				createVNode(2, 'div', null,'b'),
 				createVNode(2, 'div', null,'c')
 			])
-		]
-		);
+		]);
 	});
 
 	benchmark('20 children siblings', () => {
@@ -151,5 +150,16 @@ suite('createVNode (normalize) benchmark', () => {
 		}, 'Tokyo')) ])), createVNode(2, 'article', {
 			class: 'article'
 		}, [ createVNode(2, 'h1', null, 'London'), createVNode(2, 'p', null, 'London'), createVNode(2, 'p', null, createVNode(2, 'strong', null, 'Resize')) ]), createVNode(2, 'footer', null, 'Copyright \xA9 W3Schools.com') ])) ]);
+	});
+
+	benchmark('deeply nested Arrays (nobody should do this)', () => {
+		createVNode(2, 'div', null, [
+			createVNode(2, 'div', null, '1'),
+			createVNode(2, 'div', null, [[[[[[
+				[[createVNode(2, 'div', null,'a')]],
+				[[[[[createVNode(2, 'div', null,'b')]]]]],
+				[[[[[createVNode(2, 'div', null,'c')]]]]]
+			]]]]]])
+		]);
 	});
 });

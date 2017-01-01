@@ -75,7 +75,7 @@ function _normalizeVNodes(nodes, result, index, keyCounter) {
     for (; index < nodes.length; index++) {
         var n = nodes[index];
         if (!isInvalid(n)) {
-            if (Array.isArray(n)) {
+            if (isArray(n)) {
                 keyCounter = _normalizeVNodes(n, result, 0, keyCounter);
             }
             else {
@@ -111,7 +111,7 @@ function normalizeVNodes(nodes) {
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
         keyCounter++;
-        if (isInvalid(n) || Array.isArray(n)) {
+        if (isInvalid(n) || isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
             keyCounter = _normalizeVNodes(nodes, result, i, keyCounter);
             return result;
