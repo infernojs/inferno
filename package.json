@@ -64,7 +64,7 @@
     "karma-safari-launcher": "^1.0.0",
     "karma-sauce-launcher": "^1.1.0",
     "karma-webpack": "^1.8.1",
-    "lodash": "^4.17.3",
+    "lodash": "^4.17.4",
     "merge-source-map": "^1.0.3",
     "mkdirp": "^0.5.1",
     "mobx": "^2.7.0",

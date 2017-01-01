@@ -133,24 +133,25 @@ function normalizeElement(type: string, vNode: VNode) {
 
 export function normalize(vNode: VNode): void {
 	const props = vNode.props;
+	const hasProps = !isNull(props);
 	const type = vNode.type;
 	let children = vNode.children;
 
 	// convert a wrongly created type back to element
 	if (isString(type) && (vNode.flags & VNodeFlags.Component)) {
 		normalizeElement(type as string, vNode);
-		if (props.children) {
+		if (hasProps && props.children) {
 			vNode.children = props.children;
 			children = props.children;
 		}
 	}
-	if (props) {
+	if (hasProps) {
 		normalizeProps(vNode, props, children);
 	}
 	if (!isInvalid(children)) {
 		vNode.children = normalizeChildren(children);
 	}
-	if (props && !isInvalid(props.children)) {
+	if (hasProps && !isInvalid(props.children)) {
 		props.children = normalizeChildren(props.children);
 	}
 }

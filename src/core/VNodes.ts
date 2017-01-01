@@ -37,8 +37,8 @@ export function createVNode(
 		children: isUndefined(children) ? null : children,
 		dom: null,
 		events: events || null,
-		flags: flags || 0,
-		key: key === undefined ? null : key,
+		flags,
+		key: isUndefined(key) ? null : key,
 		props: props || null,
 		ref: ref || null,
 		type

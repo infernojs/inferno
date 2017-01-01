@@ -1,6 +1,6 @@
 /*!
  * inferno-server v1.0.3
- * (c) 2016 Dominic Gannaway
+ * (c) 2017 Dominic Gannaway
  * Released under the MIT License.
  */
 (function (global, factory) {
@@ -112,8 +112,8 @@ function createVNode(flags, type, props, children, events, key, ref, noNormalise
         children: isUndefined(children) ? null : children,
         dom: null,
         events: events || null,
-        flags: flags || 0,
-        key: key === undefined ? null : key,
+        flags: flags,
+        key: isUndefined(key) ? null : key,
         props: props || null,
         ref: ref || null,
         type: type
@@ -338,23 +338,24 @@ function normalizeElement(type, vNode) {
 }
 function normalize(vNode) {
     var props = vNode.props;
+    var hasProps = !isNull(props);
     var type = vNode.type;
     var children = vNode.children;
     // convert a wrongly created type back to element
     if (isString(type) && (vNode.flags & 28 /* Component */)) {
         normalizeElement(type, vNode);
-        if (props.children) {
+        if (hasProps && props.children) {
             vNode.children = props.children;
             children = props.children;
         }
     }
-    if (props) {
+    if (hasProps) {
         normalizeProps(vNode, props, children);
     }
     if (!isInvalid(children)) {
         vNode.children = normalizeChildren(children);
     }
-    if (props && !isInvalid(props.children)) {
+    if (hasProps && !isInvalid(props.children)) {
         props.children = normalizeChildren(props.children);
     }
 }

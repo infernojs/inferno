@@ -1,6 +1,6 @@
 /*!
  * inferno-hyperscript v1.0.3
- * (c) 2016 undefined
+ * (c) 2017 undefined
  * Released under the MIT License.
  */
 (function (global, factory) {

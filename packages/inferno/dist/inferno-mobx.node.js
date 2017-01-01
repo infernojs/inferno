@@ -1,6 +1,6 @@
 /*!
  * inferno-mobx v1.0.3
- * (c) 2016 Ryan Megidov
+ * (c) 2017 Ryan Megidov
  * Released under the MIT License.
  */
 (function (global, factory) {
