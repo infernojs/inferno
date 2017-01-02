@@ -92,7 +92,7 @@ function getURLString(location) {
  */
 function mapSearchParams(search) {
     if (search === '') {
-        return emptyObject;
+        return {};
     }
     // Create an object with no prototype
     var map = Object.create(null);
