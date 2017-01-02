@@ -4,6 +4,7 @@ import Component from '../../component/es2015';
 import { innerHTML } from '../../tools/utils';
 import Router from '../Router';
 import Route from '../Route';
+import Redirect from '../Redirect';
 import IndexRoute from '../IndexRoute';
 import Link from '../Link';
 import createMemoryHistory from 'history/createMemoryHistory';
@@ -128,6 +129,18 @@ describe('Router (jsx) #transitions', () => {
 
 		render(<Router history={ browserHistory }>
 			<Route path='/' component={ TestRouting }/>
+			<Route path='/final' component={ () => <div>Done</div> } />
+		</Router>, container);
+
+		setTimeout(() => {
+			expect(container.innerHTML).to.equal(innerHTML('<div>Done</div>'));
+			done();
+		}, 10);
+	});
+
+	it('should Redirect', (done) => {
+		render(<Router history={ browserHistory }>
+			<Redirect from='/' to='/final'/>
 			<Route path='/final' component={ () => <div>Done</div> } />
 		</Router>, container);
 
