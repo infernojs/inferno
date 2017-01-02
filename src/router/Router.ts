@@ -1,5 +1,6 @@
 import Component from 'inferno-component';
 import RouterContext from './RouterContext';
+import { matchPath } from './match';
 import createElement from 'inferno-create-element';
 
 export interface IRouterProps {
@@ -17,6 +18,9 @@ function createrRouter(history) {
 	return {
 		push: history.push,
 		listen: history.listen,
+		isActive(url) {
+			return matchPath(true, url, this.url);
+		},
 		get location() {
 			return history.location.pathname !== 'blank' ? history.location : {
 				pathname: '/',

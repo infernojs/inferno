@@ -77,7 +77,7 @@ interface IMatchRegex {
  * @param pathToMatch
  * @returns {any}
  */
-function matchPath(end: boolean, routePath: string, pathToMatch: string): any {
+export function matchPath(end: boolean, routePath: string, pathToMatch: string): any {
 	const key = `${routePath}|${end}`;
 	let regexp: IMatchRegex = cache.get(key);
 
