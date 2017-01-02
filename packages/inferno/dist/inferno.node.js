@@ -321,9 +321,7 @@ function cloneVNode(vNodeToClone, props) {
             newVNode = createVNode(flags, vNodeToClone.type, Object.assign({}, vNodeToClone.props, props), children, events, key, ref, !children);
         }
         else if (flags & 1 /* Text */) {
-            // text is immutable in JS
-            newVNode = vNodeToClone;
-            newVNode.dom = null;
+            newVNode = createTextVNode(vNodeToClone.children);
         }
     }
     return newVNode;

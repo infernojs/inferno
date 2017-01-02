@@ -138,9 +138,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 				!children
 			);
 		} else if (flags & VNodeFlags.Text) {
-			// text is immutable in JS
-			newVNode = vNodeToClone;
-			newVNode.dom = null;
+			newVNode = createTextVNode(vNodeToClone.children as string);
 		}
 	}
 

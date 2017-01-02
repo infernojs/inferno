@@ -5,6 +5,7 @@ import { assert, spy } from 'sinon';
 import createElement from 'inferno-create-element';
 import { innerHTML } from '../../tools/utils';
 import { expect } from 'chai';
+import {createTextVNode} from "../../core/VNodes";
 
 Inferno; // suppress ts 'never used' error
 
@@ -837,6 +838,40 @@ describe('Elements (JSX)', () => {
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>'));
 			render(<C>{b}{a}</C>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div></div>'));
+		});
+	});
+
+	describe('should correctly handle TEXT VNodes as quasi-immutable objects, like ReactElement does', () => {
+		const a = createTextVNode("Hello world");
+		const b = createTextVNode("This works!");
+		const C = ({ children }) => <div>{children}{children}{children}</div>;
+
+		it('basic example ', () => {
+			render(a, container);
+			expect(container.innerHTML).to.equal('Hello world');
+			render(b, container);
+			expect(container.innerHTML).to.equal(innerHTML('This works!'));
+		});
+
+		it('basic example #2 ', () => {
+			render(<div>{ [a, a, a] }</div>, container);
+			expect(container.innerHTML).to.equal(innerHTML('<div>Hello worldHello worldHello world</div>'));
+			render(b, container);
+			expect(container.innerHTML).to.equal(innerHTML('This works!'));
+		});
+
+		it('basic nested example ', () => {
+			render(<div>{a}{b}</div>, container);
+			expect(container.innerHTML).to.equal(innerHTML('<div>Hello worldThis works!</div>'));
+			render(<div>{b}{a}</div>, container);
+			expect(container.innerHTML).to.equal(innerHTML('<div>This works!Hello world</div>'));
+		});
+
+		it('basic nested component example ', () => {
+			render(<C>{a}</C>, container);
+			expect(container.innerHTML).to.equal(innerHTML('<div>Hello worldHello worldHello world</div>'));
+			render(<C>{b}{a}</C>, container);
+			expect(container.innerHTML).to.equal(innerHTML('<div>This works!Hello worldThis works!Hello worldThis works!Hello world</div>'));
 		});
 	});
 
