@@ -4,14 +4,14 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-create-element'), require('./inferno-component'), require('./inferno')) :
-	typeof define === 'function' && define.amd ? define(['inferno-create-element', 'inferno-component', 'inferno'], factory) :
-	(global.Inferno = global.Inferno || {}, global.Inferno.Router = factory(global.Inferno.createElement,global.Inferno.Component,global.Inferno));
-}(this, (function (createElement,Component,Inferno) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno'), require('./inferno-component'), require('./inferno-create-element')) :
+	typeof define === 'function' && define.amd ? define(['inferno', 'inferno-component', 'inferno-create-element'], factory) :
+	(global.Inferno = global.Inferno || {}, global.Inferno.Router = factory(global.Inferno,global.Inferno.Component,global.Inferno.createElement));
+}(this, (function (Inferno,Component,createElement) { 'use strict';
 
-createElement = 'default' in createElement ? createElement['default'] : createElement;
+var Inferno__default = 'default' in Inferno ? Inferno['default'] : Inferno;
 Component = 'default' in Component ? Component['default'] : Component;
-Inferno = 'default' in Inferno ? Inferno['default'] : Inferno;
+createElement = 'default' in createElement ? createElement['default'] : createElement;
 
 function Link(props, ref) {
     var router = ref.router;
@@ -45,12 +45,12 @@ function Link(props, ref) {
         }
         router.push(to, e.target.textContent);
     };
-    return createElement('a', elemProps, props.children);
+    return Inferno.createVNode(2 /* HtmlElement */, 'a', elemProps, props.children);
 }
 
 function IndexLink(props) {
     props.to = '/';
-    return createElement(Link, props);
+    return Inferno.createVNode(8 /* ComponentFunction */, Link, props);
 }
 
 function toArray(children) {
@@ -238,6 +238,50 @@ var IndexRoute = (function (Route$$1) {
 
     return IndexRoute;
 }(Route));
+
+var Redirect = (function (Route$$1) {
+    function Redirect(props, context) {
+        Route$$1.call(this, props, context);
+        if (!props.to) {
+            props.to = '/';
+        }
+    }
+
+    if ( Route$$1 ) Redirect.__proto__ = Route$$1;
+    Redirect.prototype = Object.create( Route$$1 && Route$$1.prototype );
+    Redirect.prototype.constructor = Redirect;
+
+    return Redirect;
+}(Route));
+
+var RouterContext = (function (Component$$1) {
+    function RouterContext(props, context) {
+        Component$$1.call(this, props, context);
+        {
+            if (!props.location || !props.matched) {
+                throw new TypeError('"inferno-router" requires a "location" and "matched" props passed');
+            }
+        }
+    }
+
+    if ( Component$$1 ) RouterContext.__proto__ = Component$$1;
+    RouterContext.prototype = Object.create( Component$$1 && Component$$1.prototype );
+    RouterContext.prototype.constructor = RouterContext;
+    RouterContext.prototype.getChildContext = function getChildContext () {
+        return {
+            router: this.props.router || {
+                location: {
+                    pathname: this.props.location
+                }
+            }
+        };
+    };
+    RouterContext.prototype.render = function render (props) {
+        return props.matched;
+    };
+
+    return RouterContext;
+}(Component));
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -713,9 +757,10 @@ function match(routes, currentURL) {
  * @param parentPath
  * @returns {object}
  */
-function matchRoutes(_routes, currentURL, parentPath) {
+function matchRoutes(_routes, currentURL, parentPath, redirect) {
     if ( currentURL === void 0 ) currentURL = '/';
     if ( parentPath === void 0 ) parentPath = '/';
+    if ( redirect === void 0 ) redirect = false;
 
     var routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
     var ref = currentURL.split('?');
@@ -725,15 +770,24 @@ function matchRoutes(_routes, currentURL, parentPath) {
     routes.sort(pathRankSort);
     for (var i = 0; i < routes.length; i++) {
         var route = routes[i];
-        var routePath = (route.props && route.props.path || '/');
+        var routePath = route.props.from || route.props.path || '/';
         var location = parentPath + toPartialURL(routePath, parentPath).replace(/\/\//g, '/');
         var isLast = !route.props || isEmpty(route.props.children);
         var matchBase = matchPath(isLast, location, pathToMatch);
         if (matchBase) {
             var children = null;
+            if (route.props.from) {
+                redirect = route.props.to;
+            }
             if (route.props && route.props.children) {
-                var matchChild = matchRoutes(route.props.children, pathToMatch, location);
+                var matchChild = matchRoutes(route.props.children, pathToMatch, location, redirect);
                 if (matchChild) {
+                    if (matchChild.redirect) {
+                        return {
+                            location: location,
+                            redirect: matchChild.redirect
+                        };
+                    }
                     children = matchChild.matched;
                     Object.assign(params, matchChild.matched.props.params);
                 }
@@ -741,11 +795,12 @@ function matchRoutes(_routes, currentURL, parentPath) {
                     route.props.children = null;
                 }
             }
-            var matched = Inferno.cloneVNode(route, {
+            var matched = Inferno__default.cloneVNode(route, {
                 params: Object.assign(params, matchBase.params)
             }, children);
             return {
                 location: location,
+                redirect: redirect,
                 matched: matched
             };
         }
@@ -781,52 +836,13 @@ function matchPath(end, routePath, pathToMatch) {
     };
 }
 
-var RouterContext = (function (Component$$1) {
-    function RouterContext(props, context) {
-        Component$$1.call(this, props, context);
-        {
-            if (!props.matched && !props.location) {
-                throw new TypeError('"inferno-router" requires a "location" prop passed');
-            }
-            if (!props.matched && !props.routes) {
-                throw new TypeError('"inferno-router" requires a "matched" prop passed or "Route" children defined');
-            }
-        }
-    }
-
-    if ( Component$$1 ) RouterContext.__proto__ = Component$$1;
-    RouterContext.prototype = Object.create( Component$$1 && Component$$1.prototype );
-    RouterContext.prototype.constructor = RouterContext;
-    RouterContext.prototype.getChildContext = function getChildContext () {
-        return {
-            router: this.props.router || {
-                location: {
-                    pathname: this.props.location
-                }
-            }
-        };
-    };
-    RouterContext.prototype.render = function render (ref) {
-        var routes = ref.routes;
-        var matched = ref.matched;
-        var location = ref.location;
-
-        if (matched) {
-            return matched;
-        }
-        var route = match(routes, location);
-        return route.matched;
-    };
-
-    return RouterContext;
-}(Component));
-
 function createrRouter(history) {
     if (!history) {
         throw new TypeError('Inferno: Error "inferno-router" requires a history prop passed');
     }
     return {
         push: history.push,
+        replace: history.replace,
         listen: history.listen,
         isActive: function isActive(url) {
             return matchPath(true, url, this.url);
@@ -876,11 +892,19 @@ var Router = (function (Component$$1) {
     Router.prototype.routeTo = function routeTo (url) {
         this.setState({ url: url });
     };
-    Router.prototype.render = function render () {
-        return createElement(RouterContext, {
+    Router.prototype.render = function render (props) {
+        var this$1 = this;
+
+        var hit = match(props.children, this.state.url);
+        if (hit.redirect) {
+            return process.nextTick(function () {
+                this$1.router.replace(hit.redirect);
+            });
+        }
+        return Inferno.createVNode(4 /* ComponentClass */, RouterContext, {
             location: this.state.url,
             router: this.router,
-            routes: this.props.children
+            matched: hit.matched
         });
     };
 
@@ -890,6 +914,8 @@ var Router = (function (Component$$1) {
 var index = {
 	Route: Route,
 	IndexRoute: IndexRoute,
+	Redirect: Redirect,
+	IndexRedirect: Redirect,
 	Router: Router,
 	RouterContext: RouterContext,
 	Link: Link,
