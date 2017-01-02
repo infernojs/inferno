@@ -44,16 +44,6 @@ interface VNode {
 }
 
 declare module 'inferno' {
-	export function createVNode(flags, type?, props?, children?, events?, key?, ref?, noNormalise?: boolean): any;
-	export function cloneVNode(node, props?, ...children);
-	export function render(...rest);
-	export function enableFindDOMNode();
-	export function findDOMNode(node: any): any;
-	export function createRenderer(...rest);
-	export function linkEvent(data, event: Function);
-	export const NO_OP;
-	export const ERROR_MSG;
-	export const EMPTY_OBJ;
 	interface Options {
 		recyclingEnabled: boolean;
 		findDOMNodeEnabled: boolean;
@@ -65,8 +55,32 @@ declare module 'inferno' {
 		afterUpdate: Function | null;
 		beforeUnmount: Function | null;
 	}
-
+	
+	export function createVNode(flags, type?, props?, children?, events?, key?, ref?, noNormalise?: boolean): any;
+	export function cloneVNode(node, props?, ...children);
+	export function render(...rest);
+	export function enableFindDOMNode();
+	export function findDOMNode(node: any): any;
+	export function createRenderer(...rest);
+	export function linkEvent(data, event: Function);
+	export const NO_OP;
+	export const ERROR_MSG;
+	export const EMPTY_OBJ;
 	export const options: Options;
+
+	export default {
+		createVNode,
+		cloneVNode,
+		render,
+		enableFindDOMNode,
+		findDOMNode,
+		createRenderer,
+		linkEvent,
+		NO_OP,
+		ERROR_MSG,
+		EMPTY_OBJ,
+		options
+	}
 }
 
 declare module 'inferno-component' {
@@ -128,11 +142,11 @@ declare module 'inferno-test-utils' {
 	export function findAllInRenderedTree(inst: any, test: Function): VNode[];
 	export function scryRenderedDOMComponentsWithClass(root: VNode, classNames: stringArr): VNode[];
 	export function scryRenderedDOMComponentsWithTag (root: VNode, tagName: string): VNode[];
-	export function scryRenderedComponentsWithType (root: VNode, componentType: Function): VNode[];
+	export function scryRenderedComponentsWithType(root: VNode, componentType: Function): VNode[];
 	export function findRenderedDOMComponentsWithClass(root: VNode, classNames: Function): VNode;
 	export function findenderedDOMComponentsWithTag(root: VNode, tagName: Function): VNode;
 	export function findRenderedComponentWithType(root: VNode, componentClass: Function): VNode;
-	export function mockComponent(module, mockTagName: string);
+	export function mockComponent(componentClass, mockTagName?: string);
 
 	export default {
 		renderIntoDocument,
