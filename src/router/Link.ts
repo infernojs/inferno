@@ -1,4 +1,5 @@
-import createElement from 'inferno-create-element';
+import { VNodeFlags } from '../core/structures';
+import { createVNode } from 'inferno';
 
 interface ILinkProps {
 	href: any;
@@ -39,5 +40,5 @@ export default function Link(props, { router }) {
 		router.push(to, e.target.textContent);
 	};
 
-	return createElement('a', elemProps, props.children);
+	return createVNode(VNodeFlags.HtmlElement, 'a', elemProps, props.children);
 }

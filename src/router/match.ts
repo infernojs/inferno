@@ -25,7 +25,7 @@ export default function match(routes, currentURL: any) {
  * @param parentPath
  * @returns {object}
  */
-function matchRoutes(_routes, currentURL = '/', parentPath = '/') {
+function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = false) {
 
 	const routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
 	const [pathToMatch = '/', search = ''] = currentURL.split('?');
@@ -35,7 +35,7 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/') {
 
 	for (let i = 0; i < routes.length; i++) {
 		const route = routes[i];
-		const routePath = (route.props && route.props.path || '/');
+		const routePath = route.props.from || route.props.path || '/';
 		const location = parentPath + toPartialURL(routePath, parentPath).replace(/\/\//g, '/');
 		const isLast = !route.props || isEmpty(route.props.children);
 		const matchBase = matchPath(isLast, location, pathToMatch);
@@ -43,9 +43,18 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/') {
 		if (matchBase) {
 			let children = null;
 
+			if (route.props.from) {
+				redirect = route.props.to;
+			}
 			if (route.props && route.props.children) {
-				const matchChild = matchRoutes(route.props.children, pathToMatch, location);
+				const matchChild = matchRoutes(route.props.children, pathToMatch, location, redirect);
 				if (matchChild) {
+					if (matchChild.redirect) {
+						return {
+							location,
+							redirect: matchChild.redirect
+						};
+					}
 					children = matchChild.matched;
 					Object.assign(params, matchChild.matched.props.params);
 				} else {
@@ -59,6 +68,7 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/') {
 
 			return {
 				location,
+				redirect,
 				matched
 			};
 		}
