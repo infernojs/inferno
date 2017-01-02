@@ -14,6 +14,7 @@
     "@types/benchmark": "^1.0.30",
     "@types/chai": "^3.4.34",
     "@types/core-js": "^0.9.35",
+    "@types/history": "^2.0.42",
     "@types/mocha": "^2.2.35",
     "@types/node": "^6.0.55",
     "@types/sinon": "^1.16.34",
