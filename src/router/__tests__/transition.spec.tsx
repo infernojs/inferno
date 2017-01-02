@@ -1,13 +1,15 @@
-import { expect } from 'chai';
 import Inferno, { render } from 'inferno';
+
 import Component from '../../component/es2015';
-import { innerHTML } from '../../tools/utils';
-import Router from '../Router';
-import Route from '../Route';
-import Redirect from '../Redirect';
 import IndexRoute from '../IndexRoute';
 import Link from '../Link';
-import createMemoryHistory from 'history/createMemoryHistory';
+import Redirect from '../Redirect';
+import Route from '../Route';
+import Router from '../Router';
+import { createMemoryHistory } from 'history';
+import { expect } from 'chai';
+import { innerHTML } from '../../tools/utils';
+
 Inferno; // suppress ts 'never used' error
 
 const browserHistory = createMemoryHistory();

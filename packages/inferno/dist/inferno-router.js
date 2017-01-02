@@ -253,10 +253,10 @@ var isarray = index$4;
  * Expose `pathToRegexp`.
  */
 var index$2 = pathToRegexp;
-var parse_1 = parse$1;
-var compile_1 = compile$1;
-var tokensToFunction_1 = tokensToFunction$1;
-var tokensToRegExp_1 = tokensToRegExp$1;
+var parse_1 = parse;
+var compile_1 = compile;
+var tokensToFunction_1 = tokensToFunction;
+var tokensToRegExp_1 = tokensToRegExp;
 
 /**
  * The main path matching regexp utility.
@@ -283,7 +283,7 @@ var PATH_REGEXP = new RegExp([
  * @param  {Object=} options
  * @return {!Array}
  */
-function parse$1 (str, options) {
+function parse (str, options) {
   var tokens = [];
   var key = 0;
   var index = 0;
@@ -356,8 +356,8 @@ function parse$1 (str, options) {
  * @param  {Object=}            options
  * @return {!function(Object=, Object=)}
  */
-function compile$1 (str, options) {
-  return tokensToFunction$1(parse$1(str, options))
+function compile (str, options) {
+  return tokensToFunction(parse(str, options))
 }
 
 /**
@@ -387,7 +387,7 @@ function encodeAsterisk (str) {
 /**
  * Expose a method for transforming tokens into the path function.
  */
-function tokensToFunction$1 (tokens) {
+function tokensToFunction (tokens) {
   // Compile all the tokens into regexps.
   var matches = new Array(tokens.length);
 
@@ -568,7 +568,7 @@ function arrayToRegexp (path, keys, options) {
  * @return {!RegExp}
  */
 function stringToRegexp (path, keys, options) {
-  return tokensToRegExp$1(parse$1(path, options), keys, options)
+  return tokensToRegExp(parse(path, options), keys, options)
 }
 
 /**
@@ -579,7 +579,7 @@ function stringToRegexp (path, keys, options) {
  * @param  {Object=}         options
  * @return {!RegExp}
  */
-function tokensToRegExp$1 (tokens, keys, options) {
+function tokensToRegExp (tokens, keys, options) {
   if (!isarray(keys)) {
     options = /** @type {!Object} */ (keys || options);
     keys = [];
