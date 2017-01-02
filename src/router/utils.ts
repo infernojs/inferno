@@ -29,7 +29,7 @@ export function getURLString(location): string {
  */
 export function mapSearchParams(search): any {
 	if (search === '') {
-		return emptyObject;
+		return {};
 	}
 
 	// Create an object with no prototype
