@@ -28,7 +28,7 @@ npm install inferno-router
 ```js
 import Inferno from 'inferno';
 import { Router, Route, IndexRoute } from 'inferno-router';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 
 const browserHistory = createBrowserHistory();
 
@@ -142,7 +142,7 @@ You can easily do this by passing a `function` to the `Route` component via a pr
 ```js
 import Inferno from 'inferno';
 import { Router, IndexRoute } from 'inferno-router';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 
 function Home({ params }) {
   // ...

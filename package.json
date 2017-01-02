@@ -11,7 +11,7 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "devDependencies": {
-    "@types/benchmark": "^1.0.40",
+    "@types/benchmark": "^1.0.30",
     "@types/chai": "^3.4.34",
     "@types/core-js": "^0.9.35",
     "@types/mocha": "^2.2.35",
@@ -65,7 +65,7 @@
     "karma-sauce-launcher": "^1.1.0",
     "karma-webpack": "^1.8.1",
     "lodash": "^4.17.4",
-    "merge-source-map": "^1.0.4",
+    "merge-source-map": "^1.0.3",
     "mkdirp": "^0.5.1",
     "mobx": "^2.7.0",
     "mocha": "^3.2.0",

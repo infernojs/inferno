@@ -178,16 +178,6 @@ declare module 'concat-stream-es6' {
 	export default concatStream;
 }
 
-declare module 'history/createBrowserHistory' {
-	function createBrowserHistory(options?: any);
-	export = createBrowserHistory;
-}
-
-declare module 'history/createMemoryHistory' {
-	function createMemoryHistory(options?: any);
-	export = createMemoryHistory;
-}
-
 declare module 'mobx' {
 	export function toJS(value: any): any;
 	export function observable(value: any): any;

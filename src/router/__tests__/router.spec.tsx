@@ -1,13 +1,14 @@
 import Inferno, { render } from 'inferno';
+
 import IndexRoute from '../IndexRoute';
-import { innerHTML } from '../../tools/utils';
 import Route from '../Route';
 import Router from '../Router';
 import RouterContext from '../RouterContext';
-import createMemoryHistory from 'history/createMemoryHistory';
+import { createMemoryHistory } from 'history';
 import {
 	expect,
 } from 'chai';
+import { innerHTML } from '../../tools/utils';
 
 Inferno; // suppress ts 'never used' error
 
