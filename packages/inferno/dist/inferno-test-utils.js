@@ -442,7 +442,7 @@ function createVoidVNode() {
     return createVNode$1(4096 /* Void */);
 }
 function createTextVNode(text) {
-    return createVNode$1(1 /* Text */, null, null, text);
+    return createVNode$1(1 /* Text */, null, null, text, null, null, null, true);
 }
 function isVNode(o) {
     return !!o.flags;
