@@ -1,4 +1,4 @@
-import { createVNode } from './../../core/VNodes';
+import { createVNode, createTextVNode } from './../../core/VNodes';
 
 suite('createVNode (normalize) benchmark', () => {
 	/* Do not compare results between each other, these only measure OPS / sec for different structures */
@@ -120,6 +120,45 @@ suite('createVNode (normalize) benchmark', () => {
 					2, 'td', null, '11')
 				, createVNode(
 					2, 'td', null, '12')
+			]) ])
+		]);
+	});
+
+	benchmark('text node childs (table shape)', () => {
+		createVNode(2, 'table', null, [
+			createVNode(2, 'thead', null, createVNode(2, 'tr', null, [
+				createVNode(2, 'th', null, createTextVNode('h1'))
+				, createVNode(2, 'th', null, createTextVNode('h2'))
+				, createVNode(2, 'th', null, createTextVNode('h3'))
+				, createVNode(2, 'th', null, createTextVNode('h4'))
+			]))
+			, createVNode(2, 'tbody', null, [ createVNode(2, 'tr', null, [
+				createVNode(
+					2, 'td', null, createTextVNode('1'))
+				, createVNode(
+					2, 'td', null, createTextVNode('2'))
+				, createVNode(
+					2, 'td', null, createTextVNode('3'))
+				, createVNode(
+					2, 'td', null, createTextVNode('4'))
+			]), createVNode(2, 'tr', null, [
+				createVNode(
+					2, 'td', null, createTextVNode('5'))
+				, createVNode(
+					2, 'td', null, createTextVNode('6'))
+				, createVNode(
+					2, 'td', null, createTextVNode('7'))
+				, createVNode(
+					2, 'td', null, createTextVNode('8'))
+			]), createVNode(2, 'tr', null, [
+				createVNode(
+					2, 'td', null, createTextVNode('9'))
+				, createVNode(
+					2, 'td', null, createTextVNode('10'))
+				, createVNode(
+					2, 'td', null, createTextVNode('11'))
+				, createVNode(
+					2, 'td', null, createTextVNode('12'))
 			]) ])
 		]);
 	});

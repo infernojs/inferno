@@ -150,7 +150,7 @@ export function createVoidVNode(): VNode {
 }
 
 export function createTextVNode(text: string | number): VNode {
-	return createVNode(VNodeFlags.Text, null, null, text);
+	return createVNode(VNodeFlags.Text, null, null, text, null, null, null, true);
 }
 
 export function isVNode(o: VNode): boolean {
