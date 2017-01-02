@@ -55,7 +55,7 @@ declare module 'inferno' {
 		afterUpdate: Function | null;
 		beforeUnmount: Function | null;
 	}
-	
+
 	export function createVNode(flags, type?, props?, children?, events?, key?, ref?, noNormalise?: boolean): any;
 	export function cloneVNode(node, props?, ...children);
 	export function render(...rest);
@@ -80,7 +80,7 @@ declare module 'inferno' {
 		ERROR_MSG,
 		EMPTY_OBJ,
 		options
-	}
+	};
 }
 
 declare module 'inferno-component' {
@@ -131,7 +131,7 @@ declare module 'inferno-hyperscript' {
 
 declare module 'inferno-test-utils' {
 	type stringArr = string | string[];
-	
+
 	export function renderIntoDocument(element: VNode): VNode;
 	export function isElement(element: VNode): boolean;
 	export function isElementOfType(inst: VNode, componentClass: Function): boolean;
@@ -190,6 +190,11 @@ declare module 'path-to-regexp-es6' {
 declare module 'concat-stream-es6' {
 	function concatStream(func?: any);
 	export default concatStream;
+}
+
+declare module 'history' {
+	export function createBrowserHistory(options?: any);
+	export function createMemoryHistory(options?: any);
 }
 
 declare module 'mobx' {
