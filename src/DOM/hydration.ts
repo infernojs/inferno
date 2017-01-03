@@ -186,6 +186,11 @@ function hydrateText(vNode, dom) {
 		vNode.dom = newDom;
 		replaceChild(dom.parentNode, newDom, dom);
 	} else {
+		const text = vNode.children;
+
+		if (dom.nodeValue !== text) {
+			dom.nodeValue = text;
+		}
 		vNode.dom = dom;
 	}
 }

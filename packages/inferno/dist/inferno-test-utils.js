@@ -2413,6 +2413,10 @@ function hydrateText(vNode, dom) {
         replaceChild(dom.parentNode, newDom, dom);
     }
     else {
+        var text = vNode.children;
+        if (dom.nodeValue !== text) {
+            dom.nodeValue = text;
+        }
         vNode.dom = dom;
     }
 }
