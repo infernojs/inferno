@@ -1067,7 +1067,6 @@ describe('Component lifecycle (JSX)', () => {
 		});
 	});
 
-
 	describe('ES6 Component within functional component', () => {
 		it('Should trigger lifecycle events when functional component change', () => {
 			let unmounted = false;
@@ -1077,7 +1076,7 @@ describe('Component lifecycle (JSX)', () => {
 					<div>
 						<Com/>
 					</div>
-				)
+				);
 			}
 
 			function B () {
@@ -1085,7 +1084,7 @@ describe('Component lifecycle (JSX)', () => {
 					<div>
 						<Com/>
 					</div>
-				)
+				);
 			}
 
 			class Com extends Component<any, any> {
@@ -1096,7 +1095,7 @@ describe('Component lifecycle (JSX)', () => {
 				render() {
 					return (
 						<div>C</div>
-					)
+					);
 				}
 			}
 
@@ -1106,7 +1105,38 @@ describe('Component lifecycle (JSX)', () => {
 			render(<B/>, container);
 			expect(unmounted).to.eql(true);
 			expect(container.innerHTML).to.eql('<div><div>C</div></div>');
-		})
+		});
+
+		it('Should trigger lifecycle events when functional component dont change', () => {
+			let unmounted = false;
+
+			function A () {
+				return (
+					<div>
+						<Com/>
+					</div>
+				);
+			}
+
+			class Com extends Component<any, any> {
+				componentWillUnmount() {
+					unmounted = true;
+				}
+
+				render() {
+					return (
+						<div>C</div>
+					);
+				}
+			}
+
+			render(<A/>, container);
+			expect(container.innerHTML).to.eql('<div><div>C</div></div>');
+			expect(unmounted).to.eql(false);
+			render(<A/>, container);
+			expect(unmounted).to.eql(false);
+			expect(container.innerHTML).to.eql('<div><div>C</div></div>');
+		});
 	});
 
 	describe('context with hooks', () => {
