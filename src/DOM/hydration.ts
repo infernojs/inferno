@@ -6,6 +6,7 @@ import {
 import {
 	isArray,
 	isInvalid,
+	isStringOrNumber,
 	isNull,
 	isObject,
 	isUndefined,
@@ -162,6 +163,16 @@ function hydrateChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
 					mount(child, dom, lifecycle, context, isSVG);
 				}
 			}
+		}
+	} else if (isStringOrNumber(children)) {
+		const textDomNode = domNodes[0];
+
+		if (textDomNode && textDomNode.nodeType === 3) {
+			if (textDomNode.value !== children) {
+				textDomNode.value = children;
+			}
+		} else if (children) {
+			dom.textContent = children;
 		}
 	} else if (isObject(children)) {
 		hydrate(children, dom.firstChild, lifecycle, context, isSVG);
