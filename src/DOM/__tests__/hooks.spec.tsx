@@ -836,7 +836,7 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.reset();
 		});
 
-		it('Should call function when node is attached', () => {
+		it('Should call function when node is attached #2', () => {
 			notCalled(spyOuter);
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);

@@ -20,13 +20,13 @@ import { componentToDOMNodeMap } from './rendering';
 import { removeChild } from './utils';
 import Lifecycle from "./lifecycle";
 
-export function unmount(vNode, parentDom, lifecycle: Lifecycle, canRecycle, shallowUnmount, isRecycling) {
+export function unmount(vNode, parentDom, lifecycle: Lifecycle, canRecycle, isRecycling) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Component) {
-		unmountComponent(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
+		unmountComponent(vNode, parentDom, lifecycle, canRecycle, isRecycling);
 	} else if (flags & VNodeFlags.Element) {
-		unmountElement(vNode, parentDom, lifecycle, canRecycle, shallowUnmount, isRecycling);
+		unmountElement(vNode, parentDom, lifecycle, canRecycle, isRecycling);
 	} else if (flags & (VNodeFlags.Text | VNodeFlags.Void)) {
 		unmountVoidOrText(vNode, parentDom);
 	}
@@ -38,12 +38,19 @@ function unmountVoidOrText(vNode, parentDom) {
 	}
 }
 
-export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecycle, shallowUnmount, isRecycling) {
+const alreadyUnmounted = new WeakMap();
+
+export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecycle, isRecycling) {
 	const instance = vNode.children;
 	const flags = vNode.flags;
 	const isStatefulComponent = flags & VNodeFlags.ComponentClass;
 	const ref = vNode.ref;
 	const dom = vNode.dom;
+
+	if (alreadyUnmounted.has(vNode) && !isRecycling) {
+		return;
+	}
+	alreadyUnmounted.set(vNode);
 
 	if (!isRecycling) {
 		if (isStatefulComponent) {
@@ -60,7 +67,7 @@ export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecy
 				const subLifecycle = instance._lifecycle;
 
 				if (!subLifecycle.fastUnmount) {
-					unmount(instance._lastInput, null, subLifecycle, false, shallowUnmount, isRecycling);
+					unmount(instance._lastInput, null, subLifecycle, false, isRecycling);
 				}
 			}
 		} else {
@@ -70,41 +77,41 @@ export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecy
 				}
 			}
 			if (!lifecycle.fastUnmount) {
-				unmount(instance, null, lifecycle, false, shallowUnmount, isRecycling);
+				unmount(instance, null, lifecycle, false, isRecycling);
 			}
 		}
 	}
-	if (!shallowUnmount) {
-		if (parentDom) {
-			let lastInput = instance._lastInput;
+	if (parentDom) {
+		let lastInput = instance._lastInput;
 
-			if (isNullOrUndef(lastInput)) {
-				lastInput = instance;
-			}
-			removeChild(parentDom, dom);
+		if (isNullOrUndef(lastInput)) {
+			lastInput = instance;
 		}
-		if (options.recyclingEnabled && !isStatefulComponent && (parentDom || canRecycle)) {
-			poolComponent(vNode);
-		}
+		removeChild(parentDom, dom);
+	}
+	if (options.recyclingEnabled && !isStatefulComponent && (parentDom || canRecycle)) {
+		poolComponent(vNode);
 	}
 }
 
-const alreadyUnmounted = new WeakMap();
-
-export function unmountElement(vNode, parentDom, lifecycle: Lifecycle, canRecycle, shallowUnmount, isRecycling) {
+export function unmountElement(vNode, parentDom, lifecycle: Lifecycle, canRecycle, isRecycling) {
 	const dom = vNode.dom;
 	const ref = vNode.ref;
 	const events = vNode.events;
 
+	if (alreadyUnmounted.has(vNode) && !isRecycling) {
+		return;
+	}
+	alreadyUnmounted.set(vNode);
+
 	if (!lifecycle.fastUnmount) {
-		if (ref && !isRecycling && !alreadyUnmounted.has(vNode)) {
-			alreadyUnmounted.set(vNode)
+		if (ref && !isRecycling) {
 			unmountRef(ref);
 		}
 		const children = vNode.children;
 
 		if (!isNullOrUndef(children)) {
-			unmountChildren(children, lifecycle, shallowUnmount, isRecycling);
+			unmountChildren(children, lifecycle, isRecycling);
 		}
 	}
 	if (!isNull(events)) {
@@ -114,27 +121,25 @@ export function unmountElement(vNode, parentDom, lifecycle: Lifecycle, canRecycl
 			events[name] = null;
 		}
 	}
-	if (!shallowUnmount) {
-		if (parentDom) {
-			removeChild(parentDom, dom);
-		}
-		if (options.recyclingEnabled && (parentDom || canRecycle)) {
-			poolElement(vNode);
-		}
+	if (parentDom) {
+		removeChild(parentDom, dom);
+	}
+	if (options.recyclingEnabled && (parentDom || canRecycle)) {
+		poolElement(vNode);
 	}
 }
 
-function unmountChildren(children, lifecycle: Lifecycle, shallowUnmount, isRecycling) {
+function unmountChildren(children, lifecycle: Lifecycle, isRecycling) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 
 			if (!isInvalid(child) && isObject(child)) {
-				unmount(child, null, lifecycle, false, shallowUnmount, isRecycling);
+				unmount(child, null, lifecycle, false, isRecycling);
 			}
 		}
 	} else if (isObject(children)) {
-		unmount(children, null, lifecycle, false, shallowUnmount, isRecycling);
+		unmount(children, null, lifecycle, false, isRecycling);
 	}
 }
 

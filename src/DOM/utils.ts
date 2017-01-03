@@ -89,12 +89,12 @@ export function replaceVNode(parentDom, dom, vNode, lifecycle: Lifecycle, isRecy
 	if (vNode.flags & VNodeFlags.Component) {
 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
 		// accessing their DOM node is not useful to us here
-		unmount(vNode, null, lifecycle, false, false, isRecycling);
+		unmount(vNode, null, lifecycle, false, isRecycling);
 		vNode = vNode.children._lastInput || vNode.children;
 		shallowUnmount = true;
 	}
 	replaceChild(parentDom, dom, vNode.dom);
-	unmount(vNode, null, lifecycle, false, shallowUnmount, isRecycling);
+	unmount(vNode, null, lifecycle, false, isRecycling);
 }
 
 export function createFunctionalComponentInput(vNode, component, props, context) {
@@ -157,7 +157,7 @@ export function documentCreateElement(tag, isSVG) {
 }
 
 export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle: Lifecycle, context, isSVG, isRecycling) {
-	unmount(lastNode, null, lifecycle, false, false, isRecycling);
+	unmount(lastNode, null, lifecycle, false, isRecycling);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
 	nextNode.dom = dom;
@@ -175,19 +175,19 @@ export function removeChild(parentDom, dom) {
 	parentDom.removeChild(dom);
 }
 
-export function removeAllChildren(dom, children, lifecycle: Lifecycle, shallowUnmount, isRecycling) {
+export function removeAllChildren(dom, children, lifecycle: Lifecycle, isRecycling) {
 	dom.textContent = '';
-	if (!lifecycle.fastUnmount || (lifecycle.fastUnmount && options.recyclingEnabled && !isRecycling && !shallowUnmount)) {
-		removeChildren(null, children, lifecycle, shallowUnmount, isRecycling);
+	if (!lifecycle.fastUnmount || (lifecycle.fastUnmount && options.recyclingEnabled && !isRecycling)) {
+		removeChildren(null, children, lifecycle, isRecycling);
 	}
 }
 
-export function removeChildren(dom, children, lifecycle: Lifecycle, shallowUnmount, isRecycling) {
+export function removeChildren(dom, children, lifecycle: Lifecycle, isRecycling) {
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
 		if (!isInvalid(child)) {
-			unmount(child, dom, lifecycle, true, shallowUnmount, isRecycling);
+			unmount(child, dom, lifecycle, true, isRecycling);
 		}
 	}
 }
