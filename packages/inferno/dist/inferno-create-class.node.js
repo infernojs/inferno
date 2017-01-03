@@ -4,12 +4,15 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component')) :
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component.node')) :
     typeof define === 'function' && define.amd ? define(['inferno-component'], factory) :
     (global.Inferno = global.Inferno || {}, global.Inferno.createClass = factory(global.Inferno.Component));
 }(this, (function (Component) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;
+
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
 
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though

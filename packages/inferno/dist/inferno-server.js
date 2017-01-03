@@ -4,7 +4,7 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno'), require('stream')) :
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno.node'), require('stream')) :
 	typeof define === 'function' && define.amd ? define(['inferno', 'stream'], factory) :
 	(global.Inferno = global.Inferno || {}, global.Inferno.Server = factory(global.Inferno,global.stream));
 }(this, (function (inferno,stream) { 'use strict';

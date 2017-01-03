@@ -4,7 +4,7 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component'), require('mobx'), require('./inferno-create-class'), require('./inferno-create-element')) :
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component.node'), require('mobx'), require('./inferno-create-class.node'), require('./inferno-create-element.node')) :
 	typeof define === 'function' && define.amd ? define(['inferno-component', 'mobx', 'inferno-create-class', 'inferno-create-element'], factory) :
 	(global.Inferno = global.Inferno || {}, global.Inferno.Mobx = factory(global.Inferno.Component,global.mobx,global.Inferno.createClass,global.Inferno.createElement));
 }(this, (function (Component,mobx,createClass,createElement) { 'use strict';
@@ -52,7 +52,7 @@ var Provider = (function (Component$$1) {
     function Provider(props, context) {
         Component$$1.call(this, props, context);
         this.contextTypes = { mobxStores: function mobxStores() { } };
-        this.childContextTypes = { mobxStores: function mobxStores() { } };
+        this.childContextTypes = { mobxStores: function mobxStores$1() { } };
         this.store = props.store;
     }
 
@@ -74,7 +74,7 @@ var Provider = (function (Component$$1) {
             }
         }
         // add own stores
-        for (var key$1 in this$1.props) {
+        for (var key$1 in this.props) {
             if (!specialKeys[key$1]) {
                 stores[key$1] = this$1.props[key$1];
             }
@@ -322,7 +322,7 @@ function createStoreInjector(grabStoresFn, component) {
             var this$1 = this;
 
             var newProps = {};
-            for (var key in this$1.props) {
+            for (var key in this.props) {
                 if (this$1.props.hasOwnProperty(key)) {
                     newProps[key] = this$1.props[key];
                 }

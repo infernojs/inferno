@@ -64,7 +64,7 @@ export function relativeModules() {
 				case 'umd':
 				case 'cjs':
 					Object.keys(aliases).forEach(alias => {
-						source = source.replace(new RegExp(`require\\('${alias}'`, 'g'), `require('./${alias}'`);
+						source = source.replace(new RegExp(`require\\('${alias}'`, 'g'), `require('./${alias}.node'`);
 					});
 					return source;
 				default:

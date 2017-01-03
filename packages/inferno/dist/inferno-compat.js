@@ -4,13 +4,16 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('proptypes'), require('./inferno-component'), require('./inferno')) :
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('proptypes'), require('./inferno-component.node'), require('./inferno.node')) :
 	typeof define === 'function' && define.amd ? define(['exports', 'proptypes', 'inferno-component', 'inferno'], factory) :
 	(factory((global.Inferno = global.Inferno || {}),global.PropTypes,global.Inferno.Component,global.Inferno));
 }(this, (function (exports,PropTypes,Component,inferno) { 'use strict';
 
 PropTypes = 'default' in PropTypes ? PropTypes['default'] : PropTypes;
 Component = 'default' in Component ? Component['default'] : Component;
+
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
 
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though
@@ -406,7 +409,7 @@ var WrapperComponent = (function (Component$$1) {
 	WrapperComponent.prototype.getChildContext = function getChildContext () {
 		return this.props.context;
 	};
-	WrapperComponent.prototype.render = function render$$1 (props) {
+	WrapperComponent.prototype.render = function render$1 (props) {
 		return props.children;
 	};
 
