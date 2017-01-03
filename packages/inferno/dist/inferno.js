@@ -2294,6 +2294,17 @@ function hydrateChildren(children, dom, lifecycle, context, isSVG) {
             }
         }
     }
+    else if (isStringOrNumber(children)) {
+        var textDomNode = domNodes[0];
+        if (textDomNode && textDomNode.nodeType === 3) {
+            if (textDomNode.value !== children) {
+                textDomNode.value = children;
+            }
+        }
+        else if (children) {
+            dom.textContent = children;
+        }
+    }
     else if (isObject(children)) {
         hydrate(children, dom.firstChild, lifecycle, context, isSVG);
     }
