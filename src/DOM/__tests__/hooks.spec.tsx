@@ -1067,7 +1067,6 @@ describe('Component lifecycle (JSX)', () => {
 		});
 	});
 
-
 	describe('ES6 Component within functional component', () => {
 		it('Should trigger lifecycle events when functional component change', () => {
 			let unmounted = false;
@@ -1077,7 +1076,7 @@ describe('Component lifecycle (JSX)', () => {
 					<div>
 						<Com/>
 					</div>
-				)
+				);
 			}
 
 			function B () {
@@ -1085,7 +1084,7 @@ describe('Component lifecycle (JSX)', () => {
 					<div>
 						<Com/>
 					</div>
-				)
+				);
 			}
 
 			class Com extends Component<any, any> {
@@ -1096,7 +1095,7 @@ describe('Component lifecycle (JSX)', () => {
 				render() {
 					return (
 						<div>C</div>
-					)
+					);
 				}
 			}
 
@@ -1116,7 +1115,7 @@ describe('Component lifecycle (JSX)', () => {
 					<div>
 						<Com/>
 					</div>
-				)
+				);
 			}
 
 			class Com extends Component<any, any> {
@@ -1127,7 +1126,7 @@ describe('Component lifecycle (JSX)', () => {
 				render() {
 					return (
 						<div>C</div>
-					)
+					);
 				}
 			}
 
