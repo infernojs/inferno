@@ -7,7 +7,6 @@
 	perfMonitor.initProfiler('view update');
 
 	var createVNode = Inferno.createVNode;
-	var staticNode = createVNode(2, 'div', { className: 'arrow' }, null, null, null, null, true);
 	var tableProps = {
 		className: 'table table-striped latest-data'
 	};
@@ -50,7 +49,7 @@
 					createVNode(2, 'div', foo, query.formatElapsed, null, null, null, true),
 					createVNode(66, 'div', popoverLeft, [
 						createVNode(2, 'div', popoverContent, query.query, null, null, null, true),
-						staticNode
+						createVNode(2, 'div', { className: 'arrow' }, null, null, null, null, true)
 					], null, null, null, true)
 				], null, null, null, true);
 				databases[i] = createVNode(66, 'tr', null, children, null, null, null, true);
