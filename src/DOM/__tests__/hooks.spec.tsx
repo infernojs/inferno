@@ -1067,6 +1067,48 @@ describe('Component lifecycle (JSX)', () => {
 		});
 	});
 
+
+	describe('ES6 Component within functional component', () => {
+		it('Should trigger lifecycle events when functional component change', () => {
+			let unmounted = false;
+
+			function A () {
+				return (
+					<div>
+						<Com/>
+					</div>
+				)
+			}
+
+			function B () {
+				return (
+					<div>
+						<Com/>
+					</div>
+				)
+			}
+
+			class Com extends Component<any, any> {
+				componentWillUnmount() {
+					unmounted = true;
+				}
+
+				render() {
+					return (
+						<div>C</div>
+					)
+				}
+			}
+
+			render(<A/>, container);
+			expect(container.innerHTML).to.eql('<div><div>C</div></div>');
+			expect(unmounted).to.eql(false);
+			render(<B/>, container);
+			expect(unmounted).to.eql(true);
+			expect(container.innerHTML).to.eql('<div><div>C</div></div>');
+		})
+	});
+
 	describe('context with hooks', () => {
 		it('Should trigger componentWillMount before getting child context', () => {
 			class A extends Component<any, any> {
