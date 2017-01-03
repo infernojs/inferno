@@ -4,7 +4,7 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('proptypes'), require('./inferno-component.node'), require('./inferno.node')) :
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('proptypes'), require('inferno-component'), require('inferno')) :
 	typeof define === 'function' && define.amd ? define(['exports', 'proptypes', 'inferno-component', 'inferno'], factory) :
 	(factory((global.Inferno = global.Inferno || {}),global.PropTypes,global.Inferno.Component,global.Inferno));
 }(this, (function (exports,PropTypes,Component,inferno) { 'use strict';

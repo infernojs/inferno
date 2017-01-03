@@ -4,7 +4,7 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./inferno-component.node'), require('mobx'), require('./inferno-create-class.node'), require('./inferno-create-element.node')) :
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('inferno-component'), require('mobx'), require('inferno-create-class'), require('inferno-create-element')) :
 	typeof define === 'function' && define.amd ? define(['inferno-component', 'mobx', 'inferno-create-class', 'inferno-create-element'], factory) :
 	(global.Inferno = global.Inferno || {}, global.Inferno.Mobx = factory(global.Inferno.Component,global.mobx,global.Inferno.createClass,global.Inferno.createElement));
 }(this, (function (Component,mobx,createClass,createElement) { 'use strict';
