@@ -1,5 +1,5 @@
 /*!
- * inferno-component v1.0.4
+ * inferno-component v1.0.5
  * (c) 2017 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -97,12 +97,12 @@ function addToQueue(component, force, callback) {
         queue = [];
         componentCallbackQueue.set(component, queue);
         Promise.resolve().then(function () {
+            componentCallbackQueue.delete(component);
             applyState(component, force, function () {
                 for (var i = 0; i < queue.length; i++) {
                     queue[i]();
                 }
             });
-            componentCallbackQueue.delete(component);
         });
     }
     if (callback) {

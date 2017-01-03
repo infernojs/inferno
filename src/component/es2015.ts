@@ -82,12 +82,12 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 		queue = [];
 		componentCallbackQueue.set(component, queue);
 		Promise.resolve().then(() => {
+			componentCallbackQueue.delete(component);
 			applyState(component, force, () => {
 				for (let i = 0; i < queue.length; i++) {
 					queue[i]();
 				}
 			});
-			componentCallbackQueue.delete(component);
 		});
 	}
 	if (callback) {

@@ -1,6 +1,6 @@
 {
   "name": "inferno-dom",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "license": "MIT",
   "description": "Provides methods to render DOM nodes from Inferno elements",
   "author": {
@@ -22,6 +22,6 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "1.0.4"
+    "inferno": "1.0.5"
   }
 }
