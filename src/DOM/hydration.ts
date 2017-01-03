@@ -168,8 +168,8 @@ function hydrateChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
 		const textDomNode = domNodes[0];
 
 		if (textDomNode && textDomNode.nodeType === 3) {
-			if (textDomNode.value !== children) {
-				textDomNode.value = children;
+			if (textDomNode.nodeValue !== children) {
+				textDomNode.nodeValue = children;
 			}
 		} else if (children) {
 			dom.textContent = children;
