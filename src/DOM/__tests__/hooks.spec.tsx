@@ -1005,7 +1005,7 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.reset();
 		});
 
-		it('Should not call ref unmount when node is not mounted', () => {
+		it('Should not call ref unmount when node is not mounted #2', () => {
 			notCalled(spyOuter);
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);

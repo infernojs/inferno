@@ -285,12 +285,12 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 			const lastInput = lastVNode.children._lastInput || lastVNode.children;
 			const nextInput = createFunctionalComponentInput(nextVNode, nextType, nextProps, context);
 
+			unmount(lastVNode, null, lifecycle, false, true, isRecycling);
 			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
 			const dom = nextVNode.dom = nextInput.dom;
 
 			nextVNode.children = nextInput;
 			mountFunctionalComponentCallbacks(nextVNode.ref, dom, lifecycle);
-			unmount(lastVNode, null, lifecycle, false, true, isRecycling);
 		}
 	} else {
 		if (isClass) {
