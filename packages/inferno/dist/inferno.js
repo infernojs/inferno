@@ -1421,7 +1421,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
             while (i > 0) {
                 aNode = aNullable[aStart++];
                 if (!isNull(aNode)) {
-                    unmount(aNode, dom, lifecycle, false, false, isRecycling);
+                    unmount(aNode, dom, lifecycle, true, false, isRecycling);
                     i--;
                 }
             }
@@ -2159,7 +2159,7 @@ function removeChild(parentDom, dom) {
 }
 function removeAllChildren(dom, children, lifecycle, shallowUnmount, isRecycling) {
     dom.textContent = '';
-    if (!lifecycle.fastUnmount) {
+    if (!lifecycle.fastUnmount || (lifecycle.fastUnmount && options.recyclingEnabled && !isRecycling && !shallowUnmount)) {
         removeChildren(null, children, lifecycle, shallowUnmount, isRecycling);
     }
 }

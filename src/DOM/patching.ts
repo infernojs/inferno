@@ -681,7 +681,7 @@ export function patchKeyedChildren(
 			while (i > 0) {
 				aNode = aNullable[aStart++];
 				if (!isNull(aNode)) {
-					unmount(aNode, dom, lifecycle, false, false, isRecycling);
+					unmount(aNode, dom, lifecycle, true, false, isRecycling);
 					i--;
 				}
 			}
