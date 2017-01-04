@@ -224,8 +224,15 @@ function hydrate(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 }
 
 export default function hydrateRoot(input, parentDom, lifecycle) {
-	if (parentDom && parentDom.nodeType === 1 && parentDom.firstChild) {
-		hydrate(input, parentDom.firstChild, lifecycle, {}, false);
+	let dom = parentDom && parentDom.firstChild;
+
+	if (dom) {
+		hydrate(input, dom, lifecycle, {}, false);
+		dom = parentDom.firstChild;
+		// clear any other DOM nodes, there should be only a single entry for the root
+		while (dom = dom.nextSibling) {
+			parentDom.removeChild(dom);
+		}
 		return true;
 	}
 	return false;

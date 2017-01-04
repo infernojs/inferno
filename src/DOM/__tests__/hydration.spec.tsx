@@ -235,4 +235,26 @@ describe('SSR Hydration - (JSX)', () => {
 			expect(container.innerHTML).to.equal(expect3);
 		});
 	});
+
+	it('should rebuild and patch from existing DOM content ', () => {
+		const container = document.createElement('div');
+		const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+
+		container.innerHTML = '<h1><div>Existing DOM content</div></h1>';
+		render(vNode, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div class="example">Hello world!</div>'));
+	});
+
+	it('should rebuild and patch from existing DOM content (whitespace) ', () => {
+		const container = document.createElement('div');
+		const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+
+		container.appendChild(document.createTextNode(''));
+		container.appendChild(document.createElement('h1'));
+		container.appendChild(document.createTextNode(''));
+		render(vNode, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div class="example">Hello world!</div>'));
+	});
 });
+
+

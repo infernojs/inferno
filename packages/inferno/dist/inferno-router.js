@@ -180,7 +180,17 @@ function flattenArray(oldArray, newArray) {
 
 var Route = (function (Component$$1) {
     function Route(props, context) {
+        var this$1 = this;
+
         Component$$1.call(this, props, context);
+        this._onComponentResolved = function (error, component) {
+            this$1.setState({
+                asyncComponent: component
+            });
+        };
+        this.state = {
+            asyncComponent: null
+        };
     }
 
     if ( Component$$1 ) Route.__proto__ = Component$$1;
@@ -196,6 +206,13 @@ var Route = (function (Component$$1) {
         if (onEnter) {
             Promise.resolve().then(function () {
                 onEnter({ props: this$1.props, router: router });
+            });
+        }
+        var ref$2 = this.props;
+        var getComponent = ref$2.getComponent;
+        if (getComponent) {
+            Promise.resolve().then(function () {
+                getComponent({ props: this$1.props, router: router }, this$1._onComponentResolved);
             });
         }
     };
@@ -220,7 +237,13 @@ var Route = (function (Component$$1) {
         var component = _args.component;
         var children = _args.children;
         var props = rest(_args, ['component', 'children', 'path']);
-        return createElement(component, props, children);
+        var ref = this.state;
+        var asyncComponent = ref.asyncComponent;
+        var resolvedComponent = component || asyncComponent;
+        if (!resolvedComponent) {
+            return null;
+        }
+        return createElement(resolvedComponent, props, children);
     };
 
     return Route;
