@@ -37,12 +37,12 @@ export default class Route extends Component<IRouteProps, any> {
 		const { getComponent } = this.props;
 		if (getComponent) {
 			Promise.resolve().then(() => {
-				getComponent({ props: this.props, router }, this.onComponentResolved);
+				getComponent({ props: this.props, router }, this._onComponentResolved);
 			});
 		}
 	}
 
-	onComponentResolved = (error, component) => {
+	private _onComponentResolved = (error, component) => {
 		this.setState({
 			asyncComponent: component
 		});
