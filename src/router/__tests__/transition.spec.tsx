@@ -191,6 +191,19 @@ describe('Router (jsx) #transitions', () => {
 			<Route path='/' onEnter={ null } onLeave={ null } component={ TestHooksLeave }/>
 		</Router>, container);
 	});
+
+	it('should support getComponent as an alternative to the component prop', (done) => {
+		const resolveToComponent = (nextState, cb) => cb(null, GoodComponent);
+
+		render(<Router history={ browserHistory }>
+				<Route path={'/'} getComponent={resolveToComponent}/>
+			</Router>, container);
+
+		setTimeout(() => {
+			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
+			done();
+		}, 10);
+	});
 });
 
 function clickOnLink(element) {
