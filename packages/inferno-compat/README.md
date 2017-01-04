@@ -33,13 +33,6 @@ Note: Inferno will not currently validate `PropTypes`
 - `ReactDOM.render`
 - `ReactDOM.unmountComponentAtNode`
 - `ReactDOM.findDOMNode`
-
-## What is missing?
-
-These features will hopefully be added in future versions
-
-### `react`
-
 - `React.DOM`
 - `React.createFactory`
 
