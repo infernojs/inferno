@@ -236,7 +236,7 @@ describe('SSR Hydration - (JSX)', () => {
 		});
 	});
 
-	it('should rebuild and patch from existing DOM content ', () => {
+	it('should rebuild and patch from existing DOM content', () => {
 		const container = document.createElement('div');
 		const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
 
@@ -254,5 +254,29 @@ describe('SSR Hydration - (JSX)', () => {
 		container.appendChild(document.createTextNode(''));
 		render(vNode, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div class="example">Hello world!</div>'));
+	});
+
+	it('should rebuild and patch from existing DOM content #2', () => {
+		const container = document.createElement('div');
+		const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, [
+			Inferno.createVNode(2, 'div', null, 'Item 1'),
+			Inferno.createVNode(2, 'div', null, 'Item 2')
+		]);
+
+		container.innerHTML = '<h1><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></h1><div>Existing DOM content</div>';
+		render(vNode, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
+	});
+
+	it('should rebuild and patch from existing DOM content #3', () => {
+		const container = document.createElement('div');
+		const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, [
+			Inferno.createVNode(2, 'div', null, 'Item 1'),
+			Inferno.createVNode(2, 'div', null, 'Item 2')
+		]);
+
+		container.innerHTML = '<div><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></div>';
+		render(vNode, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
 	});
 });

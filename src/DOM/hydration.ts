@@ -37,26 +37,24 @@ import {
 import processElement from './wrappers/processElement';
 import { svgNS } from './constants';
 
-export function normalizeChildNodes(dom) {
-	const rawChildNodes = dom.childNodes;
-	let length = rawChildNodes.length;
-	let i = 0;
+export function normalizeChildNodes(parentDom) {
+	let dom = parentDom.firstChild;
 
-	while (i < length) {
-		const rawChild = rawChildNodes[i];
-
-		if (rawChild.nodeType === 8) {
-			if (rawChild.data === '!') {
+	while (dom) {
+		if (dom.nodeType === 8) {
+			if (dom.data === '!') {
 				const placeholder = document.createTextNode('');
 
-				dom.replaceChild(placeholder, rawChild);
-				i++;
+				parentDom.replaceChild(placeholder, dom);
+				dom = dom.nextSibling;
 			} else {
-				dom.removeChild(rawChild);
-				length--;
+				const lastDom = dom.previousSibling;
+
+				parentDom.removeChild(dom);
+				dom = lastDom || parentDom.firstChild;
 			}
 		} else {
-			i++;
+			dom = dom.nextSibling;
 		}
 	}
 }
@@ -103,6 +101,7 @@ function hydrateComponent(vNode, dom, lifecycle: Lifecycle, context, isSVG, isCl
 		vNode.dom = input.dom;
 		mountFunctionalComponentCallbacks(ref, dom, lifecycle);
 	}
+	return dom;
 }
 
 function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
@@ -121,78 +120,83 @@ function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 
 		vNode.dom = newDom;
 		replaceChild(dom.parentNode, newDom, dom);
-	} else {
-		vNode.dom = dom;
-		if (children) {
-			hydrateChildren(children, dom, lifecycle, context, isSVG);
-		}
-		if (!(flags & VNodeFlags.HtmlElement)) {
-			processElement(flags, vNode, dom);
-		}
-		if (props) {
-			for (let prop in props) {
-				patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
-			}
-		}
-		if (events) {
-			for (let name in events) {
-				patchEvent(name, null, events[name], dom, lifecycle);
-			}
-		}
-		if (ref) {
-			mountRef(dom, ref, lifecycle);
+		return newDom;
+	}
+	vNode.dom = dom;
+	if (children) {
+		hydrateChildren(children, dom, lifecycle, context, isSVG);
+	}
+	if (!(flags & VNodeFlags.HtmlElement)) {
+		processElement(flags, vNode, dom);
+	}
+	if (props) {
+		for (let prop in props) {
+			patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
 		}
 	}
+	if (events) {
+		for (let name in events) {
+			patchEvent(name, null, events[name], dom, lifecycle);
+		}
+	}
+	if (ref) {
+		mountRef(dom, ref, lifecycle);
+	}
+	return dom;
 }
 
-function hydrateChildren(children, dom, lifecycle: Lifecycle, context, isSVG) {
-	normalizeChildNodes(dom);
-	const domNodes = Array.prototype.slice.call(dom.childNodes);
-	let childNodeIndex = 0;
+function hydrateChildren(children, parentDom, lifecycle: Lifecycle, context, isSVG) {
+	normalizeChildNodes(parentDom);
+	let dom = parentDom.firstChild;
 
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 
 			if (isObject(child) && !isNull(child)) {
-				const childDom = domNodes[childNodeIndex++];
-
-				if (childDom) {
-					hydrate(child, childDom, lifecycle, context, isSVG);
+				if (dom) {
+					dom = hydrate(child, dom, lifecycle, context, isSVG);
+					dom = dom.nextSibling;
 				} else {
-					mount(child, dom, lifecycle, context, isSVG);
+					mount(child, parentDom, lifecycle, context, isSVG);
 				}
 			}
 		}
 	} else if (isStringOrNumber(children)) {
-		const textDomNode = domNodes[0];
-
-		if (textDomNode && textDomNode.nodeType === 3) {
-			if (textDomNode.nodeValue !== children) {
-				textDomNode.nodeValue = children;
+		if (dom && dom.nodeType === 3) {
+			if (dom.nodeValue !== children) {
+				dom.nodeValue = children;
 			}
 		} else if (children) {
-			dom.textContent = children;
+			parentDom.textContent = children;
 		}
+		dom = dom.nextSibling;
 	} else if (isObject(children)) {
-		hydrate(children, dom.firstChild, lifecycle, context, isSVG);
+		hydrate(children, dom, lifecycle, context, isSVG);
+		dom = dom.nextSibling;
+	}
+	// clear any other DOM nodes, there should be only a single entry for the root
+	while (dom) {
+		parentDom.removeChild(dom);
+		dom = dom.nextSibling;
 	}
 }
 
 function hydrateText(vNode, dom) {
-	if (dom.nodeType === 3) {
+	if (dom.nodeType !== 3) {
 		const newDom = mountText(vNode, null);
 
 		vNode.dom = newDom;
 		replaceChild(dom.parentNode, newDom, dom);
-	} else {
-		const text = vNode.children;
-
-		if (dom.nodeValue !== text) {
-			dom.nodeValue = text;
-		}
-		vNode.dom = dom;
+		return newDom;
 	}
+	const text = vNode.children;
+
+	if (dom.nodeValue !== text) {
+		dom.nodeValue = text;
+	}
+	vNode.dom = dom;
+	return dom;
 }
 
 function hydrateVoid(vNode, dom) {

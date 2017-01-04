@@ -2280,25 +2280,23 @@ function isKeyed(lastChildren, nextChildren) {
         && lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
 
-function normalizeChildNodes(dom) {
-    var rawChildNodes = dom.childNodes;
-    var length = rawChildNodes.length;
-    var i = 0;
-    while (i < length) {
-        var rawChild = rawChildNodes[i];
-        if (rawChild.nodeType === 8) {
-            if (rawChild.data === '!') {
+function normalizeChildNodes(parentDom) {
+    var dom = parentDom.firstChild;
+    while (dom) {
+        if (dom.nodeType === 8) {
+            if (dom.data === '!') {
                 var placeholder = document.createTextNode('');
-                dom.replaceChild(placeholder, rawChild);
-                i++;
+                parentDom.replaceChild(placeholder, dom);
+                dom = dom.nextSibling;
             }
             else {
-                dom.removeChild(rawChild);
-                length--;
+                var lastDom = dom.previousSibling;
+                parentDom.removeChild(dom);
+                dom = lastDom || parentDom.firstChild;
             }
         }
         else {
-            i++;
+            dom = dom.nextSibling;
         }
     }
 }
@@ -2341,6 +2339,7 @@ function hydrateComponent(vNode, dom, lifecycle, context, isSVG, isClass) {
         vNode.dom = input$1.dom;
         mountFunctionalComponentCallbacks(ref, dom, lifecycle);
     }
+    return dom;
 }
 function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     var tag = vNode.type;
@@ -2356,76 +2355,81 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
         var newDom = mountElement(vNode, null, lifecycle, context, isSVG);
         vNode.dom = newDom;
         replaceChild(dom.parentNode, newDom, dom);
+        return newDom;
     }
-    else {
-        vNode.dom = dom;
-        if (children) {
-            hydrateChildren(children, dom, lifecycle, context, isSVG);
-        }
-        if (!(flags & 2 /* HtmlElement */)) {
-            processElement(flags, vNode, dom);
-        }
-        if (props) {
-            for (var prop in props) {
-                patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
-            }
-        }
-        if (events) {
-            for (var name in events) {
-                patchEvent(name, null, events[name], dom, lifecycle);
-            }
-        }
-        if (ref) {
-            mountRef(dom, ref, lifecycle);
+    vNode.dom = dom;
+    if (children) {
+        hydrateChildren(children, dom, lifecycle, context, isSVG);
+    }
+    if (!(flags & 2 /* HtmlElement */)) {
+        processElement(flags, vNode, dom);
+    }
+    if (props) {
+        for (var prop in props) {
+            patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
         }
     }
+    if (events) {
+        for (var name in events) {
+            patchEvent(name, null, events[name], dom, lifecycle);
+        }
+    }
+    if (ref) {
+        mountRef(dom, ref, lifecycle);
+    }
+    return dom;
 }
-function hydrateChildren(children, dom, lifecycle, context, isSVG) {
-    normalizeChildNodes(dom);
-    var domNodes = Array.prototype.slice.call(dom.childNodes);
-    var childNodeIndex = 0;
+function hydrateChildren(children, parentDom, lifecycle, context, isSVG) {
+    normalizeChildNodes(parentDom);
+    var dom = parentDom.firstChild;
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             if (isObject(child) && !isNull(child)) {
-                var childDom = domNodes[childNodeIndex++];
-                if (childDom) {
-                    hydrate(child, childDom, lifecycle, context, isSVG);
+                if (dom) {
+                    dom = hydrate(child, dom, lifecycle, context, isSVG);
+                    dom = dom.nextSibling;
                 }
                 else {
-                    mount(child, dom, lifecycle, context, isSVG);
+                    mount(child, parentDom, lifecycle, context, isSVG);
                 }
             }
         }
     }
     else if (isStringOrNumber(children)) {
-        var textDomNode = domNodes[0];
-        if (textDomNode && textDomNode.nodeType === 3) {
-            if (textDomNode.nodeValue !== children) {
-                textDomNode.nodeValue = children;
+        if (dom && dom.nodeType === 3) {
+            if (dom.nodeValue !== children) {
+                dom.nodeValue = children;
             }
         }
         else if (children) {
-            dom.textContent = children;
+            parentDom.textContent = children;
         }
+        dom = dom.nextSibling;
     }
     else if (isObject(children)) {
-        hydrate(children, dom.firstChild, lifecycle, context, isSVG);
+        hydrate(children, dom, lifecycle, context, isSVG);
+        dom = dom.nextSibling;
+    }
+    // clear any other DOM nodes, there should be only a single entry for the root
+    while (dom) {
+        parentDom.removeChild(dom);
+        dom = dom.nextSibling;
     }
 }
 function hydrateText(vNode, dom) {
-    if (dom.nodeType === 3) {
+    if (dom.nodeType !== 3) {
         var newDom = mountText(vNode, null);
         vNode.dom = newDom;
         replaceChild(dom.parentNode, newDom, dom);
+        return newDom;
     }
-    else {
-        var text = vNode.children;
-        if (dom.nodeValue !== text) {
-            dom.nodeValue = text;
-        }
-        vNode.dom = dom;
+    var text = vNode.children;
+    if (dom.nodeValue !== text) {
+        dom.nodeValue = text;
     }
+    vNode.dom = dom;
+    return dom;
 }
 function hydrateVoid(vNode, dom) {
     vNode.dom = dom;
