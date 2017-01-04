@@ -866,7 +866,7 @@ function unmountComponent(vNode, parentDom, lifecycle, canRecycle, isRecycling) 
     var isStatefulComponent$$1 = flags & 4;
     var ref = vNode.ref;
     var dom = vNode.dom;
-    if (alreadyUnmounted.has(vNode) && !isRecycling) {
+    if (alreadyUnmounted.has(vNode) && !isRecycling && !parentDom) {
         return;
     }
     alreadyUnmounted.set(vNode);
@@ -913,7 +913,7 @@ function unmountElement(vNode, parentDom, lifecycle, canRecycle, isRecycling) {
     var dom = vNode.dom;
     var ref = vNode.ref;
     var events = vNode.events;
-    if (alreadyUnmounted.has(vNode) && !isRecycling) {
+    if (alreadyUnmounted.has(vNode) && !isRecycling && !parentDom) {
         return;
     }
     alreadyUnmounted.set(vNode);
