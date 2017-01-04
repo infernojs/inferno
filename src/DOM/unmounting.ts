@@ -47,7 +47,7 @@ export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecy
 	const ref = vNode.ref;
 	const dom = vNode.dom;
 
-	if (alreadyUnmounted.has(vNode) && !isRecycling) {
+	if (alreadyUnmounted.has(vNode) && !isRecycling && !parentDom) {
 		return;
 	}
 	alreadyUnmounted.set(vNode);
@@ -99,7 +99,7 @@ export function unmountElement(vNode, parentDom, lifecycle: Lifecycle, canRecycl
 	const ref = vNode.ref;
 	const events = vNode.events;
 
-	if (alreadyUnmounted.has(vNode) && !isRecycling) {
+	if (alreadyUnmounted.has(vNode) && !isRecycling && !parentDom) {
 		return;
 	}
 	alreadyUnmounted.set(vNode);

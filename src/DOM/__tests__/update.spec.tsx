@@ -582,7 +582,6 @@ describe('Stateful Component updates', () => {
 			);
 		};
 
-
 		function B() {
 			return (
 				<div className="simplegrid">
