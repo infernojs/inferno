@@ -423,6 +423,18 @@ function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, 
 	return component;
 }
 
+// Credit: preact-compat - https://github.com/developit/preact-compat
+var ELEMENTS = 'a abbr address area article aside audio b base bdi bdo big blockquote body br button canvas caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd keygen label legend li link main map mark menu menuitem meta meter nav noscript object ol optgroup option output p param picture pre progress q rp rt ruby s samp script section select small source span strong style sub summary sup table tbody td textarea tfoot th thead time title tr track u ul var video wbr circle clipPath defs ellipse g image line linearGradient mask path pattern polygon polyline radialGradient rect stop svg text tspan'.split(' ');
+
+function createFactory(type) {
+	return createElement.bind(null, type);
+}
+
+var DOM = {};
+for (var i = ELEMENTS.length; i--;) {
+	DOM[ELEMENTS[i]] = createFactory(ELEMENTS[i]);
+}
+
 var index = {
 	createVNode: inferno.createVNode,
 	render: inferno.render,
@@ -439,7 +451,9 @@ var index = {
 	cloneVNode: inferno.cloneVNode,
 	NO_OP: inferno.NO_OP,
 	version: version,
-	unstable_renderSubtreeIntoContainer: unstable_renderSubtreeIntoContainer
+	unstable_renderSubtreeIntoContainer: unstable_renderSubtreeIntoContainer,
+	createFactory: createFactory,
+	DOM: DOM
 };
 
 exports.createVNode = inferno.createVNode;
@@ -458,6 +472,8 @@ exports.cloneVNode = inferno.cloneVNode;
 exports.NO_OP = inferno.NO_OP;
 exports.version = version;
 exports.unstable_renderSubtreeIntoContainer = unstable_renderSubtreeIntoContainer;
+exports.createFactory = createFactory;
+exports.DOM = DOM;
 exports['default'] = index;
 
 Object.defineProperty(exports, '__esModule', { value: true });
