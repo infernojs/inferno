@@ -4,6 +4,7 @@
 		"quotemark": ["single"],
 		"forin": false,
 		"no-empty": false,
+		"no-conditional-assignment": false,
 		"indent": [
 			"tabs"
 		],

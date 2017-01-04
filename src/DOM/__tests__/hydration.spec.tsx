@@ -256,5 +256,3 @@ describe('SSR Hydration - (JSX)', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div class="example">Hello world!</div>'));
 	});
 });
-
-
