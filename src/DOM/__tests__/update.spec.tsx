@@ -570,4 +570,82 @@ describe('Stateful Component updates', () => {
 		expect(assert.notCalled(submitSpy));
 		input.focus();
 	});
+
+	it('Should not append when replacing ES6 component with functional component', () => {
+		const A = function () {
+			return (
+				<div>
+					<div className="topheader">
+						<h1>A</h1>
+					</div>
+				</div>
+			);
+		};
+
+
+		function B() {
+			return (
+				<div className="simplegrid">
+					<div className="topheader">
+						<h1>B</h1>
+					</div>
+					<div className="viewcontent fullscreen">
+						<C/>
+					</div>
+				</div>
+			);
+		}
+
+		class C extends Component<any, any> {
+			componentWillUnmount() {
+
+			}
+
+			render() {
+
+				// TODO instead of giving whole setting stuff give in own properties to ReportGrid!
+				return (
+					<div className="report-container">
+						C
+					</div>
+				);
+			}
+		}
+
+		const expectedA = '<div><div class="topheader"><h1>A</h1></div></div>';
+		const expectedB = '<div class="simplegrid"><div class="topheader"><h1>B</h1></div><div class="viewcontent fullscreen"><div class="report-container">C</div></div></div>';
+		render(<A/>, container);
+		expect(container.innerHTML).to.eql(expectedA);
+
+		render(<B/>, container);
+		expect(container.innerHTML).to.eql(expectedB);
+
+		// SO FAR SO GOOD
+
+		// NOW START SWAPPING
+
+		render(<A/>, container);
+		expect(container.innerHTML).to.eql(expectedA);
+
+		render(<B/>, container);
+		expect(container.innerHTML).to.eql(expectedB);
+
+		render(<A/>, container);
+		expect(container.innerHTML).to.eql(expectedA);
+
+		render(<B/>, container);
+		expect(container.innerHTML).to.eql(expectedB);
+
+		render(<A/>, container);
+		expect(container.innerHTML).to.eql(expectedA);
+
+		render(<B/>, container);
+		expect(container.innerHTML).to.eql(expectedB);
+
+		render(<A/>, container);
+		expect(container.innerHTML).to.eql(expectedA);
+
+		render(<B/>, container);
+		expect(container.innerHTML).to.eql(expectedB);
+	});
 });
