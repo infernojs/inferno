@@ -46,7 +46,7 @@ function connect (arg1: any, arg2 = null): any {
 	}
 
 	if (!componentClass) {
-		throwError('Please pass a valid component to "observer"');
+		throwError('Please pass a valid component to "connect"');
 	}
 
 	componentClass.isMobXReactObserver = true;
