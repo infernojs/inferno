@@ -180,7 +180,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 - Inferno doesn't support string refs – although this can be enabled using `inferno-compat`. We don't recommend using them, they are the source of many memory leaks and performance issues in real-world apps. Stick with function callback refs instead.
 - Inferno includes `render` on the main core package, rather than have a `InfernoDOM` package like React does. We used to do it that way, but we found people simply didn't like it given we don't support native. Furthermore, by not splitting them, we improved performance and bundle sizes.
 - Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
-- Inferno has its own devtools debugger (still in development) that differs from the React implementation. Inferno's debugger is on average, 4x faster – fixing lots of the issues with slow, laggy interfaces when developers are debugging.
+- Inferno has is able to use the React Dev Tools exntensions for Chrome/Firefox/etc to provide the same level of debugging experience to user of Inferno via `inferno-devtools`.
 
 ## Differences from Preact
 
@@ -189,7 +189,6 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 - Inferno is *much* faster than Preact in rendering, updating and removing elements from the DOM. Inferno diffs against virtual DOM, rather than the real DOM (except for when loading from server-side rendered content) which means it can make drastic improvements. Unfortunately, diffing against the real DOM has a 30-40% overhead cost in operations.
 - Inferno fully supports controlled components for `input`/`select`/`textarea` elements. This prevents lots of edgecases where the virtual DOM is not the source of truth (it should always be). Preact pushes the source of truth to the DOM itself.
 - Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
-- Inferno has its own devtools debugger (still in development) that differs from the Preact (React bound) implementation. Inferno's debugger is on average, 4x faster – fixing lots of the issues with slow, laggy interfaces when developers are debugging.
 
 ## Event System
 
