@@ -98,7 +98,7 @@ Inferno.render(<MyComponent />, document.body);
 
 ### More Examples
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/o01mvsyn/)
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/u7p19pvc/)
 
 ## Getting Started
 
