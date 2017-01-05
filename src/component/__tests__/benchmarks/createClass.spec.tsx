@@ -1,6 +1,5 @@
 import createClass from 'inferno-create-class';
-import Inferno, { render } from 'inferno';
-Inferno; // suppress ts 'never used' error
+import { render } from 'inferno';
 
 function runBenchmark(container) {
 	let Link0 = createClass({

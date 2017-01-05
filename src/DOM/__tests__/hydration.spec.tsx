@@ -6,8 +6,7 @@ import {
 	innerHTML,
 	validateNodeTree
 } from '../../tools/utils';
-import Inferno, { render } from 'inferno';
-Inferno; // suppress ts 'never used' error
+import { render, createVNode } from 'inferno';
 
 function Comp1() {
 	return <span>Worked!</span>;
@@ -238,7 +237,7 @@ describe('SSR Hydration - (JSX)', () => {
 
 	it('should rebuild and patch from existing DOM content', () => {
 		const container = document.createElement('div');
-		const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+		const vNode = createVNode(2, 'div', { className: 'example' }, 'Hello world!');
 
 		container.innerHTML = '<h1><div>Existing DOM content</div></h1>';
 		render(vNode, container);
@@ -247,7 +246,7 @@ describe('SSR Hydration - (JSX)', () => {
 
 	it('should rebuild and patch from existing DOM content (whitespace) ', () => {
 		const container = document.createElement('div');
-		const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+		const vNode = createVNode(2, 'div', { className: 'example' }, 'Hello world!');
 
 		container.appendChild(document.createTextNode(''));
 		container.appendChild(document.createElement('h1'));
@@ -258,9 +257,9 @@ describe('SSR Hydration - (JSX)', () => {
 
 	it('should rebuild and patch from existing DOM content #2', () => {
 		const container = document.createElement('div');
-		const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, [
-			Inferno.createVNode(2, 'div', null, 'Item 1'),
-			Inferno.createVNode(2, 'div', null, 'Item 2')
+		const vNode = createVNode(2, 'div', { className: 'example' }, [
+			createVNode(2, 'div', null, 'Item 1'),
+			createVNode(2, 'div', null, 'Item 2')
 		]);
 
 		container.innerHTML = '<h1><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></h1><div>Existing DOM content</div>';
@@ -270,9 +269,9 @@ describe('SSR Hydration - (JSX)', () => {
 
 	it('should rebuild and patch from existing DOM content #3', () => {
 		const container = document.createElement('div');
-		const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, [
-			Inferno.createVNode(2, 'div', null, 'Item 1'),
-			Inferno.createVNode(2, 'div', null, 'Item 2')
+		const vNode = createVNode(2, 'div', { className: 'example' }, [
+			createVNode(2, 'div', null, 'Item 1'),
+			createVNode(2, 'div', null, 'Item 2')
 		]);
 
 		container.innerHTML = '<div><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></div>';

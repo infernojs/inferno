@@ -1,11 +1,9 @@
 import { assert, spy } from 'sinon';
-
 import Component from 'inferno-component';
-import Inferno, { render } from 'inferno';
+import { render } from 'inferno';
 import createElement from 'inferno-create-element';
 import { innerHTML } from '../../tools/utils';
 import { expect } from 'chai';
-Inferno;
 
 describe('Components (JSX)', () => {
 	let container;
@@ -14,10 +12,8 @@ describe('Components (JSX)', () => {
 	let renderedName = null;
 
 	beforeEach(function() {
-
 		attachedListener = null;
 		renderedName = null;
-
 		container = document.createElement('div');
 		container.style.display = 'none';
 		document.body.appendChild(container);

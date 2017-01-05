@@ -1,8 +1,6 @@
 import { expect } from 'chai';
-import Inferno from 'inferno';
 import {isVNode} from "../../core/VNodes";
 import {isNullOrUndef} from "../../shared";
-Inferno; // suppress ts 'never used' error
 
 describe('Normalization process', () => {
     let container;

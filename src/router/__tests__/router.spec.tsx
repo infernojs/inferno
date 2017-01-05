@@ -1,5 +1,4 @@
-import Inferno, { render } from 'inferno';
-
+import { cloneVNode, render } from 'inferno';
 import IndexRoute from '../IndexRoute';
 import Route from '../Route';
 import Router from '../Router';
@@ -9,8 +8,6 @@ import {
 	expect,
 } from 'chai';
 import { innerHTML } from '../../tools/utils';
-
-Inferno; // suppress ts 'never used' error
 
 const browserHistory = createMemoryHistory();
 
@@ -233,7 +230,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
 					<Route path={ '/foo/:test' } component={ ({ children }) => {
-							const newChild = Inferno.cloneVNode(children, { clone: ' Clone' });
+							const newChild = cloneVNode(children, { clone: ' Clone' });
 							return newChild;
 						}}>
 						<IndexRoute component={ GoodComponent } />

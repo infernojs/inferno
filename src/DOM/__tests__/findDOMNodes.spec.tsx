@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import Component from 'inferno-component';
-import Inferno, { findDOMNode, options, render } from 'inferno';
-Inferno; // suppress ts 'never used' error
+import { findDOMNode, options, render } from 'inferno';
 
 describe('findDOMNodes (JSX)', () => {
 	let container;

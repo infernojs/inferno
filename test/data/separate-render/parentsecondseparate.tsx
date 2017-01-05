@@ -1,7 +1,5 @@
 import { ChildSeparate } from './childseparate';
 import Component from 'inferno-component';
-import Inferno from 'inferno';
-Inferno; // suppress ts 'never used' error
 
 export class ParentSecondSeparate extends Component<any, any> {
 	foo: string;

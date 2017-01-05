@@ -3,8 +3,7 @@ import { expect } from 'chai';
 import { innerHTML } from '../../tools/utils';
 import makeReactive from '../makeReactive';
 import Component from 'inferno-component';
-import Inferno, { render } from 'inferno';
-Inferno; // suppress ts 'never used' error
+import { render } from 'inferno';
 
 describe('MobX Observer', () => {
 	let container;
