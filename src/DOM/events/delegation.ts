@@ -19,6 +19,9 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 		}
 		if (!lastEvent) {
 			delegatedRoots.count++;
+			if (name === 'onClick') {
+				trapClickOnNonInteractiveElement(dom);
+			}
 		}
 		delegatedRoots.items.set(dom, nextEvent);
 	} else if (delegatedRoots) {
@@ -85,4 +88,17 @@ function attachEventToDocument(name, delegatedRoots) {
 	};
 	document.addEventListener(normalizeEventName(name), docEvent);
 	return docEvent;
+}
+
+function trapClickOnNonInteractiveElement(dom) {
+	// Mobile Safari does not fire properly bubble click events on
+	// non-interactive elements, which means delegated click listeners do not
+	// fire. The workaround for this bug involves attaching an empty click
+	// listener on the target node.
+	// http://www.quirksmode.org/blog/archives/2010/09/click_event_del.html
+	// Just set it using the onclick property so that we don't have to manage any
+	// bookkeeping for it. Not sure if we need to clear it when the listener is
+	// removed.
+	// TODO: Only do this for the relevant Safaris maybe?
+	dom.onclick = () => {};
 }
