@@ -85,13 +85,11 @@ function normalizeProps(name, props) {
 			delete props.onChange;
 		}
 	}
-	if (name === 'use') {
-		for (let prop in props) {
-		  if (xlinkAttrs[prop]) {
-		    props[xlinkAttrs[prop]] = props[prop];
-		    delete props[prop];
-		  }
-		}
+	for (let prop in props) {
+	  if (xlinkAttrs[prop]) {
+	    props[xlinkAttrs[prop]] = props[prop];
+	    delete props[prop];
+	  }
 	}
 }
 
