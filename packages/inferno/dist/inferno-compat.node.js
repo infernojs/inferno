@@ -317,8 +317,8 @@ var version = '15.4.1';
 
 function normalizeProps(name, props) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
-		var eventName;
 		var type = props.type;
+		var eventName;
 
 		if (type === 'checkbox') {
 			eventName = 'onclick';

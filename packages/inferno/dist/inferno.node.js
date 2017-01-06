@@ -65,18 +65,26 @@ function warning(condition, message) {
 }
 var EMPTY_OBJ = {};
 
+function applyKey(index, vNode) {
+    vNode.key = "." + index;
+    return vNode;
+}
 function applyKeyIfMissing(index, vNode) {
     if (isNull(vNode.key)) {
-        vNode.key = "." + index;
+        return applyKey(index, vNode);
     }
     return vNode;
 }
-function _normalizeVNodes(nodes, result, index, keyCounter) {
+function applyKeyPrefix(index, vNode) {
+    vNode.key += "." + index;
+    return vNode;
+}
+function _normalizeVNodes(nodes, result, index, keyCounter, subTreePosition) {
     for (; index < nodes.length; index++) {
         var n = nodes[index];
         if (!isInvalid(n)) {
             if (isArray(n)) {
-                keyCounter = _normalizeVNodes(n, result, 0, keyCounter);
+                keyCounter = _normalizeVNodes(n, result, 0, keyCounter, subTreePosition++);
             }
             else {
                 if (isStringOrNumber(n)) {
@@ -85,7 +93,14 @@ function _normalizeVNodes(nodes, result, index, keyCounter) {
                 else if (isVNode(n) && n.dom) {
                     n = cloneVNode(n);
                 }
-                result.push((applyKeyIfMissing(keyCounter++, n)));
+                if (isNull(n.key)) {
+                    n = applyKey(keyCounter, n);
+                }
+                else {
+                    n = applyKeyPrefix(subTreePosition, n);
+                }
+                result.push(n);
+                keyCounter++;
             }
         }
         else {
@@ -113,7 +128,7 @@ function normalizeVNodes(nodes) {
         keyCounter++;
         if (isInvalid(n) || isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
-            keyCounter = _normalizeVNodes(nodes, result, i, keyCounter);
+            keyCounter = _normalizeVNodes(nodes, result, i, keyCounter, 1);
             return result;
         }
         else if (isStringOrNumber(n)) {
@@ -1040,11 +1055,12 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
             unmountChildren(lastChildren, dom, lifecycle, isRecycling);
             mount(nextChildren, dom, lifecycle, context, isSVG);
         }
-    }
-    else if (isVNode(lastChildren)) {
-    }
-    else {
-    }
+    } /* else if (isVNode(lastChildren)) {
+        // TODO: One test hits this line when passing invalid children what should be done?
+        // debugger;
+    } else {
+        // debugger;
+    }*/
     if (patchArray) {
         if (patchKeyed) {
             patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
