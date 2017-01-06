@@ -58,6 +58,16 @@ options.afterRender = function () {
 
 const version = '15.4.1';
 
+const xlinkAttrs = {
+	xlinkActuate: 'xlink:actuate',
+	xlinkArcrole: 'xlink:arcrole',
+	xlinkHref: 'xlink:href',
+	xlinkRole: 'xlink:role',
+	xlinkShow: 'xlink:show',
+	xlinkTitle: 'xlink:title',
+	xlinkType: 'xlink:type'
+};
+
 function normalizeProps(name, props) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
 		const type = props.type;
@@ -73,6 +83,12 @@ function normalizeProps(name, props) {
 		if (!props[eventName]) {
 			props[eventName] = props.onChange;
 			delete props.onChange;
+		}
+	}
+	for (let prop in props) {
+		if (xlinkAttrs[prop]) {
+			props[xlinkAttrs[prop]] = props[prop];
+			delete props[prop];
 		}
 	}
 }
