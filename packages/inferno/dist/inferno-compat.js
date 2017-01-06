@@ -317,11 +317,12 @@ var version = '15.4.1';
 
 function normalizeProps(name, props) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
+		var type = props.type;
 		var eventName;
 
-		if (props.type === 'checkbox') {
+		if (type === 'checkbox') {
 			eventName = 'onclick';
-		} else if (props.type === 'file') {
+		} else if (type === 'file') {
 			eventName = 'onchange';
 		} else {
 			eventName = 'oninput';
