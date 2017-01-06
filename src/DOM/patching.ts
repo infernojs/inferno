@@ -250,12 +250,12 @@ function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildre
 			unmountChildren(lastChildren, dom, lifecycle, isRecycling);
 			mount(nextChildren, dom, lifecycle, context, isSVG);
 		}
-	} else if (isVNode(lastChildren)) {
+	}/* else if (isVNode(lastChildren)) {
 		// TODO: One test hits this line when passing invalid children what should be done?
 		// debugger;
 	} else {
 		// debugger;
-	}
+	}*/
 	if (patchArray) {
 		if (patchKeyed) {
 			patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
