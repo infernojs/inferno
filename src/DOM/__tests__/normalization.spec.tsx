@@ -1,7 +1,8 @@
 import { expect } from 'chai';
-import Inferno from 'inferno';
+import Inferno, { render } from 'inferno';
 import {isVNode} from "../../core/VNodes";
 import {isNullOrUndef} from "../../shared";
+import Component from "inferno-component";
 Inferno; // suppress ts 'never used' error
 
 describe('Normalization process', () => {
@@ -59,6 +60,50 @@ describe('Normalization process', () => {
             </head>;
 
             verifyKeys(vNode);
+        });
+
+        it('Should handle nested arrays when keys are defined', () => {
+            let i = 0;
+
+            class A extends Component<any, any> {
+                shouldComponentUpdate() {
+                    return false;
+                }
+
+                render() {
+                    return <div>{this.props.i} ({i++})</div>;
+                }
+            }
+
+            render(
+                <div>
+                    <A i={0} />
+                    {[<A i={"A"} key={"A"} />,
+                        <A i={"B"} key={"B"} />]}
+                    <A i={1} />
+                    {[<A i={"A"} key={"A"} />,
+                        <A i={"B"} key={"B"} />]}
+                    <A i={2} />
+                </div>,
+                container
+            );
+
+            expect(container.innerHTML).to.eql('<div><div>0 (0)</div><div>A (1)</div><div>B (2)</div><div>1 (3)</div><div>A (4)</div><div>B (5)</div><div>2 (6)</div></div>');
+
+            render(
+                <div>
+                    <A i={0} />
+                    {[<A i={"B"} key={"B"} />,
+                        <A i={"A"} key={"A"} />]}
+                    <A i={1} />
+                    {[<A i={"B"} key={"B"} />,
+                        <A i={"A"} key={"A"} />]}
+                    <A i={2} />
+                </div>
+                , container
+            );
+
+            expect(container.innerHTML).to.eql('<div><div>0 (0)</div><div>B (2)</div><div>A (1)</div><div>1 (3)</div><div>B (5)</div><div>A (4)</div><div>2 (6)</div></div>');
         });
 
         describe('Static variations', () => {
