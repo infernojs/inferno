@@ -416,7 +416,7 @@ function connect(arg1, arg2) {
         return connect(newClass);
     }
     if (!componentClass) {
-        throwError('Please pass a valid component to "observer"');
+        throwError('Please pass a valid component to "connect"');
     }
     componentClass.isMobXReactObserver = true;
     return makeReactive(componentClass);

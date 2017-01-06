@@ -1,5 +1,4 @@
 import { assert, spy } from 'sinon';
-
 import Component from 'inferno-component';
 import Inferno, { render } from 'inferno';
 import createElement from 'inferno-create-element';
