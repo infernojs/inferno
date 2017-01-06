@@ -4,7 +4,7 @@ import isValidElement from '../isValidElement';
 import h from 'inferno-hyperscript';
 import Component from 'inferno-component';
 import Inferno, { cloneVNode } from 'inferno';
-Inferno; // suppress ts 'never used' error
+
 
 describe('isValidElement', () => {
     let container;

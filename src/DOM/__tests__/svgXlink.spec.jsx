@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import Inferno, { render } from 'inferno';
-Inferno; // suppress ts 'never used' error
+import { render } from 'inferno';
+
 
 describe('createTree - SVG (JSX)', () => {
 	let container;

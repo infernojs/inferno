@@ -2,8 +2,7 @@ import { expect } from 'chai';
 import { spy } from 'sinon';
 import Component from 'inferno-component';
 import { isNullOrUndef } from '../../shared';
-import Inferno, { render } from 'inferno';
-Inferno; // suppress ts 'never used' error
+import { render } from 'inferno';
 
 describe('Columns like tests - (JSX)', () => {
 	let container;

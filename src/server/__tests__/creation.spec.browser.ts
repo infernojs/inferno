@@ -1,9 +1,7 @@
 import { expect } from 'chai';
 import { renderToStaticMarkup } from '../renderToString';
-// import Component from '../../component/es2015';
 import createElement from 'inferno-create-element';
-import Inferno from 'inferno';
-Inferno; // suppress ts 'never used' error
+
 
 /*
 class StatefulComponent extends Component<any, any> {

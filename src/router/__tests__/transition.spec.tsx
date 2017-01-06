@@ -1,5 +1,4 @@
-import Inferno, { render } from 'inferno';
-
+import { render } from 'inferno';
 import Component from '../../component/es2015';
 import IndexRoute from '../IndexRoute';
 import Link from '../Link';
@@ -9,8 +8,6 @@ import Router from '../Router';
 import { createMemoryHistory } from 'history';
 import { expect } from 'chai';
 import { innerHTML } from '../../tools/utils';
-
-Inferno; // suppress ts 'never used' error
 
 const browserHistory = createMemoryHistory();
 

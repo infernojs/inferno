@@ -2,7 +2,7 @@
 // import { render } from '../../DOM/rendering';
 // import createElement from '../createElement';
 // import * as Inferno from '../../testUtils/inferno';
-// Inferno; // suppress ts 'never used' error
+//
 //
 // describe('CreateElement (non-JSX)', () => {
 // 	let container;

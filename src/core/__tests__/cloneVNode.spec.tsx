@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { innerHTML } from '../../tools/utils';
-import Inferno, { render, cloneVNode } from 'inferno';
-Inferno; // suppress ts 'never used' error
+import { render, cloneVNode } from 'inferno';
 
 describe('cloneVNode (JSX)', () => {
 	let container;

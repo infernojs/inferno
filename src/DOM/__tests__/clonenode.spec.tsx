@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import Inferno, { render } from 'inferno';
-Inferno; // suppress ts 'never used' error
+import { render } from 'inferno';
 
 describe('CloneVNode use cases', () => {
 	let container;

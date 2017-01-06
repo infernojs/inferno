@@ -1,9 +1,7 @@
 import { expect } from 'chai';
 import Component from 'inferno-component';
 import { innerHTML } from '../../tools/utils';
-import Inferno, { render } from 'inferno';
-Inferno;
-
+import { render } from 'inferno';
 /* These must be in their own files for test to reproduce */
 import { ParentFirstCommon } from '../../../test/data/common-render/parentfirstcommon';
 import { ParentSecondCommon } from '../../../test/data/common-render/parentsecondcommon';
@@ -51,11 +49,11 @@ describe('Components (JSX) #2', () => {
 		}
 
 		function ComA() {
-            return <div><span>Something</span></div>;
+			return <div><span>Something</span></div>;
 		}
 
 		function ComB() {
-            return <div><span>Something</span></div>;
+			return <div><span>Something</span></div>;
 		}
 
 		it('patching component A to component B, given they have the same children, should replace DOM tree ( for lifecycle ) with identical one', () => {
@@ -71,17 +69,17 @@ describe('Components (JSX) #2', () => {
 			expect(container.firstChild.firstChild === trackElemSpan).to.equal(false);
 		});
 
-        it('patching component A to component B, given they have the same children, should not change the DOM tree when stateless components', () => {
-            render(<ComA />, container);
-            expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
-            const trackElemDiv = container.firstChild;
-            const trackElemSpan = container.firstChild.firstChild;
+		it('patching component A to component B, given they have the same children, should not change the DOM tree when stateless components', () => {
+			render(<ComA />, container);
+			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+			const trackElemDiv = container.firstChild;
+			const trackElemSpan = container.firstChild.firstChild;
 
-            render(<ComB />, container);
-            expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
-            expect(container.firstChild === trackElemDiv).to.equal(true);
-            expect(container.firstChild.firstChild === trackElemSpan).to.equal(true);
-        });
+			render(<ComB />, container);
+			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+			expect(container.firstChild === trackElemDiv).to.equal(true);
+			expect(container.firstChild.firstChild === trackElemSpan).to.equal(true);
+		});
 	});
 
 	describe('Inheritance with common render', () => {
@@ -259,6 +257,7 @@ describe('Components (JSX) #2', () => {
 			render() {
 				return this.props.foo;
 			}
+
 			static defaultProps = {
 				foo: 'bar'
 			}
@@ -267,10 +266,10 @@ describe('Components (JSX) #2', () => {
 		it('should render the component with a key', () => {
 			let val = '1';
 
-			render(<Comp key={ val } />, container);
+			render(<Comp key={ val }/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('bar'));
 			val = 2;
-			render(<Comp key={ val } />, container);
+			render(<Comp key={ val }/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('bar'));
 		});
 	});

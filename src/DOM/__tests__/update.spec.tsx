@@ -2,8 +2,7 @@ import { expect } from 'chai';
 import { assert, spy } from 'sinon';
 import Component from 'inferno-component';
 import { innerHTML } from '../../tools/utils';
-import Inferno, { render } from 'inferno';
-Inferno; // suppress ts 'never used' error
+import { render } from 'inferno';
 
 describe('Stateful Component updates', () => {
 

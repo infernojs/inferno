@@ -1,6 +1,4 @@
 import Component from 'inferno-component';
-import Inferno from 'inferno';
-Inferno; // suppress ts 'never used' error
 
 export class ChildCommon extends Component<any, any> {
 	constructor(props) {

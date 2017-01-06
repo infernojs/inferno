@@ -4,8 +4,7 @@ import Provider from '../Provider';
 import { innerHTML } from '../../tools/utils';
 import connect from '../connect';
 import Component from 'inferno-component';
-import Inferno, { render } from 'inferno';
-Inferno; // suppress ts 'never used' error
+import { render } from 'inferno';
 
 describe('MobX Provider', () => {
 	let container;
