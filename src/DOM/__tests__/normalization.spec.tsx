@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import {isVNode} from "../../core/VNodes";
 import {isNullOrUndef} from "../../shared";
+import Component from "inferno-component";
 
 describe('Normalization process', () => {
     let container;
@@ -57,6 +58,50 @@ describe('Normalization process', () => {
             </head>;
 
             verifyKeys(vNode);
+        });
+
+        it('Should handle nested arrays when keys are defined', () => {
+            let i = 0;
+
+            class A extends Component<any, any> {
+                shouldComponentUpdate() {
+                    return false;
+                }
+
+                render() {
+                    return <div>{this.props.i} ({i++})</div>;
+                }
+            }
+
+            render(
+                <div>
+                    <A i={0} />
+                    {[<A i={"A"} key={"A"} />,
+                        <A i={"B"} key={"B"} />]}
+                    <A i={1} />
+                    {[<A i={"A"} key={"A"} />,
+                        <A i={"B"} key={"B"} />]}
+                    <A i={2} />
+                </div>,
+                container
+            );
+
+            expect(container.innerHTML).to.eql('<div><div>0 (0)</div><div>A (1)</div><div>B (2)</div><div>1 (3)</div><div>A (4)</div><div>B (5)</div><div>2 (6)</div></div>');
+
+            render(
+                <div>
+                    <A i={0} />
+                    {[<A i={"B"} key={"B"} />,
+                        <A i={"A"} key={"A"} />]}
+                    <A i={1} />
+                    {[<A i={"B"} key={"B"} />,
+                        <A i={"A"} key={"A"} />]}
+                    <A i={2} />
+                </div>
+                , container
+            );
+
+            expect(container.innerHTML).to.eql('<div><div>0 (0)</div><div>B (2)</div><div>A (1)</div><div>1 (3)</div><div>B (5)</div><div>A (4)</div><div>2 (6)</div></div>');
         });
 
         describe('Static variations', () => {
@@ -120,6 +165,55 @@ describe('Normalization process', () => {
 
             staticScenarios.forEach((node, index) => {
                 it('Static Variation #' + index, () => {
+                    verifyKeys(node);
+                });
+            });
+        });
+
+        describe('Static variations with keys', () => {
+            const staticScenarios = [
+                (
+                    <div key="2">
+                        <div key="1">1</div>
+                        <div key="2">2</div>
+                    </div>
+                ),
+                (
+                    <table key="1">
+                        <thead key="1">
+                            <tr key="1">
+                                <th key="1">h1</th>
+                                <th key="2">h2</th>
+                                <th key="3">h3</th>
+                                <th key="4">h4</th>
+                            </tr>
+                        </thead>
+                        <tbody key="2">
+                            <tr key="1">
+                                <td key="1">a1</td>
+                                <td key="2">a2</td>
+                                <td key="3">a3</td>
+                                <td key="4">a4</td>
+                            </tr>
+                            <tr key="2">
+                                <td key="1">b1</td>
+                                <td key="2">b2</td>
+                                <td key="3">b3</td>
+                                <td key="4">b4</td>
+                            </tr>
+                            <tr key="3">
+                                <td>c1</td>
+                                <td>c2</td>
+                                <td>c3</td>
+                                <td>c4</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                )
+            ];
+
+            staticScenarios.forEach((node, index) => {
+                it('Static Variation with keys #' + index, () => {
                     verifyKeys(node);
                 });
             });
@@ -207,6 +301,93 @@ describe('Normalization process', () => {
 
             dynamicScenarios.forEach((node, index) => {
                 it('Dynamic Variation #' + index, () => {
+                    verifyKeys(node);
+                });
+            });
+        });
+
+        describe('Dynamic variations with keys', () => {
+            function makeArr(data) {
+                return data.map((v) => {
+                    let result;
+
+                    if (typeof v === 'function') {
+                        result = v();
+                    } else {
+                        result = v;
+                    }
+
+                    return <div key={result}>{result}</div>;
+                });
+            }
+
+            const dynamicScenarios = [
+                (
+                    <div>
+                        <div key="1">1</div>
+                        {makeArr(['a', 'b', 'c'])}
+                    </div>
+                ),
+                (
+                    <div>
+                        {makeArr(['a', 'b', 'c'])}
+                        <div key="1">1</div>
+                    </div>
+                ),
+                (
+                    <div>
+                        {makeArr(['a', 'b', 'c'])}
+                        <div key="1">1</div>
+                        {makeArr(['a', 'b', 'c'])}
+                    </div>
+                ),
+                (
+                    <div>
+                        {makeArr(['a', 'b', 'c'])}
+                        <div key="1">1</div>
+                        {makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}
+                    </div>
+                ),
+                (
+                    <div>
+                        {makeArr(['a', 'b'])}
+                        {makeArr(['a', 'b', 'c'])}
+                        {makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}
+                    </div>
+                ),
+                (
+                    <div>
+                        {makeArr(['a', 'b', makeArr(['a', 'b', 'c']), makeArr(['a', 'b', 'c']), makeArr(['a', 'b', 'c'])])}
+                    </div>
+                ),
+                (
+                    <div>
+                        <div key="1">1</div>
+                        <div>{makeArr(['a', 'b', 'c'])}</div>
+                        <div>{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}</div>
+                    </div>
+                ),
+                (
+                    <div>
+                        <div key="1">1</div>
+                        <div>{makeArr(['a', makeArr(['a', 'b', 'c']), <div>{makeArr(['a', 'b', 'c'])}</div>, 'c'])}</div>
+                    </div>
+                ),
+                (
+                    <div>
+                        <div>{makeArr([<div key="1">1</div>, 'b', 'c'])}</div>
+                        <div>{makeArr(['a', makeArr([<div key="1">1</div>, <div key="11">1</div>, <div key="111">1</div>]), 'b', 'c'])}</div>
+                    </div>
+                ),
+                (
+                    <div>
+                        <div>{makeArr([<div>{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}</div>, makeArr(['a', <div>{makeArr(['a', 'b', 'c'])}</div>, 'c']), 'b', 'c'])}</div>
+                    </div>
+                )
+            ];
+
+            dynamicScenarios.forEach((node, index) => {
+                it('Dynamic Variation with keys #' + index, () => {
                     verifyKeys(node);
                 });
             });

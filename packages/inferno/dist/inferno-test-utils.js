@@ -1,5 +1,5 @@
 /*!
- * inferno-test-utils v1.0.7
+ * inferno-test-utils v1.0.8
  * (c) 2017 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -177,18 +177,26 @@ Lifecycle.prototype.trigger = function trigger () {
     }
 };
 
+function applyKey(index, vNode) {
+    vNode.key = "." + index;
+    return vNode;
+}
 function applyKeyIfMissing(index, vNode) {
     if (isNull(vNode.key)) {
-        vNode.key = "." + index;
+        return applyKey(index, vNode);
     }
     return vNode;
 }
-function _normalizeVNodes(nodes, result, index, keyCounter) {
+function applyKeyPrefix(index, vNode) {
+    vNode.key += "." + index;
+    return vNode;
+}
+function _normalizeVNodes(nodes, result, index, keyCounter, subTreePosition) {
     for (; index < nodes.length; index++) {
         var n = nodes[index];
         if (!isInvalid(n)) {
             if (isArray(n)) {
-                keyCounter = _normalizeVNodes(n, result, 0, keyCounter);
+                keyCounter = _normalizeVNodes(n, result, 0, keyCounter, subTreePosition++);
             }
             else {
                 if (isStringOrNumber(n)) {
@@ -197,7 +205,14 @@ function _normalizeVNodes(nodes, result, index, keyCounter) {
                 else if (isVNode(n) && n.dom) {
                     n = cloneVNode(n);
                 }
-                result.push((applyKeyIfMissing(keyCounter++, n)));
+                if (isNull(n.key)) {
+                    n = applyKey(keyCounter, n);
+                }
+                else {
+                    n = applyKeyPrefix(subTreePosition, n);
+                }
+                result.push(n);
+                keyCounter++;
             }
         }
         else {
@@ -225,7 +240,7 @@ function normalizeVNodes(nodes) {
         keyCounter++;
         if (isInvalid(n) || isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
-            keyCounter = _normalizeVNodes(nodes, result, i, keyCounter);
+            keyCounter = _normalizeVNodes(nodes, result, i, keyCounter, 1);
             return result;
         }
         else if (isStringOrNumber(n)) {
@@ -477,6 +492,7 @@ constructDefaults('onClick,onMouseDown,onMouseUp,onMouseMove,onSubmit,onDblClick
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readOnly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
+var isiOS = isBrowser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 var delegatedEvents = new Map();
 function handleEvent(name, lastEvent, nextEvent, dom) {
     var delegatedRoots = delegatedEvents.get(name);
@@ -489,6 +505,9 @@ function handleEvent(name, lastEvent, nextEvent, dom) {
         }
         if (!lastEvent) {
             delegatedRoots.count++;
+            if (isiOS && name === 'onClick') {
+                trapClickOnNonInteractiveElement(dom);
+            }
         }
         delegatedRoots.items.set(dom, nextEvent);
     }
@@ -551,6 +570,18 @@ function attachEventToDocument(name, delegatedRoots) {
     };
     document.addEventListener(normalizeEventName(name), docEvent);
     return docEvent;
+}
+function trapClickOnNonInteractiveElement(dom) {
+    // Mobile Safari does not fire properly bubble click events on
+    // non-interactive elements, which means delegated click listeners do not
+    // fire. The workaround for this bug involves attaching an empty click
+    // listener on the target node.
+    // http://www.quirksmode.org/blog/archives/2010/09/click_event_del.html
+    // Just set it using the onclick property so that we don't have to manage any
+    // bookkeeping for it. Not sure if we need to clear it when the listener is
+    // removed.
+    // TODO: Only do this for the relevant Safaris maybe?
+    dom.onclick = function () { };
 }
 
 function isCheckedType(type) {
@@ -1121,11 +1152,12 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
             unmountChildren(lastChildren, dom, lifecycle, isRecycling);
             mount(nextChildren, dom, lifecycle, context, isSVG);
         }
-    }
-    else if (isVNode(lastChildren)) {
-    }
-    else {
-    }
+    } /* else if (isVNode(lastChildren)) {
+        // TODO: One test hits this line when passing invalid children what should be done?
+        // debugger;
+    } else {
+        // debugger;
+    }*/
     if (patchArray) {
         if (patchKeyed) {
             patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);

@@ -1317,7 +1317,8 @@ describe('Children - (JSX)', () => {
 						firstClassCitizen = <div>b</div>;
 					}
 
-					return (
+					// variable for debugging
+					const node = (
 						<div>
 							<div>a</div>
 							{firstClassCitizen}
@@ -1325,6 +1326,8 @@ describe('Children - (JSX)', () => {
 							<div>C</div>
 						</div>
 					);
+
+					return node;
 				}
 			}
 

@@ -60,8 +60,16 @@ const version = '15.4.1';
 
 function normalizeProps(name, props) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
-		const eventName = props.type === 'checkbox' ? 'onclick' : 'oninput';
+		const type = props.type;
+		let eventName;
 
+		if (type === 'checkbox') {
+			eventName = 'onclick';
+		} else if (type === 'file') {
+			eventName = 'onchange';
+		} else {
+			eventName = 'oninput';
+		}
 		if (!props[eventName]) {
 			props[eventName] = props.onChange;
 			delete props.onChange;

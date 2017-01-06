@@ -1,5 +1,5 @@
 /*!
- * inferno-mobx v1.0.7
+ * inferno-mobx v1.0.8
  * (c) 2017 Ryan Megidov
  * Released under the MIT License.
  */
@@ -416,7 +416,7 @@ function connect(arg1, arg2) {
         return connect(newClass);
     }
     if (!componentClass) {
-        throwError('Please pass a valid component to "observer"');
+        throwError('Please pass a valid component to "connect"');
     }
     componentClass.isMobXReactObserver = true;
     return makeReactive(componentClass);

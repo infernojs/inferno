@@ -1,5 +1,5 @@
 /*!
- * inferno-compat v1.0.7
+ * inferno-compat v1.0.8
  * (c) 2017 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -317,8 +317,16 @@ var version = '15.4.1';
 
 function normalizeProps(name, props) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
-		var eventName = props.type === 'checkbox' ? 'onclick' : 'oninput';
+		var type = props.type;
+		var eventName;
 
+		if (type === 'checkbox') {
+			eventName = 'onclick';
+		} else if (type === 'file') {
+			eventName = 'onchange';
+		} else {
+			eventName = 'oninput';
+		}
 		if (!props[eventName]) {
 			props[eventName] = props.onChange;
 			delete props.onChange;
