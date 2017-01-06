@@ -496,11 +496,11 @@ describe('Component lifecycle (JSX)', () => {
 
 	describe('ref hook', () => {
 		const fakeObj = {
-			outerCallback () {
+			outerCallback() {
 			},
-			innerCallback () {
+			innerCallback() {
 			},
-			innerSecondCallback () {
+			innerSecondCallback() {
 			}
 		};
 
@@ -669,11 +669,11 @@ describe('Component lifecycle (JSX)', () => {
 
 	describe('ref hook complex', () => {
 		const fakeObj = {
-			outerCallback () {
+			outerCallback() {
 			},
-			innerCallback () {
+			innerCallback() {
 			},
-			innerSecondCallback () {
+			innerSecondCallback() {
 			}
 		};
 
@@ -786,11 +786,11 @@ describe('Component lifecycle (JSX)', () => {
 
 	describe('ref hook #2 with statefull components', () => {
 		const fakeObj = {
-			outerCallback () {
+			outerCallback() {
 			},
-			innerCallback () {
+			innerCallback() {
 			},
-			innerSecondCallback () {
+			innerSecondCallback() {
 			}
 		};
 
@@ -937,11 +937,11 @@ describe('Component lifecycle (JSX)', () => {
 
 	describe('ref hook complex #2 statefull components', () => {
 		const fakeObj = {
-			outerCallback () {
+			outerCallback() {
 			},
-			innerCallback () {
+			innerCallback() {
 			},
-			innerSecondCallback () {
+			innerSecondCallback() {
 			}
 		};
 
@@ -1070,7 +1070,7 @@ describe('Component lifecycle (JSX)', () => {
 		it('Should trigger lifecycle events when functional component change', () => {
 			let unmounted = false;
 
-			function A () {
+			function A() {
 				return (
 					<div>
 						<Com/>
@@ -1078,7 +1078,7 @@ describe('Component lifecycle (JSX)', () => {
 				);
 			}
 
-			function B () {
+			function B() {
 				return (
 					<div>
 						<Com/>
@@ -1109,7 +1109,7 @@ describe('Component lifecycle (JSX)', () => {
 		it('Should trigger lifecycle events when functional component dont change', () => {
 			let unmounted = false;
 
-			function A () {
+			function A() {
 				return (
 					<div>
 						<Com/>

@@ -474,6 +474,7 @@ function attachEventToDocument(name, delegatedRoots) {
     document.addEventListener(normalizeEventName(name), docEvent);
     return docEvent;
 }
+function emptyFn() { }
 function trapClickOnNonInteractiveElement(dom) {
     // Mobile Safari does not fire properly bubble click events on
     // non-interactive elements, which means delegated click listeners do not
@@ -484,7 +485,7 @@ function trapClickOnNonInteractiveElement(dom) {
     // bookkeeping for it. Not sure if we need to clear it when the listener is
     // removed.
     // TODO: Only do this for the relevant Safaris maybe?
-    dom.onclick = function () { };
+    dom.onclick = emptyFn;
 }
 
 function isCheckedType(type) {

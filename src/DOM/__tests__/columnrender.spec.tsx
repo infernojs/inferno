@@ -141,7 +141,7 @@ describe('Columns like tests - (JSX)', () => {
 				// Verify items
 				// Skip first - its hardcoded
 				for (let j = 1; j < columnChildNodes.length; j++) {
-					let itemRoot = columnChildNodes[j];
+					const itemRoot = columnChildNodes[j];
 					expect(itemRoot.innerHTML).to.equal(columns[i].items[j - 1].text.toString(), 'item content check');
 				}
 			}

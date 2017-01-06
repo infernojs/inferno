@@ -120,13 +120,13 @@ export function scryRenderedDOMComponentsWithClass(root: VNode, classNames: stri
 	});
 }
 
-export function scryRenderedDOMComponentsWithTag (root: VNode, tagName: string): VNode[] {
+export function scryRenderedDOMComponentsWithTag(root: VNode, tagName: string): VNode[] {
 	return findAllInRenderedTree(root, function(inst) {
 		return isDOMComponent(inst) && inst.tagName.toUpperCase() === tagName.toUpperCase();
 	});
 }
 
-export function scryRenderedComponentsWithType (root: VNode, componentType: Function): VNode[] {
+export function scryRenderedComponentsWithType(root: VNode, componentType: Function): VNode[] {
 	return findAllInRenderedTree(root, function(inst) {
 		return isCompositeComponentWithType(
 			inst,

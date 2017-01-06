@@ -1785,7 +1785,7 @@ describe('Components (JSX)', () => {
 
 	it('Should trigger ref lifecycle after patch', (done) => {
 		let updater;
-		let obj = {
+		const obj = {
 			fn() {
 			}
 		};
@@ -2607,7 +2607,7 @@ describe('Components (JSX)', () => {
 			return <A />;
 		}
 
-		function B () {
+		function B() {
 			return <F onComponentShouldUpdate={ () => false } />;
 		}
 

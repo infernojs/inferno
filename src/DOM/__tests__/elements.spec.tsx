@@ -775,8 +775,8 @@ describe('Elements (JSX)', () => {
 		}
 
 		const obj = {
-			fn () {
-			}, click () {
+			fn() {
+			}, click() {
 			}
 		};
 		const bool = false;

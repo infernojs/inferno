@@ -9,8 +9,8 @@ import {
 } from './patching';
 import Lifecycle from "./lifecycle";
 
-let componentPools = new Map<Function | null, Pools>();
-let elementPools = new Map<string | null, Pools>();
+const componentPools = new Map<Function | null, Pools>();
+const elementPools = new Map<string | null, Pools>();
 
 interface Pools {
   nonKeyed: VNode[];
@@ -20,7 +20,7 @@ interface Pools {
 export function recycleElement(vNode, lifecycle: Lifecycle, context, isSVG) {
 	const tag = vNode.type;
 	const key = vNode.key;
-	let pools: Pools = elementPools.get(tag);
+	const pools: Pools = elementPools.get(tag);
 
 	if (!isUndefined(pools)) {
 		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
@@ -65,7 +65,7 @@ export function poolElement(vNode) {
 export function recycleComponent(vNode: VNode, lifecycle: Lifecycle, context, isSVG) {
 	const type = vNode.type as Function;
 	const key = vNode.key;
-	let pools: Pools = componentPools.get(type);
+	const pools: Pools = componentPools.get(type);
 
 	if (!isUndefined(pools)) {
 		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);

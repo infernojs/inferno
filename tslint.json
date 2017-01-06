@@ -32,6 +32,7 @@
 		"one-variable-per-declaration": false,
 		"no-unused-expression": false,
 		"no-bitwise": false,
-		"prefer-for-of": false
+		"prefer-for-of": false,
+		"prefer-const": false
 	}
 }

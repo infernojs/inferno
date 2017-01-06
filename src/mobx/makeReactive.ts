@@ -140,7 +140,7 @@ export default function makeReactive(componentClass) {
 		}
 
 		for (let i = keys.length - 1; i >= 0; i--) {
-			let key = keys[i];
+			const key = keys[i];
 			const newValue = nextProps[key];
 			if (newValue !== this.props[key]) {
 				return true;

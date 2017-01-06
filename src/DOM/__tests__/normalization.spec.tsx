@@ -52,7 +52,7 @@ describe('Normalization process', () => {
                 );
             }
 
-            let vNode = <head>
+            const vNode = <head>
                 <title>{ 'test' }</title>
                 { meta([{property: 'p', content: 'c'}, {property: 'p1', content: 'c1'}]) }
                 { link([{rel: 'rel', href: 'href1'}, {rel: 'rel', href: 'href2'}]) }

@@ -7,7 +7,7 @@ import { render } from 'inferno';
 
 describe('MobX Observer', () => {
 	let container;
-	let store = {
+	const store = {
 		todos: observable(['one', 'two']),
 		extra: observable({ test: 'observable!' })
 	};
@@ -36,7 +36,7 @@ describe('MobX Observer', () => {
 
 		render() {
 			todoListRenderings++;
-			let todos = store.todos;
+			const todos = store.todos;
 			return <div>{todos.map(todo => <TodoItem todo={todo}/>)}</div>;
 		}
 	});

@@ -10,18 +10,18 @@ interface IStoreProps extends IProps {
 /**
  * Store Injection
  */
-function createStoreInjector (grabStoresFn: Function, component) {
+function createStoreInjector(grabStoresFn: Function, component) {
 	const Injector: any = createClass({
 		displayName: component.name,
 		render() {
-			const newProps = <IStoreProps> {};
+			const newProps = {} as IStoreProps;
 			for (let key in this.props) {
 				if (this.props.hasOwnProperty(key)) {
 					newProps[key] = this.props[key];
 				}
 			}
 			const additionalProps = grabStoresFn(this.context.mobxStores || {}, newProps, this.context) || {};
-			for ( let key in additionalProps ) {
+			for ( const key in additionalProps ) {
 				newProps[ key ] = additionalProps[ key ];
 			}
 			newProps.ref = (instance) => {
@@ -39,8 +39,8 @@ function createStoreInjector (grabStoresFn: Function, component) {
 }
 
 const grabStoresByName = function(storeNames: string[]): Function {
-	return function (baseStores: Object, nextProps: Object): Object {
-		storeNames.forEach(function (storeName) {
+	return function(baseStores: Object, nextProps: Object): Object {
+		storeNames.forEach(function(storeName) {
 
 			// Prefer props over stores
 			if (storeName in nextProps) {
@@ -70,7 +70,7 @@ export default function inject(grabStoresFn?: Function | string): any {
 
 	if (typeof grabStoresFn !== 'function') {
 
-		let storesNames: any = [];
+		const storesNames: any = [];
 		for (let i = 0; i < arguments.length; i++) {
 			storesNames[i] = arguments[i];
 		}

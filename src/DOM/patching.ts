@@ -440,9 +440,9 @@ export function patchVoid(lastVNode: VNode, nextVNode: VNode) {
 }
 
 export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
-	let lastChildrenLength = lastChildren.length;
-	let nextChildrenLength = nextChildren.length;
-	let commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
+	const lastChildrenLength = lastChildren.length;
+	const nextChildrenLength = nextChildren.length;
+	const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
 	let i = 0;
 
 	for (; i < commonLength; i++) {
@@ -686,7 +686,7 @@ export function patchKeyedChildren(
 				}
 			}
 			if (moved) {
-				let seq = lis_algorithm(sources);
+				const seq = lis_algorithm(sources);
 				j = seq.length - 1;
 				for (i = bLength - 1; i >= 0; i--) {
 					if (sources[i] === -1) {
@@ -730,8 +730,8 @@ export function patchKeyedChildren(
 
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 function lis_algorithm(a) {
-	let p = a.slice(0);
-	let result: any[] = [];
+	const p = a.slice(0);
+	const result: any[] = [];
 	result.push(0);
 	let i;
 	let j;
@@ -874,7 +874,7 @@ export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
 
 					if (linkEvent && isFunction(linkEvent)) {
 						if (!dom._data) {
-							dom[nameLowerCase] = function (e) {
+							dom[nameLowerCase] = function(e) {
 								linkEvent(e.currentTarget._data, e);
 							};
 						}
@@ -940,7 +940,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 	}
 
 	if (!isNullOrUndef(lastAttrValue)) {
-		for (const style in lastAttrValue as Styles) {
+		for (let style in lastAttrValue as Styles) {
 			if (isNullOrUndef(nextAttrValue[style])) {
 				dom.style[style] = '';
 			}

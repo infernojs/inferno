@@ -14,21 +14,13 @@ import createElement from 'inferno-create-element';
 import hoistStatics from 'hoist-non-inferno-statics';
 import { isPlainObject } from './helpers';
 
-export interface WrapWithConnect {
-	(WrappedComponent: any): any;
-}
+type WrapWithConnect = (WrappedComponent: any) => any;
 
-export interface MapStateToProps {
-	(state: any, props?: IProps): any;
-}
+type MapStateToProps = (state: any, props?: IProps) => any;
 
-export interface MapDispatchToPropsFunction {
-	(dispatch: (action: any) => void, props?: IProps) : any;
-}
+type MapDispatchToPropsFunction = (dispatch: (action: any) => void, props?: IProps) => any;
 
-export interface MapDispatchToPropsFactory {
-	(dispatch: (action: any) => void, props?: IProps) : MapDispatchToPropsFunction;
-}
+type MapDispatchToPropsFactory = (dispatch: (action: any) => void, props?: IProps) => MapDispatchToPropsFunction;
 
 type MapDispatchToProps = MapDispatchToPropsFunction | {[index: string]: MapDispatchToPropsFunction} | MapDispatchToPropsFactory;
 

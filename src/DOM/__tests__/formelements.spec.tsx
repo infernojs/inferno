@@ -138,7 +138,7 @@ describe('FormElements', () => {
 
 			it('Should pre select option by value', () => {
 				render(<SelectList value="B"/>, container);
-				let selectList = container.querySelector('select');
+				const selectList = container.querySelector('select');
 				expect(selectList.childNodes[0].selected).to.equal(false);
 				expect(selectList.childNodes[1].selected).to.equal(true);
 				expect(selectList.childNodes[2].selected).to.equal(false);

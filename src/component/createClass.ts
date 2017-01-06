@@ -57,7 +57,7 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[] | Function): any {
 	const original = inst[key];
 
-	inst[key] = function () {
+	inst[key] = function() {
 		let ret;
 
 		for (let i = 0; i < mixin.length; i++) {

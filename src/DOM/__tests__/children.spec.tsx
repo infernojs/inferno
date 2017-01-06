@@ -801,9 +801,9 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('NONKEYED - should remove children from correct location when there is 2 dynamic static items and 2 lists', function() {
-			let items = ['a', 'b', 'c'];
-			let emptyArray = [];
-			let items3 = ['v', 'a'];
+			const items = ['a', 'b', 'c'];
+			const emptyArray = [];
+			const items3 = ['v', 'a'];
 
 			let activeOne;
 			let activeTwo;
@@ -869,9 +869,9 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('KEYED - should remove children from correct location when there is dynamic static item', function() {
-			let items = ['a', 'b', 'c'];
-			let emptyArray = [];
-			let items3 = ['v', 'a'];
+			const items = ['a', 'b', 'c'];
+			const emptyArray = [];
+			const items3 = ['v', 'a'];
 			let visible = false;
 
 			let activeOne;

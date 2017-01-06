@@ -167,7 +167,7 @@ describe('Stateful Component updates', () => {
 
 		render(<A />, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div><input type="checkbox"><input type="checkbox"><input type="checkbox"></div>'));
-		let firstChild = container.firstChild;
+		const firstChild = container.firstChild;
 		expect(firstChild.childNodes[0].checked).to.equal(false);
 		expect(firstChild.childNodes[1].checked).to.equal(false);
 		expect(firstChild.childNodes[2].checked).to.equal(false);
@@ -571,7 +571,7 @@ describe('Stateful Component updates', () => {
 	});
 
 	it('Should not append when replacing ES6 component with functional component', () => {
-		const A = function () {
+		const A = function() {
 			return (
 				<div>
 					<div className="topheader">

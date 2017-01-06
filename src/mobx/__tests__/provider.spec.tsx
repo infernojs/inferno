@@ -21,7 +21,7 @@ describe('MobX Provider', () => {
 	});
 
 	describe('updating state', () => {
-		let stores: any = observable({
+		const stores: any = observable({
 			store1: {
 				data: 'one'
 			},
@@ -94,7 +94,7 @@ describe('MobX Provider', () => {
 	});
 
 	describe('providing/updating stores', () => {
-		let stores: any = observable({
+		const stores: any = observable({
 			store1: {
 				data: 'one'
 			},

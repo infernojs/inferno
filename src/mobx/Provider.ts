@@ -12,19 +12,19 @@ export default class Provider extends Component<any, any> {
 	childContextTypes: any = { mobxStores() {} };
 	private store: any;
 
-	constructor (props?: any, context?: any) {
+	constructor(props?: any, context?: any) {
 		super(props, context);
 		this.store = props.store;
 	}
 
-	public render () {
+	public render() {
 		return this.props.children;
 	}
 
-	getChildContext () {
-		let stores = {};
+	getChildContext() {
+		const stores = {};
 		// inherit stores
-		let baseStores = this.context.mobxStores;
+		const baseStores = this.context.mobxStores;
 
 		if (baseStores) {
 			for (let key in baseStores) {
