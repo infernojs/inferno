@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { render } from 'inferno';
 import {isVNode} from "../../core/VNodes";
 import {isNullOrUndef} from "../../shared";
 import Component from "inferno-component";
