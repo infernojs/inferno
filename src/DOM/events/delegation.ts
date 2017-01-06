@@ -1,3 +1,6 @@
+import { isBrowser } from '../../shared';
+
+const isiOS = isBrowser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 const delegatedEvents = new Map();
 
 interface IDelegate {
@@ -19,7 +22,7 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 		}
 		if (!lastEvent) {
 			delegatedRoots.count++;
-			if (name === 'onClick') {
+			if (isiOS && name === 'onClick') {
 				trapClickOnNonInteractiveElement(dom);
 			}
 		}
