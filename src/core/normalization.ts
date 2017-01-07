@@ -6,63 +6,62 @@ import {
 	isNull,
 	isNullOrUndef,
 	isString,
+	isNumber,
 	isStringOrNumber,
-	isUndefined, warning,
+	isUndefined,
+	warning,
 } from '../shared';
 
-function applyKey(index: number, vNode: VNode) {
-	vNode.key = `.${ index }`;
+function applyKey(key: string, vNode: VNode) {
+	vNode.key = key;
 
 	return vNode;
 }
 
-function applyKeyIfMissing(index: number, vNode: VNode): VNode {
-	if (isNull(vNode.key)) {
-		return applyKey(index, vNode);
+function applyKeyIfMissing(key: string | number, vNode: VNode): VNode {
+	if (isNumber(key)) {
+		key = `.${ key }`;
+	}
+	if (isNull(vNode.key) || vNode.key[0] === '.') {
+		return applyKey(key as string, vNode);
 	}
 	return vNode;
 }
 
-function applyKeyPrefix(index: number, vNode: VNode): VNode {
-	vNode.key += `.${ index }`;
+function applyKeyPrefix(key: string, vNode: VNode): VNode {
+	vNode.key = key + vNode.key;
 
 	return vNode;
 }
 
-function _normalizeVNodes(nodes: any[], result: VNode[], index: number, keyCounter: number, subTreePosition: number): number {
+function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey) {
 	for (; index < nodes.length; index++) {
 		let n = nodes[index];
+		const key = `${ currentKey }.${ index }`
 
 		if (!isInvalid(n)) {
 			if (isArray(n)) {
-				keyCounter = _normalizeVNodes(n, result, 0, keyCounter, subTreePosition++);
+				_normalizeVNodes(n, result, 0, key);
 			} else {
 				if (isStringOrNumber(n)) {
 					n = createTextVNode(n);
 				} else if (isVNode(n) && n.dom) {
 					n = cloneVNode(n);
 				}
-
-				if (isNull(n.key)) {
-					n = applyKey(keyCounter, n as VNode);
+				if (isNull(n.key) || n.key[0] === '.') {
+					n = applyKey(key, n as VNode);
 				} else {
-					n = applyKeyPrefix(subTreePosition, n as VNode);
+					n = applyKeyPrefix(currentKey, n as VNode);
 				}
 
 				result.push(n);
-				keyCounter++;
 			}
-		} else {
-			// Support for nulls
-			keyCounter++;
 		}
 	}
-	return keyCounter;
 }
 
 export function normalizeVNodes(nodes: any[]): VNode[] {
-	let newNodes,
-		  keyCounter = 0;
+	let newNodes;
 
 	// we assign $ which basically means we've flagged this array for future note
 	// if it comes back again, we need to clone it, as people are using it
@@ -76,25 +75,24 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	// tslint:enable
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
-		keyCounter++;
 
 		if (isInvalid(n) || isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
 
-			keyCounter = _normalizeVNodes(nodes, result, i, keyCounter, 1);
+			_normalizeVNodes(nodes, result, i, ``);
 			return result;
 		} else if (isStringOrNumber(n)) {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
-			newNodes.push(applyKeyIfMissing(keyCounter, createTextVNode(n)));
+			newNodes.push(applyKeyIfMissing(i, createTextVNode(n)));
 		} else if ((isVNode(n) && n.dom) || (isNull(n.key) && !(n.flags & VNodeFlags.HasNonKeyedChildren))) {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
-			newNodes.push(applyKeyIfMissing(keyCounter, cloneVNode(n)));
+			newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
 		} else if (newNodes) {
-			newNodes.push(applyKeyIfMissing(keyCounter, cloneVNode(n)));
+			newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
 		}
 	}
 
@@ -185,6 +183,10 @@ export function normalize(vNode: VNode): void {
 			const keyValues = vNodes.map(function(vnode){ return vnode.key; });
 			keyValues.some(function(item, idx){
 				const hasDuplicate = keyValues.indexOf(item) !== idx;
+
+				if (hasDuplicate) {
+					debugger;
+				}
 
 				warning(!hasDuplicate, 'Infreno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:'
 					+ item + ' Duplicated node: ' + JSON.stringify(vNodes[idx]));

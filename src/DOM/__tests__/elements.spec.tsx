@@ -863,7 +863,7 @@ describe('Elements (JSX)', () => {
 			expect(container.innerHTML).to.equal(innerHTML('<div>This works!Hello world</div>'));
 		});
 
-		it('basic nested component example ', () => {
+		it('basic nested component example #2 ', () => {
 			render(<C>{a}</C>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Hello worldHello worldHello world</div>'));
 			render(<C>{b}{a}</C>, container);

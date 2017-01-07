@@ -73,7 +73,7 @@ describe('Normalization process', () => {
                     return <div>{this.props.i} ({i++})</div>;
                 }
             }
-
+            
             render(
                 <div>
                     <A i={0} />

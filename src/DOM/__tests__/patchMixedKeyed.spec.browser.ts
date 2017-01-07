@@ -167,8 +167,8 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 		render(template([spanTagWithKeyAndText('d', 'b'), spanTagWithText('c1'), spanTagWithText('c2'), spanTagWithKeyAndText('f', 'c')]), container);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
-		render(template([spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]), container);
-		expect(container.textContent).to.equal('bbc');
+		render(template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]), container);
+		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
 		render(template([spanTagWithKeyAndText('d', 'b'), spanTagWithText('c1'), spanTagWithText('c2'), spanTagWithKeyAndText('f', 'c')]), container);
 		expect(container.textContent).to.equal('bc1c2c');
