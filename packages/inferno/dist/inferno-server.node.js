@@ -221,53 +221,51 @@ function isVNode(o) {
     return !!o.flags;
 }
 
-function applyKey(index, vNode) {
-    vNode.key = "." + index;
+function applyKey(key, vNode) {
+    vNode.key = key;
     return vNode;
 }
-function applyKeyIfMissing(index, vNode) {
-    if (isNull(vNode.key)) {
-        return applyKey(index, vNode);
+function applyKeyIfMissing(key, vNode) {
+    if (isNumber(key)) {
+        key = "." + key;
+    }
+    if (isNull(vNode.key) || vNode.key[0] === '.') {
+        return applyKey(key, vNode);
     }
     return vNode;
 }
-function applyKeyPrefix(index, vNode) {
-    vNode.key += "." + index;
+function applyKeyPrefix(key, vNode) {
+    vNode.key = key + vNode.key;
     return vNode;
 }
-function _normalizeVNodes(nodes, result, index, keyCounter, subTreePosition) {
+function _normalizeVNodes(nodes, result, index, currentKey) {
     for (; index < nodes.length; index++) {
         var n = nodes[index];
+        var key = currentKey + "." + index;
         if (!isInvalid(n)) {
             if (isArray(n)) {
-                keyCounter = _normalizeVNodes(n, result, 0, keyCounter, subTreePosition++);
+                _normalizeVNodes(n, result, 0, key);
             }
             else {
                 if (isStringOrNumber(n)) {
                     n = createTextVNode(n);
                 }
-                else if (isVNode(n) && n.dom) {
+                else if (isVNode(n) && n.dom || (n.key && n.key[0] === '.')) {
                     n = cloneVNode(n);
                 }
-                if (isNull(n.key)) {
-                    n = applyKey(keyCounter, n);
+                if (isNull(n.key) || n.key[0] === '.') {
+                    n = applyKey(key, n);
                 }
                 else {
-                    n = applyKeyPrefix(subTreePosition, n);
+                    n = applyKeyPrefix(currentKey, n);
                 }
                 result.push(n);
-                keyCounter++;
             }
         }
-        else {
-            // Support for nulls
-            keyCounter++;
-        }
     }
-    return keyCounter;
 }
 function normalizeVNodes(nodes) {
-    var newNodes, keyCounter = 0;
+    var newNodes;
     // we assign $ which basically means we've flagged this array for future note
     // if it comes back again, we need to clone it, as people are using it
     // in an immutable way
@@ -281,26 +279,25 @@ function normalizeVNodes(nodes) {
     // tslint:enable
     for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        keyCounter++;
         if (isInvalid(n) || isArray(n)) {
             var result = (newNodes || nodes).slice(0, i);
-            keyCounter = _normalizeVNodes(nodes, result, i, keyCounter, 1);
+            _normalizeVNodes(nodes, result, i, "");
             return result;
         }
         else if (isStringOrNumber(n)) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
-            newNodes.push(applyKeyIfMissing(keyCounter, createTextVNode(n)));
+            newNodes.push(applyKeyIfMissing(i, createTextVNode(n)));
         }
         else if ((isVNode(n) && n.dom) || (isNull(n.key) && !(n.flags & 64 /* HasNonKeyedChildren */))) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
-            newNodes.push(applyKeyIfMissing(keyCounter, cloneVNode(n)));
+            newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
         }
         else if (newNodes) {
-            newNodes.push(applyKeyIfMissing(keyCounter, cloneVNode(n)));
+            newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
         }
     }
     return newNodes || nodes;
