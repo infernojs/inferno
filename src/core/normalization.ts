@@ -45,7 +45,7 @@ function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentK
 			} else {
 				if (isStringOrNumber(n)) {
 					n = createTextVNode(n);
-				} else if (isVNode(n) && n.dom) {
+				} else if (isVNode(n) && n.dom || (n.key && n.key[0] === '.')) {
 					n = cloneVNode(n);
 				}
 				if (isNull(n.key) || n.key[0] === '.') {
@@ -183,10 +183,6 @@ export function normalize(vNode: VNode): void {
 			const keyValues = vNodes.map(function(vnode){ return vnode.key; });
 			keyValues.some(function(item, idx){
 				const hasDuplicate = keyValues.indexOf(item) !== idx;
-
-				if (hasDuplicate) {
-					debugger;
-				}
 
 				warning(!hasDuplicate, 'Infreno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:'
 					+ item + ' Duplicated node: ' + JSON.stringify(vNodes[idx]));
