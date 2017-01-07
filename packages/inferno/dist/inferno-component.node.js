@@ -190,6 +190,9 @@ function applyState(component, force, callback) {
             callback();
         }
     }
+    else if (callback) {
+        callback();
+    }
 }
 var Component$1 = function Component(props, context) {
     this.state = {};

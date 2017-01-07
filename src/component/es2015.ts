@@ -179,6 +179,8 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		if (!isNullOrUndef(callback)) {
 			callback();
 		}
+	} else if (callback) {
+		callback();
 	}
 }
 

@@ -60,7 +60,11 @@ function throwError(message) {
     }
     throw new Error(("Inferno Error: " + message));
 }
-
+function warning(condition, message) {
+    if (!condition) {
+        console.error(message);
+    }
+}
 var EMPTY_OBJ = {};
 
 var componentHooks = {
@@ -334,6 +338,22 @@ function normalize(vNode) {
     }
     if (hasProps && !isInvalid(props.children)) {
         props.children = normalizeChildren(props.children);
+    }
+    if (process.env.NODE_ENV !== 'production') {
+        // This code will be stripped out from production CODE
+        // It will help users to track errors in their applications.
+        function verifyKeys(vNodes) {
+            var keyValues = vNodes.map(function (vnode) { return vnode.key; });
+            keyValues.some(function (item, idx) {
+                var hasDuplicate = keyValues.indexOf(item) !== idx;
+                warning(!hasDuplicate, 'Infreno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:'
+                    + item + ' Duplicated node: ' + JSON.stringify(vNodes[idx]));
+                return hasDuplicate;
+            });
+        }
+        if (vNode.children && Array.isArray(vNode.children)) {
+            verifyKeys(vNode.children);
+        }
     }
 }
 

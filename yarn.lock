@@ -28,13 +28,15 @@
   version "2.0.43"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-2.0.43.tgz#8b1101111eb07324d69d349853371de28d1a9fab"
 
-"@types/mocha@^2.2.35":
-  version "2.2.35"
-  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.35.tgz#dd3150b62a6de73368109308515c3aa86f81f1ec"
+"@types/mocha@^2.2.36":
+  version "2.2.36"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.36.tgz#84e58982fc5f9ebe47d6fc0b1626dd1133db5c0d"
+  dependencies:
+    "@types/node" "*"
 
-"@types/node@^6.0.57":
-  version "6.0.57"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.57.tgz#100f9d4390331297bc3b6160ac4805b46de6e752"
+"@types/node@*", "@types/node@^6.0.58":
+  version "6.0.58"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.58.tgz#7b3b7065f3cdf24e2349d35b68d2795cfa874553"
 
 "@types/sinon@^1.16.34":
   version "1.16.34"
@@ -546,11 +548,12 @@ babel-plugin-check-es2015-constants@^6.3.13:
   dependencies:
     babel-runtime "^6.0.0"
 
-babel-plugin-inferno@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-inferno/-/babel-plugin-inferno-1.4.0.tgz#944c95b16520fb44914c846601484716852a8421"
+babel-plugin-inferno@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-inferno/-/babel-plugin-inferno-1.5.0.tgz#9beb329562ca5312a6b444b998d17e4bac842f79"
   dependencies:
     babel-plugin-syntax-jsx "^6.18.0"
+    inferno-vnode-flags "^1.0.7"
 
 babel-plugin-module-resolver@^2.4.0:
   version "2.4.0"
@@ -1995,9 +1998,9 @@ eslint-plugin-babel@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-babel/-/eslint-plugin-babel-4.0.0.tgz#a92114e2c493ac3034b030d7ecf96e174a76ef3f"
 
-eslint@^3.12.2:
-  version "3.12.2"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.12.2.tgz#6be5a9aa29658252abd7f91e9132bab1f26f3c34"
+eslint@^3.13.0:
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.13.0.tgz#636925fd163c9babe2e8be7ae43caf518d469577"
   dependencies:
     babel-code-frame "^6.16.0"
     chalk "^1.1.3"
@@ -2029,7 +2032,7 @@ eslint@^3.12.2:
     require-uncached "^1.0.2"
     shelljs "^0.7.5"
     strip-bom "^3.0.0"
-    strip-json-comments "~1.0.1"
+    strip-json-comments "~2.0.1"
     table "^3.7.8"
     text-table "~0.2.0"
     user-home "^2.0.0"
@@ -2704,6 +2707,16 @@ imurmurhash@^0.1.4:
 indexof@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/indexof/-/indexof-0.0.1.tgz#82dc336d232b9062179d05ab3293a66059fd435d"
+
+inferno-vnode-flags@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/inferno-vnode-flags/-/inferno-vnode-flags-1.0.7.tgz#0ca075489ee312e99197f7ef26bfc1feff5afeee"
+  dependencies:
+    inferno "1.0.7"
+
+inferno@1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/inferno/-/inferno-1.0.7.tgz#6e4cd800cc752ff76876f5d310dbec508ce0dcbc"
 
 inflight@^1.0.4:
   version "1.0.6"
@@ -4500,9 +4513,9 @@ rollup-pluginutils@^1.5.0, rollup-pluginutils@^1.5.1:
     estree-walker "^0.2.1"
     minimatch "^3.0.2"
 
-rollup@^0.40.2:
-  version "0.40.2"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.40.2.tgz#b59c8377332f828be38983192f3369e502f9e44b"
+rollup@^0.41.1:
+  version "0.41.1"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.41.1.tgz#5be8192c196c35977551e52ec0c98c3f83280525"
   dependencies:
     source-map-support "^0.4.0"
 
@@ -4915,11 +4928,11 @@ strip-bom@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/strip-bom/-/strip-bom-3.0.0.tgz#2334c18e9c759f7bdd56fdef7e9ae3d588e68ed3"
 
-strip-json-comments@^2.0.0:
+strip-json-comments@^2.0.0, strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
-strip-json-comments@~1.0.1, strip-json-comments@~1.0.4:
+strip-json-comments@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-1.0.4.tgz#1e15fbcac97d3ee99bf2d73b4c656b082bbafb91"
 
