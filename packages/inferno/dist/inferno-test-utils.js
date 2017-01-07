@@ -343,8 +343,7 @@ function normalize(vNode) {
             var keyValues = vNodes.map(function (vnode) { return vnode.key; });
             keyValues.some(function (item, idx) {
                 var hasDuplicate = keyValues.indexOf(item) !== idx;
-                warning(!hasDuplicate, 'Infreno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:'
-                    + item + ' Duplicated node: ' + JSON.stringify(vNodes[idx]));
+                warning(!hasDuplicate, 'Infreno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
                 return hasDuplicate;
             });
         }
