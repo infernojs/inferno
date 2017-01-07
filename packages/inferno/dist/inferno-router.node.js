@@ -798,12 +798,12 @@ function matchRoutes(_routes, currentURL, parentPath, redirect) {
         var isLast = !route.props || isEmpty(route.props.children);
         var matchBase = matchPath(isLast, location, pathToMatch);
         if (matchBase) {
-            var children = null;
+            var children = route.props.children;
             if (route.props.from) {
                 redirect = route.props.to;
             }
-            if (route.props && route.props.children) {
-                var matchChild = matchRoutes(route.props.children, pathToMatch, location, redirect);
+            if (children) {
+                var matchChild = matchRoutes(children, pathToMatch, location, redirect);
                 if (matchChild) {
                     if (matchChild.redirect) {
                         return {
@@ -812,15 +812,16 @@ function matchRoutes(_routes, currentURL, parentPath, redirect) {
                         };
                     }
                     children = matchChild.matched;
-                    Object.assign(params, matchChild.matched.props.params);
+                    Object.assign(params, children.props.params);
                 }
                 else {
-                    route.props.children = null;
+                    children = null;
                 }
             }
             var matched = Inferno__default.cloneVNode(route, {
-                params: Object.assign(params, matchBase.params)
-            }, children);
+                params: Object.assign(params, matchBase.params),
+                children: children
+            });
             return {
                 location: location,
                 redirect: redirect,

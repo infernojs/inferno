@@ -123,6 +123,22 @@ describe('Basic event tests', () => {
 		expect(container.firstChild.innerHTML).to.equal('2');
 	});
 
+	it('should not leak memory #2', () => {
+		const eventHandler = function() {};
+
+		function App({toggle}) {
+			return createElement('button', {
+				onsubmit: toggle ? eventHandler : null
+			}, ['1']);
+		}
+
+		render(App({toggle: true}), container);
+		expect(container.firstChild.innerHTML).to.equal('1');
+
+		render(App({toggle: false}), container);
+		expect(container.firstChild.innerHTML).to.equal('1');
+	});
+
 	it('should not leak memory when child changes', () => {
 		const eventHandler = function() {
 		};

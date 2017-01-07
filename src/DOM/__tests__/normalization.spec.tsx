@@ -393,10 +393,18 @@ describe('Normalization process', () => {
                 });
             });
         });
-        /*
+    });
 
-         TODO: Add more tests for different structures and create benchmark + optimize normalization process!
+    describe('Warning two duplicate keys', () => {
+        it('Should give warning if two duplicates is found', () => {
+            const errorNode = (
+                <div>
+                    <div key="1">2</div>
+                    <div key="1">1</div>
+                </div>
+            );
 
-         */
+            render(errorNode, container);
+        });
     });
 });

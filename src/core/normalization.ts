@@ -7,7 +7,7 @@ import {
 	isNullOrUndef,
 	isString,
 	isStringOrNumber,
-	isUndefined,
+	isUndefined, warning,
 } from '../shared';
 
 function applyKey(index: number, vNode: VNode) {
@@ -97,6 +97,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 			newNodes.push(applyKeyIfMissing(keyCounter, cloneVNode(n)));
 		}
 	}
+
 	return newNodes || nodes as VNode[];
 }
 
@@ -106,6 +107,7 @@ function normalizeChildren(children: InfernoChildren | null) {
 	} else if (isVNode(children as VNode) && (children as VNode).dom) {
 		return cloneVNode(children as VNode);
 	}
+
 	return children;
 }
 
@@ -172,5 +174,28 @@ export function normalize(vNode: VNode): void {
 	}
 	if (hasProps && !isInvalid(props.children)) {
 		props.children = normalizeChildren(props.children);
+	}
+
+	if (process.env.NODE_ENV !== 'production') {
+
+		// This code will be stripped out from production CODE
+		// It will help users to track errors in their applications.
+
+		function verifyKeys(vNodes) {
+			const keyValues = vNodes.map(function(vnode){ return vnode.key; });
+			keyValues.some(function(item, idx){
+				const hasDuplicate = keyValues.indexOf(item) !== idx;
+
+				warning(!hasDuplicate, 'Infreno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:'
+					+ item + ' Duplicated node: ' + JSON.stringify(vNodes[idx]));
+
+				return hasDuplicate;
+			});
+		}
+
+
+		if (vNode.children && Array.isArray(vNode.children)) {
+			verifyKeys(vNode.children)
+		}
 	}
 }

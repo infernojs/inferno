@@ -14,6 +14,8 @@ function generateKeyNodes(array) {
 		id = key = array[i];
 		if (key !== null && (typeof key !== 'string' || key[0] !== '#')) {
 			newKey = key;
+		} else {
+			newKey = null;
 		}
 
 		children.push(createElement('div', {
