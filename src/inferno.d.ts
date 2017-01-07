@@ -113,8 +113,13 @@ declare module 'inferno-component' {
 }
 
 declare module 'inferno-server' {
-	export function renderToStaticMarkup(...rest);
-	export default function renderToString(...rest);
+	export function renderToString(...rest);
+ 	export function renderToStaticMarkup(...rest);
+
+	export default {
+		renderToString(...rest),
+		renderToStaticMarkup(...rest),
+	}
 }
 
 declare module 'inferno-create-class' {
