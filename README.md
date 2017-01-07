@@ -440,7 +440,7 @@ This enables `findDOMNode()`. We strongly recommend against using this API as it
 
 This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon diposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
 
-## Functional component hooks
+## Functional component lifeycle events
 
 | Name                      | Triggered when                                                 | Arguments to callback           |
 | -----------               | --------------                                                 | -----------------------         |
@@ -451,10 +451,9 @@ This enables DOM node recycling within Inferno, so that DOM nodes are re-used up
 | `onComponentDidUpdate`    | a functional component has performed an updated                 | `lastProps, nextProps`          |
 | `onComponentWillUnmount`  | a functional component is about to be unmounted                 |                                 |
 
-### Using hooks
+### Using functional lifecycle events
 
-It's simple to implicitly assign hooks to both DOM nodes and functional components.
-Please note: class components (ES2015 classes) from `inferno-component` **do not** support hooks.
+Functional lifecycle events must be explicitly assigned via props onto a functional component like shown below:
 
 ```javascript
 function mounted(domNode) {
@@ -468,7 +467,7 @@ function FunctionalComponent({ props }) {
 Inferno.render(<FunctionalComponent onComponentDidMount={ mounted } />, document.body);
 ```
 
-Hooks provide powerful lifecycle events to functional components, allowing you to build components without being forced to use ES2015 classes.
+Please note: class components (ES2015 classes) from `inferno-component` **do not** support the same lifecycle events (they have their own lifecycle events that work as methods on the class itself).
 
 ## Development vs Production modes
 
