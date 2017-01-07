@@ -37,7 +37,7 @@ function applyKeyPrefix(key: string, vNode: VNode): VNode {
 function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey) {
 	for (; index < nodes.length; index++) {
 		let n = nodes[index];
-		const key = `${ currentKey }.${ index }`
+		const key = `${ currentKey }.${ index }`;
 
 		if (!isInvalid(n)) {
 			if (isArray(n)) {
@@ -191,9 +191,8 @@ export function normalize(vNode: VNode): void {
 			});
 		}
 
-
 		if (vNode.children && Array.isArray(vNode.children)) {
-			verifyKeys(vNode.children)
+			verifyKeys(vNode.children);
 		}
 	}
 }

@@ -117,9 +117,9 @@ declare module 'inferno-server' {
  	export function renderToStaticMarkup(...rest);
 
 	export default {
-		renderToString(...rest),
-		renderToStaticMarkup(...rest),
-	}
+		renderToString,
+		renderToStaticMarkup
+	};
 }
 
 declare module 'inferno-create-class' {
