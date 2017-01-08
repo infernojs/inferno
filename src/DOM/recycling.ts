@@ -1,4 +1,3 @@
-import { VNode, VNodeFlags } from '../core/structures';
 import {
 	isNull,
 	isUndefined,

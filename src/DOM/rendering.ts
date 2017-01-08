@@ -1,4 +1,3 @@
-import { InfernoChildren, InfernoInput, VNode, VNodeFlags } from '../core/structures';
 import {
 	NO_OP,
 	isBrowser,
@@ -33,7 +32,7 @@ options.roots = roots;
 export function findDOMNode(ref) {
 	if (!options.findDOMNodeEnabled) {
 		if (process.env.NODE_ENV !== 'production') {
-			throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
+			throwError('findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!');
 		}
 		throwError();
 	}

@@ -9,11 +9,6 @@ import {
 	ERROR_MSG,
 	isBrowser
 } from '../shared';
-import {
-	Props,
-	VNode,
-	VNodeFlags
-} from '../core/structures';
 
 import Lifecycle from './../DOM/lifecycle';
 

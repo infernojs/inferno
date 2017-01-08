@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { render, createVNode } from 'inferno';
-import { VNodeFlags } from "../../core/structures";
 import { createTextVNode } from "../../core/VNodes";
 
 describe('patching routine', () => {
@@ -16,14 +15,14 @@ describe('patching routine', () => {
 
 	// TODO: Try to cover patching lastVNode !== nextVNode. requires no normalize and hoisting
 	it('Should do nothing if lastVNode strictly equals nextVnode', () => {
-		const yar = createVNode(2, 'div', null, '123', null, null, true);
-		const bar = createVNode(2, 'div', null, '123', null, null, true);
-		let foo = createVNode(2, 'div', null, [bar, yar], null, null, true);
+		const yar = createVNode(2, 'div', null, '123', null, null, null, true);
+		const bar = createVNode(2, 'div', null, '123', null, null, null, true);
+		let foo = createVNode(2, 'div', null, [bar, yar], null, null, null, true);
 
 		render(foo, container);
 		expect(container.innerHTML).to.eql('<div><div>123</div><div>123</div></div>');
 
-		foo = createVNode(2, 'div', null, [bar, yar], null, null, true);
+		foo = createVNode(2, 'div', null, [bar, yar], null, null, null, true);
 
 		render(foo, container);
 		expect(container.innerHTML).to.eql('<div><div>123</div><div>123</div></div>');
@@ -35,6 +34,7 @@ describe('patching routine', () => {
 			'span',
 			null,
 			createTextVNode('a'),
+			null,
 			null,
 			null,
 			false
@@ -65,8 +65,10 @@ describe('patching routine', () => {
 				createTextVNode('a'),
 				null,
 				null,
+				null,
 				false
 			),
+			null,
 			null,
 			null,
 			false
@@ -77,6 +79,7 @@ describe('patching routine', () => {
 			'span',
 			null,
 			createVNode(0, 'span'),
+			null,
 			null,
 			null,
 			false

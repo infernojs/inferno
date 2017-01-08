@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { render, createVNode, NO_OP } from 'inferno';
-import { VNodeFlags } from "../../core/structures";
 
 describe('rendering routine', () => {
 	let container;
@@ -14,7 +13,7 @@ describe('rendering routine', () => {
 	});
 
 	it('Should throw error when trying to render to document.body', () => {
-		const div = createVNode(VNodeFlags.Element, 'div', null, '1', null, null, true);
+		const div = createVNode(VNodeFlags.Element, 'div', null, '1', null, null, null, true);
 		try {
 			render(div, document.body);
 		} catch (e) {
@@ -28,8 +27,8 @@ describe('rendering routine', () => {
 	});
 
 	it('Should create new object when dom exists', () => {
-		const bar = createVNode(2, 'div', null, '123', null, null, true);
-		const foo = createVNode(2, 'div', null, bar, null, null, true);
+		const bar = createVNode(2, 'div', null, '123', null, null, null, true);
+		const foo = createVNode(2, 'div', null, bar, null, null, null, true);
 
 		render(foo, container);
 		expect(container.innerHTML).to.eql('<div><div>123</div></div>');

@@ -1,4 +1,3 @@
-import { VNodeFlags } from '../core/structures';
 import { createVNode } from 'inferno';
 import Link from './Link';
 

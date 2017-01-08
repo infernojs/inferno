@@ -1,4 +1,3 @@
-import { InfernoChildren, Props, VNode, VNodeFlags } from './structures';
 import { cloneVNode, createTextVNode, isVNode } from './VNodes';
 import {
 	isArray,

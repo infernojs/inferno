@@ -15,7 +15,6 @@ import options from '../core/options';
 import {
 	patchEvent
 } from './patching';
-import { VNodeFlags } from '../core/structures';
 import { componentToDOMNodeMap } from './rendering';
 import { removeChild } from './utils';
 import Lifecycle from "./lifecycle";

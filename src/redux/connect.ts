@@ -9,10 +9,10 @@ import {
 } from './utils';
 
 import Component from 'inferno-component';
-import { IProps } from '../core/structures';
 import createElement from 'inferno-create-element';
 import hoistStatics from 'hoist-non-inferno-statics';
 import { isPlainObject } from './helpers';
+import {IProps} from "../core/structures";
 
 type WrapWithConnect = (WrappedComponent: any) => any;
 

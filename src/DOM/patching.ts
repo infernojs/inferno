@@ -24,11 +24,6 @@ import {
 	copyPropsTo
 } from '../core/normalization';
 import {
-	VNode,
-	VNodeFlags,
-	Styles
-} from '../core/structures';
-import {
 	booleanProps,
 	isUnitlessNumber,
 	namespaces,
@@ -71,6 +66,7 @@ import Lifecycle from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
 import processElement from './wrappers/processElement';
 import { unmount } from './unmounting';
+import {Styles} from "../core/structures";
 
 export function patch(lastVNode, nextVNode, parentDom, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
 	if (lastVNode !== nextVNode) {

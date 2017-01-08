@@ -778,6 +778,7 @@ function match(routes, currentURL) {
  * @param _routes
  * @param currentURL
  * @param parentPath
+ * @param redirect
  * @returns {object}
  */
 function matchRoutes(_routes, currentURL, parentPath, redirect) {

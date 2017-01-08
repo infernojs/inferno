@@ -9,15 +9,6 @@ import {
 import {
 	normalize
 } from './normalization';
-import {
-	VNodeFlags,
-	VNode,
-	InfernoChildren,
-	Props,
-	Key,
-	Ref,
-	Type
-} from './structures';
 import options from './options';
 
 export function createVNode(
@@ -67,7 +58,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 		} else {
 			if (isArray(children)) {
 				if (isArray(props.children)) {
-					props.children = props.children.concat(children);
+					props.children = props.children.concat(children) as any;
 				} else {
 					props.children = [props.children].concat(children) as any;
 				}

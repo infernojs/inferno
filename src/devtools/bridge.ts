@@ -1,5 +1,4 @@
 import { options } from 'inferno';
-import { VNodeFlags } from '../core/structures';
 import { isArray, isStringOrNumber, isObject, isInvalid } from '../shared';
 
 function findVNodeFromDom(vNode, dom) {

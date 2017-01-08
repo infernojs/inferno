@@ -17,7 +17,8 @@ var isBrowser = typeof window !== 'undefined' && window.document;
 var isArray = Array.isArray;
 
 function isStringOrNumber(obj) {
-    return isString(obj) || isNumber(obj);
+    var type = typeof obj;
+    return type === 'string' || type === 'number';
 }
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
@@ -29,12 +30,8 @@ function isFunction(obj) {
     return typeof obj === 'function';
 }
 
-function isString(obj) {
-    return typeof obj === 'string';
-}
-function isNumber(obj) {
-    return typeof obj === 'number';
-}
+
+
 function isNull(obj) {
     return obj === null;
 }

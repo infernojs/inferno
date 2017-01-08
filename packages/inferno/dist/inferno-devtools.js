@@ -18,7 +18,8 @@ function isStatefulComponent(o) {
     return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
 function isStringOrNumber(obj) {
-    return isString(obj) || isNumber(obj);
+    var type = typeof obj;
+    return type === 'string' || type === 'number';
 }
 
 function isInvalid(obj) {
@@ -26,12 +27,8 @@ function isInvalid(obj) {
 }
 
 
-function isString(obj) {
-    return typeof obj === 'string';
-}
-function isNumber(obj) {
-    return typeof obj === 'number';
-}
+
+
 function isNull(obj) {
     return obj === null;
 }

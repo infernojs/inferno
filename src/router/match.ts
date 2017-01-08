@@ -23,6 +23,7 @@ export default function match(routes, currentURL: any) {
  * @param _routes
  * @param currentURL
  * @param parentPath
+ * @param redirect
  * @returns {object}
  */
 function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = false) {

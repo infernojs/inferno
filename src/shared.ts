@@ -16,7 +16,9 @@ export function isStatefulComponent(o: any): boolean {
 }
 
 export function isStringOrNumber(obj: any): boolean {
-	return isString(obj) || isNumber(obj);
+	const type = typeof obj;
+
+	return type === 'string' || type === 'number';
 }
 
 export function isNullOrUndef(obj: any): boolean {

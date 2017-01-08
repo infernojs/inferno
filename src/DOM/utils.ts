@@ -1,8 +1,4 @@
 import {
-	VNodeFlags,
-	VNode
-} from '../core/structures';
-import {
 	isArray,
 	isInvalid,
 	isStringOrNumber,

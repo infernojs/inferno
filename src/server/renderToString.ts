@@ -15,10 +15,6 @@ import {
 	isFunction,
 	throwError
 } from '../shared';
-
-import {
-	VNodeFlags
-} from '../core/structures';
 import {
 	copyPropsTo
 } from '../core/normalization';
@@ -42,7 +38,7 @@ function renderStylesToString(styles) {
 	}
 }
 
-function renderVNodeToString(vNode, context, firstChild) {
+function renderVNodeToString(vNode, context, firstChild): string {
 	const flags = vNode.flags;
 	const type = vNode.type;
 	const props = vNode.props || EMPTY_OBJ;
@@ -153,10 +149,10 @@ function renderVNodeToString(vNode, context, firstChild) {
 	}
 }
 
-export default function renderToString(input) {
+export default function renderToString(input: any): string {
 	return renderVNodeToString(input, {}, true);
 }
 
-export function renderToStaticMarkup(input) {
+export function renderToStaticMarkup(input: any): string {
 	return renderVNodeToString(input, {}, true);
 }

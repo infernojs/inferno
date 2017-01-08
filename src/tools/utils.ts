@@ -4,8 +4,6 @@ import {
 	isStringOrNumber,
 } from '../shared';
 
-import { VNodeFlags } from '../core/structures';
-
 const comparer = document.createElement('div');
 
 export function sortAttributes(html: string): string {

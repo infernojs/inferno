@@ -20,7 +20,8 @@ function isStatefulComponent(o) {
     return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
 function isStringOrNumber(obj) {
-    return isString(obj) || isNumber(obj);
+    var type = typeof obj;
+    return type === 'string' || type === 'number';
 }
 function isNullOrUndef(obj) {
     return isUndefined(obj) || isNull(obj);
@@ -2431,7 +2432,7 @@ options.roots = roots;
 function findDOMNode(ref) {
     if (!options.findDOMNodeEnabled) {
         {
-            throwError('findDOMNode() has been disabled, use enableFindDOMNode() enabled findDOMNode(). Warning this can significantly impact performance!');
+            throwError('findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!');
         }
         throwError();
     }

@@ -1,5 +1,4 @@
 import Component from 'inferno-component';
-import { VNodeFlags } from '../core/structures';
 import { createVNode } from 'inferno';
 import RouterContext from './RouterContext';
 import match, { matchPath } from './match';

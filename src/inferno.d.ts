@@ -1,4 +1,4 @@
-declare enum VNodeFlags {
+declare const enum VNodeFlags {
 	Text = 1,
 	HtmlElement = 1 << 1,
 
@@ -19,9 +19,10 @@ declare enum VNodeFlags {
 	Component = ComponentFunction | ComponentClass | ComponentUnknown
 }
 
+type InfernoInput = VNode | null | string | number;
 type Key = string | number | null;
 type Ref = Function | null;
-type InfernoChildren = string | number | VNode | Array<string | VNode> | null;
+type InfernoChildren = string | number | VNode | Array<string | number | VNode> | null;
 type Type = string | Function | null;
 
 interface Props {
@@ -56,23 +57,21 @@ declare module 'inferno' {
 		beforeUnmount: Function | null;
 	}
 
-	export function createVNode(flags, type?, props?, children?, events?, key?, ref?, noNormalise?: boolean): any;
-	export function cloneVNode(node, props?, ...children);
-	export function render(...rest);
-	export function enableFindDOMNode();
+	export function createVNode(flags: number, type?: Type, props?: any, children?: InfernoChildren, events?: Object | null, key?: Key, ref?: Ref, noNormalise?: boolean): any;
+	export function cloneVNode(node: VNode, props?: any, ...children: any[]): VNode;
+	export function render(input: InfernoInput, parentDom?: Node | SVGAElement): InfernoChildren;
 	export function findDOMNode(node: any): any;
-	export function createRenderer(...rest);
-	export function linkEvent(data, event: Function);
-	export const NO_OP;
-	export const ERROR_MSG;
-	export const EMPTY_OBJ;
+	export function createRenderer(_parentDom?: any): Function;
+	export function linkEvent(data: any, event: Function): Object;
+	export const NO_OP: string;
+	export const ERROR_MSG: string;
+	export const EMPTY_OBJ: Object;
 	export const options: Options;
 
 	export default {
 		createVNode,
 		cloneVNode,
 		render,
-		enableFindDOMNode,
 		findDOMNode,
 		createRenderer,
 		linkEvent,
@@ -93,28 +92,28 @@ declare module 'inferno-component' {
 		componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
 		componentWillUnmount?(): void;
 	}
-	class Component<P, S> implements ComponentLifecycle<P, S>  {
+
+	export default class Component<P, S> implements ComponentLifecycle<P, S>  {
 		refs?: any;
 		state?: S;
 		props?: P;
 		context?: any;
-		_vNode;
+		_vNode: VNode;
 		_unmounted?: boolean;
-		constructor (props?: P, context?);
-		componentWillReact();
+		constructor (props?: P, context?: Object);
+		componentWillReact(): void;
 		componentWillReceiveProps? (nextProps: P, nextContext: Object): void;
-		componentWillUnmount();
+		componentWillUnmount(): void;
 		forceUpdate (): void;
 		setState (v: Object, cb?: () => {}): boolean;
 		setStateSync (v: Object): boolean;
 		isPrototypeOf (v: Object): void;
 	}
-	export default Component;
 }
 
 declare module 'inferno-server' {
-	export function renderToString(...rest);
- 	export function renderToStaticMarkup(...rest);
+	export function renderToString(input: any): string;
+	export function renderToStaticMarkup(input: any): string;
 
 	export default {
 		renderToString,
@@ -123,15 +122,15 @@ declare module 'inferno-server' {
 }
 
 declare module 'inferno-create-class' {
-	export default function createClass(component: any): any;
+	export default function createClass(obj: any): any;
 }
 
 declare module 'inferno-create-element' {
-	export default function createElement(component: any, props: any, ...children): any;
+	export default function createElement(name: any, props?: any, ...children): VNode;
 }
 
 declare module 'inferno-hyperscript' {
-	export default function hyperscript(tag: any, props?: any, ...children): any;
+	export default function hyperscript(_tag: string | VNode | Function, _props?: any, _children?: InfernoChildren): VNode;
 }
 
 declare module 'inferno-test-utils' {
@@ -172,29 +171,22 @@ declare module 'inferno-test-utils' {
 	};
 }
 
-declare module 'lodash/isPlainObject' {
-	function isPlainObject(value: any): boolean;
-	export = isPlainObject;
-}
+/*
+ *
+ *
+ *  BELOW THIS IS ONLY FOR INTERNAL USAGE
+ *
+ *
+ */
 
-declare module 'invariant' {
-	function invariant(condition: any, message: string): void;
-	export = invariant;
-}
+interface Window { process: any; __karma__: any; mocha: any; }
 
-declare module 'hoist-non-inferno-statics' {
-	function hoistStatics(connectClass: any, wrappedComponent: any): {[index: string]: any};
-	export = hoistStatics;
-}
-
-declare module 'path-to-regexp-es6' {
-	function pathToRegExp(routePath: any, keys: any, end: any);
-	export default pathToRegExp;
-}
-
-declare module 'concat-stream-es6' {
-	function concatStream(func?: any);
-	export default concatStream;
+//noinspection TsLint
+declare namespace process {
+	//noinspection TsLint
+	export interface env {
+		NODE_ENV: any;
+	}
 }
 
 declare module 'history' {
@@ -247,12 +239,17 @@ declare module 'union-type-es' {
 	export default function (obj: any): any;
 }
 
-interface Window { process: any; __karma__: any; mocha: any; }
+declare module 'hoist-non-inferno-statics' {
+	function hoistStatics(connectClass: any, wrappedComponent: any): {[index: string]: any};
+	export = hoistStatics;
+}
 
-//noinspection TsLint
-declare namespace process {
-	//noinspection TsLint
-	export interface env {
-		NODE_ENV: any;
-	}
+declare module 'path-to-regexp-es6' {
+	function pathToRegExp(routePath: any, keys: any, end: any);
+	export default pathToRegExp;
+}
+
+declare module 'concat-stream-es6' {
+	function concatStream(func?: any);
+	export default concatStream;
 }

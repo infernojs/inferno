@@ -1,4 +1,3 @@
-import { VNodeFlags } from '../core/structures';
 import { createVNode } from 'inferno';
 
 interface ILinkProps {

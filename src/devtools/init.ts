@@ -7,7 +7,6 @@ import {
 import {
 	isStatefulComponent
 } from '../shared';
-import { VNodeFlags } from '../core/structures';
 import Component from 'inferno-component';
 
 const functionalComponentWrappers = new Map();

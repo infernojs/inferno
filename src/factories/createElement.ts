@@ -1,9 +1,3 @@
-import {
-	Props,
-	InfernoChildren,
-	VNodeFlags,
-	VNode
-} from '../core/structures';
 import { createVNode } from 'inferno';
 import {
 	isAttrAnEvent,

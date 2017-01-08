@@ -25,9 +25,6 @@ import {
 import options from '../core/options';
 import Lifecycle from './lifecycle';
 import {
-	VNodeFlags
-} from '../core/structures';
-import {
 	copyPropsTo
 } from '../core/normalization';
 import { componentToDOMNodeMap } from './rendering';

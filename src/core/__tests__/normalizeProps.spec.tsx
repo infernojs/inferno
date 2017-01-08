@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { normalize } from '../normalization';
-import { VNode } from '../structures';
 
 describe('normalizeProps', () => {
 	it('should delete ref from props', () => {
