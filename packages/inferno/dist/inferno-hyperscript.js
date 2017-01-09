@@ -148,8 +148,8 @@ function hyperscript$1(_tag, _props, _children) {
     }
     else {
         var flags$1 = isStatefulComponent(tag) ? 4 /* ComponentClass */ : 8;
-        if (children) {
-            props.children = children;
+        if (children || _children) {
+            props.children = children || _children;
         }
         return inferno.createVNode(flags$1, tag, props, null, null, key, ref);
     }
