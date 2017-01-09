@@ -53,14 +53,14 @@ function isChildren(x: any): boolean {
 	return isStringOrNumber(x) || (x && isArray(x));
 }
 
-function extractProps(_props: any, _tag: string | VNode): any {
+function extractProps(_props: any, _tag: string | VNode, _children?: InfernoChildren): any {
 	_props = _props || {};
 	const isComponent = !isString(_tag);
 	const tag = !isComponent ? parseTag(_tag as string, _props) : _tag;
 	const props = {};
 	let key = null;
 	let ref = null;
-	let children = null;
+	let children = _children;
 	let events = null;
 
 	for (let prop in _props) {
@@ -95,7 +95,7 @@ export default function hyperscript(_tag: string | VNode, _props?: any, _childre
 		_children = _props;
 		_props = {};
 	}
-	const { tag, props, key, ref, children, events } = extractProps(_props, _tag);
+	const { tag, props, key, ref, children, events } = extractProps(_props, _tag, _children);
 
 	if (isString(tag)) {
 		let flags = VNodeFlags.HtmlElement;
