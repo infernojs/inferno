@@ -67,19 +67,6 @@ describe('HyperScript (non-JSX)', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
 	});
 
-	it('Should handle children as third argument', () => {
-		const Component = ({ children }) => {
-			return h('div', children);
-		};
-		const ComponentHooks = () => h(Component, null, 'Hello world!');
-
-		render(
-			h(ComponentHooks),
-			container
-		);
-		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
-	});
-
 	it('Should handle different props (key, class, id, ref, children)', () => {
 		const ComponentHooks = () => h('div#myId.test', {
 			onComponentDidMount() {
