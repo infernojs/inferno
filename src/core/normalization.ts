@@ -178,7 +178,7 @@ export function normalize(vNode: VNode): void {
 		// This code will be stripped out from production CODE
 		// It will help users to track errors in their applications.
 
-		function verifyKeys(vNodes) {
+		const verifyKeys = function(vNodes) {
 			const keyValues = vNodes.map(function(vnode){ return vnode.key; });
 			keyValues.some(function(item, idx){
 				const hasDuplicate = keyValues.indexOf(item) !== idx;
@@ -187,7 +187,7 @@ export function normalize(vNode: VNode): void {
 
 				return hasDuplicate;
 			});
-		}
+		};
 
 		if (vNode.children && Array.isArray(vNode.children)) {
 			verifyKeys(vNode.children);
