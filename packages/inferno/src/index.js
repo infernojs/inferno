@@ -19,6 +19,9 @@ if (process.env.NODE_ENV !== 'production') {
 	);
 }
 
+// This will be replaced by rollup
+const version = 'VERSION';
+
 // we duplicate it so it plays nicely with different module loading systems
 export default {
 	linkEvent,
@@ -36,7 +39,8 @@ export default {
 	render,
 	findDOMNode,
 	createRenderer,
-	options
+	options,
+	version
 };
 
 export {
@@ -55,5 +59,6 @@ export {
 	render,
 	findDOMNode,
 	createRenderer,
-	options
+	options,
+	version
 };

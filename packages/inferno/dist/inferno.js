@@ -2542,6 +2542,9 @@ function linkEvent(data, event) {
 	);
 }
 
+// This will be replaced by rollup
+var version = '1.1.1';
+
 // we duplicate it so it plays nicely with different module loading systems
 var index = {
 	linkEvent: linkEvent,
@@ -2559,7 +2562,8 @@ var index = {
 	render: render,
 	findDOMNode: findDOMNode,
 	createRenderer: createRenderer,
-	options: options
+	options: options,
+	version: version
 };
 
 exports['default'] = index;
@@ -2572,6 +2576,7 @@ exports.render = render;
 exports.findDOMNode = findDOMNode;
 exports.createRenderer = createRenderer;
 exports.options = options;
+exports.version = version;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

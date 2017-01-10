@@ -67,6 +67,7 @@ declare module 'inferno' {
 	export const ERROR_MSG: string;
 	export const EMPTY_OBJ: Object;
 	export const options: Options;
+	export const version: string;
 
 	export default {
 		createVNode,
@@ -78,7 +79,8 @@ declare module 'inferno' {
 		NO_OP,
 		ERROR_MSG,
 		EMPTY_OBJ,
-		options
+		options,
+		version
 	};
 }
 
