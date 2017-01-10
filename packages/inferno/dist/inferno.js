@@ -1,5 +1,5 @@
 /*!
- * inferno v1.1.1
+ * inferno v1.1.2
  * (c) 2017 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -2543,7 +2543,7 @@ function linkEvent(data, event) {
 }
 
 // This will be replaced by rollup
-var version = '1.1.1';
+var version = '1.1.2';
 
 // we duplicate it so it plays nicely with different module loading systems
 var index = {
