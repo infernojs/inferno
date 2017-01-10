@@ -74,14 +74,14 @@ function parseTag(tag, props) {
 function isChildren(x) {
     return isStringOrNumber(x) || (x && isArray(x));
 }
-function extractProps(_props, _tag) {
+function extractProps(_props, _tag, _children) {
     _props = _props || {};
     var isComponent = !isString(_tag);
     var tag = !isComponent ? parseTag(_tag, _props) : _tag;
     var props = {};
     var key = null;
     var ref = null;
-    var children = null;
+    var children = _children;
     var events = null;
     for (var prop in _props) {
         if (prop === 'key') {
@@ -120,7 +120,7 @@ function hyperscript$1(_tag, _props, _children) {
         _children = _props;
         _props = {};
     }
-    var ref$1 = extractProps(_props, _tag);
+    var ref$1 = extractProps(_props, _tag, _children);
     var tag = ref$1.tag;
     var props = ref$1.props;
     var key = ref$1.key;

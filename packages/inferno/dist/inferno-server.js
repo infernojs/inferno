@@ -380,14 +380,14 @@ function normalize(vNode) {
     {
         // This code will be stripped out from production CODE
         // It will help users to track errors in their applications.
-        function verifyKeys(vNodes) {
+        var verifyKeys = function (vNodes) {
             var keyValues = vNodes.map(function (vnode) { return vnode.key; });
             keyValues.some(function (item, idx) {
                 var hasDuplicate = keyValues.indexOf(item) !== idx;
-                warning(!hasDuplicate, 'Infreno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
+                warning(!hasDuplicate, 'Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
                 return hasDuplicate;
             });
-        }
+        };
         if (vNode.children && Array.isArray(vNode.children)) {
             verifyKeys(vNode.children);
         }
@@ -415,7 +415,7 @@ constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
 constructDefaults('children,ref,key,selected,checked,value,multiple', skipProps, true);
 constructDefaults('onClick,onMouseDown,onMouseUp,onMouseMove,onSubmit,onDblClick,onKeyDown,onKeyUp,onKeyPress', delegatedProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readOnly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate', booleanProps, true);
+constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readOnly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate,hidden', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
 
 function renderStylesToString(styles) {

@@ -187,7 +187,7 @@ function applyState(component, force, callback) {
             callback();
         }
     }
-    else if (callback) {
+    else if (!isNullOrUndef(callback)) {
         callback();
     }
 }
