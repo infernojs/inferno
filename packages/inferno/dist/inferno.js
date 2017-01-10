@@ -2082,7 +2082,9 @@ function createClassComponentInstance(vNode, Component, props, context, isSVG) {
     instance._unmounted = false;
     instance._pendingSetState = true;
     instance._isSVG = isSVG;
-    instance.componentWillMount();
+    if (isFunction(instance.componentWillMount)) {
+        instance.componentWillMount();
+    }
     var childContext = instance.getChildContext();
     if (!isNullOrUndef(childContext)) {
         instance._childContext = Object.assign({}, context, childContext);
