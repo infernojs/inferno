@@ -442,7 +442,8 @@ function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, 
 	var component = inferno.render(wrapperVNode, container);
 
 	if (callback) {
-		callback(component);
+		// callback gets the component as context, no other argument.
+		callback.call(component);
 	}
 	return component;
 }
