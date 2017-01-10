@@ -172,7 +172,8 @@ function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, 
 	const component = render(wrapperVNode, container);
 
 	if (callback) {
-		callback(component);
+		// callback gets the component as context, no other argument.
+		callback.call(component);
 	}
 	return component;
 }
