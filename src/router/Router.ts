@@ -74,9 +74,10 @@ export default class Router extends Component<IRouterProps, any> {
 		const hit = match(props.children, this.state.url);
 
 		if (hit.redirect) {
-			return process.nextTick(() => {
+			Promise.resolve().then(function() {
 				this.router.replace(hit.redirect);
 			});
+			return null;
 		}
 
 		return createVNode(VNodeFlags.ComponentClass, RouterContext, {
