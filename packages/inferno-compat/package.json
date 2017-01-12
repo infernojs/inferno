@@ -24,7 +24,9 @@
     "inferno": "1.1.2",
     "inferno-component": "1.1.2",
     "inferno-transition-group": "1.1.1",
-    "rc-css-transition-group": "2.1.4",
+    "rc-css-transition-group": "2.1.4"
+  },
+  "peerDependencies": {
     "proptypes": "0.14.3"
   }
 }

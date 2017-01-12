@@ -918,13 +918,12 @@ var Router = (function (Component$$1) {
         this.setState({ url: url });
     };
     Router.prototype.render = function render (props) {
-        var this$1 = this;
-
         var hit = match(props.children, this.state.url);
         if (hit.redirect) {
-            return process.nextTick(function () {
-                this$1.router.replace(hit.redirect);
+            Promise.resolve().then(function () {
+                this.router.replace(hit.redirect);
             });
+            return null;
         }
         return Inferno.createVNode(4 /* ComponentClass */, RouterContext, {
             location: this.state.url,
