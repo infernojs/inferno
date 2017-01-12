@@ -1,6 +1,6 @@
 import { expect } from 'chai';
+import { cloneVNode, render } from 'inferno';
 import { innerHTML } from '../../tools/utils';
-import { render, cloneVNode } from 'inferno';
 
 describe('cloneVNode (JSX)', () => {
 	let container;

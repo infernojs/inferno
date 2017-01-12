@@ -1,7 +1,7 @@
-import { isArray, throwError, toArray } from '../shared';
+import { render } from '../DOM/rendering';
 import createElement from '../factories/createElement';
 import isValidElement from '../factories/isValidElement';
-import { render } from '../DOM/rendering';
+import { isArray, throwError, toArray } from '../shared';
 
 export function renderIntoDocument(element: VNode): VNode {
 	const div = document.createElement('div');
@@ -57,27 +57,27 @@ function findAllInTree(inst: any, test: Function): VNode[] {
 	let ret = test(publicInst) ? [inst] : [];
 	if (isDOMComponent(publicInst)) {
 		const renderedChildren = inst.children;
-		for (let key in renderedChildren) {
-      if (!renderedChildren.hasOwnProperty(key)) {
+		for (const key in renderedChildren) {
+			if (!renderedChildren.hasOwnProperty(key)) {
 				continue;
-      }
-      ret = ret.concat(
-        findAllInTree(
-          renderedChildren[key],
-          test
-        )
-      );
-    }
-  }
+			}
+			ret = ret.concat(
+				findAllInTree(
+					renderedChildren[key],
+					test,
+				),
+			);
+		}
+	}
 
 	if (
-    isValidElement(currentElement) &&
-    typeof currentElement.type === 'function'
-  ) {
-    ret = ret.concat(
-      findAllInTree(inst._lastInput, test)
-    );
-  }
+		isValidElement(currentElement) &&
+		typeof currentElement.type === 'function'
+	) {
+		ret = ret.concat(
+			findAllInTree(inst._lastInput, test),
+		);
+	}
 
 	return ret;
 }
@@ -128,7 +128,7 @@ export function scryRenderedComponentsWithType(root: VNode, componentType: Funct
 	return findAllInRenderedTree(root, function(inst) {
 		return isCompositeComponentWithType(
 			inst,
-			componentType
+			componentType,
 		);
 	});
 }
@@ -160,7 +160,7 @@ export function mockComponent(module, mockTagName: string) {
 		return createElement(
 			mockTagName,
 			null,
-			this.props.children
+			this.props.children,
 		);
 	});
 

@@ -1,24 +1,24 @@
-import {
-	isVoidElement as _isVoidElement,
-	escapeText,
-	toHyphenCase,
-} from './utils';
 import { EMPTY_OBJ } from 'inferno';
 import {
+	copyPropsTo,
+} from '../core/normalization';
+import { isUnitlessNumber } from '../DOM/constants';
+import {
 	isArray,
+	isFunction,
 	isInvalid,
 	isNull,
 	isNullOrUndef,
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-	isFunction,
-	throwError
+	throwError,
 } from '../shared';
 import {
-	copyPropsTo
-} from '../core/normalization';
-import { isUnitlessNumber } from '../DOM/constants';
+	escapeText,
+	isVoidElement as _isVoidElement,
+	toHyphenCase,
+} from './utils';
 
 function renderStylesToString(styles) {
 	if (isStringOrNumber(styles)) {
@@ -26,7 +26,7 @@ function renderStylesToString(styles) {
 	} else {
 		let renderedString = '';
 
-		for (let styleName in styles) {
+		for (const styleName in styles) {
 			const value = styles[styleName];
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
@@ -91,7 +91,7 @@ function renderVNodeToString(vNode, context, firstChild): string {
 		const isVoidElement = _isVoidElement(type);
 
 		if (!isNull(props)) {
-			for (let prop in props) {
+			for (const prop in props) {
 				const value = props[prop];
 
 				if (prop === 'dangerouslySetInnerHTML') {

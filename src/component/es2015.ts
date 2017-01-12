@@ -1,13 +1,13 @@
-import { NO_OP, createVNode, EMPTY_OBJ, options } from 'inferno';
+import { createVNode, EMPTY_OBJ, NO_OP, options } from 'inferno';
 import {
+	ERROR_MSG,
 	isArray,
+	isBrowser,
 	isFunction,
 	isInvalid,
-	isStringOrNumber,
 	isNullOrUndef,
+	isStringOrNumber,
 	throwError,
-	ERROR_MSG,
-	isBrowser
 } from '../shared';
 
 import Lifecycle from './../DOM/lifecycle';
@@ -87,7 +87,7 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 	}
 	if (callback) {
 		queue.push(
-			callback
+			callback,
 		);
 	}
 }
@@ -96,7 +96,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 	if (isFunction(newState)) {
 		newState = newState(component.state);
 	}
-	for (let stateKey in newState) {
+	for (const stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
 	if (!component._pendingSetState && isBrowser) {
@@ -276,7 +276,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		nextProps: P & Props,
 		context: any,
 		force: boolean,
-		fromSetState: boolean
+		fromSetState: boolean,
 	): any {
 		if (this._unmounted === true) {
 			if (process.env.NODE_ENV !== 'production') {

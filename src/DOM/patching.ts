@@ -1,43 +1,57 @@
 import {
+	copyPropsTo,
+} from '../core/normalization';
+import options from '../core/options';
+import {
+	cloneVNode,
+	createTextVNode,
+	createVoidVNode,
+	isVNode,
+} from '../core/VNodes';
+import {
 	EMPTY_OBJ,
-	NO_OP,
 	isArray,
+	isAttrAnEvent,
 	isFunction,
 	isInvalid,
 	isNull,
-	isAttrAnEvent,
 	isNullOrUndef,
 	isNumber,
 	isObject,
 	isString,
 	isStringOrNumber,
 	isUndefined,
-	throwError
+	NO_OP,
+	throwError,
 } from '../shared';
 import {
-	createVoidVNode,
-	createTextVNode,
-	isVNode,
-	cloneVNode
-} from '../core/VNodes';
-import {
-	copyPropsTo
-} from '../core/normalization';
-import {
 	booleanProps,
-	isUnitlessNumber,
-	namespaces,
-	strictProps,
-	delegatedProps,
-	skipProps,
 	dehyphenProps,
+	delegatedProps,
+	isUnitlessNumber,
+	kebabize,
+	namespaces,
 	probablyKebabProps,
-	kebabize
+	skipProps,
+	strictProps,
 } from './constants';
 import {
+	handleEvent,
+} from './events/delegation';
+import {
+	mount,
+	mountArrayChildren,
+	mountComponent,
+	mountElement,
+	mountFunctionalComponentCallbacks,
+	mountRef,
+	mountText,
+	mountVoid,
+} from './mounting';
+import {
+	appendChild,
 	createFunctionalComponentInput,
 	insertOrAppend,
-	appendChild,
 	isKeyed,
 	removeAllChildren,
 	replaceChild,
@@ -47,26 +61,12 @@ import {
 	setTextContent,
 	updateTextContent,
 } from './utils';
-import {
-	mount,
-	mountArrayChildren,
-	mountComponent,
-	mountElement,
-	mountRef,
-	mountFunctionalComponentCallbacks,
-	mountText,
-	mountVoid,
-} from './mounting';
-import {
-	handleEvent
-} from './events/delegation';
-import options from '../core/options';
 
+import {Styles} from '../core/structures';
 import Lifecycle from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
-import processElement from './wrappers/processElement';
 import { unmount } from './unmounting';
-import {Styles} from "../core/structures";
+import processElement from './wrappers/processElement';
 
 export function patch(lastVNode, nextVNode, parentDom, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
 	if (lastVNode !== nextVNode) {
@@ -83,7 +83,7 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle: Lifecycle, con
 					context,
 					isSVG,
 					nextFlags & VNodeFlags.ComponentClass,
-					isRecycling
+					isRecycling,
 				);
 			} else {
 				replaceVNode(
@@ -94,11 +94,11 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle: Lifecycle, con
 						lifecycle,
 						context,
 						isSVG,
-						nextFlags & VNodeFlags.ComponentClass
+						nextFlags & VNodeFlags.ComponentClass,
 					),
 					lastVNode,
 					lifecycle,
-					isRecycling
+					isRecycling,
 				);
 			}
 		} else if (nextFlags & VNodeFlags.Element) {
@@ -112,11 +112,11 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle: Lifecycle, con
 						null,
 						lifecycle,
 						context,
-						isSVG
+						isSVG,
 					),
 					lastVNode,
 					lifecycle,
-					isRecycling
+					isRecycling,
 				);
 			}
 		} else if (nextFlags & VNodeFlags.Text) {
@@ -184,7 +184,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 				dom,
 				lifecycle,
 				context,
-				isSVG
+				isSVG,
 			);
 		}
 		if (lastEvents !== nextEvents) {
@@ -308,9 +308,9 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 						lifecycle,
 						context,
 						isSVG,
-						nextVNode.flags & VNodeFlags.ComponentClass
+						nextVNode.flags & VNodeFlags.ComponentClass,
 					),
-					lastVNode.dom
+					lastVNode.dom,
 				);
 			} else {
 				const lastState = instance.state;
@@ -474,7 +474,7 @@ export function patchKeyedChildren(
 	lifecycle: Lifecycle,
 	context,
 	isSVG: boolean,
-	isRecycling: boolean
+	isRecycling: boolean,
 ) {
 	let aLength = a.length;
 	let bLength = b.length;
@@ -838,13 +838,13 @@ export function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
 	nextEvents = nextEvents || EMPTY_OBJ;
 
 	if (nextEvents !== EMPTY_OBJ) {
-		for (let name in nextEvents) {
+		for (const name in nextEvents) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchEvent(name, lastEvents[name], nextEvents[name], dom, lifecycle);
 		}
 	}
 	if (lastEvents !== EMPTY_OBJ) {
-		for (let name in lastEvents) {
+		for (const name in lastEvents) {
 			// do not add a hasOwnProperty check here, it affects performance
 			if (isNullOrUndef(nextEvents[name])) {
 				patchEvent(name, lastEvents[name], null, dom, lifecycle);
@@ -894,7 +894,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle: Lifecycle, context, is
 	nextProps = nextProps || EMPTY_OBJ;
 
 	if (nextProps !== EMPTY_OBJ) {
-		for (let prop in nextProps) {
+		for (const prop in nextProps) {
 			// do not add a hasOwnProperty check here, it affects performance
 			const nextValue = nextProps[prop];
 			const lastValue = lastProps[prop];
@@ -907,7 +907,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle: Lifecycle, context, is
 		}
 	}
 	if (lastProps !== EMPTY_OBJ) {
-		for (let prop in lastProps) {
+		for (const prop in lastProps) {
 			// do not add a hasOwnProperty check here, it affects performance
 			if (isNullOrUndef(nextProps[prop])) {
 				removeProp(prop, lastProps[prop], dom);
@@ -924,7 +924,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 		return;
 	}
 
-	for (let style in nextAttrValue as Styles) {
+	for (const style in nextAttrValue as Styles) {
 		// do not add a hasOwnProperty check here, it affects performance
 		const value = nextAttrValue[style];
 
@@ -936,7 +936,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 	}
 
 	if (!isNullOrUndef(lastAttrValue)) {
-		for (let style in lastAttrValue as Styles) {
+		for (const style in lastAttrValue as Styles) {
 			if (isNullOrUndef(nextAttrValue[style])) {
 				dom.style[style] = '';
 			}

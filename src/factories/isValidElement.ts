@@ -1,6 +1,6 @@
 import {
 	isNull,
-	isObject
+	isObject,
 } from '../shared';
 
 export default function isValidElement(obj: VNode): boolean {

@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import { spy } from 'sinon';
-import Component from 'inferno-component';
-import { isNullOrUndef } from '../../shared';
 import { render } from 'inferno';
+import Component from 'inferno-component';
+import { spy } from 'sinon';
+import { isNullOrUndef } from '../../shared';
 
 describe('Columns like tests - (JSX)', () => {
 	let container;
@@ -22,89 +22,89 @@ describe('Columns like tests - (JSX)', () => {
 					name: 'add one column -' + suffix,
 					initial: [
 						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						Row(2, Item(3, 3), Item(4, 4)),
 					],
 					update: [
 						Row(1, Item(1, 1), Item(2, 2)),
 						Row(2, Item(3, 3), Item(4, 4)),
-						Row(3, Item(5, 5))
-					]
+						Row(3, Item(5, 5)),
+					],
 				},
 				{
 					name: 'add one item -' + suffix,
 					initial: [
 						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						Row(2, Item(3, 3), Item(4, 4)),
 					],
 					update: [
 						Row(1, Item(1, 1), Item(2, 2), Item(5, 5)),
-						Row(2, Item(3, 3), Item(4, 4))
-					]
+						Row(2, Item(3, 3), Item(4, 4)),
+					],
 				},
 				{
 					name: 'add one column and item -' + suffix,
 					initial: [
 						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						Row(2, Item(3, 3), Item(4, 4)),
 					],
 					update: [
 						Row(1, Item(1, 1), Item(2, 2)),
 						Row(2, Item(3, 3), Item(4, 4), Item(6, 6)),
-						Row(3, Item(5, 5))
-					]
+						Row(3, Item(5, 5)),
+					],
 				},
 				{
 					name: 'swap all items -' + suffix,
 					initial: [
 						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						Row(2, Item(3, 3), Item(4, 4)),
 					],
 					update: [
 						Row(1, Item(2, 2), Item(1, 1)),
-						Row(2, Item(4, 4), Item(3, 3))
-					]
+						Row(2, Item(4, 4), Item(3, 3)),
+					],
 				},
 				{
 					name: 'remove first item -' + suffix,
 					initial: [
 						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						Row(2, Item(3, 3), Item(4, 4)),
 					],
 					update: [
 						Row(1, Item(2, 2)),
-						Row(2, Item(4, 4))
-					]
+						Row(2, Item(4, 4)),
+					],
 				},
 				{
 					name: 'remove last item -' + suffix,
 					initial: [
 						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						Row(2, Item(3, 3), Item(4, 4)),
 					],
 					update: [
 						Row(1, Item(1, 1)),
-						Row(2, Item(3, 3))
-					]
+						Row(2, Item(3, 3)),
+					],
 				},
 				{
 					name: 'remove all items-' + suffix,
 					initial: [
 						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						Row(2, Item(3, 3), Item(4, 4)),
 					],
 					update: [
 						Row(1),
-						Row(2)
-					]
+						Row(2),
+					],
 				},
 				{
 					name: 'remove all columns-' + suffix,
 					initial: [
 						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						Row(2, Item(3, 3), Item(4, 4)),
 					],
-					update: []
-				}
+					update: [],
+				},
 			];
 		}
 

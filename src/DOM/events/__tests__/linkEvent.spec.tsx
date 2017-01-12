@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import Inferno, { render, linkEvent } from 'inferno';
+import Inferno, { linkEvent, render } from 'inferno';
 import Component from 'inferno-component';
 Inferno;
 
@@ -86,7 +86,7 @@ describe('linkEvent', () => {
 				elm.dispatchEvent(newEvent);
 			} else {
 				elm.oninput({
-					target: elm
+					target: elm,
 				});
 			}
 		}

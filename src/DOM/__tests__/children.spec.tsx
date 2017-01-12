@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { assert, spy } from 'sinon';
-import Component from 'inferno-component';
 import { render } from 'inferno';
+import Component from 'inferno-component';
+import { assert, spy } from 'sinon';
 import { innerHTML } from '../../tools/utils';
 
 describe('Children - (JSX)', () => {
@@ -27,7 +27,7 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should push to correct location when it keyed list has siblings', function() {
-			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+			const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
 			function Tab({ title, onSelect, key, id }) {
 				return (
@@ -42,14 +42,14 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
 				return (
 					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key={ "Item " + i }
+							key={ 'Item ' + i }
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
@@ -95,14 +95,14 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
 				return (
 					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key={ "Item " + i }
+							key={ 'Item ' + i }
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
@@ -141,7 +141,7 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
@@ -149,7 +149,7 @@ describe('Children - (JSX)', () => {
 					<div className="tab-group">
 						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
 						<Tab
-							key={ "Item " + i }
+							key={ 'Item ' + i }
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
@@ -187,20 +187,20 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
 				return (
 					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key={ "Item " + i }
+							key={ 'Item ' + i }
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
 						<Tab onSelect={create} id="add" title="Add"/>{tabs.map((tab, i) => (
 							<Tab
-								key={ "Item " + i }
+								key={ 'Item ' + i }
 								title={ tab.title }
 								onSelect={ () => undefined }/>
 						))}
@@ -224,7 +224,7 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should appendx3 to correct location when it keyed list has siblings', function() {
-			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+			const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
 			function Tab({ title, onSelect, key, id }) {
 				return (
@@ -239,16 +239,16 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({ title: "New " + tabs.length });
-					tabs.push({ title: "New " + tabs.length });
-					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
 				return (
 					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key={ "Item " + i }
+							key={ 'Item ' + i }
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
@@ -270,7 +270,7 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should unshiftx3 to correct location when it keyed list has siblings', function() {
-			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+			const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
 			function Tab({ title, onSelect, key, id }) {
 				return (
@@ -285,16 +285,16 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.unshift({ title: "New " + tabs.length });
-					tabs.unshift({ title: "New " + tabs.length });
-					tabs.unshift({ title: "New " + tabs.length });
+					tabs.unshift({ title: 'New ' + tabs.length });
+					tabs.unshift({ title: 'New ' + tabs.length });
+					tabs.unshift({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
 				return (
 					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key={ "Item " + i }
+							key={ 'Item ' + i }
 							title={ tab.title }
 							onSelect={ () => undefined }/>
 					))}
@@ -330,7 +330,7 @@ describe('Children - (JSX)', () => {
 				return (
 					<div className="tab-group">inlineText{tabs.map((tab, i) => (
 						<Tab
-							key={ "Item " + i }
+							key={ 'Item ' + i }
 							title={ tab.title }/>
 					))}
 					</div>
@@ -345,7 +345,7 @@ describe('Children - (JSX)', () => {
 
 			expect(container.innerHTML).to.equal(innerHTML('<div class="tab-group">inlineText</div>'));
 
-			_tabs.push({ title: "New " + _tabs.length });
+			_tabs.push({ title: 'New ' + _tabs.length });
 			renderIt();
 
 			expect(container.innerHTML).to.equal(innerHTML('<div class="tab-group">inlineText<div>New 0</div></div>'));
@@ -366,7 +366,7 @@ describe('Children - (JSX)', () => {
 				return (
 					<div className="tab-group">{tabs.map((tab, i) => (
 						<Tab
-							key={ "Item " + i }
+							key={ 'Item ' + i }
 							title={ tab.title }/>
 					))}inlineText
 					</div>
@@ -381,7 +381,7 @@ describe('Children - (JSX)', () => {
 
 			expect(container.innerHTML).to.equal(innerHTML('<div class="tab-group">inlineText</div>'));
 
-			_tabs.push({ title: "New " + _tabs.length });
+			_tabs.push({ title: 'New ' + _tabs.length });
 			renderIt();
 
 			expect(container.innerHTML).to.equal(innerHTML('<div class="tab-group"><div>New 0</div>inlineText</div>'));
@@ -401,7 +401,7 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should push to correct location when it keyed list has siblings', function() {
-			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+			const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
 			function Tab({ title, onSelect, id }) {
 				return (
@@ -415,7 +415,7 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
@@ -466,7 +466,7 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
@@ -510,7 +510,7 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
@@ -554,7 +554,7 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
@@ -589,7 +589,7 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should appendx3 to correct location when it list has siblings', function() {
-			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+			const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
 			function Tab({ title, onSelect, id }) {
 				return (
@@ -603,9 +603,9 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.push({ title: "New " + tabs.length });
-					tabs.push({ title: "New " + tabs.length });
-					tabs.push({ title: "New " + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
+					tabs.push({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
@@ -633,7 +633,7 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should unshiftx3 to correct location when it list has siblings', function() {
-			const _tabs = [{ title: "Item A" }, { title: "Item B" }];
+			const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
 			function Tab({ title, onSelect, id }) {
 				return (
@@ -647,9 +647,9 @@ describe('Children - (JSX)', () => {
 
 			function TabGroup({ tabs }) {
 				function create() {
-					tabs.unshift({ title: "New " + tabs.length });
-					tabs.unshift({ title: "New " + tabs.length });
-					tabs.unshift({ title: "New " + tabs.length });
+					tabs.unshift({ title: 'New ' + tabs.length });
+					tabs.unshift({ title: 'New ' + tabs.length });
+					tabs.unshift({ title: 'New ' + tabs.length });
 					renderIt();
 				}
 
@@ -705,7 +705,7 @@ describe('Children - (JSX)', () => {
 
 			expect(container.innerHTML).to.equal(innerHTML('<div class="tab-group">inlineText</div>'));
 
-			_tabs.push({ title: "New " + _tabs.length });
+			_tabs.push({ title: 'New ' + _tabs.length });
 			renderIt();
 
 			expect(container.innerHTML).to.equal(innerHTML('<div class="tab-group">inlineText<div>New 0</div></div>'));
@@ -740,7 +740,7 @@ describe('Children - (JSX)', () => {
 
 			expect(container.innerHTML).to.equal(innerHTML('<div class="tab-group">inlineText</div>'));
 
-			_tabs.push({ title: "New " + _tabs.length });
+			_tabs.push({ title: 'New ' + _tabs.length });
 			renderIt();
 
 			expect(container.innerHTML).to.equal(innerHTML('<div class="tab-group"><div>New 0</div>inlineText</div>'));
@@ -934,7 +934,7 @@ describe('Children - (JSX)', () => {
 
 					this.state = {
 						first: true,
-						second: true
+						second: true,
 					};
 
 					updaterFirst = () => this.setStateSync({ first: !this.state.first });
@@ -1136,7 +1136,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</Collection>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1147,7 +1147,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="1">1</div>
 				</Collection>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>1</div></div>');
@@ -1158,7 +1158,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="11">11</div>
 				</Collection>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
@@ -1183,7 +1183,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1193,7 +1193,7 @@ describe('Children - (JSX)', () => {
 					<div>3</div>
 					<div>2</div>
 				</CollectionNonKeyed>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div></div>');
@@ -1204,7 +1204,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="11">11</div>
 				</CollectionKeyed>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
@@ -1222,7 +1222,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1233,7 +1233,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1252,7 +1252,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1262,7 +1262,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1280,7 +1280,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1291,7 +1291,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{childB}
 				</CollectionKeyed>
-				, container
+				, container,
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1353,12 +1353,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true
+						bool: true,
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool
+							bool: !this.state.bool,
 						});
 					};
 				}
@@ -1378,7 +1378,7 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						text: 'initial'
+						text: 'initial',
 					};
 				}
 
@@ -1426,12 +1426,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true
+						bool: true,
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool
+							bool: !this.state.bool,
 						});
 					};
 				};
@@ -1497,12 +1497,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true
+						bool: true,
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool
+							bool: !this.state.bool,
 						});
 					};
 				}
@@ -1573,12 +1573,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true
+						bool: true,
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool
+							bool: !this.state.bool,
 						});
 					};
 				}
@@ -1763,7 +1763,7 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						text: 'aa'
+						text: 'aa',
 					};
 
 					dirtyReference = this;
@@ -1774,7 +1774,7 @@ describe('Children - (JSX)', () => {
 
 				changeText() {
 					this.setStateSync({
-						text: 'foo'
+						text: 'foo',
 					});
 				}
 
@@ -1998,7 +1998,7 @@ describe('Children - (JSX)', () => {
 			const FooLifecycle = {
 				componentWillUnmount: () => {
 					unMountFoo++;
-				}
+				},
 			};
 			function Foo() {
 				return <em>f</em>;
@@ -2107,7 +2107,7 @@ describe('Children - (JSX)', () => {
 				},
 				componentWillUnmountTwo: () => {
 					unMountTwoTest++;
-				}
+				},
 			};
 
 			render(<Wrapper onComponentWillUnmount={TestLifecycle.componentWillUnmount}/>, container);

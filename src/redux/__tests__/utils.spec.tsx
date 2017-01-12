@@ -1,6 +1,6 @@
-import { warning, shallowEqual } from '../utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { shallowEqual, warning } from '../utils';
 
 describe('Redux Utils', () => {
 	describe('warning', () => {

@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import connect from '../connect';
+import * as Inferno from 'inferno';
+import Component from 'inferno-component';
 import { createStore } from 'redux';
 import { innerHTML } from '../../tools/utils';
-import Component from 'inferno-component';
-import * as Inferno from 'inferno';
+import connect from '../connect';
 
 const render = Inferno.render;
 
@@ -58,7 +58,7 @@ describe('connect', () => {
 		const store = createStore(() => {
 			return { test: 1 };
 		});
-		const mapStateToProps = state => state;
+		const mapStateToProps = (state) => state;
 		const ConnectedComponent = connect(mapStateToProps)(BasicComponent);
 		render(<ConnectedComponent store={store}/>, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div>1</div>'));
@@ -71,14 +71,14 @@ describe('connect', () => {
 			}
 			return state;
 		});
-		const mapDispatchToProps = dispatch => {
+		const mapDispatchToProps = (dispatch) => {
 			return {
 				action: () => {
 					dispatch({ type: 'TEST_ACTION' });
-				}
+				},
 			};
 		};
-		const mapStateToProps = state => state;
+		const mapStateToProps = (state) => state;
 		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent1);
 		store.subscribe(() => {
 			render(<ConnectedComponent store={store}/>, container);
@@ -99,14 +99,14 @@ describe('connect', () => {
 			}
 			return state;
 		});
-		const mapDispatchToProps = dispatch => {
+		const mapDispatchToProps = (dispatch) => {
 			return {
 				action: () => {
 					dispatch({ type: 'TEST_ACTION' });
-				}
+				},
 			};
 		};
-		const mapStateToProps = state => state;
+		const mapStateToProps = (state) => state;
 		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent1);
 		store.subscribe(() => {
 			render(<ConnectedComponent store={store}/>, container);
@@ -130,9 +130,9 @@ describe('connect', () => {
 		const mapDispatchToProps = {
 			action: () => {
 				return { type: 'TEST_ACTION' };
-			}
+			},
 		};
-		const mapStateToProps = state => state;
+		const mapStateToProps = (state) => state;
 		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent1);
 		store.subscribe(() => {
 			render(<ConnectedComponent store={store}/>, container);

@@ -1,23 +1,23 @@
+import options from '../core/options';
 import {
 	isArray,
 	isFunction,
 	isInvalid,
+	isNull,
 	isNullOrUndef,
 	isObject,
 	throwError,
-	isNull
 } from '../shared';
+import Lifecycle from './lifecycle';
+import {
+	patchEvent,
+} from './patching';
 import {
 	poolComponent,
-	poolElement
+	poolElement,
 } from './recycling';
-import options from '../core/options';
-import {
-	patchEvent
-} from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import { removeChild } from './utils';
-import Lifecycle from "./lifecycle";
 
 export function unmount(vNode, parentDom, lifecycle: Lifecycle, canRecycle, isRecycling) {
 	const flags = vNode.flags;
@@ -114,7 +114,7 @@ export function unmountElement(vNode, parentDom, lifecycle: Lifecycle, canRecycl
 		}
 	}
 	if (!isNull(events)) {
-		for (let name in events) {
+		for (const name in events) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchEvent(name, events[name], null, dom, lifecycle);
 			events[name] = null;

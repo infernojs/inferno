@@ -1,13 +1,13 @@
+import { expect } from 'chai';
+import { createMemoryHistory } from 'history';
 import { render } from 'inferno';
 import Component from '../../component/es2015';
+import { innerHTML } from '../../tools/utils';
 import IndexRoute from '../IndexRoute';
 import Link from '../Link';
 import Redirect from '../Redirect';
 import Route from '../Route';
 import Router from '../Router';
-import { createMemoryHistory } from 'history';
-import { expect } from 'chai';
-import { innerHTML } from '../../tools/utils';
 
 const browserHistory = createMemoryHistory();
 
@@ -58,8 +58,8 @@ describe('Router (jsx) #transitions', () => {
 		}
 
 		render(<Router history={ browserHistory }>
-			<Route path='/' onEnter={ onEnter } component={ TestHooksEnter }/>
-			<Route path='/enter' component={ () => <div>onLeave</div> } />
+			<Route path="/" onEnter={ onEnter } component={ TestHooksEnter }/>
+			<Route path="/enter" component={ () => <div>onLeave</div> } />
 		</Router>, container);
 	});
 
@@ -85,7 +85,7 @@ describe('Router (jsx) #transitions', () => {
 
 		render(<Router history={ browserHistory }>
 			<IndexRoute onLeave={ onLeave } component={ TestHooksLeave }/>
-			<Route path='/leave' component={ () => <div>onLeave</div> } />
+			<Route path="/leave" component={ () => <div>onLeave</div> } />
 		</Router>, container);
 	});
 
@@ -110,8 +110,8 @@ describe('Router (jsx) #transitions', () => {
 		};
 
 		render(<Router history={ browserHistory }>
-			<Route path='/' onLeave={ onLeave } component={ TestHooksLeave }/>
-			<Route path='/leave' component={ () => <div>onLeave</div> } />
+			<Route path="/" onLeave={ onLeave } component={ TestHooksLeave }/>
+			<Route path="/leave" component={ () => <div>onLeave</div> } />
 		</Router>, container);
 	});
 
@@ -127,8 +127,8 @@ describe('Router (jsx) #transitions', () => {
 		}
 
 		render(<Router history={ browserHistory }>
-			<Route path='/' component={ TestRouting }/>
-			<Route path='/final' component={ () => <div>Done</div> } />
+			<Route path="/" component={ TestRouting }/>
+			<Route path="/final" component={ () => <div>Done</div> } />
 		</Router>, container);
 
 		setTimeout(() => {
@@ -139,8 +139,8 @@ describe('Router (jsx) #transitions', () => {
 
 	it('should Redirect', (done) => {
 		render(<Router history={ browserHistory }>
-			<Redirect from='/' to='/final'/>
-			<Route path='/final' component={ () => <div>Done</div> } />
+			<Redirect from="/" to="/final"/>
+			<Route path="/final" component={ () => <div>Done</div> } />
 		</Router>, container);
 
 		setTimeout(() => {
@@ -163,7 +163,7 @@ describe('Router (jsx) #transitions', () => {
 					<Route path={ '/foo/two' } component={ GoodComponent } />
 				</Route>
 			</Router>,
-			container
+			container,
 		);
 		expect(container.innerHTML).to.equal(innerHTML('<div><a href="/foo/two">Go</a><div>Bad Component</div></div>'));
 
@@ -185,7 +185,7 @@ describe('Router (jsx) #transitions', () => {
 		}
 
 		render(<Router history={ browserHistory }>
-			<Route path='/' onEnter={ null } onLeave={ null } component={ TestHooksLeave }/>
+			<Route path="/" onEnter={ null } onLeave={ null } component={ TestHooksLeave }/>
 		</Router>, container);
 	});
 

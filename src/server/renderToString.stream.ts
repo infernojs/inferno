@@ -1,8 +1,4 @@
 import {
-	escapeText,
-	isVoidElement,
-} from './utils';
-import {
 	isArray,
 	isInvalid,
 	isNullOrUndef,
@@ -12,6 +8,10 @@ import {
 	renderAttributes,
 	renderStyleToString,
 } from './prop-renderers';
+import {
+	escapeText,
+	isVoidElement,
+} from './utils';
 
 import { Readable } from 'stream';
 

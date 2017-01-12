@@ -1,9 +1,9 @@
-import { render } from 'inferno';
-import { assert, spy } from 'sinon';
-import createElement from 'inferno-create-element';
-import { innerHTML } from '../../tools/utils';
 import { expect } from 'chai';
-import {createTextVNode} from "../../core/VNodes";
+import { render } from 'inferno';
+import createElement from 'inferno-create-element';
+import { assert, spy } from 'sinon';
+import {createTextVNode} from '../../core/VNodes';
+import { innerHTML } from '../../tools/utils';
 
 describe('Elements (JSX)', () => {
 	let container;
@@ -477,9 +477,9 @@ describe('Elements (JSX)', () => {
 
 		expect(container.value).to.equal(undefined);
 		expect(
-			container.innerHTML
+			container.innerHTML,
 		).to.equal(
-			innerHTML('<input>')
+			innerHTML('<input>'),
 		);
 
 		render(<input values={undefined}/>, container);
@@ -489,9 +489,9 @@ describe('Elements (JSX)', () => {
 		expect(container.value).to.equal(undefined);
 
 		expect(
-			container.innerHTML
+			container.innerHTML,
 		).to.equal(
-			innerHTML('<input>')
+			innerHTML('<input>'),
 		);
 
 		// unset
@@ -507,27 +507,27 @@ describe('Elements (JSX)', () => {
 
 		expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 		expect(
-			container.innerHTML
+			container.innerHTML,
 		).to.equal(
-			innerHTML('<input title="Tip!">')
+			innerHTML('<input title="Tip!">'),
 		);
 
 		render(<input name="Tip!"/>, container);
 
 		expect(container.firstChild.getAttribute('name')).to.eql('Tip!');
 		expect(
-			container.innerHTML
+			container.innerHTML,
 		).to.equal(
-			innerHTML('<input name="Tip!">')
+			innerHTML('<input name="Tip!">'),
 		);
 
 		render(<input title="Tip!"/>, container);
 
 		expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 		expect(
-			container.innerHTML
+			container.innerHTML,
 		).to.equal(
-			innerHTML('<input title="Tip!">')
+			innerHTML('<input title="Tip!">'),
 		);
 	});
 
@@ -601,7 +601,7 @@ describe('Elements (JSX)', () => {
 
 	it('should properly render "width" and "height" attributes', () => {
 
-		render(<img src='' alt="Smiley face" height={42} width={42}/>, container);
+		render(<img src="" alt="Smiley face" height={42} width={42}/>, container);
 
 		expect(container.firstChild.nodeName).to.equal('IMG');
 		expect(container.childNodes.length).to.equal(1);
@@ -610,7 +610,7 @@ describe('Elements (JSX)', () => {
 		expect(container.firstChild.getAttribute('height')).to.equal('42');
 		expect(container.firstChild.getAttribute('width')).to.equal('42');
 
-		render(<img src='' alt="Smiley face" height={42} width={42} fooBar={[]}/>, container);
+		render(<img src="" alt="Smiley face" height={42} width={42} fooBar={[]}/>, container);
 
 		expect(container.firstChild.nodeName).to.equal('IMG');
 		expect(container.childNodes.length).to.equal(1);
@@ -741,10 +741,10 @@ describe('Elements (JSX)', () => {
 	it('handles JSX spread props (including children)', () => {
 		const foo = {
 			children: 'Hello world!',
-			className: 'lol'
+			className: 'lol',
 		};
 		const bar = {
-			id: 'test'
+			id: 'test',
 		};
 
 		render((
@@ -752,12 +752,12 @@ describe('Elements (JSX)', () => {
 		), container);
 		expect(
 			innerHTML(
-				container.innerHTML
-			)
+				container.innerHTML,
+			),
 		).to.equal(
 			innerHTML(
-				'<div class="lol" id="test">Hello world!</div>'
-			)
+				'<div class="lol" id="test">Hello world!</div>',
+			),
 		);
 	});
 
@@ -777,7 +777,7 @@ describe('Elements (JSX)', () => {
 		const obj = {
 			fn() {
 			}, click() {
-			}
+			},
 		};
 		const bool = false;
 		const newValue = 't';
@@ -838,8 +838,8 @@ describe('Elements (JSX)', () => {
 	});
 
 	describe('should correctly handle TEXT VNodes as quasi-immutable objects, like ReactElement does', () => {
-		const a = createTextVNode("Hello world");
-		const b = createTextVNode("This works!");
+		const a = createTextVNode('Hello world');
+		const b = createTextVNode('This works!');
 		const C = ({ children }) => <div>{children}{children}{children}</div>;
 
 		it('basic example ', () => {

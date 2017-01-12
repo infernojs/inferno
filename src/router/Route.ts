@@ -18,7 +18,7 @@ export default class Route extends Component<IRouteProps, any> {
 	constructor(props?: IRouteProps, context?: any) {
 		super(props, context);
 		this.state = {
-			asyncComponent: null
+			asyncComponent: null,
 		};
 	}
 
@@ -42,7 +42,7 @@ export default class Route extends Component<IRouteProps, any> {
 
 	private _onComponentResolved = (error, component) => {
 		this.setState({
-			asyncComponent: component
+			asyncComponent: component,
 		});
 	}
 

@@ -43,16 +43,16 @@ describe('HTML Form Elements', () => {
 
 			render(<textarea value="Hey People"/>, container);
 			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
-			expect(container.firstChild.value).to.equal("Hey People");
+			expect(container.firstChild.value).to.equal('Hey People');
 
 			//
 			// Exernal change verification
 			//
 
 			const input = container.querySelector('textarea');
-			input.value = "Inferno is cool";
+			input.value = 'Inferno is cool';
 			expect(container.innerHTML).to.equal(input.outerHTML);
-			expect(container.firstChild.value).to.equal("Inferno is cool");
+			expect(container.firstChild.value).to.equal('Inferno is cool');
 
 			//
 			// New Render
@@ -60,7 +60,7 @@ describe('HTML Form Elements', () => {
 
 			render(<textarea value="Hey People"/>, container);
 			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
-			expect(container.firstChild.value).to.equal("Hey People");
+			expect(container.firstChild.value).to.equal('Hey People');
 
 			//
 			// New Render, new value
@@ -70,22 +70,22 @@ describe('HTML Form Elements', () => {
 
 			render(<textarea value="Hey People again"/>, container);
 			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
-			expect(container.firstChild.value).to.equal("Hey People again");
+			expect(container.firstChild.value).to.equal('Hey People again');
 		});
 
 		it('Should update text input value', () => {
 			render(<input type="text" value="Hey People"/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<input type="text">'));
-			expect(container.firstChild.value).to.equal("Hey People");
+			expect(container.firstChild.value).to.equal('Hey People');
 
 			//
 			// Exernal change verification
 			//
 
 			const input = container.querySelector('input');
-			input.value = "Inferno is cool";
+			input.value = 'Inferno is cool';
 			expect(container.innerHTML).to.equal(innerHTML('<input type="text">'));
-			expect(container.firstChild.value).to.equal("Inferno is cool");
+			expect(container.firstChild.value).to.equal('Inferno is cool');
 
 			//
 			// New Render
@@ -93,7 +93,7 @@ describe('HTML Form Elements', () => {
 
 			render(<input type="text" value="Hey People"/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<input type="text">'));
-			expect(container.firstChild.value).to.equal("Hey People");
+			expect(container.firstChild.value).to.equal('Hey People');
 
 			//
 			// New Render, new value
@@ -101,7 +101,7 @@ describe('HTML Form Elements', () => {
 
 			render(<input type="text" value="Hey People again"/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<input type="text">'));
-			expect(container.firstChild.value).to.equal("Hey People again");
+			expect(container.firstChild.value).to.equal('Hey People again');
 		});
 
 		it('Should update radio button', () => {
@@ -112,7 +112,7 @@ describe('HTML Form Elements', () => {
 					<input type="radio" name="gender" value="other"/> Other
 				</div>, container);
 
-			expect(container.firstChild.firstChild.value).to.equal("male");
+			expect(container.firstChild.firstChild.value).to.equal('male');
 			expect(container.firstChild.firstChild.checked).to.equal(true);
 
 			//
@@ -134,7 +134,7 @@ describe('HTML Form Elements', () => {
 					<input type="radio" name="gender" value="other"/> Other
 				</div>, container);
 
-			expect(container.firstChild.firstChild.value).to.equal("male");
+			expect(container.firstChild.firstChild.value).to.equal('male');
 			expect(container.firstChild.firstChild.checked).to.equal(true, 'this fails');
 
 			//
@@ -148,9 +148,9 @@ describe('HTML Form Elements', () => {
 					<input type="radio" name="gender" value="other"/> Other
 				</div>, container);
 
-			expect(container.firstChild.firstChild.value).to.equal("male");
+			expect(container.firstChild.firstChild.value).to.equal('male');
 			expect(container.firstChild.firstChild.checked).to.equal(false);
-			expect(container.firstChild.children[1].value).to.equal("female");
+			expect(container.firstChild.children[1].value).to.equal('female');
 			expect(container.firstChild.children[1].checked).to.equal(true);
 		});
 	});

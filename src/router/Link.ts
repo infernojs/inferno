@@ -12,7 +12,7 @@ interface ILinkProps {
 export default function Link(props, { router }) {
 	const { activeClassName, activeStyle, className, onClick, to } = props;
 	const elemProps: ILinkProps = {
-		href: to
+		href: to,
 	};
 
 	if (className) {

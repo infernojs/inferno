@@ -1,9 +1,9 @@
 import Component from 'inferno-component';
-import { warning } from './utils';
 import {
 	isNullOrUndef,
-	toArray
+	toArray,
 } from '../shared';
+import { warning } from './utils';
 
 let didWarnAboutReceivingStore = false;
 function warnAboutReceivingStore() {
@@ -13,7 +13,7 @@ function warnAboutReceivingStore() {
 	didWarnAboutReceivingStore = true;
 
 	warning(
-		'<Provider> does not support changing `store` on the fly.'
+		'<Provider> does not support changing `store` on the fly.',
 	);
 }
 

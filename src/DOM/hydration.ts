@@ -1,38 +1,38 @@
 import {
+	copyPropsTo,
+} from '../core/normalization';
+import options from '../core/options';
+import {
+	EMPTY_OBJ,
+	isArray,
+	isInvalid,
+	isNull,
+	isObject,
+	isStringOrNumber,
+	isUndefined,
+	throwError,
+} from '../shared';
+import { svgNS } from './constants';
+import Lifecycle from './lifecycle';
+import {
+	mount,
+	mountClassComponentCallbacks,
+	mountElement,
+	mountFunctionalComponentCallbacks,
+	mountRef,
+	mountText,
+} from './mounting';
+import {
+	patchEvent,
+	patchProp,
+} from './patching';
+import { componentToDOMNodeMap } from './rendering';
+import {
 	createClassComponentInstance,
 	createFunctionalComponentInput,
 	replaceChild,
 } from './utils';
-import {
-	isArray,
-	isInvalid,
-	isStringOrNumber,
-	isNull,
-	isObject,
-	isUndefined,
-	throwError,
-	EMPTY_OBJ
-} from '../shared';
-import {
-	mountElement,
-	mountClassComponentCallbacks,
-	mountFunctionalComponentCallbacks,
-	mountText,
-	mountRef,
-	mount
-} from './mounting';
-import options from '../core/options';
-import Lifecycle from './lifecycle';
-import {
-	copyPropsTo
-} from '../core/normalization';
-import { componentToDOMNodeMap } from './rendering';
-import {
-	patchProp,
-	patchEvent
-} from './patching';
 import processElement from './wrappers/processElement';
-import { svgNS } from './constants';
 
 export function normalizeChildNodes(parentDom) {
 	let dom = parentDom.firstChild;
@@ -127,12 +127,12 @@ function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 		processElement(flags, vNode, dom);
 	}
 	if (props) {
-		for (let prop in props) {
+		for (const prop in props) {
 			patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
 		}
 	}
 	if (events) {
-		for (let name in events) {
+		for (const name in events) {
 			patchEvent(name, null, events[name], dom, lifecycle);
 		}
 	}

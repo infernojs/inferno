@@ -1,37 +1,37 @@
 import {
+	copyPropsTo,
+} from '../core/normalization';
+import options from '../core/options';
+import { cloneVNode, isVNode } from '../core/VNodes';
+import {
+	EMPTY_OBJ,
 	isArray,
 	isFunction,
 	isInvalid,
-	isObject,
 	isNull,
 	isNullOrUndef,
+	isObject,
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-	EMPTY_OBJ
 } from '../shared';
-import { cloneVNode, isVNode } from '../core/VNodes';
+import Lifecycle from './lifecycle';
 import {
-	appendChild,
-	createFunctionalComponentInput,
-	createClassComponentInstance,
-	documentCreateElement,
-	setTextContent,
-} from './utils';
+	patchEvent,
+	patchProp,
+} from './patching';
 import {
 	recycleComponent,
 	recycleElement,
 } from './recycling';
-import options from '../core/options';
-import Lifecycle from './lifecycle';
-import {
-	copyPropsTo
-} from '../core/normalization';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	patchProp,
-	patchEvent
-} from './patching';
+	appendChild,
+	createClassComponentInstance,
+	createFunctionalComponentInput,
+	documentCreateElement,
+	setTextContent,
+} from './utils';
 import processElement from './wrappers/processElement';
 
 export function mount(vNode, parentDom, lifecycle: Lifecycle, context, isSVG) {
@@ -114,13 +114,13 @@ export function mountElement(vNode, parentDom, lifecycle: Lifecycle, context, is
 		processElement(flags, vNode, dom);
 	}
 	if (!isNull(props)) {
-		for (let prop in props) {
+		for (const prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
 		}
 	}
 	if (!isNull(events)) {
-		for (let name in events) {
+		for (const name in events) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchEvent(name, null, events[name], dom, lifecycle);
 		}

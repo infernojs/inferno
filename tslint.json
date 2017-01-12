@@ -1,38 +1,24 @@
 {
 	"extends": "tslint:latest",
 	"rules": {
-		"quotemark": ["single"],
 		"forin": false,
-		"no-empty": false,
-		"no-conditional-assignment": false,
-		"indent": [
-			"tabs"
-		],
-		"arrow-parens": false,
-		"trailing-comma": false,
-		"ordered-imports": false,
-		"no-namespace": false,
-		"variable-name": [
-			false
-		],
-		"object-literal-sort-keys": false,
-		"no-debugger": false,
-		"interface-name": [
-			false
-		],
-		"max-classes-per-file": false,
-		"max-line-length": [
-			false
-		],
-		"member-ordering": false,
-		"only-arrow-functions": false,
-		"member-access": [
-			false
-		],
-		"one-variable-per-declaration": false,
-		"no-unused-expression": false,
+		"indent": [ true, "tabs" ],
+		"interface-name": [ false ],
+		"max-classes-per-file": [false],
+		"max-line-length": [ false ],
+		"member-access": [ false ],
+		"member-ordering": [false],
 		"no-bitwise": false,
+		"no-conditional-assignment": false,
+		"no-debugger": false,
+		"no-empty": false,
+		"no-namespace": false,
+		"no-unused-expression": false,
+		"object-literal-sort-keys": false,
+		"one-variable-per-declaration": [false],
+		"only-arrow-functions": [false],
 		"prefer-for-of": false,
-		"prefer-const": false
+		"quotemark": [ true, "single", "jsx-double" ],
+		"variable-name": [ false ]
 	}
 }

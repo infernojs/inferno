@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { innerHTML } from '../../tools/utils';
 import { render } from 'inferno';
+import { innerHTML } from '../../tools/utils';
 
 describe('createTree - SVG (JSX)', () => {
 
@@ -28,8 +28,8 @@ describe('createTree - SVG (JSX)', () => {
 		expect(innerHTML(container.firstChild.firstChild.tagName)).to.equal('circle');
 		expect(
 			innerHTML(
-				container.firstChild.getAttribute('xmlns')
-			)
+				container.firstChild.getAttribute('xmlns'),
+			),
 		).to.equal('http://www.w3.org/2000/svg');
 
 		render(null, container);
@@ -192,7 +192,7 @@ describe('createTree - SVG (JSX)', () => {
 
 		expect(container.firstChild.firstChild.hasAttributeNS(
 			'http://www.w3.org/1999/xlink',
-			'href'
+			'href',
 		)).to.equal(false);
 	});
 
@@ -210,7 +210,7 @@ describe('createTree - SVG (JSX)', () => {
 
 		expect(container.firstChild.firstChild.hasAttributeNS(
 			'http://www.w3.org/1999/xlink',
-			'href'
+			'href',
 		)).to.equal(false);
 	});
 
@@ -220,12 +220,12 @@ describe('createTree - SVG (JSX)', () => {
 		render(<svg {...spread}/>, container);
 		expect(
 			innerHTML(
-				container.innerHTML
-			)
+				container.innerHTML,
+			),
 		).to.equal(
 			innerHTML(
-				'<svg id="test"></svg>'
-			)
+				'<svg id="test"></svg>',
+			),
 		);
 	});
 

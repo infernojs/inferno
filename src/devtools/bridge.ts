@@ -1,5 +1,5 @@
 import { options } from 'inferno';
-import { isArray, isStringOrNumber, isObject, isInvalid } from '../shared';
+import { isArray, isInvalid, isObject, isStringOrNumber } from '../shared';
 
 function findVNodeFromDom(vNode, dom) {
 	if (!vNode) {
@@ -99,7 +99,7 @@ export function createDevToolsBridge() {
 			const vNode = findVNodeFromDom(null, dom);
 
 			return vNode ? updateReactComponent(vNode, null) : null;
-		}
+		},
 	};
 
 	// Map of root ID (the ID is unimportant) to component instance.
@@ -109,14 +109,14 @@ export function createDevToolsBridge() {
 
 	const Mount = {
 		_instancesByReactRootID: roots,
-		_renderNewRootComponent(instance?) {}
+		_renderNewRootComponent(instance?) {},
 	};
 
 	const Reconciler = {
 		mountComponent(instance?) { },
 		performUpdateIfNecessary(instance?) {},
 		receiveComponent(instance?) {},
-		unmountComponent(instance?) {}
+		unmountComponent(instance?) {},
 	};
 
 	const queuedMountComponents = new Map();
@@ -125,12 +125,12 @@ export function createDevToolsBridge() {
 
 	const queueUpdate = (updater, map, component) => {
 		if (!map.has(component)) {
-            map.set(component, true);
-            requestAnimationFrame(function() {
-                updater(component);
-                map.delete(component);
-            });
-        }
+			map.set(component, true);
+			requestAnimationFrame(function() {
+					updater(component);
+					map.delete(component);
+			});
+		}
 	};
 
 	const queueMountComponent = (component) => queueUpdate(Reconciler.mountComponent, queuedMountComponents, component);
@@ -138,14 +138,14 @@ export function createDevToolsBridge() {
 	const queueUnmountComponent = (component) => queueUpdate(Reconciler.unmountComponent, queuedUnmountComponents, component);
 
 	/** Notify devtools that a new component instance has been mounted into the DOM. */
-	const componentAdded = vNode => {
+	const componentAdded = (vNode) => {
 		const instance = updateReactComponent(vNode, null);
 		if (isRootVNode(vNode)) {
 			instance._rootID = nextRootKey(roots);
 			roots[instance._rootID] = instance;
 			Mount._renderNewRootComponent(instance);
 		}
-		visitNonCompositeChildren(instance, childInst => {
+		visitNonCompositeChildren(instance, (childInst) => {
 			if (childInst) {
 				childInst._inDevTools = true;
 				queueMountComponent(childInst);
@@ -155,10 +155,10 @@ export function createDevToolsBridge() {
 	};
 
 	/** Notify devtools that a component has been updated with new props/state. */
-	const componentUpdated = vNode => {
+	const componentUpdated = (vNode) => {
 		const prevRenderedChildren = [];
 
-		visitNonCompositeChildren(getInstanceFromVNode(vNode), childInst => {
+		visitNonCompositeChildren(getInstanceFromVNode(vNode), (childInst) => {
 			prevRenderedChildren.push(childInst);
 		});
 
@@ -166,7 +166,7 @@ export function createDevToolsBridge() {
 		// children
 		const instance = updateReactComponent(vNode, null);
 		queueReceiveComponent(instance);
-		visitNonCompositeChildren(instance, childInst => {
+		visitNonCompositeChildren(instance, (childInst) => {
 			if (!childInst._inDevTools) {
 				// New DOM child component
 				childInst._inDevTools = true;
@@ -180,7 +180,7 @@ export function createDevToolsBridge() {
 		// For any non-composite children that were removed by the latest render,
 		// remove the corresponding ReactDOMComponent-like instances and notify
 		// the devtools
-		prevRenderedChildren.forEach(childInst => {
+		prevRenderedChildren.forEach((childInst) => {
 			if (!document.body.contains(childInst.node)) {
 				deleteInstanceForVNode(childInst.vNode);
 				queueUnmountComponent(childInst);
@@ -189,10 +189,10 @@ export function createDevToolsBridge() {
 	};
 
 	/** Notify devtools that a component has been unmounted from the DOM. */
-	const componentRemoved = vNode => {
+	const componentRemoved = (vNode) => {
 		const instance = updateReactComponent(vNode, null);
 
-		visitNonCompositeChildren(childInst => {
+		visitNonCompositeChildren((childInst) => {
 			deleteInstanceForVNode(childInst.vNode);
 			queueUnmountComponent(childInst);
 		});
@@ -210,7 +210,7 @@ export function createDevToolsBridge() {
 
 		ComponentTree,
 		Mount,
-		Reconciler
+		Reconciler,
 	};
 }
 
@@ -253,8 +253,8 @@ function updateReactComponent(vNode, parentDom) {
 
 function normalizeChildren(children, dom) {
 	if (isArray(children)) {
-		return children.filter(child => !isInvalid(child)).map((child) =>
-			updateReactComponent(child, dom)
+		return children.filter((child) => !isInvalid(child)).map((child) =>
+			updateReactComponent(child, dom),
 		);
 	} else {
 		return !isInvalid(children) ? [updateReactComponent(children, dom)] : [];
@@ -284,13 +284,13 @@ function createReactDOMComponent(vNode, parentDom) {
 	return {
 		_currentElement: isText ? (children || vNode) : {
 			type,
-			props
+			props,
 		},
 		_renderedChildren: !isText && normalizeChildren(children, dom),
 		_stringText: isText ? (children || vNode) : null,
 		_inDevTools: false,
 		node: dom || parentDom,
-		vNode
+		vNode,
 	};
 }
 
@@ -324,7 +324,7 @@ function createReactCompositeComponent(vNode, parentDom) {
 			type,
 			key: normalizeKey(vNode.key),
 			ref: null,
-			props: vNode.props
+			props: vNode.props,
 		},
 		props: instance.props,
 		state: instance.state,
@@ -333,7 +333,7 @@ function createReactCompositeComponent(vNode, parentDom) {
 		node: dom,
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
-		vNode
+		vNode,
 	};
 }
 
@@ -352,7 +352,7 @@ function visitNonCompositeChildren(component, visitor?) {
 			visitNonCompositeChildren(component._renderedComponent, visitor);
 		}
 	} else if (component._renderedChildren) {
-		component._renderedChildren.forEach(child => {
+		component._renderedChildren.forEach((child) => {
 			if (child) {
 				visitor(child);
 				if (!child._component)  {
@@ -378,7 +378,7 @@ function typeName(type) {
  * and add them to the `roots` map.
  */
 function findRoots(roots) {
-	options.roots.forEach(root => {
+	options.roots.forEach((root) => {
 		roots[nextRootKey(roots)] = updateReactComponent(root.input, null);
 	});
 }

@@ -4,7 +4,7 @@ import { warning } from '../shared';
 const specialKeys = {
 	children: true,
 	key: true,
-	ref: true
+	ref: true,
 };
 
 export default class Provider extends Component<any, any> {
@@ -27,18 +27,18 @@ export default class Provider extends Component<any, any> {
 		const baseStores = this.context.mobxStores;
 
 		if (baseStores) {
-			for (let key in baseStores) {
+			for (const key in baseStores) {
 				stores[key] = baseStores[key];
 			}
 		}
 		// add own stores
-		for (let key in this.props) {
+		for (const key in this.props) {
 			if (!specialKeys[key]) {
 				stores[key] = this.props[key];
 			}
 		}
 		return {
-			mobxStores: stores
+			mobxStores: stores,
 		};
 	}
 }
@@ -49,12 +49,12 @@ if (process.env.NODE_ENV !== 'production') {
 		// Maybe this warning is to aggressive?
 		warning(Object.keys(nextProps).length === Object.keys(this.props).length,
 			'MobX Provider: The set of provided stores has changed. ' +
-			'Please avoid changing stores as the change might not propagate to all children'
+			'Please avoid changing stores as the change might not propagate to all children',
 		);
-		for (let key in nextProps) {
+		for (const key in nextProps) {
 			warning(specialKeys[key] || this.props[key] === nextProps[key],
 				`MobX Provider: Provided store '${key}' has changed. ` +
-				`Please avoid replacing stores as the change might not propagate to all children`
+				`Please avoid replacing stores as the change might not propagate to all children`,
 			);
 		}
 

@@ -1,15 +1,15 @@
-import { cloneVNode, createTextVNode, isVNode } from './VNodes';
 import {
 	isArray,
 	isInvalid,
 	isNull,
 	isNullOrUndef,
-	isString,
 	isNumber,
+	isString,
 	isStringOrNumber,
 	isUndefined,
 	warning,
 } from '../shared';
+import { cloneVNode, createTextVNode, isVNode } from './VNodes';
 
 function applyKey(key: string, vNode: VNode) {
 	vNode.key = key;
@@ -126,7 +126,7 @@ function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
 }
 
 export function copyPropsTo(copyFrom: Props, copyTo: Props) {
-	for (let prop in copyFrom) {
+	for (const prop in copyFrom) {
 		if (isUndefined(copyTo[prop])) {
 			copyTo[prop] = copyFrom[prop];
 		}

@@ -1,13 +1,13 @@
+import {
+	expect,
+} from 'chai';
+import { createMemoryHistory } from 'history';
 import { cloneVNode, render } from 'inferno';
+import { innerHTML } from '../../tools/utils';
 import IndexRoute from '../IndexRoute';
 import Route from '../Route';
 import Router from '../Router';
 import RouterContext from '../RouterContext';
-import { createMemoryHistory } from 'history';
-import {
-	expect,
-} from 'chai';
-import { innerHTML } from '../../tools/utils';
 
 const browserHistory = createMemoryHistory();
 
@@ -56,7 +56,7 @@ describe('Router (jsx)', () => {
 						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
 					</Route>
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p></div>'));
 		});
@@ -67,7 +67,7 @@ describe('Router (jsx)', () => {
 						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
 					</Route>
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is bar</div></div>'));
 		});
@@ -78,7 +78,7 @@ describe('Router (jsx)', () => {
 						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
 					</Route>
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is bar</div></div>'));
 		});
@@ -89,51 +89,51 @@ describe('Router (jsx)', () => {
 					<Route path={ '/level' } component={ () => <div>level</div> } />
 					<Route path={ '/level-one' } component={ () => <div>level-one</div> } />
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>level-one</div>'));
 		});
 		it('should render the TestComponent with given paths', () => {
 			render(
 				createRouterWithSingleRoute('/', '/', TestComponent),
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Test!</div>'));
 
 			render(
 				createRouterWithSingleRoute('/foo', '/foo', TestComponent),
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Test!</div>'));
 
 			render(
 				createRouterWithSingleRoute('/foo/bar/yar', '*', TestComponent),
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Test!</div>'));
 
 			render(
 				createRouterWithSingleRoute('/foo/bar', '/foo/*', TestComponent),
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Test!</div>'));
 		});
 		it('should render the TestComponent with given paths (and params)', () => {
 			render(
 				createRouterWithSingleRoute('/foo', '/:test', TestComponentParams),
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Test! foo</div>'));
 
 			render(
 				createRouterWithSingleRoute('/foo/bar', '/foo/:test', TestComponentParams),
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Test! bar</div>'));
 
 			render(
 				createRouterWithSingleRoute('/foo/bar/yar', '/foo/bar/:test', TestComponentParams),
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Test! yar</div>'));
 		});
@@ -144,7 +144,7 @@ describe('Router (jsx)', () => {
 					<Route path={ '/foo/bar/*' } component={ () => <div>Bad Component</div> } />
 					<Route path={ '/foo/bar/yar' } component={ GoodComponent } />
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 
@@ -155,7 +155,7 @@ describe('Router (jsx)', () => {
 					<Route path={ '/foo/bar/yar' } component={ GoodComponent } />
 					<Route path={ '/foo/bar/yar/zoo' } component={ BadComponent } />
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 		});
@@ -166,7 +166,7 @@ describe('Router (jsx)', () => {
 						<Route path={ '/bar' } component={ GoodComponent }/>
 					</Route>
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 
@@ -176,7 +176,7 @@ describe('Router (jsx)', () => {
 						<Route path={ '/yar' } component={ BadComponent } />
 					</Route>
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 
@@ -188,7 +188,7 @@ describe('Router (jsx)', () => {
 						</Route>
 					</Route>
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Good Component</div></div>'));
 		});
@@ -199,7 +199,7 @@ describe('Router (jsx)', () => {
 						<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> } />
 					</Route>
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Param is bar</div></div>'));
 		});
@@ -211,7 +211,7 @@ describe('Router (jsx)', () => {
 						{ [<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> } />] }
 					</Route>
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Param is bar</div></div>'));
 		});
@@ -222,7 +222,7 @@ describe('Router (jsx)', () => {
 						<IndexRoute component={ GoodComponent } />
 					</Route>
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 		});
@@ -237,20 +237,20 @@ describe('Router (jsx)', () => {
 						<Route path="/other" component={ GoodComponent } />
 					</Route>
 				</Router>,
-				container
+				container,
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component Clone</div>'));
 		});
 		it('should fail on empty routes', () => {
 			expect(
-				() => render(<Router url={ '/foo/bar' } history={ browserHistory }/>, container)
+				() => render(<Router url={ '/foo/bar' } history={ browserHistory }/>, container),
 			).to.throw(TypeError);
 		});
 	});
 	describe('#RouterContext', () => {
 		it('should fail when `location` is not provided', () => {
 			expect(
-				() => render(<RouterContext location={ null }/>, container)
+				() => render(<RouterContext location={ null }/>, container),
 			).to.throw(TypeError);
 		});
 	});

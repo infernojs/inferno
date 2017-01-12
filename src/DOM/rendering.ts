@@ -1,17 +1,17 @@
 import {
-	NO_OP,
 	isBrowser,
 	isInvalid,
 	isNull,
 	isNullOrUndef,
-	throwError
+	NO_OP,
+	throwError,
 } from '../shared';
 
-import Lifecycle from './lifecycle';
+import options from '../core/options';
 import { cloneVNode } from '../core/VNodes';
 import hydrateRoot from './hydration';
+import Lifecycle from './lifecycle';
 import { mount } from './mounting';
-import options from '../core/options';
 import { patch } from './patching';
 import { unmount } from './unmounting';
 
@@ -60,7 +60,7 @@ function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: Lifecy
 	const root: Root = {
 		dom,
 		input,
-		lifecycle
+		lifecycle,
 	};
 
 	roots.push(root);

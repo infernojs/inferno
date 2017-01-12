@@ -3,10 +3,10 @@ const ecapeCharacters = {
 	'<': '&lt;',
 	'>': '&gt;',
 	'"': '&quot;',
-	"'": '&#039;',
-	'&': '&amp;'
+	'\'': '&#039;',
+	'&': '&amp;',
 };
-const escapeChar = char => ecapeCharacters[char] || char;
+const escapeChar = (char) => ecapeCharacters[char] || char;
 
 export function escapeText(text) {
 	return String(text).replace(/[<>"'&]/g, escapeChar);
@@ -35,7 +35,7 @@ const voidElements = {
 	param: true,
 	source: true,
 	track: true,
-	wbr: true
+	wbr: true,
 };
 
 export function isVoidElement(str) {

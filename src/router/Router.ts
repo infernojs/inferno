@@ -1,7 +1,7 @@
-import Component from 'inferno-component';
 import { createVNode } from 'inferno';
-import RouterContext from './RouterContext';
+import Component from 'inferno-component';
 import match, { matchPath } from './match';
+import RouterContext from './RouterContext';
 
 export interface IRouterProps {
 	history?: any;
@@ -25,12 +25,12 @@ function createrRouter(history) {
 		get location() {
 			return history.location.pathname !== 'blank' ? history.location : {
 				pathname: '/',
-				search: ''
+				search: '',
 			};
 		},
 		get url() {
 			return this.location.pathname + this.location.search;
-		}
+		},
 	};
 }
 
@@ -42,7 +42,7 @@ export default class Router extends Component<IRouterProps, any> {
 		super(props, context);
 		this.router = createrRouter(props.history);
 		this.state = {
-			url: props.url || this.router.url
+			url: props.url || this.router.url,
 		};
 	}
 
@@ -56,7 +56,7 @@ export default class Router extends Component<IRouterProps, any> {
 
 	componentWillReceiveProps(nextProps) {
 		this.setState({
-			url: nextProps.url
+			url: nextProps.url,
 		});
 	}
 
@@ -83,7 +83,7 @@ export default class Router extends Component<IRouterProps, any> {
 		return createVNode(VNodeFlags.ComponentClass, RouterContext, {
 			location: this.state.url,
 			router: this.router,
-			matched: hit.matched
+			matched: hit.matched,
 		});
 	}
 }

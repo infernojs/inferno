@@ -1,8 +1,8 @@
-import { Reaction, extras, isObservable } from 'mobx';
+import { extras, isObservable, Reaction } from 'mobx';
 
 import Component from 'inferno-component';
-import EventEmitter from './EventEmitter';
 import { throwError } from '../shared';
+import EventEmitter from './EventEmitter';
 
 /**
  * Dev tools support
@@ -23,7 +23,7 @@ function reportRendering(component) {
 		renderTime: component.__$mobRenderEnd - component.__$mobRenderStart,
 		totalTime: Date.now() - component.__$mobRenderStart,
 		component,
-		node
+		node,
 	});
 }
 
@@ -122,7 +122,7 @@ export default function makeReactive(componentClass) {
 			renderReporter.emit({
 				event: 'destroy',
 				component: this,
-				node
+				node,
 			});
 		}
 	};

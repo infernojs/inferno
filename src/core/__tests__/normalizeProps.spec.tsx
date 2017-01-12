@@ -11,7 +11,7 @@ describe('normalizeProps', () => {
 			key: null,
 			props: { ref: () => {} },
 			ref: null,
-			type: null
+			type: null,
 		};
 
 		normalize(vNode);
@@ -28,7 +28,7 @@ describe('normalizeProps', () => {
 			key: null,
 			props: { key: 'key' },
 			ref: null,
-			type: null
+			type: null,
 		};
 
 		normalize(vNode);

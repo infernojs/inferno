@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import { assert, spy } from 'sinon';
-import Component from 'inferno-component';
-import { innerHTML } from '../../tools/utils';
 import { render } from 'inferno';
+import Component from 'inferno-component';
+import { assert, spy } from 'sinon';
+import { innerHTML } from '../../tools/utils';
 
 describe('Stateful Component updates', () => {
 
@@ -28,7 +28,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					stuff: true
+					stuff: true,
 				};
 
 				updatesAfromOutside = this.updateMe.bind(this);
@@ -36,7 +36,7 @@ describe('Stateful Component updates', () => {
 
 			updateMe() {
 				this.setState({
-					stuff: false
+					stuff: false,
 				});
 			}
 
@@ -81,20 +81,20 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					show: false
+					show: false,
 				};
 
 				this.domagic = this.domagic.bind(this);
 
 				// Call setState
 				expect(() => this.setState({
-					show: true
+					show: true,
 				})).to.throw;
 			}
 
 			domagic() {
 				this.setState({
-					show: !this.state.show
+					show: !this.state.show,
 				});
 			}
 
@@ -137,8 +137,8 @@ describe('Stateful Component updates', () => {
 					values: [
 						{ checked: false },
 						{ checked: false },
-						{ checked: false }
-					]
+						{ checked: false },
+					],
 				};
 
 				this.updateCaller = this.updateCaller.bind(this);
@@ -149,8 +149,8 @@ describe('Stateful Component updates', () => {
 				this.setStateSync({
 					values: [
 						{ checked: false },
-						{ checked: false }
-					]
+						{ checked: false },
+					],
 				});
 			}
 
@@ -208,8 +208,8 @@ describe('Stateful Component updates', () => {
 
 				this.state = {
 					obj: {
-						test: true
-					}
+						test: true,
+					},
 				};
 
 				this.updateCaller = this.updateCaller.bind(this);
@@ -219,8 +219,8 @@ describe('Stateful Component updates', () => {
 			updateCaller() {
 				this.setStateSync({
 					obj: {
-						test: !this.state.obj.test
-					}
+						test: !this.state.obj.test,
+					},
 				});
 			}
 
@@ -254,7 +254,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					b: false
+					b: false,
 				};
 
 				this.imstuck = this.imstuck.bind(this);
@@ -263,7 +263,7 @@ describe('Stateful Component updates', () => {
 
 			imstuck() {
 				this.setStateSync({
-					b: !this.state.b
+					b: !this.state.b,
 				});
 			}
 
@@ -320,8 +320,8 @@ describe('Stateful Component updates', () => {
 
 				this.state = {
 					obj: {
-						test: true
-					}
+						test: true,
+					},
 				};
 
 				this.updateCaller = this.updateCaller.bind(this);
@@ -331,8 +331,8 @@ describe('Stateful Component updates', () => {
 			updateCaller() {
 				this.setStateSync({
 					obj: {
-						test: !this.state.obj.test
-					}
+						test: !this.state.obj.test,
+					},
 				});
 			}
 
@@ -366,7 +366,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					b: false
+					b: false,
 				};
 
 				this.imstuck = this.imstuck.bind(this);
@@ -375,7 +375,7 @@ describe('Stateful Component updates', () => {
 
 			imstuck() {
 				this.setStateSync({
-					b: !this.state.b
+					b: !this.state.b,
 				});
 			}
 
@@ -447,7 +447,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					items: []
+					items: [],
 				};
 
 				this.setItems = this.setItems.bind(this);
@@ -457,7 +457,7 @@ describe('Stateful Component updates', () => {
 
 			setItems(collection) {
 				this.setStateSync({
-					items: collection
+					items: collection,
 				});
 			}
 
@@ -485,14 +485,14 @@ describe('Stateful Component updates', () => {
 			{ value: 'val1', text: 'key1' },
 			{ value: 'val2', text: 'key2' },
 			{ value: 'val3', text: 'key3' },
-			{ value: 'val4', text: 'key4' }
+			{ value: 'val4', text: 'key4' },
 		]);
 
 		expect(container.innerHTML).to.equal(innerHTML('<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'));
 
 		setItems([
 			{ value: 'val2', text: 'key2' },
-			{ value: 'val3', text: 'key3' }
+			{ value: 'val3', text: 'key3' },
 		]);
 		expect(container.innerHTML).to.equal(innerHTML('<div><ul><li><div class="common-root"><div>DIVval2</div></div><span>key2</span></li><li><div class="common-root"><span>SPANval3</span></div><span>key3</span></li></ul></div>'));
 
@@ -500,7 +500,7 @@ describe('Stateful Component updates', () => {
 			{ value: 'val1', text: 'key1' },
 			{ value: 'val2', text: 'key2' },
 			{ value: 'val3', text: 'key3' },
-			{ value: 'val4', text: 'key4' }
+			{ value: 'val4', text: 'key4' },
 		]);
 		expect(container.innerHTML).to.equal(innerHTML('<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'));
 	});
@@ -514,7 +514,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					stuff
+					stuff,
 				};
 
 				updater = (_stuff) => {
@@ -561,9 +561,9 @@ describe('Stateful Component updates', () => {
 
 		render(<Tester/>, container);
 		expect(
-			innerHTML(container.innerHTML)
+			innerHTML(container.innerHTML),
 		).to.eql(
-			innerHTML('<form><input id="inputId" type="text"></form>')
+			innerHTML('<form><input id="inputId" type="text"></form>'),
 		);
 		const input = container.querySelector('#inputId');
 		expect(assert.notCalled(submitSpy));
@@ -595,9 +595,7 @@ describe('Stateful Component updates', () => {
 		}
 
 		class C extends Component<any, any> {
-			componentWillUnmount() {
-
-			}
+			componentWillUnmount() { }
 
 			render() {
 

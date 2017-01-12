@@ -2,18 +2,18 @@ import {
 	isNull,
 	isUndefined,
 } from '../shared';
+import Lifecycle from './lifecycle';
 import {
 	patchComponent,
 	patchElement,
 } from './patching';
-import Lifecycle from "./lifecycle";
 
 const componentPools = new Map<Function | null, Pools>();
 const elementPools = new Map<string | null, Pools>();
 
 interface Pools {
-  nonKeyed: VNode[];
-  keyed: Map<string | number, VNode[]>;
+	nonKeyed: VNode[];
+	keyed: Map<string | number, VNode[]>;
 }
 
 export function recycleElement(vNode, lifecycle: Lifecycle, context, isSVG) {
@@ -44,7 +44,7 @@ export function poolElement(vNode) {
 	if (isUndefined(pools)) {
 		pools = {
 			nonKeyed: [],
-			keyed: new Map<string | number, VNode[]>()
+			keyed: new Map<string | number, VNode[]>(),
 		};
 		elementPools.set(tag, pools);
 	}
@@ -82,7 +82,7 @@ export function recycleComponent(vNode: VNode, lifecycle: Lifecycle, context, is
 					context,
 					isSVG,
 					flags & VNodeFlags.ComponentClass,
-					true
+					true,
 				);
 
 				if (!failed) {
@@ -113,7 +113,7 @@ export function poolComponent(vNode) {
 	if (isUndefined(pools)) {
 		pools = {
 			nonKeyed: [],
-			keyed: new Map<string | number, VNode[]>()
+			keyed: new Map<string | number, VNode[]>(),
 		};
 		componentPools.set(type, pools);
 	}

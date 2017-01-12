@@ -1,11 +1,11 @@
 import { createVNode } from 'inferno';
 import {
 	isAttrAnEvent,
-	isString,
 	isInvalid,
-	isUndefined,
 	isObject,
-	isStatefulComponent
+	isStatefulComponent,
+	isString,
+	isUndefined,
 } from '../shared';
 
 const componentHooks = {
@@ -14,13 +14,13 @@ const componentHooks = {
 	onComponentWillUnmount: true,
 	onComponentShouldUpdate: true,
 	onComponentWillUpdate: true,
-	onComponentDidUpdate: true
+	onComponentDidUpdate: true,
 };
 
 export default function createElement<T>(
 	name: string | Function,
 	props?: T & Props,
-	..._children: InfernoChildren[]
+	..._children: InfernoChildren[],
 ): VNode {
 	if (isInvalid(name) || isObject(name)) {
 		throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
@@ -56,7 +56,7 @@ export default function createElement<T>(
 				break;
 			default:
 		}
-		for (let prop in props) {
+		for (const prop in props) {
 			if (prop === 'key') {
 				key = props.key;
 				delete props.key;
@@ -81,7 +81,7 @@ export default function createElement<T>(
 			props.children = children;
 			children = null;
 		}
-		for (let prop in props) {
+		for (const prop in props) {
 			if (componentHooks[prop as string]) {
 				if (!ref) {
 					ref = {};
@@ -100,6 +100,6 @@ export default function createElement<T>(
 		children,
 		events,
 		key,
-		ref
+		ref,
 	);
 }

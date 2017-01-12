@@ -5,14 +5,14 @@ import {
 	createMemoryHistory,
 } from 'history';
 
+import { expect } from 'chai';
 import Component from 'inferno-component';
+import { createStore } from 'redux';
 import IndexRoute from '../../router/IndexRoute';
-import Provider from '../Provider';
 import Route from '../../router/Route';
 import Router from '../../router/Router';
-import { createStore } from 'redux';
-import { expect } from 'chai';
 import { innerHTML } from '../../tools/utils';
+import Provider from '../Provider';
 
 const render = Inferno.render;
 const browserHistory = (typeof window !== 'undefined') ? createBrowserHistory() : createMemoryHistory();
@@ -50,11 +50,11 @@ describe('Provider (JSX)', () => {
 			const store = this.context.store;
 			const state = store.getState();
 
-			const onClick = e => {
+			const onClick = (e) => {
 				e.preventDefault();
 				store.dispatch({
 					type: 'CHANGE_NAME',
-					name: 'Jerry'
+					name: 'Jerry',
 				});
 			};
 
@@ -155,7 +155,7 @@ describe('Provider (JSX)', () => {
 			render(
 				<Provider store={store}>
 					<Router url={ url } history={ browserHistory }>
-						<Route path='/next' component={ BasicComponent2 } />
+						<Route path="/next" component={ BasicComponent2 } />
 						<IndexRoute component={ BasicComponent1 } />
 					</Router>
 				</Provider>
@@ -190,11 +190,11 @@ describe('Provider (JSX)', () => {
 				const store = this.context.store;
 				const state = store.getState();
 
-				const onClick = e => {
+				const onClick = (e) => {
 					e.preventDefault();
 					store.dispatch({
 						type: 'CHANGE_NAME',
-						name: 'Jerry'
+						name: 'Jerry',
 					});
 				};
 
@@ -227,7 +227,7 @@ describe('Provider (JSX)', () => {
 			<Provider store={ store }>
 				<Router history={ browserHistory }>
 					<Route component={ App }>
-						<Route path='/next' component={ BasicComponent2 } />
+						<Route path="/next" component={ BasicComponent2 } />
 						<IndexRoute component={ BasicComponent1 } />
 					</Route>
 				</Router>

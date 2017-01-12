@@ -1,13 +1,13 @@
 import {
 	isArray,
 	isInvalid,
-	isNullOrUndef,
-	isUndefined,
 	isNull,
-	isStatefulComponent
+	isNullOrUndef,
+	isStatefulComponent,
+	isUndefined,
 } from '../shared';
 import {
-	normalize
+	normalize,
 } from './normalization';
 import options from './options';
 
@@ -19,7 +19,7 @@ export function createVNode(
 	events?,
 	key?: Key,
 	ref?: Ref,
-	noNormalise?: boolean
+	noNormalise?: boolean,
 ): VNode {
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
@@ -32,7 +32,7 @@ export function createVNode(
 		key: isUndefined(key) ? null : key,
 		props: props || null,
 		ref: ref || null,
-		type
+		type,
 	};
 	if (!noNormalise) {
 		normalize(vNode);
@@ -95,7 +95,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 				events,
 				key,
 				ref,
-				true
+				true,
 			);
 			const newProps = newVNode.props;
 
@@ -126,7 +126,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 				events,
 				key,
 				ref,
-				!children
+				!children,
 			);
 		} else if (flags & VNodeFlags.Text) {
 			newVNode = createTextVNode(vNodeToClone.children as string);

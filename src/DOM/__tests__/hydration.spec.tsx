@@ -1,12 +1,12 @@
 import { expect } from 'chai';
-import renderToString from '../../server/renderToString';
+import { createVNode, render } from 'inferno';
 import Component from 'inferno-component';
+import renderToString from '../../server/renderToString';
 import {
 	createContainerWithHTML,
 	innerHTML,
-	validateNodeTree
+	validateNodeTree,
 } from '../../tools/utils';
-import { render, createVNode } from 'inferno';
 
 function Comp1() {
 	return <span>Worked!</span>;
@@ -37,59 +37,59 @@ describe('SSR Hydration - (JSX)', () => {
 		{
 			node: <div><span>Hello world</span></div>,
 			expect1: '<div><span>Hello world</span></div>',
-			expect2: '<div><span>Hello world</span></div>'
+			expect2: '<div><span>Hello world</span></div>',
 		},
 		{
 			node: <div><p>Hello world<sup><a>Foo</a></sup></p></div>,
 			expect1: '<div><p>Hello world<sup><a>Foo</a></sup></p></div>',
-			expect2: '<div><p>Hello world<sup><a>Foo</a></sup></p></div>'
+			expect2: '<div><p>Hello world<sup><a>Foo</a></sup></p></div>',
 		},
 		{
 			node: <div>{ <span>Hello world</span> }</div>,
 			expect1: '<div><span>Hello world</span></div>',
-			expect2: '<div><span>Hello world</span></div>'
+			expect2: '<div><span>Hello world</span></div>',
 		},
 		{
 			node: <div><span>{ <span>Hello world</span> }</span></div>,
 			expect1: '<div><span><span>Hello world</span></span></div>',
-			expect2: '<div><span><span>Hello world</span></span></div>'
+			expect2: '<div><span><span>Hello world</span></span></div>',
 		},
 		{
 			node: <div>Hello world</div>,
 			expect1: '<div>Hello world</div>',
-			expect2: '<div>Hello world</div>'
+			expect2: '<div>Hello world</div>',
 		},
 		{
 			node: <div>
 				<svg className={(() => 'foo')()} viewBox="0 0 64 64"/>
 			</div>,
 			expect1: '<div><svg class="foo" viewBox="0 0 64 64"></svg></div>',
-			expect2: '<div><svg class="foo" viewBox="0 0 64 64"></svg></div>'
+			expect2: '<div><svg class="foo" viewBox="0 0 64 64"></svg></div>',
 		},
 		{
 			node: <Comp4><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></Comp4>,
 			expect1: '<section><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></section>',
-			expect2: '<section><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></section>'
+			expect2: '<section><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></section>',
 		},
 		{
 			node: <div>Hello world, { 'Foo!' }</div>,
 			expect1: '<div>Hello world, <!---->Foo!</div>',
-			expect2: '<div>Hello world, Foo!</div>'
+			expect2: '<div>Hello world, Foo!</div>',
 		},
 		{
 			node: <div>Hello world, { ['Foo!', 'Bar!'] }</div>,
 			expect1: '<div>Hello world, <!---->Foo!<!---->Bar!</div>',
-			expect2: '<div>Hello world, Foo!Bar!</div>'
+			expect2: '<div>Hello world, Foo!Bar!</div>',
 		},
 		{
 			node: <div>Hello world!{ null }</div>,
 			expect1: '<div>Hello world!</div>',
-			expect2: '<div>Hello world!</div>'
+			expect2: '<div>Hello world!</div>',
 		},
 		{
 			node: <div>Hello world, { '1' }2{ '3' }</div>,
 			expect1: '<div>Hello world, <!---->1<!---->2<!---->3</div>',
-			expect2: '<div>Hello world, 123</div>'
+			expect2: '<div>Hello world, 123</div>',
 		},
 		{
 			node: <div id="1">
@@ -98,28 +98,28 @@ describe('SSR Hydration - (JSX)', () => {
 				</div>
 			</div>,
 			expect1: '<div id="1"><div id="2"><div id="3"></div></div></div>',
-			expect2: '<div id="1"><div id="2"><div id="3"></div></div></div>'
+			expect2: '<div id="1"><div id="2"><div id="3"></div></div></div>',
 		},
 		{
 			node: <div><Comp1 /></div>,
 			expect1: '<div><span>Worked!</span></div>',
-			expect2: '<div><span>Worked!</span></div>'
+			expect2: '<div><span>Worked!</span></div>',
 		},
 		{
-			node: <div className='test'><Comp1 /></div>,
+			node: <div className="test"><Comp1 /></div>,
 			expect1: '<div class="test"><span>Worked!</span></div>',
-			expect2: '<div class="test"><span>Worked!</span></div>'
+			expect2: '<div class="test"><span>Worked!</span></div>',
 		},
 		{
 			node: <div><Comp1 /><Comp1 /><Comp1 /></div>,
 			expect1: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>',
-			expect2: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>'
+			expect2: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>',
 		},
 		{
 			node: <div><Comp3 /></div>,
 			expect1: '<div><em>Works<!----> <span>again</span><!---->!</em></div>',
-			expect2: '<div><em>Works <span>again</span>!</em></div>'
-		}
+			expect2: '<div><em>Works <span>again</span>!</em></div>',
+		},
 	].forEach(({ node, expect1, expect2 }, i) => {
 		it(`Validate various structures #${ (i + 1) }`, () => {
 			const html = renderToString(node);
@@ -140,7 +140,7 @@ describe('SSR Hydration - (JSX)', () => {
 			node2: <div>Hello world 2</div>,
 			expect2: '<div>Hello world 2</div>',
 			node3: <div>Hello world</div>,
-			expect3: '<div>Hello world</div>'
+			expect3: '<div>Hello world</div>',
 		},
 		{
 			node: <div>Hello world, { 'Foo!' }</div>,
@@ -148,7 +148,7 @@ describe('SSR Hydration - (JSX)', () => {
 			node2: <div>{ 'Start' } Hello world, { 'Foo!' }</div>,
 			expect2: '<div>Start Hello world, Foo!</div>',
 			node3: <div>Hello world, { 'Foo!' }</div>,
-			expect3: '<div>Hello world, Foo!</div>'
+			expect3: '<div>Hello world, Foo!</div>',
 		},
 		{
 			node: <div>Hello world, { '1' }2{ '3' }</div>,
@@ -156,7 +156,7 @@ describe('SSR Hydration - (JSX)', () => {
 			node2: <div>Hello world, { '3' }2{ '1' }</div>,
 			expect2: '<div>Hello world, 321</div>',
 			node3: <div>Hello world, { '1' }2{ '3' }</div>,
-			expect3: '<div>Hello world, 123</div>'
+			expect3: '<div>Hello world, 123</div>',
 		},
 		{
 			node: <div id="1">
@@ -176,7 +176,7 @@ describe('SSR Hydration - (JSX)', () => {
 					<div id="3"></div>
 				</div>
 			</div>,
-			expect3: '<div id="1"><div id="2"><div id="3"></div></div></div>'
+			expect3: '<div id="1"><div id="2"><div id="3"></div></div></div>',
 		},
 		{
 			node: <div><Comp1 /></div>,
@@ -184,15 +184,15 @@ describe('SSR Hydration - (JSX)', () => {
 			node2: <div></div>,
 			expect2: '<div></div>',
 			node3: <div><Comp1 /></div>,
-			expect3: '<div><span>Worked!</span></div>'
+			expect3: '<div><span>Worked!</span></div>',
 		},
 		{
-			node: <div className='test'><Comp1 /></div>,
+			node: <div className="test"><Comp1 /></div>,
 			expect1: '<div class="test"><span>Worked!</span></div>',
-			node2: <div className='test'><Comp2 /></div>,
+			node2: <div className="test"><Comp2 /></div>,
 			expect2: '<div class="test"><em>Worked 2!</em></div>',
-			node3: <div className='test'><Comp1 /></div>,
-			expect3: '<div class="test"><span>Worked!</span></div>'
+			node3: <div className="test"><Comp1 /></div>,
+			expect3: '<div class="test"><span>Worked!</span></div>',
 		},
 		{
 			node: <div><Comp1 /><Comp1 /><Comp1 /></div>,
@@ -200,7 +200,7 @@ describe('SSR Hydration - (JSX)', () => {
 			node2: <div><Comp2 /><Comp2 /><Comp2 /></div>,
 			expect2: '<div><em>Worked 2!</em><em>Worked 2!</em><em>Worked 2!</em></div>',
 			node3: <div><Comp1 /><Comp1 /><Comp1 /></div>,
-			expect3: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>'
+			expect3: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>',
 		},
 		{
 			node: <div><Comp3 /></div>,
@@ -208,7 +208,7 @@ describe('SSR Hydration - (JSX)', () => {
 			node2: <div><Comp1 /><Comp3 /></div>,
 			expect2: '<div><span>Worked!</span><em>Works <span>again</span>!</em></div>',
 			node3: <div><Comp3 /></div>,
-			expect3: '<div><em>Works <span>again</span>!</em></div>'
+			expect3: '<div><em>Works <span>again</span>!</em></div>',
 		},
 		{
 			node: <div><Comp5 /></div>,
@@ -216,8 +216,8 @@ describe('SSR Hydration - (JSX)', () => {
 			node2: <div><Comp5 /><Comp3 /><Comp5 /></div>,
 			expect2: '<div><em>Works <span>again</span>!</em></div>',
 			node3: <div><Comp5 /></div>,
-			expect3: '<div></div>'
-		}
+			expect3: '<div></div>',
+		},
 	].forEach(({ node, expect1, node2, node3, expect2, expect3 }, i) => {
 		it(`Update various structures #${ (i + 1) }`, () => {
 			const html = renderToString(node);
@@ -259,7 +259,7 @@ describe('SSR Hydration - (JSX)', () => {
 		const container = document.createElement('div');
 		const vNode = createVNode(2, 'div', { className: 'example' }, [
 			createVNode(2, 'div', null, 'Item 1'),
-			createVNode(2, 'div', null, 'Item 2')
+			createVNode(2, 'div', null, 'Item 2'),
 		]);
 
 		container.innerHTML = '<h1><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></h1><div>Existing DOM content</div>';
@@ -271,7 +271,7 @@ describe('SSR Hydration - (JSX)', () => {
 		const container = document.createElement('div');
 		const vNode = createVNode(2, 'div', { className: 'example' }, [
 			createVNode(2, 'div', null, 'Item 1'),
-			createVNode(2, 'div', null, 'Item 2')
+			createVNode(2, 'div', null, 'Item 2'),
 		]);
 
 		container.innerHTML = '<div><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></div>';

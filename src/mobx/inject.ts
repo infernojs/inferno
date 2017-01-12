@@ -1,7 +1,7 @@
+import hoistStatics from 'hoist-non-inferno-statics';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
-import hoistStatics from 'hoist-non-inferno-statics';
-import {IProps} from "../core/structures";
+import {IProps} from '../core/structures';
 
 interface IStoreProps extends IProps {
 	ref: any;
@@ -15,7 +15,7 @@ function createStoreInjector(grabStoresFn: Function, component) {
 		displayName: component.name,
 		render() {
 			const newProps = {} as IStoreProps;
-			for (let key in this.props) {
+			for (const key in this.props) {
 				if (this.props.hasOwnProperty(key)) {
 					newProps[key] = this.props[key];
 				}
@@ -29,7 +29,7 @@ function createStoreInjector(grabStoresFn: Function, component) {
 			};
 
 			return createElement(component, newProps);
-		}
+		},
 	});
 
 	Injector.contextTypes = { mobxStores() {} };
@@ -50,7 +50,7 @@ const grabStoresByName = function(storeNames: string[]): Function {
 			if (!(storeName in baseStores)) {
 				throw new Error(
 					`MobX observer: Store "${storeName}" is not available! ` +
-					`Make sure it is provided by some Provider`
+					`Make sure it is provided by some Provider`,
 				);
 			}
 

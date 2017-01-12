@@ -1,23 +1,23 @@
+import options from '../core/options';
+import { cloneVNode, createTextVNode, createVoidVNode } from '../core/VNodes';
 import {
+	EMPTY_OBJ,
 	isArray,
-	isInvalid,
-	isStringOrNumber,
 	isFunction,
+	isInvalid,
 	isNullOrUndef,
+	isStringOrNumber,
 	isUndefined,
 	throwError,
-	EMPTY_OBJ
 } from '../shared';
-import options from '../core/options';
-import { cloneVNode, createVoidVNode, createTextVNode } from '../core/VNodes';
-import { componentToDOMNodeMap } from './rendering';
+import { svgNS } from './constants';
+import Lifecycle from './lifecycle';
 import { mount } from './mounting';
 import { patch } from './patching';
-import { svgNS } from './constants';
+import { componentToDOMNodeMap } from './rendering';
 import {
 	unmount,
 } from './unmounting';
-import Lifecycle from "./lifecycle";
 
 export function createClassComponentInstance(vNode: VNode, Component, props, context, isSVG: boolean) {
 	if (isUndefined(context)) {

@@ -1,8 +1,8 @@
 import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
+import { throwError } from '../shared';
 import inject from './inject';
 import makeReactive from './makeReactive';
-import { throwError } from '../shared';
 
 /**
  * Wraps a component and provides stores as props
@@ -39,7 +39,7 @@ function connect(arg1: any, arg2 = null): any {
 			getDefaultProps: () => componentClass.defaultProps,
 			render() {
 				return componentClass.call(this, this.props, this.context);
-			}
+			},
 		});
 
 		return connect(newClass);

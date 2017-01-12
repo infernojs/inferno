@@ -63,7 +63,7 @@ function extractProps(_props: any, _tag: string | VNode): any {
 	let children = null;
 	let events = null;
 
-	for (let prop in _props) {
+	for (const prop in _props) {
 		if (prop === 'key') {
 			key = _props[prop];
 		} else if (prop === 'ref') {

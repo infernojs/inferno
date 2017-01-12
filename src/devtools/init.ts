@@ -1,13 +1,13 @@
 import {
-	options
+	options,
 } from 'inferno';
-import {
-	createDevToolsBridge
-} from './bridge';
-import {
-	isStatefulComponent
-} from '../shared';
 import Component from 'inferno-component';
+import {
+	isStatefulComponent,
+} from '../shared';
+import {
+	createDevToolsBridge,
+} from './bridge';
 
 const functionalComponentWrappers = new Map();
 
@@ -61,7 +61,7 @@ export default function initDevTools() {
 	const bridge = createDevToolsBridge();
 	const nextAfterMount = options.afterMount;
 
-	options.afterMount = vNode => {
+	options.afterMount = (vNode) => {
 		bridge.componentAdded(vNode);
 		if (nextAfterMount) {
 			nextAfterMount(vNode);
@@ -69,7 +69,7 @@ export default function initDevTools() {
 	};
 	const nextAfterUpdate = options.afterUpdate;
 
-	options.afterUpdate = vNode => {
+	options.afterUpdate = (vNode) => {
 		bridge.componentUpdated(vNode);
 		if (nextAfterUpdate) {
 			nextAfterUpdate(vNode);
@@ -77,7 +77,7 @@ export default function initDevTools() {
 	};
 	const nextBeforeUnmount = options.beforeUnmount;
 
-	options.beforeUnmount = vNode => {
+	options.beforeUnmount = (vNode) => {
 		bridge.componentRemoved(vNode);
 		if (nextBeforeUnmount) {
 			nextBeforeUnmount(vNode);

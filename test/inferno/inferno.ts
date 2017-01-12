@@ -1,18 +1,18 @@
-import {
-	createVNode,
-	cloneVNode
-} from '../../src/core/VNodes';
-import {
-	render,
-	createRenderer,
-	findDOMNode
-} from '../../src/DOM/rendering';
 import options from '../../src/core/options';
 import {
-	EMPTY_OBJ,
-	NO_OP
-} from '../../src/shared';
+	cloneVNode,
+	createVNode,
+} from '../../src/core/VNodes';
 import linkEvent from '../../src/DOM/events/linkEvent';
+import {
+	createRenderer,
+	findDOMNode,
+	render,
+} from '../../src/DOM/rendering';
+import {
+	EMPTY_OBJ,
+	NO_OP,
+} from '../../src/shared';
 
 export {
 	createVNode,
@@ -35,5 +35,5 @@ export default {
 	NO_OP,
 	linkEvent,
 	options,
-	findDOMNode
+	findDOMNode,
 };

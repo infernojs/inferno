@@ -11,8 +11,8 @@ export function sortAttributes(html: string): string {
 		const attrName = (attribute: string): string => attribute.split('=')[0];
 		const list: string[] = attrs.match(/\s[a-z0-9:_.-]+=".*?"/gi).sort( (a, b) => attrName(a) > attrName(b) ? 1 : -1 );
 		if (~after.indexOf('/')) {
-      after = '></' + pre + '>';
-    }
+			after = '></' + pre + '>';
+		}
 		return '<' + pre + list.join('') + after;
 	});
 }
@@ -61,7 +61,7 @@ export function validateNodeTree(node: any): boolean {
 	if (flags & VNodeFlags.Element) {
 		if (!isNullOrUndef(children)) {
 			if (isArray(children)) {
-				for (let child of children) {
+				for (const child of children) {
 					const val = validateNodeTree(child);
 
 					if (!val) {

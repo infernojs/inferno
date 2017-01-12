@@ -1,10 +1,10 @@
-import { observable } from 'mobx';
 import { expect } from 'chai';
-import Provider from '../Provider';
+import { render } from 'inferno';
+import Component from 'inferno-component';
+import { observable } from 'mobx';
 import { innerHTML } from '../../tools/utils';
 import connect from '../connect';
-import Component from 'inferno-component';
-import { render } from 'inferno';
+import Provider from '../Provider';
 
 describe('MobX Provider', () => {
 	let container;
@@ -23,11 +23,11 @@ describe('MobX Provider', () => {
 	describe('updating state', () => {
 		const stores: any = observable({
 			store1: {
-				data: 'one'
+				data: 'one',
 			},
 			store2: {
-				data: 'two'
-			}
+				data: 'two',
+			},
 		});
 
 		const Statefull = connect(['store1'], class extends Component<any, any> {
@@ -50,7 +50,7 @@ describe('MobX Provider', () => {
 			</article>;
 		});
 
-		const StatelessWithStores = connect(['store1'], props => {
+		const StatelessWithStores = connect(['store1'], (props) => {
 			const update = () => props.store1.data = 'hello world';
 
 			return <article>
@@ -96,15 +96,15 @@ describe('MobX Provider', () => {
 	describe('providing/updating stores', () => {
 		const stores: any = observable({
 			store1: {
-				data: 'one'
+				data: 'one',
 			},
 			store2: {
-				data: 'two'
-			}
+				data: 'two',
+			},
 		});
 
 		it('should inherit stores from parent', () => {
-			const InheritComponent = connect(['store1', 'store2'], props => {
+			const InheritComponent = connect(['store1', 'store2'], (props) => {
 				return <div>
 					<span>{props.store1.data}</span>
 					<span>{props.store2.data}</span>
