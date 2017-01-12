@@ -29,7 +29,7 @@ export default function Link(props, { router }) {
 	}
 
 	elemProps.onclick = function navigate(e) {
-		if (e.button !== 0 || e.ctrlKey || e.altKey) {
+		if (e.button !== 0 || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) {
 			return;
 		}
 		e.preventDefault();
