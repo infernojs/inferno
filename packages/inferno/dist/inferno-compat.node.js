@@ -404,7 +404,7 @@ var AUTOBIND_BLACKLIST = {
     componentWillMount: 1,
     componentDidMount: 1,
     componentWillUnmount: 1,
-    componentDidUnmount: 1
+    componentDidUnmount: 1,
 };
 function extend(base, props, all) {
     for (var key in props) {
@@ -514,7 +514,7 @@ var componentHooks = {
     onComponentWillUnmount: true,
     onComponentShouldUpdate: true,
     onComponentWillUpdate: true,
-    onComponentDidUpdate: true
+    onComponentDidUpdate: true,
 };
 function createElement$1(name, props) {
     var _children = [], len = arguments.length - 2;

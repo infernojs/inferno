@@ -47,7 +47,7 @@ var componentHooks = {
     onComponentWillUnmount: true,
     onComponentShouldUpdate: true,
     onComponentWillUpdate: true,
-    onComponentDidUpdate: true
+    onComponentDidUpdate: true,
 };
 function createElement$1(name, props) {
     var _children = [], len = arguments.length - 2;

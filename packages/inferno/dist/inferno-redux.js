@@ -12,13 +12,48 @@
 Component = 'default' in Component ? Component['default'] : Component;
 createElement = 'default' in createElement ? createElement['default'] : createElement;
 
+var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+
+function toArray(children) {
+    return isArray(children) ? children : (children ? [children] : children);
+}
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+var isArray = Array.isArray;
+
+
+function isNullOrUndef(obj) {
+    return isUndefined(obj) || isNull(obj);
+}
+
+function isFunction(obj) {
+    return typeof obj === 'function';
+}
+
+
+
+function isNull(obj) {
+    return obj === null;
+}
+
+function isUndefined(obj) {
+    return obj === undefined;
+}
+
+function throwError(message) {
+    if (!message) {
+        message = ERROR_MSG;
+    }
+    throw new Error(("Inferno Error: " + message));
+}
+
 /**
  * Prints a warning in the console if it exists.
  *
  * @param {String} message The warning message.
  * @returns {void}
  */
-function warning(message) {
+function warning$1(message) {
     /* eslint-disable no-console */
     if (typeof console !== 'undefined' && typeof console.error === 'function') {
         console.error(message);
@@ -57,48 +92,13 @@ function wrapActionCreators(actionCreators) {
     return function (dispatch) { return redux.bindActionCreators(actionCreators, dispatch); };
 }
 
-var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-
-function toArray(children) {
-    return isArray(children) ? children : (children ? [children] : children);
-}
-// this is MUCH faster than .constructor === Array and instanceof Array
-// in Node 7 and the later versions of V8, slower in older versions though
-var isArray = Array.isArray;
-
-
-function isNullOrUndef(obj) {
-    return isUndefined(obj) || isNull(obj);
-}
-
-function isFunction(obj) {
-    return typeof obj === 'function';
-}
-
-
-
-function isNull(obj) {
-    return obj === null;
-}
-
-function isUndefined(obj) {
-    return obj === undefined;
-}
-
-function throwError(message) {
-    if (!message) {
-        message = ERROR_MSG;
-    }
-    throw new Error(("Inferno Error: " + message));
-}
-
 var didWarnAboutReceivingStore = false;
 function warnAboutReceivingStore() {
     if (didWarnAboutReceivingStore) {
         return;
     }
     didWarnAboutReceivingStore = true;
-    warning('<Provider> does not support changing `store` on the fly.');
+    warning$1('<Provider> does not support changing `store` on the fly.');
 }
 var Provider = (function (Component$$1) {
     function Provider(props, context) {
@@ -261,7 +261,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps, options) {
         var connectDisplayName = "Connect(" + (getDisplayName(WrappedComponent)) + ")";
         function checkStateShape(props, methodName) {
             if (!isPlainObject(props)) {
-                warning(methodName + "() in " + connectDisplayName + " must return a plain object. " +
+                warning$1(methodName + "() in " + connectDisplayName + " must return a plain object. " +
                     "Instead received " + props + ".");
             }
         }

@@ -9,44 +9,6 @@
 	(global.Inferno = global.Inferno || {}, global.Inferno.Server = factory(global.Inferno,global.stream));
 }(this, (function (inferno,stream) { 'use strict';
 
-var ecapeCharacters = {
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;',
-    '&': '&amp;'
-};
-var escapeChar = function (char) { return ecapeCharacters[char] || char; };
-function escapeText(text) {
-    return String(text).replace(/[<>"'&]/g, escapeChar);
-}
-var uppercasePattern = /[A-Z]/g;
-var msPattern = /^ms-/;
-function toHyphenCase(str) {
-    return str.replace(uppercasePattern, '-$&').toLowerCase().replace(msPattern, '-ms-');
-}
-var voidElements = {
-    area: true,
-    base: true,
-    br: true,
-    col: true,
-    command: true,
-    embed: true,
-    hr: true,
-    img: true,
-    input: true,
-    keygen: true,
-    link: true,
-    meta: true,
-    param: true,
-    source: true,
-    track: true,
-    wbr: true
-};
-function isVoidElement(str) {
-    return !!voidElements[str];
-}
-
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
 
@@ -107,7 +69,7 @@ var options = {
     afterRender: null,
     afterMount: null,
     afterUpdate: null,
-    beforeUnmount: null
+    beforeUnmount: null,
 };
 
 function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
@@ -122,7 +84,7 @@ function createVNode(flags, type, props, children, events, key, ref, noNormalise
         key: isUndefined(key) ? null : key,
         props: props || null,
         ref: ref || null,
-        type: type
+        type: type,
     };
     if (!noNormalise) {
         normalize(vNode);
@@ -417,6 +379,44 @@ constructDefaults('children,ref,key,selected,checked,value,multiple', skipProps,
 constructDefaults('onClick,onMouseDown,onMouseUp,onMouseMove,onSubmit,onDblClick,onKeyDown,onKeyUp,onKeyPress', delegatedProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readOnly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate,hidden', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+
+var ecapeCharacters = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#039;',
+    '&': '&amp;',
+};
+var escapeChar = function (char) { return ecapeCharacters[char] || char; };
+function escapeText(text) {
+    return String(text).replace(/[<>"'&]/g, escapeChar);
+}
+var uppercasePattern = /[A-Z]/g;
+var msPattern = /^ms-/;
+function toHyphenCase(str) {
+    return str.replace(uppercasePattern, '-$&').toLowerCase().replace(msPattern, '-ms-');
+}
+var voidElements = {
+    area: true,
+    base: true,
+    br: true,
+    col: true,
+    command: true,
+    embed: true,
+    hr: true,
+    img: true,
+    input: true,
+    keygen: true,
+    link: true,
+    meta: true,
+    param: true,
+    source: true,
+    track: true,
+    wbr: true,
+};
+function isVoidElement(str) {
+    return !!voidElements[str];
+}
 
 function renderStylesToString(styles) {
     if (isStringOrNumber(styles)) {
