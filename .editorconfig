@@ -7,7 +7,7 @@ insert_final_newline = true
 quote_type = single
 
 # Tab indentation
-[*.{js,ts,json}]
+[*.{js,ts,jsx,tsx,json}]
 indent_style = tab
 indent_size = 2
 

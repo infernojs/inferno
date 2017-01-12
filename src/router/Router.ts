@@ -74,9 +74,9 @@ export default class Router extends Component<IRouterProps, any> {
 		const hit = match(props.children, this.state.url);
 
 		if (hit.redirect) {
-			Promise.resolve().then(function() {
+			setTimeout(() => {
 				this.router.replace(hit.redirect);
-			});
+			}, 0);
 			return null;
 		}
 
