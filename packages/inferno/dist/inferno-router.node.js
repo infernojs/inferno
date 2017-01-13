@@ -36,7 +36,7 @@ function Link(props, ref) {
         }
     }
     elemProps.onclick = function navigate(e) {
-        if (e.button !== 0 || e.ctrlKey || e.altKey) {
+        if (e.button !== 0 || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) {
             return;
         }
         e.preventDefault();
