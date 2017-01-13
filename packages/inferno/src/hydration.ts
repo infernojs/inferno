@@ -1,7 +1,7 @@
 import {
 	copyPropsTo,
-} from '../core/normalization';
-import options from '../core/options';
+} from './core/normalization';
+import options from './core/options';
 import {
 	EMPTY_OBJ,
 	isArray,
@@ -11,7 +11,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-} from '../shared';
+} from '../../../src/shared';
 import { svgNS } from './constants';
 import Lifecycle from './lifecycle';
 import {

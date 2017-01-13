@@ -1,7 +1,7 @@
 import {
 	isNull,
 	isUndefined,
-} from '../shared';
+} from '../../../src/shared';
 import Lifecycle from './lifecycle';
 import {
 	patchComponent,

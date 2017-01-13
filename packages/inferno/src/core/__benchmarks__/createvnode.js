@@ -1,4 +1,4 @@
-import { createVNode, createTextVNode } from './../../core/VNodes';
+import { createVNode, createTextVNode } from '../VNodes';
 
 suite('createVNode (normalize) benchmark', () => {
 	/* Do not compare results between each other, these only measure OPS / sec for different structures */

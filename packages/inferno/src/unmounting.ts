@@ -1,4 +1,4 @@
-import options from '../core/options';
+import options from './core/options';
 import {
 	isArray,
 	isFunction,
@@ -7,7 +7,7 @@ import {
 	isNullOrUndef,
 	isObject,
 	throwError,
-} from '../shared';
+} from '../../../src/shared';
 import Lifecycle from './lifecycle';
 import {
 	patchEvent,

@@ -1,3 +1,3 @@
-import Component from '../../src/component/es2015';
+import Component from '../../packages/inferno-component/src/es2015';
 
 export default Component;

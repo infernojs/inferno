@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
-import Component from '../../component/es2015';
+import { render } from '../../../packages/inferno/src/rendering';
+import Component from '../../../packages/inferno-component/src/es2015';
 import createElement from '../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
 import Provider from '../Provider';

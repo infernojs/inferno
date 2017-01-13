@@ -8,7 +8,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	warning,
-} from '../shared';
+} from '../../../../src/shared';
 import { cloneVNode, createTextVNode, isVNode } from './VNodes';
 
 function applyKey(key: string, vNode: VNode) {

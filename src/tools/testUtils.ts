@@ -1,4 +1,4 @@
-import { render } from '../DOM/rendering';
+import { render } from '../../packages/inferno/src/rendering';
 import createElement from '../factories/createElement';
 import isValidElement from '../factories/isValidElement';
 import { isArray, throwError, toArray } from '../shared';

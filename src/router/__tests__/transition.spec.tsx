@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { createMemoryHistory } from 'history';
 import { render } from 'inferno';
-import Component from '../../component/es2015';
+import Component from '../../../packages/inferno-component/src/es2015';
 import { innerHTML } from '../../tools/utils';
 import IndexRoute from '../IndexRoute';
 import Link from '../Link';

@@ -4,7 +4,7 @@ import {
 	isNullOrUndef
 } from '../../shared';
 import { wrappers } from './processElement';
-import { isVNode } from '../../core/VNodes';
+import { isVNode } from '../../../packages/inferno/src/core/VNodes';
 
 function isControlled(props) {
 	return !isNullOrUndef(props.value);

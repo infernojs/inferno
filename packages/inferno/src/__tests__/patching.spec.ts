@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { render, createVNode } from 'inferno';
-import { createTextVNode } from "../../core/VNodes";
+import { createTextVNode } from "../../../packages/inferno/src/core/VNodes";
 
 describe('patching routine', () => {
 	let container;

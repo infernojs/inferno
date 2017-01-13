@@ -5,7 +5,7 @@ import {
 	isNullOrUndef,
 	isStatefulComponent,
 	isUndefined,
-} from '../shared';
+} from '../../../../src/shared';
 import {
 	normalize,
 } from './normalization';

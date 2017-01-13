@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
 import { assert, spy } from 'sinon';
-import {createTextVNode} from '../../core/VNodes';
+import {createTextVNode} from '../../../packages/inferno/src/core/VNodes';
 import { innerHTML } from '../../tools/utils';
 
 describe('Elements (JSX)', () => {

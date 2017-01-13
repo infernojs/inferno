@@ -1,8 +1,8 @@
 import {
 	copyPropsTo,
-} from '../core/normalization';
-import options from '../core/options';
-import { cloneVNode, isVNode } from '../core/VNodes';
+} from './core/normalization';
+import options from './core/options';
+import { cloneVNode, isVNode } from './core/VNodes';
 import {
 	EMPTY_OBJ,
 	isArray,
@@ -14,7 +14,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-} from '../shared';
+} from '../../../src/shared';
 import Lifecycle from './lifecycle';
 import {
 	patchEvent,

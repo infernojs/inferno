@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
+import { render } from '../../../packages/inferno/src/rendering';
 import createClass from '../createClass';
 import createElement from '../../factories/createElement';
 import { innerHTML } from '../../tools/utils';

@@ -1,13 +1,13 @@
 import {
 	copyPropsTo,
-} from '../core/normalization';
-import options from '../core/options';
+} from './core/normalization';
+import options from './core/options';
 import {
 	cloneVNode,
 	createTextVNode,
 	createVoidVNode,
 	isVNode,
-} from '../core/VNodes';
+} from './core/VNodes';
 import {
 	EMPTY_OBJ,
 	isArray,
@@ -23,7 +23,7 @@ import {
 	isUndefined,
 	NO_OP,
 	throwError,
-} from '../shared';
+} from '../../../src/shared';
 import {
 	booleanProps,
 	dehyphenProps,
@@ -62,7 +62,7 @@ import {
 	updateTextContent,
 } from './utils';
 
-import {Styles} from '../core/structures';
+import {Styles} from './core/structures';
 import Lifecycle from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
 import { unmount } from './unmounting';

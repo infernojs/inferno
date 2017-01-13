@@ -8,9 +8,9 @@ import {
 	isNullOrUndef,
 	isStringOrNumber,
 	throwError,
-} from '../shared';
+} from '../../../src/shared';
 
-import Lifecycle from './../DOM/lifecycle';
+import Lifecycle from '../../inferno/src/lifecycle';
 
 let noOp = ERROR_MSG;
 

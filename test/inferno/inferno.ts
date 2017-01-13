@@ -1,14 +1,14 @@
-import options from '../../src/core/options';
+import options from '../../packages/inferno/src/core/options';
 import {
 	cloneVNode,
 	createVNode,
-} from '../../src/core/VNodes';
-import linkEvent from '../../src/DOM/events/linkEvent';
+} from '../../packages/inferno/src/core/VNodes';
+import linkEvent from '../../packages/inferno/src/events/linkEvent';
 import {
 	createRenderer,
 	findDOMNode,
 	render,
-} from '../../src/DOM/rendering';
+} from '../../packages/inferno/src/rendering';
 import {
 	EMPTY_OBJ,
 	NO_OP,

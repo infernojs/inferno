@@ -11,7 +11,7 @@ import {
 import hoistStatics from 'hoist-non-inferno-statics';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import {IProps} from '../core/structures';
+import {IProps} from '../../packages/inferno/src/core/structures';
 import { isPlainObject } from './helpers';
 
 type WrapWithConnect = (WrappedComponent: any) => any;

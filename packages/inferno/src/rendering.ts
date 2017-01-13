@@ -5,10 +5,10 @@ import {
 	isNullOrUndef,
 	NO_OP,
 	throwError,
-} from '../shared';
+} from '../../../src/shared';
 
-import options from '../core/options';
-import { cloneVNode } from '../core/VNodes';
+import options from './core/options';
+import { cloneVNode } from './core/VNodes';
 import hydrateRoot from './hydration';
 import Lifecycle from './lifecycle';
 import { mount } from './mounting';
