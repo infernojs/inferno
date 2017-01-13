@@ -273,8 +273,7 @@ describe('Select / select multiple (JSX)', () => {
 		);
 	});
 
-	/*
-	it('Should be possible to change value of Progress element', () => {
+	it('Should be possible to change value of Progress element Github#714', () => {
 		render(<progress value={10} max={100} />, container);
 
 		expect(container.firstChild.value).to.eql(10);
@@ -287,5 +286,4 @@ describe('Select / select multiple (JSX)', () => {
 
 		expect(container.firstChild.value).to.be.null;
 	});
-	*/
 });
