@@ -5,12 +5,12 @@ import options from '../core/options';
 import {
 	EMPTY_OBJ,
 	isArray,
-	isInvalid,
 	isNull,
 	isObject,
 	isStringOrNumber,
 	isUndefined,
 	throwError,
+	warning,
 } from '../shared';
 import { svgNS } from './constants';
 import Lifecycle from './lifecycle';
@@ -113,6 +113,10 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Lifecycle, contex
 		isSVG = true;
 	}
 	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
+		warning(
+			process.env.NODE_ENV !== 'production',
+			'Inferno hydration: Server-side markup doesn\'t match client-side markup',
+		);
 		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
 
 		vNode.dom = newDom;
@@ -203,11 +207,6 @@ function hydrateVoid(vNode: VNode, dom: Element): Element {
 }
 
 function hydrate(vNode: VNode, dom: Element, lifecycle: Lifecycle, context: Object, isSVG: boolean): Element {
-	if (process.env.NODE_ENV !== 'production') {
-		if (isInvalid(dom)) {
-			throwError(`failed to hydrate. The server-side render doesn't match client side.`);
-		}
-	}
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Component) {
