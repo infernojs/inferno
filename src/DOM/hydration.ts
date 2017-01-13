@@ -11,6 +11,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
+  warning,
 } from '../shared';
 import { svgNS } from './constants';
 import Lifecycle from './lifecycle';
@@ -113,6 +114,10 @@ function hydrateElement(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
 		isSVG = true;
 	}
 	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
+		warning(
+			process.env.NODE_ENV !== 'production',
+			'Inferno hydration: Server-side markup doesn\'t match client-side markup',
+		);
 		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
 
 		vNode.dom = newDom;
