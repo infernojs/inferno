@@ -60,16 +60,21 @@ export function processTextarea(vNode, dom) {
 			wrappers.set(dom, textareaWrapper);
 		}
 		textareaWrapper.vNode = vNode;
+		return true;
 	}
+	return false;
 }
 
 export function applyValue(vNode, dom) {
 	const props = vNode.props || EMPTY_OBJ;
 	const value = props.value;
+	const domValue = dom.value;
 
-	if (dom.value !== value) {
+	if (domValue !== value) {
 		if (!isNullOrUndef(value)) {
 			dom.value = value;
+		} else if (domValue !== '') {
+			dom.value = '';
 		}
 	}
 }

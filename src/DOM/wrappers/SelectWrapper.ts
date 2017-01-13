@@ -79,7 +79,9 @@ export function processSelect(vNode, dom) {
 			wrappers.set(dom, selectWrapper);
 		}
 		selectWrapper.vNode = vNode;
+		return true;
 	}
+	return false;
 }
 
 export function applyValue(vNode, dom) {

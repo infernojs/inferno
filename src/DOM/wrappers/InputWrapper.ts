@@ -83,7 +83,7 @@ function handleAssociatedRadioInputs(name) {
 	});
 }
 
-export function processInput(vNode, dom) {
+export function processInput(vNode, dom): boolean {
 	const props = vNode.props || EMPTY_OBJ;
 
 	applyValue(vNode, dom);
@@ -109,7 +109,9 @@ export function processInput(vNode, dom) {
 			wrappers.set(dom, inputWrapper);
 		}
 		inputWrapper.vNode = vNode;
+		return true;
 	}
+	return false;
 }
 
 export function applyValue(vNode, dom) {
@@ -140,4 +142,5 @@ export function applyValue(vNode, dom) {
 			dom.checked = checked;
 		}
 	}
+	// delete vNode.props.value;
 }

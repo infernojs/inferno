@@ -174,17 +174,41 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 		if (lastChildren !== nextChildren) {
 			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom as Element, lifecycle, context, isSVG, isRecycling);
 		}
+
+		let hasControlledValue = false;
 		if (!(nextFlags & VNodeFlags.HtmlElement)) {
-			processElement(nextFlags, nextVNode, dom);
+			hasControlledValue = processElement(nextFlags, nextVNode, dom);
 		}
+
+		// inlined patchProps  -- starts --
 		if (lastProps !== nextProps) {
-			patchProps(
-				lastProps,
-				nextProps,
-				dom as Element,
-				isSVG,
-			);
+			const lastPropsOrEmpty = lastProps || EMPTY_OBJ;
+			const nextPropsOrEmpty = nextProps || EMPTY_OBJ;
+
+			if (nextPropsOrEmpty !== EMPTY_OBJ) {
+				for (let prop in nextPropsOrEmpty) {
+					// do not add a hasOwnProperty check here, it affects performance
+					const nextValue = nextPropsOrEmpty[prop];
+					const lastValue = lastPropsOrEmpty[prop];
+
+					if (isNullOrUndef(nextValue)) {
+						removeProp(prop, nextValue, dom);
+					} else {
+						patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue);
+					}
+				}
+			}
+			if (lastPropsOrEmpty !== EMPTY_OBJ) {
+				for (let prop in lastPropsOrEmpty) {
+					// do not add a hasOwnProperty check here, it affects performance
+					if (isNullOrUndef(nextPropsOrEmpty[prop])) {
+						removeProp(prop, lastPropsOrEmpty[prop], dom);
+					}
+				}
+			}
 		}
+		// inlined patchProps  -- ends --
+
 		if (lastEvents !== nextEvents) {
 			patchEvents(lastEvents, nextEvents, dom as Element);
 		}
@@ -244,12 +268,7 @@ function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildre
 			unmountChildren(lastChildren, dom, lifecycle, isRecycling);
 			mount(nextChildren, dom, lifecycle, context, isSVG);
 		}
-	}/* else if (isVNode(lastChildren)) {
-		// TODO: One test hits this line when passing invalid children what should be done?
-		// debugger;
-	} else {
-		// debugger;
-	}*/
+	}
 	if (patchArray) {
 		if (patchKeyed) {
 			patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
@@ -775,12 +794,12 @@ function lis_algorithm(a) {
 	return result;
 }
 
-export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean) {
-	if (skipProps[prop]) {
+export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean) {
+	if (skipProps[prop] || hasControlledValue && prop === 'value') {
 		return;
 	}
 	if (booleanProps[prop]) {
-		dom[prop] = nextValue ? true : false;
+		dom[prop] = !!nextValue;
 	} else if (strictProps[prop]) {
 		const value = isNullOrUndef(nextValue) ? '' : nextValue;
 
@@ -809,7 +828,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
 					dom.innerHTML = nextHtml;
 				}
 			}
-		} else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
+		} else {
 			let dehyphenProp;
 			if (dehyphenProps[prop]) {
 				dehyphenProp = dehyphenProps[prop];
@@ -850,7 +869,7 @@ export function patchEvents(lastEvents, nextEvents, dom: Element) {
 	}
 }
 
-export function patchEvent(name: string, lastValue, nextValue, dom: any) {
+export function patchEvent(name: string, lastValue, nextValue, dom) {
 	if (lastValue !== nextValue) {
 		const nameLowerCase = name.toLowerCase();
 		const domEvent = dom[nameLowerCase];
@@ -881,33 +900,6 @@ export function patchEvent(name: string, lastValue, nextValue, dom: any) {
 				} else {
 					dom[nameLowerCase] = nextValue;
 				}
-			}
-		}
-	}
-}
-
-function patchProps(lastProps, nextProps, dom: Element, isSVG: boolean) {
-	lastProps = lastProps || EMPTY_OBJ;
-	nextProps = nextProps || EMPTY_OBJ;
-
-	if (nextProps !== EMPTY_OBJ) {
-		for (let prop in nextProps) {
-			// do not add a hasOwnProperty check here, it affects performance
-			const nextValue = nextProps[prop];
-			const lastValue = lastProps[prop];
-
-			if (isNullOrUndef(nextValue)) {
-				removeProp(prop, nextValue, dom);
-			} else {
-				patchProp(prop, lastValue, nextValue, dom, isSVG);
-			}
-		}
-	}
-	if (lastProps !== EMPTY_OBJ) {
-		for (let prop in lastProps) {
-			// do not add a hasOwnProperty check here, it affects performance
-			if (isNullOrUndef(nextProps[prop])) {
-				removeProp(prop, lastProps[prop], dom);
 			}
 		}
 	}

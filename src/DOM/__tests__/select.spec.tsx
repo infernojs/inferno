@@ -272,18 +272,4 @@ describe('Select / select multiple (JSX)', () => {
 			innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'),
 		);
 	});
-
-	it('Should be possible to change value of Progress element Github#714', () => {
-		render(<progress value={10} max={100} />, container);
-
-		expect(container.firstChild.value).to.eql(10);
-
-		render(<progress value={33} max={100} />, container);
-
-		expect(container.firstChild.value).to.eql(33);
-
-		render(<progress max={100} />, container);
-
-		expect(container.firstChild.value).to.be.null;
-	});
 });

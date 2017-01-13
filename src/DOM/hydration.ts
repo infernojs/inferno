@@ -123,12 +123,13 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Lifecycle, contex
 	if (children) {
 		hydrateChildren(children, dom, lifecycle, context, isSVG);
 	}
+	let hasControlledValue = false;
 	if (!(flags & VNodeFlags.HtmlElement)) {
-		processElement(flags, vNode, dom);
+		hasControlledValue = processElement(flags, vNode, dom);
 	}
 	if (props) {
 		for (let prop in props) {
-			patchProp(prop, null, props[prop], dom, isSVG);
+			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
 		}
 	}
 	if (events) {

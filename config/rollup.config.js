@@ -84,6 +84,7 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 			moduleGlobal: moduleGlobal
 		}, moduleGlobals),
 		banner: copyright,
+		indent: '\t',
 		sourceMap: false
 	};
 

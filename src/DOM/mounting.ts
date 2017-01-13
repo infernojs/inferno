@@ -110,13 +110,14 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 			mount(children as VNode, dom, lifecycle, context, isSVG);
 		}
 	}
+	let hasControlledValue = false;
 	if (!(flags & VNodeFlags.HtmlElement)) {
-		processElement(flags, vNode, dom);
+		hasControlledValue = processElement(flags, vNode, dom);
 	}
 	if (!isNull(props)) {
 		for (let prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchProp(prop, null, props[prop], dom, isSVG);
+			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
 		}
 	}
 	if (!isNull(events)) {

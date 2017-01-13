@@ -4,12 +4,15 @@ import { processTextarea } from './TextareaWrapper';
 
 export const wrappers = new Map();
 
-export default function processElement(flags, vNode, dom) {
+export default function processElement(flags, vNode, dom): boolean {
 	if (flags & VNodeFlags.InputElement) {
-		processInput(vNode, dom);
-	} else if (flags & VNodeFlags.SelectElement) {
-		processSelect(vNode, dom);
-	} else if (flags & VNodeFlags.TextareaElement) {
-		processTextarea(vNode, dom);
+		return processInput(vNode, dom);
 	}
+	if (flags & VNodeFlags.SelectElement) {
+		return processSelect(vNode, dom);
+	}
+	if (flags & VNodeFlags.TextareaElement) {
+		return processTextarea(vNode, dom);
+	}
+	return false;
 }
