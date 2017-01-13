@@ -19,7 +19,7 @@ import {
 	unmount,
 } from './unmounting';
 
-export function createClassComponentInstance(vNode: VNode, Component, props, context, isSVG: boolean) {
+export function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean) {
 	if (isUndefined(context)) {
 		context = {};
 	}
@@ -78,7 +78,7 @@ export function createClassComponentInstance(vNode: VNode, Component, props, con
 	instance._lastInput = input;
 	return instance;
 }
-export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle: Lifecycle, context, isSVG, isRecycling) {
+export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle: Lifecycle, context: Object, isSVG: boolean, isRecycling: boolean) {
 	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle, isRecycling);
 }
 
@@ -96,7 +96,7 @@ export function replaceVNode(parentDom, dom, vNode, lifecycle: Lifecycle, isRecy
 	unmount(vNode, null, lifecycle, false, isRecycling);
 }
 
-export function createFunctionalComponentInput(vNode, component, props, context) {
+export function createFunctionalComponentInput(vNode: VNode, component, props: Props, context: Object) {
 	let input = component(props, context);
 
 	if (isArray(input)) {
@@ -123,7 +123,7 @@ export function createFunctionalComponentInput(vNode, component, props, context)
 	return input;
 }
 
-export function setTextContent(dom, text) {
+export function setTextContent(dom, text: string | number) {
 	if (text !== '') {
 		dom.textContent = text;
 	} else {
@@ -131,7 +131,7 @@ export function setTextContent(dom, text) {
 	}
 }
 
-export function updateTextContent(dom, text) {
+export function updateTextContent(dom, text: string) {
 	dom.firstChild.nodeValue = text;
 }
 
@@ -147,7 +147,7 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 	}
 }
 
-export function documentCreateElement(tag, isSVG) {
+export function documentCreateElement(tag, isSVG): Element {
 	if (isSVG === true) {
 		return document.createElementNS(svgNS, tag);
 	} else {
@@ -155,7 +155,7 @@ export function documentCreateElement(tag, isSVG) {
 	}
 }
 
-export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle: Lifecycle, context, isSVG, isRecycling) {
+export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle: Lifecycle, context: Object, isSVG: boolean, isRecycling: boolean) {
 	unmount(lastNode, null, lifecycle, false, isRecycling);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
@@ -170,18 +170,18 @@ export function replaceChild(parentDom, nextDom, lastDom) {
 	parentDom.replaceChild(nextDom, lastDom);
 }
 
-export function removeChild(parentDom, dom) {
+export function removeChild(parentDom: Element, dom: Element) {
 	parentDom.removeChild(dom);
 }
 
-export function removeAllChildren(dom, children, lifecycle: Lifecycle, isRecycling) {
+export function removeAllChildren(dom: Element, children, lifecycle: Lifecycle, isRecycling: boolean) {
 	dom.textContent = '';
 	if (!lifecycle.fastUnmount || (lifecycle.fastUnmount && options.recyclingEnabled && !isRecycling)) {
 		removeChildren(null, children, lifecycle, isRecycling);
 	}
 }
 
-export function removeChildren(dom, children, lifecycle: Lifecycle, isRecycling) {
+export function removeChildren(dom: Element, children, lifecycle: Lifecycle, isRecycling: boolean) {
 	for (let i = 0; i < children.length; i++) {
 		const child = children[i];
 
@@ -191,7 +191,7 @@ export function removeChildren(dom, children, lifecycle: Lifecycle, isRecycling)
 	}
 }
 
-export function isKeyed(lastChildren, nextChildren) {
+export function isKeyed(lastChildren: VNode[], nextChildren: VNode[]): boolean {
 	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
 		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }

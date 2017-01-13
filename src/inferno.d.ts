@@ -32,9 +32,18 @@ interface Props {
 	events?: Object | null;
 }
 
+interface Refs {
+	onComponentDidMount?: (domNode: Element) => void;
+	onComponentWillMount?(): void;
+	onComponentShouldUpdate?(lastProps, nextProps): boolean;
+	onComponentWillUpdate?(lastProps, nextProps): void;
+	onComponentDidUpdate?(lastProps, nextProps): void;
+	onComponentWillUnmount?(domNode: Element): void;
+}
+
 interface VNode {
 	children: InfernoChildren;
-	dom: Node | null;
+	dom: Element | null;
 	events: Object | null;
 	flags: VNodeFlags;
 	key: Key;
@@ -59,7 +68,7 @@ declare module 'inferno' {
 
 	export function createVNode(flags: number, type?: Type, props?: any, children?: InfernoChildren, events?: Object | null, key?: Key, ref?: Ref, noNormalise?: boolean): any;
 	export function cloneVNode(node: VNode, props?: any, ...children: any[]): VNode;
-	export function render(input: InfernoInput, parentDom?: Node | SVGAElement): InfernoChildren;
+	export function render(input: InfernoInput, parentDom?: any): InfernoChildren;
 	export function findDOMNode(node: any): any;
 	export function createRenderer(_parentDom?: any): Function;
 	export function linkEvent(data: any, event: Function): Object;

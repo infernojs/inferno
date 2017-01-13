@@ -68,7 +68,7 @@ import { componentToDOMNodeMap } from './rendering';
 import { unmount } from './unmounting';
 import processElement from './wrappers/processElement';
 
-export function patch(lastVNode, nextVNode, parentDom, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
+export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, lifecycle: Lifecycle, context: Object, isSVG: boolean, isRecycling: boolean) {
 	if (lastVNode !== nextVNode) {
 		const lastFlags = lastVNode.flags;
 		const nextFlags = nextVNode.flags;
@@ -138,7 +138,7 @@ export function patch(lastVNode, nextVNode, parentDom, lifecycle: Lifecycle, con
 	}
 }
 
-function unmountChildren(children, dom, lifecycle: Lifecycle, isRecycling: boolean) {
+function unmountChildren(children, dom: Element, lifecycle: Lifecycle, isRecycling: boolean) {
 	if (isVNode(children)) {
 		unmount(children, dom, lifecycle, true, isRecycling);
 	} else if (isArray(children)) {
@@ -148,7 +148,7 @@ function unmountChildren(children, dom, lifecycle: Lifecycle, isRecycling: boole
 	}
 }
 
-export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
+export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node, lifecycle: Lifecycle, context: Object, isSVG: boolean, isRecycling: boolean) {
 	const nextTag = nextVNode.type;
 	const lastTag = lastVNode.type;
 
@@ -172,7 +172,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 			isSVG = true;
 		}
 		if (lastChildren !== nextChildren) {
-			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
+			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom as Element, lifecycle, context, isSVG, isRecycling);
 		}
 		if (!(nextFlags & VNodeFlags.HtmlElement)) {
 			processElement(nextFlags, nextVNode, dom);
@@ -181,24 +181,22 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 			patchProps(
 				lastProps,
 				nextProps,
-				dom,
-				lifecycle,
-				context,
+				dom as Element,
 				isSVG,
 			);
 		}
 		if (lastEvents !== nextEvents) {
-			patchEvents(lastEvents, nextEvents, dom, lifecycle);
+			patchEvents(lastEvents, nextEvents, dom as Element);
 		}
 		if (nextRef) {
 			if (lastRef !== nextRef || isRecycling) {
-				mountRef(dom, nextRef, lifecycle);
+				mountRef(dom as Element, nextRef, lifecycle);
 			}
 		}
 	}
 }
 
-function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildren, nextChildren, dom, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
+function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildren, nextChildren, dom: Element, lifecycle: Lifecycle, context: Object, isSVG: boolean, isRecycling: boolean) {
 	let patchArray = false;
 	let patchKeyed = false;
 
@@ -435,7 +433,7 @@ export function patchVoid(lastVNode: VNode, nextVNode: VNode) {
 	nextVNode.dom = lastVNode.dom;
 }
 
-export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle: Lifecycle, context, isSVG: boolean, isRecycling: boolean) {
+export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle: Lifecycle, context: Object, isSVG: boolean, isRecycling: boolean) {
 	const lastChildrenLength = lastChildren.length;
 	const nextChildrenLength = nextChildren.length;
 	const commonLength = lastChildrenLength > nextChildrenLength ? nextChildrenLength : lastChildrenLength;
@@ -727,8 +725,7 @@ export function patchKeyedChildren(
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 function lis_algorithm(a) {
 	const p = a.slice(0);
-	const result: any[] = [];
-	result.push(0);
+	const result: any[] = [0];
 	let i;
 	let j;
 	let u;
@@ -778,7 +775,7 @@ function lis_algorithm(a) {
 	return result;
 }
 
-export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, lifecycle: Lifecycle) {
+export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean) {
 	if (skipProps[prop]) {
 		return;
 	}
@@ -792,7 +789,7 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, lifec
 		}
 	} else if (lastValue !== nextValue) {
 		if (isAttrAnEvent(prop)) {
-			patchEvent(prop, lastValue, nextValue, dom, lifecycle);
+			patchEvent(prop, lastValue, nextValue, dom);
 		} else if (isNullOrUndef(nextValue)) {
 			dom.removeAttribute(prop);
 		} else if (prop === 'className') {
@@ -833,27 +830,27 @@ export function patchProp(prop, lastValue, nextValue, dom, isSVG: boolean, lifec
 	}
 }
 
-export function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
+export function patchEvents(lastEvents, nextEvents, dom: Element) {
 	lastEvents = lastEvents || EMPTY_OBJ;
 	nextEvents = nextEvents || EMPTY_OBJ;
 
 	if (nextEvents !== EMPTY_OBJ) {
 		for (const name in nextEvents) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchEvent(name, lastEvents[name], nextEvents[name], dom, lifecycle);
+			patchEvent(name, lastEvents[name], nextEvents[name], dom);
 		}
 	}
 	if (lastEvents !== EMPTY_OBJ) {
 		for (const name in lastEvents) {
 			// do not add a hasOwnProperty check here, it affects performance
 			if (isNullOrUndef(nextEvents[name])) {
-				patchEvent(name, lastEvents[name], null, dom, lifecycle);
+				patchEvent(name, lastEvents[name], null, dom);
 			}
 		}
 	}
 }
 
-export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
+export function patchEvent(name: string, lastValue, nextValue, dom: any) {
 	if (lastValue !== nextValue) {
 		const nameLowerCase = name.toLowerCase();
 		const domEvent = dom[nameLowerCase];
@@ -889,7 +886,7 @@ export function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
 	}
 }
 
-function patchProps(lastProps, nextProps, dom, lifecycle: Lifecycle, context, isSVG: boolean) {
+function patchProps(lastProps, nextProps, dom: Element, isSVG: boolean) {
 	lastProps = lastProps || EMPTY_OBJ;
 	nextProps = nextProps || EMPTY_OBJ;
 
@@ -902,7 +899,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle: Lifecycle, context, is
 			if (isNullOrUndef(nextValue)) {
 				removeProp(prop, nextValue, dom);
 			} else {
-				patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle);
+				patchProp(prop, lastValue, nextValue, dom, isSVG);
 			}
 		}
 	}
@@ -944,7 +941,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 	}
 }
 
-function removeProp(prop, lastValue, dom) {
+function removeProp(prop: string, lastValue, dom) {
 	if (prop === 'className') {
 		dom.removeAttribute('class');
 	} else if (prop === 'value') {

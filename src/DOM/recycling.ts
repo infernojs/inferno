@@ -16,8 +16,8 @@ interface Pools {
 	keyed: Map<string | number, VNode[]>;
 }
 
-export function recycleElement(vNode, lifecycle: Lifecycle, context, isSVG) {
-	const tag = vNode.type;
+export function recycleElement(vNode: VNode, lifecycle: Lifecycle, context: Object, isSVG: boolean) {
+	const tag = vNode.type as string | null;
 	const key = vNode.key;
 	const pools: Pools = elementPools.get(tag);
 
@@ -36,8 +36,8 @@ export function recycleElement(vNode, lifecycle: Lifecycle, context, isSVG) {
 	return null;
 }
 
-export function poolElement(vNode) {
-	const tag = vNode.type;
+export function poolElement(vNode: VNode) {
+	const tag = vNode.type as string | null;
 	const key = vNode.key;
 	let pools: Pools = elementPools.get(tag);
 
@@ -61,7 +61,7 @@ export function poolElement(vNode) {
 	}
 }
 
-export function recycleComponent(vNode: VNode, lifecycle: Lifecycle, context, isSVG) {
+export function recycleComponent(vNode: VNode, lifecycle: Lifecycle, context: Object, isSVG: boolean) {
 	const type = vNode.type as Function;
 	const key = vNode.key;
 	const pools: Pools = componentPools.get(type);
@@ -94,10 +94,10 @@ export function recycleComponent(vNode: VNode, lifecycle: Lifecycle, context, is
 	return null;
 }
 
-export function poolComponent(vNode) {
+export function poolComponent(vNode: VNode) {
 	const type = vNode.type;
 	const key = vNode.key;
-	const hooks = vNode.ref;
+	const hooks = vNode.ref as Refs;
 	const nonRecycleHooks = hooks && (
 		hooks.onComponentWillMount ||
 		hooks.onComponentWillUnmount ||
@@ -108,14 +108,14 @@ export function poolComponent(vNode) {
 	if (nonRecycleHooks) {
 		return;
 	}
-	let pools: Pools = componentPools.get(type);
+	let pools: Pools = componentPools.get(type as Function);
 
 	if (isUndefined(pools)) {
 		pools = {
 			nonKeyed: [],
 			keyed: new Map<string | number, VNode[]>(),
 		};
-		componentPools.set(type, pools);
+		componentPools.set(type as Function, pools);
 	}
 	if (isNull(key)) {
 		pools.nonKeyed.push(vNode);

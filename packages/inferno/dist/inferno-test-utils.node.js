@@ -683,7 +683,7 @@ function unmountElement(vNode, parentDom, lifecycle, canRecycle, isRecycling) {
     if (!isNull(events)) {
         for (var name in events) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchEvent(name, events[name], null, dom, lifecycle);
+            patchEvent(name, events[name], null, dom);
             events[name] = null;
         }
     }
@@ -1258,10 +1258,10 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
             processElement(nextFlags, nextVNode, dom);
         }
         if (lastProps !== nextProps) {
-            patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG);
+            patchProps(lastProps, nextProps, dom, isSVG);
         }
         if (lastEvents !== nextEvents) {
-            patchEvents(lastEvents, nextEvents, dom, lifecycle);
+            patchEvents(lastEvents, nextEvents, dom);
         }
         if (nextRef) {
             if (lastRef !== nextRef || isRecycling) {
@@ -1786,8 +1786,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 function lis_algorithm(a) {
     var p = a.slice(0);
-    var result = [];
-    result.push(0);
+    var result = [0];
     var i;
     var j;
     var u;
@@ -1829,7 +1828,7 @@ function lis_algorithm(a) {
     }
     return result;
 }
-function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
+function patchProp(prop, lastValue, nextValue, dom, isSVG) {
     if (skipProps[prop]) {
         return;
     }
@@ -1844,7 +1843,7 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
     }
     else if (lastValue !== nextValue) {
         if (isAttrAnEvent(prop)) {
-            patchEvent(prop, lastValue, nextValue, dom, lifecycle);
+            patchEvent(prop, lastValue, nextValue, dom);
         }
         else if (isNullOrUndef(nextValue)) {
             dom.removeAttribute(prop);
@@ -1891,25 +1890,25 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
         }
     }
 }
-function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
+function patchEvents(lastEvents, nextEvents, dom) {
     lastEvents = lastEvents || EMPTY_OBJ;
     nextEvents = nextEvents || EMPTY_OBJ;
     if (nextEvents !== EMPTY_OBJ) {
         for (var name in nextEvents) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchEvent(name, lastEvents[name], nextEvents[name], dom, lifecycle);
+            patchEvent(name, lastEvents[name], nextEvents[name], dom);
         }
     }
     if (lastEvents !== EMPTY_OBJ) {
         for (var name$1 in lastEvents) {
             // do not add a hasOwnProperty check here, it affects performance
             if (isNullOrUndef(nextEvents[name$1])) {
-                patchEvent(name$1, lastEvents[name$1], null, dom, lifecycle);
+                patchEvent(name$1, lastEvents[name$1], null, dom);
             }
         }
     }
 }
-function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
+function patchEvent(name, lastValue, nextValue, dom) {
     if (lastValue !== nextValue) {
         var nameLowerCase = name.toLowerCase();
         var domEvent = dom[nameLowerCase];
@@ -1946,7 +1945,7 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
         }
     }
 }
-function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
+function patchProps(lastProps, nextProps, dom, isSVG) {
     lastProps = lastProps || EMPTY_OBJ;
     nextProps = nextProps || EMPTY_OBJ;
     if (nextProps !== EMPTY_OBJ) {
@@ -1958,7 +1957,7 @@ function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
                 removeProp(prop, nextValue, dom);
             }
             else {
-                patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle);
+                patchProp(prop, lastValue, nextValue, dom, isSVG);
             }
         }
     }
@@ -2094,13 +2093,13 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
     if (!isNull(props)) {
         for (var prop in props) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+            patchProp(prop, null, props[prop], dom, isSVG);
         }
     }
     if (!isNull(events)) {
         for (var name in events) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchEvent(name, null, events[name], dom, lifecycle);
+            patchEvent(name, null, events[name], dom);
         }
     }
     if (!isNull(ref)) {
@@ -2114,6 +2113,7 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
+        // TODO: Verify can string/number be here. might cause de-opt
         if (!isInvalid(child)) {
             if (child.dom) {
                 children[i] = child = cloneVNode(child);
@@ -2319,12 +2319,12 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     }
     if (props) {
         for (var prop in props) {
-            patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+            patchProp(prop, null, props[prop], dom, isSVG);
         }
     }
     if (events) {
         for (var name in events) {
-            patchEvent(name, null, events[name], dom, lifecycle);
+            patchEvent(name, null, events[name], dom);
         }
     }
     if (ref) {
@@ -2338,7 +2338,7 @@ function hydrateChildren(children, parentDom, lifecycle, context, isSVG) {
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
-            if (isObject(child) && !isNull(child)) {
+            if (!isNull(child) && isObject(child)) {
                 if (dom) {
                     dom = hydrate(child, dom, lifecycle, context, isSVG);
                     dom = dom.nextSibling;
@@ -2386,6 +2386,7 @@ function hydrateText(vNode, dom) {
 }
 function hydrateVoid(vNode, dom) {
     vNode.dom = dom;
+    return dom;
 }
 function hydrate(vNode, dom, lifecycle, context, isSVG) {
     if (process.env.NODE_ENV !== 'production') {
@@ -2443,7 +2444,6 @@ function getRoot(dom) {
     }
     return null;
 }
-
 function setRoot(dom, input, lifecycle) {
     var root = {
         dom: dom,
