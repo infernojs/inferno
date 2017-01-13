@@ -76,8 +76,10 @@ function removeRoot(root: Root): void {
 	}
 }
 
-if (isBrowser && document.body === null) {
-	throwError('you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
+if (process.env.NODE_ENV !== 'production') {
+	if (isBrowser && document.body === null) {
+		throwError('you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
+	}
 }
 
 const documentBody = isBrowser ? document.body : null;
