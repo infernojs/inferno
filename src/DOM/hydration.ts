@@ -5,13 +5,12 @@ import options from '../core/options';
 import {
 	EMPTY_OBJ,
 	isArray,
-	isInvalid,
 	isNull,
 	isObject,
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-  warning,
+	warning,
 } from '../shared';
 import { svgNS } from './constants';
 import Lifecycle from './lifecycle';
@@ -206,11 +205,6 @@ function hydrateVoid(vNode, dom) {
 }
 
 function hydrate(vNode, dom, lifecycle: Lifecycle, context, isSVG) {
-	if (process.env.NODE_ENV !== 'production') {
-		if (isInvalid(dom)) {
-			throwError(`failed to hydrate. The server-side render doesn't match client side.`);
-		}
-	}
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Component) {
