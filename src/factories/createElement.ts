@@ -56,7 +56,7 @@ export default function createElement<T>(
 				break;
 			default:
 		}
-		for (const prop in props) {
+		for (let prop in props) {
 			if (prop === 'key') {
 				key = props.key;
 				delete props.key;
@@ -81,7 +81,7 @@ export default function createElement<T>(
 			props.children = children;
 			children = null;
 		}
-		for (const prop in props) {
+		for (let prop in props) {
 			if (componentHooks[prop as string]) {
 				if (!ref) {
 					ref = {};

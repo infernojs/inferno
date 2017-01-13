@@ -835,13 +835,13 @@ export function patchEvents(lastEvents, nextEvents, dom: Element) {
 	nextEvents = nextEvents || EMPTY_OBJ;
 
 	if (nextEvents !== EMPTY_OBJ) {
-		for (const name in nextEvents) {
+		for (let name in nextEvents) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchEvent(name, lastEvents[name], nextEvents[name], dom);
 		}
 	}
 	if (lastEvents !== EMPTY_OBJ) {
-		for (const name in lastEvents) {
+		for (let name in lastEvents) {
 			// do not add a hasOwnProperty check here, it affects performance
 			if (isNullOrUndef(nextEvents[name])) {
 				patchEvent(name, lastEvents[name], null, dom);
@@ -891,7 +891,7 @@ function patchProps(lastProps, nextProps, dom: Element, isSVG: boolean) {
 	nextProps = nextProps || EMPTY_OBJ;
 
 	if (nextProps !== EMPTY_OBJ) {
-		for (const prop in nextProps) {
+		for (let prop in nextProps) {
 			// do not add a hasOwnProperty check here, it affects performance
 			const nextValue = nextProps[prop];
 			const lastValue = lastProps[prop];
@@ -904,7 +904,7 @@ function patchProps(lastProps, nextProps, dom: Element, isSVG: boolean) {
 		}
 	}
 	if (lastProps !== EMPTY_OBJ) {
-		for (const prop in lastProps) {
+		for (let prop in lastProps) {
 			// do not add a hasOwnProperty check here, it affects performance
 			if (isNullOrUndef(nextProps[prop])) {
 				removeProp(prop, lastProps[prop], dom);
@@ -921,7 +921,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 		return;
 	}
 
-	for (const style in nextAttrValue as Styles) {
+	for (let style in nextAttrValue as Styles) {
 		// do not add a hasOwnProperty check here, it affects performance
 		const value = nextAttrValue[style];
 
@@ -933,7 +933,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 	}
 
 	if (!isNullOrUndef(lastAttrValue)) {
-		for (const style in lastAttrValue as Styles) {
+		for (let style in lastAttrValue as Styles) {
 			if (isNullOrUndef(nextAttrValue[style])) {
 				dom.style[style] = '';
 			}

@@ -114,7 +114,7 @@ export function unmountElement(vNode: VNode, parentDom: Element, lifecycle: Life
 		}
 	}
 	if (!isNull(events)) {
-		for (const name in events) {
+		for (let name in events) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchEvent(name, events[name], null, dom);
 			events[name] = null;

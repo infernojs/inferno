@@ -114,13 +114,13 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 		processElement(flags, vNode, dom);
 	}
 	if (!isNull(props)) {
-		for (const prop in props) {
+		for (let prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchProp(prop, null, props[prop], dom, isSVG);
 		}
 	}
 	if (!isNull(events)) {
-		for (const name in events) {
+		for (let name in events) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchEvent(name, null, events[name], dom);
 		}

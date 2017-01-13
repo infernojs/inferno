@@ -127,12 +127,12 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Lifecycle, contex
 		processElement(flags, vNode, dom);
 	}
 	if (props) {
-		for (const prop in props) {
+		for (let prop in props) {
 			patchProp(prop, null, props[prop], dom, isSVG);
 		}
 	}
 	if (events) {
-		for (const name in events) {
+		for (let name in events) {
 			patchEvent(name, null, events[name], dom);
 		}
 	}

@@ -126,7 +126,7 @@ function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
 }
 
 export function copyPropsTo(copyFrom: Props, copyTo: Props) {
-	for (const prop in copyFrom) {
+	for (let prop in copyFrom) {
 		if (isUndefined(copyTo[prop])) {
 			copyTo[prop] = copyFrom[prop];
 		}

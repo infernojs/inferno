@@ -96,7 +96,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 	if (isFunction(newState)) {
 		newState = newState(component.state);
 	}
-	for (const stateKey in newState) {
+	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
 	if (!component._pendingSetState && isBrowser) {

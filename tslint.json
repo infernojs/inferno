@@ -18,6 +18,7 @@
 		"one-variable-per-declaration": [false],
 		"only-arrow-functions": [false],
 		"prefer-for-of": false,
+		"trailing-comma": false,
 		"quotemark": [ true, "single", "jsx-double" ],
 		"variable-name": [ false ]
 	}
