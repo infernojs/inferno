@@ -442,14 +442,14 @@ This enables DOM node recycling within Inferno, so that DOM nodes are re-used up
 
 ## Functional component lifeycle events
 
-| Name                      | Triggered when                                                 | Arguments to callback           |
-| -----------               | --------------                                                 | -----------------------         |
+| Name                      | Triggered when                                                  | Arguments to callback           |
+| -----------               | --------------                                                  | -----------------------         |
 | `onComponentWillMount`    | a functional component is about to mount                        |                                 |
 | `onComponentDidMount`     | a functional component has mounted successfully                 | `domNode`                       |
 | `onComponentShouldUpdate` | a functional component has been triggered to updated            | `lastProps, nextProps`          |
 | `onComponentWillUpdate`   | a functional component is about to perform an update            | `lastProps, nextProps`          |
 | `onComponentDidUpdate`    | a functional component has performed an updated                 | `lastProps, nextProps`          |
-| `onComponentWillUnmount`  | a functional component is about to be unmounted                 |                                 |
+| `onComponentWillUnmount`  | a functional component is about to be unmounted                 | `domNode`                       |
 
 ### Using functional lifecycle events
 

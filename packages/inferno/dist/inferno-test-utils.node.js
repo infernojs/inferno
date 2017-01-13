@@ -390,7 +390,7 @@ var delegatedProps = {};
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
 constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
 constructDefaults('volume,defaultValue,defaultChecked', strictProps, true);
-constructDefaults('children,ref,key,selected,checked,value,multiple', skipProps, true);
+constructDefaults('children,childrenType,ref,key,selected,checked,multiple', skipProps, true);
 constructDefaults('onClick,onMouseDown,onMouseUp,onMouseMove,onSubmit,onDblClick,onKeyDown,onKeyUp,onKeyPress', delegatedProps, true);
 constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readOnly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate,hidden', booleanProps, true);
 constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
@@ -683,7 +683,7 @@ function unmountElement(vNode, parentDom, lifecycle, canRecycle, isRecycling) {
     if (!isNull(events)) {
         for (var name in events) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchEvent(name, events[name], null, dom, lifecycle);
+            patchEvent(name, events[name], null, dom);
             events[name] = null;
         }
     }
@@ -981,7 +981,9 @@ function processInput(vNode, dom) {
             wrappers.set(dom, inputWrapper);
         }
         inputWrapper.vNode = vNode;
+        return true;
     }
+    return false;
 }
 function applyValue(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
@@ -1012,6 +1014,7 @@ function applyValue(vNode, dom) {
             dom.checked = checked;
         }
     }
+    // delete vNode.props.value;
 }
 
 function isControlled$1(props) {
@@ -1080,7 +1083,9 @@ function processSelect(vNode, dom) {
             wrappers.set(dom, selectWrapper);
         }
         selectWrapper.vNode = vNode;
+        return true;
     }
+    return false;
 }
 function applyValue$1(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
@@ -1151,14 +1156,20 @@ function processTextarea(vNode, dom) {
             wrappers.set(dom, textareaWrapper);
         }
         textareaWrapper.vNode = vNode;
+        return true;
     }
+    return false;
 }
 function applyValue$2(vNode, dom) {
     var props = vNode.props || EMPTY_OBJ;
     var value = props.value;
-    if (dom.value !== value) {
+    var domValue = dom.value;
+    if (domValue !== value) {
         if (!isNullOrUndef(value)) {
             dom.value = value;
+        }
+        else if (domValue !== '') {
+            dom.value = '';
         }
     }
 }
@@ -1166,14 +1177,15 @@ function applyValue$2(vNode, dom) {
 var wrappers = new Map();
 function processElement(flags, vNode, dom) {
     if (flags & 512 /* InputElement */) {
-        processInput(vNode, dom);
+        return processInput(vNode, dom);
     }
-    else if (flags & 2048 /* SelectElement */) {
-        processSelect(vNode, dom);
+    if (flags & 2048 /* SelectElement */) {
+        return processSelect(vNode, dom);
     }
-    else if (flags & 1024 /* TextareaElement */) {
-        processTextarea(vNode, dom);
+    if (flags & 1024 /* TextareaElement */) {
+        return processTextarea(vNode, dom);
     }
+    return false;
 }
 
 function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling) {
@@ -1254,14 +1266,39 @@ function patchElement(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG
         if (lastChildren !== nextChildren) {
             patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
         }
+        var hasControlledValue = false;
         if (!(nextFlags & 2 /* HtmlElement */)) {
-            processElement(nextFlags, nextVNode, dom);
+            hasControlledValue = processElement(nextFlags, nextVNode, dom);
         }
+        // inlined patchProps  -- starts --
         if (lastProps !== nextProps) {
-            patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG);
+            var lastPropsOrEmpty = lastProps || EMPTY_OBJ;
+            var nextPropsOrEmpty = nextProps || EMPTY_OBJ;
+            if (nextPropsOrEmpty !== EMPTY_OBJ) {
+                for (var prop in nextPropsOrEmpty) {
+                    // do not add a hasOwnProperty check here, it affects performance
+                    var nextValue = nextPropsOrEmpty[prop];
+                    var lastValue = lastPropsOrEmpty[prop];
+                    if (isNullOrUndef(nextValue)) {
+                        removeProp(prop, nextValue, dom);
+                    }
+                    else {
+                        patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue);
+                    }
+                }
+            }
+            if (lastPropsOrEmpty !== EMPTY_OBJ) {
+                for (var prop$1 in lastPropsOrEmpty) {
+                    // do not add a hasOwnProperty check here, it affects performance
+                    if (isNullOrUndef(nextPropsOrEmpty[prop$1])) {
+                        removeProp(prop$1, lastPropsOrEmpty[prop$1], dom);
+                    }
+                }
+            }
         }
+        // inlined patchProps  -- ends --
         if (lastEvents !== nextEvents) {
-            patchEvents(lastEvents, nextEvents, dom, lifecycle);
+            patchEvents(lastEvents, nextEvents, dom);
         }
         if (nextRef) {
             if (lastRef !== nextRef || isRecycling) {
@@ -1329,12 +1366,7 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
             unmountChildren(lastChildren, dom, lifecycle, isRecycling);
             mount(nextChildren, dom, lifecycle, context, isSVG);
         }
-    } /* else if (isVNode(lastChildren)) {
-        // TODO: One test hits this line when passing invalid children what should be done?
-        // debugger;
-    } else {
-        // debugger;
-    }*/
+    }
     if (patchArray) {
         if (patchKeyed) {
             patchKeyedChildren(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
@@ -1786,8 +1818,7 @@ function patchKeyedChildren(a, b, dom, lifecycle, context, isSVG, isRecycling) {
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 function lis_algorithm(a) {
     var p = a.slice(0);
-    var result = [];
-    result.push(0);
+    var result = [0];
     var i;
     var j;
     var u;
@@ -1829,12 +1860,12 @@ function lis_algorithm(a) {
     }
     return result;
 }
-function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
-    if (skipProps[prop]) {
+function patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue) {
+    if (skipProps[prop] || hasControlledValue && prop === 'value') {
         return;
     }
     if (booleanProps[prop]) {
-        dom[prop] = nextValue ? true : false;
+        dom[prop] = !!nextValue;
     }
     else if (strictProps[prop]) {
         var value = isNullOrUndef(nextValue) ? '' : nextValue;
@@ -1844,7 +1875,7 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
     }
     else if (lastValue !== nextValue) {
         if (isAttrAnEvent(prop)) {
-            patchEvent(prop, lastValue, nextValue, dom, lifecycle);
+            patchEvent(prop, lastValue, nextValue, dom);
         }
         else if (isNullOrUndef(nextValue)) {
             dom.removeAttribute(prop);
@@ -1869,7 +1900,7 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
                 }
             }
         }
-        else if (prop !== 'childrenType' && prop !== 'ref' && prop !== 'key') {
+        else {
             var dehyphenProp;
             if (dehyphenProps[prop]) {
                 dehyphenProp = dehyphenProps[prop];
@@ -1891,25 +1922,25 @@ function patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle) {
         }
     }
 }
-function patchEvents(lastEvents, nextEvents, dom, lifecycle) {
+function patchEvents(lastEvents, nextEvents, dom) {
     lastEvents = lastEvents || EMPTY_OBJ;
     nextEvents = nextEvents || EMPTY_OBJ;
     if (nextEvents !== EMPTY_OBJ) {
         for (var name in nextEvents) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchEvent(name, lastEvents[name], nextEvents[name], dom, lifecycle);
+            patchEvent(name, lastEvents[name], nextEvents[name], dom);
         }
     }
     if (lastEvents !== EMPTY_OBJ) {
         for (var name$1 in lastEvents) {
             // do not add a hasOwnProperty check here, it affects performance
             if (isNullOrUndef(nextEvents[name$1])) {
-                patchEvent(name$1, lastEvents[name$1], null, dom, lifecycle);
+                patchEvent(name$1, lastEvents[name$1], null, dom);
             }
         }
     }
 }
-function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
+function patchEvent(name, lastValue, nextValue, dom) {
     if (lastValue !== nextValue) {
         var nameLowerCase = name.toLowerCase();
         var domEvent = dom[nameLowerCase];
@@ -1942,31 +1973,6 @@ function patchEvent(name, lastValue, nextValue, dom, lifecycle) {
                 else {
                     dom[nameLowerCase] = nextValue;
                 }
-            }
-        }
-    }
-}
-function patchProps(lastProps, nextProps, dom, lifecycle, context, isSVG) {
-    lastProps = lastProps || EMPTY_OBJ;
-    nextProps = nextProps || EMPTY_OBJ;
-    if (nextProps !== EMPTY_OBJ) {
-        for (var prop in nextProps) {
-            // do not add a hasOwnProperty check here, it affects performance
-            var nextValue = nextProps[prop];
-            var lastValue = lastProps[prop];
-            if (isNullOrUndef(nextValue)) {
-                removeProp(prop, nextValue, dom);
-            }
-            else {
-                patchProp(prop, lastValue, nextValue, dom, isSVG, lifecycle);
-            }
-        }
-    }
-    if (lastProps !== EMPTY_OBJ) {
-        for (var prop$1 in lastProps) {
-            // do not add a hasOwnProperty check here, it affects performance
-            if (isNullOrUndef(nextProps[prop$1])) {
-                removeProp(prop$1, lastProps[prop$1], dom);
             }
         }
     }
@@ -2088,19 +2094,20 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
             mount(children, dom, lifecycle, context, isSVG);
         }
     }
+    var hasControlledValue = false;
     if (!(flags & 2 /* HtmlElement */)) {
-        processElement(flags, vNode, dom);
+        hasControlledValue = processElement(flags, vNode, dom);
     }
     if (!isNull(props)) {
         for (var prop in props) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+            patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
         }
     }
     if (!isNull(events)) {
         for (var name in events) {
             // do not add a hasOwnProperty check here, it affects performance
-            patchEvent(name, null, events[name], dom, lifecycle);
+            patchEvent(name, null, events[name], dom);
         }
     }
     if (!isNull(ref)) {
@@ -2114,6 +2121,7 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
 function mountArrayChildren(children, dom, lifecycle, context, isSVG) {
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
+        // TODO: Verify can string/number be here. might cause de-opt
         if (!isInvalid(child)) {
             if (child.dom) {
                 children[i] = child = cloneVNode(child);
@@ -2314,17 +2322,18 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     if (children) {
         hydrateChildren(children, dom, lifecycle, context, isSVG);
     }
+    var hasControlledValue = false;
     if (!(flags & 2 /* HtmlElement */)) {
-        processElement(flags, vNode, dom);
+        hasControlledValue = processElement(flags, vNode, dom);
     }
     if (props) {
         for (var prop in props) {
-            patchProp(prop, null, props[prop], dom, isSVG, lifecycle);
+            patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
         }
     }
     if (events) {
         for (var name in events) {
-            patchEvent(name, null, events[name], dom, lifecycle);
+            patchEvent(name, null, events[name], dom);
         }
     }
     if (ref) {
@@ -2338,7 +2347,7 @@ function hydrateChildren(children, parentDom, lifecycle, context, isSVG) {
     if (isArray(children)) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
-            if (isObject(child) && !isNull(child)) {
+            if (!isNull(child) && isObject(child)) {
                 if (dom) {
                     dom = hydrate(child, dom, lifecycle, context, isSVG);
                     dom = dom.nextSibling;
@@ -2386,6 +2395,7 @@ function hydrateText(vNode, dom) {
 }
 function hydrateVoid(vNode, dom) {
     vNode.dom = dom;
+    return dom;
 }
 function hydrate(vNode, dom, lifecycle, context, isSVG) {
     if (process.env.NODE_ENV !== 'production') {
@@ -2443,7 +2453,6 @@ function getRoot(dom) {
     }
     return null;
 }
-
 function setRoot(dom, input, lifecycle) {
     var root = {
         dom: dom,
@@ -2461,8 +2470,10 @@ function removeRoot(root) {
         }
     }
 }
-if (isBrowser && document.body === null) {
-    throwError('you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
+if (process.env.NODE_ENV !== 'production') {
+    if (isBrowser && document.body === null) {
+        throwError('you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
+    }
 }
 var documentBody = isBrowser ? document.body : null;
 function render(input, parentDom) {

@@ -18,7 +18,7 @@ const AUTOBIND_BLACKLIST = {
 };
 
 function extend(base, props, all?) {
-	for (const key in props) {
+	for (let key in props) {
 		if (all === true || !isNullOrUndef(props[key])) {
 			base[key] = props[key];
 		}
@@ -27,7 +27,7 @@ function extend(base, props, all?) {
 }
 
 function bindAll(ctx) {
-	for (const i in ctx) {
+	for (let i in ctx) {
 		const v = ctx[i];
 		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST[i]) {
 			(ctx[i] = v.bind(ctx)).__bound = true;
@@ -45,7 +45,7 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 			collateMixins(mixin.mixins, keyed);
 		}
 
-		for (const key in mixin as Function[]) {
+		for (let key in mixin as Function[]) {
 			if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
 				(keyed[key] || (keyed[key] = [])).push(mixin[key]);
 			}
@@ -80,7 +80,7 @@ function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[] 
 }
 
 function applyMixins<P, S>(inst: Component<P, S>, mixins: Function[] | any[]) {
-	for (const key in mixins) {
+	for (let key in mixins) {
 		if (mixins.hasOwnProperty(key)) {
 			const mixin = mixins[key];
 

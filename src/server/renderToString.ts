@@ -26,7 +26,7 @@ function renderStylesToString(styles) {
 	} else {
 		let renderedString = '';
 
-		for (const styleName in styles) {
+		for (let styleName in styles) {
 			const value = styles[styleName];
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
 
@@ -91,7 +91,7 @@ function renderVNodeToString(vNode, context, firstChild): string {
 		const isVoidElement = _isVoidElement(type);
 
 		if (!isNull(props)) {
-			for (const prop in props) {
+			for (let prop in props) {
 				const value = props[prop];
 
 				if (prop === 'dangerouslySetInnerHTML') {

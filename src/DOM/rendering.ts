@@ -52,10 +52,6 @@ function getRoot(dom): Root | null {
 	return null;
 }
 
-export function getRoots() {
-	return roots;
-}
-
 function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: Lifecycle): Root {
 	const root: Root = {
 		dom,
@@ -84,7 +80,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const documentBody = isBrowser ? document.body : null;
 
-export function render(input: InfernoInput, parentDom?: Node | SVGAElement): InfernoChildren {
+export function render(input: InfernoInput, parentDom?: Element | SVGAElement): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -104,7 +100,7 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement): Inf
 				input = cloneVNode(input as VNode);
 			}
 			if (!hydrateRoot(input, parentDom, lifecycle)) {
-				mount(input, parentDom, lifecycle, {}, false);
+				mount(input as VNode, parentDom, lifecycle, {}, false);
 			}
 			root = setRoot(parentDom, input, lifecycle);
 			lifecycle.trigger();
@@ -114,13 +110,13 @@ export function render(input: InfernoInput, parentDom?: Node | SVGAElement): Inf
 
 		lifecycle.listeners = [];
 		if (isNullOrUndef(input)) {
-			unmount(root.input, parentDom, lifecycle, false, false);
+			unmount(root.input as VNode, parentDom, lifecycle, false, false);
 			removeRoot(root);
 		} else {
 			if ((input as VNode).dom) {
 				input = cloneVNode(input as VNode);
 			}
-			patch(root.input, input, parentDom, lifecycle, {}, false, false);
+			patch(root.input as VNode, input as VNode, parentDom, lifecycle, {}, false, false);
 		}
 		lifecycle.trigger();
 		root.input = input;

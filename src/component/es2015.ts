@@ -21,7 +21,7 @@ const componentCallbackQueue: Map<any, Function[]> = new Map();
 
 // when a components root VNode is also a component, we can run into issues
 // this will recursively look for vNode.parentNode if the VNode is a component
-function updateParentComponentVNodes(vNode: VNode, dom: Node) {
+function updateParentComponentVNodes(vNode: VNode, dom: Element) {
 	if (vNode.flags & VNodeFlags.Component) {
 		const parentVNode = vNode.parentVNode;
 
@@ -96,7 +96,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 	if (isFunction(newState)) {
 		newState = newState(component.state);
 	}
-	for (const stateKey in newState) {
+	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
 	if (!component._pendingSetState && isBrowser) {

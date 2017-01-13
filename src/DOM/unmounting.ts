@@ -19,7 +19,7 @@ import {
 import { componentToDOMNodeMap } from './rendering';
 import { removeChild } from './utils';
 
-export function unmount(vNode, parentDom, lifecycle: Lifecycle, canRecycle, isRecycling) {
+export function unmount(vNode: VNode, parentDom: Element, lifecycle: Lifecycle, canRecycle: boolean, isRecycling: boolean) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Component) {
@@ -31,7 +31,7 @@ export function unmount(vNode, parentDom, lifecycle: Lifecycle, canRecycle, isRe
 	}
 }
 
-function unmountVoidOrText(vNode, parentDom) {
+function unmountVoidOrText(vNode: VNode, parentDom: Element) {
 	if (parentDom) {
 		removeChild(parentDom, vNode.dom);
 	}
@@ -39,11 +39,11 @@ function unmountVoidOrText(vNode, parentDom) {
 
 const alreadyUnmounted = new WeakMap();
 
-export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecycle, isRecycling) {
-	const instance = vNode.children;
+export function unmountComponent(vNode: VNode, parentDom: Element, lifecycle: Lifecycle, canRecycle: boolean, isRecycling: boolean) {
+	const instance = vNode.children as any;
 	const flags = vNode.flags;
 	const isStatefulComponent = flags & VNodeFlags.ComponentClass;
-	const ref = vNode.ref;
+	const ref = vNode.ref as any;
 	const dom = vNode.dom;
 
 	if (alreadyUnmounted.has(vNode) && !isRecycling && !parentDom) {
@@ -93,9 +93,9 @@ export function unmountComponent(vNode, parentDom, lifecycle: Lifecycle, canRecy
 	}
 }
 
-export function unmountElement(vNode, parentDom, lifecycle: Lifecycle, canRecycle, isRecycling) {
+export function unmountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecycle, canRecycle: boolean, isRecycling: boolean) {
 	const dom = vNode.dom;
-	const ref = vNode.ref;
+	const ref = vNode.ref as any;
 	const events = vNode.events;
 
 	if (alreadyUnmounted.has(vNode) && !isRecycling && !parentDom) {
@@ -114,9 +114,9 @@ export function unmountElement(vNode, parentDom, lifecycle: Lifecycle, canRecycl
 		}
 	}
 	if (!isNull(events)) {
-		for (const name in events) {
+		for (let name in events) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchEvent(name, events[name], null, dom, lifecycle);
+			patchEvent(name, events[name], null, dom);
 			events[name] = null;
 		}
 	}
@@ -128,21 +128,21 @@ export function unmountElement(vNode, parentDom, lifecycle: Lifecycle, canRecycl
 	}
 }
 
-function unmountChildren(children, lifecycle: Lifecycle, isRecycling) {
+function unmountChildren(children: InfernoChildren, lifecycle: Lifecycle, isRecycling: boolean) {
 	if (isArray(children)) {
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 
 			if (!isInvalid(child) && isObject(child)) {
-				unmount(child, null, lifecycle, false, isRecycling);
+				unmount(child as VNode, null, lifecycle, false, isRecycling);
 			}
 		}
 	} else if (isObject(children)) {
-		unmount(children, null, lifecycle, false, isRecycling);
+		unmount(children as VNode, null, lifecycle, false, isRecycling);
 	}
 }
 
-function unmountRef(ref) {
+function unmountRef(ref: Ref) {
 	if (isFunction(ref)) {
 		ref(null);
 	} else {
