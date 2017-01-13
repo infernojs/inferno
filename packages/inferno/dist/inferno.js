@@ -2468,8 +2468,10 @@ function removeRoot(root) {
         }
     }
 }
-if (isBrowser && document.body === null) {
-    throwError('you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
+{
+    if (isBrowser && document.body === null) {
+        throwError('you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
+    }
 }
 var documentBody = isBrowser ? document.body : null;
 function render(input, parentDom) {

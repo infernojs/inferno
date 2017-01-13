@@ -289,7 +289,7 @@ function createReactDOMComponent(vNode, parentDom) {
             props: props,
         },
         _renderedChildren: !isText && normalizeChildren(children, dom),
-        _stringText: isText ? (children || vNode) : null,
+        _stringText: isText ? (children || vNode).toString() : null,
         _inDevTools: false,
         node: dom || parentDom,
         vNode: vNode,
