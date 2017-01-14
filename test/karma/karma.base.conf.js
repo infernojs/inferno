@@ -19,12 +19,23 @@ module.exports = function (config) {
 					}, {
 						test: /\.jsx?$/,
 						loader: 'babel-loader',
-						exclude: /node_modules/
+						exclude: /node_modules/,
+						query: {
+							compact: false,
+							presets: [[ 'es2015', { loose: true }]],
+							plugins: [
+								'transform-class-properties',
+								'transform-object-rest-spread',
+								'babel-plugin-syntax-jsx',
+								'babel-plugin-inferno'
+							]
+						}
 					}
 				]
 			},
 			resolve: {
-				extensions: [ '.js', '.jsx', '.ts', '.tsx' ]
+				extensions: [ '.js', '.jsx', '.ts', '.tsx' ],
+				mainFields: ['main']
 			},
 			performance: {
 				hints: false

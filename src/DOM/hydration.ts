@@ -113,10 +113,12 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Lifecycle, contex
 		isSVG = true;
 	}
 	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
-		warning(
-			process.env.NODE_ENV !== 'production',
-			'Inferno hydration: Server-side markup doesn\'t match client-side markup',
-		);
+		if (process.env.NODE_ENV !== 'production') {
+			warning(
+				false,
+				'Inferno hydration: Server-side markup doesn\'t match client-side markup',
+			);
+		}
 		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
 
 		vNode.dom = newDom;

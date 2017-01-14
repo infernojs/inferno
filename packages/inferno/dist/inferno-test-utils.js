@@ -2313,6 +2313,9 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
         isSVG = true;
     }
     if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
+        {
+            warning(false, 'Inferno hydration: Server-side markup doesn\'t match client-side markup');
+        }
         var newDom = mountElement(vNode, null, lifecycle, context, isSVG);
         vNode.dom = newDom;
         replaceChild(dom.parentNode, newDom, dom);
@@ -2375,8 +2378,9 @@ function hydrateChildren(children, parentDom, lifecycle, context, isSVG) {
     }
     // clear any other DOM nodes, there should be only a single entry for the root
     while (dom) {
+        var nextSibling = dom.nextSibling;
         parentDom.removeChild(dom);
-        dom = dom.nextSibling;
+        dom = nextSibling;
     }
 }
 function hydrateText(vNode, dom) {
@@ -2398,11 +2402,6 @@ function hydrateVoid(vNode, dom) {
     return dom;
 }
 function hydrate(vNode, dom, lifecycle, context, isSVG) {
-    {
-        if (isInvalid(dom)) {
-            throwError("failed to hydrate. The server-side render doesn't match client side.");
-        }
-    }
     var flags = vNode.flags;
     if (flags & 28 /* Component */) {
         return hydrateComponent(vNode, dom, lifecycle, context, isSVG, flags & 4 /* ComponentClass */);
