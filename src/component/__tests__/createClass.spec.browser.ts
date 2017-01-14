@@ -1,8 +1,8 @@
-import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
-import createClass from '../createClass';
-import createElement from '../../factories/createElement';
-import { innerHTML } from '../../tools/utils';
+import {expect} from "chai";
+import {render} from "../../DOM/rendering";
+import createClass from "../createClass";
+import createElement from "../../factories/createElement";
+import {innerHTML} from "../../tools/utils";
 
 describe('Components createClass (non-JSX)', () => {
 	let container;
@@ -43,13 +43,13 @@ describe('Components createClass (non-JSX)', () => {
 		render(createElement(LifecycleComponent1 as Function, {}), container);
 		expect(componentWillUpdate).to.equal(true);
 	});
-	it('should render a basic component with methods bound', done => {
+
+	it('should have context available in getInitialState', done => {
 		let context;
 		let context2;
 		const BoundComponent = createClass({
 			getInitialState() {
-				context = this;
-				setTimeout(this.foo, 1);
+				expect(this.context)
 			},
 			foo() {
 				context2 = this;
@@ -65,9 +65,11 @@ describe('Components createClass (non-JSX)', () => {
 			done();
 		}, 2);
 	});
+
 	it('should have propTypes on created class', () => {
 		const propTypes = {
-			value() {}
+			value() {
+			}
 		};
 		const Component = createClass({
 			propTypes,

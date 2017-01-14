@@ -100,8 +100,8 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>) {
 		static defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
 		static mixins = obj.mixins && collateMixins(obj.mixins);
 
-		constructor(props) {
-			super(props);
+		constructor(props, context) {
+			super(props, context);
 			extend(this, obj);
 			if (Cl.mixins) {
 				applyMixins(this, Cl.mixins);

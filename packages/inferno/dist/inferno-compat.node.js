@@ -477,8 +477,8 @@ function applyMixins(inst, mixins) {
 }
 function createClass(obj) {
     var Cl = (function (Component$$1) {
-        function Cl(props) {
-            Component$$1.call(this, props);
+        function Cl(props, context) {
+            Component$$1.call(this, props, context);
             this.isMounted = function () {
                 return !this._unmounted;
             };
