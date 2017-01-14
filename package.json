@@ -163,7 +163,7 @@
     "url": "git+ssh://git@github.com/infernojs/inferno.git"
   },
   "scripts": {
-    "bootstrap": "npm run build:lib && npm run build:dev",
+    "bootstrap": "npm run build:lib && npm run build:dev && lerna bootstrap",
     "browser": "webpack-dev-server --config config/webpack.dev.conf.js",
     "build": "npm run clean && mkdirp build && (tsc --outDir build --module es6 || true) && npm run build:dev && npm run build:prod && npm run build:browser",
     "build:lib": "gulp",
