@@ -1,8 +1,8 @@
 import { EMPTY_OBJ } from 'inferno';
 import {
 	copyPropsTo,
-} from '../../inferno/src/core/normalization';
-import { isUnitlessNumber } from '../../inferno/src/constants';
+} from 'inferno/lib/core/normalization';
+import { isUnitlessNumber } from 'inferno/lib/constants';
 import {
 	isArray,
 	isFunction,

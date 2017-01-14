@@ -1,6 +1,5 @@
-import { render } from '../../inferno/src/rendering';
-import createElement from '../../inferno-create-element/src/createElement';
-import isValidElement from '../../inferno-create-element/src/isValidElement';
+import { render } from 'inferno';
+import createElement, { isValidElement } from 'inferno-create-element';
 import { isArray, throwError, toArray } from 'inferno-helpers';
 
 export function renderIntoDocument(element: VNode): VNode {

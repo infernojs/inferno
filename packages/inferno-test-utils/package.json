@@ -24,5 +24,6 @@
     "inferno-helpers": "1.1.2"
   },
   "main": "inferno-test-utils.js",
+  "types": "inferno-test-utils.d.ts",
   "repository": "https://github.com/infernojs/inferno"
 }
