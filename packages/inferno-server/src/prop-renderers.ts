@@ -9,7 +9,7 @@ import {
 	toHyphenCase,
 } from './utils';
 
-import { isUnitlessNumber } from '../../inferno/src/constants';
+import { isUnitlessNumber } from 'inferno/lib/constants';  // TODO decide what (export or something)
 
 export function renderStyleToString(style): string {
 	if (isStringOrNumber(style)) {

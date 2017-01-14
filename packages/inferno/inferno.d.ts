@@ -84,16 +84,6 @@ declare module 'inferno' {
 	};
 }
 
-declare module 'inferno-server' {
-	export function renderToString(input: any): string;
-	export function renderToStaticMarkup(input: any): string;
-
-	export default {
-		renderToString,
-		renderToStaticMarkup
-	};
-}
-
 declare module 'inferno-test-utils' {
 	type stringArr = string | string[];
 

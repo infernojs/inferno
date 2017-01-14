@@ -26,6 +26,7 @@
     "rollup"
   ],
   "main": "inferno-server.js",
+  "types": "inferno-server.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
     "inferno": "1.1.2",
