@@ -12,6 +12,7 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "inferno-mobx.js",
+  "types": "inferno-mobx.d.ts",
   "keywords": [
     "babel",
     "react",
