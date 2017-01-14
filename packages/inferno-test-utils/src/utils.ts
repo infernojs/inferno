@@ -2,7 +2,7 @@ import {
 	isArray,
 	isNullOrUndef,
 	isStringOrNumber,
-} from '../../inferno-helpers/src/index';
+} from 'inferno-helpers/lib/index';
 
 const comparer = document.createElement('div');
 

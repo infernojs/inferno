@@ -6,7 +6,7 @@ import {
 	isStatefulComponent,
 	isString,
 	isUndefined,
-} from '../../inferno-helpers/src/index';
+} from 'inferno-helpers/lib/index';
 
 const componentHooks = {
 	onComponentWillMount: true,

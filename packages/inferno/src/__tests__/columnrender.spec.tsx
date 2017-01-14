@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
 import { spy } from 'sinon';
-import { isNullOrUndef } from '../../shared';
+import { isNullOrUndef } from 'inferno-helpers';
 
 describe('Columns like tests - (JSX)', () => {
 	let container;

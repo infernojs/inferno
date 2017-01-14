@@ -1,6 +1,6 @@
 import Inferno from 'inferno';
 import pathToRegExp from 'path-to-regexp-es6';
-import { isArray, toArray } from '../../inferno-helpers/src/index';
+import { isArray, toArray } from 'inferno-helpers/lib/index';
 import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort, toPartialURL } from './utils';
 
 const cache: Map<string, IMatchRegex> = new Map();

@@ -23,7 +23,7 @@ import {
 	isUndefined,
 	NO_OP,
 	throwError,
-} from '../../inferno-helpers/src/index';
+} from 'inferno-helpers/lib/index';
 import {
 	booleanProps,
 	dehyphenProps,

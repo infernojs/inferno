@@ -1,7 +1,7 @@
 import {
 	isNull,
 	isObject,
-} from '../../inferno-helpers/src/index';
+} from 'inferno-helpers/lib/index';
 
 export default function isValidElement(obj: VNode): boolean {
 	const isNotANullObject = isObject(obj) && isNull(obj) === false;

@@ -1,7 +1,7 @@
 import {
 	EMPTY_OBJ,
 	isNullOrUndef
-} from '../../shared';
+} from 'inferno-helpers';
 import { wrappers } from './processElement';
 
 function isCheckedType(type) {

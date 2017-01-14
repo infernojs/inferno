@@ -11,7 +11,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-} from '../../inferno-helpers/src/index';
+} from 'inferno-helpers/lib/index';
 import { svgNS } from './constants';
 import Lifecycle from './lifecycle';
 import {

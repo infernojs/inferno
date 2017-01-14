@@ -1,7 +1,7 @@
 import {
 	isFunction,
 	throwError,
-} from '../../inferno-helpers/src/index';
+} from 'inferno-helpers/lib/index';
 import {
 	shallowEqual,
 	warning,

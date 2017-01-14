@@ -25,6 +25,9 @@
     "browser",
     "rollup"
   ],
+  "dependencies": {
+    "inferno-helpers": "1.1.2"
+  },
   "main": "inferno.js",
   "typings": "inferno.d.ts",
   "repository": "https://github.com/infernojs/inferno"

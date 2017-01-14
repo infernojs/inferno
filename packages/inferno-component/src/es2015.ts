@@ -8,7 +8,7 @@ import {
 	isNullOrUndef,
 	isStringOrNumber,
 	throwError,
-} from '../../inferno-helpers/src/index';
+} from 'inferno-helpers/lib/index';
 
 import Lifecycle from '../../inferno/src/lifecycle';
 

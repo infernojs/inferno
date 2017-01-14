@@ -7,7 +7,7 @@ import {
 	isNullOrUndef,
 	isObject,
 	throwError,
-} from '../../inferno-helpers/src/index';
+} from 'inferno-helpers/lib/index';
 import Lifecycle from './lifecycle';
 import {
 	patchEvent,

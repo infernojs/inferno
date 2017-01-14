@@ -5,7 +5,7 @@ import {
 	isNullOrUndef,
 	isStatefulComponent,
 	isUndefined,
-} from '../../../inferno-helpers/src/index';
+} from 'inferno-helpers/lib/index';
 import {
 	normalize,
 } from './normalization';

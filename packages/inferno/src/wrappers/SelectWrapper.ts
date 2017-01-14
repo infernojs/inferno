@@ -2,7 +2,7 @@ import {
 	isArray,
 	EMPTY_OBJ,
 	isNullOrUndef
-} from '../../shared';
+} from 'inferno-helpers';
 import { wrappers } from './processElement';
 import { isVNode } from '../../../packages/inferno/src/core/VNodes';
 

@@ -1,4 +1,4 @@
-import { isArray, isString } from '../../inferno-helpers/src/index';
+import { isArray, isString } from 'inferno-helpers/lib/index';
 
 const emptyObject = Object.create(null);
 

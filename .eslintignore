@@ -1,2 +1,4 @@
 **/*.min.js
+lib
 dist
+.tmp

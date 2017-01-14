@@ -4,7 +4,7 @@ import {
 import Component from 'inferno-component';
 import {
 	isStatefulComponent,
-} from '../../inferno-helpers/src/index';
+} from 'inferno-helpers/lib/index';
 import {
 	createDevToolsBridge,
 } from './bridge';

@@ -20,7 +20,8 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "1.1.2"
+    "inferno": "1.1.2",
+    "inferno-helpers": "1.1.2"
   },
   "main": "inferno-test-utils.js",
   "repository": "https://github.com/infernojs/inferno"
