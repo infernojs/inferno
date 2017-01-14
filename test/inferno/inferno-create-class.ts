@@ -1,3 +1,3 @@
-import createClass from '../../packages/inferno-component/src/createClass';
+import createClass from '../../packages/inferno-create-class/src/createClass';
 
 export default createClass;

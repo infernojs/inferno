@@ -1,0 +1,24 @@
+{
+  "name": "inferno-helpers",
+  "version": "1.1.2",
+  "license": "MIT",
+  "description": "Provides helper functions for other Inferno packages.",
+  "author": {
+    "name": "Dominic Gannaway",
+    "email": "dg@domgan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/infernojs/inferno/issues"
+  },
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "keywords": [
+    "babel",
+    "react",
+    "inferno",
+    "framework",
+    "interfaces",
+    "user interfaces"
+  ],
+  "main": "inferno-helpers.js",
+  "repository": "https://github.com/infernojs/inferno"
+}

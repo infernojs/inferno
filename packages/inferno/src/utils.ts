@@ -9,7 +9,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-} from '../../../src/shared';
+} from '../../inferno-helpers/src/index';
 import { svgNS } from './constants';
 import Lifecycle from './lifecycle';
 import { mount } from './mounting';

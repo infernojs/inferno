@@ -14,7 +14,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-} from '../../../src/shared';
+} from '../../inferno-helpers/src/index';
 import Lifecycle from './lifecycle';
 import {
 	patchEvent,

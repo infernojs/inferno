@@ -5,7 +5,7 @@ import {
 	isNullOrUndef,
 	NO_OP,
 	throwError,
-} from '../../../src/shared';
+} from '../../inferno-helpers/src/index';
 
 import options from './core/options';
 import { cloneVNode } from './core/VNodes';
