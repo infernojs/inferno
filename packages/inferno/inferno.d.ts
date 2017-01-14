@@ -94,12 +94,6 @@ declare module 'inferno-server' {
 	};
 }
 
-declare module 'inferno-create-element' {
-	export default function createElement(name: any, props?: any, ...children): VNode;
-
-	export function isValidElement(obj: VNode): boolean;  // TODO maybe move to helpers? ask core devs
-}
-
 declare module 'inferno-hyperscript' {
 	export default function hyperscript(_tag: string | VNode | Function, _props?: any, _children?: InfernoChildren): VNode;
 }
