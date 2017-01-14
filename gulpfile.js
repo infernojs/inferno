@@ -10,6 +10,8 @@ const through = require('through2');
 const srcts = [
   './packages/*/src/**/*.{ts,tsx}',
   '!**/__tests__/**',
+  '!**/__benchmarks__/**',
+  '!**/benchmarks/**',
 ];
 
 const dest = './packages';
