@@ -7,8 +7,18 @@ bundles.add({
 	moduleGlobal: 'Inferno',
 	moduleName: 'inferno',
 	moduleEntry: 'packages/inferno/lib/index.js',
-	moduleGlobals: {},
+	moduleGlobals: {
+		'inferno-helpers': 'Inferno.Helpers',
+	},
 	path: 'packages/inferno/'
+});
+
+bundles.add({
+	moduleGlobal: 'Inferno.Helpers',
+	moduleName: 'inferno-helpers',
+	moduleEntry: 'packages/inferno-helpers/lib/index.js',
+	moduleGlobals: {},
+	path: 'packages/inferno-helpers/'
 });
 
 bundles.add({
@@ -16,7 +26,8 @@ bundles.add({
 	moduleName: 'inferno-server',
 	moduleEntry: 'packages/inferno-server/lib/index.js',
 	moduleGlobals: {
-		inferno: 'Inferno'
+		inferno: 'Inferno',
+		'inferno-helpers': 'Inferno.Helpers',
 	},
 	path: 'packages/inferno-server/'
 });
@@ -26,7 +37,8 @@ bundles.add({
 	moduleName: 'inferno-component',
 	moduleEntry: 'packages/inferno-component/lib/index.js',
 	moduleGlobals: {
-		inferno: 'Inferno'
+		inferno: 'Inferno',
+		'inferno-helpers': 'Inferno.Helpers',
 	},
 	path: 'packages/inferno-component/'
 });
@@ -36,7 +48,8 @@ bundles.add({
 	moduleName: 'inferno-test-utils',
 	moduleEntry: 'packages/inferno-test-utils/lib/index.js',
 	moduleGlobals: {
-		inferno: 'Inferno'
+		inferno: 'Inferno',
+		'inferno-helpers': 'Inferno.Helpers',
 	},
 	path: 'packages/inferno-test-utils/'
 });
@@ -46,7 +59,8 @@ bundles.add({
 	moduleName: 'inferno-create-element',
 	moduleEntry: 'packages/inferno-create-element/lib/index.js',
 	moduleGlobals: {
-		inferno: 'Inferno'
+		inferno: 'Inferno',
+		'inferno-helpers': 'Inferno.Helpers',
 	},
 	path: 'packages/inferno-create-element/'
 });
@@ -57,7 +71,8 @@ bundles.add({
 	moduleEntry: 'packages/inferno-compat/lib/index.js',
 	moduleGlobals: {
 		inferno: 'Inferno',
-		'inferno-component': 'Inferno.Component'
+		'inferno-component': 'Inferno.Component',
+		'inferno-helpers': 'Inferno.Helpers',
 	},
 	path: 'packages/inferno-compat/'
 });
@@ -69,7 +84,8 @@ bundles.add({
 	moduleGlobals: {
 		inferno: 'Inferno',
 		'inferno-component': 'Inferno.Component',
-		'inferno-create-element': 'Inferno.createElement'
+		'inferno-create-element': 'Inferno.createElement',
+		'inferno-helpers': 'Inferno.Helpers',
 	},
 	path: 'packages/inferno-router/'
 });
@@ -81,7 +97,8 @@ bundles.add({
 	moduleGlobals: {
 		inferno: 'Inferno',
 		'inferno-component': 'Inferno.Component',
-		'inferno-create-element': 'Inferno.createElement'
+		'inferno-create-element': 'Inferno.createElement',
+		'inferno-helpers': 'Inferno.Helpers',
 	},
 	path: 'packages/inferno-create-class/'
 });
@@ -95,6 +112,7 @@ bundles.add({
 		'inferno-component': 'Inferno.Component',
 		'inferno-create-element': 'Inferno.createElement',
 		'inferno-create-class': 'Inferno.createClass',
+		'inferno-helpers': 'Inferno.Helpers',
 		'path-to-regexp-es6': 'Inferno.pathToRegExp',
 		redux: 'Redux'
 	},
@@ -110,6 +128,7 @@ bundles.add({
 		'inferno-component': 'Inferno.Component',
 		'inferno-create-element': 'Inferno.createElement',
 		'inferno-create-class': 'Inferno.createClass',
+		'inferno-helpers': 'Inferno.Helpers',
 		'path-to-regexp-es6': 'Inferno.pathToRegExp',
 		mobx: 'mobx'
 	},
@@ -122,7 +141,8 @@ bundles.add({
 	moduleEntry: 'packages/inferno-hyperscript/lib/index.js',
 	moduleGlobals: {
 		inferno: 'Inferno',
-		'inferno-create-element': 'Inferno.createElement'
+		'inferno-create-element': 'Inferno.createElement',
+		'inferno-helpers': 'Inferno.Helpers',
 	},
 	path: 'packages/inferno-hyperscript/'
 });
@@ -140,7 +160,8 @@ bundles.add({
 	moduleEntry: 'packages/inferno-devtools/lib/index.js',
 	moduleGlobals: {
 		inferno: 'Inferno',
-		'inferno-component': 'Inferno.Component'
+		'inferno-component': 'Inferno.Component',
+		'inferno-helpers': 'Inferno.Helpers',
 	},
 	path: 'packages/inferno-devtools/'
 });
