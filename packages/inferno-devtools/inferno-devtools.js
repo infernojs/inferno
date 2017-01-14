@@ -1,1 +1,1 @@
-module.exports = require('inferno/dist/inferno-devtools');
+module.exports = require('./dist/inferno-devtools');
