@@ -2,7 +2,7 @@ import {
   createVNode,
   cloneVNode
 } from './core/VNodes';
-import { warning, NO_OP, EMPTY_OBJ } from 'inferno-helpers/lib/index';
+import { warning, NO_OP, EMPTY_OBJ } from 'inferno-helpers';
 import { render, findDOMNode, createRenderer } from './rendering';
 import linkEvent from './events/linkEvent';
 import options from './core/options';

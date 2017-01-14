@@ -13,7 +13,7 @@ import {
 	isStringOrNumber,
 	isTrue,
 	throwError,
-} from 'inferno-helpers/lib/index';
+} from 'inferno-helpers';
 import {
 	escapeText,
 	isVoidElement as _isVoidElement,

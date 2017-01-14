@@ -1,7 +1,7 @@
 import PropTypes from 'proptypes';
-import isValidElement from '../../../build/factories/isValidElement';
-import createClass from '../../../build/component/createClass';
-import infernoCreateElement from '../../../build/factories/createElement';
+import { isValidElement } from 'inferno-create-element';
+import createClass from 'inferno-create-class';
+import infernoCreateElement from 'inferno-create-element';
 import { createVNode, NO_OP, render, findDOMNode, options, cloneVNode } from 'inferno';
 import Component from 'inferno-component';
 

@@ -1,7 +1,7 @@
 import {
 	isNull,
 	isObject,
-} from 'inferno-helpers/lib/index';
+} from 'inferno-helpers';
 
 export default function isValidElement(obj: VNode): boolean {
 	const isNotANullObject = isObject(obj) && isNull(obj) === false;
@@ -10,5 +10,5 @@ export default function isValidElement(obj: VNode): boolean {
 	}
 	const flags = obj.flags;
 
-	return !!(flags & (VNodeFlags.Component | VNodeFlags.Element)) as boolean;
+	return Boolean(flags & (VNodeFlags.Component | VNodeFlags.Element));
 };

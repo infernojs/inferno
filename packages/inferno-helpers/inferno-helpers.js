@@ -1,2 +1,2 @@
-module.exports = require('inferno/distinferno-helpers/lib/index');
+module.exports = require('inferno/distinferno-helpers');
 module.exports.default = module.exports;

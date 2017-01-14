@@ -8,7 +8,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	warning,
-} from 'inferno-helpers/lib/index';
+} from 'inferno-helpers';
 import { cloneVNode, createTextVNode, isVNode } from './VNodes';
 
 function applyKey(key: string, vNode: VNode) {
