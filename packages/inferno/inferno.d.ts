@@ -94,10 +94,6 @@ declare module 'inferno-server' {
 	};
 }
 
-declare module 'inferno-hyperscript' {
-	export default function hyperscript(_tag: string | VNode | Function, _props?: any, _children?: InfernoChildren): VNode;
-}
-
 declare module 'inferno-test-utils' {
 	type stringArr = string | string[];
 

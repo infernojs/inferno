@@ -9,6 +9,7 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "inferno-hyperscript.js",
+  "types": "inferno-hyperscript.d.ts",
   "keywords": [
     "inferno",
     "hyperscript"
