@@ -179,8 +179,9 @@ function hydrateChildren(children: InfernoChildren, parentDom: Element, lifecycl
 	}
 	// clear any other DOM nodes, there should be only a single entry for the root
 	while (dom) {
+		const nextSibling = dom.nextSibling;
 		parentDom.removeChild(dom);
-		dom = dom.nextSibling;
+		dom = nextSibling;
 	}
 }
 
