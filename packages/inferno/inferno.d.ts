@@ -94,10 +94,6 @@ declare module 'inferno-server' {
 	};
 }
 
-declare module 'inferno-create-class' {
-	export default function createClass(obj: any): any;
-}
-
 declare module 'inferno-create-element' {
 	export default function createElement(name: any, props?: any, ...children): VNode;
 

@@ -12,6 +12,7 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "inferno-create-class.js",
+  "types": "inferno-create-class.d.ts",
   "keywords": [
     "babel",
     "react",
