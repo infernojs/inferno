@@ -1,4 +1,5 @@
-declare const enum VNodeFlags {
+// TODO namespace all these types
+declare const enum VNodeFlags {  // TODO remove duplicate (see 'inferno-vnode-flags')
 	Text = 1,
 	HtmlElement = 1 << 1,
 
