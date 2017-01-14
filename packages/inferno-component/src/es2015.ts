@@ -10,7 +10,7 @@ import {
 	throwError,
 } from 'inferno-helpers';
 
-import Lifecycle from '../../inferno/src/lifecycle';
+import Lifecycle from 'inferno/lib/lifecycle';
 
 let noOp = ERROR_MSG;
 

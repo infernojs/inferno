@@ -12,6 +12,7 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "inferno-component.js",
+  "types": "inferno-component.d.ts",
   "keywords": [
     "babel",
     "react",
