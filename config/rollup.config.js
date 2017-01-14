@@ -113,4 +113,4 @@ function getDependenciesArray(pack) {
 	return Object.keys(pack.dependencies || {});
 }
 
-Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/dist/')));
+Promise.all(bundles.map(bundle => createBundle(bundle, `packages/${bundle.moduleName}/dist/`)));

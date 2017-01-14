@@ -7,21 +7,28 @@ const chalk = require('chalk');
 const through = require('through2');
 
 
-const srcts = [
-  './packages/*/src/**/*.{ts,tsx}',
+const IGNORE = [
   '!**/__tests__/**',
   '!**/__benchmarks__/**',
   '!**/benchmarks/**',
 ];
 
+const srcts = IGNORE.concat('./packages/*/src/**/*.{ts,tsx}');
+
+const srcjs = IGNORE.concat('./packages/*/src/**/*.js');
+
 const dest = './packages';
 
 const tsOptions = ts.createProject('tsconfig.json');
 
-const mapDest = (path) => path.replace(/(packages\/[^/]+)\/src\//, '$1/lib/');
+
+function mapThroughDest(file, enc, callback) {
+  file.path = file.path.replace(/(packages\/[^/]+)\/src\//, '$1/lib/');
+  callback(null, file);
+}
 
 
-gulp.task('default', ['ts']);
+gulp.task('default', ['ts', 'js']);
 
 gulp.task('ts', () =>
   gulp.src(srcts)
@@ -31,8 +38,15 @@ gulp.task('ts', () =>
       callback(null, file);
     }))
     .pipe(ts(tsOptions))
+    .pipe(through.obj(mapThroughDest))
+    .pipe(gulp.dest(dest)));
+
+gulp.task('js', () =>
+  gulp.src(srcjs)
+    .pipe(plumber())
     .pipe(through.obj((file, enc, callback) => {
-      file.path = mapDest(file.path);
+      gutil.log(`Copying ${chalk.yellow(file.path)}...`);
       callback(null, file);
     }))
+    .pipe(through.obj(mapThroughDest))
     .pipe(gulp.dest(dest)));
