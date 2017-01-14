@@ -20,5 +20,6 @@
     "user interfaces"
   ],
   "main": "inferno-helpers.js",
+  "types": "inferno-helpers.d.ts",
   "repository": "https://github.com/infernojs/inferno"
 }
