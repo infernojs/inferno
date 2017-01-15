@@ -1,7 +1,16 @@
 {
   "extends": "../../config/tsbase.json",
   "compilerOptions": {
-    "outDir": "lib/"
+    "outDir": "lib/",
+    "types": [
+      "hoist-non-inferno-statics",
+      "inferno",
+      "inferno-component",
+      "inferno-create-class",
+      "inferno-create-element",
+      "inferno-helpers",
+      "mobx"
+    ]
   },
   "include": [
     "src/**/*"

@@ -45,6 +45,10 @@ interface VNode {
 	parentVNode?: VNode;
 }
 
+declare const process: {
+	env: { NODE_ENV: string | undefined },
+};
+
 declare module 'inferno' {
 	interface Options {
 		recyclingEnabled: boolean;
@@ -83,4 +87,30 @@ declare module 'inferno' {
 		options,
 		version
 	};
+}
+
+// TODO:
+// export these, or make it so they are accessible to other packages
+
+declare module 'inferno/lib/lifecycle' {
+	export default class Lifecycle {
+		listeners: Function[];
+		fastUnmount: boolean;
+
+		addListener(callback: Function);
+		trigger();
+	}
+}
+
+declare module 'inferno/lib/core/structures' {
+	export interface Styles {
+		[key: string]: number | string;
+	}
+
+	export interface IProps {
+		[index: string]: any;
+	}
+	export interface VType {
+		flags: VNodeFlags;
+	}
 }

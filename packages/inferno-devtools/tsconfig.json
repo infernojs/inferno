@@ -1,7 +1,12 @@
 {
   "extends": "../../config/tsbase.json",
   "compilerOptions": {
-    "outDir": "lib/"
+    "outDir": "lib/",
+    "types": [
+      "inferno",
+      "inferno-component",
+      "inferno-helpers"
+    ]
   },
   "include": [
     "src/**/*"
