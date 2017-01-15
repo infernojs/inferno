@@ -1,5 +1,8 @@
 {
   "extends": "../../config/tsbase.json",
+  "compilerOptions": {
+    "outDir": "lib/"
+  },
   "include": [
     "src/**/*"
   ],

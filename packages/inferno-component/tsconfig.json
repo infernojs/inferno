@@ -1,6 +1,15 @@
 {
   "extends": "../../config/tsbase.json",
+  "compilerOptions": {
+    "outDir": "lib/"
+  },
   "include": [
     "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/__tests__/*",
+    "**/__benchmarks__/*",
+    "**/benchmarks/*"
   ]
 }

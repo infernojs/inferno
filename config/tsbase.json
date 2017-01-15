@@ -1,7 +1,6 @@
 {
 	"version": "2.1.5",
 	"compilerOptions": {
-		"outDir": "lib/",
 		"target": "es6",
 		"module": "es6",
 		"allowJs": false,
