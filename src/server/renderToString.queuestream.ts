@@ -51,12 +51,11 @@ export class RenderQueueStream extends Readable {
 		super();
 		this.initNode = initNode;
 		this.staticMarkup = staticMarkup;
+		this.renderVNodeToQueue(this.initNode, null, this.staticMarkup, null);
 	}
 
 	_read() {
-		if (this.started) { return; }
-		this.started = true;
-		this.renderVNodeToQueue(this.initNode, null, this.staticMarkup, null);
+		setTimeout(this.pushQueue.bind(this), 0);
 	}
 
 	addToQueue(node, position) {
@@ -97,9 +96,6 @@ export class RenderQueueStream extends Readable {
 		if (typeof chunk === 'string') {
 			this.push(chunk);
 			this.collector.shift();
-			if (this.collector.length !== 0) {
-				this.pushQueue();
-			}
 		// For fulfilled promises, merge into collector
 		} else if (
 			!! chunk &&
@@ -111,7 +107,6 @@ export class RenderQueueStream extends Readable {
 				(index) => {
 					self.collector.splice(0, 1, ...self.promises[index]);
 					self.promises[index] = null;
-					this.pushQueue();
 				},
 			);
 			this.collector[0] = null;
