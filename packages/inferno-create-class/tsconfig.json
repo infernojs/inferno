@@ -1,0 +1,12 @@
+{
+  "extends": "../../config/tsbase.json",
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/__tests__/*",
+    "**/__benchmarks__/*",
+    "**/benchmarks/*"
+  ]
+}

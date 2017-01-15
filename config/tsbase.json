@@ -1,6 +1,7 @@
 {
-	"version": "2.1.4",
+	"version": "2.1.5",
 	"compilerOptions": {
+		"outDir": "lib/",
 		"target": "es6",
 		"module": "es6",
 		"allowJs": false,
@@ -21,11 +22,5 @@
 		"noUnusedLocals": true,
 		"strictNullChecks": false,
 		"removeComments": false
-	},
-	"include": [
-		"src/**/*"
-  ],
-	"exclude": [
-		"node_modules"
-	]
+	}
 }

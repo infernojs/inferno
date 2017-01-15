@@ -3,5 +3,9 @@
   "version": "independent",
   "packages": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "rimraf": "^2.5.4",
+    "typescript": "^2.1.5"
+  }
 }

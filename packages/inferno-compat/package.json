@@ -26,7 +26,14 @@
     "inferno-transition-group": "1.1.1",
     "rc-css-transition-group": "2.1.4"
   },
+  "devDependencies": {
+    "rimraf": "^2.5.4"
+  },
   "peerDependencies": {
     "proptypes": "0.14.3"
+  },
+  "scripts": {
+    "build:lib": "cp -R src/ lib/",
+    "clean": "rimraf lib dist"
   }
 }

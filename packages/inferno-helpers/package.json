@@ -21,5 +21,13 @@
   ],
   "main": "inferno-helpers.js",
   "types": "inferno-helpers.d.ts",
-  "repository": "https://github.com/infernojs/inferno"
+  "repository": "https://github.com/infernojs/inferno",
+  "devDependencies": {
+    "rimraf": "^2.5.4",
+    "typescript": "^2.1.5"
+  },
+  "scripts": {
+    "build:lib": "tsc",
+    "clean": "rimraf lib dist"
+  }
 }

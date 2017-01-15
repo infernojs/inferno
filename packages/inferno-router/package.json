@@ -28,5 +28,13 @@
     "inferno-component": "1.1.2",
     "inferno-create-element": "1.1.2",
     "inferno-helpers": "1.1.2"
+  },
+  "devDependencies": {
+    "rimraf": "^2.5.4",
+    "typescript": "^2.1.5"
+  },
+  "scripts": {
+    "build:lib": "tsc",
+    "clean": "rimraf lib dist"
   }
 }

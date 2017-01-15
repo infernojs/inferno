@@ -23,6 +23,14 @@
     "inferno": "1.1.2",
     "inferno-helpers": "1.1.2"
   },
+  "devDependencies": {
+    "rimraf": "^2.5.4",
+    "typescript": "^2.1.5"
+  },
+  "scripts": {
+    "build:lib": "tsc",
+    "clean": "rimraf lib dist"
+  },
   "main": "inferno-test-utils.js",
   "types": "inferno-test-utils.d.ts",
   "repository": "https://github.com/infernojs/inferno"

@@ -1,0 +1,6 @@
+{
+  "extends": "../../config/tsbase.json",
+  "include": [
+    "src/**/*"
+  ]
+}

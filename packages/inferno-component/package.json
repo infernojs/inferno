@@ -32,6 +32,11 @@
     "inferno-helpers": "1.1.2"
   },
   "devDependencies": {
-    "typescript": "^2.0.2"
+    "rimraf": "^2.5.4",
+    "typescript": "^2.1.5"
+  },
+  "scripts": {
+    "build:lib": "tsc",
+    "clean": "rimraf lib dist"
   }
 }
