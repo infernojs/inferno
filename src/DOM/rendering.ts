@@ -4,7 +4,7 @@ import {
 	isNull,
 	isNullOrUndef,
 	NO_OP,
-	throwError,
+	throwError, warning,
 } from '../shared';
 
 import options from '../core/options';
@@ -74,7 +74,7 @@ function removeRoot(root: Root): void {
 
 if (process.env.NODE_ENV !== 'production') {
 	if (isBrowser && document.body === null) {
-		throwError('you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
+		warning(false, 'Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
 	}
 }
 
