@@ -11,7 +11,7 @@ class StatefulComponent extends Component<any, any> {
 }
 
 class StatefulPromiseComponent extends Component<any, any> {
-	componentWillMount() {
+	getInitialProps() {
 		return new Promise((resolve, reject) => {
 			// Waits incremenetally for each subindex
 			setTimeout(() => {
@@ -24,13 +24,13 @@ class StatefulPromiseComponent extends Component<any, any> {
 	render() {
 		return createElement(
 			'span', null,
-			`Stateless Item ${ this.props.index }: ${ this.context.value }`
+			`Stateless Item ${ this.props.index }: ${ this.props.value }`
 		);
 	}
 }
 
 class StatefulHierchicalPromiseComponent extends Component<any, any> {
-	componentWillMount() {
+	getInitialProps() {
 		return new Promise((resolve, reject) => {
 			// Waits incremenetally for each subindex
 			setTimeout(() => {
@@ -41,16 +41,15 @@ class StatefulHierchicalPromiseComponent extends Component<any, any> {
 		});
 	}
 	render() {
-		console.log(this.props.index);
 		if (this.props.index > 4) {
 			return createElement(
 				'span', null,
-				`Final Stateless Item ${ this.props.index }: ${ this.context.value }`
+				`Final Stateless Item ${ this.props.index }: ${ this.props.value }`
 			);
 		} else {
 			return createElement(
 				'div', { className: 'child' },
-				`Stateless Item ${ this.props.index }: ${ this.context.value }`,
+				`Stateless Item ${ this.props.index }: ${ this.props.value }`,
 				createElement(StatefulHierchicalPromiseComponent, { index: this.props.index + 1 })
 			);
 		}

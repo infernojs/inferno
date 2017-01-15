@@ -89,7 +89,7 @@ export class RenderQueueStream extends Readable {
 			this.push(chunk);
 			this.collector.shift();
 			if (this.collector.length !== 0) {
-				setTimeout(this.pushQueue.bind(this), 0);
+				this.pushQueue();
 			}
 		// For fulfilled promises, merge into collector
 		} else if (
@@ -102,7 +102,7 @@ export class RenderQueueStream extends Readable {
 				(index) => {
 					self.collector.splice(0, 1, ...self.promises[index]);
 					self.promises[index] = null;
-					setTimeout(self.pushQueue.bind(self), 0);
+					this.pushQueue();
 				},
 			);
 			this.collector[0] = null;
@@ -140,35 +140,32 @@ export class RenderQueueStream extends Readable {
 				instance.context = context;
 				instance._pendingSetState = true;
 				instance._unmounted = false;
-				// Capture a promise, else continue
+				// Trigger lifecycle hook
 				if (isFunction(instance.componentWillMount)) {
+					instance.componentWillMount();
+				}
+				// Trigger extra promise-based lifecycle hook
+				if (isFunction(instance.getInitialProps)) {
 					const self = this;
-					let mountValue = instance.componentWillMount();
-					// Check if the return value is a promise
-					if (!isNullOrUndef(mountValue)) {
-						const promisePosition = this.promises.push([]) - 1;
-						this.addToQueue(
-							mountValue.then((dataForContext) => {
-								instance._pendingSetState = false;
-								if (!isNullOrUndef(dataForContext)) {
-									instance.context = Object.assign({},
-										instance.context,
-										dataForContext,
-									);
-								}
-								self.renderVNodeToQueue(
-									instance.render(props, instance.context),
-									instance.context,
-									true,
-									promisePosition,
-								);
-								setTimeout(self.pushQueue.bind(self), 0);
-								return promisePosition;
-							}),
-							position,
-						);
-						return;
-					}
+					const promisePosition = this.promises.push([]) - 1;
+					this.addToQueue(
+						instance.getInitialProps().then((dataForContext) => {
+							instance._pendingSetState = false;
+							if (typeof dataForContext === 'object') {
+								instance.props = Object.assign({}, instance.props, dataForContext);
+							}
+							self.renderVNodeToQueue(
+								instance.render(instance.props, instance.context),
+								instance.context,
+								true,
+								promisePosition,
+							);
+							this.pushQueue();
+							return promisePosition;
+						}),
+						position,
+					);
+					return;
 				}
 				const nextVNode = instance.render(props, vNode.context);
 				instance._pendingSetState = false;
