@@ -62,11 +62,20 @@ export class RenderQueueStream extends Readable {
 	addToQueue(node, position) {
 		// Positioning defined, stack it
 		if (!isNullOrUndef(position)) {
-			this.promises[position].push(node);
+			const lastSlot = this.promises[position].length - 1;
+			// Combine as array or push into promise collector
+			if (
+				typeof this.promises[position][lastSlot] === 'string' &&
+				typeof node === 'string'
+			) {
+				this.promises[position][lastSlot] += node;
+			} else {
+				this.promises[position].push(node);
+			}
 		// Collector is empty push to stream
 		} else if (
 			typeof node === 'string' &&
-			(this.collector.length) - 1 === 0
+			(this.collector.length - 1) === 0
 		) {
 			this.push(node);
 		// Last element in collector and incoming are same then concat
