@@ -87,7 +87,6 @@ export class RenderQueueStream extends Readable {
 		} else {
 			this.collector.splice(-1, 0, node);
 		}
-		setTimeout(this.pushQueue.bind(this), 0);
 	}
 
 	pushQueue() {
@@ -131,7 +130,7 @@ export class RenderQueueStream extends Readable {
 				copyPropsTo(type.defaultProps, props);
 				vNode.props = props;
 			}
-			// If a stateful component
+			// Render the
 			if (isClass) {
 				const instance = new type(props, context);
 				const childContext = instance.getChildContext();
@@ -164,7 +163,7 @@ export class RenderQueueStream extends Readable {
 								true,
 								promisePosition,
 							);
-							this.pushQueue();
+							setTimeout(this.pushQueue.bind(this), 0);
 							return promisePosition;
 						}),
 						position,
@@ -173,6 +172,7 @@ export class RenderQueueStream extends Readable {
 				}
 				const nextVNode = instance.render(props, vNode.context);
 				instance._pendingSetState = false;
+
 				// In case render returns invalid stuff
 				if (isInvalid(nextVNode)) {
 					this.addToQueue('<!--!-->', position);
@@ -210,11 +210,13 @@ export class RenderQueueStream extends Readable {
 					}
 				}
 			}
-			// If voided element, push to queue
+			// Voided element, push directly to queue
 			if (isVoidElement) {
 				this.addToQueue(renderedString + `>`, position);
+			// Regular element with content
 			} else {
 				renderedString += `>`;
+				// Element has children, build them in
 				if (!isInvalid(children)) {
 					if (isArray(children)) {
 						this.addToQueue(renderedString, position);
@@ -240,6 +242,7 @@ export class RenderQueueStream extends Readable {
 					this.addToQueue(renderedString + html + '</' + type + '>', position);
 					return;
 				}
+				// Close element if it's not void
 				if (!isVoidElement) {
 					this.addToQueue(renderedString + '</' + type + '>', position);
 				}

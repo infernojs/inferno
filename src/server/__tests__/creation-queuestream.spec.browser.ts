@@ -138,36 +138,54 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 		template: (value) => createElement('div', null, createElement(StatefulComponent, { value })),
 		result: '<div><span>stateless foo!</span></div>'
 	},
+	// Following tests check for not only concatenated output, but chunked streams
 	{
 		description: 'should render a stateless component',
 		template: (value) => createElement('div', null, createElement(FunctionalComponent, { value })),
-		result: '<div><span>stateless foo!</span></div>'
+		result: [
+			[ '<div>', '<span>stateless foo!</span>', '</div>' ],
+			'<div><span>stateless foo!</span></div>'
+		]
 	},
 	{
 		description: 'should render a stateful component with promise',
 		template: (value) => createElement('div', null, createElement(StatefulPromiseComponent, { index: 1 })),
-		result: '<div><span>Stateless Item 1: I waited long enough!</span></div>'
+		result: [
+			[ '<div>', '<span>Stateless Item 1: I waited long enough!</span>', '</div>' ],
+			'<div><span>Stateless Item 1: I waited long enough!</span></div>'
+		]
 	},
 	{
 		description: 'should render a stateful component with promise as hierarchy',
 		template: (value) => createElement(StatefulHierchicalPromiseComponent, { index: 1 }),
-		result: '<div class="child">Stateless Item 1: I waited long enough for 1!<div class="child">Stateless Item 2: I waited long enough for 2!<div class="child">Stateless Item 3: I waited long enough for 3!<div class="child">Stateless Item 4: I waited long enough for 4!<span>Final Stateless Item 5: I waited long enough for 5!</span></div></div></div></div>'
+		result: [
+			[ '<div class="child">Stateless Item 1: I waited long enough for 1!', '<div class="child">Stateless Item 2: I waited long enough for 2!', '<div class="child">Stateless Item 3: I waited long enough for 3!', '<div class="child">Stateless Item 4: I waited long enough for 4!', '<span>Final Stateless Item 5: I waited long enough for 5!</span>', '</div>', '</div>', '</div>', '</div>' ],
+			'<div class="child">Stateless Item 1: I waited long enough for 1!<div class="child">Stateless Item 2: I waited long enough for 2!<div class="child">Stateless Item 3: I waited long enough for 3!<div class="child">Stateless Item 4: I waited long enough for 4!<span>Final Stateless Item 5: I waited long enough for 5!</span></div></div></div></div>'
+		]
 	},
 	{
 		description: 'should render a stack of stateful component with promise',
 		template: (value) => createElement('div', null, createElement(StatefulPromiseComponent, { index: 1 }), createElement(StatefulPromiseComponent, { index: 2 }), createElement(StatefulPromiseComponent, { index: 3 })),
-		result: '<div><span>Stateless Item 1: I waited long enough!</span><span>Stateless Item 2: I waited long enough!</span><span>Stateless Item 3: I waited long enough!</span></div>'
+		result: [
+			[ '<div>', '<span>Stateless Item 1: I waited long enough!</span>', '<span>Stateless Item 2: I waited long enough!</span>', '<span>Stateless Item 3: I waited long enough!</span>', '</div>' ],
+			'<div><span>Stateless Item 1: I waited long enough!</span><span>Stateless Item 2: I waited long enough!</span><span>Stateless Item 3: I waited long enough!</span></div>'
+		]
 	}];
 
 	testEntries.forEach(test => {
 		it(test.description, () => {
-			const container = document.createElement('div');
 			const vDom = test.template('foo');
 			return streamPromise(vDom).then(function (output) {
-				document.body.appendChild(container);
-				container.innerHTML = output as string;
-				expect(output).to.equal(test.result);
-				document.body.removeChild(container);
+				if (typeof test.result == 'object') {
+					expect(output[0]).to.deep.equal(test.result[0]);
+					expect(output[1]).to.equal(test.result[1]);
+				} else {
+					const container = document.createElement('div');
+					document.body.appendChild(container);
+					container.innerHTML = output as string;
+					expect(output[1]).to.equal(test.result);
+					document.body.removeChild(container);
+				}
 			});
 		});
 	});
@@ -175,10 +193,14 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 
 function streamPromise(dom) {
 	return new Promise(function (res, rej) {
+		let chunks = [];
 		streamAsString(dom)
 		.on('error', rej)
+		.on('data', (chunk) => {
+			chunks.push(chunk.toString());
+		})
 		.pipe(concatStream(function (buffer) {
-			res(buffer.toString('utf-8'));
+			res([ chunks, buffer.toString('utf-8') ]);
 		}));
 	});
 }
