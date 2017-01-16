@@ -159,13 +159,13 @@ function Home({ params }) {
   // ...
 }
 
-function authorizedOnly(props, router) {
+function authorizedOnly({ props, router }) {
   if (!props.loggedIn) {
     router.push('/login');
   }
 }
 
-function sayGoodBye(props, router) {
+function sayGoodBye({ props, router }) {
   alert('Good bye!')
 }
 
