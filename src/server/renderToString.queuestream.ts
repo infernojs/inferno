@@ -149,26 +149,27 @@ export class RenderQueueStream extends Readable {
 				}
 				// Trigger extra promise-based lifecycle hook
 				if (isFunction(instance.getInitialProps)) {
-					const self = this;
-					const promisePosition = this.promises.push([]) - 1;
-					this.addToQueue(
-						instance.getInitialProps().then((dataForContext) => {
-							instance._pendingSetState = false;
-							if (typeof dataForContext === 'object') {
-								instance.props = Object.assign({}, instance.props, dataForContext);
-							}
-							self.renderVNodeToQueue(
-								instance.render(instance.props, instance.context),
-								instance.context,
-								true,
-								promisePosition,
-							);
-							setTimeout(this.pushQueue.bind(this), 0);
-							return promisePosition;
-						}),
-						position,
-					);
-					return;
+				    const initialProps = instance.getInitialProps(props);
+
+				    if (initialProps) {
+				        if (initialProps instanceof Promise) {
+				            const promisePosition = this.promises.push([]) - 1;
+
+				            this.addToQueue(initialProps.then((dataForContext) => {
+				                instance._pendingSetState = false;
+				                if (typeof dataForContext === 'object') {
+				                    instance.props = Object.assign({}, instance.props, dataForContext);
+				                }
+				                this.renderVNodeToQueue(instance.render(instance.props, instance.context), instance.context, true, promisePosition);
+				                this.pushQueue();
+				                return promisePosition;
+				            }), position);
+				            
+				            return;
+				        } else {
+				            props = instance.props = initialProps;
+				        }
+				    }
 				}
 				const nextVNode = instance.render(props, vNode.context);
 				instance._pendingSetState = false;
