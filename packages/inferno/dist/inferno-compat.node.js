@@ -679,6 +679,10 @@ function normalizeProps(name, props) {
 		}
 	}
 	for (var prop in props) {
+		if (prop === 'onDoubleClick') {
+			props.onDblClick = props[prop];
+			delete props[prop];
+		}
 		if (xlinkAttrs[prop]) {
 			props[xlinkAttrs[prop]] = props[prop];
 			delete props[prop];
