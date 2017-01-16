@@ -887,7 +887,6 @@ var RenderQueueStream = (function (Readable$$1) {
                     var initialProps = instance.getInitialProps(instance.props, instance.context);
                     if (initialProps) {
                         if (Promise.resolve(initialProps) == initialProps) {
-                            console.log('do promise');
                             var promisePosition = this.promises.push([]) - 1;
                             this.addToQueue(initialProps.then(function (dataForContext) {
                                 instance._pendingSetState = false;

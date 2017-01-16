@@ -150,7 +150,6 @@ export class RenderQueueStream extends Readable {
 					const initialProps = instance.getInitialProps(instance.props, instance.context);
 					if (initialProps) {
 						if (Promise.resolve(initialProps) == initialProps) {
-							console.log('do promise');
 							const promisePosition = this.promises.push([]) - 1;
 							this.addToQueue(initialProps.then((dataForContext) => {
 								instance._pendingSetState = false;
