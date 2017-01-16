@@ -48,7 +48,7 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = fal
 				redirect = route.props.to;
 			}
 			if (children) {
-				const matchChild = matchRoutes(children, pathToMatch, location, redirect);
+				const matchChild = matchRoutes(children, currentURL, location, redirect);
 				if (matchChild) {
 					if (matchChild.redirect) {
 						return {
