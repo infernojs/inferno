@@ -39,18 +39,16 @@ function renderStylesToString(styles) {
 
 export class RenderQueueStream extends Readable {
 
-	initNode: any;
-	staticMarkup: any;
 	started: boolean = false;
 	collector: any[] = [ Infinity ]; // Infinity marks the end of the stream
 	promises: any[] = [];
 
 	constructor(initNode, staticMarkup) {
 		super();
-		this.initNode = initNode;
-		this.staticMarkup = staticMarkup;
 		this.pushQueue = this.pushQueue.bind(this);
-		this.renderVNodeToQueue(this.initNode, null, this.staticMarkup, null);
+		if (initNode) {
+			this.renderVNodeToQueue(initNode, null, staticMarkup, null);
+		}
 	}
 
 	_read() {
@@ -105,6 +103,7 @@ export class RenderQueueStream extends Readable {
 				(index) => {
 					self.collector.splice(0, 1, ...self.promises[index]);
 					self.promises[index] = null;
+					setTimeout(self.pushQueue, 0);
 				},
 			);
 			this.collector[0] = null;
@@ -268,10 +267,10 @@ export class RenderQueueStream extends Readable {
 
 };
 
-export default function streamAsString(node) {
+export default function streamQueueAsString(node) {
 	return new RenderQueueStream(node, false);
 }
 
-export function streamAsStaticMarkup(node) {
+export function streamQueueAsStaticMarkup(node) {
 	return new RenderQueueStream(node, true);
 }
