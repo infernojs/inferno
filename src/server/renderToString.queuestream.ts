@@ -26,11 +26,9 @@ function renderStylesToString(styles) {
 		return styles;
 	} else {
 		let renderedString = '';
-
 		for (const styleName in styles) {
 			const value = styles[styleName];
 			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
-
 			if (!isNullOrUndef(value)) {
 				renderedString += `${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`;
 			}
@@ -51,11 +49,12 @@ export class RenderQueueStream extends Readable {
 		super();
 		this.initNode = initNode;
 		this.staticMarkup = staticMarkup;
+		this.pushQueue = this.pushQueue.bind(this);
 		this.renderVNodeToQueue(this.initNode, null, this.staticMarkup, null);
 	}
 
 	_read() {
-		setTimeout(this.pushQueue.bind(this), 0);
+		setTimeout(this.pushQueue, 0);
 	}
 
 	addToQueue(node, position) {
@@ -149,27 +148,30 @@ export class RenderQueueStream extends Readable {
 				}
 				// Trigger extra promise-based lifecycle hook
 				if (isFunction(instance.getInitialProps)) {
-				    const initialProps = instance.getInitialProps(props);
-
-				    if (initialProps) {
-				        if (initialProps instanceof Promise) {
-				            const promisePosition = this.promises.push([]) - 1;
-
-				            this.addToQueue(initialProps.then((dataForContext) => {
-				                instance._pendingSetState = false;
-				                if (typeof dataForContext === 'object') {
-				                    instance.props = Object.assign({}, instance.props, dataForContext);
-				                }
-				                this.renderVNodeToQueue(instance.render(instance.props, instance.context), instance.context, true, promisePosition);
-				                this.pushQueue();
-				                return promisePosition;
-				            }), position);
-				            
-				            return;
-				        } else {
-				            props = instance.props = initialProps;
-				        }
-				    }
+					const initialProps = instance.getInitialProps(instance.props, instance.context);
+					if (initialProps) {
+						if (Promise.resolve(initialProps) == initialProps) {
+							console.log('do promise');
+							const promisePosition = this.promises.push([]) - 1;
+							this.addToQueue(initialProps.then((dataForContext) => {
+								instance._pendingSetState = false;
+								if (typeof dataForContext === 'object') {
+									instance.props = Object.assign({}, instance.props, dataForContext);
+								}
+								this.renderVNodeToQueue(
+									instance.render(instance.props, instance.context),
+									instance.context,
+									true,
+									promisePosition
+								);
+								setTimeout(this.pushQueue, 0);
+								return promisePosition;
+							}), position);
+							return;
+						} else {
+							instance.props = Object.assign({}, instance.props, initialProps);
+						}
+					}
 				}
 				const nextVNode = instance.render(props, vNode.context);
 				instance._pendingSetState = false;

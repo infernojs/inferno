@@ -37,7 +37,7 @@ class StatefulHierchicalPromiseComponent extends Component<any, any> {
 				resolve({
 					value: `I waited long enough for ${ this.props.index }!`
 				});
-			}, 5 * this.props.index);
+			}, 0);
 		});
 	}
 	render() {
@@ -65,7 +65,8 @@ interface ITestEntry {
 }
 
 describe('SSR Creation Queue Streams - (non-JSX)', () => {
-	const testEntries: ITestEntry[] = [{
+	const testEntries: ITestEntry[] = [
+	{
 		description: 'should render div with span child',
 		template: () => createElement('div', null, createElement('span', null)),
 		result: '<div><span></span></div>'
@@ -170,7 +171,8 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 			[ '<div>', '<span>Stateless Item 1: I waited long enough!</span>', '<span>Stateless Item 2: I waited long enough!</span>', '<span>Stateless Item 3: I waited long enough!</span>', '</div>' ],
 			'<div><span>Stateless Item 1: I waited long enough!</span><span>Stateless Item 2: I waited long enough!</span><span>Stateless Item 3: I waited long enough!</span></div>'
 		]
-	}];
+	}
+	];
 
 	testEntries.forEach(test => {
 		it(test.description, () => {

@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('inferno'), require('inferno-component')) :
-	typeof define === 'function' && define.amd ? define(['inferno', 'inferno-component'], factory) :
-	(factory(global.Inferno,global.Inferno.Component));
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('inferno'), require('inferno-component')) :
+    typeof define === 'function' && define.amd ? define(['inferno', 'inferno-component'], factory) :
+    (factory(global.Inferno,global.Inferno.Component));
 }(this, (function (inferno,Component) { 'use strict';
 
 Component = 'default' in Component ? Component['default'] : Component;

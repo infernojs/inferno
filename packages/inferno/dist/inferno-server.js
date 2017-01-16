@@ -512,7 +512,10 @@ function renderVNodeToString(vNode, context, firstChild) {
                 if (isArray(children)) {
                     for (var i = 0; i < children.length; i++) {
                         var child = children[i];
-                        if (!isInvalid(child)) {
+                        if (isStringOrNumber(child)) {
+                            renderedString += escapeText(child);
+                        }
+                        else if (!isInvalid(child)) {
                             renderedString += renderVNodeToString(child, context, i === 0);
                         }
                     }
