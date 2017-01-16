@@ -493,6 +493,8 @@ function renderVNodeToString(vNode, context, firstChild) {
                 else if (prop === 'className' && !isNullOrUndef(value)) {
                     renderedString += " class=\"" + (escapeText(value)) + "\"";
                 }
+                else if (prop === 'children') {
+                }
                 else {
                     if (isStringOrNumber(value)) {
                         renderedString += " " + prop + "=\"" + (escapeText(value)) + "\"";

@@ -39,6 +39,10 @@ describe('SSR Creation (JSX)', () => {
 		description: 'should render mixed invalid/valid children',
 		template: () => <div>{[ null, '123', null, '456' ]}</div>,
 		result: '<div>123<!---->456</div>',
+	}, {
+		description: 'should ignore children as props',
+		template: () => <p children="foo">foo</p>,
+		result: '<p>foo</p>',
 	}];
 
 	testEntries.forEach((test) => {
