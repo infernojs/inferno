@@ -100,6 +100,8 @@ function renderVNodeToString(vNode, context, firstChild): string {
 					renderedString += ` style="${ renderStylesToString(props.style) }"`;
 				} else if (prop === 'className' && !isNullOrUndef(value)) {
 					renderedString += ` class="${ escapeText(value) }"`;
+				} else if (prop === 'children') {
+					// Ignore children as prop.
 				} else {
 					if (isStringOrNumber(value)) {
 						renderedString += ` ${ prop }="${ escapeText(value) }"`;

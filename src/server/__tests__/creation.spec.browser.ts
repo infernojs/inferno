@@ -87,6 +87,10 @@ describe('SSR Creation (non-JSX)', () => {
 		description: 'should ignore undefined className',
 		template: () => createElement('div', { className: undefined }),
 		result: '<div></div>'
+	}, {
+		description: 'should ignore children as props',
+		template: () => createElement('p', {}, 'foo'),
+		result: '<p>foo</p>',
 	}];
 
 	testEntries.forEach(test => {
