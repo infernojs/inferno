@@ -1,6 +1,6 @@
 import {
 	EMPTY_OBJ,
-	isNullOrUndef
+	isNullOrUndef,
 } from '../../shared';
 import { wrappers } from './processElement';
 
@@ -92,7 +92,7 @@ export function processInput(vNode, dom): boolean {
 
 		if (!inputWrapper) {
 			inputWrapper = {
-				vNode
+				vNode,
 			};
 
 			if (isCheckedType(props.type)) {
@@ -142,5 +142,4 @@ export function applyValue(vNode, dom) {
 			dom.checked = checked;
 		}
 	}
-	// delete vNode.props.value;
 }

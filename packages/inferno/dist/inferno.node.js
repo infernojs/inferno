@@ -962,7 +962,7 @@ function processInput(vNode, dom) {
         var inputWrapper = wrappers.get(dom);
         if (!inputWrapper) {
             inputWrapper = {
-                vNode: vNode
+                vNode: vNode,
             };
             if (isCheckedType(props.type)) {
                 dom.onclick = onCheckboxChange.bind(inputWrapper);
@@ -1012,7 +1012,6 @@ function applyValue(vNode, dom) {
             dom.checked = checked;
         }
     }
-    // delete vNode.props.value;
 }
 
 function isControlled$1(props) {
@@ -1091,14 +1090,16 @@ function applyValue$1(vNode, dom) {
         dom.multiple = props.multiple;
     }
     var children = vNode.children;
-    var value = props.value;
-    if (isArray(children)) {
-        for (var i = 0; i < children.length; i++) {
-            updateChildOptionGroup(children[i], value);
+    if (!isInvalid(children)) {
+        var value = props.value;
+        if (isArray(children)) {
+            for (var i = 0; i < children.length; i++) {
+                updateChildOptionGroup(children[i], value);
+            }
         }
-    }
-    else if (isVNode(children)) {
-        updateChildOptionGroup(children, value);
+        else if (isVNode(children)) {
+            updateChildOptionGroup(children, value);
+        }
     }
 }
 
