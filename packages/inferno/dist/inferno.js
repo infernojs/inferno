@@ -1,5 +1,5 @@
 /*!
- * inferno v1.2.0
+ * inferno v1.2.1
  * (c) 2017 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -962,7 +962,7 @@ function processInput(vNode, dom) {
         var inputWrapper = wrappers.get(dom);
         if (!inputWrapper) {
             inputWrapper = {
-                vNode: vNode
+                vNode: vNode,
             };
             if (isCheckedType(props.type)) {
                 dom.onclick = onCheckboxChange.bind(inputWrapper);
@@ -1012,7 +1012,6 @@ function applyValue(vNode, dom) {
             dom.checked = checked;
         }
     }
-    // delete vNode.props.value;
 }
 
 function isControlled$1(props) {
@@ -1091,14 +1090,16 @@ function applyValue$1(vNode, dom) {
         dom.multiple = props.multiple;
     }
     var children = vNode.children;
-    var value = props.value;
-    if (isArray(children)) {
-        for (var i = 0; i < children.length; i++) {
-            updateChildOptionGroup(children[i], value);
+    if (!isInvalid(children)) {
+        var value = props.value;
+        if (isArray(children)) {
+            for (var i = 0; i < children.length; i++) {
+                updateChildOptionGroup(children[i], value);
+            }
         }
-    }
-    else if (isVNode(children)) {
-        updateChildOptionGroup(children, value);
+        else if (isVNode(children)) {
+            updateChildOptionGroup(children, value);
+        }
     }
 }
 
@@ -2556,7 +2557,7 @@ function linkEvent(data, event) {
 }
 
 // This will be replaced by rollup
-var version = '1.2.0';
+var version = '1.2.1';
 
 // we duplicate it so it plays nicely with different module loading systems
 var index = {
