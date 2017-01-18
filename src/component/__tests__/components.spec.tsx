@@ -2265,11 +2265,11 @@ describe('Components (JSX)', () => {
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="A" id="B">Hello C!</div>'));
 		});
 
-		it.skip('should mount child component with its defaultProps', () => {
-			const Parent = (props) => <div>{props.children.props.a}</div>;
-			render(<Parent><Comp1 c="C" /></Parent>, container);
-			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>A</div>'));
-		});
+		// it.skip('should mount child component with its defaultProps', () => {
+		// 	const Parent = (props) => <div>{props.children.props.a}</div>;
+		// 	render(<Parent><Comp1 c="C" /></Parent>, container);
+		// 	expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>A</div>'));
+		// });
 
 		it('should patch component with defaultProps', () => {
 			render(<Comp1 c="C"/>, container);
