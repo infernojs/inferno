@@ -770,12 +770,261 @@ function streamAsStaticMarkup(node) {
     return new RenderStream(node, true);
 }
 
+function renderStylesToString$1(styles) {
+    if (isStringOrNumber(styles)) {
+        return styles;
+    }
+    else {
+        var renderedString = '';
+        for (var styleName in styles) {
+            var value = styles[styleName];
+            var px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+            if (!isNullOrUndef(value)) {
+                renderedString += (toHyphenCase(styleName)) + ":" + (escapeText(value)) + px + ";";
+            }
+        }
+        return renderedString;
+    }
+}
+var RenderQueueStream = (function (Readable$$1) {
+    function RenderQueueStream(initNode, staticMarkup) {
+        Readable$$1.call(this);
+        this.started = false;
+        this.collector = [Infinity]; // Infinity marks the end of the stream
+        this.promises = [];
+        this.pushQueue = this.pushQueue.bind(this);
+        if (initNode) {
+            this.renderVNodeToQueue(initNode, null, staticMarkup, null);
+        }
+    }
+
+    if ( Readable$$1 ) RenderQueueStream.__proto__ = Readable$$1;
+    RenderQueueStream.prototype = Object.create( Readable$$1 && Readable$$1.prototype );
+    RenderQueueStream.prototype.constructor = RenderQueueStream;
+    RenderQueueStream.prototype._read = function _read () {
+        setTimeout(this.pushQueue, 0);
+    };
+    RenderQueueStream.prototype.addToQueue = function addToQueue (node, position) {
+        // Positioning defined, stack it
+        if (!isNullOrUndef(position)) {
+            var lastSlot = this.promises[position].length - 1;
+            // Combine as array or push into promise collector
+            if (typeof this.promises[position][lastSlot] === 'string' &&
+                typeof node === 'string') {
+                this.promises[position][lastSlot] += node;
+            }
+            else {
+                this.promises[position].push(node);
+            }
+        }
+        else if (typeof node === 'string' &&
+            (this.collector.length - 1) === 0) {
+            this.push(node);
+        }
+        else if (typeof node === 'string' &&
+            typeof this.collector[this.collector.length - 2] === 'string') {
+            this.collector[this.collector.length - 2] += node;
+        }
+        else {
+            this.collector.splice(-1, 0, node);
+        }
+    };
+    RenderQueueStream.prototype.pushQueue = function pushQueue () {
+        var chunk = this.collector[0];
+        // Output strings directly
+        if (typeof chunk === 'string') {
+            this.push(chunk);
+            this.collector.shift();
+        }
+        else if (!!chunk &&
+            (typeof chunk === 'object' || isFunction(chunk)) &&
+            isFunction(chunk.then)) {
+            var self = this;
+            chunk.then(function (index) {
+                (ref = self.collector).splice.apply(ref, [ 0, 1 ].concat( self.promises[index] ));
+                self.promises[index] = null;
+                setTimeout(self.pushQueue, 0);
+                var ref;
+            });
+            this.collector[0] = null;
+        }
+        else if (chunk === Infinity) {
+            this.emit('end');
+        }
+    };
+    RenderQueueStream.prototype.renderVNodeToQueue = function renderVNodeToQueue (vNode, context, firstChild, position) {
+        var this$1 = this;
+
+        var flags = vNode.flags;
+        var type = vNode.type;
+        var props = vNode.props || inferno.EMPTY_OBJ;
+        var children = vNode.children;
+        // Handles a component render
+        if (flags & 28 /* Component */) {
+            var isClass = flags & 4;
+            // Primitive node doesn't have defaultProps, only Component
+            if (!isNullOrUndef(type.defaultProps)) {
+                copyPropsTo(type.defaultProps, props);
+                vNode.props = props;
+            }
+            // Render the
+            if (isClass) {
+                var instance = new type(props, context);
+                var childContext = instance.getChildContext();
+                if (!isNullOrUndef(childContext)) {
+                    context = Object.assign({}, context, childContext);
+                }
+                if (instance.props === inferno.EMPTY_OBJ) {
+                    instance.props = props;
+                }
+                instance.context = context;
+                instance._pendingSetState = true;
+                instance._unmounted = false;
+                // Trigger lifecycle hook
+                if (isFunction(instance.componentWillMount)) {
+                    instance.componentWillMount();
+                }
+                // Trigger extra promise-based lifecycle hook
+                if (isFunction(instance.getInitialProps)) {
+                    var initialProps = instance.getInitialProps(instance.props, instance.context);
+                    if (initialProps) {
+                        if (Promise.resolve(initialProps) == initialProps) {
+                            var promisePosition = this.promises.push([]) - 1;
+                            this.addToQueue(initialProps.then(function (dataForContext) {
+                                instance._pendingSetState = false;
+                                if (typeof dataForContext === 'object') {
+                                    instance.props = Object.assign({}, instance.props, dataForContext);
+                                }
+                                this$1.renderVNodeToQueue(instance.render(instance.props, instance.context), instance.context, true, promisePosition);
+                                setTimeout(this$1.pushQueue, 0);
+                                return promisePosition;
+                            }), position);
+                            return;
+                        }
+                        else {
+                            instance.props = Object.assign({}, instance.props, initialProps);
+                        }
+                    }
+                }
+                var nextVNode = instance.render(props, vNode.context);
+                instance._pendingSetState = false;
+                // In case render returns invalid stuff
+                if (isInvalid(nextVNode)) {
+                    this.addToQueue('<!--!-->', position);
+                }
+                this.renderVNodeToQueue(nextVNode, context, true, position);
+            }
+            else {
+                var nextVNode$1 = type(props, context);
+                if (isInvalid(nextVNode$1)) {
+                    this.addToQueue('<!--!-->', position);
+                }
+                this.renderVNodeToQueue(nextVNode$1, context, true, position);
+            }
+        }
+        else if (flags & 3970 /* Element */) {
+            var renderedString = "<" + type;
+            var html;
+            var isVoidElement$$1 = isVoidElement(type);
+            if (!isNull(props)) {
+                for (var prop in props) {
+                    var value = props[prop];
+                    if (prop === 'dangerouslySetInnerHTML') {
+                        html = value.__html;
+                    }
+                    else if (prop === 'style') {
+                        renderedString += " style=\"" + (renderStylesToString$1(props.style)) + "\"";
+                    }
+                    else if (prop === 'className' && !isNullOrUndef(value)) {
+                        renderedString += " class=\"" + (escapeText(value)) + "\"";
+                    }
+                    else {
+                        if (isStringOrNumber(value)) {
+                            renderedString += " " + prop + "=\"" + (escapeText(value)) + "\"";
+                        }
+                        else if (isTrue(value)) {
+                            renderedString += " " + prop;
+                        }
+                    }
+                }
+            }
+            // Voided element, push directly to queue
+            if (isVoidElement$$1) {
+                this.addToQueue(renderedString + ">", position);
+            }
+            else {
+                renderedString += ">";
+                // Element has children, build them in
+                if (!isInvalid(children)) {
+                    if (isArray(children)) {
+                        this.addToQueue(renderedString, position);
+                        renderedString = '';
+                        for (var i = 0; i < children.length; i++) {
+                            var child = children[i];
+                            if (isStringOrNumber(child)) {
+                                this$1.addToQueue(escapeText(children), position);
+                            }
+                            else if (!isInvalid(child)) {
+                                this$1.renderVNodeToQueue(child, context, i === 0, position);
+                            }
+                        }
+                    }
+                    else if (isStringOrNumber(children)) {
+                        this.addToQueue(renderedString + escapeText(children) + '</' + type + '>', position);
+                        return;
+                    }
+                    else {
+                        this.addToQueue(renderedString, position);
+                        this.renderVNodeToQueue(children, context, true, position);
+                        this.addToQueue('</' + type + '>', position);
+                        return;
+                    }
+                }
+                else if (html) {
+                    this.addToQueue(renderedString + html + '</' + type + '>', position);
+                    return;
+                }
+                // Close element if it's not void
+                if (!isVoidElement$$1) {
+                    this.addToQueue(renderedString + '</' + type + '>', position);
+                }
+            }
+        }
+        else if (flags & 1 /* Text */) {
+            this.addToQueue((firstChild ? '' : '<!---->') + escapeText(children), position);
+        }
+        else {
+            {
+                if (typeof vNode === 'object') {
+                    throwError(("renderToString() received an object that's not a valid VNode, you should stringify it first. Object: \"" + (JSON.stringify(vNode)) + "\"."));
+                }
+                else {
+                    throwError(("renderToString() expects a valid VNode, instead it received an object with the type \"" + (typeof vNode) + "\"."));
+                }
+            }
+            throwError();
+        }
+    };
+
+    return RenderQueueStream;
+}(stream.Readable));
+
+function streamQueueAsString(node) {
+    return new RenderQueueStream(node, false);
+}
+function streamQueueAsStaticMarkup(node) {
+    return new RenderQueueStream(node, true);
+}
+
 var index = {
 	renderToString: renderToString,
 	renderToStaticMarkup: renderToStaticMarkup,
 	streamAsString: streamAsString,
 	streamAsStaticMarkup: streamAsStaticMarkup,
-	RenderStream: RenderStream
+	RenderStream: RenderStream,
+	RenderQueueStream: RenderQueueStream,
+	streamQueueAsString: streamQueueAsString,
+	streamQueueAsStaticMarkup: streamQueueAsStaticMarkup
 };
 
 return index;
