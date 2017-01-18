@@ -1,7 +1,7 @@
 import {
 	isArray,
 	EMPTY_OBJ,
-	isNullOrUndef
+	isNullOrUndef, isInvalid
 } from '../../shared';
 import { wrappers } from './processElement';
 import { isVNode } from '../../core/VNodes';
@@ -91,13 +91,15 @@ export function applyValue(vNode, dom) {
 		dom.multiple = props.multiple;
 	}
 	const children = vNode.children;
-	const value = props.value;
 
-	if (isArray(children)) {
-		for (let i = 0; i < children.length; i++) {
-			updateChildOptionGroup(children[i], value);
+	if (!isInvalid(children)) {
+		const value = props.value;
+		if (isArray(children)) {
+			for (let i = 0; i < children.length; i++) {
+				updateChildOptionGroup(children[i], value);
+			}
+		} else if (isVNode(children)) {
+			updateChildOptionGroup(children, value);
 		}
-	} else if (isVNode(children)) {
-		updateChildOptionGroup(children, value);
 	}
 }

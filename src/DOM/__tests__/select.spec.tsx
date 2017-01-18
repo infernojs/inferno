@@ -272,4 +272,9 @@ describe('Select / select multiple (JSX)', () => {
 			innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'),
 		);
 	});
+
+	it('Should render empty select', () => {
+		render(<select></select>, container);
+		expect(container.innerHTML).to.eql(innerHTML('<select></select>'));
+	});
 });
