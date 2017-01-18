@@ -2,7 +2,7 @@
   "name": "inferno-build",
   "private": true,
   "license": "MIT",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"

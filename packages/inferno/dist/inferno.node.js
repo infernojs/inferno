@@ -1,5 +1,5 @@
 /*!
- * inferno v1.2.0
+ * inferno v1.2.1
  * (c) 2017 Dominic Gannaway
  * Released under the MIT License.
  */
@@ -2557,7 +2557,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // This will be replaced by rollup
-var version = '1.2.0';
+var version = '1.2.1';
 
 // we duplicate it so it plays nicely with different module loading systems
 var index = {
