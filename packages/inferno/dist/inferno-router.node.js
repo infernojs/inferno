@@ -775,7 +775,7 @@ function matchRoutes(_routes, currentURL, parentPath, redirect) {
                 redirect = route.props.to;
             }
             if (children) {
-                var matchChild = matchRoutes(children, pathToMatch, location, redirect);
+                var matchChild = matchRoutes(children, currentURL, location, redirect);
                 if (matchChild) {
                     if (matchChild.redirect) {
                         return {
