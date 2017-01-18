@@ -149,7 +149,7 @@ export class RenderQueueStream extends Readable {
 				if (isFunction(instance.getInitialProps)) {
 					const initialProps = instance.getInitialProps(instance.props, instance.context);
 					if (initialProps) {
-						if (Promise.resolve(initialProps) == initialProps) {
+						if (Promise.resolve(initialProps) === initialProps) {
 							const promisePosition = this.promises.push([]) - 1;
 							this.addToQueue(initialProps.then((dataForContext) => {
 								instance._pendingSetState = false;
@@ -160,7 +160,7 @@ export class RenderQueueStream extends Readable {
 									instance.render(instance.props, instance.context),
 									instance.context,
 									true,
-									promisePosition
+									promisePosition,
 								);
 								setTimeout(this.pushQueue, 0);
 								return promisePosition;

@@ -4,9 +4,9 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('inferno')) :
-    typeof define === 'function' && define.amd ? define(['inferno'], factory) :
-    (global.Inferno = global.Inferno || {}, global.Inferno.createElement = factory(global.Inferno));
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('inferno')) :
+	typeof define === 'function' && define.amd ? define(['inferno'], factory) :
+	(global.Inferno = global.Inferno || {}, global.Inferno.createElement = factory(global.Inferno));
 }(this, (function (inferno) { 'use strict';
 
 // this is MUCH faster than .constructor === Array and instanceof Array
