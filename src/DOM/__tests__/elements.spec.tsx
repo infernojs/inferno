@@ -894,27 +894,27 @@ describe('Elements (JSX)', () => {
 	if (typeof global !== 'undefined' && !(global as any).usingJSDOM) {
 		describe('Progress element', () => {
 			it('Should be possible to change value of Progress element Github#714', () => {
-				render(<progress value={10} max={100} />, container);
+				render(<progress max={100} value="10" />, container);
 
-				expect(container.firstChild.value).to.eql(10);
+				expect(container.firstChild.getAttribute('value')).to.eql('10');
 
-				render(<progress value={33} max={100} />, container);
+				render(<progress max={100} value="33" />, container);
 
-				expect(container.firstChild.value).to.eql(33);
+				expect(container.firstChild.getAttribute('value')).to.eql('33');
 
-				render(<progress value={0} max={100} />, container);
+				render(<progress max={100} value={'0'} />, container);
 
-				expect(container.firstChild.value).to.eql(0);
+				expect(container.firstChild.getAttribute('value')).to.eql('0');
 			});
 			it('Should be possible to render Progress element without value', () => {
 				render(<progress max={100}/>, container);
 				expect(container.firstChild.tagName).to.eql('PROGRESS');
-				expect(container.firstChild.value).to.be.oneOf([null, '', 0]);
+				expect(container.firstChild.getAttribute('value')).to.be.oneOf([null, '', 0, '0']);
 
 				// Add as string
-				render(<progress value="3" max={100}/>, container);
+				render(<progress max={100} value="3" />, container);
 				expect(container.firstChild.tagName).to.eql('PROGRESS');
-				expect(container.firstChild.value).to.eql(3);
+				expect(container.firstChild.getAttribute('value')).to.eql('3');
 			});
 		});
 	}
