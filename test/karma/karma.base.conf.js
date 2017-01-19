@@ -27,7 +27,7 @@ module.exports = function (config) {
 								'transform-class-properties',
 								'transform-object-rest-spread',
 								'babel-plugin-syntax-jsx',
-								'babel-plugin-inferno'
+								[ 'babel-plugin-inferno', { imports: true }]
 							]
 						}
 					}

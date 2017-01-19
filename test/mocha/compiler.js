@@ -33,7 +33,7 @@ const babelOptions = {
 	presets: [],
 	plugins: [
 		'transform-es2015-modules-commonjs',
-		'babel-plugin-inferno',
+		[ 'babel-plugin-inferno', { imports: true }],
 		[ 'module-resolver', {
 			alias: virtuals.compilerAliases
 		}]
