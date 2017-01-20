@@ -48,8 +48,8 @@ export default class Router extends Component<IRouterProps, any> {
 
 	componentWillMount() {
 		if (this.router) {
-			this.unlisten = this.router.listen((url) => {
-				this.routeTo(url.pathname);
+			this.unlisten = this.router.listen(() => {
+				this.routeTo(this.router.url);
 			});
 		}
 	}
