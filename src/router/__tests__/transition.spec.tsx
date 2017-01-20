@@ -201,6 +201,24 @@ describe('Router (jsx) #transitions', () => {
 			done();
 		}, 10);
 	});
+
+	it('should passed query parameters when URL is changed by using the history API', (done) => {
+		const TestQueryParams = ({ params }) => <div>Query Params { params.foo }</div>;
+
+		render(
+			<Router history={ browserHistory }>
+				<IndexRoute component={ TestQueryParams } />
+			</Router>,
+			container,
+		);
+
+		browserHistory.push('/?foo=Bar');
+
+		setTimeout(() => {
+			expect(container.innerHTML).to.equal(innerHTML('<div>Query Params Bar</div>'));
+			done();
+		}, 10);
+	});
 });
 
 function clickOnLink(element) {
