@@ -11,7 +11,7 @@ import {
 	scryRenderedDOMComponentsWithClass,
 	scryRenderedDOMComponentsWithTag,
 	scryRenderedComponentsWithType,
-	findenderedDOMComponentsWithTag,
+	findRenderedDOMComponentsWithTag,
 	findRenderedComponentWithType,
 	mockComponent
 } from '../../../build/tools/testUtils';
@@ -29,7 +29,7 @@ export {
 	scryRenderedDOMComponentsWithTag,
 	scryRenderedComponentsWithType,
 	findRenderedDOMComponentsWithClass,
-	findenderedDOMComponentsWithTag,
+	findRenderedDOMComponentsWithTag,
 	findRenderedComponentWithType,
 	mockComponent
 };
@@ -47,7 +47,7 @@ export default {
 	scryRenderedDOMComponentsWithTag,
 	scryRenderedComponentsWithType,
 	findRenderedDOMComponentsWithClass,
-	findenderedDOMComponentsWithTag,
+	findRenderedDOMComponentsWithTag,
 	findRenderedComponentWithType,
 	mockComponent,
 };

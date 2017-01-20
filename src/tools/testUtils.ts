@@ -145,7 +145,7 @@ export function findRenderedDOMComponentsWithClass(root: VNode, classNames: Func
 	return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass);
 }
 
-export function findenderedDOMComponentsWithTag(root: VNode, tagName: Function): VNode {
+export function findRenderedDOMComponentsWithTag(root: VNode, tagName: Function): VNode {
 	return findOneOf(root, tagName, 'tag', scryRenderedDOMComponentsWithTag);
 }
 
