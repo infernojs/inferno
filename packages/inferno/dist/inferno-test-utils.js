@@ -2726,10 +2726,10 @@ function findOneOf(root, option, optionName, finderFn) {
     }
     return all[0];
 }
-function findRenderedDOMComponentsWithClass(root, classNames) {
+function findRenderedDOMComponentWithClass(root, classNames) {
     return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass);
 }
-function findenderedDOMComponentsWithTag(root, tagName) {
+function findRenderedDOMComponentWithTag(root, tagName) {
     return findOneOf(root, tagName, 'tag', scryRenderedDOMComponentsWithTag);
 }
 function findRenderedComponentWithType(root, componentClass) {
@@ -2755,8 +2755,8 @@ var index = {
 	scryRenderedDOMComponentsWithClass: scryRenderedDOMComponentsWithClass,
 	scryRenderedDOMComponentsWithTag: scryRenderedDOMComponentsWithTag,
 	scryRenderedComponentsWithType: scryRenderedComponentsWithType,
-	findRenderedDOMComponentsWithClass: findRenderedDOMComponentsWithClass,
-	findenderedDOMComponentsWithTag: findenderedDOMComponentsWithTag,
+	findRenderedDOMComponentWithClass: findRenderedDOMComponentWithClass,
+	findRenderedDOMComponentWithTag: findRenderedDOMComponentWithTag,
 	findRenderedComponentWithType: findRenderedComponentWithType,
 	mockComponent: mockComponent,
 };
@@ -2772,8 +2772,8 @@ exports.findAllInRenderedTree = findAllInRenderedTree;
 exports.scryRenderedDOMComponentsWithClass = scryRenderedDOMComponentsWithClass;
 exports.scryRenderedDOMComponentsWithTag = scryRenderedDOMComponentsWithTag;
 exports.scryRenderedComponentsWithType = scryRenderedComponentsWithType;
-exports.findRenderedDOMComponentsWithClass = findRenderedDOMComponentsWithClass;
-exports.findenderedDOMComponentsWithTag = findenderedDOMComponentsWithTag;
+exports.findRenderedDOMComponentWithClass = findRenderedDOMComponentWithClass;
+exports.findRenderedDOMComponentWithTag = findRenderedDOMComponentWithTag;
 exports.findRenderedComponentWithType = findRenderedComponentWithType;
 exports.mockComponent = mockComponent;
 exports['default'] = index;

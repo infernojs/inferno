@@ -141,11 +141,11 @@ function findOneOf(root: VNode, option: any, optionName: string, finderFn: Funct
 	return all[0];
 }
 
-export function findRenderedDOMComponentsWithClass(root: VNode, classNames: Function): VNode {
+export function findRenderedDOMComponentWithClass(root: VNode, classNames: Function): VNode {
 	return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass);
 }
 
-export function findenderedDOMComponentsWithTag(root: VNode, tagName: Function): VNode {
+export function findRenderedDOMComponentWithTag(root: VNode, tagName: Function): VNode {
 	return findOneOf(root, tagName, 'tag', scryRenderedDOMComponentsWithTag);
 }
 
