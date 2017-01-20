@@ -1,6 +1,6 @@
 import {
 	findAllInRenderedTree,
-	findRenderedDOMComponentsWithClass,
+	findRenderedDOMComponentWithClass,
 	isCompositeComponent,
 	isCompositeComponentWithType,
 	isDOMComponent,
@@ -11,7 +11,7 @@ import {
 	scryRenderedDOMComponentsWithClass,
 	scryRenderedDOMComponentsWithTag,
 	scryRenderedComponentsWithType,
-	findRenderedDOMComponentsWithTag,
+	findRenderedDOMComponentWithTag,
 	findRenderedComponentWithType,
 	mockComponent
 } from '../../../build/tools/testUtils';
@@ -28,8 +28,8 @@ export {
 	scryRenderedDOMComponentsWithClass,
 	scryRenderedDOMComponentsWithTag,
 	scryRenderedComponentsWithType,
-	findRenderedDOMComponentsWithClass,
-	findRenderedDOMComponentsWithTag,
+	findRenderedDOMComponentWithClass,
+	findRenderedDOMComponentWithTag,
 	findRenderedComponentWithType,
 	mockComponent
 };
@@ -46,8 +46,8 @@ export default {
 	scryRenderedDOMComponentsWithClass,
 	scryRenderedDOMComponentsWithTag,
 	scryRenderedComponentsWithType,
-	findRenderedDOMComponentsWithClass,
-	findRenderedDOMComponentsWithTag,
+	findRenderedDOMComponentWithClass,
+	findRenderedDOMComponentWithTag,
 	findRenderedComponentWithType,
 	mockComponent,
 };

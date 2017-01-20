@@ -158,8 +158,8 @@ declare module 'inferno-test-utils' {
 	export function scryRenderedDOMComponentsWithClass(root: VNode, classNames: stringArr): VNode[];
 	export function scryRenderedDOMComponentsWithTag (root: VNode, tagName: string): VNode[];
 	export function scryRenderedComponentsWithType(root: VNode, componentType: Function): VNode[];
-	export function findRenderedDOMComponentsWithClass(root: VNode, classNames: Function): VNode;
-	export function findRenderedDOMComponentsWithTag(root: VNode, tagName: Function): VNode;
+	export function findRenderedDOMComponentWithClass(root: VNode, classNames: Function): VNode;
+	export function findRenderedDOMComponentWithTag(root: VNode, tagName: Function): VNode;
 	export function findRenderedComponentWithType(root: VNode, componentClass: Function): VNode;
 	export function mockComponent(componentClass, mockTagName?: string);
 
@@ -175,8 +175,8 @@ declare module 'inferno-test-utils' {
 		scryRenderedDOMComponentsWithClass,
 		scryRenderedDOMComponentsWithTag,
 		scryRenderedComponentsWithType,
-		findRenderedDOMComponentsWithClass,
-		findRenderedDOMComponentsWithTag,
+		findRenderedDOMComponentWithClass,
+		findRenderedDOMComponentWithTag,
 		findRenderedComponentWithType,
 		mockComponent
 	};
