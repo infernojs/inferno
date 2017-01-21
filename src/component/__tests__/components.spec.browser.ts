@@ -1107,4 +1107,61 @@ describe('Components (non-JSX)', () => {
 			);
 		});
 	});
+
+	describe('SetState function callback', () => {
+		it('Should have state, props, and context as parameters', (done) => {
+			function checkParams(state, props, context) {
+				expect(state).to.eql({btnstate: 'btnstate'});
+				expect(props).to.eql({buttonProp: 'magic', children: 'btn'});
+				expect(context).to.eql({color: 'purple'});
+				done();
+			}
+
+			class Button extends Component<any, any> {
+				constructor(props) {
+					super(props);
+					this.state = {
+						btnstate: 'btnstate'
+					};
+				}
+
+				click() {
+					this.setState(checkParams);
+				}
+
+				render() {
+					return createElement('button', {
+						onClick: this.click.bind(this),
+						style: {background: this.context.color}
+					}, this.props.children);
+				}
+			}
+
+			class Message extends Component<any, any> {
+				render() {
+					return createElement('div', null,
+						[ this.props.text, createElement(Button, {buttonProp: 'magic'}, 'btn') ]
+					);
+				}
+			}
+
+			class MessageList extends Component<any, any> {
+				getChildContext() {
+					return {color: 'purple'};
+				}
+
+				render() {
+					const children = this.props.messages.map(function (message) {
+						return createElement(Message, {text: message.text});
+					});
+
+					return createElement('div', null, children);
+				}
+			}
+
+			render(createElement(MessageList, {messages: [ {text: 'eka'}, {text: 'toka'} ]}), container);
+
+			container.querySelector('button').click();
+		});
+	});
 });

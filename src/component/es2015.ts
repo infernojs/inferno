@@ -94,7 +94,7 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 
 function queueStateChanges<P, S>(component: Component<P, S>, newState, callback: Function, sync: boolean): void {
 	if (isFunction(newState)) {
-		newState = newState(component.state);
+		newState = newState(component.state, component.props, component.context);
 	}
 	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];

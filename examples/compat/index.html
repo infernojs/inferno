@@ -1,38 +1,93 @@
 <!doctype html>
 <html>
-	<head>
-		<title>Inferno CSS transform example</title>
-	</head>
-	<body>
-		<div id="app"></div>
-		<script>
-			window.process = {
-				env: {
-					NODE_ENV: 'development'
-				}
+<head>
+    <title>Inferno CSS transform example</title>
+</head>
+<body>
+<div id="app"></div>
+<div id="app1"></div>
+<script>
+	window.process = {
+		env: {
+			NODE_ENV: 'development'
+		}
+	};
+</script>
+<script src="../../packages/inferno/dist/inferno.js"></script>
+<script src="../../packages/inferno/dist/inferno-component.js"></script>
+<script src="../../packages/inferno/dist/inferno-compat.js"></script>
+<script>
+	"use strict";
+	var createElement = Inferno.createElement;
+
+	class MyFoo extends Inferno.Component {
+		render() {
+			return createElement('div', {ref: 'hey'}, 'Hello world!')
+		}
+
+		componentDidMount() {
+			if (this.refs.hey) {
+				console.log('inferno-compat string refs work :)')
+			} else {
+				console.log('inferno-compat string refs do not work :(')
+			}
+		}
+	}
+
+	Inferno.render(createElement(MyFoo, {}), document.getElementById('app'));
+
+    /*
+     Example of using context and setState callback function
+     */
+
+
+	function checkParams(state, props, context) {
+		console.log(state, props, context)
+	}
+
+	class Button extends Inferno.Component {
+		constructor(props) {
+			super(props);
+			this.state = {
+				btnstate: 'btnstate'
 			};
-		</script>
-		<script src="../../packages/inferno/dist/inferno.js"></script>
-		<script src="../../packages/inferno/dist/inferno-component.js"></script>
-		<script src="../../packages/inferno/dist/inferno-compat.js"></script>
-		<script>
-			"use strict";
-			var createElement = Inferno.createElement;
+		}
 
-			class MyFoo extends Inferno.Component {
-				render() {
-					return createElement('div', { ref: 'hey' }, 'Hello world!')
-				}
-				componentDidMount() {
-					if (this.refs.hey) {
-						console.log('inferno-compat string refs work :)')
-					} else {
-						console.log('inferno-compat string refs do not work :(')
-					}
-				}
-			} 
+		click() {
+			this.setState(checkParams);
+		}
 
-			Inferno.render(createElement(MyFoo, {}), document.getElementById('app'));
-		</script>
-	</body>
+		render() {
+			return createElement('button', {
+				onClick: this.click.bind(this),
+				style: {background: this.context.color}
+			}, this.props.children);
+		}
+	}
+
+	class Message extends Inferno.Component {
+		render() {
+			return createElement('div', null,
+				[ this.props.text, createElement(Button, {buttonProp: 'magic'}, 'btn') ]
+			);
+		}
+	}
+
+	class MessageList extends Inferno.Component {
+		getChildContext() {
+			return {color: "purple"};
+		}
+
+		render() {
+			const children = this.props.messages.map(function (message) {
+				return createElement(Message, {text: message.text});
+			});
+
+			return createElement('div', null, children);
+		}
+	}
+
+	Inferno.render(createElement(MessageList, {messages: [ {text: 'eka'}, {text: 'toka'} ]}), document.getElementById('app1'))
+</script>
+</body>
 </html>

@@ -2549,13 +2549,13 @@ function linkEvent(data, event) {
 {
 	Object.freeze(EMPTY_OBJ);
 	var testFunc = function testFn() {};
-	warning(
-		(testFunc.name || testFunc.toString()).indexOf('testFn') !== -1,
-		'It looks like you\'re using a minified copy of the development build ' +
-		'of Inferno. When deploying Inferno apps to production, make sure to use ' +
-		'the production build which skips development warnings and is faster. ' +
-		'See http://infernojs.org for more details.'
-	);
+	if ((testFunc.name || testFunc.toString()).indexOf('testFn') === -1) {
+		warning(('It looks like you\'re using a minified copy of the development build ' +
+				'of Inferno. When deploying Inferno apps to production, make sure to use ' +
+				'the production build which skips development warnings and is faster. ' +
+				'See http://infernojs.org for more details.'
+		));
+	}
 }
 
 // This will be replaced by rollup

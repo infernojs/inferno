@@ -108,7 +108,7 @@ function addToQueue(component, force, callback) {
 }
 function queueStateChanges(component, newState, callback, sync) {
     if (isFunction(newState)) {
-        newState = newState(component.state);
+        newState = newState(component.state, component.props, component.context);
     }
     for (var stateKey in newState) {
         component._pendingState[stateKey] = newState[stateKey];
