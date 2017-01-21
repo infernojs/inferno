@@ -115,7 +115,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Lifecycle, contex
 	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
 		if (process.env.NODE_ENV !== 'production') {
 			warning(
-				false,
+				dom.tagName.toLowerCase() !== tag,
 				'Inferno hydration: Server-side markup doesn\'t match client-side markup',
 			);
 		}
