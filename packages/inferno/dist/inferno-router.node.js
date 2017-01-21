@@ -1,5 +1,5 @@
 /*!
- * inferno-router v1.2.1
+ * inferno-router v1.2.2
  * (c) 2017 Dominic Gannaway
  * Released under the MIT License.
  */

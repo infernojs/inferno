@@ -122,8 +122,8 @@ ajv-keywords@^1.0.0, ajv-keywords@^1.1.1:
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-1.5.0.tgz#c11e6859eafff83e0dafc416929472eca946aa2c"
 
 ajv@^4.7.0:
-  version "4.11.1"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.11.1.tgz#a903487faabf8608aa22871032ca447440afe494"
+  version "4.11.2"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.11.2.tgz#f166c3c11cbc6cb9dcc102a5bcfe5b72c95287e6"
   dependencies:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
@@ -2284,8 +2284,8 @@ filename-regex@^2.0.0:
   resolved "https://registry.yarnpkg.com/filename-regex/-/filename-regex-2.0.0.tgz#996e3e80479b98b9897f15a8a58b3d084e926775"
 
 filesize@^3.2.0:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/filesize/-/filesize-3.4.1.tgz#8ea8935cb0eafde10dcb792eaf1caede6e94f127"
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/filesize/-/filesize-3.4.2.tgz#f0231ad53ec885423759873de9f124fe67219dd1"
 
 fill-range@^2.1.0:
   version "2.2.3"
