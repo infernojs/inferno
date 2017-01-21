@@ -8,7 +8,7 @@ import {
 	isNullOrUndef,
 	isStringOrNumber,
 	isUndefined,
-	throwError,
+	throwError
 } from '../shared';
 import { svgNS } from './constants';
 import Lifecycle from './lifecycle';
@@ -16,7 +16,7 @@ import { mount } from './mounting';
 import { patch } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import {
-	unmount,
+	unmount
 } from './unmounting';
 
 export function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean) {

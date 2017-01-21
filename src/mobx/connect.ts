@@ -39,7 +39,7 @@ function connect(arg1: any, arg2 = null): any {
 			getDefaultProps: () => componentClass.defaultProps,
 			render() {
 				return componentClass.call(this, this.props, this.context);
-			},
+			}
 		});
 
 		return connect(newClass);

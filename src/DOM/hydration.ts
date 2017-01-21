@@ -1,5 +1,5 @@
 import {
-	copyPropsTo,
+	copyPropsTo
 } from '../core/normalization';
 import options from '../core/options';
 import {
@@ -10,7 +10,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError,
-	warning,
+	warning
 } from '../shared';
 import { svgNS } from './constants';
 import Lifecycle from './lifecycle';
@@ -20,17 +20,17 @@ import {
 	mountElement,
 	mountFunctionalComponentCallbacks,
 	mountRef,
-	mountText,
+	mountText
 } from './mounting';
 import {
 	patchEvent,
-	patchProp,
+	patchProp
 } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import {
 	createClassComponentInstance,
 	createFunctionalComponentInput,
-	replaceChild,
+	replaceChild
 } from './utils';
 import processElement from './wrappers/processElement';
 
@@ -116,7 +116,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Lifecycle, contex
 		if (process.env.NODE_ENV !== 'production') {
 			warning(
 				false,
-				'Inferno hydration: Server-side markup doesn\'t match client-side markup',
+				'Inferno hydration: Server-side markup doesn\'t match client-side markup'
 			);
 		}
 		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);

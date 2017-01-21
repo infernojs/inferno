@@ -1,7 +1,7 @@
-import { render } from 'inferno';
+import {expect} from 'chai';
+import {render} from 'inferno';
 import createElement from 'inferno-create-element';
-import { innerHTML } from '../../tools/utils';
-import { expect } from 'chai';
+import {innerHTML} from '../../tools/utils';
 
 describe('Select / select multiple (non-JSX)', () => {
 	let container;
@@ -124,51 +124,51 @@ describe('Select / select multiple (non-JSX)', () => {
 				multiple: true,
 				value: val
 			}, createElement('optgroup', {label: 'foo-group'}, createElement('option', {value: 'foo'})),
-				createElement('optgroup', {label: 'bar-group', disabled: true}, createElement('option', {value: 'bar'})));
+			createElement('optgroup', {label: 'bar-group', disabled: true}, createElement('option', {value: 'bar'})));
 
-		//render(template(undefined), container);
-		render(template([ 'foo', 'bar' ]), container);
+		// render(template(undefined), container);
+		render(template(['foo', 'bar']), container);
 
-		expect(container.firstChild.children[ 0 ].disabled).to.eql(false);
-		expect(container.firstChild.children[ 1 ].disabled).to.eql(true);
+		expect(container.firstChild.children[0].disabled).to.eql(false);
+		expect(container.firstChild.children[1].disabled).to.eql(true);
 
-		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
-		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
+		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
 
-		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(true);
-		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[0].children[0].selected).to.eql(true);
+		expect(container.firstChild.children[1].children[0].selected).to.eql(true);
 
 		render(template([]), container);
 
-		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
-		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
+		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
 
-		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(false);
-		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[0].children[0].selected).to.eql(false);
+		expect(container.firstChild.children[1].children[0].selected).to.eql(false);
 
 		render(template('foo'), container);
 
-		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
-		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
+		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
 
-		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(true);
-		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[0].children[0].selected).to.eql(true);
+		expect(container.firstChild.children[1].children[0].selected).to.eql(false);
 
 		render(template('bar'), container);
 
-		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
-		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
+		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
 
-		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(false);
-		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[0].children[0].selected).to.eql(false);
+		expect(container.firstChild.children[1].children[0].selected).to.eql(true);
 
 		render(template(null), container);
 
-		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
-		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
+		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
 
-		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(false);
-		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[0].children[0].selected).to.eql(false);
+		expect(container.firstChild.children[1].children[0].selected).to.eql(false);
 	});
 
 	it('should render "select" boolean on select options #3 browser', () => {
@@ -205,8 +205,8 @@ describe('Select / select multiple (non-JSX)', () => {
 	});
 
 	it('should assure a `textarea` with no value should show no value', () => {
-		 render(createElement('textarea', null), container);
-		 expect(container.firstChild.value).to.eql('');
+		render(createElement('textarea', null), container);
+		expect(container.firstChild.value).to.eql('');
 	});
 
 	it('should assure the value attribute also set the value property for `textarea`', () => {

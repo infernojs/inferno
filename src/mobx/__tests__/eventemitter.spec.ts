@@ -1,10 +1,10 @@
 import {
-	expect,
+	expect
 } from 'chai';
 import EventEmitter from '../EventEmitter';
 
 const testdata = {
-	testKey: 'testdata',
+	testKey: 'testdata'
 };
 const testListener = function(data: any) {
 	expect(data).to.equal(testdata);

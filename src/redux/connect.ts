@@ -1,11 +1,11 @@
 import {
 	isFunction,
-	throwError,
+	throwError
 } from '../shared';
 import {
 	shallowEqual,
 	warning,
-	wrapActionCreators,
+	wrapActionCreators
 } from './utils';
 
 import hoistStatics from 'hoist-non-inferno-statics';
@@ -30,7 +30,7 @@ const defaultMapDispatchToProps = (dispatch) => ({ dispatch });
 const defaultMergeProps = (stateProps, dispatchProps, parentProps) => Object.assign({},
 	parentProps,
 	stateProps,
-	dispatchProps,
+	dispatchProps
 );
 
 function tryCatch(fn, ctx) {
@@ -50,7 +50,7 @@ function getDisplayName(WrappedComponent) {
 let nextVersion = 0;
 
 export default function connect(
-	mapStateToProps?: MapStateToProps, mapDispatchToProps?: MapDispatchToProps, mergeProps?, options: any = {},
+	mapStateToProps?: MapStateToProps, mapDispatchToProps?: MapDispatchToProps, mergeProps?, options: any = {}
 ): WrapWithConnect {
 	const shouldSubscribe = Boolean(mapStateToProps);
 	const mapState = mapStateToProps || defaultMapStateToProps;
@@ -76,7 +76,7 @@ export default function connect(
 			if (!isPlainObject(props)) {
 				warning(
 					`${methodName}() in ${connectDisplayName} must return a plain object. ` +
-					`Instead received ${props}.`,
+					`Instead received ${props}.`
 				);
 			}
 		}
@@ -292,7 +292,7 @@ export default function connect(
 					hasStoreStateChanged,
 					haveStatePropsBeenPrecalculated,
 					statePropsPrecalculationError,
-					renderedElement,
+					renderedElement
 				} = this;
 
 				this.haveOwnPropsChanged = false;
@@ -341,11 +341,11 @@ export default function connect(
 				}
 				if (withRef) {
 					this.renderedElement = createElement(WrappedComponent,
-						Object.assign({}, this.mergedProps, { ref: (instance) => this.wrappedInstance = instance }),
+						Object.assign({}, this.mergedProps, { ref: (instance) => this.wrappedInstance = instance })
 					);
 				} else {
 					this.renderedElement = createElement(WrappedComponent,
-						this.mergedProps,
+						this.mergedProps
 					);
 				}
 				return this.renderedElement;

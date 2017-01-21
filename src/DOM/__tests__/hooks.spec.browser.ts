@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { spy } from 'sinon';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
+import { spy } from 'sinon';
 
 describe('lifecycle hooks', () => {
 	describe('Stateless component hooks', () => {

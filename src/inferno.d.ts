@@ -192,13 +192,13 @@ declare module 'inferno-test-utils' {
 
 interface Window { process: any; __karma__: any; mocha: any; }
 
-//noinspection TsLint
+/* tslint:disable */
 declare namespace process {
-	//noinspection TsLint
 	export interface env {
 		NODE_ENV: any;
 	}
 }
+/* tslint:enable */
 
 declare module 'history' {
 	export function createBrowserHistory(options?: any);

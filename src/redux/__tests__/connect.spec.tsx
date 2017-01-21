@@ -75,7 +75,7 @@ describe('connect', () => {
 			return {
 				action: () => {
 					dispatch({ type: 'TEST_ACTION' });
-				},
+				}
 			};
 		};
 		const mapStateToProps = (state) => state;
@@ -103,7 +103,7 @@ describe('connect', () => {
 			return {
 				action: () => {
 					dispatch({ type: 'TEST_ACTION' });
-				},
+				}
 			};
 		};
 		const mapStateToProps = (state) => state;
@@ -130,7 +130,7 @@ describe('connect', () => {
 		const mapDispatchToProps = {
 			action: () => {
 				return { type: 'TEST_ACTION' };
-			},
+			}
 		};
 		const mapStateToProps = (state) => state;
 		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent1);

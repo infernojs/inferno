@@ -2,11 +2,11 @@ import {
 	isNullOrUndef,
 	isNumber,
 	isStringOrNumber,
-	isTrue,
+	isTrue
 } from '../shared';
 import {
 	escapeText,
-	toHyphenCase,
+	toHyphenCase
 } from './utils';
 
 import { isUnitlessNumber } from '../DOM/constants';

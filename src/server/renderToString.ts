@@ -1,6 +1,6 @@
 import { EMPTY_OBJ } from 'inferno';
 import {
-	copyPropsTo,
+	copyPropsTo
 } from '../core/normalization';
 import { isUnitlessNumber } from '../DOM/constants';
 import {
@@ -12,12 +12,12 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-	throwError,
+	throwError
 } from '../shared';
 import {
 	escapeText,
 	isVoidElement as _isVoidElement,
-	toHyphenCase,
+	toHyphenCase
 } from './utils';
 
 function renderStylesToString(styles) {

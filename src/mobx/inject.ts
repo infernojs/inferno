@@ -29,7 +29,7 @@ function createStoreInjector(grabStoresFn: Function, component) {
 			};
 
 			return createElement(component, newProps);
-		},
+		}
 	});
 
 	Injector.contextTypes = { mobxStores() {} };
@@ -50,7 +50,7 @@ const grabStoresByName = function(storeNames: string[]): Function {
 			if (!(storeName in baseStores)) {
 				throw new Error(
 					`MobX observer: Store "${storeName}" is not available! ` +
-					`Make sure it is provided by some Provider`,
+					`Make sure it is provided by some Provider`
 				);
 			}
 

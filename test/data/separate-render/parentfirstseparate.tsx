@@ -1,5 +1,5 @@
-import { ChildSeparate } from './childseparate';
 import Component from 'inferno-component';
+import { ChildSeparate } from './childseparate';
 
 export class ParentFirstSeparate extends Component<any, any> {
 	foo: string;

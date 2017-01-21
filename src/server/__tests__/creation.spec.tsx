@@ -18,31 +18,31 @@ describe('SSR Creation (JSX)', () => {
 	const testEntries: ITestEntry[] = [{
 		description: 'should render a null component',
 		template: () => <div>{ null }</div>,
-		result: '<div></div>',
+		result: '<div></div>'
 	}, {
 		description: 'should render a component with null children',
 		template: () => <div>{ null }<span>emptyValue: { null }</span></div>,
-		result: '<div><span>emptyValue: </span></div>',
+		result: '<div><span>emptyValue: </span></div>'
 	}, {
 		description: 'should render a component with valueless attribute',
 		template: () => <script src="foo" async></script>,
-		result: '<script src="foo" async></script>',
+		result: '<script src="foo" async></script>'
 	}, {
 		description: 'should render a stateless component with text',
 		template: () => <div>Hello world, { '1' }2{ '3' }</div>,
-		result: '<div>Hello world, <!---->1<!---->2<!---->3</div>',
+		result: '<div>Hello world, <!---->1<!---->2<!---->3</div>'
 	}, {
 		description: 'should render a stateless component with comments',
 		template: () => <div>Hello world, {/*comment*/}</div>,
-		result: '<div>Hello world, </div>',
+		result: '<div>Hello world, </div>'
 	}, {
 		description: 'should render mixed invalid/valid children',
 		template: () => <div>{[ null, '123', null, '456' ]}</div>,
-		result: '<div>123<!---->456</div>',
+		result: '<div>123<!---->456</div>'
 	}, {
 		description: 'should ignore children as props',
 		template: () => <p children="foo">foo</p>,
-		result: '<p>foo</p>',
+		result: '<p>foo</p>'
 	}];
 
 	testEntries.forEach((test) => {

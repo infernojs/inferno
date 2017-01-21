@@ -1,6 +1,6 @@
 import {
 	EMPTY_OBJ,
-	isNullOrUndef,
+	isNullOrUndef
 } from '../../shared';
 import { wrappers } from './processElement';
 
@@ -70,7 +70,7 @@ function onCheckboxChange(e) {
 
 function handleAssociatedRadioInputs(name) {
 	const inputs: any = document.querySelectorAll(`input[type="radio"][name="${ name }"]`);
-	[].forEach.call(inputs, dom => {
+	[].forEach.call(inputs, (dom) => {
 		const inputWrapper = wrappers.get(dom);
 
 		if (inputWrapper) {
@@ -92,7 +92,7 @@ export function processInput(vNode, dom): boolean {
 
 		if (!inputWrapper) {
 			inputWrapper = {
-				vNode,
+				vNode
 			};
 
 			if (isCheckedType(props.type)) {

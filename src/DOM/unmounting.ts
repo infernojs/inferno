@@ -6,15 +6,15 @@ import {
 	isNull,
 	isNullOrUndef,
 	isObject,
-	throwError,
+	throwError
 } from '../shared';
 import Lifecycle from './lifecycle';
 import {
-	patchEvent,
+	patchEvent
 } from './patching';
 import {
 	poolComponent,
-	poolElement,
+	poolElement
 } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
 import { removeChild } from './utils';

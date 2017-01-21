@@ -1,12 +1,12 @@
 import {
-	copyPropsTo,
+	copyPropsTo
 } from '../core/normalization';
 import options from '../core/options';
 import {
 	cloneVNode,
 	createTextVNode,
 	createVoidVNode,
-	isVNode,
+	isVNode
 } from '../core/VNodes';
 import {
 	EMPTY_OBJ,
@@ -22,7 +22,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	NO_OP,
-	throwError,
+	throwError
 } from '../shared';
 import {
 	booleanProps,
@@ -33,10 +33,10 @@ import {
 	namespaces,
 	probablyKebabProps,
 	skipProps,
-	strictProps,
+	strictProps
 } from './constants';
 import {
-	handleEvent,
+	handleEvent
 } from './events/delegation';
 import {
 	mount,
@@ -46,7 +46,7 @@ import {
 	mountFunctionalComponentCallbacks,
 	mountRef,
 	mountText,
-	mountVoid,
+	mountVoid
 } from './mounting';
 import {
 	appendChild,
@@ -59,7 +59,7 @@ import {
 	replaceVNode,
 	replaceWithNewNode,
 	setTextContent,
-	updateTextContent,
+	updateTextContent
 } from './utils';
 
 import {Styles} from '../core/structures';
@@ -83,7 +83,7 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, li
 					context,
 					isSVG,
 					nextFlags & VNodeFlags.ComponentClass,
-					isRecycling,
+					isRecycling
 				);
 			} else {
 				replaceVNode(
@@ -94,11 +94,11 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, li
 						lifecycle,
 						context,
 						isSVG,
-						nextFlags & VNodeFlags.ComponentClass,
+						nextFlags & VNodeFlags.ComponentClass
 					),
 					lastVNode,
 					lifecycle,
-					isRecycling,
+					isRecycling
 				);
 			}
 		} else if (nextFlags & VNodeFlags.Element) {
@@ -112,11 +112,11 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, li
 						null,
 						lifecycle,
 						context,
-						isSVG,
+						isSVG
 					),
 					lastVNode,
 					lifecycle,
-					isRecycling,
+					isRecycling
 				);
 			}
 		} else if (nextFlags & VNodeFlags.Text) {
@@ -325,9 +325,9 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 						lifecycle,
 						context,
 						isSVG,
-						nextVNode.flags & VNodeFlags.ComponentClass,
+						nextVNode.flags & VNodeFlags.ComponentClass
 					),
-					lastVNode.dom,
+					lastVNode.dom
 				);
 			} else {
 				const lastState = instance.state;
@@ -491,7 +491,7 @@ export function patchKeyedChildren(
 	lifecycle: Lifecycle,
 	context,
 	isSVG: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	let aLength = a.length;
 	let bLength = b.length;

@@ -1,6 +1,6 @@
-import { render } from '../rendering';
-import createElement from '../../factories/createElement';
 import { expect } from 'chai';
+import createElement from '../../factories/createElement';
+import { render } from '../rendering';
 
 describe('Creation - (non-JSX)', () => {
 	let container;

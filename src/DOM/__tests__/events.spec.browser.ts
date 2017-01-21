@@ -1,6 +1,6 @@
+import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
-import { expect } from 'chai';
 
 describe('Basic event tests', () => {
 	let container;
@@ -37,7 +37,7 @@ describe('Basic event tests', () => {
 		render(template(test), container);
 
 		let divs = Array.prototype.slice.call(container.querySelectorAll('div'));
-		divs.forEach(div => div.click());
+		divs.forEach((div) => div.click());
 		expect(calledFirstTest).to.equal(true);
 
 		// reset
@@ -45,7 +45,7 @@ describe('Basic event tests', () => {
 
 		render(template(test2), container);
 		divs = Array.prototype.slice.call(container.querySelectorAll('div'));
-		divs.forEach(div => div.click());
+		divs.forEach((div) => div.click());
 
 		expect(calledFirstTest).to.equal(false);
 		expect(calledSecondTest).to.equal(true);
@@ -56,7 +56,7 @@ describe('Basic event tests', () => {
 
 		render(null, container);
 		divs = Array.prototype.slice.call(container.querySelectorAll('div'));
-		divs.forEach(div => div.click());
+		divs.forEach((div) => div.click());
 
 		expect(calledFirstTest).to.equal(false);
 		expect(calledSecondTest).to.equal(false);
@@ -91,10 +91,10 @@ describe('Basic event tests', () => {
 
 		expect(container.firstChild.innerHTML).to.equal('Count 0');
 		expect(data.count).to.equal(0);
-		buttons.forEach(button => button.click());
+		buttons.forEach((button) => button.click());
 		expect(container.firstChild.innerHTML).to.equal('Count 1');
 		expect(data.count).to.equal(1);
-		buttons.forEach(button => button.click());
+		buttons.forEach((button) => button.click());
 		expect(container.firstChild.innerHTML).to.equal('Count 2');
 		expect(data.count).to.equal(2);
 	});

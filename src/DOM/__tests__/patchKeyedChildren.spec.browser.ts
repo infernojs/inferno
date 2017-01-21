@@ -1,7 +1,7 @@
-import { render, createVNode } from 'inferno';
-import createElement from 'inferno-create-element';
 import { expect } from 'chai';
-import { createTextVNode } from "../../core/VNodes";
+import { createVNode, render } from 'inferno';
+import createElement from 'inferno-create-element';
+import { createTextVNode } from '../../core/VNodes';
 
 function generateKeyNodes(array) {
 
@@ -465,7 +465,7 @@ describe('keyed-nodes', () => {
 				wk(33), d(15), d(16), d(17), d(18), d(19), d(20), d(21),
 				wk(34), d(22), d(23), d(24), d(25), d(26), d(27), d(28),
 				wk(35), d(29), d(30), d(31), o(1), o(2), o(3), o(4),
-				wk(36), o(5), o(6), o(7), o(8), o(9), o(10), o(11),
+				wk(36), o(5), o(6), o(7), o(8), o(9), o(10), o(11)
 			];
 			render(template(layout1), container);
 
@@ -477,7 +477,7 @@ describe('keyed-nodes', () => {
 				wk(37), d(12), d(13), d(14), d(15), d(16), d(17), d(18),
 				wk(38), d(19), d(20), d(21), d(22), d(23), d(24), d(25),
 				wk(39), d(26), d(27), d(28), d(29), d(30), o(1), o(2),
-				wk(40), o(3), o(4), o(5), o(6), o(7), o(8), o(9),
+				wk(40), o(3), o(4), o(5), o(6), o(7), o(8), o(9)
 			];
 			render(template(layout2), container);
 
@@ -487,7 +487,7 @@ describe('keyed-nodes', () => {
 
 	// VDom tests ported from Kivi - credits: https://github.com/localvoid
 	// https://github.com/localvoid/kivi/blob/master/tests/vdom.spec.ts
-	describe("children", () => {
+	describe('children', () => {
 		const TESTS = [
 			[[0], [0]],
 			[[0, 1, 2], [0, 1, 2]],
@@ -634,61 +634,61 @@ describe('keyed-nodes', () => {
 					{ key: 4, children: [1] }]],
 
 			[[0, 1, { key: 2, children: [0] }, 3, { key: 4, children: [0] }, 5],
-				[6, 7, 3, { key: 2, children: [] }, { key: 4, children: [] }]],
+				[6, 7, 3, { key: 2, children: [] }, { key: 4, children: [] }]]
 		];
 
-		describe("syncChildren string children", () => {
-			it("null => 'abc'", () => {
+		describe('syncChildren string children', () => {
+			it('null => \'abc\'', () => {
 				const f = document.createDocumentFragment();
-				const a = createElement("div", null);
-				const b = createElement("div", null, "abc");
+				const a = createElement('div', null);
+				const b = createElement('div', null, 'abc');
 				render(a, f);
 				render(b, f);
 				expect((f.firstChild as Element).childNodes.length).to.equal(1);
-				expect((f.firstChild as Element).firstChild.nodeValue).to.equal("abc");
+				expect((f.firstChild as Element).firstChild.nodeValue).to.equal('abc');
 			});
 
-			it("'abc' => null", () => {
+			it('\'abc\' => null', () => {
 				const f = document.createDocumentFragment();
-				const a = createElement("div", null, "abc");
-				const b = createElement("div", null);
+				const a = createElement('div', null, 'abc');
+				const b = createElement('div', null);
 				render(a, f);
 				render(b, f);
 				expect((f.firstChild as Element).childNodes.length).to.equal(0);
 			});
 
-			it("'abc' => 'cde'", () => {
+			it('\'abc\' => \'cde\'', () => {
 				const f = document.createDocumentFragment();
-				const a = createElement("div", null, "abc");
-				const b = createElement("div", null, "cde");
+				const a = createElement('div', null, 'abc');
+				const b = createElement('div', null, 'cde');
 				render(a, f);
 				render(b, f);
 				expect((f.firstChild as Element).childNodes.length).to.equal(1);
-				expect((f.firstChild as Element).firstChild.nodeValue).to.equal("cde");
+				expect((f.firstChild as Element).firstChild.nodeValue).to.equal('cde');
 			});
 
-			it("[div] => 'cde'", () => {
+			it('[div] => \'cde\'', () => {
 				const f = document.createDocumentFragment();
-				const a = createElement("div", null, createElement("div", null));
-				const b = createElement("div", null, "cde");
+				const a = createElement('div', null, createElement('div', null));
+				const b = createElement('div', null, 'cde');
 				render(a, f);
 				render(b, f);
 				expect((f.firstChild as Element).childNodes.length).to.equal(1);
-				expect((f.firstChild as Element).firstChild.nodeValue).to.equal("cde");
+				expect((f.firstChild as Element).firstChild.nodeValue).to.equal('cde');
 			});
 
-			it("'cde' => [div]", () => {
+			it('\'cde\' => [div]', () => {
 				const f = document.createDocumentFragment();
-				const a = createElement("div", null, "cde");
-				const b = createElement("div", null, createElement("div", null));
+				const a = createElement('div', null, 'cde');
+				const b = createElement('div', null, createElement('div', null));
 				render(a, f);
 				render(b, f);
 				expect((f.firstChild as Element).childNodes.length).to.equal(1);
-				expect((f.firstChild.firstChild as Element).tagName).to.equal("DIV");
+				expect((f.firstChild.firstChild as Element).tagName).to.equal('DIV');
 			});
 
 			function gen(item: any, keys: boolean): VNode | VNode[] {
-				if (typeof item === "number") {
+				if (typeof item === 'number') {
 					return keys ? createVNode(VNodeFlags.Text, null, null, item, item) : createTextVNode(item);
 				} else if (Array.isArray(item)) {
 					let result: VNode[] = [];
@@ -698,9 +698,9 @@ describe('keyed-nodes', () => {
 					return result;
 				} else {
 					if (keys) {
-						return createElement("div", { key: item.key }, gen(item.children, keys));
+						return createElement('div', { key: item.key }, gen(item.children, keys));
 					} else {
-						return createElement("div", null, gen(item.children, keys));
+						return createElement('div', null, gen(item.children, keys));
 					}
 				}
 			}
@@ -709,17 +709,17 @@ describe('keyed-nodes', () => {
 				let a, b, c;
 
 				if (keys) {
-					a = createElement("div", { key: ax }, ax);
-					b = createElement("div", { key: bx }, bx);
-					c = createElement("div", { key: cx }, cx);
+					a = createElement('div', { key: ax }, ax);
+					b = createElement('div', { key: bx }, bx);
+					c = createElement('div', { key: cx }, cx);
 				} else {
-					a = createElement("div", null, ax);
-					b = createElement("div", null, bx);
-					c = createElement("div", null, cx);
+					a = createElement('div', null, ax);
+					b = createElement('div', null, bx);
+					c = createElement('div', null, cx);
 				}
 
-				const aDiv = document.createElement("div");
-				const bDiv = document.createElement("div");
+				const aDiv = document.createElement('div');
+				const bDiv = document.createElement('div');
 				render(a, aDiv);
 				render(b, bDiv);
 
@@ -728,9 +728,9 @@ describe('keyed-nodes', () => {
 				expect(aDiv.innerHTML).to.equal(bDiv.innerHTML);
 			}
 
-			describe("Keyed algorithm", () => {
+			describe('Keyed algorithm', () => {
 				TESTS.forEach((t) => {
-					const name = JSON.stringify(t[0]) + " => " + JSON.stringify(t[1]);
+					const name = JSON.stringify(t[0]) + ' => ' + JSON.stringify(t[1]);
 					const testFn = () => {
 						checkInnerHtmlEquals(gen(t[0], true) as VNode[],
 							gen(t[1], true) as VNode[],
@@ -741,9 +741,9 @@ describe('keyed-nodes', () => {
 				});
 			});
 
-			describe("Non keyed algorithm", () => {
+			describe('Non keyed algorithm', () => {
 				TESTS.forEach((t) => {
-					const name = JSON.stringify(t[0]) + " => " + JSON.stringify(t[1]);
+					const name = JSON.stringify(t[0]) + ' => ' + JSON.stringify(t[1]);
 					const testFn = () => {
 						checkInnerHtmlEquals(gen(t[0], false) as VNode[],
 							gen(t[1], false) as VNode[],

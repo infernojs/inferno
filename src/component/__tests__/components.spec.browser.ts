@@ -1,7 +1,7 @@
 import { expect } from 'chai';
+import { render } from 'inferno';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import { render } from 'inferno';
 import {
 	innerHTML,
 	waits
@@ -1001,7 +1001,7 @@ describe('Components (non-JSX)', () => {
 			render(tpl79713834(TEST), container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 
-			buttons.forEach(button => button.click());
+			buttons.forEach((button) => button.click());
 
 			requestAnimationFrame(() => {
 				expect(

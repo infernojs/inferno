@@ -1,10 +1,10 @@
+import { isVNode } from '../../core/VNodes';
 import {
-	isArray,
 	EMPTY_OBJ,
-	isNullOrUndef, isInvalid
+	isArray,
+	isInvalid, isNullOrUndef
 } from '../../shared';
 import { wrappers } from './processElement';
-import { isVNode } from '../../core/VNodes';
 
 function isControlled(props) {
 	return !isNullOrUndef(props.value);
@@ -13,7 +13,7 @@ function isControlled(props) {
 function updateChildOptionGroup(vNode, value) {
 	const type = vNode.type;
 
-	if(type === 'optgroup') {
+	if (type === 'optgroup') {
 		const children = vNode.children;
 
 		if (isArray(children)) {
@@ -23,8 +23,7 @@ function updateChildOptionGroup(vNode, value) {
 		} else if (isVNode(children)) {
 			updateChildOption(children, value);
 		}
-	}
-	else {
+	} else {
 		updateChildOption(vNode, value);
 	}
 }

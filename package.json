@@ -168,7 +168,7 @@
     "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
     "lint": "npm run lint:ts && npm run lint:js",
     "lint:js": "eslint config examples src test packages/*/src",
-    "lint:ts": "tslint src/**/*.ts src/**/*.tsx test/**/*.ts",
+    "lint:ts": "tslint src/*.ts{,x} src/**/*.ts{,x} test/**/*.ts{,x}",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "prepublish": "npm run build",

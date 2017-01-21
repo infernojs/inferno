@@ -163,7 +163,7 @@ describe('Router (jsx) #transitions', () => {
 					<Route path={ '/foo/two' } component={ GoodComponent } />
 				</Route>
 			</Router>,
-			container,
+			container
 		);
 		expect(container.innerHTML).to.equal(innerHTML('<div><a href="/foo/two">Go</a><div>Bad Component</div></div>'));
 
@@ -209,7 +209,7 @@ describe('Router (jsx) #transitions', () => {
 			<Router history={ browserHistory }>
 				<IndexRoute component={ TestQueryParams } />
 			</Router>,
-			container,
+			container
 		);
 
 		browserHistory.push('/?foo=Bar');

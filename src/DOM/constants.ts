@@ -13,7 +13,7 @@ export const isUnitlessNumber = {};
 export const skipProps = {};
 export const dehyphenProps = {
 	httpEquiv: 'http-equiv',
-	acceptCharset: 'accept-charset',
+	acceptCharset: 'accept-charset'
 };
 export const probablyKebabProps = /^(accentH|arabicF|capH|font[FSVW]|glyph[NO]|horiz[AO]|panose1|renderingI|strikethrough[PT]|underline[PT]|v[AHIM]|vert[AO]|xH|alignmentB|baselineS|clip[PR]|color[IPR]|dominantB|enableB|fill[OR]|flood[COF]|imageR|letterS|lightingC|marker[EMS]|pointerE|shapeR|stop[CO]|stroke[DLMOW]|text[ADR]|unicodeB|wordS|writingM).*/;
 export function kebabize(str, smallLetter, largeLetter) {

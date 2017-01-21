@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
-import { innerHTML } from '../../tools/utils';
 import createElement from 'inferno-create-element';
+import { innerHTML } from '../../tools/utils';
 
 describe('CreateElement (non-JSX)', () => {
 	let container;
@@ -37,7 +37,7 @@ describe('CreateElement (non-JSX)', () => {
 		expect(triggered).to.equal(false);
 
 		const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
-		buttons.forEach(button => button.click());
+		buttons.forEach((button) => button.click());
 
 		expect(triggered).to.equal(true);
 	});
@@ -61,7 +61,7 @@ describe('CreateElement (non-JSX)', () => {
 		expect(triggered).to.equal(false);
 
 		const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
-		buttons.forEach(button => button.click());
+		buttons.forEach((button) => button.click());
 
 		expect(triggered).to.equal(true);
 	});
@@ -81,7 +81,7 @@ describe('CreateElement (non-JSX)', () => {
 	});
 
 	it('Should allow passing childs through "children" property (custom component)', () => {
-		const Button = props => createElement('button', props);
+		const Button = (props) => createElement('button', props);
 		const app = () => {
 			return createElement('div', null,
 				createElement(Button, {

@@ -40,7 +40,7 @@ describe('Normalization process', () => {
 								return metas.map(
 										(meta) => {
 												return <meta property={ meta.property } content={ meta.content }/>;
-										},
+										}
 								);
 						}
 
@@ -48,7 +48,7 @@ describe('Normalization process', () => {
 								return links.map(
 										(link) => {
 												return <link rel={ link.rel } href={ link.href }/>;
-										},
+										}
 								);
 						}
 
@@ -84,7 +84,7 @@ describe('Normalization process', () => {
 												<A i={'B'} key={'B'} />]}
 										<A i={2} />
 								</div>,
-								container,
+								container
 						);
 
 						expect(container.innerHTML).to.eql('<div><div>0 (0)</div><div>A (1)</div><div>B (2)</div><div>1 (3)</div><div>A (4)</div><div>B (5)</div><div>2 (6)</div></div>');
@@ -99,7 +99,7 @@ describe('Normalization process', () => {
 												<A i={'A'} key={'A'} />]}
 										<A i={2} />
 								</div>
-								, container,
+								, container
 						);
 
 						expect(container.innerHTML).to.eql('<div><div>0 (0)</div><div>B (2)</div><div>A (1)</div><div>1 (3)</div><div>B (5)</div><div>A (4)</div><div>2 (6)</div></div>');
@@ -161,7 +161,7 @@ describe('Normalization process', () => {
 												<li>Aliquam tincidunt mauris eu risus.</li>
 												<li>Vestibulum auctor dapibus neque.</li>
 										</ol>
-								),
+								)
 						];
 
 						staticScenarios.forEach((node, index) => {
@@ -210,7 +210,7 @@ describe('Normalization process', () => {
 														</tr>
 												</tbody>
 										</table>
-								),
+								)
 						];
 
 						staticScenarios.forEach((node, index) => {
@@ -297,7 +297,7 @@ describe('Normalization process', () => {
 										<div>
 												<div>{makeArr([<div>{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}</div>, makeArr(['a', <div>{makeArr(['a', 'b', 'c'])}</div>, 'c']), 'b', 'c'])}</div>
 										</div>
-								),
+								)
 						];
 
 						dynamicScenarios.forEach((node, index) => {
@@ -384,7 +384,7 @@ describe('Normalization process', () => {
 										<div>
 												<div>{makeArr([<div>{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}</div>, makeArr(['a', <div>{makeArr(['a', 'b', 'c'])}</div>, 'c']), 'b', 'c'])}</div>
 										</div>
-								),
+								)
 						];
 
 						dynamicScenarios.forEach((node, index) => {

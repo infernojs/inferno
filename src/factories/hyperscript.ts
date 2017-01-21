@@ -4,7 +4,7 @@ import {
 	isStatefulComponent,
 	isString,
 	isStringOrNumber,
-	isUndefined,
+	isUndefined
 } from '../shared';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;

@@ -1027,7 +1027,7 @@ describe('Update (non-jsx)', () => {
 
 			it('variation 6', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null,
-					createElement('td', null, 'text 1', createElement('br', null)),
+					createElement('td', null, 'text 1', createElement('br', null))
 				))));
 
 				const B = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null,
@@ -1313,7 +1313,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	describe('Github #162', () => {
-		it("works", () => {
+		it('works', () => {
 			const A = [];
 
 			A[0] = createElement('div', null,

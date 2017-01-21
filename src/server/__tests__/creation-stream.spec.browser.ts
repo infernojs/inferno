@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import streamAsString from '../renderToString.stream';
 import concatStream from 'concat-stream-es6';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
+import streamAsString from '../renderToString.stream';
 
 class StatefulComponent extends Component<any, any> {
 	render() {
@@ -108,7 +108,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 		}
 	];
 
-	testEntries.forEach(test => {
+	testEntries.forEach((test) => {
 		it(test.description, () => {
 			const container = document.createElement('div');
 			const vDom = test.template('foo');

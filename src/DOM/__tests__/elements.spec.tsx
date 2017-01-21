@@ -477,9 +477,9 @@ describe('Elements (JSX)', () => {
 
 		expect(container.value).to.equal(undefined);
 		expect(
-			container.innerHTML,
+			container.innerHTML
 		).to.equal(
-			innerHTML('<input>'),
+			innerHTML('<input>')
 		);
 
 		render(<input values={undefined}/>, container);
@@ -489,9 +489,9 @@ describe('Elements (JSX)', () => {
 		expect(container.value).to.equal(undefined);
 
 		expect(
-			container.innerHTML,
+			container.innerHTML
 		).to.equal(
-			innerHTML('<input>'),
+			innerHTML('<input>')
 		);
 
 		// unset
@@ -507,27 +507,27 @@ describe('Elements (JSX)', () => {
 
 		expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 		expect(
-			container.innerHTML,
+			container.innerHTML
 		).to.equal(
-			innerHTML('<input title="Tip!">'),
+			innerHTML('<input title="Tip!">')
 		);
 
 		render(<input name="Tip!"/>, container);
 
 		expect(container.firstChild.getAttribute('name')).to.eql('Tip!');
 		expect(
-			container.innerHTML,
+			container.innerHTML
 		).to.equal(
-			innerHTML('<input name="Tip!">'),
+			innerHTML('<input name="Tip!">')
 		);
 
 		render(<input title="Tip!"/>, container);
 
 		expect(container.firstChild.getAttribute('title')).to.eql('Tip!');
 		expect(
-			container.innerHTML,
+			container.innerHTML
 		).to.equal(
-			innerHTML('<input title="Tip!">'),
+			innerHTML('<input title="Tip!">')
 		);
 	});
 
@@ -741,10 +741,10 @@ describe('Elements (JSX)', () => {
 	it('handles JSX spread props (including children)', () => {
 		const foo = {
 			children: 'Hello world!',
-			className: 'lol',
+			className: 'lol'
 		};
 		const bar = {
-			id: 'test',
+			id: 'test'
 		};
 
 		render((
@@ -752,12 +752,12 @@ describe('Elements (JSX)', () => {
 		), container);
 		expect(
 			innerHTML(
-				container.innerHTML,
-			),
+				container.innerHTML
+			)
 		).to.equal(
 			innerHTML(
-				'<div class="lol" id="test">Hello world!</div>',
-			),
+				'<div class="lol" id="test">Hello world!</div>'
+			)
 		);
 	});
 
@@ -777,7 +777,7 @@ describe('Elements (JSX)', () => {
 		const obj = {
 			fn() {
 			}, click() {
-			},
+			}
 		};
 		const bool = false;
 		const newValue = 't';

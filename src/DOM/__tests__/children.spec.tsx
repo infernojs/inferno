@@ -934,7 +934,7 @@ describe('Children - (JSX)', () => {
 
 					this.state = {
 						first: true,
-						second: true,
+						second: true
 					};
 
 					updaterFirst = () => this.setStateSync({ first: !this.state.first });
@@ -1136,7 +1136,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</Collection>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1147,7 +1147,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="1">1</div>
 				</Collection>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>1</div></div>');
@@ -1158,7 +1158,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="11">11</div>
 				</Collection>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
@@ -1183,7 +1183,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1193,7 +1193,7 @@ describe('Children - (JSX)', () => {
 					<div>3</div>
 					<div>2</div>
 				</CollectionNonKeyed>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div></div>');
@@ -1204,7 +1204,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="11">11</div>
 				</CollectionKeyed>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
@@ -1222,7 +1222,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1233,7 +1233,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1252,7 +1252,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1262,7 +1262,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1280,7 +1280,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1291,7 +1291,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{childB}
 				</CollectionKeyed>
-				, container,
+				, container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1353,12 +1353,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true,
+						bool: true
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool,
+							bool: !this.state.bool
 						});
 					};
 				}
@@ -1378,7 +1378,7 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						text: 'initial',
+						text: 'initial'
 					};
 				}
 
@@ -1426,12 +1426,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true,
+						bool: true
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool,
+							bool: !this.state.bool
 						});
 					};
 				};
@@ -1497,12 +1497,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true,
+						bool: true
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool,
+							bool: !this.state.bool
 						});
 					};
 				}
@@ -1573,12 +1573,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true,
+						bool: true
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool,
+							bool: !this.state.bool
 						});
 					};
 				}
@@ -1763,7 +1763,7 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						text: 'aa',
+						text: 'aa'
 					};
 
 					dirtyReference = this;
@@ -1774,7 +1774,7 @@ describe('Children - (JSX)', () => {
 
 				changeText() {
 					this.setStateSync({
-						text: 'foo',
+						text: 'foo'
 					});
 				}
 
@@ -1894,7 +1894,7 @@ describe('Children - (JSX)', () => {
 				},
 				componentWillMount: () => {
 					mountCalls++;
-				},
+				}
 			};
 			function FooBar() {
 				return (
@@ -1943,7 +1943,7 @@ describe('Children - (JSX)', () => {
 				},
 				componentWillMount: () => {
 					mountCalls++;
-				},
+				}
 			};
 			function Test() {
 				return (
@@ -1989,7 +1989,7 @@ describe('Children - (JSX)', () => {
 			const TestLifecycle = {
 				componentWillUnmount: () => {
 					unMountTest++;
-				},
+				}
 			};
 			function Test() {
 				return <em>f</em>;
@@ -1998,7 +1998,7 @@ describe('Children - (JSX)', () => {
 			const FooLifecycle = {
 				componentWillUnmount: () => {
 					unMountFoo++;
-				},
+				}
 			};
 			function Foo() {
 				return <em>f</em>;
@@ -2060,7 +2060,7 @@ describe('Children - (JSX)', () => {
 			const TestLifecycle = {
 				componentWillUnmount: () => {
 					unMountTest++;
-				},
+				}
 			};
 			function Test5() {
 				return <h1>ShouldUnMountMe</h1>;
@@ -2107,7 +2107,7 @@ describe('Children - (JSX)', () => {
 				},
 				componentWillUnmountTwo: () => {
 					unMountTwoTest++;
-				},
+				}
 			};
 
 			render(<Wrapper onComponentWillUnmount={TestLifecycle.componentWillUnmount}/>, container);

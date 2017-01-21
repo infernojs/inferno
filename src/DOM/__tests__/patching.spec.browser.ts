@@ -1,6 +1,6 @@
+import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
-import { expect } from 'chai';
 
 describe('patching keyed lists (non-jsx)', () => {
 	function createDataModels(): Object[] {

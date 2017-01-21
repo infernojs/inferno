@@ -7,7 +7,7 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber,
-	throwError,
+	throwError
 } from '../shared';
 
 import Lifecycle from './../DOM/lifecycle';
@@ -87,7 +87,7 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 	}
 	if (callback) {
 		queue.push(
-			callback,
+			callback
 		);
 	}
 }
@@ -276,7 +276,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		nextProps: P & Props,
 		context: any,
 		force: boolean,
-		fromSetState: boolean,
+		fromSetState: boolean
 	): any {
 		if (this._unmounted === true) {
 			if (process.env.NODE_ENV !== 'production') {

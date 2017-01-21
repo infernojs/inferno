@@ -55,7 +55,7 @@ describe('HyperScript (non-JSX)', () => {
 		const ComponentHooks = () => h(Component, {
 			hooks: {
 				onComponentDidUnmount() {
-				},
+				}
 			},
 			children: 'Hello world!'
 		});

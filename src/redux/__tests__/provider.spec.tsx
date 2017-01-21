@@ -2,7 +2,7 @@ import * as Inferno from 'inferno';
 
 import {
 	createBrowserHistory,
-	createMemoryHistory,
+	createMemoryHistory
 } from 'history';
 
 import { expect } from 'chai';
@@ -54,7 +54,7 @@ describe('Provider (JSX)', () => {
 				e.preventDefault();
 				store.dispatch({
 					type: 'CHANGE_NAME',
-					name: 'Jerry',
+					name: 'Jerry'
 				});
 			};
 
@@ -194,7 +194,7 @@ describe('Provider (JSX)', () => {
 					e.preventDefault();
 					store.dispatch({
 						type: 'CHANGE_NAME',
-						name: 'Jerry',
+						name: 'Jerry'
 					});
 				};
 

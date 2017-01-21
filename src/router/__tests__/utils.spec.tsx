@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import {
 	isEmpty,
-	mapSearchParams,
+	mapSearchParams
 } from '../utils';
 
 describe('Router #utils', () => {

@@ -7,5 +7,5 @@ export default {
 	afterRender: null,
 	afterMount: null,
 	afterUpdate: null,
-	beforeUnmount: null,
+	beforeUnmount: null
 };

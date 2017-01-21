@@ -14,7 +14,7 @@ const AUTOBIND_BLACKLIST = {
 	componentWillMount: 1,
 	componentDidMount: 1,
 	componentWillUnmount: 1,
-	componentDidUnmount: 1,
+	componentDidUnmount: 1
 };
 
 function extend(base, props, all?) {

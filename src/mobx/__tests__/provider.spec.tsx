@@ -23,11 +23,11 @@ describe('MobX Provider', () => {
 	describe('updating state', () => {
 		const stores: any = observable({
 			store1: {
-				data: 'one',
+				data: 'one'
 			},
 			store2: {
-				data: 'two',
-			},
+				data: 'two'
+			}
 		});
 
 		const Statefull = connect(['store1'], class extends Component<any, any> {
@@ -96,11 +96,11 @@ describe('MobX Provider', () => {
 	describe('providing/updating stores', () => {
 		const stores: any = observable({
 			store1: {
-				data: 'one',
+				data: 'one'
 			},
 			store2: {
-				data: 'two',
-			},
+				data: 'two'
+			}
 		});
 
 		it('should inherit stores from parent', () => {

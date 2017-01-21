@@ -7,7 +7,7 @@ import {
 	isString,
 	isStringOrNumber,
 	isUndefined,
-	warning,
+	warning
 } from '../shared';
 import { cloneVNode, createTextVNode, isVNode } from './VNodes';
 

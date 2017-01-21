@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import { streamAsStaticMarkup } from '../renderToString.stream';
 import concatStream from 'concat-stream-es6';
-import createElement from 'inferno-create-element';
 import createClass from 'inferno-create-class';
+import createElement from 'inferno-create-element';
+import { streamAsStaticMarkup } from '../renderToString.stream';
 
 describe('SSR Root Creation Streams - (non-JSX)', () => {
 	let container;
@@ -20,7 +20,7 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
 	it('should throw with invalid children', () => {
 		const test = (value) => createElement('a', null, true);
 
-		return streamPromise(test('foo')).catch(err => {
+		return streamPromise(test('foo')).catch((err) => {
 			expect(err.toString()).to.equal('Error: invalid component');
 		});
 	});

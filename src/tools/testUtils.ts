@@ -64,8 +64,8 @@ function findAllInTree(inst: any, test: Function): VNode[] {
 			ret = ret.concat(
 				findAllInTree(
 					renderedChildren[key],
-					test,
-				),
+					test
+				)
 			);
 		}
 	}
@@ -75,7 +75,7 @@ function findAllInTree(inst: any, test: Function): VNode[] {
 		typeof currentElement.type === 'function'
 	) {
 		ret = ret.concat(
-			findAllInTree(inst._lastInput, test),
+			findAllInTree(inst._lastInput, test)
 		);
 	}
 
@@ -128,7 +128,7 @@ export function scryRenderedComponentsWithType(root: VNode, componentType: Funct
 	return findAllInRenderedTree(root, function(inst) {
 		return isCompositeComponentWithType(
 			inst,
-			componentType,
+			componentType
 		);
 	});
 }
@@ -160,7 +160,7 @@ export function mockComponent(module, mockTagName: string) {
 		return createElement(
 			mockTagName,
 			null,
-			this.props.children,
+			this.props.children
 		);
 	});
 

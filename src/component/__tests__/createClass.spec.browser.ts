@@ -1,8 +1,8 @@
-import {expect} from "chai";
-import {render} from "../../DOM/rendering";
-import createClass from "../createClass";
-import createElement from "../../factories/createElement";
-import {innerHTML} from "../../tools/utils";
+import {expect} from 'chai';
+import {render} from '../../DOM/rendering';
+import createElement from '../../factories/createElement';
+import {innerHTML} from '../../tools/utils';
+import createClass from '../createClass';
 
 describe('Components createClass (non-JSX)', () => {
 	let container;
@@ -44,12 +44,12 @@ describe('Components createClass (non-JSX)', () => {
 		expect(componentWillUpdate).to.equal(true);
 	});
 
-	it('should have context available in getInitialState', done => {
+	it('should have context available in getInitialState', (done) => {
 		let context;
 		let context2;
 		const BoundComponent = createClass({
 			getInitialState() {
-				expect(this.context)
+				expect(this.context);
 			},
 			foo() {
 				context2 = this;
@@ -106,7 +106,7 @@ describe('Components createClass (non-JSX)', () => {
 		const mixins = [{
 			mixins: [{
 				mixins: [{
-					nestedMixin: () => true,
+					nestedMixin: () => true
 				}]
 			}]
 		}];

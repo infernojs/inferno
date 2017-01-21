@@ -1,12 +1,12 @@
 import {
-	options,
+	options
 } from 'inferno';
 import Component from 'inferno-component';
 import {
-	isStatefulComponent,
+	isStatefulComponent
 } from '../shared';
 import {
-	createDevToolsBridge,
+	createDevToolsBridge
 } from './bridge';
 
 const functionalComponentWrappers = new Map();

@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import streamAsString from '../renderToString.queuestream';
 import concatStream from 'concat-stream-es6';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
+import streamAsString from '../renderToString.queuestream';
 
 class StatefulComponent extends Component<any, any> {
 	render() {
@@ -174,11 +174,11 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 	}
 	];
 
-	testEntries.forEach(test => {
+	testEntries.forEach((test) => {
 		it(test.description, () => {
 			const vDom = test.template('foo');
 			return streamPromise(vDom).then(function (output) {
-				if (typeof test.result == 'object') {
+				if (typeof test.result === 'object') {
 					expect(output[0]).to.deep.equal(test.result[0]);
 					expect(output[1]).to.equal(test.result[1]);
 				} else {

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { render, createVNode, NO_OP } from 'inferno';
+import { createVNode, NO_OP, render } from 'inferno';
 
 describe('rendering routine', () => {
 	let container;

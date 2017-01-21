@@ -1,7 +1,6 @@
 import { expect } from 'chai';
-import { renderToStaticMarkup } from '../renderToString';
 import createElement from 'inferno-create-element';
-
+import { renderToStaticMarkup } from '../renderToString';
 
 /*
 class StatefulComponent extends Component<any, any> {
@@ -90,10 +89,10 @@ describe('SSR Creation (non-JSX)', () => {
 	}, {
 		description: 'should ignore children as props',
 		template: () => createElement('p', {}, 'foo'),
-		result: '<p>foo</p>',
+		result: '<p>foo</p>'
 	}];
 
-	testEntries.forEach(test => {
+	testEntries.forEach((test) => {
 		it(test.description, () => {
 			const container = document.createElement('div');
 			const vDom = test.template('foo');

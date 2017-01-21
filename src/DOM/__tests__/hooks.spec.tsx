@@ -29,7 +29,7 @@ describe('Component lifecycle (JSX)', () => {
 					super(props);
 
 					this.state = {
-						foo: true,
+						foo: true
 					};
 
 					this.updateme = this.updateme.bind(this);
@@ -38,7 +38,7 @@ describe('Component lifecycle (JSX)', () => {
 
 				updateme() {
 					this.setStateSync({
-						foo: !this.state.foo,
+						foo: !this.state.foo
 					});
 				}
 
@@ -133,7 +133,7 @@ describe('Component lifecycle (JSX)', () => {
 					super(props);
 
 					this.state = {
-						foo: true,
+						foo: true
 					};
 
 					this.updateme = this.updateme.bind(this);
@@ -142,7 +142,7 @@ describe('Component lifecycle (JSX)', () => {
 
 				updateme() {
 					this.setStateSync({
-						foo: !this.state.foo,
+						foo: !this.state.foo
 					});
 				}
 
@@ -311,7 +311,7 @@ describe('Component lifecycle (JSX)', () => {
 					super(props);
 
 					this.state = {
-						text: 'C0',
+						text: 'C0'
 					};
 
 					this.updateMe = this.updateMe.bind(this);
@@ -322,7 +322,7 @@ describe('Component lifecycle (JSX)', () => {
 
 				updateMe() {
 					this.setState({
-						text: 'C1',
+						text: 'C1'
 					});
 				}
 
@@ -398,7 +398,7 @@ describe('Component lifecycle (JSX)', () => {
 		it('"onComponentWillMount" hook should fire', () => {
 			const spyObj = {
 				fn: () => {
-				},
+				}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillMount={spyObj.fn}/>, _container);
@@ -409,7 +409,7 @@ describe('Component lifecycle (JSX)', () => {
 		it('"onComponentDidMount" hook should fire, args DOM', () => {
 			const spyObj = {
 				fn: () => {
-				},
+				}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentDidMount={spyObj.fn}/>, _container);
@@ -421,7 +421,7 @@ describe('Component lifecycle (JSX)', () => {
 		it('"onComponentWillUnmount" hook should fire', () => {
 			const spyObj = {
 				fn: () => {
-				},
+				}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillUnmount={spyObj.fn}/>, _container);
@@ -435,7 +435,7 @@ describe('Component lifecycle (JSX)', () => {
 		it('"onComponentWillUpdate" hook should fire', () => {
 			const spyObj = {
 				fn: () => {
-				},
+				}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillUpdate={spyObj.fn}/>, _container);
@@ -450,7 +450,7 @@ describe('Component lifecycle (JSX)', () => {
 		it('"onComponentDidUpdate" hook should fire', () => {
 			const spyObj = {
 				fn: () => {
-				},
+				}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentDidUpdate={spyObj.fn}/>, _container);
@@ -501,7 +501,7 @@ describe('Component lifecycle (JSX)', () => {
 			innerCallback() {
 			},
 			innerSecondCallback() {
-			},
+			}
 		};
 
 		const calledOnce = assert.calledOnce;
@@ -674,7 +674,7 @@ describe('Component lifecycle (JSX)', () => {
 			innerCallback() {
 			},
 			innerSecondCallback() {
-			},
+			}
 		};
 
 		const calledOnce = assert.calledOnce;
@@ -791,7 +791,7 @@ describe('Component lifecycle (JSX)', () => {
 			innerCallback() {
 			},
 			innerSecondCallback() {
-			},
+			}
 		};
 
 		const calledOnce = assert.calledOnce;
@@ -942,7 +942,7 @@ describe('Component lifecycle (JSX)', () => {
 			innerCallback() {
 			},
 			innerSecondCallback() {
-			},
+			}
 		};
 
 		const calledOnce = assert.calledOnce;
@@ -1145,19 +1145,19 @@ describe('Component lifecycle (JSX)', () => {
 					super(props);
 
 					this.state = {
-						foobar: null,
+						foobar: null
 					};
 				}
 
 				getChildContext() {
 					return {
-						foobar: this.state.foobar,
+						foobar: this.state.foobar
 					};
 				}
 
 				componentWillMount() {
 					this.setState({
-						foobar: 'hey',
+						foobar: 'hey'
 					});
 				}
 

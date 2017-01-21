@@ -1,7 +1,7 @@
 import {
 	isArray,
 	isNullOrUndef,
-	isStringOrNumber,
+	isStringOrNumber
 } from '../shared';
 
 const comparer = document.createElement('div');

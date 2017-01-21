@@ -1,17 +1,17 @@
 import options from '../../src/core/options';
 import {
 	cloneVNode,
-	createVNode,
+	createVNode
 } from '../../src/core/VNodes';
 import linkEvent from '../../src/DOM/events/linkEvent';
 import {
 	createRenderer,
 	findDOMNode,
-	render,
+	render
 } from '../../src/DOM/rendering';
 import {
 	EMPTY_OBJ,
-	NO_OP,
+	NO_OP
 } from '../../src/shared';
 
 export {
@@ -35,5 +35,5 @@ export default {
 	NO_OP,
 	linkEvent,
 	options,
-	findDOMNode,
+	findDOMNode
 };

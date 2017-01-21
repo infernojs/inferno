@@ -1,11 +1,11 @@
 import {
 	isNull,
-	isUndefined,
+	isUndefined
 } from '../shared';
 import Lifecycle from './lifecycle';
 import {
 	patchComponent,
-	patchElement,
+	patchElement
 } from './patching';
 
 const componentPools = new Map<Function | null, Pools>();
@@ -44,7 +44,7 @@ export function poolElement(vNode: VNode) {
 	if (isUndefined(pools)) {
 		pools = {
 			nonKeyed: [],
-			keyed: new Map<string | number, VNode[]>(),
+			keyed: new Map<string | number, VNode[]>()
 		};
 		elementPools.set(tag, pools);
 	}
@@ -82,7 +82,7 @@ export function recycleComponent(vNode: VNode, lifecycle: Lifecycle, context: Ob
 					context,
 					isSVG,
 					flags & VNodeFlags.ComponentClass,
-					true,
+					true
 				);
 
 				if (!failed) {
@@ -113,7 +113,7 @@ export function poolComponent(vNode: VNode) {
 	if (isUndefined(pools)) {
 		pools = {
 			nonKeyed: [],
-			keyed: new Map<string | number, VNode[]>(),
+			keyed: new Map<string | number, VNode[]>()
 		};
 		componentPools.set(type as Function, pools);
 	}

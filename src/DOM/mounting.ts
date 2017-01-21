@@ -1,5 +1,5 @@
 import {
-	copyPropsTo,
+	copyPropsTo
 } from '../core/normalization';
 import options from '../core/options';
 import { cloneVNode, isVNode } from '../core/VNodes';
@@ -13,16 +13,16 @@ import {
 	isObject,
 	isStringOrNumber,
 	isUndefined,
-	throwError,
+	throwError
 } from '../shared';
 import Lifecycle from './lifecycle';
 import {
 	patchEvent,
-	patchProp,
+	patchProp
 } from './patching';
 import {
 	recycleComponent,
-	recycleElement,
+	recycleElement
 } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
 import {
@@ -30,7 +30,7 @@ import {
 	createClassComponentInstance,
 	createFunctionalComponentInput,
 	documentCreateElement,
-	setTextContent,
+	setTextContent
 } from './utils';
 import processElement from './wrappers/processElement';
 

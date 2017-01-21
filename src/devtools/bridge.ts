@@ -99,7 +99,7 @@ export function createDevToolsBridge() {
 			const vNode = findVNodeFromDom(null, dom);
 
 			return vNode ? updateReactComponent(vNode, null) : null;
-		},
+		}
 	};
 
 	// Map of root ID (the ID is unimportant) to component instance.
@@ -109,14 +109,14 @@ export function createDevToolsBridge() {
 
 	const Mount = {
 		_instancesByReactRootID: roots,
-		_renderNewRootComponent(instance?) {},
+		_renderNewRootComponent(instance?) {}
 	};
 
 	const Reconciler = {
 		mountComponent(instance?) { },
 		performUpdateIfNecessary(instance?) {},
 		receiveComponent(instance?) {},
-		unmountComponent(instance?) {},
+		unmountComponent(instance?) {}
 	};
 
 	const queuedMountComponents = new Map();
@@ -210,7 +210,7 @@ export function createDevToolsBridge() {
 
 		ComponentTree,
 		Mount,
-		Reconciler,
+		Reconciler
 	};
 }
 
@@ -254,7 +254,7 @@ function updateReactComponent(vNode, parentDom) {
 function normalizeChildren(children, dom) {
 	if (isArray(children)) {
 		return children.filter((child) => !isInvalid(child)).map((child) =>
-			updateReactComponent(child, dom),
+			updateReactComponent(child, dom)
 		);
 	} else {
 		return !isInvalid(children) ? [updateReactComponent(children, dom)] : [];
@@ -284,13 +284,13 @@ function createReactDOMComponent(vNode, parentDom) {
 	return {
 		_currentElement: isText ? (children || vNode) : {
 			type,
-			props,
+			props
 		},
 		_renderedChildren: !isText && normalizeChildren(children, dom),
 		_stringText: isText ? (children || vNode).toString() : null,
 		_inDevTools: false,
 		node: dom || parentDom,
-		vNode,
+		vNode
 	};
 }
 
@@ -324,7 +324,7 @@ function createReactCompositeComponent(vNode, parentDom) {
 			type,
 			key: normalizeKey(vNode.key),
 			ref: null,
-			props: vNode.props,
+			props: vNode.props
 		},
 		props: instance.props,
 		state: instance.state,
@@ -333,7 +333,7 @@ function createReactCompositeComponent(vNode, parentDom) {
 		node: dom,
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
-		vNode,
+		vNode
 	};
 }
 

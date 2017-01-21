@@ -3,7 +3,7 @@ import {
 	isDOMComponent,
 	renderIntoDocument,
 	scryRenderedDOMComponentsWithClass,
-	scryRenderedDOMComponentsWithTag,
+	scryRenderedDOMComponentsWithTag
 } from '../testUtils';
 
 import { expect } from 'chai';
@@ -36,7 +36,7 @@ describe('ReactTestUtils', () => {
 		const renderedComponent = renderIntoDocument(<Wrapper />);
 		const scryResults = scryRenderedDOMComponentsWithClass(
 			renderedComponent,
-			'NonExistentClass',
+			'NonExistentClass'
 		);
 		expect(scryResults.length).to.equal(0);
 	});
@@ -67,19 +67,19 @@ describe('ReactTestUtils', () => {
 		const renderedComponent = renderIntoDocument(<Wrapper />);
 		const scryResults1 = scryRenderedDOMComponentsWithClass(
 			renderedComponent,
-			'x y',
+			'x y'
 		);
 		expect(scryResults1.length).to.equal(1);
 
 		const scryResults2 = scryRenderedDOMComponentsWithClass(
 			renderedComponent,
-			'x z',
+			'x z'
 		);
 		expect(scryResults2.length).to.equal(1);
 
 		const scryResults3 = scryRenderedDOMComponentsWithClass(
 			renderedComponent,
-			['x', 'y'],
+			['x', 'y']
 		);
 		expect(scryResults3.length).to.equal(1);
 
@@ -88,13 +88,13 @@ describe('ReactTestUtils', () => {
 
 		const scryResults4 = scryRenderedDOMComponentsWithClass(
 			renderedComponent,
-			['x', 'a'],
+			['x', 'a']
 		);
 		expect(scryResults4.length).to.equal(0);
 
 		const scryResults5 = scryRenderedDOMComponentsWithClass(
 			renderedComponent,
-			['x a'],
+			['x a']
 		);
 		expect(scryResults5.length).to.equal(0);
 	});
@@ -113,14 +113,14 @@ describe('ReactTestUtils', () => {
 				{null}
 				<div>purple</div>
 			</Wrapper>,
-			container,
+			container
 		);
 		const tree = render(
 			<Wrapper>
 				<div>orange</div>
 				<div>purple</div>
 			</Wrapper>,
-			container,
+			container
 		);
 
 		const log = [];

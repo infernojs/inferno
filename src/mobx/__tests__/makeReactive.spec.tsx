@@ -9,7 +9,7 @@ describe('MobX Observer', () => {
 	let container;
 	const store = {
 		todos: observable(['one', 'two']),
-		extra: observable({ test: 'observable!' }),
+		extra: observable({ test: 'observable!' })
 	};
 
 	beforeEach(() => {
@@ -67,7 +67,7 @@ describe('MobX Observer', () => {
 		store.extra = toJS({ test: 'XXX' });
 		render(<FlatList extra={ store.extra }/>, container);
 		extendObservable(store, {
-			test: 'new entry',
+			test: 'new entry'
 		});
 		render(<FlatList extra={ store.extra }/>, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div><li>oneXXX</li><li>twoXXX</li><li>threeXXX</li></div>'));

@@ -1,5 +1,5 @@
 import {
-	expect,
+	expect
 } from 'chai';
 import { createMemoryHistory } from 'history';
 import { render } from 'inferno';
@@ -44,13 +44,13 @@ describe('Router (jsx)', () => {
 	describe('#Link', () => {
 		it('should render with all possible props', () => {
 			render(createRoutes(
-				<Link to="/" activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>Link</Link>,
+				<Link to="/" activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>Link</Link>
 			), container);
 
 			expect(
-				innerHTML(container.innerHTML),
+				innerHTML(container.innerHTML)
 			).to.equal(
-				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">Link</a>'),
+				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">Link</a>')
 			);
 		});
 
@@ -72,13 +72,13 @@ describe('Router (jsx)', () => {
 	describe('#IndexLink', () => {
 		it('should render with all possible props', () => {
 			render(createRoutes(
-				<IndexLink activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>IndexLink</IndexLink>,
+				<IndexLink activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>IndexLink</IndexLink>
 			), container);
 
 			expect(
-				innerHTML(container.innerHTML),
+				innerHTML(container.innerHTML)
 			).to.equal(
-				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">IndexLink</a>'),
+				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">IndexLink</a>')
 			);
 		});
 

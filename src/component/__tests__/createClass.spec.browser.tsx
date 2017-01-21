@@ -123,13 +123,13 @@ describe('Components createClass (non-JSX)', () => {
 			const App = createClass({
 				getDefaultProps() {
 					return {
-						wrapContext: false,
+						wrapContext: false
 					};
 				},
 
 				getChildContext() {
 					return {
-						foo: 'bar baz',
+						foo: 'bar baz'
 					};
 				},
 
@@ -157,18 +157,18 @@ describe('Components createClass (non-JSX)', () => {
 							{children}
 						</div>
 					);
-				},
+				}
 			});
 
 			const Page = createClass({
 				getInitialState() {
 					return {
-						foo: this.context.foo,
+						foo: this.context.foo
 					};
 				},
 				render() {
 					return <div>{this.props.greeting} {this.state.foo}</div>;
-				},
+				}
 			});
 
 			render(

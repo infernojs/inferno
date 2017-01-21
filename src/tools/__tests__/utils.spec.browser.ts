@@ -1,17 +1,17 @@
 import {
+	spy,
+	stub
+} from 'sinon';
+import {
 	createStyler,
 	innerHTML,
 	sortAttributes,
 	style,
-	triggerEvent,
+	triggerEvent
 } from '../utils';
-import {
-	spy,
-	stub,
-} from 'sinon';
 
 import {
-	expect,
+	expect
 } from 'chai';
 
 const styleStringToArray = (styleString: string) => styleString.split(';').map((s) => s.trim());
@@ -85,7 +85,7 @@ describe('Utils', () => {
 
 	describe('triggerEvent', () => {
 		const element = {
-			dispatchEvent(event) {},
+			dispatchEvent(event) {}
 		};
 		const spyDispatch = spy(element, 'dispatchEvent');
 		let spyCreateMouseEvent;

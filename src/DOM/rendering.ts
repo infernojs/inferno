@@ -4,7 +4,7 @@ import {
 	isNull,
 	isNullOrUndef,
 	NO_OP,
-	throwError, warning,
+	throwError, warning
 } from '../shared';
 
 import options from '../core/options';
@@ -56,7 +56,7 @@ function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: Lifecy
 	const root: Root = {
 		dom,
 		input,
-		lifecycle,
+		lifecycle
 	};
 
 	roots.push(root);

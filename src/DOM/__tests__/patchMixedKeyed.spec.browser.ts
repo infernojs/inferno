@@ -1,6 +1,6 @@
+import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
-import { expect } from 'chai';
 
 function spanTagWithText(text) {
 	return createElement('span', {

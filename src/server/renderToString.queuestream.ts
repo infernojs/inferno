@@ -1,7 +1,7 @@
 import { EMPTY_OBJ } from 'inferno';
 import { Readable } from 'stream';
 import {
-	copyPropsTo,
+	copyPropsTo
 } from '../core/normalization';
 import { isUnitlessNumber } from '../DOM/constants';
 import {
@@ -13,12 +13,12 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-	throwError,
+	throwError
 } from '../shared';
 import {
 	escapeText,
 	isVoidElement as _isVoidElement,
-	toHyphenCase,
+	toHyphenCase
 } from './utils';
 
 function renderStylesToString(styles) {
@@ -104,7 +104,7 @@ export class RenderQueueStream extends Readable {
 					self.collector.splice(0, 1, ...self.promises[index]);
 					self.promises[index] = null;
 					setTimeout(self.pushQueue, 0);
-				},
+				}
 			);
 			this.collector[0] = null;
 		// End of content
@@ -160,7 +160,7 @@ export class RenderQueueStream extends Readable {
 									instance.render(instance.props, instance.context),
 									instance.context,
 									true,
-									promisePosition,
+									promisePosition
 								);
 								setTimeout(this.pushQueue, 0);
 								return promisePosition;

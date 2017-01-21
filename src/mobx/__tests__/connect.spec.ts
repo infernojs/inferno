@@ -1,11 +1,11 @@
 import { expect } from 'chai';
-import { render } from '../../DOM/rendering';
 import Component from '../../component/es2015';
+import { render } from '../../DOM/rendering';
 import createElement from '../../factories/createElement';
 import { innerHTML } from '../../tools/utils';
-import Provider from '../Provider';
 import connect from '../connect';
 import inject from '../inject';
+import Provider from '../Provider';
 
 describe('MobX connect()', () => {
 

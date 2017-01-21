@@ -4330,7 +4330,7 @@ function runBenchmark(container) {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
 				{[
-					<XUICardHeaderTitle501 key={'/.0'}/>,
+					<XUICardHeaderTitle501 key={'/.0'}/>
 				]}
 				{undefined}
 				{undefined}
@@ -4457,7 +4457,7 @@ function runBenchmark(container) {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
 				{[
-					<XUICardHeaderTitle519 key={'/.0'}/>,
+					<XUICardHeaderTitle519 key={'/.0'}/>
 				]}
 				{undefined}
 				{undefined}
@@ -4635,7 +4635,7 @@ function runBenchmark(container) {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
 				{[
-					<XUICardHeaderTitle544 key={'/.0'}/>,
+					<XUICardHeaderTitle544 key={'/.0'}/>
 				]}
 				{undefined}
 				{undefined}
@@ -4722,7 +4722,7 @@ function runBenchmark(container) {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
 				{[
-					<XUICardHeaderTitle558 key={'/.0'}/>,
+					<XUICardHeaderTitle558 key={'/.0'}/>
 				]}
 				{undefined}
 				{undefined}
@@ -5122,7 +5122,7 @@ function runBenchmark(container) {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
 				{[
-					<XUICardHeaderTitle608 key={'/.0'}/>,
+					<XUICardHeaderTitle608 key={'/.0'}/>
 				]}
 				{undefined}
 				{undefined}

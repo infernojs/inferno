@@ -167,7 +167,7 @@ describe('FormElements', () => {
 					super(props);
 
 					this.state = {
-						value: 'A',
+						value: 'A'
 					};
 
 					updater = (e) => {
@@ -179,7 +179,7 @@ describe('FormElements', () => {
 					return [
 						<option value="A">A</option>,
 						<option value="B">B</option>,
-						<option value="C">C</option>,
+						<option value="C">C</option>
 					];
 				}
 

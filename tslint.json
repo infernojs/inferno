@@ -1,13 +1,13 @@
 {
-	"extends": "tslint:latest",
+	"extends": "tslint:recommended",
 	"rules": {
 		"forin": false,
 		"indent": [ true, "tabs" ],
-		"interface-name": [ false ],
+		"interface-name": false,
 		"max-classes-per-file": [false],
-		"max-line-length": [ false ],
-		"member-access": [ false ],
-		"member-ordering": [false],
+		"max-line-length": false,
+		"member-access": false,
+		"member-ordering": false,
 		"no-bitwise": false,
 		"no-conditional-assignment": false,
 		"no-debugger": false,
@@ -20,6 +20,7 @@
 		"prefer-for-of": false,
 		"prefer-const": false,
 		"quotemark": [ true, "single", "jsx-double" ],
-		"variable-name": [ false ]
+		"trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+		"variable-name": false
 	}
 }

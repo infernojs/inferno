@@ -2,15 +2,15 @@ import {
 	isArray,
 	isInvalid,
 	isNullOrUndef,
-	isStringOrNumber,
+	isStringOrNumber
 } from '../shared';
 import {
 	renderAttributes,
-	renderStyleToString,
+	renderStyleToString
 } from './prop-renderers';
 import {
 	escapeText,
-	isVoidElement,
+	isVoidElement
 } from './utils';
 
 import { Readable } from 'stream';

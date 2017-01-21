@@ -18,7 +18,7 @@ describe('Functional methods (JSX)', () => {
 
 		const update = (model, action) => Action.case({
 			Increment: (_) => model + 1,
-			Decrement: (_) => model - 1,
+			Decrement: (_) => model - 1
 		}, action);
 
 		const actions$ = hold(1, sync());
@@ -32,7 +32,7 @@ describe('Functional methods (JSX)', () => {
 			fontSize: '48px',
 			fontFamily: 'monospace',
 			width: '100%',
-			textAlign: 'center',
+			textAlign: 'center'
 		};
 
 		// noinspection TypeScriptUnresolvedFunction
