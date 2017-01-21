@@ -454,9 +454,11 @@ function dispatchEvent(event, dom, items, count, eventData) {
             return;
         }
     }
-    var parentDom = dom.parentNode;
-    if (count > 0 && (parentDom || parentDom === document.body)) {
-        dispatchEvent(event, parentDom, items, count, eventData);
+    if (count > 0) {
+        var parentDom = dom.parentNode;
+        if (parentDom || parentDom === document.body) {
+            dispatchEvent(event, parentDom, items, count, eventData);
+        }
     }
 }
 function normalizeEventName(name) {

@@ -55,10 +55,12 @@ function dispatchEvent(event, dom, items, count, eventData) {
 			return;
 		}
 	}
-	const parentDom = dom.parentNode;
+	if (count > 0) {
+		const parentDom = dom.parentNode;
 
-	if (count > 0 && (parentDom || parentDom === document.body)) {
-		dispatchEvent(event, parentDom, items, count, eventData);
+		if (parentDom || parentDom === document.body) {
+			dispatchEvent(event, parentDom, items, count, eventData);
+		}
 	}
 }
 

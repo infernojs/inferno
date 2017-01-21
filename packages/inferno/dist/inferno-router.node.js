@@ -899,8 +899,8 @@ var Router = (function (Component$$1) {
         var this$1 = this;
 
         if (this.router) {
-            this.unlisten = this.router.listen(function (url) {
-                this$1.routeTo(url.pathname);
+            this.unlisten = this.router.listen(function () {
+                this$1.routeTo(this$1.router.url);
             });
         }
     };
