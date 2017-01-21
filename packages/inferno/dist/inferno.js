@@ -59,10 +59,8 @@ function throwError(message) {
     }
     throw new Error(("Inferno Error: " + message));
 }
-function warning(condition, message) {
-    if (!condition) {
-        console.error(message);
-    }
+function warning(message) {
+    console.warn(message);
 }
 var EMPTY_OBJ = {};
 
@@ -228,7 +226,9 @@ function normalize(vNode) {
             var keyValues = vNodes.map(function (vnode) { return vnode.key; });
             keyValues.some(function (item, idx) {
                 var hasDuplicate = keyValues.indexOf(item) !== idx;
-                warning(!hasDuplicate, 'Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
+                if (hasDuplicate) {
+                    warning('Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
+                }
                 return hasDuplicate;
             });
         };
@@ -2315,7 +2315,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     }
     if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
         {
-            warning(false, 'Inferno hydration: Server-side markup doesn\'t match client-side markup');
+            warning('Inferno hydration: Server-side markup doesn\'t match client-side markup or Initial render target is not empty');
         }
         var newDom = mountElement(vNode, null, lifecycle, context, isSVG);
         vNode.dom = newDom;
@@ -2481,7 +2481,7 @@ function removeRoot(root) {
 }
 {
     if (isBrowser && document.body === null) {
-        warning(false, 'Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
+        warning('Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
     }
 }
 var documentBody = isBrowser ? document.body : null;

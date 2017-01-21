@@ -1,7 +1,7 @@
-import { expect } from 'chai';
-import { render } from 'inferno';
-import createElement from 'inferno-create-element';
 import renderToString from '../../server/renderToString';
+import { render } from 'inferno';
+import { expect } from 'chai';
+import createElement from 'inferno-create-element';
 import {
 	createContainerWithHTML,
 	innerHTML,

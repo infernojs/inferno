@@ -114,7 +114,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Lifecycle, contex
 	}
 	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
 		if (process.env.NODE_ENV !== 'production') {
-			warning('Inferno hydration: Server-side markup doesn\'t match client-side markup');
+			warning('Inferno hydration: Server-side markup doesn\'t match client-side markup or Initial render target is not empty');
 		}
 		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
 

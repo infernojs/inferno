@@ -17,6 +17,7 @@
 		"object-literal-sort-keys": false,
 		"one-variable-per-declaration": [false],
 		"only-arrow-functions": [false],
+		"ordered-imports": false,
 		"prefer-for-of": false,
 		"prefer-const": false,
 		"quotemark": [ true, "single", "jsx-double" ],

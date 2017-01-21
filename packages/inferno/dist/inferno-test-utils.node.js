@@ -61,10 +61,8 @@ function throwError(message) {
     }
     throw new Error(("Inferno Error: " + message));
 }
-function warning(condition, message) {
-    if (!condition) {
-        console.error(message);
-    }
+function warning(message) {
+    console.warn(message);
 }
 var EMPTY_OBJ = {};
 
@@ -242,7 +240,9 @@ function normalize(vNode) {
             var keyValues = vNodes.map(function (vnode) { return vnode.key; });
             keyValues.some(function (item, idx) {
                 var hasDuplicate = keyValues.indexOf(item) !== idx;
-                warning(!hasDuplicate, 'Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
+                if (hasDuplicate) {
+                    warning('Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
+                }
                 return hasDuplicate;
             });
         };
@@ -2317,7 +2317,7 @@ function hydrateElement(vNode, dom, lifecycle, context, isSVG) {
     }
     if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
         if (process.env.NODE_ENV !== 'production') {
-            warning(false, 'Inferno hydration: Server-side markup doesn\'t match client-side markup');
+            warning('Inferno hydration: Server-side markup doesn\'t match client-side markup or Initial render target is not empty');
         }
         var newDom = mountElement(vNode, null, lifecycle, context, isSVG);
         vNode.dom = newDom;
@@ -2474,7 +2474,7 @@ function removeRoot(root) {
 }
 if (process.env.NODE_ENV !== 'production') {
     if (isBrowser && document.body === null) {
-        warning(false, 'Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
+        warning('Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
     }
 }
 var documentBody = isBrowser ? document.body : null;
@@ -2554,6 +2554,7 @@ function createElement(name, props) {
             children = undefined;
         }
     }
+    flags = isStatefulComponent(name) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     if (isString(name)) {
         flags = 2 /* HtmlElement */;
         switch (name) {
@@ -2571,28 +2572,35 @@ function createElement(name, props) {
                 break;
             default:
         }
-        for (var prop in props) {
-            if (prop === 'key') {
-                key = props.key;
-                delete props.key;
-            }
-            else if (prop === 'children' && isUndefined(children)) {
-                children = props.children; // always favour children args, default to props
-            }
-            else if (prop === 'ref') {
-                ref = props.ref;
-            }
-            else if (isAttrAnEvent(prop)) {
-                if (!events) {
-                    events = {};
+        /*
+         This fixes de-optimisation:
+         uses object Keys for looping props to avoid deleting props of looped object
+         */
+        if (!isNullOrUndef(props)) {
+            var propKeys = Object.keys(props);
+            for (var i = 0; i < propKeys.length; i++) {
+                var propKey = propKeys[i];
+                if (propKey === 'key') {
+                    key = props.key;
+                    delete props.key;
                 }
-                events[prop] = props[prop];
-                delete props[prop];
+                else if (propKey === 'children' && isUndefined(children)) {
+                    children = props.children; // always favour children args, default to props
+                }
+                else if (propKey === 'ref') {
+                    ref = props.ref;
+                }
+                else if (isAttrAnEvent(propKey)) {
+                    if (!events) {
+                        events = {};
+                    }
+                    events[propKey] = props[propKey];
+                    delete props[propKey];
+                }
             }
         }
     }
     else {
-        flags = isStatefulComponent(name) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
         if (!isUndefined(children)) {
             if (!props) {
                 props = {};
@@ -2600,16 +2608,24 @@ function createElement(name, props) {
             props.children = children;
             children = null;
         }
-        for (var prop$1 in props) {
-            if (componentHooks[prop$1]) {
-                if (!ref) {
-                    ref = {};
+        if (!isNullOrUndef(props)) {
+            /*
+             This fixes de-optimisation:
+             uses object Keys for looping props to avoid deleting props of looped object
+             */
+            var propKeys$1 = Object.keys(props);
+            for (var i$1 = 0; i$1 < propKeys$1.length; i$1++) {
+                var propKey$1 = propKeys$1[i$1];
+                if (componentHooks[propKey$1]) {
+                    if (!ref) {
+                        ref = {};
+                    }
+                    ref[propKey$1] = props[propKey$1];
                 }
-                ref[prop$1] = props[prop$1];
-            }
-            else if (prop$1 === 'key') {
-                key = props.key;
-                delete props.key;
+                else if (propKey$1 === 'key') {
+                    key = props.key;
+                    delete props.key;
+                }
             }
         }
     }

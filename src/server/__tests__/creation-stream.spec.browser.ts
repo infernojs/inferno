@@ -1,8 +1,8 @@
+import streamAsString from '../renderToString.stream';
+import Component from 'inferno-component';
 import { expect } from 'chai';
 import concatStream from 'concat-stream-es6';
-import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import streamAsString from '../renderToString.stream';
 
 class StatefulComponent extends Component<any, any> {
 	render() {

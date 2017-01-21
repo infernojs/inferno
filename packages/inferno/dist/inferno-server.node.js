@@ -54,10 +54,8 @@ function throwError(message) {
     }
     throw new Error(("Inferno Error: " + message));
 }
-function warning(condition, message) {
-    if (!condition) {
-        console.error(message);
-    }
+function warning(message) {
+    console.warn(message);
 }
 
 var options = {
@@ -346,7 +344,9 @@ function normalize(vNode) {
             var keyValues = vNodes.map(function (vnode) { return vnode.key; });
             keyValues.some(function (item, idx) {
                 var hasDuplicate = keyValues.indexOf(item) !== idx;
-                warning(!hasDuplicate, 'Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
+                if (hasDuplicate) {
+                    warning('Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
+                }
                 return hasDuplicate;
             });
         };
