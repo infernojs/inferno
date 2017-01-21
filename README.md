@@ -178,7 +178,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 - Inferno doesn't have a fully synthetic event system like React does. Inferno has a partially synthetic event system, instead opting to only delegate certain events (such as `onClick`).
 - Inferno doesn't support React Native. Inferno was only designed for the browser/server with the DOM in mind.
 - Inferno doesn't support string refs – although this can be enabled using `inferno-compat`. We don't recommend using them, they are the source of many memory leaks and performance issues in real-world apps. Stick with function callback refs instead.
-- Inferno includes `render` on the main core package, rather than have a `InfernoDOM` package like React does. We used to do it that way, but we found people simply didn't like it given we don't support native. Furthermore, by not splitting them, we improved performance and bundle sizes.
+- Inferno includes `render` on the main core package, rather than have an `InfernoDOM` package like React does. We used to do it that way, but we found people simply didn't like it given we don't support native. Furthermore, by not splitting them, we improved performance and bundle sizes.
 - Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
 - Inferno is able to use the React Dev Tools extensions for Chrome/Firefox/etc to provide the same level of debugging experience to user of Inferno via `inferno-devtools`.
 
@@ -438,9 +438,9 @@ This enables `findDOMNode()`. We strongly recommend against using this API as it
 
 #### - `recyclingEnabled` (default: `true`)
 
-This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon diposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
+This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon disposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
 
-## Functional component lifeycle events
+## Functional component lifecycle events
 
 | Name                      | Triggered when                                                  | Arguments to callback           |
 | -----------               | --------------                                                  | -----------------------         |
