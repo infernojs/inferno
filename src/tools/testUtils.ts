@@ -57,16 +57,14 @@ function findAllInTree(inst: any, test: Function): VNode[] {
 	let ret = test(publicInst) ? [inst] : [];
 	if (isDOMComponent(publicInst)) {
 		const renderedChildren = inst.children;
-		for (let key in renderedChildren) {
-			if (!renderedChildren.hasOwnProperty(key)) {
-				continue;
+		if (isArray(renderedChildren)) {
+			for (let i = 0; i < renderedChildren.length; i++) {
+				let child = renderedChildren[i];
+
+				ret = ret.concat(findAllInTree(child, test));
 			}
-			ret = ret.concat(
-				findAllInTree(
-					renderedChildren[key],
-					test
-				)
-			);
+		} else {
+			ret = ret.concat(findAllInTree(renderedChildren, test));
 		}
 	}
 
@@ -145,7 +143,7 @@ export function findRenderedDOMComponentWithClass(root: VNode, classNames: Funct
 	return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass);
 }
 
-export function findRenderedDOMComponentWithTag(root: VNode, tagName: Function): VNode {
+export function findRenderedDOMComponentWithTag(root: VNode, tagName: string): VNode {
 	return findOneOf(root, tagName, 'tag', scryRenderedDOMComponentsWithTag);
 }
 

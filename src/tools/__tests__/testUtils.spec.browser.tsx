@@ -10,6 +10,7 @@ import { expect } from 'chai';
 import Inferno from 'inferno';
 import { render } from 'inferno';
 import Component from 'inferno-component';
+import createElement from '../../factories/createElement';
 
 Inferno;
 
@@ -52,6 +53,7 @@ describe('ReactTestUtils', () => {
 
 		const renderedComponent = renderIntoDocument(<Wrapper />);
 		const scryResults       = scryRenderedDOMComponentsWithClass(renderedComponent, 'x');
+
 		expect(scryResults.length).to.equal(1);
 	});
 
@@ -151,5 +153,24 @@ describe('ReactTestUtils', () => {
 		const tree = renderIntoDocument(<SomeComponent />);
 		const hrs = scryRenderedDOMComponentsWithTag(tree, 'hr');
 		expect(hrs.length).to.equal(2);
+	});
+
+	it('Should not get stuck in infinite loop', () => {
+
+		function BaseComponent(props) {
+			return createElement('div', props);
+		}
+		function SuperComponent(props) {
+			return createElement(BaseComponent, props);
+		}
+
+		// This is fine...
+		const result = renderIntoDocument(
+			createElement(SuperComponent, null, createElement(SuperComponent))
+		);
+
+		// This throws 'Maximum call stack size exceeded' error
+		const test = scryRenderedDOMComponentsWithTag(result, 'div');
+		expect(test.length).to.eql(5);
 	});
 });

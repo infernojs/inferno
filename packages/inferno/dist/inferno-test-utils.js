@@ -2683,11 +2683,14 @@ function findAllInTree(inst, test) {
     var ret = test(publicInst) ? [inst] : [];
     if (isDOMComponent(publicInst)) {
         var renderedChildren = inst.children;
-        for (var key in renderedChildren) {
-            if (!renderedChildren.hasOwnProperty(key)) {
-                continue;
+        if (isArray(renderedChildren)) {
+            for (var i = 0; i < renderedChildren.length; i++) {
+                var child = renderedChildren[i];
+                ret = ret.concat(findAllInTree(child, test));
             }
-            ret = ret.concat(findAllInTree(renderedChildren[key], test));
+        }
+        else {
+            ret = ret.concat(findAllInTree(renderedChildren, test));
         }
     }
     if (isValidElement(currentElement) &&
