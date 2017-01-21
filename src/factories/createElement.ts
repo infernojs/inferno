@@ -38,8 +38,6 @@ export default function createElement<T>(
 			children = undefined;
 		}
 	}
-	flags = isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
-
 	if (isString(name)) {
 		flags = VNodeFlags.HtmlElement;
 
@@ -86,6 +84,7 @@ export default function createElement<T>(
 			}
 		}
 	} else {
+		flags = isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 		if (!isUndefined(children)) {
 			if (!props) {
 				props = {} as T;

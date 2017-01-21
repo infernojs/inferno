@@ -71,7 +71,6 @@ function createElement$1(name, props) {
             children = undefined;
         }
     }
-    flags = isStatefulComponent(name) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
     if (isString(name)) {
         flags = 2 /* HtmlElement */;
         switch (name) {
@@ -118,6 +117,7 @@ function createElement$1(name, props) {
         }
     }
     else {
+        flags = isStatefulComponent(name) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
         if (!isUndefined(children)) {
             if (!props) {
                 props = {};
