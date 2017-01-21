@@ -91,8 +91,7 @@ export function findAllInRenderedTree(inst: any, test: Function): VNode[] {
 	return findAllInTree(inst, test);
 }
 
-type stringArr = string | string[];
-export function scryRenderedDOMComponentsWithClass(root: VNode, classNames: stringArr): VNode[] {
+export function scryRenderedDOMComponentsWithClass(root: VNode, classNames: string | string[]): VNode[] {
 	return findAllInRenderedTree(root, function(inst) {
 		if (isDOMComponent(inst)) {
 			let className = inst.className;
@@ -139,7 +138,7 @@ function findOneOf(root: VNode, option: any, optionName: string, finderFn: Funct
 	return all[0];
 }
 
-export function findRenderedDOMComponentWithClass(root: VNode, classNames: Function): VNode {
+export function findRenderedDOMComponentWithClass(root: VNode, classNames: string | string[]): VNode {
 	return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass);
 }
 

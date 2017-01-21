@@ -136,8 +136,6 @@ declare module 'inferno-hyperscript' {
 }
 
 declare module 'inferno-test-utils' {
-	type stringArr = string | string[];
-
 	export function renderIntoDocument(element: VNode): VNode;
 	export function isElement(element: VNode): boolean;
 	export function isElementOfType(inst: VNode, componentClass: Function): boolean;
@@ -146,11 +144,11 @@ declare module 'inferno-test-utils' {
 	export function isCompositeComponent(inst): boolean;
 	export function isCompositeComponentWithType(inst, type: Function): boolean;
 	export function findAllInRenderedTree(inst: any, test: Function): VNode[];
-	export function scryRenderedDOMComponentsWithClass(root: VNode, classNames: stringArr): VNode[];
+	export function scryRenderedDOMComponentsWithClass(root: VNode, classNames: string | string[]): VNode[];
 	export function scryRenderedDOMComponentsWithTag (root: VNode, tagName: string): VNode[];
 	export function scryRenderedComponentsWithType(root: VNode, componentType: Function): VNode[];
-	export function findRenderedDOMComponentWithClass(root: VNode, classNames: Function): VNode;
-	export function findRenderedDOMComponentWithTag(root: VNode, tagName: Function): VNode;
+	export function findRenderedDOMComponentWithClass(root: VNode, classNames: string | string[]): VNode;
+	export function findRenderedDOMComponentWithTag(root: VNode, tagName: string): VNode;
 	export function findRenderedComponentWithType(root: VNode, componentClass: Function): VNode;
 	export function mockComponent(componentClass, mockTagName?: string);
 
