@@ -5,7 +5,7 @@ import {
 	isString,
 	isStringOrNumber,
 	isUndefined
-} from '../shared';
+} from 'inferno-helpers';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;

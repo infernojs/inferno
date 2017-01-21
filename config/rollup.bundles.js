@@ -4,10 +4,25 @@ import { Bundles } from './rollup.helpers';
 const bundles = new Bundles();
 
 bundles.add({
+	moduleGlobal: 'Inferno.Helpers',
+	moduleName: 'inferno-helpers',
+	moduleEntry: 'packages/inferno-helpers/dist-es/index.js',
+	path: 'packages/inferno-helpers/',
+	dest: 'packages/inferno-helpers/dist/'
+});
+
+bundles.add({
+	moduleGlobal: 'Inferno.VNodeFlags',
+	moduleName: 'inferno-vnode-flags',
+	moduleEntry: 'packages/inferno-vnode-flags/dist-es/index.js',
+	path: 'packages/inferno-vnode-flags/',
+	dest: 'packages/inferno-vnode-flags/dist/'
+});
+
+bundles.add({
 	moduleGlobal: 'Inferno',
 	moduleName: 'inferno',
 	moduleEntry: 'packages/inferno/src/index.js',
-	moduleGlobals: {},
 	path: 'packages/inferno/'
 });
 
@@ -125,13 +140,6 @@ bundles.add({
 		'inferno-create-element': 'Inferno.createElement'
 	},
 	path: 'packages/inferno-hyperscript/'
-});
-
-bundles.add({
-	moduleGlobal: 'Inferno.VNodeFlags',
-	moduleName: 'inferno-vnode-flags',
-	moduleEntry: 'packages/inferno-vnode-flags/src/index.js',
-	path: 'packages/inferno-vnode-flags/'
 });
 
 bundles.add({

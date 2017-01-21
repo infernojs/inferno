@@ -1,8 +1,4 @@
 import {
-	copyPropsTo
-} from '../core/normalization';
-import options from '../core/options';
-import {
 	EMPTY_OBJ,
 	isArray,
 	isNull,
@@ -11,7 +7,11 @@ import {
 	isUndefined,
 	throwError,
 	warning
-} from '../shared';
+} from 'inferno-helpers';
+import {
+	copyPropsTo
+} from '../core/normalization';
+import options from '../core/options';
 import { svgNS } from './constants';
 import Lifecycle from './lifecycle';
 import {

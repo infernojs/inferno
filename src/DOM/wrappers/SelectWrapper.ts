@@ -1,9 +1,10 @@
-import { isVNode } from '../../core/VNodes';
 import {
 	EMPTY_OBJ,
 	isArray,
-	isInvalid, isNullOrUndef
-} from '../../shared';
+	isInvalid, 
+	isNullOrUndef
+} from 'inferno-helpers';
+import { isVNode } from '../../core/VNodes';
 import { wrappers } from './processElement';
 
 function isControlled(props) {

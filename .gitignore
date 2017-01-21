@@ -21,3 +21,7 @@ node_modules
 *.swp
 *~
 test/data/result.json
+
+packages/**/tsconfig.*
+packages/**/.npmignore
+packages/**/dist-es

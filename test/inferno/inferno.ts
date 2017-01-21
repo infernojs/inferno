@@ -1,3 +1,7 @@
+import {
+	EMPTY_OBJ,
+	NO_OP
+} from 'inferno-helpers';
 import options from '../../src/core/options';
 import {
 	cloneVNode,
@@ -9,10 +13,6 @@ import {
 	findDOMNode,
 	render
 } from '../../src/DOM/rendering';
-import {
-	EMPTY_OBJ,
-	NO_OP
-} from '../../src/shared';
 
 export {
 	createVNode,

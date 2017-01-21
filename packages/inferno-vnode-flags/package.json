@@ -28,6 +28,8 @@
     "createVNode",
     "flags"
   ],
-  "main": "inferno-vnode-flags.js",
+  "main": "dist/inferno-vnode-flags.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
   "repository": "https://github.com/infernojs/inferno"
 }

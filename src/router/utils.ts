@@ -1,4 +1,4 @@
-import { isArray, isString } from '../shared';
+import { isArray, isString } from 'inferno-helpers';
 
 const emptyObject = Object.create(null);
 

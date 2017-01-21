@@ -70,7 +70,7 @@ declare module 'inferno' {
 	export function cloneVNode(node: VNode, props?: any, ...children: any[]): VNode;
 	export function render(input: InfernoInput, parentDom?: any): InfernoChildren;
 	export function findDOMNode(node: any): any;
-	export function createRenderer(_parentDom?: any): Function;
+	export function createRenderer(_parentDom?: any): (lastInput, nextInput) => never;
 	export function linkEvent(data: any, event: Function): Object;
 	export const NO_OP: string;
 	export const ERROR_MSG: string;
@@ -229,28 +229,12 @@ declare module 'sinon' {
 	export const assert;
 }
 
-declare module 'most' {
-	export function map(f?: any, stream?: any): any;
-	export function reduce(f?: any, intitial?: any, stream?: any): any;
-	export function scan(f?: any, initial?: any, stream?: any): any;
-}
-
-declare module 'most-subject' {
-	export function hold(bufferSize?: number, subject?: any): any;
-	export function sync(): void;
-}
-
 declare module 'lodash/fp' {
 	export function curry(obj: any): any;
 }
 
 declare module 'union-type-es' {
 	export default function (obj: any): any;
-}
-
-declare module 'hoist-non-inferno-statics' {
-	function hoistStatics(connectClass: any, wrappedComponent: any): {[index: string]: any};
-	export = hoistStatics;
 }
 
 declare module 'path-to-regexp-es6' {

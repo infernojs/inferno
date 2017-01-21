@@ -1,9 +1,5 @@
 import { EMPTY_OBJ } from 'inferno';
 import {
-	copyPropsTo
-} from '../core/normalization';
-import { isUnitlessNumber } from '../DOM/constants';
-import {
 	isArray,
 	isFunction,
 	isInvalid,
@@ -13,7 +9,11 @@ import {
 	isStringOrNumber,
 	isTrue,
 	throwError
-} from '../shared';
+} from 'inferno-helpers';
+import {
+	copyPropsTo
+} from '../core/normalization';
+import { isUnitlessNumber } from '../DOM/constants';
 import {
 	escapeText,
 	isVoidElement as _isVoidElement,

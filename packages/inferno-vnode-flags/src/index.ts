@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	Text: 1,
 	HtmlElement: 1 << 1,
 

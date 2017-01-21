@@ -1,14 +1,4 @@
 import {
-	copyPropsTo
-} from '../core/normalization';
-import options from '../core/options';
-import {
-	cloneVNode,
-	createTextVNode,
-	createVoidVNode,
-	isVNode
-} from '../core/VNodes';
-import {
 	EMPTY_OBJ,
 	isArray,
 	isAttrAnEvent,
@@ -23,7 +13,17 @@ import {
 	isUndefined,
 	NO_OP,
 	throwError
-} from '../shared';
+} from 'inferno-helpers';
+import {
+	copyPropsTo
+} from '../core/normalization';
+import options from '../core/options';
+import {
+	cloneVNode,
+	createTextVNode,
+	createVoidVNode,
+	isVNode
+} from '../core/VNodes';
 import {
 	booleanProps,
 	dehyphenProps,
