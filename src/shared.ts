@@ -68,10 +68,8 @@ export function throwError(message?: string) {
 	throw new Error(`Inferno Error: ${ message }`);
 }
 
-export function warning(condition: boolean, message: string) {
-	if (!condition) {
-		console.error(message);
-	}
+export function warning(message: string) {
+	console.warn(message);
 }
 
 export const EMPTY_OBJ = {};

@@ -183,7 +183,9 @@ export function normalize(vNode: VNode): void {
 			keyValues.some(function(item, idx){
 				const hasDuplicate = keyValues.indexOf(item) !== idx;
 
-				warning(!hasDuplicate, 'Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
+				if (hasDuplicate) {
+					warning('Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
+				}
 
 				return hasDuplicate;
 			});

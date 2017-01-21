@@ -47,16 +47,19 @@ if (process.env.NODE_ENV !== 'production') {
 	Provider.prototype.componentWillReceiveProps = function(nextProps) {
 
 		// Maybe this warning is to aggressive?
-		warning(Object.keys(nextProps).length === Object.keys(this.props).length,
-			'MobX Provider: The set of provided stores has changed. ' +
-			'Please avoid changing stores as the change might not propagate to all children'
-		);
-		for (let key in nextProps) {
-			warning(specialKeys[key] || this.props[key] === nextProps[key],
-				`MobX Provider: Provided store '${key}' has changed. ` +
-				`Please avoid replacing stores as the change might not propagate to all children`
+		if (Object.keys(nextProps).length !== Object.keys(this.props).length) {
+			warning(
+				'MobX Provider: The set of provided stores has changed. ' +
+				'Please avoid changing stores as the change might not propagate to all children'
 			);
 		}
-
+		for (let key in nextProps) {
+			if (!specialKeys[key] && this.props[key] !== nextProps[key]) {
+				warning(
+					`MobX Provider: Provided store '${key}' has changed. ` +
+					`Please avoid replacing stores as the change might not propagate to all children`
+				);
+			}
+		}
 	};
 }
