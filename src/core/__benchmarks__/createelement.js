@@ -2,7 +2,7 @@ import createElement from './../../factories/createElement';
 
 const emptyFn = function emptyFunction() {};
 
-suite('createElement (normalize) benchmark', () => {
+suite('createElement', () => {
 	/* Do not compare results between each other, these only measure OPS / sec for different structures */
 
 	benchmark('Single node nulls', () => {

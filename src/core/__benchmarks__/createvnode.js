@@ -1,6 +1,6 @@
 import { createVNode, createTextVNode } from './../../core/VNodes';
 
-suite('createVNode (normalize) benchmark', () => {
+suite('createVNode', () => {
 	/* Do not compare results between each other, these only measure OPS / sec for different structures */
 
 	benchmark('Single node nulls', () => {
