@@ -126,20 +126,20 @@ function createDevToolsBridge() {
         getClosestInstanceFromNode: function getClosestInstanceFromNode(dom) {
             var vNode = findVNodeFromDom(null, dom);
             return vNode ? updateReactComponent(vNode, null) : null;
-        },
+        }
     };
     // Map of root ID (the ID is unimportant) to component instance.
     var roots = {};
     findRoots(roots);
     var Mount = {
         _instancesByReactRootID: roots,
-        _renderNewRootComponent: function _renderNewRootComponent(instance) { },
+        _renderNewRootComponent: function _renderNewRootComponent(instance) { }
     };
     var Reconciler = {
         mountComponent: function mountComponent(instance) { },
         performUpdateIfNecessary: function performUpdateIfNecessary(instance) { },
         receiveComponent: function receiveComponent(instance) { },
-        unmountComponent: function unmountComponent(instance) { },
+        unmountComponent: function unmountComponent(instance) { }
     };
     var queuedMountComponents = new Map();
     var queuedReceiveComponents = new Map();
@@ -222,7 +222,7 @@ function createDevToolsBridge() {
         componentRemoved: componentRemoved,
         ComponentTree: ComponentTree,
         Mount: Mount,
-        Reconciler: Reconciler,
+        Reconciler: Reconciler
     };
 }
 function isRootVNode(vNode) {
@@ -286,13 +286,13 @@ function createReactDOMComponent(vNode, parentDom) {
     return {
         _currentElement: isText ? (children || vNode) : {
             type: type,
-            props: props,
+            props: props
         },
         _renderedChildren: !isText && normalizeChildren(children, dom),
         _stringText: isText ? (children || vNode).toString() : null,
         _inDevTools: false,
         node: dom || parentDom,
-        vNode: vNode,
+        vNode: vNode
     };
 }
 function normalizeKey(key) {
@@ -323,7 +323,7 @@ function createReactCompositeComponent(vNode, parentDom) {
             type: type,
             key: normalizeKey(vNode.key),
             ref: null,
-            props: vNode.props,
+            props: vNode.props
         },
         props: instance.props,
         state: instance.state,
@@ -332,7 +332,7 @@ function createReactCompositeComponent(vNode, parentDom) {
         node: dom,
         _instance: instance,
         _renderedComponent: updateReactComponent(lastInput, dom),
-        vNode: vNode,
+        vNode: vNode
     };
 }
 function nextRootKey(roots) {

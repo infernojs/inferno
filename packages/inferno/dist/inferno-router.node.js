@@ -22,7 +22,7 @@ function Link(props, ref) {
     var onClick = props.onClick;
     var to = props.to;
     var elemProps = {
-        href: to,
+        href: to
     };
     if (className) {
         elemProps.className = className;
@@ -185,11 +185,11 @@ var Route = (function (Component$$1) {
         Component$$1.call(this, props, context);
         this._onComponentResolved = function (error, component) {
             this$1.setState({
-                asyncComponent: component,
+                asyncComponent: component
             });
         };
         this.state = {
-            asyncComponent: null,
+            asyncComponent: null
         };
     }
 
@@ -780,7 +780,7 @@ function matchRoutes(_routes, currentURL, parentPath, redirect) {
                     if (matchChild.redirect) {
                         return {
                             location: location,
-                            redirect: matchChild.redirect,
+                            redirect: matchChild.redirect
                         };
                     }
                     children = matchChild.matched;
@@ -792,12 +792,12 @@ function matchRoutes(_routes, currentURL, parentPath, redirect) {
             }
             var matched = Inferno__default.cloneVNode(route, {
                 params: Object.assign(params, matchBase.params),
-                children: children,
+                children: children
             });
             return {
                 location: location,
                 redirect: redirect,
-                matched: matched,
+                matched: matched
             };
         }
     }
@@ -828,7 +828,7 @@ function matchPath(end, routePath, pathToMatch) {
     }
     return {
         path: path === '' ? '/' : path,
-        params: params,
+        params: params
     };
 }
 
@@ -849,9 +849,9 @@ var RouterContext = (function (Component$$1) {
         return {
             router: this.props.router || {
                 location: {
-                    pathname: this.props.location,
-                },
-            },
+                    pathname: this.props.location
+                }
+            }
         };
     };
     RouterContext.prototype.render = function render (props) {
@@ -875,12 +875,12 @@ function createrRouter(history) {
         get location() {
             return history.location.pathname !== 'blank' ? history.location : {
                 pathname: '/',
-                search: '',
+                search: ''
             };
         },
         get url() {
             return this.location.pathname + this.location.search;
-        },
+        }
     };
 }
 var Router = (function (Component$$1) {
@@ -888,7 +888,7 @@ var Router = (function (Component$$1) {
         Component$$1.call(this, props, context);
         this.router = createrRouter(props.history);
         this.state = {
-            url: props.url || this.router.url,
+            url: props.url || this.router.url
         };
     }
 
@@ -906,7 +906,7 @@ var Router = (function (Component$$1) {
     };
     Router.prototype.componentWillReceiveProps = function componentWillReceiveProps (nextProps) {
         this.setState({
-            url: nextProps.url,
+            url: nextProps.url
         });
     };
     Router.prototype.componentWillUnmount = function componentWillUnmount () {
@@ -930,7 +930,7 @@ var Router = (function (Component$$1) {
         return Inferno.createVNode(4 /* ComponentClass */, RouterContext, {
             location: this.state.url,
             router: this.router,
-            matched: hit.matched,
+            matched: hit.matched
         });
     };
 

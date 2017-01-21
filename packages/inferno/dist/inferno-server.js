@@ -69,7 +69,7 @@ var options = {
     afterRender: null,
     afterMount: null,
     afterUpdate: null,
-    beforeUnmount: null,
+    beforeUnmount: null
 };
 
 function createVNode(flags, type, props, children, events, key, ref, noNormalise) {
@@ -84,7 +84,7 @@ function createVNode(flags, type, props, children, events, key, ref, noNormalise
         key: isUndefined(key) ? null : key,
         props: props || null,
         ref: ref || null,
-        type: type,
+        type: type
     };
     if (!noNormalise) {
         normalize(vNode);
@@ -385,7 +385,7 @@ var ecapeCharacters = {
     '>': '&gt;',
     '"': '&quot;',
     '\'': '&#039;',
-    '&': '&amp;',
+    '&': '&amp;'
 };
 var escapeChar = function (char) { return ecapeCharacters[char] || char; };
 function escapeText(text) {
@@ -412,7 +412,7 @@ var voidElements = {
     param: true,
     source: true,
     track: true,
-    wbr: true,
+    wbr: true
 };
 function isVoidElement(str) {
     return !!voidElements[str];

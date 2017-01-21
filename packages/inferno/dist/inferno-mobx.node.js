@@ -46,7 +46,7 @@ function warning(condition, message) {
 var specialKeys = {
     children: true,
     key: true,
-    ref: true,
+    ref: true
 };
 var Provider = (function (Component$$1) {
     function Provider(props, context) {
@@ -80,7 +80,7 @@ var Provider = (function (Component$$1) {
             }
         }
         return {
-            mobxStores: stores,
+            mobxStores: stores
         };
     };
 
@@ -142,7 +142,7 @@ function reportRendering(component) {
         renderTime: component.__$mobRenderEnd - component.__$mobRenderStart,
         totalTime: Date.now() - component.__$mobRenderStart,
         component: component,
-        node: node,
+        node: node
     });
 }
 function trackComponents() {
@@ -224,7 +224,7 @@ function makeReactive(componentClass) {
             renderReporter.emit({
                 event: 'destroy',
                 component: this,
-                node: node,
+                node: node
             });
         }
     };
@@ -335,7 +335,7 @@ function createStoreInjector(grabStoresFn, component) {
                 this$1.wrappedInstance = instance;
             };
             return createElement(component, newProps);
-        },
+        }
     });
     Injector.contextTypes = { mobxStores: function mobxStores() { } };
     index$1(Injector, component);
@@ -411,7 +411,7 @@ function connect(arg1, arg2) {
             getDefaultProps: function () { return componentClass.defaultProps; },
             render: function render() {
                 return componentClass.call(this, this.props, this.context);
-            },
+            }
         });
         return connect(newClass);
     }

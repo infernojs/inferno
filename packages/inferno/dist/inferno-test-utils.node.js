@@ -77,7 +77,7 @@ var options = {
     afterRender: null,
     afterMount: null,
     afterUpdate: null,
-    beforeUnmount: null,
+    beforeUnmount: null
 };
 
 function applyKey(key, vNode) {
@@ -264,7 +264,7 @@ function createVNode$1(flags, type, props, children, events, key, ref, noNormali
         key: isUndefined(key) ? null : key,
         props: props || null,
         ref: ref || null,
-        type: type,
+        type: type
     };
     if (!noNormalise) {
         normalize(vNode);
@@ -380,7 +380,7 @@ var isUnitlessNumber = {};
 var skipProps = {};
 var dehyphenProps = {
     httpEquiv: 'http-equiv',
-    acceptCharset: 'accept-charset',
+    acceptCharset: 'accept-charset'
 };
 var probablyKebabProps = /^(accentH|arabicF|capH|font[FSVW]|glyph[NO]|horiz[AO]|panose1|renderingI|strikethrough[PT]|underline[PT]|v[AHIM]|vert[AO]|xH|alignmentB|baselineS|clip[PR]|color[IPR]|dominantB|enableB|fill[OR]|flood[COF]|imageR|letterS|lightingC|marker[EMS]|pointerE|shapeR|stop[CO]|stroke[DLMOW]|text[ADR]|unicodeB|wordS|writingM).*/;
 function kebabize(str, smallLetter, largeLetter) {
@@ -530,7 +530,7 @@ function poolElement(vNode) {
     if (isUndefined(pools)) {
         pools = {
             nonKeyed: [],
-            keyed: new Map(),
+            keyed: new Map()
         };
         elementPools.set(tag, pools);
     }
@@ -581,7 +581,7 @@ function poolComponent(vNode) {
     if (isUndefined(pools)) {
         pools = {
             nonKeyed: [],
-            keyed: new Map(),
+            keyed: new Map()
         };
         componentPools.set(type, pools);
     }
@@ -966,7 +966,7 @@ function processInput(vNode, dom) {
         var inputWrapper = wrappers.get(dom);
         if (!inputWrapper) {
             inputWrapper = {
-                vNode: vNode,
+                vNode: vNode
             };
             if (isCheckedType(props.type)) {
                 dom.onclick = onCheckboxChange.bind(inputWrapper);
@@ -2459,7 +2459,7 @@ function setRoot(dom, input, lifecycle) {
     var root = {
         dom: dom,
         input: input,
-        lifecycle: lifecycle,
+        lifecycle: lifecycle
     };
     roots.push(root);
     return root;
@@ -2532,7 +2532,7 @@ var componentHooks = {
     onComponentWillUnmount: true,
     onComponentShouldUpdate: true,
     onComponentWillUpdate: true,
-    onComponentDidUpdate: true,
+    onComponentDidUpdate: true
 };
 function createElement(name, props) {
     var _children = [], len = arguments.length - 2;
