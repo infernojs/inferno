@@ -4,10 +4,10 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.Inferno = global.Inferno || {}, global.Inferno.VNodeFlags = factory());
-}(this, (function () { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.Inferno = global.Inferno || {}, global.Inferno.VNodeFlags = global.Inferno.VNodeFlags || {})));
+}(this, (function (exports) { 'use strict';
 
 var index = {
 	Text: 1,
@@ -28,6 +28,9 @@ var index = {
 	Void: 1 << 12
 };
 
-return index;
+exports['default'] = index;
+exports.__moduleExports = index;
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 })));

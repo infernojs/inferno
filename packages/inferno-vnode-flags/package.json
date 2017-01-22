@@ -29,8 +29,5 @@
     "flags"
   ],
   "main": "inferno-vnode-flags.js",
-  "repository": "https://github.com/infernojs/inferno",
-  "dependencies": {
-    "inferno": "1.2.2"
-  }
+  "repository": "https://github.com/infernojs/inferno"
 }

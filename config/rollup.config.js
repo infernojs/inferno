@@ -20,7 +20,7 @@ let plugins = [
 	}),
 	relativeModules(),
 	commonjs({
-		include: 'node_modules/**',
+		include: [ 'node_modules/**', 'packages/inferno-vnode-flags/src/*' ],
 		exclude: [ 'node_modules/symbol-observable/**', '**/*.css' ]
 	})
 ];
