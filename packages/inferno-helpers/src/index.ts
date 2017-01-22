@@ -73,3 +73,20 @@ export function warning(message: string) {
 }
 
 export const EMPTY_OBJ = {};
+
+/**
+ * This is purely a tiny event-emitter/pubsub
+ */
+export class Lifecycle {
+	public listeners: Function[] = [];
+	public fastUnmount = true;
+
+	addListener(callback) {
+		this.listeners.push(callback);
+	}
+	trigger() {
+		for (let i = 0; i < this.listeners.length; i++) {
+			this.listeners[i]();
+		}
+	}
+}

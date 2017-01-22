@@ -25,6 +25,7 @@
   "dependencies": {
     "inferno": "1.2.2",
     "inferno-component": "1.2.2",
-    "inferno-create-element": "1.2.2"
+    "inferno-create-element": "1.2.2",
+    "inferno-helpers": "1.2.2"
   }
 }

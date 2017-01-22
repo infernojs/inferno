@@ -27,9 +27,7 @@
     "rollup"
   ],
   "dependencies": {
-    "inferno": "1.2.2"
-  },
-  "devDependencies": {
-    "typescript": "^2.0.2"
+    "inferno": "1.2.2",
+    "inferno-helpers": "1.2.2"
   }
 }

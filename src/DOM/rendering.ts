@@ -3,6 +3,7 @@ import {
 	isInvalid,
 	isNull,
 	isNullOrUndef,
+	Lifecycle,
 	NO_OP,
 	throwError,
 	warning
@@ -11,7 +12,6 @@ import {
 import options from '../core/options';
 import { cloneVNode } from '../core/VNodes';
 import hydrateRoot from './hydration';
-import Lifecycle from './lifecycle';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { unmount } from './unmounting';

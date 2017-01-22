@@ -6,12 +6,12 @@ import {
 	isNullOrUndef,
 	isStringOrNumber,
 	isUndefined,
+	Lifecycle,
 	throwError
 } from 'inferno-helpers';
 import options from '../core/options';
 import { cloneVNode, createTextVNode, createVoidVNode } from '../core/VNodes';
 import { svgNS } from './constants';
-import Lifecycle from './lifecycle';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { componentToDOMNodeMap } from './rendering';

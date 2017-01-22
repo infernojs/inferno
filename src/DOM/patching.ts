@@ -11,6 +11,7 @@ import {
 	isString,
 	isStringOrNumber,
 	isUndefined,
+	Lifecycle,
 	NO_OP,
 	throwError
 } from 'inferno-helpers';
@@ -63,7 +64,6 @@ import {
 } from './utils';
 
 import {Styles} from '../core/structures';
-import Lifecycle from './lifecycle';
 import { componentToDOMNodeMap } from './rendering';
 import { unmount } from './unmounting';
 import processElement from './wrappers/processElement';

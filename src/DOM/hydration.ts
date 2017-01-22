@@ -5,6 +5,7 @@ import {
 	isObject,
 	isStringOrNumber,
 	isUndefined,
+	Lifecycle,
 	throwError,
 	warning
 } from 'inferno-helpers';
@@ -13,7 +14,6 @@ import {
 } from '../core/normalization';
 import options from '../core/options';
 import { svgNS } from './constants';
-import Lifecycle from './lifecycle';
 import {
 	mount,
 	mountClassComponentCallbacks,

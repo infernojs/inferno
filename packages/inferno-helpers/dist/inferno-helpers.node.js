@@ -65,6 +65,23 @@ function warning(message) {
     console.warn(message);
 }
 var EMPTY_OBJ = {};
+/**
+ * This is purely a tiny event-emitter/pubsub
+ */
+var Lifecycle = function Lifecycle() {
+    this.listeners = [];
+    this.fastUnmount = true;
+};
+Lifecycle.prototype.addListener = function addListener (callback) {
+    this.listeners.push(callback);
+};
+Lifecycle.prototype.trigger = function trigger () {
+        var this$1 = this;
+
+    for (var i = 0; i < this.listeners.length; i++) {
+        this$1.listeners[i]();
+    }
+};
 
 exports.NO_OP = NO_OP;
 exports.ERROR_MSG = ERROR_MSG;
@@ -86,6 +103,7 @@ exports.isObject = isObject;
 exports.throwError = throwError;
 exports.warning = warning;
 exports.EMPTY_OBJ = EMPTY_OBJ;
+exports.Lifecycle = Lifecycle;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

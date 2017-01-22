@@ -7,7 +7,7 @@ import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import pack from '../package.json';
 import commonjs from 'rollup-plugin-commonjs';
-import { withNodeResolve, relativeModules, updatePackageVersion, outputFileSize } from './rollup.helpers';
+import { withNodeResolve, updatePackageVersion, outputFileSize } from './rollup.helpers';
 import bundles from './rollup.bundles';
 import { aliases } from './aliases';
 
@@ -17,14 +17,12 @@ const dependencies = Object.keys(infernoPackage.peerDependencies || {});
 const EXTERNAL_BLACKLISTS = new Map();
 EXTERNAL_BLACKLISTS.set('inferno-helpers', true);
 
-let plugins = [
+const plugins = [
+	commonjs({
+		include: 'node_modules/**'
+	}),
 	buble({
 		objectAssign: 'Object.assign'
-	}),
-	relativeModules(),
-	commonjs({
-		include: 'node_modules/**',
-		exclude: [ 'node_modules/inferno-*/**', 'node_modules/symbol-observable/**', '**/*.css' ]
 	})
 ];
 
@@ -96,14 +94,11 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 	const virtuals = Object.keys(aliases);
 
 	// Skip bundling dependencies of each package
-	plugins = withNodeResolve(plugins, {
-		module: true,
+	const _plugins = withNodeResolve(plugins, {
 		jsnext: true,
-		main: true,
 		skip: external.concat(virtuals)
 	});
-
-	return rollup({ entry, plugins, external }).then(({ write }) => write(bundleConfig)).catch(console.log);
+	return rollup({ entry, plugins: _plugins, external }).then(({ write }) => write(bundleConfig)).catch(console.error);
 }
 
 /**

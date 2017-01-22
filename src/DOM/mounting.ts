@@ -8,6 +8,7 @@ import {
 	isObject,
 	isStringOrNumber,
 	isUndefined,
+	Lifecycle,
 	throwError
 } from 'inferno-helpers';
 import {
@@ -15,7 +16,6 @@ import {
 } from '../core/normalization';
 import options from '../core/options';
 import { cloneVNode, isVNode } from '../core/VNodes';
-import Lifecycle from './lifecycle';
 import {
 	patchEvent,
 	patchProp

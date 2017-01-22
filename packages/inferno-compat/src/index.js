@@ -2,7 +2,8 @@ import PropTypes from 'proptypes';
 import isValidElement from '../../../build/factories/isValidElement';
 import createClass from '../../../build/component/createClass';
 import infernoCreateElement from '../../../build/factories/createElement';
-import { createVNode, NO_OP, render, findDOMNode, options, cloneVNode } from 'inferno';
+import { createVNode, render, findDOMNode, options, cloneVNode } from 'inferno';
+import { NO_OP } from 'inferno-helpers';
 import Component from 'inferno-component';
 
 options.findDOMNodeEnabled = true;
