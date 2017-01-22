@@ -8,8 +8,7 @@ import {
 	isNullOrUndef,
 	isStringOrNumber,
 	throwError
-} from '../shared';
-
+} from 'inferno-helpers';
 import Lifecycle from './../DOM/lifecycle';
 
 let noOp = ERROR_MSG;

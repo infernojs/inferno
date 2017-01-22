@@ -3,7 +3,7 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber
-} from '../shared';
+} from 'inferno-helpers';
 import {
 	renderAttributes,
 	renderStyleToString

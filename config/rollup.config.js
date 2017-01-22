@@ -14,14 +14,17 @@ import { aliases } from './aliases';
 const infernoPackage = JSON.parse(fs.readFileSync('./package.json'));
 const dependencies = Object.keys(infernoPackage.peerDependencies || {});
 
+const EXTERNAL_BLACKLISTS = new Map();
+EXTERNAL_BLACKLISTS.set('inferno-helpers', true);
+
 let plugins = [
 	buble({
 		objectAssign: 'Object.assign'
 	}),
 	relativeModules(),
 	commonjs({
-		include: [ 'node_modules/**', 'packages/inferno-vnode-flags/src/*' ],
-		exclude: [ 'node_modules/symbol-observable/**', '**/*.css' ]
+		include: 'node_modules/**',
+		exclude: [ 'node_modules/inferno-*/**', 'node_modules/symbol-observable/**', '**/*.css' ]
 	})
 ];
 
@@ -87,7 +90,9 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 		sourceMap: false
 	};
 
-	const external = dependencies.concat(getDependenciesArray(pack));
+	// HACK: For now don't treat certain inferno-* as external dep, package them together
+	// for backwards compat in dist files. Remove this after lerna transition is completed
+	const external = dependencies.concat(getDependenciesArray(pack)).filter(n => !EXTERNAL_BLACKLISTS.has(n));
 	const virtuals = Object.keys(aliases);
 
 	// Skip bundling dependencies of each package
@@ -98,9 +103,7 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 		skip: external.concat(virtuals)
 	});
 
-	return rollup({ entry, plugins, external }).then(({ write }) => write(bundleConfig)).catch(err => {
-		console.log(err);
-	});
+	return rollup({ entry, plugins, external }).then(({ write }) => write(bundleConfig)).catch(console.log);
 }
 
 /**
@@ -113,4 +116,4 @@ function getDependenciesArray(pack) {
 	return Object.keys(pack.dependencies || {});
 }
 
-Promise.all(bundles.map(bundle => createBundle(bundle, 'packages/inferno/dist/')));
+Promise.all(bundles.map(bundle => createBundle(bundle, bundle.dest || 'packages/inferno/dist/')));

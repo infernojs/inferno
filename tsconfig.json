@@ -4,18 +4,13 @@
 		"target": "es6",
 		"module": "es6",
 		"allowJs": false,
+		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
 		"sourceMap": true,
 		"lib": [
 			"es6",
 			"es7",
 			"dom"
-		],
-		"types": [
-			"node",
-			"mocha",
-			"sinon",
-			"chai"
 		],
 		"jsx": "preserve",
 		"noUnusedLocals": true,
@@ -24,8 +19,5 @@
 	},
 	"include": [
 		"src/**/*"
-  ],
-	"exclude": [
-		"node_modules"
-	]
+  ]
 }

@@ -27,5 +27,8 @@
   ],
   "main": "inferno.js",
   "typings": "inferno.d.ts",
-  "repository": "https://github.com/infernojs/inferno"
+  "repository": "https://github.com/infernojs/inferno",
+  "dependencies": {
+    "inferno-helpers": "1.2.2"
+  }
 }

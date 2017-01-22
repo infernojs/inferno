@@ -1,9 +1,4 @@
 import {
-	copyPropsTo
-} from '../core/normalization';
-import options from '../core/options';
-import { cloneVNode, isVNode } from '../core/VNodes';
-import {
 	EMPTY_OBJ,
 	isArray,
 	isFunction,
@@ -14,7 +9,12 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	throwError
-} from '../shared';
+} from 'inferno-helpers';
+import {
+	copyPropsTo
+} from '../core/normalization';
+import options from '../core/options';
+import { cloneVNode, isVNode } from '../core/VNodes';
 import Lifecycle from './lifecycle';
 import {
 	patchEvent,

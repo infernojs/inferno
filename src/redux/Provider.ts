@@ -2,7 +2,7 @@ import Component from 'inferno-component';
 import {
 	isNullOrUndef,
 	toArray
-} from '../shared';
+} from 'inferno-helpers';
 import { warning } from './utils';
 
 let didWarnAboutReceivingStore = false;

@@ -1,4 +1,3 @@
-import options from '../core/options';
 import {
 	isArray,
 	isFunction,
@@ -7,7 +6,8 @@ import {
 	isNullOrUndef,
 	isObject,
 	throwError
-} from '../shared';
+} from 'inferno-helpers';
+import options from '../core/options';
 import Lifecycle from './lifecycle';
 import {
 	patchEvent

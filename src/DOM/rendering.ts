@@ -6,7 +6,7 @@ import {
 	NO_OP,
 	throwError,
 	warning
-} from '../shared';
+} from 'inferno-helpers';
 
 import options from '../core/options';
 import { cloneVNode } from '../core/VNodes';
