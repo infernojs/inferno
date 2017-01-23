@@ -1,6 +1,7 @@
 import {
 	expect
 } from 'chai';
+import { assert, spy } from 'sinon';
 import { createMemoryHistory } from 'history';
 import { render } from 'inferno';
 import { innerHTML } from '../../tools/utils';
@@ -44,13 +45,49 @@ describe('Router (jsx)', () => {
 	describe('#Link', () => {
 		it('should render with all possible props', () => {
 			render(createRoutes(
-				<Link to="/" activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>Link</Link>
+				<Link to="/" activeClassName="linkActiveClass" className="linkClass" style={{ color: 'red' }} activeStyle={{ fontWeight: 'bold' }} title="TestTitle" data-test="DataTest">Link</Link>
 			), container);
 
 			expect(
 				innerHTML(container.innerHTML)
 			).to.equal(
-				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">Link</a>')
+				innerHTML('<a class="linkClass linkActiveClass" href="/" style="color: red; font-weight: bold;" title="TestTitle" data-test="DataTest">Link</a>')
+			);
+		});
+
+		it('should render without active class and style when not the active location', () => {
+			render(createRoutes(
+				<Link to="/notactive" activeClassName="linkActiveClass" className="linkClass" style={{ color: 'red' }} activeStyle={{ fontWeight: 'bold' }}>Link</Link>
+			), container);
+
+			expect(
+				innerHTML(container.innerHTML)
+			).to.equal(
+				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>')
+			);
+		});
+
+		it('should render base class and style when active class and style are not defined', () => {
+			render(createRoutes(
+				<Link to="/notactive" className="linkClass" style={{ color: 'red' }}>Link</Link>
+			), container);
+
+			expect(
+				innerHTML(container.innerHTML)
+			).to.equal(
+				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>')
+			);
+		});
+
+		it('should render active class and style even when base class is not defined', () => {
+			render(createRoutes(
+				<Link to="/" activeClassName="linkActiveClass" activeStyle={{ fontWeight: 'bold' }}>Link</Link>
+			), container);
+
+			expect(
+				innerHTML(container.innerHTML)
+			).to.equal(
+				innerHTML('<a class="linkActiveClass" href="/" style="font-weight: bold;">Link</a>')
 			);
 		});
 
@@ -66,6 +103,50 @@ describe('Router (jsx)', () => {
 				expect(container.innerHTML).to.equal(innerHTML('<div>Good</div>'));
 				done();
 			});
+		});
+
+		it('should call onClick handler when clicked', () => {
+			const obj = {
+				fn() {
+				}
+			};
+			const sinonSpy = spy(obj, 'fn');
+
+			render(createRoutes(
+				<Link to="/" onClick={obj.fn}>Link</Link>
+			), container);
+
+			const link = container.querySelector('a[href="/"]');
+			link.onclick({
+				button: 0,
+				preventDefault() {},
+				target: {}
+			});
+
+			const calledOnce = assert.calledOnce;
+			calledOnce(sinonSpy);
+		});
+
+		it('should not call onClick handler when right clicked', () => {
+			const obj = {
+				fn() {
+				}
+			};
+			const sinonSpy = spy(obj, 'fn');
+
+			render(createRoutes(
+				<Link to="/" onClick={obj.fn}>Link</Link>
+			), container);
+
+			const link = container.querySelector('a[href="/"]');
+			link.onclick({
+				button: 2,
+				preventDefault() {},
+				target: {}
+			});
+
+			const notCalled = assert.notCalled;
+			notCalled(sinonSpy);
 		});
 	});
 
