@@ -153,14 +153,11 @@ function shallowDiffers(a, b) {
 	return false;
 }
 
-function PureComponent(props, context) {
-	Component.call(this, props, context);
+class PureComponent extends Component {
+	shouldComponentUpdate(props, state) {
+		return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
+	}
 }
-
-PureComponent.prototype = new Component({}, {});
-PureComponent.prototype.shouldComponentUpdate = function (props, state) {
-	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
-};
 
 class WrapperComponent extends Component {
 	getChildContext() {
