@@ -25,3 +25,4 @@ test/data/result.json
 packages/**/tsconfig.*
 packages/**/.npmignore
 packages/**/dist-es
+packages/inferno/dist
