@@ -10,9 +10,10 @@ interface ILinkProps {
 }
 
 export default function Link(props, { router }) {
-	const { activeClassName, activeStyle, className, onClick, to } = props;
+	const { activeClassName, activeStyle, className, onClick, to, ...otherProps } = props;
 	const elemProps: ILinkProps = {
-		href: to
+		href: to,
+		...otherProps
 	};
 
 	if (className) {
