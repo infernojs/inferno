@@ -1,15 +1,15 @@
-import * as p from 'path';
-import * as fs from 'fs';
-import { rollup } from 'rollup';
-import buble from 'rollup-plugin-buble';
-import replace from 'rollup-plugin-replace';
-import uglify from 'rollup-plugin-uglify';
-import filesize from 'rollup-plugin-filesize';
-import pack from '../package.json';
-import commonjs from 'rollup-plugin-commonjs';
-import { withNodeResolve, relativeModules, updatePackageVersion, outputFileSize } from './rollup.helpers';
-import bundles from './rollup.bundles';
-import { aliases } from './aliases';
+const p = require('path');
+const fs = require('fs');
+const { rollup } = require('rollup');
+const buble = require('rollup-plugin-buble');
+const replace = require('rollup-plugin-replace');
+const uglify = require('rollup-plugin-uglify');
+const filesize = require('rollup-plugin-filesize');
+const pack = require('../package.json');
+const commonjs = require('rollup-plugin-commonjs');
+const { withNodeResolve, updatePackageVersion, outputFileSize } = require('./rollup.helpers');
+const bundles = require('./rollup.bundles');
+const { aliases } = require('./aliases');
 
 const infernoPackage = JSON.parse(fs.readFileSync('./package.json'));
 const dependencies = Object.keys(infernoPackage.peerDependencies || {});
@@ -17,14 +17,12 @@ const dependencies = Object.keys(infernoPackage.peerDependencies || {});
 const EXTERNAL_BLACKLISTS = new Map();
 EXTERNAL_BLACKLISTS.set('inferno-helpers', true);
 
-let plugins = [
+const plugins = [
+	commonjs({
+		include: 'node_modules/**'
+	}),
 	buble({
 		objectAssign: 'Object.assign'
-	}),
-	relativeModules(),
-	commonjs({
-		include: 'node_modules/**',
-		exclude: [ 'node_modules/inferno-*/**', 'node_modules/symbol-observable/**', '**/*.css' ]
 	})
 ];
 
@@ -96,14 +94,11 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 	const virtuals = Object.keys(aliases);
 
 	// Skip bundling dependencies of each package
-	plugins = withNodeResolve(plugins, {
-		module: true,
+	const _plugins = withNodeResolve(plugins, {
 		jsnext: true,
-		main: true,
 		skip: external.concat(virtuals)
 	});
-
-	return rollup({ entry, plugins, external }).then(({ write }) => write(bundleConfig)).catch(console.log);
+	return rollup({ entry, plugins: _plugins, external }).then(({ write }) => write(bundleConfig)).catch(console.error);
 }
 
 /**

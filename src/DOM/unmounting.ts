@@ -5,10 +5,10 @@ import {
 	isNull,
 	isNullOrUndef,
 	isObject,
+	Lifecycle,
 	throwError
 } from 'inferno-helpers';
 import options from '../core/options';
-import Lifecycle from './lifecycle';
 import {
 	patchEvent
 } from './patching';

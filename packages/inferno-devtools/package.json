@@ -23,6 +23,7 @@
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
     "inferno": "1.2.2",
-    "inferno-component": "1.2.2"
+    "inferno-component": "1.2.2",
+    "inferno-helpers": "1.2.2"
   }
 }

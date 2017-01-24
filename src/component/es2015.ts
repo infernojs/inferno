@@ -1,5 +1,6 @@
-import { createVNode, EMPTY_OBJ, NO_OP, options } from 'inferno';
+import { createVNode, options } from 'inferno';
 import {
+	EMPTY_OBJ,
 	ERROR_MSG,
 	isArray,
 	isBrowser,
@@ -7,9 +8,10 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber,
+	Lifecycle,
+	NO_OP,
 	throwError
 } from 'inferno-helpers';
-import Lifecycle from './../DOM/lifecycle';
 
 let noOp = ERROR_MSG;
 

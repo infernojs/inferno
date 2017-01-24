@@ -73,3 +73,23 @@ export function warning(message: string) {
 }
 
 export const EMPTY_OBJ = {};
+
+// So that Lifecycle gets tree-shaked properly https://gitlab.com/Rich-Harris/buble/issues/181
+export class Dummy {}
+
+/**
+ * This is purely a tiny event-emitter/pubsub
+ */
+export class Lifecycle extends Dummy {
+	public listeners: Function[] = [];
+	public fastUnmount = true;
+
+	addListener(callback) {
+		this.listeners.push(callback);
+	}
+	trigger() {
+		for (let i = 0; i < this.listeners.length; i++) {
+			this.listeners[i]();
+		}
+	}
+}
