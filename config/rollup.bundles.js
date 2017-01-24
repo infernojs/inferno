@@ -1,4 +1,4 @@
-import { Bundles } from './rollup.helpers';
+const { Bundles } = require('./rollup.helpers');
 
 // Methods available: add, skip, only
 const bundles = new Bundles();
@@ -153,4 +153,4 @@ bundles.add({
 	path: 'packages/inferno-devtools/'
 });
 
-export default bundles;
+module.exports = bundles;

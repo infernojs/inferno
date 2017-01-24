@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import nodeResolve from 'rollup-plugin-node-resolve';
+const fs = require('fs');
+const path = require('path');
+const nodeResolve = require('rollup-plugin-node-resolve');
 
-export class Bundles {
+class Bundles {
 	constructor() {
 		this.bundles = [];
 		this._only = [];
@@ -36,7 +36,7 @@ function getPackageJSON(moduleName, defaultPackage) {
 	}
 }
 
-export function updatePackageVersion(moduleName, defaultPackage) {
+function updatePackageVersion(moduleName, defaultPackage) {
 	try {
 		const modulePackage = require(packagePath(moduleName));
 		modulePackage.version = defaultPackage.version;
@@ -46,9 +46,15 @@ export function updatePackageVersion(moduleName, defaultPackage) {
 	}
 }
 
-export function withNodeResolve(arr, resolveConfig) {
+function withNodeResolve(arr, resolveConfig) {
 	const newArray = Array.from(arr);
 	const index = newArray.findIndex(plugin => plugin.name === 'buble');
 	newArray.splice(index, 0, nodeResolve(resolveConfig));
 	return newArray;
 }
+
+module.exports = {
+	Bundles,
+	updatePackageVersion,
+	withNodeResolve
+};

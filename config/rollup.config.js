@@ -1,15 +1,15 @@
-import * as p from 'path';
-import * as fs from 'fs';
-import { rollup } from 'rollup';
-import buble from 'rollup-plugin-buble';
-import replace from 'rollup-plugin-replace';
-import uglify from 'rollup-plugin-uglify';
-import filesize from 'rollup-plugin-filesize';
-import pack from '../package.json';
-import commonjs from 'rollup-plugin-commonjs';
-import { withNodeResolve, updatePackageVersion, outputFileSize } from './rollup.helpers';
-import bundles from './rollup.bundles';
-import { aliases } from './aliases';
+const p = require('path');
+const fs = require('fs');
+const { rollup } = require('rollup');
+const buble = require('rollup-plugin-buble');
+const replace = require('rollup-plugin-replace');
+const uglify = require('rollup-plugin-uglify');
+const filesize = require('rollup-plugin-filesize');
+const pack = require('../package.json');
+const commonjs = require('rollup-plugin-commonjs');
+const { withNodeResolve, updatePackageVersion, outputFileSize } = require('./rollup.helpers');
+const bundles = require('./rollup.bundles');
+const { aliases } = require('./aliases');
 
 const infernoPackage = JSON.parse(fs.readFileSync('./package.json'));
 const dependencies = Object.keys(infernoPackage.peerDependencies || {});
