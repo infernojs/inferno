@@ -7,12 +7,17 @@ import {
 	innerHTML,
 	sortAttributes,
 	style,
-	triggerEvent
+	triggerEvent,
+	createContainerWithHTML,
+	validateNodeTree
 } from '../utils';
-
 import {
 	expect
 } from 'chai';
+import {
+	render
+} from 'inferno';
+import renderToString from '../../server/renderToString';
 
 const styleStringToArray = (styleString: string) => styleString.split(';').map((s) => s.trim());
 
@@ -81,6 +86,39 @@ describe('Utils', () => {
 
 			expect(styleStringToArray(style(CSS) as string)).to.have.members(styleStringToArray(createStyler(CSS)));
 		});
+	});
+
+	describe('createContainerWithHTML', () => {
+		it('should create a container with the passed in HTML', () => {
+			const container = createContainerWithHTML('<h1>hello!</h1>');
+			expect(container.innerHTML).to.equal('<h1>hello!</h1>');
+			expect(container.tagName).to.equal('DIV');
+		});
+	});
+	describe('validateNodeTree', () => {
+
+		it('should return true if called with falsy arguments', () => {
+			expect(validateNodeTree(false)).to.equal(true);
+			expect(validateNodeTree(null)).to.equal(true);
+			expect(validateNodeTree(undefined)).to.equal(true);
+		});
+
+		it('should return true if called with a string', () => {
+			expect(validateNodeTree('<div><h1>test</h1></div>')).to.equal(true);
+		});
+
+		it('should return true if called with a number', () => {
+			expect(validateNodeTree(4)).to.equal(true);
+		});
+
+		it('should return true on a valid node tree', () => {
+			const node = <div><span>Hello world</span></div>;
+			const html = renderToString(node);
+			const container = createContainerWithHTML(html);
+			render(node, container);
+			expect(validateNodeTree(node)).to.equal(true);
+		});
+
 	});
 
 	describe('triggerEvent', () => {
