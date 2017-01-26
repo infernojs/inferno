@@ -136,6 +136,63 @@ declare module 'inferno-create-class' {
 	export default function createClass(obj: any): any;
 }
 
+declare module 'inferno-helpers' {
+	export const NO_OP: string;
+	export const ERROR_MSG: string;
+
+	export const isBrowser: boolean;
+
+	export function toArray(children: any): any[];
+
+// this is MUCH faster than .constructor === Array and instanceof Array
+// in Node 7 and the later versions of V8, slower in older versions though
+	export function isArray(obj: any): boolean;
+
+	export function isStatefulComponent(obj: any): boolean;
+
+	export function isStringOrNumber(obj: any): boolean;
+
+	export function isNullOrUndef(obj: any): boolean;
+
+	export function isInvalid(obj: any): boolean;
+
+	export function isFunction(obj: any): boolean;
+
+	export function isAttrAnEvent(attr: string): boolean;
+
+	export function isString(obj: any): boolean;
+
+	export function isNumber(obj: any): boolean;
+
+	export function isNull(obj: any): boolean;
+
+	export function isTrue(obj: any): boolean;
+
+	export function isUndefined(obj: any): boolean;
+
+	export function isObject(obj: any): boolean;
+
+	export function throwError(message?: string);
+
+	export function warning(message: string);
+
+	export const EMPTY_OBJ: Object;
+
+// So that Lifecycle gets tree-shaked properly https://gitlab.com/Rich-Harris/buble/issues/181
+	export class Dummy {}
+
+	/**
+	 * This is purely a tiny event-emitter/pubsub
+	 */
+	export class Lifecycle extends Dummy {
+		public listeners: Function[];
+		public fastUnmount: boolean;
+
+		addListener: (listener: Function) => void;
+		trigger(): void;
+	}
+}
+
 declare module 'inferno-create-element' {
 	export default function createElement(name: any, props?: any, ...children): VNode;
 }

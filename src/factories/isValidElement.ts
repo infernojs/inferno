@@ -10,5 +10,5 @@ export default function isValidElement(obj: VNode): boolean {
 	}
 	const flags = obj.flags;
 
-	return !!(flags & (VNodeFlags.Component | VNodeFlags.Element)) as boolean;
+	return (flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
 };

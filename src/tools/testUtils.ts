@@ -103,7 +103,7 @@ export function scryRenderedDOMComponentsWithClass(root: VNode, classNames: stri
 
 			let classNamesList = classNames;
 			if (!isArray(classNames)) {
-				classNamesList = classNames.split(/\s+/);
+				classNamesList = (classNames as string).split(/\s+/);
 			}
 
 			classNamesList = toArray(classNamesList);

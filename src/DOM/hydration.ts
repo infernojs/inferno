@@ -151,7 +151,7 @@ function hydrateChildren(children: InfernoChildren, parentDom: Element, lifecycl
 	let dom = parentDom.firstChild;
 
 	if (isArray(children)) {
-		for (let i = 0; i < children.length; i++) {
+		for (let i = 0; i < (children as Array<string | number | VNode>).length; i++) {
 			const child = children[i];
 
 			if (!isNull(child) && isObject(child)) {

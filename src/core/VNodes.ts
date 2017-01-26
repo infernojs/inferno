@@ -58,13 +58,13 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 		} else {
 			if (isArray(children)) {
 				if (isArray(props.children)) {
-					props.children = props.children.concat(children) as any;
+					props.children = (props.children as Array<string | number | VNode>).concat(children) as any;
 				} else {
 					props.children = [props.children].concat(children) as any;
 				}
 			} else {
 				if (isArray(props.children)) {
-					props.children.push(children);
+					(props.children as Array<string | number | VNode>).push(children);
 				} else {
 					props.children = [props.children] as any;
 					(props.children as any[]).push(children);
@@ -77,7 +77,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 
 	if (isArray(vNodeToClone)) {
 		const tmpArray = [];
-		for (let i = 0; i < vNodeToClone.length; i++) {
+		for (let i = 0; i < (vNodeToClone as any).length; i++) {
 			tmpArray.push(cloneVNode(vNodeToClone[i]));
 		}
 

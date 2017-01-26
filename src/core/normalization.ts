@@ -100,7 +100,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 
 function normalizeChildren(children: InfernoChildren | null) {
 	if (isArray(children)) {
-		return normalizeVNodes(children);
+		return normalizeVNodes(children as any[]);
 	} else if (isVNode(children as VNode) && (children as VNode).dom) {
 		return cloneVNode(children as VNode);
 	}

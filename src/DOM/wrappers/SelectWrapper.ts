@@ -1,7 +1,7 @@
 import {
 	EMPTY_OBJ,
 	isArray,
-	isInvalid, 
+	isInvalid,
 	isNullOrUndef
 } from 'inferno-helpers';
 import { isVNode } from '../../core/VNodes';

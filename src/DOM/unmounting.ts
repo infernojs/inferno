@@ -130,7 +130,7 @@ export function unmountElement(vNode: VNode, parentDom: Element, lifecycle: Life
 
 function unmountChildren(children: InfernoChildren, lifecycle: Lifecycle, isRecycling: boolean) {
 	if (isArray(children)) {
-		for (let i = 0; i < children.length; i++) {
+		for (let i = 0; i < (children as Array<string | number | VNode>).length; i++) {
 			const child = children[i];
 
 			if (!isInvalid(child) && isObject(child)) {

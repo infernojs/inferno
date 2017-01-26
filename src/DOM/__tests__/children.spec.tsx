@@ -1064,13 +1064,13 @@ describe('Children - (JSX)', () => {
 				</div>
 			);
 
-			render(<Nodes items={[1,2,3]}/>, container);
+			render(<Nodes items={[1, 2, 3]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'));
 
-			render(<Nodes items={[3,2,1]}/>, container);
+			render(<Nodes items={[3, 2, 1]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>'));
 
-			render(<Nodes items={[9,8,7]}/>, container);
+			render(<Nodes items={[9, 8, 7]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>'));
 
 			render(<Nodes items={[]}/>, container);
@@ -1086,13 +1086,13 @@ describe('Children - (JSX)', () => {
 				</div>
 			);
 
-			render(<Nodes items={[1,2,3]}/>, container);
+			render(<Nodes items={[1, 2, 3]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'));
 
-			render(<Nodes items={[3,2,1]}/>, container);
+			render(<Nodes items={[3, 2, 1]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>'));
 
-			render(<Nodes items={[9,8,7]}/>, container);
+			render(<Nodes items={[9, 8, 7]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>'));
 
 			render(<Nodes items={[]}/>, container);
