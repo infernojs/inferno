@@ -65,7 +65,7 @@
     "karma-safari-launcher": "^1.0.0",
     "karma-sauce-launcher": "^1.1.0",
     "karma-webpack": "2.0.2",
-    "lerna": "2.0.0-beta.33",
+    "lerna": "2.0.0-beta.34",
     "lodash": "^4.17.4",
     "merge-source-map": "^1.0.3",
     "mkdirp": "^0.5.1",

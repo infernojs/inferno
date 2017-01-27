@@ -206,7 +206,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		this.props = props || (EMPTY_OBJ as P);
 
 		/** @type {object} */
-		this.context = context || {};
+		this.context = context || EMPTY_OBJ; // context should not be mutable
 	}
 
 	render(nextProps?: P, nextState?, nextContext?) {

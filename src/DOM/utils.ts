@@ -21,7 +21,7 @@ import {
 
 export function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean) {
 	if (isUndefined(context)) {
-		context = {};
+		context = EMPTY_OBJ; // Context should not be mutable
 	}
 	const instance = new Component(props, context);
 

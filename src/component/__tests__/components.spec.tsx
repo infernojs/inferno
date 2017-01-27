@@ -2996,4 +2996,19 @@ describe('Components (JSX)', () => {
 			}, 40);
 		});
 	});
+
+	describe('Context', () => {
+		it('Should be the same object always (dev frozen)', () => {
+			class ContextClass extends Component<any, any> {
+				constructor(props, context) {
+					super(props, context);
+					context.foo = 'bar';
+				}
+			}
+
+			expect(() => {
+				render(<ContextClass />, container);
+			}).to.throw();
+		});
+	});
 });

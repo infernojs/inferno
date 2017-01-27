@@ -1,6 +1,9 @@
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
-	string.split(',').forEach((i) => object[i] = value);
+	const array = string.split(',');
+	for (let i = 0; i < array.length; i++) {
+		object[array[i]] = value;
+	}
 }
 
 export const xlinkNS = 'http://www.w3.org/1999/xlink';

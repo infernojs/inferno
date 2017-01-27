@@ -26,7 +26,10 @@ import {
 	patchEvent,
 	patchProp
 } from './patching';
-import { componentToDOMNodeMap } from './rendering';
+import {
+	componentToDOMNodeMap,
+	CONTEXT_OBJ
+} from './rendering';
 import {
 	createClassComponentInstance,
 	createFunctionalComponentInput,
@@ -229,7 +232,7 @@ export default function hydrateRoot(input, parentDom: Node, lifecycle: Lifecycle
 	let dom = parentDom && parentDom.firstChild as Element;
 
 	if (dom) {
-		hydrate(input, dom, lifecycle, {}, false);
+		hydrate(input, dom, lifecycle, CONTEXT_OBJ, false);
 		dom = parentDom.firstChild as Element;
 		// clear any other DOM nodes, there should be only a single entry for the root
 		while (dom = dom.nextSibling as Element) {
