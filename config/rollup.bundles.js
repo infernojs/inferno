@@ -22,8 +22,9 @@ bundles.add({
 bundles.add({
 	moduleGlobal: 'Inferno',
 	moduleName: 'inferno',
-	moduleEntry: 'packages/inferno/src/index.js',
-	path: 'packages/inferno/'
+	moduleEntry: 'packages/inferno/dist-es/index.js',
+	path: 'packages/inferno/',
+	dest: 'packages/inferno/dist/'
 });
 
 bundles.add({
@@ -39,11 +40,12 @@ bundles.add({
 bundles.add({
 	moduleGlobal: 'Inferno.Component',
 	moduleName: 'inferno-component',
-	moduleEntry: 'packages/inferno-component/src/index.js',
+	moduleEntry: 'packages/inferno-component/dist-es/index.js',
 	moduleGlobals: {
 		inferno: 'Inferno'
 	},
-	path: 'packages/inferno-component/'
+	path: 'packages/inferno-component',
+	dest: 'packages/inferno-component/dist/'
 });
 
 bundles.add({
@@ -59,11 +61,12 @@ bundles.add({
 bundles.add({
 	moduleGlobal: 'Inferno.createElement',
 	moduleName: 'inferno-create-element',
-	moduleEntry: 'packages/inferno-create-element/src/index.js',
+	moduleEntry: 'packages/inferno-create-element/dist-es/index.js',
 	moduleGlobals: {
 		inferno: 'Inferno'
 	},
-	path: 'packages/inferno-create-element/'
+	path: 'packages/inferno-create-element',
+	dest: 'packages/inferno-create-element/dist/'
 });
 
 bundles.add({
@@ -92,13 +95,14 @@ bundles.add({
 bundles.add({
 	moduleGlobal: 'Inferno.createClass',
 	moduleName: 'inferno-create-class',
-	moduleEntry: 'packages/inferno-create-class/src/index.js',
+	moduleEntry: 'packages/inferno-create-class/dist-es/index.js',
 	moduleGlobals: {
 		inferno: 'Inferno',
 		'inferno-component': 'Inferno.Component',
 		'inferno-create-element': 'Inferno.createElement'
 	},
-	path: 'packages/inferno-create-class/'
+	path: 'packages/inferno-create-class',
+	dest: 'packages/inferno-create-class/dist/'
 });
 
 bundles.add({
@@ -134,12 +138,12 @@ bundles.add({
 bundles.add({
 	moduleGlobal: 'Inferno.h',
 	moduleName: 'inferno-hyperscript',
-	moduleEntry: 'packages/inferno-hyperscript/src/index.js',
+	moduleEntry: 'packages/inferno-hyperscript/dist-es/index.js',
 	moduleGlobals: {
-		inferno: 'Inferno',
-		'inferno-create-element': 'Inferno.createElement'
+		inferno: 'Inferno'
 	},
-	path: 'packages/inferno-hyperscript/'
+	path: 'packages/inferno-hyperscript',
+	dest: 'packages/inferno-hyperscript/dist/'
 });
 
 bundles.add({

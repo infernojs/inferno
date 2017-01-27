@@ -11,7 +11,9 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "inferno-create-class.js",
+  "main": "dist/inferno-create-class.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -21,7 +23,11 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "1.2.2",
+    "inferno-helpers": "1.2.2",
     "inferno-component": "1.2.2"
+  },
+  "devDependencies": {
+    "inferno": "1.2.2",
+    "inferno-create-element": "1.2.2"
   }
 }

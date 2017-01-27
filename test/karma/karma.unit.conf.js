@@ -17,9 +17,10 @@ module.exports = function (config) {
 			'node_modules/es6-shim/es6-shim.js',
 			'node_modules/babel-polyfill/dist/polyfill.js',
 			'node_modules/sinon/pkg/sinon.js',
-			'src/**/__tests__/**/*.ts',
-			'src/**/__tests__/**/*.tsx',
-			'src/**/__tests__/**/*.jsx'
+			'src/**/__tests__/**/*.ts*',
+			'src/**/__tests__/**/*.js*',
+			'packages/*/__tests__/**/*.ts*',
+			'packages/*/__tests__/**/*.js*'
 		],
 		reporters: [
 			'failed'

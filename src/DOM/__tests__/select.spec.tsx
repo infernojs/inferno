@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
-import { innerHTML } from '../../tools/utils';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 
 describe('Select / select multiple (JSX)', () => {
 	let container;

@@ -16,6 +16,7 @@ const dependencies = Object.keys(infernoPackage.peerDependencies || {});
 
 const EXTERNAL_BLACKLISTS = new Map();
 EXTERNAL_BLACKLISTS.set('inferno-helpers', true);
+EXTERNAL_BLACKLISTS.set('inferno-vnode-flags', true);
 
 const plugins = [
 	commonjs({

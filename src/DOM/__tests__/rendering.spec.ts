@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { createVNode, render } from 'inferno';
 import { NO_OP } from 'inferno-helpers';
+import VNodeFlags from 'inferno-vnode-flags';
 
 describe('rendering routine', () => {
 	let container;

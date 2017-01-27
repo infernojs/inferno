@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import { innerHTML } from '../../tools/utils';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 
 describe('Blueprints (JSX)', () => {
 	let container;

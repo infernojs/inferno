@@ -5,6 +5,7 @@ import Component from 'inferno-component';
 import {
 	isStatefulComponent
 } from 'inferno-helpers';
+import VNodeFlags from 'inferno-vnode-flags';
 import {
 	createDevToolsBridge
 } from './bridge';

@@ -1,9 +1,8 @@
 import hoistStatics from 'hoist-non-inferno-statics';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
-import {IProps} from '../core/structures';
 
-interface IStoreProps extends IProps {
+interface IStoreProps {
 	ref: any;
 }
 

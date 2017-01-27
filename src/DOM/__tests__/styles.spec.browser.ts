@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
-import { style } from '../../tools/utils';
-import { innerHTML } from '../../tools/utils';
+import { style } from 'inferno/dist-es/test/utils';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 
 const isPhantomJS = window && window.navigator && /PhantomJS/.test(window.navigator.userAgent);
 

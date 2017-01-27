@@ -25,10 +25,12 @@
     "browser",
     "rollup"
   ],
-  "main": "inferno.js",
-  "typings": "inferno.d.ts",
+  "main": "dist/inferno.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno-helpers": "1.2.2"
+    "inferno-helpers": "1.2.2",
+    "inferno-vnode-flags": "1.2.2"
   }
 }

@@ -11,16 +11,15 @@ import {
 import hoistStatics from 'hoist-non-inferno-statics';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import {IProps} from '../core/structures';
 import { isPlainObject } from './helpers';
 
 type WrapWithConnect = (WrappedComponent: any) => any;
 
-type MapStateToProps = (state: any, props?: IProps) => any;
+type MapStateToProps = (state: any, props?: {}) => any;
 
-type MapDispatchToPropsFunction = (dispatch: (action: any) => void, props?: IProps) => any;
+type MapDispatchToPropsFunction = (dispatch: (action: any) => void, props?: {}) => any;
 
-type MapDispatchToPropsFactory = (dispatch: (action: any) => void, props?: IProps) => MapDispatchToPropsFunction;
+type MapDispatchToPropsFactory = (dispatch: (action: any) => void, props?: {}) => MapDispatchToPropsFunction;
 
 type MapDispatchToProps = MapDispatchToPropsFunction | {[index: string]: MapDispatchToPropsFunction} | MapDispatchToPropsFactory;
 
@@ -108,7 +107,6 @@ export default function connect(
 			statePropsPrecalculationError: any;
 			renderedElement: any;
 			componentDidMount: any;
-			componentWillUpdate: any;
 			wrappedInstance: any;
 
 			constructor(props, context) {

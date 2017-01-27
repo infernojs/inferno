@@ -1,4 +1,5 @@
 import { createVNode } from 'inferno';
+import VNodeFlags from 'inferno-vnode-flags';
 
 interface ILinkProps {
 	href: any;

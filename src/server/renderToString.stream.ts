@@ -4,6 +4,7 @@ import {
 	isNullOrUndef,
 	isStringOrNumber
 } from 'inferno-helpers';
+import VNodeFlags from 'inferno-vnode-flags';
 import {
 	renderAttributes,
 	renderStyleToString

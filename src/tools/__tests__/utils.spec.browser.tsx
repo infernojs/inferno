@@ -10,7 +10,8 @@ import {
 	triggerEvent,
 	createContainerWithHTML,
 	validateNodeTree
-} from '../utils';
+} from 'inferno/dist-es/test/utils';
+
 import {
 	expect
 } from 'chai';

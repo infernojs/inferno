@@ -10,7 +10,7 @@ import { expect } from 'chai';
 import Inferno from 'inferno';
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import createElement from '../../factories/createElement';
+import createElement from 'inferno-create-element';
 
 Inferno;
 

@@ -1,9 +1,7 @@
 import * as Inferno from 'inferno';
 
-import {
-	createBrowserHistory,
-	createMemoryHistory
-} from 'history';
+import createBrowserHistory from 'history/createBrowserHistory';
+import createMemoryHistory from 'history/createMemoryHistory';
 
 import { expect } from 'chai';
 import Component from 'inferno-component';
@@ -11,7 +9,7 @@ import { createStore } from 'redux';
 import IndexRoute from '../../router/IndexRoute';
 import Route from '../../router/Route';
 import Router from '../../router/Router';
-import { innerHTML } from '../../tools/utils';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 import Provider from '../Provider';
 
 const render = Inferno.render;

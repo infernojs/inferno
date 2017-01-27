@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
-import { innerHTML } from '../../tools/utils';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 
 describe('Update (non-jsx)', () => {
 	let container;

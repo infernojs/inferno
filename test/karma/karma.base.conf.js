@@ -7,7 +7,8 @@ module.exports = function (config) {
 			'Chrome'
 		],
 		preprocessors: {
-			'src/**/*': ['webpack']
+			'src/**/*': ['webpack'],
+			'packages/**/*': ['webpack']
 		},
 		webpack: {
 			module: {
@@ -23,6 +24,7 @@ module.exports = function (config) {
 						query: {
 							compact: false,
 							presets: [[ 'es2015', { loose: true }]],
+							babelrc: false,
 							plugins: [
 								'transform-class-properties',
 								'transform-object-rest-spread',
@@ -35,7 +37,7 @@ module.exports = function (config) {
 			},
 			resolve: {
 				extensions: [ '.js', '.jsx', '.ts', '.tsx' ],
-				mainFields: ['main']
+				mainFields: [ 'module', 'main' ]
 			},
 			performance: {
 				hints: false

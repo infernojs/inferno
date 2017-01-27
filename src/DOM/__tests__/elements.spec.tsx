@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
 import { assert, spy } from 'sinon';
-import {createTextVNode} from '../../core/VNodes';
-import { innerHTML } from '../../tools/utils';
+import {createTextVNode} from 'inferno/dist-es/core/VNodes';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 
 describe('Elements (JSX)', () => {
 	let container;

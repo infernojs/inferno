@@ -1,9 +1,9 @@
 import {
 	expect
 } from 'chai';
-import { createMemoryHistory } from 'history';
+import createMemoryHistory from 'history/createMemoryHistory';
 import { cloneVNode, render } from 'inferno';
-import { innerHTML } from '../../tools/utils';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 import IndexRoute from '../IndexRoute';
 import Route from '../Route';
 import Router from '../Router';

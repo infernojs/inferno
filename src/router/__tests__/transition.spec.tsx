@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import { createMemoryHistory } from 'history';
+import createMemoryHistory from 'history/createMemoryHistory';
 import { render } from 'inferno';
-import Component from '../../component/es2015';
-import { innerHTML } from '../../tools/utils';
+import Component from 'inferno-component';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 import IndexRoute from '../IndexRoute';
 import Link from '../Link';
 import Redirect from '../Redirect';
@@ -10,6 +10,14 @@ import Route from '../Route';
 import Router from '../Router';
 
 const browserHistory = createMemoryHistory();
+
+declare global {
+	interface Window {
+		process: any;
+		__karma__: any;
+		mocha: any;
+	}
+}
 
 function GoodComponent(props) {
 	return <div>Good Component{props.clone}</div>;

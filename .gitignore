@@ -28,3 +28,7 @@ packages/**/dist-es
 packages/inferno/dist
 packages/inferno-helpers/dist
 packages/inferno-vnode-flags/dist
+packages/inferno-component/dist
+packages/inferno-create-class/dist
+packages/inferno-create-element/dist/
+packages/inferno-hyperscript/dist

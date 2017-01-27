@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
 import { observable } from 'mobx';
-import { innerHTML } from '../../tools/utils';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 import connect from '../connect';
 import Provider from '../Provider';
 

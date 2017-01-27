@@ -9,7 +9,7 @@ import {
 	toHyphenCase
 } from './utils';
 
-import { isUnitlessNumber } from '../DOM/constants';
+import { internal_isUnitlessNumber } from 'inferno';
 
 export function renderStyleToString(style): string {
 	if (isStringOrNumber(style)) {
@@ -19,7 +19,7 @@ export function renderStyleToString(style): string {
 
 		for (let styleName in style) {
 			const value = style[styleName];
-			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+			const px = isNumber(value) && !internal_isUnitlessNumber[styleName] ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
 				styles.push(`${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`);

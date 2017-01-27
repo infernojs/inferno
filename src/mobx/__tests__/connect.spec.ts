@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import Component from '../../component/es2015';
-import { render } from '../../DOM/rendering';
-import createElement from '../../factories/createElement';
-import { innerHTML } from '../../tools/utils';
+import Component from 'inferno-component';
+import { render } from 'inferno';
+import createElement from 'inferno-create-element';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 import connect from '../connect';
 import inject from '../inject';
 import Provider from '../Provider';

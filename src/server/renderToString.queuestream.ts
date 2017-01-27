@@ -1,4 +1,5 @@
 import {
+	copyPropsTo,
 	EMPTY_OBJ,
 	isArray,
 	isFunction,
@@ -10,11 +11,9 @@ import {
 	isTrue,
 	throwError
 } from 'inferno-helpers';
+import VNodeFlags from 'inferno-vnode-flags';
 import { Readable } from 'stream';
-import {
-	copyPropsTo
-} from '../core/normalization';
-import { isUnitlessNumber } from '../DOM/constants';
+import { internal_isUnitlessNumber } from 'inferno';
 import {
 	escapeText,
 	isVoidElement as _isVoidElement,
@@ -28,7 +27,7 @@ function renderStylesToString(styles) {
 		let renderedString = '';
 		for (const styleName in styles) {
 			const value = styles[styleName];
-			const px = isNumber(value) && !isUnitlessNumber[styleName] ? 'px' : '';
+			const px = isNumber(value) && !internal_isUnitlessNumber[styleName] ? 'px' : '';
 			if (!isNullOrUndef(value)) {
 				renderedString += `${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`;
 			}

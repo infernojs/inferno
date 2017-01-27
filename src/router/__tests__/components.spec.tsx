@@ -2,15 +2,23 @@ import {
 	expect
 } from 'chai';
 import { assert, spy } from 'sinon';
-import { createMemoryHistory } from 'history';
+import createMemoryHistory from 'history/createMemoryHistory';
 import { render } from 'inferno';
-import { innerHTML } from '../../tools/utils';
+import { innerHTML } from 'inferno/dist-es/test/utils';
 import IndexLink from '../IndexLink';
 import IndexRoute from '../IndexRoute';
 import Link from '../Link';
 import Route from '../Route';
 import Router from '../Router';
 const browserHistory = createMemoryHistory();
+
+declare global {
+	interface Window {
+		process: any;
+		__karma__: any;
+		mocha: any;
+	}
+}
 
 function TestComponent() {
 	return <div>

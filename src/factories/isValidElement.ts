@@ -1,3 +1,5 @@
+import { VNode } from 'inferno';
+import VNodeFlags from 'inferno-vnode-flags';
 import {
 	isNull,
 	isObject

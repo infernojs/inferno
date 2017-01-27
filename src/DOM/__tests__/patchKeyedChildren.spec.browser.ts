@@ -1,7 +1,8 @@
 import { expect } from 'chai';
-import { createVNode, render } from 'inferno';
+import { createVNode, render, VNode } from 'inferno';
+import VNodeFlags from 'inferno-vnode-flags';
 import createElement from 'inferno-create-element';
-import { createTextVNode } from '../../core/VNodes';
+import { createTextVNode } from 'inferno/dist-es/core/VNodes';
 
 function generateKeyNodes(array) {
 

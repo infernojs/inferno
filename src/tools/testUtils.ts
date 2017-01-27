@@ -1,11 +1,11 @@
 import { isArray, throwError, toArray } from 'inferno-helpers';
-import { render } from '../DOM/rendering';
-import createElement from '../factories/createElement';
+import { render, VNode } from 'inferno';
+import createElement from 'inferno-create-element';
 import isValidElement from '../factories/isValidElement';
 
 export function renderIntoDocument(element: VNode): VNode {
 	const div = document.createElement('div');
-	return render(element, div) as VNode;
+	return render(element as VNode, div) as VNode;
 }
 
 export function isElement(element: VNode): boolean {

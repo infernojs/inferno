@@ -6,7 +6,7 @@ import {
 	createContainerWithHTML,
 	innerHTML,
 	validateNodeTree
-} from '../../tools/utils';
+} from 'inferno/dist-es/test/utils';
 
 function Comp1() {
 	return <span>Worked!</span>;

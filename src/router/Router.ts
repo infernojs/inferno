@@ -2,6 +2,7 @@ import { createVNode } from 'inferno';
 import Component from 'inferno-component';
 import match, { matchPath } from './match';
 import RouterContext from './RouterContext';
+import VNodeFlags from 'inferno-vnode-flags';
 
 export interface IRouterProps {
 	history?: any;
