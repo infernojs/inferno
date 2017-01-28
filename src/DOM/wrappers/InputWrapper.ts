@@ -120,6 +120,8 @@ export function applyValue(vNode, dom) {
 	const value = props.value;
 	const checked = props.checked;
 	const multiple = props.multiple;
+	const defaultValue = props.defaultValue;
+	const hasValue = !isNullOrUndef(value);
 
 	if (type && type !== dom.type) {
 		dom.type = type;
@@ -127,8 +129,11 @@ export function applyValue(vNode, dom) {
 	if (multiple && multiple !== dom.multiple) {
 		dom.multiple = multiple;
 	}
+	if (!isNullOrUndef(defaultValue) && !hasValue) {
+		dom.defaultValue = defaultValue + '';
+	}
 	if (isCheckedType(type)) {
-		if (!isNullOrUndef(value)) {
+		if (hasValue) {
 			dom.value = value;
 		}
 		dom.checked = checked;
@@ -136,7 +141,7 @@ export function applyValue(vNode, dom) {
 			handleAssociatedRadioInputs(props.name);
 		}
 	} else {
-		if (!isNullOrUndef(value) && dom.value !== value) {
+		if (hasValue && dom.value !== value) {
 			dom.value = value;
 		} else if (!isNullOrUndef(checked)) {
 			dom.checked = checked;

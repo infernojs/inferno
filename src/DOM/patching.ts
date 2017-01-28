@@ -177,7 +177,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 
 		let hasControlledValue = false;
 		if (!(nextFlags & VNodeFlags.HtmlElement)) {
-			hasControlledValue = processElement(nextFlags, nextVNode, dom);
+			hasControlledValue = processElement(nextFlags, nextVNode, dom, false);
 		}
 
 		// inlined patchProps  -- starts --

@@ -131,7 +131,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: Lifecycle, contex
 	}
 	let hasControlledValue = false;
 	if (!(flags & VNodeFlags.HtmlElement)) {
-		hasControlledValue = processElement(flags, vNode, dom);
+		hasControlledValue = processElement(flags, vNode, dom, false);
 	}
 	if (props) {
 		for (let prop in props) {

@@ -13,6 +13,109 @@ describe('HTML Form Elements', () => {
 		container.innerHTML = '';
 	});
 
+	describe('Textarea - defaultValue', () => {
+		it('Should have value as defaultValue when actual value is null', () => {
+			const expectedTextArea = document.createElement('textarea');
+			expectedTextArea.value = 'Hey Inferno';
+
+			render(<textarea defaultValue="Hey Inferno" value={null}/>, container);
+			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
+			expect(container.firstChild.value).to.equal('Hey Inferno');
+		});
+
+		it('Should have value as defaultValue when actual value is undefined', () => {
+			const expectedTextArea = document.createElement('textarea');
+			expectedTextArea.value = 'Hey Inferno';
+
+			render(<textarea defaultValue="Hey Inferno"/>, container);
+			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
+			expect(container.firstChild.value).to.equal('Hey Inferno');
+		});
+
+		it('Should not use defaultValue when actual value is empty string', () => {
+			const expectedTextArea = document.createElement('textarea');
+
+			render(<textarea defaultValue="Hey Inferno" value=""/>, container);
+			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
+			expect(container.firstChild.value).to.equal('');
+		});
+
+		it('Should not use defaultValue when actual value is number', () => {
+			const expectedTextArea = document.createElement('textarea');
+			expectedTextArea.value = '1';
+
+			render(<textarea defaultValue="Hey Inferno" value={1}/>, container);
+			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
+			expect(container.firstChild.value).to.equal('1');
+		});
+
+		it('Should not use defaultValue when actual value is object', () => {
+			const expectedTextArea = document.createElement('textarea');
+			expectedTextArea.value = '[object Object]';
+
+			render(<textarea defaultValue="Hey Inferno" value={{a: 1}}/>, container);
+			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
+			expect(container.firstChild.value).to.equal('[object Object]');
+		});
+
+		it('Should have false as string when given as defaultValue', () => {
+			const expectedTextArea = document.createElement('textarea');
+			expectedTextArea.value = 'false';
+
+			render(<textarea defaultValue={false}/>, container);
+			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
+			expect(container.firstChild.value).to.equal('false');
+		});
+	});
+
+	describe('Input - defaultValue', () => {
+		it('Should have value as defaultValue when actual value is null', () => {
+			const expectedInput = document.createElement('input');
+			expectedInput.defaultValue = 'Hey Inferno';
+
+			render(<input defaultValue="Hey Inferno" value={null}/>, container);
+
+			expect(container.innerHTML).to.equal(expectedInput.outerHTML);
+			expect(container.firstChild.value).to.equal('Hey Inferno');
+		});
+
+		it('Should have value as defaultValue when actual value is undefined', () => {
+			const expectedInput = document.createElement('input');
+			expectedInput.defaultValue = 'Hey Inferno';
+
+			render(<input defaultValue="Hey Inferno"/>, container);
+			expect(container.innerHTML).to.equal(expectedInput.outerHTML);
+			expect(container.firstChild.value).to.equal('Hey Inferno');
+		});
+
+		it('Should not use defaultValue when actual value is empty string', () => {
+			const expectedInput = document.createElement('input');
+			expectedInput.value = '';
+
+			render(<input defaultValue="Hey Inferno" value=""/>, container);
+			expect(container.innerHTML).to.equal(expectedInput.outerHTML);
+			expect(container.firstChild.value).to.equal('');
+		});
+
+		it('Should not use defaultValue when actual value is number', () => {
+			const expectedInput = document.createElement('input');
+			expectedInput.value = '1';
+
+			render(<input defaultValue="Hey Inferno" value={1}/>, container);
+			expect(container.innerHTML).to.equal(expectedInput.outerHTML);
+			expect(container.firstChild.value).to.equal('1');
+		});
+
+		it('Should not use defaultValue when actual value is object', () => {
+			const expectedInput = document.createElement('input');
+			expectedInput.value = '[object Object]';
+
+			render(<input defaultValue="Hey Inferno" value={{a: 1}}/>, container);
+			expect(container.innerHTML).to.equal(expectedInput.outerHTML);
+			expect(container.firstChild.value).to.equal('[object Object]');
+		});
+	});
+
 	describe('After external change', () => {
 		it('Should update input check property', () => {
 			render(<input type="checkbox" checked={true}/>, container);
@@ -150,8 +253,8 @@ describe('HTML Form Elements', () => {
 
 			expect(container.firstChild.firstChild.value).to.equal('male');
 			expect(container.firstChild.firstChild.checked).to.equal(false);
-			expect(container.firstChild.children[1].value).to.equal('female');
-			expect(container.firstChild.children[1].checked).to.equal(true);
+			expect(container.firstChild.children[ 1 ].value).to.equal('female');
+			expect(container.firstChild.children[ 1 ].checked).to.equal(true);
 		});
 	});
 });

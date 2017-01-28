@@ -112,7 +112,7 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 	}
 	let hasControlledValue = false;
 	if (!(flags & VNodeFlags.HtmlElement)) {
-		hasControlledValue = processElement(flags, vNode, dom);
+		hasControlledValue = processElement(flags, vNode, dom, true);
 	}
 	if (!isNull(props)) {
 		for (let prop in props) {

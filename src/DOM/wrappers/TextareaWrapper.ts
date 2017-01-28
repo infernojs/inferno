@@ -38,12 +38,12 @@ function onTextareaInputChange(e) {
 	}
 	// the user may have updated the vNode from the above onInput events
 	// so we need to get it from the context of `this` again
-	applyValue(this.vNode, dom);
+	applyValue(this.vNode, dom, false);
 }
 
-export function processTextarea(vNode, dom) {
+export function processTextarea(vNode, dom, mounting: boolean) {
 	const props = vNode.props || EMPTY_OBJ;
-	applyValue(vNode, dom);
+	applyValue(vNode, dom, mounting);
 	let textareaWrapper = wrappers.get(dom);
 
 	if (isControlled(props)) {
@@ -65,16 +65,27 @@ export function processTextarea(vNode, dom) {
 	return false;
 }
 
-export function applyValue(vNode, dom) {
+export function applyValue(vNode, dom, mounting: boolean) {
 	const props = vNode.props || EMPTY_OBJ;
 	const value = props.value;
 	const domValue = dom.value;
 
-	if (!isNullOrUndef(value) && domValue !== value) {
-		if (!isNullOrUndef(value)) {
+	if (isNullOrUndef(value)) {
+		if (mounting) {
+			const defaultValue = props.defaultValue;
+
+			if (!isNullOrUndef(defaultValue)) {
+				if (defaultValue !== domValue) {
+					dom.value = defaultValue;
+				}
+			} else if (domValue !== '') {
+				dom.value = '';
+			}
+		}
+	} else {
+		/* There is value so keep it controlled */
+		if (domValue !== value) {
 			dom.value = value;
-		} else if (domValue !== '') {
-			dom.value = '';
 		}
 	}
 }
