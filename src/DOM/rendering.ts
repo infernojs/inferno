@@ -130,6 +130,7 @@ export function render(input: InfernoInput, parentDom?: Element | SVGAElement): 
 			return rootInput.children;
 		}
 	}
+	return input;
 }
 
 export function createRenderer(_parentDom) {
