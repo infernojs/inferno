@@ -70,7 +70,7 @@ export function applyValue(vNode, dom) {
 	const value = props.value;
 	const domValue = dom.value;
 
-	if (domValue !== value) {
+	if (!isNullOrUndef(value) && domValue !== value) {
 		if (!isNullOrUndef(value)) {
 			dom.value = value;
 		} else if (domValue !== '') {
