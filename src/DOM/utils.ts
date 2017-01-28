@@ -6,7 +6,6 @@ import {
 	isNullOrUndef,
 	isStringOrNumber,
 	isUndefined,
-	Lifecycle,
 	throwError
 } from 'inferno-helpers';
 import options from '../core/options';

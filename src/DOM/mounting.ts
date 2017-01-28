@@ -161,15 +161,19 @@ export function mountComponent(vNode: VNode, parentDom: Element, lifecycle: Life
 		}
 	}
 	const type = vNode.type;
-	const props = vNode.props || EMPTY_OBJ;
 	const defaultProps = (type as any).defaultProps;
-	const ref = vNode.ref;
-	let dom;
-
+	let props;
 	if (!isUndefined(defaultProps)) {
+		// When defaultProps are used we need to create new Object
+		props = vNode.props || {};
 		copyPropsTo(defaultProps, props);
 		vNode.props = props;
+	} else {
+		props = vNode.props || EMPTY_OBJ;
 	}
+
+	const ref = vNode.ref;
+	let dom;
 	if (isClass) {
 		const instance = createClassComponentInstance(vNode, type, props, context, isSVG);
 		// If instance does not have componentWillUnmount specified we can enable fastUnmount

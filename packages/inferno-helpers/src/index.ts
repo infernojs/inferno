@@ -1,3 +1,7 @@
+/*
+  When this file is changed remember to make new build to see effect.
+ */
+
 export const NO_OP = '$NO_OP';
 export const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
@@ -74,22 +78,23 @@ export function warning(message: string) {
 
 export const EMPTY_OBJ = {};
 
-// So that Lifecycle gets tree-shaked properly https://gitlab.com/Rich-Harris/buble/issues/181
-export class Dummy {}
+if (process.env.NODE_ENV !== 'production') {
+	Object.freeze(EMPTY_OBJ);
+}
 
-/**
+/*
  * This is purely a tiny event-emitter/pubsub
  */
-export class Lifecycle extends Dummy {
-	public listeners: Function[] = [];
-	public fastUnmount = true;
-
-	addListener(callback) {
-		this.listeners.push(callback);
-	}
-	trigger() {
-		for (let i = 0; i < this.listeners.length; i++) {
-			this.listeners[i]();
-		}
-	}
+export function Lifecycle() {
+	this.listeners = [];
+	this.fastUnmount = true;
 }
+
+Lifecycle.prototype.addListener = function addListener (callback) {
+	this.listeners.push(callback);
+};
+Lifecycle.prototype.trigger = function trigger () {
+	for (let i = 0; i < this.listeners.length; i++) {
+		this.listeners[i]();
+	}
+};

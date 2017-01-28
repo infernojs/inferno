@@ -32,6 +32,14 @@ interface Props {
 	events?: Object | null;
 }
 
+interface Lifecycle {
+	fastUnmount: boolean;
+	listeners: Function[];
+
+	addListener(listener: Function): void;
+	trigger(): void;
+}
+
 interface Refs {
 	onComponentDidMount?: (domNode: Element) => void;
 	onComponentWillMount?(): void;
@@ -176,21 +184,9 @@ declare module 'inferno-helpers' {
 
 	export function warning(message: string);
 
+	export function Lifecycle(): void;
+
 	export const EMPTY_OBJ: Object;
-
-// So that Lifecycle gets tree-shaked properly https://gitlab.com/Rich-Harris/buble/issues/181
-	export class Dummy {}
-
-	/**
-	 * This is purely a tiny event-emitter/pubsub
-	 */
-	export class Lifecycle extends Dummy {
-		public listeners: Function[];
-		public fastUnmount: boolean;
-
-		addListener: (listener: Function) => void;
-		trigger(): void;
-	}
 }
 
 declare module 'inferno-create-element' {

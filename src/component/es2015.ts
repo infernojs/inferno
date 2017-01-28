@@ -146,7 +146,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 
 		component._lastInput = nextInput;
 		if (didUpdate) {
-			let subLifecycle: Lifecycle = component._lifecycle;
+			let subLifecycle = component._lifecycle;
 
 			if (!subLifecycle) {
 				subLifecycle = new Lifecycle();

@@ -1,7 +1,6 @@
 import {
 	isNull,
-	isUndefined,
-	Lifecycle
+	isUndefined
 } from 'inferno-helpers';
 import {
 	patchComponent,

@@ -27,8 +27,7 @@ import {
 	patchProp
 } from './patching';
 import {
-	componentToDOMNodeMap,
-	CONTEXT_OBJ
+	componentToDOMNodeMap
 } from './rendering';
 import {
 	createClassComponentInstance,
@@ -61,18 +60,24 @@ export function normalizeChildNodes(parentDom) {
 
 function hydrateComponent(vNode: VNode, dom: Element, lifecycle: Lifecycle, context, isSVG: boolean, isClass: number): Element {
 	const type = vNode.type;
-	const props = vNode.props || EMPTY_OBJ;
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
+
+	const defaultProps = (type as any).defaultProps;
+	let props;
+
+	if (!isUndefined(defaultProps)) {
+		// When defaultProps are used we need to create new Object
+		props = vNode.props || {};
+		copyPropsTo(defaultProps, props);
+		vNode.props = props;
+	} else {
+		props = vNode.props || EMPTY_OBJ;
+	}
+
 	if (isClass) {
 		const _isSVG = dom.namespaceURI === svgNS;
-		const defaultProps = (type as any).defaultProps;
-
-		if (!isUndefined(defaultProps)) {
-			copyPropsTo(defaultProps, props);
-			vNode.props = props;
-		}
 		const instance = createClassComponentInstance(vNode, type, props, context, _isSVG);
 		// If instance does not have componentWillUnmount specified we can enable fastUnmount
 		const prevFastUnmount = lifecycle.fastUnmount;
@@ -232,7 +237,7 @@ export default function hydrateRoot(input, parentDom: Node, lifecycle: Lifecycle
 	let dom = parentDom && parentDom.firstChild as Element;
 
 	if (dom) {
-		hydrate(input, dom, lifecycle, CONTEXT_OBJ, false);
+		hydrate(input, dom, lifecycle, EMPTY_OBJ, false);
 		dom = parentDom.firstChild as Element;
 		// clear any other DOM nodes, there should be only a single entry for the root
 		while (dom = dom.nextSibling as Element) {

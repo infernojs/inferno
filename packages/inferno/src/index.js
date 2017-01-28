@@ -1,4 +1,4 @@
-import { warning, NO_OP, EMPTY_OBJ } from 'inferno-helpers';
+import { warning } from 'inferno-helpers';
 import {
 	createVNode,
 	cloneVNode
@@ -8,7 +8,6 @@ import linkEvent from '../../../build/DOM/events/linkEvent';
 import options from '../../../build/core/options';
 
 if (process.env.NODE_ENV !== 'production') {
-	Object.freeze(EMPTY_OBJ);
 	const testFunc = function testFn() {};
 	if ((testFunc.name || testFunc.toString()).indexOf('testFn') === -1) {
 		warning(('It looks like you\'re using a minified copy of the development build ' +
@@ -31,10 +30,6 @@ export default {
 	// cloning
 	cloneVNode,
 
-	// used to shared common items between Inferno libs
-	NO_OP,
-	EMPTY_OBJ,
-
 	// DOM
 	render,
 	findDOMNode,
@@ -50,10 +45,6 @@ export {
 
 	// cloning
 	cloneVNode,
-
-	// used to shared common items between Inferno libs
-	NO_OP,
-	EMPTY_OBJ,
 
 	// DOM
 	render,

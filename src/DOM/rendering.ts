@@ -15,6 +15,7 @@ import hydrateRoot from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { unmount } from './unmounting';
+import { EMPTY_OBJ } from '../../packages/inferno-helpers/dist-es/index';
 
 interface Root {
 	dom: Node | SVGAElement;
@@ -73,10 +74,7 @@ function removeRoot(root: Root): void {
 	}
 }
 
-export const CONTEXT_OBJ = {};
-
 if (process.env.NODE_ENV !== 'production') {
-	Object.freeze(CONTEXT_OBJ);
 	if (isBrowser && document.body === null) {
 		warning('Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
 	}
@@ -104,7 +102,7 @@ export function render(input: InfernoInput, parentDom?: Element | SVGAElement): 
 				input = cloneVNode(input as VNode);
 			}
 			if (!hydrateRoot(input, parentDom, lifecycle)) {
-				mount(input as VNode, parentDom, lifecycle, CONTEXT_OBJ, false);
+				mount(input as VNode, parentDom, lifecycle, EMPTY_OBJ, false);
 			}
 			root = setRoot(parentDom, input, lifecycle);
 			lifecycle.trigger();
@@ -120,7 +118,7 @@ export function render(input: InfernoInput, parentDom?: Element | SVGAElement): 
 			if ((input as VNode).dom) {
 				input = cloneVNode(input as VNode);
 			}
-			patch(root.input as VNode, input as VNode, parentDom, lifecycle, CONTEXT_OBJ, false, false);
+			patch(root.input as VNode, input as VNode, parentDom, lifecycle, EMPTY_OBJ, false, false);
 		}
 		lifecycle.trigger();
 		root.input = input;

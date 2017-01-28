@@ -11,7 +11,6 @@ import {
 	isString,
 	isStringOrNumber,
 	isUndefined,
-	Lifecycle,
 	NO_OP,
 	throwError
 } from 'inferno-helpers';
@@ -290,8 +289,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 	const defaultProps = nextType.defaultProps;
 
 	if (!isUndefined(defaultProps)) {
-		copyPropsTo(defaultProps, nextProps);
-		nextVNode.props = nextProps;
+		// When defaultProps are used we need to create new Object
+		const props = nextVNode.props || {};
+		copyPropsTo(defaultProps, props);
+		nextVNode.props = props;
 	}
 
 	if (lastType !== nextType) {
