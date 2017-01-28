@@ -950,6 +950,15 @@ function removeProp(prop: string, lastValue, dom) {
 		dom.removeAttribute('style');
 	} else if (isAttrAnEvent(prop)) {
 		handleEvent(name, lastValue, null, dom);
+	} else if (prop.match(probablyColonProps)) {
+		let normalizedProp;
+		if (colonProps[prop]) {
+			normalizedProp = colonProps[prop];
+		} else {
+			normalizedProp = prop.replace(/([a-z])([A-Z])/g, colonize);
+			colonProps[prop] = normalizedProp;
+		}
+		dom.removeAttribute(normalizedProp);
 	} else {
 		dom.removeAttribute(prop);
 	}
