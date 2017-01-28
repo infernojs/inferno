@@ -29,9 +29,12 @@ import {
 	booleanProps,
 	dehyphenProps,
 	delegatedProps,
+	colonize,
+	colonProps,
 	isUnitlessNumber,
 	kebabize,
 	namespaces,
+	probablyColonProps,
 	probablyKebabProps,
 	skipProps,
 	strictProps
@@ -829,21 +832,26 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
 				}
 			}
 		} else {
-			let dehyphenProp;
+			let normalizedProp;
 			if (dehyphenProps[prop]) {
-				dehyphenProp = dehyphenProps[prop];
+				normalizedProp = dehyphenProps[prop];
+			} else if (colonProps[prop]) {
+				normalizedProp = colonProps[prop];
 			} else if (isSVG && prop.match(probablyKebabProps)) {
-				dehyphenProp = prop.replace(/([a-z])([A-Z]|1)/g, kebabize);
-				dehyphenProps[prop] = dehyphenProp;
+				normalizedProp = prop.replace(/([a-z])([A-Z]|1)/g, kebabize);
+				dehyphenProps[prop] = normalizedProp;
+			} else if (isSVG && prop.match(probablyColonProps)) {
+				normalizedProp = prop.replace(/([a-z])([A-Z])/g, colonize);
+				colonProps[prop] = normalizedProp;
 			} else {
-				dehyphenProp = prop;
+				normalizedProp = prop;
 			}
-			const ns = namespaces[prop];
+			const ns = namespaces[normalizedProp];
 
 			if (ns) {
-				dom.setAttributeNS(ns, dehyphenProp, nextValue);
+				dom.setAttributeNS(ns, normalizedProp, nextValue);
 			} else {
-				dom.setAttribute(dehyphenProp, nextValue);
+				dom.setAttribute(normalizedProp, nextValue);
 			}
 		}
 	}
@@ -942,6 +950,15 @@ function removeProp(prop: string, lastValue, dom) {
 		dom.removeAttribute('style');
 	} else if (isAttrAnEvent(prop)) {
 		handleEvent(name, lastValue, null, dom);
+	} else if (prop.match(probablyColonProps)) {
+		let normalizedProp;
+		if (colonProps[prop]) {
+			normalizedProp = colonProps[prop];
+		} else {
+			normalizedProp = prop.replace(/([a-z])([A-Z])/g, colonize);
+			colonProps[prop] = normalizedProp;
+		}
+		dom.removeAttribute(normalizedProp);
 	} else {
 		dom.removeAttribute(prop);
 	}

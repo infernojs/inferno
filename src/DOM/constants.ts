@@ -12,6 +12,11 @@ export const svgNS = 'http://www.w3.org/2000/svg';
 export const strictProps = {};
 export const booleanProps = {};
 export const namespaces = {};
+export const colonProps = {};
+export const probablyColonProps = /^(xlink[HART]|xml[BLS])/;
+export function colonize(str, smallLetter, largeLetter) {
+	return `${smallLetter}:${largeLetter.toLowerCase()}`;
+}
 export const isUnitlessNumber = {};
 export const skipProps = {};
 export const dehyphenProps = {
