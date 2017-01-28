@@ -1,4 +1,4 @@
-import { warning } from 'inferno-helpers';
+import { warning, NO_OP, EMPTY_OBJ } from 'inferno-helpers';
 import {
 	createVNode,
 	cloneVNode
@@ -30,6 +30,10 @@ export default {
 	// cloning
 	cloneVNode,
 
+	// used to shared common items between Inferno libs
+	NO_OP,
+	EMPTY_OBJ,
+
 	// DOM
 	render,
 	findDOMNode,
@@ -45,6 +49,10 @@ export {
 
 	// cloning
 	cloneVNode,
+
+	// used to shared common items between Inferno libs
+	NO_OP,
+	EMPTY_OBJ,
 
 	// DOM
 	render,
