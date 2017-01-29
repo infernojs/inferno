@@ -55,6 +55,13 @@ describe('SSR Creation (JSX)', () => {
 		description: 'should render input when value is not present with defaultValue',
 		template: () => <input defaultValue="foo"/>,
 		result: '<input value="foo">'
+	}, {
+		description: 'should render select element with selected property',
+		template: () => <select value="dog">
+			<option value="cat">A cat</option>
+			<option value="dog">A dog</option>
+		</select>,
+		result: '<select value="dog"><option>A cat</option><option selected>A dog</option></select>'
 	}];
 
 	testEntries.forEach((test) => {
