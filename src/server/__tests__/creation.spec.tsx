@@ -43,6 +43,18 @@ describe('SSR Creation (JSX)', () => {
 		description: 'should ignore children as props',
 		template: () => <p children="foo">foo</p>,
 		result: '<p>foo</p>'
+	}, {
+		description: 'should render input with value',
+		template: () => <input value="bar"/>,
+		result: '<input value="bar">'
+	}, {
+		description: 'should render input with value when defaultValue is present',
+		template: () => <input value="bar" defaultValue="foo"/>,
+		result: '<input value="bar">'
+	}, {
+		description: 'should render input when value is not present with defaultValue',
+		template: () => <input defaultValue="foo"/>,
+		result: '<input value="foo">'
 	}];
 
 	testEntries.forEach((test) => {

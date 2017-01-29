@@ -102,6 +102,16 @@ function renderVNodeToString(vNode, context, firstChild): string {
 					renderedString += ` class="${ escapeText(value) }"`;
 				} else if (prop === 'children') {
 					// Ignore children as prop.
+				} else if (prop === 'defaultValue') {
+					// Use default values if normal values are not present
+					if (!props.value) {
+						renderedString += ` value="${ escapeText(value) }"`;
+					}
+				} else if (prop === 'defaultChecked') {
+					// Use default values if normal values are not present
+					if (!props.checked) {
+						renderedString += ` checked="${ value }"`;
+					}
 				} else {
 					if (isStringOrNumber(value)) {
 						renderedString += ` ${ prop }="${ escapeText(value) }"`;
