@@ -2,13 +2,12 @@ const path = require('path');
 
 module.exports = function (config) {
 	config.set({
-		basePath: path.join(__dirname, '..', '..'),
+		// basePath: path.join(__dirname, '..', '..'),
 		browsers: [
 			'Chrome'
 		],
 		preprocessors: {
-			'src/**/*': ['webpack'],
-			'packages/**/*': ['webpack']
+			'**/*': ['webpack']
 		},
 		webpack: {
 			module: {

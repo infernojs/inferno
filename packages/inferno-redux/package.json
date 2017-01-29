@@ -11,7 +11,9 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "inferno-redux.js",
+  "main": "dist/inferno-redux.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -28,5 +30,8 @@
     "inferno-create-element": "1.2.2",
     "inferno-helpers": "1.2.2",
     "redux": "*"
+  },
+  "devDependencies": {
+    "inferno-router": "1.2.2"
   }
 }

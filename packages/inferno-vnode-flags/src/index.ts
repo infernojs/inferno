@@ -1,4 +1,4 @@
-enum VNodeFlags {
+const enum VNodeFlags {
 	Text = 1,
 	HtmlElement = 1 << 1,
 

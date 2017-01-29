@@ -44,33 +44,6 @@ export interface ComponentLifecycle<P, S> {
 	componentWillUnmount?: () => void;
 }
 
-export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
-	statics?: {
-		[key: string]: any;
-	};
-	mixins?: any;
-
-	displayName?: string;
-	propTypes?: {[index: string]: Function};
-
-	getDefaultProps?(): P;
-	getInitialState?(): S;
-}
-
-export interface ComponentClass<P, S> extends Mixin<P, S> {
-	new (props?: P, context?: any): Component<P, S>;
-	propTypes?: {};
-	contextTypes?: {};
-	childContextTypes?: {};
-	defaultProps?: P;
-	displayName?: string;
-}
-
-export interface ComponentSpec<P, S> extends Mixin<P, S> {
-	[propertyName: string]: any;
-	render(props?, context?): any;
-}
-
 // this is in shapes too, but we don't want to import from shapes as it will pull in a duplicate of createVNode
 function createVoidVNode(): VNode {
 	return createVNode(VNodeFlags.Void);

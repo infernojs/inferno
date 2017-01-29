@@ -1,1 +1,1 @@
-module.exports = require('../inferno-router').Link;
+module.exports = require('../').Link;

@@ -13,14 +13,12 @@ module.exports = function (config) {
 			'mocha'
 		],
 		files: [
-			'node_modules/es5-shim/es5-shim.js',
-			'node_modules/es6-shim/es6-shim.js',
-			'node_modules/babel-polyfill/dist/polyfill.js',
-			'node_modules/sinon/pkg/sinon.js',
-			'src/**/__tests__/**/*.ts*',
-			'src/**/__tests__/**/*.js*',
-			'packages/*/__tests__/**/*.ts*',
-			'packages/*/__tests__/**/*.js*'
+			require.resolve('es5-shim'),
+			require.resolve('es6-shim'),
+			require.resolve('babel-polyfill'),
+			path.resolve(require.resolve('sinon'), '..', '..', 'pkg', 'sinon.js'),
+			'__tests__/**/*.tsx?',
+			'__tests__/**/*.jsx?'
 		],
 		reporters: [
 			'failed'

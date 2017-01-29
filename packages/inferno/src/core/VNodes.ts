@@ -46,7 +46,7 @@ export interface VNode {
 	parentVNode?: VNode;
 }
 
-export type CreateVNodeFn = (
+export function createVNode (
 	flags: VNodeFlags,
 	type?: Type,
 	props?: Props,
@@ -55,18 +55,7 @@ export type CreateVNodeFn = (
 	key?: any,
 	ref?: Ref,
 	noNormalise?: boolean
-) => VNode;
-
-export const createVNode: CreateVNodeFn = (
-	flags: VNodeFlags,
-	type?: Type,
-	props?: Props,
-	children?: InfernoChildren,
-	events?,
-	key?: any,
-	ref?: Ref,
-	noNormalise?: boolean
-) => {
+) {
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}

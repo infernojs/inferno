@@ -1,1 +1,1 @@
-module.exports = require('../inferno-router').Redirect;
+module.exports = require('../').Redirect;

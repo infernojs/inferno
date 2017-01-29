@@ -22,7 +22,6 @@
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.10",
     "babel-plugin-inferno": "^1.7.0",
-    "babel-plugin-module-resolver": "^2.4.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-class-properties": "^6.22.0",
@@ -103,8 +102,6 @@
     "src"
   ],
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "packages/inferno/dist/inferno.js",
-  "jsnext:main": "packages/inferno/dist/inferno.es2015.js",
   "keywords": [
     "babel",
     "react",
@@ -128,21 +125,12 @@
     "branches": 80,
     "sourceMap": false,
     "include": [
-      "src/*.ts",
-      "src/**/*.ts",
-      "packages/**/dist/*.node.js"
+      "packages/*/dist-es/**/*.js"
     ],
     "exclude": [
-      "packages/inferno-helpers",
-      "packages/inferno-vnode-flags",
-      "packages/**/dist-es",
       "packages/**/*.d.ts",
-      "packages/inferno/dist/inferno-*.js",
       "examples",
       "benchmarks",
-      "src/inferno.d.ts",
-      "src/**/*__tests__*/**",
-      "src/devtools/**/*.ts",
       "typings"
     ],
     "extension": [
@@ -169,14 +157,14 @@
     "build:browser": "cross-env NODE_ENV=browser node config/rollup.config.js",
     "build:dev": "cross-env NODE_ENV=development node config/rollup.config.js",
     "build:prod": "cross-env NODE_ENV=production node config/rollup.config.js",
-    "build": "npm run clean && mkdirp build && npm run build:packages && tsc --outDir build --module es6 && npm run build:dev && npm run build:prod && npm run build:browser",
-    "clean": "rimraf coverage/ build/ packages/**/dist-es/ packages/inferno/dist packages/inferno-helpers/dist* packages/inferno-vnode-flags/dist*",
+    "build": "npm run clean && npm run build:packages && npm run build:dev && npm run build:prod && npm run build:browser",
+    "clean": "rimraf coverage/ packages/*/dist*/",
     "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
     "karma:chrome": "karma start test/karma/karma.unit.conf.js --browsers=Chrome",
     "karma:firefox": "karma start test/karma/karma.unit.conf.js --browsers=Firefox",
     "karma:ie": "karma start test/karma/karma.unit.conf.js --browsers=IE",
     "lint:js": "eslint config examples src test packages/*/src",
-    "lint:ts": "tslint src/**/*.ts src/**/*.tsx test/**/*.ts packages/**/src/*.ts",
+    "lint:ts": "tslint packages/*/src/*.ts",
     "lint": "npm run lint:ts && npm run lint:js",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
@@ -192,7 +180,6 @@
   },
   "pre-commit": [
     "lint",
-    "test",
-    "build"
+    "test"
   ]
 }

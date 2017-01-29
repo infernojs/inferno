@@ -1,6 +1,6 @@
 const { spawn, spawnSync, SpawnOptions } = require('child_process')
 
-exports.spawnPromise = (cmd, args, opts) =>
+exports.spawnPromise = (cmd, args = [], opts) =>
     new Promise((resolve, reject) => {
         const cp = spawn(cmd, args, opts)
         let stdout = ''

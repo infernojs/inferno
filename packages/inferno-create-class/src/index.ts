@@ -1,5 +1,32 @@
 import { isFunction, isNullOrUndef, isUndefined } from 'inferno-helpers';
-import Component, { ComponentSpec, ComponentClass } from 'inferno-component';
+import Component, { ComponentLifecycle } from 'inferno-component';
+
+export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
+	statics?: {
+		[key: string]: any;
+	};
+	mixins?: any;
+
+	displayName?: string;
+	propTypes?: {[index: string]: Function};
+
+	getDefaultProps?(): P;
+	getInitialState?(): S;
+}
+
+export interface ComponentClass<P, S> extends Mixin<P, S> {
+	new (props?: P, context?: any): Component<P, S>;
+	propTypes?: {};
+	contextTypes?: {};
+	childContextTypes?: {};
+	defaultProps?: P;
+	displayName?: string;
+}
+
+export interface ComponentSpec<P, S> extends Mixin<P, S> {
+	[propertyName: string]: any;
+	render(props?, context?): any;
+}
 
 export interface ClassicComponent<P, S> extends Component<P, S> {
 	replaceState(nextState: S, callback?: () => any): void;
