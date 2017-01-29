@@ -1,4 +1,4 @@
-import createElement from '../dist-es';
+import createElement from '../';
 
 const emptyFn = function emptyFunction() {};
 

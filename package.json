@@ -129,10 +129,15 @@
     "sourceMap": false,
     "include": [
       "src/*.ts",
-      "src/**/*.ts"
+      "src/**/*.ts",
+      "packages/**/dist/*.node.js"
     ],
     "exclude": [
-      "packages",
+      "packages/inferno-helpers",
+      "packages/inferno-vnode-flags",
+      "packages/**/dist-es",
+      "packages/**/*.d.ts",
+      "packages/inferno/dist/inferno-*.js",
       "examples",
       "benchmarks",
       "src/inferno.d.ts",
@@ -141,7 +146,8 @@
       "typings"
     ],
     "extension": [
-      ".ts"
+      ".ts",
+      ".js"
     ],
     "reporter": [
       "lcov",

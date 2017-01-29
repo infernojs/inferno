@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {render} from 'inferno';
 import {innerHTML} from 'inferno/dist-es/test/utils';
-import createClass from '../src';
+import createClass from '../';
 
 describe('Components createClass (non-JSX)', () => {
 	let container;

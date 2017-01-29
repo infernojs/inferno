@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import createElement from '../src';
+import createElement from '../';
 import { assert, spy } from 'sinon';
 import { innerHTML } from 'inferno/dist-es/test/utils';
 

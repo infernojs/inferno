@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
-import h from '../src';
+import h from '../';
 import { innerHTML } from 'inferno/dist-es/test/utils';
 
 describe('HyperScript (non-JSX)', () => {

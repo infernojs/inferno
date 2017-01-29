@@ -1,7 +1,6 @@
 import { expect } from 'chai';
-import { cloneVNode } from '../src/core/VNodes';
-import { render } from '../src/DOM/rendering';
-import { innerHTML } from '../src/test/utils';
+import { cloneVNode, render } from '../';
+import { innerHTML } from '../dist-es/test/utils';
 
 describe('cloneVNode (JSX)', () => {
 	let container;

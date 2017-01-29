@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import Component from '../src';
+import Component from '../';
 import { innerHTML } from 'inferno/dist-es/test/utils';
 import { render } from 'inferno';
 

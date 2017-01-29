@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
-import createElement from '../dist-es';
+import createElement from '../';
 import { innerHTML } from 'inferno/dist-es/test/utils';
 
 describe('CreateElement (non-JSX)', () => {

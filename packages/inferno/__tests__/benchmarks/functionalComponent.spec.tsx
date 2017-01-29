@@ -1,4 +1,4 @@
-import { render } from '../../src';
+import { render } from '../../';
 
 function runBenchmark(container) {
 	const Link0 = function() {

@@ -1,4 +1,4 @@
-import h from '../dist-es';
+import h from '../';
 
 const emptyFn = function emptyFunction() {};
 

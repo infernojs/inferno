@@ -68,3 +68,6 @@ export {
 
 // Internal stuff that only core inferno-* packages use
 export { isUnitlessNumber as internal_isUnitlessNumber } from './DOM/constants';
+
+// Mainly for testing
+export { normalize as internal_normalize } from './core/normalization';

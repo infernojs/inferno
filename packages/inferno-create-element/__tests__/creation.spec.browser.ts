@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import createElement from '../src';
+import createElement from '../';
 import { render } from 'inferno';
 
 describe('Creation - (non-JSX)', () => {

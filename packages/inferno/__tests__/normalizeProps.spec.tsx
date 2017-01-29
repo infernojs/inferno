@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { VNode } from '../src/core/VNodes';
-import { normalize } from '../src/core/normalization';
+import { VNode } from '../dist-es/core/VNodes';
+import { internal_normalize as normalize } from '../';
 
 describe('normalizeProps', () => {
 	it('should delete ref from props', () => {
