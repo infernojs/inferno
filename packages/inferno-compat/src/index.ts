@@ -6,7 +6,7 @@ import { createVNode, render, findDOMNode, options, cloneVNode, VNode, InfernoCh
 import { NO_OP } from 'inferno-helpers';
 import CoreComponent from 'inferno-component';
 import { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
-import VNodeFlags from 'inferno-vnode-flags';
+import _VNodeFlags from 'inferno-vnode-flags';
 
 declare global {
 	interface Event {
@@ -231,7 +231,6 @@ export {
 	// See: https://github.com/Microsoft/TypeScript/issues/6307
 	ClassicComponentClass,
 	ComponentSpec,
-	VNodeFlags,
 
 	createVNode,
 	render,
@@ -267,3 +266,7 @@ export default {
 	createFactory,
 	DOM
 };
+
+// To please the TS God
+// https://github.com/Microsoft/TypeScript/issues/6307
+export declare const VNodeFlags: _VNodeFlags;

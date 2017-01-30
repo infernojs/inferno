@@ -10,6 +10,6 @@ executeSync(({ location: cwd }) => {
 	} catch (e) {}
 
 	if (tsconfigExist) {
-		return spawnPromise('tsc', [], { cwd });
+		return spawnPromise(require.resolve('typescript/bin/tsc'), [], { cwd });
 	}
 });

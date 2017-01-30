@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import Component from 'inferno-component';
-import { innerHTML } from 'inferno/dist-es/test/utils';
+import { innerHTML } from 'inferno/test/utils';
 import { render } from 'inferno';
 
 /* These must be in their own files for test to reproduce */

@@ -8,8 +8,8 @@ import {
 	isString,
 	isUndefined
 } from 'inferno-helpers';
-import VNodeFlags from 'inferno-vnode-flags';
 import Component from 'inferno-component';
+import VNodeFlags from 'inferno-vnode-flags';
 
 const componentHooks = {
 	onComponentWillMount: true,

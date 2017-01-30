@@ -136,7 +136,7 @@ bundles.add({
 		mobx: 'mobx'
 	},
 	path: 'packages/inferno-mobx/',
-	dest: 'packages/inferno-mobx/dist'
+	dest: 'packages/inferno-mobx/dist/'
 });
 
 bundles.add({

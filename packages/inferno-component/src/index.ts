@@ -1,5 +1,6 @@
 // Make sure u use EMPTY_OBJ from 'inferno', otherwise it'll be a different reference
 import { EMPTY_OBJ, createVNode, options, VNode, Props } from 'inferno';
+import VNodeFlags from 'inferno-vnode-flags';
 import {
 	ERROR_MSG,
 	isArray,
@@ -12,7 +13,6 @@ import {
 	NO_OP,
 	throwError
 } from 'inferno-helpers';
-import VNodeFlags from 'inferno-vnode-flags';
 
 let noOp = ERROR_MSG;
 

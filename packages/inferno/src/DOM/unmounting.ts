@@ -51,7 +51,7 @@ export function unmountComponent(vNode: VNode, parentDom: Element, lifecycle: Li
 	if (alreadyUnmounted.has(vNode) && !isRecycling && !parentDom) {
 		return;
 	}
-	alreadyUnmounted.set(vNode);
+	alreadyUnmounted.set(vNode, true);
 
 	if (!isRecycling) {
 		if (isStatefulComponent) {
@@ -103,7 +103,7 @@ export function unmountElement(vNode: VNode, parentDom: Element, lifecycle: Life
 	if (alreadyUnmounted.has(vNode) && !isRecycling && !parentDom) {
 		return;
 	}
-	alreadyUnmounted.set(vNode);
+	alreadyUnmounted.set(vNode, true);
 
 	if (!lifecycle.fastUnmount) {
 		if (ref && !isRecycling) {

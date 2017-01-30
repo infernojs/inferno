@@ -9,16 +9,15 @@ module.exports = function (config) {
 
 	config.set({
 		frameworks: [
-			'chai',
-			'mocha'
+			'mocha',
+			'chai'
 		],
 		files: [
 			require.resolve('es5-shim'),
 			require.resolve('es6-shim'),
-			require.resolve('babel-polyfill'),
-			path.resolve(require.resolve('sinon'), '..', '..', 'pkg', 'sinon.js'),
-			'__tests__/**/*.tsx?',
-			'__tests__/**/*.jsx?'
+			require.resolve('babel-polyfill/dist/polyfill'),
+			require.resolve('sinon/pkg/sinon'),
+			'packages/*/__tests__/**/*.js*'
 		],
 		reporters: [
 			'failed'

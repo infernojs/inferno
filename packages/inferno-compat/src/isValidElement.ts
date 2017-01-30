@@ -1,9 +1,9 @@
 import { VNode } from 'inferno';
-import VNodeFlags from 'inferno-vnode-flags';
 import {
 	isNull,
 	isObject
 } from 'inferno-helpers';
+import VNodeFlags from 'inferno-vnode-flags';
 
 export default function isValidElement(obj: VNode): boolean {
 	const isNotANullObject = isObject(obj) && isNull(obj) === false;

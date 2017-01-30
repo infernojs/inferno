@@ -9,7 +9,6 @@ module.exports = function (config) {
 	base(config);
 
 	config.set({
-		// base path that will be used to resolve all patterns (eg. files, exclude)
 		files: [
 			'packages/*/__benchmarks__/**/*.js*'
 		],

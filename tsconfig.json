@@ -7,6 +7,7 @@
 		"allowJs": false,
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
+		"preserveConstEnums": true,
 		"declaration": true,
 		"outDir": "dist-es",
 		"sourceMap": false,
@@ -21,12 +22,6 @@
 		"removeComments": false
 	},
 	"include": [
-		"src/**/*",
-		"packages/*/src/**/*"
-  ],
-	"paths": {
-		"inferno": "../packages/inferno",
-		"inferno-vnode-flags": "../packages/inferno-vnode-flags",
-		"inferno-helpers": "../packages/inferno-helpers"
-	}
+		"src/**/*"
+  ]
 }

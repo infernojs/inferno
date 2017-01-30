@@ -1,14 +1,8 @@
-import {
-	options
-} from 'inferno';
+import { options } from 'inferno';
 import Component from 'inferno-component';
-import {
-	isStatefulComponent
-} from 'inferno-helpers';
+import { isStatefulComponent } from 'inferno-helpers';
+import { createDevToolsBridge } from './bridge';
 import VNodeFlags from 'inferno-vnode-flags';
-import {
-	createDevToolsBridge
-} from './bridge';
 
 const functionalComponentWrappers = new Map();
 

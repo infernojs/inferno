@@ -1,4 +1,4 @@
---compilers ts:./test/mocha/compiler.js,js:babel-core/register
+--compilers js:babel-core/register
 --require ./test/mocha/DOM.js
 --full-trace
 --reporter spec
@@ -6,5 +6,4 @@
 --recursive
 --timeout 15000
 
-packages/*/__tests__/**/*.ts*
 packages/*/__tests__/**/*.js*

@@ -5,3 +5,8 @@ export default {
 	Provider,
 	connect
 };
+
+export {
+	Provider,
+	connect
+};

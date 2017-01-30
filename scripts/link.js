@@ -14,4 +14,4 @@ executeSync(({ location }) => {
 });
 
 ensureSymlinkSync(join(PROJECT_FOLDER, 'packages', 'inferno-vnode-flags'), join(PROJECT_FOLDER, 'node_modules', 'inferno-vnode-flags'));
-ensureSymlinkSync(join(PROJECT_FOLDER, 'packages', 'inferno'), join(PROJECT_FOLDER, 'node_modules', 'inferno'));
+// ensureSymlinkSync(join(PROJECT_FOLDER, 'packages', 'inferno'), join(PROJECT_FOLDER, 'node_modules', 'inferno'));

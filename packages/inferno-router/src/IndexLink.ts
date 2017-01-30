@@ -1,6 +1,6 @@
 import { createVNode, VNode } from 'inferno';
-import VNodeFlags from 'inferno-vnode-flags';
 import Link from './Link';
+import VNodeFlags from 'inferno-vnode-flags';
 
 export default function IndexLink (props): VNode {
 	props.to = '/';

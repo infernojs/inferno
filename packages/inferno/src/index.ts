@@ -3,7 +3,7 @@ import { Props, VNode, createVNode, cloneVNode, InfernoChildren } from './core/V
 import linkEvent from './DOM/events/linkEvent';
 import options from './core/options';
 import { render, findDOMNode, createRenderer } from './DOM/rendering';
-import VNodeFlags from 'inferno-vnode-flags';
+import _VNodeFlags from 'inferno-vnode-flags';
 
 if (process.env.NODE_ENV !== 'production') {
 	const testFunc = function testFn() {};
@@ -15,6 +15,10 @@ if (process.env.NODE_ENV !== 'production') {
 		));
 	}
 }
+
+// To please the TS God
+// https://github.com/Microsoft/TypeScript/issues/6307
+export declare const VNodeFlags: _VNodeFlags;
 
 // This will be replaced by rollup
 export const version = 'VERSION';
@@ -45,7 +49,6 @@ export {
 	Props,
 	VNode,
 	InfernoChildren,
-	VNodeFlags,
 
 	// Public methods
 	linkEvent,

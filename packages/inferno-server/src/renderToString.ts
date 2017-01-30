@@ -11,8 +11,8 @@ import {
 	isTrue,
 	throwError
 } from 'inferno-helpers';
-import VNodeFlags from 'inferno-vnode-flags';
 import { internal_isUnitlessNumber } from 'inferno';
+import VNodeFlags from 'inferno-vnode-flags';
 import {
 	escapeText,
 	isVoidElement as _isVoidElement,
