@@ -48,9 +48,9 @@
 		var h = Inferno.h;
 		
 		let firstName = 'Dominic';
-		let lastName = 'Gannaway';
+		let lastName = null;
 		let age = 28;
-		let description = 'I don\'t know?';
+		let description = null;
 
 		function linkedTextHandler(data, e) {
 			const val = e.target.value;
@@ -92,7 +92,7 @@
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter your first last name:'),
-					h('input', { type: 'text', placeholder: 'Bloggs', value: lastName, onInput: textHandler })
+					h('input', { type: 'text', placeholder: 'Bloggs', defaultValue: 'Gannaway', onInput: textHandler })
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter your age:'),
@@ -119,7 +119,7 @@
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter a description:'),
-					h('textarea', { value: description, onInput: descHandler })
+					h('textarea', { defaultValue: 'I don\'t know?', value: description, onInput: descHandler })
 				]),
 			]), document.getElementById('app'));
 		}

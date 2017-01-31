@@ -1,1 +1,1 @@
-module.exports = require('../inferno-router').RouterContext;
+module.exports = require('../').RouterContext;

@@ -18,8 +18,8 @@
 		"one-variable-per-declaration": [false],
 		"only-arrow-functions": [false],
 		"ordered-imports": false,
-		"prefer-for-of": false,
 		"prefer-const": false,
+		"prefer-for-of": false,
 		"quotemark": [ true, "single", "jsx-double" ],
 		"trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
 		"variable-name": false

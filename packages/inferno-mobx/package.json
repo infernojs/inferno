@@ -11,7 +11,9 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "inferno-mobx.js",
+  "main": "dist/inferno-mobx.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -28,6 +30,7 @@
     "inferno-component": "1.2.2",
     "inferno-create-class": "1.2.2",
     "inferno-create-element": "1.2.2",
+    "inferno-helpers": "1.2.2",
     "mobx": "*"
   }
 }

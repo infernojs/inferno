@@ -1,1 +1,1 @@
-module.exports = require('../inferno-router').match;
+module.exports = require('../').match;

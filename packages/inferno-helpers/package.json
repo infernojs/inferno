@@ -1,0 +1,22 @@
+{
+  "name": "inferno-helpers",
+  "version": "1.2.2",
+  "license": "MIT",
+  "description": "Helpers functions for Inferno",
+  "author": {
+    "name": "Dominic Gannaway",
+    "email": "dg@domgan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/infernojs/inferno/issues"
+  },
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "main": "dist/inferno-helpers.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
+  "keywords": [
+    "inferno",
+    "helpers"
+  ],
+  "repository": "https://github.com/infernojs/inferno"
+}

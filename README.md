@@ -98,7 +98,7 @@ Inferno.render(<MyComponent />, document.body);
 
 ### More Examples
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/u7p19pvc/)
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/u7p19pvc/78/)
 
 ## Getting Started
 
@@ -525,6 +525,11 @@ Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support
 - [Object.assign](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
 
 Potential solutions include using the [es5-shim](https://github.com/es-shims/es5-shim) for ES5 features and [es6-shim](https://github.com/paulmillr/es6-shim) from ES2015 features.
+
+As a quick drop-in solution, you may also use the [Polyfill.io](https://polyfill.io) service to pull in the required polyfills for the user's browser automatically by including the following line in your page:
+```
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise,Map,WeakMap,Object.keys,Object.assign"></script>
+```
 
 ### Custom namespaces
 
