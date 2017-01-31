@@ -25,80 +25,100 @@ npm install inferno-test-utils --save-dev
 
 ## Usage
 
-### `renderIntoDocument`
+### `renderIntoDocument(VNodeTree)`
 
-Render a VNode tree into a detached DOM node in the document. This function requires a DOM.
+Renders `VNodeTree` into a detached DOM element in the document and returns a rendered `VNode` tree.
+
+_This function requires a DOM_.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div className="outer">
     <SomeComponent className="inner"/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
+const renderedVNodeTree = renderIntoDocument(VNodeTree);
 ```
 
-### `findAllInRenderedTree`
+### `findAllInRenderedTree(renderedVNodeTree, predicate)`
+
+Calls `predicate` with each `VNode` instance in `renderedVNodeTree`. 
+
+Returns an array of `VNodes` where `predicate` returns `true`.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div className="outer">
     <SomeComponent className="inner"/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
-const predicate = (vNode) => vNode.type === SomeComponent;
-const result = findAllInRenderedTree(renderedTree, predicate);
+const renderedVNodeTree = renderIntoDocument(VNodeTree);
+const predicate = (VNode) => VNode.type === SomeComponent;
+const result = findAllInRenderedTree(renderedVNodeTree, predicate);
 ```
 
-### `findAllInVNodeTree`
+### `findAllInVNodeTree(VNodeTree, predicate)`
+
+Calls `predicate` with each `VNode` instance in `VNodeTree`. 
+
+Returns an array of `VNodes` where `predicate` returns `true`.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div className="outer">
     <SomeComponent className="inner"/>
   </div>
 );
-const predicate = (vNode) => vNode.type === SomeComponent;
-const result = findAllInVNodeTree(vNodeTree, predicate);
+const predicate = (VNode) => VNode.type === SomeComponent;
+const result = findAllInVNodeTree(VNodeTree, predicate);
 ```
 
-### `scryRenderedDOMElementsWithClass`
+### `scryRenderedDOMElementsWithClass(renderedVNodeTree, className)`
+
+Returns an array of DOM elements with `className`.
+
+`className` can be a space-separated string or an array of strings.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div className="outer">
     <SomeComponent className="inner one"/>
     <SomeComponent className="inner two"/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
-const result1 = scryRenderedDOMElementsWithClass(renderedTree, 'inner');
-const result2 = scryRenderedDOMElementsWithClass(renderedTree, 'inner one');
-const result3 = scryRenderedDOMElementsWithClass(renderedTree, ['inner', 'two']);
-const result4 = scryRenderedDOMElementsWithClass(renderedTree, 'three'); // Empty array
+const renderedVNodeTree = renderIntoDocument(VNodeTree);
+const result1 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'inner');
+const result2 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'inner one');
+const result3 = scryRenderedDOMElementsWithClass(renderedVNodeTree, ['inner', 'two']);
+const result4 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'three'); // Empty array
 ```
 
-### `findRenderedDOMElementWithClass`
+### `findRenderedDOMElementWithClass(renderedVNodeTree, className)`
+
+Returns a single DOM element with `className`. If more than one matches are found, throws an error.
+
+`className` can be a space-separated string or an array of strings.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div className="outer">
     <SomeComponent className="inner one"/>
     <SomeComponent className="inner two"/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
-const result1 = scryRenderedDOMElementsWithClass(renderedTree, 'outer');
-const result2 = scryRenderedDOMElementsWithClass(renderedTree, 'inner one');
+const renderedVNodeTree = renderIntoDocument(VNodeTree);
+const result1 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'outer');
+const result2 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'inner one');
 // Will throw an error because more than 1 matches were found...
-const result3 = scryRenderedDOMElementsWithClass(renderedTree, 'inner');
+const result3 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'inner');
 ```
 
-### `scryRenderedDOMElementsWithTag`
+### `scryRenderedDOMElementsWithTag(renderedVNodeTree, tagName)`
+
+Returns an array of DOM elements with `tagName`.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div>
     <h1>Heading</h1>
     <p>Paragraph One</p>
@@ -106,16 +126,18 @@ const vNodeTree = (
     <p>Paragraph Three</p>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
-const result1 = scryRenderedDOMElementsWithTag(renderedTree, 'h1');
-const result3 = scryRenderedDOMElementsWithTag(renderedTree, 'p');
-const result4 = scryRenderedVNodesWithType(renderedTree, 'span'); // Empty array
+const renderedVNodeTree = renderIntoDocument(VNodeTree);
+const result1 = scryRenderedDOMElementsWithTag(renderedVNodeTree, 'h1');
+const result3 = scryRenderedDOMElementsWithTag(renderedVNodeTree, 'p');
+const result4 = scryRenderedVNodesWithType(renderedVNodeTree, 'span'); // Empty array
 ```
 
-### `findRenderedDOMElementWithTag`
+### `findRenderedDOMElementWithTag(renderedVNodeTree, tagName)`
+
+Returns a single DOM element with `tagName`. If more than one matches are found, throws an error.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div>
     <h1>Heading</h1>
     <div>
@@ -125,32 +147,36 @@ const vNodeTree = (
     </div>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
-const result1 = findRenderedDOMElementWithTag(renderedTree, 'h1');
+const renderedVNodeTree = renderIntoDocument(VNodeTree);
+const result1 = findRenderedDOMElementWithTag(renderedVNodeTree, 'h1');
 // Will throw an error because more than 1 matches were found...
-const result2 = findRenderedDOMElementWithTag(renderedTree, 'p');
+const result2 = findRenderedDOMElementWithTag(renderedVNodeTree, 'p');
 ```
 
-### `scryRenderedVNodesWithType`
+### `scryRenderedVNodesWithType(renderedVNodeTree, type)`
+
+Returns an array of rendered `VNodes` with `type`.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div>
     <h1>Heading</h1>
     <SomeComponent/>
     <SomeComponent/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
-const result1 = scryRenderedVNodesWithType(renderedTree, 'h1');
-const result2 = scryRenderedVNodesWithType(renderedTree, SomeComponent);
-const result3 = scryRenderedVNodesWithType(renderedTree, 'p'); // Empty array
+const renderedVNodeTree = renderIntoDocument(VNodeTree);
+const result1 = scryRenderedVNodesWithType(renderedVNodeTree, 'h1');
+const result2 = scryRenderedVNodesWithType(renderedVNodeTree, SomeComponent);
+const result3 = scryRenderedVNodesWithType(renderedVNodeTree, 'p'); // Empty array
 ```
 
-### `findRenderedVNodeWithType`
+### `findRenderedVNodeWithType(renderedVNodeTree, type)`
+
+Returns a single rendered `VNode` with `type`. If more than one matches are found, throws an error.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div>
     <h1>Heading</h1>
     <p>Paragraph 1</p>
@@ -160,40 +186,44 @@ const vNodeTree = (
     <AnotherComponent/>
   </div>
 );
-const renderedTree = renderIntoDocument(vNodeTree);
-const result1 = findRenderedVNodeWithType(renderedTree, 'h1');
-const result2 = findRenderedVNodeWithType(renderedTree, SomeComponent);
+const renderedVNodeTree = renderIntoDocument(VNodeTree);
+const result1 = findRenderedVNodeWithType(renderedVNodeTree, 'h1');
+const result2 = findRenderedVNodeWithType(renderedVNodeTree, SomeComponent);
 // Will throw an error because more than 1 matches were found...
-const result3 = findRenderedVNodeWithType(renderedTree, 'p);
-const result4 = findRenderedVNodeWithType(renderedTree, AnotherComponent);
+const result3 = findRenderedVNodeWithType(renderedVNodeTree, 'p');
+const result4 = findRenderedVNodeWithType(renderedVNodeTree, AnotherComponent);
 ```
 
-### `scryVNodesWithType`
+### `scryVNodesWithType(VNodeTree, type)`
+
+Returns an array of `VNodes` with `type`.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div>
     <h1>Heading</h1>
     <SomeComponent/>
     <SomeComponent/>
   </div>
 );
-const result1 = scryVNodesWithType(vNodeTree, 'h1');
-const result2 = scryVNodesWithType(vNodeTree, SomeComponent);
-const result3 = scryVNodesWithType(vNodeTree, 'p'); // Empty array
+const result1 = scryVNodesWithType(VNodeTree, 'h1');
+const result2 = scryVNodesWithType(VNodeTree, SomeComponent);
+const result3 = scryVNodesWithType(VNodeTree, 'p'); // Empty array
 ```
 
-### `findVNodeWithType`
+### `findVNodeWithType(VNodeTree, type)`
+
+Returns a single `VNode` with `type`. If more than one matches are found, throws an error.
 
 ```js
-const vNodeTree = (
+const VNodeTree = (
   <div>
     <h1>Heading</h1>
     <SomeComponent/>
     <SomeComponent/>
   </div>
 );
-const result1 = findVNodeWithType(vNodeTree, 'h1');
+const result1 = findVNodeWithType(VNodeTree, 'h1');
 // Will throw an error because more than 1 matches were found...
-const result2 = findVNodeWithType(vNodeTree, SomeComponent);
+const result2 = findVNodeWithType(VNodeTree, SomeComponent);
 ```
