@@ -8,13 +8,17 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "inferno-hyperscript.js",
+  "main": "dist/inferno-hyperscript.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
   "keywords": [
     "inferno",
     "hyperscript"
   ],
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "1.2.2"
+    "inferno": "1.2.2",
+    "inferno-helpers": "1.2.2",
+    "inferno-vnode-flags": "1.2.2"
   }
 }

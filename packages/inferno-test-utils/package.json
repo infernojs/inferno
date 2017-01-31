@@ -20,8 +20,17 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "1.2.2"
+    "inferno": "1.2.2",
+    "inferno-helpers": "1.2.2",
+    "inferno-create-element": "1.2.2",
+    "inferno-compat": "1.2.2"
   },
-  "main": "inferno-test-utils.js",
+  "devDependencies": {
+    "inferno-component": "1.2.2",
+    "inferno-server": "1.2.2"
+  },
+  "main": "dist/inferno-test-utils.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
   "repository": "https://github.com/infernojs/inferno"
 }

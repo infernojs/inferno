@@ -103,8 +103,6 @@
     "src"
   ],
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "packages/inferno/dist/inferno.js",
-  "jsnext:main": "packages/inferno/dist/inferno.es2015.js",
   "keywords": [
     "babel",
     "react",
@@ -125,23 +123,22 @@
     "lines": 85,
     "statements": 85,
     "functions": 85,
-    "branches": 80,
+    "branches": 75,
     "sourceMap": false,
     "include": [
-      "src/*.ts",
-      "src/**/*.ts"
+      "packages/*/dist-es/**/*.js"
     ],
     "exclude": [
-      "packages",
+      "packages/inferno-vnode-flags",
+      "packages/inferno-compat/dist-es/index.js",
+      "packages/inferno-devtools",
+      "packages/**/*.ts",
       "examples",
       "benchmarks",
-      "src/inferno.d.ts",
-      "src/**/*__tests__*/**",
-      "src/devtools/**/*.ts",
       "typings"
     ],
     "extension": [
-      ".ts"
+      ".js"
     ],
     "reporter": [
       "lcov",
@@ -149,7 +146,6 @@
       "text"
     ],
     "require": [
-      "./test/mocha/compiler.js",
       "babel-register"
     ]
   },
@@ -163,30 +159,29 @@
     "build:browser": "cross-env NODE_ENV=browser node config/rollup.config.js",
     "build:dev": "cross-env NODE_ENV=development node config/rollup.config.js",
     "build:prod": "cross-env NODE_ENV=production node config/rollup.config.js",
-    "build": "npm run clean && mkdirp build && npm run build:packages && tsc --outDir build --module es6 && npm run build:dev && npm run build:prod && npm run build:browser",
-    "clean": "rimraf coverage/ build/ packages/**/dist-es/ packages/inferno/dist packages/inferno-helpers/dist* packages/inferno-vnode-flags/dist*",
+    "build": "npm run clean && npm run build:packages && npm run build:dev && npm run build:prod && npm run build:browser",
+    "clean": "rimraf coverage/ packages/*/dist*/",
     "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
     "karma:chrome": "karma start test/karma/karma.unit.conf.js --browsers=Chrome",
     "karma:firefox": "karma start test/karma/karma.unit.conf.js --browsers=Firefox",
     "karma:ie": "karma start test/karma/karma.unit.conf.js --browsers=IE",
-    "lint:js": "eslint config examples src test packages/*/src",
-    "lint:ts": "tslint src/**/*.ts src/**/*.tsx test/**/*.ts packages/**/src/*.ts",
+    "lint:js": "eslint config examples src packages/*/__tests__",
+    "lint:ts": "tslint packages/*/src/*.ts",
     "lint": "npm run lint:ts && npm run lint:js",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "postinstall": "lerna bootstrap && node scripts/link",
     "prepublish": "npm run build",
-    "pretest:bench": "karma start test/karma/karma.bench.conf.js",
+    "pretest:bench": "karma start test/karma/karma.bench.conf.js --log-level debug",
     "test:bench": "node test/karma/bench.js",
-    "test:browser": "karma start test/karma/karma.unit.conf.js",
+    "test:browser": "karma start test/karma/karma.unit.conf.js --log-level debug",
     "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
     "test:quick": "cross-env mocha",
     "test:server": "cross-env nyc mocha",
-    "test": "npm run lint && npm run test:browser && npm run test:server"
+    "test": "npm run lint && npm run build && npm run test:browser && npm run test:server"
   },
   "pre-commit": [
     "lint",
-    "test",
-    "build"
+    "test"
   ]
 }

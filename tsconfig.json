@@ -1,12 +1,16 @@
 {
 	"version": "2.1.4",
 	"compilerOptions": {
+		"baseUrl": ".",
 		"target": "es6",
 		"module": "es6",
 		"allowJs": false,
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
-		"sourceMap": true,
+		"preserveConstEnums": true,
+		"declaration": true,
+		"outDir": "dist-es",
+		"sourceMap": false,
 		"lib": [
 			"es6",
 			"es7",

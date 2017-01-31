@@ -78,7 +78,15 @@ module.exports = function processPackages (repo = new Repository) {
                 total: batches.length
             });
             const ordered = batches.reduce((all, b) => all.concat(b), []);
-            return ordered.reduce((allPromises, pkg) => allPromises.then(() => fn(pkg)), Promise.resolve());
+            return ordered.reduce(
+							(allPromises, pkg) =>
+								allPromises.then(() => fn(pkg)),
+							Promise.resolve()
+						)
+						.catch(e => {
+							console.error(e)
+							process.exit(1)
+						});
         }
     }
 }

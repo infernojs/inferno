@@ -22,9 +22,7 @@ node_modules
 *~
 test/data/result.json
 
-packages/**/tsconfig.*
-packages/**/.npmignore
-packages/**/dist-es
-packages/inferno/dist
-packages/inferno-helpers/dist
-packages/inferno-vnode-flags/dist
+packages/*/tsconfig.*
+packages/*/.npmignore
+packages/*/dist-es
+packages/*/dist

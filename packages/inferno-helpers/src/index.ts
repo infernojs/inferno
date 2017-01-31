@@ -85,6 +85,13 @@ if (process.env.NODE_ENV !== 'production') {
 /*
  * This is purely a tiny event-emitter/pubsub
  */
+export interface LifecycleClass {
+	listeners: Function[];
+	fastUnmount: boolean;
+	addListener (callback: Function): void;
+	trigger (): void;
+}
+
 export function Lifecycle() {
 	this.listeners = [];
 	this.fastUnmount = true;
@@ -98,3 +105,11 @@ Lifecycle.prototype.trigger = function trigger () {
 		this.listeners[i]();
 	}
 };
+
+export function copyPropsTo(copyFrom: {}, copyTo: {}) {
+	for (let prop in copyFrom) {
+		if (isUndefined(copyTo[prop])) {
+			copyTo[prop] = copyFrom[prop];
+		}
+	}
+}

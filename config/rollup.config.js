@@ -9,13 +9,13 @@ const pack = require('../package.json');
 const commonjs = require('rollup-plugin-commonjs');
 const { withNodeResolve, updatePackageVersion, outputFileSize } = require('./rollup.helpers');
 const bundles = require('./rollup.bundles');
-const { aliases } = require('./aliases');
 
 const infernoPackage = JSON.parse(fs.readFileSync('./package.json'));
 const dependencies = Object.keys(infernoPackage.peerDependencies || {});
 
 const EXTERNAL_BLACKLISTS = new Map();
 EXTERNAL_BLACKLISTS.set('inferno-helpers', true);
+EXTERNAL_BLACKLISTS.set('inferno-vnode-flags', true);
 
 const plugins = [
 	commonjs({
@@ -91,12 +91,11 @@ function createBundle({ moduleGlobal, moduleName, moduleEntry, moduleGlobals }, 
 	// HACK: For now don't treat certain inferno-* as external dep, package them together
 	// for backwards compat in dist files. Remove this after lerna transition is completed
 	const external = dependencies.concat(getDependenciesArray(pack)).filter(n => !EXTERNAL_BLACKLISTS.has(n));
-	const virtuals = Object.keys(aliases);
 
 	// Skip bundling dependencies of each package
 	const _plugins = withNodeResolve(plugins, {
 		jsnext: true,
-		skip: external.concat(virtuals)
+		skip: external
 	});
 	return rollup({ entry, plugins: _plugins, external }).then(({ write }) => write(bundleConfig)).catch(console.error);
 }

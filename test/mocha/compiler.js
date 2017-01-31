@@ -11,7 +11,6 @@ const buble = require('buble');
 const babel = require('babel-core');
 const convert = require('convert-source-map');
 const merge = require('merge-source-map');
-const virtuals = require('../../config/aliases');
 
 const nodeModulesPattern = path.sep === '/' ? /\/node_modules\// : /\\node_modules\\/;
 
@@ -33,10 +32,7 @@ const babelOptions = {
 	presets: [],
 	plugins: [
 		'transform-es2015-modules-commonjs',
-		[ 'babel-plugin-inferno', { imports: true }],
-		[ 'module-resolver', {
-			alias: virtuals.compilerAliases
-		}]
+		[ 'babel-plugin-inferno', { imports: true }]
 	]
 };
 

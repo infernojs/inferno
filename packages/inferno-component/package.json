@@ -11,7 +11,9 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "inferno-component.js",
+  "main": "dist/inferno-component.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -28,6 +30,7 @@
   ],
   "dependencies": {
     "inferno": "1.2.2",
-    "inferno-helpers": "1.2.2"
+    "inferno-helpers": "1.2.2",
+    "inferno-vnode-flags": "1.2.2"
   }
 }

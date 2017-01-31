@@ -4,10 +4,7 @@ const webpack = require('webpack');
 const glob = require('glob');
 const path = require('path');
 
-const testFiles = glob.sync('./src/**/*__tests__*/**/*.ts')
-	.concat(glob.sync('./src/**/*__tests__*/**/*.tsx'))
-	.concat(glob.sync('./src/**/*__tests__*/**/*.js'))
-	.concat(glob.sync('./src/**/*__tests__*/**/*.jsx'));
+const testFiles = glob.sync('./packages/*/*__tests__*/**/*.js*');
 
 module.exports = {
 	watch: true,
@@ -52,7 +49,8 @@ module.exports = {
 		}
 	},
 	resolve: {
-		extensions: [ '.js', '.jsx', '.ts', '.tsx' ]
+		extensions: [ '.js', '.jsx', '.ts', '.tsx' ],
+		mainFields: [ 'module', 'main' ],
 	},
 	plugins: [
 		// By default, webpack does `n=>n` compilation with entry files. This concatenates
