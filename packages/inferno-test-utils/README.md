@@ -11,17 +11,17 @@ npm install inferno-test-utils --save-dev
 
 ## Contents
 
-* [`renderIntoDocument`](#renderIntoDocument)
-* [`findAllInRenderedTree`](#findAllInRenderedTree)
-* [`findAllInVNodeTree`](#findAllInVNodeTree)
-* [`scryRenderedDOMElementsWithClass`](#scryRenderedDOMElementsWithClass)
-* [`findRenderedDOMElementWithClass`](#findRenderedDOMElementWithClass)
-* [`scryRenderedDOMElementsWithTag`](#scryRenderedDOMElementsWithTag)
-* [`findRenderedDOMElementWithTag`](#findRenderedDOMElementWithTag)
-* [`scryRenderedVNodesWithType`](#scryRenderedVNodesWithType)
-* [`findRenderedVNodeWithType`](#findRenderedVNodeWithType)
-* [`scryVNodesWithType`](#scryVNodesWithType)
-* [`findVNodeWithType`](#findVNodeWithType)
+* [`renderIntoDocument`](#renderintodocumentvnodetree)
+* [`findAllInRenderedTree`](#findallinrenderedtreerenderedvnodetree-predicate)
+* [`findAllInVNodeTree`](#findallinvnodetreevnodetree-predicate)
+* [`scryRenderedDOMElementsWithClass`](#scryrendereddomelementswithclassrenderedvnodetree-classname)
+* [`findRenderedDOMElementWithClass`](#findrendereddomelementwithclassrenderedvnodetree-classname)
+* [`scryRenderedDOMElementsWithTag`](#scryrendereddomelementswithtagrenderedvnodetree-tagname)
+* [`findRenderedDOMElementWithTag`](#findrendereddomelementwithtagrenderedvnodetree-tagname)
+* [`scryRenderedVNodesWithType`](#scryrenderedvnodeswithtyperenderedvnodetree-type)
+* [`findRenderedVNodeWithType`](#findrenderedvnodewithtyperenderedvnodetree-type)
+* [`scryVNodesWithType`](#scryvnodeswithtypevnodetree-type)
+* [`findVNodeWithType`](#findvnodewithtypevnodetree-type)
 
 ## Usage
 
