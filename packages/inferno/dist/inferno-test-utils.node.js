@@ -1,20 +1,20 @@
 /*!
  * inferno-test-utils v1.2.2
- * (c) 2017 Dominic Gannaway
+ * (c) 2017 Matthew Wagerfield
  * Released under the MIT License.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('inferno')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'inferno'], factory) :
-	(factory((global.Inferno = global.Inferno || {}, global.Inferno.TestUtils = global.Inferno.TestUtils || {}),global.Inferno));
-}(this, (function (exports,inferno) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('inferno-component'), require('inferno')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'inferno-component', 'inferno'], factory) :
+	(factory((global.Inferno = global.Inferno || {}, global.Inferno.TestUtils = global.Inferno.TestUtils || {}),global.Component,global.Inferno));
+}(this, (function (exports,Component,inferno) { 'use strict';
+
+Component = 'default' in Component ? Component['default'] : Component;
 
 var NO_OP = '$NO_OP';
 var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 var isBrowser = typeof window !== 'undefined' && window.document;
-function toArray(children) {
-    return isArray(children) ? children : (children ? [children] : children);
-}
+
 // this is MUCH faster than .constructor === Array and instanceof Array
 // in Node 7 and the later versions of V8, slower in older versions though
 var isArray = Array.isArray;
@@ -107,7 +107,7 @@ function _normalizeVNodes(nodes, result, index, currentKey) {
                 if (isStringOrNumber(n)) {
                     n = createTextVNode(n);
                 }
-                else if (isVNode(n) && n.dom || (n.key && n.key[0] === '.')) {
+                else if (isVNode$1(n) && n.dom || (n.key && n.key[0] === '.')) {
                     n = cloneVNode(n);
                 }
                 if (isNull(n.key) || n.key[0] === '.') {
@@ -147,7 +147,7 @@ function normalizeVNodes(nodes) {
             }
             newNodes.push(applyKeyIfMissing(i, createTextVNode(n)));
         }
-        else if ((isVNode(n) && n.dom) || (isNull(n.key) && !(n.flags & 64 /* HasNonKeyedChildren */))) {
+        else if ((isVNode$1(n) && n.dom) || (isNull(n.key) && !(n.flags & 64 /* HasNonKeyedChildren */))) {
             if (!newNodes) {
                 newNodes = nodes.slice(0, i);
             }
@@ -163,7 +163,7 @@ function normalizeChildren(children) {
     if (isArray(children)) {
         return normalizeVNodes(children);
     }
-    else if (isVNode(children) && children.dom) {
+    else if (isVNode$1(children) && children.dom) {
         return cloneVNode(children);
     }
     return children;
@@ -334,12 +334,12 @@ function cloneVNode(vNodeToClone, props) {
                     if (isArray(newChildren)) {
                         for (var i$1 = 0; i$1 < newChildren.length; i$1++) {
                             var child = newChildren[i$1];
-                            if (!isInvalid(child) && isVNode(child)) {
+                            if (!isInvalid(child) && isVNode$1(child)) {
                                 newProps.children[i$1] = cloneVNode(child);
                             }
                         }
                     }
-                    else if (isVNode(newChildren)) {
+                    else if (isVNode$1(newChildren)) {
                         newProps.children = cloneVNode(newChildren);
                     }
                 }
@@ -362,7 +362,7 @@ function createVoidVNode() {
 function createTextVNode(text) {
     return createVNode$1(1 /* Text */, null, null, text, null, null, null, true);
 }
-function isVNode(o) {
+function isVNode$1(o) {
     return !!o.flags;
 }
 
@@ -724,11 +724,11 @@ function unmountRef(ref) {
     }
 }
 
-function createClassComponentInstance(vNode, Component, props, context, isSVG) {
+function createClassComponentInstance(vNode, Component$$1, props, context, isSVG) {
     if (isUndefined(context)) {
         context = {};
     }
-    var instance = new Component(props, context);
+    var instance = new Component$$1(props, context);
     instance.context = context;
     if (instance.props === EMPTY_OBJ) {
         instance.props = props;
@@ -1030,7 +1030,7 @@ function updateChildOptionGroup(vNode, value) {
                 updateChildOption(children[i], value);
             }
         }
-        else if (isVNode(children)) {
+        else if (isVNode$1(children)) {
             updateChildOption(children, value);
         }
     }
@@ -1101,7 +1101,7 @@ function applyValue$1(vNode, dom) {
                 updateChildOptionGroup(children[i], value);
             }
         }
-        else if (isVNode(children)) {
+        else if (isVNode$1(children)) {
             updateChildOptionGroup(children, value);
         }
     }
@@ -1234,7 +1234,7 @@ function patch(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRec
     }
 }
 function unmountChildren(children, dom, lifecycle, isRecycling) {
-    if (isVNode(children)) {
+    if (isVNode$1(children)) {
         unmount(children, dom, lifecycle, true, isRecycling);
     }
     else if (isArray(children)) {
@@ -1361,8 +1361,8 @@ function patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, li
         removeAllChildren(dom, lastChildren, lifecycle, isRecycling);
         mount(nextChildren, dom, lifecycle, context, isSVG);
     }
-    else if (isVNode(nextChildren)) {
-        if (isVNode(lastChildren)) {
+    else if (isVNode$1(nextChildren)) {
+        if (isVNode$1(lastChildren)) {
             patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
         }
         else {
@@ -2093,7 +2093,7 @@ function mountElement(vNode, parentDom, lifecycle, context, isSVG) {
         else if (isArray(children)) {
             mountArrayChildren(children, dom, lifecycle, context, isSVG);
         }
-        else if (isVNode(children)) {
+        else if (isVNode$1(children)) {
             mount(children, dom, lifecycle, context, isSVG);
         }
     }
@@ -2526,6 +2526,121 @@ function render(input, parentDom) {
     }
 }
 
+// don't autobind these methods since they already have guaranteed context.
+var AUTOBIND_BLACKLIST = {
+    constructor: 1,
+    render: 1,
+    shouldComponentUpdate: 1,
+    componentWillReceiveProps: 1,
+    componentWillUpdate: 1,
+    componentDidUpdate: 1,
+    componentWillMount: 1,
+    componentDidMount: 1,
+    componentWillUnmount: 1,
+    componentDidUnmount: 1
+};
+function extend(base, props, all) {
+    for (var key in props) {
+        if (all === true || !isNullOrUndef(props[key])) {
+            base[key] = props[key];
+        }
+    }
+    return base;
+}
+function bindAll(ctx) {
+    for (var i in ctx) {
+        var v = ctx[i];
+        if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST[i]) {
+            (ctx[i] = v.bind(ctx)).__bound = true;
+        }
+    }
+}
+function collateMixins(mixins, keyed) {
+    if ( keyed === void 0 ) keyed = {};
+
+    for (var i = 0; i < mixins.length; i++) {
+        var mixin = mixins[i];
+        // Surprise: Mixins can have mixins
+        if (mixin.mixins) {
+            // Recursively collate sub-mixins
+            collateMixins(mixin.mixins, keyed);
+        }
+        for (var key in mixin) {
+            if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
+                (keyed[key] || (keyed[key] = [])).push(mixin[key]);
+            }
+        }
+    }
+    return keyed;
+}
+function applyMixin(key, inst, mixin) {
+    var original = inst[key];
+    inst[key] = function () {
+        var arguments$1 = arguments;
+
+        var ret;
+        for (var i = 0; i < mixin.length; i++) {
+            var method = mixin[i];
+            var _ret = method.apply(inst, arguments$1);
+            if (!isUndefined(_ret)) {
+                ret = _ret;
+            }
+        }
+        if (original) {
+            var _ret$1 = original.call(inst);
+            if (!isUndefined(_ret$1)) {
+                ret = _ret$1;
+            }
+        }
+        return ret;
+    };
+}
+function applyMixins(inst, mixins) {
+    for (var key in mixins) {
+        if (mixins.hasOwnProperty(key)) {
+            var mixin = mixins[key];
+            if (isFunction(mixin[0])) {
+                applyMixin(key, inst, mixin);
+            }
+            else {
+                inst[key] = mixin;
+            }
+        }
+    }
+}
+function createClass(obj) {
+    var Cl = (function (Component$$1) {
+        function Cl(props, context) {
+            Component$$1.call(this, props, context);
+            this.isMounted = function () {
+                return !this._unmounted;
+            };
+            extend(this, obj);
+            if (Cl.mixins) {
+                applyMixins(this, Cl.mixins);
+            }
+            bindAll(this);
+            if (obj.getInitialState) {
+                this.state = obj.getInitialState.call(this);
+            }
+        }
+
+        if ( Component$$1 ) Cl.__proto__ = Component$$1;
+        Cl.prototype = Object.create( Component$$1 && Component$$1.prototype );
+        Cl.prototype.constructor = Cl;
+
+        return Cl;
+    }(Component));
+    Cl.displayName = obj.displayName || 'Component';
+    Cl.propTypes = obj.propTypes;
+    Cl.defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
+    Cl.mixins = obj.mixins && collateMixins(obj.mixins);
+    if (obj.statics) {
+        extend(Cl, obj.statics);
+    }
+    return Cl;
+}
+
 var componentHooks = {
     onComponentWillMount: true,
     onComponentDidMount: true,
@@ -2641,163 +2756,210 @@ function isValidElement(obj) {
     return !!(flags & (28 /* Component */ | 3970 /* Element */));
 }
 
-function renderIntoDocument(element) {
-    var div = document.createElement('div');
-    return render(element, div);
+// Type Checkers
+function isVNode(inst) {
+    return isValidElement(inst);
 }
-function isElement(element) {
-    return isValidElement(element);
+function isVNodeOfType(inst, type) {
+    return isVNode(inst) && inst.type === type;
 }
-function isElementOfType(inst, componentClass) {
-    return (isValidElement(inst) &&
-        inst.type === componentClass);
+function isDOMVNode(inst) {
+    return isVNode(inst) && isString(inst.type);
 }
-function isDOMComponent(inst) {
-    return !!(inst && inst.nodeType === 1 && inst.tagName);
+function isDOMVNodeOfType(inst, type) {
+    return isDOMVNode(inst) && inst.type === type;
 }
-function isDOMComponentElement(inst) {
-    return !!(inst &&
-        isValidElement(inst) &&
-        typeof inst.type === 'string');
+function isFunctionalVNode(inst) {
+    return isVNode(inst) && Boolean(inst.flags & 8 /* ComponentFunction */);
 }
-function isCompositeComponent(inst) {
-    if (isDOMComponent(inst)) {
-        return false;
+function isFunctionalVNodeOfType(inst, type) {
+    return isFunctionalVNode(inst) && inst.type === type;
+}
+function isClassVNode(inst) {
+    return isVNode(inst) && Boolean(inst.flags & 4 /* ComponentClass */);
+}
+function isClassVNodeOfType(inst, type) {
+    return isClassVNode(inst) && inst.type === type;
+}
+function isDOMElement(inst) {
+    return Boolean(inst) && isObject(inst) &&
+        inst.nodeType === 1 && isString(inst.tagName);
+}
+function isDOMElementOfType(inst, type) {
+    return isDOMElement(inst) && isString(type) &&
+        inst.tagName.toLowerCase() === type.toLowerCase();
+}
+function isRenderedClassComponent(inst) {
+    return Boolean(inst) && isObject(inst) && isVNode(inst._vNode) &&
+        isFunction(inst.render) && isFunction(inst.setState);
+}
+function isRenderedClassComponentOfType(inst, type) {
+    return isRenderedClassComponent(inst) &&
+        isFunction(type) && inst._vNode.type === type;
+}
+// Render Utilities
+var Wrapper = createClass({
+    render: function render$$1() {
+        return this.props.children;
     }
-    return (inst != null &&
-        typeof inst.type.render === 'function' &&
-        typeof inst.type.setState === 'function');
+});
+function renderIntoDocument(input) {
+    var wrappedInput = createElement(Wrapper, null, input);
+    var parent = document.createElement('div');
+    return render(wrappedInput, parent);
 }
-function isCompositeComponentWithType(inst, type) {
-    if (!isCompositeComponent(inst)) {
-        return false;
+// Recursive Finder Functions
+function findAllInRenderedTree(tree, predicate) {
+    if (isRenderedClassComponent(tree)) {
+        return findAllInVNodeTree(tree._lastInput, predicate);
     }
-    return (inst.type === type);
+    else {
+        throwError('findAllInRenderedTree(...) instance must be a rendered class component');
+    }
 }
-function findAllInTree(inst, test) {
-    if (!inst) {
-        return [];
-    }
-    var publicInst = inst.dom;
-    var currentElement = inst._vNode;
-    var ret = test(publicInst) ? [inst] : [];
-    if (isDOMComponent(publicInst)) {
-        var renderedChildren = inst.children;
-        if (isArray(renderedChildren)) {
-            for (var i = 0; i < renderedChildren.length; i++) {
-                var child = renderedChildren[i];
-                ret = ret.concat(findAllInTree(child, test));
-            }
+function findAllInVNodeTree(tree, predicate) {
+    if (isVNode(tree)) {
+        var result = predicate(tree) ? [tree] : [];
+        var children = tree.children;
+        if (isRenderedClassComponent(children)) {
+            result = result.concat(findAllInVNodeTree(children._lastInput, predicate));
         }
-        else {
-            ret = ret.concat(findAllInTree(renderedChildren, test));
+        else if (isVNode(children)) {
+            result = result.concat(findAllInVNodeTree(children, predicate));
         }
-    }
-    if (isValidElement(currentElement) &&
-        typeof currentElement.type === 'function') {
-        ret = ret.concat(findAllInTree(inst._lastInput, test));
-    }
-    return ret;
-}
-function findAllInRenderedTree(inst, test) {
-    var result = [];
-    if (!inst) {
-        return result;
-    }
-    if (isDOMComponent(inst)) {
-        throwError('findAllInRenderedTree(...): instance must be a composite component');
-    }
-    return findAllInTree(inst, test);
-}
-function scryRenderedDOMComponentsWithClass(root, classNames) {
-    return findAllInRenderedTree(root, function (inst) {
-        if (isDOMComponent(inst)) {
-            var className = inst.className;
-            if (typeof className !== 'string') {
-                // SVG, probably.
-                className = inst.getAttribute('class') || '';
-            }
-            var classList = className.split(/\s+/);
-            var classNamesList = classNames;
-            if (!isArray(classNames)) {
-                classNamesList = classNames.split(/\s+/);
-            }
-            classNamesList = toArray(classNamesList);
-            return classNamesList.every(function (name) {
-                return classList.indexOf(name) !== -1;
+        else if (isArray(children)) {
+            children.forEach(function (child) {
+                result = result.concat(findAllInVNodeTree(child, predicate));
             });
         }
-        return false;
-    });
-}
-function scryRenderedDOMComponentsWithTag(root, tagName) {
-    return findAllInRenderedTree(root, function (inst) {
-        return isDOMComponent(inst) && inst.tagName.toUpperCase() === tagName.toUpperCase();
-    });
-}
-function scryRenderedComponentsWithType(root, componentType) {
-    return findAllInRenderedTree(root, function (inst) {
-        return isCompositeComponentWithType(inst, componentType);
-    });
-}
-function findOneOf(root, option, optionName, finderFn) {
-    var all = finderFn(root, option);
-    if (all.length > 1) {
-        throwError(("Did not find exactly one match (found " + (all.length) + ") for " + optionName + ": " + option));
+        return result;
     }
-    return all[0];
+    else {
+        throwError('findAllInVNodeTree(...) instance must be a VNode');
+    }
 }
-function findRenderedDOMComponentWithClass(root, classNames) {
-    return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass);
+// Finder Helpers
+function parseSelector(filter) {
+    if (isArray(filter)) {
+        return filter;
+    }
+    else if (isString(filter)) {
+        return filter.trim().split(/\s+/);
+    }
+    else {
+        return [];
+    }
 }
-function findRenderedDOMComponentWithTag(root, tagName) {
-    return findOneOf(root, tagName, 'tag', scryRenderedDOMComponentsWithTag);
+function findOneOf(tree, filter, name, finder) {
+    var all = finder(tree, filter);
+    if (all.length > 1) {
+        throwError(("Did not find exactly one match (found " + (all.length) + ") for " + name + ": " + filter));
+    }
+    else
+        { return all[0]; }
 }
-function findRenderedComponentWithType(root, componentClass) {
-    return findOneOf(root, componentClass, 'component', scryRenderedComponentsWithType);
+// Scry Utilities
+function scryRenderedDOMElementsWithClass(tree, classNames) {
+    return findAllInRenderedTree(tree, function (inst) {
+        if (isDOMVNode(inst)) {
+            var domClassName = inst.dom.className;
+            if (!isString(domClassName)) {
+                domClassName = inst.dom.getAttribute('class') || '';
+            }
+            var domClassList = parseSelector(domClassName);
+            return parseSelector(classNames).every(function (className) {
+                return domClassList.indexOf(className) !== -1;
+            });
+        }
+        else
+            { return false; }
+    }).map(function (inst) { return inst.dom; });
 }
+function scryRenderedDOMElementsWithTag(tree, tagName) {
+    return findAllInRenderedTree(tree, function (inst) {
+        return isDOMVNodeOfType(inst, tagName);
+    }).map(function (inst) { return inst.dom; });
+}
+function scryRenderedVNodesWithType(tree, type) {
+    return findAllInRenderedTree(tree, function (inst) { return isVNodeOfType(inst, type); });
+}
+function scryVNodesWithType(tree, type) {
+    return findAllInVNodeTree(tree, function (inst) { return isVNodeOfType(inst, type); });
+}
+// Find Utilities
+function findRenderedDOMElementWithClass(tree, classNames) {
+    return findOneOf(tree, classNames, 'class', scryRenderedDOMElementsWithClass);
+}
+function findRenderedDOMElementWithTag(tree, tagName) {
+    return findOneOf(tree, tagName, 'tag', scryRenderedDOMElementsWithTag);
+}
+function findRenderedVNodeWithType(tree, type) {
+    return findOneOf(tree, type, 'component', scryRenderedVNodesWithType);
+}
+function findVNodeWithType(tree, type) {
+    return findOneOf(tree, type, 'VNode', scryVNodesWithType);
+}
+// Mock Utilities
 function mockComponent(module, mockTagName) {
-    mockTagName = mockTagName || typeof module.type === 'string' ? module.type : 'div';
-    module.prototype.render.mockImplementation(function () {
-        return createElement(mockTagName, null, this.props.children);
-    });
+    var this$1 = this;
+
+    mockTagName = mockTagName || isString(module.type) ? module.type : 'div';
+    module.prototype.render.mockImplementation(function () { return createElement(mockTagName, null, this$1.props.children); });
     return this;
 }
 
 var index = {
+	isVNode: isVNode,
+	isVNodeOfType: isVNodeOfType,
+	isDOMVNode: isDOMVNode,
+	isDOMVNodeOfType: isDOMVNodeOfType,
+	isFunctionalVNode: isFunctionalVNode,
+	isFunctionalVNodeOfType: isFunctionalVNodeOfType,
+	isClassVNode: isClassVNode,
+	isClassVNodeOfType: isClassVNodeOfType,
+	isDOMElement: isDOMElement,
+	isDOMElementOfType: isDOMElementOfType,
+	isRenderedClassComponent: isRenderedClassComponent,
+	isRenderedClassComponentOfType: isRenderedClassComponentOfType,
 	renderIntoDocument: renderIntoDocument,
-	isElement: isElement,
-	isElementOfType: isElementOfType,
-	isDOMComponent: isDOMComponent,
-	isDOMComponentElement: isDOMComponentElement,
-	isCompositeComponent: isCompositeComponent,
-	isCompositeComponentWithType: isCompositeComponentWithType,
 	findAllInRenderedTree: findAllInRenderedTree,
-	scryRenderedDOMComponentsWithClass: scryRenderedDOMComponentsWithClass,
-	scryRenderedDOMComponentsWithTag: scryRenderedDOMComponentsWithTag,
-	scryRenderedComponentsWithType: scryRenderedComponentsWithType,
-	findRenderedDOMComponentWithClass: findRenderedDOMComponentWithClass,
-	findRenderedDOMComponentWithTag: findRenderedDOMComponentWithTag,
-	findRenderedComponentWithType: findRenderedComponentWithType,
-	mockComponent: mockComponent,
+	findAllInVNodeTree: findAllInVNodeTree,
+	scryRenderedDOMElementsWithClass: scryRenderedDOMElementsWithClass,
+	findRenderedDOMElementWithClass: findRenderedDOMElementWithClass,
+	scryRenderedDOMElementsWithTag: scryRenderedDOMElementsWithTag,
+	findRenderedDOMElementWithTag: findRenderedDOMElementWithTag,
+	scryRenderedVNodesWithType: scryRenderedVNodesWithType,
+	findRenderedVNodeWithType: findRenderedVNodeWithType,
+	scryVNodesWithType: scryVNodesWithType,
+	findVNodeWithType: findVNodeWithType,
+	mockComponent: mockComponent
 };
 
-exports.renderIntoDocument = renderIntoDocument;
-exports.isElement = isElement;
-exports.isElementOfType = isElementOfType;
-exports.isDOMComponent = isDOMComponent;
-exports.isDOMComponentElement = isDOMComponentElement;
-exports.isCompositeComponent = isCompositeComponent;
-exports.isCompositeComponentWithType = isCompositeComponentWithType;
-exports.findAllInRenderedTree = findAllInRenderedTree;
-exports.scryRenderedDOMComponentsWithClass = scryRenderedDOMComponentsWithClass;
-exports.scryRenderedDOMComponentsWithTag = scryRenderedDOMComponentsWithTag;
-exports.scryRenderedComponentsWithType = scryRenderedComponentsWithType;
-exports.findRenderedDOMComponentWithClass = findRenderedDOMComponentWithClass;
-exports.findRenderedDOMComponentWithTag = findRenderedDOMComponentWithTag;
-exports.findRenderedComponentWithType = findRenderedComponentWithType;
-exports.mockComponent = mockComponent;
 exports['default'] = index;
+exports.isVNode = isVNode;
+exports.isVNodeOfType = isVNodeOfType;
+exports.isDOMVNode = isDOMVNode;
+exports.isDOMVNodeOfType = isDOMVNodeOfType;
+exports.isFunctionalVNode = isFunctionalVNode;
+exports.isFunctionalVNodeOfType = isFunctionalVNodeOfType;
+exports.isClassVNode = isClassVNode;
+exports.isClassVNodeOfType = isClassVNodeOfType;
+exports.isDOMElement = isDOMElement;
+exports.isDOMElementOfType = isDOMElementOfType;
+exports.isRenderedClassComponent = isRenderedClassComponent;
+exports.isRenderedClassComponentOfType = isRenderedClassComponentOfType;
+exports.renderIntoDocument = renderIntoDocument;
+exports.findAllInRenderedTree = findAllInRenderedTree;
+exports.findAllInVNodeTree = findAllInVNodeTree;
+exports.scryRenderedDOMElementsWithClass = scryRenderedDOMElementsWithClass;
+exports.findRenderedDOMElementWithClass = findRenderedDOMElementWithClass;
+exports.scryRenderedDOMElementsWithTag = scryRenderedDOMElementsWithTag;
+exports.findRenderedDOMElementWithTag = findRenderedDOMElementWithTag;
+exports.scryRenderedVNodesWithType = scryRenderedVNodesWithType;
+exports.findRenderedVNodeWithType = findRenderedVNodeWithType;
+exports.scryVNodesWithType = scryVNodesWithType;
+exports.findVNodeWithType = findVNodeWithType;
+exports.mockComponent = mockComponent;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
