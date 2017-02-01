@@ -12,14 +12,14 @@ npm install inferno-test-utils --save-dev
 ## Contents
 
 * [`renderIntoDocument`](#renderintodocumentvnodetree)
-* [`findAllInRenderedTree`](#findallinrenderedtreerenderedvnodetree-predicate)
+* [`findAllInRenderedTree`](#findallinrenderedtreerenderedtree-predicate)
 * [`findAllInVNodeTree`](#findallinvnodetreevnodetree-predicate)
-* [`scryRenderedDOMElementsWithClass`](#scryrendereddomelementswithclassrenderedvnodetree-classname)
-* [`findRenderedDOMElementWithClass`](#findrendereddomelementwithclassrenderedvnodetree-classname)
-* [`scryRenderedDOMElementsWithTag`](#scryrendereddomelementswithtagrenderedvnodetree-tagname)
-* [`findRenderedDOMElementWithTag`](#findrendereddomelementwithtagrenderedvnodetree-tagname)
-* [`scryRenderedVNodesWithType`](#scryrenderedvnodeswithtyperenderedvnodetree-type)
-* [`findRenderedVNodeWithType`](#findrenderedvnodewithtyperenderedvnodetree-type)
+* [`scryRenderedDOMElementsWithClass`](#scryrendereddomelementswithclassrenderedtree-classname)
+* [`findRenderedDOMElementWithClass`](#findrendereddomelementwithclassrenderedtree-classname)
+* [`scryRenderedDOMElementsWithTag`](#scryrendereddomelementswithtagrenderedtree-tagname)
+* [`findRenderedDOMElementWithTag`](#findrendereddomelementwithtagrenderedtree-tagname)
+* [`scryRenderedVNodesWithType`](#scryrenderedvnodeswithtyperenderedtree-type)
+* [`findRenderedVNodeWithType`](#findrenderedvnodewithtyperenderedtree-type)
 * [`scryVNodesWithType`](#scryvnodeswithtypevnodetree-type)
 * [`findVNodeWithType`](#findvnodewithtypevnodetree-type)
 * [`isVNode`](#isvnodeinstance)
@@ -49,12 +49,12 @@ const VNodeTree = (
     <SomeComponent className="inner"/>
   </div>
 );
-const renderedVNodeTree = renderIntoDocument(VNodeTree);
+const renderedTree = renderIntoDocument(VNodeTree);
 ```
 
-### `findAllInRenderedTree(renderedVNodeTree, predicate)`
+### `findAllInRenderedTree(renderedTree, predicate)`
 
-Calls `predicate` with each `VNode` instance in `renderedVNodeTree`. 
+Calls `predicate` with each `VNode` instance in `renderedTree`. 
 
 Returns an array of `VNodes` where `predicate` returns `true`.
 
@@ -64,9 +64,9 @@ const VNodeTree = (
     <SomeComponent className="inner"/>
   </div>
 );
-const renderedVNodeTree = renderIntoDocument(VNodeTree);
+const renderedTree = renderIntoDocument(VNodeTree);
 const predicate = (VNode) => VNode.type === SomeComponent;
-const result = findAllInRenderedTree(renderedVNodeTree, predicate);
+const result = findAllInRenderedTree(renderedTree, predicate);
 ```
 
 ### `findAllInVNodeTree(VNodeTree, predicate)`
@@ -85,7 +85,7 @@ const predicate = (VNode) => VNode.type === SomeComponent;
 const result = findAllInVNodeTree(VNodeTree, predicate);
 ```
 
-### `scryRenderedDOMElementsWithClass(renderedVNodeTree, className)`
+### `scryRenderedDOMElementsWithClass(renderedTree, className)`
 
 Returns an array of DOM elements with `className`.
 
@@ -98,14 +98,14 @@ const VNodeTree = (
     <SomeComponent className="inner two"/>
   </div>
 );
-const renderedVNodeTree = renderIntoDocument(VNodeTree);
-const result1 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'inner');
-const result2 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'inner one');
-const result3 = scryRenderedDOMElementsWithClass(renderedVNodeTree, ['inner', 'two']);
-const result4 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'three'); // Empty array
+const renderedTree = renderIntoDocument(VNodeTree);
+const result1 = scryRenderedDOMElementsWithClass(renderedTree, 'inner');
+const result2 = scryRenderedDOMElementsWithClass(renderedTree, 'inner one');
+const result3 = scryRenderedDOMElementsWithClass(renderedTree, ['inner', 'two']);
+const result4 = scryRenderedDOMElementsWithClass(renderedTree, 'three'); // Empty array
 ```
 
-### `findRenderedDOMElementWithClass(renderedVNodeTree, className)`
+### `findRenderedDOMElementWithClass(renderedTree, className)`
 
 Returns a single DOM element with `className`. If more than one matches are found, throws an error.
 
@@ -118,14 +118,14 @@ const VNodeTree = (
     <SomeComponent className="inner two"/>
   </div>
 );
-const renderedVNodeTree = renderIntoDocument(VNodeTree);
-const result1 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'outer');
-const result2 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'inner one');
+const renderedTree = renderIntoDocument(VNodeTree);
+const result1 = scryRenderedDOMElementsWithClass(renderedTree, 'outer');
+const result2 = scryRenderedDOMElementsWithClass(renderedTree, 'inner one');
 // Will throw an error because more than 1 matches were found...
-const result3 = scryRenderedDOMElementsWithClass(renderedVNodeTree, 'inner');
+const result3 = scryRenderedDOMElementsWithClass(renderedTree, 'inner');
 ```
 
-### `scryRenderedDOMElementsWithTag(renderedVNodeTree, tagName)`
+### `scryRenderedDOMElementsWithTag(renderedTree, tagName)`
 
 Returns an array of DOM elements with `tagName`.
 
@@ -138,13 +138,13 @@ const VNodeTree = (
     <p>Paragraph Three</p>
   </div>
 );
-const renderedVNodeTree = renderIntoDocument(VNodeTree);
-const result1 = scryRenderedDOMElementsWithTag(renderedVNodeTree, 'h1');
-const result3 = scryRenderedDOMElementsWithTag(renderedVNodeTree, 'p');
-const result4 = scryRenderedVNodesWithType(renderedVNodeTree, 'span'); // Empty array
+const renderedTree = renderIntoDocument(VNodeTree);
+const result1 = scryRenderedDOMElementsWithTag(renderedTree, 'h1');
+const result3 = scryRenderedDOMElementsWithTag(renderedTree, 'p');
+const result4 = scryRenderedVNodesWithType(renderedTree, 'span'); // Empty array
 ```
 
-### `findRenderedDOMElementWithTag(renderedVNodeTree, tagName)`
+### `findRenderedDOMElementWithTag(renderedTree, tagName)`
 
 Returns a single DOM element with `tagName`. If more than one matches are found, throws an error.
 
@@ -159,13 +159,13 @@ const VNodeTree = (
     </div>
   </div>
 );
-const renderedVNodeTree = renderIntoDocument(VNodeTree);
-const result1 = findRenderedDOMElementWithTag(renderedVNodeTree, 'h1');
+const renderedTree = renderIntoDocument(VNodeTree);
+const result1 = findRenderedDOMElementWithTag(renderedTree, 'h1');
 // Will throw an error because more than 1 matches were found...
-const result2 = findRenderedDOMElementWithTag(renderedVNodeTree, 'p');
+const result2 = findRenderedDOMElementWithTag(renderedTree, 'p');
 ```
 
-### `scryRenderedVNodesWithType(renderedVNodeTree, type)`
+### `scryRenderedVNodesWithType(renderedTree, type)`
 
 Returns an array of rendered `VNodes` with `type`.
 
@@ -177,13 +177,13 @@ const VNodeTree = (
     <SomeComponent/>
   </div>
 );
-const renderedVNodeTree = renderIntoDocument(VNodeTree);
-const result1 = scryRenderedVNodesWithType(renderedVNodeTree, 'h1');
-const result2 = scryRenderedVNodesWithType(renderedVNodeTree, SomeComponent);
-const result3 = scryRenderedVNodesWithType(renderedVNodeTree, 'p'); // Empty array
+const renderedTree = renderIntoDocument(VNodeTree);
+const result1 = scryRenderedVNodesWithType(renderedTree, 'h1');
+const result2 = scryRenderedVNodesWithType(renderedTree, SomeComponent);
+const result3 = scryRenderedVNodesWithType(renderedTree, 'p'); // Empty array
 ```
 
-### `findRenderedVNodeWithType(renderedVNodeTree, type)`
+### `findRenderedVNodeWithType(renderedTree, type)`
 
 Returns a single rendered `VNode` with `type`. If more than one matches are found, throws an error.
 
@@ -198,12 +198,12 @@ const VNodeTree = (
     <AnotherComponent/>
   </div>
 );
-const renderedVNodeTree = renderIntoDocument(VNodeTree);
-const result1 = findRenderedVNodeWithType(renderedVNodeTree, 'h1');
-const result2 = findRenderedVNodeWithType(renderedVNodeTree, SomeComponent);
+const renderedTree = renderIntoDocument(VNodeTree);
+const result1 = findRenderedVNodeWithType(renderedTree, 'h1');
+const result2 = findRenderedVNodeWithType(renderedTree, SomeComponent);
 // Will throw an error because more than 1 matches were found...
-const result3 = findRenderedVNodeWithType(renderedVNodeTree, 'p');
-const result4 = findRenderedVNodeWithType(renderedVNodeTree, AnotherComponent);
+const result3 = findRenderedVNodeWithType(renderedTree, 'p');
+const result4 = findRenderedVNodeWithType(renderedTree, AnotherComponent);
 ```
 
 ### `scryVNodesWithType(VNodeTree, type)`
