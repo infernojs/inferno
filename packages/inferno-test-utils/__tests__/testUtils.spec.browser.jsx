@@ -449,6 +449,7 @@ describe('Test Utils', () => {
 		});
 	});
 
+
 	describe('scryRenderedDOMElementsWithClass', () => {
 
 		const tree = renderIntoDocument(
@@ -467,14 +468,14 @@ describe('Test Utils', () => {
 			expect(result1).to.be.instanceof(Array);
 			expect(result1).to.have.lengthOf(3);
 			result1.forEach((result) => {
-				expect(result).to.be.instanceof(HTMLDivElement);
+				expect(result).to.be.instanceof(window.HTMLDivElement);
 			});
 
 			const result2 = scryRenderedDOMElementsWithClass(tree, 'two');
 			expect(result2).to.be.instanceof(Array);
 			expect(result2).to.have.lengthOf(2);
-			expect(result2[0]).to.be.instanceof(HTMLDivElement);
-			expect(result2[1]).to.be.instanceof(HTMLSpanElement);
+			expect(result2[0]).to.be.instanceof(window.HTMLDivElement);
+			expect(result2[1]).to.be.instanceof(window.HTMLSpanElement);
 
 			const result3 = scryRenderedDOMElementsWithClass(tree, 'three');
 			expect(result3).to.be.instanceof(Array);
@@ -523,10 +524,10 @@ describe('Test Utils', () => {
 					expect(item).to.be.instanceof(instance);
 				});
 			};
-			testValue('div', 1, HTMLDivElement);
-			testValue('h1', 2, HTMLHeadingElement);
-			testValue('p', 3, HTMLParagraphElement);
-			testValue('span', 0, HTMLSpanElement);
+			testValue('div', 1, window.HTMLDivElement);
+			testValue('h1', 2, window.HTMLHeadingElement);
+			testValue('p', 3, window.HTMLParagraphElement);
+			testValue('span', 0, window.HTMLSpanElement);
 		});
 	});
 
@@ -625,9 +626,9 @@ describe('Test Utils', () => {
 				const result = findRenderedDOMElementWithClass(tree, classNames);
 				expect(result).to.be.instanceof(instance);
 			};
-			testValue('level-1', HTMLDivElement);
-			testValue('level-2 one', HTMLDivElement);
-			testValue('level-3 two', HTMLSpanElement);
+			testValue('level-1', window.HTMLDivElement);
+			testValue('level-2 one', window.HTMLDivElement);
+			testValue('level-3 two', window.HTMLSpanElement);
 		});
 	});
 
@@ -663,9 +664,9 @@ describe('Test Utils', () => {
 				const result = findRenderedDOMElementWithTag(tree, tagName);
 				expect(result).to.be.instanceof(instance);
 			};
-			testValue('div', HTMLDivElement);
-			testValue('header', HTMLElement);
-			testValue('section', HTMLElement);
+			testValue('div', window.HTMLDivElement);
+			testValue('header', window.HTMLElement);
+			testValue('section', window.HTMLElement);
 		});
 	});
 
