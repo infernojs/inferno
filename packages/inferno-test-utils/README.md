@@ -22,6 +22,18 @@ npm install inferno-test-utils --save-dev
 * [`findRenderedVNodeWithType`](#findrenderedvnodewithtyperenderedvnodetree-type)
 * [`scryVNodesWithType`](#scryvnodeswithtypevnodetree-type)
 * [`findVNodeWithType`](#findvnodewithtypevnodetree-type)
+* [`isVNode`](#isvnodeinstance)
+* [`isVNodeOfType`](#isvnodeoftypeinstance-type)
+* [`isDOMVNode`](#isdomvnodeinstance)
+* [`isDOMVNodeOfType`](#isdomvnodeoftypeinstance-type)
+* [`isFunctionalVNode`](#isfunctionalvnodeinstance)
+* [`isFunctionalVNodeOfType`](#isfunctionalvnodeoftypeinstance-type)
+* [`isClassVNode`](#isclassvnodeinstance)
+* [`isClassVNodeOfType`](#isclassvnodeoftypeinstance-type)
+* [`isDOMElement`](#isdomelementinstance)
+* [`isDOMElementOfType`](#isdomelementoftypeinstance-type)
+* [`isRenderedClassComponent`](#isrenderedclasscomponentinstance)
+* [`isRenderedClassComponentOfType`](#isrenderedclasscomponentoftypeinstance-type)
 
 ## Usage
 
@@ -227,3 +239,51 @@ const result1 = findVNodeWithType(VNodeTree, 'h1');
 // Will throw an error because more than 1 matches were found...
 const result2 = findVNodeWithType(VNodeTree, SomeComponent);
 ```
+
+### `isVNode(instance)`
+
+Returns `true` when `instance` is a `VNode`.
+
+### `isVNodeOfType(instance, type)`
+
+Returns `true` when `instance` is a `VNode` of `type`.
+
+### `isDOMVNode(instance)`
+
+Returns `true` when `instance` is a DOM-type `VNode`.
+
+### `isDOMVNodeOfType(instance, type)`
+
+Returns `true` when `instance` is a DOM-type `VNode` of `type`.
+
+### `isFunctionalVNode(instance)`
+
+Returns `true` when `instance` is a functional-type `VNode`.
+
+### `isFunctionalVNodeOfType(instance, type)`
+
+Returns `true` when `instance` is a functional-type `VNode` of `type`.
+
+### `isClassVNode(instance)`
+
+Returns `true` when `instance` is a class-type `VNode`.
+
+### `isClassVNodeOfType(instance, type)`
+
+Returns `true` when `instance` is a class-type `VNode` of `type`.
+
+### `isDOMElement(instance)`
+
+Returns `true` when `instance` is a DOM element.
+
+### `isDOMElementOfType(instance, type)`
+
+Returns `true` when `instance` is a DOM element of `type`.
+
+### `isRenderedClassComponent(instance)`
+
+Returns `true` when `instance` is a rendered class `VNode`.
+
+### `isRenderedClassComponentOfType(instance, type)`
+
+Returns `true` when `instance` is a rendered class `VNode` of `type`.
