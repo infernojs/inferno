@@ -449,7 +449,6 @@ describe('Test Utils', () => {
 		});
 	});
 
-
 	describe('scryRenderedDOMElementsWithClass', () => {
 
 		const tree = renderIntoDocument(
