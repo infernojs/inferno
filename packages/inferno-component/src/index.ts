@@ -174,6 +174,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_blockSetState = false;
 	_deferSetState = false;
 	_pendingSetState = false;
+	_syncSetState = true;
 	_pendingState = {};
 	_lastInput = null;
 	_vNode = null;
@@ -208,7 +209,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 		if (!this._blockSetState) {
 			if (!this._ignoreSetState) {
-				queueStateChanges(this, newState, callback, false);
+				queueStateChanges(this, newState, callback, this._syncSetState);
 			}
 		} else {
 			if (process.env.NODE_ENV !== 'production') {

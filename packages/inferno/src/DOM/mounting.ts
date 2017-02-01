@@ -235,7 +235,10 @@ export function mountClassComponentCallbacks(vNode: VNode, ref, instance, lifecy
 		lifecycle.addListener(() => {
 			afterMount && afterMount(vNode);
 			cDM && instance.componentDidMount();
+			instance._syncSetState = true;
 		});
+	} else {
+		instance._syncSetState = true;
 	}
 }
 
