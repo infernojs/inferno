@@ -374,7 +374,7 @@ Inferno.render(newVNode, container);
 
 ### `findDOMNode` (package: `inferno`)
 
-Once enabled via `options.findDOMNodeEnabled()` at the start of an application, `findDOMNode()` is enabled.
+Once enabled via `Inferno.options.findDOMNodeEnabled = true;` at the start of an application, `findDOMNode()` is enabled.
 
 Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode()`. `findDOMNode()` cannot be used on functional components and it introduces a significant performance impact.
 

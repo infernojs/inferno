@@ -11,6 +11,7 @@ interface ILinkProps {
 }
 
 export default function Link(props, { router }): VNode {
+	// TODO: Convert to object assign
 	const { activeClassName, activeStyle, className, onClick, to, ...otherProps } = props;
 	const elemProps: ILinkProps = {
 		href: to,
