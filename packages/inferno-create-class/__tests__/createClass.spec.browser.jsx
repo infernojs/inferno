@@ -3,7 +3,7 @@ import { render } from 'inferno';
 import { innerHTML } from 'inferno/test/utils';
 import createClass from '../dist-es';
 
-describe('Components createClass (non-JSX)', () => {
+describe('Components createClass (JSX)', () => {
 	let container;
 
 	beforeEach(() => {
@@ -56,19 +56,18 @@ describe('Components createClass (non-JSX)', () => {
 			});
 
 			it('should throw an error for duplicate keys', () => {
-				expect(() => {
-					createClass({
-						mixins: [
-							{ getDefaultProps: () => ({ a: true }) }
-						],
-						getDefaultProps() {
-							return { a: true };
-						},
-						render() {
-							return <div />;
-						}
-					});
-				}).to.throw();
+				const Foo = createClass({
+					mixins: [
+						{ getDefaultProps: () => ({ a: true }) }
+					],
+					getDefaultProps() {
+						return { a: true };
+					},
+					render() {
+						return <div />;
+					}
+				});
+				expect(Foo).to.throw(Error);
 			});
 		});
 
