@@ -10,6 +10,9 @@ execute(({ location: cwd }) => {
 	} catch (e) {}
 
 	if (tsconfigExist) {
-		return spawnPromise(require.resolve('typescript/bin/tsc'), [], { cwd });
+		const isWindows = /^win/.test(process.platform);
+		const extension = isWindows ? '.cmd' : ''
+		const tsCompiler = join(__dirname, `../node_modules/.bin/tsc${extension}`)
+		return spawnPromise(tsCompiler, [], { cwd });
 	}
 });
