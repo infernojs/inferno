@@ -34,5 +34,19 @@
   },
   "devDependencies": {
     "inferno-hyperscript": "1.2.2"
+  },
+  "bundledDependencies": [
+    "inferno-helpers",
+    "inferno-vnode-flags",
+    "proptypes",
+    "inferno-create-class",
+    "inferno-create-element"
+  ],
+  "rollup": {
+    "moduleGlobal": "Inferno",
+    "moduleGlobals": {
+      "inferno": "Inferno",
+      "inferno-component": "Inferno.Component"
+    }
   }
 }

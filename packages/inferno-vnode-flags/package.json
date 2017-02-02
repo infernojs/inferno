@@ -28,6 +28,9 @@
     "createVNode",
     "flags"
   ],
+  "rollup": {
+    "moduleGlobal": "Inferno.VNodeFlags"
+  },
   "main": "dist/inferno-vnode-flags.node.js",
   "module": "dist-es/index.js",
   "typings": "dist-es/index.d.ts",

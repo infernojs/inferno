@@ -32,5 +32,17 @@
     "inferno-create-element": "1.2.2",
     "inferno-helpers": "1.2.2",
     "mobx": "*"
+  },
+  "bundledDependencies": [
+    "inferno-helpers"
+  ],
+  "rollup": {
+    "moduleGlobal": "Inferno.Mobx",
+    "moduleGlobals": {
+      "inferno": "Inferno",
+      "inferno-component": "Inferno.Component",
+      "inferno-create-element": "Inferno.createElement",
+      "inferno-create-class": "Inferno.createClass"
+    }
   }
 }

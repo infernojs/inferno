@@ -32,5 +32,15 @@
     "inferno": "1.2.2",
     "inferno-helpers": "1.2.2",
     "inferno-vnode-flags": "1.2.2"
+  },
+  "bundledDependencies": [
+    "inferno-helpers",
+    "inferno-vnode-flags"
+  ],
+  "rollup": {
+    "moduleGlobal": "Inferno.Component",
+    "moduleGlobals": {
+      "inferno": "Inferno"
+    }
   }
 }
