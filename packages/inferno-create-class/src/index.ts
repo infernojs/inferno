@@ -161,6 +161,7 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComp
 		static defaultProps;
 		static displayName = obj.displayName || 'Component';
 		static propTypes = obj.propTypes;
+		static mixins = obj.mixins && collateMixins(obj.mixins);
 		static getDefaultProps = obj.getDefaultProps;
 		static getInitialState = obj.getInitialState;
 
