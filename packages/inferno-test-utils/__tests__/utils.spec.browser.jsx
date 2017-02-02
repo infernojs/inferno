@@ -140,7 +140,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent', (eventInterface) => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -162,7 +162,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent', (eventInterface) => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -184,7 +184,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent', (eventInterface) => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -206,7 +206,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent', (eventInterface) => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -228,7 +228,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent', (eventInterface) => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -250,7 +250,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent', (eventInterface) => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -272,7 +272,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent', (eventInterface) => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -294,7 +294,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent', (eventInterface) => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;

@@ -1,4 +1,4 @@
-import { isFunction, isNullOrUndef, isUndefined } from 'inferno-helpers';
+import { isFunction, isNullOrUndef, isUndefined, isObject, throwError } from 'inferno-helpers';
 import Component, { ComponentLifecycle } from 'inferno-component';
 
 export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
@@ -53,7 +53,7 @@ const AUTOBIND_BLACKLIST = {
 	componentDidUnmount: 1
 };
 
-function extend(base, props, all?) {
+function extend(base, props, all?: boolean) {
 	for (let key in props) {
 		if (all === true || !isNullOrUndef(props[key])) {
 			base[key] = props[key];
@@ -62,7 +62,7 @@ function extend(base, props, all?) {
 	return base;
 }
 
-function bindAll(ctx) {
+function bindAll<P, S>(ctx: Component<P, S>) {
 	for (let i in ctx) {
 		const v = ctx[i];
 		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST[i]) {
@@ -90,32 +90,59 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 	return keyed;
 }
 
-function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[] | Function): any {
-	const original = inst[key];
-
-	inst[key] = function() {
+function multihook<P, S>(inst: Component<P, S>, hooks: Function[], mergeFn?: Function): any {
+	return function() {
 		let ret;
 
-		for (let i = 0; i < mixin.length; i++) {
-			const method = mixin[i];
-			const _ret = method.apply(inst, arguments);
+		for (let i = 0; i < hooks.length; i ++) {
+			const hook = hooks[i];
+			let r = hook.apply(inst, arguments);
 
-			if (!isUndefined(_ret)) {
-				ret = _ret;
+			if (mergeFn) {
+				ret = mergeFn(ret, r);
+			} else if (isUndefined(r)) {
+				ret = r;
 			}
 		}
-		if (original) {
-			const _ret = original.call(inst);
 
-			if (!isUndefined(_ret)) {
-				ret = _ret;
-			}
-		}
 		return ret;
 	};
+};
+
+function mergeNoDupes(previous: any, current: any) {
+	if (!isUndefined(current)) {
+		if (!isObject(current)) {
+			throwError('Expected Mixin to return value to be an object or null.');
+		}
+
+		if (!previous) {
+			previous = {};
+		}
+
+		for (let key in current) {
+			if (current.hasOwnProperty(key)) {
+				if (previous.hasOwnProperty(key)) {
+					throwError(`Mixins return duplicate key ${key} in their return values`);
+				}
+
+				previous[key] = current[key];
+			}
+		}
+	}
+	return previous;
 }
 
-function applyMixins<P, S>(inst: Component<P, S>, mixins: Function[] | any[]) {
+function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[]): void {
+	const hooks = isUndefined(inst[key]) ? mixin : mixin.concat(inst[key]);
+
+	if (key === 'getDefaultProps' || key === 'getInitialState' || key === 'getChildContext') {
+		inst[key] = multihook<P, S>(inst, hooks, mergeNoDupes);
+	} else {
+		inst[key] = multihook<P, S>(inst, hooks);
+	}
+}
+
+function applyMixins(inst: any, mixins: Function[] | any[]) {
 	for (let key in mixins) {
 		if (mixins.hasOwnProperty(key)) {
 			const mixin = mixins[key];
@@ -131,20 +158,19 @@ function applyMixins<P, S>(inst: Component<P, S>, mixins: Function[] | any[]) {
 
 export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComponentClass<P, S> {
 	class Cl extends Component<P, S> {
+		static defaultProps;
 		static displayName = obj.displayName || 'Component';
 		static propTypes = obj.propTypes;
-		static defaultProps = obj.getDefaultProps ? obj.getDefaultProps() : undefined;
 		static mixins = obj.mixins && collateMixins(obj.mixins);
+		static getDefaultProps = obj.getDefaultProps;
+		static getInitialState = obj.getInitialState;
 
 		constructor(props, context) {
 			super(props, context);
 			extend(this, obj);
-			if (Cl.mixins) {
-				applyMixins(this, Cl.mixins);
-			}
 			bindAll(this);
-			if (obj.getInitialState) {
-				this.state = obj.getInitialState.call(this);
+			if (Cl.getInitialState) {
+				this.state = Cl.getInitialState.call(this);
 			}
 		}
 
@@ -152,12 +178,22 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComp
 			this.setState(nextState, callback);
 		}
 
-		public isMounted = function(): boolean {
+		public isMounted(): boolean {
 			return !this._unmounted;
 		};
+
 	}
+
+	if (obj.mixins) {
+		applyMixins(Cl, collateMixins(obj.mixins));
+	}
+
 	if (obj.statics) {
 		extend(Cl, obj.statics);
 	}
+
+	Cl.getInitialState = isUndefined(Cl.getInitialState) ? undefined : Cl.getInitialState;
+	Cl.defaultProps = isUndefined(Cl.getDefaultProps) ? undefined : Cl.getDefaultProps();
+
 	return Cl;
 }

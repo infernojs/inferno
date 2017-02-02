@@ -1,16 +1,16 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
+import { stub } from 'sinon';
 import { shallowEqual, warning } from '../dist-es/utils';
 
 describe('Redux Utils', () => {
 	describe('warning', () => {
 		it('should log message using console.error', () => {
 			// stub instead of spy to prevent console.error actually firing during test
-			const stub = sinon.stub(console, 'error', (message) => null);
+			const stubFn = stub(console, 'error').callsFake((message) => null);
 			warning('warning!');
-			expect(stub.calledOnce).to.equal(true);
-			expect(stub.calledWith('warning!')).to.equal(true);
-			stub.restore();
+			expect(stubFn.calledOnce).to.equal(true);
+			expect(stubFn.calledWith('warning!')).to.equal(true);
+			stubFn.restore();
 		});
 	});
 	describe('shallowEqual', () => {

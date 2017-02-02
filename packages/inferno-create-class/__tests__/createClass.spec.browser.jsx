@@ -3,7 +3,7 @@ import { render } from 'inferno';
 import { innerHTML } from 'inferno/test/utils';
 import createClass from '../dist-es';
 
-describe('Components createClass (non-JSX)', () => {
+describe('Components createClass (JSX)', () => {
 	let container;
 
 	beforeEach(() => {
@@ -17,13 +17,12 @@ describe('Components createClass (non-JSX)', () => {
 		render(null, container);
 	});
 
-	/*
-	describe("mixins", () => {
-		describe("getDefaultProps", () => {
+	describe('mixins', () => {
+		describe('getDefaultProps', () => {
 			it('should use a mixin', () => {
 				const Foo = createClass({
 					mixins: [
-						{getDefaultProps: () => ({a: true})}
+						{ getDefaultProps: () => ({ a: true }) }
 					],
 					render() {
 						return <div></div>;
@@ -38,11 +37,11 @@ describe('Components createClass (non-JSX)', () => {
 			it('should combine the results', () => {
 				const Foo = createClass({
 					mixins: [
-						{getDefaultProps: () => ({a: true})},
-						{getDefaultProps: () => ({b: true})}
+						{ getDefaultProps: () => ({ a: true }) },
+						{ getDefaultProps: () => ({ b: true }) }
 					],
 					getDefaultProps() {
-						return {c: true};
+						return { c: true };
 					},
 					render() {
 						return <div />;
@@ -57,31 +56,29 @@ describe('Components createClass (non-JSX)', () => {
 			});
 
 			it('should throw an error for duplicate keys', () => {
-				expect(() => {
-					createClass({
-						mixins: [
-							{getDefaultProps: () => ({a: true})}
-						],
-						getDefaultProps() {
-							return {a: true};
-						},
-						render() {
-							return <div />;
-						}
-					});
-				}).to.throw();
+				expect(() => createClass({
+					mixins: [
+						{ getDefaultProps: () => ({ a: true }) }
+					],
+					getDefaultProps() {
+						return { a: true };
+					},
+					render() {
+						return <div />;
+					}
+				})).to.throw(Error);
 			});
 		});
 
-		describe("getInitialState", () => {
+		describe('getInitialState', () => {
 			it('should combine the results', () => {
 				const Foo = createClass({
 					mixins: [
-						{getInitialState: () => ({a: true})},
-						{getInitialState: () => ({b: true})}
+						{ getInitialState: () => ({ a: true }) },
+						{ getInitialState: () => ({ b: true }) }
 					],
 					getInitialState() {
-						return {c: true};
+						return { c: true };
 					},
 					render() {
 						return <div />;
@@ -89,7 +86,7 @@ describe('Components createClass (non-JSX)', () => {
 				});
 
 				let a;
-				render(<Foo ref={function (i) {a = i}} />, container);
+				render(<Foo ref={function (i) { a = i; }} />, container);
 
 				expect(a.state).to.eql({
 					a: true,
@@ -101,10 +98,10 @@ describe('Components createClass (non-JSX)', () => {
 			it('should throw an error for duplicate keys', () => {
 				const Foo = createClass({
 					mixins: [
-						{getInitialState: () => ({a: true})}
+						{ getInitialState: () => ({ a: true }) }
 					],
 					getInitialState() {
-						return {a: true};
+						return { a: true };
 					},
 					render() {
 						return <div />;
@@ -117,7 +114,7 @@ describe('Components createClass (non-JSX)', () => {
 			});
 		});
 	});
-*/
+
 	describe('Context', () => {
 		it('It should have context defined when context moved to children', () => {
 			const App = createClass({
