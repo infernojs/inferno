@@ -1,4 +1,4 @@
-import PropTypes from 'proptypes';
+import * as PropTypes from 'proptypes';
 import isValidElement from './isValidElement';
 import createClass from 'inferno-create-class';
 import infernoCreateElement from 'inferno-create-element';

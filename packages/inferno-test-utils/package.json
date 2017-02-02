@@ -31,6 +31,17 @@
     "inferno-component": "1.2.2",
     "inferno-server": "1.2.2"
   },
+  "bundledDependencies": [
+    "inferno-helpers",
+    "inferno-vnode-flags"
+  ],
+  "rollup": {
+    "moduleGlobal": "Inferno.TestUtils",
+    "moduleGlobals": {
+      "inferno": "Inferno",
+      "inferno-create-element": "Inferno.createElement"
+    }
+  },
   "main": "dist/inferno-test-utils.node.js",
   "module": "dist-es/index.js",
   "typings": "dist-es/index.d.ts",

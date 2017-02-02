@@ -18,5 +18,8 @@
     "inferno",
     "helpers"
   ],
-  "repository": "https://github.com/infernojs/inferno"
+  "repository": "https://github.com/infernojs/inferno",
+  "rollup": {
+    "moduleGlobal": "Inferno.Helpers"
+  }
 }

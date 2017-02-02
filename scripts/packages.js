@@ -71,7 +71,7 @@ module.exports = function processPackages (repo = new Repository) {
          * @returns {Promise<any>}
          */
         executeSync (fn) {
-            new ProgressBar('Executing [:bar] :percent', {
+            const bar = new ProgressBar('Executing [:bar] :percent', {
                 complete: '$',
                 incomplete: '-',
                 width: 50,
@@ -80,7 +80,9 @@ module.exports = function processPackages (repo = new Repository) {
             const ordered = batches.reduce((all, b) => all.concat(b), []);
             return ordered.reduce(
 							(allPromises, pkg) =>
-								allPromises.then(() => fn(pkg)),
+								allPromises
+									.then(() => fn(pkg))
+									.then(() => bar.tick()),
 							Promise.resolve()
 						)
 						.catch(e => {

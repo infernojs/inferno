@@ -1,9 +1,9 @@
-const { executeSync } = require('./packages')();
+const { execute } = require('./packages')();
 const { spawnPromise } = require('./spawnPromise');
 const { statSync } = require('fs');
 const { join } = require('path');
 
-executeSync(({ location: cwd }) => {
+execute(({ location: cwd }) => {
 	let tsconfigExist = false;
 	try {
 		tsconfigExist = statSync(join(cwd, 'tsconfig.json')).isFile();
