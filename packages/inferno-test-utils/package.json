@@ -2,10 +2,10 @@
   "name": "inferno-test-utils",
   "version": "1.2.2",
   "license": "MIT",
-  "description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
+  "description": "Suite of utilities for testing Inferno applications",
   "author": {
-    "name": "Dominic Gannaway",
-    "email": "dg@domgan.com"
+    "name": "Matthew Wagerfield",
+    "email": "matthew@wagerfield.com"
   },
   "bugs": {
     "url": "https://github.com/infernojs/inferno/issues"
@@ -17,13 +17,15 @@
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces"
+    "tests",
+    "utils"
   ],
   "dependencies": {
     "inferno": "1.2.2",
-    "inferno-helpers": "1.2.2",
+    "inferno-create-class": "1.2.2",
     "inferno-create-element": "1.2.2",
-    "inferno-compat": "1.2.2"
+    "inferno-helpers": "1.2.2",
+    "inferno-vnode-flags": "1.2.2"
   },
   "devDependencies": {
     "inferno-component": "1.2.2",

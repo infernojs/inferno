@@ -1,5 +1,5 @@
 import { warning, NO_OP, EMPTY_OBJ } from 'inferno-helpers';
-import { Props, VNode, createVNode, cloneVNode, InfernoChildren } from './core/VNodes';
+import { Props, VNode, createVNode, cloneVNode, InfernoInput, InfernoChildren } from './core/VNodes';
 import linkEvent from './DOM/events/linkEvent';
 import options from './core/options';
 import { render, findDOMNode, createRenderer } from './DOM/rendering';
@@ -49,6 +49,7 @@ export {
 	Props,
 	VNode,
 	InfernoChildren,
+	InfernoInput,
 
 	// Public methods
 	linkEvent,

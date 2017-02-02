@@ -9,6 +9,7 @@ const testFiles = glob.sync('./packages/*/*__tests__*/**/*.js*');
 module.exports = {
 	watch: true,
 	entry: testFiles,
+	devtool: 'source-map',
 	output: {
 		filename: '__spec-build.js'
 	},
@@ -18,22 +19,11 @@ module.exports = {
 	module: {
 		loaders: [
 			{
-				test: /\.tsx?$/,
-				loaders: [ 'babel-loader', 'ts-loader' ],
-				exclude: /node_modules/
-			}, {
 				test: /\.jsx?$/,
 				loader: 'babel-loader',
 				exclude: /node_modules/,
 				query: {
-					compact: false,
-					presets: [[ 'es2015', { loose: true }]],
-					plugins: [
-						'transform-class-properties',
-						'transform-object-rest-spread',
-						'babel-plugin-syntax-jsx',
-						[ 'babel-plugin-inferno', { imports: true }]
-					]
+					compact: false
 				}
 			}
 		]
@@ -49,8 +39,8 @@ module.exports = {
 		}
 	},
 	resolve: {
-		extensions: [ '.js', '.jsx', '.ts', '.tsx' ],
-		mainFields: [ 'module', 'main' ],
+		extensions: [ '.js', '.jsx' ],
+		mainFields: [ 'browser', 'module', 'main' ],
 	},
 	plugins: [
 		// By default, webpack does `n=>n` compilation with entry files. This concatenates

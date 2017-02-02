@@ -1,183 +1,238 @@
-import { isArray, throwError, toArray } from 'inferno-helpers';
-import { render, VNode } from 'inferno';
+import {
+	render,
+	VNode,
+	InfernoInput,
+	InfernoChildren
+} from 'inferno';
+import VNodeFlags from 'inferno-vnode-flags';
+import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
-import isValidElement from 'inferno-compat/dist-es/isValidElement';
+import {
+	isArray,
+	isFunction,
+	isNumber,
+	isObject,
+	isString,
+	throwError
+} from 'inferno-helpers';
 
-export function renderIntoDocument(element: VNode): VNode {
-	const div = document.createElement('div');
-	return render(element as VNode, div) as VNode;
+// Type Checkers
+
+export function isVNode(inst: any): boolean {
+	return Boolean(inst) && isObject(inst) && isNumber(inst.flags) &&
+		(inst.flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
 }
 
-export function isElement(element: VNode): boolean {
-	return isValidElement(element);
+export function isVNodeOfType(inst: VNode, type: string | Function): boolean {
+	return isVNode(inst) && inst.type === type;
 }
 
-export function isElementOfType(inst: VNode, componentClass: Function): boolean {
-	return (
-		isValidElement(inst) &&
-		inst.type === componentClass
-	);
+export function isDOMVNode(inst: VNode): boolean {
+	return isVNode(inst) && isString(inst.type);
 }
 
-export function isDOMComponent(inst: any): boolean  {
-	return !!(inst && inst.nodeType === 1 && inst.tagName);
+export function isDOMVNodeOfType(inst: VNode, type: string): boolean {
+	return isDOMVNode(inst) && inst.type === type;
 }
 
-export function isDOMComponentElement(inst: VNode): boolean {
-	return !!(inst &&
-		isValidElement(inst) &&
-		typeof inst.type === 'string'
-	);
+export function isFunctionalVNode(inst: VNode): boolean {
+	return isVNode(inst) && Boolean(inst.flags & VNodeFlags.ComponentFunction);
 }
 
-export function isCompositeComponent(inst): boolean {
-	if (isDOMComponent(inst)) {
-		return false;
+export function isFunctionalVNodeOfType(inst: VNode, type: Function): boolean {
+	return isFunctionalVNode(inst) && inst.type === type;
+}
+
+export function isClassVNode(inst: VNode): boolean {
+	return isVNode(inst) && Boolean(inst.flags & VNodeFlags.ComponentClass);
+}
+
+export function isClassVNodeOfType(inst: VNode, type: Function): boolean {
+	return isClassVNode(inst) && inst.type === type;
+}
+
+export function isDOMElement(inst: any): boolean  {
+	return Boolean(inst) && isObject(inst) &&
+		inst.nodeType === 1 && isString(inst.tagName);
+}
+
+export function isDOMElementOfType(inst: any, type: string): boolean  {
+	return isDOMElement(inst) && isString(type) &&
+		inst.tagName.toLowerCase() === type.toLowerCase();
+}
+
+export function isRenderedClassComponent(inst: any): boolean {
+	return Boolean(inst) && isObject(inst) && isVNode(inst._vNode) &&
+		isFunction(inst.render) && isFunction(inst.setState);
+}
+
+export function isRenderedClassComponentOfType(inst: any, type: Function): boolean {
+	return isRenderedClassComponent(inst) &&
+		isFunction(type) && inst._vNode.type === type;
+}
+
+// Render Utilities
+
+const Wrapper = createClass({
+	render() {
+		return this.props.children;
 	}
-	return (
-		inst != null &&
-		typeof inst.type.render === 'function' &&
-		typeof inst.type.setState === 'function'
-	);
+});
+
+export function renderIntoDocument(input: InfernoInput): InfernoChildren {
+	const wrappedInput = createElement(Wrapper, null, input);
+	const parent = document.createElement('div');
+	return render(wrappedInput, parent);
 }
 
-export function isCompositeComponentWithType(inst, type: Function): boolean {
-	if (!isCompositeComponent(inst)) {
-		return false;
+// Recursive Finder Functions
+
+export function findAllInRenderedTree(tree: any, predicate: Function): VNode[] {
+	if (isRenderedClassComponent(tree)) {
+		return findAllInVNodeTree(tree._lastInput, predicate);
+	} else {
+		throwError('findAllInRenderedTree(...) instance must be a rendered class component');
 	}
-	return (inst.type === type);
 }
 
-function findAllInTree(inst: any, test: Function): VNode[] {
-	if (!inst) {
+export function findAllInVNodeTree(tree: VNode, predicate: Function): VNode[] {
+	if (isVNode(tree)) {
+		let result: VNode[] = predicate(tree) ? [ tree ] : [];
+		const children: any = tree.children;
+
+		if (isRenderedClassComponent(children)) {
+			result = result.concat(findAllInVNodeTree(children._lastInput, predicate));
+
+		} else if (isVNode(children)) {
+			result = result.concat(findAllInVNodeTree(children, predicate));
+
+		} else if (isArray(children)) {
+			children.forEach((child) => {
+				result = result.concat(findAllInVNodeTree(child, predicate));
+			});
+		}
+		return result;
+	} else {
+		throwError('findAllInVNodeTree(...) instance must be a VNode');
+	}
+}
+
+// Finder Helpers
+
+function parseSelector(filter) {
+	if (isArray(filter)) {
+		return filter;
+	} else if (isString(filter)) {
+		return filter.trim().split(/\s+/);
+	} else {
 		return [];
 	}
-	const publicInst = inst.dom;
-	const currentElement = inst._vNode;
-	let ret = test(publicInst) ? [inst] : [];
-	if (isDOMComponent(publicInst)) {
-		const renderedChildren = inst.children;
-		if (isArray(renderedChildren)) {
-			for (let i = 0; i < renderedChildren.length; i++) {
-				let child = renderedChildren[i];
-
-				ret = ret.concat(findAllInTree(child, test));
-			}
-		} else {
-			ret = ret.concat(findAllInTree(renderedChildren, test));
-		}
-	}
-
-	if (
-		isValidElement(currentElement) &&
-		typeof currentElement.type === 'function'
-	) {
-		ret = ret.concat(
-			findAllInTree(inst._lastInput, test)
-		);
-	}
-
-	return ret;
 }
 
-export function findAllInRenderedTree(inst: any, test: Function): VNode[] {
-	const result: VNode[] = [];
-	if (!inst) {
-		return result;
+function findOneOf(tree: any, filter: any, name: string, finder: Function): any {
+	const all = finder(tree, filter);
+	if (all.length > 1) {
+		throwError(`Did not find exactly one match (found ${all.length}) for ${name}: ${filter}`);
+	} else {
+		return all[0];
 	}
-	if (isDOMComponent(inst)) {
-		throwError('findAllInRenderedTree(...): instance must be a composite component');
-	}
-	return findAllInTree(inst, test);
 }
 
-export function scryRenderedDOMComponentsWithClass(root: VNode, classNames: string | string[]): VNode[] {
-	return findAllInRenderedTree(root, function(inst) {
-		if (isDOMComponent(inst)) {
-			let className = inst.className;
-			if (typeof className !== 'string') {
-				// SVG, probably.
-				className = inst.getAttribute('class') || '';
-			}
-			const classList = className.split(/\s+/);
+// Scry Utilities
 
-			let classNamesList = classNames;
-			if (!isArray(classNames)) {
-				classNamesList = (classNames as string).split(/\s+/);
+export function scryRenderedDOMElementsWithClass(tree: any, classNames: string | string[]): Element[] {
+	return findAllInRenderedTree(tree, (inst) => {
+		if (isDOMVNode(inst)) {
+			let domClassName = inst.dom.className;
+			if (!isString(domClassName)) { // SVG, probably
+				domClassName = inst.dom.getAttribute('class') || '';
 			}
-
-			classNamesList = toArray(classNamesList);
-			return classNamesList.every(function(name) {
-				return classList.indexOf(name) !== -1;
+			const domClassList = parseSelector(domClassName);
+			return parseSelector(classNames).every((className) => {
+				return domClassList.indexOf(className) !== -1;
 			});
 		}
 		return false;
-	});
+	}).map((inst) => inst.dom);
 }
 
-export function scryRenderedDOMComponentsWithTag(root: VNode, tagName: string): VNode[] {
-	return findAllInRenderedTree(root, function(inst) {
-		return isDOMComponent(inst) && inst.tagName.toUpperCase() === tagName.toUpperCase();
-	});
+export function scryRenderedDOMElementsWithTag(tree: any, tagName: string): Element[] {
+	return findAllInRenderedTree(tree, (inst) => {
+		return isDOMVNodeOfType(inst, tagName);
+	}).map((inst) => inst.dom);
 }
 
-export function scryRenderedComponentsWithType(root: VNode, componentType: Function): VNode[] {
-	return findAllInRenderedTree(root, function(inst) {
-		return isCompositeComponentWithType(
-			inst,
-			componentType
-		);
-	});
+export function scryRenderedVNodesWithType(tree: any, type: string | Function): VNode[] {
+	return findAllInRenderedTree(tree, (inst) => isVNodeOfType(inst, type));
 }
 
-function findOneOf(root: VNode, option: any, optionName: string, finderFn: Function): VNode {
-	const all = finderFn(root, option);
-	if (all.length > 1) {
-		throwError(`Did not find exactly one match (found ${all.length}) for ${optionName}: ${option}`);
-	}
-	return all[0];
+export function scryVNodesWithType(tree: VNode, type: string | Function): VNode[] {
+	return findAllInVNodeTree(tree, (inst) => isVNodeOfType(inst, type));
 }
 
-export function findRenderedDOMComponentWithClass(root: VNode, classNames: string | string[]): VNode {
-	return findOneOf(root, classNames, 'class', scryRenderedDOMComponentsWithClass);
+// Find Utilities
+
+export function findRenderedDOMElementWithClass(tree: any, classNames: string | string[]): Element {
+	return findOneOf(tree, classNames, 'class', scryRenderedDOMElementsWithClass);
 }
 
-export function findRenderedDOMComponentWithTag(root: VNode, tagName: string): VNode {
-	return findOneOf(root, tagName, 'tag', scryRenderedDOMComponentsWithTag);
+export function findRenderedDOMElementWithTag(tree: any, tagName: string): Element {
+	return findOneOf(tree, tagName, 'tag', scryRenderedDOMElementsWithTag);
 }
 
-export function findRenderedComponentWithType(root: VNode, componentClass: Function): VNode {
-	return findOneOf(root, componentClass, 'component', scryRenderedComponentsWithType);
+export function findRenderedVNodeWithType(tree: any, type: string | Function): VNode {
+	return findOneOf(tree, type, 'component', scryRenderedVNodesWithType);
 }
+
+export function findVNodeWithType(tree: VNode, type: string | Function): VNode {
+	return findOneOf(tree, type, 'VNode', scryVNodesWithType);
+}
+
+// Mock Utilities
 
 export function mockComponent(module, mockTagName: string) {
-	mockTagName = mockTagName || typeof module.type === 'string' ? module.type : 'div';
-
-	module.prototype.render.mockImplementation(function() {
-		return createElement(
-			mockTagName,
-			null,
-			this.props.children
-		);
-	});
-
+	mockTagName = mockTagName || isString(module.type) ? module.type : 'div';
+	module.prototype.render.mockImplementation(() =>
+		createElement(mockTagName, null, this.props.children));
 	return this;
 }
 
 export default {
+
+	isVNode,
+	isVNodeOfType,
+
+	isDOMVNode,
+	isDOMVNodeOfType,
+
+	isFunctionalVNode,
+	isFunctionalVNodeOfType,
+
+	isClassVNode,
+	isClassVNodeOfType,
+
+	isDOMElement,
+	isDOMElementOfType,
+
+	isRenderedClassComponent,
+	isRenderedClassComponentOfType,
+
 	renderIntoDocument,
-	isElement,
-	isElementOfType,
-	isDOMComponent,
-	isDOMComponentElement,
-	isCompositeComponent,
-	isCompositeComponentWithType,
+
 	findAllInRenderedTree,
-	scryRenderedDOMComponentsWithClass,
-	scryRenderedDOMComponentsWithTag,
-	scryRenderedComponentsWithType,
-	findRenderedDOMComponentWithClass,
-	findRenderedDOMComponentWithTag,
-	findRenderedComponentWithType,
+	findAllInVNodeTree,
+
+	scryRenderedDOMElementsWithClass,
+	findRenderedDOMElementWithClass,
+
+	scryRenderedDOMElementsWithTag,
+	findRenderedDOMElementWithTag,
+
+	scryRenderedVNodesWithType,
+	findRenderedVNodeWithType,
+
+	scryVNodesWithType,
+	findVNodeWithType,
+
 	mockComponent
 };
