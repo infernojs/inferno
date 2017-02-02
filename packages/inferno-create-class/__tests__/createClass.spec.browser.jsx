@@ -56,7 +56,7 @@ describe('Components createClass (JSX)', () => {
 			});
 
 			it('should throw an error for duplicate keys', () => {
-				const Foo = createClass({
+				expect(() => createClass({
 					mixins: [
 						{ getDefaultProps: () => ({ a: true }) }
 					],
@@ -66,8 +66,7 @@ describe('Components createClass (JSX)', () => {
 					render() {
 						return <div />;
 					}
-				});
-				expect(Foo).to.throw(Error);
+				})).to.throw(Error);
 			});
 		});
 

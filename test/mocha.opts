@@ -5,3 +5,5 @@
 --ui bdd
 --recursive
 --timeout 15000
+
+packages/*/__tests__/**/*.js*
