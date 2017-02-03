@@ -1,15 +1,17 @@
+#!/usr/bin/env node
+
 const { resolve, join } = require('path');
-const { execute } = require('./packages')();
 const { rollup } = require('rollup');
 const buble = require('rollup-plugin-buble');
 const replace = require('rollup-plugin-replace');
 const uglify = require('rollup-plugin-uglify');
 const filesize = require('rollup-plugin-filesize');
-const packageJson = require('../package.json');
+
 const nodeResolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
 
 const PROJECT_FOLDER = resolve(__dirname, '..');
+const rootPackageJson = require(join(PROJECT_FOLDER, 'package.json'));
 
 const { NODE_ENV } = process.env;
 
@@ -40,21 +42,21 @@ if (NODE_ENV === 'production') {
 	);
 	plugins.push(
 		replace({
-			VERSION: packageJson.version,
+			VERSION: rootPackageJson.version,
 			'process.env.NODE_ENV': JSON.stringify('production')
 		})
 	);
 } else if (NODE_ENV === 'browser') {
 	plugins.push(
 		replace({
-			VERSION: packageJson.version,
+			VERSION: rootPackageJson.version,
 			'process.env.NODE_ENV': JSON.stringify('development')
 		})
 	);
 } else {
 	plugins.push(
 		replace({
-			VERSION: packageJson.version
+			VERSION: rootPackageJson.version
 		})
 	);
 }
@@ -71,53 +73,54 @@ function withNodeResolve(arr, resolveConfig) {
 	return newArray;
 }
 
-execute(({
+const cwd = process.cwd()
+const pkgJson = require(join(cwd, 'package.json'))
+
+const {
 	name,
 	version,
-	location,
 	dependencies = {},
-	_package: {
-		module: entryFile,
-		rollup: rollupConfig = {},
-		bundledDependencies = []
-	}
-}) => {
-	const copyright = `
+	module: entryFile,
+	rollup: rollupConfig = {},
+	bundledDependencies = {}
+} = pkgJson
+
+const copyright = `
 /*!
  * ${name} v${version}
- * (c) ${COPYRIGHT_YEAR} ${packageJson.author.name}'
- * Released under the ${packageJson.license} License.
+ * (c) ${COPYRIGHT_YEAR} ${rootPackageJson.author.name}'
+ * Released under the ${rootPackageJson.license} License.
  */
 `;
 
-	const entry = require.resolve(resolve(location, entryFile));
-	let filename = name;
-	if (NODE_ENV === 'production') {
-		filename += '.min.js';
-	} else if (NODE_ENV === 'development') {
-		filename += '.node.js';
-	} else {
-		filename += '.js';
-	}
-	const dest = join(location, 'dist', filename);
-	const bundleConfig = {
-		dest,
-		format: 'umd',
-		moduleName: name,
-		globals: Object.assign({ moduleGlobal: rollupConfig.moduleGlobal }, rollupConfig.moduleGlobals),
-		banner: copyright,
-		sourceMap: false
-	};
+const entry = require.resolve(resolve(cwd, entryFile));
+let filename = name;
+if (NODE_ENV === 'production') {
+	filename += '.min.js';
+} else if (NODE_ENV === 'development') {
+	filename += '.node.js';
+} else {
+	filename += '.js';
+}
+const dest = join(cwd, 'dist', filename);
+const bundleConfig = {
+	dest,
+	format: 'umd',
+	moduleName: name,
+	globals: Object.assign({ moduleGlobal: rollupConfig.moduleGlobal }, rollupConfig.moduleGlobals),
+	banner: copyright,
+	sourceMap: false
+};
 
-	const external = Object.keys(dependencies).filter(n => !bundledDependencies.includes(n));
+const external = Object.keys(dependencies).filter(n => !bundledDependencies.includes(n));
 
-	return rollup({
-		entry,
-		plugins: withNodeResolve(plugins, {
-			jsnext: true,
-			skip: external
-		}),
-		external
-	})
-	.then(({ write }) => write(bundleConfig)).catch(console.error);
-});
+rollup({
+	entry,
+	plugins: withNodeResolve(plugins, {
+		jsnext: true,
+		skip: external
+	}),
+	external
+})
+.then(({ write }) => write(bundleConfig)).catch(console.error);
+
