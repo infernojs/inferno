@@ -64,7 +64,7 @@
     "karma-mocha-reporter": "^2.2.2",
     "karma-safari-launcher": "^1.0.0",
     "karma-sauce-launcher": "^1.1.0",
-    "karma-webpack": "2.0.1",
+    "karma-webpack": "2.0.2",
     "lodash": "^4.17.4",
     "merge-source-map": "^1.0.3",
     "mkdirp": "^0.5.1",
