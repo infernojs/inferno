@@ -29,6 +29,7 @@
     "inferno-component": "1.2.2",
     "inferno-create-element": "1.2.2",
     "inferno-helpers": "1.2.2",
+    "inferno-vnode-flags": "1.2.2",
     "path-to-regexp-es6": "0.0.2"
   },
   "bundledDependencies": [

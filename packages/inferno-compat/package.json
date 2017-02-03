@@ -28,6 +28,7 @@
     "inferno-create-element": "1.2.2",
     "inferno-helpers": "1.2.2",
     "inferno-transition-group": "1.1.1",
+    "inferno-vnode-flags": "1.2.2",
     "inferno": "1.2.2",
     "proptypes": "0.14.3",
     "rc-css-transition-group-modern": "^2.1.6"
