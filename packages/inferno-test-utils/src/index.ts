@@ -188,15 +188,6 @@ export function findVNodeWithType(tree: VNode, type: string | Function): VNode {
 	return findOneOf(tree, type, 'VNode', scryVNodesWithType);
 }
 
-// Mock Utilities
-
-export function mockComponent(module, mockTagName: string) {
-	mockTagName = mockTagName || isString(module.type) ? module.type : 'div';
-	module.prototype.render.mockImplementation(() =>
-		createElement(mockTagName, null, this.props.children));
-	return this;
-}
-
 export default {
 
 	isVNode,
@@ -232,7 +223,5 @@ export default {
 	findRenderedVNodeWithType,
 
 	scryVNodesWithType,
-	findVNodeWithType,
-
-	mockComponent
+	findVNodeWithType
 };
