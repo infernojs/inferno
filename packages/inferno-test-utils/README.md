@@ -11,15 +11,13 @@ npm install inferno inferno-test-utils
 
 ## Contents
 
-* shallowRender
-* deepRender
 * renderIntoDocument
 
 ## Usage
 
 ```js
 import Inferno from 'inferno';
-import { shallowRender } from 'inferno-test-utils';
+import { renderIntoDocument } from 'inferno-test-utils';
 
-const output = shallowRender(<div>Hello world</div>);
+const output = renderIntoDocument(<div>Hello world</div>);
 ```
