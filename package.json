@@ -91,7 +91,7 @@
     "sinon": "2.0.0-pre.5",
     "ts-loader": "^2.0.0",
     "ts-node": "^2.0.0",
-    "tslint": "^4.3.1",
+    "tslint": "^4.4.0",
     "typescript": "^2.1.5",
     "union-type-es": "^0.1.0",
     "webpack": "2.2.1",
