@@ -1,7 +1,7 @@
 import Inferno from 'inferno';
 import { isArray, toArray } from 'inferno-helpers';
 import pathToRegExp from 'path-to-regexp-es6';
-import { decode, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort, toPartialURL } from './utils';
+import { decode, emptyObject, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort, toPartialURL } from './utils';
 
 const cache: Map<string, IMatchRegex> = new Map();
 
@@ -36,16 +36,17 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = fal
 
 	for (let i = 0; i < routes.length; i++) {
 		const route = routes[i];
-		const routePath = route.props.from || route.props.path || '/';
+		const props = route.props || emptyObject;
+		const routePath = props.from || props.path || '/';
 		const location = parentPath + toPartialURL(routePath, parentPath).replace(/\/\//g, '/');
-		const isLast = !route.props || isEmpty(route.props.children);
+		const isLast = isEmpty(props.children);
 		const matchBase = matchPath(isLast, location, pathToMatch);
 
 		if (matchBase) {
-			let children = route.props.children;
+			let children = props.children;
 
-			if (route.props.from) {
-				redirect = route.props.to;
+			if (props.from) {
+				redirect = props.to;
 			}
 			if (children) {
 				const matchChild = matchRoutes(children, currentURL, location, redirect);

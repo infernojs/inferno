@@ -1,6 +1,6 @@
 import { isArray, isString } from 'inferno-helpers';
 
-const emptyObject = Object.create(null);
+export const emptyObject = {};
 
 export function decode(val: any): any {
 	return typeof val !== 'string' ? val : decodeURIComponent(val);
