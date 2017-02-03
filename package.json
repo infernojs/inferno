@@ -95,7 +95,7 @@
     "typescript": "^2.1.5",
     "union-type-es": "^0.1.0",
     "webpack": "2.2.1",
-    "webpack-dev-server": "2.2.1"
+    "webpack-dev-server": "2.3.0"
   },
   "files": [
     "src"
