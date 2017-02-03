@@ -55,11 +55,31 @@ export default class Route extends Component<IRouteProps, any> {
 		}
 	}
 
+	onEnter(nextProps) {
+		const { onEnter } = nextProps;
+		const { router } = this.context;
+
+		if (this.props.path !== nextProps.path && onEnter) {
+			onEnter({ props: nextProps, router });
+		}
+	}
+
+	getComponent(nextProps) {
+		const { getComponent } = nextProps;
+		const { router } = this.context;
+
+		if (this.props.path !== nextProps.path && getComponent) {
+			getComponent({ props: nextProps, router }, this._onComponentResolved);
+		}
+	}
+
 	componentWillUnmount() {
 		this.onLeave(true);
 	}
 
-	componentWillReceiveProps(nextProps) {
+	componentWillReceiveProps(nextProps: IRouteProps) {
+		this.getComponent(nextProps);
+		this.onEnter(nextProps);
 		this.onLeave(this.props.path !== nextProps.path);
 	}
 

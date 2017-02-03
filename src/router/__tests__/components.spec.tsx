@@ -98,6 +98,119 @@ describe('Router (jsx)', () => {
 				done();
 			});
 		});
+
+		it('should call onEnter when switching route through a click', (done) => {
+			let clickWitness = 0;
+			render(
+				<Router url={ '/test' } history={ browserHistory }>
+					<IndexRoute component={ () => <div>Good</div> } onEnter={ () => { clickWitness++; } } />
+					<Route path={'/test'} component={ () => <TestComponent/> }/>
+				</Router>, container
+			);
+
+			const link = container.querySelector('a[href="/"]');
+			clickOnLink(link);
+
+			requestAnimationFrame(() => {
+				expect(clickWitness).to.equal(1);
+				done();
+			});
+		});
+
+		it('shouldn\'t call onEnter if already on the page the href points to', (done) => {
+			let clickWitness = 0;
+			render(
+				<Router url={ '/test' } history={ browserHistory }>
+					<IndexRoute component={ () => <div>Good</div> } />
+					<Route path={'/test'}  component={ () => <TestComponent/> } onEnter={ () => { clickWitness++; } } />
+				</Router>, container
+			);
+
+			const link = container.querySelector('a[href="/test"]');
+			clickOnLink(link);
+
+			requestAnimationFrame(() => {
+				expect(clickWitness).to.equal(1);
+				done();
+			});
+		});
+
+		it('should pass props and context through onEnter when switching route', (done) => {
+			let tprops;
+			let trouter;
+			render(
+				<Router url={ '/test' } history={ browserHistory }>
+					<IndexRoute component={ () => <div>Good</div> }
+											onEnter={ ({ props, router }) => {
+												tprops = props;
+												trouter = router;
+											} }
+											className="test-class"
+					/>
+					<Route path={'/test'}  component={ () => <TestComponent/> }/>
+				</Router>, container
+			);
+
+			const link = container.querySelector('a[href="/"]');
+			clickOnLink(link);
+
+			requestAnimationFrame(() => {
+				expect(tprops.className).to.equal('test-class');
+				expect(trouter.url).to.equal('/');
+				done();
+			});
+		});
+
+		it('should call getComponent when switching route after click', (done) => {
+			let getComponentWitness = 0;
+			render(
+				<Router url={ '/test' } history={ browserHistory }>
+					<IndexRoute component={ () => <div>Good</div> } getComponent={ () => { getComponentWitness++; } } />
+					<Route path={'/test'}  component={ () => <TestComponent/> }/>
+				</Router>, container
+			);
+
+			const link = container.querySelector('a[href="/"]');
+			clickOnLink(link);
+
+			requestAnimationFrame(() => {
+				expect(getComponentWitness).to.equal(1);
+				done();
+			});
+		});
+
+		it('should mount the child returned by getComponent after navigating through a click', (done) => {
+
+			function Test() {
+				return <div id="getComponentCreated">async component</div>;
+			}
+
+			let leaveWitness = 0;
+
+			render(
+				<Router url={ '/test' } history={ browserHistory }>
+					<IndexRoute getComponent={ (_, callback) => {
+												callback(null, Test);
+											} }
+											onLeave={ () => { leaveWitness++; } }
+					/>
+					<Route path={'/test'}  component={ () => <TestComponent /> } />
+				</Router>, container
+			);
+
+			const link = container.querySelector('a[href="/"]');
+			clickOnLink(link);
+
+			requestAnimationFrame(() => {
+				let created = container.querySelector('#getComponentCreated');
+				expect(innerHTML(created.innerHTML)).to.equal(innerHTML('async component'));
+				browserHistory.push('/test');
+				requestAnimationFrame(() => {
+					expect(leaveWitness).to.equal(1);
+					done();
+				});
+			});
+		});
 	});
 });
 
