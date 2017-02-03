@@ -139,6 +139,8 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 							renderedString += renderVNodeToString(child, vNode, context, i === 0);
 						}
 					}
+				} else if (children === '') {
+					return '<!---->';
 				} else if (isStringOrNumber(children)) {
 					renderedString += escapeText(children);
 				} else {
