@@ -52,8 +52,8 @@
 						createVNode(2, 'div', { className: 'arrow' }, null, null, null, null, true)
 					], null, null, null, true)
 				], null, null, null, true);
-				databases[i] = createVNode(66, 'tr', null, children, null, null, null, true);
 			}
+			databases[i] = createVNode(66, 'tr', null, children, null, null, null, true);
 		}
 
 		Inferno.render(
