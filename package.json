@@ -168,7 +168,7 @@
     "lint": "npm run lint:ts && npm run lint:js",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
-    "postinstall": "lerna bootstrap && lerna exec --no-sort -- node ../../bin/link",
+    "postinstall": "lerna bootstrap && lerna exec --no-sort --concurrency 1 -- node ../../bin/link",
     "prepublish": "npm run build",
     "pretest:bench": "karma start test/karma/karma.bench.conf.js --log-level debug",
     "test:bench": "node test/karma/bench.js",
