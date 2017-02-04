@@ -73,8 +73,8 @@ function withNodeResolve(arr, resolveConfig) {
 	return newArray;
 }
 
-const cwd = process.cwd()
-const pkgJson = require(join(cwd, 'package.json'))
+const cwd = process.cwd();
+const pkgJson = require(join(cwd, 'package.json'));
 
 const {
 	name,
@@ -83,7 +83,7 @@ const {
 	module: entryFile,
 	rollup: rollupConfig = {},
 	bundledDependencies = {}
-} = pkgJson
+} = pkgJson;
 
 const copyright = `
 /*!
@@ -106,7 +106,7 @@ const dest = join(cwd, 'dist', filename);
 const bundleConfig = {
 	dest,
 	format: 'umd',
-	moduleName: name,
+	moduleName: rollupConfig.moduleName || name,
 	globals: Object.assign({ moduleGlobal: rollupConfig.moduleGlobal }, rollupConfig.moduleGlobals),
 	banner: copyright,
 	sourceMap: false

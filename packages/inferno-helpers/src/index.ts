@@ -1,7 +1,3 @@
-/*
-  When this file is changed remember to make new build to see effect.
- */
-
 export const NO_OP = '$NO_OP';
 export const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 

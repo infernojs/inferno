@@ -26,6 +26,7 @@
     "rollup"
   ],
   "rollup": {
+    "moduleName": "Inferno",
     "moduleGlobal": "Inferno"
   },
   "main": "dist/inferno.node.js",
