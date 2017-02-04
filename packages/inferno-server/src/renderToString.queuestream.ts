@@ -221,7 +221,7 @@ export class RenderQueueStream extends Readable {
 					if (isArray(children)) {
 						this.addToQueue(renderedString, position);
 						renderedString = '';
-						for (let i = 0; i < children.length; i++) {
+						for (let i = 0, len = children.length; i < len; i++) {
 							const child = children[i];
 							if (isStringOrNumber(child)) {
 								this.addToQueue(escapeText(children), position);

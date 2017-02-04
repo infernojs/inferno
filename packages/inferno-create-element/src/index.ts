@@ -66,7 +66,7 @@ export default function createElement<T>(
 		if (!isNullOrUndef(props)) {
 			const propKeys = Object.keys(props);
 
-			for (let i = 0; i < propKeys.length; i++) {
+			for (let i = 0, len = propKeys.length; i < len; i++) {
 				const propKey = propKeys[i];
 
 				if (propKey === 'key') {
@@ -102,7 +102,7 @@ export default function createElement<T>(
 			 */
 			const propKeys = Object.keys(props);
 
-			for (let i = 0; i < propKeys.length; i++) {
+			for (let i = 0, len = propKeys.length; i < len; i++) {
 				const propKey = propKeys[i];
 
 				if (componentHooks[propKey]) {

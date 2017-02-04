@@ -131,7 +131,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 			renderedString += `>`;
 			if (!isInvalid(children)) {
 				if (isArray(children)) {
-					for (let i = 0; i < children.length; i++) {
+					for (let i = 0, len = children.length; i < len; i++) {
 						const child = children[i];
 						if (isStringOrNumber(child)) {
 							renderedString += escapeText(child);

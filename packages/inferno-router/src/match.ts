@@ -34,7 +34,7 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = fal
 
 	routes.sort(pathRankSort);
 
-	for (let i = 0; i < routes.length; i++) {
+	for (let i = 0, len = routes.length; i < len; i++) {
 		const route = routes[i];
 		const props = route.props || emptyObject;
 		const routePath = props.from || props.path || '/';
@@ -109,7 +109,7 @@ export function matchPath(end: boolean, routePath: string, pathToMatch: string):
 	const path: string = m[0];
 	const params = Object.create(null);
 
-	for (let i = 1; i < m.length; i += 1) {
+	for (let i = 1, len = m.length; i < len; i += 1) {
 		params[regexp.keys[i - 1].name] = decode(m[i]);
 	}
 

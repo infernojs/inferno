@@ -6,7 +6,7 @@ function findVNodeFromDom(vNode, dom) {
 	if (!vNode) {
 		const roots = options.roots;
 
-		for (let i = 0; i < roots.length; i++) {
+		for (let i = 0, len = roots.length; i < len; i++) {
 			const root = roots[i];
 			const result = findVNodeFromDom(root.input, dom);
 
@@ -26,7 +26,7 @@ function findVNodeFromDom(vNode, dom) {
 		}
 		if (children) {
 			if (isArray(children)) {
-				for (let i = 0; i < children.length; i++) {
+				for (let i = 0, len = children.length; i < len; i++) {
 					const child = children[i];
 
 					if (child) {
@@ -216,7 +216,7 @@ export function createDevToolsBridge() {
 }
 
 function isRootVNode(vNode) {
-	for (let i = 0; i < options.roots.length; i++) {
+	for (let i = 0, len = options.roots.length; i < len; i++) {
 		const root = options.roots[i];
 
 		if (root.input === vNode) {

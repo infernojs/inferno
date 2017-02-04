@@ -70,7 +70,7 @@ export default function inject(grabStoresFn?: Function | string): any {
 	if (typeof grabStoresFn !== 'function') {
 
 		const storesNames: any = [];
-		for (let i = 0; i < arguments.length; i++) {
+		for (let i = 0, len = arguments.length; i < len; i++) {
 			storesNames[i] = arguments[i];
 		}
 
