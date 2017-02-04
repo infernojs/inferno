@@ -9,7 +9,7 @@ const testFiles = glob.sync('./packages/*/*__tests__*/**/*.js*');
 module.exports = {
 	watch: true,
 	entry: testFiles,
-	devtool: 'source-map',
+	// devtool: 'source-map',
 	output: {
 		filename: '__spec-build.js'
 	},
