@@ -70,8 +70,6 @@ export default class Route extends Component<IRouteProps, any> {
 		const { router } = this.context;
 
 		if (this.props.path !== nextProps.path && getComponent) {
-			this.props.component = null;
-			this.forceUpdate();
 			getComponent({ props: nextProps, router }, this._onComponentResolved);
 		}
 	}
