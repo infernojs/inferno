@@ -175,6 +175,7 @@
     "test:browser": "karma start test/karma/karma.unit.conf.js --log-level debug",
     "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
     "test:quick": "cross-env mocha",
+    "tsc:dev": "lerna exec --no-sort --concurrency `ls -d packages/* | wc -l` -- tsc -w",
     "test:server": "cross-env nyc mocha",
     "test": "npm run lint && npm run build && npm run test:browser && npm run test:server"
   },

@@ -18,7 +18,33 @@ Reporting security vulnerabilities
 
 If you think you've found a security vulnerability, please email [Dominic Gannaway](mailto:dg@domgan.com) with details, and he will respond to you if he isn't at work by that time.
 
+Repository Layout
+-----------------
 
+The repository structures as a monorepo utilizing [lerna](https://github.com/lerna/lerna) as a management tool of choice. Lerna setup and linking are part of the `postinstall` task so it should be automatically
+run after `npm install`. `lerna` executes command based on a topological-sorted order of packages based on their dependencies.
+
+For example, if you want to see the order of packages being processed, you can do:
+```
+$ lerna exec -- node -e "console.log(require('./package.json').name)"
+Lerna v2.0.0-beta.36
+inferno-helpers
+inferno-vnode-flags
+inferno
+inferno-component
+inferno-hyperscript
+inferno-create-element
+inferno-devtools
+inferno-router
+inferno-create-class
+inferno-compat
+inferno-server
+inferno-redux
+inferno-mobx
+inferno-test-utils
+```
+
+Source files are written in TypeScript and tests are written in JS/JSX consuming the dist files.
 
 Pull requests
 -------------
