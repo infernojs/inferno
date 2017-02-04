@@ -41,7 +41,7 @@ function applyKeyPrefix(key: string, vNode: VNode): VNode {
 }
 
 function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey) {
-	for (; index < nodes.length; index++) {
+	for (let len = nodes.length; index < len; index++) {
 		let n = nodes[index];
 		const key = `${ currentKey }.${ index }`;
 
@@ -79,7 +79,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 		nodes['$'] = true;
 	}
 	// tslint:enable
-	for (let i = 0; i < nodes.length; i++) {
+	for (let i = 0, len = nodes.length; i < len; i++) {
 		const n = nodes[i];
 
 		if (isInvalid(n) || isArray(n)) {

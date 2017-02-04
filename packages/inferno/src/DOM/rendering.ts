@@ -45,7 +45,7 @@ export function findDOMNode(ref) {
 }
 
 function getRoot(dom): Root | null {
-	for (let i = 0; i < roots.length; i++) {
+	for (let i = 0, len = roots.length; i < len; i++) {
 		const root = roots[i];
 
 		if (root.dom === dom) {
@@ -67,7 +67,7 @@ function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: Lifecy
 }
 
 function removeRoot(root: Root): void {
-	for (let i = 0; i < roots.length; i++) {
+	for (let i = 0, len = roots.length; i < len; i++) {
 		if (roots[i] === root) {
 			roots.splice(i, 1);
 			return;

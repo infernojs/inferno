@@ -757,8 +757,9 @@ function lis_algorithm(a) {
 	let u;
 	let v;
 	let c;
+	const len = a.length;
 
-	for (i = 0; i < a.length; i++) {
+	for (i = 0; i < len; i++) {
 		if (a[i] === -1) {
 			continue;
 		}

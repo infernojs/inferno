@@ -182,7 +182,7 @@ export function removeAllChildren(dom: Element, children, lifecycle: LifecycleCl
 }
 
 export function removeChildren(dom: Element, children, lifecycle: LifecycleClass, isRecycling: boolean) {
-	for (let i = 0; i < children.length; i++) {
+	for (let i = 0, len = children.length; i < len; i++) {
 		const child = children[i];
 
 		if (!isInvalid(child)) {

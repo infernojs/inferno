@@ -137,7 +137,7 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 }
 
 export function mountArrayChildren(children, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
-	for (let i = 0; i < children.length; i++) {
+	for (let i = 0, len = children.length; i < len; i++) {
 		let child = children[i];
 
 		// TODO: Verify can string/number be here. might cause de-opt

@@ -1,7 +1,7 @@
 function constructDefaults(string, object, value) {
 	/* eslint no-return-assign: 0 */
 	const array = string.split(',');
-	for (let i = 0; i < array.length; i++) {
+	for (let i = 0, len = array.length; i < len; i++) {
 		object[array[i]] = value;
 	}
 }

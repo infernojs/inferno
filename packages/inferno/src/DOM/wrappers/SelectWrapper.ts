@@ -18,7 +18,7 @@ function updateChildOptionGroup(vNode, value) {
 		const children = vNode.children;
 
 		if (isArray(children)) {
-			for (let i = 0; i < children.length; i++) {
+			for (let i = 0, len = children.length; i < len; i++) {
 				updateChildOption(children[i], value);
 			}
 		} else if (isVNode(children)) {
@@ -95,7 +95,7 @@ export function applyValue(vNode, dom) {
 	if (!isInvalid(children)) {
 		const value = props.value;
 		if (isArray(children)) {
-			for (let i = 0; i < children.length; i++) {
+			for (let i = 0, len = children.length; i < len; i++) {
 				updateChildOptionGroup(children[i], value);
 			}
 		} else if (isVNode(children)) {
