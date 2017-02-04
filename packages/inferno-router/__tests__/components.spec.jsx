@@ -22,6 +22,10 @@ function createRoutes(component) {
 	);
 }
 
+function showChildren({ children }) {
+	return <div>{children}</div>;
+}
+
 describe('Router (jsx)', () => {
 	let container;
 
@@ -170,6 +174,157 @@ describe('Router (jsx)', () => {
 
 			requestAnimationFrame(() => {
 				expect(container.innerHTML).to.equal(innerHTML('<div>Good</div>'));
+				done();
+			});
+		});
+	});
+
+	describe('#Route', () => {
+		it('should call onEnter when switching route through a click', (done) => {
+			const callbackSpy = sinon.spy();
+
+			render(
+				<Router url={ '/test' } history={ browserHistory }>
+					<IndexRoute component={ () => <div>Good</div> } onEnter={ callbackSpy } />
+					<Route path={'/test'} component={ () => <TestComponent/> }/>
+				</Router>, container
+			);
+
+			const link = container.querySelector('a[href="/"]');
+			clickOnLink(link);
+
+			requestAnimationFrame(() => {
+				expect(callbackSpy.calledOnce).to.equal(true);
+				done();
+			});
+		});
+
+		it('shouldn\'t call onEnter if already on the page the href points to', (done) => {
+			const callbackSpy = sinon.spy();
+			render(
+				<Router url={ '/test' } history={ browserHistory }>
+					<IndexRoute component={ () => <div>Good</div> } />
+					<Route path={ '/test' }  component={ () => <TestComponent/> } onEnter={ () => { callbackSpy(); } } />
+				</Router>, container
+			);
+
+
+			requestAnimationFrame(() => {
+				// onEnter should have been called the first time we enter the component
+				expect(callbackSpy.callCount).to.equal(1);
+				const link = container.querySelector('a[href="/test"]');
+				clickOnLink(link);
+				requestAnimationFrame(() => {
+					// But shouldn't be called again when clicking on a link that points to the same location
+					// as we are in
+					expect(callbackSpy.callCount).to.equal(1);
+					done();
+				});
+			});
+		});
+
+		it('should pass props and context through onEnter when switching route', (done) => {
+			const callback = sinon.spy();
+
+			render(
+				<Router url={ '/test' } history={ browserHistory }>
+					<IndexRoute component={ () => <div>Good</div> }
+											onEnter={ callback }
+											className="test-class"
+					/>
+					<Route path={'/test'}  component={ () => <TestComponent/> }/>
+				</Router>, container
+			);
+
+			const link = container.querySelector('a[href="/"]');
+			clickOnLink(link);
+
+			requestAnimationFrame(() => {
+				const context = callback.getCall(0).args[0];
+				expect(context.props.className).to.equal('test-class');
+				expect(context.router.url).to.equal('/');
+				done();
+			});
+		});
+
+		it('should call getComponent when switching route after click', (done) => {
+			const callback = (context, cb) => {
+				cb(null, () => <div>...</div>);
+			};
+
+			const spy = sinon.spy(callback);
+
+			render(
+				<Router url={ '/test' } history={ browserHistory }>
+					<Route component={ showChildren }>
+						<IndexRoute getComponent={ spy } />
+						<Route path={'/test'}  component={ () => <TestComponent/> }/>
+					</Route>
+				</Router>, container
+			);
+
+			requestAnimationFrame(() => {
+				const link = container.querySelector('a[href="/"]');
+				clickOnLink(link);
+				requestAnimationFrame(() => {
+					expect(spy.callCount).to.equal(1);
+					expect(spy.getCall(0).args[0].props.path).to.equal('/');
+					expect(spy.getCall(0).args[0].router.url).to.equal('/');
+					done();
+				});
+			});
+		});
+
+		it('shouldn\'t call getComponent if already on the page the href points to', (done) => {
+			function callback(context, cb) {
+				cb(null, TestComponent);
+			}
+
+			const spy = sinon.spy(callback);
+
+			render(
+				<Router url={ '/test' } history={ browserHistory }>
+					<IndexRoute component={ () => <div>Good</div> } />
+					<Route path={ '/test' }  getComponent={ spy }/>
+				</Router>, container
+			);
+
+			requestAnimationFrame(() => {
+				expect(container.innerHTML).to.equal('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>');
+				expect(spy.getCall(0).args[0].props.path).to.equal('/test');
+				const link = container.querySelector('a[href="/test"]');
+				clickOnLink(link);
+				requestAnimationFrame(() => {
+					// Should be one because getComponent is called on first render
+					expect(spy.callCount).to.equal(1);
+					done();
+				});
+			});
+		});
+
+		it('should mount the child returned by getComponent after navigating through a click', (done) => {
+			const Test = () => {
+				return <div>async component</div>;
+			};
+
+			const callback = (context, cb) => {
+				cb(null, () => <Test/>);
+			};
+
+			render(
+				<Router url={ '/' } history={ browserHistory }>
+					<Route component={ showChildren }>
+						<IndexRoute component={ () => <TestComponent /> } />
+						<Route path={'/test'} getComponent={ callback } />
+					</Route>
+				</Router>, container
+			);
+
+			const link = container.querySelector('a[href="/test"]');
+			clickOnLink(link);
+
+			requestAnimationFrame(() => {
+				expect(container.innerHTML).to.equal('<div><div>async component</div></div>');
 				done();
 			});
 		});
