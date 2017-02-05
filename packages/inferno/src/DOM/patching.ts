@@ -619,7 +619,6 @@ export function patchKeyedChildren(
 	} else {
 		aLength = aEnd - aStart + 1;
 		bLength = bEnd - bStart + 1;
-		const aNullable: Array<VNode | null> = a;
 		const sources = new Array(bLength);
 
 		// Mark all nodes as inserted.
@@ -630,6 +629,7 @@ export function patchKeyedChildren(
 		let pos = 0;
 		let patched = 0;
 
+		// When sizes are small, just loop them through
 		if ((bLength <= 4) || (aLength * bLength <= 16)) {
 			for (i = aStart; i <= aEnd; i++) {
 				aNode = a[i];
@@ -649,7 +649,7 @@ export function patchKeyedChildren(
 							}
 							patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
 							patched++;
-							aNullable[i] = null;
+							a[i] = null;
 							break;
 						}
 					}
@@ -658,10 +658,13 @@ export function patchKeyedChildren(
 		} else {
 			const keyIndex = new Map();
 
+			// Map keys by their index in array
 			for (i = bStart; i <= bEnd; i++) {
 				node = b[i];
 				keyIndex.set(node.key, i);
 			}
+
+			// Try to patch same keys
 			for (i = aStart; i <= aEnd; i++) {
 				aNode = a[i];
 
@@ -681,11 +684,12 @@ export function patchKeyedChildren(
 						}
 						patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
 						patched++;
-						aNullable[i] = null;
+						a[i] = null;
 					}
 				}
 			}
 		}
+		// fast-path: if nothing patched remove all old and add all new
 		if (aLength === a.length && patched === 0) {
 			removeAllChildren(dom, a, lifecycle, isRecycling);
 			while (bStart < bLength) {
@@ -699,7 +703,7 @@ export function patchKeyedChildren(
 		} else {
 			i = aLength - patched;
 			while (i > 0) {
-				aNode = aNullable[aStart++];
+				aNode = a[aStart++];
 				if (!isNull(aNode)) {
 					unmount(aNode, dom, lifecycle, true, isRecycling);
 					i--;
@@ -731,6 +735,8 @@ export function patchKeyedChildren(
 					}
 				}
 			} else if (patched !== bLength) {
+				// when patched count doesn't match b length we need to insert those new ones
+				// loop backwards so we can use insertBefore
 				for (i = bLength - 1; i >= 0; i--) {
 					if (sources[i] === -1) {
 						pos = i + bStart;
@@ -749,23 +755,25 @@ export function patchKeyedChildren(
 }
 
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
-function lis_algorithm(a) {
-	const p = a.slice(0);
+function lis_algorithm(arr) {
+	const p = arr.slice(0);
 	const result: any[] = [0];
 	let i;
 	let j;
 	let u;
 	let v;
 	let c;
-	const len = a.length;
+	const len = arr.length;
 
 	for (i = 0; i < len; i++) {
-		if (a[i] === -1) {
+		let arrI = arr[i];
+
+		if (arrI === -1) {
 			continue;
 		}
 
 		j = result[result.length - 1];
-		if (a[j] < a[i]) {
+		if (arr[j] < arrI) {
 			p[i] = j;
 			result.push(i);
 			continue;
@@ -776,14 +784,14 @@ function lis_algorithm(a) {
 
 		while (u < v) {
 			c = ((u + v) / 2) | 0;
-			if (a[result[c]] < a[i]) {
+			if (arr[result[c]] < arrI) {
 				u = c + 1;
 			} else {
 				v = c;
 			}
 		}
 
-		if (a[i] < a[result[u]]) {
+		if (arrI < arr[result[u]]) {
 			if (u > 0) {
 				p[i] = result[u - 1];
 			}

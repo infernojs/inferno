@@ -49,7 +49,7 @@
     "fs-extra": "^2.0.0",
     "glob": "^7.1.1",
     "history": "4.5.1",
-    "jsdom": "^9.9.1",
+    "jsdom": "^9.10.0",
     "karma": "^1.4.1",
     "karma-benchmark": "^0.7.1",
     "karma-benchmark-reporter": "^0.1.1",
