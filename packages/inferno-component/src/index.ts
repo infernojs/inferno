@@ -139,10 +139,10 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 			component._lifecycle = subLifecycle;
 			let childContext = component.getChildContext();
 
-			if (!isNullOrUndef(childContext)) {
-				childContext = Object.assign({}, context, component._childContext, childContext);
+			if (isNullOrUndef(childContext)) {
+				childContext = component._childContext;
 			} else {
-				childContext = Object.assign({}, context, component._childContext);
+				childContext = Object.assign({}, context, component._childContext, childContext);
 			}
 
 			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);

@@ -9,7 +9,6 @@ import {
 	isObject,
 	isStringOrNumber,
 	isUndefined,
-	Lifecycle,
 	LifecycleClass,
 	throwError
 } from 'inferno-helpers';
@@ -180,7 +179,6 @@ export function mountComponent(vNode: VNode, parentDom: Element, lifecycle: Life
 		const input = instance._lastInput;
 		instance._vNode = vNode;
 		vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
-		instance._lifecycle = new Lifecycle();
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}

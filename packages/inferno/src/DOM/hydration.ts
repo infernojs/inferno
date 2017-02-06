@@ -6,7 +6,6 @@ import {
 	isObject,
 	isStringOrNumber,
 	isUndefined,
-	Lifecycle,
 	LifecycleClass,
 	throwError,
 	warning
@@ -85,9 +84,6 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 		instance._vComponent = vNode;
 		instance._vNode = vNode;
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
-		// we now create a lifecycle for this component and store the fastUnmount value
-		instance._lifecycle = new Lifecycle();
-
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;

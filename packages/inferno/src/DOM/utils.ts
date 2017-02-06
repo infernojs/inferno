@@ -43,10 +43,10 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 
 	const childContext = instance.getChildContext();
 
-	if (!isNullOrUndef(childContext)) {
-		instance._childContext = Object.assign({}, context, childContext);
-	} else {
+	if (isNullOrUndef(childContext)) {
 		instance._childContext = context;
+	} else {
+		instance._childContext = Object.assign({}, context, childContext);
 	}
 
 	options.beforeRender && options.beforeRender(instance);

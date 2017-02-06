@@ -337,10 +337,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				nextVNode.children = instance;
 				instance._isSVG = isSVG;
 				instance._syncSetState = false;
-				if (!isNullOrUndef(childContext)) {
-					childContext = Object.assign({}, context, childContext);
-				} else {
+				if (isNullOrUndef(childContext)) {
 					childContext = context;
+				} else {
+					childContext = Object.assign({}, context, childContext);
 				}
 				const lastInput = instance._lastInput;
 				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false, false);
