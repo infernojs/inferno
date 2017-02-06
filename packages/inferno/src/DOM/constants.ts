@@ -12,21 +12,8 @@ export const svgNS = 'http://www.w3.org/2000/svg';
 export const strictProps = {};
 export const booleanProps = {};
 export const namespaces = {};
-export const colonProps = {};
-export const probablyColonProps = /^(xlink[HART]|xml[BLS])/;
-export function colonize(str, smallLetter, largeLetter) {
-	return `${smallLetter}:${largeLetter.toLowerCase()}`;
-}
 export const isUnitlessNumber = {};
 export const skipProps = {};
-export const dehyphenProps = {
-	httpEquiv: 'http-equiv',
-	acceptCharset: 'accept-charset'
-};
-export const probablyKebabProps = /^(accentH|arabicF|capH|font[FSVW]|glyph[NO]|horiz[AO]|panose1|renderingI|strikethrough[PT]|underline[PT]|v[AHIM]|vert[AO]|xH|alignmentB|baselineS|clip[PR]|color[IPR]|dominantB|enableB|fill[OR]|flood[COF]|imageR|letterS|lightingC|marker[EMS]|pointerE|shapeR|stop[CO]|stroke[DLMOW]|text[ADR]|unicodeB|wordS|writingM).*/;
-export function kebabize(str, smallLetter, largeLetter) {
-	return `${smallLetter}-${largeLetter.toLowerCase()}`;
-}
 export const delegatedProps = {};
 
 constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
