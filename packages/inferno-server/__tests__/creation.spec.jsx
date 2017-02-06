@@ -59,7 +59,7 @@ describe('SSR Creation (JSX)', () => {
 	}, {
 		description: 'should render a text placeholder',
 		template: () => <div><div>{ '' }</div><p>Test</p></div>,
-		result: '<div><!----><p>Test</p></div>'
+		result: '<div><div> </div><p>Test</p></div>'
 	}];
 
 	testEntries.forEach((test) => {
