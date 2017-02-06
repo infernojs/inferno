@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from '../dist-es';
 import { assert, spy } from 'sinon';
-import {createTextVNode} from 'inferno/core/VNodes';
+import { createTextVNode } from 'inferno/core/VNodes';
 import { innerHTML } from 'inferno/test/utils';
 
 describe('Elements (JSX)', () => {
@@ -51,13 +51,13 @@ describe('Elements (JSX)', () => {
 	});
 
 	it('should render a simple div with multiple children #2', () => {
-		const items = [1, 2, 3];
+		const items = [ 1, 2, 3 ];
 		const header = 'Hello ';
 
 		render(<div>{header}{items}</div>, container);
 		expect(container.firstChild.innerHTML).to.equal('Hello 123');
 
-		render(<div>{header}{[4, 5, 6]}</div>, container);
+		render(<div>{header}{[ 4, 5, 6 ]}</div>, container);
 		expect(container.firstChild.innerHTML).to.equal('Hello 456');
 	});
 
@@ -816,7 +816,7 @@ describe('Elements (JSX)', () => {
 		});
 
 		it('basic example #2 ', () => {
-			render(<div>{ [a, a, a] }</div>, container);
+			render(<div>{ [ a, a, a ] }</div>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>'));
 			render(b, container);
 			expect(container.innerHTML).to.equal(innerHTML('<span>This works!</span>'));
@@ -850,7 +850,7 @@ describe('Elements (JSX)', () => {
 		});
 
 		it('basic example #2 ', () => {
-			render(<div>{ [a, a, a] }</div>, container);
+			render(<div>{ [ a, a, a ] }</div>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Hello worldHello worldHello world</div>'));
 			render(b, container);
 			expect(container.innerHTML).to.equal(innerHTML('This works!'));
@@ -909,7 +909,7 @@ describe('Elements (JSX)', () => {
 			it('Should be possible to render Progress element without value', () => {
 				render(<progress max={100}/>, container);
 				expect(container.firstChild.tagName).to.eql('PROGRESS');
-				expect(container.firstChild.getAttribute('value')).to.be.oneOf([null, '', 0, '0']);
+				expect(container.firstChild.getAttribute('value')).to.be.oneOf([ null, '', 0, '0' ]);
 
 				// Add as string
 				render(<progress max={100} value="3" />, container);
@@ -921,7 +921,7 @@ describe('Elements (JSX)', () => {
 
 	describe('Value for components', () => {
 		it('Should be possible to pass down value prop', () => {
-			function Foo({value}) {
+			function Foo({ value }) {
 				return <div>{value}</div>;
 			}
 

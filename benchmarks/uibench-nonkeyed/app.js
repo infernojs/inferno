@@ -2,6 +2,7 @@
 	"use strict";
 
 	/* (flags, type, props, children, key, ref, noNormalise) */
+	Inferno.options.recyclingEnabled = true; // Advanced optimisation
 	var createVNode = Inferno.createVNode;
 
 	uibench.init('Inferno', Inferno.version + ' non-keyed');

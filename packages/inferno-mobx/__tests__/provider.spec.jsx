@@ -31,6 +31,7 @@ describe('MobX Provider', () => {
 
 		const Statefull = connect(['store1'], class extends Component {
 			render({ store1 }) {
+				// eslint-disable-next-line
 				const update = () => store1.data = 'Statefull';
 
 				return <article>
@@ -41,6 +42,7 @@ describe('MobX Provider', () => {
 		});
 
 		const Stateless = connect(() => {
+			// eslint-disable-next-line
 			const update = () => stores.store1.data = 'Stateless';
 
 			return <article>
@@ -50,6 +52,7 @@ describe('MobX Provider', () => {
 		});
 
 		const StatelessWithStores = connect(['store1'], (props) => {
+			// eslint-disable-next-line
 			const update = () => props.store1.data = 'hello world';
 
 			return <article>
@@ -103,7 +106,7 @@ describe('MobX Provider', () => {
 		});
 
 		it('should inherit stores from parent', () => {
-			const InheritComponent = connect(['store1', 'store2'], (props) => {
+			const InheritComponent = connect([ 'store1', 'store2' ], (props) => {
 				return <div>
 					<span>{props.store1.data}</span>
 					<span>{props.store2.data}</span>

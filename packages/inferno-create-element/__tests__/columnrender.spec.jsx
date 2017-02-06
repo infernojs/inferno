@@ -19,92 +19,92 @@ describe('Columns like tests - (JSX)', () => {
 	});
 
 	describe('Column-like tests', () => {
-		function buildTestCases(Row, Item, suffix) {
+		function buildTestCases(row, item, suffix) {
 			return [
 				{
 					name: 'add one column -' + suffix,
 					initial: [
-						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						row(1, item(1, 1), item(2, 2)),
+						row(2, item(3, 3), item(4, 4))
 					],
 					update: [
-						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4)),
-						Row(3, Item(5, 5))
+						row(1, item(1, 1), item(2, 2)),
+						row(2, item(3, 3), item(4, 4)),
+						row(3, item(5, 5))
 					]
 				},
 				{
 					name: 'add one item -' + suffix,
 					initial: [
-						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						row(1, item(1, 1), item(2, 2)),
+						row(2, item(3, 3), item(4, 4))
 					],
 					update: [
-						Row(1, Item(1, 1), Item(2, 2), Item(5, 5)),
-						Row(2, Item(3, 3), Item(4, 4))
+						row(1, item(1, 1), item(2, 2), item(5, 5)),
+						row(2, item(3, 3), item(4, 4))
 					]
 				},
 				{
 					name: 'add one column and item -' + suffix,
 					initial: [
-						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						row(1, item(1, 1), item(2, 2)),
+						row(2, item(3, 3), item(4, 4))
 					],
 					update: [
-						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4), Item(6, 6)),
-						Row(3, Item(5, 5))
+						row(1, item(1, 1), item(2, 2)),
+						row(2, item(3, 3), item(4, 4), item(6, 6)),
+						row(3, item(5, 5))
 					]
 				},
 				{
 					name: 'swap all items -' + suffix,
 					initial: [
-						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						row(1, item(1, 1), item(2, 2)),
+						row(2, item(3, 3), item(4, 4))
 					],
 					update: [
-						Row(1, Item(2, 2), Item(1, 1)),
-						Row(2, Item(4, 4), Item(3, 3))
+						row(1, item(2, 2), item(1, 1)),
+						row(2, item(4, 4), item(3, 3))
 					]
 				},
 				{
 					name: 'remove first item -' + suffix,
 					initial: [
-						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						row(1, item(1, 1), item(2, 2)),
+						row(2, item(3, 3), item(4, 4))
 					],
 					update: [
-						Row(1, Item(2, 2)),
-						Row(2, Item(4, 4))
+						row(1, item(2, 2)),
+						row(2, item(4, 4))
 					]
 				},
 				{
 					name: 'remove last item -' + suffix,
 					initial: [
-						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						row(1, item(1, 1), item(2, 2)),
+						row(2, item(3, 3), item(4, 4))
 					],
 					update: [
-						Row(1, Item(1, 1)),
-						Row(2, Item(3, 3))
+						row(1, item(1, 1)),
+						row(2, item(3, 3))
 					]
 				},
 				{
 					name: 'remove all items-' + suffix,
 					initial: [
-						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						row(1, item(1, 1), item(2, 2)),
+						row(2, item(3, 3), item(4, 4))
 					],
 					update: [
-						Row(1),
-						Row(2)
+						row(1),
+						row(2)
 					]
 				},
 				{
 					name: 'remove all columns-' + suffix,
 					initial: [
-						Row(1, Item(1, 1), Item(2, 2)),
-						Row(2, Item(3, 3), Item(4, 4))
+						row(1, item(1, 1), item(2, 2)),
+						row(2, item(3, 3), item(4, 4))
 					],
 					update: []
 				}
@@ -151,16 +151,16 @@ describe('Columns like tests - (JSX)', () => {
 		}
 
 		function getDifferentObjects(arr1, arr2) {
-			return arr1.filter(function(obj) {
-				return !arr2.some(function(obj2) {
+			return arr1.filter(function (obj) {
+				return !arr2.some(function (obj2) {
 					return obj._testKey === obj2._testKey;
 				});
 			});
 		}
 
 		function getSameObjects(arr1, arr2) {
-			return arr1.filter(function(obj) {
-				return arr2.some(function(obj2) {
+			return arr1.filter(function (obj) {
+				return arr2.some(function (obj2) {
 					return obj._testKey === obj2._testKey;
 				});
 			});

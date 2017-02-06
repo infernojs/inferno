@@ -11,7 +11,7 @@ describe('Components (JSX)', () => {
 	let attachedListener = null;
 	let renderedName = null;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		attachedListener = null;
 		renderedName = null;
 		container = document.createElement('div');
@@ -347,7 +347,7 @@ describe('Components (JSX)', () => {
 	it('should render a basic component with styling', () => {
 
 		render((
-			<BasicComponent3 title="styled!" styles={{color: 'red', paddingLeft: '10px'}}/>
+			<BasicComponent3 title="styled!" styles={{ color: 'red', paddingLeft: '10px' }}/>
 		), container);
 
 		expect(
@@ -361,7 +361,7 @@ describe('Components (JSX)', () => {
 		), container);
 
 		render((
-			<BasicComponent3 title="styled (again)!" styles={{color: 'blue', marginBottom: '20px'}}/>
+			<BasicComponent3 title="styled (again)!" styles={{ color: 'blue', marginBottom: '20px' }}/>
 		), container);
 
 		expect(
@@ -374,7 +374,7 @@ describe('Components (JSX)', () => {
 	it('should render a basic component and remove styling', () => {
 
 		render((
-			<BasicComponent3 title="styled!" styles={{color: 'red', paddingTop: '20px'}}/>
+			<BasicComponent3 title="styled!" styles={{ color: 'red', paddingTop: '20px' }}/>
 		), container);
 
 		expect(
@@ -387,7 +387,7 @@ describe('Components (JSX)', () => {
 			<BasicComponent3 title="styles are removed!" styles={null}/>
 		), container);
 
-		expect(container.firstChild.getAttribute('style')).to.be.oneOf([null, '']);
+		expect(container.firstChild.getAttribute('style')).to.be.oneOf([ null, '' ]);
 		expect(container.firstChild.tagName).to.eql('DIV');
 		expect(container.firstChild.firstChild.innerHTML).to.eql('The title is styles are removed!');
 	});
@@ -463,13 +463,13 @@ describe('Components (JSX)', () => {
 		}, 30);
 	}
 
-	it('should preserve the name of the class for use in error messages', function() {
+	it('should preserve the name of the class for use in error messages', function () {
 		class Foo extends Component {
 		}
 		expect(Foo.name).to.equal('Foo');
 	});
 
-	it('should only render once when setting state in componentWillMount', function(done) {
+	it('should only render once when setting state in componentWillMount', function (done) {
 		let renderCount = 0;
 		class Foo extends Component {
 			constructor(props) {
@@ -495,7 +495,7 @@ describe('Components (JSX)', () => {
 		// setState causes a render, so we should expect 2
 	});
 
-	it('should render with null in the initial state property', function(done) {
+	it('should render with null in the initial state property', function (done) {
 		class Foo extends Component {
 			constructor(props) {
 				super(props);
@@ -560,7 +560,7 @@ describe('Components (JSX)', () => {
 				);
 			}
 		}
-		test(<Foo initialValue="foo"/>, 'DIV', 'foo', function() {
+		test(<Foo initialValue="foo"/>, 'DIV', 'foo', function () {
 			attachedListener();
 			expect(renderedName).to.equal('bar');
 			done();
@@ -602,7 +602,7 @@ describe('Components (JSX)', () => {
 			render() {
 				return (
 					<div>
-						{['Saab', 'Volvo', 'BMW'].map(function(c) {
+						{[ 'Saab', 'Volvo', 'BMW' ].map(function (c) {
 							return (<Counter car={c}/>);
 						})}
 					</div>
@@ -661,7 +661,7 @@ describe('Components (JSX)', () => {
 					<div className="login-view bg-visma">
 						<button onClick={this.toggle}>TOGGLE</button>
 						<br />
-						{function() {
+						{function () {
 							if (this.state.show === true) {
 								return <h1>This is cool!</h1>;
 							} else {
@@ -723,7 +723,7 @@ describe('Components (JSX)', () => {
 			render() {
 				return (
 					<div>
-						{function() {
+						{function () {
 							if (this.state.show === true) {
 								return (
 									<StatelessComponent name={this.name}/>
@@ -920,7 +920,7 @@ describe('Components (JSX)', () => {
 						isok={this.props.isok ? 'true' : 'false'}
 						<div>
 							{this.props.isok &&
-							['a', 'b'].map((x) => {
+							[ 'a', 'b' ].map((x) => {
 								return (
 									<span>{x}</span>
 								);
@@ -972,7 +972,7 @@ describe('Components (JSX)', () => {
 			}
 
 			render() {
-				const z = function(v) {
+				const z = function (v) {
 					if (v) {
 						return (
 							<span>a</span>
@@ -1015,7 +1015,7 @@ describe('Components (JSX)', () => {
 		expect(container.textContent).to.equal('A');
 	});
 
-	it('should unmount stateless component', function() {
+	it('should unmount stateless component', function () {
 
 		render(<StatelessComponent2 name="A"/>, container);
 		expect(container.textContent).to.equal('A');
@@ -1024,7 +1024,7 @@ describe('Components (JSX)', () => {
 		expect(container.textContent).to.equal('');
 	});
 
-	it('should support module pattern components', function() {
+	it('should support module pattern components', function () {
 		function Child({ test }) {
 			return <div>{test}</div>;
 		}
@@ -1061,7 +1061,7 @@ describe('Components (JSX)', () => {
 								if (this.state.empty === true) {
 									return <li>No cars!</li>;
 								} else {
-									return ['BMW', 'Volvo', 'Saab'].map(function(car) {
+									return [ 'BMW', 'Volvo', 'Saab' ].map(function (car) {
 										return <li>{car}</li>;
 									});
 								}
@@ -1103,7 +1103,7 @@ describe('Components (JSX)', () => {
 				super(props);
 
 				this.state = {
-					list: ['1', '2', '3', '4']
+					list: [ '1', '2', '3', '4' ]
 				};
 
 				// Bindings
@@ -1120,7 +1120,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={this.handleClick}>1</button>
-						{this.state.list.map(function(x, i) {
+						{this.state.list.map(function (x, i) {
 							return <div>{i}</div>;
 						})}
 					</div>
@@ -1278,7 +1278,7 @@ describe('Components (JSX)', () => {
 		let firstDiv,
 			secondDiv;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			firstDiv = document.createElement('div');
 			secondDiv = document.createElement('div');
 
@@ -1393,7 +1393,7 @@ describe('Components (JSX)', () => {
 			class ChildB extends Component {
 				constructor(props) {
 					super(props);
-				};
+				}
 
 				render() {
 					return (<div>Y</div>);
@@ -1408,7 +1408,7 @@ describe('Components (JSX)', () => {
 					updateChild = () => {
 						this.setState({ z: true });
 					};
-				};
+				}
 
 				render() {
 					if (!this.state.z) {
@@ -1421,7 +1421,7 @@ describe('Components (JSX)', () => {
 			class SubChild extends Component {
 				constructor(props) {
 					super(props);
-				};
+				}
 
 				render() {
 					return (<div>B</div>);
@@ -1537,7 +1537,7 @@ describe('Components (JSX)', () => {
 			constructor(props) {
 				super(props);
 				this.state = { x: false };
-			};
+			}
 
 			componentWillMount() {
 				setTimeout(() => {
@@ -1557,7 +1557,7 @@ describe('Components (JSX)', () => {
 		class MakeY extends Component {
 			constructor(props) {
 				super(props);
-			};
+			}
 
 			render() {
 				return (<div>Y</div>);
@@ -1568,7 +1568,7 @@ describe('Components (JSX)', () => {
 			constructor(props) {
 				super(props);
 				this.state = { z: false };
-			};
+			}
 
 			componentWillMount() {
 				setTimeout(() => {
@@ -1596,7 +1596,7 @@ describe('Components (JSX)', () => {
 		}
 
 		render(<MakeX />, container);
-		setTimeout(function() {
+		setTimeout(function () {
 			done();
 		}, 50);
 	});
@@ -2004,9 +2004,9 @@ describe('Components (JSX)', () => {
 				</tr>
 			);
 
-			render(<Todo todo={{done: false}}/>, container);
+			render(<Todo todo={{ done: false }}/>, container);
 			expect(container.innerHTML).to.equal('<tr><td></td><td></td><td></td></tr>');
-			render(<Todo todo={{done: true}}/>, container);
+			render(<Todo todo={{ done: true }}/>, container);
 			expect(container.innerHTML).to.equal('<tr><td></td><td></td><td></td></tr>');
 		});
 	});
@@ -2056,7 +2056,7 @@ describe('Components (JSX)', () => {
 			class FooBar extends Component {
 				constructor(props) {
 					super(props);
-				};
+				}
 
 				render() {
 					return (
@@ -2331,7 +2331,7 @@ describe('Components (JSX)', () => {
 		});
 
 		it('Should not crash when invalid node returned - stateless', () => {
-			const Comp1 = ({foo}) => {
+			const Comp1 = ({ foo }) => {
 				if (foo) {
 					return null;
 				}
@@ -2353,7 +2353,7 @@ describe('Components (JSX)', () => {
 
 				render() {
 					if (this.props.foo) {
-						return [<div>rendered1</div>, <div>rendered2</div>];
+						return [ <div>rendered1</div>, <div>rendered2</div> ];
 					}
 
 					return <div>rendered</div>;
@@ -2372,9 +2372,9 @@ describe('Components (JSX)', () => {
 		});
 
 		it('Should throw when array returned - stateless', () => {
-			const Comp1 = ({foo}) => {
+			const Comp1 = ({ foo }) => {
 				if (foo) {
-					return [<div>rendered1</div>, <div>rendered2</div>];
+					return [ <div>rendered1</div>, <div>rendered2</div> ];
 				}
 
 				return <div>rendered</div>;
@@ -2804,8 +2804,8 @@ describe('Components (JSX)', () => {
 
 		class B extends Component {
 			constructor(props) {
-			super(props);
-		}
+				super(props);
+			}
 
 			shouldComponentUpdate() {
 				return false;
@@ -2856,10 +2856,10 @@ describe('Components (JSX)', () => {
 					<div>
 						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
 						<div>
-							{ this.state.reverse ? [a, b].reverse() : [a, b] }
+							{ this.state.reverse ? [ a, b ].reverse() : [ a, b ] }
 						</div>
 						<div>
-							{ this.state.reverse ? [a, b].reverse() : [a, b] }
+							{ this.state.reverse ? [ a, b ].reverse() : [ a, b ] }
 						</div>
 					</div>
 				);
@@ -2939,7 +2939,7 @@ describe('Components (JSX)', () => {
 					return (
 						<div>
 							<span>{this.state.text}</span>
-							{this.props.toggle ? [<Tester toggle={this.props.toggle} call={this.changeState}/>] : <span style={this.props.toggle ? {color: 'blue'} : null}>tester</span>}
+							{this.props.toggle ? [<Tester toggle={this.props.toggle} call={this.changeState}/>] : <span style={this.props.toggle ? { color: 'blue' } : null}>tester</span>}
 						</div>
 					);
 				}
@@ -2958,7 +2958,7 @@ describe('Components (JSX)', () => {
 				render() {
 					return (
 						<div>
-							<span style={this.props.toggle ? {color: 'blue'} : null}>foo</span>
+							<span style={this.props.toggle ? { color: 'blue' } : null}>foo</span>
 						</div>
 					);
 				}

@@ -158,7 +158,7 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						{this.state.values.map(function(value) {
+						{this.state.values.map(function (value) {
 							return <input type="checkbox" checked={value.checked}/>;
 						})}
 					</div>
@@ -246,7 +246,7 @@ describe('Stateful Component updates', () => {
 			}
 		}
 
-		let StuckChild = null;
+		let stuckChild = null;
 
 		// C is real component which does the job
 		// C is the one that gets unmounted...
@@ -259,7 +259,7 @@ describe('Stateful Component updates', () => {
 				};
 
 				this.imstuck = this.imstuck.bind(this);
-				StuckChild = this.imstuck;
+				stuckChild = this.imstuck;
 			}
 
 			imstuck() {
@@ -288,11 +288,11 @@ describe('Stateful Component updates', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>truefalse</div></div></div>'));
 		updateCaller();
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>falsefalse</div></div></div>'));
-		StuckChild();
+		stuckChild();
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>falsetrue</div></div></div>'));
-		StuckChild();
+		stuckChild();
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>falsefalse</div></div></div>'));
-		StuckChild();
+		stuckChild();
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>falsetrue</div></div></div>'));
 	});
 
@@ -358,7 +358,7 @@ describe('Stateful Component updates', () => {
 			}
 		}
 
-		let StuckChild = null;
+		let stuckChild = null;
 
 		// C is real component which does the job
 		// C is the one that gets unmounted...
@@ -371,7 +371,7 @@ describe('Stateful Component updates', () => {
 				};
 
 				this.imstuck = this.imstuck.bind(this);
-				StuckChild = this.imstuck;
+				stuckChild = this.imstuck;
 			}
 
 			imstuck() {
@@ -394,11 +394,11 @@ describe('Stateful Component updates', () => {
 
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>truefalse</div></div></div>'));
 
-		StuckChild();
+		stuckChild();
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>truetrue</div></div></div>'), 'failed here?');
-		StuckChild();
+		stuckChild();
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>truefalse</div></div></div>'));
-		StuckChild();
+		stuckChild();
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>truetrue</div></div></div>'));
 
 		updateCaller();
@@ -408,7 +408,7 @@ describe('Stateful Component updates', () => {
 		updateCaller();
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>falsetrue</div></div></div>'));
 
-		StuckChild();
+		stuckChild();
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><div>falsefalse</div></div></div>'));
 	});
 
@@ -466,7 +466,7 @@ describe('Stateful Component updates', () => {
 				return (
 					<div>
 						<ul>
-							{this.state.items.map(function(item, i) {
+							{this.state.items.map(function (item, i) {
 								return (
 									<DropdownItem key={item.value}>
 										<InnerComponentToGetUnmounted key={0} i={i} value={item.value}/>
@@ -508,8 +508,8 @@ describe('Stateful Component updates', () => {
 
 	it('Should not crash when patching array to array with hooks', () => {
 		let updater = null;
-		const stuff = [<div >{['Test']}</div>, <span>1</span>];
-		const orig = [[<span ref={function(){}}>{'1'}</span>]];
+		const stuff = [ <div >{['Test']}</div>, <span>1</span> ];
+		const orig = [[<span ref={function (){}}>{'1'}</span>]];
 		class Stuff extends Component {
 			constructor(props) {
 				super(props);
@@ -541,7 +541,7 @@ describe('Stateful Component updates', () => {
 	});
 
 	it('Should allow camelCase properties when using JSX plugin', () => {
-		const fakeObj = {func() {}};
+		const fakeObj = { func() {} };
 		const submitSpy = spy(fakeObj, 'func');
 
 		class Tester extends Component {
@@ -572,7 +572,7 @@ describe('Stateful Component updates', () => {
 	});
 
 	it('Should not append when replacing ES6 component with functional component', () => {
-		const A = function() {
+		const A = function () {
 			return (
 				<div>
 					<div className="topheader">

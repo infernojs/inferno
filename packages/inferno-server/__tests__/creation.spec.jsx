@@ -27,7 +27,7 @@ describe('SSR Creation (JSX)', () => {
 		result: '<div>Hello world, <!---->1<!---->2<!---->3</div>'
 	}, {
 		description: 'should render a stateless component with comments',
-		template: () => <div>Hello world, {/*comment*/}</div>,
+		template: () => <div>Hello world, {/* comment*/}</div>,
 		result: '<div>Hello world, </div>'
 	}, {
 		description: 'should render mixed invalid/valid children',

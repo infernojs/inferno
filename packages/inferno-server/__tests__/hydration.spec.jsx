@@ -77,7 +77,7 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<div>Hello world, Foo!</div>'
 		},
 		{
-			node: <div>Hello world, { ['Foo!', 'Bar!'] }</div>,
+			node: <div>Hello world, { [ 'Foo!', 'Bar!' ] }</div>,
 			expect1: '<div>Hello world, <!---->Foo!<!---->Bar!</div>',
 			expect2: '<div>Hello world, Foo!Bar!</div>'
 		},

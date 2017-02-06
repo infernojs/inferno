@@ -227,9 +227,9 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
 					<Route path={ '/foo/:test' } component={ ({ children }) => {
-							const newChild = cloneVNode(children, { clone: ' Clone' });
-							return newChild;
-						}}>
+						const newChild = cloneVNode(children, { clone: ' Clone' });
+						return newChild;
+					}}>
 						<IndexRoute component={ GoodComponent } />
 						<Route path="/other" component={ GoodComponent } />
 					</Route>

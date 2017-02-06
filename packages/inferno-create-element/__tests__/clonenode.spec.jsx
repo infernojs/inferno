@@ -16,9 +16,9 @@ describe('CloneVNode use cases', () => {
 	});
 
 	it('Should be able to render hoisted node', () => {
-		const a = ['foo', 'bar'];
+		const a = [ 'foo', 'bar' ];
 
-		render(<div>{[a, a, a, a]}</div>, container);
+		render(<div>{[ a, a, a, a ]}</div>, container);
 
 		expect(container.innerHTML).to.eql('<div>foobarfoobarfoobarfoobar</div>');
 	});

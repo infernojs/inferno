@@ -56,7 +56,7 @@ describe('HTML Form Elements', () => {
 			const expectedTextArea = document.createElement('textarea');
 			expectedTextArea.value = '[object Object]';
 
-			render(<textarea defaultValue="Hey Inferno" value={{a: 1}}/>, container);
+			render(<textarea defaultValue="Hey Inferno" value={{ a: 1 }}/>, container);
 			expect(container.innerHTML).to.equal(expectedTextArea.outerHTML);
 			expect(container.firstChild.value).to.equal('[object Object]');
 		});
@@ -113,7 +113,7 @@ describe('HTML Form Elements', () => {
 			const expectedInput = document.createElement('input');
 			expectedInput.value = '[object Object]';
 
-			render(<input defaultValue="Hey Inferno" value={{a: 1}}/>, container);
+			render(<input defaultValue="Hey Inferno" value={{ a: 1 }}/>, container);
 			expect(container.innerHTML).to.equal(expectedInput.outerHTML);
 			expect(container.firstChild.value).to.equal('[object Object]');
 		});

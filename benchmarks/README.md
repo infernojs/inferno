@@ -3,4 +3,4 @@
 
 ## How to use?
 
-Open up the .html file in your browser.
+Run Http-server at the root of Repository and Open up the .html file in your browser.

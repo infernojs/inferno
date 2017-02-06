@@ -731,9 +731,9 @@ describe('Children - (JSX)', () => {
 
 	describe('mixed children edge cases', function () {
 		it('NONKEYED - should remove children from correct location when there is dynamic static item', function () {
-			const items = ['a', 'b', 'c'];
+			const items = [ 'a', 'b', 'c' ];
 			const emptyArray = [];
-			const items3 = ['v', 'a'];
+			const items3 = [ 'v', 'a' ];
 			let visible = false;
 			let activeOne;
 
@@ -783,9 +783,9 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('NONKEYED - should remove children from correct location when there is 2 dynamic static items and 2 lists', function () {
-			const items = ['a', 'b', 'c'];
+			const items = [ 'a', 'b', 'c' ];
 			const emptyArray = [];
-			const items3 = ['v', 'a'];
+			const items3 = [ 'v', 'a' ];
 
 			let activeOne;
 			let activeTwo;
@@ -851,9 +851,9 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('KEYED - should remove children from correct location when there is dynamic static item', function () {
-			const items = ['a', 'b', 'c'];
+			const items = [ 'a', 'b', 'c' ];
 			const emptyArray = [];
-			const items3 = ['v', 'a'];
+			const items3 = [ 'v', 'a' ];
 			let visible = false;
 
 			let activeOne;
@@ -1046,13 +1046,13 @@ describe('Children - (JSX)', () => {
 				</div>
 			);
 
-			render(<Nodes items={[1, 2, 3]}/>, container);
+			render(<Nodes items={[ 1, 2, 3 ]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'));
 
-			render(<Nodes items={[3, 2, 1]}/>, container);
+			render(<Nodes items={[ 3, 2, 1 ]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>'));
 
-			render(<Nodes items={[9, 8, 7]}/>, container);
+			render(<Nodes items={[ 9, 8, 7 ]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>'));
 
 			render(<Nodes items={[]}/>, container);
@@ -1068,13 +1068,13 @@ describe('Children - (JSX)', () => {
 				</div>
 			);
 
-			render(<Nodes items={[1, 2, 3]}/>, container);
+			render(<Nodes items={[ 1, 2, 3 ]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'));
 
-			render(<Nodes items={[3, 2, 1]}/>, container);
+			render(<Nodes items={[ 3, 2, 1 ]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>'));
 
-			render(<Nodes items={[9, 8, 7]}/>, container);
+			render(<Nodes items={[ 9, 8, 7 ]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>'));
 
 			render(<Nodes items={[]}/>, container);
@@ -1099,7 +1099,7 @@ describe('Children - (JSX)', () => {
 			render(null, container);
 			expect(container.innerHTML).to.equal('');
 
-			render(<Nodes items={[1, 2, 3]}/>, container);
+			render(<Nodes items={[ 1, 2, 3 ]}/>, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'));
 		});
 	});
@@ -1416,7 +1416,7 @@ describe('Children - (JSX)', () => {
 							bool: !this.state.bool
 						});
 					};
-				};
+				}
 
 				render() {
 					return (
@@ -1645,7 +1645,7 @@ describe('Children - (JSX)', () => {
 			class Wrapper extends Component {
 				constructor(props) {
 					super(props);
-				};
+				}
 
 				componentWillUnmount() {}
 
@@ -1859,7 +1859,7 @@ describe('Children - (JSX)', () => {
 
 	describe('Children lifecycle with fastUnmount Functional Components', () => {
 		it('Should call componentWillUnmount for children', () => {
-			function Wrapper({bool}) {
+			function Wrapper({ bool }) {
 				return (
 					<div>
 						<span>foobar</span>
@@ -1902,7 +1902,19 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should call componentWillUnmount for nested children', () => {
-			function Wrapper({bool}) {
+			let unMountCalls = 0, mountCalls = 0;
+
+			const testLifeCycle = {
+				componentWillUnmount: () => {
+					unMountCalls++;
+				},
+				componentWillMount: () => {
+					mountCalls++;
+				}
+			};
+
+
+			function Wrapper({ bool }) {
 				return (
 					<div>
 						<span>foobar</span>
@@ -1914,20 +1926,11 @@ describe('Children - (JSX)', () => {
 			function FooBar() {
 				return (
 					<span>
-						<Test onComponentWillMount={TestLifecycle.componentWillMount} onComponentWillUnmount={TestLifecycle.componentWillUnmount}/>
+						<Test onComponentWillMount={testLifeCycle.componentWillMount} onComponentWillUnmount={testLifeCycle.componentWillUnmount}/>
 					</span>
 				);
 			}
-			let unMountCalls = 0, mountCalls = 0;
 
-			const TestLifecycle = {
-				componentWillUnmount: () => {
-					unMountCalls++;
-				},
-				componentWillMount: () => {
-					mountCalls++;
-				}
-			};
 			function Test() {
 				return (
 					<em>f</em>
@@ -1949,7 +1952,7 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should call componentWillUnmount for nested children #2', () => {
-			function Wrapper({bool}) {
+			function Wrapper({ bool }) {
 				return (
 					<div>
 						<span>foobar</span>
@@ -1998,7 +2001,7 @@ describe('Children - (JSX)', () => {
 		});
 
 		it('Should call componentWillUnmount for deeply nested children', () => {
-			function Wrapper({bool}) {
+			function Wrapper({ bool }) {
 				return (
 					<div>
 						<span>foobar</span>
