@@ -35,14 +35,14 @@ function BadComponent(props) {
 describe('Router (jsx)', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
-		document.body.removeChild(container);
+	afterEach(function () {
 		render(null, container);
+		document.body.removeChild(container);
 	});
 
 	describe('#history', () => {

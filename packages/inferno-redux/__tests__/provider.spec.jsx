@@ -18,8 +18,7 @@ describe('Provider (JSX)', () => {
 	let attachedListener = null;
 	let renderedName = null;
 
-	beforeEach(() => {
-
+	beforeEach(function () {
 		attachedListener = null;
 		renderedName = null;
 
@@ -28,9 +27,9 @@ describe('Provider (JSX)', () => {
 		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
-		document.body.removeChild(container);
+	afterEach(function () {
 		render(null, container);
+		document.body.removeChild(container);
 	});
 
 	class BasicRouter extends Component {

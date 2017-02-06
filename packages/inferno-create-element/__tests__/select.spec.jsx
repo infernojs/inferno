@@ -5,12 +5,15 @@ import { innerHTML } from 'inferno/test/utils';
 describe('Select / select multiple (JSX)', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	it('should render "select" boolean on select options with numbers', () => {

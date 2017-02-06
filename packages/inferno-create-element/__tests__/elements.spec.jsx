@@ -8,11 +8,11 @@ import { innerHTML } from 'inferno/test/utils';
 describe('Elements (JSX)', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 	});
 
-	afterEach(() => {
+	afterEach(function () {
 		render(null, container);
 	});
 

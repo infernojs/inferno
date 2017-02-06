@@ -6,11 +6,11 @@ import { innerHTML } from 'inferno/test/utils';
 describe('Update (non-jsx)', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 	});
 
-	afterEach(() => {
+	afterEach(function () {
 		render(null, container);
 	});
 

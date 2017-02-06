@@ -5,12 +5,15 @@ import { innerHTML } from 'inferno/test/utils';
 describe('HTML Form Elements', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	describe('Textarea - defaultValue', () => {

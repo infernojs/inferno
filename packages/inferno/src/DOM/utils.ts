@@ -176,7 +176,7 @@ export function removeChild(parentDom: Element, dom: Element) {
 
 export function removeAllChildren(dom: Element, children, lifecycle: LifecycleClass, isRecycling: boolean) {
 	dom.textContent = '';
-	if (!lifecycle.fastUnmount || (lifecycle.fastUnmount && options.recyclingEnabled && !isRecycling)) {
+	if (options.recyclingEnabled && !isRecycling) {
 		removeChildren(null, children, lifecycle, isRecycling);
 	}
 }

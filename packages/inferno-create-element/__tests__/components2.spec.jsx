@@ -31,9 +31,9 @@ describe('Components (JSX) #2', () => {
 		};
 	});
 
-	afterEach(() => {
-		document.body.removeChild(container);
+	afterEach(function () {
 		render(null, container);
+		document.body.removeChild(container);
 	});
 
 	describe('tracking DOM state', () => {

@@ -6,11 +6,11 @@ describe('createTree - SVG (JSX)', () => {
 
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 	});
 
-	afterEach(() => {
+	afterEach(function () {
 		render(null, container);
 	});
 

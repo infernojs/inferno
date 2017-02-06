@@ -7,13 +7,13 @@ import createClass from '../dist-es';
 describe('Components createClass (non-JSX)', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
 		document.body.removeChild(container);
 		render(null, container);
 	});

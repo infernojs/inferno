@@ -1,4 +1,5 @@
 import { streamAsStaticMarkup } from '../dist-es';
+import { render } from 'inferno';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
 import { expect } from 'chai';
@@ -7,13 +8,13 @@ import concatStream from 'concat-stream-es6';
 describe('SSR Root Creation Streams - (non-JSX)', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
-		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
+		render(null, container);
 		document.body.removeChild(container);
 	});
 

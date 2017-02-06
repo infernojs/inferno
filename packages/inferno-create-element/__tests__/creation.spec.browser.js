@@ -7,10 +7,13 @@ describe('Creation - (non-JSX)', () => {
 
 	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
 	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	[{

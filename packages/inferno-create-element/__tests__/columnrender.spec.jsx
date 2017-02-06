@@ -9,10 +9,13 @@ describe('Columns like tests - (JSX)', () => {
 
 	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
 	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	describe('Column-like tests', () => {
@@ -224,7 +227,7 @@ describe('Columns like tests - (JSX)', () => {
 			let unmountItemSpy = null;
 			let updateItemSpy = null;
 
-			beforeEach(() => {
+			beforeEach(function () {
 				mountedColumnSpy = spy(ColumnKeyed.prototype, 'componentWillMount');
 				unmountColumnSpy = spy(ColumnKeyed.prototype, 'componentWillUnmount');
 				updateColumnSpy = spy(ColumnKeyed.prototype, 'componentWillUpdate');
@@ -233,7 +236,7 @@ describe('Columns like tests - (JSX)', () => {
 				updateItemSpy = spy(ItemKeyed.prototype, 'componentWillUpdate');
 			});
 
-			afterEach(() => {
+			afterEach(function () {
 				mountedColumnSpy.restore();
 				unmountColumnSpy.restore();
 				updateColumnSpy.restore();
@@ -370,7 +373,7 @@ describe('Columns like tests - (JSX)', () => {
 			let unmountItemSpy = null;
 			let updateItemSpy = null;
 
-			beforeEach(() => {
+			beforeEach(function () {
 				mountedColumnSpy = spy(Column.prototype, 'componentWillMount');
 				unmountColumnSpy = spy(Column.prototype, 'componentWillUnmount');
 				updateColumnSpy = spy(Column.prototype, 'componentWillUpdate');
@@ -379,7 +382,7 @@ describe('Columns like tests - (JSX)', () => {
 				updateItemSpy = spy(Item.prototype, 'componentWillUpdate');
 			});
 
-			afterEach(() => {
+			afterEach(function () {
 				mountedColumnSpy.restore();
 				unmountColumnSpy.restore();
 				updateColumnSpy.restore();

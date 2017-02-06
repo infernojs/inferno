@@ -5,7 +5,7 @@ import { innerHTML } from 'inferno/test/utils';
 describe('cloneVNode (JSX)', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 	});
 

@@ -370,13 +370,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				instance._lastInput = nextInput;
 				instance._vNode = nextVNode;
 				if (didUpdate) {
-					const fastUnmount = lifecycle.fastUnmount;
-					const subLifecycle = instance._lifecycle;
-
-					lifecycle.fastUnmount = subLifecycle.fastUnmount;
 					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
-					subLifecycle.fastUnmount = lifecycle.fastUnmount;
-					lifecycle.fastUnmount = fastUnmount;
 					instance.componentDidUpdate(lastProps, lastState);
 					options.afterUpdate && options.afterUpdate(nextVNode);
 					options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);

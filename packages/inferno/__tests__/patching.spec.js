@@ -6,12 +6,15 @@ import { createTextVNode } from '../dist-es/core/VNodes';
 describe('patching routine', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	// TODO: Try to cover patching lastVNode !== nextVNode. requires no normalize and hoisting

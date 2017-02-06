@@ -6,12 +6,15 @@ import VNodeFlags from 'inferno-vnode-flags';
 describe('rendering routine', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	it('Should throw error when trying to render to document.body', () => {

@@ -7,12 +7,13 @@ import { innerHTML } from 'inferno/test/utils';
 describe('Component lifecycle (JSX)', () => {
 	let container;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function() {
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
 	});
@@ -387,11 +388,11 @@ describe('Component lifecycle (JSX)', () => {
 			);
 		}
 
-		afterEach(() => {
+		afterEach(function () {
 			render(null, _container);
 		});
 
-		beforeEach(() => {
+		beforeEach(function () {
 			_container = document.createElement('div');
 		});
 
@@ -532,7 +533,7 @@ describe('Component lifecycle (JSX)', () => {
 		const spyInner = spy(fakeObj, 'innerCallback');
 		const spyInnerSecond = spy(fakeObj, 'innerSecondCallback');
 
-		afterEach(() => {
+		afterEach(function () {
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
@@ -716,7 +717,7 @@ describe('Component lifecycle (JSX)', () => {
 			);
 		};
 
-		afterEach(() => {
+		afterEach(function () {
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
@@ -829,7 +830,7 @@ describe('Component lifecycle (JSX)', () => {
 		const spyInner = spy(fakeObj, 'innerCallback');
 		const spyInnerSecond = spy(fakeObj, 'innerSecondCallback');
 
-		afterEach(() => {
+		afterEach(function () {
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
@@ -998,7 +999,7 @@ describe('Component lifecycle (JSX)', () => {
 			}
 		}
 
-		afterEach(() => {
+		afterEach(function () {
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();

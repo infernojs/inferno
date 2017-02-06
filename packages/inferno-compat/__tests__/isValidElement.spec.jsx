@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import createElement from 'inferno-create-element';
 import isValidElement from '../dist-es/isValidElement';
+import { render } from 'inferno';
 import h from 'inferno-hyperscript';
 import Component from 'inferno-component';
 import Inferno, { cloneVNode } from 'inferno';
@@ -9,12 +10,15 @@ import Inferno, { cloneVNode } from 'inferno';
 describe('isValidElement', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
 		container.innerHTML = '';
+		render(null, container);
+		document.body.removeChild(container);
 	});
 
 	it('Should not work with non-object', () => {

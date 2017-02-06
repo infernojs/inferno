@@ -22,12 +22,15 @@ let template = function (child) {
 describe('Mixed of Keyed/Non-Keyed nodes', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	// TOOD: Is mixin keyed non keyed supported this way?

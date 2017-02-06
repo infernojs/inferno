@@ -6805,8 +6805,8 @@ describe('Benchmark - createClass (JSX)', () => {
 	});
 
 	afterEach(function () {
-		document.body.removeChild(container);
 		render(null, container);
+		document.body.removeChild(container);
 	});
 
 	it('Run the benchmark once', () => {

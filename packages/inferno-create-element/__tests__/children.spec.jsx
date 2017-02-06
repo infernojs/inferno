@@ -9,23 +9,16 @@ describe('Children - (JSX)', () => {
 
 	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
 	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	describe('keyed - children', function () {
-		beforeEach(() => {
-			container = document.createElement('div');
-			document.body.appendChild(container);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(container);
-			container.innerHTML = '';
-		});
-
 		it('Should push to correct location when it keyed list has siblings', function () {
 			const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
@@ -389,17 +382,6 @@ describe('Children - (JSX)', () => {
 	});
 
 	describe('nonKeyed - children', function () {
-
-		beforeEach(() => {
-			container = document.createElement('div');
-			document.body.appendChild(container);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(container);
-			container.innerHTML = '';
-		});
-
 		it('Should push to correct location when it keyed list has siblings', function () {
 			const _tabs = [{ title: 'Item A' }, { title: 'Item B' }];
 
@@ -1721,7 +1703,7 @@ describe('Children - (JSX)', () => {
 			class Wrapper extends Component {
 				constructor(props) {
 					super(props);
-				};
+				}
 
 				componentWillUnmount() {}
 
@@ -1780,7 +1762,8 @@ describe('Children - (JSX)', () => {
 
 				render() {
 					return (
-						<div>{this.state.text}</div>
+						<pre onclick={function () {
+						}}>{this.state.text}</pre>
 					);
 				}
 			}
@@ -1792,9 +1775,7 @@ describe('Children - (JSX)', () => {
 
 			const notCalled = assert.notCalled;
 
-			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em><div>aa</div></em></span></div>');
-
-			render(<Wrapper kill={true}/>, container);
+			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em><pre>aa</pre></em></span></div>');
 
 			setTimeout(() => {
 				expect(container.innerHTML).to.eql('<div><span>foobar</span><span></span></div>');

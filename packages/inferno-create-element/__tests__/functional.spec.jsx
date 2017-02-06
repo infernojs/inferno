@@ -8,7 +8,7 @@ import Type from 'union-type-es';
 describe('Functional methods (JSX)', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 	});
 

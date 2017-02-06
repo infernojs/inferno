@@ -10,12 +10,15 @@ const isPhantomJS = window && window.navigator && PHANTOM_REGEX.test(window.navi
 describe('CSS style properties', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	const preDefined = [{
@@ -359,7 +362,7 @@ describe('CSS style properties', () => {
 
 	 describe(`Set ${ shortCut } CSS properties from shorthand: ${ JSON.stringify(style) }`, () => {
 
-	 beforeEach(() => {
+	 beforeEach(function () {
 	 let template = createTemplate(() => {
 	 return {
 	 tag: 'div',
@@ -394,7 +397,7 @@ describe('CSS style properties', () => {
 
 	 describe(`Set ${ shortCut } CSS properties from shorthand: ${ JSON.stringify(style) }`, () => {
 
-	 beforeEach(() => {
+	 beforeEach(function () {
 	 let template = createTemplate(() => {
 	 return {
 	 tag: 'div',

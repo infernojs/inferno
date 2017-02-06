@@ -83,14 +83,12 @@ if (process.env.NODE_ENV !== 'production') {
  */
 export interface LifecycleClass {
 	listeners: Function[];
-	fastUnmount: boolean;
 	addListener (callback: Function): void;
 	trigger (): void;
 }
 
 export function Lifecycle() {
 	this.listeners = [];
-	this.fastUnmount = true;
 }
 
 Lifecycle.prototype.addListener = function addListener (callback) {

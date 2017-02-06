@@ -5,7 +5,7 @@ import Component from 'inferno-component';
 describe('FormElements', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 	});
 

@@ -6,12 +6,12 @@ import { innerHTML } from 'inferno/test/utils';
 describe('Blueprints (JSX)', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
 		document.body.removeChild(container);
 		container = null;
 	});

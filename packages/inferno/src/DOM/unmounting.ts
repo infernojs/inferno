@@ -67,9 +67,7 @@ export function unmountComponent(vNode: VNode, parentDom: Element, lifecycle: Li
 
 				const subLifecycle = instance._lifecycle;
 
-				if (!subLifecycle.fastUnmount) {
-					unmount(instance._lastInput, null, subLifecycle, false, isRecycling);
-				}
+				unmount(instance._lastInput, null, subLifecycle, false, isRecycling);
 			}
 		} else {
 			if (!isNullOrUndef(ref)) {
@@ -77,9 +75,8 @@ export function unmountComponent(vNode: VNode, parentDom: Element, lifecycle: Li
 					ref.onComponentWillUnmount(dom);
 				}
 			}
-			if (!lifecycle.fastUnmount) {
-				unmount(instance, null, lifecycle, false, isRecycling);
-			}
+
+			unmount(instance, null, lifecycle, false, isRecycling);
 		}
 	}
 	if (parentDom) {
@@ -105,16 +102,15 @@ export function unmountElement(vNode: VNode, parentDom: Element, lifecycle: Life
 	}
 	alreadyUnmounted.set(vNode, true);
 
-	if (!lifecycle.fastUnmount) {
-		if (ref && !isRecycling) {
-			unmountRef(ref);
-		}
-		const children = vNode.children;
-
-		if (!isNullOrUndef(children)) {
-			unmountChildren(children, lifecycle, isRecycling);
-		}
+	if (ref && !isRecycling) {
+		unmountRef(ref);
 	}
+	const children = vNode.children;
+
+	if (!isNullOrUndef(children)) {
+		unmountChildren(children, lifecycle, isRecycling);
+	}
+
 	if (!isNull(events)) {
 		for (let name in events) {
 			// do not add a hasOwnProperty check here, it affects performance

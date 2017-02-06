@@ -12,15 +12,15 @@ describe('MobX Observer', () => {
 		extra: observable({ test: 'observable!' })
 	};
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
-		document.body.removeChild(container);
+	afterEach(function () {
 		render(null, container);
+		document.body.removeChild(container);
 	});
 
 	const TodoItem = makeReactive(function ({ todo }) {

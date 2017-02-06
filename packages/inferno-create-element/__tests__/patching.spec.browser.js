@@ -75,11 +75,11 @@ describe('patching keyed lists (non-jsx)', () => {
 	let container = document.createElement('div');
 	let dataModels = null;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		dataModels = createDataModels();
 	});
 
-	afterEach(() => {
+	afterEach(function () {
 		dataModels = null;
 	});
 

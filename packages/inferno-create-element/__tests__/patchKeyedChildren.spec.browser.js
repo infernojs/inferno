@@ -33,12 +33,15 @@ describe('keyed-nodes', () => {
 		return createElement('div', null, child);
 	};
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	it('should add all nodes', () => {
@@ -409,7 +412,7 @@ describe('keyed-nodes', () => {
 	describe('Should handle massive large arrays', () => {
 		let items;
 
-		beforeEach(() => {
+		beforeEach(function () {
 			items = new Array(1000);
 			for (let i = 0; i < 1000; i++) {
 				items[ i ] = i;

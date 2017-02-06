@@ -6,12 +6,15 @@ import { innerHTML } from 'inferno/test/utils';
 describe('HyperScript (non-JSX)', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	it('Should handle a basic example', () => {

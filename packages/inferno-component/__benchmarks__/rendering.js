@@ -71,6 +71,7 @@ suite('render', function () {
 			document.body.appendChild(this.container);
 		},
 		teardown: function () {
+			render(null, this.container);
 			this.container.innerHTML = '';
 			document.body.removeChild(this.container);
 		}
@@ -84,6 +85,7 @@ suite('render', function () {
 			document.body.appendChild(this.container);
 		},
 		teardown: function () {
+			render(null, this.container);
 			this.container.innerHTML = '';
 			document.body.removeChild(this.container);
 		}
@@ -97,6 +99,7 @@ suite('render', function () {
 			document.body.appendChild(this.container);
 		},
 		teardown: function () {
+			render(null, this.container);
 			this.container.innerHTML = '';
 			document.body.removeChild(this.container);
 		}
@@ -120,6 +123,7 @@ suite('render', function () {
 			document.body.appendChild(this.container);
 		},
 		teardown: function () {
+			render(null, this.container);
 			this.container.innerHTML = '';
 			document.body.removeChild(this.container);
 		}
@@ -143,6 +147,7 @@ suite('render', function () {
 			document.body.appendChild(this.container);
 		},
 		teardown: function () {
+			render(null, this.container);
 			this.container.innerHTML = '';
 			document.body.removeChild(this.container);
 		}

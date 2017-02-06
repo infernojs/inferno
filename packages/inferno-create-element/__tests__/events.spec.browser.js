@@ -5,14 +5,15 @@ import createElement from '../dist-es';
 describe('Basic event tests', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
-		document.body.removeChild(container);
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	it('should attach basic click events', (done) => {

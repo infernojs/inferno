@@ -15,7 +15,6 @@ describe('Components (JSX)', () => {
 		attachedListener = null;
 		renderedName = null;
 		container = document.createElement('div');
-		container.style.display = 'none';
 		document.body.appendChild(container);
 
 		Inner = class extends Component {
@@ -27,9 +26,9 @@ describe('Components (JSX)', () => {
 		};
 	});
 
-	afterEach(() => {
-		document.body.removeChild(container);
+	afterEach(function () {
 		render(null, container);
+		document.body.removeChild(container);
 	});
 
 	class BasicComponent1 extends Component {
@@ -2799,7 +2798,7 @@ describe('Components (JSX)', () => {
 
 		let i;
 
-		beforeEach(() => {
+		beforeEach(function () {
 			i = 1;
 		});
 

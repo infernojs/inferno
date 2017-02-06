@@ -18,15 +18,15 @@ function BadComponent(props) {
 describe('Router (jsx) #transitions', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		browserHistory.push('/');
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
-		document.body.removeChild(container);
+	afterEach(function () {
 		render(null, container);
+		document.body.removeChild(container);
 	});
 
 	it('should fail when `history` is not provided', () => {

@@ -27,12 +27,15 @@ describe('Non Keyed nodes', () => {
 		return createElement('div', null, child);
 	};
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
-	afterEach(() => {
+	afterEach(function () {
+		render(null, container);
 		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	it('should add all nodes', () => {

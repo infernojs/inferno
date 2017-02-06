@@ -125,7 +125,7 @@ describe('Utils', () => {
 		const spyDispatch = spy(element, 'dispatchEvent');
 		let spyCreateMouseEvent;
 
-		afterEach(() => {
+		afterEach(function () {
 			spyDispatch.reset();
 			spyCreateMouseEvent.restore();
 		});

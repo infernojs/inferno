@@ -5,11 +5,11 @@ import createElement from '../dist-es';
 describe('Text', () => {
 	let container;
 
-	beforeEach(() => {
+	beforeEach(function () {
 		container = document.createElement('div');
 	});
 
-	afterEach(() => {
+	afterEach(function () {
 		render(null, container);
 	});
 
