@@ -14,6 +14,7 @@ describe('Functional methods (JSX)', () => {
 
 	it('A basic example', (done) => {
 		// Update
+		// eslint-disable-next-line new-cap
 		const Action = Type({ Increment: [], Decrement: [] });
 
 		const update = (model, action) => Action.case({
@@ -24,7 +25,9 @@ describe('Functional methods (JSX)', () => {
 		const actions$ = hold(1, sync());
 
 		const emitAction = (action) => actions$.next(action);
+		// eslint-disable-next-line new-cap
 		const emitDecrement = (_) => emitAction(Action.Decrement());
+		// eslint-disable-next-line new-cap
 		const emitIncrement = (_) => emitAction(Action.Increment());
 
 		// View

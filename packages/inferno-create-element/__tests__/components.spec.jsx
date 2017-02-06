@@ -2408,6 +2408,7 @@ describe('Components (JSX)', () => {
 
 			render() {
 				if (this.state.n) {
+					// eslint-disable-next-line
 					return <div ref={ (dom) => div = dom } onClick={this.onClick}>DIV</div>;
 				}
 				return <span onClick={this.onClick}>SPAN</span>;
@@ -2492,6 +2493,7 @@ describe('Components (JSX)', () => {
 
 			render() {
 				if (this.state.n) {
+					// eslint-disable-next-line
 					return <div ref={ (dom) => div = dom } onClick={this.onClick}>DIV</div>;
 				}
 				return <span onClick={this.onClick}>SPAN</span>;
@@ -2580,6 +2582,7 @@ describe('Components (JSX)', () => {
 
 			render() {
 				if (this.state.n) {
+					// eslint-disable-next-line
 					return <div ref={ (dom) => div = dom } onClick={this.onClick}>DIV</div>;
 				}
 				return <span onClick={this.onClick}>SPAN</span>;

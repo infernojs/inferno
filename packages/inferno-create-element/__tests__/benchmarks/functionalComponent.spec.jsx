@@ -229,7 +229,7 @@ function runBenchmark(container) {
 			} } onBlur={function () {
 			} }
 				className={'_5vwz _45hc'} wrapper={function () {
-			} } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
+				} } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
 			<a aria-selected={false} onKeyDown={function () { } }>
 				<div className={'_4jq5'}>{'Audiences'}</div>
 				<span className={'_13xf'}/>
@@ -504,7 +504,7 @@ function runBenchmark(container) {
 		return (
 			<a style={{ maxWidth: '200px' }} image={null} label={null} imageRight={{}} className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'} href={'#'} haschevron={true}
 				onClick={function () {
-			} } size={'large'} use={'default'} borderShade={'light'} suppressed={false} disabled={null} rel={undefined}>
+				}} size={'large'} use={'default'} borderShade={'light'} suppressed={false} disabled={null} rel={undefined}>
 				{null}
 			<span className={'_55pe'} style={{ maxWidth: '186px' }}>
 					<ReactImage70 />
@@ -1523,7 +1523,7 @@ function runBenchmark(container) {
 		return (
 			<label className={'_4h2r _55sg _kv1'}>
 				<input checked={undefined} onChange={function () {
-			} } className={null} type={'checkbox'}/>
+				} } className={null} type={'checkbox'}/>
 				<span data-hover={null} aria-label={undefined}/>
 			</label>
 		);
@@ -2209,7 +2209,7 @@ function runBenchmark(container) {
 			<div isHeaderCell={true} label={'Social %'} width={80} dataKey={'stats.social_percent'} className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function () {
 			} }
 				headerDataGetter={function () {
-			} } columnKey={'stats.social_percent'} height={25} style={{ height: 25, width: 80 }}>
+				} } columnKey={'stats.social_percent'} height={25} style={{ height: 25, width: 80 }}>
 			<div className={'_4lgd _4h2w'}>
 				<div className={'_4lge _4h2x'}>
 					<FixedDataTableSortableHeader278 />
@@ -2703,7 +2703,7 @@ function runBenchmark(container) {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 80, left: 1760 }}>
 				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function () {
-			} }>
+				} }>
 			<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
 			</div>
 			<TransitionCell329/>
@@ -3718,7 +3718,7 @@ function runBenchmark(container) {
 					columnKey={'ad.creative.body'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
-						<div className={'_2d6h _4h2r'}>{`It's an example.`}</div>
+						<div className={'_2d6h _4h2r'}>{'It\'s an example.'}</div>
 					</div>
 				</div>
 			</div>
@@ -4891,7 +4891,7 @@ function runBenchmark(container) {
 					<div className={'_2vla _1h1g'}>
 						<div>
 							{null}
-							<textarea value={`It' s an example.`}/>
+							<textarea value={'It\' s an example.'}/>
 							{null}
 						</div>
 						<div className={'_2vlk'}></div>
