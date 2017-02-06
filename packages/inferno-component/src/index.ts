@@ -12,7 +12,7 @@ import {
 	Lifecycle,
 	NO_OP,
 	throwError
-} from 'inferno-helpers';
+} from 'inferno-shared';
 
 let noOp = ERROR_MSG;
 

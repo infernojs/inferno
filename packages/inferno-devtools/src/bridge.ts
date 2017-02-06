@@ -1,5 +1,5 @@
 import { options } from 'inferno';
-import { isArray, isInvalid, isObject, isStringOrNumber } from 'inferno-helpers';
+import { isArray, isInvalid, isObject, isStringOrNumber } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 function findVNodeFromDom(vNode, dom) {

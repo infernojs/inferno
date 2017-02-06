@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import { isNullOrUndef } from 'inferno-helpers';
+import { isNullOrUndef } from 'inferno-shared';
 import { isVNode } from 'inferno/core/VNodes';
 
 describe('Normalization process', () => {

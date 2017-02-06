@@ -1,6 +1,6 @@
 import Component from 'inferno-component';
 import createClass from 'inferno-create-class';
-import { throwError } from 'inferno-helpers';
+import { throwError } from 'inferno-shared';
 import inject from './inject';
 import makeReactive from './makeReactive';
 

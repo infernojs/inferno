@@ -1,5 +1,5 @@
 import Inferno from 'inferno';
-import { isArray, toArray } from 'inferno-helpers';
+import { isArray, toArray } from 'inferno-shared';
 import pathToRegExp from 'path-to-regexp-es6';
 import { decode, emptyObject, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort, toPartialURL } from './utils';
 

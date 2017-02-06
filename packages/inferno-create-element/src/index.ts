@@ -7,7 +7,7 @@ import {
 	isStatefulComponent,
 	isString,
 	isUndefined
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import Component from 'inferno-component';
 import VNodeFlags from 'inferno-vnode-flags';
 

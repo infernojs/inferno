@@ -16,7 +16,7 @@
         "inferno-component": "./packages/inferno-component/dist-es",
         "inferno-create-class": "./packages/inferno-create-class/dist-es",
         "inferno-create-element": "./packages/inferno-create-element/dist-es",
-        "inferno-helpers": "./packages/inferno-helpers/dist-es",
+        "inferno-shared": "./packages/inferno-shared/dist-es",
         "inferno-hyperscript": "./packages/inferno-hyperscript/dist-es",
         "inferno-mobx": "./packages/inferno-mobx/dist-es",
         "inferno-redux": "./packages/inferno-redux/dist-es",

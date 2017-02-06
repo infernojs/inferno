@@ -5,7 +5,7 @@ import {
 	isString,
 	isStringOrNumber,
 	isUndefined
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;

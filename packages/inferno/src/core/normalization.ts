@@ -7,7 +7,7 @@ import {
 	isString,
 	isStringOrNumber,
 	warning
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
 	cloneVNode,

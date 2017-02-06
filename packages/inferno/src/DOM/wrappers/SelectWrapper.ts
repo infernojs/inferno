@@ -3,7 +3,7 @@ import {
 	isArray,
 	isInvalid,
 	isNullOrUndef
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import { isVNode } from '../../core/VNodes';
 import { wrappers } from './processElement';
 

@@ -9,7 +9,7 @@ import {
 	LifecycleClass,
 	throwError,
 	warning
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { VNode, InfernoChildren } from '../core/VNodes';
 import options from '../core/options';

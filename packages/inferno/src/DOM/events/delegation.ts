@@ -1,4 +1,4 @@
-import { isBrowser } from 'inferno-helpers';
+import { isBrowser } from 'inferno-shared';
 
 const isiOS = isBrowser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 const delegatedEvents = new Map();

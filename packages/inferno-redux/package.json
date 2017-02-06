@@ -29,14 +29,14 @@
     "inferno": "^1.3.0-rc.0",
     "inferno-component": "^1.3.0-rc.0",
     "inferno-create-element": "^1.3.0-rc.0",
-    "inferno-helpers": "^1.3.0-rc.0",
+    "inferno-shared": "^1.3.0-rc.0",
     "redux": "*"
   },
   "devDependencies": {
     "inferno-router": "^1.3.0-rc.0"
   },
   "bundledDependencies": [
-    "inferno-helpers"
+    "inferno-shared"
   ],
   "rollup": {
     "moduleGlobal": "Inferno.Redux",
