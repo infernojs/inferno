@@ -134,13 +134,13 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 					for (let i = 0, len = children.length; i < len; i++) {
 						const child = children[i];
 						if (isStringOrNumber(child)) {
-							renderedString += escapeText(child);
+							renderedString += (child === '' ? ' ' : escapeText(child));
 						} else if (!isInvalid(child)) {
 							renderedString += renderVNodeToString(child, vNode, context, i === 0);
 						}
 					}
 				} else if (isStringOrNumber(children)) {
-					renderedString += escapeText(children);
+					renderedString += (children === '' ? ' ' : escapeText(children));
 				} else {
 					renderedString += renderVNodeToString(children, vNode, context, true);
 				}
@@ -153,7 +153,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 		}
 		return renderedString;
 	} else if (flags & VNodeFlags.Text) {
-		return (firstChild ? '' : '<!---->') + escapeText(children);
+		return (firstChild ? '' : '<!---->') + (children === '' ? ' ' : escapeText(children));
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
 			if (typeof vNode === 'object') {
