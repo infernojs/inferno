@@ -302,9 +302,9 @@ describe('Columns like tests - (JSX)', () => {
 					render(<ViewKeyed columns={testCase.update}/>, container);
 					verifyRenderResult(testCase.update, container);
 
-					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length); // mount count should equal to added count
-					expect(unmountColumnSpy.callCount).to.equal(columnsToRemove.length); // Initial render none unmounted
-					expect(updateColumnSpy.callCount).to.equal(columnsToUpdate.length); // Initial render none unmounted
+					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length, 'mount'); // mount count should equal to added count
+					expect(unmountColumnSpy.callCount).to.equal(columnsToRemove.length, 'unmount'); // Initial render none unmounted
+					expect(updateColumnSpy.callCount).to.equal(columnsToUpdate.length, 'update'); // Initial render none unmounted
 					expect(mountedItemSpy.callCount).to.equal(itemsToBeAdded.length, `itemsToBeAdded ${JSON.stringify(itemsToBeAdded)} componentWillMount called: ${mountedItemSpy.callCount} times.`); // Initial render - mount all items once
 					expect(updateItemSpy.callCount).to.equal(itemsToUpdate.length, 'item update callback count'); // Initial render none to update
 					expect(unmountItemSpy.callCount).to.equal(itemsToRemove.length, 'item unmount callback count'); // Initial render none unmounted
@@ -448,9 +448,9 @@ describe('Columns like tests - (JSX)', () => {
 					render(<View columns={testCase.update}/>, container);
 					verifyRenderResult(testCase.update, container);
 
-					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length); // mount count should equal to added count
-					expect(unmountColumnSpy.callCount).to.equal(columnsToRemove.length); // Initial render none unmounted
-					expect(updateColumnSpy.callCount).to.equal(columnsToUpdate.length); // Initial render none unmounted
+					expect(mountedColumnSpy.callCount).to.equal(columnsToBeAdded.length, 'mount'); // mount count should equal to added count
+					expect(unmountColumnSpy.callCount).to.equal(columnsToRemove.length, 'unmount'); // Initial render none unmounted
+					expect(updateColumnSpy.callCount).to.equal(columnsToUpdate.length, 'update'); // Initial render none unmounted
 					expect(mountedItemSpy.callCount).to.equal(itemsToBeAdded.length, `itemsToBeAdded ${JSON.stringify(itemsToBeAdded)} componentWillMount called: ${mountedItemSpy.callCount} times.`); // Initial render - mount all items once
 					expect(updateItemSpy.callCount).to.equal(itemsToUpdate.length, 'item update callback count'); // Initial render none to update
 					expect(unmountItemSpy.callCount).to.equal(itemsToRemove.length, 'item unmount callback count'); // Initial render none unmounted

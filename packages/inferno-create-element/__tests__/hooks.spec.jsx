@@ -533,7 +533,7 @@ describe('Component lifecycle (JSX)', () => {
 		const spyInner = spy(fakeObj, 'innerCallback');
 		const spyInnerSecond = spy(fakeObj, 'innerSecondCallback');
 
-		afterEach(function () {
+		beforeEach(function () {
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
@@ -651,8 +651,10 @@ describe('Component lifecycle (JSX)', () => {
 				}
 
 				ref(n) {
-					expect(n.offsetWidth, 'ref node should have width in callback').not.to.eql(0);
-					node = n;
+					if (n) {
+						expect(n.offsetWidth, 'ref node should have width in callback').not.to.eql(0);
+						node = n;
+					}
 				}
 
 				render() {
@@ -830,7 +832,7 @@ describe('Component lifecycle (JSX)', () => {
 		const spyInner = spy(fakeObj, 'innerCallback');
 		const spyInnerSecond = spy(fakeObj, 'innerSecondCallback');
 
-		afterEach(function () {
+		beforeEach(function () {
 			spyOuter.reset();
 			spyInner.reset();
 			spyInnerSecond.reset();
@@ -860,7 +862,7 @@ describe('Component lifecycle (JSX)', () => {
 			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
 		});
 
-		it('Should call ref functions in order: child to parent', () => {
+		it('Should call ref functions in order: child to parent #2', () => {
 			notCalled(spyOuter);
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);

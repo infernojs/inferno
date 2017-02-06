@@ -1777,6 +1777,8 @@ describe('Children - (JSX)', () => {
 
 			expect(container.innerHTML).to.eql('<div><span>foobar</span><span><em><pre>aa</pre></em></span></div>');
 
+			render(<Wrapper kill={true}/>, container);
+
 			setTimeout(() => {
 				expect(container.innerHTML).to.eql('<div><span>foobar</span><span></span></div>');
 
@@ -1784,12 +1786,12 @@ describe('Children - (JSX)', () => {
 				notCalled(unMountSpy2);
 
 				// This component is actually unmounted but fastUnmount skips unmount loop so unmounted remains false
-				expect(dirtyReference._unmounted).to.eql(false);
+				expect(dirtyReference._unmounted).to.eql(true);
 				// Try to do setState and verify it doesn't fail
 				updateFastUnmountedComponent();
 
 				setTimeout(() => {
-					expect(dirtyReference._unmounted).to.eql(false);
+					expect(dirtyReference._unmounted).to.eql(true);
 					expect(container.innerHTML).to.eql('<div><span>foobar</span><span></span></div>');
 
 					done();
