@@ -204,7 +204,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/test' } history={ browserHistory }>
 					<IndexRoute component={ () => <div>Good</div> } />
-					<Route path={ '/test' }  component={ () => <TestComponent/> } onEnter={ () => { callbackSpy(); } } />
+					<Route path={ '/test' } component={ () => <TestComponent/> } onEnter={ () => { callbackSpy(); } } />
 				</Router>, container
 			);
 
@@ -232,7 +232,7 @@ describe('Router (jsx)', () => {
 											onEnter={ callback }
 											className="test-class"
 					/>
-					<Route path={'/test'}  component={ () => <TestComponent/> }/>
+					<Route path={'/test'} component={ () => <TestComponent/> }/>
 				</Router>, container
 			);
 
@@ -258,7 +258,7 @@ describe('Router (jsx)', () => {
 				<Router url={ '/test' } history={ browserHistory }>
 					<Route component={ showChildren }>
 						<IndexRoute getComponent={ spy } />
-						<Route path={'/test'}  component={ () => <TestComponent/> }/>
+						<Route path={'/test'} component={ () => <TestComponent/> }/>
 					</Route>
 				</Router>, container
 			);
@@ -285,7 +285,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/test' } history={ browserHistory }>
 					<IndexRoute component={ () => <div>Good</div> } />
-					<Route path={ '/test' }  getComponent={ spy }/>
+					<Route path={ '/test' } getComponent={ spy }/>
 				</Router>, container
 			);
 
