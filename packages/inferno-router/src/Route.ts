@@ -56,17 +56,37 @@ export default class Route extends Component<IRouteProps, any> {
 		}
 	}
 
+	onEnter(nextProps) {
+		const { onEnter } = nextProps;
+		const { router } = this.context;
+
+		if (this.props.path !== nextProps.path && onEnter) {
+			onEnter({ props: nextProps, router });
+		}
+	}
+
+	getComponent(nextProps) {
+		const { getComponent } = nextProps;
+		const { router } = this.context;
+
+		if (this.props.path !== nextProps.path && getComponent) {
+			getComponent({ props: nextProps, router }, this._onComponentResolved);
+		}
+	}
+
 	componentWillUnmount() {
 		this.onLeave(true);
 	}
 
 	componentWillReceiveProps(nextProps: IRouteProps) {
+		this.getComponent(nextProps);
+		this.onEnter(nextProps);
 		this.onLeave(this.props.path !== nextProps.path);
 	}
 
 	render(_args: IRouteProps): VNode {
 		const { component, children } = _args;
-		const props = rest(_args, ['component', 'children', 'path']);
+		const props = rest(_args, ['component', 'children', 'path', 'getComponent']);
 
 		const { asyncComponent } = this.state;
 
