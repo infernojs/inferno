@@ -252,6 +252,7 @@ export default {
 	render,
 	isValidElement,
 	createElement,
+	Component,
 	PureComponent,
 	unmountComponentAtNode,
 	cloneElement,
