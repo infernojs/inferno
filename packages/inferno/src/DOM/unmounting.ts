@@ -7,7 +7,7 @@ import {
 	isObject,
 	LifecycleClass,
 	throwError
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import options from '../core/options';
 import { VNode, InfernoChildren, Ref } from '../core/VNodes';

@@ -3,7 +3,7 @@ import isValidElement from './isValidElement';
 import createClass from 'inferno-create-class';
 import infernoCreateElement from 'inferno-create-element';
 import { createVNode, render, findDOMNode, options, cloneVNode, VNode, InfernoChildren, Props } from 'inferno';
-import { NO_OP } from 'inferno-helpers';
+import { NO_OP } from 'inferno-shared';
 import CoreComponent from 'inferno-component';
 import { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
 import _VNodeFlags from 'inferno-vnode-flags';

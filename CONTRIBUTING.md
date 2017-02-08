@@ -28,7 +28,7 @@ For example, if you want to see the order of packages being processed, you can d
 ```
 $ lerna exec -- node -e "console.log(require('./package.json').name)"
 Lerna v2.0.0-beta.36
-inferno-helpers
+inferno-shared
 inferno-vnode-flags
 inferno
 inferno-component

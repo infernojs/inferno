@@ -11,7 +11,7 @@ import {
 	isUndefined,
 	LifecycleClass,
 	throwError
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { VNode } from '../core/VNodes';
 import options from '../core/options';

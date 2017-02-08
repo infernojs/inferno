@@ -10,7 +10,7 @@ import {
 	isStringOrNumber,
 	isTrue,
 	throwError
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import { internal_isUnitlessNumber } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
 import {

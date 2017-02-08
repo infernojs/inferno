@@ -1,6 +1,6 @@
 {
   "name": "inferno-devtools",
-  "version": "1.2.2",
+  "version": "1.3.0-rc.1",
   "license": "MIT",
   "description": "Provides support for React's Dev Tools for Inferno",
   "author": {
@@ -24,13 +24,13 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "1.2.2",
-    "inferno-component": "1.2.2",
-    "inferno-helpers": "1.2.2",
-    "inferno-vnode-flags": "1.2.2"
+    "inferno": "^1.3.0-rc.1",
+    "inferno-component": "^1.3.0-rc.1",
+    "inferno-shared": "^1.3.0-rc.1",
+    "inferno-vnode-flags": "^1.3.0-rc.1"
   },
   "bundledDependencies": [
-    "inferno-helpers"
+    "inferno-shared"
   ],
   "rollup": {
     "moduleGlobal": "Inferno.DevTools",

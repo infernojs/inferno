@@ -2,7 +2,7 @@ import { VNode } from 'inferno';
 import {
 	isNull,
 	isObject
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 export default function isValidElement(obj: VNode): boolean {

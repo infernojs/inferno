@@ -1,6 +1,6 @@
 {
-  "name": "inferno-helpers",
-  "version": "1.2.2",
+  "name": "inferno-shared",
+  "version": "1.3.0-rc.1",
   "license": "MIT",
   "description": "Helpers functions for Inferno",
   "author": {
@@ -11,7 +11,7 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "dist/inferno-helpers.node.js",
+  "main": "dist/inferno-shared.node.js",
   "module": "dist-es/index.js",
   "typings": "dist-es/index.d.ts",
   "keywords": [
@@ -20,6 +20,6 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "rollup": {
-    "moduleGlobal": "Inferno.Helpers"
+    "moduleGlobal": "Inferno.Shared"
   }
 }

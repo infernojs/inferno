@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { createVNode, render } from '../dist-es';
-import { NO_OP } from 'inferno-helpers';
+import { NO_OP } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 describe('rendering routine', () => {

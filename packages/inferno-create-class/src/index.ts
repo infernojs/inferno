@@ -1,4 +1,4 @@
-import { isFunction, isNullOrUndef, isUndefined, isObject, throwError } from 'inferno-helpers';
+import { isFunction, isNullOrUndef, isUndefined, isObject, throwError } from 'inferno-shared';
 import Component, { ComponentLifecycle } from 'inferno-component';
 
 export interface Mixin<P, S> extends ComponentLifecycle<P, S> {

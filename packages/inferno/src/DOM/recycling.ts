@@ -2,7 +2,7 @@ import {
 	isNull,
 	isUndefined,
 	LifecycleClass
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { VNode, Refs } from '../core/VNodes';
 import {

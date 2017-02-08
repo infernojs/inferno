@@ -1,4 +1,4 @@
-import { warning, NO_OP, EMPTY_OBJ } from 'inferno-helpers';
+import { warning, NO_OP, EMPTY_OBJ } from 'inferno-shared';
 import { Props, VNode, createVNode, cloneVNode, InfernoInput, InfernoChildren } from './core/VNodes';
 import linkEvent from './DOM/events/linkEvent';
 import options from './core/options';

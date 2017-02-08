@@ -3,7 +3,7 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import {
 	escapeText,
 	toHyphenCase

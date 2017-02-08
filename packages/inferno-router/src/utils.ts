@@ -1,4 +1,4 @@
-import { isArray, isString } from 'inferno-helpers';
+import { isArray, isString } from 'inferno-shared';
 
 export const emptyObject = {};
 

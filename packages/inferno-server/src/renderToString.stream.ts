@@ -3,7 +3,7 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber
-} from 'inferno-helpers';
+} from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
 	renderAttributes,

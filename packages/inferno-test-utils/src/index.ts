@@ -14,7 +14,7 @@ import {
 	isObject,
 	isString,
 	throwError
-} from 'inferno-helpers';
+} from 'inferno-shared';
 
 // Type Checkers
 
