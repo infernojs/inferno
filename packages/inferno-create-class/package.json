@@ -31,7 +31,7 @@
     "inferno-create-element": "^1.3.0-rc.1"
   },
   "bundledDependencies": [
-    "inferno-shared",
+    "inferno-shared"
   ],
   "rollup": {
     "moduleGlobal": "Inferno.createClass",
