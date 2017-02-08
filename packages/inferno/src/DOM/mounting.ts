@@ -1,6 +1,5 @@
 import {
 	copyPropsTo,
-	EMPTY_OBJ,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -30,7 +29,8 @@ import {
 	createClassComponentInstance,
 	createFunctionalComponentInput,
 	documentCreateElement,
-	setTextContent
+	setTextContent,
+	EMPTY_OBJ
 } from './utils';
 import processElement from './wrappers/processElement';
 

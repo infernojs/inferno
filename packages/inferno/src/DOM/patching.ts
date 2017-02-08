@@ -1,6 +1,5 @@
 import {
 	copyPropsTo,
-	EMPTY_OBJ,
 	isArray,
 	isAttrAnEvent,
 	isFunction,
@@ -57,7 +56,8 @@ import {
 	replaceVNode,
 	replaceWithNewNode,
 	setTextContent,
-	updateTextContent
+	updateTextContent,
+	EMPTY_OBJ
 } from './utils';
 
 import {Styles} from '../core/structures';

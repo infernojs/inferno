@@ -72,12 +72,6 @@ export function warning(message: string) {
 	console.warn(message);
 }
 
-export const EMPTY_OBJ = {};
-
-if (process.env.NODE_ENV !== 'production') {
-	Object.freeze(EMPTY_OBJ);
-}
-
 /*
  * This is purely a tiny event-emitter/pubsub
  */

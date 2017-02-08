@@ -1,5 +1,4 @@
 import {
-	EMPTY_OBJ,
 	isBrowser,
 	isInvalid,
 	isNull,
@@ -17,6 +16,7 @@ import hydrateRoot from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { unmount } from './unmounting';
+import { EMPTY_OBJ } from './utils';
 
 export interface Root {
 	dom: Node | SVGAElement;

@@ -1,11 +1,11 @@
 import {
-	EMPTY_OBJ,
 	isArray,
 	isInvalid,
 	isNullOrUndef
 } from 'inferno-shared';
 import { isVNode } from '../../core/VNodes';
 import { wrappers } from './processElement';
+import { EMPTY_OBJ } from '../utils';
 
 function isControlled(props) {
 	return !isNullOrUndef(props.value);

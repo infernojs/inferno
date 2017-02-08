@@ -1,9 +1,10 @@
-import { warning, NO_OP, EMPTY_OBJ } from 'inferno-shared';
+import { warning, NO_OP } from 'inferno-shared';
 import { Props, VNode, createVNode, cloneVNode, InfernoInput, InfernoChildren } from './core/VNodes';
 import linkEvent from './DOM/events/linkEvent';
 import options from './core/options';
 import { render, findDOMNode, createRenderer } from './DOM/rendering';
 import _VNodeFlags from 'inferno-vnode-flags';
+import { EMPTY_OBJ } from './DOM/utils';
 
 if (process.env.NODE_ENV !== 'production') {
 	const testFunc = function testFn() {};

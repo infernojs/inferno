@@ -1,6 +1,5 @@
 import {
 	copyPropsTo,
-	EMPTY_OBJ,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -13,7 +12,7 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { Readable } from 'stream';
-import { internal_isUnitlessNumber } from 'inferno';
+import { internal_isUnitlessNumber, EMPTY_OBJ } from 'inferno';
 import {
 	escapeText,
 	isVoidElement as _isVoidElement,

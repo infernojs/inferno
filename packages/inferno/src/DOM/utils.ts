@@ -1,5 +1,4 @@
 import {
-	EMPTY_OBJ,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -18,6 +17,15 @@ import { mount } from './mounting';
 import { patch } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import { unmount } from './unmounting';
+
+// We need EMPTY_OBJ defined in one place.
+// Its used for comparison so we cant inline it into shared
+export const EMPTY_OBJ = {};
+
+if (process.env.NODE_ENV !== 'production') {
+	Object.freeze(EMPTY_OBJ);
+}
+
 
 export function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean) {
 	if (isUndefined(context)) {

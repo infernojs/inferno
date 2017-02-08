@@ -1,8 +1,8 @@
 import {
-	EMPTY_OBJ,
 	isNullOrUndef
 } from 'inferno-shared';
 import { wrappers } from './processElement';
+import { EMPTY_OBJ } from '../utils';
 
 function isControlled(props) {
 	return !isNullOrUndef(props.value);
