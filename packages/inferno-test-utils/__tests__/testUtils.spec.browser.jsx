@@ -27,7 +27,8 @@ import {
 	scryRenderedDOMElementsWithClass,
 	scryRenderedDOMElementsWithTag,
 	scryRenderedVNodesWithType,
-	scryVNodesWithType
+	scryVNodesWithType,
+	Wrapper
 } from '../dist-es';
 
 const VNodeKeys = [
@@ -330,19 +331,19 @@ describe('Test Utils', () => {
 
 	describe('renderIntoDocument', () => {
 
-		it('should return a rendered class component', () => {
-			expect(isRenderedClassComponent(
+		it('should return wrapper instances', () => {
+			expect(
 				renderIntoDocument(createElement('div'))
-			)).to.be.true;
-			expect(isRenderedClassComponent(
+			).to.be.instanceOf(Wrapper);
+			expect(
 				renderIntoDocument(createElement(FunctionalComponent))
-			)).to.be.true;
-			expect(isRenderedClassComponent(
+			).to.be.instanceOf(Wrapper);
+			expect(
 				renderIntoDocument(createElement(CreateClassComponent))
-			)).to.be.true;
-			expect(isRenderedClassComponent(
+			).to.be.instanceOf(Wrapper);
+			expect(
 				renderIntoDocument(createElement(ExtendClassComponent))
-			)).to.be.true;
+			).to.be.instanceOf(Wrapper);
 		});
 	});
 

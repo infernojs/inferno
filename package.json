@@ -32,7 +32,9 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-undefined-to-void": "^6.8.0",
     "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.3.3",
     "babel-preset-es2015": "^6.24.1",
+    "babel-preset-power-assert": "^1.0.0",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.24.1",
     "boxen": "^1.0.0",
@@ -79,6 +81,7 @@
     "nyc": "^10.2.0",
     "object.entries": "^1.0.4",
     "optimize-js": "^1.0.3",
+    "power-assert": "^1.4.2",
     "pre-commit": "^1.2.2",
     "progress": "^2.0.0",
     "redux": "^3.6.0",
@@ -99,6 +102,7 @@
     "typescript": "^2.2.2",
     "typescript-eslint-parser": "^2.1.0",
     "union-type-es": "^0.1.0",
+    "util": "0.10.0",
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2"
   },
@@ -162,9 +166,9 @@
     "build:packages": "npm run build:packages-cjs && npm run build:packages-es",
     "build:packages-cjs": "lerna exec -- ../../node_modules/.bin/tsc --module commonjs --outDir dist --target es5",
     "build:packages-es": "lerna exec -- ../../node_modules/.bin/tsc",
-    "build:dev": "lerna exec -- node ../../bin/rollup",
-    "build:prod": "cross-env NODE_ENV=production lerna exec -- node ../../bin/rollup",
     "build": "npm run clean && npm run build:packages && npm run build:dev && npm run build:prod",
+    "build:dev": "cross-env NODE_ENV=development BABEL_ENV=development lerna exec -- node ../../bin/rollup",
+    "build:prod": "cross-env NODE_ENV=production BABEL_ENV=production lerna exec -- node ../../bin/rollup",
     "clean": "rimraf coverage/ packages/*/dist*/",
     "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
     "karma:chrome": "karma start test/karma/karma.unit.conf.js --browsers=Chrome",
@@ -179,21 +183,29 @@
     "postinstall": "lerna bootstrap && lerna exec --no-sort --concurrency 1 -- node ../../bin/link",
     "prepublish": "npm run build",
     "pretest:bench": "karma start test/karma/karma.bench.conf.js --log-level debug",
-    "test:bench": "node test/karma/bench.js",
-    "test:browser": "karma start test/karma/karma.unit.conf.js --log-level debug",
-    "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
-    "test:quick": "cross-env mocha",
+    "test:bench": "cross-env BABEL_ENV=testing node test/karma/bench.js",
+    "test:browser": "cross-env BABEL_ENV=development karma start test/karma/karma.unit.conf.js --log-level debug",
+    "test:publish": "cross-env BABEL_ENV=testing coveralls < coverage/lcov.info && rimraf coverage",
+    "test:quick": "cross-env BABEL_ENV=testing mocha",
     "tsc:dev": "lerna exec --no-sort --concurrency `ls -d packages/* | wc -l` -- tsc -w",
-    "test:server": "cross-env nyc mocha",
+    "test:server": "cross-env BABEL_ENV=testing cross-env nyc mocha",
     "test": "npm run lint && npm run build && npm run test:browser && npm run test:server",
     "uninstall": "rm -rf node_modules && lerna exec -- rm -rf node_modules",
     "cross-env": "cross-env",
     "lerna": "lerna",
     "karma": "karma",
-    "mocha": "mocha"
+    "mocha": "mocha",
+    "watch:karma": "cross-env BABEL_ENV=development karma start test/karma/karma.unit.conf.js --auto-watch --no-single-run",
+    "watch:mocha": "cross-env BABEL_ENV=testing mocha --watch"
   },
   "pre-commit": [
     "lint",
     "test"
-  ]
+  ],
+  "importSort": {
+    ".ts, .tsx": {
+      "parser": "typescript",
+      "style": "eslint"
+    }
+  }
 }
