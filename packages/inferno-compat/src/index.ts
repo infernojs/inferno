@@ -131,7 +131,7 @@ if (typeof Event !== 'undefined' && !Event.prototype.persist) {
 	Event.prototype.persist = function () {};
 }
 
-const injectStringRefs = (originalFunction) => {
+const injectStringRefs = function (originalFunction) {
 	return function (name, _props, ...children) {
 		let props = _props || {};
 		const ref = props.ref;
