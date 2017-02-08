@@ -15,9 +15,7 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 	if (nextEvent) {
 		if (!delegatedRoots) {
 			delegatedRoots = { items: new Map(), count: 0, docEvent: null };
-			const docEvent: any = attachEventToDocument(name, delegatedRoots);
-
-			delegatedRoots.docEvent = docEvent;
+			delegatedRoots.docEvent = attachEventToDocument(name, delegatedRoots);
 			delegatedEvents.set(name, delegatedRoots);
 		}
 		if (!lastEvent) {
