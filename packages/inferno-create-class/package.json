@@ -31,8 +31,7 @@
     "inferno-create-element": "1.2.2"
   },
   "bundledDependencies": [
-    "inferno-helpers",
-    "inferno-vnode-flags"
+    "inferno-helpers"
   ],
   "rollup": {
     "moduleGlobal": "Inferno.createClass",
