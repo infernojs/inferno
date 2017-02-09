@@ -29,7 +29,7 @@ npm install inferno-router
 ```js
 import Inferno from 'inferno';
 import { Router, Route, IndexRoute } from 'inferno-router';
-import { createBrowserHistory } from 'history';
+import createBrowserHistory from 'history/createBrowserHistory';
 
 const browserHistory = createBrowserHistory();
 
