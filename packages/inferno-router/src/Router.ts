@@ -20,6 +20,7 @@ function createrRouter(history) {
 		push: history.push,
 		replace: history.replace,
 		listen: history.listen,
+		createHref: history.createHref,
 		isActive(url) {
 			return matchPath(true, url, this.url);
 		},
