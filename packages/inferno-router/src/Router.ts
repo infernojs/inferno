@@ -9,6 +9,7 @@ export interface IRouterProps {
 	children?: any;
 	router: any;
 	location: any;
+	baseUrl?: any;
 	component?: Component<any, any>;
 }
 

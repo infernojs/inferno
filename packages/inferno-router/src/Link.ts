@@ -15,7 +15,7 @@ export default function Link(props, { router }): VNode {
 	// TODO: Convert to object assign
 	const { activeClassName, activeStyle, className, onClick, to, ...otherProps } = props;
 	const elemProps: ILinkProps = {
-		href: isBrowser ? router.createHref({pathname: to}) : router.location.baseUrl ? router.location.baseUrl + to : to
+		href: isBrowser ? router.createHref({pathname: to}) : router.location.baseUrl ? router.location.baseUrl + to : to,
 		...otherProps
 	};
 
