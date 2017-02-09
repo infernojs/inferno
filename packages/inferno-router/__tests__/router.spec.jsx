@@ -51,8 +51,8 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistoryWithBaseName }>
 					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
-		 				<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test } Link is <Link to="/foo/test" /></div> } />
-					</Route>				
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test } Link is <Link to="/foo/test" /></div> } />
+					</Route>
 				</Router>,
 				container
 			);
