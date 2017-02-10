@@ -91,7 +91,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 			addToQueue(component, false, callback);
 		}
 	} else {
-		component.state = Object.assign(component.state, component._pendingState, newState);
+		Object.assign(component.state, component._pendingState, newState);
 		component._pendingState = {};
 	}
 }
