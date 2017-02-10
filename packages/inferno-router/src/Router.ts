@@ -9,6 +9,7 @@ export interface IRouterProps {
 	children?: any;
 	router: any;
 	location: any;
+	baseUrl?: any;
 	component?: Component<any, any>;
 }
 
@@ -20,6 +21,7 @@ function createrRouter(history) {
 		push: history.push,
 		replace: history.replace,
 		listen: history.listen,
+		createHref: history.createHref,
 		isActive(url) {
 			return matchPath(true, url, this.url);
 		},

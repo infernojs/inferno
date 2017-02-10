@@ -1,12 +1,13 @@
 import {
 	expect
 } from 'chai';
-import createMemoryHistory from 'history/createMemoryHistory';
+import { createMemoryHistory, createBrowserHistory } from 'history';
 import { cloneVNode, render } from 'inferno';
 import { innerHTML } from 'inferno/test/utils';
-import { IndexRoute, Route, Router, RouterContext } from '../dist-es';
+import { IndexRoute, Route, Router, RouterContext, Link } from '../dist-es';
 
-const browserHistory = createMemoryHistory();
+const browserHistory = createBrowserHistory();
+const browserHistoryWithBaseName = createBrowserHistory({ basename: '/basename-prefix' });
 
 function TestComponent() {
 	return <div>Test!</div>;
@@ -45,6 +46,19 @@ describe('Router (jsx)', () => {
 		document.body.removeChild(container);
 	});
 
+	describe('#historyWithBaseName', () => {
+		it('should render the child and inherit parent (partial URL) with basename `/basename-prefix`', () => {
+			render(
+				<Router url={ '/foo/bar' } history={ browserHistoryWithBaseName }>
+					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test } Link is <Link to="/foo/test" /></div> } />
+					</Route>
+				</Router>,
+				container
+			);
+			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is bar Link is <a href="/basename-prefix/foo/test"></a></div></div>'));
+		});
+	});
 	describe('#history', () => {
 		it('should render the parent component only', () => {
 			render(
