@@ -71,7 +71,7 @@
     "mobx": "^3.1.0",
     "mocha": "^3.2.0",
     "mocha-lcov-reporter": "^1.2.0",
-    "most": "^1.2.1",
+    "most": "^1.2.2",
     "most-subject": "^5.3.0",
     "nyc": "^10.1.2",
     "object.entries": "^1.0.4",
