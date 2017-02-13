@@ -398,6 +398,23 @@ describe('Test Utils', () => {
 			findAllInRenderedTree(tree, ({ type }) => types.push(type));
 			expect(types).to.eql([ 'section', FunctionalComponent, 'div' ]);
 		});
+
+		it('should correctly find within a rendered tree with interpolated text', () => {
+			function Hello({ who }) {
+				return (<div>Hello, {who}!</div>);
+			}
+			const predicate = sinon.spy();
+			const treeWithText = renderIntoDocument(<Hello who='world' />);
+			assert.notCalled(predicate);
+			findAllInRenderedTree(treeWithText, predicate);
+
+			assert.callCount(predicate, 5);
+			assert.calledWithMatch(predicate, { type: Hello });
+			assert.calledWithMatch(predicate, { type: 'div' });
+			assert.calledWithMatch(predicate, { children: 'Hello, ' });
+			assert.calledWithMatch(predicate, { children: 'world' });
+			assert.calledWithMatch(predicate, { children: '!' });
+		});
 	});
 
 	describe('findAllInVNodeTree', () => {
