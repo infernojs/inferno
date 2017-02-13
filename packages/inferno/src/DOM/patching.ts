@@ -152,11 +152,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 	if (lastTag !== nextTag) {
 		replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
 	} else {
-		const dom = lastVNode.dom;
-		
-		Object.keys(dom.dataset).forEach((key) => delete dom.dataset[key] );
-		dom.style.cssText = "";
-		
+		const dom = lastVNode.dom;		
 		const lastProps = lastVNode.props;
 		const nextProps = nextVNode.props;
 		const lastChildren = lastVNode.children;
@@ -172,6 +168,15 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 		if (isSVG || (nextFlags & VNodeFlags.SvgElement)) {
 			isSVG = true;
 		}
+		
+		if(!isSVG && !nextFlags){
+			let htmlElement = nextVNode.dom as HTMLElement;
+			for(let prop in htmlElement.dataset){
+				delete htmlElement.dataset[prop]
+			}
+			htmlElement.style.cssText = "";
+		}
+		
 		if (lastChildren !== nextChildren) {
 			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom as Element, lifecycle, context, isSVG, isRecycling);
 		}
