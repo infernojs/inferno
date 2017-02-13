@@ -153,6 +153,10 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 		replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
 	} else {
 		const dom = lastVNode.dom;
+		
+		Object.keys(dom.dataset).forEach((key) => delete dom.dataset[key] );
+		dom.style.cssText = "";
+		
 		const lastProps = lastVNode.props;
 		const nextProps = nextVNode.props;
 		const lastChildren = lastVNode.children;
