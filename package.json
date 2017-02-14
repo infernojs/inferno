@@ -18,7 +18,7 @@
     "@types/node": "^7.0.5",
     "@types/sinon": "^1.16.34",
     "babel-cli": "^6.22.2",
-    "babel-core": "^6.22.1",
+    "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.10",
     "babel-plugin-inferno": "^1.9.0",
