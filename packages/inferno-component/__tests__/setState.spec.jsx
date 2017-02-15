@@ -29,7 +29,7 @@ describe('setState', () => {
 
 			checkSetState() {
 				const value = this.state.value;
-				expect(value).to.equal(50);
+				expect(value).to.equal('__NEWVALUE__');
 			}
 
 			componentWillReceiveProps(nextProps) {
@@ -48,12 +48,12 @@ describe('setState', () => {
 
 		class BaseComp extends Component {
 			state = {
-				value: 9
+				value: '__OLDVALUE__'
 			};
 
 			componentDidMount() {
 				this.setState({
-					value: 50
+					value: '__NEWVALUE__'
 				});
 			}
 
