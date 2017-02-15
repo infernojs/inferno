@@ -22,6 +22,6 @@
 		"removeComments": false
 	},
 	"include": [
-		"src/**/*"
+		"packages/**/*"
   ]
 }
