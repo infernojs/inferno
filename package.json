@@ -176,7 +176,8 @@
     "test:quick": "cross-env mocha",
     "tsc:dev": "lerna exec --no-sort --concurrency `ls -d packages/* | wc -l` -- tsc -w",
     "test:server": "cross-env nyc mocha",
-    "test": "npm run lint && npm run build && npm run test:browser && npm run test:server"
+    "test": "npm run lint && npm run build && npm run test:browser && npm run test:server",
+    "uninstall": "rm -rf node_modules && lerna exec -- rm -rf node_modules"
   },
   "pre-commit": [
     "lint",
