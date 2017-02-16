@@ -1,7 +1,6 @@
 {
 	"version": "2.1.4",
 	"compilerOptions": {
-		"baseUrl": ".",
 		"target": "es6",
 		"module": "es6",
 		"allowJs": false,
@@ -22,6 +21,6 @@
 		"removeComments": false
 	},
 	"include": [
-		"packages/**/*"
-  ]
+		"./src/**/*"
+	]
 }
