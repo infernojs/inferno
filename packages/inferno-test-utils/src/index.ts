@@ -19,7 +19,7 @@ import {
 // Type Checkers
 
 export function isVNode(inst: any): boolean {
-	return Boolean(inst) && isObject(inst) && isNumber(inst.flags);
+	return Boolean(inst) && isObject(inst) && isNumber(inst.flags) && inst.flags > 0;
 }
 
 export function isVNodeOfType(inst: VNode, type: string | Function): boolean {
