@@ -639,6 +639,12 @@ describe('Component lifecycle (JSX)', () => {
 		});
 
 		it('Should have width defined when html node is attached', () => {
+
+			if (global.usingJSDOM) {
+				// JSDOM mocks the ref node width to 0. Skip test
+				return;
+			}
+
 			let node = null;
 
 			class Hello extends Component {
