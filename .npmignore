@@ -7,6 +7,7 @@ coverage
 config
 dist/*.map
 test
+__tests__
 
 tsconfig.json
 tsconfig.*.json
