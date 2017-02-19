@@ -401,7 +401,7 @@ describe('Test Utils', () => {
 
 		it('should work with interpolated text', () => {
 			const predicate = sinon.spy();
-			const Hello = ({ who }) => <div>Hello, {who}!</div>
+			const Hello = ({ who }) => (<div>Hello, {who}!</div>);
 			const treeWithText = renderIntoDocument(<Hello who="world"/>);
 			assert.notCalled(predicate);
 			findAllInRenderedTree(treeWithText, predicate);
