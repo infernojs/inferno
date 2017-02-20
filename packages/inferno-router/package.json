@@ -12,6 +12,7 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "dist/inferno-router.node.js",
+  "jsnext:main": "dist-es/index.js",
   "module": "dist-es/index.js",
   "typings": "dist-es/index.d.ts",
   "keywords": [
