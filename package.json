@@ -50,7 +50,7 @@
     "glob": "^7.1.1",
     "history": "4.5.1",
     "jsdom": "^9.10.0",
-    "karma": "^1.4.1",
+    "karma": "^1.5.0",
     "karma-benchmark": "^0.7.1",
     "karma-benchmark-reporter": "^0.1.1",
     "karma-chai": "^0.1.0",
