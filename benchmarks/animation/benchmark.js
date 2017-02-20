@@ -189,7 +189,8 @@ var N = 200;
 // The Inferno implementation:
 (function(){
 
-	var createVNode = Inferno.createVNode; 
+	Inferno.options.recyclingEnabled = true; // Advanced optimisation
+	var createVNode = Inferno.createVNode;
 	var container = document.getElementById('grid');
 
 	var counter;

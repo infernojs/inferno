@@ -2,29 +2,31 @@ const path = require('path');
 
 module.exports = function (config) {
 	config.set({
-		basePath: path.join(__dirname, '..', '..'),
+		basePath: path.resolve(__dirname, '..', '..'),
 		browsers: [
 			'Chrome'
 		],
 		preprocessors: {
-			'src/**/*': ['webpack']
+			'packages/*/dist-es/**/*': ['webpack'],
+			'packages/*/__benchmarks__/**/*': ['webpack'],
+			'packages/*/__tests__/**/*': ['webpack']
 		},
 		webpack: {
 			module: {
 				loaders: [
 					{
-						test: /\.tsx?$/,
-						loaders: [ 'babel-loader', 'ts-loader' ],
-						exclude: /node_modules/
-					}, {
 						test: /\.jsx?$/,
 						loader: 'babel-loader',
-						exclude: /node_modules/
+						exclude: /node_modules/,
+						query: {
+							compact: false
+						}
 					}
 				]
 			},
 			resolve: {
-				extensions: [ '.js', '.jsx', '.ts', '.tsx' ]
+				extensions: [ '.js', '.jsx' ],
+				mainFields: [ 'module', 'main' ]
 			},
 			performance: {
 				hints: false
@@ -47,7 +49,8 @@ module.exports = function (config) {
 		browserNoActivityTimeout: 2 * 60 * 1000,
 		captureTimeout: 2 * 60 * 10000,
 		autoWatch: false,
-		singleRun: true
+		singleRun: true,
+		failOnEmptyTestSuite: false
 	});
 
 	const ci = String(process.env.CI).match(/^(1|true)$/gi);

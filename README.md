@@ -98,13 +98,13 @@ Inferno.render(<MyComponent />, document.body);
 
 ### More Examples
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/u7p19pvc/)
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/u7p19pvc/78/)
 
 ## Getting Started
 
 The best way to start to use Inferno is by using [Create Inferno App](https://github.com/infernojs/create-inferno-app). You can get setup and running within a few minutes.
 
-Alternatively, you can get started with Inferno using the [Inferno Boilerplate](https://github.com/infernojs/inferno-boilerplate) for a very simple setup. For a more advanced example demonstrating how Inferno might be used, we recommend trying out [Inferno Starter Project](https://github.com/nightwolfz/inferno-starter) by [nightwolfz](https://github.com/nightwolfz/).
+Alternatively, you can get started with Inferno using the [Inferno Boilerplate](https://github.com/infernojs/inferno-boilerplate) for a very simple setup. For a more advanced example demonstrating how Inferno might be used, we recommend trying out [Inferno Starter Project](https://github.com/nightwolfz/inferno-starter) by [nightwolfz](https://github.com/nightwolfz/). For using inferno to build a mobile app [Inferno Mobile Starter Project](https://github.com/Rudy-Zidan/inferno-mobile) by [Rudy-Zidan](https://github.com/Rudy-Zidan).
 
 Core package:
 
@@ -126,13 +126,13 @@ npm install --save inferno-router
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.0.7/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/1.2.2/inferno.min.js
 ```
 
 Or on unpkg.com:
 
 ```
-https://unpkg.com/inferno@1.0.7/dist/inferno.min.js
+https://unpkg.com/inferno@1.2.2/dist/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -178,9 +178,9 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 - Inferno doesn't have a fully synthetic event system like React does. Inferno has a partially synthetic event system, instead opting to only delegate certain events (such as `onClick`).
 - Inferno doesn't support React Native. Inferno was only designed for the browser/server with the DOM in mind.
 - Inferno doesn't support string refs – although this can be enabled using `inferno-compat`. We don't recommend using them, they are the source of many memory leaks and performance issues in real-world apps. Stick with function callback refs instead.
-- Inferno includes `render` on the main core package, rather than have a `InfernoDOM` package like React does. We used to do it that way, but we found people simply didn't like it given we don't support native. Furthermore, by not splitting them, we improved performance and bundle sizes.
+- Inferno includes `render` on the main core package, rather than have an `InfernoDOM` package like React does. We used to do it that way, but we found people simply didn't like it given we don't support native. Furthermore, by not splitting them, we improved performance and bundle sizes.
 - Inferno provides lifecycle events on functional components. This is a major win for people who prefer lightweight components rather than bloated ES2015 classes.
-- Inferno has is able to use the React Dev Tools extensions for Chrome/Firefox/etc to provide the same level of debugging experience to user of Inferno via `inferno-devtools`.
+- Inferno is able to use the React Dev Tools extensions for Chrome/Firefox/etc to provide the same level of debugging experience to user of Inferno via `inferno-devtools`.
 
 ## Differences from Preact
 
@@ -193,7 +193,7 @@ Inferno has its own [JSX Babel plugin](https://github.com/trueadm/babel-plugin-i
 ## Event System
 
 Like React, Inferno also uses a light-weight synthetic event system in certain places (although both event systems differ massively). Inferno's event system provides highly efficient delegation and an event helper called [`linkEvent`](https://github.com/infernojs/inferno/blob/master/README.md#linkevent-package-inferno).
- 
+
 One major difference between Inferno and React is that Inferno does not rename events or change how they work by default. Inferno only specifies that events should be camel cased, rather than lower case. Lower case events will bypass
 Inferno's event system in favour of using the native event system supplied by the browser. For example, when detecting changes on an `<input>` element, in React you'd use `onChange`, with Inferno you'd use `onInput` instead (the
 native DOM event is `oninput`).
@@ -215,11 +215,11 @@ More events are expected to be supported in future versions.
 
 ## Controlled Components
 
-In HTML, form elements such as `<input>`, `<textarea>`, and `<select>` typically maintain their own state and update it based on user input. 
+In HTML, form elements such as `<input>`, `<textarea>`, and `<select>` typically maintain their own state and update it based on user input.
 In Inferno, mutable state is typically kept in the state property of components, and only updated with `setState()`.
 
-We can combine the two by making the Inferno state be the "single source of truth". Then the Inferno component that renders a form also 
-controls what happens in that form on subsequent user input. An input form element whose value is controlled by 
+We can combine the two by making the Inferno state be the "single source of truth". Then the Inferno component that renders a form also
+controls what happens in that form on subsequent user input. An input form element whose value is controlled by
 Inferno in this way is called a "controlled component".
 
 ## Inferno Top-Level API
@@ -374,11 +374,11 @@ Inferno.render(newVNode, container);
 
 ### `findDOMNode` (package: `inferno`)
 
-Once enabled via `options.findDOMNodeEnabled()` at the start of an application, `findDOMNode()` is enabled.
+Once enabled via `Inferno.options.findDOMNodeEnabled = true;` at the start of an application, `findDOMNode()` is enabled.
 
 Note: we recommend using a `ref` callback on a component to find its instance, rather than using `findDOMNode()`. `findDOMNode()` cannot be used on functional components and it introduces a significant performance impact.
 
-If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements. 
+If a component has been mounted into the DOM, this returns the corresponding native browser DOM element. This method is useful for reading values out of the DOM, such as form field values and performing DOM measurements.
 In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode()` at all. When render returns null or false, `findDOMNode()` returns null.
 
 ### `linkEvent` (package: `inferno`)
@@ -438,23 +438,22 @@ This enables `findDOMNode()`. We strongly recommend against using this API as it
 
 #### - `recyclingEnabled` (default: `true`)
 
-This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon diposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
+This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon disposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
 
-## Functional component hooks
+## Functional component lifecycle events
 
-| Name                      | Triggered when                                                 | Arguments to callback           |
-| -----------               | --------------                                                 | -----------------------         |
+| Name                      | Triggered when                                                  | Arguments to callback           |
+| -----------               | --------------                                                  | -----------------------         |
 | `onComponentWillMount`    | a functional component is about to mount                        |                                 |
 | `onComponentDidMount`     | a functional component has mounted successfully                 | `domNode`                       |
 | `onComponentShouldUpdate` | a functional component has been triggered to updated            | `lastProps, nextProps`          |
 | `onComponentWillUpdate`   | a functional component is about to perform an update            | `lastProps, nextProps`          |
 | `onComponentDidUpdate`    | a functional component has performed an updated                 | `lastProps, nextProps`          |
-| `onComponentWillUnmount`  | a functional component is about to be unmounted                 |                                 |
+| `onComponentWillUnmount`  | a functional component is about to be unmounted                 | `domNode`                       |
 
-### Using hooks
+### Using functional lifecycle events
 
-It's simple to implicitly assign hooks to both DOM nodes and functional components.
-Please note: class components (ES2015 classes) from `inferno-component` **do not** support hooks.
+Functional lifecycle events must be explicitly assigned via props onto a functional component like shown below:
 
 ```javascript
 function mounted(domNode) {
@@ -468,7 +467,7 @@ function FunctionalComponent({ props }) {
 Inferno.render(<FunctionalComponent onComponentDidMount={ mounted } />, document.body);
 ```
 
-Hooks provide powerful lifecycle events to functional components, allowing you to build components without being forced to use ES2015 classes.
+Please note: class components (ES2015 classes) from `inferno-component` **do not** support the same lifecycle events (they have their own lifecycle events that work as methods on the class itself).
 
 ## Development vs Production modes
 
@@ -526,6 +525,11 @@ Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support
 - [Object.assign](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
 
 Potential solutions include using the [es5-shim](https://github.com/es-shims/es5-shim) for ES5 features and [es6-shim](https://github.com/paulmillr/es6-shim) from ES2015 features.
+
+As a quick drop-in solution, you may also use the [Polyfill.io](https://polyfill.io) service to pull in the required polyfills for the user's browser automatically by including the following line in your page:
+```
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise,Map,WeakMap,Object.keys,Object.assign"></script>
+```
 
 ### Custom namespaces
 

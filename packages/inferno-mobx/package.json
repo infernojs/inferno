@@ -1,6 +1,6 @@
 {
   "name": "inferno-mobx",
-  "version": "1.0.7",
+  "version": "1.3.0-rc.3",
   "license": "MIT",
   "description": "Official Inferno bindings for Mobx",
   "author": {
@@ -11,7 +11,9 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "inferno-mobx.js",
+  "main": "dist/inferno-mobx.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -24,10 +26,24 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "1.0.7",
-    "inferno-component": "1.0.7",
-    "inferno-create-class": "1.0.7",
-    "inferno-create-element": "1.0.7",
+    "hoist-non-inferno-statics": "^1.1.3",
+    "inferno": "^1.3.0-rc.3",
+    "inferno-component": "^1.3.0-rc.3",
+    "inferno-create-class": "^1.3.0-rc.3",
+    "inferno-create-element": "^1.3.0-rc.3",
+    "inferno-shared": "^1.3.0-rc.3",
     "mobx": "*"
+  },
+  "bundledDependencies": [
+    "inferno-shared"
+  ],
+  "rollup": {
+    "moduleGlobal": "Inferno.Mobx",
+    "moduleGlobals": {
+      "inferno": "Inferno",
+      "inferno-component": "Inferno.Component",
+      "inferno-create-element": "Inferno.createElement",
+      "inferno-create-class": "Inferno.createClass"
+    }
   }
 }

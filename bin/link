@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+
+const { ensureSymlinkSync } = require('fs-extra');
+const { resolve, join } = require('path');
+const rimraf = require('rimraf');
+
+const PROJECT_FOLDER = resolve(__dirname, '..');
+// TODO: Remove this once new inferno-vnode-flags is published
+rimraf.sync(join(PROJECT_FOLDER, 'node_modules', 'inferno'));
+rimraf.sync(join(PROJECT_FOLDER, 'node_modules', 'inferno-vnode-flags'));
+
+const cwd = process.cwd()
+
+ensureSymlinkSync(join(PROJECT_FOLDER, 'tsconfig.json'), join(cwd, 'tsconfig.json'));
+ensureSymlinkSync(join(PROJECT_FOLDER, '.npmignore'), join(cwd, '.npmignore'));
+
+ensureSymlinkSync(join(PROJECT_FOLDER, 'packages', 'inferno-vnode-flags'), join(PROJECT_FOLDER, 'node_modules', 'inferno-vnode-flags'));
+// ensureSymlinkSync(join(PROJECT_FOLDER, 'packages', 'inferno'), join(PROJECT_FOLDER, 'node_modules', 'inferno'));

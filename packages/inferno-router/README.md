@@ -29,7 +29,7 @@ npm install inferno-router
 ```js
 import Inferno from 'inferno';
 import { Router, Route, IndexRoute } from 'inferno-router';
-import { createBrowserHistory } from 'history';
+import createBrowserHistory from 'history/createBrowserHistory';
 
 const browserHistory = createBrowserHistory();
 
@@ -159,13 +159,13 @@ function Home({ params }) {
   // ...
 }
 
-function authorizedOnly(props, router) {
+function authorizedOnly({ props, router }) {
   if (!props.loggedIn) {
     router.push('/login');
   }
 }
 
-function sayGoodBye(props, router) {
+function sayGoodBye({ props, router }) {
   alert('Good bye!')
 }
 

@@ -1,11 +1,11 @@
 {
   "name": "inferno-test-utils",
-  "version": "1.0.7",
+  "version": "1.3.0-rc.3",
   "license": "MIT",
-  "description": "Provides test utilities to help with creating and maintaining tests for Inferno applications",
+  "description": "Suite of utilities for testing Inferno applications",
   "author": {
-    "name": "Dominic Gannaway",
-    "email": "dg@domgan.com"
+    "name": "Matthew Wagerfield",
+    "email": "matthew@wagerfield.com"
   },
   "bugs": {
     "url": "https://github.com/infernojs/inferno/issues"
@@ -17,11 +17,33 @@
     "inferno",
     "framework",
     "interfaces",
-    "user interfaces"
+    "tests",
+    "utils"
   ],
   "dependencies": {
-    "inferno": "1.0.7"
+    "inferno": "^1.3.0-rc.3",
+    "inferno-create-class": "^1.3.0-rc.3",
+    "inferno-create-element": "^1.3.0-rc.3",
+    "inferno-shared": "^1.3.0-rc.3",
+    "inferno-vnode-flags": "^1.3.0-rc.1"
   },
-  "main": "inferno-test-utils.js",
+  "devDependencies": {
+    "inferno-component": "^1.3.0-rc.3",
+    "inferno-server": "^1.3.0-rc.3"
+  },
+  "bundledDependencies": [
+    "inferno-shared",
+    "inferno-vnode-flags"
+  ],
+  "rollup": {
+    "moduleGlobal": "Inferno.TestUtils",
+    "moduleGlobals": {
+      "inferno": "Inferno",
+      "inferno-create-element": "Inferno.createElement"
+    }
+  },
+  "main": "dist/inferno-test-utils.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
   "repository": "https://github.com/infernojs/inferno"
 }

@@ -1,0 +1,25 @@
+{
+  "name": "inferno-shared",
+  "version": "1.3.0-rc.3",
+  "license": "MIT",
+  "description": "Helpers functions for Inferno",
+  "author": {
+    "name": "Dominic Gannaway",
+    "email": "dg@domgan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/infernojs/inferno/issues"
+  },
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "main": "dist/inferno-shared.node.js",
+  "module": "dist-es/index.js",
+  "typings": "dist-es/index.d.ts",
+  "keywords": [
+    "inferno",
+    "helpers"
+  ],
+  "repository": "https://github.com/infernojs/inferno",
+  "rollup": {
+    "moduleGlobal": "Inferno.Shared"
+  }
+}

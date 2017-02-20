@@ -1,1 +1,1 @@
-module.exports = require('../inferno-router').IndexRoute;
+module.exports = require('../').IndexRoute;

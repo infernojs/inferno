@@ -15,7 +15,7 @@ const browsers = {
 	},
 	'Windows 10': {
 		chrome: [ '53', '54', 'beta' ],
-		firefox: [ '49', '50', 'beta' ],
+		firefox: [ '49', '50' ],
 		MicrosoftEdge: [ '13', '14' ]
 	},
 	'OS X 10.11': {
@@ -42,8 +42,8 @@ class Config {
 }
 
 const config = new Config();
-for (const platform in browsers) {
-	for (const browser in browsers[platform]) {
+for (let platform in browsers) {
+	for (let browser in browsers[platform]) {
 		const versions = browsers[platform][browser];
 		for (let i = 0; i < versions.length; i += 1) {
 			config.add(platform, browser, versions[i]);
