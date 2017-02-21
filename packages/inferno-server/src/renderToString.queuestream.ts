@@ -113,6 +113,12 @@ export class RenderQueueStream extends Readable {
 
 	renderVNodeToQueue(vNode, context, firstChild, position) {
 
+		// In case render returns invalid stuff
+		if (isInvalid(vNode)) {
+			this.addToQueue('<!--!-->', position);
+			return;
+		}
+
 		const flags = vNode.flags;
 		const type = vNode.type;
 		const props = vNode.props || EMPTY_OBJ;
@@ -172,16 +178,9 @@ export class RenderQueueStream extends Readable {
 				const nextVNode = instance.render(props, vNode.context);
 				instance._pendingSetState = false;
 
-				// In case render returns invalid stuff
-				if (isInvalid(nextVNode)) {
-					this.addToQueue('<!--!-->', position);
-				}
 				this.renderVNodeToQueue(nextVNode, context, true, position);
 			} else {
 				const nextVNode = type(props, context);
-				if (isInvalid(nextVNode)) {
-					this.addToQueue('<!--!-->', position);
-				}
 				this.renderVNodeToQueue(nextVNode, context, true, position);
 			}
 		// If an element
