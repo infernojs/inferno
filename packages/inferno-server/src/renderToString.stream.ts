@@ -123,7 +123,7 @@ export class RenderStream extends Readable {
 						}
 						insertComment = true;
 					}
-					return this.renderNode(child, context, false)
+					return Promise.resolve(this.renderNode(child, context, false))
 						.then((_insertComment) => {
 							if (child.flags & VNodeFlags.Text) {
 								return true;
