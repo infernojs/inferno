@@ -132,13 +132,13 @@ describe('HyperScript (non-JSX)', () => {
 			render(
 				h('svg', null, h(
 					'filter', { id: 'blur' }, h(
-						'feGaussianBlur', { in: 'SourceGraphic', stdDeviation: 5 }
+						'feGaussianBlur', { in: 'SourceGraphic' }
 					)
 				)),
 				container
 			);
 
-			expect(container.innerHTML).to.eql('<svg><filter id="blur"><feGaussianBlur in="SourceGraphic" stdDeviation="5"></feGaussianBlur></filter></svg>');
+			expect(container.innerHTML).to.eql('<svg><filter id="blur"><feGaussianBlur in="SourceGraphic"></feGaussianBlur></filter></svg>');
 		});
 	}
 });
