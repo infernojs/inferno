@@ -56,7 +56,9 @@ function dispatchEvent(event, dom, items, count, eventData) {
 	if (count > 0) {
 		const parentDom = dom.parentNode;
 
-		if (parentDom || parentDom === document.body) {
+		// Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
+		// because the event listener is on document.body
+		if (parentDom && parentDom.disabled !== true || parentDom === document.body) {
 			dispatchEvent(event, parentDom, items, count, eventData);
 		}
 	}

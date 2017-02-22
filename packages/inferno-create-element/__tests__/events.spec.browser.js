@@ -101,6 +101,41 @@ describe('Basic event tests', () => {
 		expect(data.count).to.equal(2);
 	});
 
+	it('should not trigger click at all if target is disabled', () => {
+		let data = {
+			count: 0
+		};
+
+		function onClick(d) {
+			return function (e) {
+				data = { count: d.count + 1 };
+
+				renderIt();
+			};
+		}
+
+		function App(d) {
+			return createElement('button', {
+				disabled: 'disabled',
+				onClick: onClick(d)
+			}, createElement('span', null, 'Count ', d.count));
+		}
+
+		function renderIt() {
+			// eslint-disable-next-line
+			render(App(data), container);
+		}
+
+		renderIt();
+		const buttons = Array.prototype.slice.call(container.querySelectorAll('span'));
+
+		expect(container.firstChild.innerHTML).to.equal('<span>Count 0</span>');
+		expect(data.count).to.equal(0);
+		debugger;
+		buttons.forEach((button) => button.click());
+		expect(container.firstChild.innerHTML).to.equal('<span>Count 0</span>');
+	});
+
 	it('should not leak memory', () => {
 		const eventHandler = function () {
 		};
