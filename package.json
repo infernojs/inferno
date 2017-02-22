@@ -88,7 +88,7 @@
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-uglify": "^1.0.1",
     "sinon": "2.0.0-pre.5",
-    "ts-loader": "^2.0.0",
+    "ts-loader": "^2.0.1",
     "ts-node": "^2.0.0",
     "tslint": "^4.4.2",
     "typescript": "^2.1.5",
