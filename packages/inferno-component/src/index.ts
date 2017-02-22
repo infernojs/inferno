@@ -83,7 +83,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 	for (let stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
-	if (!component._pendingSetState && isBrowser) {
+	if (!component._pendingSetState && isBrowser && !(sync && component._blockRender)) {
 		if (sync || component._blockRender) {
 			component._pendingSetState = true;
 			applyState(component, false, callback);
@@ -91,8 +91,9 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 			addToQueue(component, false, callback);
 		}
 	} else {
-		component.state = Object.assign({}, component.state, component._pendingState);
+		Object.assign(component.state, component._pendingState);
 		component._pendingState = {};
+		component._pendingSetState = false;
 	}
 }
 
