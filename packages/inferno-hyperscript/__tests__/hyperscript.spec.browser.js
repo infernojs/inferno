@@ -126,16 +126,19 @@ describe('HyperScript (non-JSX)', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div id="myId"></div>'));
 	});
 
-	it('Should not lower case SVG tags', () => {
-		render(
-			h('svg', null, h(
-				'filter', {id: 'blur'}, h(
-					'feGaussianBlur', {in: 'SourceGraphic', stdDeviation: 5}
-				)
-			)),
-			container
-		);
 
-		expect(container.innerHTML).to.eql('<svg><filter id="blur"><feGaussianBlur in="SourceGraphic" stdDeviation="5"></feGaussianBlur></filter></svg>');
-	})
+	if (typeof global !== 'undefined' && !global.usingJSDOM) {
+		it('Should not lower case SVG tags', () => {
+			render(
+				h('svg', null, h(
+					'filter', { id: 'blur' }, h(
+						'feGaussianBlur', { in: 'SourceGraphic', stdDeviation: 5 }
+					)
+				)),
+				container
+			);
+
+			expect(container.innerHTML).to.eql('<svg><filter id="blur"><feGaussianBlur in="SourceGraphic" stdDeviation="5"></feGaussianBlur></filter></svg>');
+		});
+	}
 });
