@@ -41,8 +41,6 @@ export default function createElement<T>(
 		}
 	}
 	if (isString(name)) {
-		flags = VNodeFlags.HtmlElement;
-
 		switch (name) {
 			case 'svg':
 				flags = VNodeFlags.SvgElement;
@@ -57,6 +55,8 @@ export default function createElement<T>(
 				flags = VNodeFlags.SelectElement;
 				break;
 			default:
+				flags = VNodeFlags.HtmlElement;
+				break;
 		}
 
 		/*

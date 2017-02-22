@@ -131,7 +131,6 @@ describe('Basic event tests', () => {
 
 		expect(container.firstChild.innerHTML).to.equal('<span>Count 0</span>');
 		expect(data.count).to.equal(0);
-		debugger;
 		buttons.forEach((button) => button.click());
 		expect(container.firstChild.innerHTML).to.equal('<span>Count 0</span>');
 	});
