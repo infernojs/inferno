@@ -47,7 +47,7 @@ function parseTag(tag: string | null, props: any): string {
 		}
 		props.className = classes.join(' ');
 	}
-	return tagName ? tagName.toLowerCase() : 'div';
+	return tagName || 'div';
 }
 
 function isChildren(x: any): boolean {
