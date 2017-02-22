@@ -49,9 +49,7 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 
 - [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
 - [UI Bench](https://localvoid.github.io/uibench/)
-- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
-- [dbmonster (lazy optimisation)](http://infernojs.org/benchmarks/dbmonster-lazy/)
-- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
+- [dbmonster](https://rawgit.com/infernojs/dbmonster-inferno/master/index.html)
 - [JS Web Frameworks Benchmark - Round 4](http://stefankrause.net/js-frameworks-benchmark4/webdriver-ts/table.html)
 
 ## Code Example
