@@ -138,7 +138,7 @@ describe('HyperScript (non-JSX)', () => {
 				container
 			);
 
-			expect(container.innerHTML).to.eql('<svg><filter id="blur"><feGaussianBlur in="SourceGraphic"></feGaussianBlur></filter></svg>');
+			expect(container.innerHTML).to.equal(innerHTML('<svg><filter id="blur"><feGaussianBlur in="SourceGraphic"></feGaussianBlur></filter></svg>'));
 		});
 	}
 });
