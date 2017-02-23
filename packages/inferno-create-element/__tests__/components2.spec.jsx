@@ -49,6 +49,21 @@ describe('Components (JSX) #2', () => {
 			}
 		}
 
+		class ComponentBWithStateChange extends Component {
+			componentWillMount() {
+				this.setStateSync({
+					text: 'newText'
+				});
+
+				this.setStateSync({
+					text: 'newText2'
+				});
+			}
+			render() {
+				return <div><span>{this.state.text}</span></div>;
+			}
+		}
+
 		function ComA() {
 			return <div><span>Something</span></div>;
 		}
@@ -80,6 +95,19 @@ describe('Components (JSX) #2', () => {
 			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
 			expect(container.firstChild === trackElemDiv).to.equal(true);
 			expect(container.firstChild.firstChild === trackElemSpan).to.equal(true);
+		});
+
+		it('Should not crash when ComB does setState while changing', () => {
+			render(<ComponentA />, container);
+			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+			const trackElemDiv = container.firstChild;
+			const trackElemSpan = container.firstChild.firstChild;
+
+			render(<ComponentBWithStateChange />, container);
+			// These are same but not equal
+			expect(container.innerHTML).to.equal(innerHTML('<div><span>newText2</span></div>'));
+			expect(container.firstChild === trackElemDiv).to.equal(false);
+			expect(container.firstChild.firstChild === trackElemSpan).to.equal(false);
 		});
 	});
 
