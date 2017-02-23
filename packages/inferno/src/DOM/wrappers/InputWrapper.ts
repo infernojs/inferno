@@ -133,10 +133,17 @@ export function applyValue(vNode, dom) {
 		dom.defaultValue = defaultValue + '';
 	}
 	if (isCheckedType(type)) {
+		const defaultChecked = props.defaultChecked;
+
 		if (hasValue) {
 			dom.value = value;
 		}
-		dom.checked = checked;
+		if (!isNullOrUndef(checked)) {
+			dom.checked = checked;
+		}
+		if (!isNullOrUndef(defaultChecked)) {
+			dom.defaultChecked = !!defaultChecked;
+		}
 		if (type === 'radio' && props.name) {
 			handleAssociatedRadioInputs(props.name);
 		}
