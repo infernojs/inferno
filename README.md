@@ -1,4 +1,4 @@
-<p align="center"><img src="http://infernojs.org/img/inferno.png" width="150px"></p>
+<p align="center"><img src="https://www.infernojs.org/assets/infernojs-logo.png" width="150px"></p>
 <p>&nbsp;</p>
 
 [![Build Status](https://img.shields.io/travis/infernojs/inferno/master.svg?style=flat-square)](https://travis-ci.org/infernojs/inferno/branches)
