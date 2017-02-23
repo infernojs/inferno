@@ -31,7 +31,6 @@
   },
   "main": "dist/inferno.node.js",
   "jsnext:main": "dist-es/index.js",
-  "module": "dist-es/index.js",
   "typings": "dist-es/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
