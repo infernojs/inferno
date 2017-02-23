@@ -138,7 +138,9 @@ describe('HyperScript (non-JSX)', () => {
 				container
 			);
 
-			expect(container.innerHTML).to.equal(innerHTML('<svg><filter id="blur"><feGaussianBlur in="SourceGraphic"></feGaussianBlur></filter></svg>'));
+			expect(container.firstChild.firstChild.firstChild.tagName).to.eql('feGaussianBlur'); // tag name is case sensitive
+			expect(container.firstChild.firstChild.tagName).to.eql('filter');
+			expect(container.firstChild.tagName).to.eql('svg');
 		});
 	}
 });
