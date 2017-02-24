@@ -3,8 +3,7 @@
 - Check that the bug has not been fixed in the latest development version. Use our [CDN @ Edge](http://cdn.infernojs.org/edge/inferno.js).
 - Check that the issue has not been brought up before on [Github issues](http://www.github.com/infernojs/inferno/issues).
 
-**If you can, please distill your problem down and include a JSFiddle example for illustration.**
-
+**If you can, please distill your problem down and include a JSFiddle example for illustration. Also when requesting bug fix please include at least one test to avoid regression.**
 ---
 
 ## Issue Template
