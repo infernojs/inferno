@@ -1,4 +1,5 @@
 import { createVNode, createTextVNode } from '../dist-es/core/VNodes';
+import { render } from '../dist-es/index';
 
 suite('createVNode', () => {
 	/* Do not compare results between each other, these only measure OPS / sec for different structures */
@@ -200,5 +201,31 @@ suite('createVNode', () => {
 				[[[[[createVNode(2, 'div', null,'c')]]]]]
 			]]]]]])
 		]);
+	});
+
+	benchmark('Changing attributes', () => {
+		var container = document.createElement('div');
+		// Mount
+		render(createVNode(2, 'div', {
+			className: 'foo bar',
+			style: {
+				color: 'red',
+				float: 'left'
+			},
+			'data-attribute': 'data-value',
+			'custom-stuff': 'custom',
+		}), container);
+
+		// Change
+		render(createVNode(2, 'div', {
+			className: 'bar',
+			style: {
+				color: 'blue'
+			},
+			'data-attribute': 'data-value'
+		}), container);
+
+		// Remove all
+		render(createVNode(2, 'div', null), container);
 	});
 });

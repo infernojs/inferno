@@ -433,4 +433,35 @@ describe('CSS style properties', () => {
 		render(template(), container);
 		expect(container.innerHTML).to.equal(innerHTML('<div style="width: 200px; height: 200px; background-color: red;"></div>'));
 	});
+
+	// JSDom is buggy
+	if (typeof global !== 'undefined' && !global.usingJSDOM) {
+		it('Should support changing values and properties', () => {
+			render(createElement('div', {
+				style: {
+					width: '200px',
+					height: '10rem',
+					backgroundColor: 'blue'
+				}
+			}), container);
+			expect(container.innerHTML).to.equal(innerHTML('<div style="width: 200px; height: 10rem; background-color: blue;"></div>'));
+
+			render(createElement('div', {
+				style: {
+					height: 'initial',
+					color: 'green',
+					backgroundColor: 'red'
+				}
+			}), container);
+			expect(container.innerHTML).to.equal(innerHTML('<div style="height: initial; background-color: red; color: green;"></div>'));
+
+			render(createElement('div', {
+				style: 'float: left;'
+			}), container);
+			expect(container.innerHTML).to.equal(innerHTML('<div style="float: left;"></div>'));
+
+			render(createElement('div', null), container);
+			expect(container.innerHTML).to.equal(innerHTML('<div></div>'));
+		});
+	}
 });

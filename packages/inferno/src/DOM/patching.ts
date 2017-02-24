@@ -903,8 +903,10 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 // We are assuming here that we come from patchProp routine
 // -nextAttrValue cannot be null or undefined
 export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string | Styles, dom) {
+	const domStyle = dom.style;
+
 	if (isString(nextAttrValue)) {
-		dom.style.cssText = nextAttrValue;
+		domStyle.cssText = nextAttrValue;
 		return;
 	}
 
@@ -913,16 +915,16 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 		const value = nextAttrValue[style];
 
 		if (isNumber(value) && !isUnitlessNumber[style]) {
-			dom.style[style] = value + 'px';
+			domStyle[style] = value + 'px';
 		} else {
-			dom.style[style] = value;
+			domStyle[style] = value;
 		}
 	}
 
 	if (!isNullOrUndef(lastAttrValue)) {
 		for (let style in lastAttrValue as Styles) {
 			if (isNullOrUndef(nextAttrValue[style])) {
-				dom.style[style] = '';
+				domStyle[style] = '';
 			}
 		}
 	}

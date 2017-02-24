@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+    <title>Inferno CSS transform example</title>
+</head>
+<body>
+<div id="app"></div>
+<div id="app1"></div>
+<script>
+	window.process = {
+		env: {
+			NODE_ENV: 'production'
+		}
+	};
+</script>
+<script src="../../packages/inferno/dist/inferno.js"></script>
+<script>
+	"use strict";
+	var container = document.getElementById('app1');
+	var render = Inferno.render;
+	var createVNode = Inferno.createVNode;
+
+	function loop() {
+		// Mount
+		render(createVNode(2, 'div', {
+			className: 'foo bar',
+			style: {
+				color: 'red',
+				float: 'left'
+			},
+			'data-attribute': 'data-value',
+			'custom-stuff': 'custom',
+		}), container);
+
+		// Change
+		render(createVNode(2, 'div', {
+			className: 'bar',
+			style: {
+				color: 'blue'
+			},
+			'data-attribute': 'data-value'
+		}), container);
+
+		// Remove all
+		render(createVNode(2, 'div', null), container);
+    }
+
+    setInterval(loop, 1000);
+</script>
+</body>
+</html>
