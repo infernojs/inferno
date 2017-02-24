@@ -88,7 +88,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
 			props = {};
 		}
 
-		if (restParamLength === 3) {
+		if (restParamLength === 1) {
 			children = arguments[2];
 		} else {
 			children = [];

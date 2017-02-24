@@ -60,6 +60,30 @@ describe('cloneVNode (JSX)', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div><span>arr3a</span><span>arr3b</span></div>'));
 	});
 
+	it('Should support multiple parameters as children', () => {
+		const node = cloneVNode(<div/>, null, <span>arr3a</span>, <span>arr3b</span>, <span>arr3c</span>);
+		render(node, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>'));
+	});
+
+	it('Should support multiple nodes as children inside array', () => {
+		const node = cloneVNode(<div/>, null, [ <span>arr3a</span>, <span>arr3b</span>, <span>arr3c</span> ]);
+		render(node, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div><span>arr3a</span><span>arr3b</span><span>arr3c</span></div>'));
+	});
+
+	it('Should support single node as children', () => {
+		const node = cloneVNode(<div/>, null, <span>arr3a</span>);
+		render(node, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div><span>arr3a</span></div>'));
+	});
+
+	it('Should support single node as children inside array', () => {
+		const node = cloneVNode(<div/>, null, [<span>arr3a</span>]);
+		render(node, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div><span>arr3a</span></div>'));
+	});
+
 	it('should clone a basic element with null children', () => {
 		const node = cloneVNode(<div/>, { children: null });
 		render(node, container);
