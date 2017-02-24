@@ -434,34 +434,45 @@ describe('CSS style properties', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div style="width: 200px; height: 200px; background-color: red;"></div>'));
 	});
 
-	// JSDom is buggy
-	if (typeof global !== 'undefined' && !global.usingJSDOM) {
-		it('Should support changing values and properties', () => {
-			render(createElement('div', {
-				style: {
-					width: '200px',
-					height: '10rem',
-					backgroundColor: 'blue'
-				}
-			}), container);
-			expect(container.innerHTML).to.equal(innerHTML('<div style="width: 200px; height: 10rem; background-color: blue;"></div>'));
+	it('Should support changing values and properties', () => {
+		render(createElement('div', {
+			style: {
+				width: 200,
+				float: 'left',
+				backgroundColor: 'blue'
+			}
+		}), container);
+		// Order of attributes vary between different browser versions.
+		// Check each property by hand
+		let style = container.firstChild.style;
 
-			render(createElement('div', {
-				style: {
-					height: 'initial',
-					color: 'green',
-					backgroundColor: 'red'
-				}
-			}), container);
-			expect(container.innerHTML).to.equal(innerHTML('<div style="height: initial; background-color: red; color: green;"></div>'));
+		expect(style.width).to.eql('200px');
+		expect(style.backgroundColor).to.eql('blue');
+		expect(style.color).to.eql('');
+		expect(style.float).to.eql('left');
 
-			render(createElement('div', {
-				style: 'float: left;'
-			}), container);
-			expect(container.innerHTML).to.equal(innerHTML('<div style="float: left;"></div>'));
+		render(createElement('div', {
+			style: {
+				float: 'right',
+				color: 'green',
+				backgroundColor: 'red'
+			}
+		}), container);
 
-			render(createElement('div', null), container);
-			expect(container.innerHTML).to.equal(innerHTML('<div></div>'));
-		});
-	}
+		style = container.firstChild.style;
+
+		expect(style.width).to.eql('');
+		expect(style.backgroundColor).to.eql('red');
+		expect(style.color).to.eql('green');
+		expect(style.float).to.eql('right');
+
+		render(createElement('div', {
+			style: 'float: left;'
+		}), container);
+
+		expect(container.innerHTML).to.equal(innerHTML('<div style="float: left;"></div>'));
+
+		render(createElement('div', null), container);
+		expect(container.innerHTML).to.equal(innerHTML('<div></div>'));
+	});
 });
