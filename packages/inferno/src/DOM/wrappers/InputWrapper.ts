@@ -136,7 +136,9 @@ export function applyValue(vNode, dom) {
 		if (hasValue) {
 			dom.value = value;
 		}
-		dom.checked = checked;
+		if (!isNullOrUndef(checked)) {
+			dom.checked = checked;
+		}
 		if (type === 'radio' && props.name) {
 			handleAssociatedRadioInputs(props.name);
 		}
