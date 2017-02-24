@@ -88,13 +88,12 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 			return dom;
 		}
 	}
-	const tag = vNode.type;
 	const flags = vNode.flags;
 
 	if (isSVG || (flags & VNodeFlags.SvgElement)) {
 		isSVG = true;
 	}
-	const dom = documentCreateElement(tag, isSVG);
+	const dom = documentCreateElement(vNode.type, isSVG);
 	const children = vNode.children;
 	const props = vNode.props;
 	const events = vNode.events;

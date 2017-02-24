@@ -159,7 +159,6 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 		const nextChildren = nextVNode.children;
 		const lastFlags = lastVNode.flags;
 		const nextFlags = nextVNode.flags;
-		const lastRef = lastVNode.ref;
 		const nextRef = nextVNode.ref;
 		const lastEvents = lastVNode.events;
 		const nextEvents = nextVNode.events;
@@ -210,7 +209,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 			patchEvents(lastEvents, nextEvents, dom as Element);
 		}
 		if (nextRef) {
-			if (lastRef !== nextRef || isRecycling) {
+			if (lastVNode.ref !== nextRef || isRecycling) {
 				mountRef(dom as Element, nextRef, lifecycle);
 			}
 		}
