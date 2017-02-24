@@ -26,3 +26,5 @@ packages/*/tsconfig.*
 packages/*/.npmignore
 packages/*/dist-es
 packages/*/dist
+test/data/baseline.json
+test/data/result.json

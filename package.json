@@ -78,7 +78,7 @@
     "pre-commit": "^1.2.2",
     "progress": "^1.1.8",
     "redux": "^3.6.0",
-    "rimraf": "^2.6.0",
+    "rimraf": "^2.6.1",
     "rollup": "0.41.4",
     "rollup-plugin-alias": "^1.2.0",
     "rollup-plugin-babel": "^2.7.1",

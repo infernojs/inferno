@@ -203,7 +203,7 @@ suite('createVNode', () => {
 		]);
 	});
 
-	benchmark('Changing attributes', () => {
+	benchmark('Changing attributes (includes render)', () => {
 		var container = document.createElement('div');
 		// Mount
 		render(createVNode(2, 'div', {

@@ -98,7 +98,6 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 }
 
 function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean): Element {
-	const tag = vNode.type;
 	const children = vNode.children;
 	const props = vNode.props;
 	const events = vNode.events;
@@ -108,7 +107,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 	if (isSVG || (flags & VNodeFlags.SvgElement)) {
 		isSVG = true;
 	}
-	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== tag) {
+	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== vNode.type) {
 		if (process.env.NODE_ENV !== 'production') {
 			warning('Inferno hydration: Server-side markup doesn\'t match client-side markup or Initial render target is not empty');
 		}

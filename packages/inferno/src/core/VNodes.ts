@@ -1,7 +1,6 @@
 import {
 	isArray,
 	isInvalid,
-	isNull,
 	isNullOrUndef,
 	isStatefulComponent,
 	isUndefined
@@ -78,15 +77,26 @@ export function createVNode (
 	return vNode;
 }
 
-export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: InfernoChildren[]): VNode {
-	let children: any = _children;
-	if (_children.length > 0 && !isNull(_children[0])) {
+export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
+	let restParamLength = arguments.length - 2; // children
+	let children;
+
+	// Manually handle restParam for children, because babel always creates array
+	// Not creating array allows us to fastPath out of recursion
+	if (restParamLength > 0) {
 		if (!props) {
 			props = {};
 		}
-		if (_children.length === 1) {
-			children = _children[0];
+
+		if (restParamLength === 3) {
+			children = arguments[2];
+		} else {
+			children = [];
+			while ( restParamLength-- > 0 ) {
+				children[ restParamLength ] = arguments[ restParamLength + 2 ]
+			}
 		}
+
 		if (isUndefined(props.children)) {
 			props.children = children as VNode;
 		} else {
@@ -106,7 +116,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 			}
 		}
 	}
-	children = null;
+
 	let newVNode;
 
 	if (isArray(vNodeToClone)) {
