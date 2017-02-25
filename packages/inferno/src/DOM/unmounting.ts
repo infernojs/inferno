@@ -39,19 +39,12 @@ function unmountVoidOrText(vNode: VNode, parentDom: Element) {
 	}
 }
 
-const alreadyUnmounted = new WeakMap();
-
 export function unmountComponent(vNode: VNode, parentDom: Element, lifecycle: LifecycleClass, canRecycle: boolean, isRecycling: boolean) {
 	const instance = vNode.children as any;
 	const flags = vNode.flags;
 	const isStatefulComponent = flags & VNodeFlags.ComponentClass;
 	const ref = vNode.ref as any;
 	const dom = vNode.dom;
-
-	if (alreadyUnmounted.has(vNode) && !isRecycling && !parentDom) {
-		return;
-	}
-	alreadyUnmounted.set(vNode, true);
 
 	if (!isRecycling) {
 		if (isStatefulComponent) {
@@ -96,11 +89,6 @@ export function unmountElement(vNode: VNode, parentDom: Element, lifecycle: Life
 	const dom = vNode.dom;
 	const ref = vNode.ref as any;
 	const events = vNode.events;
-
-	if (alreadyUnmounted.has(vNode) && !isRecycling && !parentDom) {
-		return;
-	}
-	alreadyUnmounted.set(vNode, true);
 
 	if (ref && !isRecycling) {
 		unmountRef(ref);

@@ -100,7 +100,7 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
-	if (!isNull(children)) {
+	if (!isInvalid(children)) {
 		if (isStringOrNumber(children)) {
 			setTextContent(dom, children as string | number);
 		} else if (isArray(children)) {

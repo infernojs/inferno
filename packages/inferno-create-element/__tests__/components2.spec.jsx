@@ -93,8 +93,9 @@ describe('Components (JSX) #2', () => {
 
 			render(<ComB />, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
-			expect(container.firstChild === trackElemDiv).to.equal(true);
-			expect(container.firstChild.firstChild === trackElemSpan).to.equal(true);
+
+			expect(container.firstChild === trackElemDiv).to.equal(false);
+			expect(container.firstChild.firstChild === trackElemSpan).to.equal(false);
 		});
 
 		it('Should not crash when ComB does setState while changing', () => {

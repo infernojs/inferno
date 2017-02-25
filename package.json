@@ -11,7 +11,7 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "devDependencies": {
-    "@types/benchmark": "^1.0.30",
+    "@types/benchmark": "^1",
     "@types/chai": "^3.4.35",
     "@types/history": "^4.5.0",
     "@types/mocha": "^2.2.39",

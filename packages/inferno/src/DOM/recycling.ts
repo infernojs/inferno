@@ -20,10 +20,10 @@ interface Pools {
 
 export function recycleElement(vNode: VNode, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	const tag = vNode.type as string | null;
-	const key = vNode.key;
 	const pools: Pools = elementPools.get(tag);
 
 	if (!isUndefined(pools)) {
+		const key = vNode.key;
 		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
 
 		if (!isUndefined(pool)) {
@@ -65,10 +65,10 @@ export function poolElement(vNode: VNode) {
 
 export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	const type = vNode.type as Function;
-	const key = vNode.key;
 	const pools: Pools = componentPools.get(type);
 
 	if (!isUndefined(pools)) {
+		const key = vNode.key;
 		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
 
 		if (!isUndefined(pool)) {
@@ -97,8 +97,6 @@ export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, contex
 }
 
 export function poolComponent(vNode: VNode) {
-	const type = vNode.type;
-	const key = vNode.key;
 	const hooks = vNode.ref as Refs;
 	const nonRecycleHooks = hooks && (
 		hooks.onComponentWillMount ||
@@ -110,6 +108,8 @@ export function poolComponent(vNode: VNode) {
 	if (nonRecycleHooks) {
 		return;
 	}
+	const type = vNode.type;
+	const key = vNode.key;
 	let pools: Pools = componentPools.get(type as Function);
 
 	if (isUndefined(pools)) {

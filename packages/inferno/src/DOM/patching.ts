@@ -40,14 +40,12 @@ import {
 	mountArrayChildren,
 	mountComponent,
 	mountElement,
-	mountFunctionalComponentCallbacks,
 	mountRef,
 	mountText,
 	mountVoid
 } from './mounting';
 import {
 	appendChild,
-	createFunctionalComponentInput,
 	insertOrAppend,
 	isKeyed,
 	removeAllChildren,
@@ -277,7 +275,6 @@ function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildre
 export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleClass, context, isSVG: boolean, isClass: number, isRecycling: boolean) {
 	const lastType = lastVNode.type;
 	const nextType = nextVNode.type;
-	const nextProps = nextVNode.props || EMPTY_OBJ;
 	const lastKey = lastVNode.key;
 	const nextKey = nextVNode.key;
 	const defaultProps = nextType.defaultProps;
@@ -289,26 +286,13 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 		nextVNode.props = props;
 	}
 
-	if (lastType !== nextType) {
-		if (isClass) {
-			replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
-		} else {
-			const lastInput = lastVNode.children._lastInput || lastVNode.children;
-			const nextInput = createFunctionalComponentInput(nextVNode, nextType, nextProps, context);
-
-			unmount(lastVNode, null, lifecycle, false, isRecycling);
-			patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
-			const dom = nextVNode.dom = nextInput.dom;
-
-			nextVNode.children = nextInput;
-			mountFunctionalComponentCallbacks(nextVNode.ref, dom, lifecycle);
-		}
+	if (lastType !== nextType || lastKey !== nextKey) {
+		replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
+		return false;
 	} else {
+		const nextProps = nextVNode.props || EMPTY_OBJ;
+
 		if (isClass) {
-			if (lastKey !== nextKey) {
-				replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
-				return false;
-			}
 			const instance = lastVNode.children;
 
 			if (instance._unmounted) {
