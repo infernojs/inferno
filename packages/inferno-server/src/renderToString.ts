@@ -1,5 +1,4 @@
 import {
-	copyPropsTo,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -44,12 +43,6 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 
 	if (flags & VNodeFlags.Component) {
 		const isClass = flags & VNodeFlags.ComponentClass;
-
-		// Primitive node doesn't have defaultProps, only Component
-		if (!isNullOrUndef(type.defaultProps)) {
-			copyPropsTo(type.defaultProps, props);
-			vNode.props = props;
-		}
 
 		if (isClass) {
 			const instance = new type(props, context);

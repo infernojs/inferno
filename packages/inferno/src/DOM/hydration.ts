@@ -1,10 +1,8 @@
 import {
-	copyPropsTo,
 	isArray,
 	isNull,
 	isObject,
 	isStringOrNumber,
-	isUndefined,
 	LifecycleClass,
 	throwError,
 	warning
@@ -64,17 +62,7 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 
 	vNode.dom = dom;
 
-	const defaultProps = (type as any).defaultProps;
-	let props;
-
-	if (!isUndefined(defaultProps)) {
-		// When defaultProps are used we need to create new Object
-		props = vNode.props || {};
-		copyPropsTo(defaultProps, props);
-		vNode.props = props;
-	} else {
-		props = vNode.props || EMPTY_OBJ;
-	}
+	const props = vNode.props || EMPTY_OBJ;
 
 	if (isClass) {
 		const _isSVG = dom.namespaceURI === svgNS;

@@ -164,7 +164,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 }
 
 export default class Component<P, S> implements ComponentLifecycle<P, S> {
-	static defaultProps: any;
+	static defaultProps: {};
 	state: S = {} as S;
 	refs: any = {};
 	props: P & Props;

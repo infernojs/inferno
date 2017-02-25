@@ -58,6 +58,23 @@ export function createVNode (
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
+
+	// Primitive node doesn't have defaultProps, only Component
+	if (flags & VNodeFlags.Component) {
+		// set default props
+		const defaultProps = (type as any).defaultProps;
+
+		if (!isNullOrUndef(defaultProps)) {
+			props = props || {}; // Create new object if only defaultProps given
+
+			for (let prop in defaultProps) {
+				if (isUndefined(props[prop])) {
+					props[prop] = defaultProps[prop];
+				}
+			}
+		}
+	}
+
 	const vNode: VNode = {
 		children: isUndefined(children) ? null : children,
 		dom: null,

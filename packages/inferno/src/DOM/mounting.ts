@@ -1,5 +1,4 @@
 import {
-	copyPropsTo,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -160,17 +159,7 @@ export function mountComponent(vNode: VNode, parentDom: Element, lifecycle: Life
 		}
 	}
 	const type = vNode.type;
-	const defaultProps = (type as any).defaultProps;
-	let props;
-	if (!isUndefined(defaultProps)) {
-		// When defaultProps are used we need to create new Object
-		props = vNode.props || {};
-		copyPropsTo(defaultProps, props);
-		vNode.props = props;
-	} else {
-		props = vNode.props || EMPTY_OBJ;
-	}
-
+	const props = vNode.props || EMPTY_OBJ;
 	const ref = vNode.ref;
 	let dom;
 	if (isClass) {

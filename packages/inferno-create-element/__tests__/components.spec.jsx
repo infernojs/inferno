@@ -2254,11 +2254,11 @@ describe('Components (JSX)', () => {
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="A" id="B">Hello C!</div>'));
 		});
 
-		// it.skip('should mount child component with its defaultProps', () => {
-		// 	const Parent = (props) => <div>{props.children.props.a}</div>;
-		// 	render(<Parent><Comp1 c="C" /></Parent>, container);
-		// 	expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>A</div>'));
-		// });
+		it('should mount child component with its defaultProps', () => {
+			const Parent = (props) => <div>{props.children.props.a}</div>;
+			render(<Parent><Comp1 c="C" /></Parent>, container);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>A</div>'));
+		});
 
 		it('should patch component with defaultProps', () => {
 			render(<Comp1 c="C"/>, container);
@@ -2271,6 +2271,39 @@ describe('Components (JSX)', () => {
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="aye" id="bee">Hello C1!</div>'));
 			render(<Comp1 c="C2"/>, container);
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="A" id="B">Hello C2!</div>'));
+		});
+
+		it('should as per React: Have childrens defaultProps set before children is mounted', () => {
+			let childrenPropertABeforeMount = 'A';
+			class Parent extends Component {
+				render() {
+					expect(this.props.children.props.a).to.eql(childrenPropertABeforeMount);
+
+					return (
+						<div>
+							{this.props.children}
+						</div>
+					);
+				}
+			}
+
+			render(
+				<Parent>
+					<Comp1 />
+				</Parent>, container
+			);
+
+			expect(container.innerHTML).to.eql(innerHTML('<div><div class="A" id="B">Hello !</div></div>'));
+
+			childrenPropertABeforeMount = 'ABCD';
+
+			render(
+				<Parent>
+					<Comp1 a="ABCD" />
+				</Parent>, container
+			);
+
+			expect(container.innerHTML).to.eql(innerHTML('<div><div class="ABCD" id="B">Hello !</div></div>'));
 		});
 	});
 

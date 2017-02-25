@@ -1,5 +1,4 @@
 import {
-	copyPropsTo,
 	isArray,
 	isAttrAnEvent,
 	isFunction,
@@ -277,14 +276,6 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 	const nextType = nextVNode.type;
 	const lastKey = lastVNode.key;
 	const nextKey = nextVNode.key;
-	const defaultProps = nextType.defaultProps;
-
-	if (!isUndefined(defaultProps)) {
-		// When defaultProps are used we need to create new Object
-		const props = nextVNode.props || {};
-		copyPropsTo(defaultProps, props);
-		nextVNode.props = props;
-	}
 
 	if (lastType !== nextType || lastKey !== nextKey) {
 		replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);

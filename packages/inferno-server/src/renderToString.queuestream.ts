@@ -1,5 +1,4 @@
 import {
-	copyPropsTo,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -127,11 +126,6 @@ export class RenderQueueStream extends Readable {
 		// Handles a component render
 		if (flags & VNodeFlags.Component) {
 			const isClass = flags & VNodeFlags.ComponentClass;
-			// Primitive node doesn't have defaultProps, only Component
-			if (!isNullOrUndef(type.defaultProps)) {
-				copyPropsTo(type.defaultProps, props);
-				vNode.props = props;
-			}
 			// Render the
 			if (isClass) {
 				const instance = new type(props, context);

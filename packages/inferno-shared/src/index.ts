@@ -93,11 +93,3 @@ Lifecycle.prototype.trigger = function trigger () {
 		this.listeners[i]();
 	}
 };
-
-export function copyPropsTo(copyFrom: {}, copyTo: {}) {
-	for (let prop in copyFrom) {
-		if (isUndefined(copyTo[prop])) {
-			copyTo[prop] = copyFrom[prop];
-		}
-	}
-}
