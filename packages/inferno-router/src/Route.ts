@@ -15,6 +15,14 @@ export interface IRouteProps {
 	getComponent(nextState: any, callback: (error: any, comp: Component<any, any>) => void): void;
 }
 
+export interface IPlainRouteConfig {
+	path: string;
+	component: Component<any, any>;
+	indexRoute?: IPlainRouteConfig;
+	childRoutes?: IPlainRouteConfig | IPlainRouteConfig[];
+	children?: VNode[];
+}
+
 export default class Route extends Component<IRouteProps, any> {
 	constructor(props?: IRouteProps, context?: any) {
 		super(props, context);
