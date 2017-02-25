@@ -5,6 +5,7 @@ import IndexRoute from './IndexRoute';
 import Redirect from './Redirect';
 import Router from './Router';
 import match from './match';
+import createRoutes, {IPlainRouteConfig} from './createRoutes';
 import RouterContext from './RouterContext';
 import { VNode } from 'inferno';
 
@@ -18,7 +19,9 @@ export {
 	RouterContext,
 	Link,
 	IndexLink,
-	match
+	match,
+	createRoutes,
+	IPlainRouteConfig
 };
 
 export default {
@@ -30,5 +33,6 @@ export default {
 	RouterContext,
 	Link,
 	IndexLink,
-	match
+	match,
+	createRoutes
 };
