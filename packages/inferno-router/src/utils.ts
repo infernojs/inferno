@@ -1,7 +1,4 @@
-import { VNode } from 'inferno';
-import createElement from 'inferno-create-element';
 import { isArray, isString } from 'inferno-shared';
-import Route, { IPlainRouteConfig } from './Route';
 
 export const emptyObject = {};
 
@@ -122,43 +119,3 @@ function flattenArray(oldArray, newArray) {
 		}
 	}
 }
-
-/**
- * Helper function for parsing plain route configurations
- */
-const handleChildRoute  = (childRouteNode: IPlainRouteConfig): VNode => handleRouteNode(childRouteNode);
-const handleChildRoutes = (childRouteNodes: IPlainRouteConfig[]): VNode[]	=> childRouteNodes.map(handleChildRoute);
-const handleIndexRoute  = (indexRouteNode: IPlainRouteConfig): VNode => {
-	// had to use Route here as well because Route import on IndexRoute fails on unit tests (test:server)
-	const node: IPlainRouteConfig = Object.assign({}, indexRouteNode);
-	node.path = '/';
-	return createElement(Route, node);
-};
-
-function handleRouteNode(routeConfigNode: IPlainRouteConfig): VNode {
-
-	if (routeConfigNode.indexRoute && !routeConfigNode.childRoutes) {
-		return createElement(Route, routeConfigNode);
-	}
-
-	// create deep copy of config
-	const node: IPlainRouteConfig = Object.assign({}, routeConfigNode);
-	node.children = [];
-
-	// handle index route config
-	if (node.indexRoute) {
-		node.children.push(handleIndexRoute(node.indexRoute));
-		delete node.indexRoute;
-	}
-
-	// handle child routes config
-	if (node.childRoutes) {
-		const nodes: IPlainRouteConfig[] = isArray(node.childRoutes) ? node.childRoutes : [node.childRoutes];
-		node.children.push(...handleChildRoutes(nodes));
-		delete node.childRoutes;
-	}
-
-	return createElement(Route, node);
-}
-
-export const createRoutes = (routeConfig: IPlainRouteConfig[]): VNode[] => routeConfig.map(handleRouteNode);
