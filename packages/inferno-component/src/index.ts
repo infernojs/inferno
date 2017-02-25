@@ -285,20 +285,24 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 
 			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState, context);
 
-			this.props = nextProps;
-			this.state = nextState;
-			this.context = context;
-
 			if (shouldUpdate || force) {
 				this._blockSetState = true;
 				this.componentWillUpdate(nextProps, nextState, context);
 				this._blockSetState = false;
+
+				this.props = nextProps;
+				this.state = nextState;
+				this.context = context;
 
 				options.beforeRender && options.beforeRender(this);
 				const render = this.render(nextProps, nextState, context);
 
 				options.afterRender && options.afterRender(this);
 				return render;
+			} else {
+				this.props = nextProps;
+				this.state = nextState;
+				this.context = context;
 			}
 		}
 		return NO_OP;
