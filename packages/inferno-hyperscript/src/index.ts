@@ -99,7 +99,7 @@ export default function hyperscript(_tag: string | VNode | Function, _props?: an
 	const { tag, props, key, ref, children, events } = extractProps(_props, _tag as VNode);
 
 	if (isString(tag)) {
-		let flags = VNodeFlags.HtmlElement;
+		let flags;
 
 		switch (tag) {
 			case 'svg':
@@ -115,6 +115,8 @@ export default function hyperscript(_tag: string | VNode | Function, _props?: an
 				flags = VNodeFlags.SelectElement;
 				break;
 			default:
+				flags = VNodeFlags.HtmlElement;
+				break;
 		}
 		return createVNode(flags, tag, props, _children || children, events, key, ref);
 	} else {

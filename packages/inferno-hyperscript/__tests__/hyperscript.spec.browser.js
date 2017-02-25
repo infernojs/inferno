@@ -117,6 +117,27 @@ describe('HyperScript (non-JSX)', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div>Hello world!</div>'));
 	});
 
+	it('Should be possible to create textarea with hyperscript', () => {
+		const ComponentHooks = () => h('textarea', { id: 'test' });
+		render(
+			h(ComponentHooks),
+			container
+		);
+		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<textarea id="test"></textarea>'));
+	});
+
+	it('Should be possible to create select element with hyperscript', () => {
+		const ComponentHooks = () => h('select', { id: 'select' }, [
+			h('option', { value: 1 }, '1'),
+			h('option', { value: 2 }, '2')
+		]);
+		render(
+			h(ComponentHooks),
+			container
+		);
+		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<select id="select"><option value="1">1</option><option value="2">2</option></select>'));
+	});
+
 	it('Should handle tag with no tag name but id is present', () => {
 		const ComponentHooks = () => h('#myId');
 		render(
