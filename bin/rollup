@@ -7,6 +7,8 @@ const replace = require('rollup-plugin-replace');
 const uglify = require('rollup-plugin-uglify');
 const filesize = require('rollup-plugin-filesize');
 const alias = require('rollup-plugin-alias');
+const chalk = require('chalk');
+const boxen = require('boxen');
 
 const nodeResolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
@@ -123,7 +125,12 @@ if (NODE_ENV === 'production') {
 }
 
 // Filesize plugin needs to be last to report correct filesizes when minified
-plugins.push(filesize());
+plugins.push(filesize({
+	render: function (options, size, gzip){
+		return boxen(chalk.green.bold(filename + ' size: ') + chalk.yellow.bold(size) + ', ' +
+			chalk.green.bold('Gzipped size: ') + chalk.yellow.bold(gzip), { padding: 1 })
+	}
+}));
 
 rollup({
 	entry,
