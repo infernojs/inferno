@@ -2293,7 +2293,7 @@ describe('Components (JSX)', () => {
 				</Parent>, container
 			);
 
-			expect(container.innerHTML).to.eql(innerHTML('<div><div class="A" id="B">Hello !</div></div>'));
+			expect(container.innerHTML).to.equal(innerHTML('<div><div class="A" id="B">Hello !</div></div>'));
 
 			childrenPropertABeforeMount = 'ABCD';
 
@@ -2303,7 +2303,7 @@ describe('Components (JSX)', () => {
 				</Parent>, container
 			);
 
-			expect(container.innerHTML).to.eql(innerHTML('<div><div class="ABCD" id="B">Hello !</div></div>'));
+			expect(container.innerHTML).to.equal(innerHTML('<div><div class="ABCD" id="B">Hello !</div></div>'));
 		});
 	});
 
