@@ -9,7 +9,7 @@
  * - indexRoute
  *
  * Usage example:
- * const routeConfig = [
+ * const routes = createRoutes([
  *  {
  *    path        : '/',
  *    component   : App,
@@ -31,7 +31,7 @@
  *      }
  *    ]
  *  }
- * ];
+ * ]);
  *
  * Usage on Router JSX
  * <Router history={browserHistory} children={routes} />
