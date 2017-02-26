@@ -41,7 +41,7 @@ import Component from 'inferno-component';
 import { VNode } from 'inferno';
 import createElement from 'inferno-create-element';
 import { isArray } from 'inferno-shared';
-import Route from './Route';
+import Route, {IRouteHook} from './Route';
 
 export interface IPlainRouteConfig {
 	path: string;
@@ -49,6 +49,8 @@ export interface IPlainRouteConfig {
 	indexRoute?: IPlainRouteConfig;
 	childRoutes?: IPlainRouteConfig | IPlainRouteConfig[];
 	children?: VNode | VNode[];
+	onEnter?: IRouteHook;
+	onLeave?: IRouteHook;
 }
 
 const handleIndexRoute  = (indexRouteNode: IPlainRouteConfig): VNode => createElement(Route, indexRouteNode);
