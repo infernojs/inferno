@@ -114,5 +114,5 @@ class Foo extends React.Component {
 
 ReactDOM.render((
     <Foo a="a">test</Foo>
-), document.body);
+), document.getElementById("app"));
 ```
