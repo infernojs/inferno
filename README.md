@@ -66,7 +66,7 @@ const message = "Hello world";
 Inferno.render(
   <MyComponent message={ message } />,
   document.getElementById("app")
-)
+);
 ```
 Furthermore, Inferno also uses ES6 components like React:
 
@@ -91,7 +91,10 @@ class MyComponent extends Component {
   }
 }
 
-Inferno.render(<MyComponent />, document.body);
+Inferno.render(
+  <MyComponent />,
+  document.getElementById("app")
+);
 ```
 
 ### More Examples
@@ -227,7 +230,7 @@ Inferno in this way is called a "controlled component".
 ```javascript
 import Inferno from 'inferno';
 
-Inferno.render(<div />, document.body);
+Inferno.render(<div />, document.getElementById("app"));
 ```
 
 Render a virtual node into the DOM in the supplied container given the supplied virtual DOM. If the virtual node was previously rendered
@@ -272,7 +275,10 @@ class BasicComponent extends Component {
     }
 }
 
-Inferno.render(createElement(BasicComponent, { title: 'abc' }), document.body);
+Inferno.render(
+  createElement(BasicComponent, { title: 'abc' }),
+  document.getElementById("app")
+);
 ```
 
 ### `Component` (package: `inferno-component`)
@@ -462,7 +468,10 @@ function FunctionalComponent({ props }) {
 	return <div>Hello world</div>;
 }
 
-Inferno.render(<FunctionalComponent onComponentDidMount={ mounted } />, document.body);
+Inferno.render(
+  <FunctionalComponent onComponentDidMount={ mounted } />,
+  document.getElementById("app")
+);
 ```
 
 Please note: class components (ES2015 classes) from `inferno-component` **do not** support the same lifecycle events (they have their own lifecycle events that work as methods on the class itself).
