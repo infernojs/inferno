@@ -523,7 +523,7 @@ const replace = require('rollup-plugin-replace');
 
 ## Browser Support
 
-Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support IE8+, Inferno requires polyfills for the following JavaScript features:
+Inferno supports Edge, Chrome, Firefox and Safari 8+. In order to support IE8-11, Inferno may require polyfills for the following JavaScript features:
 
 - [Promise object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 - [Map object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
