@@ -60,13 +60,13 @@ function onSelectChange(e) {
 	}
 	// the user may have updated the vNode from the above onChange events
 	// so we need to get it from the context of `this` again
-	applyValue(this.vNode, dom);
+	applyValue(this.vNode, dom, false);
 }
 
-export function processSelect(vNode, dom) {
+export function processSelect(vNode, dom, mounting: boolean) {
 	const props = vNode.props || EMPTY_OBJ;
 
-	applyValue(vNode, dom);
+	applyValue(vNode, dom, mounting);
 	if (isControlled(props)) {
 		let selectWrapper = wrappers.get(dom);
 
@@ -84,7 +84,7 @@ export function processSelect(vNode, dom) {
 	return false;
 }
 
-export function applyValue(vNode, dom) {
+export function applyValue(vNode, dom, mounting: boolean) {
 	const props = vNode.props || EMPTY_OBJ;
 
 	if (props.multiple !== dom.multiple) {
@@ -93,7 +93,7 @@ export function applyValue(vNode, dom) {
 	const children = vNode.children;
 
 	if (!isInvalid(children)) {
-		const value = props.value;
+		const value = props.value || (mounting && props.defaultValue);
 		if (isArray(children)) {
 			for (let i = 0, len = children.length; i < len; i++) {
 				updateChildOptionGroup(children[i], value);
