@@ -1,4 +1,5 @@
 import {
+	assign,
 	isFunction,
 	throwError
 } from 'inferno-shared';
@@ -26,7 +27,7 @@ export type MapDispatchToProps = MapDispatchToPropsFunction | {[index: string]: 
 const errorObject = { value: null };
 const defaultMapStateToProps = (state) => ({}); // eslint-disable-line no-unused-vars
 const defaultMapDispatchToProps = (dispatch) => ({ dispatch });
-const defaultMergeProps = (stateProps, dispatchProps, parentProps) => Object.assign({},
+const defaultMergeProps = (stateProps, dispatchProps, parentProps) => (assign as any)({},
 	parentProps,
 	stateProps,
 	dispatchProps
@@ -339,7 +340,7 @@ export default function connect(
 				}
 				if (withRef) {
 					this.renderedElement = createElement(WrappedComponent,
-						Object.assign({}, this.mergedProps, { ref: (instance) => this.wrappedInstance = instance })
+						(assign as any)({}, this.mergedProps, { ref: (instance) => this.wrappedInstance = instance })
 					);
 				} else {
 					this.renderedElement = createElement(WrappedComponent,

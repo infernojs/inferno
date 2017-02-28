@@ -2,6 +2,7 @@
 import { EMPTY_OBJ, createVNode, options, VNode, Props } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
+	assign,
 	ERROR_MSG,
 	isArray,
 	isBrowser,
@@ -91,7 +92,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 			addToQueue(component, false, callback);
 		}
 	} else {
-		Object.assign(component.state, component._pendingState);
+		(assign as any)(component.state, component._pendingState);
 		component._pendingState = {};
 	}
 }
@@ -101,7 +102,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
 		const prevState = component.state;
-		const nextState = Object.assign({}, prevState, pendingState);
+		const nextState = (assign as any)({}, prevState, pendingState);
 		const props = component.props;
 		const context = component.context;
 
@@ -142,7 +143,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 			if (isNullOrUndef(childContext)) {
 				childContext = component._childContext;
 			} else {
-				childContext = Object.assign({}, context, component._childContext, childContext);
+				childContext = (assign as any)({}, context, component._childContext, childContext);
 			}
 
 			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
@@ -277,7 +278,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 					this._blockRender = false;
 				}
 				if (this._pendingSetState) {
-					nextState = Object.assign({}, nextState, this._pendingState);
+					nextState = (assign as any)({}, nextState, this._pendingState);
 					this._pendingSetState = false;
 					this._pendingState = {};
 				}

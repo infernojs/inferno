@@ -1,4 +1,5 @@
 import {
+	assign,
 	isArray,
 	isAttrAnEvent,
 	isFunction,
@@ -314,7 +315,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				if (isNullOrUndef(childContext)) {
 					childContext = context;
 				} else {
-					childContext = Object.assign({}, context, childContext);
+					childContext = (assign as any)({}, context, childContext);
 				}
 				const lastInput = instance._lastInput;
 				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false, false);

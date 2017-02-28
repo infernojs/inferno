@@ -1,5 +1,5 @@
 import Inferno from 'inferno';
-import { isArray, toArray } from 'inferno-shared';
+import { assign, isArray, toArray } from 'inferno-shared';
 import pathToRegExp from 'path-to-regexp-es6';
 import { decode, emptyObject, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort, toPartialURL } from './utils';
 
@@ -58,14 +58,14 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = fal
 						};
 					}
 					children = matchChild.matched;
-					Object.assign(params, children.props.params);
+					(assign as any)(params, children.props.params);
 				} else {
 					children = null;
 				}
 			}
 
 			const matched = Inferno.cloneVNode(route, {
-				params: Object.assign(params, matchBase.params),
+				params: (assign as any)(params, matchBase.params),
 				children
 			});
 

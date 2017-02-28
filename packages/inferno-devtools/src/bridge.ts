@@ -1,5 +1,5 @@
 import { options } from 'inferno';
-import { isArray, isInvalid, isObject, isStringOrNumber } from 'inferno-shared';
+import { isArray, isInvalid, isObject, isStringOrNumber, assign } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 function findVNodeFromDom(vNode, dom) {
@@ -244,7 +244,7 @@ function updateReactComponent(vNode, parentDom) {
 	const oldInstance = getInstanceFromVNode(vNode);
 
 	if (oldInstance) {
-		Object.assign(oldInstance, newInstance);
+		(assign as any)(oldInstance, newInstance);
 		return oldInstance;
 	}
 	createInstanceFromVNode(vNode, newInstance);

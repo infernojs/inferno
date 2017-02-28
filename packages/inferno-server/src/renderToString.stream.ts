@@ -1,4 +1,5 @@
 import {
+	assign,
 	isArray,
 	isInvalid,
 	isNullOrUndef,
@@ -70,7 +71,7 @@ export class RenderStream extends Readable {
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndef(childContext)) {
-			context = Object.assign({}, context, childContext);
+			context = (assign as any)({}, context, childContext);
 		}
 		instance.context = context;
 

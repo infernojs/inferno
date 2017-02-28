@@ -72,6 +72,24 @@ export function warning(message: string) {
 	console.warn(message);
 }
 
+export function assign(target): any {
+	for (let i = 1, argumentsLength = arguments.length; i < argumentsLength; i++) {
+		let obj = arguments[i];
+
+		if (!isNullOrUndef(obj)) {
+			const keys = Object.keys(obj);
+
+			for (let j = 0, keysLength = keys.length; j < keysLength; j++) {
+				const key = keys[j];
+
+				target[key] = obj[key];
+			}
+		}
+	}
+
+	return target;
+}
+
 /*
  * This is purely a tiny event-emitter/pubsub
  */

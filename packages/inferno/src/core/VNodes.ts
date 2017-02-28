@@ -3,7 +3,8 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	isStatefulComponent,
-	isUndefined
+	isUndefined,
+	assign
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
@@ -151,7 +152,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
 
 		if (flags & VNodeFlags.Component) {
 			newVNode = createVNode(flags, vNodeToClone.type,
-				Object.assign({}, vNodeToClone.props, props),
+				(assign as any)({}, vNodeToClone.props, props),
 				null,
 				events,
 				key,
@@ -182,7 +183,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
 		} else if (flags & VNodeFlags.Element) {
 			children = (props && props.children) || vNodeToClone.children;
 			newVNode = createVNode(flags, vNodeToClone.type,
-				Object.assign({}, vNodeToClone.props, props),
+				(assign as any)({}, vNodeToClone.props, props),
 				children,
 				events,
 				key,

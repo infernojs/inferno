@@ -1,4 +1,5 @@
 import {
+	assign,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -54,7 +55,7 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 	if (isNullOrUndef(childContext)) {
 		instance._childContext = context;
 	} else {
-		instance._childContext = Object.assign({}, context, childContext);
+		instance._childContext = (assign as any)({}, context, childContext);
 	}
 
 	options.beforeRender && options.beforeRender(instance);

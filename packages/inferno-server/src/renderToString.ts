@@ -1,4 +1,5 @@
 import {
+	assign,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -49,7 +50,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 			const childContext = instance.getChildContext();
 
 			if (!isNullOrUndef(childContext)) {
-				context = Object.assign({}, context, childContext);
+				context = (assign as any)({}, context, childContext);
 			}
 			if (instance.props === EMPTY_OBJ) {
 				instance.props = props;

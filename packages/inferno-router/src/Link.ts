@@ -1,6 +1,6 @@
 import { createVNode, VNode } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
-import { isBrowser } from 'inferno-shared';
+import { assign, isBrowser } from 'inferno-shared';
 
 interface ILinkProps {
 	href: any;
@@ -28,7 +28,7 @@ export default function Link(props, { router }): VNode {
 			elemProps.className = (className ? className + ' ' : '') + activeClassName;
 		}
 		if (activeStyle) {
-			elemProps.style = Object.assign({}, props.style, activeStyle) as Object;
+			elemProps.style = (assign as any)({}, props.style, activeStyle) as Object;
 		}
 	}
 

@@ -1,4 +1,5 @@
 import {
+	assign,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -131,7 +132,7 @@ export class RenderQueueStream extends Readable {
 				const instance = new type(props, context);
 				const childContext = instance.getChildContext();
 				if (!isNullOrUndef(childContext)) {
-					context = Object.assign({}, context, childContext);
+					context = (assign as any)({}, context, childContext);
 				}
 				if (instance.props === EMPTY_OBJ) {
 					instance.props = props;
@@ -152,7 +153,7 @@ export class RenderQueueStream extends Readable {
 							this.addToQueue(initialProps.then((dataForContext) => {
 								instance._pendingSetState = false;
 								if (typeof dataForContext === 'object') {
-									instance.props = Object.assign({}, instance.props, dataForContext);
+									instance.props = (assign as any)({}, instance.props, dataForContext);
 								}
 								this.renderVNodeToQueue(
 									instance.render(instance.props, instance.context),
@@ -165,7 +166,7 @@ export class RenderQueueStream extends Readable {
 							}), position);
 							return;
 						} else {
-							instance.props = Object.assign({}, instance.props, initialProps);
+							instance.props = (assign as any)({}, instance.props, initialProps);
 						}
 					}
 				}

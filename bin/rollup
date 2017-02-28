@@ -82,9 +82,7 @@ const plugins = [
 	commonjs({
 		include: 'node_modules/**'
 	}),
-	buble({
-		objectAssign: 'Object.assign'
-	})
+	buble()
 ];
 
 if (NODE_ENV === 'production') {
