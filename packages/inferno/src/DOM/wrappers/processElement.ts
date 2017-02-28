@@ -10,7 +10,7 @@ export default function processElement(flags, vNode, dom, mounting: boolean): bo
 		return processInput(vNode, dom);
 	}
 	if (flags & VNodeFlags.SelectElement) {
-		return processSelect(vNode, dom);
+		return processSelect(vNode, dom, mounting);
 	}
 	if (flags & VNodeFlags.TextareaElement) {
 		return processTextarea(vNode, dom, mounting);

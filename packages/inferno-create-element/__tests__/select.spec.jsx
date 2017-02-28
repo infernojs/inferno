@@ -280,4 +280,41 @@ describe('Select / select multiple (JSX)', () => {
 		render(<select></select>, container);
 		expect(container.innerHTML).to.eql(innerHTML('<select></select>'));
 	});
+
+	it('should render defaultValue', () => {
+		render(<select defaultValue="b">
+			<option value="a">a</option>
+			<option value="b">b</option>
+			<option value="c">c</option>
+			<option value="d">d</option>
+		</select>, container);
+		expect(container.firstChild.children[0].selected).to.eql(false);
+		expect(container.firstChild.children[1].selected).to.eql(true);
+		expect(container.firstChild.children[2].selected).to.eql(false);
+		expect(container.firstChild.children[3].selected).to.eql(false);
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<select><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
+		);
+	});
+
+	it('should render multiple defaultValue', () => {
+		render(<select multiple={ true } defaultValue={ [ 'a', 'b', 'c' ] }>
+			<option value={ 'a' }>a</option>
+			<option value={ 'b' }>b</option>
+			<option value={ 'c' }>c</option>
+			<option value={ 'd' }>d</option>
+		</select>, container);
+
+		expect(container.firstChild.children[0].selected).to.eql(true);
+		expect(container.firstChild.children[1].selected).to.eql(true);
+		expect(container.firstChild.children[2].selected).to.eql(true);
+		expect(container.firstChild.children[3].selected).to.eql(false);
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
+		);
+	});
 });
