@@ -63,17 +63,17 @@ const external = Object.keys(dependencies).filter(n => !bundledDependencies.incl
 
 const plugins = [
 	alias({
-		'inferno-compat': resolve(__dirname, '../packages/inferno-compat/dist-es/index'),
-		'inferno-component': resolve(__dirname, '../packages/inferno-component/dist-es/index'),
-		'inferno-create-class': resolve(__dirname, '../packages/inferno-create-class/dist-es/index'),
-		'inferno-create-element': resolve(__dirname, '../packages/inferno-create-element/dist-es/index'),
-		'inferno-shared': resolve(__dirname, '../packages/inferno-shared/dist-es/index'),
-		'inferno-hyperscript': resolve(__dirname, '../packages/inferno-hyperscript/dist-es/index'),
-		'inferno-mobx': resolve(__dirname, '../packages/inferno-mobx/dist-es/index'),
-		'inferno-redux': resolve(__dirname, '../packages/inferno-redux/dist-es/index'),
-		'inferno-router': resolve(__dirname, '../packages/inferno-router/dist-es/index'),
-		'inferno-server': resolve(__dirname, '../packages/inferno-server/dist-es/index'),
-		inferno: resolve(__dirname, '../packages/inferno/dist-es/index')
+		'inferno-compat': resolve(__dirname, '../packages/inferno-compat/dist-es/index.js'),
+		'inferno-component': resolve(__dirname, '../packages/inferno-component/dist-es/index.js'),
+		'inferno-create-class': resolve(__dirname, '../packages/inferno-create-class/dist-es/index.js'),
+		'inferno-create-element': resolve(__dirname, '../packages/inferno-create-element/dist-es/index.js'),
+		'inferno-shared': resolve(__dirname, '../packages/inferno-shared/dist-es/index.js'),
+		'inferno-hyperscript': resolve(__dirname, '../packages/inferno-hyperscript/dist-es/index.js'),
+		'inferno-mobx': resolve(__dirname, '../packages/inferno-mobx/dist-es/index.js'),
+		'inferno-redux': resolve(__dirname, '../packages/inferno-redux/dist-es/index.js'),
+		'inferno-router': resolve(__dirname, '../packages/inferno-router/dist-es/index.js'),
+		'inferno-server': resolve(__dirname, '../packages/inferno-server/dist-es/index.js'),
+		inferno: resolve(__dirname, '../packages/inferno/dist-es/index.js')
 	}),
 	nodeResolve({
 		jsnext: true,
