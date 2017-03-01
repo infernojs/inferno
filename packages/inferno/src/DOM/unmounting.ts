@@ -58,9 +58,7 @@ export function unmountComponent(vNode: VNode, parentDom: Element, lifecycle: Li
 				instance._unmounted = true;
 				options.findDOMNodeEnabled && componentToDOMNodeMap.delete(instance);
 
-				const subLifecycle = instance._lifecycle;
-
-				unmount(instance._lastInput, null, subLifecycle, false, isRecycling);
+				unmount(instance._lastInput, null, instance._lifecycle, false, isRecycling);
 			}
 		} else {
 			if (!isNullOrUndef(ref)) {
