@@ -83,7 +83,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 		const isVoidElement = _isVoidElement(type);
 
 		if (!isNull(props)) {
-			for (let prop in props) {
+			for (const prop in props) {
 				const value = props[prop];
 
 				if (prop === 'dangerouslySetInnerHTML') {

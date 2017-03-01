@@ -188,12 +188,25 @@ export class RenderQueueStream extends Readable {
 			if (!isNull(props)) {
 				for (const prop in props) {
 					const value = props[prop];
+
 					if (prop === 'dangerouslySetInnerHTML') {
 						html = value.__html;
 					} else if (prop === 'style') {
 						renderedString += ` style="${ renderStylesToString(props.style) }"`;
 					} else if (prop === 'className' && !isNullOrUndef(value)) {
 						renderedString += ` class="${ escapeText(value) }"`;
+					} else if (prop === 'children') {
+						// Ignore children as prop.
+					} else if (prop === 'defaultValue') {
+						// Use default values if normal values are not present
+						if (!props.value) {
+							renderedString += ` value="${ escapeText(value) }"`;
+						}
+					} else if (prop === 'defaultChecked') {
+						// Use default values if normal values are not present
+						if (!props.checked) {
+							renderedString += ` checked="${ value }"`;
+						}
 					} else {
 						if (isStringOrNumber(value)) {
 							renderedString += ` ${ prop }="${ escapeText(value) }"`;
@@ -255,8 +268,7 @@ export class RenderQueueStream extends Readable {
 			throwError();
 		}
 	}
-
-};
+}
 
 export default function streamQueueAsString(node) {
 	return new RenderQueueStream(node, false);

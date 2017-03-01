@@ -35,7 +35,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			template: () => createElement('div', { className: 'foo' }, createElement('span', { className: 'bar' })),
 			result: '<div class="foo"><span class="bar"></span></div>'
 		}, {
-			description: 'should render div with text child',
+			description: 'should render div with text child #2',
 			template: () => createElement('div', null, 'Hello world'),
 			result: '<div>Hello world</div>'
 		}, {

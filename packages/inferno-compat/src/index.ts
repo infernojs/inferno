@@ -1,11 +1,23 @@
 import PropTypes from 'proptypes';
 import isValidElement from './isValidElement';
-import createClass from 'inferno-create-class';
+import createClass, {
+	ClassicComponentClass,
+	ComponentSpec
+} from 'inferno-create-class';
 import infernoCreateElement from 'inferno-create-element';
-import { createVNode, render, findDOMNode, options, cloneVNode, VNode, InfernoChildren, Props, EMPTY_OBJ } from 'inferno';
+import {
+	createVNode,
+	render,
+	findDOMNode,
+	options,
+	cloneVNode,
+	VNode,
+	InfernoChildren,
+	Props,
+	EMPTY_OBJ
+} from 'inferno';
 import { NO_OP } from 'inferno-shared';
 import Component from 'inferno-component';
-import { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
 import _VNodeFlags from 'inferno-vnode-flags';
 
 declare global {
@@ -59,7 +71,7 @@ const Children = {
 		if (children.length !== 1) {
 			throw new Error('Children.only() expects only one child.');
 		}
-		return children[0];
+		return children[ 0 ];
 	},
 	toArray(children: Array<InfernoChildren | any>): Array<InfernoChildren | any> {
 		if (isNullOrUndef(children)) {
@@ -104,19 +116,19 @@ function normalizeProps(name: string, props: Props | any) {
 		} else {
 			eventName = 'oninput';
 		}
-		if (!props[eventName]) {
-			props[eventName] = props.onChange;
+		if (!props[ eventName ]) {
+			props[ eventName ] = props.onChange;
 			delete props.onChange;
 		}
 	}
 	for (let prop in props) {
 		if (prop === 'onDoubleClick') {
-			props.onDblClick = props[prop];
-			delete props[prop];
+			props.onDblClick = props[ prop ];
+			delete props[ prop ];
 		}
-		if (xlinkAttrs[prop]) {
-			props[xlinkAttrs[prop]] = props[prop];
-			delete props[prop];
+		if (xlinkAttrs[ prop ]) {
+			props[ xlinkAttrs[ prop ] ] = props[ prop ];
+			delete props[ prop ];
 		}
 	}
 }
@@ -128,7 +140,8 @@ function normalizeProps(name: string, props: Props | any) {
 // but in reality devs use onSomething for many things, not only for
 // input events
 if (typeof Event !== 'undefined' && !Event.prototype.persist) {
-	Event.prototype.persist = function () {};
+	Event.prototype.persist = function () {
+	};
 }
 
 const injectStringRefs = function (originalFunction) {
@@ -138,8 +151,11 @@ const injectStringRefs = function (originalFunction) {
 
 		if (typeof ref === 'string') {
 			props.ref = function (val) {
-				if (this && this.refs) {
-					this.refs[ref] = val;
+				if (this) {
+					if (!this.refs) {
+						this.refs = {};
+					}
+					this.refs[ ref ] = val;
 				}
 			}.bind(currentComponent || null);
 		}
@@ -178,7 +194,7 @@ function shallowDiffers(a, b): boolean {
 		}
 	}
 	for (let i in b) {
-		if (a[i] !== b[i]) {
+		if (a[ i ] !== b[ i ]) {
 			return true;
 		}
 	}
@@ -197,15 +213,16 @@ PureComponent.prototype.shouldComponentUpdate = function (props, state) {
 class WrapperComponent<P, S> extends Component<P, S> {
 	getChildContext() {
 		// tslint:disable-next-line
-		return this.props['context'];
+		return this.props[ 'context' ];
 	}
+
 	render(props) {
 		return props.children;
 	}
 }
 
 function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, callback) {
-	const wrapperVNode: VNode = createVNode(4, WrapperComponent, { context: parentComponent.context, children: vNode });
+	const wrapperVNode: VNode = createVNode(4, WrapperComponent, {context: parentComponent.context, children: vNode});
 	const component = render(wrapperVNode, container);
 
 	if (callback) {
@@ -224,7 +241,7 @@ function createFactory(type) {
 
 const DOM = {};
 for (let i = ELEMENTS.length; i--; ) {
-	DOM[ELEMENTS[i]] = createFactory(ELEMENTS[i]);
+	DOM[ ELEMENTS[ i ] ] = createFactory(ELEMENTS[ i ]);
 }
 
 export {

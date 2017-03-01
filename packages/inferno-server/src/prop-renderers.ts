@@ -36,6 +36,7 @@ export function renderAttributes(props): string[] {
 	propsKeys.forEach((propKey, i) => {
 		const value = props[propKey];
 		switch (propKey) {
+			case 'children':
 			case 'dangerouslySetInnerHTML':
 			case 'className':
 			case 'style':
