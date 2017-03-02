@@ -328,7 +328,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					nextInput = lastInput;
 					didUpdate = false;
 				} else if (isStringOrNumber(nextInput)) {
-					nextInput = createTextVNode(nextInput);
+					nextInput = createTextVNode(nextInput, null);
 				} else if (isArray(nextInput)) {
 					if (process.env.NODE_ENV !== 'production') {
 						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
@@ -379,7 +379,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				if (isInvalid(nextInput)) {
 					nextInput = createVoidVNode();
 				} else if (isStringOrNumber(nextInput) && nextInput !== NO_OP) {
-					nextInput = createTextVNode(nextInput);
+					nextInput = createTextVNode(nextInput, null);
 				} else if (isArray(nextInput)) {
 					if (process.env.NODE_ENV !== 'production') {
 						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');

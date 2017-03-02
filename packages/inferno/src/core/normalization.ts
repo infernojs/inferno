@@ -50,7 +50,7 @@ function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentK
 				_normalizeVNodes(n, result, 0, key);
 			} else {
 				if (isStringOrNumber(n)) {
-					n = createTextVNode(n);
+					n = createTextVNode(n, null);
 				} else if (isVNode(n) && n.dom || (n.key && n.key[0] === '.')) {
 					n = cloneVNode(n);
 				}
@@ -91,7 +91,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
-			newNodes.push(applyKeyIfMissing(i, createTextVNode(n)));
+			newNodes.push(applyKeyIfMissing(i, createTextVNode(n, null)));
 		} else if ((isVNode(n) && n.dom) || (isNull(n.key) && !(n.flags & VNodeFlags.HasNonKeyedChildren))) {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];

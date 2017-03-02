@@ -45,15 +45,6 @@ export interface ComponentLifecycle<P, S> {
 	componentWillUnmount?: () => void;
 }
 
-// this is in shapes too, but we don't want to import from shapes as it will pull in a duplicate of createVNode
-function createVoidVNode(): VNode {
-	return createVNode(VNodeFlags.Void);
-}
-
-function createTextVNode(text): VNode {
-	return createVNode(VNodeFlags.Text, null, null, text);
-}
-
 function addToQueue(component: Component<any, any>, force: boolean, callback?: Function): void {
 	// TODO this function needs to be revised and improved on
 	let queue: any = componentCallbackQueue.get(component);
@@ -111,12 +102,12 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		let didUpdate = true;
 
 		if (isInvalid(nextInput)) {
-			nextInput = createVoidVNode();
+			nextInput = createVNode(VNodeFlags.Void);
 		} else if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 			didUpdate = false;
 		} else if (isStringOrNumber(nextInput)) {
-			nextInput = createTextVNode(nextInput);
+			nextInput = createVNode(VNodeFlags.Text, null, null, nextInput);
 		} else if (isArray(nextInput)) {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');

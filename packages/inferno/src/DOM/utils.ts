@@ -70,7 +70,7 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
 	} else if (isStringOrNumber(input)) {
-		input = createTextVNode(input);
+		input = createTextVNode(input, null);
 	} else {
 		if (input.dom) {
 			input = cloneVNode(input);
@@ -92,14 +92,12 @@ export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, life
 }
 
 export function replaceVNode(parentDom, dom, vNode, lifecycle: LifecycleClass, isRecycling) {
-	let shallowUnmount = false;
 	// we cannot cache nodeType here as vNode might be re-assigned below
 	if (vNode.flags & VNodeFlags.Component) {
 		// if we are accessing a stateful or stateless component, we want to access their last rendered input
 		// accessing their DOM node is not useful to us here
 		unmount(vNode, null, lifecycle, false, isRecycling);
 		vNode = vNode.children._lastInput || vNode.children;
-		shallowUnmount = true;
 	}
 	replaceChild(parentDom, dom, vNode.dom);
 	unmount(vNode, null, lifecycle, false, isRecycling);
@@ -116,7 +114,7 @@ export function createFunctionalComponentInput(vNode: VNode, component, props: P
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
 	} else if (isStringOrNumber(input)) {
-		input = createTextVNode(input);
+		input = createTextVNode(input, null);
 	} else {
 		if (input.dom) {
 			input = cloneVNode(input);

@@ -191,7 +191,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
 				!children
 			);
 		} else if (flags & VNodeFlags.Text) {
-			newVNode = createTextVNode(vNodeToClone.children as string);
+			newVNode = createTextVNode(vNodeToClone.children as string, key);
 		}
 	}
 
@@ -202,8 +202,8 @@ export function createVoidVNode(): VNode {
 	return createVNode(VNodeFlags.Void);
 }
 
-export function createTextVNode(text: string | number): VNode {
-	return createVNode(VNodeFlags.Text, null, null, text, null, null, null, true);
+export function createTextVNode(text: string | number, key): VNode {
+	return createVNode(VNodeFlags.Text, null, null, text, null, key);
 }
 
 export function isVNode(o: VNode): boolean {
