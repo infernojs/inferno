@@ -116,20 +116,17 @@ describe('Compat Children', () => {
 		};
 	}
 
-	it.skip('Should render element with an iterable of one text string', function () {
+	it('Should render element with an iterable of one text string', function () {
 		const iterable = arrayAsBasicIterator(['generated body text']);
 		const element = createElement('div', null, iterable);
 		expect(isValidElement(element)).to.be.true;
 
 		renderCompatTestElement(element);
 
-		// current actual behavior does not support iterables:
-		// expect(container.innerHTML).to.equal(innerHTML('<div></div>'));
-
 		expect(container.innerHTML).to.equal(innerHTML('<div>generated body text</div>'));
 	});
 
-	it.skip('Should render element with an iterable of one child element', function () {
+	it('Should render element with an iterable of one child element', function () {
 		const child = createElement('span', null, 'generated child body text');
 		expect(isValidElement(child)).to.be.true;
 
@@ -139,13 +136,10 @@ describe('Compat Children', () => {
 
 		renderCompatTestElement(element);
 
-		// current actual behavior does not support iterables:
-		// expect(container.innerHTML).to.equal(innerHTML('<div></div>'));
-
 		expect(container.innerHTML).to.equal(innerHTML('<div><span>generated child body text</span></div>'));
 	});
 
-	it.skip('Should render element with an iterable of a child element and a string', function () {
+	it('Should render element with an iterable of a child element and a string', function () {
 		const child = createElement('span', null, 'generated child body text');
 		expect(isValidElement(child)).to.be.true;
 
@@ -154,9 +148,6 @@ describe('Compat Children', () => {
 		expect(isValidElement(element)).to.be.true;
 
 		renderCompatTestElement(element);
-
-		// current actual behavior does not support iterables:
-		// expect(container.innerHTML).to.equal(innerHTML('<div></div>'));
 
 		expect(container.innerHTML).to.equal(innerHTML('<div><span>generated child body text</span>generated body text</div>'));
 	});
