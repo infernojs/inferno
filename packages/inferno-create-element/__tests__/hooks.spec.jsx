@@ -441,11 +441,6 @@ describe('Component lifecycle (JSX)', () => {
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillUpdate={spyObj.fn}/>, _container);
 			expect(sinonSpy.callCount).to.equal(0);
-
-			// console.log(spy.getCall(0).args);
-			// TODO: How can we verify last props in unit test
-			// expect(spy.getCall(0).args[0]).to.equal(node.props, 'verify last props'); // last props
-			// expect(spy.getCall(0).args[1]).to.equal(node.props, 'verify next props'); // next props
 		});
 
 		it('"onComponentDidUpdate" hook should fire', () => {

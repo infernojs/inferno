@@ -623,8 +623,7 @@ export function patchKeyedChildren(
 
 			// Map keys by their index in array
 			for (i = bStart; i <= bEnd; i++) {
-				node = b[i];
-				keyIndex.set(node.key, i);
+				keyIndex.set(b[i].key, i);
 			}
 
 			// Try to patch same keys

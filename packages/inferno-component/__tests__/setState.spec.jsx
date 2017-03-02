@@ -1,10 +1,5 @@
-/*
-
-These tests are related to Github issue:
- https://github.com/infernojs/inferno/issues/854
-
 import { expect } from 'chai';
-import Inferno, { render } from 'inferno';
+import { render } from 'inferno';
 import Component from '../dist-es';
 
 describe('setState', () => {
@@ -12,16 +7,13 @@ describe('setState', () => {
 
 	beforeEach(function () {
 		container = document.createElement('div');
-		document.body.appendChild(container);
 	});
 
 	afterEach(function () {
 		container.innerHTML = '';
-		render(null, container);
-		document.body.removeChild(container);
 	});
 
-	it('callback should be fired after state has changed', () => {
+	it('callback should be fired after state has changed', (done) => {
 
 		class TestComponent extends Component {
 			constructor(props) {
@@ -35,6 +27,9 @@ describe('setState', () => {
 			checkSetState() {
 				const value = this.state.value;
 				expect(value).to.equal('__NEWVALUE__');
+				setTimeout(function () {
+					done();
+				}, 100);
 			}
 
 			componentWillReceiveProps(nextProps) {
@@ -71,4 +66,3 @@ describe('setState', () => {
 		render(<BaseComp />, container);
 	});
 });
-*/

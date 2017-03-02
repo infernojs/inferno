@@ -160,6 +160,10 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 			callback();
 		}
 	} else if (!isNullOrUndef(callback)) {
+		if (component._blockRender) {
+			component.state = (component._pendingState as S);
+			component._pendingState = {};
+		}
 		callback();
 	}
 }
@@ -298,6 +302,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				const render = this.render(nextProps, nextState, context);
 
 				options.afterRender && options.afterRender(this);
+
 				return render;
 			} else {
 				this.props = nextProps;

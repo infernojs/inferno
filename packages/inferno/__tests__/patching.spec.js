@@ -17,7 +17,6 @@ describe('patching routine', () => {
 		document.body.removeChild(container);
 	});
 
-	// TODO: Try to cover patching lastVNode !== nextVNode. requires no normalize and hoisting
 	it('Should do nothing if lastVNode strictly equals nextVnode', () => {
 		const yar = createVNode(2, 'div', null, '123', null, null, null, true);
 		const bar = createVNode(2, 'div', null, '123', null, null, null, true);

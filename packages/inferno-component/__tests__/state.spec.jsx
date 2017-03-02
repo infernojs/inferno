@@ -1,9 +1,6 @@
-import { expect } from 'chai';
 import { createVNode, render } from 'inferno';
 import Component from '../dist-es';
 import VNodeFlags from 'inferno-vnode-flags';
-
-let counter = 0;
 
 class TestCWRP extends Component {
 	constructor(props) {
@@ -51,5 +48,4 @@ describe('setting state', () => {
 		node.props.foo = 1;
 		render(node, container);
 	});
-
 });

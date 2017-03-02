@@ -137,7 +137,7 @@ export function mountArrayChildren(children, dom: Element, lifecycle: LifecycleC
 	for (let i = 0, len = children.length; i < len; i++) {
 		let child = children[i];
 
-		// TODO: Verify can string/number be here. might cause de-opt
+		// Verify can string/number be here. might cause de-opt. - Normalization takes care of it.
 		if (!isInvalid(child)) {
 			if (child.dom) {
 				children[i] = child = cloneVNode(child);
