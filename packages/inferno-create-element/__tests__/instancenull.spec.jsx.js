@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
 
@@ -15,14 +14,13 @@ describe('BUG: instance - null', () => {
 		document.body.removeChild(container);
 	});
 
-
-	const Triangle = ({direction}) => (
+	const Triangle = ({ direction }) => (
 		<svg className={`popover-triangle ${direction}`}>
 			<polygon points={'0,0'}/>
 		</svg>
 	);
 
-	function DropdownItem({className, children, attached}) {
+	function DropdownItem({ className, children, attached }) {
 		return (
 			<li ref={attached} className={`dd-item ${className}`}>
 				{children}
@@ -52,7 +50,7 @@ describe('BUG: instance - null', () => {
 			 */
 
 			return (
-				<svg focusable="false" className={"svgicon"}>
+				<svg focusable="false" className={'svgicon'}>
 					<use xlink:href={props.icon}/>
 				</svg>
 			);
@@ -317,16 +315,16 @@ describe('BUG: instance - null', () => {
 
 
 	it('Should not fail', (done) => {
-		const items = [{"text":"Implementation","value":"b73ea78d-350d-f764-e429-9bebd9d8b4b3","icon":"#user"},{"text":"Issue","value":"4e0a069d-899a-418a-df27-8ff5ef18d459","icon":"#reminder"},{"text":"LomaTaski","value":"d9a54cc9-2a16-08e3-85da-c230b5d0b121","icon":"#favourite"}];
-		const value = "b73ea78d-350d-f764-e429-9bebd9d8b4b3";
-		const text = "pena";
+		const items = [{ text: 'Implementation',value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',icon: '#user' },{ text: 'Issue',value: '4e0a069d-899a-418a-df27-8ff5ef18d459',icon: '#reminder' },{ text: 'LomaTaski',value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',icon: '#favourite' }];
+		const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
+		const text = 'pena';
 
 		render(
 			<div>
 				<Dropdown
 					items={items}
 					changeCallback={function () {}}
-					changeParams={{guid: 'foo', field: 'activityType'}}
+					changeParams={{ guid: 'foo', field: 'activityType' }}
 					value={value}
 				/>
 			</div>,
@@ -349,16 +347,16 @@ describe('BUG: instance - null', () => {
 	});
 
 	it('Should not fail #2', () => {
-		const items = [{"text":"Implementation","value":"b73ea78d-350d-f764-e429-9bebd9d8b4b3","icon":"#user"},{"text":"Issue","value":"4e0a069d-899a-418a-df27-8ff5ef18d459","icon":"#reminder"},{"text":"LomaTaski","value":"d9a54cc9-2a16-08e3-85da-c230b5d0b121","icon":"#favourite"}];
-		const value = "b73ea78d-350d-f764-e429-9bebd9d8b4b3";
-		const text = "pena";
+		const items = [{ text: 'Implementation',value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',icon: '#user' },{ text: 'Issue',value: '4e0a069d-899a-418a-df27-8ff5ef18d459',icon: '#reminder' },{ text: 'LomaTaski',value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',icon: '#favourite' }];
+		const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
+		const text = 'pena';
 
 		render(
 			<div>
 				<Dropdown
 					items={items}
 					changeCallback={function () {}}
-					changeParams={{guid: 'foo', field: 'activityType'}}
+					changeParams={{ guid: 'foo', field: 'activityType' }}
 					value={value}
 				/>
 			</div>,
@@ -377,16 +375,16 @@ describe('BUG: instance - null', () => {
 	});
 
 	it('Should not fail #3', () => {
-		const items = [{"text":"Implementation","value":"b73ea78d-350d-f764-e429-9bebd9d8b4b3","icon":"#user"},{"text":"Issue","value":"4e0a069d-899a-418a-df27-8ff5ef18d459","icon":"#reminder"},{"text":"LomaTaski","value":"d9a54cc9-2a16-08e3-85da-c230b5d0b121","icon":"#favourite"}];
-		const value = "b73ea78d-350d-f764-e429-9bebd9d8b4b3";
-		const text = "pena";
+		const items = [{ text: 'Implementation',value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',icon: '#user' },{ text: 'Issue',value: '4e0a069d-899a-418a-df27-8ff5ef18d459',icon: '#reminder' },{ text: 'LomaTaski',value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',icon: '#favourite' }];
+		const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
+		const text = 'pena';
 
 		render(
 			<div>
 				<Dropdown
 					items={items}
 					changeCallback={function () {}}
-					changeParams={{guid: 'foo', field: 'activityType'}}
+					changeParams={{ guid: 'foo', field: 'activityType' }}
 					value={value}
 				/>
 			</div>,
@@ -401,7 +399,7 @@ describe('BUG: instance - null', () => {
 				<Dropdown
 					items={items}
 					changeCallback={function () {}}
-					changeParams={{guid: 'dwqwdq', field: 'activityType'}}
+					changeParams={{ guid: 'dwqwdq', field: 'activityType' }}
 					value={value}
 				/>
 			</div>,
