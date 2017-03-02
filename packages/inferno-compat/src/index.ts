@@ -16,7 +16,12 @@ import {
 	Props,
 	EMPTY_OBJ
 } from 'inferno';
-import { NO_OP } from 'inferno-shared';
+import {
+	NO_OP,
+	isArray,
+	isString,
+	isFunction
+} from 'inferno-shared';
 import Component from 'inferno-component';
 import _VNodeFlags from 'inferno-vnode-flags';
 
@@ -77,7 +82,7 @@ const Children = {
 		if (isNullOrUndef(children)) {
 			return [];
 		}
-		return Array.isArray && Array.isArray(children) ? children : ARR.concat(children);
+		return isArray(children) ? children : ARR.concat(children);
 	}
 };
 
@@ -161,6 +166,14 @@ const injectStringRefs = function (originalFunction) {
 		}
 		if (typeof name === 'string') {
 			normalizeProps(name, props);
+		}
+
+		// React supports iterable children, in addition to Array-like
+		for (let i = 0, len = children.length; i < len; i++) {
+			let child = children[i];
+			if (child && !isArray(child) && !isString(child) && isFunction(child[Symbol.iterator])) {
+				children[i] = child = Array.from(child);
+			}
 		}
 		return originalFunction(name, props, ...children);
 	};
