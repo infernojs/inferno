@@ -88,6 +88,7 @@ class Wrapper extends Component<any, any> {
 export function renderIntoDocument(input: InfernoInput): InfernoChildren {
 	const wrappedInput = createElement(Wrapper, null, input);
 	const parent = document.createElement('div');
+	document.body.appendChild(parent);
 	return render(wrappedInput, parent);
 }
 
