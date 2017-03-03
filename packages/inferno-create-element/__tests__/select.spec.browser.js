@@ -166,7 +166,7 @@ describe('Select / select multiple (non-JSX)', () => {
 		expect(container.firstChild.children[0].children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].children[0].selected).to.eql(true);
 
-		render(template(null), container);
+		render(template(false), container);
 
 		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
 		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
@@ -341,5 +341,27 @@ describe('Select / select multiple (non-JSX)', () => {
 		).to.equal(
 			innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
 		);
+	});
+
+	it('should not touch selections, if value or selected, is null or undefined', () => {
+		render(createElement('select', null,
+			createElement('option', {
+				value: 'a'
+			}, 'a'),
+			createElement('option', {
+				value: 'b'
+			}, 'b')
+		), container);
+		container.firstChild.children[1].selected = true;
+		render(createElement('select', null,
+			createElement('option', {
+				value: 'a'
+			}, 'a'),
+			createElement('option', {
+				value: 'b'
+			}, 'b')
+		), container);
+		expect(container.firstChild.children[0].selected).to.eql(false);
+		expect(container.firstChild.children[1].selected).to.eql(true);
 	});
 });
