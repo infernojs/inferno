@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "1.3.0-rc.8",
+  "version": "1.3.0-rc.9",
   "license": "MIT",
   "description": "Suite of utilities for testing Inferno applications",
   "author": {
@@ -21,15 +21,15 @@
     "utils"
   ],
   "dependencies": {
-    "inferno": "^1.3.0-rc.8",
-    "inferno-create-class": "^1.3.0-rc.8",
-    "inferno-create-element": "^1.3.0-rc.8",
-    "inferno-shared": "^1.3.0-rc.8",
+    "inferno": "^1.3.0-rc.9",
+    "inferno-create-class": "^1.3.0-rc.9",
+    "inferno-create-element": "^1.3.0-rc.9",
+    "inferno-shared": "^1.3.0-rc.9",
     "inferno-vnode-flags": "^1.3.0-rc.4"
   },
   "devDependencies": {
-    "inferno-component": "^1.3.0-rc.8",
-    "inferno-server": "^1.3.0-rc.8"
+    "inferno-component": "^1.3.0-rc.9",
+    "inferno-server": "^1.3.0-rc.9"
   },
   "bundledDependencies": [
     "inferno-shared",
