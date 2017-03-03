@@ -11,6 +11,7 @@ export interface IRouterProps {
 	location: any;
 	baseUrl?: any;
 	component?: Component<any, any>;
+	onUpdate?: any;
 }
 
 function createrRouter(history) {
@@ -71,7 +72,7 @@ export default class Router extends Component<IRouterProps, any> {
 	}
 
 	routeTo(url) {
-    this.setState(
+		this.setState(
 			{ url },
 			() => this.props.onUpdate && this.props.onUpdate()
 		);
