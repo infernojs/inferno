@@ -37,7 +37,7 @@ function updateChildOption(vNode, value) {
 	dom.value = props.value;
 	if ((isArray(value) && value.indexOf(props.value) !== -1) || props.value === value) {
 		dom.selected = true;
-	} else {
+	} else if (!isNullOrUndef(value) || !isNullOrUndef(props.selected)) {
 		dom.selected = props.selected || false;
 	}
 }
@@ -93,7 +93,10 @@ export function applyValue(vNode, dom, mounting: boolean) {
 	const children = vNode.children;
 
 	if (!isInvalid(children)) {
-		const value = props.value || (mounting && props.defaultValue);
+		let value = props.value;
+		if (mounting && isNullOrUndef(value)) {
+			value = props.defaultValue;
+		}
 		if (isArray(children)) {
 			for (let i = 0, len = children.length; i < len; i++) {
 				updateChildOptionGroup(children[i], value);
