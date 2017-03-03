@@ -167,12 +167,18 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
 				// as the children may also have been hoisted
 				if (newChildren) {
 					if (isArray(newChildren)) {
-						for (let i = 0, len = newChildren.length; i < len; i++) {
-							const child = newChildren[i];
+						const len = newChildren.length;
+						if (len > 0) {
+							const tmpArray = [];
 
-							if (!isInvalid(child) && isVNode(child)) {
-								newProps.children[i] = cloneVNode(child);
+							for (let i = 0; i < len; i++) {
+								const child = newChildren[i];
+
+								if (!isInvalid(child) && isVNode(child)) {
+									tmpArray.push(cloneVNode(child));
+								}
 							}
+							newProps.children = tmpArray;
 						}
 					} else if (isVNode(newChildren)) {
 						newProps.children = cloneVNode(newChildren);
