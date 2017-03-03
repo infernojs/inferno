@@ -13,8 +13,7 @@ const cache: Map<string, IMatchRegex> = new Map();
  */
 export default function match(routes, currentURL: any) {
 	const location: string = getURLString(currentURL);
-	const renderProps = matchRoutes(toArray(routes), location, '/');
-	return renderProps;
+	return matchRoutes(toArray(routes), location, '/');
 }
 
 /**

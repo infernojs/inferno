@@ -61,7 +61,7 @@ export default class Router extends Component<IRouterProps, any> {
 	componentWillReceiveProps(nextProps) {
 		this.setState(
 			{ url: nextProps.url },
-			() => this.props.onUpdate && this.props.onUpdate()
+			this.props.onUpdate ? () => this.props.onUpdate() : null
 		);
 	}
 
@@ -74,7 +74,7 @@ export default class Router extends Component<IRouterProps, any> {
 	routeTo(url) {
 		this.setState(
 			{ url },
-			() => this.props.onUpdate && this.props.onUpdate()
+			this.props.onUpdate ? () => this.props.onUpdate() : null
 		);
 	}
 
