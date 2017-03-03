@@ -11,6 +11,7 @@ export interface IRouterProps {
 	location: any;
 	baseUrl?: any;
 	component?: Component<any, any>;
+	onUpdate?: any;
 }
 
 function createrRouter(history) {
@@ -58,9 +59,10 @@ export default class Router extends Component<IRouterProps, any> {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({
-			url: nextProps.url
-		});
+		this.setState(
+			{ url: nextProps.url },
+			() => this.props.onUpdate && this.props.onUpdate()
+		);
 	}
 
 	componentWillUnmount() {
@@ -70,7 +72,10 @@ export default class Router extends Component<IRouterProps, any> {
 	}
 
 	routeTo(url) {
-			this.setState({ url });
+		this.setState(
+			{ url },
+			() => this.props.onUpdate && this.props.onUpdate()
+		);
 	}
 
 	render(props): VNode {
