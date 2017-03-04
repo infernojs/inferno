@@ -99,6 +99,7 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
+
 	if (!isInvalid(children)) {
 		if (isStringOrNumber(children)) {
 			setTextContent(dom, children as string | number);

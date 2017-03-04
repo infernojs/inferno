@@ -107,7 +107,9 @@ Lifecycle.prototype.addListener = function addListener (callback) {
 	this.listeners.push(callback);
 };
 Lifecycle.prototype.trigger = function trigger () {
-	for (let i = 0, len = this.listeners.length; i < len; i++) {
-		this.listeners[i]();
+	const listeners = this.listeners;
+
+	for (let i = 0, len = listeners.length; i < len; i++) {
+		listeners[i]();
 	}
 };

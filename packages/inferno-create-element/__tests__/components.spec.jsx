@@ -2052,10 +2052,15 @@ describe('Components (JSX)', () => {
 	describe('Swapping Component to DOM node', () => {
 		it('Should be able to swap statefull component to DOM list when doing setState', () => {
 			let change1 = null;
+			let unMountCalled = false;
 
 			class FooBar extends Component {
 				constructor(props) {
 					super(props);
+				}
+
+				componentWillUnmount() {
+					unMountCalled = true;
 				}
 
 				render() {
@@ -2105,9 +2110,12 @@ describe('Components (JSX)', () => {
 
 			render(<Tester />, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div class="login-container"><h1>foo</h1></div></div>'));
+			expect(unMountCalled).to.eql(false);
 			change1();
+			expect(unMountCalled).to.eql(false);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div></div>'));
 			change1();
+			expect(unMountCalled).to.eql(true);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div class="login-container"><h1>foo</h1></div></div>'));
 		});
 

@@ -97,7 +97,7 @@ options.afterRender = function (): void {
 	currentComponent = null;
 };
 
-const version = '15.4.1';
+const version = '15.4.2';
 
 const xlinkAttrs = {
 	xlinkActuate: 'xlink:actuate',
@@ -155,14 +155,10 @@ const injectStringRefs = function (originalFunction) {
 		const ref = props.ref;
 
 		if (typeof ref === 'string') {
+			currentComponent.refs = currentComponent.refs || {};
 			props.ref = function (val) {
-				if (this) {
-					if (!this.refs) {
-						this.refs = {};
-					}
-					this.refs[ ref ] = val;
-				}
-			}.bind(currentComponent || null);
+				this.refs[ ref ] = val;
+			}.bind(currentComponent);
 		}
 		if (typeof name === 'string') {
 			normalizeProps(name, props);
@@ -172,7 +168,7 @@ const injectStringRefs = function (originalFunction) {
 		for (let i = 0, len = children.length; i < len; i++) {
 			let child = children[i];
 			if (child && !isArray(child) && !isString(child) && isFunction(child[Symbol.iterator])) {
-				children[i] = child = Array.from(child);
+				children[i] = Array.from(child);
 			}
 		}
 		return originalFunction(name, props, ...children);

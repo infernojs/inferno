@@ -623,7 +623,7 @@ describe('Test Utils', () => {
 			</div>
 		);
 
-		it('should throw an error when more than one result is found', () => {
+		it('should throw an error when more than one result is found #1', () => {
 			const errorRegex = /Did not find exactly one match/;
 			const testValue = (classNames) => {
 				expect(() => {
@@ -650,18 +650,20 @@ describe('Test Utils', () => {
 		const tree = renderIntoDocument(
 			<div>
 				<header>
-					<h1>Hello</h1>
+					<h1>Head1</h1>
+					<span>Hello</span>
 				</header>
 				<section>
 					<h1>Hello Again</h1>
 					<p>Paragraph 1</p>
 					<p>Paragraph 2</p>
 					<p>Paragraph 3</p>
+					<a>test</a>
 				</section>
 			</div>
 		);
 
-		it('should throw an error when more than one result is found', () => {
+		it('should throw an error when more than one result is found #2', () => {
 			const errorRegex = /Did not find exactly one match/;
 			const testValue = (tagName) => {
 				expect(() => {
@@ -678,8 +680,8 @@ describe('Test Utils', () => {
 				expect(result).to.be.instanceof(instance);
 			};
 			testValue('div', window.HTMLDivElement);
-			testValue('header', window.HTMLElement);
-			testValue('section', window.HTMLElement);
+			testValue('span', window.HTMLSpanElement);
+			testValue('a', window.HTMLAnchorElement);
 		});
 	});
 
@@ -695,7 +697,7 @@ describe('Test Utils', () => {
 			</div>
 		);
 
-		it('should throw an error when more than one result is found', () => {
+		it('should throw an error when more than one result is found #3', () => {
 			const errorRegex = /Did not find exactly one match/;
 			const testValue = (type) => {
 				expect(() => {
@@ -734,7 +736,7 @@ describe('Test Utils', () => {
 			</div>
 		);
 
-		it('should throw an error when more than one result is found', () => {
+		it('should throw an error when more than one result is found #4', () => {
 			const errorRegex = /Did not find exactly one match/;
 			const testValue = (type) => {
 				expect(() => {
