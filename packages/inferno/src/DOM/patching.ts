@@ -773,12 +773,11 @@ function lis_algorithm(arr) {
 }
 
 export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean) {
-	if (skipProps[prop] || hasControlledValue && prop === 'value') {
+	if (prop in skipProps || (hasControlledValue && prop === 'value')) {
 		return;
-	}
-	if (booleanProps[prop]) {
+	} else if (prop in booleanProps) {
 		dom[prop] = !!nextValue;
-	} else if (strictProps[prop]) {
+	} else if (prop in strictProps) {
 		const value = isNullOrUndef(nextValue) ? '' : nextValue;
 
 		if (dom[prop] !== value) {
@@ -807,7 +806,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
 				}
 			}
 		} else {
-			const ns = namespaces[prop];
+			const ns = isSVG ? namespaces[prop] : false;
 
 			if (ns) {
 				dom.setAttributeNS(ns, prop, nextValue);
@@ -888,7 +887,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 		// do not add a hasOwnProperty check here, it affects performance
 		const value = nextAttrValue[style];
 
-		if (isNumber(value) && !isUnitlessNumber[style]) {
+		if (isNumber(value) && !(style in isUnitlessNumber)) {
 			domStyle[style] = value + 'px';
 		} else {
 			domStyle[style] = value;

@@ -11,6 +11,7 @@ import {
 	normalize
 } from './normalization';
 import options from './options';
+import {EMPTY_OBJ} from '../DOM/utils';
 
 export type InfernoInput = VNode | null | string | number;
 export type Ref = Function | null;
@@ -58,22 +59,6 @@ export function createVNode (
 ) {
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
-	}
-
-	// Primitive node doesn't have defaultProps, only Component
-	if (flags & VNodeFlags.Component) {
-		// set default props
-		const defaultProps = (type as any).defaultProps;
-
-		if (!isNullOrUndef(defaultProps)) {
-			props = props || {}; // Create new object if only defaultProps given
-
-			for (let prop in defaultProps) {
-				if (isUndefined(props[prop])) {
-					props[prop] = defaultProps[prop];
-				}
-			}
-		}
 	}
 
 	const vNode: VNode = {
@@ -152,7 +137,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
 
 		if (flags & VNodeFlags.Component) {
 			newVNode = createVNode(flags, vNodeToClone.type,
-				(assign as any)({}, vNodeToClone.props, props),
+				(!vNodeToClone.props && !props) ? EMPTY_OBJ : (assign as any)({}, vNodeToClone.props, props),
 				null,
 				events,
 				key,
@@ -189,7 +174,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
 		} else if (flags & VNodeFlags.Element) {
 			children = (props && props.children) || vNodeToClone.children;
 			newVNode = createVNode(flags, vNodeToClone.type,
-				(assign as any)({}, vNodeToClone.props, props),
+				(!vNodeToClone.props && !props) ? EMPTY_OBJ : (assign as any)({}, vNodeToClone.props, props),
 				children,
 				events,
 				key,

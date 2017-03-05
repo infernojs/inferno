@@ -6,7 +6,7 @@ import {
 	isNumber,
 	isString,
 	isStringOrNumber,
-	warning
+	warning, isUndefined
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
@@ -149,26 +149,44 @@ function normalizeElement(type: string, vNode: VNode) {
 }
 
 export function normalize(vNode: VNode): void {
-	const props = vNode.props;
-	const hasProps = !isNull(props);
+	let props = vNode.props;
 	const type = vNode.type;
 	let children = vNode.children;
 
 	// convert a wrongly created type back to element
-	if (isString(type) && (vNode.flags & VNodeFlags.Component)) {
-		normalizeElement(type as string, vNode);
-		if (hasProps && props.children) {
-			vNode.children = props.children;
-			children = props.children;
-		}
+		// Primitive node doesn't have defaultProps, only Component
+		if (vNode.flags & VNodeFlags.Component) {
+			// set default props
+			const defaultProps = (type as any).defaultProps;
+
+			if (!isNullOrUndef(defaultProps)) {
+				if (!props) {
+					props = vNode.props = defaultProps; // Create new object if only defaultProps given
+				} else {
+					for (let prop in defaultProps) {
+						if (isUndefined(props[prop])) {
+							props[prop] = defaultProps[prop];
+						}
+					}
+				}
+			}
+
+			if (isString(type)) {
+				normalizeElement(type as string, vNode);
+				if (props && props.children) {
+					vNode.children = props.children;
+					children = props.children;
+				}
+			}
 	}
-	if (hasProps) {
+
+	if (props) {
 		normalizeProps(vNode, props, children);
 	}
 	if (!isInvalid(children)) {
 		vNode.children = normalizeChildren(children);
 	}
-	if (hasProps && !isInvalid(props.children)) {
+	if (props && !isInvalid(props.children)) {
 		props.children = normalizeChildren(props.children);
 	}
 

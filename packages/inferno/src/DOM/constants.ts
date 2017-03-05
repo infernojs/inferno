@@ -1,25 +1,93 @@
-function constructDefaults(string, object, value) {
-	/* eslint no-return-assign: 0 */
-	const array = string.split(',');
-	for (let i = 0, len = array.length; i < len; i++) {
-		object[array[i]] = value;
-	}
-}
-
 export const xlinkNS = 'http://www.w3.org/1999/xlink';
 export const xmlNS = 'http://www.w3.org/XML/1998/namespace';
 export const svgNS = 'http://www.w3.org/2000/svg';
-export const strictProps = {};
-export const booleanProps = {};
-export const namespaces = {};
-export const isUnitlessNumber = {};
-export const skipProps = {};
-export const delegatedProps = {};
+export const strictProps = Object.create(null);
+strictProps.volume = true;
+strictProps.defaultChecked = true;
 
-constructDefaults('xlink:href,xlink:arcrole,xlink:actuate,xlink:role,xlink:titlef,xlink:type', namespaces, xlinkNS);
-constructDefaults('xml:base,xml:lang,xml:space', namespaces, xmlNS);
-constructDefaults('volume,defaultChecked', strictProps, true);
-constructDefaults('children,childrenType,defaultValue,ref,key,selected,checked,multiple', skipProps, true);
-constructDefaults('onClick,onMouseDown,onMouseUp,onMouseMove,onSubmit,onDblClick,onKeyDown,onKeyUp,onKeyPress', delegatedProps, true);
-constructDefaults('muted,scoped,loop,open,checked,default,capture,disabled,readOnly,required,autoplay,controls,seamless,reversed,allowfullscreen,novalidate,hidden', booleanProps, true);
-constructDefaults('animationIterationCount,borderImageOutset,borderImageSlice,borderImageWidth,boxFlex,boxFlexGroup,boxOrdinalGroup,columnCount,flex,flexGrow,flexPositive,flexShrink,flexNegative,flexOrder,gridRow,gridColumn,fontWeight,lineClamp,lineHeight,opacity,order,orphans,tabSize,widows,zIndex,zoom,fillOpacity,floodOpacity,stopOpacity,strokeDasharray,strokeDashoffset,strokeMiterlimit,strokeOpacity,strokeWidth,', isUnitlessNumber, true);
+export const booleanProps = Object.create(null);
+booleanProps.muted = 1;
+booleanProps.scoped = 1;
+booleanProps.loop = 1;
+booleanProps.open = 1;
+booleanProps.checked = 1;
+booleanProps.default = 1;
+booleanProps.capture = 1;
+booleanProps.disabled = 1;
+booleanProps.readOnly = 1;
+booleanProps.required = 1;
+booleanProps.autoplay = 1;
+booleanProps.controls = 1;
+booleanProps.seamless = 1;
+booleanProps.reversed = 1;
+booleanProps.allowfullscreen = 1;
+booleanProps.novalidate = 1;
+booleanProps.hidden = 1;
+
+export const namespaces = Object.create(null);
+namespaces['xlink:href'] = xlinkNS;
+namespaces['xlink:arcrole'] = xlinkNS;
+namespaces['xlink:actuate'] = xlinkNS;
+namespaces['xlink:role'] = xlinkNS;
+namespaces['xlink:titlef'] = xlinkNS;
+namespaces['xlink:type'] = xlinkNS;
+namespaces['xml:base'] = xmlNS;
+namespaces['xml:lang'] = xmlNS;
+namespaces['xml:space'] = xmlNS;
+
+export const isUnitlessNumber = Object.create(null);
+isUnitlessNumber.animationIterationCount = 1;
+isUnitlessNumber.borderImageOutset = 1;
+isUnitlessNumber.borderImageSlice = 1;
+isUnitlessNumber.borderImageWidth = 1;
+isUnitlessNumber.boxFlex = 1;
+isUnitlessNumber.boxFlexGroup = 1;
+isUnitlessNumber.boxOrdinalGroup = 1;
+isUnitlessNumber.columnCount = 1;
+isUnitlessNumber.flex = 1;
+isUnitlessNumber.flexGrow = 1;
+isUnitlessNumber.flexPositive = 1;
+isUnitlessNumber.flexShrink = 1;
+isUnitlessNumber.flexNegative = 1;
+isUnitlessNumber.flexOrder = 1;
+isUnitlessNumber.gridRow = 1;
+isUnitlessNumber.gridColumn = 1;
+isUnitlessNumber.fontWeight = 1;
+isUnitlessNumber.lineClamp = 1;
+isUnitlessNumber.lineHeight = 1;
+isUnitlessNumber.opacity = 1;
+isUnitlessNumber.order = 1;
+isUnitlessNumber.orphans = 1;
+isUnitlessNumber.tabSize = 1;
+isUnitlessNumber.widows = 1;
+isUnitlessNumber.zIndex = 1;
+isUnitlessNumber.zoom = 1;
+isUnitlessNumber.fillOpacity = 1;
+isUnitlessNumber.floodOpacity = 1;
+isUnitlessNumber.stopOpacity = 1;
+isUnitlessNumber.strokeDasharray = 1;
+isUnitlessNumber.strokeDashoffset = 1;
+isUnitlessNumber.strokeMiterlimit = 1;
+isUnitlessNumber.strokeOpacity = 1;
+isUnitlessNumber.strokeWidth = 1;
+
+export const skipProps = Object.create(null);
+skipProps.children = 1;
+skipProps.childrenType = 1;
+skipProps.defaultValue = 1;
+skipProps.ref = 1;
+skipProps.key = 1;
+skipProps.selected = 1;
+skipProps.checked = 1;
+skipProps.multiple = 1;
+
+export const delegatedProps = Object.create(null);
+delegatedProps.onClick = 1;
+delegatedProps.onMouseDown = 1;
+delegatedProps.onMouseUp = 1;
+delegatedProps.onMouseMove = 1;
+delegatedProps.onSubmit = 1;
+delegatedProps.onDblClick = 1;
+delegatedProps.onKeyDown = 1;
+delegatedProps.onKeyUp = 1;
+delegatedProps.onKeyPress = 1;
