@@ -96,11 +96,11 @@ function multihook<P, S>(inst: Component<P, S>, hooks: Function[], mergeFn?: Fun
 
 		for (let i = 0, len = hooks.length; i < len; i ++) {
 			const hook = hooks[i];
-			let r = hook.apply(inst, arguments);
+			let r = hook.apply(this, arguments);
 
 			if (mergeFn) {
 				ret = mergeFn(ret, r);
-			} else if (isUndefined(r)) {
+			} else if (!isUndefined(r)) {
 				ret = r;
 			}
 		}
@@ -142,10 +142,18 @@ function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[])
 	}
 }
 
-function applyMixins(inst: any, mixins: Function[] | any[]) {
+function applyMixins(Cl: any, mixins: Function[] | any[]) {
 	for (let key in mixins) {
 		if (mixins.hasOwnProperty(key)) {
 			const mixin = mixins[key];
+
+			let inst;
+
+			if (key === 'getDefaultProps') {
+				inst = Cl;
+			} else {
+				inst = Cl.prototype;
+			}
 
 			if (isFunction(mixin[0])) {
 				applyMixin(key, inst, mixin);
@@ -163,14 +171,13 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComp
 		static propTypes = obj.propTypes;
 		static mixins = obj.mixins && collateMixins(obj.mixins);
 		static getDefaultProps = obj.getDefaultProps;
-		static getInitialState = obj.getInitialState;
+		getInitialState?(): S;
 
 		constructor(props, context) {
 			super(props, context);
-			extend(this, obj);
 			bindAll(this);
-			if (Cl.getInitialState) {
-				this.state = Cl.getInitialState.call(this);
+			if (this.getInitialState) {
+				this.state = this.getInitialState();
 			}
 		}
 
@@ -184,15 +191,16 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComp
 
 	}
 
-	if (obj.mixins) {
-		applyMixins(Cl, collateMixins(obj.mixins));
-	}
+	extend(Cl.prototype, obj);
 
 	if (obj.statics) {
 		extend(Cl, obj.statics);
 	}
 
-	Cl.getInitialState = isUndefined(Cl.getInitialState) ? undefined : Cl.getInitialState;
+	if (obj.mixins) {
+		applyMixins(Cl, collateMixins(obj.mixins));
+	}
+
 	Cl.defaultProps = isUndefined(Cl.getDefaultProps) ? undefined : Cl.getDefaultProps();
 
 	return Cl;
