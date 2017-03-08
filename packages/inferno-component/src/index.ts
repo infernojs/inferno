@@ -178,7 +178,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_pendingState = {};
 	_lastInput = null;
 	_vNode = null;
-	_unmounted = true;
+	_unmounted = false;
 	_lifecycle = null;
 	_childContext = null;
 	_patch = null;
