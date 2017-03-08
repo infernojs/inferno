@@ -64,7 +64,11 @@ function handleRouteNode(routeConfigNode: IPlainRouteConfig): VNode {
 	}
 
 	// create deep copy of config
-	const node: IPlainRouteConfig = Object.assign({}, routeConfigNode);
+	const node: IPlainRouteConfig = {} as IPlainRouteConfig;
+	for (const key in routeConfigNode) {
+		node[key] = routeConfigNode[key];
+	}
+
 	node.children = [];
 
 	// handle index route config

@@ -11,7 +11,7 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import options from '../core/options';
-import { cloneVNode, InfernoInput, VNode, InfernoChildren } from '../core/VNodes';
+import { directClone, InfernoInput, VNode, InfernoChildren } from '../core/VNodes';
 import hydrateRoot from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
@@ -100,7 +100,7 @@ export function render(input: InfernoInput, parentDom?: Element | SVGAElement | 
 
 		if (!isInvalid(input)) {
 			if ((input as VNode).dom) {
-				input = cloneVNode(input as VNode);
+				input = directClone(input as VNode);
 			}
 			if (!hydrateRoot(input, parentDom, lifecycle)) {
 				mount(input as VNode, parentDom as Element, lifecycle, EMPTY_OBJ, false);
@@ -117,7 +117,7 @@ export function render(input: InfernoInput, parentDom?: Element | SVGAElement | 
 			removeRoot(root);
 		} else {
 			if ((input as VNode).dom) {
-				input = cloneVNode(input as VNode);
+				input = directClone(input as VNode);
 			}
 			patch(root.input as VNode, input as VNode, parentDom as Element, lifecycle, EMPTY_OBJ, false, false);
 		}

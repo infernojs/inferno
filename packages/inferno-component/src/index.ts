@@ -2,7 +2,6 @@
 import { EMPTY_OBJ, createVNode, options, VNode, Props } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
-	assign,
 	ERROR_MSG,
 	isArray,
 	isBrowser,
@@ -12,7 +11,8 @@ import {
 	isStringOrNumber,
 	Lifecycle,
 	NO_OP,
-	throwError
+	throwError,
+	combineFrom
 } from 'inferno-shared';
 
 let noOp = ERROR_MSG;
@@ -83,7 +83,12 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 			addToQueue(component, false, callback);
 		}
 	} else {
-		(assign as any)(component.state, component._pendingState);
+		const pending = component._pendingState;
+		const state = component.state;
+
+		for (const key in pending) {
+			state[key] = pending[key];
+		}
 		component._pendingState = {};
 	}
 }
@@ -93,7 +98,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
 		const prevState = component.state;
-		const nextState = (assign as any)({}, prevState, pendingState);
+		const nextState = combineFrom(prevState, pendingState) as S;
 		const props = component.props;
 		const context = component.context;
 
@@ -134,7 +139,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 			if (isNullOrUndef(childContext)) {
 				childContext = component._childContext;
 			} else {
-				childContext = (assign as any)({}, context, component._childContext, childContext);
+				childContext = combineFrom(context, childContext as any);
 			}
 
 			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
@@ -246,7 +251,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	componentWillUpdate(nextProps?: P, nextState?: S, nextContext?: any) {
 	}
 
-	getChildContext() {
+	getChildContext(): {} | void {
 	}
 
 	_updateComponent(
@@ -272,7 +277,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 					this._blockRender = false;
 				}
 				if (this._pendingSetState) {
-					nextState = (assign as any)({}, nextState, this._pendingState);
+					nextState = combineFrom(nextState, this._pendingState) as S;
 					this._pendingSetState = false;
 					this._pendingState = {};
 				}

@@ -1,5 +1,4 @@
 import {
-	assign,
 	isArray,
 	isAttrAnEvent,
 	isFunction,
@@ -13,12 +12,13 @@ import {
 	isUndefined,
 	NO_OP,
 	LifecycleClass,
-	throwError
+	throwError,
+	combineFrom
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import options from '../core/options';
 import {
-	cloneVNode,
+	directClone,
 	createTextVNode,
 	createVoidVNode,
 	isVNode,
@@ -315,7 +315,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				if (isNullOrUndef(childContext)) {
 					childContext = context;
 				} else {
-					childContext = (assign as any)({}, context, childContext);
+					childContext = combineFrom(context, childContext);
 				}
 				const lastInput = instance._lastInput;
 				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false, false);
@@ -335,7 +335,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					}
 					throwError();
 				} else if (isObject(nextInput) && nextInput.dom) {
-					nextInput = cloneVNode(nextInput);
+					nextInput = directClone(nextInput);
 				}
 				if (nextInput.flags & VNodeFlags.Component) {
 					nextInput.parentVNode = nextVNode;
@@ -386,7 +386,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					}
 					throwError();
 				} else if (isObject(nextInput) && nextInput.dom) {
-					nextInput = cloneVNode(nextInput);
+					nextInput = directClone(nextInput);
 				}
 				if (nextInput !== NO_OP) {
 					patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
@@ -432,7 +432,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 		let nextChild = nextChildren[i];
 
 		if (nextChild.dom) {
-			nextChild = nextChildren[i] = cloneVNode(nextChild);
+			nextChild = nextChildren[i] = directClone(nextChild);
 		}
 		patch(lastChildren[i], nextChild, dom, lifecycle, context, isSVG, isRecycling);
 	}
@@ -441,7 +441,7 @@ export function patchNonKeyedChildren(lastChildren, nextChildren, dom, lifecycle
 			let nextChild = nextChildren[i];
 
 			if (nextChild.dom) {
-				nextChild = nextChildren[i] = cloneVNode(nextChild);
+				nextChild = nextChildren[i] = directClone(nextChild);
 			}
 			appendChild(dom, mount(nextChild, null, lifecycle, context, isSVG));
 		}
@@ -492,10 +492,10 @@ export function patchKeyedChildren(
 	let bEndNode = b[bEnd];
 
 	if (bStartNode.dom) {
-		b[bStart] = bStartNode = cloneVNode(bStartNode);
+		b[bStart] = bStartNode = directClone(bStartNode);
 	}
 	if (bEndNode.dom) {
-		b[bEnd] = bEndNode = cloneVNode(bEndNode);
+		b[bEnd] = bEndNode = directClone(bEndNode);
 	}
 	// Step 1
 	/* eslint no-constant-condition: 0 */
@@ -511,7 +511,7 @@ export function patchKeyedChildren(
 			aStartNode = a[aStart];
 			bStartNode = b[bStart];
 			if (bStartNode.dom) {
-				b[bStart] = bStartNode = cloneVNode(bStartNode);
+				b[bStart] = bStartNode = directClone(bStartNode);
 			}
 		}
 
@@ -526,7 +526,7 @@ export function patchKeyedChildren(
 			aEndNode = a[aEnd];
 			bEndNode = b[bEnd];
 			if (bEndNode.dom) {
-				b[bEnd] = bEndNode = cloneVNode(bEndNode);
+				b[bEnd] = bEndNode = directClone(bEndNode);
 			}
 		}
 
@@ -539,7 +539,7 @@ export function patchKeyedChildren(
 			aEndNode = a[aEnd];
 			bStartNode = b[bStart];
 			if (bStartNode.dom) {
-				b[bStart] = bStartNode = cloneVNode(bStartNode);
+				b[bStart] = bStartNode = directClone(bStartNode);
 			}
 			continue;
 		}
@@ -555,7 +555,7 @@ export function patchKeyedChildren(
 			aStartNode = a[aStart];
 			bEndNode = b[bEnd];
 			if (bEndNode.dom) {
-				b[bEnd] = bEndNode = cloneVNode(bEndNode);
+				b[bEnd] = bEndNode = directClone(bEndNode);
 			}
 			continue;
 		}
@@ -569,7 +569,7 @@ export function patchKeyedChildren(
 			while (bStart <= bEnd) {
 				node = b[bStart];
 				if (node.dom) {
-					b[bStart] = node = cloneVNode(node);
+					b[bStart] = node = directClone(node);
 				}
 				bStart++;
 				insertOrAppend(dom, mount(node, null, lifecycle, context, isSVG), nextNode);
@@ -608,7 +608,7 @@ export function patchKeyedChildren(
 								pos = j;
 							}
 							if (bNode.dom) {
-								b[j] = bNode = cloneVNode(bNode);
+								b[j] = bNode = directClone(bNode);
 							}
 							patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
 							patched++;
@@ -642,7 +642,7 @@ export function patchKeyedChildren(
 							pos = j;
 						}
 						if (bNode.dom) {
-							b[j] = bNode = cloneVNode(bNode);
+							b[j] = bNode = directClone(bNode);
 						}
 						patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
 						patched++;
@@ -657,7 +657,7 @@ export function patchKeyedChildren(
 			while (bStart < bLength) {
 				node = b[bStart];
 				if (node.dom) {
-					b[bStart] = node = cloneVNode(node);
+					b[bStart] = node = directClone(node);
 				}
 				bStart++;
 				insertOrAppend(dom, mount(node, null, lifecycle, context, isSVG), null);
@@ -679,7 +679,7 @@ export function patchKeyedChildren(
 						pos = i + bStart;
 						node = b[pos];
 						if (node.dom) {
-							b[pos] = node = cloneVNode(node);
+							b[pos] = node = directClone(node);
 						}
 						nextPos = pos + 1;
 						nextNode = nextPos < b.length ? b[nextPos].dom : null;
@@ -704,7 +704,7 @@ export function patchKeyedChildren(
 						pos = i + bStart;
 						node = b[pos];
 						if (node.dom) {
-							b[pos] = node = cloneVNode(node);
+							b[pos] = node = directClone(node);
 						}
 						nextPos = pos + 1;
 						nextNode = nextPos < b.length ? b[nextPos].dom : null;
@@ -848,26 +848,24 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 		if (delegatedProps[name]) {
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
-			if (lastValue !== nextValue) {
-				if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
-					const linkEvent = nextValue.event;
+			if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
+				const linkEvent = nextValue.event;
 
-					if (linkEvent && isFunction(linkEvent)) {
-						if (!dom._data) {
-							dom[nameLowerCase] = function(e) {
-								linkEvent(e.currentTarget._data, e);
-							};
-						}
-						dom._data = nextValue.data;
-					} else {
-						if (process.env.NODE_ENV !== 'production') {
-							throwError(`an event on a VNode "${ name }". was not a function or a valid linkEvent.`);
-						}
-						throwError();
+				if (linkEvent && isFunction(linkEvent)) {
+					if (!dom._data) {
+						dom[nameLowerCase] = function(e) {
+							linkEvent(e.currentTarget._data, e);
+						};
 					}
+					dom._data = nextValue.data;
 				} else {
-					dom[nameLowerCase] = nextValue;
+					if (process.env.NODE_ENV !== 'production') {
+						throwError(`an event on a VNode "${ name }". was not a function or a valid linkEvent.`);
+					}
+					throwError();
 				}
+			} else {
+				dom[nameLowerCase] = nextValue;
 			}
 		}
 	}
@@ -883,14 +881,14 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 		return;
 	}
 
-	for (let style in nextAttrValue as Styles) {
+	for (const style in nextAttrValue as Styles) {
 		// do not add a hasOwnProperty check here, it affects performance
 		const value = nextAttrValue[style];
 
-		if (isNumber(value) && !(style in isUnitlessNumber)) {
-			domStyle[style] = value + 'px';
-		} else {
+		if (!isNumber(value) || style in isUnitlessNumber) {
 			domStyle[style] = value;
+		} else {
+			domStyle[style] = value + 'px';
 		}
 	}
 

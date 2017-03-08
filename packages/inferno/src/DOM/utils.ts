@@ -1,5 +1,4 @@
 import {
-	assign,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -7,12 +6,13 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	LifecycleClass,
-	throwError
+	throwError,
+	combineFrom
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import options from '../core/options';
 import { VNode, Props } from '../core/VNodes';
-import { cloneVNode, createTextVNode, createVoidVNode } from '../core/VNodes';
+import { directClone, createTextVNode, createVoidVNode } from '../core/VNodes';
 import { svgNS } from './constants';
 import { mount } from './mounting';
 import { patch } from './patching';
@@ -55,7 +55,7 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 	if (isNullOrUndef(childContext)) {
 		instance._childContext = context;
 	} else {
-		instance._childContext = (assign as any)({}, context, childContext);
+		instance._childContext = combineFrom(context, childContext);
 	}
 
 	options.beforeRender && options.beforeRender(instance);
@@ -73,7 +73,7 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 		input = createTextVNode(input, null);
 	} else {
 		if (input.dom) {
-			input = cloneVNode(input);
+			input = directClone(input);
 		}
 		if (input.flags & VNodeFlags.Component) {
 			// if we have an input that is also a component, we run into a tricky situation
@@ -116,7 +116,7 @@ export function createFunctionalComponentInput(vNode: VNode, component, props: P
 		input = createTextVNode(input, null);
 	} else {
 		if (input.dom) {
-			input = cloneVNode(input);
+			input = directClone(input);
 		}
 		if (input.flags & VNodeFlags.Component) {
 			// if we have an input that is also a component, we run into a tricky situation

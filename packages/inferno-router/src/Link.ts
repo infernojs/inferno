@@ -1,6 +1,6 @@
 import { createVNode, VNode } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
-import { assign, isBrowser } from 'inferno-shared';
+import { isBrowser, combineFrom } from 'inferno-shared';
 
 interface ILinkProps {
 	href: any;
@@ -12,7 +12,6 @@ interface ILinkProps {
 }
 
 export default function Link(props, { router }): VNode {
-	// TODO: Convert to object assign
 	const { activeClassName, activeStyle, className, onClick, to, ...otherProps } = props;
 	const elemProps: ILinkProps = {
 		href: isBrowser ? router.createHref({pathname: to}) : router.location.baseUrl ? router.location.baseUrl + to : to,
@@ -28,7 +27,7 @@ export default function Link(props, { router }): VNode {
 			elemProps.className = (className ? className + ' ' : '') + activeClassName;
 		}
 		if (activeStyle) {
-			elemProps.style = (assign as any)({}, props.style, activeStyle) as Object;
+			elemProps.style = combineFrom(props.style, activeStyle);
 		}
 	}
 

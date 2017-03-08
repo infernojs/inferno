@@ -1,9 +1,9 @@
 import {
-	assign,
 	isArray,
 	isInvalid,
 	isNullOrUndef,
-	isStringOrNumber
+	isStringOrNumber,
+	combineFrom
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
@@ -71,7 +71,7 @@ export class RenderStream extends Readable {
 		const childContext = instance.getChildContext();
 
 		if (!isNullOrUndef(childContext)) {
-			context = (assign as any)({}, context, childContext);
+			context = combineFrom(context, childContext);
 		}
 		instance.context = context;
 

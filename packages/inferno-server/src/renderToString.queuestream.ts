@@ -1,5 +1,4 @@
 import {
-	assign,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -8,7 +7,8 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-	throwError
+	throwError,
+	combineFrom
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { Readable } from 'stream';
@@ -132,7 +132,7 @@ export class RenderQueueStream extends Readable {
 				const instance = new type(props, context);
 				const childContext = instance.getChildContext();
 				if (!isNullOrUndef(childContext)) {
-					context = (assign as any)({}, context, childContext);
+					context = combineFrom(context, childContext);
 				}
 				if (instance.props === EMPTY_OBJ) {
 					instance.props = props;
@@ -153,7 +153,7 @@ export class RenderQueueStream extends Readable {
 							this.addToQueue(initialProps.then((dataForContext) => {
 								instance._pendingSetState = false;
 								if (typeof dataForContext === 'object') {
-									instance.props = (assign as any)({}, instance.props, dataForContext);
+									instance.props = combineFrom(instance.props, dataForContext);
 								}
 								this.renderVNodeToQueue(
 									instance.render(instance.props, instance.context),
@@ -166,7 +166,7 @@ export class RenderQueueStream extends Readable {
 							}), position);
 							return;
 						} else {
-							instance.props = (assign as any)({}, instance.props, initialProps);
+							instance.props = combineFrom(instance.props, initialProps);
 						}
 					}
 				}
