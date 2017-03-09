@@ -34,7 +34,7 @@ export function isFunction(obj: any): boolean {
 }
 
 export function isAttrAnEvent(attr: string): boolean {
-	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+	return attr[0] === 'o' && attr[1] === 'n';
 }
 
 export function isString(obj: any): boolean {
