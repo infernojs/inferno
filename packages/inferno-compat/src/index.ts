@@ -1,5 +1,6 @@
 import PropTypes from 'proptypes';
 import isValidElement from './isValidElement';
+import SVGDOMPropertyConfig from './SVGDOMPropertyConfig';
 import createClass, {
 	ClassicComponentClass,
 	ComponentSpec
@@ -99,16 +100,6 @@ options.afterRender = function (): void {
 
 const version = '15.4.2';
 
-const xlinkAttrs = {
-	xlinkActuate: 'xlink:actuate',
-	xlinkArcrole: 'xlink:arcrole',
-	xlinkHref: 'xlink:href',
-	xlinkRole: 'xlink:role',
-	xlinkShow: 'xlink:show',
-	xlinkTitle: 'xlink:title',
-	xlinkType: 'xlink:type'
-};
-
 function normalizeProps(name: string, props: Props | any) {
 	if ((name === 'input' || name === 'textarea') && props.onChange) {
 		const type = props.type;
@@ -131,8 +122,8 @@ function normalizeProps(name: string, props: Props | any) {
 			props.onDblClick = props[ prop ];
 			delete props[ prop ];
 		}
-		if (xlinkAttrs[ prop ]) {
-			props[ xlinkAttrs[ prop ] ] = props[ prop ];
+		if (SVGDOMPropertyConfig[ prop ]) {
+			props[ SVGDOMPropertyConfig[ prop ] ] = props[ prop ];
 			delete props[ prop ];
 		}
 	}

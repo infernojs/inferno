@@ -34,7 +34,6 @@ describe('BUG: instance - null', () => {
 		}
 
 		componentWillMount() {
-			// debugger;
 		}
 
 		render() {

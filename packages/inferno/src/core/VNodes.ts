@@ -4,7 +4,8 @@ import {
 	isNullOrUndef,
 	isStatefulComponent,
 	isUndefined,
-	assign
+	isStringOrNumber,
+	combineFrom
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
@@ -80,43 +81,108 @@ export function createVNode (
 	return vNode;
 }
 
-export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
-	let restParamLength = arguments.length - 2; // children
-	let children;
+export function directClone(vNodeToClone: VNode): VNode {
+	let newVNode;
+	const flags = vNodeToClone.flags;
 
-	// Manually handle restParam for children, because babel always creates array
-	// Not creating array allows us to fastPath out of recursion
-	if (restParamLength > 0) {
+	if (flags & VNodeFlags.Component) {
+		let props;
+		const propsToClone = vNodeToClone.props;
+
+		if (!propsToClone) {
+			props = EMPTY_OBJ;
+		} else {
+			props = {};
+			for (let key in propsToClone) {
+				props[key] = propsToClone[key];
+			}
+		}
+		newVNode = createVNode(flags, vNodeToClone.type,
+			props,
+			null,
+			vNodeToClone.events,
+			vNodeToClone.key,
+			vNodeToClone.ref,
+			true
+		);
+		const newProps = newVNode.props;
+
+		if (newProps) {
+			const newChildren = newProps.children;
+			// we need to also clone component children that are in props
+			// as the children may also have been hoisted
+			if (newChildren) {
+				if (isArray(newChildren)) {
+					const len = newChildren.length;
+					if (len > 0) {
+						const tmpArray = [];
+
+						for (let i = 0; i < len; i++) {
+							const child = newChildren[i];
+
+							if (isStringOrNumber(child)) {
+								tmpArray.push(child);
+							} else if (!isInvalid(child) && isVNode(child)) {
+								tmpArray.push(directClone(child));
+							}
+						}
+						newProps.children = tmpArray;
+					}
+				} else if (isVNode(newChildren)) {
+					newProps.children = directClone(newChildren);
+				}
+			}
+		}
+		newVNode.children = null;
+	} else if (flags & VNodeFlags.Element) {
+		const children = vNodeToClone.children;
+		let props;
+		const propsToClone = vNodeToClone.props;
+
+		if (!propsToClone) {
+			props = EMPTY_OBJ;
+		} else {
+			props = {};
+			for (let key in propsToClone) {
+				props[key] = propsToClone[key];
+			}
+		}
+		newVNode = createVNode(flags, vNodeToClone.type,
+			props,
+			children,
+			vNodeToClone.events,
+			vNodeToClone.key,
+			vNodeToClone.ref,
+			!children
+		);
+	} else if (flags & VNodeFlags.Text) {
+		newVNode = createTextVNode(vNodeToClone.children as string, vNodeToClone.key);
+	}
+
+	return newVNode;
+}
+
+/*
+ directClone is preferred over cloneVNode and used internally also.
+ This function makes Inferno backwards compatible.
+ And can be tree-shaked by modern bundlers
+
+ Would be nice to combine this with directClone but could not do it without breaking change
+ */
+export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: InfernoChildren[]): VNode {
+	let children: any = _children;
+	const childrenLen = _children.length;
+
+	if (childrenLen > 0 && !isUndefined(_children[0])) {
 		if (!props) {
 			props = {};
 		}
-
-		if (restParamLength === 1) {
-			children = arguments[2];
-		} else {
-			children = [];
-			while ( restParamLength-- > 0 ) {
-				children[ restParamLength ] = arguments[ restParamLength + 2 ]
-			}
+		if (childrenLen === 1) {
+			children = _children[0];
 		}
 
-		if (isUndefined(props.children)) {
+		if (!isUndefined(children)) {
 			props.children = children as VNode;
-		} else {
-			if (isArray(children)) {
-				if (isArray(props.children)) {
-					props.children = (props.children as Array<string | number | VNode>).concat(children) as any;
-				} else {
-					props.children = [props.children].concat(children) as any;
-				}
-			} else {
-				if (isArray(props.children)) {
-					(props.children as Array<string | number | VNode>).push(children);
-				} else {
-					props.children = [props.children] as any;
-					(props.children as any[]).push(children);
-				}
-			}
 		}
 	}
 
@@ -125,7 +191,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
 	if (isArray(vNodeToClone)) {
 		const tmpArray = [];
 		for (let i = 0, len = (vNodeToClone as any).length; i < len; i++) {
-			tmpArray.push(cloneVNode(vNodeToClone[i]));
+			tmpArray.push(directClone(vNodeToClone[i]));
 		}
 
 		newVNode = tmpArray;
@@ -137,7 +203,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
 
 		if (flags & VNodeFlags.Component) {
 			newVNode = createVNode(flags, vNodeToClone.type,
-				(!vNodeToClone.props && !props) ? EMPTY_OBJ : (assign as any)({}, vNodeToClone.props, props),
+				(!vNodeToClone.props && !props) ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props),
 				null,
 				events,
 				key,
@@ -159,22 +225,24 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props): VNode {
 							for (let i = 0; i < len; i++) {
 								const child = newChildren[i];
 
-								if (!isInvalid(child) && isVNode(child)) {
-									tmpArray.push(cloneVNode(child));
+								if (isStringOrNumber(child)) {
+									tmpArray.push(child);
+								} else if (!isInvalid(child) && isVNode(child)) {
+									tmpArray.push(directClone(child));
 								}
 							}
 							newProps.children = tmpArray;
 						}
 					} else if (isVNode(newChildren)) {
-						newProps.children = cloneVNode(newChildren);
+						newProps.children = directClone(newChildren);
 					}
 				}
 			}
 			newVNode.children = null;
 		} else if (flags & VNodeFlags.Element) {
-			children = (props && props.children) || vNodeToClone.children;
+			children = (props && !isUndefined(props.children)) ? props.children : vNodeToClone.children;
 			newVNode = createVNode(flags, vNodeToClone.type,
-				(!vNodeToClone.props && !props) ? EMPTY_OBJ : (assign as any)({}, vNodeToClone.props, props),
+				(!vNodeToClone.props && !props) ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props),
 				children,
 				events,
 				key,
