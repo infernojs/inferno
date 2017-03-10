@@ -32,6 +32,7 @@ export const namespaces = Object.create(null);
 namespaces['xlink:href'] = xlinkNS;
 namespaces['xlink:arcrole'] = xlinkNS;
 namespaces['xlink:actuate'] = xlinkNS;
+namespaces['xlink:show'] = xlinkNS;
 namespaces['xlink:role'] = xlinkNS;
 namespaces['xlink:titlef'] = xlinkNS;
 namespaces['xlink:type'] = xlinkNS;
