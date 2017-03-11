@@ -27,7 +27,7 @@ const {
 	name,
 	version,
 	dependencies = {},
-	'jsnext:main': entryFile,
+	'inferno:main': entryFile,
 	rollup: rollupConfig = {},
 	bundledDependencies = {}
 } = pkgJson;

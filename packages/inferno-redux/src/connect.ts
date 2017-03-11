@@ -1,14 +1,13 @@
 import {
-	assign,
 	isFunction,
-	throwError
+	throwError,
+	combineFrom
 } from 'inferno-shared';
 import {
 	shallowEqual,
 	warning,
 	wrapActionCreators
 } from './utils';
-
 import hoistStatics from 'hoist-non-inferno-statics';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
@@ -24,14 +23,33 @@ export type MapDispatchToPropsFactory = (dispatch: (action: any) => void, props?
 
 export type MapDispatchToProps = MapDispatchToPropsFunction | {[index: string]: MapDispatchToPropsFunction} | MapDispatchToPropsFactory;
 
-const errorObject = { value: null };
+const errorObject = {value: null};
 const defaultMapStateToProps = (state) => ({}); // eslint-disable-line no-unused-vars
-const defaultMapDispatchToProps = (dispatch) => ({ dispatch });
-const defaultMergeProps = (stateProps, dispatchProps, parentProps) => (assign as any)({},
-	parentProps,
-	stateProps,
-	dispatchProps
-);
+const defaultMapDispatchToProps = (dispatch) => ({dispatch});
+const defaultMergeProps = function (parentProps, stateProps, dispatchProps) {
+	const obj = {};
+	let key;
+
+	if (parentProps) {
+		for (key in parentProps) {
+			obj[ key ] = parentProps[ key ];
+		}
+	}
+
+	if (stateProps) {
+		for (key in stateProps) {
+			obj[ key ] = stateProps[ key ];
+		}
+	}
+
+	if (dispatchProps) {
+		for (key in dispatchProps) {
+			obj[ key ] = dispatchProps[ key ];
+		}
+	}
+
+	return obj;
+};
 
 function tryCatch(fn, ctx) {
 	try {
@@ -49,9 +67,7 @@ function getDisplayName(WrappedComponent) {
 // Helps track hot reloading.
 let nextVersion = 0;
 
-export default function connect(
-	mapStateToProps?: MapStateToProps, mapDispatchToProps?: MapDispatchToProps, mergeProps?, options: any = {}
-): WrapWithConnect {
+export default function connect(mapStateToProps?: MapStateToProps, mapDispatchToProps?: MapDispatchToProps, mergeProps?, options: any = {}): WrapWithConnect {
 	const shouldSubscribe = Boolean(mapStateToProps);
 	const mapState = mapStateToProps || defaultMapStateToProps;
 	let mapDispatch;
@@ -64,7 +80,7 @@ export default function connect(
 		mapDispatch = wrapActionCreators(mapDispatchToProps);
 	}
 	const finalMergeProps = mergeProps || defaultMergeProps;
-	const { pure = true, withRef = false } = options;
+	const {pure = true, withRef = false} = options;
 	const checkMergedEquals = pure && finalMergeProps !== defaultMergeProps;
 	// Helps track hot reloading.
 	const version = nextVersion++;
@@ -128,7 +144,7 @@ export default function connect(
 				}
 
 				const storeState = this.store.getState();
-				this.state = { storeState };
+				this.state = {storeState};
 				this.clearCache();
 			}
 
@@ -164,7 +180,7 @@ export default function connect(
 				if (!this.finalMapDispatchToProps) {
 					return this.configureFinalMapDispatch(store, props);
 				}
-				const { dispatch } = store;
+				const {dispatch} = store;
 				const dispatchProps = this.doDispatchPropsDependOnOwnProps ?
 					this.finalMapDispatchToProps(dispatch, props) :
 					this.finalMapDispatchToProps(dispatch);
@@ -278,7 +294,7 @@ export default function connect(
 					this.haveStatePropsBeenPrecalculated = true;
 				}
 				this.hasStoreStateChanged = true;
-				this.setState({ storeState });
+				this.setState({storeState});
 			}
 
 			getWrappedInstance() {
@@ -340,7 +356,7 @@ export default function connect(
 				}
 				if (withRef) {
 					this.renderedElement = createElement(WrappedComponent,
-						(assign as any)({}, this.mergedProps, { ref: (instance) => this.wrappedInstance = instance })
+						combineFrom(this.mergedProps, {ref: (instance) => this.wrappedInstance = instance})
 					);
 				} else {
 					this.renderedElement = createElement(WrappedComponent,

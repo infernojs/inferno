@@ -1,5 +1,4 @@
 import {
-	assign,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -8,7 +7,8 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-	throwError
+	throwError,
+	combineFrom
 } from 'inferno-shared';
 import { internal_isUnitlessNumber, EMPTY_OBJ } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
@@ -50,7 +50,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 			const childContext = instance.getChildContext();
 
 			if (!isNullOrUndef(childContext)) {
-				context = (assign as any)({}, context, childContext);
+				context = combineFrom(context, childContext);
 			}
 			if (instance.props === EMPTY_OBJ) {
 				instance.props = props;

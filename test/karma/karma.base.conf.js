@@ -24,38 +24,38 @@ module.exports = function (config) {
 						loader: 'babel-loader',
 						exclude: /node_modules/,
 						query: {
-							compact: false
-						}
-					}
-				]
+							compact: false,
+						},
+					},
+				],
 			},
 			resolve: {
 				extensions: [ '.js', '.jsx' ],
-				mainFields: [ 'module', 'main' ]
+				mainFields: [ 'module', 'main' ],
 			},
 			performance: {
-				hints: false
-			}
+				hints: false,
+			},
 		},
 		webpackMiddleware: {
 			stats: 'errors-only',
-			noInfo: true
+			noInfo: true,
 		},
 
 		concurrency: 1,
 		browserConsoleLogOptions: {
-			terminal: true
+			terminal: true,
 		},
 		browserDisconnectTimeout: 10000,
 		browserDisconnectTolerance: 2,
 		browserLogOptions: {
-			terminal: true
+			terminal: true,
 		},
 		browserNoActivityTimeout: 2 * 60 * 1000,
 		captureTimeout: 2 * 60 * 10000,
 		autoWatch: false,
 		singleRun: true,
-		failOnEmptyTestSuite: false
+		failOnEmptyTestSuite: false,
 	});
 
 	const ci = String(process.env.CI).match(/^(1|true)$/gi);
@@ -63,15 +63,15 @@ module.exports = function (config) {
 		const travisLaunchers = {
 			Chrome_travis_ci: {
 				base: 'Chrome',
-				flags: ['--no-sandbox']
-			}
+				flags: ['--no-sandbox'],
+			},
 		};
 		config.set({
 			customLaunchers: travisLaunchers,
 			browsers: [
 				'Firefox',
-				'Chrome_travis_ci'
-			]
+				'Chrome_travis_ci',
+			],
 		});
 	}
 };

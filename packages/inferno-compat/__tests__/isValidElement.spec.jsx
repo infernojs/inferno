@@ -8,19 +8,6 @@ import Inferno, { cloneVNode } from 'inferno';
 
 
 describe('isValidElement', () => {
-	let container;
-
-	beforeEach(function () {
-		container = document.createElement('div');
-		document.body.appendChild(container);
-	});
-
-	afterEach(function () {
-		container.innerHTML = '';
-		render(null, container);
-		document.body.removeChild(container);
-	});
-
 	it('Should not work with non-object', () => {
 		expect(isValidElement(33)).to.equal(false);
 		expect(isValidElement(false)).to.equal(false);

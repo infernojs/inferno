@@ -93,7 +93,6 @@ describe('Inferno-compat LifeCycle', () => {
 			);
 
 			// Assert console log
-			// debugger;
 			// TODO: WIP - This needs verification
 			// const array = consoleSpy.getCalls();
 			// expect(array[0].args).to.eql(['Will mount']);

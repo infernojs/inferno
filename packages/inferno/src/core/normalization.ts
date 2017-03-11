@@ -10,7 +10,7 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
-	cloneVNode,
+	directClone,
 	createTextVNode,
 	isVNode,
 	VNode,
@@ -52,7 +52,7 @@ function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentK
 				if (isStringOrNumber(n)) {
 					n = createTextVNode(n, null);
 				} else if (isVNode(n) && n.dom || (n.key && n.key[0] === '.')) {
-					n = cloneVNode(n);
+					n = directClone(n);
 				}
 				if (isNull(n.key) || n.key[0] === '.') {
 					n = applyKey(key, n as VNode);
@@ -96,9 +96,9 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
-			newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
+			newNodes.push(applyKeyIfMissing(i, directClone(n)));
 		} else if (newNodes) {
-			newNodes.push(applyKeyIfMissing(i, cloneVNode(n)));
+			newNodes.push(applyKeyIfMissing(i, directClone(n)));
 		}
 	}
 
@@ -109,7 +109,7 @@ function normalizeChildren(children: InfernoChildren | null) {
 	if (isArray(children)) {
 		return normalizeVNodes(children as any[]);
 	} else if (isVNode(children as VNode) && (children as VNode).dom) {
-		return cloneVNode(children as VNode);
+		return directClone(children as VNode);
 	}
 
 	return children;

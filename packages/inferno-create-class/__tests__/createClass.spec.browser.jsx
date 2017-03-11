@@ -18,6 +18,72 @@ describe('Components createClass (JSX)', () => {
 	});
 
 	describe('mixins', () => {
+		describe('mixin methods', () => {
+			it('receives the class instance', () => {
+				const Foo = createClass({
+					mixins: [
+						{
+							componentDidMount() {
+								this.someState = 1;
+							},
+							doSomething() {
+								this.anotherState = 2;
+							}
+						}
+					],
+					render() {
+						this.doSomething();
+						return <div></div>;
+					}
+				});
+
+				let a;
+				render(<Foo ref={function (i) { a = i; }} />, container);
+
+				expect(a.someState).to.eql(1);
+				expect(a.anotherState).to.eql(2);
+			});
+
+			it('returns result through instance', () => {
+				const Foo = createClass({
+					mixins: [
+						{
+							renderSomething() {
+								return <div>{this.props.bar}</div>;
+							}
+						}
+					],
+					render() {
+						return <div>{this.renderSomething()}</div>;
+					}
+				});
+
+				render(<Foo bar="test" />, container);
+				expect(container.innerHTML).to.eql(innerHTML('<div><div>test</div></div>'));
+			});
+
+			it('works as a lifecycle method even when a matching method is already defined', ()=>{
+				const Foo = createClass({
+					mixins: [
+						{
+							componentDidMount() {
+								this.someState = 1;
+							}
+						}
+					],
+					componentDidMount() {},
+					render() {
+						return <div></div>;
+					}
+				});
+
+				let a;
+				render(<Foo ref={function (i) { a = i; }} />, container);
+
+				expect(a.someState).to.eql(1);
+			});
+		});
+
 		describe('getDefaultProps', () => {
 			it('should use a mixin', () => {
 				const Foo = createClass({
