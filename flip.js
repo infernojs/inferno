@@ -9,7 +9,7 @@ const {
 const flip = new FlipHubCli(__dirname, '*');
 
 function infernoFuse(name) {
-	const { FuseBox, UglifyJSPlugin, ReplacePlugin } = require('fsbx');
+	const { FuseBox, UglifyJSPlugin, ReplacePlugin } = require('fuse-box');
 	const isProd = process.argv.includes('--production');
 	const fuse = FuseBox.init({
 		src: 'packages',
