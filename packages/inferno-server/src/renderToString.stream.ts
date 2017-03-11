@@ -3,7 +3,8 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber,
-	combineFrom
+	combineFrom,
+	isUndefined
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
@@ -68,7 +69,10 @@ export class RenderStream extends Readable {
 		}
 
 		const instance = new type(props);
-		const childContext = instance.getChildContext();
+		let childContext;
+		if (!isUndefined(instance.getChildContext)) {
+			childContext = instance.getChildContext();
+		}
 
 		if (!isNullOrUndef(childContext)) {
 			context = combineFrom(context, childContext);
@@ -77,7 +81,7 @@ export class RenderStream extends Readable {
 
 		// Block setting state - we should render only once, using latest state
 		instance._pendingSetState = true;
-		return Promise.resolve(instance.componentWillMount()).then(() => {
+		return Promise.resolve(instance.componentWillMount && instance.componentWillMount()).then(() => {
 			const node = instance.render();
 			instance._pendingSetState = false;
 			return this.renderNode(node, context, isRoot);

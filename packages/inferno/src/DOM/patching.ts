@@ -307,7 +307,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				const lastState = instance.state;
 				const nextState = instance.state;
 				const lastProps = instance.props;
-				let childContext = instance.getChildContext();
+				let childContext;
+				if (!isUndefined(instance.getChildContext)) {
+					childContext = instance.getChildContext()
+				}
 
 				nextVNode.children = instance;
 				instance._isSVG = isSVG;
@@ -346,7 +349,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				instance._vNode = nextVNode;
 				if (didUpdate) {
 					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
-					if(!isNullOrUndef(instance.componentDidUpdate)) {
+					if (!isUndefined(instance.componentDidUpdate)) {
 						instance.componentDidUpdate(lastProps, lastState);
 					}
 					options.afterUpdate && options.afterUpdate(nextVNode);

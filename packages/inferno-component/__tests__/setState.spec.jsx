@@ -65,4 +65,57 @@ describe('setState', () => {
 
 		render(<BaseComp />, container);
 	});
+
+	it('Should not fail if componentDidUpate is not defined', () => {
+
+		class TestComponent extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					value: props.value
+				};
+				this.checkSetState = this.checkSetState.bind(this);
+			}
+
+			checkSetState() {
+				const value = this.state.value;
+				expect(value).to.equal('__NEWVALUE__');
+				setTimeout(function () {
+					done();
+				}, 100);
+			}
+
+			componentWillReceiveProps(nextProps) {
+				this.setState(
+					{
+						value: nextProps.value
+					},
+					this.checkSetState
+				);
+			}
+
+			render() {
+				return null;
+			}
+		}
+
+		class BaseComp extends Component {
+			state = {
+				value: '__OLDVALUE__'
+			};
+
+			componentDidMount() {
+				this.setState({
+					value: '__NEWVALUE__'
+				});
+			}
+
+			render() {
+				const value = this.state.value;
+				return <TestComponent value={value} />;
+			}
+		}
+
+		render(<BaseComp />, container);
+	});
 });

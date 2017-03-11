@@ -8,7 +8,8 @@ import {
 	isStringOrNumber,
 	isTrue,
 	throwError,
-	combineFrom
+	combineFrom,
+	isUndefined
 } from 'inferno-shared';
 import { internal_isUnitlessNumber, EMPTY_OBJ } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
@@ -47,7 +48,10 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 
 		if (isClass) {
 			const instance = new type(props, context);
-			const childContext = instance.getChildContext();
+			let childContext;
+			if (!isUndefined(instance.getChildContext)) {
+				childContext = instance.getChildContext();
+			}
 
 			if (!isNullOrUndef(childContext)) {
 				context = combineFrom(context, childContext);

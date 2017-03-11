@@ -1,6 +1,5 @@
 import {
 	isArray,
-	isFunction,
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber,
@@ -46,11 +45,14 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 	instance._unmounted = false;
 	instance._pendingSetState = true;
 	instance._isSVG = isSVG;
-	if (isFunction(instance.componentWillMount)) {
+	if (!isUndefined(instance.componentWillMount)) {
 		instance.componentWillMount();
 	}
 
-	const childContext = instance.getChildContext();
+	let childContext;
+	if (!isUndefined(instance.getChildContext)) {
+		childContext = instance.getChildContext();
+	}
 
 	if (isNullOrUndef(childContext)) {
 		instance._childContext = context;

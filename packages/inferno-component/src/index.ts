@@ -12,7 +12,8 @@ import {
 	Lifecycle,
 	NO_OP,
 	throwError,
-	combineFrom
+	combineFrom,
+	isUndefined
 } from 'inferno-shared';
 
 let noOp = ERROR_MSG;
@@ -20,7 +21,18 @@ let noOp = ERROR_MSG;
 if (process.env.NODE_ENV !== 'production') {
 	noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 }
+
 const componentCallbackQueue: Map<any, Function[]> = new Map();
+
+export interface ComponentLifecycle<P, S> {
+	componentDidMount?(): void;
+	componentWillMount?(): void;
+	componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+	shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
+	componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
+	componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
+	componentWillUnmount?(): void;
+}
 
 // when a components root VNode is also a component, we can run into issues
 // this will recursively look for vNode.parentNode if the VNode is a component
@@ -33,16 +45,6 @@ function updateParentComponentVNodes(vNode: VNode, dom: Element) {
 			updateParentComponentVNodes(parentVNode, dom);
 		}
 	}
-}
-
-export interface ComponentLifecycle<P, S> {
-	componentDidMount?: () => void;
-	componentWillMount?(): void;
-	componentWillReceiveProps?(nextProps: P, nextContext: any): void;
-	shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
-	componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
-	componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
-	componentWillUnmount?: () => void;
 }
 
 function addToQueue(component: Component<any, any>, force: boolean, callback?: Function): void {
@@ -99,7 +101,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		const pendingState = component._pendingState;
 		const prevState = component.state;
 		const nextState = combineFrom(prevState, pendingState) as S;
-		const props = component.props;
+		const props = component.props as P;
 		const context = component.context;
 
 		component._pendingState = {};
@@ -126,7 +128,8 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 
 		component._lastInput = nextInput;
 		if (didUpdate) {
-			let subLifecycle = component._lifecycle;
+			let childContext,
+					subLifecycle = component._lifecycle;
 
 			if (!subLifecycle) {
 				subLifecycle = new Lifecycle();
@@ -134,7 +137,10 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 				subLifecycle.listeners = [];
 			}
 			component._lifecycle = subLifecycle;
-			let childContext = component.getChildContext();
+
+			if (!isUndefined(component.getChildContext)) {
+				childContext = component.getChildContext();
+			}
 
 			if (isNullOrUndef(childContext)) {
 				childContext = component._childContext;
@@ -144,7 +150,9 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 
 			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
 			subLifecycle.trigger();
-			component.componentDidUpdate(props, prevState);
+			if (!isUndefined(component.componentDidUpdate)) {
+				component.componentDidUpdate(props, prevState, context);
+			}
 			options.afterUpdate && options.afterUpdate(vNode);
 		}
 		const dom = vNode.dom = nextInput.dom;
@@ -193,8 +201,17 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		this.context = context || EMPTY_OBJ; // context should not be mutable
 	}
 
-	render(nextProps?: P, nextState?, nextContext?) {
-	}
+	// LifeCycle methods
+	componentDidMount? (): void;
+	componentWillMount? (): void;
+	componentWillReceiveProps? (nextProps: P, nextContext: any): void;
+	shouldComponentUpdate? (nextProps: P, nextState: S, nextContext: any): boolean;
+	componentWillUpdate? (nextProps: P, nextState: S, nextContext: any): void;
+	componentDidUpdate? (prevProps: P, prevState: S, prevContext: any): void;
+	componentWillUnmount? (): void;
+	getChildContext? (): void;
+
+	render(nextProps?: P, nextState?, nextContext?) {}
 
 	forceUpdate(callback?: Function) {
 		if (this._unmounted) {
@@ -235,25 +252,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 	}
 
-	componentWillMount() {
-	}
-
-	componentDidUpdate(prevProps: P, prevState: S, prevContext?: any) {
-	}
-
-	shouldComponentUpdate(nextProps?: P, nextState?: S, context?: any): boolean {
-		return true;
-	}
-
-	componentWillReceiveProps(nextProps?: P, context?: any) {
-	}
-
-	componentWillUpdate(nextProps?: P, nextState?: S, nextContext?: any) {
-	}
-
-	getChildContext(): {} | void {
-	}
-
 	_updateComponent(
 		prevState: S,
 		nextState: S,
@@ -271,7 +269,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
 			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
-				if (!fromSetState) {
+				if (!isUndefined(this.componentWillReceiveProps) && !fromSetState ) {
 					this._blockRender = true;
 					this.componentWillReceiveProps(nextProps, context);
 					this._blockRender = false;
@@ -283,12 +281,13 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				}
 			}
 
-			const shouldUpdate = this.shouldComponentUpdate(nextProps, nextState, context);
-
-			if (shouldUpdate || force) {
-				this._blockSetState = true;
-				this.componentWillUpdate(nextProps, nextState, context);
-				this._blockSetState = false;
+			/* Update if scu is not defined, or it returns truthy value or force */
+			if (isUndefined(this.shouldComponentUpdate) || this.shouldComponentUpdate(nextProps, nextState, context) || force) {
+				if (!isUndefined(this.componentWillUpdate)) {
+					this._blockSetState = true;
+					this.componentWillUpdate(nextProps, nextState, context);
+					this._blockSetState = false;
+				}
 
 				this.props = nextProps;
 				this.state = nextState;

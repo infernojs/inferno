@@ -8,7 +8,8 @@ import {
 	isStringOrNumber,
 	isTrue,
 	throwError,
-	combineFrom
+	combineFrom,
+	isUndefined
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { Readable } from 'stream';
@@ -130,7 +131,10 @@ export class RenderQueueStream extends Readable {
 			// Render the
 			if (isClass) {
 				const instance = new type(props, context);
-				const childContext = instance.getChildContext();
+				let childContext;
+				if (!isUndefined(instance.getChildContext)) {
+					childContext = instance.getChildContext();
+				}
 				if (!isNullOrUndef(childContext)) {
 					context = combineFrom(context, childContext);
 				}

@@ -91,10 +91,12 @@ describe('Component lifecycle', () => {
 			}
 		}
 
+		// eslint-disable-next-line no-return-assign
 		render(<Com ref={(inst) => c = inst} value={1}/>, container);
 
 		c.componentDidUpdate = undefined;
 
+		// eslint-disable-next-line no-return-assign
 		render(<Com ref={(inst) => c = inst} value={2}/>, container);
 	});
 });

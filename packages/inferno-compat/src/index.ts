@@ -21,7 +21,8 @@ import {
 	NO_OP,
 	isArray,
 	isString,
-	isFunction
+	isFunction,
+	isNullOrUndef
 } from 'inferno-shared';
 import Component from 'inferno-component';
 import _VNodeFlags from 'inferno-vnode-flags';
@@ -37,10 +38,6 @@ options.findDOMNodeEnabled = true;
 function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
 	render(null, container);
 	return true;
-}
-
-function isNullOrUndef(children: any) {
-	return children === null || children === undefined;
 }
 
 const ARR = [];
@@ -66,7 +63,9 @@ const Children = {
 		if (ctx && ctx !== children) {
 			fn = fn.bind(ctx);
 		}
-		children.forEach(fn);
+		for (let i = 0, len = children.length; i < len; i++) {
+			fn(children[i], i, children);
+		}
 	},
 	count(children: Array<InfernoChildren | any>): number {
 		children = Children.toArray(children);

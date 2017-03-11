@@ -123,7 +123,6 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 			haveStatePropsBeenPrecalculated: boolean;
 			statePropsPrecalculationError: any;
 			renderedElement: any;
-			componentDidMount: any;
 			wrappedInstance: any;
 
 			constructor(props, context) {
@@ -132,9 +131,6 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				this.version = version;
 				this.wrappedInstance = null;
 				this.store = (props && props.store) || (context && context.store);
-				this.componentDidMount = () => {
-					this.trySubscribe();
-				};
 
 				if (!this.store) {
 					throwError('Could not find "store" in either the context or ' +
@@ -146,6 +142,10 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				const storeState = this.store.getState();
 				this.state = {storeState};
 				this.clearCache();
+			}
+
+			componentDidMount() {
+				this.trySubscribe();
 			}
 
 			shouldComponentUpdate() {
