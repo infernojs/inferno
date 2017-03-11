@@ -66,7 +66,7 @@ describe('setState', () => {
 		render(<BaseComp />, container);
 	});
 
-	it('Should not fail if componentDidUpate is not defined', () => {
+	it('Should not fail if componentDidUpate is not defined', (done) => {
 
 		class TestComponent extends Component {
 			constructor(props) {
