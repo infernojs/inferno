@@ -9,7 +9,7 @@ module.exports = function (config) {
 	base(config);
 	config.set({
 		files: [
-			process.env.BENCHMARK_GLOB || 'packages/*/__benchmarks__/**/*.js*'
+			`packages/${process.env.BENCH_FILTER || '*'}/__benchmarks__/**/*.js*`
 		],
 		frameworks: [
 			'benchmark'

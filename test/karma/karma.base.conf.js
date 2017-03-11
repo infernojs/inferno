@@ -5,6 +5,8 @@ const distes = 'packages/*/dist-es/**/*';
 const benchmarks = `packages/${filter}/__benchmarks__/**/*`;
 const tests = `packages/${filter}/__tests__/**/*`;
 
+console.log({ filter });
+
 module.exports = function (config) {
 	config.set({
 		basePath: path.resolve(__dirname, '..', '..'),
@@ -23,9 +25,9 @@ module.exports = function (config) {
 						test: /\.jsx?$/,
 						loader: 'babel-loader',
 						exclude: /node_modules/,
-						query: {
+						query: JSON.stringify({
 							compact: false,
-						},
+						}),
 					},
 				],
 			},

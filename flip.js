@@ -8,45 +8,11 @@ const {
 
 const flip = new FlipHubCli(__dirname, '*');
 
-function infernoFuse(name) {
-	const { FuseBox, UglifyJSPlugin, ReplacePlugin } = require('fuse-box');
-	const isProd = process.argv.includes('--production');
-	const fuse = FuseBox.init({
-		src: 'packages',
-		outFile: 'inferno.fused.js',
-		plugins: [
-			ReplacePlugin({ 'process.env.NODE_ENV': JSON.stringify('production') }),
-			isProd && UglifyJSPlugin(),
-		],
-		rollup: {
-			bundle: {
-				moduleName: 'Inferno',
-			},
-			entry: 'packages/inferno/src/index.js',
-		},
-		debug: true,
-		alias: { // this can be automatically assigned
-			'inferno-compat': '~/packages/inferno-compat',
-			'inferno-component': '~/packages/inferno-component/dist-es',
-			'inferno-create-class': '~/packages/inferno-create-class/dist-es',
-			'inferno-create-element': '~/packages/inferno-create-element/dist-es',
-			'inferno-shared': '~/packages/inferno-shared/dist-es',
-			'inferno-hyperscript': '~/packages/inferno-hyperscript/dist-es',
-			'inferno-mobx': '~/packages/inferno-mobx/dist-es',
-			'inferno-redux': '~/packages/inferno-redux/dist-es',
-			'inferno-router': '~/packages/inferno-router/dist-es',
-			'inferno-server': '~/packages/inferno-server/dist-es',
-			inferno: '~/packages/inferno/dist-es',
-		},
-	});
-
-	fuse.bundle('packages/inferno/src/index.ts');
-}
-
 function runner(apps, opts) {
 	console.log('-- using nameless command option, is not implemented yet --');
 }
 
+// @TODO: https://github.com/tj/commander.js/blob/master/examples/env#L5
 program
   .version(pkg.version)
   .command('[apps]')
@@ -85,28 +51,21 @@ program
 program
 .command('bench [apps]')
 .option('-l, --log', 'logLevel')
+.option('-a, --after', 'after tests')
+.option('-b, --before', 'before tests')
+.option('-b, --browser', 'build for browser')
+.option('-p, --production', 'build for prod')
+.option('-d, --development', 'build for dev')
 .action(function (apps, options) {
+	const glob = flip.envScope('BENCH_FILTER', apps) || '*';
 	const globScoped = flip.globScope(apps) || '*';
-	const flag = `BENCHMARK_GLOB="packages/${globScoped}/__benchmarks__/**/*.js*"`;
-	return flip.execSync(flag + ' npm run test:bench ');
+	const BENCH_FILTER = `${glob}`;
+	return flip.execSync(' npm run test:bench ' + globScoped);
 });
 
-program
-  .command('test [apps]')
-  .option('-a, --all', 'all tests')
-  .option('-b, --browsers', 'browser')
-  .option('-C, --chrome', 'karma.Chrome')
-  .option('-I, --ie', 'karma.IE')
-  .option('-F, --ff', 'karma.firefox')
-  .option('-k, --karma', 'karma')
-  .option('-q, --quick', 'test quick')
-  .option('-f, --filter, --apps', 'filter / apps to use')
-  .option('-s, --server, --server', 'use the server tests')
-  .option('-c, --coverage, --publish, --coveralls', 'test the coverage for publish with coveralls')
-  .option('-p, --production', 'for prod')
-  .option('-d, --development', 'for dev')
-  .action(function (apps, options) {
-	const { karma, chrome, ie, ff, quick, filter, server, coverage } = options;
+
+function handleTest(apps, options, flaggedWithEnv) {
+	const { karma, mocha, chrome, ie, ff, quick, filter, server, coverage } = options;
 	let browsers = options.browsers;
 	const hasBrowsers = (ff || chrome || ie);
 	if (!browsers && hasBrowsers) {
@@ -116,33 +75,79 @@ program
 		if (chrome) {browsers += 'Chrome,';}
 		browsers = browsers.slice(0, browsers.length - 1);
 	}
-	const scoped = flip.envScope('PKG_FILTER', apps);
-
+	const globScoped = flip.globScope(apps) || '*';
+	const envScope = flip.envScope('PKG_FILTER', apps);
+	let flagged = flaggedWithEnv + globScoped;
 	if (browsers) {
 		browsers.split(',').forEach(browser => {
-        // flip.execSync(scoped + 'npm run karma:' + browser.toLowerCase())
-			flip.runScriptForBin('karma', 'start test/karma/karma.unit.conf.js --browsers=' + browsers + ' ' + scoped);
+      // also could do flip.execSync(flagged + 'npm run karma:' + browser.toLowerCase())
+			flip.runScriptForBin('karma', 'start test/karma/karma.unit.conf.js --browsers=' + browsers + ' ' + flagged);
 		});
 	}
 	else if (!karma && !quick && !server && !coverage) {
-		flip.execSync(' npm run karma:chrome ' + scoped);
-		flip.execSync(' npm run karma:firefox ' + scoped);
-		flip.execSync(' npm run karma:ie ' + scoped);
-		flip.execSync(' npm run test:server ' + scoped);
+		flip.execSync(' npm run karma:chrome ' + flagged);
+		flip.execSync(' npm run karma:firefox ' + flagged);
+		flip.execSync(' npm run karma:ie ' + flagged);
+		flip.execSync(' npm run test:server ' + flagged);
 	}
 	else if (karma) {
-		flip.execSync(' npm run karma:chrome ' + scoped);
-		flip.execSync(' npm run karma:ff ' + scoped);
-		flip.execSync(' npm run karma:ie ' + scoped);
+		flip.execSync(' npm run karma:chrome ' + flagged);
+		flip.execSync(' npm run karma:ff ' + flagged);
+		flip.execSync(' npm run karma:ie ' + flagged);
 	}
 	if (quick) {
-		flip.execSync(' npm run test:quick ' + scoped);
+		flip.execSync(' npm run test:quick ' + flagged);
 	}
 	if (server) {
-		flip.execSync(' npm run test:server ' + scoped);
+		flip.runNodeForModule('nyc', ' mocha ', { env: flaggedWithEnv });
+		// flip.execSync(' npm run test:server ' + flagged);
+	} else if (mocha) {
+    // @TODO
+		// flip.runNodeForModule('mocha', '  ', { env: flaggedWithEnv });
 	}
 	if (coverage) {
-		flip.execSync(' npm run test:publish ' + scoped);
+		flip.execSync(' npm run test:publish ' + flagged);
+	}
+}
+
+program
+  .command('test [apps]')
+  .option('-a, --all', 'all tests')
+  .option('-b, --browsers', 'browser')
+  .option('-C, --chrome', 'karma.Chrome')
+  .option('-I, --ie', 'karma.IE')
+  .option('-F, --ff', 'karma.firefox')
+  .option('-k, --karma', 'karma')
+  .option('-m, --mocha', 'mocha')
+  .option('-q, --quick', 'test quick')
+  .option('-f, --filter, --apps', 'filter / apps to use')
+  .option('-s, --server, --server', 'use the server tests')
+  .option('-c, --coverage, --publish, --coveralls', 'test the coverage for publish with coveralls')
+  .option('-p, --production', 'for prod env')
+  .option('-d, --development', 'for dev env')
+  .option('-r, --browser', 'browser env')
+  .action(function (apps, options) {
+	const { production, development, browser } = options;
+	let flagged = '';
+	if (production) {
+		flagged = flip.defineEnv('NODE_ENV', 'production');
+		handleTest(apps, options, flagged);
+	}
+	if (development) {
+		flagged = flip.defineEnv('NODE_ENV', 'development');
+		handleTest(apps, options, flagged);
+	}
+	if (browser) {
+		flagged = flip.defineEnv('NODE_ENV', 'browser');
+		handleTest(apps, options, flagged);
+	}
+	if (!production && !development && !browser) {
+		console.log('--------');
+		console.log('you did not define an env for tests');
+		console.log('(ignore this if you are running server tests)');
+		console.log('--------');
+		setTimeout(() => console.log('...continuing'), 500);
+		setTimeout(() => handleTest(apps, options, flagged), 1000);
 	}
 });
 
@@ -156,12 +161,13 @@ program
 .command('lint [apps]')
 .option('-j, --js', 'lint js')
 .option('-t, --ts', 'lint ts')
-.action(function (options) {
-	const { js, ts } = options;
-	if (js)
-		{flip.execSync('npm run lint:js');}
-	if (ts)
-		{flip.execSync('npm run lint:ts');}
+.option('-p, --production', 'use production env (should not need to be here)')
+.option('-d, --development', 'use development env (should not need to be here)')
+.option('-b, --browser', 'build for browse (should not need to be herer')
+.action(function (apps, options) {
+	if (options.js) {flip.execSync('npm run lint:js');}
+	if (options.ts) {flip.execSync('npm run lint:ts');}
+	// flip.execSync('npm run lint:js');
 });
 
 program
@@ -182,18 +188,27 @@ program
 	if (options.fusebox) {
 		return infernoFuse(name);
 	}
-	flip.lerna.execWith({
-		scope: name || scope,
-		bin: 'tsc',
-		log: log || 'info',
-	});
 
-	flip.lerna.execFrom({
-		bin: 'rollup',
-		envs: [ 'production', 'browser', 'development' ],
-		log: log || 'info',
-		options,
-	});
+	try {
+		flip.lerna.execWith({
+			scope: name || scope,
+			bin: 'tsc',
+			log: log || 'info',
+		});
+
+		flip.lerna.execFrom({
+			bin: 'rollup',
+			envs: [ 'production', 'browser', 'development' ],
+			log: log || 'info',
+			options,
+		});
+	} catch (e) {
+		console.log(`could not build -
+    if you are trying to build only a couple packages
+    without first building inferno,
+    it will not work. Running the full build now.`);
+		flip.execSync(' npm run build ');
+	}
 });
 
 function checkboxPresets(name, apps, options) {
@@ -202,11 +217,6 @@ function checkboxPresets(name, apps, options) {
 			new inquirer.Separator(' ==== Testing ==== '),
 			new inquirer.Separator(' => Server (server with jsdom)'),
       // ...
-			{
-				name: 'mocha',
-				value: 'test.mocha',
-				checked: true,
-			},
 			{
 				name: 'chrome',
 				value: 'test.browser.chrome',
@@ -220,14 +230,37 @@ function checkboxPresets(name, apps, options) {
 			{
 				name: 'ie',
 				value: 'test.browser.ie',
+				checked: false,
+			},
+			{
+				name: 'mocha (server)',
+				value: 'test.mocha',
 				checked: true,
 			},
+			// {
+			// 	name: 'karma (runs all browsers)',
+			// 	value: 'test.karma',
+			// 	checked: false,
+			// },
 			new inquirer.Separator(' => Browser '),
 			{
 				name: 'dev server (webpack dev server)',
 				value: 'test.browser.devserver',
 				checked: false,
 			},
+
+			new inquirer.Separator(' = Envs = '),
+			{
+				name: 'production',
+				value: 'env.production',
+				checked: true,
+			},
+			{
+				name: 'development',
+				value: 'env.development',
+				checked: true,
+			},
+
 			// {
 			// 	name: 'karma (browsers with jsdom)',
 			// 	value: 'karma',
@@ -253,17 +286,17 @@ function checkboxPresets(name, apps, options) {
 			{
 				name: 'production',
 				value: 'build.production',
-				checked: true,
+				checked: false,
 			},
 			{
 				name: 'development',
 				value: 'build.development',
-				checked: true,
+				checked: false,
 			},
 			{
 				name: 'browser',
 				value: 'build.browser',
-				checked: true,
+				checked: false,
 			},
 			new inquirer.Separator(' = Cleaning (before tests) = '),
 			{
@@ -319,7 +352,7 @@ function checkboxPresets(name, apps, options) {
 	inquirer.prompt(steps).then(answers => {
 		answers.name = name;
 		answers.apps = apps;
-		flip.presets.add(answers, [ 'clean', 'build', 'test', 'bench' ]);
+		flip.presets.add(answers, [ 'env', 'clean', 'build', 'test', 'bench' ]);
 	});
 }
 
@@ -335,5 +368,41 @@ program
 	}
 	checkboxPresets(name, apps, opts);
 });
+
+
+function infernoFuse(name) {
+	const { FuseBox, UglifyJSPlugin, ReplacePlugin } = require('fuse-box');
+	const isProd = process.argv.includes('--production');
+	const fuse = FuseBox.init({
+		src: 'packages',
+		outFile: 'inferno.fused.js',
+		plugins: [
+			ReplacePlugin({ 'process.env.NODE_ENV': JSON.stringify('production') }),
+			isProd && UglifyJSPlugin(),
+		],
+		rollup: {
+			bundle: {
+				moduleName: 'Inferno',
+			},
+			entry: 'packages/inferno/src/index.js',
+		},
+		debug: true,
+		alias: { // this can be automatically assigned
+			'inferno-compat': '~/packages/inferno-compat',
+			'inferno-component': '~/packages/inferno-component/dist-es',
+			'inferno-create-class': '~/packages/inferno-create-class/dist-es',
+			'inferno-create-element': '~/packages/inferno-create-element/dist-es',
+			'inferno-shared': '~/packages/inferno-shared/dist-es',
+			'inferno-hyperscript': '~/packages/inferno-hyperscript/dist-es',
+			'inferno-mobx': '~/packages/inferno-mobx/dist-es',
+			'inferno-redux': '~/packages/inferno-redux/dist-es',
+			'inferno-router': '~/packages/inferno-router/dist-es',
+			'inferno-server': '~/packages/inferno-server/dist-es',
+			inferno: '~/packages/inferno/dist-es',
+		},
+	});
+
+	fuse.bundle('packages/inferno/src/index.ts');
+}
 
 program.parse(process.argv);
