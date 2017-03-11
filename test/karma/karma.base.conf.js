@@ -1,15 +1,20 @@
 const path = require('path');
 
+const filter = process.env.PKG_FILTER || '*';
+const distes = 'packages/*/dist-es/**/*';
+const benchmarks = `packages/${filter}/__benchmarks__/**/*`;
+const tests = `packages/${filter}/__tests__/**/*`;
+
 module.exports = function (config) {
 	config.set({
 		basePath: path.resolve(__dirname, '..', '..'),
 		browsers: [
-			'Chrome'
+			'Chrome',
 		],
 		preprocessors: {
-			'packages/*/dist-es/**/*': ['webpack'],
-			'packages/*/__benchmarks__/**/*': ['webpack'],
-			'packages/*/__tests__/**/*': ['webpack']
+			[distes]: ['webpack'],
+			[benchmarks]: ['webpack'],
+			[tests]: ['webpack'],
 		},
 		webpack: {
 			module: {
