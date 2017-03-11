@@ -146,10 +146,10 @@ const injectStringRefs = function (originalFunction) {
 		let props = _props || {};
 		const ref = props.ref;
 
-		if (typeof ref === 'string') {
+		if (typeof ref === 'string' && currentComponent) {
 			currentComponent.refs = currentComponent.refs || {};
 			props.ref = function (val) {
-				this.refs[ ref ] = val;
+				this.refs[ref] = val;
 			}.bind(currentComponent);
 		}
 		if (typeof name === 'string') {
