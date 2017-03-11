@@ -28,3 +28,6 @@ packages/*/dist-es
 packages/*/dist
 test/data/baseline.json
 test/data/result.json
+
+.fliphub
+.fusebox
