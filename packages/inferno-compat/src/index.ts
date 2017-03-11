@@ -122,8 +122,9 @@ function normalizeProps(name: string, props: Props | any) {
 			props.onDblClick = props[ prop ];
 			delete props[ prop ];
 		}
-		if (SVGDOMPropertyConfig[ prop ]) {
-			props[ SVGDOMPropertyConfig[ prop ] ] = props[ prop ];
+		let mappedProp = SVGDOMPropertyConfig[ prop ];
+		if (mappedProp && mappedProp !== prop) {
+			props[ mappedProp ] = props[ prop ];
 			delete props[ prop ];
 		}
 	}
