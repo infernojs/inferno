@@ -70,4 +70,31 @@ describe('Component lifecycle', () => {
 		expect(callCount).to.equal(1);
 		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>2</div>'));
 	});
+
+	it('Should not fail if componentDidUpdate is undefined #922', () => {
+		let callCount = 0;
+		let c = null;
+
+		class Com extends Component {
+			componentDidUpdate(nextProps, nextState) {
+				callCount++;
+				expect(this.props.value).to.equal(1);
+				expect(nextProps.value).to.equal(2);
+
+				return true;
+			}
+
+			render() {
+				return (
+					<div>{this.props.value}</div>
+				);
+			}
+		}
+
+		render(<Com ref={(inst) => c = inst} value={1}/>, container);
+
+		c.componentDidUpdate = undefined;
+
+		render(<Com ref={(inst) => c = inst} value={2}/>, container);
+	});
 });
