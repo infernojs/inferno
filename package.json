@@ -47,6 +47,7 @@
     "es6-shim": "^0.35.3",
     "eslint": "^3.17.0",
     "eslint-plugin-babel": "^4.1.0",
+    "fliphub-cli-inferno": "^0.1.1",
     "fs-extra": "^2.0.0",
     "glob": "^7.1.1",
     "history": "4.5.1",
