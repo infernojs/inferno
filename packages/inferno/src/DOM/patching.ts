@@ -346,7 +346,9 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				instance._vNode = nextVNode;
 				if (didUpdate) {
 					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
-					instance.componentDidUpdate(lastProps, lastState);
+					if(!isNullOrUndef(instance.componentDidUpdate)) {
+						instance.componentDidUpdate(lastProps, lastState);
+					}
 					options.afterUpdate && options.afterUpdate(nextVNode);
 					options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
 				}
