@@ -9,6 +9,7 @@ const filesize = require('rollup-plugin-filesize');
 const alias = require('rollup-plugin-alias');
 const chalk = require('chalk');
 const boxen = require('boxen');
+const optimizeJs = require('optimize-js');
 
 const nodeResolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
@@ -59,6 +60,14 @@ const bundleConfig = {
 	sourceMap: false
 };
 
+const optJs = {
+	name: 'optimizeJs',
+
+	transformBundle: function (code) {
+		return optimizeJs(code);
+	}
+};
+
 const external = Object.keys(dependencies).filter(n => !bundledDependencies.includes(n));
 
 const plugins = [
@@ -107,6 +116,7 @@ if (NODE_ENV === 'production') {
 			'process.env.NODE_ENV': JSON.stringify('production')
 		})
 	);
+	plugins.push(optJs);
 } else if (NODE_ENV === 'browser') {
 	plugins.push(
 		replace({
@@ -124,9 +134,9 @@ if (NODE_ENV === 'production') {
 
 // Filesize plugin needs to be last to report correct filesizes when minified
 plugins.push(filesize({
-	render: function (options, size, gzip){
+	render: function (options, size, gzip) {
 		return boxen(chalk.green.bold(filename + ' size: ') + chalk.yellow.bold(size) + ', ' +
-			chalk.green.bold('Gzipped size: ') + chalk.yellow.bold(gzip), { padding: 1 })
+			chalk.green.bold('Gzipped size: ') + chalk.yellow.bold(gzip), {padding: 1});
 	}
 }));
 
@@ -136,4 +146,3 @@ rollup({
 	external
 })
 .then(({ write }) => write(bundleConfig)).catch(console.error);
-
