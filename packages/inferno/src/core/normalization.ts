@@ -150,13 +150,13 @@ function normalizeElement(type: string, vNode: VNode) {
 
 export function normalize(vNode: VNode): void {
 	let props = vNode.props;
-	const type = vNode.type;
 	let children = vNode.children;
 
 	// convert a wrongly created type back to element
 		// Primitive node doesn't have defaultProps, only Component
 		if (vNode.flags & VNodeFlags.Component) {
 			// set default props
+			const type = vNode.type;
 			const defaultProps = (type as any).defaultProps;
 
 			if (!isNullOrUndef(defaultProps)) {

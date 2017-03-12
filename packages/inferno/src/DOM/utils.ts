@@ -95,12 +95,6 @@ export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, life
 
 export function replaceVNode(parentDom, dom, vNode, lifecycle: LifecycleClass, isRecycling) {
 	unmount(vNode, null, lifecycle, false, isRecycling);
-	// we cannot cache nodeType here as vNode might be re-assigned below
-	if (vNode.flags & VNodeFlags.Component) {
-		// if we are accessing a stateful or stateless component, we want to access their last rendered input
-		// accessing their DOM node is not useful to us here
-		vNode = vNode.children._lastInput || vNode.children;
-	}
 	replaceChild(parentDom, dom, vNode.dom);
 }
 
