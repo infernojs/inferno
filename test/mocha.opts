@@ -1,4 +1,4 @@
---compilers js:babel-core/register
+--compilers js:babel-register
 --require ./test/mocha/DOM.js
 --full-trace
 --reporter spec
