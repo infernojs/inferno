@@ -18,6 +18,8 @@ import {
 
 import { Readable } from 'stream';
 
+const resolvedPromise = Promise.resolve();
+
 export class RenderStream extends Readable {
 	initNode: any;
 	staticMarkup: any;
@@ -35,7 +37,7 @@ export class RenderStream extends Readable {
 		}
 		this.started = true;
 
-		Promise.resolve().then(() => {
+		resolvedPromise.then(() => {
 			return this.renderNode(this.initNode, null, this.staticMarkup);
 		}).then(() => {
 			this.push(null);
@@ -141,7 +143,7 @@ export class RenderStream extends Readable {
 	}
 
 	renderText(vNode, isRoot, context) {
-		return Promise.resolve().then((insertComment) => {
+		return resolvedPromise.then((insertComment) => {
 			this.push(vNode.children);
 			return insertComment;
 		});

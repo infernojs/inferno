@@ -47,6 +47,8 @@ function updateParentComponentVNodes(vNode: VNode, dom: Element) {
 	}
 }
 
+const resolvedPromise = Promise.resolve();
+
 function addToQueue(component: Component<any, any>, force: boolean, callback?: Function): void {
 	// TODO this function needs to be revised and improved on
 	let queue: any = componentCallbackQueue.get(component);
@@ -54,7 +56,7 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 	if (!queue) {
 		queue = [];
 		componentCallbackQueue.set(component, queue);
-		Promise.resolve().then(() => {
+		resolvedPromise.then(() => {
 			componentCallbackQueue.delete(component);
 			applyState(component, force, () => {
 				for (let i = 0, len = queue.length; i < len; i++) {
@@ -226,7 +228,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 		if (!this._blockSetState) {
 			if (!this._ignoreSetState) {
-				queueStateChanges(this, newState, callback, this._syncSetState);
+				queueStateChanges(this, newState, callback, callback ? false : this._syncSetState);
 			}
 		} else {
 			if (process.env.NODE_ENV !== 'production') {

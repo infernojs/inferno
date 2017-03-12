@@ -26,7 +26,7 @@ module.exports = function (config) {
 			},
 			resolve: {
 				extensions: [ '.js', '.jsx' ],
-				mainFields: [ 'module', 'main' ]
+				mainFields: [ 'inferno:main', 'module', 'main' ]
 			},
 			performance: {
 				hints: false
