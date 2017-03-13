@@ -18,6 +18,7 @@ node_modules
 .DS_Store
 *.map
 *.log
+*.log*
 *.swp
 *~
 test/data/result.json
