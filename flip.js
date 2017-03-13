@@ -1,9 +1,13 @@
 const pkg = require('./package.json');
 const {
+  inspect,
+  read,
+  write,
   envrmts,
   program,
   inquirer,
   FlipHubCli,
+  argv,
 } = require('fliphub-cli-inferno');
 
 const flip = new FlipHubCli(__dirname, '*');
@@ -64,7 +68,7 @@ program
 });
 
 
-function handleTest(apps, options, flaggedWithEnv) {
+function handleTestWrapped(apps, options, flaggedWithEnv) {
 	const { karma, mocha, chrome, ie, ff, quick, filter, server, coverage } = options;
 	let browsers = options.browsers;
 	const hasBrowsers = (ff || chrome || ie);
@@ -100,14 +104,66 @@ function handleTest(apps, options, flaggedWithEnv) {
 	}
 	if (server) {
 		flip.runNodeForModule('nyc', ' mocha ', { env: flaggedWithEnv });
-		// flip.execSync(' npm run test:server ' + flagged);
+    // flip.execSync(' npm run test:server ' + flagged);
 	} else if (mocha) {
     // @TODO
-		// flip.runNodeForModule('mocha', '  ', { env: flaggedWithEnv });
+    // flip.runNodeForModule('mocha', '  ', { env: flaggedWithEnv });
 	}
 	if (coverage) {
 		flip.execSync(' npm run test:publish ' + flagged);
 	}
+}
+
+const infernoOptionsFile = './packages/inferno/src/core/options.ts';
+let recyclingEnabled = false;
+
+// wrap in try catch to be safe for recycling
+function handleTest(apps, options, flaggedWithEnv) {
+	if (recyclingEnabled) {
+		try {
+			const result = handleTestWrapped(apps, options, flaggedWithEnv);
+			return result;
+		} catch (e) {
+			console.log('failed with recycling:');
+			console.log('\n\n\n ------ ');
+			console.log(e);
+			console.log('\n\n\n ------ ');
+			console.log(inspect(e));
+		}
+	} else {
+		return handleTestWrapped(apps, options, flaggedWithEnv);
+	}
+}
+
+function enableRecycling(state) {
+	recyclingEnabled = state;
+	let ogInfernoOptions = infernoOptions = read(infernoOptionsFile);
+	infernoOptions = infernoOptions
+  .replace('export default ', '')
+  .replace(/[{};]/gmi, '')
+  .split(',')
+  .map(line => {
+	if (line.includes('recyclingEnabled')) {
+		return '\n\trecyclingEnabled: ' + state + '';
+	}
+	return line;
+});
+
+  // back to a string, replace the last extra empty line
+	let backToString = 'export default {' + infernoOptions.join(',') + '};';
+	backToString = backToString.replace(/(\n\n)/gmi, '');
+	backToString = backToString.replace(/(\n\}\;$)/, '\n};');
+	backToString = backToString.replace('null};', 'null\n};');
+	backToString += '\n';
+
+  // if it is the same, don't write it
+	if (backToString.length === ogInfernoOptions.length) {
+		console.log('recycling unchanged');
+		return;
+	}
+	console.log(backToString);
+
+	write(infernoOptionsFile, backToString);
 }
 
 program
@@ -120,25 +176,37 @@ program
   .option('-k, --karma', 'karma')
   .option('-m, --mocha', 'mocha')
   .option('-q, --quick', 'test quick')
-  .option('-f, --filter, --apps', 'filter / apps to use')
   .option('-s, --server, --server', 'use the server tests')
   .option('-c, --coverage, --publish, --coveralls', 'test the coverage for publish with coveralls')
   .option('-p, --production', 'for prod env')
   .option('-d, --development', 'for dev env')
   .option('-r, --browser', 'browser env')
+  .option('-y, --recycling', 'turns recycling on (default recycling is off)')
+  .option('-o, --only', 'grep to run only tests matching this filter / grep')
+  .option('-f, --filter, --apps', 'filter / apps to use (can be used when you grep)')
   .action(function (apps, options) {
 	const { production, development, browser } = options;
+	if (options.recycling) {
+		enableRecycling(true);
+	} else {
+		enableRecycling(false);
+	}
 	let flagged = '';
+	if (argv.only) {
+		let only = argv.only;
+		only = only.split('-').join(' ');
+		flagged += flip.defineEnv('TEST_GREP_FILTER', JSON.stringify(only));
+	}
 	if (production) {
-		flagged = flip.defineEnv('NODE_ENV', 'production');
+		flagged += flip.defineEnv('NODE_ENV', 'production') || '';
 		handleTest(apps, options, flagged);
 	}
 	if (development) {
-		flagged = flip.defineEnv('NODE_ENV', 'development');
+		flagged += flip.defineEnv('NODE_ENV', 'development') || '';
 		handleTest(apps, options, flagged);
 	}
 	if (browser) {
-		flagged = flip.defineEnv('NODE_ENV', 'browser');
+		flagged += flip.defineEnv('NODE_ENV', 'browser') || '';
 		handleTest(apps, options, flagged);
 	}
 	if (!production && !development && !browser) {
@@ -405,4 +473,14 @@ function infernoFuse(name) {
 	fuse.bundle('packages/inferno/src/index.ts');
 }
 
+process.argv = process.argv.map(argv => {
+	if (argv && argv.includes && argv.includes('only')) {
+		return '--only';
+	}
+	return argv;
+});
+
 program.parse(process.argv);
+if (!program.args.length) {
+	program.help();
+}
