@@ -3,12 +3,12 @@ import {
 	isFunction,
 	isInvalid,
 	isNull,
-	isNullOrUndef,
 	isObject,
 	isStringOrNumber,
 	isUndefined,
 	LifecycleClass,
-	throwError
+	throwError,
+	isNullOrUndef
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { VNode } from '../core/VNodes';

@@ -3,7 +3,8 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber,
-	combineFrom
+	combineFrom,
+	isUndefined
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
@@ -16,6 +17,8 @@ import {
 } from './utils';
 
 import { Readable } from 'stream';
+
+const resolvedPromise = Promise.resolve();
 
 export class RenderStream extends Readable {
 	initNode: any;
@@ -34,7 +37,7 @@ export class RenderStream extends Readable {
 		}
 		this.started = true;
 
-		Promise.resolve().then(() => {
+		resolvedPromise.then(() => {
 			return this.renderNode(this.initNode, null, this.staticMarkup);
 		}).then(() => {
 			this.push(null);
@@ -68,7 +71,10 @@ export class RenderStream extends Readable {
 		}
 
 		const instance = new type(props);
-		const childContext = instance.getChildContext();
+		let childContext;
+		if (!isUndefined(instance.getChildContext)) {
+			childContext = instance.getChildContext();
+		}
 
 		if (!isNullOrUndef(childContext)) {
 			context = combineFrom(context, childContext);
@@ -77,7 +83,7 @@ export class RenderStream extends Readable {
 
 		// Block setting state - we should render only once, using latest state
 		instance._pendingSetState = true;
-		return Promise.resolve(instance.componentWillMount()).then(() => {
+		return Promise.resolve(instance.componentWillMount && instance.componentWillMount()).then(() => {
 			const node = instance.render();
 			instance._pendingSetState = false;
 			return this.renderNode(node, context, isRoot);
@@ -137,7 +143,7 @@ export class RenderStream extends Readable {
 	}
 
 	renderText(vNode, isRoot, context) {
-		return Promise.resolve().then((insertComment) => {
+		return resolvedPromise.then((insertComment) => {
 			this.push(vNode.children);
 			return insertComment;
 		});

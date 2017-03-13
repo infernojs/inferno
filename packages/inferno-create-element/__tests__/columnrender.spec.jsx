@@ -184,6 +184,10 @@ describe('Columns like tests - (JSX)', () => {
 					super(props);
 				}
 
+				componentWillUpdate() {}
+
+				componentWillMount() {}
+
 				componentWillUnmount() {}
 
 				render() {
@@ -199,6 +203,10 @@ describe('Columns like tests - (JSX)', () => {
 				constructor(props) {
 					super(props);
 				}
+
+				componentWillUpdate() {}
+
+				componentWillMount() {}
 
 				componentWillUnmount() {}
 
@@ -330,6 +338,10 @@ describe('Columns like tests - (JSX)', () => {
 					super(props);
 				}
 
+				componentWillUpdate() {}
+
+				componentWillMount() {}
+
 				componentWillUnmount() {}
 
 				render() {
@@ -345,6 +357,10 @@ describe('Columns like tests - (JSX)', () => {
 				constructor(props) {
 					super(props);
 				}
+
+				componentWillUpdate() {}
+
+				componentWillMount() {}
 
 				componentWillUnmount() {}
 

@@ -21,7 +21,8 @@ import {
 	NO_OP,
 	isArray,
 	isString,
-	isFunction
+	isFunction,
+	isNullOrUndef
 } from 'inferno-shared';
 import Component from 'inferno-component';
 import _VNodeFlags from 'inferno-vnode-flags';
@@ -37,10 +38,6 @@ options.findDOMNodeEnabled = true;
 function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
 	render(null, container);
 	return true;
-}
-
-function isNullOrUndef(children: any) {
-	return children === null || children === undefined;
 }
 
 const ARR = [];
@@ -66,7 +63,9 @@ const Children = {
 		if (ctx && ctx !== children) {
 			fn = fn.bind(ctx);
 		}
-		children.forEach(fn);
+		for (let i = 0, len = children.length; i < len; i++) {
+			fn(children[i], i, children);
+		}
 	},
 	count(children: Array<InfernoChildren | any>): number {
 		children = Children.toArray(children);
@@ -122,8 +121,9 @@ function normalizeProps(name: string, props: Props | any) {
 			props.onDblClick = props[ prop ];
 			delete props[ prop ];
 		}
-		if (SVGDOMPropertyConfig[ prop ]) {
-			props[ SVGDOMPropertyConfig[ prop ] ] = props[ prop ];
+		let mappedProp = SVGDOMPropertyConfig[ prop ];
+		if (mappedProp && mappedProp !== prop) {
+			props[ mappedProp ] = props[ prop ];
 			delete props[ prop ];
 		}
 	}
@@ -145,10 +145,10 @@ const injectStringRefs = function (originalFunction) {
 		let props = _props || {};
 		const ref = props.ref;
 
-		if (typeof ref === 'string') {
+		if (typeof ref === 'string' && currentComponent) {
 			currentComponent.refs = currentComponent.refs || {};
 			props.ref = function (val) {
-				this.refs[ ref ] = val;
+				this.refs[ref] = val;
 			}.bind(currentComponent);
 		}
 		if (typeof name === 'string') {

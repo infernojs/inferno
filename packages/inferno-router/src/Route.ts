@@ -3,6 +3,8 @@ import createElement from 'inferno-create-element';
 import { VNode } from 'inferno';
 import { rest } from './utils';
 
+const resolvedPromise = Promise.resolve();
+
 export type IRouteHook = (props?: any, router?: any) => void;
 
 export interface IRouteProps {
@@ -28,14 +30,14 @@ export default class Route extends Component<IRouteProps, any> {
 		const { router } = this.context;
 
 		if (onEnter) {
-			Promise.resolve().then(() => {
+			resolvedPromise.then(() => {
 				onEnter({ props: this.props, router });
 			});
 		}
 
 		const { getComponent } = this.props;
 		if (getComponent) {
-			Promise.resolve().then(() => {
+			resolvedPromise.then(() => {
 				getComponent({ props: this.props, router }, this._onComponentResolved);
 			});
 		}
