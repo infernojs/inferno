@@ -122,13 +122,13 @@ describe('Components (JSX) #2', () => {
 
 			_update() {
 				this.setStateSync({
-					data: 'bar',
+					data: 'bar'
 				});
 			}
 
 			componentWillMount() {
 				this.setStateSync({
-					data: 'foo',
+					data: 'foo'
 				});
 			}
 
@@ -192,13 +192,13 @@ describe('Components (JSX) #2', () => {
 
 			_update() {
 				this.setStateSync({
-					data: 'bar',
+					data: 'bar'
 				});
 			}
 
 			componentWillMount() {
 				this.setStateSync({
-					data: 'foo',
+					data: 'foo'
 				});
 			}
 
@@ -289,7 +289,7 @@ describe('Components (JSX) #2', () => {
 			}
 
 			static defaultProps = {
-				foo: 'bar',
+				foo: 'bar'
 			};
 		}
 

@@ -8,7 +8,7 @@ class TestCWRP extends Component {
 
 		this.state = {
 			a: 0,
-			b: 0,
+			b: 0
 		};
 	}
 
