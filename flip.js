@@ -13,14 +13,14 @@ const {
 
 const flip = new FlipHubCli(__dirname, '*');
 
-function runner(apps, opts) {
+function runner(packages, opts) {
 	console.log('-- using nameless command option, is not implemented yet --');
 }
 
 // @TODO: https://github.com/tj/commander.js/blob/master/examples/env#L5
 program
   .version(pkg.version)
-  .command('[apps]')
+  .command('[packages]')
   .option('-c, --clean', 'runs clean')
   .option('-t, --test', 'tests')
   .option('-n, --bench', 'benchmark')
@@ -35,12 +35,12 @@ program
 
 // @TODO: extract flags elsewhere?
 program
-  .command('clean [apps]')
+  .command('clean [packages]')
   .option('-p, --purge', 'removes node modules')
   .option('-r, --reinstall', 'reinstall')
   .option('-d, --dist', 'remove coverage/ and dist files (default)')
   .option('-l, --lerna', 'use lerna clean')
-  .action(function (apps, options) {
+  .action(function (packages, options) {
 	flip.runScriptFor('rimraf', 'coverage/ packages/*/dist*/');
 	if (options.lerna) {
 		flip.runScriptFor('lerna', 'clean');
@@ -54,22 +54,22 @@ program
 });
 
 program
-.command('bench [apps]')
+.command('bench [packages]')
 .option('-l, --log', 'logLevel')
 .option('-a, --after', 'after tests')
 .option('-b, --before', 'before tests')
 .option('-b, --browser', 'build for browser')
 .option('-p, --production', 'build for prod')
 .option('-d, --development', 'build for dev')
-.action(function (apps, options) {
-	const glob = flip.envScope('BENCH_FILTER', apps) || '*';
-	const globScoped = flip.globScope(apps) || '*';
+.action(function (packages, options) {
+	const glob = flip.envScope('BENCH_FILTER', packages) || '*';
+	const globScoped = flip.globScope(packages) || '*';
 	const BENCH_FILTER = `${glob}`;
 	return flip.execSync(' npm run test:bench ' + globScoped);
 });
 
 
-function handleTestWrapped(apps, options, flaggedWithEnv) {
+function handleTestWrapped(packages, options, flaggedWithEnv) {
 	const { karma, mocha, chrome, ie, ff, quick, filter, server, coverage, nyc } = options;
 	let browsers = options.browsers;
 	const hasBrowsers = (ff || chrome || ie);
@@ -80,8 +80,8 @@ function handleTestWrapped(apps, options, flaggedWithEnv) {
 		if (chrome) {browsers += 'Chrome,';}
 		browsers = browsers.slice(0, browsers.length - 1);
 	}
-	const globScoped = flip.globScope(apps) || '*';
-	const envScope = flip.envScope('PKG_FILTER', apps);
+	const globScoped = flip.globScope(packages) || '*';
+	const envScope = flip.envScope('PKG_FILTER', packages);
 	let flagged = flaggedWithEnv + globScoped;
 	if (browsers) {
 		browsers.split(',').forEach(browser => {
@@ -126,10 +126,10 @@ const infernoOptionsFile = './packages/inferno/src/core/options.ts';
 let recyclingEnabled = false;
 
 // wrap in try catch to be safe for recycling
-function handleTest(apps, options, flaggedWithEnv) {
+function handleTest(packages, options, flaggedWithEnv) {
 	if (recyclingEnabled) {
 		try {
-			const result = handleTestWrapped(apps, options, flaggedWithEnv);
+			const result = handleTestWrapped(packages, options, flaggedWithEnv);
 			return result;
 		} catch (e) {
 			console.log('failed with recycling:');
@@ -139,7 +139,7 @@ function handleTest(apps, options, flaggedWithEnv) {
 			console.log(inspect(e));
 		}
 	} else {
-		return handleTestWrapped(apps, options, flaggedWithEnv);
+		return handleTestWrapped(packages, options, flaggedWithEnv);
 	}
 }
 
@@ -207,7 +207,7 @@ function filterMochaOpts(filter) {
 }
 
 program
-  .command('test [apps]')
+  .command('test [packages]')
   .option('-a, --all', 'all tests')
   .option('-b, --browsers', 'browser')
   .option('-C, --chrome', 'karma.Chrome')
@@ -224,9 +224,9 @@ program
   .option('-r, --browser', 'browser env')
   .option('-y, --recycling', 'turns recycling on (default recycling is off)')
   .option('-o, --only', 'grep to run only tests matching this filter / grep')
-  .option('-f, --filter', 'filter / apps to use (can be used when you grep)')
+  .option('-f, --filter', 'filter / packages to use (can be used when you grep)')
   .option('-g, --og', 'restore original mocha file')
-  .action(function (apps, options) {
+  .action(function (packages, options) {
 	let { production, development, browser, server } = options;
 	if (!production && !development) {
 		production = true;
@@ -245,20 +245,20 @@ program
 	}
 	if (production && !server) {
 		flagged += flip.defineEnv('NODE_ENV', 'production') || '';
-		handleTest(apps, options, flagged);
+		handleTest(packages, options, flagged);
 	}
 	if (development && !server) {
 		flagged += flip.defineEnv('NODE_ENV', 'development') || '';
-		handleTest(apps, options, flagged);
+		handleTest(packages, options, flagged);
 	}
 	if (browser) {
 		flagged += flip.defineEnv('NODE_ENV', 'browser') || '';
-		handleTest(apps, options, flagged);
+		handleTest(packages, options, flagged);
 	}
 	if (server) {
-		filterMochaOpts(apps);
+		filterMochaOpts(packages);
 		try {
-			handleTest(apps, options, flagged);
+			handleTest(packages, options, flagged);
 			filterMochaOpts('*');
 		} catch (e) {
 			filterMochaOpts('*');
@@ -267,30 +267,30 @@ program
 });
 
 program
-.command('browser [apps]')
-.action(function (apps, options) {
-	const globScoped = flip.globScope(apps) || '*';
-	const globFlag = flip.filterer.globFlag('inferno', apps) || '*';
+.command('browser [packages]')
+.action(function (packages, options) {
+	const globScoped = flip.globScope(packages) || '*';
+	const globFlag = flip.filterer.globFlag('inferno', packages) || '*';
 	const flagged = flip.defineEnv('DEVSERVER_FILTER', globFlag);
 	return flip.execSync(' npm run browser ');
 
 });
 
 program
-.command('lint [apps]')
+.command('lint [packages]')
 .option('-j, --js', 'lint js')
 .option('-t, --ts', 'lint ts')
 .option('-p, --production', 'use production env (should not need to be here)')
 .option('-d, --development', 'use development env (should not need to be here)')
 .option('-b, --browser', 'build for browse (should not need to be herer')
-.action(function (apps, options) {
+.action(function (packages, options) {
 	if (options.js) {flip.execSync('npm run lint:js');}
 	if (options.ts) {flip.execSync('npm run lint:ts');}
 	// flip.execSync('npm run lint:js');
 });
 
 program
-  .command('build [apps]')
+  .command('build [packages]')
   .option('-n, --nobuild', 'no build')
   .option('-b, --browser', 'build for browser')
   .option('-p, --production', 'build for prod')
@@ -330,7 +330,7 @@ program
 	}
 });
 
-function checkboxPresets(name, apps, options) {
+function checkboxPresets(name, packages, options) {
 	const choices = {
 		view: [
 			new inquirer.Separator(' ==== Testing ==== '),
@@ -470,7 +470,7 @@ function checkboxPresets(name, apps, options) {
 	];
 	inquirer.prompt(steps).then(answers => {
 		answers.name = name;
-		answers.apps = apps;
+		answers.packages = packages;
 		flip.presets.add(answers, [ 'env', 'clean', 'build', 'test', 'bench' ]);
 	});
 }
@@ -478,14 +478,14 @@ function checkboxPresets(name, apps, options) {
 function interactivePresets(name, options) {}
 
 program
-  .command('make-preset [name] [apps]')
+  .command('make-preset [name] [packages]')
   .option('-c, --checkbox', '(default) use checkbox mode')
   .option('-i, --interactive', 'use interactive mode')
-  .action(function (name, apps, opts) {
+  .action(function (name, packages, opts) {
 	if (opts.interactive) {
-		return interactivePresets(name, apps, opts);
+		return interactivePresets(name, packages, opts);
 	}
-	checkboxPresets(name, apps, opts);
+	checkboxPresets(name, packages, opts);
 });
 
 
