@@ -90,7 +90,7 @@
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-uglify": "^1.0.1",
-    "sinon": "2.0.0-pre.5",
+    "sinon": "2.0.0",
     "ts-loader": "^2.0.1",
     "ts-node": "^2.1.0",
     "tslint": "^4.5.1",
