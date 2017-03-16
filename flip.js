@@ -108,7 +108,8 @@ function handleTestWrapped(apps, options, flaggedWithEnv) {
 			flip.execSync(' npm run test:server ');
 			// flip.runNodeForModule('nyc', ' mocha ', { env: flaggedWithEnv });
 		} else {
-			flip.execSync(' npm run test:server:quick ');
+      // is test:server:quick
+			flip.execSync(' npm run test:quick ');
 		}
 	} else if (mocha) {
     // @TODO
