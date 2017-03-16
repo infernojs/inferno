@@ -40,7 +40,7 @@ module.exports = {
 	},
 	resolve: {
 		extensions: [ '.js', '.jsx' ],
-		mainFields: [ 'browser', 'inferno:main', 'module', 'main' ],
+		mainFields: [ 'browser', 'inferno:main', 'module', 'main' ]
 	},
 	plugins: [
 		// By default, webpack does `n=>n` compilation with entry files. This concatenates

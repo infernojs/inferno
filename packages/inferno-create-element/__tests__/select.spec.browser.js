@@ -322,11 +322,11 @@ describe('Select / select multiple (non-JSX)', () => {
 			multiple: true,
 			defaultValue: [ 'a', 'b', 'c' ]
 		}, createElement('option', {
-			value: 'a',
+			value: 'a'
 		}, 'a'), createElement('option', {
-			value: 'b',
+			value: 'b'
 		}, 'b'), createElement('option', {
-			value: 'c',
+			value: 'c'
 		}, 'c'), createElement('option', {
 			value: 'd'
 		}, 'd'));
