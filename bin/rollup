@@ -136,7 +136,7 @@ if (NODE_ENV === 'production') {
 plugins.push(filesize({
 	render: function (options, size, gzip) {
 		return boxen(chalk.green.bold(filename + ' size: ') + chalk.yellow.bold(size) + ', ' +
-			chalk.green.bold('Gzipped size: ') + chalk.yellow.bold(gzip), {padding: 1});
+			chalk.green.bold('Gzipped size: ') + chalk.yellow.bold(gzip), { padding: 1 });
 	}
 }));
 

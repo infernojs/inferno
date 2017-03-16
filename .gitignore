@@ -18,6 +18,7 @@ node_modules
 .DS_Store
 *.map
 *.log
+*.log*
 *.swp
 *~
 test/data/result.json
@@ -28,3 +29,6 @@ packages/*/dist-es
 packages/*/dist
 test/data/baseline.json
 test/data/result.json
+
+.fliphub
+.fusebox

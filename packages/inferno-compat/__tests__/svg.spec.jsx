@@ -22,7 +22,7 @@ describe('svg', () => {
 			createElement('stop', {
 				offset: 0,
 				stopColor: 'white',
-				stopOpacity: 0.5,
+				stopOpacity: 0.5
 			})
 		]), container);
 
