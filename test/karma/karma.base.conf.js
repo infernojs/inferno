@@ -1,15 +1,33 @@
 const path = require('path');
 
+const grep = process.env.TEST_GREP_FILTER || false;
+const filter = process.env.PKG_FILTER || '*';
+const distes = 'packages/*/dist-es/**/*';
+const benchmarks = `packages/${filter}/__benchmarks__/**/*`;
+const tests = `packages/${filter}/__tests__/**/*`;
+
+console.log({ filter, grep });
+
 module.exports = function (config) {
+	if (grep) {
+		config.set({
+			client: {
+				mocha: {
+					grep // passed directly to mocha
+				}
+			}
+		});
+	}
+
 	config.set({
 		basePath: path.resolve(__dirname, '..', '..'),
 		browsers: [
 			'Chrome'
 		],
 		preprocessors: {
-			'packages/*/dist-es/**/*': ['webpack'],
-			'packages/*/__benchmarks__/**/*': ['webpack'],
-			'packages/*/__tests__/**/*': ['webpack']
+			[distes]: ['webpack'],
+			[benchmarks]: ['webpack'],
+			[tests]: ['webpack']
 		},
 		webpack: {
 			module: {
@@ -18,9 +36,9 @@ module.exports = function (config) {
 						test: /\.jsx?$/,
 						loader: 'babel-loader',
 						exclude: /node_modules/,
-						query: {
+						query: JSON.stringify({
 							compact: false
-						}
+						})
 					}
 				]
 			},

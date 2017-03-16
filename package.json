@@ -47,6 +47,7 @@
     "es6-shim": "^0.35.3",
     "eslint": "^3.17.1",
     "eslint-plugin-babel": "^4.1.1",
+    "fliphub-cli-inferno": "^0.1.3",
     "fs-extra": "^2.0.0",
     "glob": "^7.1.1",
     "history": "4.6.0",
@@ -154,6 +155,7 @@
     "url": "git+ssh://git@github.com/infernojs/inferno.git"
   },
   "scripts": {
+    "help": "node flip --help",
     "browser": "webpack-dev-server --config config/webpack.dev.conf.js",
     "build:packages": "lerna exec -- ../../node_modules/.bin/tsc",
     "build:browser": "cross-env NODE_ENV=browser lerna exec -- node ../../bin/rollup",
@@ -180,7 +182,11 @@
     "tsc:dev": "lerna exec --no-sort --concurrency `ls -d packages/* | wc -l` -- tsc -w",
     "test:server": "cross-env nyc mocha",
     "test": "npm run lint && npm run build && npm run test:browser && npm run test:server",
-    "uninstall": "rm -rf node_modules && lerna exec -- rm -rf node_modules"
+    "uninstall": "rm -rf node_modules && lerna exec -- rm -rf node_modules",
+    "cross-env": "cross-env",
+    "lerna": "lerna",
+    "karma": "karma",
+    "mocha": "mocha"
   },
   "pre-commit": [
     "lint",
