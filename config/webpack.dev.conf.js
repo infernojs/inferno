@@ -4,7 +4,9 @@ const webpack = require('webpack');
 const glob = require('glob');
 const path = require('path');
 
-const testFiles = glob.sync('./packages/*/*__tests__*/**/*.js*');
+const DEVSERVER_FILTER = process.env.DEVSERVER_FILTER || '*';
+const testFiles = glob.sync(`./packages/${DEVSERVER_FILTER}/*__tests__*/**/*.js*`);
+console.log({ DEVSERVER_FILTER });
 
 module.exports = {
 	watch: true,
