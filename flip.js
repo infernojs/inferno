@@ -8,7 +8,7 @@ const {
   program,
   inquirer,
   FlipHubCli,
-  argv,
+  argv
 } = require('fliphub-cli-inferno');
 
 const flip = new FlipHubCli(__dirname, '*');
@@ -269,7 +269,11 @@ program
 program
 .command('browser [apps]')
 .action(function (apps, options) {
-	flip.runScriptFor('webpack-dev-server', '--config config/webpack.dev.conf.js');
+	const globScoped = flip.globScope(apps) || '*';
+	const globFlag = flip.filterer.globFlag('inferno', apps) || '*';
+	const flagged = flip.defineEnv('DEVSERVER_FILTER', globFlag);
+	return flip.execSync(' npm run browser ');
+
 });
 
 program
@@ -308,14 +312,14 @@ program
 		flip.lerna.execWith({
 			scope: name || scope,
 			bin: 'tsc',
-			log: log || 'info',
+			log: log || 'info'
 		});
 
 		flip.lerna.execFrom({
 			bin: 'rollup',
 			envs: [ 'production', 'browser', 'development' ],
 			log: log || 'info',
-			options,
+			options
 		});
 	} catch (e) {
 		console.log(`could not build -
@@ -335,22 +339,22 @@ function checkboxPresets(name, apps, options) {
 			{
 				name: 'chrome',
 				value: 'test.browser.chrome',
-				checked: true,
+				checked: true
 			},
 			{
 				name: 'firefox',
 				value: 'test.browser.ff',
-				checked: true,
+				checked: true
 			},
 			{
 				name: 'ie',
 				value: 'test.browser.ie',
-				checked: false,
+				checked: false
 			},
 			{
 				name: 'mocha (server)',
 				value: 'test.mocha',
-				checked: true,
+				checked: true
 			},
 			// {
 			// 	name: 'karma (runs all browsers)',
@@ -361,19 +365,19 @@ function checkboxPresets(name, apps, options) {
 			{
 				name: 'dev server (webpack dev server)',
 				value: 'test.browser.devserver',
-				checked: false,
+				checked: false
 			},
 
 			new inquirer.Separator(' = Envs = '),
 			{
 				name: 'production',
 				value: 'env.production',
-				checked: true,
+				checked: true
 			},
 			{
 				name: 'development',
 				value: 'env.development',
-				checked: true,
+				checked: true
 			},
 
 			// {
@@ -386,13 +390,13 @@ function checkboxPresets(name, apps, options) {
 			{
 				name: 'before tests',
 				value: 'bench.before',
-				checked: false,
+				checked: false
 				// disabled: true,
 			},
 			{
 				name: 'after tests',
 				value: 'bench.after',
-				checked: true,
+				checked: true
 			},
 
       // @TODO: how best to add building true-false and also have env opts?
@@ -401,33 +405,33 @@ function checkboxPresets(name, apps, options) {
 			{
 				name: 'production',
 				value: 'build.production',
-				checked: false,
+				checked: false
 			},
 			{
 				name: 'development',
 				value: 'build.development',
-				checked: false,
+				checked: false
 			},
 			{
 				name: 'browser',
 				value: 'build.browser',
-				checked: false,
+				checked: false
 			},
 			new inquirer.Separator(' = Cleaning (before tests) = '),
 			{
 				name: 'dists (clean built before tests)',
 				value: 'clean.dist',
-				checked: false,
+				checked: false
 			},
 			{
 				name: 'node_modules (warning -- careful)',
 				value: 'clean.purge',
-				checked: false,
+				checked: false
 			},
 			{
 				name: 'uninstall (all packages node_modules)',
 				value: 'clean.uninstall',
-				checked: false,
+				checked: false
 			},
 			{
 				name: 'reinstall',
@@ -437,7 +441,7 @@ function checkboxPresets(name, apps, options) {
         // @TODO:
 				when: (answers) => {
 					answers['clean.uninstall'] !== false;
-				},
+				}
 			},
 
 			new inquirer.Separator(' = Lint = '),
@@ -445,14 +449,14 @@ function checkboxPresets(name, apps, options) {
 			{
 				name: 'js',
 				value: 'lint.js',
-				checked: false,
+				checked: false
 			},
 			{
 				name: 'ts',
 				value: 'lint.ts',
-				checked: false,
-			},
-		],
+				checked: false
+			}
+		]
 	};
 
 	const steps = [
@@ -461,8 +465,8 @@ function checkboxPresets(name, apps, options) {
 			name: 'presets',
 			message: 'options:',
 			choices: choices.view,
-			default: false,
-		},
+			default: false
+		}
 	];
 	inquirer.prompt(steps).then(answers => {
 		answers.name = name;
@@ -493,13 +497,13 @@ function infernoFuse(name) {
 		outFile: 'inferno.fused.js',
 		plugins: [
 			ReplacePlugin({ 'process.env.NODE_ENV': JSON.stringify('production') }),
-			isProd && UglifyJSPlugin(),
+			isProd && UglifyJSPlugin()
 		],
 		rollup: {
 			bundle: {
-				moduleName: 'Inferno',
+				moduleName: 'Inferno'
 			},
-			entry: 'packages/inferno/src/index.js',
+			entry: 'packages/inferno/src/index.js'
 		},
 		debug: true,
 		alias: { // this can be automatically assigned
@@ -513,8 +517,8 @@ function infernoFuse(name) {
 			'inferno-redux': '~/packages/inferno-redux/dist-es',
 			'inferno-router': '~/packages/inferno-router/dist-es',
 			'inferno-server': '~/packages/inferno-server/dist-es',
-			inferno: '~/packages/inferno/dist-es',
-		},
+			inferno: '~/packages/inferno/dist-es'
+		}
 	});
 
 	fuse.bundle('packages/inferno/src/index.ts');
