@@ -1,22 +1,23 @@
 /* eslint-disable */
-var jsdom = require('jsdom');
+var jsdom = require("jsdom");
 
 // Setup the jsdom environment
 // @see https://github.com/facebook/react/issues/5046
-global.document = jsdom.jsdom('<!doctype html><html><body></body></html>');
+global.document = jsdom.jsdom("<!doctype html><html><body></body></html>");
 global.window = document.defaultView;
 global.navigator = global.window.navigator;
 global.usingJSDOM = true;
+global.HTMLElement = global.window.HTMLElement;
 
-global.chai = require('chai');
+global.chai = require("chai");
 global.expect = global.chai.expect;
-global.sinon = require('sinon');
+global.sinon = require("sinon");
 
 //JSDOM doesn't support localStorage by default, so lets just fake it..
 if (!global.window.localStorage) {
 	global.window.localStorage = {
-		getItem() { return '{}'; },
-		setItem() {}
+		getItem() { return "{}"; },
+		setItem() {},
 	};
 }
 
@@ -36,5 +37,5 @@ function propagateToGlobal (window) {
 if (!global.requestAnimationFrame) {
 	global.requestAnimationFrame = function (func) {
 		setTimeout(func, 1000 / 60);
-	}
+	};
 }
