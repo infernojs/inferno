@@ -1,5 +1,6 @@
 const pkg = require('./package.json');
 const {
+  fs,
   inspect,
   read,
   write,
@@ -69,7 +70,7 @@ program
 
 
 function handleTestWrapped(apps, options, flaggedWithEnv) {
-	const { karma, mocha, chrome, ie, ff, quick, filter, server, coverage } = options;
+	const { karma, mocha, chrome, ie, ff, quick, filter, server, coverage, nyc } = options;
 	let browsers = options.browsers;
 	const hasBrowsers = (ff || chrome || ie);
 	if (!browsers && hasBrowsers) {
@@ -103,8 +104,12 @@ function handleTestWrapped(apps, options, flaggedWithEnv) {
 		flip.execSync(' npm run test:quick ' + flagged);
 	}
 	if (server) {
-		flip.runNodeForModule('nyc', ' mocha ', { env: flaggedWithEnv });
-    // flip.execSync(' npm run test:server ' + flagged);
+		if (nyc) {
+			flip.execSync(' npm run test:server ');
+			// flip.runNodeForModule('nyc', ' mocha ', { env: flaggedWithEnv });
+		} else {
+			flip.execSync(' npm run test:server:quick ');
+		}
 	} else if (mocha) {
     // @TODO
     // flip.runNodeForModule('mocha', '  ', { env: flaggedWithEnv });
@@ -114,6 +119,8 @@ function handleTestWrapped(apps, options, flaggedWithEnv) {
 	}
 }
 
+const mochaOptsBackupFile = './.fliphub/mocha.opts';
+const mochaOptsFile = './test/mocha.opts';
 const infernoOptionsFile = './packages/inferno/src/core/options.ts';
 let recyclingEnabled = false;
 
@@ -166,6 +173,38 @@ function enableRecycling(state) {
 	write(infernoOptionsFile, backToString);
 }
 
+function filterMochaOpts(filter) {
+	let ogMochaOpts = mochaOpts = read(mochaOptsFile);
+
+  // back it up if we haven't before
+	if (!fs.existsSync(mochaOptsBackupFile)) {
+		write(mochaOptsBackupFile, ogMochaOpts);
+	}
+
+  // pop off the last one, change it to our filer
+	mochaOpts = mochaOpts.split('\n');
+	let last = mochaOpts.length - 1;
+	let mochaFilter = mochaOpts[last];
+	if (mochaFilter === '') {
+		last -= 1;
+	}
+
+	let globScoped = '*';
+	if (filter !== '*') {
+		globScoped = flip.filterer.globFlag('inferno', filter) || '*';
+	}
+
+	mochaFilter = `packages/${globScoped}/__tests__/**/*.js*`;
+	mochaOpts[last] = mochaFilter;
+	const backToString = mochaOpts.join('\n') + '\n';
+	if (globScoped !== '*') {
+		console.log('updating mochaOptsLog');
+		write(mochaOptsFile, backToString);
+	} else {
+		write(mochaOptsFile, read(mochaOptsBackupFile));
+	}
+}
+
 program
   .command('test [apps]')
   .option('-a, --all', 'all tests')
@@ -176,16 +215,22 @@ program
   .option('-k, --karma', 'karma')
   .option('-m, --mocha', 'mocha')
   .option('-q, --quick', 'test quick')
-  .option('-s, --server, --server', 'use the server tests')
+  .option('-s, --server', 'use the server tests')
   .option('-c, --coverage, --publish, --coveralls', 'test the coverage for publish with coveralls')
+  .option('-n, --nyc', 'use nyc to check code coverage')
   .option('-p, --production', 'for prod env')
   .option('-d, --development', 'for dev env')
   .option('-r, --browser', 'browser env')
   .option('-y, --recycling', 'turns recycling on (default recycling is off)')
   .option('-o, --only', 'grep to run only tests matching this filter / grep')
-  .option('-f, --filter, --apps', 'filter / apps to use (can be used when you grep)')
+  .option('-f, --filter', 'filter / apps to use (can be used when you grep)')
+  .option('-g, --og', 'restore original mocha file')
   .action(function (apps, options) {
-	const { production, development, browser } = options;
+	let { production, development, browser, server } = options;
+	if (!production && !development) {
+		production = true;
+	}
+
 	if (options.recycling) {
 		enableRecycling(true);
 	} else {
@@ -197,11 +242,11 @@ program
 		only = only.split('-').join(' ');
 		flagged += flip.defineEnv('TEST_GREP_FILTER', JSON.stringify(only));
 	}
-	if (production) {
+	if (production && !server) {
 		flagged += flip.defineEnv('NODE_ENV', 'production') || '';
 		handleTest(apps, options, flagged);
 	}
-	if (development) {
+	if (development && !server) {
 		flagged += flip.defineEnv('NODE_ENV', 'development') || '';
 		handleTest(apps, options, flagged);
 	}
@@ -209,13 +254,14 @@ program
 		flagged += flip.defineEnv('NODE_ENV', 'browser') || '';
 		handleTest(apps, options, flagged);
 	}
-	if (!production && !development && !browser) {
-		console.log('--------');
-		console.log('you did not define an env for tests');
-		console.log('(ignore this if you are running server tests)');
-		console.log('--------');
-		setTimeout(() => console.log('...continuing'), 500);
-		setTimeout(() => handleTest(apps, options, flagged), 1000);
+	if (server) {
+		filterMochaOpts(apps);
+		try {
+			handleTest(apps, options, flagged);
+			filterMochaOpts('*');
+		} catch (e) {
+			filterMochaOpts('*');
+		}
 	}
 });
 
