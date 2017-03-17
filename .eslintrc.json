@@ -1,6 +1,8 @@
 {
 	"root": true,
 	"parser": "babel-eslint",
+	"ext": [".ts", ".js", ".jsx", ".tsx"],
+	"ecmaVersion": 2017,
 	"globals": {
 		"document": true,
 		"window": true,
@@ -149,6 +151,7 @@
 		"no-const-assign": 2,
 		"no-this-before-super": 2,
 		"no-var": 2,
-		"prefer-spread": 2
+		"prefer-spread": 2,
+		"id-match": ["error", "^[a-zA-Z]+([A-Za-z]+)*$"]
 	}
 }

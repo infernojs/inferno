@@ -169,6 +169,7 @@
     "karma:ie": "karma start test/karma/karma.unit.conf.js --browsers=IE",
     "lint:js": "eslint config examples src packages/*/__tests__/*",
     "lint:ts": "tslint packages/*/src/*.ts",
+    "lint:jts": "eslint packages/*/src/*.ts packages/*/src/*.js",
     "lint": "npm run lint:ts && npm run lint:js",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
