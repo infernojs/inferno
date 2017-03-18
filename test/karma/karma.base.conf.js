@@ -3,7 +3,7 @@ const path = require('path');
 const grep = process.env.TEST_GREP_FILTER || false;
 const filter = process.env.PKG_FILTER || '*';
 const distes = 'packages/*/dist-es/**/*';
-const dist = 'packages/*/dist/**/*';
+const dist = 'packages/*/index.js';
 const benchmarks = `packages/${filter}/__benchmarks__/**/*`;
 const tests = `packages/${filter}/__tests__/**/*`;
 

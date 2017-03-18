@@ -8,7 +8,7 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "dist/index.js",
+  "main": "index.js",
   "inferno:main": "dist-es/index.js",
   "typings": "dist/index.d.ts",
   "keywords": [
