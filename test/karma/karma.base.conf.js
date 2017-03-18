@@ -3,6 +3,7 @@ const path = require('path');
 const grep = process.env.TEST_GREP_FILTER || false;
 const filter = process.env.PKG_FILTER || '*';
 const distes = 'packages/*/dist-es/**/*';
+const dist = 'packages/*/index.js';
 const benchmarks = `packages/${filter}/__benchmarks__/**/*`;
 const tests = `packages/${filter}/__tests__/**/*`;
 
@@ -26,6 +27,7 @@ module.exports = function (config) {
 		],
 		preprocessors: {
 			[distes]: ['webpack'],
+			[dist]: ['webpack'],
 			[benchmarks]: ['webpack'],
 			[tests]: ['webpack']
 		},

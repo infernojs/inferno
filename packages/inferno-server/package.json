@@ -25,9 +25,9 @@
     "browser",
     "rollup"
   ],
-  "main": "dist/inferno-server.node.js",
+  "main": "index.js",
   "inferno:main": "dist-es/index.js",
-  "typings": "dist-es/index.d.ts",
+  "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
     "inferno": "^1.4.0",
@@ -39,12 +39,12 @@
     "inferno-create-element": "^1.4.0",
     "inferno-create-class": "^1.4.0"
   },
-  "bundledDependencies": [
-    "inferno-shared",
-    "inferno-vnode-flags"
-  ],
   "rollup": {
-    "moduleGlobal": "Inferno.Server",
+    "bundledDependencies": [
+      "inferno-shared",
+      "inferno-vnode-flags"
+    ],
+    "moduleName": "Inferno.Server",
     "moduleGlobals": {
       "inferno": "Inferno"
     }

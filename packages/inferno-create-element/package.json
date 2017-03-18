@@ -11,9 +11,9 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "dist/inferno-create-element.node.js",
+  "main": "index.js",
   "inferno:main": "dist-es/index.js",
-  "typings": "dist-es/index.d.ts",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -28,12 +28,12 @@
     "inferno-vnode-flags": "^1.4.0",
     "inferno-component": "^1.4.0"
   },
-  "bundledDependencies": [
-    "inferno-shared",
-    "inferno-vnode-flags"
-  ],
   "rollup": {
-    "moduleGlobal": "Inferno.createElement",
+    "bundledDependencies": [
+      "inferno-shared",
+      "inferno-vnode-flags"
+    ],
+    "moduleName": "Inferno.createElement",
     "moduleGlobals": {
       "inferno": "Inferno",
       "inferno-component": "Inferno.Component"

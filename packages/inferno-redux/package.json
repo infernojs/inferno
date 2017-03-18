@@ -11,9 +11,9 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "dist/inferno-redux.node.js",
+  "main": "index.js",
   "inferno:main": "dist-es/index.js",
-  "typings": "dist-es/index.d.ts",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -35,11 +35,11 @@
   "devDependencies": {
     "inferno-router": "^1.4.0"
   },
-  "bundledDependencies": [
-    "inferno-shared"
-  ],
   "rollup": {
-    "moduleGlobal": "Inferno.Redux",
+    "bundledDependencies": [
+      "inferno-shared"
+    ],
+    "moduleName": "Inferno.Redux",
     "moduleGlobals": {
       "inferno": "Inferno",
       "inferno-component": "Inferno.Component",

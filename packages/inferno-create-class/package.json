@@ -11,9 +11,9 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "dist/inferno-create-class.node.js",
+  "main": "index.js",
   "inferno:main": "dist-es/index.js",
-  "typings": "dist-es/index.d.ts",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -30,11 +30,11 @@
     "inferno": "^1.4.0",
     "inferno-create-element": "^1.4.0"
   },
-  "bundledDependencies": [
-    "inferno-shared"
-  ],
   "rollup": {
-    "moduleGlobal": "Inferno.createClass",
+    "bundledDependencies": [
+      "inferno-shared"
+    ],
+    "moduleName": "Inferno.createClass",
     "moduleGlobals": {
       "inferno-component": "Inferno.Component"
     }

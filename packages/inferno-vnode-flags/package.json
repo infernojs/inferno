@@ -29,10 +29,10 @@
     "flags"
   ],
   "rollup": {
-    "moduleGlobal": "Inferno.VNodeFlags"
+    "moduleName": "Inferno.VNodeFlags"
   },
-  "main": "dist/inferno-vnode-flags.node.js",
+  "main": "index.js",
   "inferno:main": "dist-es/index.js",
-  "typings": "dist-es/index.d.ts",
+  "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno"
 }

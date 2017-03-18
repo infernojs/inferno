@@ -31,19 +31,19 @@
     "inferno-component": "^1.4.0",
     "inferno-server": "^1.4.0"
   },
-  "bundledDependencies": [
-    "inferno-shared",
-    "inferno-vnode-flags"
-  ],
   "rollup": {
-    "moduleGlobal": "Inferno.TestUtils",
+    "bundledDependencies": [
+      "inferno-shared",
+      "inferno-vnode-flags"
+    ],
+    "moduleName": "Inferno.TestUtils",
     "moduleGlobals": {
       "inferno": "Inferno",
       "inferno-create-element": "Inferno.createElement"
     }
   },
-  "main": "dist/inferno-test-utils.node.js",
+  "main": "index.js",
   "inferno:main": "dist-es/index.js",
-  "typings": "dist-es/index.d.ts",
+  "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno"
 }

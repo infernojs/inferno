@@ -29,8 +29,7 @@ const {
 	version,
 	dependencies = {},
 	'inferno:main': entryFile,
-	rollup: rollupConfig = {},
-	bundledDependencies = {}
+	rollup: rollupConfig = {}
 } = pkgJson;
 
 const copyright = `
@@ -45,8 +44,6 @@ const entry = require.resolve(resolve(cwd, entryFile));
 let filename = name;
 if (NODE_ENV === 'production') {
 	filename += '.min.js';
-} else if (NODE_ENV === 'development') {
-	filename += '.node.js';
 } else {
 	filename += '.js';
 }
@@ -55,7 +52,7 @@ const bundleConfig = {
 	dest,
 	format: 'umd',
 	moduleName: rollupConfig.moduleName || name,
-	globals: Object.assign({ moduleGlobal: rollupConfig.moduleGlobal }, rollupConfig.moduleGlobals),
+	globals: rollupConfig.moduleGlobals,
 	banner: copyright,
 	sourceMap: false
 };
@@ -67,8 +64,7 @@ const optJs = {
 		return optimizeJs(code);
 	}
 };
-
-const external = Object.keys(dependencies).filter(n => !bundledDependencies.includes(n));
+const external = Object.keys(dependencies).filter(n => !(rollupConfig.bundledDependencies || []).includes(n));
 
 const plugins = [
 	alias({
@@ -117,21 +113,14 @@ if (NODE_ENV === 'production') {
 		})
 	);
 	plugins.push(optJs);
-} else if (NODE_ENV === 'browser') {
+} else {
 	plugins.push(
 		replace({
 			VERSION: rootPackageJson.version,
 			'process.env.NODE_ENV': JSON.stringify('development')
 		})
 	);
-} else {
-	plugins.push(
-		replace({
-			VERSION: rootPackageJson.version
-		})
-	);
 }
-
 // Filesize plugin needs to be last to report correct filesizes when minified
 plugins.push(filesize({
 	render: function (options, size, gzip) {

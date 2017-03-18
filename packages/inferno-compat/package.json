@@ -11,9 +11,9 @@
     "url": "https://github.com/infernojs/inferno/issues"
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
-  "main": "dist/inferno-compat.node.js",
+  "main": "index.js",
   "inferno:main": "dist-es/index.js",
-  "typings": "dist-es/index.d.ts",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -36,15 +36,15 @@
   "devDependencies": {
     "inferno-hyperscript": "^1.4.0"
   },
-  "bundledDependencies": [
-    "inferno-shared",
-    "inferno-vnode-flags",
-    "proptypes",
-    "inferno-create-class",
-    "inferno-create-element"
-  ],
   "rollup": {
-    "moduleGlobal": "Inferno",
+    "bundledDependencies": [
+      "inferno-shared",
+      "inferno-vnode-flags",
+      "proptypes",
+      "inferno-create-class",
+      "inferno-create-element"
+    ],
+    "moduleName": "Inferno",
     "moduleGlobals": {
       "inferno": "Inferno",
       "inferno-component": "Inferno.Component"
