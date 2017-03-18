@@ -280,7 +280,7 @@ function createReactDOMComponent(vNode, parentDom) {
 		return null;
 	}
 	const type = vNode.type;
-	const children = vNode.children;
+	const children = vNode.children === 0 ? vNode.children.toString() : vNode.children;
 	const props = vNode.props;
 	const dom = vNode.dom;
 	const isText = (flags & VNodeFlags.Text) || isStringOrNumber(vNode);
