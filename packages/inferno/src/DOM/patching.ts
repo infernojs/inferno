@@ -781,6 +781,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
 	if (prop in skipProps || (hasControlledValue && prop === 'value')) {
 		return;
 	} else if (prop in booleanProps) {
+		prop = prop === 'autoFocus' ? prop.toLowerCase() : prop
 		dom[prop] = !!nextValue;
 	} else if (prop in strictProps) {
 		const value = isNullOrUndef(nextValue) ? '' : nextValue;
