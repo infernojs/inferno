@@ -26,6 +26,7 @@ booleanProps.reversed= TRUE;
 booleanProps.allowfullscreen= TRUE;
 booleanProps.novalidate= TRUE;
 booleanProps.hidden= TRUE;
+booleanProps.autoFocus= TRUE;
 Object.freeze(booleanProps);
 
 export const namespaces = Object.create(null);
