@@ -1,3 +1,4 @@
+// for making sure obj properties are letters only
 module.exports = {
 	parser: 'typescript-eslint-parser',
 	parserOptions: {
