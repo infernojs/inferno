@@ -181,7 +181,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	context: any;
 	_blockRender = false;
 	_ignoreSetState = false;
-	_blockSetState = false;
+	_blockSetState = true;
 	_deferSetState = false;
 	_pendingSetState = false;
 	_syncSetState = true;
@@ -232,7 +232,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			}
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
-				throwError('cannot update state via setState() in componentWillUpdate().');
+				throwError('cannot update state via setState() in componentWillUpdate() or constructor');
 			}
 			throwError();
 		}
