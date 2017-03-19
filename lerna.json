@@ -3,15 +3,15 @@
   "packages": [
     "packages/*"
   ],
-  "version": "1.4.0",
-	"changelog": {
-		"repo": "infernojs/inferno",
-		"labels": {
-			"greenkeeper": ":nail_care: Dependency upgrades",
-			"maintenance & build tools": ":nail_care: Maintenance",
-			"bug": ":bug: Bugs",
-			"enhancement": ":rocket: Enhancements"
-		},
-		"cacheDir": ".changelog"
-	}
+  "version": "1.4.1",
+  "changelog": {
+    "repo": "infernojs/inferno",
+    "labels": {
+      "greenkeeper": ":nail_care: Dependency upgrades",
+      "maintenance & build tools": ":nail_care: Maintenance",
+      "bug": ":bug: Bugs",
+      "enhancement": ":rocket: Enhancements"
+    },
+    "cacheDir": ".changelog"
+  }
 }
