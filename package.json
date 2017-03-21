@@ -159,7 +159,7 @@
     "help": "node flip --help",
     "browser": "webpack-dev-server --config config/webpack.dev.conf.js",
     "build:packages": "npm run build:packages-cjs && npm run build:packages-es",
-    "build:packages-cjs": "lerna exec -- ../../node_modules/.bin/tsc --module commonjs --outDir dist",
+    "build:packages-cjs": "lerna exec -- ../../node_modules/.bin/tsc --module commonjs --outDir dist --target es5",
     "build:packages-es": "lerna exec -- ../../node_modules/.bin/tsc",
     "build:dev": "lerna exec -- node ../../bin/rollup",
     "build:prod": "cross-env NODE_ENV=production lerna exec -- node ../../bin/rollup",
