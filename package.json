@@ -94,7 +94,7 @@
     "rollup-plugin-uglify": "^1.0.1",
     "sinon": "2.1.0",
     "ts-loader": "^2.0.1",
-    "ts-node": "^2.1.0",
+    "ts-node": "^3.0.1",
     "tslint": "^4.5.1",
     "typescript": "^2.2.1",
     "union-type-es": "^0.1.0",
