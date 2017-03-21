@@ -12,6 +12,7 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
+  "browser": "dist/inferno-compat.min.js",
   "inferno:main": "dist-es/index.js",
   "typings": "dist/index.d.ts",
   "keywords": [
