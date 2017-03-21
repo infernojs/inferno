@@ -22,6 +22,6 @@ module.exports = {
 		node: true
 	},
 	rules: {
-		'id-match': [ 'error', '^[a-zA-Z]+([A-Za-z]+)*$' ]
+		'id-match': [ 'error', '^([A-Za-z]+)*$' ]
 	}
 };
