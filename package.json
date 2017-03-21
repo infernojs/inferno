@@ -97,6 +97,7 @@
     "ts-node": "^3.0.0",
     "tslint": "^4.5.1",
     "typescript": "^2.2.1",
+    "typescript-eslint-parser": "^2.0.0",
     "union-type-es": "^0.1.0",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.2"
@@ -171,6 +172,7 @@
     "karma:ie": "karma start test/karma/karma.unit.conf.js --browsers=IE",
     "lint:js": "eslint config examples src packages/*/__tests__/*",
     "lint:ts": "tslint packages/*/src/*.ts",
+    "lint:jts": "eslint packages/inferno/src/*.ts packages/inferno-compat/src/*.ts packages/inferno-create-element/src/*.ts packages/inferno-hyperscript/src/*.ts packages/inferno-router/src/*.ts packages/inferno-shared/src/*.ts packages/inferno-vnode-flags/src/*.ts packages/inferno-server/src/*.ts packages/inferno-mobx/src/*.ts --config test/lint/letter-only-props.js --no-eslintrc",
     "lint": "npm run lint:ts && npm run lint:js",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
