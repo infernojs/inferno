@@ -118,4 +118,143 @@ describe('setState', () => {
 
 		render(<BaseComp />, container);
 	});
+
+
+	// Should work as Per react: https://jsfiddle.net/f12u8xzb/
+	// React does not get stuck
+	it('Should not get stuck in infinite loop #1', () => {
+		let doSomething;
+
+		class Parent extends Component {
+			constructor(props, context) {
+				super(props, context);
+
+				this.state = {
+					active: false,
+					foo: 'b'
+				};
+
+				this._setBar = this._setBar.bind(this);
+				doSomething = this._setActive = this._setActive.bind(this);
+			}
+
+			_setBar() {
+				this.setState({
+					foo: 'bar'
+				});
+			}
+
+			_setActive() {
+				this.setState({
+					active: true
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						<div>{this.state.foo}</div>
+						{
+							this.state.active ? (
+								<Child foo={this.state.foo} callback={this._setBar} />
+							) : <Child foo={this.state.foo} callback={this._setActive} />
+						}
+					</div>
+				);
+			}
+		}
+
+		class Child extends Component {
+			constructor(props, context) {
+				super(props, context);
+			}
+
+			componentWillUpdate(nextProps) {
+				if (nextProps.foo !== 'bar') {
+					this.props.callback();
+				}
+			}
+
+			render() {
+				return (
+					<div>
+						<div>{this.props.foo}</div>
+					</div>
+				);
+			}
+		}
+
+		render(<Parent />, container);
+		doSomething();
+	});
+
+	// Render should work as per React
+	// https://jsfiddle.net/qb4ootgm/
+	it('Should fail during rendering', () => {
+		let doSomething;
+
+		class Parent extends Component {
+			constructor(props, context) {
+				super(props, context);
+
+				this.state = {
+					active: false,
+					foo: 'b'
+				};
+
+				this._setBar = this._setBar.bind(this);
+				doSomething = this._setActive = this._setActive.bind(this);
+			}
+
+			_setBar() {
+				this.setState({
+					foo: 'bar'
+				});
+			}
+
+			_setActive() {
+				this.setState({
+					active: true
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						<div>{this.state.foo}</div>
+							<Child foo={this.state.foo} callback={this._setBar} />
+							<Child foo={this.state.foo} callback={this._setBar} />
+							<Child foo={this.state.foo} callback={this._setBar} />
+					</div>
+				);
+			}
+		}
+
+		class Child extends Component {
+			constructor(props, context) {
+				super(props, context);
+			}
+
+			componentWillReceiveProps(nextProps) {
+				if (nextProps.foo !== 'bar') {
+					this.setState({
+						foo: 'bbaarr'
+					});
+
+					this.props.callback();
+				}
+			}
+
+			render() {
+				return (
+					<div>
+						<div>{this.props.foo}</div>
+					</div>
+				);
+			}
+		}
+
+		render(<Parent />, container);
+		doSomething();
+	});
 });
