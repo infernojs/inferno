@@ -722,9 +722,9 @@ export function patchKeyedChildren(
 }
 
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
-function lis_algorithm(arr) {
+function lis_algorithm(arr: number[]): number[] {
 	const p = arr.slice(0);
-	const result: any[] = [0];
+	const result: number[] = [0];
 	let i;
 	let j;
 	let u;
