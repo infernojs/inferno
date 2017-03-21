@@ -61,9 +61,9 @@ describe('Functional methods (JSX)', () => {
 		setTimeout(() => {
 			/*
 			 <div style="font-size: 48px; font-family: monospace; width: 100%; text-align: center;">
-				 <button id="decrement">-</button>
-				 <div style="font-size: 48px; font-family: monospace; width: 100%; text-align: center;">0</div>
-				 <button id="increment">+</button>
+			 <button id="decrement">-</button>
+			 <div style="font-size: 48px; font-family: monospace; width: 100%; text-align: center;">0</div>
+			 <button id="increment">+</button>
 			 </div>
 			 */
 			const outerDiv = container.firstChild;
@@ -74,11 +74,11 @@ describe('Functional methods (JSX)', () => {
 			expect(outerDiv.style.textAlign).to.eql('center');
 			expect(outerDiv.tagName).to.eql('DIV');
 
-			const firstButton = outerDiv.childNodes[0];
+			const firstButton = outerDiv.childNodes[ 0 ];
 			expect(firstButton.getAttribute('id')).to.eql('decrement');
 			expect(firstButton.innerHTML).to.eql('-');
 
-			const midDiv = outerDiv.childNodes[1];
+			const midDiv = outerDiv.childNodes[ 1 ];
 			expect(midDiv.style.fontSize).to.eql('48px');
 			expect(midDiv.style.fontFamily).to.eql('monospace');
 			expect(midDiv.style.width).to.eql('100%');
@@ -86,7 +86,7 @@ describe('Functional methods (JSX)', () => {
 			expect(midDiv.tagName).to.eql('DIV');
 			expect(midDiv.innerHTML).to.eql('0');
 
-			const secondButton = outerDiv.childNodes[2];
+			const secondButton = outerDiv.childNodes[ 2 ];
 			expect(secondButton.getAttribute('id')).to.eql('increment');
 			expect(secondButton.innerHTML).to.eql('+');
 			done();

@@ -297,7 +297,7 @@ describe('setState', () => {
 			}
 		}
 
-		function ChildBar({foo}) {
+		function ChildBar({ foo }) {
 			return (
 				<div>
 					{foo}

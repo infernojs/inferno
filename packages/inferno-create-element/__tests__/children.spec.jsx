@@ -818,7 +818,13 @@ describe('Children - (JSX)', () => {
 			}
 
 			function renderIt() {
-				render(<Looper collectionOne={activeOne} visibleStaticOne={visibleOne} collectionTwo={activeTwo} visibleStaticTwo={visibleTwo}/>, container);
+				render(
+					<Looper
+						collectionOne={activeOne}
+						visibleStaticOne={visibleOne}
+						collectionTwo={activeTwo}
+						visibleStaticTwo={visibleTwo}
+					/>, container);
 			}
 
 			visibleOne = true;
@@ -1364,9 +1370,11 @@ describe('Children - (JSX)', () => {
 					};
 				}
 
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
-				componentWillMount() {}
+				componentWillMount() {
+				}
 
 				render() {
 					return (
@@ -1439,9 +1447,11 @@ describe('Children - (JSX)', () => {
 			}
 
 			class Test extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
-				componentWillMount() {}
+				componentWillMount() {
+				}
 
 				render() {
 					return <em>f</em>;
@@ -1511,7 +1521,8 @@ describe('Children - (JSX)', () => {
 			}
 
 			class Test extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return <em>f</em>;
@@ -1519,7 +1530,8 @@ describe('Children - (JSX)', () => {
 			}
 
 			class Foo extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return <em>f</em>;
@@ -1616,7 +1628,8 @@ describe('Children - (JSX)', () => {
 			}
 
 			class Test5 extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return <h1>ShouldUnMountMe</h1>;
@@ -1647,7 +1660,8 @@ describe('Children - (JSX)', () => {
 					super(props);
 				}
 
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -1660,7 +1674,8 @@ describe('Children - (JSX)', () => {
 			}
 
 			class FooBar extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -1705,7 +1720,8 @@ describe('Children - (JSX)', () => {
 					super(props);
 				}
 
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -1718,7 +1734,8 @@ describe('Children - (JSX)', () => {
 			}
 
 			class FooBar extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -1805,7 +1822,8 @@ describe('Children - (JSX)', () => {
 					super(props);
 				}
 
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -1828,7 +1846,8 @@ describe('Children - (JSX)', () => {
 
 			// This should have fastUnmount false
 			class HasLife extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -1875,10 +1894,11 @@ describe('Children - (JSX)', () => {
 					<div>
 						<span>foobar</span>
 						{bool ? <FooBar onComponentWillMount={foobarLifecycle.componentWillMount}
-										onComponentWillUnmount={foobarLifecycle.componentWillUnmount}/> : null}
+														onComponentWillUnmount={foobarLifecycle.componentWillUnmount}/> : null}
 					</div>
 				);
 			}
+
 			function FooBar() {
 				return (
 					<span>
@@ -1926,7 +1946,8 @@ describe('Children - (JSX)', () => {
 			function FooBar() {
 				return (
 					<span>
-						<Test onComponentWillMount={testLifeCycle.componentWillMount} onComponentWillUnmount={testLifeCycle.componentWillUnmount}/>
+						<Test onComponentWillMount={testLifeCycle.componentWillMount}
+									onComponentWillUnmount={testLifeCycle.componentWillUnmount}/>
 					</span>
 				);
 			}

@@ -139,23 +139,23 @@ describe('FormElements', () => {
 			it('Should pre select option by value', () => {
 				render(<SelectList value="B"/>, container);
 				const selectList = container.querySelector('select');
-				expect(selectList.childNodes[0].selected).to.equal(false);
-				expect(selectList.childNodes[1].selected).to.equal(true);
-				expect(selectList.childNodes[2].selected).to.equal(false);
+				expect(selectList.childNodes[ 0 ].selected).to.equal(false);
+				expect(selectList.childNodes[ 1 ].selected).to.equal(true);
+				expect(selectList.childNodes[ 2 ].selected).to.equal(false);
 			});
 
 			it('Should change value based on value property', () => {
 				render(<SelectList value="B"/>, container);
 				let selectList = container.querySelector('select');
-				expect(selectList.childNodes[0].selected).to.equal(false);
-				expect(selectList.childNodes[1].selected).to.equal(true);
-				expect(selectList.childNodes[2].selected).to.equal(false);
+				expect(selectList.childNodes[ 0 ].selected).to.equal(false);
+				expect(selectList.childNodes[ 1 ].selected).to.equal(true);
+				expect(selectList.childNodes[ 2 ].selected).to.equal(false);
 
 				render(<SelectList value="C"/>, container);
 				selectList = container.querySelector('select');
-				expect(selectList.childNodes[0].selected).to.equal(false);
-				expect(selectList.childNodes[1].selected).to.equal(false);
-				expect(selectList.childNodes[2].selected).to.equal(true);
+				expect(selectList.childNodes[ 0 ].selected).to.equal(false);
+				expect(selectList.childNodes[ 1 ].selected).to.equal(false);
+				expect(selectList.childNodes[ 2 ].selected).to.equal(true);
 			});
 		});
 
@@ -197,16 +197,16 @@ describe('FormElements', () => {
 			it('Should pre select option by value on update', (done) => {
 				render(<SelectList />, container);
 				let selectList = container.querySelector('select');
-				expect(selectList.childNodes[0].selected).to.equal(true);
-				expect(selectList.childNodes[1].selected).to.equal(false);
-				expect(selectList.childNodes[2].selected).to.equal(false);
+				expect(selectList.childNodes[ 0 ].selected).to.equal(true);
+				expect(selectList.childNodes[ 1 ].selected).to.equal(false);
+				expect(selectList.childNodes[ 2 ].selected).to.equal(false);
 
 				updater({ value: 'B' });
 				setTimeout(() => {
 					selectList = container.querySelector('select');
-					expect(selectList.childNodes[0].selected).to.equal(false);
-					expect(selectList.childNodes[1].selected).to.equal(true);
-					expect(selectList.childNodes[2].selected).to.equal(false);
+					expect(selectList.childNodes[ 0 ].selected).to.equal(false);
+					expect(selectList.childNodes[ 1 ].selected).to.equal(true);
+					expect(selectList.childNodes[ 2 ].selected).to.equal(false);
 					done();
 				}, 10);
 			});

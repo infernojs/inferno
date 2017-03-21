@@ -545,10 +545,10 @@ describe('Elements (JSX)', () => {
 
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(1);
-		expect(container.childNodes[0].childNodes[0].getAttribute('class')).to.eql('bar');
-		expect(container.childNodes[0].childNodes[0].textContent).to.eql('Inferno');
-		expect(container.childNodes[0].childNodes[1].getAttribute('class')).to.eql('yar');
-		expect(container.childNodes[0].childNodes[1].textContent).to.eql('Sucks!');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].getAttribute('class')).to.eql('bar');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].textContent).to.eql('Inferno');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].getAttribute('class')).to.eql('yar');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].textContent).to.eql('Sucks!');
 
 		render(<div className="fooo">
 			<span className="bar">{val1}</span>
@@ -557,10 +557,10 @@ describe('Elements (JSX)', () => {
 
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(1);
-		expect(container.childNodes[0].childNodes[0].getAttribute('class')).to.eql('bar');
-		expect(container.childNodes[0].childNodes[0].textContent).to.eql('Inferno');
-		expect(container.childNodes[0].childNodes[1].getAttribute('class')).to.eql('yar');
-		expect(container.childNodes[0].childNodes[1].textContent).to.eql('Sucks!');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].getAttribute('class')).to.eql('bar');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].textContent).to.eql('Inferno');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].getAttribute('class')).to.eql('yar');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].textContent).to.eql('Sucks!');
 	});
 
 	it('should properly render a input with download attribute', () => {
@@ -894,15 +894,15 @@ describe('Elements (JSX)', () => {
 	if (typeof global !== 'undefined' && !global.usingJSDOM) {
 		describe('Progress element', () => {
 			it('Should be possible to change value of Progress element Github#714', () => {
-				render(<progress max={100} value="10" />, container);
+				render(<progress max={100} value="10"/>, container);
 
 				expect(container.firstChild.getAttribute('value')).to.eql('10');
 
-				render(<progress max={100} value="33" />, container);
+				render(<progress max={100} value="33"/>, container);
 
 				expect(container.firstChild.getAttribute('value')).to.eql('33');
 
-				render(<progress max={100} value={'0'} />, container);
+				render(<progress max={100} value={'0'}/>, container);
 
 				expect(container.firstChild.getAttribute('value')).to.eql('0');
 			});
@@ -912,7 +912,7 @@ describe('Elements (JSX)', () => {
 				expect(container.firstChild.getAttribute('value')).to.be.oneOf([ null, '', 0, '0' ]);
 
 				// Add as string
-				render(<progress max={100} value="3" />, container);
+				render(<progress max={100} value="3"/>, container);
 				expect(container.firstChild.tagName).to.eql('PROGRESS');
 				expect(container.firstChild.getAttribute('value')).to.eql('3');
 			});

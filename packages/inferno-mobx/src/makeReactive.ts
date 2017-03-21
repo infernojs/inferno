@@ -1,5 +1,4 @@
 import { extras, isObservable, Reaction } from 'mobx';
-
 import Component from 'inferno-component';
 import { throwError } from 'inferno-shared';
 import EventEmitter from './EventEmitter';
