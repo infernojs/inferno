@@ -1,5 +1,16 @@
 
-## Unreleased (2017-03-19)
+## v1.4.2 (2017-03-21)
+
+#### :nail_care: Dependency upgrades
+* Other
+  * [#953](https://github.com/infernojs/inferno/pull/953) Update sinon to version 2.1.0 🚀. ([@greenkeeperio-bot](https://github.com/greenkeeperio-bot))
+
+#### Committers: 2
+- Greenkeeper ([greenkeeperio-bot](https://github.com/greenkeeperio-bot))
+- Long Ho ([longlho](https://github.com/longlho))
+
+
+## v1.4.1 (2017-03-20)
 
 #### :nail_care: Dependency upgrades
 * Other
@@ -9,6 +20,8 @@
   * [#935](https://github.com/infernojs/inferno/pull/935) Update karma-webpack to version 2.0.3 🚀. ([@greenkeeperio-bot](https://github.com/greenkeeperio-bot))
 
 #### :bug: Bugs
+* `inferno-shared`
+  * [#951](https://github.com/infernojs/inferno/pull/951) fix inferno-shared exports. ([@Ashot-KR](https://github.com/Ashot-KR))
 * `inferno-devtools`
   * [#947](https://github.com/infernojs/inferno/pull/947) Fix devtools crashes when 0 is only vnode child. ([@Ashot-KR](https://github.com/Ashot-KR))
 * `inferno`
