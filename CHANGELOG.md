@@ -5,6 +5,10 @@
 * Other
   * [#953](https://github.com/infernojs/inferno/pull/953) Update sinon to version 2.1.0 🚀. ([@greenkeeperio-bot](https://github.com/greenkeeperio-bot))
 
+#### :bug: Bugs
+* `inferno-compat`, `inferno-component`, `inferno-create-class`, `inferno-create-element`, `inferno-devtools`, `inferno-hyperscript`, `inferno-mobx`, `inferno-redux`, `inferno-router`, `inferno`
+  * [#956](https://github.com/infernojs/inferno/pull/956) make dist es5. ([@longlho](https://github.com/longlho))
+
 #### Committers: 2
 - Greenkeeper ([greenkeeperio-bot](https://github.com/greenkeeperio-bot))
 - Long Ho ([longlho](https://github.com/longlho))
