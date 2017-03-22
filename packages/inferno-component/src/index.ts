@@ -184,7 +184,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_blockSetState = false;
 	_deferSetState = false;
 	_pendingSetState = false;
-	_syncSetState = true;
 	_pendingState = {};
 	_lastInput = null;
 	_vNode = null;
@@ -194,6 +193,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_patch = null;
 	_isSVG = false;
 	_componentToDOMNodeMap = null;
+	_updating = false;
 
 	constructor(props?: P, context?: any) {
 		/** @type {object} */
@@ -228,7 +228,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 		if (!this._blockSetState) {
 			if (!this._ignoreSetState) {
-				queueStateChanges(this, newState, callback, callback ? false : this._syncSetState);
+				queueStateChanges(this, newState, callback, false);
 			}
 		} else {
 			if (process.env.NODE_ENV !== 'production') {

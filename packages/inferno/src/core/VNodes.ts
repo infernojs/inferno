@@ -253,7 +253,6 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 			newVNode = createTextVNode(vNodeToClone.children as string, key);
 		}
 	}
-
 	return newVNode;
 }
 

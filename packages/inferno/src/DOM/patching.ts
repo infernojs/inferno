@@ -314,7 +314,6 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 
 				nextVNode.children = instance;
 				instance._isSVG = isSVG;
-				instance._syncSetState = false;
 				if (isNullOrUndef(childContext)) {
 					childContext = context;
 				} else {
@@ -355,7 +354,6 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					options.afterUpdate && options.afterUpdate(nextVNode);
 					options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
 				}
-				instance._syncSetState = true;
 				nextVNode.dom = nextInput.dom;
 			}
 		} else {
