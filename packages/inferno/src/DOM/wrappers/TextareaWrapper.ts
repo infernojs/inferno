@@ -10,8 +10,8 @@ function isControlled(props) {
 
 function wrappedOnChange(e) {
 	let vNode = this.vNode;
-	const events = vNode.events || EMPTY_OBJ;
-	const event = events.onChange;
+	const props = vNode.props || EMPTY_OBJ;
+	const event = props.onChange;
 
 	if (event.event) {
 		event.event(event.data, e);
@@ -22,19 +22,19 @@ function wrappedOnChange(e) {
 
 function onTextareaInputChange(e) {
 	let vNode = this.vNode;
-	const events = vNode.events || EMPTY_OBJ;
+	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 
-	if (events.onInput) {
-		const event = events.onInput;
+	if (props.onInput) {
+		const event = props.onInput;
 
 		if (event.event) {
 			event.event(event.data, e);
 		} else {
 			event(e);
 		}
-	} else if (events.oninput) {
-		events.oninput(e);
+	} else if (props.oninput) {
+		props.oninput(e);
 	}
 	// the user may have updated the vNode from the above onInput events
 	// so we need to get it from the context of `this` again

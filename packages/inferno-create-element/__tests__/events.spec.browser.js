@@ -214,4 +214,26 @@ describe('Basic event tests', () => {
 		render(AppTwo(), container);
 		expect(container.innerHTML).to.equal('<p>2</p>');
 	});
+
+	it('Should work with spread attributes', (done) => {
+
+		function SmallComponent(props) {
+
+			return (
+				<div id="testClick" {...props}>
+					FooBar
+				</div>
+			);
+		}
+
+		const obj = {
+			test: function () {
+				done();
+			}
+		};
+
+		render(<SmallComponent className="testing" onClick={obj.test} />, container);
+
+		container.querySelector('#testClick').click();
+	});
 });

@@ -33,10 +33,6 @@ export function isFunction(obj: any): boolean {
 	return typeof obj === 'function';
 }
 
-export function isAttrAnEvent(attr: string): boolean {
-	return attr[0] === 'o' && attr[1] === 'n';
-}
-
 export function isString(obj: any): boolean {
 	return typeof obj === 'string';
 }

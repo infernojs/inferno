@@ -44,19 +44,19 @@ function updateChildOption(vNode, value) {
 
 function onSelectChange(e) {
 	const vNode = this.vNode;
-	const events = vNode.events || EMPTY_OBJ;
+	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 
-	if (events.onChange) {
-		const event = events.onChange;
+	if (props.onChange) {
+		const event = props.onChange;
 
 		if (event.event) {
 			event.event(event.data, e);
 		} else {
 			event(e);
 		}
-	} else if (events.onchange) {
-		events.onchange(e);
+	} else if (props.onchange) {
+		props.onchange(e);
 	}
 	// the user may have updated the vNode from the above onChange events
 	// so we need to get it from the context of `this` again
