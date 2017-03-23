@@ -627,7 +627,7 @@ describe('setState', () => {
 	});
 
 	it('Should not fail with Functional components and render', (done) => {
-		let data = {active: false, foo: 'bar', setActive, setBar};
+		let data = { active: false, foo: 'bar', setActive, setBar };
 
 		function cwrp(lastProps, nextProps) {
 			if (nextProps.foo !== 'bar') {
@@ -635,7 +635,7 @@ describe('setState', () => {
 			}
 		}
 
-		function Parent({setActive, active, setBar, foo}) {
+		function Parent({ setActive, active, setBar, foo }) {
 			return (
 				<div>
 					<ChildBar foo={foo}/>
@@ -658,7 +658,7 @@ describe('setState', () => {
 			);
 		}
 
-		function Child({foo}) {
+		function Child({ foo }) {
 			return (
 				<div>
 					<div>{foo}</div>
@@ -667,16 +667,15 @@ describe('setState', () => {
 		}
 
 		function setActive() {
-			render(<Parent {...Object.assign({}, data, {active: true})}/>, container);
+			render(<Parent {...Object.assign({}, data, { active: true })}/>, container);
 		}
 
 		function setBar() {
 			render(<Parent {...Object.assign({}, data)}/>, container);
 		}
 
-		debugger;
 		render(<Parent />, container);
-		render(<Parent {...Object.assign({}, data, {foo: 'bur'})}/>, container);
+		render(<Parent {...Object.assign({}, data, { foo: 'bur' })}/>, container);
 
 		setTimeout(function () {
 			done();
