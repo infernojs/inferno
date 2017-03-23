@@ -569,4 +569,117 @@ describe('setState', () => {
 			done();
 		}, 75);
 	});
+
+	it('Should not fail during rendering #2 sync', (done) => {
+		let doSomething;
+
+		class Parent extends Component {
+			constructor(props, context) {
+				super(props, context);
+
+				this.state = {
+					active: false,
+					foo: 'b'
+				};
+
+				this._setBar = this._setBar.bind(this);
+				doSomething = this._setActive = this._setActive.bind(this);
+			}
+
+			_setBar() {
+				this.setStateSync({
+					foo: 'bar'
+				});
+			}
+
+			_setActive() {
+				this.setStateSync({
+					active: true
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						<ChildBar foo={this.state.foo}/>
+						<ChildBar foo={this.state.foo}/>
+						<ChildBar foo={this.state.foo} onComponentWillMount={this._setBar}/>
+						<ChildBar foo={this.state.foo}/>
+					</div>
+				);
+			}
+		}
+
+		function ChildBar({ foo }) {
+			return (
+				<div>
+					{foo}
+				</div>
+			);
+		}
+
+		render(<Parent />, container);
+		doSomething();
+
+		setTimeout(function () {
+			done();
+		}, 75);
+	});
+
+	it('Should not fail with Functional components and render', (done) => {
+		let data = {active: false, foo: 'bar', setActive, setBar};
+
+		function cwrp(lastProps, nextProps) {
+			if (nextProps.foo !== 'bar') {
+				nextProps.callback('bbaarr');
+			}
+		}
+
+		function Parent({setActive, active, setBar, foo}) {
+			return (
+				<div>
+					<ChildBar foo={foo}/>
+					{active && (<ChildBar foo={foo}/>)}
+					<ChildBar foo={foo}/>
+					{active && (<ChildBar foo={foo}/>)}
+					<ChildBar foo={foo}/>
+					<Child foo={foo} onComponentWillUpdate={cwrp} callback={setActive}/>
+					{active && (<ChildBar onComponentWillMount={setBar} foo={foo}/>)}
+					<ChildBar foo={foo}/>
+				</div>
+			);
+		}
+
+		function ChildBar({ foo }) {
+			return (
+				<div>
+					{foo}
+				</div>
+			);
+		}
+
+		function Child({foo}) {
+			return (
+				<div>
+					<div>{foo}</div>
+				</div>
+			);
+		}
+
+		function setActive() {
+			render(<Parent {...Object.assign({}, data, {active: true})}/>, container);
+		}
+
+		function setBar() {
+			render(<Parent {...Object.assign({}, data)}/>, container);
+		}
+
+		debugger;
+		render(<Parent />, container);
+		render(<Parent {...Object.assign({}, data, {foo: 'bur'})}/>, container);
+
+		setTimeout(function () {
+			done();
+		}, 75);
+	});
 });
