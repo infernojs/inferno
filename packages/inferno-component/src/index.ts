@@ -58,11 +58,13 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 		componentCallbackQueue.set(component, queue);
 		resolvedPromise.then(() => {
 			componentCallbackQueue.delete(component);
+			component._updating = true;
 			applyState(component, force, () => {
 				for (let i = 0, len = queue.length; i < len; i++) {
 					queue[i]();
 				}
 			});
+			component._updating = false;
 		});
 	}
 	if (callback) {
@@ -80,9 +82,11 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 		component._pendingState[stateKey] = newState[stateKey];
 	}
 	if (!component._pendingSetState && isBrowser && !(sync && component._blockRender)) {
-		if (sync || component._blockRender) {
+		if ((sync || component._blockRender) && !component._updating) {
 			component._pendingSetState = true;
+			component._updating = true;
 			applyState(component, false, callback);
+			component._updating = false;
 		} else {
 			addToQueue(component, false, callback);
 		}
@@ -184,7 +188,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_blockSetState = false;
 	_deferSetState = false;
 	_pendingSetState = false;
-	_syncSetState = true;
 	_pendingState = {};
 	_lastInput = null;
 	_vNode = null;
@@ -194,6 +197,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_patch = null;
 	_isSVG = false;
 	_componentToDOMNodeMap = null;
+	_updating = false;
 
 	constructor(props?: P, context?: any) {
 		/** @type {object} */
@@ -228,7 +232,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 		if (!this._blockSetState) {
 			if (!this._ignoreSetState) {
-				queueStateChanges(this, newState, callback, callback ? false : this._syncSetState);
+				queueStateChanges(this, newState, callback, false);
 			}
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
