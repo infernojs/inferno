@@ -237,7 +237,7 @@ describe('SSR Hydration - (JSX)', () => {
 
 	it('should rebuild and patch from existing DOM content', () => {
 		const container = document.createElement('div');
-		const vNode = createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+		const vNode = createVNode(2, 'div', 'example', 'Hello world!');
 
 		container.innerHTML = '<h1><div>Existing DOM content</div></h1>';
 		render(vNode, container);
