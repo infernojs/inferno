@@ -216,7 +216,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	componentDidUpdate? (prevProps: P, prevState: S, prevContext: any): void;
 	componentWillUnmount? (): void;
 	getChildContext? (): void;
-
 	render(nextProps?: P, nextState?, nextContext?) {}
 
 	forceUpdate(callback?: Function) {
