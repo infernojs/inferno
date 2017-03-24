@@ -19,9 +19,9 @@
 			var children = new Array(7);
 
 			children[0] = createVNode(2, 'td', 'dbname', db.dbname, null, null, null, true);
-			children[1] = createVNode(2, 'td', 'query-count', createVNode(2, 'span', {
-				className: lastSample.countClassName
-			}, lastSample.nbQueries, null, null, null, true), null, null, null, true);
+			children[1] = createVNode(2, 'td', 'query-count',
+				createVNode(2, 'span', lastSample.countClassName, lastSample.nbQueries, null, null, null, true),
+			null, null, null, true);
 
 			for (var i2 = 0; i2 < 5; i2++) {
 				var query = lastSample.topFiveQueries[i2];

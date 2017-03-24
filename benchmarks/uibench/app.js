@@ -45,9 +45,9 @@
 	}
 
 	function AnimBox(data) {
-		var time = data.time;
-		var style = 'border-radius:' + (time % 10) + 'px;' +
-			'background:rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')';
+		var time = data.time % 10;
+		var style = 'border-radius:' + (time) + 'px;' +
+			'background:rgba(0,0,0,' + (0.5 + ((time) / 10)) + ')';
 
 		return createVNode(2, 'div', 'AnimBox', null, { style: style, 'data-id': data.id }, null, null, true);
 	}
