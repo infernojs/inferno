@@ -85,4 +85,33 @@ describe('createTree - SVG (JSX)', () => {
 			'href'
 		)).to.equal(false);
 	});
+
+	it('should add / change / remove xlinkHref attribute (babel plugin should transpile it)', () => {
+		render(<svg>
+			<use xlinkHref="#test"/>
+		</svg>, container);
+
+		expect(container.firstChild.firstChild.getAttributeNS(
+			'http://www.w3.org/1999/xlink',
+			'href'
+		)).to.equal('#test');
+
+		render(<svg>
+			<use xlinkHref="#changed"/>
+		</svg>, container);
+
+		expect(container.firstChild.firstChild.getAttributeNS(
+			'http://www.w3.org/1999/xlink',
+			'href'
+		)).to.equal('#changed');
+
+		render(<svg>
+			<use/>
+		</svg>, container);
+
+		expect(container.firstChild.firstChild.hasAttributeNS(
+			'http://www.w3.org/1999/xlink',
+			'href'
+		)).to.equal(false);
+	});
 });
