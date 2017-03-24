@@ -16,19 +16,19 @@ function isControlled(props) {
 
 function onTextInputChange(e) {
 	let vNode = this.vNode;
-	const events = vNode.events || EMPTY_OBJ;
+	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 
-	if (events.onInput) {
-		const event = events.onInput;
+	if (props.onInput) {
+		const event = props.onInput;
 
 		if (event.event) {
 			event.event(event.data, e);
 		} else {
 			event(e);
 		}
-	} else if (events.oninput) {
-		events.oninput(e);
+	} else if (props.oninput) {
+		props.oninput(e);
 	}
 	// the user may have updated the vNode from the above onInput events
 	// so we need to get it from the context of `this` again
@@ -37,8 +37,8 @@ function onTextInputChange(e) {
 
 function wrappedOnChange(e) {
 	let vNode = this.vNode;
-	const events = vNode.events || EMPTY_OBJ;
-	const event = events.onChange;
+	const props = vNode.props || EMPTY_OBJ;
+	const event = props.onChange;
 
 	if (event.event) {
 		event.event(event.data, e);
@@ -49,19 +49,19 @@ function wrappedOnChange(e) {
 
 function onCheckboxChange(e) {
 	const vNode = this.vNode;
-	const events = vNode.events || EMPTY_OBJ;
+	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 
-	if (events.onClick) {
-		const event = events.onClick;
+	if (props.onClick) {
+		const event = props.onClick;
 
 		if (event.event) {
 			event.event(event.data, e);
 		} else {
 			event(e);
 		}
-	} else if (events.onclick) {
-		events.onclick(e);
+	} else if (props.onclick) {
+		props.onclick(e);
 	}
 	// the user may have updated the vNode from the above onClick events
 	// so we need to get it from the context of `this` again

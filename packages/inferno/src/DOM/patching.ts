@@ -886,9 +886,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 }
 
 function removeProp(prop: string, lastValue, dom) {
-	if (prop === 'className') {
-		dom.removeAttribute('class');
-	} else if (prop === 'value') {
+	if (prop === 'value') {
 		dom.value = '';
 	} else if (prop === 'style') {
 		dom.removeAttribute('style');
