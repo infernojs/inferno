@@ -218,7 +218,9 @@ export function mountClassComponentCallbacks(vNode: VNode, ref, instance, lifecy
 export function mountFunctionalComponentCallbacks(ref, dom, lifecycle: LifecycleClass) {
 	if (ref) {
 		if (!isNullOrUndef(ref.onComponentWillMount)) {
+			options.preventSyncUpdates = true;
 			ref.onComponentWillMount();
+			options.preventSyncUpdates = false;
 		}
 		if (!isNullOrUndef(ref.onComponentDidMount)) {
 			lifecycle.addListener(() => ref.onComponentDidMount(dom));

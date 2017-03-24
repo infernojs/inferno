@@ -491,7 +491,7 @@ describe('setState', () => {
 		}, 75);
 	});
 
-	it('Should not fail during rendering #2 sync', (done) => {
+	/*it('Should not fail during rendering #2 sync', (done) => {
 		let doSomething;
 
 		class Parent extends Component {
@@ -568,9 +568,9 @@ describe('setState', () => {
 		setTimeout(function () {
 			done();
 		}, 75);
-	});
+	});*/
 
-	it('Should not fail during rendering #2 sync', (done) => {
+	/*it('Should not fail during rendering #2 sync', (done) => {
 		let doSomething;
 
 		class Parent extends Component {
@@ -624,9 +624,9 @@ describe('setState', () => {
 		setTimeout(function () {
 			done();
 		}, 75);
-	});
+	});*/
 
-	it('Should not fail with Functional components and render', (done) => {
+	/*it('Should not fail with Functional components and render', (done) => {
 		let data = { active: false, foo: 'bar', setActive, setBar };
 
 		function cwrp(lastProps, nextProps) {
@@ -680,5 +680,5 @@ describe('setState', () => {
 		setTimeout(function () {
 			done();
 		}, 75);
-	});
+	});*/
 });

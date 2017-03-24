@@ -3,6 +3,7 @@ import {
 	isInvalid,
 	isNull,
 	isNullOrUndef,
+	isTrue,
 	Lifecycle,
 	LifecycleClass,
 	NO_OP,
@@ -87,6 +88,13 @@ export function render(input: InfernoInput, parentDom?: Element | SVGAElement | 
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
+		}
+		throwError();
+	}
+	if (isTrue(options.preventSyncUpdates)) {
+		options.preventSyncUpdates = false;
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('cannot use render() in componentWillMount().');
 		}
 		throwError();
 	}
