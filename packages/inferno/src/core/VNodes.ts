@@ -93,7 +93,7 @@ export function directClone(vNodeToClone: VNode): VNode {
 			props = EMPTY_OBJ;
 		} else {
 			props = {};
-			for (let key in propsToClone) {
+			for (const key in propsToClone) {
 				props[key] = propsToClone[key];
 			}
 		}
@@ -143,7 +143,7 @@ export function directClone(vNodeToClone: VNode): VNode {
 			props = EMPTY_OBJ;
 		} else {
 			props = {};
-			for (let key in propsToClone) {
+			for (const key in propsToClone) {
 				props[key] = propsToClone[key];
 			}
 		}

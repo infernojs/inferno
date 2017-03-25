@@ -64,7 +64,7 @@ function extractProps(_props: any, _tag: string | VNode): any {
 	let children = null;
 	let className = null;
 
-	for (let prop in _props) {
+	for (const prop in _props) {
 		if (prop === 'className' || prop === 'class') {
 			className = _props[prop];
 		} else if (prop === 'key') {

@@ -113,7 +113,7 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 		hasControlledValue = processElement(flags, vNode, dom, true);
 	}
 	if (!isNull(props)) {
-		for (let prop in props) {
+		for (const prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
 		}

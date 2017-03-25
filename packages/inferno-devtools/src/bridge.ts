@@ -244,7 +244,7 @@ function updateReactComponent(vNode, parentDom) {
 	const oldInstance = getInstanceFromVNode(vNode);
 
 	if (oldInstance) {
-		for (let key in newInstance) {
+		for (const key in newInstance) {
 			oldInstance[key] = newInstance[key];
 		}
 

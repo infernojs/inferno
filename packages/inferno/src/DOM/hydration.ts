@@ -114,7 +114,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 		hasControlledValue = processElement(flags, vNode, dom, false);
 	}
 	if (props) {
-		for (let prop in props) {
+		for (const prop in props) {
 			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
 		}
 	}

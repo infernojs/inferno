@@ -166,7 +166,7 @@ export function normalize(vNode: VNode): void {
 				if (!props) {
 					props = vNode.props = defaultProps; // Create new object if only defaultProps given
 				} else {
-					for (let prop in defaultProps) {
+					for (const prop in defaultProps) {
 						if (isUndefined(props[prop])) {
 							props[prop] = defaultProps[prop];
 						}

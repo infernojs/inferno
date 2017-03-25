@@ -28,7 +28,7 @@ function renderStylesToString(styles) {
 	} else {
 		let renderedString = '';
 
-		for (let styleName in styles) {
+		for (const styleName in styles) {
 			const value = styles[ styleName ];
 			const px = isNumber(value) && !internal_isUnitlessNumber[ styleName ] ? 'px' : '';
 

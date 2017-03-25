@@ -179,7 +179,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 			const nextPropsOrEmpty = nextProps || EMPTY_OBJ;
 
 			if (nextPropsOrEmpty !== EMPTY_OBJ) {
-				for (let prop in nextPropsOrEmpty) {
+				for (const prop in nextPropsOrEmpty) {
 					// do not add a hasOwnProperty check here, it affects performance
 					const nextValue = nextPropsOrEmpty[prop];
 					const lastValue = lastPropsOrEmpty[prop];
@@ -188,7 +188,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 				}
 			}
 			if (lastPropsOrEmpty !== EMPTY_OBJ) {
-				for (let prop in lastPropsOrEmpty) {
+				for (const prop in lastPropsOrEmpty) {
 					// do not add a hasOwnProperty check here, it affects performance
 					if (isNullOrUndef(nextPropsOrEmpty[prop])) {
 						removeProp(prop, lastPropsOrEmpty[prop], dom);
@@ -877,7 +877,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 	}
 
 	if (!isNullOrUndef(lastAttrValue)) {
-		for (let style in lastAttrValue as Styles) {
+		for (const style in lastAttrValue as Styles) {
 			if (isNullOrUndef(nextAttrValue[style])) {
 				domStyle[style] = '';
 			}

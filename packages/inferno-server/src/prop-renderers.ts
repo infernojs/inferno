@@ -17,7 +17,7 @@ export function renderStyleToString(style): string {
 	} else {
 		const styles: string[] = [];
 
-		for (let styleName in style) {
+		for (const styleName in style) {
 			const value = style[styleName];
 			const px = isNumber(value) && !internal_isUnitlessNumber[styleName] ? 'px' : '';
 

@@ -117,7 +117,7 @@ function normalizeProps(name: string, props: Props | any) {
 			delete props.onChange;
 		}
 	}
-	for (let prop in props) {
+	for (const prop in props) {
 		if (prop === 'onDoubleClick') {
 			props.onDblClick = props[ prop ];
 			delete props[ prop ];
@@ -126,7 +126,7 @@ function normalizeProps(name: string, props: Props | any) {
 			props['for'] = props[prop];
 			delete props[prop];
 		}
-		let mappedProp = SVGDOMPropertyConfig[ prop ];
+		const mappedProp = SVGDOMPropertyConfig[ prop ];
 		if (mappedProp && mappedProp !== prop) {
 			props[ mappedProp ] = props[ prop ];
 			delete props[ prop ];
@@ -146,7 +146,8 @@ if (typeof Event !== 'undefined' && !Event.prototype.persist) {
 }
 
 function iterableToArray(iterable) {
-	let iterStep, tmpArr = [];
+	let iterStep;
+	const tmpArr = [];
 	do {
 		iterStep = iterable.next();
 		iterStep.value ? tmpArr.push(iterStep.value) : void 0;
@@ -159,7 +160,7 @@ const hasSymbolSupport = typeof Symbol !== 'undefined';
 
 const injectStringRefs = function (originalFunction) {
 	return function (name, _props, ...children) {
-		let props = _props || {};
+		const props = _props || {};
 		const ref = props.ref;
 
 		if (typeof ref === 'string' && currentComponent) {
@@ -175,7 +176,7 @@ const injectStringRefs = function (originalFunction) {
 		// React supports iterable children, in addition to Array-like
 		if (hasSymbolSupport) {
 			for (let i = 0, len = children.length; i < len; i++) {
-				let child = children[i];
+				const child = children[i];
 				if (child && !isArray(child) && !isString(child) && isFunction(child[Symbol.iterator])) {
 					children[i] = iterableToArray(child[Symbol.iterator]());
 				}
@@ -207,12 +208,12 @@ options.createVNode = (vNode: VNode): void => {
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
 function shallowDiffers(a, b): boolean {
-	for (let i in a) {
+	for (const i in a) {
 		if (!(i in b)) {
 			return true;
 		}
 	}
-	for (let i in b) {
+	for (const i in b) {
 		if (a[ i ] !== b[ i ]) {
 			return true;
 		}
