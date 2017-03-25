@@ -4,5 +4,5 @@ import VNodeFlags from 'inferno-vnode-flags';
 
 export default function IndexLink (props): VNode {
 	props.to = '/';
-	return createVNode(VNodeFlags.ComponentFunction, Link, props);
+	return createVNode(VNodeFlags.ComponentFunction, Link, null, null, props);
 }

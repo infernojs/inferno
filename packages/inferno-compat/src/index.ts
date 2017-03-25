@@ -236,7 +236,7 @@ class WrapperComponent<P, S> extends Component<P, S> {
 }
 
 function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, callback) {
-	const wrapperVNode: VNode = createVNode(4, WrapperComponent, {context: parentComponent.context, children: vNode});
+	const wrapperVNode: VNode = createVNode(4, WrapperComponent, null, null, {context: parentComponent.context, children: vNode});
 	const component = render(wrapperVNode, container);
 
 	if (callback) {

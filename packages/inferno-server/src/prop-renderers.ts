@@ -38,7 +38,6 @@ export function renderAttributes(props): string[] {
 		switch (propKey) {
 			case 'children':
 			case 'dangerouslySetInnerHTML':
-			case 'className':
 			case 'style':
 				return;
 			default:

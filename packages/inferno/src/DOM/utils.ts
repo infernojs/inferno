@@ -26,7 +26,6 @@ if (process.env.NODE_ENV !== 'production') {
 	Object.freeze(EMPTY_OBJ);
 }
 
-
 export function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean) {
 	if (isUndefined(context)) {
 		context = EMPTY_OBJ; // Context should not be mutable

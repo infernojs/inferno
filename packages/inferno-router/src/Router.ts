@@ -88,7 +88,7 @@ export default class Router extends Component<IRouterProps, any> {
 			return null;
 		}
 
-		return createVNode(VNodeFlags.ComponentClass, RouterContext, {
+		return createVNode(VNodeFlags.ComponentClass, RouterContext, null, null, {
 			location: this.state.url,
 			router: this.router,
 			matched: hit.matched

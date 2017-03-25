@@ -156,12 +156,11 @@ export class RenderStream extends Readable {
 		const outputAttrs = renderAttributes(props);
 
 		let html = '';
+		const className = vElement.className;
+		if (!isNullOrUndef(className)) {
+			outputAttrs.push('class="' + escapeText(className) + '"');
+		}
 		if (props) {
-			const className = props.className;
-			if (!isNullOrUndef(className)) {
-				outputAttrs.push('class="' + escapeText(className) + '"');
-			}
-
 			const style = props.style;
 			if (style) {
 				outputAttrs.push('style="' + renderStyleToString(style) + '"');

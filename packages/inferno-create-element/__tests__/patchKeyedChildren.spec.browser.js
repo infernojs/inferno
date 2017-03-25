@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { createVNode, render } from 'inferno';
-import VNodeFlags from 'inferno-vnode-flags';
+import { render } from 'inferno';
 import createElement from '../dist-es';
 import { createTextVNode } from 'inferno/core/VNodes';
 
@@ -713,7 +712,7 @@ describe('keyed-nodes', () => {
 
 			function gen(item, keys) {
 				if (typeof item === 'number') {
-					return keys ? createVNode(VNodeFlags.Text, null, null, item, item) : createTextVNode(item);
+					return keys ? createTextVNode(item, item) : createTextVNode(item);
 				} else if (Array.isArray(item)) {
 					let result = [];
 					for (let i = 0; i < item.length; i++) {

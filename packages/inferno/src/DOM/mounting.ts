@@ -15,7 +15,6 @@ import { VNode } from '../core/VNodes';
 import options from '../core/options';
 import { directClone, isVNode } from '../core/VNodes';
 import {
-	patchEvent,
 	patchProp
 } from './patching';
 import {
@@ -95,7 +94,7 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 	const dom = documentCreateElement(vNode.type, isSVG);
 	const children = vNode.children;
 	const props = vNode.props;
-	const events = vNode.events;
+	const className = vNode.className;
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
@@ -119,10 +118,13 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
 		}
 	}
-	if (!isNull(events)) {
-		for (let name in events) {
-			// do not add a hasOwnProperty check here, it affects performance
-			patchEvent(name, null, events[name], dom);
+	if (isNullOrUndef(className)) {
+		dom.removeAttribute('class');
+	} else {
+		if (isSVG) {
+			dom.setAttribute('class', className);
+		} else {
+			dom.className = className;
 		}
 	}
 	if (!isNull(ref)) {
