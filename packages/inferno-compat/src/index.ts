@@ -140,6 +140,18 @@ if (typeof Event !== 'undefined' && !Event.prototype.persist) {
 	};
 }
 
+function iterableToArray(iterable) {
+	let iterStep, tmpArr = [];
+	do {
+		iterStep = iterable.next();
+		iterStep.value ? tmpArr.push(iterStep.value) : void 0;
+	} while (!iterStep.done);
+
+	return tmpArr;
+}
+
+const hasSymbolSupport = typeof Symbol !== 'undefined';
+
 const injectStringRefs = function (originalFunction) {
 	return function (name, _props, ...children) {
 		let props = _props || {};
@@ -156,10 +168,12 @@ const injectStringRefs = function (originalFunction) {
 		}
 
 		// React supports iterable children, in addition to Array-like
-		for (let i = 0, len = children.length; i < len; i++) {
-			let child = children[i];
-			if (child && !isArray(child) && !isString(child) && isFunction(child[Symbol.iterator])) {
-				children[i] = Array.from(child);
+		if (hasSymbolSupport) {
+			for (let i = 0, len = children.length; i < len; i++) {
+				let child = children[i];
+				if (child && !isArray(child) && !isString(child) && isFunction(child[Symbol.iterator])) {
+					children[i] = iterableToArray(child[Symbol.iterator]());
+				}
 			}
 		}
 		return originalFunction(name, props, ...children);

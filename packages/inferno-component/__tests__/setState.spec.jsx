@@ -189,7 +189,7 @@ describe('setState', () => {
 
 		setTimeout(function () {
 			done();
-		}, 75);
+		}, 45);
 	});
 
 	// Render should work as per React
@@ -263,7 +263,7 @@ describe('setState', () => {
 
 		setTimeout(function () {
 			done();
-		}, 75);
+		}, 45);
 	});
 
 	it('Should not fail during rendering #2', (done) => {
@@ -342,7 +342,7 @@ describe('setState', () => {
 
 		setTimeout(function () {
 			done();
-		}, 75);
+		}, 45);
 	});
 
 	// Should work as Per react: https://jsfiddle.net/f12u8xzb/
@@ -414,7 +414,7 @@ describe('setState', () => {
 
 		setTimeout(function () {
 			done();
-		}, 75);
+		}, 45);
 	});
 
 	// Render should work as per React
@@ -488,197 +488,6 @@ describe('setState', () => {
 
 		setTimeout(function () {
 			done();
-		}, 75);
+		}, 45);
 	});
-
-	/*it('Should not fail during rendering #2 sync', (done) => {
-		let doSomething;
-
-		class Parent extends Component {
-			constructor(props, context) {
-				super(props, context);
-
-				this.state = {
-					active: false,
-					foo: 'b'
-				};
-
-				this._setBar = this._setBar.bind(this);
-				doSomething = this._setActive = this._setActive.bind(this);
-			}
-
-			_setBar() {
-				this.setStateSync({
-					foo: 'bar'
-				});
-			}
-
-			_setActive() {
-				this.setStateSync({
-					active: true
-				});
-			}
-
-			render() {
-				return (
-					<div>
-						<Child foo={this.state.foo} callback={this._setActive}/>
-						<ChildBar foo={this.state.foo} onComponentWillMount={this._setBar}/>
-						<ChildBar foo={this.state.foo}/>
-					</div>
-				);
-			}
-		}
-
-		function ChildBar({ foo }) {
-			return (
-				<div>
-					{foo}
-				</div>
-			);
-		}
-
-		class Child extends Component {
-			constructor(props, context) {
-				super(props, context);
-			}
-
-			componentWillReceiveProps(nextProps) {
-				if (nextProps.foo !== 'bar') {
-					this.setStateSync({
-						foo: 'bbaarr'
-					});
-
-					this.props.callback();
-				}
-			}
-
-			render() {
-				return (
-					<div>
-						<div>{this.props.foo}</div>
-					</div>
-				);
-			}
-		}
-
-		render(<Parent />, container);
-		doSomething();
-
-		setTimeout(function () {
-			done();
-		}, 75);
-	});*/
-
-	/*it('Should not fail during rendering #2 sync', (done) => {
-		let doSomething;
-
-		class Parent extends Component {
-			constructor(props, context) {
-				super(props, context);
-
-				this.state = {
-					active: false,
-					foo: 'b'
-				};
-
-				this._setBar = this._setBar.bind(this);
-				doSomething = this._setActive = this._setActive.bind(this);
-			}
-
-			_setBar() {
-				this.setStateSync({
-					foo: 'bar'
-				});
-			}
-
-			_setActive() {
-				this.setStateSync({
-					active: true
-				});
-			}
-
-			render() {
-				return (
-					<div>
-						<ChildBar foo={this.state.foo}/>
-						<ChildBar foo={this.state.foo}/>
-						<ChildBar foo={this.state.foo} onComponentWillMount={this._setBar}/>
-						<ChildBar foo={this.state.foo}/>
-					</div>
-				);
-			}
-		}
-
-		function ChildBar({ foo }) {
-			return (
-				<div>
-					{foo}
-				</div>
-			);
-		}
-
-		render(<Parent />, container);
-		doSomething();
-
-		setTimeout(function () {
-			done();
-		}, 75);
-	});*/
-
-	/*it('Should not fail with Functional components and render', (done) => {
-		let data = { active: false, foo: 'bar', setActive, setBar };
-
-		function cwrp(lastProps, nextProps) {
-			if (nextProps.foo !== 'bar') {
-				nextProps.callback('bbaarr');
-			}
-		}
-
-		function Parent({ setActive, active, setBar, foo }) {
-			return (
-				<div>
-					<ChildBar foo={foo}/>
-					{active && (<ChildBar foo={foo}/>)}
-					<ChildBar foo={foo}/>
-					{active && (<ChildBar foo={foo}/>)}
-					<ChildBar foo={foo}/>
-					<Child foo={foo} onComponentWillUpdate={cwrp} callback={setActive}/>
-					{active && (<ChildBar onComponentWillMount={setBar} foo={foo}/>)}
-					<ChildBar foo={foo}/>
-				</div>
-			);
-		}
-
-		function ChildBar({ foo }) {
-			return (
-				<div>
-					{foo}
-				</div>
-			);
-		}
-
-		function Child({ foo }) {
-			return (
-				<div>
-					<div>{foo}</div>
-				</div>
-			);
-		}
-
-		function setActive() {
-			render(<Parent {...Object.assign({}, data, { active: true })}/>, container);
-		}
-
-		function setBar() {
-			render(<Parent {...Object.assign({}, data)}/>, container);
-		}
-
-		render(<Parent />, container);
-		render(<Parent {...Object.assign({}, data, { foo: 'bur' })}/>, container);
-
-		setTimeout(function () {
-			done();
-		}, 75);
-	});*/
 });
