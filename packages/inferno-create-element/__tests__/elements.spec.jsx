@@ -891,7 +891,7 @@ describe('Elements (JSX)', () => {
 	describe('REST Spread JSX', () => {
 		it('Should render click event, style, className', (done) => {
 			const TextField = function (props) {
-				 return <input {...props} />;
+				return <input {...props} />;
 			};
 			const MyTextField = ({ name, className, changeName }) => <TextField className={className} value={name} onClick={function () {
 				done();
