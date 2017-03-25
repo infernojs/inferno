@@ -121,6 +121,10 @@
 					h('label', 'Please enter a description:'),
 					h('textarea', { defaultValue: 'I don\'t know?', value: description, onInput: descHandler })
 				]),
+                h('div.form-group', [
+                    h('label', 'Color picker (html5):'),
+                    h('input', { type: 'color' })
+                ]),
 			]), document.getElementById('app'));
 		}
 		render();

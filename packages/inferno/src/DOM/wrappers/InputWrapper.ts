@@ -124,7 +124,7 @@ export function applyValue(vNode, dom) {
 	const hasValue = !isNullOrUndef(value);
 
 	if (type && type !== dom.type) {
-		dom.type = type;
+		dom.setAttribute('type', type);
 	}
 	if (multiple && multiple !== dom.multiple) {
 		dom.multiple = multiple;
