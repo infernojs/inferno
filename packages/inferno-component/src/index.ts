@@ -7,7 +7,6 @@ import {
 	isBrowser,
 	isFunction,
 	isInvalid,
-	isTrue,
 	isNullOrUndef,
 	isStringOrNumber,
 	Lifecycle,
@@ -245,13 +244,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	setStateSync(newState) {
 		if (this._unmounted) {
 			return;
-		}
-		if (isTrue(options.preventSyncUpdates)) {
-			options.preventSyncUpdates = false;
-			if (process.env.NODE_ENV !== 'production') {
-				throwError('cannot update state via setStateSync() in componentWillMount().');
-			}
-			throwError();
 		}
 		if (!this._blockSetState) {
 			if (!this._ignoreSetState) {
