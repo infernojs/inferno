@@ -100,7 +100,7 @@ options.afterRender = function (): void {
 const version = '15.4.2';
 
 function normalizeProps(name: string, props: Props | any) {
-	if ((name === 'input' || name === 'textarea') && props.onChange) {
+	if ((name === 'input' || name === 'textarea') && props.type !== 'radio' && props.onChange) {
 		const type = props.type;
 		let eventName;
 
@@ -111,6 +111,7 @@ function normalizeProps(name: string, props: Props | any) {
 		} else {
 			eventName = 'oninput';
 		}
+
 		if (!props[ eventName ]) {
 			props[ eventName ] = props.onChange;
 			delete props.onChange;
@@ -120,6 +121,10 @@ function normalizeProps(name: string, props: Props | any) {
 		if (prop === 'onDoubleClick') {
 			props.onDblClick = props[ prop ];
 			delete props[ prop ];
+		}
+		if (prop === 'htmlFor') {
+			props['for'] = props[prop];
+			delete props[prop];
 		}
 		let mappedProp = SVGDOMPropertyConfig[ prop ];
 		if (mappedProp && mappedProp !== prop) {
