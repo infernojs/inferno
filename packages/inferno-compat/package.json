@@ -40,7 +40,6 @@
     "bundledDependencies": [
       "inferno-shared",
       "inferno-vnode-flags",
-      "proptypes",
       "inferno-create-class",
       "inferno-create-element"
     ],
