@@ -1,0 +1,16 @@
+{
+  "name": "webpack-test",
+  "private": true,
+  "dependencies": {
+    "browserify": "^13.3.0",
+    "cross-env": "^3.2.4"
+  },
+  "scripts": {
+    "dev": "rm -f dev.js && cross-env NODE_ENV=production && cross-env NODE_PATH=../../../packages/ browserify ./input.js -t [ envify --NODE_ENV development  ] > dev.js",
+    "prod": "rm -f prod.js && cross-env NODE_ENV=production && cross-env NODE_PATH=../../../packages/ browserify ./input.js -t [ envify --NODE_ENV production  ] > prod.js",
+    "build": "npm run dev && npm run prod"
+  },
+  "devDependencies": {
+    "envify": "^4.0.0"
+  }
+}
