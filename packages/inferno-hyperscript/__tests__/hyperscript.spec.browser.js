@@ -151,7 +151,7 @@ describe('HyperScript (non-JSX)', () => {
 		const callbackSpy = sinon.spy();
 		const ComponentHooks = () => h('#myId');
 		render(
-			h(ComponentHooks, {onComponentWillMount: callbackSpy}),
+			h(ComponentHooks, { onComponentWillMount: callbackSpy }),
 			container
 		);
 		expect(container.innerHTML).to.equal(innerHTML('<div id="myId"></div>'));
@@ -162,7 +162,7 @@ describe('HyperScript (non-JSX)', () => {
 		const callbackSpy = sinon.spy();
 		const ComponentHooks = () => h('#myId');
 		render(
-			h(ComponentHooks, {onComponentDidMount: callbackSpy}),
+			h(ComponentHooks, { onComponentDidMount: callbackSpy }),
 			container
 		);
 		expect(container.innerHTML).to.equal(innerHTML('<div id="myId"></div>'));

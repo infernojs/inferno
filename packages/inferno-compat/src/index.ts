@@ -21,7 +21,8 @@ import {
 	isArray,
 	isString,
 	isFunction,
-	isNullOrUndef
+	isNullOrUndef,
+	isBrowser
 } from 'inferno-shared';
 import Component from 'inferno-component';
 import _VNodeFlags from 'inferno-vnode-flags';
@@ -286,6 +287,34 @@ function createFactory(type) {
 const DOM = {};
 for (let i = ELEMENTS.length; i--; ) {
 	DOM[ ELEMENTS[ i ] ] = createFactory(ELEMENTS[ i ]);
+}
+
+// Mask React global in browser enviornments when React is not used.
+if (isBrowser && typeof (window as any).React === 'undefined') {
+	const exports = {
+		createVNode,
+		render,
+		isValidElement,
+		createElement,
+		Component,
+		PureComponent,
+		unmountComponentAtNode,
+		cloneElement,
+		PropTypes,
+		createClass,
+		findDOMNode,
+		Children,
+		cloneVNode,
+		NO_OP,
+		version,
+		unstable_renderSubtreeIntoContainer,
+		createFactory,
+		DOM,
+		EMPTY_OBJ
+	};
+
+	(window as any).React = exports;
+	(window as any).ReactDOM = exports;
 }
 
 export {
