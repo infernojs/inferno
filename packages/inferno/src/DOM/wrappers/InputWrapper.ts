@@ -19,8 +19,6 @@ function onTextInputChange(e) {
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 	const previousValue = props.value;
-	const start = dom.selectionStart;
-	const end = dom.selectionEnd;
 
 	if (props.onInput) {
 		const event = props.onInput;
@@ -44,7 +42,6 @@ function onTextInputChange(e) {
 		// When this happens we need to store current cursor position and restore it, to avoid jumping
 
 		applyValue(newVNode, dom);
-		dom.setSelectionRange(start, end);
 	}
 }
 

@@ -122,6 +122,34 @@ describe('HTML Form Elements', () => {
 			render(<input type="color"/>, container);
 			expect(container.firstChild.getAttribute('type')).to.equal('color');
 		});
+
+		it('Should be possible to create input with type range', () => {
+			function change() {}
+
+			render(
+				<input
+					min={0}
+					max={255}
+					value={75}
+					onChange={change}
+					type="range"
+				/>, container);
+			expect(container.firstChild.getAttribute('type')).to.equal('range');
+			expect(container.firstChild.value).to.equal('75');
+
+			render(
+				<input
+					min={0}
+					max={255}
+					value={11}
+					onChange={change}
+					type="range"
+				/>, container);
+
+			container.firstChild.oninput({}); // causes exception
+			expect(container.firstChild.getAttribute('type')).to.equal('range');
+			expect(container.firstChild.value).to.equal('11');
+		});
 	});
 
 	describe('After external change', () => {
