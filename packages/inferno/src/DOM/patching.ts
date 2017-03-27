@@ -1,6 +1,5 @@
 import {
 	isArray,
-	isAttrAnEvent,
 	isFunction,
 	isInvalid,
 	isNull,
@@ -158,8 +157,8 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 		const lastFlags = lastVNode.flags;
 		const nextFlags = nextVNode.flags;
 		const nextRef = nextVNode.ref;
-		const lastEvents = lastVNode.events;
-		const nextEvents = nextVNode.events;
+		const lastClassName = lastVNode.className;
+		const nextClassName = nextVNode.className;
 
 		nextVNode.dom = dom;
 		if (isSVG || (nextFlags & VNodeFlags.SvgElement)) {
@@ -180,20 +179,16 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 			const nextPropsOrEmpty = nextProps || EMPTY_OBJ;
 
 			if (nextPropsOrEmpty !== EMPTY_OBJ) {
-				for (let prop in nextPropsOrEmpty) {
+				for (const prop in nextPropsOrEmpty) {
 					// do not add a hasOwnProperty check here, it affects performance
 					const nextValue = nextPropsOrEmpty[prop];
 					const lastValue = lastPropsOrEmpty[prop];
 
-					if (isNullOrUndef(nextValue)) {
-						removeProp(prop, nextValue, dom);
-					} else {
-						patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue);
-					}
+					patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue);
 				}
 			}
 			if (lastPropsOrEmpty !== EMPTY_OBJ) {
-				for (let prop in lastPropsOrEmpty) {
+				for (const prop in lastPropsOrEmpty) {
 					// do not add a hasOwnProperty check here, it affects performance
 					if (isNullOrUndef(nextPropsOrEmpty[prop])) {
 						removeProp(prop, lastPropsOrEmpty[prop], dom);
@@ -202,9 +197,16 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 			}
 		}
 		// inlined patchProps  -- ends --
-
-		if (lastEvents !== nextEvents) {
-			patchEvents(lastEvents, nextEvents, dom as Element);
+		if (lastClassName !== nextClassName) {
+			if (isNullOrUndef(nextClassName)) {
+				dom.removeAttribute('class');
+			} else {
+				if (isSVG) {
+					dom.setAttribute('class', nextClassName);
+				} else {
+					dom.className = nextClassName;
+				}
+			}
 		}
 		if (nextRef) {
 			if (lastVNode.ref !== nextRef || isRecycling) {
@@ -309,12 +311,11 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				const lastProps = instance.props;
 				let childContext;
 				if (!isUndefined(instance.getChildContext)) {
-					childContext = instance.getChildContext()
+					childContext = instance.getChildContext();
 				}
 
 				nextVNode.children = instance;
 				instance._isSVG = isSVG;
-				instance._syncSetState = false;
 				if (isNullOrUndef(childContext)) {
 					childContext = context;
 				} else {
@@ -355,7 +356,6 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					options.afterUpdate && options.afterUpdate(nextVNode);
 					options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
 				}
-				instance._syncSetState = true;
 				nextVNode.dom = nextInput.dom;
 			}
 		} else {
@@ -722,9 +722,9 @@ export function patchKeyedChildren(
 }
 
 // // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
-function lis_algorithm(arr) {
+function lis_algorithm(arr: number[]): number[] {
 	const p = arr.slice(0);
-	const result: any[] = [0];
+	const result: number[] = [0];
 	let i;
 	let j;
 	let u;
@@ -777,11 +777,15 @@ function lis_algorithm(arr) {
 	return result;
 }
 
+export function isAttrAnEvent(attr: string): boolean {
+	return attr[0] === 'o' && attr[1] === 'n';
+}
+
 export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean) {
 	if (prop in skipProps || (hasControlledValue && prop === 'value')) {
 		return;
 	} else if (prop in booleanProps) {
-		prop = prop === 'autoFocus' ? prop.toLowerCase() : prop
+		prop = prop === 'autoFocus' ? prop.toLowerCase() : prop;
 		dom[prop] = !!nextValue;
 	} else if (prop in strictProps) {
 		const value = isNullOrUndef(nextValue) ? '' : nextValue;
@@ -794,12 +798,6 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
 			patchEvent(prop, lastValue, nextValue, dom);
 		} else if (isNullOrUndef(nextValue)) {
 			dom.removeAttribute(prop);
-		} else if (prop === 'className') {
-			if (isSVG) {
-				dom.setAttribute('class', nextValue);
-			} else {
-				dom.className = nextValue;
-			}
 		} else if (prop === 'style') {
 			patchStyle(lastValue, nextValue, dom);
 		} else if (prop === 'dangerouslySetInnerHTML') {
@@ -823,37 +821,17 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
 	}
 }
 
-export function patchEvents(lastEvents, nextEvents, dom: Element) {
-	lastEvents = lastEvents || EMPTY_OBJ;
-	nextEvents = nextEvents || EMPTY_OBJ;
-
-	if (nextEvents !== EMPTY_OBJ) {
-		for (let name in nextEvents) {
-			// do not add a hasOwnProperty check here, it affects performance
-			patchEvent(name, lastEvents[name], nextEvents[name], dom);
-		}
-	}
-	if (lastEvents !== EMPTY_OBJ) {
-		for (let name in lastEvents) {
-			// do not add a hasOwnProperty check here, it affects performance
-			if (isNullOrUndef(nextEvents[name])) {
-				patchEvent(name, lastEvents[name], null, dom);
-			}
-		}
-	}
-}
-
 export function patchEvent(name: string, lastValue, nextValue, dom) {
 	if (lastValue !== nextValue) {
-		const nameLowerCase = name.toLowerCase();
-		const domEvent = dom[nameLowerCase];
-		// if the function is wrapped, that means it's been controlled by a wrapper
-		if (domEvent && domEvent.wrapped) {
-			return;
-		}
-		if (delegatedProps[name]) {
+		if (name in delegatedProps) {
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
+			const nameLowerCase = name.toLowerCase();
+			const domEvent = dom[nameLowerCase];
+			// if the function is wrapped, that means it's been controlled by a wrapper
+			if (domEvent && domEvent.wrapped) {
+				return;
+			}
 			if (!isFunction(nextValue) && !isNullOrUndef(nextValue)) {
 				const linkEvent = nextValue.event;
 
@@ -899,7 +877,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 	}
 
 	if (!isNullOrUndef(lastAttrValue)) {
-		for (let style in lastAttrValue as Styles) {
+		for (const style in lastAttrValue as Styles) {
 			if (isNullOrUndef(nextAttrValue[style])) {
 				domStyle[style] = '';
 			}
@@ -908,9 +886,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 }
 
 function removeProp(prop: string, lastValue, dom) {
-	if (prop === 'className') {
-		dom.removeAttribute('class');
-	} else if (prop === 'value') {
+	if (prop === 'value') {
 		dom.value = '';
 	} else if (prop === 'style') {
 		dom.removeAttribute('style');

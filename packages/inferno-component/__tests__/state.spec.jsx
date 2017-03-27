@@ -43,7 +43,7 @@ describe('setting state', () => {
 	});
 
 	it('setStateSync should apply state during componentWillReceiveProps', (done) => {
-		const node = createVNode(VNodeFlags.ComponentClass, TestCWRP, { done }, null);
+		const node = createVNode(VNodeFlags.ComponentClass, TestCWRP, null, null, { done }, null);
 		render(node, container);
 		node.props.foo = 1;
 		render(node, container);

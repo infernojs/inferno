@@ -1,4 +1,3 @@
-import PropTypes from 'proptypes';
 import isValidElement from './isValidElement';
 import SVGDOMPropertyConfig from './SVGDOMPropertyConfig';
 import createClass, {
@@ -22,7 +21,8 @@ import {
 	isArray,
 	isString,
 	isFunction,
-	isNullOrUndef
+	isNullOrUndef,
+	isBrowser
 } from 'inferno-shared';
 import Component from 'inferno-component';
 import _VNodeFlags from 'inferno-vnode-flags';
@@ -32,6 +32,31 @@ declare global {
 		persist: Function;
 	}
 }
+
+// Inlined PropTypes, there is propType checking ATM.
+function proptype() {}
+(proptype as any).isRequired = proptype;
+
+const getProptype = () => proptype;
+
+const PropTypes = {
+	array: proptype,
+	bool: proptype,
+	func: proptype,
+	number: proptype,
+	object: proptype,
+	string: proptype,
+	symbol: proptype,
+	any: getProptype,
+	arrayOf: getProptype,
+	element: getProptype,
+	instanceOf: getProptype,
+	node: getProptype,
+	objectOf: getProptype,
+	oneOf: getProptype,
+	oneOfType: getProptype,
+	shape: getProptype
+};
 
 options.findDOMNodeEnabled = true;
 
@@ -100,7 +125,7 @@ options.afterRender = function (): void {
 const version = '15.4.2';
 
 function normalizeProps(name: string, props: Props | any) {
-	if ((name === 'input' || name === 'textarea') && props.onChange) {
+	if ((name === 'input' || name === 'textarea') && props.type !== 'radio' && props.onChange) {
 		const type = props.type;
 		let eventName;
 
@@ -111,17 +136,22 @@ function normalizeProps(name: string, props: Props | any) {
 		} else {
 			eventName = 'oninput';
 		}
+
 		if (!props[ eventName ]) {
 			props[ eventName ] = props.onChange;
 			delete props.onChange;
 		}
 	}
-	for (let prop in props) {
+	for (const prop in props) {
 		if (prop === 'onDoubleClick') {
 			props.onDblClick = props[ prop ];
 			delete props[ prop ];
 		}
-		let mappedProp = SVGDOMPropertyConfig[ prop ];
+		if (prop === 'htmlFor') {
+			props['for'] = props[prop];
+			delete props[prop];
+		}
+		const mappedProp = SVGDOMPropertyConfig[ prop ];
 		if (mappedProp && mappedProp !== prop) {
 			props[ mappedProp ] = props[ prop ];
 			delete props[ prop ];
@@ -140,9 +170,22 @@ if (typeof Event !== 'undefined' && !Event.prototype.persist) {
 	};
 }
 
+function iterableToArray(iterable) {
+	let iterStep;
+	const tmpArr = [];
+	do {
+		iterStep = iterable.next();
+		iterStep.value ? tmpArr.push(iterStep.value) : void 0;
+	} while (!iterStep.done);
+
+	return tmpArr;
+}
+
+const hasSymbolSupport = typeof Symbol !== 'undefined';
+
 const injectStringRefs = function (originalFunction) {
 	return function (name, _props, ...children) {
-		let props = _props || {};
+		const props = _props || {};
 		const ref = props.ref;
 
 		if (typeof ref === 'string' && currentComponent) {
@@ -156,10 +199,12 @@ const injectStringRefs = function (originalFunction) {
 		}
 
 		// React supports iterable children, in addition to Array-like
-		for (let i = 0, len = children.length; i < len; i++) {
-			let child = children[i];
-			if (child && !isArray(child) && !isString(child) && isFunction(child[Symbol.iterator])) {
-				children[i] = Array.from(child);
+		if (hasSymbolSupport) {
+			for (let i = 0, len = children.length; i < len; i++) {
+				const child = children[i];
+				if (child && !isArray(child) && !isString(child) && isFunction(child[Symbol.iterator])) {
+					children[i] = iterableToArray(child[Symbol.iterator]());
+				}
 			}
 		}
 		return originalFunction(name, props, ...children);
@@ -188,12 +233,12 @@ options.createVNode = (vNode: VNode): void => {
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
 function shallowDiffers(a, b): boolean {
-	for (let i in a) {
+	for (const i in a) {
 		if (!(i in b)) {
 			return true;
 		}
 	}
-	for (let i in b) {
+	for (const i in b) {
 		if (a[ i ] !== b[ i ]) {
 			return true;
 		}
@@ -222,7 +267,7 @@ class WrapperComponent<P, S> extends Component<P, S> {
 }
 
 function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, callback) {
-	const wrapperVNode: VNode = createVNode(4, WrapperComponent, {context: parentComponent.context, children: vNode});
+	const wrapperVNode: VNode = createVNode(4, WrapperComponent, null, null, {context: parentComponent.context, children: vNode});
 	const component = render(wrapperVNode, container);
 
 	if (callback) {
@@ -242,6 +287,34 @@ function createFactory(type) {
 const DOM = {};
 for (let i = ELEMENTS.length; i--; ) {
 	DOM[ ELEMENTS[ i ] ] = createFactory(ELEMENTS[ i ]);
+}
+
+// Mask React global in browser enviornments when React is not used.
+if (isBrowser && typeof (window as any).React === 'undefined') {
+	const exports = {
+		createVNode,
+		render,
+		isValidElement,
+		createElement,
+		Component,
+		PureComponent,
+		unmountComponentAtNode,
+		cloneElement,
+		PropTypes,
+		createClass,
+		findDOMNode,
+		Children,
+		cloneVNode,
+		NO_OP,
+		version,
+		unstable_renderSubtreeIntoContainer,
+		createFactory,
+		DOM,
+		EMPTY_OBJ
+	};
+
+	(window as any).React = exports;
+	(window as any).ReactDOM = exports;
 }
 
 export {

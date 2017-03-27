@@ -1,7 +1,8 @@
 export const NO_OP = '$NO_OP';
 export const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
-export const isBrowser = typeof window !== 'undefined' && window.document;
+// This should be boolean and not reference to window.document
+export const isBrowser = !!(typeof window !== 'undefined' && window.document);
 
 export function toArray(children): any[] {
 	return isArray(children) ? children : (children ? [children] : children);
@@ -31,10 +32,6 @@ export function isInvalid(obj: any): boolean {
 
 export function isFunction(obj: any): boolean {
 	return typeof obj === 'function';
-}
-
-export function isAttrAnEvent(attr: string): boolean {
-	return attr[0] === 'o' && attr[1] === 'n';
 }
 
 export function isString(obj: any): boolean {

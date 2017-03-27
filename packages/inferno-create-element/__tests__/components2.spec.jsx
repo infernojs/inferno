@@ -59,6 +59,7 @@ describe('Components (JSX) #2', () => {
 					text: 'newText2'
 				});
 			}
+
 			render() {
 				return <div><span>{this.state.text}</span></div>;
 			}

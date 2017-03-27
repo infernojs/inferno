@@ -116,15 +116,18 @@ function normalizeChildren(children: InfernoChildren | null) {
 }
 
 function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
-	if (!(vNode.flags & VNodeFlags.Component) && isNullOrUndef(children) && !isNullOrUndef(props.children)) {
-		vNode.children = props.children;
+	if (!(vNode.flags & VNodeFlags.Component)) {
+		if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
+			vNode.children = props.children;
+		}
+		if (props.className) {
+			vNode.className = props.className;
+			delete props.className;
+		}
 	}
 	if (props.ref) {
 		vNode.ref = props.ref;
 		delete props.ref;
-	}
-	if (props.events) {
-		vNode.events = props.events;
 	}
 	if (!isNullOrUndef(props.key)) {
 		vNode.key = props.key;
@@ -163,7 +166,7 @@ export function normalize(vNode: VNode): void {
 				if (!props) {
 					props = vNode.props = defaultProps; // Create new object if only defaultProps given
 				} else {
-					for (let prop in defaultProps) {
+					for (const prop in defaultProps) {
 						if (isUndefined(props[prop])) {
 							props[prop] = defaultProps[prop];
 						}

@@ -27,12 +27,12 @@ export default class Provider extends Component<any, any> {
 		const baseStores = this.context.mobxStores;
 
 		if (baseStores) {
-			for (let key in baseStores) {
+			for (const key in baseStores) {
 				stores[key] = baseStores[key];
 			}
 		}
 		// add own stores
-		for (let key in this.props) {
+		for (const key in this.props) {
 			if (!specialKeys[key]) {
 				stores[key] = this.props[key];
 			}
@@ -53,7 +53,7 @@ if (process.env.NODE_ENV !== 'production') {
 				'Please avoid changing stores as the change might not propagate to all children'
 			);
 		}
-		for (let key in nextProps) {
+		for (const key in nextProps) {
 			if (!specialKeys[key] && this.props[key] !== nextProps[key]) {
 				warning(
 					`MobX Provider: Provided store '${key}' has changed. ` +

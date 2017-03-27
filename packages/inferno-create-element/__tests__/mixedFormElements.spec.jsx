@@ -117,6 +117,11 @@ describe('HTML Form Elements', () => {
 			expect(container.innerHTML).to.equal(expectedInput.outerHTML);
 			expect(container.firstChild.value).to.equal('[object Object]');
 		});
+
+		it('Should be possible to create input with type color', () => {
+			render(<input type="color"/>, container);
+			expect(container.firstChild.getAttribute('type')).to.equal('color');
+		});
 	});
 
 	describe('After external change', () => {

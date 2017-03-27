@@ -52,6 +52,17 @@
 		let age = 28;
 		let description = null;
 
+		// special input values
+		let id = 'test';
+        let testValue = 11;
+        function changeTestValue(event) {
+            testValue = event.target.value;
+
+            console.log(event.type, testValue);
+
+            render();
+		}
+
 		function linkedTextHandler(data, e) {
 			const val = e.target.value;
 
@@ -121,6 +132,25 @@
 					h('label', 'Please enter a description:'),
 					h('textarea', { defaultValue: 'I don\'t know?', value: description, onInput: descHandler })
 				]),
+                h('div.form-group', [
+                    h('label', 'Color picker (html5):'),
+                    h('input', { type: 'color' })
+                ]),
+				h('label', {'for': 'test'}, [
+				    'Label',
+					h('input#test', {
+                        id: id,
+                        name: id,
+                        value: testValue,
+                        onChange: changeTestValue,
+						onInput: changeTestValue,
+						onKeyup: changeTestValue,
+						type: 'number',
+						pattern: '[0-9]+([,\.][0-9]+)?',
+						inputMode: 'numeric',
+						min: 10,
+					})]
+				)
 			]), document.getElementById('app'));
 		}
 		render();

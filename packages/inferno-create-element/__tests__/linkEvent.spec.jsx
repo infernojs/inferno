@@ -22,13 +22,14 @@ describe('linkEvent', () => {
 		function handleOnClick(props) {
 			test = props.test;
 		}
+
 		function FunctionalComponent(props) {
-			return <button onClick={ linkEvent(props, handleOnClick) } />;
+			return <button onClick={ linkEvent(props, handleOnClick) }/>;
 		}
 
 		class StatefulComponent extends Component {
 			render() {
-				return <button onClick={ linkEvent(this.props, handleOnClick) } />;
+				return <button onClick={ linkEvent(this.props, handleOnClick) }/>;
 			}
 		}
 
@@ -51,13 +52,14 @@ describe('linkEvent', () => {
 		function handleOnClick(props) {
 			test = props.test;
 		}
+
 		function FunctionalComponent(props) {
-			return <button onclick={ linkEvent(props, handleOnClick) } />;
+			return <button onclick={ linkEvent(props, handleOnClick) }/>;
 		}
 
 		class StatefulComponent extends Component {
 			render() {
-				return <button onclick={ linkEvent(this.props, handleOnClick) } />;
+				return <button onclick={ linkEvent(this.props, handleOnClick) }/>;
 			}
 		}
 
@@ -95,13 +97,14 @@ describe('linkEvent', () => {
 			test = props.test;
 			event = e;
 		}
+
 		function FunctionalComponent(props) {
-			return <input type="text" onInput={ linkEvent(props, handleOnInput) } value="" />;
+			return <input type="text" onInput={ linkEvent(props, handleOnInput) } value=""/>;
 		}
 
 		class StatefulComponent extends Component {
 			render() {
-				return <input type="text" onInput={ linkEvent(this.props, handleOnInput) } value="" />;
+				return <input type="text" onInput={ linkEvent(this.props, handleOnInput) } value=""/>;
 			}
 		}
 

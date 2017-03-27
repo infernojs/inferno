@@ -54,7 +54,7 @@ const AUTOBIND_BLACKLIST = {
 };
 
 function extend(base, props, all?: boolean) {
-	for (let key in props) {
+	for (const key in props) {
 		if (all === true || !isNullOrUndef(props[key])) {
 			base[key] = props[key];
 		}
@@ -63,7 +63,7 @@ function extend(base, props, all?: boolean) {
 }
 
 function bindAll<P, S>(ctx: Component<P, S>) {
-	for (let i in ctx) {
+	for (const i in ctx) {
 		const v = ctx[i];
 		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST[i]) {
 			(ctx[i] = v.bind(ctx)).__bound = true;
@@ -81,7 +81,7 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 			collateMixins(mixin.mixins, keyed);
 		}
 
-		for (let key in mixin as Function[]) {
+		for (const key in mixin as Function[]) {
 			if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
 				(keyed[key] || (keyed[key] = [])).push(mixin[key]);
 			}
@@ -119,7 +119,7 @@ function mergeNoDupes(previous: any, current: any) {
 			previous = {};
 		}
 
-		for (let key in current) {
+		for (const key in current) {
 			if (current.hasOwnProperty(key)) {
 				if (previous.hasOwnProperty(key)) {
 					throwError(`Mixins return duplicate key ${key} in their return values`);
@@ -143,7 +143,7 @@ function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[])
 }
 
 function applyMixins(Cl: any, mixins: Function[] | any[]) {
-	for (let key in mixins) {
+	for (const key in mixins) {
 		if (mixins.hasOwnProperty(key)) {
 			const mixin = mixins[key];
 

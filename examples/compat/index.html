@@ -1,94 +1,348 @@
 <!doctype html>
 <html>
 <head>
-    <title>Inferno CSS transform example</title>
+    <title>Events test page</title>
+    <style>
+        .box {
+            padding: 50px;
+            width: 300px;
+            margin: 50px;
+            background: #d2eaff;
+            float: left;
+        }
+
+        label {
+            float: left;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-<div id="app"></div>
-<div id="app1"></div>
+<div class="box" id="app"></div>
+<div class="box" id="app1"></div>
+<div class="box" id="app2"></div>
+<div class="box" id="app3"></div>
+<div class="box" id="app4"></div>
 <script>
-	window.process = {
-		env: {
-			NODE_ENV: 'development'
-		}
-	};
+    window.process = {
+        env: {
+            NODE_ENV: 'development'
+        }
+    };
 </script>
 <script src="../../packages/inferno/dist/inferno.js"></script>
 <script src="../../packages/inferno-component/dist/inferno-component.js"></script>
 <script src="../../packages/inferno-create-element/dist/inferno-create-element.js"></script>
 <script src="../../packages/inferno-compat/dist/inferno-compat.js"></script>
 <script>
-	"use strict";
-	var createElement = Inferno.createElement;
+    "use strict";
+    var createElement = Inferno.createElement;
 
-	class MyFoo extends Inferno.Component {
-		render() {
-			return createElement('div', {ref: 'hey'}, 'Hello world!')
-		}
+    class MyFoo extends Inferno.Component {
+        render() {
+            return createElement('div', {ref: 'hey'}, 'Hello world!')
+        }
 
-		componentDidMount() {
-			if (this.refs.hey) {
-				console.log('inferno-compat string refs work :)')
-			} else {
-				console.log('inferno-compat string refs do not work :(')
-			}
-		}
-	}
+        componentDidMount() {
+            if (this.refs.hey) {
+                console.log('inferno-compat string refs work :)')
+            } else {
+                console.log('inferno-compat string refs do not work :(')
+            }
+        }
+    }
 
-	Inferno.render(createElement(MyFoo, {}), document.getElementById('app'));
+    Inferno.render(createElement(MyFoo, {}), document.getElementById('app'));
 
     /*
      Example of using context and setState callback function
      */
 
 
-	function checkParams(state, props, context) {
-		console.log(state, props, context)
-	}
+    function checkParams(state, props, context) {
+        console.log(state, props, context)
+    }
 
-	class Button extends Inferno.Component {
-		constructor(props) {
-			super(props);
-			this.state = {
-				btnstate: 'btnstate'
-			};
-		}
+    class Button extends Inferno.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                btnstate: 'btnstate'
+            };
+        }
 
-		click() {
-			this.setState(checkParams);
-		}
+        click() {
+            this.setState(checkParams);
+        }
 
-		render() {
-			return createElement('button', {
-				onClick: this.click.bind(this),
-				style: {background: this.context.color}
-			}, this.props.children);
-		}
-	}
+        render() {
+            return createElement('button', {
+                onClick: this.click.bind(this),
+                style: {background: this.context.color}
+            }, this.props.children);
+        }
+    }
 
-	class Message extends Inferno.Component {
-		render() {
-			return createElement('div', null,
-				[ this.props.text, createElement(Button, {buttonProp: 'magic'}, 'btn') ]
-			);
-		}
-	}
+    class Message extends Inferno.Component {
+        render() {
+            return createElement('div', null,
+                [this.props.text, createElement(Button, {buttonProp: 'magic'}, 'btn')]
+            );
+        }
+    }
 
-	class MessageList extends Inferno.Component {
-		getChildContext() {
-			return {color: "purple"};
-		}
+    class MessageList extends Inferno.Component {
+        getChildContext() {
+            return {color: "purple"};
+        }
 
-		render() {
-			const children = this.props.messages.map(function (message) {
-				return createElement(Message, {text: message.text});
-			});
+        render() {
+            const children = this.props.messages.map(function (message) {
+                return createElement(Message, {text: message.text});
+            });
 
-			return createElement('div', null, children);
-		}
-	}
+            return createElement('div', null, children);
+        }
+    }
 
-	Inferno.render(createElement(MessageList, {messages: [ {text: 'eka'}, {text: 'toka'} ]}), document.getElementById('app1'))
+    Inferno.render(createElement(MessageList, {messages: [{text: 'first'}, {text: 'second'}]}), document.getElementById('app1'))
+
+    let testValue = 11;
+    function changeTestValue(event) {
+        testValue = event.target.value;
+
+        console.log(event.type, testValue);
+
+        render();
+    }
+
+    function render() {
+        Inferno.render(createElement('div', null,
+            [
+                createElement('label', {'for': 'test'}, [
+                    'label for input',
+                    createElement('input', {
+                        id: 'test',
+                        name: 'testing_radio',
+                        value: "first",
+                        onChange: changeTestValue,
+                        type: 'radio',
+                        pattern: '[0-9]+([,\.][0-9]+)?',
+                        inputMode: 'numeric'
+                    })]),
+                createElement('label', {'for': 'test2'}, [
+                    'label for input2',
+                    createElement('input', {
+                        id: 'test2',
+                        name: 'testing_radio',
+                        value: "second",
+                        onChange: changeTestValue,
+                        type: 'radio',
+                        pattern: '[0-9]+([,\.][0-9]+)?',
+                        inputMode: 'numeric'
+                    })]),
+                createElement('label', {'htmlFor': 'test3'}, [
+                    'label for input3',
+                    createElement('input', {
+                        id: 'test3',
+                        name: 'test3',
+                        value: testValue,
+                        onChange: changeTestValue,
+                        type: 'number',
+                        pattern: '[0-9]+([,\.][0-9]+)?',
+                        inputMode: 'numeric'
+                    })])
+            ]), document.getElementById('app2'));
+    }
+    render();
+
+    // Cursor should not move ....
+    class NameForm extends Inferno.Component {
+        constructor(props) {
+            super(props);
+            this.state = {value: 'ASYNC', radio: 'first', text: 'f', selectValue: 'second'};
+
+            this.handleChange = this.handleChange.bind(this);
+            this.radioChange = this.radioChange.bind(this);
+            this.textChange = this.textChange.bind(this);
+            this.selectChange = this.selectChange.bind(this);
+        }
+
+        handleChange(event) {
+            this.setState({value: event.target.value});
+        }
+
+        radioChange(event) {
+            this.setState({radio: event.target.value});
+        }
+
+        textChange(event) {
+            this.setState({text: event.target.value})
+        }
+
+        selectChange(event) {
+            this.setState({selectValue: event.target.value});
+        }
+
+        render() {
+            return (
+                createElement('div', null, [
+                    createElement('label', {'for': 'testasync'}, [
+                        'async label for input',
+                        createElement('input', {
+                            id: 'testasync',
+                            name: 'testing_radio_async',
+                            value: "first",
+                            onClick: this.radioChange,
+                            checked: this.state.radio === 'first',
+                            type: 'radio'
+                        })]),
+                    createElement('label', {'for': 'test2async'}, [
+                        'async label for input2',
+                        createElement('input', {
+                            id: 'test2async',
+                            name: 'testing_radio_async',
+                            value: "second",
+                            onClick: this.radioChange,
+                            checked: this.state.radio === 'second',
+                            type: 'radio'
+                        })]),
+                    createElement('label', {'htmlFor': 'test3as'}, [
+                        'Async Name',
+                        createElement('input', {
+                            id: 'test3as',
+                            name: 'test3as',
+                            value: this.state.value,
+                            onInput: this.handleChange,
+                            type: 'text'
+                        })]),
+                    createElement('label', {'htmlFor': 'textarea_async'}, [
+                        'async texxt',
+                        createElement('textarea', {
+                            id: 'textarea_async',
+                            name: 'textarea_async',
+                            value: this.state.text,
+                            onInput: this.textChange
+                        })
+                    ]),
+                    createElement('select', {onChange: this.selectChange, 'value': this.state.selectValue}, [
+                        createElement('option', {
+                            value: 'first',
+                            children: 'first'
+                        }),
+                        createElement('option', {
+                            value: 'second',
+                            children: 'second'
+                        }),
+                        createElement('option', {
+                            value: 'third',
+                            children: 'third'
+                        })]),
+                ])
+            );
+        }
+    }
+
+    let hoisted  = createElement('input', {
+        id: 'test3sync',
+        name: 'test3sync',
+        value: '100',
+        type: 'text'
+    });
+    let i = 0;
+    // Cursor should not move ....
+    class NameForm2 extends Inferno.Component {
+        constructor(props) {
+            super(props);
+            this.state = {value: 'SYNC', radio: 'first', text: 'f', selectValue: 'second'};
+
+            this.handleChange = this.handleChange.bind(this);
+            this.radioChange = this.radioChange.bind(this);
+            this.textChange = this.textChange.bind(this);
+            this.selectChange = this.selectChange.bind(this);
+        }
+
+        handleChange(event) {
+            hoisted.props.value = 200;
+            this.setStateSync({value: event.target.value});
+        }
+
+        radioChange(event) {
+            this.setStateSync({radio: event.target.value});
+        }
+
+        textChange(event) {
+            this.setStateSync({text: event.target.value})
+        }
+
+        selectChange(event) {
+            this.setStateSync({selectValue: event.target.value});
+        }
+
+        render() {
+
+            return (
+                createElement('div', null, [
+                    createElement('label', {'for': 'testsync'}, [
+                        'sync label for input',
+                        createElement('input', {
+                            id: 'testsync',
+                            name: 'testing_radio_sync',
+                            value: "first",
+                            onClick: this.radioChange,
+                            checked: this.state.radio === 'first',
+                            type: 'radio'
+                        })]),
+                    createElement('label', {'for': 'test2sync'}, [
+                        'sync label for input2',
+                        createElement('input', {
+                            id: 'test2sync',
+                            name: 'testing_radio_sync',
+                            value: "second",
+                            onClick: this.radioChange,
+                            checked: this.state.radio === 'second',
+                            type: 'radio'
+                        })]),
+                    createElement('label', {'htmlFor': 'test3sync'}, [
+                        'sync Name',
+                        createElement('input', {
+                            id: 'test3sync',
+                            name: 'test3sync',
+                            value: this.state.value,
+                            onInput: this.handleChange,
+                            type: 'text'
+                        })
+                    ]),
+                    createElement('label', {'htmlFor': 'textarea_sync'}, [
+                        'sync text',
+                        createElement('textarea', {
+                            id: 'textarea_sync',
+                            name: 'textarea_sync',
+                            value: this.state.text,
+                            onInput: this.textChange
+                        })
+                    ]),
+                    createElement('select', {onChange: this.selectChange, 'value': this.state.selectValue}, [
+                        createElement('option', {
+                            value: 'first',
+                            children: 'first'
+                        }),
+                        createElement('option', {
+                            value: 'second',
+                            children: 'second'
+                        }),
+                        createElement('option', {
+                            value: 'third',
+                            children: 'third'
+                        })]),
+                ])
+            );
+        }
+    }
+
+    // render an instance of Clock into <body>:
+    Inferno.render(createElement(NameForm, {}), document.getElementById('app3'));
+    Inferno.render(createElement(NameForm2, {}), document.getElementById('app4'));
 </script>
 </body>
 </html>

@@ -5,7 +5,8 @@ import {
 	isStringOrNumber,
 	LifecycleClass,
 	throwError,
-	warning
+	warning,
+	isNullOrUndef
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { VNode, InfernoChildren } from '../core/VNodes';
@@ -20,7 +21,6 @@ import {
 	mountText
 } from './mounting';
 import {
-	patchEvent,
 	patchProp
 } from './patching';
 import {
@@ -88,7 +88,7 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean): Element {
 	const children = vNode.children;
 	const props = vNode.props;
-	const events = vNode.events;
+	const className = vNode.className;
 	const flags = vNode.flags;
 	const ref = vNode.ref;
 
@@ -114,13 +114,17 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 		hasControlledValue = processElement(flags, vNode, dom, false);
 	}
 	if (props) {
-		for (let prop in props) {
+		for (const prop in props) {
 			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
 		}
 	}
-	if (events) {
-		for (let name in events) {
-			patchEvent(name, null, events[name], dom);
+	if (isNullOrUndef(className)) {
+		dom.removeAttribute('class');
+	} else {
+		if (isSVG) {
+			dom.setAttribute('class', className);
+		} else {
+			dom.className = className;
 		}
 	}
 	if (ref) {

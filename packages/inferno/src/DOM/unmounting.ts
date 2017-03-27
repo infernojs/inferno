@@ -12,6 +12,7 @@ import VNodeFlags from 'inferno-vnode-flags';
 import options from '../core/options';
 import { VNode, InfernoChildren, Ref } from '../core/VNodes';
 import {
+	isAttrAnEvent,
 	patchEvent
 } from './patching';
 import {
@@ -86,7 +87,7 @@ export function unmountComponent(vNode: VNode, parentDom: Element, lifecycle: Li
 export function unmountElement(vNode: VNode, parentDom: Element, lifecycle: LifecycleClass, canRecycle: boolean, isRecycling: boolean) {
 	const dom = vNode.dom;
 	const ref = vNode.ref as any;
-	const events = vNode.events;
+	const props = vNode.props;
 
 	if (ref && !isRecycling) {
 		unmountRef(ref);
@@ -97,11 +98,14 @@ export function unmountElement(vNode: VNode, parentDom: Element, lifecycle: Life
 		unmountChildren(children, lifecycle, isRecycling);
 	}
 
-	if (!isNull(events)) {
-		for (let name in events) {
+	if (!isNull(props)) {
+		for (const name in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchEvent(name, events[name], null, dom);
-			events[name] = null;
+			if (props[name] !== null && isAttrAnEvent(name)) {
+				patchEvent(name, props[name], null, dom);
+				// We need to set this null, because same props otherwise come back if SCU returns false and we are recyling
+				props[name] = null;
+			}
 		}
 	}
 	if (parentDom) {

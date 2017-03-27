@@ -23,7 +23,8 @@ describe('Stateful Component updates', () => {
 		let updatesAfromOutside;
 
 		class A extends Component {
-			componentWillUnmount() {}
+			componentWillUnmount() {
+			}
 
 			constructor(props) {
 				super(props);
@@ -169,18 +170,18 @@ describe('Stateful Component updates', () => {
 		render(<A />, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div><input type="checkbox"><input type="checkbox"><input type="checkbox"></div>'));
 		const firstChild = container.firstChild;
-		expect(firstChild.childNodes[0].checked).to.equal(false);
-		expect(firstChild.childNodes[1].checked).to.equal(false);
-		expect(firstChild.childNodes[2].checked).to.equal(false);
+		expect(firstChild.childNodes[ 0 ].checked).to.equal(false);
+		expect(firstChild.childNodes[ 1 ].checked).to.equal(false);
+		expect(firstChild.childNodes[ 2 ].checked).to.equal(false);
 
 		const checkbox = container.querySelector('input');
 		checkbox.checked = true; // SIMULATE user selecting checkbox
-		expect(firstChild.childNodes[0].checked).to.equal(true, 'USER SHOULD BE ABLE TO TICK CHECKBOX');
+		expect(firstChild.childNodes[ 0 ].checked).to.equal(true, 'USER SHOULD BE ABLE TO TICK CHECKBOX');
 
 		updateCaller(); // New render
 		expect(container.innerHTML).to.equal(innerHTML('<div><input type="checkbox"><input type="checkbox"></div>'));
-		expect(firstChild.childNodes[0].checked).to.equal(false, 'AFTER NEW RENDER IT SHOULD RENDER INPUT AS UNCHECKED');
-		expect(firstChild.childNodes[1].checked).to.equal(false);
+		expect(firstChild.childNodes[ 0 ].checked).to.equal(false, 'AFTER NEW RENDER IT SHOULD RENDER INPUT AS UNCHECKED');
+		expect(firstChild.childNodes[ 1 ].checked).to.equal(false);
 
 	});
 
@@ -509,7 +510,8 @@ describe('Stateful Component updates', () => {
 	it('Should not crash when patching array to array with hooks', () => {
 		let updater = null;
 		const stuff = [ <div >{['Test']}</div>, <span>1</span> ];
-		const orig = [[<span ref={function (){}}>{'1'}</span>]];
+		const orig = [[<span ref={function () {
+		}}>{'1'}</span>]];
 		class Stuff extends Component {
 			constructor(props) {
 				super(props);
@@ -541,7 +543,10 @@ describe('Stateful Component updates', () => {
 	});
 
 	it('Should allow camelCase properties when using JSX plugin', () => {
-		const fakeObj = { func() {} };
+		const fakeObj = {
+			func() {
+			}
+		};
 		const submitSpy = spy(fakeObj, 'func');
 
 		class Tester extends Component {
@@ -596,7 +601,8 @@ describe('Stateful Component updates', () => {
 		}
 
 		class C extends Component {
-			componentWillUnmount() { }
+			componentWillUnmount() {
+			}
 
 			render() {
 

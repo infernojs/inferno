@@ -72,7 +72,7 @@ export function toPartialURL(fullURL: string, partURL: string) {
  */
 export function rest(_args, excluded) {
 	const t = {};
-	for (let p in _args) {
+	for (const p in _args) {
 		if (excluded.indexOf(p) < 0) {
 			t[p] = _args[p];
 		}

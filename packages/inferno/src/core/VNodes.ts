@@ -23,7 +23,7 @@ export interface Props {
 	children?: InfernoChildren;
 	ref?: Ref;
 	key?: any;
-	events?: Object | null;
+	className?: string;
 	[k: string]: any;
 }
 
@@ -39,7 +39,7 @@ export interface Refs {
 export interface VNode {
 	children: InfernoChildren;
 	dom: Element | null;
-	events: Object | null;
+	className: string;
 	flags: VNodeFlags;
 	key: any;
 	props: Props | null;
@@ -51,9 +51,9 @@ export interface VNode {
 export function createVNode (
 	flags: VNodeFlags,
 	type?: Type,
-	props?: Props,
+	className?: string,
 	children?: InfernoChildren,
-	events?,
+	props?: Props,
 	key?: any,
 	ref?: Ref,
 	noNormalise?: boolean
@@ -64,8 +64,8 @@ export function createVNode (
 
 	const vNode: VNode = {
 		children: isUndefined(children) ? null : children,
+		className,
 		dom: null,
-		events: events || null,
 		flags,
 		key: isUndefined(key) ? null : key,
 		props: props || null,
@@ -93,14 +93,14 @@ export function directClone(vNodeToClone: VNode): VNode {
 			props = EMPTY_OBJ;
 		} else {
 			props = {};
-			for (let key in propsToClone) {
+			for (const key in propsToClone) {
 				props[key] = propsToClone[key];
 			}
 		}
 		newVNode = createVNode(flags, vNodeToClone.type,
-			props,
+			vNodeToClone.className,
 			null,
-			vNodeToClone.events,
+			props,
 			vNodeToClone.key,
 			vNodeToClone.ref,
 			true
@@ -143,14 +143,14 @@ export function directClone(vNodeToClone: VNode): VNode {
 			props = EMPTY_OBJ;
 		} else {
 			props = {};
-			for (let key in propsToClone) {
+			for (const key in propsToClone) {
 				props[key] = propsToClone[key];
 			}
 		}
 		newVNode = createVNode(flags, vNodeToClone.type,
-			props,
+			vNodeToClone.className,
 			children,
-			vNodeToClone.events,
+			props,
 			vNodeToClone.key,
 			vNodeToClone.ref,
 			!children
@@ -197,15 +197,15 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 		newVNode = tmpArray;
 	} else {
 		const flags = vNodeToClone.flags;
-		const events = vNodeToClone.events || (props && props.events) || null;
+		const className = vNodeToClone.className || (props && props.className) || null;
 		const key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : (props ? props.key : null);
 		const ref = vNodeToClone.ref || (props ? props.ref : null);
 
 		if (flags & VNodeFlags.Component) {
 			newVNode = createVNode(flags, vNodeToClone.type,
-				(!vNodeToClone.props && !props) ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props),
+				className,
 				null,
-				events,
+				(!vNodeToClone.props && !props) ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props),
 				key,
 				ref,
 				true
@@ -242,9 +242,9 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 		} else if (flags & VNodeFlags.Element) {
 			children = (props && !isUndefined(props.children)) ? props.children : vNodeToClone.children;
 			newVNode = createVNode(flags, vNodeToClone.type,
-				(!vNodeToClone.props && !props) ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props),
+				className,
 				children,
-				events,
+				(!vNodeToClone.props && !props) ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props),
 				key,
 				ref,
 				!children
@@ -253,7 +253,6 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 			newVNode = createTextVNode(vNodeToClone.children as string, key);
 		}
 	}
-
 	return newVNode;
 }
 
