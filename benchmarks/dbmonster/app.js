@@ -26,9 +26,7 @@
 			for (var i2 = 0; i2 < 5; i2++) {
 				var query = lastSample.topFiveQueries[i2];
 
-				children[i2 + 2] = createVNode(66, 'td', {
-					className: query.elapsedClassName
-				}, [
+				children[i2 + 2] = createVNode(66, 'td', query.elapsedClassName, [
 					createVNode(2, 'div', 'foo', query.formatElapsed, null, null, null, true),
 					createVNode(66, 'div', 'popover left', [
 						createVNode(2, 'div', 'popover-content', query.query, null, null, null, true),
