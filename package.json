@@ -2,7 +2,7 @@
   "name": "inferno-build",
   "private": true,
   "license": "MIT",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -20,7 +20,7 @@
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.1",
     "babel-loader": "^6.4.1",
-    "babel-plugin-inferno": "https://github.com/infernojs/babel-plugin-inferno.git#className-to-vNode",
+    "babel-plugin-inferno": "^3.0.0",
     "babel-plugin-module-resolver": "^2.5.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
@@ -96,7 +96,7 @@
     "ts-loader": "^2.0.3",
     "ts-node": "^3.0.2",
     "tslint": "^4.5.1",
-    "typescript": "^2.2.1",
+    "typescript": "^2.2.2",
     "typescript-eslint-parser": "^2.0.0",
     "union-type-es": "^0.1.0",
     "webpack": "^2.3.2",
