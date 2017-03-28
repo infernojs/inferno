@@ -3,7 +3,7 @@
   "packages": [
     "packages/*"
   ],
-  "version": "1.5.3",
+  "version": "1.5.4",
   "changelog": {
     "repo": "infernojs/inferno",
     "labels": {
