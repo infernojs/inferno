@@ -1,6 +1,6 @@
 {
   "name": "inferno-create-element",
-  "version": "1.5.2",
+  "version": "1.5.4",
   "license": "MIT",
   "description": "Provides methods to create Inferno VNodes",
   "author": {
@@ -23,10 +23,10 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "^1.5.2",
+    "inferno": "^1.5.4",
     "inferno-shared": "^1.5.1",
     "inferno-vnode-flags": "^1.5.1",
-    "inferno-component": "^1.5.2"
+    "inferno-component": "^1.5.4"
   },
   "rollup": {
     "bundledDependencies": [
