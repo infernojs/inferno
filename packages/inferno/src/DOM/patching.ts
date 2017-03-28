@@ -25,7 +25,7 @@ import {
 } from '../core/VNodes';
 import {
 	booleanProps,
-	delegatedProps,
+	delegatedEvents,
 	isUnitlessNumber,
 	namespaces,
 	skipProps,
@@ -823,7 +823,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
 
 export function patchEvent(name: string, lastValue, nextValue, dom) {
 	if (lastValue !== nextValue) {
-		if (name in delegatedProps) {
+		if (name in delegatedEvents) {
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
 			const nameLowerCase = name.toLowerCase();

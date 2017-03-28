@@ -6,16 +6,17 @@ import {
 	isNumber,
 	isString,
 	isStringOrNumber,
-	warning, isUndefined
+	isUndefined,
+	warning
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
-	directClone,
 	createTextVNode,
+	directClone,
+	InfernoChildren,
 	isVNode,
-	VNode,
 	Props,
-	InfernoChildren
+	VNode
 } from './VNodes';
 
 function applyKey(key: string, vNode: VNode) {
@@ -28,7 +29,7 @@ function applyKeyIfMissing(key: string | number, vNode: VNode): VNode {
 	if (isNumber(key)) {
 		key = `.${ key }`;
 	}
-	if (isNull(vNode.key) || vNode.key[0] === '.') {
+	if (isNull(vNode.key) || vNode.key[ 0 ] === '.') {
 		return applyKey(key as string, vNode);
 	}
 	return vNode;
@@ -42,7 +43,7 @@ function applyKeyPrefix(key: string, vNode: VNode): VNode {
 
 function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey) {
 	for (let len = nodes.length; index < len; index++) {
-		let n = nodes[index];
+		let n = nodes[ index ];
 		const key = `${ currentKey }.${ index }`;
 
 		if (!isInvalid(n)) {
@@ -51,10 +52,10 @@ function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentK
 			} else {
 				if (isStringOrNumber(n)) {
 					n = createTextVNode(n, null);
-				} else if (isVNode(n) && n.dom || (n.key && n.key[0] === '.')) {
+				} else if (isVNode(n) && n.dom || (n.key && n.key[ 0 ] === '.')) {
 					n = directClone(n);
 				}
-				if (isNull(n.key) || n.key[0] === '.') {
+				if (isNull(n.key) || n.key[ 0 ] === '.') {
 					n = applyKey(key, n as VNode);
 				} else {
 					n = applyKeyPrefix(currentKey, n as VNode);
@@ -73,14 +74,14 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	// if it comes back again, we need to clone it, as people are using it
 	// in an immutable way
 	// tslint:disable
-	if (nodes['$']) {
+	if (nodes[ '$' ]) {
 		nodes = nodes.slice();
 	} else {
-		nodes['$'] = true;
+		nodes[ '$' ] = true;
 	}
 	// tslint:enable
 	for (let i = 0, len = nodes.length; i < len; i++) {
-		const n = nodes[i];
+		const n = nodes[ i ];
 
 		if (isInvalid(n) || isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
@@ -156,31 +157,31 @@ export function normalize(vNode: VNode): void {
 	let children = vNode.children;
 
 	// convert a wrongly created type back to element
-		// Primitive node doesn't have defaultProps, only Component
-		if (vNode.flags & VNodeFlags.Component) {
-			// set default props
-			const type = vNode.type;
-			const defaultProps = (type as any).defaultProps;
+	// Primitive node doesn't have defaultProps, only Component
+	if (vNode.flags & VNodeFlags.Component) {
+		// set default props
+		const type = vNode.type;
+		const defaultProps = (type as any).defaultProps;
 
-			if (!isNullOrUndef(defaultProps)) {
-				if (!props) {
-					props = vNode.props = defaultProps; // Create new object if only defaultProps given
-				} else {
-					for (const prop in defaultProps) {
-						if (isUndefined(props[prop])) {
-							props[prop] = defaultProps[prop];
-						}
+		if (!isNullOrUndef(defaultProps)) {
+			if (!props) {
+				props = vNode.props = defaultProps; // Create new object if only defaultProps given
+			} else {
+				for (const prop in defaultProps) {
+					if (isUndefined(props[ prop ])) {
+						props[ prop ] = defaultProps[ prop ];
 					}
 				}
 			}
+		}
 
-			if (isString(type)) {
-				normalizeElement(type as string, vNode);
-				if (props && props.children) {
-					vNode.children = props.children;
-					children = props.children;
-				}
+		if (isString(type)) {
+			normalizeElement(type as string, vNode);
+			if (props && props.children) {
+				vNode.children = props.children;
+				children = props.children;
 			}
+		}
 	}
 
 	if (props) {
@@ -198,9 +199,11 @@ export function normalize(vNode: VNode): void {
 		// This code will be stripped out from production CODE
 		// It will help users to track errors in their applications.
 
-		const verifyKeys = function(vNodes) {
-			const keyValues = vNodes.map(function(vnode){ return vnode.key; });
-			keyValues.some(function(item, idx){
+		const verifyKeys = function (vNodes) {
+			const keyValues = vNodes.map(function (vnode) {
+				return vnode.key;
+			});
+			keyValues.some(function (item, idx) {
 				const hasDuplicate = keyValues.indexOf(item) !== idx;
 
 				if (hasDuplicate) {

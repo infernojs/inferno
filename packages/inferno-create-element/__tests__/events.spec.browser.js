@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from '../dist-es';
+import { isBrowser } from 'inferno-shared';
 
 describe('Basic event tests', () => {
 	let container;
@@ -148,6 +149,7 @@ describe('Basic event tests', () => {
 				onsubmit: eventHandler
 			}, ['1']);
 		}
+
 		// eslint-disable-next-line
 		render(App(), container);
 		expect(container.firstChild.innerHTML).to.equal('1');
@@ -162,7 +164,8 @@ describe('Basic event tests', () => {
 	});
 
 	it('should not leak memory #2', () => {
-		const eventHandler = function () {};
+		const eventHandler = function () {
+		};
 
 		function App({ toggle }) {
 			return createElement('button', {
@@ -171,11 +174,11 @@ describe('Basic event tests', () => {
 		}
 
 		// eslint-disable-next-line
-		render(App({ toggle: true }), container);
+		render(App({toggle: true}), container);
 		expect(container.firstChild.innerHTML).to.equal('1');
 
 		// eslint-disable-next-line
-		render(App({ toggle: false }), container);
+		render(App({toggle: false}), container);
 		expect(container.firstChild.innerHTML).to.equal('1');
 	});
 
@@ -213,6 +216,198 @@ describe('Basic event tests', () => {
 		// eslint-disable-next-line
 		render(AppTwo(), container);
 		expect(container.innerHTML).to.equal('<p>2</p>');
+	});
+
+	describe('Event Propagation', () => {
+		it('Should stop propagating Synthetic event to document', (done) => {
+			let eventHandlerSpy = sinon.spy();
+			const eventHandler = function (event) {
+				eventHandlerSpy();
+				event.stopPropagation();
+			};
+
+			function SmallComponent() {
+				return createElement('div', {
+					onClick: eventHandler,
+					id: 'tester'
+				}, '2');
+			}
+
+			render(<SmallComponent />, container);
+
+			const bodySpy = sinon.spy();
+			document.addEventListener('click', bodySpy);
+
+			container.querySelector('#tester').click();
+			setTimeout(function () {
+				expect(eventHandlerSpy.callCount).to.equal(1);
+				expect(bodySpy.callCount).to.equal(0);
+				document.removeEventListener('click', bodySpy);
+				done();
+			}, 20);
+		});
+
+
+		it('Should stop propagating Synthetic event to parentElement with synthetic event', (done) => {
+			let eventHandlerSpy = sinon.spy();
+			const eventHandler = function (event) {
+				eventHandlerSpy();
+				event.stopPropagation();
+			};
+
+			let eventHandlerSpy2 = sinon.spy();
+			const eventHandler2 = function (event) {
+				eventHandlerSpy2();
+			};
+
+			function SmallComponent() {
+				return createElement('div', {
+					onClick: eventHandler2,
+					id: 'parent'
+				}, createElement('div', {
+					onClick: eventHandler,
+					id: 'tester'
+				}, '2'));
+			}
+
+			render(<SmallComponent />, container);
+
+			container.querySelector('#tester').click();
+			setTimeout(function () {
+				expect(eventHandlerSpy.callCount).to.equal(1);
+				expect(eventHandlerSpy2.callCount).to.equal(0);
+				done();
+			}, 20);
+		});
+
+		// React does not block propagating synthetic event to parent with normal event either.
+		it('Should NOT stop propagating Synthetic event to parentElement with normal event', (done) => {
+			let eventHandlerSpy = sinon.spy();
+			const eventHandler = function (event) {
+				eventHandlerSpy();
+				event.stopPropagation();
+			};
+
+			let eventHandlerSpy2 = sinon.spy();
+			const eventHandler2 = function (event) {
+				eventHandlerSpy2();
+			};
+
+
+			function SmallComponent() {
+				return createElement('div', {
+					onclick: eventHandler2,
+					id: 'parent'
+				}, createElement('div', {
+					onClick: eventHandler,
+					id: 'tester'
+				}, '2'));
+			}
+
+			render(<SmallComponent />, container);
+
+			container.querySelector('#tester').click();
+			setTimeout(function () {
+				expect(eventHandlerSpy.callCount).to.equal(1);
+				expect(eventHandlerSpy2.callCount).to.equal(1);
+				done();
+			}, 20);
+		});
+
+
+		it('Should stop propagating normal event to document', (done) => {
+			let eventHandlerSpy = sinon.spy();
+			const eventHandler = function (event) {
+				eventHandlerSpy();
+				event.stopPropagation();
+			};
+
+
+			function SmallComponent() {
+				return createElement('div', {
+					onclick: eventHandler,
+					id: 'tester'
+				}, '2');
+			}
+
+			render(<SmallComponent />, container);
+			const bodySpy = sinon.spy();
+			document.addEventListener('click', bodySpy);
+
+			container.querySelector('#tester').click();
+			setTimeout(function () {
+				expect(eventHandlerSpy.callCount).to.equal(1);
+				expect(bodySpy.callCount).to.equal(0);
+				document.removeEventListener('click', bodySpy);
+				done();
+			}, 20);
+		});
+
+		it('Should stop propagating normal event to parentElement with synthetic event', (done) => {
+			let eventHandlerSpy = sinon.spy();
+			const eventHandler = function (event) {
+				eventHandlerSpy();
+				event.stopPropagation();
+			};
+
+			let eventHandlerSpy2 = sinon.spy();
+			const eventHandler2 = function (event) {
+				eventHandlerSpy2();
+			};
+
+
+			function SmallComponent() {
+				return createElement('div', {
+					onClick: eventHandler2,
+					id: 'parent'
+				}, createElement('div', {
+					onclick: eventHandler,
+					id: 'tester'
+				}, '2'));
+			}
+
+			render(<SmallComponent />, container);
+
+			container.querySelector('#tester').click();
+			setTimeout(function () {
+				expect(eventHandlerSpy.callCount).to.equal(1);
+				expect(eventHandlerSpy2.callCount).to.equal(0);
+				done();
+			}, 20);
+		});
+
+		it('Should stop propagating normal event to normal event', (done) => {
+			let eventHandlerSpy = sinon.spy();
+			const eventHandler = function (event) {
+				eventHandlerSpy();
+				event.stopPropagation();
+			};
+
+			let eventHandlerSpy2 = sinon.spy();
+			const eventHandler2 = function (event) {
+				eventHandlerSpy2();
+			};
+
+
+			function SmallComponent() {
+				return createElement('div', {
+					onclick: eventHandler2,
+					id: 'parent'
+				}, createElement('div', {
+					onclick: eventHandler,
+					id: 'tester'
+				}, '2'));
+			}
+
+			render(<SmallComponent />, container);
+
+			container.querySelector('#tester').click();
+			setTimeout(function () {
+				expect(eventHandlerSpy.callCount).to.equal(1);
+				expect(eventHandlerSpy2.callCount).to.equal(0);
+				done();
+			}, 20);
+		});
 	});
 
 	it('Should work with spread attributes', (done) => {
