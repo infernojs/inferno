@@ -26,41 +26,42 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 		}
 		delegatedRoots.items.set(dom, nextEvent);
 	} else if (delegatedRoots) {
-		if (delegatedRoots.items.has(dom)) {
-			delegatedRoots.count--;
-			delegatedRoots.items.delete(dom);
-			if (delegatedRoots.count === 0) {
-				document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
-				delegatedEvents.delete(name);
-			}
+		delegatedRoots.count--;
+		delegatedRoots.items.delete(dom);
+		if (delegatedRoots.count === 0) {
+			document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
+			delegatedEvents.delete(name);
 		}
 	}
 }
 
-function dispatchEvent(event, dom, items, count, eventData) {
-	const eventsToTrigger = items.get(dom);
+function dispatchEvent(event, target, items, count: number, dom, isClick: boolean) {
+	const eventsToTrigger = items.get(target);
 
 	if (eventsToTrigger) {
 		count--;
 		// linkEvent object
-		eventData.dom = dom;
+		dom = target;
 		if (eventsToTrigger.event) {
 			eventsToTrigger.event(eventsToTrigger.data, event);
 		} else {
 			eventsToTrigger(event);
 		}
-		if (eventData.stopPropagation) {
+		if (event.cancelBubble) {
 			return;
 		}
 	}
 	if (count > 0) {
-		const parentDom = dom.parentNode;
+		const parentDom = target.parentNode;
 
 		// Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
 		// because the event listener is on document.body
-		if (parentDom && parentDom.disabled !== true || parentDom === document.body) {
-			dispatchEvent(event, parentDom, items, count, eventData);
+		// Don't process clicks on disabled elements
+		if (parentDom === null || (isClick && parentDom.nodeType === 1 && parentDom.disabled)) {
+			return;
 		}
+
+		dispatchEvent(event, parentDom, items, count, dom, isClick);
 	}
 }
 
@@ -68,19 +69,18 @@ function normalizeEventName(name) {
 	return name.substr(2).toLowerCase();
 }
 
+function stopPropagation() {
+	this.cancelBubble = true;
+	this.stopImmediatePropagation();
+}
+
 function attachEventToDocument(name, delegatedRoots) {
 	const docEvent = (event: Event) => {
-		const eventData = {
-			stopPropagation: false,
-			dom: document
-		};
-		event.stopPropagation = () => {
-			eventData.stopPropagation = true;
-		};
 		const count = delegatedRoots.count;
 
 		if (count > 0) {
-			dispatchEvent(event, event.target, delegatedRoots.items, count, eventData);
+			event.stopPropagation = stopPropagation;
+			dispatchEvent(event, event.target, delegatedRoots.items, count, document, event.type === 'click');
 		}
 	};
 	document.addEventListener(normalizeEventName(name), docEvent);
