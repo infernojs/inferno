@@ -264,14 +264,11 @@ export class RenderQueueStream extends Readable {
 			this.addToQueue((firstChild ? '' : '<!---->') + escapeText(children), position);
 		// Handle errors
 		} else {
-			if (process.env.NODE_ENV !== 'production') {
-				if (typeof vNode === 'object') {
-					throwError(`renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${ JSON.stringify(vNode) }".`);
-				} else {
-					throwError(`renderToString() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
-				}
+			if (typeof vNode === 'object') {
+				throwError(`renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${ JSON.stringify(vNode) }".`);
+			} else {
+				throwError(`renderToString() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
 			}
-			throwError();
 		}
 	}
 }

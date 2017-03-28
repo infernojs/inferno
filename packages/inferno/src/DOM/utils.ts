@@ -64,10 +64,7 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 
 	options.afterRender && options.afterRender(instance);
 	if (isArray(input)) {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-		}
-		throwError();
+		throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
 	} else if (isStringOrNumber(input)) {
@@ -101,10 +98,7 @@ export function createFunctionalComponentInput(vNode: VNode, component, props: P
 	let input = component(props, context);
 
 	if (isArray(input)) {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-		}
-		throwError();
+		throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 	} else if (isInvalid(input)) {
 		input = createVoidVNode();
 	} else if (isStringOrNumber(input)) {

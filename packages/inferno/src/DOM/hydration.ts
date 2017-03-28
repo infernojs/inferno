@@ -205,10 +205,7 @@ function hydrate(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context:
 	} else if (flags & VNodeFlags.Void) {
 		return hydrateVoid(vNode, dom);
 	} else {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError(`hydrate() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
-		}
-		throwError();
+		throwError(`hydrate() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
 	}
 }
 

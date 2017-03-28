@@ -122,10 +122,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		} else if (isStringOrNumber(nextInput)) {
 			nextInput = createVNode(VNodeFlags.Text, null, null, nextInput);
 		} else if (isArray(nextInput)) {
-			if (process.env.NODE_ENV !== 'production') {
-				throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-			}
-			throwError();
+			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 		}
 
 		const lastInput = component._lastInput;
@@ -234,10 +231,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				queueStateChanges(this, newState, callback, false);
 			}
 		} else {
-			if (process.env.NODE_ENV !== 'production') {
-				throwError('cannot update state via setState() in componentWillUpdate().');
-			}
-			throwError();
+			throwError('cannot update state via setState() in componentWillUpdate().');
 		}
 	}
 
@@ -250,10 +244,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				queueStateChanges(this, newState, null, true);
 			}
 		} else {
-			if (process.env.NODE_ENV !== 'production') {
-				throwError('cannot update state via setState() in componentWillUpdate().');
-			}
-			throwError();
+			throwError('cannot update state via setState() in componentWillUpdate().');
 		}
 	}
 
@@ -267,10 +258,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		fromSetState: boolean
 	): any {
 		if (this._unmounted === true) {
-			if (process.env.NODE_ENV !== 'production') {
-				throwError(noOp);
-			}
-			throwError();
+			throwError(noOp);
 		}
 		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
 			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {

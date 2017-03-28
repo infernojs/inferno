@@ -34,10 +34,7 @@ options.roots = roots;
 
 export function findDOMNode(ref) {
 	if (!options.findDOMNodeEnabled) {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError('findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!');
-		}
-		throwError();
+		throwError('findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!');
 	}
 	const dom = ref && ref.nodeType ? ref : null;
 
@@ -85,10 +82,7 @@ const documentBody = isBrowser ? document.body : null;
 
 export function render(input: InfernoInput, parentDom?: Element | SVGAElement | DocumentFragment): InfernoChildren {
 	if (documentBody === parentDom) {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
-		}
-		throwError();
+		throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
 	}
 	if ((input as any) === NO_OP) {
 		return;

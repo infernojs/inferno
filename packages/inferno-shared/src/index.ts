@@ -58,11 +58,11 @@ export function isObject(o: any): boolean {
 	return typeof o === 'object';
 }
 
-export function throwError(message?: string) {
-	if (!message) {
-		message = ERROR_MSG;
+export function throwError(message: string) {
+	if (process.env.NODE_ENV === 'production') {
+		throw new Error(`Inferno Error: ${ERROR_MSG}`);
 	}
-	throw new Error(`Inferno Error: ${ message }`);
+	throw new Error(`Inferno Error: ${message}`);
 }
 
 export function warning(message: string) {
