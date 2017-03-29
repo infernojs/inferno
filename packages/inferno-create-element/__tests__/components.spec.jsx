@@ -565,7 +565,6 @@ describe('Components (JSX)', () => {
 			expect(renderedName).to.equal('bar');
 			done();
 		});
-
 	});
 
 	describe('should render a component with a list of children that dynamically update via setState', () => {

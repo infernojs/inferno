@@ -81,8 +81,8 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 	for (const stateKey in newState) {
 		component._pendingState[stateKey] = newState[stateKey];
 	}
-	if (!component._pendingSetState && isBrowser && !(sync && component._blockRender)) {
-		if ((sync || component._blockRender) && !component._updating) {
+	if (isBrowser && !component._pendingSetState && !component._blockRender) {
+		if (sync && !component._updating) {
 			component._pendingSetState = true;
 			component._updating = true;
 			applyState(component, false, callback);
@@ -98,11 +98,17 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 			state[key] = pending[key];
 		}
 		component._pendingState = {};
+		if (callback && component._blockRender) {
+			component._lifecycle.addListener(callback);
+		}
 	}
 }
 
 function applyState<P, S>(component: Component<P, S>, force: boolean, callback: Function): void {
-	if ((!component._deferSetState || force) && !component._blockRender && !component._unmounted) {
+	if (component._unmounted) {
+		return;
+	}
+	if (force || !component._blockRender) {
 		component._pendingSetState = false;
 		const pendingState = component._pendingState;
 		const prevState = component.state;
@@ -156,6 +162,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 
 			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
 			subLifecycle.trigger();
+
 			if (!isUndefined(component.componentDidUpdate)) {
 				component.componentDidUpdate(props, prevState, context);
 			}
@@ -166,14 +173,11 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 
 		componentToDOMNodeMap && componentToDOMNodeMap.set(component, nextInput.dom);
 		updateParentComponentVNodes(vNode, dom);
-		if (!isNullOrUndef(callback)) {
-			callback();
-		}
-	} else if (!isNullOrUndef(callback)) {
-		if (component._blockRender) {
-			component.state = (component._pendingState as S);
-			component._pendingState = {};
-		}
+	} else {
+		component.state = (component._pendingState as S);
+		component._pendingState = {};
+	}
+	if (!isNullOrUndef(callback)) {
 		callback();
 	}
 }
@@ -184,9 +188,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	props: P & Props;
 	context: any;
 	_blockRender = false;
-	_ignoreSetState = false;
 	_blockSetState = false;
-	_deferSetState = false;
 	_pendingSetState = false;
 	_pendingState = {};
 	_lastInput = null;
@@ -219,10 +221,11 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	render(nextProps?: P, nextState?, nextContext?) {}
 
 	forceUpdate(callback?: Function) {
-		if (this._unmounted) {
+		if (this._unmounted || !isBrowser) {
 			return;
 		}
-		isBrowser && applyState(this, true, callback);
+
+		applyState(this, true, callback);
 	}
 
 	setState(newState, callback?: Function) {
@@ -230,9 +233,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			return;
 		}
 		if (!this._blockSetState) {
-			if (!this._ignoreSetState) {
-				queueStateChanges(this, newState, callback, false);
-			}
+			queueStateChanges(this, newState, callback, false);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError('cannot update state via setState() in componentWillUpdate().');
@@ -246,9 +247,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			return;
 		}
 		if (!this._blockSetState) {
-			if (!this._ignoreSetState) {
-				queueStateChanges(this, newState, null, true);
-			}
+			queueStateChanges(this, newState, null, true);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError('cannot update state via setState() in componentWillUpdate().');
@@ -298,10 +297,14 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				this.state = nextState;
 				this.context = context;
 
-				options.beforeRender && options.beforeRender(this);
+				if (options.beforeRender) {
+					options.beforeRender(this);
+				}
 				const render = this.render(nextProps, nextState, context);
 
-				options.afterRender && options.afterRender(this);
+				if (options.afterRender) {
+					options.afterRender(this);
+				}
 
 				return render;
 			} else {

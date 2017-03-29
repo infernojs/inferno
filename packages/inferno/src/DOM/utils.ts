@@ -26,7 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
 	Object.freeze(EMPTY_OBJ);
 }
 
-export function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean) {
+export function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean, lifecycle: LifecycleClass) {
 	if (isUndefined(context)) {
 		context = EMPTY_OBJ; // Context should not be mutable
 	}
@@ -40,12 +40,16 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 	if (options.findDOMNodeEnabled) {
 		instance._componentToDOMNodeMap = componentToDOMNodeMap;
 	}
+	// setState callbacks must fire after render is done when called from componentWillReceiveProps or componentWillMount
+	instance._lifecycle = lifecycle;
 
 	instance._unmounted = false;
 	instance._pendingSetState = true;
 	instance._isSVG = isSVG;
 	if (!isUndefined(instance.componentWillMount)) {
+		instance._blockRender = true;
 		instance.componentWillMount();
+		instance._blockRender = false;
 	}
 
 	let childContext;
