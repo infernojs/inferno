@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from '../dist-es';
-import { isBrowser } from 'inferno-shared';
 
 describe('Basic event tests', () => {
 	let container;
@@ -314,6 +313,36 @@ describe('Basic event tests', () => {
 			}, 20);
 		});
 
+		// https://github.com/infernojs/inferno/issues/979
+		it('Should trigger child elements synthetic event even if parent Element has null listener', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+
+			function FooBarCom({ test }) {
+				return (
+					<div onClick={test !== '1' ? null : spy1}>
+						<div onClick={null}>
+							<span onClick={spy2}>test</span>
+						</div>
+					</div>
+				);
+			}
+
+			render(<FooBarCom test="1" />, container);
+			container.querySelector('span').click();
+			expect(spy2.callCount).to.equal(1);
+			expect(spy1.callCount).to.equal(1);
+
+			render(<FooBarCom test="2" />, container);
+			container.querySelector('span').click();
+			expect(spy2.callCount).to.equal(2);
+			expect(spy1.callCount).to.equal(1);
+
+			render(<FooBarCom test="3" />, container);
+			container.querySelector('span').click();
+			expect(spy2.callCount).to.equal(3);
+			expect(spy1.callCount).to.equal(1);
+		});
 
 		it('Should stop propagating normal event to document', (done) => {
 			let eventHandlerSpy = sinon.spy();
