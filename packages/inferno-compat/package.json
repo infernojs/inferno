@@ -1,6 +1,6 @@
 {
   "name": "inferno-compat",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "license": "MIT",
   "description": "Provides a compatibility with React codebases",
   "author": {
@@ -23,18 +23,18 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno-component": "^1.5.4",
-    "inferno-create-class": "^1.5.4",
-    "inferno-create-element": "^1.5.4",
+    "inferno-component": "^1.5.5",
+    "inferno-create-class": "^1.5.5",
+    "inferno-create-element": "^1.5.5",
     "inferno-shared": "^1.5.1",
     "inferno-transition-group": "1.1.1",
     "inferno-vnode-flags": "^1.5.1",
-    "inferno": "^1.5.4",
+    "inferno": "^1.5.5",
     "proptypes": "0.14.4",
     "rc-css-transition-group-modern": "^2.1.6"
   },
   "devDependencies": {
-    "inferno-hyperscript": "^1.5.4"
+    "inferno-hyperscript": "^1.5.5"
   },
   "rollup": {
     "bundledDependencies": [
