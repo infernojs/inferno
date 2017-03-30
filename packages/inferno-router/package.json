@@ -34,7 +34,8 @@
   },
   "rollup": {
     "bundledDependencies": [
-      "inferno-shared"
+      "inferno-shared",
+      "path-to-regexp-es6"
     ],
     "moduleName": "Inferno.Router",
     "moduleGlobals": {
