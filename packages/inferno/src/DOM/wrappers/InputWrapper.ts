@@ -58,6 +58,7 @@ function wrappedOnChange(e) {
 }
 
 function onCheckboxChange(e) {
+	e.stopPropagation(); // This click should not propagate its for internal use
 	const vNode = this.vNode;
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
@@ -158,9 +159,6 @@ export function applyValue(vNode, dom) {
 		}
 		if (!isNullOrUndef(checked)) {
 			dom.checked = checked;
-		}
-		if (type === 'radio' && props.name) {
-			handleAssociatedRadioInputs(props.name);
 		}
 	} else {
 		if (hasValue && dom.value !== value) {
