@@ -89,21 +89,6 @@ function onCheckboxChange(e) {
 	}
 }
 
-function handleAssociatedRadioInputs(name) {
-	const inputs: any = document.querySelectorAll(`input[type="radio"][name="${ name }"]`);
-	[].forEach.call(inputs, (dom) => {
-		const inputWrapper = wrappers.get(dom);
-
-		if (inputWrapper) {
-			const props = inputWrapper.vNode.props;
-
-			if (props) {
-				dom.checked = inputWrapper.vNode.props.checked;
-			}
-		}
-	});
-}
-
 export function processInput(vNode, dom): boolean {
 	const props = vNode.props || EMPTY_OBJ;
 
