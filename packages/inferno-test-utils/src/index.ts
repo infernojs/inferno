@@ -16,12 +16,6 @@ import {
 	throwError
 } from 'inferno-shared';
 
-// Interfaces
-
-export interface VNodePredicate {
-	(vNode: VNode): boolean;
-}
-
 // Type Checkers
 
 export function isVNode(instance: any): boolean {
@@ -94,7 +88,7 @@ export function renderIntoDocument(input: InfernoInput): InfernoChildren {
 
 // Recursive Finder Functions
 
-export function findAllInRenderedTree(renderedTree: any, predicate: VNodePredicate): VNode[] {
+export function findAllInRenderedTree(renderedTree: any, predicate: (vNode: VNode) => boolean): VNode[] {
 	if (isRenderedClassComponent(renderedTree)) {
 		return findAllInVNodeTree(renderedTree._lastInput, predicate);
 	} else {
@@ -102,7 +96,7 @@ export function findAllInRenderedTree(renderedTree: any, predicate: VNodePredica
 	}
 }
 
-export function findAllInVNodeTree(vNodeTree: VNode, predicate: VNodePredicate): VNode[] {
+export function findAllInVNodeTree(vNodeTree: VNode, predicate: (vNode: VNode) => boolean): VNode[] {
 	if (isVNode(vNodeTree)) {
 		let result: VNode[] = predicate(vNodeTree) ? [ vNodeTree ] : [];
 		const children: any = vNodeTree.children;

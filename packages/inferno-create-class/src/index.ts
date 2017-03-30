@@ -187,8 +187,7 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComp
 
 		public isMounted(): boolean {
 			return !this._unmounted;
-		};
-
+		}
 	}
 
 	extend(Cl.prototype, obj);

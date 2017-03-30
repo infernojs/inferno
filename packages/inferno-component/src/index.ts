@@ -210,14 +210,14 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	}
 
 	// LifeCycle methods
-	componentDidMount? (): void;
-	componentWillMount? (): void;
-	componentWillReceiveProps? (nextProps: P, nextContext: any): void;
-	shouldComponentUpdate? (nextProps: P, nextState: S, nextContext: any): boolean;
-	componentWillUpdate? (nextProps: P, nextState: S, nextContext: any): void;
-	componentDidUpdate? (prevProps: P, prevState: S, prevContext: any): void;
-	componentWillUnmount? (): void;
-	getChildContext? (): void;
+	componentDidMount?(): void;
+	componentWillMount?(): void;
+	componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+	shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
+	componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
+	componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
+	componentWillUnmount?(): void;
+	getChildContext?(): void;
 	render(nextProps?: P, nextState?, nextContext?) {}
 
 	forceUpdate(callback?: Function) {

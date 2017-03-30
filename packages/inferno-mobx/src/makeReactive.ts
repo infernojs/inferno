@@ -82,7 +82,7 @@ export default function makeReactive(componentClass) {
 
 		const reactiveRender: IReactiveRender = (nextProps, nextContext) => {
 			isRenderingPending = false;
-			let rendering = undefined;
+			let rendering;
 			reaction.track(() => {
 				if (isDevtoolsEnabled) {
 					this.__$mobRenderStart = Date.now();

@@ -89,19 +89,19 @@ export function combineFrom(first: {}, second: {}): any {
  * This is purely a tiny event-emitter/pubsub
  */
 export interface LifecycleClass {
-	listeners: Function[];
-	addListener (callback: Function): void;
-	trigger (): void;
+	listeners: Array<() => void>;
+	addListener(callback: Function): void;
+	trigger(): void;
 }
 
 export function Lifecycle() {
 	this.listeners = [];
 }
 
-Lifecycle.prototype.addListener = function addListener (callback) {
+Lifecycle.prototype.addListener = function addListener(callback) {
 	this.listeners.push(callback);
 };
-Lifecycle.prototype.trigger = function trigger () {
+Lifecycle.prototype.trigger = function trigger() {
 	const listeners = this.listeners;
 
 	for (let i = 0, len = listeners.length; i < len; i++) {

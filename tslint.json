@@ -4,6 +4,7 @@
 		"forin": false,
 		"indent": [ true, "tabs" ],
 		"interface-name": false,
+		"ban-types": false,
 		"max-classes-per-file": [false],
 		"max-line-length": false,
 		"member-access": false,
