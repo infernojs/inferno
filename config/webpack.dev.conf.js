@@ -1,37 +1,31 @@
+/* tslint:disable */
+
 const webpack = require('webpack');
 const glob = require('glob');
 const path = require('path');
 
-const testFiles = glob.sync('./src/**/*__tests__*/**/*.ts')
-	.concat(glob.sync('./src/**/*__tests__*/**/*.tsx'))
-	.concat(glob.sync('./src/**/*__tests__*/**/*.js'))
-	.concat(glob.sync('./src/**/*__tests__*/**/*.jsx'));
+const DEVSERVER_FILTER = process.env.DEVSERVER_FILTER || '*';
+const testFiles = glob.sync(`./packages/${DEVSERVER_FILTER}/*__tests__*/**/*.js*`);
+console.log({ DEVSERVER_FILTER });
 
 module.exports = {
 	watch: true,
 	entry: testFiles,
+	// devtool: 'source-map',
 	output: {
 		filename: '__spec-build.js'
 	},
-	// devtool: 'inline-source-map',
+	performance: {
+		hints: false
+	},
 	module: {
 		loaders: [
 			{
-				test: /\.tsx?$/,
-				loaders: ['babel-loader', 'ts-loader'],
-				exclude: /node_modules/
-			}, {
 				test: /\.jsx?$/,
 				loader: 'babel-loader',
 				exclude: /node_modules/,
 				query: {
-					compact: false,
-					presets: ['es2015'],
-					plugins: [
-						'transform-object-rest-spread',
-						'babel-plugin-syntax-jsx',
-						'babel-plugin-inferno'
-					]
+					compact: false
 				}
 			}
 		]
@@ -47,7 +41,8 @@ module.exports = {
 		}
 	},
 	resolve: {
-		extensions: ['.js', '.jsx', '.ts', '.tsx']
+		extensions: [ '.js', '.jsx' ],
+		mainFields: [ 'browser', 'inferno:main', 'module', 'main' ]
 	},
 	plugins: [
 		// By default, webpack does `n=>n` compilation with entry files. This concatenates

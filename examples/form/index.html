@@ -42,19 +42,38 @@
 </head>
 <body>
 	<div id="app"></div>
-	<script src="../../packages/inferno/dist/inferno.js"></script>
-	<script src="../../packages/inferno/dist/inferno-hyperscript.js"></script>
+	<script src="../../packages/inferno/dist/inferno.min.js"></script>
+	<script src="../../packages/inferno-hyperscript/dist/inferno-hyperscript.min.js"></script>
 	<script>
 		var h = Inferno.h;
 		
-		let name = 'Dominic';
+		let firstName = 'Dominic';
+		let lastName = null;
 		let age = 28;
-		let description = 'I don\'t know?';
+		let description = null;
+
+		// special input values
+		let id = 'test';
+        let testValue = 11;
+        function changeTestValue(event) {
+            testValue = event.target.value;
+
+            console.log(event.type, testValue);
+
+            render();
+		}
+
+		function linkedTextHandler(data, e) {
+			const val = e.target.value;
+
+			firstName = val;
+			render()
+		}
 
 		function textHandler(e) {
 			const val = e.target.value;
 
-			name = val;
+			lastName = val;
 			render()
 		}
 
@@ -72,11 +91,19 @@
 			render()
 		}
 
+		function handleToggle(e) {
+			console.log('Checkbox clicked!')
+		}
+
 		function render() {
 			Inferno.render(h('form.form', [
 				h('div.form-group', [
-					h('label', 'Please enter your name:'),
-					h('input', { type: 'text', placeholder: 'Joe Bloggs', value: name, onInput: textHandler })
+					h('label', 'Please enter your first name name:'),
+					h('input', { type: 'text', placeholder: 'Joe', value: firstName, onInput: Inferno.linkEvent({data: '123'}, linkedTextHandler) })
+				]),
+				h('div.form-group', [
+					h('label', 'Please enter your first last name:'),
+					h('input', { type: 'text', placeholder: 'Bloggs', defaultValue: 'Gannaway', onInput: textHandler })
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter your age:'),
@@ -85,11 +112,11 @@
 				h('div.form-group', [
 					h('label', 'What is your favourite food:'),
 					h('div.inline', [
-						h('input', { type: 'radio', name: 'food', checked: false }),
+						h('input', { type: 'radio', name: 'food', checked: false, onClick: handleToggle }),
 						h('span', 'Pizza')
 					]),
 					h('div.inline', [
-						h('input', { type: 'radio', name: 'food', checked: true }),
+						h('input', { type: 'radio', name: 'food', checked: true, onClick: handleToggle }),
 						h('span', 'Pasta')
 					])
 				]),
@@ -103,8 +130,27 @@
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter a description:'),
-					h('textarea', { value: description, onInput: descHandler })
+					h('textarea', { defaultValue: 'I don\'t know?', value: description, onInput: descHandler })
 				]),
+                h('div.form-group', [
+                    h('label', 'Color picker (html5):'),
+                    h('input', { type: 'color' })
+                ]),
+				h('label', {'for': 'test'}, [
+				    'Label',
+					h('input#test', {
+                        id: id,
+                        name: id,
+                        value: testValue,
+                        onChange: changeTestValue,
+						onInput: changeTestValue,
+						onKeyup: changeTestValue,
+						type: 'number',
+						pattern: '[0-9]+([,\.][0-9]+)?',
+						inputMode: 'numeric',
+						min: 10,
+					})]
+				)
 			]), document.getElementById('app'));
 		}
 		render();

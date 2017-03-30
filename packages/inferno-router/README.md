@@ -4,14 +4,14 @@
 <p align="center"><img src="http://infernojs.org/img/inferno.png" width="150px"></p>
 <p>&nbsp;</p>
 
-Inferno Router is a routing library for [Inferno](https://github.com/trueadm/inferno).
+Inferno Router is a routing library for [Inferno](https://github.com/infernojs/inferno).
 
 Usage of `inferno-router` is similar to that of [react-router](https://github.com/ReactTraining/react-router/blob/master/docs/API.md).  
 
 ## Install
 
 ```
-npm install inferno-router@beta23
+npm install inferno-router
 ```
 
 ## Features
@@ -19,6 +19,7 @@ npm install inferno-router@beta23
 * Router / RouterContext
 * Route / IndexRoute
 * Link / IndexLink
+* Redirect / IndexRedirect
 * browserHistory / memoryHistory
 * onEnter / onLeave hooks
 * params / querystring parsing
@@ -50,7 +51,7 @@ function Users({ children, params }) {
 }
 
 function User({ params }) {
-  return <div>{ params.username }</div>
+  return <div>{ JSON.stringify(params) }</div>
 }
 
 const routes = (
@@ -95,6 +96,11 @@ const app = express();
 
 app.use((req, res) => {
   const renderProps = match(routes, req.originalUrl);
+  
+  if (renderProps.redirect) {
+    return res.redirect(renderProps.redirect)
+  }
+  
   const content = (<Html><RouterContext {...renderProps}/></Html>);
 
   res.send('<!DOCTYPE html>\n' + renderToString(content));
@@ -127,6 +133,11 @@ const app = new Koa()
 
 app.use(async(ctx, next) => { 
   const renderProps = match(routes, ctx.url);
+  
+  if (renderProps.redirect) {
+    return ctx.redirect(renderProps.redirect)
+  }
+  
   const content = (<Html><RouterContext {...renderProps}/></Html>);
   
   ctx.body = '<!DOCTYPE html>\n' + renderToString(content);
@@ -142,19 +153,19 @@ You can easily do this by passing a `function` to the `Route` component via a pr
 ```js
 import Inferno from 'inferno';
 import { Router, IndexRoute } from 'inferno-router';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 
 function Home({ params }) {
   // ...
 }
 
-function authorizedOnly(props, router) {
+function authorizedOnly({ props, router }) {
   if (!props.loggedIn) {
     router.push('/login');
   }
 }
 
-function sayGoodBye(props, router) {
+function sayGoodBye({ props, router }) {
   alert('Good bye!')
 }
 
@@ -163,6 +174,15 @@ Inferno.render((
     <IndexRoute component={ Home } onEnter={ authorizedOnly } onLeave={ sayGoodBye } />
   </Router>
 ), container);
+```
+
+## Redirect
+
+```js
+<Router history={ createBrowserHistory() }>
+  <Redirect from="/oldpath" to="/newpath"/>
+  <Route path="/newpath" component={ MyComponent }/>
+</Router>
 ```
 
 ## Notes

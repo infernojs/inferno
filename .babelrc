@@ -1,22 +1,28 @@
 {
   "compact": false,
   "presets": [
-    "es2015",
-    "stage-0"
+    ["es2015", {"loose": true}],
+    "stage-2"
   ],
   "plugins": [
+    "transform-class-properties",
     "transform-object-rest-spread",
     "babel-plugin-syntax-jsx",
-    "babel-plugin-inferno",
+    ["babel-plugin-inferno", {"imports": true}],
     ["module-resolver", {
-      "extensions": [".js", ".jsx", ".ts", ".tsx"],
+      "extensions": [".js", ".jsx"],
       "alias": {
-        "inferno": "./packages/inferno/src/index",
-        "inferno-component": "./packages/inferno-component/src/index",
-        "inferno-create-class": "./packages/inferno-create-class/src/index",
-        "inferno-create-element": "./packages/inferno-create-element/src/index",
-        "inferno-router": "./packages/inferno-router/src/index",
-        "inferno-server": "./packages/inferno-server/src/index"
+        "inferno-compat": "./packages/inferno-compat/dist-es",
+        "inferno-component": "./packages/inferno-component/dist-es",
+        "inferno-create-class": "./packages/inferno-create-class/dist-es",
+        "inferno-create-element": "./packages/inferno-create-element/dist-es",
+        "inferno-shared": "./packages/inferno-shared/dist-es",
+        "inferno-hyperscript": "./packages/inferno-hyperscript/dist-es",
+        "inferno-mobx": "./packages/inferno-mobx/dist-es",
+        "inferno-redux": "./packages/inferno-redux/dist-es",
+        "inferno-router": "./packages/inferno-router/dist-es",
+        "inferno-server": "./packages/inferno-server/dist-es",
+        "inferno": "./packages/inferno/dist-es"
       }
     }]
   ]

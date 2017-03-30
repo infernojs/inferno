@@ -1,10 +1,11 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 	'use strict';
 
+	Inferno.options.recyclingEnabled = true; // Advanced optimisation
 	var benchmark = require('vdom-benchmark-base');
 
 	var NAME = 'inferno';
-	var VERSION = '1.0.0-beta23';
+	var VERSION = Inferno.version;
 
 	var createVNode = Inferno.createVNode;
 
@@ -16,9 +17,9 @@
 		for (i = 0; i < nodes.length; i++) {
 			n = nodes[i];
 			if (n.children !== null) {
-				children[i] = createVNode(34, 'div', null, renderTree(n.children), n.key, null, true);
+				children[i] = createVNode(34, 'div', null, renderTree(n.children), null, n.key, null, true);
 			} else {
-				children[i] = createVNode(2, 'span', null, n.key, n.key, null, true);
+				children[i] = createVNode(2, 'span', null, n.key, null, n.key, null, true);
 			}
 		}
 		return children;
@@ -39,14 +40,14 @@
 
 	BenchmarkImpl.prototype.render = function () {
 		Inferno.render(
-			createVNode(34, 'div', null, renderTree(this.a), null, null, true),
+			createVNode(34, 'div', null, renderTree(this.a), null, null, null, true),
 			this.container
 		);
 	};
 
 	BenchmarkImpl.prototype.update = function () {
 		Inferno.render(
-			createVNode(34, 'div', null, renderTree(this.b), null, null, true),
+			createVNode(34, 'div', null, renderTree(this.b), null, null, null, true),
 			this.container
 		);
 	};

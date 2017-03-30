@@ -1,6 +1,6 @@
 {
   "name": "inferno-router",
-  "version": "1.0.0-beta23",
+  "version": "1.5.5",
   "license": "MIT",
   "description": "Provides routing functionality for Inferno",
   "author": {
@@ -8,10 +8,12 @@
     "email": "dg@domgan.com"
   },
   "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
+    "url": "https://github.com/infernojs/inferno/issues"
   },
-  "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-router.js",
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "main": "index.js",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -21,10 +23,25 @@
     "user interfaces",
     "router"
   ],
-  "repository": "https://github.com/trueadm/inferno",
+  "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "1.0.0-beta23",
-    "inferno-component": "1.0.0-beta23",
-    "inferno-create-element": "1.0.0-beta23"
+    "inferno": "^1.5.5",
+    "inferno-component": "^1.5.5",
+    "inferno-create-element": "^1.5.5",
+    "inferno-shared": "^1.5.1",
+    "inferno-vnode-flags": "^1.5.1",
+    "path-to-regexp-es6": "0.0.2"
+  },
+  "rollup": {
+    "bundledDependencies": [
+      "inferno-shared"
+    ],
+    "moduleName": "Inferno.Router",
+    "moduleGlobals": {
+      "inferno": "Inferno",
+      "inferno-component": "Inferno.Component",
+      "inferno-create-element": "Inferno.createElement",
+      "path-to-regexp-es6": "Inferno.pathToRegexp"
+    }
   }
 }

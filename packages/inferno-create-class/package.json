@@ -1,6 +1,6 @@
 {
   "name": "inferno-create-class",
-  "version": "1.0.0-beta23",
+  "version": "1.5.5",
   "license": "MIT",
   "description": "Provides a helper to create Inferno Components without needing ES2015",
   "author": {
@@ -8,10 +8,12 @@
     "email": "dg@domgan.com"
   },
   "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
+    "url": "https://github.com/infernojs/inferno/issues"
   },
-  "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-create-class.js",
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "main": "index.js",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -21,6 +23,20 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "1.0.0-beta23"
+    "inferno-shared": "^1.5.1",
+    "inferno-component": "^1.5.5"
+  },
+  "devDependencies": {
+    "inferno": "^1.5.5",
+    "inferno-create-element": "^1.5.5"
+  },
+  "rollup": {
+    "bundledDependencies": [
+      "inferno-shared"
+    ],
+    "moduleName": "Inferno.createClass",
+    "moduleGlobals": {
+      "inferno-component": "Inferno.Component"
+    }
   }
 }

@@ -12,7 +12,7 @@ npm install inferno-create-class
 ## Usage
 
 ```js
-var createClass = require('infrno-create-class');
+var createClass = require('inferno-create-class');
 var Inferno = require('inferno');
 var InfernoDOM = require('inferno-dom');
 

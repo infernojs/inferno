@@ -4,7 +4,9 @@ node_js:
   - '6'
 
 notifications:
-  email: true
+  email:
+    on_success: change
+    on_failure: always
 
 # Use container-based Travis infrastructure.
 sudo: required
@@ -13,6 +15,7 @@ dist: trusty
 env:
   - CXX=g++-4.8
 addons:
+  firefox: "latest"
   apt:
     sources:
       - ubuntu-toolchain-r-test
@@ -29,7 +32,6 @@ addons:
 
 before_install:
   - "nvm use $TRAVIS_NODE_VERSION"
-  - npm config set loglevel http
   # Repo for newer Node.js versions
   - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 
@@ -38,4 +40,4 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
 
 after_script:
-  - npm run server:cov:publish
+  - npm run test:publish

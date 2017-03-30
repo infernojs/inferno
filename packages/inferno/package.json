@@ -1,16 +1,16 @@
 {
   "name": "inferno",
-  "version": "1.0.0-beta23",
+  "version": "1.5.5",
   "license": "MIT",
-  "description": "An extremely fast, isomorphic JavaScript library for building modern user interfaces",
+  "description": "An extremely fast, React-like JavaScript library for building modern user interfaces",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
   },
   "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
+    "url": "https://github.com/infernojs/inferno/issues"
   },
-  "homepage": "https://github.com/trueadm/inferno#readme",
+  "homepage": "https://github.com/infernojs/inferno#readme",
   "keywords": [
     "babel",
     "react",
@@ -25,7 +25,19 @@
     "browser",
     "rollup"
   ],
-  "main": "inferno.js",
-  "typings": "inferno.d.ts",
-  "repository": "https://github.com/trueadm/inferno"
+  "rollup": {
+    "bundledDependencies": [
+      "inferno-shared",
+      "inferno-vnode-flags"
+    ],
+    "moduleName": "Inferno"
+  },
+  "main": "index.js",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": "https://github.com/infernojs/inferno",
+  "dependencies": {
+    "inferno-shared": "^1.5.1",
+    "inferno-vnode-flags": "^1.5.1"
+  }
 }

@@ -1,0 +1,42 @@
+{
+  "name": "inferno-devtools",
+  "version": "1.5.5",
+  "license": "MIT",
+  "description": "Provides support for React's Dev Tools for Inferno",
+  "author": {
+    "name": "Dominic Gannaway",
+    "email": "dg@domgan.com"
+  },
+  "bugs": {
+    "url": "https://github.com/infernojs/inferno/issues"
+  },
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "main": "index.js",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
+  "keywords": [
+    "babel",
+    "react",
+    "inferno",
+    "framework",
+    "interfaces",
+    "user interfaces"
+  ],
+  "repository": "https://github.com/infernojs/inferno",
+  "dependencies": {
+    "inferno": "^1.5.5",
+    "inferno-component": "^1.5.5",
+    "inferno-shared": "^1.5.1",
+    "inferno-vnode-flags": "^1.5.1"
+  },
+  "rollup": {
+    "bundledDependencies": [
+      "inferno-shared"
+    ],
+    "moduleName": "Inferno.DevTools",
+    "moduleGlobals": {
+      "inferno": "Inferno",
+      "inferno-component": "Inferno.Component"
+    }
+  }
+}

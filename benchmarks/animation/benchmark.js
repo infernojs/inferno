@@ -189,11 +189,11 @@ var N = 200;
 // The Inferno implementation:
 (function(){
 
-	var createVNode = Inferno.createVNode; 
+	Inferno.options.recyclingEnabled = true; // Advanced optimisation
+	var createVNode = Inferno.createVNode;
 	var container = document.getElementById('grid');
 
 	var counter;
-	var boxViewProps = { className: 'box-view' };
 
 	function createBoxes(count) {
 		var boxes = [];
@@ -202,7 +202,7 @@ var N = 200;
 					'left:' + Math.cos(count / 10) * 10 + 'px;' +
 					'background-color:' + 'rgb(0, 0,' + count % 255 + ');';
 
-			boxes.push(createVNode(2, 'div', boxViewProps, createVNode(2, 'div', { className: 'box', style: style }, count % 100, null, null, true), null, null, true));
+			boxes.push(createVNode(2, 'div', 'box-view', createVNode(2, 'div', 'box', count % 100, { style: style }, null, null, true), null, null, null, true));
 
 		}
 		return boxes;
@@ -210,7 +210,7 @@ var N = 200;
 
 	var infernoAnimate = function() {
 		Inferno.render(
-			createVNode(66, 'div', null, createBoxes(counter++), null, null, true),
+			createVNode(66, 'div', null, createBoxes(counter++), null, null, null, true),
 			container
 		);
 	};

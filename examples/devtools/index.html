@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Inferno CSS transform example</title>
+	</head>
+	<body>
+		<div id="app"></div>
+		<script src="../../packages/inferno/dist/inferno.js"></script>
+		<script src="../../packages/inferno-component/dist/inferno-component.js"></script>
+		<script src="../../packages/inferno-create-element/dist/inferno-create-element.js"></script>
+		<script src="../../packages/inferno-devtools/dist/inferno-devtools.js"></script>
+		<script>
+			"use strict";
+			var createElement = Inferno.createElement;
+
+			class MyBar extends Inferno.Component {
+				constructor(props) {
+					super(props)
+					this.state = {
+						test: '123'
+					}
+				}
+				render() {
+					return createElement('div', null, 'Works!');
+				}
+			}
+
+			function FunctionalComponent(props) {
+				return createElement('button', null, 'A button!');
+			}
+
+			class MyFoo extends Inferno.Component {
+				render() {
+					return createElement('div', { className: 'test' },
+						createElement('span', { className: 'foo' }, 
+							'Hello world!'
+						),
+						createElement('span', { className: 'foo' }, 
+							'Hello world!'
+						),
+						createElement('br', null),
+						createElement(MyBar, null),
+						createElement(FunctionalComponent, null)
+					)
+				}
+			} 
+
+			Inferno.render(createElement(MyFoo, {}), document.getElementById('app'));
+		</script>
+	</body>
+</html>

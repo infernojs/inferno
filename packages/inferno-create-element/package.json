@@ -1,6 +1,6 @@
 {
   "name": "inferno-create-element",
-  "version": "1.0.0-beta23",
+  "version": "1.5.5",
   "license": "MIT",
   "description": "Provides methods to create Inferno VNodes",
   "author": {
@@ -8,10 +8,12 @@
     "email": "dg@domgan.com"
   },
   "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
+    "url": "https://github.com/infernojs/inferno/issues"
   },
-  "homepage": "https://github.com/trueadm/inferno#readme",
-  "main": "inferno-create-element.js",
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "main": "index.js",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
   "keywords": [
     "babel",
     "react",
@@ -21,6 +23,20 @@
     "user interfaces"
   ],
   "dependencies": {
-    "inferno": "1.0.0-beta23"
+    "inferno": "^1.5.5",
+    "inferno-shared": "^1.5.1",
+    "inferno-vnode-flags": "^1.5.1",
+    "inferno-component": "^1.5.5"
+  },
+  "rollup": {
+    "bundledDependencies": [
+      "inferno-shared",
+      "inferno-vnode-flags"
+    ],
+    "moduleName": "Inferno.createElement",
+    "moduleGlobals": {
+      "inferno": "Inferno",
+      "inferno-component": "Inferno.Component"
+    }
   }
 }

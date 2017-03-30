@@ -1,6 +1,6 @@
 {
   "name": "inferno-server",
-  "version": "1.0.0-beta23",
+  "version": "1.5.5",
   "license": "MIT",
   "description": "Provides methods to render HTML strings from Inferno elements",
   "author": {
@@ -8,9 +8,9 @@
     "email": "dg@domgan.com"
   },
   "bugs": {
-    "url": "https://github.com/trueadm/inferno/issues"
+    "url": "https://github.com/infernojs/inferno/issues"
   },
-  "homepage": "https://github.com/trueadm/inferno#readme",
+  "homepage": "https://github.com/infernojs/inferno#readme",
   "keywords": [
     "babel",
     "react",
@@ -25,9 +25,28 @@
     "browser",
     "rollup"
   ],
-  "main": "inferno-server.js",
-  "repository": "https://github.com/trueadm/inferno",
+  "main": "index.js",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "1.0.0-beta23"
+    "inferno": "^1.5.5",
+    "inferno-shared": "^1.5.1",
+    "inferno-vnode-flags": "^1.5.1"
+  },
+  "devDependencies": {
+    "inferno-component": "^1.5.5",
+    "inferno-create-element": "^1.5.5",
+    "inferno-create-class": "^1.5.5"
+  },
+  "rollup": {
+    "bundledDependencies": [
+      "inferno-shared",
+      "inferno-vnode-flags"
+    ],
+    "moduleName": "Inferno.Server",
+    "moduleGlobals": {
+      "inferno": "Inferno"
+    }
   }
 }

@@ -1,20 +1,34 @@
 {
-	"name": "inferno-hyperscript",
-	"version": "1.0.0-beta23",
-	"license": "MIT",
-	"description": "Bridging hyperscript to InfernoJS",
-	"author": "Terin Stock <terinjokes@gmail.com> (https://terinstock.com/)",
-	"bugs": {
-		"url": "https://github.com/trueadm/inferno/issues"
-	},
-	"homepage": "https://github.com/trueadm/inferno#readme",
-	"main": "inferno-hyperscript.js",
-	"keywords": [
-		"inferno",
-		"hyperscript"
-	],
-	"repository": "https://github.com/trueadm/inferno",
-	"dependencies": {
-		"inferno": "1.0.0-beta23"
-	}
+  "name": "inferno-hyperscript",
+  "version": "1.5.5",
+  "license": "MIT",
+  "description": "Bridging hyperscript to InfernoJS",
+  "author": "Terin Stock <terinjokes@gmail.com> (https://terinstock.com/)",
+  "bugs": {
+    "url": "https://github.com/infernojs/inferno/issues"
+  },
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "main": "index.js",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
+  "keywords": [
+    "inferno",
+    "hyperscript"
+  ],
+  "repository": "https://github.com/infernojs/inferno",
+  "dependencies": {
+    "inferno": "^1.5.5",
+    "inferno-shared": "^1.5.1",
+    "inferno-vnode-flags": "^1.5.1"
+  },
+  "rollup": {
+    "bundledDependencies": [
+      "inferno-shared",
+      "inferno-vnode-flags"
+    ],
+    "moduleName": "Inferno.h",
+    "moduleGlobals": {
+      "inferno": "Inferno"
+    }
+  }
 }
