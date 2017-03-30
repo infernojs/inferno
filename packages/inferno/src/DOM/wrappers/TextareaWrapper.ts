@@ -1,7 +1,6 @@
 import {
 	isNullOrUndef
 } from 'inferno-shared';
-import { wrappers } from './processElement';
 import { EMPTY_OBJ } from '../utils';
 
 function isControlled(props) {
@@ -9,8 +8,7 @@ function isControlled(props) {
 }
 
 function wrappedOnChange(e) {
-	let vNode = this.vNode;
-	const props = vNode.props || EMPTY_OBJ;
+	const props = this.props || EMPTY_OBJ;
 	const event = props.onChange;
 
 	if (event.event) {
@@ -21,7 +19,7 @@ function wrappedOnChange(e) {
 }
 
 function onTextareaInputChange(e) {
-	let vNode = this.vNode;
+	let vNode = this;
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 	const previousValue = props.value;
@@ -40,7 +38,7 @@ function onTextareaInputChange(e) {
 
 	// the user may have updated the vNode from the above onInput events syncronously
 	// so we need to get it from the context of `this` again
-	const newVNode = this.vNode;
+	const newVNode = this;
 	const newProps = newVNode.props || EMPTY_OBJ;
 
 	// If render is going async there is no value change yet, it will come back to process input soon
@@ -54,22 +52,16 @@ function onTextareaInputChange(e) {
 export function processTextarea(vNode, dom, mounting: boolean) {
 	const props = vNode.props || EMPTY_OBJ;
 	applyValue(vNode, dom, mounting);
-	let textareaWrapper = wrappers.get(dom);
 
 	if (isControlled(props)) {
-		if (!textareaWrapper) {
-			textareaWrapper = {
-				vNode
-			};
-			dom.oninput = onTextareaInputChange.bind(textareaWrapper);
+		if (mounting) {
+			dom.oninput = onTextareaInputChange.bind(vNode);
 			dom.oninput.wrapped = true;
 			if (props.onChange) {
-				dom.onchange = wrappedOnChange.bind(textareaWrapper);
+				dom.onchange = wrappedOnChange.bind(vNode);
 				dom.onchange.wrapped = true;
 			}
-			wrappers.set(dom, textareaWrapper);
 		}
-		textareaWrapper.vNode = vNode;
 		return true;
 	}
 	return false;

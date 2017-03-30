@@ -4,7 +4,6 @@ import {
 	isNullOrUndef
 } from 'inferno-shared';
 import { isVNode } from '../../core/VNodes';
-import { wrappers } from './processElement';
 import { EMPTY_OBJ } from '../utils';
 
 function isControlled(props) {
@@ -43,7 +42,7 @@ function updateChildOption(vNode, value) {
 }
 
 function onSelectChange(e) {
-	const vNode = this.vNode;
+	const vNode = this;
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 
@@ -60,7 +59,7 @@ function onSelectChange(e) {
 	}
 	// the user may have updated the vNode from the above onChange events
 	// so we need to get it from the context of `this` again
-	applyValue(this.vNode, dom, false);
+	applyValue(this, dom, false);
 }
 
 export function processSelect(vNode, dom, mounting: boolean) {
@@ -68,17 +67,10 @@ export function processSelect(vNode, dom, mounting: boolean) {
 
 	applyValue(vNode, dom, mounting);
 	if (isControlled(props)) {
-		let selectWrapper = wrappers.get(dom);
-
-		if (!selectWrapper) {
-			selectWrapper = {
-				vNode
-			};
-			dom.onchange = onSelectChange.bind(selectWrapper);
+		if (mounting) {
+			dom.onchange = onSelectChange.bind(vNode);
 			dom.onchange.wrapped = true;
-			wrappers.set(dom, selectWrapper);
 		}
-		selectWrapper.vNode = vNode;
 		return true;
 	}
 	return false;

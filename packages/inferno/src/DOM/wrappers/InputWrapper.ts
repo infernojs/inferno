@@ -1,7 +1,6 @@
 import {
 	isNullOrUndef
 } from 'inferno-shared';
-import { wrappers } from './processElement';
 import { EMPTY_OBJ } from '../utils';
 
 function isCheckedType(type) {
@@ -15,7 +14,7 @@ function isControlled(props) {
 }
 
 function onTextInputChange(e) {
-	const vNode = this.vNode;
+	const vNode = this;
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 	const previousValue = props.value;
@@ -34,7 +33,7 @@ function onTextInputChange(e) {
 
 	// the user may have updated the vNode from the above onInput events syncronously
 	// so we need to get it from the context of `this` again
-	const newVNode = this.vNode;
+	const newVNode = this;
 	const newProps = newVNode.props || EMPTY_OBJ;
 
 	// If render is going async there is no value change yet, it will come back to process input soon
@@ -46,8 +45,7 @@ function onTextInputChange(e) {
 }
 
 function wrappedOnChange(e) {
-	let vNode = this.vNode;
-	const props = vNode.props || EMPTY_OBJ;
+	const props = this.props || EMPTY_OBJ;
 	const event = props.onChange;
 
 	if (event.event) {
@@ -59,7 +57,7 @@ function wrappedOnChange(e) {
 
 function onCheckboxChange(e) {
 	e.stopPropagation(); // This click should not propagate its for internal use
-	const vNode = this.vNode;
+	const vNode = this;
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 	const previousValue = props.value;
@@ -78,7 +76,7 @@ function onCheckboxChange(e) {
 
 	// the user may have updated the vNode from the above onInput events syncronously
 	// so we need to get it from the context of `this` again
-	const newVNode = this.vNode;
+	const newVNode = this;
 	const newProps = newVNode.props || EMPTY_OBJ;
 
 	// If render is going async there is no value change yet, it will come back to process input soon
@@ -89,32 +87,25 @@ function onCheckboxChange(e) {
 	}
 }
 
-export function processInput(vNode, dom): boolean {
+export function processInput(vNode, dom, mounting: boolean): boolean {
 	const props = vNode.props || EMPTY_OBJ;
 
 	applyValue(vNode, dom);
 	if (isControlled(props)) {
-		let inputWrapper = wrappers.get(dom);
-
-		if (!inputWrapper) {
-			inputWrapper = {
-				vNode
-			};
-
+		if (mounting) {
 			if (isCheckedType(props.type)) {
-				dom.onclick = onCheckboxChange.bind(inputWrapper);
+				dom.onclick = onCheckboxChange.bind(vNode);
 				dom.onclick.wrapped = true;
 			} else {
-				dom.oninput = onTextInputChange.bind(inputWrapper);
+				dom.oninput = onTextInputChange.bind(vNode);
 				dom.oninput.wrapped = true;
 			}
 			if (props.onChange) {
-				dom.onchange = wrappedOnChange.bind(inputWrapper);
+				dom.onchange = wrappedOnChange.bind(vNode);
 				dom.onchange.wrapped = true;
 			}
-			wrappers.set(dom, inputWrapper);
 		}
-		inputWrapper.vNode = vNode;
+
 		return true;
 	}
 	return false;
