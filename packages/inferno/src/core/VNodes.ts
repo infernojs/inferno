@@ -15,9 +15,9 @@ import options from './options';
 import {EMPTY_OBJ} from '../DOM/utils';
 
 export type InfernoInput = VNode | null | string | number;
-export type Ref = Function | null;
+export type Ref = (node?) => void | null;
 export type InfernoChildren = string | number | VNode | Array<string | number | VNode> | null;
-export type Type = string | Function | null;
+export type Type = string | null | Function;
 
 export interface Props {
 	children?: InfernoChildren;
@@ -48,7 +48,7 @@ export interface VNode {
 	parentVNode?: VNode;
 }
 
-export function createVNode (
+export function createVNode(
 	flags: VNodeFlags,
 	type?: Type,
 	className?: string,

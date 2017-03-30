@@ -409,6 +409,7 @@ describe('HTML Form Elements', () => {
 			expect(node.childNodes[2].checked).to.equal(false);
 		});
 
+
 		it('Should change others radio inputs should have single one checked', () => {
 			render(
 				<div>
@@ -491,22 +492,6 @@ describe('HTML Form Elements', () => {
 			node = container.firstChild;
 
 			expect(node.childNodes[0].checked).to.equal(true);
-
-
-			render(
-				<div>
-					<input type="radio" name="gender" value="1" checked={true}/>
-					<input type="radio" name="gender" value="2" checked={true}/>
-					<input type="radio" name="gender" value="3" checked={true}/>
-				</div>, container);
-
-			node = container.firstChild;
-
-			// If all are checked latest wins - there can be only one checked radio button
-			expect(node.childNodes[0].checked).to.equal(false);
-			expect(node.childNodes[1].checked).to.equal(false);
-			expect(node.childNodes[2].checked).to.equal(true);
-
 		});
 	});
 });

@@ -115,10 +115,10 @@ const Children = {
 
 let currentComponent = null;
 
-options.beforeRender = function (component): void {
+options.beforeRender = function(component): void {
 	currentComponent = component;
 };
-options.afterRender = function (): void {
+options.afterRender = function(): void {
 	currentComponent = null;
 };
 
@@ -166,7 +166,7 @@ function normalizeProps(name: string, props: Props | any) {
 // but in reality devs use onSomething for many things, not only for
 // input events
 if (typeof Event !== 'undefined' && !Event.prototype.persist) {
-	Event.prototype.persist = function () {
+	Event.prototype.persist = function() {
 	};
 }
 
@@ -183,14 +183,14 @@ function iterableToArray(iterable) {
 
 const hasSymbolSupport = typeof Symbol !== 'undefined';
 
-const injectStringRefs = function (originalFunction) {
-	return function (name, _props, ...children) {
+const injectStringRefs = function(originalFunction) {
+	return function(name, _props, ...children) {
 		const props = _props || {};
 		const ref = props.ref;
 
 		if (typeof ref === 'string' && currentComponent) {
 			currentComponent.refs = currentComponent.refs || {};
-			props.ref = function (val) {
+			props.ref = function(val) {
 				this.refs[ref] = val;
 			}.bind(currentComponent);
 		}
@@ -251,7 +251,7 @@ function PureComponent(props, context) {
 }
 
 PureComponent.prototype = new Component({}, {});
-PureComponent.prototype.shouldComponentUpdate = function (props, state) {
+PureComponent.prototype.shouldComponentUpdate = function(props, state) {
 	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
 };
 
