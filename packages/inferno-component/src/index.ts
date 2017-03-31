@@ -178,7 +178,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		component._pendingState = {};
 	}
 	if (!isNullOrUndef(callback)) {
-		callback();
+		callback.call(component);
 	}
 }
 
