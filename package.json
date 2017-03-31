@@ -42,7 +42,7 @@
     "concat-stream-es6": "0.0.1",
     "convert-source-map": "^1.5.0",
     "coveralls": "^2.13.0",
-    "cross-env": "^3.2.4",
+    "cross-env": "^4.0.0",
     "es5-shim": "^4.5.9",
     "es6-shim": "^0.35.3",
     "eslint": "^3.18.0",
