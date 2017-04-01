@@ -22,7 +22,7 @@ if (process.env.NODE_ENV !== 'production') {
 export declare const VNodeFlags: _VNodeFlags;
 
 // This will be replaced by rollup
-export const version = '1.5.5';
+export const version = '1.5.6';
 
 // we duplicate it so it plays nicely with different module loading systems
 export default {
