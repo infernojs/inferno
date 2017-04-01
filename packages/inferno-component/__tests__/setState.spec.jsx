@@ -13,6 +13,19 @@ describe('setState', () => {
 		container.innerHTML = '';
 	});
 
+	it('should throw an error when setState is called in constructor', () => {
+		class TestComponent extends Component {
+			constructor(props, ctx) {
+				super(props, ctx);
+				this.setState({
+					state: 'Something'
+				});
+			}
+		}
+
+		expect(render.bind(render, <TestComponent />, container)).to.throw(Error);
+	});
+
 	it('callback should be fired after state has changed', (done) => {
 
 		class TestComponent extends Component {

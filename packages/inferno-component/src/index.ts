@@ -188,7 +188,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	props: P & Props;
 	context: any;
 	_blockRender = false;
-	_blockSetState = false;
+	_blockSetState = true;
 	_pendingSetState = false;
 	_pendingState = {};
 	_lastInput = null;
@@ -236,7 +236,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			queueStateChanges(this, newState, callback, false);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
-				throwError('cannot update state via setState() in componentWillUpdate().');
+				throwError('cannot update state via setState() in componentWillUpdate() or constructor');
 			}
 			throwError();
 		}
