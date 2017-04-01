@@ -32,6 +32,7 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 	}
 	const instance = new Component(props, context);
 
+	instance._blockSetState = false;
 	instance.context = context;
 	if (instance.props === EMPTY_OBJ) {
 		instance.props = props;
