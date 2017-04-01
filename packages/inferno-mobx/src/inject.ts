@@ -14,7 +14,7 @@ function createStoreInjector(grabStoresFn: Function, component) {
 		displayName: component.name,
 		render() {
 			const newProps = {} as IStoreProps;
-			for (let key in this.props) {
+			for (const key in this.props) {
 				if (this.props.hasOwnProperty(key)) {
 					newProps[key] = this.props[key];
 				}

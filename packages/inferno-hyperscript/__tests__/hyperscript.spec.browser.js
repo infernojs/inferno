@@ -147,6 +147,27 @@ describe('HyperScript (non-JSX)', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div id="myId"></div>'));
 	});
 
+	it('Should support lifecycle methods on functional components willMount', () => {
+		const callbackSpy = sinon.spy();
+		const ComponentHooks = () => h('#myId');
+		render(
+			h(ComponentHooks, { onComponentWillMount: callbackSpy }),
+			container
+		);
+		expect(container.innerHTML).to.equal(innerHTML('<div id="myId"></div>'));
+		expect(callbackSpy.calledOnce).to.equal(true);
+	});
+
+	it('Should support lifecycle methods on functional components didMount', () => {
+		const callbackSpy = sinon.spy();
+		const ComponentHooks = () => h('#myId');
+		render(
+			h(ComponentHooks, { onComponentDidMount: callbackSpy }),
+			container
+		);
+		expect(container.innerHTML).to.equal(innerHTML('<div id="myId"></div>'));
+		expect(callbackSpy.calledOnce).to.equal(true);
+	});
 
 	if (typeof global !== 'undefined' && !global.usingJSDOM) {
 		it('Should not lower case SVG tags', () => {

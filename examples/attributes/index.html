@@ -4,7 +4,6 @@
     <title>Inferno CSS transform example</title>
 </head>
 <body>
-<div id="app"></div>
 <div id="app1"></div>
 <script>
 	window.process = {
@@ -22,8 +21,7 @@
 
 	function loop() {
 		// Mount
-		render(createVNode(2, 'div', {
-			className: 'foo bar',
+		render(createVNode(2, 'div', 'foo bar', 'First', {
 			style: {
 				color: 'red',
 				float: 'left'
@@ -33,19 +31,24 @@
 		}), container);
 
 		// Change
-		render(createVNode(2, 'div', {
-			className: 'bar',
-			style: {
-				color: 'blue'
-			},
-			'data-attribute': 'data-value'
-		}), container);
+        setTimeout(function () {
+			render(createVNode(2, 'div', 'bar', 'Second', {
+				style: {
+					color: 'blue'
+				},
+				'data-attribute': 'data-value'
+			}), container);
+        }, 1000);
 
 		// Remove all
-		render(createVNode(2, 'div', null), container);
+		setTimeout(function () {
+			render(null, container);
+		}, 2000);
     }
 
-    setInterval(loop, 1000);
+    loop();
+
+    setInterval(loop, 3000);
 </script>
 </body>
 </html>

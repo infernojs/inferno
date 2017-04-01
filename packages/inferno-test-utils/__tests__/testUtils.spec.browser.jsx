@@ -32,12 +32,12 @@ import {
 
 const VNodeKeys = [
 	'children',
+	'className',
 	'dom',
-	'events',
 	'flags',
 	'key',
-	'props',
 	'ref',
+	'props',
 	'type'
 ];
 
@@ -708,7 +708,7 @@ describe('Test Utils', () => {
 			testValue(FunctionalComponent);
 		});
 
-		it('should return a matched VNode', () => {
+		it('should return a matched VNode #1', () => {
 			const testValue = (type) => {
 				const result = findRenderedVNodeWithType(tree, type);
 				expect(result).to.be.instanceof(Object);
@@ -747,7 +747,7 @@ describe('Test Utils', () => {
 			testValue(FunctionalComponent);
 		});
 
-		it('should return a matched VNode', () => {
+		it('should return a matched VNode #2', () => {
 			const testValue = (type) => {
 				const result = findVNodeWithType(tree, type);
 				expect(result).to.be.instanceof(Object);

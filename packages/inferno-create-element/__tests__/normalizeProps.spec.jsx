@@ -9,7 +9,10 @@ describe('normalizeProps', () => {
 			events: null,
 			flags: 0,
 			key: null,
-			props: { ref: () => {} },
+			props: {
+				ref: () => {
+				}
+			},
 			ref: null,
 			type: null
 		};

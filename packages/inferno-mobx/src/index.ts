@@ -23,4 +23,4 @@ export {
 	trackComponents,
 	renderReporter,
 	componentByNodeRegistery
-}
+};

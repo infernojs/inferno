@@ -1,4 +1,5 @@
 import {
+	combineFrom,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -7,11 +8,13 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-	throwError,
-	combineFrom,
-	isUndefined
+	isUndefined,
+	throwError
 } from 'inferno-shared';
-import { internal_isUnitlessNumber, EMPTY_OBJ } from 'inferno';
+import {
+	EMPTY_OBJ,
+	internal_isUnitlessNumber
+} from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
 import {
 	escapeText,
@@ -25,9 +28,9 @@ function renderStylesToString(styles) {
 	} else {
 		let renderedString = '';
 
-		for (let styleName in styles) {
-			const value = styles[styleName];
-			const px = isNumber(value) && !internal_isUnitlessNumber[styleName] ? 'px' : '';
+		for (const styleName in styles) {
+			const value = styles[ styleName ];
+			const px = isNumber(value) && !internal_isUnitlessNumber[ styleName ] ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
 				renderedString += `${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`;
@@ -86,16 +89,18 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 		let html;
 		const isVoidElement = _isVoidElement(type);
 
+		if (!isNullOrUndef(vNode.className)) {
+			renderedString += ` class="${ escapeText(vNode.className) }"`;
+		}
+
 		if (!isNull(props)) {
 			for (const prop in props) {
-				const value = props[prop];
+				const value = props[ prop ];
 
 				if (prop === 'dangerouslySetInnerHTML') {
 					html = value.__html;
 				} else if (prop === 'style') {
 					renderedString += ` style="${ renderStylesToString(props.style) }"`;
-				} else if (prop === 'className' && !isNullOrUndef(value)) {
-					renderedString += ` class="${ escapeText(value) }"`;
 				} else if (prop === 'children') {
 					// Ignore children as prop.
 				} else if (prop === 'defaultValue') {
@@ -129,7 +134,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 			if (!isInvalid(children)) {
 				if (isArray(children)) {
 					for (let i = 0, len = children.length; i < len; i++) {
-						const child = children[i];
+						const child = children[ i ];
 						if (isStringOrNumber(child)) {
 							renderedString += (child === '' ? ' ' : escapeText(child));
 						} else if (!isInvalid(child)) {

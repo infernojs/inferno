@@ -58,14 +58,16 @@ function extractProps(_props: any, _tag: string | VNode): any {
 	_props = _props || {};
 	const isComponent = !isString(_tag);
 	const tag = !isComponent ? parseTag(_tag as string, _props) : _tag;
-	const props = {};
+	const newProps = {};
 	let key = null;
 	let ref = null;
 	let children = null;
-	let events = null;
+	let className = null;
 
-	for (let prop in _props) {
-		if (prop === 'key') {
+	for (const prop in _props) {
+		if (prop === 'className' || prop === 'class') {
+			className = _props[prop];
+		} else if (prop === 'key') {
 			key = _props[prop];
 		} else if (prop === 'ref') {
 			ref = _props[prop];
@@ -74,20 +76,15 @@ function extractProps(_props: any, _tag: string | VNode): any {
 				ref = {};
 			}
 			ref[prop] = _props[prop];
-		} else if (prop.substr(0, 2) === 'on' && !isComponent) {
-			if (!events) {
-				events = {};
-			}
-			events[prop] = _props[prop];
 		} else if (prop === 'hooks') {
 			ref = _props[prop];
 		} else if (prop === 'children') {
 			children = _props[prop];
 		} else {
-			props[prop] = _props[prop];
+			newProps[prop] = _props[prop];
 		}
 	}
-	return { tag, props, key, ref, children, events };
+	return { tag, props: newProps, key, ref, children, className };
 }
 
 export default function hyperscript(_tag: string | VNode | Function, _props?: any, _children?: InfernoChildren): VNode {
@@ -96,7 +93,7 @@ export default function hyperscript(_tag: string | VNode | Function, _props?: an
 		_children = _props;
 		_props = {};
 	}
-	const { tag, props, key, ref, children, events } = extractProps(_props, _tag as VNode);
+	const { tag, props, key, ref, children, className } = extractProps(_props, _tag as VNode);
 
 	if (isString(tag)) {
 		let flags;
@@ -118,13 +115,13 @@ export default function hyperscript(_tag: string | VNode | Function, _props?: an
 				flags = VNodeFlags.HtmlElement;
 				break;
 		}
-		return createVNode(flags, tag, props, _children || children, events, key, ref);
+		return createVNode(flags, tag, className, _children || children, props, key, ref);
 	} else {
 		const flags = isStatefulComponent(tag) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 
 		if (children || _children) {
 			(props as any).children = children || _children;
 		}
-		return createVNode(flags, tag, props, null, null, key, ref);
+		return createVNode(flags, tag, className, null, props, key, ref);
 	}
 }

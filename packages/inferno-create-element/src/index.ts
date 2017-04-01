@@ -1,6 +1,5 @@
 import { createVNode, VNode, Props, InfernoChildren } from 'inferno';
 import {
-	isAttrAnEvent,
 	isInvalid,
 	isNullOrUndef,
 	isObject,
@@ -30,7 +29,7 @@ export default function createElement<T>(
 	let children: any = _children;
 	let ref = null;
 	let key = null;
-	let events = null;
+	let className = null;
 	let flags = 0;
 
 	if (_children) {
@@ -69,19 +68,16 @@ export default function createElement<T>(
 			for (let i = 0, len = propKeys.length; i < len; i++) {
 				const propKey = propKeys[i];
 
-				if (propKey === 'key') {
+				if (propKey === 'className' || propKey === 'class') {
+					className = props[propKey];
+					delete props[propKey];
+				} else if (propKey === 'key') {
 					key = props.key;
 					delete props.key;
 				} else if (propKey === 'children' && isUndefined(children)) {
 					children = props.children; // always favour children args, default to props
 				} else if (propKey === 'ref') {
 					ref = props.ref;
-				} else if (isAttrAnEvent(propKey)) {
-					if (!events) {
-						events = {};
-					}
-					events[propKey] = props[propKey];
-					delete props[propKey];
 				}
 			}
 		}
@@ -120,9 +116,9 @@ export default function createElement<T>(
 	return createVNode(
 		flags,
 		name as Function,
-		props,
+		className,
 		children,
-		events,
+		props,
 		key,
 		ref
 	);

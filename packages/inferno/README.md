@@ -292,7 +292,7 @@ This is the base class for Inferno Components when they're defined using ES6 cla
 import Inferno from 'inferno';
 
 const MyComponent = ({ name, age }) => (
-  <span>My name is: { name } and my age is: {age}</span>  
+  <span>My name is: { name } and my age is: {age}</span>
 );
 ```
 
@@ -523,7 +523,7 @@ Potential solutions include using the [es5-shim](https://github.com/es-shims/es5
 
 As a quick drop-in solution, you may also use the [Polyfill.io](https://polyfill.io) service to pull in the required polyfills for the user's browser automatically by including the following line in your page:
 ```
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise,Map,WeakMap,Object.keys,Object.assign"></script>
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise,Map,WeakMap,Object.keys"></script>
 ```
 
 ### Custom namespaces

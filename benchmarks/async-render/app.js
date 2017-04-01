@@ -3,8 +3,8 @@
 	/* (flags, type, props, children, key, ref, noNormalise) */
 	Inferno.options.recyclingEnabled = true; // Advanced optimisation
 	var createVNode = Inferno.createVNode;
-	var Component = window['inferno-component'];
-	var createElement = window['inferno-create-element'];
+	var Component = Inferno.Component;
+	var createElement = Inferno.createElement;
 
 	function NOOP() {}
 

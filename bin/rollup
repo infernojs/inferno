@@ -81,8 +81,7 @@ const plugins = [
 		inferno: resolve(__dirname, '../packages/inferno/dist-es/index.js')
 	}),
 	nodeResolve({
-		jsnext: true,
-		skip: external
+		jsnext: true
 	}),
 	commonjs({
 		include: 'node_modules/**'

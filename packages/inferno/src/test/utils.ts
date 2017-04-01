@@ -62,7 +62,7 @@ export function validateNodeTree(node: any): boolean {
 	if (flags & VNodeFlags.Element) {
 		if (!isNullOrUndef(children)) {
 			if (isArray(children)) {
-				for (let child of children) {
+				for (const child of children) {
 					const val = validateNodeTree(child);
 
 					if (!val) {
@@ -81,7 +81,7 @@ export function validateNodeTree(node: any): boolean {
 	return true;
 }
 
-export function waits(timer: number, done: Function) {
+export function waits(timer: number, done: () => void) {
 	setTimeout(done, timer);
 }
 

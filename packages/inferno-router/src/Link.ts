@@ -18,13 +18,14 @@ export default function Link(props, { router }): VNode {
 		...otherProps
 	};
 
+	let classNm;
 	if (className) {
-		elemProps.className = className as string;
+		classNm = className as string;
 	}
 
 	if (router.location.pathname === to) {
 		if (activeClassName) {
-			elemProps.className = (className ? className + ' ' : '') + activeClassName;
+			classNm = (className ? className + ' ' : '') + activeClassName;
 		}
 		if (activeStyle) {
 			elemProps.style = combineFrom(props.style, activeStyle);
@@ -42,5 +43,5 @@ export default function Link(props, { router }): VNode {
 		router.push(to, e.target.textContent);
 	};
 
-	return createVNode(VNodeFlags.HtmlElement, 'a', elemProps, props.children);
+	return createVNode(VNodeFlags.HtmlElement, 'a', classNm, props.children, elemProps);
 }

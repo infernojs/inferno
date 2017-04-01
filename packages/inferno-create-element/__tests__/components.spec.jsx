@@ -565,7 +565,6 @@ describe('Components (JSX)', () => {
 			expect(renderedName).to.equal('bar');
 			done();
 		});
-
 	});
 
 	describe('should render a component with a list of children that dynamically update via setState', () => {
@@ -2264,7 +2263,7 @@ describe('Components (JSX)', () => {
 
 		it('should mount child component with its defaultProps', () => {
 			const Parent = (props) => <div>{props.children.props.a}</div>;
-			render(<Parent><Comp1 c="C" /></Parent>, container);
+			render(<Parent><Comp1 c="C"/></Parent>, container);
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>A</div>'));
 		});
 
@@ -2307,7 +2306,7 @@ describe('Components (JSX)', () => {
 
 			render(
 				<Parent>
-					<Comp1 a="ABCD" />
+					<Comp1 a="ABCD"/>
 				</Parent>, container
 			);
 
@@ -2485,7 +2484,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setStateSync({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setStateSync({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2574,7 +2576,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setStateSync({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setStateSync({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2635,7 +2640,7 @@ describe('Components (JSX)', () => {
 		}
 
 		function B() {
-			return <F onComponentShouldUpdate={ () => false } />;
+			return <F onComponentShouldUpdate={ () => false }/>;
 		}
 
 		class Test extends Component {
@@ -2657,7 +2662,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setStateSync({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setStateSync({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2739,7 +2747,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setStateSync({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setStateSync({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2814,7 +2825,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setStateSync({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setStateSync({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2864,9 +2878,13 @@ describe('Components (JSX)', () => {
 			render() {
 				return (
 					<div>
-						<button onClick={() => { i++; this.setStateSync({}); }}>Replace</button>
+						<button onClick={() => {
+							i++;
+							this.setStateSync({});
+						}}>Replace
+						</button>
 						<div>
-					<B key={i} />
+							<B key={i}/>
 						</div>
 					</div>
 				);
@@ -2898,7 +2916,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setState({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ this.state.reverse ? [ a, b ].reverse() : [ a, b ] }
 						</div>
@@ -2939,7 +2960,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setState({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2983,7 +3007,8 @@ describe('Components (JSX)', () => {
 					return (
 						<div>
 							<span>{this.state.text}</span>
-							{this.props.toggle ? [<Tester toggle={this.props.toggle} call={this.changeState}/>] : <span style={this.props.toggle ? { color: 'blue' } : null}>tester</span>}
+							{this.props.toggle ? [<Tester toggle={this.props.toggle} call={this.changeState}/>] :
+								<span style={this.props.toggle ? { color: 'blue' } : null}>tester</span>}
 						</div>
 					);
 				}

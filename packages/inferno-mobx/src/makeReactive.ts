@@ -1,5 +1,4 @@
 import { extras, isObservable, Reaction } from 'mobx';
-
 import Component from 'inferno-component';
 import { throwError } from 'inferno-shared';
 import EventEmitter from './EventEmitter';
@@ -83,7 +82,7 @@ export default function makeReactive(componentClass) {
 
 		const reactiveRender: IReactiveRender = (nextProps, nextContext) => {
 			isRenderingPending = false;
-			let rendering = undefined;
+			let rendering;
 			reaction.track(() => {
 				if (isDevtoolsEnabled) {
 					this.__$mobRenderStart = Date.now();

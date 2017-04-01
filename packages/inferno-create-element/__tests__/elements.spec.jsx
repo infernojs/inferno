@@ -10,10 +10,13 @@ describe('Elements (JSX)', () => {
 
 	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
 	});
 
 	afterEach(function () {
 		render(null, container);
+		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	it('should render a simple div', () => {
@@ -545,10 +548,10 @@ describe('Elements (JSX)', () => {
 
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(1);
-		expect(container.childNodes[0].childNodes[0].getAttribute('class')).to.eql('bar');
-		expect(container.childNodes[0].childNodes[0].textContent).to.eql('Inferno');
-		expect(container.childNodes[0].childNodes[1].getAttribute('class')).to.eql('yar');
-		expect(container.childNodes[0].childNodes[1].textContent).to.eql('Sucks!');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].getAttribute('class')).to.eql('bar');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].textContent).to.eql('Inferno');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].getAttribute('class')).to.eql('yar');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].textContent).to.eql('Sucks!');
 
 		render(<div className="fooo">
 			<span className="bar">{val1}</span>
@@ -557,10 +560,10 @@ describe('Elements (JSX)', () => {
 
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.childNodes.length).to.equal(1);
-		expect(container.childNodes[0].childNodes[0].getAttribute('class')).to.eql('bar');
-		expect(container.childNodes[0].childNodes[0].textContent).to.eql('Inferno');
-		expect(container.childNodes[0].childNodes[1].getAttribute('class')).to.eql('yar');
-		expect(container.childNodes[0].childNodes[1].textContent).to.eql('Sucks!');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].getAttribute('class')).to.eql('bar');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].textContent).to.eql('Inferno');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].getAttribute('class')).to.eql('yar');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].textContent).to.eql('Sucks!');
 	});
 
 	it('should properly render a input with download attribute', () => {
@@ -686,14 +689,11 @@ describe('Elements (JSX)', () => {
 	});
 
 	it('should render an iframe', () => {
-		document.body.appendChild(container);
 		render(<iframe src="http://infernojs.org"></iframe>, container);
 		expect(container.firstChild.contentWindow).to.not.equal(undefined);
-		document.body.removeChild(container);
 	});
 
 	it('should render a HTML5 video', () => {
-		document.body.appendChild(container);
 		render((
 			<video width="400" controls volume={0}>
 				<source src="http://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
@@ -701,7 +701,6 @@ describe('Elements (JSX)', () => {
 		), container);
 		expect(container.firstChild.volume).to.not.equal(undefined);
 		expect(container.firstChild.volume).to.be.equal(0);
-		document.body.removeChild(container);
 	});
 
 	it('should dangerously set innerHTML', () => {
@@ -792,13 +791,11 @@ describe('Elements (JSX)', () => {
 									onclick={obj.click} className="edit-field" onkeydown={test} onkeyup={test}
 									onBlur={test} {...spread} />, container);
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
-		document.body.appendChild(container);
 		const input = container.querySelector('#test');
 		assert.calledOnce(sinonSpy); // Verify hook works
 		input.click(); // Focus fails with async tests - changed to tests
 		requestAnimationFrame(() => {
 			assert.calledOnce(spyClick); // Verify hook works
-			document.body.removeChild(container);
 			done();
 		});
 	});
@@ -891,18 +888,35 @@ describe('Elements (JSX)', () => {
 		});
 	});
 
+	describe('REST Spread JSX', () => {
+		it('Should render click event, style, className', (done) => {
+			const TextField = function (props) {
+				return <input {...props} />;
+			};
+			const MyTextField = ({ name, className, changeName }) => <TextField className={className} value={name} onClick={function () {
+				done();
+			}} />;
+
+			render(<MyTextField className="foobar" name="test" />, container);
+
+			expect(container.firstChild.value).to.equal('test');
+			expect(container.firstChild.getAttribute('class')).to.equal('foobar');
+			container.firstChild.click();
+		});
+	});
+
 	if (typeof global !== 'undefined' && !global.usingJSDOM) {
 		describe('Progress element', () => {
 			it('Should be possible to change value of Progress element Github#714', () => {
-				render(<progress max={100} value="10" />, container);
+				render(<progress max={100} value="10"/>, container);
 
 				expect(container.firstChild.getAttribute('value')).to.eql('10');
 
-				render(<progress max={100} value="33" />, container);
+				render(<progress max={100} value="33"/>, container);
 
 				expect(container.firstChild.getAttribute('value')).to.eql('33');
 
-				render(<progress max={100} value={'0'} />, container);
+				render(<progress max={100} value={'0'}/>, container);
 
 				expect(container.firstChild.getAttribute('value')).to.eql('0');
 			});
@@ -912,7 +926,7 @@ describe('Elements (JSX)', () => {
 				expect(container.firstChild.getAttribute('value')).to.be.oneOf([ null, '', 0, '0' ]);
 
 				// Add as string
-				render(<progress max={100} value="3" />, container);
+				render(<progress max={100} value="3"/>, container);
 				expect(container.firstChild.tagName).to.eql('PROGRESS');
 				expect(container.firstChild.getAttribute('value')).to.eql('3');
 			});

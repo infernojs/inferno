@@ -13,8 +13,11 @@ export default class EventEmitter {
 	}
 
 	public emit(data: any) {
-		this.listeners.forEach((fn) => fn(data));
-	};
+		const listeners = this.listeners;
+		for (let i = 0, len = listeners.length; i < len; i++) {
+			listeners[i](data);
+		}
+	}
 
 	public getTotalListeners(): number {
 		return this.listeners.length;
