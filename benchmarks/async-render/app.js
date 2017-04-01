@@ -6,8 +6,6 @@
 	var Component = Inferno.Component;
 	var createElement = Inferno.createElement;
 
-	function NOOP() {}
-
 	class List extends Component {
 		constructor() {
 			super();
