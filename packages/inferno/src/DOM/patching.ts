@@ -334,10 +334,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				} else if (isStringOrNumber(nextInput)) {
 					nextInput = createTextVNode(nextInput, null);
 				} else if (isArray(nextInput)) {
-					if (process.env.NODE_ENV !== 'production') {
-						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-					}
-					throwError();
+					throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 				} else if (isObject(nextInput) && nextInput.dom) {
 					nextInput = directClone(nextInput);
 				}
@@ -386,10 +383,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				} else if (isStringOrNumber(nextInput) && nextInput !== NO_OP) {
 					nextInput = createTextVNode(nextInput, null);
 				} else if (isArray(nextInput)) {
-					if (process.env.NODE_ENV !== 'production') {
-						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-					}
-					throwError();
+					throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 				} else if (isObject(nextInput) && nextInput.dom) {
 					nextInput = directClone(nextInput);
 				}
@@ -843,10 +837,7 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 					}
 					dom._data = nextValue.data;
 				} else {
-					if (process.env.NODE_ENV !== 'production') {
-						throwError(`an event on a VNode "${ name }". was not a function or a valid linkEvent.`);
-					}
-					throwError();
+					throwError(`an event on a VNode "${ name }". was not a function or a valid linkEvent.`);
 				}
 			} else {
 				dom[nameLowerCase] = nextValue;

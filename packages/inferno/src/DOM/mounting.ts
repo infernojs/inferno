@@ -44,14 +44,11 @@ export function mount(vNode: VNode, parentDom: Element, lifecycle: LifecycleClas
 	} else if (flags & VNodeFlags.Text) {
 		return mountText(vNode, parentDom);
 	} else {
-		if (process.env.NODE_ENV !== 'production') {
-			if (typeof vNode === 'object') {
-				throwError(`mount() received an object that's not a valid VNode, you should stringify it first. Object: "${ JSON.stringify(vNode) }".`);
-			} else {
-				throwError(`mount() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
-			}
+		if (typeof vNode === 'object') {
+			throwError(`mount() received an object that's not a valid VNode, you should stringify it first. Object: "${ JSON.stringify(vNode) }".`);
+		} else {
+			throwError(`mount() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
 		}
-		throwError();
 	}
 }
 
@@ -194,16 +191,13 @@ export function mountClassComponentCallbacks(vNode: VNode, ref, instance, lifecy
 		if (isFunction(ref)) {
 			ref(instance);
 		} else {
-			if (process.env.NODE_ENV !== 'production') {
-				if (isStringOrNumber(ref)) {
-					throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-				} else if (isObject(ref) && (vNode.flags & VNodeFlags.ComponentClass)) {
-					throwError('functional component lifecycle events are not supported on ES2015 class components.');
-				} else {
-					throwError(`a bad value for "ref" was used on component: "${ JSON.stringify(ref) }"`);
-				}
+			if (isStringOrNumber(ref)) {
+				throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+			} else if (isObject(ref) && (vNode.flags & VNodeFlags.ComponentClass)) {
+				throwError('functional component lifecycle events are not supported on ES2015 class components.');
+			} else {
+				throwError(`a bad value for "ref" was used on component: "${ JSON.stringify(ref) }"`);
 			}
-			throwError();
 		}
 	}
 	const cDM = instance.componentDidMount;
@@ -235,9 +229,6 @@ export function mountRef(dom: Element, value, lifecycle: LifecycleClass) {
 		if (isInvalid(value)) {
 			return;
 		}
-		if (process.env.NODE_ENV !== 'production') {
-			throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-		}
-		throwError();
+		throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
 	}
 }

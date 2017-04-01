@@ -137,9 +137,6 @@ function unmountRef(ref: Ref) {
 		if (isInvalid(ref)) {
 			return;
 		}
-		if (process.env.NODE_ENV !== 'production') {
-			throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-		}
-		throwError();
+		throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
 	}
 }
