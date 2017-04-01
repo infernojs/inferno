@@ -174,6 +174,7 @@ export function mountComponent(vNode: VNode, parentDom: Element, lifecycle: Life
 			appendChild(parentDom, dom);
 		}
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
+		instance._updating = false;
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {
@@ -206,13 +207,19 @@ export function mountClassComponentCallbacks(vNode: VNode, ref, instance, lifecy
 			throwError();
 		}
 	}
-	const cDM = instance.componentDidMount;
+	const hasDidMount = !isUndefined(instance.componentDidMount);
 	const afterMount = options.afterMount;
 
-	if (!isUndefined(cDM) || !isNull(afterMount)) {
+	if (hasDidMount || !isNull(afterMount)) {
 		lifecycle.addListener(() => {
-			afterMount && afterMount(vNode);
-			cDM && instance.componentDidMount();
+			instance._updating = true;
+			if (afterMount) {
+				afterMount(vNode);
+			}
+			if (hasDidMount) {
+				instance.componentDidMount();
+			}
+			instance._updating = false;
 		});
 	}
 }

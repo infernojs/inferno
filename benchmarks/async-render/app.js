@@ -21,7 +21,7 @@
 		componentDidMount() {
 			while (this.items.length < 20000) {
 				this.items[this.items.length] = createElement('li', null, `${this.items.length}bar`);
-				this.setState({ items: this.items }, NOOP);
+				this.setState({ items: this.items });
 			}
 		}
 

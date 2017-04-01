@@ -74,15 +74,22 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 	}
 }
 
-function queueStateChanges<P, S>(component: Component<P, S>, newState, callback: Function, sync: boolean): void {
+function queueStateChanges<P, S>(component: Component<P, S>, newState, callback: Function): void {
 	if (isFunction(newState)) {
 		newState = newState(component.state, component.props, component.context);
 	}
-	for (const stateKey in newState) {
-		component._pendingState[stateKey] = newState[stateKey];
+	let pending = component._pendingState;
+
+	if (pending === null) {
+		component._pendingState = pending = newState;
+	} else {
+		for (const stateKey in newState) {
+			pending[stateKey] = newState[stateKey];
+		}
 	}
+
 	if (isBrowser && !component._pendingSetState && !component._blockRender) {
-		if (sync && !component._updating) {
+		if (!component._updating) {
 			component._pendingSetState = true;
 			component._updating = true;
 			applyState(component, false, callback);
@@ -91,13 +98,17 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 			addToQueue(component, false, callback);
 		}
 	} else {
-		const pending = component._pendingState;
 		const state = component.state;
 
-		for (const key in pending) {
-			state[key] = pending[key];
+		if (state === null) {
+			component.state = pending;
+		} else {
+			for (const key in pending) {
+				state[key] = pending[key];
+			}
 		}
-		component._pendingState = {};
+
+		component._pendingState = null;
 		if (callback && component._blockRender) {
 			component._lifecycle.addListener(callback);
 		}
@@ -182,15 +193,17 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 	}
 }
 
+let alreadyWarned = false;
+
 export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	static defaultProps: {};
-	state: S = {} as S;
+	state: S = null as S;
 	props: P & Props;
 	context: any;
 	_blockRender = false;
 	_blockSetState = true;
 	_pendingSetState = false;
-	_pendingState = {};
+	_pendingState = null;
 	_lastInput = null;
 	_vNode = null;
 	_unmounted = false;
@@ -233,27 +246,23 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			return;
 		}
 		if (!this._blockSetState) {
-			queueStateChanges(this, newState, callback, false);
+			queueStateChanges(this, newState, callback);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
-				throwError('cannot update state via setState() in componentWillUpdate() or constructor');
+				throwError('cannot update state via setState() in componentWillUpdate() or constructor.');
 			}
 			throwError();
 		}
 	}
 
 	setStateSync(newState) {
-		if (this._unmounted) {
-			return;
-		}
-		if (!this._blockSetState) {
-			queueStateChanges(this, newState, null, true);
-		} else {
-			if (process.env.NODE_ENV !== 'production') {
-				throwError('cannot update state via setState() in componentWillUpdate().');
+		if (process.env.NODE_ENV !== 'production') {
+			if (!alreadyWarned) {
+				alreadyWarned = true;
+				console.warn('Inferno WARNING: setStateSync has been deprecated and will be removed in next release. Use setState instead.');
 			}
-			throwError();
 		}
+		this.setState(newState);
 	}
 
 	_updateComponent(

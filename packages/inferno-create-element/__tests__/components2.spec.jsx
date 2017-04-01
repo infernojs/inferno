@@ -118,6 +118,8 @@ describe('Components (JSX) #2', () => {
 			constructor(props) {
 				super(props);
 
+				this.state = { data: '' };
+
 				this._update = this._update.bind(this);
 			}
 

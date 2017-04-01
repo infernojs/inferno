@@ -73,6 +73,7 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 		instance._vNode = vNode;
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
+		instance._updating = false; // Mount finished allow going sync
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
 		vNode.children = instance;
 	} else {

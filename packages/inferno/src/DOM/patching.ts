@@ -288,6 +288,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 
 		if (isClass) {
 			const instance = lastVNode.children;
+			instance._updating = true;
 
 			if (instance._unmounted) {
 				if (isNull(parentDom)) {
@@ -358,6 +359,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				}
 				nextVNode.dom = nextInput.dom;
 			}
+			instance._updating = false;
 		} else {
 			let shouldUpdate = true;
 			const lastProps = lastVNode.props;
