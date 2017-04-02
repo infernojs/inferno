@@ -132,7 +132,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		let didUpdate = true;
 
 		if (isInvalid(nextInput)) {
-			nextInput = createVNode(VNodeFlags.Void);
+			nextInput = createVNode(VNodeFlags.Void, null);
 		} else if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 			didUpdate = false;

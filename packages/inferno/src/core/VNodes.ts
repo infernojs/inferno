@@ -48,10 +48,22 @@ export interface VNode {
 	parentVNode?: VNode;
 }
 
+/**
+ * Creates virtual node
+ * @param {number} flags
+ * @param {string|Function|null} type
+ * @param {string|null=} className
+ * @param {object=} children
+ * @param {object=} props
+ * @param {*=} key
+ * @param {object|Function=} ref
+ * @param {boolean=} noNormalise
+ * @returns {VNode} returns new virtual node
+ */
 export function createVNode(
 	flags: VNodeFlags,
-	type?: Type,
-	className?: string,
+	type: Type,
+	className?: string | null,
 	children?: InfernoChildren,
 	props?: Props,
 	key?: any,
@@ -257,7 +269,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 }
 
 export function createVoidVNode(): VNode {
-	return createVNode(VNodeFlags.Void);
+	return createVNode(VNodeFlags.Void, null);
 }
 
 export function createTextVNode(text: string | number, key): VNode {
