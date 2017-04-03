@@ -11,7 +11,7 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import options from '../core/options';
-import { directClone, InfernoInput, VNode, InfernoChildren } from '../core/VNodes';
+import { directClone, InfernoChildren, InfernoInput, VNode } from '../core/VNodes';
 import hydrateRoot from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
@@ -51,7 +51,7 @@ export function findDOMNode(ref) {
 
 function getRoot(dom): Root | null {
 	for (let i = 0, len = roots.length; i < len; i++) {
-		const root = roots[i];
+		const root = roots[ i ];
 
 		if (root.dom === dom) {
 			return root;
@@ -73,7 +73,7 @@ function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: Lifecy
 
 function removeRoot(root: Root): void {
 	for (let i = 0, len = roots.length; i < len; i++) {
-		if (roots[i] === root) {
+		if (roots[ i ] === root) {
 			roots.splice(i, 1);
 			return;
 		}

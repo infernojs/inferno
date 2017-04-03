@@ -45,9 +45,9 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
 function streamPromise(dom) {
 	return new Promise(function (res, rej) {
 		streamAsStaticMarkup(dom)
-		.on('error', rej)
-		.pipe(concatStream(function (buffer) {
-			res(buffer.toString('utf-8'));
-		}));
+			.on('error', rej)
+			.pipe(concatStream(function (buffer) {
+				res(buffer.toString('utf-8'));
+			}));
 	});
 }

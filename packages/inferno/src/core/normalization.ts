@@ -10,14 +10,7 @@ import {
 	warning
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import {
-	createTextVNode,
-	directClone,
-	InfernoChildren,
-	isVNode,
-	Props,
-	VNode
-} from './VNodes';
+import { createTextVNode, directClone, InfernoChildren, isVNode, Props, VNode } from './VNodes';
 
 function applyKey(key: string, vNode: VNode) {
 	vNode.key = key;

@@ -1,6 +1,6 @@
-import { extras, isObservable, Reaction } from 'mobx';
 import Component from 'inferno-component';
 import { throwError } from 'inferno-shared';
+import { extras, isObservable, Reaction } from 'mobx';
 import EventEmitter from './EventEmitter';
 
 /**
@@ -139,9 +139,9 @@ export default function makeReactive(componentClass) {
 		}
 
 		for (let i = keys.length - 1; i >= 0; i--) {
-			const key = keys[i];
-			const newValue = nextProps[key];
-			if (newValue !== this.props[key]) {
+			const key = keys[ i ];
+			const newValue = nextProps[ key ];
+			if (newValue !== this.props[ key ]) {
 				return true;
 			} else if (newValue && typeof newValue === 'object' && !isObservable(newValue)) {
 				// If the newValue is still the same object, but that object is not observable,

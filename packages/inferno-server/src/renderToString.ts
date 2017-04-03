@@ -1,3 +1,4 @@
+import { EMPTY_OBJ, internal_isUnitlessNumber } from 'inferno';
 import {
 	combineFrom,
 	isArray,
@@ -11,16 +12,8 @@ import {
 	isUndefined,
 	throwError
 } from 'inferno-shared';
-import {
-	EMPTY_OBJ,
-	internal_isUnitlessNumber
-} from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
-import {
-	escapeText,
-	isVoidElement as _isVoidElement,
-	toHyphenCase
-} from './utils';
+import { escapeText, isVoidElement as _isVoidElement, toHyphenCase } from './utils';
 
 function renderStylesToString(styles) {
 	if (isStringOrNumber(styles)) {

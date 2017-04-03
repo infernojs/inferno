@@ -1,24 +1,24 @@
-import { render, createVNode } from 'inferno';
+import { createVNode, render } from 'inferno';
 import InfernoVNodeFlags from 'inferno-vnode-flags';
 
-suite('functional components', function () {
-	benchmark('single functional component (with div) + render', function () {
+suite('functional components', function() {
+	benchmark('single functional component (with div) + render', function() {
 		function Com() {
 			return createVNode(InfernoVNodeFlags.Element, 'div', null, '1');
 		}
 
 		render(createVNode(InfernoVNodeFlags.ComponentFunction, Com), this.testDiv);
 	}, {
-		setup: function () {
+		setup: function() {
 			this.testDiv = document.createElement('div');
 		},
 
-		teardown: function () {
+		teardown: function() {
 			this.testDiv.innerHTML = '';
 		}
 	});
 
-	benchmark('20 children functional components', function () {
+	benchmark('20 children functional components', function() {
 
 		function Com() {
 			return createVNode(InfernoVNodeFlags.Element, 'div', null, '1');
@@ -47,11 +47,11 @@ suite('functional components', function () {
 			createVNode(InfernoVNodeFlags.ComponentFunction, Com)
 		]), this.testDiv);
 	}, {
-		setup: function () {
+		setup: function() {
 			this.testDiv = document.createElement('div');
 		},
 
-		teardown: function () {
+		teardown: function() {
 			this.testDiv.innerHTML = '';
 		}
 	});

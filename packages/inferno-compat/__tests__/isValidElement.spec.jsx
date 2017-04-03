@@ -1,10 +1,9 @@
 import { expect } from 'chai';
 import createElement from 'inferno-create-element';
 import isValidElement from '../dist-es/isValidElement';
-import { render } from 'inferno';
+import { cloneVNode } from 'inferno';
 import h from 'inferno-hyperscript';
 import Component from 'inferno-component';
-import Inferno, { cloneVNode } from 'inferno';
 
 
 describe('isValidElement', () => {
@@ -44,7 +43,7 @@ describe('isValidElement', () => {
 			render() {
 				return createElement('div', null, 'Do a thing');
 			}
-        }
+		}
 		const comp = createElement(Comp);
 		expect(isValidElement(comp)).to.equal(true);
 	});
@@ -77,7 +76,7 @@ describe('isValidElement', () => {
 			render() {
 				return h('div', 'Do a thing');
 			}
-        }
+		}
 		const comp = h(Comp);
 		expect(isValidElement(comp)).to.equal(true);
 	});
@@ -99,7 +98,7 @@ describe('isValidElement', () => {
 			render() {
 				return createElement('div', null, 'Do a thing');
 			}
-        }
+		}
 		expect(isValidElement(Comp)).to.equal(false);
 	});
 
@@ -108,7 +107,7 @@ describe('isValidElement', () => {
 			render() {
 				return h('div', 'Do a thing');
 			}
-        }
+		}
 		expect(isValidElement(Comp)).to.equal(false);
 	});
 });

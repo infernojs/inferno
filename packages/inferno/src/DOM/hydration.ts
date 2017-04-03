@@ -1,16 +1,16 @@
 import {
 	isArray,
 	isNull,
+	isNullOrUndef,
 	isObject,
 	isStringOrNumber,
 	LifecycleClass,
 	throwError,
-	warning,
-	isNullOrUndef
+	warning
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import { VNode, InfernoChildren } from '../core/VNodes';
 import options from '../core/options';
+import { InfernoChildren, VNode } from '../core/VNodes';
 import { svgNS } from './constants';
 import {
 	mount,
@@ -20,18 +20,9 @@ import {
 	mountRef,
 	mountText
 } from './mounting';
-import {
-	patchProp
-} from './patching';
-import {
-	componentToDOMNodeMap
-} from './rendering';
-import {
-	createClassComponentInstance,
-	createFunctionalComponentInput,
-	replaceChild,
-	EMPTY_OBJ
-} from './utils';
+import { patchProp } from './patching';
+import { componentToDOMNodeMap } from './rendering';
+import { createClassComponentInstance, createFunctionalComponentInput, EMPTY_OBJ, replaceChild } from './utils';
 import processElement from './wrappers/processElement';
 
 export function normalizeChildNodes(parentDom) {
@@ -116,7 +107,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 	}
 	if (props) {
 		for (const prop in props) {
-			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
+			patchProp(prop, null, props[ prop ], dom, isSVG, hasControlledValue);
 		}
 	}
 	if (isNullOrUndef(className)) {
@@ -140,7 +131,7 @@ function hydrateChildren(children: InfernoChildren, parentDom: Element, lifecycl
 
 	if (isArray(children)) {
 		for (let i = 0, len = (children as Array<string | number | VNode>).length; i < len; i++) {
-			const child = children[i];
+			const child = children[ i ];
 
 			if (!isNull(child) && isObject(child)) {
 				if (dom) {

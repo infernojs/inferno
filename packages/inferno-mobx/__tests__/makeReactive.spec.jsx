@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import { observable, extendObservable, toJS } from 'mobx';
+import { extendObservable, observable, toJS } from 'mobx';
 import { innerHTML } from 'inferno/test/utils';
 import makeReactive from '../dist-es/makeReactive';
 

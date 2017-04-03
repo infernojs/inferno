@@ -1,6 +1,4 @@
-import {
-	isNullOrUndef
-} from 'inferno-shared';
+import { isNullOrUndef } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils';
 
 function isCheckedType(type) {

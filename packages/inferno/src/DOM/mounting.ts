@@ -3,32 +3,26 @@ import {
 	isFunction,
 	isInvalid,
 	isNull,
+	isNullOrUndef,
 	isObject,
 	isStringOrNumber,
 	isUndefined,
 	LifecycleClass,
-	throwError,
-	isNullOrUndef
+	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import { VNode } from '../core/VNodes';
 import options from '../core/options';
-import { directClone, isVNode } from '../core/VNodes';
-import {
-	patchProp
-} from './patching';
-import {
-	recycleComponent,
-	recycleElement
-} from './recycling';
+import { directClone, isVNode, VNode } from '../core/VNodes';
+import { patchProp } from './patching';
+import { recycleComponent, recycleElement } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
 import {
 	appendChild,
 	createClassComponentInstance,
 	createFunctionalComponentInput,
 	documentCreateElement,
-	setTextContent,
-	EMPTY_OBJ
+	EMPTY_OBJ,
+	setTextContent
 } from './utils';
 import processElement from './wrappers/processElement';
 
@@ -115,7 +109,7 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 	if (!isNull(props)) {
 		for (const prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
+			patchProp(prop, null, props[ prop ], dom, isSVG, hasControlledValue);
 		}
 	}
 	if (isNullOrUndef(className)) {
@@ -138,14 +132,14 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 
 export function mountArrayChildren(children, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	for (let i = 0, len = children.length; i < len; i++) {
-		let child = children[i];
+		let child = children[ i ];
 
 		// Verify can string/number be here. might cause de-opt. - Normalization takes care of it.
 		if (!isInvalid(child)) {
 			if (child.dom) {
-				children[i] = child = directClone(child);
+				children[ i ] = child = directClone(child);
 			}
-			mount(children[i], dom, lifecycle, context, isSVG);
+			mount(children[ i ], dom, lifecycle, context, isSVG);
 		}
 	}
 }

@@ -1,18 +1,19 @@
-import { warning, NO_OP } from 'inferno-shared';
-import { Props, VNode, createVNode, cloneVNode, InfernoInput, InfernoChildren } from './core/VNodes';
-import linkEvent from './DOM/events/linkEvent';
-import options from './core/options';
-import { render, findDOMNode, createRenderer } from './DOM/rendering';
+import { NO_OP, warning } from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
+import options from './core/options';
+import { cloneVNode, createVNode, InfernoChildren, InfernoInput, Props, VNode } from './core/VNodes';
+import linkEvent from './DOM/events/linkEvent';
+import { createRenderer, findDOMNode, render } from './DOM/rendering';
 import { EMPTY_OBJ } from './DOM/utils';
 
 if (process.env.NODE_ENV !== 'production') {
-	const testFunc = function testFn() {};
+	const testFunc = function testFn() {
+	};
 	if ((testFunc.name || testFunc.toString()).indexOf('testFn') === -1) {
 		warning(('It looks like you\'re using a minified copy of the development build ' +
-				'of Inferno. When deploying Inferno apps to production, make sure to use ' +
-				'the production build which skips development warnings and is faster. ' +
-				'See http://infernojs.org for more details.'
+			'of Inferno. When deploying Inferno apps to production, make sure to use ' +
+			'the production build which skips development warnings and is faster. ' +
+			'See http://infernojs.org for more details.'
 		));
 	}
 }

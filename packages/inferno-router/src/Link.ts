@@ -1,22 +1,11 @@
 import { createVNode, VNode } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
-import { isBrowser, combineFrom } from 'inferno-shared';
-
-interface ILinkProps {
-	href: any;
-	className?: string;
-	activeClassName?: string;
-	style?: any;
-	activeStyle?: any;
-	onclick?: (event?: any) => void;
-}
+import { combineFrom, isBrowser } from 'inferno-shared';
 
 export default function Link(props, { router }): VNode {
-	const { activeClassName, activeStyle, className, onClick, to, ...otherProps } = props;
-	const elemProps: ILinkProps = {
-		href: isBrowser ? router.createHref({pathname: to}) : router.location.baseUrl ? router.location.baseUrl + to : to,
-		...otherProps
-	};
+	const { activeClassName, activeStyle, className, onClick, children, to, ...otherProps } = props;
+
+	otherProps.href = isBrowser ? router.createHref({ pathname: to }) : router.location.baseUrl ? router.location.baseUrl + to : to;
 
 	let classNm;
 	if (className) {
@@ -28,11 +17,11 @@ export default function Link(props, { router }): VNode {
 			classNm = (className ? className + ' ' : '') + activeClassName;
 		}
 		if (activeStyle) {
-			elemProps.style = combineFrom(props.style, activeStyle);
+			otherProps.style = combineFrom(props.style, activeStyle);
 		}
 	}
 
-	elemProps.onclick = function navigate(e) {
+	otherProps.onclick = function navigate(e) {
 		if (e.button !== 0 || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) {
 			return;
 		}
@@ -43,5 +32,5 @@ export default function Link(props, { router }): VNode {
 		router.push(to, e.target.textContent);
 	};
 
-	return createVNode(VNodeFlags.HtmlElement, 'a', classNm, props.children, elemProps);
+	return createVNode(VNodeFlags.HtmlElement, 'a', classNm, children, otherProps);
 }

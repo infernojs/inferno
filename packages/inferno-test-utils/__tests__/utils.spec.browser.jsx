@@ -1,14 +1,11 @@
+import { spy, stub } from 'sinon';
 import {
-	spy,
-	stub
-} from 'sinon';
-import {
+	createContainerWithHTML,
 	createStyler,
 	innerHTML,
 	sortAttributes,
 	style,
 	triggerEvent,
-	createContainerWithHTML,
 	validateNodeTree
 } from 'inferno/test/utils';
 
@@ -120,7 +117,8 @@ describe('Utils', () => {
 
 	describe('triggerEvent', () => {
 		const element = {
-			dispatchEvent(event) {}
+			dispatchEvent(event) {
+			}
 		};
 		const spyDispatch = spy(element, 'dispatchEvent');
 		let spyCreateMouseEvent;
@@ -148,8 +146,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on dblclick', () => {
@@ -170,8 +168,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on mousedown', () => {
@@ -192,8 +190,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on mouseup', () => {
@@ -214,8 +212,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on focus', () => {
@@ -236,8 +234,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on change', () => {
@@ -258,8 +256,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on blur', () => {
@@ -280,8 +278,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on select', () => {
@@ -302,8 +300,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should throw an error on unknown event', () => {

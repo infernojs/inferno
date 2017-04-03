@@ -16,11 +16,11 @@ function createStoreInjector(grabStoresFn: Function, component) {
 			const newProps = {} as IStoreProps;
 			for (const key in this.props) {
 				if (this.props.hasOwnProperty(key)) {
-					newProps[key] = this.props[key];
+					newProps[ key ] = this.props[ key ];
 				}
 			}
 			const additionalProps = grabStoresFn(this.context.mobxStores || {}, newProps, this.context) || {};
-			for ( const key in additionalProps ) {
+			for (const key in additionalProps) {
 				newProps[ key ] = additionalProps[ key ];
 			}
 			newProps.ref = (instance) => {
@@ -31,7 +31,10 @@ function createStoreInjector(grabStoresFn: Function, component) {
 		}
 	});
 
-	Injector.contextTypes = { mobxStores() {} };
+	Injector.contextTypes = {
+		mobxStores() {
+		}
+	};
 	hoistStatics(Injector, component);
 
 	return Injector;
@@ -53,7 +56,7 @@ const grabStoresByName = function(storeNames: string[]): Function {
 				);
 			}
 
-			nextProps[storeName] = baseStores[storeName];
+			nextProps[ storeName ] = baseStores[ storeName ];
 		});
 		return nextProps;
 	};
@@ -71,7 +74,7 @@ export default function inject(grabStoresFn?: Function | string): any {
 
 		const storesNames: any = [];
 		for (let i = 0, len = arguments.length; i < len; i++) {
-			storesNames[i] = arguments[i];
+			storesNames[ i ] = arguments[ i ];
 		}
 
 		grabStoresFn = grabStoresByName(storesNames);

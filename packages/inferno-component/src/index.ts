@@ -1,7 +1,7 @@
 // Make sure u use EMPTY_OBJ from 'inferno', otherwise it'll be a different reference
-import { EMPTY_OBJ, createVNode, options, VNode, Props } from 'inferno';
-import VNodeFlags from 'inferno-vnode-flags';
+import { createVNode, EMPTY_OBJ, options, Props, VNode } from 'inferno';
 import {
+	combineFrom,
 	ERROR_MSG,
 	isArray,
 	isBrowser,
@@ -9,12 +9,12 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber,
+	isUndefined,
 	Lifecycle,
 	NO_OP,
-	throwError,
-	combineFrom,
-	isUndefined
+	throwError
 } from 'inferno-shared';
+import VNodeFlags from 'inferno-vnode-flags';
 
 let noOp = ERROR_MSG;
 
@@ -61,7 +61,7 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 			component._updating = true;
 			applyState(component, force, () => {
 				for (let i = 0, len = queue.length; i < len; i++) {
-					queue[i]();
+					queue[ i ]();
 				}
 			});
 			component._updating = false;
@@ -84,7 +84,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 		component._pendingState = pending = newState;
 	} else {
 		for (const stateKey in newState) {
-			pending[stateKey] = newState[stateKey];
+			pending[ stateKey ] = newState[ stateKey ];
 		}
 	}
 
@@ -104,7 +104,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 			component.state = pending;
 		} else {
 			for (const key in pending) {
-				state[key] = pending[key];
+				state[ key ] = pending[ key ];
 			}
 		}
 
@@ -152,7 +152,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		component._lastInput = nextInput;
 		if (didUpdate) {
 			let childContext,
-					subLifecycle = component._lifecycle;
+				subLifecycle = component._lifecycle;
 
 			if (!subLifecycle) {
 				subLifecycle = new Lifecycle();
@@ -224,14 +224,23 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 
 	// LifeCycle methods
 	componentDidMount?(): void;
+
 	componentWillMount?(): void;
+
 	componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+
 	shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
+
 	componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
+
 	componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
+
 	componentWillUnmount?(): void;
+
 	getChildContext?(): void;
-	render(nextProps?: P, nextState?, nextContext?) {}
+
+	render(nextProps?: P, nextState?, nextContext?) {
+	}
 
 	forceUpdate(callback?: Function) {
 		if (this._unmounted || !isBrowser) {
@@ -265,15 +274,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		this.setState(newState);
 	}
 
-	_updateComponent(
-		prevState: S,
-		nextState: S,
-		prevProps: P & Props,
-		nextProps: P & Props,
-		context: any,
-		force: boolean,
-		fromSetState: boolean
-	): any {
+	_updateComponent(prevState: S, nextState: S, prevProps: P & Props, nextProps: P & Props, context: any, force: boolean, fromSetState: boolean): any {
 		if (this._unmounted === true) {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError(noOp);
@@ -282,7 +283,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
 			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
-				if (!isUndefined(this.componentWillReceiveProps) && !fromSetState ) {
+				if (!isUndefined(this.componentWillReceiveProps) && !fromSetState) {
 					this._blockRender = true;
 					this.componentWillReceiveProps(nextProps, context);
 					this._blockRender = false;

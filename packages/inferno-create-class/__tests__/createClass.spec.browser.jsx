@@ -38,7 +38,9 @@ describe('Components createClass (JSX)', () => {
 				});
 
 				let a;
-				render(<Foo ref={function (i) { a = i; }} />, container);
+				render(<Foo ref={function (i) {
+					a = i;
+				}}/>, container);
 
 				expect(a.someState).to.eql(1);
 				expect(a.anotherState).to.eql(2);
@@ -58,11 +60,11 @@ describe('Components createClass (JSX)', () => {
 					}
 				});
 
-				render(<Foo bar="test" />, container);
+				render(<Foo bar="test"/>, container);
 				expect(container.innerHTML).to.eql(innerHTML('<div><div>test</div></div>'));
 			});
 
-			it('works as a lifecycle method even when a matching method is already defined', ()=>{
+			it('works as a lifecycle method even when a matching method is already defined', () => {
 				const Foo = createClass({
 					mixins: [
 						{
@@ -71,14 +73,17 @@ describe('Components createClass (JSX)', () => {
 							}
 						}
 					],
-					componentDidMount() {},
+					componentDidMount() {
+					},
 					render() {
 						return <div></div>;
 					}
 				});
 
 				let a;
-				render(<Foo ref={function (i) { a = i; }} />, container);
+				render(<Foo ref={function (i) {
+					a = i;
+				}}/>, container);
 
 				expect(a.someState).to.eql(1);
 			});
@@ -152,7 +157,9 @@ describe('Components createClass (JSX)', () => {
 				});
 
 				let a;
-				render(<Foo ref={function (i) { a = i; }} />, container);
+				render(<Foo ref={function (i) {
+					a = i;
+				}}/>, container);
 
 				expect(a.state).to.eql({
 					a: true,
@@ -200,7 +207,7 @@ describe('Components createClass (JSX)', () => {
 					const newChildren = [];
 
 					for (let i = 0; i < children.length; i++) {
-						newChildren.push(<Page {...children[i].props} />);
+						newChildren.push(<Page {...children[ i ].props} />);
 					}
 
 					return newChildren;
@@ -237,8 +244,8 @@ describe('Components createClass (JSX)', () => {
 			render(
 				(
 					<App wrapContext={true}>
-						<Page greeting="Hello" />
-						<Page greeting="Hai" />
+						<Page greeting="Hello"/>
+						<Page greeting="Hai"/>
 					</App>
 				), container);
 

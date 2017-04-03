@@ -16,31 +16,14 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import options from '../core/options';
-import {
-	createTextVNode,
-	createVoidVNode,
-	directClone,
-	isVNode,
-	VNode
-} from '../core/VNodes';
-import {
-	booleanProps,
-	delegatedEvents,
-	isUnitlessNumber,
-	namespaces,
-	skipProps,
-	strictProps
-} from './constants';
+
+import { Styles } from '../core/structures';
+import { createTextVNode, createVoidVNode, directClone, isVNode, VNode } from '../core/VNodes';
+import { booleanProps, delegatedEvents, isUnitlessNumber, namespaces, skipProps, strictProps } from './constants';
 import { handleEvent } from './events/delegation';
-import {
-	mount,
-	mountArrayChildren,
-	mountComponent,
-	mountElement,
-	mountRef,
-	mountText,
-	mountVoid
-} from './mounting';
+import { mount, mountArrayChildren, mountComponent, mountElement, mountRef, mountText, mountVoid } from './mounting';
+import { componentToDOMNodeMap } from './rendering';
+import { unmount } from './unmounting';
 import {
 	appendChild,
 	EMPTY_OBJ,
@@ -54,10 +37,6 @@ import {
 	setTextContent,
 	updateTextContent
 } from './utils';
-
-import { Styles } from '../core/structures';
-import { componentToDOMNodeMap } from './rendering';
-import { unmount } from './unmounting';
 import processElement from './wrappers/processElement';
 
 export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isRecycling: boolean) {

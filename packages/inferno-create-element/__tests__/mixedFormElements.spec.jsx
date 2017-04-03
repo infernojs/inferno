@@ -124,7 +124,8 @@ describe('HTML Form Elements', () => {
 		});
 
 		it('Should be possible to create input with type range', () => {
-			function change() {}
+			function change() {
+			}
 
 			render(
 				<input
@@ -306,7 +307,7 @@ describe('HTML Form Elements', () => {
 				</div>, container);
 
 
-			expect(container.firstChild.childNodes[1].checked).to.equal(true);
+			expect(container.firstChild.childNodes[ 1 ].checked).to.equal(true);
 
 			//
 			// Exernal change verification
@@ -322,9 +323,9 @@ describe('HTML Form Elements', () => {
 
 			let node = container.firstChild;
 
-			expect(node.childNodes[0].checked).to.equal(false);
-			expect(node.childNodes[1].checked).to.equal(false);
-			expect(node.childNodes[2].checked).to.equal(true);
+			expect(node.childNodes[ 0 ].checked).to.equal(false);
+			expect(node.childNodes[ 1 ].checked).to.equal(false);
+			expect(node.childNodes[ 2 ].checked).to.equal(true);
 
 			//
 			// New Render
@@ -344,9 +345,9 @@ describe('HTML Form Elements', () => {
 			node = container.firstChild;
 
 			// Change to first being checked
-			expect(node.childNodes[0].checked).to.equal(true);
-			expect(node.childNodes[1].checked).to.equal(false);
-			expect(node.childNodes[2].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).to.equal(true);
+			expect(node.childNodes[ 1 ].checked).to.equal(false);
+			expect(node.childNodes[ 2 ].checked).to.equal(false);
 
 			//
 			// New Render, new value
@@ -366,9 +367,9 @@ describe('HTML Form Elements', () => {
 			node = container.firstChild;
 
 			// Change to first being checked
-			expect(node.childNodes[0].checked).to.equal(false);
-			expect(node.childNodes[1].checked).to.equal(false);
-			expect(node.childNodes[2].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).to.equal(false);
+			expect(node.childNodes[ 1 ].checked).to.equal(false);
+			expect(node.childNodes[ 2 ].checked).to.equal(false);
 
 
 			render(
@@ -389,9 +390,9 @@ describe('HTML Form Elements', () => {
 			node = container.firstChild;
 
 			// Change to first being checked
-			expect(node.childNodes[0].checked).to.equal(true);
-			expect(node.childNodes[1].checked).to.equal(false);
-			expect(node.childNodes[2].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).to.equal(true);
+			expect(node.childNodes[ 1 ].checked).to.equal(false);
+			expect(node.childNodes[ 2 ].checked).to.equal(false);
 
 			expect(spy1.callCount).to.equal(1);
 			expect(spy2.callCount).to.equal(0);
@@ -404,9 +405,9 @@ describe('HTML Form Elements', () => {
 					<input onClick={spy3} type="radio" name="gender" checked={false} value="other"/>
 				</div>, container);
 
-			expect(node.childNodes[0].checked).to.equal(true);
-			expect(node.childNodes[1].checked).to.equal(false);
-			expect(node.childNodes[2].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).to.equal(true);
+			expect(node.childNodes[ 1 ].checked).to.equal(false);
+			expect(node.childNodes[ 2 ].checked).to.equal(false);
 		});
 
 
@@ -420,9 +421,9 @@ describe('HTML Form Elements', () => {
 
 			let node = container.firstChild;
 
-			expect(node.childNodes[0].checked).to.equal(false);
-			expect(node.childNodes[1].checked).to.equal(true);
-			expect(node.childNodes[2].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).to.equal(false);
+			expect(node.childNodes[ 1 ].checked).to.equal(true);
+			expect(node.childNodes[ 2 ].checked).to.equal(false);
 
 			render(
 				<div>
@@ -433,9 +434,9 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[0].checked).to.equal(true);
-			expect(node.childNodes[1].checked).to.equal(false);
-			expect(node.childNodes[2].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).to.equal(true);
+			expect(node.childNodes[ 1 ].checked).to.equal(false);
+			expect(node.childNodes[ 2 ].checked).to.equal(false);
 
 			render(
 				<div>
@@ -445,8 +446,8 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[0].checked).to.equal(false);
-			expect(node.childNodes[1].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).to.equal(false);
+			expect(node.childNodes[ 1 ].checked).to.equal(false);
 
 			render(
 				<div>
@@ -456,8 +457,8 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[0].checked).to.equal(false);
-			expect(node.childNodes[1].checked).to.equal(true);
+			expect(node.childNodes[ 0 ].checked).to.equal(false);
+			expect(node.childNodes[ 1 ].checked).to.equal(true);
 
 			render(
 				<div>
@@ -469,10 +470,10 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[0].checked).to.equal(false);
-			expect(node.childNodes[1].checked).to.equal(true);
-			expect(node.childNodes[2].checked).to.equal(false);
-			expect(node.childNodes[3].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).to.equal(false);
+			expect(node.childNodes[ 1 ].checked).to.equal(true);
+			expect(node.childNodes[ 2 ].checked).to.equal(false);
+			expect(node.childNodes[ 3 ].checked).to.equal(false);
 
 
 			render(
@@ -482,7 +483,7 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[0].checked).to.equal(false);
+			expect(node.childNodes[ 0 ].checked).to.equal(false);
 
 			render(
 				<div>
@@ -491,7 +492,7 @@ describe('HTML Form Elements', () => {
 
 			node = container.firstChild;
 
-			expect(node.childNodes[0].checked).to.equal(true);
+			expect(node.childNodes[ 0 ].checked).to.equal(true);
 		});
 	});
 });

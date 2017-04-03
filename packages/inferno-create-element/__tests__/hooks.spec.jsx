@@ -24,7 +24,8 @@ describe('Component lifecycle (JSX)', () => {
 			let updater = null;
 
 			class A extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				constructor(props) {
 					super(props);
@@ -59,7 +60,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 
 			class B extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -71,7 +73,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 
 			class C extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -84,7 +87,8 @@ describe('Component lifecycle (JSX)', () => {
 
 			class D extends Component {
 
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -128,7 +132,8 @@ describe('Component lifecycle (JSX)', () => {
 			let updater = null;
 
 			class A extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				constructor(props) {
 					super(props);
@@ -163,7 +168,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 
 			class B extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (<C />);
@@ -171,7 +177,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 
 			class C extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (<D />);
@@ -179,7 +186,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 
 			class D extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -221,7 +229,8 @@ describe('Component lifecycle (JSX)', () => {
 
 		it('Should trigger unMount once for direct nested children', () => {
 			class B extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return <div>B</div>;
@@ -229,7 +238,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 
 			class C extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return <div>C</div>;
@@ -237,7 +247,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 
 			class D extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return <div>D</div>;
@@ -279,7 +290,8 @@ describe('Component lifecycle (JSX)', () => {
 			let updater = null;
 
 			class B extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -292,7 +304,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 
 			class B1 extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return <p>B1</p>;
@@ -300,7 +313,8 @@ describe('Component lifecycle (JSX)', () => {
 			}
 
 			class B2 extends Component {
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				render() {
 					return <p>B2</p>;
@@ -319,7 +333,8 @@ describe('Component lifecycle (JSX)', () => {
 					updater = this.updateMe;
 				}
 
-				componentWillUnmount() {}
+				componentWillUnmount() {
+				}
 
 				updateMe() {
 					this.setState({
@@ -416,7 +431,7 @@ describe('Component lifecycle (JSX)', () => {
 			render(<StatelessComponent onComponentDidMount={spyObj.fn}/>, _container);
 
 			expect(sinonSpy.callCount).to.equal(1);
-			expect(sinonSpy.getCall(0).args[0]).to.equal(_container.firstChild);
+			expect(sinonSpy.getCall(0).args[ 0 ]).to.equal(_container.firstChild);
 		});
 
 		it('"onComponentWillUnmount" hook should fire', () => {
@@ -463,11 +478,17 @@ describe('Component lifecycle (JSX)', () => {
 				return null;
 			};
 
-			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return true; }}/>, _container);
+			render(<StatelessComponent onComponentShouldUpdate={() => {
+				onComponentShouldUpdateCount++;
+				return true;
+			}}/>, _container);
 			expect(onComponentShouldUpdateCount).to.equal(0, 'should have called shouldUpdate none'); // Update 1
 			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
 
-			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return true; }}/>, _container);
+			render(<StatelessComponent onComponentShouldUpdate={() => {
+				onComponentShouldUpdateCount++;
+				return true;
+			}}/>, _container);
 			expect(onComponentShouldUpdateCount).to.equal(1, 'should have called shouldUpdate once'); // Update 2
 			expect(renderCount).to.equal(2, 'should have called "render" twice'); // Rendered 2 time
 		});
@@ -480,11 +501,17 @@ describe('Component lifecycle (JSX)', () => {
 				return null;
 			};
 
-			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return false; }}/>, _container);
+			render(<StatelessComponent onComponentShouldUpdate={() => {
+				onComponentShouldUpdateCount++;
+				return false;
+			}}/>, _container);
 			expect(onComponentShouldUpdateCount).to.equal(0, 'should have called shouldUpdate none'); // Update 1
 			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
 
-			render(<StatelessComponent onComponentShouldUpdate={() => { onComponentShouldUpdateCount++; return false; }}/>, _container);
+			render(<StatelessComponent onComponentShouldUpdate={() => {
+				onComponentShouldUpdateCount++;
+				return false;
+			}}/>, _container);
 			expect(onComponentShouldUpdateCount).to.equal(1, 'should have called shouldUpdate once'); // Update 2
 			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
 		});
@@ -541,21 +568,21 @@ describe('Component lifecycle (JSX)', () => {
 			render(<RefTester inner={false} innersecond={false}/>, container);
 
 			calledOnce(spyOuter);
-			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
+			expect(spyOuter.getCall(0).args[ 0 ].outerHTML).to.eql('<span>abc</span>');
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
 
 			render(<RefTester inner={true} innersecond={false}/>, container);
 			calledOnce(spyInner);
 			calledOnce(spyOuter);
-			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div></div>');
+			expect(spyInner.getCall(0).args[ 0 ].outerHTML).to.eql('<div></div>');
 			notCalled(spyInnerSecond);
 
 			render(<RefTester inner={true} innersecond={true}/>, container);
 			calledOnce(spyInner);
 			calledOnce(spyOuter);
 			calledOnce(spyInnerSecond);
-			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+			expect(spyInnerSecond.getCall(0).args[ 0 ].outerHTML).to.eql('<span>dfg</span>');
 		});
 
 		it('Should call ref functions in order: child to parent', () => {
@@ -568,9 +595,9 @@ describe('Component lifecycle (JSX)', () => {
 			calledOnce(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
-			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
-			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+			expect(spyOuter.getCall(0).args[ 0 ].outerHTML).to.eql('<span>abc</span>');
+			expect(spyInner.getCall(0).args[ 0 ].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[ 0 ].outerHTML).to.eql('<span>dfg</span>');
 
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
@@ -586,9 +613,9 @@ describe('Component lifecycle (JSX)', () => {
 			calledOnce(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
-			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
-			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+			expect(spyOuter.getCall(0).args[ 0 ].outerHTML).to.eql('<span>abc</span>');
+			expect(spyInner.getCall(0).args[ 0 ].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[ 0 ].outerHTML).to.eql('<span>dfg</span>');
 
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
@@ -607,8 +634,8 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			expect(spyInner.getCall(0).args[0]).to.eql(null);
-			expect(spyInnerSecond.getCall(0).args[0]).to.eql(null);
+			expect(spyInner.getCall(0).args[ 0 ]).to.eql(null);
+			expect(spyInnerSecond.getCall(0).args[ 0 ]).to.eql(null);
 
 			// reset
 			spyOuter.reset();
@@ -624,8 +651,8 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
-			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+			expect(spyInner.getCall(0).args[ 0 ].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[ 0 ].outerHTML).to.eql('<span>dfg</span>');
 
 			// reset
 			spyOuter.reset();
@@ -733,7 +760,7 @@ describe('Component lifecycle (JSX)', () => {
 			render(<RefParent bool={true} inner={false} innersecond={false}/>, container);
 
 			calledOnce(spyOuter);
-			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
+			expect(spyOuter.getCall(0).args[ 0 ].outerHTML).to.eql('<span>abc</span>');
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
 
@@ -751,8 +778,8 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 
-			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
-			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+			expect(spyInner.getCall(0).args[ 0 ].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[ 0 ].outerHTML).to.eql('<span>dfg</span>');
 
 			expect(container.innerHTML).to.eql('<div><div><span>abc</span><div><span>dfg</span></div></div></div>');
 			spyOuter.reset();
@@ -768,8 +795,8 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 
-			expect(spyInner.getCall(0).args[0]).to.eql(null);
-			expect(spyInnerSecond.getCall(0).args[0]).to.eql(null);
+			expect(spyInner.getCall(0).args[ 0 ]).to.eql(null);
+			expect(spyInnerSecond.getCall(0).args[ 0 ]).to.eql(null);
 
 			expect(container.innerHTML).to.eql('<div><div><span>abc</span></div></div>');
 			spyOuter.reset();
@@ -846,21 +873,21 @@ describe('Component lifecycle (JSX)', () => {
 			render(<RefTester inner={false} innersecond={false}/>, container);
 
 			calledOnce(spyOuter);
-			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
+			expect(spyOuter.getCall(0).args[ 0 ].outerHTML).to.eql('<span>abc</span>');
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
 
 			render(<RefTester inner={true} innersecond={false}/>, container);
 			calledOnce(spyInner);
 			calledOnce(spyOuter);
-			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div></div>');
+			expect(spyInner.getCall(0).args[ 0 ].outerHTML).to.eql('<div></div>');
 			notCalled(spyInnerSecond);
 
 			render(<RefTester inner={true} innersecond={true}/>, container);
 			calledOnce(spyInner);
 			calledOnce(spyOuter);
 			calledOnce(spyInnerSecond);
-			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+			expect(spyInnerSecond.getCall(0).args[ 0 ].outerHTML).to.eql('<span>dfg</span>');
 		});
 
 		it('Should call ref functions in order: child to parent #2', () => {
@@ -873,9 +900,9 @@ describe('Component lifecycle (JSX)', () => {
 			calledOnce(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
-			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
-			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+			expect(spyOuter.getCall(0).args[ 0 ].outerHTML).to.eql('<span>abc</span>');
+			expect(spyInner.getCall(0).args[ 0 ].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[ 0 ].outerHTML).to.eql('<span>dfg</span>');
 
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
@@ -891,9 +918,9 @@ describe('Component lifecycle (JSX)', () => {
 			calledOnce(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
-			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
-			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+			expect(spyOuter.getCall(0).args[ 0 ].outerHTML).to.eql('<span>abc</span>');
+			expect(spyInner.getCall(0).args[ 0 ].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[ 0 ].outerHTML).to.eql('<span>dfg</span>');
 
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
@@ -912,8 +939,8 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			expect(spyInner.getCall(0).args[0]).to.eql(null);
-			expect(spyInnerSecond.getCall(0).args[0]).to.eql(null);
+			expect(spyInner.getCall(0).args[ 0 ]).to.eql(null);
+			expect(spyInnerSecond.getCall(0).args[ 0 ]).to.eql(null);
 
 			// reset
 			spyOuter.reset();
@@ -929,8 +956,8 @@ describe('Component lifecycle (JSX)', () => {
 			notCalled(spyOuter);
 			calledOnce(spyInner);
 			calledOnce(spyInnerSecond);
-			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
-			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+			expect(spyInner.getCall(0).args[ 0 ].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[ 0 ].outerHTML).to.eql('<span>dfg</span>');
 
 			// reset
 			spyOuter.reset();
@@ -1015,7 +1042,7 @@ describe('Component lifecycle (JSX)', () => {
 			render(<RefParent bool={true} inner={false} innersecond={false}/>, container);
 
 			calledOnce(spyOuter);
-			expect(spyOuter.getCall(0).args[0].outerHTML).to.eql('<span>abc</span>');
+			expect(spyOuter.getCall(0).args[ 0 ].outerHTML).to.eql('<span>abc</span>');
 			notCalled(spyInner);
 			notCalled(spyInnerSecond);
 
@@ -1033,8 +1060,8 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 
-			expect(spyInner.getCall(0).args[0].outerHTML).to.eql('<div><span>dfg</span></div>');
-			expect(spyInnerSecond.getCall(0).args[0].outerHTML).to.eql('<span>dfg</span>');
+			expect(spyInner.getCall(0).args[ 0 ].outerHTML).to.eql('<div><span>dfg</span></div>');
+			expect(spyInnerSecond.getCall(0).args[ 0 ].outerHTML).to.eql('<span>dfg</span>');
 
 			expect(container.innerHTML).to.eql('<div><div><span>abc</span><div><span>dfg</span></div></div></div>');
 			spyOuter.reset();
@@ -1050,8 +1077,8 @@ describe('Component lifecycle (JSX)', () => {
 			spyInnerSecond.calledBefore(spyInner);
 			spyInner.calledBefore(spyOuter);
 
-			expect(spyInner.getCall(0).args[0]).to.eql(null);
-			expect(spyInnerSecond.getCall(0).args[0]).to.eql(null);
+			expect(spyInner.getCall(0).args[ 0 ]).to.eql(null);
+			expect(spyInnerSecond.getCall(0).args[ 0 ]).to.eql(null);
 
 			expect(container.innerHTML).to.eql('<div><div><span>abc</span></div></div>');
 			spyOuter.reset();

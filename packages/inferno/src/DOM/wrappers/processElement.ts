@@ -1,7 +1,7 @@
+import VNodeFlags from 'inferno-vnode-flags';
 import { processInput } from './InputWrapper';
 import { processSelect } from './SelectWrapper';
 import { processTextarea } from './TextareaWrapper';
-import VNodeFlags from 'inferno-vnode-flags';
 
 /**
  * There is currently no support for switching same input between controlled and nonControlled

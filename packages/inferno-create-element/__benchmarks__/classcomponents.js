@@ -1,9 +1,9 @@
-import { render, createVNode } from 'inferno';
+import { createVNode, render } from 'inferno';
 import Component from 'inferno-component';
 import InfernoVNodeFlags from 'inferno-vnode-flags';
 
-suite('class components', function () {
-	benchmark('single component', function () {
+suite('class components', function() {
+	benchmark('single component', function() {
 		class Com extends Component {
 			render() {
 				return createVNode(InfernoVNodeFlags.Element, 'div', null, '1');
@@ -12,17 +12,17 @@ suite('class components', function () {
 
 		render(createVNode(InfernoVNodeFlags.ComponentClass, Com), this.testDiv);
 	}, {
-		setup: function () {
+		setup: function() {
 			this.testDiv = document.createElement('div');
 		},
 
-		teardown: function () {
+		teardown: function() {
 			this.testDiv.innerHTML = '';
 		}
 	});
 
 
-	benchmark('single component + state change in CWM', function () {
+	benchmark('single component + state change in CWM', function() {
 		class Com extends Component {
 
 			componentWillMount() {
@@ -40,16 +40,16 @@ suite('class components', function () {
 
 		render(createVNode(InfernoVNodeFlags.ComponentClass, Com), this.testDiv);
 	}, {
-		setup: function () {
+		setup: function() {
 			this.testDiv = document.createElement('div');
 		},
 
-		teardown: function () {
+		teardown: function() {
 			this.testDiv.innerHTML = '';
 		}
 	});
 
-	benchmark('20 children components with state change in CWM', function () {
+	benchmark('20 children components with state change in CWM', function() {
 
 		class Com extends Component {
 
@@ -89,11 +89,11 @@ suite('class components', function () {
 			createVNode(InfernoVNodeFlags.ComponentClass, Com)
 		]), this.testDiv);
 	}, {
-		setup: function () {
+		setup: function() {
 			this.testDiv = document.createElement('div');
 		},
 
-		teardown: function () {
+		teardown: function() {
 			this.testDiv.innerHTML = '';
 		}
 	});

@@ -382,7 +382,7 @@ describe('setState', () => {
 			render() {
 				return (
 					<div>
-						<Child foo={this.state.foo} />
+						<Child foo={this.state.foo}/>
 					</div>
 				);
 			}
@@ -440,7 +440,7 @@ describe('setState', () => {
 			render() {
 				return (
 					<div>
-						<Child foo={this.state.foo} />
+						<Child foo={this.state.foo}/>
 					</div>
 				);
 			}

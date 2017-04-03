@@ -2,11 +2,7 @@ import { expect } from 'chai';
 import { createVNode, render } from 'inferno';
 import Component from 'inferno-component';
 import { renderToString } from '../dist-es';
-import {
-	createContainerWithHTML,
-	innerHTML,
-	validateNodeTree
-} from 'inferno/test/utils';
+import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno/test/utils';
 
 function Comp1() {
 	return <span>Worked!</span>;

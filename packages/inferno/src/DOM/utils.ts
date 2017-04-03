@@ -1,17 +1,16 @@
 import {
+	combineFrom,
 	isArray,
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber,
 	isUndefined,
 	LifecycleClass,
-	throwError,
-	combineFrom
+	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import options from '../core/options';
-import { VNode, Props } from '../core/VNodes';
-import { directClone, createTextVNode, createVoidVNode } from '../core/VNodes';
+import { createTextVNode, createVoidVNode, directClone, Props, VNode } from '../core/VNodes';
 import { svgNS } from './constants';
 import { mount } from './mounting';
 import { patch } from './patching';
@@ -189,7 +188,7 @@ export function removeAllChildren(dom: Element, children, lifecycle: LifecycleCl
 
 export function removeChildren(dom: Element, children, lifecycle: LifecycleClass, isRecycling: boolean) {
 	for (let i = 0, len = children.length; i < len; i++) {
-		const child = children[i];
+		const child = children[ i ];
 
 		if (!isInvalid(child)) {
 			unmount(child, dom, lifecycle, true, isRecycling);
@@ -198,6 +197,6 @@ export function removeChildren(dom: Element, children, lifecycle: LifecycleClass
 }
 
 export function isKeyed(lastChildren: VNode[], nextChildren: VNode[]): boolean {
-	return nextChildren.length && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
-		&& lastChildren.length && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
+	return nextChildren.length && !isNullOrUndef(nextChildren[ 0 ]) && !isNullOrUndef(nextChildren[ 0 ].key)
+		&& lastChildren.length && !isNullOrUndef(lastChildren[ 0 ]) && !isNullOrUndef(lastChildren[ 0 ].key);
 }

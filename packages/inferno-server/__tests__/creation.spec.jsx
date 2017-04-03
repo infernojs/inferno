@@ -2,11 +2,11 @@ import { expect } from 'chai';
 import { renderToStaticMarkup } from '../dist-es';
 
 /*
-class StatefulComponent extends Component {
-	render() {
-		return createElement('span', null, `stateless ${ this.props.value }!`);
-	}
-}*/
+ class StatefulComponent extends Component {
+ render() {
+ return createElement('span', null, `stateless ${ this.props.value }!`);
+ }
+ }*/
 
 describe('SSR Creation (JSX)', () => {
 	const testEntries = [{
@@ -58,7 +58,9 @@ describe('SSR Creation (JSX)', () => {
 		result: '<select value="dog"><option>A cat</option><option selected>A dog</option></select>'
 	}, {
 		description: 'should render a text placeholder',
-		template: () => <div><div>{ '' }</div><p>Test</p></div>,
+		template: () => <div>
+			<div>{ '' }</div>
+			<p>Test</p></div>,
 		result: '<div><div> </div><p>Test</p></div>'
 	}];
 

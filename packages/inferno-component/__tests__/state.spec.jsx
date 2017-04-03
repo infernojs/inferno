@@ -15,7 +15,7 @@ class TestCWRP extends Component {
 	componentWillReceiveProps() {
 		this.setStateSync({ a: 1 });
 
-		if (this.state.a !== 1){
+		if (this.state.a !== 1) {
 			this.props.done('state is not correct');
 			return;
 		}

@@ -20,7 +20,8 @@ export function warning(message) {
 		throw new Error(message);
 
 		/* eslint-disable no-empty */
-	} catch (e) {}
+	} catch ( e ) {
+	}
 
 	/* eslint-enable no-empty */
 }
@@ -38,10 +39,10 @@ export function shallowEqual(objA, objB) {
 	// Test for A's keys different from B.
 	const hasOwn = Object.prototype.hasOwnProperty;
 	for (let i = 0, len = keysA.length; i < len; i++) {
-		const key = keysA[i];
+		const key = keysA[ i ];
 
 		if (!hasOwn.call(objB, key) ||
-			objA[key] !== objB[key]) {
+			objA[ key ] !== objB[ key ]) {
 			return false;
 		}
 	}

@@ -7,7 +7,7 @@ function findVNodeFromDom(vNode, dom) {
 		const roots = options.roots;
 
 		for (let i = 0, len = roots.length; i < len; i++) {
-			const root = roots[i];
+			const root = roots[ i ];
 			const result = findVNodeFromDom(root.input, dom);
 
 			if (result) {
@@ -27,7 +27,7 @@ function findVNodeFromDom(vNode, dom) {
 		if (children) {
 			if (isArray(children)) {
 				for (let i = 0, len = children.length; i < len; i++) {
-					const child = children[i];
+					const child = children[ i ];
 
 					if (child) {
 						const result = findVNodeFromDom(child, dom);
@@ -110,14 +110,19 @@ export function createDevToolsBridge() {
 
 	const Mount = {
 		_instancesByReactRootID: roots,
-		_renderNewRootComponent(instance?) {}
+		_renderNewRootComponent(instance?) {
+		}
 	};
 
 	const Reconciler = {
-		mountComponent(instance?) { },
-		performUpdateIfNecessary(instance?) {},
-		receiveComponent(instance?) {},
-		unmountComponent(instance?) {}
+		mountComponent(instance?) {
+		},
+		performUpdateIfNecessary(instance?) {
+		},
+		receiveComponent(instance?) {
+		},
+		unmountComponent(instance?) {
+		}
 	};
 
 	const queuedMountComponents = new Map();
@@ -128,8 +133,8 @@ export function createDevToolsBridge() {
 		if (!map.has(component)) {
 			map.set(component, true);
 			requestAnimationFrame(function() {
-					updater(component);
-					map.delete(component);
+				updater(component);
+				map.delete(component);
 			});
 		}
 	};
@@ -143,7 +148,7 @@ export function createDevToolsBridge() {
 		const instance = updateReactComponent(vNode, null);
 		if (isRootVNode(vNode)) {
 			instance._rootID = nextRootKey(roots);
-			roots[instance._rootID] = instance;
+			roots[ instance._rootID ] = instance;
 			Mount._renderNewRootComponent(instance);
 		}
 		visitNonCompositeChildren(instance, (childInst) => {
@@ -200,7 +205,7 @@ export function createDevToolsBridge() {
 		queueUnmountComponent(instance);
 		deleteInstanceForVNode(vNode);
 		if (instance._rootID) {
-			delete roots[instance._rootID];
+			delete roots[ instance._rootID ];
 		}
 	};
 
@@ -217,7 +222,7 @@ export function createDevToolsBridge() {
 
 function isRootVNode(vNode) {
 	for (let i = 0, len = options.roots.length; i < len; i++) {
-		const root = options.roots[i];
+		const root = options.roots[ i ];
 
 		if (root.input === vNode) {
 			return true;
@@ -245,7 +250,7 @@ function updateReactComponent(vNode, parentDom) {
 
 	if (oldInstance) {
 		for (const key in newInstance) {
-			oldInstance[key] = newInstance[key];
+			oldInstance[ key ] = newInstance[ key ];
 		}
 
 		return oldInstance;
@@ -261,7 +266,7 @@ function normalizeChildren(children, dom) {
 			updateReactComponent(child, dom)
 		);
 	} else {
-		return !isInvalid(children) ? [updateReactComponent(children, dom)] : [];
+		return !isInvalid(children) ? [ updateReactComponent(children, dom) ] : [];
 	}
 }
 
@@ -299,7 +304,7 @@ function createReactDOMComponent(vNode, parentDom) {
 }
 
 function normalizeKey(key) {
-	if (key && key[0] === '.') {
+	if (key && key[ 0 ] === '.') {
 		return null;
 	}
 }
@@ -359,7 +364,7 @@ function visitNonCompositeChildren(component, visitor?) {
 		component._renderedChildren.forEach((child) => {
 			if (child) {
 				visitor(child);
-				if (!child._component)  {
+				if (!child._component) {
 					visitNonCompositeChildren(child, visitor);
 				}
 			}
@@ -383,6 +388,6 @@ function typeName(type) {
  */
 function findRoots(roots) {
 	options.roots.forEach((root) => {
-		roots[nextRootKey(roots)] = updateReactComponent(root.input, null);
+		roots[ nextRootKey(roots) ] = updateReactComponent(root.input, null);
 	});
 }

@@ -5,7 +5,7 @@ export const ERROR_MSG = 'a runtime error occured! Use Inferno in development en
 export const isBrowser = !!(typeof window !== 'undefined' && window.document);
 
 export function toArray(children): any[] {
-	return isArray(children) ? children : (children ? [children] : children);
+	return isArray(children) ? children : (children ? [ children ] : children);
 }
 
 // this is MUCH faster than .constructor === Array and instanceof Array
@@ -74,12 +74,12 @@ export function combineFrom(first: {}, second: {}): any {
 	let key;
 	if (first) {
 		for (key in first) {
-			obj[key] = first[key];
+			obj[ key ] = first[ key ];
 		}
 	}
 	if (second) {
 		for (key in second) {
-			obj[key] = second[key];
+			obj[ key ] = second[ key ];
 		}
 	}
 	return obj;
@@ -105,6 +105,6 @@ Lifecycle.prototype.trigger = function trigger() {
 	const listeners = this.listeners;
 
 	for (let i = 0, len = listeners.length; i < len; i++) {
-		listeners[i]();
+		listeners[ i ]();
 	}
 };

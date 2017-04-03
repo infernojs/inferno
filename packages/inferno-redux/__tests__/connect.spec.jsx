@@ -19,6 +19,7 @@ class BasicComponent1 extends Component {
 	handleClick() {
 		this.props.action();
 	}
+
 	render() {
 		return (
 			<a onClick={this.handleClick.bind(this)}>{this.props.test}</a>

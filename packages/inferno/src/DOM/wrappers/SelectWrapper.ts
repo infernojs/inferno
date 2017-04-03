@@ -1,8 +1,4 @@
-import {
-	isArray,
-	isInvalid,
-	isNullOrUndef
-} from 'inferno-shared';
+import { isArray, isInvalid, isNullOrUndef } from 'inferno-shared';
 import { isVNode } from '../../core/VNodes';
 import { EMPTY_OBJ } from '../utils';
 
@@ -18,7 +14,7 @@ function updateChildOptionGroup(vNode, value) {
 
 		if (isArray(children)) {
 			for (let i = 0, len = children.length; i < len; i++) {
-				updateChildOption(children[i], value);
+				updateChildOption(children[ i ], value);
 			}
 		} else if (isVNode(children)) {
 			updateChildOption(children, value);
@@ -91,7 +87,7 @@ export function applyValue(vNode, dom, mounting: boolean) {
 		}
 		if (isArray(children)) {
 			for (let i = 0, len = children.length; i < len; i++) {
-				updateChildOptionGroup(children[i], value);
+				updateChildOptionGroup(children[ i ], value);
 			}
 		} else if (isVNode(children)) {
 			updateChildOptionGroup(children, value);

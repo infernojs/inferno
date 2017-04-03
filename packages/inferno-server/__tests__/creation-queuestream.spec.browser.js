@@ -21,6 +21,7 @@ class StatefulPromiseComponent extends Component {
 			}, 5 * this.props.index);
 		});
 	}
+
 	render() {
 		return createElement(
 			'span', null,
@@ -40,6 +41,7 @@ class StatefulHierchicalPromiseComponent extends Component {
 			}, 0);
 		});
 	}
+
 	render() {
 		if (this.props.index > 4) {
 			return createElement(
@@ -173,13 +175,13 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 			const vDom = test.template('foo');
 			return streamPromise(vDom).then(function (output) {
 				if (typeof test.result === 'object') {
-					expect(output[0]).to.deep.equal(test.result[0]);
-					expect(output[1]).to.equal(test.result[1]);
+					expect(output[ 0 ]).to.deep.equal(test.result[ 0 ]);
+					expect(output[ 1 ]).to.equal(test.result[ 1 ]);
 				} else {
 					const container = document.createElement('div');
 					document.body.appendChild(container);
 					container.innerHTML = output;
-					expect(output[1]).to.equal(test.result);
+					expect(output[ 1 ]).to.equal(test.result);
 					document.body.removeChild(container);
 				}
 			});
@@ -191,12 +193,12 @@ function streamPromise(dom) {
 	return new Promise(function (res, rej) {
 		let chunks = [];
 		streamQueueAsString(dom)
-		.on('error', rej)
-		.on('data', (chunk) => {
-			chunks.push(chunk.toString());
-		})
-		.pipe(concatStream(function (buffer) {
-			res([ chunks, buffer.toString('utf-8') ]);
-		}));
+			.on('error', rej)
+			.on('data', (chunk) => {
+				chunks.push(chunk.toString());
+			})
+			.pipe(concatStream(function (buffer) {
+				res([ chunks, buffer.toString('utf-8') ]);
+			}));
 	});
 }

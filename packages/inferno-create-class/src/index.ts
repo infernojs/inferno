@@ -1,5 +1,5 @@
-import { isFunction, isNullOrUndef, isUndefined, isObject, throwError } from 'inferno-shared';
 import Component, { ComponentLifecycle } from 'inferno-component';
+import { isFunction, isNullOrUndef, isObject, isUndefined, throwError } from 'inferno-shared';
 
 export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
 	statics?: {
@@ -8,7 +8,7 @@ export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
 	mixins?: any;
 
 	displayName?: string;
-	propTypes?: {[index: string]: Function};
+	propTypes?: { [index: string]: Function };
 
 	getDefaultProps?(): P;
 	getInitialState?(): S;
@@ -55,8 +55,8 @@ const AUTOBIND_BLACKLIST = {
 
 function extend(base, props, all?: boolean) {
 	for (const key in props) {
-		if (all === true || !isNullOrUndef(props[key])) {
-			base[key] = props[key];
+		if (all === true || !isNullOrUndef(props[ key ])) {
+			base[ key ] = props[ key ];
 		}
 	}
 	return base;
@@ -64,16 +64,16 @@ function extend(base, props, all?: boolean) {
 
 function bindAll<P, S>(ctx: Component<P, S>) {
 	for (const i in ctx) {
-		const v = ctx[i];
-		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST[i]) {
-			(ctx[i] = v.bind(ctx)).__bound = true;
+		const v = ctx[ i ];
+		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST[ i ]) {
+			(ctx[ i ] = v.bind(ctx)).__bound = true;
 		}
 	}
 }
 
 function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 	for (let i = 0, len = mixins.length; i < len; i++) {
-		const mixin = mixins[i];
+		const mixin = mixins[ i ];
 
 		// Surprise: Mixins can have mixins
 		if (mixin.mixins) {
@@ -82,8 +82,8 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 		}
 
 		for (const key in mixin as Function[]) {
-			if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
-				(keyed[key] || (keyed[key] = [])).push(mixin[key]);
+			if (mixin.hasOwnProperty(key) && typeof mixin[ key ] === 'function') {
+				(keyed[ key ] || (keyed[ key ] = [])).push(mixin[ key ]);
 			}
 		}
 	}
@@ -94,8 +94,8 @@ function multihook<P, S>(inst: Component<P, S>, hooks: Function[], mergeFn?: Fun
 	return function() {
 		let ret;
 
-		for (let i = 0, len = hooks.length; i < len; i ++) {
-			const hook = hooks[i];
+		for (let i = 0, len = hooks.length; i < len; i++) {
+			const hook = hooks[ i ];
 			let r = hook.apply(this, arguments);
 
 			if (mergeFn) {
@@ -125,7 +125,7 @@ function mergeNoDupes(previous: any, current: any) {
 					throwError(`Mixins return duplicate key ${key} in their return values`);
 				}
 
-				previous[key] = current[key];
+				previous[ key ] = current[ key ];
 			}
 		}
 	}
@@ -133,19 +133,19 @@ function mergeNoDupes(previous: any, current: any) {
 }
 
 function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[]): void {
-	const hooks = isUndefined(inst[key]) ? mixin : mixin.concat(inst[key]);
+	const hooks = isUndefined(inst[ key ]) ? mixin : mixin.concat(inst[ key ]);
 
 	if (key === 'getDefaultProps' || key === 'getInitialState' || key === 'getChildContext') {
-		inst[key] = multihook<P, S>(inst, hooks, mergeNoDupes);
+		inst[ key ] = multihook<P, S>(inst, hooks, mergeNoDupes);
 	} else {
-		inst[key] = multihook<P, S>(inst, hooks);
+		inst[ key ] = multihook<P, S>(inst, hooks);
 	}
 }
 
 function applyMixins(Cl: any, mixins: Function[] | any[]) {
 	for (const key in mixins) {
 		if (mixins.hasOwnProperty(key)) {
-			const mixin = mixins[key];
+			const mixin = mixins[ key ];
 
 			let inst;
 
@@ -155,10 +155,10 @@ function applyMixins(Cl: any, mixins: Function[] | any[]) {
 				inst = Cl.prototype;
 			}
 
-			if (isFunction(mixin[0])) {
+			if (isFunction(mixin[ 0 ])) {
 				applyMixin(key, inst, mixin);
 			} else {
-				inst[key] = mixin;
+				inst[ key ] = mixin;
 			}
 		}
 	}
@@ -171,6 +171,7 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComp
 		static propTypes = obj.propTypes;
 		static mixins = obj.mixins && collateMixins(obj.mixins);
 		static getDefaultProps = obj.getDefaultProps;
+
 		getInitialState?(): S;
 
 		constructor(props, context) {
