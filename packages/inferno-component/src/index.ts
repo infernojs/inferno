@@ -110,7 +110,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 
 		component._pendingState = null;
 		if (callback && component._blockRender) {
-			component._lifecycle.addListener(callback);
+			component._lifecycle.addListener(callback.bind(component));
 		}
 	}
 }

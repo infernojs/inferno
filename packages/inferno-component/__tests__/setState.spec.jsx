@@ -677,4 +677,35 @@ describe('setState', () => {
 		doSomething('4');
 		expect(container.firstChild.innerHTML).to.equal('4');
 	});
+
+	it('Set state callback should have context of caller component (forced) - as per React', () => {
+		let cnt = 0;
+
+		class Com extends Component {
+			doTest() {
+				expect(this.state.a).to.equal(cnt);
+			}
+
+			componentWillMount() {
+				this.setState({
+					a: ++cnt
+				}, this.doTest);
+			}
+
+			componentDidMount() {
+				this.setState({
+					a: ++cnt
+				}, this.doTest);
+			}
+
+			render() {
+				return (
+					<div>1</div>
+				);
+			}
+		}
+
+
+		render(<Com />, container);
+	});
 });
