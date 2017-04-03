@@ -181,6 +181,14 @@ export function directClone(vNodeToClone: VNode): VNode {
 
  Would be nice to combine this with directClone but could not do it without breaking change
  */
+
+/**
+ * Clones given virtual node by creating new instance of it
+ * @param {VNode} vNodeToClone virtual node to be cloned
+ * @param {Props=} props additional props for new virtual node
+ * @param {...*} _children new children for new virtual node
+ * @returns {VNode} new virtual node
+ */
 export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: InfernoChildren[]): VNode {
 	let children: any = _children;
 	const childrenLen = _children.length;
