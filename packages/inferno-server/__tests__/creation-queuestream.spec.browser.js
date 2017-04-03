@@ -167,6 +167,11 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 				[ '<div>', '<span>Stateless Item 1: I waited long enough!</span>', '<span>Stateless Item 2: I waited long enough!</span>', '<span>Stateless Item 3: I waited long enough!</span>', '</div>' ],
 				'<div><span>Stateless Item 1: I waited long enough!</span><span>Stateless Item 2: I waited long enough!</span><span>Stateless Item 3: I waited long enough!</span></div>'
 			]
+		},
+		{
+			description: 'should render opacity style',
+			template: () => createElement('div', { style: {opacity: .8}}),
+			result: '<div style="opacity:0.8;"></div>'
 		}
 	];
 

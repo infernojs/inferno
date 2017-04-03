@@ -62,6 +62,14 @@ describe('SSR Creation (JSX)', () => {
 			<div>{ '' }</div>
 			<p>Test</p></div>,
 		result: '<div><div> </div><p>Test</p></div>'
+	}, {
+		description: 'Should render style opacity #1',
+		template: () => <div style={{ opacity: 0.8 }}></div>,
+		result: '<div style="opacity:0.8;"></div>'
+	}, {
+		description: 'Should render style opacity #2',
+		template: () => <div style="opacity:0.8;"></div>,
+		result: '<div style="opacity:0.8;"></div>'
 	}];
 
 	testEntries.forEach((test) => {
