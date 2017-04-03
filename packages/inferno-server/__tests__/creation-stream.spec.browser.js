@@ -100,7 +100,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			result: '<div></div>'
 		}, {
 			description: 'should render opacity style',
-			template: () => createElement('div', { style: {opacity: .8}}),
+			template: () => createElement('div', { style: { opacity: 0.8 } }),
 			result: '<div style="opacity:0.8;"></div>'
 		}
 	];

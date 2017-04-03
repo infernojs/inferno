@@ -170,7 +170,7 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 		},
 		{
 			description: 'should render opacity style',
-			template: () => createElement('div', { style: {opacity: .8}}),
+			template: () => createElement('div', { style: { opacity: 0.8 } }),
 			result: '<div style="opacity:0.8;"></div>'
 		}
 	];
