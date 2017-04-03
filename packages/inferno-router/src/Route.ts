@@ -2,6 +2,7 @@ import { VNode } from 'inferno';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
 import { rest } from './utils';
+import { isArray } from 'inferno-shared';
 
 const resolvedPromise = Promise.resolve();
 
@@ -94,7 +95,7 @@ export default class Route extends Component<IRouteProps, any> {
 
 		const resolvedComponent = component || asyncComponent;
 		if (!resolvedComponent) {
-			return null;
+			return !isArray(children) ? children : null;
 		}
 
 		return createElement(resolvedComponent, props, children);

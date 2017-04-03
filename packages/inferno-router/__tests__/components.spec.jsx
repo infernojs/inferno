@@ -334,6 +334,32 @@ describe('Router (jsx)', () => {
 				done();
 			});
 		});
+
+		it('should render IndexRoute when root Route without component prop used', () => {
+			render(
+				<Router history={ browserHistory }>
+					<Route path="/">
+						<IndexRoute component={ () => <div>Good</div> }/>
+						<Route path={'/test'} component={ () => <div>Bad</div> }/>
+					</Route>
+				</Router>, container
+			);
+
+			expect(innerHTML(container.innerHTML)).to.equal('<div>Good</div>');
+		});
+
+		it('should render /test Route when root Route without component prop used', () => {
+			render(
+				<Router url={'/test'} history={ browserHistory }>
+					<Route path="/">
+						<IndexRoute component={ () => <div>Bad</div> }/>
+						<Route path={'/test'} component={ () => <div>Good</div> }/>
+					</Route>
+				</Router>, container
+			);
+
+			expect(container.innerHTML).to.equal('<div>Good</div>');
+		});
 	});
 });
 
