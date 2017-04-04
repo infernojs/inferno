@@ -80,7 +80,7 @@
     "object.entries": "^1.0.4",
     "optimize-js": "^1.0.3",
     "pre-commit": "^1.2.2",
-    "progress": "^1.1.8",
+    "progress": "^2.0.0",
     "redux": "^3.6.0",
     "rimraf": "^2.6.1",
     "rollup": "0.41.6",
