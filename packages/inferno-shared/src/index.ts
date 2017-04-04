@@ -104,7 +104,9 @@ Lifecycle.prototype.addListener = function addListener(callback) {
 Lifecycle.prototype.trigger = function trigger() {
 	const listeners = this.listeners;
 
-	for (let i = 0, len = listeners.length; i < len; i++) {
-		listeners[ i ]();
+	let listener;
+	// We need to remove current listener from array when calling it, because more listeners might be added
+	while (listener = listeners.shift()) {
+		listener();
 	}
 };

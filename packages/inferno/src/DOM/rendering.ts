@@ -87,7 +87,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const documentBody = isBrowser ? document.body : null;
-
 /**
  * Renders virtual node tree into parent node.
  * @param {VNode | null | string | number} input vNode to be rendered
@@ -132,8 +131,8 @@ export function render(input: InfernoInput, parentDom?: Element | SVGAElement | 
 			}
 			patch(root.input as VNode, input as VNode, parentDom as Element, lifecycle, EMPTY_OBJ, false, false);
 		}
-		lifecycle.trigger();
 		root.input = input;
+		lifecycle.trigger();
 	}
 	if (root) {
 		const rootInput: VNode = root.input as VNode;

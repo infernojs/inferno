@@ -170,7 +170,6 @@ export function mountComponent(vNode: VNode, parentDom: Element, lifecycle: Life
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
 		instance._updating = false;
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
-		vNode.children = instance;
 	} else {
 		const input = createFunctionalComponentInput(vNode, type, props, context);
 

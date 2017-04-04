@@ -10,7 +10,6 @@ import {
 	isNullOrUndef,
 	isStringOrNumber,
 	isUndefined,
-	Lifecycle,
 	NO_OP,
 	throwError
 } from 'inferno-shared';
@@ -127,7 +126,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		const props = component.props as P;
 		const context = component.context;
 
-		component._pendingState = {};
+		component._pendingState = null;
 		let nextInput = component._updateComponent(prevState, nextState, props, props, context, force, true);
 		let didUpdate = true;
 
@@ -151,15 +150,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 
 		component._lastInput = nextInput;
 		if (didUpdate) {
-			let childContext,
-				subLifecycle = component._lifecycle;
-
-			if (!subLifecycle) {
-				subLifecycle = new Lifecycle();
-			} else {
-				subLifecycle.listeners = [];
-			}
-			component._lifecycle = subLifecycle;
+			let childContext;
 
 			if (!isUndefined(component.getChildContext)) {
 				childContext = component.getChildContext();
@@ -171,8 +162,9 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 				childContext = combineFrom(context, childContext as any);
 			}
 
-			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
-			subLifecycle.trigger();
+			const lifeCycle = component._lifecycle;
+			component._patch(lastInput, nextInput, parentDom, lifeCycle, childContext, component._isSVG, false);
+			lifeCycle.trigger();
 
 			if (!isUndefined(component.componentDidUpdate)) {
 				component.componentDidUpdate(props, prevState, context);
@@ -186,7 +178,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		updateParentComponentVNodes(vNode, dom);
 	} else {
 		component.state = (component._pendingState as S);
-		component._pendingState = {};
+		component._pendingState = null;
 	}
 	if (!isNullOrUndef(callback)) {
 		callback.call(component);
@@ -212,7 +204,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_patch = null;
 	_isSVG = false;
 	_componentToDOMNodeMap = null;
-	_updating = false;
+	_updating = true;
 
 	constructor(props?: P, context?: any) {
 		/** @type {object} */
@@ -291,7 +283,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				if (this._pendingSetState) {
 					nextState = combineFrom(nextState, this._pendingState) as S;
 					this._pendingSetState = false;
-					this._pendingState = {};
+					this._pendingState = null;
 				}
 			}
 

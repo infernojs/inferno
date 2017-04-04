@@ -1218,4 +1218,168 @@ describe('Component lifecycle (JSX)', () => {
 			expect(container.innerHTML).to.eql('<div><span>hey</span></div>');
 		});
 	});
+
+
+	describe('ref', () => {
+		it('Should trigger lifecycle hooks when parent changes', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+			const spy3 = sinon.spy();
+			const spy4 = sinon.spy();
+			const spy5 = sinon.spy();
+
+			class A extends Component {
+				render() {
+					return (
+						<div>
+							<div ref={spy5}>
+								<span>1</span>
+								<span>1</span>
+							</div>
+						</div>
+					);
+				}
+			}
+
+			class B extends Component {
+				componentWillMount() {
+					this.setState({
+						foo: 'bar'
+					});
+				}
+				render() {
+					return (
+						<div>
+							<div ref={spy1}></div>
+							<Child />
+							<div></div>
+							<div ref={spy2}></div>
+							<div></div>
+							<Child ref={spy3}/>
+						</div>
+					);
+				}
+			}
+
+			class Child extends Component {
+				componentWillMount() {
+					this.setState({
+						foo: '1'
+					});
+				}
+				render() {
+					return <div ref={spy4}>5</div>;
+				}
+			}
+
+			render(<A />, container);
+			expect(spy5.callCount).to.equal(1);
+
+			render(<B />, container);
+
+			expect(spy5.callCount).to.equal(2); // mount + unmount
+
+			expect(spy1.callCount).to.equal(1);
+			expect(spy2.callCount).to.equal(1);
+			expect(spy3.callCount).to.equal(1);
+			expect(spy4.callCount).to.equal(2); // 2 refs
+		});
+
+		// it('Should trigger lifecycle hooks when parent changes #2', (done) => {
+		// 	const spy1 = sinon.spy();
+		// 	const spy2 = sinon.spy();
+		// 	const spy3 = sinon.spy();
+		// 	const spy4 = sinon.spy();
+		// 	const spy5 = sinon.spy();
+		//
+		// 	class A extends Component {
+		// 		render() {
+		// 			return (
+		// 				<div>
+		// 					<div ref={spy5}>
+		// 						<span>1</span>
+		// 						<span>1</span>
+		// 					</div>
+		// 				</div>
+		// 			);
+		// 		}
+		// 	}
+		//
+		// 	class B extends Component {
+		// 		componentWillMount() {
+		// 			this.setState({
+		// 				a: 2
+		// 			});
+		// 		}
+		// 		render() {
+		// 			return (
+		// 				<div>
+		// 					<div ref={spy1}></div>
+		// 					<Child changeCallback={this.props.callback} />
+		// 					<div ref={() => this.setState({ a: 1 })}></div>
+		// 					{this.state.a === 1 ? <div ref={spy2}></div> : null}
+		// 					<div></div>
+		// 					<Child ref={spy3}/>
+		// 				</div>
+		// 			);
+		// 		}
+		// 	}
+		//
+		// 	let called = false;
+		//
+		// 	class Child extends Component {
+		// 		componentWillMount() {
+		// 			this.setState({
+		// 				foo: '1'
+		// 			});
+		// 		}
+		//
+		// 		componentWillReceiveProps() {
+		// 			if (!called) {
+		// 				called = true;
+		//
+		// 				this.props.changeCallback();
+		// 			}
+		// 		}
+		//
+		// 		render() {
+		// 			return <div ref={spy4}>5</div>;
+		// 		}
+		// 	}
+		//
+		// 	class Parent extends Component {
+		// 		constructor(p, c) {
+		// 			super(p, c);
+		//
+		// 			this.change = () => {
+		// 				this.setState({ a: 1 });
+		// 			};
+		// 		}
+		// 		render() {
+		// 			return (
+		// 				<div>
+		// 					{this.props.bool ? <A /> : <B callback={this.change}/>}
+		// 				</div>
+		// 			);
+		// 		}
+		// 	}
+		//
+		// 	render(<Parent bool={true}/>, container);
+		// 	expect(spy5.callCount).to.equal(1);
+		// 	render(<Parent bool={false}/>, container);
+		//
+		// 	setTimeout(function () {
+		// 		expect(spy5.callCount).to.equal(2); // mount + unmount
+		//
+		// 		expect(spy1.callCount).to.equal(1);
+		// 		expect(spy2.callCount).to.equal(0);
+		// 		expect(spy3.callCount).to.equal(1);
+		// 		expect(spy4.callCount).to.equal(1); // 2 refs
+		//
+		// 		setTimeout(function () {
+		// 			done();
+		// 		}, 10);
+		// 	}, 10);
+		// });
+	});
 });

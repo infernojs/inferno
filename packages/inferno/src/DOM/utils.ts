@@ -30,7 +30,7 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 		context = EMPTY_OBJ; // Context should not be mutable
 	}
 	const instance = new Component(props, context);
-	instance._updating = true;
+	vNode.children = instance;
 	instance._blockSetState = false;
 	instance.context = context;
 	if (instance.props === EMPTY_OBJ) {

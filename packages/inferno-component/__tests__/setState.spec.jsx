@@ -87,7 +87,6 @@ describe('setState', () => {
 				this.state = {
 					value: props.value
 				};
-				this.checkSetState = this.checkSetState.bind(this);
 			}
 
 			checkSetState() {

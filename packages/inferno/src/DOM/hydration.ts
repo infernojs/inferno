@@ -66,7 +66,6 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
 		instance._updating = false; // Mount finished allow going sync
 		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
-		vNode.children = instance;
 	} else {
 		const input = createFunctionalComponentInput(vNode, type, props, context);
 		hydrate(input, dom, lifecycle, context, isSVG);
