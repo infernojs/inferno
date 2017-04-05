@@ -22,7 +22,7 @@ if (process.env.NODE_ENV !== 'production') {
 // https://github.com/Microsoft/TypeScript/issues/6307
 export declare const VNodeFlags: _VNodeFlags;
 
-export const version = '1.6.1';
+export const version = '1.6.2';
 
 // we duplicate it so it plays nicely with different module loading systems
 export default {
