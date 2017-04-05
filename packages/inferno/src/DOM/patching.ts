@@ -37,7 +37,7 @@ import {
 	setTextContent,
 	updateTextContent
 } from './utils';
-import processElement from './wrappers/processElement';
+import { isControlledFormElement, processElement } from './wrappers/processElement';
 
 export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isRecycling: boolean) {
 	if (lastVNode !== nextVNode) {
@@ -138,30 +138,35 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 		const nextClassName = nextVNode.className;
 
 		nextVNode.dom = dom;
-		if (isSVG || (nextFlags & VNodeFlags.SvgElement)) {
+		if (isSVG || (nextFlags & VNodeFlags.SvgElement) > 0) {
 			isSVG = true;
 		}
 		if (lastChildren !== nextChildren) {
 			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom as Element, lifecycle, context, isSVG, isRecycling);
 		}
 
-		let hasControlledValue = false;
-		if (!(nextFlags & VNodeFlags.HtmlElement)) {
-			hasControlledValue = processElement(nextFlags, nextVNode, dom, false);
-		}
-
 		// inlined patchProps  -- starts --
 		if (lastProps !== nextProps) {
 			const lastPropsOrEmpty = lastProps || EMPTY_OBJ;
-			const nextPropsOrEmpty = nextProps || EMPTY_OBJ;
+			const nextPropsOrEmpty = nextProps || EMPTY_OBJ as any;
+			let hasControlledValue = false;
 
 			if (nextPropsOrEmpty !== EMPTY_OBJ) {
+				let isFormElement = (nextFlags & VNodeFlags.FormElement) > 0;
+				if (isFormElement) {
+					hasControlledValue = isControlledFormElement(nextPropsOrEmpty);
+				}
+
 				for (const prop in nextPropsOrEmpty) {
 					// do not add a hasOwnProperty check here, it affects performance
 					const nextValue = nextPropsOrEmpty[ prop ];
 					const lastValue = lastPropsOrEmpty[ prop ];
 
 					patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue);
+				}
+
+				if (isFormElement) {
+					processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
 				}
 			}
 			if (lastPropsOrEmpty !== EMPTY_OBJ) {

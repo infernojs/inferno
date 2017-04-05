@@ -1,10 +1,6 @@
 import { isNullOrUndef } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils';
 
-function isControlled(props) {
-	return !isNullOrUndef(props.value);
-}
-
 function wrappedOnChange(e) {
 	const props = this.props || EMPTY_OBJ;
 	const event = props.onChange;
@@ -17,9 +13,8 @@ function wrappedOnChange(e) {
 }
 
 function onTextareaInputChange(e) {
-	let vNode = this;
+	const vNode = this;
 	const props = vNode.props || EMPTY_OBJ;
-	const dom = vNode.dom;
 	const previousValue = props.value;
 
 	if (props.onInput) {
@@ -43,36 +38,30 @@ function onTextareaInputChange(e) {
 	if (previousValue !== newProps.value) {
 		// When this happens we need to store current cursor position and restore it, to avoid jumping
 
-		applyValue(newVNode, dom, false);
+		applyValue(newVNode, vNode.dom, false);
 	}
 }
 
-export function processTextarea(vNode, dom, mounting: boolean) {
-	const props = vNode.props || EMPTY_OBJ;
-	applyValue(vNode, dom, mounting);
+export function processTextarea(vNode, dom, nextPropsOrEmpty, mounting: boolean, isControlled: boolean) {
+	applyValue(nextPropsOrEmpty, dom, mounting);
 
-	if (isControlled(props)) {
-		if (mounting) {
-			dom.oninput = onTextareaInputChange.bind(vNode);
-			dom.oninput.wrapped = true;
-			if (props.onChange) {
-				dom.onchange = wrappedOnChange.bind(vNode);
-				dom.onchange.wrapped = true;
-			}
+	if (mounting && isControlled) {
+		dom.oninput = onTextareaInputChange.bind(vNode);
+		dom.oninput.wrapped = true;
+		if (nextPropsOrEmpty.onChange) {
+			dom.onchange = wrappedOnChange.bind(vNode);
+			dom.onchange.wrapped = true;
 		}
-		return true;
 	}
-	return false;
 }
 
-export function applyValue(vNode, dom, mounting: boolean) {
-	const props = vNode.props || EMPTY_OBJ;
-	const value = props.value;
+export function applyValue(nextPropsOrEmpty, dom, mounting: boolean) {
+	const value = nextPropsOrEmpty.value;
 	const domValue = dom.value;
 
 	if (isNullOrUndef(value)) {
 		if (mounting) {
-			const defaultValue = props.defaultValue;
+			const defaultValue = nextPropsOrEmpty.defaultValue;
 
 			if (!isNullOrUndef(defaultValue)) {
 				if (defaultValue !== domValue) {

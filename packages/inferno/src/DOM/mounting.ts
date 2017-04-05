@@ -24,7 +24,7 @@ import {
 	EMPTY_OBJ,
 	setTextContent
 } from './utils';
-import processElement from './wrappers/processElement';
+import { processElement, isControlledFormElement } from './wrappers/processElement';
 
 export function mount(vNode: VNode, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	const flags = vNode.flags;
@@ -102,14 +102,18 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 			mount(children as VNode, dom, lifecycle, context, isSVG);
 		}
 	}
-	let hasControlledValue = false;
-	if (!(flags & VNodeFlags.HtmlElement)) {
-		hasControlledValue = processElement(flags, vNode, dom, true);
-	}
 	if (!isNull(props)) {
+		let hasControlledValue = false;
+		let isFormElement = (flags & VNodeFlags.FormElement) > 0;
+		if (isFormElement) {
+			hasControlledValue = isControlledFormElement(props);
+		}
 		for (const prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
 			patchProp(prop, null, props[ prop ], dom, isSVG, hasControlledValue);
+		}
+		if (isFormElement) {
+			processElement(flags, vNode, dom, props, true, hasControlledValue);
 		}
 	}
 	if (isNullOrUndef(className)) {

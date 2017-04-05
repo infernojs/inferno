@@ -1,14 +1,8 @@
 import { isNullOrUndef } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils';
 
-function isCheckedType(type) {
+export function isCheckedType(type) {
 	return type === 'checkbox' || type === 'radio';
-}
-
-function isControlled(props) {
-	const usesChecked = isCheckedType(props.type);
-
-	return usesChecked ? !isNullOrUndef(props.checked) : !isNullOrUndef(props.value);
 }
 
 function onTextInputChange(e) {
@@ -38,7 +32,7 @@ function onTextInputChange(e) {
 	if (previousValue !== newProps.value) {
 		// When this happens we need to store current cursor position and restore it, to avoid jumping
 
-		applyValue(newVNode, dom);
+		applyValue(newProps, dom);
 	}
 }
 
@@ -81,41 +75,33 @@ function onCheckboxChange(e) {
 	if (previousValue !== newProps.value) {
 		// When this happens we need to store current cursor position and restore it, to avoid jumping
 
-		applyValue(newVNode, dom);
+		applyValue(newProps, dom);
 	}
 }
 
-export function processInput(vNode, dom, mounting: boolean): boolean {
-	const props = vNode.props || EMPTY_OBJ;
-
-	applyValue(vNode, dom);
-	if (isControlled(props)) {
-		if (mounting) {
-			if (isCheckedType(props.type)) {
-				dom.onclick = onCheckboxChange.bind(vNode);
-				dom.onclick.wrapped = true;
-			} else {
-				dom.oninput = onTextInputChange.bind(vNode);
-				dom.oninput.wrapped = true;
-			}
-			if (props.onChange) {
-				dom.onchange = wrappedOnChange.bind(vNode);
-				dom.onchange.wrapped = true;
-			}
+export function processInput(vNode, dom, nextPropsOrEmpty, mounting: boolean, isControlled): void {
+	applyValue(nextPropsOrEmpty, dom);
+	if (mounting && isControlled) {
+		if (isCheckedType(nextPropsOrEmpty.type)) {
+			dom.onclick = onCheckboxChange.bind(vNode);
+			dom.onclick.wrapped = true;
+		} else {
+			dom.oninput = onTextInputChange.bind(vNode);
+			dom.oninput.wrapped = true;
 		}
-
-		return true;
+		if (nextPropsOrEmpty.onChange) {
+			dom.onchange = wrappedOnChange.bind(vNode);
+			dom.onchange.wrapped = true;
+		}
 	}
-	return false;
 }
 
-export function applyValue(vNode, dom) {
-	const props = vNode.props || EMPTY_OBJ;
-	const type = props.type;
-	const value = props.value;
-	const checked = props.checked;
-	const multiple = props.multiple;
-	const defaultValue = props.defaultValue;
+export function applyValue(nextPropsOrEmpty, dom) {
+	const type = nextPropsOrEmpty.type;
+	const value = nextPropsOrEmpty.value;
+	const checked = nextPropsOrEmpty.checked;
+	const multiple = nextPropsOrEmpty.multiple;
+	const defaultValue = nextPropsOrEmpty.defaultValue;
 	const hasValue = !isNullOrUndef(value);
 
 	if (type && type !== dom.type) {

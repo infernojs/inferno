@@ -23,7 +23,7 @@ import {
 import { patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
 import { createClassComponentInstance, createFunctionalComponentInput, EMPTY_OBJ, replaceChild } from './utils';
-import processElement from './wrappers/processElement';
+import { processElement, isControlledFormElement } from './wrappers/processElement';
 
 export function normalizeChildNodes(parentDom) {
 	let dom = parentDom.firstChild;
@@ -100,13 +100,18 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 	if (children) {
 		hydrateChildren(children, dom, lifecycle, context, isSVG);
 	}
-	let hasControlledValue = false;
-	if (!(flags & VNodeFlags.HtmlElement)) {
-		hasControlledValue = processElement(flags, vNode, dom, false);
-	}
 	if (props) {
+		let hasControlledValue = false;
+		let isFormElement = (flags & VNodeFlags.FormElement) > 0;
+		if (isFormElement) {
+			hasControlledValue = isControlledFormElement(props);
+		}
 		for (const prop in props) {
+			// do not add a hasOwnProperty check here, it affects performance
 			patchProp(prop, null, props[ prop ], dom, isSVG, hasControlledValue);
+		}
+		if (isFormElement) {
+			processElement(flags, vNode, dom, props, true, hasControlledValue);
 		}
 	}
 	if (isNullOrUndef(className)) {
