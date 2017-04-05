@@ -93,7 +93,7 @@ describe('Router (jsx)', () => {
 		});
 		it('should render the child and inherit parent (URL containing percent encoded value)', () => {
 			render(
-				<Router url={ '/foo/100%25' } history={ browserHistory }>
+				<Router url={ '/foo/100%' } history={ browserHistory }>
 					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
 						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> }/>
 					</Route>
@@ -101,6 +101,17 @@ describe('Router (jsx)', () => {
 				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is 100%</div></div>'));
+		});
+		it('should render the child and inherit parent (URL search param containing percent encoded value)', () => {
+			render(
+				<Router url={ '/foo/bar?yar=50%25' } history={ browserHistory }>
+					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.yar }</div> }/>
+					</Route>
+				</Router>,
+				container
+			);
+			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is 50%</div></div>'));
 		});
 		it('should render the child with the longest path', () => {
 			render(
@@ -295,7 +306,7 @@ describe('Router (jsx)', () => {
 	});
 	describe('#match', () => {
 		it('should find route when url has normal value', () => {
-			const url = '/search/foo';
+			const url = '/search/foo?arg1=50%25';
 			const history = createMemoryHistory();
 			history.push(url);
 
@@ -304,18 +315,22 @@ describe('Router (jsx)', () => {
 					<Route path="search/:searchData" component={ GoodComponent }/>
 				</Route>
 			</Router>;
-			const renderProps = match(router, url);
+			console.log('history.location', history.location);
+			const renderProps = match(router, history.location.pathname + history.location.search);
 
 			const actual = render(<RouterContext {...renderProps}/>, container);
 
 			expect(actual.props.location).to.equal('/');
-			expect(actual.props.matched.props.history.location.pathname).to.equal(url);
+			expect(
+				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search
+			).to.equal('/search/foo?arg1=50%25');
 			expect(actual.props.matched.props.params.searchData).to.equal('foo');
+			expect(actual.props.matched.props.params.arg1).to.equal('50%');
 			expect(actual.props.matched.props.children.props.component).to.equal(BadComponent);
 			expect(actual.props.matched.props.children.props.children.props.component).to.equal(GoodComponent);
 		});
 		it('should find route when url has percent encoded value', () => {
-			const url = '/search/100%25';
+			const url = '/search/100%25?arg1=50%25';
 			const history = createMemoryHistory();
 			history.push(url);
 			const router = <Router history={ history }>
@@ -323,13 +338,41 @@ describe('Router (jsx)', () => {
 					<Route path="search/:searchData" component={ GoodComponent }/>
 				</Route>
 			</Router>;
-			const renderProps = match(router, history.location.pathname);
+			console.log('history.location', history.location);
+			const renderProps = match(router, history.location.pathname + history.location.search);
 
 			const actual = render(<RouterContext {...renderProps}/>, container);
 
 			expect(actual.props.location).to.equal('/');
-			expect(actual.props.matched.props.history.location.pathname).to.equal(url.replace('%25', '%'));
+			expect(
+				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search
+			).to.equal('/search/100%?arg1=50%25');
 			expect(actual.props.matched.props.params.searchData).to.equal('100%');
+			expect(actual.props.matched.props.params.arg1).to.equal('50%');
+			expect(actual.props.matched.props.children.props.component).to.equal(BadComponent);
+			expect(actual.props.matched.props.children.props.children.props.component).to.equal(GoodComponent);
+		});
+		it('should find route when url has percent encoded value and multi-search arg', () => {
+			const url = '/search/100%25?arg1=50%25&arg1=75%25';
+			const history = createMemoryHistory();
+			history.push(url);
+			const router = <Router history={ history }>
+				<Route path="/" component={ BadComponent }>
+					<Route path="search/:searchData" component={ GoodComponent }/>
+				</Route>
+			</Router>;
+			console.log('history.location', history.location);
+			const renderProps = match(router, history.location.pathname + history.location.search);
+
+			const actual = render(<RouterContext {...renderProps}/>, container);
+
+			expect(actual.props.location).to.equal('/');
+			expect(
+				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search
+			).to.equal('/search/100%?arg1=50%25&arg1=75%25');
+			expect(actual.props.matched.props.params.searchData).to.equal('100%');
+			expect(actual.props.matched.props.params.arg1[0]).to.equal('50%');
+			expect(actual.props.matched.props.params.arg1[1]).to.equal('75%');
 			expect(actual.props.matched.props.children.props.component).to.equal(BadComponent);
 			expect(actual.props.matched.props.children.props.children.props.component).to.equal(GoodComponent);
 		});

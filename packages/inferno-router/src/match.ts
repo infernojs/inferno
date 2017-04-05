@@ -22,7 +22,7 @@ const cache: Map<string, IMatchRegex> = new Map();
  */
 export default function match(routes, currentURL: any) {
 	const location: string = getURLString(currentURL);
-	return matchRoutes(toArray(routes), location, '/');
+	return matchRoutes(toArray(routes), encodeURI(location), '/');
 }
 
 /**
