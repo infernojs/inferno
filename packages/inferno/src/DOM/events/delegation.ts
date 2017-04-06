@@ -87,7 +87,8 @@ function attachEventToDocument(name, delegatedRoots) {
 	return docEvent;
 }
 
-function emptyFn() {}
+function emptyFn() {
+}
 
 function trapClickOnNonInteractiveElement(dom) {
 	// Mobile Safari does not fire properly bubble click events on

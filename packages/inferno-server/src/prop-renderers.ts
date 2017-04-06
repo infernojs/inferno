@@ -1,15 +1,6 @@
-import {
-	isNullOrUndef,
-	isNumber,
-	isStringOrNumber,
-	isTrue
-} from 'inferno-shared';
-import {
-	escapeText,
-	toHyphenCase
-} from './utils';
-
 import { internal_isUnitlessNumber } from 'inferno';
+import { isNullOrUndef, isNumber, isStringOrNumber, isTrue } from 'inferno-shared';
+import { escapeText, toHyphenCase } from './utils';
 
 export function renderStyleToString(style): string {
 	if (isStringOrNumber(style)) {
@@ -18,8 +9,8 @@ export function renderStyleToString(style): string {
 		const styles: string[] = [];
 
 		for (const styleName in style) {
-			const value = style[styleName];
-			const px = isNumber(value) && !internal_isUnitlessNumber[styleName] ? 'px' : '';
+			const value = style[ styleName ];
+			const px = isNumber(value) && !internal_isUnitlessNumber[ styleName ] ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
 				styles.push(`${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`);
@@ -34,8 +25,8 @@ export function renderAttributes(props): string[] {
 	const propsKeys = (props && Object.keys(props)) || [];
 
 	propsKeys.forEach((propKey, i) => {
-		const value = props[propKey];
-		switch (propKey) {
+		const value = props[ propKey ];
+		switch ( propKey ) {
 			case 'children':
 			case 'dangerouslySetInnerHTML':
 			case 'style':

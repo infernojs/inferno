@@ -98,6 +98,10 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			description: 'should ignore undefined className',
 			template: () => createElement('div', { className: undefined }),
 			result: '<div></div>'
+		}, {
+			description: 'should render opacity style',
+			template: () => createElement('div', { style: { opacity: 0.8 } }),
+			result: '<div style="opacity:0.8;"></div>'
 		}
 	];
 
@@ -118,9 +122,9 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 function streamPromise(dom) {
 	return new Promise(function (res, rej) {
 		streamAsString(dom)
-		.on('error', rej)
-		.pipe(concatStream(function (buffer) {
-			res(buffer.toString('utf-8'));
-		}));
+			.on('error', rej)
+			.pipe(concatStream(function (buffer) {
+				res(buffer.toString('utf-8'));
+			}));
 	});
 }

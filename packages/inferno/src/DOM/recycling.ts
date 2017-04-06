@@ -1,14 +1,7 @@
-import {
-	isNull,
-	isUndefined,
-	LifecycleClass
-} from 'inferno-shared';
+import { isNull, isUndefined, LifecycleClass } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import { VNode, Refs } from '../core/VNodes';
-import {
-	patchComponent,
-	patchElement
-} from './patching';
+import { Refs, VNode } from '../core/VNodes';
+import { patchComponent, patchElement } from './patching';
 
 const componentPools = new Map<Function | null, Pools>();
 const elementPools = new Map<string | null, Pools>();
@@ -99,12 +92,12 @@ export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, contex
 export function poolComponent(vNode: VNode) {
 	const hooks = vNode.ref as Refs;
 	const nonRecycleHooks = hooks && (
-		hooks.onComponentWillMount ||
-		hooks.onComponentWillUnmount ||
-		hooks.onComponentDidMount ||
-		hooks.onComponentWillUpdate ||
-		hooks.onComponentDidUpdate
-	);
+			hooks.onComponentWillMount ||
+			hooks.onComponentWillUnmount ||
+			hooks.onComponentDidMount ||
+			hooks.onComponentWillUpdate ||
+			hooks.onComponentDidUpdate
+		);
 	if (nonRecycleHooks) {
 		return;
 	}

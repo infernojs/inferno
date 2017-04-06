@@ -6,8 +6,6 @@
 	var Component = Inferno.Component;
 	var createElement = Inferno.createElement;
 
-	function NOOP() {}
-
 	class List extends Component {
 		constructor() {
 			super();
@@ -21,7 +19,7 @@
 		componentDidMount() {
 			while (this.items.length < 20000) {
 				this.items[this.items.length] = createElement('li', null, `${this.items.length}bar`);
-				this.setState({ items: this.items }, NOOP);
+				this.setState({ items: this.items });
 			}
 		}
 

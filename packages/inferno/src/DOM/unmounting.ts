@@ -10,15 +10,9 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import options from '../core/options';
-import { VNode, InfernoChildren, Ref } from '../core/VNodes';
-import {
-	isAttrAnEvent,
-	patchEvent
-} from './patching';
-import {
-	poolComponent,
-	poolElement
-} from './recycling';
+import { InfernoChildren, Ref, VNode } from '../core/VNodes';
+import { isAttrAnEvent, patchEvent } from './patching';
+import { poolComponent, poolElement } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
 import { removeChild } from './utils';
 
@@ -101,10 +95,10 @@ export function unmountElement(vNode: VNode, parentDom: Element, lifecycle: Life
 	if (!isNull(props)) {
 		for (const name in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			if (props[name] !== null && isAttrAnEvent(name)) {
-				patchEvent(name, props[name], null, dom);
+			if (props[ name ] !== null && isAttrAnEvent(name)) {
+				patchEvent(name, props[ name ], null, dom);
 				// We need to set this null, because same props otherwise come back if SCU returns false and we are recyling
-				props[name] = null;
+				props[ name ] = null;
 			}
 		}
 	}
@@ -119,7 +113,7 @@ export function unmountElement(vNode: VNode, parentDom: Element, lifecycle: Life
 function unmountChildren(children: InfernoChildren, lifecycle: LifecycleClass, isRecycling: boolean) {
 	if (isArray(children)) {
 		for (let i = 0, len = (children as Array<string | number | VNode>).length; i < len; i++) {
-			const child = children[i];
+			const child = children[ i ];
 
 			if (!isInvalid(child) && isObject(child)) {
 				unmount(child as VNode, null, lifecycle, false, isRecycling);

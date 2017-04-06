@@ -43,7 +43,8 @@ describe('Router (jsx)', () => {
 	describe('#Link', () => {
 		it('should render with all possible props', () => {
 			render(createRoutes(
-				<Link to="/" activeClassName="linkActiveClass" className="linkClass" style={{ color: 'red' }} activeStyle={{ fontWeight: 'bold' }} title="TestTitle" data-test="DataTest">Link</Link>
+				<Link to="/" activeClassName="linkActiveClass" className="linkClass" style={{ color: 'red' }}
+							activeStyle={{ fontWeight: 'bold' }} title="TestTitle" data-test="DataTest">Link</Link>
 			), container);
 
 			expect(
@@ -55,7 +56,8 @@ describe('Router (jsx)', () => {
 
 		it('should render without active class and style when not the active location', () => {
 			render(createRoutes(
-				<Link to="/notactive" activeClassName="linkActiveClass" className="linkClass" style={{ color: 'red' }} activeStyle={{ fontWeight: 'bold' }}>Link</Link>
+				<Link to="/notactive" activeClassName="linkActiveClass" className="linkClass" style={{ color: 'red' }}
+							activeStyle={{ fontWeight: 'bold' }}>Link</Link>
 			), container);
 
 			expect(
@@ -117,7 +119,8 @@ describe('Router (jsx)', () => {
 			const link = container.querySelector('a[href="/"]');
 			link.onclick({
 				button: 0,
-				preventDefault() {},
+				preventDefault() {
+				},
 				target: {}
 			});
 
@@ -139,7 +142,8 @@ describe('Router (jsx)', () => {
 			const link = container.querySelector('a[href="/"]');
 			link.onclick({
 				button: 2,
-				preventDefault() {},
+				preventDefault() {
+				},
 				target: {}
 			});
 
@@ -185,7 +189,7 @@ describe('Router (jsx)', () => {
 
 			render(
 				<Router url={ '/test' } history={ browserHistory }>
-					<IndexRoute component={ () => <div>Good</div> } onEnter={ callbackSpy } />
+					<IndexRoute component={ () => <div>Good</div> } onEnter={ callbackSpy }/>
 					<Route path={'/test'} component={ () => <TestComponent/> }/>
 				</Router>, container
 			);
@@ -203,8 +207,10 @@ describe('Router (jsx)', () => {
 			const callbackSpy = sinon.spy();
 			render(
 				<Router url={ '/test' } history={ browserHistory }>
-					<IndexRoute component={ () => <div>Good</div> } />
-					<Route path={ '/test' } component={ () => <TestComponent/> } onEnter={ () => { callbackSpy(); } } />
+					<IndexRoute component={ () => <div>Good</div> }/>
+					<Route path={ '/test' } component={ () => <TestComponent/> } onEnter={ () => {
+						callbackSpy();
+					} }/>
 				</Router>, container
 			);
 
@@ -240,7 +246,7 @@ describe('Router (jsx)', () => {
 			clickOnLink(link);
 
 			requestAnimationFrame(() => {
-				const context = callback.getCall(0).args[0];
+				const context = callback.getCall(0).args[ 0 ];
 				expect(context.props.className).to.equal('test-class');
 				expect(context.router.url).to.equal('/');
 				done();
@@ -257,7 +263,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/test' } history={ browserHistory }>
 					<Route component={ showChildren }>
-						<IndexRoute getComponent={ spy } />
+						<IndexRoute getComponent={ spy }/>
 						<Route path={'/test'} component={ () => <TestComponent/> }/>
 					</Route>
 				</Router>, container
@@ -268,8 +274,8 @@ describe('Router (jsx)', () => {
 				clickOnLink(link);
 				requestAnimationFrame(() => {
 					expect(spy.callCount).to.equal(1);
-					expect(spy.getCall(0).args[0].props.path).to.equal('/');
-					expect(spy.getCall(0).args[0].router.url).to.equal('/');
+					expect(spy.getCall(0).args[ 0 ].props.path).to.equal('/');
+					expect(spy.getCall(0).args[ 0 ].router.url).to.equal('/');
 					done();
 				});
 			});
@@ -284,14 +290,14 @@ describe('Router (jsx)', () => {
 
 			render(
 				<Router url={ '/test' } history={ browserHistory }>
-					<IndexRoute component={ () => <div>Good</div> } />
+					<IndexRoute component={ () => <div>Good</div> }/>
 					<Route path={ '/test' } getComponent={ spy }/>
 				</Router>, container
 			);
 
 			requestAnimationFrame(() => {
 				expect(container.innerHTML).to.equal('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>');
-				expect(spy.getCall(0).args[0].props.path).to.equal('/test');
+				expect(spy.getCall(0).args[ 0 ].props.path).to.equal('/test');
 				const link = container.querySelector('a[href="/test"]');
 				clickOnLink(link);
 				requestAnimationFrame(() => {
@@ -314,8 +320,8 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/' } history={ browserHistory }>
 					<Route component={ showChildren }>
-						<IndexRoute component={ () => <TestComponent /> } />
-						<Route path={'/test'} getComponent={ callback } />
+						<IndexRoute component={ () => <TestComponent /> }/>
+						<Route path={'/test'} getComponent={ callback }/>
 					</Route>
 				</Router>, container
 			);

@@ -893,11 +893,12 @@ describe('Elements (JSX)', () => {
 			const TextField = function (props) {
 				return <input {...props} />;
 			};
-			const MyTextField = ({ name, className, changeName }) => <TextField className={className} value={name} onClick={function () {
-				done();
-			}} />;
+			const MyTextField = ({ name, className, changeName }) => <TextField className={className} value={name}
+																																					onClick={function () {
+																																						done();
+																																					}}/>;
 
-			render(<MyTextField className="foobar" name="test" />, container);
+			render(<MyTextField className="foobar" name="test"/>, container);
 
 			expect(container.firstChild.value).to.equal('test');
 			expect(container.firstChild.getAttribute('class')).to.equal('foobar');

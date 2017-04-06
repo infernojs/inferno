@@ -1,22 +1,8 @@
-import {
-	isArray,
-	isInvalid,
-	isNullOrUndef,
-	isStringOrNumber,
-	combineFrom,
-	isUndefined
-} from 'inferno-shared';
+import { combineFrom, isArray, isInvalid, isNullOrUndef, isStringOrNumber, isUndefined } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import {
-	renderAttributes,
-	renderStyleToString
-} from './prop-renderers';
-import {
-	escapeText,
-	isVoidElement
-} from './utils';
-
 import { Readable } from 'stream';
+import { renderAttributes, renderStyleToString } from './prop-renderers';
+import { escapeText, isVoidElement } from './utils';
 
 const resolvedPromise = Promise.resolve();
 
@@ -130,13 +116,7 @@ export class RenderStream extends Readable {
 						}
 						insertComment = true;
 					}
-					return Promise.resolve(this.renderNode(child, context, false))
-						.then((_insertComment) => {
-							if (child.flags & VNodeFlags.Text) {
-								return true;
-							}
-							return false;
-						});
+					return Promise.resolve(this.renderNode(child, context, false)).then(() => !!(child.flags & VNodeFlags.Text));
 				}
 			});
 		}, Promise.resolve(false));

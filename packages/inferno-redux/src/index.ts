@@ -1,5 +1,5 @@
-import Provider from './Provider';
 import connect from './connect';
+import Provider from './Provider';
 
 export default {
 	Provider,

@@ -15,7 +15,7 @@ class TestCWRP extends Component {
 	componentWillReceiveProps() {
 		this.setStateSync({ a: 1 });
 
-		if (this.state.a !== 1){
+		if (this.state.a !== 1) {
 			this.props.done('state is not correct');
 			return;
 		}
@@ -28,7 +28,7 @@ class TestCWRP extends Component {
 	}
 }
 
-describe('setting state', () => {
+describe('state', () => {
 	let container;
 
 	beforeEach(function () {
@@ -42,10 +42,28 @@ describe('setting state', () => {
 		document.body.removeChild(container);
 	});
 
-	it('setStateSync should apply state during componentWillReceiveProps', (done) => {
-		const node = createVNode(VNodeFlags.ComponentClass, TestCWRP, null, null, { done }, null);
-		render(node, container);
-		node.props.foo = 1;
-		render(node, container);
+	// As per React
+	it('Should not have state defined in base constructor', () => {
+		class Foo extends Component {
+			constructor(p, c) {
+				super(p, c);
+
+				expect(this.state).to.be.a('null');
+			}
+		}
+
+		const f = new Foo({}, {});
+
+		expect(f).not.to.be.a('null');
+	});
+
+	describe('setting state', () => {
+
+		it('setStateSync should apply state during componentWillReceiveProps', (done) => {
+			const node = createVNode(VNodeFlags.ComponentClass, TestCWRP, null, null, { done }, null);
+			render(node, container);
+			node.props.foo = 1;
+			render(node, container);
+		});
 	});
 });

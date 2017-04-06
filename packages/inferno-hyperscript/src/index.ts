@@ -1,11 +1,5 @@
-import { createVNode, VNode, InfernoChildren } from 'inferno';
-import {
-	isArray,
-	isStatefulComponent,
-	isString,
-	isStringOrNumber,
-	isUndefined
-} from 'inferno-shared';
+import { createVNode, InfernoChildren, VNode } from 'inferno';
+import { isArray, isStatefulComponent, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
@@ -19,13 +13,13 @@ function parseTag(tag: string | null, props: any): string {
 	const tagParts = tag.split(classIdSplit);
 	let tagName: null | string = null;
 
-	if (notClassId.test(tagParts[1])) {
+	if (notClassId.test(tagParts[ 1 ])) {
 		tagName = 'div';
 	}
 	let classes;
 
 	for (let i = 0, len = tagParts.length; i < len; i++) {
-		const part = tagParts[i];
+		const part = tagParts[ i ];
 
 		if (!part) {
 			continue;
@@ -66,22 +60,22 @@ function extractProps(_props: any, _tag: string | VNode): any {
 
 	for (const prop in _props) {
 		if (prop === 'className' || prop === 'class') {
-			className = _props[prop];
+			className = _props[ prop ];
 		} else if (prop === 'key') {
-			key = _props[prop];
+			key = _props[ prop ];
 		} else if (prop === 'ref') {
-			ref = _props[prop];
+			ref = _props[ prop ];
 		} else if (prop.substr(0, 11) === 'onComponent' && isComponent) {
 			if (!ref) {
 				ref = {};
 			}
-			ref[prop] = _props[prop];
+			ref[ prop ] = _props[ prop ];
 		} else if (prop === 'hooks') {
-			ref = _props[prop];
+			ref = _props[ prop ];
 		} else if (prop === 'children') {
-			children = _props[prop];
+			children = _props[ prop ];
 		} else {
-			newProps[prop] = _props[prop];
+			newProps[ prop ] = _props[ prop ];
 		}
 	}
 	return { tag, props: newProps, key, ref, children, className };
@@ -98,7 +92,7 @@ export default function hyperscript(_tag: string | VNode | Function, _props?: an
 	if (isString(tag)) {
 		let flags;
 
-		switch (tag) {
+		switch ( tag ) {
 			case 'svg':
 				flags = VNodeFlags.SvgElement;
 				break;

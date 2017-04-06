@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
-import { createElement, Component } from '../dist-es';
+import { createElement } from '../dist-es';
 
 describe('svg', () => {
 	let container;

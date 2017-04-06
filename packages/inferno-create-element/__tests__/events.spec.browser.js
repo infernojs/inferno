@@ -173,11 +173,11 @@ describe('Basic event tests', () => {
 		}
 
 		// eslint-disable-next-line
-		render(App({toggle: true}), container);
+		render(App({ toggle: true }), container);
 		expect(container.firstChild.innerHTML).to.equal('1');
 
 		// eslint-disable-next-line
-		render(App({toggle: false}), container);
+		render(App({ toggle: false }), container);
 		expect(container.firstChild.innerHTML).to.equal('1');
 	});
 
@@ -328,17 +328,17 @@ describe('Basic event tests', () => {
 				);
 			}
 
-			render(<FooBarCom test="1" />, container);
+			render(<FooBarCom test="1"/>, container);
 			container.querySelector('span').click();
 			expect(spy2.callCount).to.equal(1);
 			expect(spy1.callCount).to.equal(1);
 
-			render(<FooBarCom test="2" />, container);
+			render(<FooBarCom test="2"/>, container);
 			container.querySelector('span').click();
 			expect(spy2.callCount).to.equal(2);
 			expect(spy1.callCount).to.equal(1);
 
-			render(<FooBarCom test="3" />, container);
+			render(<FooBarCom test="3"/>, container);
 			container.querySelector('span').click();
 			expect(spy2.callCount).to.equal(3);
 			expect(spy1.callCount).to.equal(1);
@@ -456,7 +456,7 @@ describe('Basic event tests', () => {
 			}
 		};
 
-		render(<SmallComponent className="testing" onClick={obj.test} />, container);
+		render(<SmallComponent className="testing" onClick={obj.test}/>, container);
 
 		container.querySelector('#testClick').click();
 	});

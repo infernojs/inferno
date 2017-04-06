@@ -53,18 +53,18 @@ describe('createTree - SVG (JSX)', () => {
 				</g>
 			</g>
 		</svg>, container);
-		expect(container.childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.childNodes[0].childNodes[0].tagName).to.equal('g');
-		expect(container.childNodes[0].childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.childNodes[0].childNodes[0].firstChild.tagName).to.equal('circle');
-		expect(container.childNodes[0].childNodes[0].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].tagName).to.equal('g');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].firstChild.tagName).to.equal('circle');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
-		expect(container.childNodes[0].childNodes[1].tagName).to.equal('g');
-		expect(container.childNodes[0].childNodes[1].namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.childNodes[0].childNodes[1].firstChild.tagName).to.equal('g');
-		expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.childNodes[0].childNodes[1].firstChild.firstChild.tagName).to.equal('circle');
-		expect(container.childNodes[0].childNodes[1].firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].tagName).to.equal('g');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].firstChild.tagName).to.equal('g');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].firstChild.firstChild.tagName).to.equal('circle');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
 		render(<svg xmlns="http://www.w3.org/2000/svg">
 			<circle/>
@@ -85,21 +85,22 @@ describe('createTree - SVG (JSX)', () => {
 				<circle xmlns="http://www.w3.org/2000/svg" cx="50" cy="50" r="40" stroke="green" fill="yellow"/>
 			</g>
 			<g>
-				<circle xmlns="http://www.w3.org/2000/svg" cx="50" cy="50" r="40" stroke="green" fill="yellow" foo={ undefined }/>
+				<circle xmlns="http://www.w3.org/2000/svg" cx="50" cy="50" r="40" stroke="green" fill="yellow"
+								foo={ undefined }/>
 			</g>
 		</svg>, container);
-		expect(container.childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.childNodes[0].childNodes[0].tagName).to.equal('g');
-		expect(container.childNodes[0].childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.childNodes[0].childNodes[0].firstChild.tagName).to.equal('circle');
-		expect(container.childNodes[0].childNodes[0].firstChild.getAttribute('xmlns')).to.equal('http://www.w3.org/2000/svg');
-		expect(container.childNodes[0].childNodes[0].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].tagName).to.equal('g');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].firstChild.tagName).to.equal('circle');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].firstChild.getAttribute('xmlns')).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 0 ].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
-		expect(container.childNodes[0].childNodes[1].tagName).to.equal('g');
-		expect(container.childNodes[0].childNodes[1].namespaceURI).to.equal('http://www.w3.org/2000/svg');
-		expect(container.childNodes[0].childNodes[1].firstChild.tagName).to.equal('circle');
-		expect(container.childNodes[0].childNodes[1].firstChild.getAttribute('xmlns')).to.equal('http://www.w3.org/2000/svg');
-		expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].tagName).to.equal('g');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].firstChild.tagName).to.equal('circle');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].firstChild.getAttribute('xmlns')).to.equal('http://www.w3.org/2000/svg');
+		expect(container.childNodes[ 0 ].childNodes[ 1 ].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	});
 
 	it('should set and remove dynamic class property', () => {
