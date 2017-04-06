@@ -812,11 +812,9 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 				const linkEvent = nextValue.event;
 
 				if (linkEvent && isFunction(linkEvent)) {
-					if (!dom._data) {
-						dom[ nameLowerCase ] = function(e) {
-							linkEvent(e.currentTarget._data, e);
-						};
-					}
+					dom[ nameLowerCase ] = function(e) {
+						linkEvent(nextValue.data, e);
+					};
 					dom._data = nextValue.data;
 				} else {
 					if (process.env.NODE_ENV !== 'production') {
