@@ -122,4 +122,53 @@ describe('linkEvent', () => {
 			expect(event.target.nodeName).to.equal('INPUT');
 		});
 	});
+
+	describe('linkEvent on a input (onfocus and onblur) - no delegation', () => {
+		let isFocus;
+		let isBlur;
+
+		function handleOnFocus(id) {
+			isFocus = id;
+		}
+
+		function handleOnBlur(id) {
+			isBlur = id;
+		}
+
+		function FunctionalComponent(props) {
+			return <div>
+				<input
+					onfocus={ linkEvent('1234', handleOnFocus) }
+					onblur={ linkEvent('4321', handleOnBlur) }
+				/>
+			</div>;
+		}
+
+		class StatefulComponent extends Component {
+			render() {
+				return <div>
+					<input
+						onfocus={ linkEvent('1234', handleOnFocus) }
+						onblur={ linkEvent('4321', handleOnBlur) }
+					/>
+				</div>;
+			}
+		}
+
+		it('should work correctly for functional components', () => {
+			render(<FunctionalComponent/>, container);
+			container.querySelector('input').focus();
+			container.querySelector('input').blur();
+			expect(isFocus).to.equal('1234');
+			expect(isBlur).to.equal('4321');
+		});
+
+		it('should work correctly for stateful components', () => {
+			render(<StatefulComponent/>, container);
+			container.querySelector('input').focus();
+			container.querySelector('input').blur();
+			expect(isFocus).to.equal('1234');
+			expect(isBlur).to.equal('4321');
+		});
+	});
 });
