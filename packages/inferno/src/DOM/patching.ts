@@ -815,7 +815,6 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 					dom[ nameLowerCase ] = function(e) {
 						linkEvent(nextValue.data, e);
 					};
-					dom._data = nextValue.data;
 				} else {
 					if (process.env.NODE_ENV !== 'production') {
 						throwError(`an event on a VNode "${ name }". was not a function or a valid linkEvent.`);
