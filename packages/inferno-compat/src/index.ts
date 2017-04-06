@@ -1,31 +1,21 @@
+import {
+	cloneVNode,
+	createVNode,
+	EMPTY_OBJ,
+	findDOMNode,
+	InfernoChildren,
+	options,
+	Props,
+	render,
+	VNode
+} from 'inferno';
+import Component from 'inferno-component';
+import createClass, { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
+import infernoCreateElement from 'inferno-create-element';
+import { isArray, isBrowser, isFunction, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
+import _VNodeFlags from 'inferno-vnode-flags';
 import isValidElement from './isValidElement';
 import SVGDOMPropertyConfig from './SVGDOMPropertyConfig';
-import createClass, {
-	ClassicComponentClass,
-	ComponentSpec
-} from 'inferno-create-class';
-import infernoCreateElement from 'inferno-create-element';
-import {
-	createVNode,
-	render,
-	findDOMNode,
-	options,
-	cloneVNode,
-	VNode,
-	InfernoChildren,
-	Props,
-	EMPTY_OBJ
-} from 'inferno';
-import {
-	NO_OP,
-	isArray,
-	isString,
-	isFunction,
-	isNullOrUndef,
-	isBrowser
-} from 'inferno-shared';
-import Component from 'inferno-component';
-import _VNodeFlags from 'inferno-vnode-flags';
 
 declare global {
 	interface Event {
@@ -34,7 +24,8 @@ declare global {
 }
 
 // Inlined PropTypes, there is propType checking ATM.
-function proptype() {}
+function proptype() {
+}
 (proptype as any).isRequired = proptype;
 
 const getProptype = () => proptype;
@@ -89,7 +80,7 @@ const Children = {
 			fn = fn.bind(ctx);
 		}
 		for (let i = 0, len = children.length; i < len; i++) {
-			fn(children[i], i, children);
+			fn(children[ i ], i, children);
 		}
 	},
 	count(children: Array<InfernoChildren | any>): number {
@@ -115,10 +106,10 @@ const Children = {
 
 let currentComponent = null;
 
-options.beforeRender = function (component): void {
+options.beforeRender = function(component): void {
 	currentComponent = component;
 };
-options.afterRender = function (): void {
+options.afterRender = function(): void {
 	currentComponent = null;
 };
 
@@ -148,8 +139,8 @@ function normalizeProps(name: string, props: Props | any) {
 			delete props[ prop ];
 		}
 		if (prop === 'htmlFor') {
-			props['for'] = props[prop];
-			delete props[prop];
+			props[ 'for' ] = props[ prop ];
+			delete props[ prop ];
 		}
 		const mappedProp = SVGDOMPropertyConfig[ prop ];
 		if (mappedProp && mappedProp !== prop) {
@@ -166,7 +157,7 @@ function normalizeProps(name: string, props: Props | any) {
 // but in reality devs use onSomething for many things, not only for
 // input events
 if (typeof Event !== 'undefined' && !Event.prototype.persist) {
-	Event.prototype.persist = function () {
+	Event.prototype.persist = function() {
 	};
 }
 
@@ -183,15 +174,15 @@ function iterableToArray(iterable) {
 
 const hasSymbolSupport = typeof Symbol !== 'undefined';
 
-const injectStringRefs = function (originalFunction) {
-	return function (name, _props, ...children) {
+const injectStringRefs = function(originalFunction) {
+	return function(name, _props, ...children) {
 		const props = _props || {};
 		const ref = props.ref;
 
 		if (typeof ref === 'string' && currentComponent) {
 			currentComponent.refs = currentComponent.refs || {};
-			props.ref = function (val) {
-				this.refs[ref] = val;
+			props.ref = function(val) {
+				this.refs[ ref ] = val;
 			}.bind(currentComponent);
 		}
 		if (typeof name === 'string') {
@@ -201,9 +192,9 @@ const injectStringRefs = function (originalFunction) {
 		// React supports iterable children, in addition to Array-like
 		if (hasSymbolSupport) {
 			for (let i = 0, len = children.length; i < len; i++) {
-				const child = children[i];
-				if (child && !isArray(child) && !isString(child) && isFunction(child[Symbol.iterator])) {
-					children[i] = iterableToArray(child[Symbol.iterator]());
+				const child = children[ i ];
+				if (child && !isArray(child) && !isString(child) && isFunction(child[ Symbol.iterator ])) {
+					children[ i ] = iterableToArray(child[ Symbol.iterator ]());
 				}
 			}
 		}
@@ -251,7 +242,7 @@ function PureComponent(props, context) {
 }
 
 PureComponent.prototype = new Component({}, {});
-PureComponent.prototype.shouldComponentUpdate = function (props, state) {
+PureComponent.prototype.shouldComponentUpdate = function(props, state) {
 	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
 };
 
@@ -267,7 +258,10 @@ class WrapperComponent<P, S> extends Component<P, S> {
 }
 
 function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, callback) {
-	const wrapperVNode: VNode = createVNode(4, WrapperComponent, null, null, {context: parentComponent.context, children: vNode});
+	const wrapperVNode: VNode = createVNode(4, WrapperComponent, null, null, {
+		context: parentComponent.context,
+		children: vNode
+	});
 	const component = render(wrapperVNode, container);
 
 	if (callback) {

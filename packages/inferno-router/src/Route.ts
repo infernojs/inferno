@@ -1,6 +1,6 @@
+import { VNode } from 'inferno';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import { VNode } from 'inferno';
 import { rest } from './utils';
 
 const resolvedPromise = Promise.resolve();
@@ -88,7 +88,7 @@ export default class Route extends Component<IRouteProps, any> {
 
 	render(_args: IRouteProps): VNode {
 		const { component, children } = _args;
-		const props = rest(_args, ['component', 'children', 'path', 'getComponent']);
+		const props = rest(_args, [ 'component', 'children', 'path', 'getComponent' ]);
 
 		const { asyncComponent } = this.state;
 

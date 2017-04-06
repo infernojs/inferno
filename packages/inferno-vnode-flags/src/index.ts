@@ -16,6 +16,7 @@ const enum VNodeFlags {
 	SelectElement = 1 << 11,
 	Void = 1 << 12,
 
+	FormElement = InputElement | TextareaElement | SelectElement,
 	Element = HtmlElement | SvgElement | MediaElement | InputElement | TextareaElement | SelectElement,
 	Component = ComponentFunction | ComponentClass | ComponentUnknown
 }

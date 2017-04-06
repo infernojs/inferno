@@ -1,13 +1,6 @@
-import { createVNode, VNode, Props, InfernoChildren } from 'inferno';
-import {
-	isInvalid,
-	isNullOrUndef,
-	isObject,
-	isStatefulComponent,
-	isString,
-	isUndefined
-} from 'inferno-shared';
+import { createVNode, InfernoChildren, Props, VNode } from 'inferno';
 import Component from 'inferno-component';
+import { isInvalid, isNullOrUndef, isObject, isStatefulComponent, isString, isUndefined } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 const componentHooks = {
@@ -19,10 +12,7 @@ const componentHooks = {
 	onComponentDidUpdate: true
 };
 
-export default function createElement<T>(
-	name: string | Function | Component<any, any>,
-	props?: T & Props,
-	..._children: Array<InfernoChildren | any>): VNode {
+export default function createElement<T>(name: string | Function | Component<any, any>, props?: T & Props, ..._children: Array<InfernoChildren | any>): VNode {
 	if (isInvalid(name) || isObject(name)) {
 		throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
@@ -34,13 +24,13 @@ export default function createElement<T>(
 
 	if (_children) {
 		if (_children.length === 1) {
-			children = _children[0];
+			children = _children[ 0 ];
 		} else if (_children.length === 0) {
 			children = undefined;
 		}
 	}
 	if (isString(name)) {
-		switch (name) {
+		switch ( name ) {
 			case 'svg':
 				flags = VNodeFlags.SvgElement;
 				break;
@@ -66,11 +56,11 @@ export default function createElement<T>(
 			const propKeys = Object.keys(props);
 
 			for (let i = 0, len = propKeys.length; i < len; i++) {
-				const propKey = propKeys[i];
+				const propKey = propKeys[ i ];
 
 				if (propKey === 'className' || propKey === 'class') {
-					className = props[propKey];
-					delete props[propKey];
+					className = props[ propKey ];
+					delete props[ propKey ];
 				} else if (propKey === 'key') {
 					key = props.key;
 					delete props.key;
@@ -99,13 +89,13 @@ export default function createElement<T>(
 			const propKeys = Object.keys(props);
 
 			for (let i = 0, len = propKeys.length; i < len; i++) {
-				const propKey = propKeys[i];
+				const propKey = propKeys[ i ];
 
-				if (componentHooks[propKey]) {
+				if (componentHooks[ propKey ]) {
 					if (!ref) {
 						ref = {};
 					}
-					ref[propKey] = props[propKey];
+					ref[ propKey ] = props[ propKey ];
 				} else if (propKey === 'key') {
 					key = props.key;
 					delete props.key;

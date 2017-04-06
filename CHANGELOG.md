@@ -1,4 +1,56 @@
 
+## Unreleased (2017-03-31)
+
+#### :nail_care: Dependency upgrades
+* Other
+  * [#986](https://github.com/infernojs/inferno/pull/986) Update cross-env to version 4.0.0 🚀. ([@greenkeeperio-bot](https://github.com/greenkeeperio-bot))
+
+#### Committers: 1
+- Greenkeeper ([greenkeeperio-bot](https://github.com/greenkeeperio-bot))
+
+
+## 1.5.6 (2017-03-30)
+
+#### :bug: Bugs
+* `inferno-router`
+  * [#982](https://github.com/infernojs/inferno/pull/982) Fix inferno-router need the path-to-regexp-es6 . ([@wxxian001](https://github.com/wxxian001))
+
+#### Committers: 1
+- wxxian001 ([wxxian001](https://github.com/wxxian001))
+
+
+## v1.5.1 (2017-03-27)
+
+#### :nail_care: Dependency upgrades
+* Other
+  * [#966](https://github.com/infernojs/inferno/pull/966) Update lerna-changelog to version 0.4.0 🚀. ([@greenkeeperio-bot](https://github.com/greenkeeperio-bot))
+  * [#957](https://github.com/infernojs/inferno/pull/957) Update ts-node to version 3.0.1 🚀. ([@greenkeeperio-bot](https://github.com/greenkeeperio-bot))
+
+#### :bug: Bugs
+* `inferno-devtools`
+  * [#971](https://github.com/infernojs/inferno/pull/971) fix inferno-devtools exports. ([@Ashot-KR](https://github.com/Ashot-KR))
+* `inferno-compat`, `inferno-component`, `inferno-create-element`, `inferno-hyperscript`, `inferno-router`, `inferno-server`, `inferno-shared`, `inferno-test-utils`, `inferno`
+  * [#959](https://github.com/infernojs/inferno/pull/959) Move ClassName to vNode. ([@Havunen](https://github.com/Havunen))
+* `inferno-compat`, `inferno-component`, `inferno-create-class`, `inferno-create-element`, `inferno-devtools`, `inferno-hyperscript`, `inferno-mobx`, `inferno-redux`, `inferno-router`, `inferno`
+  * [#964](https://github.com/infernojs/inferno/pull/964) rm browser field. ([@longlho](https://github.com/longlho))
+
+#### :rocket: Enhancements
+* `inferno`
+  * [#969](https://github.com/infernojs/inferno/pull/969) Remove Object.assign from polyfill link as it is not required. ([@DoumanAsh](https://github.com/DoumanAsh))
+* `inferno-compat`, `inferno-component`, `inferno-create-element`, `inferno-hyperscript`, `inferno-router`, `inferno-server`, `inferno-shared`, `inferno-test-utils`, `inferno`
+  * [#959](https://github.com/infernojs/inferno/pull/959) Move ClassName to vNode. ([@Havunen](https://github.com/Havunen))
+* Other
+  * [#944](https://github.com/infernojs/inferno/pull/944) Letter only prop lint. ([@aretecode](https://github.com/aretecode))
+
+#### Committers: 6
+- Douman ([DoumanAsh](https://github.com/DoumanAsh))
+- Greenkeeper ([greenkeeperio-bot](https://github.com/greenkeeperio-bot))
+- James ([aretecode](https://github.com/aretecode))
+- Long Ho ([longlho](https://github.com/longlho))
+- Poluektov Dmitriy ([Ashot-KR](https://github.com/Ashot-KR))
+- Sampo Kivistö ([Havunen](https://github.com/Havunen))
+
+
 ## v1.4.2 (2017-03-21)
 
 #### :nail_care: Dependency upgrades

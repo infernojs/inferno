@@ -106,7 +106,7 @@ describe('Compat Children', () => {
 				return {
 					next() {
 						if (idx < array.length) {
-							return { value: array[idx++], done: false };
+							return { value: array[ idx++ ], done: false };
 						} else {
 							return { done: true };
 						}

@@ -11,7 +11,7 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import options from '../core/options';
-import { directClone, InfernoInput, VNode, InfernoChildren } from '../core/VNodes';
+import { directClone, InfernoChildren, InfernoInput, VNode } from '../core/VNodes';
 import hydrateRoot from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
@@ -32,6 +32,11 @@ export const componentToDOMNodeMap = new Map();
 
 options.roots = roots;
 
+/**
+ * When inferno.options.findDOMNOdeEnabled is true, this function will return DOM Node by component instance
+ * @param ref Component instance
+ * @returns {*|null} returns dom node
+ */
 export function findDOMNode(ref) {
 	if (!options.findDOMNodeEnabled) {
 		if (process.env.NODE_ENV !== 'production') {
@@ -46,7 +51,7 @@ export function findDOMNode(ref) {
 
 function getRoot(dom): Root | null {
 	for (let i = 0, len = roots.length; i < len; i++) {
-		const root = roots[i];
+		const root = roots[ i ];
 
 		if (root.dom === dom) {
 			return root;
@@ -68,7 +73,7 @@ function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: Lifecy
 
 function removeRoot(root: Root): void {
 	for (let i = 0, len = roots.length; i < len; i++) {
-		if (roots[i] === root) {
+		if (roots[ i ] === root) {
 			roots.splice(i, 1);
 			return;
 		}
@@ -82,7 +87,12 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const documentBody = isBrowser ? document.body : null;
-
+/**
+ * Renders virtual node tree into parent node.
+ * @param {VNode | null | string | number} input vNode to be rendered
+ * @param parentDom DOM node which content will be replaced by virtual node
+ * @returns {InfernoChildren} rendered virtual node
+ */
 export function render(input: InfernoInput, parentDom?: Element | SVGAElement | DocumentFragment): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
@@ -121,8 +131,8 @@ export function render(input: InfernoInput, parentDom?: Element | SVGAElement | 
 			}
 			patch(root.input as VNode, input as VNode, parentDom as Element, lifecycle, EMPTY_OBJ, false, false);
 		}
-		lifecycle.trigger();
 		root.input = input;
+		lifecycle.trigger();
 	}
 	if (root) {
 		const rootInput: VNode = root.input as VNode;

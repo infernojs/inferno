@@ -13,6 +13,19 @@ describe('setState', () => {
 		container.innerHTML = '';
 	});
 
+	it('should throw an error when setState is called in constructor', () => {
+		class TestComponent extends Component {
+			constructor(props, ctx) {
+				super(props, ctx);
+				this.setState({
+					state: 'Something'
+				});
+			}
+		}
+
+		expect(render.bind(render, <TestComponent />, container)).to.throw(Error);
+	});
+
 	it('callback should be fired after state has changed', (done) => {
 
 		class TestComponent extends Component {
@@ -74,7 +87,6 @@ describe('setState', () => {
 				this.state = {
 					value: props.value
 				};
-				this.checkSetState = this.checkSetState.bind(this);
 			}
 
 			checkSetState() {
@@ -266,6 +278,7 @@ describe('setState', () => {
 		}, 45);
 	});
 
+	// https://jsfiddle.net/c6q9bvez/
 	it('Should not fail during rendering #2', (done) => {
 		let doSomething;
 
@@ -368,7 +381,7 @@ describe('setState', () => {
 			render() {
 				return (
 					<div>
-						<Child foo={this.state.foo} />
+						<Child foo={this.state.foo}/>
 					</div>
 				);
 			}
@@ -426,7 +439,7 @@ describe('setState', () => {
 			render() {
 				return (
 					<div>
-						<Child foo={this.state.foo} />
+						<Child foo={this.state.foo}/>
 					</div>
 				);
 			}
@@ -622,5 +635,76 @@ describe('setState', () => {
 		setTimeout(function () {
 			done();
 		}, 45);
+	});
+
+	it('setState must be sync like React if no state changes are pending', () => {
+		let doSomething;
+
+		class Parent extends Component {
+			constructor(props, context) {
+				super(props, context);
+
+				this.state = {
+					foo: 'b'
+				};
+
+				doSomething = this._setBar = this._setBar.bind(this);
+			}
+
+			_setBar(p) {
+				this.setState({
+					foo: p
+				});
+			}
+
+			render() {
+				return (
+					<div>{this.state.foo}</div>
+				);
+			}
+		}
+
+		render(<Parent />, container);
+		// Set state must go sync when nothing pending
+		expect(container.firstChild.innerHTML).to.equal('b');
+		doSomething('1');
+		expect(container.firstChild.innerHTML).to.equal('1');
+		doSomething('2');
+		expect(container.firstChild.innerHTML).to.equal('2');
+		doSomething('3');
+		expect(container.firstChild.innerHTML).to.equal('3');
+		doSomething('4');
+		expect(container.firstChild.innerHTML).to.equal('4');
+	});
+
+	it('Set state callback should have context of caller component (forced) - as per React', () => {
+		let cnt = 0;
+
+		class Com extends Component {
+			doTest() {
+				expect(this.state.a).to.equal(cnt);
+			}
+
+			componentWillMount() {
+				this.setState({
+					a: ++cnt
+				}, this.doTest);
+			}
+
+			componentDidMount() {
+				this.setState({
+					a: ++cnt
+				}, this.doTest);
+			}
+
+			render() {
+				return (
+					<div>1</div>
+				);
+			}
+		}
+
+
+		render(<Com />, container);
 	});
 });

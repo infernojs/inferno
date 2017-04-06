@@ -51,7 +51,7 @@ describe('Error recovery', () => {
 			expect(ex.message).to.equal('test');
 		}
 
-		render(<Crasher crash={false} />, container);
+		render(<Crasher crash={false}/>, container);
 		expect(container.firstChild.innerHTML).to.equal('2');
 	});
 

@@ -227,7 +227,7 @@ describe('BUG: instance - null', () => {
 			const itemsToRender = [];
 
 			for (let i = 0; i < items.length; i++) {
-				const item = items[i];
+				const item = items[ i ];
 				const isActive = activeValue === item.value;
 
 				itemsToRender.push(this._renderItem(item, i, items, isActive, searchText));
@@ -314,7 +314,15 @@ describe('BUG: instance - null', () => {
 
 
 	it('Should not fail', (done) => {
-		const items = [{ text: 'Implementation',value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',icon: '#user' },{ text: 'Issue',value: '4e0a069d-899a-418a-df27-8ff5ef18d459',icon: '#reminder' },{ text: 'LomaTaski',value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',icon: '#favourite' }];
+		const items = [{
+			text: 'Implementation',
+			value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
+			icon: '#user'
+		}, { text: 'Issue', value: '4e0a069d-899a-418a-df27-8ff5ef18d459', icon: '#reminder' }, {
+			text: 'LomaTaski',
+			value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
+			icon: '#favourite'
+		}];
 		const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
 		const text = 'pena';
 
@@ -322,7 +330,8 @@ describe('BUG: instance - null', () => {
 			<div>
 				<Dropdown
 					items={items}
-					changeCallback={function () {}}
+					changeCallback={function () {
+					}}
 					changeParams={{ guid: 'foo', field: 'activityType' }}
 					value={value}
 				/>
@@ -346,7 +355,15 @@ describe('BUG: instance - null', () => {
 	});
 
 	it('Should not fail #2', () => {
-		const items = [{ text: 'Implementation',value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',icon: '#user' },{ text: 'Issue',value: '4e0a069d-899a-418a-df27-8ff5ef18d459',icon: '#reminder' },{ text: 'LomaTaski',value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',icon: '#favourite' }];
+		const items = [{
+			text: 'Implementation',
+			value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
+			icon: '#user'
+		}, { text: 'Issue', value: '4e0a069d-899a-418a-df27-8ff5ef18d459', icon: '#reminder' }, {
+			text: 'LomaTaski',
+			value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
+			icon: '#favourite'
+		}];
 		const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
 		const text = 'pena';
 
@@ -354,7 +371,8 @@ describe('BUG: instance - null', () => {
 			<div>
 				<Dropdown
 					items={items}
-					changeCallback={function () {}}
+					changeCallback={function () {
+					}}
 					changeParams={{ guid: 'foo', field: 'activityType' }}
 					value={value}
 				/>
@@ -367,14 +385,22 @@ describe('BUG: instance - null', () => {
 
 		render(
 			<div>
-				<Icon	/>
+				<Icon />
 			</div>,
 			container
 		);
 	});
 
 	it('Should not fail #3', () => {
-		const items = [{ text: 'Implementation',value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',icon: '#user' },{ text: 'Issue',value: '4e0a069d-899a-418a-df27-8ff5ef18d459',icon: '#reminder' },{ text: 'LomaTaski',value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',icon: '#favourite' }];
+		const items = [{
+			text: 'Implementation',
+			value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
+			icon: '#user'
+		}, { text: 'Issue', value: '4e0a069d-899a-418a-df27-8ff5ef18d459', icon: '#reminder' }, {
+			text: 'LomaTaski',
+			value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
+			icon: '#favourite'
+		}];
 		const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
 		const text = 'pena';
 
@@ -382,7 +408,8 @@ describe('BUG: instance - null', () => {
 			<div>
 				<Dropdown
 					items={items}
-					changeCallback={function () {}}
+					changeCallback={function () {
+					}}
 					changeParams={{ guid: 'foo', field: 'activityType' }}
 					value={value}
 				/>
@@ -397,7 +424,8 @@ describe('BUG: instance - null', () => {
 			<div>
 				<Dropdown
 					items={items}
-					changeCallback={function () {}}
+					changeCallback={function () {
+					}}
 					changeParams={{ guid: 'dwqwdq', field: 'activityType' }}
 					value={value}
 				/>

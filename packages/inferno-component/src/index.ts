@@ -1,7 +1,7 @@
 // Make sure u use EMPTY_OBJ from 'inferno', otherwise it'll be a different reference
-import { EMPTY_OBJ, createVNode, options, VNode, Props } from 'inferno';
-import VNodeFlags from 'inferno-vnode-flags';
+import { createVNode, EMPTY_OBJ, options, Props, VNode } from 'inferno';
 import {
+	combineFrom,
 	ERROR_MSG,
 	isArray,
 	isBrowser,
@@ -9,12 +9,11 @@ import {
 	isInvalid,
 	isNullOrUndef,
 	isStringOrNumber,
-	Lifecycle,
+	isUndefined,
 	NO_OP,
-	throwError,
-	combineFrom,
-	isUndefined
+	throwError
 } from 'inferno-shared';
+import VNodeFlags from 'inferno-vnode-flags';
 
 let noOp = ERROR_MSG;
 
@@ -61,7 +60,7 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 			component._updating = true;
 			applyState(component, force, () => {
 				for (let i = 0, len = queue.length; i < len; i++) {
-					queue[i]();
+					queue[ i ]();
 				}
 			});
 			component._updating = false;
@@ -74,15 +73,22 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 	}
 }
 
-function queueStateChanges<P, S>(component: Component<P, S>, newState, callback: Function, sync: boolean): void {
+function queueStateChanges<P, S>(component: Component<P, S>, newState, callback: Function): void {
 	if (isFunction(newState)) {
 		newState = newState(component.state, component.props, component.context);
 	}
-	for (const stateKey in newState) {
-		component._pendingState[stateKey] = newState[stateKey];
+	let pending = component._pendingState;
+
+	if (pending === null) {
+		component._pendingState = pending = newState;
+	} else {
+		for (const stateKey in newState) {
+			pending[ stateKey ] = newState[ stateKey ];
+		}
 	}
+
 	if (isBrowser && !component._pendingSetState && !component._blockRender) {
-		if (sync && !component._updating) {
+		if (!component._updating) {
 			component._pendingSetState = true;
 			component._updating = true;
 			applyState(component, false, callback);
@@ -91,15 +97,19 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState, callback:
 			addToQueue(component, false, callback);
 		}
 	} else {
-		const pending = component._pendingState;
 		const state = component.state;
 
-		for (const key in pending) {
-			state[key] = pending[key];
+		if (state === null) {
+			component.state = pending;
+		} else {
+			for (const key in pending) {
+				state[ key ] = pending[ key ];
+			}
 		}
-		component._pendingState = {};
+
+		component._pendingState = null;
 		if (callback && component._blockRender) {
-			component._lifecycle.addListener(callback);
+			component._lifecycle.addListener(callback.bind(component));
 		}
 	}
 }
@@ -116,12 +126,12 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		const props = component.props as P;
 		const context = component.context;
 
-		component._pendingState = {};
+		component._pendingState = null;
 		let nextInput = component._updateComponent(prevState, nextState, props, props, context, force, true);
 		let didUpdate = true;
 
 		if (isInvalid(nextInput)) {
-			nextInput = createVNode(VNodeFlags.Void);
+			nextInput = createVNode(VNodeFlags.Void, null);
 		} else if (nextInput === NO_OP) {
 			nextInput = component._lastInput;
 			didUpdate = false;
@@ -140,15 +150,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 
 		component._lastInput = nextInput;
 		if (didUpdate) {
-			let childContext,
-					subLifecycle = component._lifecycle;
-
-			if (!subLifecycle) {
-				subLifecycle = new Lifecycle();
-			} else {
-				subLifecycle.listeners = [];
-			}
-			component._lifecycle = subLifecycle;
+			let childContext;
 
 			if (!isUndefined(component.getChildContext)) {
 				childContext = component.getChildContext();
@@ -160,8 +162,9 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 				childContext = combineFrom(context, childContext as any);
 			}
 
-			component._patch(lastInput, nextInput, parentDom, subLifecycle, childContext, component._isSVG, false);
-			subLifecycle.trigger();
+			const lifeCycle = component._lifecycle;
+			component._patch(lastInput, nextInput, parentDom, lifeCycle, childContext, component._isSVG, false);
+			lifeCycle.trigger();
 
 			if (!isUndefined(component.componentDidUpdate)) {
 				component.componentDidUpdate(props, prevState, context);
@@ -175,22 +178,24 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback: 
 		updateParentComponentVNodes(vNode, dom);
 	} else {
 		component.state = (component._pendingState as S);
-		component._pendingState = {};
+		component._pendingState = null;
 	}
 	if (!isNullOrUndef(callback)) {
-		callback();
+		callback.call(component);
 	}
 }
 
+let alreadyWarned = false;
+
 export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	static defaultProps: {};
-	state: S = {} as S;
+	state: S = null as S;
 	props: P & Props;
 	context: any;
 	_blockRender = false;
-	_blockSetState = false;
+	_blockSetState = true;
 	_pendingSetState = false;
-	_pendingState = {};
+	_pendingState = null;
 	_lastInput = null;
 	_vNode = null;
 	_unmounted = false;
@@ -199,7 +204,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	_patch = null;
 	_isSVG = false;
 	_componentToDOMNodeMap = null;
-	_updating = false;
+	_updating = true;
 
 	constructor(props?: P, context?: any) {
 		/** @type {object} */
@@ -210,15 +215,24 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	}
 
 	// LifeCycle methods
-	componentDidMount? (): void;
-	componentWillMount? (): void;
-	componentWillReceiveProps? (nextProps: P, nextContext: any): void;
-	shouldComponentUpdate? (nextProps: P, nextState: S, nextContext: any): boolean;
-	componentWillUpdate? (nextProps: P, nextState: S, nextContext: any): void;
-	componentDidUpdate? (prevProps: P, prevState: S, prevContext: any): void;
-	componentWillUnmount? (): void;
-	getChildContext? (): void;
-	render(nextProps?: P, nextState?, nextContext?) {}
+	componentDidMount?(): void;
+
+	componentWillMount?(): void;
+
+	componentWillReceiveProps?(nextProps: P, nextContext: any): void;
+
+	shouldComponentUpdate?(nextProps: P, nextState: S, nextContext: any): boolean;
+
+	componentWillUpdate?(nextProps: P, nextState: S, nextContext: any): void;
+
+	componentDidUpdate?(prevProps: P, prevState: S, prevContext: any): void;
+
+	componentWillUnmount?(): void;
+
+	getChildContext?(): void;
+
+	render(nextProps?: P, nextState?, nextContext?) {
+	}
 
 	forceUpdate(callback?: Function) {
 		if (this._unmounted || !isBrowser) {
@@ -233,38 +247,26 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			return;
 		}
 		if (!this._blockSetState) {
-			queueStateChanges(this, newState, callback, false);
+			queueStateChanges(this, newState, callback);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
-				throwError('cannot update state via setState() in componentWillUpdate().');
+				throwError('cannot update state via setState() in componentWillUpdate() or constructor.');
 			}
 			throwError();
 		}
 	}
 
 	setStateSync(newState) {
-		if (this._unmounted) {
-			return;
-		}
-		if (!this._blockSetState) {
-			queueStateChanges(this, newState, null, true);
-		} else {
-			if (process.env.NODE_ENV !== 'production') {
-				throwError('cannot update state via setState() in componentWillUpdate().');
+		if (process.env.NODE_ENV !== 'production') {
+			if (!alreadyWarned) {
+				alreadyWarned = true;
+				console.warn('Inferno WARNING: setStateSync has been deprecated and will be removed in next release. Use setState instead.');
 			}
-			throwError();
 		}
+		this.setState(newState);
 	}
 
-	_updateComponent(
-		prevState: S,
-		nextState: S,
-		prevProps: P & Props,
-		nextProps: P & Props,
-		context: any,
-		force: boolean,
-		fromSetState: boolean
-	): any {
+	_updateComponent(prevState: S, nextState: S, prevProps: P & Props, nextProps: P & Props, context: any, force: boolean, fromSetState: boolean): any {
 		if (this._unmounted === true) {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError(noOp);
@@ -273,7 +275,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
 			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
-				if (!isUndefined(this.componentWillReceiveProps) && !fromSetState ) {
+				if (!isUndefined(this.componentWillReceiveProps) && !fromSetState) {
 					this._blockRender = true;
 					this.componentWillReceiveProps(nextProps, context);
 					this._blockRender = false;
@@ -281,7 +283,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				if (this._pendingSetState) {
 					nextState = combineFrom(nextState, this._pendingState) as S;
 					this._pendingSetState = false;
-					this._pendingState = {};
+					this._pendingState = null;
 				}
 			}
 

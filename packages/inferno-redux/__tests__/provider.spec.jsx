@@ -6,7 +6,7 @@ import createMemoryHistory from 'history/createMemoryHistory';
 import { expect } from 'chai';
 import Component from 'inferno-component';
 import { createStore } from 'redux';
-import { Route, Router, IndexRoute } from 'inferno-router';
+import { IndexRoute, Route, Router } from 'inferno-router';
 import { Provider } from '../dist-es';
 import { innerHTML } from 'inferno/test/utils';
 
@@ -88,24 +88,24 @@ describe('Provider (JSX)', () => {
 		expect(() => render(
 			<Provider store={store}>
 			</Provider>,
-		container)).to.throw(Error);
+			container)).to.throw(Error);
 
 		expect(() => render(
 			<Provider store={store}>
 				<div />
 				<div />
 			</Provider>,
-		container)).to.throw(Error);
+			container)).to.throw(Error);
 	});
 
 	it('should add the store to the child context', () => {
 		/*
-		const reducer = (state = { name: 'Tom' }, action) => {
-			switch (action.type) {
-				default:
-					return state;
-			}
-		};*/
+		 const reducer = (state = { name: 'Tom' }, action) => {
+		 switch (action.type) {
+		 default:
+		 return state;
+		 }
+		 };*/
 		const store = createStore((state = { name: 'Tom' }, action) => {
 			switch (action.type) {
 				case 'CHANGE_NAME':
@@ -123,7 +123,7 @@ describe('Provider (JSX)', () => {
 						<BasicComponent2 />
 					</BasicRouter>
 				</Provider>
-			, container);
+				, container);
 		};
 
 		_render();
@@ -151,11 +151,11 @@ describe('Provider (JSX)', () => {
 			render(
 				<Provider store={store}>
 					<Router url={ url } history={ browserHistory }>
-						<Route path="/next" component={ BasicComponent2 } />
-						<IndexRoute component={ BasicComponent1 } />
+						<Route path="/next" component={ BasicComponent2 }/>
+						<IndexRoute component={ BasicComponent1 }/>
 					</Router>
 				</Provider>
-			, container);
+				, container);
 		};
 
 		_render();
@@ -223,8 +223,8 @@ describe('Provider (JSX)', () => {
 			<Provider store={ store }>
 				<Router history={ browserHistory }>
 					<Route component={ App }>
-						<Route path="/next" component={ BasicComponent2 } />
-						<IndexRoute component={ BasicComponent1 } />
+						<Route path="/next" component={ BasicComponent2 }/>
+						<IndexRoute component={ BasicComponent1 }/>
 					</Route>
 				</Router>
 			</Provider>

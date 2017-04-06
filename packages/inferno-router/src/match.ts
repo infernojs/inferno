@@ -1,7 +1,16 @@
 import Inferno from 'inferno';
-import { isArray, toArray, combineFrom } from 'inferno-shared';
+import { combineFrom, isArray, toArray } from 'inferno-shared';
 import pathToRegExp from 'path-to-regexp-es6';
-import { decode, emptyObject, flatten, getURLString, isEmpty, mapSearchParams, pathRankSort, toPartialURL } from './utils';
+import {
+	decode,
+	emptyObject,
+	flatten,
+	getURLString,
+	isEmpty,
+	mapSearchParams,
+	pathRankSort,
+	toPartialURL
+} from './utils';
 
 const cache: Map<string, IMatchRegex> = new Map();
 
@@ -28,13 +37,13 @@ export default function match(routes, currentURL: any) {
 function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = false) {
 
 	const routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
-	const [pathToMatch = '/', search = ''] = currentURL.split('?');
+	const [ pathToMatch = '/', search = '' ] = currentURL.split('?');
 	const params = mapSearchParams(search);
 
 	routes.sort(pathRankSort);
 
 	for (let i = 0, len = routes.length; i < len; i++) {
-		const route = routes[i];
+		const route = routes[ i ];
 		const props = route.props || emptyObject;
 		const routePath = props.from || props.path || '/';
 		const location = parentPath + toPartialURL(routePath, parentPath).replace(/\/\//g, '/');
@@ -59,7 +68,7 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = fal
 					children = matchChild.matched;
 					const childProps = children.props.params;
 					for (const key in childProps) {
-						params[key] = childProps[key];
+						params[ key ] = childProps[ key ];
 					}
 				} else {
 					children = null;
@@ -108,11 +117,11 @@ export function matchPath(end: boolean, routePath: string, pathToMatch: string):
 		return null;
 	}
 
-	const path: string = m[0];
+	const path: string = m[ 0 ];
 	const params = Object.create(null);
 
 	for (let i = 1, len = m.length; i < len; i += 1) {
-		params[regexp.keys[i - 1].name] = decode(m[i]);
+		params[ regexp.keys[ i - 1 ].name ] = decode(m[ i ]);
 	}
 
 	return {

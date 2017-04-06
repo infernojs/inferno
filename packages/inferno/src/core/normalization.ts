@@ -10,14 +10,7 @@ import {
 	warning
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import {
-	createTextVNode,
-	directClone,
-	InfernoChildren,
-	isVNode,
-	Props,
-	VNode
-} from './VNodes';
+import { createTextVNode, directClone, InfernoChildren, isVNode, Props, VNode } from './VNodes';
 
 function applyKey(key: string, vNode: VNode) {
 	vNode.key = key;
@@ -199,11 +192,11 @@ export function normalize(vNode: VNode): void {
 		// This code will be stripped out from production CODE
 		// It will help users to track errors in their applications.
 
-		const verifyKeys = function (vNodes) {
-			const keyValues = vNodes.map(function (vnode) {
+		const verifyKeys = function(vNodes) {
+			const keyValues = vNodes.map(function(vnode) {
 				return vnode.key;
 			});
-			keyValues.some(function (item, idx) {
+			keyValues.some(function(item, idx) {
 				const hasDuplicate = keyValues.indexOf(item) !== idx;
 
 				if (hasDuplicate) {

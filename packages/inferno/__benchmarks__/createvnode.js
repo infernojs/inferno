@@ -1,4 +1,4 @@
-import { createVNode, createTextVNode } from '../dist-es/core/VNodes';
+import { createTextVNode, createVNode } from '../dist-es/core/VNodes';
 import { render } from '../dist-es/index';
 
 suite('createVNode', () => {
@@ -16,35 +16,35 @@ suite('createVNode', () => {
 		createVNode(2, 'div', null, [
 			createVNode(2, 'div', null, '1'),
 			createVNode(2, 'div', null, [
-				createVNode(2, 'div', null,'a'),
-				createVNode(2, 'div', null,'b'),
-				createVNode(2, 'div', null,'c')
+				createVNode(2, 'div', null, 'a'),
+				createVNode(2, 'div', null, 'b'),
+				createVNode(2, 'div', null, 'c')
 			])
 		]);
 	});
 
 	benchmark('20 children siblings', () => {
 		createVNode(2, 'div', null, [
-			createVNode(2, 'div', null,'1'),
-			createVNode(2, 'div', null,'2'),
-			createVNode(2, 'div', null,'3'),
-			createVNode(2, 'div', null,'4'),
-			createVNode(2, 'div', null,'5'),
-			createVNode(2, 'div', null,'6'),
-			createVNode(2, 'div', null,'7'),
-			createVNode(2, 'div', null,'8'),
-			createVNode(2, 'div', null,'9'),
-			createVNode(2, 'div', null,'10'),
-			createVNode(2, 'div', null,'11'),
-			createVNode(2, 'div', null,'12'),
-			createVNode(2, 'div', null,'13'),
-			createVNode(2, 'div', null,'14'),
-			createVNode(2, 'div', null,'15'),
-			createVNode(2, 'div', null,'16'),
-			createVNode(2, 'div', null,'17'),
-			createVNode(2, 'div', null,'18'),
-			createVNode(2, 'div', null,'19'),
-			createVNode(2, 'div', null,'20')
+			createVNode(2, 'div', null, '1'),
+			createVNode(2, 'div', null, '2'),
+			createVNode(2, 'div', null, '3'),
+			createVNode(2, 'div', null, '4'),
+			createVNode(2, 'div', null, '5'),
+			createVNode(2, 'div', null, '6'),
+			createVNode(2, 'div', null, '7'),
+			createVNode(2, 'div', null, '8'),
+			createVNode(2, 'div', null, '9'),
+			createVNode(2, 'div', null, '10'),
+			createVNode(2, 'div', null, '11'),
+			createVNode(2, 'div', null, '12'),
+			createVNode(2, 'div', null, '13'),
+			createVNode(2, 'div', null, '14'),
+			createVNode(2, 'div', null, '15'),
+			createVNode(2, 'div', null, '16'),
+			createVNode(2, 'div', null, '17'),
+			createVNode(2, 'div', null, '18'),
+			createVNode(2, 'div', null, '19'),
+			createVNode(2, 'div', null, '20')
 		]);
 	});
 
@@ -83,7 +83,7 @@ suite('createVNode', () => {
 																																	createVNode(2, 'div', null, (
 																																		createVNode(2, 'div', null, (
 																																			createVNode(2, 'div', null, 'child33')
-		))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+																																		))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
 	});
 
 	benchmark('Table shape', () => {
@@ -195,11 +195,11 @@ suite('createVNode', () => {
 	benchmark('deeply nested Arrays (nobody should do this)', () => {
 		createVNode(2, 'div', null, [
 			createVNode(2, 'div', null, '1'),
-			createVNode(2, 'div', null, [[[[[[
-				[[createVNode(2, 'div', null,'a')]],
-				[[[[[createVNode(2, 'div', null,'b')]]]]],
-				[[[[[createVNode(2, 'div', null,'c')]]]]]
-			]]]]]])
+			createVNode(2, 'div', null, [ [ [ [ [ [
+				[ [ createVNode(2, 'div', null, 'a') ] ],
+				[ [ [ [ [ createVNode(2, 'div', null, 'b') ] ] ] ] ],
+				[ [ [ [ [ createVNode(2, 'div', null, 'c') ] ] ] ] ]
+			] ] ] ] ] ])
 		]);
 	});
 

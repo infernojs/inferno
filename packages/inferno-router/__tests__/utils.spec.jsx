@@ -1,8 +1,5 @@
 import { expect } from 'chai';
-import {
-	isEmpty,
-	mapSearchParams
-} from '../dist-es/utils';
+import { isEmpty, mapSearchParams } from '../dist-es/utils';
 
 describe('Router #utils', () => {
 	it('it should map search params to object', () => {
@@ -14,7 +11,7 @@ describe('Router #utils', () => {
 		expect(params.utf8).to.equal('çava-oui');
 
 		params = mapSearchParams('arr[]=one&arr[]=two&arr[]=çava-oui');
-		expect(params.arr[2]).to.equal('çava-oui');
+		expect(params.arr[ 2 ]).to.equal('çava-oui');
 	});
 
 	it('it should return true for an empty object or array', () => {

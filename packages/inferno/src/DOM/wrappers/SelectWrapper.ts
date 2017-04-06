@@ -1,15 +1,6 @@
-import {
-	isArray,
-	isInvalid,
-	isNullOrUndef
-} from 'inferno-shared';
+import { isArray, isInvalid, isNullOrUndef } from 'inferno-shared';
 import { isVNode } from '../../core/VNodes';
-import { wrappers } from './processElement';
 import { EMPTY_OBJ } from '../utils';
-
-function isControlled(props) {
-	return !isNullOrUndef(props.value);
-}
 
 function updateChildOptionGroup(vNode, value) {
 	const type = vNode.type;
@@ -19,7 +10,7 @@ function updateChildOptionGroup(vNode, value) {
 
 		if (isArray(children)) {
 			for (let i = 0, len = children.length; i < len; i++) {
-				updateChildOption(children[i], value);
+				updateChildOption(children[ i ], value);
 			}
 		} else if (isVNode(children)) {
 			updateChildOption(children, value);
@@ -43,9 +34,10 @@ function updateChildOption(vNode, value) {
 }
 
 function onSelectChange(e) {
-	const vNode = this.vNode;
+	const vNode = this;
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
+	const previousValue = props.value;
 
 	if (props.onChange) {
 		const event = props.onChange;
@@ -58,48 +50,42 @@ function onSelectChange(e) {
 	} else if (props.onchange) {
 		props.onchange(e);
 	}
-	// the user may have updated the vNode from the above onChange events
+	// the user may have updated the vNode from the above onInput events syncronously
 	// so we need to get it from the context of `this` again
-	applyValue(this.vNode, dom, false);
-}
+	const newVNode = this;
+	const newProps = newVNode.props || EMPTY_OBJ;
 
-export function processSelect(vNode, dom, mounting: boolean) {
-	const props = vNode.props || EMPTY_OBJ;
+	// If render is going async there is no value change yet, it will come back to process input soon
+	if (previousValue !== newProps.value) {
+		// When this happens we need to store current cursor position and restore it, to avoid jumping
 
-	applyValue(vNode, dom, mounting);
-	if (isControlled(props)) {
-		let selectWrapper = wrappers.get(dom);
-
-		if (!selectWrapper) {
-			selectWrapper = {
-				vNode
-			};
-			dom.onchange = onSelectChange.bind(selectWrapper);
-			dom.onchange.wrapped = true;
-			wrappers.set(dom, selectWrapper);
-		}
-		selectWrapper.vNode = vNode;
-		return true;
+		applyValue(newVNode, dom, newProps, false);
 	}
-	return false;
 }
 
-export function applyValue(vNode, dom, mounting: boolean) {
-	const props = vNode.props || EMPTY_OBJ;
+export function processSelect(vNode, dom, nextPropsOrEmpty, mounting: boolean, isControlled: boolean) {
+	applyValue(vNode, dom, nextPropsOrEmpty, mounting);
 
-	if (props.multiple !== dom.multiple) {
-		dom.multiple = props.multiple;
+	if (mounting && isControlled) {
+		dom.onchange = onSelectChange.bind(vNode);
+		dom.onchange.wrapped = true;
+	}
+}
+
+export function applyValue(vNode, dom, nextPropsOrEmpty, mounting: boolean) {
+	if (nextPropsOrEmpty.multiple !== dom.multiple) {
+		dom.multiple = nextPropsOrEmpty.multiple;
 	}
 	const children = vNode.children;
 
 	if (!isInvalid(children)) {
-		let value = props.value;
+		let value = nextPropsOrEmpty.value;
 		if (mounting && isNullOrUndef(value)) {
-			value = props.defaultValue;
+			value = nextPropsOrEmpty.defaultValue;
 		}
 		if (isArray(children)) {
 			for (let i = 0, len = children.length; i < len; i++) {
-				updateChildOptionGroup(children[i], value);
+				updateChildOptionGroup(children[ i ], value);
 			}
 		} else if (isVNode(children)) {
 			updateChildOptionGroup(children, value);

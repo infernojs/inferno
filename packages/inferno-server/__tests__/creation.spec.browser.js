@@ -3,11 +3,11 @@ import createElement from 'inferno-create-element';
 import { renderToStaticMarkup } from '../dist-es';
 
 /*
-class StatefulComponent extends Component {
-	render() {
-		return createElement('span', null, `stateless ${ this.props.value }!`);
-	}
-}*/
+ class StatefulComponent extends Component {
+ render() {
+ return createElement('span', null, `stateless ${ this.props.value }!`);
+ }
+ }*/
 
 const FunctionalComponent = ({ value }) => createElement('span', null, `stateless ${ value }!`);
 

@@ -8,8 +8,14 @@ const specialKeys = {
 };
 
 export default class Provider extends Component<any, any> {
-	contextTypes: any = { mobxStores() {} };
-	childContextTypes: any = { mobxStores() {} };
+	contextTypes: any = {
+		mobxStores() {
+		}
+	};
+	childContextTypes: any = {
+		mobxStores() {
+		}
+	};
 	private store: any;
 
 	constructor(props?: any, context?: any) {
@@ -28,13 +34,13 @@ export default class Provider extends Component<any, any> {
 
 		if (baseStores) {
 			for (const key in baseStores) {
-				stores[key] = baseStores[key];
+				stores[ key ] = baseStores[ key ];
 			}
 		}
 		// add own stores
 		for (const key in this.props) {
-			if (!specialKeys[key]) {
-				stores[key] = this.props[key];
+			if (!specialKeys[ key ]) {
+				stores[ key ] = this.props[ key ];
 			}
 		}
 		return {
@@ -54,7 +60,7 @@ if (process.env.NODE_ENV !== 'production') {
 			);
 		}
 		for (const key in nextProps) {
-			if (!specialKeys[key] && this.props[key] !== nextProps[key]) {
+			if (!specialKeys[ key ] && this.props[ key ] !== nextProps[ key ]) {
 				warning(
 					`MobX Provider: Provided store '${key}' has changed. ` +
 					`Please avoid replacing stores as the change might not propagate to all children`

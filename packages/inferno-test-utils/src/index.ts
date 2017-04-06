@@ -1,26 +1,8 @@
-import {
-	render,
-	VNode,
-	InfernoInput,
-	InfernoChildren
-} from 'inferno';
-import VNodeFlags from 'inferno-vnode-flags';
+import { InfernoChildren, InfernoInput, render, VNode } from 'inferno';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import {
-	isArray,
-	isFunction,
-	isNumber,
-	isObject,
-	isString,
-	throwError
-} from 'inferno-shared';
-
-// Interfaces
-
-export interface VNodePredicate {
-	(vNode: VNode): boolean;
-}
+import { isArray, isFunction, isNumber, isObject, isString, throwError } from 'inferno-shared';
+import VNodeFlags from 'inferno-vnode-flags';
 
 // Type Checkers
 
@@ -57,12 +39,12 @@ export function isClassVNodeOfType(instance: VNode, type: Function): boolean {
 	return isClassVNode(instance) && instance.type === type;
 }
 
-export function isDOMElement(instance: any): boolean  {
+export function isDOMElement(instance: any): boolean {
 	return Boolean(instance) && isObject(instance) &&
 		instance.nodeType === 1 && isString(instance.tagName);
 }
 
-export function isDOMElementOfType(instance: any, type: string): boolean  {
+export function isDOMElementOfType(instance: any, type: string): boolean {
 	return isDOMElement(instance) && isString(type) &&
 		instance.tagName.toLowerCase() === type.toLowerCase();
 }
@@ -94,7 +76,7 @@ export function renderIntoDocument(input: InfernoInput): InfernoChildren {
 
 // Recursive Finder Functions
 
-export function findAllInRenderedTree(renderedTree: any, predicate: VNodePredicate): VNode[] {
+export function findAllInRenderedTree(renderedTree: any, predicate: (vNode: VNode) => boolean): VNode[] {
 	if (isRenderedClassComponent(renderedTree)) {
 		return findAllInVNodeTree(renderedTree._lastInput, predicate);
 	} else {
@@ -102,7 +84,7 @@ export function findAllInRenderedTree(renderedTree: any, predicate: VNodePredica
 	}
 }
 
-export function findAllInVNodeTree(vNodeTree: VNode, predicate: VNodePredicate): VNode[] {
+export function findAllInVNodeTree(vNodeTree: VNode, predicate: (vNode: VNode) => boolean): VNode[] {
 	if (isVNode(vNodeTree)) {
 		let result: VNode[] = predicate(vNodeTree) ? [ vNodeTree ] : [];
 		const children: any = vNodeTree.children;
@@ -141,7 +123,7 @@ function findOneOf(tree: any, filter: any, name: string, finder: Function): any 
 	if (all.length > 1) {
 		throwError(`Did not find exactly one match (found ${all.length}) for ${name}: ${filter}`);
 	} else {
-		return all[0];
+		return all[ 0 ];
 	}
 }
 

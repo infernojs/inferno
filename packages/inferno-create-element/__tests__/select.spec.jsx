@@ -30,8 +30,8 @@ describe('Select / select multiple (JSX)', () => {
 			<option value={ 2 }>2</option>
 		</select>, container);
 
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(true);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -43,10 +43,10 @@ describe('Select / select multiple (JSX)', () => {
 			<option value={ 2 }>2</option>
 		</select>, container);
 
-		console.log(container.firstChild.children[0].selected);
-		console.log(container.firstChild.children[1].selected);
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		console.log(container.firstChild.children[ 0 ].selected);
+		console.log(container.firstChild.children[ 1 ].selected);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -58,8 +58,8 @@ describe('Select / select multiple (JSX)', () => {
 			<option value={ 2 }>2</option>
 		</select>, container);
 
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -76,8 +76,8 @@ describe('Select / select multiple (JSX)', () => {
 			<option value="foo">foo</option>
 			<option value="bar">bar</option>
 		</select>, container);
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -87,8 +87,8 @@ describe('Select / select multiple (JSX)', () => {
 			<option value="foo">foo</option>
 			<option value="bar">bar</option>
 		</select>, container);
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -99,8 +99,8 @@ describe('Select / select multiple (JSX)', () => {
 			<option value="foo">foo</option>
 			<option value="bar">bar</option>
 		</select>, container);
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(true);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -109,7 +109,7 @@ describe('Select / select multiple (JSX)', () => {
 	});
 
 	it('should populate the value attribute on select multiple using groups', () => {
-		const template = (val) => <select	multiple={ true }	value={ val }>
+		const template = (val) => <select multiple={ true } value={ val }>
 			<optgroup label="foo-group">
 				<option value="foo"/>
 			</optgroup>
@@ -168,8 +168,8 @@ describe('Select / select multiple (JSX)', () => {
 			<option value="foo">foo</option>
 			<option value="bar">bar</option>
 		</select>, container);
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -184,8 +184,8 @@ describe('Select / select multiple (JSX)', () => {
 			<option value="bar">bar</option>
 		</select>, container);
 
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -197,8 +197,8 @@ describe('Select / select multiple (JSX)', () => {
 			<option value="bar">bar</option>
 		</select>, container);
 
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -236,10 +236,10 @@ describe('Select / select multiple (JSX)', () => {
 			<option value={ 'd' }>d</option>
 		</select>, container);
 
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(true);
-		expect(container.firstChild.children[2].selected).to.eql(true);
-		expect(container.firstChild.children[3].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 2 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -255,10 +255,10 @@ describe('Select / select multiple (JSX)', () => {
 			<option value="d">d</option>
 		</select>, container);
 
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(true);
-		expect(container.firstChild.children[2].selected).to.eql(true);
-		expect(container.firstChild.children[3].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 2 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -278,10 +278,10 @@ describe('Select / select multiple (JSX)', () => {
 			<option value="c">c</option>
 			<option value="d">d</option>
 		</select>, container);
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(true);
-		expect(container.firstChild.children[2].selected).to.eql(false);
-		expect(container.firstChild.children[3].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 2 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -297,10 +297,10 @@ describe('Select / select multiple (JSX)', () => {
 			<option value={ 'd' }>d</option>
 		</select>, container);
 
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(true);
-		expect(container.firstChild.children[2].selected).to.eql(true);
-		expect(container.firstChild.children[3].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 2 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -311,13 +311,13 @@ describe('Select / select multiple (JSX)', () => {
 		render(<select>
 			<option value="a">a</option>
 			<option value="b">b</option>
-			</select>, container);
-		container.firstChild.children[1].selected = true;
+		</select>, container);
+		container.firstChild.children[ 1 ].selected = true;
 		render(<select>
 			<option value="a">a</option>
 			<option value="b">b</option>
-			</select>, container);
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(true);
+		</select>, container);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
 	});
 });

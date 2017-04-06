@@ -211,5 +211,29 @@ describe('FormElements', () => {
 				}, 10);
 			});
 		});
+
+		describe('input range scu', () => {
+			it('Should have correct value on initial render', () => {
+				class TestInputRange extends Component {
+					shouldComponentUpdate() {
+						return false;
+					}
+					render() {
+						return (
+							<input
+								name="test"
+								type="range"
+								min={50}
+								max={500}
+								step={5}
+								defaultValue={260}/>
+						);
+					}
+				}
+				render(<TestInputRange />, container);
+
+				expect(container.firstChild.value).to.equal('260');
+			});
+		});
 	});
 });
