@@ -812,12 +812,9 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 				const linkEvent = nextValue.event;
 
 				if (linkEvent && isFunction(linkEvent)) {
-					if (!dom._data) {
-						dom[ nameLowerCase ] = function(e) {
-							linkEvent(e.currentTarget._data, e);
-						};
-					}
-					dom._data = nextValue.data;
+					dom[ nameLowerCase ] = function(e) {
+						linkEvent(nextValue.data, e);
+					};
 				} else {
 					if (process.env.NODE_ENV !== 'production') {
 						throwError(`an event on a VNode "${ name }". was not a function or a valid linkEvent.`);
