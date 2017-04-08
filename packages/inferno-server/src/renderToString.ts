@@ -23,7 +23,7 @@ function renderStylesToString(styles) {
 
 		for (const styleName in styles) {
 			const value = styles[ styleName ];
-			const px = isNumber(value) && !internal_isUnitlessNumber[ styleName ] ? 'px' : '';
+			const px = isNumber(value) && !internal_isUnitlessNumber.has(styleName) ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
 				renderedString += `${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`;

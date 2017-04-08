@@ -761,12 +761,12 @@ export function isAttrAnEvent(attr: string): boolean {
 
 export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boolean, hasControlledValue: boolean) {
 	if (lastValue !== nextValue) {
-		if (prop in skipProps || (hasControlledValue && prop === 'value')) {
+		if (skipProps.has(prop) || (hasControlledValue && prop === 'value')) {
 			return;
-		} else if (prop in booleanProps) {
+		} else if (booleanProps.has(prop)) {
 			prop = prop === 'autoFocus' ? prop.toLowerCase() : prop;
 			dom[ prop ] = !!nextValue;
-		} else if (prop in strictProps) {
+		} else if (strictProps.has(prop)) {
 			const value = isNullOrUndef(nextValue) ? '' : nextValue;
 
 			if (dom[ prop ] !== value) {
@@ -789,9 +789,9 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
 			}
 		} else {
 			// We optimize for NS being boolean. Its 99.9% time false
-			if (isSVG && prop in namespaces) {
+			if (isSVG && namespaces.has(prop)) {
 				// If we end up in this path we can read property again
-				dom.setAttributeNS(namespaces[ prop ], prop, nextValue);
+				dom.setAttributeNS(namespaces.get(prop), prop, nextValue);
 			} else {
 				dom.setAttribute(prop, nextValue);
 			}
@@ -801,7 +801,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
 
 export function patchEvent(name: string, lastValue, nextValue, dom) {
 	if (lastValue !== nextValue) {
-		if (name in delegatedEvents) {
+		if (delegatedEvents.has(name)) {
 			handleEvent(name, lastValue, nextValue, dom);
 		} else {
 			const nameLowerCase = name.toLowerCase();
@@ -844,7 +844,7 @@ export function patchStyle(lastAttrValue: string | Styles, nextAttrValue: string
 		// do not add a hasOwnProperty check here, it affects performance
 		const value = nextAttrValue[ style ];
 
-		if (!isNumber(value) || style in isUnitlessNumber) {
+		if (!isNumber(value) || isUnitlessNumber.has(style)) {
 			domStyle[ style ] = value;
 		} else {
 			domStyle[ style ] = value + 'px';

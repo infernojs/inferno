@@ -86,7 +86,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
 			newNodes.push(applyKeyIfMissing(i, createTextVNode(n, null)));
-		} else if ((isVNode(n) && n.dom) || (isNull(n.key) && !(n.flags & VNodeFlags.HasNonKeyedChildren))) {
+		} else if ((isVNode(n) && n.dom !== null) || (isNull(n.key) && !(n.flags & VNodeFlags.HasNonKeyedChildren))) {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
@@ -102,7 +102,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 function normalizeChildren(children: InfernoChildren | null) {
 	if (isArray(children)) {
 		return normalizeVNodes(children as any[]);
-	} else if (isVNode(children as VNode) && (children as VNode).dom) {
+	} else if (isVNode(children as VNode) && (children as VNode).dom !== null) {
 		return directClone(children as VNode);
 	}
 
@@ -110,11 +110,11 @@ function normalizeChildren(children: InfernoChildren | null) {
 }
 
 function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
-	if (!(vNode.flags & VNodeFlags.Component)) {
+	if (vNode.flags & VNodeFlags.Element) {
 		if (isNullOrUndef(children) && !isNullOrUndef(props.children)) {
 			vNode.children = props.children;
 		}
-		if (props.className) {
+		if (!isNullOrUndef(props.className)) {
 			vNode.className = props.className;
 			delete props.className;
 		}
@@ -129,20 +129,19 @@ function normalizeProps(vNode: VNode, props: Props, children: InfernoChildren) {
 	}
 }
 
-function normalizeElement(type: string, vNode: VNode) {
+export function getFlagsForElementVnode(type: string): number {
 	if (type === 'svg') {
-		vNode.flags = VNodeFlags.SvgElement;
+		return VNodeFlags.SvgElement;
 	} else if (type === 'input') {
-		vNode.flags = VNodeFlags.InputElement;
+		return VNodeFlags.InputElement;
 	} else if (type === 'select') {
-		vNode.flags = VNodeFlags.SelectElement;
+		return VNodeFlags.SelectElement;
 	} else if (type === 'textarea') {
-		vNode.flags = VNodeFlags.TextareaElement;
+		return VNodeFlags.TextareaElement;
 	} else if (type === 'media') {
-		vNode.flags = VNodeFlags.MediaElement;
-	} else {
-		vNode.flags = VNodeFlags.HtmlElement;
+		return VNodeFlags.MediaElement;
 	}
+	return VNodeFlags.HtmlElement;
 }
 
 export function normalize(vNode: VNode): void {
@@ -169,7 +168,7 @@ export function normalize(vNode: VNode): void {
 		}
 
 		if (isString(type)) {
-			normalizeElement(type as string, vNode);
+			vNode.flags = getFlagsForElementVnode(type as string);
 			if (props && props.children) {
 				vNode.children = props.children;
 				children = props.children;
@@ -179,18 +178,18 @@ export function normalize(vNode: VNode): void {
 
 	if (props) {
 		normalizeProps(vNode, props, children);
+		if (!isInvalid(props.children)) {
+			props.children = normalizeChildren(props.children);
+		}
 	}
 	if (!isInvalid(children)) {
 		vNode.children = normalizeChildren(children);
-	}
-	if (props && !isInvalid(props.children)) {
-		props.children = normalizeChildren(props.children);
 	}
 
 	if (process.env.NODE_ENV !== 'production') {
 
 		// This code will be stripped out from production CODE
-		// It will help users to track errors in their applications.
+		// It helps users to track errors in their applications.
 
 		const verifyKeys = function(vNodes) {
 			const keyValues = vNodes.map(function(vnode) {

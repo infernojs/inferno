@@ -1,5 +1,5 @@
-import { createVNode, InfernoChildren, VNode } from 'inferno';
-import { isArray, isStatefulComponent, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
+import { createVNode, getFlagsForElementVnode, InfernoChildren, VNode } from 'inferno';
+import { isArray, isString, isStringOrNumber, isUndefined } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
@@ -48,10 +48,9 @@ function isChildren(x: any): boolean {
 	return isStringOrNumber(x) || (x && isArray(x));
 }
 
-function extractProps(_props: any, _tag: string | VNode): any {
+function extractProps(_props: any, isElement: boolean, _tag: string | VNode): any {
 	_props = _props || {};
-	const isComponent = !isString(_tag);
-	const tag = !isComponent ? parseTag(_tag as string, _props) : _tag;
+	const tag = isElement ? parseTag(_tag as string, _props) : _tag;
 	const newProps = {};
 	let key = null;
 	let ref = null;
@@ -65,7 +64,7 @@ function extractProps(_props: any, _tag: string | VNode): any {
 			key = _props[ prop ];
 		} else if (prop === 'ref') {
 			ref = _props[ prop ];
-		} else if (prop.substr(0, 11) === 'onComponent' && isComponent) {
+		} else if (prop.substr(0, 11) === 'onComponent' && !isElement) {
 			if (!ref) {
 				ref = {};
 			}
@@ -81,41 +80,28 @@ function extractProps(_props: any, _tag: string | VNode): any {
 	return { tag, props: newProps, key, ref, children, className };
 }
 
+/**
+ * Creates virtual node
+ * @param {string|VNode|Function} _tag Name for virtual node
+ * @param {object=} _props Additional properties for virtual node
+ * @param {string|number|VNode|Array<string|number|VNode>|null=} _children Optional children for virtual node
+ * @returns {VNode} returns new virtual node
+ */
 export default function hyperscript(_tag: string | VNode | Function, _props?: any, _children?: InfernoChildren): VNode {
 	// If a child array or text node are passed as the second argument, shift them
 	if (!_children && isChildren(_props)) {
 		_children = _props;
 		_props = {};
 	}
-	const { tag, props, key, ref, children, className } = extractProps(_props, _tag as VNode);
+	const isElement = isString(_tag);
+	const { tag, props, key, ref, children, className } = extractProps(_props, isElement, _tag as VNode);
 
-	if (isString(tag)) {
-		let flags;
-
-		switch ( tag ) {
-			case 'svg':
-				flags = VNodeFlags.SvgElement;
-				break;
-			case 'input':
-				flags = VNodeFlags.InputElement;
-				break;
-			case 'textarea':
-				flags = VNodeFlags.TextareaElement;
-				break;
-			case 'select':
-				flags = VNodeFlags.SelectElement;
-				break;
-			default:
-				flags = VNodeFlags.HtmlElement;
-				break;
-		}
-		return createVNode(flags, tag, className, _children || children, props, key, ref);
+	if (isElement) {
+		return createVNode(getFlagsForElementVnode(tag), tag, className, _children || children, props, key, ref);
 	} else {
-		const flags = isStatefulComponent(tag) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
-
 		if (children || _children) {
 			(props as any).children = children || _children;
 		}
-		return createVNode(flags, tag, className, null, props, key, ref);
+		return createVNode(VNodeFlags.ComponentUnknown, tag, className, null, props, key, ref);
 	}
 }

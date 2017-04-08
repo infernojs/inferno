@@ -46,6 +46,17 @@ export interface VNode {
 	parentVNode?: VNode;
 }
 
+function VNode(children, className, flags, key, props, ref, type) {
+	this.children = children;
+	this.className = className;
+	this.dom = null;
+	this.flags = flags;
+	this.key = key;
+	this.props = props;
+	this.ref = ref;
+	this.type = type;
+}
+
 /**
  * Creates virtual node
  * @param {number} flags
@@ -63,22 +74,22 @@ export function createVNode(flags: VNodeFlags, type: Type, className?: string | 
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
 	}
 
-	const vNode: VNode = {
-		children: isUndefined(children) ? null : children,
-		className,
-		dom: null,
+	const vNode = new VNode(
+		children === void 0 ? null : children,
+		className === void 0 ? null : className,
 		flags,
-		key: isUndefined(key) ? null : key,
-		props: props || null,
-		ref: ref || null,
+		key === void 0 ? null : key,
+		props === void 0 ? null : props,
+		ref === void 0 ? null : ref,
 		type
-	};
-	if (!noNormalise) {
+	);
+	if (noNormalise !== true) {
 		normalize(vNode);
 	}
-	if (options.createVNode) {
+	if (options.createVNode !== null) {
 		options.createVNode(vNode);
 	}
+
 	return vNode;
 }
 
@@ -206,7 +217,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 		newVNode = tmpArray;
 	} else {
 		const flags = vNodeToClone.flags;
-		const className = vNodeToClone.className || (props && props.className) || null;
+		const className = vNodeToClone.className || (props && props.className);
 		const key = !isNullOrUndef(vNodeToClone.key) ? vNodeToClone.key : (props ? props.key : null);
 		const ref = vNodeToClone.ref || (props ? props.ref : null);
 

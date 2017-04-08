@@ -116,15 +116,15 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 			processElement(flags, vNode, dom, props, true, hasControlledValue);
 		}
 	}
-	if (isNullOrUndef(className)) {
-		dom.removeAttribute('class');
-	} else {
+
+	if (className !== null) {
 		if (isSVG) {
 			dom.setAttribute('class', className);
 		} else {
 			dom.className = className;
 		}
 	}
+
 	if (!isNull(ref)) {
 		mountRef(dom, ref, lifecycle);
 	}
