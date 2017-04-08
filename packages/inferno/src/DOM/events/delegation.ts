@@ -1,15 +1,19 @@
 import { isBrowser } from 'inferno-shared';
 
 const isiOS = isBrowser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
-const delegatedEvents = new Map();
+const delegatedEvents: Map<string, IDelegate> = new Map();
 
 interface IDelegate {
 	docEvent: any;
 	items: any;
 }
 
+interface IEventData {
+	dom: Node;
+}
+
 export function handleEvent(name, lastEvent, nextEvent, dom) {
-	let delegatedRoots = delegatedEvents.get(name) as IDelegate;
+	let delegatedRoots = delegatedEvents.get(name);
 
 	if (nextEvent) {
 		if (!delegatedRoots) {
@@ -36,13 +40,13 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 	}
 }
 
-function dispatchEvent(event, target, items, count: number, dom, isClick: boolean) {
+function dispatchEvent(event, target, items, count: number, isClick: boolean, eventData: IEventData) {
 	const eventsToTrigger = items.get(target);
 
 	if (eventsToTrigger) {
 		count--;
 		// linkEvent object
-		dom = target;
+		eventData.dom = target;
 		if (eventsToTrigger.event) {
 			eventsToTrigger.event(eventsToTrigger.data, event);
 		} else {
@@ -62,7 +66,7 @@ function dispatchEvent(event, target, items, count: number, dom, isClick: boolea
 			return;
 		}
 
-		dispatchEvent(event, parentDom, items, count, dom, isClick);
+		dispatchEvent(event, parentDom, items, count, isClick, eventData);
 	}
 }
 
@@ -81,7 +85,21 @@ function attachEventToDocument(name, delegatedRoots: IDelegate) {
 
 		if (count > 0) {
 			event.stopPropagation = stopPropagation;
-			dispatchEvent(event, event.target, delegatedRoots.items, count, document, event.type === 'click');
+			// Event data needs to be object to save reference to currentTarget getter
+			const eventData: IEventData = {
+				dom: document
+			};
+
+			try {
+				Object.defineProperty(event, 'currentTarget', {
+					configurable: true,
+					get: function get() {
+						return eventData.dom;
+					}
+				});
+			} catch (e) {/* safari7 and phantomJS will crash */}
+
+			dispatchEvent(event, event.target, delegatedRoots.items, count, event.type === 'click', eventData);
 		}
 	};
 	document.addEventListener(normalizeEventName(name), docEvent);

@@ -496,4 +496,93 @@ describe('Basic event tests', () => {
 		document.body.removeChild(root3);
 		document.body.removeChild(root4);
 	});
+
+	describe('currentTarget', () => {
+		it('Should have currentTarget', (done) => {
+			function verifyCurrentTarget(event) {
+				expect(event.currentTarget).to.equal(container.firstChild);
+				done();
+			}
+
+			render(<div onClick={verifyCurrentTarget} />, container);
+
+			container.firstChild.click();
+		});
+
+		it('Current target should not be the clicked element, but the one with listener', (done) => {
+			function verifyCurrentTarget(event) {
+				expect(event.currentTarget).to.equal(container.firstChild);
+				done();
+			}
+
+			render((
+				<div onClick={verifyCurrentTarget}>
+					<span>test</span>
+				</div>
+			), container);
+
+			container.querySelector('span').click();
+		});
+
+		it('Should work with deeply nested tree', (done) => {
+			function verifyCurrentTarget(event) {
+				expect(event.currentTarget).to.equal(container.querySelector('#test'));
+				done();
+			}
+
+			render((
+				<div>
+					<div>
+						<div>
+							<div>
+								<div>1</div>
+								<div id="test" onClick={verifyCurrentTarget}>
+									<div>foo</div>
+									<span>2</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<span>test</span>
+				</div>
+			), container);
+
+			container.querySelector('span').click();
+		});
+
+		it('currentTarget should propagate work with multiple levels of children', (done) => {
+			function verifyCurrentTarget(event) {
+				expect(event.currentTarget).to.equal(container.querySelector('#test'));
+				done();
+			}
+
+			render((
+				<div>
+					<div>
+						<div>
+							<div>
+								<div>1</div>
+								<div id="test" onClick={verifyCurrentTarget}>
+									<div>foo</div>
+									<div>
+										<div>
+											<div>
+												<div>
+													<span>test</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div>1</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<span>test</span>
+				</div>
+			), container);
+
+			container.querySelector('span').click();
+		});
+	});
 });

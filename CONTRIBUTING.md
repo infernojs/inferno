@@ -3,7 +3,6 @@ Contributing to Inferno
 
 Many thanks for using Inferno and contributing to its development. The following is a quick set of guidelines designed to maximise your contribution's effectiveness.
 
-
 Got a question or need help?
 ----------------------------
 
@@ -45,6 +44,21 @@ inferno-test-utils
 ```
 
 Source files are written in TypeScript and tests are written in JS/JSX consuming the dist files.
+
+Running tests
+-------------
+Always include tests for the functionality you want to add into Inferno. This way we can avoid regression in future.
+
+Make sure you have lerna tool installed globally.
+
+```
+npm i -g lerna
+```
+
+- Clone the repository, and clean it. `lerna clean`
+- Install development dependencies `npm i`
+- build typescript files and run tests `npm run build:packages && npm run browser` after its done open http://localhost:8080 and you will see mocha test suite
+
 
 Pull requests
 -------------

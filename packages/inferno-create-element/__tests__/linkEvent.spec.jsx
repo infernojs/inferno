@@ -155,20 +155,54 @@ describe('linkEvent', () => {
 			}
 		}
 
-		it('should work correctly for functional components', () => {
+		function simulateFocus(elm) {
+			if (typeof Event !== 'undefined') {
+				const newEvent = document.createEvent('UIEvent');
+				newEvent.initEvent('focus', true, true);
+
+				elm.dispatchEvent(newEvent);
+			} else {
+				elm.focus();
+			}
+		}
+
+		function simulateBlur(elm) {
+			if (typeof Event !== 'undefined') {
+				const newEvent = document.createEvent('UIEvent');
+				newEvent.initEvent('blur', true, true);
+
+				elm.dispatchEvent(newEvent);
+			} else {
+				elm.blur();
+			}
+		}
+
+		it('should work correctly for functional components', (done) => {
 			render(<FunctionalComponent/>, container);
-			container.querySelector('input').focus();
-			container.querySelector('input').blur();
-			expect(isFocus).to.equal('1234');
-			expect(isBlur).to.equal('4321');
+			const input = container.querySelector('input');
+			simulateFocus(input);
+			requestAnimationFrame(() => {
+				simulateBlur(input);
+				requestAnimationFrame(() => {
+					expect(isFocus).to.equal('1234');
+					expect(isBlur).to.equal('4321');
+					done();
+				});
+			});
 		});
 
-		it('should work correctly for stateful components', () => {
+		it('should work correctly for stateful components', (done) => {
 			render(<StatefulComponent/>, container);
-			container.querySelector('input').focus();
-			container.querySelector('input').blur();
-			expect(isFocus).to.equal('1234');
-			expect(isBlur).to.equal('4321');
+			const input = container.querySelector('input');
+			simulateFocus(input);
+			requestAnimationFrame(() => {
+				simulateBlur(input);
+				requestAnimationFrame(() => {
+					expect(isFocus).to.equal('1234');
+					expect(isBlur).to.equal('4321');
+					done();
+				});
+			});
 		});
 	});
 });
