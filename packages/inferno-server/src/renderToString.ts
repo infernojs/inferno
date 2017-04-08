@@ -44,6 +44,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 
 		if (isClass) {
 			const instance = new type(props, context);
+			instance._blockSetState = false;
 			let childContext;
 			if (!isUndefined(instance.getChildContext)) {
 				childContext = instance.getChildContext();

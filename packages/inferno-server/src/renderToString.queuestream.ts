@@ -127,6 +127,7 @@ export class RenderQueueStream extends Readable {
 			// Render the
 			if (isClass) {
 				const instance = new type(props, context);
+				instance._blockSetState = false;
 				let childContext;
 				if (!isUndefined(instance.getChildContext)) {
 					childContext = instance.getChildContext();

@@ -57,6 +57,7 @@ export class RenderStream extends Readable {
 		}
 
 		const instance = new type(props);
+		instance._blockSetState = false;
 		let childContext;
 		if (!isUndefined(instance.getChildContext)) {
 			childContext = instance.getChildContext();
