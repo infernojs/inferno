@@ -66,4 +66,66 @@ describe('state', () => {
 			render(node, container);
 		});
 	});
+
+
+	describe('didUpdate and setState', () => {
+		it('order', (done) => {
+			class Test extends Component {
+
+				constructor(props, context) {
+					super(props, context);
+
+					this.state = {
+						testScrollTop: 0
+					};
+				}
+
+				componentWillReceiveProps(nextProps) {
+					console.log('CWRP', nextProps.scrollTop);
+					if (nextProps.scrollTop !== 0){
+						this.setState({ testScrollTop: nextProps.scrollTop });
+					}
+				}
+
+				componentDidUpdate(prevProps, prevState) {
+					expect(prevState.testScrollTop).to.equal(0);
+					expect(this.state.testScrollTop).to.equal(200);
+				}
+
+				render(){
+					return (<div>aa</div>);
+				}
+
+			}
+
+			class Example extends Component{
+
+				constructor(props, context) {
+					super(props, context);
+					this.state = {
+						exampleScrollTop: 0
+					};
+				}
+
+				render(){
+					return (<Test scrollTop={this.state.exampleScrollTop}/>);
+				}
+
+				componentDidMount(){
+					setTimeout(()=> {
+						this.setState({ exampleScrollTop: 200 });
+
+						setTimeout(() => {
+							done();
+						}, 50);
+					}, 50);
+				}
+			}
+
+			render(
+				<Example name="World" />,
+				document.getElementById('container')
+			);
+		});
+	});
 });

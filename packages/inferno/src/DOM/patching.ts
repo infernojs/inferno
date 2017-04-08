@@ -289,8 +289,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					lastVNode.dom
 				);
 			} else {
-				const lastState = instance.state;
+				const hasComponentDidUpdate = !isUndefined(instance.componentDidUpdate);
 				const nextState = instance.state;
+				// When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
+				const lastState = hasComponentDidUpdate ? combineFrom(nextState, null) : nextState;
 				const lastProps = instance.props;
 				let childContext;
 				if (!isUndefined(instance.getChildContext)) {
@@ -333,7 +335,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 				instance._vNode = nextVNode;
 				if (didUpdate) {
 					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
-					if (!isUndefined(instance.componentDidUpdate)) {
+					if (hasComponentDidUpdate) {
 						instance.componentDidUpdate(lastProps, lastState);
 					}
 					options.afterUpdate && options.afterUpdate(nextVNode);
