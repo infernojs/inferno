@@ -79,7 +79,7 @@ export default class Router extends Component<IRouterProps, any> {
 	}
 
 	render(props): VNode {
-		const hit = match(props.children, this.state.url);
+		const hit = match(props.children, this.state.url || props.history.location.pathname);
 
 		if (hit.redirect) {
 			setTimeout(() => {
