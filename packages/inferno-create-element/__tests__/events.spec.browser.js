@@ -460,4 +460,40 @@ describe('Basic event tests', () => {
 
 		container.querySelector('#testClick').click();
 	});
+
+	it('Synthetic Events - Should not reduce listener count when nothing was removed', () => {
+		const spy = sinon.spy();
+		const root1 = document.createElement('div');
+		const root2 = document.createElement('div');
+		const root3 = document.createElement('div');
+		const root4 = document.createElement('div');
+
+		document.body.appendChild(root1);
+		document.body.appendChild(root2);
+		document.body.appendChild(root3);
+		document.body.appendChild(root4);
+
+		render(<div onClick={spy}/>, root1);
+		render(<div onClick={undefined}/>, root2);
+		render(<div onClick={void 0}/>, root3);
+		render(<div onClick={null}/>, root4);
+
+		root1.firstChild.click();
+		root2.firstChild.click();
+		root3.firstChild.click();
+		root4.firstChild.click();
+
+		expect(spy.callCount).to.equal(1);
+
+
+		render(null, root1);
+		render(null, root2);
+		render(null, root3);
+		render(null, root4);
+
+		document.body.removeChild(root1);
+		document.body.removeChild(root2);
+		document.body.removeChild(root3);
+		document.body.removeChild(root4);
+	});
 });

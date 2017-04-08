@@ -5,7 +5,6 @@ const delegatedEvents = new Map();
 
 interface IDelegate {
 	docEvent: any;
-	count: number;
 	items: any;
 }
 
@@ -14,23 +13,25 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 
 	if (nextEvent) {
 		if (!delegatedRoots) {
-			delegatedRoots = { items: new Map(), count: 0, docEvent: null };
+			delegatedRoots = { items: new Map(), docEvent: null };
 			delegatedRoots.docEvent = attachEventToDocument(name, delegatedRoots);
 			delegatedEvents.set(name, delegatedRoots);
 		}
 		if (!lastEvent) {
-			delegatedRoots.count++;
 			if (isiOS && name === 'onClick') {
 				trapClickOnNonInteractiveElement(dom);
 			}
 		}
 		delegatedRoots.items.set(dom, nextEvent);
 	} else if (delegatedRoots) {
-		delegatedRoots.count--;
-		delegatedRoots.items.delete(dom);
-		if (delegatedRoots.count === 0) {
-			document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
-			delegatedEvents.delete(name);
+		const items = delegatedRoots.items;
+
+		if (items.delete(dom)) {
+			// If any items were deleted, check if listener need to be removed
+			if (items.size === 0) {
+				document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
+				delegatedEvents.delete(name);
+			}
 		}
 	}
 }
@@ -74,9 +75,9 @@ function stopPropagation() {
 	this.stopImmediatePropagation();
 }
 
-function attachEventToDocument(name, delegatedRoots) {
+function attachEventToDocument(name, delegatedRoots: IDelegate) {
 	const docEvent = (event: Event) => {
-		const count = delegatedRoots.count;
+		const count = delegatedRoots.items.size;
 
 		if (count > 0) {
 			event.stopPropagation = stopPropagation;
