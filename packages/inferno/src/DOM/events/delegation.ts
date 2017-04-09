@@ -9,7 +9,7 @@ interface IDelegate {
 }
 
 interface IEventData {
-	dom: Node;
+	dom: Element;
 }
 
 export function handleEvent(name, lastEvent, nextEvent, dom) {
@@ -87,7 +87,7 @@ function attachEventToDocument(name, delegatedRoots: IDelegate) {
 			event.stopPropagation = stopPropagation;
 			// Event data needs to be object to save reference to currentTarget getter
 			const eventData: IEventData = {
-				dom: document
+				dom: document as any
 			};
 
 			try {
@@ -106,8 +106,8 @@ function attachEventToDocument(name, delegatedRoots: IDelegate) {
 	return docEvent;
 }
 
-function emptyFn() {
-}
+// tslint:disable-next-line:no-empty
+function emptyFn() {}
 
 function trapClickOnNonInteractiveElement(dom) {
 	// Mobile Safari does not fire properly bubble click events on

@@ -1,11 +1,23 @@
-export default {
-	recyclingEnabled: false,
-	findDOMNodeEnabled: false,
-	roots: null,
-	createVNode: null,
-	beforeRender: null,
-	afterRender: null,
+import { Root } from '../DOM/rendering';
+
+export const options: {
+	afterMount: null|Function,
+	afterRender: null|Function,
+	afterUpdate: null|Function,
+	beforeRender: null|Function,
+	beforeUnmount: null|Function
+	createVNode: null|Function,
+	findDOMNodeEnabled: boolean,
+	recyclingEnabled: boolean,
+	roots: Root[]
+} = {
 	afterMount: null,
+	afterRender: null,
 	afterUpdate: null,
-	beforeUnmount: null
+	beforeRender: null,
+	beforeUnmount: null,
+	createVNode: null,
+	findDOMNodeEnabled: false,
+	recyclingEnabled: false,
+	roots: []
 };

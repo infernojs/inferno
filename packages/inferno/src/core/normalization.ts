@@ -35,7 +35,7 @@ function applyKeyPrefix(key: string, vNode: VNode): VNode {
 }
 
 function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey) {
-	for (let len = nodes.length; index < len; index++) {
+	for (const len = nodes.length; index < len; index++) {
 		let n = nodes[ index ];
 		const key = `${ currentKey }.${ index }`;
 

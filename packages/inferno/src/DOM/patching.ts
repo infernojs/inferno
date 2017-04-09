@@ -15,7 +15,7 @@ import {
 	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import options from '../core/options';
+import { options } from '../core/options';
 
 import { Styles } from '../core/structures';
 import { createTextVNode, createVoidVNode, directClone, isVNode, VNode } from '../core/VNodes';
@@ -119,14 +119,14 @@ function unmountChildren(children, dom: Element, lifecycle: LifecycleClass, isRe
 	}
 }
 
-export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isRecycling: boolean) {
+export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isRecycling: boolean) {
 	const nextTag = nextVNode.type;
 	const lastTag = lastVNode.type;
 
 	if (lastTag !== nextTag) {
 		replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
 	} else {
-		const dom = lastVNode.dom;
+		const dom = lastVNode.dom as Element;
 		const lastProps = lastVNode.props;
 		const nextProps = nextVNode.props;
 		const lastChildren = lastVNode.children;
@@ -142,7 +142,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 			isSVG = true;
 		}
 		if (lastChildren !== nextChildren) {
-			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom as Element, lifecycle, context, isSVG, isRecycling);
+			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
 		}
 
 		// inlined patchProps  -- starts --
@@ -152,7 +152,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Node
 			let hasControlledValue = false;
 
 			if (nextPropsOrEmpty !== EMPTY_OBJ) {
-				let isFormElement = (nextFlags & VNodeFlags.FormElement) > 0;
+				const isFormElement = (nextFlags & VNodeFlags.FormElement) > 0;
 				if (isFormElement) {
 					hasControlledValue = isControlledFormElement(nextPropsOrEmpty);
 				}
@@ -323,8 +323,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 					}
 					throwError();
-				} else if (isObject(nextInput) && nextInput.dom) {
-					nextInput = directClone(nextInput);
+				} else if (isObject(nextInput)) {
+					if (!isNull((nextInput as VNode).dom)) {
+						nextInput = directClone(nextInput as VNode);
+					}
 				}
 				if (nextInput.flags & VNodeFlags.Component) {
 					nextInput.parentVNode = nextVNode;
@@ -338,8 +340,12 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					if (hasComponentDidUpdate) {
 						instance.componentDidUpdate(lastProps, lastState);
 					}
-					options.afterUpdate && options.afterUpdate(nextVNode);
-					options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, nextInput.dom);
+					if (!isNull(options.afterUpdate)) {
+						options.afterUpdate(nextVNode);
+					}
+					if (options.findDOMNodeEnabled) {
+						componentToDOMNodeMap.set(instance, nextInput.dom);
+					}
 				}
 				nextVNode.dom = nextInput.dom;
 			}
@@ -376,8 +382,10 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 					}
 					throwError();
-				} else if (isObject(nextInput) && nextInput.dom) {
-					nextInput = directClone(nextInput);
+				} else if (isObject(nextInput)) {
+					if (!isNull((nextInput as VNode).dom)) {
+						nextInput = directClone((nextInput as VNode));
+					}
 				}
 				if (nextInput !== NO_OP) {
 					patch(lastInput, nextInput, parentDom, lifecycle, context, isSVG, isRecycling);
@@ -400,7 +408,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 
 export function patchText(lastVNode: VNode, nextVNode: VNode) {
 	const nextText = nextVNode.children as string;
-	const dom = lastVNode.dom;
+	const dom = lastVNode.dom as Element;
 
 	nextVNode.dom = dom;
 
@@ -595,7 +603,8 @@ export function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Lifec
 							}
 							patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
 							patched++;
-							a[ i ] = null;
+							// TODO: Check this out
+							// a[ i ] = null;
 							break;
 						}
 					}
@@ -629,7 +638,8 @@ export function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Lifec
 						}
 						patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
 						patched++;
-						a[ i ] = null;
+						// TODO: Check this out
+						// a[ i ] = null;
 					}
 				}
 			}
@@ -711,7 +721,7 @@ function lis_algorithm(arr: number[]): number[] {
 	const len = arr.length;
 
 	for (i = 0; i < len; i++) {
-		let arrI = arr[ i ];
+		const arrI = arr[ i ];
 
 		if (arrI === -1) {
 			continue;
@@ -791,7 +801,7 @@ export function patchProp(prop, lastValue, nextValue, dom: Element, isSVG: boole
 			// We optimize for NS being boolean. Its 99.9% time false
 			if (isSVG && namespaces.has(prop)) {
 				// If we end up in this path we can read property again
-				dom.setAttributeNS(namespaces.get(prop), prop, nextValue);
+				dom.setAttributeNS(namespaces.get(prop) as string, prop, nextValue);
 			} else {
 				dom.setAttribute(prop, nextValue);
 			}
