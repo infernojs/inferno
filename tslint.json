@@ -8,7 +8,7 @@
 		"max-classes-per-file": true,
 		"max-line-length": false,
 		"member-access": true,
-		"member-ordering": true,
+		"member-ordering": false,
 		"no-bitwise": false,
 		"no-conditional-assignment": false,
 		"no-debugger": false,
