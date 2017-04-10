@@ -1,10 +1,12 @@
 import { NO_OP, warning } from 'inferno-shared';
+import { LifecycleClass as _LifecycleClass} from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
 import { getFlagsForElementVnode } from './core/normalization';
 import { options, Root as _Root } from './core/options';
 import { cloneVNode, createVNode, InfernoChildren, InfernoInput, Props, VNode } from './core/VNodes';
 import { linkEvent } from './DOM/events/linkEvent';
-import { createRenderer, findDOMNode, render } from './DOM/rendering';
+import { patch as internal_patch } from './DOM/patching';
+import { componentToDOMNodeMap as internal_DOMNodeMap, createRenderer, findDOMNode, render } from './DOM/rendering';
 import { EMPTY_OBJ } from './DOM/utils';
 
 if (process.env.NODE_ENV !== 'production') {
@@ -23,8 +25,9 @@ if (process.env.NODE_ENV !== 'production') {
 // https://github.com/Microsoft/TypeScript/issues/6307
 export declare const VNodeFlags: _VNodeFlags;
 export declare const Root: _Root;
+export declare const LifecycleClass: _LifecycleClass;
 
-export const version = '3.0.1';
+const version = '3.0.2';
 
 // we duplicate it so it plays nicely with different module loading systems
 export default {
@@ -44,7 +47,10 @@ export default {
 	findDOMNode,
 	createRenderer,
 	options,
-	version
+	version,
+
+	internal_patch,
+	internal_DOMNodeMap
 };
 
 export {
@@ -71,7 +77,11 @@ export {
 	render,
 	findDOMNode,
 	createRenderer,
-	options
+	options,
+	version,
+
+	internal_patch,
+	internal_DOMNodeMap
 };
 
 // Internal stuff that only core inferno-* packages use
@@ -79,6 +89,3 @@ export { isUnitlessNumber as internal_isUnitlessNumber } from './DOM/constants';
 
 // Mainly for testing
 export { normalize as internal_normalize } from './core/normalization';
-// Reference for inferno-component
-export { patch as internal_patch } from './DOM/patching';
-export {componentToDOMNodeMap as internal_DOMNodeMap} from './DOM/rendering';
