@@ -13,8 +13,6 @@ import { options } from '../core/options';
 import { createTextVNode, createVoidVNode, directClone, Props, VNode } from '../core/VNodes';
 import { svgNS } from './constants';
 import { mount } from './mounting';
-import { patch } from './patching';
-import { componentToDOMNodeMap } from './rendering';
 import { unmount } from './unmounting';
 
 // We need EMPTY_OBJ defined in one place.
@@ -35,10 +33,6 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 	instance.context = context;
 	if (instance.props === EMPTY_OBJ) {
 		instance.props = props;
-	}
-	instance._patch = patch;
-	if (options.findDOMNodeEnabled) {
-		instance._componentToDOMNodeMap = componentToDOMNodeMap;
 	}
 	// setState callbacks must fire after render is done when called from componentWillReceiveProps or componentWillMount
 	instance._lifecycle = lifecycle;

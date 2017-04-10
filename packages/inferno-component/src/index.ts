@@ -1,5 +1,5 @@
 // Make sure u use EMPTY_OBJ from 'inferno', otherwise it'll be a different reference
-import { createVNode, EMPTY_OBJ, options, Props, VNode } from 'inferno';
+import { createVNode, EMPTY_OBJ, internal_DOMNodeMap, internal_patch, options, Props, VNode } from 'inferno';
 import {
 	combineFrom,
 	ERROR_MSG,
@@ -148,7 +148,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 		const vNode = component._vNode as VNode;
 		const parentDom = (lastInput.dom && lastInput.dom.parentNode) || (lastInput.dom = vNode.dom);
 
-		component._lastInput = nextInput;
+		component._lastInput = nextInput as VNode;
 		if (didUpdate) {
 			let childContext;
 
@@ -163,7 +163,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 			}
 
 			const lifeCycle = component._lifecycle as any;
-			(component._patch as any)(lastInput, nextInput, parentDom, lifeCycle, childContext, component._isSVG, false);
+			internal_patch(lastInput, nextInput as VNode, parentDom as Element, lifeCycle, childContext, component._isSVG, false);
 			lifeCycle.trigger();
 
 			if (!isUndefined(component.componentDidUpdate)) {
@@ -174,10 +174,8 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 			}
 		}
 		const dom = vNode.dom = (nextInput as VNode).dom as Element;
-		const componentToDOMNodeMap = component._componentToDOMNodeMap;
-
-		if (!isNull(componentToDOMNodeMap)) {
-			componentToDOMNodeMap.set(component, (nextInput as VNode).dom);
+		if (options.findDOMNodeEnabled) {
+			internal_DOMNodeMap.set(component, (nextInput as VNode).dom);
 		}
 
 		updateParentComponentVNodes(vNode, dom);
@@ -207,7 +205,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public _unmounted = false;
 	public _lifecycle = null;
 	public _childContext = null;
-	public _patch = null;
 	public _isSVG = false;
 	public _componentToDOMNodeMap: Map<any, any>|null = null;
 	public _updating = true;

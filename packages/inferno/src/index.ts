@@ -79,3 +79,6 @@ export { isUnitlessNumber as internal_isUnitlessNumber } from './DOM/constants';
 
 // Mainly for testing
 export { normalize as internal_normalize } from './core/normalization';
+// Reference for inferno-component
+export { patch as internal_patch } from './DOM/patching';
+export {componentToDOMNodeMap as internal_DOMNodeMap} from './DOM/rendering';
