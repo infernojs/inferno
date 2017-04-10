@@ -1,6 +1,6 @@
 {
   "name": "inferno-hyperscript",
-  "version": "1.6.2",
+  "version": "2.0.0",
   "license": "MIT",
   "description": "Bridging hyperscript to InfernoJS",
   "author": "Terin Stock <terinjokes@gmail.com> (https://terinstock.com/)",
@@ -17,9 +17,9 @@
   ],
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "^1.6.2",
-    "inferno-shared": "^1.6.1",
-    "inferno-vnode-flags": "^1.6.2"
+    "inferno": "^2.0.0",
+    "inferno-shared": "^2.0.0",
+    "inferno-vnode-flags": "^2.0.0"
   },
   "rollup": {
     "bundledDependencies": [
