@@ -29,7 +29,9 @@ function parseTag(tag: string | null, props: any): string {
 		if (!tagName) {
 			tagName = part;
 		} else if (type === '.') {
-			classes = classes || [];
+			if (classes === void 0) {
+				classes = [];
+			}
 			classes.push(part.substring(1, part.length));
 		} else if (type === '#' && noId) {
 			props.id = part.substring(1, part.length);
@@ -53,7 +55,7 @@ function extractProps(_props: any, isElement: boolean, _tag: string | VNode): an
 	const tag = isElement ? parseTag(_tag as string, _props) : _tag;
 	const newProps = {};
 	let key = null;
-	let ref = null;
+	let ref: any = null;
 	let children = null;
 	let className = null;
 

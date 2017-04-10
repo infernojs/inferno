@@ -8,13 +8,13 @@ const specialKeys = {
 };
 
 export default class Provider extends Component<any, any> {
-	contextTypes: any = {
-		mobxStores() {
-		}
+	public contextTypes: any = {
+		// tslint:disable-next-line:no-empty
+		mobxStores() {}
 	};
-	childContextTypes: any = {
-		mobxStores() {
-		}
+	public childContextTypes: any = {
+		// tslint:disable-next-line:no-empty
+		mobxStores() {}
 	};
 	private store: any;
 
@@ -27,7 +27,7 @@ export default class Provider extends Component<any, any> {
 		return this.props.children;
 	}
 
-	getChildContext() {
+	public getChildContext() {
 		const stores = {};
 		// inherit stores
 		const baseStores = this.context.mobxStores;

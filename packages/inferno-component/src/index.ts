@@ -49,10 +49,9 @@ function updateParentComponentVNodes(vNode: VNode, dom: Element) {
 const resolvedPromise = Promise.resolve();
 
 function addToQueue(component: Component<any, any>, force: boolean, callback?: Function): void {
-	// TODO this function needs to be revised and improved on
 	let queue: any = componentCallbackQueue.get(component);
 
-	if (!queue) {
+	if (queue === void 0) {
 		queue = [];
 		componentCallbackQueue.set(component, queue);
 		resolvedPromise.then(() => {
@@ -73,7 +72,7 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 	}
 }
 
-function queueStateChanges<P, S>(component: Component<P, S>, newState, callback?: Function): void {
+function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callback?: Function): void {
 	if (isFunction(newState)) {
 		newState = newState(component.state, component.props, component.context);
 	}
@@ -136,7 +135,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 			nextInput = component._lastInput;
 			didUpdate = false;
 		} else if (isStringOrNumber(nextInput)) {
-			nextInput = createVNode(VNodeFlags.Text, null, null, nextInput);
+			nextInput = createVNode(VNodeFlags.Text, null, null, nextInput) as VNode;
 		} else if (isArray(nextInput)) {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
@@ -173,11 +172,11 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 				options.afterUpdate(vNode);
 			}
 		}
-		const dom = vNode.dom = nextInput.dom;
+		const dom = vNode.dom = (nextInput as VNode).dom as Element;
 		const componentToDOMNodeMap = component._componentToDOMNodeMap;
 
 		if (!isNull(componentToDOMNodeMap)) {
-			componentToDOMNodeMap.set(component, nextInput.dom);
+			componentToDOMNodeMap.set(component, (nextInput as VNode).dom);
 		}
 
 		updateParentComponentVNodes(vNode, dom);
@@ -201,9 +200,9 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public _blockRender = false;
 	public _blockSetState = true;
 	public _pendingSetState = false;
-	public _pendingState = null;
-	public _lastInput = null;
-	public _vNode = null;
+	public _pendingState: S|null = null;
+	public _lastInput: any = null;
+	public _vNode: VNode|null = null;
 	public _unmounted = false;
 	public _lifecycle = null;
 	public _childContext = null;
@@ -322,5 +321,5 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	}
 
 	// tslint:disable-next-line:no-empty
-	public render(nextProps?: P, nextState?, nextContext?) {}
-};
+	public render(nextProps?: P, nextState?, nextContext?): any {}
+}

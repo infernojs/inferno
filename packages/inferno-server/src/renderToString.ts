@@ -33,7 +33,7 @@ function renderStylesToString(styles) {
 	}
 }
 
-function renderVNodeToString(vNode, parent, context, firstChild): string {
+function renderVNodeToString(vNode, parent, context, firstChild): string|undefined {
 	const flags = vNode.flags;
 	const type = vNode.type;
 	const props = vNode.props || EMPTY_OBJ;
@@ -163,9 +163,9 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 }
 
 export default function renderToString(input: any): string {
-	return renderVNodeToString(input, {}, {}, true);
+	return renderVNodeToString(input, {}, {}, true) as string;
 }
 
 export function renderToStaticMarkup(input: any): string {
-	return renderVNodeToString(input, {}, {}, true);
+	return renderVNodeToString(input, {}, {}, true) as string;
 }

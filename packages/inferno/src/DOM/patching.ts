@@ -603,8 +603,7 @@ export function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Lifec
 							}
 							patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
 							patched++;
-							// TODO: Check this out
-							// a[ i ] = null;
+							a[ i ] = null as any;
 							break;
 						}
 					}
@@ -638,8 +637,7 @@ export function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Lifec
 						}
 						patch(aNode, bNode, dom, lifecycle, context, isSVG, isRecycling);
 						patched++;
-						// TODO: Check this out
-						// a[ i ] = null;
+						a[ i ] = null as any;
 					}
 				}
 			}

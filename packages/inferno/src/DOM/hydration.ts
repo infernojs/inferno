@@ -209,7 +209,7 @@ function hydrate(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context:
 	}
 }
 
-export default function hydrateRoot(input, parentDom: Element|null, lifecycle: LifecycleClass) {
+export function hydrateRoot(input, parentDom: Element|null, lifecycle: LifecycleClass) {
 	if (!isNull(parentDom)) {
 		let dom = (parentDom.firstChild as Element);
 

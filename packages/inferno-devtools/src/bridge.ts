@@ -110,19 +110,19 @@ export function createDevToolsBridge() {
 
 	const Mount = {
 		_instancesByReactRootID: roots,
-		_renderNewRootComponent(instance?) {
-		}
+		// tslint:disable-next-line:no-empty
+		_renderNewRootComponent(instance?) {}
 	};
 
 	const Reconciler = {
-		mountComponent(instance?) {
-		},
-		performUpdateIfNecessary(instance?) {
-		},
-		receiveComponent(instance?) {
-		},
-		unmountComponent(instance?) {
-		}
+		// tslint:disable-next-line:no-empty
+		mountComponent(instance?) {},
+		// tslint:disable-next-line:no-empty
+		performUpdateIfNecessary(instance?) {},
+		// tslint:disable-next-line:no-empty
+		receiveComponent(instance?) {},
+		// tslint:disable-next-line:no-empty
+		unmountComponent(instance?) {}
 	};
 
 	const queuedMountComponents = new Map();
@@ -162,7 +162,7 @@ export function createDevToolsBridge() {
 
 	/** Notify devtools that a component has been updated with new props/state. */
 	const componentUpdated = (vNode) => {
-		const prevRenderedChildren = [];
+		const prevRenderedChildren: any[] = [];
 
 		visitNonCompositeChildren(getInstanceFromVNode(vNode), (childInst) => {
 			prevRenderedChildren.push(childInst);
@@ -242,7 +242,7 @@ function updateReactComponent(vNode, parentDom) {
 	let newInstance;
 
 	if (flags & VNodeFlags.Component) {
-		newInstance = createReactCompositeComponent(vNode, parentDom);
+		newInstance = createReactCompositeComponent(vNode);
 	} else {
 		newInstance = createReactDOMComponent(vNode, parentDom);
 	}
@@ -295,9 +295,9 @@ function createReactDOMComponent(vNode, parentDom) {
 			type,
 			props
 		},
+		_inDevTools: false,
 		_renderedChildren: !isText && normalizeChildren(children, dom),
 		_stringText: isText ? (children || vNode).toString() : null,
-		_inDevTools: false,
 		node: dom || parentDom,
 		vNode
 	};
@@ -319,7 +319,7 @@ function normalizeKey(key) {
  *
  * See https://github.com/facebook/react-devtools/blob/e31ec5825342eda570acfc9bcb43a44258fceb28/backend/getData.js
  */
-function createReactCompositeComponent(vNode, parentDom) {
+function createReactCompositeComponent(vNode) {
 	const type = vNode.type;
 	const instance = vNode.children;
 	const lastInput = instance._lastInput || instance;
@@ -332,16 +332,16 @@ function createReactCompositeComponent(vNode, parentDom) {
 		_currentElement: {
 			type,
 			key: normalizeKey(vNode.key),
-			ref: null,
-			props: vNode.props
+			props: vNode.props,
+			ref: null
 		},
-		props: instance.props,
-		state: instance.state,
-		forceUpdate: instance.forceUpdate.bind(instance),
-		setState: instance.setState.bind(instance),
-		node: dom,
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
+		forceUpdate: instance.forceUpdate.bind(instance),
+		node: dom,
+		props: instance.props,
+		setState: instance.setState.bind(instance),
+		state: instance.state,
 		vNode
 	};
 }

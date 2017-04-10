@@ -1,6 +1,6 @@
 import { createVNode, VNode } from 'inferno';
-import VNodeFlags from 'inferno-vnode-flags';
 import { combineFrom, isBrowser } from 'inferno-shared';
+import VNodeFlags from 'inferno-vnode-flags';
 
 export default function Link(props, { router }): VNode {
 	const { activeClassName, activeStyle, className, onClick, children, to, ...otherProps } = props;

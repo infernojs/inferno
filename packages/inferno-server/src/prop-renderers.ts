@@ -2,7 +2,7 @@ import { internal_isUnitlessNumber } from 'inferno';
 import { isNullOrUndef, isNumber, isStringOrNumber, isTrue } from 'inferno-shared';
 import { escapeText, toHyphenCase } from './utils';
 
-export function renderStyleToString(style): string {
+export function renderStyleToString(style): string|number {
 	if (isStringOrNumber(style)) {
 		return style;
 	} else {

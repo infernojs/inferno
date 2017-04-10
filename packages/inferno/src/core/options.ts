@@ -1,4 +1,11 @@
-import { Root } from '../DOM/rendering';
+import { LifecycleClass } from 'inferno-shared';
+import { InfernoInput } from './VNodes';
+
+export interface Root {
+	dom: Element | SVGAElement;
+	input: InfernoInput;
+	lifecycle: LifecycleClass;
+}
 
 export const options: {
 	afterMount: null|Function,

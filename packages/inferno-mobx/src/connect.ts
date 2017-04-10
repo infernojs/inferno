@@ -33,10 +33,10 @@ function connect(arg1: any, arg2 = null): any {
 		&& !Component.isPrototypeOf(componentClass)
 	) {
 		const newClass = createClass({
-			displayName: componentClass.displayName || componentClass.name,
-			propTypes: componentClass.propTypes,
 			contextTypes: componentClass.contextTypes,
+			displayName: componentClass.displayName || componentClass.name,
 			getDefaultProps: () => componentClass.defaultProps,
+			propTypes: componentClass.propTypes,
 			render() {
 				return componentClass.call(this, this.props, this.context);
 			}

@@ -1,9 +1,9 @@
 import { NO_OP, warning } from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
 import { getFlagsForElementVnode } from './core/normalization';
-import { options } from './core/options';
+import { options, Root as _Root } from './core/options';
 import { cloneVNode, createVNode, InfernoChildren, InfernoInput, Props, VNode } from './core/VNodes';
-import linkEvent from './DOM/events/linkEvent';
+import { linkEvent } from './DOM/events/linkEvent';
 import { createRenderer, findDOMNode, render } from './DOM/rendering';
 import { EMPTY_OBJ } from './DOM/utils';
 
@@ -22,6 +22,7 @@ if (process.env.NODE_ENV !== 'production') {
 // To please the TS God
 // https://github.com/Microsoft/TypeScript/issues/6307
 export declare const VNodeFlags: _VNodeFlags;
+export declare const Root: _Root;
 
 export const version = '1.6.2';
 

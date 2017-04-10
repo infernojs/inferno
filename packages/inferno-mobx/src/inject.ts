@@ -32,8 +32,8 @@ function createStoreInjector(grabStoresFn: Function, component) {
 	});
 
 	Injector.contextTypes = {
-		mobxStores() {
-		}
+		// tslint:disable-next-line:no-empty
+		mobxStores() {}
 	};
 	hoistStatics(Injector, component);
 

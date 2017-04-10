@@ -13,7 +13,7 @@ function wrapFunctionalComponent(vNode) {
 
 	if (!wrappers.has(originalRender)) {
 		const wrapper = class extends Component<any, any> {
-			render(props, state, context) {
+			public render(props, state, context) {
 				return originalRender(props, context);
 			}
 		};

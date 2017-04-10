@@ -4,6 +4,6 @@
  * @param {Function} event Function to be called when event occurs
  * @returns {{data: *, event: Function}}
  */
-export default function linkEvent(data, event) {
+export function linkEvent(data, event) {
 	return { data, event };
 }

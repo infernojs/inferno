@@ -34,9 +34,9 @@ function renderStylesToString(styles) {
 
 export class RenderQueueStream extends Readable {
 
-	started: boolean = false;
-	collector: any[] = [ Infinity ]; // Infinity marks the end of the stream
-	promises: any[] = [];
+	public started: boolean = false;
+	public collector: any[] = [ Infinity ]; // Infinity marks the end of the stream
+	public promises: any[] = [];
 
 	constructor(initNode, staticMarkup) {
 		super();
@@ -46,11 +46,11 @@ export class RenderQueueStream extends Readable {
 		}
 	}
 
-	_read() {
+	public _read() {
 		setTimeout(this.pushQueue, 0);
 	}
 
-	addToQueue(node, position) {
+	public addToQueue(node, position) {
 		// Positioning defined, stack it
 		if (!isNullOrUndef(position)) {
 			const lastSlot = this.promises[ position ].length - 1;
@@ -81,7 +81,7 @@ export class RenderQueueStream extends Readable {
 		}
 	}
 
-	pushQueue() {
+	public pushQueue() {
 		const chunk = this.collector[ 0 ];
 		// Output strings directly
 		if (typeof chunk === 'string') {
@@ -108,7 +108,7 @@ export class RenderQueueStream extends Readable {
 		}
 	}
 
-	renderVNodeToQueue(vNode, context, firstChild, position) {
+	public renderVNodeToQueue(vNode, context, firstChild, position) {
 
 		// In case render returns invalid stuff
 		if (isInvalid(vNode)) {
