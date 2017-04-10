@@ -195,7 +195,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public state: S|null = null;
 	public props: P & Props;
 	public context: any;
-
 	public _blockRender = false;
 	public _blockSetState = true;
 	public _pendingSetState = false;
@@ -206,7 +205,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public _lifecycle = null;
 	public _childContext = null;
 	public _isSVG = false;
-	public _componentToDOMNodeMap: Map<any, any>|null = null;
 	public _updating = true;
 
 	constructor(props?: P, context?: any) {
