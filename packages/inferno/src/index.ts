@@ -24,7 +24,7 @@ if (process.env.NODE_ENV !== 'production') {
 export declare const VNodeFlags: _VNodeFlags;
 export declare const Root: _Root;
 
-export const version = '2.0.0';
+export const version = '3.0.1';
 
 // we duplicate it so it plays nicely with different module loading systems
 export default {
