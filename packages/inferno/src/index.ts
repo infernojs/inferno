@@ -1,9 +1,10 @@
 import { NO_OP, warning } from 'inferno-shared';
 import { LifecycleClass as _LifecycleClass} from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
-import { getFlagsForElementVnode } from './core/normalization';
+import { getFlagsForElementVnode, normalize as internal_normalize } from './core/normalization';
 import { options, Root as _Root } from './core/options';
 import { cloneVNode, createVNode, InfernoChildren, InfernoInput, Props, VNode } from './core/VNodes';
+import { isUnitlessNumber as internal_isUnitlessNumber } from './DOM/constants';
 import { linkEvent } from './DOM/events/linkEvent';
 import { patch as internal_patch } from './DOM/patching';
 import { componentToDOMNodeMap as internal_DOMNodeMap, createRenderer, findDOMNode, render } from './DOM/rendering';
@@ -27,7 +28,7 @@ export declare const VNodeFlags: _VNodeFlags;
 export declare const Root: _Root;
 export declare const LifecycleClass: _LifecycleClass;
 
-const version = '3.0.2';
+const version = '3.0.3';
 
 // we duplicate it so it plays nicely with different module loading systems
 export default {
@@ -51,7 +52,9 @@ export default {
 	version,
 
 	internal_patch,
-	internal_DOMNodeMap
+	internal_DOMNodeMap,
+	internal_isUnitlessNumber,
+	internal_normalize
 };
 
 export {
@@ -82,11 +85,7 @@ export {
 	version,
 
 	internal_patch,
-	internal_DOMNodeMap
+	internal_DOMNodeMap,
+	internal_isUnitlessNumber,
+	internal_normalize
 };
-
-// Internal stuff that only core inferno-* packages use
-export { isUnitlessNumber as internal_isUnitlessNumber } from './DOM/constants';
-
-// Mainly for testing
-export { normalize as internal_normalize } from './core/normalization';
