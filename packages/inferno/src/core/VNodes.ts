@@ -13,7 +13,7 @@ import { normalize } from './normalization';
 import { options } from './options';
 
 export type InfernoInput = VNode | null | string | number;
-export type Ref = (node?) => void | null;
+export type Ref = (node?: Element | null) => void | null;
 export type InfernoChildren = string | number | boolean | undefined | VNode | Array<string | number | VNode> | null;
 export type Type = string | null | Function;
 
