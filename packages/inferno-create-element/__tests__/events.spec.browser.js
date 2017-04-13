@@ -585,4 +585,84 @@ describe('Basic event tests', () => {
 			container.querySelector('span').click();
 		});
 	});
+
+	describe('Event removal', () => {
+		it('Should remove events when parent changes', () => {
+			const spy = sinon.spy();
+			render((
+				<div>
+					<div id="test" onClick={spy}>
+						1
+					</div>
+				</div>
+			), container);
+
+			expect(spy.callCount).to.equal(0);
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(1);
+
+			render((
+				<div>
+					<div id="test">
+						2
+					</div>
+				</div>
+			), container);
+
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(1);
+		});
+
+		it('Should NOT remove events when listener remains there', () => {
+			const spy = sinon.spy();
+			render((
+				<div>
+					<div id="test" onClick={spy}>
+						1
+					</div>
+				</div>
+			), container);
+
+			expect(spy.callCount).to.equal(0);
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(1);
+
+			render((
+				<div>
+					<div id="test" onClick={spy}>
+						2
+					</div>
+				</div>
+			), container);
+
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(2);
+		});
+
+		it('Should remove events when listener is nulled', () => {
+			const spy = sinon.spy();
+			render((
+				<div>
+					<div id="test" onClick={spy}>
+						1
+					</div>
+				</div>
+			), container);
+
+			expect(spy.callCount).to.equal(0);
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(1);
+
+			render((
+				<div>
+					<div id="test" onClick={null}>
+						2
+					</div>
+				</div>
+			), container);
+
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(1);
+		});
+	});
 });
