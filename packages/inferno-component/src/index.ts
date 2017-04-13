@@ -60,7 +60,7 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 			component._updating = true;
 			applyState(component, force, () => {
 				for (let i = 0, len = queue.length; i < len; i++) {
-					queue[ i ]();
+					queue[ i ].call(component);
 				}
 			});
 			component._updating = false;
