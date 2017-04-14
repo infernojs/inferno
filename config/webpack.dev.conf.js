@@ -18,6 +18,9 @@ module.exports = {
 	performance: {
 		hints: false
 	},
+	node: {
+		console: true
+	},
 	module: {
 		loaders: [
 			{

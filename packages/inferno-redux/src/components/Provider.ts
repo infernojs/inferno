@@ -1,42 +1,52 @@
+import {isNullOrUndef, toArray} from 'inferno-shared';
+
 import Component from 'inferno-component';
-import { isNullOrUndef, toArray } from 'inferno-shared';
-import { warning } from './utils';
+import { Store } from 'redux';
+import { warning } from '../utils/warning';
 
 let didWarnAboutReceivingStore = false;
-function warnAboutReceivingStore() {
+const warnAboutReceivingStore = () => {
 	if (didWarnAboutReceivingStore) {
 		return;
 	}
+
 	didWarnAboutReceivingStore = true;
 
 	warning(
 		'<Provider> does not support changing `store` on the fly.'
 	);
+};
+
+export interface Props {
+	store: Store<any>;
+	children: any;
 }
 
-export default class Provider extends Component<any, any> {
-	public store: any;
+export class Provider extends Component<Props, any> {
+	public static displayName = 'Provider';
+	private store: Store<any>;
 
-	constructor(props, context?: any) {
+	constructor(props: Props, context: any) {
 		super(props, context);
 		this.store = props.store;
 	}
 
 	public getChildContext() {
-		return { store: this.store };
+		return { store: this.store, storeSubscription: null };
 	}
 
-	public render(props) {
+	public render() {
+		// TODO: Maybe not allocate an array here for no reason?
 		if (isNullOrUndef(this.props.children) || toArray(this.props.children).length !== 1) {
 			throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
 		}
 
-		return props.children;
+		return this.props.children;
 	}
 }
 
 if (process.env.NODE_ENV !== 'production') {
-	Provider.prototype.componentWillReceiveProps = function(nextProps) {
+	Provider.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
 		const { store } = this;
 		const { store: nextStore } = nextProps;
 

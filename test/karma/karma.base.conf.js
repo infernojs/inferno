@@ -73,7 +73,10 @@ module.exports = function (config) {
 			},
 			resolve: {
 				extensions: [ '.js', '.jsx' ],
-				mainFields: [ 'inferno:main', 'module', 'main' ]
+				mainFields: [ 'inferno:main', 'module', 'main' ],
+				alias: {
+					util: path.resolve(path.join(__dirname, '..', '..', 'node_modules', 'util', 'util.js'))
+				}
 			},
 			performance: {
 				hints: false

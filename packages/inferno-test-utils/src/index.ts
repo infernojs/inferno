@@ -1,8 +1,27 @@
-import { InfernoChildren, InfernoInput, render, VNode } from 'inferno';
+import {
+	InfernoInput,
+	render,
+	VNode
+} from 'inferno';
+import {
+	isArray,
+	isFunction,
+	isNumber,
+	isObject,
+	isString,
+	throwError
+} from 'inferno-shared';
+
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import { isArray, isFunction, isNumber, isObject, isString, throwError } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
+
+// Interfaces
+
+// tslint:disable-next-line:callable-types
+export interface VNodePredicate {
+	(vNode: VNode): boolean;
+}
 
 // Type Checkers
 
@@ -61,17 +80,21 @@ export function isRenderedClassComponentOfType(instance: any, type: Function): b
 
 // Render Utilities
 
-class Wrapper extends Component<any, any> {
+export class Wrapper extends Component<any, any> {
 	public render() {
 		return this.props.children;
 	}
+
+	public repaint() {
+		return new Promise<void>((resolve) => this.setState({}, resolve));
+	}
 }
 
-export function renderIntoDocument(input: InfernoInput): InfernoChildren {
+export function renderIntoDocument(input: InfernoInput): Wrapper {
 	const wrappedInput = createElement(Wrapper, null, input);
 	const parent = document.createElement('div');
 	document.body.appendChild(parent);
-	return render(wrappedInput, parent);
+	return render(wrappedInput, parent) as any;
 }
 
 // Recursive Finder Functions
@@ -212,5 +235,7 @@ export default {
 	findRenderedVNodeWithType,
 
 	scryVNodesWithType,
-	findVNodeWithType
+	findVNodeWithType,
+
+	Wrapper
 };

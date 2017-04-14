@@ -1,14 +1,10 @@
 {
   "compact": false,
-  "presets": [
-    ["es2015", {"loose": true}],
-    "stage-2"
-  ],
   "plugins": [
     "transform-class-properties",
     "transform-object-rest-spread",
     "babel-plugin-syntax-jsx",
-    ["babel-plugin-inferno", {"imports": true}],
+    ["inferno", {"imports": true}],
     ["module-resolver", {
       "extensions": [".js", ".jsx"],
       "alias": {
@@ -25,5 +21,29 @@
         "inferno": "./packages/inferno/dist-es"
       }
     }]
-  ]
+  ],
+  "presets": [
+    "babel-preset-power-assert"
+  ],
+  "env": {
+    "development": {
+      "presets": [
+        ["es2015", {"loose": true}],
+        "stage-2"
+      ]
+    },
+    "testing": {
+      "plugins": [
+        "transform-class-properties"
+      ],
+      "presets": [
+        ["env", {
+          "targets": { "node": "current" },
+          "include": [
+            "transform-es2015-classes"
+          ]
+        }]
+      ]
+    }
+  }
 }
