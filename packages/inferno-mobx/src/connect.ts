@@ -7,7 +7,7 @@ import makeReactive from './makeReactive';
 /**
  * Wraps a component and provides stores as props
  */
-function connect(arg1: any, arg2 = null): any {
+function connect(arg1: any, arg2?: any): any {
 	if (typeof arg1 === 'string') {
 		throwError('Store names should be provided as array');
 	}
