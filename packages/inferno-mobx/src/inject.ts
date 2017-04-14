@@ -1,6 +1,7 @@
 import hoistStatics from 'hoist-non-inferno-statics';
+import { createVNode } from 'inferno';
 import createClass from 'inferno-create-class';
-import createElement from 'inferno-create-element';
+import VNodeFlags from 'inferno-vnode-flags';
 
 interface IStoreProps {
 	ref: any;
@@ -27,7 +28,7 @@ function createStoreInjector(grabStoresFn: Function, component) {
 				this.wrappedInstance = instance;
 			};
 
-			return createElement(component, newProps);
+			return createVNode(VNodeFlags.ComponentUnknown, component, null, null, newProps);
 		}
 	});
 
