@@ -1,6 +1,6 @@
 {
   "name": "inferno-router",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "license": "MIT",
   "description": "Provides routing functionality for Inferno",
   "author": {
@@ -26,9 +26,9 @@
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
     "history": "^4.6.1",
-    "inferno": "3.0.4",
-    "inferno-component": "3.0.4",
-    "inferno-create-element": "3.0.4",
+    "inferno": "3.0.5",
+    "inferno-component": "3.0.5",
+    "inferno-create-element": "3.0.5",
     "inferno-shared": "^3.0.0",
     "inferno-vnode-flags": "^3.0.0",
     "path-to-regexp-es6": "0.0.2"
