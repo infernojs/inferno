@@ -15,8 +15,8 @@ export function isVNodeOfType(instance: VNode, type: string | Function): boolean
 	return isVNode(instance) && instance.type === type;
 }
 
-export function isDOMVNode(instance: VNode): instance is VNode {
-	return isVNode(instance) && isString(instance.type);
+export function isDOMVNode(inst: VNode): boolean {
+	return !isComponentVNode(inst) && !isTextVNode(inst);
 }
 
 export function isDOMVNodeOfType(instance: VNode, type: string): boolean {
@@ -37,6 +37,18 @@ export function isClassVNode(instance: VNode): boolean {
 
 export function isClassVNodeOfType(instance: VNode, type: Function): boolean {
 	return isClassVNode(instance) && instance.type === type;
+}
+
+export function isComponentVNode(inst: VNode): boolean {
+	return isFunctionalVNode(inst) || isClassVNode(inst);
+}
+
+export function isComponentVNodeOfType(inst: VNode, type: Function): boolean {
+	return (isFunctionalVNode(inst) || isClassVNode(inst)) && inst.type === type;
+}
+
+export function isTextVNode(inst: VNode): boolean {
+	return inst.flags === VNodeFlags.Text;
 }
 
 export function isDOMElement(instance: any): boolean {
@@ -177,6 +189,83 @@ export function findVNodeWithType(vNodeTree: VNode, type: string | Function): VN
 	return findOneOf(vNodeTree, type, 'VNode', scryVNodesWithType);
 }
 
+// Jest Snapshot Utilities
+// Jest formats it's snapshots prettily because it knows how to play with the React test renderer.
+// Symbols and algorithm have been reversed from the following file:
+// https://github.com/facebook/react/blob/v15.4.2/src/renderers/testing/ReactTestRenderer.js#L98
+export function getTagNameOfVNode(inst: any) {
+	return (inst && inst.dom && inst.dom.tagName.toLowerCase()) ||
+		(inst && inst._vNode && inst._vNode.dom && inst._vNode.dom.tagName.toLowerCase()) ||
+		undefined;
+}
+
+export function createSnapshotObject(object: object) {
+	Object.defineProperty(object, '$$typeof', {
+		value: Symbol.for('react.test.json')
+	});
+
+	return object;
+}
+
+export function vNodeToSnapshot(node: any) {
+	let object;
+	const children: any[] = [];
+
+	if (isDOMVNode(node)) {
+		const props = { ...node.props };
+
+		// Remove undefined props
+		Object.keys(props).forEach((propKey) => {
+			if (props[propKey] === undefined) {
+				delete props[propKey];
+			}
+		});
+
+		// Create the actual object that Jest will interpret as the snapshot for this VNode
+		object = createSnapshotObject({
+			type: getTagNameOfVNode(node),
+			props
+		});
+	}
+
+	if (Array.isArray(node.children)) {
+		node.children.forEach((child) => {
+			const asJSON = vNodeToSnapshot(child);
+			if (asJSON) {
+				children.push(asJSON);
+			}
+		});
+	} else if (typeof node.children === 'string') {
+		children.push(node.children);
+	} else if (typeof node.children === 'object' && node.children !== null) {
+		const asJSON = vNodeToSnapshot(node.children);
+		if (asJSON) {
+			children.push(asJSON);
+		}
+	}
+
+	if (object) {
+		object.children = children.length ? children : null;
+		return object;
+	}
+
+	if (children.length > 1) {
+		return children;
+	} else if (children.length === 1) {
+		return children[0];
+	}
+
+	return object;
+}
+
+export function renderToSnapshot(input: InfernoInput) {
+	const vnode = renderIntoDocument(input);
+	const snapshot = vNodeToSnapshot(vnode);
+	delete snapshot.props.children;
+
+	return snapshot;
+}
+
 export default {
 
 	isVNode,
@@ -190,6 +279,11 @@ export default {
 
 	isClassVNode,
 	isClassVNodeOfType,
+
+	isComponentVNode,
+	isComponentVNodeOfType,
+
+	isTextVNode,
 
 	isDOMElement,
 	isDOMElementOfType,
@@ -212,5 +306,10 @@ export default {
 	findRenderedVNodeWithType,
 
 	scryVNodesWithType,
-	findVNodeWithType
+	findVNodeWithType,
+
+	getTagNameOfVNode,
+	createSnapshotObject,
+	vNodeToSnapshot,
+	renderToSnapshot
 };
