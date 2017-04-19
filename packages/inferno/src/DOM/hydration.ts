@@ -47,7 +47,7 @@ export function normalizeChildNodes(parentDom) {
 	}
 }
 
-function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context, isSVG: boolean, isClass: number): Element {
+function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context, isSVG: boolean, isClass: boolean): Element {
 	const type = vNode.type;
 	const ref = vNode.ref;
 
@@ -85,9 +85,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 	const flags = vNode.flags;
 	const ref = vNode.ref;
 
-	if (isSVG || (flags & VNodeFlags.SvgElement)) {
-		isSVG = true;
-	}
+	isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
 	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== vNode.type) {
 		if (process.env.NODE_ENV !== 'production') {
 			warning('Inferno hydration: Server-side markup doesn\'t match client-side markup or Initial render target is not empty');
@@ -194,7 +192,7 @@ function hydrate(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context:
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Component) {
-		return hydrateComponent(vNode, dom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
+		return hydrateComponent(vNode, dom, lifecycle, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
 	} else if (flags & VNodeFlags.Element) {
 		return hydrateElement(vNode, dom, lifecycle, context, isSVG);
 	} else if (flags & VNodeFlags.Text) {

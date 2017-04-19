@@ -2,6 +2,7 @@ import {
 	combineFrom,
 	isArray,
 	isInvalid,
+	isNull,
 	isNullOrUndef,
 	isStatefulComponent,
 	isStringOrNumber,
@@ -101,7 +102,7 @@ export function directClone(vNodeToClone: VNode): VNode {
 		let props;
 		const propsToClone = vNodeToClone.props;
 
-		if (!propsToClone) {
+		if (isNull(propsToClone)) {
 			props = EMPTY_OBJ;
 		} else {
 			props = {};
@@ -109,8 +110,10 @@ export function directClone(vNodeToClone: VNode): VNode {
 				props[ key ] = propsToClone[ key ];
 			}
 		}
-		newVNode = createVNode(flags, vNodeToClone.type,
-			vNodeToClone.className,
+		newVNode = createVNode(
+			flags,
+			vNodeToClone.type,
+			null,
 			null,
 			props,
 			vNodeToClone.key,
@@ -119,39 +122,38 @@ export function directClone(vNodeToClone: VNode): VNode {
 		);
 		const newProps = newVNode.props;
 
-		if (newProps) {
-			const newChildren = newProps.children;
-			// we need to also clone component children that are in props
-			// as the children may also have been hoisted
-			if (newChildren) {
-				if (isArray(newChildren)) {
-					const len = newChildren.length;
-					if (len > 0) {
-						const tmpArray: InfernoChildren = [];
+		const newChildren = newProps.children;
+		// we need to also clone component children that are in props
+		// as the children may also have been hoisted
+		if (newChildren) {
+			if (isArray(newChildren)) {
+				const len = newChildren.length;
+				if (len > 0) {
+					const tmpArray: InfernoChildren = [];
 
-						for (let i = 0; i < len; i++) {
-							const child = newChildren[ i ];
+					for (let i = 0; i < len; i++) {
+						const child = newChildren[ i ];
 
-							if (isStringOrNumber(child)) {
-								tmpArray.push(child);
-							} else if (!isInvalid(child) && isVNode(child)) {
-								tmpArray.push(directClone(child));
-							}
+						if (isStringOrNumber(child)) {
+							tmpArray.push(child);
+						} else if (!isInvalid(child) && isVNode(child)) {
+							tmpArray.push(directClone(child));
 						}
-						newProps.children = tmpArray;
 					}
-				} else if (isVNode(newChildren)) {
-					newProps.children = directClone(newChildren);
+					newProps.children = tmpArray;
 				}
+			} else if (isVNode(newChildren)) {
+				newProps.children = directClone(newChildren);
 			}
 		}
+
 		newVNode.children = null;
 	} else if (flags & VNodeFlags.Element) {
 		const children = vNodeToClone.children;
 		let props;
 		const propsToClone = vNodeToClone.props;
 
-		if (!propsToClone) {
+		if (propsToClone === null) {
 			props = EMPTY_OBJ;
 		} else {
 			props = {};
@@ -159,7 +161,9 @@ export function directClone(vNodeToClone: VNode): VNode {
 				props[ key ] = propsToClone[ key ];
 			}
 		}
-		newVNode = createVNode(flags, vNodeToClone.type,
+		newVNode = createVNode(
+			flags,
+			vNodeToClone.type,
 			vNodeToClone.className,
 			children,
 			props,

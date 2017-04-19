@@ -67,7 +67,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	// if it comes back again, we need to clone it, as people are using it
 	// in an immutable way
 	// tslint:disable
-	if (nodes[ '$' ]) {
+	if (nodes[ '$' ] === true) {
 		nodes = nodes.slice();
 	} else {
 		nodes[ '$' ] = true;
@@ -86,7 +86,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
 			newNodes.push(applyKeyIfMissing(i, createTextVNode(n, null)));
-		} else if ((isVNode(n) && n.dom !== null) || (isNull(n.key) && !(n.flags & VNodeFlags.HasNonKeyedChildren))) {
+		} else if ((isVNode(n) && n.dom !== null) || (isNull(n.key) && (n.flags & VNodeFlags.HasNonKeyedChildren) === 0)) {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}

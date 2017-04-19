@@ -65,7 +65,7 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, li
 						lifecycle,
 						context,
 						isSVG,
-						nextFlags & VNodeFlags.ComponentClass
+						(nextFlags & VNodeFlags.ComponentClass) > 0
 					),
 					lastVNode,
 					lifecycle,
@@ -138,9 +138,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
 		const nextClassName = nextVNode.className;
 
 		nextVNode.dom = dom;
-		if (isSVG || (nextFlags & VNodeFlags.SvgElement) > 0) {
-			isSVG = true;
-		}
+		isSVG = isSVG || (nextFlags & VNodeFlags.SvgElement) > 0;
 		if (lastChildren !== nextChildren) {
 			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
 		}
@@ -204,7 +202,7 @@ function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildre
 
 	if (nextFlags & VNodeFlags.HasNonKeyedChildren) {
 		patchArray = true;
-	} else if ((lastFlags & VNodeFlags.HasKeyedChildren) && (nextFlags & VNodeFlags.HasKeyedChildren)) {
+	} else if ((lastFlags & VNodeFlags.HasKeyedChildren) > 0 && (nextFlags & VNodeFlags.HasKeyedChildren) > 0) {
 		patchKeyed = true;
 		patchArray = true;
 	} else if (isInvalid(nextChildren)) {
@@ -284,7 +282,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 						lifecycle,
 						context,
 						isSVG,
-						nextVNode.flags & VNodeFlags.ComponentClass
+						(nextVNode.flags & VNodeFlags.ComponentClass) > 0
 					),
 					lastVNode.dom
 				);
@@ -469,7 +467,7 @@ export function patchKeyedChildren(a: VNode[], b: VNode[], dom, lifecycle: Lifec
 	let node;
 
 	if (aLength === 0) {
-		if (bLength !== 0) {
+		if (bLength > 0) {
 			mountArrayChildren(b, dom, lifecycle, context, isSVG);
 		}
 		return;

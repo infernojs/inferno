@@ -195,16 +195,16 @@ suite('createVNode', () => {
 	benchmark('deeply nested Arrays (nobody should do this)', () => {
 		createVNode(2, 'div', null, [
 			createVNode(2, 'div', null, '1'),
-			createVNode(2, 'div', null, [ [ [ [ [ [
-				[ [ createVNode(2, 'div', null, 'a') ] ],
-				[ [ [ [ [ createVNode(2, 'div', null, 'b') ] ] ] ] ],
-				[ [ [ [ [ createVNode(2, 'div', null, 'c') ] ] ] ] ]
-			] ] ] ] ] ])
+			createVNode(2, 'div', null, [[[[[[
+				[[createVNode(2, 'div', null, 'a')]],
+				[[[[[createVNode(2, 'div', null, 'b')]]]]],
+				[[[[[createVNode(2, 'div', null, 'c')]]]]]
+			]]]]]])
 		]);
 	});
 
 	benchmark('Changing attributes (includes render)', () => {
-		var container = document.createElement('div');
+		let container = document.createElement('div');
 		// Mount
 		render(createVNode(2, 'div', {
 			className: 'foo bar',
@@ -213,7 +213,7 @@ suite('createVNode', () => {
 				float: 'left'
 			},
 			'data-attribute': 'data-value',
-			'custom-stuff': 'custom',
+			'custom-stuff': 'custom'
 		}), container);
 
 		// Change

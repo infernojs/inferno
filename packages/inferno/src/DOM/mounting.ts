@@ -32,7 +32,7 @@ export function mount(vNode: VNode, parentDom: Element|null, lifecycle: Lifecycl
 	if (flags & VNodeFlags.Element) {
 		return mountElement(vNode, parentDom, lifecycle, context, isSVG);
 	} else if (flags & VNodeFlags.Component) {
-		return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
+		return mountComponent(vNode, parentDom, lifecycle, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
 	} else if (flags & VNodeFlags.Void) {
 		return mountVoid(vNode, parentDom);
 	} else if (flags & VNodeFlags.Text) {
@@ -83,9 +83,7 @@ export function mountElement(vNode: VNode, parentDom: Element|null, lifecycle: L
 	}
 	const flags = vNode.flags;
 
-	if (isSVG || (flags & VNodeFlags.SvgElement)) {
-		isSVG = true;
-	}
+	isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
 	const dom = documentCreateElement(vNode.type, isSVG);
 	const children = vNode.children;
 	const props = vNode.props;
@@ -149,7 +147,7 @@ export function mountArrayChildren(children, dom: Element, lifecycle: LifecycleC
 	}
 }
 
-export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isClass: number) {
+export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isClass: boolean) {
 	if (options.recyclingEnabled) {
 		const dom = recycleComponent(vNode, lifecycle, context, isSVG);
 
