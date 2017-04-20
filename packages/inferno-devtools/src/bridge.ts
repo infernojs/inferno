@@ -260,13 +260,17 @@ function updateReactComponent(vNode, parentDom) {
 
 }
 
+function isInvalidChild(child) {
+	return isInvalid(child) || child === '';
+}
+
 function normalizeChildren(children, dom) {
 	if (isArray(children)) {
-		return children.filter((child) => !isInvalid(child)).map((child) =>
+		return children.filter((child) => !isInvalidChild(child)).map((child) =>
 			updateReactComponent(child, dom)
 		);
 	} else {
-		return !isInvalid(children) ? [ updateReactComponent(children, dom) ] : [];
+		return !(isInvalidChild(children) || children === '') ? [ updateReactComponent(children, dom) ] : [];
 	}
 }
 
