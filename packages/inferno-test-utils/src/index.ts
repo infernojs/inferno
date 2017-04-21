@@ -197,7 +197,7 @@ export function getTagNameOfVNode(inst: any) {
 
 import {
 	renderToSnapshot,
-	vNodeToSnapshot,
+	vNodeToSnapshot
 } from './jest';
 
 export default {
