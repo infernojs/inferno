@@ -264,15 +264,15 @@ import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
 
 class BasicComponent extends Component {
-    render() {
-        return createElement('div', {
-               className: 'basic'
-           },
-           createElement('span', {
-               className: this.props.name
-           }, 'The title is ', this.props.title)
-       )
-    }
+  render() {
+    return createElement('div', {
+        className: 'basic'
+      },
+      createElement('span', {
+        className: this.props.name
+      }, 'The title is ', this.props.title)
+    )
+  }
 }
 
 Inferno.render(
@@ -393,11 +393,11 @@ In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode
 import Inferno, { linkEvent } from 'inferno';
 
 function handleClick(props, event) {
-	props.validateValue(event.target.value);
+  props.validateValue(event.target.value);
 }
 
 function MyComponent(props) {
-	return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
+  return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
 }
 ```
 
@@ -409,13 +409,13 @@ import Inferno, { linkEvent } from 'inferno';
 import Component from 'inferno-component';
 
 function handleClick(instance, event) {
-	instance.setState({ data: event.target.value });
+  instance.setState({ data: event.target.value });
 }
 
 class MyComponent extends Component {
-	render () {
-		return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
-	}
+  render () {
+    return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
+  }
 }
 ```
 
@@ -461,11 +461,11 @@ Functional lifecycle events must be explicitly assigned via props onto a functio
 
 ```javascript
 function mounted(domNode) {
-    // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
+  // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 }
 
 function FunctionalComponent({ props }) {
-	return <div>Hello world</div>;
+  return <div>Hello world</div>;
 }
 
 Inferno.render(
@@ -495,7 +495,7 @@ Use the following configuration in your Webpack build:
 
 ```js
   ...
-	plugins: [
+  plugins: [
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
@@ -514,10 +514,10 @@ const replace = require('rollup-plugin-replace');
 
 ```js
   ...
-	plugins: [
-		replace({
-			'process.env.NODE_ENV': JSON.stringify('production'),
-		})
+  plugins: [
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    })
   ]
 ```
 
