@@ -150,6 +150,16 @@ describe('Router (jsx)', () => {
 			const notCalled = assert.notCalled;
 			notCalled(sinonSpy);
 		});
+
+		it('should show warning when used without <Router />', () => {
+			const sinonSpy = spy(console, 'warn');
+
+			render(<Link to="/">Link</Link>, container);
+
+			assert.called(sinonSpy);
+
+			sinonSpy.restore();
+		});
 	});
 
 	describe('#IndexLink', () => {
