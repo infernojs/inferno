@@ -3,9 +3,7 @@ import { assert, spy } from 'sinon';
 import createMemoryHistory from 'history/createMemoryHistory';
 import { render } from 'inferno';
 import { innerHTML } from 'inferno/test/utils';
-import { warning } from 'inferno-shared'
 import { IndexLink, IndexRoute, Link, Route, Router } from '../dist-es';
-
 const browserHistory = createMemoryHistory();
 
 function TestComponent() {
