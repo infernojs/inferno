@@ -1,16 +1,31 @@
 import { createVNode, VNode } from 'inferno';
-import { combineFrom, isBrowser } from 'inferno-shared';
+import { combineFrom, isBrowser, warning } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
+
+function renderLink(classNm, children, otherProps) {
+	return createVNode(VNodeFlags.HtmlElement, 'a', classNm, children, otherProps);
+}
 
 export default function Link(props, { router }): VNode {
 	const { activeClassName, activeStyle, className, onClick, children, to, ...otherProps } = props;
-
-	otherProps.href = isBrowser ? router.createHref({ pathname: to }) : router.location.baseUrl ? router.location.baseUrl + to : to;
 
 	let classNm;
 	if (className) {
 		classNm = className as string;
 	}
+
+	if (!router) {
+		if (process.env.NODE_ENV !== 'production') {
+			warning('<Link/> component used outside of <Router/>. Fallback to <a> tag.');
+		}
+
+		otherProps.href = to;
+		otherProps.onClick = onClick;
+
+		return renderLink(classNm, children, otherProps);
+	}
+
+	otherProps.href = isBrowser ? router.createHref({ pathname: to }) : router.location.baseUrl ? router.location.baseUrl + to : to;
 
 	if (router.location.pathname === to) {
 		if (activeClassName) {
@@ -32,5 +47,5 @@ export default function Link(props, { router }): VNode {
 		router.push(to, e.target.textContent);
 	};
 
-	return createVNode(VNodeFlags.HtmlElement, 'a', classNm, children, otherProps);
+	return renderLink(classNm, children, otherProps);
 }

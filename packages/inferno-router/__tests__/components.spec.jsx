@@ -3,7 +3,9 @@ import { assert, spy } from 'sinon';
 import createMemoryHistory from 'history/createMemoryHistory';
 import { render } from 'inferno';
 import { innerHTML } from 'inferno/test/utils';
+import { warning } from 'inferno-shared'
 import { IndexLink, IndexRoute, Link, Route, Router } from '../dist-es';
+
 const browserHistory = createMemoryHistory();
 
 function TestComponent() {
@@ -149,6 +151,16 @@ describe('Router (jsx)', () => {
 
 			const notCalled = assert.notCalled;
 			notCalled(sinonSpy);
+		});
+
+		it('should show warning when used without <Router />', () => {
+			const sinonSpy = spy(console, 'warn');
+
+			render(<Link to="/">Link</Link>, container);
+
+			assert.called(sinonSpy);
+
+			sinonSpy.restore();
 		});
 	});
 
