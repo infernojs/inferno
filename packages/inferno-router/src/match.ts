@@ -18,11 +18,11 @@ const cache: Map<string, IMatchRegex> = new Map();
  * Returns a node containing only the matched components
  * @param routes
  * @param currentURL
- * @returns {any|VComponent}
+ * @returns {*}
  */
 export default function match(routes, currentURL: any) {
 	const location: string = getURLString(currentURL);
-	return matchRoutes(toArray(routes), location, '/');
+	return matchRoutes(toArray(routes), encodeURI(location), '/');
 }
 
 /**
@@ -103,9 +103,9 @@ interface IMatchRegex {
  */
 export function matchPath(end: boolean, routePath: string, pathToMatch: string): any {
 	const key = `${routePath}|${end}`;
-	let regexp: IMatchRegex = cache.get(key);
+	let regexp: IMatchRegex|undefined = cache.get(key);
 
-	if (!regexp) {
+	if (regexp === void 0) {
 		const keys = [];
 		regexp = { pattern: pathToRegExp(routePath, keys, { end }), keys };
 		cache.set(key, regexp);

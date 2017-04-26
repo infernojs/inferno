@@ -1,78 +1,63 @@
-import { createVNode, InfernoChildren, Props, VNode } from 'inferno';
+import { createVNode, getFlagsForElementVnode, InfernoChildren, Props, VNode } from 'inferno';
 import Component from 'inferno-component';
-import { isInvalid, isNullOrUndef, isObject, isStatefulComponent, isString, isUndefined } from 'inferno-shared';
+import { isInvalid, isNullOrUndef, isObject, isString, isUndefined } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
-const componentHooks = {
-	onComponentWillMount: true,
-	onComponentDidMount: true,
-	onComponentWillUnmount: true,
-	onComponentShouldUpdate: true,
-	onComponentWillUpdate: true,
-	onComponentDidUpdate: true
-};
+const componentHooks = new Set<string>();
+componentHooks.add('onComponentWillMount');
+componentHooks.add('onComponentDidMount');
+componentHooks.add('onComponentWillUnmount');
+componentHooks.add('onComponentShouldUpdate');
+componentHooks.add('onComponentWillUpdate');
+componentHooks.add('onComponentDidUpdate');
 
-export default function createElement<T>(name: string | Function | Component<any, any>, props?: T & Props, ..._children: Array<InfernoChildren | any>): VNode {
-	if (isInvalid(name) || isObject(name)) {
+/**
+ * Creates virtual node
+ * @param {string|Function|Component<any, any>} type Type of node
+ * @param {object=} props Optional props for virtual node
+ * @param {...{object}=} _children Optional children for virtual node
+ * @returns {VNode} new virtual ndoe
+ */
+export default function createElement<T>(type: string | Function | Component<any, any>, props?: T & Props|null, ..._children: Array<InfernoChildren | any>): VNode {
+	if (isInvalid(type) || isObject(type)) {
 		throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
 	}
 	let children: any = _children;
-	let ref = null;
+	let ref: any = null;
 	let key = null;
 	let className = null;
 	let flags = 0;
+	let newProps;
 
 	if (_children) {
 		if (_children.length === 1) {
 			children = _children[ 0 ];
 		} else if (_children.length === 0) {
-			children = undefined;
+			children = void 0;
 		}
 	}
-	if (isString(name)) {
-		switch ( name ) {
-			case 'svg':
-				flags = VNodeFlags.SvgElement;
-				break;
-			case 'input':
-				flags = VNodeFlags.InputElement;
-				break;
-			case 'textarea':
-				flags = VNodeFlags.TextareaElement;
-				break;
-			case 'select':
-				flags = VNodeFlags.SelectElement;
-				break;
-			default:
-				flags = VNodeFlags.HtmlElement;
-				break;
-		}
+	if (isString(type)) {
+		flags = getFlagsForElementVnode(type as string);
 
-		/*
-		 This fixes de-optimisation:
-		 uses object Keys for looping props to avoid deleting props of looped object
-		 */
 		if (!isNullOrUndef(props)) {
-			const propKeys = Object.keys(props);
+			newProps = {} as T & Props;
 
-			for (let i = 0, len = propKeys.length; i < len; i++) {
-				const propKey = propKeys[ i ];
-
-				if (propKey === 'className' || propKey === 'class') {
-					className = props[ propKey ];
-					delete props[ propKey ];
-				} else if (propKey === 'key') {
+			for (const prop in props) {
+				if (prop === 'className' || prop === 'class') {
+					className = props[ prop ];
+				} else if (prop === 'key') {
 					key = props.key;
-					delete props.key;
-				} else if (propKey === 'children' && isUndefined(children)) {
+				} else if (prop === 'children' && isUndefined(children)) {
 					children = props.children; // always favour children args, default to props
-				} else if (propKey === 'ref') {
+				} else if (prop === 'ref') {
 					ref = props.ref;
+				} else {
+					newProps[prop] = props[prop];
 				}
 			}
 		}
 	} else {
-		flags = isStatefulComponent(name) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
+		flags = VNodeFlags.ComponentUnknown;
 		if (!isUndefined(children)) {
 			if (!props) {
 				props = {} as T;
@@ -82,33 +67,28 @@ export default function createElement<T>(name: string | Function | Component<any
 		}
 
 		if (!isNullOrUndef(props)) {
-			/*
-			 This fixes de-optimisation:
-			 uses object Keys for looping props to avoid deleting props of looped object
-			 */
-			const propKeys = Object.keys(props);
+			newProps = {} as T & Props;
 
-			for (let i = 0, len = propKeys.length; i < len; i++) {
-				const propKey = propKeys[ i ];
-
-				if (componentHooks[ propKey ]) {
+			for (const prop in props) {
+				if (componentHooks.has(prop)) {
 					if (!ref) {
 						ref = {};
 					}
-					ref[ propKey ] = props[ propKey ];
-				} else if (propKey === 'key') {
+					ref[ prop ] = props[ prop ];
+				} else if (prop === 'key') {
 					key = props.key;
-					delete props.key;
+				} else {
+					newProps[prop] = props[prop];
 				}
 			}
 		}
 	}
 	return createVNode(
 		flags,
-		name as Function,
+		type as string|Function,
 		className,
 		children,
-		props,
+		newProps,
 		key,
 		ref
 	);

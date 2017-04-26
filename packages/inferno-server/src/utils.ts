@@ -1,9 +1,9 @@
 const ecapeCharacters = {
-	'<': '&lt;',
-	'>': '&gt;',
 	'"': '&quot;',
+	'&': '&amp;',
 	'\'': '&#039;',
-	'&': '&amp;'
+	'<': '&lt;',
+	'>': '&gt;'
 };
 const escapeChar = (char) => ecapeCharacters[ char ] || char;
 

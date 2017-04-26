@@ -23,22 +23,21 @@ const defaultMapStateToProps = (state) => ({}); // eslint-disable-line no-unused
 const defaultMapDispatchToProps = (dispatch) => ({ dispatch });
 const defaultMergeProps = function(parentProps, stateProps, dispatchProps) {
 	const obj = {};
-	let key;
 
 	if (parentProps) {
-		for (key in parentProps) {
+		for (const key in parentProps) {
 			obj[ key ] = parentProps[ key ];
 		}
 	}
 
 	if (stateProps) {
-		for (key in stateProps) {
+		for (const key in stateProps) {
 			obj[ key ] = stateProps[ key ];
 		}
 	}
 
 	if (dispatchProps) {
-		for (key in dispatchProps) {
+		for (const key in dispatchProps) {
 			obj[ key ] = dispatchProps[ key ];
 		}
 	}
@@ -101,24 +100,24 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 		}
 
 		class Connect extends Component<any, any> {
-			static displayName: any;
-			static WrappedComponent: any;
-			version: any;
-			store: any;
-			haveOwnPropsChanged: boolean;
-			hasStoreStateChanged: boolean;
-			finalMapStateToProps: any;
-			doStatePropsDependOnOwnProps: any;
-			finalMapDispatchToProps: any;
-			doDispatchPropsDependOnOwnProps: any;
-			stateProps: any;
-			dispatchProps: any;
-			mergedProps: any;
-			unsubscribe: any;
-			haveStatePropsBeenPrecalculated: boolean;
-			statePropsPrecalculationError: any;
-			renderedElement: any;
-			wrappedInstance: any;
+			public static displayName: any;
+			public static WrappedComponent: any;
+			public version: any;
+			public store: any;
+			public haveOwnPropsChanged: boolean;
+			public hasStoreStateChanged: boolean;
+			public finalMapStateToProps: any;
+			public doStatePropsDependOnOwnProps: any;
+			public finalMapDispatchToProps: any;
+			public doDispatchPropsDependOnOwnProps: any;
+			public stateProps: any;
+			public dispatchProps: any;
+			public mergedProps: any;
+			public unsubscribe: any;
+			public haveStatePropsBeenPrecalculated: boolean;
+			public statePropsPrecalculationError: any;
+			public renderedElement: any;
+			public wrappedInstance: any;
 
 			constructor(props, context) {
 				super(props, context);
@@ -139,15 +138,15 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				this.clearCache();
 			}
 
-			componentDidMount() {
+			public componentDidMount() {
 				this.trySubscribe();
 			}
 
-			shouldComponentUpdate() {
+			public shouldComponentUpdate() {
 				return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged;
 			}
 
-			computeStateProps(store, props) {
+			public computeStateProps(store, props) {
 				if (!this.finalMapStateToProps) {
 					return this.configureFinalMapState(store, props);
 				}
@@ -159,7 +158,7 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				return stateProps;
 			}
 
-			configureFinalMapState(store, props) {
+			public configureFinalMapState(store, props) {
 				const mappedState = mapState(store.getState(), props);
 				const isFactory = isFunction(mappedState);
 
@@ -171,19 +170,17 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				return mappedState;
 			}
 
-			computeDispatchProps(store, props) {
+			public computeDispatchProps(store, props) {
 				if (!this.finalMapDispatchToProps) {
 					return this.configureFinalMapDispatch(store, props);
 				}
 				const { dispatch } = store;
-				const dispatchProps = this.doDispatchPropsDependOnOwnProps ?
+				return this.doDispatchPropsDependOnOwnProps ?
 					this.finalMapDispatchToProps(dispatch, props) :
 					this.finalMapDispatchToProps(dispatch);
-
-				return dispatchProps;
 			}
 
-			configureFinalMapDispatch(store, props) {
+			public configureFinalMapDispatch(store, props) {
 				const mappedDispatch = mapDispatch(store.dispatch, props);
 				const isFactory = isFunction(mappedDispatch);
 
@@ -196,7 +193,7 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				return mappedDispatch;
 			}
 
-			updateStatePropsIfNeeded() {
+			public updateStatePropsIfNeeded() {
 				const nextStateProps = this.computeStateProps(this.store, this.props);
 
 				if (this.stateProps && shallowEqual(nextStateProps, this.stateProps)) {
@@ -206,7 +203,7 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				return true;
 			}
 
-			updateDispatchPropsIfNeeded() {
+			public updateDispatchPropsIfNeeded() {
 				const nextDispatchProps = this.computeDispatchProps(this.store, this.props);
 
 				if (this.dispatchProps && shallowEqual(nextDispatchProps, this.dispatchProps)) {
@@ -216,7 +213,7 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				return true;
 			}
 
-			updateMergedPropsIfNeeded() {
+			public updateMergedPropsIfNeeded() {
 				const nextMergedProps = computeMergedProps(this.stateProps, this.dispatchProps, this.props);
 
 				if (this.mergedProps && checkMergedEquals && shallowEqual(nextMergedProps, this.mergedProps)) {
@@ -226,36 +223,36 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				return true;
 			}
 
-			isSubscribed() {
+			public isSubscribed() {
 				return isFunction(this.unsubscribe);
 			}
 
-			trySubscribe() {
+			public trySubscribe() {
 				if (shouldSubscribe && !this.unsubscribe) {
 					this.unsubscribe = this.store.subscribe(this.handleChange.bind(this));
 					this.handleChange();
 				}
 			}
 
-			tryUnsubscribe() {
+			public tryUnsubscribe() {
 				if (this.unsubscribe) {
 					this.unsubscribe();
 					this.unsubscribe = null;
 				}
 			}
 
-			componentWillReceiveProps(nextProps) {
+			public componentWillReceiveProps(nextProps) {
 				if (!pure || !shallowEqual(nextProps, this.props)) {
 					this.haveOwnPropsChanged = true;
 				}
 			}
 
-			componentWillUnmount() {
+			public componentWillUnmount() {
 				this.tryUnsubscribe();
 				this.clearCache();
 			}
 
-			clearCache() {
+			public clearCache() {
 				this.dispatchProps = null;
 				this.stateProps = null;
 				this.mergedProps = null;
@@ -268,7 +265,7 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				this.finalMapStateToProps = null;
 			}
 
-			handleChange() {
+			public handleChange() {
 				if (!this.unsubscribe) {
 					return;
 				}
@@ -292,11 +289,11 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				this.setState({ storeState });
 			}
 
-			getWrappedInstance() {
+			public getWrappedInstance() {
 				return this.wrappedInstance;
 			}
 
-			render() {
+			public render() {
 				const {
 					haveOwnPropsChanged,
 					hasStoreStateChanged,

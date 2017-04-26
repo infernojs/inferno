@@ -605,8 +605,6 @@ describe('Stateful Component updates', () => {
 			}
 
 			render() {
-
-				// TODO instead of giving whole setting stuff give in own properties to ReportGrid!
 				return (
 					<div className="report-container">
 						C

@@ -10,28 +10,19 @@ import {
 	warning
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import options from '../core/options';
+import { options, Root } from '../core/options';
 import { directClone, InfernoChildren, InfernoInput, VNode } from '../core/VNodes';
-import hydrateRoot from './hydration';
+import { hydrateRoot } from './hydration';
 import { mount } from './mounting';
 import { patch } from './patching';
 import { unmount } from './unmounting';
 import { EMPTY_OBJ } from './utils';
 
-export interface Root {
-	dom: Node | SVGAElement;
-	input: InfernoInput;
-	lifecycle: LifecycleClass;
-}
-
 // rather than use a Map, like we did before, we can use an array here
 // given there shouldn't be THAT many roots on the page, the difference
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
-export const roots: Root[] = [];
 export const componentToDOMNodeMap = new Map();
-
-options.roots = roots;
-
+const roots = options.roots;
 /**
  * When inferno.options.findDOMNOdeEnabled is true, this function will return DOM Node by component instance
  * @param ref Component instance
@@ -60,7 +51,7 @@ function getRoot(dom): Root | null {
 	return null;
 }
 
-function setRoot(dom: Node | SVGAElement, input: InfernoInput, lifecycle: LifecycleClass): Root {
+function setRoot(dom: Element | SVGAElement, input: InfernoInput, lifecycle: LifecycleClass): Root {
 	const root: Root = {
 		dom,
 		input,
@@ -93,7 +84,7 @@ const documentBody = isBrowser ? document.body : null;
  * @param parentDom DOM node which content will be replaced by virtual node
  * @returns {InfernoChildren} rendered virtual node
  */
-export function render(input: InfernoInput, parentDom?: Element | SVGAElement | DocumentFragment): InfernoChildren {
+export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | null | HTMLElement | Node): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -112,10 +103,10 @@ export function render(input: InfernoInput, parentDom?: Element | SVGAElement | 
 			if ((input as VNode).dom) {
 				input = directClone(input as VNode);
 			}
-			if (!hydrateRoot(input, parentDom, lifecycle)) {
+			if (!hydrateRoot(input, parentDom as any, lifecycle)) {
 				mount(input as VNode, parentDom as Element, lifecycle, EMPTY_OBJ, false);
 			}
-			root = setRoot(parentDom, input, lifecycle);
+			root = setRoot(parentDom as any, input, lifecycle);
 			lifecycle.trigger();
 		}
 	} else {

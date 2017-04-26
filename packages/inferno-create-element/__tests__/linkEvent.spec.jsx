@@ -122,4 +122,87 @@ describe('linkEvent', () => {
 			expect(event.target.nodeName).to.equal('INPUT');
 		});
 	});
+
+	describe('linkEvent on a input (onfocus and onblur) - no delegation', () => {
+		let isFocus;
+		let isBlur;
+
+		function handleOnFocus(id) {
+			isFocus = id;
+		}
+
+		function handleOnBlur(id) {
+			isBlur = id;
+		}
+
+		function FunctionalComponent(props) {
+			return <div>
+				<input
+					onfocus={ linkEvent('1234', handleOnFocus) }
+					onblur={ linkEvent('4321', handleOnBlur) }
+				/>
+			</div>;
+		}
+
+		class StatefulComponent extends Component {
+			render() {
+				return <div>
+					<input
+						onfocus={ linkEvent('1234', handleOnFocus) }
+						onblur={ linkEvent('4321', handleOnBlur) }
+					/>
+				</div>;
+			}
+		}
+
+		function simulateFocus(elm) {
+			if (typeof Event !== 'undefined') {
+				const newEvent = document.createEvent('UIEvent');
+				newEvent.initEvent('focus', true, true);
+
+				elm.dispatchEvent(newEvent);
+			} else {
+				elm.focus();
+			}
+		}
+
+		function simulateBlur(elm) {
+			if (typeof Event !== 'undefined') {
+				const newEvent = document.createEvent('UIEvent');
+				newEvent.initEvent('blur', true, true);
+
+				elm.dispatchEvent(newEvent);
+			} else {
+				elm.blur();
+			}
+		}
+
+		it('should work correctly for functional components', (done) => {
+			render(<FunctionalComponent/>, container);
+			const input = container.querySelector('input');
+			simulateFocus(input);
+			requestAnimationFrame(() => {
+				simulateBlur(input);
+				requestAnimationFrame(() => {
+					expect(isFocus).to.equal('1234');
+					expect(isBlur).to.equal('4321');
+					done();
+				});
+			});
+		});
+
+		it('should work correctly for stateful components', (done) => {
+			render(<StatefulComponent/>, container);
+			const input = container.querySelector('input');
+			simulateFocus(input);
+			requestAnimationFrame(() => {
+				simulateBlur(input);
+				requestAnimationFrame(() => {
+					expect(isFocus).to.equal('1234');
+					expect(isBlur).to.equal('4321');
+					done();
+				});
+			});
+		});
+	});
 });

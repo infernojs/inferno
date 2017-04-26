@@ -1,7 +1,7 @@
 import {
 	combineFrom,
 	isArray,
-	isInvalid,
+	isInvalid, isNull,
 	isNullOrUndef,
 	isStringOrNumber,
 	isUndefined,
@@ -9,12 +9,10 @@ import {
 	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import options from '../core/options';
+import { options } from '../core/options';
 import { createTextVNode, createVoidVNode, directClone, Props, VNode } from '../core/VNodes';
 import { svgNS } from './constants';
 import { mount } from './mounting';
-import { patch } from './patching';
-import { componentToDOMNodeMap } from './rendering';
 import { unmount } from './unmounting';
 
 // We need EMPTY_OBJ defined in one place.
@@ -35,10 +33,6 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 	instance.context = context;
 	if (instance.props === EMPTY_OBJ) {
 		instance.props = props;
-	}
-	instance._patch = patch;
-	if (options.findDOMNodeEnabled) {
-		instance._componentToDOMNodeMap = componentToDOMNodeMap;
 	}
 	// setState callbacks must fire after render is done when called from componentWillReceiveProps or componentWillMount
 	instance._lifecycle = lifecycle;
@@ -63,10 +57,15 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 		instance._childContext = combineFrom(context, childContext);
 	}
 
-	options.beforeRender && options.beforeRender(instance);
+	if (!isNull(options.beforeRender)) {
+		options.beforeRender(instance);
+	}
+
 	let input = instance.render(props, instance.state, context);
 
-	options.afterRender && options.afterRender(instance);
+	if (!isNull(options.afterRender)) {
+		options.afterRender(instance);
+	}
 	if (isArray(input)) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
@@ -136,7 +135,7 @@ export function setTextContent(dom, text: string | number) {
 	}
 }
 
-export function updateTextContent(dom, text: string) {
+export function updateTextContent(dom, text: string|number) {
 	dom.firstChild.nodeValue = text;
 }
 
@@ -152,7 +151,7 @@ export function insertOrAppend(parentDom, newNode, nextNode) {
 	}
 }
 
-export function documentCreateElement(tag, isSVG): Element {
+export function documentCreateElement(tag, isSVG: boolean): Element {
 	if (isSVG === true) {
 		return document.createElementNS(svgNS, tag);
 	} else {
@@ -186,7 +185,7 @@ export function removeAllChildren(dom: Element, children, lifecycle: LifecycleCl
 	}
 }
 
-export function removeChildren(dom: Element, children, lifecycle: LifecycleClass, isRecycling: boolean) {
+export function removeChildren(dom: Element|null, children, lifecycle: LifecycleClass, isRecycling: boolean) {
 	for (let i = 0, len = children.length; i < len; i++) {
 		const child = children[ i ];
 
@@ -197,6 +196,6 @@ export function removeChildren(dom: Element, children, lifecycle: LifecycleClass
 }
 
 export function isKeyed(lastChildren: VNode[], nextChildren: VNode[]): boolean {
-	return nextChildren.length && !isNullOrUndef(nextChildren[ 0 ]) && !isNullOrUndef(nextChildren[ 0 ].key)
-		&& lastChildren.length && !isNullOrUndef(lastChildren[ 0 ]) && !isNullOrUndef(lastChildren[ 0 ].key);
+	return nextChildren.length > 0 && !isNullOrUndef(nextChildren[ 0 ]) && !isNullOrUndef(nextChildren[ 0 ].key)
+		&& lastChildren.length > 0 && !isNullOrUndef(lastChildren[ 0 ]) && !isNullOrUndef(lastChildren[ 0 ].key);
 }

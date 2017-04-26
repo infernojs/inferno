@@ -38,9 +38,36 @@ module.exports = function (config) {
 						test: /\.jsx?$/,
 						loader: 'babel-loader',
 						exclude: /node_modules/,
-						query: JSON.stringify({
-							compact: false
-						})
+						query: {
+							// TODO: This is workaround because some of devDeps are shipping ES6...
+							babelrc: false,
+							presets: [
+								[ 'es2015', { loose: true, modules: false }],
+								'stage-2'
+							],
+							plugins: [
+								'transform-class-properties',
+								'transform-object-rest-spread',
+								'babel-plugin-syntax-jsx',
+								[ 'babel-plugin-inferno', { imports: true }],
+								[ 'module-resolver', {
+									extensions: [ '.js', '.jsx' ],
+									alias: {
+										'inferno-compat': './packages/inferno-compat/dist-es',
+										'inferno-component': './packages/inferno-component/dist-es',
+										'inferno-create-class': './packages/inferno-create-class/dist-es',
+										'inferno-create-element': './packages/inferno-create-element/dist-es',
+										'inferno-shared': './packages/inferno-shared/dist-es',
+										'inferno-hyperscript': './packages/inferno-hyperscript/dist-es',
+										'inferno-mobx': './packages/inferno-mobx/dist-es',
+										'inferno-redux': './packages/inferno-redux/dist-es',
+										'inferno-router': './packages/inferno-router/dist-es',
+										'inferno-server': './packages/inferno-server/dist-es',
+										inferno: './packages/inferno/dist-es'
+									}
+								}]
+							]
+						}
 					}
 				]
 			},

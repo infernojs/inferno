@@ -1,6 +1,7 @@
 import { VNode } from 'inferno';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
+import { isArray } from 'inferno-shared';
 import { rest } from './utils';
 
 const resolvedPromise = Promise.resolve();
@@ -25,7 +26,7 @@ export default class Route extends Component<IRouteProps, any> {
 		};
 	}
 
-	componentWillMount() {
+	public componentWillMount() {
 		const { onEnter } = this.props;
 		const { router } = this.context;
 
@@ -49,7 +50,7 @@ export default class Route extends Component<IRouteProps, any> {
 		});
 	}
 
-	onLeave(trigger = false) {
+	public  onLeave(trigger = false) {
 		const { onLeave } = this.props;
 		const { router } = this.context;
 
@@ -58,7 +59,7 @@ export default class Route extends Component<IRouteProps, any> {
 		}
 	}
 
-	onEnter(nextProps) {
+	public onEnter(nextProps) {
 		const { onEnter } = nextProps;
 		const { router } = this.context;
 
@@ -67,7 +68,7 @@ export default class Route extends Component<IRouteProps, any> {
 		}
 	}
 
-	getComponent(nextProps) {
+	public getComponent(nextProps) {
 		const { getComponent } = nextProps;
 		const { router } = this.context;
 
@@ -76,17 +77,17 @@ export default class Route extends Component<IRouteProps, any> {
 		}
 	}
 
-	componentWillUnmount() {
+	public componentWillUnmount() {
 		this.onLeave(true);
 	}
 
-	componentWillReceiveProps(nextProps: IRouteProps) {
+	public componentWillReceiveProps(nextProps: IRouteProps) {
 		this.getComponent(nextProps);
 		this.onEnter(nextProps);
 		this.onLeave(this.props.path !== nextProps.path);
 	}
 
-	render(_args: IRouteProps): VNode {
+	public render(_args: IRouteProps): VNode|null {
 		const { component, children } = _args;
 		const props = rest(_args, [ 'component', 'children', 'path', 'getComponent' ]);
 
@@ -94,7 +95,7 @@ export default class Route extends Component<IRouteProps, any> {
 
 		const resolvedComponent = component || asyncComponent;
 		if (!resolvedComponent) {
-			return null;
+			return !isArray(children) ? children : null;
 		}
 
 		return createElement(resolvedComponent, props, children);

@@ -2,7 +2,7 @@ import { internal_isUnitlessNumber } from 'inferno';
 import { isNullOrUndef, isNumber, isStringOrNumber, isTrue } from 'inferno-shared';
 import { escapeText, toHyphenCase } from './utils';
 
-export function renderStyleToString(style): string {
+export function renderStyleToString(style): string|number {
 	if (isStringOrNumber(style)) {
 		return style;
 	} else {
@@ -10,7 +10,7 @@ export function renderStyleToString(style): string {
 
 		for (const styleName in style) {
 			const value = style[ styleName ];
-			const px = isNumber(value) && !internal_isUnitlessNumber[ styleName ] ? 'px' : '';
+			const px = isNumber(value) && !internal_isUnitlessNumber.has(styleName) ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
 				styles.push(`${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`);

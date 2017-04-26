@@ -6,16 +6,16 @@ import VNodeFlags from 'inferno-vnode-flags';
 
 // Type Checkers
 
-export function isVNode(instance: any): boolean {
+export function isVNode(instance: any): instance is VNode {
 	return Boolean(instance) && isObject(instance) &&
-		isNumber(instance.flags) && instance.flags > 0;
+		isNumber((instance as any).flags) && (instance as any).flags > 0;
 }
 
 export function isVNodeOfType(instance: VNode, type: string | Function): boolean {
 	return isVNode(instance) && instance.type === type;
 }
 
-export function isDOMVNode(instance: VNode): boolean {
+export function isDOMVNode(instance: VNode): instance is VNode {
 	return isVNode(instance) && isString(instance.type);
 }
 
@@ -41,7 +41,7 @@ export function isClassVNodeOfType(instance: VNode, type: Function): boolean {
 
 export function isDOMElement(instance: any): boolean {
 	return Boolean(instance) && isObject(instance) &&
-		instance.nodeType === 1 && isString(instance.tagName);
+		(instance as any).nodeType === 1 && isString((instance as any).tagName);
 }
 
 export function isDOMElementOfType(instance: any, type: string): boolean {
@@ -50,8 +50,8 @@ export function isDOMElementOfType(instance: any, type: string): boolean {
 }
 
 export function isRenderedClassComponent(instance: any): boolean {
-	return Boolean(instance) && isObject(instance) && isVNode(instance._vNode) &&
-		isFunction(instance.render) && isFunction(instance.setState);
+	return Boolean(instance) && isObject(instance) && isVNode((instance as any)._vNode) &&
+		isFunction((instance as any).render) && isFunction((instance as any).setState);
 }
 
 export function isRenderedClassComponentOfType(instance: any, type: Function): boolean {
@@ -62,7 +62,7 @@ export function isRenderedClassComponentOfType(instance: any, type: Function): b
 // Render Utilities
 
 class Wrapper extends Component<any, any> {
-	render() {
+	public render() {
 		return this.props.children;
 	}
 }
@@ -76,7 +76,7 @@ export function renderIntoDocument(input: InfernoInput): InfernoChildren {
 
 // Recursive Finder Functions
 
-export function findAllInRenderedTree(renderedTree: any, predicate: (vNode: VNode) => boolean): VNode[] {
+export function findAllInRenderedTree(renderedTree: any, predicate: (vNode: VNode) => boolean): VNode[]|any {
 	if (isRenderedClassComponent(renderedTree)) {
 		return findAllInVNodeTree(renderedTree._lastInput, predicate);
 	} else {
@@ -84,20 +84,20 @@ export function findAllInRenderedTree(renderedTree: any, predicate: (vNode: VNod
 	}
 }
 
-export function findAllInVNodeTree(vNodeTree: VNode, predicate: (vNode: VNode) => boolean): VNode[] {
+export function findAllInVNodeTree(vNodeTree: VNode, predicate: (vNode: VNode) => boolean): any {
 	if (isVNode(vNodeTree)) {
 		let result: VNode[] = predicate(vNodeTree) ? [ vNodeTree ] : [];
 		const children: any = vNodeTree.children;
 
 		if (isRenderedClassComponent(children)) {
-			result = result.concat(findAllInVNodeTree(children._lastInput, predicate));
+			result = result.concat(findAllInVNodeTree(children._lastInput, predicate) as VNode[]);
 
 		} else if (isVNode(children)) {
-			result = result.concat(findAllInVNodeTree(children, predicate));
+			result = result.concat(findAllInVNodeTree(children, predicate) as VNode[]);
 
 		} else if (isArray(children)) {
 			children.forEach((child) => {
-				result = result.concat(findAllInVNodeTree(child, predicate));
+				result = result.concat(findAllInVNodeTree(child, predicate) as VNode[]);
 			});
 		}
 		return result;
@@ -132,9 +132,9 @@ function findOneOf(tree: any, filter: any, name: string, finder: Function): any 
 export function scryRenderedDOMElementsWithClass(renderedTree: any, classNames: string | string[]): Element[] {
 	return findAllInRenderedTree(renderedTree, (instance) => {
 		if (isDOMVNode(instance)) {
-			let domClassName = instance.dom.className;
+			let domClassName = (instance.dom as Element).className;
 			if (!isString(domClassName)) { // SVG, probably
-				domClassName = instance.dom.getAttribute('class') || '';
+				domClassName = (instance.dom as Element).getAttribute('class') || '';
 			}
 			const domClassList = parseSelector(domClassName);
 			return parseSelector(classNames).every((className) => {

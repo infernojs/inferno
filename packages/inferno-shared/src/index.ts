@@ -16,45 +16,45 @@ export function isStatefulComponent(o: any): boolean {
 	return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
 
-export function isStringOrNumber(obj: any): boolean {
-	const type = typeof obj;
+export function isStringOrNumber(o: any): o is string|number {
+	const type = typeof o;
 
 	return type === 'string' || type === 'number';
 }
 
-export function isNullOrUndef(obj: any): boolean {
-	return isUndefined(obj) || isNull(obj);
+export function isNullOrUndef(o: any): o is undefined|null {
+	return isUndefined(o) || isNull(o);
 }
 
-export function isInvalid(obj: any): boolean {
-	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
+export function isInvalid(o: any): o is null|false|true|undefined {
+	return isNull(o) || o === false || isTrue(o) || isUndefined(o);
 }
 
-export function isFunction(obj: any): boolean {
-	return typeof obj === 'function';
+export function isFunction(o: any): o is Function {
+	return typeof o === 'function';
 }
 
-export function isString(obj: any): boolean {
-	return typeof obj === 'string';
+export function isString(o: any): o is string {
+	return typeof o === 'string';
 }
 
-export function isNumber(obj: any): boolean {
-	return typeof obj === 'number';
+export function isNumber(o: any): o is number {
+	return typeof o === 'number';
 }
 
-export function isNull(obj: any): boolean {
-	return obj === null;
+export function isNull(o: any): o is null {
+	return o === null;
 }
 
-export function isTrue(obj: any): boolean {
-	return obj === true;
+export function isTrue(o: any): o is true {
+	return o === true;
 }
 
-export function isUndefined(obj: any): boolean {
-	return obj === undefined;
+export function isUndefined(o: any): o is undefined {
+	return o === void 0;
 }
 
-export function isObject(o: any): boolean {
+export function isObject(o: any): o is object {
 	return typeof o === 'object';
 }
 
@@ -69,20 +69,19 @@ export function warning(message: string) {
 	console.warn(message);
 }
 
-export function combineFrom(first: {}, second: {}): any {
-	const obj = {};
-	let key;
+export function combineFrom(first?: {}|null, second?: {}|null): object {
+	const out = {};
 	if (first) {
-		for (key in first) {
-			obj[ key ] = first[ key ];
+		for (const key in first) {
+			out[ key ] = first[ key ];
 		}
 	}
 	if (second) {
-		for (key in second) {
-			obj[ key ] = second[ key ];
+		for (const key in second) {
+			out[ key ] = second[ key ];
 		}
 	}
-	return obj;
+	return out;
 }
 
 /*

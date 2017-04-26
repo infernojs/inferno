@@ -11,7 +11,7 @@ import {
 	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import options from '../core/options';
+import { options } from '../core/options';
 import { directClone, isVNode, VNode } from '../core/VNodes';
 import { patchProp } from './patching';
 import { recycleComponent, recycleElement } from './recycling';
@@ -24,15 +24,15 @@ import {
 	EMPTY_OBJ,
 	setTextContent
 } from './utils';
-import { processElement, isControlledFormElement } from './wrappers/processElement';
+import { isControlledFormElement, processElement } from './wrappers/processElement';
 
-export function mount(vNode: VNode, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
+export function mount(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Element) {
 		return mountElement(vNode, parentDom, lifecycle, context, isSVG);
 	} else if (flags & VNodeFlags.Component) {
-		return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
+		return mountComponent(vNode, parentDom, lifecycle, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
 	} else if (flags & VNodeFlags.Void) {
 		return mountVoid(vNode, parentDom);
 	} else if (flags & VNodeFlags.Text) {
@@ -49,27 +49,28 @@ export function mount(vNode: VNode, parentDom: Element, lifecycle: LifecycleClas
 	}
 }
 
-export function mountText(vNode: VNode, parentDom: Element): any {
+export function mountText(vNode: VNode, parentDom: Element|null): any {
 	const dom = document.createTextNode(vNode.children as string);
 
 	vNode.dom = dom as any;
-	if (parentDom) {
+	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
 	}
+
 	return dom;
 }
 
-export function mountVoid(vNode: VNode, parentDom: Element) {
+export function mountVoid(vNode: VNode, parentDom: Element|null) {
 	const dom = document.createTextNode('');
 
 	vNode.dom = dom as any;
-	if (parentDom) {
+	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
 	}
 	return dom;
 }
 
-export function mountElement(vNode: VNode, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
+export function mountElement(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	if (options.recyclingEnabled) {
 		const dom = recycleElement(vNode, lifecycle, context, isSVG);
 
@@ -82,9 +83,7 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 	}
 	const flags = vNode.flags;
 
-	if (isSVG || (flags & VNodeFlags.SvgElement)) {
-		isSVG = true;
-	}
+	isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
 	const dom = documentCreateElement(vNode.type, isSVG);
 	const children = vNode.children;
 	const props = vNode.props;
@@ -104,7 +103,7 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 	}
 	if (!isNull(props)) {
 		let hasControlledValue = false;
-		let isFormElement = (flags & VNodeFlags.FormElement) > 0;
+		const isFormElement = (flags & VNodeFlags.FormElement) > 0;
 		if (isFormElement) {
 			hasControlledValue = isControlledFormElement(props);
 		}
@@ -116,15 +115,15 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 			processElement(flags, vNode, dom, props, true, hasControlledValue);
 		}
 	}
-	if (isNullOrUndef(className)) {
-		dom.removeAttribute('class');
-	} else {
+
+	if (className !== null) {
 		if (isSVG) {
 			dom.setAttribute('class', className);
 		} else {
 			dom.className = className;
 		}
 	}
+
 	if (!isNull(ref)) {
 		mountRef(dom, ref, lifecycle);
 	}
@@ -148,7 +147,7 @@ export function mountArrayChildren(children, dom: Element, lifecycle: LifecycleC
 	}
 }
 
-export function mountComponent(vNode: VNode, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isClass: number) {
+export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isClass: boolean) {
 	if (options.recyclingEnabled) {
 		const dom = recycleComponent(vNode, lifecycle, context, isSVG);
 
@@ -173,7 +172,9 @@ export function mountComponent(vNode: VNode, parentDom: Element, lifecycle: Life
 		}
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
 		instance._updating = false;
-		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
+		if (options.findDOMNodeEnabled) {
+			componentToDOMNodeMap.set(instance, dom);
+		}
 	} else {
 		const input = createFunctionalComponentInput(vNode, type, props, context);
 

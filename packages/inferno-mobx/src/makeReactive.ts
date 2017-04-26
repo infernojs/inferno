@@ -50,7 +50,9 @@ export default function makeReactive(componentClass) {
 	target.componentWillMount = function() {
 
 		// Call original
-		baseWillMount && baseWillMount.call(this);
+		if (baseWillMount) {
+			baseWillMount.call(this);
+		}
 
 		let reaction: Reaction;
 		let isRenderingPending = false;
@@ -99,18 +101,26 @@ export default function makeReactive(componentClass) {
 	};
 
 	target.componentDidMount = function() {
-		isDevtoolsEnabled && reportRendering(this);
+		if (isDevtoolsEnabled) {
+			reportRendering(this);
+		}
 
 		// Call original
-		baseDidMount && baseDidMount.call(this);
+		if (baseDidMount) {
+			baseDidMount.call(this);
+		}
 	};
 
 	target.componentWillUnmount = function() {
 		// Call original
-		baseUnmount && baseUnmount.call(this);
+		if (baseUnmount) {
+			baseUnmount.call(this);
+		}
 
 		// Dispose observables
-		this.render.$mobx && this.render.$mobx.dispose();
+		if (this.render.$mobx) {
+			this.render.$mobx.dispose();
+		}
 		this.__$mobxIsUnmounted = true;
 
 		if (isDevtoolsEnabled) {
@@ -119,8 +129,8 @@ export default function makeReactive(componentClass) {
 				componentByNodeRegistery.delete(node);
 			}
 			renderReporter.emit({
-				event: 'destroy',
 				component: this,
+				event: 'destroy',
 				node
 			});
 		}

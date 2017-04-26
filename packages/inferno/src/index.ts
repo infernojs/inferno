@@ -1,15 +1,19 @@
 import { NO_OP, warning } from 'inferno-shared';
+import { LifecycleClass as _LifecycleClass} from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
-import options from './core/options';
+import { getFlagsForElementVnode, normalize as internal_normalize } from './core/normalization';
+import { options, Root as _Root } from './core/options';
 import { cloneVNode, createVNode, InfernoChildren, InfernoInput, Props, VNode } from './core/VNodes';
-import linkEvent from './DOM/events/linkEvent';
-import { createRenderer, findDOMNode, render } from './DOM/rendering';
+import { isUnitlessNumber as internal_isUnitlessNumber } from './DOM/constants';
+import { linkEvent } from './DOM/events/linkEvent';
+import { patch as internal_patch } from './DOM/patching';
+import { componentToDOMNodeMap as internal_DOMNodeMap, createRenderer, findDOMNode, render } from './DOM/rendering';
 import { EMPTY_OBJ } from './DOM/utils';
 
 if (process.env.NODE_ENV !== 'production') {
-	const testFunc = function testFn() {
-	};
-	if ((testFunc.name || testFunc.toString()).indexOf('testFn') === -1) {
+	/* tslint:disable-next-line:no-empty */
+	const testFunc = function testFn() {};
+	if (((testFunc as Function).name || testFunc.toString()).indexOf('testFn') === -1) {
 		warning(('It looks like you\'re using a minified copy of the development build ' +
 			'of Inferno. When deploying Inferno apps to production, make sure to use ' +
 			'the production build which skips development warnings and is faster. ' +
@@ -21,11 +25,14 @@ if (process.env.NODE_ENV !== 'production') {
 // To please the TS God
 // https://github.com/Microsoft/TypeScript/issues/6307
 export declare const VNodeFlags: _VNodeFlags;
+export declare const Root: _Root;
+export declare const LifecycleClass: _LifecycleClass;
 
-export const version = '1.6.2';
+const version = '3.0.6';
 
 // we duplicate it so it plays nicely with different module loading systems
 export default {
+	getFlagsForElementVnode,
 	linkEvent,
 	// core shapes
 	createVNode,
@@ -42,7 +49,12 @@ export default {
 	findDOMNode,
 	createRenderer,
 	options,
-	version
+	version,
+
+	internal_patch,
+	internal_DOMNodeMap,
+	internal_isUnitlessNumber,
+	internal_normalize
 };
 
 export {
@@ -53,6 +65,7 @@ export {
 	InfernoInput,
 
 	// Public methods
+	getFlagsForElementVnode,
 	linkEvent,
 	// core shapes
 	createVNode,
@@ -68,11 +81,11 @@ export {
 	render,
 	findDOMNode,
 	createRenderer,
-	options
+	options,
+	version,
+
+	internal_patch,
+	internal_DOMNodeMap,
+	internal_isUnitlessNumber,
+	internal_normalize
 };
-
-// Internal stuff that only core inferno-* packages use
-export { isUnitlessNumber as internal_isUnitlessNumber } from './DOM/constants';
-
-// Mainly for testing
-export { normalize as internal_normalize } from './core/normalization';

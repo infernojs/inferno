@@ -16,7 +16,7 @@
 		],
 		"jsx": "preserve",
 		"noUnusedLocals": true,
-		"strictNullChecks": false,
+		"strictNullChecks": true,
 		"removeComments": false
 	},
 	"include": [

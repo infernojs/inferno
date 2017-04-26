@@ -192,6 +192,68 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
 			});
 		});
 	});
+
+	describe('Component hook', () => {
+		it('Should allow changing state in CWM', () => {
+			class Another extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+					this.state = {
+						foo: 'bar'
+					};
+				}
+
+				componentWillMount() {
+					this.setState({
+						foo: 'bar2'
+					});
+				}
+
+				render() {
+					return (
+						<div>
+							{this.state.foo}
+						</div>
+					);
+				}
+			}
+
+			class Tester extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+					this.state = {
+						foo: 'bar'
+					};
+				}
+
+				componentWillMount() {
+					this.setState({
+						foo: 'bar2'
+					});
+				}
+
+				render() {
+					return (
+						<div>
+							{this.state.foo}
+							<Another />
+						</div>
+					);
+				}
+			}
+
+			const vDom = <Tester />;
+			return streamPromise(vDom).then(function (output) {
+				const container = document.createElement('div');
+				document.body.appendChild(container);
+				container.innerHTML = output;
+				expect(output[ 1 ]).to.equal('<div>bar2<div>bar2</div></div>');
+				document.body.removeChild(container);
+			});
+		});
+	});
 });
 
 function streamPromise(dom) {

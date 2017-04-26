@@ -7,9 +7,9 @@ import { escapeText, isVoidElement } from './utils';
 const resolvedPromise = Promise.resolve();
 
 export class RenderStream extends Readable {
-	initNode: any;
-	staticMarkup: any;
-	started: boolean = false;
+	public initNode: any;
+	public staticMarkup: any;
+	public started: boolean = false;
 
 	constructor(initNode, staticMarkup) {
 		super();
@@ -17,7 +17,7 @@ export class RenderStream extends Readable {
 		this.staticMarkup = staticMarkup;
 	}
 
-	_read() {
+	public _read() {
 		if (this.started) {
 			return;
 		}
@@ -32,7 +32,7 @@ export class RenderStream extends Readable {
 		});
 	}
 
-	renderNode(vNode, context, isRoot) {
+	public renderNode(vNode, context, isRoot) {
 		if (isInvalid(vNode)) {
 			return;
 		} else {
@@ -48,7 +48,7 @@ export class RenderStream extends Readable {
 		}
 	}
 
-	renderComponent(vComponent, isRoot, context, isClass) {
+	public renderComponent(vComponent, isRoot, context, isClass) {
 		const type = vComponent.type;
 		const props = vComponent.props;
 
@@ -57,6 +57,7 @@ export class RenderStream extends Readable {
 		}
 
 		const instance = new type(props);
+		instance._blockSetState = false;
 		let childContext;
 		if (!isUndefined(instance.getChildContext)) {
 			childContext = instance.getChildContext();
@@ -76,7 +77,7 @@ export class RenderStream extends Readable {
 		});
 	}
 
-	renderChildren(children: any, context?: any) {
+	public renderChildren(children: any, context?: any) {
 		if (isStringOrNumber(children)) {
 			return this.push(escapeText(children));
 		}
@@ -122,14 +123,14 @@ export class RenderStream extends Readable {
 		}, Promise.resolve(false));
 	}
 
-	renderText(vNode, isRoot, context) {
+	public renderText(vNode, isRoot, context) {
 		return resolvedPromise.then((insertComment) => {
 			this.push(vNode.children);
 			return insertComment;
 		});
 	}
 
-	renderElement(vElement, isRoot, context) {
+	public renderElement(vElement, isRoot, context) {
 		const tag = vElement.type;
 		const props = vElement.props;
 

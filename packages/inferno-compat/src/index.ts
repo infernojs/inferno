@@ -12,7 +12,7 @@ import {
 import Component from 'inferno-component';
 import createClass, { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
 import infernoCreateElement from 'inferno-create-element';
-import { isArray, isBrowser, isFunction, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
+import { isArray, isBrowser, isFunction, isNull, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
 import isValidElement from './isValidElement';
 import SVGDOMPropertyConfig from './SVGDOMPropertyConfig';
@@ -24,29 +24,29 @@ declare global {
 }
 
 // Inlined PropTypes, there is propType checking ATM.
-function proptype() {
-}
+// tslint:disable-next-line:no-empty
+function proptype() {}
 (proptype as any).isRequired = proptype;
 
 const getProptype = () => proptype;
 
 const PropTypes = {
-	array: proptype,
-	bool: proptype,
-	func: proptype,
-	number: proptype,
-	object: proptype,
-	string: proptype,
-	symbol: proptype,
 	any: getProptype,
+	array: proptype,
 	arrayOf: getProptype,
+	bool: proptype,
 	element: getProptype,
+	func: proptype,
 	instanceOf: getProptype,
 	node: getProptype,
+	number: proptype,
+	object: proptype,
 	objectOf: getProptype,
 	oneOf: getProptype,
 	oneOfType: getProptype,
-	shape: getProptype
+	shape: getProptype,
+	string: proptype,
+	symbol: proptype
 };
 
 options.findDOMNodeEnabled = true;
@@ -104,7 +104,7 @@ const Children = {
 
 (Component.prototype as any).isReactComponent = {};
 
-let currentComponent = null;
+let currentComponent: any = null;
 
 options.beforeRender = function(component): void {
 	currentComponent = component;
@@ -157,16 +157,18 @@ function normalizeProps(name: string, props: Props | any) {
 // but in reality devs use onSomething for many things, not only for
 // input events
 if (typeof Event !== 'undefined' && !Event.prototype.persist) {
-	Event.prototype.persist = function() {
-	};
+// tslint:disable-next-line:no-empty
+	Event.prototype.persist = function() {};
 }
 
 function iterableToArray(iterable) {
 	let iterStep;
-	const tmpArr = [];
+	const tmpArr: any[] = [];
 	do {
 		iterStep = iterable.next();
-		iterStep.value ? tmpArr.push(iterStep.value) : void 0;
+		if (iterStep.value) {
+			tmpArr.push(iterStep.value);
+		}
 	} while (!iterStep.done);
 
 	return tmpArr;
@@ -179,7 +181,7 @@ const injectStringRefs = function(originalFunction) {
 		const props = _props || {};
 		const ref = props.ref;
 
-		if (typeof ref === 'string' && currentComponent) {
+		if (typeof ref === 'string' && !isNull(currentComponent)) {
 			currentComponent.refs = currentComponent.refs || {};
 			props.ref = function(val) {
 				this.refs[ ref ] = val;
@@ -211,7 +213,7 @@ options.createVNode = (vNode: VNode): void => {
 	const children = vNode.children;
 	let props = vNode.props;
 
-	if (isNullOrUndef(vNode.props)) {
+	if (isNullOrUndef(props)) {
 		props = vNode.props = {};
 	}
 	if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
@@ -247,20 +249,20 @@ PureComponent.prototype.shouldComponentUpdate = function(props, state) {
 };
 
 class WrapperComponent<P, S> extends Component<P, S> {
-	getChildContext() {
+	public getChildContext() {
 		// tslint:disable-next-line
 		return this.props[ 'context' ];
 	}
 
-	render(props) {
+	public render(props) {
 		return props.children;
 	}
 }
 
 function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, callback) {
 	const wrapperVNode: VNode = createVNode(4, WrapperComponent, null, null, {
-		context: parentComponent.context,
-		children: vNode
+		children: vNode,
+		context: parentComponent.context
 	});
 	const component = render(wrapperVNode, container);
 

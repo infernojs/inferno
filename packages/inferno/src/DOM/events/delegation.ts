@@ -1,47 +1,52 @@
 import { isBrowser } from 'inferno-shared';
 
 const isiOS = isBrowser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
-const delegatedEvents = new Map();
+const delegatedEvents: Map<string, IDelegate> = new Map();
 
 interface IDelegate {
 	docEvent: any;
-	count: number;
 	items: any;
 }
 
+interface IEventData {
+	dom: Element;
+}
+
 export function handleEvent(name, lastEvent, nextEvent, dom) {
-	let delegatedRoots = delegatedEvents.get(name) as IDelegate;
+	let delegatedRoots = delegatedEvents.get(name);
 
 	if (nextEvent) {
 		if (!delegatedRoots) {
-			delegatedRoots = { items: new Map(), count: 0, docEvent: null };
+			delegatedRoots = { items: new Map(), docEvent: null };
 			delegatedRoots.docEvent = attachEventToDocument(name, delegatedRoots);
 			delegatedEvents.set(name, delegatedRoots);
 		}
 		if (!lastEvent) {
-			delegatedRoots.count++;
 			if (isiOS && name === 'onClick') {
 				trapClickOnNonInteractiveElement(dom);
 			}
 		}
 		delegatedRoots.items.set(dom, nextEvent);
 	} else if (delegatedRoots) {
-		delegatedRoots.count--;
-		delegatedRoots.items.delete(dom);
-		if (delegatedRoots.count === 0) {
-			document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
-			delegatedEvents.delete(name);
+		const items = delegatedRoots.items;
+
+		if (items.delete(dom)) {
+			// If any items were deleted, check if listener need to be removed
+			if (items.size === 0) {
+				document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
+				delegatedEvents.delete(name);
+			}
 		}
 	}
 }
 
-function dispatchEvent(event, target, items, count: number, dom, isClick: boolean) {
+function dispatchEvent(event, target, items, count: number, isClick: boolean, eventData: IEventData) {
 	const eventsToTrigger = items.get(target);
 
 	if (eventsToTrigger) {
 		count--;
 		// linkEvent object
-		dom = target;
+		eventData.dom = target;
 		if (eventsToTrigger.event) {
 			eventsToTrigger.event(eventsToTrigger.data, event);
 		} else {
@@ -61,7 +66,7 @@ function dispatchEvent(event, target, items, count: number, dom, isClick: boolea
 			return;
 		}
 
-		dispatchEvent(event, parentDom, items, count, dom, isClick);
+		dispatchEvent(event, parentDom, items, count, isClick, eventData);
 	}
 }
 
@@ -74,21 +79,35 @@ function stopPropagation() {
 	this.stopImmediatePropagation();
 }
 
-function attachEventToDocument(name, delegatedRoots) {
+function attachEventToDocument(name, delegatedRoots: IDelegate) {
 	const docEvent = (event: Event) => {
-		const count = delegatedRoots.count;
+		const count = delegatedRoots.items.size;
 
 		if (count > 0) {
 			event.stopPropagation = stopPropagation;
-			dispatchEvent(event, event.target, delegatedRoots.items, count, document, event.type === 'click');
+			// Event data needs to be object to save reference to currentTarget getter
+			const eventData: IEventData = {
+				dom: document as any
+			};
+
+			try {
+				Object.defineProperty(event, 'currentTarget', {
+					configurable: true,
+					get: function get() {
+						return eventData.dom;
+					}
+				});
+			} catch (e) {/* safari7 and phantomJS will crash */}
+
+			dispatchEvent(event, event.target, delegatedRoots.items, count, event.type === 'click', eventData);
 		}
 	};
 	document.addEventListener(normalizeEventName(name), docEvent);
 	return docEvent;
 }
 
-function emptyFn() {
-}
+// tslint:disable-next-line:no-empty
+function emptyFn() {}
 
 function trapClickOnNonInteractiveElement(dom) {
 	// Mobile Safari does not fire properly bubble click events on

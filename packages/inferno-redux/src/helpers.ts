@@ -12,8 +12,8 @@ function isObjectLike(value) {
 }
 
 const objectTag = '[object Object]';
-const funcProto = Function.prototype,
-	objectProto = Object.prototype;
+const funcProto = Function.prototype;
+const objectProto = Object.prototype;
 
 const funcToString = funcProto.toString;
 const hasOwnProperty = objectProto.hasOwnProperty;

@@ -460,4 +460,209 @@ describe('Basic event tests', () => {
 
 		container.querySelector('#testClick').click();
 	});
+
+	it('Synthetic Events - Should not reduce listener count when nothing was removed', () => {
+		const spy = sinon.spy();
+		const root1 = document.createElement('div');
+		const root2 = document.createElement('div');
+		const root3 = document.createElement('div');
+		const root4 = document.createElement('div');
+
+		document.body.appendChild(root1);
+		document.body.appendChild(root2);
+		document.body.appendChild(root3);
+		document.body.appendChild(root4);
+
+		render(<div onClick={spy}/>, root1);
+		render(<div onClick={undefined}/>, root2);
+		render(<div onClick={void 0}/>, root3);
+		render(<div onClick={null}/>, root4);
+
+		root1.firstChild.click();
+		root2.firstChild.click();
+		root3.firstChild.click();
+		root4.firstChild.click();
+
+		expect(spy.callCount).to.equal(1);
+
+
+		render(null, root1);
+		render(null, root2);
+		render(null, root3);
+		render(null, root4);
+
+		document.body.removeChild(root1);
+		document.body.removeChild(root2);
+		document.body.removeChild(root3);
+		document.body.removeChild(root4);
+	});
+
+	describe('currentTarget', () => {
+		it('Should have currentTarget', (done) => {
+			function verifyCurrentTarget(event) {
+				expect(event.currentTarget).to.equal(container.firstChild);
+				done();
+			}
+
+			render(<div onClick={verifyCurrentTarget} />, container);
+
+			container.firstChild.click();
+		});
+
+		it('Current target should not be the clicked element, but the one with listener', (done) => {
+			function verifyCurrentTarget(event) {
+				expect(event.currentTarget).to.equal(container.firstChild);
+				done();
+			}
+
+			render((
+				<div onClick={verifyCurrentTarget}>
+					<span>test</span>
+				</div>
+			), container);
+
+			container.querySelector('span').click();
+		});
+
+		it('Should work with deeply nested tree', (done) => {
+			function verifyCurrentTarget(event) {
+				expect(event.currentTarget).to.equal(container.querySelector('#test'));
+				done();
+			}
+
+			render((
+				<div>
+					<div>
+						<div>
+							<div>
+								<div>1</div>
+								<div id="test" onClick={verifyCurrentTarget}>
+									<div>foo</div>
+									<span>2</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<span>test</span>
+				</div>
+			), container);
+
+			container.querySelector('span').click();
+		});
+
+		it('currentTarget should propagate work with multiple levels of children', (done) => {
+			function verifyCurrentTarget(event) {
+				expect(event.currentTarget).to.equal(container.querySelector('#test'));
+				done();
+			}
+
+			render((
+				<div>
+					<div>
+						<div>
+							<div>
+								<div>1</div>
+								<div id="test" onClick={verifyCurrentTarget}>
+									<div>foo</div>
+									<div>
+										<div>
+											<div>
+												<div>
+													<span>test</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div>1</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<span>test</span>
+				</div>
+			), container);
+
+			container.querySelector('span').click();
+		});
+	});
+
+	describe('Event removal', () => {
+		it('Should remove events when parent changes', () => {
+			const spy = sinon.spy();
+			render((
+				<div>
+					<div id="test" onClick={spy}>
+						1
+					</div>
+				</div>
+			), container);
+
+			expect(spy.callCount).to.equal(0);
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(1);
+
+			render((
+				<div>
+					<div id="test">
+						2
+					</div>
+				</div>
+			), container);
+
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(1);
+		});
+
+		it('Should NOT remove events when listener remains there', () => {
+			const spy = sinon.spy();
+			render((
+				<div>
+					<div id="test" onClick={spy}>
+						1
+					</div>
+				</div>
+			), container);
+
+			expect(spy.callCount).to.equal(0);
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(1);
+
+			render((
+				<div>
+					<div id="test" onClick={spy}>
+						2
+					</div>
+				</div>
+			), container);
+
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(2);
+		});
+
+		it('Should remove events when listener is nulled', () => {
+			const spy = sinon.spy();
+			render((
+				<div>
+					<div id="test" onClick={spy}>
+						1
+					</div>
+				</div>
+			), container);
+
+			expect(spy.callCount).to.equal(0);
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(1);
+
+			render((
+				<div>
+					<div id="test" onClick={null}>
+						2
+					</div>
+				</div>
+			), container);
+
+			container.querySelector('#test').click();
+			expect(spy.callCount).to.equal(1);
+		});
+	});
 });

@@ -23,7 +23,7 @@ function renderStylesToString(styles) {
 
 		for (const styleName in styles) {
 			const value = styles[ styleName ];
-			const px = isNumber(value) && !internal_isUnitlessNumber[ styleName ] ? 'px' : '';
+			const px = isNumber(value) && !internal_isUnitlessNumber.has(styleName) ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
 				renderedString += `${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`;
@@ -33,7 +33,7 @@ function renderStylesToString(styles) {
 	}
 }
 
-function renderVNodeToString(vNode, parent, context, firstChild): string {
+function renderVNodeToString(vNode, parent, context, firstChild): string|undefined {
 	const flags = vNode.flags;
 	const type = vNode.type;
 	const props = vNode.props || EMPTY_OBJ;
@@ -44,6 +44,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 
 		if (isClass) {
 			const instance = new type(props, context);
+			instance._blockSetState = false;
 			let childContext;
 			if (!isUndefined(instance.getChildContext)) {
 				childContext = instance.getChildContext();
@@ -106,7 +107,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 					if (!props.checked) {
 						renderedString += ` checked="${ value }"`;
 					}
-				} else if (prop === 'value' && parent.props && parent.props.value) {
+				} else if (type === 'option' && prop === 'value') {
 					// Parent value sets children value
 					if (value === parent.props.value) {
 						renderedString += ` selected`;
@@ -162,9 +163,9 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 }
 
 export default function renderToString(input: any): string {
-	return renderVNodeToString(input, {}, {}, true);
+	return renderVNodeToString(input, {}, {}, true) as string;
 }
 
 export function renderToStaticMarkup(input: any): string {
-	return renderVNodeToString(input, {}, {}, true);
+	return renderVNodeToString(input, {}, {}, true) as string;
 }
