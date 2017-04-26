@@ -9,8 +9,8 @@ import Component from 'inferno-component';
  }
  }*/
 
-function WrappedInput (props) {
-	return <input type="text" value={props.value} />
+function WrappedInput(props) {
+	return <input type="text" value={props.value} />;
 }
 
 describe('SSR Creation (JSX)', () => {
