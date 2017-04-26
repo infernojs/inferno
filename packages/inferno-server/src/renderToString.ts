@@ -107,7 +107,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string|undefin
 					if (!props.checked) {
 						renderedString += ` checked="${ value }"`;
 					}
-				} else if (prop === 'value' && parent.props && parent.props.value) {
+				} else if (type === 'option' && prop === 'value') {
 					// Parent value sets children value
 					if (value === parent.props.value) {
 						renderedString += ` selected`;
