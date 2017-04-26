@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "license": "MIT",
   "description": "An extremely fast, React-like JavaScript library for building modern user interfaces",
   "author": {

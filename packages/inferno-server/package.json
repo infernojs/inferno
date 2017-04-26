@@ -1,6 +1,6 @@
 {
   "name": "inferno-server",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "license": "MIT",
   "description": "Provides methods to render HTML strings from Inferno elements",
   "author": {
@@ -30,14 +30,14 @@
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno": "3.0.5",
+    "inferno": "3.0.6",
     "inferno-shared": "^3.0.0",
     "inferno-vnode-flags": "^3.0.0"
   },
   "devDependencies": {
-    "inferno-component": "3.0.5",
-    "inferno-create-class": "3.0.5",
-    "inferno-create-element": "3.0.5"
+    "inferno-component": "3.0.6",
+    "inferno-create-class": "3.0.6",
+    "inferno-create-element": "3.0.6"
   },
   "rollup": {
     "bundledDependencies": [
