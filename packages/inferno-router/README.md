@@ -22,6 +22,7 @@ npm install inferno-router
 * Redirect / IndexRedirect
 * browserHistory / memoryHistory
 * onEnter / onLeave hooks
+* onUpdate event support for Router
 * params / querystring parsing
 
 ## Usage (client-side)
@@ -172,6 +173,29 @@ function sayGoodBye({ props, router }) {
 Inferno.render((
   <Router history={ createBrowserHistory() }>
     <IndexRoute component={ Home } onEnter={ authorizedOnly } onLeave={ sayGoodBye } />
+  </Router>
+), container);
+```
+
+## onUpdate event
+In some cases you may need to execute some code on route updates. If so you can do this: 
+
+```js
+import Inferno from 'inferno';
+import { Router, IndexRoute } from 'inferno-router';
+import { createBrowserHistory } from 'history';
+
+function onRouteUpdate() {
+  // ...
+}
+
+function Home({ params }) {
+  // ...
+}
+
+Inferno.render((
+  <Router onUpdate={onRouteUpdate} history={ createBrowserHistory() }>
+    <IndexRoute component={ Home } />
   </Router>
 ), container);
 ```
