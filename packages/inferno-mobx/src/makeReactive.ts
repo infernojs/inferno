@@ -159,7 +159,7 @@ export default function makeReactive(componentClass) {
 				return true;
 			}
 		}
-		return true;
+		return false;
 	};
 
 	return componentClass;
