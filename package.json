@@ -48,7 +48,7 @@
     "eslint": "^3.19.0",
     "eslint-plugin-babel": "^4.1.1",
     "fliphub-cli-inferno": "^0.1.4",
-    "fs-extra": "^2.1.2",
+    "fs-extra": "^3.0.0",
     "glob": "^7.1.1",
     "history": "4.6.1",
     "jsdom": "^9.12.0",
