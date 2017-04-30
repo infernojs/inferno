@@ -274,4 +274,57 @@ describe('SSR Hydration - (JSX)', () => {
 		render(vNode, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
 	});
+
+	it('Should work with setState', () => {
+		class Comp3 extends Component {
+			constructor(props, context) {
+				super(props, context);
+
+				this.state = {
+					i: 0
+				};
+
+				this.clicker = this.clicker.bind(this);
+			}
+
+			componentWillMount() {
+				this.setState({
+					i: ++this.state.i
+				});
+			}
+
+			clicker() {
+				this.setState({
+					i: ++this.state.i
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						{this.state.i}
+						<span onClick={this.clicker}>1</span>
+					</div>
+				);
+			}
+		}
+
+
+		const container = document.createElement('div');
+
+		document.body.appendChild(container);
+		container.innerHTML = '<div>1<span>1</span></div>';
+		render(<Comp3 />, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div>1<span>1</span></div>'));
+
+		container.querySelector('span').click();
+
+		expect(container.innerHTML).to.equal(innerHTML('<div>2<span>1</span></div>'));
+
+		container.querySelector('span').click();
+
+		expect(container.innerHTML).to.equal(innerHTML('<div>3<span>1</span></div>'));
+
+		document.body.removeChild(container);
+	});
 });

@@ -60,7 +60,6 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 		const instance = createClassComponentInstance(vNode, type, props, context, _isSVG, lifecycle);
 		const input = instance._lastInput;
 
-		instance._vComponent = vNode;
 		instance._vNode = vNode;
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);

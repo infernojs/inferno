@@ -235,5 +235,31 @@ describe('FormElements', () => {
 				expect(container.firstChild.value).to.equal('260');
 			});
 		});
+
+		describe('Non-controlled select element', () => {
+			it('Should have 2nd option selected', () => {
+				render((
+					<select>
+						<option value="a">a</option>
+						<option selected={true} value="b">b</option>
+					</select>
+				), container);
+
+				expect(container.firstChild.children[0].selected).to.equal(false);
+				expect(container.firstChild.children[1].selected).to.equal(true);
+			});
+
+			it('should render specified default selected option', () => {
+				render(<div>
+					<select>
+						<option value="a">a</option>
+						<option selected={true} value="b">b</option>
+					</select>
+				</div>, container);
+
+				expect(container.querySelector('select').children[ 0 ].selected).to.eql(false);
+				expect(container.querySelector('select').children[ 1 ].selected).to.eql(true);
+			});
+		});
 	});
 });
