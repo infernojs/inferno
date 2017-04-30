@@ -307,6 +307,7 @@ describe('Select / select multiple (JSX)', () => {
 			innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
 		);
 	});
+
 	it('should not touch selections, if value or selected, is null or undefined', () => {
 		render(<select>
 			<option value="a">a</option>
@@ -319,5 +320,14 @@ describe('Select / select multiple (JSX)', () => {
 		</select>, container);
 		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
 		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+	});
+
+	it('should render specified default selected option', () => {
+		render(<select>
+			<option value="a">a</option>
+			<option selected={true} value="b">b</option>
+		</select>, container);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true); // Currently failing due to issue #1031
 	});
 });
