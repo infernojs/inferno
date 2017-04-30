@@ -72,4 +72,23 @@ describe('MobX Observer', () => {
 		render(<FlatList extra={ store.extra }/>, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div><li>oneXXX</li><li>twoXXX</li><li>threeXXX</li></div>'));
 	});
+
+	it('should have a shouldComponentUpdate that returns false when appropriate', () => {
+		const scu = TodoItem.prototype.shouldComponentUpdate;
+
+		let todoItem = <TodoItem str="test" />;
+		let str = 'different';
+		expect(scu.call(todoItem, { str })).to.be.true;
+		str = 'test';
+		expect(scu.call(todoItem, { str })).to.be.false;
+		expect(scu.call(todoItem, { str, prop: 'foo' })).to.be.true;
+
+		const obj = {};
+		todoItem = <TodoItem obj={obj} />;
+		expect(scu.call(todoItem, { obj })).to.be.true;
+
+		const observableObj = observable({});
+		todoItem = <TodoItem observableObj={observableObj} />;
+		expect(scu.call(todoItem, { observableObj })).to.be.false;
+	});
 });
