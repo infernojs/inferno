@@ -21,7 +21,7 @@ export type MapDispatchToProps =
 const errorObject = { value: null };
 const defaultMapStateToProps = (state) => ({}); // eslint-disable-line no-unused-vars
 const defaultMapDispatchToProps = (dispatch) => ({ dispatch });
-const defaultMergeProps = function(parentProps, stateProps, dispatchProps) {
+const defaultMergeProps = function(stateProps, dispatchProps, parentProps) {
 	const obj = {};
 
 	if (parentProps) {
