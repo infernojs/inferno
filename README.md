@@ -1,4 +1,4 @@
-<p align="center"><img src="https://www.infernojs.org/assets/infernojs-logo.png"></p>
+<p align="center"><img src="http://i.imgur.com/k3euf7E.png"></p>
 <p>&nbsp;</p>
 
 [![Build Status](https://img.shields.io/travis/infernojs/inferno/master.svg?style=flat-square)](https://travis-ci.org/infernojs/inferno/branches)
@@ -547,6 +547,6 @@ There is an [Inferno Slack](https://infernojs.slack.com). You can join via [infe
 
 ### Inferno is supported by BrowserStack
 
-<img src="http://infernojs.org/browserstack.svg" height="50px" alt="Supported by Browserstack" />
+<img src="https://jazzteam.org/ru/wp-content/uploads/2014/01/browserstack.png" height="50px" alt="Supported by Browserstack" />
 <img src="https://saucelabs.com/content/images/logo@3x.png" height="50px" alt="Supported by Sauce Labs" />
 <img src="https://www.digitalocean.com/assets/media/logos-badges/png/DO_Powered_by_Badge_black-a35c64eb.png" height="50px" alt="Supported by Digital Ocean" />
