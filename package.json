@@ -99,7 +99,7 @@
     "typescript": "^2.3.2",
     "typescript-eslint-parser": "^2.1.0",
     "union-type-es": "^0.1.0",
-    "webpack": "^2.4.1",
+    "webpack": "^2.5.0",
     "webpack-dev-server": "^2.4.5"
   },
   "files": [
