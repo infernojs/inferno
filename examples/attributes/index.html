@@ -31,24 +31,26 @@
 		}), container);
 
 		// Change
-        setTimeout(function () {
-			render(createVNode(2, 'div', 'bar', 'Second', {
-				style: {
-					color: 'blue'
-				},
-				'data-attribute': 'data-value'
-			}), container);
-        }, 1000);
+    setTimeout(
+    	function () {
+				render(createVNode(2, 'div', 'bar', 'Second', {
+					style: {color: 'blue'},
+					'data-attribute': 'data-value'
+				}), 
+				container
+			)}, 
+			1000
+		);
 
 		// Remove all
 		setTimeout(function () {
 			render(null, container);
 		}, 2000);
-    }
+  }
 
-    loop();
+  loop();
 
-    setInterval(loop, 3000);
+  setInterval(loop, 3000);
 </script>
 </body>
 </html>
