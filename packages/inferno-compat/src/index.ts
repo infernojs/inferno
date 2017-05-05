@@ -139,7 +139,7 @@ function normalizeProps(name: string, props: Props | any) {
 			delete props[ prop ];
 		}
 		if (prop === 'htmlFor') {
-			props[ 'for' ] = props[ prop ];
+			props.for = props[ prop ];
 			delete props[ prop ];
 		}
 		const mappedProp = SVGDOMPropertyConfig[ prop ];

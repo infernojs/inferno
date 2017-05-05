@@ -66,6 +66,7 @@ export function throwError(message?: string) {
 }
 
 export function warning(message: string) {
+	// tslint:disable-next-line:no-console
 	console.warn(message);
 }
 

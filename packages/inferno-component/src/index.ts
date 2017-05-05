@@ -258,6 +258,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		if (process.env.NODE_ENV !== 'production') {
 			if (!alreadyWarned) {
 				alreadyWarned = true;
+				// tslint:disable-next-line:no-console
 				console.warn('Inferno WARNING: setStateSync has been deprecated and will be removed in next release. Use setState instead.');
 			}
 		}
