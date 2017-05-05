@@ -56,7 +56,7 @@
     "karma-benchmark": "^0.7.1",
     "karma-benchmark-reporter": "^0.1.1",
     "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^2.1.0",
+    "karma-chrome-launcher": "^2.1.1",
     "karma-failed-reporter": "0.0.3",
     "karma-firefox-launcher": "^1.0.1",
     "karma-ie-launcher": "^1.0.0",
