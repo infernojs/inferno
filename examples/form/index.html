@@ -54,13 +54,13 @@
 
 		// special input values
 		let id = 'test';
-        let testValue = 11;
-        function changeTestValue(event) {
-            testValue = event.target.value;
+    let testValue = 11;
+    function changeTestValue(event) {
+      testValue = event.target.value;
 
-            console.log(event.type, testValue);
+      console.log(event.type, testValue);
 
-            render();
+      render();
 		}
 
 		function linkedTextHandler(data, e) {
@@ -99,11 +99,21 @@
 			Inferno.render(h('form.form', [
 				h('div.form-group', [
 					h('label', 'Please enter your first name name:'),
-					h('input', { type: 'text', placeholder: 'Joe', value: firstName, onInput: Inferno.linkEvent({data: '123'}, linkedTextHandler) })
+					h('input', { 
+						type: 'text', 
+						placeholder: 'Joe', 
+						value: firstName, 
+						onInput: Inferno.linkEvent({data: '123'}, linkedTextHandler) 
+					})
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter your first last name:'),
-					h('input', { type: 'text', placeholder: 'Bloggs', defaultValue: 'Gannaway', onInput: textHandler })
+					h('input', { 
+						type: 'text', 
+						placeholder: 'Bloggs', 
+						defaultValue: 'Gannaway', 
+						onInput: textHandler 
+					})
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter your age:'),
@@ -130,19 +140,23 @@
 				]),
 				h('div.form-group', [
 					h('label', 'Please enter a description:'),
-					h('textarea', { defaultValue: 'I don\'t know?', value: description, onInput: descHandler })
+					h('textarea', { 
+						defaultValue: 'I don\'t know?', 
+						value: description, 
+						onInput: descHandler 
+					})
 				]),
-                h('div.form-group', [
-                    h('label', 'Color picker (html5):'),
-                    h('input', { type: 'color' })
-                ]),
+        h('div.form-group', [
+          h('label', 'Color picker (html5):'),
+          h('input', { type: 'color' })
+        ]),
 				h('label', {'for': 'test'}, [
 				    'Label',
 					h('input#test', {
-                        id: id,
-                        name: id,
-                        value: testValue,
-                        onChange: changeTestValue,
+            id: id,
+            name: id,
+            value: testValue,
+            onChange: changeTestValue,
 						onInput: changeTestValue,
 						onKeyup: changeTestValue,
 						type: 'number',
