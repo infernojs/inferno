@@ -28,7 +28,9 @@ function reportRendering(component) {
 
 export function trackComponents() {
 	if (typeof WeakMap === 'undefined') {
-		throwError('[inferno-mobx] tracking components is not supported in this browser.');
+		throwError(
+			'[inferno-mobx] tracking components is not supported in this browser.'
+		);
 	}
 	if (!isDevtoolsEnabled) {
 		isDevtoolsEnabled = true;
@@ -36,19 +38,17 @@ export function trackComponents() {
 }
 
 interface IReactiveRender {
-	$mobx?: Reaction;
-	(nextProps, nextContext): void;
+	$mobx?: Reaction,
+	(nextProps, nextContext): void
 }
 
 export default function makeReactive(componentClass) {
-
 	const target = componentClass.prototype || componentClass;
 	const baseDidMount = target.componentDidMount;
 	const baseWillMount = target.componentWillMount;
 	const baseUnmount = target.componentWillUnmount;
 
 	target.componentWillMount = function() {
-
 		// Call original
 		if (baseWillMount) {
 			baseWillMount.call(this);
@@ -57,7 +57,12 @@ export default function makeReactive(componentClass) {
 		let reaction: Reaction;
 		let isRenderingPending = false;
 
-		const initialName = this.displayName || this.name || (this.constructor && (this.constructor.displayName || this.constructor.name)) || '<component>';
+		const initialName =
+			this.displayName ||
+			this.name ||
+			(this.constructor &&
+				(this.constructor.displayName || this.constructor.name)) ||
+			'<component>';
 		const baseRender = this.render.bind(this);
 
 		const initialRender = (nextProps, nextContext) => {
@@ -89,7 +94,10 @@ export default function makeReactive(componentClass) {
 				if (isDevtoolsEnabled) {
 					this.__$mobRenderStart = Date.now();
 				}
-				rendering = extras.allowStateChanges(false, baseRender.bind(this, nextProps, nextContext));
+				rendering = extras.allowStateChanges(
+					false,
+					baseRender.bind(this, nextProps, nextContext)
+				);
 				if (isDevtoolsEnabled) {
 					this.__$mobRenderEnd = Date.now();
 				}
@@ -105,19 +113,16 @@ export default function makeReactive(componentClass) {
 			reportRendering(this);
 		}
 
-		// Call original
 		if (baseDidMount) {
 			baseDidMount.call(this);
 		}
 	};
 
 	target.componentWillUnmount = function() {
-		// Call original
 		if (baseUnmount) {
 			baseUnmount.call(this);
 		}
 
-		// Dispose observables
 		if (this.render.$mobx) {
 			this.render.$mobx.dispose();
 		}
@@ -137,25 +142,25 @@ export default function makeReactive(componentClass) {
 	};
 
 	target.shouldComponentUpdate = function(nextProps, nextState) {
-		// Update on any state changes (as is the default)
 		if (this.state !== nextState) {
 			return true;
 		}
 
-		// Update if props are shallowly not equal, inspired by PureRenderMixin
 		const keys = Object.keys(this.props);
 		if (keys.length !== Object.keys(nextProps).length) {
 			return true;
 		}
 
 		for (let i = keys.length - 1; i >= 0; i--) {
-			const key = keys[ i ];
-			const newValue = nextProps[ key ];
-			if (newValue !== this.props[ key ]) {
+			const key = keys[i];
+			const newValue = nextProps[key];
+			if (newValue !== this.props[key]) {
 				return true;
-			} else if (newValue && typeof newValue === 'object' && !isObservable(newValue)) {
-				// If the newValue is still the same object, but that object is not observable,
-				// fallback to the default behavior: update, because the object *might* have changed.
+			} else if (
+				newValue &&
+				typeof newValue === 'object' &&
+				!isObservable(newValue)
+			) {
 				return true;
 			}
 		}

@@ -2,18 +2,18 @@ import { LifecycleClass } from 'inferno-shared';
 import { InfernoInput } from './VNodes';
 
 export interface Root {
-	dom: Element | SVGAElement;
-	input: InfernoInput;
-	lifecycle: LifecycleClass;
+	dom: Element | SVGAElement,
+	input: InfernoInput,
+	lifecycle: LifecycleClass
 }
 
 export const options: {
-	afterMount: null|Function,
-	afterRender: null|Function,
-	afterUpdate: null|Function,
-	beforeRender: null|Function,
-	beforeUnmount: null|Function
-	createVNode: null|Function,
+	afterMount: null | Function,
+	afterRender: null | Function,
+	afterUpdate: null | Function,
+	beforeRender: null | Function,
+	beforeUnmount: null | Function,
+	createVNode: null | Function,
 	findDOMNodeEnabled: boolean,
 	recyclingEnabled: boolean,
 	roots: Root[]

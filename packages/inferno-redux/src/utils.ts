@@ -19,8 +19,8 @@ export function warning(message) {
 		// it would pause the execution at this line.
 		throw new Error(message);
 
-// tslint:disable-next-line:no-empty
-	} catch ( e ) {}
+		// tslint:disable-next-line:no-empty
+	} catch (e) {}
 }
 
 export function shallowEqual(objA, objB) {
@@ -36,10 +36,9 @@ export function shallowEqual(objA, objB) {
 	// Test for A's keys different from B.
 	const hasOwn = Object.prototype.hasOwnProperty;
 	for (let i = 0, len = keysA.length; i < len; i++) {
-		const key = keysA[ i ];
+		const key = keysA[i];
 
-		if (!hasOwn.call(objB, key) ||
-			objA[ key ] !== objB[ key ]) {
+		if (!hasOwn.call(objB, key) || objA[key] !== objB[key]) {
 			return false;
 		}
 	}
@@ -47,5 +46,5 @@ export function shallowEqual(objA, objB) {
 }
 
 export function wrapActionCreators(actionCreators) {
-	return (dispatch) => bindActionCreators(actionCreators, dispatch);
+	return dispatch => bindActionCreators(actionCreators, dispatch);
 }

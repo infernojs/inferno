@@ -24,15 +24,31 @@ import {
 	EMPTY_OBJ,
 	setTextContent
 } from './utils';
-import { isControlledFormElement, processElement } from './wrappers/processElement';
+import {
+	isControlledFormElement,
+	processElement
+} from './wrappers/processElement';
 
-export function mount(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
+export function mount(
+	vNode: VNode,
+	parentDom: Element | null,
+	lifecycle: LifecycleClass,
+	context: Object,
+	isSVG: boolean
+) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Element) {
 		return mountElement(vNode, parentDom, lifecycle, context, isSVG);
 	} else if (flags & VNodeFlags.Component) {
-		return mountComponent(vNode, parentDom, lifecycle, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
+		return mountComponent(
+			vNode,
+			parentDom,
+			lifecycle,
+			context,
+			isSVG,
+			(flags & VNodeFlags.ComponentClass) > 0
+		);
 	} else if (flags & VNodeFlags.Void) {
 		return mountVoid(vNode, parentDom);
 	} else if (flags & VNodeFlags.Text) {
@@ -40,16 +56,20 @@ export function mount(vNode: VNode, parentDom: Element|null, lifecycle: Lifecycl
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
 			if (typeof vNode === 'object') {
-				throwError(`mount() received an object that's not a valid VNode, you should stringify it first. Object: "${ JSON.stringify(vNode) }".`);
+				throwError(
+					`mount() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(vNode)}".`
+				);
 			} else {
-				throwError(`mount() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+				throwError(
+					`mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
+				);
 			}
 		}
 		throwError();
 	}
 }
 
-export function mountText(vNode: VNode, parentDom: Element|null): any {
+export function mountText(vNode: VNode, parentDom: Element | null): any {
 	const dom = document.createTextNode(vNode.children as string);
 
 	vNode.dom = dom as any;
@@ -60,7 +80,7 @@ export function mountText(vNode: VNode, parentDom: Element|null): any {
 	return dom;
 }
 
-export function mountVoid(vNode: VNode, parentDom: Element|null) {
+export function mountVoid(vNode: VNode, parentDom: Element | null) {
 	const dom = document.createTextNode('');
 
 	vNode.dom = dom as any;
@@ -70,7 +90,13 @@ export function mountVoid(vNode: VNode, parentDom: Element|null) {
 	return dom;
 }
 
-export function mountElement(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
+export function mountElement(
+	vNode: VNode,
+	parentDom: Element | null,
+	lifecycle: LifecycleClass,
+	context: Object,
+	isSVG: boolean
+) {
 	if (options.recyclingEnabled) {
 		const dom = recycleElement(vNode, lifecycle, context, isSVG);
 
@@ -109,7 +135,7 @@ export function mountElement(vNode: VNode, parentDom: Element|null, lifecycle: L
 		}
 		for (const prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchProp(prop, null, props[ prop ], dom, isSVG, hasControlledValue);
+			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
 		}
 		if (isFormElement) {
 			processElement(flags, vNode, dom, props, true, hasControlledValue);
@@ -133,21 +159,34 @@ export function mountElement(vNode: VNode, parentDom: Element|null, lifecycle: L
 	return dom;
 }
 
-export function mountArrayChildren(children, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
+export function mountArrayChildren(
+	children,
+	dom: Element,
+	lifecycle: LifecycleClass,
+	context: Object,
+	isSVG: boolean
+) {
 	for (let i = 0, len = children.length; i < len; i++) {
-		let child = children[ i ];
+		let child = children[i];
 
 		// Verify can string/number be here. might cause de-opt. - Normalization takes care of it.
 		if (!isInvalid(child)) {
 			if (child.dom) {
-				children[ i ] = child = directClone(child);
+				children[i] = child = directClone(child);
 			}
-			mount(children[ i ], dom, lifecycle, context, isSVG);
+			mount(children[i], dom, lifecycle, context, isSVG);
 		}
 	}
 }
 
-export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isClass: boolean) {
+export function mountComponent(
+	vNode: VNode,
+	parentDom: Element | null,
+	lifecycle: LifecycleClass,
+	context: Object,
+	isSVG: boolean,
+	isClass: boolean
+) {
 	if (options.recyclingEnabled) {
 		const dom = recycleComponent(vNode, lifecycle, context, isSVG);
 
@@ -163,10 +202,23 @@ export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle:
 	const ref = vNode.ref;
 	let dom;
 	if (isClass) {
-		const instance = createClassComponentInstance(vNode, type, props, context, isSVG, lifecycle);
+		const instance = createClassComponentInstance(
+			vNode,
+			type,
+			props,
+			context,
+			isSVG,
+			lifecycle
+		);
 		const input = instance._lastInput;
 		instance._vNode = vNode;
-		vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
+		vNode.dom = dom = mount(
+			input,
+			null,
+			lifecycle,
+			instance._childContext,
+			isSVG
+		);
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
 		}
@@ -188,18 +240,29 @@ export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle:
 	return dom;
 }
 
-export function mountClassComponentCallbacks(vNode: VNode, ref, instance, lifecycle: LifecycleClass) {
+export function mountClassComponentCallbacks(
+	vNode: VNode,
+	ref,
+	instance,
+	lifecycle: LifecycleClass
+) {
 	if (ref) {
 		if (isFunction(ref)) {
 			ref(instance);
 		} else {
 			if (process.env.NODE_ENV !== 'production') {
 				if (isStringOrNumber(ref)) {
-					throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
-				} else if (isObject(ref) && (vNode.flags & VNodeFlags.ComponentClass)) {
-					throwError('functional component lifecycle events are not supported on ES2015 class components.');
+					throwError(
+						'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
+					);
+				} else if (isObject(ref) && vNode.flags & VNodeFlags.ComponentClass) {
+					throwError(
+						'functional component lifecycle events are not supported on ES2015 class components.'
+					);
 				} else {
-					throwError(`a bad value for "ref" was used on component: "${ JSON.stringify(ref) }"`);
+					throwError(
+						`a bad value for "ref" was used on component: "${JSON.stringify(ref)}"`
+					);
 				}
 			}
 			throwError();
@@ -222,7 +285,11 @@ export function mountClassComponentCallbacks(vNode: VNode, ref, instance, lifecy
 	}
 }
 
-export function mountFunctionalComponentCallbacks(ref, dom, lifecycle: LifecycleClass) {
+export function mountFunctionalComponentCallbacks(
+	ref,
+	dom,
+	lifecycle: LifecycleClass
+) {
 	if (ref) {
 		if (!isNullOrUndef(ref.onComponentWillMount)) {
 			ref.onComponentWillMount();
@@ -241,7 +308,9 @@ export function mountRef(dom: Element, value, lifecycle: LifecycleClass) {
 			return;
 		}
 		if (process.env.NODE_ENV !== 'production') {
-			throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+			throwError(
+				'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
+			);
 		}
 		throwError();
 	}

@@ -1,15 +1,18 @@
 import { isBrowser } from 'inferno-shared';
 
-const isiOS = isBrowser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+const isiOS =
+	isBrowser &&
+	!!navigator.platform &&
+	(/iPad|iPhone|iPod/).test(navigator.platform);
 const delegatedEvents: Map<string, IDelegate> = new Map();
 
 interface IDelegate {
-	docEvent: any;
-	items: any;
+	docEvent: any,
+	items: any
 }
 
 interface IEventData {
-	dom: Element;
+	dom: Element
 }
 
 export function handleEvent(name, lastEvent, nextEvent, dom) {
@@ -33,14 +36,24 @@ export function handleEvent(name, lastEvent, nextEvent, dom) {
 		if (items.delete(dom)) {
 			// If any items were deleted, check if listener need to be removed
 			if (items.size === 0) {
-				document.removeEventListener(normalizeEventName(name), delegatedRoots.docEvent);
+				document.removeEventListener(
+					normalizeEventName(name),
+					delegatedRoots.docEvent
+				);
 				delegatedEvents.delete(name);
 			}
 		}
 	}
 }
 
-function dispatchEvent(event, target, items, count: number, isClick: boolean, eventData: IEventData) {
+function dispatchEvent(
+	event,
+	target,
+	items,
+	count: number,
+	isClick: boolean,
+	eventData: IEventData
+) {
 	const eventsToTrigger = items.get(target);
 
 	if (eventsToTrigger) {
@@ -62,7 +75,10 @@ function dispatchEvent(event, target, items, count: number, isClick: boolean, ev
 		// Html Nodes can be nested fe: span inside button in that scenario browser does not handle disabled attribute on parent,
 		// because the event listener is on document.body
 		// Don't process clicks on disabled elements
-		if (parentDom === null || (isClick && parentDom.nodeType === 1 && parentDom.disabled)) {
+		if (
+			parentDom === null ||
+			(isClick && parentDom.nodeType === 1 && parentDom.disabled)
+		) {
 			return;
 		}
 
@@ -97,9 +113,18 @@ function attachEventToDocument(name, delegatedRoots: IDelegate) {
 						return eventData.dom;
 					}
 				});
-			} catch (e) {/* safari7 and phantomJS will crash */}
+			} catch (e) {
+				/* safari7 and phantomJS will crash */
+			}
 
-			dispatchEvent(event, event.target, delegatedRoots.items, count, event.type === 'click', eventData);
+			dispatchEvent(
+				event,
+				event.target,
+				delegatedRoots.items,
+				count,
+				event.type === 'click',
+				eventData
+			);
 		}
 	};
 	document.addEventListener(normalizeEventName(name), docEvent);

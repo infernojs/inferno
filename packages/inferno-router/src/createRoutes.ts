@@ -44,21 +44,23 @@ import { isArray } from 'inferno-shared';
 import Route, { IRouteHook } from './Route';
 
 export interface IPlainRouteConfig {
-	path: string;
-	component: Component<any, any>;
-	indexRoute?: IPlainRouteConfig;
-	childRoutes?: IPlainRouteConfig | IPlainRouteConfig[];
-	children?: VNode | VNode[];
-	onEnter?: IRouteHook;
-	onLeave?: IRouteHook;
+	path: string,
+	component: Component<any, any>,
+	indexRoute?: IPlainRouteConfig,
+	childRoutes?: IPlainRouteConfig | IPlainRouteConfig[],
+	children?: VNode | VNode[],
+	onEnter?: IRouteHook,
+	onLeave?: IRouteHook
 }
 
-const handleIndexRoute = (indexRouteNode: IPlainRouteConfig): VNode => createElement(Route, indexRouteNode);
-const handleChildRoute = (childRouteNode: IPlainRouteConfig): VNode => handleRouteNode(childRouteNode);
-const handleChildRoutes = (childRouteNodes: IPlainRouteConfig[]): VNode[] => childRouteNodes.map(handleChildRoute);
+const handleIndexRoute = (indexRouteNode: IPlainRouteConfig): VNode =>
+	createElement(Route, indexRouteNode);
+const handleChildRoute = (childRouteNode: IPlainRouteConfig): VNode =>
+	handleRouteNode(childRouteNode);
+const handleChildRoutes = (childRouteNodes: IPlainRouteConfig[]): VNode[] =>
+	childRouteNodes.map(handleChildRoute);
 
 function handleRouteNode(routeConfigNode: IPlainRouteConfig): VNode {
-
 	if (routeConfigNode.indexRoute && !routeConfigNode.childRoutes) {
 		return createElement(Route, routeConfigNode);
 	}
@@ -66,7 +68,7 @@ function handleRouteNode(routeConfigNode: IPlainRouteConfig): VNode {
 	// create deep copy of config
 	const node: IPlainRouteConfig = {} as IPlainRouteConfig;
 	for (const key in routeConfigNode) {
-		node[ key ] = routeConfigNode[ key ];
+		node[key] = routeConfigNode[key];
 	}
 
 	node.children = [];
@@ -79,14 +81,16 @@ function handleRouteNode(routeConfigNode: IPlainRouteConfig): VNode {
 
 	// handle child routes config
 	if (node.childRoutes) {
-		const nodes: IPlainRouteConfig[] = isArray(node.childRoutes) ? node.childRoutes : [ node.childRoutes ];
+		const nodes: IPlainRouteConfig[] = isArray(node.childRoutes)
+			? node.childRoutes
+			: [node.childRoutes];
 		node.children.push(...handleChildRoutes(nodes));
 		delete node.childRoutes;
 	}
 
 	// cleanup to match native rendered result
 	if (node.children.length === 1) {
-		node.children = node.children[ 0 ];
+		node.children = node.children[0];
 	}
 	if (
 		(isArray(node.children) && node.children.length === 0) ||
@@ -98,4 +102,5 @@ function handleRouteNode(routeConfigNode: IPlainRouteConfig): VNode {
 	return createElement(Route, node);
 }
 
-export default (routeConfig: IPlainRouteConfig[]): VNode[] => routeConfig.map(handleRouteNode);
+export default (routeConfig: IPlainRouteConfig[]): VNode[] =>
+	routeConfig.map(handleRouteNode);

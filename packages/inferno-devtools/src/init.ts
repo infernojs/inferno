@@ -21,7 +21,7 @@ function wrapFunctionalComponent(vNode) {
 		// this property if it exists or fall back to Function.name
 		// otherwise.
 		/* tslint:disable */
-		wrapper[ 'displayName' ] = name;
+		wrapper['displayName'] = name;
 		/* tslint:enable */
 		wrappers.set(originalRender, wrapper);
 	}
@@ -36,16 +36,16 @@ function wrapFunctionalComponent(vNode) {
 
 export default function initDevTools() {
 	/* tslint:disable */
-	if (typeof window[ '__REACT_DEVTOOLS_GLOBAL_HOOK__' ] === 'undefined') {
+	if (typeof window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] === 'undefined') {
 		/* tslint:enable */
 		// React DevTools are not installed
 		return;
 	}
 	const nextVNode = options.createVNode;
-	options.createVNode = (vNode) => {
+	options.createVNode = vNode => {
 		const flags = vNode.flags;
 
-		if ((flags & VNodeFlags.Component) && !isStatefulComponent(vNode.type)) {
+		if (flags & VNodeFlags.Component && !isStatefulComponent(vNode.type)) {
 			wrapFunctionalComponent(vNode);
 		}
 		if (nextVNode) {
@@ -56,7 +56,7 @@ export default function initDevTools() {
 	const bridge = createDevToolsBridge();
 	const nextAfterMount = options.afterMount;
 
-	options.afterMount = (vNode) => {
+	options.afterMount = vNode => {
 		bridge.componentAdded(vNode);
 		if (nextAfterMount) {
 			nextAfterMount(vNode);
@@ -64,7 +64,7 @@ export default function initDevTools() {
 	};
 	const nextAfterUpdate = options.afterUpdate;
 
-	options.afterUpdate = (vNode) => {
+	options.afterUpdate = vNode => {
 		bridge.componentUpdated(vNode);
 		if (nextAfterUpdate) {
 			nextAfterUpdate(vNode);
@@ -72,7 +72,7 @@ export default function initDevTools() {
 	};
 	const nextBeforeUnmount = options.beforeUnmount;
 
-	options.beforeUnmount = (vNode) => {
+	options.beforeUnmount = vNode => {
 		bridge.componentRemoved(vNode);
 		if (nextBeforeUnmount) {
 			nextBeforeUnmount(vNode);
@@ -80,7 +80,7 @@ export default function initDevTools() {
 	};
 	// Notify devtools about this instance of "React"
 	/* tslint:disable */
-	window[ '__REACT_DEVTOOLS_GLOBAL_HOOK__' ].inject(bridge);
+	window['__REACT_DEVTOOLS_GLOBAL_HOOK__'].inject(bridge);
 	/* tslint:enable */
 	return () => {
 		options.afterMount = nextAfterMount;

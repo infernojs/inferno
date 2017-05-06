@@ -9,9 +9,7 @@ function warnAboutReceivingStore() {
 	}
 	didWarnAboutReceivingStore = true;
 
-	warning(
-		'<Provider> does not support changing `store` on the fly.'
-	);
+	warning('<Provider> does not support changing `store` on the fly.');
 }
 
 export default class Provider extends Component<any, any> {
@@ -27,8 +25,13 @@ export default class Provider extends Component<any, any> {
 	}
 
 	public render(props) {
-		if (isNullOrUndef(this.props.children) || toArray(this.props.children).length !== 1) {
-			throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
+		if (
+			isNullOrUndef(this.props.children) ||
+			toArray(this.props.children).length !== 1
+		) {
+			throw Error(
+				'Inferno Error: Only one child is allowed within the `Provider` component'
+			);
 		}
 
 		return props.children;

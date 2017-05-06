@@ -6,7 +6,9 @@ export default class RouterContext extends Component<IRouterProps, any> {
 		super(props, context);
 		if (process.env.NODE_ENV !== 'production') {
 			if (!props.location || !props.matched) {
-				throw new TypeError('"inferno-router" requires a "location" and "matched" props passed');
+				throw new TypeError(
+					'"inferno-router" requires a "location" and "matched" props passed'
+				);
 			}
 		}
 	}

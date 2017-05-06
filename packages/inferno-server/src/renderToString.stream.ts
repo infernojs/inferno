@@ -1,4 +1,11 @@
-import { combineFrom, isArray, isInvalid, isNullOrUndef, isStringOrNumber, isUndefined } from 'inferno-shared';
+import {
+	combineFrom,
+	isArray,
+	isInvalid,
+	isNullOrUndef,
+	isStringOrNumber,
+	isUndefined
+} from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderAttributes, renderStyleToString } from './prop-renderers';
@@ -23,13 +30,16 @@ export class RenderStream extends Readable {
 		}
 		this.started = true;
 
-		resolvedPromise.then(() => {
-			return this.renderNode(this.initNode, null, this.staticMarkup);
-		}).then(() => {
-			this.push(null);
-		}).catch((err) => {
-			this.emit('error', err);
-		});
+		resolvedPromise
+			.then(() => {
+				return this.renderNode(this.initNode, null, this.staticMarkup);
+			})
+			.then(() => {
+				this.push(null);
+			})
+			.catch(err => {
+				this.emit('error', err);
+			});
 	}
 
 	public renderNode(vNode, context, isRoot) {
@@ -39,7 +49,12 @@ export class RenderStream extends Readable {
 			const flags = vNode.flags;
 
 			if (flags & VNodeFlags.Component) {
-				return this.renderComponent(vNode, isRoot, context, flags & VNodeFlags.ComponentClass);
+				return this.renderComponent(
+					vNode,
+					isRoot,
+					context,
+					flags & VNodeFlags.ComponentClass
+				);
 			} else if (flags & VNodeFlags.Element) {
 				return this.renderElement(vNode, isRoot, context);
 			} else {
@@ -70,7 +85,9 @@ export class RenderStream extends Readable {
 
 		// Block setting state - we should render only once, using latest state
 		instance._pendingSetState = true;
-		return Promise.resolve(instance.componentWillMount && instance.componentWillMount()).then(() => {
+		return Promise.resolve(
+			instance.componentWillMount && instance.componentWillMount()
+		).then(() => {
 			const node = instance.render();
 			instance._pendingSetState = false;
 			return this.renderNode(node, context, isRoot);
@@ -93,7 +110,7 @@ export class RenderStream extends Readable {
 			throw new Error('invalid component');
 		}
 		return children.reduce((p, child) => {
-			return p.then((insertComment) => {
+			return p.then(insertComment => {
 				const isText = isStringOrNumber(child);
 
 				if (isText) {
@@ -117,14 +134,16 @@ export class RenderStream extends Readable {
 						}
 						insertComment = true;
 					}
-					return Promise.resolve(this.renderNode(child, context, false)).then(() => !!(child.flags & VNodeFlags.Text));
+					return Promise.resolve(this.renderNode(child, context, false)).then(
+						() => !!(child.flags & VNodeFlags.Text)
+					);
 				}
 			});
 		}, Promise.resolve(false));
 	}
 
 	public renderText(vNode, isRoot, context) {
-		return resolvedPromise.then((insertComment) => {
+		return resolvedPromise.then(insertComment => {
 			this.push(vNode.children);
 			return insertComment;
 		});
@@ -155,7 +174,9 @@ export class RenderStream extends Readable {
 		if (isRoot) {
 			outputAttrs.push('data-infernoroot');
 		}
-		this.push(`<${tag}${outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : ''}>`);
+		this.push(
+			`<${tag}${outputAttrs.length > 0 ? ' ' + outputAttrs.join(' ') : ''}>`
+		);
 		if (isVoidElement(tag)) {
 			return;
 		}
@@ -164,7 +185,9 @@ export class RenderStream extends Readable {
 			this.push(`</${tag}>`);
 			return;
 		}
-		return Promise.resolve(this.renderChildren(vElement.children, context)).then(() => {
+		return Promise.resolve(
+			this.renderChildren(vElement.children, context)
+		).then(() => {
 			this.push(`</${tag}>`);
 		});
 	}

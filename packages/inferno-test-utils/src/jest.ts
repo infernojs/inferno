@@ -23,7 +23,7 @@ export function vNodeToSnapshot(node: VNode) {
 		const props = { ...node.props };
 
 		// Remove undefined props
-		Object.keys(props).forEach((propKey) => {
+		Object.keys(props).forEach(propKey => {
 			if (props[propKey] === undefined) {
 				delete props[propKey];
 			}
@@ -37,7 +37,7 @@ export function vNodeToSnapshot(node: VNode) {
 	}
 
 	if (isArray(node.children)) {
-		node.children.forEach((child) => {
+		node.children.forEach(child => {
 			const asJSON = vNodeToSnapshot(child as VNode);
 			if (asJSON) {
 				children.push(asJSON);
