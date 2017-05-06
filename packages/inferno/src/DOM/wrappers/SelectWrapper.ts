@@ -10,7 +10,7 @@ function updateChildOptionGroup(vNode, value) {
 
 		if (isArray(children)) {
 			for (let i = 0, len = children.length; i < len; i++) {
-				updateChildOption(children[ i ], value);
+				updateChildOption(children[i], value);
 			}
 		} else if (isVNode(children)) {
 			updateChildOption(children, value);
@@ -26,7 +26,10 @@ function updateChildOption(vNode, value) {
 
 	// we do this as multiple may have changed
 	dom.value = props.value;
-	if ((isArray(value) && value.indexOf(props.value) !== -1) || props.value === value) {
+	if (
+		(isArray(value) && value.indexOf(props.value) !== -1) ||
+		props.value === value
+	) {
 		dom.selected = true;
 	} else if (!isNullOrUndef(value) || !isNullOrUndef(props.selected)) {
 		dom.selected = props.selected || false;
@@ -63,7 +66,13 @@ function onSelectChange(e) {
 	}
 }
 
-export function processSelect(vNode, dom, nextPropsOrEmpty, mounting: boolean, isControlled: boolean) {
+export function processSelect(
+	vNode,
+	dom,
+	nextPropsOrEmpty,
+	mounting: boolean,
+	isControlled: boolean
+) {
 	applyValue(vNode, dom, nextPropsOrEmpty, mounting);
 
 	if (mounting && isControlled) {
@@ -85,7 +94,7 @@ export function applyValue(vNode, dom, nextPropsOrEmpty, mounting: boolean) {
 		}
 		if (isArray(children)) {
 			for (let i = 0, len = children.length; i < len; i++) {
-				updateChildOptionGroup(children[ i ], value);
+				updateChildOptionGroup(children[i], value);
 			}
 		} else if (isVNode(children)) {
 			updateChildOptionGroup(children, value);

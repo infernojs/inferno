@@ -1,42 +1,48 @@
 import Component, { ComponentLifecycle } from 'inferno-component';
-import { isFunction, isNullOrUndef, isObject, isUndefined, throwError } from 'inferno-shared';
+import {
+	isFunction,
+	isNullOrUndef,
+	isObject,
+	isUndefined,
+	throwError
+} from 'inferno-shared';
 
 export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
 	statics?: {
-		[key: string]: any;
-	};
-	mixins?: any;
+		[key: string]: any
+	},
+	mixins?: any,
 
-	displayName?: string;
-	propTypes?: { [index: string]: Function };
+	displayName?: string,
+	propTypes?: { [index: string]: Function },
 
-	getDefaultProps?(): P;
-	getInitialState?(): S;
+	getDefaultProps?(): P,
+	getInitialState?(): S
 }
 
 export interface ComponentClass<P, S> extends Mixin<P, S> {
-	new (props?: P, context?: any): Component<P, S>;
-	propTypes?: {};
-	contextTypes?: {};
-	childContextTypes?: {};
-	defaultProps?: P;
-	displayName?: string;
+	new (props?: P, context?: any): Component<P, S>,
+	propTypes?: {},
+	contextTypes?: {},
+	childContextTypes?: {},
+	defaultProps?: P,
+	displayName?: string
 }
 
 export interface ComponentSpec<P, S> extends Mixin<P, S> {
-	[propertyName: string]: any;
-	render(props?, context?): any;
+	[propertyName: string]: any,
+	render(props?, context?): any
 }
 
 export interface ClassicComponent<P, S> extends Component<P, S> {
-	replaceState(nextState: S, callback?: () => any): void;
-	isMounted(): boolean;
-	getInitialState?(): S;
+	replaceState(nextState: S, callback?: () => any): void,
+	isMounted(): boolean,
+	getInitialState?(): S
 }
 
 export interface ClassicComponentClass<P, S> extends ComponentClass<P, S> {
-	new (props?: P, context?: any): ClassicComponent<P, S>;
-	getDefaultProps?(): P;
+	new (props?: P, context?: any): ClassicComponent<P, S>,
+	getDefaultProps?(): P
 }
 
 // don't autobind these methods since they already have guaranteed context.
@@ -54,8 +60,8 @@ AUTOBIND_BLACKLIST.add('componentDidUnmount');
 
 function extend(base, props) {
 	for (const key in props) {
-		if (!isNullOrUndef(props[ key ])) {
-			base[ key ] = props[ key ];
+		if (!isNullOrUndef(props[key])) {
+			base[key] = props[key];
 		}
 	}
 	return base;
@@ -63,16 +69,16 @@ function extend(base, props) {
 
 function bindAll<P, S>(ctx: Component<P, S>) {
 	for (const i in ctx) {
-		const v = ctx[ i ];
+		const v = ctx[i];
 		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST.has(i)) {
-			(ctx[ i ] = v.bind(ctx)).__bound = true;
+			(ctx[i] = v.bind(ctx)).__bound = true;
 		}
 	}
 }
 
 function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 	for (let i = 0, len = mixins.length; i < len; i++) {
-		const mixin = mixins[ i ];
+		const mixin = mixins[i];
 
 		// Surprise: Mixins can have mixins
 		if (mixin.mixins) {
@@ -81,8 +87,8 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 		}
 
 		for (const key in mixin as Function[]) {
-			if (mixin.hasOwnProperty(key) && typeof mixin[ key ] === 'function') {
-				(keyed[ key ] || (keyed[ key ] = [])).push(mixin[ key ]);
+			if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
+				(keyed[key] || (keyed[key] = [])).push(mixin[key]);
 			}
 		}
 	}
@@ -94,7 +100,7 @@ function multihook(hooks: Function[], mergeFn?: Function): any {
 		let ret;
 
 		for (let i = 0, len = hooks.length; i < len; i++) {
-			const hook = hooks[ i ];
+			const hook = hooks[i];
 			const r = hook.apply(this, arguments);
 
 			if (mergeFn) {
@@ -121,30 +127,40 @@ function mergeNoDupes(previous: any, current: any) {
 		for (const key in current) {
 			if (current.hasOwnProperty(key)) {
 				if (previous.hasOwnProperty(key)) {
-					throwError(`Mixins return duplicate key ${key} in their return values`);
+					throwError(
+						`Mixins return duplicate key ${key} in their return values`
+					);
 				}
 
-				previous[ key ] = current[ key ];
+				previous[key] = current[key];
 			}
 		}
 	}
 	return previous;
 }
 
-function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[]): void {
-	const hooks = isUndefined(inst[ key ]) ? mixin : mixin.concat(inst[ key ]);
+function applyMixin<P, S>(
+	key: string,
+	inst: Component<P, S>,
+	mixin: Function[]
+): void {
+	const hooks = isUndefined(inst[key]) ? mixin : mixin.concat(inst[key]);
 
-	if (key === 'getDefaultProps' || key === 'getInitialState' || key === 'getChildContext') {
-		inst[ key ] = multihook(hooks, mergeNoDupes);
+	if (
+		key === 'getDefaultProps' ||
+		key === 'getInitialState' ||
+		key === 'getChildContext'
+	) {
+		inst[key] = multihook(hooks, mergeNoDupes);
 	} else {
-		inst[ key ] = multihook(hooks);
+		inst[key] = multihook(hooks);
 	}
 }
 
 function applyMixins(Cl: any, mixins: Function[] | any[]) {
 	for (const key in mixins) {
 		if (mixins.hasOwnProperty(key)) {
-			const mixin = mixins[ key ];
+			const mixin = mixins[key];
 
 			let inst;
 
@@ -154,22 +170,24 @@ function applyMixins(Cl: any, mixins: Function[] | any[]) {
 				inst = Cl.prototype;
 			}
 
-			if (isFunction(mixin[ 0 ])) {
+			if (isFunction(mixin[0])) {
 				applyMixin(key, inst, mixin);
 			} else {
-				inst[ key ] = mixin;
+				inst[key] = mixin;
 			}
 		}
 	}
 }
 
-export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComponentClass<P, S> {
+export default function createClass<P, S>(
+	obj: ComponentSpec<P, S>
+): ClassicComponentClass<P, S> {
 	class Cl extends Component<P, S> {
-		public static defaultProps;
-		public static displayName = obj.displayName || 'Component';
-		public static propTypes = obj.propTypes;
-		public static mixins = obj.mixins && collateMixins(obj.mixins);
-		public static getDefaultProps = obj.getDefaultProps;
+		static public defaultProps;
+		static public displayName = obj.displayName || 'Component';
+		static public propTypes = obj.propTypes;
+		static public mixins = obj.mixins && collateMixins(obj.mixins);
+		static public getDefaultProps = obj.getDefaultProps;
 
 		public getInitialState?(): S;
 
@@ -200,7 +218,9 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComp
 		applyMixins(Cl, collateMixins(obj.mixins));
 	}
 
-	Cl.defaultProps = isUndefined(Cl.getDefaultProps) ? undefined : Cl.getDefaultProps();
+	Cl.defaultProps = isUndefined(Cl.getDefaultProps)
+		? undefined
+		: Cl.getDefaultProps();
 
 	return Cl;
 }

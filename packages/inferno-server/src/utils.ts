@@ -1,11 +1,11 @@
 const ecapeCharacters = {
 	'"': '&quot;',
 	'&': '&amp;',
-	'\'': '&#039;',
+	"'": '&#039;',
 	'<': '&lt;',
 	'>': '&gt;'
 };
-const escapeChar = (char) => ecapeCharacters[ char ] || char;
+const escapeChar = char => ecapeCharacters[char] || char;
 
 export function escapeText(text) {
 	return String(text).replace(/[<>"'&]/g, escapeChar);
@@ -15,7 +15,10 @@ const uppercasePattern = /[A-Z]/g;
 const msPattern = /^ms-/;
 
 export function toHyphenCase(str) {
-	return str.replace(uppercasePattern, '-$&').toLowerCase().replace(msPattern, '-ms-');
+	return str
+		.replace(uppercasePattern, '-$&')
+		.toLowerCase()
+		.replace(msPattern, '-ms-');
 }
 
 const voidElements = {
@@ -38,5 +41,5 @@ const voidElements = {
 };
 
 export function isVoidElement(str) {
-	return !!voidElements[ str ];
+	return !!voidElements[str];
 }

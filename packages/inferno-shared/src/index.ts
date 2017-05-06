@@ -1,11 +1,12 @@
 export const NO_OP = '$NO_OP';
-export const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+export const ERROR_MSG =
+	'a runtime error occured! Use Inferno in development environment to find the error.';
 
 // This should be boolean and not reference to window.document
 export const isBrowser = !!(typeof window !== 'undefined' && window.document);
 
 export function toArray(children): any[] {
-	return isArray(children) ? children : (children ? [ children ] : children);
+	return isArray(children) ? children : children ? [children] : children;
 }
 
 // this is MUCH faster than .constructor === Array and instanceof Array
@@ -16,17 +17,17 @@ export function isStatefulComponent(o: any): boolean {
 	return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
 
-export function isStringOrNumber(o: any): o is string|number {
+export function isStringOrNumber(o: any): o is string | number {
 	const type = typeof o;
 
 	return type === 'string' || type === 'number';
 }
 
-export function isNullOrUndef(o: any): o is undefined|null {
+export function isNullOrUndef(o: any): o is undefined | null {
 	return isUndefined(o) || isNull(o);
 }
 
-export function isInvalid(o: any): o is null|false|true|undefined {
+export function isInvalid(o: any): o is null | false | true | undefined {
 	return isNull(o) || o === false || isTrue(o) || isUndefined(o);
 }
 
@@ -62,36 +63,32 @@ export function throwError(message?: string) {
 	if (!message) {
 		message = ERROR_MSG;
 	}
-	throw new Error(`Inferno Error: ${ message }`);
+	throw new Error(`Inferno Error: ${message}`);
 }
 
 export function warning(message: string) {
-	// tslint:disable-next-line:no-console
 	console.warn(message);
 }
 
-export function combineFrom(first?: {}|null, second?: {}|null): object {
+export function combineFrom(first?: {} | null, second?: {} | null): object {
 	const out = {};
 	if (first) {
 		for (const key in first) {
-			out[ key ] = first[ key ];
+			out[key] = first[key];
 		}
 	}
 	if (second) {
 		for (const key in second) {
-			out[ key ] = second[ key ];
+			out[key] = second[key];
 		}
 	}
 	return out;
 }
 
-/*
- * This is purely a tiny event-emitter/pubsub
- */
 export interface LifecycleClass {
-	listeners: Array<() => void>;
-	addListener(callback: Function): void;
-	trigger(): void;
+	listeners: Array<() => void>,
+	addListener(callback: Function): void,
+	trigger(): void
 }
 
 export function Lifecycle() {
@@ -105,8 +102,7 @@ Lifecycle.prototype.trigger = function trigger() {
 	const listeners = this.listeners;
 
 	let listener;
-	// We need to remove current listener from array when calling it, because more listeners might be added
-	while (listener = listeners.shift()) {
+	while ((listener = listeners.shift())) {
 		listener();
 	}
 };

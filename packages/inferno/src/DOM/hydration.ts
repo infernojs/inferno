@@ -22,8 +22,16 @@ import {
 } from './mounting';
 import { patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
-import { createClassComponentInstance, createFunctionalComponentInput, EMPTY_OBJ, replaceChild } from './utils';
-import { isControlledFormElement, processElement } from './wrappers/processElement';
+import {
+	createClassComponentInstance,
+	createFunctionalComponentInput,
+	EMPTY_OBJ,
+	replaceChild
+} from './utils';
+import {
+	isControlledFormElement,
+	processElement
+} from './wrappers/processElement';
 
 export function normalizeChildNodes(parentDom) {
 	let dom = parentDom.firstChild;
@@ -47,7 +55,14 @@ export function normalizeChildNodes(parentDom) {
 	}
 }
 
-function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context, isSVG: boolean, isClass: boolean): Element {
+function hydrateComponent(
+	vNode: VNode,
+	dom: Element,
+	lifecycle: LifecycleClass,
+	context,
+	isSVG: boolean,
+	isClass: boolean
+): Element {
 	const type = vNode.type;
 	const ref = vNode.ref;
 
@@ -57,7 +72,14 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 
 	if (isClass) {
 		const _isSVG = dom.namespaceURI === svgNS;
-		const instance = createClassComponentInstance(vNode, type, props, context, _isSVG, lifecycle);
+		const instance = createClassComponentInstance(
+			vNode,
+			type,
+			props,
+			context,
+			_isSVG,
+			lifecycle
+		);
 		const input = instance._lastInput;
 
 		instance._vNode = vNode;
@@ -77,7 +99,13 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 	return dom;
 }
 
-function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean): Element {
+function hydrateElement(
+	vNode: VNode,
+	dom: Element,
+	lifecycle: LifecycleClass,
+	context: Object,
+	isSVG: boolean
+): Element {
 	const children = vNode.children;
 	const props = vNode.props;
 	const className = vNode.className;
@@ -87,7 +115,9 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 	isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
 	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== vNode.type) {
 		if (process.env.NODE_ENV !== 'production') {
-			warning('Inferno hydration: Server-side markup doesn\'t match client-side markup or Initial render target is not empty');
+			warning(
+				"Inferno hydration: Server-side markup doesn't match client-side markup or Initial render target is not empty"
+			);
 		}
 		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
 
@@ -107,7 +137,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 		}
 		for (const prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchProp(prop, null, props[ prop ], dom, isSVG, hasControlledValue);
+			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
 		}
 		if (isFormElement) {
 			processElement(flags, vNode, dom, props, true, hasControlledValue);
@@ -128,17 +158,33 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 	return dom;
 }
 
-function hydrateChildren(children: InfernoChildren, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean): void {
+function hydrateChildren(
+	children: InfernoChildren,
+	parentDom: Element,
+	lifecycle: LifecycleClass,
+	context: Object,
+	isSVG: boolean
+): void {
 	normalizeChildNodes(parentDom);
 	let dom = parentDom.firstChild;
 
 	if (isArray(children)) {
-		for (let i = 0, len = (children as Array<string | number | VNode>).length; i < len; i++) {
-			const child = children[ i ];
+		for (
+			let i = 0, len = (children as Array<string | number | VNode>).length;
+			i < len;
+			i++
+		) {
+			const child = children[i];
 
 			if (!isNull(child) && isObject(child)) {
 				if (!isNull(dom)) {
-					dom = (hydrate(child as VNode, dom as Element, lifecycle, context, isSVG) as Element).nextSibling;
+					dom = (hydrate(
+						child as VNode,
+						dom as Element,
+						lifecycle,
+						context,
+						isSVG
+					) as Element).nextSibling;
 				} else {
 					mount(child as VNode, parentDom, lifecycle, context, isSVG);
 				}
@@ -187,11 +233,24 @@ function hydrateVoid(vNode: VNode, dom: Element): Element {
 	return dom;
 }
 
-function hydrate(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean): Element|undefined {
+function hydrate(
+	vNode: VNode,
+	dom: Element,
+	lifecycle: LifecycleClass,
+	context: Object,
+	isSVG: boolean
+): Element | undefined {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Component) {
-		return hydrateComponent(vNode, dom, lifecycle, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
+		return hydrateComponent(
+			vNode,
+			dom,
+			lifecycle,
+			context,
+			isSVG,
+			(flags & VNodeFlags.ComponentClass) > 0
+		);
 	} else if (flags & VNodeFlags.Element) {
 		return hydrateElement(vNode, dom, lifecycle, context, isSVG);
 	} else if (flags & VNodeFlags.Text) {
@@ -200,21 +259,27 @@ function hydrate(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context:
 		return hydrateVoid(vNode, dom);
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
-			throwError(`hydrate() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+			throwError(
+				`hydrate() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
+			);
 		}
 		throwError();
 	}
 }
 
-export function hydrateRoot(input, parentDom: Element|null, lifecycle: LifecycleClass) {
+export function hydrateRoot(
+	input,
+	parentDom: Element | null,
+	lifecycle: LifecycleClass
+) {
 	if (!isNull(parentDom)) {
-		let dom = (parentDom.firstChild as Element);
+		let dom = parentDom.firstChild as Element;
 
 		if (!isNull(dom)) {
 			hydrate(input, dom, lifecycle, EMPTY_OBJ, false);
 			dom = parentDom.firstChild as Element;
 			// clear any other DOM nodes, there should be only a single entry for the root
-			while (dom = dom.nextSibling as Element) {
+			while ((dom = dom.nextSibling as Element)) {
 				parentDom.removeChild(dom);
 			}
 			return true;

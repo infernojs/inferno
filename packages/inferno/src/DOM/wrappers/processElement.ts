@@ -11,7 +11,14 @@ import { processTextarea } from './TextareaWrapper';
  * Currently user must choose either controlled or non-controlled and stick with that
  */
 
-export function processElement(flags: number, vNode: VNode, dom: Element, nextPropsOrEmpty, mounting: boolean, isControlled: boolean): void {
+export function processElement(
+	flags: number,
+	vNode: VNode,
+	dom: Element,
+	nextPropsOrEmpty,
+	mounting: boolean,
+	isControlled: boolean
+): void {
 	if (flags & VNodeFlags.InputElement) {
 		processInput(vNode, dom, nextPropsOrEmpty, mounting, isControlled);
 	}
@@ -24,5 +31,7 @@ export function processElement(flags: number, vNode: VNode, dom: Element, nextPr
 }
 
 export function isControlledFormElement(nextPropsOrEmpty): boolean {
-	return (nextPropsOrEmpty.type && isCheckedType(nextPropsOrEmpty.type)) ? !isNullOrUndef(nextPropsOrEmpty.checked) : !isNullOrUndef(nextPropsOrEmpty.value);
+	return nextPropsOrEmpty.type && isCheckedType(nextPropsOrEmpty.type)
+		? !isNullOrUndef(nextPropsOrEmpty.checked)
+		: !isNullOrUndef(nextPropsOrEmpty.value);
 }

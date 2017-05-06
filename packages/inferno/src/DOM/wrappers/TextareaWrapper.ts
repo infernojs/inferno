@@ -42,7 +42,13 @@ function onTextareaInputChange(e) {
 	}
 }
 
-export function processTextarea(vNode, dom, nextPropsOrEmpty, mounting: boolean, isControlled: boolean) {
+export function processTextarea(
+	vNode,
+	dom,
+	nextPropsOrEmpty,
+	mounting: boolean,
+	isControlled: boolean
+) {
 	applyValue(nextPropsOrEmpty, dom, mounting);
 
 	if (mounting && isControlled) {

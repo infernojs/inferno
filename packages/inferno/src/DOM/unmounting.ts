@@ -4,7 +4,8 @@ import {
 	isInvalid,
 	isNull,
 	isNullOrUndef,
-	isObject, isUndefined,
+	isObject,
+	isUndefined,
 	LifecycleClass,
 	throwError
 } from 'inferno-shared';
@@ -16,7 +17,13 @@ import { poolComponent, poolElement } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
 import { removeChild } from './utils';
 
-export function unmount(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, canRecycle: boolean, isRecycling: boolean) {
+export function unmount(
+	vNode: VNode,
+	parentDom: Element | null,
+	lifecycle: LifecycleClass,
+	canRecycle: boolean,
+	isRecycling: boolean
+) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Component) {
@@ -28,13 +35,19 @@ export function unmount(vNode: VNode, parentDom: Element|null, lifecycle: Lifecy
 	}
 }
 
-function unmountVoidOrText(vNode: VNode, parentDom: Element|null) {
+function unmountVoidOrText(vNode: VNode, parentDom: Element | null) {
 	if (!isNull(parentDom)) {
-		removeChild(parentDom, (vNode.dom as Element));
+		removeChild(parentDom, vNode.dom as Element);
 	}
 }
 
-export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, canRecycle: boolean, isRecycling: boolean) {
+export function unmountComponent(
+	vNode: VNode,
+	parentDom: Element | null,
+	lifecycle: LifecycleClass,
+	canRecycle: boolean,
+	isRecycling: boolean
+) {
 	const instance = vNode.children as any;
 	const flags = vNode.flags;
 	const isStatefulComponent = flags & VNodeFlags.ComponentClass;
@@ -59,7 +72,13 @@ export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycl
 					componentToDOMNodeMap.delete(instance);
 				}
 
-				unmount(instance._lastInput, null, instance._lifecycle, false, isRecycling);
+				unmount(
+					instance._lastInput,
+					null,
+					instance._lifecycle,
+					false,
+					isRecycling
+				);
 			}
 		} else {
 			if (!isNullOrUndef(ref)) {
@@ -79,12 +98,22 @@ export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycl
 		}
 		removeChild(parentDom, dom);
 	}
-	if (options.recyclingEnabled && !isStatefulComponent && (parentDom || canRecycle)) {
+	if (
+		options.recyclingEnabled &&
+		!isStatefulComponent &&
+		(parentDom || canRecycle)
+	) {
 		poolComponent(vNode);
 	}
 }
 
-export function unmountElement(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, canRecycle: boolean, isRecycling: boolean) {
+export function unmountElement(
+	vNode: VNode,
+	parentDom: Element | null,
+	lifecycle: LifecycleClass,
+	canRecycle: boolean,
+	isRecycling: boolean
+) {
 	const dom = vNode.dom as Element;
 	const ref = vNode.ref as any;
 	const props = vNode.props;
@@ -101,10 +130,10 @@ export function unmountElement(vNode: VNode, parentDom: Element|null, lifecycle:
 	if (!isNull(props)) {
 		for (const name in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			if (props[ name ] !== null && isAttrAnEvent(name)) {
-				patchEvent(name, props[ name ], null, dom);
+			if (props[name] !== null && isAttrAnEvent(name)) {
+				patchEvent(name, props[name], null, dom);
 				// We need to set this null, because same props otherwise come back if SCU returns false and we are recyling
-				props[ name ] = null;
+				props[name] = null;
 			}
 		}
 	}
@@ -116,10 +145,18 @@ export function unmountElement(vNode: VNode, parentDom: Element|null, lifecycle:
 	}
 }
 
-function unmountChildren(children: InfernoChildren, lifecycle: LifecycleClass, isRecycling: boolean) {
+function unmountChildren(
+	children: InfernoChildren,
+	lifecycle: LifecycleClass,
+	isRecycling: boolean
+) {
 	if (isArray(children)) {
-		for (let i = 0, len = (children as Array<string | number | VNode>).length; i < len; i++) {
-			const child = children[ i ];
+		for (
+			let i = 0, len = (children as Array<string | number | VNode>).length;
+			i < len;
+			i++
+		) {
+			const child = children[i];
 
 			if (!isInvalid(child) && isObject(child)) {
 				unmount(child as VNode, null, lifecycle, false, isRecycling);
@@ -138,7 +175,9 @@ function unmountRef(ref: Ref) {
 			return;
 		}
 		if (process.env.NODE_ENV !== 'production') {
-			throwError('string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.');
+			throwError(
+				'string "refs" are not supported in Inferno 1.0. Use callback "refs" instead.'
+			);
 		}
 		throwError();
 	}

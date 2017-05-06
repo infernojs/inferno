@@ -1,3 +1,3 @@
 export interface Styles {
-	[key: string]: number | string;
+	[key: string]: number | string
 }

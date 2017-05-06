@@ -79,7 +79,13 @@ function onCheckboxChange(e) {
 	}
 }
 
-export function processInput(vNode, dom, nextPropsOrEmpty, mounting: boolean, isControlled): void {
+export function processInput(
+	vNode,
+	dom,
+	nextPropsOrEmpty,
+	mounting: boolean,
+	isControlled
+): void {
 	applyValue(nextPropsOrEmpty, dom);
 	if (mounting && isControlled) {
 		if (isCheckedType(nextPropsOrEmpty.type)) {

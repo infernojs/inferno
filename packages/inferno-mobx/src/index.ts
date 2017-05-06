@@ -1,7 +1,11 @@
 import connect from './connect';
 import EventEmitter from './EventEmitter';
 import inject from './inject';
-import { componentByNodeRegistery, renderReporter, trackComponents } from './makeReactive';
+import {
+	componentByNodeRegistery,
+	renderReporter,
+	trackComponents
+} from './makeReactive';
 import Provider from './Provider';
 
 export default {
