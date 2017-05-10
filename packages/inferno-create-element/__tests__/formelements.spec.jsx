@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { render } from 'inferno';
+import { render, linkEvent } from 'inferno';
 import Component from 'inferno-component';
 
 describe('FormElements', () => {
@@ -49,6 +49,301 @@ describe('FormElements', () => {
 			render(<TextBox value={1}/>, container);
 			input = container.querySelector('input');
 			expect(input.value).to.equal('1');
+		});
+
+		it('Controlled - oninput - Should have updated props in onInput callbacks', () => {
+			class Example extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+					this._method = this._method.bind(this);
+				}
+
+				_method() {
+					this.props.callback(this.props.value);
+				}
+
+				render() {
+					return (
+						<input type="text" oninput={this._method} value="test"/>
+					);
+				}
+			}
+
+			const spy = sinon.spy();
+
+			render(<Example callback={spy} value={1}/>, container);
+
+			let event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledOnce).to.equal(true);
+			expect(spy.args[0][0]).to.equal(1); // Verify initial props are correct
+
+			// Then update component
+			render(<Example callback={spy} value={2}/>, container);
+
+			event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledTwice).to.equal(true);
+			expect(spy.args[1][0]).to.equal(2); // Verify props have changed
+		});
+
+		it('Controlled - onInput - Should have updated props in onInput callbacks', () => {
+			class Example extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+					this._method = this._method.bind(this);
+				}
+
+				_method() {
+					this.props.callback(this.props.value);
+				}
+
+				render() {
+					return (
+						<input type="text" onInput={this._method} value="test"/>
+					);
+				}
+			}
+
+			const spy = sinon.spy();
+
+			render(<Example callback={spy} value={1}/>, container);
+
+			let event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledOnce).to.equal(true);
+			expect(spy.args[0][0]).to.equal(1); // Verify initial props are correct
+
+			// Then update component
+			render(<Example callback={spy} value={2}/>, container);
+
+			event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledTwice).to.equal(true);
+			expect(spy.args[1][0]).to.equal(2); // Verify props have changed
+		});
+
+		it('Controlled - onInput - Should have updated props in onInput callbacks in setState callback', () => {
+			class Example extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+					this.state = {
+						a: 0
+					};
+
+					this._method = this._method.bind(this);
+				}
+
+				test() {
+					this.props.callback(this.props.value, this.state.a);
+				}
+
+				_method() {
+					this.setState({
+						a: this.props.value
+					}, this.test);
+				}
+
+				render() {
+					return (
+						<input type="text" onInput={this._method} value="test"/>
+					);
+				}
+			}
+
+			const spy = sinon.spy();
+
+			render(<Example callback={spy} value={1}/>, container);
+
+			let event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledOnce).to.equal(true);
+			expect(spy.args[0][0]).to.equal(1); // Verify initial props are correct
+
+			// Then update component
+			render(<Example callback={spy} value={2}/>, container);
+
+			event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledTwice).to.equal(true);
+			expect(spy.args[1][0]).to.equal(2); // Verify props have changed
+			expect(spy.args[1][1]).to.equal(2); // Verify state have changed
+		});
+
+		it('Controlled - onInput (linkEvent) - Should have updated props in onInput callbacks', () => {
+			class Example extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+				}
+
+				static _method(me) {
+					me.props.callback(me.props.value);
+				}
+
+				render() {
+					return (
+						<input type="text" onInput={linkEvent(this, Example._method)} value="test"/>
+					);
+				}
+			}
+
+			const spy = sinon.spy();
+
+			render(<Example callback={spy} value={1}/>, container);
+
+			let event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledOnce).to.equal(true);
+			expect(spy.args[0][0]).to.equal(1); // Verify initial props are correct
+
+			// Then update component
+			render(<Example callback={spy} value={2}/>, container);
+
+			event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledTwice).to.equal(true);
+			expect(spy.args[1][0]).to.equal(2); // Verify props have changed
+		});
+
+		it('NON Controlled - onInput (linkEvent) - Should have updated props in onInput callbacks', () => {
+			class Example extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+				}
+
+				static _method(me) {
+					me.props.callback(me.props.value);
+				}
+
+				render() {
+					return (
+						<input type="text" onInput={linkEvent(this, Example._method)}/>
+					);
+				}
+			}
+
+			const spy = sinon.spy();
+
+			render(<Example callback={spy} value={1}/>, container);
+
+			let event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledOnce).to.equal(true);
+			expect(spy.args[0][0]).to.equal(1); // Verify initial props are correct
+
+			// Then update component
+			render(<Example callback={spy} value={2}/>, container);
+
+			event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledTwice).to.equal(true);
+			expect(spy.args[1][0]).to.equal(2); // Verify props have changed
+		});
+
+		it('NON Controlled - onInput - Should have updated props in onInput callbacks', () => {
+			class Example extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+					this._method = this._method.bind(this);
+				}
+
+				_method() {
+					this.props.callback(this.props.value);
+				}
+
+				render() {
+					return (
+						<input type="text" onInput={this._method}/>
+					);
+				}
+			}
+
+			const spy = sinon.spy();
+
+			render(<Example callback={spy} value={1}/>, container);
+
+			let event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledOnce).to.equal(true);
+			expect(spy.args[0][0]).to.equal(1); // Verify initial props are correct
+
+			// Then update component
+			render(<Example callback={spy} value={2}/>, container);
+
+			event = document.createEvent('Event');
+			event.initEvent('input', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledTwice).to.equal(true);
+			expect(spy.args[1][0]).to.equal(2); // Verify props have changed
+		});
+
+		it('Controlled - onChange (linkEvent) - Should have updated props in onInput callbacks', () => {
+			class Example extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+				}
+
+				static _method(me) {
+					me.props.callback(me.props.value);
+				}
+
+				render() {
+					return (
+						<input type="text" onChange={linkEvent(this, Example._method)} value="test"/>
+					);
+				}
+			}
+
+			const spy = sinon.spy();
+
+			render(<Example callback={spy} value={1}/>, container);
+
+			let event = document.createEvent('Event');
+			event.initEvent('change', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledOnce).to.equal(true);
+			expect(spy.args[0][0]).to.equal(1); // Verify initial props are correct
+
+			// Then update component
+			render(<Example callback={spy} value={2}/>, container);
+
+			event = document.createEvent('Event');
+			event.initEvent('change', true, true);
+			container.firstChild.dispatchEvent(event, true);
+
+			expect(spy.calledTwice).to.equal(true);
+			expect(spy.args[1][0]).to.equal(2); // Verify props have changed
 		});
 	});
 
