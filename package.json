@@ -51,8 +51,8 @@
     "fs-extra": "^3.0.1",
     "glob": "^7.1.1",
     "history": "4.6.1",
-    "jsdom": "9.12.0",
-    "karma": "^1.6.0",
+    "jsdom": "10.1.0",
+    "karma": "^1.7.0",
     "karma-benchmark": "^0.7.1",
     "karma-benchmark-reporter": "^0.1.1",
     "karma-chai": "^0.1.0",
@@ -76,7 +76,7 @@
     "mocha-lcov-reporter": "^1.3.0",
     "most": "^1.3.0",
     "most-subject": "^5.3.0",
-    "nyc": "^10.3.0",
+    "nyc": "^10.3.2",
     "object.entries": "^1.0.4",
     "optimize-js": "^1.0.3",
     "pre-commit": "^1.2.2",
@@ -99,7 +99,7 @@
     "typescript": "^2.3.2",
     "typescript-eslint-parser": "^2.1.0",
     "union-type-es": "^0.1.0",
-    "webpack": "^2.5.0",
+    "webpack": "^2.5.1",
     "webpack-dev-server": "^2.4.5"
   },
   "files": [
