@@ -164,7 +164,8 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
 				}
 
 				if (isFormElement) {
-					processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
+					// When inferno is recycling form element, we need to process it like it would be mounting
+					processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, isRecycling, hasControlledValue);
 				}
 			}
 			if (lastPropsOrEmpty !== EMPTY_OBJ) {
