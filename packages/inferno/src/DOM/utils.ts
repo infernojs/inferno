@@ -179,10 +179,10 @@ export function removeChild(parentDom: Element, dom: Element) {
 }
 
 export function removeAllChildren(dom: Element, children, lifecycle: LifecycleClass, isRecycling: boolean) {
-	dom.textContent = '';
 	if (!options.recyclingEnabled || (options.recyclingEnabled && !isRecycling)) {
 		removeChildren(null, children, lifecycle, isRecycling);
 	}
+	dom.textContent = '';
 }
 
 export function removeChildren(dom: Element|null, children, lifecycle: LifecycleClass, isRecycling: boolean) {
