@@ -36,11 +36,11 @@
 <script src="../../packages/inferno-compat/dist/inferno-compat.js"></script>
 <script>
     "use strict";
-    var createElement = Inferno.createElement;
+    var h = Inferno.createElement;
 
     class MyFoo extends Inferno.Component {
         render() {
-            return createElement('div', {ref: 'hey'}, 'Hello world!')
+            return h('div', {ref: 'hey'}, 'Hello world!')
         }
 
         componentDidMount() {
@@ -52,7 +52,10 @@
         }
     }
 
-    Inferno.render(createElement(MyFoo, {}), document.getElementById('app'));
+    Inferno.render(
+        h(MyFoo, {}), 
+        document.getElementById('app')
+    );
 
     /*
      Example of using context and setState callback function
@@ -76,7 +79,7 @@
         }
 
         render() {
-            return createElement('button', {
+            return h('button', {
                 onClick: this.click.bind(this),
                 style: {background: this.context.color}
             }, this.props.children);
@@ -85,8 +88,8 @@
 
     class Message extends Inferno.Component {
         render() {
-            return createElement('div', null,
-                [this.props.text, createElement(Button, {buttonProp: 'magic'}, 'btn')]
+            return h('div', null,
+                [this.props.text, h(Button, {buttonProp: 'magic'}, 'btn')]
             );
         }
     }
@@ -98,14 +101,17 @@
 
         render() {
             const children = this.props.messages.map(function (message) {
-                return createElement(Message, {text: message.text});
+                return h(Message, {text: message.text});
             });
 
-            return createElement('div', null, children);
+            return h('div', null, children);
         }
     }
 
-    Inferno.render(createElement(MessageList, {messages: [{text: 'first'}, {text: 'second'}]}), document.getElementById('app1'))
+    Inferno.render(
+        h(MessageList, {messages: [{text: 'first'}, {text: 'second'}]}), 
+        document.getElementById('app1')
+    )
 
     let testValue = 11;
     function changeTestValue(event) {
@@ -117,11 +123,11 @@
     }
 
     function render() {
-        Inferno.render(createElement('div', null,
+        Inferno.render(h('div', null,
             [
-                createElement('label', {'for': 'test'}, [
+                h('label', {'for': 'test'}, [
                     'label for input',
-                    createElement('input', {
+                    h('input', {
                         id: 'test',
                         name: 'testing_radio',
                         value: "first",
@@ -130,9 +136,9 @@
                         pattern: '[0-9]+([,\.][0-9]+)?',
                         inputMode: 'numeric'
                     })]),
-                createElement('label', {'for': 'test2'}, [
+                h('label', {'for': 'test2'}, [
                     'label for input2',
-                    createElement('input', {
+                    h('input', {
                         id: 'test2',
                         name: 'testing_radio',
                         value: "second",
@@ -141,9 +147,9 @@
                         pattern: '[0-9]+([,\.][0-9]+)?',
                         inputMode: 'numeric'
                     })]),
-                createElement('label', {'htmlFor': 'test3'}, [
+                h('label', {'htmlFor': 'test3'}, [
                     'label for input3',
-                    createElement('input', {
+                    h('input', {
                         id: 'test3',
                         name: 'test3',
                         value: testValue,
@@ -186,10 +192,10 @@
 
         render() {
             return (
-                createElement('div', null, [
-                    createElement('label', {'for': 'testasync'}, [
+                h('div', null, [
+                    h('label', {'for': 'testasync'}, [
                         'async label for input',
-                        createElement('input', {
+                        h('input', {
                             id: 'testasync',
                             name: 'testing_radio_async',
                             value: "first",
@@ -197,9 +203,9 @@
                             checked: this.state.radio === 'first',
                             type: 'radio'
                         })]),
-                    createElement('label', {'for': 'test2async'}, [
+                    h('label', {'for': 'test2async'}, [
                         'async label for input2',
-                        createElement('input', {
+                        h('input', {
                             id: 'test2async',
                             name: 'testing_radio_async',
                             value: "second",
@@ -207,34 +213,37 @@
                             checked: this.state.radio === 'second',
                             type: 'radio'
                         })]),
-                    createElement('label', {'htmlFor': 'test3as'}, [
+                    h('label', {'htmlFor': 'test3as'}, [
                         'Async Name',
-                        createElement('input', {
+                        h('input', {
                             id: 'test3as',
                             name: 'test3as',
                             value: this.state.value,
                             onInput: this.handleChange,
                             type: 'text'
                         })]),
-                    createElement('label', {'htmlFor': 'textarea_async'}, [
+                    h('label', {'htmlFor': 'textarea_async'}, [
                         'async texxt',
-                        createElement('textarea', {
+                        h('textarea', {
                             id: 'textarea_async',
                             name: 'textarea_async',
                             value: this.state.text,
                             onInput: this.textChange
                         })
                     ]),
-                    createElement('select', {onChange: this.selectChange, 'value': this.state.selectValue}, [
-                        createElement('option', {
+                    h('select', {
+                        onChange: this.selectChange, 
+                        'value': this.state.selectValue
+                    }, [
+                        h('option', {
                             value: 'first',
                             children: 'first'
                         }),
-                        createElement('option', {
+                        h('option', {
                             value: 'second',
                             children: 'second'
                         }),
-                        createElement('option', {
+                        h('option', {
                             value: 'third',
                             children: 'third'
                         })]),
@@ -243,7 +252,7 @@
         }
     }
 
-    let hoisted  = createElement('input', {
+    let hoisted  = h('input', {
         id: 'test3sync',
         name: 'test3sync',
         value: '100',
@@ -254,7 +263,12 @@
     class NameForm2 extends Inferno.Component {
         constructor(props) {
             super(props);
-            this.state = {value: 'SYNC', radio: 'first', text: 'f', selectValue: 'second'};
+            this.state = {
+                value: 'SYNC', 
+                radio: 'first', 
+                text: 'f', 
+                selectValue: 'second'
+            };
 
             this.handleChange = this.handleChange.bind(this);
             this.radioChange = this.radioChange.bind(this);
@@ -282,10 +296,10 @@
         render() {
 
             return (
-                createElement('div', null, [
-                    createElement('label', {'for': 'testsync'}, [
+                h('div', null, [
+                    h('label', {'for': 'testsync'}, [
                         'sync label for input',
-                        createElement('input', {
+                        h('input', {
                             id: 'testsync',
                             name: 'testing_radio_sync',
                             value: "first",
@@ -293,9 +307,9 @@
                             checked: this.state.radio === 'first',
                             type: 'radio'
                         })]),
-                    createElement('label', {'for': 'test2sync'}, [
+                    h('label', {'for': 'test2sync'}, [
                         'sync label for input2',
-                        createElement('input', {
+                        h('input', {
                             id: 'test2sync',
                             name: 'testing_radio_sync',
                             value: "second",
@@ -303,9 +317,9 @@
                             checked: this.state.radio === 'second',
                             type: 'radio'
                         })]),
-                    createElement('label', {'htmlFor': 'test3sync'}, [
+                    h('label', {'htmlFor': 'test3sync'}, [
                         'sync Name',
-                        createElement('input', {
+                        h('input', {
                             id: 'test3sync',
                             name: 'test3sync',
                             value: this.state.value,
@@ -313,25 +327,28 @@
                             type: 'text'
                         })
                     ]),
-                    createElement('label', {'htmlFor': 'textarea_sync'}, [
+                    h('label', {'htmlFor': 'textarea_sync'}, [
                         'sync text',
-                        createElement('textarea', {
+                        h('textarea', {
                             id: 'textarea_sync',
                             name: 'textarea_sync',
                             value: this.state.text,
                             onInput: this.textChange
                         })
                     ]),
-                    createElement('select', {onChange: this.selectChange, 'value': this.state.selectValue}, [
-                        createElement('option', {
+                    h('select', {
+                        onChange: this.selectChange, 
+                        'value': this.state.selectValue
+                    }, [
+                        h('option', {
                             value: 'first',
                             children: 'first'
                         }),
-                        createElement('option', {
+                        h('option', {
                             value: 'second',
                             children: 'second'
                         }),
-                        createElement('option', {
+                        h('option', {
                             value: 'third',
                             children: 'third'
                         })]),
@@ -341,8 +358,14 @@
     }
 
     // render an instance of Clock into <body>:
-    Inferno.render(createElement(NameForm, {}), document.getElementById('app3'));
-    Inferno.render(createElement(NameForm2, {}), document.getElementById('app4'));
+    Inferno.render(
+        h(NameForm, {}), 
+        document.getElementById('app3')
+    );
+    Inferno.render(
+        h(NameForm2, {}), 
+        document.getElementById('app4')
+    );
 </script>
 </body>
 </html>
