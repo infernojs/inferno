@@ -25,7 +25,7 @@ import { componentToDOMNodeMap } from './rendering';
 import { createClassComponentInstance, createFunctionalComponentInput, EMPTY_OBJ, replaceChild } from './utils';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 
-export function normalizeChildNodes(parentDom) {
+function normalizeChildNodes(parentDom) {
 	let dom = parentDom.firstChild;
 
 	while (dom) {
@@ -113,9 +113,7 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 			processElement(flags, vNode, dom, props, true, hasControlledValue);
 		}
 	}
-	if (isNullOrUndef(className)) {
-		dom.removeAttribute('class');
-	} else {
+	if (!isNullOrUndef(className)) {
 		if (isSVG) {
 			dom.setAttribute('class', className);
 		} else {
@@ -138,7 +136,8 @@ function hydrateChildren(children: InfernoChildren, parentDom: Element, lifecycl
 
 			if (!isNull(child) && isObject(child)) {
 				if (!isNull(dom)) {
-					dom = (hydrate(child as VNode, dom as Element, lifecycle, context, isSVG) as Element).nextSibling;
+					hydrate(child as VNode, dom as Element, lifecycle, context, isSVG);
+					dom = dom.nextSibling;
 				} else {
 					mount(child as VNode, parentDom, lifecycle, context, isSVG);
 				}
@@ -187,17 +186,17 @@ function hydrateVoid(vNode: VNode, dom: Element): Element {
 	return dom;
 }
 
-function hydrate(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean): Element|undefined {
+function hydrate(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Component) {
-		return hydrateComponent(vNode, dom, lifecycle, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
+		hydrateComponent(vNode, dom, lifecycle, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
 	} else if (flags & VNodeFlags.Element) {
-		return hydrateElement(vNode, dom, lifecycle, context, isSVG);
+		hydrateElement(vNode, dom, lifecycle, context, isSVG);
 	} else if (flags & VNodeFlags.Text) {
-		return hydrateText(vNode, dom);
+		hydrateText(vNode, dom);
 	} else if (flags & VNodeFlags.Void) {
-		return hydrateVoid(vNode, dom);
+		hydrateVoid(vNode, dom);
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError(`hydrate() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);

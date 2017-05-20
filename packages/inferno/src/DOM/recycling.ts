@@ -76,7 +76,7 @@ export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, contex
 					lifecycle,
 					context,
 					isSVG,
-					flags & VNodeFlags.ComponentClass,
+					(flags & VNodeFlags.ComponentClass) > 0,
 					true
 				);
 
