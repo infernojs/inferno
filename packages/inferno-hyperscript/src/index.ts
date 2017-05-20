@@ -60,21 +60,21 @@ function extractProps(_props: any, isElement: boolean, _tag: string | VNode): an
 	let className = null;
 
 	for (const prop in _props) {
-		if (prop === 'className' || prop === 'class') {
+		if (isElement && (prop === 'className' || prop === 'class')) {
 			className = _props[ prop ];
 		} else if (prop === 'key') {
 			key = _props[ prop ];
 		} else if (prop === 'ref') {
 			ref = _props[ prop ];
-		} else if (prop.substr(0, 11) === 'onComponent' && !isElement) {
-			if (!ref) {
-				ref = {};
-			}
-			ref[ prop ] = _props[ prop ];
 		} else if (prop === 'hooks') {
 			ref = _props[ prop ];
 		} else if (prop === 'children') {
 			children = _props[ prop ];
+		} else if (!isElement && prop.substr(0, 11) === 'onComponent') {
+			if (!ref) {
+				ref = {};
+			}
+			ref[ prop ] = _props[ prop ];
 		} else {
 			newProps[ prop ] = _props[ prop ];
 		}
