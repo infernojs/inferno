@@ -11,7 +11,7 @@ const platformNames = {
 
 const browsers = {
 	'Windows 7': {
-		'Internet Explorer': [ '11', '10', '9' ],
+		'Internet Explorer': ['11'],
 		chrome: [ '55', '56', '57', '58' ],
 		firefox: [ '50', '51', '52', '53' ]
 	},
