@@ -105,19 +105,7 @@ if (NODE_ENV === 'production') {
 				booleans: true,
 				unused: true
 			},
-			mangle: {
-				// mangle options
-
-				properties: {
-					// mangle property options
-				}
-			},
-			output: {
-				// output options
-			},
-			sourceMap: {
-				// source map options
-			},
+			sourceMap: false,
 			toplevel: false,
 			ie8: false
 		})
