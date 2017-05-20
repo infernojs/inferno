@@ -40,6 +40,32 @@ interface IReactiveRender {
 	(nextProps, nextContext): void;
 }
 
+function scuMobx(nextProps, nextState) {
+	// Update on any state changes (as is the default)
+	if (this.state !== nextState) {
+		return true;
+	}
+
+	// Update if props are shallowly not equal, inspired by PureRenderMixin
+	const keys = Object.keys(this.props);
+	if (keys.length !== Object.keys(nextProps).length) {
+		return true;
+	}
+
+	for (let i = keys.length - 1; i >= 0; i--) {
+		const key = keys[ i ];
+		const newValue = nextProps[ key ];
+		if (newValue !== this.props[ key ]) {
+			return true;
+		} else if (newValue && typeof newValue === 'object' && !isObservable(newValue)) {
+			// If the newValue is still the same object, but that object is not observable,
+			// fallback to the default behavior: update, because the object *might* have changed.
+			return true;
+		}
+	}
+	return false;
+}
+
 export default function makeReactive(componentClass) {
 
 	const target = componentClass.prototype || componentClass;
@@ -136,31 +162,9 @@ export default function makeReactive(componentClass) {
 		}
 	};
 
-	target.shouldComponentUpdate = function(nextProps, nextState) {
-		// Update on any state changes (as is the default)
-		if (this.state !== nextState) {
-			return true;
-		}
-
-		// Update if props are shallowly not equal, inspired by PureRenderMixin
-		const keys = Object.keys(this.props);
-		if (keys.length !== Object.keys(nextProps).length) {
-			return true;
-		}
-
-		for (let i = keys.length - 1; i >= 0; i--) {
-			const key = keys[ i ];
-			const newValue = nextProps[ key ];
-			if (newValue !== this.props[ key ]) {
-				return true;
-			} else if (newValue && typeof newValue === 'object' && !isObservable(newValue)) {
-				// If the newValue is still the same object, but that object is not observable,
-				// fallback to the default behavior: update, because the object *might* have changed.
-				return true;
-			}
-		}
-		return false;
-	};
+	if (!target.shouldComponentUpdate) {
+		target.shouldComponentUpdate = scuMobx;
+	}
 
 	return componentClass;
 }

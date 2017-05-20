@@ -91,4 +91,22 @@ describe('MobX Observer', () => {
 		todoItem = <TodoItem observableObj={observableObj} />;
 		expect(scu.call(todoItem, { observableObj })).to.be.false;
 	});
+
+	it('Should use given sCU over predefined sCU when possible', () => {
+		const Foobar = makeReactive(class extends Component {
+			shouldComponentUpdate() {
+				return false;
+			}
+
+			render() {
+				return <div>{this.props.number}</div>;
+			}
+		});
+
+		render(<Foobar number={1} />, container);
+		expect(container.firstChild.innerHTML).to.equal('1');
+
+		render(<Foobar number={2} />, container);
+		expect(container.firstChild.innerHTML).to.equal('1');
+	});
 });
