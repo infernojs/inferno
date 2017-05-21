@@ -6,7 +6,7 @@ export function isCheckedType(type) {
 }
 
 function onTextInputChange(e) {
-	const vNode = this;
+	const vNode = this.vNode;
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 	const previousValue = props.value;
@@ -25,7 +25,7 @@ function onTextInputChange(e) {
 
 	// the user may have updated the vNode from the above onInput events syncronously
 	// so we need to get it from the context of `this` again
-	const newVNode = this;
+	const newVNode = this.vNode;
 	const newProps = newVNode.props || EMPTY_OBJ;
 
 	// If render is going async there is no value change yet, it will come back to process input soon
@@ -37,7 +37,7 @@ function onTextInputChange(e) {
 }
 
 function wrappedOnChange(e) {
-	const props = this.props || EMPTY_OBJ;
+	const props = this.vNode.props || EMPTY_OBJ;
 	const event = props.onChange;
 
 	if (event.event) {
@@ -49,7 +49,7 @@ function wrappedOnChange(e) {
 
 function onCheckboxChange(e) {
 	e.stopPropagation(); // This click should not propagate its for internal use
-	const vNode = this;
+	const vNode = this.vNode;
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
 	const previousValue = props.value;
@@ -68,7 +68,7 @@ function onCheckboxChange(e) {
 
 	// the user may have updated the vNode from the above onInput events syncronously
 	// so we need to get it from the context of `this` again
-	const newVNode = this;
+	const newVNode = this.vNode;
 	const newProps = newVNode.props || EMPTY_OBJ;
 
 	// If render is going async there is no value change yet, it will come back to process input soon
@@ -81,17 +81,21 @@ function onCheckboxChange(e) {
 
 export function processInput(vNode, dom, nextPropsOrEmpty, mounting: boolean, isControlled): void {
 	applyValue(nextPropsOrEmpty, dom);
-	if (mounting && isControlled) {
-		if (isCheckedType(nextPropsOrEmpty.type)) {
-			dom.onclick = onCheckboxChange.bind(vNode);
-			dom.onclick.wrapped = true;
-		} else {
-			dom.oninput = onTextInputChange.bind(vNode);
-			dom.oninput.wrapped = true;
-		}
-		if (nextPropsOrEmpty.onChange) {
-			dom.onchange = wrappedOnChange.bind(vNode);
-			dom.onchange.wrapped = true;
+	if (isControlled) {
+		dom.vNode = vNode; // TODO: Remove this when implementing Fiber's
+
+		if (mounting) {
+			if (isCheckedType(nextPropsOrEmpty.type)) {
+				dom.onclick = onCheckboxChange;
+				dom.onclick.wrapped = true;
+			} else {
+				dom.oninput = onTextInputChange;
+				dom.oninput.wrapped = true;
+			}
+			if (nextPropsOrEmpty.onChange) {
+				dom.onchange = wrappedOnChange;
+				dom.onchange.wrapped = true;
+			}
 		}
 	}
 }
