@@ -57,6 +57,15 @@ describe('state', () => {
 		expect(f).not.to.be.a('null');
 	});
 
+	// As per React
+	it('Should have state defined in base constructor', () => {
+		class Foo extends Component {}
+
+		const f = new Foo({}, {});
+
+		expect(f.state).to.deep.equal({});
+	});
+
 	describe('setting state', () => {
 
 		it('setStateSync should apply state during componentWillReceiveProps', (done) => {
