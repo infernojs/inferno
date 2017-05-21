@@ -1,15 +1,15 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import { extendObservable, observable, toJS } from 'mobx';
+import mobx from 'mobx';
 import { innerHTML } from 'inferno/test/utils';
-import makeReactive from '../dist-es/makeReactive';
+import { observer } from '../dist-es';
 
-describe('MobX Observer', () => {
+describe('old - MobX Observer', () => {
 	let container;
 	const store = {
-		todos: observable([ 'one', 'two' ]),
-		extra: observable({ test: 'observable!' })
+		todos: mobx.observable([ 'one', 'two' ]),
+		extra: mobx.observable({ test: 'observable!' })
 	};
 
 	beforeEach(function () {
@@ -23,13 +23,13 @@ describe('MobX Observer', () => {
 		document.body.removeChild(container);
 	});
 
-	const TodoItem = makeReactive(function ({ todo }) {
+	const TodoItem = observer(function ({ todo }) {
 		return <li>{ todo }</li>;
 	});
 
 	let todoListRenderings = 0;
 	let todoListWillReactCount = 0;
-	const TodoList = makeReactive(class extends Component {
+	const TodoList = observer(class extends Component {
 		componentWillReact() {
 			todoListWillReactCount++;
 		}
@@ -57,16 +57,16 @@ describe('MobX Observer', () => {
 	});
 
 	it('should render a todo list with non observable item', () => {
-		const FlatList = makeReactive(class extends Component {
+		const FlatList = observer(class extends Component {
 			render({ extra }) {
 				return <div>{store.todos.map((title) => <li>{ title }{ extra.test }</li>)}</div>;
 			}
 		});
 
 		render(<FlatList extra={ store.extra }/>, container);
-		store.extra = toJS({ test: 'XXX' });
+		store.extra = mobx.toJS({ test: 'XXX' });
 		render(<FlatList extra={ store.extra }/>, container);
-		extendObservable(store, {
+		mobx.extendObservable(store, {
 			test: 'new entry'
 		});
 		render(<FlatList extra={ store.extra }/>, container);
@@ -80,20 +80,21 @@ describe('MobX Observer', () => {
 		let str = 'different';
 		expect(scu.call(todoItem, { str })).to.be.true;
 		str = 'test';
+
 		expect(scu.call(todoItem, { str })).to.be.false;
 		expect(scu.call(todoItem, { str, prop: 'foo' })).to.be.true;
 
 		const obj = {};
 		todoItem = <TodoItem obj={obj} />;
-		expect(scu.call(todoItem, { obj })).to.be.true;
+		expect(scu.call(todoItem, { obj })).to.be.false;
 
-		const observableObj = observable({});
+		const observableObj = mobx.observable({});
 		todoItem = <TodoItem observableObj={observableObj} />;
 		expect(scu.call(todoItem, { observableObj })).to.be.false;
 	});
 
 	it('Should use given sCU over predefined sCU when possible', () => {
-		const Foobar = makeReactive(class extends Component {
+		const Foobar = observer(class extends Component {
 			shouldComponentUpdate() {
 				return false;
 			}

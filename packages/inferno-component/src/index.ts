@@ -233,7 +233,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public getChildContext?(): void;
 
 	public forceUpdate(callback?: Function) {
-		if (this._unmounted || !isBrowser) {
+		if (this._unmounted || this._updating || !isBrowser) {
 			return;
 		}
 
@@ -287,7 +287,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			}
 
 			/* Update if scu is not defined, or it returns truthy value or force */
-			if (isUndefined(this.shouldComponentUpdate) || this.shouldComponentUpdate(nextProps, nextState, context) || force) {
+			if (force || isUndefined(this.shouldComponentUpdate) || this.shouldComponentUpdate(nextProps, nextState, context)) {
 				if (!isUndefined(this.componentWillUpdate)) {
 					this._blockSetState = true;
 					this.componentWillUpdate(nextProps, nextState, context);

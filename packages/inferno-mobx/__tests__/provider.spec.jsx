@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import { observable } from 'mobx';
+import mobx from 'mobx';
 import { innerHTML } from 'inferno/test/utils';
-import { connect, Provider } from '../dist-es';
+import { observer, Provider } from '../dist-es';
 
-describe('MobX Provider', () => {
+describe('old - MobX Provider', () => {
 	let container;
 
 	beforeEach(function () {
@@ -20,7 +20,7 @@ describe('MobX Provider', () => {
 	});
 
 	describe('updating state', () => {
-		const stores = observable({
+		const stores = mobx.observable({
 			store1: {
 				data: 'one'
 			},
@@ -29,7 +29,7 @@ describe('MobX Provider', () => {
 			}
 		});
 
-		const Statefull = connect(['store1'], class extends Component {
+		const Statefull = observer(['store1'], class extends Component {
 			render({ store1 }) {
 				// eslint-disable-next-line
 				const update = () => store1.data = 'Statefull';
@@ -41,7 +41,7 @@ describe('MobX Provider', () => {
 			}
 		});
 
-		const Stateless = connect(() => {
+		const Stateless = observer(() => {
 			// eslint-disable-next-line
 			const update = () => stores.store1.data = 'Stateless';
 
@@ -51,7 +51,7 @@ describe('MobX Provider', () => {
 			</article>;
 		});
 
-		const StatelessWithStores = connect(['store1'], (props) => {
+		const StatelessWithStores = observer(['store1'], (props) => {
 			// eslint-disable-next-line
 			const update = () => props.store1.data = 'hello world';
 
@@ -96,7 +96,7 @@ describe('MobX Provider', () => {
 	});
 
 	describe('providing/updating stores', () => {
-		const stores = observable({
+		const stores = mobx.observable({
 			store1: {
 				data: 'one'
 			},
@@ -106,7 +106,7 @@ describe('MobX Provider', () => {
 		});
 
 		it('should inherit stores from parent', () => {
-			const InheritComponent = connect([ 'store1', 'store2' ], (props) => {
+			const InheritComponent = observer([ 'store1', 'store2' ], (props) => {
 				return <div>
 					<span>{props.store1.data}</span>
 					<span>{props.store2.data}</span>
@@ -127,7 +127,7 @@ describe('MobX Provider', () => {
 		/*
 		 it.skip('should warn if stores change', () => {
 
-		 const TestComponent = connect(['store1'], class extends Component {
+		 const TestComponent = observer(['store1'], class extends Component {
 		 componentDidMount() {
 		 stores = observable({
 		 newStore: 'newStore'

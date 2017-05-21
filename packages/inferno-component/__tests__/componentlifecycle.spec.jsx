@@ -110,6 +110,30 @@ describe('Component lifecycle', () => {
 		expect(container.querySelectorAll('.foobar').length).to.equal(0);
 	});
 
+	it('Should not call shouldComponentUpdate when doing forceUpdate', () => {
+		let callCount = 0;
+		let c = null;
+
+		class Com extends Component {
+			shouldComponentUpdate() {
+				callCount++;
+				return true;
+			}
+
+			render() {
+				return (
+					<div>{this.props.value}</div>
+				);
+			}
+		}
+
+		// eslint-disable-next-line no-return-assign
+		render(<Com ref={(inst) => c = inst} value={1}/>, container);
+		expect(callCount).to.equal(0);
+		c.forceUpdate();
+		expect(callCount).to.equal(0);
+	});
+
 	it('Should not fail if componentDidUpdate is undefined #922', () => {
 		let callCount = 0;
 		let c = null;
