@@ -34,7 +34,7 @@ function createStoreInjector(grabStoresFn, component, injectNames?): any {
 					newProps[key] = props[key];
 				}
 			}
-			const additionalProps = grabStoresFn(this.context.mobxStores || {}, newProps, context) || {};
+			const additionalProps = grabStoresFn(context.mobxStores || {}, newProps, context) || {};
 			for (const key in additionalProps) {
 				newProps[key] = additionalProps[key];
 			}
