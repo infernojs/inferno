@@ -44,6 +44,19 @@ describe('linkEvent', () => {
 			container.querySelector('button').click();
 			expect(test).to.equal('456');
 		});
+
+		it('Should not fail when given event is invalid', () => {
+			render(<div onClick={linkEvent({ number: 1 }, null)} />, container);
+			container.firstChild.click();
+			render(<div onClick={linkEvent({ number: 1 }, undefined)} />, container);
+			container.firstChild.click();
+			render(<div onClick={linkEvent({ number: 1 }, false)} />, container);
+			container.firstChild.click();
+			render(<div onClick={linkEvent({ number: 1 }, true)} />, container);
+			container.firstChild.click();
+			render(<div onClick={linkEvent({ number: 1 }, {})} />, container);
+			container.firstChild.click();
+		});
 	});
 
 	describe('linkEvent on a button (onclick) - no delegation', () => {
