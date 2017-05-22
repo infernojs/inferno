@@ -1,6 +1,7 @@
 import h from '../';
 
-const emptyFn = function emptyFunction() {};
+const emptyFn = function emptyFunction() {
+};
 
 suite('hyperscript', () => {
 	/* Do not compare results between each other, these only measure OPS / sec for different structures */
@@ -17,35 +18,35 @@ suite('hyperscript', () => {
 		h('div', null, [
 			h('div', null, '1'),
 			h('div', null, [
-				h('div', null,'a'),
-				h('div', null,'b'),
-				h('div', null,'c')
+				h('div', null, 'a'),
+				h('div', null, 'b'),
+				h('div', null, 'c')
 			])
 		]);
 	});
 
 	benchmark('20 children siblings', () => {
 		h('div', null, [
-			h('div', null,'1'),
-			h('div', null,'2'),
-			h('div', null,'3'),
-			h('div', null,'4'),
-			h('div', null,'5'),
-			h('div', null,'6'),
-			h('div', null,'7'),
-			h('div', null,'8'),
-			h('div', null,'9'),
-			h('div', null,'10'),
-			h('div', null,'11'),
-			h('div', null,'12'),
-			h('div', null,'13'),
-			h('div', null,'14'),
-			h('div', null,'15'),
-			h('div', null,'16'),
-			h('div', null,'17'),
-			h('div', null,'18'),
-			h('div', null,'19'),
-			h('div', null,'20')
+			h('div', null, '1'),
+			h('div', null, '2'),
+			h('div', null, '3'),
+			h('div', null, '4'),
+			h('div', null, '5'),
+			h('div', null, '6'),
+			h('div', null, '7'),
+			h('div', null, '8'),
+			h('div', null, '9'),
+			h('div', null, '10'),
+			h('div', null, '11'),
+			h('div', null, '12'),
+			h('div', null, '13'),
+			h('div', null, '14'),
+			h('div', null, '15'),
+			h('div', null, '16'),
+			h('div', null, '17'),
+			h('div', null, '18'),
+			h('div', null, '19'),
+			h('div', null, '20')
 		]);
 	});
 
@@ -84,7 +85,7 @@ suite('hyperscript', () => {
 																																	h('div', null, (
 																																		h('div', null, (
 																																			h('div', null, 'child33')
-		))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+																																		))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
 	});
 
 	benchmark('Table shape', () => {

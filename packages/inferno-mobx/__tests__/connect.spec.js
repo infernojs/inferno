@@ -45,7 +45,7 @@ describe('MobX inject()', () => {
 	}
 
 	/*
-	it('should inject without second argument', () => {
+	 it('should inject without second argument', () => {
 
 	 class TestComponent extends Component {
 	 static defaultProps = { hello: 'world' };

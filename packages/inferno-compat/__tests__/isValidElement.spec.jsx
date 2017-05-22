@@ -1,26 +1,12 @@
 import { expect } from 'chai';
 import createElement from 'inferno-create-element';
 import isValidElement from '../dist-es/isValidElement';
-import { render } from 'inferno';
+import { cloneVNode } from 'inferno';
 import h from 'inferno-hyperscript';
 import Component from 'inferno-component';
-import Inferno, { cloneVNode } from 'inferno';
 
 
 describe('isValidElement', () => {
-	let container;
-
-	beforeEach(function () {
-		container = document.createElement('div');
-		document.body.appendChild(container);
-	});
-
-	afterEach(function () {
-		container.innerHTML = '';
-		render(null, container);
-		document.body.removeChild(container);
-	});
-
 	it('Should not work with non-object', () => {
 		expect(isValidElement(33)).to.equal(false);
 		expect(isValidElement(false)).to.equal(false);
@@ -57,7 +43,7 @@ describe('isValidElement', () => {
 			render() {
 				return createElement('div', null, 'Do a thing');
 			}
-        }
+		}
 		const comp = createElement(Comp);
 		expect(isValidElement(comp)).to.equal(true);
 	});
@@ -90,7 +76,7 @@ describe('isValidElement', () => {
 			render() {
 				return h('div', 'Do a thing');
 			}
-        }
+		}
 		const comp = h(Comp);
 		expect(isValidElement(comp)).to.equal(true);
 	});
@@ -112,7 +98,7 @@ describe('isValidElement', () => {
 			render() {
 				return createElement('div', null, 'Do a thing');
 			}
-        }
+		}
 		expect(isValidElement(Comp)).to.equal(false);
 	});
 
@@ -121,7 +107,7 @@ describe('isValidElement', () => {
 			render() {
 				return h('div', 'Do a thing');
 			}
-        }
+		}
 		expect(isValidElement(Comp)).to.equal(false);
 	});
 });

@@ -11,11 +11,13 @@ const platformNames = {
 
 const browsers = {
 	'Windows 7': {
-		'Internet Explorer': ['11']
+		'Internet Explorer': ['11'],
+		chrome: [ '55', '56', '57', '58' ],
+		firefox: [ '50', '51', '52', '53' ]
 	},
 	'Windows 10': {
-		chrome: [ '53', '54', 'beta' ],
-		firefox: [ '49', '50' ],
+		chrome: [ '55', '56', '57', '58' ],
+		firefox: [ '50', '51', '52', '53' ],
 		MicrosoftEdge: [ '13', '14' ]
 	},
 	'OS X 10.11': {

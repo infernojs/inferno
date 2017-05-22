@@ -1,6 +1,6 @@
 {
   "name": "inferno-test-utils",
-  "version": "1.3.0-rc.3",
+  "version": "3.2.2",
   "license": "MIT",
   "description": "Suite of utilities for testing Inferno applications",
   "author": {
@@ -21,30 +21,29 @@
     "utils"
   ],
   "dependencies": {
-    "inferno": "^1.3.0-rc.3",
-    "inferno-create-class": "^1.3.0-rc.3",
-    "inferno-create-element": "^1.3.0-rc.3",
-    "inferno-shared": "^1.3.0-rc.3",
-    "inferno-vnode-flags": "^1.3.0-rc.1"
+    "inferno": "3.2.2",
+    "inferno-create-class": "3.2.2",
+    "inferno-create-element": "3.2.2",
+    "inferno-shared": "3.1.1",
+    "inferno-vnode-flags": "^3.0.0"
   },
   "devDependencies": {
-    "inferno-component": "^1.3.0-rc.3",
-    "inferno-server": "^1.3.0-rc.3"
+    "inferno-component": "3.2.2",
+    "inferno-server": "3.2.2"
   },
-  "bundledDependencies": [
-    "inferno-shared",
-    "inferno-vnode-flags"
-  ],
   "rollup": {
-    "moduleGlobal": "Inferno.TestUtils",
+    "bundledDependencies": [
+      "inferno-shared",
+      "inferno-vnode-flags"
+    ],
+    "moduleName": "Inferno.TestUtils",
     "moduleGlobals": {
       "inferno": "Inferno",
       "inferno-create-element": "Inferno.createElement"
     }
   },
-  "main": "dist/inferno-test-utils.node.js",
-  "jsnext:main": "dist-es/index.js",
-  "module": "dist-es/index.js",
-  "typings": "dist-es/index.d.ts",
+  "main": "index.js",
+  "inferno:main": "dist-es/index.js",
+  "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno"
 }

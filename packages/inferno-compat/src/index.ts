@@ -1,12 +1,22 @@
-import PropTypes from 'proptypes';
-import isValidElement from './isValidElement';
-import createClass from 'inferno-create-class';
-import infernoCreateElement from 'inferno-create-element';
-import { createVNode, render, findDOMNode, options, cloneVNode, VNode, InfernoChildren, Props, EMPTY_OBJ } from 'inferno';
-import { NO_OP } from 'inferno-shared';
+import {
+	cloneVNode,
+	createVNode,
+	EMPTY_OBJ,
+	findDOMNode,
+	InfernoChildren,
+	options,
+	Props,
+	render,
+	VNode
+} from 'inferno';
 import Component from 'inferno-component';
-import { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
+import createClass, { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
+import infernoCreateElement from 'inferno-create-element';
+import { isArray, isBrowser, isFunction, isNull, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
+import isValidElement from './isValidElement';
+import PropTypes from './PropTypes';
+import SVGDOMPropertyConfig from './SVGDOMPropertyConfig';
 
 declare global {
 	interface Event {
@@ -19,10 +29,6 @@ options.findDOMNodeEnabled = true;
 function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragment): boolean {
 	render(null, container);
 	return true;
-}
-
-function isNullOrUndef(children: any) {
-	return children === null || children === undefined;
 }
 
 const ARR = [];
@@ -48,7 +54,9 @@ const Children = {
 		if (ctx && ctx !== children) {
 			fn = fn.bind(ctx);
 		}
-		children.forEach(fn);
+		for (let i = 0, len = children.length; i < len; i++) {
+			fn(children[ i ], i, children);
+		}
 	},
 	count(children: Array<InfernoChildren | any>): number {
 		children = Children.toArray(children);
@@ -59,41 +67,31 @@ const Children = {
 		if (children.length !== 1) {
 			throw new Error('Children.only() expects only one child.');
 		}
-		return children[0];
+		return children[ 0 ];
 	},
 	toArray(children: Array<InfernoChildren | any>): Array<InfernoChildren | any> {
 		if (isNullOrUndef(children)) {
 			return [];
 		}
-		return Array.isArray && Array.isArray(children) ? children : ARR.concat(children);
+		return isArray(children) ? children : ARR.concat(children);
 	}
 };
 
 (Component.prototype as any).isReactComponent = {};
 
-let currentComponent = null;
+let currentComponent: any = null;
 
-options.beforeRender = function (component): void {
+options.beforeRender = function(component): void {
 	currentComponent = component;
 };
-options.afterRender = function (): void {
+options.afterRender = function(): void {
 	currentComponent = null;
 };
 
-const version = '15.4.1';
-
-const xlinkAttrs = {
-	xlinkActuate: 'xlink:actuate',
-	xlinkArcrole: 'xlink:arcrole',
-	xlinkHref: 'xlink:href',
-	xlinkRole: 'xlink:role',
-	xlinkShow: 'xlink:show',
-	xlinkTitle: 'xlink:title',
-	xlinkType: 'xlink:type'
-};
+const version = '15.4.2';
 
 function normalizeProps(name: string, props: Props | any) {
-	if ((name === 'input' || name === 'textarea') && props.onChange) {
+	if ((name === 'input' || name === 'textarea') && props.type !== 'radio' && props.onChange) {
 		const type = props.type;
 		let eventName;
 
@@ -104,19 +102,25 @@ function normalizeProps(name: string, props: Props | any) {
 		} else {
 			eventName = 'oninput';
 		}
-		if (!props[eventName]) {
-			props[eventName] = props.onChange;
+
+		if (!props[ eventName ]) {
+			props[ eventName ] = props.onChange;
 			delete props.onChange;
 		}
 	}
-	for (let prop in props) {
+	for (const prop in props) {
 		if (prop === 'onDoubleClick') {
-			props.onDblClick = props[prop];
-			delete props[prop];
+			props.onDblClick = props[ prop ];
+			delete props[ prop ];
 		}
-		if (xlinkAttrs[prop]) {
-			props[xlinkAttrs[prop]] = props[prop];
-			delete props[prop];
+		if (prop === 'htmlFor') {
+			props.for = props[ prop ];
+			delete props[ prop ];
+		}
+		const mappedProp = SVGDOMPropertyConfig[ prop ];
+		if (mappedProp && mappedProp !== prop) {
+			props[ mappedProp ] = props[ prop ];
+			delete props[ prop ];
 		}
 	}
 }
@@ -128,23 +132,48 @@ function normalizeProps(name: string, props: Props | any) {
 // but in reality devs use onSomething for many things, not only for
 // input events
 if (typeof Event !== 'undefined' && !Event.prototype.persist) {
-	Event.prototype.persist = function () {};
+// tslint:disable-next-line:no-empty
+	Event.prototype.persist = function() {};
 }
 
-const injectStringRefs = function (originalFunction) {
-	return function (name, _props, ...children) {
-		let props = _props || {};
+function iterableToArray(iterable) {
+	let iterStep;
+	const tmpArr: any[] = [];
+	do {
+		iterStep = iterable.next();
+		if (iterStep.value) {
+			tmpArr.push(iterStep.value);
+		}
+	} while (!iterStep.done);
+
+	return tmpArr;
+}
+
+const hasSymbolSupport = typeof Symbol !== 'undefined';
+
+const injectStringRefs = function(originalFunction) {
+	return function(name, _props, ...children) {
+		const props = _props || {};
 		const ref = props.ref;
 
-		if (typeof ref === 'string') {
-			props.ref = function (val) {
-				if (this && this.refs) {
-					this.refs[ref] = val;
-				}
-			}.bind(currentComponent || null);
+		if (typeof ref === 'string' && !isNull(currentComponent)) {
+			currentComponent.refs = currentComponent.refs || {};
+			props.ref = function(val) {
+				this.refs[ ref ] = val;
+			}.bind(currentComponent);
 		}
 		if (typeof name === 'string') {
 			normalizeProps(name, props);
+		}
+
+		// React supports iterable children, in addition to Array-like
+		if (hasSymbolSupport) {
+			for (let i = 0, len = children.length; i < len; i++) {
+				const child = children[ i ];
+				if (child && !isArray(child) && !isString(child) && isFunction(child[ Symbol.iterator ])) {
+					children[ i ] = iterableToArray(child[ Symbol.iterator ]());
+				}
+			}
 		}
 		return originalFunction(name, props, ...children);
 	};
@@ -159,7 +188,7 @@ options.createVNode = (vNode: VNode): void => {
 	const children = vNode.children;
 	let props = vNode.props;
 
-	if (isNullOrUndef(vNode.props)) {
+	if (isNullOrUndef(props)) {
 		props = vNode.props = {};
 	}
 	if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {
@@ -172,13 +201,13 @@ options.createVNode = (vNode: VNode): void => {
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
 function shallowDiffers(a, b): boolean {
-	for (let i in a) {
+	for (const i in a) {
 		if (!(i in b)) {
 			return true;
 		}
 	}
-	for (let i in b) {
-		if (a[i] !== b[i]) {
+	for (const i in b) {
+		if (a[ i ] !== b[ i ]) {
 			return true;
 		}
 	}
@@ -190,22 +219,26 @@ function PureComponent(props, context) {
 }
 
 PureComponent.prototype = new Component({}, {});
-PureComponent.prototype.shouldComponentUpdate = function (props, state) {
+PureComponent.prototype.shouldComponentUpdate = function(props, state) {
 	return shallowDiffers(this.props, props) || shallowDiffers(this.state, state);
 };
 
 class WrapperComponent<P, S> extends Component<P, S> {
-	getChildContext() {
+	public getChildContext() {
 		// tslint:disable-next-line
-		return this.props['context'];
+		return this.props[ 'context' ];
 	}
-	render(props) {
+
+	public render(props) {
 		return props.children;
 	}
 }
 
 function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, callback) {
-	const wrapperVNode: VNode = createVNode(4, WrapperComponent, { context: parentComponent.context, children: vNode });
+	const wrapperVNode: VNode = createVNode(4, WrapperComponent, null, null, {
+		children: vNode,
+		context: parentComponent.context
+	});
 	const component = render(wrapperVNode, container);
 
 	if (callback) {
@@ -224,7 +257,35 @@ function createFactory(type) {
 
 const DOM = {};
 for (let i = ELEMENTS.length; i--; ) {
-	DOM[ELEMENTS[i]] = createFactory(ELEMENTS[i]);
+	DOM[ ELEMENTS[ i ] ] = createFactory(ELEMENTS[ i ]);
+}
+
+// Mask React global in browser enviornments when React is not used.
+if (isBrowser && typeof (window as any).React === 'undefined') {
+	const exports = {
+		createVNode,
+		render,
+		isValidElement,
+		createElement,
+		Component,
+		PureComponent,
+		unmountComponentAtNode,
+		cloneElement,
+		PropTypes,
+		createClass,
+		findDOMNode,
+		Children,
+		cloneVNode,
+		NO_OP,
+		version,
+		unstable_renderSubtreeIntoContainer,
+		createFactory,
+		DOM,
+		EMPTY_OBJ
+	};
+
+	(window as any).React = exports;
+	(window as any).ReactDOM = exports;
 }
 
 export {

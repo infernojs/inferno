@@ -9,20 +9,18 @@ import { bindActionCreators } from 'redux';
 export function warning(message) {
 	/* eslint-disable no-console */
 	if (typeof console !== 'undefined' && typeof console.error === 'function') {
+		// tslint:disable-next-line:no-console
 		console.error(message);
 	}
 
-	/* eslint-enable no-console */
 	try {
 		// This error was thrown as a convenience so that if you enable
 		// "break on all exceptions" in your console,
 		// it would pause the execution at this line.
 		throw new Error(message);
 
-		/* eslint-disable no-empty */
-	} catch (e) {}
-
-	/* eslint-enable no-empty */
+// tslint:disable-next-line:no-empty
+	} catch ( e ) {}
 }
 
 export function shallowEqual(objA, objB) {
@@ -38,10 +36,10 @@ export function shallowEqual(objA, objB) {
 	// Test for A's keys different from B.
 	const hasOwn = Object.prototype.hasOwnProperty;
 	for (let i = 0, len = keysA.length; i < len; i++) {
-		const key = keysA[i];
+		const key = keysA[ i ];
 
 		if (!hasOwn.call(objB, key) ||
-			objA[key] !== objB[key]) {
+			objA[ key ] !== objB[ key ]) {
 			return false;
 		}
 	}

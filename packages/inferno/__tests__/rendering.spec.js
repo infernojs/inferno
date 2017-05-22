@@ -43,5 +43,4 @@ describe('rendering routine', () => {
 		render(foo, container);
 		expect(container.innerHTML).to.eql('<div><div>123</div></div>');
 	});
-
 });

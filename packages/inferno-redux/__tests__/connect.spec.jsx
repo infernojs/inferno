@@ -19,9 +19,18 @@ class BasicComponent1 extends Component {
 	handleClick() {
 		this.props.action();
 	}
+
 	render() {
 		return (
 			<a onClick={this.handleClick.bind(this)}>{this.props.test}</a>
+		);
+	}
+}
+
+class BasicComponent2 extends Component {
+	render() {
+		return (
+			<div>{this.props.a} {this.props.b} {this.props.c}</div>
 		);
 	}
 }
@@ -140,5 +149,19 @@ describe('connect', () => {
 			expect(container.innerHTML).to.equal(innerHTML('<a>2</a>'));
 			done();
 		}, 10);
+	});
+
+	it('should override parentProps with stateProps and stateProps with dispatchProps', () => {
+		const store = createStore(state => state);
+		const mapDispatchToProps = dispatch => ({
+			a: 'dispatch'
+		});
+		const mapStateToProps = state => ({
+			a: 'state',
+			b: 'state'
+		});
+		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent2);
+		render(<ConnectedComponent store={store} a="parent" b="parent" c="parent"/>, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div>dispatch state parent</div>'));
 	});
 });

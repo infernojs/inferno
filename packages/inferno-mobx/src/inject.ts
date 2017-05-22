@@ -1,6 +1,7 @@
 import hoistStatics from 'hoist-non-inferno-statics';
+import { createVNode } from 'inferno';
 import createClass from 'inferno-create-class';
-import createElement from 'inferno-create-element';
+import VNodeFlags from 'inferno-vnode-flags';
 
 interface IStoreProps {
 	ref: any;
@@ -14,24 +15,27 @@ function createStoreInjector(grabStoresFn: Function, component) {
 		displayName: component.name,
 		render() {
 			const newProps = {} as IStoreProps;
-			for (let key in this.props) {
+			for (const key in this.props) {
 				if (this.props.hasOwnProperty(key)) {
-					newProps[key] = this.props[key];
+					newProps[ key ] = this.props[ key ];
 				}
 			}
 			const additionalProps = grabStoresFn(this.context.mobxStores || {}, newProps, this.context) || {};
-			for ( const key in additionalProps ) {
+			for (const key in additionalProps) {
 				newProps[ key ] = additionalProps[ key ];
 			}
 			newProps.ref = (instance) => {
 				this.wrappedInstance = instance;
 			};
 
-			return createElement(component, newProps);
+			return createVNode(VNodeFlags.ComponentUnknown, component, null, null, newProps);
 		}
 	});
 
-	Injector.contextTypes = { mobxStores() {} };
+	Injector.contextTypes = {
+		// tslint:disable-next-line:no-empty
+		mobxStores() {}
+	};
 	hoistStatics(Injector, component);
 
 	return Injector;
@@ -53,7 +57,7 @@ const grabStoresByName = function(storeNames: string[]): Function {
 				);
 			}
 
-			nextProps[storeName] = baseStores[storeName];
+			nextProps[ storeName ] = baseStores[ storeName ];
 		});
 		return nextProps;
 	};
@@ -71,7 +75,7 @@ export default function inject(grabStoresFn?: Function | string): any {
 
 		const storesNames: any = [];
 		for (let i = 0, len = arguments.length; i < len; i++) {
-			storesNames[i] = arguments[i];
+			storesNames[ i ] = arguments[ i ];
 		}
 
 		grabStoresFn = grabStoresByName(storesNames);

@@ -35,7 +35,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			template: () => createElement('div', { className: 'foo' }, createElement('span', { className: 'bar' })),
 			result: '<div class="foo"><span class="bar"></span></div>'
 		}, {
-			description: 'should render div with text child',
+			description: 'should render div with text child #2',
 			template: () => createElement('div', null, 'Hello world'),
 			result: '<div>Hello world</div>'
 		}, {
@@ -98,6 +98,10 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			description: 'should ignore undefined className',
 			template: () => createElement('div', { className: undefined }),
 			result: '<div></div>'
+		}, {
+			description: 'should render opacity style',
+			template: () => createElement('div', { style: { opacity: 0.8 } }),
+			result: '<div style="opacity:0.8;"></div>'
 		}
 	];
 
@@ -113,14 +117,77 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			});
 		});
 	});
+
+
+	describe('Component hook', () => {
+		it('Should allow changing state in CWM', () => {
+			class Another extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+					this.state = {
+						foo: 'bar'
+					};
+				}
+
+				componentWillMount() {
+					this.setState({
+						foo: 'bar2'
+					});
+				}
+
+				render() {
+					return (
+						<div>
+							{this.state.foo}
+						</div>
+					);
+				}
+			}
+
+			class Tester extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+					this.state = {
+						foo: 'bar'
+					};
+				}
+
+				componentWillMount() {
+					this.setState({
+						foo: 'bar2'
+					});
+				}
+
+				render() {
+					return (
+						<div>
+							{this.state.foo}
+							<Another />
+						</div>
+					);
+				}
+			}
+
+			const vDom = <Tester />;
+			return streamPromise(vDom).then(function (output) {
+				const container = document.createElement('div');
+				document.body.appendChild(container);
+				container.innerHTML = output;
+				expect(output).to.equal('<div>bar2<div>bar2</div></div>');
+				document.body.removeChild(container);
+			});
+		});
+	});
 });
 
 function streamPromise(dom) {
 	return new Promise(function (res, rej) {
 		streamAsString(dom)
-		.on('error', rej)
-		.pipe(concatStream(function (buffer) {
-			res(buffer.toString('utf-8'));
-		}));
+			.on('error', rej)
+			.pipe(concatStream(function (buffer) {
+				res(buffer.toString('utf-8'));
+			}));
 	});
 }

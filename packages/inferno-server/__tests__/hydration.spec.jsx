@@ -2,11 +2,7 @@ import { expect } from 'chai';
 import { createVNode, render } from 'inferno';
 import Component from 'inferno-component';
 import { renderToString } from '../dist-es';
-import {
-	createContainerWithHTML,
-	innerHTML,
-	validateNodeTree
-} from 'inferno/test/utils';
+import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno/test/utils';
 
 function Comp1() {
 	return <span>Worked!</span>;
@@ -237,7 +233,7 @@ describe('SSR Hydration - (JSX)', () => {
 
 	it('should rebuild and patch from existing DOM content', () => {
 		const container = document.createElement('div');
-		const vNode = createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+		const vNode = createVNode(2, 'div', 'example', 'Hello world!');
 
 		container.innerHTML = '<h1><div>Existing DOM content</div></h1>';
 		render(vNode, container);
@@ -246,7 +242,7 @@ describe('SSR Hydration - (JSX)', () => {
 
 	it('should rebuild and patch from existing DOM content (whitespace) ', () => {
 		const container = document.createElement('div');
-		const vNode = createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+		const vNode = createVNode(2, 'div', 'example', 'Hello world!');
 
 		container.appendChild(document.createTextNode(''));
 		container.appendChild(document.createElement('h1'));
@@ -257,7 +253,7 @@ describe('SSR Hydration - (JSX)', () => {
 
 	it('should rebuild and patch from existing DOM content #2', () => {
 		const container = document.createElement('div');
-		const vNode = createVNode(2, 'div', { className: 'example' }, [
+		const vNode = createVNode(2, 'div', 'example', [
 			createVNode(2, 'div', null, 'Item 1'),
 			createVNode(2, 'div', null, 'Item 2')
 		]);
@@ -269,7 +265,7 @@ describe('SSR Hydration - (JSX)', () => {
 
 	it('should rebuild and patch from existing DOM content #3', () => {
 		const container = document.createElement('div');
-		const vNode = createVNode(2, 'div', { className: 'example' }, [
+		const vNode = createVNode(2, 'div', 'example', [
 			createVNode(2, 'div', null, 'Item 1'),
 			createVNode(2, 'div', null, 'Item 2')
 		]);
@@ -277,5 +273,58 @@ describe('SSR Hydration - (JSX)', () => {
 		container.innerHTML = '<div><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></div>';
 		render(vNode, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
+	});
+
+	it('Should work with setState', () => {
+		class Comp3 extends Component {
+			constructor(props, context) {
+				super(props, context);
+
+				this.state = {
+					i: 0
+				};
+
+				this.clicker = this.clicker.bind(this);
+			}
+
+			componentWillMount() {
+				this.setState({
+					i: ++this.state.i
+				});
+			}
+
+			clicker() {
+				this.setState({
+					i: ++this.state.i
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						{this.state.i}
+						<span onClick={this.clicker}>1</span>
+					</div>
+				);
+			}
+		}
+
+
+		const container = document.createElement('div');
+
+		document.body.appendChild(container);
+		container.innerHTML = '<div>1<span>1</span></div>';
+		render(<Comp3 />, container);
+		expect(container.innerHTML).to.equal(innerHTML('<div>1<span>1</span></div>'));
+
+		container.querySelector('span').click();
+
+		expect(container.innerHTML).to.equal(innerHTML('<div>2<span>1</span></div>'));
+
+		container.querySelector('span').click();
+
+		expect(container.innerHTML).to.equal(innerHTML('<div>3<span>1</span></div>'));
+
+		document.body.removeChild(container);
 	});
 });

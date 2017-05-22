@@ -17,7 +17,7 @@ module.exports = function (config) {
 			require.resolve('es6-shim'),
 			require.resolve('babel-polyfill/dist/polyfill'),
 			require.resolve('sinon/pkg/sinon'),
-			'packages/*/__tests__/**/*.js*'
+			`packages/${process.env.PKG_FILTER || '*'}/__tests__/**/*.js*`
 		],
 		reporters: [
 			'failed'

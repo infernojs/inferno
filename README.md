@@ -1,4 +1,4 @@
-<p align="center"><img src="http://infernojs.org/img/inferno.png" width="150px"></p>
+<p align="center"><img src="https://www.infernojs.org/assets/infernojs-logo.png"></p>
 <p>&nbsp;</p>
 
 [![Build Status](https://img.shields.io/travis/infernojs/inferno/master.svg?style=flat-square)](https://travis-ci.org/infernojs/inferno/branches)
@@ -49,9 +49,7 @@ Inferno proves that it is possible to be fast on mobile. Parse-time, load-time, 
 
 - [Virtual DOM Benchmark](http://vdom-benchmark.github.io/vdom-benchmark/)
 - [UI Bench](https://localvoid.github.io/uibench/)
-- [dbmonster](http://infernojs.org/benchmarks/dbmonster/)
-- [dbmonster (lazy optimisation)](http://infernojs.org/benchmarks/dbmonster-lazy/)
-- [Angular Test Table](http://infernojs.org/benchmarks/angular-test-table/infernojs/index.html)
+- [dbmonster](https://rawgit.com/infernojs/dbmonster-inferno/master/index.html)
 - [JS Web Frameworks Benchmark - Round 4](http://stefankrause.net/js-frameworks-benchmark4/webdriver-ts/table.html)
 
 ## Code Example
@@ -68,7 +66,7 @@ const message = "Hello world";
 Inferno.render(
   <MyComponent message={ message } />,
   document.getElementById("app")
-)
+);
 ```
 Furthermore, Inferno also uses ES6 components like React:
 
@@ -93,12 +91,15 @@ class MyComponent extends Component {
   }
 }
 
-Inferno.render(<MyComponent />, document.body);
+Inferno.render(
+  <MyComponent />,
+  document.getElementById("app")
+);
 ```
 
 ### More Examples
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/u7p19pvc/78/)
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/wqxuags2/)
 
 ## Getting Started
 
@@ -126,13 +127,13 @@ npm install --save inferno-router
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.2.2/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/3.0.5/inferno.min.js
 ```
 
 Or on unpkg.com:
 
 ```
-https://unpkg.com/inferno@1.2.2/dist/inferno.min.js
+https://unpkg.com/inferno@3.0.5/dist/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -229,7 +230,7 @@ Inferno in this way is called a "controlled component".
 ```javascript
 import Inferno from 'inferno';
 
-Inferno.render(<div />, document.body);
+Inferno.render(<div />, document.getElementById("app"));
 ```
 
 Render a virtual node into the DOM in the supplied container given the supplied virtual DOM. If the virtual node was previously rendered
@@ -239,20 +240,20 @@ Warning: If the container element is not empty before rendering, the content of 
 
 ### `createRenderer` (package: `inferno`)
 
-`createRenderer` allows for functional composition when rendering content to the DOM. Example:
+`createRenderer` creates an alternative render function with a signature matching that of the first argument passed to a reduce/scan function. This allows for easier integration with reactive programming libraries, like [RxJS](https://github.com/ReactiveX/rxjs) and [Most](https://github.com/cujojs/most).
 
 ```javascript
 import Inferno from 'inferno';
 import { scan, map } from 'most';
 
-...
-const model$ = scan(update, 0, actions$);
-const vNodes$ = map(view(actions$), model$);
 const renderer = Inferno.createRenderer();
-const runApp = () => scan(renderer, container, vNodes$).drain();
 
-runApp();
+...
+// NOTE: vNodes$ represents a stream of virtual DOM node updates
+scan(renderer, document.getElementById("app"), vNodes$);
 ```
+
+See [inferno-most-fp-demo](https://github.com/joshburgess/inferno-most-fp-demo) for an example of how to build an app architecture around this.
 
 ### `createElement` (package: `inferno-create-element`)
 
@@ -263,18 +264,21 @@ import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
 
 class BasicComponent extends Component {
-    render() {
-        return createElement('div', {
-               className: 'basic'
-           },
-           createElement('span', {
-               className: this.props.name
-           }, 'The title is ', this.props.title)
-       )
-    }
+  render() {
+    return createElement('div', {
+        className: 'basic'
+      },
+      createElement('span', {
+        className: this.props.name
+      }, 'The title is ', this.props.title)
+    )
+  }
 }
 
-Inferno.render(createElement(BasicComponent, { title: 'abc' }), document.body);
+Inferno.render(
+  createElement(BasicComponent, { title: 'abc' }),
+  document.getElementById("app")
+);
 ```
 
 ### `Component` (package: `inferno-component`)
@@ -299,7 +303,7 @@ This is the base class for Inferno Components when they're defined using ES6 cla
 import Inferno from 'inferno';
 
 const MyComponent = ({ name, age }) => (
-  <span>My name is: { name } and my age is: {age}</span>  
+  <span>My name is: { name } and my age is: {age}</span>
 );
 ```
 
@@ -310,12 +314,12 @@ Functional components are first-class functions where their first argument is th
 Inferno.createVNode(
   flags,
   type,
-  [props],
+  [className],
   [...children],
-  [events],
+  [props],
   [key],
   [ref],
-  [isNormalized]
+  [noNormalise]
 )
 ```
 
@@ -327,7 +331,7 @@ of `createVNode` usage:
 ```javascript
 import Inferno from 'inferno';
 
-const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+const vNode = Inferno.createVNode(2, 'div', 'example', 'Hello world!');
 
 Inferno.render(vNode, container);
 ```
@@ -335,7 +339,7 @@ Inferno.render(vNode, container);
 The first argument for `createVNode()` is a value from [`VNodeFlags`](https://github.com/infernojs/inferno/tree/master/packages/inferno-vnode-flags), this is a numerical value that tells Inferno what the VNode describes on the page.
 
 ### `cloneVNode` (package: `inferno`)
-```js
+```javascript
 Inferno.cloneVNode(
   vNode,
   [props],
@@ -355,7 +359,7 @@ An example of using `cloneVNode`:
 ```javascript
 import Inferno from 'inferno';
 
-const vNode = Inferno.createVNode(2, 'div', { className: 'example' }, 'Hello world!');
+const vNode = Inferno.createVNode(2, 'div', 'example', 'Hello world!');
 const newVNode = Inferno.cloneVNode(vNode, { id: 'new' }); // we are adding an id prop to the VNode
 
 Inferno.render(newVNode, container);
@@ -389,11 +393,11 @@ In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode
 import Inferno, { linkEvent } from 'inferno';
 
 function handleClick(props, event) {
-	props.validateValue(event.target.value);
+  props.validateValue(event.target.value);
 }
 
 function MyComponent(props) {
-	return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
+  return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
 }
 ```
 
@@ -405,13 +409,13 @@ import Inferno, { linkEvent } from 'inferno';
 import Component from 'inferno-component';
 
 function handleClick(instance, event) {
-	instance.setState({ data: event.target.value });
+  instance.setState({ data: event.target.value });
 }
 
 class MyComponent extends Component {
-	render () {
-		return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
-	}
+  render () {
+    return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
+  }
 }
 ```
 
@@ -436,7 +440,7 @@ You can set default options for Inferno using `Inferno.options`. Below are the f
 
 This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
 
-#### - `recyclingEnabled` (default: `true`)
+#### - `recyclingEnabled` (default: v1.3+ `false`)
 
 This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon disposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
 
@@ -457,14 +461,17 @@ Functional lifecycle events must be explicitly assigned via props onto a functio
 
 ```javascript
 function mounted(domNode) {
-    // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
+  // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 }
 
 function FunctionalComponent({ props }) {
-	return <div>Hello world</div>;
+  return <div>Hello world</div>;
 }
 
-Inferno.render(<FunctionalComponent onComponentDidMount={ mounted } />, document.body);
+Inferno.render(
+  <FunctionalComponent onComponentDidMount={ mounted } />,
+  document.getElementById("app")
+);
 ```
 
 Please note: class components (ES2015 classes) from `inferno-component` **do not** support the same lifecycle events (they have their own lifecycle events that work as methods on the class itself).
@@ -488,7 +495,7 @@ Use the following configuration in your Webpack build:
 
 ```js
   ...
-	plugins: [
+  plugins: [
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
@@ -507,28 +514,27 @@ const replace = require('rollup-plugin-replace');
 
 ```js
   ...
-	plugins: [
-		replace({
-			'process.env.NODE_ENV': JSON.stringify('production'),
-		})
+  plugins: [
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    })
   ]
 ```
 
 ## Browser Support
 
-Inferno supports IE11+, Edge, Chrome, Firefox and Safari 8+. In order to support IE8+, Inferno requires polyfills for the following JavaScript features:
+Inferno supports Edge, Chrome, Firefox and Safari 8+. In order to support IE8-11, Inferno may require polyfills for the following JavaScript features:
 
 - [Promise object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 - [Map object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
 - [WeakMap object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
 - [Object.keys](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
-- [Object.assign](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
 
 Potential solutions include using the [es5-shim](https://github.com/es-shims/es5-shim) for ES5 features and [es6-shim](https://github.com/paulmillr/es6-shim) from ES2015 features.
 
 As a quick drop-in solution, you may also use the [Polyfill.io](https://polyfill.io) service to pull in the required polyfills for the user's browser automatically by including the following line in your page:
 ```
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise,Map,WeakMap,Object.keys,Object.assign"></script>
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise,Map,WeakMap,Object.keys"></script>
 ```
 
 ### Custom namespaces

@@ -49,6 +49,22 @@ describe('Components (JSX) #2', () => {
 			}
 		}
 
+		class ComponentBWithStateChange extends Component {
+			componentWillMount() {
+				this.setStateSync({
+					text: 'newText'
+				});
+
+				this.setStateSync({
+					text: 'newText2'
+				});
+			}
+
+			render() {
+				return <div><span>{this.state.text}</span></div>;
+			}
+		}
+
 		function ComA() {
 			return <div><span>Something</span></div>;
 		}
@@ -78,8 +94,22 @@ describe('Components (JSX) #2', () => {
 
 			render(<ComB />, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
-			expect(container.firstChild === trackElemDiv).to.equal(true);
-			expect(container.firstChild.firstChild === trackElemSpan).to.equal(true);
+
+			expect(container.firstChild === trackElemDiv).to.equal(false);
+			expect(container.firstChild.firstChild === trackElemSpan).to.equal(false);
+		});
+
+		it('Should not crash when ComB does setState while changing', () => {
+			render(<ComponentA />, container);
+			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+			const trackElemDiv = container.firstChild;
+			const trackElemSpan = container.firstChild.firstChild;
+
+			render(<ComponentBWithStateChange />, container);
+			// These are same but not equal
+			expect(container.innerHTML).to.equal(innerHTML('<div><span>newText2</span></div>'));
+			expect(container.firstChild === trackElemDiv).to.equal(false);
+			expect(container.firstChild.firstChild === trackElemSpan).to.equal(false);
 		});
 	});
 
@@ -88,18 +118,20 @@ describe('Components (JSX) #2', () => {
 			constructor(props) {
 				super(props);
 
+				this.state = { data: '' };
+
 				this._update = this._update.bind(this);
 			}
 
 			_update() {
 				this.setStateSync({
-					data: 'bar',
+					data: 'bar'
 				});
 			}
 
 			componentWillMount() {
 				this.setStateSync({
-					data: 'foo',
+					data: 'foo'
 				});
 			}
 
@@ -163,13 +195,13 @@ describe('Components (JSX) #2', () => {
 
 			_update() {
 				this.setStateSync({
-					data: 'bar',
+					data: 'bar'
 				});
 			}
 
 			componentWillMount() {
 				this.setStateSync({
-					data: 'foo',
+					data: 'foo'
 				});
 			}
 
@@ -260,7 +292,7 @@ describe('Components (JSX) #2', () => {
 			}
 
 			static defaultProps = {
-				foo: 'bar',
+				foo: 'bar'
 			};
 		}
 

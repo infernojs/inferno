@@ -7,10 +7,9 @@ const base = require('./karma.base.conf');
 
 module.exports = function (config) {
 	base(config);
-
 	config.set({
 		files: [
-			'packages/*/__benchmarks__/**/*.js*'
+			`packages/${process.env.BENCH_FILTER || '*'}/__benchmarks__/**/*.js*`
 		],
 		frameworks: [
 			'benchmark'

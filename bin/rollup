@@ -7,6 +7,9 @@ const replace = require('rollup-plugin-replace');
 const uglify = require('rollup-plugin-uglify');
 const filesize = require('rollup-plugin-filesize');
 const alias = require('rollup-plugin-alias');
+const chalk = require('chalk');
+const boxen = require('boxen');
+const optimizeJs = require('optimize-js');
 
 const nodeResolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
@@ -25,9 +28,8 @@ const {
 	name,
 	version,
 	dependencies = {},
-	'jsnext:main': entryFile,
-	rollup: rollupConfig = {},
-	bundledDependencies = {}
+	'inferno:main': entryFile,
+	rollup: rollupConfig = {}
 } = pkgJson;
 
 const copyright = `
@@ -42,8 +44,6 @@ const entry = require.resolve(resolve(cwd, entryFile));
 let filename = name;
 if (NODE_ENV === 'production') {
 	filename += '.min.js';
-} else if (NODE_ENV === 'development') {
-	filename += '.node.js';
 } else {
 	filename += '.js';
 }
@@ -52,53 +52,62 @@ const bundleConfig = {
 	dest,
 	format: 'umd',
 	moduleName: rollupConfig.moduleName || name,
-	globals: Object.assign({ moduleGlobal: rollupConfig.moduleGlobal }, rollupConfig.moduleGlobals),
+	globals: rollupConfig.moduleGlobals,
 	banner: copyright,
 	sourceMap: false
 };
 
-const external = Object.keys(dependencies).filter(n => !bundledDependencies.includes(n));
+const optJs = {
+	name: 'optimizeJs',
+
+	transformBundle: function (code) {
+		return optimizeJs(code);
+	}
+};
+const external = Object.keys(dependencies).filter(n => !(rollupConfig.bundledDependencies || []).includes(n));
 
 const plugins = [
 	alias({
-		'inferno-compat': resolve(__dirname, '../packages/inferno-compat/dist-es/index'),
-		'inferno-component': resolve(__dirname, '../packages/inferno-component/dist-es/index'),
-		'inferno-create-class': resolve(__dirname, '../packages/inferno-create-class/dist-es/index'),
-		'inferno-create-element': resolve(__dirname, '../packages/inferno-create-element/dist-es/index'),
-		'inferno-shared': resolve(__dirname, '../packages/inferno-shared/dist-es/index'),
-		'inferno-hyperscript': resolve(__dirname, '../packages/inferno-hyperscript/dist-es/index'),
-		'inferno-mobx': resolve(__dirname, '../packages/inferno-mobx/dist-es/index'),
-		'inferno-redux': resolve(__dirname, '../packages/inferno-redux/dist-es/index'),
-		'inferno-router': resolve(__dirname, '../packages/inferno-router/dist-es/index'),
-		'inferno-server': resolve(__dirname, '../packages/inferno-server/dist-es/index'),
-		inferno: resolve(__dirname, '../packages/inferno/dist-es/index')
+		'inferno-compat': resolve(__dirname, '../packages/inferno-compat/dist-es/index.js'),
+		'inferno-component': resolve(__dirname, '../packages/inferno-component/dist-es/index.js'),
+		'inferno-create-class': resolve(__dirname, '../packages/inferno-create-class/dist-es/index.js'),
+		'inferno-create-element': resolve(__dirname, '../packages/inferno-create-element/dist-es/index.js'),
+		'inferno-shared': resolve(__dirname, '../packages/inferno-shared/dist-es/index.js'),
+		'inferno-hyperscript': resolve(__dirname, '../packages/inferno-hyperscript/dist-es/index.js'),
+		'inferno-mobx': resolve(__dirname, '../packages/inferno-mobx/dist-es/index.js'),
+		'inferno-redux': resolve(__dirname, '../packages/inferno-redux/dist-es/index.js'),
+		'inferno-router': resolve(__dirname, '../packages/inferno-router/dist-es/index.js'),
+		'inferno-server': resolve(__dirname, '../packages/inferno-server/dist-es/index.js'),
+		inferno: resolve(__dirname, '../packages/inferno/dist-es/index.js')
 	}),
 	nodeResolve({
-		jsnext: true,
-		skip: external
+		jsnext: true
 	}),
 	commonjs({
 		include: 'node_modules/**'
 	}),
-	buble({
-		objectAssign: 'Object.assign'
-	})
+	buble()
 ];
 
 if (NODE_ENV === 'production') {
 	plugins.push(
 		uglify({
 			warnings: false,
-			compress: {
-				screw_ie8: true,
-				dead_code: true,
-				unused: true,
-				drop_debugger: true, //
-				booleans: true // various optimizations for boolean context, for example !!a ? b : c → a ? b : c
+			parse: {
+				// parse options
+				html5_comments: false,
+				shebang: false
 			},
-			mangle: {
-				screw_ie8: true
-			}
+			compress: {
+				// compress options
+				dead_code: true,
+				drop_debugger: true,
+				booleans: true,
+				unused: true
+			},
+			sourceMap: false,
+			toplevel: false,
+			ie8: false
 		})
 	);
 	plugins.push(
@@ -107,23 +116,22 @@ if (NODE_ENV === 'production') {
 			'process.env.NODE_ENV': JSON.stringify('production')
 		})
 	);
-} else if (NODE_ENV === 'browser') {
+	plugins.push(optJs);
+} else {
 	plugins.push(
 		replace({
 			VERSION: rootPackageJson.version,
 			'process.env.NODE_ENV': JSON.stringify('development')
 		})
 	);
-} else {
-	plugins.push(
-		replace({
-			VERSION: rootPackageJson.version
-		})
-	);
 }
-
 // Filesize plugin needs to be last to report correct filesizes when minified
-plugins.push(filesize());
+plugins.push(filesize({
+	render: function (options, size, gzip) {
+		return boxen(chalk.green.bold(filename + ' size: ') + chalk.yellow.bold(size) + ', ' +
+			chalk.green.bold('Gzipped size: ') + chalk.yellow.bold(gzip), { padding: 1 });
+	}
+}));
 
 rollup({
 	entry,
@@ -131,4 +139,3 @@ rollup({
 	external
 })
 .then(({ write }) => write(bundleConfig)).catch(console.error);
-

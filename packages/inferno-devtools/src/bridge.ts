@@ -7,7 +7,7 @@ function findVNodeFromDom(vNode, dom) {
 		const roots = options.roots;
 
 		for (let i = 0, len = roots.length; i < len; i++) {
-			const root = roots[i];
+			const root = roots[ i ];
 			const result = findVNodeFromDom(root.input, dom);
 
 			if (result) {
@@ -27,7 +27,7 @@ function findVNodeFromDom(vNode, dom) {
 		if (children) {
 			if (isArray(children)) {
 				for (let i = 0, len = children.length; i < len; i++) {
-					const child = children[i];
+					const child = children[ i ];
 
 					if (child) {
 						const result = findVNodeFromDom(child, dom);
@@ -110,13 +110,18 @@ export function createDevToolsBridge() {
 
 	const Mount = {
 		_instancesByReactRootID: roots,
+		// tslint:disable-next-line:no-empty
 		_renderNewRootComponent(instance?) {}
 	};
 
 	const Reconciler = {
-		mountComponent(instance?) { },
+		// tslint:disable-next-line:no-empty
+		mountComponent(instance?) {},
+		// tslint:disable-next-line:no-empty
 		performUpdateIfNecessary(instance?) {},
+		// tslint:disable-next-line:no-empty
 		receiveComponent(instance?) {},
+		// tslint:disable-next-line:no-empty
 		unmountComponent(instance?) {}
 	};
 
@@ -128,8 +133,8 @@ export function createDevToolsBridge() {
 		if (!map.has(component)) {
 			map.set(component, true);
 			requestAnimationFrame(function() {
-					updater(component);
-					map.delete(component);
+				updater(component);
+				map.delete(component);
 			});
 		}
 	};
@@ -143,7 +148,7 @@ export function createDevToolsBridge() {
 		const instance = updateReactComponent(vNode, null);
 		if (isRootVNode(vNode)) {
 			instance._rootID = nextRootKey(roots);
-			roots[instance._rootID] = instance;
+			roots[ instance._rootID ] = instance;
 			Mount._renderNewRootComponent(instance);
 		}
 		visitNonCompositeChildren(instance, (childInst) => {
@@ -157,7 +162,7 @@ export function createDevToolsBridge() {
 
 	/** Notify devtools that a component has been updated with new props/state. */
 	const componentUpdated = (vNode) => {
-		const prevRenderedChildren = [];
+		const prevRenderedChildren: any[] = [];
 
 		visitNonCompositeChildren(getInstanceFromVNode(vNode), (childInst) => {
 			prevRenderedChildren.push(childInst);
@@ -200,7 +205,7 @@ export function createDevToolsBridge() {
 		queueUnmountComponent(instance);
 		deleteInstanceForVNode(vNode);
 		if (instance._rootID) {
-			delete roots[instance._rootID];
+			delete roots[ instance._rootID ];
 		}
 	};
 
@@ -217,7 +222,7 @@ export function createDevToolsBridge() {
 
 function isRootVNode(vNode) {
 	for (let i = 0, len = options.roots.length; i < len; i++) {
-		const root = options.roots[i];
+		const root = options.roots[ i ];
 
 		if (root.input === vNode) {
 			return true;
@@ -237,14 +242,17 @@ function updateReactComponent(vNode, parentDom) {
 	let newInstance;
 
 	if (flags & VNodeFlags.Component) {
-		newInstance = createReactCompositeComponent(vNode, parentDom);
+		newInstance = createReactCompositeComponent(vNode);
 	} else {
 		newInstance = createReactDOMComponent(vNode, parentDom);
 	}
 	const oldInstance = getInstanceFromVNode(vNode);
 
 	if (oldInstance) {
-		Object.assign(oldInstance, newInstance);
+		for (const key in newInstance) {
+			oldInstance[ key ] = newInstance[ key ];
+		}
+
 		return oldInstance;
 	}
 	createInstanceFromVNode(vNode, newInstance);
@@ -252,13 +260,17 @@ function updateReactComponent(vNode, parentDom) {
 
 }
 
+function isInvalidChild(child) {
+	return isInvalid(child) || child === '';
+}
+
 function normalizeChildren(children, dom) {
 	if (isArray(children)) {
-		return children.filter((child) => !isInvalid(child)).map((child) =>
+		return children.filter((child) => !isInvalidChild(child)).map((child) =>
 			updateReactComponent(child, dom)
 		);
 	} else {
-		return !isInvalid(children) ? [updateReactComponent(children, dom)] : [];
+		return !(isInvalidChild(children) || children === '') ? [ updateReactComponent(children, dom) ] : [];
 	}
 }
 
@@ -277,7 +289,7 @@ function createReactDOMComponent(vNode, parentDom) {
 		return null;
 	}
 	const type = vNode.type;
-	const children = vNode.children;
+	const children = vNode.children === 0 ? vNode.children.toString() : vNode.children;
 	const props = vNode.props;
 	const dom = vNode.dom;
 	const isText = (flags & VNodeFlags.Text) || isStringOrNumber(vNode);
@@ -287,16 +299,16 @@ function createReactDOMComponent(vNode, parentDom) {
 			type,
 			props
 		},
+		_inDevTools: false,
 		_renderedChildren: !isText && normalizeChildren(children, dom),
 		_stringText: isText ? (children || vNode).toString() : null,
-		_inDevTools: false,
 		node: dom || parentDom,
 		vNode
 	};
 }
 
 function normalizeKey(key) {
-	if (key && key[0] === '.') {
+	if (key && key[ 0 ] === '.') {
 		return null;
 	}
 }
@@ -311,7 +323,7 @@ function normalizeKey(key) {
  *
  * See https://github.com/facebook/react-devtools/blob/e31ec5825342eda570acfc9bcb43a44258fceb28/backend/getData.js
  */
-function createReactCompositeComponent(vNode, parentDom) {
+function createReactCompositeComponent(vNode) {
 	const type = vNode.type;
 	const instance = vNode.children;
 	const lastInput = instance._lastInput || instance;
@@ -324,16 +336,16 @@ function createReactCompositeComponent(vNode, parentDom) {
 		_currentElement: {
 			type,
 			key: normalizeKey(vNode.key),
-			ref: null,
-			props: vNode.props
+			props: vNode.props,
+			ref: null
 		},
-		props: instance.props,
-		state: instance.state,
-		forceUpdate: instance.forceUpdate.bind(instance),
-		setState: instance.setState.bind(instance),
-		node: dom,
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
+		forceUpdate: instance.forceUpdate.bind(instance),
+		node: dom,
+		props: instance.props,
+		setState: instance.setState.bind(instance),
+		state: instance.state,
 		vNode
 	};
 }
@@ -356,7 +368,7 @@ function visitNonCompositeChildren(component, visitor?) {
 		component._renderedChildren.forEach((child) => {
 			if (child) {
 				visitor(child);
-				if (!child._component)  {
+				if (!child._component) {
 					visitNonCompositeChildren(child, visitor);
 				}
 			}
@@ -380,6 +392,6 @@ function typeName(type) {
  */
 function findRoots(roots) {
 	options.roots.forEach((root) => {
-		roots[nextRootKey(roots)] = updateReactComponent(root.input, null);
+		roots[ nextRootKey(roots) ] = updateReactComponent(root.input, null);
 	});
 }

@@ -1,8 +1,7 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import createElement from '../dist-es';
-import { style } from 'inferno/test/utils';
-import { innerHTML } from 'inferno/test/utils';
+import { innerHTML, style } from 'inferno/test/utils';
 
 const PHANTOM_REGEX = /PhantomJS/;
 const isPhantomJS = window && window.navigator && PHANTOM_REGEX.test(window.navigator.userAgent);
@@ -432,5 +431,47 @@ describe('CSS style properties', () => {
 		});
 		render(template(), container);
 		expect(container.innerHTML).to.equal(innerHTML('<div style="width: 200px; height: 200px; background-color: red;"></div>'));
+	});
+
+	it('Should support changing values and properties', () => {
+		render(createElement('div', {
+			style: {
+				width: 200,
+				float: 'left',
+				backgroundColor: 'blue'
+			}
+		}), container);
+		// Order of attributes vary between different browser versions.
+		// Check each property by hand
+		let style = container.firstChild.style;
+
+		expect(style.width).to.eql('200px');
+		expect(style.backgroundColor).to.eql('blue');
+		expect(style.color).to.eql('');
+		expect(style.float).to.eql('left');
+
+		render(createElement('div', {
+			style: {
+				float: 'right',
+				color: 'green',
+				backgroundColor: 'red'
+			}
+		}), container);
+
+		style = container.firstChild.style;
+
+		expect(style.width).to.eql('');
+		expect(style.backgroundColor).to.eql('red');
+		expect(style.color).to.eql('green');
+		expect(style.float).to.eql('right');
+
+		render(createElement('div', {
+			style: 'float: left;'
+		}), container);
+
+		expect(container.innerHTML).to.equal(innerHTML('<div style="float: left;"></div>'));
+
+		render(createElement('div', null), container);
+		expect(container.innerHTML).to.equal(innerHTML('<div></div>'));
 	});
 });

@@ -1,14 +1,7 @@
-import {
-	isNull,
-	isUndefined,
-	LifecycleClass
-} from 'inferno-shared';
+import { isNull, isUndefined, LifecycleClass } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import { VNode, Refs } from '../core/VNodes';
-import {
-	patchComponent,
-	patchElement
-} from './patching';
+import { Refs, VNode } from '../core/VNodes';
+import { patchComponent, patchElement } from './patching';
 
 const componentPools = new Map<Function | null, Pools>();
 const elementPools = new Map<string | null, Pools>();
@@ -20,10 +13,10 @@ interface Pools {
 
 export function recycleElement(vNode: VNode, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	const tag = vNode.type as string | null;
-	const key = vNode.key;
-	const pools: Pools = elementPools.get(tag);
+	const pools: Pools|undefined = elementPools.get(tag);
 
 	if (!isUndefined(pools)) {
+		const key = vNode.key;
 		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
 
 		if (!isUndefined(pool)) {
@@ -41,12 +34,12 @@ export function recycleElement(vNode: VNode, lifecycle: LifecycleClass, context:
 export function poolElement(vNode: VNode) {
 	const tag = vNode.type as string | null;
 	const key = vNode.key;
-	let pools: Pools = elementPools.get(tag);
+	let pools: Pools|undefined = elementPools.get(tag);
 
 	if (isUndefined(pools)) {
 		pools = {
-			nonKeyed: [],
-			keyed: new Map<string | number, VNode[]>()
+			keyed: new Map<string | number, VNode[]>(),
+			nonKeyed: []
 		};
 		elementPools.set(tag, pools);
 	}
@@ -65,10 +58,10 @@ export function poolElement(vNode: VNode) {
 
 export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	const type = vNode.type as Function;
-	const key = vNode.key;
-	const pools: Pools = componentPools.get(type);
+	const pools: Pools|undefined = componentPools.get(type);
 
 	if (!isUndefined(pools)) {
+		const key = vNode.key;
 		const pool = key === null ? pools.nonKeyed : pools.keyed.get(key);
 
 		if (!isUndefined(pool)) {
@@ -83,7 +76,7 @@ export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, contex
 					lifecycle,
 					context,
 					isSVG,
-					flags & VNodeFlags.ComponentClass,
+					(flags & VNodeFlags.ComponentClass) > 0,
 					true
 				);
 
@@ -97,25 +90,25 @@ export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, contex
 }
 
 export function poolComponent(vNode: VNode) {
-	const type = vNode.type;
-	const key = vNode.key;
 	const hooks = vNode.ref as Refs;
 	const nonRecycleHooks = hooks && (
-		hooks.onComponentWillMount ||
-		hooks.onComponentWillUnmount ||
-		hooks.onComponentDidMount ||
-		hooks.onComponentWillUpdate ||
-		hooks.onComponentDidUpdate
-	);
+			hooks.onComponentWillMount ||
+			hooks.onComponentWillUnmount ||
+			hooks.onComponentDidMount ||
+			hooks.onComponentWillUpdate ||
+			hooks.onComponentDidUpdate
+		);
 	if (nonRecycleHooks) {
 		return;
 	}
-	let pools: Pools = componentPools.get(type as Function);
+	const type = vNode.type;
+	const key = vNode.key;
+	let pools: Pools|undefined = componentPools.get(type as Function);
 
 	if (isUndefined(pools)) {
 		pools = {
-			nonKeyed: [],
-			keyed: new Map<string | number, VNode[]>()
+			keyed: new Map<string | number, VNode[]>(),
+			nonKeyed: []
 		};
 		componentPools.set(type as Function, pools);
 	}

@@ -1,5 +1,4 @@
 import {
-	copyPropsTo,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -12,35 +11,28 @@ import {
 	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import { VNode } from '../core/VNodes';
-import options from '../core/options';
-import { cloneVNode, isVNode } from '../core/VNodes';
-import {
-	patchEvent,
-	patchProp
-} from './patching';
-import {
-	recycleComponent,
-	recycleElement
-} from './recycling';
+import { options } from '../core/options';
+import { directClone, isVNode, VNode } from '../core/VNodes';
+import { patchProp } from './patching';
+import { recycleComponent, recycleElement } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
 import {
 	appendChild,
 	createClassComponentInstance,
 	createFunctionalComponentInput,
 	documentCreateElement,
-	setTextContent,
-	EMPTY_OBJ
+	EMPTY_OBJ,
+	setTextContent
 } from './utils';
-import processElement from './wrappers/processElement';
+import { isControlledFormElement, processElement } from './wrappers/processElement';
 
-export function mount(vNode: VNode, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
+export function mount(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	const flags = vNode.flags;
 
 	if (flags & VNodeFlags.Element) {
 		return mountElement(vNode, parentDom, lifecycle, context, isSVG);
 	} else if (flags & VNodeFlags.Component) {
-		return mountComponent(vNode, parentDom, lifecycle, context, isSVG, flags & VNodeFlags.ComponentClass);
+		return mountComponent(vNode, parentDom, lifecycle, context, isSVG, (flags & VNodeFlags.ComponentClass) > 0);
 	} else if (flags & VNodeFlags.Void) {
 		return mountVoid(vNode, parentDom);
 	} else if (flags & VNodeFlags.Text) {
@@ -57,27 +49,28 @@ export function mount(vNode: VNode, parentDom: Element, lifecycle: LifecycleClas
 	}
 }
 
-export function mountText(vNode: VNode, parentDom: Element): any {
+export function mountText(vNode: VNode, parentDom: Element|null): any {
 	const dom = document.createTextNode(vNode.children as string);
 
 	vNode.dom = dom as any;
-	if (parentDom) {
+	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
 	}
+
 	return dom;
 }
 
-export function mountVoid(vNode: VNode, parentDom: Element) {
+export function mountVoid(vNode: VNode, parentDom: Element|null) {
 	const dom = document.createTextNode('');
 
 	vNode.dom = dom as any;
-	if (parentDom) {
+	if (!isNull(parentDom)) {
 		appendChild(parentDom, dom);
 	}
 	return dom;
 }
 
-export function mountElement(vNode: VNode, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
+export function mountElement(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	if (options.recyclingEnabled) {
 		const dom = recycleElement(vNode, lifecycle, context, isSVG);
 
@@ -88,20 +81,18 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 			return dom;
 		}
 	}
-	const tag = vNode.type;
 	const flags = vNode.flags;
 
-	if (isSVG || (flags & VNodeFlags.SvgElement)) {
-		isSVG = true;
-	}
-	const dom = documentCreateElement(tag, isSVG);
+	isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
+	const dom = documentCreateElement(vNode.type, isSVG);
 	const children = vNode.children;
 	const props = vNode.props;
-	const events = vNode.events;
+	const className = vNode.className;
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
-	if (!isNull(children)) {
+
+	if (!isInvalid(children)) {
 		if (isStringOrNumber(children)) {
 			setTextContent(dom, children as string | number);
 		} else if (isArray(children)) {
@@ -110,22 +101,29 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 			mount(children as VNode, dom, lifecycle, context, isSVG);
 		}
 	}
-	let hasControlledValue = false;
-	if (!(flags & VNodeFlags.HtmlElement)) {
-		hasControlledValue = processElement(flags, vNode, dom, true);
-	}
 	if (!isNull(props)) {
-		for (let prop in props) {
+		let hasControlledValue = false;
+		const isFormElement = (flags & VNodeFlags.FormElement) > 0;
+		if (isFormElement) {
+			hasControlledValue = isControlledFormElement(props);
+		}
+		for (const prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
+			patchProp(prop, null, props[ prop ], dom, isSVG, hasControlledValue);
+		}
+		if (isFormElement) {
+			processElement(flags, vNode, dom, props, true, hasControlledValue);
 		}
 	}
-	if (!isNull(events)) {
-		for (let name in events) {
-			// do not add a hasOwnProperty check here, it affects performance
-			patchEvent(name, null, events[name], dom);
+
+	if (className !== null) {
+		if (isSVG) {
+			dom.setAttribute('class', className);
+		} else {
+			dom.className = className;
 		}
 	}
+
 	if (!isNull(ref)) {
 		mountRef(dom, ref, lifecycle);
 	}
@@ -137,19 +135,19 @@ export function mountElement(vNode: VNode, parentDom: Element, lifecycle: Lifecy
 
 export function mountArrayChildren(children, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	for (let i = 0, len = children.length; i < len; i++) {
-		let child = children[i];
+		let child = children[ i ];
 
-		// TODO: Verify can string/number be here. might cause de-opt
+		// Verify can string/number be here. might cause de-opt. - Normalization takes care of it.
 		if (!isInvalid(child)) {
 			if (child.dom) {
-				children[i] = child = cloneVNode(child);
+				children[ i ] = child = directClone(child);
 			}
-			mount(children[i], dom, lifecycle, context, isSVG);
+			mount(children[ i ], dom, lifecycle, context, isSVG);
 		}
 	}
 }
 
-export function mountComponent(vNode: VNode, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isClass: number) {
+export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isClass: boolean) {
 	if (options.recyclingEnabled) {
 		const dom = recycleComponent(vNode, lifecycle, context, isSVG);
 
@@ -161,21 +159,11 @@ export function mountComponent(vNode: VNode, parentDom: Element, lifecycle: Life
 		}
 	}
 	const type = vNode.type;
-	const defaultProps = (type as any).defaultProps;
-	let props;
-	if (!isUndefined(defaultProps)) {
-		// When defaultProps are used we need to create new Object
-		props = vNode.props || {};
-		copyPropsTo(defaultProps, props);
-		vNode.props = props;
-	} else {
-		props = vNode.props || EMPTY_OBJ;
-	}
-
+	const props = vNode.props || EMPTY_OBJ;
 	const ref = vNode.ref;
 	let dom;
 	if (isClass) {
-		const instance = createClassComponentInstance(vNode, type, props, context, isSVG);
+		const instance = createClassComponentInstance(vNode, type, props, context, isSVG, lifecycle);
 		const input = instance._lastInput;
 		instance._vNode = vNode;
 		vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
@@ -183,8 +171,10 @@ export function mountComponent(vNode: VNode, parentDom: Element, lifecycle: Life
 			appendChild(parentDom, dom);
 		}
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
-		options.findDOMNodeEnabled && componentToDOMNodeMap.set(instance, dom);
-		vNode.children = instance;
+		instance._updating = false;
+		if (options.findDOMNodeEnabled) {
+			componentToDOMNodeMap.set(instance, dom);
+		}
 	} else {
 		const input = createFunctionalComponentInput(vNode, type, props, context);
 
@@ -215,17 +205,20 @@ export function mountClassComponentCallbacks(vNode: VNode, ref, instance, lifecy
 			throwError();
 		}
 	}
-	const cDM = instance.componentDidMount;
+	const hasDidMount = !isUndefined(instance.componentDidMount);
 	const afterMount = options.afterMount;
 
-	if (!isUndefined(cDM) || !isNull(afterMount)) {
+	if (hasDidMount || !isNull(afterMount)) {
 		lifecycle.addListener(() => {
-			afterMount && afterMount(vNode);
-			cDM && instance.componentDidMount();
-			instance._syncSetState = true;
+			instance._updating = true;
+			if (afterMount) {
+				afterMount(vNode);
+			}
+			if (hasDidMount) {
+				instance.componentDidMount();
+			}
+			instance._updating = false;
 		});
-	} else {
-		instance._syncSetState = true;
 	}
 }
 

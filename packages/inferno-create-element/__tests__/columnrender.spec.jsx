@@ -116,7 +116,7 @@ describe('Columns like tests - (JSX)', () => {
 			let len = nodes.length, i = 0;
 
 			while (i < len) {
-				const node = nodes[i];
+				const node = nodes[ i ];
 
 				if (node.nodeType === 3 && node.nodeValue === '') {
 					nodes.splice(i, 1);
@@ -135,17 +135,17 @@ describe('Columns like tests - (JSX)', () => {
 			expect(rootChildNodes.length).to.equal(columns.length);
 			// Verify columns
 			for (let i = 0; i < rootChildNodes.length; i++) {
-				const columnRoot = rootChildNodes[i];
+				const columnRoot = rootChildNodes[ i ];
 				const columnChildNodes = filterPlaceholders(columnRoot.childNodes);
 
-				expect(columnChildNodes.length).to.equal(columns[i].items.length + 1, `Column data: ${JSON.stringify(columns[i].items)} Rendered: ${columnRoot.innerHTML}`);
+				expect(columnChildNodes.length).to.equal(columns[ i ].items.length + 1, `Column data: ${JSON.stringify(columns[ i ].items)} Rendered: ${columnRoot.innerHTML}`);
 				expect(columnRoot.firstChild.innerHTML).to.equal('column', 'Column first child check');
 
 				// Verify items
 				// Skip first - its hardcoded
 				for (let j = 1; j < columnChildNodes.length; j++) {
-					const itemRoot = columnChildNodes[j];
-					expect(itemRoot.innerHTML).to.equal(columns[i].items[j - 1].text.toString(), 'item content check');
+					const itemRoot = columnChildNodes[ j ];
+					expect(itemRoot.innerHTML).to.equal(columns[ i ].items[ j - 1 ].text.toString(), 'item content check');
 				}
 			}
 		}
@@ -184,7 +184,14 @@ describe('Columns like tests - (JSX)', () => {
 					super(props);
 				}
 
-				componentWillUnmount() {}
+				componentWillUpdate() {
+				}
+
+				componentWillMount() {
+				}
+
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -200,7 +207,14 @@ describe('Columns like tests - (JSX)', () => {
 					super(props);
 				}
 
-				componentWillUnmount() {}
+				componentWillUpdate() {
+				}
+
+				componentWillMount() {
+				}
+
+				componentWillUnmount() {
+				}
 
 				render() {
 					const items = this.props.items;
@@ -257,8 +271,8 @@ describe('Columns like tests - (JSX)', () => {
 					let initialItemsCount = 0;
 
 					for (let i = 0; i < testCase.update.length || i < testCase.initial.length; i++) {
-						const updateColumns = testCase.update[i];
-						const intialColumns = testCase.initial[i];
+						const updateColumns = testCase.update[ i ];
+						const intialColumns = testCase.initial[ i ];
 
 						if (!isNullOrUndef(updateColumns)) {
 							if (!isNullOrUndef(intialColumns)) {
@@ -330,7 +344,14 @@ describe('Columns like tests - (JSX)', () => {
 					super(props);
 				}
 
-				componentWillUnmount() {}
+				componentWillUpdate() {
+				}
+
+				componentWillMount() {
+				}
+
+				componentWillUnmount() {
+				}
 
 				render() {
 					return (
@@ -346,7 +367,14 @@ describe('Columns like tests - (JSX)', () => {
 					super(props);
 				}
 
-				componentWillUnmount() {}
+				componentWillUpdate() {
+				}
+
+				componentWillMount() {
+				}
+
+				componentWillUnmount() {
+				}
 
 				render() {
 					const items = this.props.items;
@@ -403,8 +431,8 @@ describe('Columns like tests - (JSX)', () => {
 					let initialItemsCount = 0;
 
 					for (let i = 0; i < testCase.update.length || i < testCase.initial.length; i++) {
-						const updateColumns = testCase.update[i];
-						const intialColumns = testCase.initial[i];
+						const updateColumns = testCase.update[ i ];
+						const intialColumns = testCase.initial[ i ];
 
 						if (!isNullOrUndef(updateColumns)) {
 							if (!isNullOrUndef(intialColumns)) {

@@ -1,5 +1,6 @@
+import { EMPTY_OBJ, internal_isUnitlessNumber } from 'inferno';
 import {
-	copyPropsTo,
+	combineFrom,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -8,15 +9,11 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
+	isUndefined,
 	throwError
 } from 'inferno-shared';
-import { internal_isUnitlessNumber, EMPTY_OBJ } from 'inferno';
 import VNodeFlags from 'inferno-vnode-flags';
-import {
-	escapeText,
-	isVoidElement as _isVoidElement,
-	toHyphenCase
-} from './utils';
+import { escapeText, isVoidElement as _isVoidElement, toHyphenCase } from './utils';
 
 function renderStylesToString(styles) {
 	if (isStringOrNumber(styles)) {
@@ -24,9 +21,9 @@ function renderStylesToString(styles) {
 	} else {
 		let renderedString = '';
 
-		for (let styleName in styles) {
-			const value = styles[styleName];
-			const px = isNumber(value) && !internal_isUnitlessNumber[styleName] ? 'px' : '';
+		for (const styleName in styles) {
+			const value = styles[ styleName ];
+			const px = isNumber(value) && !internal_isUnitlessNumber.has(styleName) ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
 				renderedString += `${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`;
@@ -36,7 +33,7 @@ function renderStylesToString(styles) {
 	}
 }
 
-function renderVNodeToString(vNode, parent, context, firstChild): string {
+function renderVNodeToString(vNode, parent, context, firstChild): string|undefined {
 	const flags = vNode.flags;
 	const type = vNode.type;
 	const props = vNode.props || EMPTY_OBJ;
@@ -45,18 +42,16 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 	if (flags & VNodeFlags.Component) {
 		const isClass = flags & VNodeFlags.ComponentClass;
 
-		// Primitive node doesn't have defaultProps, only Component
-		if (!isNullOrUndef(type.defaultProps)) {
-			copyPropsTo(type.defaultProps, props);
-			vNode.props = props;
-		}
-
 		if (isClass) {
 			const instance = new type(props, context);
-			const childContext = instance.getChildContext();
+			instance._blockSetState = false;
+			let childContext;
+			if (!isUndefined(instance.getChildContext)) {
+				childContext = instance.getChildContext();
+			}
 
 			if (!isNullOrUndef(childContext)) {
-				context = Object.assign({}, context, childContext);
+				context = combineFrom(context, childContext);
 			}
 			if (instance.props === EMPTY_OBJ) {
 				instance.props = props;
@@ -88,16 +83,18 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 		let html;
 		const isVoidElement = _isVoidElement(type);
 
+		if (!isNullOrUndef(vNode.className)) {
+			renderedString += ` class="${ escapeText(vNode.className) }"`;
+		}
+
 		if (!isNull(props)) {
-			for (let prop in props) {
-				const value = props[prop];
+			for (const prop in props) {
+				const value = props[ prop ];
 
 				if (prop === 'dangerouslySetInnerHTML') {
 					html = value.__html;
 				} else if (prop === 'style') {
 					renderedString += ` style="${ renderStylesToString(props.style) }"`;
-				} else if (prop === 'className' && !isNullOrUndef(value)) {
-					renderedString += ` class="${ escapeText(value) }"`;
 				} else if (prop === 'children') {
 					// Ignore children as prop.
 				} else if (prop === 'defaultValue') {
@@ -110,7 +107,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 					if (!props.checked) {
 						renderedString += ` checked="${ value }"`;
 					}
-				} else if (prop === 'value' && parent.props && parent.props.value) {
+				} else if (type === 'option' && prop === 'value') {
 					// Parent value sets children value
 					if (value === parent.props.value) {
 						renderedString += ` selected`;
@@ -131,7 +128,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 			if (!isInvalid(children)) {
 				if (isArray(children)) {
 					for (let i = 0, len = children.length; i < len; i++) {
-						const child = children[i];
+						const child = children[ i ];
 						if (isStringOrNumber(child)) {
 							renderedString += (child === '' ? ' ' : escapeText(child));
 						} else if (!isInvalid(child)) {
@@ -166,9 +163,9 @@ function renderVNodeToString(vNode, parent, context, firstChild): string {
 }
 
 export default function renderToString(input: any): string {
-	return renderVNodeToString(input, {}, {}, true);
+	return renderVNodeToString(input, {}, {}, true) as string;
 }
 
 export function renderToStaticMarkup(input: any): string {
-	return renderVNodeToString(input, {}, {}, true);
+	return renderVNodeToString(input, {}, {}, true) as string;
 }
