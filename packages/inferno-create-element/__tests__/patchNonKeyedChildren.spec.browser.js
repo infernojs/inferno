@@ -305,7 +305,7 @@ describe('Non Keyed nodes', () => {
 
 	describe('Without blueprints', () => {
 		it('should swap two non-keyed children', () => {
-			render(template([ spanTagWithText('a'), [ ], spanTagWithText('b') ]), container);
+			render(template([ spanTagWithText('a'), [], spanTagWithText('b') ]), container);
 			expect(container.textContent).to.equal('ab');
 			render(template([ spanTagWithText('b'), null, spanTagWithText('a') ]), container);
 			expect(container.textContent).to.equal('ba');

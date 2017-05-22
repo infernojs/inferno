@@ -12,7 +12,7 @@
     ["module-resolver", {
       "extensions": [".js", ".jsx"],
       "alias": {
-        "inferno-compat": "./packages/inferno-compat",
+        "inferno-compat": "./packages/inferno-compat/dist-es",
         "inferno-component": "./packages/inferno-component/dist-es",
         "inferno-create-class": "./packages/inferno-create-class/dist-es",
         "inferno-create-element": "./packages/inferno-create-element/dist-es",

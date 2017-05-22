@@ -1,10 +1,11 @@
 export const NO_OP = '$NO_OP';
 export const ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
 
-export const isBrowser = typeof window !== 'undefined' && window.document;
+// This should be boolean and not reference to window.document
+export const isBrowser = !!(typeof window !== 'undefined' && window.document);
 
 export function toArray(children): any[] {
-	return isArray(children) ? children : (children ? [children] : children);
+	return isArray(children) ? children : (children ? [ children ] : children);
 }
 
 // this is MUCH faster than .constructor === Array and instanceof Array
@@ -15,49 +16,45 @@ export function isStatefulComponent(o: any): boolean {
 	return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
 
-export function isStringOrNumber(obj: any): boolean {
-	const type = typeof obj;
+export function isStringOrNumber(o: any): o is string|number {
+	const type = typeof o;
 
 	return type === 'string' || type === 'number';
 }
 
-export function isNullOrUndef(obj: any): boolean {
-	return isUndefined(obj) || isNull(obj);
+export function isNullOrUndef(o: any): o is undefined|null {
+	return isUndefined(o) || isNull(o);
 }
 
-export function isInvalid(obj: any): boolean {
-	return isNull(obj) || obj === false || isTrue(obj) || isUndefined(obj);
+export function isInvalid(o: any): o is null|false|true|undefined {
+	return isNull(o) || o === false || isTrue(o) || isUndefined(o);
 }
 
-export function isFunction(obj: any): boolean {
-	return typeof obj === 'function';
+export function isFunction(o: any): o is Function {
+	return typeof o === 'function';
 }
 
-export function isAttrAnEvent(attr: string): boolean {
-	return attr[0] === 'o' && attr[1] === 'n' && attr.length > 3;
+export function isString(o: any): o is string {
+	return typeof o === 'string';
 }
 
-export function isString(obj: any): boolean {
-	return typeof obj === 'string';
+export function isNumber(o: any): o is number {
+	return typeof o === 'number';
 }
 
-export function isNumber(obj: any): boolean {
-	return typeof obj === 'number';
+export function isNull(o: any): o is null {
+	return o === null;
 }
 
-export function isNull(obj: any): boolean {
-	return obj === null;
+export function isTrue(o: any): o is true {
+	return o === true;
 }
 
-export function isTrue(obj: any): boolean {
-	return obj === true;
+export function isUndefined(o: any): o is undefined {
+	return o === void 0;
 }
 
-export function isUndefined(obj: any): boolean {
-	return obj === undefined;
-}
-
-export function isObject(o: any): boolean {
+export function isObject(o: any): o is object {
 	return typeof o === 'object';
 }
 
@@ -69,35 +66,47 @@ export function throwError(message?: string) {
 }
 
 export function warning(message: string) {
+	// tslint:disable-next-line:no-console
 	console.warn(message);
+}
+
+export function combineFrom(first?: {}|null, second?: {}|null): object {
+	const out = {};
+	if (first) {
+		for (const key in first) {
+			out[ key ] = first[ key ];
+		}
+	}
+	if (second) {
+		for (const key in second) {
+			out[ key ] = second[ key ];
+		}
+	}
+	return out;
 }
 
 /*
  * This is purely a tiny event-emitter/pubsub
  */
 export interface LifecycleClass {
-	listeners: Function[];
-	addListener (callback: Function): void;
-	trigger (): void;
+	listeners: Array<() => void>;
+	addListener(callback: Function): void;
+	trigger(): void;
 }
 
 export function Lifecycle() {
 	this.listeners = [];
 }
 
-Lifecycle.prototype.addListener = function addListener (callback) {
+Lifecycle.prototype.addListener = function addListener(callback) {
 	this.listeners.push(callback);
 };
-Lifecycle.prototype.trigger = function trigger () {
-	for (let i = 0, len = this.listeners.length; i < len; i++) {
-		this.listeners[i]();
+Lifecycle.prototype.trigger = function trigger() {
+	const listeners = this.listeners;
+
+	let listener;
+	// We need to remove current listener from array when calling it, because more listeners might be added
+	while (listener = listeners.shift()) {
+		listener();
 	}
 };
-
-export function copyPropsTo(copyFrom: {}, copyTo: {}) {
-	for (let prop in copyFrom) {
-		if (isUndefined(copyTo[prop])) {
-			copyTo[prop] = copyFrom[prop];
-		}
-	}
-}

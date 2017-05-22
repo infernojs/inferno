@@ -9,7 +9,7 @@ const PROJECT_FOLDER = resolve(__dirname, '..');
 rimraf.sync(join(PROJECT_FOLDER, 'node_modules', 'inferno'));
 rimraf.sync(join(PROJECT_FOLDER, 'node_modules', 'inferno-vnode-flags'));
 
-const cwd = process.cwd()
+const cwd = process.cwd();
 
 ensureSymlinkSync(join(PROJECT_FOLDER, 'tsconfig.json'), join(cwd, 'tsconfig.json'));
 ensureSymlinkSync(join(PROJECT_FOLDER, '.npmignore'), join(cwd, '.npmignore'));

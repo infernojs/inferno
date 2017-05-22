@@ -565,7 +565,6 @@ describe('Components (JSX)', () => {
 			expect(renderedName).to.equal('bar');
 			done();
 		});
-
 	});
 
 	describe('should render a component with a list of children that dynamically update via setState', () => {
@@ -620,7 +619,7 @@ describe('Components (JSX)', () => {
 			);
 		});
 
-		it('Second render (update)', (done) => {
+		it('Second render (update) #1', (done) => {
 			render(<Wrapper />, container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 			buttons.forEach((button) => button.click());
@@ -683,7 +682,7 @@ describe('Components (JSX)', () => {
 			);
 		});
 
-		it('Second render (update with state change)', (done) => {
+		it('Second render (update with state change) #2', (done) => {
 			render(<SomeError />, container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 			buttons.forEach((button) => button.click());
@@ -753,7 +752,7 @@ describe('Components (JSX)', () => {
 			);
 		});
 
-		it('Second render (update with state change)', (done) => {
+		it('Second render (update with state change) #3', (done) => {
 			render(<Testing />, container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 			buttons.forEach((button) => button.click());
@@ -2052,10 +2051,15 @@ describe('Components (JSX)', () => {
 	describe('Swapping Component to DOM node', () => {
 		it('Should be able to swap statefull component to DOM list when doing setState', () => {
 			let change1 = null;
+			let unMountCalled = false;
 
 			class FooBar extends Component {
 				constructor(props) {
 					super(props);
+				}
+
+				componentWillUnmount() {
+					unMountCalled = true;
 				}
 
 				render() {
@@ -2105,9 +2109,12 @@ describe('Components (JSX)', () => {
 
 			render(<Tester />, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div class="login-container"><h1>foo</h1></div></div>'));
+			expect(unMountCalled).to.eql(false);
 			change1();
+			expect(unMountCalled).to.eql(false);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div><span>foo1</span><span>foo2</span><span>foo3</span><span>foo4</span></div></div>'));
 			change1();
+			expect(unMountCalled).to.eql(true);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div class="login-container"><h1>foo</h1></div></div>'));
 		});
 
@@ -2254,11 +2261,11 @@ describe('Components (JSX)', () => {
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="A" id="B">Hello C!</div>'));
 		});
 
-		// it.skip('should mount child component with its defaultProps', () => {
-		// 	const Parent = (props) => <div>{props.children.props.a}</div>;
-		// 	render(<Parent><Comp1 c="C" /></Parent>, container);
-		// 	expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>A</div>'));
-		// });
+		it('should mount child component with its defaultProps', () => {
+			const Parent = (props) => <div>{props.children.props.a}</div>;
+			render(<Parent><Comp1 c="C"/></Parent>, container);
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>A</div>'));
+		});
 
 		it('should patch component with defaultProps', () => {
 			render(<Comp1 c="C"/>, container);
@@ -2271,6 +2278,39 @@ describe('Components (JSX)', () => {
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="aye" id="bee">Hello C1!</div>'));
 			render(<Comp1 c="C2"/>, container);
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div class="A" id="B">Hello C2!</div>'));
+		});
+
+		it('should as per React: Have childrens defaultProps set before children is mounted', () => {
+			let childrenPropertABeforeMount = 'A';
+			class Parent extends Component {
+				render() {
+					expect(this.props.children.props.a).to.eql(childrenPropertABeforeMount);
+
+					return (
+						<div>
+							{this.props.children}
+						</div>
+					);
+				}
+			}
+
+			render(
+				<Parent>
+					<Comp1 />
+				</Parent>, container
+			);
+
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div><div class="A" id="B">Hello !</div></div>'));
+
+			childrenPropertABeforeMount = 'ABCD';
+
+			render(
+				<Parent>
+					<Comp1 a="ABCD"/>
+				</Parent>, container
+			);
+
+			expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div><div class="ABCD" id="B">Hello !</div></div>'));
 		});
 	});
 
@@ -2444,7 +2484,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setStateSync({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setStateSync({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2533,7 +2576,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setStateSync({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setStateSync({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2594,7 +2640,7 @@ describe('Components (JSX)', () => {
 		}
 
 		function B() {
-			return <F onComponentShouldUpdate={ () => false } />;
+			return <F onComponentShouldUpdate={ () => false }/>;
 		}
 
 		class Test extends Component {
@@ -2616,7 +2662,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setStateSync({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setStateSync({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2698,7 +2747,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setStateSync({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setStateSync({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2773,7 +2825,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setStateSync({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setStateSync({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2823,9 +2878,13 @@ describe('Components (JSX)', () => {
 			render() {
 				return (
 					<div>
-						<button onClick={() => { i++; this.setStateSync({}); }}>Replace</button>
+						<button onClick={() => {
+							i++;
+							this.setStateSync({});
+						}}>Replace
+						</button>
 						<div>
-					<B key={i} />
+							<B key={i}/>
 						</div>
 					</div>
 				);
@@ -2857,7 +2916,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setState({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ this.state.reverse ? [ a, b ].reverse() : [ a, b ] }
 						</div>
@@ -2898,7 +2960,10 @@ describe('Components (JSX)', () => {
 
 				return (
 					<div>
-						<button onClick={() => { this.setState({ reverse: !this.state.reverse }); }}>Swap Rows</button>
+						<button onClick={() => {
+							this.setState({ reverse: !this.state.reverse });
+						}}>Swap Rows
+						</button>
 						<div>
 							{ children }
 						</div>
@@ -2942,7 +3007,8 @@ describe('Components (JSX)', () => {
 					return (
 						<div>
 							<span>{this.state.text}</span>
-							{this.props.toggle ? [<Tester toggle={this.props.toggle} call={this.changeState}/>] : <span style={this.props.toggle ? { color: 'blue' } : null}>tester</span>}
+							{this.props.toggle ? [<Tester toggle={this.props.toggle} call={this.changeState}/>] :
+								<span style={this.props.toggle ? { color: 'blue' } : null}>tester</span>}
 						</div>
 					);
 				}

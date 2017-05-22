@@ -31,8 +31,8 @@ describe('Select / select multiple (non-JSX)', () => {
 		render(template(), container);
 		render(template(2), container);
 
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(true);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -41,8 +41,8 @@ describe('Select / select multiple (non-JSX)', () => {
 
 		render(template(1), container);
 
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -51,8 +51,8 @@ describe('Select / select multiple (non-JSX)', () => {
 
 		render(template('foo'), container);
 
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -113,8 +113,8 @@ describe('Select / select multiple (non-JSX)', () => {
 		}, 'bar'));
 
 		render(template('foo'), container);
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -133,46 +133,46 @@ describe('Select / select multiple (non-JSX)', () => {
 		// render(template(undefined), container);
 		render(template([ 'foo', 'bar' ]), container);
 
-		expect(container.firstChild.children[0].disabled).to.eql(false);
-		expect(container.firstChild.children[1].disabled).to.eql(true);
+		expect(container.firstChild.children[ 0 ].disabled).to.eql(false);
+		expect(container.firstChild.children[ 1 ].disabled).to.eql(true);
 
-		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
-		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
 
-		expect(container.firstChild.children[0].children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].children[0].selected).to.eql(true);
+		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(true);
 
 		render(template([]), container);
 
-		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
-		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
 
-		expect(container.firstChild.children[0].children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].children[0].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(false);
 
 		render(template('foo'), container);
 
-		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
-		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
 
-		expect(container.firstChild.children[0].children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].children[0].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(false);
 
 		render(template('bar'), container);
 
-		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
-		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
 
-		expect(container.firstChild.children[0].children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].children[0].selected).to.eql(true);
+		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(true);
 
-		render(template(null), container);
+		render(template(false), container);
 
-		expect(container.firstChild.childNodes[0].innerHTML).to.eql('<option value="foo"></option>');
-		expect(container.firstChild.childNodes[1].innerHTML).to.eql('<option value="bar"></option>');
+		expect(container.firstChild.childNodes[ 0 ].innerHTML).to.eql('<option value="foo"></option>');
+		expect(container.firstChild.childNodes[ 1 ].innerHTML).to.eql('<option value="bar"></option>');
 
-		expect(container.firstChild.children[0].children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].children[0].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].children[ 0 ].selected).to.eql(false);
 	});
 
 	it('should render "select" boolean on select options #3 browser', () => {
@@ -188,8 +188,8 @@ describe('Select / select multiple (non-JSX)', () => {
 
 		render(template('bar'), container);
 
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(true);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -198,8 +198,8 @@ describe('Select / select multiple (non-JSX)', () => {
 
 		render(template(''), container);
 
-		expect(container.firstChild.children[0].selected).to.eql(false);
-		expect(container.firstChild.children[1].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -253,10 +253,10 @@ describe('Select / select multiple (non-JSX)', () => {
 			value: 'd'
 		}, 'd'));
 		render(template([ 'a', 'b', 'c' ]), container);
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(true);
-		expect(container.firstChild.children[2].selected).to.eql(true);
-		expect(container.firstChild.children[3].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 2 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
@@ -281,14 +281,87 @@ describe('Select / select multiple (non-JSX)', () => {
 		}, 'd'));
 		render(template(), container);
 
-		expect(container.firstChild.children[0].selected).to.eql(true);
-		expect(container.firstChild.children[1].selected).to.eql(true);
-		expect(container.firstChild.children[2].selected).to.eql(true);
-		expect(container.firstChild.children[3].selected).to.eql(false);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 2 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
 		expect(
 			container.innerHTML
 		).to.equal(
 			innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
 		);
+	});
+
+	it('should render defaultValue', () => {
+		const template = () => createElement('select', {
+			defaultValue: 'b'
+		}, createElement('option', {
+			value: 'a'
+		}, 'a'), createElement('option', {
+			value: 'b'
+		}, 'b'), createElement('option', {
+			value: 'c'
+		}, 'c'), createElement('option', {
+			value: 'd'
+		}, 'd'));
+		render(template(), container);
+
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 2 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<select><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
+		);
+	});
+
+	it('should render multiple defaultValue', () => {
+		const template = () => createElement('select', {
+			multiple: true,
+			defaultValue: [ 'a', 'b', 'c' ]
+		}, createElement('option', {
+			value: 'a'
+		}, 'a'), createElement('option', {
+			value: 'b'
+		}, 'b'), createElement('option', {
+			value: 'c'
+		}, 'c'), createElement('option', {
+			value: 'd'
+		}, 'd'));
+		render(template(), container);
+
+		expect(container.firstChild.children[ 0 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 2 ].selected).to.eql(true);
+		expect(container.firstChild.children[ 3 ].selected).to.eql(false);
+		expect(
+			container.innerHTML
+		).to.equal(
+			innerHTML('<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>')
+		);
+	});
+
+	it('should not touch selections, if value or selected, is null or undefined', () => {
+		render(createElement('select', null,
+			createElement('option', {
+				value: 'a'
+			}, 'a'),
+			createElement('option', {
+				value: 'b'
+			}, 'b')
+		), container);
+		container.firstChild.children[ 1 ].selected = true;
+		render(createElement('select', null,
+			createElement('option', {
+				value: 'a'
+			}, 'a'),
+			createElement('option', {
+				value: 'b'
+			}, 'b')
+		), container);
+		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
+		expect(container.firstChild.children[ 1 ].selected).to.eql(true);
 	});
 });

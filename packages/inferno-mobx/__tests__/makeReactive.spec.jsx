@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import { observable, extendObservable, toJS } from 'mobx';
+import { extendObservable, observable, toJS } from 'mobx';
 import { innerHTML } from 'inferno/test/utils';
 import makeReactive from '../dist-es/makeReactive';
 
@@ -71,5 +71,42 @@ describe('MobX Observer', () => {
 		});
 		render(<FlatList extra={ store.extra }/>, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div><li>oneXXX</li><li>twoXXX</li><li>threeXXX</li></div>'));
+	});
+
+	it('should have a shouldComponentUpdate that returns false when appropriate', () => {
+		const scu = TodoItem.prototype.shouldComponentUpdate;
+
+		let todoItem = <TodoItem str="test" />;
+		let str = 'different';
+		expect(scu.call(todoItem, { str })).to.be.true;
+		str = 'test';
+		expect(scu.call(todoItem, { str })).to.be.false;
+		expect(scu.call(todoItem, { str, prop: 'foo' })).to.be.true;
+
+		const obj = {};
+		todoItem = <TodoItem obj={obj} />;
+		expect(scu.call(todoItem, { obj })).to.be.true;
+
+		const observableObj = observable({});
+		todoItem = <TodoItem observableObj={observableObj} />;
+		expect(scu.call(todoItem, { observableObj })).to.be.false;
+	});
+
+	it('Should use given sCU over predefined sCU when possible', () => {
+		const Foobar = makeReactive(class extends Component {
+			shouldComponentUpdate() {
+				return false;
+			}
+
+			render() {
+				return <div>{this.props.number}</div>;
+			}
+		});
+
+		render(<Foobar number={1} />, container);
+		expect(container.firstChild.innerHTML).to.equal('1');
+
+		render(<Foobar number={2} />, container);
+		expect(container.firstChild.innerHTML).to.equal('1');
 	});
 });

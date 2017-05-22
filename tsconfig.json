@@ -1,12 +1,10 @@
 {
-	"version": "2.1.4",
+	"version": "2.2.1",
 	"compilerOptions": {
-		"baseUrl": ".",
 		"target": "es6",
 		"module": "es6",
 		"allowJs": false,
 		"moduleResolution": "node",
-		"allowSyntheticDefaultImports": true,
 		"preserveConstEnums": true,
 		"declaration": true,
 		"outDir": "dist-es",
@@ -18,10 +16,10 @@
 		],
 		"jsx": "preserve",
 		"noUnusedLocals": true,
-		"strictNullChecks": false,
+		"strictNullChecks": true,
 		"removeComments": false
 	},
 	"include": [
 		"src/**/*"
-  ]
+	]
 }

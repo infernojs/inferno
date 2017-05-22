@@ -11,18 +11,18 @@ export default class RouterContext extends Component<IRouterProps, any> {
 		}
 	}
 
-	getChildContext() {
+	public getChildContext() {
 		return {
 			router: this.props.router || {
 				location: {
-					pathname: this.props.location,
-					baseUrl: this.props.baseUrl
+					baseUrl: this.props.baseUrl,
+					pathname: this.props.location
 				}
 			}
 		};
 	}
 
-	render(props) {
+	public render(props) {
 		return props.matched;
 	}
 }

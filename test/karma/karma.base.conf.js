@@ -1,15 +1,35 @@
 const path = require('path');
 
+const grep = process.env.TEST_GREP_FILTER || false;
+const filter = process.env.PKG_FILTER || '*';
+const distes = 'packages/*/dist-es/**/*';
+const dist = 'packages/*/index.js';
+const benchmarks = `packages/${filter}/__benchmarks__/**/*`;
+const tests = `packages/${filter}/__tests__/**/*`;
+
+console.log({ filter, grep });
+
 module.exports = function (config) {
+	if (grep) {
+		config.set({
+			client: {
+				mocha: {
+					grep // passed directly to mocha
+				}
+			}
+		});
+	}
+
 	config.set({
 		basePath: path.resolve(__dirname, '..', '..'),
 		browsers: [
 			'Chrome'
 		],
 		preprocessors: {
-			'packages/*/dist-es/**/*': ['webpack'],
-			'packages/*/__benchmarks__/**/*': ['webpack'],
-			'packages/*/__tests__/**/*': ['webpack']
+			[distes]: ['webpack'],
+			[dist]: ['webpack'],
+			[benchmarks]: ['webpack'],
+			[tests]: ['webpack']
 		},
 		webpack: {
 			module: {
@@ -19,14 +39,41 @@ module.exports = function (config) {
 						loader: 'babel-loader',
 						exclude: /node_modules/,
 						query: {
-							compact: false
+							// TODO: This is workaround because some of devDeps are shipping ES6...
+							babelrc: false,
+							presets: [
+								[ 'es2015', { loose: true, modules: false }],
+								'stage-2'
+							],
+							plugins: [
+								'transform-class-properties',
+								'transform-object-rest-spread',
+								'babel-plugin-syntax-jsx',
+								[ 'babel-plugin-inferno', { imports: true }],
+								[ 'module-resolver', {
+									extensions: [ '.js', '.jsx' ],
+									alias: {
+										'inferno-compat': './packages/inferno-compat/dist-es',
+										'inferno-component': './packages/inferno-component/dist-es',
+										'inferno-create-class': './packages/inferno-create-class/dist-es',
+										'inferno-create-element': './packages/inferno-create-element/dist-es',
+										'inferno-shared': './packages/inferno-shared/dist-es',
+										'inferno-hyperscript': './packages/inferno-hyperscript/dist-es',
+										'inferno-mobx': './packages/inferno-mobx/dist-es',
+										'inferno-redux': './packages/inferno-redux/dist-es',
+										'inferno-router': './packages/inferno-router/dist-es',
+										'inferno-server': './packages/inferno-server/dist-es',
+										inferno: './packages/inferno/dist-es'
+									}
+								}]
+							]
 						}
 					}
 				]
 			},
 			resolve: {
 				extensions: [ '.js', '.jsx' ],
-				mainFields: [ 'module', 'main' ]
+				mainFields: [ 'inferno:main', 'module', 'main' ]
 			},
 			performance: {
 				hints: false

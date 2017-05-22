@@ -1,10 +1,8 @@
-import {
-	expect
-} from 'chai';
-import { createMemoryHistory, createBrowserHistory } from 'history';
+import { expect } from 'chai';
+import { createBrowserHistory, createMemoryHistory } from 'history';
 import { cloneVNode, render } from 'inferno';
 import { innerHTML } from 'inferno/test/utils';
-import { IndexRoute, Route, Router, RouterContext, Link } from '../dist-es';
+import { IndexRoute, Link, Route, Router, RouterContext, match } from '../dist-es';
 
 const browserHistory = createBrowserHistory();
 const browserHistoryWithBaseName = createBrowserHistory({ basename: '/basename-prefix' });
@@ -20,7 +18,7 @@ function TestComponentParams({ params }) {
 function createRouterWithSingleRoute(url, path, component) {
 	return (
 		<Router url={ url } history={ browserHistory }>
-			<Route path={ path } component={ component } />
+			<Route path={ path } component={ component }/>
 		</Router>
 	);
 }
@@ -51,7 +49,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistoryWithBaseName }>
 					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
-						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test } Link is <Link to="/foo/test" /></div> } />
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test } Link is <Link to="/foo/test"/></div> }/>
 					</Route>
 				</Router>,
 				container
@@ -64,7 +62,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo' } history={ browserHistory }>
 					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
-						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> }/>
 					</Route>
 				</Router>,
 				container
@@ -75,7 +73,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
 					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
-						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> }/>
 					</Route>
 				</Router>,
 				container
@@ -86,19 +84,41 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
 					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
-						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> } />
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> }/>
 					</Route>
 				</Router>,
 				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is bar</div></div>'));
 		});
+		it('should render the child and inherit parent (URL containing percent encoded value)', () => {
+			render(
+				<Router url={ '/foo/100%' } history={ browserHistory }>
+					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.test }</div> }/>
+					</Route>
+				</Router>,
+				container
+			);
+			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is 100%</div></div>'));
+		});
+		it('should render the child and inherit parent (URL search param containing percent encoded value)', () => {
+			render(
+				<Router url={ '/foo/bar?yar=50%25' } history={ browserHistory }>
+					<Route path={ '/foo' } component={ ({ children }) => <div><p>Parent Component</p>{ children }</div> }>
+						<Route path={ '/:test' } component={ ({ params }) => <div>Child is { params.yar }</div> }/>
+					</Route>
+				</Router>,
+				container
+			);
+			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is 50%</div></div>'));
+		});
 		it('should render the child with the longest path', () => {
 			render(
 				<Router url={ '/level-one' } history={ browserHistory }>
-					<Route path={ '/lev' } component={ () => <div>lev</div> } />
-					<Route path={ '/level' } component={ () => <div>level</div> } />
-					<Route path={ '/level-one' } component={ () => <div>level-one</div> } />
+					<Route path={ '/lev' } component={ () => <div>lev</div> }/>
+					<Route path={ '/level' } component={ () => <div>level</div> }/>
+					<Route path={ '/level-one' } component={ () => <div>level-one</div> }/>
 				</Router>,
 				container
 			);
@@ -151,9 +171,9 @@ describe('Router (jsx)', () => {
 		it('should render the TestComponent with the highest ranked path', () => {
 			render(
 				<Router url={ '/foo/bar/yar' } history={ browserHistory }>
-					<Route path={ '*' } component={ () => <div>Bad Component</div> } />
-					<Route path={ '/foo/bar/*' } component={ () => <div>Bad Component</div> } />
-					<Route path={ '/foo/bar/yar' } component={ GoodComponent } />
+					<Route path={ '*' } component={ () => <div>Bad Component</div> }/>
+					<Route path={ '/foo/bar/*' } component={ () => <div>Bad Component</div> }/>
+					<Route path={ '/foo/bar/yar' } component={ GoodComponent }/>
 				</Router>,
 				container
 			);
@@ -161,10 +181,10 @@ describe('Router (jsx)', () => {
 
 			render(
 				<Router url={ '/foo/bar/yar' } history={ browserHistory }>
-					<Route path={ '*' } component={ BadComponent } />
-					<Route path={ '/foo/bar/*' } component={ BadComponent } />
-					<Route path={ '/foo/bar/yar' } component={ GoodComponent } />
-					<Route path={ '/foo/bar/yar/zoo' } component={ BadComponent } />
+					<Route path={ '*' } component={ BadComponent }/>
+					<Route path={ '/foo/bar/*' } component={ BadComponent }/>
+					<Route path={ '/foo/bar/yar' } component={ GoodComponent }/>
+					<Route path={ '/foo/bar/yar/zoo' } component={ BadComponent }/>
 				</Router>,
 				container
 			);
@@ -184,7 +204,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo' } history={ browserHistory }>
 					<Route path={ '/foo' } component={ GoodComponent }>
-						<Route path={ '/yar' } component={ BadComponent } />
+						<Route path={ '/yar' } component={ BadComponent }/>
 					</Route>
 				</Router>,
 				container
@@ -195,7 +215,7 @@ describe('Router (jsx)', () => {
 				<Router url={ '/foo' } history={ browserHistory }>
 					<Route component={ ({ children }) => <div>{ children }</div> }>
 						<Route path={ '/foo' } component={ GoodComponent }>
-							<Route path={ '/yar' } component={ BadComponent } />
+							<Route path={ '/yar' } component={ BadComponent }/>
 						</Route>
 					</Route>
 				</Router>,
@@ -207,7 +227,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
 					<Route component={ ({ children }) => <div>{ children }</div> }>
-						<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> } />
+						<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> }/>
 					</Route>
 				</Router>,
 				container
@@ -218,8 +238,8 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo/bar' } history={ browserHistory }>
 					<Route component={ ({ children }) => <div>{ children }</div> }>
-						<Route path={ '/yar' } component={ BadComponent } />
-						{ [<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> } />] }
+						<Route path={ '/yar' } component={ BadComponent }/>
+						{ [<Route path={ '/foo/:test' } component={ ({ params }) => <div>Param is { params.test }</div> }/>] }
 					</Route>
 				</Router>,
 				container
@@ -230,7 +250,7 @@ describe('Router (jsx)', () => {
 			render(
 				<Router url={ '/foo' } history={ browserHistory }>
 					<Route path={ '/foo' } component={ ({ children }) => children }>
-						<IndexRoute component={ GoodComponent } />
+						<IndexRoute component={ GoodComponent }/>
 					</Route>
 				</Router>,
 				container
@@ -244,8 +264,8 @@ describe('Router (jsx)', () => {
 						const newChild = cloneVNode(children, { clone: ' Clone' });
 						return newChild;
 					}}>
-						<IndexRoute component={ GoodComponent } />
-						<Route path="/other" component={ GoodComponent } />
+						<IndexRoute component={ GoodComponent }/>
+						<Route path="/other" component={ GoodComponent }/>
 					</Route>
 				</Router>,
 				container
@@ -263,6 +283,98 @@ describe('Router (jsx)', () => {
 			expect(
 				() => render(<RouterContext location={ null }/>, container)
 			).to.throw(TypeError);
+		});
+		it('should fail when `matched` is not provided', () => {
+			expect(
+				() => render(<RouterContext location={ '/' } matched={ null }/>, container)
+			).to.throw(TypeError);
+		});
+		it('should pass when `location` is provided', () => {
+			const url = '/';
+			const matched = <GoodComponent/>;
+			const actual = render(<RouterContext location={ url } matched={ matched }/>, container);
+			expect(actual.props.location).to.equal(url);
+			expect(actual.props.matched).to.equal(matched);
+		});
+		it('should pass when `location` is provided and has percent encoded value', () => {
+			const url = '/100%25';
+			const matched = <GoodComponent/>;
+			const actual = render(<RouterContext location={ url } matched={ matched }/>, container);
+			expect(actual.props.location).to.equal(url);
+			expect(actual.props.matched).to.equal(matched);
+		});
+	});
+	describe('#match', () => {
+		it('should find route when url has normal value', () => {
+			const url = '/search/foo?arg1=50%25';
+			const history = createMemoryHistory();
+			history.push(url);
+
+			const router = <Router history={ history }>
+				<Route path="/" component={ BadComponent }>
+					<Route path="search/:searchData" component={ GoodComponent }/>
+				</Route>
+			</Router>;
+			console.log('history.location', history.location);
+			const renderProps = match(router, history.location.pathname + history.location.search);
+
+			const actual = render(<RouterContext {...renderProps}/>, container);
+
+			expect(actual.props.location).to.equal('/');
+			expect(
+				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search
+			).to.equal('/search/foo?arg1=50%25');
+			expect(actual.props.matched.props.params.searchData).to.equal('foo');
+			expect(actual.props.matched.props.params.arg1).to.equal('50%');
+			expect(actual.props.matched.props.children.props.component).to.equal(BadComponent);
+			expect(actual.props.matched.props.children.props.children.props.component).to.equal(GoodComponent);
+		});
+		it('should find route when url has percent encoded value', () => {
+			const url = '/search/100%25?arg1=50%25';
+			const history = createMemoryHistory();
+			history.push(url);
+			const router = <Router history={ history }>
+				<Route path="/" component={ BadComponent }>
+					<Route path="search/:searchData" component={ GoodComponent }/>
+				</Route>
+			</Router>;
+			console.log('history.location', history.location);
+			const renderProps = match(router, history.location.pathname + history.location.search);
+
+			const actual = render(<RouterContext {...renderProps}/>, container);
+
+			expect(actual.props.location).to.equal('/');
+			expect(
+				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search
+			).to.equal('/search/100%?arg1=50%25');
+			expect(actual.props.matched.props.params.searchData).to.equal('100%');
+			expect(actual.props.matched.props.params.arg1).to.equal('50%');
+			expect(actual.props.matched.props.children.props.component).to.equal(BadComponent);
+			expect(actual.props.matched.props.children.props.children.props.component).to.equal(GoodComponent);
+		});
+		it('should find route when url has percent encoded value and multi-search arg', () => {
+			const url = '/search/100%25?arg1=50%25&arg1=75%25';
+			const history = createMemoryHistory();
+			history.push(url);
+			const router = <Router history={ history }>
+				<Route path="/" component={ BadComponent }>
+					<Route path="search/:searchData" component={ GoodComponent }/>
+				</Route>
+			</Router>;
+			console.log('history.location', history.location);
+			const renderProps = match(router, history.location.pathname + history.location.search);
+
+			const actual = render(<RouterContext {...renderProps}/>, container);
+
+			expect(actual.props.location).to.equal('/');
+			expect(
+				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search
+			).to.equal('/search/100%?arg1=50%25&arg1=75%25');
+			expect(actual.props.matched.props.params.searchData).to.equal('100%');
+			expect(actual.props.matched.props.params.arg1[0]).to.equal('50%');
+			expect(actual.props.matched.props.params.arg1[1]).to.equal('75%');
+			expect(actual.props.matched.props.children.props.component).to.equal(BadComponent);
+			expect(actual.props.matched.props.children.props.children.props.component).to.equal(GoodComponent);
 		});
 	});
 

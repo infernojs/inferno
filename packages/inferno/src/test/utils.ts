@@ -1,16 +1,12 @@
-import {
-	isArray,
-	isNullOrUndef,
-	isStringOrNumber
-} from 'inferno-shared';
+import { isArray, isNullOrUndef, isStringOrNumber } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 const comparer = document.createElement('div');
 
 export function sortAttributes(html: string): string {
 	return html.replace(/<([a-z0-9-]+)((?:\s[a-z0-9:_.-]+=".*?")+)((?:\s*\/)?>)/gi, (s, pre, attrs, after) => {
-		const attrName = (attribute: string): string => attribute.split('=')[0];
-		const list: string[] = attrs.match(/\s[a-z0-9:_.-]+=".*?"/gi).sort( (a, b) => attrName(a) > attrName(b) ? 1 : -1 );
+		const attrName = (attribute: string): string => attribute.split('=')[ 0 ];
+		const list: string[] = attrs.match(/\s[a-z0-9:_.-]+=".*?"/gi).sort((a, b) => attrName(a) > attrName(b) ? 1 : -1);
 		if (~after.indexOf('/')) {
 			after = '></' + pre + '>';
 		}
@@ -62,7 +58,7 @@ export function validateNodeTree(node: any): boolean {
 	if (flags & VNodeFlags.Element) {
 		if (!isNullOrUndef(children)) {
 			if (isArray(children)) {
-				for (let child of children) {
+				for (const child of children) {
 					const val = validateNodeTree(child);
 
 					if (!val) {
@@ -81,7 +77,7 @@ export function validateNodeTree(node: any): boolean {
 	return true;
 }
 
-export function waits(timer: number, done: Function) {
+export function waits(timer: number, done: () => void) {
 	setTimeout(done, timer);
 }
 

@@ -15,8 +15,10 @@ const enum VNodeFlags {
 	TextareaElement = 1 << 10,
 	SelectElement = 1 << 11,
 	Void = 1 << 12,
+
+	FormElement = InputElement | TextareaElement | SelectElement,
 	Element = HtmlElement | SvgElement | MediaElement | InputElement | TextareaElement | SelectElement,
 	Component = ComponentFunction | ComponentClass | ComponentUnknown
-};
+}
 
 export default VNodeFlags;

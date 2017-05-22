@@ -56,7 +56,7 @@ describe('lifecycle hooks', () => {
 			render(node, container);
 
 			expect(sinonSpy.callCount).to.equal(1);
-			expect(sinonSpy.getCall(0).args[0]).to.equal(container.firstChild);
+			expect(sinonSpy.getCall(0).args[ 0 ]).to.equal(container.firstChild);
 		});
 
 		it('"onComponentWillUnmount" hook should fire', () => {
@@ -86,8 +86,8 @@ describe('lifecycle hooks', () => {
 
 			render(node, container);
 			expect(sinonSpy.callCount).to.equal(1);
-			expect(sinonSpy.getCall(0).args[0]).to.be.an('object');
-			expect(sinonSpy.getCall(0).args[1]).to.be.an('object');
+			expect(sinonSpy.getCall(0).args[ 0 ]).to.be.an('object');
+			expect(sinonSpy.getCall(0).args[ 1 ]).to.be.an('object');
 		});
 
 		it('"onComponentDidUpdate" hook should fire', () => {

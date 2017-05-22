@@ -125,25 +125,25 @@ describe('MobX Provider', () => {
 		// TODO: UNFINISHED
 		// Commented out as travisCI does not honor skip syntax with all browsers
 		/*
-		it.skip('should warn if stores change', () => {
+		 it.skip('should warn if stores change', () => {
 
-			const TestComponent = connect(['store1'], class extends Component {
-				componentDidMount() {
-					stores = observable({
-						newStore: 'newStore'
-					});
-				}
-				render({ store1 }) {
-					return <div>{store1.data}</div>;
-				}
-			});
+		 const TestComponent = connect(['store1'], class extends Component {
+		 componentDidMount() {
+		 stores = observable({
+		 newStore: 'newStore'
+		 });
+		 }
+		 render({ store1 }) {
+		 return <div>{store1.data}</div>;
+		 }
+		 });
 
-			render(<Provider store1={stores.store1}>
-				<TestComponent/>
-			</Provider>, container);
+		 render(<Provider store1={stores.store1}>
+		 <TestComponent/>
+		 </Provider>, container);
 
-			expect(container.innerHTML).to.equal(innerHTML('<div>one</div>'));
-		});
-		*/
+		 expect(container.innerHTML).to.equal(innerHTML('<div>one</div>'));
+		 });
+		 */
 	});
 });

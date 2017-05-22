@@ -7,7 +7,7 @@ import makeReactive from './makeReactive';
 /**
  * Wraps a component and provides stores as props
  */
-function connect(arg1: any, arg2 = null): any {
+function connect(arg1: any, arg2?: any): any {
 	if (typeof arg1 === 'string') {
 		throwError('Store names should be provided as array');
 	}
@@ -33,10 +33,10 @@ function connect(arg1: any, arg2 = null): any {
 		&& !Component.isPrototypeOf(componentClass)
 	) {
 		const newClass = createClass({
-			displayName: componentClass.displayName || componentClass.name,
-			propTypes: componentClass.propTypes,
 			contextTypes: componentClass.contextTypes,
+			displayName: componentClass.displayName || componentClass.name,
 			getDefaultProps: () => componentClass.defaultProps,
+			propTypes: componentClass.propTypes,
 			render() {
 				return componentClass.call(this, this.props, this.context);
 			}

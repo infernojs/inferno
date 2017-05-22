@@ -1,7 +1,10 @@
+import { VNode } from 'inferno';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import { VNode } from 'inferno';
+import { isArray } from 'inferno-shared';
 import { rest } from './utils';
+
+const resolvedPromise = Promise.resolve();
 
 export type IRouteHook = (props?: any, router?: any) => void;
 
@@ -23,19 +26,19 @@ export default class Route extends Component<IRouteProps, any> {
 		};
 	}
 
-	componentWillMount() {
+	public componentWillMount() {
 		const { onEnter } = this.props;
 		const { router } = this.context;
 
 		if (onEnter) {
-			Promise.resolve().then(() => {
+			resolvedPromise.then(() => {
 				onEnter({ props: this.props, router });
 			});
 		}
 
 		const { getComponent } = this.props;
 		if (getComponent) {
-			Promise.resolve().then(() => {
+			resolvedPromise.then(() => {
 				getComponent({ props: this.props, router }, this._onComponentResolved);
 			});
 		}
@@ -47,7 +50,7 @@ export default class Route extends Component<IRouteProps, any> {
 		});
 	}
 
-	onLeave(trigger = false) {
+	public  onLeave(trigger = false) {
 		const { onLeave } = this.props;
 		const { router } = this.context;
 
@@ -56,7 +59,7 @@ export default class Route extends Component<IRouteProps, any> {
 		}
 	}
 
-	onEnter(nextProps) {
+	public onEnter(nextProps) {
 		const { onEnter } = nextProps;
 		const { router } = this.context;
 
@@ -65,7 +68,7 @@ export default class Route extends Component<IRouteProps, any> {
 		}
 	}
 
-	getComponent(nextProps) {
+	public getComponent(nextProps) {
 		const { getComponent } = nextProps;
 		const { router } = this.context;
 
@@ -74,25 +77,25 @@ export default class Route extends Component<IRouteProps, any> {
 		}
 	}
 
-	componentWillUnmount() {
+	public componentWillUnmount() {
 		this.onLeave(true);
 	}
 
-	componentWillReceiveProps(nextProps: IRouteProps) {
+	public componentWillReceiveProps(nextProps: IRouteProps) {
 		this.getComponent(nextProps);
 		this.onEnter(nextProps);
 		this.onLeave(this.props.path !== nextProps.path);
 	}
 
-	render(_args: IRouteProps): VNode {
+	public render(_args: IRouteProps): VNode|null {
 		const { component, children } = _args;
-		const props = rest(_args, ['component', 'children', 'path', 'getComponent']);
+		const props = rest(_args, [ 'component', 'children', 'path', 'getComponent' ]);
 
 		const { asyncComponent } = this.state;
 
 		const resolvedComponent = component || asyncComponent;
 		if (!resolvedComponent) {
-			return null;
+			return !isArray(children) ? children : null;
 		}
 
 		return createElement(resolvedComponent, props, children);

@@ -1,5 +1,5 @@
-import { isFunction, isNullOrUndef, isUndefined, isObject, throwError } from 'inferno-shared';
 import Component, { ComponentLifecycle } from 'inferno-component';
+import { isFunction, isNullOrUndef, isObject, isUndefined, throwError } from 'inferno-shared';
 
 export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
 	statics?: {
@@ -8,7 +8,7 @@ export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
 	mixins?: any;
 
 	displayName?: string;
-	propTypes?: {[index: string]: Function};
+	propTypes?: { [index: string]: Function };
 
 	getDefaultProps?(): P;
 	getInitialState?(): S;
@@ -40,40 +40,39 @@ export interface ClassicComponentClass<P, S> extends ComponentClass<P, S> {
 }
 
 // don't autobind these methods since they already have guaranteed context.
-const AUTOBIND_BLACKLIST = {
-	constructor: 1,
-	render: 1,
-	shouldComponentUpdate: 1,
-	componentWillReceiveProps: 1,
-	componentWillUpdate: 1,
-	componentDidUpdate: 1,
-	componentWillMount: 1,
-	componentDidMount: 1,
-	componentWillUnmount: 1,
-	componentDidUnmount: 1
-};
+const AUTOBIND_BLACKLIST = new Set<string>();
+AUTOBIND_BLACKLIST.add('constructor');
+AUTOBIND_BLACKLIST.add('render');
+AUTOBIND_BLACKLIST.add('shouldComponentUpdate');
+AUTOBIND_BLACKLIST.add('componentWillReceiveProps');
+AUTOBIND_BLACKLIST.add('componentWillUpdate');
+AUTOBIND_BLACKLIST.add('componentDidUpdate');
+AUTOBIND_BLACKLIST.add('componentWillMount');
+AUTOBIND_BLACKLIST.add('componentDidMount');
+AUTOBIND_BLACKLIST.add('componentWillUnmount');
+AUTOBIND_BLACKLIST.add('componentDidUnmount');
 
-function extend(base, props, all?: boolean) {
-	for (let key in props) {
-		if (all === true || !isNullOrUndef(props[key])) {
-			base[key] = props[key];
+function extend(base, props) {
+	for (const key in props) {
+		if (!isNullOrUndef(props[ key ])) {
+			base[ key ] = props[ key ];
 		}
 	}
 	return base;
 }
 
 function bindAll<P, S>(ctx: Component<P, S>) {
-	for (let i in ctx) {
-		const v = ctx[i];
-		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST[i]) {
-			(ctx[i] = v.bind(ctx)).__bound = true;
+	for (const i in ctx) {
+		const v = ctx[ i ];
+		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST.has(i)) {
+			(ctx[ i ] = v.bind(ctx)).__bound = true;
 		}
 	}
 }
 
 function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 	for (let i = 0, len = mixins.length; i < len; i++) {
-		const mixin = mixins[i];
+		const mixin = mixins[ i ];
 
 		// Surprise: Mixins can have mixins
 		if (mixin.mixins) {
@@ -81,26 +80,26 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 			collateMixins(mixin.mixins, keyed);
 		}
 
-		for (let key in mixin as Function[]) {
-			if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
-				(keyed[key] || (keyed[key] = [])).push(mixin[key]);
+		for (const key in mixin as Function[]) {
+			if (mixin.hasOwnProperty(key) && typeof mixin[ key ] === 'function') {
+				(keyed[ key ] || (keyed[ key ] = [])).push(mixin[ key ]);
 			}
 		}
 	}
 	return keyed;
 }
 
-function multihook<P, S>(inst: Component<P, S>, hooks: Function[], mergeFn?: Function): any {
+function multihook(hooks: Function[], mergeFn?: Function): any {
 	return function() {
 		let ret;
 
-		for (let i = 0, len = hooks.length; i < len; i ++) {
-			const hook = hooks[i];
-			let r = hook.apply(inst, arguments);
+		for (let i = 0, len = hooks.length; i < len; i++) {
+			const hook = hooks[ i ];
+			const r = hook.apply(this, arguments);
 
 			if (mergeFn) {
 				ret = mergeFn(ret, r);
-			} else if (isUndefined(r)) {
+			} else if (!isUndefined(r)) {
 				ret = r;
 			}
 		}
@@ -119,13 +118,13 @@ function mergeNoDupes(previous: any, current: any) {
 			previous = {};
 		}
 
-		for (let key in current) {
+		for (const key in current) {
 			if (current.hasOwnProperty(key)) {
 				if (previous.hasOwnProperty(key)) {
 					throwError(`Mixins return duplicate key ${key} in their return values`);
 				}
 
-				previous[key] = current[key];
+				previous[ key ] = current[ key ];
 			}
 		}
 	}
@@ -133,24 +132,32 @@ function mergeNoDupes(previous: any, current: any) {
 }
 
 function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[]): void {
-	const hooks = isUndefined(inst[key]) ? mixin : mixin.concat(inst[key]);
+	const hooks = isUndefined(inst[ key ]) ? mixin : mixin.concat(inst[ key ]);
 
 	if (key === 'getDefaultProps' || key === 'getInitialState' || key === 'getChildContext') {
-		inst[key] = multihook<P, S>(inst, hooks, mergeNoDupes);
+		inst[ key ] = multihook(hooks, mergeNoDupes);
 	} else {
-		inst[key] = multihook<P, S>(inst, hooks);
+		inst[ key ] = multihook(hooks);
 	}
 }
 
-function applyMixins(inst: any, mixins: Function[] | any[]) {
-	for (let key in mixins) {
+function applyMixins(Cl: any, mixins: Function[] | any[]) {
+	for (const key in mixins) {
 		if (mixins.hasOwnProperty(key)) {
-			const mixin = mixins[key];
+			const mixin = mixins[ key ];
 
-			if (isFunction(mixin[0])) {
+			let inst;
+
+			if (key === 'getDefaultProps') {
+				inst = Cl;
+			} else {
+				inst = Cl.prototype;
+			}
+
+			if (isFunction(mixin[ 0 ])) {
 				applyMixin(key, inst, mixin);
 			} else {
-				inst[key] = mixin;
+				inst[ key ] = mixin;
 			}
 		}
 	}
@@ -158,19 +165,19 @@ function applyMixins(inst: any, mixins: Function[] | any[]) {
 
 export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComponentClass<P, S> {
 	class Cl extends Component<P, S> {
-		static defaultProps;
-		static displayName = obj.displayName || 'Component';
-		static propTypes = obj.propTypes;
-		static mixins = obj.mixins && collateMixins(obj.mixins);
-		static getDefaultProps = obj.getDefaultProps;
-		static getInitialState = obj.getInitialState;
+		public static defaultProps;
+		public static displayName = obj.displayName || 'Component';
+		public static propTypes = obj.propTypes;
+		public static mixins = obj.mixins && collateMixins(obj.mixins);
+		public static getDefaultProps = obj.getDefaultProps;
+
+		public getInitialState?(): S;
 
 		constructor(props, context) {
 			super(props, context);
-			extend(this, obj);
 			bindAll(this);
-			if (Cl.getInitialState) {
-				this.state = Cl.getInitialState.call(this);
+			if (this.getInitialState) {
+				this.state = this.getInitialState();
 			}
 		}
 
@@ -180,19 +187,19 @@ export default function createClass<P, S>(obj: ComponentSpec<P, S>): ClassicComp
 
 		public isMounted(): boolean {
 			return !this._unmounted;
-		};
+		}
+	}
 
+	extend(Cl.prototype, obj);
+
+	if (obj.statics) {
+		extend(Cl, obj.statics);
 	}
 
 	if (obj.mixins) {
 		applyMixins(Cl, collateMixins(obj.mixins));
 	}
 
-	if (obj.statics) {
-		extend(Cl, obj.statics);
-	}
-
-	Cl.getInitialState = isUndefined(Cl.getInitialState) ? undefined : Cl.getInitialState;
 	Cl.defaultProps = isUndefined(Cl.getDefaultProps) ? undefined : Cl.getDefaultProps();
 
 	return Cl;

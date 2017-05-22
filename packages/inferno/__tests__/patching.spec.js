@@ -17,7 +17,6 @@ describe('patching routine', () => {
 		document.body.removeChild(container);
 	});
 
-	// TODO: Try to cover patching lastVNode !== nextVNode. requires no normalize and hoisting
 	it('Should do nothing if lastVNode strictly equals nextVnode', () => {
 		const yar = createVNode(2, 'div', null, '123', null, null, null, true);
 		const bar = createVNode(2, 'div', null, '123', null, null, null, true);
@@ -49,7 +48,7 @@ describe('patching routine', () => {
 		try {
 			render(invalidNode, container);
 		} catch (e) {
-			expect(e.message).to.eql('Inferno Error: mount() received an object that\'s not a valid VNode, you should stringify it first. Object: "{"children":null,"dom":null,"events":null,"flags":0,"key":null,"props":null,"ref":null,"type":"span"}".');
+			expect(e.message.indexOf('Inferno Error: mount() received an object')).to.not.eql(-1);
 		}
 		expect(container.innerHTML).to.eql('<span>a</span>');
 

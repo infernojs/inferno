@@ -1,25 +1,15 @@
-import {
-	isArray,
-	isInvalid,
-	isNullOrUndef,
-	isStringOrNumber
-} from 'inferno-shared';
+import { combineFrom, isArray, isInvalid, isNullOrUndef, isStringOrNumber, isUndefined } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
-import {
-	renderAttributes,
-	renderStyleToString
-} from './prop-renderers';
-import {
-	escapeText,
-	isVoidElement
-} from './utils';
-
 import { Readable } from 'stream';
+import { renderAttributes, renderStyleToString } from './prop-renderers';
+import { escapeText, isVoidElement } from './utils';
+
+const resolvedPromise = Promise.resolve();
 
 export class RenderStream extends Readable {
-	initNode: any;
-	staticMarkup: any;
-	started: boolean = false;
+	public initNode: any;
+	public staticMarkup: any;
+	public started: boolean = false;
 
 	constructor(initNode, staticMarkup) {
 		super();
@@ -27,13 +17,13 @@ export class RenderStream extends Readable {
 		this.staticMarkup = staticMarkup;
 	}
 
-	_read() {
+	public _read() {
 		if (this.started) {
 			return;
 		}
 		this.started = true;
 
-		Promise.resolve().then(() => {
+		resolvedPromise.then(() => {
 			return this.renderNode(this.initNode, null, this.staticMarkup);
 		}).then(() => {
 			this.push(null);
@@ -42,7 +32,7 @@ export class RenderStream extends Readable {
 		});
 	}
 
-	renderNode(vNode, context, isRoot) {
+	public renderNode(vNode, context, isRoot) {
 		if (isInvalid(vNode)) {
 			return;
 		} else {
@@ -58,7 +48,7 @@ export class RenderStream extends Readable {
 		}
 	}
 
-	renderComponent(vComponent, isRoot, context, isClass) {
+	public renderComponent(vComponent, isRoot, context, isClass) {
 		const type = vComponent.type;
 		const props = vComponent.props;
 
@@ -67,23 +57,27 @@ export class RenderStream extends Readable {
 		}
 
 		const instance = new type(props);
-		const childContext = instance.getChildContext();
+		instance._blockSetState = false;
+		let childContext;
+		if (!isUndefined(instance.getChildContext)) {
+			childContext = instance.getChildContext();
+		}
 
 		if (!isNullOrUndef(childContext)) {
-			context = Object.assign({}, context, childContext);
+			context = combineFrom(context, childContext);
 		}
 		instance.context = context;
 
 		// Block setting state - we should render only once, using latest state
 		instance._pendingSetState = true;
-		return Promise.resolve(instance.componentWillMount()).then(() => {
+		return Promise.resolve(instance.componentWillMount && instance.componentWillMount()).then(() => {
 			const node = instance.render();
 			instance._pendingSetState = false;
 			return this.renderNode(node, context, isRoot);
 		});
 	}
 
-	renderChildren(children: any, context?: any) {
+	public renderChildren(children: any, context?: any) {
 		if (isStringOrNumber(children)) {
 			return this.push(escapeText(children));
 		}
@@ -123,38 +117,31 @@ export class RenderStream extends Readable {
 						}
 						insertComment = true;
 					}
-					return this.renderNode(child, context, false)
-						.then((_insertComment) => {
-							if (child.flags & VNodeFlags.Text) {
-								return true;
-							}
-							return false;
-						});
+					return Promise.resolve(this.renderNode(child, context, false)).then(() => !!(child.flags & VNodeFlags.Text));
 				}
 			});
 		}, Promise.resolve(false));
 	}
 
-	renderText(vNode, isRoot, context) {
-		return Promise.resolve().then((insertComment) => {
+	public renderText(vNode, isRoot, context) {
+		return resolvedPromise.then((insertComment) => {
 			this.push(vNode.children);
 			return insertComment;
 		});
 	}
 
-	renderElement(vElement, isRoot, context) {
+	public renderElement(vElement, isRoot, context) {
 		const tag = vElement.type;
 		const props = vElement.props;
 
 		const outputAttrs = renderAttributes(props);
 
 		let html = '';
+		const className = vElement.className;
+		if (!isNullOrUndef(className)) {
+			outputAttrs.push('class="' + escapeText(className) + '"');
+		}
 		if (props) {
-			const className = props.className;
-			if (!isNullOrUndef(className)) {
-				outputAttrs.push('class="' + escapeText(className) + '"');
-			}
-
 			const style = props.style;
 			if (style) {
 				outputAttrs.push('style="' + renderStyleToString(style) + '"');

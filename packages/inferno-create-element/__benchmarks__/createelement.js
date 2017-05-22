@@ -1,6 +1,7 @@
 import createElement from '../';
 
-const emptyFn = function emptyFunction() {};
+const emptyFn = function emptyFunction() {
+};
 
 suite('createElement', () => {
 	/* Do not compare results between each other, these only measure OPS / sec for different structures */
@@ -17,35 +18,35 @@ suite('createElement', () => {
 		createElement('div', null, [
 			createElement('div', null, '1'),
 			createElement('div', null, [
-				createElement('div', null,'a'),
-				createElement('div', null,'b'),
-				createElement('div', null,'c')
+				createElement('div', null, 'a'),
+				createElement('div', null, 'b'),
+				createElement('div', null, 'c')
 			])
 		]);
 	});
 
 	benchmark('20 children siblings', () => {
 		createElement('div', null, [
-			createElement('div', null,'1'),
-			createElement('div', null,'2'),
-			createElement('div', null,'3'),
-			createElement('div', null,'4'),
-			createElement('div', null,'5'),
-			createElement('div', null,'6'),
-			createElement('div', null,'7'),
-			createElement('div', null,'8'),
-			createElement('div', null,'9'),
-			createElement('div', null,'10'),
-			createElement('div', null,'11'),
-			createElement('div', null,'12'),
-			createElement('div', null,'13'),
-			createElement('div', null,'14'),
-			createElement('div', null,'15'),
-			createElement('div', null,'16'),
-			createElement('div', null,'17'),
-			createElement('div', null,'18'),
-			createElement('div', null,'19'),
-			createElement('div', null,'20')
+			createElement('div', null, '1'),
+			createElement('div', null, '2'),
+			createElement('div', null, '3'),
+			createElement('div', null, '4'),
+			createElement('div', null, '5'),
+			createElement('div', null, '6'),
+			createElement('div', null, '7'),
+			createElement('div', null, '8'),
+			createElement('div', null, '9'),
+			createElement('div', null, '10'),
+			createElement('div', null, '11'),
+			createElement('div', null, '12'),
+			createElement('div', null, '13'),
+			createElement('div', null, '14'),
+			createElement('div', null, '15'),
+			createElement('div', null, '16'),
+			createElement('div', null, '17'),
+			createElement('div', null, '18'),
+			createElement('div', null, '19'),
+			createElement('div', null, '20')
 		]);
 	});
 
@@ -84,7 +85,7 @@ suite('createElement', () => {
 																																	createElement('div', null, (
 																																		createElement('div', null, (
 																																			createElement('div', null, 'child33')
-		))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+																																		))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
 	});
 
 	benchmark('Table shape', () => {

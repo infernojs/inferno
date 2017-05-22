@@ -22,13 +22,14 @@ describe('linkEvent', () => {
 		function handleOnClick(props) {
 			test = props.test;
 		}
+
 		function FunctionalComponent(props) {
-			return <button onClick={ linkEvent(props, handleOnClick) } />;
+			return <button onClick={ linkEvent(props, handleOnClick) }/>;
 		}
 
 		class StatefulComponent extends Component {
 			render() {
-				return <button onClick={ linkEvent(this.props, handleOnClick) } />;
+				return <button onClick={ linkEvent(this.props, handleOnClick) }/>;
 			}
 		}
 
@@ -43,6 +44,19 @@ describe('linkEvent', () => {
 			container.querySelector('button').click();
 			expect(test).to.equal('456');
 		});
+
+		it('Should not fail when given event is invalid', () => {
+			render(<div onClick={linkEvent({ number: 1 }, null)} />, container);
+			container.firstChild.click();
+			render(<div onClick={linkEvent({ number: 1 }, undefined)} />, container);
+			container.firstChild.click();
+			render(<div onClick={linkEvent({ number: 1 }, false)} />, container);
+			container.firstChild.click();
+			render(<div onClick={linkEvent({ number: 1 }, true)} />, container);
+			container.firstChild.click();
+			render(<div onClick={linkEvent({ number: 1 }, {})} />, container);
+			container.firstChild.click();
+		});
 	});
 
 	describe('linkEvent on a button (onclick) - no delegation', () => {
@@ -51,13 +65,14 @@ describe('linkEvent', () => {
 		function handleOnClick(props) {
 			test = props.test;
 		}
+
 		function FunctionalComponent(props) {
-			return <button onclick={ linkEvent(props, handleOnClick) } />;
+			return <button onclick={ linkEvent(props, handleOnClick) }/>;
 		}
 
 		class StatefulComponent extends Component {
 			render() {
-				return <button onclick={ linkEvent(this.props, handleOnClick) } />;
+				return <button onclick={ linkEvent(this.props, handleOnClick) }/>;
 			}
 		}
 
@@ -95,13 +110,14 @@ describe('linkEvent', () => {
 			test = props.test;
 			event = e;
 		}
+
 		function FunctionalComponent(props) {
-			return <input type="text" onInput={ linkEvent(props, handleOnInput) } value="" />;
+			return <input type="text" onInput={ linkEvent(props, handleOnInput) } value=""/>;
 		}
 
 		class StatefulComponent extends Component {
 			render() {
-				return <input type="text" onInput={ linkEvent(this.props, handleOnInput) } value="" />;
+				return <input type="text" onInput={ linkEvent(this.props, handleOnInput) } value=""/>;
 			}
 		}
 
@@ -117,6 +133,89 @@ describe('linkEvent', () => {
 			simulateInput(container.querySelector('input'), '123');
 			expect(test).to.equal('456');
 			expect(event.target.nodeName).to.equal('INPUT');
+		});
+	});
+
+	describe('linkEvent on a input (onfocus and onblur) - no delegation', () => {
+		let isFocus;
+		let isBlur;
+
+		function handleOnFocus(id) {
+			isFocus = id;
+		}
+
+		function handleOnBlur(id) {
+			isBlur = id;
+		}
+
+		function FunctionalComponent(props) {
+			return <div>
+				<input
+					onfocus={ linkEvent('1234', handleOnFocus) }
+					onblur={ linkEvent('4321', handleOnBlur) }
+				/>
+			</div>;
+		}
+
+		class StatefulComponent extends Component {
+			render() {
+				return <div>
+					<input
+						onfocus={ linkEvent('1234', handleOnFocus) }
+						onblur={ linkEvent('4321', handleOnBlur) }
+					/>
+				</div>;
+			}
+		}
+
+		function simulateFocus(elm) {
+			if (typeof Event !== 'undefined') {
+				const newEvent = document.createEvent('UIEvent');
+				newEvent.initEvent('focus', true, true);
+
+				elm.dispatchEvent(newEvent);
+			} else {
+				elm.focus();
+			}
+		}
+
+		function simulateBlur(elm) {
+			if (typeof Event !== 'undefined') {
+				const newEvent = document.createEvent('UIEvent');
+				newEvent.initEvent('blur', true, true);
+
+				elm.dispatchEvent(newEvent);
+			} else {
+				elm.blur();
+			}
+		}
+
+		it('should work correctly for functional components', (done) => {
+			render(<FunctionalComponent/>, container);
+			const input = container.querySelector('input');
+			simulateFocus(input);
+			requestAnimationFrame(() => {
+				simulateBlur(input);
+				requestAnimationFrame(() => {
+					expect(isFocus).to.equal('1234');
+					expect(isBlur).to.equal('4321');
+					done();
+				});
+			});
+		});
+
+		it('should work correctly for stateful components', (done) => {
+			render(<StatefulComponent/>, container);
+			const input = container.querySelector('input');
+			simulateFocus(input);
+			requestAnimationFrame(() => {
+				simulateBlur(input);
+				requestAnimationFrame(() => {
+					expect(isFocus).to.equal('1234');
+					expect(isBlur).to.equal('4321');
+					done();
+				});
+			});
 		});
 	});
 });

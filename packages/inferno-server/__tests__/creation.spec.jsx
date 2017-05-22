@@ -1,12 +1,17 @@
 import { expect } from 'chai';
 import { renderToStaticMarkup } from '../dist-es';
+import Component from 'inferno-component';
 
 /*
-class StatefulComponent extends Component {
-	render() {
-		return createElement('span', null, `stateless ${ this.props.value }!`);
-	}
-}*/
+ class StatefulComponent extends Component {
+ render() {
+ return createElement('span', null, `stateless ${ this.props.value }!`);
+ }
+ }*/
+
+function WrappedInput(props) {
+	return <input type="text" value={props.value} />;
+}
 
 describe('SSR Creation (JSX)', () => {
 	const testEntries = [{
@@ -50,6 +55,10 @@ describe('SSR Creation (JSX)', () => {
 		template: () => <input defaultValue="foo"/>,
 		result: '<input value="foo">'
 	}, {
+		description: 'should render input of type text with value when input is wrapped',
+		template: () => <WrappedInput value="foo"/>,
+		result: '<input type="text" value="foo">'
+	}, {
 		description: 'should render select element with selected property',
 		template: () => <select value="dog">
 			<option value="cat">A cat</option>
@@ -58,8 +67,18 @@ describe('SSR Creation (JSX)', () => {
 		result: '<select value="dog"><option>A cat</option><option selected>A dog</option></select>'
 	}, {
 		description: 'should render a text placeholder',
-		template: () => <div><div>{ '' }</div><p>Test</p></div>,
+		template: () => <div>
+			<div>{ '' }</div>
+			<p>Test</p></div>,
 		result: '<div><div> </div><p>Test</p></div>'
+	}, {
+		description: 'Should render style opacity #1',
+		template: () => <div style={{ opacity: 0.8 }}></div>,
+		result: '<div style="opacity:0.8;"></div>'
+	}, {
+		description: 'Should render style opacity #2',
+		template: () => <div style="opacity:0.8;"></div>,
+		result: '<div style="opacity:0.8;"></div>'
 	}];
 
 	testEntries.forEach((test) => {
@@ -75,4 +94,67 @@ describe('SSR Creation (JSX)', () => {
 		});
 	});
 
+
+	describe('Component hook', () => {
+		it('Should allow changing state in CWM', () => {
+			class Another extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+					this.state = {
+						foo: 'bar'
+					};
+				}
+
+				componentWillMount() {
+					this.setState({
+						foo: 'bar2'
+					});
+				}
+
+				render() {
+					return (
+						<div>
+							{this.state.foo}
+						</div>
+					);
+				}
+			}
+
+			class Tester extends Component {
+				constructor(props, context) {
+					super(props, context);
+
+					this.state = {
+						foo: 'bar'
+					};
+				}
+
+				componentWillMount() {
+					this.setState({
+						foo: 'bar2'
+					});
+				}
+
+				render() {
+					return (
+						<div>
+							{this.state.foo}
+							<Another />
+						</div>
+					);
+				}
+			}
+
+			const container = document.createElement('div');
+			const vDom = <Tester />;
+
+			const output = renderToStaticMarkup(vDom);
+
+			document.body.appendChild(container);
+			container.innerHTML = output;
+			expect(output).to.equal('<div>bar2<div>bar2</div></div>');
+			document.body.removeChild(container);
+		});
+	});
 });

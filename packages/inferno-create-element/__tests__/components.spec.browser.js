@@ -2,10 +2,7 @@ import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
 import createElement from '../dist-es';
-import {
-	innerHTML,
-	waits
-} from 'inferno/test/utils';
+import { innerHTML, waits } from 'inferno/test/utils';
 
 let global;
 
@@ -332,16 +329,16 @@ describe('Components (non-JSX)', () => {
 	class BasicComponent2 extends Component {
 		render() {
 			const template = (name, title, children) =>
-					createElement('div',
-						{
-							className: 'basic'
-						},
-						createElement('span', {
-							className: name
-						}, 'The title is ', title),
-						children
-					)
-				;
+				createElement('div',
+					{
+						className: 'basic'
+					},
+					createElement('span', {
+						className: name
+					}, 'The title is ', title),
+					children
+				)
+			;
 			return template(this.props.name, this.props.title, this.props.children);
 		}
 	}
@@ -394,11 +391,11 @@ describe('Components (non-JSX)', () => {
 	class BasicComponent2b extends Component {
 		render() {
 			const template = (children) =>
-					createElement('div', null,
-						createElement('span', null, 'component!'),
-						createElement('div', null, children)
-					)
-				;
+				createElement('div', null,
+					createElement('span', null, 'component!'),
+					createElement('div', null, children)
+				)
+			;
 			return template(this.props.children);
 		}
 	}
@@ -406,11 +403,11 @@ describe('Components (non-JSX)', () => {
 	class BasicComponent2c extends Component {
 		render() {
 			const template = (children) =>
-					createElement('div', null,
-						createElement('span', null, 'other component!'),
-						createElement('div', null, children)
-					)
-				;
+				createElement('div', null,
+					createElement('span', null, 'other component!'),
+					createElement('div', null, children)
+				)
+			;
 			return template(this.props.children);
 		}
 	}
@@ -418,15 +415,15 @@ describe('Components (non-JSX)', () => {
 	class BasicComponent3 extends Component {
 		render() {
 			const template = (styles, title) =>
-					createElement('div',
-						{
-							style: styles
-						},
-						createElement('span', {
-							style: styles
-						}, 'The title is ', title)
-					)
-				;
+				createElement('div',
+					{
+						style: styles
+					},
+					createElement('span', {
+						style: styles
+					}, 'The title is ', title)
+				)
+			;
 
 			return template(this.props.styles, this.props.title);
 		}
@@ -694,10 +691,10 @@ describe('Components (non-JSX)', () => {
 
 			render() {
 				const _template = (counter) =>
-						createElement('div', null,
-							createElement('span', {}, counter)
-						)
-					;
+					createElement('div', null,
+						createElement('span', {}, counter)
+					)
+				;
 				return _template(this.state.counter);
 			}
 
@@ -745,10 +742,10 @@ describe('Components (non-JSX)', () => {
 
 			render() {
 				const _template = (counter) =>
-						createElement('div', null,
-							createElement('span', {}, counter)
-						)
-					;
+					createElement('div', null,
+						createElement('span', {}, counter)
+					)
+				;
 				return _template(this.state.counter);
 			}
 
@@ -888,32 +885,32 @@ describe('Components (non-JSX)', () => {
 	});
 
 	function BasicStatelessComponent1({
-		name,
-		title
-	}) {
+																			name,
+																			title
+																		}) {
 
 		const template = (_name, _title) =>
-				createElement('div',
-					{
-						className: 'basic'
-					},
-					createElement('span', {
-						className: _name
-					}, 'The title is ', _title)
-				)
-			;
+			createElement('div',
+				{
+					className: 'basic'
+				},
+				createElement('span', {
+					className: _name
+				}, 'The title is ', _title)
+			)
+		;
 		return template(name, title);
 	}
 
 	it('should render a stateless component', () => {
 		let template = (Component, title) =>
-				createElement('div', null,
-					createElement(Component, {
-						title,
-						name: 'Hello, World!'
-					})
-				)
-			;
+			createElement('div', null,
+				createElement(Component, {
+					title,
+					name: 'Hello, World!'
+				})
+			)
+		;
 
 		render(template(BasicStatelessComponent1, 'abc'), container);
 		expect(container.firstChild.childNodes.length).to.equal(1);

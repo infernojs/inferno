@@ -47,13 +47,12 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 		render(template([ spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c'), spanTagWithText('c') ]), container);
 		expect(container.textContent).to.equal('abcc');
 		expect(container.firstChild.childNodes.length).to.equal(4);
-		// TODO: is mixin nulls undefineds inside keyed array supported?
-		// render(template([ spanTagWithKeyAndText('a', 'a'), null, spanTagWithKeyAndText('b', 'b'), undefined, spanTagWithKeyAndText('e', 'c'), spanTagWithText('c') ]), container);
-		// expect(container.textContent).to.equal('abcc');
-		// expect(container.firstChild.childNodes.length).to.equal(4);
-		// render(template([ spanTagWithKeyAndText('a', 'a'), null, spanTagWithKeyAndText('b', 'b'), undefined, spanTagWithKeyAndText('e', 'c'), spanTagWithText('c') ]), container);
-		// expect(container.textContent).to.equal('abcc');
-		// expect(container.firstChild.childNodes.length).to.equal(4);
+		render(template([ spanTagWithKeyAndText('a', 'a'), null, spanTagWithKeyAndText('b', 'b'), undefined, spanTagWithKeyAndText('e', 'c'), spanTagWithText('c') ]), container);
+		expect(container.textContent).to.equal('abcc');
+		expect(container.firstChild.childNodes.length).to.equal(4);
+		render(template([ spanTagWithKeyAndText('a', 'a'), null, spanTagWithKeyAndText('b', 'b'), undefined, spanTagWithKeyAndText('e', 'c'), spanTagWithText('c') ]), container);
+		expect(container.textContent).to.equal('abcc');
+		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(template([ spanTagWithKeyAndText('d', 'b'), spanTagWithText('c') ]), container);
 		expect(container.textContent).to.equal('bc');
 		expect(container.firstChild.childNodes.length).to.equal(2);
@@ -75,17 +74,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 		render(template([ spanTagWithKeyAndText('d', 'b'), spanTagWithKeyAndText('e', 'a'), spanTagWithKeyAndText('f', 'c'), spanTagWithText('c') ]), container);
 		expect(container.textContent).to.equal('bacc');
 		expect(container.firstChild.childNodes.length).to.equal(4);
-		// TODO: is mixin nulls undefineds inside keyed array supported?
-		// render(template([ spanTagWithKeyAndText('a', 'a'), null, spanTagWithKeyAndText('b', 'b') ]), container);
-		// expect(container.textContent).to.equal('ab');
-		// expect(container.firstChild.childNodes.length).to.equal(2);
+		render(template([ spanTagWithKeyAndText('a', 'a'), null, spanTagWithKeyAndText('b', 'b') ]), container);
+		expect(container.textContent).to.equal('ab');
+		expect(container.firstChild.childNodes.length).to.equal(2);
 		render(template([ spanTagWithKeyAndText('d', 'b'), spanTagWithKeyAndText('e', 'a'), spanTagWithKeyAndText('f', 'c'), spanTagWithText('c') ]), container);
 		expect(container.textContent).to.equal('bacc');
 		expect(container.firstChild.childNodes.length).to.equal(4);
-		// TODO: is mixin nulls undefineds inside keyed array supported?
-		// render(template([ spanTagWithKeyAndText('d', 'b'), undefined, spanTagWithKeyAndText('e', 'a'), spanTagWithKeyAndText('f', 'c'), spanTagWithText('c') ]), container);
-		// expect(container.textContent).to.equal('bacc');
-		// expect(container.firstChild.childNodes.length).to.equal(4);
+		render(template([ spanTagWithKeyAndText('d', 'b'), undefined, spanTagWithKeyAndText('e', 'a'), spanTagWithKeyAndText('f', 'c'), spanTagWithText('c') ]), container);
+		expect(container.textContent).to.equal('bacc');
+		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(template([ spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b') ]), container);
 		expect(container.textContent).to.equal('ab');
 		expect(container.firstChild.childNodes.length).to.equal(2);

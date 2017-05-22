@@ -1,8 +1,5 @@
 import Component from 'inferno-component';
-import {
-	isNullOrUndef,
-	toArray
-} from 'inferno-shared';
+import { isNullOrUndef, toArray } from 'inferno-shared';
 import { warning } from './utils';
 
 let didWarnAboutReceivingStore = false;
@@ -18,23 +15,23 @@ function warnAboutReceivingStore() {
 }
 
 export default class Provider extends Component<any, any> {
-	store: any;
+	public store: any;
 
 	constructor(props, context?: any) {
 		super(props, context);
 		this.store = props.store;
 	}
 
-	getChildContext() {
+	public getChildContext() {
 		return { store: this.store };
 	}
 
-	render() {
+	public render(props) {
 		if (isNullOrUndef(this.props.children) || toArray(this.props.children).length !== 1) {
 			throw Error('Inferno Error: Only one child is allowed within the `Provider` component');
 		}
 
-		return this.props.children;
+		return props.children;
 	}
 }
 

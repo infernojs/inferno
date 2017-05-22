@@ -1,17 +1,9 @@
-import {
-	isFunction,
-	throwError
-} from 'inferno-shared';
-import {
-	shallowEqual,
-	warning,
-	wrapActionCreators
-} from './utils';
-
 import hoistStatics from 'hoist-non-inferno-statics';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
+import { combineFrom, isFunction, throwError } from 'inferno-shared';
 import { isPlainObject } from './helpers';
+import { shallowEqual, warning, wrapActionCreators } from './utils';
 
 export type WrapWithConnect = (WrappedComponent: any) => any;
 
@@ -21,21 +13,42 @@ export type MapDispatchToPropsFunction = (dispatch: (action: any) => void, props
 
 export type MapDispatchToPropsFactory = (dispatch: (action: any) => void, props?: {}) => MapDispatchToPropsFunction;
 
-export type MapDispatchToProps = MapDispatchToPropsFunction | {[index: string]: MapDispatchToPropsFunction} | MapDispatchToPropsFactory;
+export type MapDispatchToProps =
+	MapDispatchToPropsFunction
+	| { [index: string]: MapDispatchToPropsFunction }
+	| MapDispatchToPropsFactory;
 
 const errorObject = { value: null };
 const defaultMapStateToProps = (state) => ({}); // eslint-disable-line no-unused-vars
 const defaultMapDispatchToProps = (dispatch) => ({ dispatch });
-const defaultMergeProps = (stateProps, dispatchProps, parentProps) => Object.assign({},
-	parentProps,
-	stateProps,
-	dispatchProps
-);
+const defaultMergeProps = function(stateProps, dispatchProps, parentProps) {
+	const obj = {};
+
+	if (parentProps) {
+		for (const key in parentProps) {
+			obj[ key ] = parentProps[ key ];
+		}
+	}
+
+	if (stateProps) {
+		for (const key in stateProps) {
+			obj[ key ] = stateProps[ key ];
+		}
+	}
+
+	if (dispatchProps) {
+		for (const key in dispatchProps) {
+			obj[ key ] = dispatchProps[ key ];
+		}
+	}
+
+	return obj;
+};
 
 function tryCatch(fn, ctx) {
 	try {
 		return fn.apply(ctx);
-	} catch (e) {
+	} catch ( e ) {
 		errorObject.value = e;
 		return errorObject;
 	}
@@ -48,9 +61,7 @@ function getDisplayName(WrappedComponent) {
 // Helps track hot reloading.
 let nextVersion = 0;
 
-export default function connect(
-	mapStateToProps?: MapStateToProps, mapDispatchToProps?: MapDispatchToProps, mergeProps?, options: any = {}
-): WrapWithConnect {
+export default function connect(mapStateToProps?: MapStateToProps, mapDispatchToProps?: MapDispatchToProps, mergeProps?, options: any = {}): WrapWithConnect {
 	const shouldSubscribe = Boolean(mapStateToProps);
 	const mapState = mapStateToProps || defaultMapStateToProps;
 	let mapDispatch;
@@ -89,25 +100,24 @@ export default function connect(
 		}
 
 		class Connect extends Component<any, any> {
-			static displayName: any;
-			static WrappedComponent: any;
-			version: any;
-			store: any;
-			haveOwnPropsChanged: boolean;
-			hasStoreStateChanged: boolean;
-			finalMapStateToProps: any;
-			doStatePropsDependOnOwnProps: any;
-			finalMapDispatchToProps: any;
-			doDispatchPropsDependOnOwnProps: any;
-			stateProps: any;
-			dispatchProps: any;
-			mergedProps: any;
-			unsubscribe: any;
-			haveStatePropsBeenPrecalculated: boolean;
-			statePropsPrecalculationError: any;
-			renderedElement: any;
-			componentDidMount: any;
-			wrappedInstance: any;
+			public static displayName: any;
+			public static WrappedComponent: any;
+			public version: any;
+			public store: any;
+			public haveOwnPropsChanged: boolean;
+			public hasStoreStateChanged: boolean;
+			public finalMapStateToProps: any;
+			public doStatePropsDependOnOwnProps: any;
+			public finalMapDispatchToProps: any;
+			public doDispatchPropsDependOnOwnProps: any;
+			public stateProps: any;
+			public dispatchProps: any;
+			public mergedProps: any;
+			public unsubscribe: any;
+			public haveStatePropsBeenPrecalculated: boolean;
+			public statePropsPrecalculationError: any;
+			public renderedElement: any;
+			public wrappedInstance: any;
 
 			constructor(props, context) {
 				super(props, context);
@@ -115,9 +125,6 @@ export default function connect(
 				this.version = version;
 				this.wrappedInstance = null;
 				this.store = (props && props.store) || (context && context.store);
-				this.componentDidMount = () => {
-					this.trySubscribe();
-				};
 
 				if (!this.store) {
 					throwError('Could not find "store" in either the context or ' +
@@ -131,11 +138,15 @@ export default function connect(
 				this.clearCache();
 			}
 
-			shouldComponentUpdate() {
+			public componentDidMount() {
+				this.trySubscribe();
+			}
+
+			public shouldComponentUpdate() {
 				return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged;
 			}
 
-			computeStateProps(store, props) {
+			public computeStateProps(store, props) {
 				if (!this.finalMapStateToProps) {
 					return this.configureFinalMapState(store, props);
 				}
@@ -147,7 +158,7 @@ export default function connect(
 				return stateProps;
 			}
 
-			configureFinalMapState(store, props) {
+			public configureFinalMapState(store, props) {
 				const mappedState = mapState(store.getState(), props);
 				const isFactory = isFunction(mappedState);
 
@@ -159,19 +170,17 @@ export default function connect(
 				return mappedState;
 			}
 
-			computeDispatchProps(store, props) {
+			public computeDispatchProps(store, props) {
 				if (!this.finalMapDispatchToProps) {
 					return this.configureFinalMapDispatch(store, props);
 				}
 				const { dispatch } = store;
-				const dispatchProps = this.doDispatchPropsDependOnOwnProps ?
+				return this.doDispatchPropsDependOnOwnProps ?
 					this.finalMapDispatchToProps(dispatch, props) :
 					this.finalMapDispatchToProps(dispatch);
-
-				return dispatchProps;
 			}
 
-			configureFinalMapDispatch(store, props) {
+			public configureFinalMapDispatch(store, props) {
 				const mappedDispatch = mapDispatch(store.dispatch, props);
 				const isFactory = isFunction(mappedDispatch);
 
@@ -184,7 +193,7 @@ export default function connect(
 				return mappedDispatch;
 			}
 
-			updateStatePropsIfNeeded() {
+			public updateStatePropsIfNeeded() {
 				const nextStateProps = this.computeStateProps(this.store, this.props);
 
 				if (this.stateProps && shallowEqual(nextStateProps, this.stateProps)) {
@@ -194,7 +203,7 @@ export default function connect(
 				return true;
 			}
 
-			updateDispatchPropsIfNeeded() {
+			public updateDispatchPropsIfNeeded() {
 				const nextDispatchProps = this.computeDispatchProps(this.store, this.props);
 
 				if (this.dispatchProps && shallowEqual(nextDispatchProps, this.dispatchProps)) {
@@ -204,7 +213,7 @@ export default function connect(
 				return true;
 			}
 
-			updateMergedPropsIfNeeded() {
+			public updateMergedPropsIfNeeded() {
 				const nextMergedProps = computeMergedProps(this.stateProps, this.dispatchProps, this.props);
 
 				if (this.mergedProps && checkMergedEquals && shallowEqual(nextMergedProps, this.mergedProps)) {
@@ -214,36 +223,36 @@ export default function connect(
 				return true;
 			}
 
-			isSubscribed() {
+			public isSubscribed() {
 				return isFunction(this.unsubscribe);
 			}
 
-			trySubscribe() {
+			public trySubscribe() {
 				if (shouldSubscribe && !this.unsubscribe) {
 					this.unsubscribe = this.store.subscribe(this.handleChange.bind(this));
 					this.handleChange();
 				}
 			}
 
-			tryUnsubscribe() {
+			public tryUnsubscribe() {
 				if (this.unsubscribe) {
 					this.unsubscribe();
 					this.unsubscribe = null;
 				}
 			}
 
-			componentWillReceiveProps(nextProps) {
+			public componentWillReceiveProps(nextProps) {
 				if (!pure || !shallowEqual(nextProps, this.props)) {
 					this.haveOwnPropsChanged = true;
 				}
 			}
 
-			componentWillUnmount() {
+			public componentWillUnmount() {
 				this.tryUnsubscribe();
 				this.clearCache();
 			}
 
-			clearCache() {
+			public clearCache() {
 				this.dispatchProps = null;
 				this.stateProps = null;
 				this.mergedProps = null;
@@ -256,7 +265,7 @@ export default function connect(
 				this.finalMapStateToProps = null;
 			}
 
-			handleChange() {
+			public handleChange() {
 				if (!this.unsubscribe) {
 					return;
 				}
@@ -280,11 +289,11 @@ export default function connect(
 				this.setState({ storeState });
 			}
 
-			getWrappedInstance() {
+			public getWrappedInstance() {
 				return this.wrappedInstance;
 			}
 
-			render() {
+			public render() {
 				const {
 					haveOwnPropsChanged,
 					hasStoreStateChanged,
@@ -339,7 +348,7 @@ export default function connect(
 				}
 				if (withRef) {
 					this.renderedElement = createElement(WrappedComponent,
-						Object.assign({}, this.mergedProps, { ref: (instance) => this.wrappedInstance = instance })
+						combineFrom(this.mergedProps, { ref: (instance) => this.wrappedInstance = instance })
 					);
 				} else {
 					this.renderedElement = createElement(WrappedComponent,

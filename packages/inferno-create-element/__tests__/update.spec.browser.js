@@ -962,7 +962,7 @@ describe('Update (non-jsx)', () => {
 			it('variation 2', () => {
 				const A = createElement('div', null, createElement('div', null, createElement('table', null,
 					createElement('tr', null, createElement('td', null, 'text', createElement('br', null))
-				))));
+					))));
 				const B = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['text'])))));
 				const C = createElement('div', null, createElement('div', null, createElement('table', null, createElement('tr', null, createElement('td', null, ['value'], createElement('br', null))))));
 
@@ -1015,17 +1015,17 @@ describe('Update (non-jsx)', () => {
 			it('variation 5', () => {
 				const A = [];
 
-				A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br', null))));
-				A[1] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', 'text a', createElement('br', null))));
-				A[2] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null))));
-				A[3] = createElement('table', null, createElement('tr', null, createElement('td', null, [ createElement('br', null), 'text 3' ], createElement('br', null))));
-				render(A[0], container);
+				A[ 0 ] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br', null))));
+				A[ 1 ] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', 'text a', createElement('br', null))));
+				A[ 2 ] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null))));
+				A[ 3 ] = createElement('table', null, createElement('tr', null, createElement('td', null, [ createElement('br', null), 'text 3' ], createElement('br', null))));
+				render(A[ 0 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
-				render(A[1], container);
+				render(A[ 1 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td>text 1text a<br></td></tr></table>');
-				render(A[2], container);
+				render(A[ 2 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
-				render(A[3], container);
+				render(A[ 3 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
 			});
 
@@ -1052,18 +1052,18 @@ describe('Update (non-jsx)', () => {
 
 			it('variation 7', () => {
 				const A = [];
-				A[0] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br', null))));
-				A[1] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', createElement('br', null))));
-				A[2] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null))));
-				A[3] = createElement('table', null, createElement('tr', null, createElement('td', null, [createElement('br', null)], 'text 3', createElement('br', null))));
+				A[ 0 ] = createElement('table', null, createElement('tr', null, createElement('td', null, createElement('br', null))));
+				A[ 1 ] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 1', createElement('br', null))));
+				A[ 2 ] = createElement('table', null, createElement('tr', null, createElement('td', null, 'text 2', createElement('br', null))));
+				A[ 3 ] = createElement('table', null, createElement('tr', null, createElement('td', null, [createElement('br', null)], 'text 3', createElement('br', null))));
 
-				render(A[0], container);
+				render(A[ 0 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
-				render(A[1], container);
+				render(A[ 1 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td>text 1<br></td></tr></table>');
-				render(A[2], container);
+				render(A[ 2 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
-				render(A[3], container);
+				render(A[ 3 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
 			});
 		});
@@ -1184,41 +1184,41 @@ describe('Update (non-jsx)', () => {
 			it('variation 5', () => {
 				const A = [];
 
-				A[0] = createElement('table', null, createElement('tr', { key: 'row1' },
+				A[ 0 ] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						'',
 						createElement('br', null)
 					)
 				));
 
-				A[1] = createElement('table', null, createElement('tr', { key: 'row1' },
+				A[ 1 ] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						[ 'text 1', 'text a' ],
 						createElement('br', null)
 					)
 				));
 
-				A[2] = createElement('table', null, createElement('tr', { key: 'row1' },
+				A[ 2 ] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						['text 2'],
 						createElement('br', null)
 					)
 				));
 
-				A[3] = createElement('table', null, createElement('tr', { key: 'row1' },
+				A[ 3 ] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						[ createElement('br', null), 'text 3' ],
 						createElement('br', null)
 					)
 				));
 
-				render(A[0], container);
+				render(A[ 0 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
-				render(A[1], container);
+				render(A[ 1 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td>text 1text a<br></td></tr></table>');
-				render(A[2], container);
+				render(A[ 2 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
-				render(A[3], container);
+				render(A[ 3 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
 			});
 
@@ -1255,28 +1255,28 @@ describe('Update (non-jsx)', () => {
 			it('variation 7', () => {
 				const A = [];
 
-				A[0] = createElement('table', null, createElement('tr', { key: 'row1' },
+				A[ 0 ] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						'',
 						createElement('br', null)
 					)
 				));
 
-				A[1] = createElement('table', null, createElement('tr', { key: 'row1' },
+				A[ 1 ] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						'text 1',
 						createElement('br', null)
 					)
 				));
 
-				A[2] = createElement('table', null, createElement('tr', { key: 'row1' },
+				A[ 2 ] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						'text 2',
 						createElement('br', null)
 					)
 				));
 
-				A[3] = createElement('table', null, createElement('tr', { key: 'row1' },
+				A[ 3 ] = createElement('table', null, createElement('tr', { key: 'row1' },
 					createElement('td', { key: 'td1-1' },
 						[
 							createElement('br', null),
@@ -1286,13 +1286,13 @@ describe('Update (non-jsx)', () => {
 					)
 				));
 
-				render(A[0], container);
+				render(A[ 0 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br></td></tr></table>');
-				render(A[1], container);
+				render(A[ 1 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td>text 1<br></td></tr></table>');
-				render(A[2], container);
+				render(A[ 2 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td>text 2<br></td></tr></table>');
-				render(A[3], container);
+				render(A[ 3 ], container);
 				expect(container.innerHTML).to.equal('<table><tr><td><br>text 3<br></td></tr></table>');
 			});
 		});
@@ -1302,19 +1302,19 @@ describe('Update (non-jsx)', () => {
 		it('works', () => {
 			const A = [];
 
-			A[0] = createElement('div', null, 'text 1');
-			A[1] = createElement('div', null,
+			A[ 0 ] = createElement('div', null, 'text 1');
+			A[ 1 ] = createElement('div', null,
 				'text 2',
 				createElement('br', null),
 				'text 3'
 			);
-			A[2] = createElement('div', null, 'text 4');
+			A[ 2 ] = createElement('div', null, 'text 4');
 
-			render(A[0], container);
+			render(A[ 0 ], container);
 			expect(container.innerHTML).to.equal(innerHTML('<div>text 1</div>'));
-			render(A[1], container);
+			render(A[ 1 ], container);
 			expect(container.innerHTML).to.equal(innerHTML('<div>text 2<br>text 3</div>'));
-			render(A[2], container);
+			render(A[ 2 ], container);
 			expect(container.innerHTML).to.equal(innerHTML('<div>text 4</div>'));
 		});
 	});
@@ -1323,25 +1323,25 @@ describe('Update (non-jsx)', () => {
 		it('works', () => {
 			const A = [];
 
-			A[0] = createElement('div', null,
+			A[ 0 ] = createElement('div', null,
 				'text 1',
 				createElement('br', null)
 			);
 
-			A[1] = createElement('div', null,
+			A[ 1 ] = createElement('div', null,
 				'text 2'
 			);
 
-			A[2] = createElement('div', null,
+			A[ 2 ] = createElement('div', null,
 				createElement('br', null),
 				'text 4'
 			);
 
-			render(A[0], container);
+			render(A[ 0 ], container);
 			expect(container.innerHTML).to.equal(innerHTML('<div>text 1<br></div>'));
-			render(A[1], container);
+			render(A[ 1 ], container);
 			expect(container.innerHTML).to.equal(innerHTML('<div>text 2</div>'));
-			render(A[2], container);
+			render(A[ 2 ], container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><br>text 4</div>'));
 		});
 	});
