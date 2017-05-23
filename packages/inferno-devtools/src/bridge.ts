@@ -211,10 +211,9 @@ export function createDevToolsBridge() {
 
 	return {
 		componentAdded,
-		componentUpdated,
 		componentRemoved,
-
 		ComponentTree,
+		componentUpdated,
 		Mount,
 		Reconciler
 	};

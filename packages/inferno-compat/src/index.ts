@@ -263,25 +263,25 @@ for (let i = ELEMENTS.length; i--; ) {
 // Mask React global in browser enviornments when React is not used.
 if (isBrowser && typeof (window as any).React === 'undefined') {
 	const exports = {
-		createVNode,
-		render,
-		isValidElement,
-		createElement,
-		Component,
-		PureComponent,
-		unmountComponentAtNode,
-		cloneElement,
-		PropTypes,
-		createClass,
-		findDOMNode,
 		Children,
+		cloneElement,
 		cloneVNode,
-		NO_OP,
-		version,
-		unstable_renderSubtreeIntoContainer,
+		Component,
+		createClass,
+		createElement,
 		createFactory,
+		createVNode,
 		DOM,
-		EMPTY_OBJ
+		EMPTY_OBJ,
+		findDOMNode,
+		isValidElement,
+		NO_OP,
+		PropTypes,
+		PureComponent,
+		render,
+		unmountComponentAtNode,
+		unstable_renderSubtreeIntoContainer,
+		version
 	};
 
 	(window as any).React = exports;
