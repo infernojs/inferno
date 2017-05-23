@@ -43,6 +43,68 @@ describe('Component lifecycle', () => {
 		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>2</div>'));
 	});
 
+	it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', (done) => {
+		let doSomething;
+		class Child extends Component {
+			constructor() {
+				super();
+				this.state = {
+					active: false
+				};
+			}
+
+			componentWillReceiveProps(nextProps) {
+				if (!this.props.active && nextProps.active) {
+					this.setState({
+						active: true
+					});
+				}
+			}
+
+			componentWillUpdate(nextProps, nextState) {
+				expect(this.state.active).to.equal(false);
+				expect(nextState.active).to.equal(true);
+			}
+
+			render() {
+				return (
+					<div>{this.state.active ? 'true' : 'false'}</div>
+				);
+			}
+		}
+
+		class Parent extends Component {
+			constructor() {
+				super();
+				this.state = {
+					active: false
+				};
+				doSomething = this._setActive = this._setActive.bind(this);
+			}
+
+			_setActive() {
+				this.setState({
+					active: true
+				});
+			}
+
+			render() {
+				return (
+					<div>
+						<Child active={this.state.active} />
+					</div>
+				);
+			}
+		}
+
+		render(<Parent />, container);
+		doSomething();
+
+		setTimeout(function () {
+			done();
+		}, 45);
+	});
+
 	it('shouldComponentUpdate Should have nextProp in params and old variants in instance', () => {
 		let callCount = 0;
 		class Com extends Component {
