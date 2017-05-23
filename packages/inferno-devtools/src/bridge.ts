@@ -330,9 +330,6 @@ function createReactCompositeComponent(vNode) {
 	const dom = vNode.dom;
 
 	const compositeComponent = {
-		getName() {
-			return typeName(type);
-		},
 		_currentElement: {
 			key: normalizeKey(vNode.key),
 			props: vNode.props,
@@ -341,6 +338,9 @@ function createReactCompositeComponent(vNode) {
 		},
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
+		getName() {
+			return typeName(type);
+		},
 		forceUpdate: instance.forceUpdate.bind(instance),
 		node: dom,
 		props: instance.props,
