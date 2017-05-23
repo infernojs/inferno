@@ -31,8 +31,8 @@ export function vNodeToSnapshot(node: VNode) {
 
 		// Create the actual object that Jest will interpret as the snapshot for this VNode
 		object = createSnapshotObject({
-			type: getTagNameOfVNode(node),
-			props
+			props,
+			type: getTagNameOfVNode(node)
 		});
 	}
 
@@ -80,6 +80,6 @@ export function renderToSnapshot(input: VNode) {
 
 export default {
 	createSnapshotObject,
-	vNodeToSnapshot,
-	renderToSnapshot
+	renderToSnapshot,
+	vNodeToSnapshot
 };

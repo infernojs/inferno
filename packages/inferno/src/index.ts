@@ -1,3 +1,4 @@
+/* tslint:disable:object-literal-sort-keys */
 import { NO_OP, warning } from 'inferno-shared';
 import { LifecycleClass as _LifecycleClass} from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
