@@ -329,7 +329,10 @@ function createReactCompositeComponent(vNode) {
 	const lastInput = instance._lastInput || instance;
 	const dom = vNode.dom;
 
-	return {
+	const compositeComponent = {
+		getName() {
+			return typeName(type);
+		},
 		_currentElement: {
 			key: normalizeKey(vNode.key),
 			props: vNode.props,
@@ -339,15 +342,30 @@ function createReactCompositeComponent(vNode) {
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
 		forceUpdate: instance.forceUpdate.bind(instance),
-		getName() {
-			return typeName(type);
-		},
 		node: dom,
 		props: instance.props,
 		setState: instance.setState.bind(instance),
 		state: instance.state,
 		vNode
 	};
+
+	const forceInstanceUpdate = instance.forceUpdate.bind(instance); // Save off for use below.
+	instance.forceUpdate = () => {
+		const newProps = Object.assign(
+			{},
+			// These are the regular Inferno props.
+			instance.props,
+			// This is what gets updated by the React devtools when props are edited.
+			compositeComponent._currentElement.props
+		);
+
+		instance.props = newProps;
+		vNode.props = newProps;
+
+		forceInstanceUpdate();
+	};
+
+	return compositeComponent;
 }
 
 function nextRootKey(roots) {
