@@ -17,7 +17,8 @@ import {
 	options
 } from './options';
 import {
-	createVNode
+	createVNode,
+	VNode
 } from './VNodes';
 
 const resolvedPromise = Promise.resolve();
@@ -33,6 +34,7 @@ function updateParentComponentVNodes(vNode: VNode, dom: Element) {
 			parentVNode.dom = dom;
 			updateParentComponentVNodes(parentVNode, dom);
 		}
+	}
 }
 
 function applyState<P, S>(component: any, force: boolean, callback?: Function): void {
