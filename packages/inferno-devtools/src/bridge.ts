@@ -338,10 +338,10 @@ function createReactCompositeComponent(vNode) {
 		},
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
+		forceUpdate: instance.forceUpdate.bind(instance),
 		getName() {
 			return typeName(type);
 		},
-		forceUpdate: instance.forceUpdate.bind(instance),
 		node: dom,
 		props: instance.props,
 		setState: instance.setState.bind(instance),
