@@ -22,8 +22,6 @@ if (process.env.NODE_ENV !== 'production') {
 	noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 }
 
-const componentCallbackQueue: Map<any, Function[]> = new Map();
-
 export interface ComponentLifecycle<P, S> {
 	componentDidMount?(): void;
 	componentWillMount?(): void;
@@ -44,32 +42,13 @@ function updateParentComponentVNodes(vNode: VNode, dom: Element) {
 			parentVNode.dom = dom;
 			updateParentComponentVNodes(parentVNode, dom);
 		}
-	}
 }
 
-const resolvedPromise = Promise.resolve();
-
 function addToQueue(component: Component<any, any>, force: boolean, callback?: Function): void {
-	let queue: any = componentCallbackQueue.get(component);
+	const queueStateChange = component._queueStateChange;
 
-	if (queue === void 0) {
-		queue = [];
-		componentCallbackQueue.set(component, queue);
-		resolvedPromise.then(() => {
-			componentCallbackQueue.delete(component);
-			component._updating = true;
-			applyState(component, force, () => {
-				for (let i = 0, len = queue.length; i < len; i++) {
-					queue[ i ].call(component);
-				}
-			});
-			component._updating = false;
-		});
-	}
-	if (!isNullOrUndef(callback)) {
-		queue.push(
-			callback
-		);
+	if (queueStateChange !== null) {
+		queueStateChange(component, force, callback);
 	}
 }
 
@@ -88,14 +67,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callba
 	}
 
 	if (isBrowser && !component._pendingSetState && !component._blockRender) {
-		if (!component._updating) {
-			component._pendingSetState = true;
-			component._updating = true;
-			applyState(component, false, callback);
-			component._updating = false;
-		} else {
-			addToQueue(component, false, callback);
-		}
+		addToQueue(component, false, callback);
 	} else {
 		const state = component.state;
 
@@ -111,80 +83,6 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callba
 		if (!isNullOrUndef(callback) && component._blockRender) {
 			(component._lifecycle as any).addListener(callback.bind(component));
 		}
-	}
-}
-
-function applyState<P, S>(component: Component<P, S>, force: boolean, callback?: Function): void {
-	if (component._unmounted) {
-		return;
-	}
-	if (force || !component._blockRender) {
-		component._pendingSetState = false;
-		const pendingState = component._pendingState;
-		const prevState = component.state;
-		const nextState = combineFrom(prevState, pendingState) as any;
-		const props = component.props as P;
-		const context = component.context;
-
-		component._pendingState = null;
-		let nextInput = component._updateComponent(prevState as S, nextState, props, props, context, force, true);
-		let didUpdate = true;
-
-		if (isInvalid(nextInput)) {
-			nextInput = createVNode(VNodeFlags.Void, null);
-		} else if (nextInput === NO_OP) {
-			nextInput = component._lastInput;
-			didUpdate = false;
-		} else if (isStringOrNumber(nextInput)) {
-			nextInput = createVNode(VNodeFlags.Text, null, null, nextInput) as VNode;
-		} else if (isArray(nextInput)) {
-			if (process.env.NODE_ENV !== 'production') {
-				throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-			}
-			throwError();
-		}
-
-		const lastInput = component._lastInput as VNode;
-		const vNode = component._vNode as VNode;
-		const parentDom = (lastInput.dom && lastInput.dom.parentNode) || (lastInput.dom = vNode.dom);
-
-		component._lastInput = nextInput as VNode;
-		if (didUpdate) {
-			let childContext;
-
-			if (!isUndefined(component.getChildContext)) {
-				childContext = component.getChildContext();
-			}
-
-			if (isNullOrUndef(childContext)) {
-				childContext = component._childContext;
-			} else {
-				childContext = combineFrom(context, childContext as any);
-			}
-
-			const lifeCycle = component._lifecycle as any;
-			internal_patch(lastInput, nextInput as VNode, parentDom as Element, lifeCycle, childContext, component._isSVG, false);
-			lifeCycle.trigger();
-
-			if (!isUndefined(component.componentDidUpdate)) {
-				component.componentDidUpdate(props, prevState as S, context);
-			}
-			if (!isNull(options.afterUpdate)) {
-				options.afterUpdate(vNode);
-			}
-		}
-		const dom = vNode.dom = (nextInput as VNode).dom as Element;
-		if (options.findDOMNodeEnabled) {
-			internal_DOMNodeMap.set(component, (nextInput as VNode).dom);
-		}
-
-		updateParentComponentVNodes(vNode, dom);
-	} else {
-		component.state = component._pendingState as any;
-		component._pendingState = null;
-	}
-	if (!isNullOrUndef(callback)) {
-		callback.call(component);
 	}
 }
 
@@ -205,7 +103,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public _lifecycle = null;
 	public _childContext = null;
 	public _isSVG = false;
-	public _updating = true;
+	public _queueStateChange = null;
 
 	constructor(props?: P, context?: any) {
 		/** @type {object} */

@@ -10,6 +10,7 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
+import { queueStateChange } from '../core/queue';
 import { createTextVNode, createVoidVNode, directClone, Props, VNode } from '../core/VNodes';
 import { svgNS } from './constants';
 import { mount } from './mounting';
@@ -31,6 +32,7 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 	vNode.children = instance;
 	instance._blockSetState = false;
 	instance.context = context;
+	instance._queueStateChange = queueStateChange;
 	if (instance.props === EMPTY_OBJ) {
 		instance.props = props;
 	}
@@ -135,7 +137,7 @@ export function setTextContent(dom, text: string | number) {
 	}
 }
 
-export function updateTextContent(dom, text: string|number) {
+export function updateTextContent(dom, text: string | number) {
 	dom.firstChild.nodeValue = text;
 }
 
@@ -185,9 +187,9 @@ export function removeAllChildren(dom: Element, children, lifecycle: LifecycleCl
 	dom.textContent = '';
 }
 
-export function removeChildren(dom: Element|null, children, lifecycle: LifecycleClass, isRecycling: boolean) {
+export function removeChildren(dom: Element | null, children, lifecycle: LifecycleClass, isRecycling: boolean) {
 	for (let i = 0, len = children.length; i < len; i++) {
-		const child = children[ i ];
+		const child = children[i];
 
 		if (!isInvalid(child)) {
 			unmount(child, dom, lifecycle, true, isRecycling);
@@ -196,6 +198,6 @@ export function removeChildren(dom: Element|null, children, lifecycle: Lifecycle
 }
 
 export function isKeyed(lastChildren: VNode[], nextChildren: VNode[]): boolean {
-	return nextChildren.length > 0 && !isNullOrUndef(nextChildren[ 0 ]) && !isNullOrUndef(nextChildren[ 0 ].key)
-		&& lastChildren.length > 0 && !isNullOrUndef(lastChildren[ 0 ]) && !isNullOrUndef(lastChildren[ 0 ].key);
+	return nextChildren.length > 0 && !isNullOrUndef(nextChildren[0]) && !isNullOrUndef(nextChildren[0].key)
+		&& lastChildren.length > 0 && !isNullOrUndef(lastChildren[0]) && !isNullOrUndef(lastChildren[0].key);
 }
