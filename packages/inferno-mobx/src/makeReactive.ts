@@ -18,11 +18,11 @@ function reportRendering(component) {
 	}
 
 	renderReporter.emit({
-		event: 'render',
-		renderTime: component.__$mobRenderEnd - component.__$mobRenderStart,
-		totalTime: Date.now() - component.__$mobRenderStart,
 		component,
-		node
+		event: 'render',
+		node,
+		renderTime: component.__$mobRenderEnd - component.__$mobRenderStart,
+		totalTime: Date.now() - component.__$mobRenderStart
 	});
 }
 
