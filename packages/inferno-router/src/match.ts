@@ -76,14 +76,14 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = fal
 			}
 
 			const matched = Inferno.cloneVNode(route, {
-				params: combineFrom(params, matchBase.params),
-				children
+				children,
+				params: combineFrom(params, matchBase.params)
 			});
 
 			return {
 				location,
-				redirect,
-				matched
+				matched,
+				redirect
 			};
 		}
 	}
@@ -125,7 +125,7 @@ export function matchPath(end: boolean, routePath: string, pathToMatch: string):
 	}
 
 	return {
-		path: path === '' ? '/' : path,
-		params
+		params,
+		path: path === '' ? '/' : path
 	};
 }

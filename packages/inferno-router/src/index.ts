@@ -10,29 +10,29 @@ import Router from './Router';
 import RouterContext from './RouterContext';
 
 export {
-	VNode,
-	Route,
-	IndexRoute,
-	Redirect,
+	IPlainRouteConfig,
+	IndexLink,
 	Redirect as IndexRedirect,
+	IndexRoute,
+	Link,
+	Redirect,
+	Route,
 	Router,
 	RouterContext,
-	Link,
-	IndexLink,
-	match,
+	VNode,
 	createRoutes,
-	IPlainRouteConfig
+	match
 };
 
 export default {
-	Route,
-	IndexRoute,
-	Redirect,
+	IndexLink,
 	IndexRedirect: Redirect,
+	IndexRoute,
+	Link,
+	Redirect,
+	Route,
 	Router,
 	RouterContext,
-	Link,
-	IndexLink,
-	match,
-	createRoutes
+	createRoutes,
+	match
 };

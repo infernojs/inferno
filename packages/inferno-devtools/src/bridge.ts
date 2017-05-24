@@ -210,13 +210,12 @@ export function createDevToolsBridge() {
 	};
 
 	return {
-		componentAdded,
-		componentUpdated,
-		componentRemoved,
-
 		ComponentTree,
 		Mount,
-		Reconciler
+		Reconciler,
+		componentAdded,
+		componentRemoved,
+		componentUpdated
 	};
 }
 
@@ -296,8 +295,8 @@ function createReactDOMComponent(vNode, parentDom) {
 
 	return {
 		_currentElement: isText ? (children || vNode) : {
-			type,
-			props
+			props,
+			type
 		},
 		_inDevTools: false,
 		_renderedChildren: !isText && normalizeChildren(children, dom),
@@ -334,10 +333,10 @@ function createReactCompositeComponent(vNode) {
 			return typeName(type);
 		},
 		_currentElement: {
-			type,
 			key: normalizeKey(vNode.key),
 			props: vNode.props,
-			ref: null
+			ref: null,
+			type
 		},
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
