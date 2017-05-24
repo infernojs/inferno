@@ -33,29 +33,21 @@ const version = '3.2.2';
 
 // we duplicate it so it plays nicely with different module loading systems
 export default {
+	EMPTY_OBJ, // used to shared common items between Inferno libs
+	NO_OP, // used to shared common items between Inferno libs
+	cloneVNode, // cloning
+	createRenderer, // DOM
+	createVNode, // core shapes
+	findDOMNode, // DOM
 	getFlagsForElementVnode,
-	linkEvent,
-	// core shapes
-	createVNode,
-
-	// cloning
-	cloneVNode,
-
-	// used to shared common items between Inferno libs
-	NO_OP,
-	EMPTY_OBJ,
-
-	// DOM
-	render,
-	findDOMNode,
-	createRenderer,
-	options,
-	version,
-
-	internal_patch,
 	internal_DOMNodeMap,
 	internal_isUnitlessNumber,
-	internal_normalize
+	internal_normalize,
+	internal_patch,
+	linkEvent,
+	options, // DOM
+	render, // DOM
+	version // DOM
 };
 
 export {
