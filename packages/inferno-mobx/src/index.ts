@@ -5,6 +5,7 @@ import { componentByNodeRegistery, renderReporter, trackComponents } from './mak
 import Provider from './Provider';
 
 export default {
+	EventEmitter,
 	Provider,
 	componentByNodeRegistery,
 	connect,

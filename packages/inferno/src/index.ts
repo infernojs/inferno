@@ -39,7 +39,6 @@ export default {
 	createRenderer, // DOM
 	createVNode, // core shapes
 	findDOMNode, // DOM
-	getFlagsForElementVnode,
 	internal_DOMNodeMap,
 	internal_isUnitlessNumber,
 	internal_normalize,
@@ -51,34 +50,23 @@ export default {
 };
 
 export {
-	// Interfaces
-	Props,
-	VNode,
+	EMPTY_OBJ,
 	InfernoChildren,
 	InfernoInput,
-
-	// Public methods
-	getFlagsForElementVnode,
-	linkEvent,
-	// core shapes
-	createVNode,
-
-	// cloning
-	cloneVNode,
-
-	// used to shared common items between Inferno libs
 	NO_OP,
-	EMPTY_OBJ,
-
-	// DOM
-	render,
-	findDOMNode,
+	Props,
+	VNode,
+	cloneVNode,
 	createRenderer,
-	options,
-	version,
-
-	internal_patch,
+	createVNode,
+	findDOMNode,
+	getFlagsForElementVnode,
 	internal_DOMNodeMap,
 	internal_isUnitlessNumber,
-	internal_normalize
+	internal_normalize,
+	internal_patch,
+	linkEvent,
+	options,
+	render,
+	version
 };
