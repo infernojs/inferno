@@ -343,4 +343,13 @@ describe('SVG (non-jsx)', () => {
 		render(template(), container);
 		expect(container.firstChild.getAttribute('class')).to.equal('class1 class2');
 	});
+
+	it('should respect XHTML namespace inside foreignObject of SVG', () => {
+		const template = () => createElement('svg', null, createElement('foreignObject', null, createElement('div')));
+
+		render(template(), container);
+		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+	});
 });

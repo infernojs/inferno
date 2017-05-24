@@ -96,9 +96,9 @@ export function mountElement(vNode: VNode, parentDom: Element|null, lifecycle: L
 		if (isStringOrNumber(children)) {
 			setTextContent(dom, children as string | number);
 		} else if (isArray(children)) {
-			mountArrayChildren(children, dom, lifecycle, context, isSVG);
+			mountArrayChildren(children, dom, lifecycle, context, isSVG && vNode.type !== 'foreignObject');
 		} else if (isVNode(children as any)) {
-			mount(children as VNode, dom, lifecycle, context, isSVG);
+			mount(children as VNode, dom, lifecycle, context, isSVG && vNode.type !== 'foreignObject');
 		}
 	}
 	if (!isNull(props)) {
