@@ -100,7 +100,7 @@
     "typescript": "^2.3.3",
     "typescript-eslint-parser": "^3.0.0",
     "union-type-es": "^0.1.0",
-    "webpack": "^2.6.0",
+    "webpack": "^2.6.1",
     "webpack-dev-server": "^2.4.5"
   },
   "files": [
