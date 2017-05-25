@@ -345,11 +345,16 @@ describe('SVG (non-jsx)', () => {
 	});
 
 	it('should respect XHTML namespace inside foreignObject of SVG', () => {
-		const template = () => createElement('svg', null, createElement('foreignObject', null, createElement('div')));
+		const template = (extraElement) => createElement('svg', null, createElement('foreignObject', null, createElement('div', null, extraElement ? createElement('p') : null)));
 
-		render(template(), container);
+		render(template(false), container);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+		render(template(true), container);
+		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+		expect(container.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+		expect(container.firstChild.firstChild.firstChild.firstChild.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
 	});
 });
