@@ -1,12 +1,21 @@
 import { expect } from 'chai';
 import { render, linkEvent } from 'inferno';
 import Component from 'inferno-component';
+import sinon from 'sinon';
+import { triggerEvent } from 'inferno/test/utils';
 
 describe('FormElements', () => {
 	let container;
 
 	beforeEach(function () {
 		container = document.createElement('div');
+		document.body.appendChild(container);
+	});
+
+	afterEach(() => {
+		render(null, container);
+		container.innerHTML = '';
+		document.body.removeChild(container);
 	});
 
 	describe('text input', () => {
@@ -513,6 +522,7 @@ describe('FormElements', () => {
 					shouldComponentUpdate() {
 						return false;
 					}
+
 					render() {
 						return (
 							<input
@@ -540,8 +550,8 @@ describe('FormElements', () => {
 					</select>
 				), container);
 
-				expect(container.firstChild.children[0].selected).to.equal(false);
-				expect(container.firstChild.children[1].selected).to.equal(true);
+				expect(container.firstChild.children[ 0 ].selected).to.equal(false);
+				expect(container.firstChild.children[ 1 ].selected).to.equal(true);
 			});
 
 			it('should render specified default selected option', () => {
@@ -555,6 +565,187 @@ describe('FormElements', () => {
 				expect(container.querySelector('select').children[ 0 ].selected).to.eql(false);
 				expect(container.querySelector('select').children[ 1 ].selected).to.eql(true);
 			});
+		});
+
+		describe('callbacks with FormElements', () => {
+			it('Should call latest calback from props', () => {
+				class CompA extends Component {
+
+					constructor(props) {
+						super(props);
+						this.state = {
+							orderedConfigs: [{ value: false }, { value: true }, { value: false }]
+						};
+					}
+
+					handleClick(that, { targetConf, targetIndex }) {
+						const newConfigs = that.state.orderedConfigs.map(
+							(conf, index) => index === targetIndex
+								? { value: !targetConf.value }
+								: conf
+						);
+
+						this.setState({ orderedConfigs: newConfigs });
+					}
+
+					render(props) {
+						return <CompB orderedConfigs={this.state.orderedConfigs}
+													onClick={(...args) => this.handleClick(this, ...args)}/>;
+					}
+				}
+
+				const CompB = function renderCompB(props) {
+					return (<div>{
+						props.orderedConfigs.map(
+							(conf, index) => (
+								<input
+									type="checkbox"
+									checked={conf.value}
+									onClick={() => {
+										props.onClick({ targetConf: conf, targetIndex: index });
+									}}
+								/>
+							)
+						)
+					}</div>);
+
+				};
+
+
+				render(<CompA/>, container);
+
+				expect(container.firstChild.firstChild.checked).to.equal(false);
+				// expect(container.querySelectorAll('input:checked').length).to.equal(1);
+
+
+				let input = container.querySelector('input');
+				input.click();
+
+				expect(container.firstChild.firstChild.checked).to.equal(true);
+				// expect(container.querySelectorAll('input:checked').length).to.equal(2);
+
+				input = container.querySelector('input');
+				input.click();
+
+				expect(container.firstChild.firstChild.checked).to.equal(false, 'it should toggle back to false');
+				// expect(container.querySelectorAll('input:checked').length).to.equal(1);
+			});
+
+			it('Github - 1023 It should call recent callback from input', (done) => {
+				class Foobar extends Component {
+					constructor(props) {
+						super(props);
+						this.state = { error: null, value: props.value };
+						this.handleChange = this.handleChange.bind(this);
+					}
+
+					handleChange(event) {
+						this.setState({
+							error: 'test ' + event.currentTarget.value
+						});
+						this.props.onChange(this.props.name, event.currentTarget.value);
+					}
+
+					render() {
+						return (
+							<div className='inputContainer' style={{ width: this.props.width ? this.props.width : '100%' }}>
+								<div className='label'>{ this.props.label }&nbsp;</div>
+								<input type={this.props.type} onChange={this.handleChange} value={this.props.value}/>
+								<div className='hint'>{ this.props.hint }</div>
+								{ this.state.error && (
+									<div className='error'>
+										{ this.state.error }
+									</div>
+								)}
+							</div>
+						);
+					}
+				}
+
+				const obj = {
+					func() {
+					}
+				};
+
+				const spy = sinon.spy(obj.func);
+
+				render(<Foobar onChange={spy}/>, container);
+				const input = container.querySelector('input');
+
+				input.value = 'foo';
+
+				triggerEvent('change', input);
+
+				expect(spy.calledOnce).to.equal(true);
+				expect(spy.args[ 0 ][ 1 ]).to.equal('foo');
+
+				input.value = 'bar';
+
+				triggerEvent('change', input);
+
+				expect(spy.calledTwice).to.equal(true);
+				expect(spy.args[ 1 ][ 1 ]).to.equal('bar');
+
+				done();
+			});
+
+			// TODO: This requires async events, Something we could add in v4
+			// 	it('Github - 1023 It should call recent callback from input #2', (done) => {
+			// 		class Foobar extends Component {
+			// 			constructor(props) {
+			// 				super(props);
+			// 				this.state = { error: null, value: props.value };
+			// 				this.handleChange = this.handleChange.bind(this);
+			// 			}
+			//
+			// 			handleChange(event) {
+			// 				this.setState({
+			// 					error: 'test ' + event.currentTarget.value
+			// 				});
+			// 				this.props.onChange(this.props.name, event.currentTarget.value);
+			// 			}
+			//
+			// 			render() {
+			// 				return (
+			// 					<div className='inputContainer' style={{ width: this.props.width ? this.props.width : '100%' }}>
+			// 						<div className='label'>{ this.props.label }&nbsp;</div>
+			// 						<input type={this.props.type} onChange={this.handleChange} value={this.props.value} />
+			// 						<div className='hint'>{ this.props.hint }</div>
+			// 						{ this.state.error && (
+			// 							<div className='error'>
+			// 								{ this.state.error }
+			// 							</div>
+			// 						)}
+			// 					</div>
+			// 				);
+			// 			}
+			// 		}
+			//
+			// 		const obj = {
+			// 			func() {}
+			// 		};
+			//
+			// 		const spy = sinon.spy(obj.func);
+			//
+			// 		render(<Foobar value="" onChange={spy} />, container);
+			// 		const input = container.querySelector('input');
+			//
+			// 		input.value = 'foo';
+			//
+			// 		triggerEvent('change', input);
+			//
+			// 		expect(spy.calledOnce).to.equal(true);
+			// 		expect(spy.args[0][1]).to.equal('foo');
+			//
+			// 		input.value = 'bar';
+			//
+			// 		triggerEvent('change', input);
+			//
+			// 		expect(spy.calledTwice).to.equal(true);
+			// 		expect(spy.args[1][1]).to.equal('bar');
+			//
+			// 		done();
+			// 	});
 		});
 	});
 });

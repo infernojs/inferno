@@ -97,4 +97,3 @@ export function inject(arg: any/* fn(stores, nextProps) or ...storeNames */) {
 		};
 	}
 }
-

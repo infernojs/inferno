@@ -173,7 +173,7 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
 			if (lastPropsOrEmpty !== EMPTY_OBJ) {
 				for (const prop in lastPropsOrEmpty) {
 					// do not add a hasOwnProperty check here, it affects performance
-					if (isNullOrUndef(nextPropsOrEmpty[ prop ])) {
+					if (isNullOrUndef(nextPropsOrEmpty[ prop ]) && !isNullOrUndef(lastPropsOrEmpty[ prop ])) {
 						removeProp(prop, lastPropsOrEmpty[ prop ], dom);
 					}
 				}

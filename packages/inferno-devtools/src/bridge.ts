@@ -210,13 +210,13 @@ export function createDevToolsBridge() {
 	};
 
 	return {
-		componentAdded,
-		componentUpdated,
-		componentRemoved,
-
 		ComponentTree,
 		Mount,
-		Reconciler
+		Reconciler,
+
+		componentAdded,
+		componentRemoved,
+		componentUpdated
 	};
 }
 
@@ -296,8 +296,8 @@ function createReactDOMComponent(vNode, parentDom) {
 
 	return {
 		_currentElement: isText ? (children || vNode) : {
-			type,
-			props
+			props,
+			type
 		},
 		_inDevTools: false,
 		_renderedChildren: !isText && normalizeChildren(children, dom),
@@ -329,25 +329,43 @@ function createReactCompositeComponent(vNode) {
 	const lastInput = instance._lastInput || instance;
 	const dom = vNode.dom;
 
-	return {
-		getName() {
-			return typeName(type);
-		},
+	const compositeComponent = {
 		_currentElement: {
-			type,
 			key: normalizeKey(vNode.key),
 			props: vNode.props,
-			ref: null
+			ref: null,
+			type
 		},
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
 		forceUpdate: instance.forceUpdate.bind(instance),
+		getName() {
+			return typeName(type);
+		},
 		node: dom,
 		props: instance.props,
 		setState: instance.setState.bind(instance),
 		state: instance.state,
 		vNode
 	};
+
+	const forceInstanceUpdate = instance.forceUpdate.bind(instance); // Save off for use below.
+	instance.forceUpdate = () => {
+		const newProps = Object.assign(
+			{},
+			// These are the regular Inferno props.
+			instance.props,
+			// This is what gets updated by the React devtools when props are edited.
+			compositeComponent._currentElement.props
+		);
+
+		instance.props = newProps;
+		vNode.props = newProps;
+
+		forceInstanceUpdate();
+	};
+
+	return compositeComponent;
 }
 
 function nextRootKey(roots) {

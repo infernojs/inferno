@@ -201,49 +201,33 @@ import {
 } from './jest';
 
 export default {
-
-	isVNode,
-	isVNodeOfType,
-
-	isDOMVNode,
-	isDOMVNodeOfType,
-
-	isFunctionalVNode,
-	isFunctionalVNodeOfType,
-
-	isClassVNode,
-	isClassVNodeOfType,
-
-	isComponentVNode,
-	isComponentVNodeOfType,
-
-	isTextVNode,
-
-	isDOMElement,
-	isDOMElementOfType,
-
-	isRenderedClassComponent,
-	isRenderedClassComponentOfType,
-
-	renderIntoDocument,
-
 	findAllInRenderedTree,
 	findAllInVNodeTree,
-
-	scryRenderedDOMElementsWithClass,
 	findRenderedDOMElementWithClass,
-
-	scryRenderedDOMElementsWithTag,
 	findRenderedDOMElementWithTag,
-
-	scryRenderedVNodesWithType,
 	findRenderedVNodeWithType,
-
-	scryVNodesWithType,
 	findVNodeWithType,
-
 	getTagNameOfVNode,
-
-	vNodeToSnapshot,
-	renderToSnapshot
+	isClassVNode,
+	isClassVNodeOfType,
+	isComponentVNode,
+	isComponentVNodeOfType,
+	isDOMElement,
+	isDOMElementOfType,
+	isDOMVNode,
+	isDOMVNodeOfType,
+	isFunctionalVNode,
+	isFunctionalVNodeOfType,
+	isRenderedClassComponent,
+	isRenderedClassComponentOfType,
+	isTextVNode,
+	isVNode,
+	isVNodeOfType,
+	renderIntoDocument,
+	renderToSnapshot,
+	scryRenderedDOMElementsWithClass,
+	scryRenderedDOMElementsWithTag,
+	scryRenderedVNodesWithType,
+	scryVNodesWithType,
+	vNodeToSnapshot
 };

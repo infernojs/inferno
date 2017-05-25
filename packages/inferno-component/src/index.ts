@@ -275,9 +275,19 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
 			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
 				if (!isUndefined(this.componentWillReceiveProps) && !fromSetState) {
+					// keep a copy of state before componentWillReceiveProps
+					const beforeState = combineFrom(this.state) as any;
 					this._blockRender = true;
 					this.componentWillReceiveProps(nextProps, context);
 					this._blockRender = false;
+					const afterState = this.state;
+					if (beforeState !== afterState) {
+						// if state changed in componentWillReceiveProps, reassign the beforeState
+						this.state = beforeState;
+						// set the afterState as pending state so the change gets picked up below
+						this._pendingSetState = true;
+						this._pendingState = afterState;
+					}
 				}
 				if (this._pendingSetState) {
 					nextState = combineFrom(nextState, this._pendingState) as any;
