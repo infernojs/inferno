@@ -29,7 +29,7 @@ export declare const VNodeFlags: _VNodeFlags;
 export declare const Root: _Root;
 export declare const LifecycleClass: _LifecycleClass;
 
-const version = '3.2.2';
+const version = '3.3.0';
 
 // we duplicate it so it plays nicely with different module loading systems
 export default {
