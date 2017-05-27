@@ -11,10 +11,10 @@ import RouterContext from './RouterContext';
 
 export {
 	IndexLink,
+	Redirect as IndexRedirect,
 	IndexRoute,
 	IPlainRouteConfig,
 	Link,
-	Redirect as IndexRedirect,
 	Redirect,
 	Route,
 	Router,
