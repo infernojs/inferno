@@ -136,8 +136,9 @@ function hydrateChildren(children: InfernoChildren, parentDom: Element, lifecycl
 
 			if (!isNull(child) && isObject(child)) {
 				if (!isNull(dom)) {
+					const nextSibling = dom.nextSibling;
 					hydrate(child as VNode, dom as Element, lifecycle, context, isSVG);
-					dom = dom.nextSibling;
+					dom = nextSibling;
 				} else {
 					mount(child as VNode, parentDom, lifecycle, context, isSVG);
 				}
