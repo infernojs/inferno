@@ -13,6 +13,7 @@ import VNodeFlags from 'inferno-vnode-flags';
 import {
 	patch
 } from '../DOM/patching';
+import { componentToDOMNodeMap } from '../DOM/rendering';
 import {
 	options
 } from './options';
@@ -22,7 +23,7 @@ import {
 } from './VNodes';
 
 const resolvedPromise = Promise.resolve();
-const stateChangeQueue = <any> [];
+const stateChangeQueue: any[] = [];
 
 // when a components root VNode is also a component, we can run into issues
 // this will recursively look for vNode.parentNode if the VNode is a component
@@ -98,7 +99,7 @@ function applyState<P, S>(component: any, force: boolean, callback?: Function): 
 		}
 		const dom = vNode.dom = (nextInput as VNode).dom as Element;
 		if (options.findDOMNodeEnabled) {
-			internal_DOMNodeMap.set(component, (nextInput as VNode).dom);
+			componentToDOMNodeMap.set(component, (nextInput as VNode).dom);
 		}
 
 		updateParentComponentVNodes(vNode, dom);
@@ -111,7 +112,7 @@ function applyState<P, S>(component: any, force: boolean, callback?: Function): 
 	}
 }
 
-export function flushQueue() {
+function flushQueue() {
 	const length = stateChangeQueue.length;
 
 	if (length !== 0) {
@@ -125,9 +126,9 @@ export function flushQueue() {
 
 export function queueStateChange(component, force, callback) {
 	stateChangeQueue.push({
+		callback,
 		component,
-		force,
-		callback
+		force
 	});
 
 	resolvedPromise.then(flushQueue);

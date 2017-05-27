@@ -14,6 +14,10 @@ export const options: {
 	beforeRender: null|Function,
 	beforeUnmount: null|Function
 	createVNode: null|Function,
+	component: {
+		create: null|Function,
+		patch: null|Function
+	},
 	findDOMNodeEnabled: boolean,
 	recyclingEnabled: boolean,
 	roots: Root[]
@@ -23,6 +27,10 @@ export const options: {
 	afterUpdate: null,
 	beforeRender: null,
 	beforeUnmount: null,
+	component: {
+		create: null,
+		patch: null
+	},
 	createVNode: null,
 	findDOMNodeEnabled: false,
 	recyclingEnabled: false,

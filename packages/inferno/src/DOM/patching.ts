@@ -1,5 +1,4 @@
 import {
-	combineFrom,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -16,13 +15,11 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
-
 import { Styles } from '../core/structures';
 import { createTextVNode, createVoidVNode, directClone, isVNode, VNode } from '../core/VNodes';
 import { booleanProps, delegatedEvents, isUnitlessNumber, namespaces, skipProps, strictProps } from './constants';
 import { handleEvent } from './events/delegation';
 import { mount, mountArrayChildren, mountComponent, mountElement, mountRef, mountText, mountVoid } from './mounting';
-import { componentToDOMNodeMap } from './rendering';
 import { unmount } from './unmounting';
 import {
 	appendChild,
@@ -268,13 +265,9 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 		replaceWithNewNode(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
 		return false;
 	} else {
-		const nextProps = nextVNode.props || EMPTY_OBJ;
-
 		if (isClass) {
-			const instance = lastVNode.children;
-			instance._updating = true;
-
-			if (instance._unmounted) {
+			const isUnmounted = patchClassComponent(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling);
+			if (isUnmounted) {
 				if (isNull(parentDom)) {
 					return true;
 				}
@@ -290,69 +283,9 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					),
 					lastVNode.dom
 				);
-			} else {
-				const hasComponentDidUpdate = !isUndefined(instance.componentDidUpdate);
-				const nextState = instance.state;
-				// When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
-				const lastState = hasComponentDidUpdate ? combineFrom(nextState, null) : nextState;
-				const lastProps = instance.props;
-				let childContext;
-				if (!isUndefined(instance.getChildContext)) {
-					childContext = instance.getChildContext();
-				}
-
-				nextVNode.children = instance;
-				instance._isSVG = isSVG;
-				if (isNullOrUndef(childContext)) {
-					childContext = context;
-				} else {
-					childContext = combineFrom(context, childContext);
-				}
-				const lastInput = instance._lastInput;
-				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false, false);
-				let didUpdate = true;
-
-				instance._childContext = childContext;
-				if (isInvalid(nextInput)) {
-					nextInput = createVoidVNode();
-				} else if (nextInput === NO_OP) {
-					nextInput = lastInput;
-					didUpdate = false;
-				} else if (isStringOrNumber(nextInput)) {
-					nextInput = createTextVNode(nextInput, null);
-				} else if (isArray(nextInput)) {
-					if (process.env.NODE_ENV !== 'production') {
-						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-					}
-					throwError();
-				} else if (isObject(nextInput)) {
-					if (!isNull((nextInput as VNode).dom)) {
-						nextInput = directClone(nextInput as VNode);
-					}
-				}
-				if (nextInput.flags & VNodeFlags.Component) {
-					nextInput.parentVNode = nextVNode;
-				} else if (lastInput.flags & VNodeFlags.Component) {
-					lastInput.parentVNode = nextVNode;
-				}
-				instance._lastInput = nextInput;
-				instance._vNode = nextVNode;
-				if (didUpdate) {
-					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
-					if (hasComponentDidUpdate) {
-						instance.componentDidUpdate(lastProps, lastState);
-					}
-					if (!isNull(options.afterUpdate)) {
-						options.afterUpdate(nextVNode);
-					}
-					if (options.findDOMNodeEnabled) {
-						componentToDOMNodeMap.set(instance, nextInput.dom);
-					}
-				}
-				nextVNode.dom = nextInput.dom;
 			}
-			instance._updating = false;
 		} else {
+			const nextProps = nextVNode.props || EMPTY_OBJ;
 			let shouldUpdate = true;
 			const lastProps = lastVNode.props;
 			const nextHooks = nextVNode.ref;

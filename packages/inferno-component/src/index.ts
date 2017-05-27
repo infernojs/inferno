@@ -1,20 +1,21 @@
 // Make sure u use EMPTY_OBJ from 'inferno', otherwise it'll be a different reference
-import { createVNode, EMPTY_OBJ, internal_DOMNodeMap, internal_patch, options, Props, VNode } from 'inferno';
+import { EMPTY_OBJ, options, Props, VNode } from 'inferno';
 import {
 	combineFrom,
 	ERROR_MSG,
-	isArray,
 	isBrowser,
 	isFunction,
-	isInvalid,
-	isNull,
 	isNullOrUndef,
-	isStringOrNumber,
 	isUndefined,
 	NO_OP,
-	throwError
+	throwError,
+    LifecycleClass
 } from 'inferno-shared';
-import VNodeFlags from 'inferno-vnode-flags';
+
+
+/* Add ES6 component implementations for Inferno-core to use */
+options.component.create = createClassComponentInstance;
+options.component.patch = patchClassComponent;
 
 let noOp = ERROR_MSG;
 
@@ -73,6 +74,148 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callba
 		}
 	}
 }
+
+function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean, lifecycle: LifecycleClass) {
+	if (isUndefined(context)) {
+		context = EMPTY_OBJ; // Context should not be mutable
+	}
+	const instance = new Component(props, context);
+	vNode.children = instance;
+	instance._blockSetState = false;
+	instance.context = context;
+	if (instance.props === EMPTY_OBJ) {
+		instance.props = props;
+	}
+	// setState callbacks must fire after render is done when called from componentWillReceiveProps or componentWillMount
+	instance._lifecycle = lifecycle;
+
+	instance._unmounted = false;
+	instance._pendingSetState = true;
+	instance._isSVG = isSVG;
+	if (!isUndefined(instance.componentWillMount)) {
+		instance._blockRender = true;
+		instance.componentWillMount();
+		instance._blockRender = false;
+	}
+
+	let childContext;
+	if (!isUndefined(instance.getChildContext)) {
+		childContext = instance.getChildContext();
+	}
+
+	if (isNullOrUndef(childContext)) {
+		instance._childContext = context;
+	} else {
+		instance._childContext = combineFrom(context, childContext);
+	}
+
+	if (!isNull(options.beforeRender)) {
+		options.beforeRender(instance);
+	}
+
+	let input = instance.render(props, instance.state, context);
+
+	if (!isNull(options.afterRender)) {
+		options.afterRender(instance);
+	}
+	if (isArray(input)) {
+		if (process.env.NODE_ENV !== 'production') {
+			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+		}
+		throwError();
+	} else if (isInvalid(input)) {
+		input = createVoidVNode();
+	} else if (isStringOrNumber(input)) {
+		input = createTextVNode(input, null);
+	} else {
+		if (input.dom) {
+			input = directClone(input);
+		}
+		if (input.flags & VNodeFlags.Component) {
+			// if we have an input that is also a component, we run into a tricky situation
+			// where the root vNode needs to always have the correct DOM entry
+			// so we break monomorphism on our input and supply it our vNode as parentVNode
+			// we can optimise this in the future, but this gets us out of a lot of issues
+			input.parentVNode = vNode;
+		}
+	}
+	instance._pendingSetState = false;
+	instance._lastInput = input;
+	return instance;
+}
+
+function patchClassComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleClass, context, isSVG: boolean, isRecycling: boolean) {
+	const instance = lastVNode.children;
+	instance._updating = true;
+
+	if (instance._unmounted) {
+		return true;
+	} else {
+		const hasComponentDidUpdate = !isUndefined(instance.componentDidUpdate);
+		const nextState = instance.state;
+		// When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
+		const lastState = hasComponentDidUpdate ? combineFrom(nextState, null) : nextState;
+		const lastProps = instance.props;
+		let childContext;
+		if (!isUndefined(instance.getChildContext)) {
+			childContext = instance.getChildContext();
+		}
+
+		nextVNode.children = instance;
+		instance._isSVG = isSVG;
+		if (isNullOrUndef(childContext)) {
+			childContext = context;
+		} else {
+			childContext = combineFrom(context, childContext);
+		}
+		const lastInput = instance._lastInput;
+		let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextVNode.props || EMPTY_OBJ, context, false, false);
+		let didUpdate = true;
+
+		instance._childContext = childContext;
+		if (isInvalid(nextInput)) {
+			nextInput = createVoidVNode();
+		} else if (nextInput === NO_OP) {
+			nextInput = lastInput;
+			didUpdate = false;
+		} else if (isStringOrNumber(nextInput)) {
+			nextInput = createTextVNode(nextInput, null);
+		} else if (isArray(nextInput)) {
+			if (process.env.NODE_ENV !== 'production') {
+				throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+			}
+			throwError();
+		} else if (isObject(nextInput)) {
+			if (!isNull((nextInput as VNode).dom)) {
+				nextInput = directClone(nextInput as VNode);
+			}
+		}
+		if (nextInput.flags & VNodeFlags.Component) {
+			nextInput.parentVNode = nextVNode;
+		} else if (lastInput.flags & VNodeFlags.Component) {
+			lastInput.parentVNode = nextVNode;
+		}
+		instance._lastInput = nextInput;
+		instance._vNode = nextVNode;
+		if (didUpdate) {
+			patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
+			if (hasComponentDidUpdate) {
+				instance.componentDidUpdate(lastProps, lastState);
+			}
+			if (!isNull(options.afterUpdate)) {
+				options.afterUpdate(nextVNode);
+			}
+			if (options.findDOMNodeEnabled) {
+				componentToDOMNodeMap.set(instance, nextInput.dom);
+			}
+		}
+		nextVNode.dom = nextInput.dom;
+	}
+	instance._updating = false;
+
+	return false;
+}
+
 
 let alreadyWarned = false;
 
