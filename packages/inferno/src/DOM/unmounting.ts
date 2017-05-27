@@ -4,7 +4,7 @@ import {
 	isInvalid,
 	isNull,
 	isNullOrUndef,
-	isObject, isUndefined,
+	isObject,
 	LifecycleClass,
 	throwError
 } from 'inferno-shared';
@@ -12,7 +12,7 @@ import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
 import { InfernoChildren, Ref, VNode } from '../core/VNodes';
 import { isAttrAnEvent, patchEvent } from './patching';
-import { poolComponent, poolElement } from './recycling';
+import { componentPools, elementPools, pool } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
 import { removeChild } from './utils';
 
@@ -37,7 +37,7 @@ function unmountVoidOrText(vNode: VNode, parentDom: Element|null) {
 export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, canRecycle: boolean, isRecycling: boolean) {
 	const instance = vNode.children as any;
 	const flags = vNode.flags;
-	const isStatefulComponent = flags & VNodeFlags.ComponentClass;
+	const isStatefulComponent: boolean = (flags & VNodeFlags.ComponentClass) > 0;
 	const ref = vNode.ref as any;
 	const dom = vNode.dom as Element;
 
@@ -45,13 +45,13 @@ export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycl
 		if (isStatefulComponent) {
 			if (!instance._unmounted) {
 				instance._blockSetState = true;
-				if (!isNull(options.beforeUnmount)) {
+				if (isFunction(options.beforeUnmount)) {
 					options.beforeUnmount(vNode);
 				}
-				if (!isUndefined(instance.componentWillUnmount)) {
+				if (isFunction(instance.componentWillUnmount)) {
 					instance.componentWillUnmount();
 				}
-				if (ref && !isRecycling) {
+				if (isFunction(ref) && !isRecycling) {
 					ref(null);
 				}
 				instance._unmounted = true;
@@ -63,7 +63,7 @@ export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycl
 			}
 		} else {
 			if (!isNullOrUndef(ref)) {
-				if (!isNullOrUndef(ref.onComponentWillUnmount)) {
+				if (isFunction(ref.onComponentWillUnmount)) {
 					ref.onComponentWillUnmount(dom);
 				}
 			}
@@ -80,7 +80,17 @@ export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycl
 		removeChild(parentDom, dom);
 	}
 	if (options.recyclingEnabled && !isStatefulComponent && (parentDom || canRecycle)) {
-		poolComponent(vNode);
+		const hooks = ref;
+		if (hooks && (
+				hooks.onComponentWillMount ||
+				hooks.onComponentWillUnmount ||
+				hooks.onComponentDidMount ||
+				hooks.onComponentWillUpdate ||
+				hooks.onComponentDidUpdate
+			)) {
+			return;
+		}
+		pool(vNode, componentPools);
 	}
 }
 
@@ -112,7 +122,7 @@ export function unmountElement(vNode: VNode, parentDom: Element|null, lifecycle:
 		removeChild(parentDom, dom);
 	}
 	if (options.recyclingEnabled && (parentDom || canRecycle)) {
-		poolElement(vNode);
+		pool(vNode, elementPools);
 	}
 }
 

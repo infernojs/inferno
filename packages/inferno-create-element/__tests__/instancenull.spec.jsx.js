@@ -91,7 +91,7 @@ describe('BUG: instance - null', () => {
 		_popoverRef(node) {
 			this._elements.popover = node;
 			if (node !== null) {
-				this.setStateSync({
+				this.setState({
 					placement: ''
 				});
 			}
@@ -197,7 +197,7 @@ describe('BUG: instance - null', () => {
 				event.stopPropagation();
 			}
 
-			this.setStateSync({
+			this.setState({
 				editableText: '',
 				isEditMode: false,
 				filteredItems: null,
@@ -282,7 +282,7 @@ describe('BUG: instance - null', () => {
 			}
 
 			// Updating editable and changing into editmode
-			this.setStateSync({
+			this.setState({
 				isEditMode: true,
 				activeValue: props.value
 			});

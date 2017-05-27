@@ -1842,7 +1842,7 @@ describe('Components (JSX)', () => {
 				}
 
 				changeDOM() {
-					this.setStateSync({
+					this.setState({
 						bool: !this.state.bool
 					});
 				}
@@ -1892,7 +1892,7 @@ describe('Components (JSX)', () => {
 			}
 
 			changeDOM() {
-				this.setStateSync({
+				this.setState({
 					bool: !this.state.bool
 				});
 			}
@@ -2081,7 +2081,7 @@ describe('Components (JSX)', () => {
 				}
 
 				toggle1() {
-					this.setStateSync({
+					this.setState({
 						toggle1: !this.state.toggle1
 					});
 				}
@@ -2137,7 +2137,7 @@ describe('Components (JSX)', () => {
 				}
 
 				toggle1() {
-					this.setStateSync({
+					this.setState({
 						toggle1: !this.state.toggle1
 					});
 				}
@@ -2442,7 +2442,7 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-					this.setStateSync({ n: !this.state.n });
+					this.setState({ n: !this.state.n });
 				};
 			}
 
@@ -2485,7 +2485,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={() => {
-							this.setStateSync({ reverse: !this.state.reverse });
+							this.setState({ reverse: !this.state.reverse });
 						}}>Swap Rows
 						</button>
 						<div>
@@ -2530,7 +2530,7 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-					this.setStateSync({ n: !this.state.n });
+					this.setState({ n: !this.state.n });
 				};
 			}
 
@@ -2577,7 +2577,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={() => {
-							this.setStateSync({ reverse: !this.state.reverse });
+							this.setState({ reverse: !this.state.reverse });
 						}}>Swap Rows
 						</button>
 						<div>
@@ -2622,7 +2622,7 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-					this.setStateSync({ n: !this.state.n });
+					this.setState({ n: !this.state.n });
 				};
 			}
 
@@ -2663,7 +2663,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={() => {
-							this.setStateSync({ reverse: !this.state.reverse });
+							this.setState({ reverse: !this.state.reverse });
 						}}>Swap Rows
 						</button>
 						<div>
@@ -2706,7 +2706,7 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-					this.setStateSync({ n: !this.state.n });
+					this.setState({ n: !this.state.n });
 				};
 			}
 
@@ -2748,7 +2748,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={() => {
-							this.setStateSync({ reverse: !this.state.reverse });
+							this.setState({ reverse: !this.state.reverse });
 						}}>Swap Rows
 						</button>
 						<div>
@@ -2782,7 +2782,7 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-					this.setStateSync({ n: !this.state.n });
+					this.setState({ n: !this.state.n });
 				};
 			}
 
@@ -2826,7 +2826,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={() => {
-							this.setStateSync({ reverse: !this.state.reverse });
+							this.setState({ reverse: !this.state.reverse });
 						}}>Swap Rows
 						</button>
 						<div>
@@ -2880,7 +2880,7 @@ describe('Components (JSX)', () => {
 					<div>
 						<button onClick={() => {
 							i++;
-							this.setStateSync({});
+							this.setState({});
 						}}>Replace
 						</button>
 						<div>

@@ -22,7 +22,7 @@ import {
 } from './mounting';
 import { patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
-import { createClassComponentInstance, createFunctionalComponentInput, EMPTY_OBJ, replaceChild } from './utils';
+import { EMPTY_OBJ, handleComponentInput, replaceChild } from './utils';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 
 function normalizeChildNodes(parentDom) {
@@ -47,8 +47,10 @@ function normalizeChildNodes(parentDom) {
 	}
 }
 
+const C = options.component;
+
 function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context, isSVG: boolean, isClass: boolean): Element {
-	const type = vNode.type;
+	const type = vNode.type as Function;
 	const ref = vNode.ref;
 
 	vNode.dom = dom;
@@ -57,10 +59,9 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 
 	if (isClass) {
 		const _isSVG = dom.namespaceURI === svgNS;
-		const instance = createClassComponentInstance(vNode, type, props, context, _isSVG, lifecycle);
+		const instance = (C.create as Function)(vNode, type, props, context, _isSVG, lifecycle, handleComponentInput);
 		const input = instance._lastInput;
 
-		instance._vNode = vNode;
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);
 		mountClassComponentCallbacks(vNode, ref, instance, lifecycle);
 		instance._updating = false; // Mount finished allow going sync
@@ -68,7 +69,8 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 			componentToDOMNodeMap.set(instance, dom);
 		}
 	} else {
-		const input = createFunctionalComponentInput(vNode, type, props, context);
+		const renderOutput = type(props, context);
+		const input = handleComponentInput(renderOutput, vNode);
 		hydrate(input, dom, lifecycle, context, isSVG);
 		vNode.children = input;
 		vNode.dom = input.dom;

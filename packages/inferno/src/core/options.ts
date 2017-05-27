@@ -1,4 +1,5 @@
 import { LifecycleClass } from 'inferno-shared';
+import { handleComponentInput } from '../DOM/utils';
 import { InfernoInput } from './VNodes';
 
 export interface Root {
@@ -16,6 +17,7 @@ export const options: {
 	createVNode: null|Function,
 	component: {
 		create: null|Function,
+		handleInput: Function
 		patch: null|Function
 	},
 	findDOMNodeEnabled: boolean,
@@ -29,6 +31,7 @@ export const options: {
 	beforeUnmount: null,
 	component: {
 		create: null,
+		handleInput: handleComponentInput,
 		patch: null
 	},
 	createVNode: null,

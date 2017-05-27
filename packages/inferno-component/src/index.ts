@@ -1,22 +1,22 @@
 // Make sure u use EMPTY_OBJ from 'inferno', otherwise it'll be a different reference
-import { EMPTY_OBJ, options, Props, VNode } from 'inferno';
+import { EMPTY_OBJ, internal_DOMNodeMap, internal_patch, options, Props, VNode} from 'inferno';
 import {
 	combineFrom,
 	ERROR_MSG,
 	isBrowser,
 	isFunction,
 	isNullOrUndef,
-	isUndefined,
+	LifecycleClass,
 	NO_OP,
-	throwError,
-    LifecycleClass
+	throwError
 } from 'inferno-shared';
-
+import VNodeFlags from 'inferno-vnode-flags';
 
 /* Add ES6 component implementations for Inferno-core to use */
-options.component.create = createClassComponentInstance;
-options.component.patch = patchClassComponent;
+options.component.create = createInstance;
+options.component.patch = patchComponent;
 
+const handleInput = options.component.handleInput;
 let noOp = ERROR_MSG;
 
 if (process.env.NODE_ENV !== 'production') {
@@ -33,7 +33,7 @@ export interface ComponentLifecycle<P, S> {
 	componentWillUnmount?(): void;
 }
 
-function addToQueue(component: Component<any, any>, force: boolean, callback?: Function): void {
+function addToQueue<P, S>(component: Component<P, S>, force: boolean, callback?: Function): void {
 	const queueStateChange = component._queueStateChange;
 
 	if (queueStateChange !== null) {
@@ -43,11 +43,11 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 
 function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callback?: Function): void {
 	if (isFunction(newState)) {
-		newState = newState(component.state, component.props, component.context);
+		newState = (newState as any)(component.state, component.props, component.context) as S;
 	}
 	let pending = component._pendingState;
 
-	if (pending === null) {
+	if (isNullOrUndef(pending)) {
 		component._pendingState = pending = newState;
 	} else {
 		for (const stateKey in newState) {
@@ -69,18 +69,15 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callba
 		}
 
 		component._pendingState = null;
-		if (!isNullOrUndef(callback) && component._blockRender) {
-			(component._lifecycle as any).addListener(callback.bind(component));
+		if (component._blockRender && isFunction(callback)) {
+			component._lifecycle.addListener(callback.bind(component));
 		}
 	}
 }
 
-function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean, lifecycle: LifecycleClass) {
-	if (isUndefined(context)) {
-		context = EMPTY_OBJ; // Context should not be mutable
-	}
-	const instance = new Component(props, context);
-	vNode.children = instance;
+function createInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean, lifecycle: LifecycleClass) {
+	const instance = new Component(props, context) as Component<any, any>;
+	vNode.children = instance as any;
 	instance._blockSetState = false;
 	instance.context = context;
 	if (instance.props === EMPTY_OBJ) {
@@ -88,18 +85,16 @@ function createClassComponentInstance(vNode: VNode, Component, props: Props, con
 	}
 	// setState callbacks must fire after render is done when called from componentWillReceiveProps or componentWillMount
 	instance._lifecycle = lifecycle;
-
-	instance._unmounted = false;
 	instance._pendingSetState = true;
 	instance._isSVG = isSVG;
-	if (!isUndefined(instance.componentWillMount)) {
+	if (isFunction(instance.componentWillMount)) {
 		instance._blockRender = true;
 		instance.componentWillMount();
 		instance._blockRender = false;
 	}
 
 	let childContext;
-	if (!isUndefined(instance.getChildContext)) {
+	if (isFunction(instance.getChildContext)) {
 		childContext = instance.getChildContext();
 	}
 
@@ -109,115 +104,218 @@ function createClassComponentInstance(vNode: VNode, Component, props: Props, con
 		instance._childContext = combineFrom(context, childContext);
 	}
 
-	if (!isNull(options.beforeRender)) {
+	if (isFunction(options.beforeRender)) {
 		options.beforeRender(instance);
 	}
 
-	let input = instance.render(props, instance.state, context);
+	const renderOutput = instance.render(props, instance.state, context);
 
-	if (!isNull(options.afterRender)) {
+	if (isFunction(options.afterRender)) {
 		options.afterRender(instance);
 	}
-	if (isArray(input)) {
-		if (process.env.NODE_ENV !== 'production') {
-			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-		}
-		throwError();
-	} else if (isInvalid(input)) {
-		input = createVoidVNode();
-	} else if (isStringOrNumber(input)) {
-		input = createTextVNode(input, null);
-	} else {
-		if (input.dom) {
-			input = directClone(input);
-		}
-		if (input.flags & VNodeFlags.Component) {
-			// if we have an input that is also a component, we run into a tricky situation
-			// where the root vNode needs to always have the correct DOM entry
-			// so we break monomorphism on our input and supply it our vNode as parentVNode
-			// we can optimise this in the future, but this gets us out of a lot of issues
-			input.parentVNode = vNode;
-		}
-	}
+
 	instance._pendingSetState = false;
-	instance._lastInput = input;
+	instance._lastInput = handleInput(renderOutput, vNode);
+	instance._vNode = vNode;
 	return instance;
 }
 
-function patchClassComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleClass, context, isSVG: boolean, isRecycling: boolean) {
-	const instance = lastVNode.children;
+function updateComponent<P, S>(component: Component<P, S>, prevState: S, nextState: S, prevProps: P & Props, nextProps: P & Props, context: any, force: boolean, fromSetState: boolean): VNode|string {
+	if (component._unmounted === true) {
+		if (process.env.NODE_ENV !== 'production') {
+			throwError(noOp);
+		}
+		throwError();
+	}
+	if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
+		if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
+			if (!fromSetState && isFunction(component.componentWillReceiveProps)) {
+				// keep a copy of state before componentWillReceiveProps
+				const beforeState = combineFrom(component.state) as any;
+				component._blockRender = true;
+				component.componentWillReceiveProps(nextProps, context);
+				component._blockRender = false;
+				const afterState = component.state;
+				if (beforeState !== afterState) {
+					// if state changed in componentWillReceiveProps, reassign the beforeState
+					component.state = beforeState;
+					// set the afterState as pending state so the change gets picked up below
+					component._pendingSetState = true;
+					component._pendingState = afterState;
+				}
+			}
+			if (component._pendingSetState) {
+				nextState = combineFrom(nextState, component._pendingState) as any;
+				component._pendingSetState = false;
+				component._pendingState = null;
+			}
+		}
+
+		/* Update if scu is not defined, or it returns truthy value or force */
+		// When force is true we should not call scu
+		if (force || (isFunction(component.shouldComponentUpdate) && component.shouldComponentUpdate(nextProps, nextState, context) !== false)) {
+			if (isFunction(component.componentWillUpdate)) {
+				component._blockSetState = true;
+				component.componentWillUpdate(nextProps, nextState, context);
+				component._blockSetState = false;
+			}
+
+			component.props = nextProps;
+			component.state = nextState;
+			component.context = context;
+
+			if (isFunction(options.beforeRender)) {
+				options.beforeRender(this);
+			}
+			const render = component.render(nextProps, nextState, context);
+
+			if (isFunction(options.afterRender)) {
+				options.afterRender(this);
+			}
+
+			return render;
+		} else {
+			component.props = nextProps;
+			component.state = nextState;
+			component.context = context;
+		}
+	}
+	return NO_OP;
+}
+
+function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleClass, context, isSVG: boolean, isRecycling: boolean) {
+	const instance = lastVNode.children as Component<any, any>;
 	instance._updating = true;
 
 	if (instance._unmounted) {
 		return true;
 	} else {
-		const hasComponentDidUpdate = !isUndefined(instance.componentDidUpdate);
-		const nextState = instance.state;
-		// When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
-		const lastState = hasComponentDidUpdate ? combineFrom(nextState, null) : nextState;
-		const lastProps = instance.props;
-		let childContext;
-		if (!isUndefined(instance.getChildContext)) {
-			childContext = instance.getChildContext();
-		}
-
-		nextVNode.children = instance;
-		instance._isSVG = isSVG;
-		if (isNullOrUndef(childContext)) {
-			childContext = context;
-		} else {
-			childContext = combineFrom(context, childContext);
-		}
-		const lastInput = instance._lastInput;
-		let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextVNode.props || EMPTY_OBJ, context, false, false);
-		let didUpdate = true;
-
-		instance._childContext = childContext;
-		if (isInvalid(nextInput)) {
-			nextInput = createVoidVNode();
-		} else if (nextInput === NO_OP) {
-			nextInput = lastInput;
-			didUpdate = false;
-		} else if (isStringOrNumber(nextInput)) {
-			nextInput = createTextVNode(nextInput, null);
-		} else if (isArray(nextInput)) {
-			if (process.env.NODE_ENV !== 'production') {
-				throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-			}
-			throwError();
-		} else if (isObject(nextInput)) {
-			if (!isNull((nextInput as VNode).dom)) {
-				nextInput = directClone(nextInput as VNode);
-			}
-		}
-		if (nextInput.flags & VNodeFlags.Component) {
-			nextInput.parentVNode = nextVNode;
-		} else if (lastInput.flags & VNodeFlags.Component) {
-			lastInput.parentVNode = nextVNode;
-		}
-		instance._lastInput = nextInput;
-		instance._vNode = nextVNode;
-		if (didUpdate) {
-			patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
-			if (hasComponentDidUpdate) {
-				instance.componentDidUpdate(lastProps, lastState);
-			}
-			if (!isNull(options.afterUpdate)) {
-				options.afterUpdate(nextVNode);
-			}
-			if (options.findDOMNodeEnabled) {
-				componentToDOMNodeMap.set(instance, nextInput.dom);
-			}
-		}
-		nextVNode.dom = nextInput.dom;
+		nextVNode.dom = handleUpdate(instance, instance.state, nextVNode.props || EMPTY_OBJ, context, false, false);
 	}
+
 	instance._updating = false;
 
 	return false;
 }
 
+const resolvedPromise = Promise.resolve();
+const stateChangeQueue: any[] = [];
 
-let alreadyWarned = false;
+// when a components root VNode is also a component, we can run into issues
+// this will recursively look for vNode.parentNode if the VNode is a component
+function updateParentComponentVNodes(vNode: VNode, dom: Element) {
+	if (vNode.flags & VNodeFlags.Component) {
+		const parentVNode = vNode.parentVNode;
+
+		if (parentVNode) {
+			parentVNode.dom = dom;
+			updateParentComponentVNodes(parentVNode, dom);
+		}
+	}
+}
+
+function handleUpdate(component, nextState, nextProps, context, force, fromSetState) {
+	let nextInput;
+	const hasComponentDidUpdateIsFunction = isFunction(component.componentDidUpdate);
+	// When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
+	const prevState = hasComponentDidUpdateIsFunction ? combineFrom(nextState, null) : nextState;
+	const lastInput = component._lastInput as VNode;
+	const prevProps = component.props;
+	const renderOutput = updateComponent(component, prevState, nextState, prevProps, nextProps, context, force, fromSetState);
+	const vNode = component._vNode as VNode;
+	const parentDom = (lastInput.dom && lastInput.dom.parentNode) || (lastInput.dom = vNode.dom);
+
+	if (renderOutput !== NO_OP) {
+		nextInput = handleInput(renderOutput, vNode);
+		let childContext;
+
+		if (isFunction(component.getChildContext)) {
+			childContext = component.getChildContext();
+		}
+
+		if (isNullOrUndef(childContext)) {
+			childContext = component._childContext;
+		} else {
+			childContext = combineFrom(context, childContext as any);
+		}
+
+		const lifeCycle = component._lifecycle;
+		internal_patch(lastInput, nextInput as VNode, parentDom as Element, lifeCycle, childContext, component._isSVG, false);
+		if (fromSetState) {
+			lifeCycle.trigger();
+		}
+
+		if (hasComponentDidUpdateIsFunction) {
+			component.componentDidUpdate(prevProps, prevState, context);
+		}
+		if (isFunction(options.afterUpdate)) {
+			options.afterUpdate(vNode);
+		}
+		if (options.findDOMNodeEnabled) {
+			internal_DOMNodeMap.set(component, nextInput.dom);
+		}
+	} else {
+		nextInput = lastInput;
+	}
+
+	component._lastInput = nextInput as VNode;
+	const dom = vNode.dom = (nextInput as VNode).dom as Element;
+
+	if (options.findDOMNodeEnabled) {
+		internal_DOMNodeMap.set(component, (nextInput as VNode).dom);
+	}
+
+	return dom;
+}
+
+function applyState<P, S>(component: Component<P, S>, force: boolean, callback?: Function): void {
+	if (component._unmounted) {
+		return;
+	}
+	if (force || !component._blockRender) {
+		component._pendingSetState = false;
+		component._pendingState = null;
+		updateParentComponentVNodes(
+			component._vNode,
+			handleUpdate(
+				component,
+				combineFrom(component.state, component._pendingState),
+				component.props,
+				component.context,
+				force,
+				true
+			)
+		);
+	} else {
+		component.state = component._pendingState as S;
+		component._pendingState = null;
+	}
+	if (isFunction(callback)) {
+		callback.call(component);
+	}
+}
+
+function flushQueue() {
+	const length = stateChangeQueue.length;
+
+	if (length > 0) {
+		for (let i = 0; i < length; i++) {
+			const stateChange = stateChangeQueue[i];
+			applyState(stateChange.component, stateChange.force, stateChange.callback);
+		}
+		stateChangeQueue.length = 0;
+	}
+}
+
+export function queueStateChange(component, force, callback) {
+	stateChangeQueue.push({
+		callback,
+		component,
+		force
+	});
+
+	resolvedPromise.then(flushQueue);
+}
 
 export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public static defaultProps: {};
@@ -229,12 +327,13 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public _pendingSetState = false;
 	public _pendingState: S|null = null;
 	public _lastInput: any = null;
-	public _vNode: VNode|null = null;
-	public _unmounted = false;
-	public _lifecycle = null;
-	public _childContext = null;
+	public _vNode: VNode;
+	public _unmounted: boolean = false;
+	public _lifecycle: LifecycleClass;
+	public _childContext: object|null = null;
 	public _isSVG = false;
 	public _queueStateChange = null;
+	public _updating: boolean = true;
 
 	constructor(props?: P, context?: any) {
 		/** @type {object} */
@@ -266,10 +365,10 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			return;
 		}
 
-		applyState(this, true, callback);
+		addToQueue(this, true, callback);
 	}
 
-	public setState(newState, callback?: Function) {
+	public setState(newState: S|Function, callback?: Function) {
 		if (this._unmounted) {
 			return;
 		}
@@ -281,79 +380,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			}
 			throwError();
 		}
-	}
-
-	public setStateSync(newState) {
-		if (process.env.NODE_ENV !== 'production') {
-			if (!alreadyWarned) {
-				alreadyWarned = true;
-				// tslint:disable-next-line:no-console
-				console.warn('Inferno WARNING: setStateSync has been deprecated and will be removed in next release. Use setState instead.');
-			}
-		}
-		this.setState(newState);
-	}
-
-	public _updateComponent(prevState: S, nextState: S, prevProps: P & Props, nextProps: P & Props, context: any, force: boolean, fromSetState: boolean): VNode|string {
-		if (this._unmounted === true) {
-			if (process.env.NODE_ENV !== 'production') {
-				throwError(noOp);
-			}
-			throwError();
-		}
-		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
-			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
-				if (!isUndefined(this.componentWillReceiveProps) && !fromSetState) {
-					// keep a copy of state before componentWillReceiveProps
-					const beforeState = combineFrom(this.state) as any;
-					this._blockRender = true;
-					this.componentWillReceiveProps(nextProps, context);
-					this._blockRender = false;
-					const afterState = this.state;
-					if (beforeState !== afterState) {
-						// if state changed in componentWillReceiveProps, reassign the beforeState
-						this.state = beforeState;
-						// set the afterState as pending state so the change gets picked up below
-						this._pendingSetState = true;
-						this._pendingState = afterState;
-					}
-				}
-				if (this._pendingSetState) {
-					nextState = combineFrom(nextState, this._pendingState) as any;
-					this._pendingSetState = false;
-					this._pendingState = null;
-				}
-			}
-
-			/* Update if scu is not defined, or it returns truthy value or force */
-			if (isUndefined(this.shouldComponentUpdate) || this.shouldComponentUpdate(nextProps, nextState, context) || force) {
-				if (!isUndefined(this.componentWillUpdate)) {
-					this._blockSetState = true;
-					this.componentWillUpdate(nextProps, nextState, context);
-					this._blockSetState = false;
-				}
-
-				this.props = nextProps;
-				this.state = nextState;
-				this.context = context;
-
-				if (options.beforeRender) {
-					options.beforeRender(this);
-				}
-				const render = this.render(nextProps, nextState, context);
-
-				if (options.afterRender) {
-					options.afterRender(this);
-				}
-
-				return render;
-			} else {
-				this.props = nextProps;
-				this.state = nextState;
-				this.context = context;
-			}
-		}
-		return NO_OP;
 	}
 
 	// tslint:disable-next-line:no-empty

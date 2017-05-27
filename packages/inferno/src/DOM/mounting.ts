@@ -18,10 +18,9 @@ import { recycleComponent, recycleElement } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
 import {
 	appendChild,
-	createClassComponentInstance,
-	createFunctionalComponentInput,
 	documentCreateElement,
 	EMPTY_OBJ,
+	handleComponentInput,
 	setTextContent
 } from './utils';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
@@ -150,6 +149,8 @@ export function mountArrayChildren(children, dom: Element, lifecycle: LifecycleC
 	}
 }
 
+const C = options.component;
+
 export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isClass: boolean) {
 	if (options.recyclingEnabled) {
 		const dom = recycleComponent(vNode, lifecycle, context, isSVG);
@@ -161,14 +162,14 @@ export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle:
 			return dom;
 		}
 	}
-	const type = vNode.type;
+	const type = vNode.type as Function;
 	const props = vNode.props || EMPTY_OBJ;
 	const ref = vNode.ref;
 	let dom;
 	if (isClass) {
-		const instance = createClassComponentInstance(vNode, type, props, context, isSVG, lifecycle);
+		const instance = (C.create as Function)(vNode, type, props, context, isSVG, lifecycle, handleComponentInput);
 		const input = instance._lastInput;
-		instance._vNode = vNode;
+
 		vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);
 		if (!isNull(parentDom)) {
 			appendChild(parentDom, dom);
@@ -179,7 +180,8 @@ export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle:
 			componentToDOMNodeMap.set(instance, dom);
 		}
 	} else {
-		const input = createFunctionalComponentInput(vNode, type, props, context);
+		const renderOutput = type(props, context);
+		const input = handleComponentInput(renderOutput, vNode);
 
 		vNode.dom = dom = mount(input, null, lifecycle, context, isSVG);
 		vNode.children = input;

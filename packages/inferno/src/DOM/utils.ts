@@ -8,7 +8,7 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
-import { createTextVNode, createVoidVNode, directClone, Props, VNode } from '../core/VNodes';
+import { createTextVNode, createVoidVNode, directClone, VNode } from '../core/VNodes';
 import { svgNS } from './constants';
 import { mount } from './mounting';
 import { unmount } from './unmounting';
@@ -30,31 +30,34 @@ export function replaceVNode(parentDom, dom, vNode, lifecycle: LifecycleClass, i
 	replaceChild(parentDom, dom, vNode.dom);
 }
 
-export function createFunctionalComponentInput(vNode: VNode, component, props: Props, context: Object) {
-	let input = component(props, context);
+export function handleComponentInput(input, parentVNode: VNode) {
+	let out;
 
-	if (isArray(input)) {
+	if (isInvalid(input)) {
+		out = createVoidVNode();
+	} else if (isStringOrNumber(input)) {
+		out = createTextVNode(input, null);
+	} else if (isArray(input)) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 		}
 		throwError();
-	} else if (isInvalid(input)) {
-		input = createVoidVNode();
-	} else if (isStringOrNumber(input)) {
-		input = createTextVNode(input, null);
 	} else {
+		// It's vNode
 		if (input.dom) {
-			input = directClone(input);
+			out = directClone(input);
+		} else {
+			out = input;
 		}
-		if (input.flags & VNodeFlags.Component) {
+		if ((out.flags & VNodeFlags.Component) > 0) {
 			// if we have an input that is also a component, we run into a tricky situation
 			// where the root vNode needs to always have the correct DOM entry
 			// so we break monomorphism on our input and supply it our vNode as parentVNode
 			// we can optimise this in the future, but this gets us out of a lot of issues
-			input.parentVNode = vNode;
+			out.parentVNode = parentVNode;
 		}
 	}
-	return input;
+	return out;
 }
 
 export function setTextContent(dom, text: string | number) {
