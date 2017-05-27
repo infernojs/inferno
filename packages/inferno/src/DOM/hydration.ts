@@ -98,6 +98,8 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 	vNode.dom = dom;
 	if (children) {
 		hydrateChildren(children, dom, lifecycle, context, isSVG);
+	} else if (dom.firstChild !== null) {
+		dom.textContent = ''; // dom has content, but VNode has no children remove everything from DOM
 	}
 	if (props) {
 		let hasControlledValue = false;
@@ -118,6 +120,10 @@ function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, c
 			dom.setAttribute('class', className);
 		} else {
 			dom.className = className;
+		}
+	} else {
+		if (dom.className !== '') {
+			dom.removeAttribute('class');
 		}
 	}
 	if (ref) {
@@ -156,6 +162,8 @@ function hydrateChildren(children: InfernoChildren, parentDom: Element, lifecycl
 	} else if (isObject(children)) {
 		hydrate(children as VNode, dom as Element, lifecycle, context, isSVG);
 		dom = (dom as Element).nextSibling;
+	} else {
+		debugger;
 	}
 	// clear any other DOM nodes, there should be only a single entry for the root
 	while (dom) {
