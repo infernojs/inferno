@@ -136,7 +136,16 @@ function hydrateChildren(children: InfernoChildren, parentDom: Element, lifecycl
 	normalizeChildNodes(parentDom);
 	let dom = parentDom.firstChild;
 
-	if (isArray(children)) {
+	if (isStringOrNumber(children)) {
+		if (dom && dom.nodeType === 3) {
+			if (dom.nodeValue !== children) {
+				dom.nodeValue = children as string;
+			}
+		} else if (children) {
+			parentDom.textContent = children as string;
+		}
+		dom = (dom as Element).nextSibling;
+	} else if (isArray(children)) {
 		for (let i = 0, len = (children as Array<string | number | VNode>).length; i < len; i++) {
 			const child = children[ i ];
 
@@ -150,21 +159,12 @@ function hydrateChildren(children: InfernoChildren, parentDom: Element, lifecycl
 				}
 			}
 		}
-	} else if (isStringOrNumber(children)) {
-		if (dom && dom.nodeType === 3) {
-			if (dom.nodeValue !== children) {
-				dom.nodeValue = children as string;
-			}
-		} else if (children) {
-			parentDom.textContent = children as string;
-		}
-		dom = (dom as Element).nextSibling;
-	} else if (isObject(children)) {
+	} else {
+		// It's VNode
 		hydrate(children as VNode, dom as Element, lifecycle, context, isSVG);
 		dom = (dom as Element).nextSibling;
-	} else {
-		debugger;
 	}
+
 	// clear any other DOM nodes, there should be only a single entry for the root
 	while (dom) {
 		const nextSibling = dom.nextSibling;
