@@ -142,7 +142,8 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
 		nextVNode.dom = dom;
 		isSVG = isSVG || (nextFlags & VNodeFlags.SvgElement) > 0;
 		if (lastChildren !== nextChildren) {
-			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
+			const childrenIsSVG = isSVG === true && nextVNode.type !== 'foreignObject';
+			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, childrenIsSVG, isRecycling);
 		}
 
 		// inlined patchProps  -- starts --
