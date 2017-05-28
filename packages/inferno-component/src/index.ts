@@ -213,7 +213,7 @@ function handleUpdate(component, nextState, nextProps, context, force, fromSetSt
 	let nextInput;
 	const hasComponentDidUpdateIsFunction = isFunction(component.componentDidUpdate);
 	// When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
-	const prevState = hasComponentDidUpdateIsFunction ? combineFrom(nextState, null) : nextState;
+	const prevState = component.state;
 	const lastInput = component._lastInput as VNode;
 	const prevProps = component.props;
 	const renderOutput = updateComponent(component, prevState, nextState, prevProps, nextProps, context, force, fromSetState);
@@ -268,13 +268,14 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 		return;
 	}
 	if (force || !component._blockRender) {
+		const pendingState = component._pendingState;
 		component._pendingSetState = false;
 		component._pendingState = null;
 		updateParentComponentVNodes(
 			component._vNode,
 			handleUpdate(
 				component,
-				combineFrom(component.state, component._pendingState),
+				combineFrom(component.state, pendingState),
 				component.props,
 				component.context,
 				force,
