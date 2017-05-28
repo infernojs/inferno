@@ -33,14 +33,6 @@ export interface ComponentLifecycle<P, S> {
 	componentWillUnmount?(): void;
 }
 
-function addToQueue<P, S>(component: Component<P, S>, force: boolean, callback?: Function): void {
-	const queueStateChange = component._queueStateChange;
-
-	if (queueStateChange !== null) {
-		queueStateChange(component, force, callback);
-	}
-}
-
 function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callback?: Function): void {
 	if (isFunction(newState)) {
 		newState = (newState as any)(component.state, component.props, component.context) as S;
@@ -56,7 +48,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callba
 	}
 
 	if (isBrowser && !component._pendingSetState && !component._blockRender) {
-		addToQueue(component, false, callback);
+		queueStateChange(component, false, callback);
 	} else {
 		const state = component.state;
 
@@ -153,7 +145,8 @@ function updateComponent<P, S>(component: Component<P, S>, prevState: S, nextSta
 
 		/* Update if scu is not defined, or it returns truthy value or force */
 		// When force is true we should not call scu
-		if (force || (isFunction(component.shouldComponentUpdate) && component.shouldComponentUpdate(nextProps, nextState, context) !== false)) {
+		const hasSCU = isFunction(component.shouldComponentUpdate);
+		if (force || !hasSCU || (hasSCU && (component.shouldComponentUpdate as Function)(nextProps, nextState, context) !== false)) {
 			if (isFunction(component.componentWillUpdate)) {
 				component._blockSetState = true;
 				component.componentWillUpdate(nextProps, nextState, context);
@@ -165,12 +158,12 @@ function updateComponent<P, S>(component: Component<P, S>, prevState: S, nextSta
 			component.context = context;
 
 			if (isFunction(options.beforeRender)) {
-				options.beforeRender(this);
+				options.beforeRender(component);
 			}
 			const render = component.render(nextProps, nextState, context);
 
 			if (isFunction(options.afterRender)) {
-				options.afterRender(this);
+				options.afterRender(component);
 			}
 
 			return render;
@@ -190,9 +183,9 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleCla
 	if (instance._unmounted) {
 		return true;
 	} else {
-		nextVNode.dom = handleUpdate(instance, instance.state, nextVNode.props || EMPTY_OBJ, context, false, false);
+		nextVNode.dom  = handleUpdate(instance, instance.state, nextVNode.props || EMPTY_OBJ, context, false, false);
+		nextVNode.children = instance;
 	}
-
 	instance._updating = false;
 
 	return false;
@@ -332,7 +325,6 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public _lifecycle: LifecycleClass;
 	public _childContext: object|null = null;
 	public _isSVG = false;
-	public _queueStateChange = null;
 	public _updating: boolean = true;
 
 	constructor(props?: P, context?: any) {
@@ -365,7 +357,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			return;
 		}
 
-		addToQueue(this, true, callback);
+		queueStateChange(this, true, callback);
 	}
 
 	public setState(newState: S|Function, callback?: Function) {

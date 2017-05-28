@@ -227,7 +227,11 @@ function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildre
 		}
 	} else if (isStringOrNumber(lastChildren)) {
 		unmountChildren(lastChildren, dom, lifecycle, isRecycling);
-		mount(nextChildren, dom, lifecycle, context, isSVG);
+		if (isArray(nextChildren)) {
+			mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
+		} else {
+			mount(nextChildren, dom, lifecycle, context, isSVG);
+		}
 	} else if (isArray(nextChildren)) {
 		if (isArray(lastChildren)) {
 			patchArray = true;
