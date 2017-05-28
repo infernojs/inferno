@@ -1,4 +1,5 @@
-import { isBrowser } from 'inferno-shared';
+import { options } from './../../core/options';
+import { isBrowser, isFunction } from 'inferno-shared';
 
 const isiOS = isBrowser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 const delegatedEvents: Map<string, IDelegate> = new Map();
@@ -11,6 +12,8 @@ interface IDelegate {
 interface IEventData {
 	dom: Element;
 }
+
+const C = options.component;
 
 export function handleEvent(name, lastEvent, nextEvent, dom) {
 	let delegatedRoots = delegatedEvents.get(name);
@@ -53,6 +56,9 @@ function dispatchEvent(event, target, items, count: number, isClick: boolean, ev
 			eventsToTrigger(event);
 		}
 		if (event.cancelBubble) {
+			if (isFunction(C.flush)) {
+				C.flush();
+			}
 			return;
 		}
 	}
@@ -67,6 +73,8 @@ function dispatchEvent(event, target, items, count: number, isClick: boolean, ev
 		}
 
 		dispatchEvent(event, parentDom, items, count, isClick, eventData);
+	} else if (isFunction(C.flush)) {
+		C.flush();
 	}
 }
 

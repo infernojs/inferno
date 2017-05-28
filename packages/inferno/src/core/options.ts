@@ -17,6 +17,7 @@ export const options: {
 	createVNode: null|Function,
 	component: {
 		create: null|Function,
+		flush: null|Function,
 		handleInput: Function
 		patch: null|Function
 	},
@@ -31,6 +32,7 @@ export const options: {
 	beforeUnmount: null,
 	component: {
 		create: null,
+		flush: null,
 		handleInput: handleComponentInput,
 		patch: null
 	},

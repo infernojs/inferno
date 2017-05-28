@@ -15,6 +15,7 @@ import VNodeFlags from 'inferno-vnode-flags';
 /* Add ES6 component implementations for Inferno-core to use */
 options.component.create = createInstance;
 options.component.patch = patchComponent;
+options.component.flush = flushQueue;
 
 const handleInput = options.component.handleInput;
 let noOp = ERROR_MSG;
@@ -82,6 +83,7 @@ function createInstance(vNode: VNode, Component, props: Props, context: Object, 
 	if (isFunction(instance.componentWillMount)) {
 		instance._blockRender = true;
 		instance.componentWillMount();
+		flushQueue();
 		instance._blockRender = false;
 	}
 
