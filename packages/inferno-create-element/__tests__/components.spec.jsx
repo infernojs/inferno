@@ -2497,7 +2497,8 @@ describe('Components (JSX)', () => {
 		}
 
 		// this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
-		it('should correct swap rows', () => {
+		it('should correct swap rows #1', () => {
+			debugger;
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
 			// click on "SPAN"
@@ -2589,7 +2590,7 @@ describe('Components (JSX)', () => {
 		}
 
 		// this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
-		it('should correct swap rows', () => {
+		it('should correct swap rows #2', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
 			// click on "SPAN"
@@ -2675,7 +2676,7 @@ describe('Components (JSX)', () => {
 		}
 
 		// this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
-		it('should correct swap rows', () => {
+		it('should correct swap rows #3', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
 			// click on "SPAN"
@@ -2762,7 +2763,7 @@ describe('Components (JSX)', () => {
 			}
 		}
 
-		it('should correct swap rows', () => {
+		it('should correct swap rows #4', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>');
 			// click "SWAP ROWS"
@@ -2840,7 +2841,7 @@ describe('Components (JSX)', () => {
 			}
 		}
 
-		it('should correct swap rows', () => {
+		it('should correct swap rows #5', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>');
 			// click "SWAP ROWS"
@@ -2932,7 +2933,7 @@ describe('Components (JSX)', () => {
 		}
 
 		// this test is to replicate https://jsfiddle.net/localvoid/fmznjwxv/
-		it('should correct swap rows', () => {
+		it('should correct swap rows #6', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>');
 			// click "SWAP ROWS"
@@ -2976,7 +2977,7 @@ describe('Components (JSX)', () => {
 		}
 
 		// this test is to replicate https://jsfiddle.net/localvoid/fmznjwxv/
-		it('should correct swap rows', () => {
+		it('should correct swap rows #7', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>');
 			// click "SWAP ROWS"

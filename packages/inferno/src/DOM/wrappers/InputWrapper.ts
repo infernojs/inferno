@@ -1,11 +1,13 @@
-import { isNullOrUndef } from 'inferno-shared';
+import { isNullOrUndef, isFunction } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils';
+import {options} from './../../core/options';
 
 export function isCheckedType(type) {
 	return type === 'checkbox' || type === 'radio';
 }
 
 function onTextInputChange(e) {
+	options.component.rendering = true;
 	const vNode = this.vNode;
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
@@ -34,9 +36,14 @@ function onTextInputChange(e) {
 
 		applyValue(newProps, dom);
 	}
+	if (isFunction(options.component.flush)) {
+		options.component.flush();
+	}
+	options.component.rendering = false;
 }
 
 function wrappedOnChange(e) {
+	options.component.rendering = true;
 	const props = this.vNode.props || EMPTY_OBJ;
 	const event = props.onChange;
 
@@ -45,9 +52,14 @@ function wrappedOnChange(e) {
 	} else {
 		event(e);
 	}
+	if (isFunction(options.component.flush)) {
+		options.component.flush();
+	}
+	options.component.rendering = false;
 }
 
 function onCheckboxChange(e) {
+	options.component.rendering = true;
 	e.stopPropagation(); // This click should not propagate its for internal use
 	const vNode = this.vNode;
 	const props = vNode.props || EMPTY_OBJ;
@@ -72,6 +84,10 @@ function onCheckboxChange(e) {
 
 	// If render is going async there is no value change yet, it will come back to process input soon
 	applyValue(newProps, dom);
+	if (isFunction(options.component.flush)) {
+		options.component.flush();
+	}
+	options.component.rendering = false;
 }
 
 export function processInput(vNode, dom, nextPropsOrEmpty, mounting: boolean, isControlled): void {

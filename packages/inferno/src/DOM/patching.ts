@@ -739,7 +739,12 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 
 				if (linkEvent && isFunction(linkEvent)) {
 					dom[ nameLowerCase ] = function(e) {
+						options.component.rendering = true;
 						linkEvent(nextValue.data, e);
+						if (isFunction(options.component.flush)) {
+							options.component.flush();
+						}
+						options.component.rendering = false;
 					};
 				} else {
 					if (process.env.NODE_ENV !== 'production') {
@@ -748,7 +753,14 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 					throwError();
 				}
 			} else {
-				dom[ nameLowerCase ] = nextValue;
+				dom[ nameLowerCase ] = function(event) {
+					options.component.rendering = true;
+					nextValue(event);
+					if (isFunction(options.component.flush)) {
+						options.component.flush();
+					}
+					options.component.rendering = false;
+				};
 			}
 		}
 	}

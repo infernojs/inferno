@@ -203,7 +203,6 @@ describe('Router (jsx) #transitions', () => {
 
 	it('should passed query parameters when URL is changed by using the history API', (done) => {
 		const TestQueryParams = ({ params }) => <div>Query Params { params.foo }</div>;
-		debugger;
 		render(
 			<Router history={ browserHistory }>
 				<IndexRoute component={ TestQueryParams }/>

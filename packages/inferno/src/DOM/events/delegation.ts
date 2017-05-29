@@ -13,8 +13,6 @@ interface IEventData {
 	dom: Element;
 }
 
-const C = options.component;
-
 export function handleEvent(name, lastEvent, nextEvent, dom) {
 	let delegatedRoots = delegatedEvents.get(name);
 
@@ -56,9 +54,6 @@ function dispatchEvent(event, target, items, count: number, isClick: boolean, ev
 			eventsToTrigger(event);
 		}
 		if (event.cancelBubble) {
-			if (isFunction(C.flush)) {
-				C.flush();
-			}
 			return;
 		}
 	}
@@ -73,8 +68,6 @@ function dispatchEvent(event, target, items, count: number, isClick: boolean, ev
 		}
 
 		dispatchEvent(event, parentDom, items, count, isClick, eventData);
-	} else if (isFunction(C.flush)) {
-		C.flush();
 	}
 }
 
@@ -89,6 +82,7 @@ function stopPropagation() {
 
 function attachEventToDocument(name, delegatedRoots: IDelegate) {
 	const docEvent = (event: Event) => {
+		options.component.rendering = true;
 		const count = delegatedRoots.items.size;
 
 		if (count > 0) {
@@ -109,6 +103,10 @@ function attachEventToDocument(name, delegatedRoots: IDelegate) {
 
 			dispatchEvent(event, event.target, delegatedRoots.items, count, event.type === 'click', eventData);
 		}
+		if (isFunction(options.component.flush)) {
+			options.component.flush();
+		}
+		options.component.rendering = false;
 	};
 	document.addEventListener(normalizeEventName(name), docEvent);
 	return docEvent;

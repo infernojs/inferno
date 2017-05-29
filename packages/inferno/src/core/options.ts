@@ -9,20 +9,21 @@ export interface Root {
 }
 
 export const options: {
-	afterMount: null|Function,
-	afterRender: null|Function,
-	afterUpdate: null|Function,
-	beforeRender: null|Function,
+	afterMount: null|Function
+	afterRender: null|Function
+	afterUpdate: null|Function
+	beforeRender: null|Function
 	beforeUnmount: null|Function
-	createVNode: null|Function,
+	createVNode: null|Function
 	component: {
-		create: null|Function,
-		flush: null|Function,
+		create: null|Function
+		flush: null|Function
 		handleInput: Function
 		patch: null|Function
+		rendering: boolean
 	},
-	findDOMNodeEnabled: boolean,
-	recyclingEnabled: boolean,
+	findDOMNodeEnabled: boolean
+	recyclingEnabled: boolean
 	roots: Root[]
 } = {
 	afterMount: null,
@@ -34,7 +35,8 @@ export const options: {
 		create: null,
 		flush: null,
 		handleInput: handleComponentInput,
-		patch: null
+		patch: null,
+		rendering: false
 	},
 	createVNode: null,
 	findDOMNodeEnabled: false,

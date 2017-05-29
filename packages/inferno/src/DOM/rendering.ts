@@ -7,7 +7,8 @@ import {
 	LifecycleClass,
 	NO_OP,
 	throwError,
-	warning
+	warning,
+    isFunction
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options, Root } from '../core/options';
@@ -94,6 +95,7 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
 	if ((input as any) === NO_OP) {
 		return;
 	}
+	options.component.rendering = true;
 	let root = getRoot(parentDom);
 
 	if (isNull(root)) {
@@ -125,6 +127,10 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
 		root.input = input;
 		lifecycle.trigger();
 	}
+	if (isFunction(options.component.flush)) {
+		options.component.flush();
+	}
+	options.component.rendering = false;
 	if (root) {
 		const rootInput: VNode = root.input as VNode;
 

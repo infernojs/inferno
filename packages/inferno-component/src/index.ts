@@ -213,13 +213,13 @@ function handleUpdate(component, nextState, nextProps, context, force, fromSetSt
 	let nextInput;
 	const hasComponentDidUpdateIsFunction = isFunction(component.componentDidUpdate);
 	// When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
-	const prevState = component.state;
+	const prevState = hasComponentDidUpdateIsFunction ? combineFrom(nextState, null) : component.state;
 	const lastInput = component._lastInput as VNode;
 	const prevProps = component.props;
 	const renderOutput = updateComponent(component, prevState, nextState, prevProps, nextProps, context, force, fromSetState);
 	const vNode = component._vNode as VNode;
 	const parentDom = (lastInput.dom && lastInput.dom.parentNode) || (lastInput.dom = vNode.dom);
-
+	// debugger;
 	if (renderOutput !== NO_OP) {
 		nextInput = handleInput(renderOutput, vNode);
 		let childContext;
@@ -292,25 +292,35 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 }
 
 function flushQueue() {
-	const length = stateChangeQueue.length;
+	resolvedPromise.then(function() {
+		options.component.rendering = true;
+		const length = stateChangeQueue.length;
 
-	if (length > 0) {
-		for (let i = 0; i < length; i++) {
-			const stateChange = stateChangeQueue[i];
-			applyState(stateChange.component, stateChange.force, stateChange.callback);
+		if (length > 0) {
+			for (let i = 0; i < length; i++) {
+				const stateChange = stateChangeQueue[i];
+				applyState(stateChange.component, stateChange.force, stateChange.callback);
+			}
+			stateChangeQueue.length = 0;
 		}
-		stateChangeQueue.length = 0;
-	}
+		options.component.rendering = false;
+	});
 }
 
-export function queueStateChange(component, force, callback) {
-	stateChangeQueue.push({
-		callback,
-		component,
-		force
-	});
-
-	resolvedPromise.then(flushQueue);
+function queueStateChange(component, force, callback) {
+	if (options.component.rendering) {
+		stateChangeQueue.push({
+			callback,
+			component,
+			force
+		});
+		// resolvedPromise.then(flushQueue);
+	} else {
+		options.component.rendering = true;
+		applyState(component, force, callback);
+		flushQueue();
+		options.component.rendering = false;
+	}
 }
 
 export default class Component<P, S> implements ComponentLifecycle<P, S> {
