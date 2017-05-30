@@ -619,7 +619,7 @@ describe('Components (JSX)', () => {
 			);
 		});
 
-		it('Second render (update)', (done) => {
+		it('Second render (update) #1', (done) => {
 			render(<Wrapper />, container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 			buttons.forEach((button) => button.click());
@@ -682,7 +682,7 @@ describe('Components (JSX)', () => {
 			);
 		});
 
-		it('Second render (update with state change)', (done) => {
+		it('Second render (update with state change) #2', (done) => {
 			render(<SomeError />, container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 			buttons.forEach((button) => button.click());
@@ -752,7 +752,7 @@ describe('Components (JSX)', () => {
 			);
 		});
 
-		it('Second render (update with state change)', (done) => {
+		it('Second render (update with state change) #3', (done) => {
 			render(<Testing />, container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
 			buttons.forEach((button) => button.click());

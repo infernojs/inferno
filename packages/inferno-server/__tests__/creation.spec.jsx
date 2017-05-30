@@ -9,6 +9,10 @@ import Component from 'inferno-component';
  }
  }*/
 
+function WrappedInput(props) {
+	return <input type="text" value={props.value} />;
+}
+
 describe('SSR Creation (JSX)', () => {
 	const testEntries = [{
 		description: 'should render a null component',
@@ -50,6 +54,10 @@ describe('SSR Creation (JSX)', () => {
 		description: 'should render input when value is not present with defaultValue',
 		template: () => <input defaultValue="foo"/>,
 		result: '<input value="foo">'
+	}, {
+		description: 'should render input of type text with value when input is wrapped',
+		template: () => <WrappedInput value="foo"/>,
+		result: '<input type="text" value="foo">'
 	}, {
 		description: 'should render select element with selected property',
 		template: () => <select value="dog">

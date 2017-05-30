@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux';
 export function warning(message) {
 	/* eslint-disable no-console */
 	if (typeof console !== 'undefined' && typeof console.error === 'function') {
+		// tslint:disable-next-line:no-console
 		console.error(message);
 	}
 

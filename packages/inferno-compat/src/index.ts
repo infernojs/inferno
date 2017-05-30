@@ -15,6 +15,7 @@ import infernoCreateElement from 'inferno-create-element';
 import { isArray, isBrowser, isFunction, isNull, isNullOrUndef, isString, NO_OP } from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
 import isValidElement from './isValidElement';
+import PropTypes from './PropTypes';
 import SVGDOMPropertyConfig from './SVGDOMPropertyConfig';
 
 declare global {
@@ -22,32 +23,6 @@ declare global {
 		persist: Function;
 	}
 }
-
-// Inlined PropTypes, there is propType checking ATM.
-// tslint:disable-next-line:no-empty
-function proptype() {}
-(proptype as any).isRequired = proptype;
-
-const getProptype = () => proptype;
-
-const PropTypes = {
-	any: getProptype,
-	array: proptype,
-	arrayOf: getProptype,
-	bool: proptype,
-	element: getProptype,
-	func: proptype,
-	instanceOf: getProptype,
-	node: getProptype,
-	number: proptype,
-	object: proptype,
-	objectOf: getProptype,
-	oneOf: getProptype,
-	oneOfType: getProptype,
-	shape: getProptype,
-	string: proptype,
-	symbol: proptype
-};
 
 options.findDOMNodeEnabled = true;
 
@@ -139,7 +114,7 @@ function normalizeProps(name: string, props: Props | any) {
 			delete props[ prop ];
 		}
 		if (prop === 'htmlFor') {
-			props[ 'for' ] = props[ prop ];
+			props.for = props[ prop ];
 			delete props[ prop ];
 		}
 		const mappedProp = SVGDOMPropertyConfig[ prop ];
@@ -288,25 +263,25 @@ for (let i = ELEMENTS.length; i--; ) {
 // Mask React global in browser enviornments when React is not used.
 if (isBrowser && typeof (window as any).React === 'undefined') {
 	const exports = {
-		createVNode,
-		render,
-		isValidElement,
-		createElement,
-		Component,
-		PureComponent,
-		unmountComponentAtNode,
-		cloneElement,
-		PropTypes,
-		createClass,
-		findDOMNode,
 		Children,
-		cloneVNode,
-		NO_OP,
-		version,
-		unstable_renderSubtreeIntoContainer,
-		createFactory,
+		Component,
 		DOM,
-		EMPTY_OBJ
+		EMPTY_OBJ,
+		NO_OP,
+		PropTypes,
+		PureComponent,
+		cloneElement,
+		cloneVNode,
+		createClass,
+		createElement,
+		createFactory,
+		createVNode,
+		findDOMNode,
+		isValidElement,
+		render,
+		unmountComponentAtNode,
+		unstable_renderSubtreeIntoContainer,
+		version
 	};
 
 	(window as any).React = exports;
@@ -316,50 +291,49 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
 export {
 	// Bc we're trying to generate a complete declaration file
 	// See: https://github.com/Microsoft/TypeScript/issues/6307
-	ClassicComponentClass,
-	ComponentSpec,
-
-	createVNode,
-	render,
-	isValidElement,
-	createElement,
-	Component,
-	PureComponent,
-	unmountComponentAtNode,
-	cloneElement,
-	PropTypes,
-	createClass,
-	findDOMNode,
 	Children,
-	cloneVNode,
-	NO_OP,
-	version,
-	unstable_renderSubtreeIntoContainer,
-	createFactory,
+	ClassicComponentClass,
+	Component,
+	ComponentSpec,
 	DOM,
-	EMPTY_OBJ
+	EMPTY_OBJ,
+	NO_OP,
+	PropTypes,
+	PureComponent,
+	cloneElement,
+	cloneVNode,
+	createClass,
+	createElement,
+	createFactory,
+	createVNode,
+	findDOMNode,
+	isValidElement,
+	render,
+	unmountComponentAtNode,
+	unstable_renderSubtreeIntoContainer,
+	version
 };
 
 export default {
-	createVNode,
-	render,
-	isValidElement,
-	createElement,
-	Component,
-	PureComponent,
-	unmountComponentAtNode,
-	cloneElement,
-	PropTypes,
-	createClass,
-	findDOMNode,
 	Children,
-	cloneVNode,
-	NO_OP,
-	version,
-	unstable_renderSubtreeIntoContainer,
-	createFactory,
+	Component,
 	DOM,
-	EMPTY_OBJ
+	EMPTY_OBJ,
+	NO_OP,
+	PropTypes,
+	PureComponent,
+	cloneElement,
+	cloneVNode,
+	createClass,
+	createElement,
+	createFactory,
+	createVNode,
+	findDOMNode,
+	isValidElement,
+	render,
+	unmountComponentAtNode,
+	unstable_renderSubtreeIntoContainer,
+	version
 };
 
 // To please the TS God

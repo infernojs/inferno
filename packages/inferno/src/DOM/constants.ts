@@ -25,6 +25,7 @@ booleanProps.add('allowfullscreen');
 booleanProps.add('novalidate');
 booleanProps.add('hidden');
 booleanProps.add('autoFocus');
+booleanProps.add('selected');
 
 export const namespaces  = new Map<string, string>();
 namespaces.set( 'xlink:href', xlinkNS);
@@ -80,7 +81,6 @@ skipProps.add('childrenType');
 skipProps.add('defaultValue');
 skipProps.add('ref');
 skipProps.add('key');
-skipProps.add('selected');
 skipProps.add('checked');
 skipProps.add('multiple');
 

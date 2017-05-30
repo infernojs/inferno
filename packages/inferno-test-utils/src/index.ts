@@ -15,8 +15,8 @@ export function isVNodeOfType(instance: VNode, type: string | Function): boolean
 	return isVNode(instance) && instance.type === type;
 }
 
-export function isDOMVNode(instance: VNode): instance is VNode {
-	return isVNode(instance) && isString(instance.type);
+export function isDOMVNode(inst: VNode): boolean {
+	return !isComponentVNode(inst) && !isTextVNode(inst);
 }
 
 export function isDOMVNodeOfType(instance: VNode, type: string): boolean {
@@ -37,6 +37,18 @@ export function isClassVNode(instance: VNode): boolean {
 
 export function isClassVNodeOfType(instance: VNode, type: Function): boolean {
 	return isClassVNode(instance) && instance.type === type;
+}
+
+export function isComponentVNode(inst: VNode): boolean {
+	return isFunctionalVNode(inst) || isClassVNode(inst);
+}
+
+export function isComponentVNodeOfType(inst: VNode, type: Function): boolean {
+	return (isFunctionalVNode(inst) || isClassVNode(inst)) && inst.type === type;
+}
+
+export function isTextVNode(inst: VNode): boolean {
+	return inst.flags === VNodeFlags.Text;
 }
 
 export function isDOMElement(instance: any): boolean {
@@ -76,7 +88,7 @@ export function renderIntoDocument(input: InfernoInput): InfernoChildren {
 
 // Recursive Finder Functions
 
-export function findAllInRenderedTree(renderedTree: any, predicate: (vNode: VNode) => boolean): VNode[]|any {
+export function findAllInRenderedTree(renderedTree: any, predicate: (vNode: VNode) => boolean): VNode[] | any {
 	if (isRenderedClassComponent(renderedTree)) {
 		return findAllInVNodeTree(renderedTree._lastInput, predicate);
 	} else {
@@ -86,7 +98,7 @@ export function findAllInRenderedTree(renderedTree: any, predicate: (vNode: VNod
 
 export function findAllInVNodeTree(vNodeTree: VNode, predicate: (vNode: VNode) => boolean): any {
 	if (isVNode(vNodeTree)) {
-		let result: VNode[] = predicate(vNodeTree) ? [ vNodeTree ] : [];
+		let result: VNode[] = predicate(vNodeTree) ? [vNodeTree] : [];
 		const children: any = vNodeTree.children;
 
 		if (isRenderedClassComponent(children)) {
@@ -123,7 +135,7 @@ function findOneOf(tree: any, filter: any, name: string, finder: Function): any 
 	if (all.length > 1) {
 		throwError(`Did not find exactly one match (found ${all.length}) for ${name}: ${filter}`);
 	} else {
-		return all[ 0 ];
+		return all[0];
 	}
 }
 
@@ -177,40 +189,45 @@ export function findVNodeWithType(vNodeTree: VNode, type: string | Function): VN
 	return findOneOf(vNodeTree, type, 'VNode', scryVNodesWithType);
 }
 
+export function getTagNameOfVNode(inst: any) {
+	return (inst && inst.dom && inst.dom.tagName.toLowerCase()) ||
+		(inst && inst._vNode && inst._vNode.dom && inst._vNode.dom.tagName.toLowerCase()) ||
+		undefined;
+}
+
+import {
+	renderToSnapshot,
+	vNodeToSnapshot
+} from './jest';
+
 export default {
-
-	isVNode,
-	isVNodeOfType,
-
-	isDOMVNode,
-	isDOMVNodeOfType,
-
-	isFunctionalVNode,
-	isFunctionalVNodeOfType,
-
-	isClassVNode,
-	isClassVNodeOfType,
-
-	isDOMElement,
-	isDOMElementOfType,
-
-	isRenderedClassComponent,
-	isRenderedClassComponentOfType,
-
-	renderIntoDocument,
-
 	findAllInRenderedTree,
 	findAllInVNodeTree,
-
-	scryRenderedDOMElementsWithClass,
 	findRenderedDOMElementWithClass,
-
-	scryRenderedDOMElementsWithTag,
 	findRenderedDOMElementWithTag,
-
-	scryRenderedVNodesWithType,
 	findRenderedVNodeWithType,
-
+	findVNodeWithType,
+	getTagNameOfVNode,
+	isClassVNode,
+	isClassVNodeOfType,
+	isComponentVNode,
+	isComponentVNodeOfType,
+	isDOMElement,
+	isDOMElementOfType,
+	isDOMVNode,
+	isDOMVNodeOfType,
+	isFunctionalVNode,
+	isFunctionalVNodeOfType,
+	isRenderedClassComponent,
+	isRenderedClassComponentOfType,
+	isTextVNode,
+	isVNode,
+	isVNodeOfType,
+	renderIntoDocument,
+	renderToSnapshot,
+	scryRenderedDOMElementsWithClass,
+	scryRenderedDOMElementsWithTag,
+	scryRenderedVNodesWithType,
 	scryVNodesWithType,
-	findVNodeWithType
+	vNodeToSnapshot
 };

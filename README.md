@@ -127,13 +127,13 @@ npm install --save inferno-router
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
 ```
-https://cdnjs.cloudflare.com/ajax/libs/inferno/1.2.2/inferno.min.js
+https://cdnjs.cloudflare.com/ajax/libs/inferno/3.0.5/inferno.min.js
 ```
 
 Or on unpkg.com:
 
 ```
-https://unpkg.com/inferno@1.2.2/dist/inferno.min.js
+https://unpkg.com/inferno@3.0.5/dist/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -240,20 +240,20 @@ Warning: If the container element is not empty before rendering, the content of 
 
 ### `createRenderer` (package: `inferno`)
 
-`createRenderer` allows for functional composition when rendering content to the DOM. Example:
+`createRenderer` creates an alternative render function with a signature matching that of the first argument passed to a reduce/scan function. This allows for easier integration with reactive programming libraries, like [RxJS](https://github.com/ReactiveX/rxjs) and [Most](https://github.com/cujojs/most).
 
 ```javascript
 import Inferno from 'inferno';
 import { scan, map } from 'most';
 
-...
-const model$ = scan(update, 0, actions$);
-const vNodes$ = map(view(actions$), model$);
 const renderer = Inferno.createRenderer();
-const runApp = () => scan(renderer, container, vNodes$).drain();
 
-runApp();
+...
+// NOTE: vNodes$ represents a stream of virtual DOM node updates
+scan(renderer, document.getElementById("app"), vNodes$);
 ```
+
+See [inferno-most-fp-demo](https://github.com/joshburgess/inferno-most-fp-demo) for an example of how to build an app architecture around this.
 
 ### `createElement` (package: `inferno-create-element`)
 
@@ -264,15 +264,15 @@ import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
 
 class BasicComponent extends Component {
-    render() {
-        return createElement('div', {
-               className: 'basic'
-           },
-           createElement('span', {
-               className: this.props.name
-           }, 'The title is ', this.props.title)
-       )
-    }
+  render() {
+    return createElement('div', {
+        className: 'basic'
+      },
+      createElement('span', {
+        className: this.props.name
+      }, 'The title is ', this.props.title)
+    )
+  }
 }
 
 Inferno.render(
@@ -393,11 +393,11 @@ In most cases, you can attach a ref to the DOM node and avoid using `findDOMNode
 import Inferno, { linkEvent } from 'inferno';
 
 function handleClick(props, event) {
-	props.validateValue(event.target.value);
+  props.validateValue(event.target.value);
 }
 
 function MyComponent(props) {
-	return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
+  return <div><input type="text" onClick={ linkEvent(props, handleClick) } /><div>;
 }
 ```
 
@@ -409,13 +409,13 @@ import Inferno, { linkEvent } from 'inferno';
 import Component from 'inferno-component';
 
 function handleClick(instance, event) {
-	instance.setState({ data: event.target.value });
+  instance.setState({ data: event.target.value });
 }
 
 class MyComponent extends Component {
-	render () {
-		return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
-	}
+  render () {
+    return <div><input type="text" onClick={ linkEvent(this, handleClick) } /><div>;
+  }
 }
 ```
 
@@ -440,7 +440,7 @@ You can set default options for Inferno using `Inferno.options`. Below are the f
 
 This enables `findDOMNode()`. We strongly recommend against using this API as it introduces a significant impact to performance. In the future this API command will be removed, along with `findDOMNode()`;
 
-#### - `recyclingEnabled` (default: `true`)
+#### - `recyclingEnabled` (default: v1.3+ `false`)
 
 This enables DOM node recycling within Inferno, so that DOM nodes are re-used upon disposal. It can have significant performance benefits, but may also cause side-effects with custom elements.
 
@@ -461,11 +461,11 @@ Functional lifecycle events must be explicitly assigned via props onto a functio
 
 ```javascript
 function mounted(domNode) {
-    // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
+  // [domNode] will be available for DOM nodes and components (if the component has mounted to the DOM)
 }
 
 function FunctionalComponent({ props }) {
-	return <div>Hello world</div>;
+  return <div>Hello world</div>;
 }
 
 Inferno.render(
@@ -495,7 +495,7 @@ Use the following configuration in your Webpack build:
 
 ```js
   ...
-	plugins: [
+  plugins: [
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
@@ -514,10 +514,10 @@ const replace = require('rollup-plugin-replace');
 
 ```js
   ...
-	plugins: [
-		replace({
-			'process.env.NODE_ENV': JSON.stringify('production'),
-		})
+  plugins: [
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    })
   ]
 ```
 

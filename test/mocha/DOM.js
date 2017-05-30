@@ -1,13 +1,14 @@
 /* eslint-disable */
 var jsdom = require("jsdom");
+var JSDOM = jsdom.JSDOM;
 
-// Setup the jsdom environment
-// @see https://github.com/facebook/react/issues/5046
-global.document = jsdom.jsdom("<!doctype html><html><body></body></html>");
-global.window = document.defaultView;
-global.navigator = global.window.navigator;
+// We want to execute all scripts, because this is for test environment only
+var dom = new JSDOM("<!doctype html><html><body></body></html>", { runScripts: "dangerously" });
+global.window = dom.window;
+global.document = dom.window.document;
+global.navigator = dom.window.navigator;
 global.usingJSDOM = true;
-global.HTMLElement = global.window.HTMLElement;
+global.HTMLElement = dom.window.HTMLElement;
 
 global.chai = require("chai");
 global.expect = global.chai.expect;

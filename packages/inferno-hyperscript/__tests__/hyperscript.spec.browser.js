@@ -169,6 +169,41 @@ describe('HyperScript (non-JSX)', () => {
 		expect(callbackSpy.calledOnce).to.equal(true);
 	});
 
+	it('Should pass classNames through', () => {
+		function Test1({ children, ...props }) {
+			return h('div.test1', props, children);
+		}
+
+		function Test2({ children, ...props }) {
+			return h('div', props, children);
+		}
+
+		function Test3({ children, ...props }) {
+			return h('div', { className: 'test3' }, children);
+		}
+
+		function Test4({ children, className, ...props }) {
+			return h('div', { className, ...props }, children);
+		}
+
+		render(
+			h('div', {}, [
+				h(Test1, { className: 'test1prop' }),
+				h(Test2, { className: 'test2prop' }),
+				h(Test3),
+				h(Test4, { className: 'test4prop' })
+			]),
+			container
+		);
+
+		const children = container.firstChild.childNodes;
+
+		expect(children[0].className).to.equal('test1 test1prop');
+		expect(children[1].className).to.equal('test2prop');
+		expect(children[2].className).to.equal('test3');
+		expect(children[3].className).to.equal('test4prop');
+	});
+
 	if (typeof global !== 'undefined' && !global.usingJSDOM) {
 		it('Should not lower case SVG tags', () => {
 			render(

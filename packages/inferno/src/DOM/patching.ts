@@ -45,6 +45,8 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, li
 		const nextFlags = nextVNode.flags;
 
 		if (nextFlags & VNodeFlags.Component) {
+			const isClass = (nextFlags & VNodeFlags.ComponentClass) > 0;
+
 			if (lastFlags & VNodeFlags.Component) {
 				patchComponent(
 					lastVNode,
@@ -53,7 +55,7 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, li
 					lifecycle,
 					context,
 					isSVG,
-					nextFlags & VNodeFlags.ComponentClass,
+					isClass,
 					isRecycling
 				);
 			} else {
@@ -65,7 +67,7 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, li
 						lifecycle,
 						context,
 						isSVG,
-						(nextFlags & VNodeFlags.ComponentClass) > 0
+						isClass
 					),
 					lastVNode,
 					lifecycle,
@@ -140,7 +142,8 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
 		nextVNode.dom = dom;
 		isSVG = isSVG || (nextFlags & VNodeFlags.SvgElement) > 0;
 		if (lastChildren !== nextChildren) {
-			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
+			const childrenIsSVG = isSVG === true && nextVNode.type !== 'foreignObject';
+			patchChildren(lastFlags, nextFlags, lastChildren, nextChildren, dom, lifecycle, context, childrenIsSVG, isRecycling);
 		}
 
 		// inlined patchProps  -- starts --
@@ -164,13 +167,14 @@ export function patchElement(lastVNode: VNode, nextVNode: VNode, parentDom: Elem
 				}
 
 				if (isFormElement) {
-					processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
+					// When inferno is recycling form element, we need to process it like it would be mounting
+					processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, isRecycling, hasControlledValue);
 				}
 			}
 			if (lastPropsOrEmpty !== EMPTY_OBJ) {
 				for (const prop in lastPropsOrEmpty) {
 					// do not add a hasOwnProperty check here, it affects performance
-					if (isNullOrUndef(nextPropsOrEmpty[ prop ])) {
+					if (isNullOrUndef(nextPropsOrEmpty[ prop ]) && !isNullOrUndef(lastPropsOrEmpty[ prop ])) {
 						removeProp(prop, lastPropsOrEmpty[ prop ], dom);
 					}
 				}
@@ -254,7 +258,7 @@ function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildre
 	}
 }
 
-export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleClass, context, isSVG: boolean, isClass: number, isRecycling: boolean) {
+export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleClass, context, isSVG: boolean, isClass: boolean, isRecycling: boolean) {
 	const lastType = lastVNode.type;
 	const nextType = nextVNode.type;
 	const lastKey = lastVNode.key;

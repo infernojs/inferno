@@ -93,16 +93,21 @@ if (NODE_ENV === 'production') {
 	plugins.push(
 		uglify({
 			warnings: false,
-			compress: {
-				screw_ie8: true,
-				dead_code: true,
-				unused: true,
-				drop_debugger: true, //
-				booleans: true // various optimizations for boolean context, for example !!a ? b : c → a ? b : c
+			parse: {
+				// parse options
+				html5_comments: false,
+				shebang: false
 			},
-			mangle: {
-				screw_ie8: true
-			}
+			compress: {
+				// compress options
+				dead_code: true,
+				drop_debugger: true,
+				booleans: true,
+				unused: true
+			},
+			sourceMap: false,
+			toplevel: false,
+			ie8: false
 		})
 	);
 	plugins.push(

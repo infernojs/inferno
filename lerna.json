@@ -1,9 +1,9 @@
 {
-  "lerna": "2.0.0-rc.3",
+  "lerna": "2.0.0-rc.5",
   "packages": [
     "packages/*"
   ],
-  "version": "3.0.5",
+  "version": "3.3.1",
   "changelog": {
     "repo": "infernojs/inferno",
     "labels": {
