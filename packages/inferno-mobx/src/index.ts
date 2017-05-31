@@ -5,22 +5,23 @@ import { componentByNodeRegistery, renderReporter, trackComponents } from './mak
 import Provider from './Provider';
 
 export default {
+	EventEmitter,
 	Provider,
-	inject,
+	componentByNodeRegistery,
 	connect,
+	inject,
 	observer: connect,
-	trackComponents,
 	renderReporter,
-	componentByNodeRegistery
+	trackComponents
 };
 
 export {
 	EventEmitter,
 	Provider,
-	inject,
-	connect,
+	componentByNodeRegistery,
 	connect as observer,
-	trackComponents,
+	connect,
+	inject,
 	renderReporter,
-	componentByNodeRegistery
+	trackComponents
 };

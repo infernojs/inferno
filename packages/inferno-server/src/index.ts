@@ -3,23 +3,23 @@ import streamQueueAsString, { RenderQueueStream, streamQueueAsStaticMarkup } fro
 import streamAsString, { RenderStream, streamAsStaticMarkup } from './renderToString.stream';
 
 export default {
-	renderToString,
-	renderToStaticMarkup,
-	streamAsString,
-	streamAsStaticMarkup,
-	RenderStream,
 	RenderQueueStream,
-	streamQueueAsString,
-	streamQueueAsStaticMarkup
+	RenderStream,
+	renderToStaticMarkup,
+	renderToString,
+	streamAsStaticMarkup,
+	streamAsString,
+	streamQueueAsStaticMarkup,
+	streamQueueAsString
 };
 
 export {
-	renderToString,
-	renderToStaticMarkup,
-	streamAsString,
-	streamAsStaticMarkup,
-	RenderStream,
 	RenderQueueStream,
-	streamQueueAsString,
-	streamQueueAsStaticMarkup
+	RenderStream,
+	renderToStaticMarkup,
+	renderToString,
+	streamAsStaticMarkup,
+	streamAsString,
+	streamQueueAsStaticMarkup,
+	streamQueueAsString
 };
