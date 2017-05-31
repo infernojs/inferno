@@ -29,64 +29,45 @@ export declare const VNodeFlags: _VNodeFlags;
 export declare const Root: _Root;
 export declare const LifecycleClass: _LifecycleClass;
 
-const version = '3.2.2';
+const version = '3.3.1';
 
 // we duplicate it so it plays nicely with different module loading systems
 export default {
+	EMPTY_OBJ, // used to shared common items between Inferno libs
+	NO_OP, // used to shared common items between Inferno libs
+	cloneVNode, // cloning
+	createRenderer, // DOM
+	createVNode, // core shapes
+	findDOMNode, // DOM
 	getFlagsForElementVnode,
-	linkEvent,
-	// core shapes
-	createVNode,
-
-	// cloning
-	cloneVNode,
-
-	// used to shared common items between Inferno libs
-	NO_OP,
-	EMPTY_OBJ,
-
-	// DOM
-	render,
-	findDOMNode,
-	createRenderer,
-	options,
-	version,
-
-	internal_patch,
 	internal_DOMNodeMap,
 	internal_isUnitlessNumber,
-	internal_normalize
+	internal_normalize,
+	internal_patch,
+	linkEvent,
+	options, // DOM
+	render, // DOM
+	version // DOM
 };
 
 export {
-	// Interfaces
-	Props,
-	VNode,
+	EMPTY_OBJ,
 	InfernoChildren,
 	InfernoInput,
-
-	// Public methods
-	getFlagsForElementVnode,
-	linkEvent,
-	// core shapes
-	createVNode,
-
-	// cloning
-	cloneVNode,
-
-	// used to shared common items between Inferno libs
 	NO_OP,
-	EMPTY_OBJ,
-
-	// DOM
-	render,
-	findDOMNode,
+	Props,
+	VNode,
+	cloneVNode,
 	createRenderer,
-	options,
-	version,
-
-	internal_patch,
+	createVNode,
+	findDOMNode,
+	getFlagsForElementVnode,
 	internal_DOMNodeMap,
 	internal_isUnitlessNumber,
-	internal_normalize
+	internal_normalize,
+	internal_patch,
+	linkEvent,
+	options,
+	render,
+	version
 };

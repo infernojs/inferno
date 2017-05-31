@@ -11,6 +11,7 @@ const PropTypes = {
 	array: proptype,
 	arrayOf: getProptype,
 	bool: proptype,
+	checkPropTypes: () => null,
 	element: getProptype,
 	func: proptype,
 	instanceOf: getProptype,

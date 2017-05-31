@@ -301,13 +301,10 @@ describe('HTML Form Elements', () => {
 
 			render(
 				<div>
-					<input onClick={spy1} type="radio" name="gender" value="male" checked={false}/>
-					<input onClick={spy2} type="radio" name="gender" value="female" checked={true}/>
-					<input onClick={spy3} type="radio" id="test" name="gender" value="other" checked={false}/>
+					<input onClick={spy1} type="radio" name="gender" value="male"/>
+					<input onClick={spy2} type="radio" name="gender" value="female"/>
+					<input onClick={spy3} type="radio" id="test" name="gender" value="other"/>
 				</div>, container);
-
-
-			expect(container.firstChild.childNodes[ 1 ].checked).to.equal(true);
 
 			//
 			// Exernal change verification
@@ -321,33 +318,20 @@ describe('HTML Form Elements', () => {
 			expect(spy2.callCount).to.equal(0);
 			expect(spy3.callCount).to.equal(1);
 
-			let node = container.firstChild;
-
-			expect(node.childNodes[ 0 ].checked).to.equal(false);
-			expect(node.childNodes[ 1 ].checked).to.equal(false);
-			expect(node.childNodes[ 2 ].checked).to.equal(true);
-
 			//
 			// New Render
 			//
 
 			render(
 				<div>
-					<input onClick={spy1} type="radio" name="gender" value="male" checked={true}/>
-					<input onClick={spy2} type="radio" name="gender" value="female" checked={false}/>
-					<input onClick={spy3} type="radio" name="gender" value="other" checked={false}/>
+					<input onClick={spy1} type="radio" name="gender" value="male"/>
+					<input onClick={spy2} type="radio" name="gender" value="female"/>
+					<input onClick={spy3} type="radio" name="gender" value="other"/>
 				</div>, container);
 
 			expect(spy1.callCount).to.equal(0);
 			expect(spy2.callCount).to.equal(0);
 			expect(spy3.callCount).to.equal(1);
-
-			node = container.firstChild;
-
-			// Change to first being checked
-			expect(node.childNodes[ 0 ].checked).to.equal(true);
-			expect(node.childNodes[ 1 ].checked).to.equal(false);
-			expect(node.childNodes[ 2 ].checked).to.equal(false);
 
 			//
 			// New Render, new value
@@ -355,28 +339,21 @@ describe('HTML Form Elements', () => {
 
 			render(
 				<div>
-					<input onClick={spy1} type="radio" name="gender" checked={false} value="male"/>
-					<input onClick={spy2} type="radio" name="gender" checked={false} value="female"/>
-					<input onClick={spy3} type="radio" name="gender" checked={false} value="other"/>
+					<input onClick={spy1} type="radio" name="gender" value="male"/>
+					<input onClick={spy2} type="radio" name="gender" value="female"/>
+					<input onClick={spy3} type="radio" name="gender" value="other"/>
 				</div>, container);
 
 			expect(spy1.callCount).to.equal(0);
 			expect(spy2.callCount).to.equal(0);
 			expect(spy3.callCount).to.equal(1);
 
-			node = container.firstChild;
-
-			// Change to first being checked
-			expect(node.childNodes[ 0 ].checked).to.equal(false);
-			expect(node.childNodes[ 1 ].checked).to.equal(false);
-			expect(node.childNodes[ 2 ].checked).to.equal(false);
-
 
 			render(
 				<div>
-					<input onClick={spy1} type="radio" id="test" name="gender" checked={false} value="male"/>
-					<input onClick={spy2} type="radio" name="gender" checked={false} value="female"/>
-					<input onClick={spy3} type="radio" name="gender" checked={false} value="other"/>
+					<input onClick={spy1} type="radio" id="test" name="gender" value="male"/>
+					<input onClick={spy2} type="radio" name="gender" value="female"/>
+					<input onClick={spy3} type="radio" name="gender" value="other"/>
 				</div>, container);
 
 			expect(spy1.callCount).to.equal(0);
@@ -386,13 +363,6 @@ describe('HTML Form Elements', () => {
 			radiobutton = container.querySelector('#test');
 
 			radiobutton.click();
-
-			node = container.firstChild;
-
-			// Change to first being checked
-			expect(node.childNodes[ 0 ].checked).to.equal(true);
-			expect(node.childNodes[ 1 ].checked).to.equal(false);
-			expect(node.childNodes[ 2 ].checked).to.equal(false);
 
 			expect(spy1.callCount).to.equal(1);
 			expect(spy2.callCount).to.equal(0);
@@ -404,6 +374,8 @@ describe('HTML Form Elements', () => {
 					<input onClick={spy2} type="radio" name="gender" checked={false} value="female"/>
 					<input onClick={spy3} type="radio" name="gender" checked={false} value="other"/>
 				</div>, container);
+
+			const node = container.firstChild;
 
 			expect(node.childNodes[ 0 ].checked).to.equal(true);
 			expect(node.childNodes[ 1 ].checked).to.equal(false);
