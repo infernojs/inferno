@@ -44,7 +44,6 @@ export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycl
 	if (!isRecycling) {
 		if (isStatefulComponent) {
 			if (!instance._unmounted) {
-				instance._blockSetState = true;
 				if (!isNull(options.beforeUnmount)) {
 					options.beforeUnmount(vNode);
 				}
