@@ -538,6 +538,31 @@ describe('FormElements', () => {
 				render(<TestInputRange />, container);
 
 				expect(container.firstChild.value).to.equal('260');
+				expect(container.firstChild.defaultValue).to.equal('260');
+			});
+
+			it('Should have defaultValue even when defaultValue is omitted, if value exists', () => {
+				class TestInputRange extends Component {
+					shouldComponentUpdate() {
+						return false;
+					}
+
+					render() {
+						return (
+							<input
+								name="test"
+								type="range"
+								min={50}
+								max={500}
+								step={5}
+								value="110"/>
+						);
+					}
+				}
+				render(<TestInputRange />, container);
+
+				expect(container.firstChild.value).to.equal('110');
+				expect(container.firstChild.defaultValue).to.equal('110');
 			});
 		});
 

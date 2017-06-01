@@ -121,6 +121,7 @@ export function applyValue(nextPropsOrEmpty, dom) {
 		}
 	} else {
 		if (hasValue && dom.value !== value) {
+			dom.defaultValue = value;
 			dom.value = value;
 		} else if (!isNullOrUndef(checked)) {
 			dom.checked = checked;

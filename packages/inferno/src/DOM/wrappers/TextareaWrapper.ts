@@ -69,15 +69,18 @@ export function applyValue(nextPropsOrEmpty, dom, mounting: boolean) {
 
 			if (!isNullOrUndef(defaultValue)) {
 				if (defaultValue !== domValue) {
+					dom.defaultValue = defaultValue;
 					dom.value = defaultValue;
 				}
 			} else if (domValue !== '') {
+				dom.defaultValue = '';
 				dom.value = '';
 			}
 		}
 	} else {
 		/* There is value so keep it controlled */
 		if (domValue !== value) {
+			dom.defaultValue = value;
 			dom.value = value;
 		}
 	}
