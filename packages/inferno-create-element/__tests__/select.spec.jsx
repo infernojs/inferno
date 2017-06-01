@@ -347,6 +347,6 @@ describe('Select / select multiple (JSX)', () => {
 			</select>
 		), container);
 		expect(container.firstChild.value, 'Second selected index').to.equal('');
-		expect(container.firstChild.selectedIndex, 'Second value').to.oneOf([ 0, -1]);
+		expect(container.firstChild.selectedIndex, 'Second value').to.oneOf([ 0, -1 ]);
 	});
 });
