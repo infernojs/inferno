@@ -133,7 +133,7 @@ https://cdnjs.cloudflare.com/ajax/libs/inferno/3.0.5/inferno.min.js
 Or on unpkg.com:
 
 ```
-https://unpkg.com/inferno@3.0.5/dist/inferno.min.js
+https://unpkg.com/inferno@latest/dist/inferno.min.js
 ```
 
 ### Creating Virtual DOM
