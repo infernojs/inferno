@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { createVNode, render } from '../dist-es';
 import VNodeFlags from 'inferno-vnode-flags';
 import { createTextVNode } from '../dist-es/core/VNodes';

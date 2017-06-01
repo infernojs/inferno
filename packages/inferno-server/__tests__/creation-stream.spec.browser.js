@@ -1,6 +1,6 @@
 import { streamAsString } from '../dist-es';
 import Component from 'inferno-component';
-import { expect } from 'chai';
+
 import concatStream from 'concat-stream-es6';
 import createElement from 'inferno-create-element';
 

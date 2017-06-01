@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { internal_normalize as normalize } from 'inferno';
 
 describe('normalizeProps', () => {

@@ -2,7 +2,7 @@ import { streamAsStaticMarkup } from '../dist-es';
 import { render } from 'inferno';
 import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
-import { expect } from 'chai';
+
 import concatStream from 'concat-stream-es6';
 import Component from 'inferno-component';
 

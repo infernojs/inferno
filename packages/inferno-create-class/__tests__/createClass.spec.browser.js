@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
 import { innerHTML } from 'inferno/test/utils';

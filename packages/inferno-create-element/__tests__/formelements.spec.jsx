@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { render, linkEvent } from 'inferno';
 import Component from 'inferno-component';
 import sinon from 'sinon';

@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import createElement from 'inferno-create-element';
 import isValidElement from '../dist-es/isValidElement';
 import { cloneVNode } from 'inferno';

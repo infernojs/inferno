@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { createBrowserHistory, createMemoryHistory } from 'history';
 import { cloneVNode, render } from 'inferno';
 import { innerHTML } from 'inferno/test/utils';

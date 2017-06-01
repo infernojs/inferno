@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { assert, spy } from 'sinon';
 import createMemoryHistory from 'history/createMemoryHistory';
 import { render } from 'inferno';

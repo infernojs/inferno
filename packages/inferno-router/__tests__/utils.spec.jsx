@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { isEmpty, mapSearchParams } from '../dist-es/utils';
 
 describe('Router #utils', () => {

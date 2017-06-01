@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { createVNode, render } from 'inferno';
 import Component from 'inferno-component';
 import { renderToString } from '../dist-es';
