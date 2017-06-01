@@ -343,12 +343,14 @@ describe('Select / select multiple (JSX)', () => {
 			</select>
 		), container);
 		expect(container.firstChild.selectedIndex).to.equal(0);
+		expect(container.firstChild.value).to.equal("");
 
 		render((
 			<select id="sel">
 				<option value="">a</option>
 			</select>
 		), container);
+		expect(container.firstChild.value).to.equal(null);
 		expect(container.firstChild.selectedIndex).to.equal(-1);
 	});
 });
