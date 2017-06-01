@@ -88,7 +88,7 @@ Inferno.render(
 
 ### More Examples
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/bqraqtmq/)
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/wt5vL603//)
 
 ## Getting Started
 
