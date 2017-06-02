@@ -2,7 +2,7 @@
   "name": "inferno-build",
   "private": true,
   "license": "MIT",
-  "version": "3.4.1",
+  "version": "4.0.0",
   "author": {
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
@@ -15,7 +15,7 @@
     "@types/chai": "^4.0.0",
     "@types/history": "^4.5.1",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^7.0.23",
+    "@types/node": "^7.0.27",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.3",
@@ -96,7 +96,7 @@
     "sinon": "2.3.2",
     "ts-loader": "^2.1.0",
     "ts-node": "^3.0.4",
-    "tslint": "^5.4.1",
+    "tslint": "^5.4.2",
     "typescript": "^2.3.4",
     "typescript-eslint-parser": "^3.0.0",
     "union-type-es": "^0.1.0",

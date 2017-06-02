@@ -29,25 +29,25 @@ export declare const VNodeFlags: _VNodeFlags;
 export declare const Root: _Root;
 export declare const LifecycleClass: _LifecycleClass;
 
-const version = '3.4.0';
+const version = '4.0.0';
 
 // we duplicate it so it plays nicely with different module loading systems
 export default {
-	EMPTY_OBJ, // used to shared common items between Inferno libs
-	NO_OP, // used to shared common items between Inferno libs
-	cloneVNode, // cloning
-	createRenderer, // DOM
-	createVNode, // core shapes
-	findDOMNode, // DOM
+	EMPTY_OBJ,
+	NO_OP,
+	cloneVNode,
+	createRenderer,
+	createVNode,
+	findDOMNode,
 	getFlagsForElementVnode,
 	internal_DOMNodeMap,
 	internal_isUnitlessNumber,
 	internal_normalize,
 	internal_patch,
 	linkEvent,
-	options, // DOM
-	render, // DOM
-	version // DOM
+	options,
+	render,
+	version
 };
 
 export {
