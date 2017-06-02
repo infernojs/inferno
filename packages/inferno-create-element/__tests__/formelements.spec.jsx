@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { render, linkEvent } from 'inferno';
 import Component from 'inferno-component';
 import sinon from 'sinon';
@@ -538,6 +538,31 @@ describe('FormElements', () => {
 				render(<TestInputRange />, container);
 
 				expect(container.firstChild.value).to.equal('260');
+				expect(container.firstChild.defaultValue).to.equal('260');
+			});
+
+			it('Should have defaultValue even when defaultValue is omitted, if value exists', () => {
+				class TestInputRange extends Component {
+					shouldComponentUpdate() {
+						return false;
+					}
+
+					render() {
+						return (
+							<input
+								name="test"
+								type="range"
+								min={50}
+								max={500}
+								step={5}
+								value="110"/>
+						);
+					}
+				}
+				render(<TestInputRange />, container);
+
+				expect(container.firstChild.value).to.equal('110');
+				expect(container.firstChild.defaultValue).to.equal('110');
 			});
 		});
 
@@ -746,6 +771,142 @@ describe('FormElements', () => {
 			//
 			// 		done();
 			// 	});
+		});
+
+		describe('Controlled inputs, checkbox', () => {
+			it('Should keep unChecked if checked is false', () => {
+				render(
+					<label>
+						<input type='checkbox' checked={false} name='test' value='test' /> test
+					</label>,
+					container
+				);
+
+				// Verify its not checked
+				const input = container.querySelector('input');
+
+				expect(input.checked).to.equal(false);
+
+				input.click();
+
+				expect(input.checked).to.equal(false);
+			});
+
+			it('Should be possible to control checkbox by props', () => {
+				class ComponentTest extends Component {
+					constructor(props) {
+						super(props);
+						this.state = { checked: false };
+					}
+					handleClick(event) {
+						this.setState((state) => ({ checked: !state.checked }));
+					}
+					render() {
+						return (
+						<div>
+							<button onClick={() => this.handleClick()} />
+							<input type="checkbox" checked={this.state.checked} />
+						</div>
+						);
+					}
+				}
+
+				render(<ComponentTest/>, container);
+
+				expect(container.querySelectorAll('input').length).to.equal(1);
+
+				const input = container.querySelector('input');
+				const button = container.querySelector('button');
+
+				expect(input.checked).to.equal(false);
+
+				button.click();
+
+				expect(input.checked).to.equal(true);
+			});
+
+			it('Clicking checkbox should have value changed in callback, and reverted after it (unless no change in state)', () => {
+				let changeToValue = true;
+
+				class ComponentTest extends Component {
+					constructor(props) {
+						super(props);
+						this.state = { checked: true };
+					}
+					handleClick(event) {
+						expect(event.currentTarget.checked).to.equal(false);
+
+						this.setState((state) => ({ checked: changeToValue }));
+					}
+					render() {
+						return (
+						<div>
+							<input onClick={(e) => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
+						</div>
+						);
+					}
+				}
+
+				render(<ComponentTest/>, container);
+
+				expect(container.querySelectorAll('input').length).to.equal(1);
+
+				const input = container.querySelector('input');
+
+				expect(input.checked).to.equal(true);
+
+				input.click();
+
+				expect(input.checked).to.equal(true);
+
+				changeToValue = false;
+
+				input.click();
+
+				expect(input.checked).to.equal(false);
+			});
+
+			/* Same test as above, but in opposite order */
+			it('Clicking checkbox should have value changed in callback, and reverted after it (unless no change in state) #2', () => {
+				let changeToValue = false;
+
+				class ComponentTest extends Component {
+					constructor(props) {
+						super(props);
+						this.state = { checked: false };
+					}
+					handleClick(event) {
+						expect(event.currentTarget.checked).to.equal(true);
+
+						this.setState((state) => ({ checked: changeToValue }));
+					}
+					render() {
+						return (
+						<div>
+							<input onClick={(e) => this.handleClick(e)} type="checkbox" checked={this.state.checked} />
+						</div>
+						);
+					}
+				}
+
+				render(<ComponentTest/>, container);
+
+				expect(container.querySelectorAll('input').length).to.equal(1);
+
+				const input = container.querySelector('input');
+
+				expect(input.checked).to.equal(false); // Initially false
+
+				input.click(); // Inside event handler should be true
+
+				expect(input.checked).to.equal(false); // After render it should be false again
+
+				changeToValue = true;
+
+				input.click(); // Inside event handler should be true
+
+				expect(input.checked).to.equal(true); // Now it should be true because value was changed in state
+			});
 		});
 	});
 });

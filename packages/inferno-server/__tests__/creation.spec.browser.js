@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import createElement from 'inferno-create-element';
 import { renderToStaticMarkup } from '../dist-es';
 

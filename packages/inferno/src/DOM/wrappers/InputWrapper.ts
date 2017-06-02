@@ -52,7 +52,6 @@ function onCheckboxChange(e) {
 	const vNode = this.vNode;
 	const props = vNode.props || EMPTY_OBJ;
 	const dom = vNode.dom;
-	const previousValue = props.value;
 
 	if (props.onClick) {
 		const event = props.onClick;
@@ -72,11 +71,7 @@ function onCheckboxChange(e) {
 	const newProps = newVNode.props || EMPTY_OBJ;
 
 	// If render is going async there is no value change yet, it will come back to process input soon
-	if (previousValue !== newProps.value) {
-		// When this happens we need to store current cursor position and restore it, to avoid jumping
-
-		applyValue(newProps, dom);
-	}
+	applyValue(newProps, dom);
 }
 
 export function processInput(vNode, dom, nextPropsOrEmpty, mounting: boolean, isControlled): void {
@@ -126,6 +121,7 @@ export function applyValue(nextPropsOrEmpty, dom) {
 		}
 	} else {
 		if (hasValue && dom.value !== value) {
+			dom.defaultValue = value;
 			dom.value = value;
 		} else if (!isNullOrUndef(checked)) {
 			dom.checked = checked;

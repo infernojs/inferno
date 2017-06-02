@@ -40,14 +40,14 @@ export function createClassComponentInstance(vNode: VNode, Component, props: Pro
 	instance._unmounted = false;
 	instance._pendingSetState = true;
 	instance._isSVG = isSVG;
-	if (!isUndefined(instance.componentWillMount)) {
+	if (!isNullOrUndef(instance.componentWillMount)) {
 		instance._blockRender = true;
 		instance.componentWillMount();
 		instance._blockRender = false;
 	}
 
 	let childContext;
-	if (!isUndefined(instance.getChildContext)) {
+	if (!isNullOrUndef(instance.getChildContext)) {
 		childContext = instance.getChildContext();
 	}
 

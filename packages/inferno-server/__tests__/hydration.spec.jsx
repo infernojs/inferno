@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { createVNode, render } from 'inferno';
 import Component from 'inferno-component';
 import { renderToString } from '../dist-es';
@@ -129,6 +129,7 @@ describe('SSR Hydration - (JSX)', () => {
 			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
 		});
 	});
+
 	[
 		{
 			node: <div>Hello world</div>,
@@ -326,5 +327,137 @@ describe('SSR Hydration - (JSX)', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div>3<span>1</span></div>'));
 
 		document.body.removeChild(container);
+	});
+
+	describe('Hydration SSR - CSR mismatches', () => {
+		[{
+			SSR: <div><span>Hello world</span></div>,
+			SSR_expected: '<div><span>Hello world</span></div>',
+			CSR: <div><em>Hello world</em></div>,
+			CSR_expected: '<div><em>Hello world</em></div>'
+		},
+		{
+			SSR: <div><p>Hello world<sup><a>Foo</a></sup></p></div>,
+			SSR_expected: '<div><p>Hello world<sup><a>Foo</a></sup></p></div>',
+			CSR: <div><p>Hello bar<span><em>Foo</em></span></p></div>,
+			CSR_expected: '<div><p>Hello bar<span><em>Foo</em></span></p></div>'
+		},
+		{
+			SSR: <div>{ <span>Hello world</span> }</div>,
+			SSR_expected: '<div><span>Hello world</span></div>',
+			CSR: <em>{ <span>Hello 11</span> }</em>,
+			CSR_expected: '<em><span>Hello 11</span></em>'
+		},
+		{
+			SSR: <div><span>{ <span>Hello world</span> }</span></div>,
+			SSR_expected: '<div><span><span>Hello world</span></span></div>',
+			CSR: <em>{ <span>Hello 11</span> }</em>,
+			CSR_expected: '<em><span>Hello 11</span></em>'
+		},
+		{
+			SSR: <div>Hello world</div>,
+			SSR_expected: '<div>Hello world</div>',
+			CSR: <div><p>Hello bar<span><em>Foo</em></span></p></div>,
+			CSR_expected: '<div><p>Hello bar<span><em>Foo</em></span></p></div>'
+		},
+		{
+			SSR: <div>
+				<svg className={(() => 'foo')()} viewBox="0 0 64 64"/>
+			</div>,
+			SSR_expected: '<div><svg class="foo" viewBox="0 0 64 64"></svg></div>',
+			CSR: <div>
+				<svg className={(() => 'bar1')()} viewBox="0 0 64 11"/>
+			</div>,
+			CSR_expected: '<div><svg class="bar1" viewBox="0 0 64 11"></svg></div>'
+		},
+		{
+			SSR: <Comp4><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></Comp4>,
+			SSR_expected: '<section><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></section>',
+			CSR: <Comp4><h1>Hello world again!</h1><p><em>{[ 1,2,3 ]}</em></p><p>{null}</p><p><em>Foo</em></p></Comp4>,
+			CSR_expected: '<section><h1>Hello world again!</h1><p><em>123</em></p><p></p><p><em>Foo</em></p></section>'
+		},
+		{
+			SSR: <div>Hello world, { 'Foo!' }</div>,
+			SSR_expected: '<div>Hello world, <!---->Foo!</div>',
+			CSR: <Comp4><h1>Hello world again!</h1><p><em>{[ 1,2,3 ]}</em></p><p>{null}</p><p><em>Foo</em></p></Comp4>,
+			CSR_expected: '<section><h1>Hello world again!</h1><p><em>123</em></p><p></p><p><em>Foo</em></p></section>'
+		},
+		{
+			SSR: <div>Hello world, { 'Foo!' }</div>,
+			SSR_expected: '<div>Hello world, <!---->Foo!</div>',
+			CSR: <div>Hello world, { 'BarBar!' }</div>,
+			CSR_expected: '<div>Hello world, BarBar!</div>'
+		},
+		{
+			SSR: <div>Hello world, { [ 'Foo!', 'Bar!' ] }</div>,
+			SSR_expected: '<div>Hello world, <!---->Foo!<!---->Bar!</div>',
+			CSR: <div>Hello world, { [ 'Foo!', 'Bar!' ] }</div>,
+			CSR_expected: '<div>Hello world, Foo!Bar!</div>'
+		},
+		{
+			SSR: <div>Hello world!{ null }</div>,
+			SSR_expected: '<div>Hello world!</div>',
+			CSR: <div>Hello world!{ false }</div>,
+			CSR_expected: '<div>Hello world!</div>'
+		},
+		{
+			SSR: <div>Hello world, { '1' }2{ '3' }</div>,
+			SSR_expected: '<div>Hello world, <!---->1<!---->2<!---->3</div>',
+			CSR: <div>Hello world, { '1' }2{ [ 3,4,5,[ 6,7 ]] }</div>,
+			CSR_expected: '<div>Hello world, 1234567</div>'
+		},
+		{
+			SSR: <div id="1">
+				<div id="2">
+					<div id="3"></div>
+				</div>
+			</div>,
+			SSR_expected: '<div id="1"><div id="2"><div id="3"></div></div></div>',
+			CSR: <div id="1">
+				{[ null, false, true, undefined ]}
+				<i id="2">
+					<em>1</em>
+					<span id="3"></span>
+				</i>
+			</div>,
+			CSR_expected: '<div id="1"><i id="2"><em>1</em><span id="3"></div></i></div>'
+		},
+		{
+			SSR: <div><Comp1 /></div>,
+			SSR_expected: '<div><span>Worked!</span></div>',
+			CSR: <div id="1">
+				{[ null, false, true, undefined ]}
+				<i id="2">
+					<em>1</em>
+					<span id="3"></span>
+				</i>
+			</div>,
+			CSR_expected: '<div id="1"><i id="2"><em>1</em><span id="3"></div></i></div>'
+		},
+		{
+			SSR: <div className="test"><Comp1 /></div>,
+			SSR_expected: '<div class="test"><span>Worked!</span></div>',
+			CSR: <div><Comp1 /><Comp1 /><Comp1 /></div>,
+			CSR_expected: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>'
+		},
+		{
+			SSR: <div><Comp1 /><Comp1 /><Comp1 /></div>,
+			SSR_expected: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>',
+			CSR: <div className="test"><Comp1 /></div>,
+			CSR_expected: '<div class="test"><span>Worked!</span></div>'
+		}
+		].forEach(({ SSR, CSR, SSR_expected, CSR_expected }, i) => {
+			it(`Validate various structures #${ (i + 1) }`, () => {
+				const ssrString = renderToString(SSR);
+				const SsrContainer = createContainerWithHTML(ssrString);
+
+				expect(innerHTML(SsrContainer.innerHTML)).to.equal(innerHTML(SSR_expected));
+				render(CSR, SsrContainer); // Mount
+
+				expect(innerHTML(SsrContainer.innerHTML)).to.equal(innerHTML(CSR_expected));
+				render(CSR, SsrContainer); // patch
+				expect(innerHTML(SsrContainer.innerHTML)).to.equal(innerHTML(CSR_expected));
+			});
+		});
 	});
 });

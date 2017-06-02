@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { trackComponents } from '../dist-es/makeReactive';
 
 describe('MobX trackComponents()', () => {

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import * as Inferno from 'inferno';
 import Component from 'inferno-component';
 import { createStore } from 'redux';

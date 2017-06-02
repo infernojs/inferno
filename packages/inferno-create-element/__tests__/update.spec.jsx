@@ -1,8 +1,8 @@
-import { expect } from 'chai';
 import { render } from 'inferno';
 import Component from 'inferno-component';
 import { assert, spy } from 'sinon';
 import { innerHTML } from 'inferno/test/utils';
+import createElement from './../dist-es';
 
 describe('Stateful Component updates', () => {
 
@@ -648,5 +648,68 @@ describe('Stateful Component updates', () => {
 
 		render(<B/>, container);
 		expect(container.innerHTML).to.eql(expectedB);
+	});
+
+	it('Should not fail removing child of component node Github #1111', () => {
+		const InfoLi = function InfoLi(props) {
+			return (
+			<li>
+				{createElement('input', { checked: props.check, type: props.type, label: props.label, onClick: props.onClick })} {props.label}: check, then uncheck
+				<div>{props.children}</div>
+			</li>
+			);
+		};
+
+		class ConfigsList extends Component {
+			constructor(props) {
+				super(props);
+				this.state = {
+					checks: props.orderedConfigs.map((mod) => Boolean(mod.value))
+				};
+
+			}
+
+			handleCheck(index, ifChecked) {
+				this.setState({
+					checks: this.state.checks.map(
+						(ch, i) => i === index ? ifChecked : ch
+					)
+				});
+			}
+
+			render(props) {
+				return (
+					<ol>
+					{
+						props.orderedConfigs.map((conf, index) => {
+							const child = this.state.checks[index] && createElement('div', null, 'hi there');
+							return (
+								<InfoLi
+									label={conf}
+									type='checkbox'
+									checked={this.state.checks[index]}
+									onClick={(event) => {
+										this.handleCheck(index, event.target.checked);}
+									}>
+								{child}
+							</InfoLi>
+							);
+						})
+					}
+					</ol>
+				);
+			}
+		}
+
+		render(
+			<ConfigsList orderedConfigs={['use proxy?']}/>,
+			container,
+		);
+
+		const input = container.querySelector('input');
+
+		input.click();
+
+		input.click();
 	});
 });

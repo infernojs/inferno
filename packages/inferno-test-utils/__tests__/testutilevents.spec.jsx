@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import Component from 'inferno-component';
 import { spy } from 'sinon';
 import { findRenderedVNodeWithType, renderIntoDocument } from '../dist-es';

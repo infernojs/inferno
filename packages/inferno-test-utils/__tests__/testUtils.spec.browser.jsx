@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { render } from 'inferno';
 import { assert, spy } from 'sinon';
 import Component from 'inferno-component';

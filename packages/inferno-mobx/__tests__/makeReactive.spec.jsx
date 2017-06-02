@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { render } from 'inferno';
 import Component from 'inferno-component';
 import { extendObservable, observable, toJS } from 'mobx';

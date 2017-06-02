@@ -10,7 +10,6 @@ import {
 	isNull,
 	isNullOrUndef,
 	isStringOrNumber,
-	isUndefined,
 	NO_OP,
 	throwError
 } from 'inferno-shared';
@@ -79,7 +78,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callba
 	}
 	let pending = component._pendingState;
 
-	if (pending === null) {
+	if (isNullOrUndef(pending)) {
 		component._pendingState = pending = newState;
 	} else {
 		for (const stateKey in newState) {
@@ -152,7 +151,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 		if (didUpdate) {
 			let childContext;
 
-			if (!isUndefined(component.getChildContext)) {
+			if (!isNullOrUndef(component.getChildContext)) {
 				childContext = component.getChildContext();
 			}
 
@@ -166,7 +165,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 			internal_patch(lastInput, nextInput as VNode, parentDom as Element, lifeCycle, childContext, component._isSVG, false);
 			lifeCycle.trigger();
 
-			if (!isUndefined(component.componentDidUpdate)) {
+			if (!isNullOrUndef(component.componentDidUpdate)) {
 				component.componentDidUpdate(props, prevState as S, context);
 			}
 			if (!isNull(options.afterUpdate)) {
@@ -274,7 +273,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		}
 		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
 			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
-				if (!isUndefined(this.componentWillReceiveProps) && !fromSetState) {
+				if (!isNullOrUndef(this.componentWillReceiveProps) && !fromSetState) {
 					// keep a copy of state before componentWillReceiveProps
 					const beforeState = combineFrom(this.state) as any;
 					this._blockRender = true;
@@ -297,8 +296,8 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			}
 
 			/* Update if scu is not defined, or it returns truthy value or force */
-			if (isUndefined(this.shouldComponentUpdate) || this.shouldComponentUpdate(nextProps, nextState, context) || force) {
-				if (!isUndefined(this.componentWillUpdate)) {
+			if (isNullOrUndef(this.shouldComponentUpdate) || (this.shouldComponentUpdate && this.shouldComponentUpdate(nextProps, nextState, context)) || force) {
+				if (!isNullOrUndef(this.componentWillUpdate)) {
 					this._blockSetState = true;
 					this.componentWillUpdate(nextProps, nextState, context);
 					this._blockSetState = false;

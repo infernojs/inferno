@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { render } from 'inferno';
 import { spy } from 'sinon';
 import { innerHTML } from 'inferno/test/utils';

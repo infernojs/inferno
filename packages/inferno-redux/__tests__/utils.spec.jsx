@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { stub } from 'sinon';
 import { shallowEqual, warning } from '../dist-es/utils';
 

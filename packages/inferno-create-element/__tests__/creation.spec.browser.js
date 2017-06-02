@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import createElement from '../dist-es';
 import { render } from 'inferno';
 

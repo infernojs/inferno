@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { render } from 'inferno';
 import h from '../dist-es';
 import { innerHTML } from 'inferno/test/utils';

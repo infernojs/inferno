@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { createRenderer } from 'inferno';
 import curry from 'lodash/curry';
 import { map, reduce, scan } from 'most';
