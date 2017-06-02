@@ -1,7 +1,7 @@
 import { InfernoChildren, InfernoInput, render, VNode } from 'inferno';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import { isArray, isFunction, isNumber, isObject, isString, throwError } from 'inferno-shared';
+import { isArray, isFunction, isNullOrUndef, isNumber, isObject, isString, throwError } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 // Type Checkers
@@ -145,7 +145,11 @@ export function scryRenderedDOMElementsWithClass(renderedTree: any, classNames: 
 	return findAllInRenderedTree(renderedTree, (instance) => {
 		if (isDOMVNode(instance)) {
 			let domClassName = (instance.dom as Element).className;
-			if (!isString(domClassName)) { // SVG, probably
+			if (
+				!isString(domClassName) &&
+				!isNullOrUndef(instance.dom) &&
+				isFunction(instance.dom.getAttribute)
+			) { // SVG || null, probably
 				domClassName = (instance.dom as Element).getAttribute('class') || '';
 			}
 			const domClassList = parseSelector(domClassName);
