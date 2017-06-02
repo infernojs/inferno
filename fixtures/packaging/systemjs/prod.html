@@ -1,0 +1,28 @@
+<html>
+  <body>
+    <script src="https://unpkg.com/systemjs@0.19.41/dist/system.js"></script>
+    <div id="container"></div>
+    <script>
+      System.config({
+        paths: {
+          inferno: '../../../../packages/inferno/dist/inferno.min.js',
+		      'inferno-create-element': '../../../../packages/inferno-create-element/dist/inferno-create-element.min.js',
+		      'inferno-shared': '../../../../packages/inferno-shared/dist/inferno-shared.min.js',
+        }
+      });
+
+      Promise.all([
+        System.import("inferno"),
+        System.import("inferno-create-element")
+      ]).then(function (deps) {
+        var Inferno = deps[0];
+        var createElement = deps[1];
+
+        Inferno.render(
+          createElement('h1', null, 'Hello World!'),
+          document.getElementById('container')
+        );
+      });
+    </script>
+  </body>
+</html>
