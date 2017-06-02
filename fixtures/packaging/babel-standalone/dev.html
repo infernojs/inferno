@@ -1,0 +1,15 @@
+<html>
+  <body>
+    <script src="../../../packages/inferno-shared/dist/inferno-shared.js"></script>
+    <script src="../../../packages/inferno/dist/inferno.js"></script>
+    <script src="../../../packages/inferno-create-element/dist/inferno-create-element.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.js"></script>
+    <div id="container"></div>
+    <script type="text/babel">
+      Inferno.render(
+        Inferno.createElement('h1', null, 'Hello World!'),
+        document.getElementById('container')
+      );
+    </script>
+  </body>
+</html>

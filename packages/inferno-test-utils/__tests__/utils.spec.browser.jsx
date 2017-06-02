@@ -9,7 +9,7 @@ import {
 	validateNodeTree
 } from 'inferno/test/utils';
 
-import { expect } from 'chai';
+
 import { render } from 'inferno';
 import { renderToString } from 'inferno-server';
 

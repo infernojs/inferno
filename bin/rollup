@@ -51,6 +51,7 @@ const dest = join(cwd, 'dist', filename);
 const bundleConfig = {
 	dest,
 	format: 'umd',
+	exports: 'named',
 	moduleName: rollupConfig.moduleName || name,
 	globals: rollupConfig.moduleGlobals,
 	banner: copyright,

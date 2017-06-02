@@ -3,7 +3,7 @@ import * as Inferno from 'inferno';
 import createBrowserHistory from 'history/createBrowserHistory';
 import createMemoryHistory from 'history/createMemoryHistory';
 
-import { expect } from 'chai';
+
 import Component from 'inferno-component';
 import { createStore } from 'redux';
 import { IndexRoute, Route, Router } from 'inferno-router';

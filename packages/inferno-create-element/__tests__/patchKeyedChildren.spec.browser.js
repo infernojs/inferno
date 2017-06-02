@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { render } from 'inferno';
 import createElement from '../dist-es';
 import { createTextVNode } from 'inferno/core/VNodes';

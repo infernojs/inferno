@@ -34,3 +34,4 @@ test/data/result.json
 .fusebox
 .changelog
 .npm-debug.log*
+package-lock.json

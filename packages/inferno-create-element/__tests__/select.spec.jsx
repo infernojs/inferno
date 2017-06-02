@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { render } from 'inferno';
 import { innerHTML } from 'inferno/test/utils';
 
@@ -329,5 +329,24 @@ describe('Select / select multiple (JSX)', () => {
 		</select>, container);
 		expect(container.firstChild.children[ 0 ].selected).to.eql(false);
 		expect(container.firstChild.children[ 1 ].selected).to.eql(true); // Currently failing due to issue #1031
+	});
+
+	it('Shoult have selectedIndex -1 and value as null when value is removed - Github #1105', () => {
+
+		render((
+			<select id="sel" value="">
+				<option value="">a</option>
+			</select>
+		), container);
+		expect(container.firstChild.selectedIndex, 'Initial selected index').to.equal(0);
+		expect(container.firstChild.value, 'Intial value').to.equal('');
+
+		render((
+			<select id="sel">
+				<option value="">a</option>
+			</select>
+		), container);
+		expect(container.firstChild.value, 'Second selected index').to.equal('');
+		expect(container.firstChild.selectedIndex, 'Second value').to.oneOf([ 0, -1 ]);
 	});
 });

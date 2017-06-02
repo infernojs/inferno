@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import createMemoryHistory from 'history/createMemoryHistory';
 import { render } from 'inferno';
 import Component from 'inferno-component';

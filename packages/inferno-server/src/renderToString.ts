@@ -9,7 +9,6 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-	isUndefined,
 	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
@@ -46,7 +45,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string|undefin
 			const instance = new type(props, context);
 			instance._blockSetState = false;
 			let childContext;
-			if (!isUndefined(instance.getChildContext)) {
+			if (!isNullOrUndef(instance.getChildContext)) {
 				childContext = instance.getChildContext();
 			}
 

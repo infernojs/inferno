@@ -1,0 +1,22 @@
+<html>
+  <body>
+    <script src="https://unpkg.com/requirejs@2.3.2/require.js"></script>
+    <div id="container"></div>
+    <script>
+      requirejs.config({
+        paths: {
+          inferno: '../../../packages/inferno/dist/inferno.min',
+          'inferno-create-element': '../../../packages/inferno-create-element/dist/inferno-create-element.min',
+          'inferno-shared': '../../../packages/inferno-shared/dist/inferno-shared.min',
+        }
+      });
+
+      require(['inferno', 'inferno-create-element'], function(Inferno, createElement) {
+        Inferno.render(
+          createElement('h1', null, 'Hello World!'),
+          document.getElementById('container')
+        );
+      });
+    </script>
+  </body>
+</html>

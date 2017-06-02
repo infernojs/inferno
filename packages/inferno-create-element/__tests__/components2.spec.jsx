@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import Component from 'inferno-component';
 import { innerHTML } from 'inferno/test/utils';
 import { render } from 'inferno';

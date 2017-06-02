@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { EventEmitter } from '../dist-es';
 
 const testdata = {

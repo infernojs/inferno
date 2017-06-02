@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import Route from '../dist-es/Route';
 import IndexRoute from '../dist-es/IndexRoute';
 import createRoutes from '../dist-es/createRoutes';

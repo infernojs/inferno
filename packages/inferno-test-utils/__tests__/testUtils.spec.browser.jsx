@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { render } from 'inferno';
 import { assert, spy } from 'sinon';
 import Component from 'inferno-component';
@@ -642,6 +642,14 @@ describe('Test Utils', () => {
 			testValue('level-1', window.HTMLDivElement);
 			testValue('level-2 one', window.HTMLDivElement);
 			testValue('level-3 two', window.HTMLSpanElement);
+		});
+
+		it('should be able to handle null elements', () => {
+			const NoOp = () => null;
+			const Broken = () => <div className='dummy'><NoOp /></div>;
+			const renderedTree = renderIntoDocument(<Broken />);
+			const dummy = findRenderedDOMElementWithClass(renderedTree, 'dummy');
+			expect(dummy.className).to.equal('dummy');
 		});
 	});
 
