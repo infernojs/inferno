@@ -1,6 +1,6 @@
 {
   "name": "inferno-create-element",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "license": "MIT",
   "description": "Provides methods to create Inferno VNodes",
   "author": {

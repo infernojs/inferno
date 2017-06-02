@@ -19,8 +19,8 @@ fs.readdir(PACKAGE_ROOT, (err, packages) => {
 				console.error(`${pkgJSON.name} mismatch version @ ${pkgJSON.version}`);
 				pkgJSON.version = infernoBuildVersion;
 				try {
-					const newPkgJSON = JSON.stringify(pkgJSON);
-					fs.writeFileSync(join(PACKAGE_ROOT, package, 'package.json'), newPkgJSON, null, 2);
+					const newPkgJSON = JSON.stringify(pkgJSON, null, 2);
+					fs.writeFileSync(join(PACKAGE_ROOT, package, 'package.json'), newPkgJSON);
 				} catch (e) {
 					console.warn(`Skipping writing ${pkgJSON.name}: ${e}`);
 				}
