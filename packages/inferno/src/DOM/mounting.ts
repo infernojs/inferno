@@ -167,7 +167,7 @@ export function mountComponent(vNode: VNode, parentDom: Element|null, lifecycle:
 	const ref = vNode.ref;
 	let dom;
 	if (isClass) {
-		const instance = (C.create as Function)(vNode, type, props, context, isSVG, lifecycle, handleComponentInput);
+		const instance = (C.create as Function)(vNode, type, props, context, isSVG, lifecycle);
 		const input = instance._lastInput;
 
 		vNode.dom = dom = mount(input, null, lifecycle, instance._childContext, isSVG);

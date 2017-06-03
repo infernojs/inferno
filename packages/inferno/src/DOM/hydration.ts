@@ -59,7 +59,7 @@ function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass,
 
 	if (isClass) {
 		const _isSVG = dom.namespaceURI === svgNS;
-		const instance = (C.create as Function)(vNode, type, props, context, _isSVG, lifecycle, handleComponentInput);
+		const instance = (C.create as Function)(vNode, type, props, context, _isSVG, lifecycle);
 		const input = instance._lastInput;
 
 		hydrate(input, dom, lifecycle, instance._childContext, _isSVG);

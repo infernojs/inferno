@@ -2499,7 +2499,10 @@ describe('Components (JSX)', () => {
 		// this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
 		it('should correct swap rows #1', () => {
 			debugger;
-			render(<Test />, container);
+			let testInstance = null;
+			// eslint-disable-next-line
+			render(<Test ref={(i) => testInstance = i} />, container);
+
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
 			// click on "SPAN"
 			container.querySelector('span').click();
@@ -2512,8 +2515,12 @@ describe('Components (JSX)', () => {
 			container.querySelector('button').click();
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
 			// click on "DIV"
+			debugger;
+			let reversedChildren = testInstance._lastInput.children[1].children;
 			div.click();
 			// "DIV" should now be "SPAN"
+			// When debugging component._vNode is fresh, but here ...
+			reversedChildren = testInstance._lastInput.children[1].children; // <== component B is still pointing to old DOM Node
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
 			// click "SWAP ROWS"
 			container.querySelector('button').click();

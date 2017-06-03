@@ -292,19 +292,16 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 }
 
 function flushQueue() {
-	resolvedPromise.then(function() {
-		options.component.rendering = true;
-		const length = stateChangeQueue.length;
+	options.component.rendering = true;
+	const length = stateChangeQueue.length;
 
-		if (length > 0) {
-			for (let i = 0; i < length; i++) {
-				const stateChange = stateChangeQueue[i];
-				applyState(stateChange.component, stateChange.force, stateChange.callback);
-			}
-			stateChangeQueue.length = 0;
+	if (length > 0) {
+		for (let i = 0; i < length; i++) {
+			const stateChange = stateChangeQueue[i];
+			applyState(stateChange.component, stateChange.force, stateChange.callback);
 		}
-		options.component.rendering = false;
-	});
+		stateChangeQueue.length = 0;
+	}
 }
 
 function queueStateChange(component, force, callback) {
