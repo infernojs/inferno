@@ -31,6 +31,7 @@ module.exports = {
 						'stage-2'
 					],
 					plugins: [
+						'transform-decorators-legacy',
 						'transform-class-properties',
 						'transform-object-rest-spread',
 						'babel-plugin-syntax-jsx',

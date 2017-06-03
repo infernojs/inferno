@@ -73,7 +73,7 @@
 		"no-redeclare": [2, {
 			"builtinGlobals":true
 		}],
-		"no-return-assign": [2, "except-parens"],
+		"no-return-assign": 0,
 		"no-with": 2,
 		"radix": 2,
 		"vars-on-top": 2,

@@ -410,7 +410,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public getChildContext?(): void;
 
 	public forceUpdate(callback?: Function) {
-		if (this._unmounted || !isBrowser) {
+		if (this._unmounted || this._updating || !isBrowser) {
 			return;
 		}
 

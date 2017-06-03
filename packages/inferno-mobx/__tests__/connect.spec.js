@@ -3,28 +3,28 @@ import Component from 'inferno-component';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
 import { innerHTML } from 'inferno/test/utils';
-import { connect, inject, Provider } from '../dist-es';
+import { observer, inject, Provider } from '../dist-es';
 
-describe('MobX connect()', () => {
+describe('old MobX observer()', () => {
 
 	it('should throw if store is invalid', () => {
-		const tryConnect = () => connect('invalidStore', () => 'Test');
+		const tryConnect = () => observer('invalidStore', () => 'Test');
 		expect(tryConnect).to.throw(Error, /should be provided as array/);
 	});
 
 	it('should throw if component is invalid', () => {
-		const tryConnect = () => connect(null);
+		const tryConnect = () => observer(null);
 		expect(tryConnect).to.throw(Error, /Please pass a valid component/);
 	});
 
-	it('should connect without second argument', () => {
-		const tryConnect = () => connect(['invalidStore'])(() => 'Test');
+	it('should observer without second argument', () => {
+		const tryConnect = () => observer(['invalidStore'])(() => 'Test');
 		expect(tryConnect).to.not.throw(Error);
 	});
 
 });
 
-describe('MobX inject()', () => {
+describe('old - MobX inject()', () => {
 	let container;
 
 	beforeEach(function () {

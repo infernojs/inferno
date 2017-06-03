@@ -784,13 +784,11 @@ describe('Elements (JSX)', () => {
 		const sinonSpy = spy(obj, 'fn');
 		const spyClick = spy(obj, 'click');
 
-		// TODO: Fails to creation of node fix needed
 		render(<input type="text" ref={obj.fn} spellcheck="false"
 									readOnly={bool ? 'readonly' : false} disabled={bool}
 									ondragenter={test} ondragover={test} value={newValue} oninput={test}
 									onclick={obj.click} className="edit-field" onkeydown={test} onkeyup={test}
 									onBlur={test} {...spread} />, container);
-		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		const input = container.querySelector('#test');
 		assert.calledOnce(sinonSpy); // Verify hook works
 		input.click(); // Focus fails with async tests - changed to tests

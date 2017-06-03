@@ -1,27 +1,24 @@
-import connect from './connect';
-import EventEmitter from './EventEmitter';
-import inject from './inject';
-import { componentByNodeRegistery, renderReporter, trackComponents } from './makeReactive';
-import Provider from './Provider';
-
-export default {
-	EventEmitter,
-	Provider,
-	componentByNodeRegistery,
-	connect,
-	inject,
-	observer: connect,
-	renderReporter,
-	trackComponents
-};
+import { inject } from './inject';
+import { Observer, observer, useStaticRendering } from './observer';
+import { Provider } from './Provider';
+import { EventEmitter } from './utils/EventEmitter';
 
 export {
 	EventEmitter,
+	Observer,
 	Provider,
-	componentByNodeRegistery,
-	connect as observer,
-	connect,
 	inject,
-	renderReporter,
-	trackComponents
+	observer,
+	EventEmitter as renderReporter,
+	useStaticRendering
+};
+
+export default {
+	EventEmitter,
+	Observer,
+	Provider,
+	inject,
+	observer,
+	renderReporter: EventEmitter,
+	useStaticRendering
 };

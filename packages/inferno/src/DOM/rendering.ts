@@ -82,10 +82,11 @@ const documentBody = isBrowser ? document.body : null;
 /**
  * Renders virtual node tree into parent node.
  * @param {VNode | null | string | number} input vNode to be rendered
- * @param parentDom DOM node which content will be replaced by virtual node
+ * @param {*} parentDom DOM node which content will be replaced by virtual node
+ * @param {Function?} callback Callback to be called after rendering has finished
  * @returns {InfernoChildren} rendered virtual node
  */
-export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | null | HTMLElement | Node): InfernoChildren {
+export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | null | HTMLElement | Node, callback?: Function): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -127,10 +128,15 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
 		root.input = input;
 		lifecycle.trigger();
 	}
+
+	if (!isNullOrUndef(callback)) {
+		callback();
+	}
 	if (isFunction(options.component.flush)) {
 		options.component.flush();
 	}
 	options.component.rendering = false;
+
 	if (root) {
 		const rootInput: VNode = root.input as VNode;
 
