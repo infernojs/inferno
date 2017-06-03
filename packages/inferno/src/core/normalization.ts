@@ -37,9 +37,10 @@ function applyKeyPrefix(key: string, vNode: VNode): VNode {
 function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey) {
 	for (const len = nodes.length; index < len; index++) {
 		let n = nodes[ index ];
-		const key = `${ currentKey }.${ index }`;
 
 		if (!isInvalid(n)) {
+			const key = `${ currentKey }.${ index }`;
+
 			if (isArray(n)) {
 				_normalizeVNodes(n, result, 0, key);
 			} else {
@@ -144,6 +145,22 @@ export function getFlagsForElementVnode(type: string): number {
 	return VNodeFlags.HtmlElement;
 }
 
+// tslint:disable-next-line
+let validateChildren: Function = function() {};
+if (process.env.NODE_ENV !== 'production') {
+	validateChildren = function validateChildren(vNode: VNode, children) {
+		if (vNode.flags & VNodeFlags.InputElement) {
+			throw new Error('Failed to set children, input elements can\'t have children.');
+		}
+		if (vNode.flags & VNodeFlags.MediaElement) {
+			throw new Error('Failed to set children, media elements can\'t have children.');
+		}
+		if (vNode.flags === 0 || vNode.flags & VNodeFlags.Void) {
+			throw new Error(`Failed to set children, Void elements can\'t have children.`);
+		}
+	}
+}
+
 export function normalize(vNode: VNode): void {
 	let props = vNode.props;
 	let children = vNode.children;
@@ -179,10 +196,16 @@ export function normalize(vNode: VNode): void {
 	if (props) {
 		normalizeProps(vNode, props, children);
 		if (!isInvalid(props.children)) {
+			if (process.env.NODE_ENV !== 'production') {
+				validateChildren(vNode, props.children);
+			}
 			props.children = normalizeChildren(props.children);
 		}
 	}
 	if (!isInvalid(children)) {
+		if (process.env.NODE_ENV !== 'production') {
+			validateChildren(vNode, children);
+		}
 		vNode.children = normalizeChildren(children);
 	}
 
