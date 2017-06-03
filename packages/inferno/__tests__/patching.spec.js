@@ -89,7 +89,10 @@ describe('patching routine', () => {
 		);
 
 		render(validNode, container);
-		render(invalidChildNode, container);
+		// This is not supported
+		expect(() => {
+			render(invalidChildNode, container);
+		}).to.throw();
 	});
 
 	it('Should not access real DOM property when text does not change', () => {

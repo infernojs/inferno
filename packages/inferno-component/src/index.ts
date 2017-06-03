@@ -83,7 +83,6 @@ function createInstance(vNode: VNode, Component, props: Props, context: Object, 
 	if (isFunction(instance.componentWillMount)) {
 		instance._blockRender = true;
 		instance.componentWillMount();
-		flushQueue();
 		instance._blockRender = false;
 	}
 
@@ -180,6 +179,7 @@ function updateComponent<P, S>(component: Component<P, S>, prevState: S, nextSta
 
 function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleClass, context, isSVG: boolean, isRecycling: boolean) {
 	const instance = lastVNode.children as Component<any, any>;
+	instance._vNode = nextVNode;
 	instance._updating = true;
 
 	if (instance._unmounted) {
@@ -194,7 +194,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleCla
 }
 
 const resolvedPromise = Promise.resolve();
-const stateChangeQueue: any[] = [];
+const componentFlushQueue: any[] = [];
 
 // when a components root VNode is also a component, we can run into issues
 // this will recursively look for vNode.parentNode if the VNode is a component
@@ -235,6 +235,13 @@ function handleUpdate(component, nextState, nextProps, context, force, fromSetSt
 		}
 
 		const lifeCycle = component._lifecycle;
+
+		if (nextInput.flags & VNodeFlags.Component) {
+			nextInput.parentVNode = vNode;
+		} else if (lastInput.flags & VNodeFlags.Component) {
+			lastInput.parentVNode = vNode;
+		}
+
 		internal_patch(lastInput, nextInput as VNode, parentDom as Element, lifeCycle, childContext, component._isSVG, false);
 		if (fromSetState) {
 			lifeCycle.trigger();
@@ -251,6 +258,12 @@ function handleUpdate(component, nextState, nextProps, context, force, fromSetSt
 		}
 	} else {
 		nextInput = lastInput;
+	}
+
+	if (nextInput.flags & VNodeFlags.Component) {
+		nextInput.parentVNode = vNode;
+	} else if (lastInput.flags & VNodeFlags.Component) {
+		lastInput.parentVNode = vNode;
 	}
 
 	component._lastInput = nextInput as VNode;
@@ -291,27 +304,56 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 	}
 }
 
+let globalFlushPending = false;
+
+function loopCallbacks() {
+	const callbacks = this.__FCB;
+
+	for (let i = 0, len = callbacks.length; i < len; i++) {
+		callbacks[i].call(this);
+	}
+
+	this.__FCB = null;
+}
+
 function flushQueue() {
 	options.component.rendering = true;
-	const length = stateChangeQueue.length;
+	const length = componentFlushQueue.length;
 
 	if (length > 0) {
 		for (let i = 0; i < length; i++) {
-			const stateChange = stateChangeQueue[i];
-			applyState(stateChange.component, stateChange.force, stateChange.callback);
+			const component = componentFlushQueue[i];
+
+			applyState(component, false, (component.__FCB !== null ? loopCallbacks : undefined));
+			component.__FP = false; // Flush no longer pending for this component
 		}
-		stateChangeQueue.length = 0;
+		componentFlushQueue.length = 0;
 	}
+	globalFlushPending = false;
 }
+
 
 function queueStateChange(component, force, callback) {
 	if (options.component.rendering) {
-		stateChangeQueue.push({
-			callback,
-			component,
-			force
-		});
-		// resolvedPromise.then(flushQueue);
+		if (!component.__FP) {
+			component.__FP = true;
+			componentFlushQueue.push(component);
+		}
+
+		if (isFunction(callback)) {
+			let callbacks = component.__FCB;
+
+			if (callbacks === null) {
+				component.__FCB = callbacks = [callback];
+			} else {
+				callbacks.push(callback);
+			}
+		}
+
+		if (!globalFlushPending) {
+			globalFlushPending = true;
+			resolvedPromise.then(flushQueue);
+		}
 	} else {
 		options.component.rendering = true;
 		applyState(component, force, callback);
@@ -336,6 +378,10 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public _childContext: object|null = null;
 	public _isSVG = false;
 	public _updating: boolean = true;
+	public _updateComponent: Function; // TODO: Remove
+
+	public __FP: boolean = false; // Flush Pending
+	public __FCB: Function[]|null = null; // Flush callbacks for this component
 
 	constructor(props?: P, context?: any) {
 		/** @type {object} */
@@ -343,6 +389,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 
 		/** @type {object} */
 		this.context = context || EMPTY_OBJ; // context should not be mutable
+		this._updateComponent = updateComponent;
 	}
 
 	// LifeCycle methods
