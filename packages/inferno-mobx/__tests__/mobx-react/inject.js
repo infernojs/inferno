@@ -29,9 +29,9 @@ describe('react-mobx port: inject based context', () => {
 		})));
 		const B = () => <C />;
 		const A = () =>
-      <Provider foo='bar'>
-        <B />
-      </Provider>;
+			<Provider foo='bar'>
+				<B />
+			</Provider>;
 		const wrapper = mount(<A />);
 		t.equal(wrapper.find('div').text(), 'context:bar');
 		t.end();
@@ -46,9 +46,9 @@ describe('react-mobx port: inject based context', () => {
 		const B = () => <C foo={ 42 } />;
 		const A = createClass({
 			render: () =>
-        <Provider foo='bar'>
-          <B />
-        </Provider>
+				<Provider foo='bar'>
+					<B />
+				</Provider>
 		});
 		const wrapper = mount(<A />);
 		t.equal(wrapper.find('div').text(), 'context:42');
@@ -64,18 +64,18 @@ describe('react-mobx port: inject based context', () => {
 		const B = () => <C />;
 		const A = createClass({
 			render: () =>
-        <Provider foo='bar' bar={1337}>
-          <div>
-            <span>
-              <B />
-            </span>
-            <section>
-              <Provider foo={42}>
-                <B />
-              </Provider>
-            </section>
-          </div>
-        </Provider>
+				<Provider foo='bar' bar={1337}>
+					<div>
+						<span>
+							<B />
+						</span>
+						<section>
+							<Provider foo={42}>
+								<B />
+							</Provider>
+						</section>
+					</div>
+				</Provider>
 		});
 		const wrapper = mount(<A />);
 		t.equal(wrapper.find('span').text(), 'context:bar1337');
@@ -92,9 +92,9 @@ describe('react-mobx port: inject based context', () => {
 		const B = () => <C />;
 		const A = createClass({
 			render: () =>
-        <Provider baz={42}>
-          <B />
-        </Provider>
+				<Provider baz={42}>
+					<B />
+				</Provider>
 		});
 		t.throws(() => mount(<A />), /Store 'foo' is not available! Make sure it is provided by some Provider/);
 		t.end();
@@ -139,14 +139,14 @@ describe('react-mobx port: inject based context', () => {
 		}));
 		const A = observer(createClass({
 			render: () =>
-        <section>
-          <span>
-            { a.get() }
-          </span>
-          <Provider foo={ a.get() }>
-            <B />
-          </Provider>
-        </section>
+				<section>
+					<span>
+						{ a.get() }
+					</span>
+					<Provider foo={ a.get() }>
+						<B />
+					</Provider>
+				</section>
 		}));
 		const wrapper = mount(<A />);
 
@@ -181,9 +181,9 @@ describe('react-mobx port: inject based context', () => {
 			render: () => <C baz={ 42 } />
 		});
 		const A = () =>
-      <Provider foo='bar'>
-        <B />
-      </Provider>;
+			<Provider foo='bar'>
+				<B />
+			</Provider>;
 		const wrapper = mount(<A/>);
 		t.equal(wrapper.find('div').text(), 'context:bar84');
 		t.end();
@@ -230,9 +230,9 @@ describe('react-mobx port: inject based context', () => {
 
 		const B = () => <C />;
 		const A = () =>
-      <Provider foo='bar'>
-        <B />
-      </Provider>;
+			<Provider foo='bar'>
+				<B />
+			</Provider>;
 		mount(<A />);
 		// t.equal(msg.length, 1);
 		// t.equal(msg[0], 'Mobx Injector: you are trying to attach `contextTypes` on an component decorated with `inject` (or `observer`) HOC. Please specify the contextTypes on the wrapped component instead. It is accessible through the `wrappedComponent`');
@@ -265,9 +265,9 @@ describe('react-mobx port: inject based context', () => {
 		};
 		const B = () => <C z='test' />;
 		const A = () =>
-      <Provider foo='bar'>
-        <B />
-      </Provider>;
+			<Provider foo='bar'>
+				<B />
+			</Provider>;
 		mount(<A />);
 		// t.equal(msg.length, 2);
 		// t.equal(msg[0].split('\n')[0], 'Warning: Failed prop type: The prop `x` is marked as required in `inject-C-with-foo`, but its value is `undefined`.');
@@ -313,9 +313,9 @@ describe('react-mobx port: inject based context', () => {
 		const DisplayName = props => <h1>{ props.name }</h1>;
 		const User = inject(mapper)(DisplayName);
 		const App = () =>
-      <Provider user={ user }>
-        <User />
-      </Provider>;
+			<Provider user={ user }>
+				<User />
+			</Provider>;
 		const wrapper = mount(<App />);
 
 		t.equal(wrapper.find('h1').text(), 'Noa');
@@ -338,23 +338,23 @@ describe('react-mobx port: inject based context', () => {
 		}
 
 		class State {
-      @observable highlighted = null;
+			@observable highlighted = null;
 			isHighlighted(item) {
 				return this.highlighted === item;
 			}
 
-      @action highlight = (item) => {
+			@action highlight = (item) => {
 				this.highlighted = item;
 			}
-    }
+		}
 
 		const items = observable([
-      { title: 'ItemA' },
-      { title: 'ItemB' },
-      { title: 'ItemC' },
-      { title: 'ItemD' },
-      { title: 'ItemE' },
-      { title: 'ItemF' }
+			{ title: 'ItemA' },
+			{ title: 'ItemB' },
+			{ title: 'ItemC' },
+			{ title: 'ItemD' },
+			{ title: 'ItemE' },
+			{ title: 'ItemF' }
 		]);
 
 		const state = new State();
@@ -366,23 +366,23 @@ describe('react-mobx port: inject based context', () => {
 				const { items } = this.props;
 
 				return <ul>{
-          items.map((item) => <ItemComponent key={item.title} item={item}/>)
-        }</ul>;
+					items.map((item) => <ItemComponent key={item.title} item={item}/>)
+				}</ul>;
 			}
-    }
+		}
 
-    @connect(({ state }, { item }) => {
-	injectRender++;
-	if (injectRender > 6) {
+		@connect(({ state }, { item }) => {
+			injectRender++;
+			if (injectRender > 6) {
 								// debugger;
-	}
-	return ({
+			}
+			return ({
 								// Using
 								// highlighted: expr(() => state.isHighlighted(item)) // seems to fix the problem
-		highlighted: state.isHighlighted(item),
-		highlight: state.highlight
-	});
-})
+				highlighted: state.isHighlighted(item),
+				highlight: state.highlight
+			});
+		})
 		class ItemComponent extends InfernoComponent {
 			highlight = () => {
 				const { item, highlight } = this.props;
@@ -394,35 +394,35 @@ describe('react-mobx port: inject based context', () => {
 				const { highlighted, item } = this.props;
 				return <li className={'hl_' + item.title} onClick={this.highlight}>{ item.title } { highlighted ? '(highlighted)' : '' } </li>;
 			}
-    }
+		}
 		render(
-      <Provider state={state}>
-        <ListComponent items={items}/>
-      </Provider>,
-      testRoot, () => {
-	t.equal(listRender, 1);
-	t.equal(injectRender, 6);
-	t.equal(itemRender, 6);
+			<Provider state={state}>
+				<ListComponent items={items}/>
+			</Provider>,
+			testRoot, () => {
+				t.equal(listRender, 1);
+				t.equal(injectRender, 6);
+				t.equal(itemRender, 6);
 
-	testRoot.querySelectorAll('.hl_ItemB').forEach(e => e.click());
+				testRoot.querySelectorAll('.hl_ItemB').forEach(e => e.click());
 
-	setTimeout(() => {
-		t.equal(listRender, 1);
-		t.equal(injectRender, 12); // ideally, 7
-		t.equal(itemRender, 7);
+				setTimeout(() => {
+					t.equal(listRender, 1);
+					t.equal(injectRender, 12); // ideally, 7
+					t.equal(itemRender, 7);
 
-		testRoot.querySelectorAll('.hl_ItemF').forEach(e => e.click());
-		setTimeout(() => {
-			t.equal(listRender, 1);
-			t.equal(injectRender, 18); // ideally, 9
-			t.equal(itemRender, 9);
+					testRoot.querySelectorAll('.hl_ItemF').forEach(e => e.click());
+					setTimeout(() => {
+						t.equal(listRender, 1);
+						t.equal(injectRender, 18); // ideally, 9
+						t.equal(itemRender, 9);
 
-			testRoot.parentNode.removeChild(testRoot);
-			done();
-		}, 20);
-	}, 20);
-}
-    );
+						testRoot.parentNode.removeChild(testRoot);
+						done();
+					}, 20);
+				}, 20);
+			}
+		);
 	});
 
 	t.end();

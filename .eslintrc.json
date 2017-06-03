@@ -61,7 +61,7 @@
 		"no-fallthrough": 2,
 		"no-floating-decimal": 2,
 		"no-implied-eval": 2,
-		"no-invalid-this": 2,
+		"no-invalid-this": 1,
 		"no-loop-func": 2,
 		"no-multi-spaces": 2,
 		"no-multi-str": 2,

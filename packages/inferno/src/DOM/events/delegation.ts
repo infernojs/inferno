@@ -1,5 +1,5 @@
-import { options } from './../../core/options';
 import { isBrowser, isFunction } from 'inferno-shared';
+import { options } from './../../core/options';
 
 const isiOS = isBrowser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 const delegatedEvents: Map<string, IDelegate> = new Map();

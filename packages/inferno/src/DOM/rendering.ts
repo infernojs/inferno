@@ -1,5 +1,6 @@
 import {
 	isBrowser,
+	isFunction,
 	isInvalid,
 	isNull,
 	isNullOrUndef,
@@ -7,8 +8,7 @@ import {
 	LifecycleClass,
 	NO_OP,
 	throwError,
-	warning,
-    isFunction
+	warning
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options, Root } from '../core/options';

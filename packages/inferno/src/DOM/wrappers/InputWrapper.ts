@@ -1,4 +1,4 @@
-import { isNullOrUndef, isFunction } from 'inferno-shared';
+import { isFunction, isNullOrUndef } from 'inferno-shared';
 import { EMPTY_OBJ } from '../utils';
 import {options} from './../../core/options';
 

@@ -332,7 +332,6 @@ function flushQueue() {
 	globalFlushPending = false;
 }
 
-
 function queueStateChange(component, force, callback) {
 	if (options.component.rendering) {
 		if (!component.__FP) {

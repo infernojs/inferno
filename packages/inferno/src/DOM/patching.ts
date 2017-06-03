@@ -1,26 +1,27 @@
 import {
+	combineFrom,
 	isArray,
 	isFunction,
 	isInvalid,
 	isNull,
 	isNullOrUndef,
 	isNumber,
+	isObject,
 	isString,
 	isStringOrNumber,
 	isUndefined,
 	LifecycleClass,
 	NO_OP,
-	throwError,
-	isObject,
-	combineFrom
+	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
 import { Styles } from '../core/structures';
-import { directClone, isVNode, VNode, createVoidVNode, createTextVNode } from '../core/VNodes';
+import { createTextVNode, createVoidVNode, directClone, isVNode, VNode } from '../core/VNodes';
 import { booleanProps, delegatedEvents, isUnitlessNumber, namespaces, skipProps, strictProps } from './constants';
 import { handleEvent } from './events/delegation';
 import { mount, mountArrayChildren, mountComponent, mountElement, mountRef, mountText, mountVoid } from './mounting';
+import { componentToDOMNodeMap } from './rendering';
 import { unmount } from './unmounting';
 import {
 	appendChild,
@@ -37,7 +38,6 @@ import {
 	updateTextContent
 } from './utils';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
-import { componentToDOMNodeMap } from "./rendering";
 
 export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isRecycling: boolean) {
 	if (lastVNode !== nextVNode) {

@@ -158,7 +158,7 @@ if (process.env.NODE_ENV !== 'production') {
 		if (vNode.flags === 0 || vNode.flags & VNodeFlags.Void) {
 			throw new Error(`Failed to set children, Void elements can\'t have children.`);
 		}
-	}
+	};
 }
 
 export function normalize(vNode: VNode): void {

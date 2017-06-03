@@ -32,7 +32,7 @@
     "inferno-create-class": "4.0.0",
     "inferno-create-element": "4.0.0",
     "inferno-shared": "4.0.0",
-    "mobx": "*"
+    "mobx": "^2.6.3 || ^3.0.0"
   },
   "devDependencies": {
     "inferno-server": "4.0.0"
