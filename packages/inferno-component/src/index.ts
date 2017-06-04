@@ -12,12 +12,14 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
-/* Add ES6 component implementations for Inferno-core to use */
-options.component.create = createInstance;
-options.component.patch = patchComponent;
-options.component.flush = flushQueue;
+const C = options.component;
 
-const handleInput = options.component.handleInput;
+/* Add ES6 component implementations for Inferno-core to use */
+C.create = createInstance;
+C.patch = patchComponent;
+C.flush = flushQueue;
+
+const handleInput = C.handleInput;
 let noOp = ERROR_MSG;
 
 if (process.env.NODE_ENV !== 'production') {
@@ -185,7 +187,7 @@ function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleCla
 	if (instance._unmounted) {
 		return true;
 	} else {
-		nextVNode.dom  = handleUpdate(instance, instance.state, nextVNode.props || EMPTY_OBJ, context, false, false);
+		nextVNode.dom  = handleUpdate(instance, instance.state, nextVNode.props || EMPTY_OBJ, context, false, false, isRecycling, isSVG, lifecycle, parentDom);
 		nextVNode.children = instance;
 	}
 	instance._updating = false;
@@ -209,7 +211,7 @@ function updateParentComponentVNodes(vNode: VNode, dom: Element) {
 	}
 }
 
-function handleUpdate(component, nextState, nextProps, context, force, fromSetState) {
+function handleUpdate(component, nextState, nextProps, context, force: boolean, fromSetState: boolean, isRecycling: boolean, isSVG: boolean, lifeCycle, parentDom) {
 	let nextInput;
 	const hasComponentDidUpdateIsFunction = isFunction(component.componentDidUpdate);
 	// When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
@@ -218,7 +220,7 @@ function handleUpdate(component, nextState, nextProps, context, force, fromSetSt
 	const prevProps = component.props;
 	const renderOutput = updateComponent(component, prevState, nextState, prevProps, nextProps, context, force, fromSetState);
 	const vNode = component._vNode as VNode;
-	const parentDom = (lastInput.dom && lastInput.dom.parentNode) || (lastInput.dom = vNode.dom);
+
 	// debugger;
 	if (renderOutput !== NO_OP) {
 		nextInput = handleInput(renderOutput, vNode);
@@ -234,15 +236,14 @@ function handleUpdate(component, nextState, nextProps, context, force, fromSetSt
 			childContext = combineFrom(context, childContext as any);
 		}
 
-		const lifeCycle = component._lifecycle;
-
 		if (nextInput.flags & VNodeFlags.Component) {
 			nextInput.parentVNode = vNode;
 		} else if (lastInput.flags & VNodeFlags.Component) {
 			lastInput.parentVNode = vNode;
 		}
 
-		internal_patch(lastInput, nextInput as VNode, parentDom as Element, lifeCycle, childContext, component._isSVG, false);
+		// lastVNode: nextVNode: parentDom, lifecycle, context, isSVG, isRecycling
+		internal_patch(lastInput, nextInput as VNode, parentDom as Element, lifeCycle, childContext, isSVG, isRecycling);
 		if (fromSetState) {
 			lifeCycle.trigger();
 		}
@@ -284,6 +285,8 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 		const pendingState = component._pendingState;
 		component._pendingSetState = false;
 		component._pendingState = null;
+		const lastInput = component._lastInput;
+
 		updateParentComponentVNodes(
 			component._vNode,
 			handleUpdate(
@@ -292,8 +295,11 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 				component.props,
 				component.context,
 				force,
-				true
-			)
+				true,
+				false,
+				component._isSVG,
+				component._lifecycle,
+				lastInput.dom && lastInput.dom.parentNode) || (lastInput.dom = component._vNode.dom)
 		);
 	} else {
 		component.state = component._pendingState as S;
@@ -317,7 +323,7 @@ function loopCallbacks() {
 }
 
 function flushQueue() {
-	options.component.rendering = true;
+	C.rendering = true;
 	const length = componentFlushQueue.length;
 
 	if (length > 0) {
@@ -333,7 +339,7 @@ function flushQueue() {
 }
 
 function queueStateChange(component, force, callback) {
-	if (options.component.rendering) {
+	if (C.rendering) {
 		if (!component.__FP) {
 			component.__FP = true;
 			componentFlushQueue.push(component);
@@ -354,10 +360,10 @@ function queueStateChange(component, force, callback) {
 			resolvedPromise.then(flushQueue);
 		}
 	} else {
-		options.component.rendering = true;
+		C.rendering = true;
 		applyState(component, force, callback);
 		flushQueue();
-		options.component.rendering = false;
+		C.rendering = false;
 	}
 }
 

@@ -3,6 +3,7 @@ import { options } from './../../core/options';
 
 const isiOS = isBrowser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 const delegatedEvents: Map<string, IDelegate> = new Map();
+const C = options.component;
 
 interface IDelegate {
 	docEvent: any;
@@ -82,7 +83,7 @@ function stopPropagation() {
 
 function attachEventToDocument(name, delegatedRoots: IDelegate) {
 	const docEvent = (event: Event) => {
-		options.component.rendering = true;
+		C.rendering = true;
 		const count = delegatedRoots.items.size;
 
 		if (count > 0) {
@@ -103,10 +104,10 @@ function attachEventToDocument(name, delegatedRoots: IDelegate) {
 
 			dispatchEvent(event, event.target, delegatedRoots.items, count, event.type === 'click', eventData);
 		}
-		if (isFunction(options.component.flush)) {
-			options.component.flush();
+		if (isFunction(C.flush)) {
+			C.flush();
 		}
-		options.component.rendering = false;
+		C.rendering = false;
 	};
 	document.addEventListener(normalizeEventName(name), docEvent);
 	return docEvent;

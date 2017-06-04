@@ -22,11 +22,11 @@ describe('CSS style properties (JSX)', () => {
 
 	it('should set and remove dynamic styles', () => {
 
-		const styles = { display: 'none', fontFamily: 'Arial', lineHeight: 1.2 };
+		const styles = { display: 'none', fontFamily: 'Arial', lineHeight: 2 };
 
 		render(<div style={ styles }/>, container);
 		expect(container.firstChild.style.fontFamily).to.equal('Arial');
-		expect(container.firstChild.style.lineHeight).to.equal('1.2');
+		expect(container.firstChild.style.lineHeight).to.equal('2');
 
 		render(<div />, container);
 		expect(container.firstChild.style.fontFamily).to.equal('');

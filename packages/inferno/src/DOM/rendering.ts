@@ -23,6 +23,7 @@ import { EMPTY_OBJ } from './utils';
 // given there shouldn't be THAT many roots on the page, the difference
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 export const componentToDOMNodeMap = new Map();
+const C = options.component;
 const roots = options.roots;
 /**
  * When inferno.options.findDOMNOdeEnabled is true, this function will return DOM Node by component instance
@@ -96,7 +97,7 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
 	if ((input as any) === NO_OP) {
 		return;
 	}
-	options.component.rendering = true;
+	C.rendering = true;
 	let root = getRoot(parentDom);
 
 	if (isNull(root)) {
@@ -132,10 +133,10 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
 	if (!isNullOrUndef(callback)) {
 		callback();
 	}
-	if (isFunction(options.component.flush)) {
-		options.component.flush();
+	if (isFunction(C.flush)) {
+		C.flush();
 	}
-	options.component.rendering = false;
+	C.rendering = false;
 
 	if (root) {
 		const rootInput: VNode = root.input as VNode;
