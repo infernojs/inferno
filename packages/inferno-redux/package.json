@@ -33,6 +33,7 @@
     "redux": "*"
   },
   "devDependencies": {
+    "history": "^4.6.1",
     "inferno-router": "^4.0.0"
   },
   "rollup": {
