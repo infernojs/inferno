@@ -1,7 +1,6 @@
 const bublePlugin = require('rollup-plugin-buble');
 const commonjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
-const builtins = require('rollup-plugin-node-builtins');
 const replacePlugin = require('rollup-plugin-replace');
 const tsPlugin = require('rollup-plugin-typescript2');
 const uglify = require('rollup-plugin-uglify');
@@ -12,7 +11,6 @@ const optJSPlugin = require('./optimize');
 module.exports = function(version, options) {
 	const plugins = [
 		aliasPlugin,
-		builtins(),
 		nodeResolve({
 			extensions: ['.ts', '.js', '.json'],
 			jsnext: true
@@ -21,11 +19,7 @@ module.exports = function(version, options) {
 			include: 'node_modules/**'
 		}),
 		tsPlugin({
-			abortOnError: false,
-			cacheRoot: `.rpt2_cache_${options.env}`,
-			check: false,
-			clean: true,
-			exclude: ['*.d.ts', '**/*.d.ts', '*.spec*', '**/*.spec*']
+			cacheRoot: `.cache_${process.pid}`,
 		}),
 		bublePlugin()
 	];
@@ -37,6 +31,8 @@ module.exports = function(version, options) {
 	if (options.replace) {
 		replaceValues['process.env.NODE_ENV'] = JSON.stringify(options.env);
 	}
+
+	plugins.push(replacePlugin(replaceValues));
 
 	if (options.uglify) {
 		plugins.push(
@@ -61,7 +57,6 @@ module.exports = function(version, options) {
 		);
 	}
 
-	plugins.push(replacePlugin(replaceValues));
 
 	if (options.optimize) {
 		plugins.push(optJSPlugin);

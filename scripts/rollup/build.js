@@ -38,8 +38,7 @@ mkdir(join(cwd, 'dist'), err => {
 		.then(() => {
 			console.log(`${pkgJSON.name} in ${options.format} is DONE`);
 		})
-		.catch(buildErr => {
-			console.error(buildErr);
-			process.exit(1);
+		.catch(error => {
+			console.error(`${pkgJSON.name} in ${options.format} is FAILED ${error}`);
 		});
 });
