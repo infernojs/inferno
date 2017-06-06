@@ -29,4 +29,4 @@ jobs:
     - stage: Build
       script:
         - npm run build
-        - npm run test:fixtures:package
+        - npm run test:fixture:package
