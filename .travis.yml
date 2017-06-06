@@ -1,7 +1,9 @@
 language: node_js
 
 node_js:
+  - '4'
   - '6'
+  - '8'
 
 notifications:
   email:
@@ -27,6 +29,7 @@ script:
 jobs:
   include:
     - stage: Build
+      node_js: '6'
       script:
         - npm run build
         - npm run test:fixture:package
