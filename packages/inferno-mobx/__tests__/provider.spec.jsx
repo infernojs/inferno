@@ -111,7 +111,7 @@ describe('MobX Provider', () => {
 	});
 
 	describe('providing/updating stores', () => {
-		const stores = observable({
+		let stores = observable({
 			store1: {
 				data: 'one',
 			},
@@ -142,28 +142,30 @@ describe('MobX Provider', () => {
 			expect(container.innerHTML).toBe(innerHTML('<div><span>one</span><span>two</span></div>'));
 		});
 
-		// TODO: UNFINISHED
-		// Commented out as travisCI does not honor skip syntax with all browsers
-		/*
-		 it.skip('should warn if stores change', () => {
+		it('should warn if stores change', () => {
+			class ChildComponent extends Component {
+				componentDidMount() {
+					stores = observable({
+						store1: {
+							data: 'two',
+						},
+					});
+				}
+				render({ store1 }) {
+					return <div>{store1.data}</div>;
+				}
+			}
 
-		 const TestComponent = connect(['store1'], class extends Component {
-		 componentDidMount() {
-		 stores = observable({
-		 newStore: 'newStore'
-		 });
-		 }
-		 render({ store1 }) {
-		 return <div>{store1.data}</div>;
-		 }
-		 });
+			const TestComponent = connect(['store1'], ChildComponent);
 
-		 render(<Provider store1={stores.store1}>
-		 <TestComponent/>
-		 </Provider>, container);
+			render(
+				<Provider store1={stores.store1}>
+					<TestComponent />
+				</Provider>,
+				container,
+			);
 
-		 expect(container.innerHTML).to.equal(innerHTML('<div>one</div>'));
-		 });
-		 */
+			expect(container.innerHTML).toEqual(innerHTML('<div>one</div>'));
+		});
 	});
 });

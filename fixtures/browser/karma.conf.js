@@ -38,12 +38,10 @@ module.exports = function(config) {
 			'./packages/*/__tests__/*': ['webpack', 'sourcemap'],
 		},
 
-		reporters: [
-			'progress'
-		],
+		reporters: ['progress'],
 
 		browserConsoleLogOptions: {
-			terminal: true
+			terminal: true,
 		},
 		colors: true,
 		singleRun: true,
@@ -52,7 +50,7 @@ module.exports = function(config) {
 
 		webpackMiddleware: {
 			stats: 'errors-only',
-			noInfo: true
+			noInfo: true,
 		},
 		webpack: {
 			devtool: 'inline-source-map',
@@ -91,7 +89,7 @@ module.exports = function(config) {
 				mainFields: ['inferno:main', 'module', 'main'],
 			},
 			devServer: {
-				noInfo: true
+				noInfo: true,
 			},
 			stats: 'errors-only',
 			performance: {
