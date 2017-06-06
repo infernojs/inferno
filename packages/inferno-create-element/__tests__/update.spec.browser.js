@@ -163,8 +163,6 @@ describe('Update (non-jsx)', () => {
 		render(template('Hello', ' world!', ' and ', 'Zoo'), container);
 		expect(container.innerHTML).toBe(innerHTML('<div>Hello world! and Zoo</div>'));
 
-		expect(() => render(template('Hello', [], ' and ', 'Zoo'), container)).toThrow();
-
 		render(template('Hello', null, ' and ', 'Zoo'), container);
 		expect(container.innerHTML).toBe(innerHTML('<div>Hello and Zoo</div>'));
 
@@ -412,8 +410,6 @@ describe('Update (non-jsx)', () => {
 		expect(container.firstChild.firstChild.firstChild.tagName).toBe('SPAN');
 		expect(container.firstChild.firstChild.textContent).toBe('');
 		expect(container.firstChild.firstChild.firstChild.textContent).toBe('');
-
-		expect(() => render(template([], [], [], [], '', []), container)).toThrow();
 	});
 
 	it('should render a basic example #7', () => {
