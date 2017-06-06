@@ -177,7 +177,6 @@
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "postinstall": "lerna bootstrap && lerna exec --no-sort --concurrency 1 -- node ../../bin/link",
-    "prepublish": "npm run build",
     "pretest:bench": "karma start test/karma/karma.bench.conf.js --log-level debug",
     "prettier": "npm-run-all --parallel prettier:**",
     "prettier:packages:js": "./scripts/tasks/prettier.sh packages/*/{src,__tests__}/**/*.{js,jsx} packages/*/{src,__tests__}/*.{js,jsx}",
