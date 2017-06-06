@@ -17,7 +17,7 @@ describe('normalizeProps', () => {
 
 		normalize(vNode);
 
-		expect(vNode.props).not.toHaveProperty('ref');
+		expect(vNode.props.ref).not.toBeDefined();
 	});
 
 	it('should delete key from props', () => {
@@ -34,6 +34,6 @@ describe('normalizeProps', () => {
 
 		normalize(vNode);
 
-		expect(vNode.props).not.toHaveProperty('key');
+		expect(vNode.props.key).not.toBeDefined();
 	});
 });

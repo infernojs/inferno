@@ -9,13 +9,13 @@ export class ChildCommon extends Component {
 
 	_update() {
 		this.setState({
-			data: 'bar'
+			data: 'bar',
 		});
 	}
 
 	componentWillMount() {
 		this.setState({
-			data: 'foo'
+			data: 'foo',
 		});
 	}
 

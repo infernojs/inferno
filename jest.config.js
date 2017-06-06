@@ -6,6 +6,10 @@ module.exports = {
 	collectCoverageFrom: ['packages/*/src/**/*.ts', '!**/*.ts.js'],
 	coverageDirectory: 'coverage',
 	coverageReporters: ['html', 'lcov', 'text'],
+	globals: {
+		usingJSDOM: true,
+		usingJest: true
+	},
 	moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
 	moduleNameMapper: {
 		'^inferno$': '<rootDir>/packages/inferno/src',
@@ -34,7 +38,7 @@ module.exports = {
 		'<rootDir>/packages/inferno-shared',
 		'<rootDir>/packages/inferno-vnode-flags',
 	],
-	setupFiles: ['<rootDir>/scripts/jest/requestAnimationFrame.ts', '<rootDir>/scripts/jest/globals.ts'],
+	setupFiles: ['<rootDir>/scripts/test/requestAnimationFrame.ts' ],
 	testMatch: [
 		'<rootDir>/packages/*/__tests__/**/*spec.js?(x)',
 		'<rootDir>/packages/*/__tests__/**/*spec.ts?(x)',

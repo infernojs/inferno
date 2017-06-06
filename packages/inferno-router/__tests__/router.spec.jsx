@@ -1,7 +1,7 @@
 import { createBrowserHistory, createMemoryHistory } from 'history';
 import { cloneVNode, render } from 'inferno';
+import { IndexRoute, Link, match, Route, Router, RouterContext } from 'inferno-router';
 import { innerHTML } from 'inferno-utils';
-import { IndexRoute, Link, Route, Router, RouterContext, match } from 'inferno-router';
 
 const browserHistory = createBrowserHistory();
 const browserHistoryWithBaseName = createBrowserHistory({ basename: '/basename-prefix' });
@@ -299,7 +299,6 @@ describe('Router (jsx)', () => {
 					</Route>
 				</Router>
 			);
-			console.log('history.location', history.location);
 			const renderProps = match(router, history.location.pathname + history.location.search);
 
 			const actual = render(<RouterContext {...renderProps} />, container);
@@ -324,7 +323,6 @@ describe('Router (jsx)', () => {
 					</Route>
 				</Router>
 			);
-			console.log('history.location', history.location);
 			const renderProps = match(router, history.location.pathname + history.location.search);
 
 			const actual = render(<RouterContext {...renderProps} />, container);
@@ -349,7 +347,6 @@ describe('Router (jsx)', () => {
 					</Route>
 				</Router>
 			);
-			console.log('history.location', history.location);
 			const renderProps = match(router, history.location.pathname + history.location.search);
 
 			const actual = render(<RouterContext {...renderProps} />, container);

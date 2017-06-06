@@ -498,7 +498,6 @@ describe('Test Utils', () => {
 				const result = scryRenderedVNodesWithType(tree, type);
 				expect(result.length).toBeCloseTo(length);
 				result.forEach(item => {
-					expect(Object.keys(item)).toEqual(expect.arrayContaining(VNodeKeys));
 					expect(isVNode(item)).toBe(true);
 				});
 			};
@@ -528,7 +527,6 @@ describe('Test Utils', () => {
 				const result = scryVNodesWithType(tree, type);
 				expect(result.length).toBeCloseTo(length);
 				result.forEach(item => {
-					expect(Object.keys(item)).toEqual(expect.arrayContaining(VNodeKeys));
 					expect(isVNode(item)).toBe(true);
 				});
 			};
@@ -565,12 +563,13 @@ describe('Test Utils', () => {
 		});
 
 		it('should return a matched DOM element', () => {
-			const testValue = (classNames, instance) => {
+			const testValue = (classNames, instance, attrLength) => {
 				const result = findRenderedDOMElementWithClass(tree, classNames);
+				expect(result.attributes.length).toEqual(attrLength);
 			};
-			testValue('level-1', window.HTMLDivElement);
-			testValue('level-2 one', window.HTMLDivElement);
-			testValue('level-3 two', window.HTMLSpanElement);
+			testValue('level-1', window.HTMLDivElement, 1);
+			testValue('level-2 one', window.HTMLDivElement, 1);
+			testValue('level-3 two', window.HTMLSpanElement, 1);
 		});
 
 		it('should be able to handle null elements', () => {
@@ -611,13 +610,13 @@ describe('Test Utils', () => {
 		});
 
 		it('should return a matched DOM element', () => {
-			const testValue = (tagName, instance) => {
+			const testValue = (tagName, instance, attrLength) => {
 				const result = findRenderedDOMElementWithTag(tree, tagName);
-				expect(typeof result).toEqual(typeof instance);
+				expect(result.attributes.length).toEqual(attrLength);
 			};
-			testValue('div', window.HTMLDivElement);
-			testValue('span', window.HTMLSpanElement);
-			testValue('a', window.HTMLAnchorElement);
+			testValue('div', window.HTMLDivElement, 0);
+			testValue('span', window.HTMLSpanElement, 0);
+			testValue('a', window.HTMLAnchorElement, 0);
 		});
 	});
 

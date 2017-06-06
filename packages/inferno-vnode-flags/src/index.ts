@@ -22,7 +22,7 @@ const enum VNodeFlags {
 
 	FormElement = InputElement | TextareaElement | SelectElement,
 	Element = HtmlElement | SvgElement | MediaElement | InputElement | TextareaElement | SelectElement,
-	Component = ComponentFunction | ComponentClass | ComponentUnknown
+	Component = ComponentFunction | ComponentClass | ComponentUnknown,
 }
 
 export default VNodeFlags;

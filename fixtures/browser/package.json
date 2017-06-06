@@ -1,5 +1,5 @@
 {
-  "name": "inferno-test-browser",
+  "name": "inferno-fixture-browser",
   "private": true,
   "version": "1.0.0",
   "description": "",
@@ -19,12 +19,11 @@
     "karma": "^1.7.0",
     "karma-chrome-launcher": "^2.1.1",
     "karma-detect-browsers": "^2.2.5",
-    "karma-failed-reporter": "0.0.3",
     "karma-firefox-launcher": "^1.0.1",
     "karma-jasmine": "^1.1.0",
+    "karma-jasmine-matchers": "^3.7.0",
     "karma-phantomjs-launcher": "^1.0.4",
-    "karma-safari-launcher": "^1.0.0",
-    "karma-safaritechpreview-launcher": "0.0.5",
+    "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.3",
     "ts-loader": "^2.1.0"
   }

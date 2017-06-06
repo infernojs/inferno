@@ -23,7 +23,10 @@ module.exports = function(version, options) {
 			cacheRoot: `.rpt2_cache_${options.env}`,
 			check: false,
 			clean: true,
-			exclude: ['*.spec*', '**/*.spec*']
+			exclude: [
+				'*.spec*',
+				'**/*.spec*'
+			]
 		}),
 		bublePlugin()
 	];

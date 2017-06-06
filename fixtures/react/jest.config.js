@@ -11,8 +11,5 @@ module.exports = Object.assign({}, baseConfig, {
 		'^inferno$': '<rootDir>/fixtures/react-suite/packages/inferno',
 	}),
 	rootDir: join(__dirname, '../../'),
-	testPathIgnorePatterns: [
-		'/node_modules/',
-		'/inferno-server/',
-	],
+	testPathIgnorePatterns: ['/node_modules/', '/inferno-server/'],
 });
