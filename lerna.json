@@ -1,9 +1,14 @@
 {
   "lerna": "2.0.0-rc.5",
+	"command": {
+    "init": {
+      "exact": true
+    }
+  },
   "packages": [
     "packages/*"
   ],
-  "version": "3.4.0",
+  "version": "4.0.0",
   "changelog": {
     "repo": "infernojs/inferno",
     "labels": {

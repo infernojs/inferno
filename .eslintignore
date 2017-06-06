@@ -1,3 +1,0 @@
-**/*.min.js
-packages/inferno/dist/*
-examples/**/dist/*

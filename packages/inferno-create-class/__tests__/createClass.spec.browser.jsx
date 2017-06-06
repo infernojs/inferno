@@ -1,18 +1,17 @@
-
 import { render } from 'inferno';
-import { innerHTML } from 'inferno/test/utils';
-import createClass from '../dist-es';
+import { innerHTML } from 'inferno-utils';
+import createClass from 'inferno-create-class';
 
 describe('Components createClass (JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		document.body.removeChild(container);
 	});
@@ -28,22 +27,27 @@ describe('Components createClass (JSX)', () => {
 							},
 							doSomething() {
 								this.anotherState = 2;
-							}
-						}
+							},
+						},
 					],
 					render() {
 						this.doSomething();
-						return <div></div>;
-					}
+						return <div />;
+					},
 				});
 
 				let a;
-				render(<Foo ref={function (i) {
-					a = i;
-				}}/>, container);
+				render(
+					<Foo
+						ref={function(i) {
+							a = i;
+						}}
+					/>,
+					container,
+				);
 
-				expect(a.someState).to.eql(1);
-				expect(a.anotherState).to.eql(2);
+				expect(a.someState).toEqual(1);
+				expect(a.anotherState).toEqual(2);
 			});
 
 			it('returns result through instance', () => {
@@ -52,16 +56,16 @@ describe('Components createClass (JSX)', () => {
 						{
 							renderSomething() {
 								return <div>{this.props.bar}</div>;
-							}
-						}
+							},
+						},
 					],
 					render() {
 						return <div>{this.renderSomething()}</div>;
-					}
+					},
 				});
 
-				render(<Foo bar="test"/>, container);
-				expect(container.innerHTML).to.eql(innerHTML('<div><div>test</div></div>'));
+				render(<Foo bar="test" />, container);
+				expect(container.innerHTML).toEqual(innerHTML('<div><div>test</div></div>'));
 			});
 
 			it('works as a lifecycle method even when a matching method is already defined', () => {
@@ -70,120 +74,119 @@ describe('Components createClass (JSX)', () => {
 						{
 							componentDidMount() {
 								this.someState = 1;
-							}
-						}
+							},
+						},
 					],
-					componentDidMount() {
-					},
+					componentDidMount() {},
 					render() {
-						return <div></div>;
-					}
+						return <div />;
+					},
 				});
 
 				let a;
-				render(<Foo ref={function (i) {
-					a = i;
-				}}/>, container);
+				render(
+					<Foo
+						ref={function(i) {
+							a = i;
+						}}
+					/>,
+					container,
+				);
 
-				expect(a.someState).to.eql(1);
+				expect(a.someState).toEqual(1);
 			});
 		});
 
 		describe('getDefaultProps', () => {
 			it('should use a mixin', () => {
 				const Foo = createClass({
-					mixins: [
-						{ getDefaultProps: () => ({ a: true }) }
-					],
+					mixins: [{ getDefaultProps: () => ({ a: true }) }],
 					render() {
-						return <div></div>;
-					}
+						return <div />;
+					},
 				});
 
-				expect(Foo.defaultProps).to.eql({
-					a: true
+				expect(Foo.defaultProps).toEqual({
+					a: true,
 				});
 			});
 
 			it('should combine the results', () => {
 				const Foo = createClass({
-					mixins: [
-						{ getDefaultProps: () => ({ a: true }) },
-						{ getDefaultProps: () => ({ b: true }) }
-					],
+					mixins: [{ getDefaultProps: () => ({ a: true }) }, { getDefaultProps: () => ({ b: true }) }],
 					getDefaultProps() {
 						return { c: true };
 					},
 					render() {
 						return <div />;
-					}
+					},
 				});
 
-				expect(Foo.defaultProps).to.eql({
+				expect(Foo.defaultProps).toEqual({
 					a: true,
 					b: true,
-					c: true
+					c: true,
 				});
 			});
 
 			it('should throw an error for duplicate keys', () => {
-				expect(() => createClass({
-					mixins: [
-						{ getDefaultProps: () => ({ a: true }) }
-					],
-					getDefaultProps() {
-						return { a: true };
-					},
-					render() {
-						return <div />;
-					}
-				})).to.throw(Error);
+				expect(() =>
+					createClass({
+						mixins: [{ getDefaultProps: () => ({ a: true }) }],
+						getDefaultProps() {
+							return { a: true };
+						},
+						render() {
+							return <div />;
+						},
+					}),
+				).toThrowError(Error);
 			});
 		});
 
 		describe('getInitialState', () => {
 			it('should combine the results', () => {
 				const Foo = createClass({
-					mixins: [
-						{ getInitialState: () => ({ a: true }) },
-						{ getInitialState: () => ({ b: true }) }
-					],
+					mixins: [{ getInitialState: () => ({ a: true }) }, { getInitialState: () => ({ b: true }) }],
 					getInitialState() {
 						return { c: true };
 					},
 					render() {
 						return <div />;
-					}
+					},
 				});
 
 				let a;
-				render(<Foo ref={function (i) {
-					a = i;
-				}}/>, container);
+				render(
+					<Foo
+						ref={function(i) {
+							a = i;
+						}}
+					/>,
+					container,
+				);
 
-				expect(a.state).to.eql({
+				expect(a.state).toEqual({
 					a: true,
 					b: true,
-					c: true
+					c: true,
 				});
 			});
 
 			it('should throw an error for duplicate keys', () => {
 				const Foo = createClass({
-					mixins: [
-						{ getInitialState: () => ({ a: true }) }
-					],
+					mixins: [{ getInitialState: () => ({ a: true }) }],
 					getInitialState() {
 						return { a: true };
 					},
 					render() {
 						return <div />;
-					}
+					},
 				});
 
 				expect(() => {
 					render(<Foo />, container);
-				}).to.throw();
+				}).toThrowError();
 			});
 		});
 	});
@@ -193,13 +196,13 @@ describe('Components createClass (JSX)', () => {
 			const App = createClass({
 				getDefaultProps() {
 					return {
-						wrapContext: false
+						wrapContext: false,
 					};
 				},
 
 				getChildContext() {
 					return {
-						foo: 'bar baz'
+						foo: 'bar baz',
 					};
 				},
 
@@ -207,7 +210,7 @@ describe('Components createClass (JSX)', () => {
 					const newChildren = [];
 
 					for (let i = 0; i < children.length; i++) {
-						newChildren.push(<Page {...children[ i ].props} />);
+						newChildren.push(<Page {...children[i].props} />);
 					}
 
 					return newChildren;
@@ -227,29 +230,29 @@ describe('Components createClass (JSX)', () => {
 							{children}
 						</div>
 					);
-				}
+				},
 			});
 
 			const Page = createClass({
 				getInitialState() {
 					return {
-						foo: this.context.foo
+						foo: this.context.foo,
 					};
 				},
 				render() {
 					return <div>{this.props.greeting} {this.state.foo}</div>;
-				}
+				},
 			});
 
 			render(
-				(
-					<App wrapContext={true}>
-						<Page greeting="Hello"/>
-						<Page greeting="Hai"/>
-					</App>
-				), container);
+				<App wrapContext={true}>
+					<Page greeting="Hello" />
+					<Page greeting="Hai" />
+				</App>,
+				container,
+			);
 
-			expect(container.innerHTML).to.eql(innerHTML('<div><div>Hello bar baz</div><div>Hai bar baz</div></div>'));
+			expect(container.innerHTML).toEqual(innerHTML('<div><div>Hello bar baz</div><div>Hai bar baz</div></div>'));
 		});
 	});
 });

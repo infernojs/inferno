@@ -1,4 +1,3 @@
-
 import { internal_normalize as normalize } from 'inferno';
 
 describe('normalizeProps', () => {
@@ -10,16 +9,15 @@ describe('normalizeProps', () => {
 			flags: 0,
 			key: null,
 			props: {
-				ref: () => {
-				}
+				ref: () => {},
 			},
 			ref: null,
-			type: null
+			type: null,
 		};
 
 		normalize(vNode);
 
-		expect(vNode.props).to.not.have.property('ref');
+		expect(vNode.props).not.toHaveProperty('ref');
 	});
 
 	it('should delete key from props', () => {
@@ -31,11 +29,11 @@ describe('normalizeProps', () => {
 			key: null,
 			props: { key: 'key' },
 			ref: null,
-			type: null
+			type: null,
 		};
 
 		normalize(vNode);
 
-		expect(vNode.props).to.not.have.property('key');
+		expect(vNode.props).not.toHaveProperty('key');
 	});
 });

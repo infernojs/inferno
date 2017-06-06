@@ -12,36 +12,21 @@ notifications:
 sudo: required
 dist: trusty
 
-env:
-  - CXX=g++-4.8
 addons:
-  firefox: "latest"
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
-
-addons:
-  at:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
-      - google-chrome-beta
-
-before_install:
-  - "nvm use $TRAVIS_NODE_VERSION"
-  # Repo for newer Node.js versions
-  - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-
-script:
-  - npm test
-  - npm run test:package
+  chrome: stable
+  firefox: "latest"  
 
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 
-after_script:
-  - npm run test:publish
+script:
+  - npm run lint
+  - ./scripts/travis/test.sh
+
+jobs:
+  include:
+    - stage: Build
+      script:
+        - npm run build
+        - npm run test:fixtures:package

@@ -1,3 +1,7 @@
+/**
+ * @module Inferno
+ */ /** TypeDoc Comment */
+
 import {
 	isBrowser,
 	isInvalid,
@@ -7,7 +11,7 @@ import {
 	LifecycleClass,
 	NO_OP,
 	throwError,
-	warning
+	warning,
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options, Root } from '../core/options';
@@ -31,7 +35,9 @@ const roots = options.roots;
 export function findDOMNode(ref) {
 	if (!options.findDOMNodeEnabled) {
 		if (process.env.NODE_ENV !== 'production') {
-			throwError('findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!');
+			throwError(
+				'findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!',
+			);
 		}
 		throwError();
 	}
@@ -42,7 +48,7 @@ export function findDOMNode(ref) {
 
 function getRoot(dom): Root | null {
 	for (let i = 0, len = roots.length; i < len; i++) {
-		const root = roots[ i ];
+		const root = roots[i];
 
 		if (root.dom === dom) {
 			return root;
@@ -55,7 +61,7 @@ function setRoot(dom: Element | SVGAElement, input: InfernoInput, lifecycle: Lif
 	const root: Root = {
 		dom,
 		input,
-		lifecycle
+		lifecycle,
 	};
 
 	roots.push(root);
@@ -64,7 +70,7 @@ function setRoot(dom: Element | SVGAElement, input: InfernoInput, lifecycle: Lif
 
 function removeRoot(root: Root): void {
 	for (let i = 0, len = roots.length; i < len; i++) {
-		if (roots[ i ] === root) {
+		if (roots[i] === root) {
 			roots.splice(i, 1);
 			return;
 		}
@@ -73,7 +79,9 @@ function removeRoot(root: Root): void {
 
 if (process.env.NODE_ENV !== 'production') {
 	if (isBrowser && document.body === null) {
-		warning('Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.');
+		warning(
+			'Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.',
+		);
 	}
 }
 
@@ -84,7 +92,10 @@ const documentBody = isBrowser ? document.body : null;
  * @param parentDom DOM node which content will be replaced by virtual node
  * @returns {InfernoChildren} rendered virtual node
  */
-export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | null | HTMLElement | Node): InfernoChildren {
+export function render(
+	input: InfernoInput,
+	parentDom: Element | SVGAElement | DocumentFragment | null | HTMLElement | Node,
+): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -128,7 +139,7 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
 	if (root) {
 		const rootInput: VNode = root.input as VNode;
 
-		if (rootInput && (rootInput.flags & VNodeFlags.Component)) {
+		if (rootInput && rootInput.flags & VNodeFlags.Component) {
 			return rootInput.children;
 		}
 	}

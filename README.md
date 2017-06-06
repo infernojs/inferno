@@ -99,7 +99,7 @@ Inferno.render(
 
 ### More Examples
 
-- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/wt5vL603/)
+- [**Simple Clock** (@JSFiddle)](https://jsfiddle.net/wqxuags2/)
 
 ## Getting Started
 
@@ -126,10 +126,14 @@ npm install --save inferno-router
 
 Pre-bundled files for browser consumption can be found on [our cdnjs](https://cdnjs.com/libraries/inferno):
 
+```
+https://cdnjs.cloudflare.com/ajax/libs/inferno/3.0.5/inferno.min.js
+```
+
 Or on unpkg.com:
 
 ```
-https://unpkg.com/inferno@latest/dist/inferno.min.js
+https://unpkg.com/inferno@3.0.5/dist/inferno.min.js
 ```
 
 ### Creating Virtual DOM
@@ -236,20 +240,20 @@ Warning: If the container element is not empty before rendering, the content of 
 
 ### `createRenderer` (package: `inferno`)
 
-`createRenderer` creates an alternative render function with a signature matching that of the first argument passed to a reduce/scan function. This allows for easier integration with reactive programming libraries, like [RxJS](https://github.com/ReactiveX/rxjs) and [Most](https://github.com/cujojs/most).
+`createRenderer` allows for functional composition when rendering content to the DOM. Example:
 
 ```javascript
 import Inferno from 'inferno';
 import { scan, map } from 'most';
 
-const renderer = Inferno.createRenderer();
-
 ...
-// NOTE: vNodes$ represents a stream of virtual DOM node updates
-scan(renderer, document.getElementById("app"), vNodes$);
-```
+const model$ = scan(update, 0, actions$);
+const vNodes$ = map(view(actions$), model$);
+const renderer = Inferno.createRenderer();
+const runApp = () => scan(renderer, container, vNodes$).drain();
 
-See [inferno-most-fp-demo](https://github.com/joshburgess/inferno-most-fp-demo) for an example of how to build an app architecture around this.
+runApp();
+```
 
 ### `createElement` (package: `inferno-create-element`)
 

@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Test-Utils
+ */ /** TypeDoc Comment */
+
 import { VNode } from 'inferno';
 import { isArray, isNull, isObject, isString } from 'inferno-shared';
 import { getTagNameOfVNode, isDOMVNode, renderIntoDocument } from './index';
@@ -9,7 +13,7 @@ import { getTagNameOfVNode, isDOMVNode, renderIntoDocument } from './index';
 
 function createSnapshotObject(object: object) {
 	Object.defineProperty(object, '$$typeof', {
-		value: Symbol.for('react.test.json')
+		value: Symbol.for('react.test.json'),
 	});
 
 	return object;
@@ -23,7 +27,7 @@ export function vNodeToSnapshot(node: VNode) {
 		const props = { ...node.props };
 
 		// Remove undefined props
-		Object.keys(props).forEach((propKey) => {
+		Object.keys(props).forEach(propKey => {
 			if (props[propKey] === undefined) {
 				delete props[propKey];
 			}
@@ -32,12 +36,12 @@ export function vNodeToSnapshot(node: VNode) {
 		// Create the actual object that Jest will interpret as the snapshot for this VNode
 		object = createSnapshotObject({
 			props,
-			type: getTagNameOfVNode(node)
+			type: getTagNameOfVNode(node),
 		});
 	}
 
 	if (isArray(node.children)) {
-		node.children.forEach((child) => {
+		node.children.forEach(child => {
 			const asJSON = vNodeToSnapshot(child as VNode);
 			if (asJSON) {
 				children.push(asJSON);
@@ -81,5 +85,5 @@ export function renderToSnapshot(input: VNode) {
 export default {
 	createSnapshotObject,
 	renderToSnapshot,
-	vNodeToSnapshot
+	vNodeToSnapshot,
 };

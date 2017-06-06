@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Router
+ */ /** TypeDoc Comment */
+
 import { createVNode, VNode } from 'inferno';
 import { combineFrom, isBrowser, warning } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
@@ -25,7 +29,9 @@ export default function Link(props, { router }): VNode {
 		return renderLink(classNm, children, otherProps);
 	}
 
-	otherProps.href = isBrowser ? router.createHref({ pathname: to }) : router.location.baseUrl ? router.location.baseUrl + to : to;
+	otherProps.href = isBrowser
+		? router.createHref({ pathname: to })
+		: router.location.baseUrl ? router.location.baseUrl + to : to;
 
 	if (router.location.pathname === to) {
 		if (activeClassName) {

@@ -1,16 +1,16 @@
-import { renderToString } from '../dist-es';
+import { renderToString } from 'inferno-server';
 import { render } from 'inferno';
 
 import createElement from 'inferno-create-element';
-import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno/test/utils';
+import { createContainerWithHTML, innerHTML, validateNodeTree } from 'inferno-utils';
 
 describe('SSR Hydration - (non-JSX)', () => {
 	[
 		{
 			node: createElement('div', null, createElement('span', null, 'Hello world')),
 			expect1: '<div><span>Hello world</span></div>',
-			expect2: '<div><span>Hello world</span></div>'
-		}
+			expect2: '<div><span>Hello world</span></div>',
+		},
 		// {
 		// 	node: <div>{ <span>Hello world</span> }</div>,
 		// 	expect1: '<div data-infernoroot=""><span>Hello world</span></div>',
@@ -72,16 +72,16 @@ describe('SSR Hydration - (non-JSX)', () => {
 		// 	expect2: '<div><em>Works <span>again</span>!</em></div>'
 		// }
 	].forEach(({ node, expect1, expect2 }, i) => {
-		it(`Validate various structures #${ (i + 1) }`, () => {
+		it(`Validate various structures #${i + 1}`, () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
-			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect1));
+			expect(innerHTML(container.innerHTML)).toBe(innerHTML(expect1));
 			render(node, container);
-			expect(validateNodeTree(node)).to.equal(true);
-			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
+			expect(validateNodeTree(node)).toBe(true);
+			expect(innerHTML(container.innerHTML)).toBe(innerHTML(expect2));
 			render(node, container);
-			expect(innerHTML(container.innerHTML)).to.equal(innerHTML(expect2));
+			expect(innerHTML(container.innerHTML)).toBe(innerHTML(expect2));
 		});
 	});
 });

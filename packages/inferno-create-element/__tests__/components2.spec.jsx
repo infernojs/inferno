@@ -1,6 +1,5 @@
-
 import Component from 'inferno-component';
-import { innerHTML } from 'inferno/test/utils';
+import { innerHTML } from 'inferno-utils';
 import { render } from 'inferno';
 
 /* These must be in their own files for test to reproduce */
@@ -13,8 +12,7 @@ describe('Components (JSX) #2', () => {
 	let attachedListener = null;
 	let renderedName = null;
 
-	beforeEach(function () {
-
+	beforeEach(function() {
 		attachedListener = null;
 		renderedName = null;
 
@@ -26,12 +24,12 @@ describe('Components (JSX) #2', () => {
 			render() {
 				attachedListener = this.props.onClick;
 				renderedName = this.props.name;
-				return <div className={this.props.name}/>;
+				return <div className={this.props.name} />;
 			}
 		};
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		document.body.removeChild(container);
 	});
@@ -52,11 +50,11 @@ describe('Components (JSX) #2', () => {
 		class ComponentBWithStateChange extends Component {
 			componentWillMount() {
 				this.setStateSync({
-					text: 'newText'
+					text: 'newText',
 				});
 
 				this.setStateSync({
-					text: 'newText2'
+					text: 'newText2',
 				});
 			}
 
@@ -75,41 +73,41 @@ describe('Components (JSX) #2', () => {
 
 		it('patching component A to component B, given they have the same children, should replace DOM tree ( for lifecycle ) with identical one', () => {
 			render(<ComponentA />, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div><span>Something</span></div>'));
 			const trackElemDiv = container.firstChild;
 			const trackElemSpan = container.firstChild.firstChild;
 
 			render(<ComponentB />, container);
 			// These are same but not equal
-			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
-			expect(container.firstChild === trackElemDiv).to.equal(false);
-			expect(container.firstChild.firstChild === trackElemSpan).to.equal(false);
+			expect(container.innerHTML).toBe(innerHTML('<div><span>Something</span></div>'));
+			expect(container.firstChild === trackElemDiv).toBe(false);
+			expect(container.firstChild.firstChild === trackElemSpan).toBe(false);
 		});
 
 		it('patching component A to component B, given they have the same children, should not change the DOM tree when stateless components', () => {
 			render(<ComA />, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div><span>Something</span></div>'));
 			const trackElemDiv = container.firstChild;
 			const trackElemSpan = container.firstChild.firstChild;
 
 			render(<ComB />, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div><span>Something</span></div>'));
 
-			expect(container.firstChild === trackElemDiv).to.equal(false);
-			expect(container.firstChild.firstChild === trackElemSpan).to.equal(false);
+			expect(container.firstChild === trackElemDiv).toBe(false);
+			expect(container.firstChild.firstChild === trackElemSpan).toBe(false);
 		});
 
 		it('Should not crash when ComB does setState while changing', () => {
 			render(<ComponentA />, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div><span>Something</span></div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div><span>Something</span></div>'));
 			const trackElemDiv = container.firstChild;
 			const trackElemSpan = container.firstChild.firstChild;
 
 			render(<ComponentBWithStateChange />, container);
 			// These are same but not equal
-			expect(container.innerHTML).to.equal(innerHTML('<div><span>newText2</span></div>'));
-			expect(container.firstChild === trackElemDiv).to.equal(false);
-			expect(container.firstChild.firstChild === trackElemSpan).to.equal(false);
+			expect(container.innerHTML).toBe(innerHTML('<div><span>newText2</span></div>'));
+			expect(container.firstChild === trackElemDiv).toBe(false);
+			expect(container.firstChild.firstChild === trackElemSpan).toBe(false);
 		});
 	});
 
@@ -125,13 +123,13 @@ describe('Components (JSX) #2', () => {
 
 			_update() {
 				this.setStateSync({
-					data: 'bar'
+					data: 'bar',
 				});
 			}
 
 			componentWillMount() {
 				this.setStateSync({
-					data: 'foo'
+					data: 'foo',
 				});
 			}
 
@@ -149,7 +147,7 @@ describe('Components (JSX) #2', () => {
 			render() {
 				return (
 					<div>
-						<Child name={this.foo}/>
+						<Child name={this.foo} />
 					</div>
 				);
 			}
@@ -172,14 +170,14 @@ describe('Components (JSX) #2', () => {
 		}
 
 		// For some reason this one breaks but if components are imported separately, it works
-		it('Should not reuse children if parent changes #1', (done) => {
+		it('Should not reuse children if parent changes #1', done => {
 			render(<ParentFirst />, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
 			setTimeout(() => {
-				expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div><div>Firstbar</div></div>'));
 				render(<ParentSecond />, container);
-				expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div><div>Secondfoo</div></div>'));
 				done();
 			}, 10);
 		});
@@ -195,13 +193,13 @@ describe('Components (JSX) #2', () => {
 
 			_update() {
 				this.setStateSync({
-					data: 'bar'
+					data: 'bar',
 				});
 			}
 
 			componentWillMount() {
 				this.setStateSync({
-					data: 'foo'
+					data: 'foo',
 				});
 			}
 
@@ -225,11 +223,10 @@ describe('Components (JSX) #2', () => {
 			render() {
 				return (
 					<div>
-						<Child name={this.foo}/>
+						<Child name={this.foo} />
 					</div>
 				);
 			}
-
 		}
 
 		class ParentSecond extends Component {
@@ -242,35 +239,35 @@ describe('Components (JSX) #2', () => {
 			render() {
 				return (
 					<div>
-						<Child name={this.foo}/>
+						<Child name={this.foo} />
 					</div>
 				);
 			}
 		}
 
 		// For some reason this one breaks but if components are imported separately, it works
-		it('Should not reuse children if parent changes #2', (done) => {
+		it('Should not reuse children if parent changes #2', done => {
 			render(<ParentFirst />, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
 			setTimeout(() => {
-				expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div><div>Firstbar</div></div>'));
 				render(<ParentSecond />, container);
-				expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div><div>Secondfoo</div></div>'));
 				done();
 			}, 10);
 		});
 	});
 
 	describe('Inheritance with 1 component per file Common BASE', () => {
-		it('Should not reuse children if parent changes #3', (done) => {
+		it('Should not reuse children if parent changes #3', done => {
 			render(<ParentFirstCommon />, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
 			setTimeout(() => {
-				expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstbar</div></div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div><div>Firstbar</div></div>'));
 				render(<ParentSecondCommon />, container);
-				expect(container.innerHTML).to.equal(innerHTML('<div><div>Secondfoo</div></div>'));
+				expect(container.innerHTML).toBe(innerHTML('<div><div>Secondfoo</div></div>'));
 				done();
 			}, 10);
 		});
@@ -281,7 +278,7 @@ describe('Components (JSX) #2', () => {
 		it('Should render a string div', () => {
 			const Div = 'div';
 			render(<Div>Hello World</Div>, container);
-			expect(container.innerHTML).to.equal(innerHTML('<div>Hello World</div>'));
+			expect(container.innerHTML).toBe(innerHTML('<div>Hello World</div>'));
 		});
 	});
 
@@ -292,18 +289,18 @@ describe('Components (JSX) #2', () => {
 			}
 
 			static defaultProps = {
-				foo: 'bar'
+				foo: 'bar',
 			};
 		}
 
 		it('should render the component with a key', () => {
 			let val = '1';
 
-			render(<Comp key={ val }/>, container);
-			expect(container.innerHTML).to.equal(innerHTML('bar'));
+			render(<Comp key={val} />, container);
+			expect(container.innerHTML).toBe(innerHTML('bar'));
 			val = 2;
-			render(<Comp key={ val }/>, container);
-			expect(container.innerHTML).to.equal(innerHTML('bar'));
+			render(<Comp key={val} />, container);
+			expect(container.innerHTML).toBe(innerHTML('bar'));
 		});
 	});
 });

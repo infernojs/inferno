@@ -1,6 +1,6 @@
 {
   "name": "inferno",
-  "version": "3.4.1",
+  "version": "4.0.0",
   "license": "MIT",
   "description": "An extremely fast, React-like JavaScript library for building modern user interfaces",
   "author": {
@@ -37,7 +37,7 @@
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
-    "inferno-shared": "3.1.1",
-    "inferno-vnode-flags": "^3.0.0"
+    "inferno-shared": "^4.0.0",
+    "inferno-vnode-flags": "^4.0.0"
   }
 }

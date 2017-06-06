@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Server
+ */ /** TypeDoc Comment */
+
 import { combineFrom, isArray, isInvalid, isNullOrUndef, isStringOrNumber, isUndefined } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { Readable } from 'stream';
@@ -23,13 +27,16 @@ export class RenderStream extends Readable {
 		}
 		this.started = true;
 
-		resolvedPromise.then(() => {
-			return this.renderNode(this.initNode, null, this.staticMarkup);
-		}).then(() => {
-			this.push(null);
-		}).catch((err) => {
-			this.emit('error', err);
-		});
+		resolvedPromise
+			.then(() => {
+				return this.renderNode(this.initNode, null, this.staticMarkup);
+			})
+			.then(() => {
+				this.push(null);
+			})
+			.catch(err => {
+				this.emit('error', err);
+			});
 	}
 
 	public renderNode(vNode, context, isRoot) {
@@ -93,7 +100,7 @@ export class RenderStream extends Readable {
 			throw new Error('invalid component');
 		}
 		return children.reduce((p, child) => {
-			return p.then((insertComment) => {
+			return p.then(insertComment => {
 				const isText = isStringOrNumber(child);
 
 				if (isText) {
@@ -124,7 +131,7 @@ export class RenderStream extends Readable {
 	}
 
 	public renderText(vNode, isRoot, context) {
-		return resolvedPromise.then((insertComment) => {
+		return resolvedPromise.then(insertComment => {
 			this.push(vNode.children);
 			return insertComment;
 		});

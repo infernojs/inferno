@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Redux
+ */ /** TypeDoc Comment */
+
 // From https://github.com/lodash/lodash/blob/es
 function overArg(func, transform) {
 	return function(arg) {
@@ -29,6 +33,5 @@ export function isPlainObject(value) {
 		return true;
 	}
 	const Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
-	return (typeof Ctor === 'function' &&
-	Ctor instanceof Ctor && funcToString.call(Ctor) === objectCtorString);
+	return typeof Ctor === 'function' && Ctor instanceof Ctor && funcToString.call(Ctor) === objectCtorString;
 }

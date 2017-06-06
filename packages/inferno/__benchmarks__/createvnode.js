@@ -1,5 +1,5 @@
-import { createTextVNode, createVNode } from '../dist-es/core/VNodes';
-import { render } from '../dist-es/index';
+import { createTextVNode, createVNode } from 'inferno/core/VNodes';
+import { render } from 'inferno/index';
 
 suite('createVNode', () => {
 	/* Do not compare results between each other, these only measure OPS / sec for different structures */

@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Redux
+ */ /** TypeDoc Comment */
+
 import hoistStatics from 'hoist-non-inferno-statics';
 import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
@@ -14,31 +18,31 @@ export type MapDispatchToPropsFunction = (dispatch: (action: any) => void, props
 export type MapDispatchToPropsFactory = (dispatch: (action: any) => void, props?: {}) => MapDispatchToPropsFunction;
 
 export type MapDispatchToProps =
-	MapDispatchToPropsFunction
+	| MapDispatchToPropsFunction
 	| { [index: string]: MapDispatchToPropsFunction }
 	| MapDispatchToPropsFactory;
 
 const errorObject = { value: null };
-const defaultMapStateToProps = (state) => ({}); // eslint-disable-line no-unused-vars
-const defaultMapDispatchToProps = (dispatch) => ({ dispatch });
+const defaultMapStateToProps = state => ({}); // eslint-disable-line no-unused-vars
+const defaultMapDispatchToProps = dispatch => ({ dispatch });
 const defaultMergeProps = function(stateProps, dispatchProps, parentProps) {
 	const obj = {};
 
 	if (parentProps) {
 		for (const key in parentProps) {
-			obj[ key ] = parentProps[ key ];
+			obj[key] = parentProps[key];
 		}
 	}
 
 	if (stateProps) {
 		for (const key in stateProps) {
-			obj[ key ] = stateProps[ key ];
+			obj[key] = stateProps[key];
 		}
 	}
 
 	if (dispatchProps) {
 		for (const key in dispatchProps) {
-			obj[ key ] = dispatchProps[ key ];
+			obj[key] = dispatchProps[key];
 		}
 	}
 
@@ -48,7 +52,7 @@ const defaultMergeProps = function(stateProps, dispatchProps, parentProps) {
 function tryCatch(fn, ctx) {
 	try {
 		return fn.apply(ctx);
-	} catch ( e ) {
+	} catch (e) {
 		errorObject.value = e;
 		return errorObject;
 	}
@@ -61,7 +65,12 @@ function getDisplayName(WrappedComponent) {
 // Helps track hot reloading.
 let nextVersion = 0;
 
-export default function connect(mapStateToProps?: MapStateToProps, mapDispatchToProps?: MapDispatchToProps, mergeProps?, options: any = {}): WrapWithConnect {
+export default function connect(
+	mapStateToProps?: MapStateToProps,
+	mapDispatchToProps?: MapDispatchToProps,
+	mergeProps?,
+	options: any = {},
+): WrapWithConnect {
 	const shouldSubscribe = Boolean(mapStateToProps);
 	const mapState = mapStateToProps || defaultMapStateToProps;
 	let mapDispatch;
@@ -84,10 +93,7 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 
 		function checkStateShape(props, methodName) {
 			if (!isPlainObject(props)) {
-				warning(
-					`${methodName}() in ${connectDisplayName} must return a plain object. ` +
-					`Instead received ${props}.`
-				);
+				warning(`${methodName}() in ${connectDisplayName} must return a plain object. ` + `Instead received ${props}.`);
 			}
 		}
 
@@ -127,10 +133,12 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				this.store = (props && props.store) || (context && context.store);
 
 				if (!this.store) {
-					throwError('Could not find "store" in either the context or ' +
-						`props of "${connectDisplayName}". ` +
-						'Either wrap the root component in a <Provider>, ' +
-						`or explicitly pass "store" as a prop to "${connectDisplayName}".`);
+					throwError(
+						'Could not find "store" in either the context or ' +
+							`props of "${connectDisplayName}". ` +
+							'Either wrap the root component in a <Provider>, ' +
+							`or explicitly pass "store" as a prop to "${connectDisplayName}".`,
+					);
 				}
 
 				const storeState = this.store.getState();
@@ -151,9 +159,9 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 					return this.configureFinalMapState(store, props);
 				}
 				const state = store.getState();
-				const stateProps = this.doStatePropsDependOnOwnProps ?
-					this.finalMapStateToProps(state, props) :
-					this.finalMapStateToProps(state);
+				const stateProps = this.doStatePropsDependOnOwnProps
+					? this.finalMapStateToProps(state, props)
+					: this.finalMapStateToProps(state);
 
 				return stateProps;
 			}
@@ -175,9 +183,9 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 					return this.configureFinalMapDispatch(store, props);
 				}
 				const { dispatch } = store;
-				return this.doDispatchPropsDependOnOwnProps ?
-					this.finalMapDispatchToProps(dispatch, props) :
-					this.finalMapDispatchToProps(dispatch);
+				return this.doDispatchPropsDependOnOwnProps
+					? this.finalMapDispatchToProps(dispatch, props)
+					: this.finalMapDispatchToProps(dispatch);
 			}
 
 			public configureFinalMapDispatch(store, props) {
@@ -299,7 +307,7 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 					hasStoreStateChanged,
 					haveStatePropsBeenPrecalculated,
 					statePropsPrecalculationError,
-					renderedElement
+					renderedElement,
 				} = this;
 
 				this.haveOwnPropsChanged = false;
@@ -314,11 +322,8 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				let shouldUpdateDispatchProps = true;
 
 				if (pure && renderedElement) {
-					shouldUpdateStateProps = hasStoreStateChanged || (
-							haveOwnPropsChanged && this.doStatePropsDependOnOwnProps
-						);
-					shouldUpdateDispatchProps =
-						haveOwnPropsChanged && this.doDispatchPropsDependOnOwnProps;
+					shouldUpdateStateProps = hasStoreStateChanged || (haveOwnPropsChanged && this.doStatePropsDependOnOwnProps);
+					shouldUpdateDispatchProps = haveOwnPropsChanged && this.doDispatchPropsDependOnOwnProps;
 				}
 				let haveStatePropsChanged = false;
 				let haveDispatchPropsChanged = false;
@@ -333,11 +338,7 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 				}
 				let haveMergedPropsChanged = true;
 
-				if (
-					haveStatePropsChanged ||
-					haveDispatchPropsChanged ||
-					haveOwnPropsChanged
-				) {
+				if (haveStatePropsChanged || haveDispatchPropsChanged || haveOwnPropsChanged) {
 					haveMergedPropsChanged = this.updateMergedPropsIfNeeded();
 				} else {
 					haveMergedPropsChanged = false;
@@ -347,13 +348,12 @@ export default function connect(mapStateToProps?: MapStateToProps, mapDispatchTo
 					return renderedElement;
 				}
 				if (withRef) {
-					this.renderedElement = createElement(WrappedComponent,
-						combineFrom(this.mergedProps, { ref: (instance) => this.wrappedInstance = instance })
+					this.renderedElement = createElement(
+						WrappedComponent,
+						combineFrom(this.mergedProps, { ref: instance => (this.wrappedInstance = instance) }),
 					);
 				} else {
-					this.renderedElement = createElement(WrappedComponent,
-						this.mergedProps
-					);
+					this.renderedElement = createElement(WrappedComponent, this.mergedProps);
 				}
 				return this.renderedElement;
 			}

@@ -1,5 +1,4 @@
-
-import { trackComponents } from '../dist-es/makeReactive';
+import { trackComponents } from 'inferno-mobx/makeReactive';
 
 describe('MobX trackComponents()', () => {
 	const _WeakMap = WeakMap;
@@ -7,13 +6,13 @@ describe('MobX trackComponents()', () => {
 	it('should throw if WeakMap is undefined', () => {
 		// eslint-disable-next-line
 		WeakMap = undefined;
-		expect(trackComponents).to.throw(Error);
+		expect(trackComponents).toThrowError(Error);
 	});
 
 	it('should run', () => {
 		// eslint-disable-next-line
 		WeakMap = _WeakMap;
 		trackComponents();
-		expect(trackComponents).to.not.throw(Error);
+		expect(trackComponents).not.toThrowError(Error);
 	});
 });

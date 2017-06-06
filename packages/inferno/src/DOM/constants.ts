@@ -1,3 +1,7 @@
+/**
+ * @module Inferno
+ */ /** TypeDoc Comment */
+
 export const xlinkNS = 'http://www.w3.org/1999/xlink';
 export const xmlNS = 'http://www.w3.org/XML/1998/namespace';
 export const svgNS = 'http://www.w3.org/2000/svg';
@@ -27,17 +31,17 @@ booleanProps.add('hidden');
 booleanProps.add('autoFocus');
 booleanProps.add('selected');
 
-export const namespaces  = new Map<string, string>();
-namespaces.set( 'xlink:href', xlinkNS);
-namespaces.set( 'xlink:arcrole', xlinkNS);
-namespaces.set( 'xlink:actuate', xlinkNS);
-namespaces.set( 'xlink:show', xlinkNS);
-namespaces.set( 'xlink:role', xlinkNS);
-namespaces.set( 'xlink:title', xlinkNS);
-namespaces.set( 'xlink:type', xlinkNS);
-namespaces.set( 'xml:base', xmlNS);
-namespaces.set( 'xml:lang', xmlNS);
-namespaces.set( 'xml:space', xmlNS);
+export const namespaces = new Map<string, string>();
+namespaces.set('xlink:href', xlinkNS);
+namespaces.set('xlink:arcrole', xlinkNS);
+namespaces.set('xlink:actuate', xlinkNS);
+namespaces.set('xlink:show', xlinkNS);
+namespaces.set('xlink:role', xlinkNS);
+namespaces.set('xlink:title', xlinkNS);
+namespaces.set('xlink:type', xlinkNS);
+namespaces.set('xml:base', xmlNS);
+namespaces.set('xml:lang', xmlNS);
+namespaces.set('xml:space', xmlNS);
 
 export const isUnitlessNumber = new Set<string>();
 isUnitlessNumber.add('animationIterationCount');

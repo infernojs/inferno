@@ -1,3 +1,7 @@
+/**
+ * @module Inferno-Router
+ */ /** TypeDoc Comment */
+
 import Component from 'inferno-component';
 import { IRouterProps } from './Router';
 
@@ -16,9 +20,9 @@ export default class RouterContext extends Component<IRouterProps, any> {
 			router: this.props.router || {
 				location: {
 					baseUrl: this.props.baseUrl,
-					pathname: this.props.location
-				}
-			}
+					pathname: this.props.location,
+				},
+			},
 		};
 	}
 

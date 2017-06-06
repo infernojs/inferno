@@ -1,0 +1,31 @@
+{
+  "name": "inferno-test-browser",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "karma start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-loader": "^7.0.0",
+    "babel-polyfill": "^6.23.0",
+    "es5-shim": "^4.5.9",
+    "es6-shim": "^0.35.3",
+    "jasmine-core": "^2.6.2",
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.1.1",
+    "karma-detect-browsers": "^2.2.5",
+    "karma-failed-reporter": "0.0.3",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-safaritechpreview-launcher": "0.0.5",
+    "karma-webpack": "^2.0.3",
+    "ts-loader": "^2.1.0"
+  }
+}
