@@ -1,4 +1,3 @@
-
 import { createRenderer } from 'inferno';
 import curry from 'lodash/curry';
 import { map, reduce, scan } from 'most';
@@ -8,34 +7,38 @@ import Type from 'union-type-es';
 describe('Functional methods (JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 	});
 
-	it('A basic example', (done) => {
+	it('A basic example', done => {
 		// Update
 		// eslint-disable-next-line new-cap
 		const Action = Type({ Increment: [], Decrement: [] });
 
-		const update = (model, action) => Action.case({
-			Increment: (_) => model + 1,
-			Decrement: (_) => model - 1
-		}, action);
+		const update = (model, action) =>
+			Action.case(
+				{
+					Increment: _ => model + 1,
+					Decrement: _ => model - 1,
+				},
+				action,
+			);
 
 		const actions$ = hold(1, sync());
 
-		const emitAction = (action) => actions$.next(action);
+		const emitAction = action => actions$.next(action);
 		// eslint-disable-next-line new-cap
-		const emitDecrement = (_) => emitAction(Action.Decrement());
+		const emitDecrement = _ => emitAction(Action.Decrement());
 		// eslint-disable-next-line new-cap
-		const emitIncrement = (_) => emitAction(Action.Increment());
+		const emitIncrement = _ => emitAction(Action.Increment());
 
 		// View
 		const countStyle = {
 			fontSize: '48px',
 			fontFamily: 'monospace',
 			width: '100%',
-			textAlign: 'center'
+			textAlign: 'center',
 		};
 
 		// noinspection TypeScriptUnresolvedFunction
@@ -44,7 +47,8 @@ describe('Functional methods (JSX)', () => {
 				<button id="decrement" onClick={emitDecrement}>-</button>
 				<div style={countStyle}>{model}</div>
 				<button id="increment" onClick={emitIncrement}>+</button>
-			</div>);
+			</div>,
+		);
 
 		// FRP
 		const model$ = scan(update, 0, actions$);
@@ -74,11 +78,11 @@ describe('Functional methods (JSX)', () => {
 			expect(outerDiv.style.textAlign).to.eql('center');
 			expect(outerDiv.tagName).to.eql('DIV');
 
-			const firstButton = outerDiv.childNodes[ 0 ];
+			const firstButton = outerDiv.childNodes[0];
 			expect(firstButton.getAttribute('id')).to.eql('decrement');
 			expect(firstButton.innerHTML).to.eql('-');
 
-			const midDiv = outerDiv.childNodes[ 1 ];
+			const midDiv = outerDiv.childNodes[1];
 			expect(midDiv.style.fontSize).to.eql('48px');
 			expect(midDiv.style.fontFamily).to.eql('monospace');
 			expect(midDiv.style.width).to.eql('100%');
@@ -86,7 +90,7 @@ describe('Functional methods (JSX)', () => {
 			expect(midDiv.tagName).to.eql('DIV');
 			expect(midDiv.innerHTML).to.eql('0');
 
-			const secondButton = outerDiv.childNodes[ 2 ];
+			const secondButton = outerDiv.childNodes[2];
 			expect(secondButton.getAttribute('id')).to.eql('increment');
 			expect(secondButton.innerHTML).to.eql('+');
 			done();

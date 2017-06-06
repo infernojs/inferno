@@ -7,7 +7,7 @@ function findVNodeFromDom(vNode, dom) {
 		const roots = options.roots;
 
 		for (let i = 0, len = roots.length; i < len; i++) {
-			const root = roots[ i ];
+			const root = roots[i];
 			const result = findVNodeFromDom(root.input, dom);
 
 			if (result) {
@@ -27,7 +27,7 @@ function findVNodeFromDom(vNode, dom) {
 		if (children) {
 			if (isArray(children)) {
 				for (let i = 0, len = children.length; i < len; i++) {
-					const child = children[ i ];
+					const child = children[i];
 
 					if (child) {
 						const result = findVNodeFromDom(child, dom);
@@ -100,7 +100,7 @@ export function createDevToolsBridge() {
 			const vNode = findVNodeFromDom(null, dom);
 
 			return vNode ? updateReactComponent(vNode, null) : null;
-		}
+		},
 	};
 
 	// Map of root ID (the ID is unimportant) to component instance.
@@ -111,7 +111,7 @@ export function createDevToolsBridge() {
 	const Mount = {
 		_instancesByReactRootID: roots,
 		// tslint:disable-next-line:no-empty
-		_renderNewRootComponent(instance?) {}
+		_renderNewRootComponent(instance?) {},
 	};
 
 	const Reconciler = {
@@ -122,7 +122,7 @@ export function createDevToolsBridge() {
 		// tslint:disable-next-line:no-empty
 		receiveComponent(instance?) {},
 		// tslint:disable-next-line:no-empty
-		unmountComponent(instance?) {}
+		unmountComponent(instance?) {},
 	};
 
 	const queuedMountComponents = new Map();
@@ -139,19 +139,21 @@ export function createDevToolsBridge() {
 		}
 	};
 
-	const queueMountComponent = (component) => queueUpdate(Reconciler.mountComponent, queuedMountComponents, component);
-	const queueReceiveComponent = (component) => queueUpdate(Reconciler.receiveComponent, queuedReceiveComponents, component);
-	const queueUnmountComponent = (component) => queueUpdate(Reconciler.unmountComponent, queuedUnmountComponents, component);
+	const queueMountComponent = component => queueUpdate(Reconciler.mountComponent, queuedMountComponents, component);
+	const queueReceiveComponent = component =>
+		queueUpdate(Reconciler.receiveComponent, queuedReceiveComponents, component);
+	const queueUnmountComponent = component =>
+		queueUpdate(Reconciler.unmountComponent, queuedUnmountComponents, component);
 
 	/** Notify devtools that a new component instance has been mounted into the DOM. */
-	const componentAdded = (vNode) => {
+	const componentAdded = vNode => {
 		const instance = updateReactComponent(vNode, null);
 		if (isRootVNode(vNode)) {
 			instance._rootID = nextRootKey(roots);
-			roots[ instance._rootID ] = instance;
+			roots[instance._rootID] = instance;
 			Mount._renderNewRootComponent(instance);
 		}
-		visitNonCompositeChildren(instance, (childInst) => {
+		visitNonCompositeChildren(instance, childInst => {
 			if (childInst) {
 				childInst._inDevTools = true;
 				queueMountComponent(childInst);
@@ -161,10 +163,10 @@ export function createDevToolsBridge() {
 	};
 
 	/** Notify devtools that a component has been updated with new props/state. */
-	const componentUpdated = (vNode) => {
+	const componentUpdated = vNode => {
 		const prevRenderedChildren: any[] = [];
 
-		visitNonCompositeChildren(getInstanceFromVNode(vNode), (childInst) => {
+		visitNonCompositeChildren(getInstanceFromVNode(vNode), childInst => {
 			prevRenderedChildren.push(childInst);
 		});
 
@@ -172,7 +174,7 @@ export function createDevToolsBridge() {
 		// children
 		const instance = updateReactComponent(vNode, null);
 		queueReceiveComponent(instance);
-		visitNonCompositeChildren(instance, (childInst) => {
+		visitNonCompositeChildren(instance, childInst => {
 			if (!childInst._inDevTools) {
 				// New DOM child component
 				childInst._inDevTools = true;
@@ -186,7 +188,7 @@ export function createDevToolsBridge() {
 		// For any non-composite children that were removed by the latest render,
 		// remove the corresponding ReactDOMComponent-like instances and notify
 		// the devtools
-		prevRenderedChildren.forEach((childInst) => {
+		prevRenderedChildren.forEach(childInst => {
 			if (!document.body.contains(childInst.node)) {
 				deleteInstanceForVNode(childInst.vNode);
 				queueUnmountComponent(childInst);
@@ -195,17 +197,17 @@ export function createDevToolsBridge() {
 	};
 
 	/** Notify devtools that a component has been unmounted from the DOM. */
-	const componentRemoved = (vNode) => {
+	const componentRemoved = vNode => {
 		const instance = updateReactComponent(vNode, null);
 
-		visitNonCompositeChildren((childInst) => {
+		visitNonCompositeChildren(childInst => {
 			deleteInstanceForVNode(childInst.vNode);
 			queueUnmountComponent(childInst);
 		});
 		queueUnmountComponent(instance);
 		deleteInstanceForVNode(vNode);
 		if (instance._rootID) {
-			delete roots[ instance._rootID ];
+			delete roots[instance._rootID];
 		}
 	};
 
@@ -216,13 +218,13 @@ export function createDevToolsBridge() {
 
 		componentAdded,
 		componentRemoved,
-		componentUpdated
+		componentUpdated,
 	};
 }
 
 function isRootVNode(vNode) {
 	for (let i = 0, len = options.roots.length; i < len; i++) {
-		const root = options.roots[ i ];
+		const root = options.roots[i];
 
 		if (root.input === vNode) {
 			return true;
@@ -250,14 +252,13 @@ function updateReactComponent(vNode, parentDom) {
 
 	if (oldInstance) {
 		for (const key in newInstance) {
-			oldInstance[ key ] = newInstance[ key ];
+			oldInstance[key] = newInstance[key];
 		}
 
 		return oldInstance;
 	}
 	createInstanceFromVNode(vNode, newInstance);
 	return newInstance;
-
 }
 
 function isInvalidChild(child) {
@@ -266,11 +267,9 @@ function isInvalidChild(child) {
 
 function normalizeChildren(children, dom) {
 	if (isArray(children)) {
-		return children.filter((child) => !isInvalidChild(child)).map((child) =>
-			updateReactComponent(child, dom)
-		);
+		return children.filter(child => !isInvalidChild(child)).map(child => updateReactComponent(child, dom));
 	} else {
-		return !(isInvalidChild(children) || children === '') ? [ updateReactComponent(children, dom) ] : [];
+		return !(isInvalidChild(children) || children === '') ? [updateReactComponent(children, dom)] : [];
 	}
 }
 
@@ -292,23 +291,25 @@ function createReactDOMComponent(vNode, parentDom) {
 	const children = vNode.children === 0 ? vNode.children.toString() : vNode.children;
 	const props = vNode.props;
 	const dom = vNode.dom;
-	const isText = (flags & VNodeFlags.Text) || isStringOrNumber(vNode);
+	const isText = flags & VNodeFlags.Text || isStringOrNumber(vNode);
 
 	return {
-		_currentElement: isText ? (children || vNode) : {
-			props,
-			type
-		},
+		_currentElement: isText
+			? children || vNode
+			: {
+					props,
+					type,
+				},
 		_inDevTools: false,
 		_renderedChildren: !isText && normalizeChildren(children, dom),
 		_stringText: isText ? (children || vNode).toString() : null,
 		node: dom || parentDom,
-		vNode
+		vNode,
 	};
 }
 
 function normalizeKey(key) {
-	if (key && key[ 0 ] === '.') {
+	if (key && key[0] === '.') {
 		return null;
 	}
 }
@@ -334,7 +335,7 @@ function createReactCompositeComponent(vNode) {
 			key: normalizeKey(vNode.key),
 			props: vNode.props,
 			ref: null,
-			type
+			type,
 		},
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
@@ -346,7 +347,7 @@ function createReactCompositeComponent(vNode) {
 		props: instance.props,
 		setState: instance.setState.bind(instance),
 		state: instance.state,
-		vNode
+		vNode,
 	};
 
 	const forceInstanceUpdate = instance.forceUpdate.bind(instance); // Save off for use below.
@@ -356,7 +357,7 @@ function createReactCompositeComponent(vNode) {
 			// These are the regular Inferno props.
 			instance.props,
 			// This is what gets updated by the React devtools when props are edited.
-			compositeComponent._currentElement.props
+			compositeComponent._currentElement.props,
 		);
 
 		instance.props = newProps;
@@ -383,7 +384,7 @@ function visitNonCompositeChildren(component, visitor?) {
 			visitNonCompositeChildren(component._renderedComponent, visitor);
 		}
 	} else if (component._renderedChildren) {
-		component._renderedChildren.forEach((child) => {
+		component._renderedChildren.forEach(child => {
 			if (child) {
 				visitor(child);
 				if (!child._component) {
@@ -409,7 +410,7 @@ function typeName(type) {
  * and add them to the `roots` map.
  */
 function findRoots(roots) {
-	options.roots.forEach((root) => {
-		roots[ nextRootKey(roots) ] = updateReactComponent(root.input, null);
+	options.roots.forEach(root => {
+		roots[nextRootKey(roots)] = updateReactComponent(root.input, null);
 	});
 }

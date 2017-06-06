@@ -16,9 +16,9 @@ export default class RouterContext extends Component<IRouterProps, any> {
 			router: this.props.router || {
 				location: {
 					baseUrl: this.props.baseUrl,
-					pathname: this.props.location
-				}
-			}
+					pathname: this.props.location,
+				},
+			},
 		};
 	}
 

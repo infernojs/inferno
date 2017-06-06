@@ -1,4 +1,3 @@
-
 import { render } from 'inferno';
 import Component from 'inferno-component';
 import { innerHTML } from 'inferno/test/utils';
@@ -6,12 +5,12 @@ import { innerHTML } from 'inferno/test/utils';
 describe('Error recovery', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -23,10 +22,9 @@ describe('Error recovery', () => {
 				super(props, context);
 
 				this.state = {
-					value: 1
+					value: 1,
 				};
 			}
-
 
 			componentWillMount() {
 				if (this.props.crash) {
@@ -34,24 +32,22 @@ describe('Error recovery', () => {
 				}
 
 				this.setState({
-					value: 2
+					value: 2,
 				});
 			}
 
 			render() {
-				return (
-					<div>{this.state.value}</div>
-				);
+				return <div>{this.state.value}</div>;
 			}
 		}
 
 		try {
-			render(<Crasher crash={true}/>, container);
+			render(<Crasher crash={true} />, container);
 		} catch (ex) {
 			expect(ex.message).to.equal('test');
 		}
 
-		render(<Crasher crash={false}/>, container);
+		render(<Crasher crash={false} />, container);
 		expect(container.firstChild.innerHTML).to.equal('2');
 	});
 
@@ -61,10 +57,9 @@ describe('Error recovery', () => {
 				super(props, context);
 
 				this.state = {
-					value: 1
+					value: 1,
 				};
 			}
-
 
 			componentWillUnmount() {
 				if (this.props.crash) {
@@ -73,13 +68,11 @@ describe('Error recovery', () => {
 			}
 
 			render() {
-				return (
-					<div>{this.state.value}</div>
-				);
+				return <div>{this.state.value}</div>;
 			}
 		}
 
-		render(<Crasher crash={true}/>, container);
+		render(<Crasher crash={true} />, container);
 
 		expect(container.firstChild.innerHTML).to.equal('1');
 
@@ -93,7 +86,7 @@ describe('Error recovery', () => {
 		expect(container.firstChild.innerHTML).to.equal('1');
 
 		// Try update
-		render(<Crasher crash={false}/>, container);
+		render(<Crasher crash={false} />, container);
 
 		expect(container.firstChild.innerHTML).to.equal('1');
 

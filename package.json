@@ -68,6 +68,7 @@
     "karma-webpack": "2.0.3",
     "lerna": "^2.0.0-rc.5",
     "lerna-changelog": "^0.5.0",
+    "lint-staged": "^3.6.0",
     "lodash": "^4.17.4",
     "merge-source-map": "^1.0.3",
     "mkdirp": "^0.5.1",
@@ -81,6 +82,7 @@
     "object.entries": "^1.0.4",
     "optimize-js": "^1.0.3",
     "pre-commit": "^1.2.2",
+    "prettier": "^1.4.2",
     "progress": "^2.0.0",
     "redux": "^3.6.0",
     "rimraf": "^2.6.1",
@@ -177,11 +179,15 @@
     "lint:ts": "tslint packages/*/src/*.ts packages/*/src/**/*.ts",
     "lint:jts": "eslint packages/inferno/src/*.ts packages/inferno-compat/src/*.ts packages/inferno-create-element/src/*.ts packages/inferno-hyperscript/src/*.ts packages/inferno-router/src/*.ts packages/inferno-shared/src/*.ts packages/inferno-vnode-flags/src/*.ts packages/inferno-server/src/*.ts packages/inferno-mobx/src/*.ts --config test/lint/letter-only-props.js --no-eslintrc",
     "lint": "npm run lint:ts && npm run lint:js",
+    "lint-staged": "lint-staged",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
     "postinstall": "lerna bootstrap && lerna exec --no-sort --concurrency 1 -- node ../../bin/link",
-    "prepublish": "npm run build",
     "pretest:bench": "karma start test/karma/karma.bench.conf.js --log-level debug",
+    "prettier": "npm-run-all --parallel prettier:**",
+    "prettier:packages:js": "./scripts/tasks/prettier.sh packages/*/{src,__tests__}/**/*.{js,jsx} packages/*/{src,__tests__}/*.{js,jsx}",
+    "prettier:packages:ts": "./scripts/tasks/prettier.sh --parser=typescript packages/*/{src,__tests__}/**/*.{ts,tsx} packages/*/{src,__tests__}/*.{ts,tsx}",
+    "prettier:fixtures": "./scripts/tasks/prettier.sh fixtures/**/*.{js,jsx}",
     "test:bench": "node test/karma/bench.js",
     "test:browser": "karma start test/karma/karma.unit.conf.js --log-level debug",
     "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
@@ -196,8 +202,27 @@
     "karma": "karma",
     "mocha": "mocha"
   },
+  "lint-staged": {
+    "*.js": [
+      "./scripts/tasks/prettier.sh",
+      "git add"
+    ],
+    "*.ts": [
+      "./scripts/tasks/prettier.sh",
+      "git add"
+    ],
+    "*.jsx": [
+      "./scripts/tasks/prettier.sh",
+      "git add"
+    ],
+    "*.tsx": [
+      "./scripts/tasks/prettier.sh",
+      "git add"
+    ]
+  },
   "pre-commit": [
+    "lint-staged",
     "lint",
-    "test"
+    "test:quick"
   ]
 }

@@ -9,7 +9,7 @@ import {
 	isEmpty,
 	mapSearchParams,
 	pathRankSort,
-	toPartialURL
+	toPartialURL,
 } from './utils';
 
 const cache: Map<string, IMatchRegex> = new Map();
@@ -35,15 +35,14 @@ export default function match(routes, currentURL: any) {
  * @returns {object}
  */
 function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = false) {
-
 	const routes = isArray(_routes) ? flatten(_routes) : toArray(_routes);
-	const [ pathToMatch = '/', search = '' ] = currentURL.split('?');
+	const [pathToMatch = '/', search = ''] = currentURL.split('?');
 	const params = mapSearchParams(search);
 
 	routes.sort(pathRankSort);
 
 	for (let i = 0, len = routes.length; i < len; i++) {
-		const route = routes[ i ];
+		const route = routes[i];
 		const props = route.props || emptyObject;
 		const routePath = props.from || props.path || '/';
 		const location = parentPath + toPartialURL(routePath, parentPath).replace(/\/\//g, '/');
@@ -62,13 +61,13 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = fal
 					if (matchChild.redirect) {
 						return {
 							location,
-							redirect: matchChild.redirect
+							redirect: matchChild.redirect,
 						};
 					}
 					children = matchChild.matched;
 					const childProps = children.props.params;
 					for (const key in childProps) {
-						params[ key ] = childProps[ key ];
+						params[key] = childProps[key];
 					}
 				} else {
 					children = null;
@@ -77,13 +76,13 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = fal
 
 			const matched = Inferno.cloneVNode(route, {
 				children,
-				params: combineFrom(params, matchBase.params)
+				params: combineFrom(params, matchBase.params),
 			});
 
 			return {
 				location,
 				matched,
-				redirect
+				redirect,
 			};
 		}
 	}
@@ -103,7 +102,7 @@ interface IMatchRegex {
  */
 export function matchPath(end: boolean, routePath: string, pathToMatch: string): any {
 	const key = `${routePath}|${end}`;
-	let regexp: IMatchRegex|undefined = cache.get(key);
+	let regexp: IMatchRegex | undefined = cache.get(key);
 
 	if (regexp === void 0) {
 		const keys = [];
@@ -117,15 +116,15 @@ export function matchPath(end: boolean, routePath: string, pathToMatch: string):
 		return null;
 	}
 
-	const path: string = m[ 0 ];
+	const path: string = m[0];
 	const params = Object.create(null);
 
 	for (let i = 1, len = m.length; i < len; i += 1) {
-		params[ regexp.keys[ i - 1 ].name ] = decode(m[ i ]);
+		params[regexp.keys[i - 1].name] = decode(m[i]);
 	}
 
 	return {
 		params,
-		path: path === '' ? '/' : path
+		path: path === '' ? '/' : path,
 	};
 }

@@ -1,79 +1,74 @@
-
 import { render } from 'inferno';
 
 function styleNode(style) {
-	return <div style={ style }></div>;
+	return <div style={style} />;
 }
 
 describe('CSS style properties (JSX)', () => {
-
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
 	});
 
 	it('should set and remove dynamic styles', () => {
-
 		const styles = { display: 'none', fontFamily: 'Arial', lineHeight: 1.2 };
 
-		render(<div style={ styles }/>, container);
+		render(<div style={styles} />, container);
 		expect(container.firstChild.style.fontFamily).to.equal('Arial');
 		expect(container.firstChild.style.lineHeight).to.equal('1.2');
 
 		render(<div />, container);
 		expect(container.firstChild.style.fontFamily).to.equal('');
 		expect(container.firstChild.style.lineHeight).to.equal('');
-
 	});
 
 	it('should update styles if initially null', () => {
-
 		let styles = null;
-		render(<div style={ styles }/>, container);
+		render(<div style={styles} />, container);
 
 		styles = { display: 'block' };
 
-		render(<div style={ styles }/>, container);
+		render(<div style={styles} />, container);
 		expect(container.firstChild.style.display).to.equal('block');
 	});
 
 	it('should update styles if updated to null multiple times', () => {
 		let styles = null;
 
-		render(<div style={ undefined }/>, container);
+		render(<div style={undefined} />, container);
 
-		render(<div style={ styles }/>, container);
+		render(<div style={styles} />, container);
 		expect(container.firstChild.style.display).to.equal('');
 
 		styles = { display: 'block' };
 
-		render(<div style={ styles }/>, container);
+		render(<div style={styles} />, container);
 		expect(container.firstChild.style.display).to.equal('block');
 
-		render(<div style={ null }/>, container);
+		render(<div style={null} />, container);
 		expect(container.firstChild.style.display).to.equal('');
 
-		render(<div style={ styles }/>, container);
+		render(<div style={styles} />, container);
 		expect(container.firstChild.style.display).to.equal('block');
 
-		render(<div style={ null }/>, container);
+		render(<div style={null} />, container);
 		expect(container.firstChild.style.display).to.equal('');
 	});
 
 	it('should update styles when `style` changes from null to object', () => {
 		const styles = { color: 'red' };
-		render(<div style={ 123 }/>, container);
-		render(<div style={ styles }/>, container);
+		render(<div style={123} />, container);
+		render(<div style={styles} />, container);
 		render(<div />, container);
-		render(<div style={ styles }/>, container);
+		render(<div style={styles} />, container);
 
 		const stubStyle = container.firstChild.style;
 		expect(stubStyle.color).to.equal('red');
@@ -81,9 +76,9 @@ describe('CSS style properties (JSX)', () => {
 
 	it('should support different unit types - em and mm', () => {
 		const styles = { height: '200em', width: '20mm' };
-		render(<div style={ styles }/>, container);
+		render(<div style={styles} />, container);
 		render(<div />, container);
-		render(<div style={ styles }/>, container);
+		render(<div style={styles} />, container);
 
 		const stubStyle = container.firstChild.style;
 		expect(stubStyle.height).to.equal('200em');
@@ -92,7 +87,7 @@ describe('CSS style properties (JSX)', () => {
 
 	it('should clear all the styles when removing `style`', () => {
 		const styles = { display: 'none', color: 'red' };
-		render(<div style={ styles }/>, container);
+		render(<div style={styles} />, container);
 
 		const stubStyle = container.firstChild.style;
 		expect(stubStyle.display).to.equal('none');

@@ -13,7 +13,7 @@ interface Pools {
 
 export function recycleElement(vNode: VNode, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	const tag = vNode.type as string | null;
-	const pools: Pools|undefined = elementPools.get(tag);
+	const pools: Pools | undefined = elementPools.get(tag);
 
 	if (!isUndefined(pools)) {
 		const key = vNode.key;
@@ -34,12 +34,12 @@ export function recycleElement(vNode: VNode, lifecycle: LifecycleClass, context:
 export function poolElement(vNode: VNode) {
 	const tag = vNode.type as string | null;
 	const key = vNode.key;
-	let pools: Pools|undefined = elementPools.get(tag);
+	let pools: Pools | undefined = elementPools.get(tag);
 
 	if (isUndefined(pools)) {
 		pools = {
 			keyed: new Map<string | number, VNode[]>(),
-			nonKeyed: []
+			nonKeyed: [],
 		};
 		elementPools.set(tag, pools);
 	}
@@ -58,7 +58,7 @@ export function poolElement(vNode: VNode) {
 
 export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
 	const type = vNode.type as Function;
-	const pools: Pools|undefined = componentPools.get(type);
+	const pools: Pools | undefined = componentPools.get(type);
 
 	if (!isUndefined(pools)) {
 		const key = vNode.key;
@@ -77,7 +77,7 @@ export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, contex
 					context,
 					isSVG,
 					(flags & VNodeFlags.ComponentClass) > 0,
-					true
+					true,
 				);
 
 				if (!failed) {
@@ -91,24 +91,24 @@ export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, contex
 
 export function poolComponent(vNode: VNode) {
 	const hooks = vNode.ref as Refs;
-	const nonRecycleHooks = hooks && (
-			hooks.onComponentWillMount ||
+	const nonRecycleHooks =
+		hooks &&
+		(hooks.onComponentWillMount ||
 			hooks.onComponentWillUnmount ||
 			hooks.onComponentDidMount ||
 			hooks.onComponentWillUpdate ||
-			hooks.onComponentDidUpdate
-		);
+			hooks.onComponentDidUpdate);
 	if (nonRecycleHooks) {
 		return;
 	}
 	const type = vNode.type;
 	const key = vNode.key;
-	let pools: Pools|undefined = componentPools.get(type as Function);
+	let pools: Pools | undefined = componentPools.get(type as Function);
 
 	if (isUndefined(pools)) {
 		pools = {
 			keyed: new Map<string | number, VNode[]>(),
-			nonKeyed: []
+			nonKeyed: [],
 		};
 		componentPools.set(type as Function, pools);
 	}

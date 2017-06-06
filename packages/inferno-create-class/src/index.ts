@@ -54,8 +54,8 @@ AUTOBIND_BLACKLIST.add('componentDidUnmount');
 
 function extend(base, props) {
 	for (const key in props) {
-		if (!isNullOrUndef(props[ key ])) {
-			base[ key ] = props[ key ];
+		if (!isNullOrUndef(props[key])) {
+			base[key] = props[key];
 		}
 	}
 	return base;
@@ -63,16 +63,16 @@ function extend(base, props) {
 
 function bindAll<P, S>(ctx: Component<P, S>) {
 	for (const i in ctx) {
-		const v = ctx[ i ];
+		const v = ctx[i];
 		if (typeof v === 'function' && !v.__bound && !AUTOBIND_BLACKLIST.has(i)) {
-			(ctx[ i ] = v.bind(ctx)).__bound = true;
+			(ctx[i] = v.bind(ctx)).__bound = true;
 		}
 	}
 }
 
 function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 	for (let i = 0, len = mixins.length; i < len; i++) {
-		const mixin = mixins[ i ];
+		const mixin = mixins[i];
 
 		// Surprise: Mixins can have mixins
 		if (mixin.mixins) {
@@ -81,8 +81,8 @@ function collateMixins(mixins: Function[] | any[], keyed = {}): any {
 		}
 
 		for (const key in mixin as Function[]) {
-			if (mixin.hasOwnProperty(key) && typeof mixin[ key ] === 'function') {
-				(keyed[ key ] || (keyed[ key ] = [])).push(mixin[ key ]);
+			if (mixin.hasOwnProperty(key) && typeof mixin[key] === 'function') {
+				(keyed[key] || (keyed[key] = [])).push(mixin[key]);
 			}
 		}
 	}
@@ -94,7 +94,7 @@ function multihook(hooks: Function[], mergeFn?: Function): any {
 		let ret;
 
 		for (let i = 0, len = hooks.length; i < len; i++) {
-			const hook = hooks[ i ];
+			const hook = hooks[i];
 			const r = hook.apply(this, arguments);
 
 			if (mergeFn) {
@@ -124,7 +124,7 @@ function mergeNoDupes(previous: any, current: any) {
 					throwError(`Mixins return duplicate key ${key} in their return values`);
 				}
 
-				previous[ key ] = current[ key ];
+				previous[key] = current[key];
 			}
 		}
 	}
@@ -132,19 +132,19 @@ function mergeNoDupes(previous: any, current: any) {
 }
 
 function applyMixin<P, S>(key: string, inst: Component<P, S>, mixin: Function[]): void {
-	const hooks = isUndefined(inst[ key ]) ? mixin : mixin.concat(inst[ key ]);
+	const hooks = isUndefined(inst[key]) ? mixin : mixin.concat(inst[key]);
 
 	if (key === 'getDefaultProps' || key === 'getInitialState' || key === 'getChildContext') {
-		inst[ key ] = multihook(hooks, mergeNoDupes);
+		inst[key] = multihook(hooks, mergeNoDupes);
 	} else {
-		inst[ key ] = multihook(hooks);
+		inst[key] = multihook(hooks);
 	}
 }
 
 function applyMixins(Cl: any, mixins: Function[] | any[]) {
 	for (const key in mixins) {
 		if (mixins.hasOwnProperty(key)) {
-			const mixin = mixins[ key ];
+			const mixin = mixins[key];
 
 			let inst;
 
@@ -154,10 +154,10 @@ function applyMixins(Cl: any, mixins: Function[] | any[]) {
 				inst = Cl.prototype;
 			}
 
-			if (isFunction(mixin[ 0 ])) {
+			if (isFunction(mixin[0])) {
 				applyMixin(key, inst, mixin);
 			} else {
-				inst[ key ] = mixin;
+				inst[key] = mixin;
 			}
 		}
 	}

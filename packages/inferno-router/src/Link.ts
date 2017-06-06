@@ -25,7 +25,9 @@ export default function Link(props, { router }): VNode {
 		return renderLink(classNm, children, otherProps);
 	}
 
-	otherProps.href = isBrowser ? router.createHref({ pathname: to }) : router.location.baseUrl ? router.location.baseUrl + to : to;
+	otherProps.href = isBrowser
+		? router.createHref({ pathname: to })
+		: router.location.baseUrl ? router.location.baseUrl + to : to;
 
 	if (router.location.pathname === to) {
 		if (activeClassName) {

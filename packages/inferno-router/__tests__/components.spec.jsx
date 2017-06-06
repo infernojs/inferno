@@ -1,4 +1,3 @@
-
 import { assert, spy } from 'sinon';
 import createMemoryHistory from 'history/createMemoryHistory';
 import { render } from 'inferno';
@@ -7,17 +6,19 @@ import { IndexLink, IndexRoute, Link, Route, Router } from '../dist-es';
 const browserHistory = createMemoryHistory();
 
 function TestComponent() {
-	return <div>
-		<Link to={'/test'}>Link</Link>
-		<IndexLink>IndexLink</IndexLink>
-	</div>;
+	return (
+		<div>
+			<Link to={'/test'}>Link</Link>
+			<IndexLink>IndexLink</IndexLink>
+		</div>
+	);
 }
 
 function createRoutes(component) {
 	return (
-		<Router history={ browserHistory }>
-			<IndexRoute component={ () => component }/>
-			<Route path={'/test'} component={ () => <div>Good</div> }/>
+		<Router history={browserHistory}>
+			<IndexRoute component={() => component} />
+			<Route path={'/test'} component={() => <div>Good</div>} />
 		</Router>
 	);
 }
@@ -29,70 +30,85 @@ function showChildren({ children }) {
 describe('Router (jsx)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		browserHistory.push('/');
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		document.body.removeChild(container);
 	});
 
 	describe('#Link', () => {
 		it('should render with all possible props', () => {
-			render(createRoutes(
-				<Link to="/" activeClassName="linkActiveClass" className="linkClass" style={{ color: 'red' }}
-							activeStyle={{ fontWeight: 'bold' }} title="TestTitle" data-test="DataTest">Link</Link>
-			), container);
+			render(
+				createRoutes(
+					<Link
+						to="/"
+						activeClassName="linkActiveClass"
+						className="linkClass"
+						style={{ color: 'red' }}
+						activeStyle={{ fontWeight: 'bold' }}
+						title="TestTitle"
+						data-test="DataTest"
+					>
+						Link
+					</Link>,
+				),
+				container,
+			);
 
-			expect(
-				innerHTML(container.innerHTML)
-			).to.equal(
-				innerHTML('<a class="linkClass linkActiveClass" href="/" style="color: red; font-weight: bold;" title="TestTitle" data-test="DataTest">Link</a>')
+			expect(innerHTML(container.innerHTML)).to.equal(
+				innerHTML(
+					'<a class="linkClass linkActiveClass" href="/" style="color: red; font-weight: bold;" title="TestTitle" data-test="DataTest">Link</a>',
+				),
 			);
 		});
 
 		it('should render without active class and style when not the active location', () => {
-			render(createRoutes(
-				<Link to="/notactive" activeClassName="linkActiveClass" className="linkClass" style={{ color: 'red' }}
-							activeStyle={{ fontWeight: 'bold' }}>Link</Link>
-			), container);
+			render(
+				createRoutes(
+					<Link
+						to="/notactive"
+						activeClassName="linkActiveClass"
+						className="linkClass"
+						style={{ color: 'red' }}
+						activeStyle={{ fontWeight: 'bold' }}
+					>
+						Link
+					</Link>,
+				),
+				container,
+			);
 
-			expect(
-				innerHTML(container.innerHTML)
-			).to.equal(
-				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>')
+			expect(innerHTML(container.innerHTML)).to.equal(
+				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>'),
 			);
 		});
 
 		it('should render base class and style when active class and style are not defined', () => {
-			render(createRoutes(
-				<Link to="/notactive" className="linkClass" style={{ color: 'red' }}>Link</Link>
-			), container);
+			render(createRoutes(<Link to="/notactive" className="linkClass" style={{ color: 'red' }}>Link</Link>), container);
 
-			expect(
-				innerHTML(container.innerHTML)
-			).to.equal(
-				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>')
+			expect(innerHTML(container.innerHTML)).to.equal(
+				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>'),
 			);
 		});
 
 		it('should render active class and style even when base class is not defined', () => {
-			render(createRoutes(
-				<Link to="/" activeClassName="linkActiveClass" activeStyle={{ fontWeight: 'bold' }}>Link</Link>
-			), container);
+			render(
+				createRoutes(<Link to="/" activeClassName="linkActiveClass" activeStyle={{ fontWeight: 'bold' }}>Link</Link>),
+				container,
+			);
 
-			expect(
-				innerHTML(container.innerHTML)
-			).to.equal(
-				innerHTML('<a class="linkActiveClass" href="/" style="font-weight: bold;">Link</a>')
+			expect(innerHTML(container.innerHTML)).to.equal(
+				innerHTML('<a class="linkActiveClass" href="/" style="font-weight: bold;">Link</a>'),
 			);
 		});
 
-		it('should route on click', (done) => {
-			render(createRoutes(<TestComponent/>), container);
+		it('should route on click', done => {
+			render(createRoutes(<TestComponent />), container);
 
 			expect(container.innerHTML).to.equal(innerHTML('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>'));
 
@@ -107,21 +123,17 @@ describe('Router (jsx)', () => {
 
 		it('should call onClick handler when clicked', () => {
 			const obj = {
-				fn() {
-				}
+				fn() {},
 			};
 			const sinonSpy = spy(obj, 'fn');
 
-			render(createRoutes(
-				<Link to="/" onClick={obj.fn}>Link</Link>
-			), container);
+			render(createRoutes(<Link to="/" onClick={obj.fn}>Link</Link>), container);
 
 			const link = container.querySelector('a[href="/"]');
 			link.onclick({
 				button: 0,
-				preventDefault() {
-				},
-				target: {}
+				preventDefault() {},
+				target: {},
 			});
 
 			const calledOnce = assert.calledOnce;
@@ -130,21 +142,17 @@ describe('Router (jsx)', () => {
 
 		it('should not call onClick handler when right clicked', () => {
 			const obj = {
-				fn() {
-				}
+				fn() {},
 			};
 			const sinonSpy = spy(obj, 'fn');
 
-			render(createRoutes(
-				<Link to="/" onClick={obj.fn}>Link</Link>
-			), container);
+			render(createRoutes(<Link to="/" onClick={obj.fn}>Link</Link>), container);
 
 			const link = container.querySelector('a[href="/"]');
 			link.onclick({
 				button: 2,
-				preventDefault() {
-				},
-				target: {}
+				preventDefault() {},
+				target: {},
 			});
 
 			const notCalled = assert.notCalled;
@@ -164,22 +172,28 @@ describe('Router (jsx)', () => {
 
 	describe('#IndexLink', () => {
 		it('should render with all possible props', () => {
-			render(createRoutes(
-				<IndexLink activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>IndexLink</IndexLink>
-			), container);
+			render(
+				createRoutes(
+					<IndexLink activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>
+						IndexLink
+					</IndexLink>,
+				),
+				container,
+			);
 
-			expect(
-				innerHTML(container.innerHTML)
-			).to.equal(
-				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">IndexLink</a>')
+			expect(innerHTML(container.innerHTML)).to.equal(
+				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">IndexLink</a>'),
 			);
 		});
 
-		it('should route on click', (done) => {
-			render(<Router url={ '/test' } history={ browserHistory }>
-				<IndexRoute component={ () => <div>Good</div> }/>
-				<Route path={'/test'} component={ () => <TestComponent/> }/>
-			</Router>, container);
+		it('should route on click', done => {
+			render(
+				<Router url={'/test'} history={browserHistory}>
+					<IndexRoute component={() => <div>Good</div>} />
+					<Route path={'/test'} component={() => <TestComponent />} />
+				</Router>,
+				container,
+			);
 
 			expect(container.innerHTML).to.equal(innerHTML('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>'));
 
@@ -194,14 +208,15 @@ describe('Router (jsx)', () => {
 	});
 
 	describe('#Route', () => {
-		it('should call onEnter when switching route through a click', (done) => {
+		it('should call onEnter when switching route through a click', done => {
 			const callbackSpy = sinon.spy();
 
 			render(
-				<Router url={ '/test' } history={ browserHistory }>
-					<IndexRoute component={ () => <div>Good</div> } onEnter={ callbackSpy }/>
-					<Route path={'/test'} component={ () => <TestComponent/> }/>
-				</Router>, container
+				<Router url={'/test'} history={browserHistory}>
+					<IndexRoute component={() => <div>Good</div>} onEnter={callbackSpy} />
+					<Route path={'/test'} component={() => <TestComponent />} />
+				</Router>,
+				container,
 			);
 
 			const link = container.querySelector('a[href="/"]');
@@ -213,17 +228,21 @@ describe('Router (jsx)', () => {
 			});
 		});
 
-		it('shouldn\'t call onEnter if already on the page the href points to', (done) => {
+		it("shouldn't call onEnter if already on the page the href points to", done => {
 			const callbackSpy = sinon.spy();
 			render(
-				<Router url={ '/test' } history={ browserHistory }>
-					<IndexRoute component={ () => <div>Good</div> }/>
-					<Route path={ '/test' } component={ () => <TestComponent/> } onEnter={ () => {
-						callbackSpy();
-					} }/>
-				</Router>, container
+				<Router url={'/test'} history={browserHistory}>
+					<IndexRoute component={() => <div>Good</div>} />
+					<Route
+						path={'/test'}
+						component={() => <TestComponent />}
+						onEnter={() => {
+							callbackSpy();
+						}}
+					/>
+				</Router>,
+				container,
 			);
-
 
 			requestAnimationFrame(() => {
 				// onEnter should have been called the first time we enter the component
@@ -239,31 +258,29 @@ describe('Router (jsx)', () => {
 			});
 		});
 
-		it('should pass props and context through onEnter when switching route', (done) => {
+		it('should pass props and context through onEnter when switching route', done => {
 			const callback = sinon.spy();
 
 			render(
-				<Router url={ '/test' } history={ browserHistory }>
-					<IndexRoute component={ () => <div>Good</div> }
-											onEnter={ callback }
-											className="test-class"
-					/>
-					<Route path={'/test'} component={ () => <TestComponent/> }/>
-				</Router>, container
+				<Router url={'/test'} history={browserHistory}>
+					<IndexRoute component={() => <div>Good</div>} onEnter={callback} className="test-class" />
+					<Route path={'/test'} component={() => <TestComponent />} />
+				</Router>,
+				container,
 			);
 
 			const link = container.querySelector('a[href="/"]');
 			clickOnLink(link);
 
 			requestAnimationFrame(() => {
-				const context = callback.getCall(0).args[ 0 ];
+				const context = callback.getCall(0).args[0];
 				expect(context.props.className).to.equal('test-class');
 				expect(context.router.url).to.equal('/');
 				done();
 			});
 		});
 
-		it('should call getComponent when switching route after click', (done) => {
+		it('should call getComponent when switching route after click', done => {
 			const callback = (context, cb) => {
 				cb(null, () => <div>...</div>);
 			};
@@ -271,12 +288,13 @@ describe('Router (jsx)', () => {
 			const spy = sinon.spy(callback);
 
 			render(
-				<Router url={ '/test' } history={ browserHistory }>
-					<Route component={ showChildren }>
-						<IndexRoute getComponent={ spy }/>
-						<Route path={'/test'} component={ () => <TestComponent/> }/>
+				<Router url={'/test'} history={browserHistory}>
+					<Route component={showChildren}>
+						<IndexRoute getComponent={spy} />
+						<Route path={'/test'} component={() => <TestComponent />} />
 					</Route>
-				</Router>, container
+				</Router>,
+				container,
 			);
 
 			requestAnimationFrame(() => {
@@ -284,14 +302,14 @@ describe('Router (jsx)', () => {
 				clickOnLink(link);
 				requestAnimationFrame(() => {
 					expect(spy.callCount).to.equal(1);
-					expect(spy.getCall(0).args[ 0 ].props.path).to.equal('/');
-					expect(spy.getCall(0).args[ 0 ].router.url).to.equal('/');
+					expect(spy.getCall(0).args[0].props.path).to.equal('/');
+					expect(spy.getCall(0).args[0].router.url).to.equal('/');
 					done();
 				});
 			});
 		});
 
-		it('shouldn\'t call getComponent if already on the page the href points to', (done) => {
+		it("shouldn't call getComponent if already on the page the href points to", done => {
 			function callback(context, cb) {
 				cb(null, TestComponent);
 			}
@@ -299,15 +317,16 @@ describe('Router (jsx)', () => {
 			const spy = sinon.spy(callback);
 
 			render(
-				<Router url={ '/test' } history={ browserHistory }>
-					<IndexRoute component={ () => <div>Good</div> }/>
-					<Route path={ '/test' } getComponent={ spy }/>
-				</Router>, container
+				<Router url={'/test'} history={browserHistory}>
+					<IndexRoute component={() => <div>Good</div>} />
+					<Route path={'/test'} getComponent={spy} />
+				</Router>,
+				container,
 			);
 
 			requestAnimationFrame(() => {
 				expect(container.innerHTML).to.equal('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>');
-				expect(spy.getCall(0).args[ 0 ].props.path).to.equal('/test');
+				expect(spy.getCall(0).args[0].props.path).to.equal('/test');
 				const link = container.querySelector('a[href="/test"]');
 				clickOnLink(link);
 				requestAnimationFrame(() => {
@@ -318,22 +337,23 @@ describe('Router (jsx)', () => {
 			});
 		});
 
-		it('should mount the child returned by getComponent after navigating through a click', (done) => {
+		it('should mount the child returned by getComponent after navigating through a click', done => {
 			const Test = () => {
 				return <div>async component</div>;
 			};
 
 			const callback = (context, cb) => {
-				cb(null, () => <Test/>);
+				cb(null, () => <Test />);
 			};
 
 			render(
-				<Router url={ '/' } history={ browserHistory }>
-					<Route component={ showChildren }>
-						<IndexRoute component={ () => <TestComponent /> }/>
-						<Route path={'/test'} getComponent={ callback }/>
+				<Router url={'/'} history={browserHistory}>
+					<Route component={showChildren}>
+						<IndexRoute component={() => <TestComponent />} />
+						<Route path={'/test'} getComponent={callback} />
 					</Route>
-				</Router>, container
+				</Router>,
+				container,
 			);
 
 			const link = container.querySelector('a[href="/test"]');
@@ -347,12 +367,13 @@ describe('Router (jsx)', () => {
 
 		it('should render IndexRoute when root Route without component prop used', () => {
 			render(
-				<Router history={ browserHistory }>
+				<Router history={browserHistory}>
 					<Route path="/">
-						<IndexRoute component={ () => <div>Good</div> }/>
-						<Route path={'/test'} component={ () => <div>Bad</div> }/>
+						<IndexRoute component={() => <div>Good</div>} />
+						<Route path={'/test'} component={() => <div>Bad</div>} />
 					</Route>
-				</Router>, container
+				</Router>,
+				container,
 			);
 
 			expect(innerHTML(container.innerHTML)).to.equal('<div>Good</div>');
@@ -360,12 +381,13 @@ describe('Router (jsx)', () => {
 
 		it('should render /test Route when root Route without component prop used', () => {
 			render(
-				<Router url={'/test'} history={ browserHistory }>
+				<Router url={'/test'} history={browserHistory}>
 					<Route path="/">
-						<IndexRoute component={ () => <div>Bad</div> }/>
-						<Route path={'/test'} component={ () => <div>Good</div> }/>
+						<IndexRoute component={() => <div>Bad</div>} />
+						<Route path={'/test'} component={() => <div>Good</div>} />
 					</Route>
-				</Router>, container
+				</Router>,
+				container,
 			);
 
 			expect(container.innerHTML).to.equal('<div>Good</div>');

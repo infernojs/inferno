@@ -1,4 +1,3 @@
-
 import Component from 'inferno-component';
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
@@ -6,7 +5,6 @@ import { innerHTML } from 'inferno/test/utils';
 import { connect, inject, Provider } from '../dist-es';
 
 describe('MobX connect()', () => {
-
 	it('should throw if store is invalid', () => {
 		const tryConnect = () => connect('invalidStore', () => 'Test');
 		expect(tryConnect).to.throw(Error, /should be provided as array/);
@@ -21,19 +19,18 @@ describe('MobX connect()', () => {
 		const tryConnect = () => connect(['invalidStore'])(() => 'Test');
 		expect(tryConnect).to.not.throw(Error);
 	});
-
 });
 
 describe('MobX inject()', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		document.body.removeChild(container);
 	});
@@ -59,7 +56,6 @@ describe('MobX inject()', () => {
 	 });*/
 
 	it('should fail if store is not provided', () => {
-
 		function App() {
 			return createElement(Provider, null, createElement(inject('hello')(createElement('span'))));
 		}
@@ -69,11 +65,14 @@ describe('MobX inject()', () => {
 	});
 
 	it('should inject stores', () => {
-
 		function App() {
-			return createElement(Provider, {
-				testStore: 'works!'
-			}, createElement(inject('testStore')(TestComponent)));
+			return createElement(
+				Provider,
+				{
+					testStore: 'works!',
+				},
+				createElement(inject('testStore')(TestComponent)),
+			);
 		}
 
 		// eslint-disable-next-line
@@ -82,11 +81,14 @@ describe('MobX inject()', () => {
 	});
 
 	it('should prefer props over stores', () => {
-
 		function App() {
-			return createElement(Provider, {
-				testStore: 'hello'
-			}, createElement(inject('testStore')(TestComponent), { testStore: 'works!' }));
+			return createElement(
+				Provider,
+				{
+					testStore: 'hello',
+				},
+				createElement(inject('testStore')(TestComponent), { testStore: 'works!' }),
+			);
 		}
 
 		// eslint-disable-next-line
@@ -95,10 +97,9 @@ describe('MobX inject()', () => {
 	});
 
 	it('should create class with injected stores', () => {
-
 		class TestClass extends Component {
 			static defaultProps = {
-				world: 'world'
+				world: 'world',
 			};
 
 			render({ hello, world }) {
@@ -107,14 +108,17 @@ describe('MobX inject()', () => {
 		}
 
 		function App() {
-			return createElement(Provider, {
-				hello: 'hello'
-			}, createElement(inject('hello')(TestClass)));
+			return createElement(
+				Provider,
+				{
+					hello: 'hello',
+				},
+				createElement(inject('hello')(TestClass)),
+			);
 		}
 
 		// eslint-disable-next-line
 		render(App(), container);
 		expect(container.innerHTML).to.equal(innerHTML('<span>hello world</span>'));
 	});
-
 });

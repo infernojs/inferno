@@ -2,21 +2,32 @@ import { render } from 'inferno';
 
 function runBenchmark(container) {
 	const Link0 = function() {
-		return <a href={'/'} className={'_5ljn'} rel={undefined} onClick={function() {
-		} }/>;
+		return <a href={'/'} className={'_5ljn'} rel={undefined} onClick={function() {}} />;
 	};
 
 	const ReactImage1 = function() {
-		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_7e56e9'} src={null}/>;
+		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_7e56e9'} src={null} />;
 	};
 
 	const Link2 = function() {
 		return (
-			<a style={{ maxWidth: '200px' }} image={null} label={null} imageRight={{}}
-				 className={'_387r _55pi _2agf _387r _55pi _4jy0 _4jy3 _517h _51sy _42ft'} href={'#'} haschevron={true}
-				 onClick={function() {
-				 } } onToggle={function() {
-			} } size={'medium'} use={'default'} borderShade={'light'} suppressed={false} disabled={null} rel={undefined}>
+			<a
+				style={{ maxWidth: '200px' }}
+				image={null}
+				label={null}
+				imageRight={{}}
+				className={'_387r _55pi _2agf _387r _55pi _4jy0 _4jy3 _517h _51sy _42ft'}
+				href={'#'}
+				haschevron={true}
+				onClick={function() {}}
+				onToggle={function() {}}
+				size={'medium'}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				disabled={null}
+				rel={undefined}
+			>
 				{null}
 				<span className={'_55pe'} style={{ maxWidth: '186px' }}>
 					{null}
@@ -53,10 +64,18 @@ function runBenchmark(container) {
 
 	const AbstractButton9 = function() {
 		return (
-			<button id={'downloadButton'} className={'_5lk0 _4jy0 _4jy3 _517h _51sy _42ft'} label={null}
-							onClick={function() {
-							} } use={'default'} size={'medium'} borderShade={'light'} suppressed={false}
-							type="submit" value={'1'}>
+			<button
+				id={'downloadButton'}
+				className={'_5lk0 _4jy0 _4jy3 _517h _51sy _42ft'}
+				label={null}
+				onClick={function() {}}
+				use={'default'}
+				size={'medium'}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				{undefined}
 				{'Download to Power Editor'}
 				{undefined}
@@ -79,15 +98,24 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage12 = function() {
-		return <i alt={''} className={'_3-8_ img sp_UuU9HmrQ397 sx_dbc06a'} src={null}/>;
+		return <i alt={''} className={'_3-8_ img sp_UuU9HmrQ397 sx_dbc06a'} src={null} />;
 	};
 
 	const AbstractButton13 = function() {
 		return (
-			<button id={'uploadButton'} className={'_5lk0 _4jy0 _4jy3 _517h _51sy _42ft'} image={{}} use={'default'}
-							label={null} onClick={function() {
-			} } size={'medium'} borderShade={'light'}
-							suppressed={false} type="submit" value={'1'}>
+			<button
+				id={'uploadButton'}
+				className={'_5lk0 _4jy0 _4jy3 _517h _51sy _42ft'}
+				image={{}}
+				use={'default'}
+				label={null}
+				onClick={function() {}}
+				size={'medium'}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage12 />
 				{'Upload Changes'}
 				{undefined}
@@ -100,14 +128,22 @@ function runBenchmark(container) {
 	};
 
 	const DownloadUploadTimestamp15 = function() {
-		return <div></div>;
+		return <div />;
 	};
 
 	const AbstractButton16 = function() {
 		return (
-			<button className={'_5ljz _4jy0 _4jy3 _517h _51sy _42ft'} label={null} onClick={function() {
-			} } use={'default'} size={'medium'} borderShade={'light'} suppressed={false} type="submit"
-							value={'1'}>
+			<button
+				className={'_5ljz _4jy0 _4jy3 _517h _51sy _42ft'}
+				label={null}
+				onClick={function() {}}
+				use={'default'}
+				size={'medium'}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				{undefined}
 				{'Help'}
 				{undefined}
@@ -120,13 +156,22 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage18 = function() {
-		return <i src={null} className={'img sp_UuU9HmrQ397 sx_d5a685'}/>;
+		return <i src={null} className={'img sp_UuU9HmrQ397 sx_d5a685'} />;
 	};
 
 	const AbstractButton19 = function() {
 		return (
-			<button className={'_5ljw _p _4jy0 _4jy3 _517h _51sy _42ft'} image={{}} use={'default'} size={'medium'}
-							borderShade={'light'} suppressed={false} label={null} type="submit" value={'1'}>
+			<button
+				className={'_5ljw _p _4jy0 _4jy3 _517h _51sy _42ft'}
+				image={{}}
+				use={'default'}
+				size={'medium'}
+				borderShade={'light'}
+				suppressed={false}
+				label={null}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage18 />
 				{undefined}
 				{undefined}
@@ -140,9 +185,15 @@ function runBenchmark(container) {
 
 	const InlineBlock21 = function() {
 		return (
-			<div className={'_5ljz uiPopover _6a _6b'} alignh={'right'} menu={{}} alignv={'middle'} disabled={null}
-					 fullWidth={false}>
-				<XUIButton20 key={'/.0'}/>
+			<div
+				className={'_5ljz uiPopover _6a _6b'}
+				alignh={'right'}
+				menu={{}}
+				alignv={'middle'}
+				disabled={null}
+				fullWidth={false}
+			>
+				<XUIButton20 key={'/.0'} />
 			</div>
 		);
 	};
@@ -161,7 +212,7 @@ function runBenchmark(container) {
 	};
 
 	const AdsPEResetDialog24 = function() {
-		return <span/>;
+		return <span />;
 	};
 
 	const AdsPETopNav25 = function() {
@@ -210,17 +261,24 @@ function runBenchmark(container) {
 
 	const Wrapper27 = function() {
 		return (
-			<li selected={true} focused={false} tabIndex={null} hideFocusRing={true} onClick={function() {
-			} } onMouseDown={function() {
-			} } onFocus={function() {
-			} } onBlur={function() {
-			} }
-					className={'_5vwz _5vwy _45hc _1hqh'} wrapper={function() {
-			} } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
-				<a aria-selected={true} onKeyDown={function() {
-				} }>
+			<li
+				selected={true}
+				focused={false}
+				tabIndex={null}
+				hideFocusRing={true}
+				onClick={function() {}}
+				onMouseDown={function() {}}
+				onFocus={function() {}}
+				onBlur={function() {}}
+				className={'_5vwz _5vwy _45hc _1hqh'}
+				wrapper={function() {}}
+				shouldWrapTab={true}
+				mockSpacebarClick={true}
+				role={'presentation'}
+			>
+				<a aria-selected={true} onKeyDown={function() {}}>
 					<div className="_4jq5">{'Manage Ads'}</div>
-					<span className="_13xf"/>
+					<span className="_13xf" />
 				</a>
 			</li>
 		);
@@ -235,22 +293,29 @@ function runBenchmark(container) {
 	};
 
 	const TabBarItemWrapper30 = function() {
-		return <XUIPageNavigationItem29 key={'MANAGE_ADS'}/>;
+		return <XUIPageNavigationItem29 key={'MANAGE_ADS'} />;
 	};
 
 	const Wrapper31 = function() {
 		return (
-			<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function() {
-			} } onMouseDown={function() {
-			} } onFocus={function() {
-			} } onBlur={function() {
-			} }
-					className={'_5vwz _45hc'} wrapper={function() {
-			} } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
-				<a aria-selected={false} onKeyDown={function() {
-				} }>
+			<li
+				selected={false}
+				focused={false}
+				tabIndex={null}
+				hideFocusRing={true}
+				onClick={function() {}}
+				onMouseDown={function() {}}
+				onFocus={function() {}}
+				onBlur={function() {}}
+				className={'_5vwz _45hc'}
+				wrapper={function() {}}
+				shouldWrapTab={true}
+				mockSpacebarClick={true}
+				role={'presentation'}
+			>
+				<a aria-selected={false} onKeyDown={function() {}}>
 					<div className={'_4jq5'}>{'Audiences'}</div>
-					<span className={'_13xf'}/>
+					<span className={'_13xf'} />
 				</a>
 			</li>
 		);
@@ -265,22 +330,29 @@ function runBenchmark(container) {
 	};
 
 	const TabBarItemWrapper34 = function() {
-		return <XUIPageNavigationItem33 key={'AUDIENCES'}/>;
+		return <XUIPageNavigationItem33 key={'AUDIENCES'} />;
 	};
 
 	const Wrapper35 = function() {
 		return (
-			<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function() {
-			} } onMouseDown={function() {
-			} } onFocus={function() {
-			} } onBlur={function() {
-			} }
-					className={'_5vwz _45hc'} wrapper={function() {
-			} } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
-				<a aria-selected={false} onKeyDown={function() {
-				} }>
+			<li
+				selected={false}
+				focused={false}
+				tabIndex={null}
+				hideFocusRing={true}
+				onClick={function() {}}
+				onMouseDown={function() {}}
+				onFocus={function() {}}
+				onBlur={function() {}}
+				className={'_5vwz _45hc'}
+				wrapper={function() {}}
+				shouldWrapTab={true}
+				mockSpacebarClick={true}
+				role={'presentation'}
+			>
+				<a aria-selected={false} onKeyDown={function() {}}>
 					<div className={'_4jq5'}>{'Image Library'}</div>
-					<span className={'_13xf'}/>
+					<span className={'_13xf'} />
 				</a>
 			</li>
 		);
@@ -295,25 +367,32 @@ function runBenchmark(container) {
 	};
 
 	const TabBarItemWrapper38 = function() {
-		return <XUIPageNavigationItem37 key={'IMAGES'}/>;
+		return <XUIPageNavigationItem37 key={'IMAGES'} />;
 	};
 
 	const Wrapper39 = function() {
 		return (
-			<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function() {
-			} } onMouseDown={function() {
-			} } onFocus={function() {
-			} } onBlur={function() {
-			} }
-					className={'_5vwz _45hc'} wrapper={function() {
-			} } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
-				<a aria-selected={false} onKeyDown={function() {
-				} }>
+			<li
+				selected={false}
+				focused={false}
+				tabIndex={null}
+				hideFocusRing={true}
+				onClick={function() {}}
+				onMouseDown={function() {}}
+				onFocus={function() {}}
+				onBlur={function() {}}
+				className={'_5vwz _45hc'}
+				wrapper={function() {}}
+				shouldWrapTab={true}
+				mockSpacebarClick={true}
+				role={'presentation'}
+			>
+				<a aria-selected={false} onKeyDown={function() {}}>
 					<div className={'_4jq5'}>
 						{'Reporting'}
 						{null}
 					</div>
-					<span className={'_13xf'}/>
+					<span className={'_13xf'} />
 				</a>
 			</li>
 		);
@@ -328,22 +407,29 @@ function runBenchmark(container) {
 	};
 
 	const TabBarItemWrapper42 = function() {
-		return <XUIPageNavigationItem41 key={'REPORTING'}/>;
+		return <XUIPageNavigationItem41 key={'REPORTING'} />;
 	};
 
 	const Wrapper43 = function() {
 		return (
-			<li selected={false} focused={false} tabIndex={null} hideFocusRing={true} onClick={function() {
-			} } onMouseDown={function() {
-			} } onFocus={function() {
-			} } onBlur={function() {
-			} }
-					className={'_5vwz _45hc'} wrapper={function() {
-			} } shouldWrapTab={true} mockSpacebarClick={true} role={'presentation'}>
-				<a aria-selected={false} onKeyDown={function() {
-				} }>
+			<li
+				selected={false}
+				focused={false}
+				tabIndex={null}
+				hideFocusRing={true}
+				onClick={function() {}}
+				onMouseDown={function() {}}
+				onFocus={function() {}}
+				onBlur={function() {}}
+				className={'_5vwz _45hc'}
+				wrapper={function() {}}
+				shouldWrapTab={true}
+				mockSpacebarClick={true}
+				role={'presentation'}
+			>
+				<a aria-selected={false} onKeyDown={function() {}}>
 					<div className={'_4jq5'}>{'Page Posts'}</div>
-					<span className={'_13xf'}/>
+					<span className={'_13xf'} />
 				</a>
 			</li>
 		);
@@ -358,7 +444,7 @@ function runBenchmark(container) {
 	};
 
 	const TabBarItemWrapper46 = function() {
-		return <XUIPageNavigationItem45 key={'PAGES'}/>;
+		return <XUIPageNavigationItem45 key={'PAGES'} />;
 	};
 
 	const TabBarItem47 = function() {
@@ -374,9 +460,15 @@ function runBenchmark(container) {
 
 	const InlineBlock48 = function() {
 		return (
-			<div menu={{}} layerBehaviors={{}} alignv={'middle'} className={'uiPopover _6a _6b'} disabled={null}
-					 fullWidth={false}>
-				<TabBarItem47 key={'/.0'}/>
+			<div
+				menu={{}}
+				layerBehaviors={{}}
+				alignv={'middle'}
+				className={'uiPopover _6a _6b'}
+				disabled={null}
+				fullWidth={false}
+			>
+				<TabBarItem47 key={'/.0'} />
 			</div>
 		);
 	};
@@ -395,19 +487,27 @@ function runBenchmark(container) {
 
 	const TabBar51 = function() {
 		return (
-			<ul onTabClick={function() {
-			} } activeTabKey={'MANAGE_ADS'} onWidthCalculated={function() {
-			} } width={null} maxTabsVisible={5} moreLabel={'Tools'} alwaysShowActive={true}
-					dropdownTabComponent={function() {
-					} } shouldCalculateVisibleTabs={true} className={'_43o4'} role={'tablist'} onKeyDown={function() {
-			} } onKeyUp={function() {
-			} }>
-				<TabBarItemWrapper30 key={'MANAGE_ADS'}/>
-				<TabBarItemWrapper34 key={'AUDIENCES'}/>
-				<TabBarItemWrapper38 key={'IMAGES'}/>
-				<TabBarItemWrapper42 key={'REPORTING'}/>
-				<TabBarItemWrapper46 key={'PAGES'}/>
-				<TabBarDropdownItem50 key={'_dropdown'}/>
+			<ul
+				onTabClick={function() {}}
+				activeTabKey={'MANAGE_ADS'}
+				onWidthCalculated={function() {}}
+				width={null}
+				maxTabsVisible={5}
+				moreLabel={'Tools'}
+				alwaysShowActive={true}
+				dropdownTabComponent={function() {}}
+				shouldCalculateVisibleTabs={true}
+				className={'_43o4'}
+				role={'tablist'}
+				onKeyDown={function() {}}
+				onKeyUp={function() {}}
+			>
+				<TabBarItemWrapper30 key={'MANAGE_ADS'} />
+				<TabBarItemWrapper34 key={'AUDIENCES'} />
+				<TabBarItemWrapper38 key={'IMAGES'} />
+				<TabBarItemWrapper42 key={'REPORTING'} />
+				<TabBarItemWrapper46 key={'PAGES'} />
+				<TabBarDropdownItem50 key={'_dropdown'} />
 			</ul>
 		);
 	};
@@ -420,7 +520,7 @@ function runBenchmark(container) {
 		return (
 			<div className={'_5vx7 clearfix'}>
 				<div key={'left'} className={'_ohe lfloat'}>
-					<XUIPageNavigationGroup52 key={'0'}/>
+					<XUIPageNavigationGroup52 key={'0'} />
 				</div>
 				{null}
 			</div>
@@ -457,9 +557,21 @@ function runBenchmark(container) {
 
 	const Link58 = function() {
 		return (
-			<a className={'_585q _50zy _50-0 _50z- _5upp _42ft'} href={'#'} onClick={function() {
-			} } size={'medium'} shade={'dark'} type={null} label={null} title={'Remove'} aria-label={undefined}
-				 data-hover={undefined} data-tooltip-alignh={undefined} disabled={null} rel={undefined}>
+			<a
+				className={'_585q _50zy _50-0 _50z- _5upp _42ft'}
+				href={'#'}
+				onClick={function() {}}
+				size={'medium'}
+				shade={'dark'}
+				type={null}
+				label={null}
+				title={'Remove'}
+				aria-label={undefined}
+				data-hover={undefined}
+				data-tooltip-alignh={undefined}
+				disabled={null}
+				rel={undefined}
+			>
 				{undefined}
 				{'Remove'}
 				{undefined}
@@ -485,8 +597,12 @@ function runBenchmark(container) {
 
 	const Link63 = function() {
 		return (
-			<a href={'/ads/manage/billing.php?act=10149999073643408'} target={'_blank'} rel={undefined} onClick={function() {
-			} }>
+			<a
+				href={'/ads/manage/billing.php?act=10149999073643408'}
+				target={'_blank'}
+				rel={undefined}
+				onClick={function() {}}
+			>
 				<XUIText62 />
 			</a>
 		);
@@ -512,11 +628,17 @@ function runBenchmark(container) {
 
 	const ReactTransitionGroup66 = function() {
 		return (
-			<span transitionEnterTimeout={500} transitionLeaveTimeout={500} transitionName={{}} transitionAppear={false}
-						transitionEnter={true} transitionLeave={true} childFactory={function() {
-			} }
-						component={'span'}>
-				<ReactCSSTransitionGroupChild65 key={'.0'}/>
+			<span
+				transitionEnterTimeout={500}
+				transitionLeaveTimeout={500}
+				transitionName={{}}
+				transitionAppear={false}
+				transitionEnter={true}
+				transitionLeave={true}
+				childFactory={function() {}}
+				component={'span'}
+			>
+				<ReactCSSTransitionGroupChild65 key={'.0'} />
 			</span>
 		);
 	};
@@ -538,19 +660,31 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage70 = function() {
-		return <i className={'_3-8_ img sp_UuU9HmrQ397 sx_bae57d'} src={null}></i>;
+		return <i className={'_3-8_ img sp_UuU9HmrQ397 sx_bae57d'} src={null} />;
 	};
 
 	const ReactImage71 = function() {
-		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_7e56e9'} src={null}></i>;
+		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_7e56e9'} src={null} />;
 	};
 
 	const Link72 = function() {
 		return (
-			<a style={{ maxWidth: '200px' }} image={null} label={null} imageRight={{}}
-				 className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'} href={'#'} haschevron={true}
-				 onClick={function() {
-				 }} size={'large'} use={'default'} borderShade={'light'} suppressed={false} disabled={null} rel={undefined}>
+			<a
+				style={{ maxWidth: '200px' }}
+				image={null}
+				label={null}
+				imageRight={{}}
+				className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'}
+				href={'#'}
+				haschevron={true}
+				onClick={function() {}}
+				size={'large'}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				disabled={null}
+				rel={undefined}
+			>
 				{null}
 				<span className={'_55pe'} style={{ maxWidth: '186px' }}>
 					<ReactImage70 />
@@ -578,19 +712,31 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage77 = function() {
-		return <i className={'_3-8_ img sp_UuU9HmrQ397 sx_81d5f0'} src={null}></i>;
+		return <i className={'_3-8_ img sp_UuU9HmrQ397 sx_81d5f0'} src={null} />;
 	};
 
 	const ReactImage78 = function() {
-		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_7e56e9'} src={null}></i>;
+		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_7e56e9'} src={null} />;
 	};
 
 	const Link79 = function() {
 		return (
-			<a style={{ maxWidth: '200px' }} image={null} label={null} imageRight={{}}
-				 className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'} href={'#'} haschevron={true}
-				 onClick={function() {
-				 } } size={'large'} use={'default'} borderShade={'light'} suppressed={false} disabled={null} rel={undefined}>
+			<a
+				style={{ maxWidth: '200px' }}
+				image={null}
+				label={null}
+				imageRight={{}}
+				className={' _5bbf _55pi _2agf  _5bbf _55pi _4jy0 _4jy4 _517h _51sy _42ft'}
+				href={'#'}
+				haschevron={true}
+				onClick={function() {}}
+				size={'large'}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				disabled={null}
+				rel={undefined}
+			>
 				{null}
 				<span className={'_55pe'} style={{ maxWidth: '186px' }}>
 					<ReactImage77 />
@@ -627,14 +773,23 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage85 = function() {
-		return <i className={'_3yz6 _5whs img sp_UuU9HmrQ397 sx_5fe5c2'} src={null}></i>;
+		return <i className={'_3yz6 _5whs img sp_UuU9HmrQ397 sx_5fe5c2'} src={null} />;
 	};
 
 	const AbstractButton86 = function() {
 		return (
-			<button className={'_3yz9 _1t-2 _50z_ _50zy _50zz _50z- _5upp _42ft'} size={'small'} onClick={function() {
-			} } shade={'dark'} type={'button'} label={null} title={'Remove'}
-							aria-label={undefined} data-hover={undefined} data-tooltip-alignh={undefined}>
+			<button
+				className={'_3yz9 _1t-2 _50z_ _50zy _50zz _50z- _5upp _42ft'}
+				size={'small'}
+				onClick={function() {}}
+				shade={'dark'}
+				type={'button'}
+				label={null}
+				title={'Remove'}
+				aria-label={undefined}
+				data-hover={undefined}
+				data-tooltip-alignh={undefined}
+			>
 				{undefined}
 				{'Remove'}
 				{undefined}
@@ -651,19 +806,17 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage89 = function() {
-		return <i className={'_5b5p _4gem img sp_UuU9HmrQ397 sx_5fe5c2'} src={null}></i>;
+		return <i className={'_5b5p _4gem img sp_UuU9HmrQ397 sx_5fe5c2'} src={null} />;
 	};
 
 	const ReactImage90 = function() {
-		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'}></i>;
+		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'} />;
 	};
 
 	const AdsPopoverLink91 = function() {
 		return (
-			<span onMouseEnter={function() {
-			} } onMouseLeave={function() {
-			} }>
-				<span className={'_3o_j'}></span>
+			<span onMouseEnter={function() {}} onMouseLeave={function() {}}>
+				<span className={'_3o_j'} />
 				<ReactImage90 />
 			</span>
 		);
@@ -675,10 +828,17 @@ function runBenchmark(container) {
 
 	const AbstractButton93 = function() {
 		return (
-			<button className={'_5b5u _5b5v _4jy0 _4jy3 _517h _51sy _42ft'} label={null} use={'default'}
-							onClick={function() {
-							} } size={'medium'} borderShade={'light'} suppressed={false} type="submit"
-							value={'1'}>
+			<button
+				className={'_5b5u _5b5v _4jy0 _4jy3 _517h _51sy _42ft'}
+				label={null}
+				use={'default'}
+				onClick={function() {}}
+				size={'medium'}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				{undefined}
 				{'Apply'}
 				{undefined}
@@ -709,8 +869,7 @@ function runBenchmark(container) {
 		return (
 			<div className={'_3yz1 _3yz2 _3dad'}>
 				<div aria-hidden={false}>
-					<div onClick={function() {
-					} } className={'_3yz5'}>
+					<div onClick={function() {}} className={'_3yz5'}>
 						<ReactImage85 />
 						<div className={'_3yz7'}>{'Ads:'}</div>
 						<div className={'ellipsis _3yz8'} data-hover={'tooltip'} data-tooltip-display={'overflow'}>{'(1)'}</div>
@@ -723,14 +882,23 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage97 = function() {
-		return <i src={null} className={'img sp_UuU9HmrQ397 sx_158e8d'}></i>;
+		return <i src={null} className={'img sp_UuU9HmrQ397 sx_158e8d'} />;
 	};
 
 	const AbstractButton98 = function() {
 		return (
-			<button className={'_1wdf _4jy0 _517i _517h _51sy _42ft'} size={'small'} onClick={function() {
-			} } image={{}} use={'default'} borderShade={'light'} suppressed={false} label={null}
-							type="submit" value={'1'}>
+			<button
+				className={'_1wdf _4jy0 _517i _517h _51sy _42ft'}
+				size={'small'}
+				onClick={function() {}}
+				image={{}}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				label={null}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage97 />
 				{undefined}
 				{undefined}
@@ -755,16 +923,16 @@ function runBenchmark(container) {
 			<div className={'_5b-m _3o1v clearfix'}>
 				{undefined}
 				{[]}
-				<BUIFilterToken96 key={'token0'}/>
+				<BUIFilterToken96 key={'token0'} />
 				<BUIFilterTokenCreateButton100 />
 				{null}
-				<div className={'_49u3'}></div>
+				<div className={'_49u3'} />
 			</div>
 		);
 	};
 
 	const AdsPEAmbientNUXMegaphone102 = function() {
-		return <span></span>;
+		return <span />;
 	};
 
 	const AdsPEFilters103 = function() {
@@ -784,7 +952,7 @@ function runBenchmark(container) {
 	};
 
 	const AdsPECampaignTimeLimitNotice105 = function() {
-		return <div></div>;
+		return <div />;
 	};
 
 	const AdsPECampaignTimeLimitNoticeContainer106 = function() {
@@ -804,15 +972,28 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage110 = function() {
-		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_132804'} src={null}></i>;
+		return <i alt={''} className={'_3-99 img sp_UuU9HmrQ397 sx_132804'} src={null} />;
 	};
 
 	const Link111 = function() {
 		return (
-			<a style={{ maxWidth: '200px' }} image={null} label={null} imageRight={{}}
-				 className={'_55pi _2agf _55pi _4jy0 _4jy4 _517h _51sy _42ft'} href={'#'} disabled={null} maxwidth={undefined}
-				 size={'large'} suppressed={false} chevron={{}} use={'default'} borderShade={'light'} onClick={function() {
-			} } rel={undefined}>
+			<a
+				style={{ maxWidth: '200px' }}
+				image={null}
+				label={null}
+				imageRight={{}}
+				className={'_55pi _2agf _55pi _4jy0 _4jy4 _517h _51sy _42ft'}
+				href={'#'}
+				disabled={null}
+				maxwidth={undefined}
+				size={'large'}
+				suppressed={false}
+				chevron={{}}
+				use={'default'}
+				borderShade={'light'}
+				onClick={function() {}}
+				rel={undefined}
+			>
 				{null}
 				<span className={'_55pe'} style={{ maxWidth: '186px' }}>
 					{null}
@@ -845,9 +1026,16 @@ function runBenchmark(container) {
 
 	const InlineBlock117 = function() {
 		return (
-			<div className={'_3c5o _3c5p _6a _6b'} defaultValue={'LIFETIME'} size={'large'} onChange={function() {
-			} } disabled={false} alignv={'middle'} fullWidth={false}>
-				<input type={'hidden'} autoComplete={'off'} name={undefined} value={'LIFETIME'}/>
+			<div
+				className={'_3c5o _3c5p _6a _6b'}
+				defaultValue={'LIFETIME'}
+				size={'large'}
+				onChange={function() {}}
+				disabled={false}
+				alignv={'middle'}
+				fullWidth={false}
+			>
+				<input type={'hidden'} autoComplete={'off'} name={undefined} value={'LIFETIME'} />
 				<XUISingleSelectorButton116 />
 			</div>
 		);
@@ -858,15 +1046,25 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage119 = function() {
-		return <i src={null} className={'img sp_UuU9HmrQ397 sx_6c732d'}/>;
+		return <i src={null} className={'img sp_UuU9HmrQ397 sx_6c732d'} />;
 	};
 
 	const AbstractButton120 = function() {
 		return (
-			<button aria-label={'List Settings'} className={'_u_k _3c5o _1-r0 _4jy0 _4jy4 _517h _51sy _42ft'}
-							data-hover={'tooltip'} image={{}} size={'large'} onClick={function() {
-			} } use={'default'}
-							borderShade={'light'} suppressed={false} label={null} type="submit" value={'1'}>
+			<button
+				aria-label={'List Settings'}
+				className={'_u_k _3c5o _1-r0 _4jy0 _4jy4 _517h _51sy _42ft'}
+				data-hover={'tooltip'}
+				image={{}}
+				size={'large'}
+				onClick={function() {}}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				label={null}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage119 />
 				{undefined}
 				{undefined}
@@ -883,9 +1081,9 @@ function runBenchmark(container) {
 			<div className={'_3c5k'}>
 				<span className={'_3c5j'}>{'Stats:'}</span>
 				<span className={'_3c5l'}>
-					<XUISingleSelector118 key={'range'}/>
+					<XUISingleSelector118 key={'range'} />
 					{null}
-					<XUIButton121 key={'settings'}/>
+					<XUIButton121 key={'settings'} />
 				</span>
 			</div>
 		);
@@ -901,7 +1099,7 @@ function runBenchmark(container) {
 				<div className={'_3c5f'}>
 					{null}
 					<AdsPETablePagerContainer109 />
-					<div className={'_3c5i'}></div>
+					<div className={'_3c5i'} />
 					<AdsPEStatRangeContainer123 />
 				</div>
 			</div>
@@ -909,14 +1107,23 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage125 = function() {
-		return <i alt={''} className={'_3-8_ img sp_UuU9HmrQ397 sx_158e8d'} src={null}/>;
+		return <i alt={''} className={'_3-8_ img sp_UuU9HmrQ397 sx_158e8d'} src={null} />;
 	};
 
 	const AbstractButton126 = function() {
 		return (
-			<button className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'} label={null} size={'large'} onClick={function() {
-			} } image={{}} use={'default'} borderShade={'light'} suppressed={false}
-							type="submit" value={'1'}>
+			<button
+				className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'}
+				label={null}
+				size={'large'}
+				onClick={function() {}}
+				image={{}}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage125 />
 				{'Create Ad'}
 				{undefined}
@@ -929,13 +1136,22 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage128 = function() {
-		return <i src={null} className={'img sp_UuU9HmrQ397 sx_d5a685'}/>;
+		return <i src={null} className={'img sp_UuU9HmrQ397 sx_d5a685'} />;
 	};
 
 	const AbstractButton129 = function() {
 		return (
-			<button className={'_u_k _p _4jy0 _4jy4 _517h _51sy _42ft'} image={{}} size={'large'} use={'default'}
-							borderShade={'light'} suppressed={false} label={null} type="submit" value={'1'}>
+			<button
+				className={'_u_k _p _4jy0 _4jy4 _517h _51sy _42ft'}
+				image={{}}
+				size={'large'}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				label={null}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage128 />
 				{undefined}
 				{undefined}
@@ -949,9 +1165,16 @@ function runBenchmark(container) {
 
 	const InlineBlock131 = function() {
 		return (
-			<div menu={{}} alignh={'right'} layerBehaviors={{}} alignv={'middle'} className={'uiPopover _6a _6b'}
-					 disabled={null} fullWidth={false}>
-				<XUIButton130 key={'/.0'}/>
+			<div
+				menu={{}}
+				alignh={'right'}
+				layerBehaviors={{}}
+				alignv={'middle'}
+				className={'uiPopover _6a _6b'}
+				disabled={null}
+				fullWidth={false}
+			>
+				<XUIButton130 key={'/.0'} />
 			</div>
 		);
 	};
@@ -970,15 +1193,26 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage134 = function() {
-		return <i alt={''} className={'_3-8_ img sp_UuU9HmrQ397 sx_990b54'} src={null}/>;
+		return <i alt={''} className={'_3-8_ img sp_UuU9HmrQ397 sx_990b54'} src={null} />;
 	};
 
 	const AbstractButton135 = function() {
 		return (
-			<button size={'large'} disabled={false} className={'_d2_ _u_k _5n7z _4jy0 _4jy4 _517h _51sy _42ft'} image={{}}
-							data-hover={'tooltip'} aria-label={'Edit Ads (Ctrl+U)'} onClick={function() {
-			} }
-							use={'default'} label={null} borderShade={'light'} suppressed={false} type="submit" value={'1'}>
+			<button
+				size={'large'}
+				disabled={false}
+				className={'_d2_ _u_k _5n7z _4jy0 _4jy4 _517h _51sy _42ft'}
+				image={{}}
+				data-hover={'tooltip'}
+				aria-label={'Edit Ads (Ctrl+U)'}
+				onClick={function() {}}
+				use={'default'}
+				label={null}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage134 />
 				{'Edit'}
 				{undefined}
@@ -991,15 +1225,26 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage137 = function() {
-		return <i src={null} className={'img sp_UuU9HmrQ397 sx_203adb'}/>;
+		return <i src={null} className={'img sp_UuU9HmrQ397 sx_203adb'} />;
 	};
 
 	const AbstractButton138 = function() {
 		return (
-			<button aria-label={'Duplicate'} className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'} data-hover={'tooltip'}
-							disabled={false} image={{}} size={'large'} onClick={function() {
-			} } use={'default'}
-							borderShade={'light'} suppressed={false} label={null} type="submit" value={'1'}>
+			<button
+				aria-label={'Duplicate'}
+				className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'}
+				data-hover={'tooltip'}
+				disabled={false}
+				image={{}}
+				size={'large'}
+				onClick={function() {}}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				label={null}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage137 />
 				{undefined}
 				{undefined}
@@ -1012,22 +1257,31 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage140 = function() {
-		return <i src={null} className={'img sp_UuU9HmrQ397 sx_0c342e'}/>;
+		return <i src={null} className={'img sp_UuU9HmrQ397 sx_0c342e'} />;
 	};
 
 	const AbstractButton141 = function() {
 		return (
-			<button aria-label={'Revert'} className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft _42fr'} data-hover={'tooltip'}
-							disabled={true} image={{}} size={'large'} onClick={function() {
-			} } use={'default'}
-							borderShade={'light'} suppressed={false} label={null} type="submit" value={'1'}>
+			<button
+				aria-label={'Revert'}
+				className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft _42fr'}
+				data-hover={'tooltip'}
+				disabled={true}
+				image={{}}
+				size={'large'}
+				onClick={function() {}}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				label={null}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage140 />
 				{undefined}
 				{undefined}
-			</button
-			>
-		)
-			;
+			</button>
+		);
 	};
 
 	const XUIButton142 = function() {
@@ -1035,15 +1289,26 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage143 = function() {
-		return <i src={null} className={'img sp_UuU9HmrQ397 sx_0e75f5'}/>;
+		return <i src={null} className={'img sp_UuU9HmrQ397 sx_0e75f5'} />;
 	};
 
 	const AbstractButton144 = function() {
 		return (
-			<button aria-label={'Delete'} className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'} image={{}} data-hover={'tooltip'}
-							disabled={false} size={'large'} onClick={function() {
-			} } use={'default'}
-							borderShade={'light'} suppressed={false} label={null} type="submit" value={'1'}>
+			<button
+				aria-label={'Delete'}
+				className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'}
+				image={{}}
+				data-hover={'tooltip'}
+				disabled={false}
+				size={'large'}
+				onClick={function() {}}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				label={null}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage143 />
 				{undefined}
 				{undefined}
@@ -1058,23 +1323,34 @@ function runBenchmark(container) {
 	const XUIButtonGroup146 = function() {
 		return (
 			<div className={'_5n7z _51xa'}>
-				<XUIButton139 key={'duplicate'}/>
-				<XUIButton142 key={'revert'}/>
-				<XUIButton145 key={'delete'}/>
+				<XUIButton139 key={'duplicate'} />
+				<XUIButton142 key={'revert'} />
+				<XUIButton145 key={'delete'} />
 			</div>
 		);
 	};
 
 	const ReactImage147 = function() {
-		return <i src={null} className={'img sp_UuU9HmrQ397 sx_8c19ae'}/>;
+		return <i src={null} className={'img sp_UuU9HmrQ397 sx_8c19ae'} />;
 	};
 
 	const AbstractButton148 = function() {
 		return (
-			<button size={'large'} disabled={false} className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'} image={{}}
-							data-hover={'tooltip'} aria-label={'Save Audience'} onClick={function() {
-			} } use={'default'}
-							borderShade={'light'} suppressed={false} label={null} type="submit" value={'1'}>
+			<button
+				size={'large'}
+				disabled={false}
+				className={'_u_k _4jy0 _4jy4 _517h _51sy _42ft'}
+				image={{}}
+				data-hover={'tooltip'}
+				aria-label={'Save Audience'}
+				onClick={function() {}}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				label={null}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage147 />
 				{undefined}
 				{undefined}
@@ -1087,14 +1363,25 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage150 = function() {
-		return <i src={null} className={'img sp_UuU9HmrQ397 sx_d2b33c'}/>;
+		return <i src={null} className={'img sp_UuU9HmrQ397 sx_d2b33c'} />;
 	};
 
 	const AbstractButton151 = function() {
 		return (
-			<button size={'large'} className={'_u_k noMargin _p _4jy0 _4jy4 _517h _51sy _42ft'} onClick={function() {
-			} } image={{}} data-hover={'tooltip'} aria-label={'Export & Import'} use={'default'}
-							borderShade={'light'} suppressed={false} label={null} type="submit" value={'1'}>
+			<button
+				size={'large'}
+				className={'_u_k noMargin _p _4jy0 _4jy4 _517h _51sy _42ft'}
+				onClick={function() {}}
+				image={{}}
+				data-hover={'tooltip'}
+				aria-label={'Export & Import'}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				label={null}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage150 />
 				{undefined}
 				{undefined}
@@ -1109,7 +1396,7 @@ function runBenchmark(container) {
 	const InlineBlock153 = function() {
 		return (
 			<div menu={{}} size={'large'} alignv={'middle'} className={'uiPopover _6a _6b'} disabled={null} fullWidth={false}>
-				<XUIButton152 key={'/.0'}/>
+				<XUIButton152 key={'/.0'} />
 			</div>
 		);
 	};
@@ -1119,7 +1406,7 @@ function runBenchmark(container) {
 	};
 
 	const AdsPEExportImportMenu155 = function() {
-		return <ReactPopoverMenu154 key={'export'}/>;
+		return <ReactPopoverMenu154 key={'export'} />;
 	};
 
 	const FluxContainer_x_156 = function() {
@@ -1146,16 +1433,27 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage160 = function() {
-		return <i src={null} className={'img sp_UuU9HmrQ397 sx_872db1'}/>;
+		return <i src={null} className={'img sp_UuU9HmrQ397 sx_872db1'} />;
 	};
 
 	const AbstractButton161 = function() {
 		return (
-			<button size={'large'} disabled={false} onClick={function() {
-			} } className={'_u_k _5n7z _4jy0 _4jy4 _517h _51sy _42ft'} image={{}}
-							style={{ boxSizing: 'border-box', height: '28px', width: '48px' }} data-hover={'tooltip'}
-							aria-label={'Create Report'} use={'default'} borderShade={'light'} suppressed={false}
-							label={null} type="submit" value={'1'}>
+			<button
+				size={'large'}
+				disabled={false}
+				onClick={function() {}}
+				className={'_u_k _5n7z _4jy0 _4jy4 _517h _51sy _42ft'}
+				image={{}}
+				style={{ boxSizing: 'border-box', height: '28px', width: '48px' }}
+				data-hover={'tooltip'}
+				aria-label={'Create Report'}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				label={null}
+				type="submit"
+				value={'1'}
+			>
 				<ReactImage160 />
 				{undefined}
 				{undefined}
@@ -1169,10 +1467,18 @@ function runBenchmark(container) {
 
 	const AbstractButton163 = function() {
 		return (
-			<button size={'large'} disabled={true} className={'hidden_elem _5n7z _4jy0 _4jy4 _517h _51sy _42ft _42fr'}
-							label={null} onClick={function() {
-			} } use={'default'} borderShade={'light'}
-							suppressed={false} type="submit" value={'1'}>
+			<button
+				size={'large'}
+				disabled={true}
+				className={'hidden_elem _5n7z _4jy0 _4jy4 _517h _51sy _42ft _42fr'}
+				label={null}
+				onClick={function() {}}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				{undefined}
 				{'Generate Variations'}
 				{undefined}
@@ -1187,10 +1493,10 @@ function runBenchmark(container) {
 	const XUIButtonGroup165 = function() {
 		return (
 			<div className={'_5n7z _51xa'}>
-				<XUIButton149 key={'saveAudience'}/>
+				<XUIButton149 key={'saveAudience'} />
 				<AdsPEExportImportMenuContainer159 />
-				<XUIButton162 key={'createReport'}/>
-				<XUIButton164 key={'variations'}/>
+				<XUIButton162 key={'createReport'} />
+				<XUIButton164 key={'variations'} />
 			</div>
 		);
 	};
@@ -1201,7 +1507,7 @@ function runBenchmark(container) {
 				<span className={'_3c5e'}>
 					<span>
 						<XUIButtonGroup133 />
-						<XUIButton136 key={'edit'}/>
+						<XUIButton136 key={'edit'} />
 						<XUIButtonGroup146 />
 					</span>
 					<XUIButtonGroup165 />
@@ -1213,8 +1519,8 @@ function runBenchmark(container) {
 	const Layout167 = function() {
 		return (
 			<div className={'clearfix'}>
-				<Column124 key={'1'}/>
-				<FillColumn166 key={'0'}/>
+				<Column124 key={'1'} />
+				<FillColumn166 key={'0'} />
 			</div>
 		);
 	};
@@ -1238,14 +1544,24 @@ function runBenchmark(container) {
 
 	const AbstractButton170 = function() {
 		return (
-			<button className={'_tm3 _tm6 _4jy0 _4jy6 _517h _51sy _42ft'} label={null} data-tooltip-position={'right'}
-							aria-label={'Campaigns'} data-hover={'tooltip'} onClick={function() {
-			} }
-							size={'xxlarge'} use={'default'} borderShade={'light'} suppressed={false} type="submit" value={'1'}>
+			<button
+				className={'_tm3 _tm6 _4jy0 _4jy6 _517h _51sy _42ft'}
+				label={null}
+				data-tooltip-position={'right'}
+				aria-label={'Campaigns'}
+				data-hover={'tooltip'}
+				onClick={function() {}}
+				size={'xxlarge'}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				{undefined}
 				<div>
-					<div className={'_tma'}></div>
-					<div className={'_tm8'}></div>
+					<div className={'_tma'} />
+					<div className={'_tm8'} />
 					<div className={'_tm9'}>{1}</div>
 				</div>
 				{undefined}
@@ -1259,14 +1575,24 @@ function runBenchmark(container) {
 
 	const AbstractButton172 = function() {
 		return (
-			<button className={'_tm4 _tm6 _4jy0 _4jy6 _517h _51sy _42ft'} label={null} data-tooltip-position={'right'}
-							aria-label={'Ad Sets'} data-hover={'tooltip'} onClick={function() {
-			} }
-							size={'xxlarge'} use={'default'} borderShade={'light'} suppressed={false} type="submit" value={'1'}>
+			<button
+				className={'_tm4 _tm6 _4jy0 _4jy6 _517h _51sy _42ft'}
+				label={null}
+				data-tooltip-position={'right'}
+				aria-label={'Ad Sets'}
+				data-hover={'tooltip'}
+				onClick={function() {}}
+				size={'xxlarge'}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				{undefined}
 				<div>
-					<div className={'_tma'}></div>
-					<div className={'_tm8'}></div>
+					<div className={'_tma'} />
+					<div className={'_tm8'} />
 					<div className={'_tm9'}>{1}</div>
 				</div>
 				{undefined}
@@ -1280,14 +1606,24 @@ function runBenchmark(container) {
 
 	const AbstractButton174 = function() {
 		return (
-			<button className={'_tm5 _tm6 _tm7 _4jy0 _4jy6 _517h _51sy _42ft'} label={null} data-tooltip-position={'right'}
-							aria-label={'Ads'} data-hover={'tooltip'} onClick={function() {
-			} }
-							size={'xxlarge'} use={'default'} borderShade={'light'} suppressed={false} type="submit" value={'1'}>
+			<button
+				className={'_tm5 _tm6 _tm7 _4jy0 _4jy6 _517h _51sy _42ft'}
+				label={null}
+				data-tooltip-position={'right'}
+				aria-label={'Ads'}
+				data-hover={'tooltip'}
+				onClick={function() {}}
+				size={'xxlarge'}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				{undefined}
 				<div>
-					<div className={'_tma'}></div>
-					<div className={'_tm8'}></div>
+					<div className={'_tma'} />
+					<div className={'_tm8'} />
 					<div className={'_tm9'}>{1}</div>
 				</div>
 				{undefined}
@@ -1320,13 +1656,13 @@ function runBenchmark(container) {
 	const FixedDataTableColumnResizeHandle178 = function() {
 		return (
 			<div className={'_3487 _3488 _3489'} style={{ width: 0, height: 532, left: 0 }}>
-				<div className={'_348a'} style={{ height: 532 }}></div>
+				<div className={'_348a'} style={{ height: 532 }} />
 			</div>
 		);
 	};
 
 	const ReactImage179 = function() {
-		return <i className={'_1cie _1cif img sp_R48dKBxiJkP sx_dc0ad2'} src={null}/>;
+		return <i className={'_1cie _1cif img sp_R48dKBxiJkP sx_dc0ad2'} src={null} />;
 	};
 
 	const AdsPETableHeader180 = function() {
@@ -1340,9 +1676,20 @@ function runBenchmark(container) {
 
 	const TransitionCell181 = function() {
 		return (
-			<div isHeaderCell={true} label={'Ads'} dataKey={0} groupHeaderRenderer={function() {
-			} } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={521} rowIndex={0}
-					 className={'_4lgc _4h2u'} style={{ height: 40, width: 521 }}>
+			<div
+				isHeaderCell={true}
+				label={'Ads'}
+				dataKey={0}
+				groupHeaderRenderer={function() {}}
+				groupHeaderLabels={{}}
+				groupHeaderData={{}}
+				columnKey={undefined}
+				height={40}
+				width={521}
+				rowIndex={0}
+				className={'_4lgc _4h2u'}
+				style={{ height: 40, width: 521 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader180 />
@@ -1363,15 +1710,18 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellGroupImpl183 = function() {
 		return (
-			<div className={'_3pzj'} style={{
-				height: 40,
-				position: 'absolute',
-				width: 521,
-				zIndex: 2,
-				transform: 'translate3d(0px,0px,0)',
-				backfaceVisibility: 'hidden'
-			}}>
-				<FixedDataTableCell182 key={'cell_0'}/>
+			<div
+				className={'_3pzj'}
+				style={{
+					height: 40,
+					position: 'absolute',
+					width: 521,
+					zIndex: 2,
+					transform: 'translate3d(0px,0px,0)',
+					backfaceVisibility: 'hidden',
+				}}
+			>
+				<FixedDataTableCell182 key={'cell_0'} />
 			</div>
 		);
 	};
@@ -1395,9 +1745,20 @@ function runBenchmark(container) {
 
 	const TransitionCell186 = function() {
 		return (
-			<div isHeaderCell={true} label={'Delivery'} dataKey={1} groupHeaderRenderer={function() {
-			} } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={298}
-					 rowIndex={0} className={'_4lgc _4h2u'} style={{ height: 40, width: 298 }}>
+			<div
+				isHeaderCell={true}
+				label={'Delivery'}
+				dataKey={1}
+				groupHeaderRenderer={function() {}}
+				groupHeaderLabels={{}}
+				groupHeaderData={{}}
+				columnKey={undefined}
+				height={40}
+				width={298}
+				rowIndex={0}
+				className={'_4lgc _4h2u'}
+				style={{ height: 40, width: 298 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader185 />
@@ -1427,9 +1788,20 @@ function runBenchmark(container) {
 
 	const TransitionCell189 = function() {
 		return (
-			<div isHeaderCell={true} label={'Performance'} dataKey={2} groupHeaderRenderer={function() {
-			} } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={490}
-					 rowIndex={0} className={'_4lgc _4h2u'} style={{ height: 40, width: 490 }}>
+			<div
+				isHeaderCell={true}
+				label={'Performance'}
+				dataKey={2}
+				groupHeaderRenderer={function() {}}
+				groupHeaderLabels={{}}
+				groupHeaderData={{}}
+				columnKey={undefined}
+				height={40}
+				width={490}
+				rowIndex={0}
+				className={'_4lgc _4h2u'}
+				style={{ height: 40, width: 490 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader188 />
@@ -1459,9 +1831,20 @@ function runBenchmark(container) {
 
 	const TransitionCell192 = function() {
 		return (
-			<div isHeaderCell={true} label={'Overview'} dataKey={3} groupHeaderRenderer={function() {
-			} } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={972}
-					 rowIndex={0} className={'_4lgc _4h2u'} style={{ height: 40, width: 972 }}>
+			<div
+				isHeaderCell={true}
+				label={'Overview'}
+				dataKey={3}
+				groupHeaderRenderer={function() {}}
+				groupHeaderLabels={{}}
+				groupHeaderData={{}}
+				columnKey={undefined}
+				height={40}
+				width={972}
+				rowIndex={0}
+				className={'_4lgc _4h2u'}
+				style={{ height: 40, width: 972 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader191 />
@@ -1491,9 +1874,20 @@ function runBenchmark(container) {
 
 	const TransitionCell195 = function() {
 		return (
-			<div isHeaderCell={true} label={'Creative Assets'} dataKey={4} groupHeaderRenderer={function() {
-			} } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={514}
-					 rowIndex={0} className={'_4lgc _4h2u'} style={{ height: 40, width: 514 }}>
+			<div
+				isHeaderCell={true}
+				label={'Creative Assets'}
+				dataKey={4}
+				groupHeaderRenderer={function() {}}
+				groupHeaderLabels={{}}
+				groupHeaderData={{}}
+				columnKey={undefined}
+				height={40}
+				width={514}
+				rowIndex={0}
+				className={'_4lgc _4h2u'}
+				style={{ height: 40, width: 514 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader194 />
@@ -1523,9 +1917,20 @@ function runBenchmark(container) {
 
 	const TransitionCell198 = function() {
 		return (
-			<div isHeaderCell={true} label={'Toplines'} dataKey={5} groupHeaderRenderer={function() {
-			} } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={0}
-					 rowIndex={0} className={'_4lgc _4h2u'} style={{ height: 40, width: 0 }}>
+			<div
+				isHeaderCell={true}
+				label={'Toplines'}
+				dataKey={5}
+				groupHeaderRenderer={function() {}}
+				groupHeaderLabels={{}}
+				groupHeaderData={{}}
+				columnKey={undefined}
+				height={40}
+				width={0}
+				rowIndex={0}
+				className={'_4lgc _4h2u'}
+				style={{ height: 40, width: 0 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader197 />
@@ -1545,14 +1950,25 @@ function runBenchmark(container) {
 	};
 
 	const AdsPETableHeader200 = function() {
-		return <div className={'_1cig _1vd7 _4h2r'}></div>;
+		return <div className={'_1cig _1vd7 _4h2r'} />;
 	};
 
 	const TransitionCell201 = function() {
 		return (
-			<div isHeaderCell={true} label={''} dataKey={6} groupHeaderRenderer={function() {
-			} } groupHeaderLabels={{}} groupHeaderData={{}} columnKey={undefined} height={40} width={25} rowIndex={0}
-					 className={'_4lgc _4h2u'} style={{ height: 40, width: 25 }}>
+			<div
+				isHeaderCell={true}
+				label={''}
+				dataKey={6}
+				groupHeaderRenderer={function() {}}
+				groupHeaderLabels={{}}
+				groupHeaderData={{}}
+				columnKey={undefined}
+				height={40}
+				width={25}
+				rowIndex={0}
+				className={'_4lgc _4h2u'}
+				style={{ height: 40, width: 25 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader200 />
@@ -1573,20 +1989,23 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellGroupImpl203 = function() {
 		return (
-			<div className={'_3pzj'} style={{
-				height: 40,
-				position: 'absolute',
-				width: 2299,
-				zIndex: 0,
-				transform: 'translate3d(0px,0px,0)',
-				backfaceVisibility: 'hidden'
-			}}>
-				<FixedDataTableCell187 key={'cell_0'}/>
-				<FixedDataTableCell190 key={'cell_1'}/>
-				<FixedDataTableCell193 key={'cell_2'}/>
-				<FixedDataTableCell196 key={'cell_3'}/>
-				<FixedDataTableCell199 key={'cell_4'}/>
-				<FixedDataTableCell202 key={'cell_5'}/>
+			<div
+				className={'_3pzj'}
+				style={{
+					height: 40,
+					position: 'absolute',
+					width: 2299,
+					zIndex: 0,
+					transform: 'translate3d(0px,0px,0)',
+					backfaceVisibility: 'hidden',
+				}}
+			>
+				<FixedDataTableCell187 key={'cell_0'} />
+				<FixedDataTableCell190 key={'cell_1'} />
+				<FixedDataTableCell193 key={'cell_2'} />
+				<FixedDataTableCell196 key={'cell_3'} />
+				<FixedDataTableCell199 key={'cell_4'} />
+				<FixedDataTableCell202 key={'cell_5'} />
 			</div>
 		);
 	};
@@ -1601,13 +2020,19 @@ function runBenchmark(container) {
 
 	const FixedDataTableRowImpl205 = function() {
 		return (
-			<div className={'_1gd4 _4li _52no _3h1a _1mib'} onClick={null} onDoubleClick={null} onMouseDown={null}
-					 onMouseEnter={null} onMouseLeave={null} style={{ width: 1083, height: 40 }}>
+			<div
+				className={'_1gd4 _4li _52no _3h1a _1mib'}
+				onClick={null}
+				onDoubleClick={null}
+				onMouseDown={null}
+				onMouseEnter={null}
+				onMouseLeave={null}
+				style={{ width: 1083, height: 40 }}
+			>
 				<div className={'_1gd5'}>
-					<FixedDataTableCellGroup184 key={'fixed_cells'}/>
-					<FixedDataTableCellGroup204 key={'scrollable_cells'}/>
-					<div className={'_1gd6 _1gd8'} style={{ left: 521, height: 40 }}>
-					</div>
+					<FixedDataTableCellGroup184 key={'fixed_cells'} />
+					<FixedDataTableCellGroup204 key={'scrollable_cells'} />
+					<div className={'_1gd6 _1gd8'} style={{ left: 521, height: 40 }} />
 				</div>
 			</div>
 		);
@@ -1621,9 +2046,10 @@ function runBenchmark(container) {
 					height: 40,
 					zIndex: 1,
 					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden'
+					backfaceVisibility: 'hidden',
 				}}
-				className={'_1gda'}>
+				className={'_1gda'}
+			>
 				<FixedDataTableRowImpl205 />
 			</div>
 		);
@@ -1632,9 +2058,8 @@ function runBenchmark(container) {
 	const AbstractCheckboxInput207 = function() {
 		return (
 			<label className={'_4h2r _55sg _kv1'}>
-				<input checked={undefined} onChange={function() {
-				} } className={null} type={'checkbox'}/>
-				<span data-hover={null} aria-label={undefined}/>
+				<input checked={undefined} onChange={function() {}} className={null} type={'checkbox'} />
+				<span data-hover={null} aria-label={undefined} />
 			</label>
 		);
 	};
@@ -1645,11 +2070,19 @@ function runBenchmark(container) {
 
 	const TransitionCell209 = function() {
 		return (
-			<div isHeaderCell={true} label={undefined} width={42} dataKey={'common.id'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'common.id'} height={25} style={{ height: 25, width: 42 }}>
+			<div
+				isHeaderCell={true}
+				label={undefined}
+				width={42}
+				dataKey={'common.id'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'common.id'}
+				height={25}
+				style={{ height: 25, width: 42 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<XUICheckboxInput208 />
@@ -1679,8 +2112,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader212 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader211 />
@@ -1695,11 +2127,19 @@ function runBenchmark(container) {
 
 	const TransitionCell214 = function() {
 		return (
-			<div isHeaderCell={true} label={'Ad Name'} width={200} dataKey={'ad.name'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'ad.name'} height={25} style={{ height: 25, width: 200 }}>
+			<div
+				isHeaderCell={true}
+				label={'Ad Name'}
+				width={200}
+				dataKey={'ad.name'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'ad.name'}
+				height={25}
+				style={{ height: 25, width: 200 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader213 />
@@ -1712,9 +2152,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell215 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 200, left: 42 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell214 />
 			</div>
@@ -1722,7 +2161,7 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage216 = function() {
-		return <i className={'_1cie img sp_UuU9HmrQ397 sx_844e7d'} src={null}></i>;
+		return <i className={'_1cie img sp_UuU9HmrQ397 sx_844e7d'} src={null} />;
 	};
 
 	const AdsPETableHeader217 = function() {
@@ -1736,13 +2175,11 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader218 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _1kst _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _1kst _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader217 />
-				</div
-				>
+				</div>
 			</div>
 		);
 	};
@@ -1753,11 +2190,19 @@ function runBenchmark(container) {
 
 	const TransitionCell220 = function() {
 		return (
-			<div isHeaderCell={true} label={undefined} width={33} dataKey={'edit_status'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'edit_status'} height={25} style={{ height: 25, width: 33 }}>
+			<div
+				isHeaderCell={true}
+				label={undefined}
+				width={33}
+				dataKey={'edit_status'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'edit_status'}
+				height={25}
+				style={{ height: 25, width: 33 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader219 />
@@ -1777,7 +2222,7 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage222 = function() {
-		return <i className={'_1cie img sp_UuU9HmrQ397 sx_36dc45'} src={null}></i>;
+		return <i className={'_1cie img sp_UuU9HmrQ397 sx_36dc45'} src={null} />;
 	};
 
 	const AdsPETableHeader223 = function() {
@@ -1791,8 +2236,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader224 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _1kst _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _1kst _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader223 />
@@ -1807,11 +2251,19 @@ function runBenchmark(container) {
 
 	const TransitionCell226 = function() {
 		return (
-			<div isHeaderCell={true} label={undefined} width={36} dataKey={'errors'} className={'_4lgc _4h2u'} columnData={{}}
-					 cellRenderer={function() {
-					 } } headerDataGetter={function() {
-			} }
-					 columnKey={'errors'} height={25} style={{ height: 25, width: 36 }}>
+			<div
+				isHeaderCell={true}
+				label={undefined}
+				width={36}
+				dataKey={'errors'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'errors'}
+				height={25}
+				style={{ height: 25, width: 36 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader225 />
@@ -1841,8 +2293,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader229 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader228 />
@@ -1857,11 +2308,19 @@ function runBenchmark(container) {
 
 	const TransitionCell231 = function() {
 		return (
-			<div isHeaderCell={true} label={'Status'} width={60} dataKey={'ad.adgroup_status'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'ad.adgroup_status'} height={25} style={{ height: 25, width: 60 }}>
+			<div
+				isHeaderCell={true}
+				label={'Status'}
+				width={60}
+				dataKey={'ad.adgroup_status'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'ad.adgroup_status'}
+				height={25}
+				style={{ height: 25, width: 60 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader230 />
@@ -1891,8 +2350,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader234 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader233 />
@@ -1907,11 +2365,19 @@ function runBenchmark(container) {
 
 	const TransitionCell236 = function() {
 		return (
-			<div isHeaderCell={true} label={'Delivery'} width={150} dataKey={'ukiAdData.computed_activity_status'}
-					 className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'ukiAdData.computed_activity_status'} height={25} style={{ height: 25, width: 150 }}>
+			<div
+				isHeaderCell={true}
+				label={'Delivery'}
+				width={150}
+				dataKey={'ukiAdData.computed_activity_status'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'ukiAdData.computed_activity_status'}
+				height={25}
+				style={{ height: 25, width: 150 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader235 />
@@ -1924,9 +2390,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell237 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 150, left: 371 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell236 />
 			</div>
@@ -1935,20 +2400,23 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellGroupImpl238 = function() {
 		return (
-			<div className={'_3pzj'} style={{
-				height: 25,
-				position: 'absolute',
-				width: 521,
-				zIndex: 2,
-				transform: 'translate3d(0px,0px,0)',
-				backfaceVisibility: 'hidden'
-			}}>
-				<FixedDataTableCell210 key={'cell_0'}/>
-				<FixedDataTableCell215 key={'cell_1'}/>
-				<FixedDataTableCell221 key={'cell_2'}/>
-				<FixedDataTableCell227 key={'cell_3'}/>
-				<FixedDataTableCell232 key={'cell_4'}/>
-				<FixedDataTableCell237 key={'cell_5'}/>
+			<div
+				className={'_3pzj'}
+				style={{
+					height: 25,
+					position: 'absolute',
+					width: 521,
+					zIndex: 2,
+					transform: 'translate3d(0px,0px,0)',
+					backfaceVisibility: 'hidden',
+				}}
+			>
+				<FixedDataTableCell210 key={'cell_0'} />
+				<FixedDataTableCell215 key={'cell_1'} />
+				<FixedDataTableCell221 key={'cell_2'} />
+				<FixedDataTableCell227 key={'cell_3'} />
+				<FixedDataTableCell232 key={'cell_4'} />
+				<FixedDataTableCell237 key={'cell_5'} />
 			</div>
 		);
 	};
@@ -1972,8 +2440,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader241 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader240 />
@@ -1988,11 +2455,19 @@ function runBenchmark(container) {
 
 	const TransitionCell243 = function() {
 		return (
-			<div isHeaderCell={true} label={'Reach'} width={60} dataKey={'stats.unique_impressions'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'stats.unique_impressions'} height={25} style={{ height: 25, width: 60 }}>
+			<div
+				isHeaderCell={true}
+				label={'Reach'}
+				width={60}
+				dataKey={'stats.unique_impressions'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'stats.unique_impressions'}
+				height={25}
+				style={{ height: 25, width: 60 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader242 />
@@ -2005,9 +2480,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell244 = function() {
 		return (
 			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 60, left: 0 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell243 />
 			</div>
@@ -2025,8 +2499,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader246 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader245 />
@@ -2041,11 +2514,19 @@ function runBenchmark(container) {
 
 	const TransitionCell248 = function() {
 		return (
-			<div isHeaderCell={true} label={'Ad Impressions'} width={80} dataKey={'stats.impressions'}
-					 className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'stats.impressions'} height={25} style={{ height: 25, width: 80 }}>
+			<div
+				isHeaderCell={true}
+				label={'Ad Impressions'}
+				width={80}
+				dataKey={'stats.impressions'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'stats.impressions'}
+				height={25}
+				style={{ height: 25, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader247 />
@@ -2058,9 +2539,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell249 = function() {
 		return (
 			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 80, left: 60 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell248 />
 			</div>
@@ -2078,8 +2558,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader251 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader250 />
@@ -2094,11 +2573,19 @@ function runBenchmark(container) {
 
 	const TransitionCell253 = function() {
 		return (
-			<div isHeaderCell={true} label={'Avg. CPM'} width={80} dataKey={'stats.avg_cpm'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'stats.avg_cpm'} height={25} style={{ height: 25, width: 80 }}>
+			<div
+				isHeaderCell={true}
+				label={'Avg. CPM'}
+				width={80}
+				dataKey={'stats.avg_cpm'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'stats.avg_cpm'}
+				height={25}
+				style={{ height: 25, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader252 />
@@ -2111,9 +2598,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell254 = function() {
 		return (
 			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 80, left: 140 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell253 />
 			</div>
@@ -2131,8 +2617,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader256 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader255 />
@@ -2147,11 +2632,19 @@ function runBenchmark(container) {
 
 	const TransitionCell258 = function() {
 		return (
-			<div isHeaderCell={true} label={'Avg. CPC'} width={78} dataKey={'stats.avg_cpc'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'stats.avg_cpc'} height={25} style={{ height: 25, width: 78 }}>
+			<div
+				isHeaderCell={true}
+				label={'Avg. CPC'}
+				width={78}
+				dataKey={'stats.avg_cpc'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'stats.avg_cpc'}
+				height={25}
+				style={{ height: 25, width: 78 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader257 />
@@ -2164,9 +2657,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell259 = function() {
 		return (
 			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 78, left: 220 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell258 />
 			</div>
@@ -2184,18 +2676,24 @@ function runBenchmark(container) {
 
 	const TransitionCell261 = function() {
 		return (
-			<div isHeaderCell={true} label={'Results'} width={140} dataKey={'stats.actions'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'stats.actions'} height={25} style={{ height: 25, width: 140 }}>
+			<div
+				isHeaderCell={true}
+				label={'Results'}
+				width={140}
+				dataKey={'stats.actions'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'stats.actions'}
+				height={25}
+				style={{ height: 25, width: 140 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader260 />
-					</div
-					>
-				</div
-				>
+					</div>
+				</div>
 			</div>
 		);
 	};
@@ -2203,9 +2701,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell262 = function() {
 		return (
 			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 140, left: 298 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell261 />
 			</div>
@@ -2223,11 +2720,19 @@ function runBenchmark(container) {
 
 	const TransitionCell264 = function() {
 		return (
-			<div isHeaderCell={true} label={'Cost'} width={140} dataKey={'stats.cpa'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'stats.cpa'} height={25} style={{ height: 25, width: 140 }}>
+			<div
+				isHeaderCell={true}
+				label={'Cost'}
+				width={140}
+				dataKey={'stats.cpa'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'stats.cpa'}
+				height={25}
+				style={{ height: 25, width: 140 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader263 />
@@ -2240,9 +2745,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell265 = function() {
 		return (
 			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 140, left: 438 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell264 />
 			</div>
@@ -2260,8 +2764,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader267 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader266 />
@@ -2276,11 +2779,19 @@ function runBenchmark(container) {
 
 	const TransitionCell269 = function() {
 		return (
-			<div isHeaderCell={true} label={'Clicks'} width={60} dataKey={'stats.clicks'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'stats.clicks'} height={25} style={{ height: 25, width: 60 }}>
+			<div
+				isHeaderCell={true}
+				label={'Clicks'}
+				width={60}
+				dataKey={'stats.clicks'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'stats.clicks'}
+				height={25}
+				style={{ height: 25, width: 60 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader268 />
@@ -2293,9 +2804,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell270 = function() {
 		return (
 			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 60, left: 578 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell269 />
 			</div>
@@ -2313,8 +2823,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader272 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader271 />
@@ -2329,11 +2838,19 @@ function runBenchmark(container) {
 
 	const TransitionCell274 = function() {
 		return (
-			<div isHeaderCell={true} label={'CTR %'} width={70} dataKey={'stats.ctr'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'stats.ctr'} height={25} style={{ height: 25, width: 70 }}>
+			<div
+				isHeaderCell={true}
+				label={'CTR %'}
+				width={70}
+				dataKey={'stats.ctr'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'stats.ctr'}
+				height={25}
+				style={{ height: 25, width: 70 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader273 />
@@ -2346,9 +2863,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell275 = function() {
 		return (
 			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 70, left: 638 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell274 />
 			</div>
@@ -2366,8 +2882,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader277 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader276 />
@@ -2382,11 +2897,19 @@ function runBenchmark(container) {
 
 	const TransitionCell279 = function() {
 		return (
-			<div isHeaderCell={true} label={'Social %'} width={80} dataKey={'stats.social_percent'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'stats.social_percent'} height={25} style={{ height: 25, width: 80 }}>
+			<div
+				isHeaderCell={true}
+				label={'Social %'}
+				width={80}
+				dataKey={'stats.social_percent'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'stats.social_percent'}
+				height={25}
+				style={{ height: 25, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader278 />
@@ -2399,9 +2922,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell280 = function() {
 		return (
 			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 80, left: 708 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell279 />
 			</div>
@@ -2419,8 +2941,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader282 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader281 />
@@ -2435,11 +2956,19 @@ function runBenchmark(container) {
 
 	const TransitionCell284 = function() {
 		return (
-			<div isHeaderCell={true} label={'Ad Set Name'} width={100} dataKey={'campaign.name'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'campaign.name'} height={25} style={{ height: 25, width: 100 }}>
+			<div
+				isHeaderCell={true}
+				label={'Ad Set Name'}
+				width={100}
+				dataKey={'campaign.name'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'campaign.name'}
+				height={25}
+				style={{ height: 25, width: 100 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader283 />
@@ -2452,9 +2981,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell285 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 100, left: 788 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell284 />
 			</div>
@@ -2472,8 +3000,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader287 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader286 />
@@ -2488,11 +3015,19 @@ function runBenchmark(container) {
 
 	const TransitionCell289 = function() {
 		return (
-			<div isHeaderCell={true} label={'Campaign Name'} width={150} dataKey={'campaignGroup.name'}
-					 className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'campaignGroup.name'} height={25} style={{ height: 25, width: 150 }}>
+			<div
+				isHeaderCell={true}
+				label={'Campaign Name'}
+				width={150}
+				dataKey={'campaignGroup.name'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'campaignGroup.name'}
+				height={25}
+				style={{ height: 25, width: 150 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader288 />
@@ -2505,9 +3040,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell290 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 150, left: 888 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell289 />
 			</div>
@@ -2525,8 +3059,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader292 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader291 />
@@ -2541,11 +3074,19 @@ function runBenchmark(container) {
 
 	const TransitionCell294 = function() {
 		return (
-			<div isHeaderCell={true} label={'Ad ID'} width={120} dataKey={'ad.id'} className={'_4lgc _4h2u'} columnData={{}}
-					 cellRenderer={function() {
-					 } } headerDataGetter={function() {
-			} }
-					 columnKey={'ad.id'} height={25} style={{ height: 25, width: 120 }}>
+			<div
+				isHeaderCell={true}
+				label={'Ad ID'}
+				width={120}
+				dataKey={'ad.id'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'ad.id'}
+				height={25}
+				style={{ height: 25, width: 120 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader293 />
@@ -2558,9 +3099,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell295 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 120, left: 1038 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell294 />
 			</div>
@@ -2578,8 +3118,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader297 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader296 />
@@ -2594,11 +3133,19 @@ function runBenchmark(container) {
 
 	const TransitionCell299 = function() {
 		return (
-			<div isHeaderCell={true} label={'Objective'} width={80} dataKey={'campaignGroup.objective'}
-					 className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'campaignGroup.objective'} height={25} style={{ height: 25, width: 80 }}>
+			<div
+				isHeaderCell={true}
+				label={'Objective'}
+				width={80}
+				dataKey={'campaignGroup.objective'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'campaignGroup.objective'}
+				height={25}
+				style={{ height: 25, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader298 />
@@ -2611,9 +3158,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell300 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 80, left: 1158 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell299 />
 			</div>
@@ -2631,8 +3177,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader302 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader301 />
@@ -2647,11 +3192,19 @@ function runBenchmark(container) {
 
 	const TransitionCell304 = function() {
 		return (
-			<div isHeaderCell={true} label={'Spent'} width={70} dataKey={'stats.spent_100'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'stats.spent_100'} height={25} style={{ height: 25, width: 70 }}>
+			<div
+				isHeaderCell={true}
+				label={'Spent'}
+				width={70}
+				dataKey={'stats.spent_100'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'stats.spent_100'}
+				height={25}
+				style={{ height: 25, width: 70 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader303 />
@@ -2664,9 +3217,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell305 = function() {
 		return (
 			<div className={'_4lg0 _4lg5 _4h2p _4h2m'} style={{ height: 25, width: 70, left: 1238 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell304 />
 			</div>
@@ -2684,8 +3236,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader307 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader306 />
@@ -2700,11 +3251,19 @@ function runBenchmark(container) {
 
 	const TransitionCell309 = function() {
 		return (
-			<div isHeaderCell={true} label={'Start'} width={113} dataKey={'derivedCampaign.startDate'}
-					 className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'derivedCampaign.startDate'} height={25} style={{ height: 25, width: 113 }}>
+			<div
+				isHeaderCell={true}
+				label={'Start'}
+				width={113}
+				dataKey={'derivedCampaign.startDate'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'derivedCampaign.startDate'}
+				height={25}
+				style={{ height: 25, width: 113 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader308 />
@@ -2717,9 +3276,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell310 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1308 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell309 />
 			</div>
@@ -2737,8 +3295,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader312 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader311 />
@@ -2753,11 +3310,19 @@ function runBenchmark(container) {
 
 	const TransitionCell314 = function() {
 		return (
-			<div isHeaderCell={true} label={'End'} width={113} dataKey={'derivedCampaign.endDate'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'derivedCampaign.endDate'} height={25} style={{ height: 25, width: 113 }}>
+			<div
+				isHeaderCell={true}
+				label={'End'}
+				width={113}
+				dataKey={'derivedCampaign.endDate'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'derivedCampaign.endDate'}
+				height={25}
+				style={{ height: 25, width: 113 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader313 />
@@ -2770,9 +3335,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell315 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1421 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell314 />
 			</div>
@@ -2790,8 +3354,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader317 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader316 />
@@ -2806,11 +3369,19 @@ function runBenchmark(container) {
 
 	const TransitionCell319 = function() {
 		return (
-			<div isHeaderCell={true} label={'Date created'} width={113} dataKey={'ad.created_time'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'ad.created_time'} height={25} style={{ height: 25, width: 113 }}>
+			<div
+				isHeaderCell={true}
+				label={'Date created'}
+				width={113}
+				dataKey={'ad.created_time'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'ad.created_time'}
+				height={25}
+				style={{ height: 25, width: 113 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader318 />
@@ -2823,9 +3394,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell320 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1534 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell319 />
 			</div>
@@ -2843,8 +3413,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader322 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader321 />
@@ -2859,11 +3428,19 @@ function runBenchmark(container) {
 
 	const TransitionCell324 = function() {
 		return (
-			<div isHeaderCell={true} label={'Date last edited'} width={113} dataKey={'ad.updated_time'}
-					 className={'_4lgc _4h2u'} columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'ad.updated_time'} height={25} style={{ height: 25, width: 113 }}>
+			<div
+				isHeaderCell={true}
+				label={'Date last edited'}
+				width={113}
+				dataKey={'ad.updated_time'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'ad.updated_time'}
+				height={25}
+				style={{ height: 25, width: 113 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader323 />
@@ -2876,9 +3453,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell325 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 113, left: 1647 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell324 />
 			</div>
@@ -2896,8 +3472,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader327 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader326 />
@@ -2912,11 +3487,19 @@ function runBenchmark(container) {
 
 	const TransitionCell329 = function() {
 		return (
-			<div isHeaderCell={true} label={'Title'} width={80} dataKey={'ad.title'} className={'_4lgc _4h2u'} columnData={{}}
-					 cellRenderer={function() {
-					 } } headerDataGetter={function() {
-			} }
-					 columnKey={'ad.title'} height={25} style={{ height: 25, width: 80 }}>
+			<div
+				isHeaderCell={true}
+				label={'Title'}
+				width={80}
+				dataKey={'ad.title'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'ad.title'}
+				height={25}
+				style={{ height: 25, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader328 />
@@ -2929,11 +3512,10 @@ function runBenchmark(container) {
 	const FixedDataTableCell330 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 80, left: 1760 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
-				<TransitionCell329/>
+				<TransitionCell329 />
 			</div>
 		);
 	};
@@ -2949,8 +3531,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader332 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader331 />
@@ -2965,11 +3546,19 @@ function runBenchmark(container) {
 
 	const TransitionCell334 = function() {
 		return (
-			<div isHeaderCell={true} label={'Body'} width={80} dataKey={'ad.creative.body'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'ad.creative.body'} height={25} style={{ height: 25, width: 80 }}>
+			<div
+				isHeaderCell={true}
+				label={'Body'}
+				width={80}
+				dataKey={'ad.creative.body'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'ad.creative.body'}
+				height={25}
+				style={{ height: 25, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader333 />
@@ -2982,9 +3571,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell335 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 80, left: 1840 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell334 />
 			</div>
@@ -3002,8 +3590,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader337 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader336 />
@@ -3018,11 +3605,19 @@ function runBenchmark(container) {
 
 	const TransitionCell339 = function() {
 		return (
-			<div isHeaderCell={true} label={'Destination'} width={92} dataKey={'destination'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'destination'} height={25} style={{ height: 25, width: 92 }}>
+			<div
+				isHeaderCell={true}
+				label={'Destination'}
+				width={92}
+				dataKey={'destination'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'destination'}
+				height={25}
+				style={{ height: 25, width: 92 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader338 />
@@ -3035,9 +3630,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell340 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 92, left: 1920 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell339 />
 			</div>
@@ -3055,8 +3649,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader342 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader341 />
@@ -3071,11 +3664,19 @@ function runBenchmark(container) {
 
 	const TransitionCell344 = function() {
 		return (
-			<div isHeaderCell={true} label={'Link'} width={70} dataKey={'ad.creative.link_url'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'ad.creative.link_url'} height={25} style={{ height: 25, width: 70 }}>
+			<div
+				isHeaderCell={true}
+				label={'Link'}
+				width={70}
+				dataKey={'ad.creative.link_url'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'ad.creative.link_url'}
+				height={25}
+				style={{ height: 25, width: 70 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader343 />
@@ -3088,9 +3689,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell345 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 70, left: 2012 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell344 />
 			</div>
@@ -3108,8 +3708,7 @@ function runBenchmark(container) {
 
 	const FixedDataTableAbstractSortableHeader347 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_54_8 _4h2r _2wzx'}>
+			<div onClick={function() {}} className={'_54_8 _4h2r _2wzx'}>
 				<div className={'_2eq6'}>
 					{null}
 					<AdsPETableHeader346 />
@@ -3124,11 +3723,19 @@ function runBenchmark(container) {
 
 	const TransitionCell349 = function() {
 		return (
-			<div isHeaderCell={true} label={'Related Page'} width={92} dataKey={'page'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'page'} height={25} style={{ height: 25, width: 92 }}>
+			<div
+				isHeaderCell={true}
+				label={'Related Page'}
+				width={92}
+				dataKey={'page'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'page'}
+				height={25}
+				style={{ height: 25, width: 92 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<FixedDataTableSortableHeader348 />
@@ -3141,9 +3748,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell350 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 92, left: 2082 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell349 />
 			</div>
@@ -3161,11 +3767,19 @@ function runBenchmark(container) {
 
 	const TransitionCell352 = function() {
 		return (
-			<div isHeaderCell={true} label={'Preview Link'} width={100} dataKey={'ad.demolink_hash'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} }
-					 headerDataGetter={function() {
-					 } } columnKey={'ad.demolink_hash'} height={25} style={{ height: 25, width: 100 }}>
+			<div
+				isHeaderCell={true}
+				label={'Preview Link'}
+				width={100}
+				dataKey={'ad.demolink_hash'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'ad.demolink_hash'}
+				height={25}
+				style={{ height: 25, width: 100 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader351 />
@@ -3178,9 +3792,8 @@ function runBenchmark(container) {
 	const FixedDataTableCell353 = function() {
 		return (
 			<div className={'_4lg0 _4h2m'} style={{ height: 25, width: 100, left: 2174 }}>
-				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {
-				} }>
-					<div className={'_4lga _4lgb'} style={{ height: 25 }}></div>
+				<div className={'_4lg9'} style={{ height: 25 }} onMouseDown={function() {}}>
+					<div className={'_4lga _4lgb'} style={{ height: 25 }} />
 				</div>
 				<TransitionCell352 />
 			</div>
@@ -3188,16 +3801,24 @@ function runBenchmark(container) {
 	};
 
 	const AdsPETableHeader354 = function() {
-		return <div className={'_1cig _25fg _4h2r'}></div>;
+		return <div className={'_1cig _25fg _4h2r'} />;
 	};
 
 	const TransitionCell355 = function() {
 		return (
-			<div isHeaderCell={true} label={''} width={25} dataKey={'scrollbar_spacer'} className={'_4lgc _4h2u'}
-					 columnData={{}} cellRenderer={function() {
-			} } headerDataGetter={function() {
-			} }
-					 columnKey={'scrollbar_spacer'} height={25} style={{ height: 25, width: 25 }}>
+			<div
+				isHeaderCell={true}
+				label={''}
+				width={25}
+				dataKey={'scrollbar_spacer'}
+				className={'_4lgc _4h2u'}
+				columnData={{}}
+				cellRenderer={function() {}}
+				headerDataGetter={function() {}}
+				columnKey={'scrollbar_spacer'}
+				height={25}
+				style={{ height: 25, width: 25 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsPETableHeader354 />
@@ -3218,41 +3839,43 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellGroupImpl357 = function() {
 		return (
-			<div className={'_3pzj'} style={{
-				height: 25,
-				position: 'absolute',
-				width: 2299,
-				zIndex: 0,
-				transform: 'translate3d(0px,0px,0)',
-				backfaceVisibility: 'hidden'
-			}}>
-				<FixedDataTableCell244 key={'cell_0'}/>
-				<FixedDataTableCell249 key={'cell_1'}/>
-				<FixedDataTableCell254 key={'cell_2'}/>
-				<FixedDataTableCell259 key={'cell_3'}/>
-				<FixedDataTableCell262 key={'cell_4'}/>
-				<FixedDataTableCell265 key={'cell_5'}/>
-				<FixedDataTableCell270 key={'cell_6'}/>
-				<FixedDataTableCell275 key={'cell_7'}/>
-				<FixedDataTableCell280 key={'cell_8'}/>
-				<FixedDataTableCell285 key={'cell_9'}/>
-				<FixedDataTableCell290 key={'cell_10'}/>
-				<FixedDataTableCell295 key={'cell_11'}/>
-				<FixedDataTableCell300 key={'cell_12'}/>
-				<FixedDataTableCell305 key={'cell_13'}/>
-				<FixedDataTableCell310 key={'cell_14'}/>
-				<FixedDataTableCell315 key={'cell_15'}/>
-				<FixedDataTableCell320 key={'cell_16'}/>
-				<FixedDataTableCell325 key={'cell_17'}/>
-				<FixedDataTableCell330 key={'cell_18'}/>
-				<FixedDataTableCell335 key={'cell_19'}/>
-				<FixedDataTableCell340 key={'cell_20'}/>
-				<FixedDataTableCell345 key={'cell_21'}/>
-				<FixedDataTableCell350 key={'cell_22'}/>
-				<FixedDataTableCell353 key={'cell_23'}/>
-				<FixedDataTableCell356 key={'cell_24'}/>
-			</div
+			<div
+				className={'_3pzj'}
+				style={{
+					height: 25,
+					position: 'absolute',
+					width: 2299,
+					zIndex: 0,
+					transform: 'translate3d(0px,0px,0)',
+					backfaceVisibility: 'hidden',
+				}}
 			>
+				<FixedDataTableCell244 key={'cell_0'} />
+				<FixedDataTableCell249 key={'cell_1'} />
+				<FixedDataTableCell254 key={'cell_2'} />
+				<FixedDataTableCell259 key={'cell_3'} />
+				<FixedDataTableCell262 key={'cell_4'} />
+				<FixedDataTableCell265 key={'cell_5'} />
+				<FixedDataTableCell270 key={'cell_6'} />
+				<FixedDataTableCell275 key={'cell_7'} />
+				<FixedDataTableCell280 key={'cell_8'} />
+				<FixedDataTableCell285 key={'cell_9'} />
+				<FixedDataTableCell290 key={'cell_10'} />
+				<FixedDataTableCell295 key={'cell_11'} />
+				<FixedDataTableCell300 key={'cell_12'} />
+				<FixedDataTableCell305 key={'cell_13'} />
+				<FixedDataTableCell310 key={'cell_14'} />
+				<FixedDataTableCell315 key={'cell_15'} />
+				<FixedDataTableCell320 key={'cell_16'} />
+				<FixedDataTableCell325 key={'cell_17'} />
+				<FixedDataTableCell330 key={'cell_18'} />
+				<FixedDataTableCell335 key={'cell_19'} />
+				<FixedDataTableCell340 key={'cell_20'} />
+				<FixedDataTableCell345 key={'cell_21'} />
+				<FixedDataTableCell350 key={'cell_22'} />
+				<FixedDataTableCell353 key={'cell_23'} />
+				<FixedDataTableCell356 key={'cell_24'} />
+			</div>
 		);
 	};
 
@@ -3266,12 +3889,19 @@ function runBenchmark(container) {
 
 	const FixedDataTableRowImpl359 = function() {
 		return (
-			<div className={'_1gd4 _4li _3h1a _1mib'} onClick={null} onDoubleClick={null} onMouseDown={null}
-					 onMouseEnter={null} onMouseLeave={null} style={{ width: 1083, height: 25 }}>
+			<div
+				className={'_1gd4 _4li _3h1a _1mib'}
+				onClick={null}
+				onDoubleClick={null}
+				onMouseDown={null}
+				onMouseEnter={null}
+				onMouseLeave={null}
+				style={{ width: 1083, height: 25 }}
+			>
 				<div className={'_1gd5'}>
-					<FixedDataTableCellGroup239 key={'fixed_cells'}/>
-					<FixedDataTableCellGroup358 key={'scrollable_cells'}/>
-					<div className={'_1gd6 _1gd8'} style={{ left: 521, height: 25 }}></div>
+					<FixedDataTableCellGroup239 key={'fixed_cells'} />
+					<FixedDataTableCellGroup358 key={'scrollable_cells'} />
+					<div className={'_1gd6 _1gd8'} style={{ left: 521, height: 25 }} />
 				</div>
 			</div>
 		);
@@ -3285,9 +3915,10 @@ function runBenchmark(container) {
 					height: 25,
 					zIndex: 1,
 					transform: 'translate3d(0px,40px,0)',
-					backfaceVisibility: 'hidden'
+					backfaceVisibility: 'hidden',
 				}}
-				className={'_1gda'}>
+				className={'_1gda'}
+			>
 				<FixedDataTableRowImpl359 />
 			</div>
 		);
@@ -3296,9 +3927,16 @@ function runBenchmark(container) {
 	const AbstractCheckboxInput361 = function() {
 		return (
 			<label className={'_5hhv _55sg _kv1'}>
-				<input className={null} disabled={false} inline={true} checked={true} value={undefined} onChange={function() {
-				} } type={'checkbox'}/>
-				<span data-hover={null} aria-label={undefined}/>
+				<input
+					className={null}
+					disabled={false}
+					inline={true}
+					checked={true}
+					value={undefined}
+					onChange={function() {}}
+					type={'checkbox'}
+				/>
+				<span data-hover={null} aria-label={undefined} />
 			</label>
 		);
 	};
@@ -3309,15 +3947,22 @@ function runBenchmark(container) {
 
 	const TransitionCell363 = function() {
 		return (
-			<div dataKey={'common.id'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={42} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'common.id'} height={32} rowIndex={0} style={{ height: 32, width: 42 }}>
+			<div
+				dataKey={'common.id'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={42}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'common.id'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 42 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
-						<span className={'_5hhu _4h2r'} onMouseDown={function() {
-						} }>
+						<span className={'_5hhu _4h2r'} onMouseDown={function() {}}>
 							<XUICheckboxInput362 />
 						</span>
 					</div>
@@ -3337,13 +3982,10 @@ function runBenchmark(container) {
 
 	const AdsEditableTextCellDisplay365 = function() {
 		return (
-			<div className={'_vew'} onDoubleClick={function() {
-			} } onMouseEnter={function() {
-			} } onMouseLeave={function() {
-			} }>
+			<div className={'_vew'} onDoubleClick={function() {}} onMouseEnter={function() {}} onMouseLeave={function() {}}>
 				<div className={'_vex _5w6k'}>
 					<div className={'_vey'}>{'Test Ad'}</div>
-					<div className={'_5w6_'}></div>
+					<div className={'_5w6_'} />
 				</div>
 			</div>
 		);
@@ -3359,11 +4001,19 @@ function runBenchmark(container) {
 
 	const TransitionCell367 = function() {
 		return (
-			<div dataKey={'ad.name'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={200} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'ad.name'} height={32} rowIndex={0} style={{ height: 32, width: 200 }}>
+			<div
+				dataKey={'ad.name'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={200}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'ad.name'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 200 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<AdsEditableCell366 />
@@ -3384,11 +4034,19 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellDefault369 = function() {
 		return (
-			<div dataKey={'edit_status'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={33} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'edit_status'} height={32} rowIndex={0} style={{ height: 32, width: 33 }}>
+			<div
+				dataKey={'edit_status'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={33}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'edit_status'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 33 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_4h2r'}>{''}</div>
@@ -3413,14 +4071,22 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellDefault372 = function() {
 		return (
-			<div dataKey={'errors'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={36} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} } columnKey={'errors'}
-					 height={32} rowIndex={0} style={{ height: 32, width: 36 }}>
+			<div
+				dataKey={'errors'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={36}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'errors'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 36 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
-						<div className={'_4h2r'}></div>
+						<div className={'_4h2r'} />
 					</div>
 				</div>
 			</div>
@@ -3442,15 +4108,26 @@ function runBenchmark(container) {
 
 	const BUISwitch375 = function() {
 		return (
-			<div value={true} disabled={true} onToggle={function() {
-			} } data-hover={'tooltip'} data-tooltip-position={'below'}
-					 aria-label={'Currently active and you can not deactivate it.'} animate={true}
-					 className={'_128j _128k _128m _128n'} role={'checkbox'} aria-checked={'true'}>
-				<div className={'_128o'} onClick={function() {
-				} } onKeyDown={function() {
-				} } onMouseDown={function() {
-				} } tabIndex={'-1'}>
-					<div className={'_128p'}></div>
+			<div
+				value={true}
+				disabled={true}
+				onToggle={function() {}}
+				data-hover={'tooltip'}
+				data-tooltip-position={'below'}
+				aria-label={'Currently active and you can not deactivate it.'}
+				animate={true}
+				className={'_128j _128k _128m _128n'}
+				role={'checkbox'}
+				aria-checked={'true'}
+			>
+				<div
+					className={'_128o'}
+					onClick={function() {}}
+					onKeyDown={function() {}}
+					onMouseDown={function() {}}
+					tabIndex={'-1'}
+				>
+					<div className={'_128p'} />
 				</div>
 				{null}
 			</div>
@@ -3467,11 +4144,19 @@ function runBenchmark(container) {
 
 	const TransitionCell378 = function() {
 		return (
-			<div dataKey={'ad.adgroup_status'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={60} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'ad.adgroup_status'} height={32} rowIndex={0} style={{ height: 32, width: 60 }}>
+			<div
+				dataKey={'ad.adgroup_status'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={60}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'ad.adgroup_status'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 60 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_15si _4h2r'}>
@@ -3493,8 +4178,16 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage380 = function() {
-		return <i aria-label={'Pending Review'} data-hover={'tooltip'} className={'_4ms8 img sp_UuU9HmrQ397 sx_ced63f'}
-							src={null} width={'7'} height={'7'}></i>;
+		return (
+			<i
+				aria-label={'Pending Review'}
+				data-hover={'tooltip'}
+				className={'_4ms8 img sp_UuU9HmrQ397 sx_ced63f'}
+				src={null}
+				width={'7'}
+				height={'7'}
+			/>
+		);
 	};
 
 	const AdsPEActivityStatusIndicator381 = function() {
@@ -3509,12 +4202,19 @@ function runBenchmark(container) {
 
 	const TransitionCell382 = function() {
 		return (
-			<div dataKey={'ukiAdData.computed_activity_status'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={150} columnData={{}} cellDataGetter={function() {
-			} }
-					 cellRenderer={function() {
-					 } } columnKey={'ukiAdData.computed_activity_status'} height={32} rowIndex={0}
-					 style={{ height: 32, width: 150 }}>
+			<div
+				dataKey={'ukiAdData.computed_activity_status'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={150}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'ukiAdData.computed_activity_status'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 150 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>
@@ -3537,20 +4237,23 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellGroupImpl384 = function() {
 		return (
-			<div className={'_3pzj'} style={{
-				height: 32,
-				position: 'absolute',
-				width: 521,
-				zIndex: 2,
-				transform: 'translate3d(0px,0px,0)',
-				backfaceVisibility: 'hidden'
-			}}>
-				<FixedDataTableCell364 key={'cell_0'}/>
-				<FixedDataTableCell368 key={'cell_1'}/>
-				<FixedDataTableCell371 key={'cell_2'}/>
-				<FixedDataTableCell374 key={'cell_3'}/>
-				<FixedDataTableCell379 key={'cell_4'}/>
-				<FixedDataTableCell383 key={'cell_5'}/>
+			<div
+				className={'_3pzj'}
+				style={{
+					height: 32,
+					position: 'absolute',
+					width: 521,
+					zIndex: 2,
+					transform: 'translate3d(0px,0px,0)',
+					backfaceVisibility: 'hidden',
+				}}
+			>
+				<FixedDataTableCell364 key={'cell_0'} />
+				<FixedDataTableCell368 key={'cell_1'} />
+				<FixedDataTableCell371 key={'cell_2'} />
+				<FixedDataTableCell374 key={'cell_3'} />
+				<FixedDataTableCell379 key={'cell_4'} />
+				<FixedDataTableCell383 key={'cell_5'} />
 			</div>
 		);
 	};
@@ -3565,11 +4268,19 @@ function runBenchmark(container) {
 
 	const TransitionCell386 = function() {
 		return (
-			<div dataKey={'stats.unique_impressions'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={60} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'stats.unique_impressions'} height={32} rowIndex={0} style={{ height: 32, width: 60 }}>
+			<div
+				dataKey={'stats.unique_impressions'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={60}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'stats.unique_impressions'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 60 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3590,11 +4301,19 @@ function runBenchmark(container) {
 
 	const TransitionCell388 = function() {
 		return (
-			<div dataKey={'stats.impressions'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={80} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'stats.impressions'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
+			<div
+				dataKey={'stats.impressions'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={80}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'stats.impressions'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3615,11 +4334,19 @@ function runBenchmark(container) {
 
 	const TransitionCell390 = function() {
 		return (
-			<div dataKey={'stats.avg_cpm'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={80} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'stats.avg_cpm'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
+			<div
+				dataKey={'stats.avg_cpm'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={80}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'stats.avg_cpm'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3640,11 +4367,19 @@ function runBenchmark(container) {
 
 	const TransitionCell392 = function() {
 		return (
-			<div dataKey={'stats.avg_cpc'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={78} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'stats.avg_cpc'} height={32} rowIndex={0} style={{ height: 32, width: 78 }}>
+			<div
+				dataKey={'stats.avg_cpc'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={78}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'stats.avg_cpc'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 78 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3665,11 +4400,19 @@ function runBenchmark(container) {
 
 	const TransitionCell394 = function() {
 		return (
-			<div dataKey={'stats.actions'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={140} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'stats.actions'} height={32} rowIndex={0} style={{ height: 32, width: 140 }}>
+			<div
+				dataKey={'stats.actions'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={140}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'stats.actions'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 140 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3690,11 +4433,19 @@ function runBenchmark(container) {
 
 	const TransitionCell396 = function() {
 		return (
-			<div dataKey={'stats.cpa'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={140} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'stats.cpa'} height={32} rowIndex={0} style={{ height: 32, width: 140 }}>
+			<div
+				dataKey={'stats.cpa'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={140}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'stats.cpa'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 140 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3715,11 +4466,19 @@ function runBenchmark(container) {
 
 	const TransitionCell398 = function() {
 		return (
-			<div dataKey={'stats.clicks'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={60} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'stats.clicks'} height={32} rowIndex={0} style={{ height: 32, width: 60 }}>
+			<div
+				dataKey={'stats.clicks'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={60}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'stats.clicks'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 60 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3740,11 +4499,19 @@ function runBenchmark(container) {
 
 	const TransitionCell400 = function() {
 		return (
-			<div dataKey={'stats.ctr'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={70} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'stats.ctr'} height={32} rowIndex={0} style={{ height: 32, width: 70 }}>
+			<div
+				dataKey={'stats.ctr'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={70}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'stats.ctr'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 70 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3765,11 +4532,19 @@ function runBenchmark(container) {
 
 	const TransitionCell402 = function() {
 		return (
-			<div dataKey={'stats.social_percent'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={80} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'stats.social_percent'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
+			<div
+				dataKey={'stats.social_percent'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={80}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'stats.social_percent'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3790,14 +4565,22 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellDefault404 = function() {
 		return (
-			<div dataKey={'campaign.name'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={100} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={undefined}
-					 columnKey={'campaign.name'} height={32} rowIndex={0} style={{ height: 32, width: 100 }}>
+			<div
+				dataKey={'campaign.name'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={100}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={undefined}
+				columnKey={'campaign.name'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 100 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
-						<div className={'_4h2r'}>{'Test Ad Set'}</div
-						>
+						<div className={'_4h2r'}>{'Test Ad Set'}</div>
 					</div>
 				</div>
 			</div>
@@ -3819,10 +4602,19 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellDefault407 = function() {
 		return (
-			<div dataKey={'campaignGroup.name'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={150} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={undefined}
-					 columnKey={'campaignGroup.name'} height={32} rowIndex={0} style={{ height: 32, width: 150 }}>
+			<div
+				dataKey={'campaignGroup.name'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={150}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={undefined}
+				columnKey={'campaignGroup.name'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 150 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_4h2r'}>{'Test Campaign'}</div>
@@ -3847,11 +4639,19 @@ function runBenchmark(container) {
 
 	const TransitionCell410 = function() {
 		return (
-			<div dataKey={'ad.id'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={120} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} } columnKey={'ad.id'}
-					 height={32} rowIndex={0} style={{ height: 32, width: 120 }}>
+			<div
+				dataKey={'ad.id'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={120}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'ad.id'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 120 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>{'98010048849345'}</div>
@@ -3872,11 +4672,19 @@ function runBenchmark(container) {
 
 	const TransitionCell412 = function() {
 		return (
-			<div dataKey={'campaignGroup.objective'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={80} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'campaignGroup.objective'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
+			<div
+				dataKey={'campaignGroup.objective'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={80}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'campaignGroup.objective'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>{'Clicks to Website'}</div>
@@ -3897,11 +4705,19 @@ function runBenchmark(container) {
 
 	const TransitionCell414 = function() {
 		return (
-			<div dataKey={'stats.spent_100'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={70} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'stats.spent_100'} height={32} rowIndex={0} style={{ height: 32, width: 70 }}>
+			<div
+				dataKey={'stats.spent_100'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={70}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'stats.spent_100'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 70 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _2g7x _4h2r'}>{' — '}</div>
@@ -3926,11 +4742,19 @@ function runBenchmark(container) {
 
 	const TransitionCell417 = function() {
 		return (
-			<div dataKey={'derivedCampaign.startDate'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={113} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'derivedCampaign.startDate'} height={32} rowIndex={0} style={{ height: 32, width: 113 }}>
+			<div
+				dataKey={'derivedCampaign.startDate'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={113}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'derivedCampaign.startDate'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 113 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>
@@ -3953,11 +4777,19 @@ function runBenchmark(container) {
 
 	const TransitionCell419 = function() {
 		return (
-			<div dataKey={'derivedCampaign.endDate'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={113} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'derivedCampaign.endDate'} height={32} rowIndex={0} style={{ height: 32, width: 113 }}>
+			<div
+				dataKey={'derivedCampaign.endDate'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={113}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'derivedCampaign.endDate'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 113 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>{'Ongoing'}</div>
@@ -3982,11 +4814,19 @@ function runBenchmark(container) {
 
 	const TransitionCell422 = function() {
 		return (
-			<div dataKey={'ad.created_time'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={113} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'ad.created_time'} height={32} rowIndex={0} style={{ height: 32, width: 113 }}>
+			<div
+				dataKey={'ad.created_time'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={113}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'ad.created_time'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 113 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>
@@ -4013,11 +4853,19 @@ function runBenchmark(container) {
 
 	const TransitionCell425 = function() {
 		return (
-			<div dataKey={'ad.updated_time'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={113} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'ad.updated_time'} height={32} rowIndex={0} style={{ height: 32, width: 113 }}>
+			<div
+				dataKey={'ad.updated_time'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={113}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'ad.updated_time'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 113 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>
@@ -4040,11 +4888,19 @@ function runBenchmark(container) {
 
 	const TransitionCell427 = function() {
 		return (
-			<div dataKey={'ad.title'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={80} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'ad.title'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
+			<div
+				dataKey={'ad.title'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={80}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'ad.title'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>{'Example'}</div>
@@ -4065,14 +4921,22 @@ function runBenchmark(container) {
 
 	const TransitionCell429 = function() {
 		return (
-			<div dataKey={'ad.creative.body'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={80} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'ad.creative.body'} height={32} rowIndex={0} style={{ height: 32, width: 80 }}>
+			<div
+				dataKey={'ad.creative.body'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={80}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'ad.creative.body'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 80 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
-						<div className={'_2d6h _4h2r'}>{'It\'s an example.'}</div>
+						<div className={'_2d6h _4h2r'}>{"It's an example."}</div>
 					</div>
 				</div>
 			</div>
@@ -4090,14 +4954,22 @@ function runBenchmark(container) {
 
 	const TransitionCell431 = function() {
 		return (
-			<div dataKey={'destination'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={92} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'destination'} height={32} rowIndex={0} style={{ height: 32, width: 92 }}>
+			<div
+				dataKey={'destination'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={92}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'destination'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 92 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
-						<div className={'_2d6h _4h2r'}></div>
+						<div className={'_2d6h _4h2r'} />
 					</div>
 				</div>
 			</div>
@@ -4115,11 +4987,19 @@ function runBenchmark(container) {
 
 	const TransitionCell433 = function() {
 		return (
-			<div dataKey={'ad.creative.link_url'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={70} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'ad.creative.link_url'} height={32} rowIndex={0} style={{ height: 32, width: 70 }}>
+			<div
+				dataKey={'ad.creative.link_url'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={70}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'ad.creative.link_url'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 70 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_2d6h _4h2r'}>{'http://www.example.com/'}</div>
@@ -4140,14 +5020,22 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellDefault435 = function() {
 		return (
-			<div dataKey={'page'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={92} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} } columnKey={'page'}
-					 height={32} rowIndex={0} style={{ height: 32, width: 92 }}>
+			<div
+				dataKey={'page'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={92}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'page'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 92 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
-						<div className={'_4h2r'}></div>
+						<div className={'_4h2r'} />
 					</div>
 				</div>
 			</div>
@@ -4168,21 +5056,26 @@ function runBenchmark(container) {
 	};
 
 	const Link438 = function() {
-		return <a href={'https://www.facebook.com/?demo_ad=98010048849345&h=AQA24w3temAtB-5f#pagelet_ego_pane'}
-							target={'_blank'} rel={undefined} onClick={function() {
-		} }>{'Preview Ad'}</a>;
+		return (
+			<a
+				href={'https://www.facebook.com/?demo_ad=98010048849345&h=AQA24w3temAtB-5f#pagelet_ego_pane'}
+				target={'_blank'}
+				rel={undefined}
+				onClick={function() {}}
+			>
+				{'Preview Ad'}
+			</a>
+		);
 	};
 
 	const ReactImage439 = function() {
-		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'}></i>;
+		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'} />;
 	};
 
 	const AdsPopoverLink440 = function() {
 		return (
-			<span onMouseEnter={function() {
-			} } onMouseLeave={function() {
-			} }>
-				<span className={'_3o_j'}></span>
+			<span onMouseEnter={function() {}} onMouseLeave={function() {}}>
+				<span className={'_3o_j'} />
 				<ReactImage439 />
 			</span>
 		);
@@ -4194,11 +5087,19 @@ function runBenchmark(container) {
 
 	const TransitionCell442 = function() {
 		return (
-			<div dataKey={'ad.demolink_hash'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={100} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'ad.demolink_hash'} height={32} rowIndex={0} style={{ height: 32, width: 100 }}>
+			<div
+				dataKey={'ad.demolink_hash'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={100}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'ad.demolink_hash'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 100 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
 						<div className={'_4h2r'}>
@@ -4222,14 +5123,22 @@ function runBenchmark(container) {
 
 	const TransitionCell444 = function() {
 		return (
-			<div dataKey={'scrollbar_spacer'} className={'_4lgc _4h2u'} rowGetter={function() {
-			} } width={25} columnData={{}} cellDataGetter={function() {
-			} } cellRenderer={function() {
-			} }
-					 columnKey={'scrollbar_spacer'} height={32} rowIndex={0} style={{ height: 32, width: 25 }}>
+			<div
+				dataKey={'scrollbar_spacer'}
+				className={'_4lgc _4h2u'}
+				rowGetter={function() {}}
+				width={25}
+				columnData={{}}
+				cellDataGetter={function() {}}
+				cellRenderer={function() {}}
+				columnKey={'scrollbar_spacer'}
+				height={32}
+				rowIndex={0}
+				style={{ height: 32, width: 25 }}
+			>
 				<div className={'_4lgd _4h2w'}>
 					<div className={'_4lge _4h2x'}>
-						<div className={'_2d6h _4h2r'}></div>
+						<div className={'_2d6h _4h2r'} />
 					</div>
 				</div>
 			</div>
@@ -4247,39 +5156,42 @@ function runBenchmark(container) {
 
 	const FixedDataTableCellGroupImpl446 = function() {
 		return (
-			<div className={'_3pzj'} style={{
-				height: 32,
-				position: 'absolute',
-				width: 2299,
-				zIndex: 0,
-				transform: 'translate3d(0px,0px,0)',
-				backfaceVisibility: 'hidden'
-			}}>
-				<FixedDataTableCell387 key={'cell_0'}/>
-				<FixedDataTableCell389 key={'cell_1'}/>
-				<FixedDataTableCell391 key={'cell_2'}/>
-				<FixedDataTableCell393 key={'cell_3'}/>
-				<FixedDataTableCell395 key={'cell_4'}/>
-				<FixedDataTableCell397 key={'cell_5'}/>
-				<FixedDataTableCell399 key={'cell_6'}/>
-				<FixedDataTableCell401 key={'cell_7'}/>
-				<FixedDataTableCell403 key={'cell_8'}/>
-				<FixedDataTableCell406 key={'cell_9'}/>
-				<FixedDataTableCell409 key={'cell_10'}/>
-				<FixedDataTableCell411 key={'cell_11'}/>
-				<FixedDataTableCell413 key={'cell_12'}/>
-				<FixedDataTableCell415 key={'cell_13'}/>
-				<FixedDataTableCell418 key={'cell_14'}/>
-				<FixedDataTableCell420 key={'cell_15'}/>
-				<FixedDataTableCell423 key={'cell_16'}/>
-				<FixedDataTableCell426 key={'cell_17'}/>
-				<FixedDataTableCell428 key={'cell_18'}/>
-				<FixedDataTableCell430 key={'cell_19'}/>
-				<FixedDataTableCell432 key={'cell_20'}/>
-				<FixedDataTableCell434 key={'cell_21'}/>
-				<FixedDataTableCell437 key={'cell_22'}/>
-				<FixedDataTableCell443 key={'cell_23'}/>
-				<FixedDataTableCell445 key={'cell_24'}/>
+			<div
+				className={'_3pzj'}
+				style={{
+					height: 32,
+					position: 'absolute',
+					width: 2299,
+					zIndex: 0,
+					transform: 'translate3d(0px,0px,0)',
+					backfaceVisibility: 'hidden',
+				}}
+			>
+				<FixedDataTableCell387 key={'cell_0'} />
+				<FixedDataTableCell389 key={'cell_1'} />
+				<FixedDataTableCell391 key={'cell_2'} />
+				<FixedDataTableCell393 key={'cell_3'} />
+				<FixedDataTableCell395 key={'cell_4'} />
+				<FixedDataTableCell397 key={'cell_5'} />
+				<FixedDataTableCell399 key={'cell_6'} />
+				<FixedDataTableCell401 key={'cell_7'} />
+				<FixedDataTableCell403 key={'cell_8'} />
+				<FixedDataTableCell406 key={'cell_9'} />
+				<FixedDataTableCell409 key={'cell_10'} />
+				<FixedDataTableCell411 key={'cell_11'} />
+				<FixedDataTableCell413 key={'cell_12'} />
+				<FixedDataTableCell415 key={'cell_13'} />
+				<FixedDataTableCell418 key={'cell_14'} />
+				<FixedDataTableCell420 key={'cell_15'} />
+				<FixedDataTableCell423 key={'cell_16'} />
+				<FixedDataTableCell426 key={'cell_17'} />
+				<FixedDataTableCell428 key={'cell_18'} />
+				<FixedDataTableCell430 key={'cell_19'} />
+				<FixedDataTableCell432 key={'cell_20'} />
+				<FixedDataTableCell434 key={'cell_21'} />
+				<FixedDataTableCell437 key={'cell_22'} />
+				<FixedDataTableCell443 key={'cell_23'} />
+				<FixedDataTableCell445 key={'cell_24'} />
 			</div>
 		);
 	};
@@ -4294,14 +5206,19 @@ function runBenchmark(container) {
 
 	const FixedDataTableRowImpl448 = function() {
 		return (
-			<div className={'_1gd4 _4li _52no _35m0 _35m1 _3c7k _4efq _4efs'} onClick={null} onDoubleClick={null}
-					 onMouseDown={function() {
-					 } } onMouseEnter={null} onMouseLeave={null}
-					 style={{ width: 1083, height: 32 }}>
+			<div
+				className={'_1gd4 _4li _52no _35m0 _35m1 _3c7k _4efq _4efs'}
+				onClick={null}
+				onDoubleClick={null}
+				onMouseDown={function() {}}
+				onMouseEnter={null}
+				onMouseLeave={null}
+				style={{ width: 1083, height: 32 }}
+			>
 				<div className={'_1gd5'}>
-					<FixedDataTableCellGroup385 key={'fixed_cells'}/>
-					<FixedDataTableCellGroup447 key={'scrollable_cells'}/>
-					<div className={'_1gd6 _1gd8'} style={{ left: 521, height: 32 }}></div>
+					<FixedDataTableCellGroup385 key={'fixed_cells'} />
+					<FixedDataTableCellGroup447 key={'scrollable_cells'} />
+					<div className={'_1gd6 _1gd8'} style={{ left: 521, height: 32 }} />
 				</div>
 			</div>
 		);
@@ -4315,9 +5232,10 @@ function runBenchmark(container) {
 					height: 32,
 					zIndex: 0,
 					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden'
+					backfaceVisibility: 'hidden',
 				}}
-				className={'_1gda'}>
+				className={'_1gda'}
+			>
 				<FixedDataTableRowImpl448 />
 			</div>
 		);
@@ -4325,28 +5243,32 @@ function runBenchmark(container) {
 
 	const FixedDataTableBufferedRows450 = function() {
 		return (
-			<div style={{
-				position: 'absolute',
-				pointerEvents: 'auto',
-				transform: 'translate3d(0px,65px,0)',
-				backfaceVisibility: 'hidden'
-			}}>
-				<FixedDataTableRow449 key={'0'}/>
+			<div
+				style={{
+					position: 'absolute',
+					pointerEvents: 'auto',
+					transform: 'translate3d(0px,65px,0)',
+					backfaceVisibility: 'hidden',
+				}}
+			>
+				<FixedDataTableRow449 key={'0'} />
 			</div>
 		);
 	};
 
 	const Scrollbar451 = function() {
 		return (
-			<div onFocus={function() {
-			} } onBlur={function() {
-			} } onKeyDown={function() {
-			} } onMouseDown={function() {
-			} } onWheel={function() {
-			} } className={'_1t0r _1t0t _4jdr _1t0u'}
-					 style={{ width: 1083, zIndex: 99 }} tabIndex={0}>
-				<div
-					style={{ width: 407.918085106383, transform: 'translate3d(4px,0px,0)', backfaceVisibility: 'hidden' }}></div>
+			<div
+				onFocus={function() {}}
+				onBlur={function() {}}
+				onKeyDown={function() {}}
+				onMouseDown={function() {}}
+				onWheel={function() {}}
+				className={'_1t0r _1t0t _4jdr _1t0u'}
+				style={{ width: 1083, zIndex: 99 }}
+				tabIndex={0}
+			>
+				<div style={{ width: 407.918085106383, transform: 'translate3d(4px,0px,0)', backfaceVisibility: 'hidden' }} />
 			</div>
 		);
 	};
@@ -4354,14 +5276,16 @@ function runBenchmark(container) {
 	const HorizontalScrollbar452 = function() {
 		return (
 			<div className={'_3h1k _3h1m'} style={{ height: 15, width: 1083 }}>
-				<div style={{
-					height: 15,
-					position: 'absolute',
-					overflow: 'hidden',
-					width: 1083,
-					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden'
-				}}>
+				<div
+					style={{
+						height: 15,
+						position: 'absolute',
+						overflow: 'hidden',
+						width: 1083,
+						transform: 'translate3d(0px,0px,0)',
+						backfaceVisibility: 'hidden',
+					}}
+				>
 					<Scrollbar451 />
 				</div>
 			</div>
@@ -4370,12 +5294,11 @@ function runBenchmark(container) {
 
 	const FixedDataTable453 = function() {
 		return (
-			<div className={'_3h1i _1mie'} onWheel={function() {
-			} } style={{ height: 532, width: 1083 }}>
+			<div className={'_3h1i _1mie'} onWheel={function() {}} style={{ height: 532, width: 1083 }}>
 				<div className={'_3h1j'} style={{ height: 515, width: 1083 }}>
 					<FixedDataTableColumnResizeHandle178 />
-					<FixedDataTableRow206 key={'group_header'}/>
-					<FixedDataTableRow360 key={'header'}/>
+					<FixedDataTableRow206 key={'group_header'} />
+					<FixedDataTableRow360 key={'header'} />
 					<FixedDataTableBufferedRows450 />
 					{null}
 					{undefined}
@@ -4401,8 +5324,7 @@ function runBenchmark(container) {
 
 	const AdsDataTableKeyboardSupportDecorator456 = function() {
 		return (
-			<div onKeyDown={function() {
-			} }>
+			<div onKeyDown={function() {}}>
 				<AdsSelectableFixedDataTable455 />
 			</div>
 		);
@@ -4410,8 +5332,7 @@ function runBenchmark(container) {
 
 	const AdsEditableDataTableDecorator457 = function() {
 		return (
-			<div onCopy={function() {
-			} }>
+			<div onCopy={function() {}}>
 				<AdsDataTableKeyboardSupportDecorator456 />
 			</div>
 		);
@@ -4429,11 +5350,10 @@ function runBenchmark(container) {
 
 	const ResponsiveBlock459 = function() {
 		return (
-			<div onResize={function() {
-			} } className={'_4u-c'}>
+			<div onResize={function() {}} className={'_4u-c'}>
 				<AdsPEDataTableContainer458 />
 				<div key={'sensor'} className={'_4u-f'}>
-					<iframe tabIndex={'-1'}></iframe>
+					<iframe tabIndex={'-1'} />
 				</div>
 			</div>
 		);
@@ -4494,16 +5414,15 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage467 = function() {
-		return <i className={'_1-lx img sp_UuU9HmrQ397 sx_990b54'} src={null}></i>;
+		return <i className={'_1-lx img sp_UuU9HmrQ397 sx_990b54'} src={null} />;
 	};
 
 	const AdsPESideTrayTabButton468 = function() {
 		return (
-			<div onClick={function() {
-			} } className={'_1-ly _59j9 _d9a'}>
+			<div onClick={function() {}} className={'_1-ly _59j9 _d9a'}>
 				<ReactImage467 />
-				<div className={'_vf7'}></div>
-				<div className={'_vf8'}></div>
+				<div className={'_vf7'} />
+				<div className={'_vf8'} />
 			</div>
 		);
 	};
@@ -4513,16 +5432,15 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage470 = function() {
-		return <i className={'_1-lx img sp_UuU9HmrQ397 sx_94017f'} src={null}></i>;
+		return <i className={'_1-lx img sp_UuU9HmrQ397 sx_94017f'} src={null} />;
 	};
 
 	const AdsPESideTrayTabButton471 = function() {
 		return (
-			<div onClick={function() {
-			} } className={' _1-lz _d9a'}>
+			<div onClick={function() {}} className={' _1-lz _d9a'}>
 				<ReactImage470 />
-				<div className={'_vf7'}></div>
-				<div className={'_vf8'}></div>
+				<div className={'_vf7'} />
+				<div className={'_vf8'} />
 			</div>
 		);
 	};
@@ -4540,21 +5458,30 @@ function runBenchmark(container) {
 	};
 
 	const FBDragHandle475 = function() {
-		return <div style={{ height: 550 }} className={'_4a2j _2ciy _2ciz'} horizontal={true} onStart={function() {
-		} } onEnd={function() {
-		} } onChange={function() {
-		} }
-								initialData={function() {
-								} } vertical={false} throttle={25} delay={0} threshold={0} onMouseDown={function() {
-		} } onMouseUp={function() {
-		} }
-								onMouseLeave={function() {
-								} }></div>;
+		return (
+			<div
+				style={{ height: 550 }}
+				className={'_4a2j _2ciy _2ciz'}
+				horizontal={true}
+				onStart={function() {}}
+				onEnd={function() {}}
+				onChange={function() {}}
+				initialData={function() {}}
+				vertical={false}
+				throttle={25}
+				delay={0}
+				threshold={0}
+				onMouseDown={function() {}}
+				onMouseUp={function() {}}
+				onMouseLeave={function() {}}
+			/>
+		);
 	};
 
 	const XUIText476 = function() {
-		return <span size={'large'} weight={'bold'} className={'_2x9f  _50f5 _50f7'}
-								 display={'inline'}>{'Editing Ad'}</span>;
+		return (
+			<span size={'large'} weight={'bold'} className={'_2x9f  _50f5 _50f7'} display={'inline'}>{'Editing Ad'}</span>
+		);
 	};
 
 	const XUIText477 = function() {
@@ -4572,7 +5499,7 @@ function runBenchmark(container) {
 	const AdsPEHeaderSection480 = function() {
 		return (
 			<div className={'_yke'}>
-				<div className={'_2x9d _pry'}></div>
+				<div className={'_2x9d _pry'} />
 				<XUIText476 />
 				<div className={'_3a-a'}>
 					<div className={'_3a-b'}>
@@ -4610,7 +5537,7 @@ function runBenchmark(container) {
 					{undefined}
 				</label>
 				{null}
-				<div className={'_3bv-'}></div>
+				<div className={'_3bv-'} />
 			</div>
 		);
 	};
@@ -4624,10 +5551,10 @@ function runBenchmark(container) {
 					<div className={'_2vla _1h1g'}>
 						<div>
 							{null}
-							<textarea value={'Test Ad'}/>
+							<textarea value={'Test Ad'} />
 							{null}
 						</div>
-						<div className={'_2vlk'}></div>
+						<div className={'_2vlk'} />
 					</div>
 				</div>
 				{null}
@@ -4640,9 +5567,18 @@ function runBenchmark(container) {
 	};
 
 	const Link488 = function() {
-		return <a className={'_5ir9'} label={'Rename using available fields'} onMouseDown={function() {
-		} } href={'#'} rel={undefined} onClick={function() {
-		} }>{'Rename using available fields'}</a>;
+		return (
+			<a
+				className={'_5ir9'}
+				label={'Rename using available fields'}
+				onMouseDown={function() {}}
+				href={'#'}
+				rel={undefined}
+				onClick={function() {}}
+			>
+				{'Rename using available fields'}
+			</a>
+		);
 	};
 
 	const AdsAutoNamingTemplateDialog489 = function() {
@@ -4651,7 +5587,7 @@ function runBenchmark(container) {
 
 	const AdsPEAmbientNUXMegaphone490 = function() {
 		return (
-			<span >
+			<span>
 				<AdsAutoNamingTemplateDialog489 />
 			</span>
 		);
@@ -4666,22 +5602,33 @@ function runBenchmark(container) {
 					{undefined}
 				</label>
 				{null}
-				<div className={'_3bv-'}></div>
+				<div className={'_3bv-'} />
 			</div>
 		);
 	};
 
 	const BUISwitch492 = function() {
 		return (
-			<div value={true} disabled={true} onToggle={function() {
-			} } data-hover={'tooltip'} data-tooltip-position={'below'}
-					 aria-label={'Currently active and you can not deactivate it.'} animate={true}
-					 className={'_128j _128k _128m _128n'} role={'checkbox'} aria-checked={'true'}>
-				<div className={'_128o'} onClick={function() {
-				} } onKeyDown={function() {
-				} } onMouseDown={function() {
-				} } tabIndex={'-1'}>
-					<div className={'_128p'}></div>
+			<div
+				value={true}
+				disabled={true}
+				onToggle={function() {}}
+				data-hover={'tooltip'}
+				data-tooltip-position={'below'}
+				aria-label={'Currently active and you can not deactivate it.'}
+				animate={true}
+				className={'_128j _128k _128m _128n'}
+				role={'checkbox'}
+				aria-checked={'true'}
+			>
+				<div
+					className={'_128o'}
+					onClick={function() {}}
+					onKeyDown={function() {}}
+					onMouseDown={function() {}}
+					tabIndex={'-1'}
+				>
+					<div className={'_128p'} />
 				</div>
 				{null}
 			</div>
@@ -4703,7 +5650,7 @@ function runBenchmark(container) {
 					<div>
 						<AdsLabeledField485 />
 						<span className={'_5irl'}>
-							<AdsTextInput487 key={'nameEditor98010048849345'}/>
+							<AdsTextInput487 key={'nameEditor98010048849345'} />
 							<AdsPEAmbientNUXMegaphone490 />
 						</span>
 					</div>
@@ -4749,7 +5696,7 @@ function runBenchmark(container) {
 			<span itemComponent={'span'} className={'_38my'}>
 				{'Ad Links'}
 				{null}
-				<span className={'_c1c'}></span>
+				<span className={'_c1c'} />
 			</span>
 		);
 	};
@@ -4757,12 +5704,10 @@ function runBenchmark(container) {
 	const XUICardSection502 = function() {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
-				{[
-					<XUICardHeaderTitle501 key={'/.0'}/>
-				]}
+				{[<XUICardHeaderTitle501 key={'/.0'} />]}
 				{undefined}
 				{undefined}
-				<div className={'_3s3-'}></div>
+				<div className={'_3s3-'} />
 			</div>
 		);
 	};
@@ -4776,39 +5721,58 @@ function runBenchmark(container) {
 	};
 
 	const XUIText505 = function() {
-		return <div className={'_502s'} display={'block'} size={'inherit'}
-								weight={'inherit'}>{'Ad ID 98010048849345'}</div>;
+		return (
+			<div className={'_502s'} display={'block'} size={'inherit'} weight={'inherit'}>{'Ad ID 98010048849345'}</div>
+		);
 	};
 
 	const Link506 = function() {
-		return <a target={'_blank'} href={'/ads/manager/ad/?ids=98010048849345'} onClick={function() {
-		} } rel={undefined}>{'Open in Ads Manager'}</a>;
+		return (
+			<a target={'_blank'} href={'/ads/manager/ad/?ids=98010048849345'} onClick={function() {}} rel={undefined}>
+				{'Open in Ads Manager'}
+			</a>
+		);
 	};
 
 	const Link507 = function() {
-		return <a target={'_blank'} href={'#'} onClick={function() {
-		} } rel={undefined}>{'Open in Ads Reporting'}</a>;
+		return <a target={'_blank'} href={'#'} onClick={function() {}} rel={undefined}>{'Open in Ads Reporting'}</a>;
 	};
 
 	const Link508 = function() {
-		return <a target={'_blank'}
-							href={'https://www.facebook.com/?demo_ad=98010048849345&h=AQA24w3temAtB-5f#pagelet_ego_pane'}
-							onClick={function() {
-							} }
-							rel={undefined}>{'View on Desktop Right Column'}</a>;
+		return (
+			<a
+				target={'_blank'}
+				href={'https://www.facebook.com/?demo_ad=98010048849345&h=AQA24w3temAtB-5f#pagelet_ego_pane'}
+				onClick={function() {}}
+				rel={undefined}
+			>
+				{'View on Desktop Right Column'}
+			</a>
+		);
 	};
 
 	const Link509 = function() {
-		return <a target={'_blank'} href={'/ads/manage/powereditor/?act=10149999073643408&adgroup=98010048849345'}
-							onClick={function() {
-							} }
-							rel={undefined}>{'Open Power Editor with this ad selected'}</a>;
+		return (
+			<a
+				target={'_blank'}
+				href={'/ads/manage/powereditor/?act=10149999073643408&adgroup=98010048849345'}
+				onClick={function() {}}
+				rel={undefined}
+			>
+				{'Open Power Editor with this ad selected'}
+			</a>
+		);
 	};
 
 	const List510 = function() {
 		return (
-			<ul spacing={'small'} border={'none'} direction={'vertical'} valign={'top'}
-					className={'uiList _4kg _6-i _6-h _704'}>
+			<ul
+				spacing={'small'}
+				border={'none'}
+				direction={'vertical'}
+				valign={'top'}
+				className={'uiList _4kg _6-i _6-h _704'}
+			>
 				{null}
 				<li key={'/ads/manager/ad/?ids=98010048849345'}>
 					<Link506 />
@@ -4885,7 +5849,7 @@ function runBenchmark(container) {
 			<span itemComponent={'span'} className={'_38my'}>
 				{'Preview'}
 				{null}
-				<span className={'_c1c'}></span>
+				<span className={'_c1c'} />
 			</span>
 		);
 	};
@@ -4893,12 +5857,10 @@ function runBenchmark(container) {
 	const XUICardSection520 = function() {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
-				{[
-					<XUICardHeaderTitle519 key={'/.0'}/>
-				]}
+				{[<XUICardHeaderTitle519 key={'/.0'} />]}
 				{undefined}
 				{undefined}
-				<div className={'_3s3-'}></div>
+				<div className={'_3s3-'} />
 			</div>
 		);
 	};
@@ -4912,16 +5874,30 @@ function runBenchmark(container) {
 	};
 
 	const PillButton523 = function() {
-		return <a label={null} selected={true} onClick={function() {
-		} } href={'#'} className={'uiPillButton uiPillButtonSelected'}>{'Desktop Right Column'}</a>;
+		return (
+			<a
+				label={null}
+				selected={true}
+				onClick={function() {}}
+				href={'#'}
+				className={'uiPillButton uiPillButtonSelected'}
+			>
+				{'Desktop Right Column'}
+			</a>
+		);
 	};
 
 	const List524 = function() {
 		return (
-			<ul className={'uiList  _4ki _509- _6-i _6-h _704'} border={'none'} direction={'horizontal'} spacing={'small'}
-					valign={'top'}>
+			<ul
+				className={'uiList  _4ki _509- _6-i _6-h _704'}
+				border={'none'}
+				direction={'horizontal'}
+				spacing={'small'}
+				valign={'top'}
+			>
 				<li key={'0/.$RIGHT_COLUMN_STANDARD'}>
-					<PillButton523 key={'RIGHT_COLUMN_STANDARD'}/>
+					<PillButton523 key={'RIGHT_COLUMN_STANDARD'} />
 				</li>
 			</ul>
 		);
@@ -4950,8 +5926,16 @@ function runBenchmark(container) {
 	};
 
 	const XUISpinner529 = function() {
-		return <span size={'large'} className={'hidden_elem img _55ym _55yq _55yo'} showOnAsync={false} background={'light'}
-								 aria-label={'Loading...'} aria-busy={true}/>;
+		return (
+			<span
+				size={'large'}
+				className={'hidden_elem img _55ym _55yq _55yo'}
+				showOnAsync={false}
+				background={'light'}
+				aria-label={'Loading...'}
+				aria-busy={true}
+			/>
+		);
 	};
 
 	const ReactImage530 = function() {
@@ -4982,7 +5966,7 @@ function runBenchmark(container) {
 					<div className={'hidden_elem'}>
 						<XUINotice531 />
 					</div>
-					<div className={''}></div>
+					<div className={''} />
 				</div>
 			</div>
 		);
@@ -5054,7 +6038,7 @@ function runBenchmark(container) {
 		return (
 			<div>
 				{null}
-				<div >
+				<div>
 					<AdsPEAdgroupPreviewSectionContainer542 />
 				</div>
 			</div>
@@ -5066,7 +6050,7 @@ function runBenchmark(container) {
 			<span itemComponent={'span'} className={'_38my'}>
 				{'Facebook Page'}
 				{null}
-				<span className={'_c1c'}></span>
+				<span className={'_c1c'} />
 			</span>
 		);
 	};
@@ -5074,12 +6058,10 @@ function runBenchmark(container) {
 	const XUICardSection545 = function() {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
-				{[
-					<XUICardHeaderTitle544 key={'/.0'}/>
-				]}
+				{[<XUICardHeaderTitle544 key={'/.0'} />]}
 				{undefined}
 				{undefined}
-				<div className={'_3s3-'}></div>
+				<div className={'_3s3-'} />
 			</div>
 		);
 	};
@@ -5093,8 +6075,7 @@ function runBenchmark(container) {
 	};
 
 	const Link548 = function() {
-		return <a className={'fwb'} onClick={function() {
-		} } href={'#'} rel={undefined}>{'Connect a Facebook Page'}</a>;
+		return <a className={'fwb'} onClick={function() {}} href={'#'} rel={undefined}>{'Connect a Facebook Page'}</a>;
 	};
 
 	const AdsPEWebsiteNoPageDestinationSection549 = function() {
@@ -5154,7 +6135,7 @@ function runBenchmark(container) {
 			<span itemComponent={'span'} className={'_38my'}>
 				{'Creative'}
 				{null}
-				<span className={'_c1c'}/>
+				<span className={'_c1c'} />
 			</span>
 		);
 	};
@@ -5162,12 +6143,10 @@ function runBenchmark(container) {
 	const XUICardSection559 = function() {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
-				{[
-					<XUICardHeaderTitle558 key={'/.0'}/>
-				]}
+				{[<XUICardHeaderTitle558 key={'/.0'} />]}
 				{undefined}
 				{undefined}
-				<div className={'_3s3-'}></div>
+				<div className={'_3s3-'} />
 			</div>
 		);
 	};
@@ -5181,15 +6160,13 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage562 = function() {
-		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'}/>;
+		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'} />;
 	};
 
 	const AdsPopoverLink563 = function() {
 		return (
-			<span onMouseEnter={function() {
-			} } onMouseLeave={function() {
-			} }>
-				<span className={'_3o_j'}/>
+			<span onMouseEnter={function() {}} onMouseLeave={function() {}}>
+				<span className={'_3o_j'} />
 				<ReactImage562 />
 			</span>
 		);
@@ -5201,17 +6178,22 @@ function runBenchmark(container) {
 
 	const AdsLabeledField565 = function() {
 		return (
-			<div htmlFor={undefined} label={'Website URL'}
-					 helpText={'Enter the website URL you want to promote. Ex: http://www.example.com/page'}
-					 helpLinger={undefined} optional={undefined}
-					 labelSize={'small'} className={'_3bvz'}>
+			<div
+				htmlFor={undefined}
+				label={'Website URL'}
+				helpText={'Enter the website URL you want to promote. Ex: http://www.example.com/page'}
+				helpLinger={undefined}
+				optional={undefined}
+				labelSize={'small'}
+				className={'_3bvz'}
+			>
 				<label className={'_4el4 _3qwj _3hy-'} htmlFor={undefined}>
 					{'Website URL'}
 					{' '}
 					{undefined}
 				</label>
 				<AdsHelpLink564 />
-				<div className={'_3bv-'}></div>
+				<div className={'_3bv-'} />
 			</div>
 		);
 	};
@@ -5225,10 +6207,10 @@ function runBenchmark(container) {
 					<div className={'_2vla _1h1g'}>
 						<div>
 							{null}
-							<textarea value={'http://www.example.com/'}/>
+							<textarea value={'http://www.example.com/'} />
 							{null}
 						</div>
-						<div className={'_2vlk'}></div>
+						<div className={'_2vlk'} />
 					</div>
 				</div>
 				{null}
@@ -5249,15 +6231,13 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage570 = function() {
-		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'}/>;
+		return <i src={null} className={'_541d img sp_R48dKBxiJkP sx_dc2cdb'} />;
 	};
 
 	const AdsPopoverLink571 = function() {
 		return (
-			<span onMouseEnter={function() {
-			} } onMouseLeave={function() {
-			} }>
-				<span className={'_3o_j'}/>
+			<span onMouseEnter={function() {}} onMouseLeave={function() {}}>
+				<span className={'_3o_j'} />
 				<ReactImage570 />
 			</span>
 		);
@@ -5269,16 +6249,24 @@ function runBenchmark(container) {
 
 	const AdsLabeledField573 = function() {
 		return (
-			<div htmlFor={undefined} label={'Headline'}
-					 helpText={'Your headline text will appear differently depending on the placement of your ad. Check the previews to make sure your headline looks the way you want in the placements it appears in.'}
-					 helpLinger={undefined} optional={undefined} labelSize={'small'} className={'_3bvz'}>
+			<div
+				htmlFor={undefined}
+				label={'Headline'}
+				helpText={
+					'Your headline text will appear differently depending on the placement of your ad. Check the previews to make sure your headline looks the way you want in the placements it appears in.'
+				}
+				helpLinger={undefined}
+				optional={undefined}
+				labelSize={'small'}
+				className={'_3bvz'}
+			>
 				<label className={'_4el4 _3qwj _3hy-'} htmlFor={undefined}>
 					{'Headline'}
 					{' '}
 					{undefined}
 				</label>
 				<AdsHelpLink572 />
-				<div className={'_3bv-'}></div>
+				<div className={'_3bv-'} />
 			</div>
 		);
 	};
@@ -5292,10 +6280,10 @@ function runBenchmark(container) {
 					<div className={'_2vla _1h1g'}>
 						<div>
 							{null}
-							<textarea value={'Example'}/>
+							<textarea value={'Example'} />
 							{null}
 						</div>
-						<div className={'_2vlk'}></div>
+						<div className={'_2vlk'} />
 					</div>
 				</div>
 				{null}
@@ -5317,15 +6305,22 @@ function runBenchmark(container) {
 
 	const AdsLabeledField578 = function() {
 		return (
-			<div htmlFor={undefined} label={'Text'} helpText={undefined} helpLinger={undefined} optional={undefined}
-					 labelSize={'small'} className={'_3bvz'}>
+			<div
+				htmlFor={undefined}
+				label={'Text'}
+				helpText={undefined}
+				helpLinger={undefined}
+				optional={undefined}
+				labelSize={'small'}
+				className={'_3bvz'}
+			>
 				<label className={'_4el4 _3qwj _3hy-'} htmlFor={undefined}>
 					{'Text'}
 					{' '}
 					{undefined}
 				</label>
 				{null}
-				<div className={'_3bv-'}></div>
+				<div className={'_3bv-'} />
 			</div>
 		);
 	};
@@ -5339,10 +6334,10 @@ function runBenchmark(container) {
 					<div className={'_2vla _1h1g'}>
 						<div>
 							{null}
-							<textarea value={'It\' s an example.'}/>
+							<textarea value={"It' s an example."} />
 							{null}
 						</div>
-						<div className={'_2vlk'}></div>
+						<div className={'_2vlk'} />
 					</div>
 				</div>
 				{null}
@@ -5369,9 +6364,17 @@ function runBenchmark(container) {
 
 	const AbstractButton583 = function() {
 		return (
-			<button label={null} onClick={function() {
-			} } size={'large'} use={'default'} borderShade={'light'} suppressed={false}
-							className={'_4jy0 _4jy4 _517h _51sy _42ft'} type="submit" value={'1'}>
+			<button
+				label={null}
+				onClick={function() {}}
+				size={'large'}
+				use={'default'}
+				borderShade={'light'}
+				suppressed={false}
+				className={'_4jy0 _4jy4 _517h _51sy _42ft'}
+				type="submit"
+				value={'1'}
+			>
 				{undefined}
 				{'Change Image'}
 				{undefined}
@@ -5385,12 +6388,23 @@ function runBenchmark(container) {
 
 	const BackgroundImage585 = function() {
 		return (
-			<div src={'https://scontent.xx.fbcdn.net/hads-xap1/t45.1600-4/12124737_98010048849339_1665004369_n.png'}
-					 width={114.6} height={60} backgroundSize={'contain'} optimizeResizeSpeed={false}
-					 loadingIndicatorStyle={'none'} className={'_5f0d'} style={{ width: '114.6px', height: '60px' }}
-					 onContextMenu={undefined}>
-				<img alt={''} className={'_5i4g'} style={{ width: '90px', height: '60px', left: '12px', top: '0px' }}
-						 src={'https://scontent.xx.fbcdn.net/hads-xap1/t45.1600-4/12124737_98010048849339_1665004369_n.png'}/>
+			<div
+				src={'https://scontent.xx.fbcdn.net/hads-xap1/t45.1600-4/12124737_98010048849339_1665004369_n.png'}
+				width={114.6}
+				height={60}
+				backgroundSize={'contain'}
+				optimizeResizeSpeed={false}
+				loadingIndicatorStyle={'none'}
+				className={'_5f0d'}
+				style={{ width: '114.6px', height: '60px' }}
+				onContextMenu={undefined}
+			>
+				<img
+					alt={''}
+					className={'_5i4g'}
+					style={{ width: '90px', height: '60px', left: '12px', top: '0px' }}
+					src={'https://scontent.xx.fbcdn.net/hads-xap1/t45.1600-4/12124737_98010048849339_1665004369_n.png'}
+				/>
 				{undefined}
 				{null}
 			</div>
@@ -5398,8 +6412,11 @@ function runBenchmark(container) {
 	};
 
 	const XUIText586 = function() {
-		return <span shade={'light'} className={'_50f8'} size={'inherit'} weight={'inherit'}
-								 display={'inline'}>{'1000 × 667'}</span>;
+		return (
+			<span shade={'light'} className={'_50f8'} size={'inherit'} weight={'inherit'} display={'inline'}>
+				{'1000 × 667'}
+			</span>
+		);
 	};
 
 	const XUIGrayText587 = function() {
@@ -5424,7 +6441,7 @@ function runBenchmark(container) {
 						<div key={'/.0'} className={'_3bwx'}>
 							<XUIText588 />
 						</div>
-						<div key={'/.1'} className={'_3bwx'}></div>
+						<div key={'/.1'} className={'_3bwx'} />
 					</div>
 				</div>
 			</div>
@@ -5432,8 +6449,11 @@ function runBenchmark(container) {
 	};
 
 	const Link590 = function() {
-		return <a href={'/business/ads-guide/'} target={'_blank'} rel={undefined} onClick={function() {
-		} }>{'Facebook Ad Guidelines'}</a>;
+		return (
+			<a href={'/business/ads-guide/'} target={'_blank'} rel={undefined} onClick={function() {}}>
+				{'Facebook Ad Guidelines'}
+			</a>
+		);
 	};
 
 	const XUIText591 = function() {
@@ -5518,7 +6538,7 @@ function runBenchmark(container) {
 		return (
 			<div className={'_12jy _4-u3'} background={'transparent'}>
 				<div className={'_3-8j'}>
-					<div></div>
+					<div />
 					<AdsPEWebsiteNoPageCreativeContainer598 />
 				</div>
 			</div>
@@ -5565,22 +6585,20 @@ function runBenchmark(container) {
 	const XUICardHeaderTitle608 = function() {
 		return (
 			<span itemComponent={'span'} className={'_38my'}>
-					{'Tracking'}
+				{'Tracking'}
 				{null}
-				<span className={'_c1c'}/>
-				</span>
+				<span className={'_c1c'} />
+			</span>
 		);
 	};
 
 	const XUICardSection609 = function() {
 		return (
 			<div className={'_5dw9 _5dwa _4-u3'} background={'transparent'}>
-				{[
-					<XUICardHeaderTitle608 key={'/.0'}/>
-				]}
+				{[<XUICardHeaderTitle608 key={'/.0'} />]}
 				{undefined}
 				{undefined}
-				<div className={'_3s3-'}></div>
+				<div className={'_3s3-'} />
 			</div>
 		);
 	};
@@ -5594,22 +6612,23 @@ function runBenchmark(container) {
 	};
 
 	const XUIText612 = function() {
-		return <span weight={'bold'} className={'_3ga-  _50f7'} size={'inherit'}
-								 display={'inline'}>{'Conversion Tracking'}</span>;
+		return (
+			<span weight={'bold'} className={'_3ga-  _50f7'} size={'inherit'} display={'inline'}>
+				{'Conversion Tracking'}
+			</span>
+		);
 	};
 
 	const ReactImage613 = function() {
-		return <i src={null} className={'_5s_w _541d img sp_R48dKBxiJkP sx_dc2cdb'}/>;
+		return <i src={null} className={'_5s_w _541d img sp_R48dKBxiJkP sx_dc2cdb'} />;
 	};
 
 	const AdsPopoverLink614 = function() {
 		return (
-			<span onMouseEnter={function() {
-			} } onMouseLeave={function() {
-			} }>
-					<span className={'_3o_j'}/>
-					<ReactImage613 />
-				</span>
+			<span onMouseEnter={function() {}} onMouseLeave={function() {}}>
+				<span className={'_3o_j'} />
+				<ReactImage613 />
+			</span>
 		);
 	};
 
@@ -5631,12 +6650,15 @@ function runBenchmark(container) {
 	};
 
 	const ReactImage618 = function() {
-		return <i src={null} className={'img _8o _8r img sp_UuU9HmrQ397 sx_ad67ef'}/>;
+		return <i src={null} className={'img _8o _8r img sp_UuU9HmrQ397 sx_ad67ef'} />;
 	};
 
 	const XUIText619 = function() {
-		return <div size={'medium'} weight={'bold'} shade={'medium'} display={'block'}
-								className={'_3-8m  _c24  _50f4 _50f7'}>{'Facebook Pixel'}</div>;
+		return (
+			<div size={'medium'} weight={'bold'} shade={'medium'} display={'block'} className={'_3-8m  _c24  _50f4 _50f7'}>
+				{'Facebook Pixel'}
+			</div>
+		);
 	};
 
 	const XUIGrayText620 = function() {
@@ -5649,8 +6671,7 @@ function runBenchmark(container) {
 
 	const Link622 = function() {
 		return (
-			<a href={'/help/336923339852238'} target={'_blank'} rel={undefined} onClick={function() {
-			} }>
+			<a href={'/help/336923339852238'} target={'_blank'} rel={undefined} onClick={function() {}}>
 				<XUIText621 />
 			</a>
 		);
@@ -5673,9 +6694,17 @@ function runBenchmark(container) {
 
 	const AbstractButton625 = function() {
 		return (
-			<button className={'_23ng _4jy0 _4jy4 _4jy1 _51sy selected _42ft'} label={null} onClick={function() {
-			} } size={'large'} use={'confirm'} borderShade={'light'} suppressed={false} type="submit"
-							value={'1'}>
+			<button
+				className={'_23ng _4jy0 _4jy4 _4jy1 _51sy selected _42ft'}
+				label={null}
+				onClick={function() {}}
+				size={'large'}
+				use={'confirm'}
+				borderShade={'light'}
+				suppressed={false}
+				type="submit"
+				value={'1'}
+			>
 				{undefined}
 				{'Create a Pixel'}
 				{undefined}
@@ -5729,7 +6758,7 @@ function runBenchmark(container) {
 	const AdsPixelTrackingSelector631 = function() {
 		return (
 			<div className={'_3-8x _4fsk'}>
-				<AdsPixelCreationCard630 key={'FacebookPixelNUX'}/>
+				<AdsPixelCreationCard630 key={'FacebookPixelNUX'} />
 			</div>
 		);
 	};
@@ -5739,7 +6768,7 @@ function runBenchmark(container) {
 			<div className={undefined}>
 				<AdsPixelTrackingLabel617 />
 				<div className={'_3-8x'}>
-					<div></div>
+					<div />
 				</div>
 				<AdsPixelTrackingSelector631 />
 			</div>
@@ -5747,7 +6776,7 @@ function runBenchmark(container) {
 	};
 
 	const AdsPEPixelTracking633 = function() {
-		return <AdsPixelTracking632 key={'tracking'}/>;
+		return <AdsPixelTracking632 key={'tracking'} />;
 	};
 
 	const AdsPEPixelTrackingContainer634 = function() {
@@ -5879,7 +6908,7 @@ function runBenchmark(container) {
 	};
 
 	const AdsPEAdgroupEditorContainer651 = function() {
-		return <AdsPEAdgroupEditor650 key={'98010048849345'}/>;
+		return <AdsPEAdgroupEditor650 key={'98010048849345'} />;
 	};
 
 	const AdsPESideTrayTabContent652 = function() {
@@ -5896,16 +6925,22 @@ function runBenchmark(container) {
 
 	const AdsPEMultiTabDrawer654 = function() {
 		return (
-			<div style={{ height: 550, width: 1027 }} tabButtons={{}} tabContentPanes={{}} enableAnimation={true}
-					 showButton={true} className={'_2kev _2kew _2kex'}>
+			<div
+				style={{ height: 550, width: 1027 }}
+				tabButtons={{}}
+				tabContentPanes={{}}
+				enableAnimation={true}
+				showButton={true}
+				className={'_2kev _2kew _2kex'}
+			>
 				<div className={'_2kf0'}>
-					<AdsPEEditorTrayTabButton469 key={'editor_tray_button'}/>
-					<AdsPEInsightsTrayTabButton472 key={'insights_tray_button'}/>
-					<AdsPENekoDebuggerTrayTabButton474 key={'neko_debugger_tray_button'}/>
+					<AdsPEEditorTrayTabButton469 key={'editor_tray_button'} />
+					<AdsPEInsightsTrayTabButton472 key={'insights_tray_button'} />
+					<AdsPENekoDebuggerTrayTabButton474 key={'neko_debugger_tray_button'} />
 				</div>
 				<div className={'_2kf1'}>
 					<FBDragHandle475 />
-					<AdsPEEditorTrayTabContent653 key={'EDITOR_DRAWER'}/>
+					<AdsPEEditorTrayTabContent653 key={'EDITOR_DRAWER'} />
 					{null}
 				</div>
 			</div>

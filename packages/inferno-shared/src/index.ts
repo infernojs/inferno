@@ -5,7 +5,7 @@ export const ERROR_MSG = 'a runtime error occured! Use Inferno in development en
 export const isBrowser = !!(typeof window !== 'undefined' && window.document);
 
 export function toArray(children): any[] {
-	return isArray(children) ? children : (children ? [ children ] : children);
+	return isArray(children) ? children : children ? [children] : children;
 }
 
 // this is MUCH faster than .constructor === Array and instanceof Array
@@ -16,17 +16,17 @@ export function isStatefulComponent(o: any): boolean {
 	return !isUndefined(o.prototype) && !isUndefined(o.prototype.render);
 }
 
-export function isStringOrNumber(o: any): o is string|number {
+export function isStringOrNumber(o: any): o is string | number {
 	const type = typeof o;
 
 	return type === 'string' || type === 'number';
 }
 
-export function isNullOrUndef(o: any): o is undefined|null {
+export function isNullOrUndef(o: any): o is undefined | null {
 	return isUndefined(o) || isNull(o);
 }
 
-export function isInvalid(o: any): o is null|false|true|undefined {
+export function isInvalid(o: any): o is null | false | true | undefined {
 	return isNull(o) || o === false || isTrue(o) || isUndefined(o);
 }
 
@@ -62,7 +62,7 @@ export function throwError(message?: string) {
 	if (!message) {
 		message = ERROR_MSG;
 	}
-	throw new Error(`Inferno Error: ${ message }`);
+	throw new Error(`Inferno Error: ${message}`);
 }
 
 export function warning(message: string) {
@@ -70,16 +70,16 @@ export function warning(message: string) {
 	console.warn(message);
 }
 
-export function combineFrom(first?: {}|null, second?: {}|null): object {
+export function combineFrom(first?: {} | null, second?: {} | null): object {
 	const out = {};
 	if (first) {
 		for (const key in first) {
-			out[ key ] = first[ key ];
+			out[key] = first[key];
 		}
 	}
 	if (second) {
 		for (const key in second) {
-			out[ key ] = second[ key ];
+			out[key] = second[key];
 		}
 	}
 	return out;
@@ -106,7 +106,7 @@ Lifecycle.prototype.trigger = function trigger() {
 
 	let listener;
 	// We need to remove current listener from array when calling it, because more listeners might be added
-	while (listener = listeners.shift()) {
+	while ((listener = listeners.shift())) {
 		listener();
 	}
 };

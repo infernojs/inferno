@@ -10,7 +10,7 @@ export default {
 	streamAsStaticMarkup,
 	streamAsString,
 	streamQueueAsStaticMarkup,
-	streamQueueAsString
+	streamQueueAsString,
 };
 
 export {
@@ -21,5 +21,5 @@ export {
 	streamAsStaticMarkup,
 	streamAsString,
 	streamQueueAsStaticMarkup,
-	streamQueueAsString
+	streamQueueAsString,
 };

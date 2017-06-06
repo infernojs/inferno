@@ -7,8 +7,7 @@ import VNodeFlags from 'inferno-vnode-flags';
 // Type Checkers
 
 export function isVNode(instance: any): instance is VNode {
-	return Boolean(instance) && isObject(instance) &&
-		isNumber((instance as any).flags) && (instance as any).flags > 0;
+	return Boolean(instance) && isObject(instance) && isNumber((instance as any).flags) && (instance as any).flags > 0;
 }
 
 export function isVNodeOfType(instance: VNode, type: string | Function): boolean {
@@ -52,23 +51,27 @@ export function isTextVNode(inst: VNode): boolean {
 }
 
 export function isDOMElement(instance: any): boolean {
-	return Boolean(instance) && isObject(instance) &&
-		(instance as any).nodeType === 1 && isString((instance as any).tagName);
+	return (
+		Boolean(instance) && isObject(instance) && (instance as any).nodeType === 1 && isString((instance as any).tagName)
+	);
 }
 
 export function isDOMElementOfType(instance: any, type: string): boolean {
-	return isDOMElement(instance) && isString(type) &&
-		instance.tagName.toLowerCase() === type.toLowerCase();
+	return isDOMElement(instance) && isString(type) && instance.tagName.toLowerCase() === type.toLowerCase();
 }
 
 export function isRenderedClassComponent(instance: any): boolean {
-	return Boolean(instance) && isObject(instance) && isVNode((instance as any)._vNode) &&
-		isFunction((instance as any).render) && isFunction((instance as any).setState);
+	return (
+		Boolean(instance) &&
+		isObject(instance) &&
+		isVNode((instance as any)._vNode) &&
+		isFunction((instance as any).render) &&
+		isFunction((instance as any).setState)
+	);
 }
 
 export function isRenderedClassComponentOfType(instance: any, type: Function): boolean {
-	return isRenderedClassComponent(instance) &&
-		isFunction(type) && instance._vNode.type === type;
+	return isRenderedClassComponent(instance) && isFunction(type) && instance._vNode.type === type;
 }
 
 // Render Utilities
@@ -103,12 +106,10 @@ export function findAllInVNodeTree(vNodeTree: VNode, predicate: (vNode: VNode) =
 
 		if (isRenderedClassComponent(children)) {
 			result = result.concat(findAllInVNodeTree(children._lastInput, predicate) as VNode[]);
-
 		} else if (isVNode(children)) {
 			result = result.concat(findAllInVNodeTree(children, predicate) as VNode[]);
-
 		} else if (isArray(children)) {
-			children.forEach((child) => {
+			children.forEach(child => {
 				result = result.concat(findAllInVNodeTree(child, predicate) as VNode[]);
 			});
 		}
@@ -142,37 +143,34 @@ function findOneOf(tree: any, filter: any, name: string, finder: Function): any 
 // Scry Utilities
 
 export function scryRenderedDOMElementsWithClass(renderedTree: any, classNames: string | string[]): Element[] {
-	return findAllInRenderedTree(renderedTree, (instance) => {
+	return findAllInRenderedTree(renderedTree, instance => {
 		if (isDOMVNode(instance)) {
 			let domClassName = (instance.dom as Element).className;
-			if (
-				!isString(domClassName) &&
-				!isNullOrUndef(instance.dom) &&
-				isFunction(instance.dom.getAttribute)
-			) { // SVG || null, probably
+			if (!isString(domClassName) && !isNullOrUndef(instance.dom) && isFunction(instance.dom.getAttribute)) {
+				// SVG || null, probably
 				domClassName = (instance.dom as Element).getAttribute('class') || '';
 			}
 			const domClassList = parseSelector(domClassName);
-			return parseSelector(classNames).every((className) => {
+			return parseSelector(classNames).every(className => {
 				return domClassList.indexOf(className) !== -1;
 			});
 		}
 		return false;
-	}).map((instance) => instance.dom);
+	}).map(instance => instance.dom);
 }
 
 export function scryRenderedDOMElementsWithTag(renderedTree: any, tagName: string): Element[] {
-	return findAllInRenderedTree(renderedTree, (instance) => {
+	return findAllInRenderedTree(renderedTree, instance => {
 		return isDOMVNodeOfType(instance, tagName);
-	}).map((instance) => instance.dom);
+	}).map(instance => instance.dom);
 }
 
 export function scryRenderedVNodesWithType(renderedTree: any, type: string | Function): VNode[] {
-	return findAllInRenderedTree(renderedTree, (instance) => isVNodeOfType(instance, type));
+	return findAllInRenderedTree(renderedTree, instance => isVNodeOfType(instance, type));
 }
 
 export function scryVNodesWithType(vNodeTree: VNode, type: string | Function): VNode[] {
-	return findAllInVNodeTree(vNodeTree, (instance) => isVNodeOfType(instance, type));
+	return findAllInVNodeTree(vNodeTree, instance => isVNodeOfType(instance, type));
 }
 
 // Find Utilities
@@ -194,15 +192,14 @@ export function findVNodeWithType(vNodeTree: VNode, type: string | Function): VN
 }
 
 export function getTagNameOfVNode(inst: any) {
-	return (inst && inst.dom && inst.dom.tagName.toLowerCase()) ||
+	return (
+		(inst && inst.dom && inst.dom.tagName.toLowerCase()) ||
 		(inst && inst._vNode && inst._vNode.dom && inst._vNode.dom.tagName.toLowerCase()) ||
-		undefined;
+		undefined
+	);
 }
 
-import {
-	renderToSnapshot,
-	vNodeToSnapshot
-} from './jest';
+import { renderToSnapshot, vNodeToSnapshot } from './jest';
 
 export default {
 	findAllInRenderedTree,
@@ -233,5 +230,5 @@ export default {
 	scryRenderedDOMElementsWithTag,
 	scryRenderedVNodesWithType,
 	scryVNodesWithType,
-	vNodeToSnapshot
+	vNodeToSnapshot,
 };

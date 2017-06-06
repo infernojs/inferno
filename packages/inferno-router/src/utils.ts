@@ -18,7 +18,7 @@ export function flatten(oldArray) {
 }
 
 export function getURLString(location): string {
-	return isString(location) ? location : (location.pathname + location.search);
+	return isString(location) ? location : location.pathname + location.search;
 }
 
 /**
@@ -37,14 +37,14 @@ export function mapSearchParams(search): any {
 	const fragments = search.split('&');
 
 	for (let i = 0, len = fragments.length; i < len; i++) {
-		const fragment = fragments[ i ];
-		const [ k, v ] = fragment.split('=').map(mapFragment).map(decodeURIComponent);
+		const fragment = fragments[i];
+		const [k, v] = fragment.split('=').map(mapFragment).map(decodeURIComponent);
 
-		if (map[ k ]) {
-			map[ k ] = isArray(map[ k ]) ? map[ k ] : [ map[ k ] ];
-			map[ k ].push(v);
+		if (map[k]) {
+			map[k] = isArray(map[k]) ? map[k] : [map[k]];
+			map[k].push(v);
 		} else {
-			map[ k ] = v;
+			map[k] = v;
 		}
 	}
 	return map;
@@ -74,7 +74,7 @@ export function rest(_args, excluded) {
 	const t = {};
 	for (const p in _args) {
 		if (excluded.indexOf(p) < 0) {
-			t[ p ] = _args[ p ];
+			t[p] = _args[p];
 		}
 	}
 	return t;
@@ -90,7 +90,7 @@ export function pathRankSort(a: any, b: any) {
 	const aAttr = a.props || emptyObject;
 	const bAttr = b.props || emptyObject;
 	const diff = rank(bAttr.path) - rank(aAttr.path);
-	return diff || ((bAttr.path && aAttr.path) ? (bAttr.path.length - aAttr.path.length) : 0);
+	return diff || (bAttr.path && aAttr.path ? bAttr.path.length - aAttr.path.length : 0);
 }
 
 /**
@@ -110,7 +110,7 @@ function rank(url: string = ''): number {
 
 function flattenArray(oldArray, newArray) {
 	for (let i = 0, len = oldArray.length; i < len; i++) {
-		const item = oldArray[ i ];
+		const item = oldArray[i];
 
 		if (isArray(item)) {
 			flattenArray(item, newArray);

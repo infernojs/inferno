@@ -1,6 +1,6 @@
 /* tslint:disable:object-literal-sort-keys */
 import { NO_OP, warning } from 'inferno-shared';
-import { LifecycleClass as _LifecycleClass} from 'inferno-shared';
+import { LifecycleClass as _LifecycleClass } from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
 import { getFlagsForElementVnode, normalize as internal_normalize } from './core/normalization';
 import { options, Root as _Root } from './core/options';
@@ -15,11 +15,12 @@ if (process.env.NODE_ENV !== 'production') {
 	/* tslint:disable-next-line:no-empty */
 	const testFunc = function testFn() {};
 	if (((testFunc as Function).name || testFunc.toString()).indexOf('testFn') === -1) {
-		warning(('It looks like you\'re using a minified copy of the development build ' +
-			'of Inferno. When deploying Inferno apps to production, make sure to use ' +
-			'the production build which skips development warnings and is faster. ' +
-			'See http://infernojs.org for more details.'
-		));
+		warning(
+			"It looks like you're using a minified copy of the development build " +
+				'of Inferno. When deploying Inferno apps to production, make sure to use ' +
+				'the production build which skips development warnings and is faster. ' +
+				'See http://infernojs.org for more details.',
+		);
 	}
 }
 
@@ -47,7 +48,7 @@ export default {
 	linkEvent,
 	options, // DOM
 	render, // DOM
-	version // DOM
+	version, // DOM
 };
 
 export {
@@ -69,5 +70,5 @@ export {
 	linkEvent,
 	options,
 	render,
-	version
+	version,
 };

@@ -4,7 +4,6 @@ import { cloneVNode } from 'inferno';
 import h from 'inferno-hyperscript';
 import Component from 'inferno-component';
 
-
 describe('isValidElement', () => {
 	it('Should not work with non-object', () => {
 		expect(isValidElement(33)).to.equal(false);

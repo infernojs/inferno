@@ -58,7 +58,6 @@ const handleChildRoute = (childRouteNode: IPlainRouteConfig): VNode => handleRou
 const handleChildRoutes = (childRouteNodes: IPlainRouteConfig[]): VNode[] => childRouteNodes.map(handleChildRoute);
 
 function handleRouteNode(routeConfigNode: IPlainRouteConfig): VNode {
-
 	if (routeConfigNode.indexRoute && !routeConfigNode.childRoutes) {
 		return createElement(Route, routeConfigNode);
 	}
@@ -66,7 +65,7 @@ function handleRouteNode(routeConfigNode: IPlainRouteConfig): VNode {
 	// create deep copy of config
 	const node: IPlainRouteConfig = {} as IPlainRouteConfig;
 	for (const key in routeConfigNode) {
-		node[ key ] = routeConfigNode[ key ];
+		node[key] = routeConfigNode[key];
 	}
 
 	node.children = [];
@@ -79,14 +78,14 @@ function handleRouteNode(routeConfigNode: IPlainRouteConfig): VNode {
 
 	// handle child routes config
 	if (node.childRoutes) {
-		const nodes: IPlainRouteConfig[] = isArray(node.childRoutes) ? node.childRoutes : [ node.childRoutes ];
+		const nodes: IPlainRouteConfig[] = isArray(node.childRoutes) ? node.childRoutes : [node.childRoutes];
 		node.children.push(...handleChildRoutes(nodes));
 		delete node.childRoutes;
 	}
 
 	// cleanup to match native rendered result
 	if (node.children.length === 1) {
-		node.children = node.children[ 0 ];
+		node.children = node.children[0];
 	}
 	if (
 		(isArray(node.children) && node.children.length === 0) ||

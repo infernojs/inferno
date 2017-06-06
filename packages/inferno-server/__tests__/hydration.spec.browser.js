@@ -9,8 +9,8 @@ describe('SSR Hydration - (non-JSX)', () => {
 		{
 			node: createElement('div', null, createElement('span', null, 'Hello world')),
 			expect1: '<div><span>Hello world</span></div>',
-			expect2: '<div><span>Hello world</span></div>'
-		}
+			expect2: '<div><span>Hello world</span></div>',
+		},
 		// {
 		// 	node: <div>{ <span>Hello world</span> }</div>,
 		// 	expect1: '<div data-infernoroot=""><span>Hello world</span></div>',
@@ -72,7 +72,7 @@ describe('SSR Hydration - (non-JSX)', () => {
 		// 	expect2: '<div><em>Works <span>again</span>!</em></div>'
 		// }
 	].forEach(({ node, expect1, expect2 }, i) => {
-		it(`Validate various structures #${ (i + 1) }`, () => {
+		it(`Validate various structures #${i + 1}`, () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 

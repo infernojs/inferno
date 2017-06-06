@@ -1,4 +1,3 @@
-
 import { render } from 'inferno';
 import Component from 'inferno-component';
 import { isNullOrUndef } from 'inferno-shared';
@@ -7,12 +6,12 @@ import { isVNode } from 'inferno/core/VNodes';
 describe('Normalization process', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -23,17 +22,17 @@ describe('Normalization process', () => {
 		// If Inferno goes back to nonKeyed routine in future change this function so that "all" can be null or unique
 		function verifyKeys(vNodes) {
 			if (Array.isArray(vNodes)) {
-				const keyValues = vNodes.map(function (vnode) {
+				const keyValues = vNodes.map(function(vnode) {
 					return vnode.key;
 				});
-				const isDuplicate = keyValues.some(function (item, idx) {
+				const isDuplicate = keyValues.some(function(item, idx) {
 					return keyValues.indexOf(item) !== idx;
 				});
 
 				expect(isDuplicate).to.eql(false, 'All siblings should have unique key');
 
 				for (let i = 0; i < vNodes.length; i++) {
-					verifyKeys(vNodes[ i ].children);
+					verifyKeys(vNodes[i].children);
 				}
 			} else if (!isNullOrUndef(vNodes) && isVNode(vNodes)) {
 				verifyKeys(vNodes.children);
@@ -42,26 +41,24 @@ describe('Normalization process', () => {
 
 		it('Should work when using functions within siblings', () => {
 			function meta(metas) {
-				return metas.map(
-					(meta) => {
-						return <meta property={ meta.property } content={ meta.content }/>;
-					}
-				);
+				return metas.map(meta => {
+					return <meta property={meta.property} content={meta.content} />;
+				});
 			}
 
 			function link(links) {
-				return links.map(
-					(link) => {
-						return <link rel={ link.rel } href={ link.href }/>;
-					}
-				);
+				return links.map(link => {
+					return <link rel={link.rel} href={link.href} />;
+				});
 			}
 
-			const vNode = <head>
-				<title>{ 'test' }</title>
-				{ meta([{ property: 'p', content: 'c' }, { property: 'p1', content: 'c1' }]) }
-				{ link([{ rel: 'rel', href: 'href1' }, { rel: 'rel', href: 'href2' }]) }
-			</head>;
+			const vNode = (
+				<head>
+					<title>{'test'}</title>
+					{meta([{ property: 'p', content: 'c' }, { property: 'p1', content: 'c1' }])}
+					{link([{ rel: 'rel', href: 'href1' }, { rel: 'rel', href: 'href2' }])}
+				</head>
+			);
 
 			verifyKeys(vNode);
 		});
@@ -81,54 +78,51 @@ describe('Normalization process', () => {
 
 			render(
 				<div>
-					<A i={0}/>
-					{[ <A i={'A'} key={'A'}/>,
-						<A i={'B'} key={'B'}/> ]}
-					<A i={1}/>
-					{[ <A i={'A'} key={'A'}/>,
-						<A i={'B'} key={'B'}/> ]}
-					<A i={2}/>
+					<A i={0} />
+					{[<A i={'A'} key={'A'} />, <A i={'B'} key={'B'} />]}
+					<A i={1} />
+					{[<A i={'A'} key={'A'} />, <A i={'B'} key={'B'} />]}
+					<A i={2} />
 				</div>,
-				container
+				container,
 			);
 
-			expect(container.innerHTML).to.eql('<div><div>0 (0)</div><div>A (1)</div><div>B (2)</div><div>1 (3)</div><div>A (4)</div><div>B (5)</div><div>2 (6)</div></div>');
+			expect(container.innerHTML).to.eql(
+				'<div><div>0 (0)</div><div>A (1)</div><div>B (2)</div><div>1 (3)</div><div>A (4)</div><div>B (5)</div><div>2 (6)</div></div>',
+			);
 
 			render(
 				<div>
-					<A i={0}/>
-					{[ <A i={'B'} key={'B'}/>,
-						<A i={'A'} key={'A'}/> ]}
-					<A i={1}/>
-					{[ <A i={'B'} key={'B'}/>,
-						<A i={'A'} key={'A'}/> ]}
-					<A i={2}/>
-				</div>
-				, container
+					<A i={0} />
+					{[<A i={'B'} key={'B'} />, <A i={'A'} key={'A'} />]}
+					<A i={1} />
+					{[<A i={'B'} key={'B'} />, <A i={'A'} key={'A'} />]}
+					<A i={2} />
+				</div>,
+				container,
 			);
 
-			expect(container.innerHTML).to.eql('<div><div>0 (0)</div><div>B (2)</div><div>A (1)</div><div>1 (3)</div><div>B (5)</div><div>A (4)</div><div>2 (6)</div></div>');
+			expect(container.innerHTML).to.eql(
+				'<div><div>0 (0)</div><div>B (2)</div><div>A (1)</div><div>1 (3)</div><div>B (5)</div><div>A (4)</div><div>2 (6)</div></div>',
+			);
 		});
 
 		describe('Static variations', () => {
 			const staticScenarios = [
-				(
 				<div>
-						<div>1</div>
-						<div>2</div>
-					</div>
-				),
-				(
+					<div>1</div>
+					<div>2</div>
+				</div>,
 				<table>
-						<thead>
+					<thead>
 						<tr>
 							<th>h1</th>
 							<th>h2</th>
 							<th>h3</th>
 							<th>h4</th>
 						</tr>
-						</thead>
-						<tbody>
+					</thead>
+					<tbody>
 						<tr>
 							<td>a1</td>
 							<td>a2</td>
@@ -147,26 +141,21 @@ describe('Normalization process', () => {
 							<td>c3</td>
 							<td>c4</td>
 						</tr>
-						</tbody>
-					</table>
-				),
-				(
+					</tbody>
+				</table>,
 				<nav>
-						<ul>
-							<li><a href="#">Home</a></li>
-							<li><a href="#">About</a></li>
-							<li><a href="#">Clients</a></li>
-							<li><a href="#">Contact Us</a></li>
-						</ul>
-					</nav>
-				),
-				(
+					<ul>
+						<li><a href="#">Home</a></li>
+						<li><a href="#">About</a></li>
+						<li><a href="#">Clients</a></li>
+						<li><a href="#">Contact Us</a></li>
+					</ul>
+				</nav>,
 				<ol>
-						<li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
-						<li>Aliquam tincidunt mauris eu risus.</li>
-						<li>Vestibulum auctor dapibus neque.</li>
-					</ol>
-				)
+					<li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+					<li>Aliquam tincidunt mauris eu risus.</li>
+					<li>Vestibulum auctor dapibus neque.</li>
+				</ol>,
 			];
 
 			staticScenarios.forEach((node, index) => {
@@ -178,23 +167,20 @@ describe('Normalization process', () => {
 
 		describe('Static variations with keys', () => {
 			const staticScenarios = [
-				(
 				<div key="2">
-						<div key="1">1</div>
-						<div key="2">2</div>
-					</div>
-				),
-				(
+					<div key="1">1</div>
+					<div key="2">2</div>
+				</div>,
 				<table key="1">
-						<thead key="1">
+					<thead key="1">
 						<tr key="1">
 							<th key="1">h1</th>
 							<th key="2">h2</th>
 							<th key="3">h3</th>
 							<th key="4">h4</th>
 						</tr>
-						</thead>
-						<tbody key="2">
+					</thead>
+					<tbody key="2">
 						<tr key="1">
 							<td key="1">a1</td>
 							<td key="2">a2</td>
@@ -213,9 +199,8 @@ describe('Normalization process', () => {
 							<td>c3</td>
 							<td>c4</td>
 						</tr>
-						</tbody>
-					</table>
-				)
+					</tbody>
+				</table>,
 			];
 
 			staticScenarios.forEach((node, index) => {
@@ -227,7 +212,7 @@ describe('Normalization process', () => {
 
 		describe('Dynamic variations', () => {
 			function makeArr(data) {
-				return data.map((v) => {
+				return data.map(v => {
 					let result;
 
 					if (typeof v === 'function') {
@@ -241,69 +226,55 @@ describe('Normalization process', () => {
 			}
 
 			const dynamicScenarios = [
-				(
 				<div>
-						<div>1</div>
-						{makeArr([ 'a', 'b', 'c' ])}
-					</div>
-				),
-				(
+					<div>1</div>
+					{makeArr(['a', 'b', 'c'])}
+				</div>,
 				<div>
-						{makeArr([ 'a', 'b', 'c' ])}
-						<div>1</div>
-					</div>
-				),
-				(
+					{makeArr(['a', 'b', 'c'])}
+					<div>1</div>
+				</div>,
 				<div>
-						{makeArr([ 'a', 'b', 'c' ])}
-						<div>1</div>
-						{makeArr([ 'a', 'b', 'c' ])}
-					</div>
-				),
-				(
+					{makeArr(['a', 'b', 'c'])}
+					<div>1</div>
+					{makeArr(['a', 'b', 'c'])}
+				</div>,
 				<div>
-						{makeArr([ 'a', 'b', 'c' ])}
-						<div>1</div>
-						{makeArr([ 'a', makeArr([ 'a', 'b', 'c' ]), 'b', 'c' ])}
-					</div>
-				),
-				(
+					{makeArr(['a', 'b', 'c'])}
+					<div>1</div>
+					{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}
+				</div>,
 				<div>
-						{[ 'a', 'b' ]}
-						{makeArr([ 'a', 'b', 'c' ])}
-						{makeArr([ 'a', makeArr([ 'a', 'b', 'c' ]), 'b', 'c' ])}
-					</div>
-				),
-				(
+					{['a', 'b']}
+					{makeArr(['a', 'b', 'c'])}
+					{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}
+				</div>,
 				<div>
-						{[ 'a', 'b', makeArr([ 'a', 'b', 'c' ]), makeArr([ 'a', 'b', 'c' ]), makeArr([ 'a', 'b', 'c' ]) ]}
-					</div>
-				),
-				(
+					{['a', 'b', makeArr(['a', 'b', 'c']), makeArr(['a', 'b', 'c']), makeArr(['a', 'b', 'c'])]}
+				</div>,
 				<div>
-						<div>1</div>
-						<div>{makeArr([ 'a', 'b', 'c' ])}</div>
-						<div>{makeArr([ 'a', makeArr([ 'a', 'b', 'c' ]), 'b', 'c' ])}</div>
-					</div>
-				),
-				(
+					<div>1</div>
+					<div>{makeArr(['a', 'b', 'c'])}</div>
+					<div>{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}</div>
+				</div>,
 				<div>
-						<div>1</div>
-						<div>{makeArr([ 'a', makeArr([ 'a', 'b', 'c' ]), <div>{makeArr([ 'a', 'b', 'c' ])}</div>, 'c' ])}</div>
-					</div>
-				),
-				(
+					<div>1</div>
+					<div>{makeArr(['a', makeArr(['a', 'b', 'c']), <div>{makeArr(['a', 'b', 'c'])}</div>, 'c'])}</div>
+				</div>,
 				<div>
-						<div>{makeArr([ <div>1</div>, 'b', 'c' ])}</div>
-						<div>{makeArr([ 'a', makeArr([ <div>1</div>, <div>1</div>, <div>1</div> ]), 'b', 'c' ])}</div>
-					</div>
-				),
-				(
+					<div>{makeArr([<div>1</div>, 'b', 'c'])}</div>
+					<div>{makeArr(['a', makeArr([<div>1</div>, <div>1</div>, <div>1</div>]), 'b', 'c'])}</div>
+				</div>,
 				<div>
-						<div>{makeArr([ <div>{makeArr([ 'a', makeArr([ 'a', 'b', 'c' ]), 'b', 'c' ])}</div>, makeArr([ 'a',
-							<div>{makeArr([ 'a', 'b', 'c' ])}</div>, 'c' ]), 'b', 'c' ])}</div>
+					<div>
+						{makeArr([
+							<div>{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}</div>,
+							makeArr(['a', <div>{makeArr(['a', 'b', 'c'])}</div>, 'c']),
+							'b',
+							'c',
+						])}
 					</div>
-				)
+				</div>,
 			];
 
 			dynamicScenarios.forEach((node, index) => {
@@ -315,7 +286,7 @@ describe('Normalization process', () => {
 
 		describe('Dynamic variations with keys', () => {
 			function makeArr(data) {
-				return data.map((v) => {
+				return data.map(v => {
 					let result;
 
 					if (typeof v === 'function') {
@@ -329,70 +300,57 @@ describe('Normalization process', () => {
 			}
 
 			const dynamicScenarios = [
-				(
 				<div>
-						<div key="1">1</div>
-						{makeArr([ 'a', 'b', 'c' ])}
-					</div>
-				),
-				(
+					<div key="1">1</div>
+					{makeArr(['a', 'b', 'c'])}
+				</div>,
 				<div>
-						{makeArr([ 'a', 'b', 'c' ])}
-						<div key="1">1</div>
-					</div>
-				),
-				(
+					{makeArr(['a', 'b', 'c'])}
+					<div key="1">1</div>
+				</div>,
 				<div>
-						{makeArr([ 'a', 'b', 'c' ])}
-						<div key="1">1</div>
-						{makeArr([ 'a', 'b', 'c' ])}
-					</div>
-				),
-				(
+					{makeArr(['a', 'b', 'c'])}
+					<div key="1">1</div>
+					{makeArr(['a', 'b', 'c'])}
+				</div>,
 				<div>
-						{makeArr([ 'a', 'b', 'c' ])}
-						<div key="1">1</div>
-						{makeArr([ 'a', makeArr([ 'a', 'b', 'c' ]), 'b', 'c' ])}
-					</div>
-				),
-				(
+					{makeArr(['a', 'b', 'c'])}
+					<div key="1">1</div>
+					{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}
+				</div>,
 				<div>
-						{makeArr([ 'a', 'b' ])}
-						{makeArr([ 'a', 'b', 'c' ])}
-						{makeArr([ 'a', makeArr([ 'a', 'b', 'c' ]), 'b', 'c' ])}
-					</div>
-				),
-				(
+					{makeArr(['a', 'b'])}
+					{makeArr(['a', 'b', 'c'])}
+					{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}
+				</div>,
 				<div>
-						{makeArr([ 'a', 'b', makeArr([ 'a', 'b', 'c' ]), makeArr([ 'a', 'b', 'c' ]), makeArr([ 'a', 'b', 'c' ]) ])}
-					</div>
-				),
-				(
+					{makeArr(['a', 'b', makeArr(['a', 'b', 'c']), makeArr(['a', 'b', 'c']), makeArr(['a', 'b', 'c'])])}
+				</div>,
 				<div>
-						<div key="1">1</div>
-						<div>{makeArr([ 'a', 'b', 'c' ])}</div>
-						<div>{makeArr([ 'a', makeArr([ 'a', 'b', 'c' ]), 'b', 'c' ])}</div>
-					</div>
-				),
-				(
+					<div key="1">1</div>
+					<div>{makeArr(['a', 'b', 'c'])}</div>
+					<div>{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}</div>
+				</div>,
 				<div>
-						<div key="1">1</div>
-						<div>{makeArr([ 'a', makeArr([ 'a', 'b', 'c' ]), <div>{makeArr([ 'a', 'b', 'c' ])}</div>, 'c' ])}</div>
-					</div>
-				),
-				(
+					<div key="1">1</div>
+					<div>{makeArr(['a', makeArr(['a', 'b', 'c']), <div>{makeArr(['a', 'b', 'c'])}</div>, 'c'])}</div>
+				</div>,
 				<div>
-						<div>{makeArr([ <div key="1">1</div>, 'b', 'c' ])}</div>
-						<div>{makeArr([ 'a', makeArr([ <div key="1">1</div>, <div key="11">1</div>,
-							<div key="111">1</div> ]), 'b', 'c' ])}</div>
+					<div>{makeArr([<div key="1">1</div>, 'b', 'c'])}</div>
+					<div>
+						{makeArr(['a', makeArr([<div key="1">1</div>, <div key="11">1</div>, <div key="111">1</div>]), 'b', 'c'])}
 					</div>
-				),
-				(
+				</div>,
 				<div>
-						<div>{makeArr([ <div>{makeArr([ 'a', makeArr([ 'a', 'b', 'c' ]), 'b', 'c' ])}</div>, makeArr([ 'a',
-							<div>{makeArr([ 'a', 'b', 'c' ])}</div>, 'c' ]), 'b', 'c' ])}</div>
+					<div>
+						{makeArr([
+							<div>{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}</div>,
+							makeArr(['a', <div>{makeArr(['a', 'b', 'c'])}</div>, 'c']),
+							'b',
+							'c',
+						])}
 					</div>
-				)
+				</div>,
 			];
 
 			dynamicScenarios.forEach((node, index) => {

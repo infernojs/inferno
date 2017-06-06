@@ -1,4 +1,3 @@
-
 import Component from 'inferno-component';
 import { innerHTML } from 'inferno/test/utils';
 import { render } from 'inferno';
@@ -13,8 +12,7 @@ describe('Components (JSX) #2', () => {
 	let attachedListener = null;
 	let renderedName = null;
 
-	beforeEach(function () {
-
+	beforeEach(function() {
 		attachedListener = null;
 		renderedName = null;
 
@@ -26,12 +24,12 @@ describe('Components (JSX) #2', () => {
 			render() {
 				attachedListener = this.props.onClick;
 				renderedName = this.props.name;
-				return <div className={this.props.name}/>;
+				return <div className={this.props.name} />;
 			}
 		};
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		document.body.removeChild(container);
 	});
@@ -52,11 +50,11 @@ describe('Components (JSX) #2', () => {
 		class ComponentBWithStateChange extends Component {
 			componentWillMount() {
 				this.setStateSync({
-					text: 'newText'
+					text: 'newText',
 				});
 
 				this.setStateSync({
-					text: 'newText2'
+					text: 'newText2',
 				});
 			}
 
@@ -125,13 +123,13 @@ describe('Components (JSX) #2', () => {
 
 			_update() {
 				this.setStateSync({
-					data: 'bar'
+					data: 'bar',
 				});
 			}
 
 			componentWillMount() {
 				this.setStateSync({
-					data: 'foo'
+					data: 'foo',
 				});
 			}
 
@@ -149,7 +147,7 @@ describe('Components (JSX) #2', () => {
 			render() {
 				return (
 					<div>
-						<Child name={this.foo}/>
+						<Child name={this.foo} />
 					</div>
 				);
 			}
@@ -172,7 +170,7 @@ describe('Components (JSX) #2', () => {
 		}
 
 		// For some reason this one breaks but if components are imported separately, it works
-		it('Should not reuse children if parent changes #1', (done) => {
+		it('Should not reuse children if parent changes #1', done => {
 			render(<ParentFirst />, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
@@ -195,13 +193,13 @@ describe('Components (JSX) #2', () => {
 
 			_update() {
 				this.setStateSync({
-					data: 'bar'
+					data: 'bar',
 				});
 			}
 
 			componentWillMount() {
 				this.setStateSync({
-					data: 'foo'
+					data: 'foo',
 				});
 			}
 
@@ -225,11 +223,10 @@ describe('Components (JSX) #2', () => {
 			render() {
 				return (
 					<div>
-						<Child name={this.foo}/>
+						<Child name={this.foo} />
 					</div>
 				);
 			}
-
 		}
 
 		class ParentSecond extends Component {
@@ -242,14 +239,14 @@ describe('Components (JSX) #2', () => {
 			render() {
 				return (
 					<div>
-						<Child name={this.foo}/>
+						<Child name={this.foo} />
 					</div>
 				);
 			}
 		}
 
 		// For some reason this one breaks but if components are imported separately, it works
-		it('Should not reuse children if parent changes #2', (done) => {
+		it('Should not reuse children if parent changes #2', done => {
 			render(<ParentFirst />, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
@@ -263,7 +260,7 @@ describe('Components (JSX) #2', () => {
 	});
 
 	describe('Inheritance with 1 component per file Common BASE', () => {
-		it('Should not reuse children if parent changes #3', (done) => {
+		it('Should not reuse children if parent changes #3', done => {
 			render(<ParentFirstCommon />, container);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Firstfoo</div></div>'));
 			container.firstChild.firstChild.click();
@@ -292,17 +289,17 @@ describe('Components (JSX) #2', () => {
 			}
 
 			static defaultProps = {
-				foo: 'bar'
+				foo: 'bar',
 			};
 		}
 
 		it('should render the component with a key', () => {
 			let val = '1';
 
-			render(<Comp key={ val }/>, container);
+			render(<Comp key={val} />, container);
 			expect(container.innerHTML).to.equal(innerHTML('bar'));
 			val = 2;
-			render(<Comp key={ val }/>, container);
+			render(<Comp key={val} />, container);
 			expect(container.innerHTML).to.equal(innerHTML('bar'));
 		});
 	});

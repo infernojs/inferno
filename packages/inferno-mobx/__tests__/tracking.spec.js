@@ -1,4 +1,3 @@
-
 import { trackComponents } from '../dist-es/makeReactive';
 
 describe('MobX trackComponents()', () => {

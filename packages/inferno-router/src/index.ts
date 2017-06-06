@@ -21,7 +21,7 @@ export {
 	RouterContext,
 	VNode,
 	createRoutes,
-	match
+	match,
 };
 
 export default {
@@ -34,5 +34,5 @@ export default {
 	Router,
 	RouterContext,
 	createRoutes,
-	match
+	match,
 };

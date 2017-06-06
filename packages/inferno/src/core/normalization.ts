@@ -7,7 +7,7 @@ import {
 	isString,
 	isStringOrNumber,
 	isUndefined,
-	warning
+	warning,
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { createTextVNode, directClone, InfernoChildren, isVNode, Props, VNode } from './VNodes';
@@ -20,9 +20,9 @@ function applyKey(key: string, vNode: VNode) {
 
 function applyKeyIfMissing(key: string | number, vNode: VNode): VNode {
 	if (isNumber(key)) {
-		key = `.${ key }`;
+		key = `.${key}`;
 	}
-	if (isNull(vNode.key) || vNode.key[ 0 ] === '.') {
+	if (isNull(vNode.key) || vNode.key[0] === '.') {
 		return applyKey(key as string, vNode);
 	}
 	return vNode;
@@ -36,8 +36,8 @@ function applyKeyPrefix(key: string, vNode: VNode): VNode {
 
 function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentKey) {
 	for (const len = nodes.length; index < len; index++) {
-		let n = nodes[ index ];
-		const key = `${ currentKey }.${ index }`;
+		let n = nodes[index];
+		const key = `${currentKey}.${index}`;
 
 		if (!isInvalid(n)) {
 			if (isArray(n)) {
@@ -45,10 +45,10 @@ function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentK
 			} else {
 				if (isStringOrNumber(n)) {
 					n = createTextVNode(n, null);
-				} else if (isVNode(n) && n.dom || (n.key && n.key[ 0 ] === '.')) {
+				} else if ((isVNode(n) && n.dom) || (n.key && n.key[0] === '.')) {
 					n = directClone(n);
 				}
-				if (isNull(n.key) || n.key[ 0 ] === '.') {
+				if (isNull(n.key) || n.key[0] === '.') {
 					n = applyKey(key, n as VNode);
 				} else {
 					n = applyKeyPrefix(currentKey, n as VNode);
@@ -67,14 +67,14 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	// if it comes back again, we need to clone it, as people are using it
 	// in an immutable way
 	// tslint:disable
-	if (nodes[ '$' ] === true) {
+	if (nodes['$'] === true) {
 		nodes = nodes.slice();
 	} else {
-		nodes[ '$' ] = true;
+		nodes['$'] = true;
 	}
 	// tslint:enable
 	for (let i = 0, len = nodes.length; i < len; i++) {
-		const n = nodes[ i ];
+		const n = nodes[i];
 
 		if (isInvalid(n) || isArray(n)) {
 			const result = (newNodes || nodes).slice(0, i) as VNode[];
@@ -96,7 +96,7 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 		}
 	}
 
-	return newNodes || nodes as VNode[];
+	return newNodes || (nodes as VNode[]);
 }
 
 function normalizeChildren(children: InfernoChildren | null) {
@@ -160,8 +160,8 @@ export function normalize(vNode: VNode): void {
 				props = vNode.props = defaultProps; // Create new object if only defaultProps given
 			} else {
 				for (const prop in defaultProps) {
-					if (isUndefined(props[ prop ])) {
-						props[ prop ] = defaultProps[ prop ];
+					if (isUndefined(props[prop])) {
+						props[prop] = defaultProps[prop];
 					}
 				}
 			}
@@ -187,7 +187,6 @@ export function normalize(vNode: VNode): void {
 	}
 
 	if (process.env.NODE_ENV !== 'production') {
-
 		// This code will be stripped out from production CODE
 		// It helps users to track errors in their applications.
 
@@ -199,7 +198,10 @@ export function normalize(vNode: VNode): void {
 				const hasDuplicate = keyValues.indexOf(item) !== idx;
 
 				if (hasDuplicate) {
-					warning('Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' + item);
+					warning(
+						'Inferno normalisation(...): Encountered two children with same key, all keys must be unique within its siblings. Duplicated key is:' +
+							item,
+					);
 				}
 
 				return hasDuplicate;

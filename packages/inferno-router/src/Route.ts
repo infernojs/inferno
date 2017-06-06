@@ -22,7 +22,7 @@ export default class Route extends Component<IRouteProps, any> {
 	constructor(props?: IRouteProps, context?: any) {
 		super(props, context);
 		this.state = {
-			asyncComponent: null
+			asyncComponent: null,
 		};
 	}
 
@@ -46,11 +46,11 @@ export default class Route extends Component<IRouteProps, any> {
 
 	private _onComponentResolved = (error, component) => {
 		this.setState({
-			asyncComponent: component
+			asyncComponent: component,
 		});
-	}
+	};
 
-	public  onLeave(trigger = false) {
+	public onLeave(trigger = false) {
 		const { onLeave } = this.props;
 		const { router } = this.context;
 
@@ -87,9 +87,9 @@ export default class Route extends Component<IRouteProps, any> {
 		this.onLeave(this.props.path !== nextProps.path);
 	}
 
-	public render(_args: IRouteProps): VNode|null {
+	public render(_args: IRouteProps): VNode | null {
 		const { component, children } = _args;
-		const props = rest(_args, [ 'component', 'children', 'path', 'getComponent' ]);
+		const props = rest(_args, ['component', 'children', 'path', 'getComponent']);
 
 		const { asyncComponent } = this.state;
 

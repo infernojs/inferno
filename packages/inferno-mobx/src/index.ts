@@ -12,7 +12,7 @@ export default {
 	inject,
 	observer: connect,
 	renderReporter,
-	trackComponents
+	trackComponents,
 };
 
 export {
@@ -23,5 +23,5 @@ export {
 	connect,
 	inject,
 	renderReporter,
-	trackComponents
+	trackComponents,
 };

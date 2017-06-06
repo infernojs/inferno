@@ -9,7 +9,7 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-	throwError
+	throwError,
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { escapeText, isVoidElement as _isVoidElement, toHyphenCase } from './utils';
@@ -21,18 +21,18 @@ function renderStylesToString(styles) {
 		let renderedString = '';
 
 		for (const styleName in styles) {
-			const value = styles[ styleName ];
+			const value = styles[styleName];
 			const px = isNumber(value) && !internal_isUnitlessNumber.has(styleName) ? 'px' : '';
 
 			if (!isNullOrUndef(value)) {
-				renderedString += `${ toHyphenCase(styleName) }:${ escapeText(value) }${ px };`;
+				renderedString += `${toHyphenCase(styleName)}:${escapeText(value)}${px};`;
 			}
 		}
 		return renderedString;
 	}
 }
 
-function renderVNodeToString(vNode, parent, context, firstChild): string|undefined {
+function renderVNodeToString(vNode, parent, context, firstChild): string | undefined {
 	const flags = vNode.flags;
 	const type = vNode.type;
 	const props = vNode.props || EMPTY_OBJ;
@@ -78,33 +78,33 @@ function renderVNodeToString(vNode, parent, context, firstChild): string|undefin
 			return renderVNodeToString(nextVNode, vNode, context, true);
 		}
 	} else if (flags & VNodeFlags.Element) {
-		let renderedString = `<${ type }`;
+		let renderedString = `<${type}`;
 		let html;
 		const isVoidElement = _isVoidElement(type);
 
 		if (!isNullOrUndef(vNode.className)) {
-			renderedString += ` class="${ escapeText(vNode.className) }"`;
+			renderedString += ` class="${escapeText(vNode.className)}"`;
 		}
 
 		if (!isNull(props)) {
 			for (const prop in props) {
-				const value = props[ prop ];
+				const value = props[prop];
 
 				if (prop === 'dangerouslySetInnerHTML') {
 					html = value.__html;
 				} else if (prop === 'style') {
-					renderedString += ` style="${ renderStylesToString(props.style) }"`;
+					renderedString += ` style="${renderStylesToString(props.style)}"`;
 				} else if (prop === 'children') {
 					// Ignore children as prop.
 				} else if (prop === 'defaultValue') {
 					// Use default values if normal values are not present
 					if (!props.value) {
-						renderedString += ` value="${ escapeText(value) }"`;
+						renderedString += ` value="${escapeText(value)}"`;
 					}
 				} else if (prop === 'defaultChecked') {
 					// Use default values if normal values are not present
 					if (!props.checked) {
-						renderedString += ` checked="${ value }"`;
+						renderedString += ` checked="${value}"`;
 					}
 				} else if (type === 'option' && prop === 'value') {
 					// Parent value sets children value
@@ -113,9 +113,9 @@ function renderVNodeToString(vNode, parent, context, firstChild): string|undefin
 					}
 				} else {
 					if (isStringOrNumber(value)) {
-						renderedString += ` ${ prop }="${ escapeText(value) }"`;
+						renderedString += ` ${prop}="${escapeText(value)}"`;
 					} else if (isTrue(value)) {
-						renderedString += ` ${ prop }`;
+						renderedString += ` ${prop}`;
 					}
 				}
 			}
@@ -127,15 +127,15 @@ function renderVNodeToString(vNode, parent, context, firstChild): string|undefin
 			if (!isInvalid(children)) {
 				if (isArray(children)) {
 					for (let i = 0, len = children.length; i < len; i++) {
-						const child = children[ i ];
+						const child = children[i];
 						if (isStringOrNumber(child)) {
-							renderedString += (child === '' ? ' ' : escapeText(child));
+							renderedString += child === '' ? ' ' : escapeText(child);
 						} else if (!isInvalid(child)) {
 							renderedString += renderVNodeToString(child, vNode, context, i === 0);
 						}
 					}
 				} else if (isStringOrNumber(children)) {
-					renderedString += (children === '' ? ' ' : escapeText(children));
+					renderedString += children === '' ? ' ' : escapeText(children);
 				} else {
 					renderedString += renderVNodeToString(children, vNode, context, true);
 				}
@@ -143,7 +143,7 @@ function renderVNodeToString(vNode, parent, context, firstChild): string|undefin
 				renderedString += html;
 			}
 			if (!isVoidElement) {
-				renderedString += `</${ type }>`;
+				renderedString += `</${type}>`;
 			}
 		}
 		return renderedString;
@@ -152,9 +152,15 @@ function renderVNodeToString(vNode, parent, context, firstChild): string|undefin
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
 			if (typeof vNode === 'object') {
-				throwError(`renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${ JSON.stringify(vNode) }".`);
+				throwError(
+					`renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
+						vNode,
+					)}".`,
+				);
 			} else {
-				throwError(`renderToString() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
+				throwError(
+					`renderToString() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`,
+				);
 			}
 		}
 		throwError();

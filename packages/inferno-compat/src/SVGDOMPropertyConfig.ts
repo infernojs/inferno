@@ -241,5 +241,5 @@ export default {
 	y2: 0,
 	yChannelSelector: 'yChannelSelector',
 	z: 0,
-	zoomAndPan: 'zoomAndPan'
+	zoomAndPan: 'zoomAndPan',
 };

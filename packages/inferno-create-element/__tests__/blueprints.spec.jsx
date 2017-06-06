@@ -1,4 +1,3 @@
-
 import { render } from 'inferno';
 import Component from 'inferno-component';
 import { innerHTML } from 'inferno/test/utils';
@@ -6,12 +5,12 @@ import { innerHTML } from 'inferno/test/utils';
 describe('Blueprints (JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		document.body.removeChild(container);
 		container = null;
 	});
@@ -33,22 +32,22 @@ describe('Blueprints (JSX)', () => {
 			constructor(props) {
 				super(props);
 				this.state = {
-					bool: false
+					bool: false,
 				};
 				this.btnCount = this.btnCount.bind(this);
 			}
 
 			btnCount() {
 				this.setState({
-					bool: !this.state.bool
+					bool: !this.state.bool,
 				});
 			}
 
 			render() {
 				return (
 					<div className="my-component">
-						<h1>{ this.props.car } { this.state.bool ? <A /> : <B /> }</h1>
-						<button type="button" onClick={ this.btnCount }>btn</button>
+						<h1>{this.props.car} {this.state.bool ? <A /> : <B />}</h1>
+						<button type="button" onClick={this.btnCount}>btn</button>
 					</div>
 				);
 			}
@@ -62,38 +61,38 @@ describe('Blueprints (JSX)', () => {
 			render() {
 				return (
 					<div>
-						{ [ 'Saab', 'Volvo', 'BMW' ].map(function (c) {
-							return (<Counter car={ c }/>);
-						}) }
+						{['Saab', 'Volvo', 'BMW'].map(function(c) {
+							return <Counter car={c} />;
+						})}
 					</div>
 				);
 			}
 		}
 
 		it('Initial render (creation)', () => {
-			render(<Wrapper/>, container);
+			render(<Wrapper />, container);
 
-			expect(
-				container.innerHTML
-			).to.equal(
-				innerHTML('<div><div class="my-component"><h1>Saab <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <span>B</span></h1><button type="button">btn</button></div></div>')
+			expect(container.innerHTML).to.equal(
+				innerHTML(
+					'<div><div class="my-component"><h1>Saab <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <span>B</span></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <span>B</span></h1><button type="button">btn</button></div></div>',
+				),
 			);
 
 			render(null, container);
 		});
 
-		it('Second render (update)', (done) => {
-			render(<Wrapper/>, container);
+		it('Second render (update)', done => {
+			render(<Wrapper />, container);
 			const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
-			buttons.forEach((button) => button.click());
+			buttons.forEach(button => button.click());
 
 			// requestAnimationFrame is needed here because
 			// setState fires after a requestAnimationFrame
 			requestAnimationFrame(() => {
-				expect(
-					container.innerHTML
-				).to.equal(
-					innerHTML('<div><div class="my-component"><h1>Saab <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <div>A</div></h1><button type="button">btn</button></div></div>')
+				expect(container.innerHTML).to.equal(
+					innerHTML(
+						'<div><div class="my-component"><h1>Saab <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>Volvo <div>A</div></h1><button type="button">btn</button></div><div class="my-component"><h1>BMW <div>A</div></h1><button type="button">btn</button></div></div>',
+					),
 				);
 				render(null, container);
 				done();
@@ -102,13 +101,13 @@ describe('Blueprints (JSX)', () => {
 	});
 
 	describe('Infinite loop issue', () => {
-		it('Should not get stuck when doing setState from ref callback', (done) => {
+		it('Should not get stuck when doing setState from ref callback', done => {
 			class A extends Component {
 				constructor(props) {
 					super(props);
 
 					this.state = {
-						text: 'foo'
+						text: 'foo',
 					};
 
 					this.onWilAttach = this.onWilAttach.bind(this);
@@ -117,7 +116,7 @@ describe('Blueprints (JSX)', () => {
 				onWilAttach(node) {
 					// Do something with node and setState
 					this.setState({
-						text: 'animate'
+						text: 'animate',
 					});
 				}
 
@@ -136,7 +135,7 @@ describe('Blueprints (JSX)', () => {
 
 			render(<A />, container);
 
-			render(<A open={true}/>, container);
+			render(<A open={true} />, container);
 			setTimeout(() => {
 				expect(container.innerHTML).to.equal(innerHTML('<div>animate</div>'));
 				done();
@@ -160,9 +159,9 @@ describe('Blueprints (JSX)', () => {
 
 				render() {
 					return (
-						<div ref={(node) => (this._first = node)}>
+						<div ref={node => (this._first = node)}>
 							<span>1</span>
-							<span ref={(node) => (this._second = node)}>2</span>
+							<span ref={node => (this._second = node)}>2</span>
 						</div>
 					);
 				}
@@ -182,17 +181,17 @@ describe('Blueprints (JSX)', () => {
 				render() {
 					return (
 						<div>
-							<input disabled={ this.props.disabled } {...this.props.args} />
+							<input disabled={this.props.disabled} {...this.props.args} />
 						</div>
 					);
 				}
 			}
 
-			render(<A disabled={true}/>, container);
+			render(<A disabled={true} />, container);
 			let input = container.querySelector('input');
 			expect(input.disabled).to.equal(true);
 
-			render(<A disabled={false}/>, container);
+			render(<A disabled={false} />, container);
 			input = container.querySelector('input');
 			expect(input.disabled).to.equal(false);
 		});

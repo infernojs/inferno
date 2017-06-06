@@ -27,14 +27,16 @@ function createrRouter(history) {
 			return matchPath(true, url, this.url);
 		},
 		get location() {
-			return history.location.pathname !== 'blank' ? history.location : {
-				pathname: '/',
-				search: ''
-			};
+			return history.location.pathname !== 'blank'
+				? history.location
+				: {
+						pathname: '/',
+						search: '',
+					};
 		},
 		get url() {
 			return this.location.pathname + this.location.search;
-		}
+		},
 	};
 }
 
@@ -46,7 +48,7 @@ export default class Router extends Component<IRouterProps, any> {
 		super(props, context);
 		this.router = createrRouter(props.history);
 		this.state = {
-			url: props.url || this.router.url
+			url: props.url || this.router.url,
 		};
 	}
 
@@ -59,10 +61,7 @@ export default class Router extends Component<IRouterProps, any> {
 	}
 
 	public componentWillReceiveProps(nextProps) {
-		this.setState(
-			{ url: nextProps.url },
-			this.props.onUpdate ? () => this.props.onUpdate() : void 0
-		);
+		this.setState({ url: nextProps.url }, this.props.onUpdate ? () => this.props.onUpdate() : void 0);
 	}
 
 	public componentWillUnmount() {
@@ -72,13 +71,10 @@ export default class Router extends Component<IRouterProps, any> {
 	}
 
 	public routeTo(url) {
-		this.setState(
-			{ url },
-			this.props.onUpdate ? () => this.props.onUpdate() : void 0
-		);
+		this.setState({ url }, this.props.onUpdate ? () => this.props.onUpdate() : void 0);
 	}
 
-	public render(props): VNode|null {
+	public render(props): VNode | null {
 		const hit = match(props.children, this.state.url);
 
 		if (hit.redirect) {
@@ -91,7 +87,7 @@ export default class Router extends Component<IRouterProps, any> {
 		return createVNode(VNodeFlags.ComponentClass, RouterContext, null, null, {
 			location: this.state.url,
 			matched: hit.matched,
-			router: this.router
+			router: this.router,
 		});
 	}
 }

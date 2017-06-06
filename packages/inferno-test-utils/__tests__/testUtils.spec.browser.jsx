@@ -1,4 +1,3 @@
-
 import { render } from 'inferno';
 import { assert, spy } from 'sinon';
 import Component from 'inferno-component';
@@ -27,40 +26,31 @@ import {
 	scryRenderedDOMElementsWithClass,
 	scryRenderedDOMElementsWithTag,
 	scryRenderedVNodesWithType,
-	scryVNodesWithType
+	scryVNodesWithType,
 } from '../dist-es';
 
-const VNodeKeys = [
-	'children',
-	'className',
-	'dom',
-	'flags',
-	'key',
-	'ref',
-	'props',
-	'type'
-];
+const VNodeKeys = ['children', 'className', 'dom', 'flags', 'key', 'ref', 'props', 'type'];
 
-const createDOMElement = (tagName) => document.createElement(tagName);
+const createDOMElement = tagName => document.createElement(tagName);
 
-const FunctionalComponent = function (props) {
+const FunctionalComponent = function(props) {
 	return createElement('div', props);
 };
 
-const AnotherFunctionalComponent = function (props) {
+const AnotherFunctionalComponent = function(props) {
 	return createElement('div', props);
 };
 
 const CreateClassComponent = createClass({
 	render() {
 		return createElement('div', this.props);
-	}
+	},
 });
 
 const AnotherCreateClassComponent = createClass({
 	render() {
 		return createElement('div', this.props);
-	}
+	},
 });
 
 class ExtendClassComponent extends Component {
@@ -76,18 +66,16 @@ class AnotherExtendClassComponent extends Component {
 }
 
 describe('Test Utils', () => {
-
 	describe('isVNode', () => {
-
 		it('should return true for VNodes', () => {
 			expect(isVNode(createElement('div'))).to.be.true;
 			expect(isVNode(createElement(CreateClassComponent))).to.be.true;
 			expect(isVNode(createElement(ExtendClassComponent))).to.be.true;
 			expect(isVNode(createElement(FunctionalComponent))).to.be.true;
-			expect(isVNode(<CreateClassComponent/>)).to.be.true;
-			expect(isVNode(<ExtendClassComponent/>)).to.be.true;
-			expect(isVNode(<FunctionalComponent/>)).to.be.true;
-			expect(isVNode(<div/>)).to.be.true;
+			expect(isVNode(<CreateClassComponent />)).to.be.true;
+			expect(isVNode(<ExtendClassComponent />)).to.be.true;
+			expect(isVNode(<FunctionalComponent />)).to.be.true;
+			expect(isVNode(<div />)).to.be.true;
 		});
 
 		it('should return false for non-VNodes', () => {
@@ -105,7 +93,6 @@ describe('Test Utils', () => {
 	});
 
 	describe('isVNodeOfType', () => {
-
 		it('should return true for VNodes with a specified type', () => {
 			expect(isVNodeOfType(createElement('div'), 'div')).to.be.true;
 			expect(isVNodeOfType(createElement(FunctionalComponent), FunctionalComponent)).to.be.true;
@@ -122,7 +109,6 @@ describe('Test Utils', () => {
 	});
 
 	describe('isDOMVNode', () => {
-
 		it('should return true for VNodes of type string', () => {
 			expect(isDOMVNode(createElement('div'))).to.be.true;
 			expect(isDOMVNode(createElement('h1'))).to.be.true;
@@ -137,7 +123,6 @@ describe('Test Utils', () => {
 	});
 
 	describe('isDOMVNodeOfType', () => {
-
 		it('should return true for VNodes of specific string type', () => {
 			expect(isDOMVNodeOfType(createElement('div'), 'div')).to.be.true;
 			expect(isDOMVNodeOfType(createElement('h1'), 'h1')).to.be.true;
@@ -155,7 +140,6 @@ describe('Test Utils', () => {
 	});
 
 	describe('isFunctionalVNode', () => {
-
 		it('should return true for VNodes of stateless function type', () => {
 			expect(isFunctionalVNode(createElement(FunctionalComponent))).to.be.true;
 		});
@@ -168,7 +152,6 @@ describe('Test Utils', () => {
 	});
 
 	describe('isFunctionalVNodeOfType', () => {
-
 		it('should return true for VNodes of specific stateless function type', () => {
 			expect(isFunctionalVNodeOfType(createElement(FunctionalComponent), FunctionalComponent)).to.be.true;
 		});
@@ -181,7 +164,6 @@ describe('Test Utils', () => {
 	});
 
 	describe('isClassVNode', () => {
-
 		it('should return true for VNodes of class type', () => {
 			expect(isClassVNode(createElement(CreateClassComponent))).to.be.true;
 			expect(isClassVNode(createElement(ExtendClassComponent))).to.be.true;
@@ -194,7 +176,6 @@ describe('Test Utils', () => {
 	});
 
 	describe('isClassVNodeOfType', () => {
-
 		it('should return true for VNodes of specific class type', () => {
 			expect(isClassVNodeOfType(createElement(CreateClassComponent), CreateClassComponent)).to.be.true;
 			expect(isClassVNodeOfType(createElement(ExtendClassComponent), ExtendClassComponent)).to.be.true;
@@ -212,7 +193,6 @@ describe('Test Utils', () => {
 	});
 
 	describe('isDOMElement', () => {
-
 		it('should return true for DOMElements', () => {
 			expect(isDOMElement(createDOMElement('div'))).to.be.true;
 			expect(isDOMElement(createDOMElement('h1'))).to.be.true;
@@ -237,7 +217,6 @@ describe('Test Utils', () => {
 	});
 
 	describe('isDOMElementOfType', () => {
-
 		it('should return true for DOMElements of specific type', () => {
 			expect(isDOMElementOfType(createDOMElement('div'), 'div')).to.be.true;
 			expect(isDOMElementOfType(createDOMElement('div'), 'DIV')).to.be.true;
@@ -258,108 +237,78 @@ describe('Test Utils', () => {
 	});
 
 	describe('isRenderedClassComponent', () => {
-
 		const DOMVNode = createElement('div');
 		const functionalVNode = createElement(FunctionalComponent);
 		const createClassVNode = createElement(CreateClassComponent);
 		const extendClassVNode = createElement(ExtendClassComponent);
 
 		it('should return true for rendered Class Components', () => {
-			expect(isRenderedClassComponent(
-				render(createClassVNode, createDOMElement('div'))
-			)).to.be.true;
-			expect(isRenderedClassComponent(
-				render(extendClassVNode, createDOMElement('div'))
-			)).to.be.true;
+			expect(isRenderedClassComponent(render(createClassVNode, createDOMElement('div')))).to.be.true;
+			expect(isRenderedClassComponent(render(extendClassVNode, createDOMElement('div')))).to.be.true;
 		});
 
 		it('should return false for non-rendered Class Components', () => {
 			expect(isRenderedClassComponent(createClassVNode)).to.be.false;
 			expect(isRenderedClassComponent(extendClassVNode)).to.be.false;
-			expect(isRenderedClassComponent(
-				render(functionalVNode, createDOMElement('div'))
-			)).to.be.false;
-			expect(isRenderedClassComponent(
-				render(DOMVNode, createDOMElement('div'))
-			)).to.be.false;
+			expect(isRenderedClassComponent(render(functionalVNode, createDOMElement('div')))).to.be.false;
+			expect(isRenderedClassComponent(render(DOMVNode, createDOMElement('div')))).to.be.false;
 		});
 	});
 
 	describe('isRenderedClassComponentOfType', () => {
-
 		const createClassVNode = createElement(CreateClassComponent);
 		const extendClassVNode = createElement(ExtendClassComponent);
 
 		it('should return true for rendered Class Components of specific type', () => {
-			expect(isRenderedClassComponentOfType(
-				render(createClassVNode, createDOMElement('div')),
-				CreateClassComponent)).to.be.true;
-			expect(isRenderedClassComponentOfType(
-				render(extendClassVNode, createDOMElement('div')),
-				ExtendClassComponent)).to.be.true;
+			expect(isRenderedClassComponentOfType(render(createClassVNode, createDOMElement('div')), CreateClassComponent)).to
+				.be.true;
+			expect(isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), ExtendClassComponent)).to
+				.be.true;
 		});
 
 		it('should return false for rendered Class Components of incorrect type', () => {
-			expect(isRenderedClassComponentOfType(
-				render(createClassVNode, createDOMElement('div')),
-				AnotherCreateClassComponent)).to.be.false;
-			expect(isRenderedClassComponentOfType(
-				render(createClassVNode, createDOMElement('div')),
-				ExtendClassComponent)).to.be.false;
-			expect(isRenderedClassComponentOfType(
-				render(createClassVNode, createDOMElement('div')),
-				FunctionalComponent)).to.be.false;
-			expect(isRenderedClassComponentOfType(
-				render(createClassVNode, createDOMElement('div')),
-				'div')).to.be.false;
+			expect(
+				isRenderedClassComponentOfType(render(createClassVNode, createDOMElement('div')), AnotherCreateClassComponent),
+			).to.be.false;
+			expect(isRenderedClassComponentOfType(render(createClassVNode, createDOMElement('div')), ExtendClassComponent)).to
+				.be.false;
+			expect(isRenderedClassComponentOfType(render(createClassVNode, createDOMElement('div')), FunctionalComponent)).to
+				.be.false;
+			expect(isRenderedClassComponentOfType(render(createClassVNode, createDOMElement('div')), 'div')).to.be.false;
 
-			expect(isRenderedClassComponentOfType(
-				render(extendClassVNode, createDOMElement('div')),
-				AnotherExtendClassComponent)).to.be.false;
-			expect(isRenderedClassComponentOfType(
-				render(extendClassVNode, createDOMElement('div')),
-				CreateClassComponent)).to.be.false;
-			expect(isRenderedClassComponentOfType(
-				render(extendClassVNode, createDOMElement('div')),
-				FunctionalComponent)).to.be.false;
-			expect(isRenderedClassComponentOfType(
-				render(extendClassVNode, createDOMElement('div')),
-				'div')).to.be.false;
+			expect(
+				isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), AnotherExtendClassComponent),
+			).to.be.false;
+			expect(isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), CreateClassComponent)).to
+				.be.false;
+			expect(isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), FunctionalComponent)).to
+				.be.false;
+			expect(isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), 'div')).to.be.false;
 		});
 	});
 
 	describe('renderIntoDocument', () => {
-
 		it('should return a rendered class component', () => {
-			expect(isRenderedClassComponent(
-				renderIntoDocument(createElement('div'))
-			)).to.be.true;
-			expect(isRenderedClassComponent(
-				renderIntoDocument(createElement(FunctionalComponent))
-			)).to.be.true;
-			expect(isRenderedClassComponent(
-				renderIntoDocument(createElement(CreateClassComponent))
-			)).to.be.true;
-			expect(isRenderedClassComponent(
-				renderIntoDocument(createElement(ExtendClassComponent))
-			)).to.be.true;
+			expect(isRenderedClassComponent(renderIntoDocument(createElement('div')))).to.be.true;
+			expect(isRenderedClassComponent(renderIntoDocument(createElement(FunctionalComponent)))).to.be.true;
+			expect(isRenderedClassComponent(renderIntoDocument(createElement(CreateClassComponent)))).to.be.true;
+			expect(isRenderedClassComponent(renderIntoDocument(createElement(ExtendClassComponent)))).to.be.true;
 		});
 	});
 
 	describe('findAllInRenderedTree', () => {
-
 		const tree = renderIntoDocument(
 			<section className="outer">
-				<FunctionalComponent/>
-			</section>
+				<FunctionalComponent />
+			</section>,
 		);
 
 		it('should throw an error when not passed a rendered class component', () => {
 			const errorRegex = /findAllInRenderedTree/;
-			const predicate = (vNode) => {
+			const predicate = vNode => {
 				return true;
 			};
-			const testValue = (value) => {
+			const testValue = value => {
 				expect(() => {
 					findAllInRenderedTree(value, predicate);
 				}).to.throw(Error, errorRegex);
@@ -396,13 +345,13 @@ describe('Test Utils', () => {
 		it('should call predicate in the correct order', () => {
 			const types = [];
 			findAllInRenderedTree(tree, ({ type }) => types.push(type));
-			expect(types).to.eql([ 'section', FunctionalComponent, 'div' ]);
+			expect(types).to.eql(['section', FunctionalComponent, 'div']);
 		});
 
 		it('should work with interpolated text', () => {
 			const predicate = sinon.spy();
-			const Hello = ({ who }) => (<div>Hello, {who}!</div>);
-			const treeWithText = renderIntoDocument(<Hello who="world"/>);
+			const Hello = ({ who }) => <div>Hello, {who}!</div>;
+			const treeWithText = renderIntoDocument(<Hello who="world" />);
 			assert.notCalled(predicate);
 			findAllInRenderedTree(treeWithText, predicate);
 			assert.callCount(predicate, 5);
@@ -415,24 +364,23 @@ describe('Test Utils', () => {
 	});
 
 	describe('findAllInVNodeTree', () => {
-
 		const tree = (
 			<section className="outer">
-				<FunctionalComponent/>
+				<FunctionalComponent />
 			</section>
 		);
 
 		it('should throw an error when not passed a VNode', () => {
 			const errorRegex = /findAllInVNodeTree/;
-			const predicate = (vNode) => {
+			const predicate = vNode => {
 				return true;
 			};
-			const testValue = (value) => {
+			const testValue = value => {
 				expect(() => {
 					findAllInVNodeTree(value, predicate);
 				}).to.throw(Error, errorRegex);
 			};
-			testValue(renderIntoDocument(<div/>));
+			testValue(renderIntoDocument(<div />));
 			testValue(CreateClassComponent);
 			testValue(ExtendClassComponent);
 			testValue(FunctionalComponent);
@@ -459,36 +407,35 @@ describe('Test Utils', () => {
 		it('should call predicate in the correct order', () => {
 			const types = [];
 			findAllInVNodeTree(tree, ({ type }) => types.push(type));
-			expect(types).to.eql([ 'section', FunctionalComponent ]);
+			expect(types).to.eql(['section', FunctionalComponent]);
 		});
 	});
 
 	describe('scryRenderedDOMElementsWithClass', () => {
-
 		const tree = renderIntoDocument(
 			<div className="level-1 one">
 				<div className="level-2 one">
-					<div className="level-3 one"/>
+					<div className="level-3 one" />
 				</div>
 				<div className="level-2 two">
-					<span className="level-3 two"/>
+					<span className="level-3 two" />
 				</div>
-			</div>
+			</div>,
 		);
 
 		it('should return an array of matched DOM elements', () => {
 			const result1 = scryRenderedDOMElementsWithClass(tree, 'one');
 			expect(result1).to.be.instanceof(Array);
 			expect(result1).to.have.lengthOf(3);
-			result1.forEach((result) => {
+			result1.forEach(result => {
 				expect(result).to.be.instanceof(window.HTMLDivElement);
 			});
 
 			const result2 = scryRenderedDOMElementsWithClass(tree, 'two');
 			expect(result2).to.be.instanceof(Array);
 			expect(result2).to.have.lengthOf(2);
-			expect(result2[ 0 ]).to.be.instanceof(window.HTMLDivElement);
-			expect(result2[ 1 ]).to.be.instanceof(window.HTMLSpanElement);
+			expect(result2[0]).to.be.instanceof(window.HTMLDivElement);
+			expect(result2[1]).to.be.instanceof(window.HTMLSpanElement);
 
 			const result3 = scryRenderedDOMElementsWithClass(tree, 'three');
 			expect(result3).to.be.instanceof(Array);
@@ -506,14 +453,13 @@ describe('Test Utils', () => {
 		});
 
 		it('should accept an array of class names', () => {
-			const result = scryRenderedDOMElementsWithClass(tree, [ 'level-2', 'one' ]);
+			const result = scryRenderedDOMElementsWithClass(tree, ['level-2', 'one']);
 			expect(result).to.be.instanceof(Array);
 			expect(result).to.have.lengthOf(1);
 		});
 	});
 
 	describe('scryRenderedDOMElementsWithTag', () => {
-
 		const tree = renderIntoDocument(
 			<div>
 				<header>
@@ -525,7 +471,7 @@ describe('Test Utils', () => {
 					<p>Paragraph 2</p>
 					<p>Paragraph 3</p>
 				</section>
-			</div>
+			</div>,
 		);
 
 		it('should return an array of matched DOM elements', () => {
@@ -533,7 +479,7 @@ describe('Test Utils', () => {
 				const result = scryRenderedDOMElementsWithTag(tree, tagName);
 				expect(result).to.be.instanceof(Array);
 				expect(result).to.have.lengthOf(length);
-				result.forEach((item) => {
+				result.forEach(item => {
 					expect(item).to.be.instanceof(instance);
 				});
 			};
@@ -545,16 +491,15 @@ describe('Test Utils', () => {
 	});
 
 	describe('scryRenderedVNodesWithType', () => {
-
 		const tree = renderIntoDocument(
 			<div>
-				<FunctionalComponent/>
-				<FunctionalComponent/>
-				<CreateClassComponent/>
-				<CreateClassComponent/>
-				<ExtendClassComponent/>
-				<ExtendClassComponent/>
-			</div>
+				<FunctionalComponent />
+				<FunctionalComponent />
+				<CreateClassComponent />
+				<CreateClassComponent />
+				<ExtendClassComponent />
+				<ExtendClassComponent />
+			</div>,
 		);
 
 		it('should return an array of matched VNodes', () => {
@@ -562,7 +507,7 @@ describe('Test Utils', () => {
 				const result = scryRenderedVNodesWithType(tree, type);
 				expect(result).to.be.instanceof(Array);
 				expect(result).to.have.lengthOf(length);
-				result.forEach((item) => {
+				result.forEach(item => {
 					expect(item).to.be.instanceof(Object);
 					expect(item).to.have.all.keys(VNodeKeys);
 					expect(isVNode(item)).to.be.true;
@@ -578,15 +523,14 @@ describe('Test Utils', () => {
 	});
 
 	describe('scryVNodesWithType', () => {
-
 		const tree = (
 			<div>
-				<FunctionalComponent/>
-				<FunctionalComponent/>
-				<CreateClassComponent/>
-				<CreateClassComponent/>
-				<ExtendClassComponent/>
-				<ExtendClassComponent/>
+				<FunctionalComponent />
+				<FunctionalComponent />
+				<CreateClassComponent />
+				<CreateClassComponent />
+				<ExtendClassComponent />
+				<ExtendClassComponent />
 			</div>
 		);
 
@@ -595,7 +539,7 @@ describe('Test Utils', () => {
 				const result = scryVNodesWithType(tree, type);
 				expect(result).to.be.instanceof(Array);
 				expect(result).to.have.lengthOf(length);
-				result.forEach((item) => {
+				result.forEach(item => {
 					expect(item).to.be.instanceof(Object);
 					expect(item).to.have.all.keys(VNodeKeys);
 					expect(isVNode(item)).to.be.true;
@@ -611,21 +555,20 @@ describe('Test Utils', () => {
 	});
 
 	describe('findRenderedDOMElementWithClass', () => {
-
 		const tree = renderIntoDocument(
 			<div className="level-1 one">
 				<div className="level-2 one">
-					<div className="level-3 one"/>
+					<div className="level-3 one" />
 				</div>
 				<div className="level-2 two">
-					<span className="level-3 two"/>
+					<span className="level-3 two" />
 				</div>
-			</div>
+			</div>,
 		);
 
 		it('should throw an error when more than one result is found #1', () => {
 			const errorRegex = /Did not find exactly one match/;
-			const testValue = (classNames) => {
+			const testValue = classNames => {
 				expect(() => {
 					findRenderedDOMElementWithClass(tree, classNames);
 				}).to.throw(Error, errorRegex);
@@ -646,7 +589,7 @@ describe('Test Utils', () => {
 
 		it('should be able to handle null elements', () => {
 			const NoOp = () => null;
-			const Broken = () => <div className='dummy'><NoOp /></div>;
+			const Broken = () => <div className="dummy"><NoOp /></div>;
 			const renderedTree = renderIntoDocument(<Broken />);
 			const dummy = findRenderedDOMElementWithClass(renderedTree, 'dummy');
 			expect(dummy.className).to.equal('dummy');
@@ -654,7 +597,6 @@ describe('Test Utils', () => {
 	});
 
 	describe('findRenderedDOMElementWithTag', () => {
-
 		const tree = renderIntoDocument(
 			<div>
 				<header>
@@ -668,12 +610,12 @@ describe('Test Utils', () => {
 					<p>Paragraph 3</p>
 					<a>test</a>
 				</section>
-			</div>
+			</div>,
 		);
 
 		it('should throw an error when more than one result is found #2', () => {
 			const errorRegex = /Did not find exactly one match/;
-			const testValue = (tagName) => {
+			const testValue = tagName => {
 				expect(() => {
 					findRenderedDOMElementWithTag(tree, tagName);
 				}).to.throw(Error, errorRegex);
@@ -694,20 +636,19 @@ describe('Test Utils', () => {
 	});
 
 	describe('findRenderedVNodeWithType', () => {
-
 		const tree = renderIntoDocument(
 			<div>
 				<h1>Hello</h1>
-				<FunctionalComponent/>
-				<FunctionalComponent/>
-				<CreateClassComponent/>
-				<ExtendClassComponent/>
-			</div>
+				<FunctionalComponent />
+				<FunctionalComponent />
+				<CreateClassComponent />
+				<ExtendClassComponent />
+			</div>,
 		);
 
 		it('should throw an error when more than one result is found #3', () => {
 			const errorRegex = /Did not find exactly one match/;
-			const testValue = (type) => {
+			const testValue = type => {
 				expect(() => {
 					findRenderedVNodeWithType(tree, type);
 				}).to.throw(Error, errorRegex);
@@ -717,7 +658,7 @@ describe('Test Utils', () => {
 		});
 
 		it('should return a matched VNode #1', () => {
-			const testValue = (type) => {
+			const testValue = type => {
 				const result = findRenderedVNodeWithType(tree, type);
 				expect(result).to.be.instanceof(Object);
 				expect(result).to.have.all.keys(VNodeKeys);
@@ -731,22 +672,21 @@ describe('Test Utils', () => {
 	});
 
 	describe('findVNodeWithType', () => {
-
 		const tree = (
 			<div>
 				<div>
 					<h1>Hello</h1>
 				</div>
-				<FunctionalComponent/>
-				<FunctionalComponent/>
-				<CreateClassComponent/>
-				<ExtendClassComponent/>
+				<FunctionalComponent />
+				<FunctionalComponent />
+				<CreateClassComponent />
+				<ExtendClassComponent />
 			</div>
 		);
 
 		it('should throw an error when more than one result is found #4', () => {
 			const errorRegex = /Did not find exactly one match/;
-			const testValue = (type) => {
+			const testValue = type => {
 				expect(() => {
 					findVNodeWithType(tree, type);
 				}).to.throw(Error, errorRegex);
@@ -756,7 +696,7 @@ describe('Test Utils', () => {
 		});
 
 		it('should return a matched VNode #2', () => {
-			const testValue = (type) => {
+			const testValue = type => {
 				const result = findVNodeWithType(tree, type);
 				expect(result).to.be.instanceof(Object);
 				expect(result).to.have.all.keys(VNodeKeys);

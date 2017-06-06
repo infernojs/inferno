@@ -11,14 +11,15 @@ import {
 	isNullOrUndef,
 	isStringOrNumber,
 	NO_OP,
-	throwError
+	throwError,
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
 let noOp = ERROR_MSG;
 
 if (process.env.NODE_ENV !== 'production') {
-	noOp = 'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
+	noOp =
+		'Inferno Error: Can only update a mounted or mounting component. This usually means you called setState() or forceUpdate() on an unmounted component. This is a no-op.';
 }
 
 const componentCallbackQueue: Map<any, Function[]> = new Map();
@@ -59,16 +60,14 @@ function addToQueue(component: Component<any, any>, force: boolean, callback?: F
 			component._updating = true;
 			applyState(component, force, () => {
 				for (let i = 0, len = queue.length; i < len; i++) {
-					queue[ i ].call(component);
+					queue[i].call(component);
 				}
 			});
 			component._updating = false;
 		});
 	}
 	if (!isNullOrUndef(callback)) {
-		queue.push(
-			callback
-		);
+		queue.push(callback);
 	}
 }
 
@@ -82,7 +81,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callba
 		component._pendingState = pending = newState;
 	} else {
 		for (const stateKey in newState) {
-			pending[ stateKey ] = newState[ stateKey ];
+			pending[stateKey] = newState[stateKey];
 		}
 	}
 
@@ -102,7 +101,7 @@ function queueStateChanges<P, S>(component: Component<P, S>, newState: S, callba
 			component.state = pending;
 		} else {
 			for (const key in pending) {
-				state[ key ] = pending[ key ];
+				state[key] = pending[key];
 			}
 		}
 
@@ -138,7 +137,9 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 			nextInput = createVNode(VNodeFlags.Text, null, null, nextInput) as VNode;
 		} else if (isArray(nextInput)) {
 			if (process.env.NODE_ENV !== 'production') {
-				throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
+				throwError(
+					'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.',
+				);
 			}
 			throwError();
 		}
@@ -162,7 +163,15 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 			}
 
 			const lifeCycle = component._lifecycle as any;
-			internal_patch(lastInput, nextInput as VNode, parentDom as Element, lifeCycle, childContext, component._isSVG, false);
+			internal_patch(
+				lastInput,
+				nextInput as VNode,
+				parentDom as Element,
+				lifeCycle,
+				childContext,
+				component._isSVG,
+				false,
+			);
 			lifeCycle.trigger();
 
 			if (!isNullOrUndef(component.componentDidUpdate)) {
@@ -172,7 +181,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 				options.afterUpdate(vNode);
 			}
 		}
-		const dom = vNode.dom = (nextInput as VNode).dom as Element;
+		const dom = (vNode.dom = (nextInput as VNode).dom as Element);
 		if (options.findDOMNodeEnabled) {
 			internal_DOMNodeMap.set(component, (nextInput as VNode).dom);
 		}
@@ -191,15 +200,15 @@ let alreadyWarned = false;
 
 export default class Component<P, S> implements ComponentLifecycle<P, S> {
 	public static defaultProps: {};
-	public state: S|null = null;
+	public state: S | null = null;
 	public props: P & Props;
 	public context: any;
 	public _blockRender = false;
 	public _blockSetState = true;
 	public _pendingSetState = false;
-	public _pendingState: S|null = null;
+	public _pendingState: S | null = null;
 	public _lastInput: any = null;
-	public _vNode: VNode|null = null;
+	public _vNode: VNode | null = null;
 	public _unmounted = false;
 	public _lifecycle = null;
 	public _childContext = null;
@@ -258,20 +267,30 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			if (!alreadyWarned) {
 				alreadyWarned = true;
 				// tslint:disable-next-line:no-console
-				console.warn('Inferno WARNING: setStateSync has been deprecated and will be removed in next release. Use setState instead.');
+				console.warn(
+					'Inferno WARNING: setStateSync has been deprecated and will be removed in next release. Use setState instead.',
+				);
 			}
 		}
 		this.setState(newState);
 	}
 
-	public _updateComponent(prevState: S, nextState: S, prevProps: P & Props, nextProps: P & Props, context: any, force: boolean, fromSetState: boolean): VNode|string {
+	public _updateComponent(
+		prevState: S,
+		nextState: S,
+		prevProps: P & Props,
+		nextProps: P & Props,
+		context: any,
+		force: boolean,
+		fromSetState: boolean,
+	): VNode | string {
 		if (this._unmounted === true) {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError(noOp);
 			}
 			throwError();
 		}
-		if ((prevProps !== nextProps || nextProps === EMPTY_OBJ) || prevState !== nextState || force) {
+		if (prevProps !== nextProps || nextProps === EMPTY_OBJ || prevState !== nextState || force) {
 			if (prevProps !== nextProps || nextProps === EMPTY_OBJ) {
 				if (!isNullOrUndef(this.componentWillReceiveProps) && !fromSetState) {
 					// keep a copy of state before componentWillReceiveProps
@@ -296,7 +315,11 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 			}
 
 			/* Update if scu is not defined, or it returns truthy value or force */
-			if (isNullOrUndef(this.shouldComponentUpdate) || (this.shouldComponentUpdate && this.shouldComponentUpdate(nextProps, nextState, context)) || force) {
+			if (
+				isNullOrUndef(this.shouldComponentUpdate) ||
+				(this.shouldComponentUpdate && this.shouldComponentUpdate(nextProps, nextState, context)) ||
+				force
+			) {
 				if (!isNullOrUndef(this.componentWillUpdate)) {
 					this._blockSetState = true;
 					this.componentWillUpdate(nextProps, nextState, context);

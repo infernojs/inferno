@@ -8,15 +8,15 @@ export interface Root {
 }
 
 export const options: {
-	afterMount: null|Function,
-	afterRender: null|Function,
-	afterUpdate: null|Function,
-	beforeRender: null|Function,
-	beforeUnmount: null|Function
-	createVNode: null|Function,
-	findDOMNodeEnabled: boolean,
-	recyclingEnabled: boolean,
-	roots: Root[]
+	afterMount: null | Function;
+	afterRender: null | Function;
+	afterUpdate: null | Function;
+	beforeRender: null | Function;
+	beforeUnmount: null | Function;
+	createVNode: null | Function;
+	findDOMNodeEnabled: boolean;
+	recyclingEnabled: boolean;
+	roots: Root[];
 } = {
 	afterMount: null,
 	afterRender: null,
@@ -26,5 +26,5 @@ export const options: {
 	createVNode: null,
 	findDOMNodeEnabled: false,
 	recyclingEnabled: false,
-	roots: []
+	roots: [],
 };

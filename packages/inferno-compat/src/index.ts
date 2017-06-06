@@ -7,7 +7,7 @@ import {
 	options,
 	Props,
 	render,
-	VNode
+	VNode,
 } from 'inferno';
 import Component from 'inferno-component';
 import createClass, { ClassicComponentClass, ComponentSpec } from 'inferno-create-class';
@@ -33,7 +33,11 @@ function unmountComponentAtNode(container: Element | SVGAElement | DocumentFragm
 
 const ARR = [];
 
-export type IterateChildrenFn = (value: InfernoChildren | any, index: number, array: Array<InfernoChildren | any>) => any;
+export type IterateChildrenFn = (
+	value: InfernoChildren | any,
+	index: number,
+	array: Array<InfernoChildren | any>,
+) => any;
 
 const Children = {
 	map(children: Array<InfernoChildren | any>, fn: IterateChildrenFn, ctx: any): any[] {
@@ -55,7 +59,7 @@ const Children = {
 			fn = fn.bind(ctx);
 		}
 		for (let i = 0, len = children.length; i < len; i++) {
-			fn(children[ i ], i, children);
+			fn(children[i], i, children);
 		}
 	},
 	count(children: Array<InfernoChildren | any>): number {
@@ -67,14 +71,14 @@ const Children = {
 		if (children.length !== 1) {
 			throw new Error('Children.only() expects only one child.');
 		}
-		return children[ 0 ];
+		return children[0];
 	},
 	toArray(children: Array<InfernoChildren | any>): Array<InfernoChildren | any> {
 		if (isNullOrUndef(children)) {
 			return [];
 		}
 		return isArray(children) ? children : ARR.concat(children);
-	}
+	},
 };
 
 (Component.prototype as any).isReactComponent = {};
@@ -103,24 +107,24 @@ function normalizeProps(name: string, props: Props | any) {
 			eventName = 'oninput';
 		}
 
-		if (!props[ eventName ]) {
-			props[ eventName ] = props.onChange;
+		if (!props[eventName]) {
+			props[eventName] = props.onChange;
 			delete props.onChange;
 		}
 	}
 	for (const prop in props) {
 		if (prop === 'onDoubleClick') {
-			props.onDblClick = props[ prop ];
-			delete props[ prop ];
+			props.onDblClick = props[prop];
+			delete props[prop];
 		}
 		if (prop === 'htmlFor') {
-			props.for = props[ prop ];
-			delete props[ prop ];
+			props.for = props[prop];
+			delete props[prop];
 		}
-		const mappedProp = SVGDOMPropertyConfig[ prop ];
+		const mappedProp = SVGDOMPropertyConfig[prop];
 		if (mappedProp && mappedProp !== prop) {
-			props[ mappedProp ] = props[ prop ];
-			delete props[ prop ];
+			props[mappedProp] = props[prop];
+			delete props[prop];
 		}
 	}
 }
@@ -132,7 +136,7 @@ function normalizeProps(name: string, props: Props | any) {
 // but in reality devs use onSomething for many things, not only for
 // input events
 if (typeof Event !== 'undefined' && !Event.prototype.persist) {
-// tslint:disable-next-line:no-empty
+	// tslint:disable-next-line:no-empty
 	Event.prototype.persist = function() {};
 }
 
@@ -159,7 +163,7 @@ const injectStringRefs = function(originalFunction) {
 		if (typeof ref === 'string' && !isNull(currentComponent)) {
 			currentComponent.refs = currentComponent.refs || {};
 			props.ref = function(val) {
-				this.refs[ ref ] = val;
+				this.refs[ref] = val;
 			}.bind(currentComponent);
 		}
 		if (typeof name === 'string') {
@@ -169,9 +173,9 @@ const injectStringRefs = function(originalFunction) {
 		// React supports iterable children, in addition to Array-like
 		if (hasSymbolSupport) {
 			for (let i = 0, len = children.length; i < len; i++) {
-				const child = children[ i ];
-				if (child && !isArray(child) && !isString(child) && isFunction(child[ Symbol.iterator ])) {
-					children[ i ] = iterableToArray(child[ Symbol.iterator ]());
+				const child = children[i];
+				if (child && !isArray(child) && !isString(child) && isFunction(child[Symbol.iterator])) {
+					children[i] = iterableToArray(child[Symbol.iterator]());
 				}
 			}
 		}
@@ -207,7 +211,7 @@ function shallowDiffers(a, b): boolean {
 		}
 	}
 	for (const i in b) {
-		if (a[ i ] !== b[ i ]) {
+		if (a[i] !== b[i]) {
 			return true;
 		}
 	}
@@ -226,7 +230,7 @@ PureComponent.prototype.shouldComponentUpdate = function(props, state) {
 class WrapperComponent<P, S> extends Component<P, S> {
 	public getChildContext() {
 		// tslint:disable-next-line
-		return this.props[ 'context' ];
+		return this.props['context'];
 	}
 
 	public render(props) {
@@ -237,7 +241,7 @@ class WrapperComponent<P, S> extends Component<P, S> {
 function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, callback) {
 	const wrapperVNode: VNode = createVNode(4, WrapperComponent, null, null, {
 		children: vNode,
-		context: parentComponent.context
+		context: parentComponent.context,
 	});
 	const component = render(wrapperVNode, container);
 
@@ -249,7 +253,9 @@ function unstable_renderSubtreeIntoContainer(parentComponent, vNode, container, 
 }
 
 // Credit: preact-compat - https://github.com/developit/preact-compat
-const ELEMENTS = 'a abbr address area article aside audio b base bdi bdo big blockquote body br button canvas caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd keygen label legend li link main map mark menu menuitem meta meter nav noscript object ol optgroup option output p param picture pre progress q rp rt ruby s samp script section select small source span strong style sub summary sup table tbody td textarea tfoot th thead time title tr track u ul var video wbr circle clipPath defs ellipse g image line linearGradient mask path pattern polygon polyline radialGradient rect stop svg text tspan'.split(' ');
+const ELEMENTS = 'a abbr address area article aside audio b base bdi bdo big blockquote body br button canvas caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd keygen label legend li link main map mark menu menuitem meta meter nav noscript object ol optgroup option output p param picture pre progress q rp rt ruby s samp script section select small source span strong style sub summary sup table tbody td textarea tfoot th thead time title tr track u ul var video wbr circle clipPath defs ellipse g image line linearGradient mask path pattern polygon polyline radialGradient rect stop svg text tspan'.split(
+	' ',
+);
 
 function createFactory(type) {
 	return createElement.bind(null, type);
@@ -257,7 +263,7 @@ function createFactory(type) {
 
 const DOM = {};
 for (let i = ELEMENTS.length; i--; ) {
-	DOM[ ELEMENTS[ i ] ] = createFactory(ELEMENTS[ i ]);
+	DOM[ELEMENTS[i]] = createFactory(ELEMENTS[i]);
 }
 
 // Mask React global in browser enviornments when React is not used.
@@ -281,7 +287,7 @@ if (isBrowser && typeof (window as any).React === 'undefined') {
 		render,
 		unmountComponentAtNode,
 		unstable_renderSubtreeIntoContainer,
-		version
+		version,
 	};
 
 	(window as any).React = exports;
@@ -311,7 +317,7 @@ export {
 	render,
 	unmountComponentAtNode,
 	unstable_renderSubtreeIntoContainer,
-	version
+	version,
 };
 
 export default {
@@ -333,7 +339,7 @@ export default {
 	render,
 	unmountComponentAtNode,
 	unstable_renderSubtreeIntoContainer,
-	version
+	version,
 };
 
 // To please the TS God

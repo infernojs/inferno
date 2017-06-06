@@ -2,14 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
 
-const fixtureDirs = fs.readdirSync(__dirname).filter((file) => {
+const fixtureDirs = fs.readdirSync(__dirname).filter(file => {
 	return fs.statSync(path.join(__dirname, file)).isDirectory();
 });
 
-const cmdArgs = [
-	{cmd: 'npm', args: ['install']},
-	{cmd: 'npm', args: ['run', 'build']},
-];
+const cmdArgs = [{ cmd: 'npm', args: ['install'] }, { cmd: 'npm', args: ['run', 'build'] }];
 
 function buildFixture(cmdArg, cwdPath) {
 	const opts = {

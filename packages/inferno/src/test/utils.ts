@@ -5,8 +5,8 @@ const comparer = document.createElement('div');
 
 export function sortAttributes(html: string): string {
 	return html.replace(/<([a-z0-9-]+)((?:\s[a-z0-9:_.-]+=".*?")+)((?:\s*\/)?>)/gi, (s, pre, attrs, after) => {
-		const attrName = (attribute: string): string => attribute.split('=')[ 0 ];
-		const list: string[] = attrs.match(/\s[a-z0-9:_.-]+=".*?"/gi).sort((a, b) => attrName(a) > attrName(b) ? 1 : -1);
+		const attrName = (attribute: string): string => attribute.split('=')[0];
+		const list: string[] = attrs.match(/\s[a-z0-9:_.-]+=".*?"/gi).sort((a, b) => (attrName(a) > attrName(b) ? 1 : -1));
 		if (~after.indexOf('/')) {
 			after = '></' + pre + '>';
 		}
@@ -90,7 +90,6 @@ export function triggerEvent(name: string, element: any) {
 		eventType = 'HTMLEvents';
 	} else {
 		throw new Error('Unsupported `"' + name + '"`event');
-
 	}
 	const event = document.createEvent(eventType);
 	event.initEvent(name, name !== 'change', true);

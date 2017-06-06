@@ -1,4 +1,3 @@
-
 // Inlined PropTypes, there is propType checking ATM.
 // tslint:disable-next-line:no-empty
 function proptype() {}
@@ -23,7 +22,7 @@ const PropTypes = {
 	oneOfType: getProptype,
 	shape: getProptype,
 	string: proptype,
-	symbol: proptype
+	symbol: proptype,
 };
 
 export default PropTypes;

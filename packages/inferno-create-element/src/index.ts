@@ -18,9 +18,15 @@ componentHooks.add('onComponentDidUpdate');
  * @param {...{object}=} _children Optional children for virtual node
  * @returns {VNode} new virtual ndoe
  */
-export default function createElement<T>(type: string | Function | Component<any, any>, props?: T & Props|null, ..._children: Array<InfernoChildren | any>): VNode {
+export default function createElement<T>(
+	type: string | Function | Component<any, any>,
+	props?: T & Props | null,
+	..._children: Array<InfernoChildren | any>
+): VNode {
 	if (isInvalid(type) || isObject(type)) {
-		throw new Error('Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.');
+		throw new Error(
+			'Inferno Error: createElement() name parameter cannot be undefined, null, false or true, It must be a string, class or function.',
+		);
 	}
 	let children: any = _children;
 	let ref: any = null;
@@ -31,7 +37,7 @@ export default function createElement<T>(type: string | Function | Component<any
 
 	if (_children) {
 		if (_children.length === 1) {
-			children = _children[ 0 ];
+			children = _children[0];
 		} else if (_children.length === 0) {
 			children = void 0;
 		}
@@ -44,7 +50,7 @@ export default function createElement<T>(type: string | Function | Component<any
 
 			for (const prop in props) {
 				if (prop === 'className' || prop === 'class') {
-					className = props[ prop ];
+					className = props[prop];
 				} else if (prop === 'key') {
 					key = props.key;
 				} else if (prop === 'children' && isUndefined(children)) {
@@ -74,7 +80,7 @@ export default function createElement<T>(type: string | Function | Component<any
 					if (!ref) {
 						ref = {};
 					}
-					ref[ prop ] = props[ prop ];
+					ref[prop] = props[prop];
 				} else if (prop === 'key') {
 					key = props.key;
 				} else {
@@ -83,13 +89,5 @@ export default function createElement<T>(type: string | Function | Component<any
 			}
 		}
 	}
-	return createVNode(
-		flags,
-		type as string|Function,
-		className,
-		children,
-		newProps,
-		key,
-		ref
-	);
+	return createVNode(flags, type as string | Function, className, children, newProps, key, ref);
 }
