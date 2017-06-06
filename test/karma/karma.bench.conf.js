@@ -11,6 +11,9 @@ module.exports = function (config) {
 		files: [
 			`packages/${process.env.BENCH_FILTER || '*'}/__benchmarks__/**/*.js*`
 		],
+		browsers: [
+			'Firefox'
+		],
 		frameworks: [
 			'benchmark'
 		],

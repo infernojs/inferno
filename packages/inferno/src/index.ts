@@ -1,6 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
-import { NO_OP, warning } from 'inferno-shared';
-import { LifecycleClass as _LifecycleClass} from 'inferno-shared';
+import { LifecycleClass as _LifecycleClass, NO_OP, warning } from 'inferno-shared';
 import _VNodeFlags from 'inferno-vnode-flags';
 import { getFlagsForElementVnode, normalize as internal_normalize } from './core/normalization';
 import { options, Root as _Root } from './core/options';

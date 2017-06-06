@@ -41,22 +41,29 @@ function _normalizeVNodes(nodes: any[], result: VNode[], index: number, currentK
 		if (!isInvalid(n)) {
 			const key = `${ currentKey }.${ index }`;
 
-			if (isArray(n)) {
+			if (isStringOrNumber(n)) {
+				// String
+				n = createTextVNode(n, null);
+			} else if (isArray(n)) {
+				// Array
 				_normalizeVNodes(n, result, 0, key);
-			} else {
-				if (isStringOrNumber(n)) {
-					n = createTextVNode(n, null);
-				} else if (isVNode(n) && n.dom || (n.key && n.key[ 0 ] === '.')) {
-					n = directClone(n);
-				}
-				if (isNull(n.key) || n.key[ 0 ] === '.') {
-					n = applyKey(key, n as VNode);
-				} else {
-					n = applyKeyPrefix(currentKey, n as VNode);
-				}
 
-				result.push(n);
+				continue;
 			}
+
+			// vNode
+			const emptyKey = isNull(n.key) || n.key[ 0 ] === '.';
+
+			if (emptyKey || n.dom) {
+				n = directClone(n);
+			}
+			if (emptyKey) {
+				n = applyKey(key, n as VNode);
+			} else {
+				n = applyKeyPrefix(currentKey, n as VNode);
+			}
+
+			result.push(n);
 		}
 	}
 }
@@ -77,16 +84,16 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	for (let i = 0, len = nodes.length; i < len; i++) {
 		const n = nodes[ i ];
 
-		if (isInvalid(n) || isArray(n)) {
-			const result = (newNodes || nodes).slice(0, i) as VNode[];
-
-			_normalizeVNodes(nodes, result, i, ``);
-			return result;
-		} else if (isStringOrNumber(n)) {
+		if (isStringOrNumber(n)) {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
 			}
 			newNodes.push(applyKeyIfMissing(i, createTextVNode(n, null)));
+		} else if (isInvalid(n) || isArray(n)) {
+			const result = (newNodes || nodes).slice(0, i) as VNode[];
+
+			_normalizeVNodes(nodes, result, i, ``);
+			return result;
 		} else if ((isVNode(n) && n.dom !== null) || (isNull(n.key) && (n.flags & VNodeFlags.HasNonKeyedChildren) === 0)) {
 			if (!newNodes) {
 				newNodes = nodes.slice(0, i) as VNode[];
@@ -100,13 +107,14 @@ export function normalizeVNodes(nodes: any[]): VNode[] {
 	return newNodes || nodes as VNode[];
 }
 
-function normalizeChildren(children: InfernoChildren | null) {
-	if (isArray(children)) {
+function normalizeChildren(children) {
+	if (isStringOrNumber(children)) {
+		return children;
+	} else if (isArray(children)) {
 		return normalizeVNodes(children as any[]);
-	} else if (isVNode(children as VNode) && (children as VNode).dom !== null) {
+	} else if (/* must be vNode */children.dom !== null) {
 		return directClone(children as VNode);
 	}
-
 	return children;
 }
 

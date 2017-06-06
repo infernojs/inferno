@@ -16,7 +16,7 @@ import {
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
 import { Styles } from '../core/structures';
-import { createTextVNode, createVoidVNode, directClone, isVNode, VNode } from '../core/VNodes';
+import { createTextVNode, createVoidVNode, directClone, VNode } from '../core/VNodes';
 import { booleanProps, delegatedEvents, isUnitlessNumber, namespaces, skipProps, strictProps } from './constants';
 import { handleEvent } from './events/delegation';
 import { mount, mountArrayChildren, mountComponent, mountElement, mountRef, mountText, mountVoid } from './mounting';
@@ -109,7 +109,8 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, li
 }
 
 function unmountChildren(children, dom: Element, lifecycle: LifecycleClass, isRecycling: boolean) {
-	if (isVNode(children)) {
+	// TODO: Check this
+	if (children.flags > 0) {
 		unmount(children, dom, lifecycle, true, isRecycling);
 	} else if (isArray(children)) {
 		removeAllChildren(dom, children, lifecycle, isRecycling);

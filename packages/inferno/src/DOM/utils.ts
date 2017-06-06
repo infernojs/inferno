@@ -1,11 +1,4 @@
-import {
-	isArray,
-	isInvalid,
-	isNullOrUndef,
-	isStringOrNumber,
-	LifecycleClass,
-	throwError
-} from 'inferno-shared';
+import { isArray, isInvalid, isNullOrUndef, isStringOrNumber, LifecycleClass, throwError } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
 import { createTextVNode, createVoidVNode, directClone, VNode } from '../core/VNodes';

@@ -1,6 +1,6 @@
 import { isFunction, isNullOrUndef } from 'inferno-shared';
+import { options } from '../../core/options';
 import { EMPTY_OBJ } from '../utils';
-import {options} from './../../core/options';
 
 export function isCheckedType(type) {
 	return type === 'checkbox' || type === 'radio';

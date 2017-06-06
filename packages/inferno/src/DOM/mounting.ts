@@ -16,13 +16,7 @@ import { directClone, isVNode, VNode } from '../core/VNodes';
 import { patchProp } from './patching';
 import { recycleComponent, recycleElement } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
-import {
-	appendChild,
-	documentCreateElement,
-	EMPTY_OBJ,
-	handleComponentInput,
-	setTextContent
-} from './utils';
+import { appendChild, documentCreateElement, EMPTY_OBJ, handleComponentInput, setTextContent } from './utils';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 
 export function mount(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
@@ -69,7 +63,7 @@ export function mountVoid(vNode: VNode, parentDom: Element|null) {
 	return dom;
 }
 
-export function mountElement(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: Object, isSVG: boolean) {
+export function mountElement(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, context: {}, isSVG: boolean) {
 	if (options.recyclingEnabled) {
 		const dom = recycleElement(vNode, lifecycle, context, isSVG);
 

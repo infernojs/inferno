@@ -1,16 +1,7 @@
-import {
-	isArray,
-	isFunction,
-	isInvalid,
-	isNull,
-	isNullOrUndef,
-	isObject,
-	LifecycleClass,
-	throwError
-} from 'inferno-shared';
+import { isArray,  isFunction, isInvalid, isNull, isNullOrUndef, isObject, isStringOrNumber, LifecycleClass, throwError } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
-import { InfernoChildren, Ref, VNode } from '../core/VNodes';
+import { Ref, VNode } from '../core/VNodes';
 import { isAttrAnEvent, patchEvent } from './patching';
 import { componentPools, elementPools, pool } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
@@ -103,8 +94,18 @@ export function unmountElement(vNode: VNode, parentDom: Element|null, lifecycle:
 	}
 	const children = vNode.children;
 
-	if (!isNullOrUndef(children)) {
-		unmountChildren(children, lifecycle, isRecycling);
+	if (!isNullOrUndef(children) && !isStringOrNumber(children)) {
+		if (isArray(children)) {
+			for (let i = 0, len = (children as Array<string | number | VNode>).length; i < len; i++) {
+				const child = children[ i ];
+
+				if (!isInvalid(child) && isObject(child)) {
+					unmount(child as VNode, null, lifecycle, false, isRecycling);
+				}
+			}
+		} else {
+			unmount(children as VNode, null, lifecycle, false, isRecycling);
+		}
 	}
 
 	if (!isNull(props)) {
@@ -122,20 +123,6 @@ export function unmountElement(vNode: VNode, parentDom: Element|null, lifecycle:
 	}
 	if (options.recyclingEnabled && (parentDom || canRecycle)) {
 		pool(vNode, elementPools);
-	}
-}
-
-function unmountChildren(children: InfernoChildren, lifecycle: LifecycleClass, isRecycling: boolean) {
-	if (isArray(children)) {
-		for (let i = 0, len = (children as Array<string | number | VNode>).length; i < len; i++) {
-			const child = children[ i ];
-
-			if (!isInvalid(child) && isObject(child)) {
-				unmount(child as VNode, null, lifecycle, false, isRecycling);
-			}
-		}
-	} else if (isObject(children)) {
-		unmount(children as VNode, null, lifecycle, false, isRecycling);
 	}
 }
 
