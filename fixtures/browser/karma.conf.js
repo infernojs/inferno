@@ -9,7 +9,6 @@ module.exports = function(config) {
 
 		detectBrowsers: {
 			postDetection(browserList) {
-				console.log('AVAILABLE BROWSERS >>>>', ...browserList);
 				const results = browserList.indexOf('PhantomJS') && browserList.length === 1 ? ['PhantomJS'] : [];
 
 				if (browserList.indexOf('Chrome') > -1) {
