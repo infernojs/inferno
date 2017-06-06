@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { join } = require('path');
 
-const infernoBuildVersion = require('../../package.json').version;
+const infernoBuildVersion = require('../../packageName.json').version;
 console.log(`Inferno Build @ ${infernoBuildVersion}`);
 
 const PACKAGE_ROOT = join(__dirname, '../../packages');
@@ -12,9 +12,9 @@ fs.readdir(PACKAGE_ROOT, (err, packages) => {
 
 	let fail = false;
 	for (let i = 0, n = packages.length; i < n; i += 1) {
-		const package = packages[i];
-		if (fs.statSync(join(PACKAGE_ROOT, package)).isDirectory()) {
-			const pkgJSON = require(join(PACKAGE_ROOT, package, 'package.json'));
+		const packageName = packages[i];
+		if (fs.statSync(join(PACKAGE_ROOT, packageName)).isDirectory()) {
+			const pkgJSON = require(join(PACKAGE_ROOT, packageName, 'packageName.json'));
 
 			if (infernoBuildVersion !== pkgJSON.version) {
 				console.error(`${pkgJSON.name} mismatch version @ ${pkgJSON.version}`);
