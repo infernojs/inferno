@@ -3,7 +3,7 @@ const path = require('path');
 const read = require('fs-readdir-recursive');
 
 module.exports = {
-	collectCoverageFrom: ['packages/*/src/**/*.ts', '!**/*.ts.js'],
+	collectCoverageFrom: ['packages/*/src/**/*.ts', '!**/*.ts.js', '!**/inferno-utils/**/*', '!**/inferno-devtools/**/*' ],
 	coverageDirectory: 'coverage',
 	coverageReporters: ['html', 'lcov', 'text'],
 	globals: {
