@@ -26,8 +26,8 @@
     "rollup"
   ],
   "main": "index.js",
-  "inferno:main": "dist-es/index.js",
-  "typings": "dist/index.d.ts",
+  "inferno:main": "dist/index.es.js",
+  "typings": "dist/inferno-server.d.ts",
   "repository": "https://github.com/infernojs/inferno",
   "dependencies": {
     "inferno": "^4.0.0",

@@ -12,8 +12,8 @@
   },
   "homepage": "https://github.com/infernojs/inferno#readme",
   "main": "index.js",
-  "inferno:main": "dist-es/index.js",
-  "typings": "dist/index.d.ts",
+  "inferno:main": "dist/index.es.js",
+  "typings": "dist/inferno-compat.d.ts",
   "keywords": [
     "babel",
     "react",
