@@ -18,7 +18,6 @@
     "@types/node": "^7.0.23",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
-    "babel-eslint": "^7.2.3",
     "babel-loader": "^7.0.0",
     "babel-plugin-inferno": "^3.2.0",
     "babel-plugin-module-resolver": "^2.7.1",
@@ -45,8 +44,6 @@
     "cross-env": "^5.0.0",
     "es5-shim": "^4.5.9",
     "es6-shim": "^0.35.3",
-    "eslint": "^3.19.0",
-    "eslint-plugin-babel": "^4.1.1",
     "fliphub-cli-inferno": "^0.1.4",
     "fs-extra": "^3.0.1",
     "glob": "^7.1.2",
@@ -175,10 +172,7 @@
     "karma:chrome": "karma start test/karma/karma.unit.conf.js --browsers=Chrome",
     "karma:firefox": "karma start test/karma/karma.unit.conf.js --browsers=Firefox",
     "karma:ie": "karma start test/karma/karma.unit.conf.js --browsers=IE",
-    "lint:js": "eslint config examples src packages/*/__tests__/*",
-    "lint:ts": "tslint packages/*/src/*.ts packages/*/src/**/*.ts",
-    "lint:jts": "eslint packages/inferno/src/*.ts packages/inferno-compat/src/*.ts packages/inferno-create-element/src/*.ts packages/inferno-hyperscript/src/*.ts packages/inferno-router/src/*.ts packages/inferno-shared/src/*.ts packages/inferno-vnode-flags/src/*.ts packages/inferno-server/src/*.ts packages/inferno-mobx/src/*.ts --config test/lint/letter-only-props.js --no-eslintrc",
-    "lint": "npm run lint:ts && npm run lint:js",
+    "lint": "tslint packages/*/src/**/*.ts packages/*/src/**/*.tsx",
     "lint-staged": "lint-staged",
     "packages:purge": "rimraf node_modules",
     "packages:reinstall": "npm run packages:purge && npm install",
@@ -222,7 +216,6 @@
   },
   "pre-commit": [
     "lint-staged",
-    "lint",
     "test:quick"
   ]
 }

@@ -5,7 +5,7 @@ export class ParentBaseCommon extends Component {
 	render() {
 		return (
 			<div>
-				<ChildCommon name={this.foo}/>
+				<ChildCommon name={this.foo} />
 			</div>
 		);
 	}
