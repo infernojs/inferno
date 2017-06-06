@@ -19,7 +19,11 @@ module.exports = function(version, options) {
 			include: 'node_modules/**'
 		}),
 		tsPlugin({
-			cacheRoot: `.cache_${process.pid}`,
+			abortOnError: false,
+			cacheRoot: `.rpt2_cache_${options.env}`,
+			check: false,
+			clean: true,
+			exclude: ['*.spec*', '**/*.spec*']
 		}),
 		bublePlugin()
 	];
@@ -31,8 +35,6 @@ module.exports = function(version, options) {
 	if (options.replace) {
 		replaceValues['process.env.NODE_ENV'] = JSON.stringify(options.env);
 	}
-
-	plugins.push(replacePlugin(replaceValues));
 
 	if (options.uglify) {
 		plugins.push(
@@ -57,6 +59,7 @@ module.exports = function(version, options) {
 		);
 	}
 
+	plugins.push(replacePlugin(replaceValues));
 
 	if (options.optimize) {
 		plugins.push(optJSPlugin);
