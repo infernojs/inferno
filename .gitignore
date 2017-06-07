@@ -4,7 +4,7 @@
 .DS_Store
 .npm-debug.log*
 .rpt2_cache*
-.cache_*
+.changelog
 
 *.log
 
