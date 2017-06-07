@@ -1,3 +1,4 @@
+
 import { render } from 'inferno';
 import { innerHTML } from 'inferno/test/utils';
 import Component from '../dist-es';
@@ -5,12 +6,12 @@ import Component from '../dist-es';
 describe('Component lifecycle', () => {
 	let container;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function() {
+	afterEach(function () {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -26,21 +27,23 @@ describe('Component lifecycle', () => {
 			}
 
 			render() {
-				return <div>{this.props.value}</div>;
+				return (
+					<div>{this.props.value}</div>
+				);
 			}
 		}
 
-		render(<Com value={1} />, container);
+		render(<Com value={1}/>, container);
 
 		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>1</div>'));
 
-		render(<Com value={2} />, container);
+		render(<Com value={2}/>, container);
 
 		expect(callCount).to.equal(1);
 		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>2</div>'));
 	});
 
-	it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', done => {
+	it('Current state in componentWillUpdate should not equal nextState if setState is called from componentWillReceiveProps', (done) => {
 		let doSomething;
 		class Child extends Component {
 			constructor() {
@@ -64,7 +67,9 @@ describe('Component lifecycle', () => {
 			}
 
 			render() {
-				return <div>{this.state.active ? 'true' : 'false'}</div>;
+				return (
+					<div>{this.state.active ? 'true' : 'false'}</div>
+				);
 			}
 		}
 
@@ -95,7 +100,7 @@ describe('Component lifecycle', () => {
 		render(<Parent />, container);
 		doSomething();
 
-		setTimeout(function() {
+		setTimeout(function () {
 			done();
 		}, 45);
 	});
@@ -112,15 +117,17 @@ describe('Component lifecycle', () => {
 			}
 
 			render() {
-				return <div>{this.props.value}</div>;
+				return (
+					<div>{this.props.value}</div>
+				);
 			}
 		}
 
-		render(<Com value={1} />, container);
+		render(<Com value={1}/>, container);
 
 		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>1</div>'));
 
-		render(<Com value={2} />, container);
+		render(<Com value={2}/>, container);
 
 		expect(callCount).to.equal(1);
 		expect(innerHTML(container.innerHTML)).to.equal(innerHTML('<div>2</div>'));
@@ -154,7 +161,7 @@ describe('Component lifecycle', () => {
 
 			render() {
 				// eslint-disable-next-line
-				return <div className="foobar" ref={el => (this.element = el)}>1</div>;
+				return <div className="foobar" ref={(el) => this.element = el}>1</div>
 			}
 		}
 
@@ -179,16 +186,18 @@ describe('Component lifecycle', () => {
 			}
 
 			render() {
-				return <div>{this.props.value}</div>;
+				return (
+					<div>{this.props.value}</div>
+				);
 			}
 		}
 
 		// eslint-disable-next-line no-return-assign
-		render(<Com ref={inst => (c = inst)} value={1} />, container);
+		render(<Com ref={(inst) => c = inst} value={1}/>, container);
 
 		c.componentDidUpdate = undefined;
 
 		// eslint-disable-next-line no-return-assign
-		render(<Com ref={inst => (c = inst)} value={2} />, container);
+		render(<Com ref={(inst) => c = inst} value={2}/>, container);
 	});
 });

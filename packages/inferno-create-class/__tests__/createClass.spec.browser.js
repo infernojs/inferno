@@ -1,3 +1,4 @@
+
 import { render } from 'inferno';
 import createElement from 'inferno-create-element';
 import { innerHTML } from 'inferno/test/utils';
@@ -6,13 +7,13 @@ import createClass from '../dist-es';
 describe('Components createClass (non-JSX)', () => {
 	let container;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		container = document.createElement('div');
 		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
 
-	afterEach(function() {
+	afterEach(function () {
 		document.body.removeChild(container);
 		render(null, container);
 	});
@@ -43,7 +44,7 @@ describe('Components createClass (non-JSX)', () => {
 		expect(componentWillUpdate).to.equal(true);
 	});
 
-	it('should have context available in getInitialState', done => {
+	it('should have context available in getInitialState', (done) => {
 		let context;
 		let context2;
 		const BoundComponent = createClass({
@@ -67,7 +68,8 @@ describe('Components createClass (non-JSX)', () => {
 
 	it('should have propTypes on created class', () => {
 		const propTypes = {
-			value() {}
+			value() {
+			}
 		};
 		const Component = createClass({
 			propTypes,
@@ -88,11 +90,9 @@ describe('Components createClass (non-JSX)', () => {
 		expect(Component.propTypes).to.be.undefined;
 	});
 	it('should have mixins on created class', () => {
-		const mixins = [
-			{
-				func1: () => true
-			}
-		];
+		const mixins = [{
+			func1: () => true
+		}];
 		const Component = createClass({
 			mixins,
 			render() {
@@ -103,19 +103,13 @@ describe('Components createClass (non-JSX)', () => {
 		expect(Component.mixins).to.have.property('func1');
 	});
 	it('should have nested mixins on created class', () => {
-		const mixins = [
-			{
-				mixins: [
-					{
-						mixins: [
-							{
-								nestedMixin: () => true
-							}
-						]
-					}
-				]
-			}
-		];
+		const mixins = [{
+			mixins: [{
+				mixins: [{
+					nestedMixin: () => true
+				}]
+			}]
+		}];
 		const Component = createClass({
 			mixins,
 			render() {

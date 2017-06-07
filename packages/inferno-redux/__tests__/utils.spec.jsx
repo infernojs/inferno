@@ -1,3 +1,4 @@
+
 import { stub } from 'sinon';
 import { shallowEqual, warning } from '../dist-es/utils';
 
@@ -5,7 +6,7 @@ describe('Redux Utils', () => {
 	describe('warning', () => {
 		it('should log message using console.error', () => {
 			// stub instead of spy to prevent console.error actually firing during test
-			const stubFn = stub(console, 'error').callsFake(message => null);
+			const stubFn = stub(console, 'error').callsFake((message) => null);
 			warning('warning!');
 			expect(stubFn.calledOnce).to.equal(true);
 			expect(stubFn.calledWith('warning!')).to.equal(true);

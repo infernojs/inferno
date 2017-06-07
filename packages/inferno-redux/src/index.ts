@@ -6,4 +6,7 @@ export default {
 	connect
 };
 
-export { Provider, connect };
+export {
+	Provider,
+	connect
+};

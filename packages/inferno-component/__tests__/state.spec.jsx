@@ -31,12 +31,12 @@ class TestCWRP extends Component {
 describe('state', () => {
 	let container;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function() {
+	afterEach(function () {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -58,7 +58,8 @@ describe('state', () => {
 	});
 
 	describe('setting state', () => {
-		it('setStateSync should apply state during componentWillReceiveProps', done => {
+
+		it('setStateSync should apply state during componentWillReceiveProps', (done) => {
 			const node = createVNode(VNodeFlags.ComponentClass, TestCWRP, null, null, { done }, null);
 			render(node, container);
 			node.props.foo = 1;
@@ -66,9 +67,11 @@ describe('state', () => {
 		});
 	});
 
+
 	describe('didUpdate and setState', () => {
-		it('order', done => {
+		it('order', (done) => {
 			class Test extends Component {
+
 				constructor(props, context) {
 					super(props, context);
 
@@ -79,7 +82,7 @@ describe('state', () => {
 
 				componentWillReceiveProps(nextProps) {
 					console.log('CWRP', nextProps.scrollTop);
-					if (nextProps.scrollTop !== 0) {
+					if (nextProps.scrollTop !== 0){
 						this.setState({ testScrollTop: nextProps.scrollTop });
 					}
 				}
@@ -89,12 +92,14 @@ describe('state', () => {
 					expect(this.state.testScrollTop).to.equal(200);
 				}
 
-				render() {
-					return <div>aa</div>;
+				render(){
+					return (<div>aa</div>);
 				}
+
 			}
 
-			class Example extends Component {
+			class Example extends Component{
+
 				constructor(props, context) {
 					super(props, context);
 					this.state = {
@@ -102,12 +107,12 @@ describe('state', () => {
 					};
 				}
 
-				render() {
-					return <Test scrollTop={this.state.exampleScrollTop} />;
+				render(){
+					return (<Test scrollTop={this.state.exampleScrollTop}/>);
 				}
 
-				componentDidMount() {
-					setTimeout(() => {
+				componentDidMount(){
+					setTimeout(()=> {
 						this.setState({ exampleScrollTop: 200 });
 
 						setTimeout(() => {
@@ -117,7 +122,10 @@ describe('state', () => {
 				}
 			}
 
-			render(<Example name="World" />, document.getElementById('container'));
+			render(
+				<Example name="World" />,
+				document.getElementById('container')
+			);
 		});
 	});
 });

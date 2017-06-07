@@ -5,24 +5,26 @@ import { innerHTML } from 'inferno/test/utils';
 import createElement from './../dist-es';
 
 describe('Stateful Component updates', () => {
+
 	let container;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function() {
+	afterEach(function () {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
 	});
 
-	it('Should forget old updates', done => {
+	it('Should forget old updates', (done) => {
 		let updatesAfromOutside;
 
 		class A extends Component {
-			componentWillUnmount() {}
+			componentWillUnmount() {
+			}
 
 			constructor(props) {
 				super(props);
@@ -73,6 +75,7 @@ describe('Stateful Component updates', () => {
 	});
 
 	it('Should give better error message when calling setState from constructor ??', () => {
+
 		// Following test simulates situation that setState is called when mounting process has not finished, fe. in constructor
 
 		class Parent extends Component {
@@ -86,11 +89,9 @@ describe('Stateful Component updates', () => {
 				this.domagic = this.domagic.bind(this);
 
 				// Call setState
-				expect(() =>
-					this.setState({
-						show: true
-					})
-				).to.throw;
+				expect(() => this.setState({
+					show: true
+				})).to.throw;
 			}
 
 			domagic() {
@@ -102,8 +103,8 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						<button onclick={this.domagic} />
-						<Child show={this.state.show} />
+						<button onclick={this.domagic}/>
+						<Child show={this.state.show}/>
 					</div>
 				);
 			}
@@ -135,7 +136,11 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					values: [{ checked: false }, { checked: false }, { checked: false }]
+					values: [
+						{ checked: false },
+						{ checked: false },
+						{ checked: false }
+					]
 				};
 
 				this.updateCaller = this.updateCaller.bind(this);
@@ -144,15 +149,18 @@ describe('Stateful Component updates', () => {
 
 			updateCaller() {
 				this.setStateSync({
-					values: [{ checked: false }, { checked: false }]
+					values: [
+						{ checked: false },
+						{ checked: false }
+					]
 				});
 			}
 
 			render() {
 				return (
 					<div>
-						{this.state.values.map(function(value) {
-							return <input type="checkbox" checked={value.checked} />;
+						{this.state.values.map(function (value) {
+							return <input type="checkbox" checked={value.checked}/>;
 						})}
 					</div>
 				);
@@ -160,22 +168,21 @@ describe('Stateful Component updates', () => {
 		}
 
 		render(<A />, container);
-		expect(container.innerHTML).to.equal(
-			innerHTML('<div><input type="checkbox"><input type="checkbox"><input type="checkbox"></div>')
-		);
+		expect(container.innerHTML).to.equal(innerHTML('<div><input type="checkbox"><input type="checkbox"><input type="checkbox"></div>'));
 		const firstChild = container.firstChild;
-		expect(firstChild.childNodes[0].checked).to.equal(false);
-		expect(firstChild.childNodes[1].checked).to.equal(false);
-		expect(firstChild.childNodes[2].checked).to.equal(false);
+		expect(firstChild.childNodes[ 0 ].checked).to.equal(false);
+		expect(firstChild.childNodes[ 1 ].checked).to.equal(false);
+		expect(firstChild.childNodes[ 2 ].checked).to.equal(false);
 
 		const checkbox = container.querySelector('input');
 		checkbox.checked = true; // SIMULATE user selecting checkbox
-		expect(firstChild.childNodes[0].checked).to.equal(true, 'USER SHOULD BE ABLE TO TICK CHECKBOX');
+		expect(firstChild.childNodes[ 0 ].checked).to.equal(true, 'USER SHOULD BE ABLE TO TICK CHECKBOX');
 
 		updateCaller(); // New render
 		expect(container.innerHTML).to.equal(innerHTML('<div><input type="checkbox"><input type="checkbox"></div>'));
-		expect(firstChild.childNodes[0].checked).to.equal(false, 'AFTER NEW RENDER IT SHOULD RENDER INPUT AS UNCHECKED');
-		expect(firstChild.childNodes[1].checked).to.equal(false);
+		expect(firstChild.childNodes[ 0 ].checked).to.equal(false, 'AFTER NEW RENDER IT SHOULD RENDER INPUT AS UNCHECKED');
+		expect(firstChild.childNodes[ 1 ].checked).to.equal(false);
+
 	});
 
 	it('Should Not get stuck in UNMOUNTED state', () => {
@@ -190,7 +197,7 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						<A />
+						<A/>
 					</div>
 				);
 			}
@@ -222,7 +229,7 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						<B data={this.state.obj} />
+						<B data={this.state.obj}/>
 					</div>
 				);
 			}
@@ -234,7 +241,9 @@ describe('Stateful Component updates', () => {
 			}
 
 			render() {
-				return <C data={this.props.data} />;
+				return (
+					<C data={this.props.data}/>
+				);
 			}
 		}
 
@@ -300,7 +309,7 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						<A />
+						<A/>
 					</div>
 				);
 			}
@@ -332,7 +341,7 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<div>
-						<B data={this.state.obj} />
+						<B data={this.state.obj}/>
 					</div>
 				);
 			}
@@ -344,7 +353,9 @@ describe('Stateful Component updates', () => {
 			}
 
 			render() {
-				return <C data={this.props.data} />;
+				return (
+					<C data={this.props.data}/>
+				);
 			}
 		}
 
@@ -415,9 +426,13 @@ describe('Stateful Component updates', () => {
 					<div className="common-root">
 						{(() => {
 							if (this.props.i % 2 === 0) {
-								return <div>DIV{this.props.value}</div>;
+								return (
+									<div>DIV{this.props.value}</div>
+								);
 							} else {
-								return <span>SPAN{this.props.value}</span>;
+								return (
+									<span>SPAN{this.props.value}</span>
+								);
 							}
 						})()}
 					</div>
@@ -425,7 +440,9 @@ describe('Stateful Component updates', () => {
 			}
 		}
 
-		const DropdownItem = ({ children }) => <li>{children}</li>;
+		const DropdownItem = ({ children }) => (
+			<li>{children}</li>
+		);
 
 		class Looper extends Component {
 			constructor(props) {
@@ -450,10 +467,10 @@ describe('Stateful Component updates', () => {
 				return (
 					<div>
 						<ul>
-							{this.state.items.map(function(item, i) {
+							{this.state.items.map(function (item, i) {
 								return (
 									<DropdownItem key={item.value}>
-										<InnerComponentToGetUnmounted key={0} i={i} value={item.value} />
+										<InnerComponentToGetUnmounted key={0} i={i} value={item.value}/>
 										<span key={1}>{item.text}</span>
 									</DropdownItem>
 								);
@@ -473,18 +490,13 @@ describe('Stateful Component updates', () => {
 			{ value: 'val4', text: 'key4' }
 		]);
 
-		expect(container.innerHTML).to.equal(
-			innerHTML(
-				'<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'
-			)
-		);
+		expect(container.innerHTML).to.equal(innerHTML('<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'));
 
-		setItems([{ value: 'val2', text: 'key2' }, { value: 'val3', text: 'key3' }]);
-		expect(container.innerHTML).to.equal(
-			innerHTML(
-				'<div><ul><li><div class="common-root"><div>DIVval2</div></div><span>key2</span></li><li><div class="common-root"><span>SPANval3</span></div><span>key3</span></li></ul></div>'
-			)
-		);
+		setItems([
+			{ value: 'val2', text: 'key2' },
+			{ value: 'val3', text: 'key3' }
+		]);
+		expect(container.innerHTML).to.equal(innerHTML('<div><ul><li><div class="common-root"><div>DIVval2</div></div><span>key2</span></li><li><div class="common-root"><span>SPANval3</span></div><span>key3</span></li></ul></div>'));
 
 		setItems([
 			{ value: 'val1', text: 'key1' },
@@ -492,17 +504,14 @@ describe('Stateful Component updates', () => {
 			{ value: 'val3', text: 'key3' },
 			{ value: 'val4', text: 'key4' }
 		]);
-		expect(container.innerHTML).to.equal(
-			innerHTML(
-				'<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'
-			)
-		);
+		expect(container.innerHTML).to.equal(innerHTML('<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'));
 	});
 
 	it('Should not crash when patching array to array with hooks', () => {
 		let updater = null;
-		const stuff = [<div>{['Test']}</div>, <span>1</span>];
-		const orig = [[<span ref={function() {}}>{'1'}</span>]];
+		const stuff = [ <div >{['Test']}</div>, <span>1</span> ];
+		const orig = [[<span ref={function () {
+		}}>{'1'}</span>]];
 		class Stuff extends Component {
 			constructor(props) {
 				super(props);
@@ -511,7 +520,7 @@ describe('Stateful Component updates', () => {
 					stuff
 				};
 
-				updater = _stuff => {
+				updater = (_stuff) => {
 					this.setStateSync({ stuff: _stuff });
 				};
 			}
@@ -530,11 +539,13 @@ describe('Stateful Component updates', () => {
 		render(<Stuff />, container);
 		updater(orig);
 		expect(container.innerHTML).to.equal(innerHTML('<div><div><span>1</span></div></div>'));
+
 	});
 
 	it('Should allow camelCase properties when using JSX plugin', () => {
 		const fakeObj = {
-			func() {}
+			func() {
+			}
 		};
 		const submitSpy = spy(fakeObj, 'func');
 
@@ -546,27 +557,27 @@ describe('Stateful Component updates', () => {
 			render() {
 				return (
 					<form>
-						<input
-							id="inputId"
-							onFocus={e => {
-								expect(e).to.be.ok;
-							}}
-							type="text"
-						/>
+						<input id="inputId" onFocus={(e) => {
+							expect(e).to.be.ok;
+						}} type="text"/>
 					</form>
 				);
 			}
 		}
 
-		render(<Tester />, container);
-		expect(innerHTML(container.innerHTML)).to.eql(innerHTML('<form><input id="inputId" type="text"></form>'));
+		render(<Tester/>, container);
+		expect(
+			innerHTML(container.innerHTML)
+		).to.eql(
+			innerHTML('<form><input id="inputId" type="text"></form>')
+		);
 		const input = container.querySelector('#inputId');
 		expect(assert.notCalled(submitSpy));
 		input.focus();
 	});
 
 	it('Should not append when replacing ES6 component with functional component', () => {
-		const A = function() {
+		const A = function () {
 			return (
 				<div>
 					<div className="topheader">
@@ -583,14 +594,15 @@ describe('Stateful Component updates', () => {
 						<h1>B</h1>
 					</div>
 					<div className="viewcontent fullscreen">
-						<C />
+						<C/>
 					</div>
 				</div>
 			);
 		}
 
 		class C extends Component {
-			componentWillUnmount() {}
+			componentWillUnmount() {
+			}
 
 			render() {
 				return (
@@ -602,56 +614,49 @@ describe('Stateful Component updates', () => {
 		}
 
 		const expectedA = '<div><div class="topheader"><h1>A</h1></div></div>';
-		const expectedB =
-			'<div class="simplegrid"><div class="topheader"><h1>B</h1></div><div class="viewcontent fullscreen"><div class="report-container">C</div></div></div>';
-		render(<A />, container);
+		const expectedB = '<div class="simplegrid"><div class="topheader"><h1>B</h1></div><div class="viewcontent fullscreen"><div class="report-container">C</div></div></div>';
+		render(<A/>, container);
 		expect(container.innerHTML).to.eql(expectedA);
 
-		render(<B />, container);
+		render(<B/>, container);
 		expect(container.innerHTML).to.eql(expectedB);
 
 		// SO FAR SO GOOD
 
 		// NOW START SWAPPING
 
-		render(<A />, container);
+		render(<A/>, container);
 		expect(container.innerHTML).to.eql(expectedA);
 
-		render(<B />, container);
+		render(<B/>, container);
 		expect(container.innerHTML).to.eql(expectedB);
 
-		render(<A />, container);
+		render(<A/>, container);
 		expect(container.innerHTML).to.eql(expectedA);
 
-		render(<B />, container);
+		render(<B/>, container);
 		expect(container.innerHTML).to.eql(expectedB);
 
-		render(<A />, container);
+		render(<A/>, container);
 		expect(container.innerHTML).to.eql(expectedA);
 
-		render(<B />, container);
+		render(<B/>, container);
 		expect(container.innerHTML).to.eql(expectedB);
 
-		render(<A />, container);
+		render(<A/>, container);
 		expect(container.innerHTML).to.eql(expectedA);
 
-		render(<B />, container);
+		render(<B/>, container);
 		expect(container.innerHTML).to.eql(expectedB);
 	});
 
 	it('Should not fail removing child of component node Github #1111', () => {
 		const InfoLi = function InfoLi(props) {
 			return (
-				<li>
-					{createElement('input', {
-						checked: props.check,
-						type: props.type,
-						label: props.label,
-						onClick: props.onClick
-					})}
-					{' '}{props.label}: check, then uncheck
-					<div>{props.children}</div>
-				</li>
+			<li>
+				{createElement('input', { checked: props.check, type: props.type, label: props.label, onClick: props.onClick })} {props.label}: check, then uncheck
+				<div>{props.children}</div>
+			</li>
 			);
 		};
 
@@ -659,40 +664,47 @@ describe('Stateful Component updates', () => {
 			constructor(props) {
 				super(props);
 				this.state = {
-					checks: props.orderedConfigs.map(mod => Boolean(mod.value))
+					checks: props.orderedConfigs.map((mod) => Boolean(mod.value))
 				};
+
 			}
 
 			handleCheck(index, ifChecked) {
 				this.setState({
-					checks: this.state.checks.map((ch, i) => (i === index ? ifChecked : ch))
+					checks: this.state.checks.map(
+						(ch, i) => i === index ? ifChecked : ch
+					)
 				});
 			}
 
 			render(props) {
 				return (
 					<ol>
-						{props.orderedConfigs.map((conf, index) => {
+					{
+						props.orderedConfigs.map((conf, index) => {
 							const child = this.state.checks[index] && createElement('div', null, 'hi there');
 							return (
 								<InfoLi
 									label={conf}
-									type="checkbox"
+									type='checkbox'
 									checked={this.state.checks[index]}
-									onClick={event => {
-										this.handleCheck(index, event.target.checked);
-									}}
-								>
-									{child}
-								</InfoLi>
+									onClick={(event) => {
+										this.handleCheck(index, event.target.checked);}
+									}>
+								{child}
+							</InfoLi>
 							);
-						})}
+						})
+					}
 					</ol>
 				);
 			}
 		}
 
-		render(<ConfigsList orderedConfigs={['use proxy?']} />, container);
+		render(
+			<ConfigsList orderedConfigs={['use proxy?']}/>,
+			container,
+		);
 
 		const input = container.querySelector('input');
 

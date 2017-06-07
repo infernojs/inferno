@@ -9,10 +9,11 @@ import {
 	validateNodeTree
 } from 'inferno/test/utils';
 
+
 import { render } from 'inferno';
 import { renderToString } from 'inferno-server';
 
-const styleStringToArray = styleString => styleString.split(';').map(s => s.trim());
+const styleStringToArray = (styleString) => styleString.split(';').map((s) => s.trim());
 
 describe('Utils', () => {
 	describe('sortAttributes', () => {
@@ -61,9 +62,9 @@ describe('Utils', () => {
 
 	describe('style', () => {
 		it('should map an array', () => {
-			const CSS = ['1', 'position: relative;', '3'];
+			const CSS = [ '1', 'position: relative;', '3' ];
 
-			const expected = ['', 'position: relative;', ''];
+			const expected = [ '', 'position: relative;', '' ];
 			const actual = style(CSS);
 
 			expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
@@ -89,6 +90,7 @@ describe('Utils', () => {
 		});
 	});
 	describe('validateNodeTree', () => {
+
 		it('should return true if called with falsy arguments', () => {
 			expect(validateNodeTree(false)).to.equal(true);
 			expect(validateNodeTree(null)).to.equal(true);
@@ -110,16 +112,18 @@ describe('Utils', () => {
 			render(node, container);
 			expect(validateNodeTree(node)).to.equal(true);
 		});
+
 	});
 
 	describe('triggerEvent', () => {
 		const element = {
-			dispatchEvent(event) {}
+			dispatchEvent(event) {
+			}
 		};
 		const spyDispatch = spy(element, 'dispatchEvent');
 		let spyCreateMouseEvent;
 
-		afterEach(function() {
+		afterEach(function () {
 			spyDispatch.reset();
 			spyCreateMouseEvent.restore();
 		});
@@ -134,7 +138,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -142,8 +146,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on dblclick', () => {
@@ -156,7 +160,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -164,8 +168,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on mousedown', () => {
@@ -178,7 +182,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -186,8 +190,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on mouseup', () => {
@@ -200,7 +204,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -208,8 +212,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on focus', () => {
@@ -222,7 +226,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -230,8 +234,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on change', () => {
@@ -244,7 +248,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -252,8 +256,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on blur', () => {
@@ -266,7 +270,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -274,8 +278,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should trigger event on select', () => {
@@ -288,7 +292,7 @@ describe('Utils', () => {
 					expect(cancelable).to.be.true;
 				}
 			};
-			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
+			spyCreateMouseEvent = stub(document, 'createEvent').callsFake((eventInterface) => {
 				expect(eventInterface).to.equal(triggeredEventType);
 
 				return event;
@@ -296,8 +300,8 @@ describe('Utils', () => {
 
 			triggerEvent(triggerName, element);
 
-			expect(spyDispatch.args[0][0]).to.equal(event);
-			expect(spyDispatch.args[0][1]).to.be.true;
+			expect(spyDispatch.args[ 0 ][ 0 ]).to.equal(event);
+			expect(spyDispatch.args[ 0 ][ 1 ]).to.be.true;
 		});
 
 		it('should throw an error on unknown event', () => {

@@ -1,3 +1,4 @@
+
 import Component from 'inferno-component';
 import { spy } from 'sinon';
 import { findRenderedVNodeWithType, renderIntoDocument } from '../dist-es';
@@ -5,7 +6,8 @@ import { findRenderedVNodeWithType, renderIntoDocument } from '../dist-es';
 describe('TestUtils events', () => {
 	it('Should work with Synthetic events', () => {
 		const testObj = {
-			clicker: () => {}
+			clicker: () => {
+			}
 		};
 
 		const sinonSpy = spy(testObj, 'clicker');
@@ -29,7 +31,8 @@ describe('TestUtils events', () => {
 
 	it('Should work with native events', () => {
 		const testObj = {
-			clicker: () => {}
+			clicker: () => {
+			}
 		};
 
 		const sinonSpy = spy(testObj, 'clicker');

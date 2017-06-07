@@ -1,3 +1,4 @@
+
 import { render } from 'inferno';
 import createElement from '../dist-es';
 import { innerHTML } from 'inferno/test/utils';
@@ -5,12 +6,12 @@ import { innerHTML } from 'inferno/test/utils';
 describe('CreateElement (non-JSX)', () => {
 	let container;
 
-	beforeEach(function() {
+	beforeEach(function () {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function() {
+	afterEach(function () {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -20,32 +21,24 @@ describe('CreateElement (non-JSX)', () => {
 		let triggered = false;
 
 		const App = () => {
-			return createElement(
-				'div',
-				null,
+			return createElement('div', null,
 				createElement('div', { className: 'title' }, 'Example'),
-				createElement(
-					'button',
-					{
-						type: 'button',
-						onClick: () => {
-							triggered = !triggered;
-						}
-					},
-					'Do a thing'
-				)
+				createElement('button', {
+					type: 'button',
+					onClick: () => {
+						triggered = !triggered;
+					}
+				}, 'Do a thing')
 			);
 		};
 
 		// eslint-disable-next-line
 		render(App(), container);
-		expect(container.innerHTML).to.equal(
-			innerHTML('<div><div class="title">Example</div><button type="button">Do a thing</button></div>')
-		);
+		expect(container.innerHTML).to.equal(innerHTML('<div><div class="title">Example</div><button type="button">Do a thing</button></div>'));
 		expect(triggered).to.equal(false);
 
 		const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
-		buttons.forEach(button => button.click());
+		buttons.forEach((button) => button.click());
 
 		expect(triggered).to.equal(true);
 	});
@@ -54,19 +47,13 @@ describe('CreateElement (non-JSX)', () => {
 		let triggered = false;
 
 		const app = () => {
-			return createElement(
-				'div',
-				null,
-				createElement(
-					'button',
-					{
-						type: 'button',
-						onClick: () => {
-							triggered = !triggered;
-						}
-					},
-					'Do a thing'
-				)
+			return createElement('div', null,
+				createElement('button', {
+					type: 'button',
+					onClick: () => {
+						triggered = !triggered;
+					}
+				}, 'Do a thing')
 			);
 		};
 
@@ -75,16 +62,14 @@ describe('CreateElement (non-JSX)', () => {
 		expect(triggered).to.equal(false);
 
 		const buttons = Array.prototype.slice.call(container.querySelectorAll('button'));
-		buttons.forEach(button => button.click());
+		buttons.forEach((button) => button.click());
 
 		expect(triggered).to.equal(true);
 	});
 
 	it('Should allow passing childs through "children" property (native component)', () => {
 		const app = () => {
-			return createElement(
-				'div',
-				null,
+			return createElement('div', null,
 				createElement('button', {
 					type: 'button',
 					children: ['Do a thing']
@@ -97,11 +82,9 @@ describe('CreateElement (non-JSX)', () => {
 	});
 
 	it('Should allow passing childs through "children" property (custom component)', () => {
-		const Button = props => createElement('button', props);
+		const Button = (props) => createElement('button', props);
 		const app = () => {
-			return createElement(
-				'div',
-				null,
+			return createElement('div', null,
 				createElement(Button, {
 					type: 'button',
 					children: ['Do a thing']
@@ -113,7 +96,8 @@ describe('CreateElement (non-JSX)', () => {
 		expect(container.innerHTML).to.equal(innerHTML('<div><button type="button">Do a thing</button></div>'));
 	});
 
-	it('Should handle node with hooks and key', done => {
+	it('Should handle node with hooks and key', (done) => {
+
 		const node = () => createElement('div', { key: 'key2' }, 'Hooks');
 		const app = createElement(node, {
 			key: 'key1',
@@ -129,6 +113,7 @@ describe('CreateElement (non-JSX)', () => {
 	});
 
 	it('Should handle node with children but no props', () => {
+
 		const node = () => createElement('div', null, 'Hooks');
 		const app = createElement(node, null, 'Hooks');
 
@@ -140,14 +125,13 @@ describe('CreateElement (non-JSX)', () => {
 		expect(() => createElement({}, null)).to.throw(Error);
 	});
 
-	it('Should handle node with refs', done => {
+	it('Should handle node with refs', (done) => {
 		let myRef = 'myRef';
 
 		const app = () => {
-			const node = () =>
-				createElement('a', {
-					ref: c => (myRef = c)
-				});
+			const node = () => createElement('a', {
+				ref: (c) => (myRef = c)
+			});
 			return createElement(node, {
 				onComponentDidMount() {
 					expect(myRef.tagName).to.equal('A');

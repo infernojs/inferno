@@ -1,9 +1,10 @@
+
 import { EventEmitter } from '../dist-es';
 
 const testdata = {
 	testKey: 'testdata'
 };
-const testListener = function(data) {
+const testListener = function (data) {
 	expect(data).to.equal(testdata);
 };
 

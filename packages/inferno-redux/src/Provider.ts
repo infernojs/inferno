@@ -9,7 +9,9 @@ function warnAboutReceivingStore() {
 	}
 	didWarnAboutReceivingStore = true;
 
-	warning('<Provider> does not support changing `store` on the fly.');
+	warning(
+		'<Provider> does not support changing `store` on the fly.'
+	);
 }
 
 export default class Provider extends Component<any, any> {

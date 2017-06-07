@@ -17,14 +17,14 @@ function createStoreInjector(grabStoresFn: Function, component) {
 			const newProps = {} as IStoreProps;
 			for (const key in this.props) {
 				if (this.props.hasOwnProperty(key)) {
-					newProps[key] = this.props[key];
+					newProps[ key ] = this.props[ key ];
 				}
 			}
 			const additionalProps = grabStoresFn(this.context.mobxStores || {}, newProps, this.context) || {};
 			for (const key in additionalProps) {
-				newProps[key] = additionalProps[key];
+				newProps[ key ] = additionalProps[ key ];
 			}
-			newProps.ref = instance => {
+			newProps.ref = (instance) => {
 				this.wrappedInstance = instance;
 			};
 
@@ -44,6 +44,7 @@ function createStoreInjector(grabStoresFn: Function, component) {
 const grabStoresByName = function(storeNames: string[]): Function {
 	return function(baseStores: Object, nextProps: Object): Object {
 		storeNames.forEach(function(storeName) {
+
 			// Prefer props over stores
 			if (storeName in nextProps) {
 				return;
@@ -51,11 +52,12 @@ const grabStoresByName = function(storeNames: string[]): Function {
 
 			if (!(storeName in baseStores)) {
 				throw new Error(
-					`MobX observer: Store "${storeName}" is not available! ` + `Make sure it is provided by some Provider`
+					`MobX observer: Store "${storeName}" is not available! ` +
+					`Make sure it is provided by some Provider`
 				);
 			}
 
-			nextProps[storeName] = baseStores[storeName];
+			nextProps[ storeName ] = baseStores[ storeName ];
 		});
 		return nextProps;
 	};
@@ -68,14 +70,16 @@ const grabStoresByName = function(storeNames: string[]): Function {
  * storesToProps(mobxStores, props, context) => newProps
  */
 export default function inject(grabStoresFn?: Function | string): any {
+
 	if (typeof grabStoresFn !== 'function') {
+
 		const storesNames: any = [];
 		for (let i = 0, len = arguments.length; i < len; i++) {
-			storesNames[i] = arguments[i];
+			storesNames[ i ] = arguments[ i ];
 		}
 
 		grabStoresFn = grabStoresByName(storesNames);
 	}
 
-	return componentClass => createStoreInjector(grabStoresFn as Function, componentClass);
+	return (componentClass) => createStoreInjector(grabStoresFn as Function, componentClass);
 }

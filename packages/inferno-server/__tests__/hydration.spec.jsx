@@ -1,3 +1,4 @@
+
 import { createVNode, render } from 'inferno';
 import Component from 'inferno-component';
 import { renderToString } from '../dist-es';
@@ -13,7 +14,7 @@ function Comp2() {
 
 class Comp3 extends Component {
 	render() {
-		return <em>Works{' '}<span>again</span>!</em>;
+		return <em>Works{ ' ' }<span>again</span>!</em>;
 	}
 }
 
@@ -40,12 +41,12 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<div><p>Hello world<sup><a>Foo</a></sup></p></div>'
 		},
 		{
-			node: <div>{<span>Hello world</span>}</div>,
+			node: <div>{ <span>Hello world</span> }</div>,
 			expect1: '<div><span>Hello world</span></div>',
 			expect2: '<div><span>Hello world</span></div>'
 		},
 		{
-			node: <div><span>{<span>Hello world</span>}</span></div>,
+			node: <div><span>{ <span>Hello world</span> }</span></div>,
 			expect1: '<div><span><span>Hello world</span></span></div>',
 			expect2: '<div><span><span>Hello world</span></span></div>'
 		},
@@ -55,11 +56,9 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<div>Hello world</div>'
 		},
 		{
-			node: (
-				<div>
-					<svg className={(() => 'foo')()} viewBox="0 0 64 64" />
-				</div>
-			),
+			node: <div>
+				<svg className={(() => 'foo')()} viewBox="0 0 64 64"/>
+			</div>,
 			expect1: '<div><svg class="foo" viewBox="0 0 64 64"></svg></div>',
 			expect2: '<div><svg class="foo" viewBox="0 0 64 64"></svg></div>'
 		},
@@ -69,33 +68,31 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<section><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></section>'
 		},
 		{
-			node: <div>Hello world, {'Foo!'}</div>,
+			node: <div>Hello world, { 'Foo!' }</div>,
 			expect1: '<div>Hello world, <!---->Foo!</div>',
 			expect2: '<div>Hello world, Foo!</div>'
 		},
 		{
-			node: <div>Hello world, {['Foo!', 'Bar!']}</div>,
+			node: <div>Hello world, { [ 'Foo!', 'Bar!' ] }</div>,
 			expect1: '<div>Hello world, <!---->Foo!<!---->Bar!</div>',
 			expect2: '<div>Hello world, Foo!Bar!</div>'
 		},
 		{
-			node: <div>Hello world!{null}</div>,
+			node: <div>Hello world!{ null }</div>,
 			expect1: '<div>Hello world!</div>',
 			expect2: '<div>Hello world!</div>'
 		},
 		{
-			node: <div>Hello world, {'1'}2{'3'}</div>,
+			node: <div>Hello world, { '1' }2{ '3' }</div>,
 			expect1: '<div>Hello world, <!---->1<!---->2<!---->3</div>',
 			expect2: '<div>Hello world, 123</div>'
 		},
 		{
-			node: (
-				<div id="1">
-					<div id="2">
-						<div id="3" />
-					</div>
+			node: <div id="1">
+				<div id="2">
+					<div id="3"></div>
 				</div>
-			),
+			</div>,
 			expect1: '<div id="1"><div id="2"><div id="3"></div></div></div>',
 			expect2: '<div id="1"><div id="2"><div id="3"></div></div></div>'
 		},
@@ -120,7 +117,7 @@ describe('SSR Hydration - (JSX)', () => {
 			expect2: '<div><em>Works <span>again</span>!</em></div>'
 		}
 	].forEach(({ node, expect1, expect2 }, i) => {
-		it(`Validate various structures #${i + 1}`, () => {
+		it(`Validate various structures #${ (i + 1) }`, () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
@@ -143,51 +140,45 @@ describe('SSR Hydration - (JSX)', () => {
 			expect3: '<div>Hello world</div>'
 		},
 		{
-			node: <div>Hello world, {'Foo!'}</div>,
+			node: <div>Hello world, { 'Foo!' }</div>,
 			expect1: '<div>Hello world, <!---->Foo!</div>',
-			node2: <div>{'Start'} Hello world, {'Foo!'}</div>,
+			node2: <div>{ 'Start' } Hello world, { 'Foo!' }</div>,
 			expect2: '<div>Start Hello world, Foo!</div>',
-			node3: <div>Hello world, {'Foo!'}</div>,
+			node3: <div>Hello world, { 'Foo!' }</div>,
 			expect3: '<div>Hello world, Foo!</div>'
 		},
 		{
-			node: <div>Hello world, {'1'}2{'3'}</div>,
+			node: <div>Hello world, { '1' }2{ '3' }</div>,
 			expect1: '<div>Hello world, <!---->1<!---->2<!---->3</div>',
-			node2: <div>Hello world, {'3'}2{'1'}</div>,
+			node2: <div>Hello world, { '3' }2{ '1' }</div>,
 			expect2: '<div>Hello world, 321</div>',
-			node3: <div>Hello world, {'1'}2{'3'}</div>,
+			node3: <div>Hello world, { '1' }2{ '3' }</div>,
 			expect3: '<div>Hello world, 123</div>'
 		},
 		{
-			node: (
-				<div id="1">
-					<div id="2">
-						<div id="3" />
-					</div>
+			node: <div id="1">
+				<div id="2">
+					<div id="3"></div>
 				</div>
-			),
+			</div>,
 			expect1: '<div id="1"><div id="2"><div id="3"></div></div></div>',
-			node2: (
-				<div id="3">
-					<div id="2">
-						<div id="1" />
-					</div>
+			node2: <div id="3">
+				<div id="2">
+					<div id="1"></div>
 				</div>
-			),
+			</div>,
 			expect2: '<div id="3"><div id="2"><div id="1"></div></div></div>',
-			node3: (
-				<div id="1">
-					<div id="2">
-						<div id="3" />
-					</div>
+			node3: <div id="1">
+				<div id="2">
+					<div id="3"></div>
 				</div>
-			),
+			</div>,
 			expect3: '<div id="1"><div id="2"><div id="3"></div></div></div>'
 		},
 		{
 			node: <div><Comp1 /></div>,
 			expect1: '<div><span>Worked!</span></div>',
-			node2: <div />,
+			node2: <div></div>,
 			expect2: '<div></div>',
 			node3: <div><Comp1 /></div>,
 			expect3: '<div><span>Worked!</span></div>'
@@ -225,7 +216,7 @@ describe('SSR Hydration - (JSX)', () => {
 			expect3: '<div></div>'
 		}
 	].forEach(({ node, expect1, node2, node3, expect2, expect3 }, i) => {
-		it(`Update various structures #${i + 1}`, () => {
+		it(`Update various structures #${ (i + 1) }`, () => {
 			const html = renderToString(node);
 			const container = createContainerWithHTML(html);
 
@@ -268,8 +259,7 @@ describe('SSR Hydration - (JSX)', () => {
 			createVNode(2, 'div', null, 'Item 2')
 		]);
 
-		container.innerHTML =
-			'<h1><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></h1><div>Existing DOM content</div>';
+		container.innerHTML = '<h1><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></h1><div>Existing DOM content</div>';
 		render(vNode, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
 	});
@@ -281,8 +271,7 @@ describe('SSR Hydration - (JSX)', () => {
 			createVNode(2, 'div', null, 'Item 2')
 		]);
 
-		container.innerHTML =
-			'<div><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></div>';
+		container.innerHTML = '<div><div>Existing DOM content</div><div>Existing DOM content</div><div>Existing DOM content</div></div>';
 		render(vNode, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div class="example"><div>Item 1</div><div>Item 2</div></div>'));
 	});
@@ -321,6 +310,7 @@ describe('SSR Hydration - (JSX)', () => {
 			}
 		}
 
+
 		const container = document.createElement('div');
 
 		document.body.appendChild(container);
@@ -340,135 +330,124 @@ describe('SSR Hydration - (JSX)', () => {
 	});
 
 	describe('Hydration SSR - CSR mismatches', () => {
-		[
-			{
-				SSR: <div><span>Hello world</span></div>,
-				SSR_expected: '<div><span>Hello world</span></div>',
-				CSR: <div><em>Hello world</em></div>,
-				CSR_expected: '<div><em>Hello world</em></div>'
-			},
-			{
-				SSR: <div><p>Hello world<sup><a>Foo</a></sup></p></div>,
-				SSR_expected: '<div><p>Hello world<sup><a>Foo</a></sup></p></div>',
-				CSR: <div><p>Hello bar<span><em>Foo</em></span></p></div>,
-				CSR_expected: '<div><p>Hello bar<span><em>Foo</em></span></p></div>'
-			},
-			{
-				SSR: <div>{<span>Hello world</span>}</div>,
-				SSR_expected: '<div><span>Hello world</span></div>',
-				CSR: <em>{<span>Hello 11</span>}</em>,
-				CSR_expected: '<em><span>Hello 11</span></em>'
-			},
-			{
-				SSR: <div><span>{<span>Hello world</span>}</span></div>,
-				SSR_expected: '<div><span><span>Hello world</span></span></div>',
-				CSR: <em>{<span>Hello 11</span>}</em>,
-				CSR_expected: '<em><span>Hello 11</span></em>'
-			},
-			{
-				SSR: <div>Hello world</div>,
-				SSR_expected: '<div>Hello world</div>',
-				CSR: <div><p>Hello bar<span><em>Foo</em></span></p></div>,
-				CSR_expected: '<div><p>Hello bar<span><em>Foo</em></span></p></div>'
-			},
-			{
-				SSR: (
-					<div>
-						<svg className={(() => 'foo')()} viewBox="0 0 64 64" />
-					</div>
-				),
-				SSR_expected: '<div><svg class="foo" viewBox="0 0 64 64"></svg></div>',
-				CSR: (
-					<div>
-						<svg className={(() => 'bar1')()} viewBox="0 0 64 11" />
-					</div>
-				),
-				CSR_expected: '<div><svg class="bar1" viewBox="0 0 64 11"></svg></div>'
-			},
-			{
-				SSR: <Comp4><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></Comp4>,
-				SSR_expected: '<section><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></section>',
-				CSR: <Comp4><h1>Hello world again!</h1><p><em>{[1, 2, 3]}</em></p><p>{null}</p><p><em>Foo</em></p></Comp4>,
-				CSR_expected: '<section><h1>Hello world again!</h1><p><em>123</em></p><p></p><p><em>Foo</em></p></section>'
-			},
-			{
-				SSR: <div>Hello world, {'Foo!'}</div>,
-				SSR_expected: '<div>Hello world, <!---->Foo!</div>',
-				CSR: <Comp4><h1>Hello world again!</h1><p><em>{[1, 2, 3]}</em></p><p>{null}</p><p><em>Foo</em></p></Comp4>,
-				CSR_expected: '<section><h1>Hello world again!</h1><p><em>123</em></p><p></p><p><em>Foo</em></p></section>'
-			},
-			{
-				SSR: <div>Hello world, {'Foo!'}</div>,
-				SSR_expected: '<div>Hello world, <!---->Foo!</div>',
-				CSR: <div>Hello world, {'BarBar!'}</div>,
-				CSR_expected: '<div>Hello world, BarBar!</div>'
-			},
-			{
-				SSR: <div>Hello world, {['Foo!', 'Bar!']}</div>,
-				SSR_expected: '<div>Hello world, <!---->Foo!<!---->Bar!</div>',
-				CSR: <div>Hello world, {['Foo!', 'Bar!']}</div>,
-				CSR_expected: '<div>Hello world, Foo!Bar!</div>'
-			},
-			{
-				SSR: <div>Hello world!{null}</div>,
-				SSR_expected: '<div>Hello world!</div>',
-				CSR: <div>Hello world!{false}</div>,
-				CSR_expected: '<div>Hello world!</div>'
-			},
-			{
-				SSR: <div>Hello world, {'1'}2{'3'}</div>,
-				SSR_expected: '<div>Hello world, <!---->1<!---->2<!---->3</div>',
-				CSR: <div>Hello world, {'1'}2{[3, 4, 5, [6, 7]]}</div>,
-				CSR_expected: '<div>Hello world, 1234567</div>'
-			},
-			{
-				SSR: (
-					<div id="1">
-						<div id="2">
-							<div id="3" />
-						</div>
-					</div>
-				),
-				SSR_expected: '<div id="1"><div id="2"><div id="3"></div></div></div>',
-				CSR: (
-					<div id="1">
-						{[null, false, true, undefined]}
-						<i id="2">
-							<em>1</em>
-							<span id="3" />
-						</i>
-					</div>
-				),
-				CSR_expected: '<div id="1"><i id="2"><em>1</em><span id="3"></div></i></div>'
-			},
-			{
-				SSR: <div><Comp1 /></div>,
-				SSR_expected: '<div><span>Worked!</span></div>',
-				CSR: (
-					<div id="1">
-						{[null, false, true, undefined]}
-						<i id="2">
-							<em>1</em>
-							<span id="3" />
-						</i>
-					</div>
-				),
-				CSR_expected: '<div id="1"><i id="2"><em>1</em><span id="3"></div></i></div>'
-			},
-			{
-				SSR: <div className="test"><Comp1 /></div>,
-				SSR_expected: '<div class="test"><span>Worked!</span></div>',
-				CSR: <div><Comp1 /><Comp1 /><Comp1 /></div>,
-				CSR_expected: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>'
-			},
-			{
-				SSR: <div><Comp1 /><Comp1 /><Comp1 /></div>,
-				SSR_expected: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>',
-				CSR: <div className="test"><Comp1 /></div>,
-				CSR_expected: '<div class="test"><span>Worked!</span></div>'
-			}
+		[{
+			SSR: <div><span>Hello world</span></div>,
+			SSR_expected: '<div><span>Hello world</span></div>',
+			CSR: <div><em>Hello world</em></div>,
+			CSR_expected: '<div><em>Hello world</em></div>'
+		},
+		{
+			SSR: <div><p>Hello world<sup><a>Foo</a></sup></p></div>,
+			SSR_expected: '<div><p>Hello world<sup><a>Foo</a></sup></p></div>',
+			CSR: <div><p>Hello bar<span><em>Foo</em></span></p></div>,
+			CSR_expected: '<div><p>Hello bar<span><em>Foo</em></span></p></div>'
+		},
+		{
+			SSR: <div>{ <span>Hello world</span> }</div>,
+			SSR_expected: '<div><span>Hello world</span></div>',
+			CSR: <em>{ <span>Hello 11</span> }</em>,
+			CSR_expected: '<em><span>Hello 11</span></em>'
+		},
+		{
+			SSR: <div><span>{ <span>Hello world</span> }</span></div>,
+			SSR_expected: '<div><span><span>Hello world</span></span></div>',
+			CSR: <em>{ <span>Hello 11</span> }</em>,
+			CSR_expected: '<em><span>Hello 11</span></em>'
+		},
+		{
+			SSR: <div>Hello world</div>,
+			SSR_expected: '<div>Hello world</div>',
+			CSR: <div><p>Hello bar<span><em>Foo</em></span></p></div>,
+			CSR_expected: '<div><p>Hello bar<span><em>Foo</em></span></p></div>'
+		},
+		{
+			SSR: <div>
+				<svg className={(() => 'foo')()} viewBox="0 0 64 64"/>
+			</div>,
+			SSR_expected: '<div><svg class="foo" viewBox="0 0 64 64"></svg></div>',
+			CSR: <div>
+				<svg className={(() => 'bar1')()} viewBox="0 0 64 11"/>
+			</div>,
+			CSR_expected: '<div><svg class="bar1" viewBox="0 0 64 11"></svg></div>'
+		},
+		{
+			SSR: <Comp4><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></Comp4>,
+			SSR_expected: '<section><h1>Hello world</h1><p><em>Foo</em></p><p>Woot</p><p><em>Bar</em></p></section>',
+			CSR: <Comp4><h1>Hello world again!</h1><p><em>{[ 1,2,3 ]}</em></p><p>{null}</p><p><em>Foo</em></p></Comp4>,
+			CSR_expected: '<section><h1>Hello world again!</h1><p><em>123</em></p><p></p><p><em>Foo</em></p></section>'
+		},
+		{
+			SSR: <div>Hello world, { 'Foo!' }</div>,
+			SSR_expected: '<div>Hello world, <!---->Foo!</div>',
+			CSR: <Comp4><h1>Hello world again!</h1><p><em>{[ 1,2,3 ]}</em></p><p>{null}</p><p><em>Foo</em></p></Comp4>,
+			CSR_expected: '<section><h1>Hello world again!</h1><p><em>123</em></p><p></p><p><em>Foo</em></p></section>'
+		},
+		{
+			SSR: <div>Hello world, { 'Foo!' }</div>,
+			SSR_expected: '<div>Hello world, <!---->Foo!</div>',
+			CSR: <div>Hello world, { 'BarBar!' }</div>,
+			CSR_expected: '<div>Hello world, BarBar!</div>'
+		},
+		{
+			SSR: <div>Hello world, { [ 'Foo!', 'Bar!' ] }</div>,
+			SSR_expected: '<div>Hello world, <!---->Foo!<!---->Bar!</div>',
+			CSR: <div>Hello world, { [ 'Foo!', 'Bar!' ] }</div>,
+			CSR_expected: '<div>Hello world, Foo!Bar!</div>'
+		},
+		{
+			SSR: <div>Hello world!{ null }</div>,
+			SSR_expected: '<div>Hello world!</div>',
+			CSR: <div>Hello world!{ false }</div>,
+			CSR_expected: '<div>Hello world!</div>'
+		},
+		{
+			SSR: <div>Hello world, { '1' }2{ '3' }</div>,
+			SSR_expected: '<div>Hello world, <!---->1<!---->2<!---->3</div>',
+			CSR: <div>Hello world, { '1' }2{ [ 3,4,5,[ 6,7 ]] }</div>,
+			CSR_expected: '<div>Hello world, 1234567</div>'
+		},
+		{
+			SSR: <div id="1">
+				<div id="2">
+					<div id="3"></div>
+				</div>
+			</div>,
+			SSR_expected: '<div id="1"><div id="2"><div id="3"></div></div></div>',
+			CSR: <div id="1">
+				{[ null, false, true, undefined ]}
+				<i id="2">
+					<em>1</em>
+					<span id="3"></span>
+				</i>
+			</div>,
+			CSR_expected: '<div id="1"><i id="2"><em>1</em><span id="3"></div></i></div>'
+		},
+		{
+			SSR: <div><Comp1 /></div>,
+			SSR_expected: '<div><span>Worked!</span></div>',
+			CSR: <div id="1">
+				{[ null, false, true, undefined ]}
+				<i id="2">
+					<em>1</em>
+					<span id="3"></span>
+				</i>
+			</div>,
+			CSR_expected: '<div id="1"><i id="2"><em>1</em><span id="3"></div></i></div>'
+		},
+		{
+			SSR: <div className="test"><Comp1 /></div>,
+			SSR_expected: '<div class="test"><span>Worked!</span></div>',
+			CSR: <div><Comp1 /><Comp1 /><Comp1 /></div>,
+			CSR_expected: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>'
+		},
+		{
+			SSR: <div><Comp1 /><Comp1 /><Comp1 /></div>,
+			SSR_expected: '<div><span>Worked!</span><span>Worked!</span><span>Worked!</span></div>',
+			CSR: <div className="test"><Comp1 /></div>,
+			CSR_expected: '<div class="test"><span>Worked!</span></div>'
+		}
 		].forEach(({ SSR, CSR, SSR_expected, CSR_expected }, i) => {
-			it(`Validate various structures #${i + 1}`, () => {
+			it(`Validate various structures #${ (i + 1) }`, () => {
 				const ssrString = renderToString(SSR);
 				const SsrContainer = createContainerWithHTML(ssrString);
 

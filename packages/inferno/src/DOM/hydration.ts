@@ -47,14 +47,7 @@ function normalizeChildNodes(parentDom) {
 	}
 }
 
-function hydrateComponent(
-	vNode: VNode,
-	dom: Element,
-	lifecycle: LifecycleClass,
-	context,
-	isSVG: boolean,
-	isClass: boolean
-): Element {
+function hydrateComponent(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context, isSVG: boolean, isClass: boolean): Element {
 	const type = vNode.type;
 	const ref = vNode.ref;
 
@@ -84,13 +77,7 @@ function hydrateComponent(
 	return dom;
 }
 
-function hydrateElement(
-	vNode: VNode,
-	dom: Element,
-	lifecycle: LifecycleClass,
-	context: Object,
-	isSVG: boolean
-): Element {
+function hydrateElement(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean): Element {
 	const children = vNode.children;
 	const props = vNode.props;
 	const className = vNode.className;
@@ -100,9 +87,7 @@ function hydrateElement(
 	isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
 	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== vNode.type) {
 		if (process.env.NODE_ENV !== 'production') {
-			warning(
-				"Inferno hydration: Server-side markup doesn't match client-side markup or Initial render target is not empty"
-			);
+			warning('Inferno hydration: Server-side markup doesn\'t match client-side markup or Initial render target is not empty');
 		}
 		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
 
@@ -124,7 +109,7 @@ function hydrateElement(
 		}
 		for (const prop in props) {
 			// do not add a hasOwnProperty check here, it affects performance
-			patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue);
+			patchProp(prop, null, props[ prop ], dom, isSVG, hasControlledValue);
 		}
 		if (isFormElement) {
 			processElement(flags, vNode, dom, props, true, hasControlledValue);
@@ -147,13 +132,7 @@ function hydrateElement(
 	return dom;
 }
 
-function hydrateChildren(
-	children: InfernoChildren,
-	parentDom: Element,
-	lifecycle: LifecycleClass,
-	context: Object,
-	isSVG: boolean
-): void {
+function hydrateChildren(children: InfernoChildren, parentDom: Element, lifecycle: LifecycleClass, context: Object, isSVG: boolean): void {
 	normalizeChildNodes(parentDom);
 	let dom = parentDom.firstChild;
 
@@ -168,7 +147,7 @@ function hydrateChildren(
 		dom = (dom as Element).nextSibling;
 	} else if (isArray(children)) {
 		for (let i = 0, len = (children as Array<string | number | VNode>).length; i < len; i++) {
-			const child = children[i];
+			const child = children[ i ];
 
 			if (!isNull(child) && isObject(child)) {
 				if (!isNull(dom)) {
@@ -229,21 +208,21 @@ function hydrate(vNode: VNode, dom: Element, lifecycle: LifecycleClass, context:
 		hydrateVoid(vNode, dom);
 	} else {
 		if (process.env.NODE_ENV !== 'production') {
-			throwError(`hydrate() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
+			throwError(`hydrate() expects a valid VNode, instead it received an object with the type "${ typeof vNode }".`);
 		}
 		throwError();
 	}
 }
 
-export function hydrateRoot(input, parentDom: Element | null, lifecycle: LifecycleClass) {
+export function hydrateRoot(input, parentDom: Element|null, lifecycle: LifecycleClass) {
 	if (!isNull(parentDom)) {
-		let dom = parentDom.firstChild as Element;
+		let dom = (parentDom.firstChild as Element);
 
 		if (!isNull(dom)) {
 			hydrate(input, dom, lifecycle, EMPTY_OBJ, false);
 			dom = parentDom.firstChild as Element;
 			// clear any other DOM nodes, there should be only a single entry for the root
-			while ((dom = dom.nextSibling as Element)) {
+			while (dom = dom.nextSibling as Element) {
 				parentDom.removeChild(dom);
 			}
 			return true;

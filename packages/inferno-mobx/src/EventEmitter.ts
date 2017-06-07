@@ -1,4 +1,5 @@
 export default class EventEmitter {
+
 	private listeners: Function[] = [];
 
 	public on(cb: Function) {
@@ -14,7 +15,7 @@ export default class EventEmitter {
 	public emit(data: any) {
 		const listeners = this.listeners;
 		for (let i = 0, len = listeners.length; i < len; i++) {
-			listeners[i](data);
+			listeners[ i ](data);
 		}
 	}
 

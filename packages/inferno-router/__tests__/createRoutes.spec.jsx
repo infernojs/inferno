@@ -1,12 +1,13 @@
+
 import Route from '../dist-es/Route';
 import IndexRoute from '../dist-es/IndexRoute';
 import createRoutes from '../dist-es/createRoutes';
 
-const App = () => <div />;
-const Home = () => <div />;
-const Films = () => <div />;
-const FilmDetail = () => <div />;
-const NoMatch = () => <div />;
+const App = () => (<div/>);
+const Home = () => (<div/>);
+const Films = () => (<div/>);
+const FilmDetail = () => (<div/>);
+const NoMatch = () => (<div/>);
 
 const routeConfig = [
 	{
@@ -34,16 +35,16 @@ const routeConfig = [
 
 const expectedResult = (
 	<Route path="/" component={App}>
-		<IndexRoute component={Home} />
+		<IndexRoute component={Home}/>
 		<Route path="films/" component={Films}>
-			<Route path="detail/:id" component={FilmDetail} />
+			<Route path="detail/:id" component={FilmDetail}/>
 		</Route>
-		<Route path="/*" component={NoMatch} />
+		<Route path="/*" component={NoMatch}/>
 	</Route>
 );
 
 describe('Router #createRoutes', () => {
 	it('it should parse route configuration', () => {
-		expect(JSON.stringify(createRoutes(routeConfig)[0])).to.equal(JSON.stringify(expectedResult));
+		expect(JSON.stringify(createRoutes(routeConfig)[ 0 ])).to.equal(JSON.stringify(expectedResult));
 	});
 });

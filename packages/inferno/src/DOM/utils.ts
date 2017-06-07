@@ -1,8 +1,7 @@
 import {
 	combineFrom,
 	isArray,
-	isInvalid,
-	isNull,
+	isInvalid, isNull,
 	isNullOrUndef,
 	isStringOrNumber,
 	isUndefined,
@@ -24,14 +23,7 @@ if (process.env.NODE_ENV !== 'production') {
 	Object.freeze(EMPTY_OBJ);
 }
 
-export function createClassComponentInstance(
-	vNode: VNode,
-	Component,
-	props: Props,
-	context: Object,
-	isSVG: boolean,
-	lifecycle: LifecycleClass
-) {
+export function createClassComponentInstance(vNode: VNode, Component, props: Props, context: Object, isSVG: boolean, lifecycle: LifecycleClass) {
 	if (isUndefined(context)) {
 		context = EMPTY_OBJ; // Context should not be mutable
 	}
@@ -76,9 +68,7 @@ export function createClassComponentInstance(
 	}
 	if (isArray(input)) {
 		if (process.env.NODE_ENV !== 'production') {
-			throwError(
-				'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
-			);
+			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 		}
 		throwError();
 	} else if (isInvalid(input)) {
@@ -101,15 +91,7 @@ export function createClassComponentInstance(
 	instance._lastInput = input;
 	return instance;
 }
-export function replaceLastChildAndUnmount(
-	lastInput,
-	nextInput,
-	parentDom,
-	lifecycle: LifecycleClass,
-	context: Object,
-	isSVG: boolean,
-	isRecycling: boolean
-) {
+export function replaceLastChildAndUnmount(lastInput, nextInput, parentDom, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isRecycling: boolean) {
 	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle, isRecycling);
 }
 
@@ -123,9 +105,7 @@ export function createFunctionalComponentInput(vNode: VNode, component, props: P
 
 	if (isArray(input)) {
 		if (process.env.NODE_ENV !== 'production') {
-			throwError(
-				'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
-			);
+			throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
 		}
 		throwError();
 	} else if (isInvalid(input)) {
@@ -155,7 +135,7 @@ export function setTextContent(dom, text: string | number) {
 	}
 }
 
-export function updateTextContent(dom, text: string | number) {
+export function updateTextContent(dom, text: string|number) {
 	dom.firstChild.nodeValue = text;
 }
 
@@ -179,15 +159,7 @@ export function documentCreateElement(tag, isSVG: boolean): Element {
 	}
 }
 
-export function replaceWithNewNode(
-	lastNode,
-	nextNode,
-	parentDom,
-	lifecycle: LifecycleClass,
-	context: Object,
-	isSVG: boolean,
-	isRecycling: boolean
-) {
+export function replaceWithNewNode(lastNode, nextNode, parentDom, lifecycle: LifecycleClass, context: Object, isSVG: boolean, isRecycling: boolean) {
 	unmount(lastNode, null, lifecycle, false, isRecycling);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);
 
@@ -213,9 +185,9 @@ export function removeAllChildren(dom: Element, children, lifecycle: LifecycleCl
 	dom.textContent = '';
 }
 
-export function removeChildren(dom: Element | null, children, lifecycle: LifecycleClass, isRecycling: boolean) {
+export function removeChildren(dom: Element|null, children, lifecycle: LifecycleClass, isRecycling: boolean) {
 	for (let i = 0, len = children.length; i < len; i++) {
-		const child = children[i];
+		const child = children[ i ];
 
 		if (!isInvalid(child)) {
 			unmount(child, dom, lifecycle, true, isRecycling);
@@ -224,12 +196,6 @@ export function removeChildren(dom: Element | null, children, lifecycle: Lifecyc
 }
 
 export function isKeyed(lastChildren: VNode[], nextChildren: VNode[]): boolean {
-	return (
-		nextChildren.length > 0 &&
-		!isNullOrUndef(nextChildren[0]) &&
-		!isNullOrUndef(nextChildren[0].key) &&
-		lastChildren.length > 0 &&
-		!isNullOrUndef(lastChildren[0]) &&
-		!isNullOrUndef(lastChildren[0].key)
-	);
+	return nextChildren.length > 0 && !isNullOrUndef(nextChildren[ 0 ]) && !isNullOrUndef(nextChildren[ 0 ].key)
+		&& lastChildren.length > 0 && !isNullOrUndef(lastChildren[ 0 ]) && !isNullOrUndef(lastChildren[ 0 ].key);
 }
