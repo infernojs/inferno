@@ -1,30 +1,41 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const { join } = require('path');
 
-const infernoBuildVersion = require('../../package.json').version;
-console.log(`Inferno Build @ ${infernoBuildVersion}`);
+const PACKAGES_DIR = join(__dirname, '../../packages');
+const INFERNO_VERSION = require(join(__dirname, '../../package.json')).version;
+const PACKAGES = fs.readdirSync(PACKAGES_DIR).filter(path => fs.statSync(join(PACKAGES_DIR, path)).isDirectory());
 
-const PACKAGE_ROOT = join(__dirname, '../../packages');
-fs.readdir(PACKAGE_ROOT, (err, packages) => {
-	if (err) {
-		throw Error(err);
-	}
-
-	for (let i = 0, n = packages.length; i < n; i += 1) {
-		const package = packages[i];
-		if (fs.statSync(join(PACKAGE_ROOT, package)).isDirectory()) {
-			const pkgJSON = require(join(PACKAGE_ROOT, package, 'package.json'));
-
-			if (infernoBuildVersion !== pkgJSON.version) {
-				console.error(`${pkgJSON.name} mismatch version @ ${pkgJSON.version}`);
-				pkgJSON.version = infernoBuildVersion;
-				try {
-					const newPkgJSON = JSON.stringify(pkgJSON, null, 2);
-					fs.writeFileSync(join(PACKAGE_ROOT, package, 'package.json'), newPkgJSON);
-				} catch (e) {
-					console.warn(`Skipping writing ${pkgJSON.name}: ${e}`);
-				}
-			}
+function updateDependencies(name, deps) {
+	for (const dep in deps) {
+		if (PACKAGES.includes(dep)) {
+			deps[dep] = `^${INFERNO_VERSION}`;
 		}
 	}
-});
+}
+
+let failedToUpdate = false;
+for (let i = 0; i < PACKAGES.length; i += 1) {
+	const pkgJSONPath = join(PACKAGES_DIR, PACKAGES[i], 'package.json');
+	const pkgJSON = require(pkgJSONPath);
+
+	if (pkgJSON.version !== INFERNO_VERSION) {
+		pkgJSON.version = INFERNO_VERSION;
+	}
+
+	updateDependencies(pkgJSON.name, pkgJSON.dependencies);
+	updateDependencies(pkgJSON.name, pkgJSON.devDependencies);
+
+	const pkgJSONStr = JSON.stringify(pkgJSON, null, 2);
+	try {
+		fs.writeFileSync(pkgJSONPath, pkgJSONStr);
+	} catch (e) {
+		failedToUpdate = true;
+		console.error('Failed to update %s: %s', pkgJSON.name, e);
+	}
+}
+
+if (failedToUpdate) {
+	process.exit(1);
+}

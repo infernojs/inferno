@@ -1,30 +1,38 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const { join } = require('path');
 
-const infernoBuildVersion = require('../../packageName.json').version;
-console.log(`Inferno Build @ ${infernoBuildVersion}`);
+const PACKAGES_DIR = join(__dirname, '../../packages');
+const INFERNO_VERSION = require(join(__dirname, '../../package.json')).version;
+const PACKAGES = fs.readdirSync(PACKAGES_DIR).filter(path => fs.statSync(join(PACKAGES_DIR, path)).isDirectory());
 
-const PACKAGE_ROOT = join(__dirname, '../../packages');
-fs.readdir(PACKAGE_ROOT, (err, packages) => {
-	if (err) {
-		throw Error(err);
-	}
-
-	let fail = false;
-	for (let i = 0, n = packages.length; i < n; i += 1) {
-		const packageName = packages[i];
-		if (fs.statSync(join(PACKAGE_ROOT, packageName)).isDirectory()) {
-			const pkgJSON = require(join(PACKAGE_ROOT, packageName, 'packageName.json'));
-
-			if (infernoBuildVersion !== pkgJSON.version) {
-				console.error(`${pkgJSON.name} mismatch version @ ${pkgJSON.version}`);
-				fail = true;
-			}
+function checkDependencies(name, deps) {
+	for (const dep in deps) {
+		if (PACKAGES.includes(dep) && deps[dep].indexOf(INFERNO_VERSION) === -1) {
+			throw Error(`Version Mismatch: ${name}. ${dep} @ ${deps[dep]}`);
 		}
 	}
-	if (fail) {
-		console.error('Inferno Version Check Failed');
-	} else {
-		console.log('Inferno Version Check Passed');
+}
+
+let failed = false;
+for (let i = 0; i < PACKAGES.length; i += 1) {
+	const pkgJSONPath = join(PACKAGES_DIR, PACKAGES[i], 'package.json');
+	const pkgJSON = require(pkgJSONPath);
+
+	if (pkgJSON.version !== INFERNO_VERSION) {
+		failed = true;
 	}
-});
+
+	try {
+		checkDependencies(pkgJSON.name, pkgJSON.dependencies);
+		checkDependencies(pkgJSON.name, pkgJSON.devDependencies);
+	} catch (e) {
+		console.error(e.message);
+		failed = true;
+	}
+}
+
+if (failed) {
+	process.exit(1);
+}

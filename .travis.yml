@@ -36,7 +36,6 @@ before_install:
   - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 
 script:
-  - npm run build
   - npm test
   - npm run test:package
 
