@@ -46,16 +46,16 @@ describe('Inferno-compat LifeCycle', () => {
 						{
 							ref: () => {
 								console.log('S1', this.refs['S2a'] ? 'stringRef' : null);
-							},
+							}
 						},
 						[
 							createElement('div', { ref: 'S2a' }),
 							createElement('div', {
 								ref: () => {
 									console.log('S2b', this.refs['S2a'] ? 'stringRef' : null);
-								},
-							}),
-						],
+								}
+							})
+						]
 					);
 				}
 			}
@@ -83,7 +83,7 @@ describe('Inferno-compat LifeCycle', () => {
 						{
 							ref: () => {
 								console.log('1', this.refs['3a'] ? 'stringRef' : null);
-							},
+							}
 						},
 						[
 							createElement(
@@ -91,7 +91,7 @@ describe('Inferno-compat LifeCycle', () => {
 								{
 									ref: () => {
 										console.log('2a', this.refs['3a'] ? 'stringRef' : null);
-									},
+									}
 								},
 								[
 									createElement(Hello2, {}, null),
@@ -99,31 +99,31 @@ describe('Inferno-compat LifeCycle', () => {
 										createElement('div', {
 											ref: () => {
 												console.log('4a', this.refs['3a'] ? 'stringRef' : null);
-											},
+											}
 										}),
 										createElement('div', {
 											ref: () => {
 												console.log('4b', this.refs['3a'] ? 'stringRef' : null);
-											},
-										}),
+											}
+										})
 									]),
 									createElement('div', {
 										ref: () => {
 											console.log('3b', this.refs['3a'] ? 'stringRef' : null);
-										},
-									}),
-								],
+										}
+									})
+								]
 							),
 							createElement(
 								'div',
 								{
 									ref: () => {
 										console.log('2b', this.refs['3a'] ? 'stringRef' : null);
-									},
+									}
 								},
-								null,
-							),
-						],
+								null
+							)
+						]
 					);
 				}
 			}

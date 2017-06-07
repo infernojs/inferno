@@ -50,7 +50,7 @@ describe('Provider (JSX)', () => {
 				e.preventDefault();
 				store.dispatch({
 					type: 'CHANGE_NAME',
-					name: 'Jerry',
+					name: 'Jerry'
 				});
 			};
 
@@ -87,8 +87,8 @@ describe('Provider (JSX)', () => {
 						<div />
 					</Provider>
 				</div>,
-				container,
-			),
+				container
+			)
 		).to.not.throw(Error);
 
 		expect(() => render(<Provider store={store} />, container)).to.throw(Error);
@@ -99,8 +99,8 @@ describe('Provider (JSX)', () => {
 					<div />
 					<div />
 				</Provider>,
-				container,
-			),
+				container
+			)
 		).to.throw(Error);
 	});
 
@@ -129,7 +129,7 @@ describe('Provider (JSX)', () => {
 						<BasicComponent2 />
 					</BasicRouter>
 				</Provider>,
-				container,
+				container
 			);
 		};
 
@@ -138,8 +138,8 @@ describe('Provider (JSX)', () => {
 
 		expect(container.innerHTML).to.equal(
 			innerHTML(
-				'<div><div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div><div class="basic2">You\'re a cat!</div></div>',
-			),
+				'<div><div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div><div class="basic2">You\'re a cat!</div></div>'
+			)
 		);
 
 		const link = container.querySelector('#dispatch');
@@ -147,8 +147,8 @@ describe('Provider (JSX)', () => {
 
 		expect(container.innerHTML).to.equal(
 			innerHTML(
-				'<div><div class="basic"><a id="dispatch"><span>Hello Jerry</span></a></div><div class="basic2">You\'re a mouse!</div></div>',
-			),
+				'<div><div class="basic"><a id="dispatch"><span>Hello Jerry</span></a></div><div class="basic2">You\'re a mouse!</div></div>'
+			)
 		);
 	});
 
@@ -170,7 +170,7 @@ describe('Provider (JSX)', () => {
 						<IndexRoute component={BasicComponent1} />
 					</Router>
 				</Provider>,
-				container,
+				container
 			);
 		};
 
@@ -181,7 +181,7 @@ describe('Provider (JSX)', () => {
 		});
 
 		expect(container.innerHTML).to.equal(
-			innerHTML('<div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div>'),
+			innerHTML('<div class="basic"><a id="dispatch"><span>Hello Tom</span></a></div>')
 		);
 
 		const link = container.querySelector('#dispatch');
@@ -210,7 +210,7 @@ describe('Provider (JSX)', () => {
 					e.preventDefault();
 					store.dispatch({
 						type: 'CHANGE_NAME',
-						name: 'Jerry',
+						name: 'Jerry'
 					});
 				};
 
@@ -248,7 +248,7 @@ describe('Provider (JSX)', () => {
 					</Route>
 				</Router>
 			</Provider>,
-			container,
+			container
 		);
 	});
 });

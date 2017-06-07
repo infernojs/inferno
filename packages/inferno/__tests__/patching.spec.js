@@ -55,7 +55,7 @@ describe('patching routine', () => {
 			null,
 			null,
 			null,
-			false,
+			false
 		);
 
 		const invalidChildNode = createVNode(
@@ -66,7 +66,7 @@ describe('patching routine', () => {
 			null,
 			null,
 			null,
-			false,
+			false
 		);
 
 		render(validNode, container);

@@ -5,9 +5,9 @@ function spanTagWithText(text) {
 	return createElement(
 		'span',
 		{
-			className: 'TableCell',
+			className: 'TableCell'
 		},
-		text,
+		text
 	);
 }
 
@@ -16,9 +16,9 @@ function spanTagWithKeyAndText(key, text) {
 		'span',
 		{
 			className: 'TableCell',
-			key,
+			key
 		},
-		text,
+		text
 	);
 }
 
@@ -50,9 +50,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('a', 'a'),
 				spanTagWithKeyAndText('b', 'b'),
 				spanTagWithKeyAndText('e', 'c'),
-				spanTagWithText('c'),
+				spanTagWithText('c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abcc');
 		expect(container.firstChild.childNodes.length).to.equal(4);
@@ -64,9 +64,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('a', 'a'),
 				spanTagWithKeyAndText('b', 'b'),
 				spanTagWithKeyAndText('e', 'c'),
-				spanTagWithText('c'),
+				spanTagWithText('c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abcc');
 		expect(container.firstChild.childNodes.length).to.equal(4);
@@ -77,9 +77,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('b', 'b'),
 				undefined,
 				spanTagWithKeyAndText('e', 'c'),
-				spanTagWithText('c'),
+				spanTagWithText('c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abcc');
 		expect(container.firstChild.childNodes.length).to.equal(4);
@@ -90,9 +90,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('b', 'b'),
 				undefined,
 				spanTagWithKeyAndText('e', 'c'),
-				spanTagWithText('c'),
+				spanTagWithText('c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abcc');
 		expect(container.firstChild.childNodes.length).to.equal(4);
@@ -110,9 +110,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c'),
 				spanTagWithKeyAndText('e', 'a'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bcac');
 		expect(container.firstChild.childNodes.length).to.equal(4);
@@ -127,9 +127,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithKeyAndText('e', 'a'),
 				spanTagWithKeyAndText('f', 'c'),
-				spanTagWithText('c'),
+				spanTagWithText('c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bacc');
 		expect(container.firstChild.childNodes.length).to.equal(4);
@@ -141,9 +141,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithKeyAndText('e', 'a'),
 				spanTagWithKeyAndText('f', 'c'),
-				spanTagWithText('c'),
+				spanTagWithText('c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bacc');
 		expect(container.firstChild.childNodes.length).to.equal(4);
@@ -153,9 +153,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				undefined,
 				spanTagWithKeyAndText('e', 'a'),
 				spanTagWithKeyAndText('f', 'c'),
-				spanTagWithText('c'),
+				spanTagWithText('c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bacc');
 		expect(container.firstChild.childNodes.length).to.equal(4);
@@ -174,9 +174,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('e', 'c'),
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithKeyAndText('e2', 'b'),
-				spanTagWithText('g'),
+				spanTagWithText('g')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('ccbbg');
 		render(template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('f', 'b')]), container);
@@ -191,15 +191,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -208,15 +208,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -225,15 +225,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -242,15 +242,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -259,15 +259,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -276,15 +276,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -293,15 +293,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -310,21 +310,21 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -333,15 +333,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -350,15 +350,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -367,15 +367,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -384,15 +384,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -401,15 +401,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -418,15 +418,15 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);
 		render(
 			template([spanTagWithKeyAndText('a', 'a'), spanTagWithKeyAndText('b', 'b'), spanTagWithKeyAndText('e', 'c')]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('abc');
 		expect(container.firstChild.childNodes.length).to.equal(3);
@@ -435,9 +435,9 @@ describe('Mixed of Keyed/Non-Keyed nodes', () => {
 				spanTagWithKeyAndText('d', 'b'),
 				spanTagWithText('c1'),
 				spanTagWithText('c2'),
-				spanTagWithKeyAndText('f', 'c'),
+				spanTagWithKeyAndText('f', 'c')
 			]),
-			container,
+			container
 		);
 		expect(container.textContent).to.equal('bc1c2c');
 		expect(container.firstChild.childNodes.length).to.equal(4);

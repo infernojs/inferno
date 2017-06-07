@@ -50,35 +50,35 @@ describe('Children - (JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'),
+				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>')
 			);
 			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div id="add">Add</div></div>'
+				)
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div id="add">Add</div></div>'
+				)
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>'
+				)
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div>New 5</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div>New 5</div><div id="add">Add</div></div>'
+				)
 			);
 		});
 
@@ -116,12 +116,12 @@ describe('Children - (JSX)', () => {
 			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>New 0</div><div id="add">Add</div></div>'),
+				innerHTML('<div class="tab-group"><div>New 0</div><div id="add">Add</div></div>')
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div></div>'),
+				innerHTML('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div></div>')
 			);
 		});
 
@@ -159,12 +159,12 @@ describe('Children - (JSX)', () => {
 			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div id="add">Add</div><div>New 0</div></div>'),
+				innerHTML('<div class="tab-group"><div id="add">Add</div><div>New 0</div></div>')
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div id="add">Add</div><div>New 0</div><div>New 1</div></div>'),
+				innerHTML('<div class="tab-group"><div id="add">Add</div><div>New 0</div><div>New 1</div></div>')
 			);
 		});
 
@@ -204,14 +204,14 @@ describe('Children - (JSX)', () => {
 			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>'),
+				innerHTML('<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>')
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>',
-				),
+					'<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>'
+				)
 			);
 		});
 
@@ -249,14 +249,14 @@ describe('Children - (JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'),
+				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>')
 			);
 			const addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>'
+				)
 			);
 		});
 
@@ -294,14 +294,14 @@ describe('Children - (JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'),
+				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>')
 			);
 			const addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>New 4</div><div>New 3</div><div>New 2</div><div>Item A</div><div>Item B</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>New 4</div><div>New 3</div><div>New 2</div><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'
+				)
 			);
 		});
 
@@ -405,35 +405,35 @@ describe('Children - (JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'),
+				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>')
 			);
 			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div id="add">Add</div></div>'
+				)
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div id="add">Add</div></div>'
+				)
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>'
+				)
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div>New 5</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div>New 5</div><div id="add">Add</div></div>'
+				)
 			);
 		});
 
@@ -471,12 +471,12 @@ describe('Children - (JSX)', () => {
 			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>New 0</div><div id="add">Add</div></div>'),
+				innerHTML('<div class="tab-group"><div>New 0</div><div id="add">Add</div></div>')
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div></div>'),
+				innerHTML('<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div></div>')
 			);
 		});
 
@@ -515,11 +515,11 @@ describe('Children - (JSX)', () => {
 			const addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div id="add">Add</div><div>New 0</div></div>'),
+				innerHTML('<div class="tab-group"><div id="add">Add</div><div>New 0</div></div>')
 			);
 			addTab.click();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div id="add">Add</div><div>New 0</div><div>New 1</div></div>'),
+				innerHTML('<div class="tab-group"><div id="add">Add</div><div>New 0</div><div>New 1</div></div>')
 			);
 		});
 
@@ -559,14 +559,14 @@ describe('Children - (JSX)', () => {
 			let addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>'),
+				innerHTML('<div class="tab-group"><div>New 0</div><div id="add">Add</div><div>New 0</div></div>')
 			);
 			addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>',
-				),
+					'<div class="tab-group"><div>New 0</div><div>New 1</div><div id="add">Add</div><div>New 0</div><div>New 1</div></div>'
+				)
 			);
 		});
 
@@ -604,14 +604,14 @@ describe('Children - (JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'),
+				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>')
 			);
 			const addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>Item A</div><div>Item B</div><div>New 2</div><div>New 3</div><div>New 4</div><div id="add">Add</div></div>'
+				)
 			);
 		});
 
@@ -649,14 +649,14 @@ describe('Children - (JSX)', () => {
 			renderIt();
 
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'),
+				innerHTML('<div class="tab-group"><div>Item A</div><div>Item B</div><div id="add">Add</div></div>')
 			);
 			const addTab = container.querySelector('#add');
 			addTab.click();
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tab-group"><div>New 4</div><div>New 3</div><div>New 2</div><div>Item A</div><div>Item B</div><div id="add">Add</div></div>',
-				),
+					'<div class="tab-group"><div>New 4</div><div>New 3</div><div>New 2</div><div>Item A</div><div>Item B</div><div id="add">Add</div></div>'
+				)
 			);
 		});
 
@@ -814,7 +814,7 @@ describe('Children - (JSX)', () => {
 						collectionTwo={activeTwo}
 						visibleStaticTwo={visibleTwo}
 					/>,
-					container,
+					container
 				);
 			}
 
@@ -831,7 +831,7 @@ describe('Children - (JSX)', () => {
 			activeTwo = items;
 			renderIt();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="c"><p>static</p><p>static</p><p>a</p><p>b</p><p>c</p></div>'),
+				innerHTML('<div class="c"><p>static</p><p>static</p><p>a</p><p>b</p><p>c</p></div>')
 			);
 
 			visibleOne = false;
@@ -847,7 +847,7 @@ describe('Children - (JSX)', () => {
 			activeTwo = emptyArray;
 			renderIt();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div class="c"><p>static</p><p>a</p><p>b</p><p>c</p><p>static</p></div>'),
+				innerHTML('<div class="c"><p>static</p><p>a</p><p>b</p><p>c</p><p>static</p></div>')
 			);
 		});
 
@@ -914,7 +914,7 @@ describe('Children - (JSX)', () => {
 
 					this.state = {
 						first: true,
-						second: true,
+						second: true
 					};
 
 					updaterFirst = () => this.setStateSync({ first: !this.state.first });
@@ -946,7 +946,7 @@ describe('Children - (JSX)', () => {
 
 			render(<A />, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>'),
+				innerHTML('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>')
 			);
 			updaterFirst();
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>1</p><p>2</p><span>def</span><p>3</p></div>'));
@@ -956,7 +956,7 @@ describe('Children - (JSX)', () => {
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>1</p><p>2</p><span>def</span><p>3</p></div>'));
 			updaterFirst();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>'),
+				innerHTML('<div><p>1</p><span>abc</span><p>2</p><span>def</span><p>3</p></div>')
 			);
 		});
 	});
@@ -1045,17 +1045,17 @@ describe('Children - (JSX)', () => {
 
 			render(<Nodes items={[1, 2, 3]} />, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'),
+				innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>')
 			);
 
 			render(<Nodes items={[3, 2, 1]} />, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>'),
+				innerHTML('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>')
 			);
 
 			render(<Nodes items={[9, 8, 7]} />, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>'),
+				innerHTML('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>')
 			);
 
 			render(<Nodes items={[]} />, container);
@@ -1072,17 +1072,17 @@ describe('Children - (JSX)', () => {
 
 			render(<Nodes items={[1, 2, 3]} />, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'),
+				innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>')
 			);
 
 			render(<Nodes items={[3, 2, 1]} />, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>'),
+				innerHTML('<div><div>test</div><span>3</span><span>2</span><span>1</span><div>end</div></div>')
 			);
 
 			render(<Nodes items={[9, 8, 7]} />, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>'),
+				innerHTML('<div><div>test</div><span>9</span><span>8</span><span>7</span><div>end</div></div>')
 			);
 
 			render(<Nodes items={[]} />, container);
@@ -1108,7 +1108,7 @@ describe('Children - (JSX)', () => {
 
 			render(<Nodes items={[1, 2, 3]} />, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>'),
+				innerHTML('<div><div>test</div><span>1</span><span>2</span><span>3</span><div>end</div></div>')
 			);
 		});
 	});
@@ -1126,7 +1126,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</Collection>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1137,7 +1137,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="1">1</div>
 				</Collection>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>1</div></div>');
@@ -1148,7 +1148,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="11">11</div>
 				</Collection>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
@@ -1171,7 +1171,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1181,7 +1181,7 @@ describe('Children - (JSX)', () => {
 					<div>3</div>
 					<div>2</div>
 				</CollectionNonKeyed>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div></div>');
@@ -1192,7 +1192,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="11">11</div>
 				</CollectionKeyed>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>3</div><div>2</div><div>11</div></div>');
@@ -1209,7 +1209,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1220,7 +1220,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1238,7 +1238,7 @@ describe('Children - (JSX)', () => {
 					<div key="2">2</div>
 					<div key="3">3</div>
 				</CollectionKeyed>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div><div>1</div><div>2</div><div>3</div></div>');
@@ -1248,7 +1248,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1265,7 +1265,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{child}
 				</CollectionKeyed>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1276,7 +1276,7 @@ describe('Children - (JSX)', () => {
 				<CollectionKeyed>
 					{childB}
 				</CollectionKeyed>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql('<div></div>');
@@ -1338,12 +1338,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true,
+						bool: true
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool,
+							bool: !this.state.bool
 						});
 					};
 				}
@@ -1363,7 +1363,7 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						text: 'initial',
+						text: 'initial'
 					};
 				}
 
@@ -1411,12 +1411,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true,
+						bool: true
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool,
+							bool: !this.state.bool
 						});
 					};
 				}
@@ -1482,12 +1482,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true,
+						bool: true
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool,
+							bool: !this.state.bool
 						});
 					};
 				}
@@ -1558,12 +1558,12 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						bool: true,
+						bool: true
 					};
 
 					toggle = () => {
 						this.setState({
-							bool: !this.state.bool,
+							bool: !this.state.bool
 						});
 					};
 				}
@@ -1633,7 +1633,7 @@ describe('Children - (JSX)', () => {
 			const calledOnce = assert.calledOnce;
 
 			expect(container.innerHTML).to.eql(
-				'<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>',
+				'<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>'
 			);
 
 			unMountSpy.reset();
@@ -1752,7 +1752,7 @@ describe('Children - (JSX)', () => {
 					super(props);
 
 					this.state = {
-						text: 'aa',
+						text: 'aa'
 					};
 
 					dirtyReference = this;
@@ -1763,7 +1763,7 @@ describe('Children - (JSX)', () => {
 
 				changeText() {
 					this.setStateSync({
-						text: 'foo',
+						text: 'foo'
 					});
 				}
 
@@ -1867,7 +1867,7 @@ describe('Children - (JSX)', () => {
 				},
 				componentWillMount: () => {
 					mountCalls++;
-				},
+				}
 			};
 
 			function Wrapper({ bool }) {
@@ -1916,7 +1916,7 @@ describe('Children - (JSX)', () => {
 				},
 				componentWillMount: () => {
 					mountCalls++;
-				},
+				}
 			};
 
 			function Wrapper({ bool }) {
@@ -1964,13 +1964,13 @@ describe('Children - (JSX)', () => {
 			const testLifeCycle = {
 				componentWillUnmount: () => {
 					unMountTest++;
-				},
+				}
 			};
 
 			const fooLifecycle = {
 				componentWillUnmount: () => {
 					unMountFoo++;
-				},
+				}
 			};
 
 			function Wrapper({ bool }) {
@@ -2015,7 +2015,7 @@ describe('Children - (JSX)', () => {
 			const testLifecycle = {
 				componentWillUnmount: () => {
 					unMountTest++;
-				},
+				}
 			};
 
 			function Wrapper({ bool }) {
@@ -2066,7 +2066,7 @@ describe('Children - (JSX)', () => {
 			render(<Wrapper bool={true} />, container);
 
 			expect(container.innerHTML).to.eql(
-				'<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>',
+				'<div><span>foobar</span><span><span><span><span><div><span></span><h1>ShouldUnMountMe</h1><span></span></div></span></span></span></span></div>'
 			);
 
 			render(<Wrapper bool={false} />, container);
@@ -2085,7 +2085,7 @@ describe('Children - (JSX)', () => {
 				},
 				componentWillUnmountTwo: () => {
 					unMountTwoTest++;
-				},
+				}
 			};
 
 			function Wrapper() {

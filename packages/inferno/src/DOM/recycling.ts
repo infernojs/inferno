@@ -39,7 +39,7 @@ export function poolElement(vNode: VNode) {
 	if (isUndefined(pools)) {
 		pools = {
 			keyed: new Map<string | number, VNode[]>(),
-			nonKeyed: [],
+			nonKeyed: []
 		};
 		elementPools.set(tag, pools);
 	}
@@ -77,7 +77,7 @@ export function recycleComponent(vNode: VNode, lifecycle: LifecycleClass, contex
 					context,
 					isSVG,
 					(flags & VNodeFlags.ComponentClass) > 0,
-					true,
+					true
 				);
 
 				if (!failed) {
@@ -108,7 +108,7 @@ export function poolComponent(vNode: VNode) {
 	if (isUndefined(pools)) {
 		pools = {
 			keyed: new Map<string | number, VNode[]>(),
-			nonKeyed: [],
+			nonKeyed: []
 		};
 		componentPools.set(type as Function, pools);
 	}

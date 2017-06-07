@@ -20,10 +20,10 @@ function generateKeyNodes(array) {
 				'div',
 				{
 					key: newKey,
-					id: String(id),
+					id: String(id)
 				},
-				id,
-			),
+				id
+			)
 		);
 	}
 	return children;
@@ -451,9 +451,9 @@ describe('keyed-nodes', () => {
 			return createElement(
 				'span',
 				{
-					key: 'o' + text,
+					key: 'o' + text
 				},
-				',o' + text,
+				',o' + text
 			);
 		}
 
@@ -461,9 +461,9 @@ describe('keyed-nodes', () => {
 			return createElement(
 				'span',
 				{
-					key: 'd' + text,
+					key: 'd' + text
 				},
-				',d' + text,
+				',d' + text
 			);
 		}
 
@@ -471,9 +471,9 @@ describe('keyed-nodes', () => {
 			return createElement(
 				'span',
 				{
-					key: 'wk' + text,
+					key: 'wk' + text
 				},
-				',wk' + text,
+				',wk' + text
 			);
 		}
 
@@ -526,12 +526,12 @@ describe('keyed-nodes', () => {
 				o(8),
 				o(9),
 				o(10),
-				o(11),
+				o(11)
 			];
 			render(template(layout1), container);
 
 			expect(container.textContent).to.equal(
-				',wk31,d1,d2,d3,d4,d5,d6,d7,wk32,d8,d9,d10,d11,d12,d13,d14,wk33,d15,d16,d17,d18,d19,d20,d21,wk34,d22,d23,d24,d25,d26,d27,d28,wk35,d29,d30,d31,o1,o2,o3,o4,wk36,o5,o6,o7,o8,o9,o10,o11',
+				',wk31,d1,d2,d3,d4,d5,d6,d7,wk32,d8,d9,d10,d11,d12,d13,d14,wk33,d15,d16,d17,d18,d19,d20,d21,wk34,d22,d23,d24,d25,d26,d27,d28,wk35,d29,d30,d31,o1,o2,o3,o4,wk36,o5,o6,o7,o8,o9,o10,o11'
 			);
 
 			const layout2 = [
@@ -582,12 +582,12 @@ describe('keyed-nodes', () => {
 				o(6),
 				o(7),
 				o(8),
-				o(9),
+				o(9)
 			];
 			render(template(layout2), container);
 
 			expect(container.textContent).to.equal(
-				',wk35,o29,o30,o31,d1,d2,d3,d4,wk36,d5,d6,d7,d8,d9,d10,d11,wk37,d12,d13,d14,d15,d16,d17,d18,wk38,d19,d20,d21,d22,d23,d24,d25,wk39,d26,d27,d28,d29,d30,o1,o2,wk40,o3,o4,o5,o6,o7,o8,o9',
+				',wk35,o29,o30,o31,d1,d2,d3,d4,wk36,d5,d6,d7,d8,d9,d10,d11,wk37,d12,d13,d14,d15,d16,d17,d18,wk38,d19,d20,d21,d22,d23,d24,d25,wk39,d26,d27,d28,d29,d30,o1,o2,wk40,o3,o4,o5,o6,o7,o8,o9'
 			);
 		});
 	});
@@ -722,35 +722,35 @@ describe('keyed-nodes', () => {
 				[0, { key: 1, children: [0, 1] }, 2],
 				[3, 2, { key: 1, children: [1, 0] }],
 				[0, 0, 1, 0, 3, 0, 1],
-				[1, 0, 3, 0, 2, 2, 0],
+				[1, 0, 3, 0, 2, 2, 0]
 			],
 
 			[
 				[0, { key: 1, children: [0, 1] }, 2],
 				[2, { key: 1, children: [1, 0] }, 3],
 				[0, 0, 1, 0, 4, 0, 1],
-				[0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0]
 			],
 
 			[
 				[{ key: 1, children: [0, 1] }, { key: 2, children: [0, 1] }, 0],
 				[{ key: 2, children: [1, 0] }, { key: 1, children: [1, 0] }, 3],
 				[0, 0, 1, 0, 4, 0, 1],
-				[0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0]
 			],
 
 			[
 				[{ key: 1, children: [0, 1] }, { key: 2, children: [] }, 0],
 				[3, { key: 2, children: [1, 0] }, { key: 1, children: [] }],
 				[0, 0, 3, 0, 5, 0, 1],
-				[1, 0, 3, 0, 2, 2, 0],
+				[1, 0, 3, 0, 2, 2, 0]
 			],
 
 			[
 				[0, { key: 1, children: [] }, 2, { key: 3, children: [1, 0] }, 4, 5],
 				[6, { key: 1, children: [0, 1] }, { key: 3, children: [] }, 2, 4, 7],
 				[0, 0, 4, 0, 5, 0, 2],
-				[1, 0, 3, 0, 2, 2, 0],
+				[1, 0, 3, 0, 2, 2, 0]
 			],
 
 			[
@@ -760,18 +760,18 @@ describe('keyed-nodes', () => {
 					7,
 					{ key: 3, children: [1] },
 					{ key: 2, children: [1] },
-					{ key: 4, children: [1] },
+					{ key: 4, children: [1] }
 				],
 				[2, 0, 5, 0, 8, 0, 3],
-				[2, 0, 5, 0, 5, 2, 1],
+				[2, 0, 5, 0, 5, 2, 1]
 			],
 
 			[
 				[0, 1, { key: 2, children: [0] }, 3, { key: 4, children: [0] }, 5],
 				[6, 7, 3, { key: 2, children: [] }, { key: 4, children: [] }],
 				[0, 0, 2, 0, 3, 0, 3],
-				[1, 0, 1, 0, 0, 2, 1],
-			],
+				[1, 0, 1, 0, 0, 2, 1]
+			]
 		];
 
 		describe('syncChildren string children', () => {

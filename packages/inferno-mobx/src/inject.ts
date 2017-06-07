@@ -29,12 +29,12 @@ function createStoreInjector(grabStoresFn: Function, component) {
 			};
 
 			return createVNode(VNodeFlags.ComponentUnknown, component, null, null, newProps);
-		},
+		}
 	});
 
 	Injector.contextTypes = {
 		// tslint:disable-next-line:no-empty
-		mobxStores() {},
+		mobxStores() {}
 	};
 	hoistStatics(Injector, component);
 
@@ -51,7 +51,7 @@ const grabStoresByName = function(storeNames: string[]): Function {
 
 			if (!(storeName in baseStores)) {
 				throw new Error(
-					`MobX observer: Store "${storeName}" is not available! ` + `Make sure it is provided by some Provider`,
+					`MobX observer: Store "${storeName}" is not available! ` + `Make sure it is provided by some Provider`
 				);
 			}
 

@@ -3,7 +3,7 @@ const ecapeCharacters = {
 	'&': '&amp;',
 	"'": '&#039;',
 	'<': '&lt;',
-	'>': '&gt;',
+	'>': '&gt;'
 };
 const escapeChar = char => ecapeCharacters[char] || char;
 
@@ -34,7 +34,7 @@ const voidElements = {
 	param: true,
 	source: true,
 	track: true,
-	wbr: true,
+	wbr: true
 };
 
 export function isVoidElement(str) {

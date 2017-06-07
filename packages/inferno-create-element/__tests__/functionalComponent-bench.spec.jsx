@@ -1718,7 +1718,7 @@ function runBenchmark(container) {
 					width: 521,
 					zIndex: 2,
 					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden',
+					backfaceVisibility: 'hidden'
 				}}
 			>
 				<FixedDataTableCell182 key={'cell_0'} />
@@ -1997,7 +1997,7 @@ function runBenchmark(container) {
 					width: 2299,
 					zIndex: 0,
 					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden',
+					backfaceVisibility: 'hidden'
 				}}
 			>
 				<FixedDataTableCell187 key={'cell_0'} />
@@ -2046,7 +2046,7 @@ function runBenchmark(container) {
 					height: 40,
 					zIndex: 1,
 					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden',
+					backfaceVisibility: 'hidden'
 				}}
 				className={'_1gda'}
 			>
@@ -2408,7 +2408,7 @@ function runBenchmark(container) {
 					width: 521,
 					zIndex: 2,
 					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden',
+					backfaceVisibility: 'hidden'
 				}}
 			>
 				<FixedDataTableCell210 key={'cell_0'} />
@@ -3847,7 +3847,7 @@ function runBenchmark(container) {
 					width: 2299,
 					zIndex: 0,
 					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden',
+					backfaceVisibility: 'hidden'
 				}}
 			>
 				<FixedDataTableCell244 key={'cell_0'} />
@@ -3915,7 +3915,7 @@ function runBenchmark(container) {
 					height: 25,
 					zIndex: 1,
 					transform: 'translate3d(0px,40px,0)',
-					backfaceVisibility: 'hidden',
+					backfaceVisibility: 'hidden'
 				}}
 				className={'_1gda'}
 			>
@@ -4245,7 +4245,7 @@ function runBenchmark(container) {
 					width: 521,
 					zIndex: 2,
 					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden',
+					backfaceVisibility: 'hidden'
 				}}
 			>
 				<FixedDataTableCell364 key={'cell_0'} />
@@ -5164,7 +5164,7 @@ function runBenchmark(container) {
 					width: 2299,
 					zIndex: 0,
 					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden',
+					backfaceVisibility: 'hidden'
 				}}
 			>
 				<FixedDataTableCell387 key={'cell_0'} />
@@ -5232,7 +5232,7 @@ function runBenchmark(container) {
 					height: 32,
 					zIndex: 0,
 					transform: 'translate3d(0px,0px,0)',
-					backfaceVisibility: 'hidden',
+					backfaceVisibility: 'hidden'
 				}}
 				className={'_1gda'}
 			>
@@ -5248,7 +5248,7 @@ function runBenchmark(container) {
 					position: 'absolute',
 					pointerEvents: 'auto',
 					transform: 'translate3d(0px,65px,0)',
-					backfaceVisibility: 'hidden',
+					backfaceVisibility: 'hidden'
 				}}
 			>
 				<FixedDataTableRow449 key={'0'} />
@@ -5283,7 +5283,7 @@ function runBenchmark(container) {
 						overflow: 'hidden',
 						width: 1083,
 						transform: 'translate3d(0px,0px,0)',
-						backfaceVisibility: 'hidden',
+						backfaceVisibility: 'hidden'
 					}}
 				>
 					<Scrollbar451 />

@@ -13,7 +13,7 @@ const routeConfig = [
 		path: '/',
 		component: App,
 		indexRoute: {
-			component: Home,
+			component: Home
 		},
 		childRoutes: [
 			{
@@ -21,15 +21,15 @@ const routeConfig = [
 				component: Films,
 				childRoutes: {
 					path: 'detail/:id',
-					component: FilmDetail,
-				},
+					component: FilmDetail
+				}
 			},
 			{
 				path: '/*',
-				component: NoMatch,
-			},
-		],
-	},
+				component: NoMatch
+			}
+		]
+	}
 ];
 
 const expectedResult = (

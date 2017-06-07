@@ -30,17 +30,17 @@ describe('CreateElement (non-JSX)', () => {
 						type: 'button',
 						onClick: () => {
 							triggered = !triggered;
-						},
+						}
 					},
-					'Do a thing',
-				),
+					'Do a thing'
+				)
 			);
 		};
 
 		// eslint-disable-next-line
 		render(App(), container);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<div><div class="title">Example</div><button type="button">Do a thing</button></div>'),
+			innerHTML('<div><div class="title">Example</div><button type="button">Do a thing</button></div>')
 		);
 		expect(triggered).to.equal(false);
 
@@ -63,10 +63,10 @@ describe('CreateElement (non-JSX)', () => {
 						type: 'button',
 						onClick: () => {
 							triggered = !triggered;
-						},
+						}
 					},
-					'Do a thing',
-				),
+					'Do a thing'
+				)
 			);
 		};
 
@@ -87,8 +87,8 @@ describe('CreateElement (non-JSX)', () => {
 				null,
 				createElement('button', {
 					type: 'button',
-					children: ['Do a thing'],
-				}),
+					children: ['Do a thing']
+				})
 			);
 		};
 
@@ -104,8 +104,8 @@ describe('CreateElement (non-JSX)', () => {
 				null,
 				createElement(Button, {
 					type: 'button',
-					children: ['Do a thing'],
-				}),
+					children: ['Do a thing']
+				})
 			);
 		};
 
@@ -121,7 +121,7 @@ describe('CreateElement (non-JSX)', () => {
 				expect(app.key).to.equal('key1');
 				expect(domNode.tagName).to.equal('DIV');
 				done();
-			},
+			}
 		});
 
 		render(app, container);
@@ -146,13 +146,13 @@ describe('CreateElement (non-JSX)', () => {
 		const app = () => {
 			const node = () =>
 				createElement('a', {
-					ref: c => (myRef = c),
+					ref: c => (myRef = c)
 				});
 			return createElement(node, {
 				onComponentDidMount() {
 					expect(myRef.tagName).to.equal('A');
 					done();
-				},
+				}
 			});
 		};
 		render(createElement(app, null), container);

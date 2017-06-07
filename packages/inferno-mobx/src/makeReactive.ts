@@ -22,7 +22,7 @@ function reportRendering(component) {
 		event: 'render',
 		node,
 		renderTime: component.__$mobRenderEnd - component.__$mobRenderStart,
-		totalTime: Date.now() - component.__$mobRenderStart,
+		totalTime: Date.now() - component.__$mobRenderStart
 	});
 }
 
@@ -159,7 +159,7 @@ export default function makeReactive(componentClass) {
 			renderReporter.emit({
 				component: this,
 				event: 'destroy',
-				node,
+				node
 			});
 		}
 	};

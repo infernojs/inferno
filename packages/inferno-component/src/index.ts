@@ -11,7 +11,7 @@ import {
 	isNullOrUndef,
 	isStringOrNumber,
 	NO_OP,
-	throwError,
+	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 
@@ -138,7 +138,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 		} else if (isArray(nextInput)) {
 			if (process.env.NODE_ENV !== 'production') {
 				throwError(
-					'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.',
+					'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
 				);
 			}
 			throwError();
@@ -170,7 +170,7 @@ function applyState<P, S>(component: Component<P, S>, force: boolean, callback?:
 				lifeCycle,
 				childContext,
 				component._isSVG,
-				false,
+				false
 			);
 			lifeCycle.trigger();
 
@@ -268,7 +268,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 				alreadyWarned = true;
 				// tslint:disable-next-line:no-console
 				console.warn(
-					'Inferno WARNING: setStateSync has been deprecated and will be removed in next release. Use setState instead.',
+					'Inferno WARNING: setStateSync has been deprecated and will be removed in next release. Use setState instead.'
 				);
 			}
 		}
@@ -282,7 +282,7 @@ export default class Component<P, S> implements ComponentLifecycle<P, S> {
 		nextProps: P & Props,
 		context: any,
 		force: boolean,
-		fromSetState: boolean,
+		fromSetState: boolean
 	): VNode | string {
 		if (this._unmounted === true) {
 			if (process.env.NODE_ENV !== 'production') {

@@ -6,7 +6,7 @@ import {
 	sortAttributes,
 	style,
 	triggerEvent,
-	validateNodeTree,
+	validateNodeTree
 } from 'inferno/test/utils';
 
 import { render } from 'inferno';
@@ -19,10 +19,10 @@ describe('Utils', () => {
 		it('should return sorted attributes on HTML strings', () => {
 			expect(
 				sortAttributes(
-					'<div zAttribute="test" aAttribute="inferno" bAttribute="running">Inferno <span fAttribute="huh" cAttr="last">is cool!</span></div>',
-				),
+					'<div zAttribute="test" aAttribute="inferno" bAttribute="running">Inferno <span fAttribute="huh" cAttr="last">is cool!</span></div>'
+				)
 			).to.equal(
-				'<div aAttribute="inferno" bAttribute="running" zAttribute="test">Inferno <span cAttr="last" fAttribute="huh">is cool!</span></div>',
+				'<div aAttribute="inferno" bAttribute="running" zAttribute="test">Inferno <span cAttr="last" fAttribute="huh">is cool!</span></div>'
 			);
 		});
 	});
@@ -114,7 +114,7 @@ describe('Utils', () => {
 
 	describe('triggerEvent', () => {
 		const element = {
-			dispatchEvent(event) {},
+			dispatchEvent(event) {}
 		};
 		const spyDispatch = spy(element, 'dispatchEvent');
 		let spyCreateMouseEvent;
@@ -132,7 +132,7 @@ describe('Utils', () => {
 					expect(eventType).to.equal(triggerName);
 					expect(canBubble).to.be.true;
 					expect(cancelable).to.be.true;
-				},
+				}
 			};
 			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
 				expect(eventInterface).to.equal(triggeredEventType);
@@ -154,7 +154,7 @@ describe('Utils', () => {
 					expect(eventType).to.equal(triggerName);
 					expect(canBubble).to.be.true;
 					expect(cancelable).to.be.true;
-				},
+				}
 			};
 			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
 				expect(eventInterface).to.equal(triggeredEventType);
@@ -176,7 +176,7 @@ describe('Utils', () => {
 					expect(eventType).to.equal(triggerName);
 					expect(canBubble).to.be.true;
 					expect(cancelable).to.be.true;
-				},
+				}
 			};
 			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
 				expect(eventInterface).to.equal(triggeredEventType);
@@ -198,7 +198,7 @@ describe('Utils', () => {
 					expect(eventType).to.equal(triggerName);
 					expect(canBubble).to.be.true;
 					expect(cancelable).to.be.true;
-				},
+				}
 			};
 			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
 				expect(eventInterface).to.equal(triggeredEventType);
@@ -220,7 +220,7 @@ describe('Utils', () => {
 					expect(eventType).to.equal(triggerName);
 					expect(canBubble).to.be.true;
 					expect(cancelable).to.be.true;
-				},
+				}
 			};
 			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
 				expect(eventInterface).to.equal(triggeredEventType);
@@ -242,7 +242,7 @@ describe('Utils', () => {
 					expect(eventType).to.equal(triggerName);
 					expect(canBubble).to.be.false;
 					expect(cancelable).to.be.true;
-				},
+				}
 			};
 			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
 				expect(eventInterface).to.equal(triggeredEventType);
@@ -264,7 +264,7 @@ describe('Utils', () => {
 					expect(eventType).to.equal(triggerName);
 					expect(canBubble).to.be.true;
 					expect(cancelable).to.be.true;
-				},
+				}
 			};
 			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
 				expect(eventInterface).to.equal(triggeredEventType);
@@ -286,7 +286,7 @@ describe('Utils', () => {
 					expect(eventType).to.equal(triggerName);
 					expect(canBubble).to.be.true;
 					expect(cancelable).to.be.true;
-				},
+				}
 			};
 			spyCreateMouseEvent = stub(document, 'createEvent').callsFake(eventInterface => {
 				expect(eventInterface).to.equal(triggeredEventType);

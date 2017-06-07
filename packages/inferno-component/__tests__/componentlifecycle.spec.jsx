@@ -46,14 +46,14 @@ describe('Component lifecycle', () => {
 			constructor() {
 				super();
 				this.state = {
-					active: false,
+					active: false
 				};
 			}
 
 			componentWillReceiveProps(nextProps) {
 				if (!this.props.active && nextProps.active) {
 					this.setState({
-						active: true,
+						active: true
 					});
 				}
 			}
@@ -72,14 +72,14 @@ describe('Component lifecycle', () => {
 			constructor() {
 				super();
 				this.state = {
-					active: false,
+					active: false
 				};
 				doSomething = this._setActive = this._setActive.bind(this);
 			}
 
 			_setActive() {
 				this.setState({
-					active: true,
+					active: true
 				});
 			}
 

@@ -100,7 +100,7 @@ export function createDevToolsBridge() {
 			const vNode = findVNodeFromDom(null, dom);
 
 			return vNode ? updateReactComponent(vNode, null) : null;
-		},
+		}
 	};
 
 	// Map of root ID (the ID is unimportant) to component instance.
@@ -111,7 +111,7 @@ export function createDevToolsBridge() {
 	const Mount = {
 		_instancesByReactRootID: roots,
 		// tslint:disable-next-line:no-empty
-		_renderNewRootComponent(instance?) {},
+		_renderNewRootComponent(instance?) {}
 	};
 
 	const Reconciler = {
@@ -122,7 +122,7 @@ export function createDevToolsBridge() {
 		// tslint:disable-next-line:no-empty
 		receiveComponent(instance?) {},
 		// tslint:disable-next-line:no-empty
-		unmountComponent(instance?) {},
+		unmountComponent(instance?) {}
 	};
 
 	const queuedMountComponents = new Map();
@@ -218,7 +218,7 @@ export function createDevToolsBridge() {
 
 		componentAdded,
 		componentRemoved,
-		componentUpdated,
+		componentUpdated
 	};
 }
 
@@ -298,13 +298,13 @@ function createReactDOMComponent(vNode, parentDom) {
 			? children || vNode
 			: {
 					props,
-					type,
+					type
 				},
 		_inDevTools: false,
 		_renderedChildren: !isText && normalizeChildren(children, dom),
 		_stringText: isText ? (children || vNode).toString() : null,
 		node: dom || parentDom,
-		vNode,
+		vNode
 	};
 }
 
@@ -335,7 +335,7 @@ function createReactCompositeComponent(vNode) {
 			key: normalizeKey(vNode.key),
 			props: vNode.props,
 			ref: null,
-			type,
+			type
 		},
 		_instance: instance,
 		_renderedComponent: updateReactComponent(lastInput, dom),
@@ -347,7 +347,7 @@ function createReactCompositeComponent(vNode) {
 		props: instance.props,
 		setState: instance.setState.bind(instance),
 		state: instance.state,
-		vNode,
+		vNode
 	};
 
 	const forceInstanceUpdate = instance.forceUpdate.bind(instance); // Save off for use below.
@@ -357,7 +357,7 @@ function createReactCompositeComponent(vNode) {
 			// These are the regular Inferno props.
 			instance.props,
 			// This is what gets updated by the React devtools when props are edited.
-			compositeComponent._currentElement.props,
+			compositeComponent._currentElement.props
 		);
 
 		instance.props = newProps;

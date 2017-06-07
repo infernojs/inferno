@@ -24,116 +24,116 @@ describe('CSS style properties', () => {
 			name: 'set width and height',
 			value: {
 				width: '200px',
-				height: '200px',
+				height: '200px'
 			},
-			expected: ['width: 200px; height: 200px;'],
+			expected: ['width: 200px; height: 200px;']
 		},
 		{
 			name: 'ignore null styles',
 			value: {
 				backgroundColor: null,
-				display: 'none',
+				display: 'none'
 			},
-			expected: ['display: none;'],
+			expected: ['display: none;']
 		},
 		{
 			name: 'ignore null styles',
 			value: {
 				backgroundColor: null,
-				display: 'null',
+				display: 'null'
 			},
-			expected: [null, '', 'display: null;'],
+			expected: [null, '', 'display: null;']
 		},
 		{
 			name: 'ignore null styles',
 			value: {},
-			expected: [null],
+			expected: [null]
 		},
 		{
 			name: 'ignore undefined styles',
 			value: {
 				backgroundColor: undefined,
-				display: 'none',
+				display: 'none'
 			},
-			expected: ['display: none;'],
+			expected: ['display: none;']
 		},
 		{
 			name: 'ignore undefined styles',
 			value: {
 				backgroundColor: undefined,
-				display: 'undefined',
+				display: 'undefined'
 			},
-			expected: [null, '', 'display: undefined;'],
+			expected: [null, '', 'display: undefined;']
 		},
 		{
 			name: 'ignore undefined styles',
 			value: {
 				'background-color': undefined,
-				display: 'none',
+				display: 'none'
 			},
-			expected: ['display: none;'],
+			expected: ['display: none;']
 		},
 		{
 			name: 'ignore empty string styles',
 			value: {
-				display: 'none',
+				display: 'none'
 			},
-			expected: ['display: none;'],
+			expected: ['display: none;']
 		},
 		{
 			name: 'return null for no styles',
 			value: {
 				backgroundColor: null,
-				display: null,
+				display: null
 			},
-			expected: [null],
+			expected: [null]
 		},
 		{
 			name: 'correctly set fontSize css property',
 			value: {
-				fontSize: '123px',
+				fontSize: '123px'
 			},
-			expected: ['font-size: 123px;'],
+			expected: ['font-size: 123px;']
 		},
 		{
 			name: 'correctly set fontSize css property #2',
 			value: {
-				fontSize: 123,
+				fontSize: 123
 			},
-			expected: ['font-size: 123px;'],
+			expected: ['font-size: 123px;']
 		},
 		{
 			name: 'not add px suffix to some css properties',
 			value: {
 				widows: 5,
 				zIndex: 5,
-				lineHeight: 5,
+				lineHeight: 5
 			},
-			expected: ['widows: 5; z-index: 5; line-height: 5;'],
+			expected: ['widows: 5; z-index: 5; line-height: 5;']
 		},
 		{
 			name: 'not set non-browser supported style properties',
 			value: {
-				someProp: 5,
+				someProp: 5
 			},
-			expected: [null],
+			expected: [null]
 		},
 		{
 			name: 'handle hypenhated markup correctly',
 			value: {
-				fontFamily: 'Inferno',
+				fontFamily: 'Inferno'
 			},
-			expected: ['font-family: Inferno;'],
+			expected: ['font-family: Inferno;']
 		},
 		{
 			name: 'handle different units - em, cm, mm etc',
 			value: {
 				height: '200em',
 				width: '200cm',
-				marginLeft: '200mm',
+				marginLeft: '200mm'
 			},
-			expected: ['height: 200em; width: 200cm; margin-left: 200mm;'],
-		},
+			expected: ['height: 200em; width: 200cm; margin-left: 200mm;']
+		}
 	];
 
 	if (typeof global !== 'undefined' && !global.usingJSDOM) {
@@ -141,17 +141,17 @@ describe('CSS style properties', () => {
 			preDefined.push({
 				name: 'support webkit transform',
 				value: {
-					webkitTransform: 'rotate(245deg)',
+					webkitTransform: 'rotate(245deg)'
 				},
-				expected: ['-webkit-transform: rotate(245deg);'],
+				expected: ['-webkit-transform: rotate(245deg);']
 			});
 		} else {
 			preDefined.push({
 				name: 'support css3 transform',
 				value: {
-					transform: 'rotate(245deg)',
+					transform: 'rotate(245deg)'
 				},
-				expected: ['transform: rotate(245deg);'],
+				expected: ['transform: rotate(245deg);']
 			});
 		}
 	}
@@ -162,9 +162,9 @@ describe('CSS style properties', () => {
 				description: 'should ' + arg.name + ' on root node',
 				template: () =>
 					createElement('div', {
-						style: arg.value,
-					}),
-			},
+						style: arg.value
+					})
+			}
 		].forEach(test => {
 			it(test.description, () => {
 				render(test.template(), container);
@@ -186,10 +186,10 @@ describe('CSS style properties', () => {
 						'div',
 						null,
 						createElement('div', {
-							style: arg.value,
-						}),
-					),
-			},
+							style: arg.value
+						})
+					)
+			}
 		].forEach(test => {
 			it(test.description, () => {
 				render(test.template(), container);
@@ -216,9 +216,9 @@ describe('CSS style properties', () => {
 				description: 'should dynamically ' + arg.name + ' on root node',
 				template: value =>
 					createElement('div', {
-						style: value,
-					}),
-			},
+						style: value
+					})
+			}
 		].forEach(test => {
 			it(test.description, () => {
 				render(test.template(arg.value), container);
@@ -277,10 +277,10 @@ describe('CSS style properties', () => {
 						'div',
 						null,
 						createElement('div', {
-							style: value,
-						}),
-					),
-			},
+							style: value
+						})
+					)
+			}
 		].forEach(test => {
 			it(test.description, () => {
 				render(test.template(arg.value), container);
@@ -333,14 +333,14 @@ describe('CSS style properties', () => {
 					createElement(
 						'div',
 						{
-							style: arg.value,
+							style: arg.value
 						},
 						createElement('div', {
 							tag: 'div',
-							style: value,
-						}),
-					),
-			},
+							style: value
+						})
+					)
+			}
 		].forEach(test => {
 			it(test.description, () => {
 				render(test.template({}), container);
@@ -468,12 +468,12 @@ describe('CSS style properties', () => {
 				style: {
 					width: '200px',
 					height: '200px',
-					backgroundColor: 'red',
-				},
+					backgroundColor: 'red'
+				}
 			});
 		render(template(), container);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<div style="width: 200px; height: 200px; background-color: red;"></div>'),
+			innerHTML('<div style="width: 200px; height: 200px; background-color: red;"></div>')
 		);
 	});
 
@@ -483,10 +483,10 @@ describe('CSS style properties', () => {
 				style: {
 					width: 200,
 					float: 'left',
-					backgroundColor: 'blue',
-				},
+					backgroundColor: 'blue'
+				}
 			}),
-			container,
+			container
 		);
 		// Order of attributes vary between different browser versions.
 		// Check each property by hand
@@ -502,10 +502,10 @@ describe('CSS style properties', () => {
 				style: {
 					float: 'right',
 					color: 'green',
-					backgroundColor: 'red',
-				},
+					backgroundColor: 'red'
+				}
 			}),
-			container,
+			container
 		);
 
 		style = container.firstChild.style;
@@ -517,9 +517,9 @@ describe('CSS style properties', () => {
 
 		render(
 			createElement('div', {
-				style: 'float: left;',
+				style: 'float: left;'
 			}),
-			container,
+			container
 		);
 
 		expect(container.innerHTML).to.equal(innerHTML('<div style="float: left;"></div>'));

@@ -230,5 +230,5 @@ export default {
 	scryRenderedDOMElementsWithTag,
 	scryRenderedVNodesWithType,
 	scryVNodesWithType,
-	vNodeToSnapshot,
+	vNodeToSnapshot
 };

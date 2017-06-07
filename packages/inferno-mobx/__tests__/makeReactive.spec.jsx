@@ -8,7 +8,7 @@ describe('MobX Observer', () => {
 	let container;
 	const store = {
 		todos: observable(['one', 'two']),
-		extra: observable({ test: 'observable!' }),
+		extra: observable({ test: 'observable!' })
 	};
 
 	beforeEach(function() {
@@ -39,7 +39,7 @@ describe('MobX Observer', () => {
 				const todos = store.todos;
 				return <div>{todos.map(todo => <TodoItem todo={todo} />)}</div>;
 			}
-		},
+		}
 	);
 
 	it('should render a component', () => {
@@ -63,14 +63,14 @@ describe('MobX Observer', () => {
 				render({ extra }) {
 					return <div>{store.todos.map(title => <li>{title}{extra.test}</li>)}</div>;
 				}
-			},
+			}
 		);
 
 		render(<FlatList extra={store.extra} />, container);
 		store.extra = toJS({ test: 'XXX' });
 		render(<FlatList extra={store.extra} />, container);
 		extendObservable(store, {
-			test: 'new entry',
+			test: 'new entry'
 		});
 		render(<FlatList extra={store.extra} />, container);
 		expect(container.innerHTML).to.equal(innerHTML('<div><li>oneXXX</li><li>twoXXX</li><li>threeXXX</li></div>'));
@@ -105,7 +105,7 @@ describe('MobX Observer', () => {
 				render() {
 					return <div>{this.props.number}</div>;
 				}
-			},
+			}
 		);
 
 		render(<Foobar number={1} />, container);

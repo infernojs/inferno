@@ -23,43 +23,43 @@ describe('Columns like tests - (JSX)', () => {
 				{
 					name: 'add one column -' + suffix,
 					initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
-					update: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4)), row(3, item(5, 5))],
+					update: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4)), row(3, item(5, 5))]
 				},
 				{
 					name: 'add one item -' + suffix,
 					initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
-					update: [row(1, item(1, 1), item(2, 2), item(5, 5)), row(2, item(3, 3), item(4, 4))],
+					update: [row(1, item(1, 1), item(2, 2), item(5, 5)), row(2, item(3, 3), item(4, 4))]
 				},
 				{
 					name: 'add one column and item -' + suffix,
 					initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
-					update: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4), item(6, 6)), row(3, item(5, 5))],
+					update: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4), item(6, 6)), row(3, item(5, 5))]
 				},
 				{
 					name: 'swap all items -' + suffix,
 					initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
-					update: [row(1, item(2, 2), item(1, 1)), row(2, item(4, 4), item(3, 3))],
+					update: [row(1, item(2, 2), item(1, 1)), row(2, item(4, 4), item(3, 3))]
 				},
 				{
 					name: 'remove first item -' + suffix,
 					initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
-					update: [row(1, item(2, 2)), row(2, item(4, 4))],
+					update: [row(1, item(2, 2)), row(2, item(4, 4))]
 				},
 				{
 					name: 'remove last item -' + suffix,
 					initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
-					update: [row(1, item(1, 1)), row(2, item(3, 3))],
+					update: [row(1, item(1, 1)), row(2, item(3, 3))]
 				},
 				{
 					name: 'remove all items-' + suffix,
 					initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
-					update: [row(1), row(2)],
+					update: [row(1), row(2)]
 				},
 				{
 					name: 'remove all columns-' + suffix,
 					initial: [row(1, item(1, 1), item(2, 2)), row(2, item(3, 3), item(4, 4))],
-					update: [],
-				},
+					update: []
+				}
 			];
 		}
 
@@ -93,7 +93,7 @@ describe('Columns like tests - (JSX)', () => {
 
 				expect(columnChildNodes.length).to.equal(
 					columns[i].items.length + 1,
-					`Column data: ${JSON.stringify(columns[i].items)} Rendered: ${columnRoot.innerHTML}`,
+					`Column data: ${JSON.stringify(columns[i].items)} Rendered: ${columnRoot.innerHTML}`
 				);
 				expect(columnRoot.firstChild.innerHTML).to.equal('column', 'Column first child check');
 
@@ -271,8 +271,8 @@ describe('Columns like tests - (JSX)', () => {
 					expect(mountedItemSpy.callCount).to.equal(
 						itemsToBeAdded.length,
 						`itemsToBeAdded ${JSON.stringify(
-							itemsToBeAdded,
-						)} componentWillMount called: ${mountedItemSpy.callCount} times.`,
+							itemsToBeAdded
+						)} componentWillMount called: ${mountedItemSpy.callCount} times.`
 					); // Initial render - mount all items once
 					expect(updateItemSpy.callCount).to.equal(itemsToUpdate.length, 'item update callback count'); // Initial render none to update
 					expect(unmountItemSpy.callCount).to.equal(itemsToRemove.length, 'item unmount callback count'); // Initial render none unmounted
@@ -429,8 +429,8 @@ describe('Columns like tests - (JSX)', () => {
 					expect(mountedItemSpy.callCount).to.equal(
 						itemsToBeAdded.length,
 						`itemsToBeAdded ${JSON.stringify(
-							itemsToBeAdded,
-						)} componentWillMount called: ${mountedItemSpy.callCount} times.`,
+							itemsToBeAdded
+						)} componentWillMount called: ${mountedItemSpy.callCount} times.`
 					); // Initial render - mount all items once
 					expect(updateItemSpy.callCount).to.equal(itemsToUpdate.length, 'item update callback count'); // Initial render none to update
 					expect(unmountItemSpy.callCount).to.equal(itemsToRemove.length, 'item unmount callback count'); // Initial render none unmounted

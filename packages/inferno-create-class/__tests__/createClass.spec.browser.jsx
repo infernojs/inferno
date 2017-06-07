@@ -27,13 +27,13 @@ describe('Components createClass (JSX)', () => {
 							},
 							doSomething() {
 								this.anotherState = 2;
-							},
-						},
+							}
+						}
 					],
 					render() {
 						this.doSomething();
 						return <div />;
-					},
+					}
 				});
 
 				let a;
@@ -43,7 +43,7 @@ describe('Components createClass (JSX)', () => {
 							a = i;
 						}}
 					/>,
-					container,
+					container
 				);
 
 				expect(a.someState).to.eql(1);
@@ -56,12 +56,12 @@ describe('Components createClass (JSX)', () => {
 						{
 							renderSomething() {
 								return <div>{this.props.bar}</div>;
-							},
-						},
+							}
+						}
 					],
 					render() {
 						return <div>{this.renderSomething()}</div>;
-					},
+					}
 				});
 
 				render(<Foo bar="test" />, container);
@@ -74,13 +74,13 @@ describe('Components createClass (JSX)', () => {
 						{
 							componentDidMount() {
 								this.someState = 1;
-							},
-						},
+							}
+						}
 					],
 					componentDidMount() {},
 					render() {
 						return <div />;
-					},
+					}
 				});
 
 				let a;
@@ -90,7 +90,7 @@ describe('Components createClass (JSX)', () => {
 							a = i;
 						}}
 					/>,
-					container,
+					container
 				);
 
 				expect(a.someState).to.eql(1);
@@ -103,11 +103,11 @@ describe('Components createClass (JSX)', () => {
 					mixins: [{ getDefaultProps: () => ({ a: true }) }],
 					render() {
 						return <div />;
-					},
+					}
 				});
 
 				expect(Foo.defaultProps).to.eql({
-					a: true,
+					a: true
 				});
 			});
 
@@ -119,13 +119,13 @@ describe('Components createClass (JSX)', () => {
 					},
 					render() {
 						return <div />;
-					},
+					}
 				});
 
 				expect(Foo.defaultProps).to.eql({
 					a: true,
 					b: true,
-					c: true,
+					c: true
 				});
 			});
 
@@ -138,8 +138,8 @@ describe('Components createClass (JSX)', () => {
 						},
 						render() {
 							return <div />;
-						},
-					}),
+						}
+					})
 				).to.throw(Error);
 			});
 		});
@@ -153,7 +153,7 @@ describe('Components createClass (JSX)', () => {
 					},
 					render() {
 						return <div />;
-					},
+					}
 				});
 
 				let a;
@@ -163,13 +163,13 @@ describe('Components createClass (JSX)', () => {
 							a = i;
 						}}
 					/>,
-					container,
+					container
 				);
 
 				expect(a.state).to.eql({
 					a: true,
 					b: true,
-					c: true,
+					c: true
 				});
 			});
 
@@ -181,7 +181,7 @@ describe('Components createClass (JSX)', () => {
 					},
 					render() {
 						return <div />;
-					},
+					}
 				});
 
 				expect(() => {
@@ -196,13 +196,13 @@ describe('Components createClass (JSX)', () => {
 			const App = createClass({
 				getDefaultProps() {
 					return {
-						wrapContext: false,
+						wrapContext: false
 					};
 				},
 
 				getChildContext() {
 					return {
-						foo: 'bar baz',
+						foo: 'bar baz'
 					};
 				},
 
@@ -230,18 +230,18 @@ describe('Components createClass (JSX)', () => {
 							{children}
 						</div>
 					);
-				},
+				}
 			});
 
 			const Page = createClass({
 				getInitialState() {
 					return {
-						foo: this.context.foo,
+						foo: this.context.foo
 					};
 				},
 				render() {
 					return <div>{this.props.greeting} {this.state.foo}</div>;
-				},
+				}
 			});
 
 			render(
@@ -249,7 +249,7 @@ describe('Components createClass (JSX)', () => {
 					<Page greeting="Hello" />
 					<Page greeting="Hai" />
 				</App>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql(innerHTML('<div><div>Hello bar baz</div><div>Hai bar baz</div></div>'));

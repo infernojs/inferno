@@ -69,9 +69,9 @@ describe('MobX inject()', () => {
 			return createElement(
 				Provider,
 				{
-					testStore: 'works!',
+					testStore: 'works!'
 				},
-				createElement(inject('testStore')(TestComponent)),
+				createElement(inject('testStore')(TestComponent))
 			);
 		}
 
@@ -85,9 +85,9 @@ describe('MobX inject()', () => {
 			return createElement(
 				Provider,
 				{
-					testStore: 'hello',
+					testStore: 'hello'
 				},
-				createElement(inject('testStore')(TestComponent), { testStore: 'works!' }),
+				createElement(inject('testStore')(TestComponent), { testStore: 'works!' })
 			);
 		}
 
@@ -99,7 +99,7 @@ describe('MobX inject()', () => {
 	it('should create class with injected stores', () => {
 		class TestClass extends Component {
 			static defaultProps = {
-				world: 'world',
+				world: 'world'
 			};
 
 			render({ hello, world }) {
@@ -111,9 +111,9 @@ describe('MobX inject()', () => {
 			return createElement(
 				Provider,
 				{
-					hello: 'hello',
+					hello: 'hello'
 				},
-				createElement(inject('hello')(TestClass)),
+				createElement(inject('hello')(TestClass))
 			);
 		}
 

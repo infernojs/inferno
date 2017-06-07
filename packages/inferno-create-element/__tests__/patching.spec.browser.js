@@ -20,7 +20,7 @@ describe('patching keyed lists (non-jsx)', () => {
 		for (let i = 0; i < count; i++) {
 			dataModel.push({
 				key: i,
-				children: null,
+				children: null
 			});
 		}
 		return dataModel;

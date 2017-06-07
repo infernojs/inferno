@@ -28,7 +28,7 @@ describe('Component lifecycle (JSX)', () => {
 					super(props);
 
 					this.state = {
-						foo: true,
+						foo: true
 					};
 
 					this.updateme = this.updateme.bind(this);
@@ -37,7 +37,7 @@ describe('Component lifecycle (JSX)', () => {
 
 				updateme() {
 					this.setStateSync({
-						foo: !this.state.foo,
+						foo: !this.state.foo
 					});
 				}
 
@@ -107,7 +107,7 @@ describe('Component lifecycle (JSX)', () => {
 
 			updater();
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><div><div><div>Terve</div></div></div><button>btn</button></div>'),
+				innerHTML('<div><div><div><div>Terve</div></div></div><button>btn</button></div>')
 			);
 			notCalled(Aspy);
 			notCalled(Bspy);
@@ -133,7 +133,7 @@ describe('Component lifecycle (JSX)', () => {
 					super(props);
 
 					this.state = {
-						foo: true,
+						foo: true
 					};
 
 					this.updateme = this.updateme.bind(this);
@@ -142,7 +142,7 @@ describe('Component lifecycle (JSX)', () => {
 
 				updateme() {
 					this.setStateSync({
-						foo: !this.state.foo,
+						foo: !this.state.foo
 					});
 				}
 
@@ -311,7 +311,7 @@ describe('Component lifecycle (JSX)', () => {
 					super(props);
 
 					this.state = {
-						text: 'C0',
+						text: 'C0'
 					};
 
 					this.updateMe = this.updateMe.bind(this);
@@ -322,7 +322,7 @@ describe('Component lifecycle (JSX)', () => {
 
 				updateMe() {
 					this.setState({
-						text: 'C1',
+						text: 'C1'
 					});
 				}
 
@@ -396,7 +396,7 @@ describe('Component lifecycle (JSX)', () => {
 
 		it('"onComponentWillMount" hook should fire', () => {
 			const spyObj = {
-				fn: () => {},
+				fn: () => {}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillMount={spyObj.fn} />, _container);
@@ -406,7 +406,7 @@ describe('Component lifecycle (JSX)', () => {
 
 		it('"onComponentDidMount" hook should fire, args DOM', () => {
 			const spyObj = {
-				fn: () => {},
+				fn: () => {}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentDidMount={spyObj.fn} />, _container);
@@ -417,7 +417,7 @@ describe('Component lifecycle (JSX)', () => {
 
 		it('"onComponentWillUnmount" hook should fire', () => {
 			const spyObj = {
-				fn: () => {},
+				fn: () => {}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillUnmount={spyObj.fn} />, _container);
@@ -430,7 +430,7 @@ describe('Component lifecycle (JSX)', () => {
 
 		it('"onComponentWillUpdate" hook should fire', () => {
 			const spyObj = {
-				fn: () => {},
+				fn: () => {}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentWillUpdate={spyObj.fn} />, _container);
@@ -439,7 +439,7 @@ describe('Component lifecycle (JSX)', () => {
 
 		it('"onComponentDidUpdate" hook should fire', () => {
 			const spyObj = {
-				fn: () => {},
+				fn: () => {}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			render(<StatelessComponent onComponentDidUpdate={spyObj.fn} />, _container);
@@ -463,7 +463,7 @@ describe('Component lifecycle (JSX)', () => {
 						return true;
 					}}
 				/>,
-				_container,
+				_container
 			);
 			expect(onComponentShouldUpdateCount).to.equal(0, 'should have called shouldUpdate none'); // Update 1
 			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
@@ -475,7 +475,7 @@ describe('Component lifecycle (JSX)', () => {
 						return true;
 					}}
 				/>,
-				_container,
+				_container
 			);
 			expect(onComponentShouldUpdateCount).to.equal(1, 'should have called shouldUpdate once'); // Update 2
 			expect(renderCount).to.equal(2, 'should have called "render" twice'); // Rendered 2 time
@@ -496,7 +496,7 @@ describe('Component lifecycle (JSX)', () => {
 						return false;
 					}}
 				/>,
-				_container,
+				_container
 			);
 			expect(onComponentShouldUpdateCount).to.equal(0, 'should have called shouldUpdate none'); // Update 1
 			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
@@ -508,7 +508,7 @@ describe('Component lifecycle (JSX)', () => {
 						return false;
 					}}
 				/>,
-				_container,
+				_container
 			);
 			expect(onComponentShouldUpdateCount).to.equal(1, 'should have called shouldUpdate once'); // Update 2
 			expect(renderCount).to.equal(1, 'should have called "render" once'); // Rendered 1 time
@@ -519,7 +519,7 @@ describe('Component lifecycle (JSX)', () => {
 		const fakeObj = {
 			outerCallback() {},
 			innerCallback() {},
-			innerSecondCallback() {},
+			innerSecondCallback() {}
 		};
 
 		const calledOnce = assert.calledOnce;
@@ -696,7 +696,7 @@ describe('Component lifecycle (JSX)', () => {
 		const fakeObj = {
 			outerCallback() {},
 			innerCallback() {},
-			innerSecondCallback() {},
+			innerSecondCallback() {}
 		};
 
 		const calledOnce = assert.calledOnce;
@@ -809,7 +809,7 @@ describe('Component lifecycle (JSX)', () => {
 		const fakeObj = {
 			outerCallback() {},
 			innerCallback() {},
-			innerSecondCallback() {},
+			innerSecondCallback() {}
 		};
 
 		const calledOnce = assert.calledOnce;
@@ -956,7 +956,7 @@ describe('Component lifecycle (JSX)', () => {
 		const fakeObj = {
 			outerCallback() {},
 			innerCallback() {},
-			innerSecondCallback() {},
+			innerSecondCallback() {}
 		};
 
 		const calledOnce = assert.calledOnce;
@@ -1154,19 +1154,19 @@ describe('Component lifecycle (JSX)', () => {
 					super(props);
 
 					this.state = {
-						foobar: null,
+						foobar: null
 					};
 				}
 
 				getChildContext() {
 					return {
-						foobar: this.state.foobar,
+						foobar: this.state.foobar
 					};
 				}
 
 				componentWillMount() {
 					this.setState({
-						foobar: 'hey',
+						foobar: 'hey'
 					});
 				}
 
@@ -1219,7 +1219,7 @@ describe('Component lifecycle (JSX)', () => {
 			class B extends Component {
 				componentWillMount() {
 					this.setState({
-						foo: 'bar',
+						foo: 'bar'
 					});
 				}
 				render() {
@@ -1239,7 +1239,7 @@ describe('Component lifecycle (JSX)', () => {
 			class Child extends Component {
 				componentWillMount() {
 					this.setState({
-						foo: '1',
+						foo: '1'
 					});
 				}
 				render() {

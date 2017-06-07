@@ -11,7 +11,7 @@ const cmdArgs = [{ cmd: 'npm', args: ['install'] }, { cmd: 'npm', args: ['run', 
 function buildFixture(cmdArg, cwdPath) {
 	const opts = {
 		cwd: cwdPath,
-		stdio: 'inherit',
+		stdio: 'inherit'
 	};
 	const result = child_process.spawnSync(cmdArg.cmd, cmdArg.args, opts);
 	if (result.status !== 0 || result.error) {

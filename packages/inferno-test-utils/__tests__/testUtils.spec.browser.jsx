@@ -26,7 +26,7 @@ import {
 	scryRenderedDOMElementsWithClass,
 	scryRenderedDOMElementsWithTag,
 	scryRenderedVNodesWithType,
-	scryVNodesWithType,
+	scryVNodesWithType
 } from '../dist-es';
 
 const VNodeKeys = ['children', 'className', 'dom', 'flags', 'key', 'ref', 'props', 'type'];
@@ -44,13 +44,13 @@ const AnotherFunctionalComponent = function(props) {
 const CreateClassComponent = createClass({
 	render() {
 		return createElement('div', this.props);
-	},
+	}
 });
 
 const AnotherCreateClassComponent = createClass({
 	render() {
 		return createElement('div', this.props);
-	},
+	}
 });
 
 class ExtendClassComponent extends Component {
@@ -268,7 +268,7 @@ describe('Test Utils', () => {
 
 		it('should return false for rendered Class Components of incorrect type', () => {
 			expect(
-				isRenderedClassComponentOfType(render(createClassVNode, createDOMElement('div')), AnotherCreateClassComponent),
+				isRenderedClassComponentOfType(render(createClassVNode, createDOMElement('div')), AnotherCreateClassComponent)
 			).to.be.false;
 			expect(isRenderedClassComponentOfType(render(createClassVNode, createDOMElement('div')), ExtendClassComponent)).to
 				.be.false;
@@ -277,7 +277,7 @@ describe('Test Utils', () => {
 			expect(isRenderedClassComponentOfType(render(createClassVNode, createDOMElement('div')), 'div')).to.be.false;
 
 			expect(
-				isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), AnotherExtendClassComponent),
+				isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), AnotherExtendClassComponent)
 			).to.be.false;
 			expect(isRenderedClassComponentOfType(render(extendClassVNode, createDOMElement('div')), CreateClassComponent)).to
 				.be.false;
@@ -300,7 +300,7 @@ describe('Test Utils', () => {
 		const tree = renderIntoDocument(
 			<section className="outer">
 				<FunctionalComponent />
-			</section>,
+			</section>
 		);
 
 		it('should throw an error when not passed a rendered class component', () => {
@@ -420,7 +420,7 @@ describe('Test Utils', () => {
 				<div className="level-2 two">
 					<span className="level-3 two" />
 				</div>
-			</div>,
+			</div>
 		);
 
 		it('should return an array of matched DOM elements', () => {
@@ -471,7 +471,7 @@ describe('Test Utils', () => {
 					<p>Paragraph 2</p>
 					<p>Paragraph 3</p>
 				</section>
-			</div>,
+			</div>
 		);
 
 		it('should return an array of matched DOM elements', () => {
@@ -499,7 +499,7 @@ describe('Test Utils', () => {
 				<CreateClassComponent />
 				<ExtendClassComponent />
 				<ExtendClassComponent />
-			</div>,
+			</div>
 		);
 
 		it('should return an array of matched VNodes', () => {
@@ -563,7 +563,7 @@ describe('Test Utils', () => {
 				<div className="level-2 two">
 					<span className="level-3 two" />
 				</div>
-			</div>,
+			</div>
 		);
 
 		it('should throw an error when more than one result is found #1', () => {
@@ -610,7 +610,7 @@ describe('Test Utils', () => {
 					<p>Paragraph 3</p>
 					<a>test</a>
 				</section>
-			</div>,
+			</div>
 		);
 
 		it('should throw an error when more than one result is found #2', () => {
@@ -643,7 +643,7 @@ describe('Test Utils', () => {
 				<FunctionalComponent />
 				<CreateClassComponent />
 				<ExtendClassComponent />
-			</div>,
+			</div>
 		);
 
 		it('should throw an error when more than one result is found #3', () => {

@@ -17,9 +17,9 @@ function spanTagWithText(text) {
 	return createElement(
 		'span',
 		{
-			className: 'TableCell',
+			className: 'TableCell'
 		},
-		text,
+		text
 	);
 }
 
@@ -324,9 +324,9 @@ describe('Non Keyed nodes', () => {
 					spanTagWithText('d'),
 					spanTagWithText('c'),
 					spanTagWithText('v'),
-					spanTagWithText('w'),
+					spanTagWithText('w')
 				]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('xyabdcvw');
 			expect(container.firstChild.childNodes.length).to.equal(8);
@@ -339,9 +339,9 @@ describe('Non Keyed nodes', () => {
 					spanTagWithText('f'),
 					spanTagWithText('g'),
 					spanTagWithText('w'),
-					spanTagWithText('v'),
+					spanTagWithText('v')
 				]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('yxad2fgwv');
 			expect(container.firstChild.childNodes.length).to.equal(8);
@@ -354,9 +354,9 @@ describe('Non Keyed nodes', () => {
 					spanTagWithText('d'),
 					spanTagWithText('c'),
 					spanTagWithText('v'),
-					spanTagWithText('w'),
+					spanTagWithText('w')
 				]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('xyabdcvw');
 			expect(container.firstChild.childNodes.length).to.equal(8);
@@ -370,9 +370,9 @@ describe('Non Keyed nodes', () => {
 					spanTagWithText('f'),
 					spanTagWithText('g'),
 					spanTagWithText('w'),
-					spanTagWithText('v'),
+					spanTagWithText('v')
 				]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('yxad2fgwv');
 			expect(container.firstChild.childNodes.length).to.equal(8);
@@ -381,7 +381,7 @@ describe('Non Keyed nodes', () => {
 		it('should do a advanced shuffle', () => {
 			render(
 				template([spanTagWithText('a'), spanTagWithText('b'), spanTagWithText('c'), spanTagWithText('d')]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('abcd');
 			expect(container.firstChild.childNodes.length).to.equal(4);
@@ -392,15 +392,15 @@ describe('Non Keyed nodes', () => {
 					spanTagWithText('f'),
 					spanTagWithText('g'),
 					spanTagWithText('c'),
-					spanTagWithText('a'),
+					spanTagWithText('a')
 				]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('ebfgca');
 			expect(container.firstChild.childNodes.length).to.equal(6);
 			render(
 				template([spanTagWithText('a'), spanTagWithText('6'), null, spanTagWithText('c'), spanTagWithText('d')]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('a6cd');
 			expect(container.firstChild.childNodes.length).to.equal(4);
@@ -411,15 +411,15 @@ describe('Non Keyed nodes', () => {
 					spanTagWithText('f'),
 					spanTagWithText('g'),
 					spanTagWithText('c'),
-					spanTagWithText('a'),
+					spanTagWithText('a')
 				]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('ebfgca');
 			expect(container.firstChild.childNodes.length).to.equal(6);
 			render(
 				template([spanTagWithText('a'), spanTagWithText('b'), undefined, spanTagWithText('c'), spanTagWithText('d')]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('abcd');
 			expect(container.firstChild.childNodes.length).to.equal(4);
@@ -430,9 +430,9 @@ describe('Non Keyed nodes', () => {
 					spanTagWithText('f'),
 					spanTagWithText('g'),
 					spanTagWithText('c'),
-					spanTagWithText('a'),
+					spanTagWithText('a')
 				]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('ebfgca');
 			expect(container.firstChild.childNodes.length).to.equal(6);
@@ -448,7 +448,7 @@ describe('Non Keyed nodes', () => {
 			expect(container.firstChild.childNodes.length).to.equal(3);
 			render(
 				template([spanTagWithText('#2'), spanTagWithText('#1'), null, null, null, spanTagWithText('#0')]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('#2#1#0');
 			expect(container.firstChild.childNodes.length).to.equal(3);
@@ -460,11 +460,11 @@ describe('Non Keyed nodes', () => {
 		it('should add to end, delete from center & reverse #2', () => {
 			render(
 				template([spanTagWithText('a'), spanTagWithText('b'), spanTagWithText('c'), spanTagWithText('d')]),
-				container,
+				container
 			);
 			render(
 				template([spanTagWithText('e'), spanTagWithText('d'), spanTagWithText('c'), spanTagWithText('a')]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('edca');
 			expect(container.firstChild.childNodes.length).to.equal(4);
@@ -476,11 +476,11 @@ describe('Non Keyed nodes', () => {
 			expect(container.firstChild.childNodes.length).to.equal(3);
 			render(
 				template([spanTagWithText('a'), spanTagWithText('b'), spanTagWithText('c'), spanTagWithText('d')]),
-				container,
+				container
 			);
 			render(
 				template([spanTagWithText('e'), spanTagWithText('d'), spanTagWithText('c'), spanTagWithText('a')]),
-				container,
+				container
 			);
 			expect(container.textContent).to.equal('edca');
 			expect(container.firstChild.childNodes.length).to.equal(4);

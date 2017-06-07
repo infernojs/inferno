@@ -20,9 +20,9 @@ describe('Functional methods (JSX)', () => {
 			Action.case(
 				{
 					Increment: _ => model + 1,
-					Decrement: _ => model - 1,
+					Decrement: _ => model - 1
 				},
-				action,
+				action
 			);
 
 		const actions$ = hold(1, sync());
@@ -38,7 +38,7 @@ describe('Functional methods (JSX)', () => {
 			fontSize: '48px',
 			fontFamily: 'monospace',
 			width: '100%',
-			textAlign: 'center',
+			textAlign: 'center'
 		};
 
 		// noinspection TypeScriptUnresolvedFunction
@@ -47,7 +47,7 @@ describe('Functional methods (JSX)', () => {
 				<button id="decrement" onClick={emitDecrement}>-</button>
 				<div style={countStyle}>{model}</div>
 				<button id="increment" onClick={emitIncrement}>+</button>
-			</div>,
+			</div>
 		);
 
 		// FRP

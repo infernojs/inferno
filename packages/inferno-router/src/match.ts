@@ -9,7 +9,7 @@ import {
 	isEmpty,
 	mapSearchParams,
 	pathRankSort,
-	toPartialURL,
+	toPartialURL
 } from './utils';
 
 const cache: Map<string, IMatchRegex> = new Map();
@@ -61,7 +61,7 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = fal
 					if (matchChild.redirect) {
 						return {
 							location,
-							redirect: matchChild.redirect,
+							redirect: matchChild.redirect
 						};
 					}
 					children = matchChild.matched;
@@ -76,13 +76,13 @@ function matchRoutes(_routes, currentURL = '/', parentPath = '/', redirect = fal
 
 			const matched = Inferno.cloneVNode(route, {
 				children,
-				params: combineFrom(params, matchBase.params),
+				params: combineFrom(params, matchBase.params)
 			});
 
 			return {
 				location,
 				matched,
-				redirect,
+				redirect
 			};
 		}
 	}
@@ -125,6 +125,6 @@ export function matchPath(end: boolean, routePath: string, pathToMatch: string):
 
 	return {
 		params,
-		path: path === '' ? '/' : path,
+		path: path === '' ? '/' : path
 	};
 }

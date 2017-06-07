@@ -22,7 +22,7 @@ describe('Error recovery', () => {
 				super(props, context);
 
 				this.state = {
-					value: 1,
+					value: 1
 				};
 			}
 
@@ -32,7 +32,7 @@ describe('Error recovery', () => {
 				}
 
 				this.setState({
-					value: 2,
+					value: 2
 				});
 			}
 
@@ -57,7 +57,7 @@ describe('Error recovery', () => {
 				super(props, context);
 
 				this.state = {
-					value: 1,
+					value: 1
 				};
 			}
 

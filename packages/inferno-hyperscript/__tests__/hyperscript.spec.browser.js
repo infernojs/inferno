@@ -45,9 +45,9 @@ describe('HyperScript (non-JSX)', () => {
 		const ComponentHooks = () =>
 			h(Component, {
 				hooks: {
-					onComponentDidUnmount() {},
+					onComponentDidUnmount() {}
 				},
-				children: 'Hello world!',
+				children: 'Hello world!'
 			});
 
 		render(h(ComponentHooks), container);
@@ -71,12 +71,12 @@ describe('HyperScript (non-JSX)', () => {
 				key: 'myKey',
 				ref: c => c,
 				className: 'myClass',
-				children: 'Hello world!',
+				children: 'Hello world!'
 			});
 
 		render(h(ComponentHooks), container);
 		expect(innerHTML(container.innerHTML)).to.equal(
-			innerHTML('<div class="test myClass" id="myId">Hello world!</div>'),
+			innerHTML('<div class="test myClass" id="myId">Hello world!</div>')
 		);
 	});
 
@@ -97,7 +97,7 @@ describe('HyperScript (non-JSX)', () => {
 			h('select', { id: 'select' }, [h('option', { value: 1 }, '1'), h('option', { value: 2 }, '2')]);
 		render(h(ComponentHooks), container);
 		expect(innerHTML(container.innerHTML)).to.equal(
-			innerHTML('<select id="select"><option value="1">1</option><option value="2">2</option></select>'),
+			innerHTML('<select id="select"><option value="1">1</option><option value="2">2</option></select>')
 		);
 	});
 
@@ -145,9 +145,9 @@ describe('HyperScript (non-JSX)', () => {
 				h(Test1, { className: 'test1prop' }),
 				h(Test2, { className: 'test2prop' }),
 				h(Test3),
-				h(Test4, { className: 'test4prop' }),
+				h(Test4, { className: 'test4prop' })
 			]),
-			container,
+			container
 		);
 
 		const children = container.firstChild.childNodes;

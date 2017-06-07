@@ -84,11 +84,11 @@ describe('Normalization process', () => {
 					{[<A i={'A'} key={'A'} />, <A i={'B'} key={'B'} />]}
 					<A i={2} />
 				</div>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql(
-				'<div><div>0 (0)</div><div>A (1)</div><div>B (2)</div><div>1 (3)</div><div>A (4)</div><div>B (5)</div><div>2 (6)</div></div>',
+				'<div><div>0 (0)</div><div>A (1)</div><div>B (2)</div><div>1 (3)</div><div>A (4)</div><div>B (5)</div><div>2 (6)</div></div>'
 			);
 
 			render(
@@ -99,11 +99,11 @@ describe('Normalization process', () => {
 					{[<A i={'B'} key={'B'} />, <A i={'A'} key={'A'} />]}
 					<A i={2} />
 				</div>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.eql(
-				'<div><div>0 (0)</div><div>B (2)</div><div>A (1)</div><div>1 (3)</div><div>B (5)</div><div>A (4)</div><div>2 (6)</div></div>',
+				'<div><div>0 (0)</div><div>B (2)</div><div>A (1)</div><div>1 (3)</div><div>B (5)</div><div>A (4)</div><div>2 (6)</div></div>'
 			);
 		});
 
@@ -155,7 +155,7 @@ describe('Normalization process', () => {
 					<li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
 					<li>Aliquam tincidunt mauris eu risus.</li>
 					<li>Vestibulum auctor dapibus neque.</li>
-				</ol>,
+				</ol>
 			];
 
 			staticScenarios.forEach((node, index) => {
@@ -200,7 +200,7 @@ describe('Normalization process', () => {
 							<td>c4</td>
 						</tr>
 					</tbody>
-				</table>,
+				</table>
 			];
 
 			staticScenarios.forEach((node, index) => {
@@ -271,10 +271,10 @@ describe('Normalization process', () => {
 							<div>{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}</div>,
 							makeArr(['a', <div>{makeArr(['a', 'b', 'c'])}</div>, 'c']),
 							'b',
-							'c',
+							'c'
 						])}
 					</div>
-				</div>,
+				</div>
 			];
 
 			dynamicScenarios.forEach((node, index) => {
@@ -347,10 +347,10 @@ describe('Normalization process', () => {
 							<div>{makeArr(['a', makeArr(['a', 'b', 'c']), 'b', 'c'])}</div>,
 							makeArr(['a', <div>{makeArr(['a', 'b', 'c'])}</div>, 'c']),
 							'b',
-							'c',
+							'c'
 						])}
 					</div>
-				</div>,
+				</div>
 			];
 
 			dynamicScenarios.forEach((node, index) => {

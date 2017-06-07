@@ -8,7 +8,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	LifecycleClass,
-	throwError,
+	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
@@ -22,7 +22,7 @@ import {
 	createFunctionalComponentInput,
 	documentCreateElement,
 	EMPTY_OBJ,
-	setTextContent,
+	setTextContent
 } from './utils';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 
@@ -31,7 +31,7 @@ export function mount(
 	parentDom: Element | null,
 	lifecycle: LifecycleClass,
 	context: Object,
-	isSVG: boolean,
+	isSVG: boolean
 ) {
 	const flags = vNode.flags;
 
@@ -48,8 +48,8 @@ export function mount(
 			if (typeof vNode === 'object') {
 				throwError(
 					`mount() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
-						vNode,
-					)}".`,
+						vNode
+					)}".`
 				);
 			} else {
 				throwError(`mount() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`);
@@ -85,7 +85,7 @@ export function mountElement(
 	parentDom: Element | null,
 	lifecycle: LifecycleClass,
 	context: Object,
-	isSVG: boolean,
+	isSVG: boolean
 ) {
 	if (options.recyclingEnabled) {
 		const dom = recycleElement(vNode, lifecycle, context, isSVG);
@@ -172,7 +172,7 @@ export function mountComponent(
 	lifecycle: LifecycleClass,
 	context: Object,
 	isSVG: boolean,
-	isClass: boolean,
+	isClass: boolean
 ) {
 	if (options.recyclingEnabled) {
 		const dom = recycleComponent(vNode, lifecycle, context, isSVG);

@@ -143,7 +143,7 @@ describe('FormElements', () => {
 					super(props, context);
 
 					this.state = {
-						a: 0,
+						a: 0
 					};
 
 					this._method = this._method.bind(this);
@@ -156,9 +156,9 @@ describe('FormElements', () => {
 				_method() {
 					this.setState(
 						{
-							a: this.props.value,
+							a: this.props.value
 						},
-						this.test,
+						this.test
 					);
 				}
 
@@ -456,7 +456,7 @@ describe('FormElements', () => {
 					super(props);
 
 					this.state = {
-						value: 'A',
+						value: 'A'
 					};
 
 					updater = e => {
@@ -538,7 +538,7 @@ describe('FormElements', () => {
 						<option value="a">a</option>
 						<option selected={true} value="b">b</option>
 					</select>,
-					container,
+					container
 				);
 
 				expect(container.firstChild.children[0].selected).to.equal(false);
@@ -553,7 +553,7 @@ describe('FormElements', () => {
 							<option selected={true} value="b">b</option>
 						</select>
 					</div>,
-					container,
+					container
 				);
 
 				expect(container.querySelector('select').children[0].selected).to.eql(false);
@@ -567,13 +567,13 @@ describe('FormElements', () => {
 					constructor(props) {
 						super(props);
 						this.state = {
-							orderedConfigs: [{ value: false }, { value: true }, { value: false }],
+							orderedConfigs: [{ value: false }, { value: true }, { value: false }]
 						};
 					}
 
 					handleClick(that, { targetConf, targetIndex }) {
 						const newConfigs = that.state.orderedConfigs.map(
-							(conf, index) => (index === targetIndex ? { value: !targetConf.value } : conf),
+							(conf, index) => (index === targetIndex ? { value: !targetConf.value } : conf)
 						);
 
 						this.setState({ orderedConfigs: newConfigs });
@@ -599,7 +599,7 @@ describe('FormElements', () => {
 									onClick={() => {
 										props.onClick({ targetConf: conf, targetIndex: index });
 									}}
-								/>,
+								/>
 							)}
 						</div>
 					);
@@ -633,7 +633,7 @@ describe('FormElements', () => {
 
 					handleChange(event) {
 						this.setState({
-							error: 'test ' + event.currentTarget.value,
+							error: 'test ' + event.currentTarget.value
 						});
 						this.props.onChange(this.props.name, event.currentTarget.value);
 					}
@@ -654,7 +654,7 @@ describe('FormElements', () => {
 				}
 
 				const obj = {
-					func() {},
+					func() {}
 				};
 
 				const spy = sinon.spy(obj.func);
@@ -744,7 +744,7 @@ describe('FormElements', () => {
 					<label>
 						<input type="checkbox" checked={false} name="test" value="test" /> test
 					</label>,
-					container,
+					container
 				);
 
 				// Verify its not checked

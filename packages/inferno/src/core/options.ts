@@ -26,5 +26,5 @@ export const options: {
 	createVNode: null,
 	findDOMNodeEnabled: false,
 	recyclingEnabled: false,
-	roots: [],
+	roots: []
 };

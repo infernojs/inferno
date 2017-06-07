@@ -100,7 +100,7 @@ describe('linkEvent', () => {
 				elm.dispatchEvent(newEvent);
 			} else {
 				elm.oninput({
-					target: elm,
+					target: elm
 				});
 			}
 		}

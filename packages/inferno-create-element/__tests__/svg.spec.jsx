@@ -24,7 +24,7 @@ describe('createTree - SVG (JSX)', () => {
 			<svg xmlns="http://www.w3.org/2000/svg">
 				<circle xmlns="http://www.w3.org/2000/svg" />
 			</svg>,
-			container,
+			container
 		);
 		expect(innerHTML(container.firstChild.firstChild.tagName)).to.equal('circle');
 		expect(innerHTML(container.firstChild.getAttribute('xmlns'))).to.equal('http://www.w3.org/2000/svg');
@@ -38,7 +38,7 @@ describe('createTree - SVG (JSX)', () => {
 			<svg xmlns="http://www.w3.org/2000/svg">
 				<circle />
 			</svg>,
-			container,
+			container
 		);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		render(null, container);
@@ -53,7 +53,7 @@ describe('createTree - SVG (JSX)', () => {
 					</g>
 				</g>
 			</svg>,
-			container,
+			container
 		);
 		expect(container.childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.childNodes[0].childNodes[0].tagName).to.equal('g');
@@ -67,14 +67,14 @@ describe('createTree - SVG (JSX)', () => {
 		expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.childNodes[0].childNodes[1].firstChild.firstChild.tagName).to.equal('circle');
 		expect(container.childNodes[0].childNodes[1].firstChild.firstChild.namespaceURI).to.equal(
-			'http://www.w3.org/2000/svg',
+			'http://www.w3.org/2000/svg'
 		);
 
 		render(
 			<svg xmlns="http://www.w3.org/2000/svg">
 				<circle />
 			</svg>,
-			container,
+			container
 		);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	});
@@ -84,7 +84,7 @@ describe('createTree - SVG (JSX)', () => {
 			<svg xmlns="http://www.w3.org/2000/svg">
 				<circle />
 			</svg>,
-			container,
+			container
 		);
 		expect(container.firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
@@ -105,14 +105,14 @@ describe('createTree - SVG (JSX)', () => {
 					/>
 				</g>
 			</svg>,
-			container,
+			container
 		);
 		expect(container.childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.childNodes[0].childNodes[0].tagName).to.equal('g');
 		expect(container.childNodes[0].childNodes[0].namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.childNodes[0].childNodes[0].firstChild.tagName).to.equal('circle');
 		expect(container.childNodes[0].childNodes[0].firstChild.getAttribute('xmlns')).to.equal(
-			'http://www.w3.org/2000/svg',
+			'http://www.w3.org/2000/svg'
 		);
 		expect(container.childNodes[0].childNodes[0].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 
@@ -120,7 +120,7 @@ describe('createTree - SVG (JSX)', () => {
 		expect(container.childNodes[0].childNodes[1].namespaceURI).to.equal('http://www.w3.org/2000/svg');
 		expect(container.childNodes[0].childNodes[1].firstChild.tagName).to.equal('circle');
 		expect(container.childNodes[0].childNodes[1].firstChild.getAttribute('xmlns')).to.equal(
-			'http://www.w3.org/2000/svg',
+			'http://www.w3.org/2000/svg'
 		);
 		expect(container.childNodes[0].childNodes[1].firstChild.namespaceURI).to.equal('http://www.w3.org/2000/svg');
 	});
@@ -204,7 +204,7 @@ describe('createTree - SVG (JSX)', () => {
 			<svg>
 				<image />
 			</svg>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);
@@ -221,7 +221,7 @@ describe('createTree - SVG (JSX)', () => {
 			<svg>
 				<image />
 			</svg>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.firstChild.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')).to.equal(false);

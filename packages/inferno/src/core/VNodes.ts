@@ -6,7 +6,7 @@ import {
 	isNullOrUndef,
 	isStatefulComponent,
 	isStringOrNumber,
-	isUndefined,
+	isUndefined
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { EMPTY_OBJ } from '../DOM/utils';
@@ -78,7 +78,7 @@ export function createVNode(
 	props?: Props | null,
 	key?: any,
 	ref?: Ref,
-	noNormalise?: boolean,
+	noNormalise?: boolean
 ) {
 	if (flags & VNodeFlags.ComponentUnknown) {
 		flags = isStatefulComponent(type) ? VNodeFlags.ComponentClass : VNodeFlags.ComponentFunction;
@@ -91,7 +91,7 @@ export function createVNode(
 		key === void 0 ? null : key,
 		props === void 0 ? null : props,
 		ref === void 0 ? null : ref,
-		type,
+		type
 	);
 	if (noNormalise !== true) {
 		normalize(vNode);
@@ -169,7 +169,7 @@ export function directClone(vNodeToClone: VNode): VNode {
 			props,
 			vNodeToClone.key,
 			vNodeToClone.ref,
-			!children,
+			!children
 		);
 	} else if (flags & VNodeFlags.Text) {
 		newVNode = createTextVNode(vNodeToClone.children as string, vNodeToClone.key);
@@ -234,7 +234,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 				!vNodeToClone.props && !props ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props),
 				key,
 				ref,
-				true,
+				true
 			);
 			const newProps = newVNode.props;
 
@@ -275,7 +275,7 @@ export function cloneVNode(vNodeToClone: VNode, props?: Props, ..._children: Inf
 				!vNodeToClone.props && !props ? EMPTY_OBJ : combineFrom(vNodeToClone.props, props),
 				key,
 				ref,
-				!children,
+				!children
 			);
 		} else if (flags & VNodeFlags.Text) {
 			newVNode = createTextVNode(vNodeToClone.children as string, key);

@@ -140,7 +140,7 @@ describe('Elements (JSX)', () => {
 			<div>
 				<div id={attrs} />
 			</div>,
-			container,
+			container
 		);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -153,7 +153,7 @@ describe('Elements (JSX)', () => {
 			<div>
 				<div id={attrs} />
 			</div>,
-			container,
+			container
 		);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -173,7 +173,7 @@ describe('Elements (JSX)', () => {
 			<div>
 				<div id={attrs} />
 			</div>,
-			container,
+			container
 		);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -225,7 +225,7 @@ describe('Elements (JSX)', () => {
 			<div className="Hello, Dominic" id={attrs}>
 				<div id={attrs} />
 			</div>,
-			container,
+			container
 		);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -240,7 +240,7 @@ describe('Elements (JSX)', () => {
 			<div className="Hello, Dominic" id={attrs}>
 				<div id={attrs} />
 			</div>,
-			container,
+			container
 		);
 		expect(container.firstChild.nodeName).to.equal('DIV');
 		expect(container.firstChild.childNodes.length).to.equal(1);
@@ -366,7 +366,7 @@ describe('Elements (JSX)', () => {
 			<div>
 				<div>{null}</div>
 			</div>,
-			container,
+			container
 		);
 
 		expect(container.nodeName).to.equal('DIV');
@@ -376,7 +376,7 @@ describe('Elements (JSX)', () => {
 			<div>
 				<div>{null}</div>
 			</div>,
-			container,
+			container
 		);
 
 		expect(container.nodeName).to.equal('DIV');
@@ -528,7 +528,7 @@ describe('Elements (JSX)', () => {
 				<span className="bar">{val1}</span>
 				<span className="yar">{val2}</span>
 			</div>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -543,7 +543,7 @@ describe('Elements (JSX)', () => {
 				<span className="bar">{val1}</span>
 				<span className="yar">{val2}</span>
 			</div>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.nodeName).to.equal('DIV');
@@ -681,7 +681,7 @@ describe('Elements (JSX)', () => {
 			<video width="400" controls volume={0}>
 				<source src="http://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
 			</video>,
-			container,
+			container
 		);
 		expect(container.firstChild.volume).to.not.equal(undefined);
 		expect(container.firstChild.volume).to.be.equal(0);
@@ -708,7 +708,7 @@ describe('Elements (JSX)', () => {
 			render(<div dangerouslySetInnerHTML={{ __html: null }} />, container);
 		} catch (e) {
 			expect(e.message).to.eql(
-				'Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.',
+				'Inferno Error: dangerouslySetInnerHTML requires an object with a __html propety containing the innerHTML content.'
 			);
 		}
 	});
@@ -716,10 +716,10 @@ describe('Elements (JSX)', () => {
 	it('handles JSX spread props (including children)', () => {
 		const foo = {
 			children: 'Hello world!',
-			className: 'lol',
+			className: 'lol'
 		};
 		const bar = {
-			id: 'test',
+			id: 'test'
 		};
 
 		render(<div {...foo} {...bar} />, container);
@@ -740,7 +740,7 @@ describe('Elements (JSX)', () => {
 
 		const obj = {
 			fn() {},
-			click() {},
+			click() {}
 		};
 		const bool = false;
 		const newValue = 't';
@@ -767,7 +767,7 @@ describe('Elements (JSX)', () => {
 				onBlur={test}
 				{...spread}
 			/>,
-			container,
+			container
 		);
 		// TODO: Somehow verify hooks / events work. Not sure this is as expected
 		const input = container.querySelector('#test');
@@ -794,7 +794,7 @@ describe('Elements (JSX)', () => {
 		it('basic example #2 ', () => {
 			render(<div>{[a, a, a]}</div>, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>'),
+				innerHTML('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>')
 			);
 			render(b, container);
 			expect(container.innerHTML).to.equal(innerHTML('<span>This works!</span>'));
@@ -810,13 +810,13 @@ describe('Elements (JSX)', () => {
 		it('basic nested component example ', () => {
 			render(<C>{a}</C>, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>'),
+				innerHTML('<div><div>Hello world</div><div>Hello world</div><div>Hello world</div></div>')
 			);
 			render(<C>{b}{a}</C>, container);
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div></div>',
-				),
+					'<div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div><span>This works!</span><div>Hello world</div></div>'
+				)
 			);
 		});
 	});
@@ -852,7 +852,7 @@ describe('Elements (JSX)', () => {
 			expect(container.innerHTML).to.equal(innerHTML('<div>Hello worldHello worldHello world</div>'));
 			render(<C>{b}{a}</C>, container);
 			expect(container.innerHTML).to.equal(
-				innerHTML('<div>This works!Hello worldThis works!Hello worldThis works!Hello world</div>'),
+				innerHTML('<div>This works!Hello worldThis works!Hello worldThis works!Hello world</div>')
 			);
 		});
 	});
@@ -872,12 +872,12 @@ describe('Elements (JSX)', () => {
 						and climate conditions.
 					</p>
 				</div>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div class="tesla-battery__notice"><p>The actual amount of range that you experience will vary based on your particular use conditions. See how particular use conditions may affect your range in our simulation model.</p><p>Vehicle range may vary depending on the vehicle configuration, battery age and condition, driving style and operating, environmental and climate conditions.</p></div>',
-				),
+					'<div class="tesla-battery__notice"><p>The actual amount of range that you experience will vary based on your particular use conditions. See how particular use conditions may affect your range in our simulation model.</p><p>Vehicle range may vary depending on the vehicle configuration, battery age and condition, driving style and operating, environmental and climate conditions.</p></div>'
+				)
 			);
 		});
 	});

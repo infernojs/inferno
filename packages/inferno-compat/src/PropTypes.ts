@@ -22,7 +22,7 @@ const PropTypes = {
 	oneOfType: getProptype,
 	shape: getProptype,
 	string: proptype,
-	symbol: proptype,
+	symbol: proptype
 };
 
 export default PropTypes;

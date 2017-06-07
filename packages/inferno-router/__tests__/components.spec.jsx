@@ -55,15 +55,15 @@ describe('Router (jsx)', () => {
 						data-test="DataTest"
 					>
 						Link
-					</Link>,
+					</Link>
 				),
-				container,
+				container
 			);
 
 			expect(innerHTML(container.innerHTML)).to.equal(
 				innerHTML(
-					'<a class="linkClass linkActiveClass" href="/" style="color: red; font-weight: bold;" title="TestTitle" data-test="DataTest">Link</a>',
-				),
+					'<a class="linkClass linkActiveClass" href="/" style="color: red; font-weight: bold;" title="TestTitle" data-test="DataTest">Link</a>'
+				)
 			);
 		});
 
@@ -78,13 +78,13 @@ describe('Router (jsx)', () => {
 						activeStyle={{ fontWeight: 'bold' }}
 					>
 						Link
-					</Link>,
+					</Link>
 				),
-				container,
+				container
 			);
 
 			expect(innerHTML(container.innerHTML)).to.equal(
-				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>'),
+				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>')
 			);
 		});
 
@@ -92,18 +92,18 @@ describe('Router (jsx)', () => {
 			render(createRoutes(<Link to="/notactive" className="linkClass" style={{ color: 'red' }}>Link</Link>), container);
 
 			expect(innerHTML(container.innerHTML)).to.equal(
-				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>'),
+				innerHTML('<a class="linkClass" href="/notactive" style="color: red;">Link</a>')
 			);
 		});
 
 		it('should render active class and style even when base class is not defined', () => {
 			render(
 				createRoutes(<Link to="/" activeClassName="linkActiveClass" activeStyle={{ fontWeight: 'bold' }}>Link</Link>),
-				container,
+				container
 			);
 
 			expect(innerHTML(container.innerHTML)).to.equal(
-				innerHTML('<a class="linkActiveClass" href="/" style="font-weight: bold;">Link</a>'),
+				innerHTML('<a class="linkActiveClass" href="/" style="font-weight: bold;">Link</a>')
 			);
 		});
 
@@ -123,7 +123,7 @@ describe('Router (jsx)', () => {
 
 		it('should call onClick handler when clicked', () => {
 			const obj = {
-				fn() {},
+				fn() {}
 			};
 			const sinonSpy = spy(obj, 'fn');
 
@@ -133,7 +133,7 @@ describe('Router (jsx)', () => {
 			link.onclick({
 				button: 0,
 				preventDefault() {},
-				target: {},
+				target: {}
 			});
 
 			const calledOnce = assert.calledOnce;
@@ -142,7 +142,7 @@ describe('Router (jsx)', () => {
 
 		it('should not call onClick handler when right clicked', () => {
 			const obj = {
-				fn() {},
+				fn() {}
 			};
 			const sinonSpy = spy(obj, 'fn');
 
@@ -152,7 +152,7 @@ describe('Router (jsx)', () => {
 			link.onclick({
 				button: 2,
 				preventDefault() {},
-				target: {},
+				target: {}
 			});
 
 			const notCalled = assert.notCalled;
@@ -176,13 +176,13 @@ describe('Router (jsx)', () => {
 				createRoutes(
 					<IndexLink activeClassName="linkActiveClass" className="linkClass" activeStyle={{ fontWeight: 'bold' }}>
 						IndexLink
-					</IndexLink>,
+					</IndexLink>
 				),
-				container,
+				container
 			);
 
 			expect(innerHTML(container.innerHTML)).to.equal(
-				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">IndexLink</a>'),
+				innerHTML('<a class="linkClass linkActiveClass" href="/" style="font-weight: bold;">IndexLink</a>')
 			);
 		});
 
@@ -192,7 +192,7 @@ describe('Router (jsx)', () => {
 					<IndexRoute component={() => <div>Good</div>} />
 					<Route path={'/test'} component={() => <TestComponent />} />
 				</Router>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.equal(innerHTML('<div><a href="/test">Link</a><a href="/">IndexLink</a></div>'));
@@ -216,7 +216,7 @@ describe('Router (jsx)', () => {
 					<IndexRoute component={() => <div>Good</div>} onEnter={callbackSpy} />
 					<Route path={'/test'} component={() => <TestComponent />} />
 				</Router>,
-				container,
+				container
 			);
 
 			const link = container.querySelector('a[href="/"]');
@@ -241,7 +241,7 @@ describe('Router (jsx)', () => {
 						}}
 					/>
 				</Router>,
-				container,
+				container
 			);
 
 			requestAnimationFrame(() => {
@@ -266,7 +266,7 @@ describe('Router (jsx)', () => {
 					<IndexRoute component={() => <div>Good</div>} onEnter={callback} className="test-class" />
 					<Route path={'/test'} component={() => <TestComponent />} />
 				</Router>,
-				container,
+				container
 			);
 
 			const link = container.querySelector('a[href="/"]');
@@ -294,7 +294,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/test'} component={() => <TestComponent />} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 
 			requestAnimationFrame(() => {
@@ -321,7 +321,7 @@ describe('Router (jsx)', () => {
 					<IndexRoute component={() => <div>Good</div>} />
 					<Route path={'/test'} getComponent={spy} />
 				</Router>,
-				container,
+				container
 			);
 
 			requestAnimationFrame(() => {
@@ -353,7 +353,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/test'} getComponent={callback} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 
 			const link = container.querySelector('a[href="/test"]');
@@ -373,7 +373,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/test'} component={() => <div>Bad</div>} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 
 			expect(innerHTML(container.innerHTML)).to.equal('<div>Good</div>');
@@ -387,7 +387,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/test'} component={() => <div>Good</div>} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.equal('<div>Good</div>');

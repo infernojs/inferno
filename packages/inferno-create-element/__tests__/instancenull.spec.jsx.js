@@ -59,7 +59,7 @@ describe('BUG: instance - null', () => {
 			super(props);
 
 			this.state = {
-				placement: 'below',
+				placement: 'below'
 			};
 
 			// Element references
@@ -68,7 +68,7 @@ describe('BUG: instance - null', () => {
 				target: props.target || null,
 				container: null,
 				parentPopover: null,
-				popoverBody: null,
+				popoverBody: null
 			};
 
 			// Lexical bindings
@@ -90,7 +90,7 @@ describe('BUG: instance - null', () => {
 			this._elements.popover = node;
 			if (node !== null) {
 				this.setStateSync({
-					placement: '',
+					placement: ''
 				});
 			}
 		}
@@ -171,7 +171,7 @@ describe('BUG: instance - null', () => {
 				editableText: '',
 				activeValue: props.value,
 				filteredItems: null,
-				filteredCustomItems: null,
+				filteredCustomItems: null
 			};
 
 			this._popover = null;
@@ -200,7 +200,7 @@ describe('BUG: instance - null', () => {
 				isEditMode: false,
 				filteredItems: null,
 				filteredCustomItems: null,
-				activeValue: this.props.value,
+				activeValue: this.props.value
 			});
 		}
 
@@ -281,7 +281,7 @@ describe('BUG: instance - null', () => {
 			// Updating editable and changing into editmode
 			this.setStateSync({
 				isEditMode: true,
-				activeValue: props.value,
+				activeValue: props.value
 			});
 		}
 
@@ -315,14 +315,14 @@ describe('BUG: instance - null', () => {
 			{
 				text: 'Implementation',
 				value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
-				icon: '#user',
+				icon: '#user'
 			},
 			{ text: 'Issue', value: '4e0a069d-899a-418a-df27-8ff5ef18d459', icon: '#reminder' },
 			{
 				text: 'LomaTaski',
 				value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
-				icon: '#favourite',
-			},
+				icon: '#favourite'
+			}
 		];
 		const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
 		const text = 'pena';
@@ -336,7 +336,7 @@ describe('BUG: instance - null', () => {
 					value={value}
 				/>
 			</div>,
-			container,
+			container
 		);
 
 		setTimeout(function() {
@@ -359,14 +359,14 @@ describe('BUG: instance - null', () => {
 			{
 				text: 'Implementation',
 				value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
-				icon: '#user',
+				icon: '#user'
 			},
 			{ text: 'Issue', value: '4e0a069d-899a-418a-df27-8ff5ef18d459', icon: '#reminder' },
 			{
 				text: 'LomaTaski',
 				value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
-				icon: '#favourite',
-			},
+				icon: '#favourite'
+			}
 		];
 		const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
 		const text = 'pena';
@@ -380,7 +380,7 @@ describe('BUG: instance - null', () => {
 					value={value}
 				/>
 			</div>,
-			container,
+			container
 		);
 
 		container.querySelector('#MAGICBUTTON').click();
@@ -389,7 +389,7 @@ describe('BUG: instance - null', () => {
 			<div>
 				<Icon />
 			</div>,
-			container,
+			container
 		);
 	});
 
@@ -398,14 +398,14 @@ describe('BUG: instance - null', () => {
 			{
 				text: 'Implementation',
 				value: 'b73ea78d-350d-f764-e429-9bebd9d8b4b3',
-				icon: '#user',
+				icon: '#user'
 			},
 			{ text: 'Issue', value: '4e0a069d-899a-418a-df27-8ff5ef18d459', icon: '#reminder' },
 			{
 				text: 'LomaTaski',
 				value: 'd9a54cc9-2a16-08e3-85da-c230b5d0b121',
-				icon: '#favourite',
-			},
+				icon: '#favourite'
+			}
 		];
 		const value = 'b73ea78d-350d-f764-e429-9bebd9d8b4b3';
 		const text = 'pena';
@@ -419,7 +419,7 @@ describe('BUG: instance - null', () => {
 					value={value}
 				/>
 			</div>,
-			container,
+			container
 		);
 
 		container.querySelector('#MAGICBUTTON').click();
@@ -433,7 +433,7 @@ describe('BUG: instance - null', () => {
 					value={value}
 				/>
 			</div>,
-			container,
+			container
 		);
 	});
 });

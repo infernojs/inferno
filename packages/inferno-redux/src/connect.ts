@@ -65,7 +65,7 @@ export default function connect(
 	mapStateToProps?: MapStateToProps,
 	mapDispatchToProps?: MapDispatchToProps,
 	mergeProps?,
-	options: any = {},
+	options: any = {}
 ): WrapWithConnect {
 	const shouldSubscribe = Boolean(mapStateToProps);
 	const mapState = mapStateToProps || defaultMapStateToProps;
@@ -133,7 +133,7 @@ export default function connect(
 						'Could not find "store" in either the context or ' +
 							`props of "${connectDisplayName}". ` +
 							'Either wrap the root component in a <Provider>, ' +
-							`or explicitly pass "store" as a prop to "${connectDisplayName}".`,
+							`or explicitly pass "store" as a prop to "${connectDisplayName}".`
 					);
 				}
 
@@ -303,7 +303,7 @@ export default function connect(
 					hasStoreStateChanged,
 					haveStatePropsBeenPrecalculated,
 					statePropsPrecalculationError,
-					renderedElement,
+					renderedElement
 				} = this;
 
 				this.haveOwnPropsChanged = false;
@@ -346,7 +346,7 @@ export default function connect(
 				if (withRef) {
 					this.renderedElement = createElement(
 						WrappedComponent,
-						combineFrom(this.mergedProps, { ref: instance => (this.wrappedInstance = instance) }),
+						combineFrom(this.mergedProps, { ref: instance => (this.wrappedInstance = instance) })
 					);
 				} else {
 					this.renderedElement = createElement(WrappedComponent, this.mergedProps);

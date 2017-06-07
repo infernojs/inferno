@@ -12,7 +12,7 @@ import {
 	isUndefined,
 	LifecycleClass,
 	NO_OP,
-	throwError,
+	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
@@ -35,7 +35,7 @@ import {
 	replaceVNode,
 	replaceWithNewNode,
 	setTextContent,
-	updateTextContent,
+	updateTextContent
 } from './utils';
 import { isControlledFormElement, processElement } from './wrappers/processElement';
 
@@ -46,7 +46,7 @@ export function patch(
 	lifecycle: LifecycleClass,
 	context: Object,
 	isSVG: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	if (lastVNode !== nextVNode) {
 		const lastFlags = lastVNode.flags;
@@ -63,7 +63,7 @@ export function patch(
 					mountComponent(nextVNode, null, lifecycle, context, isSVG, isClass),
 					lastVNode,
 					lifecycle,
-					isRecycling,
+					isRecycling
 				);
 			}
 		} else if (nextFlags & VNodeFlags.Element) {
@@ -75,7 +75,7 @@ export function patch(
 					mountElement(nextVNode, null, lifecycle, context, isSVG),
 					lastVNode,
 					lifecycle,
-					isRecycling,
+					isRecycling
 				);
 			}
 		} else if (nextFlags & VNodeFlags.Text) {
@@ -114,7 +114,7 @@ export function patchElement(
 	lifecycle: LifecycleClass,
 	context: Object,
 	isSVG: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	const nextTag = nextVNode.type;
 	const lastTag = lastVNode.type;
@@ -146,7 +146,7 @@ export function patchElement(
 				lifecycle,
 				context,
 				childrenIsSVG,
-				isRecycling,
+				isRecycling
 			);
 		}
 
@@ -213,7 +213,7 @@ function patchChildren(
 	lifecycle: LifecycleClass,
 	context: Object,
 	isSVG: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	let patchArray = false;
 	let patchKeyed = false;
@@ -280,7 +280,7 @@ export function patchComponent(
 	context,
 	isSVG: boolean,
 	isClass: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	const lastType = lastVNode.type;
 	const nextType = nextVNode.type;
@@ -304,7 +304,7 @@ export function patchComponent(
 				replaceChild(
 					parentDom,
 					mountComponent(nextVNode, null, lifecycle, context, isSVG, (nextVNode.flags & VNodeFlags.ComponentClass) > 0),
-					lastVNode.dom,
+					lastVNode.dom
 				);
 			} else {
 				const hasComponentDidUpdate = !isUndefined(instance.componentDidUpdate);
@@ -339,7 +339,7 @@ export function patchComponent(
 				} else if (isArray(nextInput)) {
 					if (process.env.NODE_ENV !== 'production') {
 						throwError(
-							'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.',
+							'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
 						);
 					}
 					throwError();
@@ -400,7 +400,7 @@ export function patchComponent(
 				} else if (isArray(nextInput)) {
 					if (process.env.NODE_ENV !== 'production') {
 						throwError(
-							'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.',
+							'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
 						);
 					}
 					throwError();
@@ -450,7 +450,7 @@ export function patchNonKeyedChildren(
 	lifecycle: LifecycleClass,
 	context: Object,
 	isSVG: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	const lastChildrenLength = lastChildren.length;
 	const nextChildrenLength = nextChildren.length;
@@ -490,7 +490,7 @@ export function patchKeyedChildren(
 	lifecycle: LifecycleClass,
 	context,
 	isSVG: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	let aLength = a.length;
 	let bLength = b.length;

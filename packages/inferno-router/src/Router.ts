@@ -31,12 +31,12 @@ function createrRouter(history) {
 				? history.location
 				: {
 						pathname: '/',
-						search: '',
+						search: ''
 					};
 		},
 		get url() {
 			return this.location.pathname + this.location.search;
-		},
+		}
 	};
 }
 
@@ -48,7 +48,7 @@ export default class Router extends Component<IRouterProps, any> {
 		super(props, context);
 		this.router = createrRouter(props.history);
 		this.state = {
-			url: props.url || this.router.url,
+			url: props.url || this.router.url
 		};
 	}
 
@@ -87,7 +87,7 @@ export default class Router extends Component<IRouterProps, any> {
 		return createVNode(VNodeFlags.ComponentClass, RouterContext, null, null, {
 			location: this.state.url,
 			matched: hit.matched,
-			router: this.router,
+			router: this.router
 		});
 	}
 }

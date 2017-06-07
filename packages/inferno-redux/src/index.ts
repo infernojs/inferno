@@ -3,7 +3,7 @@ import Provider from './Provider';
 
 export default {
 	Provider,
-	connect,
+	connect
 };
 
 export { Provider, connect };

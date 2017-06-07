@@ -56,7 +56,7 @@ describe('Router (jsx) #transitions', () => {
 				<Route path="/" onEnter={onEnter} component={TestHooksEnter} />
 				<Route path="/enter" component={() => <div>onLeave</div>} />
 			</Router>,
-			container,
+			container
 		);
 	});
 
@@ -85,7 +85,7 @@ describe('Router (jsx) #transitions', () => {
 				<IndexRoute onLeave={onLeave} component={TestHooksLeave} />
 				<Route path="/leave" component={() => <div>onLeave</div>} />
 			</Router>,
-			container,
+			container
 		);
 	});
 
@@ -114,7 +114,7 @@ describe('Router (jsx) #transitions', () => {
 				<Route path="/" onLeave={onLeave} component={TestHooksLeave} />
 				<Route path="/leave" component={() => <div>onLeave</div>} />
 			</Router>,
-			container,
+			container
 		);
 	});
 
@@ -134,7 +134,7 @@ describe('Router (jsx) #transitions', () => {
 				<Route path="/" component={TestRouting} />
 				<Route path="/final" component={() => <div>Done</div>} />
 			</Router>,
-			container,
+			container
 		);
 
 		setTimeout(() => {
@@ -149,7 +149,7 @@ describe('Router (jsx) #transitions', () => {
 				<Redirect from="/" to="/final" />
 				<Route path="/final" component={() => <div>Done</div>} />
 			</Router>,
-			container,
+			container
 		);
 
 		setTimeout(() => {
@@ -172,7 +172,7 @@ describe('Router (jsx) #transitions', () => {
 					<Route path={'/foo/two'} component={GoodComponent} />
 				</Route>
 			</Router>,
-			container,
+			container
 		);
 		expect(container.innerHTML).to.equal(innerHTML('<div><a href="/foo/two">Go</a><div>Bad Component</div></div>'));
 
@@ -196,7 +196,7 @@ describe('Router (jsx) #transitions', () => {
 			<Router history={browserHistory}>
 				<Route path="/" onEnter={null} onLeave={null} component={TestHooksLeave} />
 			</Router>,
-			container,
+			container
 		);
 	});
 
@@ -207,7 +207,7 @@ describe('Router (jsx) #transitions', () => {
 			<Router history={browserHistory}>
 				<Route path={'/'} getComponent={resolveToComponent} />
 			</Router>,
-			container,
+			container
 		);
 
 		setTimeout(() => {
@@ -223,7 +223,7 @@ describe('Router (jsx) #transitions', () => {
 			<Router history={browserHistory}>
 				<IndexRoute component={TestQueryParams} />
 			</Router>,
-			container,
+			container
 		);
 
 		browserHistory.push('/?foo=Bar');

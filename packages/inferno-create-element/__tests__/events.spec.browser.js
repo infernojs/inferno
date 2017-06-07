@@ -19,7 +19,7 @@ describe('Basic event tests', () => {
 		const template = val =>
 			createElement('div', {
 				id: 'test',
-				onclick: val,
+				onclick: val
 			});
 
 		let calledFirstTest = false;
@@ -66,7 +66,7 @@ describe('Basic event tests', () => {
 
 	it('should update events', () => {
 		let data = {
-			count: 0,
+			count: 0
 		};
 
 		function onClick(d) {
@@ -81,10 +81,10 @@ describe('Basic event tests', () => {
 			return createElement(
 				'button',
 				{
-					onclick: onClick(d),
+					onclick: onClick(d)
 				},
 				'Count ',
-				d.count,
+				d.count
 			);
 		}
 
@@ -108,7 +108,7 @@ describe('Basic event tests', () => {
 
 	it('should not trigger click at all if target is disabled', () => {
 		let data = {
-			count: 0,
+			count: 0
 		};
 
 		function onClick(d) {
@@ -124,9 +124,9 @@ describe('Basic event tests', () => {
 				'button',
 				{
 					disabled: 'disabled',
-					onClick: onClick(d),
+					onClick: onClick(d)
 				},
-				createElement('span', null, 'Count ', d.count),
+				createElement('span', null, 'Count ', d.count)
 			);
 		}
 
@@ -155,9 +155,9 @@ describe('Basic event tests', () => {
 			return createElement(
 				'button',
 				{
-					onsubmit: eventHandler,
+					onsubmit: eventHandler
 				},
-				['1'],
+				['1']
 			);
 		}
 
@@ -181,9 +181,9 @@ describe('Basic event tests', () => {
 			return createElement(
 				'button',
 				{
-					onsubmit: toggle ? eventHandler : null,
+					onsubmit: toggle ? eventHandler : null
 				},
-				['1'],
+				['1']
 			);
 		}
 
@@ -203,9 +203,9 @@ describe('Basic event tests', () => {
 			return createElement(
 				'div',
 				{
-					onkeyup: eventHandler,
+					onkeyup: eventHandler
 				},
-				'2',
+				'2'
 			);
 		}
 
@@ -219,9 +219,9 @@ describe('Basic event tests', () => {
 			return createElement(
 				'p',
 				{
-					onkeydown: eventHandler,
+					onkeydown: eventHandler
 				},
-				children.slice(0),
+				children.slice(0)
 			);
 		}
 
@@ -252,9 +252,9 @@ describe('Basic event tests', () => {
 					'div',
 					{
 						onClick: eventHandler,
-						id: 'tester',
+						id: 'tester'
 					},
-					'2',
+					'2'
 				);
 			}
 
@@ -289,16 +289,16 @@ describe('Basic event tests', () => {
 					'div',
 					{
 						onClick: eventHandler2,
-						id: 'parent',
+						id: 'parent'
 					},
 					createElement(
 						'div',
 						{
 							onClick: eventHandler,
-							id: 'tester',
+							id: 'tester'
 						},
-						'2',
-					),
+						'2'
+					)
 				);
 			}
 
@@ -330,16 +330,16 @@ describe('Basic event tests', () => {
 					'div',
 					{
 						onclick: eventHandler2,
-						id: 'parent',
+						id: 'parent'
 					},
 					createElement(
 						'div',
 						{
 							onClick: eventHandler,
-							id: 'tester',
+							id: 'tester'
 						},
-						'2',
-					),
+						'2'
+					)
 				);
 			}
 
@@ -396,9 +396,9 @@ describe('Basic event tests', () => {
 					'div',
 					{
 						onclick: eventHandler,
-						id: 'tester',
+						id: 'tester'
 					},
-					'2',
+					'2'
 				);
 			}
 
@@ -432,16 +432,16 @@ describe('Basic event tests', () => {
 					'div',
 					{
 						onClick: eventHandler2,
-						id: 'parent',
+						id: 'parent'
 					},
 					createElement(
 						'div',
 						{
 							onclick: eventHandler,
-							id: 'tester',
+							id: 'tester'
 						},
-						'2',
-					),
+						'2'
+					)
 				);
 			}
 
@@ -472,16 +472,16 @@ describe('Basic event tests', () => {
 					'div',
 					{
 						onclick: eventHandler2,
-						id: 'parent',
+						id: 'parent'
 					},
 					createElement(
 						'div',
 						{
 							onclick: eventHandler,
-							id: 'tester',
+							id: 'tester'
 						},
-						'2',
-					),
+						'2'
+					)
 				);
 			}
 
@@ -508,7 +508,7 @@ describe('Basic event tests', () => {
 		const obj = {
 			test: function() {
 				done();
-			},
+			}
 		};
 
 		render(<SmallComponent className="testing" onClick={obj.test} />, container);
@@ -573,7 +573,7 @@ describe('Basic event tests', () => {
 				<div onClick={verifyCurrentTarget}>
 					<span>test</span>
 				</div>,
-				container,
+				container
 			);
 
 			container.querySelector('span').click();
@@ -600,7 +600,7 @@ describe('Basic event tests', () => {
 					</div>
 					<span>test</span>
 				</div>,
-				container,
+				container
 			);
 
 			container.querySelector('span').click();
@@ -636,7 +636,7 @@ describe('Basic event tests', () => {
 					</div>
 					<span>test</span>
 				</div>,
-				container,
+				container
 			);
 
 			container.querySelector('span').click();
@@ -652,7 +652,7 @@ describe('Basic event tests', () => {
 						1
 					</div>
 				</div>,
-				container,
+				container
 			);
 
 			expect(spy.callCount).to.equal(0);
@@ -665,7 +665,7 @@ describe('Basic event tests', () => {
 						2
 					</div>
 				</div>,
-				container,
+				container
 			);
 
 			container.querySelector('#test').click();
@@ -680,7 +680,7 @@ describe('Basic event tests', () => {
 						1
 					</div>
 				</div>,
-				container,
+				container
 			);
 
 			expect(spy.callCount).to.equal(0);
@@ -693,7 +693,7 @@ describe('Basic event tests', () => {
 						2
 					</div>
 				</div>,
-				container,
+				container
 			);
 
 			container.querySelector('#test').click();
@@ -708,7 +708,7 @@ describe('Basic event tests', () => {
 						1
 					</div>
 				</div>,
-				container,
+				container
 			);
 
 			expect(spy.callCount).to.equal(0);
@@ -721,7 +721,7 @@ describe('Basic event tests', () => {
 						2
 					</div>
 				</div>,
-				container,
+				container
 			);
 
 			container.querySelector('#test').click();

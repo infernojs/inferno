@@ -10,7 +10,7 @@ import {
 	isStringOrNumber,
 	isTrue,
 	isUndefined,
-	throwError,
+	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { Readable } from 'stream';
@@ -144,12 +144,12 @@ export class RenderQueueStream extends Readable {
 										instance.render(instance.props, instance.context),
 										instance.context,
 										true,
-										promisePosition,
+										promisePosition
 									);
 									setTimeout(this.pushQueue, 0);
 									return promisePosition;
 								}),
-								position,
+								position
 							);
 							return;
 						} else {
@@ -250,12 +250,12 @@ export class RenderQueueStream extends Readable {
 				if (typeof vNode === 'object') {
 					throwError(
 						`renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
-							vNode,
-						)}".`,
+							vNode
+						)}".`
 					);
 				} else {
 					throwError(
-						`renderToString() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`,
+						`renderToString() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
 					);
 				}
 			}

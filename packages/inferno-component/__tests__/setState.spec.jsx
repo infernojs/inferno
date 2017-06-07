@@ -17,7 +17,7 @@ describe('setState', () => {
 			constructor(props, ctx) {
 				super(props, ctx);
 				this.setState({
-					state: 'Something',
+					state: 'Something'
 				});
 			}
 		}
@@ -30,7 +30,7 @@ describe('setState', () => {
 			constructor(props) {
 				super(props);
 				this.state = {
-					value: props.value,
+					value: props.value
 				};
 				this.checkSetState = this.checkSetState.bind(this);
 			}
@@ -46,9 +46,9 @@ describe('setState', () => {
 			componentWillReceiveProps(nextProps) {
 				this.setState(
 					{
-						value: nextProps.value,
+						value: nextProps.value
 					},
-					this.checkSetState,
+					this.checkSetState
 				);
 			}
 
@@ -59,12 +59,12 @@ describe('setState', () => {
 
 		class BaseComp extends Component {
 			state = {
-				value: '__OLDVALUE__',
+				value: '__OLDVALUE__'
 			};
 
 			componentDidMount() {
 				this.setState({
-					value: '__NEWVALUE__',
+					value: '__NEWVALUE__'
 				});
 			}
 
@@ -82,7 +82,7 @@ describe('setState', () => {
 			constructor(props) {
 				super(props);
 				this.state = {
-					value: props.value,
+					value: props.value
 				};
 			}
 
@@ -97,9 +97,9 @@ describe('setState', () => {
 			componentWillReceiveProps(nextProps) {
 				this.setState(
 					{
-						value: nextProps.value,
+						value: nextProps.value
 					},
-					this.checkSetState,
+					this.checkSetState
 				);
 			}
 
@@ -110,12 +110,12 @@ describe('setState', () => {
 
 		class BaseComp extends Component {
 			state = {
-				value: '__OLDVALUE__',
+				value: '__OLDVALUE__'
 			};
 
 			componentDidMount() {
 				this.setState({
-					value: '__NEWVALUE__',
+					value: '__NEWVALUE__'
 				});
 			}
 
@@ -139,7 +139,7 @@ describe('setState', () => {
 
 				this.state = {
 					active: false,
-					foo: 'b',
+					foo: 'b'
 				};
 
 				this._setBar = this._setBar.bind(this);
@@ -148,13 +148,13 @@ describe('setState', () => {
 
 			_setBar() {
 				this.setState({
-					foo: 'bar',
+					foo: 'bar'
 				});
 			}
 
 			_setActive() {
 				this.setState({
-					active: true,
+					active: true
 				});
 			}
 
@@ -209,7 +209,7 @@ describe('setState', () => {
 
 				this.state = {
 					active: false,
-					foo: 'b',
+					foo: 'b'
 				};
 
 				this._setBar = this._setBar.bind(this);
@@ -218,13 +218,13 @@ describe('setState', () => {
 
 			_setBar() {
 				this.setState({
-					foo: 'bar',
+					foo: 'bar'
 				});
 			}
 
 			_setActive() {
 				this.setState({
-					active: true,
+					active: true
 				});
 			}
 
@@ -248,7 +248,7 @@ describe('setState', () => {
 			componentWillReceiveProps(nextProps) {
 				if (nextProps.foo !== 'bar') {
 					this.setState({
-						foo: 'bbaarr',
+						foo: 'bbaarr'
 					});
 
 					this.props.callback();
@@ -282,7 +282,7 @@ describe('setState', () => {
 
 				this.state = {
 					active: false,
-					foo: 'b',
+					foo: 'b'
 				};
 
 				this._setBar = this._setBar.bind(this);
@@ -291,13 +291,13 @@ describe('setState', () => {
 
 			_setBar() {
 				this.setState({
-					foo: 'bar',
+					foo: 'bar'
 				});
 			}
 
 			_setActive() {
 				this.setState({
-					active: true,
+					active: true
 				});
 			}
 
@@ -328,7 +328,7 @@ describe('setState', () => {
 			componentWillReceiveProps(nextProps) {
 				if (nextProps.foo !== 'bar') {
 					this.setState({
-						foo: 'bbaarr',
+						foo: 'bbaarr'
 					});
 
 					this.props.callback();
@@ -360,7 +360,7 @@ describe('setState', () => {
 				super(props, context);
 
 				this.state = {
-					foo: 'bar',
+					foo: 'bar'
 				};
 
 				changeFoo = this.changeFoo.bind(this);
@@ -368,7 +368,7 @@ describe('setState', () => {
 
 			changeFoo() {
 				this.setState({
-					foo: 'bar2',
+					foo: 'bar2'
 				});
 			}
 
@@ -386,7 +386,7 @@ describe('setState', () => {
 				super(props, context);
 
 				this.state = {
-					foo: props.foo,
+					foo: props.foo
 				};
 			}
 
@@ -399,9 +399,9 @@ describe('setState', () => {
 				if (nextProps.foo !== this.state.foo) {
 					this.setState(
 						{
-							foo: nextProps.foo,
+							foo: nextProps.foo
 						},
-						this.callback,
+						this.callback
 					);
 				}
 			}
@@ -427,7 +427,7 @@ describe('setState', () => {
 				super(props, context);
 
 				this.state = {
-					foo: 'bar',
+					foo: 'bar'
 				};
 			}
 
@@ -446,43 +446,43 @@ describe('setState', () => {
 				super(props, context);
 
 				this.state = {
-					foo: props.foo,
+					foo: props.foo
 				};
 			}
 
 			componentWillMount() {
 				this.setState(
 					{
-						foo: '1',
+						foo: '1'
 					},
-					spy,
+					spy
 				);
 				this.setState(
 					{
-						foo: '2',
+						foo: '2'
 					},
-					spy,
-				);
-
-				this.setState(
-					{
-						foo: '3',
-					},
-					spy,
+					spy
 				);
 
 				this.setState(
 					{
-						foo: '3',
+						foo: '3'
 					},
-					spy,
+					spy
 				);
 
 				this.setState(
 					{
-						foo: '4',
+						foo: '3'
 					},
-					spy,
+					spy
+				);
+
+				this.setState(
+					{
+						foo: '4'
+					},
+					spy
 				);
 			}
 
@@ -510,7 +510,7 @@ describe('setState', () => {
 
 				this.state = {
 					active: false,
-					foo: 'b',
+					foo: 'b'
 				};
 
 				this._setBar = this._setBar.bind(this);
@@ -519,13 +519,13 @@ describe('setState', () => {
 
 			_setBar() {
 				this.setStateSync({
-					foo: 'bar',
+					foo: 'bar'
 				});
 			}
 
 			_setActive() {
 				this.setStateSync({
-					active: true,
+					active: true
 				});
 			}
 
@@ -580,7 +580,7 @@ describe('setState', () => {
 
 				this.state = {
 					active: false,
-					foo: 'b',
+					foo: 'b'
 				};
 
 				this._setBar = this._setBar.bind(this);
@@ -589,13 +589,13 @@ describe('setState', () => {
 
 			_setBar() {
 				this.setStateSync({
-					foo: 'bar',
+					foo: 'bar'
 				});
 			}
 
 			_setActive() {
 				this.setStateSync({
-					active: true,
+					active: true
 				});
 			}
 
@@ -619,7 +619,7 @@ describe('setState', () => {
 			componentWillReceiveProps(nextProps) {
 				if (nextProps.foo !== 'bar') {
 					this.setStateSync({
-						foo: 'bbaarr',
+						foo: 'bbaarr'
 					});
 
 					this.props.callback();
@@ -651,7 +651,7 @@ describe('setState', () => {
 				super(props, context);
 
 				this.state = {
-					foo: 'b',
+					foo: 'b'
 				};
 
 				doSomething = this._setBar = this._setBar.bind(this);
@@ -659,7 +659,7 @@ describe('setState', () => {
 
 			_setBar(p) {
 				this.setState({
-					foo: p,
+					foo: p
 				});
 			}
 
@@ -692,18 +692,18 @@ describe('setState', () => {
 			componentWillMount() {
 				this.setState(
 					{
-						a: ++cnt,
+						a: ++cnt
 					},
-					this.doTest,
+					this.doTest
 				);
 			}
 
 			componentDidMount() {
 				this.setState(
 					{
-						a: ++cnt,
+						a: ++cnt
 					},
-					this.doTest,
+					this.doTest
 				);
 			}
 

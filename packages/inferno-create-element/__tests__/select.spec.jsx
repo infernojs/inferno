@@ -21,27 +21,27 @@ describe('Select / select multiple (JSX)', () => {
 				<option value={1}>1</option>
 				<option value={2}>2</option>
 			</select>,
-			container,
+			container
 		);
 		render(
 			<select multiple={true} value={undefined}>
 				<option value={1}>1</option>
 				<option value={2}>1</option>
 			</select>,
-			container,
+			container
 		);
 		render(
 			<select multiple={true} value={2}>
 				<option value={1}>1</option>
 				<option value={2}>2</option>
 			</select>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(true);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<select multiple=""><option value="1">1</option><option value="2">2</option></select>'),
+			innerHTML('<select multiple=""><option value="1">1</option><option value="2">2</option></select>')
 		);
 
 		render(
@@ -49,7 +49,7 @@ describe('Select / select multiple (JSX)', () => {
 				<option value={1}>1</option>
 				<option value={2}>2</option>
 			</select>,
-			container,
+			container
 		);
 
 		console.log(container.firstChild.children[0].selected);
@@ -57,7 +57,7 @@ describe('Select / select multiple (JSX)', () => {
 		expect(container.firstChild.children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<select multiple=""><option value="1">1</option><option value="2">2</option></select>'),
+			innerHTML('<select multiple=""><option value="1">1</option><option value="2">2</option></select>')
 		);
 
 		render(
@@ -65,13 +65,13 @@ describe('Select / select multiple (JSX)', () => {
 				<option value={1}>1</option>
 				<option value={2}>2</option>
 			</select>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<select multiple=""><option value="1">1</option><option value="2">2</option></select>'),
+			innerHTML('<select multiple=""><option value="1">1</option><option value="2">2</option></select>')
 		);
 	});
 
@@ -81,31 +81,31 @@ describe('Select / select multiple (JSX)', () => {
 				<option value="foo">foo</option>
 				<option value="bar">bar</option>
 			</select>,
-			container,
+			container
 		);
 		render(
 			<select multiple={true} value={'foo'}>
 				<option value="foo">foo</option>
 				<option value="bar">bar</option>
 			</select>,
-			container,
+			container
 		);
 		expect(container.firstChild.children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'),
+			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
 		);
 		render(
 			<select multiple={true} value={false}>
 				<option value="foo">foo</option>
 				<option value="bar">bar</option>
 			</select>,
-			container,
+			container
 		);
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'),
+			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
 		);
 
 		render(
@@ -113,12 +113,12 @@ describe('Select / select multiple (JSX)', () => {
 				<option value="foo">foo</option>
 				<option value="bar">bar</option>
 			</select>,
-			container,
+			container
 		);
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(true);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'),
+			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
 		);
 	});
 
@@ -184,12 +184,12 @@ describe('Select / select multiple (JSX)', () => {
 				<option value="foo">foo</option>
 				<option value="bar">bar</option>
 			</select>,
-			container,
+			container
 		);
 		expect(container.firstChild.children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'), // Missing selected markup
+			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>') // Missing selected markup
 		);
 	});
 
@@ -199,13 +199,13 @@ describe('Select / select multiple (JSX)', () => {
 				<option value="foo">foo</option>
 				<option value="bar">bar</option>
 			</select>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.children[0].selected).to.eql(true);
 		expect(container.firstChild.children[1].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'),
+			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
 		);
 
 		render(
@@ -213,13 +213,13 @@ describe('Select / select multiple (JSX)', () => {
 				<option value="foo">foo</option>
 				<option value="bar">bar</option>
 			</select>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>'),
+			innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
 		);
 	});
 
@@ -252,7 +252,7 @@ describe('Select / select multiple (JSX)', () => {
 				<option value={'c'}>c</option>
 				<option value={'d'}>d</option>
 			</select>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.children[0].selected).to.eql(true);
@@ -261,8 +261,8 @@ describe('Select / select multiple (JSX)', () => {
 		expect(container.firstChild.children[3].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
 			innerHTML(
-				'<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>',
-			),
+				'<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
+			)
 		);
 	});
 
@@ -274,7 +274,7 @@ describe('Select / select multiple (JSX)', () => {
 				<option value="c" selected={true}>c</option>
 				<option value="d">d</option>
 			</select>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.children[0].selected).to.eql(true);
@@ -283,8 +283,8 @@ describe('Select / select multiple (JSX)', () => {
 		expect(container.firstChild.children[3].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
 			innerHTML(
-				'<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>',
-			),
+				'<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
+			)
 		);
 	});
 
@@ -301,7 +301,7 @@ describe('Select / select multiple (JSX)', () => {
 				<option value="c">c</option>
 				<option value="d">d</option>
 			</select>,
-			container,
+			container
 		);
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(true);
@@ -309,8 +309,8 @@ describe('Select / select multiple (JSX)', () => {
 		expect(container.firstChild.children[3].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
 			innerHTML(
-				'<select><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>',
-			),
+				'<select><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
+			)
 		);
 	});
 
@@ -322,7 +322,7 @@ describe('Select / select multiple (JSX)', () => {
 				<option value={'c'}>c</option>
 				<option value={'d'}>d</option>
 			</select>,
-			container,
+			container
 		);
 
 		expect(container.firstChild.children[0].selected).to.eql(true);
@@ -331,8 +331,8 @@ describe('Select / select multiple (JSX)', () => {
 		expect(container.firstChild.children[3].selected).to.eql(false);
 		expect(container.innerHTML).to.equal(
 			innerHTML(
-				'<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>',
-			),
+				'<select multiple=""><option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option></select>'
+			)
 		);
 	});
 
@@ -342,7 +342,7 @@ describe('Select / select multiple (JSX)', () => {
 				<option value="a">a</option>
 				<option value="b">b</option>
 			</select>,
-			container,
+			container
 		);
 		container.firstChild.children[1].selected = true;
 		render(
@@ -350,7 +350,7 @@ describe('Select / select multiple (JSX)', () => {
 				<option value="a">a</option>
 				<option value="b">b</option>
 			</select>,
-			container,
+			container
 		);
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(true);
@@ -362,7 +362,7 @@ describe('Select / select multiple (JSX)', () => {
 				<option value="a">a</option>
 				<option selected={true} value="b">b</option>
 			</select>,
-			container,
+			container
 		);
 		expect(container.firstChild.children[0].selected).to.eql(false);
 		expect(container.firstChild.children[1].selected).to.eql(true); // Currently failing due to issue #1031
@@ -373,7 +373,7 @@ describe('Select / select multiple (JSX)', () => {
 			<select id="sel" value="">
 				<option value="">a</option>
 			</select>,
-			container,
+			container
 		);
 		expect(container.firstChild.selectedIndex, 'Initial selected index').to.equal(0);
 		expect(container.firstChild.value, 'Intial value').to.equal('');
@@ -382,7 +382,7 @@ describe('Select / select multiple (JSX)', () => {
 			<select id="sel">
 				<option value="">a</option>
 			</select>,
-			container,
+			container
 		);
 		expect(container.firstChild.value, 'Second selected index').to.equal('');
 		expect(container.firstChild.selectedIndex, 'Second value').to.oneOf([0, -1]);

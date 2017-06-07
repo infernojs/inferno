@@ -7,7 +7,7 @@ import {
 	isObject,
 	isUndefined,
 	LifecycleClass,
-	throwError,
+	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
@@ -22,7 +22,7 @@ export function unmount(
 	parentDom: Element | null,
 	lifecycle: LifecycleClass,
 	canRecycle: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	const flags = vNode.flags;
 
@@ -46,7 +46,7 @@ export function unmountComponent(
 	parentDom: Element | null,
 	lifecycle: LifecycleClass,
 	canRecycle: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	const instance = vNode.children as any;
 	const flags = vNode.flags;
@@ -101,7 +101,7 @@ export function unmountElement(
 	parentDom: Element | null,
 	lifecycle: LifecycleClass,
 	canRecycle: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	const dom = vNode.dom as Element;
 	const ref = vNode.ref as any;

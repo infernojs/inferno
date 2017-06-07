@@ -6,7 +6,7 @@ import {
 	isStringOrNumber,
 	LifecycleClass,
 	throwError,
-	warning,
+	warning
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
@@ -18,7 +18,7 @@ import {
 	mountElement,
 	mountFunctionalComponentCallbacks,
 	mountRef,
-	mountText,
+	mountText
 } from './mounting';
 import { patchProp } from './patching';
 import { componentToDOMNodeMap } from './rendering';
@@ -53,7 +53,7 @@ function hydrateComponent(
 	lifecycle: LifecycleClass,
 	context,
 	isSVG: boolean,
-	isClass: boolean,
+	isClass: boolean
 ): Element {
 	const type = vNode.type;
 	const ref = vNode.ref;
@@ -89,7 +89,7 @@ function hydrateElement(
 	dom: Element,
 	lifecycle: LifecycleClass,
 	context: Object,
-	isSVG: boolean,
+	isSVG: boolean
 ): Element {
 	const children = vNode.children;
 	const props = vNode.props;
@@ -101,7 +101,7 @@ function hydrateElement(
 	if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== vNode.type) {
 		if (process.env.NODE_ENV !== 'production') {
 			warning(
-				"Inferno hydration: Server-side markup doesn't match client-side markup or Initial render target is not empty",
+				"Inferno hydration: Server-side markup doesn't match client-side markup or Initial render target is not empty"
 			);
 		}
 		const newDom = mountElement(vNode, null, lifecycle, context, isSVG);
@@ -152,7 +152,7 @@ function hydrateChildren(
 	parentDom: Element,
 	lifecycle: LifecycleClass,
 	context: Object,
-	isSVG: boolean,
+	isSVG: boolean
 ): void {
 	normalizeChildNodes(parentDom);
 	let dom = parentDom.firstChild;

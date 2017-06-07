@@ -28,7 +28,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					stuff: true,
+					stuff: true
 				};
 
 				updatesAfromOutside = this.updateMe.bind(this);
@@ -36,7 +36,7 @@ describe('Stateful Component updates', () => {
 
 			updateMe() {
 				this.setState({
-					stuff: false,
+					stuff: false
 				});
 			}
 
@@ -80,7 +80,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					show: false,
+					show: false
 				};
 
 				this.domagic = this.domagic.bind(this);
@@ -88,14 +88,14 @@ describe('Stateful Component updates', () => {
 				// Call setState
 				expect(() =>
 					this.setState({
-						show: true,
-					}),
+						show: true
+					})
 				).to.throw;
 			}
 
 			domagic() {
 				this.setState({
-					show: !this.state.show,
+					show: !this.state.show
 				});
 			}
 
@@ -135,7 +135,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					values: [{ checked: false }, { checked: false }, { checked: false }],
+					values: [{ checked: false }, { checked: false }, { checked: false }]
 				};
 
 				this.updateCaller = this.updateCaller.bind(this);
@@ -144,7 +144,7 @@ describe('Stateful Component updates', () => {
 
 			updateCaller() {
 				this.setStateSync({
-					values: [{ checked: false }, { checked: false }],
+					values: [{ checked: false }, { checked: false }]
 				});
 			}
 
@@ -161,7 +161,7 @@ describe('Stateful Component updates', () => {
 
 		render(<A />, container);
 		expect(container.innerHTML).to.equal(
-			innerHTML('<div><input type="checkbox"><input type="checkbox"><input type="checkbox"></div>'),
+			innerHTML('<div><input type="checkbox"><input type="checkbox"><input type="checkbox"></div>')
 		);
 		const firstChild = container.firstChild;
 		expect(firstChild.childNodes[0].checked).to.equal(false);
@@ -203,8 +203,8 @@ describe('Stateful Component updates', () => {
 
 				this.state = {
 					obj: {
-						test: true,
-					},
+						test: true
+					}
 				};
 
 				this.updateCaller = this.updateCaller.bind(this);
@@ -214,8 +214,8 @@ describe('Stateful Component updates', () => {
 			updateCaller() {
 				this.setStateSync({
 					obj: {
-						test: !this.state.obj.test,
-					},
+						test: !this.state.obj.test
+					}
 				});
 			}
 
@@ -247,7 +247,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					b: false,
+					b: false
 				};
 
 				this.imstuck = this.imstuck.bind(this);
@@ -256,7 +256,7 @@ describe('Stateful Component updates', () => {
 
 			imstuck() {
 				this.setStateSync({
-					b: !this.state.b,
+					b: !this.state.b
 				});
 			}
 
@@ -313,8 +313,8 @@ describe('Stateful Component updates', () => {
 
 				this.state = {
 					obj: {
-						test: true,
-					},
+						test: true
+					}
 				};
 
 				this.updateCaller = this.updateCaller.bind(this);
@@ -324,8 +324,8 @@ describe('Stateful Component updates', () => {
 			updateCaller() {
 				this.setStateSync({
 					obj: {
-						test: !this.state.obj.test,
-					},
+						test: !this.state.obj.test
+					}
 				});
 			}
 
@@ -357,7 +357,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					b: false,
+					b: false
 				};
 
 				this.imstuck = this.imstuck.bind(this);
@@ -366,7 +366,7 @@ describe('Stateful Component updates', () => {
 
 			imstuck() {
 				this.setStateSync({
-					b: !this.state.b,
+					b: !this.state.b
 				});
 			}
 
@@ -432,7 +432,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					items: [],
+					items: []
 				};
 
 				this.setItems = this.setItems.bind(this);
@@ -442,7 +442,7 @@ describe('Stateful Component updates', () => {
 
 			setItems(collection) {
 				this.setStateSync({
-					items: collection,
+					items: collection
 				});
 			}
 
@@ -470,32 +470,32 @@ describe('Stateful Component updates', () => {
 			{ value: 'val1', text: 'key1' },
 			{ value: 'val2', text: 'key2' },
 			{ value: 'val3', text: 'key3' },
-			{ value: 'val4', text: 'key4' },
+			{ value: 'val4', text: 'key4' }
 		]);
 
 		expect(container.innerHTML).to.equal(
 			innerHTML(
-				'<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>',
-			),
+				'<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'
+			)
 		);
 
 		setItems([{ value: 'val2', text: 'key2' }, { value: 'val3', text: 'key3' }]);
 		expect(container.innerHTML).to.equal(
 			innerHTML(
-				'<div><ul><li><div class="common-root"><div>DIVval2</div></div><span>key2</span></li><li><div class="common-root"><span>SPANval3</span></div><span>key3</span></li></ul></div>',
-			),
+				'<div><ul><li><div class="common-root"><div>DIVval2</div></div><span>key2</span></li><li><div class="common-root"><span>SPANval3</span></div><span>key3</span></li></ul></div>'
+			)
 		);
 
 		setItems([
 			{ value: 'val1', text: 'key1' },
 			{ value: 'val2', text: 'key2' },
 			{ value: 'val3', text: 'key3' },
-			{ value: 'val4', text: 'key4' },
+			{ value: 'val4', text: 'key4' }
 		]);
 		expect(container.innerHTML).to.equal(
 			innerHTML(
-				'<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>',
-			),
+				'<div><ul><li><div class="common-root"><div>DIVval1</div></div><span>key1</span></li><li><div class="common-root"><span>SPANval2</span></div><span>key2</span></li><li><div class="common-root"><div>DIVval3</div></div><span>key3</span></li><li><div class="common-root"><span>SPANval4</span></div><span>key4</span></li></ul></div>'
+			)
 		);
 	});
 
@@ -508,7 +508,7 @@ describe('Stateful Component updates', () => {
 				super(props);
 
 				this.state = {
-					stuff,
+					stuff
 				};
 
 				updater = _stuff => {
@@ -534,7 +534,7 @@ describe('Stateful Component updates', () => {
 
 	it('Should allow camelCase properties when using JSX plugin', () => {
 		const fakeObj = {
-			func() {},
+			func() {}
 		};
 		const submitSpy = spy(fakeObj, 'func');
 
@@ -647,7 +647,7 @@ describe('Stateful Component updates', () => {
 						checked: props.check,
 						type: props.type,
 						label: props.label,
-						onClick: props.onClick,
+						onClick: props.onClick
 					})}
 					{' '}{props.label}: check, then uncheck
 					<div>{props.children}</div>
@@ -659,13 +659,13 @@ describe('Stateful Component updates', () => {
 			constructor(props) {
 				super(props);
 				this.state = {
-					checks: props.orderedConfigs.map(mod => Boolean(mod.value)),
+					checks: props.orderedConfigs.map(mod => Boolean(mod.value))
 				};
 			}
 
 			handleCheck(index, ifChecked) {
 				this.setState({
-					checks: this.state.checks.map((ch, i) => (i === index ? ifChecked : ch)),
+					checks: this.state.checks.map((ch, i) => (i === index ? ifChecked : ch))
 				});
 			}
 

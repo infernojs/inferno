@@ -73,7 +73,7 @@ describe('connect', () => {
 			return {
 				action: () => {
 					dispatch({ type: 'TEST_ACTION' });
-				},
+				}
 			};
 		};
 		const mapStateToProps = state => state;
@@ -101,7 +101,7 @@ describe('connect', () => {
 			return {
 				action: () => {
 					dispatch({ type: 'TEST_ACTION' });
-				},
+				}
 			};
 		};
 		const mapStateToProps = state => state;
@@ -128,7 +128,7 @@ describe('connect', () => {
 		const mapDispatchToProps = {
 			action: () => {
 				return { type: 'TEST_ACTION' };
-			},
+			}
 		};
 		const mapStateToProps = state => state;
 		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent1);
@@ -147,11 +147,11 @@ describe('connect', () => {
 	it('should override parentProps with stateProps and stateProps with dispatchProps', () => {
 		const store = createStore(state => state);
 		const mapDispatchToProps = dispatch => ({
-			a: 'dispatch',
+			a: 'dispatch'
 		});
 		const mapStateToProps = state => ({
 			a: 'state',
-			b: 'state',
+			b: 'state'
 		});
 		const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(BasicComponent2);
 		render(<ConnectedComponent store={store} a="parent" b="parent" c="parent" />, container);

@@ -40,7 +40,7 @@ function connect(arg1: any, arg2?: any): any {
 			propTypes: componentClass.propTypes,
 			render() {
 				return componentClass.call(this, this.props, this.context);
-			},
+			}
 		});
 
 		return connect(newClass);

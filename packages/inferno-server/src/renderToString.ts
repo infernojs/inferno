@@ -9,7 +9,7 @@ import {
 	isNumber,
 	isStringOrNumber,
 	isTrue,
-	throwError,
+	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { escapeText, isVoidElement as _isVoidElement, toHyphenCase } from './utils';
@@ -154,12 +154,12 @@ function renderVNodeToString(vNode, parent, context, firstChild): string | undef
 			if (typeof vNode === 'object') {
 				throwError(
 					`renderToString() received an object that's not a valid VNode, you should stringify it first. Object: "${JSON.stringify(
-						vNode,
-					)}".`,
+						vNode
+					)}".`
 				);
 			} else {
 				throwError(
-					`renderToString() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`,
+					`renderToString() expects a valid VNode, instead it received an object with the type "${typeof vNode}".`
 				);
 			}
 		}

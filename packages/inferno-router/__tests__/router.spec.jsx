@@ -54,12 +54,12 @@ describe('Router (jsx)', () => {
 						/>
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(
 				innerHTML(
-					'<div><p>Parent Component</p><div>Child is bar Link is <a href="/basename-prefix/foo/test"></a></div></div>',
-				),
+					'<div><p>Parent Component</p><div>Child is bar Link is <a href="/basename-prefix/foo/test"></a></div></div>'
+				)
 			);
 		});
 	});
@@ -71,7 +71,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/:test'} component={({ params }) => <div>Child is {params.test}</div>} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p></div>'));
 		});
@@ -82,7 +82,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/:test'} component={({ params }) => <div>Child is {params.test}</div>} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is bar</div></div>'));
 		});
@@ -93,7 +93,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/:test'} component={({ params }) => <div>Child is {params.test}</div>} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is bar</div></div>'));
 		});
@@ -104,7 +104,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/:test'} component={({ params }) => <div>Child is {params.test}</div>} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is 100%</div></div>'));
 		});
@@ -115,7 +115,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/:test'} component={({ params }) => <div>Child is {params.yar}</div>} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><p>Parent Component</p><div>Child is 50%</div></div>'));
 		});
@@ -126,7 +126,7 @@ describe('Router (jsx)', () => {
 					<Route path={'/level'} component={() => <div>level</div>} />
 					<Route path={'/level-one'} component={() => <div>level-one</div>} />
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>level-one</div>'));
 		});
@@ -160,7 +160,7 @@ describe('Router (jsx)', () => {
 					<Route path={'/foo/bar/*'} component={() => <div>Bad Component</div>} />
 					<Route path={'/foo/bar/yar'} component={GoodComponent} />
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 
@@ -171,7 +171,7 @@ describe('Router (jsx)', () => {
 					<Route path={'/foo/bar/yar'} component={GoodComponent} />
 					<Route path={'/foo/bar/yar/zoo'} component={BadComponent} />
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 		});
@@ -182,7 +182,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/bar'} component={GoodComponent} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 
@@ -192,7 +192,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/yar'} component={BadComponent} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 
@@ -204,7 +204,7 @@ describe('Router (jsx)', () => {
 						</Route>
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Good Component</div></div>'));
 		});
@@ -215,7 +215,7 @@ describe('Router (jsx)', () => {
 						<Route path={'/foo/:test'} component={({ params }) => <div>Param is {params.test}</div>} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Param is bar</div></div>'));
 		});
@@ -227,7 +227,7 @@ describe('Router (jsx)', () => {
 						{[<Route path={'/foo/:test'} component={({ params }) => <div>Param is {params.test}</div>} />]}
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div><div>Param is bar</div></div>'));
 		});
@@ -238,7 +238,7 @@ describe('Router (jsx)', () => {
 						<IndexRoute component={GoodComponent} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component</div>'));
 		});
@@ -256,7 +256,7 @@ describe('Router (jsx)', () => {
 						<Route path="/other" component={GoodComponent} />
 					</Route>
 				</Router>,
-				container,
+				container
 			);
 			expect(container.innerHTML).to.equal(innerHTML('<div>Good Component Clone</div>'));
 		});
@@ -306,7 +306,7 @@ describe('Router (jsx)', () => {
 
 			expect(actual.props.location).to.equal('/');
 			expect(
-				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search,
+				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search
 			).to.equal('/search/foo?arg1=50%25');
 			expect(actual.props.matched.props.params.searchData).to.equal('foo');
 			expect(actual.props.matched.props.params.arg1).to.equal('50%');
@@ -331,7 +331,7 @@ describe('Router (jsx)', () => {
 
 			expect(actual.props.location).to.equal('/');
 			expect(
-				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search,
+				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search
 			).to.equal('/search/100%?arg1=50%25');
 			expect(actual.props.matched.props.params.searchData).to.equal('100%');
 			expect(actual.props.matched.props.params.arg1).to.equal('50%');
@@ -356,7 +356,7 @@ describe('Router (jsx)', () => {
 
 			expect(actual.props.location).to.equal('/');
 			expect(
-				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search,
+				actual.props.matched.props.history.location.pathname + actual.props.matched.props.history.location.search
 			).to.equal('/search/100%?arg1=50%25&arg1=75%25');
 			expect(actual.props.matched.props.params.searchData).to.equal('100%');
 			expect(actual.props.matched.props.params.arg1[0]).to.equal('50%');

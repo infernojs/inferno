@@ -109,9 +109,9 @@ describe('Compat Children', () => {
 						} else {
 							return { done: true };
 						}
-					},
+					}
 				};
-			},
+			}
 		};
 	}
 
@@ -149,7 +149,7 @@ describe('Compat Children', () => {
 		renderCompatTestElement(element);
 
 		expect(container.innerHTML).to.equal(
-			innerHTML('<div><span>generated child body text</span>generated body text</div>'),
+			innerHTML('<div><span>generated child body text</span>generated body text</div>')
 		);
 	});
 });

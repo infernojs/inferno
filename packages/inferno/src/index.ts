@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
 			"It looks like you're using a minified copy of the development build " +
 				'of Inferno. When deploying Inferno apps to production, make sure to use ' +
 				'the production build which skips development warnings and is faster. ' +
-				'See http://infernojs.org for more details.',
+				'See http://infernojs.org for more details.'
 		);
 	}
 }
@@ -48,7 +48,7 @@ export default {
 	linkEvent,
 	options, // DOM
 	render, // DOM
-	version, // DOM
+	version // DOM
 };
 
 export {
@@ -70,5 +70,5 @@ export {
 	linkEvent,
 	options,
 	render,
-	version,
+	version
 };

@@ -8,7 +8,7 @@ class TestCWRP extends Component {
 
 		this.state = {
 			a: 0,
-			b: 0,
+			b: 0
 		};
 	}
 
@@ -73,7 +73,7 @@ describe('state', () => {
 					super(props, context);
 
 					this.state = {
-						testScrollTop: 0,
+						testScrollTop: 0
 					};
 				}
 
@@ -98,7 +98,7 @@ describe('state', () => {
 				constructor(props, context) {
 					super(props, context);
 					this.state = {
-						exampleScrollTop: 0,
+						exampleScrollTop: 0
 					};
 				}
 

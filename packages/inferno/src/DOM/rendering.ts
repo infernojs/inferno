@@ -7,7 +7,7 @@ import {
 	LifecycleClass,
 	NO_OP,
 	throwError,
-	warning,
+	warning
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options, Root } from '../core/options';
@@ -32,7 +32,7 @@ export function findDOMNode(ref) {
 	if (!options.findDOMNodeEnabled) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError(
-				'findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!',
+				'findDOMNode() has been disabled, use Inferno.options.findDOMNodeEnabled = true; enabled findDOMNode(). Warning this can significantly impact performance!'
 			);
 		}
 		throwError();
@@ -57,7 +57,7 @@ function setRoot(dom: Element | SVGAElement, input: InfernoInput, lifecycle: Lif
 	const root: Root = {
 		dom,
 		input,
-		lifecycle,
+		lifecycle
 	};
 
 	roots.push(root);
@@ -76,7 +76,7 @@ function removeRoot(root: Root): void {
 if (process.env.NODE_ENV !== 'production') {
 	if (isBrowser && document.body === null) {
 		warning(
-			'Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.',
+			'Inferno warning: you cannot initialize inferno without "document.body". Wait on "DOMContentLoaded" event, add script to bottom of body, or use async/defer attributes on script tag.'
 		);
 	}
 }
@@ -90,7 +90,7 @@ const documentBody = isBrowser ? document.body : null;
  */
 export function render(
 	input: InfernoInput,
-	parentDom: Element | SVGAElement | DocumentFragment | null | HTMLElement | Node,
+	parentDom: Element | SVGAElement | DocumentFragment | null | HTMLElement | Node
 ): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {

@@ -19,17 +19,17 @@ describe('svg', () => {
 				{
 					height: '16',
 					width: '16',
-					viewBox: '0 0 1024 1024',
+					viewBox: '0 0 1024 1024'
 				},
 				[
 					createElement('stop', {
 						offset: 0,
 						stopColor: 'white',
-						stopOpacity: 0.5,
-					}),
-				],
+						stopOpacity: 0.5
+					})
+				]
 			),
-			container,
+			container
 		);
 
 		expect(container.firstChild.getAttribute('viewBox')).to.equal('0 0 1024 1024');
@@ -44,10 +44,10 @@ describe('svg', () => {
 		render(
 			createElement('svg', null, [
 				createElement('image', {
-					xlinkHref: 'http://i.imgur.com/w7GCRPb.png',
-				}),
+					xlinkHref: 'http://i.imgur.com/w7GCRPb.png'
+				})
 			]),
-			container,
+			container
 		);
 
 		expect(container.firstChild.firstChild.tagName).to.equal('image');

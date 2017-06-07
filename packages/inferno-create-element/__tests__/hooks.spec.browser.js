@@ -28,7 +28,7 @@ describe('lifecycle hooks', () => {
 				onComponentWillUpdate,
 				onComponentDidUpdate,
 				onComponentShouldUpdate,
-				StatelessComponent,
+				StatelessComponent
 			) => {
 				return createElement(
 					StatelessComponent,
@@ -38,16 +38,16 @@ describe('lifecycle hooks', () => {
 						onComponentWillUnmount,
 						onComponentWillUpdate,
 						onComponentDidUpdate,
-						onComponentShouldUpdate,
+						onComponentShouldUpdate
 					},
-					null,
+					null
 				);
 			};
 		});
 
 		it('"onComponentWillMount" hook should fire', () => {
 			const spyObj = {
-				fn: () => {},
+				fn: () => {}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			const node = template(spyObj.fn, null, null, null, null, null, StatelessComponent);
@@ -58,7 +58,7 @@ describe('lifecycle hooks', () => {
 
 		it('"onComponentDidMount" hook should fire, args DOM', () => {
 			const spyObj = {
-				fn: () => {},
+				fn: () => {}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			const node = template(null, spyObj.fn, null, null, null, null, StatelessComponent);
@@ -70,7 +70,7 @@ describe('lifecycle hooks', () => {
 
 		it('"onComponentWillUnmount" hook should fire', () => {
 			const spyObj = {
-				fn: () => {},
+				fn: () => {}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			const node = template(null, null, spyObj.fn, null, null, null, StatelessComponent);
@@ -84,7 +84,7 @@ describe('lifecycle hooks', () => {
 
 		it('"onComponentWillUpdate" hook should fire', () => {
 			const spyObj = {
-				fn: () => {},
+				fn: () => {}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			const node = template(null, null, null, spyObj.fn, null, null, StatelessComponent);
@@ -99,7 +99,7 @@ describe('lifecycle hooks', () => {
 
 		it('"onComponentDidUpdate" hook should fire', () => {
 			const spyObj = {
-				fn: () => {},
+				fn: () => {}
 			};
 			const sinonSpy = spy(spyObj, 'fn');
 			const node = template(null, null, null, null, spyObj.fn, null, StatelessComponent);
@@ -126,7 +126,7 @@ describe('lifecycle hooks', () => {
 					onComponentShouldUpdateCount++;
 					return true;
 				},
-				StatelessComponent,
+				StatelessComponent
 			);
 
 			render(node, container);
@@ -155,7 +155,7 @@ describe('lifecycle hooks', () => {
 					onComponentShouldUpdateCount++;
 					return false;
 				},
-				StatelessComponent,
+				StatelessComponent
 			);
 
 			render(node, container);

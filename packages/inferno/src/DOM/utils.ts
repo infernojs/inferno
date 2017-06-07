@@ -7,7 +7,7 @@ import {
 	isStringOrNumber,
 	isUndefined,
 	LifecycleClass,
-	throwError,
+	throwError
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
@@ -30,7 +30,7 @@ export function createClassComponentInstance(
 	props: Props,
 	context: Object,
 	isSVG: boolean,
-	lifecycle: LifecycleClass,
+	lifecycle: LifecycleClass
 ) {
 	if (isUndefined(context)) {
 		context = EMPTY_OBJ; // Context should not be mutable
@@ -77,7 +77,7 @@ export function createClassComponentInstance(
 	if (isArray(input)) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError(
-				'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.',
+				'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
 			);
 		}
 		throwError();
@@ -108,7 +108,7 @@ export function replaceLastChildAndUnmount(
 	lifecycle: LifecycleClass,
 	context: Object,
 	isSVG: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	replaceVNode(parentDom, mount(nextInput, null, lifecycle, context, isSVG), lastInput, lifecycle, isRecycling);
 }
@@ -124,7 +124,7 @@ export function createFunctionalComponentInput(vNode: VNode, component, props: P
 	if (isArray(input)) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError(
-				'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.',
+				'a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.'
 			);
 		}
 		throwError();
@@ -186,7 +186,7 @@ export function replaceWithNewNode(
 	lifecycle: LifecycleClass,
 	context: Object,
 	isSVG: boolean,
-	isRecycling: boolean,
+	isRecycling: boolean
 ) {
 	unmount(lastNode, null, lifecycle, false, isRecycling);
 	const dom = mount(nextNode, null, lifecycle, context, isSVG);

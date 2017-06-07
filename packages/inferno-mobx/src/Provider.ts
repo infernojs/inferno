@@ -4,17 +4,17 @@ import { warning } from 'inferno-shared';
 const specialKeys = {
 	children: true,
 	key: true,
-	ref: true,
+	ref: true
 };
 
 export default class Provider extends Component<any, any> {
 	public contextTypes: any = {
 		// tslint:disable-next-line:no-empty
-		mobxStores() {},
+		mobxStores() {}
 	};
 	public childContextTypes: any = {
 		// tslint:disable-next-line:no-empty
-		mobxStores() {},
+		mobxStores() {}
 	};
 	private store: any;
 
@@ -44,7 +44,7 @@ export default class Provider extends Component<any, any> {
 			}
 		}
 		return {
-			mobxStores: stores,
+			mobxStores: stores
 		};
 	}
 }
@@ -55,14 +55,14 @@ if (process.env.NODE_ENV !== 'production') {
 		if (Object.keys(nextProps).length !== Object.keys(this.props).length) {
 			warning(
 				'MobX Provider: The set of provided stores has changed. ' +
-					'Please avoid changing stores as the change might not propagate to all children',
+					'Please avoid changing stores as the change might not propagate to all children'
 			);
 		}
 		for (const key in nextProps) {
 			if (!specialKeys[key] && this.props[key] !== nextProps[key]) {
 				warning(
 					`MobX Provider: Provided store '${key}' has changed. ` +
-						`Please avoid replacing stores as the change might not propagate to all children`,
+						`Please avoid replacing stores as the change might not propagate to all children`
 				);
 			}
 		}

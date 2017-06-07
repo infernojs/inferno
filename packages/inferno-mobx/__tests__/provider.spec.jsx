@@ -21,11 +21,11 @@ describe('MobX Provider', () => {
 	describe('updating state', () => {
 		const stores = observable({
 			store1: {
-				data: 'one',
+				data: 'one'
 			},
 			store2: {
-				data: 'two',
-			},
+				data: 'two'
+			}
 		});
 
 		const Statefull = connect(
@@ -42,7 +42,7 @@ describe('MobX Provider', () => {
 						</article>
 					);
 				}
-			},
+			}
 		);
 
 		const Stateless = connect(() => {
@@ -75,8 +75,8 @@ describe('MobX Provider', () => {
 					<Provider store1={stores.store1}>
 						<Statefull />
 					</Provider>,
-					container,
-				),
+					container
+				)
 			).to.not.throw(Error);
 		});
 
@@ -87,7 +87,7 @@ describe('MobX Provider', () => {
 			link.click();
 
 			expect(container.innerHTML).to.equal(
-				innerHTML('<article><a id="update">update</a><span>Statefull</span></article>'),
+				innerHTML('<article><a id="update">update</a><span>Statefull</span></article>')
 			);
 		});
 
@@ -98,7 +98,7 @@ describe('MobX Provider', () => {
 			link.click();
 
 			expect(container.innerHTML).to.equal(
-				innerHTML('<article><a id="update">update</a><span>Stateless</span></article>'),
+				innerHTML('<article><a id="update">update</a><span>Stateless</span></article>')
 			);
 		});
 
@@ -109,7 +109,7 @@ describe('MobX Provider', () => {
 			link.click();
 
 			expect(container.innerHTML).to.equal(
-				innerHTML('<article><a id="update">update</a><span>hello world</span></article>'),
+				innerHTML('<article><a id="update">update</a><span>hello world</span></article>')
 			);
 		});
 	});
@@ -117,11 +117,11 @@ describe('MobX Provider', () => {
 	describe('providing/updating stores', () => {
 		const stores = observable({
 			store1: {
-				data: 'one',
+				data: 'one'
 			},
 			store2: {
-				data: 'two',
-			},
+				data: 'two'
+			}
 		});
 
 		it('should inherit stores from parent', () => {
@@ -140,7 +140,7 @@ describe('MobX Provider', () => {
 						<InheritComponent />
 					</Provider>
 				</Provider>,
-				container,
+				container
 			);
 
 			expect(container.innerHTML).to.equal(innerHTML('<div><span>one</span><span>two</span></div>'));
