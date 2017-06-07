@@ -25,6 +25,9 @@ module.exports = function (config) {
 		browsers: [
 			'Chrome'
 		],
+		client: {
+			captureConsole: false
+		},
 		preprocessors: {
 			[distes]: ['webpack'],
 			[dist]: ['webpack'],
