@@ -1,6 +1,6 @@
 import Component from 'inferno-component';
 import { Atom, extras, Reaction } from 'mobx';
-import { inject } from './inject';
+import inject from './inject';
 
 let isUsingStaticRendering = false;
 
