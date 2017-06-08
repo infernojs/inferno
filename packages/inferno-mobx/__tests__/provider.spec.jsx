@@ -1,11 +1,11 @@
 
 import { render } from 'inferno';
 import Component from 'inferno-component';
-import mobx from 'mobx';
+import { observable } from 'mobx';
 import { innerHTML } from 'inferno/test/utils';
-import { observer, Provider } from '../dist-es';
+import { connect, Provider } from '../dist-es';
 
-describe('old - MobX Provider', () => {
+describe('MobX Provider', () => {
 	let container;
 
 	beforeEach(function () {
@@ -20,7 +20,7 @@ describe('old - MobX Provider', () => {
 	});
 
 	describe('updating state', () => {
-		const stores = mobx.observable({
+		const stores = observable({
 			store1: {
 				data: 'one'
 			},
@@ -29,7 +29,7 @@ describe('old - MobX Provider', () => {
 			}
 		});
 
-		const Statefull = observer(['store1'], class extends Component {
+		const Statefull = connect(['store1'], class extends Component {
 			render({ store1 }) {
 				// eslint-disable-next-line
 				const update = () => store1.data = 'Statefull';
@@ -41,7 +41,7 @@ describe('old - MobX Provider', () => {
 			}
 		});
 
-		const Stateless = observer(() => {
+		const Stateless = connect(() => {
 			// eslint-disable-next-line
 			const update = () => stores.store1.data = 'Stateless';
 
@@ -51,7 +51,7 @@ describe('old - MobX Provider', () => {
 			</article>;
 		});
 
-		const StatelessWithStores = observer(['store1'], (props) => {
+		const StatelessWithStores = connect(['store1'], (props) => {
 			// eslint-disable-next-line
 			const update = () => props.store1.data = 'hello world';
 
@@ -96,7 +96,7 @@ describe('old - MobX Provider', () => {
 	});
 
 	describe('providing/updating stores', () => {
-		const stores = mobx.observable({
+		const stores = observable({
 			store1: {
 				data: 'one'
 			},
@@ -106,7 +106,7 @@ describe('old - MobX Provider', () => {
 		});
 
 		it('should inherit stores from parent', () => {
-			const InheritComponent = observer([ 'store1', 'store2' ], (props) => {
+			const InheritComponent = connect([ 'store1', 'store2' ], (props) => {
 				return <div>
 					<span>{props.store1.data}</span>
 					<span>{props.store2.data}</span>
@@ -121,5 +121,29 @@ describe('old - MobX Provider', () => {
 
 			expect(container.innerHTML).to.equal(innerHTML('<div><span>one</span><span>two</span></div>'));
 		});
+
+		// TODO: UNFINISHED
+		// Commented out as travisCI does not honor skip syntax with all browsers
+		/*
+		 it.skip('should warn if stores change', () => {
+
+		 const TestComponent = connect(['store1'], class extends Component {
+		 componentDidMount() {
+		 stores = observable({
+		 newStore: 'newStore'
+		 });
+		 }
+		 render({ store1 }) {
+		 return <div>{store1.data}</div>;
+		 }
+		 });
+
+		 render(<Provider store1={stores.store1}>
+		 <TestComponent/>
+		 </Provider>, container);
+
+		 expect(container.innerHTML).to.equal(innerHTML('<div>one</div>'));
+		 });
+		 */
 	});
 });

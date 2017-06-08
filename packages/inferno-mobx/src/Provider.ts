@@ -7,7 +7,7 @@ const specialKeys = {
 	ref: true
 };
 
-export class Provider extends Component<any, any> {
+export default class Provider extends Component<any, any> {
 	public contextTypes: any = {
 		// tslint:disable-next-line:no-empty
 		mobxStores() {}
@@ -31,18 +31,18 @@ export class Provider extends Component<any, any> {
 		const stores = {};
 		// inherit stores
 		const baseStores = this.context.mobxStores;
+
 		if (baseStores) {
 			for (const key in baseStores) {
-				stores[key] = baseStores[key];
+				stores[ key ] = baseStores[ key ];
 			}
 		}
 		// add own stores
 		for (const key in this.props) {
-			if (!specialKeys[key] && key !== 'suppressChangedStoreWarning') {
-				stores[key] = this.props[key];
+			if (!specialKeys[ key ]) {
+				stores[ key ] = this.props[ key ];
 			}
 		}
-
 		return {
 			mobxStores: stores
 		};
@@ -52,15 +52,19 @@ export class Provider extends Component<any, any> {
 if (process.env.NODE_ENV !== 'production') {
 	Provider.prototype.componentWillReceiveProps = function(nextProps) {
 
-		// Maybe this warning is too aggressive?
+		// Maybe this warning is to aggressive?
 		if (Object.keys(nextProps).length !== Object.keys(this.props).length) {
-			warning('MobX Provider: The set of provided stores has changed. Please avoid changing stores as the change might not propagate to all children');
+			warning(
+				'MobX Provider: The set of provided stores has changed. ' +
+				'Please avoid changing stores as the change might not propagate to all children'
+			);
 		}
-		if (!nextProps.suppressChangedStoreWarning) {
-			for (const key in nextProps) {
-				if (!specialKeys[key] && this.props[key] !== nextProps[key]) {
-					warning('MobX Provider: Provided store "' + key + '" has changed. Please avoid replacing stores as the change might not propagate to all children');
-				}
+		for (const key in nextProps) {
+			if (!specialKeys[ key ] && this.props[ key ] !== nextProps[ key ]) {
+				warning(
+					`MobX Provider: Provided store '${key}' has changed. ` +
+					`Please avoid replacing stores as the change might not propagate to all children`
+				);
 			}
 		}
 	};
