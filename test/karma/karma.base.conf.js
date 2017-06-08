@@ -7,8 +7,6 @@ const dist = 'packages/*/index.js';
 const benchmarks = `packages/${filter}/__benchmarks__/**/*`;
 const tests = `packages/${filter}/__tests__/**/*`;
 
-console.log({ filter, grep });
-
 module.exports = function (config) {
 	if (grep) {
 		config.set({
@@ -78,6 +76,9 @@ module.exports = function (config) {
 			},
 			performance: {
 				hints: false
+			},
+			devServer: {
+				stats: 'errors-only'
 			}
 		},
 		webpackMiddleware: {
@@ -87,13 +88,11 @@ module.exports = function (config) {
 
 		concurrency: 1,
 		browserConsoleLogOptions: {
-			terminal: true
+			level: 'error',
+			terminal: false
 		},
 		browserDisconnectTimeout: 10000,
 		browserDisconnectTolerance: 2,
-		browserLogOptions: {
-			terminal: true
-		},
 		browserNoActivityTimeout: 2 * 60 * 1000,
 		captureTimeout: 2 * 60 * 10000,
 		autoWatch: false,

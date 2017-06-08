@@ -12,31 +12,14 @@ notifications:
 sudo: required
 dist: trusty
 
-env:
-  - CXX=g++-4.8
 addons:
-  firefox: "latest"
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
-
-addons:
-  at:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
-      - google-chrome-beta
-
-before_install:
-  - "nvm use $TRAVIS_NODE_VERSION"
-  # Repo for newer Node.js versions
-  - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+  chrome: stable
+  firefox: latest
 
 script:
-  - npm test
+  - npm run lint
+  - npm run test:browser
+  - npm run test:server
   - npm run test:package
 
 before_script:
