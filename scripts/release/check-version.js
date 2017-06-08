@@ -12,9 +12,9 @@ fs.readdir(PACKAGE_ROOT, (err, packages) => {
 
 	let fail = false;
 	for (let i = 0, n = packages.length; i < n; i += 1) {
-		const package = packages[i];
-		if (fs.statSync(join(PACKAGE_ROOT, package)).isDirectory()) {
-			const pkgJSON = require(join(PACKAGE_ROOT, package, 'package.json'));
+		const packageName = packages[i];
+		if (fs.statSync(join(PACKAGE_ROOT, packageName)).isDirectory()) {
+			const pkgJSON = require(join(PACKAGE_ROOT, packageName, 'package.json'));
 
 			if (infernoBuildVersion !== pkgJSON.version) {
 				console.error(`${pkgJSON.name} mismatch version @ ${pkgJSON.version}`);
