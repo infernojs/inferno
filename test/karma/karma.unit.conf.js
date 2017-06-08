@@ -20,6 +20,7 @@ module.exports = function (config) {
 			`packages/${process.env.PKG_FILTER || '*'}/__tests__/**/*.js*`
 		],
 		reporters: [
+			'progress',
 			'failed'
 		]
 	});
@@ -37,14 +38,6 @@ module.exports = function (config) {
 	const pullRequest = !String(TRAVIS_PULL_REQUEST).match(/^(0|false|undefined)$/gi);
 	const masterBranch = String(TRAVIS_BRANCH).match(/^master$/gi);
 	const sauce = ci && !pullRequest && masterBranch;
-
-	if (ci) {
-		config.set({
-			reporters: [
-				'failed'
-			]
-		});
-	}
 
 	const varToBool = (sVar) => !!String(sVar).match('true');
 	if (sauce) {
