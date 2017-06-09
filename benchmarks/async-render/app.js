@@ -1,10 +1,16 @@
 (function() {
 	"use strict";
+
+	// React
+	// http://jsfiddle.net/4a3avjqy/
+
 	/* (flags, type, props, children, key, ref, noNormalise) */
 	Inferno.options.recyclingEnabled = true; // Advanced optimisation
 	var createVNode = Inferno.createVNode;
-	var Component = Inferno.Component;
-	var createElement = Inferno.createElement;
+	var Component = Inferno.Component.default;
+	var createElement = Inferno.createElement.default;
+	var setStateCounter = 0;
+
 
 	class List extends Component {
 		constructor() {
@@ -18,13 +24,15 @@
 
 		componentDidMount() {
 			while (this.items.length < 20000) {
-				this.items[this.items.length] = createElement('li', null, `${this.items.length}bar`);
-				this.setState({ items: this.items });
+				this.items[this.items.length] = createVNode(2, 'li', null, `${this.items.length}bar`), null, null, null, false;
+				this.setState({ items: this.items }, function () {
+					console.log(setStateCounter++);
+				});
 			}
 		}
 
 		render() {
-			return createElement('ul', null, this.state.items);
+			return createVNode(2, 'ul', null, this.state.items, null, null, null, false);
 		}
 	}
 
@@ -37,12 +45,14 @@
 
 		for (var i = 0; i < count; i++) {
 			var start = window.performance.now();
+			console.log("Iteration", i);
 
+			debugger;
 			Inferno.render(createElement(List), container);
 
 			var end = window.performance.now();
 
-			Inferno.render(null, container);
+			// Inferno.render(null, container);
 
 			var roundTime = end - start;
 			totalTime += roundTime;
@@ -54,6 +64,6 @@
 			Rounds: ${count},
 			Average: ${totalTime / count},
 			Total: ${totalTime}
-		`), container);
+		`), document.querySelector('#results'));
 	});
 })();

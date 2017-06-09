@@ -220,11 +220,6 @@ describe('SVG (non-jsx)', () => {
 
 		render(template([ 'bar', 'zoo' ]), container);
 		expect(container.firstChild.getAttribute('class')).to.equal('bar,zoo');
-
-		// TODO! Fix this
-		// render(template([ 'bar', null, 'zoo' ]), container);
-		// expect(container.firstChild.getAttribute('class')).to.equal('bar,zoo');
-
 	});
 
 	it('should respect SVG namespace and render SVG attributes', () => {

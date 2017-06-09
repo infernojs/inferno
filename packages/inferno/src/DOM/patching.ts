@@ -1,5 +1,4 @@
 import {
-	combineFrom,
 	isArray,
 	isFunction,
 	isInvalid,
@@ -16,13 +15,11 @@ import {
 } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
-
 import { Styles } from '../core/structures';
-import { createTextVNode, createVoidVNode, directClone, isVNode, VNode } from '../core/VNodes';
+import { createTextVNode, createVoidVNode, directClone, VNode } from '../core/VNodes';
 import { booleanProps, delegatedEvents, isUnitlessNumber, namespaces, skipProps, strictProps } from './constants';
 import { handleEvent } from './events/delegation';
 import { mount, mountArrayChildren, mountComponent, mountElement, mountRef, mountText, mountVoid } from './mounting';
-import { componentToDOMNodeMap } from './rendering';
 import { unmount } from './unmounting';
 import {
 	appendChild,
@@ -112,7 +109,8 @@ export function patch(lastVNode: VNode, nextVNode: VNode, parentDom: Element, li
 }
 
 function unmountChildren(children, dom: Element, lifecycle: LifecycleClass, isRecycling: boolean) {
-	if (isVNode(children)) {
+	// TODO: Check this
+	if (children.flags > 0) {
 		unmount(children, dom, lifecycle, true, isRecycling);
 	} else if (isArray(children)) {
 		removeAllChildren(dom, children, lifecycle, isRecycling);
@@ -228,6 +226,13 @@ function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildre
 			unmountChildren(lastChildren, dom, lifecycle, isRecycling);
 			setTextContent(dom, nextChildren);
 		}
+	} else if (isStringOrNumber(lastChildren)) {
+		unmountChildren(lastChildren, dom, lifecycle, isRecycling);
+		if (isArray(nextChildren)) {
+			mountArrayChildren(nextChildren, dom, lifecycle, context, isSVG);
+		} else {
+			mount(nextChildren, dom, lifecycle, context, isSVG);
+		}
 	} else if (isArray(nextChildren)) {
 		if (isArray(lastChildren)) {
 			patchArray = true;
@@ -241,13 +246,9 @@ function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildre
 	} else if (isArray(lastChildren)) {
 		removeAllChildren(dom, lastChildren, lifecycle, isRecycling);
 		mount(nextChildren, dom, lifecycle, context, isSVG);
-	} else if (isVNode(nextChildren)) {
-		if (isVNode(lastChildren)) {
-			patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
-		} else {
-			unmountChildren(lastChildren, dom, lifecycle, isRecycling);
-			mount(nextChildren, dom, lifecycle, context, isSVG);
-		}
+	} else {
+		// next is vNode, last is vNode
+		patch(lastChildren, nextChildren, dom, lifecycle, context, isSVG, isRecycling);
 	}
 	if (patchArray) {
 		if (patchKeyed) {
@@ -257,6 +258,8 @@ function patchChildren(lastFlags: VNodeFlags, nextFlags: VNodeFlags, lastChildre
 		}
 	}
 }
+
+const C = options.component;
 
 export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: LifecycleClass, context, isSVG: boolean, isClass: boolean, isRecycling: boolean) {
 	const lastType = lastVNode.type;
@@ -271,10 +274,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 		const nextProps = nextVNode.props || EMPTY_OBJ;
 
 		if (isClass) {
-			const instance = lastVNode.children;
-			instance._updating = true;
-
-			if (instance._unmounted) {
+			if ((C.patch as Function)(lastVNode, nextVNode, parentDom, lifecycle, context, isSVG, isRecycling)) {
 				if (isNull(parentDom)) {
 					return true;
 				}
@@ -290,68 +290,7 @@ export function patchComponent(lastVNode, nextVNode, parentDom, lifecycle: Lifec
 					),
 					lastVNode.dom
 				);
-			} else {
-				const hasComponentDidUpdate = !isUndefined(instance.componentDidUpdate);
-				const nextState = instance.state;
-				// When component has componentDidUpdate hook, we need to clone lastState or will be modified by reference during update
-				const lastState = hasComponentDidUpdate ? combineFrom(nextState, null) : nextState;
-				const lastProps = instance.props;
-				let childContext;
-				if (!isNullOrUndef(instance.getChildContext)) {
-					childContext = instance.getChildContext();
-				}
-
-				nextVNode.children = instance;
-				instance._isSVG = isSVG;
-				if (isNullOrUndef(childContext)) {
-					childContext = context;
-				} else {
-					childContext = combineFrom(context, childContext);
-				}
-				const lastInput = instance._lastInput;
-				let nextInput = instance._updateComponent(lastState, nextState, lastProps, nextProps, context, false, false);
-				let didUpdate = true;
-
-				instance._childContext = childContext;
-				if (isInvalid(nextInput)) {
-					nextInput = createVoidVNode();
-				} else if (nextInput === NO_OP) {
-					nextInput = lastInput;
-					didUpdate = false;
-				} else if (isStringOrNumber(nextInput)) {
-					nextInput = createTextVNode(nextInput, null);
-				} else if (isArray(nextInput)) {
-					if (process.env.NODE_ENV !== 'production') {
-						throwError('a valid Inferno VNode (or null) must be returned from a component render. You may have returned an array or an invalid object.');
-					}
-					throwError();
-				} else if (isObject(nextInput)) {
-					if (!isNull((nextInput as VNode).dom)) {
-						nextInput = directClone(nextInput as VNode);
-					}
-				}
-				if (nextInput.flags & VNodeFlags.Component) {
-					nextInput.parentVNode = nextVNode;
-				} else if (lastInput.flags & VNodeFlags.Component) {
-					lastInput.parentVNode = nextVNode;
-				}
-				instance._lastInput = nextInput;
-				instance._vNode = nextVNode;
-				if (didUpdate) {
-					patch(lastInput, nextInput, parentDom, lifecycle, childContext, isSVG, isRecycling);
-					if (hasComponentDidUpdate && instance.componentDidUpdate) {
-						instance.componentDidUpdate(lastProps, lastState);
-					}
-					if (!isNull(options.afterUpdate)) {
-						options.afterUpdate(nextVNode);
-					}
-					if (options.findDOMNodeEnabled) {
-						componentToDOMNodeMap.set(instance, nextInput.dom);
-					}
-				}
-				nextVNode.dom = nextInput.dom;
 			}
-			instance._updating = false;
 		} else {
 			let shouldUpdate = true;
 			const lastProps = lastVNode.props;
@@ -825,7 +764,12 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 
 				if (linkEvent && isFunction(linkEvent)) {
 					dom[ nameLowerCase ] = function(e) {
+						C.rendering = true;
 						linkEvent(nextValue.data, e);
+						if (isFunction(C.flush)) {
+							C.flush();
+						}
+						C.rendering = false;
 					};
 				} else {
 					if (process.env.NODE_ENV !== 'production') {
@@ -834,7 +778,14 @@ export function patchEvent(name: string, lastValue, nextValue, dom) {
 					throwError();
 				}
 			} else {
-				dom[ nameLowerCase ] = nextValue;
+				dom[ nameLowerCase ] = function(event) {
+					C.rendering = true;
+					nextValue(event);
+					if (isFunction(C.flush)) {
+						C.flush();
+					}
+					C.rendering = false;
+				};
 			}
 		}
 	}

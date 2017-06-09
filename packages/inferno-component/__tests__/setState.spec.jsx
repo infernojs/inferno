@@ -510,13 +510,13 @@ describe('setState', () => {
 			}
 
 			_setBar() {
-				this.setStateSync({
+				this.setState({
 					foo: 'bar'
 				});
 			}
 
 			_setActive() {
-				this.setStateSync({
+				this.setState({
 					active: true
 				});
 			}
@@ -582,13 +582,13 @@ describe('setState', () => {
 			}
 
 			_setBar() {
-				this.setStateSync({
+				this.setState({
 					foo: 'bar'
 				});
 			}
 
 			_setActive() {
-				this.setStateSync({
+				this.setState({
 					active: true
 				});
 			}
@@ -612,7 +612,7 @@ describe('setState', () => {
 
 			componentWillReceiveProps(nextProps) {
 				if (nextProps.foo !== 'bar') {
-					this.setStateSync({
+					this.setState({
 						foo: 'bbaarr'
 					});
 

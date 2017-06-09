@@ -108,7 +108,7 @@ export function findAllInVNodeTree(vNodeTree: VNode, predicate: (vNode: VNode) =
 			result = result.concat(findAllInVNodeTree(children, predicate) as VNode[]);
 
 		} else if (isArray(children)) {
-			children.forEach((child) => {
+			(children as any[]).forEach((child) => {
 				result = result.concat(findAllInVNodeTree(child, predicate) as VNode[]);
 			});
 		}

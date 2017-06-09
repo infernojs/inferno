@@ -61,7 +61,7 @@
 		"no-fallthrough": 2,
 		"no-floating-decimal": 2,
 		"no-implied-eval": 2,
-		"no-invalid-this": 2,
+		"no-invalid-this": 1,
 		"no-loop-func": 2,
 		"no-multi-spaces": 2,
 		"no-multi-str": 2,
@@ -73,7 +73,7 @@
 		"no-redeclare": [2, {
 			"builtinGlobals":true
 		}],
-		"no-return-assign": [2, "except-parens"],
+		"no-return-assign": 0,
 		"no-with": 2,
 		"radix": 2,
 		"vars-on-top": 2,

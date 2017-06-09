@@ -53,7 +53,7 @@
     }
 
     Inferno.render(
-        h(MyFoo, {}), 
+        h(MyFoo, {}),
         document.getElementById('app')
     );
 
@@ -109,7 +109,7 @@
     }
 
     Inferno.render(
-        h(MessageList, {messages: [{text: 'first'}, {text: 'second'}]}), 
+        h(MessageList, {messages: [{text: 'first'}, {text: 'second'}]}),
         document.getElementById('app1')
     )
 
@@ -232,7 +232,7 @@
                         })
                     ]),
                     h('select', {
-                        onChange: this.selectChange, 
+                        onChange: this.selectChange,
                         'value': this.state.selectValue
                     }, [
                         h('option', {
@@ -264,9 +264,9 @@
         constructor(props) {
             super(props);
             this.state = {
-                value: 'SYNC', 
-                radio: 'first', 
-                text: 'f', 
+                value: 'SYNC',
+                radio: 'first',
+                text: 'f',
                 selectValue: 'second'
             };
 
@@ -278,19 +278,19 @@
 
         handleChange(event) {
             hoisted.props.value = 200;
-            this.setStateSync({value: event.target.value});
+            this.setState({value: event.target.value});
         }
 
         radioChange(event) {
-            this.setStateSync({radio: event.target.value});
+            this.setState({radio: event.target.value});
         }
 
         textChange(event) {
-            this.setStateSync({text: event.target.value})
+            this.setState({text: event.target.value})
         }
 
         selectChange(event) {
-            this.setStateSync({selectValue: event.target.value});
+            this.setState({selectValue: event.target.value});
         }
 
         render() {
@@ -337,7 +337,7 @@
                         })
                     ]),
                     h('select', {
-                        onChange: this.selectChange, 
+                        onChange: this.selectChange,
                         'value': this.state.selectValue
                     }, [
                         h('option', {
@@ -359,11 +359,11 @@
 
     // render an instance of Clock into <body>:
     Inferno.render(
-        h(NameForm, {}), 
+        h(NameForm, {}),
         document.getElementById('app3')
     );
     Inferno.render(
-        h(NameForm2, {}), 
+        h(NameForm2, {}),
         document.getElementById('app4')
     );
 </script>

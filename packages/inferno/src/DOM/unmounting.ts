@@ -1,18 +1,9 @@
-import {
-	isArray,
-	isFunction,
-	isInvalid,
-	isNull,
-	isNullOrUndef,
-	isObject, isUndefined,
-	LifecycleClass,
-	throwError
-} from 'inferno-shared';
+import { isArray,  isFunction, isInvalid, isNull, isNullOrUndef, isObject, isStringOrNumber, LifecycleClass, throwError } from 'inferno-shared';
 import VNodeFlags from 'inferno-vnode-flags';
 import { options } from '../core/options';
-import { InfernoChildren, Ref, VNode } from '../core/VNodes';
+import { Ref, VNode } from '../core/VNodes';
 import { isAttrAnEvent, patchEvent } from './patching';
-import { poolComponent, poolElement } from './recycling';
+import { componentPools, elementPools, pool } from './recycling';
 import { componentToDOMNodeMap } from './rendering';
 import { removeChild } from './utils';
 
@@ -37,20 +28,20 @@ function unmountVoidOrText(vNode: VNode, parentDom: Element|null) {
 export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycle: LifecycleClass, canRecycle: boolean, isRecycling: boolean) {
 	const instance = vNode.children as any;
 	const flags = vNode.flags;
-	const isStatefulComponent = flags & VNodeFlags.ComponentClass;
+	const isStatefulComponent: boolean = (flags & VNodeFlags.ComponentClass) > 0;
 	const ref = vNode.ref as any;
 	const dom = vNode.dom as Element;
 
 	if (!isRecycling) {
 		if (isStatefulComponent) {
 			if (!instance._unmounted) {
-				if (!isNull(options.beforeUnmount)) {
+				if (isFunction(options.beforeUnmount)) {
 					options.beforeUnmount(vNode);
 				}
-				if (!isUndefined(instance.componentWillUnmount)) {
+				if (isFunction(instance.componentWillUnmount)) {
 					instance.componentWillUnmount();
 				}
-				if (ref && !isRecycling) {
+				if (isFunction(ref) && !isRecycling) {
 					ref(null);
 				}
 				instance._unmounted = true;
@@ -62,7 +53,7 @@ export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycl
 			}
 		} else {
 			if (!isNullOrUndef(ref)) {
-				if (!isNullOrUndef(ref.onComponentWillUnmount)) {
+				if (isFunction(ref.onComponentWillUnmount)) {
 					ref.onComponentWillUnmount(dom);
 				}
 			}
@@ -79,7 +70,17 @@ export function unmountComponent(vNode: VNode, parentDom: Element|null, lifecycl
 		removeChild(parentDom, dom);
 	}
 	if (options.recyclingEnabled && !isStatefulComponent && (parentDom || canRecycle)) {
-		poolComponent(vNode);
+		const hooks = ref;
+		if (hooks && (
+				hooks.onComponentWillMount ||
+				hooks.onComponentWillUnmount ||
+				hooks.onComponentDidMount ||
+				hooks.onComponentWillUpdate ||
+				hooks.onComponentDidUpdate
+			)) {
+			return;
+		}
+		pool(vNode, componentPools);
 	}
 }
 
@@ -93,8 +94,18 @@ export function unmountElement(vNode: VNode, parentDom: Element|null, lifecycle:
 	}
 	const children = vNode.children;
 
-	if (!isNullOrUndef(children)) {
-		unmountChildren(children, lifecycle, isRecycling);
+	if (!isNullOrUndef(children) && !isStringOrNumber(children)) {
+		if (isArray(children)) {
+			for (let i = 0, len = (children as Array<string | number | VNode>).length; i < len; i++) {
+				const child = children[ i ];
+
+				if (!isInvalid(child) && isObject(child)) {
+					unmount(child as VNode, null, lifecycle, false, isRecycling);
+				}
+			}
+		} else {
+			unmount(children as VNode, null, lifecycle, false, isRecycling);
+		}
 	}
 
 	if (!isNull(props)) {
@@ -111,21 +122,7 @@ export function unmountElement(vNode: VNode, parentDom: Element|null, lifecycle:
 		removeChild(parentDom, dom);
 	}
 	if (options.recyclingEnabled && (parentDom || canRecycle)) {
-		poolElement(vNode);
-	}
-}
-
-function unmountChildren(children: InfernoChildren, lifecycle: LifecycleClass, isRecycling: boolean) {
-	if (isArray(children)) {
-		for (let i = 0, len = (children as Array<string | number | VNode>).length; i < len; i++) {
-			const child = children[ i ];
-
-			if (!isInvalid(child) && isObject(child)) {
-				unmount(child as VNode, null, lifecycle, false, isRecycling);
-			}
-		}
-	} else if (isObject(children)) {
-		unmount(children as VNode, null, lifecycle, false, isRecycling);
+		pool(vNode, elementPools);
 	}
 }
 

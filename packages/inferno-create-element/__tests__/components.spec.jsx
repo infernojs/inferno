@@ -1842,7 +1842,7 @@ describe('Components (JSX)', () => {
 				}
 
 				changeDOM() {
-					this.setStateSync({
+					this.setState({
 						bool: !this.state.bool
 					});
 				}
@@ -1892,7 +1892,7 @@ describe('Components (JSX)', () => {
 			}
 
 			changeDOM() {
-				this.setStateSync({
+				this.setState({
 					bool: !this.state.bool
 				});
 			}
@@ -2081,7 +2081,7 @@ describe('Components (JSX)', () => {
 				}
 
 				toggle1() {
-					this.setStateSync({
+					this.setState({
 						toggle1: !this.state.toggle1
 					});
 				}
@@ -2137,7 +2137,7 @@ describe('Components (JSX)', () => {
 				}
 
 				toggle1() {
-					this.setStateSync({
+					this.setState({
 						toggle1: !this.state.toggle1
 					});
 				}
@@ -2442,7 +2442,7 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-					this.setStateSync({ n: !this.state.n });
+					this.setState({ n: !this.state.n });
 				};
 			}
 
@@ -2485,7 +2485,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={() => {
-							this.setStateSync({ reverse: !this.state.reverse });
+							this.setState({ reverse: !this.state.reverse });
 						}}>Swap Rows
 						</button>
 						<div>
@@ -2497,8 +2497,11 @@ describe('Components (JSX)', () => {
 		}
 
 		// this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
-		it('should correct swap rows', () => {
-			render(<Test />, container);
+		it('should correct swap rows #1', () => {
+			let testInstance = null;
+			// eslint-disable-next-line
+			render(<Test ref={(i) => testInstance = i} />, container);
+
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
 			// click on "SPAN"
 			container.querySelector('span').click();
@@ -2511,8 +2514,11 @@ describe('Components (JSX)', () => {
 			container.querySelector('button').click();
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>DIV</div><div>ROW</div></div></div>');
 			// click on "DIV"
+			let reversedChildren = testInstance._lastInput.children[1].children;
 			div.click();
 			// "DIV" should now be "SPAN"
+			// When debugging component._vNode is fresh, but here ...
+			reversedChildren = testInstance._lastInput.children[1].children; // <== component B is still pointing to old DOM Node
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
 			// click "SWAP ROWS"
 			container.querySelector('button').click();
@@ -2530,7 +2536,7 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-					this.setStateSync({ n: !this.state.n });
+					this.setState({ n: !this.state.n });
 				};
 			}
 
@@ -2577,7 +2583,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={() => {
-							this.setStateSync({ reverse: !this.state.reverse });
+							this.setState({ reverse: !this.state.reverse });
 						}}>Swap Rows
 						</button>
 						<div>
@@ -2589,7 +2595,7 @@ describe('Components (JSX)', () => {
 		}
 
 		// this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
-		it('should correct swap rows', () => {
+		it('should correct swap rows #2', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
 			// click on "SPAN"
@@ -2622,7 +2628,7 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-					this.setStateSync({ n: !this.state.n });
+					this.setState({ n: !this.state.n });
 				};
 			}
 
@@ -2663,7 +2669,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={() => {
-							this.setStateSync({ reverse: !this.state.reverse });
+							this.setState({ reverse: !this.state.reverse });
 						}}>Swap Rows
 						</button>
 						<div>
@@ -2675,7 +2681,7 @@ describe('Components (JSX)', () => {
 		}
 
 		// this test is to replicate https://jsfiddle.net/localvoid/r070sgrq/2/
-		it('should correct swap rows', () => {
+		it('should correct swap rows #3', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>ROW</div></div></div>');
 			// click on "SPAN"
@@ -2706,7 +2712,7 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-					this.setStateSync({ n: !this.state.n });
+					this.setState({ n: !this.state.n });
 				};
 			}
 
@@ -2748,7 +2754,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={() => {
-							this.setStateSync({ reverse: !this.state.reverse });
+							this.setState({ reverse: !this.state.reverse });
 						}}>Swap Rows
 						</button>
 						<div>
@@ -2762,7 +2768,7 @@ describe('Components (JSX)', () => {
 			}
 		}
 
-		it('should correct swap rows', () => {
+		it('should correct swap rows #4', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>');
 			// click "SWAP ROWS"
@@ -2782,7 +2788,7 @@ describe('Components (JSX)', () => {
 				this.state = { n: false };
 
 				this.onClick = () => {
-					this.setStateSync({ n: !this.state.n });
+					this.setState({ n: !this.state.n });
 				};
 			}
 
@@ -2826,7 +2832,7 @@ describe('Components (JSX)', () => {
 				return (
 					<div>
 						<button onClick={() => {
-							this.setStateSync({ reverse: !this.state.reverse });
+							this.setState({ reverse: !this.state.reverse });
 						}}>Swap Rows
 						</button>
 						<div>
@@ -2840,7 +2846,7 @@ describe('Components (JSX)', () => {
 			}
 		}
 
-		it('should correct swap rows', () => {
+		it('should correct swap rows #5', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><span>SPAN</span><div>A</div></div><div><span>SPAN</span><div>A</div></div></div>');
 			// click "SWAP ROWS"
@@ -2880,7 +2886,7 @@ describe('Components (JSX)', () => {
 					<div>
 						<button onClick={() => {
 							i++;
-							this.setStateSync({});
+							this.setState({});
 						}}>Replace
 						</button>
 						<div>
@@ -2932,7 +2938,7 @@ describe('Components (JSX)', () => {
 		}
 
 		// this test is to replicate https://jsfiddle.net/localvoid/fmznjwxv/
-		it('should correct swap rows', () => {
+		it('should correct swap rows #6', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>');
 			// click "SWAP ROWS"
@@ -2976,7 +2982,7 @@ describe('Components (JSX)', () => {
 		}
 
 		// this test is to replicate https://jsfiddle.net/localvoid/fmznjwxv/
-		it('should correct swap rows', () => {
+		it('should correct swap rows #7', () => {
 			render(<Test />, container);
 			expect(container.innerHTML).to.eql('<div><button>Swap Rows</button><div><div>B</div><div>A</div></div><div><div>B</div><div>A</div></div></div>');
 			// click "SWAP ROWS"

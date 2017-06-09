@@ -51,11 +51,11 @@ describe('Components (JSX) #2', () => {
 
 		class ComponentBWithStateChange extends Component {
 			componentWillMount() {
-				this.setStateSync({
+				this.setState({
 					text: 'newText'
 				});
 
-				this.setStateSync({
+				this.setState({
 					text: 'newText2'
 				});
 			}
@@ -124,13 +124,13 @@ describe('Components (JSX) #2', () => {
 			}
 
 			_update() {
-				this.setStateSync({
+				this.setState({
 					data: 'bar'
 				});
 			}
 
 			componentWillMount() {
-				this.setStateSync({
+				this.setState({
 					data: 'foo'
 				});
 			}
@@ -194,13 +194,13 @@ describe('Components (JSX) #2', () => {
 			}
 
 			_update() {
-				this.setStateSync({
+				this.setState({
 					data: 'bar'
 				});
 			}
 
 			componentWillMount() {
-				this.setStateSync({
+				this.setState({
 					data: 'foo'
 				});
 			}

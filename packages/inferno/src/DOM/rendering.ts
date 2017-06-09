@@ -1,5 +1,6 @@
 import {
 	isBrowser,
+	isFunction,
 	isInvalid,
 	isNull,
 	isNullOrUndef,
@@ -22,6 +23,7 @@ import { EMPTY_OBJ } from './utils';
 // given there shouldn't be THAT many roots on the page, the difference
 // in performance is huge: https://esbench.com/bench/5802a691330ab09900a1a2da
 export const componentToDOMNodeMap = new Map();
+const C = options.component;
 const roots = options.roots;
 /**
  * When inferno.options.findDOMNOdeEnabled is true, this function will return DOM Node by component instance
@@ -81,10 +83,11 @@ const documentBody = isBrowser ? document.body : null;
 /**
  * Renders virtual node tree into parent node.
  * @param {VNode | null | string | number} input vNode to be rendered
- * @param parentDom DOM node which content will be replaced by virtual node
+ * @param {*} parentDom DOM node which content will be replaced by virtual node
+ * @param {Function?} callback Callback to be called after rendering has finished
  * @returns {InfernoChildren} rendered virtual node
  */
-export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | null | HTMLElement | Node): InfernoChildren {
+export function render(input: InfernoInput, parentDom: Element | SVGAElement | DocumentFragment | null | HTMLElement | Node, callback?: Function): InfernoChildren {
 	if (documentBody === parentDom) {
 		if (process.env.NODE_ENV !== 'production') {
 			throwError('you cannot render() to the "document.body". Use an empty element as a container instead.');
@@ -94,6 +97,7 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
 	if ((input as any) === NO_OP) {
 		return;
 	}
+	C.rendering = true;
 	let root = getRoot(parentDom);
 
 	if (isNull(root)) {
@@ -125,6 +129,15 @@ export function render(input: InfernoInput, parentDom: Element | SVGAElement | D
 		root.input = input;
 		lifecycle.trigger();
 	}
+
+	if (!isNullOrUndef(callback)) {
+		callback();
+	}
+	if (isFunction(C.flush)) {
+		C.flush();
+	}
+	C.rendering = false;
+
 	if (root) {
 		const rootInput: VNode = root.input as VNode;
 
