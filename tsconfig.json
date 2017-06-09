@@ -20,6 +20,6 @@
 		"removeComments": false
 	},
 	"include": [
-		"src/**/*"
+		"./src"
 	]
 }
