@@ -175,7 +175,14 @@ const injectStringRefs = function(originalFunction) {
 				}
 			}
 		}
-		return originalFunction(name, props, ...children);
+		const vnode = originalFunction(name, props, ...children);
+
+		if (vnode.className) {
+			vnode.props = vnode.props || {};
+			vnode.props.className = vnode.className;
+		}
+
+		return vnode;
 	};
 };
 

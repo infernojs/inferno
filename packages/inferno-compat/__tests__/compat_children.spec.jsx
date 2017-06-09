@@ -20,6 +20,12 @@ describe('Compat Children', () => {
 		render(element, container);
 	}
 
+	it('should create a VNode with the correct className', function () {
+		const element = createElement('div', { className: 'foo', test: 'hi' });
+		expect(element.className).to.equal('foo');
+		expect(element.props).to.eql({ test: 'hi', className: 'foo' });
+	});
+
 	it('Should render element with a text string', function () {
 		const element = createElement('div', null, 'body text');
 		expect(isValidElement(element)).to.be.true;

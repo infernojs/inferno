@@ -184,7 +184,7 @@
     "prettier:packages:ts": "./scripts/tasks/prettier.sh --parser=typescript packages/*/{src,__tests__}/**/*.{ts,tsx} packages/*/{src,__tests__}/*.{ts,tsx}",
     "prettier:fixtures": "./scripts/tasks/prettier.sh fixtures/**/*.{js,jsx}",
     "test:bench": "node test/karma/bench.js",
-    "test:browser": "karma start test/karma/karma.unit.conf.js --log-level debug",
+    "test:browser": "karma start test/karma/karma.unit.conf.js",
     "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
     "test:package": "node fixtures/packaging/build-all.js",
     "test:quick": "cross-env mocha",
