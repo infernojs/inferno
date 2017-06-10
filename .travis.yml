@@ -27,7 +27,9 @@ before_script:
 jobs:
   include:
     - script: npm run lint
-    - script: npm run test:coveralls
+    - script:
+        - npm run test:coverage
+        - npm run coveralls
     - script: npm run test:browser
     - stage: Build
       script:

@@ -23,7 +23,7 @@
   },
   "scripts": {
     "clean": "lerna exec -- rimraf dist",
-    "coveralls": "coveralls < coverage/lcov.info",
+    "coveralls": "coveralls < coverage/lcov.info || true",
     "prebuild": "npm run clean",
     "postbuild": "rimraf build",
     "build": "npm-run-all -l --parallel build:**",
@@ -46,7 +46,7 @@
     "postinstall": "lerna bootstrap",
     "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "jest",
-    "test:coveralls": "node ./scripts/test/test.sh",
+    "test:coverage": "node ./scripts/test/test.sh", 
     "test:browser": "npm run --prefix fixtures/browser test",
     "test:react": "npm run --prefix fixtures/react test",
     "test:package": "node fixtures/packaging/build-all.js",
