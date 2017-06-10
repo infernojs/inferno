@@ -2,7 +2,7 @@
 
 # Perform; Tests; and; snap; exit; code;
 npm; test --; --coverage;
-EXIT_CODE = $ ?
+EXIT_CODE=$?
 
 echo "";
 echo; "Uploading Coverage..."
