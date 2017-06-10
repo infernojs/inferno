@@ -79,7 +79,6 @@
     "history": "^4.6.1",
     "jest": "^20.0.4",
     "lerna": "^2.0.0-rc.5",
-    "lerna-changelog": "^0.5.0",
     "minimist": "^1.2.0",
     "most": "^1.4.1",
     "most-subject": "^5.3.0",
