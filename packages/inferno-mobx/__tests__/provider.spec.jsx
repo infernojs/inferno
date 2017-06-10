@@ -148,7 +148,7 @@ describe('MobX Provider', () => {
 		 <TestComponent/>
 		 </Provider>, container);
 
-		 expect(container.innerHTML).to.equal(innerHTML('<div>one</div>'));
+		 expect(container.innerHTML).toEqual(innerHTML('<div>one</div>'));
 		 });
 		 */
 	});

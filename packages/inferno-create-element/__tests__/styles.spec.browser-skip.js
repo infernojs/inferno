@@ -151,10 +151,10 @@
 // 			it(test.description, () => {
 
 // 				render(test.template(), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				render(test.template(), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 			});
 // 		});
@@ -169,18 +169,18 @@
 // 		}].forEach((test) => {
 // 			it(test.description, () => {
 // 				render(test.template(), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				render(test.template(), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template(), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				render(test.template(), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 			});
 // 		});
@@ -195,47 +195,47 @@
 // 		}].forEach((test) => {
 // 			it(test.description, () => {
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template(), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 
 // 				render(test.template(), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 			});
 // 		});
@@ -250,42 +250,42 @@
 // 		}].forEach((test) => {
 // 			it(test.description, () => {
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template({}), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 				render(test.template({}), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 			});
 // 		});
@@ -304,43 +304,43 @@
 // 			it(test.description, () => {
 // 				render(test.template({}), container);
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 			});
 
 // 			it(test.description, () => {
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 				render(test.template(arg.value), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 			});
 // 			it(test.description, () => {
 // 				render(test.template({}), container);
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 				render(test.template(null), container);
-// 				expect(container.firstChild.nodeType).to.equal(1);
+// 				expect(container.firstChild.nodeType).toEqual(1);
 // 				expect(container.firstChild.getAttribute('style')).to.be.oneOf(style(arg.expected));
 // 				expect(container.firstChild.firstChild.getAttribute('style')).to.oneOf([ null, '' ]);
 // 			});
@@ -375,7 +375,7 @@
 
 // 	 shorthands.forEach(cssProperty => {
 // 	 it(`should set ${ cssProperty } to ${ style[ stylePropName ] }px`, () => {
-// 	 expect(container.firstChild.style[ cssProperty ]).to.equal(comparator);
+// 	 expect(container.firstChild.style[ cssProperty ]).toEqual(comparator);
 // 	 });
 // 	 });
 // 	 });
@@ -412,7 +412,7 @@
 // 	 let comparator = values[ index % values.length ];
 
 // 	 it(`should set ${ cssProperty } to ${ comparator }`, () => {
-// 	 expect(container.firstChild.style[ cssProperty ]).to.equal(comparator);
+// 	 expect(container.firstChild.style[ cssProperty ]).toEqual(comparator);
 // 	 });
 // 	 });
 // 	 });
@@ -430,7 +430,7 @@
 // 			}
 // 		});
 // 		render(template(), container);
-// 		expect(container.innerHTML).to.equal(innerHTML('<div style="width: 200px; height: 200px; background-color: red;"></div>'));
+// 		expect(container.innerHTML).toEqual(innerHTML('<div style="width: 200px; height: 200px; background-color: red;"></div>'));
 // 	});
 
 // 	it('Should support changing values and properties', () => {
@@ -469,9 +469,9 @@
 // 			style: 'float: left;'
 // 		}), container);
 
-// 		expect(container.innerHTML).to.equal(innerHTML('<div style="float: left;"></div>'));
+// 		expect(container.innerHTML).toEqual(innerHTML('<div style="float: left;"></div>'));
 
 // 		render(createElement('div', null), container);
-// 		expect(container.innerHTML).to.equal(innerHTML('<div></div>'));
+// 		expect(container.innerHTML).toEqual(innerHTML('<div></div>'));
 // 	});
 // });

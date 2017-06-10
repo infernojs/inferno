@@ -1,9 +1,9 @@
 
-import Component from 'inferno-component';
 import { render } from 'inferno';
+import Component from 'inferno-component';
 import createElement from 'inferno-create-element';
-import { innerHTML } from 'inferno-utils';
 import { connect, inject, Provider } from 'inferno-mobx';
+import { innerHTML } from 'inferno-utils';
 
 describe('MobX connect()', () => {
 
@@ -27,13 +27,13 @@ describe('MobX connect()', () => {
 describe('MobX inject()', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		document.body.removeChild(container);
 	});

@@ -1,19 +1,19 @@
 
 import { render } from 'inferno';
+import createClass from 'inferno-create-class';
 import createElement from 'inferno-create-element';
 import { innerHTML } from 'inferno-utils';
-import createClass from 'inferno-create-class';
 
 describe('Components createClass (non-JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		container.style.display = 'none';
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		document.body.removeChild(container);
 		render(null, container);
 	});

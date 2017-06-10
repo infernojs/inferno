@@ -6,12 +6,12 @@ import pkgJSON from '../package.json';
 describe('rendering routine', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -51,6 +51,6 @@ describe('rendering routine', () => {
 	});
 
 	it('Should have same version number string as package.json', () => {
-		expect(pkgJSON.version).to.equal(version);
+		expect(pkgJSON.version).toEqual(version);
 	});
 });

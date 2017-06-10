@@ -1367,16 +1367,16 @@ describe('Component lifecycle (JSX)', () => {
 		// 	}
 		//
 		// 	render(<Parent bool={true}/>, container);
-		// 	expect(spy5.callCount).to.equal(1);
+		// 	expect(spy5.callCount).toEqual(1);
 		// 	render(<Parent bool={false}/>, container);
 		//
 		// 	setTimeout(function () {
-		// 		expect(spy5.callCount).to.equal(2); // mount + unmount
+		// 		expect(spy5.callCount).toEqual(2); // mount + unmount
 		//
-		// 		expect(spy1.callCount).to.equal(1);
-		// 		expect(spy2.callCount).to.equal(0);
-		// 		expect(spy3.callCount).to.equal(1);
-		// 		expect(spy4.callCount).to.equal(1); // 2 refs
+		// 		expect(spy1.callCount).toEqual(1);
+		// 		expect(spy2.callCount).toEqual(0);
+		// 		expect(spy3.callCount).toEqual(1);
+		// 		expect(spy4.callCount).toEqual(1); // 2 refs
 		//
 		// 		setTimeout(function () {
 		// 			done();

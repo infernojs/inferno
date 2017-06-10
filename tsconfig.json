@@ -40,6 +40,7 @@
 		"rootDir": "."
 	},
 	"include": [
-		"packages/*/src"
+		"packages/*/src",
+		"packages/*/__tests__"
 	]
 }

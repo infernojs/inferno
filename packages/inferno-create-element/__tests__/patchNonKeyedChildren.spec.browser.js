@@ -4,7 +4,7 @@ import createElement from 'inferno-create-element';
 
 function generateNodes(array) {
 	let i, id;
-	let children = [];
+	const children = [];
 
 	for (i = 0; i < array.length; i++) {
 		id = array[ i ];
@@ -23,16 +23,16 @@ function spanTagWithText(text) {
 describe('Non Keyed nodes', () => {
 	let container;
 
-	let template = function (child) {
+	const template = function(child) {
 		return createElement('div', null, child);
 	};
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);

@@ -6,11 +6,11 @@ import { innerHTML } from 'inferno-utils';
 describe('Update (non-jsx)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 	});
 
@@ -367,7 +367,7 @@ describe('Update (non-jsx)', () => {
 	});
 
 	it('should handle lots of dynamic variables', () => {
-		const template = function (val1, val2, val3, val4, val5, val6) {
+		const template = function(val1, val2, val3, val4, val5, val6) {
 			return createElement('div',
 				{
 					className: val2,
@@ -510,7 +510,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should patch a text node into a tag node', () => {
 		const template = (child) => createElement('div', null, child);
-		const span = function () {
+		const span = function() {
 			return 'Hello';
 		};
 
@@ -537,7 +537,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should render text then update it', () => {
 		const template = (child) => createElement('div', null, child);
-		const span = function () {
+		const span = function() {
 			return 'Hello';
 		};
 
@@ -549,7 +549,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should render text then update to an array of text nodes', () => {
 		const template = (child) => createElement('div', null, child);
-		const span = function () {
+		const span = function() {
 			return createElement('span', null, 'Hello ', 'World', '!');
 		};
 
@@ -562,7 +562,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should render an array of text nodes then update to a single text node', () => {
 		const template = (child) => createElement('div', null, child);
-		const span = function () {
+		const span = function() {
 			return createElement('span', null, 'Hello ', 'World', '!');
 		};
 
@@ -572,7 +572,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should update and array of text nodes to another array of text nodes', () => {
 		const template = (child) => createElement('div', null, child);
-		const span = function () {
+		const span = function() {
 			return createElement('span', null, 'Hello ', 'World');
 		};
 
@@ -582,7 +582,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should update and array of text nodes to another array of text nodes #2', () => {
 		const template = (child) => createElement('div', null, child);
-		const span = function () {
+		const span = function() {
 			return createElement('span', null, 'Hello ', 'World', '!');
 		};
 
@@ -608,7 +608,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should update an node with static child and dynamic custom attribute', () => {
 		const template = (child) => createElement('div', null, createElement('div', null, child));
-		const span = function (val) {
+		const span = function(val) {
 			return createElement('span', {
 				custom_attr: val
 			});
@@ -622,7 +622,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should update an node with static child and dynamic custom attribute and static text', () => {
 		const template = (child) => createElement('div', null, createElement('div', null, child));
-		const span = function (val) {
+		const span = function(val) {
 			return createElement('span', {
 				custom_attr: val
 			}, 'Hello!!');
@@ -636,7 +636,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should update an node with static child and dynamic custom attribute and static text #2', () => {
 		const template = (child) => createElement('div', null, createElement('div', null, child));
-		const span = function (val) {
+		const span = function(val) {
 			return createElement('span', {
 				custom_attr: val
 			}, 'Hello!!');
@@ -690,7 +690,7 @@ describe('Update (non-jsx)', () => {
 
 	it('should update an node with dynamic child', () => {
 		const template = (child) => createElement('div', null, createElement('div', null, child));
-		const span = function () {
+		const span = function() {
 			return createElement('span', null, 'Hello ', 'World');
 		};
 		render(template(span()), container);

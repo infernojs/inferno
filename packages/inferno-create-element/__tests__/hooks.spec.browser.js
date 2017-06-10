@@ -15,11 +15,11 @@ describe('lifecycle hooks', () => {
 			return divTemplate();
 		}
 
-		afterEach(function () {
+		afterEach(function() {
 			render(null, container);
 		});
 
-		beforeEach(function () {
+		beforeEach(function() {
 			container = document.createElement('div');
 
 			template = (onComponentWillMount, onComponentDidMount, onComponentWillUnmount, onComponentWillUpdate, onComponentDidUpdate, onComponentShouldUpdate, StatelessComponent) => {

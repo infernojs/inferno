@@ -4,12 +4,12 @@ import Component from 'inferno-component';
 describe('BUG: instance - null', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		container.innerHTML = '';
 		document.body.removeChild(container);
 	});
@@ -50,7 +50,7 @@ describe('BUG: instance - null', () => {
 
 			return (
 				<svg focusable="false" className={'svgicon'}>
-					<use xlink:href={props.icon}/>
+					<use xlink: href={props.icon}/>
 				</svg>
 			);
 		}
@@ -312,7 +312,6 @@ describe('BUG: instance - null', () => {
 		}
 	}
 
-
 	it('Should not fail', (done) => {
 		const items = [{
 			text: 'Implementation',
@@ -330,7 +329,7 @@ describe('BUG: instance - null', () => {
 			<div>
 				<Dropdown
 					items={items}
-					changeCallback={function () {
+					changeCallback={function() {
 					}}
 					changeParams={{ guid: 'foo', field: 'activityType' }}
 					value={value}
@@ -339,13 +338,13 @@ describe('BUG: instance - null', () => {
 			container
 		);
 
-		setTimeout(function () {
+		setTimeout(function() {
 			container.querySelector('#MAGICBUTTON').click();
 
-			setTimeout(function () {
+			setTimeout(function() {
 				container.querySelector('#MAGICBUTTON').click();
 
-				setTimeout(function () {
+				setTimeout(function() {
 					render(null, container);
 
 					done();
@@ -371,7 +370,7 @@ describe('BUG: instance - null', () => {
 			<div>
 				<Dropdown
 					items={items}
-					changeCallback={function () {
+					changeCallback={function() {
 					}}
 					changeParams={{ guid: 'foo', field: 'activityType' }}
 					value={value}
@@ -381,7 +380,6 @@ describe('BUG: instance - null', () => {
 		);
 
 		container.querySelector('#MAGICBUTTON').click();
-
 
 		render(
 			<div>
@@ -408,7 +406,7 @@ describe('BUG: instance - null', () => {
 			<div>
 				<Dropdown
 					items={items}
-					changeCallback={function () {
+					changeCallback={function() {
 					}}
 					changeParams={{ guid: 'foo', field: 'activityType' }}
 					value={value}
@@ -419,12 +417,11 @@ describe('BUG: instance - null', () => {
 
 		container.querySelector('#MAGICBUTTON').click();
 
-
 		render(
 			<div>
 				<Dropdown
 					items={items}
-					changeCallback={function () {
+					changeCallback={function() {
 					}}
 					changeParams={{ guid: 'dwqwdq', field: 'activityType' }}
 					value={value}

@@ -15,24 +15,9 @@
     "type": "git",
     "url": "git+ssh://git@github.com/infernojs/inferno.git"
   },
-  "lint-staged": {
-    "*.js": [
-      "tslint"
-    ],
-    "*.ts": [
-      "tslint"
-    ],
-    "*.jsx": [
-      "tslint"
-    ],
-    "*.tsx": [
-      "tslint"
-    ]
-  },
   "pre-commit": {
     "silent": true,
     "run": [
-      "lint-staged",
       "test"
     ]
   },
@@ -40,6 +25,7 @@
     "clean": "lerna exec -- rimraf dist",
     "coveralls": "coveralls < coverage/lcov.info",
     "prebuild": "npm run clean",
+    "postbuild": "rimraf build",
     "build": "npm-run-all -l --parallel build:**",
     "prebuild:typings": "rimraf build",
     "build:typings": "tsc && lerna exec -- node ../../scripts/typings/build.js",
@@ -48,20 +34,19 @@
     "build:umd:dev": "npm run rollup --",
     "build:umd:prod": "npm run rollup -- --env=production",
     "changelog": "lerna-changelog",
-    "docs": "rimraf docs && typedoc --options ./typedoc.js",
+    "predocs": "rimraf docs",
+    "docs": "typedoc",
     "examples": "npm run --prefix examples start",
-    "lint": "npm-run-all -l lint:*",
-    "lint:ts": "tslint -p tsconfig.json --type-check",
-    "lint:js": "tslint -p tsconfig.json packages/*/__tests__/**/*",
-    "lint-staged": "lint-staged",
+    "lint": "tslint -p tsconfig.json --fix --type-check",
     "prettier": "npm-run-all --parallel prettier:**",
     "prettier:packages:js": "./scripts/tasks/prettier.sh packages/*/{src,__tests__}/**/*.{js,jsx} packages/*/{src,__tests__}/*.{js,jsx}",
     "prettier:packages:ts": "./scripts/tasks/prettier.sh --parser=typescript packages/*/{src,__tests__}/**/*.{ts,tsx} packages/*/{src,__tests__}/*.{ts,tsx}",
     "prettier:fixtures": "./scripts/tasks/prettier.sh fixtures/**/*.{js,jsx}",
     "prettier:scripts": "./scripts/tasks/prettier.sh scripts/**/*.{js,jsx} /*.{js,jsx}",
     "postinstall": "lerna bootstrap",
-    "rollup": "lerna exec -- cross-env node ../../scripts/rollup/build.js",
+    "rollup": "lerna exec -- node ../../scripts/rollup/build.js",
     "test": "jest",
+    "test:coveralls": "node ./scripts/test/test.sh",
     "test:browser": "npm run --prefix fixtures/browser test",
     "test:react": "npm run --prefix fixtures/react test",
     "test:package": "node fixtures/packaging/build-all.js",
@@ -88,13 +73,13 @@
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "concat-stream-es6": "0.0.1",
     "coveralls": "^2.13.1",
     "dts-bundle": "^0.7.2",
     "history": "^4.6.1",
     "jest": "^20.0.4",
     "lerna": "^2.0.0-rc.5",
     "lerna-changelog": "^0.5.0",
-    "lint-staged": "^3.6.0",
     "minimist": "^1.2.0",
     "most": "^1.4.1",
     "most-subject": "^5.3.0",

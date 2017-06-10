@@ -2,7 +2,6 @@ language: node_js
 
 node_js:
   - '6'
-  - '8'
 
 notifications:
   email:
@@ -27,8 +26,10 @@ script:
 
 jobs:
   include:
+    - script: npm run lint
+    - script: npm run test:coveralls
+    - script: npm run test:browser
     - stage: Build
-      node_js: '6'
       script:
         - npm run build
         - npm run test:package

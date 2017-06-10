@@ -5,11 +5,11 @@ import createElement from 'inferno-create-element';
 describe('Text', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 	});
 

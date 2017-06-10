@@ -6,7 +6,7 @@ import { createTextVNode } from 'inferno/core/VNodes';
 function generateKeyNodes(array) {
 
 	let i, id, key;
-	let children = [];
+	const children = [];
 	let newKey;
 
 	for (i = 0; i < array.length; i++) {
@@ -28,16 +28,16 @@ function generateKeyNodes(array) {
 describe('keyed-nodes', () => {
 	let container;
 
-	let template = function (child) {
+	const template = function(child) {
 		return createElement('div', null, child);
 	};
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -411,7 +411,7 @@ describe('keyed-nodes', () => {
 	describe('Should handle massive large arrays', () => {
 		let items;
 
-		beforeEach(function () {
+		beforeEach(function() {
 			items = new Array(1000);
 			for (let i = 0; i < 1000; i++) {
 				items[ i ] = i;
@@ -718,7 +718,7 @@ describe('keyed-nodes', () => {
 				if (typeof item === 'number') {
 					return keys ? createTextVNode(item, item) : createTextVNode(item);
 				} else if (Array.isArray(item)) {
-					let result = [];
+					const result = [];
 					for (let i = 0; i < item.length; i++) {
 						result.push(gen(item[ i ], keys));
 					}

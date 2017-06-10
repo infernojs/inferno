@@ -1,5 +1,5 @@
-import { streamAsString } from 'inferno-server';
 import Component from 'inferno-component';
+import { streamAsString } from 'inferno-server';
 
 import concatStream from 'concat-stream-es6';
 import createElement from 'inferno-create-element';
@@ -109,7 +109,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 		it(test.description, () => {
 			const container = document.createElement('div');
 			const vDom = test.template('foo');
-			return streamPromise(vDom).then(function (output) {
+			return streamPromise(vDom).then(function(output) {
 				document.body.appendChild(container);
 				container.innerHTML = output;
 				expect(output).toBe(test.result);
@@ -117,7 +117,6 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			});
 		});
 	});
-
 
 	describe('Component hook', () => {
 		it('Should allow changing state in CWM', () => {
@@ -171,7 +170,7 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 			}
 
 			const vDom = <Tester />;
-			return streamPromise(vDom).then(function (output) {
+			return streamPromise(vDom).then(function(output) {
 				const container = document.createElement('div');
 				document.body.appendChild(container);
 				container.innerHTML = output;
@@ -183,10 +182,10 @@ describe('SSR Creation Streams - (non-JSX)', () => {
 });
 
 function streamPromise(dom) {
-	return new Promise(function (res, rej) {
+	return new Promise(function(res, rej) {
 		streamAsString(dom)
 			.on('error', rej)
-			.pipe(concatStream(function (buffer) {
+			.pipe(concatStream(function(buffer) {
 				res(buffer.toString('utf-8'));
 			}));
 	});

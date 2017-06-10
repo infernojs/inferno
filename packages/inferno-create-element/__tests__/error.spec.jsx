@@ -156,10 +156,10 @@ describe('Error recovery', () => {
 	// 	try {
 	// 		render(<TreeOfCrashers suffle={true} crash={true}/>, container);
 	// 	} catch (ex) {
-	// 		expect(ex.message).to.equal('test');
+	// 		expect(ex.message).toEqual('test');
 	// 	}
 	//
 	// 	render(<TreeOfCrashers crash={false}/>, container);
-	// 	expect(container.firstChild.innerHTML).to.equal('2');
+	// 	expect(container.firstChild.innerHTML).toEqual('2');
 	// });
 });

@@ -640,20 +640,20 @@ describe('FormElements', () => {
 				render(<CompA/>, container);
 
 				expect(container.firstChild.firstChild.checked).toBe(false);
-				// expect(container.querySelectorAll('input:checked').length).to.equal(1);
+				// expect(container.querySelectorAll('input:checked').length).toEqual(1);
 
 
 				let input = container.querySelector('input');
 				input.click();
 
 				expect(container.firstChild.firstChild.checked).toBe(true);
-				// expect(container.querySelectorAll('input:checked').length).to.equal(2);
+				// expect(container.querySelectorAll('input:checked').length).toEqual(2);
 
 				input = container.querySelector('input');
 				input.click();
 
 				expect(container.firstChild.firstChild.checked).toBe(false);
-				// expect(container.querySelectorAll('input:checked').length).to.equal(1);
+				// expect(container.querySelectorAll('input:checked').length).toEqual(1);
 			});
 
 			it('Github - 1023 It should call recent callback from input', (done) => {
@@ -759,15 +759,15 @@ describe('FormElements', () => {
 			//
 			// 		triggerEvent('change', input);
 			//
-			// 		expect(spy.calledOnce).to.equal(true);
-			// 		expect(spy.args[0][1]).to.equal('foo');
+			// 		expect(spy.calledOnce).toEqual(true);
+			// 		expect(spy.args[0][1]).toEqual('foo');
 			//
 			// 		input.value = 'bar';
 			//
 			// 		triggerEvent('change', input);
 			//
-			// 		expect(spy.calledTwice).to.equal(true);
-			// 		expect(spy.args[1][1]).to.equal('bar');
+			// 		expect(spy.calledTwice).toEqual(true);
+			// 		expect(spy.args[1][1]).toEqual('bar');
 			//
 			// 		done();
 			// 	});

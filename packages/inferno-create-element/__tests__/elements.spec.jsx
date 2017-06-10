@@ -454,7 +454,7 @@ describe('Elements (JSX)', () => {
 		// expect(container.firstChild.className).to.eql('Dominic rocks!');
 		// expect(
 		// 	container.innerHTML
-		// ).to.equal(
+		// ).toEqual(
 		// 	innerHTML('<div className="Dominic rocks!"></div>')
 		// );
 		// render(<div className='' />, container);

@@ -9,12 +9,12 @@ let global;
 describe('Components (non-JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		document.body.removeChild(container);
 	});
@@ -41,7 +41,7 @@ describe('Components (non-JSX)', () => {
 		}
 
 		it('should render a basic component', () => {
-			let template = (Component, title) =>
+			const template = (Component, title) =>
 				createElement('div', null,
 					createElement(Component, {
 						title,
@@ -127,7 +127,7 @@ describe('Components (non-JSX)', () => {
 		}
 	//
 		it('should render a basic component with inputs', () => {
-			let template = (Component, title, isChecked) =>
+			const template = (Component, title, isChecked) =>
 				createElement('div', null,
 					createElement(Component, {
 						title,
@@ -178,7 +178,7 @@ describe('Components (non-JSX)', () => {
 		}
 
 		it('should render a basic component with input tag and attributes', () => {
-			let template = (Component, title, isEnabled) =>
+			const template = (Component, title, isEnabled) =>
 				createElement('div', null,
 					createElement(Component, {
 						title,
@@ -220,7 +220,7 @@ describe('Components (non-JSX)', () => {
 		}
 
 		it('should render a basic component with inputs #3 #3', () => {
-			let template = (Component, title, isDisabled) =>
+			const template = (Component, title, isDisabled) =>
 				createElement('div', null,
 					createElement(Component, { title, isDisabled })
 				);
@@ -246,7 +246,7 @@ describe('Components (non-JSX)', () => {
 		});
 
 		it('should render a basic component and remove property if null #1', () => {
-			let template = (Component, title, name) =>
+			const template = (Component, title, name) =>
 				createElement('div', null,
 					createElement(Component, { title, name })
 				);
@@ -267,7 +267,7 @@ describe('Components (non-JSX)', () => {
 
 		it('should render a basic component and remove property if null #2', () => {
 
-			let template = (Component, title, name) =>
+			const template = (Component, title, name) =>
 				createElement('div', null,
 					createElement(Component, { title, name })
 				);
@@ -289,7 +289,7 @@ describe('Components (non-JSX)', () => {
 		});
 
 		it('should render a basic root component', () => {
-			let template = (Component, title, name) =>
+			const template = (Component, title, name) =>
 				createElement(Component, { title, name });
 
 			render(template(BasicComponent1, 'abc', 'basic-render'), container);
@@ -340,7 +340,7 @@ describe('Components (non-JSX)', () => {
 		}
 
 		it('should render a basic component with children', () => {
-			let template = (Component, title, name) =>
+			const template = (Component, title, name) =>
 				createElement('div', null,
 					createElement(Component,
 						{
@@ -428,7 +428,7 @@ describe('Components (non-JSX)', () => {
 		if (typeof global !== 'undefined' && !global.usingJSDOM) {
 			it('should render a basic component with styling', () => {
 
-				let template = (Component, props) =>
+				const template = (Component, props) =>
 					createElement(Component, props);
 
 				render(template(BasicComponent3, {
@@ -474,7 +474,7 @@ describe('Components (non-JSX)', () => {
 		}
 
 		it('should render a basic component with component children', () => {
-			let template = (Component1, Component2, Component3) =>
+			const template = (Component1, Component2, Component3) =>
 				createElement(Component1, null,
 					createElement(Component2, null,
 						createElement(Component3, null)
@@ -572,7 +572,7 @@ describe('Components (non-JSX)', () => {
 
 		describe('should render multiple components', () => {
 			it('should render multiple components', () => {
-				let template = (Component, title1, name1, Component2, title2, name2) =>
+				const template = (Component, title1, name1, Component2, title2, name2) =>
 					createElement('div', null,
 						createElement(Component, {
 							title: title1,
@@ -792,10 +792,10 @@ describe('Components (non-JSX)', () => {
 		});
 
 		describe('should render a basic component with conditional fragment', () => {
-			const tpl3625453295 = function () {
+			const tpl3625453295 = function() {
 				return createElement('h1', null, 'BIG');
 			};
-			const tpl4021787591 = function () {
+			const tpl4021787591 = function() {
 				return createElement('h2', null, 'small');
 			};
 
@@ -816,17 +816,17 @@ describe('Components (non-JSX)', () => {
 		});
 
 		describe('should render a basic component with a list of values from state', () => {
-			const tpl2026545261 = function (v0) {
+			const tpl2026545261 = function(v0) {
 				return createElement('ul', { class: 'login-organizationlist' },
 					'',
 					v0,
 					''
 				);
 			};
-			const tpl3192647933 = function (v0) {
+			const tpl3192647933 = function(v0) {
 				return createElement('li', null, v0);
 			};
-			const tpl1546018623 = function (v0) {
+			const tpl1546018623 = function(v0) {
 				return createElement(v0, null);
 			};
 
@@ -846,7 +846,7 @@ describe('Components (non-JSX)', () => {
 				}
 
 				render() {
-					return tpl2026545261(this.state.organizations.map(function (result) {
+					return tpl2026545261(this.state.organizations.map(function(result) {
 						return tpl3192647933(result.name);
 					}));
 				}
@@ -887,7 +887,7 @@ describe('Components (non-JSX)', () => {
 		}
 
 		it('should render a stateless component', () => {
-			let template = (Component, title) =>
+			const template = (Component, title) =>
 				createElement('div', null,
 					createElement(Component, {
 						title,
@@ -926,14 +926,14 @@ describe('Components (non-JSX)', () => {
 		});
 
 		describe('should render a component with a conditional state item', () => {
-			const tpl3578458729 = function (v0) {
+			const tpl3578458729 = function(v0) {
 				return createElement('div', { className: 'login-view bg-visma' }, v0);
 			};
-			const tpl188998005 = function () {
+			const tpl188998005 = function() {
 				return createElement('div', null, 'VISIBLE');
 			};
 
-			const tpl3754840163 = function (v0) {
+			const tpl3754840163 = function(v0) {
 				return createElement('div', null,
 					createElement('button', { onclick: v0 }, 'Make visible')
 				);
@@ -946,7 +946,7 @@ describe('Components (non-JSX)', () => {
 						show: false
 					};
 
-					this.makeVisible = function () {
+					this.makeVisible = function() {
 						this.setState({
 							show: true
 						});
@@ -954,7 +954,7 @@ describe('Components (non-JSX)', () => {
 				}
 
 				render() {
-					return tpl3578458729((function () {
+					return tpl3578458729((function() {
 						if (this.state.show === true) {
 							return tpl188998005();
 						} else {
@@ -964,7 +964,7 @@ describe('Components (non-JSX)', () => {
 				}
 			}
 
-			const tpl79713834 = function (v0) {
+			const tpl79713834 = function(v0) {
 				return createElement(v0, null);
 			};
 
@@ -994,7 +994,7 @@ describe('Components (non-JSX)', () => {
 		});
 
 		describe('should render a component with a list of divs', () => {
-			const BaseView = function (v0, v1) {
+			const BaseView = function(v0, v1) {
 				return createElement('div', { class: 'login-view' },
 					createElement('button', { onclick: v0 }, 'ADD'),
 					createElement('br', null),
@@ -1002,13 +1002,13 @@ describe('Components (non-JSX)', () => {
 				);
 			};
 
-			const Looper = function (v0) {
+			const Looper = function(v0) {
 				return createElement('div', null,
 					createElement('h1', null, v0)
 				);
 			};
 
-			const starter = function (v0) {
+			const starter = function(v0) {
 				return createElement(v0, null);
 			};
 
@@ -1022,8 +1022,8 @@ describe('Components (non-JSX)', () => {
 
 				render() {
 					/* eslint new-cap:0 */
-					return BaseView(this.toggle, (function () {
-						return this.state.list.map(function (result) {
+					return BaseView(this.toggle, (function() {
+						return this.state.list.map(function(result) {
 							return Looper(result);
 						});
 					}).call(this));
@@ -1050,15 +1050,15 @@ describe('Components (non-JSX)', () => {
 		});
 
 		describe('should render a component with a list of text nodes', () => {
-			const root = function (children) {
+			const root = function(children) {
 				return createElement('div', null, children);
 			};
 
-			const header = function (children) {
+			const header = function(children) {
 				return createElement('div', null, children);
 			};
 
-			const view = function (state) {
+			const view = function(state) {
 				return root([
 					(state
 						? header(['Foo'])
@@ -1126,7 +1126,7 @@ describe('Components (non-JSX)', () => {
 					}
 
 					render() {
-						const children = this.props.messages.map(function (message) {
+						const children = this.props.messages.map(function(message) {
 							return createElement(Message, { text: message.text });
 						});
 

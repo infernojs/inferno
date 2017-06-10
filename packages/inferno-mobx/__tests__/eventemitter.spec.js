@@ -4,7 +4,7 @@ import { EventEmitter } from 'inferno-mobx';
 const testdata = {
 	testKey: 'testdata'
 };
-const testListener = function (data) {
+const testListener = function(data) {
 	expect(data).toBe(testdata);
 };
 

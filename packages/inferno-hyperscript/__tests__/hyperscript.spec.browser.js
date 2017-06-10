@@ -1,17 +1,17 @@
-import sinon from 'sinon';
 import { render } from 'inferno';
 import h from 'inferno-hyperscript';
 import { innerHTML } from 'inferno-utils';
+import sinon from 'sinon';
 
 describe('HyperScript (non-JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -102,8 +102,8 @@ describe('HyperScript (non-JSX)', () => {
 				container.innerHTML
 			)
 		).toBe(innerHTML(
-            '<div class="test myClass" id="myId">Hello world!</div>'
-        ));
+						'<div class="test myClass" id="myId">Hello world!</div>'
+				));
 	});
 
 	it('Should handle tag with no name', () => {
@@ -134,8 +134,8 @@ describe('HyperScript (non-JSX)', () => {
 			container
 		);
 		expect(innerHTML(container.innerHTML)).toBe(
-            innerHTML('<select id="select"><option value="1">1</option><option value="2">2</option></select>')
-        );
+						innerHTML('<select id="select"><option value="1">1</option><option value="2">2</option></select>')
+				);
 	});
 
 	it('Should handle tag with no tag name but id is present', () => {

@@ -5,11 +5,11 @@ import createElement from 'inferno-create-element';
 describe('SVG (non-jsx)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 	});
 
@@ -223,7 +223,7 @@ describe('SVG (non-jsx)', () => {
 
 		// TODO! Fix this
 		// render(template([ 'bar', null, 'zoo' ]), container);
-		// expect(container.firstChild.getAttribute('class')).to.equal('bar,zoo');
+		// expect(container.firstChild.getAttribute('class')).toEqual('bar,zoo');
 
 	});
 
@@ -282,7 +282,7 @@ describe('SVG (non-jsx)', () => {
 		const template = () => createElement('div', null, createElement('svg', null));
 
 		render(template(), container);
-		// expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
+		// expect(container.firstChild.firstChild.tagName).toEqual('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 	});
@@ -293,7 +293,7 @@ describe('SVG (non-jsx)', () => {
 		}, createElement('svg', null));
 
 		render(template(), container);
-		// expect(container.firstChild.firstChild.tagName).to.equal('http://www.w3.org/2000/svg');
+		// expect(container.firstChild.firstChild.tagName).toEqual('http://www.w3.org/2000/svg');
 		expect(container.firstChild.firstChild.namespaceURI).toBe('http://www.w3.org/2000/svg');
 
 	});

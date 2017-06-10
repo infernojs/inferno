@@ -6,12 +6,12 @@ import { innerHTML } from 'inferno-utils';
 describe('Select / select multiple (non-JSX)', () => {
 	let container;
 
-	beforeEach(function () {
+	beforeEach(function() {
 		container = document.createElement('div');
 		document.body.appendChild(container);
 	});
 
-	afterEach(function () {
+	afterEach(function() {
 		render(null, container);
 		container.innerHTML = '';
 		document.body.removeChild(container);
@@ -79,7 +79,7 @@ describe('Select / select multiple (non-JSX)', () => {
 	// 	expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 	// 	expect(
 	// 		container.innerHTML
-	// 	).to.equal(
+	// 	).toEqual(
 	// 		innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
 	// 	);
 	// 	render(template(undefined), container);
@@ -88,7 +88,7 @@ describe('Select / select multiple (non-JSX)', () => {
 	// 	expect(container.firstChild.children[ 1 ].selected).to.eql(false);
 	// 	expect(
 	// 		container.innerHTML
-	// 	).to.equal(
+	// 	).toEqual(
 	// 		innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
 	// 	);
 	//
@@ -97,7 +97,7 @@ describe('Select / select multiple (non-JSX)', () => {
 	// 	expect(container.firstChild.children[ 1 ].selected).to.eql(true);
 	// 	expect(
 	// 		container.innerHTML
-	// 	).to.equal(
+	// 	).toEqual(
 	// 		innerHTML('<select multiple=""><option value="foo">foo</option><option value="bar">bar</option></select>')
 	// 	);
 	// });
