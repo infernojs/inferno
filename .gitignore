@@ -23,6 +23,8 @@ node_modules
 *~
 test/data/result.json
 
+*.orig
+
 packages/*/tsconfig.*
 packages/*/.npmignore
 packages/*/dist-es
